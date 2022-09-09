@@ -1,0 +1,5 @@
+CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA
+--------------------------------------------------------------------------------
+CUSTO MÉDIO  = ((QTD_ATUAL * CUSTOMEDIO ANTERIOR) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)
+CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))
+--------------------------------------------------------------------------------
