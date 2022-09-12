@@ -1,4 +1,5 @@
 unit Unit7;
+
 interface
 
 uses
@@ -22,9 +23,7 @@ uses
   TLHelp32,
   PsAPI, ComObj, ActiveX, TnPdf, Math, pngimage, strUtils, Buttons,
   spdNFeDPEC, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP; // COnsultaCEP; //, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask;
-
-// spdTecnoWS, spdCustomGov, spdEventos, spdCCe,
+  IdHTTP;
 
   function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
   function Commitatudo(P1:Boolean): Boolean;
@@ -1422,6 +1421,7 @@ type
     IBQuery6: TIBQuery;
     N66: TMenuItem;
     DuplicatestaNFe1: TMenuItem;
+    PrvisualizarDANFE1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2022,6 +2022,7 @@ type
     procedure DevolverNF1Click(Sender: TObject);
     procedure RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
     procedure DuplicatestaNFe1Click(Sender: TObject);
+    procedure PrvisualizarDANFE1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2114,6 +2115,9 @@ type
     //
     iKey : Integer;
     //
+    function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
+    function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+    function AliqICMdoCliente16: double;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -2136,7 +2140,6 @@ type
   function RetornaValorDaTagNoCampoCRLF(sTag: String; sObs: String): String;
   function Manifesto(iP1: integer) : Boolean;
   function ProdutoValidoParaMarketplace(bP1 : Boolean): String;
-
   //
 var
   Form7: TForm7;
@@ -2145,7 +2148,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
-  Unit29, Unit48;
+  Unit29, Unit48, ugeraxmlnfe;
 
 {$R *.DFM}
 
@@ -2300,7 +2303,7 @@ begin
 
 end;
 
-
+(* // Sandro Silva 2022-09-12
 function MostraNFSe(bP1 : Boolean): Boolean;
 var
   F : TextFile;
@@ -2356,7 +2359,9 @@ begin
   Result := True;
   //
 end;
+*)
 
+{Sandro Silva 2022-09-12 inicio 
 function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 // Sandro Silva 2019-06-11
 // Valida se o Gtin informado é válido, usando ValidaEAN() e comparando o prefixo
@@ -2369,12 +2374,13 @@ begin
       Result := False;
   end;
 end;
-
+}
 
 function Manifesto(iP1: integer) : Boolean;
 var
   sJustificativa, sRetorno : String;
 begin
+
   //
   // informar o tipo do Evento:
   //
@@ -2410,7 +2416,8 @@ begin
         // 210200 – Confirmação da Operação
         // 210210 – Ciência da Operação
         // 210220 – Desconhecimento da Operação
-        // 210240 – Operação não Realizada        //
+        // 210240 – Operação não Realizada
+        //
         if (Pos('<xMotivo>Rejeicao:',sRetorno)<>0) and (Pos('<cStat>573',sRetorno)=0)then // Retornou rejeição e não é rejeição por duplicidade
         begin
           //
@@ -2432,6 +2439,7 @@ begin
   //
   Result := True;
   //
+
 end;
 
 function xmlNodeXml(sXML: String; sNode: String): String;
@@ -2506,7 +2514,7 @@ begin
   //
 end;
 
-
+{Sandro Silva 2022-09-12 inicio
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 // Sandro Silva 2015-12-10 Formata valor float com as casas decimais para usar nos elementos do xml da nfce
 // Parâmetros:
@@ -2518,7 +2526,7 @@ begin
   sMascara := '##0.' + DupeString('0', iPrecisao);
   Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.');
 end;
-
+}
 
 function RetornaValorDaTagNoCampo(sTag: String; sObs: String): String;
 // Extrai o valor do parâmetro configurado
@@ -4358,7 +4366,7 @@ begin
   end;
 end;
 
-
+{Sandro Silva 2022-09-12 inicio
 // A PEDIDO DO
 // VANDERLEI PERETI
 // FONES: 49 35664136 / 91427178
@@ -4379,7 +4387,7 @@ begin
     Result := Form7.IbDataSet16.FieldByName('ICM').AsFloat;
   end;
 end;
-
+}
 
 function utf8Fix(sTexto: String): String;
 const
@@ -4737,7 +4745,23 @@ begin
   //
   try
     Form7.spdNFe.NomeCertificado.Text     := Mais1Ini.ReadString('NFE','Certificado','');
-  except end;
+  except
+    on E: Exception do
+    begin
+      {Sandro Silva 2022-09-12 inicio
+      if Mais1Ini.ReadString('NFE','Certificado','') <> '' then
+      begin
+        if AnsiContainsText(E.Message, '"Certificado não encontrado."') then
+        begin
+          //ShowMessage('Selecione o Certificado Digital');
+          Form1.SelecionarCertificadoDigital1Click(Form1.SelecionarCertificadoDigital1);
+          ConfiguraNFE(sP1);
+          Exit;
+        end;
+      end;
+      {Sandro Silva 2022-09-12 fim}
+    end;
+  end;
   //
   if AllTrim(UpperCase(Form7.ibDataSet13ESTADO.AsString)) <> '' then
   begin
@@ -13596,6 +13620,7 @@ begin
   //
   // Nf-e
   //
+  PrvisualizarDANFE1.Visible                       := False;
   CancelarNFSe1.Visible                            := False;
   EnviarNFSeporemail1.Visible                      := False;
   Visu1.Visible                                    := False;
@@ -13854,6 +13879,13 @@ begin
     //
   end;
   //
+  {Sandro Silva 2022-09-12 inicio}
+  if LimpaNumero(Form7.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124' then // Eliminar essa validação quando concluídos os testes
+  begin
+    PrvisualizarDANFE1.Visible := CancelarNFe1.Visible;
+    PrvisualizarDANFE1.Enabled := Trim(Form7.ibDataSet15.FieldByName('NFEPROTOCOLO').AsString) = '';
+  end;
+  {Sandro Silva 2022-09-12 fim}
 end;
 
 procedure TForm7.Ativo1Click(Sender: TObject);
@@ -25112,6 +25144,14 @@ begin
             //
             begin
               //
+              // Início geração do xml
+              //
+              //
+              (* Sandro Silva 2022-09-12 inicio
+              Movido para ugeraxmlnfe
+
+
+
               Screen.Cursor            := crHourGlass;
               Form7.Panel7.Caption     := 'Verificando status do serviço...'+replicate(' ',100);
               Form7.Panel7.Repaint;
@@ -32777,6 +32817,13 @@ ShowMessage('Teste: '+chr(10)+
                 end;
                 //
               end;
+              *)
+              sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
+              fNFe := GeraXmlNFe;//(False);
+              //
+              // Fim da geração do XML
+              //
+
               //
               // Assinando
               //
@@ -33797,6 +33844,7 @@ begin
     // Recupera na tabela VENDAS o XML
     //
     fNFE :=  Form7.ibDataSet15NFEXML.AsString;
+
     //
     // Recupera na tabela VENDAS o XML
     //
@@ -33822,6 +33870,7 @@ begin
     Screen.Cursor            := crDefault;
   end;
   //
+
 end;
 
 procedure TForm7.ibDataset40NewRecord(DataSet: TDataSet);
@@ -41979,6 +42028,88 @@ begin
   //
 end;
 
+function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
+// Sandro Silva 2019-06-11
+// Valida se o Gtin informado é válido, usando ValidaEAN() e comparando o prefixo
+// Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
+begin
+  Result := ValidaEAN13(LimpaNumero(sEan));
+  if Result then
+  begin
+    if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then
+      Result := False;
+  end;
+end;
+
+function TForm7.FormatFloatXML(dValor: Double; iPrecisao: Integer): String;
+// Sandro Silva 2015-12-10 Formata valor float com as casas decimais para usar nos elementos do xml da nfce
+// Parâmetros:
+// dValor: Valor a ser formatado
+// iPrecisao: Quantidade de casas decimais resultante no valor formatado. Por default formata com 2 casas. Ex.: 2 casas = 0,00; 3 casas = 0,000
+var
+  sMascara: String;
+begin
+  sMascara := '##0.' + DupeString('0', iPrecisao);
+  Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.');
+end;
+
+// A PEDIDO DO
+// VANDERLEI PERETI
+// FONES: 49 35664136 / 91427178
+// EMAIL: comercial@vpinformatica.com.br
+function TForm7.AliqICMdoCliente16: double;
+begin
+  if Form1.fAliqICMdoCliente <> 0 then
+  begin
+    if Form7.ibDataSet13ESTADO.AsString =  Form7.ibDataSet2ESTADO.AsString then
+    begin
+      Result :=  Form1.fAliqICMdoCliente;
+    end else
+    begin
+      Result := Form7.IbDataSet16.FieldByName('ICM').AsFloat;
+    end;
+  end else
+  begin
+    Result := Form7.IbDataSet16.FieldByName('ICM').AsFloat;
+  end;
+end;
+
+procedure TForm7.PrvisualizarDANFE1Click(Sender: TObject);
+var
+  sFormato, sLote: String;
+begin
+  {Sandro Silva 2022-09-12 inicio}
+  //Ficha 4128
+
+  Form7.ibDataSet2.Close;
+  Form7.ibDataSet2.Selectsql.Clear;
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+  Form7.ibDataSet2.Open;
+  //
+  //
+  ConfiguraNFE(True);
+
+  sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
+
+  fNFE := GeraXmlNFe;//(True);
+  if Trim(fNFE) <> '' then
+  begin
+    //
+    try
+      spdNFe.PreverDanfe(fNFE, '');
+    except
+      //Screen.Cursor            := crDefault;
+    end;
+  end;
+  //
+  DecimalSeparator := ',';
+  DateSeparator    := '/';
+  //
+  Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
+  Form7.Panel7.Repaint;
+  Screen.Cursor            := crDefault;
+  //
+  {Sandro Silva 2022-09-12 fim}
+end;
+
 end.
-
-

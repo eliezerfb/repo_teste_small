@@ -56,7 +56,8 @@ uses
   Unit29 in 'Unit29.pas' {Form29},
   Unit42 in 'Unit42.pas' {Form42},
   Unit44 in 'Unit44.pas' {Form44},
-  Unit45 in 'Unit45.pas' {Form45};
+  Unit45 in 'Unit45.pas' {Form45},
+  ugeraxmlnfe in 'ugeraxmlnfe.pas';
 
 {$R *.RES}
 
