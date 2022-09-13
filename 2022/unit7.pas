@@ -38,6 +38,8 @@ uses
   function DistribuicaoNFe2(sP1: String) : Boolean;
   function AbreArquivoNoFormatoCerto(sP1:String): boolean;
   function HtmlParaPdf(sP1:String): boolean;
+  procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(
+    XmlEnviado: String; sRetorno: String);
 
 type
 
@@ -2642,7 +2644,7 @@ begin
   //
   try
     //
-    if Pos('<cStat>653</cStat>',sP1) <> 0  then // Nf-e Cancelada
+    if Pos('<cStat>653</cStat>',sP1) <> 0  then // NF-e Cancelada
     begin
       //
       if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then Form7.ibDataset24.Edit;
@@ -4568,6 +4570,18 @@ begin
   //
   Result := True;
   //
+end;
+
+procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(
+  XmlEnviado: String; sRetorno: String);
+//Exibe orientações de como proceder em casos de rejeições retornadas pela Sefaz
+begin
+  if AnsiContainsText(sRetorno, '<cStat>873</cStat>') // Rejeição: Operação com medicamentos e não informado os campos de rastreabilidade [nItem: nnn]
+  or AnsiContainsText(sRetorno, '<cStat>840</cStat>') // Rejeição: NCM de medicamento e não informado o grupo de medicamento (med) [nItem:nnn]
+  then
+  begin
+    Application.MessageBox(pChar('Preencha os campos cProdANVISA, xMotivoIsencao e rastro, da Aba TAGs, no cadastro do produto ' + ItemRejeicao(sRetorno, XmlEnviado)), 'Atenção', mb_Ok + MB_ICONWARNING);
+  end;
 end;
 
 function LoadXmlDestinatarioSaida(aChaveNFe: String): WideString;
@@ -13618,7 +13632,7 @@ begin
   Imprimirrecibo3.Visible   := False;
   Baixaestacontanobanco1.Visible := False;
   //
-  // Nf-e
+  // NF-e
   //
   PrvisualizarDANFE1.Visible                       := False;
   CancelarNFSe1.Visible                            := False;
@@ -13732,7 +13746,7 @@ begin
     if sModulo = 'VENDA'  then
     begin
       //
-      // Nf-e
+      // NF-e
       //
       Apagar2.Visible                                  := False;
       //
@@ -26119,7 +26133,7 @@ begin
                       on E: Exception do
                       begin
                         Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                         ),'Atenção',mb_Ok + MB_ICONWARNING);
                       end;
                     end;
@@ -27316,7 +27330,7 @@ begin
                         on E: Exception do
                         begin
                           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-                          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                           ),'Atenção',mb_Ok + MB_ICONWARNING);
                         end;
                       end;
@@ -27385,7 +27399,7 @@ begin
                   on E: Exception do
                   begin
                     Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-                    chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                    chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                     ),'Atenção',mb_Ok + MB_ICONWARNING);
                   end;
                 end;
@@ -28522,7 +28536,7 @@ begin
                       on E: Exception do
                       begin
                         Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                         ),'Atenção',mb_Ok + MB_ICONWARNING);
                       end;
                     end;
@@ -31843,7 +31857,7 @@ ShowMessage('Teste: '+chr(10)+
                         end else
                         begin
                           //
-                          ShowMessage('Atenção'+chr(10)+chr(10)+'Preencher nos itens da NF o valor da Alíquota Interna da UF de destino e do (FCP) Fundo de Combate a Pobreza se necessário.'+Chr(10)+Chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.');
+                          ShowMessage('Atenção'+chr(10)+chr(10)+'Preencher nos itens da NF o valor da Alíquota Interna da UF de destino e do (FCP) Fundo de Combate a Pobreza se necessário.'+Chr(10)+Chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.');
                           Abort;
                           Abort;
                           //
@@ -31937,7 +31951,7 @@ ShowMessage('Teste: '+chr(10)+
                       on E: Exception do
                       begin
                         Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao calcular o Grupo de Tributação do ICMS para UF Destino item código: '+spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                         ),'Atenção',mb_Ok + MB_ICONWARNING);
                       end;
                     end;
@@ -32024,7 +32038,7 @@ ShowMessage('Teste: '+chr(10)+
                   on E: Exception do
                   begin
                     Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-                    chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                    chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                     ),'Atenção',mb_Ok + MB_ICONWARNING);
                   end;
                 end;
@@ -32365,7 +32379,7 @@ ShowMessage('Teste: '+chr(10)+
                       //
                       Application.MessageBox(pChar(E.Message+chr(10)+
                       chr(10)+'Ao informar serviços.'+
-                      chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                      chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                       ),'Atenção',mb_Ok + MB_ICONWARNING);
                       //
                       Form7.ibDataset15.Edit;
@@ -32761,7 +32775,7 @@ ShowMessage('Teste: '+chr(10)+
                 begin
                   //
                   Application.MessageBox(pChar(E.Message+chr(10)+
-                  chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+                  chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                   ),'Atenção',mb_Ok + MB_ICONWARNING);
                   //
                   Form7.ibDataset15.Edit;
@@ -32863,6 +32877,12 @@ ShowMessage('Teste: '+chr(10)+
                   end else
                   begin
                     ShowMessage(sRetorno);
+
+                    {Sandro Silva 2022-09-13 inicio}
+                    // Ocorreu erro
+                    //ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(fNFe, sRetorno);
+                    {Sandro Silva 2022-09-13 fim}
+
                   end;
                   //
                   //             ShowMessage(sRecibo)
@@ -33003,9 +33023,11 @@ begin
       if (Pos('<cStat>100</cStat>',Form7.ibDataSet15RECIBOXML.AsString) = 0) and (Pos('<cStat>105</cStat>',Form7.ibDataSet15RECIBOXML.AsString) = 0) then
       begin
         //
+        ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(Form7.ibDataSet15NFEXML.AsString, Form7.ibDataSet15RECIBOXML.AsString);
+
         Application.MessageBox(pChar(sStatus+chr(10)+
         ItemRejeicao(Form7.ibDataSet15RECIBOXML.AsString, Form7.ibDataSet15NFEXML.AsString)+chr(10)+
-        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da Nf-e.'
+        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
         ),'Atenção',mb_Ok + MB_ICONWARNING);
         //
       end;
@@ -33615,7 +33637,7 @@ begin
         +Chr(10)+E.Message
         +Chr(10)
         +chr(10)+'1 - Verifique se o seu certificado está instalado'
-        +chr(10)+'2 - Verifique se o seu certificado está selecionado (Configurações da Nf-e; Selecionar Certificado Digital...)'
+        +chr(10)+'2 - Verifique se o seu certificado está selecionado (Configurações da NF-e; Selecionar Certificado Digital...)'
         +chr(10)+'3 - Seu certificado pode estar vencido'
         +chr(10)+'4 - Seu certificado pode ser inválido'
         + chr(10)
@@ -33645,7 +33667,7 @@ begin
         +chr(10) +'Não foi possível acessar o servidor da receita.'
         +Chr(10)
         +chr(10)+'1 - Verifique sua conexão de internet'
-        +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da Nf-e; Disponibilidade dos Serviços)'
+        +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da NF-e; Disponibilidade dos Serviços)'
         + chr(10)
         + chr(10)
         +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
@@ -35550,7 +35572,7 @@ var
 begin
   //
   //
-  sNota := AllTrim(Form1.Small_InputForm('Consultar validade da NF-e','Serviço temporário disponível apenas para Nf-e emitida por usuário do SEFAZ VIRTUAL Rio Grande do Sul (SVRS).'+chr(10)+chr(10)+'Chave de acesso da NF-e:','')); // Nf de venda
+  sNota := AllTrim(Form1.Small_InputForm('Consultar validade da NF-e','Serviço temporário disponível apenas para NF-e emitida por usuário do SEFAZ VIRTUAL Rio Grande do Sul (SVRS).'+chr(10)+chr(10)+'Chave de acesso da NF-e:','')); // Nf de venda
   //
   if Length(AllTrim(LimpaNumero(sNota))) = 44 then
   begin
@@ -35751,7 +35773,7 @@ begin
             //
             // spdCCe.EnviarXMLCCeDestinatario(edArquivoXmlDest.Text);
             //
-            sRetorno := 'Carta de correção Eletrônica (Cc-e) vinculada a Nf-e.';
+            sRetorno := 'Carta de correção Eletrônica (Cc-e) vinculada a NF-e.';
             //
             ShowMessage(sRetorno);
             //
@@ -35768,7 +35790,7 @@ begin
             //
             ShowMessage(sMotivo);
             //
-            sRetorno := 'Erro ao gerar Cc-e para Nf-e '+Form7.ibDataSet15NUMERONF.AsString;
+            sRetorno := 'Erro ao gerar Cc-e para NF-e '+Form7.ibDataSet15NUMERONF.AsString;
             //
           end;
           //

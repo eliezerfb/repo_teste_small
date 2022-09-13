@@ -13662,7 +13662,7 @@ object Form1: TForm1
           Caption = '-'
         end
         object VersodolayoutdaNFE1: TMenuItem
-          Caption = 'Vers'#227'o do layout da NFE'
+          Caption = 'Vers'#227'o do layout da NF-e'
           object N301: TMenuItem
             Caption = '2.00'
             Enabled = False

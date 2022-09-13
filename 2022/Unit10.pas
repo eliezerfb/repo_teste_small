@@ -8406,6 +8406,13 @@ begin
   //
   Memo1.Lines.Add('<cProdANVISA>0000000000000 "Código de Produto da ANVISA"</cProdANVISA>');
   Memo1.Lines.Add('<xMotivoIsencao>"Motivo da isenção da ANVISA"</xMotivoIsencao>');
+  {Sandro Silva 2022-09-12 inicio}
+  // ficha 6224 NT 2021.004 v1.33
+  //
+  // Informar os campos de rastreabilidade na emissão de NF-e
+  //
+  Memo1.Lines.Add('<rastro>Sim"Informar grupo Rastreamento de Produto"</rastro>');
+  {Sandro Silva 2022-09-12 fim}
   //
   Memo1.Lines.Add('<cBenef>0000000000 "Código de Benefício Fiscal na UF aplicado ao item"</cBenef>');
   Memo1.Lines.Add('<motDesICMS>00 "Motivo da desoneração do ICMS"</motDesICMS>');
@@ -8455,7 +8462,6 @@ begin
   Memo1.Lines.Add('<condVeic>1"Condição do Veículo 1=Acabado; 2=Inacabado; 3=Semiacabado "</condVeic>');
   Memo1.Lines.Add('<cMod>"Código Marca Modelo Utilizar Tabela RENAVAM "</cMod>');
   Memo1.Lines.Add('<lota>5"Capacidade máxima de lotação Quantidade máxima permitida de passageiros sentados, inclusive o motorista. (v2.0) "</lota>');
-
   //
   StringGrid2.Cells[0,0] := 'Nome';
   StringGrid2.Cells[1,0] := 'Valor';
@@ -8464,6 +8470,11 @@ begin
   //
   for I := 0 to Form10.Memo1.Lines.Count + 1 do
   begin
+    {Sandro Silva 2022-09-12 inicio}
+    //Ajustar a quantidade de linhas no grid ao número de linhas a serem preenchidas com as tags
+    if StringGrid2.RowCount <= I then
+      StringGrid2.RowCount := StringGrid2.RowCount + 1;
+    {Sandro Silva 2022-09-12 fim}
     //
 //ShowMessage(stag);
 

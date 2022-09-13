@@ -19,6 +19,8 @@ uses
   function MontaTela(sP1 : boolean):Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 
+const BUILD_DO_BANCO = '2022005';
+const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 
 type
 
@@ -465,6 +467,7 @@ type
     function GetCNPJCertificado(SubjectName: String): String;
     function Small_InputForm(sP1, sP2, sP3: String) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
+    function NcmDeMedicamentos(sNcm: String): Boolean;
 
   end;
   //
@@ -5209,7 +5212,7 @@ begin
     //
   except end;
   //
-  if sBuild <> '2022004' then
+  if sBuild <> BUILD_DO_BANCO then // Sandro Silva 2022-09-12 if sBuild <> '2022004' then
   begin
     //
     Form1.ibDataset200.Close;
@@ -5468,7 +5471,7 @@ begin
         Form1.ibDataset200.Open;
         Form1.ibDataset200.Close;
         //
-        Form7.ibDataSet4.Tag := 999;
+        Form7.ibDataSet4.Tag := IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO; // Sandro Silva 2022-09-12Form7.ibDataSet4.Tag := 999;
         //
       except end;
       //
@@ -8129,7 +8132,7 @@ begin
         //
         Form1.ibDataset200.Close;
         Form1.ibDataset200.SelectSql.Clear;
-        Form1.ibDataset200.SelectSql.Add('set generator G_BUILD to 2022004');
+        Form1.ibDataset200.SelectSql.Add('set generator G_BUILD to ' + BUILD_DO_BANCO); // Sandro Silva 2022-09-12 Form1.ibDataset200.SelectSql.Add('set generator G_BUILD to 2022004');
         Form1.ibDataset200.Open;
         //
       except end;
@@ -11574,7 +11577,7 @@ begin
       Mensagem22('');
     end;
     //
-    if Form7.ibDataSet4.Tag = 999 then
+    if Form7.ibDataSet4.Tag = IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO then // Sandro Silva 2022-09-12 if Form7.ibDataSet4.Tag = 999 then
     begin
       //
       Form7.ibDataset4.Close;
@@ -15311,6 +15314,21 @@ begin
   Form7.ibDataSet4.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosClifor)+' clientes agendados para hoje.');
   //
+end;
+
+function TForm1.NcmDeMedicamentos(sNcm: String): Boolean;
+begin
+  // Valida se o NCM informado pertence a faixa de NCM de medicamentos
+  // NCMs que começam com 3001, 3002, 3003, 3004, 3005 e 3006
+  Result := False;
+  if (Copy(sNcm, 1, 4) = '3001')
+    or (Copy(sNcm, 1, 4) = '3002')
+    or (Copy(sNcm, 1, 4) = '3003')
+    or (Copy(sNcm, 1, 4) = '3004')
+    or (Copy(sNcm, 1, 4) = '3005')
+    or (Copy(sNcm, 1, 4) = '3006')
+  then
+    Result := True;
 end;
 
 end.
