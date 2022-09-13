@@ -19,7 +19,7 @@ uses
   function MontaTela(sP1 : boolean):Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 
-const BUILD_DO_BANCO = '2022005';
+const BUILD_DO_BANCO = '2022004';
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 
 type
