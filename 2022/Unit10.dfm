@@ -971,7 +971,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_ICMS
+      ActivePage = Orelha_TAGS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -14165,103 +14165,13 @@ object Form10: TForm10
           ColCount = 4
           Ctl3D = False
           DefaultColWidth = 158
-          RowCount = 100
+          RowCount = 10
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
           ParentCtl3D = False
           TabOrder = 2
           OnDrawCell = StringGrid2DrawCell
           OnSelectCell = StringGrid2SelectCell
           RowHeights = (
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
-            24
             24
             24
             24

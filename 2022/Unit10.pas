@@ -8462,19 +8462,22 @@ begin
   Memo1.Lines.Add('<condVeic>1"Condição do Veículo 1=Acabado; 2=Inacabado; 3=Semiacabado "</condVeic>');
   Memo1.Lines.Add('<cMod>"Código Marca Modelo Utilizar Tabela RENAVAM "</cMod>');
   Memo1.Lines.Add('<lota>5"Capacidade máxima de lotação Quantidade máxima permitida de passageiros sentados, inclusive o motorista. (v2.0) "</lota>');
+
   //
   StringGrid2.Cells[0,0] := 'Nome';
   StringGrid2.Cells[1,0] := 'Valor';
   StringGrid2.Cells[2,0] := 'Exemplo';
   StringGrid2.Cells[3,0] := 'Descrição';
+
+  {Sandro Silva 2022-09-12 inicio}
+  //Ajustar a quantidade de linhas no grid ao número de linhas a serem preenchidas com as tags
+  if StringGrid2.RowCount <= Form10.Memo1.Lines.Count + 1 then
+    StringGrid2.RowCount := Form10.Memo1.Lines.Count + 1;
+  {Sandro Silva 2022-09-12 fim}
+
   //
   for I := 0 to Form10.Memo1.Lines.Count + 1 do
   begin
-    {Sandro Silva 2022-09-12 inicio}
-    //Ajustar a quantidade de linhas no grid ao número de linhas a serem preenchidas com as tags
-    if StringGrid2.RowCount <= I then
-      StringGrid2.RowCount := StringGrid2.RowCount + 1;
-    {Sandro Silva 2022-09-12 fim}
     //
 //ShowMessage(stag);
 
