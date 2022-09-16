@@ -29,6 +29,7 @@ uses
   Dialogs, ExtCtrls, StdCtrls, OleCtrls, SHDocVw, SmallFunc, Grids,
   inifiles, shellapi, DBCtrls, DBGrids, Mask, SMALL_DBEdit;
 
+const FONT_SIZE_LABEL_PADRAO = 6;  
 type
   TForm5 = class(TForm)
     Panel1: TPanel;
@@ -143,6 +144,11 @@ uses Mais, Unit7, Mais3, Unit12, Unit24
   , uFuncoesRetaguarda;
 
 {$R *.dfm}
+
+function FatorProporcaoExpandido: Integer;
+begin
+  Result := Screen.Height div 300;
+end;
 
 function ExpandeOGrafico(Objeto: tObject): boolean;
 begin
@@ -504,7 +510,7 @@ begin
     if Right(sNome,1) = 'G' then
     begin
       // Sandro Silva 2022-09-16 Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((5 * Screen.Width div 300)));
-      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((6 * Screen.Height div 300)));
+      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)));
     end else
     begin
       Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr(5));
@@ -601,7 +607,7 @@ begin
     if Right(sNome,1) = 'G' then
     begin
       // Sandro Silva 2022-09-16 Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((5 * Screen.Width div 300)));
-      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((6 * Screen.Height div 300)));
+      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)));
     end else
     begin
       Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr(5));
@@ -709,7 +715,7 @@ begin
     if Right(sNome,1) = 'G' then
     begin
       // Sandro Silva 2022-09-16 Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((5 * Screen.Width div 300)));
-      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((6 * Screen.Height div 300)));
+      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)));
     end else
     begin
       Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr(5));
@@ -797,7 +803,7 @@ begin
     if Right(sNome,1) = 'G' then
     begin
       // Sandro Silva 2022-09-16 Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((5 * Screen.Width div 300)));
-      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((6 * Screen.Height div 300)));
+      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)));
     end else
     begin
       Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr(5));
@@ -1839,7 +1845,7 @@ begin
     if Right(sNome,1) = 'G' then
     begin
       // Sandro Silva 2022-09-16 Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((5 * Screen.Width div 300)));
-      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((6 * Screen.Height div 300)));
+      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)));
     end else
     begin
       Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr(5));
@@ -1945,7 +1951,7 @@ begin
     if Right(sNome,1) = 'G' then
     begin
       // Sandro Silva 2022-09-16 Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((5 * Screen.Width div 300)));
-      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((6 * Screen.Height div 300)));
+      Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr((FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)));
     end else
     begin
       Mais1Ini.WriteString('DADOS','FontSizeMarks',IntToStr(5));
@@ -2540,7 +2546,7 @@ begin
       Form5.Panel1.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoCalendario('CalendarioG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoCalendario('CalendarioG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoCalendario('CalendarioG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       //
     end else
     begin
@@ -2585,7 +2591,7 @@ begin
       Form5.Panel2.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoInadimplencia90dias('Inadimplencia90DiasG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoInadimplencia90dias('Inadimplencia90DiasG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoInadimplencia90dias('Inadimplencia90DiasG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image2,'Inadimplencia90DiasG',True);
       //
     end else
@@ -2631,7 +2637,7 @@ begin
       Form5.Panel7.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoVendasPorVendedor('VendasPorVendedorG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(5 * Screen.Width div 300));
-      GraficoVendasPorVendedor('VendasPorVendedorG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoVendasPorVendedor('VendasPorVendedorG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image7,'VendasPorVendedorG',True);
       //
     end else
@@ -2677,7 +2683,7 @@ begin
       Form5.Panel3.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoFluxoDeCaixa('FluxoDecaixaG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoFluxoDeCaixa('FluxoDecaixaG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoFluxoDeCaixa('FluxoDecaixaG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image3,'FluxoDeCaixaG',True);
       //
     end else
@@ -2723,7 +2729,7 @@ begin
       Form5.Panel4.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoFaturamentoMes('FaturamentoMesG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoFaturamentoMes('FaturamentoMesG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoFaturamentoMes('FaturamentoMesG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image4,'FaturamentoMesG',True);
       //
     end else
@@ -2769,7 +2775,7 @@ begin
       Form5.Panel8.Repaint;
       //
       // Sandro Silva 2022-09-16 Graficoinadimplencia360dias('Inadimplencia360DiasG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      Graficoinadimplencia360dias('Inadimplencia360DiasG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      Graficoinadimplencia360dias('Inadimplencia360DiasG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.image8,'Inadimplencia360DiasG',True);
       //
     end else
@@ -2815,7 +2821,7 @@ begin
       Form5.Panel5.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoDespesasMes('DespesasMesG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoDespesasMes('DespesasMesG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoDespesasMes('DespesasMesG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image5,'DespesasMesG',True);
       //
     end else
@@ -2861,7 +2867,7 @@ begin
       Form5.Panel6.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficolucroMes('LucroMesG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficolucroMes('LucroMesG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficolucroMes('LucroMesG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image6,'LucroMesG',True);
       //
     end else
@@ -2909,7 +2915,7 @@ begin
       Form5.Panel9.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoinadimplenciaTotalDias('inadimplenciaTotalDiasG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoinadimplenciaTotalDias('inadimplenciaTotalDiasG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoinadimplenciaTotalDias('inadimplenciaTotalDiasG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.image9,'InadimplenciaTotalDiasG',True);
       //
     end else
@@ -2955,7 +2961,7 @@ begin
       Form5.Panel10.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image10,'FaturamentoUltimosAnosG',True);
       //
     end else
@@ -3001,7 +3007,7 @@ begin
       Form5.Panel11.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoDespesasUltimosAnos('DespesasUltimosAnosG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoDespesasUltimosAnos('DespesasUltimosAnosG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoDespesasUltimosAnos('DespesasUltimosAnosG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image11,'DespesasUltimosAnosG',True);
       //
     end else
@@ -3047,7 +3053,7 @@ begin
       Form5.Panel12.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoLucroUltimosAnos('LucroUltimosAnosG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoLucroUltimosAnos('LucroUltimosAnosG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));      
+      GraficoLucroUltimosAnos('LucroUltimosAnosG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));      
       CarregaGrafico(Form5.Image12,'LucroUltimosAnosG',True);
       //
     end else
@@ -3093,7 +3099,7 @@ begin
       Form5.Panel13.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoCurvaABCClientes('CurvaABCClientesG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoCurvaABCClientes('CurvaABCClientesG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoCurvaABCClientes('CurvaABCClientesG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image13,'CurvaABCClientesG',True);
       //
     end else
@@ -3139,7 +3145,7 @@ begin
       Form5.Panel14.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoCurvaABCEstoque('CurvaABCEstoqueG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoCurvaABCEstoque('CurvaABCEstoqueG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoCurvaABCEstoque('CurvaABCEstoqueG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image14,'CurvaABCEstoqueG',True);
       //
     end else
@@ -3185,7 +3191,7 @@ begin
       Form5.Panel15.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoRegistrosNoCadastro('RegistrosNoCadastroG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoRegistrosNoCadastro('RegistrosNoCadastroG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoRegistrosNoCadastro('RegistrosNoCadastroG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image15,'RegistrosNoCadastroG',True);
       //
     end else
@@ -3231,7 +3237,7 @@ begin
       Form5.Panel16.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoCurvaABCFornecedores('CurvaABCFornecedoresG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoCurvaABCFornecedores('CurvaABCFornecedoresG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoCurvaABCFornecedores('CurvaABCFornecedoresG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image16,'CurvaABCFornecedoresG',True);
       //
     end else
@@ -3277,7 +3283,7 @@ begin
       Form5.Panel17.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoRelacaoDespesas360('RelacaoDespesas360G',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoRelacaoDespesas360('RelacaoDespesas360G',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoRelacaoDespesas360('RelacaoDespesas360G',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image17,'RelacaoDespesas360G',True);
       //
     end else
@@ -3323,7 +3329,7 @@ begin
       Form5.Panel18.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoRelacaoReceitas360('RelacaoReceitas360G',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoRelacaoReceitas360('RelacaoReceitas360G',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoRelacaoReceitas360('RelacaoReceitas360G',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image18,'RelacaoReceitas360G',True);
       //
     end else
@@ -3369,7 +3375,7 @@ begin
       Form5.Panel19.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoVendasPorVendedorMesAnterior('VendasPorVendedorMesAnteriorG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(5 * Screen.Width div 300));
-      GraficoVendasPorVendedorMesAnterior('VendasPorVendedorMesAnteriorG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(5 * Screen.Height div 300));
+      GraficoVendasPorVendedorMesAnterior('VendasPorVendedorMesAnteriorG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(5 * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image19,'VendasPorVendedorMesAnteriorG',True);
       //
     end else
@@ -3415,7 +3421,7 @@ begin
       Form5.Panel20.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image20,'RelacaoDespesasMesAnteriorG',True);
       //
     end else
@@ -3461,7 +3467,7 @@ begin
       Form5.Panel21.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoVendas('VendasG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoVendas('VendasG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoVendas('VendasG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image21,'VendasG',True);
       //
     end else
@@ -3507,7 +3513,7 @@ begin
       Form5.Panel22.Repaint;
       //
       // Sandro Silva 2022-09-19 GraficoVendasMes('VendasMesG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoVendasMes('VendasMesG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300)); // Fonte se adapta melhor baseando-se na altura da tela (Screen.Height)
+      GraficoVendasMes('VendasMesG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido)); // Fonte se adapta melhor baseando-se na altura da tela (Screen.Height)
       CarregaGrafico(Form5.Image22,'VendasMesG',True);
       //
     end else
@@ -3553,7 +3559,7 @@ begin
       Form5.Panel24.Repaint;
       //
       // Sandro Silva 2022-09- GraficoVendasParciais('VendasParciaisG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoVendasParciais('VendasParciaisG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoVendasParciais('VendasParciaisG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       
       CarregaGrafico(Form5.Image24,'VendasParciaisG',True);
       //
@@ -3601,7 +3607,7 @@ begin
       Form5.Panel23.Repaint;
       //
       // Sandro Silva 2022-09-16 GraficoVendasAno('VendasAnoG',Form5.Height,Form5.Width,(8 * Screen.Width div 300),(6 * Screen.Width div 300));
-      GraficoVendasAno('VendasAnoG',Form5.Height,Form5.Width,(8 * Screen.Height div 300),(6 * Screen.Height div 300));
+      GraficoVendasAno('VendasAnoG',Form5.Height,Form5.Width,(8 * FatorProporcaoExpandido),(FONT_SIZE_LABEL_PADRAO * FatorProporcaoExpandido));
       CarregaGrafico(Form5.Image23,'VendasAnoG',True);
       //
     end else
