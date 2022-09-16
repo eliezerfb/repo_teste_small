@@ -4067,21 +4067,24 @@ begin
                     //farmacêuticos.
                     if AnsiUpperCase(Copy(Trim(RetornaValorDaTagNoCampo('rastro',Form7.ibDataSet4.FieldByname('TAGS_').AsString)), 1, 1)) = 'S' then
                     begin
-
-
+                    
                       // Form para lançamento de dados de rastreabilidade
-                      // Fica em loop enquanto a quantidade lançada seja menor que a quantidade do item ou clique no botão "Cancelar"  
+                      // Fica em loop enquanto a quantidade lançada seja menor que a quantidade do item ou clique no botão "Cancelar"
 
                       Application.CreateForm(TFrmInformacoesRastreamento, FrmInformacoesRastreamento);
-                      FrmInformacoesRastreamento.Caption := 'Rastreabilidade do produto ' + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString;
-                      FrmInformacoesRastreamento.lbQuantidadeNaNota.Caption := 'Quantidade do item na nota: ' + Form7.spdNFeDataSets.Campo('qCom_I10').Value;
-                      dQtdAcumulado := 0;
+                      FrmInformacoesRastreamento.Caption := 'Rastreabilidade';
+                      FrmInformacoesRastreamento.lbProduto.Caption := '' + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString;
                       try
+                        {
+                        dQtdAcumulado := 0;
                         while dQtdAcumulado < StrToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value) do
                         begin
                           FrmInformacoesRastreamento.LimpaCampos;
-                          FrmInformacoesRastreamento.ActiveControl       := FrmInformacoesRastreamento.edNumeroLote;
-                          FrmInformacoesRastreamento.lbAcumulado.Caption := FloatToStr(dQtdAcumulado) + ' Acumulado';
+                          FrmInformacoesRastreamento.ActiveControl := FrmInformacoesRastreamento.edNumeroLote;
+                          FrmInformacoesRastreamento.QtdAcumulado  := dQtdAcumulado;
+                          FrmInformacoesRastreamento.QtdItemNaNota := StrToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value);
+                          FrmInformacoesRastreamento.lbValorQuantidadeItem.Caption      := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
+                          FrmInformacoesRastreamento.lbValorQuantidadeAcumulada.Caption := FloatToStr(dQtdAcumulado);
                           FrmInformacoesRastreamento.ShowModal;
                           if FrmInformacoesRastreamento.ModalResult = mrOk then
                           begin
@@ -4095,9 +4098,43 @@ begin
                           else
                             Break;
                         end;
+                        }
+                        dQtdAcumulado := 0;
+                        FrmInformacoesRastreamento.ActiveControl := FrmInformacoesRastreamento.DBGridRastro;
+                        FrmInformacoesRastreamento.QtdItemNaNota := StrToFloatDef(Form7.spdNFeDataSets.Campo('qCom_I10').Value, 0);
+                        FrmInformacoesRastreamento.lbValorQuantidadeItem.Caption := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
+                        FrmInformacoesRastreamento.ShowModal;
+                        if FrmInformacoesRastreamento.ModalResult = mrOk then
+                        begin
+                          FrmInformacoesRastreamento.CDSLOTES.First;
+                          while FrmInformacoesRastreamento.CDSLOTES.Eof = False do
+                          begin
+                            try
+                              dQtdAcumulado := dQtdAcumulado + FrmInformacoesRastreamento.CDSLOTES.FieldByName('QUANTIDADE').AsFloat;
+                              //Form7.spdNfeDataSets.I80.Incluir;
+                              Form7.spdNFeDataSets.IncluirPart('I80');
+                              Form7.spdNFeDataSets.Campo('nLote_I81').Value  := ConverteAcentos2(Trim(FrmInformacoesRastreamento.CDSLOTES.FieldByName('NUMERO').AsString));   // Número do Lote do produto
+                              Form7.spdNFeDataSets.Campo('qLote_I82').Value  := StrTran(Trim(FloatToStr(StrToFloat(FrmInformacoesRastreamento.CDSLOTES.FieldByName('QUANTIDADE').AsString))), ',', '.');   // Quantidade de produto no Lote
+                              Form7.spdNFeDataSets.Campo('dFab_I83').Value   := FormatDateTime('yyyy-mm-dd', FrmInformacoesRastreamento.CDSLOTES.FieldByName('DTFABRICACAO').AsDateTime);   // Data de fabricação/ Produção
+                              Form7.spdNFeDataSets.Campo('dVal_I84').Value   := FormatDateTime('yyyy-mm-dd', FrmInformacoesRastreamento.CDSLOTES.FieldByName('DTVALIDADE').AsDateTime);   // Data de validade
+                              Form7.spdNFeDataSets.Campo('cAgreg_I85').Value := ConverteAcentos2(Trim(FrmInformacoesRastreamento.CDSLOTES.FieldByName('CODIGOAGREGACAO').AsString));   // Código de Agregação
+                              //Form7.spdNfeDataSets.I80.Salvar;
+                              Form7.spdNFeDataSets.SalvarPart('I80');
+                            except
+                              on E: Exception do
+                              begin
+                                Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString + chr(10)+ 'ao gerar Grupo Rastro'
+                                  ), 'Atenção', mb_Ok + MB_ICONWARNING);
+                              end;
+                            end;
+                            FrmInformacoesRastreamento.CDSLOTES.Next;
+                          end;
+                        end;
+
                       finally
                         FreeAndNil(FrmInformacoesRastreamento);
                       end;
+
                     end;
 
                     //
