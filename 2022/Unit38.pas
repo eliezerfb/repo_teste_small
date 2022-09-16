@@ -73,7 +73,7 @@ var
 
 implementation
 
-uses Mais, Unit34, Unit30, Unit16, Mais3, Unit2;
+uses Mais, Unit34, Unit30, Unit16, Mais3, Unit2, uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -2263,7 +2263,7 @@ begin
 
           // Ok para SQL Start
           //
-          if sModulo =  'Curva ABC de clientes' then
+          if sModulo = 'Curva ABC de clientes' then
           begin
             //
             Form7.IBDataSet2.DisableControls;
@@ -2275,7 +2275,11 @@ begin
             //
             Form7.IBDataSet99.Close;
             Form7.IBDataSet99.SelectSQL.Clear;
+            {Sandro Silva 2022-09-16 inicio Ficha 6235
             Form7.IBDataSet99.SelectSQL.Add('select VENDAS.CLIENTE, sum(VENDAS.TOTAL)as VTOTAL from VENDAS where VENDAS.EMITIDA=''S'' and VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' group by VENDAS.CLIENTE order by VTOTAL desc');
+            }
+            Form7.IBDataSet99.SelectSQL.Add(SqlSelectCurvaAbcClientes(dinicio, dfinal));
+            {Sandro Silva 2022-09-16 fim}
             Form7.IBDataSet99.Open;
             //
             ibDataSet99.First;
@@ -2441,6 +2445,7 @@ begin
             //
             Form7.ibQuery6.Close;
             Form7.ibQuery6.SQL.Clear;
+            {Sandro Silva 2022-09-16 inicio Ficha 6237
             Form7.ibQuery6.SQL.Add( 'select CODIGO, SUM(vTOTAL) as TOTAL'+
                                           ' from'+
                                           ' (select ITENS001.CODIGO, sum(ITENS001.TOTAL)as vTOTAL '+
@@ -2453,6 +2458,9 @@ begin
                                           ' from ALTERACA where (TIPO = ''BALCAO'') and ALTERACA.DATA between '+QuotedStr(DateToStrInvertida(dInicio))+' and '+QuotedStr(DateToStrInvertida(dFinal))+' '+
                                           ' group by CODIGO)'+
                                           ' group by CODIGO order by TOTAL desc');
+            }
+            Form7.ibQuery6.SQL.Add(SqlSelectCurvaAbcEstoque(dInicio, dFinal));
+            {Sandro Silva 2022-09-16 fim}
             Form7.ibQuery6.Open;
             //
             fTotal4 := 0;

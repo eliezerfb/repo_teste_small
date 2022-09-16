@@ -4114,7 +4114,7 @@ begin
                               //Form7.spdNfeDataSets.I80.Incluir;
                               Form7.spdNFeDataSets.IncluirPart('I80');
                               Form7.spdNFeDataSets.Campo('nLote_I81').Value  := ConverteAcentos2(Trim(FrmInformacoesRastreamento.CDSLOTES.FieldByName('NUMERO').AsString));   // Número do Lote do produto
-                              Form7.spdNFeDataSets.Campo('qLote_I82').Value  := StrTran(Trim(FloatToStr(StrToFloat(FrmInformacoesRastreamento.CDSLOTES.FieldByName('QUANTIDADE').AsString))), ',', '.');   // Quantidade de produto no Lote
+                              Form7.spdNFeDataSets.Campo('qLote_I82').Value  := StrTran(Trim(FormatFloat('0.000', FrmInformacoesRastreamento.CDSLOTES.FieldByName('QUANTIDADE').AsFloat)), ',', '.');   // Quantidade de produto no Lote. Precisa de 3 casas decimais para Sefaz aceitar valores em casos como 0.5 -> 0.500
                               Form7.spdNFeDataSets.Campo('dFab_I83').Value   := FormatDateTime('yyyy-mm-dd', FrmInformacoesRastreamento.CDSLOTES.FieldByName('DTFABRICACAO').AsDateTime);   // Data de fabricação/ Produção
                               Form7.spdNFeDataSets.Campo('dVal_I84').Value   := FormatDateTime('yyyy-mm-dd', FrmInformacoesRastreamento.CDSLOTES.FieldByName('DTVALIDADE').AsDateTime);   // Data de validade
                               Form7.spdNFeDataSets.Campo('cAgreg_I85').Value := ConverteAcentos2(Trim(FrmInformacoesRastreamento.CDSLOTES.FieldByName('CODIGOAGREGACAO').AsString));   // Código de Agregação
