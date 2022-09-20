@@ -15,6 +15,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   DesignSize = (
     884
     349)
@@ -104,7 +105,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 2
     OnClick = btnCancelarClick
   end
   object DBGridRastro: TDBGrid
@@ -121,7 +122,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     Font.Style = []
     Options = [dgEditing, dgTitles, dgColLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11

@@ -6,7 +6,7 @@ object Form7: TForm7
   BorderStyle = bsSingle
   Caption = ' '
   ClientHeight = 676
-  ClientWidth = 918
+  ClientWidth = 914
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -1840,8 +1840,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image8: TImage
-    Left = 768
-    Top = 131
+    Left = 800
+    Top = 147
     Width = 20
     Height = 40
     AutoSize = True
@@ -1927,8 +1927,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image9: TImage
-    Left = 736
-    Top = 131
+    Left = 768
+    Top = 147
     Width = 20
     Height = 40
     AutoSize = True
@@ -2970,8 +2970,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image1: TImage
-    Left = 704
-    Top = 131
+    Left = 736
+    Top = 147
     Width = 20
     Height = 40
     AutoSize = True
@@ -3039,8 +3039,8 @@ object Form7: TForm7
     Visible = False
   end
   object positivo: TImage
-    Left = 738
-    Top = 187
+    Left = 770
+    Top = 203
     Width = 20
     Height = 40
     AutoSize = True
@@ -3126,8 +3126,8 @@ object Form7: TForm7
     Visible = False
   end
   object Positivovermelho: TImage
-    Left = 706
-    Top = 187
+    Left = 738
+    Top = 203
     Width = 20
     Height = 40
     AutoSize = True
@@ -3220,8 +3220,8 @@ object Form7: TForm7
     Visible = False
   end
   object PositivoDownloadXML: TImage
-    Left = 770
-    Top = 187
+    Left = 802
+    Top = 203
     Width = 20
     Height = 40
     AutoSize = True
@@ -3469,8 +3469,8 @@ object Form7: TForm7
     Visible = False
   end
   object PositivoVerde: TImage
-    Left = 802
-    Top = 187
+    Left = 834
+    Top = 203
     Width = 20
     Height = 40
     AutoSize = True
@@ -3572,6 +3572,21 @@ object Form7: TForm7
     ParentFont = False
     Transparent = True
     Visible = False
+  end
+  object Label28: TLabel
+    Left = 600
+    Top = 156
+    Width = 76
+    Height = 30
+    Caption = 'popup dbgrid m'#243'dulos'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -12
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+    WordWrap = True
   end
   object WebBrowser2: TWebBrowser
     Left = 952
@@ -9043,7 +9058,7 @@ object Form7: TForm7
   object Panel3: TPanel
     Left = 0
     Top = 636
-    Width = 918
+    Width = 914
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -9115,7 +9130,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 918
+    Width = 914
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -21884,8 +21899,8 @@ object Form7: TForm7
     ValidaRegrasNegocio = False
     ValidaRegrasNegocioTecno = False
     UsarDatasetExportacao = False
-    Left = 624
-    Top = 136
+    Left = 696
+    Top = 152
   end
   object spdNFe: TspdNFe
     VersaoManual = vm50a
@@ -21932,7 +21947,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21963,7 +21978,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21976,8 +21991,8 @@ object Form7: TForm7
     DiretorioDownloads = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Downloads\'
     MaxSizeLoteEnvio = 500
     DanfeSimplificado = False
-    Left = 624
-    Top = 176
+    Left = 696
+    Top = 192
   end
   object PopupMenu2: TPopupMenu
     Left = 568
@@ -22273,7 +22288,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22300,7 +22315,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -338,7 +338,7 @@ object Form38: TForm38
         Align = alClient
         CalColors.BackColor = clWhite
         CalColors.TitleBackColor = 14456320
-        Date = 37168.396355196760000000
+        Date = 37168.653060115740000000
         ShowToday = False
         ShowTodayCircle = False
         TabOrder = 0

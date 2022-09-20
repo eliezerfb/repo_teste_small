@@ -734,7 +734,8 @@ begin
     //
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
-    Form1.ibQuery1.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    // Ficha 6246 Sandro Silva 2022-09-19 Form1.ibQuery1.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    Form1.ibQuery1.SQL.Add(SqlSelectGraficoVendas(dinicio, dfinal));
     Form1.ibQuery1.Open;
     //
     Mais1Ini.WriteString('DADOS','XY'+'02',
@@ -747,7 +748,8 @@ begin
     //
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
-    Form1.ibQuery2.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    // Sandro Silva 2022-09-19 Form1.ibQuery2.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    Form1.ibQuery2.SQL.Add(SqlSelectGraficoVendas(dinicio, dfinal));
     Form1.ibQuery2.Open;
     //
     Mais1Ini.WriteString('DADOS','XY'+'01',
@@ -822,7 +824,8 @@ begin
     //
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
-    Form1.ibQuery1.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    // Ficha 6246 Sandro Silva 2022-09-19 Form1.ibQuery1.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    Form1.ibQuery1.SQL.Add(SqlSelectGraficoVendasParciais(dInicio, dFinal));
     Form1.ibQuery1.Open;
     //
     Mais1Ini.WriteString('DADOS','XY'+'02',
@@ -835,7 +838,8 @@ begin
     //
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
-    Form1.ibQuery2.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    // Sandro Silva 2022-09-19 Form1.ibQuery2.SQL.Add('select sum(MERCADORIA+SERVICOS-DESCONTO)as TOT from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' ');
+    Form1.ibQuery2.SQL.Add(SqlSelectGraficoVendasParciais(dInicio, dFinal));
     Form1.ibQuery2.Open;
     //
     Mais1Ini.WriteString('DADOS','XY'+'01',
@@ -2455,7 +2459,7 @@ begin
         if Form5.Panel4.Visible  then CarregaGrafico(Form5.Image4,'FaturamentoMesP',False);
         if Form5.Panel3.Visible  then CarregaGrafico(Form5.Image3,'FluxoDeCaixaP',False);
         if Form5.Panel2.Visible  then CarregaGrafico(Form5.Image2,'Inadimplencia90DiasP',False);
-        if Form5.Panel1.Visible  then GraficoCalendario('CalendarioP',150,300,8,6);
+        if Form5.Panel1.Visible  then GraficoCalendario('CalendarioP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       except end;
       //
     end;
@@ -2551,7 +2555,7 @@ begin
     end else
     begin
       //
-      GraficoCalendario('CalendarioP',150,300,8,6);
+      GraficoCalendario('CalendarioP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       //
       Form5.Image1.Width  := 300;
       Form5.Image1.Height := 150;
@@ -2597,7 +2601,7 @@ begin
     end else
     begin
       //
-      GraficoInadimplencia90dias('Inadimplencia90DiasP',150,300,8,6);
+      GraficoInadimplencia90dias('Inadimplencia90DiasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image2,'Inadimplencia90DiasP',True);
       //
       Form5.Image2.Width  := 300;
@@ -2689,7 +2693,7 @@ begin
     end else
     begin
       //
-      Graficofluxodecaixa('FluxoDeCaixaP',150,300,8,6);
+      Graficofluxodecaixa('FluxoDeCaixaP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image3,'FluxoDeCaixaP',True);
       //
       Form5.Image3.Width  := 300;
@@ -2735,7 +2739,7 @@ begin
     end else
     begin
       //
-      GraficoFaturamentoMes('faturamentomesP',150,300,8,6);
+      GraficoFaturamentoMes('faturamentomesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image4,'FaturamentoMesP',True);
       //
       Form5.Image4.Width  := 300;
@@ -2781,7 +2785,7 @@ begin
     end else
     begin
       //
-      Graficoinadimplencia360dias('Inadimplencia360DiasP',150,300,8,6);
+      Graficoinadimplencia360dias('Inadimplencia360DiasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.image8,'Inadimplencia360DiasP',True);
       //
       Form5.image8.Width  := 300;
@@ -2827,7 +2831,7 @@ begin
     end else
     begin
       //
-      GraficoDespesasMes('DespesasMesP',150,300,8,6);
+      GraficoDespesasMes('DespesasMesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image5,'DespesasMesP',True);
       //
       Form5.Image5.Width  := 300;
@@ -2874,7 +2878,7 @@ begin
     begin
       //
       try
-        GraficolucroMes('lucromesP',150,300,8,6);
+        GraficolucroMes('lucromesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
         CarregaGrafico(Form5.Image6,'LucroMesP',True);
       except end;
       //
@@ -2921,7 +2925,7 @@ begin
     end else
     begin
       //
-      GraficoinadimplenciaTotalDias('InadimplenciaTotalDiasP',150,300,8,6);
+      GraficoinadimplenciaTotalDias('InadimplenciaTotalDiasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.image9,'InadimplenciaTotalDiasP',True);
       //
       Form5.image9.Width  := 300;
@@ -2967,7 +2971,7 @@ begin
     end else
     begin
       //
-      GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosP',150,300,8,6);
+      GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image10,'FaturamentoUltimosAnosP',True);
       //
       Form5.Image10.Width  := 300;
@@ -3013,7 +3017,7 @@ begin
     end else
     begin
       //
-      GraficoDespesasUltimosAnos('DespesasUltimosAnosP',150,300,8,6);
+      GraficoDespesasUltimosAnos('DespesasUltimosAnosP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image11,'DespesasUltimosAnosP',True);
       //
       Form5.Image11.Width  := 300;
@@ -3059,7 +3063,7 @@ begin
     end else
     begin
       //
-      GraficoLucroUltimosAnos('LucroUltimosAnosP',150,300,8,6);
+      GraficoLucroUltimosAnos('LucroUltimosAnosP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image12,'LucroUltimosAnosP',True);
       //
       Form5.Image12.Width  := 300;
@@ -3105,7 +3109,7 @@ begin
     end else
     begin
       //
-      GraficoCurvaABCClientes('CurvaABCClientesP',150,300,8,6);
+      GraficoCurvaABCClientes('CurvaABCClientesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image13,'CurvaABCClientesP',True);
       //
       Form5.Image13.Width  := 300;
@@ -3151,7 +3155,7 @@ begin
     end else
     begin
       //
-      GraficoCurvaABCEstoque('CurvaABCEstoqueP',150,300,8,6);
+      GraficoCurvaABCEstoque('CurvaABCEstoqueP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image14,'CurvaABCEstoqueP',True);
       //
       Form5.Image14.Width  := 300;
@@ -3197,7 +3201,7 @@ begin
     end else
     begin
       //
-      GraficoRegistrosNoCadastro('RegistrosNoCadastroP',150,300,8,6);
+      GraficoRegistrosNoCadastro('RegistrosNoCadastroP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image15,'RegistrosNoCadastroP',True);
       //
       Form5.Image15.Width  := 300;
@@ -3243,7 +3247,7 @@ begin
     end else
     begin
       //
-      GraficoCurvaABCFornecedores('CurvaABCFornecedoresP',150,300,8,6);
+      GraficoCurvaABCFornecedores('CurvaABCFornecedoresP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image16,'CurvaABCFornecedoresP',True);
       //
       Form5.Image16.Width  := 300;
@@ -3289,7 +3293,7 @@ begin
     end else
     begin
       //
-      GraficoRelacaoDespesas360('RelacaoDespesas360P',150,300,8,6);
+      GraficoRelacaoDespesas360('RelacaoDespesas360P',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image17,'RelacaoDespesas360P',True);
       //
       Form5.Image17.Width  := 300;
@@ -3335,7 +3339,7 @@ begin
     end else
     begin
       //
-      GraficoRelacaoReceitas360('RelacaoReceitas360P',150,300,8,6);
+      GraficoRelacaoReceitas360('RelacaoReceitas360P',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image18,'RelacaoReceitas360P',True);
       //
       Form5.Image18.Width  := 300;
@@ -3427,7 +3431,7 @@ begin
     end else
     begin
       //
-      GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorP',150,300,8,6);
+      GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image20,'RelacaoDespesasMesAnteriorP',True);
       //
       Form5.Image20.Width  := 300;
@@ -3473,7 +3477,7 @@ begin
     end else
     begin
       //
-      GraficoVendas('VendasP',150,300,8,6);
+      GraficoVendas('VendasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image21,'VendasP',True);
       //
       Form5.Image21.Width  := 300;
@@ -3519,7 +3523,7 @@ begin
     end else
     begin
       //
-      GraficoVendasMes('VendasMesP',150,300,8,6);
+      GraficoVendasMes('VendasMesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image22,'VendasMesP',True);
       //
       Form5.Image22.Width  := 300;
@@ -3566,7 +3570,7 @@ begin
     end else
     begin
       //
-      GraficoVendasParciais('VendasParciaisP',150,300,8,6);
+      GraficoVendasParciais('VendasParciaisP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image24,'VendasParciaisP',True);
       //
       Form5.Image24.Width  := 300;
@@ -3613,7 +3617,7 @@ begin
     end else
     begin
       //
-      GraficoVendasAno('VendasAnoP',150,300,8,6);
+      GraficoVendasAno('VendasAnoP',150,300,8, FONT_SIZE_LABEL_PADRAO);
       CarregaGrafico(Form5.Image23,'VendasAnoP',True);
       //
       Form5.Image23.Width  := 300;
@@ -3756,36 +3760,36 @@ begin
   //
   try
     //
-    if Form5.Panel24.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasPArciaisP_Ok.png')))               then GraficoVendasParciais('VendasParciaisP',150,300,8,6);
+    if Form5.Panel24.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasPArciaisP_Ok.png')))               then GraficoVendasParciais('VendasParciaisP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
-    if Form5.Panel23.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasAnoP_Ok.png')))                    then GraficoVendasAno('VendasAnoP',150,300,8,6);
-    if Form5.Panel22.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasMesP_Ok.png')))                    then GraficoVendasMes('VendasMesP',150,300,8,6);
+    if Form5.Panel23.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasAnoP_Ok.png')))                    then GraficoVendasAno('VendasAnoP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel22.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasMesP_Ok.png')))                    then GraficoVendasMes('VendasMesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
-    if Form5.Panel21.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasP_Ok.png')))                       then GraficoVendas('VendasP',150,300,8,6);
-    if Form5.Panel20.Visible then if bGeraGraficoCaixa         or  (not FileExists(pchar(Form1.sAtual+'\RelacaoDespesasMesAnteriorP_Ok.png')))   then GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorP',150,300,8,6);
+    if Form5.Panel21.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasP_Ok.png')))                       then GraficoVendas('VendasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel20.Visible then if bGeraGraficoCaixa         or  (not FileExists(pchar(Form1.sAtual+'\RelacaoDespesasMesAnteriorP_Ok.png')))   then GraficoRelacaoDespesasMesAnterior('RelacaoDespesasMesAnteriorP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     if Form5.Panel19.Visible then if bGeraGraficoVendas        or  (not FileExists(pchar(Form1.sAtual+'\VendasPorVendedorMesAnteriorP_Ok.png'))) then GraficoVendasPorVendedorMesAnterior('VendasPorVendedorMesAnteriorP',150,300,8,5);
-    if Form5.Panel18.Visible then if bGeraGraficoCaixa         or  (not FileExists(pchar(Form1.sAtual+'\RelacaoReceitas360P_Ok.png')))           then GraficoRelacaoReceitas360('RelacaoReceitas360P',150,300,8,6);
-    if Form5.Panel17.Visible then if bGeraGraficoCaixa         or  (not FileExists(pchar(Form1.sAtual+'\RelacaoDespesas360P_Ok.png')))           then GraficoRelacaoDespesas360('RelacaoDespesas360P',150,300,8,6);
+    if Form5.Panel18.Visible then if bGeraGraficoCaixa         or  (not FileExists(pchar(Form1.sAtual+'\RelacaoReceitas360P_Ok.png')))           then GraficoRelacaoReceitas360('RelacaoReceitas360P',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel17.Visible then if bGeraGraficoCaixa         or  (not FileExists(pchar(Form1.sAtual+'\RelacaoDespesas360P_Ok.png')))           then GraficoRelacaoDespesas360('RelacaoDespesas360P',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
-    if Form5.Panel16.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\CurvaABCFornecedoresP_Ok.png')))         then GraficoCurvaABCFornecedores('CurvaABCFornecedoresP',150,300,8,6);
-    if Form5.Panel15.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\RegistrosNoCadastroP_Ok.png')))          then GraficoRegistrosNoCadastro('RegistrosNoCadastroP',150,300,8,6);
-    if Form5.Panel14.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\CurvaABCEstoqueP_Ok.png')))              then GraficoCurvaABCEstoque('CurvaABCEstoqueP',150,300,8,6);
-    if Form5.Panel13.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\CurvaABCClientesP_Ok.png')))             then GraficoCurvaABCClientes('CurvaABCClientesP',150,300,8,6);
+    if Form5.Panel16.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\CurvaABCFornecedoresP_Ok.png')))         then GraficoCurvaABCFornecedores('CurvaABCFornecedoresP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel15.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\RegistrosNoCadastroP_Ok.png')))          then GraficoRegistrosNoCadastro('RegistrosNoCadastroP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel14.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\CurvaABCEstoqueP_Ok.png')))              then GraficoCurvaABCEstoque('CurvaABCEstoqueP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel13.Visible then if  bGeraGraficoSempre       or  (not FileExists(pchar(Form1.sAtual+'\CurvaABCClientesP_Ok.png')))             then GraficoCurvaABCClientes('CurvaABCClientesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
-    if Form5.Panel12.Visible then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\LucroUltimosAnosP_Ok.png')))             then GraficoLucroUltimosAnos('LucroUltimosAnosP',150,300,8,6);
-    if Form5.Panel11.Visible then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\DespesasUltimosAnosP_Ok.png')))          then GraficoDespesasUltimosAnos('DespesasUltimosAnosP',150,300,8,6);
-    if Form5.Panel10.Visible then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\FaturamentoUltimosAnosP_Ok.png')))       then GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosP',150,300,8,6);
+    if Form5.Panel12.Visible then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\LucroUltimosAnosP_Ok.png')))             then GraficoLucroUltimosAnos('LucroUltimosAnosP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel11.Visible then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\DespesasUltimosAnosP_Ok.png')))          then GraficoDespesasUltimosAnos('DespesasUltimosAnosP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel10.Visible then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\FaturamentoUltimosAnosP_Ok.png')))       then GraficoFaturamentoUltimosAnos('FaturamentoUltimosAnosP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
-    if Form5.Panel9.Visible  then if bGeraGraficoInadimplencia  or  (not FileExists(pchar(Form1.sAtual+'\InadimplenciaTotalDiasP_Ok.png')))       then GraficoInadimplenciaTotalDias('InadimplenciaTotalDiasP',150,300,8,6);
-    if Form5.Panel8.Visible  then if bGeraGraficoInadimplencia  or  (not FileExists(pchar(Form1.sAtual+'\Inadimplencia360DiasP_Ok.png')))         then GraficoInadimplencia360Dias('Inadimplencia360DiasP',150,300,8,6);
+    if Form5.Panel9.Visible  then if bGeraGraficoInadimplencia  or  (not FileExists(pchar(Form1.sAtual+'\InadimplenciaTotalDiasP_Ok.png')))       then GraficoInadimplenciaTotalDias('InadimplenciaTotalDiasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel8.Visible  then if bGeraGraficoInadimplencia  or  (not FileExists(pchar(Form1.sAtual+'\Inadimplencia360DiasP_Ok.png')))         then GraficoInadimplencia360Dias('Inadimplencia360DiasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     if Form5.Panel7.Visible  then if bGeraGraficoVendas         or  (not FileExists(pchar(Form1.sAtual+'\VendasPorVendedorP_Ok.png')))            then GraficoVendasPorVendedor('VendasPorVendedorP',150,300,8,5);
-    if Form5.Panel6.Visible  then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\LucroMesP_Ok.png')))                     then GraficoLucroMes('LucroMesP',150,300,8,6);
-    if Form5.Panel5.Visible  then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\DespesasMesP_Ok.png')))                  then GraficoDespesasMes('DespesasMesP',150,300,8,6);
-    if Form5.Panel4.Visible  then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\FaturamentoMesP_Ok.png')))               then GraficoFaturamentoMes('FaturamentoMesP',150,300,8,6);
-    if Form5.Panel3.Visible  then if bGeraGraficoFluxo          or  (not FileExists(pchar(Form1.sAtual+'\FluxoDeCaixaP_Ok.png')))                 then GraficoFluxoDeCaixa('FluxoDeCaixaP',150,300,8,6);
-    if Form5.Panel2.Visible  then if bGeraGraficoInadimplencia  or  (not FileExists(pchar(Form1.sAtual+'\Inadimplencia90DiasP_Ok.png')))          then GraficoInadimplencia90dias('Inadimplencia90DiasP',150,300,8,6);
+    if Form5.Panel6.Visible  then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\LucroMesP_Ok.png')))                     then GraficoLucroMes('LucroMesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel5.Visible  then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\DespesasMesP_Ok.png')))                  then GraficoDespesasMes('DespesasMesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel4.Visible  then if bGeraGraficoCaixa          or  (not FileExists(pchar(Form1.sAtual+'\FaturamentoMesP_Ok.png')))               then GraficoFaturamentoMes('FaturamentoMesP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel3.Visible  then if bGeraGraficoFluxo          or  (not FileExists(pchar(Form1.sAtual+'\FluxoDeCaixaP_Ok.png')))                 then GraficoFluxoDeCaixa('FluxoDeCaixaP',150,300,8, FONT_SIZE_LABEL_PADRAO);
+    if Form5.Panel2.Visible  then if bGeraGraficoInadimplencia  or  (not FileExists(pchar(Form1.sAtual+'\Inadimplencia90DiasP_Ok.png')))          then GraficoInadimplencia90dias('Inadimplencia90DiasP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
-    if Form5.Panel1.Visible  then GraficoCalendario('CalendarioP',150,300,8,6);
+    if Form5.Panel1.Visible  then GraficoCalendario('CalendarioP',150,300,8, FONT_SIZE_LABEL_PADRAO);
     //
   except end;
   //
@@ -3813,7 +3817,7 @@ begin
     if Form5.Panel4.Visible  then CarregaGrafico(Form5.Image4,'FaturamentoMesP',bGeraGraficoCaixa);
     if Form5.Panel3.Visible  then CarregaGrafico(Form5.Image3,'FluxoDeCaixaP',bGeraGraficoCaixa);
     if Form5.Panel2.Visible  then CarregaGrafico(Form5.Image2,'Inadimplencia90DiasP',bGeraGraficoInadimplencia);
-    if Form5.Panel1.Visible  then GraficoCalendario('CalendarioP',150,300,8,6);
+    if Form5.Panel1.Visible  then GraficoCalendario('CalendarioP',150,300,8, FONT_SIZE_LABEL_PADRAO);
 //    DecodeTime((Time - tInicio), Hora, Min, Seg, cent); sMensagem := sMensagem + '99: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10); tInicio := Time;
     //
   except end;

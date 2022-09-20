@@ -59,7 +59,8 @@ uses
   Unit45 in 'Unit45.pas' {Form45},
   ugeraxmlnfe in 'ugeraxmlnfe.pas',
   uFrmInformacoesRastreamento in 'uFrmInformacoesRastreamento.pas' {FrmInformacoesRastreamento},
-  uFuncoesRetaguarda in 'uFuncoesRetaguarda.pas';
+  uFuncoesRetaguarda in 'uFuncoesRetaguarda.pas',
+  uconstantes_chaves_privadas in '..\..\..\uconstantes_chaves_privadas.pas';
 
 {$R *.RES}
 

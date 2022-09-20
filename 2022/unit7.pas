@@ -1424,6 +1424,7 @@ type
     N66: TMenuItem;
     DuplicatestaNFe1: TMenuItem;
     PrvisualizarDANFE1: TMenuItem;
+    Label28: TLabel;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -3939,7 +3940,8 @@ begin
     end;
     //
     if pNome = 'PAGAMENT' then
-    begin
+
+    begin
       //
       s :=
       DataSet.FieldByname('DATA').AsString+
@@ -3972,14 +3974,18 @@ begin
       //
     end;
     //
-    if pNome = 'ECFS' then
-    begin
+
+    if pNome = 'ECFS' then
+
+    begin
       //
       s := DataSet.FieldByname('SERIE').AsString;
       //
     end;
-    //
-    Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
+
+    //
+
+    Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
     //
     if bP then
     begin
@@ -14641,7 +14647,8 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       // 210200 – Confirmação da Operação
       // 210210 – Ciência da Operação
       // 210220 – Desconhecimento da Operação
-      // 210240 – Operação não Realizada      //
+      // 210240 – Operação não Realizada
+      //
       yRect := Rect;
       YRect.Left   := Rect.Right - 20;
       YREct.Bottom := Rect.Top   + 40;
@@ -14688,7 +14695,8 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           begin
             //
             // 210220 – Desconhecimento da Operação
-            //            DBGrid1.Canvas.Font.Color := clSilver;
+            //
+            DBGrid1.Canvas.Font.Color := clSilver;
             dbGrid1.Canvas.StretchDraw(yRect,Form7.PositivoDownloadXML.Picture.Graphic);  // Positivo
             dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Desconhecimento da Operação');
             //
@@ -27549,7 +27557,8 @@ begin
                   // * Removida * 14=Duplicata Mercantil *
                   // 15=Boleto Bancário
                   // 90= Sem pagamento
-                  // 99=Outros                  //
+                  // 99=Outros
+                  //
                   if (spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
                   begin
   //                  spdNFeDataSets.campo('indPag_YA01b').Value    := '0';   // Pagamento a vista
@@ -28985,7 +28994,8 @@ begin
                         spdNFeDataSets.Campo('xBairro_G06').Value     :=  spdNFeDataSets.Campo('xBairro_E09').Value; // Bairro
                         spdNFeDataSets.Campo('cMun_G07').Value        :=  spdNFeDataSets.Campo('cMun_E10').Value;    // Código do município Utilizar a Tabela do IBGE (Anexo IX - Tabela de UF, Município e País). Informar ‘9999999 ‘para operações com o exterior.
                         spdNFeDataSets.Campo('xMun_G08').Value        :=  spdNFeDataSets.Campo('xMun_E11').Value;    // Nome do município E G01 C 1-1 2-60 Informar ‘EXTERIOR ‘para operações com o exterior.
-                        spdNFeDataSets.Campo('UF_G09').Value          :=  spdNFeDataSets.Campo('UF_E12').Value;      // Sigla da UF Informar ‘EX’ para operações com o exterior.                        spdNFeDataSets.Campo('xCpl_G05').Value        :=  ''; // Complemento
+                        spdNFeDataSets.Campo('UF_G09').Value          :=  spdNFeDataSets.Campo('UF_E12').Value;      // Sigla da UF Informar ‘EX’ para operações com o exterior.
+                        spdNFeDataSets.Campo('xCpl_G05').Value        :=  ''; // Complemento
                       end;
                       //
                     end;
@@ -32520,7 +32530,8 @@ ShowMessage('Teste: '+chr(10)+
                   // * Removida * 14=Duplicata Mercantil *
                   // 15=Boleto Bancário
                   // 90= Sem pagamento
-                  // 99=Outros                  //
+                  // 99=Outros
+                  //
 
 
                   if (spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
@@ -36244,7 +36255,8 @@ begin
     // 210200 – Confirmação da Operação
     // 210210 – Ciência da Operação
     // 210220 – Desconhecimento da Operação
-    // 210240 – Operação não Realizada    //
+    // 210240 – Operação não Realizada
+    //
     if (Length(LimpaNumero(Form7.ibDataSet24NFEID.AsString)) = 44) and (Pos('<tpEvento>2102',Form7.ibDataSet24MDESTINXML.AsString)=0) then
     begin
       //

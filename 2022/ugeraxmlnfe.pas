@@ -1935,6 +1935,7 @@ begin
                         end;
                         //
                       end;
+
                     end;
       ///////////////////////////////
       //
@@ -2492,7 +2493,8 @@ begin
                   // * Removida * 14=Duplicata Mercantil *
                   // 15=Boleto Bancário
                   // 90= Sem pagamento
-                  // 99=Outros                  //
+                  // 99=Outros
+                  //
                   if (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
                   begin
   //                  Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '0';   // Pagamento a vista
@@ -3928,7 +3930,8 @@ begin
                         Form7.spdNFeDataSets.Campo('xBairro_G06').Value     :=  Form7.spdNFeDataSets.Campo('xBairro_E09').Value; // Bairro
                         Form7.spdNFeDataSets.Campo('cMun_G07').Value        :=  Form7.spdNFeDataSets.Campo('cMun_E10').Value;    // Código do município Utilizar a Tabela do IBGE (Anexo IX - Tabela de UF, Município e País). Informar ‘9999999 ‘para operações com o exterior.
                         Form7.spdNFeDataSets.Campo('xMun_G08').Value        :=  Form7.spdNFeDataSets.Campo('xMun_E11').Value;    // Nome do município E G01 C 1-1 2-60 Informar ‘EXTERIOR ‘para operações com o exterior.
-                        Form7.spdNFeDataSets.Campo('UF_G09').Value          :=  Form7.spdNFeDataSets.Campo('UF_E12').Value;      // Sigla da UF Informar ‘EX’ para operações com o exterior.                        Form7.spdNFeDataSets.Campo('xCpl_G05').Value        :=  ''; // Complemento
+                        Form7.spdNFeDataSets.Campo('UF_G09').Value          :=  Form7.spdNFeDataSets.Campo('UF_E12').Value;      // Sigla da UF Informar ‘EX’ para operações com o exterior.
+                        Form7.spdNFeDataSets.Campo('xCpl_G05').Value        :=  ''; // Complemento
                       end;
                       //
                     end;
@@ -4072,36 +4075,12 @@ begin
                       // Fica em loop enquanto a quantidade lançada seja menor que a quantidade do item ou clique no botão "Cancelar"
 
                       Application.CreateForm(TFrmInformacoesRastreamento, FrmInformacoesRastreamento);
-                      FrmInformacoesRastreamento.Caption := 'Rastreabilidade';
-                      FrmInformacoesRastreamento.lbProduto.Caption := '' + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString;
                       try
-                        {
                         dQtdAcumulado := 0;
-                        while dQtdAcumulado < StrToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value) do
-                        begin
-                          FrmInformacoesRastreamento.LimpaCampos;
-                          FrmInformacoesRastreamento.ActiveControl := FrmInformacoesRastreamento.edNumeroLote;
-                          FrmInformacoesRastreamento.QtdAcumulado  := dQtdAcumulado;
-                          FrmInformacoesRastreamento.QtdItemNaNota := StrToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value);
-                          FrmInformacoesRastreamento.lbValorQuantidadeItem.Caption      := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
-                          FrmInformacoesRastreamento.lbValorQuantidadeAcumulada.Caption := FloatToStr(dQtdAcumulado);
-                          FrmInformacoesRastreamento.ShowModal;
-                          if FrmInformacoesRastreamento.ModalResult = mrOk then
-                          begin
-                            dQtdAcumulado := dQtdAcumulado + StrToFloat(FrmInformacoesRastreamento.edQuantidade.Text);
-                            Form7.spdNFeDataSets.Campo('nLote_I81').Value  := FrmInformacoesRastreamento.edNumeroLote.Text;   // Número do Lote do produto
-                            Form7.spdNFeDataSets.Campo('qLote_I82').Value  := StrTran(Trim(FloatToStr(StrToFloat(FrmInformacoesRastreamento.edQuantidade.Text))), ',', '.');   // Quantidade de produto no Lote
-                            Form7.spdNFeDataSets.Campo('dFab_I83').Value   := FormatDateTime('yyyy-mm-dd', StrToDate(FrmInformacoesRastreamento.edDtFabricacao.Text));   // Data de fabricação/ Produção
-                            Form7.spdNFeDataSets.Campo('dVal_I84').Value   := FormatDateTime('yyyy-mm-dd', StrToDate(FrmInformacoesRastreamento.edDtValidade.Text));   // Data de validade
-                            Form7.spdNFeDataSets.Campo('cAgreg_I85').Value := ConverteAcentos2(Trim(FrmInformacoesRastreamento.edCodigoAgregacao.Text));   // Código de Agregação
-                          end
-                          else
-                            Break;
-                        end;
-                        }
-                        dQtdAcumulado := 0;
-                        FrmInformacoesRastreamento.ActiveControl := FrmInformacoesRastreamento.DBGridRastro;
+                        FrmInformacoesRastreamento.Caption       := 'Rastreabilidade';
+                        //FrmInformacoesRastreamento.ActiveControl := FrmInformacoesRastreamento.DBGridRastro;
                         FrmInformacoesRastreamento.QtdItemNaNota := StrToFloatDef(Form7.spdNFeDataSets.Campo('qCom_I10').Value, 0);
+                        FrmInformacoesRastreamento.lbProduto.Caption             := '' + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString;
                         FrmInformacoesRastreamento.lbValorQuantidadeItem.Caption := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
                         FrmInformacoesRastreamento.ShowModal;
                         if FrmInformacoesRastreamento.ModalResult = mrOk then
@@ -4111,14 +4090,12 @@ begin
                           begin
                             try
                               dQtdAcumulado := dQtdAcumulado + FrmInformacoesRastreamento.CDSLOTES.FieldByName('QUANTIDADE').AsFloat;
-                              //Form7.spdNfeDataSets.I80.Incluir;
                               Form7.spdNFeDataSets.IncluirPart('I80');
                               Form7.spdNFeDataSets.Campo('nLote_I81').Value  := ConverteAcentos2(Trim(FrmInformacoesRastreamento.CDSLOTES.FieldByName('NUMERO').AsString));   // Número do Lote do produto
                               Form7.spdNFeDataSets.Campo('qLote_I82').Value  := StrTran(Trim(FormatFloat('0.000', FrmInformacoesRastreamento.CDSLOTES.FieldByName('QUANTIDADE').AsFloat)), ',', '.');   // Quantidade de produto no Lote. Precisa de 3 casas decimais para Sefaz aceitar valores em casos como 0.5 -> 0.500
                               Form7.spdNFeDataSets.Campo('dFab_I83').Value   := FormatDateTime('yyyy-mm-dd', FrmInformacoesRastreamento.CDSLOTES.FieldByName('DTFABRICACAO').AsDateTime);   // Data de fabricação/ Produção
                               Form7.spdNFeDataSets.Campo('dVal_I84').Value   := FormatDateTime('yyyy-mm-dd', FrmInformacoesRastreamento.CDSLOTES.FieldByName('DTVALIDADE').AsDateTime);   // Data de validade
                               Form7.spdNFeDataSets.Campo('cAgreg_I85').Value := ConverteAcentos2(Trim(FrmInformacoesRastreamento.CDSLOTES.FieldByName('CODIGOAGREGACAO').AsString));   // Código de Agregação
-                              //Form7.spdNfeDataSets.I80.Salvar;
                               Form7.spdNFeDataSets.SalvarPart('I80');
                             except
                               on E: Exception do
@@ -6550,7 +6527,15 @@ ShowMessage('Teste: '+chr(10)+
                         //
                         // Devolução Quando não tem NF relacionada calcula a aliquota
                         //
-                        Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := StrTran(Alltrim(FormatFloat('##0.00',Arredonda(((StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')) / StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))) * 100),1))),',','.'); // Calcula a Alíquota do ICMS em Percentual
+                        // Ficha 6243
+                        // Sandro Silva 2022-09-20 Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := StrTran(Alltrim(FormatFloat('##0.00',Arredonda(((StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')) / StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))) * 100),1))),',','.'); // Calcula a Alíquota do ICMS em Percentual
+                        try
+                          // vBC_N15 não pode ser zero, causa erro na divisão para encontrar a alíquota
+                          if StrToFloatDef(StrTran(StrTran(Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','), 0) > 0 then
+                            Form7.spdNFeDataSets.Campo('pICMS_N16').Value := StrTran(Alltrim(FormatFloat('##0.00', Arredonda(((StrToFloatDef(StrTran(StrTran(Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',','), 0) / StrToFloatDef(StrTran(StrTran(Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','), 0)) * 100),1))),',','.'); // Calcula a Alíquota do ICMS em Percentual
+                        except
+
+                        end;
                         //
                       end;
                       //
@@ -7529,7 +7514,8 @@ ShowMessage('Teste: '+chr(10)+
                   // * Removida * 14=Duplicata Mercantil *
                   // 15=Boleto Bancário
                   // 90= Sem pagamento
-                  // 99=Outros                  //
+                  // 99=Outros
+                  //
 
 
                   if (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)

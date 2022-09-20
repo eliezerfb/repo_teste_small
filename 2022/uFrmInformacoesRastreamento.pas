@@ -49,6 +49,7 @@ type
       Shift: TShiftState);
     procedure DBGridRastroKeyPress(Sender: TObject; var Key: Char);
     procedure DBGridRastroExit(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FdQtdAcumulado: Double;
@@ -393,7 +394,9 @@ begin
 
         if (Sender As TDBGrid).DataSource.DataSet.FieldByName('NUMERO').AsString = '' then
         begin
-          (Sender As TDBGrid).DataSource.DataSet.Post;
+          if (Sender As TDBGrid).DataSource.DataSet.State in [dsInsert, dsEdit] then
+            (Sender As TDBGrid).DataSource.DataSet.Post;
+            
           btnOk.SetFocus;
         end
         else
@@ -535,6 +538,11 @@ begin
   finally
     CDSLOTES.EnableControls;
   end;
+end;
+
+procedure TFrmInformacoesRastreamento.FormShow(Sender: TObject);
+begin
+  ActiveControl := DBGridRastro;
 end;
 
 end.

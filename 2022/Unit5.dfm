@@ -26,7 +26,6 @@ object Form5: TForm5
     Width = 1020
     Height = 1061
     HorzScrollBar.Visible = False
-    VertScrollBar.Position = 246
     Align = alClient
     BorderStyle = bsNone
     Color = 15790320
@@ -45,7 +44,7 @@ object Form5: TForm5
     object Panel1: TPanel
       Tag = 1
       Left = 10
-      Top = -210
+      Top = 36
       Width = 301
       Height = 151
       Color = clSilver
@@ -66,7 +65,7 @@ object Form5: TForm5
     end
     object Panel2: TPanel
       Left = 320
-      Top = -210
+      Top = 36
       Width = 301
       Height = 151
       Color = clSilver
@@ -89,7 +88,7 @@ object Form5: TForm5
     object Panel3: TPanel
       Tag = 2
       Left = 10
-      Top = -50
+      Top = 196
       Width = 301
       Height = 151
       Color = clSilver
@@ -111,7 +110,7 @@ object Form5: TForm5
     end
     object Panel4: TPanel
       Left = 320
-      Top = -50
+      Top = 196
       Width = 301
       Height = 151
       Color = clSilver
@@ -134,7 +133,7 @@ object Form5: TForm5
     end
     object Panel5: TPanel
       Left = 10
-      Top = 110
+      Top = 356
       Width = 301
       Height = 151
       Color = clSilver
@@ -157,7 +156,7 @@ object Form5: TForm5
     end
     object Panel6: TPanel
       Left = 320
-      Top = 110
+      Top = 356
       Width = 301
       Height = 151
       Color = clSilver
@@ -179,7 +178,7 @@ object Form5: TForm5
     end
     object Panel7: TPanel
       Left = 634
-      Top = -210
+      Top = 36
       Width = 301
       Height = 151
       Color = clSilver
@@ -202,7 +201,7 @@ object Form5: TForm5
     end
     object Panel8: TPanel
       Left = 634
-      Top = -50
+      Top = 196
       Width = 301
       Height = 151
       Color = clSilver
@@ -224,7 +223,7 @@ object Form5: TForm5
     end
     object Panel9: TPanel
       Left = 634
-      Top = 110
+      Top = 356
       Width = 301
       Height = 151
       Color = clSilver
@@ -246,7 +245,7 @@ object Form5: TForm5
     end
     object Panel10: TPanel
       Left = 10
-      Top = 270
+      Top = 516
       Width = 301
       Height = 151
       Color = clSilver
@@ -268,7 +267,7 @@ object Form5: TForm5
     end
     object Panel11: TPanel
       Left = 320
-      Top = 270
+      Top = 516
       Width = 301
       Height = 151
       Color = clSilver
@@ -290,7 +289,7 @@ object Form5: TForm5
     end
     object Panel12: TPanel
       Left = 634
-      Top = 270
+      Top = 516
       Width = 301
       Height = 151
       Color = clSilver
@@ -312,7 +311,7 @@ object Form5: TForm5
     end
     object Panel13: TPanel
       Left = 10
-      Top = 430
+      Top = 676
       Width = 301
       Height = 151
       Color = clSilver
@@ -334,7 +333,7 @@ object Form5: TForm5
     end
     object Panel14: TPanel
       Left = 320
-      Top = 430
+      Top = 676
       Width = 301
       Height = 151
       Color = clSilver
@@ -356,7 +355,7 @@ object Form5: TForm5
     end
     object Panel15: TPanel
       Left = 634
-      Top = 430
+      Top = 676
       Width = 301
       Height = 151
       Color = clSilver
@@ -378,7 +377,7 @@ object Form5: TForm5
     end
     object Panel16: TPanel
       Left = 634
-      Top = 590
+      Top = 836
       Width = 301
       Height = 151
       Color = clSilver
@@ -400,7 +399,7 @@ object Form5: TForm5
     end
     object Panel17: TPanel
       Left = 10
-      Top = 590
+      Top = 836
       Width = 301
       Height = 151
       Color = clSilver
@@ -422,7 +421,7 @@ object Form5: TForm5
     end
     object Panel18: TPanel
       Left = 320
-      Top = 590
+      Top = 836
       Width = 301
       Height = 151
       Color = clSilver
@@ -444,7 +443,7 @@ object Form5: TForm5
     end
     object Panel19: TPanel
       Left = 10
-      Top = 750
+      Top = 996
       Width = 301
       Height = 151
       Color = clSilver
@@ -466,7 +465,7 @@ object Form5: TForm5
     end
     object Panel20: TPanel
       Left = 320
-      Top = 750
+      Top = 996
       Width = 301
       Height = 151
       Color = clSilver
@@ -488,7 +487,7 @@ object Form5: TForm5
     end
     object Panel21: TPanel
       Left = 634
-      Top = 750
+      Top = 996
       Width = 301
       Height = 151
       Color = clSilver
@@ -510,7 +509,7 @@ object Form5: TForm5
     end
     object Panel22: TPanel
       Left = 10
-      Top = 910
+      Top = 1156
       Width = 301
       Height = 151
       Color = clSilver
@@ -532,7 +531,7 @@ object Form5: TForm5
     end
     object Panel23: TPanel
       Left = 320
-      Top = 910
+      Top = 1156
       Width = 301
       Height = 151
       Color = clSilver
@@ -554,7 +553,7 @@ object Form5: TForm5
     end
     object Panel24: TPanel
       Left = 634
-      Top = 910
+      Top = 1156
       Width = 301
       Height = 151
       Color = clSilver

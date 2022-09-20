@@ -486,7 +486,8 @@ implementation
 
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
-  Unit26, Unit5, Unit37, Unit29, Unit42, Unit44, Unit13, Unit48;
+  Unit26, Unit5, Unit37, Unit29, Unit42, Unit44, Unit13, Unit48,
+  uconstantes_chaves_privadas;
 
 {$R *.DFM}
 
@@ -4503,8 +4504,7 @@ var
 begin
   //
   Form1.bMKP    := False;
-  Form1.sPasta  := 'FFEAA766654488992624076BDF9907FBBDEFF3CF616D352280FD6F0E13A59109D7761E3E0492EAB3DF38EB6D125451C36662933A3AC0D5AAC6AC4F926E89'+
-                   'F717DFB1F4CB28B1D11CD44517DDDC1A3D21AA1004C13FC87E952322E73E2A969A7240A51F324E11EC8D9B9367B1C28A69035EABD45C33FD522C21A798BE4F49B95B';
+  Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
   //
   try
     DownloadDoArquivo(PChar('http://www.smallsoft.com.br/imagens/small_aviso_promocao_1.bmp?fakevariable=%rand%, out.dat'),PChar('small_aviso_promocao_1.bmp'));

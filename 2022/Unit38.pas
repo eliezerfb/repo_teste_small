@@ -2513,7 +2513,7 @@ begin
                   Write(F,Copy(ibDataSet4CODIGO.AsString+Replicate(' ',5),1,5)+' ');
                   Write(F,Copy(ibDataSet4DESCRICAO.AsString+REplicate(' ',35),1,35)+' ');
                   Write(F,Format('%12.2n',[Form7.ibQuery6.FieldByName('TOTAL').AsFloat])+' ');
-                  fTotal4 := fTotal4 + ((Form7.ibQuery6.FieldByName('TOTAL').AsFloat)/fTotal5*100);
+                  // Sandro Silva 2022-09-19 já acumula antes de "if Form1.bHtml1 then"   fTotal4 := fTotal4 + ((Form7.ibQuery6.FieldByName('TOTAL').AsFloat)/fTotal5*100);
                   Write(F,Format('%12.2n',[fTotal4])+' ');
                   //
                   if fTotal4 < 70 then  WriteLn(F,'A  ') else
