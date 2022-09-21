@@ -1425,6 +1425,7 @@ type
     DuplicatestaNFe1: TMenuItem;
     PrvisualizarDANFE1: TMenuItem;
     Label28: TLabel;
+    IBQALIQUOTAISS: TIBQuery;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2121,6 +2122,8 @@ type
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
     function AliqICMdoCliente16: double;
+    function Formata2CasasDecimais(Valor: Double): Currency;
+    procedure SelecionaAliquotaIss(var IBQuery: TIBQuery; Operacao: String = '');
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -8337,7 +8340,7 @@ begin
       //
       Form7.ibQuery3.Close;
       Form7.ibQuery3.Sql.Clear;
-      Form7.ibQuery3.Sql.Add('select sum(ISS)TOTALISS, sum(TOTAL)SERVICOS from ITENS003 where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+'');
+      Form7.ibQuery3.Sql.Add('select sum(ISS) as TOTALISS, sum(TOTAL) as SERVICOS from ITENS003 where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+'');
       Form7.ibQuery3.Open;
       //
       Form7.ibDataSet15.Edit;
@@ -8345,10 +8348,26 @@ begin
       //
       // Abate o Desconto no ISS
       //
+      //Ficha 6253
+      {Sandro Silva 2022-09-21 inicio
       Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
       Form7.ibDataSet35.Edit;
       //
       Form7.ibDataSet35ISS.AsFloat      := Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100;
+      }
+      {
+      Form7.ibDataSet15ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibQuery1.FieldByName('ISS').AsFloat / 100));
+      Form7.ibDataSet35.Edit;
+      //
+      Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByName('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByName('BASEISS').AsFloat / 100);
+      Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+      }
+      Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
+      Form7.ibDataSet35.Edit;
+      //
+      Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+      Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+      {Sandro Silva 2022-09-21 fim}
       //
       Form7.sModulo := 'VENDA';
       //
@@ -13900,11 +13919,9 @@ begin
   end;
   //
   {Sandro Silva 2022-09-12 inicio}
-  if LimpaNumero(Form7.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124' then // Eliminar essa validação quando concluídos os testes
-  begin
-    PrvisualizarDANFE1.Visible := CancelarNFe1.Visible;
-    PrvisualizarDANFE1.Enabled := Trim(Form7.ibDataSet15.FieldByName('NFEPROTOCOLO').AsString) = '';
-  end;
+  // Ficha 4128/6230
+  PrvisualizarDANFE1.Visible := CancelarNFe1.Visible;
+  PrvisualizarDANFE1.Enabled := ((Trim(Form7.ibDataSet15.FieldByName('NFEPROTOCOLO').AsString) = '') and (Form7.ibDataSet15.FieldByName('MODELO').AsString = '55'));
   {Sandro Silva 2022-09-12 fim}
 end;
 
@@ -19156,7 +19173,7 @@ begin
       //
       if Form7.IBDataSet99.FieldByname('TIPO_ITEM').AsString = '09' then
       begin
-        ShowMEssage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
+        ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
         Form7.ibDataSet16.Delete;
       end;
       //
@@ -19746,8 +19763,10 @@ begin
       //
     end;
     //
-    if Form7.sModulo = 'OS' then TotalizaOS(True);
-    if Form7.sModulo = 'VENDA' then TotalizaServicos(True);
+    if Form7.sModulo = 'OS' then
+      TotalizaOS(True);
+    if Form7.sModulo = 'VENDA' then
+      TotalizaServicos(True);
     //
   end;
   //
@@ -21417,8 +21436,10 @@ begin
         //
         // TESTE
         //
-        if Form7.ibDataSet35QUANTIDADE.AsFloat <= 0 then Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
-        if Form7.ibDataSet35UNITARIO.AsFloat   <= 0 then Form7.ibDataSet35UNITARIO.AsFloat   := Form7.IBDataSet99.FieldByname('PRECO').AsFloat;
+        if Form7.ibDataSet35QUANTIDADE.AsFloat <= 0 then
+          Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
+        if Form7.ibDataSet35UNITARIO.AsFloat   <= 0 then
+          Form7.ibDataSet35UNITARIO.AsFloat   := Form7.IBDataSet99.FieldByname('PRECO').AsFloat;
         //
       end else
       begin
@@ -21434,15 +21455,18 @@ begin
     //
   end;
   //
-  if Form7.sModulo = 'VENDA' then TotalizaServicos(True);
+  if Form7.sModulo = 'VENDA' then
+    TotalizaServicos(True);
   AgendaCommit(True);
   //
 end;
 
 procedure TForm7.ibDataSet35AfterDelete(DataSet: TDataSet);
 begin
-  if Form7.sModulo = 'OS' then TotalizaOS(True);
-  if Form7.sModulo = 'VENDA' then TotalizaServicos(True);
+  if Form7.sModulo = 'OS' then
+    TotalizaOS(True);
+  if Form7.sModulo = 'VENDA' then
+    TotalizaServicos(True);
   AgendaCommit(True);
 end;
 
@@ -21460,8 +21484,10 @@ begin
       //
     end;
     //
-    if Form7.sModulo = 'OS' then TotalizaOS(True);
-    if Form7.sModulo = 'VENDA' then TotalizaServicos(True);
+    if Form7.sModulo = 'OS' then
+      TotalizaOS(True);
+    if Form7.sModulo = 'VENDA' then
+      TotalizaServicos(True);
     //
   end;
   //
@@ -42144,6 +42170,26 @@ begin
   Screen.Cursor            := crDefault;
   //
   {Sandro Silva 2022-09-12 fim}
+end;
+
+function TForm7.Formata2CasasDecimais(Valor: Double): Currency;
+begin
+  Result := StrToFloat(FormatFloat('0.00', Valor));
+end;
+
+procedure TForm7.SelecionaAliquotaIss(var IBQuery: TIBQuery; Operacao: String = '');
+begin
+  // Seleciona a alíquota de ISS configurada para o Emitente
+  IBQuery.Close;
+  IBQuery.SQL.Text :=
+    'select first 1 ISS, BASEISS ' +
+    'from ICM ';
+  if Trim(Operacao) = '' then
+    IBQuery.SQL.Add('where coalesce(ISS, 0) <> 0 and coalesce(BASEISS, 0) <> 0')
+  else
+    IBQuery.SQL.Add('where NOME = ' + QuotedStr(Operacao));
+
+  IBQuery.Open;
 end;
 
 end.

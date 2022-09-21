@@ -1270,12 +1270,18 @@ object Form30: TForm30
       BevelOuter = bvNone
       Color = clWhite
       TabOrder = 1
-      object Button1: TButton
+      object Button1: TBitBtn
         Left = 540
         Top = 0
         Width = 99
         Height = 30
         Caption = 'Ok'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         OnClick = Button1Click
       end

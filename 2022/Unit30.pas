@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
-  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus;
+  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons;
 
 //  WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
 //  Forms, Dialogs, Grids, DBGrids, DB, DBibDataSets, ExtCtrls, Menus, Unit9, IniFiles,
@@ -81,7 +81,7 @@ type
     PopupMenu3: TPopupMenu;
     Incluirnovoitemnoestoque1: TMenuItem;
     Incluirnovocliente1: TMenuItem;
-    Button1: TButton;
+    Button1: TBitBtn;
     Label13: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
@@ -955,18 +955,21 @@ begin
       if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) then
       begin
         //
-        if (length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) then
+        if (Length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) then
         begin
           //
           // Procura por código
           //
           try
-            if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
+            // Sandro Silva 2022-09-21 if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
+            if StrToIntDef(AllTrim(Form7.ibDataSet35DESCRICAO.AsString), 0) <> 0 then
             begin
               //
-              Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
+              // Sandro Silva 2022-09-21 Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
+              Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToIntDef(AllTrim(LimpaNumero(Form7.ibDataSet35DESCRICAO.AsString)), 0),5,0),[loCaseInsensitive,loPartialKey]);
               //
-              if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
+              // Sandro Silva 2022-09-21 if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
+              if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToIntDef(AllTrim(LimpaNumero(Form7.ibDataSet35DESCRICAO.AsString)), 0),5,0) then
               begin
                 //
                 Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;

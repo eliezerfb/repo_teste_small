@@ -1,10 +1,12 @@
+// Unit de importação de OS/Orçamento
 unit Unit41;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Mask, SmallFunc, DB, IniFiles;
+  StdCtrls, ExtCtrls, Mask, SmallFunc, DB, IniFiles, Buttons
+  , StrUtils;
 
 type
   TForm41 = class(TForm)
@@ -17,9 +19,9 @@ type
     Label8: TLabel;
     MaskEdit1: TMaskEdit;
     MaskEdit2: TMaskEdit;
-    Button3: TButton;
-    Button1: TButton;
-    Button2: TButton;
+    Button3: TBitBtn;
+    Button1: TBitBtn;
+    Button2: TBitBtn;
     procedure FormActivate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -263,6 +265,15 @@ begin
             begin
               Form7.ibDataSet35.Edit;
               Form7.ibDataSet35NUMERONF.AsString := Form7.ibDataSet15NUMERONF.AsString;
+
+              {Sandro Silva 2022-09-21 inicio}
+              //Ficha 6253
+              // Quando está importando para NF-e deve selecionar a primeria alíquota de ISS configurada
+              Form7.SelecionaAliquotaIss(Form7.IBQALIQUOTAISS, IfThen(Form7.sRPS = 'S', Form7.ibDataSet15OPERACAO.AsString, '')); // Seleciona a Alíquota de ISS configurada
+              Form7.ibDataSet35ISS.AsFloat        := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('ISS').AsFloat / 100 * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
+              Form7.ibDataSet35BASEISS.AsFloat    := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
+              {Sandro Silva 2022-09-21 fim}
+
               Form7.ibDataSet35.Post;
             end;
             Form7.ibDataSet35.Next;
@@ -577,6 +588,15 @@ begin
                             Form7.ibDataSet35DESCRICAO.AsString := Form7.IbDataSet37DESCRICAO.AsString;
                             Form7.ibDataSet35QUANTIDADE.AsFloat := Form7.IbDataSet37QUANTIDADE.AsFloat;
                             Form7.ibDataSet35UNITARIO.AsFloat   := Form7.IbDataSet37UNITARIO.AsFloat;
+                            {Sandro Silva 2022-09-21 inicio}
+                            //Ficha 6253
+                            // Quando está importando para NF-e deve selecionar a primeria alíquota de ISS configurada
+                            Form7.SelecionaAliquotaIss(Form7.IBQALIQUOTAISS, IfThen(Form7.sRPS = 'S', Form7.ibDataSet15OPERACAO.AsString, '')); // Seleciona a Alíquota de ISS configurada
+                            Form7.ibDataSet35ISS.AsFloat        := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('ISS').AsFloat / 100 * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
+                            Form7.ibDataSet35BASEISS.AsFloat    := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
+
+                            {Sandro Silva 2022-09-21 fim}
+
                             //
                             Form7.ibDataSet35.Post;
                             //

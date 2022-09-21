@@ -125,9 +125,9 @@ type
     Label28: TLabel;
     SMALL_DBEdit42: TSMALL_DBEdit;
     Panel6: TPanel;
-    Button1: TButton;
+    Button1: TBitBtn;
     ListBox2: TListBox;
-    Button2: TButton;
+    Button2: TBitBtn;
     Label62: TLabel;
     N1: TMenuItem;
     Incluirnovoitemnoestoque1: TMenuItem;
@@ -146,7 +146,7 @@ type
     Label3: TLabel;
     SMALL_DBEdit40: TSMALL_DBEdit;
     DBGrid2: TDBGrid;
-    Button3: TButton;
+    Button3: TBitBtn;
     Panel2: TPanel;
     Image1: TImage;
     Label2: TLabel;

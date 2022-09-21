@@ -115,7 +115,7 @@ object Form41: TForm41
         OnKeyDown = MaskEdit1KeyDown
       end
     end
-    object Button3: TButton
+    object Button3: TBitBtn
       Left = 100
       Top = 180
       Width = 100
@@ -130,7 +130,7 @@ object Form41: TForm41
       TabOrder = 1
       OnClick = Button3Click
     end
-    object Button1: TButton
+    object Button1: TBitBtn
       Left = 215
       Top = 180
       Width = 100
@@ -145,7 +145,7 @@ object Form41: TForm41
       TabOrder = 2
       OnClick = Button1Click
     end
-    object Button2: TButton
+    object Button2: TBitBtn
       Left = 330
       Top = 180
       Width = 100

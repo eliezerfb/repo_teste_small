@@ -43,7 +43,7 @@ type
     Label59: TLabel;
     Label69: TLabel;
     Panel6: TPanel;
-    Button1: TButton;
+    Button1: TBitBtn;
     Label62: TLabel;
     DBMemo1: TDBMemo;
     SMALL_DBEdit2: TSMALL_DBEdit;
@@ -56,7 +56,7 @@ type
     DBGrid3: TDBGrid;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
-    Button3: TButton;
+    Button3: TBitBtn;
     procedure DBLookupComboBox2Exit(Sender: TObject);
     procedure SMALL_DBEdit39Exit(Sender: TObject);
     procedure SMALL_DBEdit39Change(Sender: TObject);

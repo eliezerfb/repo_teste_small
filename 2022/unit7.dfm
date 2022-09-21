@@ -22419,4 +22419,12 @@ object Form7: TForm7
     Left = 440
     Top = 491
   end
+  object IBQALIQUOTAISS: TIBQuery
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 136
+    Top = 148
+  end
 end

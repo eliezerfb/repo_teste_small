@@ -852,15 +852,15 @@ object Form48: TForm48
       Ctl3D = True
       ParentCtl3D = False
       TabOrder = 1
-      object Button1: TButton
+      object Button1: TBitBtn
         Left = 570
         Top = 4
         Width = 100
         Height = 30
         Caption = 'Ok'
         Font.Charset = ANSI_CHARSET
-        Font.Color = 15122040
-        Font.Height = -11
+        Font.Color = clWindowText
+        Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
@@ -868,15 +868,15 @@ object Form48: TForm48
         OnClick = Button1Click
         OnEnter = Button1Enter
       end
-      object Button3: TButton
+      object Button3: TBitBtn
         Left = 460
         Top = 4
         Width = 100
         Height = 30
-        Caption = 'Proxima'
+        Caption = 'Pr'#243'xima >'
         Font.Charset = ANSI_CHARSET
-        Font.Color = 15122040
-        Font.Height = -11
+        Font.Color = clWindowText
+        Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False

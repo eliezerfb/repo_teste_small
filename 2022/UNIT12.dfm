@@ -2056,14 +2056,14 @@ object Form12: TForm12
       Ctl3D = True
       ParentCtl3D = False
       TabOrder = 1
-      object Button1: TButton
+      object Button1: TBitBtn
         Left = 568
         Top = 5
         Width = 100
         Height = 30
         Caption = 'Ok'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = 15122040
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
@@ -2072,14 +2072,14 @@ object Form12: TForm12
         OnClick = Button1Click
         OnEnter = Button1Enter
       end
-      object Button2: TButton
+      object Button2: TBitBtn
         Left = 462
         Top = 5
         Width = 100
         Height = 30
         Caption = 'Pr'#243'xima >'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = 15122040
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
@@ -2108,7 +2108,7 @@ object Form12: TForm12
         Stretch = True
       end
     end
-    object Button3: TButton
+    object Button3: TBitBtn
       Left = 768
       Top = -144
       Width = 75
