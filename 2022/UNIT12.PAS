@@ -577,7 +577,8 @@ end;
 procedure TForm12.SMALL_DBEdit11Exit(Sender: TObject);
 begin
   Retributa(True);
-  if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
+  if form7.ibDataSet16.Modified then
+    Form7.ibDataSet16.Post;
   dbGrid1.SetFocus;
 end;
 
@@ -710,10 +711,14 @@ begin
   Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
   Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
   Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
-  if dbGrid2.Top = (SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1) then SMALL_DBEdit39.SetFocus;
-  if dbGrid2.Top = (SMALL_DBEdit40.Top + SMALL_DBEdit40.Height -1) then SMALL_DBEdit40.SetFocus;
-  if dbGrid2.Top = (SMALL_DBEdit41.Top + SMALL_DBEdit41.Height -1) then SMALL_DBEdit41.SetFocus;
-  if dbGrid2.Top = (SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1) then SMALL_DBEdit43.SetFocus;
+  if dbGrid2.Top = (SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1) then
+    SMALL_DBEdit39.SetFocus;
+  if dbGrid2.Top = (SMALL_DBEdit40.Top + SMALL_DBEdit40.Height -1) then
+    SMALL_DBEdit40.SetFocus;
+  if dbGrid2.Top = (SMALL_DBEdit41.Top + SMALL_DBEdit41.Height -1) then
+    SMALL_DBEdit41.SetFocus;
+  if dbGrid2.Top = (SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1) then
+    SMALL_DBEdit43.SetFocus;
   dBGrid2.Visible := False;
   //
 end;
@@ -803,7 +808,8 @@ begin
     sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
   end;
   //
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet15.Enablecontrols;
   //
   dBGrid2.Visible := False;
@@ -881,7 +887,8 @@ begin
     //
     Retributa(True);
 //    Form7.ibDataset16.Edit;
-    if Form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
+    if Form7.ibDataSet16.Modified then
+      Form7.ibDataSet16.Post;
     //
     if pos('DEVOLUÇÃO',AnsiUppercase(SMALL_DBEdit40.Text)) <> 0 then
     begin
@@ -904,7 +911,8 @@ begin
     begin
       if AllTrim(SMALL_DBEdit40.Text)<>AllTrim(Form7.ibDataSet14NOME.AsString) then
       begin
-        if SMALL_DBEdit40.CanFocus then SMALL_DBEdit40.SetFocus;
+        if SMALL_DBEdit40.CanFocus then
+          SMALL_DBEdit40.SetFocus;
       end;
       //
     end;
@@ -1093,9 +1101,12 @@ procedure TForm12.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   //
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
   //
   if DbGrid1.SelectedIndex = 0 then
   begin
@@ -1239,12 +1250,22 @@ end;
 procedure TForm12.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
   if Form7.sModulo <> 'DESCONTO' then
   begin
-    if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-    if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-    if Key = VK_UP     then  if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+    if Key = VK_RETURN then
+      Perform(Wm_NextDlgCtl,0,0);
+    if Key = VK_DOWN   then
+    begin
+      if dBgrid2.Visible = True then
+        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
+    end;
+    if Key = VK_UP     then
+    begin
+      if dBgrid2.Visible = True then
+        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+    end;
     Key := VK_SHIFT;
   end else
   begin
@@ -1264,16 +1285,16 @@ end;
 procedure TForm12.DBGrid2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then Key := 0;
+  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then
+    Key := 0;
 end;
 
 procedure TForm12.DBGrid2Exit(Sender: TObject);
 begin
-  if (dbGrid2.Top = SMALL_DBEdit41.Top + SMALL_DBEdit41.Height)
-    then SMALL_DBEdit41.SetFocus else
-  if (dbGrid2.Top = SMALL_DBEdit39.Top + SMALL_DBEdit39.Height)
-    then SMALL_DBEdit39.SetFocus;
-
+  if (dbGrid2.Top = SMALL_DBEdit41.Top + SMALL_DBEdit41.Height) then
+    SMALL_DBEdit41.SetFocus
+  else if (dbGrid2.Top = SMALL_DBEdit39.Top + SMALL_DBEdit39.Height) then
+      SMALL_DBEdit39.SetFocus;
 end;
 
 procedure TForm12.DBGrid3CellClick(Column: TColumn);
@@ -1284,13 +1305,14 @@ begin
       Form7.ibDataSet16.Edit;
       Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
       dbGrid1.SetFocus;
-    except end;
+    except
+    end;
   end;
 end;
 
 procedure TForm12.DBGrid1ColExit(Sender: TObject);
 var
-  Sreg1 : String;
+  Sreg1: String;
 begin
   //
   //
@@ -1355,15 +1377,19 @@ end;
 procedure TForm12.SMALL_DBEdit40KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_INSERT then PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_INSERT then
+    PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
 end;
 
 procedure TForm12.SMALL_DBEdit43KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_INSERT then PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
-  if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_INSERT then
+    PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
+  if Key = VK_F1     then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
 end;
 
 procedure TForm12.SMALL_DBEdit9Exit(Sender: TObject);

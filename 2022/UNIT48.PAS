@@ -10,9 +10,7 @@ uses
 function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
 
-type
-
-
+type 
     TForm48 = class(TForm)
     Label44: TLabel;
     Label55: TLabel;
@@ -118,6 +116,7 @@ type
 
   private
     { Private declarations }
+    procedure RecalcularIssDosItens;
   public
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
@@ -215,6 +214,7 @@ begin
   Result := True;
   //
 end;
+
 
 {$R *.DFM}
 
@@ -355,6 +355,8 @@ begin
   if dbGrid2.Top = (SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1) then SMALL_DBEdit43.SetFocus;
   dBGrid2.Visible := False;
   //
+  RecalcularIssDosItens;// Sandro Silva 2022-09-22
+
 end;
 
 procedure TForm48.DBGrid2CellClick(Column: TColumn);
@@ -446,13 +448,14 @@ end;
 procedure TForm48.DBGrid2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then Key := 0;
+  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then
+    Key := 0;
 end;
 
 procedure TForm48.DBGrid2Exit(Sender: TObject);
 begin
-  if (dbGrid2.Top = SMALL_DBEdit39.Top + SMALL_DBEdit39.Height)
-    then SMALL_DBEdit39.SetFocus;
+  if (dbGrid2.Top = SMALL_DBEdit39.Top + SMALL_DBEdit39.Height) then
+    SMALL_DBEdit39.SetFocus;
 end;
 
 procedure TForm48.SMALL_DBEdit4Exit(Sender: TObject);
@@ -479,7 +482,8 @@ end;
 procedure TForm48.SMALL_DBEdit43KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nfse_sobre.htm')));
+  if Key = VK_F1     then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nfse_sobre.htm')));
 end;
 
 procedure TForm48.Button1Enter(Sender: TObject);
@@ -518,7 +522,8 @@ begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   //
-  if not Form7.ibDAtaSet18.Active then Form7.ibDAtaSet18.Active := True;
+  if not Form7.ibDAtaSet18.Active then
+    Form7.ibDAtaSet18.Active := True;
   //
   Form7.ibDataSet16.DisableControls;
   Form7.ibDataSet14.DisableControls;
@@ -531,7 +536,8 @@ begin
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
   Form7.ibDataSet2.Open;
   //
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset15.Edit;
   //
   if Right(Form7.sTitulo,3) = 'RPS' then
   begin
@@ -580,9 +586,10 @@ begin
   //                                                                           //
   // Relaciona a natureza da operação com o arquivo de vendas                 //
   //                                                                         //
-  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''                          //
-    then Form7.ibDataSet14.Append                                             //
-       else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);     //
+  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then                          //
+    Form7.ibDataSet14.Append                                             //
+  else
+    Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);     //
   //                                                                    //
   // Relaciona os clientes com o arquivo de vendas                     //
   //                                                                  //
@@ -660,7 +667,8 @@ begin
     Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
     Form7.ibDataSet4.Open;
     //
-    if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+    if Form7.sModulo <> 'RETRIBUTA' then
+      Form7.ibDataSet16.EnableControls;
     //
     // Atenção a rotina acima altera a quantidade no estoque
     //
@@ -712,8 +720,16 @@ begin
     Form48.Hide;
     //
     Form7.sModulo := 'RETRIBUTA';
+
+    {Sandro Silva 2022-09-23 inicio}
+    // Teste na Small, importando Orçamento, não está gravando ISS e BASEISS em ITENS003 
+    if Form7.ibDataSet15MODELO.AsString = 'SV' then
+      RecalcularIssDosItens; // Sandro Silva 2022-09-22
+    {Sandro Silva 2022-09-23 fim}
+
     //
-    if Form7.ibDataSet15.Modified then Form7.ibDataSet15.Post;
+    if Form7.ibDataSet15.Modified then
+      Form7.ibDataSet15.Post;
     //
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
@@ -764,7 +780,8 @@ begin
                 //
               end;
             end;
-          except end;
+          except
+          end;
           //
           Form7.sModulo := 'VENDA';
           Form7.ibDataSet16.Next;
@@ -795,7 +812,10 @@ begin
         Form7.ibDataSet15.Post;
         //
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-        if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then Form18.CheckBox1.Checked := True else  Form18.CheckBox1.Checked := False;
+        if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
+          Form18.CheckBox1.Checked := True
+        else
+          Form18.CheckBox1.Checked := False;
         Mais1Ini.Free;
         //
         if Form18.CheckBox1.Checked then
@@ -816,7 +836,8 @@ begin
       //
     end;
     //
-  except end;
+  except
+  end;
   //
   //
   // Lay-Out no form7
@@ -870,7 +891,8 @@ begin
     Form7.IBQuery99.SQL.Clear;
     Form7.IBQuery99.SQL.Add('delete from ITENS001 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
     Form7.IBQuery99.Open;
-  except end;
+  except
+  end;
   //
 end;
 
@@ -880,11 +902,17 @@ begin
   //
   if DbGrid4.SelectedIndex = 0 then
   begin
-    if not dbGrid3.Visible then dbGrid3.Visible := True;
-  end else dbGrid3.Visible  := False;
+    if not dbGrid3.Visible then
+      dbGrid3.Visible := True;
+  end
+  else
+    dbGrid3.Visible  := False;
   //
   if dbGrid4.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+  begin
+    if Key = chr(46) then
+      Key := chr(44);
+  end;
   //
 end;
 
@@ -1029,7 +1057,7 @@ end;
 procedure TForm48.DBGrid4KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  I : Integer;  
+  I : Integer;
 begin
   //
   if Key = VK_DOWN  then
@@ -1055,15 +1083,19 @@ begin
   //
   if DbGrid4.SelectedIndex = 0 then
   begin
-    if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then Form7.ibDataset35.Edit;
+    if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset35.Edit;
     Form7.ibDataSet35.UpdateRecord;
-    if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then Form7.ibDataset35.Edit;
-  end;  
+    if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset35.Edit;
+  end;
   //
   //  Sistema de procura
   //
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
   try
     if Key = VK_RETURN then
     begin
@@ -1152,9 +1184,29 @@ procedure TForm48.SMALL_DBEdit39KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   //
-  if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_DOWN   then
+  begin
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
+  end;
+
+  if Key = VK_UP     then
+  begin
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,-1,0);
+  end;
+
+  if Key = VK_RETURN then
+  begin
+    if Form7.ibDataSet35.IsEmpty = False then
+      Form7.ibDataSet35.First;
+      
+    Perform(Wm_NextDlgCtl,0,0);
+  end;
   Key := VK_SHIFT;
   //
 end;
@@ -1173,7 +1225,8 @@ begin
     sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
   end;
   //
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet15.Enablecontrols;
   //
   dBGrid2.Visible := False;
@@ -1188,7 +1241,8 @@ begin
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.First;
     while (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '5'+Copy(Form1.ConfCFOP,2,3)) and (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '6'+Copy(Form1.ConfCFOP,2,3)) and
-     (not Form7.ibDataSet14.EOF) do Form7.ibDataSet14.Next;
+     (not Form7.ibDataSet14.EOF) do
+       Form7.ibDataSet14.Next;
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet15.Edit;
     SMALL_DBEdit40.Text := Form7.ibDataSet14NOME.AsString;
@@ -1256,9 +1310,13 @@ begin
   //
   if SMALL_DBEdit40.Text <> '' then
   begin
+
+    RecalcularIssDosItens; // Sandro Silva 2022-09-22
+
     //
     if (Pos( AnsiUpperCase(AllTrim(SMALL_DBEdit40.Text)), AnsiUpperCase(AllTrim(Form7.ibDataSet14NOME.AsString))) <> 0) then
     begin
+
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
       ObservacaoOperacao(False); // On exit
@@ -1277,18 +1335,34 @@ end;
 procedure TForm48.SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nfse_venda.htm')));
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then  if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nfse_venda.htm')));
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_DOWN   then
+  begin
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
+  end;
+  if Key = VK_UP     then
+  begin
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,-1,0);
+  end;
   Key := VK_SHIFT;
 end;
 
 procedure TForm48.SMALL_DBEdit40KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_INSERT then PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nfse_sobre.htm')));
+  if Key = VK_INSERT then
+    PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nfse_sobre.htm')));
 end;
 
 procedure TForm48.SMALL_DBEdit2Enter(Sender: TObject);
@@ -1328,19 +1402,26 @@ begin
   //
   try
     //
-    if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then Form7.ibDataset35.Edit;
+    if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset35.Edit;
     //
     Form7.ibDataSet35CODIGO.AsString    := Form7.IBDataSet4.FieldByname('CODIGO').AsString;
     Form7.ibDataSet35DESCRICAO.AsString := Form7.IBDataSet4.FieldByname('DESCRICAO').AsString;
     Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
     Form7.ibDataSet35UNITARIO.AsFloat   := Form7.IBDataSet4.FieldByname('PRECO').AsFloat;
+
+    {Sandro Silva 2022-09-22 inicio}
+    Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+    Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+    {Sandro Silva 2022-09-22 fim}
     //
     Form7.ibDataSet35.Post;
     Form7.ibDataSet35.Edit;
     //
   except end;
   //
-  if dbGrid3.Focused then dbGrid4.SetFocus;
+  if dbGrid3.Focused then
+    dbGrid4.SetFocus;
   //
 //  SendMessage(dBGrid4.Handle, WM_KEYDOWN, VK_RETURN, 0);
 //  SendMessage(dBGrid4.Handle, WM_KEYDOWN, VK_RETURN, 0);
@@ -1354,7 +1435,8 @@ begin
   dbGrid1.Visible := False;
   dbGrid2.Visible := False;
   //
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset15.Edit;
   //
   if Form48.CheckBox1.Checked then
   begin
@@ -1383,7 +1465,8 @@ begin
   dbGrid1.Visible := False;
   dbGrid2.Visible := False;
   //
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset15.Edit;
   //
   if Form48.CheckBox2.Checked then
   begin
@@ -1409,12 +1492,47 @@ begin
     bOk := True;
     Form48.Close;
     Form7.Image101Click(Sender);
-  except end;
+  except
+  end;
   //
 end;
 
+procedure TForm48.RecalcularIssDosItens;
+var
+  cTotal: Currency;
+begin
+
+  {Sandro Silva 2022-09-22 inicio}
+  // Quando mudar a operação deve recalcular os valores de ISS dos itens lançados na nota conforme a alíquota de ISS da operação
+  if Form7.ibDataSet35.Active then
+  begin
+    if Form7.ibDataSet35.RecordCount > 0 then // Tem itens lançados
+    begin
+      cTotal := 0.00;
+      Form7.ibDataSet35.First;
+      while Form7.ibDataSet35.Eof = False do
+      begin
+        // Aplica a alíquota nos itens lançados
+        Form7.ibDataSet35.Edit;
+        //
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        cTotal := cTotal + Form7.ibDataSet35ISS.AsFloat; // Acumula para atualizar o total de ISS na tabela VENDAS
+
+        Form7.ibDataSet35.Next;
+      end;
+      if Form7.ibDataSet15ISS.AsFloat <> cTotal then
+      begin
+        if not (Form7.ibDataSet15.State in [dsInsert, dsEdit]) then
+          Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15ISS.AsFloat := cTotal;
+      end;
+
+    end;
+  end;
+
+  {Sandro Silva 2022-09-22 fim}
+
+end;
+
 end.
-
-
-
-

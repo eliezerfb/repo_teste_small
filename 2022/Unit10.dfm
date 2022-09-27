@@ -832,7 +832,7 @@ object Form10: TForm10
         OnMouseMove = Label205MouseMove
         OnMouseLeave = Label205MouseLeave
       end
-      object Button21: TButton
+      object Button21: TBitBtn
         Left = 608
         Top = 48
         Width = 75
@@ -858,7 +858,7 @@ object Form10: TForm10
       ShowHint = True
       TabOrder = 2
       OnDblClick = Panel2DblClick
-      object Button5: TButton
+      object Button5: TBitBtn
         Left = 655
         Top = 8
         Width = 120
@@ -873,7 +873,7 @@ object Form10: TForm10
         TabOrder = 0
         OnClick = Button4Click
       end
-      object Button9: TButton
+      object Button9: TBitBtn
         Left = 10
         Top = 8
         Width = 120
@@ -889,7 +889,7 @@ object Form10: TForm10
         Visible = False
         OnClick = Button9Click
       end
-      object Button12: TButton
+      object Button12: TBitBtn
         Left = 140
         Top = 8
         Width = 120
@@ -905,7 +905,7 @@ object Form10: TForm10
         Visible = False
         OnClick = Button12Click
       end
-      object Button6: TButton
+      object Button6: TBitBtn
         Left = 392
         Top = 8
         Width = 252
@@ -934,7 +934,7 @@ object Form10: TForm10
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 3
-      object Button4: TButton
+      object Button4: TBitBtn
         Left = 350
         Top = 5
         Width = 100
@@ -956,7 +956,7 @@ object Form10: TForm10
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 4
-      object Button19: TButton
+      object Button19: TBitBtn
         Left = 350
         Top = 5
         Width = 100
@@ -971,7 +971,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_cadastro
+      ActivePage = orelha_foto
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3532,7 +3532,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 21
+            Height = 24
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -4422,7 +4422,7 @@ object Form10: TForm10
           OnKeyPress = StringGrid1KeyPress
           OnKeyUp = StringGrid1KeyUp
         end
-        object Button1: TButton
+        object Button1: TBitBtn
           Left = 10
           Top = 380
           Width = 130
@@ -4437,7 +4437,7 @@ object Form10: TForm10
           TabOrder = 1
           OnClick = Button1Click
         end
-        object Button2: TButton
+        object Button2: TBitBtn
           Left = 150
           Top = 380
           Width = 130
@@ -4452,7 +4452,7 @@ object Form10: TForm10
           TabOrder = 2
           OnClick = Button2Click
         end
-        object Button3: TButton
+        object Button3: TBitBtn
           Left = 400
           Top = 380
           Width = 130
@@ -4476,7 +4476,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4495,7 +4495,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4514,7 +4514,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4533,7 +4533,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4552,7 +4552,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4571,7 +4571,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4590,7 +4590,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4691,7 +4691,7 @@ object Form10: TForm10
           OnClick = CheckBox1Click
           OnExit = CheckBox1Exit
         end
-        object Button17: TButton
+        object Button17: TBitBtn
           Left = 10
           Top = 380
           Width = 130
@@ -4706,7 +4706,7 @@ object Form10: TForm10
           TabOrder = 9
           OnClick = Button17Click
         end
-        object Button15: TButton
+        object Button15: TBitBtn
           Left = 150
           Top = 380
           Width = 130
@@ -4721,7 +4721,7 @@ object Form10: TForm10
           TabOrder = 10
           OnClick = Button15Click
         end
-        object Button16: TButton
+        object Button16: TBitBtn
           Left = 290
           Top = 380
           Width = 130
@@ -4745,7 +4745,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 366
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -4766,7 +4766,7 @@ object Form10: TForm10
           Left = 385
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False
@@ -4878,30 +4878,48 @@ object Form10: TForm10
           ReadOnly = True
           TabOrder = 5
         end
-        object Button8: TButton
+        object Button8: TBitBtn
           Left = 20
           Top = 310
           Width = 130
           Height = 25
           Caption = '&Fabricar'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 6
           OnClick = Button8Click
         end
-        object Button10: TButton
+        object Button10: TBitBtn
           Left = 20
           Top = 345
           Width = 130
           Height = 25
           Caption = '&Desmontar'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 7
           OnClick = Button10Click
         end
-        object Button11: TButton
+        object Button11: TBitBtn
           Left = 20
           Top = 380
           Width = 130
           Height = 25
           Caption = 'C&usto'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 8
           OnClick = Button11Click
         end
@@ -5258,21 +5276,33 @@ object Form10: TForm10
           CapToFile = True
           BufferFileSize = 0
         end
-        object Button13: TButton
+        object Button13: TBitBtn
           Left = 20
           Top = 380
           Width = 130
           Height = 25
           Caption = '&Webcam'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 2
           OnClick = Button13Click
         end
-        object Button7: TButton
+        object Button7: TBitBtn
           Left = 160
           Top = 380
           Width = 130
           Height = 25
           Caption = '&Procurar na web'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 3
           OnClick = Button7Click
         end
@@ -5291,12 +5321,18 @@ object Form10: TForm10
             8000000000000000000000000000000000000000000000000000000000000000
             00000000000000000100000000000000000000000000000000000000}
         end
-        object Button22: TButton
+        object Button22: TBitBtn
           Left = 304
           Top = 380
           Width = 130
           Height = 25
           Caption = '&Selecionar arquivo'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 0
           OnClick = ButtoOpenPictureDialog1n22Click
         end
@@ -5656,7 +5692,7 @@ object Form10: TForm10
           OnExit = SMALL_DBEdit32Exit
           OnKeyDown = SMALL_DBEdit32KeyDown
         end
-        object Button20: TButton
+        object Button20: TBitBtn
           Left = 357
           Top = 151
           Width = 10
@@ -5861,7 +5897,7 @@ object Form10: TForm10
           TabOrder = 14
           Text = '+R$      0,00'
         end
-        object Button18: TButton
+        object Button18: TBitBtn
           Left = 150
           Top = 380
           Width = 130
@@ -5869,14 +5905,14 @@ object Form10: TForm10
           Caption = 'Aplicar Neste'
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
-          Font.Height = -11
+          Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentFont = False
           TabOrder = 15
           OnClick = Button18Click
         end
-        object Button14: TButton
+        object Button14: TBitBtn
           Left = 10
           Top = 380
           Width = 130
@@ -5884,7 +5920,7 @@ object Form10: TForm10
           Caption = 'Aplicar Todos'
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
-          Font.Height = -11
+          Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentFont = False

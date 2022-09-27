@@ -1,6 +1,6 @@
 object Form12: TForm12
-  Left = 574
-  Top = 235
+  Left = 575
+  Top = 236
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False
@@ -47,7 +47,6 @@ object Form12: TForm12
     Top = 0
     Width = 1020
     Height = 694
-    VertScrollBar.Position = 184
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -61,7 +60,7 @@ object Form12: TForm12
     TabOrder = 0
     object Panel1: TPanel
       Left = 10
-      Top = -174
+      Top = 10
       Width = 662
       Height = 825
       BevelOuter = bvNone
@@ -2048,7 +2047,7 @@ object Form12: TForm12
     end
     object Panel6: TPanel
       Left = 0
-      Top = 654
+      Top = 838
       Width = 675
       Height = 40
       BevelOuter = bvNone
@@ -2091,7 +2090,7 @@ object Form12: TForm12
     end
     object Panel9: TPanel
       Left = 800
-      Top = -94
+      Top = 90
       Width = 200
       Height = 200
       BevelOuter = bvNone
@@ -2110,17 +2109,23 @@ object Form12: TForm12
     end
     object Button3: TBitBtn
       Left = 768
-      Top = -144
+      Top = 40
       Width = 75
       Height = 25
       Caption = 'Button3'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'System'
+      Font.Style = [fsBold]
+      ParentFont = False
       TabOrder = 3
       Visible = False
       OnClick = Button3Click
     end
     object Panel2: TPanel
       Left = 688
-      Top = 128
+      Top = 312
       Width = 433
       Height = 209
       BevelOuter = bvNone

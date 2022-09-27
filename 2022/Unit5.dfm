@@ -1,10 +1,10 @@
 object Form5: TForm5
   Tag = 1
   Left = 316
-  Top = 153
+  Top = 0
   BorderIcons = []
   BorderStyle = bsNone
-  ClientHeight = 1061
+  ClientHeight = 1008
   ClientWidth = 1020
   Color = 16316664
   Font.Charset = ANSI_CHARSET
@@ -24,7 +24,7 @@ object Form5: TForm5
     Left = 0
     Top = 0
     Width = 1020
-    Height = 1061
+    Height = 1008
     HorzScrollBar.Visible = False
     Align = alClient
     BorderStyle = bsNone

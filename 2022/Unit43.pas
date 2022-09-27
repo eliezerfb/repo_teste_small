@@ -1,3 +1,4 @@
+//Unit Selecionar plano de contas
 unit Unit43;
 
 interface
@@ -88,12 +89,13 @@ end;
 
 procedure TForm43.FormClose(Sender: TObject; var Action: TCloseAction);
 var
- sConta : String;
+ sConta: String;
 begin
   try
     sConta := Form7.ibDataSet12NOME.AsString;
     Form7.ibDataSet12NOME.DisplayWidth := 25;
-  except end;
+  except
+  end;
 end;
 
 procedure TForm43.Edit1Change(Sender: TObject);
@@ -114,18 +116,29 @@ begin
   //
   if Key = VK_RETURN then
   begin
-    if (Edit1.Text = Form7.ibDataSet12NOME.AsString) and (Alltrim(Edit1.Text)<>'') then close;
-    if Form7.ibDataSet12.Locate('NOME',AllTrim(Edit1.Text),[loCaseInsensitive, loPartialKey]) then Edit1.Text := Form7.ibDataSet12NOME.AsString;
+    if (Edit1.Text = Form7.ibDataSet12NOME.AsString) and (Alltrim(Edit1.Text)<>'') then
+      Close;
+    if Form7.ibDataSet12.Locate('NOME',AllTrim(Edit1.Text),[loCaseInsensitive, loPartialKey]) then
+      Edit1.Text := Form7.ibDataSet12NOME.AsString;
   end;
   //
-  if (Key = VK_UP) or (Key = VK_DOWN) then if dBgrid1.CanFocus then dBgrid1.SetFocus else Button4.SetFocus;
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('planodecontas.htm')));
+  if (Key = VK_UP) or (Key = VK_DOWN) then
+  begin
+    if dBgrid1.CanFocus then
+      dBgrid1.SetFocus
+    else
+      Button4.SetFocus;
+  end;
+
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('planodecontas.htm')));
 end;
 
 procedure TForm43.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then DBGrid1DblClick(Sender);
+  if Key = VK_RETURN then
+    DBGrid1DblClick(Sender);
 end;
 
 end.

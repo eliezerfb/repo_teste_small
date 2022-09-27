@@ -1,3 +1,4 @@
+// unit desdobramento parcelas
 unit Unit18;
 
 interface
@@ -5,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Grids, DBGrids, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, Unit7, SmallFunc,
-  ExtCtrls, DB, ShellApi, IniFiles;
+  ExtCtrls, DB, ShellApi, IniFiles, Buttons;
 
 type
     TForm18 = class(TForm)
@@ -15,7 +16,7 @@ type
     DBGrid1: TDBGrid;
     Label7: TLabel;
     ComboBox1: TComboBox;
-    Button4: TButton;
+    Button4: TBitBtn;
     Panel9: TPanel;
     Label45: TLabel;
     CheckBox1: TCheckBox;
@@ -104,13 +105,19 @@ begin
           Form7.ibDataSet7NOME.Value                                 := Form7.ibDataSet2NOME.Value;
           Form7.ibDataSet7CONTA.AsString                             := sConta;
           //
-          if I = 1 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
-          if I = 2 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
-          if I = 3 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
-          if I > 3 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit6.Text))+((StrToInt(AllTrim(Form19.MaskEdit6.Text))-StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
+          if I = 1 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
+          if I = 2 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
+          if I = 3 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
+          if I > 3 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit6.Text))+((StrToInt(AllTrim(Form19.MaskEdit6.Text))-StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
           //
-          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
-          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
+          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
+          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
           //
           Form7.ibDataSet7.Post;
           //
@@ -128,7 +135,8 @@ begin
         //
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
-        if dDiferenca <> 0 then Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+        if dDiferenca <> 0 then
+          Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
         //
       end;
       //
@@ -207,15 +215,21 @@ begin
           Form7.ibDataSet7EMISSAO.asDateTime    := Form7.ibDataSet15EMISSAO.AsDateTime;
           Form7.ibDataSet7NOME.Value            := Form7.ibDataSet15CLIENTE.Value;
           Form7.ibDataSet7CONTA.AsString        := sConta;
-          if I = 1 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
-          if I = 2 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
-          if I = 3 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
-          if I > 3 then Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text))+
-            ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
-             -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
+          if I = 1 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
+          if I = 2 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
+          if I = 3 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
+          if I > 3 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text))+
+              ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
+               -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
           //
-          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
-          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
+          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
+          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
           //
           Form7.ibDataSet7.Post;
           //
@@ -233,7 +247,8 @@ begin
         //
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
-        if dDiferenca <> 0 then Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+        if dDiferenca <> 0 then
+          Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
         //
       end;
       //
@@ -288,12 +303,16 @@ begin
           Form7.ibDataSet8EMISSAO.asDateTime  := Form7.ibDataSet24EMISSAO.AsDateTime;
           Form7.ibDataSet8NOME.Value          := Form7.ibDataSet24FORNECEDOR.AsString;
           Form7.ibDataSet8CONTA.AsString      := sConta;
-          if I = 1 then Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
-          if I = 2 then Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
-          if I = 3 then Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
-          if I > 3 then Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text))+
-            ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
-             -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
+          if I = 1 then
+            Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
+          if I = 2 then
+            Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
+          if I = 3 then
+            Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
+          if I > 3 then
+            Form7.ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet24EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text))+
+              ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
+               -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
           Form7.ibDataSet8.Post;
           //
         end;
@@ -310,7 +329,8 @@ begin
         //
         Form7.ibDataSet8.First;
         Form7.ibDataSet8.Edit;
-        if dDiferenca <> 0 then Form7.ibDataSet8VALOR_DUPL.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat + ddiferenca;
+        if dDiferenca <> 0 then
+          Form7.ibDataSet8VALOR_DUPL.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat + ddiferenca;
       end;
       //
       Form7.ibDataSet8.First;
@@ -330,156 +350,164 @@ var
 begin
   //
   try
-  if Key = chr(46) then key := chr(44);
-  if (Key = chr(13)) or (Key = Chr(9) ) then
-  begin
-    //
-    if Form7.sModulo = 'CLIENTES' then
+    if Key = chr(46) then
+      Key := chr(44);
+    if (Key = chr(13)) or (Key = Chr(9) ) then
     begin
-      MyBookmark  := Form7.ibDataSet7.GetBookmark;
-      if AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then Button4.SetFocus
-      else
+      //
+      if Form7.sModulo = 'CLIENTES' then
       begin
-        //
-        iRegistro   := Form7.ibDataSet7.Recno;
-        ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
-        iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
-        //
-        Form7.ibDataSet7.DisableControls;
-        Form7.ibDataSet7.First;
-        while not Form7.ibDataSet7.Eof do
+        MyBookmark  := Form7.ibDataSet7.GetBookmark;
+        if AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then
+          Button4.SetFocus
+        else
         begin
-          if Form7.ibDataSet7.Recno <= iRegistro then
+          //
+          iRegistro   := Form7.ibDataSet7.Recno;
+          ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+          iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
+          //
+          Form7.ibDataSet7.DisableControls;
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
           begin
-            iDuplicatas := iDuplicatas - 1;
-            dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
-          end else
-          begin
-           Form7.ibDataSet7.Edit;
-           Form7.ibDataSet7VALOR_DUPL.AsFloat := dDiferenca / iDuplicatas;
-           Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+            if Form7.ibDataSet7.Recno <= iRegistro then
+            begin
+              iDuplicatas := iDuplicatas - 1;
+              dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
+            end else
+            begin
+             Form7.ibDataSet7.Edit;
+             Form7.ibDataSet7VALOR_DUPL.AsFloat := dDiferenca / iDuplicatas;
+             Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+            end;
+            Form7.ibDataSet7.Next;
           end;
-          Form7.ibDataSet7.Next;
+          //
+          ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
+          begin
+            dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+            Form7.ibDataSet7.Next;
+          end;
+          //
+          Form7.ibDataSet7.First;
+          Form7.ibDataSet7.Edit;
+          if dDiferenca <> 0 then
+            Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+          //
+          Form7.ibDataSet7.GotoBookmark(MyBookmark);
+          Form7.ibDataSet7.FreeBookmark(MyBookmark);
+          Form7.ibDataSet7.EnableControls;
+          //
         end;
-        //
-        ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
-        Form7.ibDataSet7.First;
-        while not Form7.ibDataSet7.Eof do
+      end;
+      //
+      if Form7.sModulo = 'VENDA' then // Ok
+      begin
+        MyBookmark  := Form7.ibDataSet7.GetBookmark;
+        if AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then
+          Button4.SetFocus
+        else
         begin
-          dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
-          Form7.ibDataSet7.Next;
+          //
+          iRegistro   := Form7.ibDataSet7.Recno;
+          ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+          iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
+          //
+          Form7.ibDataSet7.DisableControls;
+  //        Dbgrid1.Enabled := false;
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
+          begin
+            if Form7.ibDataSet7.Recno <= iRegistro then
+            begin
+              iDuplicatas := iDuplicatas - 1;
+              dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
+            end else
+            begin
+              Form7.ibDataSet7.Edit;
+              Form7.ibDataSet7VALOR_DUPL.AsFloat := dDiferenca / iDuplicatas;
+              Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+            end;
+            Form7.ibDataSet7.Next;
+          end;
+          //
+          ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
+          begin
+            dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+            Form7.ibDataSet7.Next;
+          end;
+          //
+          Form7.ibDataSet7.First;
+          Form7.ibDataSet7.Edit;
+          if dDiferenca <> 0 then Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+          //
+          Form7.ibDataSet7.GotoBookmark(MyBookmark);
+          Form7.ibDataSet7.FreeBookmark(MyBookmark);
+          Form7.ibDataSet7.EnableControls;
+  //        Dbgrid1.Enabled := True;
+          //
         end;
-        //
-        Form7.ibDataSet7.First;
-        Form7.ibDataSet7.Edit;
-        if dDiferenca <> 0 then Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-        //
-        Form7.ibDataSet7.GotoBookmark(MyBookmark);
-        Form7.ibDataSet7.FreeBookmark(MyBookmark);
-        Form7.ibDataSet7.EnableControls;
-        //
+      end;
+      //
+      if Form7.sModulo = 'COMPRA' then
+      begin
+        MyBookmark  := Form7.ibDataSet8.GetBookmark;
+        if AllTrim(Form7.ibDataSet8DOCUMENTO.AsString) = '' then
+          Button4.SetFocus
+        else
+        begin
+          //
+          iRegistro   := Form7.ibDataSet8.Recno;
+          ddiferenca  := Form7.ibDataSet24TOTAL.Value;
+          iDuplicatas := Trunc(Form7.ibDataSet24DUPLICATAS.AsFloat);
+          //
+          Form7.ibDataSet8.DisableControls;
+  //        Dbgrid1.Enabled := false;
+          Form7.ibDataSet8.First;
+          while not Form7.ibDataSet8.Eof do
+          begin
+            if Form7.ibDataSet8.Recno <= iRegistro then
+            begin
+              iDuplicatas := iDuplicatas - 1;
+              dDiferenca := dDiferenca - Form7.ibDataSet8VALOR_DUPL.Value;
+            end else
+            begin
+             Form7.ibDataSet8.Edit;
+             Form7.ibDataSet8VALOR_DUPL.AsFloat := dDiferenca / iDuplicatas;
+             Form7.ibDataSet8VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet8VALOR_DUPL.AsFloat]));
+            end;
+            Form7.ibDataSet8.Next;
+          end;
+          //
+          ddiferenca  := Form7.ibDataSet24TOTAL.Value;
+          Form7.ibDataSet8.First;
+          while not Form7.ibDataSet8.Eof do
+          begin
+            dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet8VALOR_DUPL.AsFloat]));
+            Form7.ibDataSet8.Next;
+          end;
+          //
+          Form7.ibDataSet8.First;
+          Form7.ibDataSet8.Edit;
+          if dDiferenca <> 0 then
+            Form7.ibDataSet8VALOR_DUPL.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat + ddiferenca;
+          //
+          Form7.ibDataSet8.GotoBookmark(MyBookmark);
+          Form7.ibDataSet8.FreeBookmark(MyBookmark);
+          Form7.ibDataSet8.EnableControls;
+  //        Dbgrid1.Enabled := True;
+          //
+        end;
       end;
     end;
-    //
-    if Form7.sModulo = 'VENDA' then // Ok
-    begin
-      MyBookmark  := Form7.ibDataSet7.GetBookmark;
-      if AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then Button4.SetFocus
-      else
-      begin
-        //
-        iRegistro   := Form7.ibDataSet7.Recno;
-        ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
-        iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
-        //
-        Form7.ibDataSet7.DisableControls;
-//        Dbgrid1.Enabled := false;
-        Form7.ibDataSet7.First;
-        while not Form7.ibDataSet7.Eof do
-        begin
-          if Form7.ibDataSet7.Recno <= iRegistro then
-          begin
-            iDuplicatas := iDuplicatas - 1;
-            dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
-          end else
-          begin
-            Form7.ibDataSet7.Edit;
-            Form7.ibDataSet7VALOR_DUPL.AsFloat := dDiferenca / iDuplicatas;
-            Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
-          end;
-          Form7.ibDataSet7.Next;
-        end;
-        //
-        ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
-        Form7.ibDataSet7.First;
-        while not Form7.ibDataSet7.Eof do
-        begin
-          dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
-          Form7.ibDataSet7.Next;
-        end;
-        //
-        Form7.ibDataSet7.First;
-        Form7.ibDataSet7.Edit;
-        if dDiferenca <> 0 then Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-        //
-        Form7.ibDataSet7.GotoBookmark(MyBookmark);
-        Form7.ibDataSet7.FreeBookmark(MyBookmark);
-        Form7.ibDataSet7.EnableControls;
-//        Dbgrid1.Enabled := True;
-        //
-      end;
-    end;
-    //
-    if Form7.sModulo = 'COMPRA' then
-    begin
-      MyBookmark  := Form7.ibDataSet8.GetBookmark;
-      if AllTrim(Form7.ibDataSet8DOCUMENTO.AsString) = '' then Button4.SetFocus
-      else
-      begin
-        //
-        iRegistro   := Form7.ibDataSet8.Recno;
-        ddiferenca  := Form7.ibDataSet24TOTAL.Value;
-        iDuplicatas := Trunc(Form7.ibDataSet24DUPLICATAS.AsFloat);
-        //
-        Form7.ibDataSet8.DisableControls;
-//        Dbgrid1.Enabled := false;
-        Form7.ibDataSet8.First;
-        while not Form7.ibDataSet8.Eof do
-        begin
-          if Form7.ibDataSet8.Recno <= iRegistro then
-          begin
-            iDuplicatas := iDuplicatas - 1;
-            dDiferenca := dDiferenca - Form7.ibDataSet8VALOR_DUPL.Value;
-          end else
-          begin
-           Form7.ibDataSet8.Edit;
-           Form7.ibDataSet8VALOR_DUPL.AsFloat := dDiferenca / iDuplicatas;
-           Form7.ibDataSet8VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet8VALOR_DUPL.AsFloat]));
-          end;
-          Form7.ibDataSet8.Next;
-        end;
-        //
-        ddiferenca  := Form7.ibDataSet24TOTAL.Value;
-        Form7.ibDataSet8.First;
-        while not Form7.ibDataSet8.Eof do
-        begin
-          dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet8VALOR_DUPL.AsFloat]));
-          Form7.ibDataSet8.Next;
-        end;
-        //
-        Form7.ibDataSet8.First;
-        Form7.ibDataSet8.Edit;
-        if dDiferenca <> 0 then Form7.ibDataSet8VALOR_DUPL.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat + ddiferenca;
-        //
-        Form7.ibDataSet8.GotoBookmark(MyBookmark);
-        Form7.ibDataSet8.FreeBookmark(MyBookmark);
-        Form7.ibDataSet8.EnableControls;
-//        Dbgrid1.Enabled := True;
-        //
-      end;
-    end;
+  except
+
   end;
-  except end;
 
 end;
 

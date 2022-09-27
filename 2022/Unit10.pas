@@ -161,9 +161,9 @@ type
     Orelha_grade: TTabSheet;
     Label39: TLabel;
     StringGrid1: TStringGrid;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
+    Button1: TBitBtn;
+    Button2: TBitBtn;
+    Button3: TBitBtn;
     orelha_serial: TTabSheet;
     Edit8: TEdit;
     Edit9: TEdit;
@@ -174,9 +174,9 @@ type
     Edit13: TEdit;
     DBGrid4: TDBGrid;
     CheckBox1: TCheckBox;
-    Button17: TButton;
-    Button15: TButton;
-    Button16: TButton;
+    Button17: TBitBtn;
+    Button15: TBitBtn;
+    Button16: TBitBtn;
     orelha_composicao: TTabSheet;
     Edit5: TEdit;
     Edit6: TEdit;
@@ -184,15 +184,15 @@ type
     SMALL_DBEdit33: TSMALL_DBEdit;
     SMALL_DBEdit34: TSMALL_DBEdit;
     SMALL_DBEdit35: TSMALL_DBEdit;
-    Button8: TButton;
-    Button10: TButton;
-    Button11: TButton;
+    Button8: TBitBtn;
+    Button10: TBitBtn;
+    Button11: TBitBtn;
     orelha_foto: TTabSheet;
     Image3: TImage;
     Image5: TImage;
     VideoCap1: TVideoCap;
-    Button13: TButton;
-    Button7: TButton;
+    Button13: TBitBtn;
+    Button7: TBitBtn;
     WebBrowser1: TWebBrowser;
     Orelha_preco: TTabSheet;
     Image6: TImage;
@@ -216,7 +216,7 @@ type
     SMALL_DBEdit36: TSMALL_DBEdit;
     Edit17: TEdit;
     SMALL_DBEdit39: TSMALL_DBEdit;
-    Button20: TButton;
+    Button20: TBitBtn;
     Edit18: TEdit;
     SMALL_DBEdit40: TSMALL_DBEdit;
     Edit19: TEdit;
@@ -225,8 +225,8 @@ type
     SMALL_DBEdit43: TSMALL_DBEdit;
     Edit21: TEdit;
     Edit22: TEdit;
-    Button18: TButton;
-    Button14: TButton;
+    Button18: TBitBtn;
+    Button14: TBitBtn;
     Orelha_promo: TTabSheet;
     ORELHA_CFOP: TTabSheet;
     Image7: TImage;
@@ -287,13 +287,13 @@ type
     Image204: TImage;
     Image205: TImage;
     Panel2: TPanel;
-    Button5: TButton;
-    Button9: TButton;
-    Button12: TButton;
+    Button5: TBitBtn;
+    Button9: TBitBtn;
+    Button12: TBitBtn;
     Panel1: TPanel;
-    Button4: TButton;
+    Button4: TBitBtn;
     Panel8: TPanel;
-    Button19: TButton;
+    Button19: TBitBtn;
     Label201: TLabel;
     Label202: TLabel;
     Label203: TLabel;
@@ -341,10 +341,10 @@ type
     SMALL_DBEdit67: TSMALL_DBEdit;
     Label96: TLabel;
     Label97: TLabel;
-    Button6: TButton;
+    Button6: TBitBtn;
     Label98: TLabel;
     SMALL_DBEdit68: TSMALL_DBEdit;
-    Button21: TButton;
+    Button21: TBitBtn;
     GroupBox3: TGroupBox;
     Label44: TLabel;
     SMALL_DBEdit45: TSMALL_DBEdit;
@@ -373,7 +373,7 @@ type
     Image1: TImage;
     Orelha_MKT: TTabSheet;
     CheckBox2: TCheckBox;
-    Button22: TButton;
+    Button22: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -607,7 +607,11 @@ var
 implementation
 
 uses Unit7, Mais, Unit14, Unit38, Unit16, Unit12, unit24, Unit22,
-  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils;
+  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils
+  {Sandro Silva 2022-09-26 inicio}
+  , WinInet
+  {Sandro Silva 2022-09-26 fim}
+  ;
 
 {$R *.DFM}
 
@@ -756,6 +760,7 @@ begin
   //
   // Posiciona o foco quando ativa
   //
+  Result := True;
   try
     if Form7.sModulo = 'ESTOQUE' then
     begin
@@ -767,14 +772,16 @@ begin
       end else
       begin
         try
-          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            Form7.ibDataset4.Edit;
           if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
           begin
             Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
           end;
           Form7.ibDataSet4PRECO.ReadOnly := False;
           Form10.SMALL_DBEdit6.Font.Color := clblack;
-        except end;
+        except
+        end;
       end;
     end;
   except end;
@@ -802,11 +809,16 @@ begin
     //
     if sP1 then
     begin
-     if Form10.SMALL_DBEdit1.CanFocus then Form10.SMALL_DBEdit1.SetFocus else
-        if Form10.SMALL_DBEdit2.CanFocus then Form10.SMALL_DBEdit2.SetFocus else
-          if Form10.SMALL_DBEdit3.CanFocus then Form10.SMALL_DBEdit3.SetFocus else
-            if Form10.SMALL_DBEdit4.CanFocus then Form10.SMALL_DBEdit4.SetFocus else
-              if Form10.SMALL_DBEdit5.CanFocus then Form10.SMALL_DBEdit5.SetFocus;
+      if Form10.SMALL_DBEdit1.CanFocus then
+        Form10.SMALL_DBEdit1.SetFocus
+      else if Form10.SMALL_DBEdit2.CanFocus then
+         Form10.SMALL_DBEdit2.SetFocus
+      else if Form10.SMALL_DBEdit3.CanFocus then
+        Form10.SMALL_DBEdit3.SetFocus
+      else if Form10.SMALL_DBEdit4.CanFocus then
+        Form10.SMALL_DBEdit4.SetFocus
+      else if Form10.SMALL_DBEdit5.CanFocus then
+        Form10.SMALL_DBEdit5.SetFocus;
     end;
     //
     Form10.Caption := 'Ficha';
@@ -851,13 +863,14 @@ begin
     if (Form7.sModulo = 'CLIENTES') then
     begin
       //
-      Form10.Image5.Picture:=nil;
-      Form10.Image3.Picture:=nil;
+      Form10.Image5.Picture := nil;
+      Form10.Image3.Picture := nil;
       //
       if FileExists(Form10.sNomeDoJPG) then
       begin
         //
-        if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then Form7.ibDataset2.Edit;
+        if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+          Form7.ibDataset2.Edit;
         FileStream := TFileStream.Create(Form10.sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
         BlobStream := Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmWrite);
         try
@@ -882,16 +895,20 @@ begin
           BlobStream.Free;
           jp2.Free;
         end;
-      end else Form10.Image5.Picture := Form10.Image3.Picture;
-    end else  Form10.Image5.Picture := Form10.Image3.Picture;
+      end
+      else
+        Form10.Image5.Picture := Form10.Image3.Picture;
+    end
+    else
+      Form10.Image5.Picture := Form10.Image3.Picture;
     //
     if (Form7.sModulo = 'ESTOQUE') then
     begin
       //
-      Form10.Caption := form7.ibDataSet4DESCRICAO.AsString;
+      Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
       //
-      Form10.Image5.Picture:=nil;
-      Form10.Image3.Picture:=nil;
+      Form10.Image5.Picture := nil;
+      Form10.Image3.Picture := nil;
       //
       if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
       begin
@@ -901,11 +918,12 @@ begin
         if FileExists(Form10.sNomeDoJPG) then
         begin
           //
-          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            Form7.ibDataset4.Edit;
           FileStream := TFileStream.Create(pChar(Form10.sNomeDoJPG),fmOpenRead or fmShareDenyWrite);
-          BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO,bmWrite);
+          BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO, bmWrite);
           try
-            BlobStream.CopyFrom(FileStream,FileStream.Size);
+            BlobStream.CopyFrom(FileStream, FileStream.Size);
           finally
             FileStream.Free;
             BlobStream.Free;
@@ -919,18 +937,26 @@ begin
         //
         if Form7.ibDataset4FOTO.BlobSize <> 0 then
         begin
-          BlobStream:= Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO,bmRead);
+          BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO, bmRead);
           jp2 := TJPEGImage.Create;
           try
-            jp2.LoadFromStream(BlobStream);
-            Form10.Image5.Picture.Assign(jp2);
-            Form10.Image5.Repaint;
+            try
+              jp2.LoadFromStream(BlobStream);
+              Form10.Image5.Picture.Assign(jp2);
+              Form10.Image5.Repaint;
+            except
+              Result := False;
+            end;
           finally
             BlobStream.Free;
             jp2.Free;
           end;
-        end else Form10.Image5.Picture := Form10.Image3.Picture;
-      end else  Form10.Image5.Picture := Form10.Image3.Picture;
+        end
+        else
+          Form10.Image5.Picture := Form10.Image3.Picture;
+      end
+      else
+        Form10.Image5.Picture := Form10.Image3.Picture;
     end;
     //
     if Form7.sModulo = 'GRUPOS' then
@@ -973,8 +999,12 @@ begin
             BlobStream.Free;
             jp2.Free;
           end;
-        end else Form10.Image5.Picture := Form10.Image3.Picture;
-      end else  Form10.Image5.Picture := Form10.Image3.Picture;
+        end
+        else
+          Form10.Image5.Picture := Form10.Image3.Picture;
+      end
+      else
+        Form10.Image5.Picture := Form10.Image3.Picture;
     end;
     //
     // Mantem a proporção da imagem
@@ -1001,32 +1031,32 @@ begin
         //
       end;
       //  
-    except end;
+    except
+    end;
     //
-  except end;
+  except
+  end;
   //
-  Result := True;
+  // Sandro Silva 2022-09-27 Result := True;
   //
 end;
 
-
-
-function tForm10.AtualizaMobile(sP1: Boolean) : Boolean;
+function tForm10.AtualizaMobile(sP1: Boolean): Boolean;
 var
-  s, sSenha : String;
+  s, sSenha: String;
   //
-  Mais1Ini : TIniFile;
-  sSecoes :  TStrings;
-  I, iI : Integer;
-  sCNPJ : String;
-  _bmp:    TBitmap;
+  Mais1Ini: TIniFile;
+  sSecoes: TStrings;
+  I, iI: Integer;
+  sCNPJ: String;
+  _bmp: TBitmap;
   Picture: TPicture;
   //
-  jp    : TJPEGImage;
-  F     : TExtFile;
-  Rect  : tRect;
-  BlobStream : TStream;
-  fDesconto : Real;
+  jp: TJPEGImage;
+  F: TExtFile;
+  Rect: tRect;
+  BlobStream: TStream;
+  fDesconto: Real;
   //
 //  Hora, Min, Seg, cent : Word;
 //  tInicio : tTime;
@@ -1073,7 +1103,8 @@ begin
             try
               DeleteFile(pChar(Form1.sAtual+'\tempo.bmp'));
               DeleteFile(pChar('_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'));
-            except end;
+            except
+            end;
             //
             if sP1 then
             begin
@@ -1088,7 +1119,8 @@ begin
                   try
                     jp.LoadFromStream(BlobStream);
                     Form10.Image5.Picture.Assign(jp);
-                  except end;
+                  except
+                  end;
                   //
                   BlobStream.Free;
                   jp.Free;
@@ -1108,7 +1140,8 @@ begin
                       _bmp.Assign(Picture.Graphic);
                       _bmp.SavetoFile('tempo.bmp');
                       Form1.Image1.Picture.LoadFromFile('tempo.bmp');
-                    except end;
+                    except
+                    end;
                     //
                     _bmp.Free;
                     Picture.Free;
@@ -1145,7 +1178,8 @@ begin
                       jp.Assign(Form1.Image1.Picture.Bitmap);
                       jp.CompressionQuality := 80;
                       jp.SaveToFile('_m_'+Form7.ibDataset4CODIGO.AsString+'.jpg');
-                    except end;
+                    except
+                    end;
                     //
                     jp.Free;
                     //
@@ -1154,25 +1188,28 @@ begin
                   try
                     DeleteFile(pChar(Form1.sAtual+'\tempo.bmp'));
                     DeleteFile(pChar('_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'));
-                  except end;
+                  except
+                  end;
                   //
                 end;
                 //
-              except end;
+              except
+              end;
               //
             end;
             //
             WriteLN(F,'insert into estoque (EMITENTE, CODIGO, CST, DESCRICAO, MEDIDA, PRECO, QTD_ATUAL, ST) values ('
-            +QuotedStr(sCNPJ)+', '
-            +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('CODIGO').AsString,'''',''))+', '
-            +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('CST').AsString,'''',''))+', '
-            +QuotedStr(ConverteAcentosPHP(Form7.IBDataSet4.FieldByname('DESCRICAO').AsString)) +', '
-            +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('MEDIDA').AsString,'''',''))+', '
-            +QuotedStr(StrTRan(Form7.IBDataSet4.FieldByname('PRECO').AsString,',','.'))+', '
-            +QuotedStr(StrTRan(Form7.IBDataSet4.FieldByname('QTD_ATUAL').AsString,',','.'))+', '
-            +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('ST').AsString,'''',''))+' ); ');
+              +QuotedStr(sCNPJ)+', '
+              +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('CODIGO').AsString,'''',''))+', '
+              +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('CST').AsString,'''',''))+', '
+              +QuotedStr(ConverteAcentosPHP(Form7.IBDataSet4.FieldByname('DESCRICAO').AsString)) +', '
+              +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('MEDIDA').AsString,'''',''))+', '
+              +QuotedStr(StrTRan(Form7.IBDataSet4.FieldByname('PRECO').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form7.IBDataSet4.FieldByname('QTD_ATUAL').AsString,',','.'))+', '
+              +QuotedStr(StrTran(Form7.IBDataSet4.FieldByname('ST').AsString,'''',''))+' ); ');
             //
-          except end;
+          except
+          end;
           //
           Form7.IBDataSet4.Next;
           //
@@ -1188,7 +1225,8 @@ begin
       except
         try
           CloseFile(F);
-        except end;
+        except
+        end;
       end;
       try
         //
@@ -1217,22 +1255,23 @@ begin
               end else fDesconto := 0;
               //
               WriteLN(F,'insert into clifor (EMITENTE, NOME, CGC, IE, CEP, EMAIL, CIDADE, COMPLE, ENDERE, ESTADO, FONE, DESCONTO_CONVENIO) values ('
-              +QuotedStr(sCNPJ)+', '
-              +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('NOME').AsString))+', '
-              +QuotedStr(LimpaNumero(Form1.ibQuery1.FieldByname('CGC').AsString))+', '
-              +QuotedStr(Form1.ibQuery1.FieldByname('IE').AsString)+', '
-              +QuotedStr(Form1.ibQuery1.FieldByname('CEP').AsString)+', '
-              +QuotedStr(Form1.ibQuery1.FieldByname('EMAIL').AsString)+', '
-              +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('CIDADE').AsString))+', '
-              +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('COMPLE').AsString))+', '
-              +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('ENDERE').AsString))+', '
-              +QuotedStr(Form1.ibQuery1.FieldByname('ESTADO').AsString)+', '
-              +QuotedStr(Form1.ibQuery1.FieldByname('FONE').AsString)+','
-              +QuotedStr(StrTRan(FloatToStr(fDesconto),',','.'))+' ); ');
+                +QuotedStr(sCNPJ)+', '
+                +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('NOME').AsString))+', '
+                +QuotedStr(LimpaNumero(Form1.ibQuery1.FieldByname('CGC').AsString))+', '
+                +QuotedStr(Form1.ibQuery1.FieldByname('IE').AsString)+', '
+                +QuotedStr(Form1.ibQuery1.FieldByname('CEP').AsString)+', '
+                +QuotedStr(Form1.ibQuery1.FieldByname('EMAIL').AsString)+', '
+                +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('CIDADE').AsString))+', '
+                +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('COMPLE').AsString))+', '
+                +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('ENDERE').AsString))+', '
+                +QuotedStr(Form1.ibQuery1.FieldByname('ESTADO').AsString)+', '
+                +QuotedStr(Form1.ibQuery1.FieldByname('FONE').AsString)+','
+                +QuotedStr(StrTRan(FloatToStr(fDesconto),',','.'))+' ); ');
               //
             end;
             //
-          except end;
+          except
+          end;
           //
           Form1.ibQuery1.Next;
           //
@@ -1243,7 +1282,8 @@ begin
       except
         try
           CloseFile(F);
-        except end;
+        except
+        end;
       end;
       try
         //
@@ -1271,26 +1311,28 @@ begin
               // Fórmula para ler a nova senha //
               // ----------------------------- //
               for iI := 1 to (Length(sSenha) div 5) do
+              begin
                 s := Chr((StrToInt(
                               Copy(sSenha,(iI*5)-4,5)
                               )+((Length(sSenha) div 5)-iI+1)*7) div 137) + s;
+              end;
               //
               if Mais1Ini.ReadString(sSecoes[I],'Chave','') <> '' then
               begin
                 //
                 WriteLN(F,'insert into usuarios (EMITENTE, NOME, SENHA, STATUS) values ('
-                +QuotedStr(sCNPJ)+', '
-                +QuotedStr(sSecoes[I])+', '
-                +QuotedStr(s)+', '
-                +QuotedStr(
-                //
-                StrTran(StrTran(StrTran(
-                Mais1Ini.ReadString(sSecoes[I],'B1','1')+  // NFCE/NFE/Orçamento
-                Mais1Ini.ReadString(sSecoes[I],'B2','1')+  // Estoque
-                Mais1Ini.ReadString(sSecoes[I],'B3','1')+  // Cadastro
-                Mais1Ini.ReadString(sSecoes[I],'B5','1')       // Caixa
-                ,'1','X'),'0','1'),'X','0') // Xoor - Inverte 0 pra um e 1 pra zero
-                )+');');
+                  +QuotedStr(sCNPJ)+', '
+                  +QuotedStr(sSecoes[I])+', '
+                  +QuotedStr(s)+', '
+                  +QuotedStr(
+                    //
+                    StrTran(StrTran(StrTran(
+                    Mais1Ini.ReadString(sSecoes[I],'B1','1')+  // NFCE/NFE/Orçamento
+                    Mais1Ini.ReadString(sSecoes[I],'B2','1')+  // Estoque
+                    Mais1Ini.ReadString(sSecoes[I],'B3','1')+  // Cadastro
+                    Mais1Ini.ReadString(sSecoes[I],'B5','1')       // Caixa
+                    ,'1','X'),'0','1'),'X','0') // Xoor - Inverte 0 pra um e 1 pra zero
+                    )+');');
                 //
               end;
               //
@@ -1303,7 +1345,8 @@ begin
       except
         try
           CloseFile(F);
-        except end;
+        except
+        end;
       end;
       //
       Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
@@ -1341,11 +1384,12 @@ begin
           while not Form7.ibDAtaSet4.Eof do
           begin
             if FileExists(Form1.sAtual+'\_m_'+Form7.ibDataset4CODIGO.AsString+'.jpg') then
-            UploadMobile(pChar('_m_'+Form7.ibDataset4CODIGO.AsString+'.jpg'));
+              UploadMobile(pChar('_m_'+Form7.ibDataset4CODIGO.AsString+'.jpg'));
             DeleteFile(pChar('_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'));
             Form7.ibDataSet4.Next;
           end;
-        except end;
+        except
+        end;
         //
       end;
       //
@@ -1361,7 +1405,8 @@ begin
       ShowMessage('CNPJ do emitente inválido.');
     end;
     //
-  except end;
+  except
+  end;
   //
   //    DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
   //    ShowMessage('Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10));
@@ -1369,8 +1414,6 @@ begin
   Result := True;
   //
 end;
-
-
 
 procedure GravaEscolha;
 begin
@@ -7513,6 +7556,42 @@ var
   sLinkDaFoto, s: String;
   documentoAtivo : variant;
   J , I : Integer;
+  iSrc: Integer;
+
+  function DownloadArquivoImg(const AOrigem: String; ADestino: String): Boolean;
+  const BufferSize = 1024;
+  var
+    hSession, hURL: HInternet;
+    Buffer: array[1..BufferSize] of Byte;
+    BufferLen: DWORD;
+    f: File;
+    sAppName: string;
+  begin
+    Result := False;
+    sAppName := ExtractFileName(Application.ExeName);
+    hSession := InternetOpen(PChar(sAppName), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+    try
+      hURL := InternetOpenURL(hSession, PChar(AOrigem), nil, 0, 0, 0);
+      try
+        if Assigned(hURL) then
+        begin
+          AssignFile(f, ADestino);
+          Rewrite(f,1);
+          repeat
+            InternetReadFile(hURL, @Buffer, SizeOf(Buffer), BufferLen);
+            BlockWrite(f, Buffer, BufferLen)
+          until BufferLen = 0;
+          CloseFile(f);
+          Result := True;
+        end;
+      finally
+        InternetCloseHandle(hURL);
+      end
+    finally
+      InternetCloseHandle(hSession);
+    end
+  end;
+
 begin
   //
   // Procura pelo código de barras no no google
@@ -7549,7 +7628,8 @@ begin
         for I := 1 to 50 do
         begin
           Application.ProcessMessages;
-          if Form10.Tag < 35 then sleep(100);
+          if Form10.Tag < 35 then
+            sleep(100);
         end;
         //
         WebBrowser1.Left := -20000;
@@ -7569,6 +7649,7 @@ begin
           //
           Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
           J := 0;
+          {Sandro Silva 2022-09-26 inicio
           //
           while Pos('http://',Lowercase(s)) <> 0 do
           begin
@@ -7625,6 +7706,81 @@ begin
             s := Copy(Copy(s,7,Length(s)-7), Pos('http://',Copy(Lowercase(s),7,Length(s)-7)), Length(Copy(s,7,Length(s)-7))-Pos('http://',Copy(Lowercase(s),7,Length(s)-7))+7);
             //
           end;
+          }
+          for iSrc := 0 to WebBrowser1.OleObject.Document.Images.Length - 1 do
+          begin
+            sLinkDaFoto := WebBrowser1.OleObject.Document.Images.Item(iSrc).Src;
+            if (sLinkDaFoto <> '') then
+            begin
+
+              try
+                // Faz o download dA Imagem sLinkDaFoto e salva no 'c:\tempo.jpg'
+                //try
+                  DownloadArquivoImg(PChar(sLinkDaFoto), PChar(Form10.sNomeDoJPG));
+                //finally
+                  //
+                  if FileExists(Form10.sNomeDoJPG) then
+                  begin
+                    //
+                    //try
+                      // Sandro Silva 2022-09-27 AtualizaTela(True);
+                    if AtualizaTela(True) then
+                    begin
+                    //finally
+                      //
+                      if Form7.ibDataset4FOTO.BlobSize <> 0 then
+                      begin
+                        J := J + 1;
+                        if J >= 7 then
+                        begin
+                          {Sandro Silva 2022-09-27 inicio
+                          CopyFile(pChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg'), pChar(Form10.sNomeDoJPG), False);
+                          AtualizaTela(True);
+                          }
+                          Form7.ibDataset4FOTO.Value := Form7.ibDataset4FOTO.OldValue;
+                          AtualizaTela(True);
+                          {Sandro Silva 2022-09-27 fim}
+                          //s := '';
+                          Break;
+                        end else
+                        begin
+                          // Sandro Silva 2022-09-27 I := Application.MessageBox(Pchar('Quer usar esta foto para este produto'), '?', mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
+                          I := Application.MessageBox(Pchar('Quer usar esta foto para este produto?'), Pchar('Sugestão ' + IntToStr(J) + ' de 6'), MB_YESNOCANCEL + mb_DefButton2 + MB_ICONQUESTION);
+                          if (I = IDYES) then
+                          begin
+                            DeleteFile(pChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg'));
+                            //s := '';
+                            Break;
+                          end;
+                          if I = IDCANCEL then
+                          begin
+                            Form7.ibDataset4FOTO.Value := Form7.ibDataset4FOTO.OldValue;
+                            AtualizaTela(True);
+                            Break;
+                          end;
+                        end;
+                      end;
+                    end;
+                    //end;
+                  end;
+                  //
+                //end;
+                //
+              except
+                ShowMessage('Download falhou!!!');
+              end;
+
+            end;
+          end;
+          {
+          if FileExists(pChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg')) then
+          begin
+            CopyFile(PChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg'), PChar(Form10.sNomeDoJPG), False);
+            AtualizaTela(True);
+          end;
+          }
+          {Sandro Silva 2022-09-26 fim}
+
           Screen.Cursor             := crDefault;              // Cursor de Aguardo
           //
           //

@@ -1081,7 +1081,8 @@ begin
     //
     if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then iAvisosIndicadores := iAvisosIndicadores + 1;
     //
-  except end;
+  except
+  end;
   //
   Result := True;
   //
@@ -1111,8 +1112,7 @@ begin
   //
   Result := True;
   //
-end;
-
+end;    
 
 function tForm1.AvisoBanco(bP1 : Boolean):Boolean;
 begin
@@ -1127,8 +1127,6 @@ begin
   //
 end;
 
-
-
 function GetWinDir: string;
 var
   dir: array [0..MAX_PATH] of Char;
@@ -1136,7 +1134,6 @@ begin
   GetWindowsDirectory(dir, MAX_PATH);
   Result := StrPas(dir);
 end;
-
 
 function ValidaHostsWindows: Boolean;
 var
@@ -1205,10 +1202,10 @@ end;
 
 function Regularize(sP1: boolean): boolean;
 var
-  Mais1ini : tIniFile;
-  documentoAtivo : variant;
-  sSerie, sInicio, s : String;
-  bButton : Integer;
+  Mais1ini: tIniFile;
+  documentoAtivo: variant;
+  sSerie, sInicio, s: String;
+  bButton: Integer;
 begin
   //
   Result := False;
@@ -1247,7 +1244,8 @@ begin
         Form1.ibQuery2.SQL.Add('commit');
         Form1.ibQuery2.ExecSQL;
         //
-      except  end;
+      except
+      end;
     end;
     //
     if pos('[SERIE',S) <> 0 then
@@ -1297,7 +1295,8 @@ begin
             //
             ShowMessage('Este sistema foi bloqueado');
             //
-          except end;
+          except
+          end;
         end;
       end else
       begin
@@ -1309,7 +1308,8 @@ begin
             Form1.ibDataset200.SelectSql.Clear;
             Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2) );
             Form1.ibDataset200.Open;
-          except end;
+          except
+          end;
         end;
         //
       end;
@@ -1325,7 +1325,8 @@ begin
           Form1.ibDataset200.SelectSql.Clear;
           Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 0');
           Form1.ibDataset200.Open;
-        except end;
+        except
+        end;
         //
         Result := True;
         //
@@ -1352,7 +1353,8 @@ begin
             Form1.ibDataset200.SelectSql.Clear;
             Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2));
             Form1.ibDataset200.Open;
-          except end;
+          except
+          end;
 //            end;
            //
 //            end;
@@ -1392,6 +1394,51 @@ begin
                                                            , '', SW_SHOW);
 
             //
+          end
+          else
+            ShowMessage('Arquivo smallcon.exe não encontrado.');
+          //
+          Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE ); // Timer2Timer
+          Winexec('TASKKILL /F /IM "mobile.exe"', SW_HIDE ); // Timer2Timer
+          Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE ); // Timer2Timer
+          Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
+          //
+        end;
+        //
+      end;
+
+      (*
+      if (pos('[BUILD]',UpperCase(S)) <> 0) then
+      begin
+        //
+        bButton := Application.MessageBox(Pchar(
+        'Uma nova Build do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
+        Chr(10) +
+        Chr(10) +
+        'Continuar?' +
+        Chr(10))
+        ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+        //
+        if bButton = IDYES then
+        begin
+          //
+          if FileExists(Form1.sAtual+'\smallcon.exe') then
+          begin
+            //
+            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20221001.sma '+
+                                                           '20221002.sma '+
+                                                           '20221003.sma '+
+                                                           '20221004.sma '+
+                                                           '20221005.sma '+
+                                                           '20221006.sma '+
+                                                           '20221007.sma '+
+                                                           '20221008.sma '+
+                                                           '20221009.sma '+
+                                                           'nfce2022.sma '+
+                                                           '2022_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                           , '', SW_SHOW);
+
+            //
           end else ShowMessage('Arquivo smallcon.exe não encontrado.');
           //
           Winexec('TASKKILL /F /IM "smallcdf.exe"' , SW_HIDE ); // Timer2Timer
@@ -1402,6 +1449,49 @@ begin
         end;
         //
       end;
+
+      if (pos('[VERSAO]',UpperCase(S)) <> 0) then
+      begin
+        //
+        bButton := Application.MessageBox(Pchar(
+        'Uma nova Versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
+        Chr(10) +
+        Chr(10) +
+        'Continuar?' +
+        Chr(10))
+        ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+        //
+        if bButton = IDYES then
+        begin
+          //
+          if FileExists(Form1.sAtual+'\smallcon.exe') then
+          begin
+            //
+            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
+                                                           '20231002.sma '+
+                                                           '20231003.sma '+
+                                                           '20231004.sma '+
+                                                           '20231005.sma '+
+                                                           '20231006.sma '+
+                                                           '20231007.sma '+
+                                                           '20231008.sma '+
+                                                           '20231009.sma '+
+                                                           'nfce2023.sma '+
+                                                           '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                           , '', SW_SHOW);
+
+            //
+          end else ShowMessage('Arquivo smallcon.exe não encontrado.');
+          //
+          Winexec('TASKKILL /F /IM "smallcdf.exe"' , SW_HIDE ); // Timer2Timer
+          Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // Timer2Timer
+          Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
+          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          //
+        end;
+        //
+      end;
+      *)
       //
       if pos('[LOJA]',UpperCase(S)) <> 0 then
       begin
@@ -1833,7 +1923,7 @@ begin
     else
        Msg.wParam := VK_DOWN;
     Handled := False;
- end;
+  end;
 end;
 
 function Titulo(sP1, sP2: String): Boolean;
@@ -5599,7 +5689,8 @@ begin
       //
       // Percentual do ICMS relativo ao
       // Fundo de Combate à Pobreza
-      // (FCP) na UF de destino      //
+      // (FCP) na UF de destino
+      //
       try
         //
         Form1.ibDataset200.Close;
@@ -15331,43 +15422,9 @@ begin
     Result := True;
 end;
 
-end.
-
-
+end.          
 // set generator G_SERIE1 to 0
 // set generator G_SERIERPS to 40
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //                                                                     //
 //                                                                     //
 //   _____  __  __  _____  __     __     _____  _____  _____  ______   //
@@ -15377,6 +15434,5 @@ end.
 //                                                                     //
 //  All rights reserved                                                //
 //                                                                     //
-
 
 

@@ -945,7 +945,8 @@ end;
 procedure TForm41.MaskEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then Button1.SetFocus;
+  if Key = VK_RETURN then
+    Button1.SetFocus;
 end;
 
 procedure TForm41.Button3Click(Sender: TObject);
@@ -956,15 +957,21 @@ end;
 procedure TForm41.RadioButton1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then Button1.setFocus;
+  if Key = VK_RETURN then
+    Button1.setFocus;
 end;
 
 procedure TForm41.MaskEdit1Exit(Sender: TObject);
 begin
   if Limpanumero(MaskEdit1.TExt) <> '' then
   begin
-    if (Form7.sModulo = 'OS') or (Form7.sModulo = 'ORCAMENTO') then MaskEdit1.Text := StrZero(StrToInt(Limpanumero(MaskEdit1.TExt)),10,0) else MaskEdit1.Text := StrZero(StrToInt(Limpanumero(MaskEdit1.TExt)),6,0);
-  end else MaskEdit1.Text := '0';
+    if (Form7.sModulo = 'OS') or (Form7.sModulo = 'ORCAMENTO') then
+      MaskEdit1.Text := StrZero(StrToInt(Limpanumero(MaskEdit1.TExt)),10,0)
+    else
+      MaskEdit1.Text := StrZero(StrToInt(Limpanumero(MaskEdit1.TExt)),6,0);
+  end
+  else
+  MaskEdit1.Text := '0';
 end;
 
 procedure TForm41.FormShow(Sender: TObject);

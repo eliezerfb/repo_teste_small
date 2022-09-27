@@ -1,6 +1,6 @@
 object Form41: TForm41
-  Left = 428
-  Top = 335
+  Left = 429
+  Top = 336
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Importar '
@@ -123,7 +123,7 @@ object Form41: TForm41
       Caption = '< Voltar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
@@ -138,7 +138,7 @@ object Form41: TForm41
       Caption = 'Avan'#231'ar >'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
@@ -153,7 +153,7 @@ object Form41: TForm41
       Caption = 'Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False

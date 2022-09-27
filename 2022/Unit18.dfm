@@ -117,7 +117,7 @@ object Form18: TForm18
       Items.Strings = (
         '<N'#227'o imprimir documento>')
     end
-    object Button4: TButton
+    object Button4: TBitBtn
       Left = 470
       Top = 345
       Width = 100
@@ -125,7 +125,7 @@ object Form18: TForm18
       Caption = '&Ok'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
