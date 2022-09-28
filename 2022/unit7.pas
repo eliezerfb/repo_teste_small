@@ -2035,6 +2035,7 @@ type
   private
     { Private declarations }
     function ImportaNF(pP1: boolean; sP1: String):Boolean;
+    function PermiteValidarSchema(DataSet: TDataSet): Boolean;
 
   public
 
@@ -8717,7 +8718,8 @@ begin
         end;
       end;
     end;
-  except end;
+  except
+  end;
   //
   // Ok
   //
@@ -14127,6 +14129,7 @@ begin
         //
       end;
       //
+      {Sandro Silva 2022-09-28 inicio
       if Pos('Falha no Schema',Form7.ibDataSet15STATUS.AsString)<> 0 then
       begin
         VVerificaresquemashema1.Enabled  := True;
@@ -14134,6 +14137,9 @@ begin
       begin
         VVerificaresquemashema1.Enabled  := False;
       end;
+      }
+      VVerificaresquemashema1.Enabled := PermiteValidarSchema(Form7.ibDataSet15); // Ficha 6275 Sempre que estiver preenchido o campo NFEXML pode verificar o schema
+      {Sandro Silva 2022-09-28 fim}
       //
       if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
       begin
@@ -14157,7 +14163,10 @@ begin
         N1enviarNFe1.Enabled                 := False;
 //        N2ConsultarrecibodaNFe1.Enabled  := False;
 //        N3ConsultarNFe1.Enabled          := False;
-        if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Form7.ibDataSet15EMITIDA.AsString = 'X') then N4ImprimirDANFE1.Enabled := True else N4ImprimirDANFE1.Enabled := False;
+        if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Form7.ibDataSet15EMITIDA.AsString = 'X') then
+          N4ImprimirDANFE1.Enabled := True
+        else
+          N4ImprimirDANFE1.Enabled := False;
 
         N5EnviarDANFEporemail1.Enabled       := True;
         CancelarNFe1.Enabled                 := True;
@@ -20209,23 +20218,23 @@ begin
     // Esta rotina cancela  //
     // um item na venda     //
     //////////////////////////
-    if ibDataSet4.FieldByname('SERIE').Value = 1 then
+    if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
     begin
       //
-      ibDataSet30.Close;
-      ibDataSet30.SelectSQL.Clear;
-      ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(ibDataSet4CODIGO.AsString));
-      ibDataSet30.Open;
-      while not ibDataSet30.Eof do
+      Form7.ibDataSet30.Close;
+      Form7.ibDataSet30.SelectSQL.Clear;
+      Form7.ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(ibDataSet4CODIGO.AsString));
+      Form7.ibDataSet30.Open;
+      while not Form7.ibDataSet30.Eof do
       begin
-        if Copy(ibDataSet30NFVENDA.AsString,1,6) = Copy(Form7.ibDataSet15NUMERONF.AsString,4,6) then
+        if Copy(Form7.ibDataSet30NFVENDA.AsString,1,6) = Copy(Form7.ibDataSet15NUMERONF.AsString,4,6) then
         begin
-          ibDataSet30.Edit;
-          ibDataSet30NFVENDA.AsString  := '';
-          ibDataSet30VALVENDA.AsFloat  := 0;
-          ibDataSet30DATVENDA.AsString := '';
+          Form7.ibDataSet30.Edit;
+          Form7.ibDataSet30NFVENDA.AsString  := '';
+          Form7.ibDataSet30VALVENDA.AsFloat  := 0;
+          Form7.ibDataSet30DATVENDA.AsString := '';
         end;
-        ibDataSet30.Next;
+        Form7.ibDataSet30.Next;
       end;
     end;
   end;
@@ -20236,15 +20245,15 @@ procedure TForm7.ibDataSet16NewRecord(DataSet: TDataSet);
 begin
   //
 //  ibDataSet16.Edit;
-  ibDataSet16REGISTRO.AsString   := sProximo;
-  ibDataSet16SINCRONIA.AsFloat   := 0;                                    // Resolvi este problema as 4 da madrugada no NoteBook em casa
+  Form7.ibDataSet16REGISTRO.AsString   := sProximo;
+  Form7.ibDataSet16SINCRONIA.AsFloat   := 0;                                    // Resolvi este problema as 4 da madrugada no NoteBook em casa
   //
-  if form7.sModulo = 'OS' then
+  if Form7.sModulo = 'OS' then
   begin
-    ibDataSet16NUMEROOS.AsString := Form7.ibDataset3NUMERO.AsString;
+    Form7.ibDataSet16NUMEROOS.AsString := Form7.ibDataset3NUMERO.AsString;
   end else
   begin
-    ibDataSet16NUMERONF.AsString   := Form7.ibDataset15NUMERONF.AsString;
+    Form7.ibDataSet16NUMERONF.AsString := Form7.ibDataset15NUMERONF.AsString;
   end;
   //
 end;
@@ -20254,36 +20263,37 @@ begin
   //
   if LimpaNumero(Text) <> '' then
   begin
-    if (Length(LimpaNumero(Text)) <> 4)
-     or  ((Copy(LimpaNumero(Text),1,1) <> '5')
-      and (Copy(LimpaNumero(Text),1,1) <> '6')
-        and (Copy(LimpaNumero(Text),1,1) <> '7'))
-          then ShowMessage('CFOP Inválido')
-            else ibDataSet16CFOP.AsString := LimpaNumero(Text);
-  end else ibDataSet16CFOP.AsString := '';
-  if ibDataSet16TOTAL.AsFloat <=0 then ibDataSet16CFOP.AsString := '';
+    if (Length(LimpaNumero(Text)) <> 4) or  ((Copy(LimpaNumero(Text),1,1) <> '5') and (Copy(LimpaNumero(Text),1,1) <> '6') and (Copy(LimpaNumero(Text),1,1) <> '7')) then
+      ShowMessage('CFOP Inválido')
+    else
+      Form7.ibDataSet16CFOP.AsString := LimpaNumero(Text);
+  end
+  else
+    Form7.ibDataSet16CFOP.AsString := '';
+  if Form7.ibDataSet16TOTAL.AsFloat <=0 then
+    Form7.ibDataSet16CFOP.AsString := '';
   //
 end;
 
 procedure TForm7.ibDataSet16DESCRICAOChange(Sender: TField);
 var
-  Mais1Ini : TiniFile;
-  fQuantidadeVendida : Real;
-  sModuloRes, sEstado, sCodigo : String;
-  sSerial_ : String;
-  sTipoEtiqueta, sMensagem : String;
-  bButton : Integer;
-  sRegistro1 :  String;
-  bFind : Boolean;
-  I : Integer;
+  Mais1Ini: TiniFile;
+  fQuantidadeVendida: Real;
+  sModuloRes, sEstado, sCodigo: String;
+  sSerial_: String;
+  sTipoEtiqueta, sMensagem: String;
+  bButton: Integer;
+  sRegistro1:  String;
+  bFind: Boolean;
+  I: Integer;
   //
   // Hora, Min, Seg, cent : Word;
   // tInicio : tTime;
   //
   // Pis cofins da Operação
   //
-  sCST_PIS_COFINS : String;
-  rpPIS, rpCOFINS : Real;
+  sCST_PIS_COFINS: String;
+  rpPIS, rpCOFINS: Real;
   //
   // rPreco : Real;
   //
@@ -20329,37 +20339,38 @@ begin
         //
         // Procura por: código
         //
-        if (length(Alltrim(ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(ibDataSet16DESCRICAO.AsString))<>'') then
+        if (length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
         begin
           try
-            if StrToInt(AllTrim(ibDataSet16DESCRICAO.AsString)) <> 0 then
-              bFind := Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(ibDataSet16DESCRICAO.AsString)),5,0),[]);
-          except end;
+            if StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) <> 0 then
+              bFind := Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),5,0),[]);
+          except
+          end;
         end;
         //
-        if Pos(Alltrim(ibDataSet16DESCRICAO.AsString),ibDataSet4CODIGO.AsString) = 0 then
+        if Pos(Alltrim(Form7.ibDataSet16DESCRICAO.AsString), Form7.ibDataSet4CODIGO.AsString) = 0 then
         begin
           //
           // Procura pela referencia
           //
-          bFind := Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(ibDataSet16DESCRICAO.AsString),[]);
-          if Alltrim(ibDataSet16DESCRICAO.AsString) <> AllTrim(ibDataSet4REFERENCIA.AsString) then
+          bFind := Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(Form7.ibDataSet16DESCRICAO.AsString),[]);
+          if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
           begin
-            bFind := Form7.ibDataSet4.Locate('REFERENCIA',AnsiUppercase(AllTrim(ibDataSet16DESCRICAO.AsString)),[]);
-            if Alltrim(AnsiUppercase(ibDataSet16DESCRICAO.AsString)) = AllTrim(ibDataSet4REFERENCIA.AsString) then
+            bFind := Form7.ibDataSet4.Locate('REFERENCIA',AnsiUppercase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),[]);
+            if Alltrim(AnsiUppercase(Form7.ibDataSet16DESCRICAO.AsString)) = AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
             begin
-              ibDataSet16DESCRICAO.AsString := Alltrim(AnsiUppercase(ibDataSet16DESCRICAO.AsString));
+              Form7.ibDataSet16DESCRICAO.AsString := Alltrim(AnsiUppercase(Form7.ibDataSet16DESCRICAO.AsString));
             end;
           end;
           // Se o produto não foi encontrado //
-          if (Alltrim(ibDataSet16DESCRICAO.AsString) <> AllTrim(ibDataSet4REFERENCIA.AsString)) and (UpperCase(Alltrim(ibDataSet16DESCRICAO.AsString)) <> AllTrim(ibDataSet4REFERENCIA.AsString)) then
+          if (Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString)) and (UpperCase(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString)) then
           begin
             // É produto pesado //
-            if (Length(AllTrim(ibDataSet16DESCRICAO.AsString)) = 13) and
-             (Copy(AllTrim(ibDataSet16DESCRICAO.AsString),1,1) = '2' ) then
+            if (Length(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) = 13) and
+             (Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,1) = '2' ) then
             begin
-              bFind := Form7.ibDataSet4.Locate('REFERENCIA',Copy(AllTrim(ibDataSet16DESCRICAO.AsString),1,7),[]);
-              if Copy(AllTrim(ibDataSet16DESCRICAO.AsString),1,7) = AllTrim(ibDataSet4REFERENCIA.AsString) then
+              bFind := Form7.ibDataSet4.Locate('REFERENCIA',Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,7),[]);
+              if Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,7) = AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
               begin
                 try
                   //
@@ -20375,16 +20386,17 @@ begin
                   begin
                     if UpperCase(AllTrim(Form7.ibDataSet4MEDIDA.AsString)) = 'KU' then
                     begin
-                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(ibDataSet16DESCRICAO.AsString),8,5));
+                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5));
                     end else
                     begin
-                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(ibDataSet16DESCRICAO.AsString),8,5)) / 1000;
+                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5)) / 1000;
                     end;
                   end else
                   begin
-                    fQuantidadeVendida := StrToFloat(Copy(AllTrim(ibDataSet16DESCRICAO.AsString),8,5)) / ibDataSet4.FieldByname('PRECO').AsFloat;
+                    fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5)) / Form7.ibDataSet4.FieldByname('PRECO').AsFloat;
                   end;
-                except end;
+                except
+                end;
               end;
             end else
             begin
@@ -20393,17 +20405,20 @@ begin
               //
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
-              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
+              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
 //              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet16DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
               Form7.ibDataSet99.Open;
               Form7.ibDataSet99.First;
 //              if Pos(UpperCAse(AllTrim(ibDataSet16DESCRICAO.AsString)),UpperCase(ibDataset99.FieldByname('DESCRICAO').AsString))<>0 then bFind := Form7.ibDataSet4.Locate('DESCRICAO',ibDataset99.FieldByname('DESCRICAO').AsString,[]);
-              if Pos(UpperCAse(AllTrim(ibDataSet16DESCRICAO.AsString)),UpperCase(ibDataset99.FieldByname('DESCRICAO').AsString))<>0 then bFind := Form7.ibDataSet4.Locate('CODIGO',ibDataset99.FieldByname('CODIGO').AsString,[]); // ibDataSet16DESCRICAOChange
+              if Pos(UpperCAse(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),UpperCase(Form7.ibDataset99.FieldByname('DESCRICAO').AsString))<> 0 then
+                bFind := Form7.ibDataSet4.Locate('CODIGO',ibDataset99.FieldByname('CODIGO').AsString,[]); // ibDataSet16DESCRICAOChange
               //
             end;
           end;
         end;
-      end else bFind := True;
+      end
+      else
+        bFind := True;
       Form7.ibDataSet4.EnableControls;
       //
       //  Preenche os dados do arquivo NOTA0001.DBF
@@ -20426,7 +20441,7 @@ begin
         Form7.ibDataSet16.Edit;
         Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
         //
-        if ibDataSet16CODIGO.AsString <> ibDataSet4CODIGO.AsString then
+        if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
         begin
           //
           if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
@@ -20450,12 +20465,12 @@ begin
               begin
                 //
                 sCodigo := Form7.ibDataSet4.FieldByname('CODIGO').AsString;
-                ibDataSet16.Edit;
-                ibDataSet16DESCRICAO.AsString := ibDataSet4DESCRICAO.AsString;
-                ibDataSet16CODIGO.AsString    := ibDataSet4CODIGO.AsString;
+                Form7.ibDataSet16.Edit;
+                Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+                Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
                 //
-                ibDataSet16.Edit;
-                ibDataSet16QUANTIDADE.AsFloat := 0;
+                Form7.ibDataSet16.Edit;
+                Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
                 //
                 sSerial_ := '99';
                 sMensagem := '';
@@ -20472,10 +20487,10 @@ begin
                   if sSerial_ <> '' then
                   begin
                     //
-                    ibDataSet30.Close;
-                    ibDataSet30.SelectSQL.Clear;
-                    ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(ibDataSet4CODIGO.AsString));
-                    ibDataSet30.Open;
+                    Form7.ibDataSet30.Close;
+                    Form7.ibDataSet30.SelectSQL.Clear;
+                    Form7.ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString));
+                    Form7.ibDataSet30.Open;
                     //
                     while not ibDataSet30.Eof do
                     begin
@@ -20485,12 +20500,12 @@ begin
                           if AllTrim(ibDataSet30NFVENDA.AsString) = '' then
                           begin
                             //
-                            ibDataSet30.Edit;
-                            ibDataSet30NFVENDA.AsString     := Copy(Form7.ibDataSet15NUMERONF.AsString,4,6);
-                            ibDataSet30VALVENDA.AsFloat     := Form7.ibDataSet16UNITARIO.AsFloat;
-                            ibDataSet30DATVENDA.AsDateTime  := Form7.ibDataSet15EMISSAO.AsDateTime;
-                            ibDataSet16QUANTIDADE.AsFloat   := ibDataSet16QUANTIDADE.AsFloat + 1;
-                            fQuantidadeVendida              := ibDataSet16QUANTIDADE.AsFloat;
+                            Form7.ibDataSet30.Edit;
+                            Form7.ibDataSet30NFVENDA.AsString     := Copy(Form7.ibDataSet15NUMERONF.AsString,4,6);
+                            Form7.ibDataSet30VALVENDA.AsFloat     := Form7.ibDataSet16UNITARIO.AsFloat;
+                            Form7.ibDataSet30DATVENDA.AsDateTime  := Form7.ibDataSet15EMISSAO.AsDateTime;
+                            Form7.ibDataSet16QUANTIDADE.AsFloat   := Form7.ibDataSet16QUANTIDADE.AsFloat + 1;
+                            fQuantidadeVendida              := Form7.ibDataSet16QUANTIDADE.AsFloat;
                             Form7.ibDataSet16.Post;
                             //
                             Form1.bFlag := False;
@@ -20521,15 +20536,18 @@ begin
                         //
                       except end;
                       //
-                      ibDataSet30.Next;
+                      Form7.ibDataSet30.Next;
                       //
                     end;
                   end;
                   //
                   try
-                    if (sMensagem = 'Número de série já vendido.') then ShowMessage(sMensagem) else
-                      if (sSerial_ <> '0CONFIRMADO0') and (sSerial_ <> '') then ShowMessage('Número de série não encontrado no produto: '+Chr(10)+ibDataSet4DESCRICAO.AsString);
-                  except end;
+                    if (sMensagem = 'Número de série já vendido.') then
+                      ShowMessage(sMensagem)
+                    else if (sSerial_ <> '0CONFIRMADO0') and (sSerial_ <> '') then
+                      ShowMessage('Número de série não encontrado no produto: '+Chr(10)+ibDataSet4DESCRICAO.AsString);
+                  except
+                  end;
                   //
                 end;
                 //
@@ -20537,10 +20555,11 @@ begin
               //
             end;
             //
-            ibDataSet16.Edit;
-            ibDataSet16DESCRICAO.AsString := ibDataSet4DESCRICAO.AsString;
-            ibDataSet16CODIGO.AsString    := ibDataSet4CODIGO.AsString;
-            if ibDataSet16QUANTIDADE.AsFloat = 0 then ibDataSet16QUANTIDADE.AsFloat := 0;
+            Form7.ibDataSet16.Edit;
+            Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+            Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
+            if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
+              Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
             //
             if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
             begin
@@ -20552,19 +20571,22 @@ begin
               //
               // Desconto pelo convênio
               //
-              if AllTrim(ibDataSet2CONVENIO.AsString) <> '' then
+              if AllTrim(Form7.ibDataSet2CONVENIO.AsString) <> '' then
               begin
-                ibDataSet29.Locate('NOME',ibDataSet2CONVENIO.AsString,[]);
-                if ibDataSet29DESCONTO.AsFloat <> 0 then
+                Form7.ibDataSet29.Locate('NOME', Form7.ibDataSet2CONVENIO.AsString,[]);
+                if Form7.ibDataSet29DESCONTO.AsFloat <> 0 then
                 begin
-                  bButton := Application.MessageBox(Pchar('Confirma um desconto de: % ' + AllTrim(Format('%12.2n',[ibDataSet29DESCONTO.AsFloat])) +
-                  Chr(10)+'Conforme convênio: '+ibDataSet29NOME.AsString+
-                  Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-                  //
-                  if bButton = IDYES
-                    then ibDataSet16UNITARIO.AsFloat    := Int(ibDataSet4PRECO.AsFloat * ( 1 - (ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
-                       else ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
-                end else ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                  bButton := Application.MessageBox(Pchar('Confirma um desconto de: % ' + AllTrim(Format('%12.2n',[Form7.ibDataSet29DESCONTO.AsFloat])) +
+                    Chr(10) + 'Conforme convênio: ' + Form7.ibDataSet29NOME.AsString+
+                    Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
+                    //
+                  if bButton = IDYES then
+                    Form7.ibDataSet16UNITARIO.AsFloat    := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
+                  else
+                    Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                end
+                else
+                  Form7.ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
               end else
               begin
                 //
@@ -20575,21 +20597,21 @@ begin
                   Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
                 end else
                 begin
-                  Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+                  Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
                 end;
                 //
               end;
               //
-              ibDataSet16ST.AsString        := ibDataSet4ST.AsString;
-              ibDataSet16MEDIDA.AsString    := ibDataSet4MEDIDA.AsString;
-              ibDataSet16IPI.AsFloat        := ibDataSet4IPI.AsFloat;
-              ibDataSet16PESO.AsFloat       := ibDataSet4PESO.AsFloat;
-              ibDataSet16CUSTO.AsFloat      := ibDataSet4CUSTOCOMPR.AsFloat;
-              ibDataSet16LISTA.AsFloat      := ibDataSet4PRECO.AsFloat;
+              Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
+              Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
+              Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
+              Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
+              Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
+              Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
               //
               // Grade
               //
-              if ibDataSet16DESCRICAO.AsString = ibDataSet4DESCRICAO.AsString then
+              if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
               begin
                 //
                 Form7.ibDataSet10.Close;
@@ -20598,7 +20620,7 @@ begin
                 Form7.ibDataSet10.Open;
                 Form7.ibDataSet10.First;
                 //
-                ibDataSet16.Edit;
+                Form7.ibDataSet16.Edit;
                 //
                 if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
                 begin
@@ -20710,7 +20732,7 @@ begin
               if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '5') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '6') then
               begin
                 try
-                  if AllTrim(Form7.ibDataSet2ESTADO.AsString)='EX' then
+                  if AllTrim(Form7.ibDataSet2ESTADO.AsString) = 'EX' then
                   begin
                     Form7.ibDataSet14.Edit;
                     Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5);
@@ -20718,7 +20740,10 @@ begin
                   end else
                   begin
                     Form7.ibDataSet14.Edit;
-                    if (sEstado = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5) else Form7.ibDataSet14CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
+                    if (sEstado = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
+                      Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
+                    else
+                      Form7.ibDataSet14CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
                     Form7.ibDataSet14.Post;
                   end;
                   //
@@ -20794,7 +20819,8 @@ begin
               Form7.IBQuery14.Open;
             end;
             //
-          except end;
+          except
+          end;
           //
           // Se o UF do cliente for inválido ocorre um erro
           //
@@ -20812,19 +20838,20 @@ begin
                   try
                     if (Form12.Edit3.Text = '1-Consumidor Final') and (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) then
                     begin
-                      Form7.ibDataSet16PFCPUFDEST.Visible := True;
+                      Form7.ibDataSet16PFCPUFDEST.Visible  := True;
                       Form7.ibDataSet16PICMSUFDEST.Visible := True;
                     end else
                     begin
-                      Form7.ibDataSet16PFCPUFDEST.Visible := False;
+                      Form7.ibDataSet16PFCPUFDEST.Visible  := False;
                       Form7.ibDataSet16PICMSUFDEST.Visible := False;
                     end;
-                  except end;
+                  except
+                  end;
                   //
-                  if AllTrim(Form7.ibDataSet2ESTADO.AsString)='EX' then
+                  if AllTrim(Form7.ibDataSet2ESTADO.AsString) = 'EX' then
                   begin
                     Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5);
-                    Form7.ibDataSet16PFCPUFDEST.Visible := False;
+                    Form7.ibDataSet16PFCPUFDEST.Visible  := False;
                     Form7.ibDataSet16PICMSUFDEST.Visible := False;
                   end else
                   begin
@@ -20863,6 +20890,7 @@ begin
                 Form7.ibDataSet16ALIQ_COFINS.AsFloat     := Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat;
               end;
               //
+              {Sandro Silva 2022-09-28 inicio
               if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
               begin
                 Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
@@ -20870,7 +20898,18 @@ begin
               begin
                 Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
               end;
+              }
             end;
+            {Sandro Silva 2022-09-28 inicio}
+            //Ficha 6273
+            if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
+            begin
+              Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
+            end else
+            begin
+              Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
+            end;
+            {Sandro Silva 2022-09-28 fim}
             //
           except
             //
@@ -21103,8 +21142,12 @@ begin
                   Form7.ibDataSet16QUANTIDADE.AsString  := '';
                   Form7.ibDataSet16CODIGO.AsString      := '';
                   Form7.ibDataSet16CFOP.AsString        := '';
-                end else ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
-              end else ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
+                end
+                else
+                  ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
+              end
+              else
+                ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
             end;
           end;
         end else
@@ -21281,7 +21324,8 @@ begin
     //
     // the end
     //
-  except end;
+  except
+  end;
 end;
 
 procedure TForm7.ibDataSet16TOTALChange(Sender: TField);
@@ -21313,7 +21357,8 @@ begin
         end;
       end;
     end;
-  except end;
+  except
+  end;
   //
   // The end no modifi
   //
@@ -21375,7 +21420,8 @@ begin
         ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet4PRECO.AsFloat * ibDataSet16QUANTIDADE.AsFloat,StrToInt(Form1.ConfPreco));
       end;
     end;
-  except end;
+  except
+  end;
   //
 end;
 
@@ -21543,7 +21589,8 @@ begin
   //
   Form7.ibDataSet15.Post;
   //
-  if Form12.Visible then Form7.ibDataSet2.Append;
+  if Form12.Visible then
+    Form7.ibDataSet2.Append;
   //
 end;
 
@@ -21732,7 +21779,8 @@ end;
 
 procedure TForm7.ibDataSet16AfterDelete(DataSet: TDataSet);
 begin
-  if Form7.sModulo = 'OS' then TotalizaOS(True);
+  if Form7.sModulo = 'OS' then
+    TotalizaOS(True);
   AgendaCommit(True);
 end;
 
@@ -21747,10 +21795,14 @@ begin
   begin
     if Form7.sModulo = 'VENDA' then
     begin
-      if ibDataSet7Vencimento.Value < date then DBGrid4.Canvas.Font.Color := clRed;
-      if ibDataSet7Vencimento.Value = date then DBGrid4.Canvas.Font.Color := clBlue;
-      if ibDataSet7Valor_Rece.Value <> 0 then DBGrid4.Canvas.Font.Color := clGreen;
-      if ibDataSet7ATIVO.AsString='1' then DBGrid4.Canvas.Font.Color := clSilver;
+      if ibDataSet7Vencimento.Value < date then
+        DBGrid4.Canvas.Font.Color := clRed;
+      if ibDataSet7Vencimento.Value = date then
+        DBGrid4.Canvas.Font.Color := clBlue;
+      if ibDataSet7Valor_Rece.Value <> 0 then
+        DBGrid4.Canvas.Font.Color := clGreen;
+      if ibDataSet7ATIVO.AsString='1' then
+        DBGrid4.Canvas.Font.Color := clSilver;
     end;
     //
     dbGrid4.Canvas.FillRect(Rect);
@@ -21762,7 +21814,10 @@ begin
   begin
     dbGrid4.Canvas.Brush.Color := clWhite;
     dbGrid4.Canvas.Font := dbGrid4.Font;
-    if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then dbGrid4.Canvas.Font.Color   := clRed else dbGrid4.Canvas.Font.Color   := clBlack;
+    if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then
+      dbGrid4.Canvas.Font.Color   := clRed
+    else
+      dbGrid4.Canvas.Font.Color   := clBlack;
     dbGrid4.Canvas.TextOut(Rect.Left+dbGrid4.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
   end;
   //
@@ -35232,13 +35287,15 @@ var
   Schema      : XMLSchemaCache;
   sErro, sMErro, sVersaoManual : String;
   rcpNFExml   : tStringList;
+  DOMDocumentNFe: IXMLDOMDocument;
+  xNodeNFe: IXMLDOMNodeList;
 begin
   //
   Screen.Cursor := crHourGlass;
   //
   // Protocolo
   //
-  if Pos('Falha no Schema',Form7.ibDataSet15STATUS.AsString)<> 0 then
+  if PermiteValidarSchema(Form7.ibDataSet15) then // Ficha 6275 Sandro Silva 2022-09-28 if Pos('Falha no Schema',Form7.ibDataSet15STATUS.AsString)<> 0 then
   begin
     //
     // Validar Shema
@@ -35247,9 +35304,9 @@ begin
       //
       DOMDocument := CoDOMDocument50.Create;
       //
-      DOMdocument.Async := FALSE;
-      DOMdocument.ResolveExternals := FALSE;
-      DOMdocument.ValidateOnParse  := TRUE;
+      DOMdocument.Async := False;
+      DOMdocument.ResolveExternals := False;
+      DOMdocument.ValidateOnParse  := True;
       //
       // Carrega só uma parte do XML
       //
@@ -35257,36 +35314,54 @@ begin
       XMLDocument1.XML.Text := Form7.IbDAtaSet15NFEXML.AsString;
       XMLDocument1.Active := True;
       rcpNFExml := TStringList.Create;
-      rcpNFExml.Text := XMLDocument1.ChildNodes['NFe'].XML;
-      DOMdocument.LoadXML(rcpNFExml.Text); //XML COM ERRO
-      rcpNFExml.Free;
-      //
-      Schema := CoXMLSchemaCache50.Create;
-      //
-      // Versão 2.0 da NFE 4.0 do manual
-      //
-      spdNFe.VersaoManual := vm50a;
-      sVersaoManual := 'vm50a\nfe_v2.00.xsd';
-      //
-      Schema.add('http://www.portalfiscal.inf.br/nfe', Form1.sAtual+'\Nfe\Esquemas\'+sVersaoManual);
-      //
-      DOMdocument.Schemas := Schema;
-      ParseError          := DOMdocument.validate;
-      sErro := '';
-      sMErro := '';
-      sErro := ParseError.reason; /// retorno da validação
+      // Sandro Silva 2022-09-28 rcpNFExml.Text := XMLDocument1.ChildNodes['NFe'].XML;
+      DOMDocumentNFe := CoDOMDocument.Create; // Precisa ser criado com está herança para não ocorrer erro na linha DOMDocumentNFe.selectNodes('//NFe');
+      DOMDocumentNFe.loadXML(Form7.IbDAtaSet15NFEXML.AsString);
+
+      xNodeNFe := DOMDocumentNFe.selectNodes('//NFe');
+      if xNodeNFe.length > 0 then
+      begin
+        rcpNFExml.Text := xNodeNFe.item[0].xml;
+
+        DOMdocument.LoadXML(rcpNFExml.Text); //XML COM ERRO
+        rcpNFExml.Free;
+        //
+        Schema := CoXMLSchemaCache50.Create;
+        //
+        // Versão 2.0 da NFE 4.0 do manual
+        //
+        {Sandro Silva 2022-09-28 inicio
+        spdNFe.VersaoManual := vm50a;
+        sVersaoManual := 'vm50a\nfe_v2.00.xsd';
+        }
+        spdNFe.VersaoManual := vm60;
+        sVersaoManual := 'vm60\nfe_v4.00.xsd';
+        {Sandro Silva 2022-09-28 fim}
+        //
+        Schema.add('http://www.portalfiscal.inf.br/nfe', Form1.sAtual+'\Nfe\Esquemas\'+sVersaoManual);
+        //
+        DOMdocument.Schemas := Schema;
+        ParseError          := DOMdocument.validate;
+        sErro := '';
+        sMErro := '';
+        sErro := ParseError.reason; /// retorno da validação
+      end;
       DOMDocument         := Nil;
       ParseError          := Nil;
       Schema              := Nil;
+      DOMDocumentNFe      := nil;
+      xNodeNFe            := nil;
       //
       // Fim valida schema
       //
-    except end;
+    except
+    end;
   end;
   //
   Screen.Cursor := crDefault;
   try
-    if sErro <> '' then ShowMessage('Mensagem de erro retornada: '+chr(10)+chr(10)+strTran(sErro,'{http://www.portalfiscal.inf.br/nfe}',''));
+    if sErro <> '' then
+      ShowMessage('Mensagem de erro retornada: '+chr(10)+chr(10)+strTran(sErro,'{http://www.portalfiscal.inf.br/nfe}',''));
   except end;
   //
 end;
@@ -42579,6 +42654,11 @@ end;
 procedure TForm7.ibDataSet35DESCRICAOChange(Sender: TField);
 begin
 ////
+end;
+
+function TForm7.PermiteValidarSchema(DataSet: TDataSet): Boolean;
+begin
+  Result := (DataSet.FieldByName('NFEXML').AsString <> '') and (DataSet.FieldByName('MODELO').AsString = '55');
 end;
 
 end.

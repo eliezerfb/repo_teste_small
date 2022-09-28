@@ -824,8 +824,11 @@ begin
   begin
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.First;
-    while (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '5'+Copy(Form1.ConfCFOP,2,3)) and (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '6'+Copy(Form1.ConfCFOP,2,3)) and
-     (not Form7.ibDataSet14.EOF) do Form7.ibDataSet14.Next;
+    while (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '5'+Copy(Form1.ConfCFOP,2,3))
+      and (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '6'+Copy(Form1.ConfCFOP,2,3))
+      and (not Form7.ibDataSet14.EOF) do
+      Form7.ibDataSet14.Next;
+      
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet15.Edit;
     SMALL_DBEdit40.Text := Form7.ibDataSet14NOME.AsString;
@@ -1279,7 +1282,8 @@ end;
 procedure TForm12.DBGrid3KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then Key := 0;
+  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then
+    Key := 0;
 end;
 
 procedure TForm12.DBGrid2KeyDown(Sender: TObject; var Key: Word;
@@ -1977,11 +1981,16 @@ begin
         end;
       end else
       begin
-        if Key = VK_DELETE then Form1.bFlag := True else Form1.bFlag := False;
+        if Key = VK_DELETE then
+          Form1.bFlag := True
+        else
+          Form1.bFlag := False;
       end;
     end;
-  except end;
-  if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '') then DbGrid1.SelectedIndex := 0;
+  except
+  end;
+  if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '') then
+    DbGrid1.SelectedIndex := 0;
 end;
 
 procedure TForm12.Edit5Click(Sender: TObject);
@@ -2145,8 +2154,10 @@ begin
   Form7.ibDataSet14.Open;
   Form7.ibDataSet14.EnableControls;
   //
-  if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then Form7.ibDataSet14.Locate('CFOP','5929',[]);
-  if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then Form7.ibDataSet14.Locate('CFOP','6929',[]);
+  if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
+    Form7.ibDataSet14.Locate('CFOP','5929',[]);
+  if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
+    Form7.ibDataSet14.Locate('CFOP','6929',[]);
   //
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
@@ -2562,7 +2573,7 @@ begin
     bOk := True;
     Form12.Close;
     Form7.Image101Click(Sender);
-  except end;  
+  except end;
   //
 end;
 
@@ -2581,8 +2592,10 @@ begin
     try
       //
       try
-        if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
-      except end;
+        if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+          Form7.ibDataset4.Post;
+      except
+      end;
       //
       Form1.bFechaTudo           := False;
       Form1.Image202Click(Sender);
@@ -2596,14 +2609,17 @@ begin
       //
       Form7.Show;
       //
-      if Form12.DBGrid1.CanFocus then Form12.DBGrid1.SetFocus;
+      if Form12.DBGrid1.CanFocus then
+        Form12.DBGrid1.SetFocus;
       Form7.ibDataSet16.Last;
       //
-    except end;
+    except
+    end;
     //
     Form1.bFechaTudo           := True;
     Form7.ibDataSet15.EnableControls;
-    if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+    if Form7.sModulo <> 'RETRIBUTA' then
+      Form7.ibDataSet16.EnableControls;
     //
   end;
 end;
@@ -2631,7 +2647,8 @@ begin
       //
       Form7.Show;
       //
-      if Form12.DBGrid1.CanFocus then Form12.DBGrid1.SetFocus;
+      if Form12.DBGrid1.CanFocus then
+        Form12.DBGrid1.SetFocus;
       Form7.ibDataSet16.Last;
       //
     except end;
@@ -2650,9 +2667,12 @@ end;
 procedure TForm12.DBMemo1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then Button2.SetFocus;
-  if Key = VK_TAB    then Button2.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_RETURN then
+    Button2.SetFocus;
+  if Key = VK_TAB    then
+    Button2.SetFocus;
+  if Key = VK_UP     then
+    Perform(Wm_NextDlgCtl,-1,0);
 end;
 
 procedure TForm12.SMALL_DBEdit39KeyDown(Sender: TObject; var Key: Word;
@@ -2670,8 +2690,22 @@ begin
     //
   end;
   //
-  if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_DOWN   then
+  begin
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
+  end;
+
+  if Key = VK_UP     then
+  begin
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,-1,0);
+  end;
+
   Key := VK_SHIFT;
   //
 end;
@@ -2734,7 +2768,8 @@ begin
     end;
   end;
   //
-  if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
+  if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then
+    Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
   //
   try
     Form12.SMALL_DBEdit40.SetFocus;
@@ -2843,7 +2878,8 @@ begin
   //
   mkp(True);
   //
-  if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
+  if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
+    Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
   //
   try
     Form12.SMALL_DBEdit40.SetFocus;
