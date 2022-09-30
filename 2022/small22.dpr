@@ -60,7 +60,8 @@ uses
   ugeraxmlnfe in 'ugeraxmlnfe.pas',
   uFrmInformacoesRastreamento in 'uFrmInformacoesRastreamento.pas' {FrmInformacoesRastreamento},
   uFuncoesRetaguarda in 'uFuncoesRetaguarda.pas',
-  uconstantes_chaves_privadas in '..\..\..\uconstantes_chaves_privadas.pas';
+  uconstantes_chaves_privadas in '..\..\..\uconstantes_chaves_privadas.pas',
+  uRateioVendasBalcao in 'uRateioVendasBalcao.pas';
 
 {$R *.RES}
 

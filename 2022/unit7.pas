@@ -25,29 +25,33 @@ uses
   spdNFeDPEC, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
   IdHTTP;
 
-  function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
-  function Commitatudo(P1:Boolean): Boolean;
-  function AbreArquivos(P1:Boolean): Boolean;
-  function AgendaCommit(P1:Boolean): Boolean;
-  function DefineJanela(bP1 : Boolean) : Boolean;
-  function Audita(pP1, pP2, pP3, pP4 : String; pP5, pP6: Double) : Boolean;
-  function AssinaturaDigital(sP1:String): String;
-  function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
-  function DistribuicaoNFe(sP1:String) : Boolean;
-  function DistribuicaoNFEInutilizada(sP1:String) : Boolean;
-  function DistribuicaoNFe2(sP1: String) : Boolean;
-  function AbreArquivoNoFormatoCerto(sP1:String): boolean;
-  function HtmlParaPdf(sP1:String): boolean;
-  procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(
-    XmlEnviado: String; sRetorno: String);
+const SIMPLES_NACIONAL = '1';
+const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
+const REGIME_NORMAL    = '3';
+
+function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
+function Commitatudo(P1:Boolean): Boolean;
+function AbreArquivos(P1:Boolean): Boolean;
+function AgendaCommit(P1:Boolean): Boolean;
+function DefineJanela(bP1 : Boolean) : Boolean;
+function Audita(pP1, pP2, pP3, pP4 : String; pP5, pP6: Double) : Boolean;
+function AssinaturaDigital(sP1:String): String;
+function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
+function DistribuicaoNFe(sP1:String) : Boolean;
+function DistribuicaoNFEInutilizada(sP1:String) : Boolean;
+function DistribuicaoNFe2(sP1: String) : Boolean;
+function AbreArquivoNoFormatoCerto(sP1:String): boolean;
+function HtmlParaPdf(sP1:String): boolean;
+procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(
+  XmlEnviado: String; sRetorno: String);
 
 type
 
 //    TValidaIE  = function (const IE, UF: String): Integer; stdcall;
     TProdutoOld = Record
-    sDescricao: String;
-    sQuantidade: String;
-    sUnitario: String;
+      sDescricao: String;
+      sQuantidade: String;
+      sUnitario: String;
     end;
 
     TForm7 = class(TForm)
@@ -1426,6 +1430,8 @@ type
     PrvisualizarDANFE1: TMenuItem;
     Label28: TLabel;
     IBQALIQUOTAISS: TIBQuery;
+    ibDataSet27CSOSN: TStringField;
+    RelatriodePISCOFINSCupomFiscal1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2028,6 +2034,7 @@ type
     procedure DuplicatestaNFe1Click(Sender: TObject);
     procedure PrvisualizarDANFE1Click(Sender: TObject);
     procedure ibDataSet35DESCRICAOChange(Sender: TField);
+    procedure RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2036,7 +2043,8 @@ type
     { Private declarations }
     function ImportaNF(pP1: boolean; sP1: String):Boolean;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
-
+    procedure ValidarSchemaSefaz(NFeXml: String);
+    procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
   public
 
     // Public declarations
@@ -9442,8 +9450,11 @@ begin
 
         if bButton = IDYES  then
         begin
-            Clipboard.SetTextBuf(pchar(Form7.ibDataSet15NFEXML.AsString));
-            ShellExecute( 0, 'Open',pChar('http://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx'),'','', SW_SHOWMAXIMIZED);
+        {Sandro Silva 2022-09-29 inicio
+          Clipboard.SetTextBuf(pchar(Form7.ibDataSet15NFEXML.AsString));
+          ShellExecute( 0, 'Open',pChar('http://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx'),'','', SW_SHOWMAXIMIZED);
+          }
+          ValidarSchemaSefaz(Form7.ibDataSet15NFEXML.AsString);
         end else
         begin
           fNFe := Form7.ibDataSet15NFEXML.AsString;
@@ -34043,7 +34054,12 @@ begin
       Form7.ibDataSet15.EnableControls;
     end;
     //
+    {Sandro Silva 2022-09-29 inicio
     VVerificaresquemashema1Click(Sender);
+    }
+    if PermiteValidarSchema(Form7.ibDataSet15) then
+      VerificarShemaXsd(Form7.ibDataSet15NFEXML.AsString, False);
+    {Sandro Silva 2022-09-29 fim}
     //
     Screen.Cursor            := crDefault;
     //
@@ -35281,6 +35297,7 @@ begin
 end;
 
 procedure TForm7.VVerificaresquemashema1Click(Sender: TObject);
+{Sandro Silva 2022-09-29 inicio 
 var
   DOMDocument : IXMLDOMDocument3;
   ParseError  : IXMLDOMParseError;
@@ -35289,12 +35306,14 @@ var
   rcpNFExml   : tStringList;
   DOMDocumentNFe: IXMLDOMDocument;
   xNodeNFe: IXMLDOMNodeList;
+}
 begin
   //
   Screen.Cursor := crHourGlass;
   //
   // Protocolo
   //
+  (*{Sandro Silva 2022-09-29 inicio}
   if PermiteValidarSchema(Form7.ibDataSet15) then // Ficha 6275 Sandro Silva 2022-09-28 if Pos('Falha no Schema',Form7.ibDataSet15STATUS.AsString)<> 0 then
   begin
     //
@@ -35361,9 +35380,14 @@ begin
   Screen.Cursor := crDefault;
   try
     if sErro <> '' then
-      ShowMessage('Mensagem de erro retornada: '+chr(10)+chr(10)+strTran(sErro,'{http://www.portalfiscal.inf.br/nfe}',''));
-  except end;
+      ShowMessage('Mensagem de erro retornada: '+chr(10)+chr(10)+strTran(sErro,'{http://www.portalfiscal.inf.br/nfe}',''))
+  except
+  end;
   //
+  *)
+  if PermiteValidarSchema(Form7.ibDataSet15) then // Ficha 6275 Sandro Silva 2022-09-28 if Pos('Falha no Schema',Form7.ibDataSet15STATUS.AsString)<> 0 then
+    VerificarShemaXsd(Form7.ibDataSet15NFEXML.AsString, True); 
+  {Sandro Silva 2022-09-29 fim}
 end;
 
 procedure TForm7.Importarretornodevendaambulante1Click(Sender: TObject);
@@ -42659,6 +42683,109 @@ end;
 function TForm7.PermiteValidarSchema(DataSet: TDataSet): Boolean;
 begin
   Result := (DataSet.FieldByName('NFEXML').AsString <> '') and (DataSet.FieldByName('MODELO').AsString = '55');
+end;
+
+procedure TForm7.ValidarSchemaSefaz(NFeXml: String);
+begin
+  Clipboard.SetTextBuf(pchar(NFEXml));
+  ShellExecute( 0, 'Open',pChar('http://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx'),'','', SW_SHOWMAXIMIZED);
+end;
+
+procedure TForm7.VerificarShemaXsd(NFeXml: String;
+  bValidarNaSefaz: Boolean);
+var
+  DOMDocument : IXMLDOMDocument3;
+  ParseError  : IXMLDOMParseError;
+  Schema      : XMLSchemaCache;
+  sErro, sMErro, sVersaoManual : String;
+  rcpNFExml   : tStringList;
+  DOMDocumentNFe: IXMLDOMDocument;
+  xNodeNFe: IXMLDOMNodeList;
+begin
+  //
+  Screen.Cursor := crHourGlass;
+  //
+  // Protocolo
+  //
+
+  //
+  // Validar Shema
+  //
+  try
+    //
+    DOMDocument := CoDOMDocument50.Create;
+    //
+    DOMdocument.Async := False;
+    DOMdocument.ResolveExternals := False;
+    DOMdocument.ValidateOnParse  := True;
+    //
+    // Carrega só uma parte do XML
+    //
+    XMLDocument1.Active := false;
+    XMLDocument1.XML.Text := Form7.IbDAtaSet15NFEXML.AsString;
+    XMLDocument1.Active := True;
+    rcpNFExml := TStringList.Create;
+    DOMDocumentNFe := CoDOMDocument.Create; // Precisa ser criado com está herança para não ocorrer erro na linha DOMDocumentNFe.selectNodes('//NFe');
+    DOMDocumentNFe.loadXML(Form7.IbDAtaSet15NFEXML.AsString);
+
+    xNodeNFe := DOMDocumentNFe.selectNodes('//NFe');
+    if xNodeNFe.length > 0 then
+    begin
+      rcpNFExml.Text := xNodeNFe.item[0].xml;
+
+      DOMdocument.LoadXML(rcpNFExml.Text); //XML COM ERRO
+      rcpNFExml.Free;
+      //
+      Schema := CoXMLSchemaCache50.Create;
+      //
+      // Versão 2.0 da NFE 4.0 do manual
+      //
+      spdNFe.VersaoManual := vm60;
+      sVersaoManual := 'vm60\nfe_v4.00.xsd';
+      //
+      Schema.add('http://www.portalfiscal.inf.br/nfe', Form1.sAtual+'\Nfe\Esquemas\'+sVersaoManual);
+      //
+      DOMdocument.Schemas := Schema;
+      ParseError          := DOMdocument.validate;
+      sErro := '';
+      sMErro := '';
+      sErro := ParseError.reason; /// retorno da validação
+    end;
+    DOMDocument         := Nil;
+    ParseError          := Nil;
+    Schema              := Nil;
+    DOMDocumentNFe      := nil;
+    xNodeNFe            := nil;
+    //
+    // Fim valida schema
+    //
+  except
+  end;
+  //
+  Screen.Cursor := crDefault;
+  try
+    if sErro <> '' then
+      ShowMessage('Mensagem de erro retornada: '+chr(10)+chr(10)+strTran(sErro, '{http://www.portalfiscal.inf.br/nfe}',''))
+    else
+      if bValidarNaSefaz then
+        ValidarSchemaSefaz(Form7.ibDataSet15NFEXML.AsString);
+  except
+  end;
+  //
+end;
+
+procedure TForm7.RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
+begin
+  //
+  sModuloAnterior := sModulo;
+  //
+  Form38.Label2.Visible := True;
+  Form38.Label3.Visible := True;
+  Form38.DateTimePicker1.Visible := True;
+  Form38.DateTimePicker2.Visible := True;
+  sModulo := 'Relatório de PIS/COFINS (Cupom Fiscal)';
+  Form38.ShowModal; // Ok
+
 end;
 
 end.

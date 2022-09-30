@@ -14164,6 +14164,10 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de PIS/COFINS...'
         OnClick = RelatriodePISCOFINS1Click
       end
+      object RelatriodePISCOFINSCupomFiscal1: TMenuItem
+        Caption = 'Relat'#243'rio de PIS/COFINS (Cupom Fiscal)...'
+        OnClick = RelatriodePISCOFINSCupomFiscal1Click
+      end
       object Relatriodeoramentospendentes1: TMenuItem
         Caption = 'Relat'#243'rio de or'#231'amentos pendentes...'
         OnClick = Relatriodeoramentospendentes1Click
@@ -18571,6 +18575,12 @@ object Form7: TForm7
       Origin = 'ALTERACA.STATUS'
       Size = 1
     end
+    object ibDataSet27CFOP: TIBStringField
+      FieldName = 'CFOP'
+      Origin = 'ALTERACA.CFOP'
+      FixedChar = True
+      Size = 4
+    end
     object ibDataSet27SERIE: TIBStringField
       FieldName = 'SERIE'
       Origin = 'ALTERACA.SERIE'
@@ -18583,11 +18593,9 @@ object Form7: TForm7
       FixedChar = True
       Size = 3
     end
-    object ibDataSet27CFOP: TIBStringField
-      FieldName = 'CFOP'
-      Origin = 'ALTERACA.CFOP'
-      FixedChar = True
-      Size = 4
+    object ibDataSet27CSOSN: TStringField
+      FieldName = 'CSOSN'
+      Size = 3
     end
   end
   object DataSource27: TDataSource
