@@ -41,6 +41,13 @@ implementation
 
 uses uFrmInformacoesRastreamento;
 
+procedure AtualizaItens001CSOSN(sCSOSN: String);
+begin
+  if not (Form7.ibDataSet16.State in [dsEdit, dsInsert]) then
+    Form7.ibDataSet16.Edit;
+  Form7.ibDataSet16CSOSN.AsString := sCSOSN;
+end;
+
 function GeraXmlNFe: String;
 var
   fNFe: String; // Sandro Silva 2022-09-12
@@ -3726,7 +3733,8 @@ begin
                     end;
                     //
                     try
-                      if Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then fRateioDoDesconto  := Arredonda((Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat),2) else fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
+                      if Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then
+                        fRateioDoDesconto  := Arredonda((Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat),2) else fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
                     except
                       fRateioDoDesconto := 0;
                     end;
@@ -5080,6 +5088,9 @@ begin
                       begin
                         Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Form7.ibDataSet4.FieldByname('CSOSN').AsString;
                       end;
+                      {Sandro Silva 2022-10-04 inicio}
+                      AtualizaItens001CSOSN(Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value);
+                      {Sandro Silva 2022-10-04 fim}
                       //
                       // N11 - Tëm em todas
                       //
@@ -7159,8 +7170,10 @@ ShowMessage('Teste: '+chr(10)+
                 begin
                   //
                   Form7.ibDataSet14.First;
-                  while (Form7.ibDataSet14ISS.AsFloat = 0) and ( not Form7.ibDataSet14.EOF) do Form7.ibDataSet14.Next;
-                  if Form7.ibDataSet14ISS.AsFloat = 0 then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+                  while (Form7.ibDataSet14ISS.AsFloat = 0) and ( not Form7.ibDataSet14.EOF) do
+                    Form7.ibDataSet14.Next;
+                  if Form7.ibDataSet14ISS.AsFloat = 0 then
+                    Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                   //
                   try
                     //
@@ -7296,8 +7309,10 @@ ShowMessage('Teste: '+chr(10)+
                         Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value := '0.00'; // Valor do COFINS em Reais
                       end;
                       //
-                      if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
-                      if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+                      if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
+                        Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+                      if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
+                        Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
                       //
                       Form7.spdNFeDataSets.SalvarItem;
                       //
@@ -7829,6 +7844,7 @@ ShowMessage('Teste: '+chr(10)+
   finally
 
   end;
+//  AgendaCommit(True);
 end;
 
 end.

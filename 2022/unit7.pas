@@ -1432,6 +1432,8 @@ type
     IBQALIQUOTAISS: TIBQuery;
     ibDataSet27CSOSN: TStringField;
     RelatriodePISCOFINSCupomFiscal1: TMenuItem;
+    ibDataSet16CSOSN: TStringField;
+    BitBtn1: TBitBtn;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2035,6 +2037,7 @@ type
     procedure PrvisualizarDANFE1Click(Sender: TObject);
     procedure ibDataSet35DESCRICAOChange(Sender: TField);
     procedure RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2186,7 +2189,12 @@ begin
     begin
       //
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
-      if RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
+      if RetornaValorDaTagNoCampo('numero_nfse', Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
+        Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
+
+      if RetornaValorDaTagNoCampo('tc:numero_nfse', Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
+        Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('tc:numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('tc:serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
+
       //
       if pChar(Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)) = '000000000' then
       begin
@@ -5212,10 +5220,10 @@ begin
   if MM > 0 then Result := round ((MM * mmPointY) - OffSetUL.Y) else Result := round (MM * mmPointY);
 end;
 
-function Largura(MM : Double) : Longint;
+function Largura(MM: Double) : Longint;
 var
   mmPointX : Real;
-  PageSize, OffSetUL : TPoint;
+  PageSize, OffSetUL: TPoint;
 begin
   mmPointX := Printer.PageWidth / GetDeviceCaps(Printer.Handle,HORZSIZE);
   Escape (Printer.Handle,GETPRINTINGOFFSET,0,nil,@OffSetUL);
@@ -5223,7 +5231,7 @@ begin
   if MM > 0 then Result := round ((MM * mmPointX) - OffSetUL.X) else Result := round (MM * mmPointX);
 end;
 
-function AgendaCommit(P1:Boolean): Boolean;
+function AgendaCommit(P1: Boolean): Boolean;
 begin
   try
     if P1 then
@@ -41260,7 +41268,14 @@ begin
             Writeln(F,'InscricaoEstadualPrestador='+LimpaNumero(Form7.ibDAtaSet13IE.AsString));   // Inscrição Estadual do prestador do serviço
             //
             Writeln(F,'TipoLogradouroPrestador=Rua');
+            {Sandro Silva 2022-10-04 inicio
             Writeln(F,'EnderecoPrestador='+ConverteAcentos2(Endereco_Sem_Numero(ibDAtaset13.FieldByname('ENDERECO').AsString))); // Logradouro do Emitente
+            }
+            if (sPadraoSistema = 'JOINVILLESC') then
+              Writeln(F,'EnderecoPrestador='+ConverteAcentos2(Endereco_Sem_Numero(ibDAtaset13.FieldByname('ENDERECO').AsString) + ', ' + Numero_Sem_Endereco(ibDAtaset13.FieldByname('ENDERECO').AsString) + ' - ' + Form7.ibDAtaSet13COMPLE.AsString)) // Logradouro do Emitente
+            else
+              Writeln(F,'EnderecoPrestador='+ConverteAcentos2(Endereco_Sem_Numero(ibDAtaset13.FieldByname('ENDERECO').AsString))); // Logradouro do Emitente
+            {Sandro Silva 2022-10-04 fim}
             Writeln(F,'NumeroPrestador='+Numero_Sem_Endereco(ibDAtaset13.FieldByname('ENDERECO').AsString)); // Numero do Logradouro do Emitente
             //
             Writeln(F,'ComplementoPrestador='+ConverteAcentos2(Form7.ibDAtaSet13NOME.AsString)); // Complemento
@@ -42786,6 +42801,11 @@ begin
   sModulo := 'Relatório de PIS/COFINS (Cupom Fiscal)';
   Form38.ShowModal; // Ok
 
+end;
+
+procedure TForm7.BitBtn1Click(Sender: TObject);
+begin
+  BuscaNumeroNFSe(True);
 end;
 
 end.

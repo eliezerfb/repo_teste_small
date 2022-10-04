@@ -74,7 +74,7 @@ var
 implementation
 
 uses Mais, Unit34, Unit30, Unit16, Mais3, Unit2, uFuncoesRetaguarda,
-  uRateioVendasBalcao, IBCustomDataSet;
+  uRateioVendasBalcao, IBCustomDataSet, uAtualizaNovoCampoItens001CSOSN;
 
 {$R *.DFM}
 
@@ -158,6 +158,7 @@ var
   dTotalCFOP: Double;
   dTotalCFOPCSTPISCOFINS: Double;
   dTotalCSTCSOSN: Double;
+  dTotalPISCOFINSCSTCSOSN: Double;
   sCaixa: String;
   sPedido: String;
 begin
@@ -372,6 +373,16 @@ begin
           //
           if sModulo = 'Relatório de produtos monofásicos (NF-e)' then
           begin
+            {Sandro Silva 2022-10-04 inicio}
+            try
+              if AtualizaItens001CSOSN(Form7.ibDataSet16.Transaction, dInicio, dFinal) then
+              begin
+                AgendaCommit(True);
+              end;
+
+            except
+            end;
+            {Sandro Silva 2022-10-04 fim}
             //
             fTotal1  := 0;
             fTotal2  := 0;
@@ -395,6 +406,12 @@ begin
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
+              {Sandro Silva 2022-10-30 inicio} 
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+              else
+                WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+              {Sandro Silva 2022-10-30 fim}
               WriteLn(F,' </tr>');
               //
             end else
@@ -416,6 +433,13 @@ begin
             //
             while (not ibQuery99.EOF) and (Form38.Caption <> 'Cancelar') do
             begin
+
+              {Sandro Silva 2022-10-03 inicio}
+              Form7.ibDataSet4.Close;
+              Form7.ibDataSet4.Selectsql.Clear;
+              Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibQuery99.FieldByName('CODIGO').AsString)+' ');
+              Form7.ibDataSet4.Open;
+              {Sandro Silva 2022-10-30 fim}
               //
               Application.ProcessMessages;
               //
@@ -425,10 +449,74 @@ begin
                 // Lista só produtos monofasicos
                 //
                 try
-                  if ibQuery99.FieldByname('DESCONTO').AsFloat <> 0 then fRateioDoDesconto  := Arredonda((ibQuery99.FieldByname('DESCONTO').AsFloat / ibQuery99.FieldByname('MERCADORIA').AsFloat * ibQuery99.FieldByname('TOTAL').AsFloat),2) else fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
+                  if ibQuery99.FieldByname('DESCONTO').AsFloat <> 0 then
+                    fRateioDoDesconto  := Arredonda((ibQuery99.FieldByname('DESCONTO').AsFloat / ibQuery99.FieldByname('MERCADORIA').AsFloat * ibQuery99.FieldByname('TOTAL').AsFloat),2)
+                  else
+                    fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
                 except
                   fRateioDoDesconto := 0;
                 end;
+
+                {Sandro Silva 2022-10-03 inicio}
+                sCFOP := Trim(Form7.ibQuery99.FieldByName('CFOP').AsString);
+                if sCFOP = '' then
+                  sCFOP := ' ';
+
+                bAchouItem := False;
+                for iItem := 0 to Length(aCFOP) - 1 do
+                begin
+                  if (aCFOP[iItem].CFOP = sCFOP) and (aCFOP[iItem].CSTPISCOFINS = sCSTPISCOFINS) then
+                  begin
+                    bAchouItem := True;
+                    Break;
+                  end;
+                end;
+
+                if bAchouItem = False then
+                begin
+                  SetLength(aCFOP, Length(aCFOP) + 1);
+                  iItem := High(aCFOP);
+                  aCFOP[High(aCFOP)] := TCFOP.Create; // Sandro Silva 2019-06-13
+                  aCFOP[High(aCFOP)].CFOP         := sCFOP;
+                  aCFOP[High(aCFOP)].CSTPISCOFINS := sCSTPISCOFINS;
+                end;
+                aCFOP[iItem].Valor     := aCFOP[iItem].Valor + Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto;
+                //aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo - fRateioDoDesconto;
+                aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto - fRateioDoDesconto;
+
+                if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                begin
+                  sCSTCSOSN := Trim(Form7.ibQuery99.FieldByName('CST_ICMS').AsString);
+                end
+                else
+                begin
+                  //sCSTCSOSN := Trim(Form7.ibDataSet4.FieldByName('CSOSN').AsString); // Usar o campo itens001.csosn depois de criá-lo Trim(Form7.ibQuery99.FieldByName('CSOSN').AsString);
+                  sCSTCSOSN := Trim(Form7.ibQuery99.FieldByName('CSOSN').AsString);
+                end;
+
+                bAchouItem := False;
+                for iItem := 0 to Length(aCSTCSOSN) - 1 do
+                begin
+                  if aCSTCSOSN[iItem].CSTCSOSN = sCSTCSOSN then
+                  begin
+                    bAchouItem := True;            // AQUI
+                    Break;
+                  end;
+                end;
+
+                if bAchouItem = False then
+                begin
+                  SetLength(aCSTCSOSN, Length(aCSTCSOSN) + 1);
+                  iItem := High(aCSTCSOSN);
+                  aCSTCSOSN[High(aCSTCSOSN)] := TCSTCSOSN.Create; // Sandro Silva 2019-06-13
+                  aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN := sCSTCSOSN;
+                end;
+                aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto;
+                //aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo - fRateioDoDesconto;
+                aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto - fRateioDoDesconto;
+
+                {Sandro Silva 2022-10-03 fim}
+
                 //
                 if Form1.bHtml1 then
                 begin
@@ -445,6 +533,15 @@ begin
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+ibQuery99.FieldByname('CFOP').AsString+'<br></font></td>');
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+ibQuery99.FieldByname('CF').AsString+'<br></font></td>');
+                  {Sandro Silva 2022-10-30 inicio}
+                  {
+                  if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+ibQuery99.FieldByname('CST_ICMS').AsString+'<br></font></td>')
+                  else
+                    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.IBDataSet4.FieldByname('CSOSN').AsString+'<br></font></td>');
+                  }
+                  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
+                  {Sandro Silva 2022-10-30 fim}
                   WriteLn(F,'   </tr>');
                   //
                 end else
@@ -488,8 +585,73 @@ begin
               WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
               WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');              
               WriteLn(F,'  </tr>');
               WriteLn(F,' </table>');
+
+              {Sandro Silva 2022-10-03 inicio}
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CFOP</b></font><br></center><br>');
+              WriteLn(F,'<center>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+              WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+              WriteLn(F,'    </tr>');
+
+              dTotalCFOP := 0.00;
+              sCFOP := '';
+
+              for iItem := 0 to Length(aCFOP) - 1 do
+              begin
+                dTotalCFOP := dTotalCFOP + aCFOP[iItem].Valor;
+                WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [aCFOP[iItem].Valor]) + '</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+              WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOP]) + '<br></font></td>');
+              WriteLn(F,'    </tr>');
+              WriteLn(F,'   </table>');
+
+              {Sandro Silva 2022-09-30 inicio}
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br>');
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CST</b></font><br></center><br>')
+              else
+                WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CSOSN</b></font><br></center><br>');
+              WriteLn(F,'<center>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+              WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>')
+              else
+                WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+              WriteLn(F,'    </tr>');
+
+              dTotalCSTCSOSN := 0.00;
+              for iItem := 0 to Length(aCSTCSOSN) - 1 do
+              begin
+                dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
+                WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+              WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+              WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n', [dTotalCSTCSOSN])+'<br></font></td>');
+              WriteLn(F,'    </tr>');
+              WriteLn(F,'   </table>');
+
+              {Sandro Silva 2022-10-03 fim}
+
               Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
               WriteLn(F,'</center>');
               //
@@ -507,6 +669,18 @@ begin
           //
           if sModulo = 'Relatório de PIS/COFINS' then
           begin
+
+            {Sandro Silva 2022-10-04 inicio}
+            try
+              if AtualizaItens001CSOSN(Form7.ibDataSet16.Transaction, dInicio, dFinal) then
+              begin
+                AgendaCommit(True);
+              end;
+
+            except
+            end;
+            {Sandro Silva 2022-10-04 fim}
+
             //
             fTotal1  := 0;
             fTotal2  := 0;
@@ -528,14 +702,14 @@ begin
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
-              {Sandro Silva 2022-09-30 inicio
+              {Sandro Silva 2022-09-30 inicio}
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
               if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
                 WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
               else
                 WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
-              {Sandro Silva 2022-09-30 fim}                                           
+              {Sandro Silva 2022-09-30 fim}
               WriteLn(F,' </tr>');
               //
             end else
@@ -558,7 +732,7 @@ begin
             while (not ibQuery99.EOF) and (Form38.Caption <> 'Cancelar') do
             begin
 
-              {Sandro Silva 2022-09-30 inicio
+              {Sandro Silva 2022-09-30 inicio}
               Form7.ibDataSet4.Close;
               Form7.ibDataSet4.Selectsql.Clear;
               Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibQuery99.FieldByName('CODIGO').AsString)+' ');
@@ -572,6 +746,69 @@ begin
               except
                 fRateioDoDesconto := 0;
               end;
+
+              {Sandro Silva 2022-10-03 inicio}
+              sCSTPISCOFINS := Trim(Form7.ibQuery99.FieldByName('CST_PIS_COFINS').AsString);
+              if sCSTPISCOFINS = '' then
+                sCSTPISCOFINS := ' ';
+
+              sCFOP := Trim(Form7.ibQuery99.FieldByName('CFOP').AsString);
+              if sCFOP = '' then
+                sCFOP := ' ';
+
+              bAchouItem := False;
+              for iItem := 0 to Length(aCFOP) - 1 do
+              begin
+                if (aCFOP[iItem].CFOP = sCFOP) and (aCFOP[iItem].CSTPISCOFINS = sCSTPISCOFINS) then
+                begin
+                  bAchouItem := True;
+                  Break;
+                end;
+              end;
+
+              if bAchouItem = False then
+              begin
+                SetLength(aCFOP, Length(aCFOP) + 1);
+                iItem := High(aCFOP);
+                aCFOP[High(aCFOP)] := TCFOP.Create; // Sandro Silva 2019-06-13
+                aCFOP[High(aCFOP)].CFOP         := sCFOP;
+                aCFOP[High(aCFOP)].CSTPISCOFINS := sCSTPISCOFINS;
+              end;
+              aCFOP[iItem].Valor     := aCFOP[iItem].Valor + Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto;
+              //aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
+              aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto - fRateioDoDesconto;
+
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                sCSTCSOSN := Trim(Form7.ibQuery99.FieldByName('CST_ICMS').AsString)
+              else
+                //sCSTCSOSN := Trim(Form7.IBDataSet4.FieldByName('CSOSN').AsString); // Depois de criar o campo itens001csosn, mudar aqui para buscar o campo Trim(Form7.ibQuery99.FieldByName('CSOSN').AsString);
+                sCSTCSOSN := Trim(Form7.ibQuery99.FieldByName('CSOSN').AsString);
+              if sCSTCSOSN = '' then
+                sCSTCSOSN := ' ';
+
+              bAchouItem := False;
+              for iItem := 0 to Length(aCSTCSOSN) - 1 do
+              begin
+                if (aCSTCSOSN[iItem].CSTCSOSN = sCSTCSOSN) and (aCSTCSOSN[iItem].CSTPISCOFINS = sCSTPISCOFINS) then
+                begin
+                  bAchouItem := True;
+                  Break;
+                end;
+              end;
+
+              if bAchouItem = False then
+              begin
+                SetLength(aCSTCSOSN, Length(aCSTCSOSN) + 1);
+                iItem := High(aCSTCSOSN);
+                aCSTCSOSN[High(aCSTCSOSN)] := TCSTCSOSN.Create; // Sandro Silva 2019-06-13
+                aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN     := sCSTCSOSN;
+                aCSTCSOSN[High(aCSTCSOSN)].CSTPISCOFINS := sCSTPISCOFINS;
+              end;
+              aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto;
+              //aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
+              aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto - fRateioDoDesconto;
+              {Sandro Silva 2022-10-03 fim}
+
               //
               if Form1.bHtml1 then
               begin
@@ -586,10 +823,10 @@ begin
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+'<br></font></td>');
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
-                {Sandro Silva 2022-09-30 inicio
+                {Sandro Silva 2022-09-30 inicio}
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
-                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.' + Form1.ConfCasas + 'n', [0.00]) + '<br></font></td>');
+                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
                 {Sandro Silva 2022-09-30 fim}
                 WriteLn(F,'   </tr>');
                 //
@@ -602,14 +839,14 @@ begin
                 Write(F,Format('%10.2n',[(ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)])+' ');
                 Write(F,Copy(ibQuery99.FieldByname('CST_PIS_COFINS').AsString,1,3)+'   ');
                 Write(F,Format('%8.4n',[ibQuery99.FieldByname('ALIQ_PIS').AsFloat])+' ');
-                Write(F,Format('%10.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+' ');
-                Write(F,Format('%8.4n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+' ');
-                WriteLn(F,Format('%10.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100]));
+                Write(F,Format('%10.'+Form1.ConfCasas + 'n',[ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100]) + ' ');
+                Write(F,Format('%8.4n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat]) + ' ');
+                WriteLn(F,Format('%10.'+Form1.ConfCasas + 'n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100]));
                 //
               end;
               //
-              fTotal1  := fTotal1 + (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100);
-              fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100);
+              fTotal1  := fTotal1 + (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100);
+              fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100);
               fTotal3  := Ftotal3 + ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto;
               //
               ibQuery99.Next;
@@ -629,8 +866,125 @@ begin
               WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
               WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
+              {Sandro Silva 2022-10-30 inicio}
+              WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');                            
+              {Sandro Silva 2022-10-30 fim}
               WriteLn(F,'  </tr>');
               WriteLn(F,' </table>');
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CFOP</b></font><br></center><br>');
+              WriteLn(F,'<center>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+              WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+              WriteLn(F,'    </tr>');
+
+              dTotalCFOP := 0.00;
+              dTotalCFOPCSTPISCOFINS := 0.00;
+              sCFOP := '';
+
+              for iItem := 0 to Length(aCFOP) - 1 do
+              begin
+                if sCFOP <> aCFOP[iItem].CFOP then
+                begin
+                  if sCFOP <> '' then
+                  begin
+                    WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+                    WriteLn(F,'    </tr>');
+                  end;
+                  sCFOP := aCFOP[iItem].CFOP;
+                end;
+                dTotalCFOP := dTotalCFOP + aCFOP[iItem].Valor;
+                dTotalCFOPCSTPISCOFINS := dTotalCFOPCSTPISCOFINS + aCFOP[iItem].Valor;
+
+                WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CSTPISCOFINS + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [aCFOP[iItem].Valor]) + '</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+              if sCFOP <> '' then
+              begin
+                WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+
+              WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOP]) + '<br></font></td>');
+              WriteLn(F,'    </tr>');
+              WriteLn(F,'   </table>');
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CST</b></font><br></center><br>')
+              else
+                WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CSOSN</b></font><br></center><br>');
+              WriteLn(F,'<center>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+              WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>')
+              else
+                WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+              WriteLn(F,'    </tr>');
+
+              dTotalCSTCSOSN          := 0.00;
+              dTotalPISCOFINSCSTCSOSN := 0.00;
+              sCSTCSOSN := '';
+              for iItem := 0 to Length(aCSTCSOSN) - 1 do
+              begin
+                if sCSTCSOSN <> aCSTCSOSN[iItem].CSTCSOSN then
+                begin
+                  if sCSTCSOSN <> '' then
+                  begin
+                    WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+                    WriteLn(F,'    </tr>');
+                  end;
+                  sCSTCSOSN := aCSTCSOSN[iItem].CSTCSOSN;
+                end;
+
+                dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
+                dTotalPISCOFINSCSTCSOSN := dTotalPISCOFINSCSTCSOSN + aCSTCSOSN[iItem].Valor;
+                WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTPISCOFINS + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+
+              if sCSTCSOSN <> '' then
+              begin
+                WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+
+              WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+              WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n', [dTotalCSTCSOSN])+'<br></font></td>');
+              WriteLn(F,'    </tr>');
+              WriteLn(F,'   </table>');
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br>');
               Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
               WriteLn(F,'</center>');
               //
@@ -721,14 +1075,14 @@ begin
                   Rateio.CalcularRateio(Form7.ibQuery99.FieldByName('CAIXA').AsString, Form7.ibQuery99.FieldByName('PEDIDO').AsString, Form7.ibQuery99.FieldByName('ITEM').AsString);
                 end;
 
-                sCSTPISCOFINS := Trim(Form7.ibDataSet27.FieldByName('CST_PIS_COFINS').AsString);
+                sCSTPISCOFINS := Trim(Form7.ibQuery99.FieldByName('CST_PIS_COFINS').AsString);
                 if sCSTPISCOFINS = '' then
-                  sCSTPISCOFINS := Trim(Form7.ibDataSet4.FieldByName('CST_PIS_COFINS_SAIDA').AsString);
+                  sCSTPISCOFINS := ' ';
 
-                sCFOP := Trim(Form7.ibDataSet27.FieldByName('CFOP').AsString);
+                sCFOP := Trim(Form7.ibQuery99.FieldByName('CFOP').AsString);
                 if sCFOP = '' then
-                  sCFOP := Trim(Form7.ibDataSet4.FieldByName('CFOP').AsString);
-
+                  sCFOP := ' ';
+                  
                 bAchouItem := False;
                 for iItem := 0 to Length(aCFOP) - 1 do
                 begin
@@ -750,6 +1104,35 @@ begin
                 aCFOP[iItem].Valor     := aCFOP[iItem].Valor + Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem;
                 aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
                 aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto + Rateio.DescontoItem + Rateio.RateioDescontoItem;
+
+                if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                  sCSTCSOSN := Trim(Form7.ibQuery99.FieldByName('CST_ICMS').AsString)
+                else
+                  sCSTCSOSN := Trim(Form7.ibQuery99.FieldByName('CSOSN').AsString);
+                if sCSTCSOSN = '' then
+                  sCSTCSOSN := ' ';
+
+                bAchouItem := False;
+                for iItem := 0 to Length(aCSTCSOSN) - 1 do
+                begin
+                  if (aCSTCSOSN[iItem].CSTCSOSN = sCSTCSOSN) and (aCSTCSOSN[iItem].CSTPISCOFINS = sCSTPISCOFINS) then
+                  begin
+                    bAchouItem := True;
+                    Break;
+                  end;
+                end;
+
+                if bAchouItem = False then
+                begin
+                  SetLength(aCSTCSOSN, Length(aCSTCSOSN) + 1);
+                  iItem := High(aCSTCSOSN);
+                  aCSTCSOSN[High(aCSTCSOSN)] := TCSTCSOSN.Create; // Sandro Silva 2019-06-13
+                  aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN     := sCSTCSOSN;
+                  aCSTCSOSN[High(aCSTCSOSN)].CSTPISCOFINS := sCSTPISCOFINS;
+                end;
+                aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem;
+                aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
+                aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto + Rateio.DescontoItem + Rateio.RateioDescontoItem;
                 //
                 if Form1.bHtml1 then
                 begin
@@ -767,10 +1150,13 @@ begin
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.' + Form1.ConfCasas + 'n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
+                  {
                   if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CST_ICMS').AsString + '<br></font></td>')
                   else
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CSOSN').AsString + '<br></font></td>');
+                  }
+                  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
                   WriteLn(F,'   </tr>');
                   //
                 end else
@@ -822,7 +1208,7 @@ begin
               WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CFOP</b></font><br></center><br>');
               WriteLn(F,'<center>');
               WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-              WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+              WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
               WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
               WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
               WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
@@ -838,13 +1224,13 @@ begin
                 begin
                   if sCFOP <> '' then
                   begin
-                    WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-                    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>Total</font></td>');
-                    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+                    WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                     WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
                     WriteLn(F,'    </tr>');
                   end;
-                  sCFOP := aCFOP[iItem].CFOP; 
+                  sCFOP := aCFOP[iItem].CFOP;
                 end;
                 dTotalCFOP := dTotalCFOP + aCFOP[iItem].Valor;
                 dTotalCFOPCSTPISCOFINS := dTotalCFOPCSTPISCOFINS + aCFOP[iItem].Valor;
@@ -855,11 +1241,72 @@ begin
                 WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [aCFOP[iItem].Valor]) + '</font></td>');
                 WriteLn(F,'    </tr>');
               end;
+              if sCFOP <> '' then
+              begin
+                WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+
               WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalCFOP]) + '<br></font></td>');
               WriteLn(F,'    </tr>');
               WriteLn(F,'   </table>');
+              WriteLn(F,'<br>');
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CST</b></font><br></center><br>')
+              else
+                WriteLn(F,'<br><font size=4 color=#000000><b>Acumulado por CSOSN</b></font><br></center><br>');
+              WriteLn(F,'<center>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+              WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
+              if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
+                WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>')
+              else
+                WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+              WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+              WriteLn(F,'    </tr>');
+
+              dTotalCSTCSOSN          := 0.00;
+              dTotalPISCOFINSCSTCSOSN := 0.00;
+              sCSTCSOSN := '';
+              for iItem := 0 to Length(aCSTCSOSN) - 1 do
+              begin
+                if sCSTCSOSN <> aCSTCSOSN[iItem].CSTCSOSN then
+                begin
+                  if sCSTCSOSN <> '' then
+                  begin
+                    WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+                    WriteLn(F,'    </tr>');
+                  end;
+                  sCSTCSOSN := aCSTCSOSN[iItem].CSTCSOSN;
+                end;
+
+                dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
+                dTotalPISCOFINSCSTCSOSN := dTotalPISCOFINSCSTCSOSN + aCSTCSOSN[iItem].Valor;
+                WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTPISCOFINS + '</font></td>');
+                WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.' + Form1.ConfPreco + 'n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+                WriteLn(F,'    </tr>');
+              end;
+              WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+              WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+              WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n', [dTotalCSTCSOSN])+'<br></font></td>');
+              WriteLn(F,'    </tr>');
+              WriteLn(F,'   </table>');
+
+              WriteLn(F,'<br>');
+              WriteLn(F,'<br>');
 
               Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal) + '<br>');
               WriteLn(F,'</center>');
@@ -3393,7 +3840,7 @@ begin
 
               sCFOP := Trim(Form7.ibDataSet27.FieldByName('CFOP').AsString);
               if sCFOP = '' then
-                sCFOP := Trim(Form7.ibDataSet4.FieldByName('CFOP').AsString);
+                sCFOP := ' ';// Trim(Form7.ibDataSet4.FieldByName('CFOP').AsString);
 
               bAchouItem := False;
               for iItem := 0 to Length(aCFOP) - 1 do
@@ -3421,15 +3868,18 @@ begin
               if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
               begin
                 sCSTCSOSN := Trim(Form7.ibDataSet27.FieldByName('CST_ICMS').AsString);
-                if sCSTCSOSN = '' then
-                  sCSTCSOSN := Trim(Form7.ibDataSet4.FieldByName('CST').AsString);
+                //if sCSTCSOSN = '' then
+                //  sCSTCSOSN := Trim(Form7.ibDataSet4.FieldByName('CST').AsString);
               end
               else
               begin
                 sCSTCSOSN := Trim(Form7.ibDataSet27.FieldByName('CSOSN').AsString);
-                if sCSTCSOSN = '' then
-                  sCSTCSOSN := Trim(Form7.ibDataSet4.FieldByName('CSOSN').AsString);
+                //if sCSTCSOSN = '' then
+                //  sCSTCSOSN := Trim(Form7.ibDataSet4.FieldByName('CSOSN').AsString);
               end;
+
+              if sCSTCSOSN = '' then
+                sCSTCSOSN := ' ';
 
               bAchouItem := False;
               for iItem := 0 to Length(aCSTCSOSN) - 1 do
@@ -3471,10 +3921,13 @@ begin
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CFOP.AsString+'<br></font></td>');
                 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CF.AsString+'<br></font></td>');
                 {Sandro Silva 2022-09-30 inicio}
+                {
                 if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet27CST_ICMS.AsString + '<br></font></td>')
                 else
                   WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet27CSOSN.AsString + '<br></font></td>');
+                }
+                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
                 {Sandro Silva 2022-09-30 fim}
                 WriteLn(F,'   </tr>');
                 //
@@ -3497,9 +3950,9 @@ begin
                 }
                 Write(F,Copy(ibDataSet4CF.AsString+Replicate(' ', 9), 1, 9)+' ');
                 if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-                  Write(F, Copy(Form7.ibDataSet27CST_ICMS.AsString + Replicate(' ', 9), 1, 9) + ' ')
+                  Write(F, Copy(sCSTCSOSN + Replicate(' ', 9), 1, 9) + ' ')
                 else
-                  Writeln(F, Copy(Form7.ibDataSet27CSOSN.AsString + Replicate(' ', 6), 1, 6) + ' ');
+                  Writeln(F, Copy(sCSTCSOSN + Replicate(' ', 6), 1, 6) + ' ');
                 {Sandro Silva 2022-09-30 fim}
                 //
               end;

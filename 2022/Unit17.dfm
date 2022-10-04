@@ -2497,7 +2497,7 @@ object Form17: TForm17
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 1
-    object Button2: TButton
+    object Button2: TBitBtn
       Left = 210
       Top = 5
       Width = 129
@@ -2505,7 +2505,7 @@ object Form17: TForm17
       Caption = 'Configura'#231#245'es'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
@@ -2513,7 +2513,7 @@ object Form17: TForm17
       OnClick = Button2Click
       OnEnter = SMALL_DBEdit6Enter
     end
-    object Button1: TButton
+    object Button1: TBitBtn
       Left = 380
       Top = 5
       Width = 129
@@ -2521,7 +2521,7 @@ object Form17: TForm17
       Caption = 'Ok'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
@@ -2529,7 +2529,7 @@ object Form17: TForm17
       OnClick = Button1Click
       OnEnter = SMALL_DBEdit6Enter
     end
-    object Button4: TButton
+    object Button4: TBitBtn
       Left = 570
       Top = 5
       Width = 129
@@ -2537,7 +2537,7 @@ object Form17: TForm17
       Caption = 'Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False

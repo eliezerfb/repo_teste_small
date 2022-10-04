@@ -12289,6 +12289,16 @@ object Form7: TForm7
     OnChange = SMALL_DBEdit3Change
     OnKeyDown = SMALL_DBEdit1KeyDown
   end
+  object BitBtn1: TBitBtn
+    Left = 656
+    Top = 96
+    Width = 75
+    Height = 25
+    Caption = 'TESTE '
+    TabOrder = 20
+    Visible = False
+    OnClick = BitBtn1Click
+  end
   object MainMenu1: TMainMenu
     AutoHotkeys = maManual
     AutoLineReduction = maManual
@@ -16539,7 +16549,7 @@ object Form7: TForm7
       
         '   VIPI, PFCPUFDEST, PICMSUFDEST, CST_PIS_COFINS, ALIQ_PIS, ALIQ' +
         '_COFINS, '
-      '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH)'
+      '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH, CSOSN)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -16555,7 +16565,7 @@ object Form7: TForm7
         'COFINS, '
       
         '   :ALIQ_PIS, :ALIQ_COFINS, :CST_IPI, :CST_ICMS, :ANVISA, :ENCRY' +
-        'PTHASH)')
+        'PTHASH, :CSOSN)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16639,7 +16649,8 @@ object Form7: TForm7
       '  CST_IPI = :CST_IPI,'
       '  CST_ICMS = :CST_ICMS,'
       '  ANVISA = :ANVISA,'
-      '  ENCRYPTHASH = :ENCRYPTHASH'
+      '  ENCRYPTHASH = :ENCRYPTHASH,'
+      '  CSOSN = :CSOSN'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     DataSource = DataSource15
@@ -16872,6 +16883,10 @@ object Form7: TForm7
       Origin = 'ITENS001.ENCRYPTHASH'
       Visible = False
       Size = 56
+    end
+    object ibDataSet16CSOSN: TStringField
+      FieldName = 'CSOSN'
+      Size = 3
     end
   end
   object DataSource16: TDataSource
@@ -21956,7 +21971,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21987,7 +22002,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22297,7 +22312,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22324,7 +22339,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

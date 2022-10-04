@@ -43,11 +43,11 @@ type
     ComboBox7: TComboBox;
     ComboBox1: TComboBox;
     Panel2: TPanel;
-    Button2: TButton;
-    Button1: TButton;
+    Button2: TBitBtn;
+    Button1: TBitBtn;
     DBGrid3: TDBGrid;
     WebBrowser3: TWebBrowser;
-    Button4: TButton;
+    Button4: TBitBtn;
     CheckBox1: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);

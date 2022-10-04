@@ -19,7 +19,7 @@ uses
   function MontaTela(sP1 : boolean):Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 
-const BUILD_DO_BANCO = '2022004';
+const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 
 type
@@ -8155,6 +8155,26 @@ begin
         Form1.ibDataset200.Close;
         //
       except end;
+      //
+      {Sandro Silva 2022-10-04 inicio}
+      try
+        //
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ITENS001 ADD CSOSN VARCHAR(3)');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+        
+        //
+      except
+      end;
+      {Sandro Silva 2022-10-04 fim}
       //
       Form22.Repaint;
       Mensagem22('Aguarde...');
