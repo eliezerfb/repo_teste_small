@@ -15,7 +15,7 @@ object Form19: TForm19
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate

@@ -1,4 +1,4 @@
-// Cadastro de produtos
+// Cadastro de produtos/clientes/fornecedores
 unit Unit10;
 
 interface
@@ -6,7 +6,8 @@ interface
 uses
 
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit, Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
+  Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
+  Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
   DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs;
 
@@ -1501,15 +1502,20 @@ begin
   //
   try
     Form7.ArquivoAberto.MoveBy(-1);
-  except end;  
+  except
+  end;  
   //
   try
     Form7.IBTransaction1.CommitRetaining;
     VerificaSeEstaSendoUsado(False);
     Form10.FormShow(Sender);
     Form10.FormActivate(Sender);
-    if ((Form7.ArquivoAberto.eof) or (bNovo)) then Form10.Image201Click(Sender) else bNovo := False;
-  except end;  
+    if ((Form7.ArquivoAberto.eof) or (bNovo)) then
+      Form10.Image201Click(Sender)
+    else
+      bNovo := False;
+  except
+  end;
   //
 end;
 
@@ -1517,6 +1523,7 @@ procedure TForm10.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
+
     bGravaEscolha := False;
     if Form7.bFlag = True then
     begin
@@ -1530,7 +1537,8 @@ begin
       begin
         if (Key = VK_UP) or (Key = VK_DOWN) then
         begin
-          if dBgrid1.CanFocus then dBgrid1.SetFocus;
+          if dBgrid1.CanFocus then
+            dBgrid1.SetFocus;
         end;
       end else
       begin
@@ -1538,23 +1546,31 @@ begin
         begin
           if (Key = VK_UP) or (Key = VK_DOWN) then
           begin
-            if dBgrid3.CanFocus then dBgrid3.SetFocus;
+            if dBgrid3.CanFocus then
+              dBgrid3.SetFocus;
           end else
           begin
-            if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
-            if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
+            if Key = VK_UP then
+              Perform(Wm_NextDlgCtl,-1,0);
+            if Key = VK_DOWN then
+              Perform(Wm_NextDlgCtl,0,0);
           end;
         end;
       end;
-    end else Form7.bFlag := True;
-  except ShowMessage('Erro 10/6 comunique o suporte técnico.') end;
+    end
+    else
+      Form7.bFlag := True;
+  except
+    ShowMessage('Erro 10/6 comunique o suporte técnico.')
+  end;
   //
 end;
 
 procedure TForm10.SMALL_DBEdit1Enter(Sender: TObject);
 begin
   // -------------------------------
-  with Sender as TSMALL_DBEdit do sPublicText := Text;
+  with Sender as TSMALL_DBEdit do
+    sPublicText := Text;
   //
   try
     if (Form7.sModulo = 'CAIXA') then
@@ -1736,8 +1752,10 @@ begin
               begin
                 if Form7.ibDataSet12CONTA.AsString = AllTrim(Text) then
 
-                if Form7.sModulo = 'CAIXA' then Form7.ibDataSet1NOME.AsString := form7.ibDataSet12NOME.AsString
-                  else Form7.ibDataSet7CONTA.AsString := form7.ibDataSet12NOME.AsString;
+                if Form7.sModulo = 'CAIXA' then
+                  Form7.ibDataSet1NOME.AsString := form7.ibDataSet12NOME.AsString
+                else
+                  Form7.ibDataSet7CONTA.AsString := form7.ibDataSet12NOME.AsString;
 
 
               end;
@@ -1750,20 +1768,24 @@ begin
         if sText <> '' then
         begin
           tProcura := Form7.ibDataSet12;
-          if Form7.sModulo = 'CAIXA' then tProcura := Form7.ibDataSet12;
+          if Form7.sModulo = 'CAIXA' then
+            tProcura := Form7.ibDataSet12;
           //
           if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
           begin
-            if DataField = 'NOME' then tProcura := Form7.ibDataSet2 else tProcura := Form7.ibDataSet12;
+            if DataField = 'NOME' then
+              tProcura := Form7.ibDataSet2
+            else
+              tProcura := Form7.ibDataSet12;
           end;
           //
-          if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then tProcura := Form7.ibDataSet21;
+          if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
+            tProcura := Form7.ibDataSet21;
           //
           if bGravaEscolha then
           begin
-            if Pos(AnsiUpperCase(sText),
-                 AnsiUpperCase(AllTrim(tProcura.FieldByName('NOME').AsString)))
-                  <> 0 then GravaEscolha
+            if Pos(AnsiUpperCase(sText), AnsiUpperCase(AllTrim(tProcura.FieldByName('NOME').AsString))) <> 0 then
+              GravaEscolha
             else
             begin
               //
@@ -2512,18 +2534,27 @@ begin
   try
     if Form7.bFlag = True then
     begin
-      if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
+      if Key = VK_RETURN then
+        Perform(Wm_NextDlgCtl,0,0);
       if dBgrid3.Visible = True then
       begin
-        if (Key = VK_UP) or (Key = VK_DOWN) then  if dBgrid3.CanFocus then dBgrid3.SetFocus;
+        if (Key = VK_UP) or (Key = VK_DOWN) then
+          if dBgrid3.CanFocus then
+            dBgrid3.SetFocus;
       end
       else
       begin
-        if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
-        if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
+        if Key = VK_UP then
+          Perform(Wm_NextDlgCtl,-1,0);
+        if Key = VK_DOWN then
+          Perform(Wm_NextDlgCtl,0,0);
       end;
-    end else Form7.bFlag := True;
-  except ShowMessage('Erro 10/66 comunique o suporte técnico.') end;
+    end
+    else
+      Form7.bFlag := True;
+  except
+    ShowMessage('Erro 10/66 comunique o suporte técnico.')
+  end;
 end;
 
 procedure TForm10.CheckBox1Exit(Sender: TObject);
@@ -3858,7 +3889,33 @@ end;
 procedure TForm10.SMALL_DBEdit1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
+
+  {Sandro Silva 2022-10-18 inicio}
+  //Key := Form1.BloqueiaCtrlXTField(Sender, Key, Shift);
+
+  if Sender.ClassType = TSMALL_DBEdit then
+  begin
+    if ((TSMALL_DBEdit(Sender).DataField = 'NOME') or (TSMALL_DBEdit(Sender).DataField = 'CGC') or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO')) and
+      (
+        (Form7.sModulo = 'RECEBER') or
+        (Form7.sModulo = 'PAGAR') or
+        (Form7.sModulo = 'CLIENTES') or
+        (Form7.sModulo = 'ESTOQUE')
+      ) then
+    begin
+      if (Trim(TSMALL_DBEdit(Sender).Text) = '') and (TSMALL_DBEdit(Sender).Field.OldValue <> '') then
+      begin
+        if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+          TSMALL_DBEdit(Sender).Field.DataSet.Edit;
+        TSMALL_DBEdit(Sender).Text := TSMALL_DBEdit(Sender).Field.AsString;
+      end;
+    end;
+  end;
+
+  {Sandro Silva 2022-10-18 fim}
+
 end;
 
 procedure TForm10.Image5Click(Sender: TObject);
@@ -3880,7 +3937,9 @@ begin
     ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
     AtualizaTela(True);
     //
-  except end;
+  except
+
+  end;
   //
 end;
 
@@ -3966,10 +4025,20 @@ begin
     //
     bProximo := False;
     //
-    if Form7.bSoLeitura then dbMemo1.Enabled := False else dbMemo1.Enabled := True;
-    if Form7.bSoLeitura then dbMemo2.Enabled := False else dbMemo2.Enabled := True;
-    if Form7.bSoLeitura then dbMemo3.Enabled := False else dbMemo3.Enabled := True;
-    if Form7.bSoLeitura then Form10.orelha_preco.TabVisible      := False;
+    if Form7.bSoLeitura then
+      dbMemo1.Enabled := False
+    else
+      dbMemo1.Enabled := True;
+    if Form7.bSoLeitura then
+      dbMemo2.Enabled := False
+    else
+      dbMemo2.Enabled := True;
+    if Form7.bSoLeitura then
+      dbMemo3.Enabled := False
+    else
+      dbMemo3.Enabled := True;
+    if Form7.bSoLeitura then
+      Form10.orelha_preco.TabVisible      := False;
     //
     if Form7.bSoLeitura then
     begin
@@ -3986,8 +4055,10 @@ begin
     //------------------------------
     //Todos os LAbel não visíveis
     //-------------------------------
-    for I := 0 to 30 do TLAbel(Form10.Components[I+LAbel1.ComponentIndex]).Visible := False;
-    for I := 0 to 30 do TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible := False;
+    for I := 0 to 30 do
+      TLabel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
+    for I := 0 to 30 do
+      TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible := False;
     //
     DbGrid1.visible              := False;
     DbGrid3.visible              := False;
@@ -4011,22 +4082,35 @@ begin
           if not ((Form7.sModulo = 'ESTOQUE') and (I>=23)) then
           begin
             //
-            if form7.sModulo = 'CLIENTES' then iTop := iTop + 24 else iTop := iTop + 25;
+            if form7.sModulo = 'CLIENTES' then
+              iTop := iTop + 24
+            else
+              iTop := iTop + 25;
             //
             if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
             begin
-              if I = 16 then iTop := 170 -25;
-              if I = 26 then iTop := 20;
-            end else if I = 18 then iTop := 15;
+              if I = 16 then
+                iTop := 170 -25;
+              if I = 26 then
+                iTop := 20;
+            end
+            else if I = 18 then
+              iTop := 15;
             //
             if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
             begin
-              if I > 25 then TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 380 +100
-                else if I > 15 then TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 200+100
-                  else TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 0;
+              if I > 25 then
+                TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 380 +100
+              else if I > 15 then
+                TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 200+100
+              else
+                TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 0;
             end else
             begin
-              if I > 17 then TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 360 + 70  else TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 0;
+              if I > 17 then
+                TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 360 + 70
+              else
+                TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Left := 0;
             end;
             //
             TLabel(Form10.Components[I-1+LAbel1.ComponentIndex]).Top              := iTop;
@@ -4036,12 +4120,18 @@ begin
             //
             if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
             begin
-              if I > 25 then TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left :=  480 +100
-                else if I > 15 then TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left :=  300+100
-                  else TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left := 100;
+              if I > 25 then
+                TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left :=  480 +100
+              else if I > 15 then
+                TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left :=  300+100
+              else
+                TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left := 100;
             end else
             begin
-              if I > 17 then TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left :=  460 + 70 else TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left := 100;
+              if I > 17 then
+                TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left :=  460 + 70
+              else
+                TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).Left := 100;
             end;
             //
             if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
@@ -4074,8 +4164,12 @@ begin
             end;
             //
             TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).width      := (Form7.ArquivoAberto.Fields[I-1].Displaywidth * 9)+10;
-            if TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).width > 340 then TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).width := 340;
-            if (Form7.ArquivoAberto.Fields[I-1].DataType <> ftFloat) then TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).MaxLength  := Form7.ArquivoAberto.Fields[I-1].Size else TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).MaxLength  := 22;
+            if TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).width > 340 then
+              TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).width := 340;
+            if (Form7.ArquivoAberto.Fields[I-1].DataType <> ftFloat) then
+              TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).MaxLength  := Form7.ArquivoAberto.Fields[I-1].Size
+            else
+              TSMALL_DBEdit(Form10.Components[I-1+SMALL_DBEdit1.ComponentIndex]).MaxLength  := 22;
             //
             if (Form7.TabelaAberta.Fields[I-1].fieldname = 'NOME') and
                              ((Form7.ArquivoAberto.Name = 'ibDataSet1') or
@@ -7188,11 +7282,14 @@ end;
 
 procedure TForm10.orelha_cadastroShow(Sender: TObject);
 begin
-  if SMALL_DBEdit1.CanFocus then SMALL_DBEdit2.SetFocus else
-   if SMALL_DBEdit2.CanFocus then SMALL_DBEdit2.SetFocus else
-     if SMALL_DBEdit3.CanFocus then SMALL_DBEdit3.SetFocus else
-       if SMALL_DBEdit4.CanFocus then SMALL_DBEdit4.SetFocus;
-
+  if SMALL_DBEdit1.CanFocus then
+    SMALL_DBEdit2.SetFocus
+  else if SMALL_DBEdit2.CanFocus then
+    SMALL_DBEdit2.SetFocus
+  else if SMALL_DBEdit3.CanFocus then
+    SMALL_DBEdit3.SetFocus
+  else if SMALL_DBEdit4.CanFocus then
+    SMALL_DBEdit4.SetFocus;
 end;
 
 procedure TForm10.Button4Click(Sender: TObject);

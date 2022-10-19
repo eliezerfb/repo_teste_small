@@ -80,6 +80,7 @@ begin
   try
     // Calcula o rateio pertencente ao caixa, pedido e item informados
 
+    // Seleciona o total bruto do item
     FIBQALTERACA.Close;
     FIBQALTERACA.SQL.Text :=
       'select A.PEDIDO, A.ITEM, A.CODIGO, A.CST_ICMS, coalesce(A.ALIQUICM, '''') as ALIQUICM, A.CST_PIS_COFINS, ' +
@@ -93,7 +94,7 @@ begin
       ' and (A.DESCRICAO <> ''<CANCELADO>'' ' +
       ' and A.DESCRICAO <> ''Desconto'' ' +
       ' and A.DESCRICAO <> ''Acréscimo'') ' +
-      ' and A.ITEM <> ' + QuotedStr(Item) + // Que tenha número do item informado no campo ALTERACA.ITEM
+      ' and A.ITEM = ' + QuotedStr(Item) + // Que tenha número do item informado no campo ALTERACA.ITEM
       ' order by A.REGISTRO';
     FIBQALTERACA.Open;
 

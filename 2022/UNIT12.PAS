@@ -340,8 +340,10 @@ function MostraFoto(P1:Boolean): Boolean;
 var
   BlobStream : TStream;
   jP2  : TJPEGImage;
+  bMostrarImage: Boolean;
 begin
   //
+  {Sandro Silva 2022-10-10 inicio
   if Form7.ibDataset4FOTO.BlobSize <> 0 then
   begin
     BlobStream:= Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO,bmRead);
@@ -373,7 +375,48 @@ begin
     Form12.Image5.Visible := False;
     Form12.Panel9.Visible := False;
   end;
+
   Result := True;
+  }
+  bMostrarImage := False;
+  Form12.Image5.Picture := nil;
+  Form12.Image5.Visible := False;
+  Form12.Panel9.Visible := False;
+
+  if Form7.ibDataset4FOTO.BlobSize <> 0 then
+  begin
+    BlobStream:= Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO,bmRead);
+    jp2 := TJPEGImage.Create;
+    try
+      try
+        jp2.LoadFromStream(BlobStream);
+        Form12.Image5.Picture.Assign(jp2);
+
+        if Form12.Image5.Picture.Width > Form12.Image5.Picture.Height then
+        begin
+          Form12.Image5.Width  := (StrToInt(StrZero((Form12.Image5.Picture.Width * (Form12.Panel9.Width / 2 / Form12.Image5.Picture.Width)),10,0)))*2;
+          Form12.Image5.Height := (StrToInt(StrZero((Form12.Image5.Picture.Height* (Form12.Panel9.Width / 2 / Form12.Image5.Picture.Width)),10,0)))*2;
+        end else
+        begin
+          Form12.Image5.Width  := (StrToInt(StrZero((Form12.Image5.Picture.Width * (Form12.Panel9.Height / 2 / Form12.Image5.Picture.Height)),10,0)))*2;
+          Form12.Image5.Height := (StrToInt(StrZero((Form12.Image5.Picture.Height* (Form12.Panel9.Height / 2 / Form12.Image5.Picture.Height)),10,0)))*2;
+        end;
+        Form12.Image5.Left := (Form12.Panel9.Width  - Form12.Image5.Width) div 2;
+        Form12.Image5.Top  := (Form12.Panel9.Height - Form12.Image5.Height) div 2;
+        Form12.Image5.Repaint;
+        Form12.Panel9.Visible := True;
+        Form12.Image5.Visible := True;
+
+      except
+      end;
+    finally
+      BlobStream.Free;
+      jp2.Free;
+    end;
+  end;
+
+  Result := True;
+  {Sandro Silva 2022-10-10 fim}
 end;
 
 function ResizeLogoDanfe(P1:Boolean): Boolean;

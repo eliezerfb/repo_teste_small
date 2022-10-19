@@ -9,8 +9,13 @@ uses
   DBTables, Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
   mais3, unit2,unit3, IniFiles, Unit4, Unit10, SmallFunc, Registry, HtmlHelp,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
-  IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf, oxmldom, XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils, WinTypes, WinProcs,
-  LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX;
+  IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
+  oxmldom, XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
+  WinTypes, WinProcs,
+  LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
+  , DBCtrls
+  , SMALL_DBEdit
+  ;
 
 
   function LeLabels(sP1: Boolean): Boolean;
@@ -468,6 +473,8 @@ type
     function Small_InputForm(sP1, sP2, sP3: String) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
     function NcmDeMedicamentos(sNcm: String): Boolean;
+    function BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
+      Shift: TShiftState): Word; // Sandro Silva 2022-10-18
 
   end;
   //
@@ -4118,7 +4125,10 @@ begin
   end;
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  if AllTrim(Mais1Ini.ReadString('Html','Html1','1')) = '1' then Form1.bHtml1 := True else Form1.bHtml1 := False;
+  if AllTrim(Mais1Ini.ReadString('Html','Html1','1')) = '1' then
+    Form1.bHtml1 := True
+  else
+    Form1.bHtml1 := False;
   if AllTrim(Mais1Ini.ReadString('Html','Html1','1')) = '3' then
   begin
     Form1.bHtml1 := True;
@@ -8523,7 +8533,8 @@ end;
 procedure TForm1.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('liberar_modulos.htm')));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('liberar_modulos.htm')));
 end;
 
 procedure TForm1.Grupos1Click(Sender: TObject);
@@ -15442,7 +15453,65 @@ begin
     Result := True;
 end;
 
-end.          
+function TForm1.BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
+  Shift: TShiftState): Word;
+// Bloqueia o CTRL + X (Recortar) em componentes de edição, acessando campos NOME, CGC, DESCRICAO
+// Funcionando com TSmall_DBEdit, TDBEdit, TDBMemo, TDBGrid
+// Avaliar necessidade de extender a outros tipos de edição
+var
+  Field: TField;
+begin
+  {Sandro Silva 2022-10-18 inicio}
+  Result := Key;
+  try
+    if Sender <> nil then
+    begin
+      Field := nil;
+      if Sender.ClassType = TSmall_DBEdit then
+        Field := TSmall_DBEdit(Sender).Field;
+      if Sender.ClassType = TDBEdit then
+        Field := TDBEdit(Sender).Field;
+      if Sender.ClassType = TDBMemo then
+        Field := TDBMemo(Sender).Field;
+      if Sender.ClassType = TDBGrid then
+        Field := TDBGrid(Sender).SelectedField;
+
+      if Field <> nil then
+      begin
+        if ((Field.FieldName = 'NOME') or (Field.FieldName = 'CGC') or (Field.FieldName = 'DESCRICAO'))  and
+          (
+            (Form7.sModulo = 'RECEBER') or
+            (Form7.sModulo = 'PAGAR') or
+            (Form7.sModulo = 'CLIENTES') or
+            (Form7.sModulo = 'ESTOQUE')
+          )
+         then
+        begin
+          if ((Key = Ord('X')) or (Key = Ord('x'))) and (ssCtrl in Shift) then
+          begin
+
+            Result := 0;
+
+            if not (Field.DataSet.State in [dsEdit, dsInsert]) then
+              Field.DataSet.Edit;
+
+            if Sender.ClassType = TSmall_DBEdit then
+              TSmall_DBEdit(Sender).Text := Field.OldValue
+            else if Sender.ClassType = TDBEdit then
+              TDBEdit(Sender).Text := Field.OldValue
+            else if Sender.ClassType = TDBGrid then
+              TDBGrid(Sender).SelectedField.Text := Field.OldValue;
+
+          end;
+        end;
+      end;
+    end;
+  except
+  end;
+  {Sandro Silva 2022-10-18 fim}
+end;
+
+end.
 // set generator G_SERIE1 to 0
 // set generator G_SERIERPS to 40
 //                                                                     //

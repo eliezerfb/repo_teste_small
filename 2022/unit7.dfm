@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 535
-  Top = 193
+  Left = 521
+  Top = 184
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -12289,16 +12289,6 @@ object Form7: TForm7
     OnChange = SMALL_DBEdit3Change
     OnKeyDown = SMALL_DBEdit1KeyDown
   end
-  object BitBtn1: TBitBtn
-    Left = 656
-    Top = 96
-    Width = 75
-    Height = 25
-    Caption = 'TESTE '
-    TabOrder = 20
-    Visible = False
-    OnClick = BitBtn1Click
-  end
   object MainMenu1: TMainMenu
     AutoHotkeys = maManual
     AutoLineReduction = maManual
@@ -14170,13 +14160,13 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de IPI...'
         OnClick = RelatriodeIPI1Click
       end
-      object RelatriodePISCOFINS1: TMenuItem
-        Caption = 'Relat'#243'rio de PIS/COFINS...'
-        OnClick = RelatriodePISCOFINS1Click
-      end
       object RelatriodePISCOFINSCupomFiscal1: TMenuItem
         Caption = 'Relat'#243'rio de PIS/COFINS (Cupom Fiscal)...'
         OnClick = RelatriodePISCOFINSCupomFiscal1Click
+      end
+      object RelatriodePISCOFINS1: TMenuItem
+        Caption = 'Relat'#243'rio de PIS/COFINS (NF-e)...'
+        OnClick = RelatriodePISCOFINS1Click
       end
       object Relatriodeoramentospendentes1: TMenuItem
         Caption = 'Relat'#243'rio de or'#231'amentos pendentes...'
@@ -16886,6 +16876,7 @@ object Form7: TForm7
     end
     object ibDataSet16CSOSN: TStringField
       FieldName = 'CSOSN'
+      Visible = False
       Size = 3
     end
   end
@@ -21971,7 +21962,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22002,7 +21993,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22312,7 +22303,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPE' +
+      'C'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22339,7 +22331,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

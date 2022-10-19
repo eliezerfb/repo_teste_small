@@ -104,7 +104,7 @@ object Form38: TForm38
       OnChange = Edit1Change
       OnExit = Edit1Exit
     end
-    object Button3: TButton
+    object Button3: TBitBtn
       Left = 100
       Top = 220
       Width = 100
@@ -120,7 +120,7 @@ object Form38: TForm38
       TabOrder = 0
       OnClick = Button3Click
     end
-    object Button1: TButton
+    object Button1: TBitBtn
       Left = 215
       Top = 220
       Width = 100
@@ -135,7 +135,7 @@ object Form38: TForm38
       TabOrder = 1
       OnClick = Button1Click
     end
-    object Button2: TButton
+    object Button2: TBitBtn
       Left = 330
       Top = 220
       Width = 100
@@ -338,7 +338,7 @@ object Form38: TForm38
         Align = alClient
         CalColors.BackColor = clWhite
         CalColors.TitleBackColor = 14456320
-        Date = 37168.711515798610000000
+        Date = 37168.599565462970000000
         ShowToday = False
         ShowTodayCircle = False
         TabOrder = 0

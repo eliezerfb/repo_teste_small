@@ -67,7 +67,10 @@ begin
   //                          //
   Button1.Enabled := False;
   iContador := 0;
-  if (form7.sModulo = 'RECEBER') or (form7.sModulo = 'ESTOQUE') or (form7.sModulo = 'CLIENTES') or (form7.sModulo = 'FORNECED') then jCampos := 6 else jCampos := 0;
+  if (form7.sModulo = 'RECEBER') or (form7.sModulo = 'ESTOQUE') or (form7.sModulo = 'CLIENTES') or (form7.sModulo = 'FORNECED') then
+    jCampos := 6
+  else
+    jCampos := 0;
   //
   //  close;
   //
@@ -77,8 +80,10 @@ begin
   // -------- //
   // Zeresima //
   // -------- //
-  for I := 0 to 100 do fTotal[I] := 0;
-  for I := 0 to 100 do rTotal[I] := 0;
+  for I := 0 to 100 do
+    fTotal[I] := 0;
+  for I := 0 to 100 do
+    rTotal[I] := 0;
   sGRUPO := '';
   //
   if not Form1.bHtml1 then
@@ -249,9 +254,15 @@ begin
       //
       bImprimir := True;
       //
-      if Form7.sModulo = 'CLIENTES' then if Form7.ibDataSet2ATIVO.AsString='1' then bImprimir := False;
-      if Form7.sModulo = 'ESTOQUE'  then if Form7.ibDataSet4ATIVO.AsString='1' then bImprimir := False;
-      if Form7.sModulo = 'RECEBER'  then if Form7.ibDataSet7ATIVO.AsString='1' then bImprimir := False;
+      if Form7.sModulo = 'CLIENTES' then
+        if Form7.ibDataSet2ATIVO.AsString='1' then
+          bImprimir := False;
+      if Form7.sModulo = 'ESTOQUE'  then
+        if Form7.ibDataSet4ATIVO.AsString='1' then
+          bImprimir := False;
+      if Form7.sModulo = 'RECEBER'  then
+        if Form7.ibDataSet7ATIVO.AsString='1' then
+          bImprimir := False;
       //
       // Divide em grupos
       //
@@ -793,9 +804,15 @@ begin
         //
         bImprimir := True;
         //
-        if Form7.sModulo = 'CLIENTES' then if Form7.ibDataSet2ATIVO.AsString='1' then bImprimir := False;
-        if Form7.sModulo = 'ESTOQUE'  then if Form7.ibDataSet4ATIVO.AsString='1' then bImprimir := False;
-        if Form7.sModulo = 'RECEBER'  then if Form7.ibDataSet7ATIVO.AsString='1' then bImprimir := False;
+        if Form7.sModulo = 'CLIENTES' then
+          if Form7.ibDataSet2ATIVO.AsString = '1' then
+            bImprimir := False;
+        if Form7.sModulo = 'ESTOQUE'  then
+          if Form7.ibDataSet4ATIVO.AsString = '1' then
+            bImprimir := False;
+        if Form7.sModulo = 'RECEBER'  then
+          if Form7.ibDataSet7ATIVO.AsString = '1' then
+            bImprimir := False;
         //
         if bImprimir then
         begin

@@ -1433,7 +1433,6 @@ type
     ibDataSet27CSOSN: TStringField;
     RelatriodePISCOFINSCupomFiscal1: TMenuItem;
     ibDataSet16CSOSN: TStringField;
-    BitBtn1: TBitBtn;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2037,7 +2036,6 @@ type
     procedure PrvisualizarDANFE1Click(Sender: TObject);
     procedure ibDataSet35DESCRICAOChange(Sender: TField);
     procedure RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
-    procedure BitBtn1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2182,21 +2180,35 @@ begin
 end;
 
 function BuscaNumeroNFSe(bP1: Boolean) : Boolean;
+  function NumeroNFSeNaoImportadoDoRetorno: Boolean;
+  begin
+    Result := False;
+    if pChar(Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)) = '000000000' then
+      Result := True;
+  end;
 begin
   //
   try
-    if pChar(Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)) = '000000000' then
+    // Sandro Silva 2022-10-06 if pChar(Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)) = '000000000' then
+    if NumeroNFSeNaoImportadoDoRetorno then
     begin
       //
-      if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+      if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset15.Edit;
       if RetornaValorDaTagNoCampo('numero_nfse', Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
         Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
 
-      if RetornaValorDaTagNoCampo('tc:numero_nfse', Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
-        Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('tc:numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('tc:serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
+      {Sandro Silva 2022-10-06 inicio}
+      if NumeroNFSeNaoImportadoDoRetorno then
+      begin
+        if RetornaValorDaTagNoCampo('tc:Numero', Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
+          Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('tc:Numero',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('tc:Serie',Form7.ibDAtaSet15RECIBOXML.AsString));
+      end;
+      {Sandro Silva 2022-10-06 fim}
 
       //
-      if pChar(Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)) = '000000000' then
+      // Sandro Silva 2022-10-06 if pChar(Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)) = '000000000' then
+      if NumeroNFSeNaoImportadoDoRetorno then
       begin
         if AllTrim(RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString)) <> '' then
         begin
@@ -9458,7 +9470,7 @@ begin
 
         if bButton = IDYES  then
         begin
-        {Sandro Silva 2022-09-29 inicio
+          {Sandro Silva 2022-09-29 inicio
           Clipboard.SetTextBuf(pchar(Form7.ibDataSet15NFEXML.AsString));
           ShellExecute( 0, 'Open',pChar('http://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx'),'','', SW_SHOWMAXIMIZED);
           }
@@ -13156,7 +13168,8 @@ begin
     ShowMessage('Nome inválido (não pode ficar em branco).');
   end else
   begin
-    if Valida_Campo('CLIFOR',AllTrim(Text),'NOME','Este cliente já foi cadastrado') then ibDataSet2NOME.AsString := AllTrim(Text);
+    if Valida_Campo('CLIFOR',AllTrim(Text),'NOME','Este cliente já foi cadastrado') then
+      ibDataSet2NOME.AsString := AllTrim(Text);
   end;
 end;
 
@@ -13638,7 +13651,8 @@ begin
   sModulo := 'Histórico';
   Form38.ShowModal;
   sModulo := sModuloAnterior;
-  if Form38.Caption <> 'Cancelar' then Form10.Image203Click(Sender);
+  if Form38.Caption <> 'Cancelar' then
+    Form10.Image203Click(Sender);
   Form7.ArquivoAberto.EnableControls;
   //
 end;
@@ -13884,6 +13898,12 @@ begin
     HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
   if Form7.sModulo <> 'RETRIBUTA' then
     Form7.ibDataSet16.EnableControls;
+  {Sandro Silva 2022-10-18 inicio}
+  if Sender.ClassType = TDBGrid then
+  begin
+    Key := Form1.BloqueiaCtrlXTField(Sender, Key, Shift);
+  end;
+  {Sandro Silva 2022-10-19 final}  
 end;
 
 procedure TForm7.ibDataSet1NOMEChange(Sender: TField);
@@ -14629,7 +14649,7 @@ var
   I, OldBkMode : Integer;
   yRect, xRect : tREct;
   sTex : String;
-begin 
+begin
   //
   try
     //
@@ -16203,7 +16223,15 @@ begin
     begin
       ShowMessage('CPF ou CNPJ inválido!');
     end;
-  end else ibDataSet2CGC.AsString := '';
+  end
+  else
+  begin
+    if (ibDataSet2CGC.OldValue <> '') then
+      ibDataSet2CGC.AsString := ibDataSet2CGC.OldValue
+    else
+      ibDataSet2CGC.AsString := '';
+  end;
+
   //
   if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
   begin
@@ -16378,7 +16406,8 @@ begin
     ShowMessage('O valor unitário não pode aceitar valor negativo ou nulo.');
     if Form7.fPrecoAnterior <= 0 then Form7.fPrecoAnterior := 0.01;
     Form7.ibDataSet4PRECO.AsFloat := Form7.fPrecoAnterior;
-    if Form10.Visible then Form10.SMALL_DBEdit7.Text := Form7.ibDataSet4PRECO.AsString;
+    if Form10.Visible then
+      Form10.SMALL_DBEdit7.Text := Form7.ibDataSet4PRECO.AsString;
     Abort;
   end else ibDataSet4ALTERADO.AsString := '1';
   //
@@ -17888,7 +17917,8 @@ begin
       Form10.Button1.SetFocus;
     end;
   end;
-  if ibDataSet8VALOR_PAGO.AsFloat < 0 then ibDataSet8VALOR_PAGO.AsFloat := 0;
+  if ibDataSet8VALOR_PAGO.AsFloat < 0 then
+    ibDataSet8VALOR_PAGO.AsFloat := 0;
 end;
 
 procedure TForm7.ibDataSet8VALOR_PAGOValidate(Sender: TField);
@@ -23736,7 +23766,10 @@ procedure TForm7.DBGrid1ColEnter(Sender: TObject);
 begin
   //
   ArquivoAberto.DisableControls;
-  if ArquivoAberto.MoveBy(+1) = 1 then ArquivoAberto.MoveBy(-1) else if ArquivoAberto.MoveBy(-1) = -1 then ArquivoAberto.MoveBy(+1);
+  if ArquivoAberto.MoveBy(+1) = 1 then
+    ArquivoAberto.MoveBy(-1)
+  else if ArquivoAberto.MoveBy(-1) = -1 then
+    ArquivoAberto.MoveBy(+1);
   ArquivoAberto.EnableControls;
   //
 end;
@@ -35984,7 +36017,7 @@ begin
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
-  sModulo := 'Relatório de PIS/COFINS';
+  sModulo := 'Relatório de PIS/COFINS (NF-e)';
   Form38.ShowModal; // Ok
   //
 end;
@@ -36405,7 +36438,9 @@ begin
     //
     bI := True;
     //
-    for I := 0 to Exibir1.Count -1 do if Exibir1.Items[I].Caption = 'Só '+Form10.ComboBox8.Items[J] then bI := False;
+    for I := 0 to Exibir1.Count -1 do
+      if Exibir1.Items[I].Caption = 'Só '+Form10.ComboBox8.Items[J] then
+        bI := False;
     //
     if bI then
     begin
@@ -37665,7 +37700,9 @@ begin
             jp2.Free;
           end;
           //
-        end else Form10.Image5.Picture := Form10.Image3.Picture;
+        end
+        else
+          Form10.Image5.Picture := Form10.Image3.Picture;
         //
         Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataSet2.FieldByName('REGISTRO').AsString+'.jpg');
         //
@@ -38995,14 +39032,17 @@ begin
               Form10.Image5.Picture.Assign(jp2);
               Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataSet99999REGISTRO.AsString+'.jpg');
               //
-            end else Form10.Image5.Picture := Form10.Image3.Picture;
+            end
+            else
+              Form10.Image5.Picture := Form10.Image3.Picture;
             //
             Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataSet99999REGISTRO.AsString+'.jpg');
             //
             if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
             begin
               WriteLn(F,'<td nowrap valign=top bgcolor=#FFFFFF align=right><img src="'+'_t_'+Form7.ibDataSet99999.FieldByName('REGISTRO').AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet99999.FieldByName('NOME').AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (100 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (100 / Form10.Image5.Picture.Width)),10,0)+'></td>');
-            end else
+            end
+            else
             begin
               WriteLn(F,'<td nowrap valign=top bgcolor=#FFFFFF align=right><img src="'+'_t_'+Form7.ibDataSet99999.FieldByName('REGISTRO').AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet99999.FieldByName('REGISTRO').AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (100 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (100 / Form10.Image5.Picture.Height)),10,0)+'></td>');
             end;
@@ -39043,9 +39083,11 @@ begin
         Mais2Ini.Free;
         //
         ShellExecute( 0, 'Open', 'graficos.exe', 'vendedores.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
-        while not FileExists(Form1.sAtual+'\vendedores.png') do sleep(100);
+        while not FileExists(Form1.sAtual+'\vendedores.png') do
+          Sleep(100);
         ShellExecute( 0, 'Open', 'graficos.exe', 'contatos.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
-        while not FileExists(Form1.sAtual+'\contatos.png') do sleep(100);
+        while not FileExists(Form1.sAtual+'\contatos.png') do
+          Sleep(100);
         //
         WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
         WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
@@ -39096,7 +39138,8 @@ begin
     //
     AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
     //
-  except end;
+  except
+  end;
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
   //
@@ -39119,11 +39162,15 @@ begin
       Form7.IBQuery1.SQL.Add('update ESTOQUE set CEST='+QuotedStr(Text)+' where CF='+QuotedStr(ibDataSet4CF.AsString)+' ');
       Form7.IBQuery1.Open;
       //
-      if Form10.Active then bForm10 := 1 else bForm10 := 0;
+      if Form10.Active then
+        bForm10 := 1
+      else
+        bForm10 := 0;
       //
       Screen.Cursor            := crHourGlass;
       AgendaCommit(True);
-      if bForm10 = 1 then Form10.Close;
+      if bForm10 = 1 then
+        Form10.Close;
       Form7.Close;
       Form7.Show;
       Form7.ibDataSet13.Edit;
@@ -39136,25 +39183,29 @@ begin
         Form10.ComboBox5.SetFocus;
       end;
       //
-    end else
+    end
+    else
     begin
       ibDataSet4CEST.AsString := Text;
     end;
     //
-  except end;
+  except
+
+  end;
   //
 end;
 
 procedure TForm7.Button1Click(Sender: TObject);
 var
-  I : Integer;
+  I: Integer;
   f: TextFile;
-  sBanco, sMensagem, sLinha : String;
+  sBanco, sMensagem, sLinha: String;
 begin
   //
   sBanco := '000';
   //
-  if not Form7.OpenDialog4.Execute then Exit;
+  if not Form7.OpenDialog4.Execute then
+    Exit;
   //
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
@@ -39451,7 +39502,7 @@ begin
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Relatório de produtos monofásicos';
+  Form7.sModulo := 'Relatório de produtos monofásicos (Cupom Fiscal)';
   Form38.ShowModal; // Ok
   //
 end;
@@ -40997,6 +41048,19 @@ var
   fValorISSRetido, fValorImpostosFederaisRetidos : Real;
   sPadraoSistema, sTipoPagamentoAPrazo: String;
   //
+  procedure InformaCodVerificadorAutenticidadeParaIMP;
+  begin
+    if Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> 0 then
+    begin
+      Writeln(F,'<NumeroDaNFSe>'+LimpaNumero(Copy(Form7.ibDAtaSet15RECIBOXML.AsString,Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString)+32,16))+'</NumeroDaNFSe>');
+    end else
+    begin
+      if RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+        Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
+      else
+        Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
+    end;
+  end;
 begin
   //
   Screen.Cursor            := crHourGlass;
@@ -41060,17 +41124,26 @@ begin
     end;
   end;
   //
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'2');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','RegimeEspecialTributacao' ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','RegimeEspecialTributacao' ,'1');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','NaturezaTributacao'       ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','NaturezaTributacao'       ,'1');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','IncentivoFiscal'          ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','IncentivoFiscal'          ,'1');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoTributacao'           ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoTributacao'           ,'6');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'1');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Operacao'                 ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Operacao'                 ,'A');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','CodigoCnae'               ,pchar(Form7.ibDataSet13CNAE.AsString) );
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'2');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','RegimeEspecialTributacao' ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','RegimeEspecialTributacao' ,'1');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','NaturezaTributacao'       ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','NaturezaTributacao'       ,'1');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','IncentivoFiscal'          ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','IncentivoFiscal'          ,'1');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoTributacao'           ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoTributacao'           ,'6');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'1');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Operacao'                 ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Operacao'                 ,'A');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','CodigoCnae'               ,pchar(Form7.ibDataSet13CNAE.AsString) );
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'') = '' then
+    Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
   //
-  sPadraoSistema := UpperCase(Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Padrao','?'));
+  sPadraoSistema       := UpperCase(Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Padrao','?'));
   sTipoPagamentoAPrazo := Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
   //
   if (Mais1Ini.ReadString('NFSE','CNPJ','')<>LimpaNumero(Form7.ibDAtaset13CGC.AsString)) or
@@ -41115,7 +41188,10 @@ begin
             Writeln(F,'<Status>EM PROCESSAMENTO</Status>');
             Writeln(F,'<tx2>'+AllTrim(RetornaValorDaTagNoCampoCRLF('tx2',Form7.ibDAtaSet15RECIBOXML.AsString))+'</tx2>');
             Writeln(F,'<XMLdeEvio>'+AllTrim(Form7.ibDAtaSet15NFEXML.AsString)+'</XMLdeEvio>');
-            if RetornaValorDaTagNoCampo('Motivo'      ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<Motivo>'        + RetornaValorDaTagNoCampo('Motivo'      ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Motivo>')       else Writeln(F,'<Motivo></Motivo>');
+            if RetornaValorDaTagNoCampo('Motivo'      ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+              Writeln(F,'<Motivo>'        + RetornaValorDaTagNoCampo('Motivo'      ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Motivo>')
+            else
+              Writeln(F,'<Motivo></Motivo>');
             //
 //            if (sPadraoSistema = 'JOINVILLESC') then
 //            begin
@@ -41159,27 +41235,79 @@ begin
                     //
                     if (sPadraoSistema = 'IPM') then
                     begin
+                      {Sandro Silva 2022-10-10 inicio
                       if Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> 0 then
                       begin
                         Writeln(F,'<NumeroDaNFSe>'+LimpaNumero(Copy(Form7.ibDAtaSet15RECIBOXML.AsString,Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString)+32,16))+'</NumeroDaNFSe>');
                       end else
                       begin
-                        if RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>') else Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
+                        if RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
+                        else
+                          Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
                       end;
+                      }
+                      InformaCodVerificadorAutenticidadeParaIMP;
+                      {Sandro Silva 2022-10-10 fim}
                     end else
                     begin
-                      if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>') else Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
-                      if RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<NumeroDoRPS>'   + RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDoRPS>')  else Writeln(F,'<NumeroDoRPS>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'</NumeroDoRPS>');
-                      if RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<Tipo>'          + RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Tipo>')         else Writeln(F,'<Tipo>1</Tipo>');
-                      if RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<Protocolo>'     + RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Protocolo>')    else Writeln(F,'<Protocolo></Protocolo>');
+                      {Sandro Silva 2022-10-18 inicio
+                      if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                        Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
+                      else
+                        Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
+                      if RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                        Writeln(F,'<NumeroDoRPS>'   + RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDoRPS>')
+                      else
+                        Writeln(F,'<NumeroDoRPS>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'</NumeroDoRPS>');
+                      if RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                        Writeln(F,'<Tipo>'          + RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Tipo>')
+                      else
+                        Writeln(F,'<Tipo>1</Tipo>');
+                      if RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                        Writeln(F,'<Protocolo>'     + RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Protocolo>')
+                      else
+                        Writeln(F,'<Protocolo></Protocolo>');
                       //
                       if (sPadraoSistema = 'IPM20') then
                       begin
+                        InformaCodVerificadorAutenticidadeParaIMP; // Sandro Silva 2022-10-10
                         Writeln(F,'<SerieDoRPS>01</SerieDoRPS>');
                       end else
                       begin
                         if RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<SerieDoRPS>'    + RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</SerieDoRPS>')   else Writeln(F,'<SerieDoRPS>001</SerieDoRPS>');
                       end;
+                      }
+                      //
+                      if (sPadraoSistema = 'IPM20') then
+                      begin
+                        InformaCodVerificadorAutenticidadeParaIMP; // Sandro Silva 2022-10-10
+                        Writeln(F,'<SerieDoRPS>01</SerieDoRPS>');
+                      end else
+                      begin
+                        if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
+                        else
+                          Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
+                        if RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<NumeroDoRPS>'   + RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDoRPS>')
+                        else
+                          Writeln(F,'<NumeroDoRPS>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'</NumeroDoRPS>');
+                        if RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<Tipo>'          + RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Tipo>')
+                        else
+                          Writeln(F,'<Tipo>1</Tipo>');
+                        if RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<Protocolo>'     + RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Protocolo>')
+                        else
+                          Writeln(F,'<Protocolo></Protocolo>');
+
+                        if RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<SerieDoRPS>'    + RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</SerieDoRPS>')
+                        else
+                          Writeln(F,'<SerieDoRPS>001</SerieDoRPS>');
+                      end;
+                      {Sandro Silva 2022-10-18 fim}
                       //
                     end;
                   end;
@@ -42800,12 +42928,6 @@ begin
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de PIS/COFINS (Cupom Fiscal)';
   Form38.ShowModal; // Ok
-
-end;
-
-procedure TForm7.BitBtn1Click(Sender: TObject);
-begin
-  BuscaNumeroNFSe(True);
 end;
 
 end.
