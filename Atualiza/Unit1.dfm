@@ -13082,7 +13082,7 @@ object Form1: TForm1
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
-    object CheckBox11: TCheckBox
+    object ckbIBPT: TCheckBox
       Left = 20
       Top = 20
       Width = 200

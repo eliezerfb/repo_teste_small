@@ -1,3 +1,4 @@
+// Cadastro Emitente
 unit Unit17;
 
 interface
@@ -69,6 +70,7 @@ type
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
+    procedure SMALL_DBEdit4Exit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -148,7 +150,8 @@ end;
 procedure TForm17.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config_emitente.htm')));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config_emitente.htm')));
   if Key = VK_RETURN then
   begin
     Perform(Wm_NextDlgCtl,0,0);
@@ -158,7 +161,8 @@ begin
   begin
     if (Key = VK_UP) or (Key = VK_DOWN) then
     begin
-      if dBgrid3.CanFocus then dBgrid3.SetFocus;
+      if dBgrid3.CanFocus then
+        dBgrid3.SetFocus;
     end;
   end else
   begin
@@ -180,7 +184,8 @@ begin
   try
     Form7.ibDataSet13.Cancel;
     Form1.AvisoConfig(True);
-  except end;
+  except
+  end;
   //
   if Form1.iReduzida = 99 then
   begin
@@ -245,7 +250,8 @@ begin
       //
     end;
     //
-  except end;
+  except
+  end;
   //
   Button1.Left  := Panel2.Width - Button1.Width - 10;
   Button2.Left  := Button1.Left - 140;
@@ -279,7 +285,8 @@ begin
   begin
     if Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text) <> '' then
     begin
-      if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
+      if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset13.Edit;
       Form17.SMALL_DBEdit7.Text := FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text));
       Form7.ibDataSet13CGCSetText(Form7.ibDataset13CGC,Form17.SMALL_DBEdit7.Text);
     end;
@@ -290,7 +297,8 @@ end;
 procedure TForm17.ComboBox1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config_emitente.htm')));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config_emitente.htm')));
   if Key = VK_RETURN then
   begin
     Perform(Wm_NextDlgCtl,0,0);
@@ -320,7 +328,8 @@ begin
     dBGrid3.DataSource := Form7.DataSource39; // Municipios
     dBGrid3.Visible    := True;
     //
-  except end;
+  except
+  end;
 end;
 
 procedure TForm17.SMALL_DBEdit6Enter(Sender: TObject);
@@ -396,8 +405,10 @@ procedure TForm17.DBGrid3DblClick(Sender: TObject);
 begin
   try
     Form7.ibDataSet13MUNICIPIO.AsString := Form7.IBDataSet39NOME.AsString;
-    if SMALL_DBEdit4.CanFocus then SMALL_DBEdit4.SetFocus;
-  except end;
+    if SMALL_DBEdit4.CanFocus then
+      SMALL_DBEdit4.SetFocus;
+  except
+  end;
 end;
 
 procedure TForm17.SMALL_DBEdit4Change(Sender: TObject);
@@ -408,7 +419,8 @@ begin
     begin
       Form17.SMALL_DBEdit4Enter(Sender);
     end;
-  except end;
+  except
+  end;
   //
   try
     if Length(AllTrim(Form7.IBDataSet13ESTADO.AsString)) = 2 then
@@ -425,7 +437,8 @@ begin
       Form7.IBDataSet39.Open;
     end;
     //
-  except end;
+  except
+  end;
   //
 end;
 
@@ -462,6 +475,46 @@ begin
       Mais1Ini.Free;
     end;
   end;
+end;
+
+procedure TForm17.SMALL_DBEdit4Exit(Sender: TObject);
+begin
+  {Sandro Silva 2022-10-24 inicio
+  //
+  if (Form7.ibDataSet39NOME.AsString <> '') or (Trim(SMALL_DBEdit4.Text) <> '') then
+  begin
+    //
+    if Length(AllTrim(Form7.ibDataSet13ESTADO.AsString)) <> 2 then
+    begin
+      Form7.IBDataSet39.Close;
+      Form7.IBDataSet39.SelectSQL.Clear;
+      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
+      Form7.IBDataSet39.Open;
+    end else
+    begin
+      Form7.IBDataSet39.Close;
+      Form7.IBDataSet39.SelectSQL.Clear;
+      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+      Form7.IBDataSet39.Open;
+    end;
+    //
+    Form7.ibDataSet39.Locate('NOME',AllTrim(SMALL_DBEdit4.Text),[loCaseInsensitive, loPartialKey]);
+    //
+    if AllTrim(SMALL_DBEdit4.Text) = '' then
+      Form7.ibDataSet13MUNICIPIO.AsString := SMALL_DBEdit4.Text
+    else if Pos(AnsiUpperCase(AllTrim(SMALL_DBEdit4.Text)),AnsiUpperCase(Form7.ibDataSet39NOME.AsString)) <> 0 then
+      Form7.ibDataSet13MUNICIPIO.AsString := Form7.ibDataSet39NOME.AsString
+    else
+    begin
+      ShowMessage('Município inválido.');
+      SMALL_DBEdit4.SetFocus;
+      Abort;
+    end;
+  end
+  else
+    Form7.ibDataSet13MUNICIPIO.AsString := Text;
+  //
+  {Sandro Silva 2022-10-24 fim}
 end;
 
 end.

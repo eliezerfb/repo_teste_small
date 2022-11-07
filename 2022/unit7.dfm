@@ -15231,6 +15231,7 @@ object Form7: TForm7
       DisplayLabel = 'Munic'#237'pio'
       DisplayWidth = 40
       FieldName = 'MUNICIPIO'
+      OnSetText = ibDataSet13MUNICIPIOSetText
       Size = 40
     end
     object ibDataSet13ESTADO: TStringField
@@ -16539,7 +16540,9 @@ object Form7: TForm7
       
         '   VIPI, PFCPUFDEST, PICMSUFDEST, CST_PIS_COFINS, ALIQ_PIS, ALIQ' +
         '_COFINS, '
-      '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH, CSOSN)'
+      
+        '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH, CSOSN, VBC_PIS_COFINS' +
+        ')'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -16555,7 +16558,8 @@ object Form7: TForm7
         'COFINS, '
       
         '   :ALIQ_PIS, :ALIQ_COFINS, :CST_IPI, :CST_ICMS, :ANVISA, :ENCRY' +
-        'PTHASH, :CSOSN)')
+        'PTHASH, :CSOSN,'
+      '   :VBC_PIS_COFINS)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16594,7 +16598,9 @@ object Form7: TForm7
       '  CST_IPI,'
       '  CST_ICMS,'
       '  ANVISA,'
-      '  ENCRYPTHASH'
+      '  ENCRYPTHASH,'
+      '  CSOSN,'
+      '  VBC_PIS_COFINS'
       'from ITENS001 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16640,7 +16646,8 @@ object Form7: TForm7
       '  CST_ICMS = :CST_ICMS,'
       '  ANVISA = :ANVISA,'
       '  ENCRYPTHASH = :ENCRYPTHASH,'
-      '  CSOSN = :CSOSN'
+      '  CSOSN = :CSOSN,'
+      '  VBC_PIS_COFINS = :VBC_PIS_COFINS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     DataSource = DataSource15
@@ -16878,6 +16885,14 @@ object Form7: TForm7
       FieldName = 'CSOSN'
       Visible = False
       Size = 3
+    end
+    object ibDataSet16VBC_PIS_COFINS: TIBBCDField
+      DisplayLabel = 'BC PIS/COFINS'
+      FieldName = 'VBC_PIS_COFINS'
+      Origin = 'ITENS001.VBC_PIS_COFINS'
+      Visible = False
+      Precision = 18
+      Size = 2
     end
   end
   object DataSource16: TDataSource
@@ -18602,6 +18617,13 @@ object Form7: TForm7
     object ibDataSet27CSOSN: TStringField
       FieldName = 'CSOSN'
       Size = 3
+    end
+    object ibDataSet27VBC_PIS_COFINS: TIBBCDField
+      FieldName = 'VBC_PIS_COFINS'
+      Origin = 'ALTERACA.VBC_PIS_COFINS'
+      Visible = False
+      Precision = 18
+      Size = 2
     end
   end
   object DataSource27: TDataSource
@@ -21962,7 +21984,8 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21993,7 +22016,8 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22303,8 +22327,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPE' +
-      'C'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22331,7 +22355,8 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -15,20 +15,18 @@ uses
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
   , DBCtrls
   , SMALL_DBEdit
-  ;
-
+  ;   
 
   function LeLabels(sP1: Boolean): Boolean;
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
-  function FechaTudo(bP1 : Boolean):Boolean;
-  function MontaTela(sP1 : boolean):Boolean;
-  function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
+  function FechaTudo(bP1: Boolean): Boolean;
+  function MontaTela(sP1: Boolean): Boolean;
+  function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
 
-const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
+const BUILD_DO_BANCO = '2022008'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 
-type
-
+type 
     TForm1 = class(TForm)
     PopupMenu1: TPopupMenu;
     TabeladeICMparatodososestados1: TMenuItem;
@@ -475,6 +473,7 @@ type
     function NcmDeMedicamentos(sNcm: String): Boolean;
     function BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
       Shift: TShiftState): Word; // Sandro Silva 2022-10-18
+    function ValidaEmitenteMunicipio: Boolean;
 
   end;
   //
@@ -1110,16 +1109,18 @@ end;
 
 function tForm1.AvisoConfig(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.iAvisosConfig := 0;
-  if Pos('@',Form7.ibDataSet13EMAIL.AsString)=0        then Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
-  if LimpaNumero(Form7.ibDataSet13TELEFO.AsString)=''  then Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
-  if AllTrim(Form7.ibDataSet13ESTADO.AsString)=''      then Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
-  if AllTrim(Form7.sCNPJContabilidade)=''              then Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
-  //
+  if Pos('@',Form7.ibDataSet13EMAIL.AsString) = 0        then
+    Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
+  if LimpaNumero(Form7.ibDataSet13TELEFO.AsString) = ''  then
+    Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
+  if AllTrim(Form7.ibDataSet13ESTADO.AsString) = ''      then
+    Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
+  if AllTrim(Form7.sCNPJContabilidade) = ''              then
+    Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
   Result := True;
   //
-end;    
+end;
 
 function tForm1.AvisoBanco(bP1 : Boolean):Boolean;
 begin
@@ -1926,9 +1927,9 @@ begin
     Msg.lParam  := 0;
     iParam := HiWord(Msg.wParam) ;
     if iParam > 0 then
-       Msg.wParam := VK_UP
+      Msg.wParam := VK_UP
     else
-       Msg.wParam := VK_DOWN;
+      Msg.wParam := VK_DOWN;
     Handled := False;
   end;
 end;
@@ -3395,7 +3396,9 @@ begin
         //
         try
           Form7.ibDataSet13.Active := True;
-          if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
+          // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
+          if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
+            or (Form1.ValidaEmitenteMunicipio = False) then
           begin
             Form17.ShowModal;
             if Form1.CanFocus then Form1.SetFocus;
@@ -4061,7 +4064,8 @@ end;
 
 procedure Tform1.ExecutaOPlugin(Sender:TObject);
 begin
-  with Sender as TMenuItem do ShellExecute( 0, 'Open',pChar('Plug-in\'+Caption+'.exe'),'', '', SW_SHOW);
+  with Sender as TMenuItem do
+    ShellExecute( 0, 'Open',pChar('Plug-in\'+Caption+'.exe'),'', '', SW_SHOW);
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);
@@ -4291,7 +4295,9 @@ begin
   Form1.SetFocus;
   //
   try
-    if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
+    // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
+    if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
+      or (ValidaEmitenteMunicipio = False) then
     begin
       Form17.ShowModal;
       if Form1.CanFocus then Form1.SetFocus;
@@ -8180,11 +8186,48 @@ begin
         Form1.ibDataset200.SelectSql.Add('commit');
         Form1.ibDataset200.Open;
         Form1.ibDataset200.Close;
-        
+
         //
       except
       end;
       {Sandro Silva 2022-10-04 fim}
+      //
+      {Sandro Silva 2022-10-25 inicio}
+      try
+        //
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ITENS001 ADD VBC_PIS_COFINS NUMERIC(18,2)');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+      try
+        //
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ALTERACA ADD VBC_PIS_COFINS NUMERIC(18,2)');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+      {Sandro Silva 2022-10-25 fim}
       //
       Form22.Repaint;
       Mensagem22('Aguarde...');
@@ -8716,7 +8759,9 @@ begin
       Form7.Caption := Form7.sTitulo;
     end;
     //
-  except end;
+  except
+
+  end;
   //
   //
 end;
@@ -14825,11 +14870,20 @@ begin
   //
   try
     sMSG := '';
-    if Pos('@',Form7.ibDataSet13EMAIL.AsString)      = 0    then sMSG := sMSG + 'Configure o e-mail no cadastro do emitente.'+chr(10);
-    if LimpaNumero(Form7.ibDataSet13TELEFO.AsString) = ''   then sMSG := sMSG + 'Configure o telefone no cadastro do emitente.'+chr(10);
-    if AllTrim(Form7.ibDataSet13ESTADO.AsString)     = ''   then sMSG := sMSG + 'Configure a UF no cadastro do emitente.'+chr(10);
-    if AllTrim(Form7.sCNPJContabilidade)             = ''   then sMSG := sMSG + 'Configure o CNPJ da contabilidade.'+chr(10);
-  except end;
+    if Pos('@',Form7.ibDataSet13EMAIL.AsString)      = 0    then
+      sMSG := sMSG + 'Configure o e-mail no cadastro do emitente.'+chr(10);
+    if LimpaNumero(Form7.ibDataSet13TELEFO.AsString) = ''   then
+      sMSG := sMSG + 'Configure o telefone no cadastro do emitente.'+chr(10);
+    if AllTrim(Form7.ibDataSet13ESTADO.AsString)     = ''   then
+      sMSG := sMSG + 'Configure a UF no cadastro do emitente.'+chr(10);
+    {Sandro Silva 2022-10-31 inicio}
+    if (Form1.ValidaEmitenteMunicipio = False) then
+      sMSG := sMSG + 'Configure o Município no cadastro do emitente.'+chr(10);
+    {Sandro Silva 2022-10-31 fim}
+    if AllTrim(Form7.sCNPJContabilidade)             = ''   then
+      sMSG := sMSG + 'Configure o CNPJ da contabilidade.'+chr(10);
+  except
+  end;
   //
   if AllTrim(sMSG) <> '' then
   begin
@@ -14841,14 +14895,16 @@ begin
   try
     if (Pos('@',Form7.ibDataSet13EMAIL.AsString)=0) or
        (LimpaNumero(Form7.ibDataSet13TELEFO.AsString)='') or
-       (AllTrim(Form7.ibDataSet13ESTADO.AsString)='') then
+       (AllTrim(Form7.ibDataSet13ESTADO.AsString)='')
+      or (Form1.ValidaEmitenteMunicipio = False)
+    then
     begin
       Form17.ShowModal;
     end;
     if AllTrim(Form7.sCNPJContabilidade) = '' then
     begin
       Form1.CNPJdacontabilidade1Click(Sender);
-    end;  
+    end;
   except end;
   //
 end;
@@ -15509,6 +15565,34 @@ begin
   except
   end;
   {Sandro Silva 2022-10-18 fim}
+end;
+
+function TForm1.ValidaEmitenteMunicipio: Boolean;
+// Sandro Silva 2022-10-31
+// Valida se foi preenchido um município que existe na tabela MUNICIPIOS
+var
+  IBQMUNICIPIO: TIBQuery;
+begin
+  Result := True;
+  IBQMUNICIPIO := TIBQuery.Create(nil);
+  IBQMUNICIPIO.Transaction := Form7.ibDataSet13.Transaction;
+  try
+    //
+    IBQMUNICIPIO.Close;
+    IBQMUNICIPIO.SQL.Text :=
+      'select M.NOME ' +
+      'from MUNICIPIOS M ' +
+      'where M.UF = :UF ' +
+      'and M.NOME = :MUNICIPIO';
+    IBQMUNICIPIO.ParamByName('UF').AsString        := Form7.ibDataSet13ESTADO.AsString;
+    IBQMUNICIPIO.ParamByName('MUNICIPIO').AsString := Form7.ibDataSet13MUNICIPIO.AsString;
+    IBQMUNICIPIO.Open;
+    if IBQMUNICIPIO.FieldByName('NOME').AsString = '' then
+      Result := False;
+    //
+  except
+  end;
+  FreeAndNil(IBQMUNICIPIO);
 end;
 
 end.

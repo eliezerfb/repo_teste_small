@@ -20,7 +20,7 @@ type
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
     CheckBox10: TCheckBox;
-    CheckBox11: TCheckBox;
+    ckbIBPT: TCheckBox;
     Panel5: TPanel;
     CheckBox7: TCheckBox;
     CheckBox8: TCheckBox;
@@ -84,6 +84,8 @@ begin
     Sleep(1000);
   end;
   //
+  // Cria o arquivo meuftp.txt
+  //
   GetDir(0,sAtual);
   AssignFile(F,pChar(sAtual+'\meuftp.txt'));  // Direciona o arquivo F para meuftp.txt
   Rewrite(F);
@@ -121,7 +123,7 @@ begin
     Writeln(F,'put c:\reduzida\nfce2021.sma');
   end;
   //
-  if CheckBox11.Checked then
+  if ckbIBPT.Checked then
   begin
     //
     Writeln(F,'put c:\reduzida\2022_ac.sma');
@@ -164,7 +166,7 @@ begin
     Sleep(100);
   end;
   //
-  if CheckBox11.Checked then
+  if ckbIBPT.Checked then
   begin
     //
     ShellExecute( Application.Handle, 'runas',pChar(sAtual+'\ibpt\renomear.bat'),'','', SW_SHOWNORMAL);
@@ -177,7 +179,8 @@ begin
     //
   end;
   //
-  if FileExists(sAtual+'\meuftp.txt') then ShellExecute( Application.Handle, 'runas',pChar(sAtual+'\atualiza_.bat'),'','', SW_SHOWNORMAL);
+  if FileExists(sAtual+'\meuftp.txt') then
+    ShellExecute( Application.Handle, 'runas',pChar(sAtual+'\atualiza_.bat'),'','', SW_SHOWNORMAL);
   //
   while ConsultaProcesso('cmd.exe') do
   begin

@@ -336,6 +336,7 @@ object Form17: TForm17
       TabOrder = 6
       OnChange = SMALL_DBEdit4Change
       OnEnter = SMALL_DBEdit4Enter
+      OnExit = SMALL_DBEdit4Exit
       OnKeyDown = SMALL_DBEdit7KeyDown
     end
     object SMALL_DBEdit5: TSMALL_DBEdit

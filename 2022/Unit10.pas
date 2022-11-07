@@ -1587,12 +1587,15 @@ begin
       //
       dBGrid1.Visible := False;
       if (DataField = 'NOME') and
-                       ((Form7.sModulo = 'CAIXA') or
+                       (
+                        (Form7.sModulo = 'CAIXA') or
                         (Form7.sModulo = 'RECEBER') or
                         (Form7.sModulo = 'PAGAR') or
-                         (Form7.sModulo = 'VENDA') or
-                          (Form7.sModulo = 'COMPRA') or
-                           (Form7.sModulo = 'ESTOQUE')) then dBGrid1.Visible := True;
+                        (Form7.sModulo = 'VENDA') or
+                        (Form7.sModulo = 'COMPRA') or
+                        (Form7.sModulo = 'ESTOQUE')
+                       ) then
+        dBGrid1.Visible := True;
 
       if ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER')) or ((DataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
       begin
@@ -1688,7 +1691,9 @@ begin
             dBGrid3.DataSource := Form7.DataSource49; // Medida
             //
             //
-          end else dBGrid3.Visible := False;
+          end
+          else
+            dBGrid3.Visible := False;
         end;
       end;
       //
@@ -1697,11 +1702,15 @@ begin
         Panel3.Visible := True;
         Panel3.Top     := Form10.DBMemo2.Top + Form10.DBMemo2.Height + 5;
         Panel3.Left    := Form10.Label23.Left;
-      end else Panel3.Visible := False;
+      end
+      else
+        Panel3.Visible := False;
       //
     end;
     //
-  except ShowMessage('Erro 10/77 comunique o suporte técnico.') end;
+  except
+    ShowMessage('Erro 10/77 comunique o suporte técnico.')
+  end;
 end;
 
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);

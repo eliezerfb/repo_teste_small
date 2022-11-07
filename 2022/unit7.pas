@@ -2036,6 +2036,8 @@ type
     procedure PrvisualizarDANFE1Click(Sender: TObject);
     procedure ibDataSet35DESCRICAOChange(Sender: TField);
     procedure RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
+    procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
+      const Text: String);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2317,8 +2319,11 @@ function ProdutoValidoParaMarketplace(bP1 : Boolean): String;
 begin
   Result := '';
   try
+    {Sandro Silva 2022-10-31 inicio
+    //Alterado smallhub.com.br para tratar quando o marketplace exigir EAN
     if (ValidaEAN13(LimpaNumero(Form7.IBDataSet4.FieldByName('REFERENCIA').AsString)) = False) then // Não tem mais EAN
       Result := Form7.IBDataSet4.FieldByName('CODIGO').AsString + '-' + Form7.IBDataSet4.FieldByName('DESCRICAO').AsString + ': EAN inválido';
+    }
 
     if (Length(LimpaNumero(Form7.IBDataSet4.FieldByName('CF').AsString)) <> 8) then // Não tem NCM com 8 caracteres numéricos
     begin
@@ -10072,7 +10077,7 @@ begin
   //
   // Não faz nada quando entra a 1 vez
   //
-  if Form7.sModulo <> 'CALCELA' then
+  if Form7.sModulo <> 'CANCELA' then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
   begin
     //
     if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
@@ -10757,7 +10762,9 @@ begin
     // Pega os dados do Emitente
     //
     Form7.ibDataSet13.Active := True;
-    if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
+    // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
+    if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
+     or (Form1.ValidaEmitenteMunicipio = False) then
     begin
       try
         Form17.ShowModal;
@@ -16303,15 +16310,18 @@ end;
 procedure TForm7.ibDataSet13CGCSetText(Sender: TField; const Text: String);
 var
   sRetorno : String;
-  I : Integer;
+  I: Integer;
 begin
   //
   if LimpaNumero(Text) <> '' then
   begin
     if CpfCgc(LimpaNumero(Text)) then
-        ibDataSet13CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)))
-             else ShowMessage('CPF ou CNPJ inválido!');
-  end else ibDataSet13CGC.AsString := '';
+      ibDataSet13CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)))
+    else
+      ShowMessage('CPF ou CNPJ inválido!');
+  end
+  else
+    ibDataSet13CGC.AsString := '';
   //
   if (AllTrim(Form7.IBDataSet13NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet13CGC.AsString))<>'') then
   begin
@@ -16328,13 +16338,13 @@ begin
         if AllTrim(xmlNodeValue(sRetorno,'//xNome')) <> '' then
         begin
           //
-          Form7.ibDataset13IE.AsString     := xmlNodeValue(sRetorno,'//IE');
-          Form7.ibDataset13ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
-          Form7.ibDataset13NOME.AsString   := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
+          Form7.ibDataset13IE.AsString       := xmlNodeValue(sRetorno,'//IE');
+          Form7.ibDataset13ESTADO.AsString   := xmlNodeValue(sRetorno,'//UF');
+          Form7.ibDataset13NOME.AsString     := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
           Form7.ibDataset13ENDERECO.AsString := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
-          Form7.ibDataset13COMPLE.AsString := PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')));
-          Form7.ibDataset13CEP.AsString    := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
-          Form7.ibDataset13CNAE.AsString   := xmlNodeValue(sRetorno,'//CNAE');
+          Form7.ibDataset13COMPLE.AsString   := PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')));
+          Form7.ibDataset13CEP.AsString      := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
+          Form7.ibDataset13CNAE.AsString     := xmlNodeValue(sRetorno,'//CNAE');
           //
           for I := 0 to Form17.ComboBox7.Items.Count -1 do
           begin
@@ -16368,7 +16378,9 @@ begin
         end;
       end;
       //
-    except end;
+    except
+
+    end;
     //
   end;
   //
@@ -25057,10 +25069,15 @@ begin
     //
     ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
     //
-    if AllTrim(Text) = '' then ibDataSet2CIDADE.AsString := Text else
-      if Pos(AnsiUpperCase(AllTrim(Text)),AnsiUpperCase(ibDataSet39NOME.AsString)) <> 0 then ibDataSet2CIDADE.AsString := ibDataSet39NOME.AsString else
-        ShowMessage('Município inválido.');
-  end else ibDataSet2CIDADE.AsString := Text;
+    if AllTrim(Text) = '' then
+      ibDataSet2CIDADE.AsString := Text
+    else if Pos(AnsiUpperCase(AllTrim(Text)),AnsiUpperCase(ibDataSet39NOME.AsString)) <> 0 then
+      ibDataSet2CIDADE.AsString := ibDataSet39NOME.AsString
+    else
+      ShowMessage('Município inválido.');
+  end
+  else
+    ibDataSet2CIDADE.AsString := Text;
   //
 end;
 
@@ -35242,7 +35259,10 @@ end;
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
 begin
   //
-  if Form7.ibDataSet16.Modified then Form7.ibDataSet16.Tag := 1 else Form7.ibDataSet16.Tag := 0;
+  if Form7.ibDataSet16.Modified then
+    Form7.ibDataSet16.Tag := 1
+  else
+    Form7.ibDataSet16.Tag := 0;
   //
   if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolucão
   begin
@@ -41689,6 +41709,8 @@ begin
             end else
             begin
               //
+              // Múltiplos serviços 
+              //
               while not ibDataSet35.Eof do
               begin
                 //
@@ -41704,7 +41726,10 @@ begin
                   //
                   Writeln(F,'');
                   Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(ibDataSet35.FieldByname('DESCRICAO').AsString)));
-                  Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
+                  if sPadraoSistema = 'SIL' then // Sandro Silva 2022-10-24
+                    Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.' + DupeString('0', StrToIntDef(Form1.ConfCasasServ, 0)) , ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')) //
+                  else
+                    Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
                   Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('UNITARIO').AsFloat)),',','.')); //
                   Writeln(F,'UnidadeServico='+Alltrim(ConverteAcentos2(ibDataSet4.FieldByname('MEDIDA').AsString)));
                   Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet15.FieldByname('SERVICOS').AsFloat-ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
@@ -41760,7 +41785,10 @@ begin
                   Writeln(F,'');
                   //
                   Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(ibDataSet35.FieldByname('DESCRICAO').AsString)));
-                  Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
+                  if sPadraoSistema = 'SIL' then // Sandro Silva 2022-10-24
+                    Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.' + DupeString('0', StrToIntDef(Form1.ConfCasasServ, 0)) , ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')) //
+                  else
+                    Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
                   Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('UNITARIO').AsFloat)),',','.')); //
                   Writeln(F,'UnidadeServico='+Alltrim(ConverteAcentos2(ibDataSet4.FieldByname('MEDIDA').AsString)));
                   Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',ibDataSet35.FieldByname('TOTAL').AsFloat)),',','.')); //
@@ -42928,6 +42956,54 @@ begin
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de PIS/COFINS (Cupom Fiscal)';
   Form38.ShowModal; // Ok
+end;
+
+procedure TForm7.ibDataSet13MUNICIPIOSetText(Sender: TField;
+  const Text: String);
+begin
+  {Sandro Silva 2022-10-24 inicio}
+  if Screen.ActiveForm = Form17 then
+  begin
+    //
+    if (Form7.ibDataSet39NOME.AsString <> '') or (Trim(Text) <> '') then
+    begin
+      //
+      if Length(AllTrim(Form7.ibDataSet13ESTADO.AsString)) <> 2 then
+      begin
+        Form7.IBDataSet39.Close;
+        Form7.IBDataSet39.SelectSQL.Clear;
+        Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
+        Form7.IBDataSet39.Open;
+      end else
+      begin
+        Form7.IBDataSet39.Close;
+        Form7.IBDataSet39.SelectSQL.Clear;
+        Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+        Form7.IBDataSet39.Open;
+      end;
+      //
+      Form7.ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+      //
+      if AllTrim(Text) = '' then
+        Form7.ibDataSet13MUNICIPIO.AsString := Text
+      else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibDataSet39NOME.AsString)) <> 0 then
+      begin
+        Form7.ibDataSet13MUNICIPIO.AsString := Form7.ibDataSet39NOME.AsString;
+        if Form7.ibDataSet13ESTADO.AsString = '' then
+          Form7.ibDataSet13ESTADO.AsString := Form7.IBDataSet39UF.AsString;
+      end
+      else
+      begin
+        //ShowMessage('Município inválido.');
+        //Form17.SMALL_DBEdit4.SetFocus;
+        //Abort;
+      end;
+    end
+    else
+      Form7.ibDataSet13MUNICIPIO.AsString := Text;
+    //
+  end;
+  {Sandro Silva 2022-10-24 fim}
 end;
 
 end.
