@@ -10082,7 +10082,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
     begin
-      //
+      //                            
       Form7.ibDataSet16.DisableControls;
       //
       try
@@ -10512,6 +10512,7 @@ begin
       end;
       //
     end;
+    
   end;
   //
   try
@@ -20205,6 +20206,12 @@ begin
       // ShowMessage('Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0));
       //
       Form7.ibDataSet15.EnableControls;
+
+      {Sandro Silva 2022-11-08 inicio} 
+      if Trim(sReg16) <> '' then
+        Form7.ibDataSet16.Locate('REGISTRO', sReg16, []);
+      {Sandro Silva 2022-11-08 fim}
+
       //
       Screen.Cursor := crDefault;
       //
@@ -41068,7 +41075,7 @@ var
   fValorISSRetido, fValorImpostosFederaisRetidos : Real;
   sPadraoSistema, sTipoPagamentoAPrazo: String;
   //
-  procedure InformaCodVerificadorAutenticidadeParaIMP;
+  procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
     if Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> 0 then
     begin
@@ -41267,7 +41274,7 @@ begin
                           Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
                       end;
                       }
-                      InformaCodVerificadorAutenticidadeParaIMP;
+                      InformaCodVerificadorAutenticidadeParaIPM;
                       {Sandro Silva 2022-10-10 fim}
                     end else
                     begin
@@ -41291,7 +41298,7 @@ begin
                       //
                       if (sPadraoSistema = 'IPM20') then
                       begin
-                        InformaCodVerificadorAutenticidadeParaIMP; // Sandro Silva 2022-10-10
+                        InformaCodVerificadorAutenticidadeParaIPM; // Sandro Silva 2022-10-10
                         Writeln(F,'<SerieDoRPS>01</SerieDoRPS>');
                       end else
                       begin
@@ -41301,7 +41308,7 @@ begin
                       //
                       if (sPadraoSistema = 'IPM20') then
                       begin
-                        InformaCodVerificadorAutenticidadeParaIMP; // Sandro Silva 2022-10-10
+                        InformaCodVerificadorAutenticidadeParaIPM; // Sandro Silva 2022-10-10
                         Writeln(F,'<SerieDoRPS>01</SerieDoRPS>');
                       end else
                       begin

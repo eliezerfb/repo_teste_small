@@ -3088,7 +3088,10 @@ begin
                   Form7.spdNFeDataSets.Campo('CEP_E13').Value     := LimpaNumero(Form7.ibDAtaset2.FieldByname('CEP').AsString); // Cep do Destinatário
                   Form7.spdNFeDataSets.Campo('cPais_E14').Value   := '1058'; // Código do Pais do Destinatário (Tabela do BACEN)
                   Form7.spdNFeDataSets.Campo('xPais_E15').Value   := 'BRASIL';// Nome do País do Destinatário
-                  if Length(LimpaNumero(Form7.ibDAtaset2.FieldByname('FONE').AsString)) = 11 then Form7.spdNFeDataSets.Campo('fone_E16').Value    := Copy(LimpaNumero(Form7.ibDAtaset2.FieldByname('FONE').AsString),2,10) else Form7.spdNFeDataSets.Campo('fone_E16').Value    := LimpaNumero(Form7.ibDAtaset2.FieldByname('FONE').AsString); // Fone do Destinatário
+                  if Length(LimpaNumero(Form7.ibDAtaset2.FieldByname('FONE').AsString)) = 11 then
+                    Form7.spdNFeDataSets.Campo('fone_E16').Value    := Copy(LimpaNumero(Form7.ibDAtaset2.FieldByname('FONE').AsString),2,10)
+                  else
+                    Form7.spdNFeDataSets.Campo('fone_E16').Value    := LimpaNumero(Form7.ibDAtaset2.FieldByname('FONE').AsString); // Fone do Destinatário
                   //
                   if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 0) then
                   begin
@@ -3659,8 +3662,10 @@ begin
                     end;
                     //
                     Form7.spdNFeDataSets.Campo('CFOP_I08').Value     := Alltrim(Form7.ibDataSet16.FieldByname('CFOP').AsString); // CFOP incidente neste Item da NF
-                    if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then Form7.spdNFeDataSets.Campo('uCom_I09').Value     := ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) // Unidade de Medida do Item
-                      else Form7.spdNFeDataSets.Campo('uCom_I09').Value     := 'UND';
+                    if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then
+                      Form7.spdNFeDataSets.Campo('uCom_I09').Value     := ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) // Unidade de Medida do Item
+                    else
+                      Form7.spdNFeDataSets.Campo('uCom_I09').Value     := 'UND';
                     Form7.spdNFeDataSets.Campo('qCom_I10').Value     := StrTran(Form7.ibDataSet16.FieldByname('QUANTIDADE').AsString,',','.'); // Quantidade Comercializada do Item
                     Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := StrTran(Alltrim(FormatFloat('##0.'+Replicate('0',StrToInt(Form1.ConfPreco)),Form7.ibDataSet16.FieldByname('UNITARIO').AsFloat)),',','.'); // Valor Comercializado do Item
                     Form7.spdNFeDataSets.Campo('vProd_I11').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)),',','.'); // Valor Total Bruto do Item
@@ -3674,8 +3679,10 @@ begin
                     //
                     if (Copy(Form7.ibDataSet16XPED.AsString,1,2) <> 'CF') then
                     begin
-                      if AllTrim(Form7.ibDataSet16XPED.AsString)     <> '' then Form7.spdNFeDataSets.Campo('xPed_I60').AsString       := AllTrim(Form7.ibDataSet16XPED.AsString);
-                      if AllTrim(Form7.ibDataSet16NITEMPED.AsString) <> '' then Form7.spdNFeDataSets.Campo('nItemPed_I61').AsString   := AllTrim(Form7.ibDataSet16NITEMPED.AsString);
+                      if AllTrim(Form7.ibDataSet16XPED.AsString)     <> '' then
+                        Form7.spdNFeDataSets.Campo('xPed_I60').AsString       := AllTrim(Form7.ibDataSet16XPED.AsString);
+                      if AllTrim(Form7.ibDataSet16NITEMPED.AsString) <> '' then
+                        Form7.spdNFeDataSets.Campo('nItemPed_I61').AsString   := AllTrim(Form7.ibDataSet16NITEMPED.AsString);
                     end;
                     //
                     // B2B
@@ -5092,7 +5099,7 @@ begin
                       AtualizaItens001CSOSN(Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value);
                       {Sandro Silva 2022-10-04 fim}
                       //
-                      // N11 - Tëm em todas
+                      // N11 - Tem em todas
                       //
                       try
                         if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
