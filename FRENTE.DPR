@@ -8,7 +8,7 @@ uses
   Messages,
   SysUtils,
   Dialogs,
-  SmallFunc in '..\smallfunc.pas',
+  SmallFunc in '..\..\componentes\Smallsoft\Delphi 7\smallfunc.pas',
   SMALL_DBEDIT in '..\SMALL_DBEDIT.pas',
   Unit22 in 'Unit22.pas' {Form22},
   fiscal in 'FISCAL.PAS' {Form1},
