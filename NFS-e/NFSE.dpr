@@ -1,13 +1,16 @@
-program ExemploProxyNFSe;
+program NFSE;
+
+{$R 'smallmanifest.res' 'smallmanifest.rc'}
 
 uses
   Forms,
-  UExemploNFSeV2 in 'UExemploNFSeV2.pas' {frmExemplo};
+  uemissornfse in 'uemissornfse.pas' {FEmissorNFSe};
+
+{$R *.res}
 
 begin
   Application.Initialize;
   Application.Title := 'Nota Fiscal de Serviços Eletrônica (NFSE)';
-  Application.CreateForm(TfrmExemplo, frmExemplo);
+  Application.CreateForm(TFEmissorNFSe, FEmissorNFSe);
   Application.Run;
 end.
-
