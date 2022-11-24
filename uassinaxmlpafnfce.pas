@@ -14,12 +14,12 @@ uses
 
 const PAF_NFC_E_ESPECIFICACAO_XML                    = '<?xml version="1.0" encoding="utf-8" ?>';
 
-function AssinarMSXMLPafNfce(XML: String; wNumSerieCertificado: String;
+function AssinarMSXMLPafNfce(XML: String; sCNPJ: String;
   Certificado: ICertificate2; URI: String): String;
 
 implementation
 
-function AssinarMSXMLPafNfce(XML: String; wNumSerieCertificado: String;
+function AssinarMSXMLPafNfce(XML: String; sCNPJ: String;
   Certificado: ICertificate2; URI: String): String;
 const
   DSIGNS = 'xmlns:ds="http://www.w3.org/2000/09/xmldsig#"';
@@ -105,6 +105,7 @@ begin
 
     if CertStoreMem = nil then
     begin
+
       CertStore := CoStore.Create;
       CertStore.Open(CAPICOM_CURRENT_USER_STORE, 'My', CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED);
 
@@ -114,14 +115,23 @@ begin
       Certs := CertStore.Certificates as ICertificates2;
       for iCert := 1 to Certs.Count do
       begin
+
         CertificadoAssina := IInterface(Certs.Item[iCert]) as ICertificate2;
-        if CertificadoAssina.Thumbprint = wNumSerieCertificado then
+
+        if
+          (AnsiContainsText(CertificadoAssina.SubjectName, Copy(scnpj, 1, 8))) // O CNPJ do emitente está no nome do certificado
+          //AnsiContainsText(CertificadoAssina.SubjectName, 'CN=SMALLSOFT TECNOLOGIA EM INFORMATICA LTDA:07426598000124,')
+        then
         begin
+
           CertStoreMem.Add(CertificadoAssina);
           NumCertCarregado := CertificadoAssina.Thumbprint;
           Break; // 2016-02-05  Sandro Silva
+
         end;
+
       end;
+      
     end;
 
     //ShowMessage('Teste Num certificado: ' + NumCertCarregado); // Sandro Silva 2022-02-22

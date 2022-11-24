@@ -60,7 +60,7 @@ procedure TForm1.Button1Click(Sender: TObject);
     Memo.WantReturns := False;
 
     try
-      Memo.Text := LimpaNumero('07426598000124') + LimpaNumero(sCNPJEmitente);//CNPJ_SOFTWARE_HOUSE + LimpaNumero(sCNPJEmitente);
+      Memo.Text := LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF) + LimpaNumero(sCNPJEmitente);//CNPJ_SOFTWARE_HOUSE + LimpaNumero(sCNPJEmitente);
       Memo.Lines.SaveToFile(sFileName);
 
       Sleep(50);

@@ -1272,115 +1272,18 @@ begin
   FRetorno.Clear;
   arqDadosServidor := TArquivo.Create;
 
-  (*// {Sandro Silva 2018-01-25 inicio}  AQUI E EM FISCAL.PAS 47847
-  if (Length(GetCNPJCertificado(FCertificado.SubjectName)) <> 14)
-    or (GetCNPJCertificado(FCertificado.SubjectName) = '07426598000124') then
-  begin
-    if FileExists(DiretorioConfigBlocoX + '\blocox_servidores_homologacao.xml') = False then
-    begin
-      arqDadosServidor.Texto :=
-        '<?xml version="1.0" encoding="utf-8"?>' +
-        '<Smallsoft>' +
-          '<BlocoX>' +
-            '<UF nome="SC">' +
-              '<Servico acao="Consultar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>ConsultarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="Enviar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>EnviarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="Validar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>ValidarResult</TagResposta>' +
-              '</Servico>' +
-            '</UF>' +
-          '</BlocoX>' +
-        '</Smallsoft>';
-    end
-    else
-      arqDadosServidor.LerArquivo(DiretorioConfigBlocoX + '\blocox_servidores_homologacao.xml');
-  end
-  else
-  begin
-    arqDadosServidor.LerArquivo(DiretorioConfigBlocoX + '\blocox_servidores.xml');
-  end;
-  *)
-  {
-  arqDadosServidor.Texto :=
-        '<?xml version="1.0" encoding="utf-8"?>' +
-        '<Smallsoft>' +
-          '<BlocoX>' +
-            '<UF nome="SC">' +
-              '<Servico acao="Consultar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>ConsultarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="Enviar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>EnviarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="Validar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>ValidarResult</TagResposta>' +
-              '</Servico>' +
-            '</UF>' +
-          '</BlocoX>' +
-        '</Smallsoft>';
-  {Sandro Silva 2018-01-25 fim}
-
-  {Sandro Silva 2018-02-05 inicio
-  if (GetCNPJCertificado(FCertificado.SubjectName) = '07426598000124') then
-  }
   sSubjectName := '';
   try
     sSubjectName := FCertificado.SubjectName;
   except
 
   end;
-  if (AnsiContainsText(sSubjectName, '07426598000124')) then
+  if (AnsiContainsText(sSubjectName, Trim(CNPJ_SOFTWARE_HOUSE_PAF))) then
   {Sandro Silva 2018-02-05 fim}
   begin
     // Sandro Silva 2018-02-01 Não é certificado da Smallsoft usa homologação
     if FileExists(DiretorioConfigBlocoX + '\blocox_servidores_homologacao.xml') = False then
     begin
-      {Sandro Silva 2019-03-26 inicio
-      arqDadosServidor.Texto :=
-        '<?xml version="1.0" encoding="utf-8"?>' +
-        '<Smallsoft>' +
-          '<BlocoX>' +
-            '<UF nome="SC">' +
-              '<Servico acao="Consultar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>ConsultarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="Enviar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>EnviarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="Validar">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/Recepcao.asmx</SOAPAction>' +
-                  '<TagResposta>ValidarResult</TagResposta>' +
-              '</Servico>' +
-              '<Servico acao="ConsultarPendenciasContribuinte">' +
-                  '<Url>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/BlocoX.asmx</Url>' +
-                  '<SOAPAction>http://webservices.sathomologa.sef.sc.gov.br/wsDfeSiv/BlocoX.asmx</SOAPAction>' +
-                  '<TagResposta>ConsultarPendenciasContribuinteResult</TagResposta>' +
-              '</Servico>' +
-            '</UF>' +
-          '</BlocoX>' +
-        '</Smallsoft>';
-        }
       arqDadosServidor.Texto :=
         '<?xml version="1.0" encoding="utf-8"?>' +
         '<Smallsoft>' +
@@ -1441,7 +1344,6 @@ begin
             '</UF>' +
           '</BlocoX>' +
         '</Smallsoft>';
-        {Sandro Silva 2019-03-26 fim}
     end
     else
       arqDadosServidor.LerArquivo(DiretorioConfigBlocoX + '\blocox_servidores_homologacao.xml');

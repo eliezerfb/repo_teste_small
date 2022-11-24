@@ -580,8 +580,6 @@ begin
                 /////////////////////////////
                 // Somente para teste. Comentar estas linhas depois de testado
                 //
-                //if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124') and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno', '') = 'Não') then
-                //  sRetorno := '';
                 sRetorno := _ecf65_SimulaSemRetornoSefaz(sRetorno); // Sandro Silva 2020-06-25
                 //
                 ////////////////////////////
@@ -602,8 +600,6 @@ begin
                   /////////////////////////////
                   // Somente para teste. Comentar estas linhas depois de testado
                   //
-                  // if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124') and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno', '') = 'Não') then
-                  //  sRetorno := '';
                   sRetorno := _ecf65_SimulaSemRetornoSefaz(sRetorno); // Sandro Silva 2020-06-25
                   //
                   ////////////////////////////
@@ -7315,7 +7311,7 @@ begin
             Break;
 
           if (xmlNodeValue(Form1.IBQuery65.FieldByName('NFEXML').AsString, '//emit/CNPJ') = LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))
-            or (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124') // Para poder testar com bancos de clientes
+            or (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) // Para poder testar com bancos de clientes
           then
           begin
 
@@ -9206,7 +9202,7 @@ procedure _ecf65_IdentificacaoResponsavelTecnico(spdNFCeDataSets: TspdNFCeDataSe
 begin
   // Ficha 4578 // Sandro Silva 2019-04-11
   // Grupo Responsável técnico
-  spdNFCeDataSets.Campo('CNPJ_ZD02').Value     := '07426598000124'; 	// Informar o CNPJ da pessoa jurídica responsável pelo sistema utilizado na emissão do documento fiscal eletrônico.
+  spdNFCeDataSets.Campo('CNPJ_ZD02').Value     := LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF); 	// Informar o CNPJ da pessoa jurídica responsável pelo sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('xContato_ZD04').Value := 'Ronei Ivo Weber'; // 	Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('email_ZD05').Value    := 'smallsoft@smallsoft.com.br';   //	Informar o e-mail da pessoa a ser contatada na empresa desenvolvedora do sistema.
   spdNFCeDataSets.Campo('fone_ZD06').Value     := '04934255800'; 	// Informar o telefone da pessoa a ser contatada na empresa desenvolvedora do sistema. Preencher com o Código DDD + número do telefone
@@ -10793,7 +10789,7 @@ var
 begin
   Result := Value;
   //if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124') and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno Denegado', '') = 'Sim') then
-  if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124') and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno Denegado', '') <> '') then
+  if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno Denegado', '') <> '') then
   begin
     scStat := LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno Denegado', '');
     if StrToIntDef(scStat, 0) = 0 then
@@ -10835,7 +10831,7 @@ function _ecf65_SimulaSemRetornoSefaz(Value: String): String;
 // Simular situação que não obtem retorno do servidor da Sefaz. Para poder testar comportamento da aplicação quando ocorre essa situação
 begin
   Result := Value;
-  if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124') and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno', '') = 'Não') then
+  if (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) and (LerParametroIni('FRENTE.INI', 'NFCE', 'Retorno', '') = 'Não') then
     Result := '';
 end;
 

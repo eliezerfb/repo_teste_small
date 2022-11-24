@@ -64,9 +64,15 @@ const CHAVE_IDENTIFICAR_POS           = 'Identificar POS';
 const CHAVE_IMPRESSORA_PADRAO         = 'Impressora Padrao';
 const CHAVE_CARNE_RESUMIDO            = 'Carne resumido';// Sandro Silva 2018-04-29
 const CHAVE_TEF_CARTEIRA_DIGITAL      = 'TEF Carteira Digital'; // Configura no frente.ini se usa carteira digital com TEF Sandro Silva 2021-08-27
+const CHAVE_CERTIFICADO_DIGITAL       = 'Certificado'; // Sandro Silva 2022-11-17
 const INTERVAL_FRENTE_MINIMIZADO      = 5000; // 2015-12-01 15000;// 15 segundos
 const INTERVAL_FRENTE_MAXIMIZADO      = 5000; // 2015-12-01 60000;// 60 segundos
-
+const CNPJ_SOFTWARE_HOUSE_PAF         = '07.426.598/0001-24';
+const IE_SOFTWARE_HOUSE_PAF           = '255422385';
+const IM_SOFTWARE_HOUSE_PAF           = '22842';  // usar ISENTO 
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
+const VERSAO_ER_PAF_ECF               = '02.06'; // ER 02.06 Sandro Silva 2019-06-19  '02.05'; // Sandro Silva 2017-07-24 ER 02.05 '02.03';
+const NUMERO_LAUDO_PAF_ECF            = 'UNO3302019';
 
 const NFCE_CSTAT_AUTORIZADO_100               = '100';
 const NFCE_CSTAT_AUTORIZADO_FORA_DE_PRAZO_150 = '150';
@@ -216,7 +222,7 @@ function TefUsado: String;
 procedure AdicionaCNPJRequisicaoTEF(var tfFile: TextFile; DataSet: TDataSet);
 function BandeiraSemCreditoDebito(sBandeira: String): String;
 function SelecionaCNPJCredenciadora(DATASETCLIFOR: TDataSet; sBandeira: String): String;
-function DiasParaExpirar(IBDATABASE: TIBDatabase): Integer;
+function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 function Legal_ok(IBDATABASE: TIBDatabase): Boolean;
 function DescricaoCRT(sCrt: String): String;
 function ConcatencaNodeNFeComProtNFe(sNFe: String; sprotNFe: String): String;
@@ -929,12 +935,13 @@ begin
   FreeAndNil(qyAux);
 end;
 
-function DiasParaExpirar(IBDATABASE: TIBDatabase): Integer;
+function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 var
   qyAux: TIBQuery;
   trAux: TIBTransaction;
   Blowfish: TLbBlowfish;
   sGeneratorG_Legal: String;
+  sDataLimite: String; // Sandro Silva 2022-11-14
 begin
 
   try
@@ -960,23 +967,37 @@ begin
 
     if AllTrim(qyAux.FieldByname('LICENCA').AsString) <> '' then
     begin
-      {Sandro Silva 2021-09-24 inicio
-      Result := Trunc(365 - (Date - StrToDate(Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4))));
-      }
       if sGeneratorG_Legal = '19670926' then
       begin
         Result := -1;
       end
       else
       begin
+
         if sGeneratorG_Legal <> '0' then
         begin
-          Result := Trunc(31 - (Date - StrToDate(Copy(sGeneratorG_Legal,7,2)+'/'+Copy(sGeneratorG_Legal,5,2)+'/'+Copy(sGeneratorG_Legal,1,4))));
+          // Sandro Silva 2022-11-14 Result := Trunc(31 - (Date - StrToDate(Copy(sGeneratorG_Legal,7,2)+'/'+Copy(sGeneratorG_Legal,5,2)+'/'+Copy(sGeneratorG_Legal,1,4))));
+          // Ronei autorizou reduzir o tempo de uso do frente sem o Commerce acessar smallsoft.com.br
+          sDataLimite := Copy(sGeneratorG_Legal,7,2)+'/'+Copy(sGeneratorG_Legal,5,2)+'/'+Copy(sGeneratorG_Legal,1,4);
+          Result := Trunc(15 - (Date - StrToDate(sDataLimite)));
         end
         else
         begin
+          {Sandro Silva 2022-11-14 inicio
           Result := Trunc(365 - (Date - StrToDate(Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4))));
+          }
+          sDataLimite := Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4);
+          if bValidacaoNova = False then
+          begin
+            Result := Trunc(365 - (Date - StrToDate(sDataLimite)));
+          end
+          else
+          begin
+            Result := Trunc((StrToDate(sDataLimite) - Date));
+          end;
+          {Sandro Silva 2022-11-14 fim}
         end;
+        
       end;
       {Sandro Silva 2021-09-24 fim}
 

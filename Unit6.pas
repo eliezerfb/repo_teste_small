@@ -215,10 +215,10 @@ begin
   Form6.Frame_teclado1.Led_REDE.Picture := Form1.Frame_teclado1.Led_REDE.Picture;
   Form6.Frame_teclado1.Led_REDE.Hint    := Form1.Frame_teclado1.Led_REDE.Hint;
   //
-  Form1.ibDataSet25VALOR_1.AsFloat := 0;
-  Form1.ibDataSet25VALOR_2.AsFloat := 0;
-  Form1.ibDataSet25VALOR_3.AsFloat := 0;
-  Form1.ibDataSet25VALOR_4.AsFloat := 0;
+  Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat := 0;
+  Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat := 0;
+  Form1.ibDataSet25.FieldByName('VALOR_3').AsFloat := 0;
+  Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat := 0;
 
   edTotalPagar.Text := FormatFloat('0.00', Form1.fTotal); // Sandro Silva 2021-08-18
   //
@@ -226,13 +226,13 @@ begin
   begin
     //
     if Form1.fDesconto <> 0 then
-      Form1.ibDataSet25.FieldByname('VALOR_2').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fDesconto)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('VALOR_2').AsFloat := Form1.fDesconto;
+      Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fDesconto)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('VALOR_2').AsFloat := Form1.fDesconto;
     if (Form1.fDesconto = 0) and (Form1.fDescontoNoTotal <> 0) then
     begin
       if Form1.fDescontoNoTotal > 0 then
-        Form1.ibDataSet25.FieldByname('VALOR_2').AsFloat := StrToFloat(FormatFloat('0.00', Abs(Form1.fDescontoNoTotal))); // Sandro Silva 2017-08-08 // Sandro Silva 2021-12-23 Abs(Form1.fDescontoNoTotal);
+        Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat := StrToFloat(FormatFloat('0.00', Abs(Form1.fDescontoNoTotal))); // Sandro Silva 2017-08-08 // Sandro Silva 2021-12-23 Abs(Form1.fDescontoNoTotal);
       if Form1.fDescontoNoTotal < 0 then
-        Form1.ibDataSet25.FieldByname('VALOR_4').AsFloat := StrToFloat(FormatFloat('0.00', Abs(Form1.fDescontoNoTotal))); // Sandro Silva 2017-08-08 // Sandro Silva 2021-12-23 Abs(Form1.fDescontoNoTotal);
+        Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat := StrToFloat(FormatFloat('0.00', Abs(Form1.fDescontoNoTotal))); // Sandro Silva 2017-08-08 // Sandro Silva 2021-12-23 Abs(Form1.fDescontoNoTotal);
     end;
     //
     Form1.ibDataSet2.Close;

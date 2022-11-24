@@ -43,6 +43,8 @@ var
 
 implementation
 
+uses uconstantes_chaves_privadas;
+
 {$R *.dfm}
 
 procedure TForm1.FormCreate(Sender: TObject);

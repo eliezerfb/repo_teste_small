@@ -112,7 +112,7 @@ RootDir=C:\Program Files (x86)\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2022
+MajorVer=2023
 MinorVer=0
 Release=0
 Build=2
@@ -126,13 +126,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Smallsoft® Tecnologia
 FileDescription=Gerenciador Bloco X
-FileVersion=2022.0.0.2
+FileVersion=2023.0.0.2
 InternalName=
 LegalCopyright=Smallsoft® Tecnologia
 LegalTrademarks=Smallsoft®
 OriginalFilename=
 ProductName=
-ProductVersion=2022
+ProductVersion=2023
 Comments=www.smallsoft.com.br
 [HistoryLists\hlUnitAliases]
 Count=1

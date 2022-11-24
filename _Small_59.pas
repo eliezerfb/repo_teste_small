@@ -1930,7 +1930,7 @@ begin
 
       if Trim(sCNPJSoftwareHouse) = '' then
       begin
-        sCNPJSoftwareHouse := '07426598000124';
+        sCNPJSoftwareHouse := LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF);
         GravarParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CNPJ_SOFTWARE_HOUSE, sCNPJSoftwareHouse);
       end;
 

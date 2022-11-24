@@ -51,6 +51,11 @@ type
     _ReprocessarArquivoBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
     _CancelarArquivoBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
     _GerarAoFISCOREDUCAOZBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl;
+    _GerarEstoqueAnoAnteriorBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueMudancaDeTributacao: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueSuspensaoOuBaixaDeIE: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueMudancaDeRegime: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueAtual: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
 
     FEmitente: TEmitente;
     FIBDATABASE: TIBDatabase;
@@ -81,7 +86,6 @@ type
       sdtInicial: String; sdtFinal: String; bLimparRecibo: Boolean;
       bLimparXMLResposta: Boolean; bAssinarXML: Boolean;
       bForcarGeracao: Boolean): Boolean;
-
     function TransmitirXmlPendente(CaminhoBanco: String;
       DiretorioAtual: String; sTipo: String; sSerieECF: String;
       bAlerta: Boolean): Integer;
@@ -110,6 +114,16 @@ type
     function CancelarArquivoBlocoX(CaminhoBanco: PAnsiChar;
       DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean;
     function GerarAoFISCOREDUCAOZBlocox(CaminhoBanco: PAnsiChar;
+      DiretorioAtual: PAnsiChar): Boolean;
+    function GerarEstoqueAnoAnterior(CaminhoBanco: PAnsiChar;
+      DiretorioAtual: PAnsiChar): Boolean;
+    function GerarEstoqueMudancaDeTributacao(CaminhoBanco: PAnsiChar;
+      DiretorioAtual: PAnsiChar): Boolean;
+    function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: PAnsiChar;
+      DiretorioAtual: PAnsiChar): Boolean;
+    function GerarEstoqueMudancaDeRegime(CaminhoBanco: PAnsiChar;
+      DiretorioAtual: PAnsiChar): Boolean;
+    function GerarEstoqueAtual(CaminhoBanco: PAnsiChar;
       DiretorioAtual: PAnsiChar): Boolean;
   end;
 
@@ -166,6 +180,7 @@ end;
 
 // Classe para poder utilizar funções do bloco X através de dll dinâmica
 { TSmallBlocoX }
+
 constructor TSmallBlocoX.Create(AOwner: TComponent);
 begin
   inherited;
@@ -214,6 +229,11 @@ begin
       Import(@_ReprocessarArquivoBlocoX, 'ReprocessarArquivoBlocoX'); // Sandro Silva 2020-09-30
       Import(@_CancelarArquivoBlocoX, 'CancelarArquivoBlocoX'); // Sandro Silva 2020-09-30
       Import(@_GerarAoFISCOREDUCAOZBlocoX, 'GerarAoFISCOREDUCAOZBlocoX'); // Sandro Silva 2022-09-05
+      Import(@_GerarEstoqueAnoAnteriorBlocoX, 'GerarEstoqueAnoAnteriorBlocoX'); // Sandro Silva 2022-11-22
+      Import(@_GerarEstoqueMudancaDeTributacao, 'GerarEstoqueMudancaDeTributacao'); // Sandro Silva 2022-11-22
+      Import(@_GerarEstoqueSuspensaoOuBaixaDeIE, 'GerarEstoqueSuspensaoOuBaixaDeIE'); // Sandro Silva 2022-11-22
+      Import(@_GerarEstoqueMudancaDeRegime, 'GerarEstoqueMudancaDeRegime'); // Sandro Silva 2022-11-22
+      Import(@_GerarEstoqueAtual, 'GerarEstoqueAtual'); // Sandro Silva 2022-11-22
 
       Result := True;
     except
@@ -249,7 +269,12 @@ begin
     _VisualizaXmlBlocoX                           := nil; // Sandro Silva 2020-06-15
     _ReprocessarArquivoBlocoX                     := nil; // Sandro Silva 2020-09-30
     _CancelarArquivoBlocoX                        := nil; // Sandro Silva 2020-09-30
-    _GerarAoFISCOREDUCAOZBlocoX                   := nil  // Sandro Silva 2022-09-05
+    _GerarAoFISCOREDUCAOZBlocoX                   := nil;  // Sandro Silva 2022-09-05
+    _GerarEstoqueAnoAnteriorBlocoX                := nil; // Sandro Silva 2022-11-22
+    _GerarEstoqueMudancaDeTributacao              := nil; // Sandro Silva 2022-11-23
+    _GerarEstoqueSuspensaoOuBaixaDeIE             := nil; // Sandro Silva 2022-11-22
+    _GerarEstoqueMudancaDeRegime                  := nil; // Sandro Silva 2022-11-23
+    _GerarEstoqueAtual                            := nil; // Sandro Silva 2022-11-23
   end;
 end;
 
@@ -680,6 +705,7 @@ begin
 end;
 
 procedure TSmallBlocoX.ValidaMd5DoListaNoCriptografado;
+(*
 var
   LbBlowfish: TLbBlowfish;
   Maisini: TIniFile;
@@ -849,6 +875,10 @@ begin
   FreeAndNil(LbBlowfish);
 
 end;
+*)
+begin
+  ufuncoesblocox.ValidaMd5DoListaNoCriptografado;
+end;
 
 function TSmallBlocoX.VisualizaXmlBlocoX(CaminhoBanco,
   DiretorioAtual: String; sTipo: String): Boolean;
@@ -995,6 +1025,197 @@ begin
   else
   begin
     Result := _GerarAoFISCOREDUCAOZBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+  end;
+
+end;
+
+function TSmallBlocoX.GerarEstoqueAnoAnterior(CaminhoBanco,
+  DiretorioAtual: PAnsiChar): Boolean;
+// Sandro Silva 2022-11-22
+begin
+
+  if Fload = False then
+  begin
+    Result := False;
+
+    ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+    if FIBDATABASE.Connected then
+    begin
+
+  //ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+      FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+      try
+
+        Result := BXGerarEstoqueAnoAnterior(FEmitente, FIBTransaction);
+
+      except
+
+      end;
+
+    end;
+
+    FechaIBDataBase(FIBDATABASE);
+
+    ChDir(DiretorioAtual);
+
+  end
+  else
+  begin
+    Result := _GerarEstoqueAnoAnteriorBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+  end;
+
+end;
+
+function TSmallBlocoX.GerarEstoqueMudancaDeTributacao(CaminhoBanco,
+  DiretorioAtual: PAnsiChar): Boolean;
+begin
+
+  if Fload = False then
+  begin
+    Result := False;
+
+    ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+    if FIBDATABASE.Connected then
+    begin
+
+  //ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+      FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+      try
+
+        Result := BXGerarEstoqueMudancaDeTributacao(FEmitente, FIBTransaction);
+
+      except
+
+      end;
+
+    end;
+
+    FechaIBDataBase(FIBDATABASE);
+
+    ChDir(DiretorioAtual);
+
+  end
+  else
+  begin
+    Result := _GerarEstoqueMudancaDeTributacao(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+  end;
+
+end;
+
+function TSmallBlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco,
+  DiretorioAtual: PAnsiChar): Boolean;
+begin
+
+  if Fload = False then
+  begin
+    Result := False;
+
+    ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+    if FIBDATABASE.Connected then
+    begin
+
+  //ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+      FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+      try
+
+        Result := BXGerarEstoqueSuspensaoOuBaixaDeIE(FEmitente, FIBTransaction);
+
+      except
+
+      end;
+
+    end;
+
+    FechaIBDataBase(FIBDATABASE);
+
+    ChDir(DiretorioAtual);
+
+  end
+  else
+  begin
+    Result := _GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+  end;
+
+end;
+
+function TSmallBlocoX.GerarEstoqueMudancaDeRegime(CaminhoBanco,
+  DiretorioAtual: PAnsiChar): Boolean;
+begin
+
+  if Fload = False then
+  begin
+    Result := False;
+
+    ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+    if FIBDATABASE.Connected then
+    begin
+
+  //ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+      FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+      try
+
+        Result := BXGerarEstoqueMudancaDeRegime(FEmitente, FIBTransaction);
+
+      except
+
+      end;
+
+    end;
+
+    FechaIBDataBase(FIBDATABASE);
+
+    ChDir(DiretorioAtual);
+
+  end
+  else
+  begin
+    Result := _GerarEstoqueMudancaDeRegime(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+  end;
+
+end;
+
+function TSmallBlocoX.GerarEstoqueAtual(CaminhoBanco,
+  DiretorioAtual: PAnsiChar): Boolean;
+begin
+
+  if Fload = False then
+  begin
+    Result := False;
+
+    ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+    if FIBDATABASE.Connected then
+    begin
+
+  //ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+      FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+      try
+
+        Result := BXGerarEstoqueAtual(FEmitente, FIBTransaction);
+
+      except
+
+      end;
+
+    end;
+
+    FechaIBDataBase(FIBDATABASE);
+
+    ChDir(DiretorioAtual);
+
+  end
+  else
+  begin
+    Result := _GerarEstoqueAtual(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
   end;
 
 end;

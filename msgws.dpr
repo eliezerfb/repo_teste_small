@@ -750,6 +750,197 @@ begin
 
 end;
 
+function GerarEstoqueAnoAnteriorBlocoX(CaminhoBanco: PAnsiChar;
+  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+begin
+  Result := False;
+
+  IBDATABASE1    := CriaIBDataBase;
+  IBTransaction1 := CriaIBTransaction(IBDATABASE1);
+
+  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+
+  if IBDATABASE1.Connected then
+  begin
+
+//ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+
+    try
+      Emitente := DadosEmitente(IBTransaction1, DiretorioAtual);
+
+      Result := BXGerarEstoqueAnoAnterior(Emitente, IBTransaction1);
+
+    except
+
+    end;
+
+  end
+  else
+  begin
+    ShowMessage('Não foi possível selecionar os dados');
+  end;
+
+  FechaIBDataBase(IBDATABASE1);
+
+  FreeAndNil(IBTransaction1);
+  FreeAndNil(IBDATABASE1);
+  ChDir(DiretorioAtual);
+
+end;
+
+function GerarEstoqueMudancaDeTributacao(CaminhoBanco: PAnsiChar;
+  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+begin
+  Result := False;
+
+  IBDATABASE1    := CriaIBDataBase;
+  IBTransaction1 := CriaIBTransaction(IBDATABASE1);
+
+  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+
+  if IBDATABASE1.Connected then
+  begin
+
+//ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+
+    try
+      Emitente := DadosEmitente(IBTransaction1, DiretorioAtual);
+
+      Result := BXGerarEstoqueMudancaDeTributacao(Emitente, IBTransaction1);
+
+    except
+
+    end;
+
+  end
+  else
+  begin
+    ShowMessage('Não foi possível selecionar os dados');
+  end;
+
+  FechaIBDataBase(IBDATABASE1);
+
+  FreeAndNil(IBTransaction1);
+  FreeAndNil(IBDATABASE1);
+  ChDir(DiretorioAtual);
+
+end;
+
+function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: PAnsiChar;
+  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+begin
+  Result := False;
+
+  IBDATABASE1    := CriaIBDataBase;
+  IBTransaction1 := CriaIBTransaction(IBDATABASE1);
+
+  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+
+  if IBDATABASE1.Connected then
+  begin
+
+//ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+
+    try
+      Emitente := DadosEmitente(IBTransaction1, DiretorioAtual);
+
+      Result := BXGerarEstoqueSuspensaoOuBaixaDeIE(Emitente, IBTransaction1);
+
+    except
+
+    end;
+
+  end
+  else
+  begin
+    ShowMessage('Não foi possível selecionar os dados');
+  end;
+
+  FechaIBDataBase(IBDATABASE1);
+
+  FreeAndNil(IBTransaction1);
+  FreeAndNil(IBDATABASE1);
+  ChDir(DiretorioAtual);
+
+end;
+
+function GerarEstoqueMudancaDeRegime(CaminhoBanco: PAnsiChar;
+  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+begin
+  Result := False;
+
+  IBDATABASE1    := CriaIBDataBase;
+  IBTransaction1 := CriaIBTransaction(IBDATABASE1);
+
+  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+
+  if IBDATABASE1.Connected then
+  begin
+
+//ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+
+    try
+      Emitente := DadosEmitente(IBTransaction1, DiretorioAtual);
+
+      Result := BXGerarEstoqueMudancaDeRegime(Emitente, IBTransaction1);
+
+    except
+
+    end;
+
+  end
+  else
+  begin
+    ShowMessage('Não foi possível selecionar os dados');
+  end;
+
+  FechaIBDataBase(IBDATABASE1);
+
+  FreeAndNil(IBTransaction1);
+  FreeAndNil(IBDATABASE1);
+  ChDir(DiretorioAtual);
+
+end;
+
+function GerarEstoqueAtual(CaminhoBanco: PAnsiChar;
+  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+begin
+  Result := False;
+
+  IBDATABASE1    := CriaIBDataBase;
+  IBTransaction1 := CriaIBTransaction(IBDATABASE1);
+
+  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+
+  if IBDATABASE1.Connected then
+  begin
+
+//ShowMessage('163 ' + DiretorioAtual); // Sandro Silva 2018-09-19
+
+    try
+      Emitente := DadosEmitente(IBTransaction1, DiretorioAtual);
+
+      Result := BXGerarEstoqueAtual(Emitente, IBTransaction1);
+
+    except
+
+    end;
+
+  end
+  else
+  begin
+    ShowMessage('Não foi possível selecionar os dados');
+  end;
+
+  FechaIBDataBase(IBDATABASE1);
+
+  FreeAndNil(IBTransaction1);
+  FreeAndNil(IBDATABASE1);
+  ChDir(DiretorioAtual);
+
+end;
+
+
 exports
   XmlReducaoZBlocoX,
   XmlEstoqueBlocoX,
@@ -771,6 +962,11 @@ exports
   , ReprocessarArquivoBlocoX // Sandro Silva 2020-09-30
   , CancelarArquivoBlocoX // Sandro Silva 2022-03-11
   , GerarAoFISCOREDUCAOZBlocoX // Sandro Silva 2022-09-05
+  , GerarEstoqueAnoAnteriorBlocoX // Sandro Silva 2022-11-22
+  , GerarEstoqueMudancaDeTributacao // Sandro Silva 2022-11-22
+  , GerarEstoqueSuspensaoOuBaixaDeIE // Sandro Silva 2022-11-23
+  , GerarEstoqueMudancaDeRegime // Sandro Silva 2022-11-23
+  , GerarEstoqueAtual // Sandro Silva 2022-11-23
   ;
 
 begin

@@ -1688,9 +1688,9 @@ begin
                     RightStr('000' + Trim(IBQECF.FieldByName('PDV').AsString), 3)+        // Número sequencial do ECF
                     RightStr('00000000000000' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString), 14) + // CNPJ do usuário
                     Copy(LimpaNumero(Form1.ibDataSet13.FieldByName('IE').AsString) + Replicate(' ', 14), 1, 14) +  // IE do usuário
-                    Right(Replicate('0',14)+ '07426598000124',14) + // CNPJ da desenvolvedora 2015-11-13 independente do cripta
-                    Copy(LimpaNumero('255422385') + Replicate(' ', 14), 1, 14) + // IE da desenvolvedora 2015-11-13
-                    Copy(LimpaNumero('22842') + Replicate(' ',14), 1, 14) + // IM da desenvolvedora 2015-11-13
+                    Right(Replicate('0',14)+ LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF),14) + // CNPJ da desenvolvedora 2015-11-13 independente do cripta
+                    Copy(LimpaNumero(IE_SOFTWARE_HOUSE_PAF) + Replicate(' ', 14), 1, 14) + // IE da desenvolvedora 2015-11-13
+                    Copy(IM_SOFTWARE_HOUSE_PAF + Replicate(' ',14), 1, 14) + // IM da desenvolvedora 2015-11-13
                     Copy(Form1.sRazaoSocialSmallsoft+Replicate(' ',40),1,40) + // Denominação da empresa desenvolvedora
                     Copy('SMALL COMMERCE'+Replicate(' ',40),1,40) + // Nome do PAF ECF
                     Copy(StrTran(Form22.sBuild,'Versão e Build: ','')+Replicate(' ',10),1,10) + // Versão do PAF ECF

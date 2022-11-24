@@ -30,6 +30,8 @@ const TIPO_ITEM_COD_MATERIAL_DE_USO_E_CONSUMO = '07';
 const DATA_FINAL_PRIMEIRO_PERIODO_OBRIGATORIO_ENVIO_ESTOQUE = '31/12/2022'; //'31/12/2022';
 const DATA_INICIAL_OBRIGATORIO_GERACAO_ARQUIVO_REDUCAO_Z    = '01/01/2023';// Sandro Silva 2022-09-05
 const RECIBO_PADRAO_DATA_REFERENCIA_ANTES_INICIO_OBRIGACAO  = 'Data de referência é anterior à data de início da obrigação';
+//const PASTA_GERAR_AO_FISCO_REDUCAO_Z = PASTA_REDUCOES_BLOCO_X; // 'c:\BlocoX\Gerar ao FISCO-REDUÇÃO Z';
+//const PASTA_GERAR_AO_FISCO_ESTOQUE   = PASTA_ESTOQUE_BLOCO_X; //'c:\BlocoX\Gerar ao FISCO-ESTOQUE';
 
 type
   TLog = class
@@ -169,11 +171,24 @@ procedure BXGeraXmlReducaoZ(Emitente: TEmitente; IBTransaction1: TIBTransaction;
 function BXGeraXmlEstoqueMes(Emitente: TEmitente; IBTransaction1: TIBTransaction;
   dtInicial: TDate; dtFinal: TDate;
   bLimparRecibo: Boolean; bLimparXMLResposta: Boolean;
-  bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean;
+  bAssinarXML: Boolean; bForcarGeracao: Boolean;
+  bExibirCaminhoXmlSalvo: Boolean = False): Boolean;
 function BXGeraXmlEstoquePeriodo(Emitente: TEmitente; IBTransaction1: TIBTransaction;
   dtInicial: TDate; dtFinal: TDate;
   bLimparRecibo: Boolean; bLimparXMLResposta: Boolean;
-  bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean;
+  bAssinarXML: Boolean; bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean = False): Boolean;
+procedure AbrirPastaXmlBlocox(sCaminho: String);
+function BXGerarEstoqueAnoAnterior(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+function BXGerarEstoqueMudancaDeTributacao(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+function BXGerarEstoqueSuspensaoOuBaixaDeIE(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+function BXGerarEstoqueMudancaDeRegime(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+function BXGerarEstoqueAtual(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
 function BXRecuperarRecibodeXmlResposta(IBTransaction: TIBTransaction;
   XmlResposta: String; sDtReferencia: String; sTipo: String;
   sSerie: String): Boolean;
@@ -1874,10 +1889,318 @@ begin
 
 end;
 
+procedure AbrirPastaXmlBlocox(sCaminho: String);
+// Abre a pasta onde foram gerados os arquivos XML
+begin
+  ShellExecute(Application.Handle, PChar('open'), PChar('explorer.exe'), PChar(sCaminho), nil, SW_NORMAL); 
+end;
+
+function BXGerarEstoqueAnoAnterior(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+// Sandro Silva 2022-11-22
+var
+  bLimparRecibo: Boolean;
+  bLimparXMLResposta: Boolean;
+  bAssinarXML: Boolean;
+  bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean;
+  sdtInicial: String;
+  sdtFinal: String;
+begin
+  Result := False;
+
+//  ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+  //if FIBDATABASE.Connected then
+  //begin
+
+    //FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+    try
+
+      CreateDir('c:\BlocoX');
+      CreateDir(PASTA_ESTOQUE_BLOCO_X);// CreateDir(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+      bLimparRecibo      := True;
+      bLimparXMLResposta := True;
+      bAssinarXML        := True;
+      bForcarGeracao     := True;
+      bExibirCaminhoSalvoXml := True;
+
+      sdtFinal   := '31/12/' + IntToStr(YearOf(IncYear(Date, -1)));
+      sdtInicial := '01/12/' + IntToStr(YearOf(StrToDate(sdtFinal)));
+
+      Result := BXGeraXmlEstoqueMes(Emitente, IBTransaction1, StrToDate(sdtInicial), StrToDate(sdtFinal), bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao, bExibirCaminhoSalvoXml);
+
+      if Result and bExibirCaminhoSalvoXml then
+        AbrirPastaXmlBlocox(PASTA_ESTOQUE_BLOCO_X); // AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+    except
+
+    end;
+  //end;
+
+  //FechaIBDataBase(FIBDATABASE);
+
+  //ChDir(DiretorioAtual);
+  //LogFrente('XML ESTOQUE criado', DiretorioAtual);
+
+end;
+
+function BXGerarEstoqueMudancaDeTributacao(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+// Sandro Silva 2022-11-22
+var
+  bLimparRecibo: Boolean;
+  bLimparXMLResposta: Boolean;
+  bAssinarXML: Boolean;
+  bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean;
+  dtInicial: TDate;
+  dtFinal: TDate;
+begin
+  Result := False;
+
+//  ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+  //if FIBDATABASE.Connected then
+  //begin
+
+    //FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+    try
+
+      CreateDir('c:\BlocoX');
+      CreateDir(PASTA_ESTOQUE_BLOCO_X); // CreateDir(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+      bLimparRecibo      := True;
+      bLimparXMLResposta := True;
+      bAssinarXML        := True;
+      bForcarGeracao     := True;
+      bExibirCaminhoSalvoXml := True;
+
+      dtFinal   := StrToDateDef(InputBox('Data Final', 'Informe a Data em que ocorreu a mudança de tributação - (dd/mm/yyyy)', ''), StrToDate('30/12/1899'));
+      dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
+
+      if (dtInicial > StrToDate('30/12/1899')) and (dtFinal > StrToDate('30/12/1899')) then
+      begin
+
+        if dtInicial <= dtFinal then
+        begin
+
+          Result := BXGeraXmlEstoqueMes(Emitente, IBTransaction1, dtInicial, dtFinal, bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao, bExibirCaminhoSalvoXml);
+
+          if Result and bExibirCaminhoSalvoXml then
+            AbrirPastaXmlBlocox(PASTA_ESTOQUE_BLOCO_X)// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+        end;
+
+      end;
+
+    except
+
+    end;
+  //end;
+
+  //FechaIBDataBase(FIBDATABASE);
+
+  //ChDir(DiretorioAtual);
+  //LogFrente('XML ESTOQUE criado', DiretorioAtual);
+
+end;
+
+function BXGerarEstoqueSuspensaoOuBaixaDeIE(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+// Sandro Silva 2022-11-22
+var
+  bLimparRecibo: Boolean;
+  bLimparXMLResposta: Boolean;
+  bAssinarXML: Boolean;
+  bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean;
+  dtInicial: TDate;
+  dtFinal: TDate;
+begin
+  Result := False;
+
+//  ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+  //if FIBDATABASE.Connected then
+  //begin
+
+    //FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+    try
+
+      CreateDir('c:\BlocoX');
+      CreateDir(PASTA_ESTOQUE_BLOCO_X); // CreateDir(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+      bLimparRecibo      := True;
+      bLimparXMLResposta := True;
+      bAssinarXML        := True;
+      bForcarGeracao     := True;
+      bExibirCaminhoSalvoXml := True;
+
+      dtFinal   := StrToDateDef(InputBox('Data Final', 'Informe a Data em que ocorreu a baixa da inscrição estadual - (dd/mm/yyyy)', ''), StrToDate('30/12/1899'));
+      dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
+
+      if (dtInicial > StrToDate('30/12/1899')) and (dtFinal > StrToDate('30/12/1899')) then
+      begin
+
+        if dtInicial <= dtFinal then
+        begin
+
+          Result := BXGeraXmlEstoqueMes(Emitente, IBTransaction1, dtInicial, dtFinal, bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao, bExibirCaminhoSalvoXml);
+
+          if Result and bExibirCaminhoSalvoXml then
+            AbrirPastaXmlBlocox(PASTA_ESTOQUE_BLOCO_X)// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+        end;
+
+      end;
+
+    except
+
+    end;
+  //end;
+
+  //FechaIBDataBase(FIBDATABASE);
+
+  //ChDir(DiretorioAtual);
+  //LogFrente('XML ESTOQUE criado', DiretorioAtual);
+
+end;
+
+function BXGerarEstoqueMudancaDeRegime(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+// Sandro Silva 2022-11-22
+var
+  bLimparRecibo: Boolean;
+  bLimparXMLResposta: Boolean;
+  bAssinarXML: Boolean;
+  bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean;
+  dtInicial: TDate;
+  dtFinal: TDate;
+begin
+  Result := False;
+
+//  ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+  //if FIBDATABASE.Connected then
+  //begin
+
+    //FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+    try
+
+      CreateDir('c:\BlocoX');
+      CreateDir(PASTA_ESTOQUE_BLOCO_X); // CreateDir(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+      bLimparRecibo      := True;
+      bLimparXMLResposta := True;
+      bAssinarXML        := True;
+      bForcarGeracao     := True;
+      bExibirCaminhoSalvoXml := True;
+
+      dtFinal   := StrToDateDef(InputBox('Data Final', 'Informe a Data em que ocorreu a mudança de regime de tributação - (dd/mm/yyyy)', ''), StrToDate('30/12/1899'));
+      dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
+
+      if (dtInicial > StrToDate('30/12/1899')) and (dtFinal > StrToDate('30/12/1899')) then
+      begin
+
+        if dtInicial <= dtFinal then
+        begin
+
+          Result := BXGeraXmlEstoqueMes(Emitente, IBTransaction1, dtInicial, dtFinal, bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao, bExibirCaminhoSalvoXml);
+
+          if Result and bExibirCaminhoSalvoXml then
+            AbrirPastaXmlBlocox(PASTA_ESTOQUE_BLOCO_X)// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+        end;
+
+      end;
+
+    except
+
+    end;
+  //end;
+
+  //FechaIBDataBase(FIBDATABASE);
+
+  //ChDir(DiretorioAtual);
+  //LogFrente('XML ESTOQUE criado', DiretorioAtual);
+
+end;
+
+function BXGerarEstoqueAtual(Emitente: TEmitente;
+  IBTransaction1: TIBTransaction): Boolean;
+// Sandro Silva 2022-11-22
+var
+  bLimparRecibo: Boolean;
+  bLimparXMLResposta: Boolean;
+  bAssinarXML: Boolean;
+  bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean;
+  dtInicial: TDate;
+  dtFinal: TDate;
+begin
+  Result := False;
+
+//  ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
+
+  //if FIBDATABASE.Connected then
+  //begin
+
+    //FEmitente := DadosEmitente(FIBTransaction, DiretorioAtual);
+
+    try
+
+      CreateDir('c:\BlocoX');
+      CreateDir(PASTA_ESTOQUE_BLOCO_X); // CreateDir(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+      bLimparRecibo      := True;
+      bLimparXMLResposta := True;
+      bAssinarXML        := True;
+      bForcarGeracao     := True;
+      bExibirCaminhoSalvoXml := True;
+
+      dtFinal   := Date;
+      dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
+
+      if (dtInicial > StrToDate('30/12/1899')) and (dtFinal > StrToDate('30/12/1899')) then
+      begin
+
+        if dtInicial <= dtFinal then
+        begin
+
+          Result := BXGeraXmlEstoqueMes(Emitente, IBTransaction1, dtInicial, dtFinal, bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao, bExibirCaminhoSalvoXml);
+
+          if Result and bExibirCaminhoSalvoXml then
+            AbrirPastaXmlBlocox(PASTA_ESTOQUE_BLOCO_X)// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_ESTOQUE);
+
+        end;
+
+      end;
+
+    except
+
+    end;
+  //end;
+
+  //FechaIBDataBase(FIBDATABASE);
+
+  //ChDir(DiretorioAtual);
+  //LogFrente('XML ESTOQUE criado', DiretorioAtual);
+
+end;
+
+
 function BXGeraXmlEstoquePeriodo(Emitente: TEmitente; IBTransaction1: TIBTransaction;
   dtInicial: TDate; dtFinal: TDate;
   bLimparRecibo: Boolean; bLimparXMLResposta: Boolean;
-  bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean;
+  bAssinarXML: Boolean; bForcarGeracao: Boolean;
+  bExibirCaminhoSalvoXml: Boolean = False): Boolean;
 //
 // NÃO USAR COMMITATUDO() AQUI OU EM OUTRO PONTO DO BLOCOX
 //
@@ -2099,9 +2422,14 @@ var
 
     IBQICM.Close; // Sandro Silva 2018-11-27
 
-    if Copy(allTrim(sST),1,1) = 'I' then sSituacaoTributaria := 'I' else
-      if Copy(allTrim(sST),1,1) = 'F' then sSituacaoTributaria := 'F' else
-        if Copy(allTrim(sST),1,1) = 'N' then sSituacaoTributaria := 'N';
+    if Copy(allTrim(sST),1,1) = 'I' then
+      sSituacaoTributaria := 'I'
+    else
+      if Copy(allTrim(sST),1,1) = 'F' then
+        sSituacaoTributaria := 'F'
+      else
+        if Copy(allTrim(sST),1,1) = 'N' then
+          sSituacaoTributaria := 'N';
 
     if (sSituacaoTributaria = 'I') or (sSituacaoTributaria = 'F') or (sSituacaoTributaria = 'N') then
       Result := '0000';
@@ -2592,7 +2920,7 @@ begin
 
             //ShowMessage('Teste 01 2167');  // Sandro Silva 2018-11-23
 
-            ForceDirectories(PASTA_ESTOQUE_BLOCO_X);
+            ForceDirectories(PASTA_ESTOQUE_BLOCO_X);  
 
             LogFrente('XML do estoque gerado' + ': ' + FormatDateTime('dd/mm/yyyy', dtFinal), Emitente.Configuracao.DiretorioAtual);
 
@@ -2608,7 +2936,6 @@ begin
             LogFrente(IfThen(sRegistro = '', 'XML não foi salvo no banco', 'XML salvo no banco') + ': ESTOQUE ' + FormatDateTime('dd/mm/yyyy', dtFinal), Emitente.Configuracao.DiretorioAtual);
 
             sArquivoXML := PASTA_ESTOQUE_BLOCO_X + '\' + PREFIXO_ARQUIVOS_XML_ESTOQUE_BLOCO_X + FormatDateTime('mmyyyy', dtFinal) + '.xml';
-
 
             if BXEstoque.SalvaArquivo(sArquivoXML) then
             begin
@@ -2660,6 +2987,11 @@ begin
             //ShowMessage('Teste 01 2235');  // Sandro Silva 2018-11-23
 
             Result := True;
+
+
+            if bExibirCaminhoSalvoXml then
+              ShowMessage('Arquivo salvo em' + #13 + '"' + sArquivoXML + '"');
+
 
   //  ShowMessage('finally 1696'); // Sandro Silva 2018-09-17
           finally
@@ -2735,7 +3067,8 @@ function BXGeraXmlEstoqueMes(Emitente: TEmitente;
   IBTransaction1: TIBTransaction;
   dtInicial: TDate; dtFinal: TDate;
   bLimparRecibo: Boolean; bLimparXMLResposta: Boolean;
-  bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean;
+  bAssinarXML: Boolean; bForcarGeracao: Boolean;
+  bExibirCaminhoXmlSalvo: Boolean = False): Boolean;
 // Permite gerar o xml do estoque se for com data menor que 01/06/2020 ou período anual
 begin
   //t := Time;
@@ -2744,7 +3077,7 @@ begin
   begin
 
     // Essa rotina só deve ser acionada durante a emissão da redução Z
-    BXGeraXmlEstoquePeriodo(Emitente, IBTransaction1, dtInicial, dtFinal, bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao);
+    BXGeraXmlEstoquePeriodo(Emitente, IBTransaction1, dtInicial, dtFinal, bLimparRecibo, bLimparXMLResposta, bAssinarXML, bForcarGeracao, bExibirCaminhoXmlSalvo);
 
     Result := True;
 
@@ -3029,7 +3362,7 @@ begin
 
 //ShowMessage('teste 1 etapa certificado' + #13 + sSubjectName); // Sandro Silva 2020-03-13
 
-      if (AnsiContainsText(sSubjectName, '07426598000124')) then
+      if (AnsiContainsText(sSubjectName, LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF))) then
       begin
         // Sandro Silva 2018-02-01 Não é certificado da Smallsoft usa homologação
         if FileExists(DiretorioConfigBlocoX + '\blocox_servidores_homologacao.xml') = False then
@@ -3842,6 +4175,7 @@ begin
     if (sTipo = 'REDUCAO') or (sTipo = '') then
       LogFrente('Arquivos da RZ PENDENTES: ' + FormatFloat('0', IBQBLOCOX.FieldByName('PENDENTE').AsInteger)  + ' ' + Emitente.UF + ' Perfil ' + Copy(Emitente.Configuracao.PerfilPAF,1,1), Emitente.Configuracao.DiretorioAtual);
 
+
     {Sandro Silva 2022-09-06 inicio}
     if IBQBLOCOX.FieldByName('PENDENTE').AsInteger > 0 then
     begin
@@ -3874,25 +4208,34 @@ begin
           Retorno.XmlResposta := XmlRespostaPadraoSucessoBlocoX(RECIBO_PADRAO_DATA_REFERENCIA_ANTES_INICIO_OBRIGACAO);
 
           BXSalvarReciboTransmissaoBanco(Emitente, IBTransaction, Retorno, IBQBLOCOX.FieldByName('REGISTRO').AsString);
-          
+
         end;
 
         IBQBLOCOX.Next;
       end;
 
-      FreeAndNil(Retorno);
-
+      FreeAndNil(Retorno);     
 
     end;
     {Sandro Silva 2022-09-06 fim}
+
+    {Sandro Silva 2022-11-23 inicio
+
+    LTS, 08:34
+    Bom dia prezado Sandro
+    as mensagem dos pendentes que a ER 02.06 fala ficou dispensado
+    seja para Z ou estoque
 
     if bExibirAlerta then
     begin
       if sMensagemAlerta <> '' then
       begin
+
         ShowMessage(PChar(sMensagemAlerta));
+
       end;
     end;
+    }
 
     FreeAndNil(IBTBLOCOX); // Create(nil);
 
@@ -3911,7 +4254,7 @@ begin
     end;
   end;
 
-  // Conforme ATO DIAT Nº 46/2022 não precisa bloquear o PAF a partir de determinado número de pendências  
+  // Conforme ATO DIAT Nº 46/2022 não precisa bloquear o PAF a partir de determinado número de pendências
   Result := False; // Sandro Silva 2022-09-06 Result := (bBlocoxEstoquePendente) or (bBlocoxRZPendente);
 
   ChDir(Emitente.Configuracao.DiretorioAtual); // Sandro Silva 2017-03-31
@@ -3940,7 +4283,7 @@ begin
       'from EMITENTE';
     IBQBLOCOX.Open;
 
-    if LimpaNumero(IBQBLOCOX.FieldByName('CGC').AsString) <> '07426598000124' then
+    if LimpaNumero(IBQBLOCOX.FieldByName('CGC').AsString) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF) then
     begin
       sCnae := LimpaNumero(IBQBLOCOX.FieldByName('CNAE').AsString);
 
@@ -4804,7 +5147,7 @@ var
 begin
   Result := False;
   try
-    sCNPJDesenvolvedor := '07426598000124';
+    sCNPJDesenvolvedor := LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF);
     if Pos(sCNPJDesenvolvedor, LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Certificado', '')) > 0 then // Sandro Silva 2019-05-07  if Pos(sCNPJDesenvolvedor, BXSelecionarCertificadoDigital) > 0 then
     begin
       //ShowMessage('Servidor estava instável. Testar a partir de ');
@@ -5592,7 +5935,6 @@ end;
 // Exporta xml do período informado
 function BXGerarAoFISCOREDUCAOZ(Emitente: TEmitente;
   IBTransaction: TIBTransaction): Boolean;
-const PASTA_GERAR_AO_FISCO_REDUCAO_Z = 'c:\BlocoX\Gerar ao FISCO-REDUÇÃO Z';
 var
   dtInicial: TDate;
   dtFinal: TDate;
@@ -5611,7 +5953,7 @@ begin
 
       try
         CreateDir('c:\BlocoX');
-        CreateDir(PASTA_GERAR_AO_FISCO_REDUCAO_Z);
+        CreateDir(PASTA_ESTOQUE_BLOCO_X);// CreateDir(PASTA_GERAR_AO_FISCO_REDUCAO_Z);
 
         IBTREDUCAO := CriaIBTransaction(IBTransaction.DefaultDatabase);
         IBQREDUCAO := CriaIBQuery(IBTREDUCAO);
@@ -5632,14 +5974,14 @@ begin
         
           if IBQREDUCAO.FieldByName('XMLENVIO').AsString <> '' then
           begin
-            TBlobField(IBQREDUCAO.FieldByName('XMLENVIO')).SaveToFile(PASTA_GERAR_AO_FISCO_REDUCAO_Z + '\' + 'Redução_Z_' + FormatDateTime('ddmmyyyy', IBQREDUCAO.FieldByName('DATAREFERENCIA').AsDateTime) + '_' + IBQREDUCAO.FieldByName('SERIE').AsString + '.xml');
+            // TBlobField(IBQREDUCAO.FieldByName('XMLENVIO')).SaveToFile(PASTA_GERAR_AO_FISCO_REDUCAO_Z + '\' + 'Redução_Z_' + FormatDateTime('ddmmyyyy', IBQREDUCAO.FieldByName('DATAREFERENCIA').AsDateTime) + '_' + IBQREDUCAO.FieldByName('SERIE').AsString + '.xml');
+            TBlobField(IBQREDUCAO.FieldByName('XMLENVIO')).SaveToFile(PASTA_REDUCOES_BLOCO_X + '\' + 'Redução_Z_' + FormatDateTime('ddmmyyyy', IBQREDUCAO.FieldByName('DATAREFERENCIA').AsDateTime) + '_' + IBQREDUCAO.FieldByName('SERIE').AsString + '.xml');
           end;
 
           IBQREDUCAO.Next;
         end;
 
-        // Abre a pasta onde foram gerados os arquivos XML 
-        ShellExecute(Application.Handle, PChar('open'), PChar('explorer.exe'), PChar(PASTA_GERAR_AO_FISCO_REDUCAO_Z), nil, SW_NORMAL);
+        AbrirPastaXmlBlocox(PASTA_REDUCOES_BLOCO_X);// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_REDUCAO_Z);
 
       except
       end;

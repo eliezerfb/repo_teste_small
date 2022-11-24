@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2022
+MajorVer=2023
 MinorVer=0
 Release=0
-Build=49
+Build=2
 Debug=0
 PreRelease=0
 Special=1
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Smallsoft Tecnologia em Informática EIRELI
 FileDescription=Frente de Caixa
-FileVersion=2022.0.0.49
+FileVersion=2023.0.0.2
 InternalName=Frente
 LegalCopyright=Smallsoft Tecnologia em Informática EIRELI
 LegalTrademarks=Smallsoft Tecnologia em Informática EIRELI

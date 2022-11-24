@@ -1334,9 +1334,9 @@ begin
         if (Form7.sMfd = 'MFDCOMPLETA') then
         begin // MFD
           //iRetorno :=
-          EPSON_Config_Dados_PAFECF(PChar('07426598000124'),
-                                    PChar('255422385'),
-                                    PChar('22842'),
+          EPSON_Config_Dados_PAFECF(PChar(LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)),
+                                    PChar(LimpaNumero(IE_SOFTWARE_HOUSE_PAF)),
+                                    PChar(IM_SOFTWARE_HOUSE_PAF),
                                     // 2015-09-08 PChar(Copy('Smallsoft Tecnologia em Informática EIRELI', 1, 40)),
                                     PChar(Copy(Form1.sRazaoSocialSmallsoft, 1, 40)),
                                     PChar('FRENTE.EXE'),

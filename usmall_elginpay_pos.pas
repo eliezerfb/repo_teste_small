@@ -509,7 +509,7 @@ begin
 
   Result := True;
 
-  if (FormataCpfCgc(LimpaNumero(FCNPJEmitente)) <> '07.426.598/0001-24') // Smallsoft
+  if (FormataCpfCgc(LimpaNumero(FCNPJEmitente)) <> CNPJ_SOFTWARE_HOUSE_PAF) // Smallsoft
   and (FormataCpfCgc(LimpaNumero(FCNPJEmitente)) <> '11.111.111/1111-11') // emulador
   and (FormataCpfCgc(LimpaNumero(FCNPJEmitente)) <> '09.450.031/0001-19') // integradand CE
   and (FormataCpfCgc(LimpaNumero(FCNPJEmitente)) <> '61.099.008/0001-41') // Dimep

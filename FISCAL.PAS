@@ -118,8 +118,10 @@ uses
   const FORMA_PAGAMENTO_CARTAO          = 'CARTAO';
   const FORMA_PAGAMENTO_CHEQUE          = 'CHEQUE'; // Sandro Silva 2016-04-19
   }
+{Sandro Silva 2022-11-22 inicio
   const VERSAO_ER_PAF_ECF               = '02.06'; // ER 02.06 Sandro Silva 2019-06-19  '02.05'; // Sandro Silva 2017-07-24 ER 02.05 '02.03';
   const NUMERO_LAUDO_PAF_ECF            = 'UNO3302019';
+}
   const INFORME_CPF_OU_CNPJ             = 'Informe o CPF ou o CNPJ válido:'; // 2015-09-16
 
   const CRIPTA_SECAO_ECFS_AUTORIZADAS   = 'R24_4';
@@ -1377,6 +1379,11 @@ type
     procedure EtiquetaBalancaPrecoR1Click(Sender: TObject);
     procedure GeraraoFISCOREDUOZ1Click(Sender: TObject);
     procedure SadasIdentificadaspeloCPFCNPJ1Click(Sender: TObject);
+    procedure ESTOQUEANOANTERIOR1Click(Sender: TObject);
+    procedure ESTOQUEMUDANADETRIBUTAO1Click(Sender: TObject);
+    procedure ESTOQUESUSPENSOOUBAIXADEIE1Click(Sender: TObject);
+    procedure ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
+    procedure ESTOQUEATUAL1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -2028,10 +2035,10 @@ begin
   Mais1Ini.WriteString('ECF','GT', Form1.LbBlowfish1.EncryptString(alltrim('0')));   // Cripta o Edit2
   Mais1Ini.WriteString('ECF','CGC',Form1.LbBlowfish1.EncryptString(alltrim(Form1.ibDataSet13.FieldByName('CGC').AsString)));
   //
-  Mais1Ini.WriteString('R01','14',Form1.LbBlowfish1.EncryptString('07426598000124')); // CGC
-  Mais1Ini.WriteString('R01','15',Form1.LbBlowfish1.EncryptString('255422385'));      // IE
-  Mais1Ini.WriteString('R01','16',Form1.LbBlowfish1.EncryptString('22842'));          // IM
-  Mais1Ini.WriteString('R01','17',Form1.LbBlowfish1.EncryptString('Smallsoft Tecnologia em Informática EIRELI'));
+  Mais1Ini.WriteString('R01','14',Form1.LbBlowfish1.EncryptString(LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF))); // CGC
+  Mais1Ini.WriteString('R01','15',Form1.LbBlowfish1.EncryptString(LimpaNumero(IE_SOFTWARE_HOUSE_PAF)));      // IE
+  Mais1Ini.WriteString('R01','16',Form1.LbBlowfish1.EncryptString(IM_SOFTWARE_HOUSE_PAF));          // IM
+  Mais1Ini.WriteString('R01','17',Form1.LbBlowfish1.EncryptString(RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
   //Mais1Ini.WriteString('R01','17',Form1.LbBlowfish1.EncryptString(RAZAO_SOCIAL_SMALLSOFT));
   Mais1Ini.WriteString('R01','18',Form1.LbBlowfish1.EncryptString('Small Commerce'));
   Mais1Ini.WriteString('R01','19',Form1.LbBlowfish1.EncryptString('0112'));
@@ -2039,10 +2046,10 @@ begin
   Mais1Ini.WriteString('R01','99',
   Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(
   Form1.ibDataSet13.FieldByName('CGC').AsString+
-  '07426598000124'+
-  '255422385'+
-  '22842'+
-  'Smallsoft Tecnologia em Informática EIRELI'+
+  LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)+
+  LimpaNumero(IE_SOFTWARE_HOUSE_PAF)+
+  IM_SOFTWARE_HOUSE_PAF+
+  RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF+
   //RAZAO_SOCIAL_SMALLSOFT +
   'Small Commerce'+
   '0112'+
@@ -2357,9 +2364,9 @@ begin
       Form1.sPerfil       := Form1.LbBlowfish1.DecryptString(Mais2Ini.ReadString('PERFIL','I',''));
 
     if Mais2Ini.ReadString('R01','17','') = '' then // 2015-10-20
-      Form1.sRazaoSocialSmallsoft := 'Smallsoft Tecnologia em Informática EIRELI'
+      Form1.sRazaoSocialSmallsoft := RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF
     else
-      Form1.sRazaoSocialSmallsoft := Form1.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17','Smallsoft Tecnologia em Informática EIRELI'));
+      Form1.sRazaoSocialSmallsoft := Form1.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17',RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
   except
     Form1.sConcomitante := 'CONCOMITANTE'
   end;
@@ -4127,9 +4134,9 @@ begin
     //             replicate(' ', 32));
     //
     Writeln(F, 'N1' +
-               Right('00000000000000' + LimpaNumero('07.426.598/0001-24'), 14) +
-               Copy(LimpaNumero('255422385') + Replicate(' ', 14), 1, 14) +
-               Copy(LimpaNumero('2284-2') + Replicate(' ', 14), 1, 14) +
+               Right('00000000000000' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) +
+               Copy(LimpaNumero(IE_SOFTWARE_HOUSE_PAF) + Replicate(' ', 14), 1, 14) +
+               Copy(IM_SOFTWARE_HOUSE_PAF + Replicate(' ', 14), 1, 14) +
                // 2015-09-08 Uppercase(Copy('Smallsoft Tecnologia EIRELI'+ Replicate(' ', 50), 1, 50)) +
                AnsiUpperCase(Copy(ConverteAcentos(Form1.sRazaoSocialSmallsoft) + Replicate(' ', 50), 1, 50)));// +
                //Replicate(' ', 32));
@@ -4161,8 +4168,8 @@ begin
     Writeln(F, 'N3'+Copy('TRDECF32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'TRDECF32.DLL')))+Replicate(' ',32),1,32))); // MD5
     //
     Writeln(F, 'N9' +
-               Right('00000000000000' + LimpaNumero('07.426.598/0001-24'), 14) +
-               Copy(LimpaNumero('255422385') + Replicate(' ', 14), 1, 14) +
+               Right('00000000000000' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) +
+               Copy(LimpaNumero(IE_SOFTWARE_HOUSE_PAF) + Replicate(' ', 14), 1, 14) +
                StrZero(18,6,0));
     //
     CloseFile(F);                                    // Fecha o arquivo
@@ -4965,10 +4972,11 @@ begin
         Result := False;
 
       end;
+
     end;
 
     // Bloqueio de serial com validade expirada
-    if DiasParaExpirar(Form1.IBDatabase1) < 0 then // Permite usar até o dia 365 Sandro Silva 2019-11-19  if DiasParaExpirar(Form1.IBDatabase1) <= 0 then
+    if DiasParaExpirar(Form1.IBDatabase1) < 0 then // Permite usar até o dia que expira Sandro Silva 2019-11-19  if DiasParaExpirar(Form1.IBDatabase1) <= 0 then
     begin
       if SmallMsgBox(PChar('Não foi possível liberar o sistema para uso neste computador'+chr(10)+
                            'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
@@ -6965,7 +6973,8 @@ begin
     //
     GetDir(0,sAtualx);
     //
-    if Pos('\',sP1) = 0 then sP1 := sAtualx + '\' + sP1;
+    if Pos('\',sP1) = 0 then
+      sP1 := sAtualx + '\' + sP1;
     //
     with Form1 do
     begin
@@ -16543,11 +16552,17 @@ begin
             end;
           end;
           //
-          if Copy(allTrim(ibDataSet4.FieldByName('ST').AsString),1,1) = 'I' then sSituacaoTributaria := 'I' else
-            if Copy(allTrim(ibDataSet4.FieldByName('ST').AsString),1,1) = 'F' then sSituacaoTributaria := 'F' else
-              if Copy(allTrim(ibDataSet4.FieldByName('ST').AsString),1,1) = 'N' then sSituacaoTributaria := 'N';
+          if Copy(allTrim(ibDataSet4.FieldByName('ST').AsString),1,1) = 'I' then
+            sSituacaoTributaria := 'I'
+          else
+            if Copy(allTrim(ibDataSet4.FieldByName('ST').AsString),1,1) = 'F' then
+              sSituacaoTributaria := 'F'
+            else
+              if Copy(allTrim(ibDataSet4.FieldByName('ST').AsString),1,1) = 'N' then
+                sSituacaoTributaria := 'N';
           //
-          if (sSituacaoTributaria = 'I') or (sSituacaoTributaria = 'F') or (sSituacaoTributaria = 'N') then sAliquota := '0000';
+          if (sSituacaoTributaria = 'I') or (sSituacaoTributaria = 'F') or (sSituacaoTributaria = 'N') then
+            sAliquota := '0000';
         end
         else
         begin
@@ -21390,7 +21405,7 @@ begin
                                'a) Laudo: '+NUMERO_LAUDO_PAF_ECF+Chr(10)+//URB0342013'+Chr(10)+
                                chr(10)+
                                'b)IDENTIFICAÇÃO DA EMPRESA DESENVOLVEDORA'+Chr(10)+
-                               'b1)CNPJ: 07.426.598/0001-24'+chr(10)+
+                               'b1)CNPJ: ' + CNPJ_SOFTWARE_HOUSE_PAF +chr(10)+
                                'b2)Razão Social: Smallsoft Tecnologia em'+chr(10)+'Informática EIRELI'+chr(10)+
                                'b3)Endereço completo: Rua Getúlio Vargas, 673'+chr(10)+
                                'CEP: 89700-019 Cidade: Concórdia UF: SC'+chr(10)+
@@ -26006,8 +26021,7 @@ begin
           except
             on E: Exception do
             begin
-              //if LimpaNumero(Form1.ibDAtaset13.FieldByName('CGC').AsString) = '07426598000124' then
-              //  SmallMsg('Teste Excluir essa mensagem ' + E.Message);
+
             end;
           end;
           if sTLista <> nil then
@@ -26854,12 +26868,12 @@ procedure TForm1.VendasIdentificadaspeloCPFCNPJ1Click(Sender: TObject);
 var
   F : TextFile;
   iZ: Integer;
-  bGerandoZ: Boolean;
+  bGerando: Boolean;
   dtGeracao: TDate;
   hrGeracao: TTime;
 begin
   CommitaTudo(True);// VendasIdentificadaspeloCPFCNPJ1Click 2015-09-12
-  bGerandoZ := False;
+  bGerando := False;
   try
     Form7.bVendaCPF := True;
     Form7.Caption := 'Vendas Identificadas pelo CPF/CNPJ';// Sandro Silva 2016-08-19
@@ -26879,7 +26893,7 @@ begin
       AssignFile(F, SaveDialog1.FileName);
       Rewrite(F);                           // Abre para gravação
 
-      bGerandoZ := True;
+      bGerando := True;
 
       Form1.ibQuery5.Close;
       Form1.ibQuery5.SQL.Text :=
@@ -26905,9 +26919,9 @@ begin
                   );
 
       Writeln(F,  'Z2' +                                                          // Tipo Z2
-                  Right('00000000000000' + '07426598000124', 14) + // CNPJ da Desenvolvedora
-                  Copy('255422385' + Replicate(' ', 14), 1, 14) + // Instrição Estadual da Desenvolvedora
-                  Copy('22842' + Replicate(' ', 14), 1, 14) + // Inscrição Municipal da Desenvolvedora
+                  Right('00000000000000' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) + // CNPJ da Desenvolvedora
+                  Copy(LimpaNumero(IE_SOFTWARE_HOUSE_PAF) + Replicate(' ', 14), 1, 14) + // Instrição Estadual da Desenvolvedora
+                  Copy(IM_SOFTWARE_HOUSE_PAF + Replicate(' ', 14), 1, 14) + // Inscrição Municipal da Desenvolvedora
                   // 2015-09-08 Copy('SMALLSOFT TECNOLOGIA EM INFORMATICA EIRELI' + Replicate(' ', 50), 1, 50) // Razão social da Desenvolvedora
                   Copy(AnsiUpperCase(Form1.sRazaoSocialSmallsoft) + Replicate(' ', 50), 1, 50) // Razão social da Desenvolvedora
                   );
@@ -26947,8 +26961,8 @@ begin
       end;
 
       Writeln(F, 'Z9' +                                                          // Tipo Z9
-                 Right('07426598000124', 14) + // CNPJ da Desenvolvedora
-                 Copy('255422385' + Replicate(' ', 14), 1, 14) + // Instrição Estadual da Desenvolvedora
+                 Right(LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) + // CNPJ da Desenvolvedora
+                 Copy(LimpaNumero(IE_SOFTWARE_HOUSE_PAF) + Replicate(' ', 14), 1, 14) + // Instrição Estadual da Desenvolvedora
                  RightStr(Replicate('0', 6) + IntToStr(iZ), 6)  // Total de registros Z4
                  );
 
@@ -26956,11 +26970,11 @@ begin
       AssinaturaDigital(pChar(SaveDialog1.FileName));
       CHDir(Form1.sAtual);
 
-      bGerandoZ := False;
+      bGerando := False;
       Screen.Cursor             := crDefault;
     end;
   finally
-    if bGerandoZ then // Falhou fechar e assinar arquivo
+    if bGerando then // Falhou fechar e assinar arquivo
     begin
       CloseFile(F);                                    // Fecha o arquivo
       CHDir(Form1.sAtual);
@@ -33172,7 +33186,7 @@ procedure TForm1.ppMenuFiscalPAFNFCePopup(Sender: TObject);
 begin
   PopupMenu1Popup(PopupMenu1);
   MesasAbertasPAFNFCe.Caption := sMesasOuContas+' abertas...';
-  SadasIdentificadaspeloCPFCNPJ1.Visible        := (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = '07426598000124');
+  SadasIdentificadaspeloCPFCNPJ1.Visible        := (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF));
   VendasIdentificadaspeloCPFCNPJPAFNFCe.Visible := (SadasIdentificadaspeloCPFCNPJ1.Visible = False);
 end;
 
@@ -33457,7 +33471,16 @@ begin
   //Screen.Cursor := crHourGlass;
   Commitatudo(True); //Antes EnvioaoFISCOREDUOZClick()
 
-  //if bOk then
+  bOk := True;
+  if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
+  begin
+    Application.ProcessMessages;
+    Application.BringToFront;
+
+    bOk := False;
+  end;
+
+  if bOk then
   begin
     _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
 
@@ -33485,7 +33508,7 @@ begin
       Commitatudo(True); // TForm1.SadasIdentificadaspeloCPFCNPJ1Click(
       Requisitos := TRequisitosPafNfce.Create;
       Requisitos.IBTransaction := IBTransaction2;
-      Requisitos.VersaoER      := tPafNfceEr0200;
+      Requisitos.VersaoER      := tPafNfceEr0100; //tPafNfceEr0200;
       Requisitos.VendasIdentificadaspeloCPFCNPJ(Form7.DateTimePicker3.Date, Form7.edCPFCNPJ.Text);
       FreeAndNil(Requisitos);
 
@@ -33493,6 +33516,154 @@ begin
   except
 
   end;
+  CHDir(Form1.sAtual);
+
+end;
+
+procedure TForm1.ESTOQUEANOANTERIOR1Click(Sender: TObject);
+var
+  bOk: Boolean;
+begin
+  Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE ANO ANTERIOR"','Aguarde... REQUISITO LIX -  "ESTOQUE ANO ANTERIOR"');
+  Screen.Cursor := crHourGlass;
+
+  Commitatudo(True);
+
+  bOk := True;
+  if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
+  begin
+    Application.ProcessMessages;
+    Application.BringToFront;
+
+    bOk := False;
+  end;
+
+  if bOk then
+  begin
+    _BlocoX.GerarEstoqueAnoAnterior(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+  end;
+
+  Form1.Display(Form1.sStatusECF,Form1.sF);
+  Screen.Cursor := crDefault;
+
+  CHDir(Form1.sAtual);
+end;
+
+procedure TForm1.ESTOQUEMUDANADETRIBUTAO1Click(Sender: TObject);
+var
+  bOk: Boolean;
+begin
+  Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE MUDANÇA DE TRIBUTAÇÃO"','Aguarde... REQUISITO LIX -  "ESTOQUE MUDANÇA DE TRIBUTAÇÃO"');
+  Screen.Cursor := crHourGlass;
+
+  Commitatudo(True);
+
+  bOk := True;
+  if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
+  begin
+    Application.ProcessMessages;
+    Application.BringToFront;
+
+    bOk := False;
+  end;
+
+  if bOk then
+  begin
+    _BlocoX.GerarEstoqueMudancaDeTributacao(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+  end;
+
+  Form1.Display(Form1.sStatusECF,Form1.sF);
+  Screen.Cursor := crDefault;
+
+  CHDir(Form1.sAtual);
+end;
+
+procedure TForm1.ESTOQUESUSPENSOOUBAIXADEIE1Click(Sender: TObject);
+var
+  bOk: Boolean;
+begin
+  Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE SUSPENSÃO OU BAIXA DE I.E."','Aguarde... REQUISITO LIX -  "ESTOQUE SUSPENSÃO OU BAIXA DE I.E."');
+  Screen.Cursor := crHourGlass;
+
+  Commitatudo(True);
+
+  bOk := True;
+  if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
+  begin
+    Application.ProcessMessages;
+    Application.BringToFront;
+
+    bOk := False;
+  end;
+
+  if bOk then
+  begin
+    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+  end;
+
+  Form1.Display(Form1.sStatusECF,Form1.sF);
+  Screen.Cursor := crDefault;
+
+  CHDir(Form1.sAtual);
+
+end;
+
+procedure TForm1.ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
+var
+  bOk: Boolean;
+begin
+  Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE MUDANÇA DE REGIME"','Aguarde... REQUISITO LIX -  "ESTOQUE MUDANÇA DE REGIME"');
+  Screen.Cursor := crHourGlass;
+
+  Commitatudo(True);
+
+  bOk := True;
+  if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
+  begin
+    Application.ProcessMessages;
+    Application.BringToFront;
+
+    bOk := False;
+  end;
+
+  if bOk then
+  begin
+    _BlocoX.GerarEstoqueMudancaDeRegime(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+  end;
+
+  Form1.Display(Form1.sStatusECF,Form1.sF);
+  Screen.Cursor := crDefault;
+
+  CHDir(Form1.sAtual);
+
+end;
+
+procedure TForm1.ESTOQUEATUAL1Click(Sender: TObject);
+var
+  bOk: Boolean;
+begin
+  Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE ATUAL"','Aguarde... REQUISITO LIX -  "ESTOQUE ATUAL"');
+  Screen.Cursor := crHourGlass;
+
+  Commitatudo(True);
+
+  bOk := True;
+  if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
+  begin
+    Application.ProcessMessages;
+    Application.BringToFront;
+
+    bOk := False;
+  end;
+
+  if bOk then
+  begin
+    _BlocoX.GerarEstoqueAtual(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+  end;
+
+  Form1.Display(Form1.sStatusECF,Form1.sF);
+  Screen.Cursor := crDefault;
+
   CHDir(Form1.sAtual);
 
 end;
