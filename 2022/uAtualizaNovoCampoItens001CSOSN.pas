@@ -16,7 +16,7 @@ uses
   , SysUtils
   ;
 
-function AtualizaItens001CSOSN(IBTransaction: TIBTransaction;
+function AtualizaItens001CsosnFromXML(IBTransaction: TIBTransaction;
   dtInicio: TDate; dtFim: TDate): Boolean;
 
 implementation
@@ -25,7 +25,7 @@ uses
   uSmallNFeUtils
   ;
 
-function AtualizaItens001CSOSN(IBTransaction: TIBTransaction;
+function AtualizaItens001CsosnFromXML(IBTransaction: TIBTransaction;
   dtInicio: TDate; dtFim: TDate): Boolean;
 var
   IBQVendas: TIBQuery;

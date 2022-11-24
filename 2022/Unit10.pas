@@ -3795,7 +3795,7 @@ begin
 
     /////////////////////////////////////////////// 2022-07-21
     // Comercial da Small está perdendo dados de contatos
-    if Form7.ibDataSet13CGC.AsString = '07.426.598/0001-24' then
+    if Form7.ibDataSet13CGC.AsString = CNPJ_SMALLSOFT then
       Audita('CONTATOS','SMALL', Senhas.UsuarioPub, Copy(Form7.IBDataSet2NOME.AsString, 1, 80),0,0); // Ato, Modulo, Usuário, Histórico, Valor
     /////////////////////////////////////////////// 2022-07-21
   end;
@@ -4380,6 +4380,35 @@ begin
   begin
     Orelhas.ActivePage := Orelha_CFOP;
   end;
+
+  {Sandro Silva 2022-11-14 inicio}
+  if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'VENDEDOR') then
+  begin
+
+    if Form7.ibDataSet13CGC.AsString = CNPJ_SMALLSOFT then
+    begin
+
+      //Add as relações comerciais
+      ComboBox8.Clear;
+      ComboBox8.Items.Add('');
+      ComboBox8.Items.Add('Cliente');
+      ComboBox8.Items.Add('Fornecedor');
+      ComboBox8.Items.Add('Cliente/Fornecedor');
+      ComboBox8.Items.Add('Funcionário');
+      ComboBox8.Items.Add('Revenda');
+      ComboBox8.Items.Add('Representante');
+      ComboBox8.Items.Add('Distribuidor');
+      ComboBox8.Items.Add('Vendedor');
+      ComboBox8.Items.Add('Credenciadora de cartão');
+      ComboBox8.Items.Add('Marketplace');
+      ComboBox8.Items.Add('Revenda Inativa');
+      ComboBox8.Items.Add('Cliente Inativo');
+      ComboBox8.Sorted := True;
+    end;
+    
+  end;
+  {Sandro Silva 2022-11-14 fim}
+
   //
   Form7.ArquivoAberto.EnableControls;
   Form7.TabelaAberta.EnableControls;
@@ -8828,7 +8857,7 @@ end;
 procedure TForm10.Image1Click(Sender: TObject);
 begin
   //
-//  if Form7.ibDataSet13CGC.AsString = '07.426.598/0001-24' then
+//  if Form7.ibDataSet13CGC.AsString = CNPJ_SMALLSOFT then
   begin
     //
     ShellExecute( 0, 'Open',pChar('https://www.google.com.br/maps/dir//'+

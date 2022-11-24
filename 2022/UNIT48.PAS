@@ -396,7 +396,8 @@ procedure TForm48.SMALL_DBEdit43Enter(Sender: TObject);
 begin
   //
   Form7.ibDataSet15.Enablecontrols;
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
   //
   dBGrid2.Visible := False;
   //

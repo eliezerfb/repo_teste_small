@@ -110,7 +110,7 @@ end;
 
 procedure TForm22.Image1Click(Sender: TObject);
 begin
-  if Image1.Tag = 303 then
+  if Image1.Tag = 303 then // não encontrei onde seta 303 para Image1.Tag
   begin
     Close;
     Form1.Webbrowser1.Visible := True;

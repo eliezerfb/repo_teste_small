@@ -21,6 +21,7 @@ uses
   , Dialogs
   , Math
   , DB
+  , IBQuery // Sandro Silva 2022-11-10
   , ShellApi
   , SpdNFeDataSets
   , spdXMLUtils
@@ -35,18 +36,38 @@ uses
   , Mais
 ;
 
+type
+  TItemNFe = class
+  private
+    FOrigem: String;
+    FCSOSN: String;
+    FCodigo: String;
+    FCST: String;
+  public
+    property Codigo: String read FCodigo write FCodigo;
+    property CSOSN: String read FCSOSN write FCSOSN;
+    property Origem: String read FOrigem write FOrigem;
+    property CST: String read FCST write FCST;
+  end;
+
 function GeraXmlNFe: String;
+procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
+  ItemNF: TItemNFe);
 
 implementation
 
 uses uFrmInformacoesRastreamento;
 
+{Sandro Silva 2022-11-11 inicio
 procedure AtualizaItens001CSOSN(sCSOSN: String);
 begin
+
   if not (Form7.ibDataSet16.State in [dsEdit, dsInsert]) then
     Form7.ibDataSet16.Edit;
   Form7.ibDataSet16CSOSN.AsString := sCSOSN;
+
 end;
+{Sandro Silva 2022-11-11 fim}
 
 function GeraXmlNFe: String;
 var
@@ -112,7 +133,12 @@ var
   slota_VeiculosNovos,
   stpRest_VeiculosNovos : String;
   dQtdAcumulado: Double;
+  IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
+  ItemNFe: TItemNFe;
 begin
+
+
+  IBQUERY99 := Form7.CriaIBQuery(Form7.IBDataSet99.Transaction);
 
   try
               Screen.Cursor            := crHourGlass;
@@ -191,12 +217,12 @@ begin
                 //
                 // Informações do Emitente da NFe
                 //
-                Form7.ibDataset99.Close;
-                Form7.ibDataset99.SelectSql.Clear;
-                Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' ');
-                Form7.ibDataset99.Open;
+                IBQUERY99.Close;
+                IBQUERY99.SQL.Clear;
+                IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' ');
+                IBQUERY99.Open;
                 //
-                if AllTrim(Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7)) = '' then
+                if AllTrim(Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7)) = '' then
                 begin
                   Form7.ibDataset15.Edit;
                   Form7.ibDataSet15STATUS.AsString    := 'Erro: Nome do município do emitente inválido.';
@@ -246,7 +272,7 @@ begin
                   Form7.spdNFeDataSets.Campo('versao_A02').Value  := '3.10'; // Versão do Layout que está utilizando
                 end;
                 //
-                Form7.spdNFeDataSets.Campo('cUF_B02').Value     := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,2);  //Codigo da UF para o estado SC = '42'
+                Form7.spdNFeDataSets.Campo('cUF_B02').Value     := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,2);  //Codigo da UF para o estado SC = '42'
                 Form7.spdNFeDataSets.Campo('cNF_B03').Value     := '004640327'; // Código Interno do Sistema que está integrando com a NFe
                 Form7.spdNFeDataSets.Campo('natOp_B04').Value   := ConverteAcentos2(Form7.ibDataSet15.FieldByname('OPERACAO').AsString);
                 //
@@ -431,7 +457,7 @@ begin
                   end;
                 end;
                 //
-                Form7.spdNFeDataSets.Campo('cMunFG_B12').Value   := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
+                Form7.spdNFeDataSets.Campo('cMunFG_B12').Value   := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
                 //
                 // B20a Tag Nota de Produtor Rural
                 //
@@ -571,13 +597,13 @@ begin
                 //
                 Form7.spdNFeDataSets.Campo('xBairro_C09').Value := ConverteAcentos2(Form7.ibDataSet13.FieldByname('COMPLE').AsString); // Bairro do Emitente
                 //
-                Form7.spdNFeDataSets.Campo('cMun_C10').Value    := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
-                Form7.spdNFeDataSets.Campo('xMun_C11').Value    := ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString); // Nome da Cidade do Emitente
+                Form7.spdNFeDataSets.Campo('cMun_C10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
+                Form7.spdNFeDataSets.Campo('xMun_C11').Value    := ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString); // Nome da Cidade do Emitente
                 //
-                Form7.spdNFeDataSets.Campo('UF_C12').Value      := Form7.ibDataset99.FieldByname('UF').AsString; // Código do Estado do Emitente (Tabela do IBGE)
+                Form7.spdNFeDataSets.Campo('UF_C12').Value      := IBQUERY99.FieldByname('UF').AsString; // Código do Estado do Emitente (Tabela do IBGE)
                 Form7.spdNFeDataSets.Campo('CEP_C13').Value     := LimpaNumero(Form7.ibDataSet13.FieldByname('CEP').AsString); // Cep do Emitente
                 //
-                if Alltrim(ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString))='' then
+                if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
                 begin
                   Form7.ibDataSet15.Edit;
                   Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
@@ -612,12 +638,12 @@ begin
                   //
                   // Informações do Destinatário da NFe
                   //
-                  Form7.ibDataset99.Close;
-                  Form7.ibDataset99.SelectSql.Clear;
-                  Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
-                  Form7.ibDataset99.Open;
+                  IBQUERY99.Close;
+                  IBQUERY99.SQL.Clear;
+                  IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+                  IBQUERY99.Open;
                   //
-                  if Alltrim(ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString))='' then
+                  if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
                   begin
                     Form7.ibDataSet15.Edit;
                     Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
@@ -662,10 +688,10 @@ begin
                   Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
                   //
                   Form7.spdNFeDataSets.Campo('xBairro_E09').Value := Alltrim(ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString)); // Bairro do Destinatario
-                  Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
+                  Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
                   //
-                  Form7.spdNFeDataSets.Campo('xMun_E11').Value    := Alltrim(ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString)); //Nome da Cidade do Destinatário
-                  Form7.spdNFeDataSets.Campo('UF_E12').Value      := Form7.ibDataset99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
+                  Form7.spdNFeDataSets.Campo('xMun_E11').Value    := Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString)); //Nome da Cidade do Destinatário
+                  Form7.spdNFeDataSets.Campo('UF_E12').Value      := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
                   //
                   Form7.spdNFeDataSets.Campo('CEP_E13').Value     := LimpaNumero(Form7.ibDAtaset2.FieldByname('CEP').AsString); // Cep do Destinatário
                   Form7.spdNFeDataSets.Campo('cPais_E14').Value   := '1058'; // Código do Pais do Destinatário (Tabela do BACEN)
@@ -1238,7 +1264,7 @@ begin
                           //
                           Form7.spdNFeDataSets.incluirPart('L1');
                           Form7.spdNFeDataSets.Campo('cProdANP_LA02').value := sCodigoANP; // Código de produto da ANP
-                          Form7.spdNFeDataSets.Campo('UFCons_LA06').value   := Form7.ibDataset99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
+                          Form7.spdNFeDataSets.Campo('UFCons_LA06').value   := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
                           //
                           if Form1.sVersaoLayout = '4.00' then
                           begin
@@ -2600,11 +2626,15 @@ begin
                 //
                 // SAIDA
                 //
-                if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''
-                  then Form7.ibDataSet14.Append
-                     else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+                if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
+                  Form7.ibDataSet14.Append
+                else
+                  Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 //
-                if Form7.ibDataSet14BASE.AsFloat <> 0 then bTributa := True else bTributa := False;
+                if Form7.ibDataSet14BASE.AsFloat <> 0 then
+                  bTributa := True
+                else
+                  bTributa := False;
                 //
                 // Pis cofins da Operação
                 //
@@ -2641,12 +2671,12 @@ begin
                 //
                 // Informações do Emitente da NFe
                 //
-                Form7.ibDataset99.Close;
-                Form7.ibDataset99.SelectSql.Clear;
-                Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' ');
-                Form7.ibDataset99.Open;
+                IBQUERY99.Close;
+                IBQUERY99.SQL.Clear;
+                IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' ');
+                IBQUERY99.Open;
                 //
-                if AllTrim(Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7)) = '' then
+                if AllTrim(Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7)) = '' then
                 begin
                   Form7.ibDataSet15.Edit;
                   Form7.ibDataSet15STATUS.AsString    := 'Erro: Nome do município do emitente inválido.';
@@ -2696,7 +2726,7 @@ begin
                   Form7.spdNFeDataSets.Campo('versao_A02').Value  := '3.10'; // Versão do Layout que está utilizando
                 end;
                 //
-                Form7.spdNFeDataSets.Campo('cUF_B02').Value     := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,2);  //Codigo da UF para o estado SC = '42'
+                Form7.spdNFeDataSets.Campo('cUF_B02').Value     := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,2);  //Codigo da UF para o estado SC = '42'
                 Form7.spdNFeDataSets.Campo('cNF_B03').Value     := '004640327'; // Código Interno do Sistema que está integrando com a NFe
                 Form7.spdNFeDataSets.Campo('natOp_B04').Value   := ConverteAcentos2(Form7.ibDataSet15.FieldByname('OPERACAO').AsString);
                 //
@@ -2785,7 +2815,7 @@ begin
                   end;
                 end;
                 //
-                Form7.spdNFeDataSets.Campo('cMunFG_B12').Value   := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
+                Form7.spdNFeDataSets.Campo('cMunFG_B12').Value   := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
                 //
                 // B20a Tag Nota de Produtor Rural Saída
                 //
@@ -2986,13 +3016,13 @@ begin
                 //
                 Form7.spdNFeDataSets.Campo('xBairro_C09').Value := ConverteAcentos2(Form7.ibDataSet13.FieldByname('COMPLE').AsString); // Bairro do Emitente
                 //
-                Form7.spdNFeDataSets.Campo('cMun_C10').Value    := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
-                Form7.spdNFeDataSets.Campo('xMun_C11').Value    := ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString); // Nome da Cidade do Emitente
+                Form7.spdNFeDataSets.Campo('cMun_C10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
+                Form7.spdNFeDataSets.Campo('xMun_C11').Value    := ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString); // Nome da Cidade do Emitente
                 //
-                Form7.spdNFeDataSets.Campo('UF_C12').Value      := Form7.ibDataset99.FieldByname('UF').AsString; // Código do Estado do Emitente (Tabela do IBGE)
+                Form7.spdNFeDataSets.Campo('UF_C12').Value      := IBQUERY99.FieldByname('UF').AsString; // Código do Estado do Emitente (Tabela do IBGE)
                 Form7.spdNFeDataSets.Campo('CEP_C13').Value     := LimpaNumero(Form7.ibDataSet13.FieldByname('CEP').AsString); // Cep do Emitente
                 //
-                if Alltrim(ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString))='' then
+                if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
                 begin
                   Form7.ibDataSet15.Edit;
                   Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
@@ -3031,12 +3061,12 @@ begin
                 if Form7.ibDAtaset2ESTADO.AsString <> 'EX' then
                 begin
                   //
-                  Form7.ibDataset99.Close;
-                  Form7.ibDataset99.SelectSql.Clear;
-                  Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
-                  Form7.ibDataset99.Open;
+                  IBQUERY99.Close;
+                  IBQUERY99.SQL.Clear;
+                  IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+                  IBQUERY99.Open;
                   //
-                  if Alltrim(ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString))='' then
+                  if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
                   begin
                     Form7.ibDataSet15.Edit;
                     Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
@@ -3081,9 +3111,9 @@ begin
                   Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
                   //
                   Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
-                  Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
-                  Form7.spdNFeDataSets.Campo('xMun_E11').Value    := ConverteAcentos2(Form7.ibDataset99.FieldByname('NOME').AsString); //Nome da Cidade do Destinatário
-                  Form7.spdNFeDataSets.Campo('UF_E12').Value      := Form7.ibDataset99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
+                  Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
+                  Form7.spdNFeDataSets.Campo('xMun_E11').Value    := ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString); //Nome da Cidade do Destinatário
+                  Form7.spdNFeDataSets.Campo('UF_E12').Value      := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
                   //
                   Form7.spdNFeDataSets.Campo('CEP_E13').Value     := LimpaNumero(Form7.ibDAtaset2.FieldByname('CEP').AsString); // Cep do Destinatário
                   Form7.spdNFeDataSets.Campo('cPais_E14').Value   := '1058'; // Código do Pais do Destinatário (Tabela do BACEN)
@@ -3983,7 +4013,7 @@ begin
                           //
                           Form7.spdNFeDataSets.incluirPart('L1');
                           Form7.spdNFeDataSets.Campo('cProdANP_LA02').value := sCodigoANP; // Código de produto da ANP
-                          Form7.spdNFeDataSets.Campo('UFCons_LA06').value   := Form7.ibDataset99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
+                          Form7.spdNFeDataSets.Campo('UFCons_LA06').value   := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
                           //
                           if Form1.sVersaoLayout = '4.00' then
                           begin
@@ -4219,7 +4249,8 @@ begin
                         Form7.ibDataSet14.SelectSQL.Clear;
                         Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                         Form7.ibDataSet14.Open;
-                        if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
+                        if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
+                          Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                         Form7.ibDataSet14.EnableControls;
                         //
                       end else
@@ -4303,7 +4334,8 @@ begin
                           Form7.ibDataSet14.SelectSQL.Clear;
                           Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                           Form7.ibDataSet14.Open;
-                          if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
+                          if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
+                            Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                           Form7.ibDataSet14.EnableControls;
                           //
                         end else
@@ -5048,6 +5080,7 @@ begin
                       //
                       // N12a Tem em todas - e eé referencia para classificar as tags
                       //
+                      {Sandro Silva 2022-11-11 inicio
                       // Posiciona na tabéla de CFOP
                       //
                       if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
@@ -5059,7 +5092,8 @@ begin
                         Form7.ibDataSet14.SelectSQL.Clear;
                         Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                         Form7.ibDataSet14.Open;
-                        if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
+                        if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
+                          Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                         Form7.ibDataSet14.EnableControls;
                         //
                         if not (AllTrim(Form7.ibDataSet14.FieldByName('CSOSN').AsString) <> '') then
@@ -5095,9 +5129,6 @@ begin
                       begin
                         Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Form7.ibDataSet4.FieldByname('CSOSN').AsString;
                       end;
-                      {Sandro Silva 2022-10-04 inicio}
-                      AtualizaItens001CSOSN(Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value);
-                      {Sandro Silva 2022-10-04 fim}
                       //
                       // N11 - Tem em todas
                       //
@@ -5112,6 +5143,20 @@ begin
                       except
                         Form7.spdNFeDataSets.Campo('orig_N11').Value   := '0';
                       end;
+                      }
+                      ItemNFe := TItemNFe.Create;
+                      CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet4.FieldByName('CODIGO').AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
+                      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value := ItemNFe.CSOSN;
+                      //
+                      // N11 - Tem em todas
+                      //
+                      Form7.spdNFeDataSets.Campo('orig_N11').Value   := ItemNFe.Origem;
+                      FreeAndNil(ItemNFe);
+                      {Sandro Silva 2022-11-11 fim}
+
+                      {Sandro Silva 2022-10-04 inicio}
+                      // Sandro Silva 2022-11-11 AtualizaItens001CSOSN(Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value);
+                      {Sandro Silva 2022-10-04 fim}
                       //
                       if  (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '101') and
                           (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '102') and
@@ -7255,7 +7300,7 @@ ShowMessage('Teste: '+chr(10)+
                       Form7.spdNFeDataSets.Campo('vBC_U02').Value       := StrTran(Alltrim(FormatFloat('##0.00', Form7.ibDataSet14.FieldByname('BAseISS').AsFloat * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100)),',','.'); // Valor da BC do ISSSQN
                       Form7.spdNFeDataSets.Campo('vAliq_U03').Value     := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet14.FieldByname('ISS').AsFloat)),',','.');  // Aliquota de ISSQN
                       Form7.spdNFeDataSets.Campo('vISSQN_U04').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('ISS').AsFloat)),',','.');// Valor do ISSQN
-                      Form7.spdNFeDataSets.Campo('cMunFG_U05').Value    := Copy(Form7.ibDataset99.FieldByname('CODIGO').AsString,1,7); // Código do município IBGE;
+                      Form7.spdNFeDataSets.Campo('cMunFG_U05').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código do município IBGE;
                       //
                       if RetornaValorDaTagNoCampo('cListServ',Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '' then
                       begin
@@ -7697,7 +7742,7 @@ ShowMessage('Teste: '+chr(10)+
               //
 //              if Form1.bHomologacao then
               begin
-                Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value                         := '07426598000124';
+                Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value                         := LimpaNumero(CNPJ_SMALLSOFT); //'07426598000124';
                 Form7.spdNFeDataSets.Campo('xContato_ZD04').Value                     := 'Ronei Ivo Weber';
                 Form7.spdNFeDataSets.Campo('email_ZD05').Value                        := 'smallsoft@smallsoft.com.br';
                 Form7.spdNFeDataSets.Campo('fone_ZD06').Value                         := '4934255800';
@@ -7852,6 +7897,99 @@ ShowMessage('Teste: '+chr(10)+
 
   end;
 //  AgendaCommit(True);
+
+  FreeAndNil(IBQUERY99);
+end;
+
+procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
+  ItemNF: TItemNFe);
+var
+  IBQESTOQUE: TIBQuery;
+  IBQICM: TIBQuery;
+  sReg: String;
+begin
+  if (Trim(sCodigo) <> '') and (Trim(sOperacao) <> '') then
+  begin
+
+    IBQESTOQUE := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+    IBQICM     := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+
+    IBQESTOQUE.Close;
+    IBQESTOQUE.SQL.Text :=
+      'select ST, CSOSN, CST ' +
+      'from ESTOQUE ' +
+      'where CODIGO = :CODIGO';
+    IBQESTOQUE.ParamByName('CODIGO').AsString := sCodigo;
+    IBQESTOQUE.Open;
+
+    IBQICM.Close;
+    IBQICM.SQL.Text :=
+      'select * ' +
+      'from ICM ' +
+      'where upper(NOME) = upper(:OPERACAO) ' +
+      ' order by upper(NOME)';
+    IBQICM.ParamByName('OPERACAO').AsString := sOperacao;
+    IBQICM.Open;
+
+    if AllTrim(IBQESTOQUE.FieldByName('ST').AsString) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
+    begin
+      //
+      sReg := IBQICM.FieldByName('REGISTRO').AsString;
+      IBQICM.DisableControls;
+      IBQICM.Close;
+      IBQICM.SQL.Clear;
+      IBQICM.SQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+      IBQICM.Open;
+      if not IBQICM.Locate('ST', IBQESTOQUE.FieldByName('ST').AsString, [loCaseInsensitive, loPartialKey]) then
+        IBQICM.Locate('REGISTRO', sReg, []);
+      IBQICM.EnableControls;
+      //
+      if not (AllTrim(IBQICM.FieldByName('CSOSN').AsString) <> '') then
+      begin
+        //
+        IBQICM.DisableControls;
+        IBQICM.Close;
+        IBQICM.SQL.Clear;
+        IBQICM.SQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+        IBQICM.Open;
+        IBQICM.Locate('NOME', sOperacao, []);
+        IBQICM.EnableControls;
+        //
+      end;
+      //
+    end else
+    begin
+      //
+      IBQICM.DisableControls;
+      IBQICM.Close;
+      IBQICM.SQL.Clear;
+      IBQICM.SQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+      IBQICM.Open;
+      IBQICM.Locate('NOME', sOperacao, []);
+      IBQICM.EnableControls;
+      //
+    end;
+    //
+
+    if Trim(IBQICM.FieldByName('CSOSN').AsString) <> '' then
+      ItemNF.CSOSN := IBQICM.FieldByname('CSOSN').AsString
+    else
+      ItemNF.CSOSN := IBQESTOQUE.FieldByname('CSOSN').AsString;
+    ItemNF.Codigo := sCodigo;
+
+    try
+      if AllTrim(IBQICM.FieldByName('CST').AsString) <> '' then
+        ItemNF.Origem   := Copy(LimpaNumero(IBQICM.FieldByname('CST').AsString) + '000', 1, 1) //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+      else
+        ItemNF.Origem   := Copy(LimpaNumero(IBQESTOQUE.FieldByname('CST').AsString) + '000', 1, 1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+
+    except
+      ItemNF.Origem   := '0';
+    end;
+
+    FreeAndNil(IBQESTOQUE);
+    FreeAndNil(IBQICM);
+  end;
 end;
 
 end.

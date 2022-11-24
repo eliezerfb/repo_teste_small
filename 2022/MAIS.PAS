@@ -15,7 +15,7 @@ uses
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
   , DBCtrls
   , SMALL_DBEdit
-  ;   
+  ;
 
   function LeLabels(sP1: Boolean): Boolean;
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
@@ -24,7 +24,10 @@ uses
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
 
 const BUILD_DO_BANCO = '2022008'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
+const CNPJ_SMALLSOFT = '07.426.598/0001-24'; 
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
+const ValidacaoNova = True; //False;
 
 type 
     TForm1 = class(TForm)
@@ -1232,11 +1235,11 @@ begin
     //
     // ShowMessage(s);
     //
-    if pos('[INICIO',S) <> 0 then
+    if pos('[INICIO', S) <> 0 then
     begin
       try
         //
-        sInicio := Copy(S,pos('[INICIO',S)+8,10);
+        sInicio := Copy(S, pos('[INICIO', S) + 8, 10);
         //
 //          ShowMessage(sInicio);
         //
@@ -1255,6 +1258,40 @@ begin
       except
       end;
     end;
+
+    {Sandro Silva 2022-11-11 inicio}
+    if ValidacaoNova then
+    begin
+
+      if pos('[LIMITE', S) <> 0 then
+      begin
+
+        try
+          //
+          sInicio := Copy(S, pos('[LIMITE', S) + 8, 10);  // Contem a data limite de uso do sistema
+          //
+  //          ShowMessage(sInicio);
+          //
+          Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
+          //
+          Form1.ibQuery2.Close;
+          Form1.ibQuery2.SQL.Clear;
+          Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
+          Form1.ibQuery2.ExecSQL;
+          //
+          Form1.ibQuery2.Close;
+          Form1.ibQuery2.SQL.Clear;
+          Form1.ibQuery2.SQL.Add('commit');
+          Form1.ibQuery2.ExecSQL;
+          //
+        except
+        end;
+
+      end;
+
+    end;
+    {Sandro Silva 2022-11-11 fim}
+
     //
     if pos('[SERIE',S) <> 0 then
     begin
@@ -1375,12 +1412,12 @@ begin
       begin
         //
         bButton := Application.MessageBox(Pchar(
-        'Uma nova versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
-        Chr(10) +
-        Chr(10) +
-        'Continuar?' +
-        Chr(10))
-        ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+          'Uma nova versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
+          Chr(10) +
+          Chr(10) +
+          'Continuar?' +
+          Chr(10))
+          ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
         //
         if bButton = IDYES then
         begin
@@ -1505,9 +1542,9 @@ begin
       begin
         //
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial='
-        +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
-        +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
-        ,'', '', SW_SHOWMAXIMIZED);
+          +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
+          +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
+          ,'', '', SW_SHOWMAXIMIZED);
         //
       end;
       //
@@ -1515,9 +1552,9 @@ begin
       begin
         //
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial='
-        +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
-        +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
-        ,'', '', SW_SHOWMAXIMIZED);
+          +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
+          +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
+          ,'', '', SW_SHOWMAXIMIZED);
         //
       end;
       //
@@ -1525,9 +1562,9 @@ begin
       begin
         //
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/aviso-via-small?serial='
-        +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
-        +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
-        ,'', '', SW_SHOWMAXIMIZED);
+          +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
+          +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
+          ,'', '', SW_SHOWMAXIMIZED);
         //
       end;
       //
@@ -1535,12 +1572,12 @@ begin
       begin
         //
         Application.MessageBox(Pchar(
-        'Este sistema não está liberado.'+
-        Chr(10) +
-        Chr(10) +
-        'Continuar?' +
-        Chr(10))
-        ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+          'Este sistema não está liberado.'+
+          Chr(10) +
+          Chr(10) +
+          'Continuar?' +
+          Chr(10))
+          ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
         //
       end;
       //
@@ -1804,13 +1841,13 @@ begin
   try
     Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
-    sRazao := Form7.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17','Smallsoft Tecnologia em Informática EIRELI'));
+    sRazao := Form7.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17',RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
     if AnsiUpperCase(Right(Trim(sRazao), 4)) = 'LTDA' then
-      Mais2Ini.WriteString('R01','17',Form7.LbBlowfish1.EncryptString('Smallsoft Tecnologia em Informática EIRELI'));
+      Mais2Ini.WriteString('R01','17',Form7.LbBlowfish1.EncryptString(RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
     Mais2Ini.Free;
-  except end;
-end;
-
+  except
+  end;
+end;   
 
 function mensagem22(sP1 : String) : Boolean;
 begin
@@ -1821,8 +1858,7 @@ begin
   //
   Result := True;
   //
-end;
-
+end;     
 
 function InstalaAtualizacao(pP1, pP2: String) : Boolean;
 begin
@@ -8502,6 +8538,7 @@ begin
       //
       Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
       //
+      {Sandro Silva 2022-11-11 inicio
       if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
       begin
         fDias := 365 - (Date - StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
@@ -8511,6 +8548,41 @@ begin
       begin
         fDias := -1;
       end;
+      }
+      if ValidacaoNova = False then
+      begin
+
+        if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
+        begin
+          // Calcula o número de dias restantes para usar o sistema
+          // 365 - (Data do PC - Data do registro)
+          fDias := 365 - (Date - StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
+                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
+                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4)));
+        end else
+        begin
+          fDias := -1;
+        end;
+
+      end
+      else
+      begin
+
+        if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
+        begin
+          // Calcula o número de dias restantes para usar o sistema
+          // Data limite - data atual do PC
+          fDias := (StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
+                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
+                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4))
+                   - Date);
+        end else
+        begin
+          fDias := -1;
+        end;
+
+      end;
+      {Sandro Silva 2022-11-11 fim}
       //
     except
       //
@@ -11024,7 +11096,8 @@ begin
 //    if ParamCount = 0 then
     begin
       //
-      Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php'+
+     {
+     Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php'+
                                     '?serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
                                     '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
                                     '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
@@ -11042,7 +11115,84 @@ begin
                                     '&conve='     + sConve  +
                                     '&origem='    + sOrigem +
                                     '&Check='     + Form1.sPublicCheck +
-                                    '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20))));
+                                    '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
+                                    //'&retorno=json'
+                                    );
+      }
+      if ValidacaoNova = False then
+      begin
+
+        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
+                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                      '&nfce='      + sNFCE +
+                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                      '&conve='     + sConve  +
+                                      '&origem='    + sOrigem +
+                                      '&Check='     + Form1.sPublicCheck +
+                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
+                                      );
+
+        {
+        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal2.php'+
+                                      '?serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                      '&nfce='      + sNFCE +
+                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                      '&conve='     + sConve  +
+                                      '&origem='    + sOrigem +
+                                      '&Check='     + Form1.sPublicCheck +
+                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
+                                      );
+        }
+      end
+      else
+      begin
+
+        //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
+        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
+                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                      '&nfce='      + sNFCE +
+                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                      '&conve='     + sConve  +
+                                      '&origem='    + sOrigem +
+                                      '&Check='     + Form1.sPublicCheck +
+                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
+                                      //+ '&retorno=json'
+                                      );
+
+      end;
       //
     end;
     //

@@ -2137,12 +2137,14 @@ type
     function AliqICMdoCliente16: double;
     function Formata2CasasDecimais(Valor: Double): Currency;
     procedure SelecionaAliquotaIss(var IBQuery: TIBQuery; Operacao: String = '');
+    function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery; // Sandro Silva 2022-11-10
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
   function ValidaEmail(sP1: String):Boolean;
 //  Function Valida_Campo(ibDataSet_P:TibDataSet; Text:String; Indice,Mensagem:String):Boolean;
-  function Valida_Campo(Arquivo: String; Text:String; Indice,Mensagem:String):Boolean;
+  function Valida_Campo(Arquivo: String; Text: String;
+    Indice, Mensagem: String):Boolean;
   function ObservacaoProduto(pP1:Boolean):Boolean;
   function ObservacaoOperacao(pP1:Boolean):Boolean;
   function Observacao2(pP1:Boolean):Boolean;
@@ -2655,7 +2657,7 @@ begin
   end;
 end;
 
-function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
+function TForm7.CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 //Sandro Silva 2011-04-12 inicio
 //Cria um objeto TIBQuery
 begin
@@ -2976,7 +2978,7 @@ begin
 
 
       IBTHASH := CriaIBTransaction(Form7.ibQuery1.Transaction.DefaultDatabase);
-      IBQHASH := CriaIBQuery(IBTHASH);
+      IBQHASH := Form7.CriaIBQuery(IBTHASH);
 
       Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
 
@@ -8588,7 +8590,8 @@ begin
   //
 end;
 
-function Valida_Campo(Arquivo: String; Text:String; Indice,Mensagem:String):Boolean;
+function Valida_Campo(Arquivo: String; Text: String;
+  Indice, Mensagem: String): Boolean;
 begin
   //
   try
@@ -19597,10 +19600,14 @@ var
   fFCP, fPercentualFCP, fPercentualFCPST, fTotalMercadoria, fRateioDoDesconto, fIPIPorUnidade, fSomaNaBase, TotalBASE, TotalICMS : Real;
   sreg, sReg4, sReg16, sEstado : String;
   tInicio : tTime;
-  Hora, Min, Seg, cent : Word;
+  Hora, Min, Seg, cent: Word;
+  IBQESTOQUE: TIBQuery; // Sandro Silva 2022-11-10 Para substituir Form7.IBDATASET99 que é usado em outros eventos disparados em cascatas
 begin
   //
   //
+  IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
+  IBQESTOQUE.DisableControls;
+
   if Form7.sModulo <> 'NAO' then
   begin
     //                               //
@@ -19614,12 +19621,12 @@ begin
 // tInicio := time;
 
       //
-      Form7.ibDataSet99.Close;
-      Form7.ibDataSet99.SelectSQL.Clear;
-      Form7.IBDataSet99.SelectSQL.Add('select DESCRICAO, PRECO, TIPO_ITEM from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' '); // Ok
-      Form7.ibDataSet99.Open;
+      IBQESTOQUE.Close;
+      IBQESTOQUE.SQL.Clear;
+      IBQESTOQUE.SQL.Add('select DESCRICAO, PRECO, TIPO_ITEM from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' '); // Ok
+      IBQESTOQUE.Open;
       //
-      if Form7.IBDataSet99.FieldByname('TIPO_ITEM').AsString = '09' then
+      if IBQESTOQUE.FieldByname('TIPO_ITEM').AsString = '09' then
       begin
         ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
         Form7.ibDataSet16.Delete;
@@ -20207,7 +20214,7 @@ begin
       //
       Form7.ibDataSet15.EnableControls;
 
-      {Sandro Silva 2022-11-08 inicio} 
+      {Sandro Silva 2022-11-08 inicio}
       if Trim(sReg16) <> '' then
         Form7.ibDataSet16.Locate('REGISTRO', sReg16, []);
       {Sandro Silva 2022-11-08 fim}
@@ -20229,6 +20236,9 @@ begin
   AgendaCommit(True);
   //
   Form7.ibDataSet16.Tag := 0;
+
+  FreeAndNil(IBQESTOQUE);
+
   //         //
   // The end //
   //         //
@@ -20365,6 +20375,7 @@ var
   //
   // rPreco : Real;
   //
+  ItemNFe: TItemNFe; // Sandro Silva 2022-11-11
 begin
   //
   // tInicio := time;
@@ -20943,6 +20954,22 @@ begin
               //
               Form7.ibDataSet16CST_IPI.AsString     := Form7.ibDataSet4CST_IPI.AsString;   // Cst do IPI no estoque
               Form7.ibDataSet16CST_ICMS.AsString    := Form7.ibDataSet4CST.AsString;       // CST do ICMS no estoque
+
+              {Sandro Silva 2022-11-11 inicio}
+              try
+                if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
+                begin
+                  ItemNFe := TItemNFe.Create;
+                  CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
+                  Form7.ibDataSet16CSOSN.AsString := ItemNFe.CSOSN;
+                end;
+              except
+
+              end;
+              if ItemNFe <> nil then
+                FreeAndNil(ItemNFe);
+              {Sandro Silva 2022-11-11 fim} 
+
               //
               // Pis cofins da Operação
               //
@@ -24383,7 +24410,7 @@ begin
 //  ShowMessage('Este registro está sendo usado por outro usuário. '+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+'Update');
   /////////////////////////////////////////////// 2022-07-18
   try
-    if (ibDataSet13CGC.AsString = '07.426.598/0001-24') then
+    if (ibDataSet13CGC.AsString = CNPJ_SMALLSOFT) then
     begin
       // Comercial da Small está perdendo dados de contatos
       if AnsiContainsText(E.Message, 'deadlock') then
@@ -35293,6 +35320,7 @@ begin
       end;
     except end;
   end;
+
   //
   AssinaRegistro('ITENS001',DataSet, True);
   //

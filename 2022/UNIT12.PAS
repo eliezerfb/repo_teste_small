@@ -586,7 +586,8 @@ end;
 procedure TForm12.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 begin
   if dbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+     if Key = chr(46) then
+       key := chr(44);
 end;
 
 
@@ -1087,7 +1088,8 @@ procedure TForm12.SMALL_DBEdit43Enter(Sender: TObject);
 begin
   //
   Form7.ibDataSet15.Enablecontrols;
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
   //
   dBGrid2.Visible := False;
   dBGrid3.Visible := False;
@@ -1363,13 +1365,18 @@ var
 begin
   //
   //
-  if UpperCase(Form1.ConfDuplo) <> 'SIM' then Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True) else
+  if UpperCase(Form1.ConfDuplo) <> 'SIM' then
+  begin
+    Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True)
+  end
+  else
   begin
     Form7.ibDataSet16.DisableControls;
     sReg1 := Form7.ibDataSet16.FieldByname('REGISTRO').AsString;
     Form7.ibDataSet16.First;
     Form7.ibDataSet16.Locate('REGISTRO',sREg1,[]);
-    if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+    if Form7.sModulo <> 'RETRIBUTA' then
+      Form7.ibDataSet16.EnableControls;
   end;
   //
   // if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '' then Perform(Wm_NextDlgCtl,0,0);
@@ -2697,7 +2704,8 @@ begin
     except end;
     Form1.bFechaTudo           := True;
     Form7.ibDataSet15.EnableControls;
-    if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+    if Form7.sModulo <> 'RETRIBUTA' then
+      Form7.ibDataSet16.EnableControls;
   end;
 end;
 

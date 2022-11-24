@@ -200,19 +200,28 @@ begin
       if (Copy(Form7.ibDataSet4REFERENCIA.AsString,1,1) = '2') and ((UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG') or (UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KU')) then
       begin
         //
-        if AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then sValidade := AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString)) else sValidade := '000';
+        if AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+          sValidade := AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString))
+        else
+          sValidade := '000';
         //
         if UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG' then                                                                                   // Quando é KG pro programa da
         begin                                                                                                                                   // FILISOLA vai um 'P', ai o a balança
-          if Radiobutton3.Checked then Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 1'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
-          if Radiobutton4.Checked then Writeln(F,'010100'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
-          if Radiobutton5.Checked then Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'P'+                                                           // gera uma etiqueta com o peso
+          if Radiobutton3.Checked then
+            Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 1'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
+          if Radiobutton4.Checked then
+            Writeln(F,'010100'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
+          if Radiobutton5.Checked then
+            Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'P'+                                                           // gera uma etiqueta com o peso
           Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',22),1,22)+'0'+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',',''));  //
         end else
         begin                                                                                                                                   // Quando é KU pro programa
-          if Radiobutton3.Checked then Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 6'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
-          if Radiobutton4.Checked then Writeln(F,'010110'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
-          if Radiobutton5.Checked then Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'U'+                                                           // FILISOLA vai um 'U', ai o balança
+          if Radiobutton3.Checked then
+            Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 6'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
+          if Radiobutton4.Checked then
+            Writeln(F,'010110'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
+          if Radiobutton5.Checked then
+            Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'U'+                                                           // FILISOLA vai um 'U', ai o balança
           Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',22),1,22)+'0'+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',',''));  // gera uma etiqueta com a unidade
         end;
         //
@@ -375,7 +384,7 @@ begin
           begin
             {Sandro Silva 2022-10-04 inicio}
             try
-              if AtualizaItens001CSOSN(Form7.ibDataSet16.Transaction, dInicio, dFinal) then
+              if AtualizaItens001CsosnFromXML(Form7.ibDataSet16.Transaction, dInicio, dFinal) then
               begin
                 AgendaCommit(True);
               end;
@@ -744,7 +753,7 @@ begin
 
             {Sandro Silva 2022-10-04 inicio}
             try
-              if AtualizaItens001CSOSN(Form7.ibDataSet16.Transaction, dInicio, dFinal) then
+              if AtualizaItens001CsosnFromXML(Form7.ibDataSet16.Transaction, dInicio, dFinal) then
               begin
                 AgendaCommit(True);
               end;
