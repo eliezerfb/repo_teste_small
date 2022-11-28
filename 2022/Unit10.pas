@@ -4401,8 +4401,8 @@ begin
       ComboBox8.Items.Add('Vendedor');
       ComboBox8.Items.Add('Credenciadora de cartão');
       ComboBox8.Items.Add('Marketplace');
-      ComboBox8.Items.Add('Revenda Inativa');
-      ComboBox8.Items.Add('Cliente Inativo');
+      ComboBox8.Items.Add('Revenda Inativa'); // adicionadas para uso na Smallsoft
+      ComboBox8.Items.Add('Cliente Inativo'); // adicionadas para uso na Smallsoft
       ComboBox8.Sorted := True;
     end;
     
