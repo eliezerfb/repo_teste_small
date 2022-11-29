@@ -6209,28 +6209,32 @@ begin
 
     {Sandro Silva 2021-03-16 inicio}
     // Se for SC e modelo for NFC-e, o aplicativo deve se comportar com as regras do PAF-NFC-e
-    if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SC') and (Form1.sModeloECF = '65') then
+    // Sandro Silva 2022-11-29 if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SC') and (Form1.sModeloECF = '65') then
+    if (Form1.sModeloECF = '65') then
     begin
-
-      // ShowMessage('teste 01 7425 '); // Sandro Silva 2021-04-27
-
-      if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE') then // Sandro Silva 2021-08-10 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then// Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> 'PAFNFCE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
+      if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SC') then
       begin
 
-        GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'PAFNFCE'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
+        // ShowMessage('teste 01 7425 '); // Sandro Silva 2021-04-27
 
-        //ShowMessage('Teste 7403 UF SC Gravou PAFNFCE=Sim'); // Sandro Silva 2021-03-17
+        if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE') then // Sandro Silva 2021-08-10 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then// Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> 'PAFNFCE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
+        begin
 
-      end
-      else
-      begin
-        //Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
-        //Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+          GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'PAFNFCE'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
+
+          //ShowMessage('Teste 7403 UF SC Gravou PAFNFCE=Sim'); // Sandro Silva 2021-03-17
+
+        end
+        else
+        begin
+          //Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+          //Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+        end;
+
+        Form1.Caption     := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+        Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+
       end;
-
-      Form1.Caption     := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
-      Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
-
     end;
     {Sandro Silva 2021-03-16 fim}
 
