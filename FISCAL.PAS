@@ -6206,7 +6206,7 @@ begin
       Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
       FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
-    
+
     {Sandro Silva 2021-03-16 inicio}
     // Se for SC e modelo for NFC-e, o aplicativo deve se comportar com as regras do PAF-NFC-e
     if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SC') and (Form1.sModeloECF = '65') then
@@ -6227,7 +6227,7 @@ begin
         //Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
         //Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
       end;
-      
+
       Form1.Caption     := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
       Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
 
@@ -6236,50 +6236,59 @@ begin
 
     {Sandro Silva 2021-03-17 inicio}
     // Se NÃO for SC e modelo for NFC-e, o aplicativo não deve se comportar com as regras do PAF-NFC-e
-    if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) <> 'SC') and (Form1.sModeloECF = '65') then
+    // Sandro Silva 2022-11-29 UnoChapeco  if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) <> 'SC') and (Form1.sModeloECF = '65') then
+    if (Form1.sModeloECF = '65') then
     begin
-
-      if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') then
+      if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) <> 'SC') then
       begin
 
-        GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'NFCE'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Não');
+        if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') then
+        begin
 
-        //ShowMessage('Teste 7428 UF não é SC Gravou PAFNFCE=Não'); // Sandro Silva 2021-03-17
+          GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'NFCE'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Não');
+
+          //ShowMessage('Teste 7428 UF não é SC Gravou PAFNFCE=Não'); // Sandro Silva 2021-03-17
+
+        end;
+
+        Form1.Caption     := 'Aplicativo emissor NFC-e';
+        Application.Title := 'Aplicativo emissor NFC-e';
 
       end;
-      
-      Form1.Caption     := 'Aplicativo emissor NFC-e';
-      Application.Title := 'Aplicativo emissor NFC-e';
-
+      {Sandro Silva 2021-03-17 fim}
     end;
-    {Sandro Silva 2021-03-17 fim}
+
 
     {Sandro Silva 2021-03-16 inicio}
     // Se for SC e modelo for NFC-e, o aplicativo deve se comportar com as regras do PAF-NFC-e
-    if ((AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') or (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SP') ) and (Form1.sModeloECF = '59') then // Sandro Silva 2021-04-27 if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') and (Form1.sModeloECF = '59') then
+    // Sandro Silva 2022-11-29 UnoChapeco  if ((AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') or (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SP') ) and (Form1.sModeloECF = '59') then // Sandro Silva 2021-04-27 if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') and (Form1.sModeloECF = '59') then
+    if (Form1.sModeloECF = '59') then
     begin
-
-      if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> 'MFE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
+      if ((AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') or (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SP') ) then // Sandro Silva 2021-04-27 if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') and (Form1.sModeloECF = '59') then
       begin
 
-        if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') then
-          GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'MFE'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
+        if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> 'MFE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
+        begin
 
-        if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SP') then
-          GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'SAT'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
+          if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') then
+            GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'MFE'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
 
-        //ShowMessage('Teste 7403 UF SC Gravou PAFNFCE=Sim'); // Sandro Silva 2021-03-17
+          if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SP') then
+            GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'SAT'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
 
-      end
-      else
-      begin
-        //Form1.Caption := 'Aplicativo emissor de CF-e';
-        //Application.Title := 'Aplicativo emissor de CF-e';
+          //ShowMessage('Teste 7403 UF SC Gravou PAFNFCE=Sim'); // Sandro Silva 2021-03-17
+
+        end
+        else
+        begin
+          //Form1.Caption := 'Aplicativo emissor de CF-e';
+          //Application.Title := 'Aplicativo emissor de CF-e';
+        end;
+
+        Form1.Caption     := 'Aplicativo emissor de CF-e';
+        Application.Title := 'Aplicativo emissor de CF-e';
+
       end;
-
-      Form1.Caption     := 'Aplicativo emissor de CF-e';
-      Application.Title := 'Aplicativo emissor de CF-e';
-
     end;
     {Sandro Silva 2021-03-16 fim}
 
@@ -7569,17 +7578,21 @@ begin
 
   {Sandro Silva 2021-04-28 inicio}
   // Validação para definiar quedo MEI precisa ser feita aqui
-  if (MEI) and (Form1.sModeloECF = '99') then // Sandro Silva 2021-12-29 if (Form1.sChaveMeiCifrada <> '') and (Form1.sModeloECF = '99') then
+  // Sandro Silva 2022-11-29 UnoChapeco  if (MEI) and (Form1.sModeloECF = '99') then // Sandro Silva 2021-12-29 if (Form1.sChaveMeiCifrada <> '') and (Form1.sModeloECF = '99') then
+  if (Form1.sModeloECF = '99') then
   begin
-
-    if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
+    if (MEI) then
     begin
 
-      GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'MEI'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
-      Application.Title := 'Aplicativo MEI';
+      if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
+      begin
+
+        GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'MEI'); // Sandro Silva 2021-03-19 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', 'Sim');
+        Application.Title := 'Aplicativo MEI';
+
+      end;
 
     end;
-
   end;
   {Sandro Silva 2021-04-28 fim}
 
@@ -7595,7 +7608,7 @@ begin
 
   if sSerial = '' then
   begin
-      //   
+      //
       //ShowMessage('Teste 01 9719'); // Sandro Silva 2021-04-27
 
       {Sandro Silva 2021-12-29 inicio
@@ -7748,7 +7761,7 @@ begin
     end else
     begin
 
-      //ShowMessage('Teste 01 9863'); // Sandro Silva 2021-04-27  
+      //ShowMessage('Teste 01 9863'); // Sandro Silva 2021-04-27
 
       SmallMsg('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
                'não está liberado para uso neste computador, instale'+Chr(10)+
@@ -8200,7 +8213,7 @@ begin
             if FileExists(Form1.sPastadoExecutavel+'\off13.fdb') then
             begin
 
-              Form22.Label6.Caption     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';  
+              Form22.Label6.Caption     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';
               Form22.Label6.Repaint;
               GetDir(0,Form1.sAtual);
               // Cria o banco offline se ainda não existir. Deve informar no Copy() o parâmetro bFailExist = True para ñão sobrepor em casos de não realizar a descarga
@@ -8229,7 +8242,7 @@ begin
           end;
 
           //
-          if FileExists(Form1.sPastaDoExecutavel+'\offline.fdb') then 
+          if FileExists(Form1.sPastaDoExecutavel+'\offline.fdb') then
           begin
 
             //
@@ -8253,7 +8266,7 @@ begin
             //
             try
               Form1.IBDatabase1.Params.Clear;
-              Form1.IbDatabase1.DatabaseName := Url+'\offline.fdb'; 
+              Form1.IbDatabase1.DatabaseName := Url+'\offline.fdb';
               Form1.IBDatabase1.Params.Add('USER_NAME=SYSDBA');
               Form1.IBDatabase1.Params.Add('PASSWORD=masterkey');
               Form1.IbDatabase1.Open;
@@ -21685,32 +21698,6 @@ var
   Mais1Ini: TIniFile;
   Url, IP, Alias : String;
 begin
-  //
-  // Desabilita os timers para não dar um commit
-  //
-  //
-  {Sandro Silva 2021-08-06 inicio}
-  {Sandro Silva 2022-01-11 inicio
-  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-  begin
-    if Form1.Button4.Enabled then
-    begin
-      if Form1.LabelF6.Caption <> 'F6'+chr(10)+'Cancela'+chr(10)+Form1.sTipoDocumento2 then
-      begin
-        Form1.LabelF6.Caption := 'F6'+chr(10)+'Cancela'+chr(10)+Form1.sTipoDocumento2;
-      end;
-    end
-    else
-    begin
-      if Form1.LabelF6.Caption <> 'F6'+chr(10)+'Gerenciador'+chr(10)+Form1.sTipoDocumento2 then
-      begin
-        Form1.LabelF6.Caption := 'F6'+chr(10)+'Gerenciador'+chr(10)+Form1.sTipoDocumento2;
-      end;
-    end;
-  end;
-  {Sandro Silva 2022-01-11 fim}
-  {Sandro Silva 2021-08-06 fim}
-
   {Sandro Silva 2021-09-08 inicio}
   if Form1.LabelF6.Caption = 'F6'+chr(10)+'Gerenciador'+chr(10)+Form1.sTipoDocumento2 then
     Form1.touch_F6.Picture.Bitmap := Form1.touch_F11.Picture.Bitmap
@@ -21718,6 +21705,10 @@ begin
     Form1.touch_F6.Picture.Bitmap := Form1.touch_F5.Picture.Bitmap;
   {Sandro Silva 2021-09-08 fim}
 
+  //
+  // Desabilita os timers para não dar um commit
+  //
+  //
   Form1.Timer1.Enabled := False;
   //
   if Copy(TimeToStr(Time),7,2)='00' then
@@ -21781,6 +21772,8 @@ begin
           //
           Screen.Cursor         := crHourGlass;    // Cursor de Aguardo
           Form22.Label6.Caption := 'Aguarde a DESCARGA do PDV...';
+
+          ShowMessage('Teste 21785 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           //
           Form1.IBDatabase2.Close;
           Form1.IBDatabase2.Params.Clear;
@@ -21791,38 +21784,50 @@ begin
           Form1.IBTransaction3.Active := True;
           //
 
+          ShowMessage('Teste 21796 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           Commitatudo2(True); // 2015-11-05 Off Line
+          ShowMessage('Teste 21798 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           CommitaTudo(True); // Off Line
 
+          ShowMessage('Teste 21801 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           Form1.IBTransaction3.Rollback; // 2015-11-05
+
+          ShowMessage('Teste 21799 '); // Sandro Silva 2022-11-29 UnoChapeco
 
           //
           Descarga('ALTERACA');
+          ShowMessage('Teste 21803 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('CAIXA');
+          ShowMessage('Teste 21805 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('RECEBER');
+          ShowMessage('Teste 21807 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('PAGAMENT');
+          ShowMessage('Teste 21809 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('REDUCOES'); // 2015-11-05
+          ShowMessage('Teste 21811 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('DEMAIS'); // 2015-11-05
+          ShowMessage('Teste 21813 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('BLOCOX'); // 2016-02-22
+          ShowMessage('Teste 21813 '); // Sandro Silva 2022-11-29 UnoChapeco
           try
             Form1.IBTransaction3.Commit; // 2015-11-06
-            //LogFrente('Teste 01: Commit 3');
+            LogFrente('Teste 01: Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
           except
-            //LogFrente('Teste 01: Erro Commit 3');
+            LogFrente('Teste 01: Erro Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
           end;
 
           try
             Form1.IBTransaction1.Commit;
-            //LogFrente('Teste 01: Commit 1');
-            //LogFrente('Teste 01: Erro Commit 1');
+            LogFrente('Teste 01: Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
+            LogFrente('Teste 01: Erro Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
           except
 
           end;
 
           try
             Form1.IBTransaction2.Commit;
-            //LogFrente('Teste 01: Commit 2');
-            //LogFrente('Teste 01: Erro Commit 2');
+            LogFrente('Teste 01: Commit 2'); // Sandro Silva 2022-11-29 UnoChapeco
+            LogFrente('Teste 01: Erro Commit 2'); // Sandro Silva 2022-11-29 UnoChapeco
           except
 
           end;
@@ -21834,15 +21839,15 @@ begin
 
           try
             Form1.IBTransaction3.Commit; // 2015-11-06
-            //LogFrente('Teste 01: Commit 3');
+            LogFrente('Teste 01: Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
           except
             //LogFrente('Teste 01: Erro Commit 3');
           end;
 
           try
             Form1.IBTransaction1.Commit;
-            //LogFrente('Teste 01: Commit 1');
-            //LogFrente('Teste 01: Erro Commit 1');
+            LogFrente('Teste 01: Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
+            LogFrente('Teste 01: Erro Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
           except
 
           end;
@@ -21909,7 +21914,7 @@ begin
       try Form1.IBDatabase1.ForceClose; except end;
       try Form1.IBTransaction3.Rollback; except end;
       try Form1.IBDatabase2.ForceClose; except end;
-      
+
       //
       AbreArquivos(True);
       Commitatudo(True); // Off line
