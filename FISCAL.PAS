@@ -5613,7 +5613,8 @@ var
 begin
   /////////
 
-  Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
+  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Não' then
+   Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
 
   GetDir(0, sDirAtual);
   ////////
@@ -7240,6 +7241,11 @@ begin
           //
           // SmallMsg(Form1.ibDataSet200.Transaction.DefaultDatabase.DatabaseName);
           //
+
+          {Sandro Silva 2022-11-29 inicio}
+          LogFrente(Form1.IBDataSet200.SelectSQL.Text);
+          {Sandro Silva 2022-11-29 fim}
+
           Form1.IBDataSet200.Open;
           //
           if (pP1 = 'ALTERACA') or (pP1 = 'PAGAMENT') or (pP1 = 'REDUCOES') or (pP1 = 'DEMAIS') then
@@ -7831,9 +7837,9 @@ begin
         if Form1.sAtualOnLine <> Form1.sPastadoExecutavel then
         begin
           //
-          if FileExists(Form1.sAtualOnLine+'\off13.fdb') then 
+          if FileExists(Form1.sAtualOnLine+'\off13.fdb') then
           begin
-            Form22.Label6.Caption     := 'Aguarde... Copiando base off13.fdb'; 
+            Form22.Label6.Caption     := 'Aguarde... Copiando base off13.fdb';
             Form22.Label6.Repaint;
             // Atualiza o off13.fdb na estação
             CopyFile(pchar(Form1.sAtualOnLine+'\off13.fdb'),pchar(Form1.sPastadoExecutavel+'\off13.fdb'),True);
@@ -8252,7 +8258,7 @@ begin
               Form1.IBDatabase1.Params.Add('PASSWORD=masterkey');
               Form1.IbDatabase1.Open;
 
-              //SmallMsg('Teste conectou offline.gdb');
+              //SmallMsg('Teste conectou offline.fdb');
 
               Form1.IBTransaction1.Active := True;
               Form1.IBTransaction2.Active := True;
@@ -8263,7 +8269,7 @@ begin
             except
               on E: Exception do
               begin
-                //SmallMsg('Teste erro ao conectar offline.gdb' + #13 + E.Message);
+                //SmallMsg('Teste erro ao conectar offline.fdb' + #13 + E.Message);
                 //
                 Screen.Cursor := crDefault;
                 SmallMsg('Entre antes no programa de retaguarda para ajustar os arquivos. Erro: 5');
@@ -8425,7 +8431,7 @@ begin
           else
           begin
 
-            //SmallMsg('Teste não encontrou ' + #13 + Form1.sPastaDoExecutavel+'\offline.gdb');
+            //SmallMsg('Teste não encontrou ' + #13 + Form1.sPastaDoExecutavel+'\offline.fdb');
 
           end;
         end else
@@ -21851,8 +21857,14 @@ begin
 
           AgendaCommit(True);
           //
-          try Form1.IBDatabase2.Close; except end;
-          try Form1.IBDatabase1.Close; except end;
+          try
+            Form1.IBDatabase2.Close;
+          except
+          end;
+          try
+            Form1.IBDatabase1.Close;
+          except
+          end;
           //
           while FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) do
           begin
@@ -21879,8 +21891,11 @@ begin
                         '1 - Sua conecção de rede esta OK.'+Chr(10)+
                         '2 - Verifique o IP no SMALL.INI'+Chr(10)+
                         ''
-                        //+ #13 + E.Message
-
+                        + IfThen(LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Sim',
+                                #13 + Form1.IBDataSet200.SelectSQL.Text
+                                + #13 + url
+                                + #13 + E.Message
+                                , '')
                         );
             FecharAplicacao(ExtractFileName(Application.ExeName));
 
@@ -21966,8 +21981,15 @@ begin
         Mais1ini.Free;
       end;
       //
-      try Form1.IBTransaction1.Rollback; except end;
-      try Form1.IBTransaction2.Rollback; except end;
+      try
+        Form1.IBTransaction1.Rollback;
+      except
+
+      end;
+      try
+        Form1.IBTransaction2.Rollback;
+      except
+      end;
       //
       with Form1 do
       begin
@@ -21981,8 +22003,14 @@ begin
         end;
       end;
       //
-      try Form1.IBTransaction1.Rollback; except end;
-      try Form1.IBDatabase1.ForceClose; except end;
+      try
+        Form1.IBTransaction1.Rollback;
+      except
+      end;
+      try
+        Form1.IBDatabase1.ForceClose;
+      except
+      end;
       //
       if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
       begin
@@ -22010,7 +22038,7 @@ begin
   // Desabilita os timers para não dar um commit
   //
   Form1.Timer1.Enabled := True;
-  //   
+  //
   if Form1.Label1.Caption = 'Off line' then
   begin
     Form1.touch_F4.Visible := False;
