@@ -1384,6 +1384,10 @@ type
     procedure ESTOQUESUSPENSOOUBAIXADEIE1Click(Sender: TObject);
     procedure ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
     procedure ESTOQUEATUAL1Click(Sender: TObject);
+    procedure ibDataSet13PostError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+    procedure ibDataSet2PostError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1451,6 +1455,7 @@ type
     procedure WndProc(var Msg: TMessage); override;
   public
     { Public declarations }
+    bagoraexibe: Boolean; // Sandro Silva 2022-11-29
     PosElginPay: TSmallElginPayPos; // Sandro Silva 2022-02-11
     IntegradorCE: TIntegradorFiscal; // Sandro Silva 2018-07-03
     TransacoesCartao: TTransacaoFinanceira;
@@ -6073,6 +6078,9 @@ var
 begin
   Cursor := Screen.Cursor; // Sandro Silva 2017-02-23
   Screen.Cursor := crHourGlass;
+
+  if Form1.bagoraexibe then
+  ShowMessage('Teste 6077 '); // Sandro Silva 2022-11-29 UnoChapeco
   //
   if not Form1.bFechandoMesasAbertas then
   begin
@@ -6132,7 +6140,7 @@ begin
       //
       Form1.ibDataSet25.Selectsql.Add('select * from FLUXO');
       Form1.ibDataSet10.Selectsql.Add('select * from GRADE where REGISTRO is null ');
-      Form1.ibDataset30.Selectsql.Add('select * from SERIE where REGISTRO is null '); 
+      Form1.ibDataset30.Selectsql.Add('select * from SERIE where REGISTRO is null ');
       Form1.ibDataSet13.Selectsql.Add('select * from EMITENTE');
       Form1.ibDataSet14.Selectsql.Add('select * from ICM order by CFOP');
       Form1.ibDataSet9.Selectsql.Add('select * from VENDEDOR where coalesce(NOME, '''') <> '''' ');
@@ -6141,6 +6149,10 @@ begin
       Form1.ibDataSet2.Selectsql.Add('select * from CLIFOR where coalesce(ATIVO,0) = 0 and trim(coalesce(NOME,'''')) <> '''' order by NOME');
       Form1.ibDataset88.SelectSQL.Add('select * from REDUCOES where SERIE='+QuotedStr(Form1.sNumeroDeSerieDaImpressora)+' order by DATA');
       Form1.ibDataSet4.Selectsql.Add('select * from ESTOQUE where coalesce(ATIVO,0)=0 and CODIGO='+QuotedStr('XXXXX')+' ');
+
+  if Form1.bagoraexibe then
+  ShowMessage('Teste 6150 '); // Sandro Silva 2022-11-29 UnoChapeco
+
       //
       try Form1.ibDataSet1.Active  := True except SmallMsg('Erro ao abrir arquivo 1') end;
       try Form1.ibDataSet2.Active  := True except SmallMsg('Erro ao abrir arquivo 2') end;
@@ -6162,7 +6174,7 @@ begin
       //
       if FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
       begin
-        DeleteFile(pchar(Form1.sPastadoExecutavel+'\offline.fdb')); 
+        DeleteFile(pchar(Form1.sPastadoExecutavel+'\offline.fdb'));
       end;
       //
     except
@@ -6171,11 +6183,11 @@ begin
       //
     end;
   end;
-                                                                                             
+
   //Sandro Silva 2015-03-26 Não permitir continuar se os dados do emitente estiverem faltando
   if Form1.ibDataSet13.Active then
   begin
-  
+
     if ((Trim(Form1.ibDataSet13.FieldByName('NOME').AsString) = '')
       or (Trim(Form1.ibDataSet13.FieldByName('CGC').AsString) = '')
       or (Trim(Form1.ibDataSet13.FieldByName('ENDERECO').AsString) = '')
@@ -6307,6 +6319,11 @@ begin
   Result := True;
   //
   Screen.Cursor := Cursor; // Sandro Silva 2017-02-23
+
+  if Form1.bagoraexibe then
+  ShowMessage('Teste 6319 '); // Sandro Silva 2022-11-29 UnoChapeco
+
+  Form1.bagoraexibe := False;
 end;
 
 function Commitatudo2(P1:Boolean): Boolean;
@@ -7876,7 +7893,8 @@ begin
       LogFrente('Teste 01: IP ' + Form1.sAtual+'\small.ini' + ' ' + ip);
 
       //
-      if IP = '' then IP := GetIp;
+      if IP = '' then
+        IP := GetIp;
 
       LogFrente('Teste 01: depois getip ' + ' ' + ip);
 
@@ -8290,8 +8308,8 @@ begin
                 //
                 Screen.Cursor := crDefault;
                 SmallMsg('Entre antes no programa de retaguarda para ajustar os arquivos. Erro: 5');
-                Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-                  Form1.ClienteSmallMobile.sLogRetornoMobile);
+                 // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+                Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
                 Form1.DestroyWindowHandle;
                 Application.Terminate;
                 Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
@@ -8462,7 +8480,8 @@ begin
           Screen.Cursor := crDefault;
           //
           //if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,13) = 'C:\PROJETO 20' then
-          if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = 'D:\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
+          // Sandro Silva 2022-11-29 if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = 'D:\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
+          if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = '\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
           begin
 
             LogFrente('Teste 01: 10434');
@@ -8479,8 +8498,8 @@ begin
                         Chr(10)+
                         '');
           end;
-          Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-            Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
+          // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+          Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
           //
           Form1.DestroyWindowHandle;
           Application.Terminate;
@@ -8506,13 +8525,16 @@ begin
     //begin
       //SmallMsg('Teste 1 ' + E.Message);
     //
-    if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
-      Form1.ClienteSmallMobile.LogRetornoMobile( // Sandro Silva 2022-08-08 LogRetornoMobile(
-        'Não foi possível ativar os arquivos do banco de dados "Client Server"')
+    // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
+    // Sandro Silva 2022-08-08 LogRetornoMobile('Não foi possível ativar os arquivos do banco de dados "Client Server"')
+    // else
+    // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
+
+    if Form1.ClienteSmallMobile.ImportandoMobile then
+      Form1.ClienteSmallMobile.LogRetornoMobile('Não foi possível ativar os arquivos do banco de dados "Client Server"')
     else
       SmallMsgBox(Pchar('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.'),'Atenção',mb_IconError+mb_Ok);
-    Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-      Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
+    Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
     Form1.DestroyWindowHandle;
     Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
 
@@ -8537,8 +8559,8 @@ begin
                          'Small Commerce', MB_ICONQUESTION + MB_YESNO) = idYes then
       ShellExecute(Application.Handle, nil, PChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial=' + sSerial + '&cnpj=' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)), nil, nil, SW_SHOWMAXIMIZED);
 
-    Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-      Form1.ClienteSmallMobile.sLogRetornoMobile);
+    // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+    Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Form1.DestroyWindowHandle;
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
@@ -8553,8 +8575,8 @@ begin
              'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
              'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
              'em contato com a Smallsoft.');
-    Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-      Form1.ClienteSmallMobile.sLogRetornoMobile);
+    // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+    Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
@@ -9980,6 +10002,8 @@ var
   //iItemMenu: Integer;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
+  bagoraexibe := False; // Sandro Silva 2022-11-29
+
   AjustarBufferChuncks(Form1);
   ClienteSmallMobile := TSmallMobileCliente.Create;
 
@@ -21791,6 +21815,9 @@ begin
           ShowMessage('Teste 21796 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           Commitatudo2(True); // 2015-11-05 Off Line
           ShowMessage('Teste 21798 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
+
+          bagoraexibe := True; // Sandro Silva 2022-11-29
+
           CommitaTudo(True); // Off Line
 
           ShowMessage('Teste 21801 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
@@ -33703,6 +33730,20 @@ begin
 
   CHDir(Form1.sAtual);
 
+end;
+
+procedure TForm1.ibDataSet13PostError(DataSet: TDataSet; E: EDatabaseError;
+  var Action: TDataAction);
+begin
+  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Sim' then
+    ShowMessage('Teste 33715 '); // Sandro Silva 2022-11-29 UnoChapeco
+end;
+
+procedure TForm1.ibDataSet2PostError(DataSet: TDataSet; E: EDatabaseError;
+  var Action: TDataAction);
+begin
+  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Sim' then
+    ShowMessage('Teste 33731 '); // Sandro Silva 2022-11-29 UnoChapeco
 end;
 
 end.

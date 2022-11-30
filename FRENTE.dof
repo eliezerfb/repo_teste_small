@@ -139,5 +139,7 @@ SpecialBuild=NFCE
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=C:\Program Files (x86)\SmallSoft\Small Commerce teste recupera xml nfce
+Count=3
+Item0=C:\Program Files (x86)\SmallSoft\Small Commerce off
+Item1=C:\Program Files (x86)\SmallSoft\Small Commerce
+Item2=C:\Program Files (x86)\SmallSoft\Small Commerce teste recupera xml nfce
