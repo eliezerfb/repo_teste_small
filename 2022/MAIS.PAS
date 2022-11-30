@@ -9918,7 +9918,8 @@ begin
     while ( not Form7.IBBackupService1.Eof ) do
     begin
       Result := Form7.IBBackupService1.GetNextLine;
-      if AllTrim(Result) <> '' then  ShowMessage(Result);
+      if AllTrim(Result) <> '' then
+        ShowMessage(Result);
     end;
     //
     Form7.IBBackupService1.Active := False;
@@ -9938,7 +9939,8 @@ begin
     Begin
       Result := Form7.IBRestoreService1.GetNextLine;
       Application.ProcessMessages;
-      if AllTrim(Result) <> '' then  ShowMessage(Result);
+      if AllTrim(Result) <> '' then
+        ShowMessage(Result);
     End;
     //
     Form7.IBRestoreService1.Active := False;
