@@ -1384,10 +1384,6 @@ type
     procedure ESTOQUESUSPENSOOUBAIXADEIE1Click(Sender: TObject);
     procedure ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
     procedure ESTOQUEATUAL1Click(Sender: TObject);
-    procedure ibDataSet13PostError(DataSet: TDataSet; E: EDatabaseError;
-      var Action: TDataAction);
-    procedure ibDataSet2PostError(DataSet: TDataSet; E: EDatabaseError;
-      var Action: TDataAction);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1455,7 +1451,6 @@ type
     procedure WndProc(var Msg: TMessage); override;
   public
     { Public declarations }
-    bagoraexibe: Boolean; // Sandro Silva 2022-11-29
     PosElginPay: TSmallElginPayPos; // Sandro Silva 2022-02-11
     IntegradorCE: TIntegradorFiscal; // Sandro Silva 2018-07-03
     TransacoesCartao: TTransacaoFinanceira;
@@ -6079,17 +6074,23 @@ begin
   Cursor := Screen.Cursor; // Sandro Silva 2017-02-23
   Screen.Cursor := crHourGlass;
 
-  if Form1.bagoraexibe then
-  ShowMessage('Teste 6077 '); // Sandro Silva 2022-11-29 UnoChapeco
   //
   if not Form1.bFechandoMesasAbertas then
   begin
     //
     //
     try
+      {Sandro Silva 2022-11-30 inicio
       Form1.IBTransaction1.Commit;
       Form1.IBTransaction2.Commit;
+      }
+      if Form1.IBTransaction1.Active then
+        Form1.IBTransaction1.Commit;
+      if Form1.IBTransaction2.Active then
+        Form1.IBTransaction2.Commit;
+      {Sandro Silva 2022-11-30 fim}
     except
+      {Sandro Silva 2022-11-30 inicio
       try
         //
         Sleep(1000);
@@ -6104,6 +6105,26 @@ begin
         //
       except
         SmallMsg('Erro de rede. (A rede física não suportou o tráfego) Erro: 1163');
+      end;
+      }
+      on E: Exception do
+      begin
+        //ShowMessage('Teste 6112 ' + E.Message); // Sandro Silva 2022-11-30
+        try
+          //
+          Sleep(1000);
+          //
+          try
+            Form1.IBTransaction1.Commit;
+            Form1.IBTransaction2.Commit;
+          except end;
+          //
+          Sleep(1000);
+          Abrearquivos(True);
+          //
+        except
+          SmallMsg('Erro de rede. (A rede física não suportou o tráfego) Erro: 1163');
+        end;
       end;
     end;
     //
@@ -6150,9 +6171,6 @@ begin
       Form1.ibDataset88.SelectSQL.Add('select * from REDUCOES where SERIE='+QuotedStr(Form1.sNumeroDeSerieDaImpressora)+' order by DATA');
       Form1.ibDataSet4.Selectsql.Add('select * from ESTOQUE where coalesce(ATIVO,0)=0 and CODIGO='+QuotedStr('XXXXX')+' ');
 
-  if Form1.bagoraexibe then
-  ShowMessage('Teste 6150 '); // Sandro Silva 2022-11-29 UnoChapeco
-
       //
       try Form1.ibDataSet1.Active  := True except SmallMsg('Erro ao abrir arquivo 1') end;
       try Form1.ibDataSet2.Active  := True except SmallMsg('Erro ao abrir arquivo 2') end;
@@ -6172,6 +6190,7 @@ begin
       //
       Form1.ibDataset25.Edit;
       //
+
       if FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
       begin
         DeleteFile(pchar(Form1.sPastadoExecutavel+'\offline.fdb'));
@@ -6320,10 +6339,6 @@ begin
   //
   Screen.Cursor := Cursor; // Sandro Silva 2017-02-23
 
-  if Form1.bagoraexibe then
-  ShowMessage('Teste 6319 '); // Sandro Silva 2022-11-29 UnoChapeco
-
-  Form1.bagoraexibe := False;
 end;
 
 function Commitatudo2(P1:Boolean): Boolean;
@@ -7221,10 +7236,14 @@ begin
           begin
             if Form1.ibDataSet99.Fields[I].FieldName <> 'TIPO' then
             begin
-              if (Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.FieldDefs[I].Name).DataType = ftString)  then sValores := sValores + QuotedStr(Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.Fields[I].FieldName).AsString) else
-                if (Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.FieldDefs[I].Name).DataType = ftDate)    then sValores := sValores + QuotedStr(DateToStrInvertida(Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.Fields[I].FieldName).AsDateTime)) else
-                  if (Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.FieldDefs[I].Name).DataType = ftFloat)   then sValores := sValores + StrTran(StrZero(Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.Fields[I].FieldName).AsFloat,12,2),',','.')
-                     else sValores := sValores + QuotedStr('0');
+              if (Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.FieldDefs[I].Name).DataType = ftString)  then
+                sValores := sValores + QuotedStr(Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.Fields[I].FieldName).AsString)
+              else if (Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.FieldDefs[I].Name).DataType = ftDate)    then
+                sValores := sValores + QuotedStr(DateToStrInvertida(Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.Fields[I].FieldName).AsDateTime))
+              else if (Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.FieldDefs[I].Name).DataType = ftFloat)   then
+                sValores := sValores + StrTran(StrZero(Form1.ibDataSet99.FieldByName(Form1.ibDataSet99.Fields[I].FieldName).AsFloat,12,2),',','.')
+              else
+                sValores := sValores + QuotedStr('0');
             end else
             begin
               if Form1.ibDataSet99.Fields[I].AsString = 'CANCEL' then
@@ -7271,11 +7290,6 @@ begin
           //
           // SmallMsg(Form1.ibDataSet200.Transaction.DefaultDatabase.DatabaseName);
           //
-
-          {Sandro Silva 2022-11-29 inicio}
-          LogFrente(Form1.IBDataSet200.SelectSQL.Text);
-          {Sandro Silva 2022-11-29 fim}
-
           Form1.IBDataSet200.Open;
           //
           if (pP1 = 'ALTERACA') or (pP1 = 'PAGAMENT') or (pP1 = 'REDUCOES') or (pP1 = 'DEMAIS') then
@@ -7775,7 +7789,8 @@ begin
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('R'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 07 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Mei
        )
-    and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 13) // Maior ou igual a S13. Segurança para evitar uso de serial muito antigo
+    // Sandro Silva 2022-11-30 and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 13) // Maior ou igual a S13. Segurança para evitar uso de serial muito antigo
+        and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 14) // Maior ou igual a S14. Segurança para evitar uso de serial muito antigo
     then
     begin
       Form22.sSerie := 'Número de série: '+sSerial;
@@ -10002,8 +10017,6 @@ var
   //iItemMenu: Integer;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
-  bagoraexibe := False; // Sandro Silva 2022-11-29
-
   AjustarBufferChuncks(Form1);
   ClienteSmallMobile := TSmallMobileCliente.Create;
 
@@ -10634,6 +10647,8 @@ begin
 
     if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then // Obtem o número do caixa para salvar na auditoria
     begin
+      bInicializa := Form1.PDV_Inicializa(sPorta); // Sandro Silva 2022-11-30
+
       Form1.sCaixa := Form1.PDV_NumeroDoCaixa(True);
       Audita('ACESSOU','FRENTE', '', 'ACESSOU O SISTEMA - Caixa: ' + Form1.sCaixa + ' ' + ExtractFileName(Application.ExeName) + ' Build: ' + LimpaNumero(Form22.sBuild),0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2019-03-06
     end
@@ -10713,6 +10728,10 @@ begin
   try
     //
     // Sandro Silva 2022-11-08 bInicializa := Form1.PDV_Inicializa(sPorta);
+    {Sandro Silva 2022-11-30 inicio}
+    if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+      bInicializa := Form1.PDV_Inicializa(sPorta);
+    {Sandro Silva 2022-11-30 fim}
 
     {Sandro Silva 2022-07-13 inicio}
     if (Form1.sModeloECF = '65') then
@@ -21801,7 +21820,6 @@ begin
           Screen.Cursor         := crHourGlass;    // Cursor de Aguardo
           Form22.Label6.Caption := 'Aguarde a DESCARGA do PDV...';
 
-          ShowMessage('Teste 21785 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           //
           Form1.IBDatabase2.Close;
           Form1.IBDatabase2.Params.Clear;
@@ -21812,53 +21830,51 @@ begin
           Form1.IBTransaction3.Active := True;
           //
 
-          ShowMessage('Teste 21796 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21796 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           Commitatudo2(True); // 2015-11-05 Off Line
-          ShowMessage('Teste 21798 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21798 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
 
-          bagoraexibe := True; // Sandro Silva 2022-11-29
+          CommitaTudo(True); // Off Line antes descarga
 
-          CommitaTudo(True); // Off Line
-
-          ShowMessage('Teste 21801 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21801 ' + url); // Sandro Silva 2022-11-29 UnoChapeco
           Form1.IBTransaction3.Rollback; // 2015-11-05
 
-          ShowMessage('Teste 21799 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21799 '); // Sandro Silva 2022-11-29 UnoChapeco
 
           //
           Descarga('ALTERACA');
-          ShowMessage('Teste 21803 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21803 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('CAIXA');
-          ShowMessage('Teste 21805 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21805 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('RECEBER');
-          ShowMessage('Teste 21807 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21807 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('PAGAMENT');
-          ShowMessage('Teste 21809 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21809 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('REDUCOES'); // 2015-11-05
-          ShowMessage('Teste 21811 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21811 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('DEMAIS'); // 2015-11-05
-          ShowMessage('Teste 21813 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21813 '); // Sandro Silva 2022-11-29 UnoChapeco
           Descarga('BLOCOX'); // 2016-02-22
-          ShowMessage('Teste 21813 '); // Sandro Silva 2022-11-29 UnoChapeco
+          //ShowMessage('Teste 21813 '); // Sandro Silva 2022-11-29 UnoChapeco
           try
             Form1.IBTransaction3.Commit; // 2015-11-06
-            LogFrente('Teste 01: Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
           except
-            LogFrente('Teste 01: Erro Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Erro Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
           end;
 
           try
             Form1.IBTransaction1.Commit;
-            LogFrente('Teste 01: Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
-            LogFrente('Teste 01: Erro Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Erro Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
           except
 
           end;
 
           try
             Form1.IBTransaction2.Commit;
-            LogFrente('Teste 01: Commit 2'); // Sandro Silva 2022-11-29 UnoChapeco
-            LogFrente('Teste 01: Erro Commit 2'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Commit 2'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Erro Commit 2'); // Sandro Silva 2022-11-29 UnoChapeco
           except
 
           end;
@@ -21870,15 +21886,15 @@ begin
 
           try
             Form1.IBTransaction3.Commit; // 2015-11-06
-            LogFrente('Teste 01: Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Commit 3'); // Sandro Silva 2022-11-29 UnoChapeco
           except
             //LogFrente('Teste 01: Erro Commit 3');
           end;
 
           try
             Form1.IBTransaction1.Commit;
-            LogFrente('Teste 01: Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
-            LogFrente('Teste 01: Erro Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
+            //LogFrente('Teste 01: Erro Commit 1'); // Sandro Silva 2022-11-29 UnoChapeco
           except
 
           end;
@@ -21902,10 +21918,12 @@ begin
           except
           end;
           //
+
           while FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) do
           begin
             DeleteFile(sAtual+'\offline.fdb');
           end;
+
           //
           if Memo2.Lines.Text <> 'Total R$ 0,00' then
           begin
@@ -21948,7 +21966,7 @@ begin
 
       //
       AbreArquivos(True);
-      Commitatudo(True); // Off line
+      Commitatudo(True); // Off line depois descarga
       Commitatudo2(True); // 2015-11-11 Off line
 
       // Depois de descarregar e ficar on line assina os registros?
@@ -33730,20 +33748,6 @@ begin
 
   CHDir(Form1.sAtual);
 
-end;
-
-procedure TForm1.ibDataSet13PostError(DataSet: TDataSet; E: EDatabaseError;
-  var Action: TDataAction);
-begin
-  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Sim' then
-    ShowMessage('Teste 33715 '); // Sandro Silva 2022-11-29 UnoChapeco
-end;
-
-procedure TForm1.ibDataSet2PostError(DataSet: TDataSet; E: EDatabaseError;
-  var Action: TDataAction);
-begin
-  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Sim' then
-    ShowMessage('Teste 33731 '); // Sandro Silva 2022-11-29 UnoChapeco
 end;
 
 end.
