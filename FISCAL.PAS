@@ -1651,7 +1651,8 @@ type
     procedure CancelaVendaAtualNoBanco(sPedido: String; sData: String;
       bValidacaoObrigatoria: Boolean);
     function SecaoFrente(): String;
-    function ImportarDaPesquisa(sTipo: String): String;    
+    function ImportarDaPesquisa(sTipo: String): String;
+    procedure ConfiguraCredencialTecnospeed;
   end;
 
 var
@@ -1731,7 +1732,7 @@ uses
   , uconstantes_chaves_privadas
   , urequisitospafnfce
   , upafnfce // Sandro Silva 2022-09-23
-  ;
+  , ucredencialtecnospeed;
 
 {$R *.DFM}
 
@@ -9655,7 +9656,13 @@ begin
     if Form1.spdNFCe1 = nil then
     begin
       Form1.spdNFCe1 := TspdNFCe.Create(Application);
+      {Sandro Silva 2022-12-15 inicio
       Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
+      }
+      Form1.ConfiguraCredencialTecnospeed;
+      {Sandro Silva 2022-12-15 fim}
+
+
       Form1.spdNFCe1.AtualizarArquivoServidores := True; // Sempre atualizar os link dos arquivos servidores .ini Sandro Silva 2021-02-01 
 
       Form1.spdNFCe1.VersaoManual                      := vm60; // Sandro Silva 2020-02-14
@@ -33748,6 +33755,27 @@ begin
 
   CHDir(Form1.sAtual);
 
+end;
+
+procedure TForm1.ConfiguraCredencialTecnospeed;
+var
+  CredencialTecnospeed: TCredenciaisTecnospeed;
+begin
+
+  Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
+
+  try
+    CredencialTecnospeed := TCredenciaisTecnospeed.Create;
+    CredencialTecnospeed.PrivateKey := Form1.sPasta;
+    CredencialTecnospeed.LeCredencial(Form1.sAtual);
+
+    if CredencialTecnospeed.CNJP <> '' then
+      Form1.spdNFCe1.ConfigurarSoftwareHouse(CredencialTecnospeed.CNJP, CredencialTecnospeed.Token);
+
+    FreeAndNil(CredencialTecnospeed);
+  except
+  end;
+  //
 end;
 
 end.
