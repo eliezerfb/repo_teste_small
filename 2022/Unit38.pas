@@ -64,6 +64,7 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+    function StrToFloatFormat(sFormato: String; Valor: Real): Real;
   public
     { Public declarations }
   end;
@@ -504,7 +505,8 @@ begin
                   aCFOP[High(aCFOP)].CFOP         := sCFOP;
                   aCFOP[High(aCFOP)].CSTPISCOFINS := sCSTPISCOFINS;
                 end;
-                aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%10.2n',[Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto]));
+                // Sandro Silva 2022-12-01 aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%10.2n',[Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto]));
+                aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto);
                 //aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo - fRateioDoDesconto;
                 aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto - fRateioDoDesconto;
 
@@ -535,7 +537,8 @@ begin
                   aCSTCSOSN[High(aCSTCSOSN)] := TCSTCSOSN.Create; // Sandro Silva 2019-06-13
                   aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN := sCSTCSOSN;
                 end;
-                aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%10.2n',[Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto]));
+                // Sandro Silva 2022-12-01 aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%10.2n',[Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto]));
+                aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto);
                 //aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo - fRateioDoDesconto;
                 aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto - fRateioDoDesconto;
 
@@ -587,9 +590,14 @@ begin
                 fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100);
                 fTotal3  := Ftotal3 + ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto;
                 }
+                {Sandro Silva 2022-12-01 inicio
                 fTotal1  := fTotal1 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100)]));
                 fTotal2  := fTotal2 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100)]));
                 fTotal3  := Ftotal3 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)]));
+                }
+                fTotal1  := fTotal1 + StrToFloatFormat('%10.2n', ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100);
+                fTotal2  := fTotal2 + StrToFloatFormat('%10.2n', ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100);
+                fTotal3  := Ftotal3 + StrToFloatFormat('%10.2n', ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto);
                 {Sandro Silva 2022-10-10 fim}
 
                 //
@@ -873,7 +881,8 @@ begin
                 aCFOP[High(aCFOP)].CFOP         := sCFOP;
                 aCFOP[High(aCFOP)].CSTPISCOFINS := sCSTPISCOFINS;
               end;
-              aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%10.2n', [(Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto)]));
+              // Sandro Silva 2022-12-15 aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%10.2n', [(Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto)]));
+              aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto));
               //aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
               aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto - fRateioDoDesconto;
 
@@ -903,7 +912,8 @@ begin
                 aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN     := sCSTCSOSN;
                 aCSTCSOSN[High(aCSTCSOSN)].CSTPISCOFINS := sCSTPISCOFINS;
               end;
-              aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%10.2n', [(Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto)]));
+              // Sandro Silva 2022-12-15 aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%10.2n', [(Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto)]));
+              aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByName('TOTAL').AsFloat - fRateioDoDesconto));
               //aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
               aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto - fRateioDoDesconto;
               {Sandro Silva 2022-10-03 fim}
@@ -964,9 +974,16 @@ begin
               fTotal3  := Ftotal3 + ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto;
               }
 
+              {Sandro Silva 2022-12-15 inicio
               fTotal1  := fTotal1 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)]));
               fTotal2  := fTotal2 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)]));
               fTotal3  := Ftotal3 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)]));
+              }
+              fTotal1  := fTotal1 + StrToFloatFormat('%10.2n', (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100));
+              fTotal2  := fTotal2 + StrToFloatFormat('%10.2n', (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100));
+              fTotal3  := Ftotal3 + StrToFloatFormat('%10.2n', (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto));
+              {Sandro Silva 2022-12-15 fim}
+
               {Sandro Silva 2022-10-10 fim}
               //
               ibQuery99.Next;
@@ -1333,7 +1350,8 @@ begin
                   aCFOP[High(aCFOP)].CFOP         := sCFOP;
                   aCFOP[High(aCFOP)].CSTPISCOFINS := sCSTPISCOFINS;
                 end;
-                aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%10.2n', [Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+                // Sandro Silva 2022-12-15 aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%10.2n', [Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+                aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem);
                 aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
                 aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto + Rateio.DescontoItem + Rateio.RateioDescontoItem;
 
@@ -1362,7 +1380,8 @@ begin
                   aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN     := sCSTCSOSN;
                   aCSTCSOSN[High(aCSTCSOSN)].CSTPISCOFINS := sCSTPISCOFINS;
                 end;
-                aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%10.2n', [Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+                // Sandro Silva 2022-12-15 aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%10.2n', [Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+                aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem);
                 aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
                 aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto + Rateio.DescontoItem + Rateio.RateioDescontoItem;
                 //
@@ -1420,9 +1439,16 @@ begin
                 fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100);
                 fTotal3  := Ftotal3 + Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem;
                 }
+                {Sandro Silva 2022-12-15 inicio
                 fTotal1  := fTotal1 + StrToFloat(Format('%10.2n', [(ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100)]));
                 fTotal2  := fTotal2 + StrToFloat(Format('%10.2n', [(ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100)]));
                 fTotal3  := Ftotal3 + StrToFloat(Format('%10.2n', [(Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
+                }
+                fTotal1  := fTotal1 + StrToFloatFormat('%10.2n', (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100));
+                fTotal2  := fTotal2 + StrToFloatFormat('%10.2n', (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100));
+                fTotal3  := Ftotal3 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
+                {Sandro Silva 2022-12-15 fim}
+
                 {Sandro Silva 2022-10-11 fim}
                 //
               end;
@@ -4214,7 +4240,8 @@ begin
                 aCFOP[High(aCFOP)] := TCFOP.Create; // Sandro Silva 2019-06-13
                 aCFOP[High(aCFOP)].CFOP := sCFOP;
               end;
-              aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%11.2n', [Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+              // Sandro Silva 2022-12-15 aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloat(Format('%11.2n', [Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+              aCFOP[iItem].Valor     := aCFOP[iItem].Valor + StrToFloatFormat('%11.2n', Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem);
               aCFOP[iItem].Acrescimo := aCFOP[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
               aCFOP[iItem].Desconto  := aCFOP[iItem].Desconto + Rateio.DescontoItem + Rateio.RateioDescontoItem;
               {Sandro Silva 2022-09-29 fim}
@@ -4245,7 +4272,8 @@ begin
                 aCSTCSOSN[High(aCSTCSOSN)] := TCSTCSOSN.Create; // Sandro Silva 2019-06-13
                 aCSTCSOSN[High(aCSTCSOSN)].CSTCSOSN := sCSTCSOSN;
               end;
-              aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%11.2n',[Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+              // Sandro Silva 2022-12-15 aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloat(Format('%11.2n',[Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem]));
+              aCSTCSOSN[iItem].Valor     := aCSTCSOSN[iItem].Valor + StrToFloatFormat('%11.2n', Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem);
               aCSTCSOSN[iItem].Acrescimo := aCSTCSOSN[iItem].Acrescimo + Rateio.RateioAcrescimoItem;
               aCSTCSOSN[iItem].Desconto  := aCSTCSOSN[iItem].Desconto + Rateio.DescontoItem + Rateio.RateioDescontoItem;
               {Sandro Silva 2022-09-30 fim}
@@ -4316,9 +4344,16 @@ begin
               fTotal1 := fTotal1 + ibDataSet27ALIQ_PIS.AsFloat/100*ibDataSet27TOTAL.AsFloat;
               fTotal2 := fTotal2 + ibDataSet27ALIQ_COFINS.AsFloat/100*ibDataSet27TOTAL.AsFloat;
               }
+              {Sandro Silva 2022-12-15 inicio
               fTotal  := fTotal  + StrToFloat(Format('%14.2n', [(Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
               fTotal1 := fTotal1 + StrToFloat(Format('%14.2n', [ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
               fTotal2 := fTotal2 + StrToFloat(Format('%14.2n', [ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
+              }
+              fTotal  := fTotal  + StrToFloatFormat('%14.2n', (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
+              fTotal1 := fTotal1 + StrToFloatFormat('%14.2n', ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
+              fTotal2 := fTotal2 + StrToFloatFormat('%14.2n', ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
+              {Sandro Silva 2022-12-15 fim}
+
               {Sandro Silva 2022-10-11 fim}
               //
               ibDataSet27.Next;
@@ -5432,6 +5467,16 @@ end;
 procedure TForm38.FormShow(Sender: TObject);
 begin
   Form38.Tag := 1;
+end;
+
+function TForm38.StrToFloatFormat(sFormato: String; Valor: Real): Real;
+var
+  sValorFormat: String;
+begin
+  sValorFormat := Format('%10.2n', [(Valor)]);
+  sValorFormat := StringReplace(sValorFormat, ' ', '', []);
+  sValorFormat := StringReplace(sValorFormat, '.', '', []);
+  Result := StrToFloatDef(sValorFormat, 0);
 end;
 
 end.

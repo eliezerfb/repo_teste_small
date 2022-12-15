@@ -4730,7 +4730,13 @@ var
   Mais1Ini: TIniFile;
 begin
   //
+
+  {Sandro Silva 2022-12-15 inicio
   Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
+  }
+  Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
+  {Sandro Silva 2022-12-15 fim}
+
   //
   if LimpaNumero(Form7.ibDataSet13CGC.AsString) <> '' then Form7.spdNFe.CNPJ := LimpaNumero(Form7.ibDataSet13CGC.AsString);
   //
@@ -4843,7 +4849,12 @@ begin
   if Form7.spdNFe.NomeCertificado.Text = '' then
   begin
     //
+    {Sandro Silva 2022-12-15 inicio 
     Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
+    }
+    Form1.ConfiguraCredencialTecnospeed;
+    {Sandro Silva 2022-12-15 fim}
+
     Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
     //
   end;
@@ -16216,7 +16227,12 @@ var
   I : Integer;
 begin
   //
+  {Sandro Silva 2022-12-15 inicio 
   Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
+  }
+  Form1.ConfiguraCredencialTecnospeed;
+  {Sandro Silva 2022-12-15 fim}
+
   //
   if LimpaNumero(Text) <> '' then
   begin

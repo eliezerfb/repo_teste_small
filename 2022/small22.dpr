@@ -63,7 +63,8 @@ uses
   uconstantes_chaves_privadas in '..\..\..\uconstantes_chaves_privadas.pas',
   uRateioVendasBalcao in 'uRateioVendasBalcao.pas',
   uAtualizaNovoCampoItens001CSOSN in 'uAtualizaNovoCampoItens001CSOSN.pas',
-  uSmallNFeUtils in 'uSmallNFeUtils.pas';
+  uSmallNFeUtils in 'uSmallNFeUtils.pas',
+  ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas';
 
 {$R *.RES}
 

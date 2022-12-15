@@ -416,6 +416,7 @@ type
 
   private
     { Private declarations }
+    procedure ExibeRazaoSocialNoCaptionDoForm;
 
   public
 
@@ -477,6 +478,7 @@ type
     function BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
       Shift: TShiftState): Word; // Sandro Silva 2022-10-18
     function ValidaEmitenteMunicipio: Boolean;
+    procedure ConfiguraCredencialTecnospeed;
 
   end;
   //
@@ -496,7 +498,7 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit42, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas;
+  uconstantes_chaves_privadas, ucredencialtecnospeed;
 
 {$R *.DFM}
 
@@ -1217,6 +1219,7 @@ var
   documentoAtivo: variant;
   sSerie, sInicio, s: String;
   bButton: Integer;
+  CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
   //
   Result := False;
@@ -1225,6 +1228,15 @@ begin
     //
     documentoAtivo := Form1.WebBrowser1.Document;
     s := documentoAtivo.Body.OuterHTML;
+
+    {Sandro Silva 2022-12-15 inicio}
+    CredencialTecnospeed := TCredenciaisTecnospeed.Create; // Sandro Silva 2022-12-15
+    CredencialTecnospeed.PrivateKey := Form1.sPasta;
+    CredencialTecnospeed.SalvaCredencial(Form1.sAtual, s);
+    CredencialTecnospeed.Free;
+    {Sandro Silva 2022-12-15 fim}
+
+
 //      ShowMessage(s);
 //      s := '[INICIO=15/08/2018]' + s;
     //
@@ -3396,6 +3408,7 @@ end;
 function Legal(sP1 : Boolean):Boolean;
 var
   I : Integer;
+  CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
   //
   // LEGAL
@@ -4742,6 +4755,7 @@ procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
 begin
   FechaTudo(bFechaTudo);
   Form17.ShowModal;
+  ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15 
 end;
 
 procedure TForm1.Ajustararquivos1Click(Sender: TObject);
@@ -5042,6 +5056,7 @@ begin
          'e atende a legislação'+chr(10)+
          'do MEI');
   end;
+
   //
   Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
@@ -8383,6 +8398,11 @@ begin
     //
     Mensagem22('Aguarde atualizando promoção.');
     AtualizaPromocao(True);
+
+    {Sandro Silva 2022-12-15 inicio}
+    ExibeRazaoSocialNoCaptionDoForm;
+    {Sandro Silva 2022-12-15 fim}
+
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
@@ -12037,12 +12057,16 @@ end;
 procedure TForm1.SelecionarCertificadoDigital1Click(Sender: TObject);
 var
   //
-  Mais1ini : TIniFile;
-  sCertificado : String;
+  Mais1ini: TIniFile;
+  sCertificado: String;
   //
 begin
   //
+  {Sandro Silva 2022-12-15 inicio
   Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
+  }
+  Form1.ConfiguraCredencialTecnospeed;
+  {Sandro Silva 2022-12-15 fim}
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
@@ -15745,6 +15769,47 @@ begin
   except
   end;
   FreeAndNil(IBQMUNICIPIO);
+end;
+
+procedure TForm1.ConfiguraCredencialTecnospeed;
+var
+  CredencialTecnospeed: TCredenciaisTecnospeed;
+begin
+
+  Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');
+  
+  try
+    CredencialTecnospeed := TCredenciaisTecnospeed.Create;
+    CredencialTecnospeed.PrivateKey := Form1.sPasta;
+    CredencialTecnospeed.LeCredencial(Form1.sAtual);
+
+    if CredencialTecnospeed.CNJP <> '' then
+      Form7.spdNFe.ConfigurarSoftwareHouse(CredencialTecnospeed.CNJP, CredencialTecnospeed.Token);
+
+    //ShowMessage( CredencialTecnospeed.CNJP + #13 + CredencialTecnospeed.Token);
+
+    FreeAndNil(CredencialTecnospeed);
+  except
+  end;
+  //
+end;
+
+procedure TForm1.ExibeRazaoSocialNoCaptionDoForm;
+var
+  sCaption: String;
+  sEmpresa: String;
+begin
+  if Form7.ibDataSet13.Active then
+  begin
+    if (Form7.ibDataSet13.FieldByName('CGC').AsString = '07.426.598/0001-24') or (Form7.ibDataSet13.FieldByName('CGC').AsString = '03.916.076/0006-64') then
+    begin
+      sEmpresa := ' - [ ' + Form7.ibDataSet13.FieldByName('NOME').AsString + ' ' + Form7.ibDataSet13.FieldByName('CGC').AsString + ' ]';
+      sCaption := Form1.Caption;
+      if Pos(' - [', sCaption) > 0 then
+        sCaption := Copy(sCaption, 1, Pos(' - [', sCaption) - 1);
+      Form1.Caption := sCaption + sEmpresa;
+    end;
+  end;
 end;
 
 end.
