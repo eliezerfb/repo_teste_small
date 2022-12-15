@@ -23,9 +23,13 @@ uses
   function MontaTela(sP1: Boolean): Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
 
-const BUILD_DO_BANCO = '2022008'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
-const CNPJ_SMALLSOFT = '07.426.598/0001-24'; 
-const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
+const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
+const BUILD_DO_BANCO = '2023002'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
+const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
+
+const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
+
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 const ValidacaoNova = True; //False;
 
@@ -1839,7 +1843,7 @@ var
 begin
   //
   try
-    Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
+    Mais2ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
     sRazao := Form7.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17',RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
     if AnsiUpperCase(Right(Trim(sRazao), 4)) = 'LTDA' then
@@ -4005,7 +4009,7 @@ begin
   Form22.RichEdit1.Visible := True;
   Form22.Button1.Visible   := True;
   //
-  Mensagem22('Copyright© SmallSoft® 2005 - 2022'); Form22.Button1.Visible := True;
+  Mensagem22('Copyright© Zucchetti® 2005 - 2022'); Form22.Button1.Visible := True;
   Form22.ShowModal;
   //
   Form22.Label6.Visible    := True;
@@ -4288,7 +4292,7 @@ begin
         //
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\APF_DLL2.DLL'),          pChar(Form1.sAtual+'\APF_DLL2.DLL'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\BemaFI32.dll'),          pChar(Form1.sAtual+'\BemaFI32.dll'),false);
-        CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\blocox.exe'),            pChar(Form1.sAtual+'\blocox.exe'),false);
+        // Sandro Silva 2022-12-02 Unochapeco CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\blocox.exe'),            pChar(Form1.sAtual+'\blocox.exe'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\CONSULTA.exe'),          pChar(Form1.sAtual+'\CONSULTA.exe'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\CONVECF.dll'),           pChar(Form1.sAtual+'\CONVECF.dll'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\daruma1'),               pChar(Form1.sAtual+'\daruma1'),false);
@@ -5240,7 +5244,7 @@ begin
     ShowMessage('Este sistema está licenciado somente para '+IntToStr(iR)+' usuários'+Chr(10)+
                 'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(10)+
                 'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
-                'em contato com a SmallSoft.');
+                'em contato com a Zucchetti pelo 0800.645.2008');
     // Form1.DestroyWindowHandle;
     Application.Terminate;
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
@@ -8614,7 +8618,10 @@ begin
             //
             Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias' + chr(10) + chr(10) + Replicate('_',( (40 - StrToInt(FloatToStr(fDias)) ) +1 - I)));
             //
-            if I = 1 then Sleep(2000) else Sleep(200);
+            if I = 1 then
+              Sleep(2000)
+            else
+              Sleep(200);
             //
           end;
         end;
@@ -9413,7 +9420,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -10880,7 +10887,7 @@ begin
       //
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
-        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
       end else
       begin
         WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -10928,7 +10935,7 @@ begin
       //
       // WWW
       //
-      WriteLn(F,'Relatório gerado pelo sistema Smallsoft, www.smallsoft.com.br'); // Ok
+      WriteLn(F,'Relatório gerado pelo sistema Small, www.smallsoft.com.br'); // Ok
       WriteLn(F,'Através do seguinte comando SQL digitado pelo operador: '+Form1.ibDataSet200.SelectSQL.Text+' ');
       WriteLn(F,'Número de registros: '+IntToStr(J)+'');
       CloseFile(F);                                    // Fecha o arquivo
@@ -11292,7 +11299,7 @@ begin
       //
       ConfFoto    := Mais1Ini.ReadString('Mobile','Fotos','Sim');
       //
-      sPropaganda := Mais1Ini.ReadString('Outros','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br');
+      sPropaganda := Mais1Ini.ReadString('Outros','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
       //
       ConfLimite  := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 1.000,00'),'R$ ',''),'.',''),'.',''),'.',''));
       ConfIR      := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %'),' %',''),'.',''),'.',''),'.',''));
@@ -13000,7 +13007,7 @@ begin
       //
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
-        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
       end else
       begin
         WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -13048,7 +13055,7 @@ begin
       //
       // WWW
       //
-      WriteLn(F,'Relatório gerado pelo sistema Smallsoft, www.smallsoft.com.br'); // Ok
+      WriteLn(F,'Relatório gerado pelo sistema Small, www.smallsoft.com.br'); // Ok
       WriteLn(F,'Através do seguinte comando SQL CONNECT digitado pelo operador: '+Form1.ibDataSet1.SelectSQL.Text+' ');
       WriteLn(F,'Número de registros: '+IntToStr(J)+'');
       CloseFile(F);                                    // Fecha o arquivo
@@ -13416,7 +13423,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -13866,7 +13873,7 @@ begin
                     //
                     //
                     Mais1Ini.Free;
-                    ShellExecute( 0, 'Open', 'graficos.exe', 'orcamentos.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+                    ShellExecute( 0, 'Open', 'graficos.exe', 'orcamentos.gra SMALL', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\orcamentos.png') do sleep(100);
                     //
                   except
@@ -13942,7 +13949,7 @@ begin
                     //
                     Mais1Ini.Free;
                     //
-                    ShellExecute( 0, 'Open', 'graficos.exe', 'PAGAR.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+                    ShellExecute( 0, 'Open', 'graficos.exe', 'PAGAR.gra SMALL', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\PAGAR.png') do sleep(100);
                     //
                     Writeln(F,'<br><br><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -14021,7 +14028,7 @@ begin
                     //
                     Mais1Ini.Free;
                     //
-                    ShellExecute( 0, 'Open', 'graficos.exe', 'RECEBER.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+                    ShellExecute( 0, 'Open', 'graficos.exe', 'RECEBER.gra SMALL', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\RECEBER.png') do sleep(100);
                     //
                     Writeln(F,'<br><br><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -14042,7 +14049,7 @@ begin
                 + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
                 + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
                 //
-                WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+                WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
                 WriteLn(F,'</html>');
                 //
                 CloseFile(F);                                    // Fecha o arquivo

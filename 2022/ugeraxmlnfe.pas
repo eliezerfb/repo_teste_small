@@ -7742,10 +7742,10 @@ ShowMessage('Teste: '+chr(10)+
               //
 //              if Form1.bHomologacao then
               begin
-                Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value                         := LimpaNumero(CNPJ_SMALLSOFT); //'07426598000124';
-                Form7.spdNFeDataSets.Campo('xContato_ZD04').Value                     := 'Ronei Ivo Weber';
-                Form7.spdNFeDataSets.Campo('email_ZD05').Value                        := 'smallsoft@smallsoft.com.br';
-                Form7.spdNFeDataSets.Campo('fone_ZD06').Value                         := '4934255800';
+                Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value     := LimpaNumero(CNPJ_SMALLSOFT); //'07426598000124';
+                Form7.spdNFeDataSets.Campo('xContato_ZD04').Value := 'Alessio Mainardi'; // Sandro Silva 2022-12-02 Unochapeco
+                Form7.spdNFeDataSets.Campo('email_ZD05').Value    := 'smallsoft@smallsoft.com.br';
+                Form7.spdNFeDataSets.Campo('fone_ZD06').Value     := '4934255800';
               end;
               //
               if Form1.bModoSVC then
