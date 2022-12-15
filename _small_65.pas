@@ -5614,7 +5614,7 @@ begin
         sTextoCorpoEmail := 'Segue em anexo seu XML da NFC-e.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
-        sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br';
+        sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
         _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sXMLFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','XML da NFC-e',pchar(sTextoCorpoEmail),pChar(sXMLFile),False);
       end;
@@ -5624,7 +5624,7 @@ begin
         sTextoCorpoEmail := 'Segue em anexo seu DANFCE em arquivo PDF.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
-        sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br';
+        sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
         _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sPDFFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)',pchar(sTextoCorpoEmail),pChar(sPDFFile),False);
       end;
@@ -5641,7 +5641,7 @@ begin
         sTextoCorpoEmail := 'Segue em anexo seu XML e DANFCE da NFC-e.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
-        sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br';
+        sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
         _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sZipFile), False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', pchar(sTextoCorpoEmail), pChar(sZipFile), False);
       end;
@@ -5727,7 +5727,7 @@ begin
         'Serviço Paralisado sem Previsão.' + Chr(13) +
         IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '') + // Sandro Silva 2019-08-09
         Chr(13) +
-        'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'), Unochapeco
         'Atenção',mb_Ok + MB_ICONWARNING);
       //
     end
@@ -5740,7 +5740,7 @@ begin
         'Serviço Paralisado Momentaneamente (curto prazo).'+Chr(13)+
         IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '') + // Sandro Silva 2019-08-09
         chr(13)+
-        'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
         'Atenção',mb_Ok + MB_ICONWARNING);
       //
     end
@@ -5768,7 +5768,7 @@ begin
               +chr(10)+'3 - Seu certificado pode estar vencido'
               +chr(10)+'4 - Seu certificado pode ser inválido'
               + chr(10)
-              +chr(10)+'Certificados recomendados pela Smallsoft®'
+              +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
               +chr(10)+''
               +chr(10)+'1. Certificados SERASA'
               +chr(10)+'    * A1'
@@ -5779,7 +5779,7 @@ begin
               +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
               +chr(10)
               +chr(10)
-              +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+              +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
               'Atenção',mb_Ok + MB_ICONWARNING);
             //
           end else
@@ -5798,7 +5798,7 @@ begin
               +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
               + chr(10)
               + chr(10)
-              +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+              +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
               'Atenção',mb_Ok + MB_ICONWARNING);
             //
           end; // if Pos('CERTIFICADO',Uppercase(sException)) <> 0 then
@@ -6218,7 +6218,7 @@ begin
                 +chr(10)+'3 - Seu certificado pode estar vencido'
                 +chr(10)+'4 - Seu certificado pode ser inválido'
                 + chr(10)
-                +chr(10)+'Certificados recomendados pela Smallsoft®'
+                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
                 +chr(10)+''
                 +chr(10)+'1. Certificados SERASA'
                 +chr(10)+'    * A1'
@@ -6229,7 +6229,7 @@ begin
                 +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
                 +chr(10)
                 +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
                 Abort;
@@ -6253,7 +6253,7 @@ begin
                 +chr(10)+'3 - Verifique seu certificado digital'
                 +chr(10)
                 +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end;
@@ -6291,7 +6291,7 @@ begin
                 Chr(13) +
                 'Serviço Paralisado sem Previsão.' + Chr(13) +
                 chr(13) +
-                'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end
@@ -6305,7 +6305,7 @@ begin
                 Chr(13)+
                 'Serviço Paralisado Momentaneamente (curto prazo).' + Chr(13) +
                 Chr(13)+
-                'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end
@@ -6332,7 +6332,7 @@ begin
                     + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'4 - Selecione o certificado digital', '')
                     +chr(10)
                     +chr(10)
-                    +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                    +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                     'Atenção',mb_Ok + MB_ICONWARNING);
                    end else
                    begin
@@ -6387,7 +6387,7 @@ begin
                 +chr(10)+'3 - Seu certificado pode estar vencido'
                 +chr(10)+'4 - Seu certificado pode ser inválido'
                 + chr(10)
-                +chr(10)+'Certificados recomendados pela Smallsoft®'
+                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
                 +chr(10)+''
                 +chr(10)+'1. Certificados SERASA'
                 +chr(10)+'    * A1'
@@ -6398,7 +6398,7 @@ begin
                 +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
                 +chr(10)
                 +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
                 Abort;
@@ -6422,7 +6422,7 @@ begin
                 +chr(10)+'3 - Verifique seu certificado digital'
                 +chr(10)
                 +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end;
@@ -9203,7 +9203,7 @@ begin
   // Ficha 4578 // Sandro Silva 2019-04-11
   // Grupo Responsável técnico
   spdNFCeDataSets.Campo('CNPJ_ZD02').Value     := LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF); 	// Informar o CNPJ da pessoa jurídica responsável pelo sistema utilizado na emissão do documento fiscal eletrônico.
-  spdNFCeDataSets.Campo('xContato_ZD04').Value := 'Ronei Ivo Weber'; // 	Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.
+  spdNFCeDataSets.Campo('xContato_ZD04').Value := 'Alessio Mainardi'; // Sandro Silva 2022-12-02 Unochapeco 'Ronei Ivo Weber'; // 	Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('email_ZD05').Value    := 'smallsoft@smallsoft.com.br';   //	Informar o e-mail da pessoa a ser contatada na empresa desenvolvedora do sistema.
   spdNFCeDataSets.Campo('fone_ZD06').Value     := '04934255800'; 	// Informar o telefone da pessoa a ser contatada na empresa desenvolvedora do sistema. Preencher com o Código DDD + número do telefone
 end;

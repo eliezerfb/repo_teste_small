@@ -3,7 +3,7 @@ object Form22: TForm22
   Top = 1
   BorderIcons = []
   BorderStyle = bsNone
-  Caption = 'Smallsoft'
+  Caption = 'Zucchetti'
   ClientHeight = 687
   ClientWidth = 1278
   Color = clWhite

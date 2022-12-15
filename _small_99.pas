@@ -2338,10 +2338,10 @@ begin
 
           {Set Doc Info}
           PDF.TITLE       := ExtractFileName(sFilePDF);
-          PDF.Creator     := 'Smallsoft - ' + ExtractFileName(Application.ExeName);
+          PDF.Creator     := 'Zucchetti - ' + ExtractFileName(Application.ExeName);// Sandro Silva 2022-12-02 Unochapeco
           PDF.Author      := ConverteAcentos2(Form1.ibDataSet13.FieldByName('NOME').AsString);
           PDF.Keywords    := 'VENDA';
-          PDF.Producer    := 'Smallsoft - ' + ExtractFileName(Application.ExeName);
+          PDF.Producer    := 'Zucchetti - ' + ExtractFileName(Application.ExeName);// Sandro Silva 2022-12-02 Unochapeco
           {Set Filename to save}
           if sFileExport = '' then // 2015-06-30
             PDF.Subject     := ExtractFileName(sFilePDF)

@@ -62,12 +62,14 @@ const CHAVE_TEF_CARTEIRA_DIGITAL      = 'TEF Carteira Digital'; // Configura no 
 const CHAVE_CERTIFICADO_DIGITAL       = 'Certificado'; // Sandro Silva 2022-11-17
 const INTERVAL_FRENTE_MINIMIZADO      = 5000; // 2015-12-01 15000;// 15 segundos
 const INTERVAL_FRENTE_MAXIMIZADO      = 5000; // 2015-12-01 60000;// 60 segundos
-const CNPJ_SOFTWARE_HOUSE_PAF         = '07.426.598/0001-24';
-const IE_SOFTWARE_HOUSE_PAF           = '255422385';
-const IM_SOFTWARE_HOUSE_PAF           = '22842';  // usar ISENTO 
-const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
+const CNPJ_SOFTWARE_HOUSE_PAF         = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
+const IE_SOFTWARE_HOUSE_PAF           = '262037645'; // Sandro Silva 2022-12-02 Unochapeco '255422385';
+const IM_SOFTWARE_HOUSE_PAF           = 'ISENTO'; // Sandro Silva 2022-12-02 Unochapeco '22842';  // usar ISENTO
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Zucchetti Software e Sistemas Ltda'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
 const VERSAO_ER_PAF_ECF               = '02.06'; // ER 02.06 Sandro Silva 2019-06-19  '02.05'; // Sandro Silva 2017-07-24 ER 02.05 '02.03';
-const NUMERO_LAUDO_PAF_ECF            = 'UNO3302019';
+const NUMERO_LAUDO_PAF_ECF            = 'UNO3972022';// Sandro Silva 2022-12-12 Unochapeco 'UNO3302019';
+const DATA_EMISSAO_LAUDO_PAF_ECF      = '12/12/2022'; // Sandro Silva 2022-12-02 Unochapeco
+const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
 
 const NFCE_CSTAT_AUTORIZADO_100               = '100';
 const NFCE_CSTAT_AUTORIZADO_FORA_DE_PRAZO_150 = '150';
@@ -1815,7 +1817,8 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 var
   sAssinaturaLida: String;
 begin
-  sAssinaturaLida := LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '');
+  sAssinaturaLida := LerParametroIni(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF, 'SAT-CFe', 'Assinatura Associada', ''); // Sandro Silva 2022-12-02 Unochapeco sAssinaturaLida := LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '');
+
   Result := (sAssinaturaLida = 'CODIGO DE VINCULACAO AC DO MFE-CFE') // MFE ELGIN
     or (sAssinaturaLida = 'SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT') // TANCA/BEMATECH
     or (sAssinaturaLida = '111111111111112222222222222211111111111111222222222222221111111111111122222222222222111111111111112222222222222211111111111111222222222222221111' +

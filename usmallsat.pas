@@ -4820,13 +4820,13 @@ begin
 
           {Set Doc Info}
           PDF.TITLE       := ExtractFileName(sFileCFeSAT);
-          PDF.Creator     := 'Smallsoft - ' + ExtractFileName(Application.ExeName);
+          PDF.Creator     := 'Zucchetti - ' + ExtractFileName(Application.ExeName); // Sandro Silva 2022-12-02 Unochapeco
           PDF.Author      := xmlNodeValue(sCFeXML, '//emit/xNome');
           if FEmitente.UF = 'CE' then
             PDF.Keywords    := 'Cupom Fiscal Eletrônico, CF-e, MFE' // Sandro Silva 2018-08-01
           else
             PDF.Keywords    := 'Cupom Fiscal Eletrônico, CF-e-SAT, SAT';
-          PDF.Producer    := 'Smallsoft - ' + ExtractFileName(Application.ExeName);
+          PDF.Producer    := 'Zucchetti - ' + ExtractFileName(Application.ExeName); // Sandro Silva 2022-12-02 Unochapeco
           {Set Filename to save}
           if sFileExport = '' then // 2015-06-30
             PDF.Subject     := ExtractFileName(sFileCFeSAT)

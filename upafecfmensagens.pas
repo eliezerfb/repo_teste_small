@@ -550,7 +550,7 @@ begin
                                 +chr(10)+'3 - Seu certificado pode estar vencido'
                                 +chr(10)+'4 - Seu certificado pode ser inválido'
                                 +chr(10)
-                                +chr(10)+'Certificados recomendados pela Smallsoft®'
+                                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
                                 +chr(10)+''
                                 +chr(10)+'1. Certificados SERASA'
                                 +chr(10)+'    * A1'
@@ -565,7 +565,7 @@ begin
                                 +chr(10)
                                 +chr(10)
                                 +chr(10)
-                                +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                                     'Atenção', MB_ICONWARNING + MB_OK);
 end;
 

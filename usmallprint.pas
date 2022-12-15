@@ -401,7 +401,7 @@ begin
         //FPDF.Creator     := 'Smallsoft - ' + ExtractFileName(Application.ExeName);
         //FPDF.Author      := xmlNodeValue(sCFeXML, '//emit/xNome');
         //FPDF.Keywords    := FPDFKeyWords;
-        FPDF.Producer    := 'Smallsoft - ' + ExtractFileName(Application.ExeName);
+        FPDF.Producer    := 'Zucchetti - ' + ExtractFileName(Application.ExeName); // Sandro Silva 2022-12-02 Unochapeco
         {Set Filename to save}
         //if sFileExport = '' then // 2015-06-30
         //  FPDF.Subject     := ExtractFileName(sFileCFeSAT)

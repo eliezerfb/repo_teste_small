@@ -231,6 +231,8 @@ var
   sDadosItemE2: String; // Sandro Silva 2019-09-13 ER 02.06 UnoChapeco
   sHashItemE2: String; // Sandro Silva 2019-09-13 ER 02.06 UnoChapeco
   sA2FiltroCaixa: String; // Sandro Silva 2019-09-19 ER 02.06 UnoChapeco
+  sMarcaR03Acrescimo: String; // Sandro Silva 2022-12-03 Unochapeco
+  sMarcaR03OPNF: String; // Sandro Silva 2022-12-03 Unochapeco
   //
 
   function LimpaNomeForma(sForma: String): String;
@@ -1972,6 +1974,7 @@ begin
                         StrZero(Form1.ibDataSet88.FieldByName('ALIQUOTA18').AsFloat*100,13,0)); // Valor Acumulado
           end;
 
+          {Sandro Silva 2022-12-03 Início Unochapeco
           //
           // Acréscimo
           IBQR03.Close;
@@ -2026,14 +2029,112 @@ begin
             Writeln(F,  'R03' + // Tipo
                         Copy(Form1.ibDataSet88.FieldByName('SERIE').AsString+Replicate(' ',20),1,20) + // Número de fabricação
                         ' '+ // MF Adidional
-                        sModelo_ECF +   // Modelo do ECF
+                        IfThen(Pos('?', sMarcaR03Acrescimo) > 0, StringReplace(sModelo_ECF, ' ', '?', [rfReplaceAll]) , sModelo_ECF)  +   // Modelo do // Sandro Silva 2022-12-03 Unochapeco sModelo_ECF +   // Modelo do ECF
                         Right('000' + Trim(sSequencialR01), 2) +// Número do usuário // Sandro Silva 2017-11-28 Polimig  Right('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 2) +// Número do usuário // Sandro Silva 2017-11-13  HOMOLOGA 2017 '01' + // Número do usuário
                         StrZero(StrToInt('0'+LimpaNumero(Form1.ibDataSet88.FieldByName('CONTADORZ').AsString)),6,0)  +  // Contador Z// Sandro Silva 2018-05-28  StrZero(StrToInt('0'+Alltrim(Form1.ibDataSet88.FieldByName('CONTADORZ').AsString)),6,0)  +  // Contador Z
                         'AT     '+ // Acréscimo ICMS
                         StrZero(dR03Acrescimo*100,13,0)); // Valor Acumulado
           end;
+          }
 
+          //
+          // Acréscimo R03
+          //
+          //Seleciona os pedidos com acréscimo
+          IBQR03.Close;
+          IBQR03.SQL.Text :=
+            'select distinct A.PEDIDO, A.CAIXA ' +
+            'from REDUCOES R ' +
+            'left join ALTERACA A on (A.PEDIDO between R.CUPOMI and R.CUPOMF and A.DATA between R.DATA and R.DATA + 1 and A.CAIXA = R.PDV and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'' or A.TIPO = ''CANCEL'' or A.TIPO = ''CANLOK'' or A.TIPO = ''KOLNAC'')) ' +
+            //'where R.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker1.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker2.Date)) +
+            'where R.DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form1.ibDataSet88.FieldByName('DATA').AsDateTime)) + ' and R.SERIE = ' + QuotedStr(Form1.ibDataSet88.FieldByName('SERIE').AsString) +
+            ' and R.SMALL <> ''59'' and R.SMALL <> ''65'' and R.SMALL <> ''99'' ' + // Sandro Silva 2021-08-11 ' and R.SMALL <> ''59'' and R.SMALL <> ''65'' ' +
+            ' and A.CAIXA = ' + QuotedStr(RightStr('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 3)) +
+            ' and A.DESCRICAO = ''Acréscimo'' ' +
+            ' and A.TIPO <> ''CANCEL'' ' +
+            ' and coalesce(A.ALIQUICM, '''') <> ''ISS'' ' +
+            ' and A.REGISTRO is not null ' +
+            'union ' +
+            'select distinct A.PEDIDO, A.CAIXA ' +
+            'from ALTERACA A ' +
+            // 'where A.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker1.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker2.Date)) +
+            'where A.PEDIDO between ' + QuotedStr(RightStr('000000' + Trim(Form1.ibDataSet88.FieldByName('CUPOMI').AsString), 6)) + ' and ' + QuotedStr(RightStr('000000' + Trim(Form1.ibDataSet88.FieldByName('CUPOMF').AsString), 6)) +
+            ' and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'' or A.TIPO = ''CANCEL'' or A.TIPO = ''CANLOK'' or A.TIPO = ''KOLNAC'') ' +
+            ' and A.PEDIDO > coalesce((select first 1 R.CUPOMF from REDUCOES R where R.PDV = A.CAIXA and R.SMALL <> ''59'' and R.SMALL <> ''65'' and R.SMALL <> ''99'' order by R.DATA desc), '''') ' + // Sandro Silva 2021-08-11 ' and A.PEDIDO > coalesce((select first 1 R.CUPOMF from REDUCOES R where R.PDV = A.CAIXA and R.SMALL <> ''59'' and R.SMALL <> ''65'' order by R.DATA desc), '''') ' +
+            ' and A.CAIXA = ' + QuotedStr(RightStr('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 3)) +
+            ' and A.DESCRICAO = ''Acréscimo'' ' +
+            ' and A.TIPO <> ''CANCEL'' ' +
+            ' and coalesce(A.ALIQUICM, '''') <> ''ISS'' ' +
+            ' and A.REGISTRO is not null ' +
+            'order by 2, 1';
+          IBQR03.Open;
+
+          dR03Acrescimo := 0;
+          sMarcaR03Acrescimo := ''; // Sandro Silva 2022-12-03 Unochapeco
+
+          while IBQR03.Eof = False do
+          begin
+
+            {
+            IBQECF.Close;
+            IBQECF.SQL.Text :=
+              'select sum(TOTAL) as ACRESCIMO ' +
+              'from ALTERACA ' +
+              'where DESCRICAO = ''Acréscimo'' ' +
+              ' and TIPO <> ''CANCEL'' ' +
+              ' and coalesce(ALIQUICM, '''') <> ''ISS'' ' +
+              ' and CAIXA = ' + QuotedStr(Form1.ibDataSet88.FieldByName('PDV').AsString) +
+              ' and PEDIDO = ' + QuotedStr(IBQR03.FieldByName('PEDIDO').AsString);
+            IBQECF.Open;
+
+            dR03Acrescimo := dR03Acrescimo + IBQECF.FieldByName('ACRESCIMO').AsFloat;
+            }
+
+
+            // seleciona cada acréscimos para analisar assinatura
+            IBQECF.Close;
+            IBQECF.SQL.Text :=
+              'select * ' +
+              'from ALTERACA ' +
+              //'where DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker1.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker2.Date)) +
+              'where PEDIDO between ' + QuotedStr(RightStr('000000' + Trim(Form1.ibDataSet88.FieldByName('CUPOMI').AsString), 6)) + ' and ' + QuotedStr(RightStr('000000' + Trim(Form1.ibDataSet88.FieldByName('CUPOMF').AsString), 6)) +
+              ' and DESCRICAO = ''Acréscimo'' ' +
+              ' and TIPO <> ''CANCEL'' ' +
+              ' and coalesce(ALIQUICM, '''') <> ''ISS'' ' +
+              //' and PEDIDO = ' + QuotedStr(IBQR03.FieldByName('PEDIDO').AsString) +
+              ' and CAIXA = ' + QuotedStr(Form1.ibDataSet88.FieldByName('PDV').AsString);
+            IBQECF.Open;
+
+            while IBQECF.Eof = False do
+            begin
+              if not AssinaRegistro('ALTERACA', IBQECF, False) then
+                 sMarcaR03Acrescimo := '?';
+              dR03Acrescimo := dR03Acrescimo + IBQECF.FieldByName('TOTAL').AsFloat;
+
+              IBQECF.Next;
+            end;
+
+            IBQR03.Next;
+          end;
+
+          if dR03Acrescimo > 0 then
+          begin
+            Writeln(F,  'R03' + // Tipo
+                        Copy(Form1.ibDataSet88.FieldByName('SERIE').AsString+Replicate(' ',20),1,20) + // Número de fabricação
+                        ' '+ // MF Adidional
+                        IfThen(Pos('?', sMarcaR03Acrescimo) > 0, StringReplace(sModelo_ECF, ' ', '?', [rfReplaceAll]) , sModelo_ECF)  +   // Modelo do ECF // Sandro Silva 2022-12-03 Unochapeco sModelo_ECF +   // Modelo do ECF
+                        Right('000' + Trim(sSequencialR01), 2) +// Número do usuário // Sandro Silva 2017-11-28 Polimig  Right('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 2) +// Número do usuário // Sandro Silva 2017-11-13  HOMOLOGA 2017 '01' + // Número do usuário
+                        StrZero(StrToInt('0'+LimpaNumero(Form1.ibDataSet88.FieldByName('CONTADORZ').AsString)),6,0)  +  // Contador Z// Sandro Silva 2018-05-28  StrZero(StrToInt('0'+Alltrim(Form1.ibDataSet88.FieldByName('CONTADORZ').AsString)),6,0)  +  // Contador Z
+                        'AT     '+ // Acréscimo ICMS
+                        StrZero(dR03Acrescimo*100,13,0)); // Valor Acumulado
+          end;
+          sMarcaR03Acrescimo := '';
+          {Sandro Silva 2022-12-03 Final Unochapeco}
+
+          {Sandro Silva 2022-12-03 Início Unochapeco
+          //
           // SANGRIA SUPRIMENTO
+          //
           IBQR03.Close;
           IBQR03.SQL.Text :=
             'select distinct P.PEDIDO, P.CAIXA, P.DATA ' +
@@ -2084,6 +2185,83 @@ begin
                         'OPNF   '+ // Operações não fiscais
                         StrZero(dR03OPNF*100,13,0)); // Valor Acumulado
           end;
+          }
+
+          //
+          // SANGRIA SUPRIMENTO
+          //
+          IBQR03.Close;
+          IBQR03.SQL.Text :=
+            'select distinct P.PEDIDO, P.CAIXA, P.DATA ' +
+            'from REDUCOES R ' +
+            'left join PAGAMENT P on (P.PEDIDO between R.CUPOMI and R.CUPOMF and P.DATA between R.DATA and R.DATA + 1 and P.CAIXA = R.PDV) ' +
+            //'where R.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker1.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker2.Date)) +
+            'where R.DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form1.ibDataSet88.FieldByName('DATA').AsDateTime)) + ' and R.SERIE = ' + QuotedStr(Form1.ibDataSet88.FieldByName('SERIE').AsString) +
+            ' and P.CAIXA = ' + QuotedStr(RightStr('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 3)) +
+            ' and (coalesce(P.CLIFOR, ''X'') = ''Sangria'' or coalesce(P.CLIFOR, ''X'') = ''Suprimento'') ' +
+            ' and R.SMALL <> ''59'' and R.SMALL <> ''65'' and R.SMALL <> ''99'' ' + // Sandro Silva 2021-08-11 ' and R.SMALL <> ''59'' and R.SMALL <> ''65'' ' +
+            ' and P.REGISTRO is not null ' +
+            ' union ' +
+            'select distinct P.PEDIDO, P.CAIXA, P.DATA ' +
+            'from PAGAMENT P ' +
+            //'where P.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker1.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.DateTimePicker2.Date)) +
+            'where P.PEDIDO between ' + QuotedStr(RightStr('000000' + Trim(Form1.ibDataSet88.FieldByName('CUPOMI').AsString), 6)) + ' and ' + QuotedStr(RightStr('000000' + Trim(Form1.ibDataSet88.FieldByName('CUPOMF').AsString), 6)) +
+            ' and P.CAIXA = ' + QuotedStr(RightStr('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 3)) +
+            ' and P.PEDIDO > coalesce((select first 1 R.CUPOMF from REDUCOES R where R.PDV = P.CAIXA and R.SMALL <> ''59'' and R.SMALL <> ''65'' and R.SMALL <> ''99'' order by R.DATA desc), '''') ' + // Sandro Silva 2021-08-11 ' and P.PEDIDO > coalesce((select first 1 R.CUPOMF from REDUCOES R where R.PDV = P.CAIXA and R.SMALL <> ''59'' and R.SMALL <> ''65'' order by R.DATA desc), '''') ' +
+            ' and (coalesce(P.CLIFOR, ''X'') = ''Sangria'' or coalesce(P.CLIFOR, ''X'') = ''Suprimento'') ' +
+            ' and P.REGISTRO is not null ' +
+            ' order by 2, 1 ';
+          IBQR03.Open;
+
+          dR03OPNF := 0.00;
+          sMarcaR03OPNF := ''; // Sandro Silva 2022-12-03 Unochapeco
+          while IBQR03.Eof = False do
+          begin
+            {
+            IBQECF.Close;
+            IBQECF.SQL.Text :=
+              'select sum(P.VALOR) as OPNF ' +
+              'from PAGAMENT P ' +
+              'where (coalesce(P.CLIFOR, ''X'') = ''Sangria'' or coalesce(P.CLIFOR, ''X'') = ''Suprimento'') ' +
+              ' and CAIXA = ' + QuotedStr(Form1.ibDataSet88.FieldByName('PDV').AsString) +
+              ' and PEDIDO = ' + QuotedStr(IBQR03.FieldByName('PEDIDO').AsString);
+            IBQECF.Open;
+            dR03OPNF := dR03OPNF + IBQECF.FieldByName('OPNF').AsFloat;
+            }
+            IBQECF.Close;
+            IBQECF.SQL.Text :=
+              'select P.* ' +
+              'from PAGAMENT P ' +
+              'where (coalesce(P.CLIFOR, ''X'') = ''Sangria'' or coalesce(P.CLIFOR, ''X'') = ''Suprimento'') ' +
+              ' and CAIXA = ' + QuotedStr(Form1.ibDataSet88.FieldByName('PDV').AsString) +
+              ' and PEDIDO = ' + QuotedStr(IBQR03.FieldByName('PEDIDO').AsString);
+            IBQECF.Open;
+            while IBQECF.Eof = False do
+            begin
+              if not AssinaRegistro('PAGAMENT', IBQECF, False) then
+                 sMarcaR03OPNF := '?';
+
+              dR03OPNF := dR03OPNF + IBQECF.FieldByName('VALOR').AsFloat;
+              IBQECF.Next;
+            end;                                              
+
+            IBQR03.Next;
+          end; // while IBQ.Eof = False do
+
+
+          if dR03OPNF > 0 then
+          begin
+            Writeln(F,  'R03' + // Tipo
+                        Copy(Form1.ibDataSet88.FieldByName('SERIE').AsString+Replicate(' ',20),1,20) + // Número de fabricação
+                        ' '+ // MF Adidional
+                        IfThen(Pos('?', sMarcaR03OPNF) > 0, StringReplace(sModelo_ECF, ' ', '?', [rfReplaceAll]) , sModelo_ECF)  +   // Modelo do ECF // Sandro Silva 2022-12-03 Unochapeco sModelo_ECF +   // Modelo do ECF
+                        Right('000' + Trim(sSequencialR01), 2) +// Número do usuário // Sandro Silva 2017-11-28 Polimig  Right('000' + Trim(Form1.ibDataSet88.FieldByName('PDV').AsString), 2) +// Número do usuário // Sandro Silva 2017-11-13  HOMOLOGA 2017 '01' + // Número do usuário
+                        StrZero(StrToInt('0'+LimpaNumero(Form1.ibDataSet88.FieldByName('CONTADORZ').AsString)),6,0)  +  // Contador Z // Sandro Silva 2018-05-28  StrZero(StrToInt('0'+Alltrim(Form1.ibDataSet88.FieldByName('CONTADORZ').AsString)),6,0)  +  // Contador Z
+                        'OPNF   '+ // Operações não fiscais
+                        StrZero(dR03OPNF*100,13,0)); // Valor Acumulado
+          end;
+          sMarcaR03OPNF := '';
+          {Sandro Silva 2022-12-03 Final Unochapeco}
 
           for I := 1 to 15 do
           begin
@@ -2290,7 +2468,7 @@ begin
             ', A1.CAIXA ' + // Sandro Silva 2017-11-13  HOMOLOGA 2017
             'order by DATA';
           Form1.IbDataSet100.Open;
-                                                  
+
           Form1.IbDataSet100.First;
           //
           // SmallMsg('Teste '+Form1.IbDataSet100.SelectSQL.Text);
@@ -3704,8 +3882,9 @@ begin
         //
       end;
 
+      //
       //J1 Referente as NF-e: 55
-      //ALTERACA.VALORICM = Número+Serie NF-e e ALTERACA.SERIE = ''
+      //
       Form1.IbDataSet100.Close;
       Form1.IbDataSet100.SelectSql.Clear;
       Form1.IbDataSet100.SelectSQL.Text :=
@@ -4987,7 +5166,7 @@ begin
         IBQECF.Next;
       end;
       }
-
+      
       // Salvando J2 no arquivo
       for iJ2 := 0 to Length(aJ2) - 1 do
       begin
@@ -5024,9 +5203,10 @@ begin
         end;
       end;
 
+
       aJ1 := nil; // Sandro Silva 2019-09-10 ER 02.06 UnoChapeco
       aJ2 := nil; // Sandro Silva 2019-09-10 ER 02.06 UnoChapeco
-      
+
     except
       SmallMsg('Erro ao criar registro J2');
     end;
