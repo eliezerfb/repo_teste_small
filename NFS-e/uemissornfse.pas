@@ -109,6 +109,7 @@ type
     procedure RadioButton1Click(Sender: TObject);
     procedure RadioButton2Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure ConfiguraCredencialTecnospeed;
   private
     fLogEnvio: string;
     {Valida a presença do arquivo .ini}
@@ -134,7 +135,8 @@ implementation
 {$R *.dfm}
 
 uses
-  ShellApi, spdNFSeXmlUtils;
+  ShellApi, spdNFSeXmlUtils, uconstantes_chaves_privadas,
+  ucredencialtecnospeed;
 
 
 {IMPLEMENTAÇÃO UTILIZANDO COMPONENTE NFSeV2}
@@ -264,7 +266,12 @@ end;
 procedure TFEmissorNFSe.btnLoadConfigClick(Sender: TObject);
 begin
   //
+  {Sandro Silva 2022-12-15 inicio
   NFSe.ConfigurarSoftwareHouse(edtCNPJSoftwareHouse.Text,edtTokenSoftwareHouse.Text);
+  }
+  ConfiguraCredencialTecnospeed;
+  {Sandro Silva 2022-12-15 fim}
+  
   NFSe.LoadConfig;
   NFSe.OnLog := OnLog;
   edtCidade.Text := NFSe.Cidade;
@@ -866,6 +873,28 @@ begin
   //
   Close;
   //
+end;
+
+procedure TFEmissorNFSe.ConfiguraCredencialTecnospeed;
+var
+  CredencialTecnospeed: TCredenciaisTecnospeed;
+begin
+
+  NFSe.ConfigurarSoftwareHouse(edtCNPJSoftwareHouse.Text,edtTokenSoftwareHouse.Text);
+
+  try
+    CredencialTecnospeed := TCredenciaisTecnospeed.Create;
+    CredencialTecnospeed.PrivateKey := CHAVE_CIFRAR;
+    CredencialTecnospeed.LeCredencial(FEmissorNFSe.sAtual);
+
+    if CredencialTecnospeed.CNJP <> '' then
+      NFSe.ConfigurarSoftwareHouse(CredencialTecnospeed.CNJP, CredencialTecnospeed.Token);
+
+    FreeAndNil(CredencialTecnospeed);
+  except
+  end;
+  //
+
 end;
 
 end.
