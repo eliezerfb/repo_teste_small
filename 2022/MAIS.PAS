@@ -23,7 +23,7 @@ uses
   function MontaTela(sP1: Boolean): Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
 
-const BUILD_DO_BANCO = '2022008'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
+const BUILD_DO_BANCO = '20220010'; // Sandro Silva 2022-12-16 const BUILD_DO_BANCO = '2022008'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
 const CNPJ_SMALLSOFT = '07.426.598/0001-24'; 
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
@@ -479,7 +479,8 @@ type
       Shift: TShiftState): Word; // Sandro Silva 2022-10-18
     function ValidaEmitenteMunicipio: Boolean;
     procedure ConfiguraCredencialTecnospeed;
-
+    function DisponivelSomenteParaNos: Boolean;
+    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;    
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -3408,7 +3409,6 @@ end;
 function Legal(sP1 : Boolean):Boolean;
 var
   I : Integer;
-  CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
   //
   // LEGAL
@@ -8279,6 +8279,124 @@ begin
       except
       end;
       {Sandro Silva 2022-10-25 fim}
+
+      {Sandro Silva 2022-12-16 inicio}
+      try
+        //
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE RECEBER ADD MOVIMENTO DATE'); // Armazena a data que o valor foi creditado na conta banco
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+        //
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('alter table RECEBER alter DOCUMENTO type varchar(11)'); // Para poder marcar as parcelas migradas da Smallsoft para Zucchetti durante a incorporação
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60), ADD IDENTIFICADOR VARCHAR(10), ADD CONTACONTABILIDADE VARCHAR(20)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE COMPRAS ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ESTOQUE ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ITENS001 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ITENS003 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+      {Sandro Silva 2022-12-16 fim}
+
       //
       Form22.Repaint;
       Mensagem22('Aguarde...');
@@ -15810,6 +15928,45 @@ begin
       Form1.Caption := sCaption + sEmpresa;
     end;
   end;
+end;
+
+function TForm1.DisponivelSomenteParaNos: Boolean;
+// Controla campos, informações, colunas, dados, etc que ficam visíveis somente para uso interno
+var
+  IBQEMITENTE: TIBQuery;
+begin
+  Result := False;
+  IBQEMITENTE := Form7.CriaIBQuery(Form7.ibDataSet13.Transaction);
+  try
+    IBQEMITENTE.Close;
+    IBQEMITENTE.SQL.Text :=
+      'select CGC from EMITENTE';
+    IBQEMITENTE.Open;
+    Result := ((IBQEMITENTE.FieldByName('CGC').AsString = '07.426.598/0001-24') or (IBQEMITENTE.FieldByName('CGC').AsString = '03.916.076/0006-64'));
+  except
+  end;
+end;
+
+function TForm1.CampoDisponivelParaUsuario(sModulo: String; sCampo: String): Boolean;
+begin
+  Result := True;
+
+  if (sModulo = 'RECEBER') then
+  begin
+    if (AnsiUpperCase(sCampo) = 'MOVIMENTO') then
+    begin
+      Result := DisponivelSomenteParaNos;
+    end;
+  end;
+
+  if (sModulo = 'ESTOQUE') then
+  begin
+    if (AnsiUpperCase(sCampo) = 'IDENTIFICADORPLANOCONTAS') then
+    begin
+      Result := DisponivelSomenteParaNos;
+    end;
+  end;
+
 end;
 
 end.

@@ -1,6 +1,6 @@
 object Form10: TForm10
-  Left = 621
-  Top = 314
+  Left = 530
+  Top = 206
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
@@ -1684,6 +1684,25 @@ object Form10: TForm10
           Visible = False
           OnClick = Image1Click
         end
+        object Label107: TLabel
+          Left = 520
+          Top = 152
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Label1'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          Visible = False
+        end
         object Panel3: TPanel
           Left = 208
           Top = 300
@@ -2606,6 +2625,31 @@ object Form10: TForm10
               FieldName = 'MEDIDA'
               Visible = False
             end>
+        end
+        object SMALL_DBEdit73: TSMALL_DBEdit
+          Left = 620
+          Top = 152
+          Width = 100
+          Height = 20
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Ctl3D = True
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 35
+          Visible = False
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyUp = SMALL_DBEdit1KeyUp
+          OnMouseMove = SMALL_DBEdit1MouseMove
         end
       end
       object orelha_ICMS: TTabSheet

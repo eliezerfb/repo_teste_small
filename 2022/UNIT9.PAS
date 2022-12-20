@@ -58,6 +58,7 @@ type
     CheckBox48: TCheckBox;
     CheckBox49: TCheckBox;
     CheckBox50: TCheckBox;
+    CheckBox51: TCheckBox;
     procedure CheckBox1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -91,16 +92,22 @@ begin
     //
     Form7.sMostra := '';
     for I := 1 to Form7.iCampos do
-    if TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked = True
-    then Form7.sMostra := Form7.sMostra + 'T' else Form7.sMostra := Form7.sMostra + 'F';
+    begin
+      if TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked = True then
+        Form7.sMostra := Form7.sMostra + 'T'
+      else
+        Form7.sMostra := Form7.sMostra + 'F';
+    end;
     //
     if Copy(Form7.sMostra,1,Form7.iCampos) = Replicate('F',Form7.iCampos) then
     begin
       Form7.sMostra := Replicate('T',Form7.iCampos);
       for I := 1 to Form7.iCampos do
       begin
-        if Form7.ArquivoAberto.Fields[I-1].Visible = True then TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
-        else TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
+        if Form7.ArquivoAberto.Fields[I-1].Visible = True then
+          TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
+        else
+          TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
       end;
     end;
     //
@@ -116,14 +123,30 @@ begin
     //
     Mais1Ini.Free;
     //
+    {Sandro Silva 2022-12-20 inicio
     with Form7 do
     begin
       with ArquivoAberto do
       begin
-        for I := 1 to iCampos do  if copy(Form7.sMostra,I,1) = 'T' then Fields[I-1].Visible := True
-        else  Fields[I-1].Visible := False;
+        for I := 1 to iCampos do
+        begin
+          if Copy(Form7.sMostra,I,1) = 'T' then
+            Fields[I-1].Visible := True
+          else
+            Fields[I-1].Visible := False;
+        end;
       end;
     end;
+    }
+    for I := 1 to Form7.iCampos do
+    begin
+      if Copy(Form7.sMostra,I,1) = 'T' then
+        Form7.ArquivoAberto.Fields[I-1].Visible := True
+      else
+        Form7.ArquivoAberto.Fields[I-1].Visible := False;
+    end;
+
+    {Sandro Silva 2022-12-20 fim}
     //
   end;
   //
@@ -146,11 +169,13 @@ begin
   Form9.Width := 215;
   Form9.Left  := Form1.Width - Form9.Width + Form7.Left -15;
   Form9.Top   := Form7.Top + 25;
-  if Form9.Height <= 50 then Form9.Height := 70;
+  if Form9.Height <= 50 then
+    Form9.Height := 70;
   //
   // Todos os CheckBox não visíveis
   //
-  for I := 0 to 48 do TcheckBox(Form9.Components[I+CheckBox1.ComponentIndex]).Visible := False;
+  for I := 0 to 48 do
+    TcheckBox(Form9.Components[I+CheckBox1.ComponentIndex]).Visible := False;
   //
   // ComponentIndex descobre qual o valor do primeiro checkbox no indice
   // Components acessa diretamente o indice do componente é possível
@@ -160,16 +185,24 @@ begin
   //
   for I := 1 to Form7.iCampos do
   begin
-    TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
-    TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Caption := Form7.ArquivoAberto.Fields[I-1].DisplayLabel;
-    if Form7.ArquivoAberto.Fields[I-1].Visible = True then TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
-    else TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
-    if Form9.Height < Screen.Height then Form9.Height := Form9.Height + 25;
+    try
+      TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
+      TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Caption := Form7.ArquivoAberto.Fields[I-1].DisplayLabel;
+      if Form7.ArquivoAberto.Fields[I-1].Visible = True then
+        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
+      else
+        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
+      if Form9.Height < Screen.Height then
+        Form9.Height := Form9.Height + 25;
+    except
+    end;
   end;
   //
   Form9.Height := form9.Height - 2;
-  if Form9.Height < 110 then Form9.Height := 110;
-  if Form9.Height > (Form7.Height -25) then Form9.Height := Form7.Height -25;
+  if Form9.Height < 110 then
+    Form9.Height := 110;
+  if Form9.Height > (Form7.Height -25) then
+    Form9.Height := Form7.Height -25;
   //
   bChave := True;
   //

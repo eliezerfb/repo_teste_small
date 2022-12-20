@@ -104,6 +104,7 @@ type
     ibDataSet7EMISSAO: TDateField;
     ibDataSet7VENCIMENTO: TDateField;
     ibDataSet7VALOR_DUPL: TFloatField;
+    ibDataSet7MOVIMENTO: TDateField;
     ibDataSet7RECEBIMENT: TDateField;
     ibDataSet7VALOR_RECE: TFloatField;
     ibDataSet7VALOR_JURO: TFloatField;
@@ -224,6 +225,9 @@ type
     ibDataSet12MES: TFloatField;
     ibDataSet12ANO: TFloatField;
     ibDataSet12SALDO: TFloatField;
+    ibDataSet12DESCRICAOCONTABIL: TStringField;
+    ibDataSet12CONTACONTABILIDADE: TStringField;
+    ibDataSet12IDENTIFICADOR: TStringField;
     Label12: TLabel;
     MainMenu12: TMainMenu;
     MenuItem45: TMenuItem;
@@ -1433,6 +1437,10 @@ type
     ibDataSet27CSOSN: TStringField;
     RelatriodePISCOFINSCupomFiscal1: TMenuItem;
     ibDataSet16CSOSN: TStringField;
+    ibDataSet24IDENTIFICADORPLANOCONTAS: TStringField;
+    ibDataSet4IDENTIFICADORPLANOCONTAS: TStringField;
+    ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
+    ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -4304,7 +4312,8 @@ begin
         //
         if (AllTrim(Form7.ibDataSet14CONTA.AsString) = '') then
         begin
-          if (Form7.ibDataSet15TOTAL.AsFloat>0) then Form43.ShowModal; // Ok
+          if (Form7.ibDataSet15TOTAL.AsFloat>0) then
+            Form43.ShowModal; // Ok
         end else
         begin
           Form7.ibDataSet12.Locate('NOME',AllTrim(Form7.ibDataSet14CONTA.AsString),[loCaseInsensitive, loPartialKey]);
@@ -10578,8 +10587,9 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   //
   if (form7.sModulo = 'RECEBER') and (Column.FieldName='NOME') then
-  Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName+', EMISSAO') else
-  Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName);
+    Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName+', EMISSAO')
+  else
+    Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName);
   //
   Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
   Mais1Ini.Free;
@@ -11391,6 +11401,7 @@ begin
         Panel9.Top      := 86;
         Panel9.Width    := Panel2.Width;
         //
+        //
         Panel2.Left     := Form7.Width - 395 -15 -5;
         Panel2.Top      := Form7.DBGrid1.Top;
         Panel2.Visible  := True;
@@ -11410,10 +11421,10 @@ begin
         Panel10.Visible := True;
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
         //
-        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
-        Form7.dbGrid1.ReadOnly  := True;
-        Form7.Image308.Visible  := False;
-        Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+        Form7.dbGrid1.ReadOnly := True;
+        Form7.Image308.Visible := False;
+        Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
         //
 //        CommitaTudo(True);
 //        AgendaCommit(False);
@@ -11491,10 +11502,10 @@ begin
         Panel10.Visible := True;
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
         //
-        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
-        Form7.dbGrid1.ReadOnly  := True;
-        Form7.Image308.Visible  := False;
-        Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+        Form7.dbGrid1.ReadOnly := True;
+        Form7.Image308.Visible := False;
+        Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
         //
         //
 //        CommitaTudo(True);
@@ -11684,6 +11695,7 @@ begin
         Form7.ibDataSet7VENCIMENTO.Visible := True;
         Form7.ibDataSet7VALOR_DUPL.Visible := True;
         Form7.ibDataSet7NOME.Visible       := True;
+
         //
         // Liga os dbGrids aos dataSurces
         //
@@ -12277,10 +12289,15 @@ begin
           sMostra   := 'TFTFTFFFFF'+Replicate('F',39)+'T';
         end else
         begin
-          sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
+          // Sandro Silva 2022-12-20 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
+          sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 41));
         end;
         //
         iCampos   := 50;
+        {Sandro Silva 2022-12-20 inicio}
+        if Form1.CampoDisponivelParaUsuario(sModulo, 'IDENTIFICADORPLANOCONTAS') then
+          iCampos   := 51;
+        {Sandro Silva 2022-12-20 fim}
         //
         //
       end;
@@ -12479,8 +12496,8 @@ begin
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTT');
-        iCampos   := 6;
+        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTT'); // Sandro Silva 2022-12-19 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTT');
+        iCampos   := 9; // Sandro Silva 2022-12-19 iCampos   := 6;
         //
       end;
       //
@@ -12522,13 +12539,13 @@ begin
         //
         // Menu
         //
-        Form7.Menu         := MainMenu6;
+        Form7.Menu := MainMenu6;
         //
         // Arquivo
         //
-        ArquivoAberto          := DataSource18.Dataset;
-        TabelaAberta           := ibDataSet18;
-        DataSourceAtual        := DataSource18;
+        ArquivoAberto   := DataSource18.Dataset;
+        TabelaAberta    := ibDataSet18;
+        DataSourceAtual := DataSource18;
         //
         // Sql
         //
@@ -12550,9 +12567,9 @@ begin
         //
         Form7.Menu         := MainMenu99;
         //
-        ArquivoAberto          := DataSource21.Dataset;
-        TabelaAberta           := ibDataSet21;
-        DataSourceAtual        := DataSource21;
+        ArquivoAberto   := DataSource21.Dataset;
+        TabelaAberta    := ibDataSet21;
+        DataSourceAtual := DataSource21;
         //
         sSelect   := 'select * FROM GRUPO';
         sWhere    := '';
@@ -12565,16 +12582,16 @@ begin
       if sModulo = '2CONTAS' then
       begin
         //
-        Image209.Visible       := False; // Filtros
-        Label209.Visible       := False;
+        Image209.Visible := False; // Filtros
+        Label209.Visible := False;
         //
         sAjuda := 'bancos.htm'; // Falta contas bancárias
         //
-        Form7.Menu         := MainMenu99;
+        Form7.Menu := MainMenu99;
         //
-        ArquivoAberto          := DataSource11.Dataset;
-        TabelaAberta           := ibDataSet11;
-        DataSourceAtual        := DataSource11;
+        ArquivoAberto   := DataSource11.Dataset;
+        TabelaAberta    := ibDataSet11;
+        DataSourceAtual := DataSource11;
         //
         sSelect   := 'select * FROM BANCOS';
         sWhere    := '';
@@ -12585,8 +12602,8 @@ begin
         //
       end else
       begin
-        Image209.Visible       := True; // Filtros
-        Label209.Visible       := True;
+        Image209.Visible := True; // Filtros
+        Label209.Visible := True;
       end;
       //
       // dBGrid
@@ -12594,7 +12611,7 @@ begin
       TabelaAberta.DisableControls;
       //
       try
-        Form7.DBGrid1.Options := [dgTitles,dgColLines,dgRowLines,dgTabs, dgColumnResize]; // 2CONTAS
+        Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize]; // 2CONTAS
         with ArquivoAberto do
         begin
           try
@@ -12604,6 +12621,28 @@ begin
                 Fields[I-1].Visible := False
               else
                 Fields[I-1].Visible := True;
+
+              {Sandro Silva 2022-12-16 inicio}
+              if sModulo = 'ESTOQUE' then
+              begin
+                if ArquivoAberto.Fields[I-1].FieldName = 'IDENTIFICADORPLANOCONTAS' then
+                begin
+                  ArquivoAberto.Fields[I-1].Visible := Form1.CampoDisponivelParaUsuario(sModulo, ArquivoAberto.Fields[I-1].FieldName);
+                end;
+              end;
+              {Sandro Silva 2022-12-16 fim}
+
+
+              {Sandro Silva 2022-12-16 inicio}
+              if sModulo = 'RECEBER' then
+              begin
+                if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
+                begin
+                  ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
+                end;
+              end;
+              {Sandro Silva 2022-12-16 fim}
+
             end;
           except
           end;
@@ -12632,7 +12671,7 @@ begin
               Form7.MenuItem61.Enabled := False;
               Form7.MenuItem62.Enabled := False;
               Form7.MenuItem63.Enabled := False;
-              Form7.Ativo5.Enabled := False;
+              Form7.Ativo5.Enabled     := False;
             end;
             //
             Image201.Visible := False;
@@ -13684,7 +13723,8 @@ begin
 //  if ibDataSet7.IndexFieldNames <> '' then
   begin
     if form7.SModulo = 'RECEBER' then
-      if (Alltrim(ibDataSet7DOCUMENTO.AsString) = '') and (ibDataSet7VALOR_DUPL.AsFloat <> 0) then ShowMessage('O número da duplicata deve ser preenchido.');
+      if (Alltrim(ibDataSet7DOCUMENTO.AsString) = '') and (ibDataSet7VALOR_DUPL.AsFloat <> 0) then
+        ShowMessage('O número da duplicata deve ser preenchido.');
   end;
   //
   AgendaCommit(True);
@@ -13955,7 +13995,11 @@ begin
   while not ibDataSet11.eof do
   begin
     bI := True;
-    for I := 0 to Menuitem34.Count -1 do if Menuitem34.Items[I].Caption = ibDataSet11Nome.Value then bI := False;
+    for I := 0 to Menuitem34.Count -1 do
+    begin
+      if Menuitem34.Items[I].Caption = ibDataSet11Nome.Value then
+        bI := False;
+    end;
     if bI then
     begin
       if AllTrim(ibDataSet11Nome.AsString) <> '' then
@@ -13974,9 +14018,10 @@ begin
     //    ShowMessage(MenuiTem34.Items[I].Caption)
     if I > 7 then
     begin
-      if MenuiTem34.Items[I].Caption = Form1.sEscolhido
-        then MenuiTem34.Items[I].Checked := True
-          else MenuiTem34.Items[I].Checked := False;
+      if MenuiTem34.Items[I].Caption = Form1.sEscolhido then
+        MenuiTem34.Items[I].Checked := True
+      else
+        MenuiTem34.Items[I].Checked := False;
     end;
   end;
   //
@@ -13984,8 +14029,8 @@ end;
 
 procedure TForm7.ibDataSet7VALOR_DUPLChange(Sender: TField);
 var
-  I : Integer;
-  fJuro : Real;
+  I: Integer;
+  fJuro: Real;
 begin
   //
   try
@@ -13998,35 +14043,43 @@ begin
       begin
         if Form19.RadioButton1.Checked then
         begin
-          if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat * (((( Date - ibDataSet7VENCIMENTO.AsDateTime )) * Form1.ftaxa / 100)+1) then
+          if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat * (((( Date - ibDataSet7VENCIMENTO.AsDateTime )) * Form1.ftaxa / 100) + 1) then
           begin
-            ibDataSet7VALOR_JURO.AsFloat  := ibDataSet7VALOR_DUPL.AsFloat * (((( Date - ibDataSet7VENCIMENTO.AsDateTime )) * Form1.ftaxa / 100)+1)
+            ibDataSet7VALOR_JURO.AsFloat := ibDataSet7VALOR_DUPL.AsFloat * (((( Date - ibDataSet7VENCIMENTO.AsDateTime )) * Form1.ftaxa / 100) + 1)
           end;
         end else
         begin
           fJuro := ibDataSet7VALOR_DUPL.AsFloat;
-          for I := 1 to  Trunc(Date - ibDataSet7VENCIMENTO.AsDateTime) do fJuro  := fJuro * ((Form1.fTaxa / 100)+1);
-          if fJuro <> ibDataSet7VALOR_DUPL.AsFloat then ibDataSet7VALOR_JURO.AsFloat  := fJuro;
+          for I := 1 to Trunc(Date - ibDataSet7VENCIMENTO.AsDateTime) do
+            fJuro  := fJuro * ((Form1.fTaxa / 100) + 1);
+
+          if fJuro <> ibDataSet7VALOR_DUPL.AsFloat then
+            ibDataSet7VALOR_JURO.AsFloat := fJuro;
         end;
       end else
       begin
-        if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat then ibDataSet7VALOR_JURO.AsFloat  := ibDataSet7VALOR_DUPL.AsFloat;
+        if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat then
+          ibDataSet7VALOR_JURO.AsFloat := ibDataSet7VALOR_DUPL.AsFloat;
       end;
     end else
     begin
-      if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat then ibDataSet7VALOR_JURO.AsFloat  := ibDataSet7VALOR_DUPL.AsFloat;
+      if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat then
+        ibDataSet7VALOR_JURO.AsFloat := ibDataSet7VALOR_DUPL.AsFloat;
     end;
     //
     ibDataSet7VALOR_JURO.ReadOnly := True;
-    if ibDataSet7VALOR_DUPL.AsFloat < 0 then ibDataSet7VALOR_DUPL.AsFloat := 0;
-  except end;
+    if ibDataSet7VALOR_DUPL.AsFloat < 0 then
+      ibDataSet7VALOR_DUPL.AsFloat := 0;
+  except
+  end;
   //
   try
     if UpperCase(Copy(Form7.ibDataSet7PORTADOR.AsString,1,7)) = 'BANCO (' then
     begin
-      Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'VENCIMENTO';
+      Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString + '(000)', 1, 11) + 'VENCIMENTO';
     end;
-  except end;
+  except
+  end;
   //
 end;
 
@@ -14095,8 +14148,14 @@ begin
     if sModulo = 'RECEBER'  then
     begin
       Imprimirrecibo3.Visible := True;
-      if ibDataSet7VALOR_RECE.AsFloat = 0 then Receberestaconta1.Enabled := True else Receberestaconta1.Enabled := False;
-      if ibDataSet7VALOR_RECE.AsFloat <> 0 then Imprimirrecibo3.Enabled := True else Imprimirrecibo3.Enabled := False;
+      if ibDataSet7VALOR_RECE.AsFloat = 0 then
+        Receberestaconta1.Enabled := True
+      else
+        Receberestaconta1.Enabled := False;
+      if ibDataSet7VALOR_RECE.AsFloat <> 0 then
+        Imprimirrecibo3.Enabled := True
+      else
+        Imprimirrecibo3.Enabled := False;
       Baixaestacontanobanco1.Visible  := True;
       //
       if UpperCase(Copy(Form7.ibDataSet7PORTADOR.AsString,1,7)) = 'BANCO (' then
@@ -14111,25 +14170,41 @@ begin
     //
     if sModulo = 'PAGAR'  then
     begin
-      if ibDataSet8VALOR_PAGO.AsFloat = 0 then Pagarestaconta1.Enabled := True else Pagarestaconta1.Enabled := False;
+      if ibDataSet8VALOR_PAGO.AsFloat = 0 then
+        Pagarestaconta1.Enabled := True
+      else
+        Pagarestaconta1.Enabled := False;
     end;
     //
-    if sModulo = 'ICM' then Abort;
+    if sModulo = 'ICM' then
+      Abort;
     //
     if sModulo = 'CLIENTES' then
     begin
-      if ibDataSet2ATIVO.AsString='1' then Ativo1.Checked := False else Ativo1.Checked := True;
+      if ibDataSet2ATIVO.AsString='1' then
+        Ativo1.Checked := False
+      else
+        Ativo1.Checked := True;
       Ativo1.Visible := True;
     end;
     if sModulo = 'RECEBER' then
     begin
-      if ibDataSet7ATIVO.AsString='1' then Ativo1.Checked := False else Ativo1.Checked := True;
-      if ibDataSet7ATIVO.AsString='1' then Ativo5.Checked := False else Ativo5.Checked := True;
+      if ibDataSet7ATIVO.AsString='1' then
+        Ativo1.Checked := False
+      else
+        Ativo1.Checked := True;
+      if ibDataSet7ATIVO.AsString='1' then
+        Ativo5.Checked := False
+      else
+        Ativo5.Checked := True;
       Ativo1.Visible := True;
     end;
     if sModulo = 'ESTOQUE'  then
     begin
-      if ibDataSet4ATIVO.AsString='1' then Ativo1.Checked := False else Ativo1.Checked := True;
+      if ibDataSet4ATIVO.AsString='1' then
+        Ativo1.Checked := False
+      else
+        Ativo1.Checked := True;
       Ativo1.Visible := True;
     end;
     //
@@ -14323,12 +14398,12 @@ begin
     if sModulo = 'RECEBER' then
     begin
       ibDataSet7.Edit;
-      if ibDataSet7ATIVO.AsString='1' then
+      if ibDataSet7ATIVO.AsString = '1' then
       begin
         Ativo1.Checked := False;
         Ativo2.Checked := False;
 //        Ativo5.Checked := False;
-        ibDataSet7ATIVO.AsString :='0';
+        ibDataSet7ATIVO.AsString := '0';
         //
         Audita('ALTEROU', sModulo, Senhas.UsuarioPub, 'ATIVOU DOCUMENTO '+ibDataSet7DOCUMENTO.AsString,(ibDataSet7VALOR_DUPL.AsFloat),0);   // Ato, Modulo, Usuário, Histórico
         //
@@ -15216,7 +15291,10 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       begin
         if (Form7.ibDataSet7VALOR_RECE.Asfloat = 0) or (FORM7.ibDataSet7ATIVO.AsFloat >= 5) then
         begin
-          if ibDataSet7ATIVO.AsFloat >= 5 then dbGrid1.Canvas.StretchDraw(Rect,Form7.Image13.Picture.Graphic) else dbGrid1.Canvas.StretchDraw(Rect,Form7.Image14.Picture.Graphic);
+          if ibDataSet7ATIVO.AsFloat >= 5 then
+            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image13.Picture.Graphic)
+          else
+            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image14.Picture.Graphic);
         end else
         begin
           dbGrid1.Canvas.StretchDraw(Rect,Form7.Image18.Picture.Graphic);
@@ -15289,13 +15367,27 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
     //
     if Field.Name = 'ibDataSet7VENCIMENTO' then
     begin
-      if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then 
+      if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then
         DBGrid1.Canvas.Font.Color   := clRed
       else
         DBGrid1.Canvas.Font.Color   := clBlack;
       dbGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
     end;
     //
+    {Sandro Silva 2022-12-19 inicio}
+    if Field.Name = 'ibDataSet7MOVIMENTO' then
+    begin
+      if Form7.ibDataSet7MOVIMENTO.AsString <> '' then
+      begin
+        if (DayOfWeek(Form7.ibDataSet7MOVIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7MOVIMENTO.AsDateTime) = 7) then
+          DBGrid1.Canvas.Font.Color   := clRed
+        else
+          DBGrid1.Canvas.Font.Color   := clBlack;
+        dbGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet7MOVIMENTO.AsDateTime), 1, 3) );
+      end;
+    end;
+    //
+    {Sandro Silva 2022-12-19 fim}
     if Field.Name = 'ibDataSet1DATA' then
     begin
       if (DayOfWeek(Form7.ibDataSet1DATA.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet1DATA.AsDateTime) = 7) then
@@ -16204,7 +16296,10 @@ begin
   //
   if sModulo = 'RECEBER'  then
   begin
-    if ibDataSet7ATIVO.AsString='1' then Ativo5.Checked := False else Ativo5.Checked := True;
+    if ibDataSet7ATIVO.AsString = '1' then
+      Ativo5.Checked := False
+    else
+      Ativo5.Checked := True;
     //
     Acertodecontasde1.Visible := False;
     //
@@ -16315,7 +16410,7 @@ procedure TForm7.ibDataSet7DOCUMENTOSetText(Sender: TField;
   const Text: String);
 begin
   if Alltrim(Text) <> '' then
-    Valida_Campo('RECEBER',Text,'DOCUMENTO','Esta conta já está cadastrada');
+    Valida_Campo('RECEBER', Text, 'DOCUMENTO','Esta conta já está cadastrada');
   ibDataSet7DOCUMENTO.AsString := AllTrim(Text);
 end;
 
@@ -16323,7 +16418,7 @@ procedure TForm7.ibDataSet5DOCUMENTOSetText(Sender: TField;
   const Text: String);
 begin
   if Alltrim(Text) <> '' then
-    Valida_Campo('MOVIMENT',Text,'DOCUMENTO','Este documento já está cadastrado');
+    Valida_Campo('MOVIMENT', Text, 'DOCUMENTO','Este documento já está cadastrado');
   ibDataSet5DOCUMENTO.AsString := Text;
 end;
 
@@ -17714,7 +17809,8 @@ begin
       Form7.sModulo := 'RECEBER';
       //
     end;
-  except end;
+  except
+  end;
   //
   Form7.ibDataSet7.EnableControls;
   //
@@ -20535,6 +20631,11 @@ begin
         //
         Form7.ibDataSet16.Edit;
         Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
+        {Sandro Silva 2022-12-20 inicio}
+        Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+        if Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.AsString = '' then
+          Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Clear;
+        {Sandro Silva 2022-12-20 fim}
         //
         if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
         begin
@@ -25506,7 +25607,7 @@ begin
     if (fValorAnterior <> ibDataSet7VALOR_DUPL.AsFloat) and (fValorAnterior <> 0) then
     begin
       Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
-      Alltrim(ibDataSet7VENCIMENTO.AsString +' - ' +Alltrim(ibDataSet7DOCUMENTO.AsString + ' - ' + ibDataSet7HISTORICO.AsString)),
+      Alltrim(ibDataSet7VENCIMENTO.AsString + ' - ' + Alltrim(ibDataSet7DOCUMENTO.AsString + ' - ' + ibDataSet7HISTORICO.AsString)),
       fValorAnterior, (ibDataSet7VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
     end;
   end;
@@ -35189,10 +35290,12 @@ begin
       //
       if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
       begin
-        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '1' then ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
+        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '1' then
+          ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
       end else
       begin
-        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '3' then ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
+        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '3' then
+          ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
       end;
       //
       Edit1.Text := 'Recebimentos';
@@ -35202,10 +35305,12 @@ begin
     begin
       if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
       begin
-        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '3' then ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
+        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '3' then
+          ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
       end else
       begin
-        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '1' then ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
+        if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '1' then
+          ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
       end;
       //
       Edit1.Text := 'Pagamentos';
@@ -40099,19 +40204,20 @@ procedure TForm7.Button11Click(Sender: TObject);
 var
   I : Integer;
   f: TextFile;
-  sDocumento, sBanco, sMensagem, sLinha : String;
+  sDocumento, sBanco, sMensagem, sLinha: String;
 begin
   //
   sBanco := '000';
   //
-  if not Form7.OpenDialog4.Execute then Exit;
+  if not Form7.OpenDialog4.Execute then
+    Exit;
   //
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
     //
     Form7.ibDataSet7.DisableControls;
     //
-    AssignFile(f,Form7.OpenDialog4.FileName);
+    AssignFile(f, Form7.OpenDialog4.FileName);
     Reset(f);
     //
     Form7.ibDataSet25DIFERENCA_.AsFloat := 0;

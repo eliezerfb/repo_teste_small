@@ -475,7 +475,28 @@ begin
       //
       if (Form7.ibDataSet14CONTA.AsString = '') then
       begin
-        if (Form7.ibDataSet24TOTAL.AsFloat>0) then Form43.ShowModal; // Ok
+        if (Form7.ibDataSet24TOTAL.AsFloat>0) then
+        begin
+          Form43.ShowModal; // Ok
+          if Form1.DisponivelSomenteParaNos then
+          begin
+
+            if Trim(Form43.Edit1.Text) <> '' then
+            begin
+              if Form7.ibDataSet12.Locate('DESCRICAOCONTABIL', Form43.Edit1.Text, []) then
+              begin
+                // Salva o identificador do plano de contas na compra 
+                Form7.ibDataSet24.Edit;
+                Form7.ibDataSet24.FieldByName('IDENTIFICADORPLANOCONTAS').AsString := Form7.ibDataSet12.FieldByName('IDENTIFICADOR').AsString;
+                Form7.ibDataSet24.Post;
+              end;
+            end;
+
+          end;
+
+        end;
+
+
       end else
       begin
         Form7.ibDataSet1.Edit;
@@ -1153,11 +1174,15 @@ begin
     //
     //
     try
-      if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
-      if Form7.ibDataSet24INDFINAL.AsString <> LimpaNumero(Edit8.Text) then Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
-      if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
+      if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
+        Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
+      if Form7.ibDataSet24INDFINAL.AsString <> LimpaNumero(Edit8.Text) then
+        Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
+      if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then
+        Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
     except
-      on E: Exception do  ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
+      on E: Exception do
+        ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
     end;
     //
     if Form7.ibDataSet24.Modified then
@@ -1416,7 +1441,8 @@ begin
                 //
                 // ShowMessage(Form7.IBQuery99.FieldByName('vC').AsString+chr(10)+Form7.IBQuery99.FieldByName('vQ').AsString);
                 //
-                if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+                if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset4.Edit;
                 //
                 // Duas formas de calcular o custo médio
                 //
@@ -1449,7 +1475,8 @@ begin
         end;
         //
         try
-          if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
+          if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            Form7.ibDataset4.Post;
         except end;
         //                                                                              //
         Form7.ibDataSet23.Post;                                                        //

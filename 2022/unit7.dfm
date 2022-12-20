@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 676
-  ClientWidth = 914
+  ClientHeight = 744
+  ClientWidth = 1369
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -9057,8 +9057,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 636
-    Width = 914
+    Top = 704
+    Width = 1369
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -9130,7 +9130,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 914
+    Width = 1369
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -11958,7 +11958,7 @@ object Form7: TForm7
     TabOrder = 8
     object Label23: TLabel
       Left = 44
-      Top = 65
+      Top = 76
       Width = 71
       Height = 13
       Alignment = taRightJustify
@@ -11972,7 +11972,7 @@ object Form7: TForm7
     end
     object Label24: TLabel
       Left = 58
-      Top = 90
+      Top = 107
       Width = 57
       Height = 13
       Alignment = taRightJustify
@@ -11986,7 +11986,7 @@ object Form7: TForm7
     end
     object Label25: TLabel
       Left = 71
-      Top = 140
+      Top = 157
       Width = 44
       Height = 13
       Alignment = taRightJustify
@@ -12000,7 +12000,7 @@ object Form7: TForm7
     end
     object Label26: TLabel
       Left = 21
-      Top = 115
+      Top = 132
       Width = 94
       Height = 13
       Alignment = taRightJustify
@@ -12014,7 +12014,7 @@ object Form7: TForm7
     end
     object Label47: TLabel
       Left = 44
-      Top = 40
+      Top = 43
       Width = 71
       Height = 13
       Alignment = taRightJustify
@@ -12028,7 +12028,7 @@ object Form7: TForm7
     end
     object Label48: TLabel
       Left = 19
-      Top = 15
+      Top = 9
       Width = 96
       Height = 13
       Alignment = taRightJustify
@@ -12042,7 +12042,7 @@ object Form7: TForm7
     end
     object Label49: TLabel
       Left = 250
-      Top = 65
+      Top = 76
       Width = 16
       Height = 15
       Caption = 'R$'
@@ -12055,7 +12055,7 @@ object Form7: TForm7
     end
     object Edit3: TEdit
       Left = 120
-      Top = 40
+      Top = 43
       Width = 121
       Height = 21
       BevelInner = bvNone
@@ -12068,7 +12068,7 @@ object Form7: TForm7
     end
     object SMALL_DBEdit6: TSMALL_DBEdit
       Left = 120
-      Top = 65
+      Top = 76
       Width = 121
       Height = 21
       DataField = 'DIFERENCA_'
@@ -12085,7 +12085,7 @@ object Form7: TForm7
     end
     object ComboBox1: TComboBox
       Left = 120
-      Top = 90
+      Top = 107
       Width = 260
       Height = 23
       Style = csDropDownList
@@ -12100,7 +12100,7 @@ object Form7: TForm7
     end
     object Edit1: TEdit
       Left = 120
-      Top = 140
+      Top = 157
       Width = 260
       Height = 21
       Font.Charset = ANSI_CHARSET
@@ -12114,7 +12114,7 @@ object Form7: TForm7
     end
     object ComboBox2: TComboBox
       Left = 120
-      Top = 115
+      Top = 132
       Width = 260
       Height = 23
       Style = csDropDownList
@@ -12130,7 +12130,7 @@ object Form7: TForm7
     end
     object SMALL_DBEdit1: TSMALL_DBEdit
       Left = 120
-      Top = 40
+      Top = 43
       Width = 121
       Height = 21
       DataField = 'VALOR_RECE'
@@ -12147,7 +12147,7 @@ object Form7: TForm7
     end
     object Edit2: TEdit
       Left = 120
-      Top = 15
+      Top = 9
       Width = 121
       Height = 21
       BevelInner = bvNone
@@ -12165,7 +12165,7 @@ object Form7: TForm7
     end
     object SMALL_DBEdit2: TSMALL_DBEdit
       Left = 250
-      Top = 16
+      Top = 10
       Width = 121
       Height = 21
       DataField = 'DOCUMENTO'
@@ -12182,7 +12182,7 @@ object Form7: TForm7
     end
     object Button6: TButton
       Left = 50
-      Top = 175
+      Top = 183
       Width = 75
       Height = 22
       Caption = '&Recibo'
@@ -12197,7 +12197,7 @@ object Form7: TForm7
     end
     object Button7: TButton
       Left = 220
-      Top = 175
+      Top = 183
       Width = 75
       Height = 22
       Caption = '&Ok'
@@ -12212,7 +12212,7 @@ object Form7: TForm7
     end
     object Button8: TButton
       Left = 305
-      Top = 175
+      Top = 183
       Width = 75
       Height = 22
       Caption = '&Cancela'
@@ -12227,7 +12227,7 @@ object Form7: TForm7
     end
     object Button1: TButton
       Left = 250
-      Top = 40
+      Top = 43
       Width = 131
       Height = 23
       Caption = 'CNAB 400'
@@ -12242,7 +12242,7 @@ object Form7: TForm7
     end
     object Button11: TButton
       Left = 250
-      Top = 15
+      Top = 9
       Width = 131
       Height = 23
       Caption = 'CNAB 240'
@@ -12583,7 +12583,7 @@ object Form7: TForm7
       
         '   CODIGO_FCI, IIA_UF, IIA_MUNI, ENQ_IPI, CEST, CSOSN_NFCE, CST_' +
         'NFCE, ALIQUOTA_NFCE, '
-      '   MARKETPLACE)'
+      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS)'
       'values'
       
         '  (:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECEDOR, :MEDIDA' +
@@ -12618,7 +12618,7 @@ object Form7: TForm7
       
         '   :CODIGO_FCI, :IIA_UF, :IIA_MUNI, :ENQ_IPI, :CEST, :CSOSN_NFCE' +
         ', :CST_NFCE, '
-      '   :ALIQUOTA_NFCE, :MARKETPLACE)')
+      '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS)')
     RefreshSQL.Strings = (
       'Select '
       '  CODIGO,'
@@ -12695,7 +12695,8 @@ object Form7: TForm7
       '  CSOSN_NFCE,'
       '  CST_NFCE,'
       '  ALIQUOTA_NFCE,'
-      '  MARKETPLACE'
+      '  MARKETPLACE,'
+      '  IDENTIFICADORPLANOCONTAS'
       'from ESTOQUE '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -12779,7 +12780,8 @@ object Form7: TForm7
       '  CSOSN_NFCE = :CSOSN_NFCE,'
       '  CST_NFCE = :CST_NFCE,'
       '  ALIQUOTA_NFCE = :ALIQUOTA_NFCE,'
-      '  MARKETPLACE = :MARKETPLACE'
+      '  MARKETPLACE = :MARKETPLACE,'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -12905,6 +12907,13 @@ object Form7: TForm7
       Origin = 'ESTOQUE.PESO'
       DisplayFormat = '#,##0.0000'
       EditFormat = '##0.00'
+    end
+    object ibDataSet4IDENTIFICADORPLANOCONTAS: TStringField
+      DisplayLabel = 'Identificador Cont'#225'bil'
+      FieldName = 'IDENTIFICADORPLANOCONTAS'
+      Origin = 'ESTOQUE.IDENTIFICADORPLANOCONTAS'
+      Visible = False
+      Size = 10
     end
     object ibDataSet4COMISSAO: TFloatField
       DisplayLabel = 'Comiss'#227'o'
@@ -13534,7 +13543,7 @@ object Form7: TForm7
       
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
-      '   NUMERONF, REGISTRO, NN)'
+      '   NUMERONF, REGISTRO, NN, MOVIMENTO)'
       'values'
       
         '  (:HISTORICO, :PORTADOR, :DOCUMENTO, :NOME, :EMISSAO, :VENCIMEN' +
@@ -13542,7 +13551,7 @@ object Form7: TForm7
       
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
-      '   :NUMERONF, :REGISTRO, :NN)')
+      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO)')
     RefreshSQL.Strings = (
       'Select '
       '  HISTORICO,'
@@ -13561,7 +13570,8 @@ object Form7: TForm7
       '  CODEBAR,'
       '  NUMERONF,'
       '  REGISTRO,'
-      '  NN'
+      '  NN,'
+      '  MOVIMENTO'
       'from RECEBER '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -13586,7 +13596,8 @@ object Form7: TForm7
       '  CODEBAR = :CODEBAR,'
       '  NUMERONF = :NUMERONF,'
       '  REGISTRO = :REGISTRO,'
-      '  NN = :NN'
+      '  NN = :NN,'
+      '  MOVIMENTO = :MOVIMENTO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -13602,12 +13613,12 @@ object Form7: TForm7
     end
     object ibDataSet7DOCUMENTO: TStringField
       DisplayLabel = 'Documento'
-      DisplayWidth = 11
+      DisplayWidth = 12
       FieldName = 'DOCUMENTO'
       Origin = 'RECEBER.DOCUMENTO'
       OnSetText = ibDataSet7DOCUMENTOSetText
-      EditMask = 'aaaaaaaaaa;1; '
-      Size = 10
+      EditMask = 'aaaaaaaaaaa;1; '
+      Size = 11
     end
     object ibDataSet7CONTA: TStringField
       DisplayLabel = 'Plano de Contas'
@@ -13643,6 +13654,14 @@ object Form7: TForm7
       FieldName = 'VENCIMENTO'
       Origin = 'RECEBER.VENCIMENTO'
       OnChange = ibDataSet7VALOR_DUPLChange
+      OnSetText = ibDataSet5COMPENSSetText
+      EditMask = '!99/99/9999;1; '
+    end
+    object ibDataSet7MOVIMENTO: TDateField
+      DisplayLabel = 'Movimento'
+      DisplayWidth = 14
+      FieldName = 'MOVIMENTO'
+      Origin = 'RECEBER.MOVIMENTO'
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
@@ -14928,9 +14947,11 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     InsertSQL.Strings = (
       'insert into CONTAS'
-      '  (CONTA, NOME, DIA, MES, ANO, SALDO, REGISTRO)'
+      '  (CONTA, NOME, DIA, MES, ANO, SALDO, DESCRICAOCONTABIL,'
+      '  IDENTIFICADOR,  CONTACONTABILIDADE, REGISTRO)'
       'values'
-      '  (:CONTA, :NOME, :DIA, :MES, :ANO, :SALDO, :REGISTRO)')
+      '  (:CONTA, :NOME, :DIA, :MES, :ANO, :SALDO, :DESCRICAOCONTABIL,'
+      '  :IDENTIFICADOR, :CONTACONTABILIDADE, :REGISTRO)')
     RefreshSQL.Strings = (
       'Select '
       '  CONTA,'
@@ -14939,6 +14960,9 @@ object Form7: TForm7
       '  MES,'
       '  ANO,'
       '  SALDO,'
+      '  DESCRICAOCONTABIL,'
+      '  IDENTIFICADOR,'
+      '  CONTACONTABILIDADE,'
       '  REGISTRO'
       'from CONTAS '
       'where'
@@ -14954,6 +14978,9 @@ object Form7: TForm7
       '  MES = :MES,'
       '  ANO = :ANO,'
       '  SALDO = :SALDO,'
+      '  DESCRICAOCONTABIL = :DESCRICAOCONTABIL,'
+      '  IDENTIFICADOR = :IDENTIFICADOR,'
+      '  CONTACONTABILIDADE = :CONTACONTABILIDADE,'
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
@@ -15002,6 +15029,23 @@ object Form7: TForm7
       ReadOnly = True
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet12DESCRICAOCONTABIL: TStringField
+      DisplayLabel = 'Descri'#231#227'o Cont'#225'bil'
+      FieldName = 'DESCRICAOCONTABIL'
+      Origin = 'CONTAS.DESCRICAOCONTABIL'
+      Size = 60
+    end
+    object ibDataSet12CONTACONTABILIDADE: TStringField
+      DisplayLabel = 'C'#243'digo Cont'#225'bil'
+      FieldName = 'CONTACONTABILIDADE'
+      Origin = 'CONTAS.CONTACONTABILIDADE'
+    end
+    object ibDataSet12IDENTIFICADOR: TStringField
+      DisplayLabel = 'Identificador'
+      FieldName = 'IDENTIFICADOR'
+      Origin = 'CONTAS.IDENTIFICADOR'
+      Size = 10
     end
     object ibDataSet12REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
@@ -16542,7 +16586,8 @@ object Form7: TForm7
         '_COFINS, '
       
         '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH, CSOSN, VBC_PIS_COFINS' +
-        ')'
+        ','
+      '   IDENTIFICADORPLANOCONTAS)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -16559,7 +16604,7 @@ object Form7: TForm7
       
         '   :ALIQ_PIS, :ALIQ_COFINS, :CST_IPI, :CST_ICMS, :ANVISA, :ENCRY' +
         'PTHASH, :CSOSN,'
-      '   :VBC_PIS_COFINS)')
+      '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16600,7 +16645,8 @@ object Form7: TForm7
       '  ANVISA,'
       '  ENCRYPTHASH,'
       '  CSOSN,'
-      '  VBC_PIS_COFINS'
+      '  VBC_PIS_COFINS,'
+      '  IDENTIFICADORPLANOCONTAS'
       'from ITENS001 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16647,7 +16693,8 @@ object Form7: TForm7
       '  ANVISA = :ANVISA,'
       '  ENCRYPTHASH = :ENCRYPTHASH,'
       '  CSOSN = :CSOSN,'
-      '  VBC_PIS_COFINS = :VBC_PIS_COFINS'
+      '  VBC_PIS_COFINS = :VBC_PIS_COFINS,'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     DataSource = DataSource15
@@ -16893,6 +16940,12 @@ object Form7: TForm7
       Visible = False
       Precision = 18
       Size = 2
+    end
+    object ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField
+      FieldName = 'IDENTIFICADORPLANOCONTAS'
+      Origin = 'ITENS001.IDENTIFICADORPLANOCONTAS'
+      Visible = False
+      Size = 10
     end
   end
   object DataSource16: TDataSource
@@ -17637,7 +17690,9 @@ object Form7: TForm7
       
         '   DESCRICAO3, PESOBRUTO, PESOLIQUI, REGISTRO, COMPLEMENTO, NFEI' +
         'D, ANVISA, '
-      '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES)'
+      
+        '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES, IDENTIFI' +
+        'CADORPLANOCONTAS)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :FORNECEDOR, :OPERACAO, :EMISS' +
@@ -17657,7 +17712,7 @@ object Form7: TForm7
       
         '   :COMPLEMENTO, :NFEID, :ANVISA, :NVOL, :NFEXML, :MDESTINXML, :' +
         'FINNFE, '
-      '   :INDFINAL, :INDPRES)')
+      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -17703,7 +17758,8 @@ object Form7: TForm7
       '  MDESTINXML,'
       '  FINNFE,'
       '  INDFINAL,'
-      '  INDPRES'
+      '  INDPRES,'
+      '  IDENTIFICADORPLANOCONTAS'
       'from COMPRAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -17755,7 +17811,8 @@ object Form7: TForm7
       '  MDESTINXML = :MDESTINXML,'
       '  FINNFE = :FINNFE,'
       '  INDFINAL = :INDFINAL,'
-      '  INDPRES = :INDPRES'
+      '  INDPRES = :INDPRES,'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -18032,6 +18089,13 @@ object Form7: TForm7
       Origin = 'COMPRAS.INDPRES'
       Visible = False
       Size = 1
+    end
+    object ibDataSet24IDENTIFICADORPLANOCONTAS: TStringField
+      DisplayLabel = 'Identificador Cont'#225'bil'
+      FieldName = 'IDENTIFICADORPLANOCONTAS'
+      Origin = 'COMPRAS.IDENTIFICADORPLANOCONTAS'
+      Visible = False
+      Size = 10
     end
   end
   object DataSource24: TDataSource
@@ -20537,14 +20601,14 @@ object Form7: TForm7
     InsertSQL.Strings = (
       'insert into ITENS003'
       '  (NUMERONF, CODIGO, DESCRICAO, MEDIDA, QUANTIDADE, UNITARIO, '
-      'TOTAL, CFOP, '
-      '   TECNICO, ISS, BASEISS, NUMEROOS, REGISTRO)'
+      '  TOTAL, CFOP, TECNICO, ISS, BASEISS, NUMEROOS, REGISTRO,'
+      '  IDENTIFICADORPLANOCONTAS)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :MEDIDA, :QUANTIDADE, :UNITAR' +
         'IO, '
-      ':TOTAL, '
-      '   :CFOP, :TECNICO, :ISS, :BASEISS, :NUMEROOS, :REGISTRO)')
+      '  :TOTAL, :CFOP, :TECNICO, :ISS, :BASEISS, :NUMEROOS, :REGISTRO,'
+      '  :IDENTIFICADORPLANOCONTAS)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -20559,7 +20623,8 @@ object Form7: TForm7
       '  ISS,'
       '  BASEISS,'
       '  NUMEROOS,'
-      '  REGISTRO'
+      '  REGISTRO,'
+      '  IDENTIFICADORPLANOCONTAS'
       'from ITENS003 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -20580,7 +20645,8 @@ object Form7: TForm7
       '  ISS = :ISS,'
       '  BASEISS = :BASEISS,'
       '  NUMEROOS = :NUMEROOS,'
-      '  REGISTRO = :REGISTRO'
+      '  REGISTRO = :REGISTRO,'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -20657,6 +20723,12 @@ object Form7: TForm7
     object ibDataSet35REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
       Origin = 'ITENS003.REGISTRO'
+      Visible = False
+      Size = 10
+    end
+    object ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField
+      FieldName = 'IDENTIFICADORPLANOCONTAS'
+      Origin = 'ITENS003.IDENTIFICADORPLANOCONTAS'
       Visible = False
       Size = 10
     end
@@ -21985,7 +22057,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50a\vm50a\'
+      '50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22017,7 +22089,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22328,7 +22400,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22356,7 +22428,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

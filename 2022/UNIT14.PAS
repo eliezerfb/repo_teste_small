@@ -1,3 +1,4 @@
+{Unit de impressão genérica para Grids dos cadastros}
 unit Unit14;
 
 interface
@@ -5,7 +6,9 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, IniFiles,
-  StdCtrls, SmallFunc, Mask, DBCtrls,  SMALL_DBEdit, Shellapi, JPEG;
+  StdCtrls, SmallFunc, Mask, DBCtrls,  SMALL_DBEdit, Shellapi, JPEG
+  , IBQuery // Sandro Silva 2022-12-19
+  ;
 
 type
   TForm14 = class(TForm)
@@ -36,31 +39,31 @@ var
 implementation
 
 uses
-Unit7, Unit16, Unit9, Mais, Unit8, Unit28, Unit39, Unit19, Unit24, Mais3,
+  Unit7, Unit16, Unit9, Mais, Unit8, Unit28, Unit39, Unit19, Unit24, Mais3,
   Unit10;
-
 
 {$R *.DFM}
 
 procedure TForm14.Button1Click(Sender: TObject);
 var
-  iContador, iColunas, Pagina, Tamanho, I, J, Linha, Coluna : Integer;
-  sGRUPO, sOp1, sOp2, sOp, sI : String;
-  rRect : Trect;
+  iContador, iColunas, Pagina, Tamanho, I, J, Linha, Coluna: Integer;
+  sGRUPO, sOp1, sOp2, sOp, sI: String;
+  rRect: Trect;
   MyBookmark: TBookmark;
   fTotal: array [0..100] of Double; //
   rTotal: array [0..100] of Double; //
-  Mais1Ini : TiniFile;
+  Mais1Ini: TiniFile;
   F: TextFile;
   jCampos: Integer;
   bEntrei: Boolean;
-  fRecebido, fReceber, fAtrasado : Double;
-  bImprimir : boolean;
-  sCor : String;
+  fRecebido, fReceber, fAtrasado: Double;
+  bImprimir: boolean;
+  sCor: String;
   //
-  BlobStream : TStream;
-  jp, JP2    : TJPEGImage;
+  BlobStream: TStream;
+  jp, JP2: TJPEGImage;
   //
+  IBQCLIENTE: TIBQuery;
 begin
   //                          //
   // Campos extras no estoque //
@@ -71,6 +74,7 @@ begin
     jCampos := 6
   else
     jCampos := 0;
+  IBQCLIENTE := Form7.CriaIBQuery(Form7.IBDataSet2.Transaction); // Sandro Silva 2022-12-19
   //
   //  close;
   //
@@ -598,6 +602,16 @@ begin
         begin
           if Form7.ArquivoAberto.Fields[I-1].Visible = True then
           begin
+            {Sandro Silva 2022-12-19 inicio}
+            if Form7.sModulo = 'RECEBER' then
+            begin
+              if (Form7.ArquivoAberto.Fields[I-1].FieldName = 'NOME') and (Form1.DisponivelSomenteParaNos) then
+              begin
+                WriteLn(F,'        <th nowrap><font face="verdana" size=2>CNPJ/CPF</font></th>');
+                iColunas := iColunas + 1;
+              end;
+            end;
+            {Sandro Silva 2022-12-19 fim}
             WriteLn(F,'        <th nowrap><font face="verdana" size=2>'+Form7.ArquivoAberto.Fields[I-1].DisplayLabel+'</font></th>');
             iColunas := iColunas + 1;
           end;
@@ -999,13 +1013,42 @@ begin
                     except sI := '0' end;
                     //
                     WriteLn(F,'        <td nowrap align=right valign=top><font face="verdana" size=2>'+ Format('%'+IntToStr(Form7.ArquivoAberto.Fields[I-1].DisplayWidth)+'.'+sI+'n',[Form7.ArquivoAberto.FieldByName(Form7.ArquivoAberto.Fields[I-1].FieldName).AsFloat])+'<br></font></td>');
-                    if Form7.ArquivoAberto.Fields[I-1].FieldName <> 'PRECO' then fTotal[I] :=  fTotal[I] + Form7.ArquivoAberto.Fields[I-1].AsFloat;
+                    if Form7.ArquivoAberto.Fields[I-1].FieldName <> 'PRECO' then
+                      fTotal[I] := fTotal[I] + Form7.ArquivoAberto.Fields[I-1].AsFloat;
                   end else
                   begin
-                    if Form7.ArquivoAberto.Fields[I-1].DisplayWidth > 50 then sCor := 'bgcolor=#'+Form1.sHtmlCor+' width=250' else sCor := '';
-                    if Form7.ArquivoAberto.Fields[I-1].DisplayName = 'e-mail'
-                    then WriteLn(F,'        <td nowrap align=left valign=top width=250><font face="verdana" size=2><a href="mailto:'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'">'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'<br></font></td>')
-                    else WriteLn(F,'        <td nowrap align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
+                    if Form7.ArquivoAberto.Fields[I-1].DisplayWidth > 50 then
+                      sCor := 'bgcolor=#'+Form1.sHtmlCor+' width=250' else sCor := '';
+                    {Sandro Silva 2022-12-19 inicio
+                    if Form7.ArquivoAberto.Fields[I-1].DisplayName = 'e-mail' then
+                      WriteLn(F,'        <td nowrap align=left valign=top width=250><font face="verdana" size=2><a href="mailto:'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'">'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'<br></font></td>')
+                    else
+                      WriteLn(F,'        <td nowrap align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
+                    }
+                    if (Form7.sModulo = 'RECEBER') then
+                    begin
+                      if (Form7.ArquivoAberto.Fields[I-1].DisplayName = 'Cliente') and (Form1.DisponivelSomenteParaNos) then
+                      begin
+                        IBQCLIENTE.Close;
+                        IBQCLIENTE.SQL.Text :=
+                          'select CGC ' +
+                          'from CLIFOR ' +
+                          'where NOME = ' + QuotedStr(Form7.ArquivoAberto.Fields[I-1].AsString);
+                        IBQCLIENTE.Open;
+                        WriteLn(F,'        <td nowrap align=left valign=top '+sCor+'><font face="verdana" size=2>'+ IBQCLIENTE.FieldByName('CGC').AsString +'<br></font></td>');
+                        WriteLn(F,'        <td nowrap align=left valign=top '+sCor+'><font face="verdana" size=2>' + StrTran(Form7.ArquivoAberto.Fields[I - 1].AsString, Chr(10), '<br>') + '<br></font></td>');
+                      end
+                      else
+                        WriteLn(F,'        <td nowrap align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
+                    end
+                    else
+                    begin
+                      if Form7.ArquivoAberto.Fields[I-1].DisplayName = 'e-mail' then
+                        WriteLn(F,'        <td nowrap align=left valign=top width=250><font face="verdana" size=2><a href="mailto:'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'">'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'<br></font></td>')
+                      else
+                        WriteLn(F,'        <td nowrap align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
+                    end;
+                    {Sandro Silva 2022-12-19 fim}
                   end;
                 end;
               end else
@@ -1210,6 +1253,15 @@ begin
                       + Format('%13.'+sI+'n',[fTotal[I]]) + '<br></font></td>')
               else
                   WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
+              {Sandro Silva 2022-12-19 inicio}
+              if Form7.sModulo = 'RECEBER' then
+              begin
+                if (Form7.ArquivoAberto.Fields[I-1].FieldName = 'NOME') and (Form1.DisponivelSomenteParaNos) then
+                begin
+                  WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
+                end;
+              end;
+              {Sandro Silva 2022-12-19 fim}
             end;
           end else
           begin
@@ -1259,9 +1311,12 @@ begin
             //
             if (Form7.sModulo = 'RECEBER') then
             begin
-              if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Endereço
-              if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Cidade
-              if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Telefone
+              if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
+                WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Endereço
+              if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
+                WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Cidade
+              if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
+                WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Telefone
             end;
             //
           end;
@@ -1298,6 +1353,10 @@ begin
     //
   end;
 // ----------------------------
+
+  if IBQCLIENTE <> nil then
+    FreeAndNil(IBQCLIENTE);
+
   //
   Screen.Cursor   := crDefault;    // Cursor de Aguardo
   Form7.ArquivoAberto.GotoBookmark(MyBookmark);

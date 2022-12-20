@@ -41,6 +41,7 @@ object Form43: TForm43
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel2: TPanel
@@ -55,6 +56,9 @@ object Form43: TForm43
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 0
+    DesignSize = (
+      263
+      282)
     object Label2: TLabel
       Left = 10
       Top = 13
@@ -80,6 +84,7 @@ object Form43: TForm43
       Top = 71
       Width = 240
       Height = 130
+      Anchors = [akLeft, akTop, akRight]
       DataSource = Form7.DataSource12
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -104,11 +109,12 @@ object Form43: TForm43
           Visible = True
         end>
     end
-    object Button4: TButton
+    object Button4: TBitBtn
       Left = 150
       Top = 240
       Width = 100
       Height = 23
+      Anchors = [akTop, akRight]
       Caption = 'Ok'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -132,6 +138,7 @@ object Form43: TForm43
       Top = 50
       Width = 240
       Height = 22
+      Anchors = [akLeft, akTop, akRight]
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13

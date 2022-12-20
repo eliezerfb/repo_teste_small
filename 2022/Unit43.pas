@@ -7,7 +7,7 @@ uses
 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Grids, DBGrids, Mask, DBCtrls, SmallFunc, shellApi, HtmlHelp,
-  ExtCtrls, WinTypes, WinProcs, DB;
+  ExtCtrls, WinTypes, WinProcs, DB, Buttons;
 
 type
   TForm43 = class(TForm)
@@ -15,7 +15,7 @@ type
     Label2: TLabel;
     Label3: TLabel;
     DBGrid1: TDBGrid;
-    Button4: TButton;
+    Button4: TBitBtn;
     CheckBox1: TCheckBox;
     Edit1: TEdit;
     procedure DBGrid1CellClick(Column: TColumn);
@@ -28,8 +28,10 @@ type
       Shift: TShiftState);
     procedure DBGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+    function UsandoDescricaoContabail: Boolean;
   public
     { Public declarations }
   end;
@@ -43,21 +45,56 @@ uses Unit7, Unit10, Unit34, Mais;
 
 {$R *.DFM}
 
-
 procedure TForm43.DBGrid1CellClick(Column: TColumn);
 begin
+  {Sandro Silva 2022-12-20 inicio
   Edit1.Text := Form7.ibDataSet12NOME.AsString;     // Plano de contas
+  }
+  if UsandoDescricaoContabail then
+  begin
+    Edit1.Text := Form7.ibDataSet12DESCRICAOCONTABIL.AsString;     // Plano de contas
+  end
+  else
+  begin
+    Edit1.Text := Form7.ibDataSet12NOME.AsString;     // Plano de contas
+  end;
   Edit1.SetFocus;
 end;
 
 procedure TForm43.DBGrid1DblClick(Sender: TObject);
 begin
+  {Sandro Silva 2022-12-20 inicio
   Edit1.Text := Form7.ibDataSet12NOME.AsString;     // Plano de contas
+  }
+  if UsandoDescricaoContabail then
+  begin
+    Edit1.Text := Form7.ibDataSet12DESCRICAOCONTABIL.AsString;     // Plano de contas
+  end
+  else
+  begin
+    Edit1.Text := Form7.ibDataSet12NOME.AsString;     // Plano de contas
+  end;
   Edit1.SetFocus;
 end;
 
 procedure TForm43.FormActivate(Sender: TObject);
 begin
+  {Sandro Silva 2022-12-20 inicio}
+  if UsandoDescricaoContabail then
+  begin
+    Form7.ibDataSet12.Close;
+    Form7.ibDataSet12.SelectSQL.Clear;
+    Form7.ibDataSet12.SelectSQL.Add('select * from CONTAS order by upper(DESCRICAOCONTABIL)');
+    Form7.ibDataSet12.Open;
+  end
+  else
+  begin
+    Form7.ibDataSet12.Close;
+    Form7.ibDataSet12.SelectSQL.Clear;
+    Form7.ibDataSet12.SelectSQL.Add('select * from CONTAS order by upper(NOME)');
+    Form7.ibDataSet12.Open;
+  end;
+  {Sandro Silva 2022-12-20 fim}
   CheckBox1.Checked := False;
   Form7.ibDataSet12NOME.DisplayWidth := 30;
   CheckBox1.Caption := 'Usar sempre esta conta para '+Form7.ibDataSet14NOME.AsString;
@@ -67,6 +104,7 @@ end;
 
 procedure TForm43.Button4Click(Sender: TObject);
 begin
+  {Sandro Silva 2022-12-20 inicio
   //
   if AllTrim(Edit1.Text) = AllTrim(Form7.ibDataSet12NOME.AsString) then
   begin
@@ -84,6 +122,48 @@ begin
     form7.ibDataSet14CONTA.AsString := Edit1.Text;
     Form7.ibDataSet14.Post;
   end;
+  }
+  if UsandoDescricaoContabail then
+  begin
+    if AllTrim(Edit1.Text) = AllTrim(Form7.ibDataSet12DESCRICAOCONTABIL.AsString) then
+    begin
+      Edit1.Text := Form7.ibDataSet12DESCRICAOCONTABIL.AsString;
+
+      if CheckBox1.Checked then
+      begin
+        Form7.ibDataSet14.Edit;
+        form7.ibDataSet14CONTA.AsString := Form7.ibDataSet12NOME.AsString;
+        Form7.ibDataSet14.Post;
+      end;
+
+      Close;
+    end else
+    begin
+      ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
+      Edit1.SetFocus;
+    end;
+  end
+  else
+  begin
+    if AllTrim(Edit1.Text) = AllTrim(Form7.ibDataSet12NOME.AsString) then
+    begin
+      Edit1.Text := Form7.ibDataSet12NOME.AsString;
+
+      if CheckBox1.Checked then
+      begin
+        Form7.ibDataSet14.Edit;
+        form7.ibDataSet14CONTA.AsString := Edit1.Text;
+        Form7.ibDataSet14.Post;
+      end;
+
+      Close;
+    end else
+    begin
+      ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
+      Edit1.SetFocus;
+    end;
+  end;
+  {Sandro Silva 2022-12-20 fim}
   //
 end;
 
@@ -101,12 +181,33 @@ end;
 procedure TForm43.Edit1Change(Sender: TObject);
 begin
   //
+  {Sandro Silva 2022-12-20 inicio
   Form7.ibDataSet99.Close;
   Form7.ibDataSet99.SelectSQL.Clear;
   Form7.ibDataSet99.SelectSQL.Add('select * FROM CONTAS where Upper(NOME) like '+QuotedStr('%'+UpperCase(AllTrim(Edit1.Text))+'%')+' order by upper(NOME) ');
   Form7.ibDataSet99.Open;
   Form7.ibDataSet99.First;
   Form7.ibDataSet12.Locate('NOME',AllTrim(Form7.ibDataSet99.FieldByname('NOME').AsString),[]);
+  }
+  if UsandoDescricaoContabail then
+  begin
+    Form7.ibDataSet99.Close;
+    Form7.ibDataSet99.SelectSQL.Clear;
+    Form7.ibDataSet99.SelectSQL.Add('select * FROM CONTAS where Upper(DESCRICAOCONTABIL) like '+QuotedStr('%'+UpperCase(AllTrim(Edit1.Text))+'%')+' order by upper(DESCRICAOCONTABIL) ');
+    Form7.ibDataSet99.Open;
+    Form7.ibDataSet99.First;
+    Form7.ibDataSet12.Locate('DESCRICAOCONTABIL', Trim(Form7.ibDataSet99.FieldByname('DESCRICAOCONTABIL').AsString), []);
+  end
+  else
+  begin
+    Form7.ibDataSet99.Close;
+    Form7.ibDataSet99.SelectSQL.Clear;
+    Form7.ibDataSet99.SelectSQL.Add('select * FROM CONTAS where Upper(NOME) like '+QuotedStr('%'+UpperCase(AllTrim(Edit1.Text))+'%')+' order by upper(NOME) ');
+    Form7.ibDataSet99.Open;
+    Form7.ibDataSet99.First;
+    Form7.ibDataSet12.Locate('NOME',AllTrim(Form7.ibDataSet99.FieldByname('NOME').AsString),[]);
+  end;
+  {Sandro Silva 2022-12-20 fim}
   //
 end;
 
@@ -116,10 +217,27 @@ begin
   //
   if Key = VK_RETURN then
   begin
+    {Sandro Silva 2022-12-20 inicio
     if (Edit1.Text = Form7.ibDataSet12NOME.AsString) and (Alltrim(Edit1.Text)<>'') then
       Close;
     if Form7.ibDataSet12.Locate('NOME',AllTrim(Edit1.Text),[loCaseInsensitive, loPartialKey]) then
       Edit1.Text := Form7.ibDataSet12NOME.AsString;
+    }
+    if UsandoDescricaoContabail then
+    begin
+      if (Edit1.Text = Form7.ibDataSet12DESCRICAOCONTABIL.AsString) and (Alltrim(Edit1.Text)<>'') then
+        Close;
+      if Form7.ibDataSet12.Locate('DESCRICAOCONTABIL',AllTrim(Edit1.Text),[loCaseInsensitive, loPartialKey]) then
+        Edit1.Text := Form7.ibDataSet12DESCRICAOCONTABIL.AsString;
+    end
+    else
+    begin
+      if (Edit1.Text = Form7.ibDataSet12NOME.AsString) and (Alltrim(Edit1.Text)<>'') then
+        Close;
+      if Form7.ibDataSet12.Locate('NOME',AllTrim(Edit1.Text),[loCaseInsensitive, loPartialKey]) then
+        Edit1.Text := Form7.ibDataSet12NOME.AsString;
+    end;
+    {Sandro Silva 2022-12-20 fim}
   end;
   //
   if (Key = VK_UP) or (Key = VK_DOWN) then
@@ -139,6 +257,29 @@ procedure TForm43.DBGrid1KeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
     DBGrid1DblClick(Sender);
+end;
+
+procedure TForm43.FormShow(Sender: TObject);
+begin
+  {Sandro Silva 2022-12-19 inicio}
+  if UsandoDescricaoContabail then
+  begin
+    Form43.Width := 459;
+    DBGrid1.Columns[0].FieldName := 'DESCRICAOCONTABIL';
+  end
+  else
+  begin
+    Form43.Width := 279;
+    DBGrid1.Columns[0].FieldName := 'NOME';
+  end;
+  {Sandro Silva 2022-12-19 fim}
+end;
+
+function TForm43.UsandoDescricaoContabail: Boolean;
+begin
+  Result := False;
+  if Form1.DisponivelSomenteParaNos and (Form7.sModulo = 'COMPRA') then
+    Result := True; 
 end;
 
 end.

@@ -4,7 +4,7 @@ object Form9: TForm9
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Colunas'
-  ClientHeight = 361
+  ClientHeight = 451
   ClientWidth = 562
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object Form9: TForm9
     Left = 0
     Top = 0
     Width = 562
-    Height = 361
+    Height = 451
     Align = alClient
     Color = clWhite
     Ctl3D = False
@@ -29,8 +29,8 @@ object Form9: TForm9
     ParentCtl3D = False
     TabOrder = 0
     object CheckBox1: TCheckBox
-      Left = 10
-      Top = 8
+      Left = 0
+      Top = 0
       Width = 175
       Height = 17
       Caption = '1'
@@ -45,8 +45,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox2: TCheckBox
-      Left = 10
-      Top = 28
+      Left = 0
+      Top = 20
       Width = 175
       Height = 17
       Caption = '2'
@@ -61,8 +61,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox3: TCheckBox
-      Left = 10
-      Top = 48
+      Left = 0
+      Top = 40
       Width = 175
       Height = 17
       Caption = '3'
@@ -77,8 +77,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox4: TCheckBox
-      Left = 10
-      Top = 69
+      Left = 0
+      Top = 61
       Width = 175
       Height = 17
       Caption = '4'
@@ -93,8 +93,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox5: TCheckBox
-      Left = 10
-      Top = 89
+      Left = 0
+      Top = 81
       Width = 175
       Height = 17
       Caption = '5'
@@ -109,8 +109,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox6: TCheckBox
-      Left = 10
-      Top = 110
+      Left = 0
+      Top = 102
       Width = 175
       Height = 17
       Caption = '6'
@@ -125,8 +125,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox7: TCheckBox
-      Left = 10
-      Top = 130
+      Left = 0
+      Top = 122
       Width = 175
       Height = 17
       Caption = '7'
@@ -141,8 +141,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox8: TCheckBox
-      Left = 10
-      Top = 150
+      Left = 0
+      Top = 142
       Width = 175
       Height = 17
       Caption = '8'
@@ -157,8 +157,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox9: TCheckBox
-      Left = 10
-      Top = 171
+      Left = 0
+      Top = 163
       Width = 175
       Height = 17
       Caption = '9'
@@ -173,8 +173,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox10: TCheckBox
-      Left = 10
-      Top = 191
+      Left = 0
+      Top = 183
       Width = 175
       Height = 17
       Caption = '10'
@@ -189,8 +189,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox11: TCheckBox
-      Left = 10
-      Top = 212
+      Left = 0
+      Top = 204
       Width = 175
       Height = 17
       Caption = '11'
@@ -205,8 +205,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox12: TCheckBox
-      Left = 10
-      Top = 232
+      Left = 0
+      Top = 224
       Width = 175
       Height = 17
       Caption = '12'
@@ -221,8 +221,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox13: TCheckBox
-      Left = 10
-      Top = 253
+      Left = 0
+      Top = 245
       Width = 175
       Height = 17
       Caption = '13'
@@ -237,8 +237,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox14: TCheckBox
-      Left = 10
-      Top = 273
+      Left = 0
+      Top = 265
       Width = 175
       Height = 17
       Caption = '14'
@@ -253,8 +253,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox15: TCheckBox
-      Left = 10
-      Top = 293
+      Left = 0
+      Top = 285
       Width = 175
       Height = 17
       Caption = '15'
@@ -269,8 +269,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox16: TCheckBox
-      Left = 10
-      Top = 314
+      Left = 0
+      Top = 306
       Width = 175
       Height = 17
       Caption = '16'
@@ -285,8 +285,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox17: TCheckBox
-      Left = 10
-      Top = 334
+      Left = 0
+      Top = 326
       Width = 175
       Height = 17
       Caption = '17'
@@ -301,8 +301,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox18: TCheckBox
-      Left = 10
-      Top = 355
+      Left = 0
+      Top = 347
       Width = 175
       Height = 17
       Caption = '18'
@@ -317,8 +317,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox19: TCheckBox
-      Left = 10
-      Top = 375
+      Left = 0
+      Top = 367
       Width = 175
       Height = 17
       Caption = '19'
@@ -333,8 +333,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox20: TCheckBox
-      Left = 10
-      Top = 395
+      Left = 0
+      Top = 387
       Width = 175
       Height = 17
       Caption = '20'
@@ -349,8 +349,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox21: TCheckBox
-      Left = 10
-      Top = 416
+      Left = 0
+      Top = 408
       Width = 175
       Height = 17
       Caption = '21'
@@ -365,8 +365,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox22: TCheckBox
-      Left = 10
-      Top = 436
+      Left = 0
+      Top = 428
       Width = 175
       Height = 17
       Caption = '19'
@@ -381,8 +381,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox23: TCheckBox
-      Left = 10
-      Top = 457
+      Left = 0
+      Top = 449
       Width = 175
       Height = 17
       Caption = '23'
@@ -397,8 +397,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox24: TCheckBox
-      Left = 10
-      Top = 477
+      Left = 0
+      Top = 469
       Width = 175
       Height = 17
       Caption = '24'
@@ -413,8 +413,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox25: TCheckBox
-      Left = 10
-      Top = 498
+      Left = 0
+      Top = 490
       Width = 175
       Height = 17
       Caption = '25'
@@ -429,8 +429,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox26: TCheckBox
-      Left = 10
-      Top = 518
+      Left = 0
+      Top = 510
       Width = 175
       Height = 17
       Caption = '26'
@@ -445,8 +445,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox27: TCheckBox
-      Left = 10
-      Top = 538
+      Left = 0
+      Top = 530
       Width = 175
       Height = 17
       Caption = '27'
@@ -461,8 +461,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox28: TCheckBox
-      Left = 10
-      Top = 559
+      Left = 0
+      Top = 551
       Width = 175
       Height = 17
       Caption = '28'
@@ -477,8 +477,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox29: TCheckBox
-      Left = 10
-      Top = 579
+      Left = 0
+      Top = 571
       Width = 175
       Height = 17
       Caption = '29'
@@ -493,8 +493,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox30: TCheckBox
-      Left = 10
-      Top = 600
+      Left = 0
+      Top = 592
       Width = 175
       Height = 17
       Caption = '30'
@@ -509,8 +509,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox31: TCheckBox
-      Left = 10
-      Top = 620
+      Left = 0
+      Top = 612
       Width = 175
       Height = 17
       Caption = '31'
@@ -525,8 +525,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox32: TCheckBox
-      Left = 10
-      Top = 640
+      Left = 0
+      Top = 632
       Width = 175
       Height = 17
       Caption = '32'
@@ -541,8 +541,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox33: TCheckBox
-      Left = 10
-      Top = 661
+      Left = 0
+      Top = 653
       Width = 175
       Height = 17
       Caption = '33'
@@ -557,8 +557,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox34: TCheckBox
-      Left = 10
-      Top = 681
+      Left = 0
+      Top = 673
       Width = 175
       Height = 17
       Caption = '34'
@@ -573,8 +573,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox35: TCheckBox
-      Left = 10
-      Top = 702
+      Left = 0
+      Top = 694
       Width = 175
       Height = 17
       Caption = '35'
@@ -589,8 +589,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox36: TCheckBox
-      Left = 10
-      Top = 722
+      Left = 0
+      Top = 714
       Width = 175
       Height = 17
       Caption = '36'
@@ -605,8 +605,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox37: TCheckBox
-      Left = 10
-      Top = 743
+      Left = 0
+      Top = 735
       Width = 175
       Height = 17
       Caption = '37'
@@ -621,8 +621,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox38: TCheckBox
-      Left = 10
-      Top = 763
+      Left = 0
+      Top = 755
       Width = 175
       Height = 17
       Caption = '38'
@@ -637,8 +637,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox39: TCheckBox
-      Left = 10
-      Top = 783
+      Left = 0
+      Top = 775
       Width = 175
       Height = 17
       Caption = '39'
@@ -653,8 +653,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox40: TCheckBox
-      Left = 10
-      Top = 804
+      Left = 0
+      Top = 796
       Width = 175
       Height = 17
       Caption = '40'
@@ -669,8 +669,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox41: TCheckBox
-      Left = 10
-      Top = 824
+      Left = 0
+      Top = 816
       Width = 175
       Height = 17
       Caption = '41'
@@ -685,8 +685,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox42: TCheckBox
-      Left = 10
-      Top = 845
+      Left = 0
+      Top = 837
       Width = 175
       Height = 17
       Caption = '42'
@@ -701,8 +701,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox43: TCheckBox
-      Left = 10
-      Top = 865
+      Left = 0
+      Top = 857
       Width = 175
       Height = 17
       Caption = '43'
@@ -717,8 +717,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox44: TCheckBox
-      Left = 10
-      Top = 885
+      Left = 0
+      Top = 877
       Width = 175
       Height = 17
       Caption = '44'
@@ -733,8 +733,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox45: TCheckBox
-      Left = 10
-      Top = 906
+      Left = 0
+      Top = 898
       Width = 175
       Height = 17
       Caption = '44'
@@ -749,8 +749,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox46: TCheckBox
-      Left = 10
-      Top = 926
+      Left = 0
+      Top = 918
       Width = 175
       Height = 17
       Caption = '44'
@@ -765,8 +765,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox47: TCheckBox
-      Left = 10
-      Top = 947
+      Left = 0
+      Top = 939
       Width = 175
       Height = 17
       Caption = '44'
@@ -781,8 +781,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox48: TCheckBox
-      Left = 10
-      Top = 967
+      Left = 0
+      Top = 959
       Width = 175
       Height = 17
       Caption = '44'
@@ -797,8 +797,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox49: TCheckBox
-      Left = 10
-      Top = 988
+      Left = 0
+      Top = 980
       Width = 175
       Height = 17
       Caption = '44'
@@ -813,8 +813,8 @@ object Form9: TForm9
       OnClick = CheckBox1Click
     end
     object CheckBox50: TCheckBox
-      Left = 10
-      Top = 1012
+      Left = 0
+      Top = 1000
       Width = 175
       Height = 17
       Caption = '44'
@@ -825,6 +825,22 @@ object Form9: TForm9
       Font.Style = []
       ParentFont = False
       TabOrder = 49
+      Visible = False
+      OnClick = CheckBox1Click
+    end
+    object CheckBox51: TCheckBox
+      Left = 0
+      Top = 1017
+      Width = 175
+      Height = 17
+      Caption = '44'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 50
       Visible = False
       OnClick = CheckBox1Click
     end

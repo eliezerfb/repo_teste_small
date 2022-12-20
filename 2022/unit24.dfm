@@ -10,7 +10,7 @@ object Form24: TForm24
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL COMPRA (ENTRADA)'
   ClientHeight = 694
-  ClientWidth = 1020
+  ClientWidth = 1037
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -29,8 +29,9 @@ object Form24: TForm24
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 0
-    Width = 1020
+    Width = 1037
     Height = 694
+    VertScrollBar.Position = 96
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False
@@ -38,7 +39,7 @@ object Form24: TForm24
     TabOrder = 0
     object Panel1: TPanel
       Left = 10
-      Top = 10
+      Top = -86
       Width = 682
       Height = 745
       BevelOuter = bvNone
@@ -2317,7 +2318,7 @@ object Form24: TForm24
     end
     object Panel9: TPanel
       Left = 800
-      Top = 90
+      Top = -6
       Width = 200
       Height = 200
       BevelOuter = bvNone
@@ -2337,7 +2338,7 @@ object Form24: TForm24
     end
     object Panel5: TPanel
       Left = 700
-      Top = 311
+      Top = 215
       Width = 501
       Height = 386
       BevelOuter = bvNone
@@ -3021,7 +3022,7 @@ object Form24: TForm24
     end
     object ok: TButton
       Left = 593
-      Top = 760
+      Top = 664
       Width = 100
       Height = 30
       Caption = 'Ok'
@@ -3036,7 +3037,7 @@ object Form24: TForm24
     end
     object Button1: TButton
       Left = 896
-      Top = 8
+      Top = -88
       Width = 75
       Height = 25
       Caption = 'Button1'

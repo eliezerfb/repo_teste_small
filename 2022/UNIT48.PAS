@@ -1415,6 +1415,12 @@ begin
     Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
     Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
     {Sandro Silva 2022-09-22 fim}
+    Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+    if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
+      Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear; 
+    {Sandro Silva 2022-12-20 inicio}
+
+    {Sandro Silva 2022-12-20 fim}
     //
     Form7.ibDataSet35.Post;
     Form7.ibDataSet35.Edit;
