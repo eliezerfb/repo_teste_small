@@ -47,6 +47,7 @@ object Form12: TForm12
     Top = 0
     Width = 1020
     Height = 694
+    VertScrollBar.Position = 184
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -60,7 +61,7 @@ object Form12: TForm12
     TabOrder = 0
     object Panel1: TPanel
       Left = 10
-      Top = 10
+      Top = -174
       Width = 662
       Height = 825
       BevelOuter = bvNone
@@ -2047,7 +2048,7 @@ object Form12: TForm12
     end
     object Panel6: TPanel
       Left = 0
-      Top = 838
+      Top = 654
       Width = 675
       Height = 40
       BevelOuter = bvNone
@@ -2090,7 +2091,7 @@ object Form12: TForm12
     end
     object Panel9: TPanel
       Left = 800
-      Top = 90
+      Top = -94
       Width = 200
       Height = 200
       BevelOuter = bvNone
@@ -2109,7 +2110,7 @@ object Form12: TForm12
     end
     object Button3: TBitBtn
       Left = 768
-      Top = 40
+      Top = -144
       Width = 75
       Height = 25
       Caption = 'Button3'
@@ -2125,7 +2126,7 @@ object Form12: TForm12
     end
     object Panel2: TPanel
       Left = 688
-      Top = 312
+      Top = 128
       Width = 433
       Height = 209
       BevelOuter = bvNone

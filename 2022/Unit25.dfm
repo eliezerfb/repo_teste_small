@@ -810,7 +810,7 @@ object Form25: TForm25
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 7
-    object Button5: TButton
+    object btnConfigurarBoleto: TBitBtn
       Left = 20
       Top = 20
       Width = 80
@@ -823,9 +823,9 @@ object Form25: TForm25
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      OnClick = Button5Click
+      OnClick = btnConfigurarBoletoClick
     end
-    object Button3: TButton
+    object btnAnterior: TBitBtn
       Left = 130
       Top = 20
       Width = 80
@@ -838,9 +838,9 @@ object Form25: TForm25
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      OnClick = Button3Click
+      OnClick = btnAnteriorClick
     end
-    object Button1: TButton
+    object btnProximo: TBitBtn
       Left = 210
       Top = 20
       Width = 80
@@ -853,9 +853,9 @@ object Form25: TForm25
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      OnClick = Button1Click
+      OnClick = btnProximoClick
     end
-    object Button6: TButton
+    object btnImprimir: TBitBtn
       Left = 320
       Top = 20
       Width = 80
@@ -868,9 +868,9 @@ object Form25: TForm25
       Font.Style = []
       ParentFont = False
       TabOrder = 3
-      OnClick = Button6Click
+      OnClick = btnImprimirClick
     end
-    object Button4: TButton
+    object btnImprimirTodos: TBitBtn
       Left = 400
       Top = 20
       Width = 80
@@ -883,9 +883,9 @@ object Form25: TForm25
       Font.Style = []
       ParentFont = False
       TabOrder = 4
-      OnClick = Button4Click
+      OnClick = btnImprimirTodosClick
     end
-    object Button7: TButton
+    object btnEnviaEmail: TBitBtn
       Left = 520
       Top = 20
       Width = 80
@@ -898,9 +898,9 @@ object Form25: TForm25
       Font.Style = []
       ParentFont = False
       TabOrder = 5
-      OnClick = Button7Click
+      OnClick = btnEnviaEmailClick
     end
-    object Button8: TButton
+    object btnEnviaEmailTodos: TBitBtn
       Left = 600
       Top = 20
       Width = 80
@@ -914,10 +914,10 @@ object Form25: TForm25
       ParentFont = False
       TabOrder = 6
       Visible = False
-      OnClick = Button8Click
+      OnClick = btnEnviaEmailTodosClick
     end
   end
-  object Button10: TButton
+  object btnCNAB240: TBitBtn
     Left = 30
     Top = 25
     Width = 80
@@ -925,9 +925,9 @@ object Form25: TForm25
     Caption = 'CNAB 240'
     TabOrder = 8
     Visible = False
-    OnClick = Button10Click
+    OnClick = btnCNAB240Click
   end
-  object Button9: TButton
+  object btnCNAB400: TBitBtn
     Left = 118
     Top = 25
     Width = 80
@@ -941,9 +941,9 @@ object Form25: TForm25
     ParentFont = False
     TabOrder = 9
     Visible = False
-    OnClick = Button9Click
+    OnClick = btnCNAB400Click
   end
-  object Button2: TButton
+  object btnCriaImagemBoleto: TBitBtn
     Left = 363
     Top = 25
     Width = 100
@@ -957,7 +957,7 @@ object Form25: TForm25
     ParentFont = False
     TabOrder = 10
     Visible = False
-    OnClick = Button2Click
+    OnClick = btnCriaImagemBoletoClick
   end
   object CheckBox1: TCheckBox
     Left = 480

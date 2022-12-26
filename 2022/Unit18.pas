@@ -206,7 +206,7 @@ begin
           //
           if Form7.sRPS <> 'S' then
           begin
-            Form7.ibDataSet7HISTORICO.Value             := 'NFE NAO AUTORIZADA';
+            Form7.ibDataSet7HISTORICO.Value := 'NFE NAO AUTORIZADA';
           end else
           begin
             Form7.ibDataSet7HISTORICO.AsString := 'RPS número: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);
@@ -255,7 +255,8 @@ begin
       Form7.ibDataSet7.First;
       //
     end;
-  except end;
+  except
+  end;
   //
   try
     //
@@ -335,7 +336,8 @@ begin
       //
       Form7.ibDataSet8.First;
     end;
-  except end;
+  except
+  end;
   //
   /////////////
   // the end //
@@ -1167,9 +1169,9 @@ begin
             if Form18.ComboBox1.Text <> '<Imprimir Carnê>' then
             begin
               Form1.sEscolhido       := Form18.ComboBox1.Text;
-              Form25.Button8.Visible := True;
+              Form25.btnEnviaEmailTodos.Visible := True; // Sandro Silva 2022-12-23 Form25.Button8.Visible := True;
               Form25.ShowModal;
-              Form25.Button8.Visible := False;
+              Form25.btnEnviaEmailTodos.Visible := False; // Sandro Silva 2022-12-23 Form25.Button8.Visible := False;
             end else
             begin
               Form7.Close;

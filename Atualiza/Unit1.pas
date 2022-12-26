@@ -13,21 +13,23 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Panel1: TPanel;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
+    chkSmallCommerce1001sma: TCheckBox;
+    chkDiversos1002sma: TCheckBox;
     Panel3: TPanel;
     Panel4: TPanel;
-    CheckBox4: TCheckBox;
-    CheckBox5: TCheckBox;
-    CheckBox10: TCheckBox;
+    chknfcesetup1004sma: TCheckBox;
+    chkPastaNFCe1005sma: TCheckBox;
+    chkNFCeCompletonfcesma: TCheckBox;
     ckbIBPT: TCheckBox;
     Panel5: TPanel;
-    CheckBox7: TCheckBox;
-    CheckBox8: TCheckBox;
-    CheckBox9: TCheckBox;
+    chkPastaNFSe1007sma: TCheckBox;
+    chknfsesetup1008sma: TCheckBox;
+    chknfse1009sma: TCheckBox;
     Image1: TImage;
-    CheckBox3: TCheckBox;
-    CheckBox6: TCheckBox;
+    chknfesetup1003sma: TCheckBox;
+    chkPastaNFE1006sma: TCheckBox;
+    edVersao: TEdit;
+    Label1: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -94,65 +96,65 @@ begin
   Writeln(F,'q1OHjtEGhDeBsQkSk2+LJg==');
   Writeln(F,'cd /publico');
   Writeln(F,'');
-  Writeln(F,'put "c:\Projeto 2022\2022\log.txt"');
+  Writeln(F,'put "c:\Projeto ' + edVersao.Text + '\' + edVersao.Text + '\log.txt"');
   Writeln(F,'');
   //
-  if CheckBox1.Checked then Writeln(F,'put c:\reduzida\20221001.sma');
-  if CheckBox2.Checked then Writeln(F,'put c:\reduzida\20221002.sma');
-  if CheckBox3.Checked then Writeln(F,'put c:\reduzida\20221003.sma');
-  if CheckBox4.Checked then Writeln(F,'put c:\reduzida\20221004.sma');
-  if CheckBox5.Checked then Writeln(F,'put c:\reduzida\20221005.sma');
-  if CheckBox6.Checked then Writeln(F,'put c:\reduzida\20221006.sma');
-  if CheckBox7.Checked then Writeln(F,'put c:\reduzida\20221007.sma');
-  if CheckBox8.Checked then Writeln(F,'put c:\reduzida\20221008.sma');
-  if CheckBox9.Checked then Writeln(F,'put c:\reduzida\20221009.sma');
+  if chkSmallCommerce1001sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1001.sma');
+  if chkDiversos1002sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1002.sma');
+  if chknfesetup1003sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1003.sma');
+  if chknfcesetup1004sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1004.sma');
+  if chkPastaNFCe1005sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1005.sma');
+  if chkPastaNFE1006sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1006.sma');
+  if chkPastaNFSe1007sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1007.sma');
+  if chknfsesetup1008sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1008.sma');
+  if chknfse1009sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1009.sma');
   //
-  if CheckBox1.Checked then Writeln(F,'put c:\reduzida\20211001.sma');
-  if CheckBox2.Checked then Writeln(F,'put c:\reduzida\20211002.sma');
-  if CheckBox3.Checked then Writeln(F,'put c:\reduzida\20211003.sma');
-  if CheckBox4.Checked then Writeln(F,'put c:\reduzida\20211004.sma');
-  if CheckBox5.Checked then Writeln(F,'put c:\reduzida\20211005.sma');
-  if CheckBox6.Checked then Writeln(F,'put c:\reduzida\20211006.sma');
-  if CheckBox7.Checked then Writeln(F,'put c:\reduzida\20211007.sma');
-  if CheckBox8.Checked then Writeln(F,'put c:\reduzida\20211008.sma');
-  if CheckBox9.Checked then Writeln(F,'put c:\reduzida\20211009.sma');
+  if chkSmallCommerce1001sma.Checked then Writeln(F,'put c:\reduzida\20211001.sma');
+  if chkDiversos1002sma.Checked then Writeln(F,'put c:\reduzida\20211002.sma');
+  if chknfesetup1003sma.Checked then Writeln(F,'put c:\reduzida\20211003.sma');
+  if chknfcesetup1004sma.Checked then Writeln(F,'put c:\reduzida\20211004.sma');
+  if chkPastaNFCe1005sma.Checked then Writeln(F,'put c:\reduzida\20211005.sma');
+  if chkPastaNFE1006sma.Checked then Writeln(F,'put c:\reduzida\20211006.sma');
+  if chkPastaNFSe1007sma.Checked then Writeln(F,'put c:\reduzida\20211007.sma');
+  if chknfsesetup1008sma.Checked then Writeln(F,'put c:\reduzida\20211008.sma');
+  if chknfse1009sma.Checked then Writeln(F,'put c:\reduzida\20211009.sma');
   //
-  if CheckBox10.Checked then
+  if chkNFCeCompletonfcesma.Checked then
   begin
-    Writeln(F,'put c:\reduzida\nfce2022.sma');
-    Writeln(F,'put c:\reduzida\nfce2021.sma');
+    Writeln(F,'put c:\reduzida\nfce' + edVersao.Text + '.sma');
+    Writeln(F,'put c:\reduzida\nfce2021.sma'); // Sandro Silva 2022-12-22
   end;
   //
   if ckbIBPT.Checked then
   begin
     //
-    Writeln(F,'put c:\reduzida\2022_ac.sma');
-    Writeln(F,'put c:\reduzida\2022_al.sma');
-    Writeln(F,'put c:\reduzida\2022_am.sma');
-    Writeln(F,'put c:\reduzida\2022_ap.sma');
-    Writeln(F,'put c:\reduzida\2022_ba.sma');
-    Writeln(F,'put c:\reduzida\2022_ce.sma');
-    Writeln(F,'put c:\reduzida\2022_df.sma');
-    Writeln(F,'put c:\reduzida\2022_es.sma');
-    Writeln(F,'put c:\reduzida\2022_go.sma');
-    Writeln(F,'put c:\reduzida\2022_ma.sma');
-    Writeln(F,'put c:\reduzida\2022_mg.sma');
-    Writeln(F,'put c:\reduzida\2022_ms.sma');
-    Writeln(F,'put c:\reduzida\2022_mt.sma');
-    Writeln(F,'put c:\reduzida\2022_pa.sma');
-    Writeln(F,'put c:\reduzida\2022_pb.sma');
-    Writeln(F,'put c:\reduzida\2022_pe.sma');
-    Writeln(F,'put c:\reduzida\2022_pi.sma');
-    Writeln(F,'put c:\reduzida\2022_pr.sma');
-    Writeln(F,'put c:\reduzida\2022_rj.sma');
-    Writeln(F,'put c:\reduzida\2022_rn.sma');
-    Writeln(F,'put c:\reduzida\2022_ro.sma');
-    Writeln(F,'put c:\reduzida\2022_rr.sma');
-    Writeln(F,'put c:\reduzida\2022_rs.sma');
-    Writeln(F,'put c:\reduzida\2022_sc.sma');
-    Writeln(F,'put c:\reduzida\2022_se.sma');
-    Writeln(F,'put c:\reduzida\2022_sp.sma');
-    Writeln(F,'put c:\reduzida\2022_to.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ac.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_al.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_am.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ap.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ba.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ce.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_df.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_es.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_go.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ma.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_mg.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ms.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_mt.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_pa.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_pb.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_pe.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_pi.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_pr.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_rj.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_rn.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_ro.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_rr.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_rs.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_sc.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_se.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_sp.sma');
+    Writeln(F,'put c:\reduzida\' + edVersao.Text + '_to.sma');
   end;
   //
   Writeln(F,'quit');
@@ -190,7 +192,7 @@ begin
   //
   // ShellExecute( 0, 'Open',pChar('C:\My Installations\My Installations\_Small Commerce 2022_.ipr'),'','', SW_SHOWNORMAL);
   //
-  ShellExecute( Application.Handle, 'Open',pChar('C:\Program Files (x86)\InstallShield\Professional 7.0\Program\BIN\ISPIde.exe'),pChar('C:\My Installations\My Installations\_Small Commerce 2022_\_Small Commerce 2022_.ipr'),'', SW_SHOWNORMAL);
+  ShellExecute( Application.Handle, 'Open',pChar('C:\Program Files (x86)\InstallShield\Professional 7.0\Program\BIN\ISPIde.exe'),pChar('C:\My Installations\My Installations\_Small Commerce ' + edVersao.Text + '_\_Small Commerce ' + edVersao.Text + '_.ipr'),'', SW_SHOWNORMAL);
   //
   while ConsultaProcesso('ISPIde.exe') do
   begin

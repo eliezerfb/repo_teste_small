@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 547
-  Top = 279
+  Left = 921
+  Top = 271
   Width = 750
   Height = 420
   Caption = 'Atualiza sistema Small Commerce'
@@ -12988,9 +12988,16 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFF}
   end
+  object Label1: TLabel
+    Left = 301
+    Top = 16
+    Width = 33
+    Height = 13
+    Caption = 'Vers'#227'o'
+  end
   object Button1: TButton
     Left = 267
-    Top = 310
+    Top = 329
     Width = 200
     Height = 40
     Caption = 'Atualizar'
@@ -13005,7 +13012,7 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 300
-    Top = 10
+    Top = 41
     Width = 200
     Height = 150
     BevelOuter = bvNone
@@ -13014,7 +13021,7 @@ object Form1: TForm1
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    object CheckBox1: TCheckBox
+    object chkSmallCommerce1001sma: TCheckBox
       Left = 20
       Top = 20
       Width = 200
@@ -13028,7 +13035,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
     end
-    object CheckBox2: TCheckBox
+    object chkDiversos1002sma: TCheckBox
       Left = 20
       Top = 50
       Width = 200
@@ -13042,7 +13049,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 1
     end
-    object CheckBox3: TCheckBox
+    object chknfesetup1003sma: TCheckBox
       Left = 20
       Top = 80
       Width = 200
@@ -13056,7 +13063,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 2
     end
-    object CheckBox6: TCheckBox
+    object chkPastaNFE1006sma: TCheckBox
       Left = 20
       Top = 110
       Width = 200
@@ -13073,7 +13080,7 @@ object Form1: TForm1
   end
   object Panel3: TPanel
     Left = 510
-    Top = 170
+    Top = 201
     Width = 200
     Height = 120
     BevelOuter = bvNone
@@ -13099,7 +13106,7 @@ object Form1: TForm1
   end
   object Panel4: TPanel
     Left = 510
-    Top = 10
+    Top = 41
     Width = 200
     Height = 150
     BevelOuter = bvNone
@@ -13108,7 +13115,7 @@ object Form1: TForm1
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
-    object CheckBox4: TCheckBox
+    object chknfcesetup1004sma: TCheckBox
       Left = 23
       Top = 50
       Width = 200
@@ -13122,7 +13129,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
     end
-    object CheckBox5: TCheckBox
+    object chkPastaNFCe1005sma: TCheckBox
       Left = 23
       Top = 80
       Width = 200
@@ -13136,7 +13143,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 1
     end
-    object CheckBox10: TCheckBox
+    object chkNFCeCompletonfcesma: TCheckBox
       Left = 23
       Top = 20
       Width = 200
@@ -13153,7 +13160,7 @@ object Form1: TForm1
   end
   object Panel5: TPanel
     Left = 300
-    Top = 170
+    Top = 201
     Width = 200
     Height = 120
     BevelOuter = bvNone
@@ -13162,7 +13169,7 @@ object Form1: TForm1
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
-    object CheckBox7: TCheckBox
+    object chkPastaNFSe1007sma: TCheckBox
       Left = 20
       Top = 80
       Width = 200
@@ -13176,7 +13183,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
     end
-    object CheckBox8: TCheckBox
+    object chknfsesetup1008sma: TCheckBox
       Left = 20
       Top = 50
       Width = 200
@@ -13190,7 +13197,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 1
     end
-    object CheckBox9: TCheckBox
+    object chknfse1009sma: TCheckBox
       Left = 20
       Top = 20
       Width = 200
@@ -13204,5 +13211,13 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 2
     end
+  end
+  object edVersao: TEdit
+    Left = 341
+    Top = 8
+    Width = 121
+    Height = 21
+    TabOrder = 5
+    Text = '2022'
   end
 end

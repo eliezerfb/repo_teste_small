@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml, msxmldom, XMLDoc, inifiles, dateutils, Registry;
-  var sDocParaGerarPDF : String;
+// Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
   function DateToStrInvertida(Data:TdateTime): String;
   function SMALL_Tempo(pP1:Integer):Integer;
@@ -580,7 +580,7 @@ begin
   except Result :='0' end;
 end;
 
-Function Modulo_SICOOB(pP1:String):String;
+Function Modulo_SICOOB(pP1: String): String;
 var
   S, I, II: integer;
   SS : Real;
@@ -595,7 +595,8 @@ begin
       II := II + 1;
       S := S + StrToInt(Copy(pP1,I,1)) * StrToInt(Copy('3197',II,1));
       if II = 4 then II := 0;
-    except end;
+    except
+    end;
   end;
   //
   SS := S-(Int(S div 11)*11);
@@ -605,7 +606,7 @@ begin
     Result := '0';
   end else
   begin
-    Result := floatToStr( 11 - SS );
+    Result := FloatToStr( 11 - SS );
   end;
   //
 end;

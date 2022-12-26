@@ -1872,7 +1872,10 @@ begin
         Form7.ibDataSet15.Post;
         //
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-        if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then Form18.CheckBox1.Checked := True else  Form18.CheckBox1.Checked := False;
+        if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
+          Form18.CheckBox1.Checked := True
+        else
+          Form18.CheckBox1.Checked := False;
         Mais1Ini.Free;
         //
         if Form18.CheckBox1.Checked then

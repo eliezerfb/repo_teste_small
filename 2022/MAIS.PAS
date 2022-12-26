@@ -4065,7 +4065,8 @@ procedure Tform1.EscolheOBloqueto(Sender:TObject);
 begin
   { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  with Sender as TMenuItem do sEscolhido := Caption;
+  with Sender as TMenuItem do
+    sEscolhido := Caption;
   sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   Form25.ShowModal;
   //
@@ -4078,7 +4079,7 @@ begin
   with Sender as TMenuItem do sEscolhido := Caption;
   sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   Form25.Show;
-  Form25.Button9.Click;
+  Form25.btnCNAB400.Click; // Sandro Silva 2022-12-23 Form25.Button9.Click;
   Form25.Close;
   //
   if Form1.sArquivoRemessa <> '' then
@@ -4095,10 +4096,11 @@ procedure Tform1.EscolheCNAB240(Sender:TObject);
 begin
   { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  with Sender as TMenuItem do sEscolhido := Caption;
+  with Sender as TMenuItem do
+    sEscolhido := Caption;
   sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   Form25.Show;
-  Form25.Button10.Click;
+  Form25.btnCNAB240.Click; // Sandro Silva 2022-12-23 Form25.Button10.Click;
   Form25.Close;
   //
   if Form1.sArquivoRemessa <> '' then

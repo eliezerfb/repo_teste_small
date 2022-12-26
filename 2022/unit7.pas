@@ -1351,7 +1351,7 @@ type
     ibDataSet16PFCPUFDEST: TFloatField;
     ibDataSet16PICMSUFDEST: TFloatField;
     IBDataSet88888: TIBDataSet;
-    Button1: TButton;
+    btnRetornoCNAB400: TButton;
     OpenDialog4: TOpenDialog;
     GerCNAB400: TMenuItem;
     ibDataSet7NN: TIBStringField;
@@ -1373,7 +1373,7 @@ type
     ibDataSet13ENCRYPTHASH: TIBStringField;
     Anlisediaria1: TMenuItem;
     gerCNAB240: TMenuItem;
-    Button11: TButton;
+    btnRetornoCNAB240: TButton;
     spdNFeDPEC1: TspdNFeDPEC;
     ConsultarNFesemitidasparameuCNPJ1: TMenuItem;
     PositivoDownloadXML: TImage;
@@ -1998,7 +1998,7 @@ type
     procedure AnliseAnualdascontas1Click(Sender: TObject);
     procedure Clientescontactadospormsporvendedor1Click(Sender: TObject);
     procedure ibDataSet4CESTSetText(Sender: TField; const Text: String);
-    procedure Button1Click(Sender: TObject);
+    procedure btnRetornoCNAB400Click(Sender: TObject);
     procedure Baixaestacontanobanco1Click(Sender: TObject);
     procedure IBDataSet2CREDITOSetText(Sender: TField; const Text: String);
     procedure Vendas_XXXClick(Sender: TObject);
@@ -2011,7 +2011,7 @@ type
     procedure ibDataSet7PORTADORSetText(Sender: TField;
       const Text: String);
     procedure Anlisediaria1Click(Sender: TObject);
-    procedure Button11Click(Sender: TObject);
+    procedure btnRetornoCNAB240Click(Sender: TObject);
     procedure ConsultarNFesemitidasparameuCNPJ1Click(Sender: TObject);
     procedure VisualizarXMLdamanifestaododestinatrio1Click(
       Sender: TObject);
@@ -2173,6 +2173,7 @@ type
 var
   Form7: TForm7;
 implementation
+
 uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
@@ -13082,7 +13083,7 @@ begin
   //
   if sModulo = 'RECEBER' then
   begin
-    Button1.Visible := True;
+    btnRetornoCNAB400.Visible := True; // Sandro Silva 2022-12-21 Button1.Visible := True;
   end;
   //
   Form7.AlphaBlendValue := 255;
@@ -14476,8 +14477,10 @@ begin
   Resumodascomrpas1.Caption := 'Resumo das compras de: '+Alltrim(ibDataSet2NOME.AsString);
   //
   if ( Pos('@',ibDataSet2EMAIL.AsString) = 0) then Emailpara1.Enabled := False else Emailpara1.Enabled := True;
-  if AllTrim(sWhere) = '' then Enviaremailparatodos1.Caption := 'Enviar um e-mail texto para todos os clientes e fornecedores' else
-      Enviaremailparatodos1.Caption := 'Enviar o e-mail texto para todos os clientes e fornecedores filtrados';
+  if AllTrim(sWhere) = '' then
+    Enviaremailparatodos1.Caption := 'Enviar um e-mail texto para todos os clientes e fornecedores'
+  else
+    Enviaremailparatodos1.Caption := 'Enviar o e-mail texto para todos os clientes e fornecedores filtrados';
   //
 end;
 
@@ -23660,7 +23663,7 @@ begin
                     while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') do
                     begin
                       DeleteFile(pchar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'));
-                      sleep(1000);
+                      Sleep(1000);
                     end;
                     //
                     MyBookMark := Form7.ibDataSet7.GetBookmark();
@@ -23670,7 +23673,7 @@ begin
                       //
                       // Cria o PDF
                       //
-                      sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
+                      // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
                       PDF := TPrintPDF.Create(Self);
                       //
                       // Configurações do documento
@@ -23700,7 +23703,7 @@ begin
                       while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                       begin
                         DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
-                        sleep(1000);
+                        Sleep(1000);
                       end;
                       //
                       Form1.sEscolhido := '';
@@ -23727,12 +23730,13 @@ begin
                         //
                         Mais1Ini.Free;
                         //
-                      except end;
+                      except
+                      end;
                       //
 //                      if AllTrim(Form1.sEscolhido) <> '' then
                       begin
                         //
-                        Form25.Show;
+                        Form25.Show; // Em Form7.Emaildecobrana1Click()
                         Form7.Repaint;
                         //
                         while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
@@ -23748,11 +23752,15 @@ begin
                         //
                         // Fecha o pdf
                         //
-                        if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then sArquivo := Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf' else sArquivo := '';
+                        if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then
+                          sArquivo := Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'
+                        else
+                          sArquivo := '';
                         //
                       end;
                       //
-                    except end;
+                    except
+                    end;
                     //
                     Form25.Close;
                     Form7.Repaint;
@@ -23858,7 +23866,8 @@ begin
         end;
       end;
       //
-    except end;
+    except
+    end;
     //
     Form7.Panel1.Visible := False;
     Form7.Repaint;
@@ -24401,7 +24410,12 @@ begin
     // Bloquetos
     //
     bI := True;
-    for I := 0 to Bloquetos1.Count -1 do if Bloquetos1.Items[I].Caption = ibDataSet11NOME.Value then bI := False;
+    for I := 0 to Bloquetos1.Count -1 do
+    begin
+      if Bloquetos1.Items[I].Caption = ibDataSet11NOME.Value then
+        bI := False;
+    end;
+
     if bI then
     begin
       //
@@ -34896,11 +34910,11 @@ begin
         end;
         //
         Unit7.EnviarEMail('',Form28.Edit1.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-        pchar('Segue em anexo arquivo zipado com as NF-e´s de saída da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-        +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
-        +chr(10)
-        +Form1.sPropaganda)
-        ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip'),False);
+          pchar('Segue em anexo arquivo zipado com as NF-e´s de saída da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
+          +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
+          +chr(10)
+          +Form1.sPropaganda)
+          ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip'),False);
         //
       end else
       begin
@@ -36486,19 +36500,19 @@ begin
               end;
               //
               Unit7.EnviarEMail('',sEmail,'','Carta de correção Eletrônica (Cc-e)',pchar('Segue em anexo Carta de correção Eletrônica (Cc-e) em arquivo XML.'+chr(10)+Form1.sPropaganda+
-              chr(10)+
-              chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),
-              pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip')
-              ,False);
+                chr(10)+
+                chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),
+                pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip')
+                ,False);
               //
             end else
             begin
               if (validaEmail(sEmail)) then
               begin
                 Unit7.EnviarEMail('',sEmail,'','Carta de correção Eletrônica (Cc-e)',pchar('Segue em anexo Carta de correção Eletrônica (Cc-e) em arquivo XML.'+chr(10)+Form1.sPropaganda+
-                chr(10)),
-                pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml')
-                ,False);
+                  chr(10)),
+                  pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml')
+                  ,False);
               end;
             end;
             //
@@ -38388,6 +38402,7 @@ var
   sMandados : String;
   MyBookMark1 : TBookMark;
   PDF: TPrintPDF;
+  sArquivoPDF: String; // Sandro Silva 2022-12-22
 
 begin
   //
@@ -38485,6 +38500,7 @@ begin
               begin
                 //
                 sArquivo := '';
+                sArquivoPDF := Form1.sAtual+'\boletos_' + LimpaNumero(Form7.IBDataSet2CGC.AsString) + '.pdf'; // Sandro Silva 2022-12-22
                 //
                 if Form7.sModulo = 'RECEBER' then
                 begin
@@ -38492,10 +38508,10 @@ begin
                   if Form40.CheckBox1.Checked then
                   begin
                     //
-                    while FileExists(Form1.sAtual+'\boletos.pdf') do
+                    while FileExists(sArquivoPDF) do  // Sandro Silva 2022-12-22 while FileExists(Form1.sAtual+'\boletos.pdf') do
                     begin
-                      DeleteFile(pChar(Form1.sAtual+'\boletos.pdf'));
-                      sleep(1000);
+                      DeleteFile(pChar(sArquivoPDF)); // Sandro Silva 2022-12-22 DeleteFile(pChar(Form1.sAtual+'\boletos.pdf'));
+                      Sleep(1000);
                     end;
                     //
                     MyBookMark := Form7.ibDataSet7.GetBookmark();
@@ -38509,7 +38525,7 @@ begin
                       //
                       // Cria o PDF
                       //
-                      sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
+                      // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
                       PDF := TPrintPDF.Create(Self);
                       //
                       // Configurações do documento
@@ -38530,13 +38546,14 @@ begin
                       //
                       // Nome do arquivo para salvar
                       //
-                      PDF.FileName    := Form1.sAtual+'\boletos.pdf';// sFileCFeSAT;
+                      PDF.FileName    := sArquivoPDF;// sFileCFeSAT; // Sandro Silva 2022-12-22 PDF.FileName    := Form1.sAtual+'\boletos.pdf';// sFileCFeSAT;
                       {Start Printing...}
                       PDF.BeginDoc;
                       //
                       Form7.ibDataSet7.First;
                       while not Form7.ibDataSet7.Eof do
                       begin
+
                         if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
                         begin
                           if ibDataSet7ATIVO.AsString <> '1' then // Não imprime boleto inativo
@@ -38547,7 +38564,7 @@ begin
                               while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                               begin
                                 DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
-                                sleep(1000);
+                                Sleep(1000);
                               end;
                               //
                               Form1.sEscolhido := '';
@@ -38563,7 +38580,7 @@ begin
                                   if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
                                    or (Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',10,3)))
                                   and ((Mais1Ini.ReadString(sSecoes[J],'CNAB400','') = 'Sim')
-                                  or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','') = 'Sim')) then
+                                    or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','') = 'Sim')) then
                                   begin
                                     Form1.sEscolhido := sSecoes[J];
                                   end;
@@ -38571,12 +38588,21 @@ begin
                                 //
                                 Mais1Ini.Free;
                                 //
-                              except end;
+                              except
+                              end;
                               //
-                              if AllTrim(Form1.sEscolhido) <> '' then
+                              if (AllTrim(Form1.sEscolhido) <> '') or (Form1.DisponivelSomenteParaNos) then // Sandro Silva 2022-12-22 if AllTrim(Form1.sEscolhido) <> '' then
                               begin
                                 //
-                                Form25.Show;
+                                Form25.Show; // Em Form7.Emaildecobrana2Click()
+
+                                {Sandro Silva 2022-12-23 inicio}
+                                if Form1.DisponivelSomenteParaNos then
+                                begin
+                                  Form25.GravaPortadorNossoNumCodeBar;
+                                end;
+                                {Sandro Silva 2022-12-23 fim}
+
                                 Form7.Repaint;
                                 //
                                 while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
@@ -38587,7 +38613,8 @@ begin
                                 // Print Image
                                 //
                                 YY := YY + 1;
-                                if YY >= 2 then PDF.NewPage; // Add New Page
+                                if YY >= 2 then
+                                  PDF.NewPage; // Add New Page
                                 //
                                 PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
                                 //
@@ -38608,9 +38635,13 @@ begin
                       Form7.ibDataSet7.GotoBookmark(MyBookMark1);
                       //
                       PDF.EndDoc;
-                      if FileExists(Form1.sAtual+'\boletos.pdf') then sArquivo := Form1.sAtual + '\boletos.pdf' else sArquivo := '';
+                      if FileExists(sArquivoPDF) then // Sandro Silva 2022-12-22 if FileExists(Form1.sAtual+'\boletos.pdf') then
+                        sArquivo := sArquivoPDF // Sandro Silva 2022-12-22 sArquivo := Form1.sAtual + '\boletos.pdf'
+                      else
+                        sArquivo := '';
                       //
-                    except end;
+                    except
+                    end;
                     //
                     Form25.Close;
                     Form7.Repaint;
@@ -39371,11 +39402,13 @@ begin
   //
 end;
 
-procedure TForm7.Button1Click(Sender: TObject);
+procedure TForm7.btnRetornoCNAB400Click(Sender: TObject);
 var
   I: Integer;
   f: TextFile;
   sBanco, sMensagem, sLinha: String;
+  sDocumento: String;
+  sDataDoCredito: String;
 begin
   //
   sBanco := '000';
@@ -39500,13 +39533,15 @@ begin
     //           Copy(sLinha,117,009)+asdfasdf
               sMensagem := sMensagem + 'Número documento: ' + Copy(sLinha,117,010) + ' Valor: R$ '+  FloatToStr(StrToFloat(Copy(sLinha,254,013))/100);
   // ShowMessage(sMensagem);
+
+              sDocumento := AllTrim(Copy(sLinha,117,010)); // Sandro Silva 2022-12-21 Número do documento
               //
               Form7.ibDataSet7.Close;
               Form7.ibDataSet7.Selectsql.Clear;
-              Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(AllTrim(Copy(sLinha,117,010)))+' ');
+              Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(sDocumento)+' '); // Sandro Silva 2022-12-21 Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(AllTrim(Copy(sLinha,117,010)))+' ');
               Form7.ibDataSet7.Open;
               //
-              if Form7.ibDataSet7DOCUMENTO.AsString = AllTrim(Copy(sLinha,117,010)) then
+              if Form7.ibDataSet7DOCUMENTO.AsString = sDocumento then // Sandro Silva 2022-12-21if Form7.ibDataSet7DOCUMENTO.AsString = AllTrim(Copy(sLinha,117,010)) then
               begin
                 //
   //            if Form7.ibDataSet7.Locate('DOCUMENTO',AllTrim(Copy(sLinha,117,010)),[]) then
@@ -39523,7 +39558,7 @@ begin
                     Form7.Edit2.Text            := Form7.SMALL_DBEdit2.Text;
                     //
                     Form7.ibDataSet7.Edit;
-                    Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
+                    Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat + 5;
                     //
                     if (sBanco = '033') or (sBanco = '353') then // Santander so 11 posicoes
                     begin
@@ -39534,6 +39569,14 @@ begin
                     end;
                     //
                     Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
+                    {Sandro Silva 2022-12-21 inicio}
+                    sDataDoCredito := Copy(sLinha, 176, 6); // Data do crédito: formato ddmmaa
+                    sDataDoCredito := Copy(sDataDoCredito, 1, 2) + '/' + Copy(sDataDoCredito, 3, 2) + '/' + Copy(sDataDoCredito, 5, 2);
+                    if StrToDateDef(sDataDoCredito, StrToDate('30/12/1899')) <> StrToDate('30/12/1899') then
+                    begin
+                      Form7.ibDataSet7MOVIMENTO.AsDateTime := StrToDate(sDataDoCredito);
+                    end;
+                    {Sandro Silva 2022-12-21 fim}
                     //
                     Form7.ibDataSet7.Post;
                     //
@@ -40200,11 +40243,12 @@ begin
   //
 end;
 
-procedure TForm7.Button11Click(Sender: TObject);
+procedure TForm7.btnRetornoCNAB240Click(Sender: TObject);
 var
-  I : Integer;
+  I: Integer;
   f: TextFile;
   sDocumento, sBanco, sMensagem, sLinha: String;
+  sDataDoCredito: String; // Sandro Silva 2022-12-21
 begin
   //
   sBanco := '000';
@@ -40224,12 +40268,12 @@ begin
     sMensagem := '';
     I := 0;
     //
-    while not eof(f) Do
+    while not Eof(f) Do
     begin
       //
-      ReadLn(f,sLinha);
+      ReadLn(f,sLinha);  // Lendo a primeira linha do documento retornado. Obtem o código do banco, número do documento e o código de movimento de retorno
       //
-      if Length(sLinha) = 240 then
+      if Length(sLinha) = 240 then // É CNAB 240
       begin
         //
         sBanco := Copy(sLinha,1,3);
@@ -40239,7 +40283,7 @@ begin
           //
           sDocumento := AllTrim(Copy(sLinha,59,15));
           //
-          if Copy(sLinha,016,02) = '06' then
+          if Copy(sLinha,016,02) = '06' then // Código de movimento de retorno 06 - Liquidação
           begin
             //
             Form7.ibDataSet7.Close;
@@ -40250,9 +40294,9 @@ begin
             if Form7.ibDataSet7DOCUMENTO.AsString = sDocumento then
             begin
               //
-              ReadLn(f,sLinha);
+              ReadLn(f,sLinha); // Avança alinha para ler os detalhes do documento
               //
-              if (Copy(sLinha,014,01) = 'U') then
+              if (Copy(sLinha,014,01) = 'U') then  // U Registro detalhe
               begin
                 //
                 if Form7.ibDataSet7ATIVO.AsFloat < 5 then
@@ -40270,7 +40314,15 @@ begin
                     Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
                     //
                     Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,78,015))/100;
-                    Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
+                    Form7.ibDataSet7PORTADOR.AsString  := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
+                    {Sandro Silva 2022-12-21 inicio}
+                    sDataDoCredito := Copy(sLinha, 146, 8);
+                    sDataDoCredito := Copy(sDataDoCredito, 1, 2) + '/' + Copy(sDataDoCredito, 3, 2) + '/' + Copy(sDataDoCredito, 5, 4);
+                    if StrToDateDef(sDataDoCredito, StrToDate('30/12/1899')) <> StrToDate('30/12/1899') then
+                    begin
+                      Form7.ibDataSet7MOVIMENTO.AsDateTime := StrToDate(sDataDoCredito);
+                    end;
+                    {Sandro Silva 2022-12-21 fim}
                     //
                     Form7.ibDataSet7.Post;
                     //
@@ -40335,8 +40387,8 @@ begin
     Form7.ibDataSet7.Enablecontrols;
     //
     sMensagem := sMensagem + chr(10) + chr(10) +
-    'Duplicatas recebidos: '+ IntToStr(I )+chr(10)+chr(10) +
-    'Total recebido R$: '+Form7.ibDataSet25DIFERENCA_.AsString+chr(10)+chr(10);
+      'Duplicatas recebidos: '+ IntToStr(I )+chr(10)+chr(10) +
+      'Total recebido R$: '+Form7.ibDataSet25DIFERENCA_.AsString+chr(10)+chr(10);
     //
     ShowMessage(sMensagem);
     //
@@ -40491,6 +40543,7 @@ var
   sMandados : String;
   MyBookMark1 : TBookMark;
   PDF: TPrintPDF;
+  sArquivoPDF: String; // Sandro Silva 2022-12-22
 begin
   //
   Form40.MaskEdit1.Visible := False;
@@ -40639,6 +40692,7 @@ begin
               begin
                 //
                 sArquivo := '';
+                sArquivoPDF := Form1.sAtual+'\boletos_' + LimpaNumero(Form7.ibDataSet2WHATSAPP.AsString) + '.pdf'; // Sandro Silva 2022-12-22
                 //
                 if Form7.sModulo = 'RECEBER' then
                 begin
@@ -40646,9 +40700,9 @@ begin
                   if Form40.CheckBox1.Checked then
                   begin
                     //
-                    while FileExists(Form1.sAtual+'\boletos.pdf') do
+                    while FileExists(sArquivoPDF) do // Sandro Silva 2022-12-22 while FileExists(Form1.sAtual+'\boletos.pdf') do
                     begin
-                      DeleteFile(pChar(Form1.sAtual+'\boletos.pdf'));
+                      DeleteFile(pChar(sArquivoPDF)); // Sandro Silva 2022-12-22 DeleteFile(pChar(Form1.sAtual+'\boletos.pdf'));
                       sleep(1000);
                     end;
                     //
@@ -40663,7 +40717,7 @@ begin
                       //
                       // Cria o PDF
                       //
-                      sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
+                      // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
                       PDF := TPrintPDF.Create(Self);
                       //
                       // Configurações do documento
@@ -40684,7 +40738,7 @@ begin
                       //
                       // Nome do arquivo para salvar
                       //
-                      PDF.FileName    := Form1.sAtual+'\boletos.pdf';// sFileCFeSAT;
+                      PDF.FileName    := sArquivoPDF;// sFileCFeSAT; // Sandro Silva 2022-12-11 PDF.FileName    := Form1.sAtual+'\boletos.pdf';// sFileCFeSAT;
                       {Start Printing...}
                       PDF.BeginDoc;
                       //
@@ -40762,7 +40816,10 @@ begin
                       Form7.ibDataSet7.GotoBookmark(MyBookMark1);
                       //
                       PDF.EndDoc;
-                      if FileExists(Form1.sAtual+'\boletos.pdf') then sArquivo := Form1.sAtual + '\boletos.pdf' else sArquivo := '';
+                      if FileExists(sArquivoPDF) then // Sandro Silva 2022-12-22 if FileExists(Form1.sAtual+'\boletos.pdf') then
+                        sArquivo := sArquivoPDF // Sandro Silva 2022-12-22 sArquivo := Form1.sAtual + '\boletos.pdf'
+                      else
+                        sArquivo := '';
                       //
                     except end;
                     //
@@ -41131,11 +41188,11 @@ begin
         end;
         //
         Unit7.EnviarEMail('',Form28.Edit1.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-        pchar('Segue em anexo arquivo zipado com as NF-e´s de entrada da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-        +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
-        +chr(10)
-        +Form1.sPropaganda)
-        ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'),False);
+          pchar('Segue em anexo arquivo zipado com as NF-e´s de entrada da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
+          +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
+          +chr(10)
+          +Form1.sPropaganda)
+          ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'),False);
       end else
       begin
         ShowMessage('Não encontrado XML para contabilidade neste período.');

@@ -12225,7 +12225,7 @@ object Form7: TForm7
       TabOrder = 10
       OnClick = Button8Click
     end
-    object Button1: TButton
+    object btnRetornoCNAB400: TButton
       Left = 250
       Top = 43
       Width = 131
@@ -12238,9 +12238,9 @@ object Form7: TForm7
       Font.Style = []
       ParentFont = False
       TabOrder = 11
-      OnClick = Button1Click
+      OnClick = btnRetornoCNAB400Click
     end
-    object Button11: TButton
+    object btnRetornoCNAB240: TButton
       Left = 250
       Top = 9
       Width = 131
@@ -12253,7 +12253,7 @@ object Form7: TForm7
       Font.Style = []
       ParentFont = False
       TabOrder = 12
-      OnClick = Button11Click
+      OnClick = btnRetornoCNAB240Click
     end
   end
   object Button10: TButton
