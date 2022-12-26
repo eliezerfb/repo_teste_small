@@ -104,7 +104,8 @@ begin
     jp.SaveToFile(sP1);
     jp.Free;
     //
-  except end;
+  except
+  end;
   //
   Result := True;
   //
@@ -925,8 +926,7 @@ end;
 procedure TForm25.btnConfigurarBoletoClick(Sender: TObject);
 begin
   Form26.ShowModal;
-end;
-
+end;  
 
 procedure TForm25.FormShow(Sender: TObject);
 var
@@ -3115,30 +3115,29 @@ begin
   Form7.ibDataSet7PORTADOR.AsString  := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
   Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
   Form7.ibDataSet7CODEBAR.AsString   := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                                        '9'+                              // Moeda
-                                        Copy(sNumero,20,1)+               // Campo Livre 20 a 21 do código de barras
-                                        '.'+                              // Ponto para facilitar a digitação
-                                        Copy(sNumero,21,4)+               // Campo Livre 21 a 24 do código de barras
-                                        Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(sNumero,20,1)+Copy(sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
+                                        '9'+                                          // Moeda
+                                        Copy(Form25.sNumero,20,1)+                    // Campo Livre 20 a 21 do código de barras
+                                        '.'+                                          // Ponto para facilitar a digitação
+                                        Copy(Form25.sNumero,21,4)+                    // Campo Livre 21 a 24 do código de barras
+                                        Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(Form25.sNumero,20,1)+Copy(Form25.sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
                                         //
                                         '  '+
-                                        Copy(sNumero,25,5)+               // Campo Livre 25 a 29 do código de barras
-                                        '.'+                              // Ponto para facilitar a digitação
-                                        Copy(sNumero,30,5)+               // Campo Livre 30 a 34 do código de barras
-                                        Modulo_10(Copy(sNumero,25,10))+   // Digito verificador
+                                        Copy(Form25.sNumero,25,5)+                    // Campo Livre 25 a 29 do código de barras
+                                        '.'+                                          // Ponto para facilitar a digitação
+                                        Copy(Form25.sNumero,30,5)+                    // Campo Livre 30 a 34 do código de barras
+                                        Modulo_10(Copy(Form25.sNumero,25,10))+        // Digito verificador
                                         '  '+
-                                        Copy(sNumero,35,5)+               // Campo Livre 35 a 39 do código de barras
-                                        '.'+                              // Ponto para facilitar a digitação
-                                        Copy(sNumero,40,5)+               // Campo Livre 40 a 44 do código de barras
-                                        Modulo_10(Copy(sNumero,35,10))+   // Digito verificador
+                                        Copy(Form25.sNumero,35,5)+                    // Campo Livre 35 a 39 do código de barras
+                                        '.'+                                          // Ponto para facilitar a digitação
+                                        Copy(Form25.sNumero,40,5)+                    // Campo Livre 40 a 44 do código de barras
+                                        Modulo_10(Copy(Form25.sNumero,35,10))+        // Digito verificador
                                         //
                                         '  '+
-                                        Copy(sNumero,5,1)+                // Dígito de verificação geral posição 5 do codebat
+                                        Copy(Form25.sNumero,5,1)+                     // Dígito de verificação geral posição 5 do codebat
                                         '  '+
-                                        Copy(sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
-                                        Copy(sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
-
-  //
+                                        Copy(Form25.sNumero,6,4)+                     // 6 a 9 do código de barras - fator de vencimento
+                                        Copy(Form25.sNumero,10,10)                  // 10 a 19 do código de barras - valor nominal
+                                        );
   Form7.ibDataSet7.Post;
 end;
 

@@ -1441,6 +1441,7 @@ type
     ibDataSet4IDENTIFICADORPLANOCONTAS: TStringField;
     ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
+    Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2056,6 +2057,8 @@ type
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
+    procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
+
   public
 
     // Public declarations
@@ -24393,12 +24396,14 @@ end;
 
 procedure TForm7.MenuItem56Click(Sender: TObject);
 var
-  Mais1ini : tIniFile;
-  I : Integer;
-  NovItem1, NovItem2 : TmenuItem;
-  bI : Boolean;
+  Mais1ini: tIniFile;
+  I: Integer;
+  NovItem1, NovItem2: TmenuItem;
+  GeraEnvioItem1, GeraEnvioItem2: TmenuItem;
+  bI: Boolean;
 begin
   //
+  Gerarboletoeenviodeemaildecobranatotalizadoporcliente1.Visible := Form1.DisponivelSomenteParaNos; // Sandro Silva 2022-12-26
   GerCNAB400.Visible := True;
   GerCNAB240.Visible := True;
   //
@@ -24423,13 +24428,25 @@ begin
       NovItem1.Caption := ibDataSet11NOME.Value;
       Bloquetos1.Add(NovItem1);
       NovItem1.OnClick := Form1.EscolheOBloqueto;
+
+      {Sandro Silva 2022-12-26 inicio}
+      GeraEnvioItem1 := TMenuItem.Create(Bloquetos1);
+      GeraEnvioItem1.Caption := ibDataSet11NOME.Value;
+      Gerarboletoeenviodeemaildecobranatotalizadoporcliente1.Add(GeraEnvioItem1);
+      GeraEnvioItem1.OnClick := EscolheOBancoParaGerarBoletoEEnviarEmail;
+      {Sandro Silva 2022-12-26 fim}
       //
     end;
     //
     // CNAB 400
     //
     bI := True;
-    for I := 0 to GerCNAB400.Count -1 do if GerCNAB400.Items[I].Caption = ibDataSet11NOME.Value then bI := False;
+    for I := 0 to GerCNAB400.Count -1 do
+    begin
+      if GerCNAB400.Items[I].Caption = ibDataSet11NOME.Value then
+        bI := False;
+    end;
+
     if bI then
     begin
       //
@@ -24443,7 +24460,12 @@ begin
     // CNAB 240
     //
     bI := True;
-    for I := 0 to GerCNAB240.Count -1 do if GerCNAB240.Items[I].Caption = ibDataSet11NOME.Value then bI := False;
+    for I := 0 to GerCNAB240.Count -1 do
+    begin
+      if GerCNAB240.Items[I].Caption = ibDataSet11NOME.Value then
+        bI := False;
+    end;
+
     if bI then
     begin
       //
@@ -24460,15 +24482,25 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
   for I := 0 to GerCNAB240.Count -1 do
   begin
-    if Mais1Ini.ReadString(pChar('Boleto de cobrança do '+GerCNAB240.Items[I].Caption),'CNAB240','') = 'Sim' then GerCNAB240.Items[I].Enabled := True else  GerCNAB240.Items[I].Enabled := False;
+    if Mais1Ini.ReadString(pChar('Boleto de cobrança do '+GerCNAB240.Items[I].Caption),'CNAB240','') = 'Sim' then
+      GerCNAB240.Items[I].Enabled := True
+    else
+      GerCNAB240.Items[I].Enabled := False;
   end;
+
   for I := 0 to GerCNAB400.Count -1 do
   begin
-    if Mais1Ini.ReadString(pChar('Boleto de cobrança do '+GerCNAB400.Items[I].Caption),'CNAB400','') = 'Sim' then GerCNAB400.Items[I].Enabled := True else  GerCNAB400.Items[I].Enabled := False;
+    if Mais1Ini.ReadString(pChar('Boleto de cobrança do '+GerCNAB400.Items[I].Caption),'CNAB400','') = 'Sim' then
+      GerCNAB400.Items[I].Enabled := True
+    else
+      GerCNAB400.Items[I].Enabled := False;
   end;
   Mais1ini.Free;
   //
-  if Form7.ibDataSet7VALOR_RECE.AsFloat <> 0 then Imprimirrecibo2.Enabled := True else  Imprimirrecibo2.Enabled := False;
+  if Form7.ibDataSet7VALOR_RECE.AsFloat <> 0 then
+    Imprimirrecibo2.Enabled := True
+  else
+    Imprimirrecibo2.Enabled := False;
   //
 end;
 
@@ -38599,6 +38631,7 @@ begin
                                 {Sandro Silva 2022-12-23 inicio}
                                 if Form1.DisponivelSomenteParaNos then
                                 begin
+                                  //GeraImagemDoBoletoComOCodigoDeBarras(False); // Para calcular código de barras, nosso numero
                                   Form25.GravaPortadorNossoNumCodeBar;
                                 end;
                                 {Sandro Silva 2022-12-23 fim}
@@ -43218,6 +43251,17 @@ begin
     //
   end;
   {Sandro Silva 2022-10-24 fim}
+end;
+
+procedure TForm7.EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
+begin
+  {Sandro Silva 2022-12-26 inicio}
+  // Para envio de boletos referente a incorporação da Zucchetti
+  Form1.sEscolhido := 'Boleto de cobrança do ' + TMenuItem(Sender).Caption;
+  Form25.Show; // Para carregar parâmetros e gerar corretamente o código de barras/nosso número
+  Form25.Close;
+  Emaildecobrana2Click(Sender); // Executando o click de modo provisório devido a pouco tempo para atender a incorporação da Zucchetti, analisar para evitar uso de eventos em cascata.
+  {Sandro Silva 2022-12-26 fim}
 end;
 
 end.
