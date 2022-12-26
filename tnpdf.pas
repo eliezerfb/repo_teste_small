@@ -29,7 +29,18 @@
 
   @ lines 98, 174, 245, 900 - Property for JPEG Quality added
 
+  ******************************************************************************
+
+  MOD by Sandro Silva <sandro@smallsoft.com.br>
+  for Small Commerce
+
+  Last modified: 26/12/2022
+
+  FidFilename - Added parameter to avoid conflict when generating multiple
+  PDF files with different images inserted at the same time
+
   ****************************************************************************** }
+
 
 unit tnpdf;
 
@@ -122,6 +133,7 @@ type
 {$IFDEF USE_ZLIB}
     CompressionStream: TCompressionStream;
 {$ENDIF}
+    FIdFileName: String; // Sandro Silva 2022-12-22 Para evitar conflito de gerar a mesmo tempo por 2 usuários
     procedure AddToOffset(offset: LongInt);
     procedure StreamWriteStr(var ms: TMemoryStream; s: string);
     procedure SetPDFHeader;
@@ -140,7 +152,7 @@ type
     procedure SetJPEG(ABitmap: TBitmap);
     procedure WriteBitmap(a: Integer);
     function GetOffsetNumber(offset: string): string;
-
+    procedure SetFFileName(const Value: string);
   protected
     { Protected declarations }
   public
@@ -161,7 +173,7 @@ type
 
   published
     { Published declarations }
-    property FileName: string read FFileName write FFileName;
+    property FileName: string read FFileName write SetFFileName; // Sandro Silva 2022-12-22 property FileName: string read FFileName write FFileName;
     property TITLE: string read FTITLE write FTITLE;
     property PageNumber: Integer read FPageNumber;
     property PageWidth: Integer read FCanvasWidth write FCanvasWidth;
@@ -335,9 +347,9 @@ begin
       for i := 1 to NumberofImages do
       begin
   {$IFDEF WIN32}
-        DeleteFile(pchar('~tmpim' + IntToStr(i)));
+        DeleteFile(pchar('~tmpim' + FIdFileName + IntToStr(i))); // Sandro Silva 2022-12-22 DeleteFile(pchar('~tmpim' + IntToStr(i)));
   {$ELSE}
-        DeleteFile(('~tmpim' + IntToStr(i)));
+        DeleteFile(('~tmpim' + FIdFileName + IntToStr(i))); // Sandro Silva 2022-12-22 DeleteFile(('~tmpim' + IntToStr(i)));
   {$ENDIF}
       end;
     end;
@@ -887,7 +899,7 @@ begin
   else
 {$ENDIF}
     ImageStream.SaveToStream(pTempStream);
-  pTempStream.SaveToFile('~tmpim' + IntToStr(NumberofImages));
+  pTempStream.SaveToFile('~tmpim'+ FIdFileName + IntToStr(NumberofImages)); // Sandro Silva 2022-12-22 pTempStream.SaveToFile('~tmpim' + IntToStr(NumberofImages));
 end;
 
 // JPEG
@@ -931,7 +943,7 @@ begin
 
   ImageStream.SaveToStream(pTempStream);
   JPE.Free;
-  pTempStream.SaveToFile('~tmpim' + IntToStr(NumberofImages));
+  pTempStream.SaveToFile('~tmpim'+ FIdFileName + IntToStr(NumberofImages)); // Sandro Silva 2022-12-22 pTempStream.SaveToFile('~tmpim' + IntToStr(NumberofImages));
 end;
 
 procedure TPrintPDF.WriteBitmap(a: Integer);
@@ -940,7 +952,7 @@ begin
   TempStream.Clear;
   StreamWriteStr(TempStream, IntToStr(CurrentObjectNum) + ' 0 obj');
   ImageStream.Clear;
-  ImageStream.LoadFromFile('~tmpim' + IntToStr(a));
+  ImageStream.LoadFromFile('~tmpim'+ FIdFileName + IntToStr(a)); // Sandro Silva 2022-12-22 ImageStream.LoadFromFile('~tmpim' + IntToStr(a));
   TempStream.Seek(0, soFromEnd);
   ImageStream.SaveToStream(TempStream);
   StreamWriteStr(TempStream, #13#10 + 'endstream');
@@ -967,6 +979,13 @@ begin
   AddToOffset(TempStream.Size);
   PDF.Seek(0, soFromEnd);
   TempStream.SaveToStream(PDF);
+end;
+
+procedure TPrintPDF.SetFFileName(const Value: string);
+// Ao definir o nome do arquivo PDF define também o nome do arquivo temporário que é usado para geração das páginas do PDF
+begin
+  FFileName   := Value;
+  FIdFileName := ChangeFileExt(ExtractFileName(FileName), '');
 end;
 
 end.
