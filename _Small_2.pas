@@ -2169,15 +2169,16 @@ end;
 
 function _ecf02_GrandeTotal(sP1: Boolean): String;
 begin
+  // Caso falhar o retorno do GT, incluir um SleepEntreMetodos e executar Bematech_FI_GrandeTotal() novamente
   Result := Replicate(' ',18);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Bematech_FI_GrandeTotal( Result ) <> 1 then Result:='0';
+  if Bematech_FI_GrandeTotal( Result ) <> 1 then Result := '0';
 end;
 
 function _ecf02_TotalizadoresDasAliquotas(sP1: Boolean): String;
 begin
-  Result:=Replicate(' ',445);
-  if Bematech_FI_VerificaTotalizadoresParciais( Result ) <> 1 then Result:='' else Result:=Copy(Result,1,224)+Copy(Result,226,14)+Copy(Result,241,14)+Copy(Result,256,14);
+  Result := Replicate(' ',445);
+  if Bematech_FI_VerificaTotalizadoresParciais( Result ) <> 1 then Result := '' else Result := Copy(Result,1,224)+Copy(Result,226,14)+Copy(Result,241,14)+Copy(Result,256,14);
 end;
 
 function _ecf02_CupomAberto(sP1: Boolean): boolean;
@@ -2185,9 +2186,9 @@ var
   I : Integer;
 begin
   if Bematech_FI_FlagsFiscais(I)=1 then
-    Result:=(Copy(Right(Replicate('0',8)+IntToBin(I),8),8,1)='1')
+    Result := (Copy(Right(Replicate('0',8)+IntToBin(I),8),8,1)='1')
   else
-    Result:=False;
+    Result := False;
 end;
 
 function _ecf02_FaltaPagamento(sP1: Boolean): boolean;

@@ -3918,7 +3918,7 @@ begin
         sTextoCorpoEmail := 'Segue em anexo seu XML do Cupom Fiscal Eletrônico - SAT.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
-        sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br';
+        sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
         EnviarEMail('',sEmail,'','XML do Cupom Fiscal Eletrônico - SAT',PansiChar(sTextoCorpoEmail),PansiChar(sFileXML),False);
       end;
 
@@ -3927,7 +3927,7 @@ begin
         sTextoCorpoEmail := 'Segue em anexo seu Extrato Cupom Fiscal Eletrônico em arquivo PDF.'+chr(10); // Sandro Silva 2018-07-03 sTextoCorpoEmail := 'Segue em anexo seu Extrato Cupom Fiscal Eletrônico - SAT em arquivo PDF.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
-        sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br';
+        sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
         EnviarEMail('',sEmail,'','Extrato Cupom Fiscal Eletrônico',PansiChar(sTextoCorpoEmail),PansiChar(sFileCFeSAT),False); // Sandro Silva 2018-07-03 EnviarEMail('',sEmail,'','Extrato Cupom Fiscal Eletrônico - SAT',pchar(sTextoCorpoEmail),pChar(sFileCFeSAT),False);
       end;
 
@@ -3942,7 +3942,7 @@ begin
         sTextoCorpoEmail := 'Segue em anexo seu XML e Extrato Cupom Fiscal Eletrônico.'+chr(10); // Sandro Silva 2018-07-03 sTextoCorpoEmail := 'Segue em anexo seu XML e Extrato Cupom Fiscal Eletrônico - SAT.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
-        sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br';
+        sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
         EnviarEMail('', sEmail, '', 'Extrato Cupom Fiscal Eletrônico e XML', PansiChar(sTextoCorpoEmail),PansiChar(sZipFile), False); // Sandro Silva 2018-07-03 EnviarEMail('', sEmail, '', 'Extrato Cupom Fiscal Eletrônico - SAT e XML', pchar(sTextoCorpoEmail),pChar(sZipFile), False);
       end;
@@ -4495,7 +4495,7 @@ begin
       begin
 
         sAssinaturaAssociada := Small_InputBox('Assinatura Associada',
-                                            'Informe a Assinatura Associada fornecida pela Smallsoft. ', sAssinaturaAssociada);
+                                            'Informe a Assinatura Associada fornecida pela Zucchetti. ', sAssinaturaAssociada); // Sandro Silva 2022-12-02 Unochapeco 'Informe a Assinatura Associada fornecida pela Smallsoft. ', sAssinaturaAssociada);
         if Trim(sAssinaturaAssociada) <> '' then
           _ecf59_GravaAssinaturaAssociada(sAssinaturaAssociada);
 

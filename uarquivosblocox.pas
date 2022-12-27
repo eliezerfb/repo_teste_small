@@ -191,7 +191,7 @@ begin
 
   sPasta := CHAVE_CIFRAR;
 
-  sArquivo := 'arquivoauxiliarcriptografadopafecfsmallsoft.ini';
+  sArquivo := NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF; // Sandro Silva 2022-12-02 Unochapeco 'arquivoauxiliarcriptografadopafecfsmallsoft.ini';
 
 end;
 

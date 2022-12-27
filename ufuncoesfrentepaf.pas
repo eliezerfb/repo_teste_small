@@ -149,7 +149,7 @@ begin
     LbBlowfish1.GenerateKey(sChave);
 
     // Sandro Silva 2019-08-07  Sleep(1000);
-    sPerfil := LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'PERFIL', 'I', sPerfil);
+    sPerfil := LerParametroIni(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF, 'PERFIL', 'I', sPerfil); // Sandro Silva 2022-12-02 Unochapeco sPerfil := LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'PERFIL', 'I', sPerfil);
 //ShowMessage('Perfil ' + sPerfil); // Sandro Silva 2018-09-17
     if sPerfil <> '' then
     begin

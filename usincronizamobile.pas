@@ -219,10 +219,10 @@ begin
     try
       //Set Doc Info
       PDF.Title       := 'Alerta';
-      PDF.Creator     := 'Small Commerce';
-      PDF.Author      := 'Smallsoft';
+      PDF.Creator     := 'Small';
+      PDF.Author      := 'Zucchetti'; // Sandro Silva 2022-12-02 Unochapeco
       PDF.Keywords    := '';
-      PDF.Producer    := 'Small Commerce';
+      PDF.Producer    := 'Small';
       PDF.Subject     := 'Alerta Small Mobile';
       PDF.JPEGQuality := 100; //50;
 

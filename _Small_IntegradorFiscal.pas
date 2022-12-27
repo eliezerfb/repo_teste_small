@@ -349,11 +349,6 @@ begin
   end
   else if AnsiContainsText(sForma, 'POS') then     //POS
   begin
-    {
-    if (LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '') = 'CODIGO DE VINCULACAO AC DO MFE-CFE') // MFE ELGIN
-      or (LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '') = 'SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT') // MFE TANCA/BEMATECH
-    then
-    }
     if UsaKitDesenvolvimentoSAT then
     begin
       Form1.IntegradorCE.UsandoSimuladorPOS := True; // Sandro Silva 2017-09-21

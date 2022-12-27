@@ -119,9 +119,16 @@ begin
   //
   GetDir(0,ssAtual);
   //
+  {Sandro Silva 2022-12-02 Início Unochapeco
   Image1.Hint := 'Registrado no INPI (Instituto Nacional da Propriedade'
         +Chr(10)+'Industrial) sob número 829288627 em nome de Smallsoft'
         +Chr(10)+'Tecnologia em Informática EIRELI, CNPJ: 07426598000124';
+  }
+  Image1.Hint := 'Registrado no INPI (Instituto Nacional da Propriedade'
+        +Chr(10)+'Industrial) sob número 829288627'
+        +Chr(10)+'em nome de ' + RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF + ',' ///Smallsoft Tecnologia em Informática Ltda,'
+        +Chr(10)+'CNPJ: ' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF); //07426598000124';
+  {Sandro Silva 2022-12-02 Final Unochapeco}
   //
   //
 end;

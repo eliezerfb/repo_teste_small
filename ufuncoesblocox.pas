@@ -598,7 +598,7 @@ var
 begin
   sPasta := CHAVE_CIFRAR; // Sandro Silva 2018-09-21
 
-  sArquivo := 'arquivoauxiliarcriptografadopafecfsmallsoft.ini';
+  sArquivo := NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF; // Sandro Silva 2022-12-02 Unochapeco 'arquivoauxiliarcriptografadopafecfsmallsoft.ini';
 
   LbBlowfish1 := TLbBlowfish.Create(nil);
   LbBlowfish1.CipherMode := cmECB;
@@ -3849,7 +3849,7 @@ begin
         begin
           // Troca o número de credenciamento
           sCredenciamentoXMl     := xmlNodeValue(IBQBLOCOX.FieldByName('XMLENVIO').AsString, '//NumeroCredenciamento');
-          sCredenciamentoVigente := Credenciamento(FormataCpfCgc(Emitente.CNPJ));// Sandro Silva 2019-12-11  sCredenciamentoVigente := LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', INI_SECAO_ECF, INI_CHAVE_NUMERO_CREDENCIAMENTO_PAF, sCredenciamentoVigente);
+          sCredenciamentoVigente := Credenciamento(FormataCpfCgc(Emitente.CNPJ));
 
           sXML := StringReplace(IBQBLOCOX.FieldByName('XMLENVIO').AsString, '<NumeroCredenciamento>' + sCredenciamentoXMl + '</NumeroCredenciamento>', '<NumeroCredenciamento>' + sCredenciamentoVigente + '</NumeroCredenciamento>', [rfReplaceAll]);
           sXML := StringReplace(sXML, '<NumeroCredenciamento></NumeroCredenciamento>', '<NumeroCredenciamento>' + sCredenciamentoVigente + '</NumeroCredenciamento>', [rfReplaceAll]);
@@ -5257,7 +5257,7 @@ begin
         slHtml.Add('</table>');
         slHtml.Add('<BR><BR><BR><p align=center> <font face=verdana size=1 color=#0000FF><b>' + IntToStr(xNodeItens.length) + '</b> Registros</font>');
         slHtml.Add('<br>');
-        slHtml.Add('<p align=center> <font face=verdana size=1 color=#0000FF>Smallsoft ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + '</BODY></HTML>');
+        slHtml.Add('<p align=center> <font face=verdana size=1 color=#0000FF>Zucchetti ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + '</BODY></HTML>');
 
         if ForceDirectories(DiretorioLogBlocoX) then
         begin

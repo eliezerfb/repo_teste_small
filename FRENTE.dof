@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2022
+MajorVer=2023
 MinorVer=0
 Release=0
-Build=52
+Build=2
 Debug=0
 PreRelease=0
 Special=1
@@ -124,15 +124,15 @@ DLL=0
 Locale=1046
 CodePage=1252
 [Version Info Keys]
-CompanyName=Smallsoft Tecnologia em Informática EIRELI
+CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Frente de Caixa
-FileVersion=2022.0.0.52
+FileVersion=2023.0.0.2
 InternalName=Frente
-LegalCopyright=Smallsoft Tecnologia em Informática EIRELI
-LegalTrademarks=Smallsoft Tecnologia em Informática EIRELI
+LegalCopyright=Zucchetti Software e Sistemas Ltda
+LegalTrademarks=Zucchetti Software e Sistemas Ltda
 OriginalFilename=Frente
 ProductName=Frente de Caixa
-ProductVersion=2022
+ProductVersion=2023
 Comments=Final
 SpecialBuild=NFCE
 [HistoryLists\hlUnitAliases]

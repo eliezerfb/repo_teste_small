@@ -2030,7 +2030,7 @@ begin
   GetDir(0,sAtual);
   sKey := CHAVE_CIFRAR;
   Form1.LbBlowfish1.GenerateKey(sKey);
-  Mais1ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
+  Mais1ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais1ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
   //
   Mais1Ini.WriteString('ECF','SERIE', Form1.LbBlowfish1.EncryptString(alltrim('0'))); // Cripta o Edit1
   Mais1Ini.WriteString('ECF','GT', Form1.LbBlowfish1.EncryptString(alltrim('0')));   // Cripta o Edit2
@@ -4138,9 +4138,8 @@ begin
                Right('00000000000000' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) +
                Copy(LimpaNumero(IE_SOFTWARE_HOUSE_PAF) + Replicate(' ', 14), 1, 14) +
                Copy(IM_SOFTWARE_HOUSE_PAF + Replicate(' ', 14), 1, 14) +
-               // 2015-09-08 Uppercase(Copy('Smallsoft Tecnologia EIRELI'+ Replicate(' ', 50), 1, 50)) +
-               AnsiUpperCase(Copy(ConverteAcentos(Form1.sRazaoSocialSmallsoft) + Replicate(' ', 50), 1, 50)));// +
-               //Replicate(' ', 32));
+               AnsiUpperCase(Copy(ConverteAcentos(Form1.sRazaoSocialSmallsoft) + Replicate(' ', 50), 1, 50)));
+
 
     //
     Writeln(F, 'N2'+
@@ -4154,7 +4153,7 @@ begin
     Writeln(F, 'N3'+Copy('CONSULTA.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONSULTA.EXE')))+Replicate(' ',32),1,32))); // MD5
     Writeln(F, 'N3'+Copy('CONVECF.DLL'+Replicate(' ',50),1,50)       +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONVECF.DLL')))+Replicate(' ',32),1,32))); // MD5
     Writeln(F, 'N3'+Copy('NFE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'NFE.EXE')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('BLOCOX.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BLOCOX.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
+    // Sandro Silva 2022-12-02 Unochapeco Writeln(F, 'N3'+Copy('BLOCOX.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BLOCOX.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
     Writeln(F, 'N3'+Copy('PESADO.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'PESADO.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
     Writeln(F, 'N3'+Copy('DARUMA32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMA32.DLL')))+Replicate(' ',32),1,32))); // MD5
     Writeln(F, 'N3'+Copy('DARUMAFRAMEWORK.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMAFRAMEWORK.DLL')))+Replicate(' ',32),1,32))); // MD5 2015-11-13
@@ -4928,7 +4927,12 @@ begin
       Form1.AtualizaECFOffLine;
     end;
 
+    //
+    //
     // Alerta MD5
+    //
+    //
+//    (* Habilitar no final da homologação
     if (Form1.sModeloEcf <> '59') and (Form1.sModeloEcf <> '65') and (Form1.sModeloEcf <> '99') then
     begin
       if (SmallCripto(Form1.ibDataSet13.FieldByName('CGC').AsString+Form1.sMD5DaLista) <> LerParametroIni(Form1.sArquivo, 'MD5', 'HOMOLOGADO', 'XXXX'))
@@ -4959,7 +4963,7 @@ begin
 
           sAlertaMD5 := sAlertaMD5 +
               '   Serial: '+ sSerie  +Chr(13) + Chr(10)+
-              '   GT: '+   FormatFloat('0.00',(StrToFloatDef(stotalDia, 0) / 100)) +Chr(13) + Chr(10)+''+ 
+              '   GT: '+   FormatFloat('0.00',(StrToFloatDef(stotalDia, 0) / 100)) +Chr(13) + Chr(10)+''+
               '   CNPJ: '+ Form1.ibDataSet13.FieldByName('CGC').AsString+ Chr(13) + Chr(10)+ Chr(13) + Chr(10) +'';
 
         end;
@@ -4975,6 +4979,7 @@ begin
       end;
 
     end;
+//    *)
 
     // Bloqueio de serial com validade expirada
     if DiasParaExpirar(Form1.IBDatabase1) < 0 then // Permite usar até o dia que expira Sandro Silva 2019-11-19  if DiasParaExpirar(Form1.IBDatabase1) <= 0 then
@@ -5417,7 +5422,14 @@ begin
         sLabel := {chr(10)+}'   '+StrZero(pI,3,0);
       end;
       //
-      sHint := sMesaOuConta+' aberta R$ '+Alltrim(Format('%10.2n',[IBQMONTAMESA.FieldByName('SUM').AsFloat-IBQMONTAMESACANCELADOS.FieldByName('CANCELADOS').AsFloat]));
+      {Sandro Silva 2022-12-07 Início Unochapeco
+        sHint := sMesaOuConta+' aberta R$ '+Alltrim(Format('%10.2n',[IBQMONTAMESA.FieldByName('SUM').AsFloat-IBQMONTAMESACANCELADOS.FieldByName('CANCELADOS').AsFloat]));
+      }
+      if (Consumo) then
+        sHint := sMesaOuConta//+' aberta R$ '+Alltrim(Format('%10.2n',[IBQMONTAMESA.FieldByName('SUM').AsFloat-IBQMONTAMESACANCELADOS.FieldByName('CANCELADOS').AsFloat]))
+      else
+        sHint := sMesaOuConta+' aberta R$ '+Alltrim(Format('%10.2n',[IBQMONTAMESA.FieldByName('SUM').AsFloat-IBQMONTAMESACANCELADOS.FieldByName('CANCELADOS').AsFloat]));
+      {Sandro Silva 2022-12-07 Final Unochapeco}
       //
       if Form1.sHoraMovimento = '' then Form1.sHoraMovimento := TimeToStr(Time);
       //
@@ -5614,7 +5626,7 @@ var
 begin
   /////////
 
-  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Não' then
+//  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Não' then
    Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
 
   GetDir(0, sDirAtual);
@@ -5825,7 +5837,7 @@ end;
 
 function Copyright: String;
 begin
-  Result := 'Copyright© Smallsoft® 2005 - ' + Copy(Build, 1, 4);
+  Result := 'Copyright© Zucchetti® 2005 - ' + Copy(Build, 1, 4); // Sandro Silva 2022-12-02 Unochapeco Result := 'Copyright© Smallsoft® 2005 - ' + Copy(Build, 1, 4);
 end;
 
 function Consumo: Boolean;
@@ -6400,7 +6412,8 @@ begin
       //
     end;
     //
-    if pNome = 'VENDA' then
+    //if pNome = 'VENDAS' then // Sandro Silva 2022-12-08 Unochapeco if pNome = 'VENDA' then
+    if pNome = 'VENDA' then // Precisa ser assim resolver 
     begin
       //
       sAntigo :=
@@ -6453,7 +6466,7 @@ begin
       VarToStr(DataSet.FieldByname('DATA_CANCEL').OldValue)+
       VarToStr(DataSet.FieldByname('HORA_CANCEL').OldValue)+
       VarToStr(DataSet.FieldByname('COD_SIT').OldValue)+
-      VarToStr(DataSet.FieldByname('FINNF').OldValue)+
+      VarToStr(DataSet.FieldByname('FINNFE').OldValue)+ // Sandro Silva 2022-12-08 Unochapeco VarToStr(DataSet.FieldByname('FINNF').OldValue)+
       VarToStr(DataSet.FieldByname('INDFINAL').OldValue)+
       VarToStr(DataSet.FieldByname('INDPRES').OldValue);
       s :=
@@ -6506,7 +6519,7 @@ begin
       DataSet.FieldByname('DATA_CANCEL').AsString+
       DataSet.FieldByname('HORA_CANCEL').AsString+
       DataSet.FieldByname('COD_SIT').AsString+
-      DataSet.FieldByname('FINNF').AsString+
+      DataSet.FieldByname('FINNFE').AsString+ // Sandro Silva 2022-12-08 Unochapeco DataSet.FieldByname('FINNF').AsString+
       DataSet.FieldByname('INDFINAL').AsString+
       DataSet.FieldByname('INDPRES').AsString;
       //
@@ -8589,8 +8602,8 @@ begin
   begin
     SmallMsg('Este sistema está licenciado somente para '+IntToStr(iR)+' usuários'+Chr(10)+
              'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
-             'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
-             'em contato com a Smallsoft.');
+             'Você pode adquirir licenças de uso adicionais acessando'+Chr(10)+// Sandro Silva 2022-12-02 Unochapeco 'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
+             'smallsoft.com.br'); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
     // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
@@ -9906,7 +9919,7 @@ begin
                           +chr(10)+'3 - Seu certificado pode estar vencido'
                           +chr(10)+'4 - Seu certificado pode ser inválido'
                           + chr(10)
-                          +chr(10)+'Certificados recomendados pela Smallsoft®'
+                          +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
                           +chr(10)+''
                           +chr(10)+'1. Certificados SERASA'
                           +chr(10)+'    * A1'
@@ -9917,7 +9930,7 @@ begin
                           +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
                           +chr(10)
                           +chr(10)
-                          +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                          +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'),  // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                           'Atenção',mb_Ok + MB_ICONWARNING);
             end;
             //
@@ -10210,7 +10223,7 @@ begin
   Form1.sPasta := CHAVE_CIFRAR;
   //
   sAjuda   := 'ecf_teclas.htm';
-  sArquivo := 'arquivoauxiliarcriptografadopafecfsmallsoft.ini';
+  sArquivo := NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF; // Sandro Silva 2022-12-02 sArquivo := 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; Unochapeco
   //
   Form1.sProximo027 := '';
   Form1.sProximo27 := '';
@@ -14845,6 +14858,7 @@ var
   sMarcaECF: String; // Sandro Silva 2018-10-23
   sTempovalidadeCertificado: String;
   iUsuariosAtivos: Integer; // Sandro Silva 2019-06-19
+  sMensagemDiasExpirar: String; // Sandro Silva 2022-12-08 Unochapeco
 begin
   //
   Form22.Close;
@@ -14918,6 +14932,7 @@ begin
     SelAttributes.Style  := [];
     SelAttributes.Height := AjustaAltura(16); // Sandro Silva 2017-09-26  16;
     //
+    {Sandro Silva 2022-12-08 Início Unochapeco
     SelText := chr(10) + chr(10) +
                Form22.sBuild + chr(10) +
                'Usuário: ' + Usuario + chr(10) +
@@ -14927,6 +14942,24 @@ begin
                Form22.sUrlDoGdb + chr(10) +
                Form22.sAtivos  + chr(10) +
                'Seu sistema está devidamente licenciado para mais ' + IntToStr(DiasParaExpirar(Form1.IBDatabase1)) + ' dias' + Chr(10) +
+               Form22.sHoraNoServidor
+               + sVersaoNFCe
+               ;
+    }
+
+    sMensagemDiasExpirar := 'Seu sistema está devidamente licenciado para mais ' + IntToStr(DiasParaExpirar(Form1.IBDatabase1)) + ' dias';
+    if DiasParaExpirar(Form1.IBDatabase1) < 0 then
+      sMensagemDiasExpirar := Chr(10) + 'Sistema Bloqueado';
+
+    SelText := chr(10) + chr(10) +
+               Form22.sBuild + chr(10) +
+               'Usuário: ' + Usuario + chr(10) +
+               Form22.sLicenca + chr(10) +
+               Form22.sSerie + chr(10) +
+               Form22.sIniciandoEm  + chr(10) +
+               Form22.sUrlDoGdb + chr(10) +
+               Form22.sAtivos  + chr(10) +
+               sMensagemDiasExpirar + Chr(10) +
                Form22.sHoraNoServidor
                + sVersaoNFCe
                ;
@@ -16681,7 +16714,7 @@ begin
   + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
   //
   WriteLn(F,'<br>');              // Linha em branco
-  WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small Commerce, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>');
+  WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>');
   WriteLn(F,'</center>');
   WriteLn(F,'</html>');
   CloseFile(F);                                    // Fecha o arquivo
@@ -17407,7 +17440,9 @@ begin
   begin
     Mais1Ini.WriteString('Frente de caixa','Balança','Sim');
     ShellExecute(0, 'open', 'pesado.exe', 'C', '', sw_normal);
-  end else Mais1Ini.WriteString('Frente de caixa','Balança','Não');
+  end
+  else
+    Mais1Ini.WriteString('Frente de caixa','Balança','Não');
   //
   Form1.sBalanca := Mais1Ini.ReadString('Frente de caixa','Balança','Não');
   Mais1Ini.Free;
@@ -18275,7 +18310,7 @@ begin
                       end;
 
                     except bFind := False end;
-                  end;
+                    end;
                 end;
               end;
             end; // if Copy(AllTrim(Edit1.Text),1,1) = '2' then
@@ -18302,6 +18337,27 @@ begin
             //
           end;
           //
+          {Sandro Silva 2022-12-12 Início Unochapeco}
+          //
+          // Unochapeco-Fernando orientou que fisco não aceita lançamento de produto pesado em mesa. Permite em Conta de Cliente
+          //
+          if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65') and (Form1.sModeloECF_Reserva <> '99') then
+          begin
+            if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
+            begin
+              if bFind and (Pos('Mesa', Form1.sMesaOuConta) > 0) then
+              begin
+                if AnsiUpperCase(Form1.ibDataSet4.FieldByName('MEDIDA').AsString) = 'KG' then
+                begin
+                  bFind := False;
+                  //Display('Produto pesado não permitido para Mesas','Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
+                  ShowMessage('Produto pesado não permitido para Mesas');
+                end;
+              end;
+            end;
+          end;
+          {Sandro Silva 2022-12-12 Final Unochapeco}
+
           if bFind then
           begin
             //
@@ -18360,7 +18416,10 @@ begin
                     Sleep(1000);
 
                     //
-                    while not FileExists(aWinDir+'\peso.txt') do begin end;
+                    while not FileExists(aWinDir+'\peso.txt') do
+                    begin
+
+                    end;
                     Sleep(1000);
                     //
                     Mais1ini  := TIniFile.Create(aWinDir+'\PESO.TXT');
@@ -21479,11 +21538,11 @@ begin
                                chr(10)+
                                'b)IDENTIFICAÇÃO DA EMPRESA DESENVOLVEDORA'+Chr(10)+
                                'b1)CNPJ: ' + CNPJ_SOFTWARE_HOUSE_PAF +chr(10)+
-                               'b2)Razão Social: Smallsoft Tecnologia em'+chr(10)+'Informática EIRELI'+chr(10)+
+                               'b2)Razão Social: Zucchetti Software e'+chr(10)+'Sistemas Ltda'+chr(10)+ // Sandro Silva 2022-12-02 Unochapeco 'b2)Razão Social: Smallsoft Tecnologia em'+chr(10)+'Informática EIRELI'+chr(10)+
                                'b3)Endereço completo: Rua Getúlio Vargas, 673'+chr(10)+
                                'CEP: 89700-019 Cidade: Concórdia UF: SC'+chr(10)+
                                'b4)Telefone: (049)3425-5800'+chr(10)+
-                               'b5)Contato: Ronei Ivo Weber'+chr(10)+
+                               'b5)Contato: Alessio Mainardi'+chr(10)+ // Sandro Silva 2022-12-02 Unochapeco 'b5)Contato: Ronei Ivo Weber'+chr(10)+
                                chr(10)+
                                'c)IDENTIFICAÇÃO DO PAF-ECF'+chr(10)+
                                'c1)Nome Comercial: Small Commerce'+chr(10)+
@@ -21497,7 +21556,7 @@ begin
                                'CONSULTA.EXE '+chr(10)+MD5Print(MD5File(pChar('CONSULTA.EXE')))+chr(10)+
                                'CONVECF.DLL '+chr(10)+MD5Print(MD5File(pChar('CONVECF.DLL')))+chr(10)+
                                'NFE.EXE '+chr(10)+MD5Print(MD5File(pChar('NFE.EXE')))+chr(10)+
-                               'BLOCOX.EXE '+chr(10)+MD5Print(MD5File(pChar('BLOCOX.EXE')))+chr(10)+
+                               // Sandro Silva 2022-12-02 Unochapeco 'BLOCOX.EXE '+chr(10)+MD5Print(MD5File(pChar('BLOCOX.EXE')))+chr(10)+
                                'PESADO.EXE '+chr(10)+MD5Print(MD5File(pChar('PESADO.EXE')))+chr(10)+
                                'DARUMA32.DLL '+chr(10)+MD5Print(MD5File(pChar('DARUMA32.DLL')))+chr(10)+
                                'DARUMAFRAMEWORK.DLL '+chr(10)+MD5Print(MD5File(pChar('DARUMAFRAMEWORK.DLL')))+chr(10)+
@@ -21517,7 +21576,7 @@ begin
                                Chr(10)+
                                'c6)Versão da ER-PAF-ECF: '+VERSAO_ER_PAF_ECF+chr(10)+
                                Chr(10)+
-                               'C7)Data Emissão Laudo: '+ '23/09/2019'+Chr(10)+ // Sandro Silva 2019-09-23 UnoChapeco  'C7)Data Emissão Laudo: '+ '27/12/2017'+Chr(10)+ // Sandro Silva 2017-11-07 Polimig
+                               'C7)Data Emissão Laudo: '+ DATA_EMISSAO_LAUDO_PAF_ECF +Chr(10)+ // Sandro Silva 2019-09-23 UnoChapeco  'C7)Data Emissão Laudo: '+ '27/12/2017'+Chr(10)+ // Sandro Silva 2017-11-07 Polimig
                                Chr(10)+
                                'd)ECFs Autorizados:'+chr(10)+
                                sNumerosDESerie;
@@ -23713,7 +23772,7 @@ begin
                     +chr(10)+'3 - Seu certificado pode estar vencido'
                     +chr(10)+'4 - Seu certificado pode ser inválido'
                     + chr(10)
-                    +chr(10)+'Certificados recomendados pela Smallsoft®'
+                    +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
                     +chr(10)+''
                     +chr(10)+'1. Certificados SERASA'
                     +chr(10)+'    * A1'
@@ -23724,7 +23783,7 @@ begin
                     +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
                     +chr(10)
                     +chr(10)
-                    +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                    +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                     'Atenção',mb_Ok + MB_ICONWARNING);
         Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
           Form1.ClienteSmallMobile.sLogRetornoMobile);
@@ -26960,6 +27019,8 @@ var
   bGerando: Boolean;
   dtGeracao: TDate;
   hrGeracao: TTime;
+  sDtInicial: String;
+  sDtFinal: String;
 begin
   CommitaTudo(True);// VendasIdentificadaspeloCPFCNPJ1Click 2015-09-12
   bGerando := False;
@@ -26999,6 +27060,11 @@ begin
         ' group by replace(replace(replace(A1.CNPJ, ''.'', ''''), ''-'', ''''), ''/'', '''') ' +
         'order by DATAI ');
       Form1.ibQuery5.Open;
+
+      {Sandro Silva 2022-12-12 Início Unochapeco}
+      sDtInicial := FormatDateTime('yyyymm', Form7.DateTimePicker3.Date) + '01';
+      sDtFinal   := FormatDateTime('yyyymm', Form7.DateTimePicker3.Date) + IntToStr(DaysInAMonth(YearOf(Form7.DateTimePicker3.Date), MonthOf(Form7.DateTimePicker3.Date)));
+      {Sandro Silva 2022-12-12 Final Unochapeco}
 
       Writeln(F,  'Z1' +                                                          // Tipo Z1
                   right('00000000000000' + LimpaNumero(ibDataSet13.FieldByName('CGC').AsString), 14) + // CNPJ
@@ -27040,8 +27106,8 @@ begin
         Writeln(F, 'Z4' +                                                          // Tipo Z4
                    Right('00000000000000' + LimpaNumero(Form1.ibQuery5.FieldByName('CNPJ').AsString), 14) + // CPF/CNPJ
                    Right('00000000000000' + LimpaNumero(FormatFloat('0.00', Form1.ibQuery5.FieldByName('TOTAL').AsFloat)), 14) + // Totalização Mensal
-                   FormatDateTime('yyyymmdd', Form1.ibQuery5.FieldByName('DATAI').AsDateTime) + // Data inicial da vendas ao CPF/CNPJ
-                   FormatDateTime('yyyymmdd', Form1.ibQuery5.FieldByName('DATAF').AsDateTime) + // Data final da vendas ao CPF/CNPJ
+                   sDtInicial + // Data inicial da vendas ao CPF/CNPJ  // Sandro Silva 2022-12-12 Unochapeco FormatDateTime('yyyymmdd', Form1.ibQuery5.FieldByName('DATAI').AsDateTime) + // Data inicial da vendas ao CPF/CNPJ
+                   sDtFinal + // Data final da vendas ao CPF/CNPJ // Sandro Silva 2022-12-12 Unochapeco FormatDateTime('yyyymmdd', Form1.ibQuery5.FieldByName('DATAF').AsDateTime) + // Data final da vendas ao CPF/CNPJ
                    FormatDateTime('yyyymmdd', dtGeracao) + // Data da geração do relatório
                    FormatDateTime('HHnnss', hrGeracao)  // hora da geração do relatório
                    );
@@ -27479,13 +27545,13 @@ begin
         //if Application.MessageBox('teste 01 Fechamento de abertas ok?', 'Atenção', MB_YESNO + MB_ICONQUESTION) = idno then
         //    FecharAplicacao(ExtractFileName(Application.ExeName));
 
+        Form1.MesasAbertas1Click(Sender); // Lista as mesas abertas antes da RZ
 
-        Form1.MesasAbertas1Click(Sender);
         Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
         if bChaveGerencialOk then
         begin
           bFechandoMesasAposReducaoZ := False; // 2015-10-16
-          Form1.Button10Click(Sender);
+          Form1.Button10Click(Sender); // Fecha as mesas abertas a mais de 2 dias antes da RZ
         end
         else
           bFechandoMesasAposReducaoZ := True; // Sandro Silva 2017-11-10 Polimig ;
@@ -27624,7 +27690,7 @@ begin
               Form1.Button10Click(Sender); // Fecha mesas na RZ  // Sandro Silva 2017-11-10 Polimig
 
               Screen.Cursor          := crHourGlass;    // Cursor de Aguardo
-              Form1.MesasAbertas1Click(Sender);
+              Form1.MesasAbertas1Click(Sender); // Lista as mesas abertas após a RZ
               Screen.Cursor          := crHourGlass;    // Cursor de Aguardo
               bFechandoMesasAposReducaoZ := True; // 2015-10-16
               //
@@ -27663,8 +27729,13 @@ begin
           BlocoXAlertarPendente1('REDUCAO', Form1.sNumeroDeSerieDaImpressora, True); // Sandro Silva 2017-11-09 Polimig
         end;
 
+        {Sandro Silva 2022-12-06 Início Unochapeco
+        ///
+        /// Fernando-Unochapeco orientou que pode ser gerado manualmente o estoque anual
+        ///
         BlocoXEstoque1(StrToDate('01' + FormatDateTime('/mm/yyyy', IncMonth(Date, -1))),
                       StrToDate(IntToStr(DaysInAMonth(YearOf(IncMonth(Date, -1)), MonthOf(IncMonth(Date, -1)))) + FormatDateTime('/mm/yyyy', IncMonth(Date, -1))), '');
+        }
         BlocoxTransmitirPendente1('ESTOQUE', ''); // Sandro Silva 2016-02-27
         BlocoXAlertarPendente1('ESTOQUE', '', True); // Sandro Silva 2019-09-23 UnoChapeco
         {Sandro Silva 2017-03-21 final}
@@ -28200,11 +28271,18 @@ procedure TForm1.BlocoXEstoque1(dtInicial: TDate; dtFinal: TDate;
 //
 // NÃO USAR COMMITATUDO() AQUI OU EM OUTRO PONTO DO BLOCOX
 //
+{
 var
   IBQDEMAIS: TIBQuery;
   IBQESTOQUE: TIBQuery;
   CursorOld: TCursor;
+}
 begin
+
+  (*{Sandro Silva 2022-12-06 Início Unochapeco}
+  ///
+  /// Fernando-Unochapeco orientou que pode ser gerado manualmente o estoque anual
+  ///
   if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   begin
 
@@ -28301,6 +28379,7 @@ begin
 
     end;
   end;
+  *)
 
 end;
 
@@ -32755,7 +32834,7 @@ begin
       if Form1.sModeloECF_Reserva = '99' then
         Imp.PrinterTexto(Imp.Linha, iMargemEsquerda, Build)
       else
-        Imp.PrinterTexto(Imp.Linha, iMargemEsquerda, 'Smallsoft Tecnologia - ' + Form1.sTipoDocumento2 + ' ' + Build);
+        Imp.PrinterTexto(Imp.Linha, iMargemEsquerda, 'Zucchetti Brasil - ' + Form1.sTipoDocumento2 + ' ' + Build); // Sandro Silva 2022-12-02 Unochapeco Imp.PrinterTexto(Imp.Linha, iMargemEsquerda, 'Smallsoft Tecnologia - ' + Form1.sTipoDocumento2 + ' ' + Build);
       Imp.Finalizar;
 
       Form1.lbOrientacaoPesagem.Caption := 'Retire o prato e pegue sua comanda...';

@@ -92,10 +92,10 @@ begin
   'a) Identificação da empresa desenvolvedora' + #13 +
     #13 +
     'CNPJ: ' + CNPJ_SOFTWARE_HOUSE_PAF + #13 +
-    'Razão Social: SMALLSOFT TECNOLOGIA EM INFORMÁTICA EIRELI' + #13 +
+    'Razão Social: ' + RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF + #13 +
     'Endereço: Rua Getúlio Vargas, 673, Centro 89700-019 - Concórdia-SC' + #13 +
     'Telefone: 049 3425 5800' + #13 +
-    'Contato: Ronei Ivo Weber' + #13 +
+    'Contato: Alessio Mainardi' + #13 +
     #13 +
     'Identificação do PAF-NFC-e' + #13 +
     #13 +
@@ -387,10 +387,10 @@ begin
     'a) Identificação da empresa desenvolvedora' + #13 +
     #13 +
     '1. CNPJ: ' + CNPJ_SOFTWARE_HOUSE_PAF + #13 +
-    '2. Razão Social: SMALLSOFT TECNOLOGIA EM INFORMÁTICA EIRELI' + #13 +
+    '2. Razão Social: ' + RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF + #13 +
     '3. Endereço: Rua Getúlio Vargas, 673, Centro 89700-019 - Concórdia-SC' + #13 +
     '4. Telefone: 049 3425 5800' + #13 +
-    '5. Contato: Ronei Ivo Weber' + #13 +
+    '5. Contato: Alessio Mainardi' + #13 +
     #13 +
     'b) Identificação do PAF-NFC-e' + #13 +
     #13 +
@@ -421,7 +421,7 @@ begin
                                 +chr(10)+'3 - Seu certificado pode estar vencido'
                                 +chr(10)+'4 - Seu certificado pode ser inválido'
                                 +chr(10)
-                                +chr(10)+'Certificados recomendados pela Smallsoft®'
+                                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
                                 +chr(10)+''
                                 +chr(10)+'1. Certificados SERASA'
                                 +chr(10)+'    * A1'
@@ -436,7 +436,7 @@ begin
                                 +chr(10)
                                 +chr(10)
                                 +chr(10)
-                                +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                                     'Atenção', MB_ICONWARNING + MB_OK);
 end;
 

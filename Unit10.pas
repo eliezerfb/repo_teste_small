@@ -626,11 +626,6 @@ begin
   Form1.IntegradorCE.ChaveRequisicao       := '';
   Form1.IntegradorCE.CodigoEstabelecimento := '';
 
-  {Sandro Silva 2022-02-16 inicio
-  if (LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '') <> 'CODIGO DE VINCULACAO AC DO MFE-CFE') // MFE ELGIN
-    and (LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '') <> 'SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT') // TANCA/BEMATECH
-  then
-  }
   if UsaKitDesenvolvimentoSAT = False then
   begin
     Form1.IntegradorCE.SerialPOS             := '';
@@ -648,15 +643,8 @@ begin
           begin
             Form1.IntegradorCE.ChaveRequisicao       := IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'Chave Requisicao', '');
             Form1.IntegradorCE.CodigoEstabelecimento := IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'ID Estabelecimento', '');
-            {Sandro Silva 2022-02-16 inicio
-            if (LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '') <> 'CODIGO DE VINCULACAO AC DO MFE-CFE') // MFE ELGIN
-              and (LerParametroIni('arquivoauxiliarcriptografadopafecfsmallsoft.ini', 'SAT-CFe', 'Assinatura Associada', '') <> 'SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT') // TANCA/BEMATECH
-             then // Usar o ID do Serial POS configurado quando não estiver usando Kit desenvolvimento
-              Form1.IntegradorCE.SerialPOS             := IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'Serial POS', '');
-             }
             if UsaKitDesenvolvimentoSAT = False then // Usar o ID do Serial POS configurado quando não estiver usando Kit desenvolvimento
               Form1.IntegradorCE.SerialPOS             := IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'Serial POS', '');
-             {Sandro Silva 2022-02-16 fim}
           end;
 
           Form1.sUltimaAdquirenteUsada := ListBox1.Items[ListBox1.ItemIndex];
