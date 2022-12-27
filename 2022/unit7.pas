@@ -3064,7 +3064,7 @@ begin
 end;
 
 
-/////////////////////////////////
+///////////////////////////////// x
 function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean;
 var
   s, sAntigo : String;
@@ -3092,7 +3092,8 @@ begin
       //
     end;
     //
-    if pNome = 'VENDA' then
+    //if pNome = 'VENDAS' then // Sandro Silva 2022-12-08 Unochapeco if pNome = 'VENDA' then
+    if pNome = 'VENDA' then // Precisa ser assim resolver 
     begin
       //
       sAntigo :=
@@ -3145,7 +3146,7 @@ begin
       VarToStr(DataSet.FieldByname('DATA_CANCEL').OldValue)+
       VarToStr(DataSet.FieldByname('HORA_CANCEL').OldValue)+
       VarToStr(DataSet.FieldByname('COD_SIT').OldValue)+
-      VarToStr(DataSet.FieldByname('FINNF').OldValue)+
+      VarToStr(DataSet.FieldByname('FINNFE').OldValue)+ // Sandro Silva 2022-12-08 Unochapeco VarToStr(DataSet.FieldByname('FINNF').OldValue)+
       VarToStr(DataSet.FieldByname('INDFINAL').OldValue)+
       VarToStr(DataSet.FieldByname('INDPRES').OldValue);
       s :=
@@ -3198,9 +3199,9 @@ begin
       DataSet.FieldByname('DATA_CANCEL').AsString+
       DataSet.FieldByname('HORA_CANCEL').AsString+
       DataSet.FieldByname('COD_SIT').AsString+
-      DataSet.FieldByname('FINNF').AsString+
+      DataSet.FieldByname('FINNFE').AsString+ // Sandro Silva 2022-12-08 Unochapeco DataSet.FieldByname('FINNF').AsString+
       DataSet.FieldByname('INDFINAL').AsString+
-      DataSet.FieldByname('INDPRES').AsString;
+      DataSet.FieldByname('INDPRES').AsString;  
       //
     end;
     //
@@ -3558,7 +3559,7 @@ begin
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
     //
 
-    if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then 
+    if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then
     begin
       sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
       sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
@@ -3582,16 +3583,20 @@ begin
       end else
       begin
         // Sandro Silva
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo))))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
         begin
           DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
         end;
+
       end;
       //
     end else
     begin
       // Sandro Silva
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))))
+        or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -13922,7 +13927,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -15501,7 +15506,7 @@ begin
   Mais1Ini.Free;
   //
   CriaJpg('logotip.jpg');
-  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '1.GRA SMALLSOFT','', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '1.GRA SMALL','', SW_SHOWMINNOACTIVE);
   //
   // Receitas
   //
@@ -15844,7 +15849,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -15920,7 +15925,7 @@ begin
   end;
   Mais1Ini.Free;
   CriaJpg('logotip.jpg');
-  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '11.GRA SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '11.GRA SMALL', '', SW_SHOWMINNOACTIVE);
   //
   // Receitas
   //
@@ -15952,7 +15957,7 @@ begin
     //
   end;
   Mais1Ini.Free;
-  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '13.GRA SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '13.GRA SMALL', '', SW_SHOWMINNOACTIVE);
   //
   // BANCOS
   //
@@ -15985,7 +15990,7 @@ begin
   end;
   //
   Mais1Ini.Free;
-  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '15.GRA SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'GRAFICOS.EXE', '15.GRA SMALL', '', SW_SHOWMINNOACTIVE);
   //
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
   Rewrite(F);                           // Abre para gravação
@@ -16258,7 +16263,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -16633,7 +16638,7 @@ end;
 procedure TForm7.MenuItem23Click(Sender: TObject);
 begin
   //
-  Form7.EnvioaoFISCOREDUOZ1.Visible := True;
+  // Sandro Silva 2022-12-02 Unochapeco Form7.EnvioaoFISCOREDUOZ1.Visible := True;
   ImprimiraNFemformulrionumerado1.Visible := True;
   ImprimirtodasasNFfiltradas1.Visible     := True;
   ImprimirNF3.Visible                     := True;
@@ -17078,7 +17083,7 @@ begin
 
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe',pChar(StrZero((year(Date)-iAno),4,0)+'.gra SMALLSOFT'), '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe',pChar(StrZero((year(Date)-iAno),4,0)+'.GRA SMALL'), '', SW_SHOWMINNOACTIVE);
     while not FileExists(StrZero((year(Date)-iAno),4,0)+'.png') do sleep(100);
     //
     WriteLn(F,'  </table>');
@@ -17097,7 +17102,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -17277,7 +17282,7 @@ begin
               //
               Mais1Ini.Free;
               //
-              ShellExecute( 0, 'Open', 'graficos.exe', pchar(AllTrim(Form7.ibDataSet12CONTA.AsString)+'.GRA SMALLSOFT'), '', SW_SHOWMINNOACTIVE);
+              ShellExecute( 0, 'Open', 'graficos.exe', pchar(AllTrim(Form7.ibDataSet12CONTA.AsString)+'.GRA SMALL'), '', SW_SHOWMINNOACTIVE);
               while not FileExists(AllTrim(Form7.ibDataSet12CONTA.AsString)+'.png') do sleep(10);
               WriteLn(F,'     <br><br><br><a href="'+Form1.sAtual+'\'+AllTrim(Form7.ibDataSet12CONTA.AsString)+'.png"><img src="'+AllTrim(Form7.ibDataSet12CONTA.AsString)+'.png" border="0" width=600 height=300></a>');
               //
@@ -17317,7 +17322,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -17759,7 +17764,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -18204,7 +18209,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -19295,7 +19300,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -19440,7 +19445,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -33783,7 +33788,6 @@ begin
     Form7.Panel7.Repaint;
     Screen.Cursor            := crDefault;
     //
-
   end;
   //
 end;
@@ -34346,7 +34350,7 @@ begin
       Application.MessageBox(pChar(chr(10) +'Aguarde, não é possível enviar esta NF-e no momento.'+Chr(10)+
       'Serviço Paralisado sem Previsão.'+Chr(10)+
       chr(10)+
-      'OBS: Tente ativar o modo SCAN (Configurações; Configuração da NF-e; (SCAN) Sistema de Contingência do Ambiente Nacional). Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+      'OBS: Tente ativar o modo SCAN (Configurações; Configuração da NF-e; (SCAN) Sistema de Contingência do Ambiente Nacional). Não ligue para o suporte técnico da Zucchetti® por este motivo.'),
       'Atenção',mb_Ok + MB_ICONWARNING);
       //
     end;
@@ -34357,7 +34361,7 @@ begin
       Application.MessageBox(pChar(chr(10) +'Aguarde, não é possível enviar esta NF-e no momento.'+Chr(10)+
       'Serviço Paralisado Momentaneamente (curto prazo).'+Chr(10)+
       chr(10)+
-      'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+      'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'),
       'Atenção',mb_Ok + MB_ICONWARNING);
       //
     end;
@@ -34388,7 +34392,7 @@ begin
         +chr(10)+'3 - Seu certificado pode estar vencido'
         +chr(10)+'4 - Seu certificado pode ser inválido'
         + chr(10)
-        +chr(10)+'Certificados recomendados pela Smallsoft®'
+        +chr(10)+'Certificados recomendados pela Zucchetti®'
         +chr(10)+''
         +chr(10)+'1. Certificados SERASA'
         +chr(10)+'    * A1'
@@ -34399,7 +34403,7 @@ begin
         +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
         +chr(10)
         +chr(10)
-        +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'),
         'Atenção',mb_Ok + MB_ICONWARNING);
         //
       end else
@@ -34417,7 +34421,7 @@ begin
         +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da NF-e; Disponibilidade dos Serviços)'
         + chr(10)
         + chr(10)
-        +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'),
         'Atenção',mb_Ok + MB_ICONWARNING);
         //
       end;
@@ -36812,7 +36816,7 @@ begin
 
   Mais1Ini.Free;
   //
-  ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_mes.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_mes.GRA SMALL', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_mes.png') do sleep(100);
   //
   // Média de dias de atraso ùltimos três meses
@@ -36882,7 +36886,7 @@ begin
 
   Mais1Ini.Free;
   //
-  ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_ano.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_ano.GRA SMALL', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_ano.png') do sleep(100);
   //
   // Fim grafico
@@ -36957,7 +36961,7 @@ begin
 
   Mais1Ini.Free;
   //
-  ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_tot.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_tot.GRA SMALL', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_tot.png') do sleep(100);
   //
   // Fim grafico
@@ -36999,7 +37003,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -37548,7 +37552,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -37715,7 +37719,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -37957,7 +37961,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -38967,7 +38971,7 @@ begin
       Form1.ibQuery1.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','faturamento.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','faturamento.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\faturamento.png') do sleep(10);
     WriteLn(F,'     <br><a href="'+Form1.sAtual+'\faturamento.png"><img src="faturamento.png" border="0" width=500 height=250></a>');
     //
@@ -39015,7 +39019,7 @@ begin
       Form1.ibQuery2.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','despesas.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','despesas.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\despesas.png') do sleep(10);
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\despesas.png"><img src="despesas.png" border="0" width=500 height=250></a>');
     //
@@ -39065,7 +39069,7 @@ begin
       Form1.ibQuery2.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','lucro.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','lucro.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\lucro.png') do sleep(10);
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\lucro.png"><img src="lucro.png" border="0" width=500 height=250></a>');
     //
@@ -39079,7 +39083,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -39322,10 +39326,10 @@ begin
         Mais1Ini.Free;
         Mais2Ini.Free;
         //
-        ShellExecute( 0, 'Open', 'graficos.exe', 'vendedores.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+        ShellExecute( 0, 'Open', 'graficos.exe', 'vendedores.GRA SMALL', '', SW_SHOWMINNOACTIVE);
         while not FileExists(Form1.sAtual+'\vendedores.png') do
           Sleep(100);
-        ShellExecute( 0, 'Open', 'graficos.exe', 'contatos.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+        ShellExecute( 0, 'Open', 'graficos.exe', 'contatos.GRA SMALL', '', SW_SHOWMINNOACTIVE);
         while not FileExists(Form1.sAtual+'\contatos.png') do
           Sleep(100);
         //
@@ -39354,7 +39358,7 @@ begin
       //
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
-        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
       end else
       begin
         WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -39839,7 +39843,7 @@ begin
       Form1.ibQuery1.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','faturamento.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','faturamento.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\faturamento.png') do sleep(10);
     WriteLn(F,'     <br><a href="'+Form1.sAtual+'\faturamento.png"><img src="faturamento.png" border="0" width=500 height=250></a>');
     //
@@ -39893,7 +39897,7 @@ begin
       Form1.ibQuery2.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','despesas.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','despesas.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\despesas.png') do sleep(10);
     WriteLn(F,'     <br><a href="'+Form1.sAtual+'\despesas.png"><img src="despesas.png" border="0" width=500 height=250></a>');
     //
@@ -39951,7 +39955,7 @@ begin
       Form1.ibQuery2.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','lucro.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','lucro.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\lucro.png') do sleep(10);
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\lucro.png"><img src="lucro.png" border="0" width=500 height=250></a>');
     //
@@ -39965,7 +39969,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -40125,7 +40129,7 @@ begin
       Form1.ibQuery1.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','faturamento.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','faturamento.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\faturamento.png') do sleep(10);
     WriteLn(F,'     <br><a href="'+Form1.sAtual+'\faturamento.png"><img src="faturamento.png" border="0" width=500 height=250></a>');
     //
@@ -40182,7 +40186,7 @@ begin
       Form1.ibQuery2.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','despesas.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','despesas.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\despesas.png') do sleep(10);
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\despesas.png"><img src="despesas.png" border="0" width=500 height=250></a>');
     //
@@ -40240,7 +40244,7 @@ begin
       Form1.ibQuery2.Next;
     end;
     //
-    ShellExecute( 0, 'Open', 'graficos.exe','lucro.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
+    ShellExecute( 0, 'Open', 'graficos.exe','lucro.GRA SMALL', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\lucro.png') do sleep(10);
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\lucro.png"><img src="lucro.png" border="0" width=500 height=250></a>');
     //
@@ -40254,7 +40258,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');

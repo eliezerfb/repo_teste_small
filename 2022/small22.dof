@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2022
+MajorVer=2023
 MinorVer=0
 Release=0
-Build=29
+Build=2
 Debug=0
 PreRelease=0
 Special=0
@@ -124,15 +124,15 @@ DLL=0
 Locale=1046
 CodePage=1252
 [Version Info Keys]
-CompanyName=Smallsoft Tecnologia Ltda
+CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Small Commerce
-FileVersion=2022.0.0.29
+FileVersion=2023.0.0.2
 InternalName=small22
-LegalCopyright=Smallsoft Tecnologia Ltda
-LegalTrademarks=Smallsoft Tecnologia Ltda
+LegalCopyright=Zucchetti Software e Sistemas Ltda
+LegalTrademarks=Zucchetti Software e Sistemas Ltda
 OriginalFilename=
 ProductName=Small Commerce
-ProductVersion=2022
+ProductVersion=2023
 Comments=tecnoaccount
 [Excluded Packages]
 C:\Program Files (x86)\Borland\Delphi7\Projects\Bpl\spdNFCe_D7.bpl=Tecnospeed - Pacote para o componente TspdNFCe

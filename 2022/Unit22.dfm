@@ -1,11 +1,11 @@
 object Form22: TForm22
-  Left = 343
-  Top = 177
+  Left = 152
+  Top = 39
   Align = alClient
   AlphaBlendValue = 200
   BorderIcons = []
   BorderStyle = bsNone
-  Caption = 'Smallsoft'
+  Caption = 'Zucchetti'
   ClientHeight = 694
   ClientWidth = 1295
   Color = clWhite

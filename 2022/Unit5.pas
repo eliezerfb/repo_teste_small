@@ -246,7 +246,7 @@ begin
     Sleep(5);
   end;
   //
-  ShellExecute( 0, 'Open', 'graficos.exe', pChar(sNome+'.gra SMALLSOFT'), '', SW_SHOWMINNOACTIVE);
+  ShellExecute( 0, 'Open', 'graficos.exe', pChar(sNome+'.gra SMALL'), '', SW_SHOWMINNOACTIVE);
   Result := True;
   //
 end;
