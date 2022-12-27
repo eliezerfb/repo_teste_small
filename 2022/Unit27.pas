@@ -480,7 +480,7 @@ begin
     //
 //    if (dFinal - dInicio) > 30 then
     begin
-      ShellExecute( 0, 'Open', 'graficos.exe', 'FLUXO.GRA SMALL', '', SW_SHOWMINNOACTIVE);
+      ShellExecute( 0, 'Open', 'graficos.exe', 'FLUXO.GRA SMALLSOFT', '', SW_SHOWMINNOACTIVE);
       while not FileExists(Form1.sAtual+'\fluxo.png') do sleep(100);
     end;
     //
@@ -498,7 +498,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="Verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="Verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="Verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');

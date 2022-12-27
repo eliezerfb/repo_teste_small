@@ -2268,7 +2268,7 @@ begin
             WriteLn(F,'     <center><a href="'+Form1.sAtual+'\vendedores.png"><img src="vendedores.png" border="0" width=800 height=400></a>');
             //
             Mais1Ini.Free;
-            ShellExecute( 0, 'Open', 'graficos.exe', 'vendedores.gra SMALL', '', SW_SHOWMINNOACTIVE);
+            ShellExecute( 0, 'Open', 'graficos.exe', 'vendedores.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
             while not FileExists(Form1.sAtual+'\vendedores.png') do sleep(100);
             //
             if Form1.bHtml1 then
@@ -5252,7 +5252,7 @@ begin
           //
           if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
           begin
-            WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+            WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
           end else
           begin
             WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');

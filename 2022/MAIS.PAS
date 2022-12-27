@@ -23,13 +23,9 @@ uses
   function MontaTela(sP1: Boolean): Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
 
-const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023002'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
-const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
-const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
-
-const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
-
+const BUILD_DO_BANCO = '20220010'; // Sandro Silva 2022-12-16 const BUILD_DO_BANCO = '2022008'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
+const CNPJ_SMALLSOFT = '07.426.598/0001-24'; 
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 const ValidacaoNova = True; //False;
 
@@ -420,6 +416,7 @@ type
 
   private
     { Private declarations }
+    procedure ExibeRazaoSocialNoCaptionDoForm;
 
   public
 
@@ -481,7 +478,9 @@ type
     function BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
       Shift: TShiftState): Word; // Sandro Silva 2022-10-18
     function ValidaEmitenteMunicipio: Boolean;
-
+    procedure ConfiguraCredencialTecnospeed;
+    function DisponivelSomenteParaNos: Boolean;
+    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;    
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -500,7 +499,7 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit42, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas;
+  uconstantes_chaves_privadas, ucredencialtecnospeed;
 
 {$R *.DFM}
 
@@ -1221,6 +1220,7 @@ var
   documentoAtivo: variant;
   sSerie, sInicio, s: String;
   bButton: Integer;
+  CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
   //
   Result := False;
@@ -1229,6 +1229,15 @@ begin
     //
     documentoAtivo := Form1.WebBrowser1.Document;
     s := documentoAtivo.Body.OuterHTML;
+
+    {Sandro Silva 2022-12-15 inicio}
+    CredencialTecnospeed := TCredenciaisTecnospeed.Create; // Sandro Silva 2022-12-15
+    CredencialTecnospeed.PrivateKey := Form1.sPasta;
+    CredencialTecnospeed.SalvaCredencial(Form1.sAtual, s);
+    CredencialTecnospeed.Free;
+    {Sandro Silva 2022-12-15 fim}
+
+
 //      ShowMessage(s);
 //      s := '[INICIO=15/08/2018]' + s;
     //
@@ -1843,7 +1852,7 @@ var
 begin
   //
   try
-    Mais2ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
+    Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
     sRazao := Form7.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17',RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
     if AnsiUpperCase(Right(Trim(sRazao), 4)) = 'LTDA' then
@@ -4009,7 +4018,7 @@ begin
   Form22.RichEdit1.Visible := True;
   Form22.Button1.Visible   := True;
   //
-  Mensagem22('Copyright© Zucchetti® 2005 - 2022'); Form22.Button1.Visible := True;
+  Mensagem22('Copyright© SmallSoft® 2005 - 2022'); Form22.Button1.Visible := True;
   Form22.ShowModal;
   //
   Form22.Label6.Visible    := True;
@@ -4050,13 +4059,12 @@ begin
   //
 end;
 
-
-
 procedure Tform1.EscolheOBloqueto(Sender:TObject);
 begin
   { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  with Sender as TMenuItem do sEscolhido := Caption;
+  with Sender as TMenuItem do
+    sEscolhido := Caption;
   sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   Form25.ShowModal;
   //
@@ -4066,10 +4074,11 @@ procedure Tform1.EscolheCNAB400(Sender:TObject);
 begin
   { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  with Sender as TMenuItem do sEscolhido := Caption;
+  with Sender as TMenuItem do
+    sEscolhido := Caption;
   sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   Form25.Show;
-  Form25.Button9.Click;
+  Form25.btnCNAB400.Click; // Sandro Silva 2022-12-23 Form25.Button9.Click;
   Form25.Close;
   //
   if Form1.sArquivoRemessa <> '' then
@@ -4086,10 +4095,11 @@ procedure Tform1.EscolheCNAB240(Sender:TObject);
 begin
   { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  with Sender as TMenuItem do sEscolhido := Caption;
+  with Sender as TMenuItem do
+    sEscolhido := Caption;
   sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   Form25.Show;
-  Form25.Button10.Click;
+  Form25.btnCNAB240.Click; // Sandro Silva 2022-12-23 Form25.Button10.Click;
   Form25.Close;
   //
   if Form1.sArquivoRemessa <> '' then
@@ -4292,7 +4302,7 @@ begin
         //
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\APF_DLL2.DLL'),          pChar(Form1.sAtual+'\APF_DLL2.DLL'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\BemaFI32.dll'),          pChar(Form1.sAtual+'\BemaFI32.dll'),false);
-        // Sandro Silva 2022-12-02 Unochapeco CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\blocox.exe'),            pChar(Form1.sAtual+'\blocox.exe'),false);
+        CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\blocox.exe'),            pChar(Form1.sAtual+'\blocox.exe'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\CONSULTA.exe'),          pChar(Form1.sAtual+'\CONSULTA.exe'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\CONVECF.dll'),           pChar(Form1.sAtual+'\CONVECF.dll'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\daruma1'),               pChar(Form1.sAtual+'\daruma1'),false);
@@ -4746,6 +4756,7 @@ procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
 begin
   FechaTudo(bFechaTudo);
   Form17.ShowModal;
+  ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15 
 end;
 
 procedure TForm1.Ajustararquivos1Click(Sender: TObject);
@@ -5046,6 +5057,7 @@ begin
          'e atende a legislação'+chr(10)+
          'do MEI');
   end;
+
   //
   Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
@@ -5244,7 +5256,7 @@ begin
     ShowMessage('Este sistema está licenciado somente para '+IntToStr(iR)+' usuários'+Chr(10)+
                 'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(10)+
                 'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
-                'em contato com a Zucchetti pelo 0800.645.2008');
+                'em contato com a SmallSoft.');
     // Form1.DestroyWindowHandle;
     Application.Terminate;
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
@@ -8268,6 +8280,124 @@ begin
       except
       end;
       {Sandro Silva 2022-10-25 fim}
+
+      {Sandro Silva 2022-12-16 inicio}
+      try
+        //
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE RECEBER ADD MOVIMENTO DATE'); // Armazena a data que o valor foi creditado na conta banco
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+        //
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('alter table RECEBER alter DOCUMENTO type varchar(11)'); // Para poder marcar as parcelas migradas da Smallsoft para Zucchetti durante a incorporação
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60), ADD IDENTIFICADOR VARCHAR(10), ADD CONTACONTABILIDADE VARCHAR(20)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE COMPRAS ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ESTOQUE ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ITENS001 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('ALTER TABLE ITENS003 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)'); // Para gerar relatórios contábeis
+        Form1.ibDataset200.Open;
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('commit');
+        Form1.ibDataset200.Open;
+        Form1.ibDataset200.Close;
+
+        //
+      except
+      end;
+      {Sandro Silva 2022-12-16 fim}
+
       //
       Form22.Repaint;
       Mensagem22('Aguarde...');
@@ -8387,6 +8517,11 @@ begin
     //
     Mensagem22('Aguarde atualizando promoção.');
     AtualizaPromocao(True);
+
+    {Sandro Silva 2022-12-15 inicio}
+    ExibeRazaoSocialNoCaptionDoForm;
+    {Sandro Silva 2022-12-15 fim}
+
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
@@ -8618,10 +8753,7 @@ begin
             //
             Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias' + chr(10) + chr(10) + Replicate('_',( (40 - StrToInt(FloatToStr(fDias)) ) +1 - I)));
             //
-            if I = 1 then
-              Sleep(2000)
-            else
-              Sleep(200);
+            if I = 1 then Sleep(2000) else Sleep(200);
             //
           end;
         end;
@@ -9420,7 +9552,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -10887,7 +11019,7 @@ begin
       //
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
-        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
       end else
       begin
         WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -10935,7 +11067,7 @@ begin
       //
       // WWW
       //
-      WriteLn(F,'Relatório gerado pelo sistema Small, www.smallsoft.com.br'); // Ok
+      WriteLn(F,'Relatório gerado pelo sistema Smallsoft, www.smallsoft.com.br'); // Ok
       WriteLn(F,'Através do seguinte comando SQL digitado pelo operador: '+Form1.ibDataSet200.SelectSQL.Text+' ');
       WriteLn(F,'Número de registros: '+IntToStr(J)+'');
       CloseFile(F);                                    // Fecha o arquivo
@@ -11299,7 +11431,7 @@ begin
       //
       ConfFoto    := Mais1Ini.ReadString('Mobile','Fotos','Sim');
       //
-      sPropaganda := Mais1Ini.ReadString('Outros','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
+      sPropaganda := Mais1Ini.ReadString('Outros','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Smallsoft.'+chr(10)+'www.smallsoft.com.br');
       //
       ConfLimite  := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 1.000,00'),'R$ ',''),'.',''),'.',''),'.',''));
       ConfIR      := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %'),' %',''),'.',''),'.',''),'.',''));
@@ -12044,12 +12176,16 @@ end;
 procedure TForm1.SelecionarCertificadoDigital1Click(Sender: TObject);
 var
   //
-  Mais1ini : TIniFile;
-  sCertificado : String;
+  Mais1ini: TIniFile;
+  sCertificado: String;
   //
 begin
   //
+  {Sandro Silva 2022-12-15 inicio
   Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
+  }
+  Form1.ConfiguraCredencialTecnospeed;
+  {Sandro Silva 2022-12-15 fim}
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
@@ -13007,7 +13143,7 @@ begin
       //
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
-        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+        WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
       end else
       begin
         WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -13055,7 +13191,7 @@ begin
       //
       // WWW
       //
-      WriteLn(F,'Relatório gerado pelo sistema Small, www.smallsoft.com.br'); // Ok
+      WriteLn(F,'Relatório gerado pelo sistema Smallsoft, www.smallsoft.com.br'); // Ok
       WriteLn(F,'Através do seguinte comando SQL CONNECT digitado pelo operador: '+Form1.ibDataSet1.SelectSQL.Text+' ');
       WriteLn(F,'Número de registros: '+IntToStr(J)+'');
       CloseFile(F);                                    // Fecha o arquivo
@@ -13423,7 +13559,7 @@ begin
   //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -13873,7 +14009,7 @@ begin
                     //
                     //
                     Mais1Ini.Free;
-                    ShellExecute( 0, 'Open', 'graficos.exe', 'orcamentos.gra SMALL', '', SW_SHOWMINNOACTIVE);
+                    ShellExecute( 0, 'Open', 'graficos.exe', 'orcamentos.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\orcamentos.png') do sleep(100);
                     //
                   except
@@ -13949,7 +14085,7 @@ begin
                     //
                     Mais1Ini.Free;
                     //
-                    ShellExecute( 0, 'Open', 'graficos.exe', 'PAGAR.gra SMALL', '', SW_SHOWMINNOACTIVE);
+                    ShellExecute( 0, 'Open', 'graficos.exe', 'PAGAR.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\PAGAR.png') do sleep(100);
                     //
                     Writeln(F,'<br><br><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -14028,7 +14164,7 @@ begin
                     //
                     Mais1Ini.Free;
                     //
-                    ShellExecute( 0, 'Open', 'graficos.exe', 'RECEBER.gra SMALL', '', SW_SHOWMINNOACTIVE);
+                    ShellExecute( 0, 'Open', 'graficos.exe', 'RECEBER.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\RECEBER.png') do sleep(100);
                     //
                     Writeln(F,'<br><br><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -14049,7 +14185,7 @@ begin
                 + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
                 + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
                 //
-                WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+                WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
                 WriteLn(F,'</html>');
                 //
                 CloseFile(F);                                    // Fecha o arquivo
@@ -15752,6 +15888,86 @@ begin
   except
   end;
   FreeAndNil(IBQMUNICIPIO);
+end;
+
+procedure TForm1.ConfiguraCredencialTecnospeed;
+var
+  CredencialTecnospeed: TCredenciaisTecnospeed;
+begin
+
+  Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');
+  
+  try
+    CredencialTecnospeed := TCredenciaisTecnospeed.Create;
+    CredencialTecnospeed.PrivateKey := Form1.sPasta;
+    CredencialTecnospeed.LeCredencial(Form1.sAtual);
+
+    if CredencialTecnospeed.CNJP <> '' then
+      Form7.spdNFe.ConfigurarSoftwareHouse(CredencialTecnospeed.CNJP, CredencialTecnospeed.Token);
+
+    //ShowMessage( CredencialTecnospeed.CNJP + #13 + CredencialTecnospeed.Token);
+
+    FreeAndNil(CredencialTecnospeed);
+  except
+  end;
+  //
+end;
+
+procedure TForm1.ExibeRazaoSocialNoCaptionDoForm;
+var
+  sCaption: String;
+  sEmpresa: String;
+begin
+  if Form7.ibDataSet13.Active then
+  begin
+    if (Form7.ibDataSet13.FieldByName('CGC').AsString = '07.426.598/0001-24') or (Form7.ibDataSet13.FieldByName('CGC').AsString = '03.916.076/0006-64') then
+    begin
+      sEmpresa := ' - [ ' + Form7.ibDataSet13.FieldByName('NOME').AsString + ' ' + Form7.ibDataSet13.FieldByName('CGC').AsString + ' ]';
+      sCaption := Form1.Caption;
+      if Pos(' - [', sCaption) > 0 then
+        sCaption := Copy(sCaption, 1, Pos(' - [', sCaption) - 1);
+      Form1.Caption := sCaption + sEmpresa;
+    end;
+  end;
+end;
+
+function TForm1.DisponivelSomenteParaNos: Boolean;
+// Controla campos, informações, colunas, dados, etc que ficam visíveis somente para uso interno
+var
+  IBQEMITENTE: TIBQuery;
+begin
+  Result := False;
+  IBQEMITENTE := Form7.CriaIBQuery(Form7.ibDataSet13.Transaction);
+  try
+    IBQEMITENTE.Close;
+    IBQEMITENTE.SQL.Text :=
+      'select CGC from EMITENTE';
+    IBQEMITENTE.Open;
+    Result := ((IBQEMITENTE.FieldByName('CGC').AsString = '07.426.598/0001-24') or (IBQEMITENTE.FieldByName('CGC').AsString = '03.916.076/0006-64'));
+  except
+  end;
+end;
+
+function TForm1.CampoDisponivelParaUsuario(sModulo: String; sCampo: String): Boolean;
+begin
+  Result := True;
+
+  if (sModulo = 'RECEBER') then
+  begin
+    if (AnsiUpperCase(sCampo) = 'MOVIMENTO') then
+    begin
+      Result := DisponivelSomenteParaNos;
+    end;
+  end;
+
+  if (sModulo = 'ESTOQUE') then
+  begin
+    if (AnsiUpperCase(sCampo) = 'IDENTIFICADORPLANOCONTAS') then
+    begin
+      Result := DisponivelSomenteParaNos;
+    end;
+  end;
+
 end;
 
 end.

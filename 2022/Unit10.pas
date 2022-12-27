@@ -2254,7 +2254,7 @@ begin
         //
         if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
         begin
-          WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+          WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
         end else
         begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -2312,7 +2312,7 @@ begin
           + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
           + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time));
           Writeln(F,'');
-          WriteLn(F,'Relatório gerado pelo sistema Small');
+          WriteLn(F,'Relatório gerado pelo sistema Smallsoft');
           WriteLn(F,'www.smallsoft.com.br');
           CloseFile(F);
           ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
@@ -2428,7 +2428,7 @@ begin
         //
         if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
         begin
-          WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+          WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
         end else
         begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -2485,7 +2485,7 @@ begin
           + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
           + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time));
           Writeln(F,'');
-          WriteLn(F,'Relatório gerado pelo sistema Small');
+          WriteLn(F,'Relatório gerado pelo sistema Smallsoft');
           WriteLn(F,'www.smallsoft.com.br');
           CloseFile(F);
           ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
@@ -2774,7 +2774,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -2863,7 +2863,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
@@ -6194,7 +6194,7 @@ begin
     //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     end else
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
