@@ -6,6 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, SmallFunc, Mask;
 
+const ID_TIPO_COBRANCA_ATUALIZA_BOLETOS = 10;
+
 type
   TForm40 = class(TForm)
     Memo1: TMemo;
@@ -59,6 +61,19 @@ begin
   //
   if Form7.sModulo = 'RECEBER' then
   begin
+     {Sandro Silva 2022-12-28 inicio}
+     if Form40.Tag = ID_TIPO_COBRANCA_ATUALIZA_BOLETOS then
+     begin
+       if FileExists(LimpaNome(Senhas.UsuarioPub)+'_cobranca3.txt') then
+       begin
+         Form40.Memo1.Lines.LoadFromFile(LimpaNome(Senhas.UsuarioPub)+'_cobranca3.txt')
+       end else
+       begin
+         if FileExists(Form1.sAtual+'\cobranca3.txt') then
+          Form40.Memo1.Lines.LoadFromFile('cobranca3.txt')
+       end;
+     end else
+     {Sandro Silva 2022-12-28 fim}
      if Form40.Tag = 9 then
      begin
        if FileExists(LimpaNome(Senhas.UsuarioPub)+'_cobranca2.txt') then
@@ -66,7 +81,8 @@ begin
          Form40.Memo1.Lines.LoadFromFile(LimpaNome(Senhas.UsuarioPub)+'_cobranca2.txt')
        end else
        begin
-         if FileExists(Form1.sAtual+'\cobranca2.txt') then Form40.Memo1.Lines.LoadFromFile('cobranca2.txt')
+         if FileExists(Form1.sAtual+'\cobranca2.txt') then
+           Form40.Memo1.Lines.LoadFromFile('cobranca2.txt')
        end;
      end else
      begin
@@ -75,7 +91,8 @@ begin
          Form40.Memo1.Lines.LoadFromFile(LimpaNome(Senhas.UsuarioPub)+'_cobranca.txt')
        end else
        begin
-         if FileExists(Form1.sAtual+'\cobranca.txt') then Form40.Memo1.Lines.LoadFromFile('cobranca.txt')
+         if FileExists(Form1.sAtual+'\cobranca.txt') then
+           Form40.Memo1.Lines.LoadFromFile('cobranca.txt')
        end;
      end;
   end else
@@ -89,7 +106,8 @@ begin
           Form40.Memo1.Lines.LoadFromFile(LimpaNome(Senhas.UsuarioPub)+'_WhatsApp1.txt');
         end else
         begin
-          if FileExists(Form1.sAtual+'\WhatsApp.txt') then Form40.Memo1.Lines.LoadFromFile('WhatsApp1.txt')
+          if FileExists(Form1.sAtual+'\WhatsApp.txt') then
+            Form40.Memo1.Lines.LoadFromFile('WhatsApp1.txt')
         end;
       end else
       begin
@@ -98,7 +116,8 @@ begin
           Form40.Memo1.Lines.LoadFromFile(LimpaNome(Senhas.UsuarioPub)+'_WhatsApp.txt');
         end else
         begin
-          if FileExists(Form1.sAtual+'\WhatsApp.txt') then Form40.Memo1.Lines.LoadFromFile('WhatsApp.txt')
+          if FileExists(Form1.sAtual+'\WhatsApp.txt') then
+            Form40.Memo1.Lines.LoadFromFile('WhatsApp.txt')
         end;
       end;
     end else
@@ -108,7 +127,8 @@ begin
         Form40.Memo1.Lines.LoadFromFile(LimpaNome(Senhas.UsuarioPub)+'_e-mail.txt');
       end else
       begin
-        if FileExists(Form1.sAtual+'\e-mail.txt') then Form40.Memo1.Lines.LoadFromFile('e-mail.txt')
+        if FileExists(Form1.sAtual+'\e-mail.txt') then
+          Form40.Memo1.Lines.LoadFromFile('e-mail.txt')
       end;
     end;
   end;

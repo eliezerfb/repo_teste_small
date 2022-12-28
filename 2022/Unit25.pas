@@ -31,7 +31,7 @@ type
     btnCNAB240: TBitBtn;
     btnCNAB400: TBitBtn;
     btnCriaImagemBoleto: TBitBtn;
-    CheckBox1: TCheckBox;
+    chkDataAtualizadaJurosMora: TCheckBox;
     procedure btnAnteriorClick(Sender: TObject);
     procedure btnProximoClick(Sender: TObject);
     procedure Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -44,7 +44,7 @@ type
     procedure btnCriaImagemBoletoClick(Sender: TObject);
     procedure btnEnviaEmailClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure CheckBox1Click(Sender: TObject);
+    procedure chkDataAtualizadaJurosMoraClick(Sender: TObject);
     procedure btnEnviaEmailTodosClick(Sender: TObject);
     procedure btnCNAB400Click(Sender: TObject);
     procedure btnCNAB240Click(Sender: TObject);
@@ -80,29 +80,38 @@ begin
   end;
 end;
 
-function CriaBoletoJpg(sP1: String) :Boolean;
+function CriaBoletoJpg(FileNameJpg: String) :Boolean;
 var
   jp: TJPEGImage;  //Requires the "jpeg" unit added to "uses" clause.
-  rRect : Trect;
+  rRect: Trect;
+  jpgTemp: String; // Sandro Silva 2022-12-28
 begin
   //
   try
+    jpgTemp := 'boleto_temp_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzz', Now) + '.tmp'; // Sandro Silva 2022-12-28
     //
     Form25.Image2.Width  := (Form25.Image1.Width  + 40) * 1;
     Form25.Image2.Height := (Form25.Image1.Height + 40) * 1;
     //
-    rRect.Top     := 20;
-    rRect.Left    := 20;
-    rRect.Bottom  := rRect.Top  + Form25.Image1.Picture.Graphic.Height;
-    rRect.Right   := rRect.Left + Form25.Image1.Picture.Graphic.Width;
+    rRect.Top    := 20;
+    rRect.Left   := 20;
+    rRect.Bottom := rRect.Top  + Form25.Image1.Picture.Graphic.Height;
+    rRect.Right  := rRect.Left + Form25.Image1.Picture.Graphic.Width;
     //
     Form25.Image2.Canvas.StretchDraw(rRect,Form25.Image1.Picture.Graphic);
     //
     jp := TJPEGImage.Create;
     jp.Assign(Form25.Image2.Picture.Bitmap);
     jp.CompressionQuality := 100;
-    jp.SaveToFile(sP1);
+    jp.SaveToFile(jpgTemp);
     jp.Free;
+
+    Sleep(250);
+
+    while FileExists(FileNameJpg) do
+      DeleteFile(FileNameJpg);
+
+    RenameFile(jpgTemp, FileNameJpg); // Sandro Silva 2022-12-28
     //
   except
   end;
@@ -221,7 +230,7 @@ begin
       //
     end;
     //
-    if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
+    if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
       //
       // Data atualizada com juros de mora
@@ -240,7 +249,7 @@ begin
     if Length(Form26.MaskEdit45.Text) <> 25 then
       Form26.MaskEdit45.Text := '0000000000000000000000000';
     //
-    if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
+    if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
       Form25.sNumero := LimpaNumero(
                           Copy(Form26.MaskEdit42.Text,1,3))+'9'+
@@ -459,7 +468,7 @@ begin
       //
       // Data atualizada com juros de mora
       //
-      if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
+      if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
       begin
         Impressao.TextOut(largura(-8+151-8),altura(14+iVia),Right(Replicate(' ',30)+DateToStr(DATE),16)); // Vencimento
       end else
@@ -638,7 +647,7 @@ begin
       //
       // Data atualizada com juros de mora
       //
-      if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
+      if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
       begin
         if (Form7.ibDataSet7VALOR_JURO.AsFloat - Form7.ibDataSet7VALOR_DUPL.AsFloat) >= 0.01 then
         begin
@@ -672,7 +681,7 @@ begin
           //
           // Data atualizada com juros de mora
           //
-          if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
+          if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
           begin
             Impressao.TextOut(largura(-8+010),altura(52+iVia),'VENCIMENTO ORIGINAL: '+Form7.ibDataSet7VENCIMENTO.AsString); // Texto
             Form25.Edit7.Visible := False;
@@ -862,7 +871,30 @@ begin
     Result     := True;
     //
   except
-    Result     := False;
+    on E: Exception do
+    begin
+      {Sandro Silva 2022-12-28 inicio}
+      if Form1.DisponivelSomenteParaNos then
+      begin
+        try
+          with TStringList.Create do
+          begin
+
+            if DirectoryExists(Form1.sAtual + '\log\Boletos') = False then
+              ForceDirectories(Form1.sAtual + '\log\Boletos');
+
+            Text := FormatDateTime('dd-mm-yyyy HH-nn-ss-zzz', Now) + ' Doc ' + Form7.ibDataSet7DOCUMENTO.AsString + ' ' + E.Message;
+            SaveToFile(Form1.sAtual + '\log\Boletos\' + FormatDateTime('dd-mm-yyyy HH-nn-ss-zzz', Now) + '-log-gerando-boleto-' + Form7.ibDataSet7DOCUMENTO.AsString + '.txt');
+            Free;
+
+          end;
+        except
+        end;
+      end;
+      {Sandro Silva 2022-12-28 fim}
+      Result     := False;
+    end;
+    
   end;
   //
   //
@@ -1040,10 +1072,10 @@ begin
       //
       if Mais1Ini.ReadString(Form1.sEscolhido,'Mora','Não') = 'Sim' then
       begin
-        Form25.CheckBox1.Checked := True;
+        Form25.chkDataAtualizadaJurosMora.Checked := True; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := True;
       end else
       begin
-        Form25.CheckBox1.Checked := False;
+        Form25.chkDataAtualizadaJurosMora.Checked := False; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := False;
       end;
       //
       Mais1Ini.Free;
@@ -1188,14 +1220,6 @@ begin
   Form25.Tag := 0; // Para saber se é impressão é na impressora
   CriaBoletoJPG('boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg');
   //
-  {Sandro Silva 2022-12-22 inicio
-
-  if Form1.DisponivelSomenteParaNos then
-  begin
-    Form25.GravaPortadorNossoNumCodeBar; não pode ser aqui
-  end;
-  {Sandro Silva 2022-12-22 fim}
-
 end;
 
 procedure TForm25.btnEnviaEmailClick(Sender: TObject);
@@ -1341,12 +1365,18 @@ begin
     Mais1Ini.WriteString(Form1.sEscolhido,'Livre',AllTrim(Form26.MaskEdit45.Text));  //     Campo livre
     Mais1Ini.WriteString(Form1.sEscolhido,'Mora','Não');
     //
-    if Form26.CheckBox1.State = cbChecked then Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Sim') else Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Não');
-    if Form26.CheckBox2.State = cbChecked then Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Sim') else Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Não');
+    if Form26.CheckBox1.State = cbChecked then
+      Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Sim')
+    else
+      Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Não');
+    if Form26.CheckBox2.State = cbChecked then
+      Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Sim')
+    else
+      Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Não');
     //
     // Data atualizada com juros de mora
     //
-    if (CheckBox1.Checked) then
+    if (chkDataAtualizadaJurosMora.Checked) then // Sandro Silva 2022-12-28 if (CheckBox1.Checked) then
     begin
       Mais1Ini.WriteString(Form1.sEscolhido,'Mora','Sim');
     end else
@@ -1361,7 +1391,7 @@ begin
   //
 end;
 
-procedure TForm25.CheckBox1Click(Sender: TObject);
+procedure TForm25.chkDataAtualizadaJurosMoraClick(Sender: TObject);
 begin
   Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
 end;

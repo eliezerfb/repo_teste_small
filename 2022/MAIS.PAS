@@ -3546,9 +3546,9 @@ begin
   //
 end;
 
-function AjustaRegistro(sP0, sP1 : String):Boolean;
+function AjustaRegistro(sP0, sP1: String):Boolean;
 var
-  sReg, sMax : String;
+  sReg, sMax: String;
 begin
   //
   Mensagem22('Aguarde ajustando arquivos '+sP0+'...');
@@ -3560,7 +3560,8 @@ begin
     Form1.ibDataset200.SelectSql.Add('create generator G_'+sP1+' ');
     Form1.ibDataset200.Open;
     //
-  except end;
+  except
+  end;
   //
   try
     //
@@ -3569,7 +3570,8 @@ begin
     Form1.ibDataset200.SelectSql.Add('create generator G_HASH_'+sP1+' ');
     Form1.ibDataset200.Open;
     //
-  except end;
+  except
+  end;
   //
   try
     //
@@ -3578,7 +3580,8 @@ begin
     Form1.ibDataset200.SelectSql.Add('set generator G_'+sP1+' to 0');
     Form1.ibDataset200.Open;
     //
-  except end;
+  except
+  end;
   //
   try
     //
@@ -3595,17 +3598,20 @@ begin
       //
       sReg := Form1.ibDataSet200.FieldByname('TOTALREG').AsString;
       //
-    except end;
+    except
+    end;
     //
     try
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('set generator G_HASH_'+sP1+' to '+sReg+' ');
       Form1.ibDataset200.Open;
-    except end;
+    except
+    end;
     //
     try
-      if Form7.IBTransaction1.Active then Form7.IBTransaction1.Commit;
+      if Form7.IBTransaction1.Active then
+        Form7.IBTransaction1.Commit;
     except
       ShowMessage('Erro ao criar REGISTRO em: '+sP1);
     end;
@@ -3618,21 +3624,25 @@ begin
         Form1.ibDataset200.SelectSql.Clear;
         Form1.ibDataset200.SelectSql.Add('update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
         Form1.ibDataset200.Open;
-      except end;
+      except
+      end;
       try
         Form1.ibDataset200.Close;
         Form1.ibDataset200.SelectSql.Clear;
         Form1.ibDataset200.SelectSql.Add('alter table '+sP1+' add constraint PK_'+sP1+' primary key (REGISTRO)');
         Form1.ibDataset200.Open;
-      except end;
+      except
+      end;
       //
       try
-        if Form7.IBTransaction1.Active then Form7.IBTransaction1.Commit;
+        if Form7.IBTransaction1.Active then
+          Form7.IBTransaction1.Commit;
       except
         ShowMessage('Erro ao criar Chave Primaria em: '+sP1);
       end;
       //
-    except end;
+    except
+    end;
     //
   except
     //
@@ -3648,7 +3658,8 @@ begin
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('set generator G_'+sP1+' to '+sMax);
       Form1.ibDataset200.Open;
-    except end;
+    except
+    end;
     //
   end;
   //
@@ -3657,7 +3668,8 @@ begin
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('create index '+sp1+'REGISTRO on '+sp1+'(REGISTRO)');
     Form1.ibDataset200.Open;
-  except end;
+  except
+  end;
   //
   Result := True;
   //
@@ -4024,7 +4036,7 @@ begin
   Form22.Button1.Visible   := True;
   //
   //Mensagem22('Copyright© SmallSoft® 2005 - 2022'); Form22.Button1.Visible := True;
-  Mensagem22('Copyright© Zucchetti® 2005 - 2022'); Form22.Button1.Visible := True;
+  Mensagem22('Copyright© Zucchetti® 2005 - 2023'); Form22.Button1.Visible := True;
   Form22.ShowModal;
   //
   Form22.Label6.Visible    := True;
@@ -4279,8 +4291,19 @@ begin
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
-    if Form7.ibDataSet13ESTADO.AsString = 'SC' then sPastaDoPaf := 'paf2022' else  sPastaDoPaf := 'paf2022'; //Sandro Silva 2018-11-29 if Form7.ibDataSet13ESTADO.AsString = 'SC' then sPastaDoPaf := 'paf2018_8' else  sPastaDoPaf := 'paf2018';
-    if not FileExists(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\bematech2\bemafi32.ini')) then sPastaDoPaf := 'paf2021';
+    {Sandro Silva 2022-12-28 inicio
+    if Form7.ibDataSet13ESTADO.AsString = 'SC' then
+      sPastaDoPaf := 'paf2022'
+    else
+      sPastaDoPaf := 'paf2022'; //Sandro Silva 2018-11-29 if Form7.ibDataSet13ESTADO.AsString = 'SC' then sPastaDoPaf := 'paf2018_8' else  sPastaDoPaf := 'paf2018';
+    }
+    sPastaDoPaf := 'paf2023';
+    if Form7.ibDataSet13ESTADO.AsString = 'SC' then
+      sPastaDoPaf := 'paf2022';
+    {Sandro Silva 2022-12-28 inicio} 
+
+    if not FileExists(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\bematech2\bemafi32.ini')) then
+      sPastaDoPaf := 'paf2022'; // Sandro Silva 2022-12-28 sPastaDoPaf := 'paf2021';
     //
     if FileExists(Form1.sAtual+'\'+sPastaDoPaf+'\paf.txt') then
     begin
@@ -4339,7 +4362,7 @@ begin
         //
         if not ((FileExists(pChar(Form1.sAtual+'\BlocoX\templates\SC\ped_enviar.xml'))) and (not FileExists(pChar(Form1.sAtual+'\BlocoX\blocox_servidores.xml')))) then
         begin
-          ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C xcopy "PAF2020\BlocoX" BlocoX/S/Y'), nil, SW_HIDE);
+          ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C xcopy "' + sPastaDoPaf + '\BlocoX" BlocoX/S/Y'), nil, SW_HIDE); // Sandro Silva 2022-12-28 ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C xcopy "PAF2020\BlocoX" BlocoX/S/Y'), nil, SW_HIDE);
         end;
         //
         ShowMessage('Software PAF-ECF para modelo do ECF '+sNomePAF+' configurado com sucesso.'+chr(10)+'Imprima uma identificação do PAF-ECF e confira o MD5 credenciado no seu estado.');
@@ -4749,8 +4772,9 @@ begin
   InstalaAtualizacao('pastanfse','6');
   InstalaAtualizacao('pastanfce','7');
   InstalaAtualizacao('pastadllsat','8');
-  InstalaAtualizacao('cdf_to','9');
+  // Sandro Silva 2022-12-28 InstalaAtualizacao('cdf_to','9');
   InstalaAtualizacao('paf2022_','10');
+  InstalaAtualizacao('paf2023_','10');// Sandro Silva 2022-12-28
   //
   if FileExists(Form1.sAtual+'\small.saas') then
   begin
@@ -4819,6 +4843,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
   //
+  {Sandro Silva 2022-12-28 inicio
   if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2022','2022.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
   begin
     ShowMessage('A build: '+Mais1Ini.ReadString('Geral','Build 2022','2022.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.');
@@ -4832,6 +4857,22 @@ begin
   begin
     Mais1Ini.WriteString('Geral','Build 2022',StrTran(Form22.sBuild,'Versão e Build:',''));
   end;
+  }
+  if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
+  begin
+    ShowMessage('A build: '+Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.');
+    Instalarpackcomasltimasalteraes1Click(Sender);
+    // Form1.DestroyWindowHandle;
+    Application.Terminate;
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName));
+  end;
+  //
+  if StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2020','2020.0.0.0'))) <> StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:',''))) then
+  begin
+    Mais1Ini.WriteString('Geral','Build 2023',StrTran(Form22.sBuild,'Versão e Build:',''));
+  end;
+  {Sandro Silva 2022-12-28 fim}
   //
   //
   if sLicenca = '' then iR := 2 else iR := 12;
@@ -8918,6 +8959,7 @@ end;
 procedure TForm1.Instalarpackcomasltimasalteraes1Click(Sender: TObject);
 begin
   //
+  {Sandro Silva 2022-12-28 inicio
   if FileExists(Form1.sAtual+'\smallcon.exe') then
   begin
     //
@@ -8935,6 +8977,26 @@ begin
                                              , '', SW_SHOW);
                                              //
   end;
+  }
+  if FileExists(Form1.sAtual+'\smallcon.exe') then
+  begin
+    //
+    ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
+                                                   '20231002.sma '+
+                                                   '20231003.sma '+
+                                                   '20231004.sma '+
+                                                   '20231005.sma '+
+                                                   '20231006.sma '+
+                                                   '20231007.sma '+
+                                                   '20231008.sma '+
+                                                   '20231009.sma '+
+                                                   'nfce2023.sma '+
+                                                   '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
+                                              '',
+                                              SW_SHOW);
+                                             //
+  end;
+  {Sandro Silva 2022-12-28 fim}
   //
   Winexec('TASKKILL /F /IM "smallcdf.exe"' , SW_HIDE ); // Timer2Timer
   Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // Timer2Timer
@@ -9934,7 +9996,14 @@ var
   iUsuariosAtivos: Integer;
   sResponsavelTecnico : String;
   Mais1ini : tIniFile;
+  iNumeroArquivo: Integer;
+  function NumeroArquivo(): String;
+  begin
+    Inc(iNumeroArquivo, 1);
+    Result := IntToStr(iNumeroArquivo);
+  end;
 begin
+  iNumeroArquivo := -1; // Sandro Silva 2022-12-28
   //
   Form22.Show;
   Form22.Repaint;
@@ -9942,7 +10011,7 @@ begin
   //
   Screen.Cursor := crHourGlass;
   //
-  Mensagem22('Aguarde ajustando arquivos 0...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     if Form7.ibDataSet39.Active then
@@ -9961,7 +10030,7 @@ begin
     end;
   end;
   //
-  Mensagem22('Aguarde ajustando arquivos 1...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   CommitaTudo(True); // bakcup Ok
   //
@@ -10005,11 +10074,11 @@ begin
   if iUsuariosAtivos = 1 then
   begin
     //
-    Mensagem22('Aguarde ajustando arquivos 2...');
+    Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
     //
     try
       //
-      Mensagem22('Aguarde ajustando arquivos 3...');
+      Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
       //
       Form7.IBDatabase1.Connected := False;
       //
@@ -10105,46 +10174,73 @@ begin
   except
   end;
   //
-  AjustaRegistro('5','CAIXA');
-  AjustaRegistro('6','ALTERACA');
-  AjustaRegistro('7','ORCAMENT');
-  AjustaRegistro('8','FLUXO');
-  AjustaRegistro('9','ITENSETI');
-  AjustaRegistro('10','GRUPO');
-  AjustaRegistro('11','GRADE');
-  AjustaRegistro('12','SERIE');
-  AjustaRegistro('13','COMPOSTO');
-  AjustaRegistro('14','USUARIOS');
-  AjustaRegistro('15','NOTA');
-  AjustaRegistro('16','CONFOS');
-  AjustaRegistro('17','TRANSPOR');
-  AjustaRegistro('18','ITENS001');
-  AjustaRegistro('19','VENDAS');
-  AjustaRegistro('20','ITENS002');
-  AjustaRegistro('21','COMPRAS');
-  AjustaRegistro('22','ITENS003');
-  AjustaRegistro('23','EMITENTE');
-  AjustaRegistro('24','ICM');
-  AjustaRegistro('25','BANCOS');
-  AjustaRegistro('26','MOVIMENT');
-  AjustaRegistro('27','RESUMO');
-  AjustaRegistro('28','VENDEDOR');
-  AjustaRegistro('29','CONVENIO');
-  AjustaRegistro('30','CONTAS');
-  AjustaRegistro('31','PAGAR');
-  AjustaRegistro('32','RECEBER');
-  AjustaRegistro('33','CLIFOR');
-  AjustaRegistro('34','OS');
-  AjustaRegistro('35','REDUCOES');
-  AjustaRegistro('36','ESTOQUE');
-  AjustaRegistro('37','PAGAMENT');
-  AjustaRegistro('38','DEMAIS');
-  AjustaRegistro('39','MUNICIPIOS');
-  AjustaRegistro('40','AUDIT0RIA');
-  AjustaRegistro('41','CODEBAR');
-  AjustaRegistro('42','NFCE');
+  AjustaRegistro(NumeroArquivo(),'CAIXA');
+  AjustaRegistro(NumeroArquivo(),'ALTERACA');
+  AjustaRegistro(NumeroArquivo(),'ORCAMENT');
+  AjustaRegistro(NumeroArquivo(),'FLUXO');
+  AjustaRegistro(NumeroArquivo(),'ITENSETI');
+  AjustaRegistro(NumeroArquivo(),'GRUPO');
+  AjustaRegistro(NumeroArquivo(),'GRADE');
+  AjustaRegistro(NumeroArquivo(),'SERIE');
+  AjustaRegistro(NumeroArquivo(),'COMPOSTO');
+  AjustaRegistro(NumeroArquivo(),'USUARIOS');
+  AjustaRegistro(NumeroArquivo(),'NOTA');
+  AjustaRegistro(NumeroArquivo(),'CONFOS');
+  AjustaRegistro(NumeroArquivo(),'TRANSPOR');
+  AjustaRegistro(NumeroArquivo(),'ITENS001');
+  AjustaRegistro(NumeroArquivo(),'VENDAS');
+  AjustaRegistro(NumeroArquivo(),'ITENS002');
+  AjustaRegistro(NumeroArquivo(),'COMPRAS');
+  AjustaRegistro(NumeroArquivo(),'ITENS003');
+  AjustaRegistro(NumeroArquivo(),'EMITENTE');
+  AjustaRegistro(NumeroArquivo(),'ICM');
+  AjustaRegistro(NumeroArquivo(),'BANCOS');
+  AjustaRegistro(NumeroArquivo(),'MOVIMENT');
+  AjustaRegistro(NumeroArquivo(),'RESUMO');
+  AjustaRegistro(NumeroArquivo(),'VENDEDOR');
+  AjustaRegistro(NumeroArquivo(),'CONVENIO');
+  AjustaRegistro(NumeroArquivo(),'CONTAS');
+  AjustaRegistro(NumeroArquivo(),'PAGAR');
+  AjustaRegistro(NumeroArquivo(),'RECEBER');
+  AjustaRegistro(NumeroArquivo(),'CLIFOR');
+  AjustaRegistro(NumeroArquivo(),'OS');
+  AjustaRegistro(NumeroArquivo(),'REDUCOES');
+  AjustaRegistro(NumeroArquivo(),'ESTOQUE');
+  AjustaRegistro(NumeroArquivo(),'PAGAMENT');
+  AjustaRegistro(NumeroArquivo(),'DEMAIS');
+  AjustaRegistro(NumeroArquivo(),'MUNICIPIOS');
+  AjustaRegistro(NumeroArquivo(),'AUDIT0RIA');
+  AjustaRegistro(NumeroArquivo(),'CODEBAR');
+  AjustaRegistro(NumeroArquivo(),'NFCE');
   //
-  Mensagem22('Aguarde ajustando arquivos 43...');
+  {Sandro Silva 2022-12-28 inicio}
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  //
+  // Ajusta generator para PK_SERIE da tabela SERIE, onde armazena o número de série usado no cadastro de produtos
+  try
+    //
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Clear;
+    Form1.ibQuery1.SQL.Add('select max(REGISTRO) from SERIE');
+    Form1.ibQuery1.Open;
+    sMax := Form1.ibQuery1.fieldByname('MAX').AsString;
+    //
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Clear;
+    Form1.ibQuery1.SQL.Add('set generator G_SERIE to 0'+sMax+' ');
+    Form1.ibQuery1.ExecSQL;
+
+    //ShowMessage('Teste 10243 ' + Form1.ibQuery1.SQL.Text);
+    //
+  except
+    on E: Exception do
+    begin
+      //ShowMessage('Teste 10243 ' + E.Message);
+    end;
+  end;
+  {Sandro Silva 2022-12-28 fim}
+  //
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10170,7 +10266,7 @@ begin
   //
   // NSU
   //
-  Mensagem22('Aguarde ajustando arquivos 43...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10193,7 +10289,7 @@ begin
   //
   // NF SERIE 1
   //
-  Mensagem22('Aguarde ajustando arquivos 44...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10216,7 +10312,7 @@ begin
   //
   // NF SERIE 2
   //
-  Mensagem22('Aguarde ajustando arquivos 45...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10254,30 +10350,40 @@ begin
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('set generator G_SERIE2 to 0'+copy(sMax,1,9)+' ');
     Form1.ibQuery1.ExecSQL;
-  except end;
+  except
+  end;
   //
-  Mensagem22('Aguarde ajustando arquivos 46...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
-  try
-    Form1.ibQuery1.Close;
-    Form1.ibQuery1.SQL.Clear;
-    Form1.ibQuery1.SQL.Add('create generator G_SERIE'+Form1.sSerieEspecial);
-    Form1.ibQuery1.ExecSQL;
-  except end;
+  if Trim(form1.sSerieEspecial) <> '' then // Sandro Silva 2022-12-22
+  begin
+    // Serie especial precisa existir. Do contrário irá alterar o generator errado, alterará o generator da tabela SERIE g_serie
+    try
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Clear;
+      Form1.ibQuery1.SQL.Add('create generator G_SERIE'+Form1.sSerieEspecial);
+      Form1.ibQuery1.ExecSQL;
+    except
+    end;
+    //
+    try
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Clear;
+      Form1.ibQuery1.SQL.Add('select max(NUMERONF) from VENDAS where NUMERONF like '+QuotedStr('%')+form1.sSerieEspecial+' ');
+      Form1.ibQuery1.Open;
+      sMax := Form1.ibQuery1.fieldByname('MAX').AsString;
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Clear;
+      Form1.ibQuery1.SQL.Add('set generator G_SERIE'+Form1.sSerieEspecial+' to 0'+copy(sMax,1,9)+' ');
+      Form1.ibQuery1.ExecSQL;
+
+      //ShowMessage('TESTE 10364 SERIE ESPECIAL "' + FORM1.sSerieEspecial + '" ' + Form1.ibQuery1.SQL.Text );
+
+    except
+    end;
+  end;
   //
-  try
-    Form1.ibQuery1.Close;
-    Form1.ibQuery1.SQL.Clear;
-    Form1.ibQuery1.SQL.Add('select max(NUMERONF) from VENDAS where NUMERONF like '+QuotedStr('%')+form1.sSerieEspecial+' ');
-    Form1.ibQuery1.Open;
-    sMax := Form1.ibQuery1.fieldByname('MAX').AsString;
-    Form1.ibQuery1.Close;
-    Form1.ibQuery1.SQL.Clear;
-    Form1.ibQuery1.SQL.Add('set generator G_SERIE'+Form1.sSerieEspecial+' to 0'+copy(sMax,1,9)+' ');
-    Form1.ibQuery1.ExecSQL;
-  except end;
-  //
-  Mensagem22('Aguarde ajustando arquivos 46...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10300,7 +10406,7 @@ begin
   //
   // OS
   //
-  Mensagem22('Aguarde ajustando arquivos 47...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10323,7 +10429,7 @@ begin
   //
   // CODIGO Código do produto no estoque
   //
-  Mensagem22('Aguarde ajustando arquivos 48...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10362,7 +10468,7 @@ begin
   //
   // Indices
   //
-  Mensagem22('Aguarde ajustando arquivos 49...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10387,7 +10493,7 @@ begin
   //
   // Indices
   //
-  Mensagem22('Aguarde ajustando arquivos 50...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10410,7 +10516,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 51...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10421,7 +10527,7 @@ begin
   //
   // Indices
   //
-  Mensagem22('Aguarde ajustando arquivos 52...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10437,7 +10543,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 53...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10455,7 +10561,7 @@ begin
   except end;
 }
   //
-  Mensagem22('Aguarde ajustando arquivos 54...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10471,7 +10577,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 55...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10486,7 +10592,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 56...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10495,7 +10601,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 57...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10504,7 +10610,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 58...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10513,7 +10619,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 59...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10522,7 +10628,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 60...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10531,7 +10637,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 61...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10540,7 +10646,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 62...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10549,7 +10655,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 63...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10558,7 +10664,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 64...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10567,7 +10673,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 65...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10576,7 +10682,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 66...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10599,7 +10705,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 67...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10608,7 +10714,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 68...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10617,7 +10723,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 69...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10626,7 +10732,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 70...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10635,7 +10741,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 71...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10646,7 +10752,7 @@ begin
   //
   // ALTERACA
   //
-  Mensagem22('Aguarde ajustando arquivos 72...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10655,7 +10761,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 73...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10664,7 +10770,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 74...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10673,7 +10779,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 75...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10682,7 +10788,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 76...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10691,7 +10797,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 77...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10700,7 +10806,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 78...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10709,7 +10815,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 79...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10725,7 +10831,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 80...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10734,7 +10840,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 81...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10743,7 +10849,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 82...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10752,7 +10858,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 83...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10761,7 +10867,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 84...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10770,7 +10876,7 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 85...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     Form1.ibQuery1.Close;
@@ -10779,30 +10885,30 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 86...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   Commitatudo(True);
   //
-  Mensagem22('Aguarde ajustando arquivos 87...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     AtivaTodosOsIndices(True);
   except end;
   //
-  Mensagem22('Aguarde ajustando arquivos 88...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   Commitatudo(True);
   //
-  Mensagem22('Aguarde ajustando arquivos 89...');
-  Mensagem22('Aguarde ajustando arquivos 90...');
-  Mensagem22('Aguarde ajustando arquivos 91...');
-  Mensagem22('Aguarde ajustando arquivos 92...');
-  Mensagem22('Aguarde ajustando arquivos 93...');
-  Mensagem22('Aguarde ajustando arquivos 94...');
-  Mensagem22('Aguarde ajustando arquivos 95...');
-  Mensagem22('Aguarde ajustando arquivos 96...');
-  Mensagem22('Aguarde ajustando arquivos 97...');
-  Mensagem22('Aguarde ajustando arquivos 98...');
-  Mensagem22('Aguarde ajustando arquivos 99...');
-  Mensagem22('Aguarde ajustando arquivos 100...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   try
     //
@@ -11131,16 +11237,17 @@ begin
   begin
     //
     ShowMessage('Seu sistema está muito lento.'+chr(10)+
-    chr(10)+
-    'Verifique'+chr(10)+
-    chr(10)+
-    '1 - Base de dados muito grande (Limpar movimento desnecessário).'+chr(10)+
-    '2 - Desempenho do ambiente de rede (Todas as placas configuradas no mínimo a 100 Mbps)'+chr(10)+
-    '3 - Memória e processamento (Quanto mais memória e processador melhor).'+chr(10)+
-    '4 - Vírus, spywere ou outro malwere (Atualize seu antivirus).'+chr(10)+
-    '5 - Outro software processando em segundo plano (Verifique os processos no gerenciador de tarefas).'+chr(10)+
-    chr(10)+
-    ' Nota: '+ StrZero(10-(((Time - tInicio)*10000*2)),5,2));
+      chr(10)+
+      'Verifique'+chr(10)+
+      chr(10)+
+      '1 - Base de dados muito grande (Limpar movimento desnecessário).'+chr(10)+
+      '2 - Desempenho do ambiente de rede (Todas as placas configuradas no mínimo a 100 Mbps)'+chr(10)+
+      '3 - Memória e processamento (Quanto mais memória e processador melhor).'+chr(10)+
+      '4 - Vírus, spywere ou outro malwere (Atualize seu antivirus).'+chr(10)+
+      '5 - Outro software processando em segundo plano (Verifique os processos no gerenciador de tarefas).'+chr(10)+
+      chr(10)+
+      ' Nota: '+ StrZero(10-(((Time - tInicio)*10000*2)),5,2)
+      );
     //
   end;
 end;

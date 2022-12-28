@@ -959,14 +959,14 @@ object Form25: TForm25
     Visible = False
     OnClick = btnCriaImagemBoletoClick
   end
-  object CheckBox1: TCheckBox
+  object chkDataAtualizadaJurosMora: TCheckBox
     Left = 480
     Top = 460
     Width = 217
     Height = 17
     Caption = 'Data atualizada com juros de mora'
     TabOrder = 11
-    OnClick = CheckBox1Click
+    OnClick = chkDataAtualizadaJurosMoraClick
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
     Left = 32
