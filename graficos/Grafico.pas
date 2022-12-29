@@ -1,6 +1,6 @@
-//
-// Projeto criado e compilado com XE6
-//
+///
+/// Projeto criado e compilado com XE6
+///
 unit Grafico;
 
 interface
@@ -8,7 +8,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   IniFiles, TeEngine, Series, ExtCtrls, TeeProcs, Chart, Menus, StdCtrls,
-  Printers, smallfunc_graficos, ComCtrls, VclTee.TeeGDIPlus, pngImage;
+  Printers, smallfunc, ComCtrls, VclTee.TeeGDIPlus, pngImage;
 
 type
   TForm1 = class(TForm)
@@ -377,7 +377,7 @@ begin
 
    if Chart1.Series[ 0 ] is TPieSeries then
    begin
-
+    Chart1.chart3dpercent := 20;
   	( Chart1.Series[ 0 ] as TPieSeries ).Circled          := True;
   	( Chart1.Series[ 0 ] as TPieSeries ).Shadow.Visible   := False;
   	( Chart1.Series[ 0 ] as TPieSeries ).Marks.FontSeriesColor := False; // Fonte da cor d serie
@@ -396,7 +396,8 @@ begin
     ( Chart1.Series[ 0 ] as TPieSeries ).PiePen.Fill.Gradient.Midcolor   := clWhite;
     ( Chart1.Series[ 0 ] as TPieSeries ).PiePen.Fill.Gradient.Startcolor := clBlack;
     ( Chart1.Series[ 0 ] as TPieSeries ).GradientBright       := 33;
-    ( Chart1.Series[ 0 ] as TPieSeries ).Pen.Width            := Abs(Form1.Chart1.Title.Font.Size div 8);
+    ( Chart1.Series[ 0 ] as TPieSeries ).Pen.Width            := Abs(Form1.Chart1.Title.Font.Size div 15);
+
 
     Form1.Chart1.Chart3DPercent         := 13; //aumenta 3d do grafico... influencia na altura
     Form1.Chart1.Series[0].Transparency := 33;
@@ -411,33 +412,33 @@ begin
    //
    if Chart1.Series[ 0 ] is TBarSeries then
    begin
-    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Visible := False; // True; // Contorno
+    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Visible := True; // Contorno
     ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.Visible    := True; // Contorno gradiente
 
-    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.EndColor   := ClBlack; // IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255)-10; //clBlack; // IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); //2020-07-20 clSilver;// clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
-    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.Midcolor   := $007E7E7E; // $00484848; //IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255)-20; //clBlack; // clWhite;// clBtnFace; // 2018-10-04 clBlack; //2018-10-04 clWhite;
-    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.Startcolor := $00C7C7C7; // $007E7E7E; //IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255)-30; // clBlack; // IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); //2020-07-20 clSilver;// clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
+    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.EndColor   := IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); //2020-07-20 clSilver;// clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
+    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.Midcolor   := clWhite;// clBtnFace; // 2018-10-04 clBlack; //2018-10-04 clWhite;
+    ( Chart1.Series[ 0 ] as TBarSeries ).BarPen.Fill.Gradient.Startcolor := IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); //2020-07-20 clSilver;// clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
     ( Chart1.Series[ 0 ] as TBarSeries ).Pen.Width                       := Abs(Form1.Chart1.Title.Font.Size div 8); // 1; // 2018-10-04 Abs(Form1.Chart1.Title.Font.Size div 30); // 15);
 
     Chart1.BottomAxis.Grid.Visible := False;
 
-    Form1.Chart1.Chart3DPercent         := 33; // aumenta 3d do grafico... influencia na altura
-    Form1.Chart1.Series[0].Transparency := 10; // 2020
-    Form1.Chart1.Series[1].Transparency := 10; // 2020
+    Form1.Chart1.Chart3DPercent         := 33; //aumenta 3d do grafico... influencia na altura
+    Form1.Chart1.Series[0].Transparency := 33; // 2018-10-04 20;
+    Form1.Chart1.Series[1].Transparency := 33; // 2018-10-04 20;
 
    end;
 
    if Chart1.Series[ 0 ] is TLineSeries then
    begin
-    ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Visible := false; // True; // Contorno
+    ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Visible := True; // Contorno
     ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Fill.Gradient.Visible    := True; // Contorno gradiente
-    ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Fill.Gradient.EndColor   := clBlack; // IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2020-07-20 clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
+    ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Fill.Gradient.EndColor   := IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2020-07-20 clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
     ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Fill.Gradient.Midcolor   := clWhite;
-    ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Fill.Gradient.Startcolor := clBlack; // IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2020-07-20 clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
-    ( Chart1.Series[ 0 ] as TLineSeries ).Pen.Width                        := Abs(Form1.Chart1.Title.Font.Size div 8);
+    ( Chart1.Series[ 0 ] as TLineSeries ).LinePen.Fill.Gradient.Startcolor := IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2020-07-20 clBlack; //2018-10-04 IniFile.ReadInteger(ProgramaQueChamou,'CorS1',255); // 2018-10-03 $00E6BE78;
+    ( Chart1.Series[ 0 ] as TLineSeries ).Pen.Width                        := Abs(Form1.Chart1.Title.Font.Size div 10);
 
     Chart1.BottomAxis.Grid.Visible := False;
-    Form1.Chart1.Chart3DPercent         := 13; //aumenta 3d do grafico... influencia na altura
+    Form1.Chart1.Chart3DPercent         := 33; //aumenta 3d do grafico... influencia na altura
     Form1.Chart1.Series[0].Transparency := 10;
     Form1.Chart1.Series[1].Transparency := 10;
 

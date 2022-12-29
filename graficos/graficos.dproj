@@ -3,11 +3,11 @@
         <ProjectGuid>{7B065101-659D-4510-BB84-8BD59891111B}</ProjectGuid>
         <MainSource>graficos.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
-        <ProjectVersion>18.2</ProjectVersion>
+        <ProjectVersion>19.3</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -26,6 +26,12 @@
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
@@ -55,13 +61,17 @@
         <DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
-        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <Icon_MainIcon>graficos_Icon5.ico</Icon_MainIcon>
+        <VerInfo_MajorVer>2022</VerInfo_MajorVer>
+        <VerInfo_Build>3</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Smallsoft Tecnologia;FileDescription=Gerador de gráficos;FileVersion=2022.0.0.3;InternalName=graficos.exe;LegalCopyright=Smallsoft Tecnologia;LegalTrademarks=Smallsoft Tecnologia;OriginalFilename=graficos.exe;ProductName=graficos.exe;ProductVersion=2022.0.0.3;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
@@ -73,36 +83,46 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_MajorVer>2023</VerInfo_MajorVer>
+        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Gerador de gráficos;FileVersion=2023.0.0.2;InternalName=graficos.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=graficos.exe;ProductName=graficos.exe;ProductVersion=2023.0.0.2;Comments=;ProgramID=smallsoft.com.br.$(MSBuildProjectName)</VerInfo_Keys>
+        <Manifest_File>smallsoft.manifest</Manifest_File>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_Optimize>false</DCC_Optimize>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <BT_BuildType>Debug</BT_BuildType>
         <Debugger_RunParams>VendasPorVendedorG.GRA</Debugger_RunParams>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <Icon_MainIcon>graficos_Icon5.ico</Icon_MainIcon>
-        <VerInfo_Keys>CompanyName=Smallsoft;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(ModuleName);FileDescription=$(ModuleName);ProductName=$(ModuleName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Smallsoft Tecnologia;FileVersion=2022.0.0.3;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2022.0.0.3;Comments=;ProgramID=smallsoft.com.br.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_MajorVer>2022</VerInfo_MajorVer>
+        <VerInfo_Build>3</VerInfo_Build>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="smallfunc_graficos.pas"/>
         <DCCReference Include="Grafico.pas">
             <Form>Form1</Form>
         </DCCReference>
-        <BuildConfiguration Include="Debug">
-            <Key>Cfg_2</Key>
-            <CfgParent>Base</CfgParent>
-        </BuildConfiguration>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
     </ItemGroup>
@@ -115,10 +135,7 @@
                     <Source Name="MainSource">graficos.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k200.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp200.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k200.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp200.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

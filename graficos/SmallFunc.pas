@@ -1,0 +1,1906 @@
+unit SmallFunc;
+
+// C4Funcoes.pas Ronei
+
+interface
+
+uses
+  SysUtils,
+  {$IFDEF VER150}// – Delphi 7
+  BDE,DBTables,
+  {$ENDIF}
+  DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml, msxmldom, XMLDoc;
+
+//  function SMALL_IE(sNumero:String;UF:String):Boolean;
+  function DateToStrInvertida(Data:TdateTime): String;
+  function SMALL_Tempo(pP1:Integer):Integer;
+  function Potencia(pP1,pP2:Integer):Integer;
+  function IntToBin(pP1:Integer ):String;
+  function BinToInt(pP1:String ):Integer;
+  function AllTrim(pP1:String):String;
+  function AllTrimCHR(pP1:String; pP2:String):String;
+  function RTrim(pP1:String):String;
+  function PrimeiraMaiuscula(pP1:String):String;
+  function Replicate(pP1:String; pP2:Integer):String;
+  function LimpaNumero(pP1:String):String;
+  function LimpaLetras(pP1:String):String;
+  function LimpaNome(pP1:String):String;
+  function LimpaLetrasPor_(pP1:String):String;
+  function CpfCgc(pP1:String):boolean;
+  function ConverteCpfCgc(pP1:String):String;
+  function ConverteAcentos(pP1:String):String;
+  function ConverteAcentos2(pP1:String):String;
+  function ConverteAcentos3(pP1:String):String;
+  function ConverteAcentosIBPT(pP1:String):String;
+  function ConverteAcentosPHP(pP1:String):String;
+  function Bisexto(AAno: Integer): Boolean;
+  function DiasPorMes(AAno, AMes: Integer): Integer;
+  function DiasDesteMes: Integer;
+  function Year(Data:TdateTime): Integer;
+  function Month(Data:TdateTime): Integer;
+  function Day(Data:TdateTime): Integer;
+  {Numeric Formatting}
+  function AllDigits(S: String): Boolean;
+  function TrocaVirgula(S: String): String;
+  function Right(S : String; numCaracteres : Byte) : String;
+  function StrTran(sP1,sP2,sP3 : string):String; ///
+  function StrTranUpper(sP1,sP2,sP3 : string):String;
+  function StrZero(Num : Double ; Zeros,Deci: integer): string; ///
+  function Extenso(pP1:double):String;
+  function MesExtenso(pP1:Integer):String;
+  function DiaUtil(pP1:TDateTime): Boolean;
+  function DiasUteisDoMes(AAno, AMes: Integer): Integer;
+  function DiasUteisDoPeriodo(pP1, pP2: TDateTime): Integer;
+  function SomaDias(Data: TDateTime; Dias: Integer): TDateTime;
+  function IsPrinter(X:Byte):Boolean;
+  function PrinterOnLine:Boolean;
+  function Cartao(pP1:String):Boolean;
+  function Modulo_11(pP1:String):String;
+  function Modulo_11_Febraban(pP1:String):String;
+  Function Modulo_11_BB(pP1:String):String;
+  function Modulo_Duplo_Digito_Banrisul(pP1:String):String;
+  function Modulo_10(pP1:String):String;
+  function SMALL_NumeroDeCores:integer;
+  function VerificaSeTemImpressora():Boolean;
+  function SMALL_2of5(sP : String): String;
+  function SMALL_2of5_2(sP : String): String;
+  function Arredonda(fP1 : Real; iP2 : Integer): Real;
+  function LimpaNumeroDeixandoAVirgula(pP1:String):String;
+  function LimpaNumeroDeixandoOponto(pP1:String):String;
+  function DiaDaSemana(pP1:TDateTime):String;
+  function RetornaOperadora(sNumero: String): String;
+  function WinVersion: string;
+  function CorrentPrinter :String; //Declare a unit Printers na clausula uses
+  function FormataCpfCgc(pP1:String):String;
+  function FormataCEP(P1:String) : String;
+  function FORMATA_TELEFONE(Fone:String):String;
+  function ZeroESQ(sP1 : string):String;
+  function LimpaNumeroVirg(pP1:String):String;
+  function LimpaNumeroDeixandoABarra(pP1:String):String;
+  function ValidaEAN13(sP1:String):Boolean;
+  function xmlNodeValue(sXML: String; sNode: String): String;
+  function TruncaDecimal(pP1: Real; pP2: Integer): Real;
+
+
+implementation
+
+function TruncaDecimal(pP1: Real; pP2: Integer): Real;
+begin
+  Result := pP1;
+end;
+
+function xmlNodeValue(sXML: String; sNode: String): String;
+{Sandro Silva 2012-02-08 inicio
+Extrai valor do elemento no xml}
+var
+  XMLDOM: IXMLDOMDocument;
+  iNode: Integer;
+  xNodes: IXMLDOMNodeList;
+begin
+  XMLDOM := CoDOMDocument.Create;
+  XMLDOM.loadXML(sXML);
+  Result := '';
+  xNodes := XMLDOM.selectNodes(sNode);
+  for iNode := 0 to xNodes.length -1 do
+  begin
+    Result := xNodes.item[iNode].text;
+  end;
+  XMLDOM := nil;
+end;
+
+
+function LimpaNumeroVirg(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(Copy(pP1,I,1),'0123456789,.') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+
+function ZeroESQ(sP1 : string):String;
+begin
+   if sp1 <> '' then
+   Result := FLOATTOSTR(STRTOFLOAT(LimpaNumeroVirg('0'+sP1)))
+   else
+   Result := '';
+end;
+ 
+function FORMATA_TELEFONE(Fone:String):String;
+var
+  sFon : String;
+begin
+    if LimpaNumero(Fone) <> '0' then
+    begin
+      sFon := ZeroESQ( LimpaNumero(Fone));
+      If Length(sFon) > 10 then
+      begin
+//        Fone :='';
+        if Pos(',',sFon)>0 then
+          sFon := LimpaNumero(Copy(sFon,1,11))
+        else
+          sFon := LimpaNumero(Copy(sFon,1,10));
+        ////
+        sFon := trim('(0xx'+Copy(sFon,1,2)+')'+Copy(sFon,3,15));
+        Fone := sFon;
+      end else
+      If Length(sFon) = 10 then
+      begin
+        sFon := trim('(0xx'+Copy(sFon,1,2)+')'+Copy(sFon,3,15));
+        Fone := sFon;
+      end else
+      If Length(sFon) = 9 then
+      begin
+        sFon := trim('(0xx'+Copy(sFon,1,2)+') '+Copy(sFon,3,15));
+        Fone := sFon;
+      end else
+      begin
+      If Length(sFon) < 9 then
+        sFon := trim('(0xx00)'+Copy(sFon,1,15));
+        Fone := sFon;
+      end;
+    end;
+  Result := Fone;
+end;
+
+
+function FormataCEP(P1:String) : String;
+begin
+  P1 := LimpaNumero(P1);
+  P1 := Copy(P1,1,5)+'-'+Copy(P1,6,3);
+  Result := P1;
+end;
+
+
+function FormataCpfCgc(pP1:String):String;
+begin
+   pP1 := LimpaNumero(pP1);
+   if length(pP1)=14 then
+      Result:=Copy(pP1,1,2)+'.'+
+                  Copy(pP1,3,3)+'.'+
+                  Copy(pP1,6,3)+'/'+
+                  Copy(pP1,9,4)+'-'+
+                  Copy(pP1,13,2)
+   else
+      Result:=Copy(pP1,1,3)+'.'+
+                  Copy(pP1,4,3)+'.'+
+                  Copy(pP1,7,3)+'-'+
+                  Copy(pP1,10,2);
+end;
+
+
+
+
+function DateToStrInvertida(Data:TdateTime): String;
+begin
+  Result := Copy(DateToStr(Data),7,4)+'/'+Copy(DateToStr(Data),4,2)+'/'+Copy(DateToStr(Data),1,2);
+end;
+
+function Modulo_11(pP1:String):String;
+var
+   Acumulado,I,Controle:integer;
+begin
+   //acumula a soma da multiplicação dos digitos
+   try
+     Pp1:=alltrim(pP1);
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(Pp1) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=2;
+     end;
+     //calcula o digito
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado = 10) or (Acumulado = 11)  then Acumulado:=0;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+   except Result :='0' end;
+end;
+
+Function Modulo_11_Febraban(pP1:String):String;
+var
+   Acumulado,I,Controle:integer;
+begin
+   try
+     {acumula a soma da multiplicação dos digitos}
+     Pp1:=alltrim(pP1);
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(Pp1) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=2;
+     end;
+     {calcula o digito}
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado > 9) or (Acumulado < 1) then Acumulado := 1;
+     {devolve o digito de controle}
+     Result:=IntToStr(Acumulado);
+   except Result :='0' end;
+end;
+
+Function Modulo_11_BB(pP1:String):String;
+var
+   Acumulado,I,Controle:integer;
+begin
+  try
+    {acumula a soma da multiplicação dos digitos}
+    Pp1:=alltrim(pP1);
+    Controle:=2;
+    Acumulado:=0;
+    for I:=length(Pp1) downto 1 do
+    begin
+      Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+      Controle := Controle + 1;
+      if Controle > 9 then Controle:=2;
+    end;
+    {calcula o digito}
+    Acumulado:=11-(Acumulado mod 11);
+    if Acumulado = 10 then
+    begin
+    Result := 'X';
+    end else
+    begin
+     if Acumulado = 11 then Acumulado:=0;
+     {devolve o digito de controle}
+     Result:=IntToStr(Acumulado);
+    end;
+  except Result :='0' end;
+end;
+
+function Modulo_Duplo_Digito_Banrisul(pP1:String):String;
+var
+  J, Z : Integer;
+  Acumulado,I,Controle:integer;
+  Primeiro_digito : String;
+begin
+  try
+    //
+    // Modulo 10
+    //acumula a soma da multiplicação dos digitos
+    //
+    J := 0;
+    Z := 2;
+    for I := Length(pP1) downto 1 do
+    begin
+     //
+     try
+       J  := J  + StrToInt(Copy(IntToStr( StrToInt(Copy(pP1,I,1)) * Z ),1,1));
+       J  := J  + StrToInt(Copy(IntToStr( StrToInt(Copy(pP1,I,1)) * Z )+'0',2,1));
+     except end;
+     if Z = 2 then Z := 1 else Z:= 2;
+     //
+    end;
+    //
+    J  := 10 - (J  mod 10);
+    if (J  = 10) then J := 0;
+    {devolve o digito de controle}
+    Primeiro_Digito := IntToStr(J);
+    Controle  :=2;
+    Acumulado :=0;
+    for I:=length(Pp1 + Primeiro_Digito) downto 1 do
+    begin
+      Acumulado:=Acumulado + (StrToInt(Copy(Pp1 + Primeiro_Digito,I,1))*Controle);
+      Controle := Controle + 1;
+      if Controle > 7 then Controle:=2;
+    end;
+    Acumulado:=11-(Acumulado mod 11);
+    if (Acumulado = 10) or (Acumulado = 11) then
+    begin
+     Primeiro_Digito := IntToStr((StrToInt(Primeiro_Digito) + 1));
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(Pp1 + Primeiro_Digito) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(Pp1 + Primeiro_Digito,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 7 then Controle:=2;
+     end;
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado = 10) or (Acumulado = 11)  then Acumulado:=0;
+    end;
+    //
+    Result := Primeiro_Digito + IntToStr(Acumulado);
+    //
+  except Result :='0' end;
+end;
+
+
+
+Function Modulo_10(pP1:String):String;
+var
+  I, J, Z : Integer;
+begin
+  try
+    {acumula a soma da multiplicação dos digitos}
+    J := 0;
+    Z := 2;
+    for I := Length(pP1) downto 1 do
+    begin
+     //
+     try
+       J  := J  + StrToInt(Copy(IntToStr( StrToInt(Copy(pP1,I,1)) * Z ),1,1));
+       J  := J  + StrToInt(Copy(IntToStr( StrToInt(Copy(pP1,I,1)) * Z )+'0',2,1));
+     except end;
+     if Z = 2 then Z := 1 else Z:= 2;
+     //
+    end;
+    //
+    J  := 10 - (J  mod 10);
+    if (J  = 10) then J := 0;
+    {devolve o digito de controle}
+    Result:= IntToStr(J);
+  except Result :='0' end;
+end;
+
+function Potencia(pP1,pP2:Integer):Integer;
+var
+  i:integer;
+begin
+//  Result:=0;
+  if pP2=0 then
+    Result:=1
+  else
+     if pP2=1 then
+        Result:= pP1
+     else
+       begin
+         Result:=pP1;
+         For i:= 1 to pP2-1 do Result:=Result*pP1;
+       end;
+end;
+{egin
+  Result:=Trunc(Exp(Ln(pP1)*(pP2)));
+end;}
+
+Function IntToBin(pP1:Integer ):String;
+begin
+   Result := '';
+   while pP1 >= 2 do
+   begin
+     Result := IntToStr( pP1 - pP1 div 2 * 2 ) +  Result;
+     pP1 := pP1 div 2;
+   end;
+   Result:= IntToStr(pP1) + Result;
+end;
+
+Function BinToInt(pP1:String ):Integer;
+var
+  I:integer;
+  sTemp:String;
+begin
+   Result := 0 ;
+   sTemp:='';
+   // inverte
+   for I:= 1 to length(pP1) do sTemp:=Copy(pP1,I,1)+sTemp;
+   for I:= 1 to length(sTemp) do
+   begin
+     if Result >= 0 then
+       if (StrToInt(Copy(sTemp,I,1))) > 1 then Result:=-1 else // se o n for > 1 não é binário
+          Result := Result+ (StrToInt(Copy(sTemp,I,1)) * Potencia(2,I-1));
+   end;
+end;
+
+Function AllTrim(pP1:String):String;
+begin
+   While Copy(pP1,Length(pP1),1) = ' ' do
+      pP1:=Copy(pP1,1,Length(pP1)-1);
+   While Copy(pP1,1,1) = ' ' do
+      pP1:=Copy(pP1,2,Length(pP1)-1);
+   Result:=pP1;
+end;
+
+Function AllTrimCHR(pP1:String; pP2:String):String;
+begin
+   While Copy(pP1,Length(pP1),1) = pP2 do
+      pP1:=Copy(pP1,1,Length(pP1)-1);
+   While Copy(pP1,1,1) = pP2 do
+      pP1:=Copy(pP1,2,Length(pP1)-1);
+   Result:=pP1;
+end;
+
+
+
+Function RTrim(pP1:String):String;
+begin
+   While Copy(pP1,Length(pP1),1) = ' ' do
+      pP1:=Copy(pP1,1,Length(pP1)-1);
+   Result:=pP1;
+end;
+
+Function PrimeiraMaiuscula(pP1:String):String;
+Var
+  I:integer;
+
+begin
+   Result:=AnsiUpperCase(pP1);
+   for I := 2 to length(pP1) do
+   begin
+      if copy(pP1,I-1,1)<> ' ' then
+      begin
+         if copy(pP1,I-1,1)<> '.' then
+         begin
+            Delete(Result,I,1);
+            Insert(AnsiLowerCase(copy(pP1,I,1)),Result,I);
+         end;
+      end;
+   end;
+end;
+{--- fim da função PrimeiraMaiúscula ---}
+
+Function Replicate(pP1:String; pP2:Integer):String;
+Var I:Integer;
+begin
+   Result:='';
+   For I := 1 to pP2 do
+      Result:=Copy(Result+pP1,1,I);
+end;
+
+Function CpfCgc(pP1:String):boolean;
+
+var
+I,J,K,SOMA,DIGITO : Integer;
+MULT,DIGITOS,CONTROLE: String;
+begin
+  if length(AllTrim(pP1)) > 0 then
+  begin
+    DIGITO := 0;
+    MULT := '543298765432';
+    {se for CGC}
+    if length(pP1) = 14 then
+       begin
+          DIGITOS := Copy(pP1, 13, 2); {dígitos informados}
+          MULT := '543298765432';
+          CONTROLE := '';
+          {loop de verificação}
+          {J := 1;}
+          for J := 1 to 2 do
+           begin
+              SOMA := 0;
+              {I := 1;}
+              for I := 1 to 12 do
+                SOMA := SOMA + StrToInt(Copy(pP1, I, 1))*StrToInt(Copy(Mult, I, 1));
+              if J = 2 then SOMA := SOMA+(2* DIGITO);
+              DIGITO := (SOMA*10) mod 11;
+              if DIGITO = 10 then DIGITO := 0;
+              CONTROLE := CONTROLE+IntToStr(DIGITO);
+              MULT := '654329876543'
+           end;
+           {compara os dígitos calculados(CONTROLE)}
+           {com os dígitos informados (DIGITOS)}
+           if CONTROLE <> DIGITOS then
+              Result := FALSE
+           else
+              Result := TRUE;
+       end
+    {se for CPF}
+    else if length(pP1) = 11 then
+       begin
+          DIGITOS := Copy(pP1, 10, 2); {dígitos informados}
+          MULT := '100908070605040302';
+          CONTROLE := '';
+          {loop de verificação}
+          for J := 1 to 2 do
+           begin
+              SOMA := 0;
+              K:=0; {coloquei para não dar erro}
+              for I := 1 to 9 do
+                begin
+                   if I = 1 then K:=1
+                   else
+                      K:=K+2;
+                   SOMA := SOMA + StrToInt(Copy(pP1, I, 1))*StrToInt(Copy(Mult, K, 2));
+                end;
+              if J = 2 then SOMA := SOMA+(2* DIGITO);
+              DIGITO := (SOMA*10) mod 11;
+              if DIGITO = 10 then DIGITO := 0;
+              CONTROLE := CONTROLE+IntToStr(DIGITO);
+              MULT := '111009080706050403'
+           end;
+           {compara os dígitos calculados(CONTROLE)}
+           {com os dígitos informados (DIGITOS)}
+           if CONTROLE <> DIGITOS then
+              Result := FALSE
+           else
+              Result := TRUE;
+       end
+    else
+       Result := FALSE;
+  end
+  else
+     Result:= True;
+end;
+Function LimpaNumero(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(Copy(pP1,I,1),'0123456789') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+Function LimpaLetras(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZÇÀÈÌÒÙÁÉÍÓÚÂÊÎÔÛÄÏÖÜÃÕ') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+Function LimpaLetrasPor_(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZ') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+'_';
+   end;
+end;
+
+
+Function LimpaNome(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXZ') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+'_';
+   end;
+end;
+
+
+Function ConverteCpfCgc(pP1:String):String;
+begin
+   if length(pP1)=14 then
+      Result:=Copy(pP1,1,2)+'.'+
+                  Copy(pP1,3,3)+'.'+
+                  Copy(pP1,6,3)+'/'+
+                  Copy(pP1,9,4)+'-'+
+                  Copy(pP1,13,2)
+   else
+      Result:=Copy(pP1,1,3)+'.'+
+                  Copy(pP1,4,3)+'.'+
+                  Copy(pP1,7,3)+'-'+
+                  Copy(pP1,10,2);
+end;
+
+
+function ConverteAcentos(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:=pP1;
+   for I := 1 to 44 do
+     Result :=  strtran( Result
+                      ,copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç*º',I,1)
+                      ,copy('AAAAAEEEEIIIOOOUUCaaaaaaeeeeiiiiooooouuuuc .',I,1));
+end;
+
+function ConverteAcentos3(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:=pP1;
+   for I := 1 to 44 do
+     Result :=  strtran( Result
+                      ,copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç*º',I,1)
+                      ,copy('____________________________________________',I,1));
+end;
+
+
+function ConverteAcentos2(pP1:String):String;
+var
+   I:Integer;
+begin
+   pP1 := ConverteAcentos(pP1);
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,/.-()%') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+' ';
+   end;
+end;
+
+function ConverteAcentosIBPT(pP1:String):String;
+var
+   I:Integer;
+begin
+   pP1 := ConverteAcentos(pP1);
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,.;') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+' ';
+   end;
+end;
+
+function ConverteAcentosPHP(pP1:String):String;
+var
+   I:Integer;
+begin
+   pP1 := ConverteAcentos(pP1);
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,.;') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+' ';
+   end;
+end;
+
+function Year(Data:TdateTime): Integer;
+var
+   DataD:TdateTime;
+begin
+   DataD:=Date;
+   if Data <> DataD then DataD:=Data;
+   result:=StrToInt(Copy(DateToStr(DataD),7,2));
+   if length(DateToStr(DataD))= 10 then result:=StrToInt(Copy(DateToStr(DataD),7,4));
+end;
+
+
+function Month(Data:TdateTime): Integer;
+var
+   DataD:TDateTime;
+begin
+   DataD:=Date;
+   if Data <> DataD then DataD:=Data;
+   result:=StrToInt(Copy(DateToStr(DataD),4,2));
+end;
+
+function Day(Data:TdateTime): Integer;
+var
+   DataD:TDateTime;
+begin
+   DataD:=Date;
+   if Data <> DataD then DataD:=Data;
+   result:=StrToInt(Copy(DateToStr(DataD),1,2));
+end;
+
+
+function Bisexto(AAno: Integer): Boolean;
+begin
+  Result := (AAno mod 4 = 0) and ((AAno mod 100 <> 0) or (AAno mod 400 = 0));
+end;
+
+function DiasPorMes(AAno, AMes: Integer): Integer;
+const
+  DiasNoMes: array[1..12] of Integer = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+begin
+  Result := DiasNoMes[AMes];
+  if (AMes = 2) and Bisexto(AAno) then Inc(Result); { leap-year Feb is special }
+end;
+
+function DiasDesteMes: Integer;
+begin
+  Result := DiasPorMes(Year(Date), Month(Date));
+end;
+
+{soma um numero de dias em uma data}
+function SomaDias(Data: TDateTime; Dias: Integer): TDateTime;
+var
+   I,D,M,A:integer;
+begin
+   D:=Day(Data);
+   M:=Month(Data);
+   A:=Year(Data);
+   for I:= 1 to Dias do
+   begin
+      D:=D+1;
+      if D > DiasPorMes(A,M) then
+      begin
+        if M=12 then {se for dezembro atribui Mes=1 e soma 1 no ano}
+          begin
+           M:=1;
+           A:=A+1;
+          end
+        else M:=M+1;
+        D:=1;
+      end;
+   end;
+   result:=StrToDate(IntToStr(D)+'/'+IntToStr(M)+'/'+IntToStr(A));
+end;
+
+
+
+
+
+
+
+function AllDigits(S: String): Boolean;
+  var i: Integer;
+begin
+  result := true;
+  for i := 1 to length(S) do begin
+    if not (S[i] in ['0'..'9']) then begin
+      result := false;
+      break;
+    end;
+  end;
+end;
+(*** End Numeric Formatting Routines ***)
+function TrocaVirgula(S:String): String;
+var I:Integer;
+begin
+  for I := 1 to length(S) do
+  begin
+    if copy(S,I,1)='.'then
+    begin
+      Delete(S,I,1);
+      Insert(',',S,I);
+    end;
+  end;
+  Result:=S;
+end;
+
+function Right(S : String; numCaracteres : Byte) : String;
+{var
+  index : Byte;}
+begin
+  if numCaracteres >= Length(S) then
+    Result := S
+  else
+    begin
+{      index := Length(S) - numCaracteres+1;}
+      Result := Copy(S,(Length(S) - numCaracteres+1),numCaracteres)
+    end
+end;
+
+{Funçao STRTRAN busca e troca uma parte de uma string em outra}
+{pP1 String, pP2 trecho a ser substituido, pP3 trecho novo}
+{function StrTran(pP1,pP2,pP3:String):String;
+var
+   I,J:Integer;
+   achei:boolean;
+begin
+   Result:=pP1;
+   achei:=false;
+   J:=1;
+   I:=1;
+   while I <= length(Result) do
+    begin
+       if Copy(Result,I,1) = Copy(pP2,1,1) then
+       begin
+         achei:=true;
+         for J:= 2 to length(pP2) do
+         begin
+            if Copy(Result,I+J-1,1) <> Copy(pP2,J,1) then
+            begin
+              achei:=false;
+              break;
+            end;
+         end;
+         if achei then
+           begin
+             Delete(Result,I,length(pP2));
+             Insert(pP3,Result,I);
+             I:=I+length(pP3);
+           end;
+       end;
+       Inc(I);
+    end;
+end; }
+
+//    Funçao STRTRAN busca e troca uma parte de uma string em outra
+//               pP1 String, pP2 trecho a ser substituido, pP3 trecho novo    //
+Function StrTran(sP1,sP2,sP3 : string):String;
+//pP1 String, pP2 trecho a ser substituido, pP3 trecho novo
+begin
+   while(Pos(sP2,sP1)<>0) do
+   begin
+     Insert(sP3,sP1,pos(sP2,sP1));
+     Delete(sP1,pos(sP2,sP1),length(sP2));
+   end;
+   Result := sP1;
+end;
+
+Function StrTranUpper(sP1,sP2,sP3 : string):String;
+//pP1 String, pP2 trecho a ser substituido, pP3 trecho novo
+begin
+   while(Pos(UpperCase(sP2),UpperCase(sP1))<>0) do
+   begin
+      Insert(sP3,sP1,pos(UpperCase(sP2),UpperCase(sP1)));
+      Delete(sP1,pos(UpperCase(sP2),UpperCase(sP1)),length(sP2));
+   end;
+   Result := sP1;
+end;
+
+
+function StrZero(Num : Double ; Zeros,Deci: integer): string;
+{var
+  I : integer;
+  zer : string;
+begin
+   Result:='';
+   if Deci = 0 then
+      Num:=int(Num);
+   Str(Num:Zeros:Deci, Result);
+
+   Result := Alltrim(Result);
+   zer := '';
+   for I := 1 to (Zeros-length(Result)) do
+      zer := zer + '0';
+   Result := Right(zer+Result,Zeros);
+end;}
+begin
+   Result:='';
+{   if Num < 0 then begin
+      Num:=Abs(Num);
+      Result:='-';
+   end;}
+   Result:=Result+StrTran(Format('%'+intToStr(Zeros)+'.'+intToStr(Deci)+'f',[Num]),' ','0');
+   if pos('-',Result) > 0 then begin
+      Delete(Result,pos('-',Result),1);
+      Result:='-'+Result;
+   end;
+end;
+
+{função EXTENSO
+ pP1 valor numérico, pP2 moeda (real, dolar), retorna uma string}
+
+{
+function Extenso(pP1:double):String;
+var
+   N:double;
+   R:string;
+   I:integer;
+begin
+   for I:= 3 downto 0 do
+   begin
+     if I <> 0 then
+        begin
+          N:=StrToFloat(Copy(Right(Copy(StrZero(pP1,15,2),1,12),3*I),1,3));
+        end
+     else
+      begin
+         R:= R+' reais';
+         N:=StrToFloat(right(StrZero(pP1,12,2),2));
+      end;
+     if N <> 0 then
+     begin
+        R := R+' '+trim(Copy('            '+
+                             'cem         '+
+                             'duzentos    '+
+                             'trezentos   '+
+                             'quatrocentos'+
+                             'quinhentos  '+
+                             'seiscentos  '+
+                             'setecentos  '+
+                             'oitocentos  '+
+                             'novecentos  ',(Trunc(int(N/100)*12)+1),12));
+        N := N - int(N/100)*100;
+        if N <> 0 then
+          begin
+           if length(trim(R))<> 0 then
+              R:= R+' e ';
+           R:= R + trim(Copy('         '+
+                             'dez      '+
+                             'vinte    '+
+                             'trinta   '+
+                             'quarenta '+
+                             'cinqüenta'+
+                             'sessenta '+
+                             'setenta  '+
+                             'oitenta  '+
+                             'noventa  ',Trunc((int(N/10)*9)+1),9));
+          end;
+        N:= N - int(N/10)*10;
+        if N <> 0 then
+          begin
+           if length(trim(R))<> 0 then
+              R:= R+' e ';
+           R:= R + trim(Copy('      '+
+                             'um    '+
+                             'dois  '+
+                             'três  '+
+                             'quatro'+
+                             'cinco '+
+                             'seis  '+
+                             'sete  '+
+                             'oito  '+
+                             'nove  ',Trunc((N*6)+1),6));
+          end;
+        if I <> 0 then
+        begin
+          R:=R+' '+trim(Copy('        '+
+                             'mil,    '+
+                             'milhões,'+
+                             'bilhões,'+
+                             'trilhões',(I-1)*8+1,8));
+        end;
+        if I = 0 then
+           R:=R+' centavos';
+     end;
+   end;
+   //
+   R:=StrTran(R,'  ',' ');
+   R:=StrTran(R,'dez e um',    'onze');
+   R:=StrTran(R,'dez e dois',  'doze');
+   R:=StrTran(R,'dez e três',  'treze');
+   R:=StrTran(R,'dez e quatro','catorze');
+   R:=StrTran(R,'dez e cinco', 'quinze');
+   R:=StrTran(R,'dez e seis',  'dezesseis');
+   R:=StrTran(R,'dez e sete',  'dezessete');
+   R:=StrTran(R,'dez e oito',  'dezoito');
+   R:=StrTran(R,'dez e nove',  'dezenove');
+   R:=StrTran(R,'cem e',       'cento e');
+   R:=StrTran(R,'e e',        'e');
+   R:=StrTran(R,'e e',        'e');
+   R:=StrTran(R,'ões e',      'ões');
+   R:=StrTran(R,'um milhões',  'um milhão');
+   R:=StrTran(R,'um bilhões',  'um bilhão');
+   R:=StrTran(R,'um trilhões', 'um trilhão');
+   R:=StrTran(R,', reais',     ' reais');
+   R:=StrTran(R,', e',         ' e');
+   //
+   if Copy(AllTrim(R),1,8)='reais e ' then Delete(R,1,8);
+   if Pos('um reais',AllTrim(R)) = 1 then R:=StrTran(R,'um reais','um real');
+   if Pos('um centavos',AllTrim(R)) = 1 then R:=StrTran(R,'um centavos', 'um centavo');
+   //
+   result:=Alltrim(R);
+   //
+end;
+}
+
+
+
+function Extenso(pP1:double):String;
+var
+  N:double;
+  I:integer;
+begin
+  Result := '';
+  for I:= 3 downto 0 do
+  begin
+    if I <> 0 then
+    begin
+      N:=StrToFloat(Copy(Right(Copy(StrZero(pP1,15,2),1,12),3*I),1,3));
+    end else
+    begin
+      Result:= Result+' reais';
+      N:=StrToFloat(right(StrZero(pP1,12,2),2));
+    end;
+    if N <> 0 then
+    begin
+      Result := Result+' '+trim(Copy('            '+
+                           'cem         '+
+                           'duzentos    '+
+                           'trezentos   '+
+                           'quatrocentos'+
+                           'quinhentos  '+
+                           'seiscentos  '+
+                           'setecentos  '+
+                           'oitocentos  '+
+                           'novecentos  ',(Trunc(int(N/100)*12)+1),12));
+      N := N - int(N/100)*100;
+      if N <> 0 then
+      begin
+        if length(trim(Result)) <> 0 then Result:= Result+' e ';
+        Result := Result + trim(Copy('         '+
+                           'dez      '+
+                           'vinte    '+
+                           'trinta   '+
+                           'quarenta '+
+                           'cinqüenta'+
+                           'sessenta '+
+                           'setenta  '+
+                           'oitenta  '+
+                           'noventa  ',Trunc((int(N/10)*9)+1),9));
+
+      end;
+      N:= N - int(N/10)*10;
+      if N <> 0 then
+      begin
+        if length(trim(Result))<> 0 then Result := Result +' e ';
+        Result := Result + trim(Copy('      '+
+                         'um    '+
+                         'dois  '+
+                         'três  '+
+                         'quatro'+
+                         'cinco '+
+                         'seis  '+
+                         'sete  '+
+                         'oito  '+
+                         'nove  ',Trunc((N*6)+1),6));
+      end;
+      if I <> 0 then Result := Result +' '+trim(Copy('        '+
+                           'mil,    '+
+                           'milhões,'+
+                           'bilhões,'+
+                           'trilhões',(I-1)*8+1,8));
+      if I = 0 then Result := Result +' centavos';
+    end;
+  end;
+  Result:=StrTran(Result,'  ',' ');
+  Result:=StrTran(Result,'dez e um',    'onze');
+  Result:=StrTran(Result,'dez e dois',  'doze');
+  Result:=StrTran(Result,'dez e três',  'treze');
+  Result:=StrTran(Result,'dez e quatro','catorze');
+  Result:=StrTran(Result,'dez e cinco', 'quinze');
+  Result:=StrTran(Result,'dez e seis',  'dezesseis');
+  Result:=StrTran(Result,'dez e sete',  'dezessete');
+  Result:=StrTran(Result,'dez e oito',  'dezoito');
+  Result:=StrTran(Result,'dez e nove',  'dezenove');
+  Result:=StrTran(Result,'cem e',       'cento e');
+  Result:=StrTran(Result,'e e',        'e');
+  Result:=StrTran(Result,'e e',        'e');
+  Result:=StrTran(Result,'ões e',      'ões');
+  Result:=StrTran(Result,'um milhões',  'um milhão');
+  Result:=StrTran(Result,'um bilhões',  'um bilhão');
+  Result:=StrTran(Result,'um trilhões', 'um trilhão');
+  Result:=StrTran(Result,', reais',     ' reais');
+  Result:=StrTran(Result,', e',         ' e');
+  if Copy(AllTrim(Result),1,8)='reais e ' then Delete(Result,1,8);
+  if Pos('um reais',AllTrim(Result)) = 1 then Result:=StrTran(Result,'um reais','um real');
+  if Pos('um centavos',AllTrim(Result)) = 1 then Result:=StrTran(Result,'um centavos', 'um centavo');
+end;
+
+
+function MesExtenso(pP1:Integer):String;
+begin
+   Result:='';
+   if (pP1 >= 1) and (pP1 <= 12) then
+   begin
+      Result:=Copy('Janeiro  FevereiroMarço    Abril    Maio     Junho    '+
+                   'Julho    Agosto   Setembro Outubro  Novembro Dezembro ',
+                   ((pP1-1)*9)+1,9);
+   end;
+end;
+
+function DiaUtil(pP1:TDateTime): Boolean;
+var
+   I:Integer;
+const feriados : array[0..7] of PChar =
+('01/01/', '21/04/', '01/05/', '07/09/','12/10/', '02/11/', '15/11/', '25/12/');
+begin
+   Result:=True;
+   for I:= 0 to 7 do
+   begin
+      if dateToStr(pP1) = (StrPas(Feriados[I])+Copy(DateToStr(pP1),7,2)) then
+         Result:=False;
+   end;
+   if (DayOfWeek(pP1)=1) or (DayOfWeek(pP1)=7) then
+      Result:=False;
+end;
+
+function DiasUteisDoMes(AAno, AMes: Integer): Integer;
+var
+  I:Integer;
+begin
+   Result:=0;
+   for I:= 1 to DiasPorMes(AAno,AMes) do
+   begin
+     if DiaUtil(StrToDate(IntToStr(I)+'/'+IntToStr(AMes)+'/'+IntToStr(AAno))) then
+        Result:=Result+1;
+   end;
+end;
+
+function DiasUteisDoPeriodo(pP1, pP2: TDateTime): Integer;
+begin
+   Result:=0;
+   while pP1 <= pP2 do
+   begin
+      if DiaUtil(pP1) then Result:=Result+1;
+      pP1:=pP1+1;
+   end;
+end;
+
+{function IsPrinter(X:Byte):Boolean; Assembler;
+asm
+  SUB DH,DH
+  MOV DL,X   //que impressora checar
+  MOV AH, 02H //funcao para printer status
+  INT 17H     //le status impressora
+  MOV AL, FALSE
+  CMP AH, 90H // 90H OK
+  JNE @@Exit //retorna falso se AH <> 90H
+  MOV AL, TRUE
+@@Exit:
+end;
+}
+
+function IsPrinter(X:Byte):Boolean;
+//var
+// nResult:byte;
+begin
+{  try
+    asm
+      SUB DH,DH
+      MOV DL,X   //que impressora checar
+      MOV AH, 02H //funcao para printer status
+      INT 17H     //le status impressora
+      MOV AL, FALSE
+      CMP AH, 90H // 90H OK
+      JNE @@Exit //retorna falso se AH <> 90H
+      MOV AL, TRUE
+    @@Exit:
+      mov nResult,AL;
+    end;
+  except
+    nResult:=1;
+  end;
+  if nResult=0 then result:=False
+  else
+  }
+  Result:=True;
+end;
+
+
+function PrinterOnLine:Boolean;
+const
+   PrnStInt : Byte = $17;
+   StRq : Byte = $02;
+   PrnNum : Word=0; //0 para LPT1
+var
+ nResult:byte;
+begin (*PrinterOnLine*)
+  try
+    asm
+      mov ah,StRq;
+      mov dx,PrnNum;
+      Int $17;
+      mov nResult,ah;
+    end;
+    PrinterOnLine:=(nResult and $90)=$80;
+  except
+    PrinterOnLine:=True;
+  end;
+end;
+
+Function Cartao(pP1:String):Boolean;
+var
+  CalcCartao,calcs,I:Integer;
+  NumeroCartao:String;
+begin
+  NumeroCartao:=pP1;
+  CalcCartao:=0;
+  For I := 1 to length(NumeroCartao) do
+  begin
+     if (I mod 2) = 0 then // posicao par só acumula
+        Calcs:=StrToInt(Copy(NumeroCartao,I,1))
+     else
+       begin
+         Calcs:=StrToInt(Copy(NumeroCartao,I,1))*2;
+         if Calcs > 9 then Calcs:=Calcs-9;
+       end;
+     CalcCartao:=CalcCartao+Calcs;
+  end;
+  if (CalcCartao < 150) and ((CalcCartao mod 10) = 0) then //se o resto da divisão por 10 for zero
+    Result:=True
+  else
+    Result:=False;
+end;
+
+function SMALL_Tempo(pP1:Integer):Integer;
+var
+  I : Integer;
+begin
+  I := (StrToInt(Copy(TimeToStr(Now),7,2))) +
+              (StrToInt(Copy(TimeToStr(Now),4,2)) * 60) +
+              (StrToInt(Copy(TimeToStr(Now),1,2)) * 60 * 60) + pP1;
+
+  while I > (StrToInt(Copy(TimeToStr(Now),7,2))) +
+              (StrToInt(Copy(TimeToStr(Now),4,2)) * 60) +
+              (StrToInt(Copy(TimeToStr(Now),1,2)) * 60 * 60) do ;
+
+  Result := Pp1;
+
+end;
+
+
+function SMALL_NumeroDeCores : Integer;
+{Retorna a quantidade atual de cores no Windows (16, 256, 65536 = 16 ou 24 bit}
+var
+  DC:HDC;
+  BitsPorPixel: Integer;
+begin
+  Dc := GetDc(0); // 0 = vídeo
+  BitsPorPixel := GetDeviceCaps(Dc,BitsPixel);
+  Result := 2 shl (BitsPorPixel - 1);
+end;
+
+
+function VerificaSeTemImpressora():Boolean;
+var
+   Device : array[0..255] of char;
+   Driver : array[0..255] of char;
+   Port   : array[0..255] of char;
+   hDMode : THandle;
+begin
+   Result:=True;
+   // Retorna a impressora padrão do windows
+   try
+      Printer.GetPrinter(Device, Driver, Port, hDMode);
+   except
+      Result:=False;
+   end;
+end;
+
+function RetornaOperadora(sNumero: String): String;
+begin
+  //
+  // 4999127336
+  //
+  sNumero := LimpaNumero(sNumero);
+  if Copy(sNumero,1,1) = '0' then sNumero := Copy(sNumero,2,Length(SNumero)-2);
+  if Copy(sNumero,3,1) <= '5' then Result := 'Convencional';
+  //
+  // Rio de janeiro, Espirito Santo
+  //
+  if (Copy(sNumero,1,2) >= '21') and (Copy(sNumero,1,2) <= '28') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '83') then Result := 'Tim - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - Rio de janeiro';
+  end;
+  //
+  // Amazônia
+  //
+  if (Copy(sNumero,1,2) >= '91') and (Copy(sNumero,1,2) <= '99') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Amazônia celular - Amazônia';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Vivo - Amazônia';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Amazônia';
+    if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '83') then Result := 'Tim - Amazônia';
+  end;
+  //
+  // Minas Gerais
+  //
+  if (Copy(sNumero,1,2) >= '31') and (Copy(sNumero,1,2) <= '38') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Telemig - Minas Gerais';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Tim - Minas Gerais';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Minas Gerais';
+    if (Copy(sNumero,3,2) = '81') or (Copy(sNumero,3,2) = '84')    then Result := 'Claro - Minas Gerais';
+  end;
+  //
+  // Bahia, Sergipe
+  //
+  if (Copy(sNumero,1,2) >= '71') and (Copy(sNumero,1,2) <= '79') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Bahia, Sergipe';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Tim - Bahia, Sergipe';
+    if (Copy(sNumero,3,2) = '81')                                  then Result := 'Claro - Bahia, Sergipe';
+  end;
+  //
+  // Nordeste
+  //
+  if (Copy(sNumero,1,2) >= '81') and (Copy(sNumero,1,2) <= '89') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Tim - Nordeste';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Nordeste';
+    if (Copy(sNumero,3,1) >= '8') then Result := 'Claro - Nordeste verificar';
+  end;
+  //
+  // Parana, Santa Catarina
+  //
+  if (Copy(sNumero,1,2) >= '41') and (Copy(sNumero,1,2) <= '49') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Tim - Parana, Santa Catarina';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Vivo - Parana, Santa Catarina';
+    if (Copy(sNumero,3,2) = '88')                                  then Result := 'Claro - Parana, Santa Catarina';
+    if (Copy(sNumero,3,2) = '84')                                  then Result := 'Brasil Telecom - Parana, Santa Catarina';
+  end;
+  //
+  // Rio Grande do Sul
+  //
+  if (Copy(sNumero,1,2) >= '51') and (Copy(sNumero,1,2) <= '55') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Rio Grande do Sul';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Rio Grande do Sul';
+    if (Copy(sNumero,3,2) = '81')                                  then Result := 'Tim - Rio Grande do Sul';
+    if (Copy(sNumero,3,2) = '84')                                  then Result := 'Brasil Telecom - Rio Grande do Sul';
+  end;
+  //
+  // Centro Oeste
+  //
+  if (Copy(sNumero,1,2) >= '61') and (Copy(sNumero,1,2) <= '69') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Centro Oeste';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Centro Oeste';
+    if (Copy(sNumero,3,2) = '81')                                  then Result := 'Tim - Centro Oeste';
+    if (Copy(sNumero,3,2) = '84')                                  then Result := 'Brasil Telecom - Centro Oeste';
+// Ver
+    if (Copy(sNumero,3,2) = '95')                                  then Result := 'Claro - Distrito Federal';
+  end;
+  //
+  // São Paulo
+  //
+  if (Copy(sNumero,1,2) >= '11') and (Copy(sNumero,1,2) <= '19') then
+  begin
+    //
+    if (Copy(sNumero,1,2) = '11') then
+    begin
+      if (Copy(sNumero,3,3) >= '996') and (Copy(sNumero,3,3) <= '999') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,3) >= '971') and (Copy(sNumero,3,3) <= '974') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,3) >= '991') and (Copy(sNumero,3,3) <= '994') then Result := 'Claro - São Paulo';
+      if (Copy(sNumero,3,3) >= '981') and (Copy(sNumero,3,3) <= '986') then Result := 'Tim - São Paulo';
+      if (Copy(sNumero,3,3) = '995')                                  then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,3) = '976') and (Copy(sNumero,3,3) = '989')   then Result := 'Claro - São Paulo';
+    end else
+    begin
+      if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,2) >= '71') and (Copy(sNumero,3,2) <= '74') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - São Paulo';
+      if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '86') then Result := 'Tim - São Paulo';
+      if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,2) = '76') and (Copy(sNumero,3,2) = '89')   then Result := 'Claro - São Paulo';
+    end;  
+    //
+  end;
+  //
+  // Londrina e Tamarana, PR
+  //
+  if (Copy(sNumero,1,2) >= '43') then
+  begin
+    if (Copy(sNumero,3,2) = '81') then Result := 'Tim - Londrina e Tamarana, PR';
+    if (Copy(sNumero,3,2) = '9')  then Result := 'Sercomtel - Londrina e Tamarana, PR';
+  end;
+  //
+  // Pelotas e região
+  //
+  if (Copy(sNumero,1,2) >= '43') then
+  begin
+    if (Copy(sNumero,3,4) = '9911')                                    then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) = '9913')                                    then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) = '9939')                                    then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) >= '9981') and (Copy(sNumero,3,4) <= '9989') then Result := 'Tim - Pelotas e região';
+  end;
+  //
+end;
+
+
+{
+//------------------------------------------------------------------------
+Function SMALL_IE(sNumero:String;UF:String):Boolean;
+var
+  bTamanho,bInicio:boolean;
+  sDigito1,sDigito2,sSoNumero:string;
+  Function Modulo_11AP(pNumero:String):String;
+  var
+     Acumulado,D,I,Controle:integer;
+  begin
+     Acumulado:=0;
+     D:=0;
+     if (StrToInt(pNumero) >= 3000001) and (StrToInt(pNumero) <= 3017000) then
+      begin
+       Acumulado:=5;
+      end
+     else
+       if (StrToInt(pNumero) >= 3017001) and (StrToInt(pNumero) <= 3019022) then
+        begin
+          Acumulado:=9;
+          D:=1;
+        end
+       else
+         if (StrToInt(pNumero) >= 3019023)  then
+         begin
+           Acumulado:=0;
+         end;
+     //acumula a soma da multiplicação dos digitos
+     pNumero:=alltrim(pNumero);
+     Controle:=2;
+     for I:=length(pNumero) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(pNumero,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=2;
+     end;
+     //calcula o digito
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado = 10) then Acumulado:=0;
+     if (Acumulado = 11) then Acumulado:=D;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+  end;
+
+  Function Modulo_10(pP1:String):String;
+  var
+     Acumulado,I,Controle:integer;
+  begin
+     //acumula a soma da multiplicação dos digitos
+     Pp1:=alltrim(pP1);
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(Pp1) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=2;
+     end;
+     //calcula o digito
+     Acumulado:=10-(Acumulado mod 10);
+     if Acumulado=10 then Acumulado:=0;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+  end;
+
+  Function Modulo_11ComLimite(pNumero:String;pLimite:Integer):String;
+  var
+     Acumulado,I,Controle:integer;
+  begin
+     //acumula a soma da multiplicação dos digitos
+     pNumero:=alltrim(pNumero);
+     Acumulado:=0;
+     Controle:=2;
+     for I:=length(pNumero) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(pNumero,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > pLimite then Controle:=2;
+     end;
+     //calcula o digito
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado = 10) or (Acumulado = 11)  then Acumulado:=0;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+  end;
+
+  Function Modulo_RR(pP1:String):String;
+  var
+     I,Acumulado:integer;
+  begin
+     //acumula a soma da multiplicação dos digitos
+     Acumulado:=0;
+     for I:=1 to length(Pp1) do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(pP1,I,1))*I);
+     end;
+     //calcula o digito
+     Result:=IntToStr((Acumulado mod 9));
+  end;
+
+  Function Modulo_MG(pNumero:String):String;
+  var
+     Acumulado,I,Controle:integer;
+     sSoma:String;
+  begin
+     //acumula a soma da multiplicação dos digitos
+     pNumero:=alltrim(pNumero);
+     Controle:=2;
+     Acumulado:=0;
+     // módulo louco 21
+     sSoma:='';
+     for I:=length(pNumero) downto 1 do
+     begin
+        sSoma:=sSoma + AllTrim(IntToStr((StrToInt(Copy(pNumero,I,1))*Controle)));
+        if Controle = 2 then Controle:=1 else Controle:=2;
+     end;
+     for I:=1 to Length(sSoma) do Acumulado:=Acumulado+StrToInt(Copy(sSoma,I,1));
+     //calcula o digito
+     if (Acumulado mod 10) = 0 then
+       Acumulado:=0
+     else
+       begin
+         I:=Acumulado;
+         while (I mod 10) <> 0 do I:=I+1;
+         Acumulado:=I-Acumulado;
+       end;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+  end;
+
+  Function Modulo_SP(pNumero:String;pTipo:string):String;
+  var
+     Acumulado,I,Controle:integer;
+     aI: array[1..8] of integer;
+  begin
+     //acumula a soma da multiplicação dos digitos
+     pNumero:=alltrim(pNumero);
+     Controle:=2;
+     Acumulado:=0;
+     if pTipo='2' then // módulo 11
+      begin
+        for I:=length(pNumero) downto 1 do
+        begin
+           Acumulado:=Acumulado + (StrToInt(Copy(pNumero,I,1))*Controle);
+           Controle := Controle + 1;
+           if Controle > 10 then Controle:=2;
+        end;
+        //calcula o digito
+        Acumulado:=(Acumulado mod 11);
+      end
+     else
+      begin // módulo louco
+        aI[1]:=1; aI[2]:=3; aI[3]:=4; aI[4]:=5; aI[5]:=6; aI[6]:=7; aI[7]:=8; aI[8]:=10;
+        for I:=length(pNumero) downto 1 do
+        begin
+           Acumulado:=Acumulado + (StrToInt(Copy(pNumero,I,1))*aI[I]);
+        end;
+        //calcula o digito
+        Acumulado:=(Acumulado mod 11);
+      end;
+
+     //devolve o digito de controle
+     Result:=Right(IntToStr(Acumulado),1);
+  end;
+
+  Function Modulo_PE(pNumero:String):String;
+  var
+     Acumulado,I,Controle:integer;
+  begin
+     //acumula a soma da multiplicação dos digitos
+     pNumero:=alltrim(pNumero);
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(pNumero) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(pNumero,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=1;
+     end;
+     //calcula o digito
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado = 10) or (Acumulado = 11)  then Acumulado:=0;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+  end;
+
+  function PR_Antiga(sInscricao:string):string;
+  var
+   sMascara1,sMascara2,sCaracter1,sCaracter2,sCaracter3:string;
+   iTemp1,iTemp2,I,iTemp3:integer;
+  begin
+     sMascara1:='000000001110001111000011001100412345670112460246133404151526';
+     sMascara2:='MNPQRJKL--DEFGHABC--VWXYZSTU';
+     iTemp1:=0;
+     iTemp2:=0;
+     for I:= 1 to 8  do
+     begin
+        sCaracter1:=Copy(sInscricao,I, 1);
+        iTemp3:= (Trunc(I / 3) * 30) - (I * 10) + Ord(sCaracter1[1]);
+        sCaracter2:=Copy(sMascara1, iTemp3 - 27, 1);
+        iTemp1:= iTemp1 + Ord(sCaracter2[1]);
+        sCaracter3:=Copy(sMascara1, iTemp3 + 3, 1);
+        iTemp2:= iTemp2 + Ord(sCaracter3[1]);
+     end;
+     Result:= Copy(sMascara2, iTemp1 mod 3 * 10 + iTemp2 mod 8 + 1, 1);
+  end;
+
+begin
+   Result:=False;
+   UF:=AllTrim(UpperCase(UF));
+   if Pos(UF,'AC,AL,AM,AP,BA,CE,DF,ES,GO,MA,MG,MS,MT,PA,PB,PE,PI,PR,RJ,RN,RO,RR,RS,SC,SE,SP,TO') > 0 then
+   begin
+      // extrai somente os números
+      sSoNumero:=LimpaNumero(sNumero);
+      if UF='TO' then // deve-se extrair dois dígitos
+         // se não for os números abaixo, deixa com 11 dígitos e bTamanho ficará falso
+         if (Copy(sSoNumero,3,2)='01') or (Copy(sSoNumero,3,2)='02') or (Copy(sSoNumero,3,2)='03') or (Copy(sSoNumero,3,2)='99') then
+            sSoNumero:=Copy(sSoNumero,1,2)+Copy(sSoNumero,5,7);
+      if UF='RO' then
+         sSoNumero:=Copy(sSoNumero,4,6);
+
+      // verifica o tamanho
+      if UF='MT' then
+         bTamanho:=(length(sSoNumero)>=9)
+      else
+         if (UF='DF') or (UF='MG') then
+            bTamanho:=(length(sSoNumero)=13)
+         else
+           if UF='PE' then
+              bTamanho:=(length(sSoNumero)=14)
+           else
+             if UF='RO' then
+                bTamanho:=(length(sSoNumero)=6)
+             else
+                if (UF='RJ') or (UF='BA')then
+                   bTamanho:=(length(sSoNumero)=8)
+                else
+                  if (UF='RS')  then
+                     bTamanho:=(length(sSoNumero)=10)
+                  else
+                    if UF='SP' then
+                       bTamanho:=(length(sSoNumero)=12)
+                    else
+                       if (UF='PR') then
+                          bTamanho:=((length(sSoNumero)=8) or (length(sSoNumero)=10))
+                       else
+                          bTamanho:=(length(sSoNumero)=9);
+
+
+      bInicio:=False;
+      if bTamanho then
+      begin
+        // verifica o inicio
+        if UF='RN' then
+           bInicio:=(Copy(sSoNumero,1,2)='20')
+        else
+           if UF='AL' then
+              bInicio:=(Copy(sSoNumero,1,2)='24')
+           else
+              if UF='AP' then
+                 bInicio:=(Copy(sSoNumero,1,2)='03')
+              else
+                if UF='DF' then
+                   bInicio:=(Copy(sSoNumero,1,2)='07')
+                else
+                   if UF='GO' then
+                      bInicio:=((Copy(sSoNumero,1,2)='10')or(Copy(sSoNumero,1,2)='11')or(Copy(sSoNumero,1,2)='15'))
+                   else
+                      if UF='MA' then
+                         bInicio:=(Copy(sSoNumero,1,2)='12')
+                      else
+                         if UF='MS' then
+                            bInicio:=(Copy(sSoNumero,1,2)='28')
+                         else
+                            if UF='PA' then
+                               bInicio:=(Copy(sSoNumero,1,2)='15')
+                            else
+                               if UF='RR' then
+                                  bInicio:=(Copy(sSoNumero,1,2)='24')
+                               else
+                                  if UF='RS' then
+                                     bInicio:=(StrToInt(Copy(sSoNumero,1,3)) < 468)
+                                  else
+                                     bInicio:=true;
+      end;
+
+      if bTamanho and bInicio then
+      begin
+        if UF='AP' then
+         begin
+            if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_11AP(Copy(sSoNumero,1,Length(sSoNumero)-1)) then Result:=True;
+         end
+        else
+         if UF='BA' then
+          begin
+            if Pos(Copy(sSoNumero,1,1),'0123458') > 0 then
+             begin
+               sDigito2:=Modulo_10(Copy(sSoNumero,1,6));
+               sDigito1:=Modulo_10(Copy(sSoNumero,1,6)+sDigito2);
+             end
+            else
+             begin
+               sDigito2:=Modulo_11(Copy(sSoNumero,1,6));
+               sDigito1:=Modulo_11(Copy(sSoNumero,1,6)+sDigito2);
+             end;
+            if Right(sSoNumero,2) = sDigito1+sDigito2 then Result:=True;
+          end
+         else
+          if UF='DF' then
+           begin
+             sDigito1:=Modulo_11(Copy(sSoNumero,1,11));
+             sDigito2:=Modulo_11(Copy(sSoNumero,1,11)+sDigito1);
+             if Right(sSoNumero,2) = sDigito1+sDigito2 then Result:=True;
+           end
+          else
+           if UF='MG' then
+            begin
+              sDigito1:=Modulo_MG(Copy(sSoNumero,1,3)+'0'+Copy(sSoNumero,4,8));
+              sDigito2:=Modulo_11ComLimite(Copy(sSoNumero,1,11)+sDigito1,11);
+              if Right(sSoNumero,2) = sDigito1+sDigito2 then Result:=True;
+            end
+           else
+            if UF='SP' then
+             begin
+               if UpperCase(Copy(sNumero,1,1))='P' then // produtor Rural
+                begin
+                  sDigito1:=Modulo_SP(Copy(sSoNumero,1,8),'1');
+                  if Copy(sSoNumero,9,1) = sDigito1 then Result:=True;
+                end
+               else
+                begin // comercio ou indústria
+                  sDigito1:=Modulo_SP(Copy(sSoNumero,1,8),'1');
+                  sDigito2:=Modulo_SP(Copy(sSoNumero,1,8)+sDigito1+Copy(sSoNumero,10,2),'2');
+                  if Copy(sSoNumero,9,1)+Copy(sSoNumero,12,1) = sDigito1+sDigito2 then Result:=True;
+                end;
+             end
+            else
+             if UF='PR' then
+              begin
+                if (length(sSoNumero)=10) then //inscrição nova
+                 begin
+                   sDigito1:=Modulo_11ComLimite(Copy(sSoNumero,1,8),7);
+                   sDigito2:=Modulo_11ComLimite(Copy(sSoNumero,1,8)+sDigito1,7);
+                   if Right(sSoNumero,2) = sDigito1+sDigito2 then Result:=True;
+                 end
+                else
+                 begin
+                   if (length(sSoNumero)=8) then // inscrição Antiga
+                     if Copy(LimpaLetras(sNumero),1,1)=PR_Antiga(sSoNumero) then Result:=True;
+                 end;
+              end
+             else
+              if UF='PE' then
+               begin
+                 if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_PE(Copy(sSoNumero,1,Length(sSoNumero)-1)) then Result:=True;
+               end
+              else
+               if UF='RR' then
+                begin
+                  if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_RR(Copy(sSoNumero,1,Length(sSoNumero)-1)) then Result:=True;
+                end
+               else
+                if UF='RJ' then
+                 begin
+                   if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_11ComLimite(Copy(sSoNumero,1,Length(sSoNumero)-1),7) then Result:=True;
+                 end
+                else
+                  // verifica o módulo 11
+                  if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_11(Copy(sSoNumero,1,Length(sSoNumero)-1)) then Result:=True;
+      end;
+      if length(sSoNumero)=0 then Result:=True; // se for em branco aceita
+   end;
+end;
+}
+
+
+
+//------------------------------------------------------------------------
+
+function SMALL_2of5(sP : String): String;
+var
+  I : Integer;
+begin
+  Result := '';
+  sP := LimpaNumero(AllTrim(sP));
+  for I := 1 to Length(sP) div 2 do
+  begin
+    if (StrToInt(Copy(sP,(I*2)-1,2)) <= 49) then  Result := Result + Chr((StrToInt(Copy(sP,(I*2)-1,2))+48));
+    if (StrToInt(Copy(sP,(I*2)-1,2)) >= 50) then  Result := Result + Chr((StrToInt(Copy(sP,(I*2)-1,2))+142));
+  end;
+end;
+
+function SMALL_2of5_2(sP : String): String;
+var
+  I : Integer;
+begin
+  // 130 > 229
+  sP := LimpaNumero(AllTrim(sP));
+  for I := 1 to Length(sP) div 2 do
+  begin
+    Result := Result + Chr( (StrToInt(Copy(sP,(I*2)-1,2))+130) );
+  end;
+  //
+end;
+
+//------------------------------------------------------------------------
+function Arredonda(fP1 : Real; iP2 : Integer): Real;
+begin
+  Result := StrToFloat(StrTran(Format('%14.'+IntToStr(iP2)+'n',[fP1]),'.',''));
+end;
+
+function LimpaNumeroDeixandoAVirgula(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(Copy(pP1,I,1),'0123456789,-') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+function LimpaNumeroDeixandoOponto(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(Copy(pP1,I,1),'0123456789.-') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+
+function LimpaNumeroDeixandoABarra(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(Copy(pP1,I,1),'0123456789/') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+
+
+function DiaDaSemana(pP1:TDateTime):String;
+begin
+  Result := Copy('DomingoSegundaTerça  Quarta Quinta Sexta  Sábado ',((DayOfWeek(pP1)-1)*7)+1,7);
+end;
+
+function WinVersion: string;
+var
+  VersionInfo: TOSVersionInfo;
+begin
+  VersionInfo.dwOSVersionInfoSize:=SizeOf(VersionInfo);
+  GetVersionEx(VersionInfo);
+  Result := StrZero(VersionInfo.dwMajorVersion,3,0)+StrZero(VersionInfo.dwMinorVersion,3,0)
+end;
+
+function CorrentPrinter :String; //Declare a unit Printers na clausula uses
+var
+  Device : array[0..255] of char;
+  Driver : array[0..255] of char;
+  Port : array[0..255] of char;
+  hDMode : THandle;
+begin
+  Printer.GetPrinter(Device, Driver, Port, hDMode);
+  Result := Device;
+end;
+
+
+function ValidaEAN13(sP1:String):Boolean;
+  function Par(Cod:Integer):Boolean;
+  begin
+    Result:= Cod Mod 2 = 0 ;
+  end;
+var
+  i,
+  SomaPar,
+  SomaImpar:Integer;
+begin
+  //
+  if Length(LimpaNumero(sP1))=13 then
+  begin
+    //
+    SomaPar:=0;
+    SomaImpar:=0;
+    //
+    for i:=1 to 12 do
+    if Par(i) then
+    SomaPar:=SomaPar+StrToInt(sP1[i])
+    else SomaImpar:=SomaImpar+StrToInt(sP1[i]);
+    //
+    SomaPar:=SomaPar*3;
+    i:=0;
+    while i < (SomaPar+SomaImpar) do
+    Inc(i,10);
+    //
+    if Copy(sP1,13,1) = IntToStr(i-(SomaPar+SomaImpar)) then Result := True else Result := False;
+  end else
+  begin
+    Result := False;
+  end;
+  //
+end;
+
+
+end.
+
+

@@ -2,7 +2,6 @@ program graficos;
 
 uses
   Forms,
-  smallfunc_graficos in 'smallfunc_graficos.pas',
   Grafico in 'Grafico.pas' {Form1};
 
 {$R *.RES}
