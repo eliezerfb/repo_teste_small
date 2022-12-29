@@ -133,7 +133,7 @@ object Form43: TForm43
       Caption = 'Usar sempre esta conta para venda a vista '
       TabOrder = 2
     end
-    object Edit1: TEdit
+    object EdPesquisaConta: TEdit
       Left = 10
       Top = 50
       Width = 240
@@ -146,8 +146,8 @@ object Form43: TForm43
       Font.Style = []
       ParentFont = False
       TabOrder = 3
-      OnChange = Edit1Change
-      OnKeyUp = Edit1KeyUp
+      OnChange = EdPesquisaContaChange
+      OnKeyUp = EdPesquisaContaKeyUp
     end
   end
 end

@@ -98,7 +98,7 @@ begin
     rRect.Bottom := rRect.Top  + Form25.Image1.Picture.Graphic.Height;
     rRect.Right  := rRect.Left + Form25.Image1.Picture.Graphic.Width;
     //
-    Form25.Image2.Canvas.StretchDraw(rRect,Form25.Image1.Picture.Graphic);
+    Form25.Image2.Canvas.StretchDraw(rRect, Form25.Image1.Picture.Graphic);
     //
     jp := TJPEGImage.Create;
     jp.Assign(Form25.Image2.Picture.Bitmap);
@@ -106,7 +106,8 @@ begin
     jp.SaveToFile(jpgTemp);
     jp.Free;
 
-    Sleep(250);
+    if Form1.DisponivelSomenteParaNos then
+      Sleep(250);
 
     while FileExists(FileNameJpg) do
       DeleteFile(FileNameJpg);
@@ -963,15 +964,17 @@ end;
 procedure TForm25.FormShow(Sender: TObject);
 var
   Mais1Ini: TIniFile;
-  I : Integer;
+  I: Integer;
 begin
   //
   try
     //
     Form25.Caption := StrTran(Form1.sEscolhido,'Boleto','Bloqueto');
+    
     for I:= 1 to 65 do vLinha[I]  := ' ';
     for I:= 1 to 20 do vLinha[I]  := ' ';
     for I:= 1 to 20 do vCampo[I]  := ' ';
+
     //
     if Trim(Form1.sEscolhido) <> '' then // Sandro Silva 2022-12-22 Só entra se o
     begin

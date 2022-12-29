@@ -275,7 +275,8 @@ begin
     except end;
     //
     Retributa(True);
-    if form7.ibDataSet16.Modified then Form7.ibDataset16.Post;
+    if form7.ibDataSet16.Modified then
+      Form7.ibDataset16.Post;
     //
   end;
   //

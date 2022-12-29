@@ -41,9 +41,11 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
+    FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
     { Private declarations }
   public
     sConta : String;
+    property IdentificadorPlanoContas: String read FIdentificadorPlanoContas write FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
 //    bDesdobra : boolean;
     { Public declarations }
   end;
@@ -688,17 +690,26 @@ begin
   //    if bDesdobra then
       if Form7.SModulo <> 'CLIENTES' then  // Ok
       begin
+
+        Form43.IdentificadorPlanoContas := FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
+
         Form43.ShowModal; // OK
         sConta := Form7.ibDataSet12NOME.AsString;
+        FIdentificadorPlanoContas := Form7.ibDataSet12IDENTIFICADOR.AsString;// Sandro Silva 2022-12-29
       end else
       begin
         sConta := '';
+        FIdentificadorPlanoContas := '';// Sandro Silva 2022-12-29
       end;
-    end else sConta := Form7.ibDataSet14CONTA.AsString;
+    end else
+    begin
+      sConta := Form7.ibDataSet14CONTA.AsString;
+    end;
     //
     Panel9.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
     //
-    if (Form7.sModulo <> 'VENDA') and (Form7.sModulo <> 'COMPRA') and (Form7.sModulo <> 'CLIENTES') then Form7.sModulo := 'VENDA';
+    if (Form7.sModulo <> 'VENDA') and (Form7.sModulo <> 'COMPRA') and (Form7.sModulo <> 'CLIENTES') then
+      Form7.sModulo := 'VENDA';
     //
     CheckBox1.Visible := False;
     //
@@ -827,7 +838,8 @@ begin
       Label7.Visible    := False;
       //
       Form7.ibDataSet8.EnableControls;
-      for I := 1 to Form7.ibDataSet8.FieldCount do  Form7.ibDataSet8.Fields[I-1].Visible := False;
+      for I := 1 to Form7.ibDataSet8.FieldCount do
+        Form7.ibDataSet8.Fields[I-1].Visible := False;
       Form7.ibDataSet8DOCUMENTO.Visible  := True;
       Form7.ibDataSet8VENCIMENTO.Visible := True;
       Form7.ibDataSet8VALOR_DUPL.Visible := True;

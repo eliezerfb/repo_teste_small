@@ -477,13 +477,14 @@ begin
       begin
         if (Form7.ibDataSet24TOTAL.AsFloat>0) then
         begin
+          Form43.IdentificadorPlanoContas := Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString; // Sandro Silva 2022-12-29
           Form43.ShowModal; // Ok
           if Form1.DisponivelSomenteParaNos then
           begin
 
-            if Trim(Form43.Edit1.Text) <> '' then
+            if Trim(Form43.EdPesquisaConta.Text) <> '' then
             begin
-              if Form7.ibDataSet12.Locate('DESCRICAOCONTABIL', Form43.Edit1.Text, []) then
+              if Form7.ibDataSet12.Locate('DESCRICAOCONTABIL', Form43.EdPesquisaConta.Text, []) then
               begin
                 // Salva o identificador do plano de contas na compra 
                 Form7.ibDataSet24.Edit;
@@ -1396,7 +1397,8 @@ begin
                       //
                     end;
                   except
-                    on E: Exception do  ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message);
+                    on E: Exception do
+                      ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message);
                   end;
                   //
                   try
@@ -1506,8 +1508,20 @@ begin
       //                                                                             //
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'PAGAR')  //
       and (Form7.ibDataSet24TOTAL.AsFloat > 0) then                                //
-      begin                                                                       //
+      begin
+        Form18.IdentificadorPlanoContas := Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString; // Sandro Silva 2022-12-29
+        //
         Form18.ShowModal;                                                        //
+        {Sandro Silva 2022-12-29 inicio}
+        if Form1.DisponivelSomenteParaNos then
+        begin
+          if not (Form7.ibDataSet24.State in [dsEdit, dsInsert]) then
+            Form7.ibDataSet24.Edit;
+          Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString := Form18.IdentificadorPlanoContas;
+          Form7.ibDataSet24.Post;
+          Form7.ibDataSet24.Edit;
+        end;
+        {Sandro Silva 2022-12-29 fim}
       end else                                                                  //
       begin                                                                    //
         ApagaAsDuplicatasAnteriores2(True);                                   //

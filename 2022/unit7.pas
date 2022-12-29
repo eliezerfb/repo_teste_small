@@ -12329,7 +12329,7 @@ begin
         // Campos
         //
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
-        iCampos                := 15;
+        iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
         //
         // Menu
         //
