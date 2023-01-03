@@ -231,7 +231,7 @@ Acessa pasta rar_cd_
 Exclui a pasta cd2022_
 Cria a pasta cd2022_
 Copia com xcopy cd2022_ xcopy "C:\Users\Ronei Ivo Weber\Desktop\cd2022_" cd2022_ /S/Y > nul
-Compacta cd2022_ com winrar
+Compacta cd2022_ com winrar "%PROGRAMFILES(x86)%"\winrar\winrar a -r -sfx -z"cd_.conf" cd2023_.rar cd2023_
 Sai da pasta rar_cd_
 Copia cd2022_.exe copy rar_cd_\cd2022_.EXE                   "C:\Users\Ronei Ivo Weber\Desktop" /Y
 
@@ -250,3 +250,48 @@ q1OHjtEGhDeBsQkSk2+LJg==
 cd /downloads/2022
 put "C:\Users\Ronei Ivo Weber\Desktop\cd2022_.exe"
 bye
+
+orca.cop
+logonfse.jpg
+autoexec.sql
+smallcon_.exe
+smallzip_.exe
+atualiza\fundo.~~1
+atualiza\leia-me.txt
+discos\programas\orca.exe
+discos\programas\Anvisa.exe
+discos\programas\Etiquetas.exe
+discos\programas\fci.exe
+discos\programas\graficos.exe
+discos\programas\consulta.exe
+discos\programas\Mail.exe
+discos\programas\mobile.exe
+discos\programas\pesado.exe
+discos\programas\retaguarda.chm
+discos\programas\sintegra.exe
+discos\programas\small.ico
+discos\programas\SmallComandas.exe
+discos\programas\SmallComandasMonitor.exe
+discos\programas\smalldupl.exe
+discos\programas\SPED.exe
+discos\programas\SPEDPISCOFINS.exe
+discos\programas\szip.exe
+discos\programas\delzip192.dll
+discos\programas\spedfiscal.dll
+discos\programas\msgws.dll
+discos\programas\small.ico
+discos\programas\DllInscE32.dll
+discos\programas\mkp.exe
+discos\programas\fbclient.dll
+discos\programas\saas_.exe
+discos\programas\banco085.bmp
+discos\programas\E1_Bridge01.dll
+
+
+rar_cd\cd_.conf
+;O comentário abaixo contém comando de sequência SFX
+
+Setup=cd2022_\setup.exe
+Silent=2
+Overwrite=1
+

@@ -109,6 +109,16 @@ begin
   if chknfsesetup1008sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1008.sma');
   if chknfse1009sma.Checked then Writeln(F,'put c:\reduzida\' + edVersao.Text + '1009.sma');
   //
+  if chkSmallCommerce1001sma.Checked then Writeln(F,'put c:\reduzida\20221001.sma');
+  if chkDiversos1002sma.Checked then Writeln(F,'put c:\reduzida\20221002.sma');
+  if chknfesetup1003sma.Checked then Writeln(F,'put c:\reduzida\20221003.sma');
+  if chknfcesetup1004sma.Checked then Writeln(F,'put c:\reduzida\20221004.sma');
+  if chkPastaNFCe1005sma.Checked then Writeln(F,'put c:\reduzida\20221005.sma');
+  if chkPastaNFE1006sma.Checked then Writeln(F,'put c:\reduzida\20221006.sma');
+  if chkPastaNFSe1007sma.Checked then Writeln(F,'put c:\reduzida\20221007.sma');
+  if chknfsesetup1008sma.Checked then Writeln(F,'put c:\reduzida\20221008.sma');
+  if chknfse1009sma.Checked then Writeln(F,'put c:\reduzida\20221009.sma');
+  //
   if chkSmallCommerce1001sma.Checked then Writeln(F,'put c:\reduzida\20211001.sma');
   if chkDiversos1002sma.Checked then Writeln(F,'put c:\reduzida\20211002.sma');
   if chknfesetup1003sma.Checked then Writeln(F,'put c:\reduzida\20211003.sma');

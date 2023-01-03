@@ -84,7 +84,7 @@ begin
   //
   Image1.Hint := 'Registrado no INPI (Instituto Nacional da Propriedade'
         +Chr(10)+'Industrial) sob número 829288627'
-        +Chr(10)+'em nome de ' + RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF + ',' ///Smallsoft Tecnologia em Informática Ltda,'
+        +Chr(10)+'em nome de ' + RAZAO_SOCIAL_SOFTWARE_HOUSE + ',' ///Smallsoft Tecnologia em Informática Ltda,'
         +Chr(10)+'CNPJ: ' + CNPJ_SMALLSOFT; //07426598000124';
 
   //

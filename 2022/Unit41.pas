@@ -441,6 +441,12 @@ begin
                   //
                   Form7.ibDataSet7NUMERONF.AsString     := Form7.ibDataSet15NUMERONF.AsString;
                   Form7.ibDataSet7DOCUMENTO.AsString    := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + chr(64+iDupl);
+
+                  {Sandro Silva 2023-01-02 inicio}
+                  if Form1.DisponivelSomenteParaNos then
+                    Form7.ibDataSet7DOCUMENTO.AsString  := Form7.ObtemNumeroDocumentoReceber(Form7.ibDataSet7NUMERONF.AsString, Form7.sRPS, iDupl);
+                  {Sandro Silva 2023-01-02 fim}
+
                   Form7.ibDataSet7VALOR_DUPL.AsFloat    := StrToFloat(sValor);
                   Form7.ibDataSet7HISTORICO.AsString    := 'Nota Fiscal: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);
                   Form7.ibDataSet7EMISSAO.asDateTime    := Form7.ibDataSet15EMISSAO.AsDateTime;
@@ -450,7 +456,7 @@ begin
                   Form7.ibDataSet7CONTA.AsString        := Form7.ibDataSet14CONTA.AsString;
                   Form7.ibDataSet7VENCIMENTO.AsDateTime := StrToDate(sVencimento); // Data de vencimento
                   //
-                  Form7.ibDataSet15DUPLICATAS.AsFloat := iDupl;
+                  Form7.ibDataSet15DUPLICATAS.AsFloat   := iDupl;
                   //
                   Form7.ibDataSet7.Post;
                   //

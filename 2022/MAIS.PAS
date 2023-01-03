@@ -26,7 +26,8 @@ uses
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2023002'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
-const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
+const RAZAO_SOCIAL_SOFTWARE_HOUSE = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
 
@@ -1860,7 +1861,7 @@ begin
     Mais2ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
     sRazao := Form7.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17',RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
-    if AnsiUpperCase(Right(Trim(sRazao), 4)) = 'LTDA' then
+    if AnsiContainsText(AnsiUpperCase(Trim(sRazao)), 'SMALLSOFT') then // Sandro Silva 2023-01-02 if AnsiUpperCase(Right(Trim(sRazao), 4)) = 'LTDA' then
       Mais2Ini.WriteString('R01','17',Form7.LbBlowfish1.EncryptString(RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
     Mais2Ini.Free;
   except
@@ -16045,6 +16046,8 @@ var
 begin
   if Form7.ibDataSet13.Active then
   begin
+    // Isso influência e permitir abrir mais de uma instância do Small na mesma máquina
+    // Não pode estar disponível para os clientes
     if (Form7.ibDataSet13.FieldByName('CGC').AsString = '07.426.598/0001-24') or (Form7.ibDataSet13.FieldByName('CGC').AsString = '03.916.076/0006-64') then
     begin
       sEmpresa := ' - [ ' + Form7.ibDataSet13.FieldByName('NOME').AsString + ' ' + Form7.ibDataSet13.FieldByName('CGC').AsString + ' ]';

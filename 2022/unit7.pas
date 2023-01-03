@@ -2059,7 +2059,6 @@ type
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
-
   public
 
     // Public declarations
@@ -2150,6 +2149,9 @@ type
     function Formata2CasasDecimais(Valor: Double): Currency;
     procedure SelecionaAliquotaIss(var IBQuery: TIBQuery; Operacao: String = '');
     function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery; // Sandro Silva 2022-11-10
+    function CaracteresParaSequencialDocumentos: String;
+    function ObtemNumeroDocumentoReceber(sNumeroNF: String; TipoRPS: String;
+      iSequencialParcela: Integer): String;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -43689,6 +43691,31 @@ begin
     //
   end;
   //
+end;
+
+function TForm7.CaracteresParaSequencialDocumentos: String;
+begin
+  // Gera lista com os caracteres que podem ser usados para identificar parcelas de contas a receber ou pagar
+  Result := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890' + DupeString('_',1000);
+end;
+
+function TForm7.ObtemNumeroDocumentoReceber(sNumeroNF: String; TipoRPS: String;
+  iSequencialParcela: Integer): String;
+// Gera o número do documento para o contas a receber
+begin
+  if TipoRPS <> 'S' then
+  begin
+    if Copy(sNumeroNF,10,3) = '002' then
+    begin
+      Result := 'S'+Copy(sNumeroNF,2,8) + Copy(Result,iSequencialParcela,1);
+    end else
+    begin
+      Result := Copy(sNumeroNF,1,9) + Copy(Result,iSequencialParcela,1);
+    end;
+  end else
+  begin
+    Result := Copy(sNumeroNF,1,1)+'S'+Copy(sNumeroNF,3,7) + Copy(Result,iSequencialParcela,1);
+  end;
 end;
 
 end.
