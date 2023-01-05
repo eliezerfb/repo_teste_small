@@ -1,10 +1,10 @@
 object Form9: TForm9
-  Left = 1078
-  Top = 125
+  Left = 1051
+  Top = 5
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Colunas'
-  ClientHeight = 451
+  ClientHeight = 973
   ClientWidth = 562
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object Form9: TForm9
     Left = 0
     Top = 0
     Width = 562
-    Height = 451
+    Height = 973
     Align = alClient
     Color = clWhite
     Ctl3D = False

@@ -140,10 +140,7 @@ begin
     }
     for I := 1 to Form7.iCampos do
     begin
-      if Copy(Form7.sMostra,I,1) = 'T' then
-        Form7.ArquivoAberto.Fields[I-1].Visible := True
-      else
-        Form7.ArquivoAberto.Fields[I-1].Visible := False;
+      Form7.ArquivoAberto.Fields[I-1].Visible := (Copy(Form7.sMostra,I,1) = 'T');
     end;
 
     {Sandro Silva 2022-12-20 fim}
@@ -161,7 +158,8 @@ end;
 
 procedure TForm9.FormShow(Sender: TObject);
 var
-  I : Integer;
+  I: Integer;
+  iChecked: Integer; // Quantidade de checkbox
 begin
   //
   bChave := False;
@@ -171,27 +169,45 @@ begin
   Form9.Top   := Form7.Top + 25;
   if Form9.Height <= 50 then
     Form9.Height := 70;
+
+  {Sandro Silva 2023-01-04 inicio}
+  // Identifica quantos checkbox exitem;
+  iChecked := -1;
+  for I := 0 to Form9.ScrollBox1.ControlCount -1 do
+  begin
+    if Form9.ScrollBox1.Controls[i].ClassType = TCheckBox then
+      Inc(iChecked);
+  end;
+  {Sandro Silva 2023-01-04 fim}
+
   //
   // Todos os CheckBox não visíveis
   //
-  for I := 0 to 48 do
+  for I := 0 to iChecked do // Sandro Silva 2023-01-04 for I := 0 to 48 do
     TcheckBox(Form9.Components[I+CheckBox1.ComponentIndex]).Visible := False;
+
   //
   // ComponentIndex descobre qual o valor do primeiro checkbox no indice
   // Components acessa diretamente o indice do componente é possível
   // inclusive mudar o valor das suas propriedades
   //
   Form9.Height := 5;
+
   //
   for I := 1 to Form7.iCampos do
   begin
     try
       TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
       TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Caption := Form7.ArquivoAberto.Fields[I-1].DisplayLabel;
+      {Sandro Silva 2023-01-04 inicio
       if Form7.ArquivoAberto.Fields[I-1].Visible = True then
         TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
       else
         TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
+      }
+      TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := Form7.ArquivoAberto.Fields[I-1].Visible;
+      {Sandro Silva 2023-01-04 fim}
+
       if Form9.Height < Screen.Height then
         Form9.Height := Form9.Height + 25;
     except

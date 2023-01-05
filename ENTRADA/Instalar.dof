@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2021
+MajorVer=2023
 MinorVer=0
 Release=0
-Build=4
+Build=2
 Debug=0
 PreRelease=0
 Special=0
@@ -124,15 +124,15 @@ DLL=0
 Locale=1046
 CodePage=1252
 [Version Info Keys]
-CompanyName=SmallSoft Informática Ltda
+CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Small Commerce
-FileVersion=2021.0.0.4
-InternalName=SmallSoft Informática Ltda
-LegalCopyright=SmallSoft
-LegalTrademarks=SmallSoft
+FileVersion=2023.0.0.2
+InternalName=Zucchetti Software e Sistemas Ltda
+LegalCopyright=Zucchetti Software e Sistemas Ltda
+LegalTrademarks=Zucchetti Software e Sistemas Ltda
 OriginalFilename=setup
 ProductName=Small Commerce
-ProductVersion=2019
+ProductVersion=2023
 Comments=Small Commerce
 [Excluded Packages]
 c:\program files (x86)\borland\delphi7\Projects\Bpl\TPNGButton.bpl=(untitled)

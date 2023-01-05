@@ -2737,7 +2737,8 @@ begin
                 // Converter de ANSITOUTF8
                 // Tira o cariage return (CR) e Line Fid (LF)
                 //
-                if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then Form7.ibDataset24.Edit;
+                if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset24.Edit;
                 Form7.ibDataset24NFEXML.AsString := AnsiToUTF8(slXMLDescom.text);  // Grava o XML descompactado na tabela compras
                 Form7.ibDataset24.Post;
                 //
@@ -2846,9 +2847,15 @@ begin
           //
           // ShowMessage('Gravando maxima nsu: '+IntToStr(StrToInt(LimpaNumero(xmlNodeValue(sP1, '//retDistDFeInt/maxNSU')))));
           //
-          // Descarta pra comessar do zero...
+          // Descarta pra começar do zero...
           //
+          {Sandro Silva 2023-01-05 inicio
           sP1 := '';
+          }
+          if Form1.DisponivelSomenteParaNos = False then //testando se precisa mesmo limpar a variável para não importar a notas iniciais, quando CNPJ é novo, empresa nova constituída
+            sP1 := '';
+          {Sandro Silva 2023-01-05 fim}
+
           //
         end else
         begin
@@ -2880,6 +2887,18 @@ begin
       //
       lXMLDocZip.loadXML(sP1);
       NodeZip     := lXMLDocZip.selectNodes('//retDistDFeInt/loteDistDFeInt/docZip');
+
+      {Sandro Silva 2023-01-04 inicio
+      if Form1.DisponivelSomenteParaNos then
+      begin
+
+        ShowMessage('teste 2888 ' + IntToStr(NodeZip.length));
+
+        ShowMessage('teste 2892 ' + sP1);
+        //Audita('DFE','SMALL', Senhas.UsuarioPub,'chNFE ' + xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe'),0,0); // Ato, Modulo, Usuário, Histórico, Valor
+      end;
+      {Sandro Silva 2023-01-04 fim}
+
       //
       for i := 0 to NodeZip.length - 1 do // Passa por todos os xml zipados
       begin
@@ -2888,9 +2907,19 @@ begin
           //
           slXMLDescom.Clear;
           slXMLDescom.text := Form7.spdNFe.DescompactarXMLZip(NodeZip.item[i].text); // Descompacta xml zipado
-          //
-          if xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe') <> '' then
+
+          {Sandro Silva 2023-01-04 inicio
+          if Form1.DisponivelSomenteParaNos then
           begin
+            ShowMessage('teste 2913 ' + slXMLDescom.text);
+          end;
+          {Sandro Silva 2023-01-04 fim}
+
+          //
+          if xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe') <> '' then  // Valida se é a nota resumida
+          begin
+            //
+            // Salvando dados para realizar o manifesto
             //
             try
               //
@@ -2922,13 +2951,16 @@ begin
           end else
           begin
             //
+            // Salvando o xml 
+            //
             // ShowMessage('Teste NF-e ENTRADA NFEID: '+pChar(xmlNodeValue(slXMLDescom.Text, '//infProt/chNFe')));
             //
             Form7.ibDataSet24.Close;
             Form7.ibDataSet24.SelectSQL.Clear;
             Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NFEID = '+QuotedStr(pChar(xmlNodeValue(slXMLDescom.Text, '//infProt/chNFe')))+'');
             Form7.ibDataSet24.Open;
-            //
+            //   
+
             if Pos(Form7.ibDataset24NFEID.AsString,slXMLDescom.Text) <> 0 then
             begin
               //
@@ -2936,10 +2968,19 @@ begin
               //
               if (Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet24NFEXML.AsString) = 0) then
               begin
+
+                {Sandro Silva 2023-01-04 inicio
+                if Form1.DisponivelSomenteParaNos then
+                begin
+                  ShowMessage('teste 2985 ' + slXMLDescom.text);
+                end;
+                {Sandro Silva 2023-01-04 fim}                   
+
                 //
-                // Teste problema inmportação das NF-e de entrada
+                // Teste problema importação das NF-e de entrada
                 //
-                if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then Form7.ibDataset24.Edit;
+                if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset24.Edit;
                 Form7.ibDataset24NFEXML.AsString := AnsiToUTF8(slXMLDescom.text);  // Grava o XML descompactado na tabela compras
                 Form7.ibDataset24.Post;
                 //
@@ -2947,7 +2988,9 @@ begin
                 // ShowMessage(Form7.ibDataSet24NFEXML.AsString);
                 //
               end;
+
             end;
+
             //
           end;
         except
@@ -4754,7 +4797,8 @@ begin
   {Sandro Silva 2022-12-15 fim}
 
   //
-  if LimpaNumero(Form7.ibDataSet13CGC.AsString) <> '' then Form7.spdNFe.CNPJ := LimpaNumero(Form7.ibDataSet13CGC.AsString);
+  if LimpaNumero(Form7.ibDataSet13CGC.AsString) <> '' then
+    Form7.spdNFe.CNPJ := LimpaNumero(Form7.ibDataSet13CGC.AsString);
   //
   if Form1.bModoScan then
   begin
@@ -4784,8 +4828,12 @@ begin
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
   //
   Form7.sFuso                := Mais1ini.ReadString('NFE' , 'FUSO','');
-  if Form7.sFuso = '' then Form7.sFuso := DefineFusoHorario(Form1.sAtual+'\nfe.ini', 'NFE', 'FUSO', Form7.ibDataSet13ESTADO.AsString, '', False);
-  if Form7.sFuso = FusoHorarioPadrao(Form7.ibDataSet13ESTADO.AsString) then Form1.HorarioDeVerao.Checked := False else  Form1.HorarioDeVerao.Checked := True;
+  if Form7.sFuso = '' then
+    Form7.sFuso := DefineFusoHorario(Form1.sAtual+'\nfe.ini', 'NFE', 'FUSO', Form7.ibDataSet13ESTADO.AsString, '', False);
+  if Form7.sFuso = FusoHorarioPadrao(Form7.ibDataSet13ESTADO.AsString) then
+    Form1.HorarioDeVerao.Checked := False
+  else
+    Form1.HorarioDeVerao.Checked := True;
   //
   Form7.sFormatoDoDanfe      := Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato');
   Form7.sZiparXML            := Mais1Ini.ReadString('ENVIO','Zipar XML','N');
@@ -4847,10 +4895,10 @@ begin
   //
   if AllTrim(UpperCase(Form7.ibDataSet13ESTADO.AsString)) <> '' then
   begin
-    Form7.spdNFe.UF                   := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+    Form7.spdNFe.UF := UpperCase(Form7.ibDataSet13ESTADO.AsString);
   end else
   begin
-    Form7.spdNFe.UF                   := 'SC';
+    Form7.spdNFe.UF := 'SC';
   end;
   //
   if (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Homologacao') and (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Producao') then Mais1Ini.WriteString('NFE','Ambiente','Homologacao');
@@ -4895,8 +4943,7 @@ begin
   //
   Result := True;
   //
-end;
-
+end;      
 
 function ConsultaCadastro(sP1: String) : String;
 var
@@ -4966,11 +5013,7 @@ begin
   ConfiguraNFE(True);
   Result := sRetorno;
   //
-end;
-
-
-
-
+end;    
 
 function DistribuicaoNFe2(sP1: String) : Boolean;
 var
@@ -12291,6 +12334,7 @@ begin
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
         //
+        {Sandro Silva 2023-01-04 inicio
         if Form1.bMKP then
         begin
           sMostra   := 'TFTFTFFFFF'+Replicate('F',39)+'T';
@@ -12299,9 +12343,20 @@ begin
           // Sandro Silva 2022-12-20 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
           sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 41));
         end;
+        }
+        if Form1.bMKP then
+        begin
+          sMostra   := 'TFTFTFFFFF'+Replicate('F',40)+'T';
+        end else
+        begin
+          // Sandro Silva 2022-12-20 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
+          sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
+        end;
+        {Sandro Silva 2023-01-04 fim}
+
         //
-        iCampos   := 50;
-        {Sandro Silva 2022-12-20 inicio}
+        iCampos   := 51; // Sandro Silva 2023-01-04 iCampos   := 50;
+        {Sandro Silva 2022-12-20 inicio
         if Form1.CampoDisponivelParaUsuario(sModulo, 'IDENTIFICADORPLANOCONTAS') then
           iCampos   := 51;
         {Sandro Silva 2022-12-20 fim}
@@ -37047,7 +37102,7 @@ begin
         if Form7.ibDataSet24MERCADORIA.Asfloat = 0 then
         begin
           sRetorno := spdNFe.ConsultarDistribuicaoDFeChave(pChar(Copy(Form7.ibDataSet24NFEID.AsString,1,2)), pChar(LimpaNumero(Form7.ibDataSet13CGC.AsString)),pChar(Form7.ibDataSet24NFEID.AsString));
-          DownloadNFeEmitida(sRetorno); // Baixa o XML de uma NF-e expecifica
+          DownloadNFeEmitida(sRetorno); // Baixa o XML de uma NF-e especifica
         end;
       end;
     end;
@@ -40465,7 +40520,7 @@ begin
       Mais1Ini.Free;
       //
       // Alterado para permitir matriz e filial com o mesmo certificado
-      //
+      // CNPJ raíz do certificado é igual ao CNPJ raíz do emitente
       if (Copy(FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text)),1,10)= Copy(Form7.ibDataset13CGC.AsString,1,10)) or (Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text)='')  then
       begin
         //
@@ -40485,7 +40540,24 @@ begin
           Form1.ibQuery2.SQL.Add('select gen_id(G_NSU_DOWNLOAD_XML,0) from rdb$database');
           Form1.ibQuery2.Open;
           //
-          sRetorno := spdNFe.ConsultarDistribuicaoDFe(pChar(Copy(ibDAtaSet99.FieldByname('CODIGO').AsString,1,2)),pChar(LimpaNumero(Form7.ibDataSet13CGC.AsString)),StrTran(StrZero(StrToInt(Form1.ibQuery2.FieldByname('GEN_ID').AsString),15,0),'-','0'),nkUltimo);
+          sRetorno := spdNFe.ConsultarDistribuicaoDFe(
+                             pChar(Copy(ibDAtaSet99.FieldByname('CODIGO').AsString,1,2)),
+                             pChar(LimpaNumero(Form7.ibDataSet13CGC.AsString)),
+                             StrTran(StrZero(StrToInt(Form1.ibQuery2.FieldByname('GEN_ID').AsString),15,0),'-','0'),
+                             nkUltimo
+                             ); 
+
+          {Sandro Silva 2023-01-04 inicio
+          if Form1.DisponivelSomenteParaNos then
+          begin
+            ShowMessage('teste 40538 ' + Form1.sAtual + #13 + 'Pasta log ' + spdNFe.DiretorioLog);
+
+            ShowMessage('teste 40544 ' + sRetorno);
+
+            //Audita('DFE','SMALL', Senhas.UsuarioPub,'chNFE ' + xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe'),0,0); // Ato, Modulo, Usuário, Histórico, Valor
+          end;
+          {Sandro Silva 2023-01-04 fim}
+
           //
           // Erro do vídeo
           //
@@ -43707,14 +43779,14 @@ begin
   begin
     if Copy(sNumeroNF,10,3) = '002' then
     begin
-      Result := 'S'+Copy(sNumeroNF,2,8) + Copy(Result,iSequencialParcela,1);
+      Result := 'S'+Copy(sNumeroNF,2,8) + Copy(CaracteresParaSequencialDocumentos,iSequencialParcela,1);
     end else
     begin
-      Result := Copy(sNumeroNF,1,9) + Copy(Result,iSequencialParcela,1);
+      Result := Copy(sNumeroNF,1,9) + Copy(CaracteresParaSequencialDocumentos,iSequencialParcela,1);
     end;
   end else
   begin
-    Result := Copy(sNumeroNF,1,1)+'S'+Copy(sNumeroNF,3,7) + Copy(Result,iSequencialParcela,1);
+    Result := Copy(sNumeroNF,1,1)+'S'+Copy(sNumeroNF,3,7) + Copy(CaracteresParaSequencialDocumentos,iSequencialParcela,1);
   end;
 end;
 

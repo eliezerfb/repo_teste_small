@@ -4129,11 +4129,15 @@ begin
     if Form7.sModulo = 'ESTOQUE' then
     begin
       iContadorCampoEstoque := 24;
+      {Sandro Silva 2023-01-04 inicio
       iTopSegundaColuna := 17;
       if Form1.CampoDisponivelParaUsuario(Form7.sModulo, 'IDENTIFICADORPLANOCONTAS') then
       begin
         iTopSegundaColuna := 16;
       end;
+      }
+      iTopSegundaColuna := 16;      
+      {Sandro Silva 2023-01-04 fim}
     end;
     {Sandro Silva 2022-12-20 fim}
 

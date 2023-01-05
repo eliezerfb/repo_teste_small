@@ -10956,7 +10956,16 @@ begin
     //
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
-    Form1.ibQuery1.SQL.Add('select NFEXML, EMISSAO from VENDAS where EMITIDA=''S'' and NFEXML not like ''%<infRespTec><CNPJ>43728245000142</CNPJ>%'' and NFEXML not like ''%<infRespTec><CNPJ>07426598000124</CNPJ>%'' and NFEXML like ''%<infRespTec><CNPJ%'' order by EMISSAO');
+    // Sandro Silva 2023-01-03 Form1.ibQuery1.SQL.Add('select NFEXML, EMISSAO from VENDAS where EMITIDA=''S'' and NFEXML not like ''%<infRespTec><CNPJ>43728245000142</CNPJ>%'' and NFEXML not like ''%<infRespTec><CNPJ>07426598000124</CNPJ>%'' and NFEXML like ''%<infRespTec><CNPJ%'' order by EMISSAO');
+    // Listar xml com responsável diferente da Smallsoft ou Zucchetti
+    Form1.ibQuery1.SQL.Text :=
+      'select NFEXML, EMISSAO ' +
+      'from VENDAS ' +
+      'where EMITIDA=''S'' ' +
+      ' and NFEXML not like ''%<infRespTec><CNPJ>43728245000142</CNPJ>%'' ' + // Sebrae/SP
+      ' and NFEXML not like ''%<infRespTec><CNPJ>07426598000124</CNPJ>%'' ' + // Smallsoft
+      ' and NFEXML not like ''%<infRespTec><CNPJ>03916076000664</CNPJ>%'' ' + // Zucchetti
+      ' and NFEXML like ''%<infRespTec><CNPJ%'' order by EMISSAO';
     Form1.ibQuery1.Open;
     Form1.ibQuery1.Last;
     //
@@ -10967,7 +10976,9 @@ begin
       //
       Form1.ibQuery1.Close;
       Form1.ibQuery1.SQL.Clear;
-      Form1.ibQuery1.SQL.Add('select NFEXML, EMISSAO from VENDAS where EMITIDA=''S'' and NFEXML not like ''%<infRespTec><CNPJ>07426598000124</CNPJ>%'' and NFEXML like ''%<infRespTec><CNPJ%'' order by EMISSAO');
+      // Sandro Silva 2023-01-03 Form1.ibQuery1.SQL.Add('select NFEXML, EMISSAO from VENDAS where EMITIDA=''S'' and NFEXML not like ''%<infRespTec><CNPJ>07426598000124</CNPJ>%'' and NFEXML like ''%<infRespTec><CNPJ%'' order by EMISSAO');
+      // Listar xml com responsável diferente da Smallsoft ou Zucchetti
+      Form1.ibQuery1.SQL.Add('select NFEXML, EMISSAO from VENDAS where EMITIDA=''S'' and (NFEXML not like ''%<infRespTec><CNPJ>07426598000124</CNPJ>%'' and NFEXML not like ''%<infRespTec><CNPJ>03916076000664</CNPJ>%'') and NFEXML like ''%<infRespTec><CNPJ%'' order by EMISSAO');
       Form1.ibQuery1.Open;
       Form1.ibQuery1.Last;
       //
@@ -13376,14 +13387,14 @@ begin
     begin
       if Form1.Image_Perigo_2.Tag = 0 then
       begin
-        Form1.Image208.Picture := Form1.Image_Perigo_1.Picture;
-        Form1.Image_Perigo_2.Tag := 1;
+        Form1.Image208.Picture    := Form1.Image_Perigo_1.Picture;
+        Form1.Image_Perigo_2.Tag  := 1;
         Form1.Label208.Font.Color := $00F0F0F0;
       end else
       begin
-        Form1.Image208.Picture := Form1.Image_Perigo_2.Picture;
+        Form1.Image208.Picture    := Form1.Image_Perigo_2.Picture;
         Form1.Label208.Font.Color := clBlack;
-        Form1.Image_Perigo_2.Tag := 0;
+        Form1.Image_Perigo_2.Tag  := 0;
       end;
       //
       Form1.Image208.Repaint;
@@ -15451,6 +15462,10 @@ begin
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Não');
     AutoMarketplace1.Checked := False;
     Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // AutoSmallMobile1Click
+
+    {Sandro Silva 2023-01-04 inicio}
+    Form1.bMKP := False; 
+    {Sandro Silva 2023-01-04 fim}
   end else
   begin
     //
@@ -16087,14 +16102,16 @@ begin
       Result := DisponivelSomenteParaNos;
     end;
   end;
-
+  
+  {Sandro Silva 2023-01-04 inicio
   if (sModulo = 'ESTOQUE') then
   begin
     if (AnsiUpperCase(sCampo) = 'IDENTIFICADORPLANOCONTAS') then
     begin
-      Result := DisponivelSomenteParaNos;
+      Result := Result := DisponivelSomenteParaNos;
     end;
   end;
+  }
 
 end;
 

@@ -970,10 +970,18 @@ begin
   //
   GetDir(0,sAtual);
   //
+  {Sandro Silva 2023-01-04 inicio
   if FileExists(sAtual+'\cd2022_\setup.exe') then
   begin
     CHDir(sAtual+'\cd2022_');
   end;
+  }
+  if FileExists(sAtual+'\cd2023_\setup.exe') then
+  begin
+    CHDir(sAtual+'\cd2023_');
+  end;
+  {Sandro Silva 2023-01-04 fim}
+
   //
   GetDir(0,sAtual);
   //
