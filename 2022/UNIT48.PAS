@@ -1418,10 +1418,7 @@ begin
     {Sandro Silva 2022-09-22 fim}
     Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
     if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
-      Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear; 
-    {Sandro Silva 2022-12-20 inicio}
-
-    {Sandro Silva 2022-12-20 fim}
+      Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear;
     //
     Form7.ibDataSet35.Post;
     Form7.ibDataSet35.Edit;

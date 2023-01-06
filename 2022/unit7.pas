@@ -2152,6 +2152,7 @@ type
     function CaracteresParaSequencialDocumentos: String;
     function ObtemNumeroDocumentoReceber(sNumeroNF: String; TipoRPS: String;
       iSequencialParcela: Integer): String;
+    function UltimaParcelaReceberDaNF(sNumeroNF: String): String; // Sandro Silva 2023-01-06
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -43788,6 +43789,29 @@ begin
   begin
     Result := Copy(sNumeroNF,1,1)+'S'+Copy(sNumeroNF,3,7) + Copy(CaracteresParaSequencialDocumentos,iSequencialParcela,1);
   end;
+end;
+
+function TForm7.UltimaParcelaReceberDaNF(sNumeroNF: String): String;
+var
+  IBQPARCELA: TIBQuery;
+begin
+  // Retorna a última parcela da nota fiscal
+  IBQPARCELA := CriaIBQuery(Form7.ibDataSet7.Transaction);
+  try
+    IBQPARCELA.Close;
+    IBQPARCELA.SQL.Text :=
+      'select first 1 ' +
+      'DOCUMENTO as ULTIMAPARCELA ' +
+      'from RECEBER ' +
+      'where NUMERONF = :NUMERONF ' +
+      'order by REGISTRO desc';
+    IBQPARCELA.ParamByName('NUMERONF').AsString := sNumeroNF;
+    IBQPARCELA.Open;
+    Result := IBQPARCELA.FieldByName('ULTIMAPARCELA').AsString;
+  except
+  end;
+  FreeAndNil(IBQPARCELA);
+
 end;
 
 end.

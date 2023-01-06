@@ -4521,7 +4521,11 @@ end;
 
 procedure TForm10.Button12Click(Sender: TObject);
 var
+  // Sandro Silva 2023-01-06 vCampo: array [1..7] of Variant; // Cria uma matriz com 6 elementos
   vCampo: array [1..7] of Variant; // Cria uma matriz com 6 elementos
+  sDocumentoBaseParaSequencia: String; // Sandro Silva 2023-01-06
+  sNumeroNF: String; // Sandro Silva 2023-01-06
+aqui   sParcelaReplicada: String; // Sandro Silva 2023-01-06
 begin
   //
   Form7.iFoco := 0;
@@ -4529,18 +4533,43 @@ begin
   with Form7 do
   begin
     //
-    if sModulo = 'RECEBER' then
+    if Form7.sModulo = 'RECEBER' then
     begin
       if AllTrim(ibDataSet7DOCUMENTO.AsString) <> '' then
       begin
-        if copy(ibDataSet7DOCUMENTO.AsString,Length(Trim(ibDataSet7DOCUMENTO.AsString)),1) = '9' then
-          vCampo[1] := copy(ibDataSet7DOCUMENTO.AsString,1,Length(Trim(ibDataSet7DOCUMENTO.AsString))-1)+'A'
+
+        {Sandro Silva 2023-01-06 inicio
+        if Copy(ibDataSet7DOCUMENTO.AsString,Length(Trim(ibDataSet7DOCUMENTO.AsString)),1) = '9' then
+          vCampo[1] := Copy(ibDataSet7DOCUMENTO.AsString,1,Length(Trim(ibDataSet7DOCUMENTO.AsString))-1)+'A'
         else if copy(ibDataSet7DOCUMENTO.AsString,Length(Trim(ibDataSet7DOCUMENTO.AsString)),1) = 'Z' then
-          vCampo[1] := copy(ibDataSet7DOCUMENTO.AsString,1,Length(Trim(ibDataSet7DOCUMENTO.AsString))-1)+'a'
+          vCampo[1] := Copy(ibDataSet7DOCUMENTO.AsString,1,Length(Trim(ibDataSet7DOCUMENTO.AsString))-1)+'a'
         else if copy(ibDataSet7DOCUMENTO.AsString,Length(Trim(ibDataSet7DOCUMENTO.AsString)),1) = 'z' then
           vCampo[1] := chr(Ord(ibDataSet7DOCUMENTO.AsString[1])+1)+copy(ibDataSet7DOCUMENTO.AsString,2,Length(Trim(ibDataSet7DOCUMENTO.AsString))-2)+'A'
         else
           vCampo[1] := copy(ibDataSet7DOCUMENTO.AsString,1,Length(Trim(ibDataSet7DOCUMENTO.AsString))-1) + chr(Ord(ibDataSet7DOCUMENTO.AsString[Length(Trim(ibDataSet7DOCUMENTO.AsString))])+1); // documento
+        }
+        sDocumentoBaseParaSequencia := Form7.ibDataSet7DOCUMENTO.AsString; // Sandro Silva 2023-01-06
+
+        if Form1.DisponivelSomenteParaNos then
+        begin
+          // Identifica a última sequência de documento da nota para usar como base para definir a próxima letra do documento replicado
+          if (Form7.ibDataSet7NUMERONF.AsString) <> '' then
+            if UltimaParcelaReceberDaNF(Form7.ibDataSet7NUMERONF.AsString) <> '' then
+            begin
+              sDocumentoBaseParaSequencia := UltimaParcelaReceberDaNF(Form7.ibDataSet7NUMERONF.AsString);
+              sNumeroNF := Form7.ibDataSet7NUMERONF.AsString;
+            end;
+        end;
+
+        if Copy(sDocumentoBaseParaSequencia,Length(Trim(sDocumentoBaseParaSequencia)),1) = '9' then
+          vCampo[1] := Copy(sDocumentoBaseParaSequencia,1,Length(Trim(sDocumentoBaseParaSequencia))-1)+'A'
+        else if copy(sDocumentoBaseParaSequencia,Length(Trim(sDocumentoBaseParaSequencia)),1) = 'Z' then
+          vCampo[1] := Copy(sDocumentoBaseParaSequencia,1,Length(Trim(sDocumentoBaseParaSequencia))-1)+'a'
+        else if copy(sDocumentoBaseParaSequencia,Length(Trim(sDocumentoBaseParaSequencia)),1) = 'z' then
+          vCampo[1] := chr(Ord(sDocumentoBaseParaSequencia[1])+1)+copy(sDocumentoBaseParaSequencia,2,Length(Trim(sDocumentoBaseParaSequencia))-2)+'A'
+        else
+          vCampo[1] := copy(sDocumentoBaseParaSequencia,1,Length(Trim(sDocumentoBaseParaSequencia))-1) + chr(Ord(sDocumentoBaseParaSequencia[Length(Trim(sDocumentoBaseParaSequencia))])+1); // documento
+        {Sandro Silva 2023-01-06 fim}
 
       end else
       begin
@@ -4630,6 +4659,14 @@ begin
       ibDataSet7VENCIMENTO.AsDAtetime := vCampo[5]; // Vencimento
       ibDataSet7NOME.AsString         := vCampo[6]; // Nome do Cliente
       ibDataSet7CONTA.AsString        := vCampo[7]; // Plano de contas
+
+      {Sandro Silva 2023-01-06 inicio}
+      if Form1.DisponivelSomenteParaNos then
+      begin
+        Form7.ibDataSet7NUMERONF.AsString := sNumeroNF;
+      end;
+      {Sandro Silva 2023-01-06 fim}
+
       ibDataSet7.Post;                              // Grava
     end;
     //
@@ -4737,7 +4774,11 @@ begin
     //
   end;
   //
-  if SMALL_DBEdit1.Visible = True then if SMALL_DBEdit1.CanFocus then SMALL_DBEdit1.SetFocus;
+  if SMALL_DBEdit1.Visible = True then
+  begin
+    if SMALL_DBEdit1.CanFocus then
+      SMALL_DBEdit1.SetFocus;
+  end;
   //
 end;
 

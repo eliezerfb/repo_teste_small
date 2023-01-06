@@ -274,6 +274,13 @@ begin
               Form7.ibDataSet35BASEISS.AsFloat    := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
               {Sandro Silva 2022-09-21 fim}
 
+              {Sandro Silva 2023-01-06 inicio}
+              Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+              if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
+                Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear;
+              {Sandro Silva 2023-01-06 fim}
+
+
               Form7.ibDataSet35.Post;
             end;
             Form7.ibDataSet35.Next;
@@ -603,6 +610,12 @@ begin
 
                             {Sandro Silva 2022-09-21 fim}
 
+                            {Sandro Silva 2023-01-06 inicio}
+                            Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+                            if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
+                              Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear;
+                            {Sandro Silva 2023-01-06 fim}
+
                             //
                             Form7.ibDataSet35.Post;
                             //
@@ -636,6 +649,13 @@ begin
                             Form1.bFlag := True;
                             Form7.sModulo := 'VENDA';
                             Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet37DESCRICAO.AsString;
+
+                            {Sandro Silva 2023-01-06 inicio}
+                            Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+                            if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
+                              Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear;
+                            {Sandro Silva 2023-01-06 fim}
+
                             Form7.sModulo := 'ORCAMENTO';
                             Form1.bFlag := False;
                             //
