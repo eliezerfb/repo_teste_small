@@ -1447,6 +1447,8 @@ type
     procedure FechaVendaRapidaFormaPagamentoCartao;
     procedure TransmiteContingenciaAutomatico(data: TDate; Caixa: String);
     procedure LeConfiguracaoTipoEtiquetaBalanca;
+    procedure VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
+    procedure ValidarAssinaturaACComNoCnpjSoftwareHouse;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -2131,7 +2133,7 @@ begin
     Form1.ibDataSet100.SelectSql.Add('insert into AUDIT0RIA (ATO, MODULO, USUARIO, HISTORICO, VALOR_DE, VALOR_PARA, DATA, HORA, REGISTRO) values('
             +QuotedStr(sAto)+', '   //Ato
             +QuotedStr(sModulo)+', '   //Modulo
-            +QuotedStr(sHistorico)+', '   //Usuario
+            +QuotedStr(sUsuario)+', '   //Usuario
             +QuotedStr(RightStr(sHistorico, 80))+', '   //Historico
             +QuotedStr(StrTran(StrZero(ValorDe,10,2),',','.'))+', '
             +QuotedStr(StrTran(StrZero(ValorPara,10,2),',','.'))+', '
@@ -10671,6 +10673,18 @@ begin
 
       Form1.sCaixa := Form1.PDV_NumeroDoCaixa(True);
       Audita('ACESSOU','FRENTE', '', 'ACESSOU O SISTEMA - Caixa: ' + Form1.sCaixa + ' ' + ExtractFileName(Application.ExeName) + ' Build: ' + LimpaNumero(Form22.sBuild),0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2019-03-06
+
+      {Sandro Silva 2023-01-05 inicio}
+      if (Form1.sModeloECF = '59') then
+      begin
+        if AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE' then
+        begin
+          if _59.NumeroSerieSAT <> '' then
+            ValidarAssinaturaACComNoCnpjSoftwareHouse;
+        end;
+      end;
+      {Sandro Silva 2023-01-05 fim}
+
     end
     else
     begin
@@ -32250,6 +32264,7 @@ procedure TForm1.VincularAssinaturaAC1Click(Sender: TObject);
 var
   sResposta: String;
 begin
+  {Sandro Silva 2023-01-05 inicio
   if _59.AssinaturaAssociada = '' then
   begin
     Form1.ExibePanelMensagem('Aguarde! Vinculando Assinatura');
@@ -32268,6 +32283,9 @@ begin
                           'Verifique sua conexão com a Internet' + #13 + 'e tente vincular novamente' + #13 +
                           'Persistindo o erro acesse www.smallsoft.com.br, Suporte e escolha Autorização de uso SAT ou MF-e' + #13 +
                           'Você receberá por e-mail um arquivo com a assinatura. Salve esse arquivo na pasta Windows'), 'Atenção', MB_OK + MB_ICONWARNING);
+  }
+  VincularAssinaturaAC;
+  {Sandro Silva 2023-01-05 fim}
 end;
 
 procedure TForm1.FormatarIEdoemitentecom12dgitos1Click(
@@ -33855,6 +33873,66 @@ begin
   except
   end;
   //
+end;
+
+procedure TForm1.VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
+var
+  sResposta: String;
+  sAssinaturaAssociadaAtual: String;
+begin
+  sAssinaturaAssociadaAtual := _59.AssinaturaAssociada;
+  if bForcarObterNovaAssinaturaAC then
+    sAssinaturaAssociadaAtual := '';
+  if sAssinaturaAssociadaAtual = '' then
+  begin
+    Form1.ExibePanelMensagem('Aguarde! Vinculando Assinatura');
+    sResposta := Form1.GetAssinaturaHttpPost(StrTran(Form22.sSerie, 'Número de série: ', ''), _59.Emitente.CNPJ, _59.Fabricante, _59.NumeroSerieSAT);
+
+    if (Trim(xmlNodeValue(sResposta, '//assinaturaassociada')) <> '') then
+      _ecf59_GravaAssinaturaAssociada(Trim(xmlNodeValue(sResposta, '//assinaturaassociada')));
+
+    //    '<?xml version="1.0" encoding="UTF-8"?><smallsoft><sat><assinaturaassociada>SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT</assinaturaassociada><cnpjsh>16716114000172</cnpjsh><cnpjsmallsoft>07426598000124</cnpjsmallsoft></sat></smallsoft> '
+    if (Trim(xmlNodeValue(sResposta, '//cnpjsmallsoft')) <> '') then
+    begin
+      if CifrarTexto(Trim(xmlNodeValue(sResposta, '//cnpjsmallsoft'))) <> '' then
+      begin
+        SalvarConfiguracao(Form1.sArquivo, 'R01','14', CifrarTexto(Trim(xmlNodeValue(sResposta, '//cnpjsmallsoft')))); // Atualiza o arquivoauxiliarcriptografadopafecfsmallsoft.ini
+        if _ecf59_ValidaKitDesenvolvimento = False then  // Quando não for kit de desenvolvimento atualiza no Frente.ini o CNPJ da software house
+          GravarParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CNPJ_SOFTWARE_HOUSE, Trim(xmlNodeValue(sResposta, '//cnpjsh')));
+      end;
+    end;
+
+    Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31
+  end;
+
+  if _59.AssinaturaAssociada <> '' then
+    _ecf59_AssociarAssinatura(_59.CodigoAtivacao, _59.Emitente.CNPJ, _59.AssinaturaAssociada)
+  else
+    SmallMsgBox(PAnsiChar('Nenhuma Assinatura encontrada' + #13 + #13 +
+                          'Verifique sua conexão com a Internet' + #13 + 'e tente vincular novamente' + #13 +
+                          'Persistindo o erro acesse www.smallsoft.com.br, Suporte e escolha Autorização de uso SAT ou MF-e' + #13 +
+                          'Você receberá por e-mail um arquivo com a assinatura. Salve esse arquivo na pasta Windows'), 'Atenção', MB_OK + MB_ICONWARNING);
+
+end;
+
+procedure TForm1.ValidarAssinaturaACComNoCnpjSoftwareHouse;
+var
+  CNPJSHCripta: String;
+begin
+  CNPJSHCripta := LerParametroIni(Form1.sArquivo, 'R01','14', '');
+  if CNPJSHCripta <> '' then
+  begin
+    try
+      Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
+      CNPJSHCripta := Form1.LbBlowfish1.DecryptString(CNPJSHCripta);
+      if (LimpaNumero(CNPJSHCripta) <> '') and (LimpaNumero(CNPJSHCripta) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) then
+      begin
+        //GravarParametroIni(Form1.sArquivo, SECAO_59, 'Assinatura Associada', '');
+        VincularAssinaturaAC(True);
+      end;
+    except
+    end;
+  end;
 end;
 
 end.

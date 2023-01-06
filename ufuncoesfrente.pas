@@ -221,6 +221,7 @@ function BandeiraSemCreditoDebito(sBandeira: String): String;
 function SelecionaCNPJCredenciadora(DATASETCLIFOR: TDataSet; sBandeira: String): String;
 function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 function Legal_ok(IBDATABASE: TIBDatabase): Boolean;
+function CifrarTexto(sTexto: String): String;
 function DescricaoCRT(sCrt: String): String;
 function ConcatencaNodeNFeComProtNFe(sNFe: String; sprotNFe: String): String;
 function FormataNumeroDoCupom(iCupom: Integer): String;
@@ -930,6 +931,25 @@ begin
 
   FreeAndNil(trAux);
   FreeAndNil(qyAux);
+end;
+
+function CifrarTexto(sTexto: String): String;
+// Método para cifrar textos usando chave privada
+var
+  Blowfish: TLbBlowfish;
+begin
+  Result := '';
+  Blowfish := TLbBlowfish.Create(Application);
+  try
+    Blowfish.GenerateKey(CHAVE_CIFRAR); // Minha chave secreta
+    Result := Blowfish.EncryptString(sTexto);
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Falha 947 ' + E.Message);
+    end;
+  end;
+  FreeAndNil(Blowfish);
 end;
 
 function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;

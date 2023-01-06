@@ -114,6 +114,8 @@ var
   bGerando: Boolean;
 //  IBQEmitente: TIBQuery;
   IBQuery: TIBQuery;
+  dtIni: TDate;// Sandro Silva 2023-01-05
+  dtFim: TDate;// Sandro Silva 2023-01-05
 begin
   inherited;
 
@@ -136,6 +138,11 @@ begin
     hrGeracao := Time;
 
     FileName := ExtractFilePath(Application.ExeName) + 'VENDAS_IDENTIFICADAS_PELO_CPF_CNPJ.TXT';
+
+    {Sandro Silva 2023-01-05 inicio}
+    dtIni := StrToDate('01/' + FormatDateTime('mm/yyyy', dtPeriodo));
+    dtFim := StrToDate(IntToStr(DaysInAMonth(YearOf(dtPeriodo), MonthOf(dtPeriodo))) + '/' + FormatDateTime('mm/yyyy', dtPeriodo));
+    {Sandro Silva 2023-01-05 fim}
 
     DeleteFile(FileName);
     AssignFile(F, FileName);
@@ -204,8 +211,8 @@ begin
         Writeln(F, 'Z4' +                                                          // Tipo Z4
                    Right('00000000000000' + LimpaNumero(IBQuery.FieldByName('CNPJ').AsString), 14) + // CPF/CNPJ
                    Right('00000000000000' + LimpaNumero(FormatFloat('0.00', IBQuery.FieldByName('TOTAL').AsFloat)), 14) + // Totalização Mensal
-                   FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAI').AsDateTime) + // Data inicial da vendas ao CPF/CNPJ
-                   FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAF').AsDateTime) + // Data final da vendas ao CPF/CNPJ
+                   FormatDateTime('yyyymmdd', dtIni) + // Data inicial da vendas ao CPF/CNPJ // Sandro Silva 2023-01-05 FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAI').AsDateTime) + // Data inicial da vendas ao CPF/CNPJ
+                   FormatDateTime('yyyymmdd', dtFim) + // Data final da vendas ao CPF/CNPJ // Sandro Silva 2023-01-05 FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAF').AsDateTime) + // Data final da vendas ao CPF/CNPJ
                    FormatDateTime('yyyymmdd', dtGeracao) + // Data da geração do relatório
                    FormatDateTime('HHnnss', hrGeracao)  // hora da geração do relatório
                    );
@@ -459,6 +466,8 @@ var
   FileName: String;
 //  IBQEmitente: TIBQuery;
   IBQuery: TIBQuery;
+  dtIni: TDate;// Sandro Silva 2023-01-05
+  dtFim: TDate;// Sandro Silva 2023-01-05
 begin
   inherited;
 
@@ -477,6 +486,11 @@ begin
 
     dtGeracao := Date;
     hrGeracao := Time;
+
+    {Sandro Silva 2023-01-05 inicio}
+    dtIni := StrToDate('01/' + FormatDateTime('mm/yyyy', dtPeriodo));
+    dtFim := StrToDate(IntToStr(DaysInAMonth(YearOf(dtPeriodo), MonthOf(dtPeriodo))) + '/' + FormatDateTime('mm/yyyy', dtPeriodo));
+    {Sandro Silva 2023-01-05 fim}
 
     FileName := ExtractFilePath(Application.ExeName) + 'VENDAS_IDENTIFICADAS_PELO_CPF_CNPJ.TXT';
 
@@ -547,8 +561,8 @@ begin
         Writeln(F, 'Z4' +                                                          // Tipo Z4
                    Right('00000000000000' + LimpaNumero(IBQuery.FieldByName('CNPJ').AsString), 14) + // CPF/CNPJ
                    Right('00000000000000' + LimpaNumero(FormatFloat('0.00', IBQuery.FieldByName('TOTAL').AsFloat)), 14) + // Totalização Mensal
-                   FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAI').AsDateTime) + // Data inicial da vendas ao CPF/CNPJ
-                   FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAF').AsDateTime) + // Data final da vendas ao CPF/CNPJ
+                   FormatDateTime('yyyymmdd', dtIni) + // Data inicial da vendas ao CPF/CNPJ // Sandro Silva 2023-01-05 FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAI').AsDateTime) + // Data inicial da vendas ao CPF/CNPJ
+                   FormatDateTime('yyyymmdd', dtFim) + // Data final da vendas ao CPF/CNPJ // Sandro Silva 2023-01-05 FormatDateTime('yyyymmdd', IBQuery.FieldByName('DATAF').AsDateTime) + // Data final da vendas ao CPF/CNPJ
                    FormatDateTime('yyyymmdd', dtGeracao) + // Data da geração do relatório
                    FormatDateTime('HHnnss', hrGeracao)  // hora da geração do relatório
                    );
