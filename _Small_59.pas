@@ -3896,7 +3896,8 @@ begin
 
     sFileXML := ExtractFilePath(Application.ExeName) + 'email\' + sFileCFeSAT + '.xml'; // Sandro Silva 2022-09-02 sFileXML := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.xml';
 
-    sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'email\' + sFileCFeSAT + '.pdf'; // Sandro Silva 2022-09-02 sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.pdf';
+    // Sandro Silva 2023-01-09 sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'email\' + sFileCFeSAT + '.pdf'; // Sandro Silva 2022-09-02 sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.pdf';
+    sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'cfesat\' + sFileCFeSAT + '.pdf';
 
     while FileExists(PansiChar(sFileXML)) do
     begin
