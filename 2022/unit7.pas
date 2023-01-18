@@ -12685,7 +12685,7 @@ begin
               else
                 Fields[I-1].Visible := True;
 
-              {Sandro Silva 2022-12-16 inicio}
+              {Sandro Silva 2022-12-16 inicio // Sandro Silva 2023-01-09
               if sModulo = 'ESTOQUE' then
               begin
                 if ArquivoAberto.Fields[I-1].FieldName = 'IDENTIFICADORPLANOCONTAS' then
@@ -41504,10 +41504,13 @@ begin
     //
     // NFSE.EXE não instalado
     //
+    {Sandro Silva 2023-01-11 inicio
     if not FileExists(pChar(Form1.sAtual+'\NFSE.EXE')) then
     begin
       ShowMessage('Módulo de transmissão de NFS-e não instalado');
     end else
+    }
+    if Form1.ExisteNfseExe(Form1.sAtual) then
     begin
       //
       // Já foi autorizada
@@ -41702,6 +41705,12 @@ begin
             begin
               Writeln(F,'NumeroLote='+ IntToStr(StrToInt(Copy(Form7.ibDataSet15NUMERONF.AsString,3,7))) );
             end else
+            {Sandro Silva 2023-01-09 inicio}
+            if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
+            begin
+              Writeln(F,'NumeroLote=' + IntToStr(StrToIntDef(Copy(Form7.ibDataSet15NUMERONF.AsString,1,9), 0)) );
+            end else
+            {Sandro Silva 2023-01-09 fim}
             begin
               Writeln(F,'NumeroLote='+ IntToStr(Trunc(Now*1000000)) );
             end;
@@ -41717,12 +41726,26 @@ begin
             Writeln(F,'INCLUIRRPS');
             Writeln(F,'');
             //
-            Writeln(F,'NumeroRps='+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9));  // Número sequencial do RPS
+            {Sandro Silva 2023-01-09 inicio}
+            if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
+            begin
+              Writeln(F,'NumeroRps=' + IntToStr(StrToIntDef(Copy(Form7.ibDataSet15NUMERONF.AsString,1,9), 0)));  // Número sequencial do RPS
+            end else
+            {Sandro Silva 2023-01-09 fim}
+            begin
+              Writeln(F,'NumeroRps='+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9));  // Número sequencial do RPS
+            end;
             //
             if (sPadraoSistema = 'IPM20') then
             begin
               Writeln(F,'SerieRps=01');    // Série
             end else
+            {Sandro Silva 2023-01-09 inicio}
+            if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
+            begin
+              Writeln(F,'SerieRps=3');    // Série   Brasília fixo 3
+            end else
+            {Sandro Silva 2023-01-09 fim}
             begin
               Writeln(F,'SerieRps=001');    // Série
             end;
@@ -41838,8 +41861,16 @@ begin
             Writeln(F,'UfTomador='+UpperCase(ibDataSet2ESTADO.AsString));                               // UF do tomador do serviço
             Writeln(F,'CepTomador='+LimpaNumero(Form7.ibDAtaSet2CEP.AsString));                     // CEP do tomador do serviço
             Writeln(F,'PaisTomador=1058');
-            Writeln(F,'DDDTomador='+ Copy(LimpaNumero(Form7.ibDAtaSet2FONE.AsString)+'000',1,3) );
-            Writeln(F,'TelefoneTomador='+AllTrim(Copy(LimpaNumero(Form7.ibDAtaSet2FONE.AsString)+'             ',4,9)));
+            {Sandro Silva 2023-01-09 inicio}
+            if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
+            begin
+              Writeln(F,'DDDTomador=' + IntToStr(StrToIntDef(Copy(LimpaNumero(Form7.ibDataSet2FONE.AsString) + '000', 1, 3), 0)));
+            end else
+            {Sandro Silva 2023-01-09 fim}
+            begin
+              Writeln(F,'DDDTomador='+ Copy(LimpaNumero(Form7.ibDAtaSet2FONE.AsString)+'000',1,3) );
+            end;
+            Writeln(F,'TelefoneTomador='+AllTrim(Copy(LimpaNumero(Form7.ibDataSet2FONE.AsString)+'             ',4,9)));
             Writeln(F,'EmailTomador='+  Copy(Form7.ibDAtaSet2EMAIL.AsString,1,Pos(';',Form7.ibDAtaSet2EMAIL.AsString+';')-1)); // somente o primeiro e-mail cadastrado
             Writeln(F,'');
             //
@@ -42629,10 +42660,13 @@ begin
       //
       Screen.Cursor            := crHourGlass;
       //
+      {Sandro Silva 2023-01-11 inicio
       if not FileExists(pChar(Form1.sAtual+'\NFSE.EXE')) then
       begin
         ShowMessage('Módulo de transmissão de NFS-e não instalado');
       end else
+      }
+      if Form1.ExisteNfseExe(Form1.sAtual) then
       begin
         //
         //

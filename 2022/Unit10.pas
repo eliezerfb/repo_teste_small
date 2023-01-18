@@ -4525,7 +4525,7 @@ var
   vCampo: array [1..7] of Variant; // Cria uma matriz com 6 elementos
   sDocumentoBaseParaSequencia: String; // Sandro Silva 2023-01-06
   sNumeroNF: String; // Sandro Silva 2023-01-06
-aqui   sParcelaReplicada: String; // Sandro Silva 2023-01-06
+  sParcelaReplicada: String; // Sandro Silva 2023-01-06
 begin
   //
   Form7.iFoco := 0;
@@ -4549,7 +4549,8 @@ begin
           vCampo[1] := copy(ibDataSet7DOCUMENTO.AsString,1,Length(Trim(ibDataSet7DOCUMENTO.AsString))-1) + chr(Ord(ibDataSet7DOCUMENTO.AsString[Length(Trim(ibDataSet7DOCUMENTO.AsString))])+1); // documento
         }
         sDocumentoBaseParaSequencia := Form7.ibDataSet7DOCUMENTO.AsString; // Sandro Silva 2023-01-06
-
+        sParcelaReplicada := Form7.ibDataSet7DOCUMENTO.AsString; // Sandro Silva 2023-01-09
+        {Sandro Silva 2023-01-09 inicio
         if Form1.DisponivelSomenteParaNos then
         begin
           // Identifica a última sequência de documento da nota para usar como base para definir a próxima letra do documento replicado
@@ -4560,6 +4561,7 @@ begin
               sNumeroNF := Form7.ibDataSet7NUMERONF.AsString;
             end;
         end;
+        }
 
         if Copy(sDocumentoBaseParaSequencia,Length(Trim(sDocumentoBaseParaSequencia)),1) = '9' then
           vCampo[1] := Copy(sDocumentoBaseParaSequencia,1,Length(Trim(sDocumentoBaseParaSequencia))-1)+'A'
@@ -4660,10 +4662,11 @@ begin
       ibDataSet7NOME.AsString         := vCampo[6]; // Nome do Cliente
       ibDataSet7CONTA.AsString        := vCampo[7]; // Plano de contas
 
-      {Sandro Silva 2023-01-06 inicio}
+      {Sandro Silva 2023-01-06 inicio
       if Form1.DisponivelSomenteParaNos then
       begin
-        Form7.ibDataSet7NUMERONF.AsString := sNumeroNF;
+        Form7.ibDataSet7NUMERONF.AsString  := sNumeroNF;
+        Form7.ibDataSet7HISTORICO.AsString := Copy(Form7.ibDataSet7HISTORICO.AsString, 1, 22) + ' (ref parc ' + RightStr(sParcelaReplicada, 1) + ')';
       end;
       {Sandro Silva 2023-01-06 fim}
 

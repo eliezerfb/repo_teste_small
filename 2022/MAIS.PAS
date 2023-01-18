@@ -26,7 +26,7 @@ uses
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2023002'; // Sandro Silva 2022-10-28 const BUILD_DO_BANCO = '2022006'; // Sandro Silva 2022-10-04 BUILD_DO_BANCO = '2022004';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
-const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
+const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -485,7 +485,8 @@ type
     function ValidaEmitenteMunicipio: Boolean;
     procedure ConfiguraCredencialTecnospeed;
     function DisponivelSomenteParaNos: Boolean;
-    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;    
+    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;
+    function ExisteNfseExe(sDiretorio: String): Boolean;
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -4300,11 +4301,11 @@ begin
     }
     sPastaDoPaf := 'paf2023';
     if Form7.ibDataSet13ESTADO.AsString = 'SC' then
-      sPastaDoPaf := 'paf2022';
-    {Sandro Silva 2022-12-28 inicio} 
+      sPastaDoPaf := 'paf2023';
+    {Sandro Silva 2022-12-28 inicio}
 
     if not FileExists(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\bematech2\bemafi32.ini')) then
-      sPastaDoPaf := 'paf2022'; // Sandro Silva 2022-12-28 sPastaDoPaf := 'paf2021';
+      sPastaDoPaf := 'paf2023'; // Sandro Silva 2022-12-28 sPastaDoPaf := 'paf2021';
     //
     if FileExists(Form1.sAtual+'\'+sPastaDoPaf+'\paf.txt') then
     begin
@@ -15842,10 +15843,13 @@ begin
 //  Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Padrao','');
   Mais1ini.Free;
   //
+  {Sandro Silva 2023-01-11 inicio
   if not FileExists(pChar(Form1.sAtual+'\NFSE.EXE')) then
   begin
     ShowMessage('Módulo de transmissão de NFS-e não instalado');
   end else
+  }
+  if Form1.ExisteNfseExe(Form1.sAtual) then
   begin
     //
     while FileExists(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
@@ -16113,6 +16117,18 @@ begin
   end;
   }
 
+end;
+
+function TForm1.ExisteNfseExe(sDiretorio: String): Boolean;
+// Sandro Silva 2023-01-11
+// Verifica se existe o nfse.exe
+begin
+  Result := True;
+  if not FileExists(pChar(sDiretorio + '\NFSE.EXE')) then
+  begin
+    Result := False;
+    ShowMessage('Módulo de transmissão de NFS-e não instalado');
+  end;
 end;
 
 end.

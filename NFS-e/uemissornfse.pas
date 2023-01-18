@@ -125,6 +125,7 @@ type
   public
     { Public declarations }
     sTX2, sNumeroDaNFSe, sRetornoDaPrefeitura, sAtual, smmXML : String;
+    
   end;
 
 var
@@ -584,21 +585,51 @@ begin
   for i := 0 to NFSe.RetornoWS.Count - 1 do
   begin
     //
-    if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0) then
+    // Sandro Silva 2023-01-11 if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0) then
+    if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0)
+      or ((Trim(edtCidade.Text) = 'BRASILIADF') and (Pos('Lote aguardando processamento', NFSe.RetornoJson) <> 0))
+    then
     begin
-      smmXml   := ConverteAcentos('<XMLRet>'+
-                  '<Status>EM PROCESSAMENTO</Status>'+
-                  '<Motivo>'+NFSe.RetornoWS.Items[i].Motivo+'</Motivo>'+
-                  '<NumeroDaNFSe>' + NFSe.RetornoWS.Items[i].NumeroNFSe+                     '</NumeroDaNFSe>'+
-                  '<NumeroDoRPS>' + NFSe.RetornoWS.Items[i].NumeroRps+                       '</NumeroDoRPS>'+
-                  '<SerieDoRPS>' + NFSe.RetornoWS.Items[i].SerieRps+                         '</SerieDoRPS>'+
-                  '<Tipo>' + NFSe.RetornoWS.Items[i].Tipo+                                   '</Tipo>'+
-                  '<Protocolo>'+NFSe.RetornoWS.Items[i].Protocolo+'</Protocolo>'+
-                  '<ArquivoGeradorNfse>'+ StrTran(lowercase(mmXMLEnvio.Text),lowercase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse>'+
-                  '<Json>' + NFSe.RetornoJson + '</Json>'+
-                  '</XMLRet>');
+      {Sandro Silva 2023-01-11 inicio}
+      if ((Trim(edtCidade.Text) = 'BRASILIADF') and (Pos('Lote aguardando processamento', NFSe.RetornoJson) <> 0)) then
+      begin
+        smmXml := ConverteAcentos('<XMLRet>'+
+                    '<Status>EM PROCESSAMENTO</Status>'+
+                    '<Motivo>' + NFSe.RetornoWS.Items[i].Motivo+'</Motivo>'+
+                    '<NumeroDaNFSe>' + RetornaValorDaTagNoCampo('NumeroDaNFSe', mmXMLEnvio.Text) +                     '</NumeroDaNFSe>'+
+                    '<NumeroDoRPS>' + RetornaValorDaTagNoCampo('NumeroDoRPS' , mmXMLEnvio.Text) +                      '</NumeroDoRPS>'+
+                    '<SerieDoRPS>' + RetornaValorDaTagNoCampo('SerieDoRPS'  , mmXMLEnvio.Text) +                       '</SerieDoRPS>'+
+                    '<Tipo>' + RetornaValorDaTagNoCampo('Tipo'        , mmXMLEnvio.Text) +                             '</Tipo>'+
+                    '<Protocolo>' + RetornaValorDaTagNoCampo('Protocolo', mmXMLEnvio.Text) + '</Protocolo>'+
+                    '<ArquivoGeradorNfse>'+ StrTran(AnsiLowerCase(mmXMLEnvio.Text), AnsiLowerCase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse>'+
+                    '<Json>' + NFSe.RetornoJson + '</Json>'+
+                    '</XMLRet>'
+                    );
 
-      if NFSe.RetornoWS.Items[i].Protocolo <> '' then edtNumProtocolo.text := NFSe.RetornoWS.Items[i].Protocolo;
+        if RetornaValorDaTagNoCampo('Protocolo', sTX2) <> '' then
+          edtNumProtocolo.text := RetornaValorDaTagNoCampo('Protocolo', sTX2);
+
+      end
+      else
+      begin
+      {Sandro Silva 2023-01-11 fim}
+
+        smmXml := ConverteAcentos('<XMLRet>'+
+                    '<Status>EM PROCESSAMENTO</Status>'+
+                    '<Motivo>'+NFSe.RetornoWS.Items[i].Motivo+'</Motivo>'+
+                    '<NumeroDaNFSe>' + NFSe.RetornoWS.Items[i].NumeroNFSe+                     '</NumeroDaNFSe>'+
+                    '<NumeroDoRPS>' + NFSe.RetornoWS.Items[i].NumeroRps+                       '</NumeroDoRPS>'+
+                    '<SerieDoRPS>' + NFSe.RetornoWS.Items[i].SerieRps+                         '</SerieDoRPS>'+
+                    '<Tipo>' + NFSe.RetornoWS.Items[i].Tipo+                                   '</Tipo>'+
+                    '<Protocolo>'+NFSe.RetornoWS.Items[i].Protocolo+'</Protocolo>'+
+                    '<ArquivoGeradorNfse>'+ StrTran(AnsiLowerCase(mmXMLEnvio.Text), AnsiLowerCase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse>'+
+                    '<Json>' + NFSe.RetornoJson + '</Json>'+
+                    '</XMLRet>');
+
+        if NFSe.RetornoWS.Items[i].Protocolo <> '' then
+          edtNumProtocolo.text := NFSe.RetornoWS.Items[i].Protocolo;
+
+      end;
 
     end else
     begin
@@ -607,30 +638,30 @@ begin
         smmXml   := ConverteAcentos('<XMLRet>'+
                     '<Status>NFS-E NAO AUTORIZADA: ' + NFSe.RetornoWS.Items[i].Motivo +'</Status>'+
                     '<Motivo>'+NFSe.RetornoWS.Items[i].Motivo+'</Motivo>'+
-                    '<ArquivoGeradorNfse>'+ StrTran(lowercase(mmXMLEnvio.Text),lowercase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse'+
+                    '<ArquivoGeradorNfse>'+ StrTran(AnsiLowerCase(mmXMLEnvio.Text), AnsiLowerCase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse'+
                     '<Json>' + NFSe.RetornoJson + '</Json>'+
                     '</XMLRet>');
       end else
       begin
         //
         sRetornoDaPrefeitura :=
-        '<Status>' + NFSe.RetornoWS.Items[i].Status +                              '</Status>'+
-        '<Protocolo>' + NFSe.RetornoWS.Items[i].Protocolo +                        '</Protocolo>'+
-        '<CNPJ>' + NFSe.RetornoWS.Items[i].CNPJ +                                  '</CNPJ>'+
-        '<InscricaoMunicipal>' + NFSe.RetornoWS.Items[i].InscricaoMunicipal+       '</InscricaoMunicipal>'+
-        '<SerieDoRPS>' + NFSe.RetornoWS.Items[i].SerieRps+                         '</SerieDoRPS>'+
-        '<NumeroDoRPS>' + NFSe.RetornoWS.Items[i].NumeroRps+                       '</NumeroDoRPS>'+
-        '<NumeroDaNFSe>' + NFSe.RetornoWS.Items[i].NumeroNFSe+                     '</NumeroDaNFSe>'+
-        '<DataDeEmissao>' + NFSe.RetornoWS.Items[i].DataEmissaoNFSe+               '</DataDeEmissao>'+
-        '<CodigoDeVerificacao>' + NFSe.RetornoWS.Items[i].CodVerificacao+          '</CodigoDeVerificacao>'+
-        '<Situacao>' + NFSe.RetornoWS.Items[i].Situacao+                           '</Situacao>'+
-        '<DataDeCancelamento>' + NFSe.RetornoWS.Items[i].DataCancelamento+         '</DataDeCancelamento>'+
-        '<ChaveDeCancelamento>' + NFSe.RetornoWS.Items[i].ChaveCancelamento+       '</ChaveDeCancelamento>'+
-        '<Tipo>' + NFSe.RetornoWS.Items[i].Tipo+                                   '</Tipo>'+
-        '<Motivo>' + NFSe.RetornoWS.Items[i].Motivo+                               '</Motivo>'+
-        '<ArquivoGeradorNfse>'+ StrTran(lowercase(mmXMLEnvio.Text),lowercase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse>'+
-        '<DataDeAutorizacao>' + NFSe.RetornoWS.Items[i].DataAutorizacao+           '</DataDeAutorizacao>'+
-        '<Json>' + NFSe.RetornoJson + '</Json>';
+          '<Status>' + NFSe.RetornoWS.Items[i].Status +                              '</Status>'+
+          '<Protocolo>' + NFSe.RetornoWS.Items[i].Protocolo +                        '</Protocolo>'+
+          '<CNPJ>' + NFSe.RetornoWS.Items[i].CNPJ +                                  '</CNPJ>'+
+          '<InscricaoMunicipal>' + NFSe.RetornoWS.Items[i].InscricaoMunicipal+       '</InscricaoMunicipal>'+
+          '<SerieDoRPS>' + NFSe.RetornoWS.Items[i].SerieRps+                         '</SerieDoRPS>'+
+          '<NumeroDoRPS>' + NFSe.RetornoWS.Items[i].NumeroRps+                       '</NumeroDoRPS>'+
+          '<NumeroDaNFSe>' + NFSe.RetornoWS.Items[i].NumeroNFSe+                     '</NumeroDaNFSe>'+
+          '<DataDeEmissao>' + NFSe.RetornoWS.Items[i].DataEmissaoNFSe+               '</DataDeEmissao>'+
+          '<CodigoDeVerificacao>' + NFSe.RetornoWS.Items[i].CodVerificacao+          '</CodigoDeVerificacao>'+
+          '<Situacao>' + NFSe.RetornoWS.Items[i].Situacao+                           '</Situacao>'+
+          '<DataDeCancelamento>' + NFSe.RetornoWS.Items[i].DataCancelamento+         '</DataDeCancelamento>'+
+          '<ChaveDeCancelamento>' + NFSe.RetornoWS.Items[i].ChaveCancelamento+       '</ChaveDeCancelamento>'+
+          '<Tipo>' + NFSe.RetornoWS.Items[i].Tipo+                                   '</Tipo>'+
+          '<Motivo>' + NFSe.RetornoWS.Items[i].Motivo+                               '</Motivo>'+
+          '<ArquivoGeradorNfse>'+ StrTran(AnsiLowerCase(mmXMLEnvio.Text), AnsiLowerCase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse>'+
+          '<DataDeAutorizacao>' + NFSe.RetornoWS.Items[i].DataAutorizacao+           '</DataDeAutorizacao>'+
+          '<Json>' + NFSe.RetornoJson + '</Json>';
         //
         mmTipado.Lines.Add(sRetornoDaPrefeitura);
         //
@@ -638,14 +669,15 @@ begin
         //
         // Tratamentos somente para Demo
         //
-        if NFSe.RetornoWS.Items[i].Protocolo <> '' then edtNumProtocolo.text := NFSe.RetornoWS.Items[i].Protocolo;
+        if NFSe.RetornoWS.Items[i].Protocolo <> '' then
+          edtNumProtocolo.text := NFSe.RetornoWS.Items[i].Protocolo;
         //
-        edtNumeroRPS.text := NFSe.RetornoWS.Items[i].NumeroRps;
-        edtSerieRPS.text := NFSe.RetornoWS.Items[i].SerieRps;
-        edtTipoRPS.text := NFSe.RetornoWS.Items[i].Tipo;
-        edtNumeroNFSe.Text := NFSe.RetornoWS.Items[i].NumeroNFSe;
+        edtNumeroRPS.text         := NFSe.RetornoWS.Items[i].NumeroRps;
+        edtSerieRPS.text          := NFSe.RetornoWS.Items[i].SerieRps;
+        edtTipoRPS.text           := NFSe.RetornoWS.Items[i].Tipo;
+        edtNumeroNFSe.Text        := NFSe.RetornoWS.Items[i].NumeroNFSe;
         edtChaveCancelamento.Text := NFSe.RetornoWS.Items[i].ChaveCancelamento;
-        mmXML.Text := NFSe.RetornoWS.Items[i].XmlImpressao;
+        mmXML.Text                := NFSe.RetornoWS.Items[i].XmlImpressao;
         //
         smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) +'</sRetornoDaPrefeitura>';
         //
