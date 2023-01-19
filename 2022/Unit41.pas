@@ -651,9 +651,9 @@ begin
                             Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet37DESCRICAO.AsString;
 
                             {Sandro Silva 2023-01-06 inicio}
-                            Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
-                            if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
-                              Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear;
+                            Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+                            if Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.AsString = '' then
+                              Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Clear;
                             {Sandro Silva 2023-01-06 fim}
 
                             Form7.sModulo := 'ORCAMENTO';
