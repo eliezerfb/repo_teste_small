@@ -12356,7 +12356,7 @@ begin
         {Sandro Silva 2023-01-04 fim}
 
         //
-        iCampos   := 51; // Sandro Silva 2023-01-04 iCampos   := 50;
+        iCampos   := 50; // Sandro Silva 2023-01-18 iCampos   := 51; // Sandro Silva 2023-01-04 iCampos   := 50;
         {Sandro Silva 2022-12-20 inicio
         if Form1.CampoDisponivelParaUsuario(sModulo, 'IDENTIFICADORPLANOCONTAS') then
           iCampos   := 51;

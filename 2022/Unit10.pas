@@ -1844,7 +1844,11 @@ begin
     if (dBGrid1.DataSource.Name = 'DataSource12')  then if SMALL_DBEdit3.CanFocus  then SMALL_DBEdit3.SetFocus;
     if (dBGrid1.DataSource.Name = 'DataSource2') then if SMALL_DBEdit5.CanFocus  then SMALL_DBEdit5.SetFocus;
   end;
-  if Form7.sModulo = 'ESTOQUE' then if SMALL_DBEdit6.CanFocus then SMALL_DBEdit6.SetFocus;
+  if Form7.sModulo = 'ESTOQUE' then
+  begin
+    if SMALL_DBEdit6.CanFocus then
+      SMALL_DBEdit6.SetFocus;
+  end;
   dBGrid1.Visible := False;
   //
 end;
@@ -1923,7 +1927,8 @@ begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
       TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     end;
-  except end;
+  except
+  end;
   //
   if Form7.sModulo <> 'ICM' then
   begin
@@ -3292,7 +3297,10 @@ begin
   //
   if Form7.sModulo = 'ESTOQUE' then
   begin
-    if Form7.ibDataSet4MARKETPLACE.AsString = '1' then CheckBox2.Checked := True else  CheckBox2.Checked := False;
+    if Form7.ibDataSet4MARKETPLACE.AsString = '1' then
+      CheckBox2.Checked := True
+    else
+      CheckBox2.Checked := False;
   end;
   //
   if Form7.sModulo = 'CLIENTES' then
@@ -4128,7 +4136,7 @@ begin
     iTopSegundaColuna := 16;
     if Form7.sModulo = 'ESTOQUE' then
     begin
-      iContadorCampoEstoque := 24;
+      iContadorCampoEstoque := 23; // Sandro Silva 2023-01-18 iContadorCampoEstoque := 24;
       {Sandro Silva 2023-01-04 inicio
       iTopSegundaColuna := 17;
       if Form1.CampoDisponivelParaUsuario(Form7.sModulo, 'IDENTIFICADORPLANOCONTAS') then
@@ -4136,7 +4144,7 @@ begin
         iTopSegundaColuna := 16;
       end;
       }
-      iTopSegundaColuna := 16;      
+      iTopSegundaColuna := 16;
       {Sandro Silva 2023-01-04 fim}
     end;
     {Sandro Silva 2022-12-20 fim}
@@ -4512,7 +4520,10 @@ end;
 procedure TForm10.Button9Click(Sender: TObject);
 begin
   //
-  if Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat <> 0 then Form7.fTotalDoRecibo := Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat else Form7.fTotalDoRecibo := Form7.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat;
+  if Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat <> 0 then
+    Form7.fTotalDoRecibo := Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat
+  else
+    Form7.fTotalDoRecibo := Form7.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat;
   Form7.sReciboProvenienteDe := 'Proveniente: dp. ' + Form7.ibDataSet7.FieldByName('DOCUMENTO').AsString + ', Referente ' + AllTrim(Form7.ibDataSet7.FieldByName('HISTORICO').AsString);
   Form7.sReciboRecebemosDe   := Form7.ibDataSet7.FieldByName('NOME').AsString;
   Form7.RECIBOClick(Sender);
@@ -8493,7 +8504,8 @@ end;
 
 procedure TForm10.ComboBox12Change(Sender: TObject);
 begin
-  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset4.Edit;
   Form7.ibDataSet4MEDIDAE.AsString :=  ComboBox12.Text;
   Exemplo(True);
 end;
@@ -8508,7 +8520,8 @@ procedure TForm10.SMALL_DBEdit64Exit(Sender: TObject);
 begin
   if Form7.IbDataSet4FATORC.AsFloat = 0 then
   begin
-    if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+    if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset4.Edit;
     Form7.ibDataSet4FATORC.AsFloat := 1;
   end;
   Exemplo(True);
