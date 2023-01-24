@@ -208,20 +208,19 @@ begin
       {Sandro Silva 2022-11-14 inicio
       Result := Trunc(365 - (Date - StrToDate(Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4))));
       }
-      sDataLimite := Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4);
+      //sDataLimite := Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4);     //Mauricio Parizotto 2023-01-11
+      sDataLimite := Copy(Blowfish.DecryptString(AllTrim(qyAux.FieldByname('LICENCA').AsString)),7,2)+'/'+Copy(Blowfish.DecryptString(AllTrim(qyAux.FieldByname('LICENCA').AsString)),5,2)+'/'+Copy(Blowfish.DecryptString(AllTrim(qyAux.FieldByname('LICENCA').AsString)),1,4);
 
       if bValidacaoNova = False then
       begin
         Result := Trunc(365 - (Date - StrToDate(sDataLimite)));
-      end
-      else
+      end else
       begin
         // Calcula o número de dias restantes para usar o sistema
         // Data limite - data atual do PC
         Result := Trunc((StrToDate(sDataLimite) - Date));
       end;
-    end
-    else
+    end else
     begin
       Result := -1; // 0 dias ainda pode usar
       Application.MessageBox(PChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
