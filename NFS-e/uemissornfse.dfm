@@ -13524,6 +13524,7 @@ object FEmissorNFSe: TFEmissorNFSe
     0000F81F0000F81F0000FC3F0000FC3F0000FE7F0000FFFF0000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96

@@ -15,6 +15,10 @@ uses
 //          Declara√ß√µes
 //
 //******************************************************************************************************
+
+type
+  TModoOpercao = (tmoNenhum, tmoConfiguracao, tmoEnvioConsulta, tmoGeraPDF); // Sandro Silva 2023-01-25
+
 type
   TFEmissorNFSe = class(TForm)
     OpnDlgTx2: TOpenDialog;
@@ -110,7 +114,9 @@ type
     procedure RadioButton2Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure ConfiguraCredencialTecnospeed;
+    procedure FormActivate(Sender: TObject);
   private
+    FModoOperacao: TModoOpercao; // Sandro Silva 2023-01-25
     fLogEnvio: string;
     {Valida a presen√ßa do arquivo .ini}
     procedure CheckConfig;
@@ -162,7 +168,6 @@ begin
     Result := AllTrim(Copy(sTextoTag, 1, Pos('<' + sTag + '>', STextoTag) -1));
   end;
 end;
-
 
 procedure TFEmissorNFSe.CheckConfig;
 var
@@ -292,10 +297,13 @@ end;
 
 procedure TFEmissorNFSe.btnEnviarRPSClick(Sender: TObject);
 begin
-  CheckConfig;
-  NFSe.Enviar(pChar(sAtual+'\NFSE\smallnfse.tx2'));
-  getRetornoV2Tipado;
-  getRetornoV2Json;
+  try
+    CheckConfig;
+    NFSe.Enviar(pChar(sAtual+'\NFSE\smallnfse.tx2'));
+    getRetornoV2Tipado;
+    getRetornoV2Json;
+  except
+  end;
 end;
 
 procedure TFEmissorNFSe.btnEditarDocumentoClick(Sender: TObject);
@@ -316,16 +324,19 @@ end;
 
 procedure TFEmissorNFSe.btnExportarClick(Sender: TObject);
 begin
-  //
-  CheckConfig;
-  if FileExists(pChar(sAtual+'\NFSE\smallnfse.tx2')) then
-  begin
-    Nfse.ExportarImpressaoParaPDF(mmXML.Text, mmXMLEnvio.Text, pChar(sAtual+'\NFSE\smallnfse.tx2'), pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
-  end else
-  begin
-    Nfse.Imprimir(mmXML.Text, mmXMLEnvio.Text,pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
+  try
+    //
+    CheckConfig;
+    if FileExists(pChar(sAtual+'\NFSE\smallnfse.tx2')) then
+    begin
+      Nfse.ExportarImpressaoParaPDF(mmXML.Text, mmXMLEnvio.Text, pChar(sAtual+'\NFSE\smallnfse.tx2'), pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
+    end else
+    begin
+      Nfse.Imprimir(mmXML.Text, mmXMLEnvio.Text,pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
+    end;
+    //
+  except
   end;
-  //
 end;
 
 procedure TFEmissorNFSe.btnVisualizarClick(Sender: TObject);
@@ -351,6 +362,7 @@ var
   sLoguinSenha : String;
 begin
   //
+  FModoOperacao := tmoNenhum; // Sandro Silva 2023-01-25
   sTX2 := '';
   GetDir(0,sAtual);
   //
@@ -391,6 +403,7 @@ begin
     //
     if Pos('Config=Sim',_File.Text) <> 0 then
     begin
+      FModoOperacao := tmoConfiguracao; // Sandro Silva 2023-01-25
       //
       btnAtualizaArquivosClick(Sender);
       Button2.Visible := True;
@@ -407,6 +420,7 @@ begin
       //
       if Pos('GerarPDF=Sim',_File.Text) <> 0 then
       begin
+        FModoOperacao := tmoGeraPDF; // Sandro Silva 2023-01-25
         //
         try
           //
@@ -415,6 +429,7 @@ begin
           //
           Write(F,RetornaValorDaTagNoCampo('tx2',_File.Text));
           CloseFile(F);
+          Sleep(100); // Sandro Silva 2023-01-25
           //
           mmXML.Text      := RetornaValorDaTagNoCampo('XMLImpressao',_File.Text);
           mmXMLEnvio.Text := RetornaValorDaTagNoCampo('XMLdeEvio',_File.Text); // ⁄ltima alteraÁ„o 08/08/2022 para resolver o caso de Joinvile
@@ -434,6 +449,7 @@ begin
         //
       end else
       begin
+        FModoOperacao := tmoEnvioConsulta; // Sandro Silva 2023-01-25
         //
         if FileExists(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG')) then
         begin
@@ -543,7 +559,8 @@ begin
               //
             end;
           end;
-        except end;
+        except
+        end;
         //
         Close;
         Winexec('TASKKILL /F /IM NFSE.EXE' , SW_HIDE );
@@ -702,40 +719,46 @@ end;
 
 procedure TFEmissorNFSe.btnConsultarNotaClick(Sender: TObject);
 begin
-  //
-  CheckConfig;
-  //
-  //  NFSe.Consultar('', edtNumeroRPS.Text, edtSerieRPS.Text, '1', '');
-  //
-{
-  ShowMessage(
-'.N˙mero NFSe : '+'|'+edtNumeroNFSe.Text+'|'+chr(10)+
-'.N˙mero RPS  : '+edtNumeroRPS.Text    +chr(10)+
-'.SÈrie RPS   : '+edtSerieRPS.Text     +chr(10)+
-'.Tipo RPS    : '+edtTipoRPS.Text      +chr(10)+
-'.Protocolo   : '+edtNumProtocolo.Text);
-}
-  //
-  if Length(AllTrim(edtNumeroNFSe.Text)) > 12 then
-  begin
-    NFSe.Consultar(AllTrim(edtNumeroNFSe.Text), '', '', '', '');
-  end else
-  begin
-    NFSe.Consultar(edtNumeroNFSe.Text, edtNumeroRPS.Text, edtSerieRPS.Text, edtTipoRPS.Text, edtNumProtocolo.Text);
+  try
+    //
+    CheckConfig;
+    //
+    //  NFSe.Consultar('', edtNumeroRPS.Text, edtSerieRPS.Text, '1', '');
+    //
+  {
+    ShowMessage(
+  '.N˙mero NFSe : '+'|'+edtNumeroNFSe.Text+'|'+chr(10)+
+  '.N˙mero RPS  : '+edtNumeroRPS.Text    +chr(10)+
+  '.SÈrie RPS   : '+edtSerieRPS.Text     +chr(10)+
+  '.Tipo RPS    : '+edtTipoRPS.Text      +chr(10)+
+  '.Protocolo   : '+edtNumProtocolo.Text);
+  }
+    //
+    if Length(AllTrim(edtNumeroNFSe.Text)) > 12 then
+    begin
+      NFSe.Consultar(AllTrim(edtNumeroNFSe.Text), '', '', '', '');
+    end else
+    begin
+      NFSe.Consultar(edtNumeroNFSe.Text, edtNumeroRPS.Text, edtSerieRPS.Text, edtTipoRPS.Text, edtNumProtocolo.Text);
+    end;
+    //
+    Sleep(1000);
+    //
+    getRetornoV2Tipado;
+    getRetornoV2Json;
+    //
+  except
   end;
-  //
-  Sleep(1000);
-  //
-  getRetornoV2Tipado;
-  getRetornoV2Json;
-  //
 end;
 
 procedure TFEmissorNFSe.btnCancelarClick(Sender: TObject);
 begin
-  NFSe.CancelarNota(edtChaveCancelamento.Text);
-  getRetornoV2Tipado;
-  getRetornoV2Json;
+  try
+    NFSe.CancelarNota(edtChaveCancelamento.Text);
+    getRetornoV2Tipado;
+    getRetornoV2Json;
+  except
+  end;
 end;
 
 //procedure TfrmExemplo.getRetornoTomadasV2Json;
@@ -927,6 +950,14 @@ begin
   end;
   //
 
+end;
+
+procedure TFEmissorNFSe.FormActivate(Sender: TObject);
+begin
+  {Sandro Silva 2023-01-25 inicio}
+  if FModoOperacao <> tmoConfiguracao then
+    FecharAplicacao(ExtractFileName(Application.ExeName));
+  {Sandro Silva 2023-01-25 fim}
 end;
 
 end.
