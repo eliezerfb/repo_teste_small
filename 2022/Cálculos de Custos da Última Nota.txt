@@ -3,3 +3,8 @@ CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA
 CUSTO MÉDIO  = ((QTD_ATUAL * CUSTOMEDIO ANTERIOR) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)
 CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))
 --------------------------------------------------------------------------------
+Descrição.........: Produto fator conversão
+Código............: 00212
+Custo de compra...: 12,5 = ( 12,5 + ((  + ) / 12))+ (( 12,5 / 150 ) *  ( 0 + 0 + 0 -  ))
+Custo médio.......: 12,5 = 12,5
+--------------------------------------------------------------------------------

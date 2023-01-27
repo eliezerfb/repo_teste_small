@@ -4535,7 +4535,7 @@ var
   // Sandro Silva 2023-01-06 vCampo: array [1..7] of Variant; // Cria uma matriz com 6 elementos
   vCampo: array [1..7] of Variant; // Cria uma matriz com 6 elementos
   sDocumentoBaseParaSequencia: String; // Sandro Silva 2023-01-06
-  sNumeroNF: String; // Sandro Silva 2023-01-06
+  //sNumeroNF: String; // Sandro Silva 2023-01-06
   sParcelaReplicada: String; // Sandro Silva 2023-01-06
 begin
   //
@@ -6363,8 +6363,20 @@ begin
       //
       jp.SaveToFile(Form10.sNomeDoJPG);
       //
-      Button13.Caption      := '&Webcam';
+      Button13.Caption     := '&Webcam';
       Image5.Visible       := True;
+
+      {Sandro Silva 2023-01-24 inicio}
+      while not FileExists(pChar(Form10.sNomeDoJPG)) do
+      begin
+        Sleep(100);
+      end;
+
+      Form10.Image3.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
+      Form10.Image5.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
+      //
+      AtualizaTela(True);
+      {Sandro Silva 2023-01-24 fim}
       //
     except end;
   end;

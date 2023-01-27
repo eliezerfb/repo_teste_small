@@ -38691,7 +38691,14 @@ begin
                                 if Form1.DisponivelSomenteParaNos then
                                 begin
                                   //GeraImagemDoBoletoComOCodigoDeBarras(False); // Para calcular código de barras, nosso numero
+                                  {Sandro Silva 2023-01-24 inicio 
                                   Form25.GravaPortadorNossoNumCodeBar;
+                                  }
+                                  if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
+                                  begin
+                                    Form25.GravaPortadorNossoNumCodeBar;
+                                  end;
+                                  {Sandro Silva 2023-01-24 fim}
                                 end;
                                 {Sandro Silva 2022-12-23 fim}
 
@@ -41390,6 +41397,7 @@ var
   Mais1Ini : tIniFile;
   fValorISSRetido, fValorImpostosFederaisRetidos : Real;
   sPadraoSistema, sTipoPagamentoAPrazo: String;
+  sResponsavelRetencao: String; // Sandro Silva 2023-01-19
   //
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
@@ -41417,7 +41425,8 @@ begin
   try
     if Form7.ibDataSet15EMITIDA.AsString <> 'S' then
     begin
-      if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+      if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset15.Edit;
       Form7.ibDataSet15EMISSAO.Value       := Date;
       Form7.ibDataset15.Post;
       Form7.ibDataset15.Edit;
@@ -41488,6 +41497,9 @@ begin
   //
   sPadraoSistema       := UpperCase(Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Padrao','?'));
   sTipoPagamentoAPrazo := Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
+
+  sResponsavelRetencao := Mais1Ini.ReadString('NFSE', 'ResponsavelRetencao', ''); // Sandro Silva 2023-01-24
+
   //
   if (Mais1Ini.ReadString('NFSE','CNPJ','')<>LimpaNumero(Form7.ibDAtaset13CGC.AsString)) or
      (Mais1Ini.ReadString('NFSE','CIDADE','')<>UpperCase(StrTran(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString),' ',''))+UpperCase(Form7.ibDAtaset13ESTADO.AsString)) or
@@ -41630,6 +41642,33 @@ begin
                         InformaCodVerificadorAutenticidadeParaIPM; // Sandro Silva 2022-10-10
                         Writeln(F,'<SerieDoRPS>01</SerieDoRPS>');
                       end else
+                      {Sandro Silva 2023-01-25 inicio}
+                      if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
+                      begin
+                        if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<NumeroDaNFSe>' + RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
+                        else
+                          Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
+                        if StrToIntDef(LimpaNumero(RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString)), 0) <> 0 then
+                          Writeln(F,'<NumeroDoRPS>' + InttoStr(StrToIntDef(LimpaNumero(RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString)), 0)) + '</NumeroDoRPS>') // ISSNETONLINE20 - Brasília aceita o RPS utilizando no máximo 5 dígitos
+                        else
+                          Writeln(F,'<NumeroDoRPS>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'</NumeroDoRPS>');
+                        if RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<Tipo>'          + RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Tipo>')
+                        else
+                          Writeln(F,'<Tipo>1</Tipo>');
+                        if RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<Protocolo>'     + RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Protocolo>')
+                        else
+                          Writeln(F,'<Protocolo></Protocolo>');
+
+                        if RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                          Writeln(F,'<SerieDoRPS>'    + RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</SerieDoRPS>')
+                        else
+                          Writeln(F,'<SerieDoRPS>3</SerieDoRPS>');
+                      end
+                      else
+                      {Sandro Silva 2023-01-25 fim}
                       begin
                         if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
                           Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
@@ -41921,6 +41960,15 @@ begin
             begin
               Writeln(F,'IssRetido=1');
               fValorISSRetido := (ibDataSet15.FieldByname('SERVICOS').AsFloat-ibDataSet15.FieldByname('DESCONTO').AsFloat)*Form7.ibDataSet14ISS.AsFloat/100;
+
+              {Sandro Silva 2023-01-19 inicio}
+              if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
+              begin
+                if Trim(sResponsavelRetencao) <> '' then
+                  Writeln(F,'ResponsavelRetencao=' + sResponsavelRetencao);
+              end;
+              {Sandro Silva 2023-01-19 fim}
+
             end else
             begin
               Writeln(F,'IssRetido=2');
@@ -42248,7 +42296,8 @@ begin
                 //
               end;
               //
-            except end;
+            except
+            end;
           end;
           //
           Form7.ibDataSet15.DisableControls;
@@ -42370,9 +42419,12 @@ begin
                   Form7.ibDataSet15.Post;
                   Form7.ibDataSet15.Edit;
                   //
-                  if RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString)       <> '' then Form7.ibDAtaSet15STATUS.AsString        := AllTrim(RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString));
-                  if RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString)     <> '' then Form7.ibDAtaSet15STATUS.AsString        := AllTrim(RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString));
-                  if RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
+                  if RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString)       <> '' then
+                    Form7.ibDAtaSet15STATUS.AsString        := AllTrim(RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString));
+                  if RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString)     <> '' then
+                    Form7.ibDAtaSet15STATUS.AsString        := AllTrim(RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString));
+                  if RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
+                    Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
                   //
                   BuscaNumeroNFSe(True);
                   //
@@ -42473,7 +42525,8 @@ begin
   //
   try
     sPDF := pChar(Form1.sAtual+'\NFSE\LOG\'+Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)+'.pdf');
-  except end;
+  except
+  end;
   //
   if not (FileExists(pChar(sPDF))) and (Form7.ibDataSet15EMITIDA.AsString = 'S') then
   begin
@@ -42484,14 +42537,28 @@ begin
       Writeln(F,'<Small>GerarPDF=Sim</Small>');
       Writeln(F,'<sNumeroDaNFSE>'+Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)+'<sNumeroDaNFSE>');
       //
+      {Sandro Silva 2023-01-26 inicio
       Writeln(F,'<XMLdeEvio>'+Form7.ibDAtaSet15NFEXML.AsString+'</XMLdeEvio>');
+      }
+      if (RetornaValorDaTagNoCampo('nfseCabecMsg', Form7.ibDAtaSet15NFEXML.AsString) <> '') and (RetornaValorDaTagNoCampo('nfseDadosMsg', Form7.ibDAtaSet15NFEXML.AsString) <> '') and (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'BRASÍLIA') then
+        Writeln(F,'<XMLdeEvio>' + '<Nfse><nfseCabecMsg>' + RetornaValorDaTagNoCampo('nfseCabecMsg', Form7.ibDAtaSet15NFEXML.AsString) + '</nfseCabecMsg><nfseDadosMsg>' + RetornaValorDaTagNoCampo('nfseDadosMsg', Form7.ibDAtaSet15NFEXML.AsString) + '</nfseDadosMsg></Nfse>' + '</XMLdeEvio>')
+      else
+        Writeln(F,'<XMLdeEvio>'+Form7.ibDAtaSet15NFEXML.AsString+'</XMLdeEvio>');
+      {Sandro Silva 2023-01-26 fim}
       //
       if Pos('CompNfse',Form7.ibDAtaSet15RECIBOXML.AsString) <> 0 then
       begin
         Writeln(F,'<XMLImpressao>'+ExtraiNodeXml(Form7.ibDAtaSet15RECIBOXML.AsString,'CompNfse')+'</XMLImpressao>');
       end else
       begin
+        {Sandro Silva 2023-01-26 inicio
         Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
+        }
+        if (RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) <> '') and (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'BRASÍLIA') then
+          Writeln(F,'<XMLImpressao>' + RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) + '</XMLImpressao>')
+        else
+          Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
+        {Sandro Silva 2023-01-26 fim}
       end;
       //
       CloseFile(F);
@@ -43583,7 +43650,14 @@ begin
                                 if Form1.DisponivelSomenteParaNos then
                                 begin
                                   //GeraImagemDoBoletoComOCodigoDeBarras(False); // Para calcular código de barras, nosso numero
+                                  {Sandro Silva 2023-01-24 inicio
                                   Form25.GravaPortadorNossoNumCodeBar;
+                                  }
+                                  if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
+                                  begin
+                                    Form25.GravaPortadorNossoNumCodeBar;
+                                  end;
+                                  {Sandro Silva 2023-01-24 fim}
                                 end;
                                 {Sandro Silva 2022-12-23 fim}
 
