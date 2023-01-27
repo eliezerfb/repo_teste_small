@@ -10679,8 +10679,10 @@ begin
       begin
         if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE') or (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') then  // Sandro Silva 2023-01-13 if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE') then
         begin
+          {Sandro Silva 2023-01-20 inicio
           if _59.NumeroSerieSAT <> '' then
             ValidarAssinaturaACComNoCnpjSoftwareHouse;
+          }
         end;
       end;
       {Sandro Silva 2023-01-05 fim}
