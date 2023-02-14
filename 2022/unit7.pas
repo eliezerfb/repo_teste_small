@@ -14159,6 +14159,7 @@ begin
   //
   // NF-e
   //
+  N6VisualizarDANFE1.Caption := '6 - Visualizar DANFE'; // Sandro Silva 2023-02-14
   PrvisualizarDANFE1.Visible                       := False;
   CancelarNFSe1.Visible                            := False;
   EnviarNFSeporemail1.Visible                      := False;
@@ -14284,6 +14285,8 @@ begin
     //
     if sModulo = 'COMPRA'  then
     begin
+      N6VisualizarDANFE1.Caption := 'Visualizar DANFE'; // Sandro Silva 2023-02-14
+      N6VisualizarDANFE1.Visible                       := True; // Sandro Silva 2023-02-14
       Manifestaododestinatrio1.Visible                 := True;
       VisualizarXMLdamanifestaododestinatrio1.Visible  := True;
       ManifestaododestinatrioDesc1.Visible             := True;
@@ -17077,7 +17080,9 @@ begin
       begin
         if not ((Year(ibDataSet99.FieldByname('VENCIMENTO').AsDateTime) = Year(Date)) and (Month(ibDataSet99.FieldByname('VENCIMENTO').AsDateTime) = Month(Date))) then
         begin
-          if ibDataSet99.FieldByname('VALOR_RECE').Value <> 0 then if Year(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime) = Year(Date)-iAno then Valorrecebido[Month(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime)] := Valorrecebido[Month(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime)] + Form7.ibDataSet99.FieldByname('VALOR_RECE').AsFloat;
+          if ibDataSet99.FieldByname('VALOR_RECE').Value <> 0 then
+            if Year(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime) = Year(Date)-iAno then
+              Valorrecebido[Month(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime)] := Valorrecebido[Month(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime)] + Form7.ibDataSet99.FieldByname('VALOR_RECE').AsFloat;
           if Year(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime) = Year(Date)-iAno then
           begin
             ValorDevido[Month(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime)] := ValorDevido[Month(Form7.ibDataSet99.FieldByname('VENCIMENTO').AsDateTime)] + Form7.ibDataSet99.FieldByname('VALOR_DUPL').AsFloat;
@@ -17109,7 +17114,10 @@ begin
     for I := 1 to 12 do
     begin
       //
-      if ValorDevido[I] = 0 then iOp1 := 0 else iOp1 := 100-(ValorRecebido[I]/ValorDevido[I]*100);
+      if ValorDevido[I] = 0 then
+        iOp1 := 0
+      else
+        iOp1 := 100-(ValorRecebido[I]/ValorDevido[I]*100);
       //
       WriteLn(F,'    <tr>');
       WriteLn(F,'     <td  ><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Copy(MesExtenso(I),1,3)+'</td>');
@@ -17122,8 +17130,13 @@ begin
       //  ValorDevido[i]    = Total do Valor a Receber
       //  Valorrecebido[i]  = Total de Valor Recebido
       //
-      if ValorDevido[I] = 0 then iOp1 := 0 else iOp1 := 100-(ValorRecebido[I]/ValorDevido[I]*100);
-      if iOp1 < 0 then iOp1 := 0;
+      if ValorDevido[I] = 0 then
+        iOp1 := 0
+      else
+        iOp1 := 100-(ValorRecebido[I]/ValorDevido[I]*100);
+
+      if iOp1 < 0 then
+        iOp1 := 0;
       //
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),
                            'S1<'+StrTran(Format('%15.2n', [iOp1]),'.','')+
@@ -34654,8 +34667,10 @@ end;
 procedure TForm7.N6VisualizarDANFE1Click(Sender: TObject);
 var
   sFormato, sLote : String;
+  bTentarVisualizar: Boolean; // Sandro Silva 2023-02-14
 begin
   //
+  {Sandro Silva 2023-02-14 inicio
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
@@ -34682,6 +34697,71 @@ begin
     end else
     begin
       sFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
+    end;
+    //
+    try
+      spdNFe.VisualizarDanfe(sLote, fNFe, sFormato);
+    except
+      Screen.Cursor            := crDefault;
+    end;
+    //
+    DecimalSeparator := ',';
+    DateSeparator    := '/';
+    //
+    Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
+    Form7.Panel7.Repaint;
+    Screen.Cursor            := crDefault;
+  end;
+  //
+  }
+  bTentarVisualizar := False;
+  if sModulo = 'VENDA' then
+  begin
+    Form7.ibDataSet2.Close;
+    Form7.ibDataSet2.Selectsql.Clear;
+    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+    Form7.ibDataSet2.Open;
+    if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') then
+      bTentarVisualizar := True;
+  end;
+
+  if sModulo = 'COMPRA' then
+  begin
+    if Form7.ibDataSet24NFEXML.AsString <> '' then
+      bTentarVisualizar := True;
+  end;
+
+  //
+  //if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') then
+  if bTentarVisualizar then
+  begin
+    Screen.Cursor            := crHourGlass;
+    Form7.Panel7.Caption := 'Visualizando o DANFE'+replicate(' ',100);
+    Form7.Panel7.Repaint;
+    //
+    ConfiguraNFE(True);
+    //
+    // Recupera na tabela VENDAS o XML
+    //
+    sFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
+    if sModulo = 'VENDA' then
+    begin
+
+      fNFE :=  Form7.ibDataSet15NFEXML.AsString;
+
+      //
+      // Recupera na tabela VENDAS o XML
+      //
+      if Form7.ibDataSet15EMITIDA.AsString = 'X' then
+      begin
+        sFormato := Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento;
+      end;
+    end;
+
+    if sModulo = 'COMPRA' then
+    begin
+      fNFE :=  Form7.ibDataSet24NFEXML.AsString;
+      Form7.spdNFe.DanfeSettings.LogotipoEmitente := '';
     end;
     //
     try
@@ -36872,7 +36952,8 @@ begin
   Mais1Ini.Free;
   //
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_mes.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
-  while not FileExists(Form1.sAtual+'\inadimplencia_mes.png') do sleep(100);
+  while not FileExists(Form1.sAtual+'\inadimplencia_mes.png') do
+    Sleep(100);
   //
   // Média de dias de atraso ùltimos três meses
   //
@@ -36942,7 +37023,8 @@ begin
   Mais1Ini.Free;
   //
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_ano.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
-  while not FileExists(Form1.sAtual+'\inadimplencia_ano.png') do sleep(100);
+  while not FileExists(Form1.sAtual+'\inadimplencia_ano.png') do
+    Sleep(100);
   //
   // Fim grafico
   //
@@ -37017,7 +37099,8 @@ begin
   Mais1Ini.Free;
   //
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_tot.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
-  while not FileExists(Form1.sAtual+'\inadimplencia_tot.png') do sleep(100);
+  while not FileExists(Form1.sAtual+'\inadimplencia_tot.png') do
+    Sleep(100);
   //
   // Fim grafico
   //
@@ -38834,7 +38917,9 @@ begin
                                 'Emissão: '+Copy(Form7.ibQuery1.fieldByname('EMISSAO').AsString     +Replicate(' ',10),1,10)+' '+chr(10)+
                                 'Vencimento: '+Copy(Form7.ibQuery1.fieldByname('VENCIMENTO').AsString  +Replicate(' ',10),1,10)+' '+chr(10)+
                                 'Valor: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_DUPL').AsFloat])+Replicate(' ',10),1,10)+' '+chr(10)+
-                                'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+chr(10);
+                                'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+
+                                IfThen(Trim(Form7.ibQuery1.fieldByname('CODEBAR').AsString) <> '', 'Código de barras: '+Form7.ibQuery1.fieldByname('CODEBAR').AsString, '')+chr(10)+chr(10)// Sandro Silva 2023-02-10
+                                ;
                     //
                     Form7.ibQuery1.Next;
                   end;
@@ -41018,7 +41103,9 @@ begin
                                 'Emissão: '+Copy(Form7.ibQuery1.fieldByname('EMISSAO').AsString     +Replicate(' ',10),1,10)+' '+chr(10)+
                                 'Vencimento: '+Copy(Form7.ibQuery1.fieldByname('VENCIMENTO').AsString  +Replicate(' ',10),1,10)+' '+chr(10)+
                                 'Valor: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_DUPL').AsFloat])+Replicate(' ',10),1,10)+' '+chr(10)+
-                                'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+chr(10);
+                                'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+
+                                IfThen(Trim(Form7.ibQuery1.fieldByname('CODEBAR').AsString) <> '', 'Código de barras: '+Form7.ibQuery1.fieldByname('CODEBAR').AsString, '')+chr(10)+chr(10)// Sandro Silva 2023-02-10ng, '')// Sandro Silva 2023-02-10
+                                ;
                     //
                     Form7.ibQuery1.Next;
                   end;
@@ -41163,6 +41250,7 @@ var
   bBlocoX : Boolean;
 begin
   //
+  {Sandro Silva 2023-02-14 inicio
   if (Form7.ibDataSet13ESTADO.AsString = 'SC') or (Form7.ibDataSet13ESTADO.AsString = 'MS') or (Form7.ibDataSet13ESTADO.AsString = 'PI') or (Form7.ibDataSet13ESTADO.AsString = 'TO') then
   begin
     //
@@ -41209,6 +41297,7 @@ begin
     end;
     //
   end;
+  }
   //
 end;
 
@@ -41431,7 +41520,8 @@ begin
       Form7.ibDataset15.Post;
       Form7.ibDataset15.Edit;
     end;
-  except end;
+  except
+  end;
   //
   // Multiplos Serviços
   //
@@ -43794,7 +43884,9 @@ begin
                                 'Emissão: '+Copy(Form7.ibQuery1.fieldByname('EMISSAO').AsString     +Replicate(' ',10),1,10)+' '+chr(10)+
                                 'Vencimento: '+Copy(Form7.ibQuery1.fieldByname('VENCIMENTO').AsString  +Replicate(' ',10),1,10)+' '+chr(10)+
                                 'Valor: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_DUPL').AsFloat])+Replicate(' ',10),1,10)+' '+chr(10)+
-                                'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+chr(10);
+                                'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+
+                                IfThen(Trim(Form7.ibQuery1.fieldByname('CODEBAR').AsString) <> '', 'Código de barras: '+Form7.ibQuery1.fieldByname('CODEBAR').AsString, '')+chr(10)+chr(10)// Sandro Silva 2023-02-10
+                                ;
                     //
                     Form7.ibQuery1.Next;
                   end;

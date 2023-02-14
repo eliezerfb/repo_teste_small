@@ -1588,7 +1588,12 @@ object Form17: TForm17
           '3316301 - Manuten'#231#227'o e repara'#231#227'o de aeronaves, exceto a manuten'#231 +
           #227'o na pista'
         '3316302 - Manuten'#231#227'o de aeronaves na pista'
-        ' - Manuten'#231#227'o e repara'#231#227'o de embarca'#231#245'es e estruturas flutuantes'
+        
+          '3317101 - Manuten'#231#227'o e repara'#231#227'o de embarca'#231#245'es e estruturas flu' +
+          'tuantes'
+        
+          '3317102 - Manuten'#231#227'o e repara'#231#227'o de embarca'#231#245'es para esporte e l' +
+          'azer'
         '3329501 - Servi'#231'os de montagem de m'#243'veis de qualquer material'
         
           '3329599 - Instala'#231#227'o de outros equipamentos n'#227'o especificados an' +
@@ -2402,7 +2407,7 @@ object Form17: TForm17
         
           '6399200 - Outras atividades de presta'#231#227'o de servi'#231'os de informa'#231 +
           #227'o n'#227'o especificadas anteriormente'
-        '6410700 - Banco Central'#13)
+        '6410700 - Banco Central')
     end
     object ComboBox1: TComboBox
       Left = 110

@@ -559,6 +559,7 @@ begin
     Form1.ibQueryGrafico.Close;
     Form1.ibQueryGrafico.SQL.Clear;
     Form1.ibQueryGrafico.SQL.Add('select sum(ALTERACA.TOTAL)as VTOT, extract(month from ALTERACA.DATA) as VMES from ALTERACA where ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') '+
+                                 'and (ALTERACA.VALORICM is null  or (ALTERACA.TIPO=''VENDA'' and ALTERACA.VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
                                  ' group by VMES order by VMES');
     Form1.ibQueryGrafico.Open;
     Form1.ibQueryGrafico.First;
@@ -657,6 +658,7 @@ begin
     Form1.ibQueryGrafico.Close;
     Form1.ibQueryGrafico.SQL.Clear;
     Form1.ibQueryGrafico.SQL.Add('select sum(ALTERACA.TOTAL)as VTOT, extract(Year from ALTERACA.DATA) as VANO from ALTERACA where (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') '+
+                                 'and (ALTERACA.VALORICM is null  or (ALTERACA.TIPO=''VENDA'' and ALTERACA.VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
                                  ' group by VANO order by VANO');
     Form1.ibQueryGrafico.Open;
     Form1.ibQueryGrafico.First;
@@ -1876,7 +1878,9 @@ begin
     //
     Form1.IBDataSetGrafico2.Close;
     Form1.IBDataSetGrafico2.SelectSQL.Clear;
-    Form1.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') group by VENDEDOR');
+    Form1.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') ' +
+                                          'and (VALORICM is null  or (TIPO=''VENDA'' and VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
+                                          'group by VENDEDOR');
     Form1.IBDataSetGrafico2.Open;
     Form1.IBDataSetGrafico2.First;
     //
@@ -1984,7 +1988,9 @@ begin
     //
     Form1.IBDataSetGrafico2.Close;
     Form1.IBDataSetGrafico2.SelectSQL.Clear;
-    Form1.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') group by VENDEDOR');
+    Form1.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') ' +
+                                          'and (VALORICM is null  or (TIPO=''VENDA'' and VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
+                                          'group by VENDEDOR');
     Form1.IBDataSetGrafico2.Open;
     Form1.IBDataSetGrafico2.First;
     //
