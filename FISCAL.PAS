@@ -1449,6 +1449,7 @@ type
     procedure LeConfiguracaoTipoEtiquetaBalanca;
     procedure VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
     procedure ValidarAssinaturaACComNoCnpjSoftwareHouse;
+    procedure EstoqueParcial;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -23051,7 +23052,8 @@ end;
 
 procedure TForm1.Estoqueparcial1Click(Sender: TObject);
 begin
-  RegistrosDoPafEstoqueparcial; // 2022-03-29
+// Sandro Silva 2023-02-14  RegistrosDoPafEstoqueparcial; // 2022-03-29
+  EstoqueParcial;
 end;
 
 procedure TForm1.Quantas1Click(Sender: TObject);
@@ -33280,31 +33282,11 @@ procedure TForm1.IdentificaodoPAFNFCe1Click(Sender: TObject);
 var
   Requisito: TRequisitosPafNfce;
 begin
-  {Sandro Silva 2022-09-23 inicio
-  MessageDlg(
-    'a) Identificação da empresa desenvolvedora' + #13 +
-    #13 +
-    'CNPJ: 07.426.598/0001-24' + #13 +
-    'Razão Social: SMALLSOFT TECNOLOGIA EM INFORMÁTICA EIRELI' + #13 +
-    'Endereço: Rua Getúlio Vargas, 673, Centro 89700-019 - Concórdia-SC' + #13 +
-    'Telefone: 049 3425 5800' + #13 +
-    'Contato: Ronei Ivo Weber' + #13 +
-    #13 +
-    'Identificação do PAF-NFC-e' + #13 +
-    #13 +
-    'Nome comercial do PAF-NFC-e: Small Commerce' + #13 +
-    'Versão do PAF-NFC-e: ' + Build
-
-    , mtInformation,
-      [mbOk], 0);
-  FreeAndNil(Requisito);
-  }
   Requisito := TRequisitosPafNfce.Create;
   Requisito.IBTransaction := Form1.IBTransaction2;
-  Requisito.VersaoER      := tPafNfceEr0100;
+  Requisito.VersaoER      := tPafNfceEr0200;// Sandro Silva 2023-02-13 Requisito.VersaoER      := tPafNfceEr0100;
   MessageDlg(Requisito.IdentificacaoDaEmpresaDesenvolvedora, mtInformation, [mbOk], 0);
   FreeAndNil(Requisito);
-  {Sandro Silva 2022-09-23 fim}
 end;
 
 procedure TForm1.MesasAbertasPAFNFCeClick(Sender: TObject);
@@ -33330,6 +33312,7 @@ begin
       Requisitos := TRequisitosPafNfce.Create;
       Requisitos.IBTransaction := IBTransaction2;
       Requisitos.VersaoER      := tPafNfceEr0100;
+      //Requisitos.spdNFCe       := Form1.spdNFCe1; // Sandro Silva 2023-02-13
       Requisitos.VendasIdentificadaspeloCPFCNPJ(Form7.DateTimePicker3.Date, Form7.edCPFCNPJ.Text);
       FreeAndNil(Requisitos);
 
@@ -33337,13 +33320,68 @@ begin
   except
 
   end;
+  Form7.bVendaCPF := False;  
   CHDir(Form1.sAtual);
 
 end;
 
 procedure TForm1.ESTOQUETOTALPAFNFCeClick(Sender: TObject);
+var
+  Requisitos: TRequisitosPafNfce;
 begin
-  RegistrosDoPAFNFCe;
+// Sandro Silva 2023-02-13 RegistrosDoPAFNFCe;
+
+  Commitatudo2(True); // Estoquetotal1Click // 2015-11-18
+  CommitaTudo(True);// Estoquetotal1Click 2015-09-12
+
+  try
+    //
+    Form7.sMfd  := '9';
+    Form7.Label1.Caption          := 'Informe o período para o relatório Registros do ' +
+                                     'PAF-NFC-e e clique em <Avançar> para continuar.';
+    Form7.DateTimePicker1.Top     := Form7.Label3.BoundsRect.Bottom + 3;
+    Form7.DateTimePicker2.Top     := Form7.Label5.BoundsRect.Bottom + 3;
+
+    Form7.DateTimePicker1.Visible := True;
+    Form7.DateTimePicker2.Visible := True;
+    Form7.MaskEdit1.Visible       := False;
+    Form7.MaskEdit2.Visible       := False;
+    Form7.CheckBox1.Visible       := False;
+    Form7.Label3.Caption          := 'Data inicial:';
+    Form7.Label5.Caption          := 'Data final:';
+    //
+
+    Form7.Caption := 'Registros do PAF-NFC-e - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+    Form7.ShowModal;
+
+    if Form7.ModalResult = mrOK then
+    begin
+
+//      Commitatudo(True); // Form1.VendasIdentificadaspeloCPFCNPJPAFNFCeClick(
+
+      Form1.Repaint;
+      //
+      Form1.Display('Aguarde...', 'Aguarde... Gerando arquivo “Registros do PAF-NFC-e”');
+
+      Form1.ExibePanelMensagem('Aguarde... Gerando arquivo “Registros do PAF-NFC-e”');
+
+      Requisitos := TRequisitosPafNfce.Create;
+      Requisitos.IBTransaction := IBTransaction2;
+      Requisitos.VersaoER      := tPafNfceEr0200;//Requisitos.VersaoER      := tPafNfceEr0100;
+      Requisitos.spdNFCe       := Form1.spdNFCe1; // Sandro Silva 2023-02-13
+      Requisitos.RequisitosDoPafNFCe(Form1.sAtualOnLine);
+      FreeAndNil(Requisitos);
+
+    end;
+
+  except
+
+  end;
+  CHDir(Form1.sAtual);
+
+
+  Form1.OcultaPanelMensagem;
+
 end;
 
 procedure TForm1.IBDataSet150BeforePost(DataSet: TDataSet);
@@ -33367,15 +33405,17 @@ end;
 
 procedure TForm1.ESTOQUEPARCIALPAFNFCeClick(Sender: TObject);
 begin
-  Estoqueparcial1Click(Estoqueparcial1);
+  EstoqueParcial;// RegistrosDoPafEstoqueparcial; // Sandro Silva 2023-02-14 Estoqueparcial1Click(Estoqueparcial1);
 end;
 
 procedure TForm1.ppMenuFiscalPAFNFCePopup(Sender: TObject);
 begin
   PopupMenu1Popup(PopupMenu1);
   MesasAbertasPAFNFCe.Caption := sMesasOuContas+' abertas...';
+  {Sandro Silva 2023-02-14 inicio
   SadasIdentificadaspeloCPFCNPJ1.Visible        := (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF));
   VendasIdentificadaspeloCPFCNPJPAFNFCe.Visible := (SadasIdentificadaspeloCPFCNPJ1.Visible = False);
+  }
 end;
 
 procedure TForm1.InformarindIntermedNFCe1Click(Sender: TObject);
@@ -33696,7 +33736,8 @@ begin
       Commitatudo(True); // TForm1.SadasIdentificadaspeloCPFCNPJ1Click(
       Requisitos := TRequisitosPafNfce.Create;
       Requisitos.IBTransaction := IBTransaction2;
-      Requisitos.VersaoER      := tPafNfceEr0100; //tPafNfceEr0200;
+      Requisitos.VersaoER      := tPafNfceEr0200;
+      Requisitos.spdNFCe       := Form1.spdNFCe1; // Sandro Silva 2023-02-13      
       Requisitos.VendasIdentificadaspeloCPFCNPJ(Form7.DateTimePicker3.Date, Form7.edCPFCNPJ.Text);
       FreeAndNil(Requisitos);
 
@@ -33704,6 +33745,7 @@ begin
   except
 
   end;
+  Form7.bVendaCPF := False;
   CHDir(Form1.sAtual);
 
 end;
@@ -33860,9 +33902,10 @@ procedure TForm1.ConfiguraCredencialTecnospeed;
 var
   CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
+  //Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
+  Form1.spdNFCe1.ConfigurarSoftwareHouse('03916076000664', '5236f0fc4fb818efe845ebff0d0457af');// Sandro Silva 2018-05-30
 
-  Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
-
+  {
   try
     CredencialTecnospeed := TCredenciaisTecnospeed.Create;
     CredencialTecnospeed.PrivateKey := Form1.sPasta;
@@ -33874,6 +33917,7 @@ begin
     FreeAndNil(CredencialTecnospeed);
   except
   end;
+  }
   //
 end;
 
@@ -33935,6 +33979,83 @@ begin
     except
     end;
   end;
+end;
+
+procedure TForm1.EstoqueParcial;
+var
+  sCodigo : String;
+  sDescri : String;
+  bAchou: Boolean;
+begin
+  CommitaTudo(True);// Estoqueparcial1Click 2015-09-12
+  //
+  Form1.sSuperCodigo := '';
+  sCodigo := 'XXX';
+  //
+  while sCodigo <> '' do
+  begin
+    //
+    sCodigo := '';
+    sCodigo := Form1.Small_InputBox('Estoque parcial','Itens escolhidos: '+chr(10)+sDescri+chr(10)+chr(10)+'Digite o Código ou <Enter> em branco para finalizar:','');
+    //
+    if AllTrim(sCodigo)<>'' then
+    begin
+      //
+      if LimpaNumero(Trim(sCodigo)) <> Trim(sCodigo) then
+      begin
+        Form1.ibQuery1.Close;
+        Form1.ibQuery1.SQL.Clear;
+        Form1.ibQuery1.SQL.Add('select CODIGO, DESCRICAO, REFERENCIA from ESTOQUE where upper(DESCRICAO) like '+QuotedStr(UpperCase(sCodigo)+'%')+' ');
+        Form1.ibQuery1.Open;
+        //
+        bAchou := Pos(AnsiUpperCase(sCodigo), AnsiUpperCase(Form1.ibQuery1.FieldByName('DESCRICAO').AsString)) > 0;
+      end
+      else
+      begin
+        if Length(Trim(sCodigo)) > 5 then // Procura pela referência
+        begin
+          Form1.ibQuery1.Close;
+          Form1.ibQuery1.SQL.Clear;
+          Form1.ibQuery1.SQL.Add('select CODIGO, DESCRICAO, REFERENCIA from ESTOQUE where REFERENCIA='+QuotedStr(LimpaNumero(sCodigo))+' ');
+          Form1.ibQuery1.Open;
+          //
+          bAchou := Form1.ibQuery1.FieldByName('REFERENCIA').AsString = LimpaNumero(sCodigo);
+        end
+        else
+        begin
+          Form1.ibQuery1.Close;
+          Form1.ibQuery1.SQL.Clear;
+          Form1.ibQuery1.SQL.Add('select CODIGO, DESCRICAO from ESTOQUE where CODIGO='+QuotedStr(StrZero(StrToInt('0'+LimpaNumero(sCodigo)),5,0))+' ');
+          Form1.ibQuery1.Open;
+          bAchou := Form1.ibQuery1.FieldByName('CODIGO').AsString = StrZero(StrToInt('0'+LimpaNumero(sCodigo)),5,0);
+        end;
+      end;
+
+      if bAchou then
+      begin
+        sCodigo := Form1.ibQuery1.FieldByName('CODIGO').AsString;
+        Form1.sSuperCodigo := Form1.sSuperCodigo + '|' + StrZero(StrToInt('0'+LimpaNumero(sCodigo)),5,0);
+        sDescri := sDescri + StrZero(StrToInt('0'+LimpaNumero(sCodigo)),5,0) + ' ' + Form1.ibQuery1.FieldByName('DESCRICAO').AsString + chr(10);
+        // SmallMsg(Form1.ibQuery1.FieldByName('DESCRICAO').AsString);
+      end else
+      begin
+        SmallMsg('Não cadastrado no estoque.');
+      end;
+
+      //
+    end;
+  end;
+  //
+  if Alltrim(Form1.sSuperCodigo) <> '' then
+  begin
+    if PAFNFCe then
+      Form1.ESTOQUETOTALPAFNFCeClick(Form1.ESTOQUETOTALPAFNFCe) // Sandro Silva 2023-02-14 RegistrosDoPAFNFCe
+    else
+      RegistrosDoPafEcfEstoquetotal; // Form1.Estoquetotal1Click(Sender);
+  end;
+  //
+  Form1.sSuperCodigo := '';
+  Form1.ibQuery1.Close;  //
 end;
 
 end.

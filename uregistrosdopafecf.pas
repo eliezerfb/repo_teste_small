@@ -15,7 +15,7 @@ uses
   ;
 
 procedure RegistrosDoPafEcfEstoquetotal;
-procedure RegistrosDoPafEstoqueparcial;
+// Sandro Silva 2023-02-14 procedure RegistrosDoPafEstoqueparcial;
 
 implementation
 
@@ -5240,7 +5240,7 @@ begin
     end;
   end;
   FreeAndNil(IBQECF);                                          
-  FreeAndNil(IBQVENDAS);                                       
+  FreeAndNil(IBQVENDAS);
   FreeAndNil(IBQCOMPRAS);
   FreeAndNil(IBQFABRICA);                                      
   FreeAndNil(IBQBALCAO);
@@ -5255,6 +5255,7 @@ begin
 
 end;
 
+{Sandro Silva 2023-02-14 inicio
 procedure RegistrosDoPafEstoqueparcial;
 var
   sCodigo : String;
@@ -5323,7 +5324,7 @@ begin
   if Alltrim(Form1.sSuperCodigo) <> '' then
   begin
     if PAFNFCe then
-      RegistrosDoPAFNFCe
+      Form1.ESTOQUETOTALPAFNFCeClick(Form1.ESTOQUETOTALPAFNFCe) // Sandro Silva 2023-02-14 RegistrosDoPAFNFCe
     else
       RegistrosDoPafEcfEstoquetotal; // Form1.Estoquetotal1Click(Sender);
   end;
@@ -5332,5 +5333,6 @@ begin
   Form1.ibQuery1.Close;
   //
 end;
+}
 
 end.

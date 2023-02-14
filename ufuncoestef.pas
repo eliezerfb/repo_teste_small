@@ -113,7 +113,6 @@ begin
     //
     while not (FileExists('c:\'+p_diretorio+'\'+p_Resp+'\INTPOS.STS')) do
     begin
-      {Sandro Silva 2021-08-27 inicio}
       //Ficha 5379
       Inc(iTentativa);
       if iTentativa > MAX_TENTATIVA_ABRIR_TEF then
@@ -126,7 +125,6 @@ begin
           Break;
         end;
       end;
-      {Sandro Silva 2021-08-27 fim}
       //
       if FileExists(p_Exec) then
       begin
@@ -1307,10 +1305,6 @@ begin
     Form10.Button3.Left    := AjustaLargura(207) - AjustaLargura(45); // Sandro Silva 2021-09-21 Form10.Button3.Left    := 207 - 45; // Sandro Silva 2017-11-07 Polimig
   end;
 
-  {Sandro Silva 2022-06-24 inicio
-  while AllTrim(Form1.sDiretorio) = '' do
-    Form10.ShowModal;
-  }
   while AllTrim(Form1.sDIRETORIO) = '' do
   begin
     if Form10.ListarTEFAtivos(True) = False then
@@ -1318,7 +1312,6 @@ begin
       Form10.ShowModal;
     end;
   end;
-  {Sandro Silva 2022-06-24 fim}
 
   Form10.Button1.Visible := True; // Sandro Silva 2017-11-07 Polimig
   Form10.Button2.Visible := True; // Sandro Silva 2017-11-07 Polimig

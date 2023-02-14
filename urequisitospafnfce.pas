@@ -42,7 +42,7 @@ begin
             sSituacaoTributaria := 'S';
           end else
           begin
-            sAliquota := StrZero( (Form1.ibDataSet14.FieldByName(Form1.ibDataSet13.FieldByName('ESTADO').AsString+'_').AsFloat * 100) ,4,0);           
+            sAliquota := StrZero( (Form1.ibDataSet14.FieldByName(Form1.ibDataSet13.FieldByName('ESTADO').AsString+'_').AsFloat * 100) ,4,0);
             sSituacaoTributaria := 'T';
           end;
         except sAliquota  := '' end;
@@ -128,7 +128,7 @@ const SELECT_ECF =
   ',(select first 1 R3.PDV from REDUCOES R3 where R3.SERIE = R1.SERIE and coalesce(R3.PDV, ''XX'') <> ''XX'' order by R3.REGISTRO desc) as PDV ' +
   ',(select first 1 R4.MODELOECF from REDUCOES R4 where R4.SERIE = R1.SERIE order by R4.REGISTRO desc) as MODELOECF ' +
   'from REDUCOES R1 ' +
-  ' where R1.SMALL <> ''59'' and R1.SMALL <> ''65'' and R1.SMALL <> ''99'' ' + 
+  ' where R1.SMALL <> ''59'' and R1.SMALL <> ''65'' and R1.SMALL <> ''99'' ' +
   ' and coalesce(R1.SERIE, ''XX'') <> ''XX'' ' +
   ' and coalesce(R1.PDV, ''XX'') <> ''XX'' ' +
   ' group by R1.SERIE ' +
@@ -419,6 +419,7 @@ begin
     Form7.Label3.Caption          := 'Data inicial:';
     Form7.Label5.Caption          := 'Data final:';
     //
+    {Sandro Silva 2023-02-13 inicio
     if AllTrim(Form1.sNumeroDeSerieDaImpressora) <> '' then
     begin
       Form7.ComboBox1.Text := Form1.sNumeroDeSerieDaImpressora;
@@ -428,7 +429,7 @@ begin
       Form1.ibDataSet99.Close;
       Form1.ibDataSet99.SelectSql.Clear;
       //Form1.ibDataSet99.SelectSQL.Add('select SERIE from REDUCOES group by SERIE');
-      Form1.IbDataSet99.SelectSQL.Add('select SERIE from REDUCOES where SMALL <> ''59'' and SMALL <> ''65'' and SMALL <> ''99'' group by SERIE'); 
+      Form1.IbDataSet99.SelectSQL.Add('select SERIE from REDUCOES where SMALL <> ''59'' and SMALL <> ''65'' and SMALL <> ''99'' group by SERIE');
       Form1.ibDataSet99.Open;
       //
       while not Form1.ibDataSet99.Eof do
@@ -448,6 +449,7 @@ begin
       //
     end;
     //
+    }
 
     if Form1.bData then
     begin
@@ -2012,6 +2014,8 @@ begin
   FreeAndNil(IBQR04); 
 
   FreeAndNil(slArq);
+
+
 
   Form1.OcultaPanelMensagem
 end;
