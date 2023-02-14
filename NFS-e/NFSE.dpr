@@ -6,7 +6,8 @@ uses
   Forms,
   uemissornfse in 'uemissornfse.pas' {FEmissorNFSe},
   uconstantes_chaves_privadas in '..\..\..\uconstantes_chaves_privadas.pas',
-  ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas';
+  ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
+  uconfiguracaonfse in 'uconfiguracaonfse.pas' {FConfiguracaoNFSe};
 
 {$R *.res}
 

@@ -143,7 +143,7 @@ implementation
 
 uses
   ShellApi, spdNFSeXmlUtils, uconstantes_chaves_privadas,
-  ucredencialtecnospeed;
+  ucredencialtecnospeed, uconfiguracaonfse;
 
 
 {IMPLEMENTAÇÃO UTILIZANDO COMPONENTE NFSeV2}
@@ -917,14 +917,18 @@ begin
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoTributacao'           ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoTributacao'           ,'6');
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'1');
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Operacao'                 ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Operacao'                 ,'A');
-  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'6203100');
+  if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','CodigoCnae'               ,''); // Sandro Silva 2023-02-09 if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'6203100');
   //
   Mais1ini.EraseSection('MAIL');
   Mais1ini.EraseSection('tx2');
   //
   Mais1ini.Free;
   //
-  ShellExecute( 0, 'Open', pChar(sAtual+'\nfseConfig.ini'),'', '', SW_SHOW);
+  // Sandro Silva 2023-02-10 ShellExecute( 0, 'Open', pChar(sAtual+'\nfseConfig.ini'),'', '', SW_SHOW);
+
+  Application.CreateForm(TFConfiguracaoNFSe, FConfiguracaoNFSe);
+  FConfiguracaoNFSe.ShowModal;
+  FreeAndNil(FConfiguracaoNFSe);
   //
   Close;
   //
