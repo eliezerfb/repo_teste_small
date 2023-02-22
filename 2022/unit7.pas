@@ -3,7 +3,6 @@ unit Unit7;
 interface
 
 uses
-
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, DBTables, ExtCtrls, Menus, Unit9, IniFiles,
   StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
@@ -7416,6 +7415,7 @@ var
   sBCST    : String;
   sCodigoDeBarrasDoFornecedor : String;
   bProdutoCadastrado : Boolean;
+  sCnpjCpf: String; // Sandro Silva 2023-02-22
   //
 begin
   //
@@ -7435,7 +7435,8 @@ begin
       Form7.OpenDialog1.FileName := '';
       Form7.OpenDialog1.Title    := 'Importar Nota Fiscal';
       //
-      if not Form7.OpenDialog1.Execute then Exit;
+      if not Form7.OpenDialog1.Execute then
+        Exit;
       if LowerCase(Right(Form7.OpenDialog1.FileName,4))='.xml' then
       begin
         try
@@ -7527,12 +7528,19 @@ begin
         Form7.ibDataSet2.Open;
         //
         sNomeDaEmpresa := PrimeiraMaiuscula(AllTrim(Copy(CaracteresHTML((AllTrim(XmlNodeValue(NodeSec.ChildNodes['xNome'].XML,'//xNome'))))+replicate(' ',60),1,60)));
+        {Sandro Silva 2023-02-22 inicio}
+        sCnpjCpf := Trim(NodeSec.ChildNodes['CNPJ'].Text);
+        if sCnpjCpf = '' then
+          sCnpjCpf := Trim(NodeSec.ChildNodes['CPF'].Text);
+        {Sandro Silva 2023-02-22 fim}
+
         //
-        if (not Form7.IBDataSet2.Locate('CGC',ConverteCpfCgc(AllTrim(NodeSec.ChildNodes['CNPJ'].Text)),[])) or (AllTrim(Form7.IBDataSet2NOME.AsString) = '') then
+        // Sandro Silva 2023-02-22 if (not Form7.IBDataSet2.Locate('CGC',ConverteCpfCgc(AllTrim(NodeSec.ChildNodes['CNPJ'].Text)),[])) or (AllTrim(Form7.IBDataSet2NOME.AsString) = '') then
+        if (not Form7.IBDataSet2.Locate('CGC',ConverteCpfCgc(Trim(sCnpjCpf)),[])) or (AllTrim(Form7.IBDataSet2NOME.AsString) = '') then
         begin
           //
           Form7.IBDataSet2.Append;
-          Form7.IBDataSet2CGC.AsString  := ConverteCpfCgc(AllTrim(NodeSec.ChildNodes['CNPJ'].Text));
+          Form7.IBDataSet2CGC.AsString  := ConverteCpfCgc(Trim(sCnpjCpf)); // Sandro Silva 2023-02-22 Form7.IBDataSet2CGC.AsString  := ConverteCpfCgc(AllTrim(NodeSec.ChildNodes['CNPJ'].Text));
           //
           Form1.ibQuery2.Close;
           Form1.ibQuery2.SQL.Clear;
