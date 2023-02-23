@@ -1483,7 +1483,7 @@ begin
           dD2Total := 0;
 
         Writeln(F, 'D2' +
-                   Right('00000000000000' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString), 14) +
+                   Right('00000000000000' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString), 14) + // CNPJ estabelecimento
                    Right('0000000000000' + Form1.ibDataSet99.FieldByName('PEDIDO').AsString, 13) + // Número do DAV
                    FormatDateTime('YYYYMMDD', Form1.ibDataSet99.FieldByName('DATA').AsDateTime) + // Data do DAV
                    Copy('ORCAMENTO'+Replicate(' ',30),1,30) + // Título
@@ -1590,15 +1590,20 @@ begin
                      Copy(sDescricaoItem, 1, 100) + // Descricao 100
                      StrZero(Form1.ibDataSet37.FieldByName('QUANTIDADE').AsFloat*1000,7,0)+ // Quantidade 7
                      Copy(sMedidaD3+'   ',1,3)+ // Unidade 3
-                     StrZero(Form1.ibDataSet37.FieldByName('UNITARIO').AsFloat*100,8,0)+ // valor unitario 8
-                     StrZero(dDescontoItem*100,8,0)+ // Desconto sobre o item 8
-                     StrZero(0.00,8,0)+ // Acrescimo sobre o item 8
-                     StrZero((Form1.ibDataSet37.FieldByName('TOTAL').AsFloat - dDescontoItem) *100,14,0)+ //  Valor total liquido 14
+                     StrZero(Form1.ibDataSet37.FieldByName('UNITARIO').AsFloat*100,14,0)+ // valor unitario 14
                      sSituacaoTributaria + // Situacao tributaria 1
                      sAliquota + // Aliquita 4
                      'N' + // Indicador de cancelamento 1
                      '3'+ // Casas decimais da quantidade
                      '2' // Casas decimais de valor unitário
+                     //StrZero(dDescontoItem*100,8,0)+ // Desconto sobre o item 8
+                     //StrZero(0.00,8,0)+ // Acrescimo sobre o item 8
+                     //StrZero((Form1.ibDataSet37.FieldByName('TOTAL').AsFloat - dDescontoItem) *100,14,0)+ //  Valor total liquido 14
+                     //sSituacaoTributaria + // Situacao tributaria 1
+                     //sAliquota + // Aliquita 4
+                     //'N' + // Indicador de cancelamento 1
+                     //'3'+ // Casas decimais da quantidade
+                     //'2' // Casas decimais de valor unitário
                      );
           Form1.ibDataSet37.Next;
         end; // if Form1.ibDataSet37.EOF = False do
@@ -1609,10 +1614,7 @@ begin
       //
     end;
 
-
     Form1.ibDataSet37.EnableControls; // Sandro Silva 2020-11-06
-
-
 
     /////////////////////////////////////// D2 e D3 FIM
 

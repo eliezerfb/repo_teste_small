@@ -33377,8 +33377,7 @@ begin
   except
 
   end;
-  CHDir(Form1.sAtual);
-
+  CHDir(Form1.sAtual);   
 
   Form1.OcultaPanelMensagem;
 
