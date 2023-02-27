@@ -346,9 +346,13 @@ begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
         end;
         //
-        if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
+        if not Form1.bPDF then
+          WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
         //
-        if Form37.Caption = 'Relatório de convênio TODOS' then Form7.ibDataSet29.Next else Form7.ibDataSet29.Last;
+        if Form37.Caption = 'Relatório de convênio TODOS' then
+          Form7.ibDataSet29.Next
+        else
+          Form7.ibDataSet29.Last;
         //
       end;
       //
@@ -360,7 +364,7 @@ begin
     end else
     begin
       //
-      // Comissão de vendedores
+      // Comissão de vendedores     'Relatório de comissões'
       //
       sVendedor  := Form7.ibDataSet9NOME.AsString;
       //
@@ -746,7 +750,22 @@ begin
           //
           Form7.ibDataSet27.Close;
           Form7.ibDataSet27.SelectSQL.Clear;
-          Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where PEDIDO='+QuotedStr('0'+copy(Form7.IBDataSet99.FieldByname('NUMERONF').AsString,1,5))+' and SubString(CAIXA from 2 for 2)='+QuotedStr(copy(Form7.IBDataSet99.FieldByname('NUMERONF').AsString,6,2))+' and VENDEDOR='+QuotedStr(sVendedor)+' ');
+          {Sandro Silva 2023-02-23 inicio   ficha 6637
+          Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA ' +
+          'where PEDIDO='+QuotedStr('0'+copy(Form7.IBDataSet99.FieldByname('NUMERONF').AsString,1,5))+
+          ' and SubString(CAIXA from 2 for 2)='+QuotedStr(copy(Form7.IBDataSet99.FieldByname('NUMERONF').AsString,6,2))+
+          ' and VENDEDOR='+QuotedStr(sVendedor)+
+          ' ');
+          }
+          Form7.ibDataSet27.SelectSQL.Text :=
+            'select * from ALTERACA ' +
+            'where PEDIDO = ' + QuotedStr(Copy(Form7.IBDataSet99.FieldByname('NUMERONF').AsString, 1, 6)) +
+            ' and subString(CAIXA from 2 for 2) = ' + QuotedStr(Right(Form7.IBDataSet99.FieldByname('NUMERONF').AsString, 2)) +
+            ' and VENDEDOR = ' + QuotedStr(sVendedor) +
+            ' and char_length(' + QuotedStr(Form7.IBDataSet99.FieldByname('NUMERONF').AsString) + ') < 12 ' + // Número da nota no PDV tem menos que 12 dígitos. Se aumentar o tamanho de ALTERACA.PEDIDO deverá rever essa lógica
+            ' ';
+          {Sandro Silva 2023-02-23 fim}
+
           Form7.ibDataSet27.Open;
           Form7.ibDataSet27.First;
           //

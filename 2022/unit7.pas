@@ -13754,7 +13754,9 @@ begin
   begin
     ShowMessage('Nome do vendedor inválido.');
     Abort;
-  end else Form37.ShowModal;
+  end
+  else
+    Form37.ShowModal;
   //
 end;
 
