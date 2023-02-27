@@ -16036,12 +16036,15 @@ begin
 end;
 
 procedure TForm1.ConfiguraCredencialTecnospeed;
+{Sandro Silva 2023-02-27 inicio
 var
   CredencialTecnospeed: TCredenciaisTecnospeed;
+}
 begin
 
-  Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');
-  
+  // Sandro Silva 2023-02-27 Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');
+  Form7.spdNFe.ConfigurarSoftwareHouse('03916076000664', '5236f0fc4fb818efe845ebff0d0457af');// Sandro Silva 2023-02-27
+  {Sandro Silva 2023-02-27 inicio
   try
     CredencialTecnospeed := TCredenciaisTecnospeed.Create;
     CredencialTecnospeed.PrivateKey := Form1.sPasta;
@@ -16054,8 +16057,10 @@ begin
 
     FreeAndNil(CredencialTecnospeed);
   except
+
   end;
   //
+  {Sandro Silva 2023-02-27 fim}
 end;
 
 procedure TForm1.ExibeRazaoSocialNoCaptionDoForm;

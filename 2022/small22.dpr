@@ -64,7 +64,8 @@ uses
   uRateioVendasBalcao in 'uRateioVendasBalcao.pas',
   uAtualizaNovoCampoItens001CSOSN in 'uAtualizaNovoCampoItens001CSOSN.pas',
   uSmallNFeUtils in 'uSmallNFeUtils.pas',
-  SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS';
+  SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
+  ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas';
 
 {$R *.RES}
 
