@@ -25086,7 +25086,8 @@ end;
 procedure TForm7.Sosclientescomcontasareceber1Click(Sender: TObject);
 begin
   //
-  sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0)<>0'; // se mudar aqui mudar o traduz sql (Contas a receber)
+  //sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0)<>0'; // se mudar aqui mudar o traduz sql (Contas a receber) Mauricio Parizotto 2023-02-28 
+  sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and COALESCE(RECEBER.ATIVO, 0) <> 1 )<>0'; // se mudar aqui mudar o traduz sql (Contas a receber)
   Form7.Close;
   Form7.Show;
   //
