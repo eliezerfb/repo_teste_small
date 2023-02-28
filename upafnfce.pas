@@ -24,13 +24,11 @@ type
   TRequisitosPafNfceBase = class
   private
     FIBTransaction: TIBTransaction;
-    FCertificadoSubjectName: String;
     FIBQEmitente: TIBQuery;
     FspdNFCe: TspdNFCe;
     FIBDataSet13: TIBDataSet;
     FIBDataSet4: TIBDataSet;
     FIBDataSet14: TIBDataSet;
-    // Sandro Silva 2023-02-13 procedure SetFCertificadoSubjectName(const Value: String);
     procedure SetIBTransaction(const Value: TIBTransaction);
   public
     constructor Create;
@@ -39,7 +37,6 @@ type
       CnpjCpfCliente: String); virtual; abstract;
     procedure RequisitosDoPafNFCe(sAtualOnLine: String); virtual; abstract;
     property IBTransaction: TIBTransaction read FIBTransaction write SetIBTransaction;
-    // Sandro Silva 2023-02-13 property CertificadoSubjectName: String read FCertificadoSubjectName write SetFCertificadoSubjectName;
     property IBQEmitente: TIBQuery read FIBQEmitente write FIBQEmitente;
     property IBDataSet4: TIBDataSet read FIBDataSet4 write FIBDataSet4;
     property IBDataSet13: TIBDataSet read FIBDataSet13 write FIBDataSet13;
@@ -53,23 +50,18 @@ type
     function IdentificacaoDaEmpresaDesenvolvedora: String; override;
     procedure VendasIdentificadaspeloCPFCNPJ(dtPeriodo: TDate;
       CnpjCpfCliente: String); override;
+    procedure RequisitosDoPafNFCe(sAtualOnLine: String); override;      
   end;
 
   TRequisitosPafNfce0200 = class(TRequisitosPafNfceBase)
   private
-    // Sandro Silva 2023-02-13 FCertificado: ICertificate2;
     function GeraXmlPafNfce(sArquivo: String; nroArquivo: String): String;
-    // Sandro Silva 2023-02-13 procedure SetCertificado(const Value: ICertificate2);
-    // Sandro Silva 2023-02-13 procedure MensagemAlertaCertificado;
-    // Sandro Silva 2023-02-13 function GetCertificado(bPermitirSelecionar: Boolean): ICertificate2;// Sandro Silva 2018-02-06  function GetCertificado: ICertificate2;
     procedure ClassificaAliquotaSituacaoTributaria(var sAliquota: String;
       var sSituacaoTributaria: String);
   public
-    //  property Certificado: ICertificate2 read FCertificado write SetCertificado; // Sandro Silva 2018-02-06 FCertificado;
     function IdentificacaoDaEmpresaDesenvolvedora: String; override;
     procedure VendasIdentificadaspeloCPFCNPJ(dtPeriodo: TDate;
       CnpjCpfCliente: String); override;
-    // Sandro Silva 2023-02-13 function AssinaturaDigitalPafNFCe(sArquivo: String): String;
     procedure RequisitosDoPafNFCe(sAtualOnLine: String); override;
   end;
 
@@ -128,6 +120,14 @@ begin
     'Versão do PAF-NFC-e: ' + Build
 end;
 
+procedure TRequisitosPafNfce0100.RequisitosDoPafNFCe(sAtualOnLine: String);
+begin
+  // Implementar se precisar
+
+  inherited;
+
+end;
+
 procedure TRequisitosPafNfce0100.VendasIdentificadaspeloCPFCNPJ(
   dtPeriodo: TDate; CnpjCpfCliente: String);
 var
@@ -137,7 +137,6 @@ var
   hrGeracao: TTime;
   FileName: String;
   bGerando: Boolean;
-//  IBQEmitente: TIBQuery;
   IBQuery: TIBQuery;
   dtIni: TDate;// Sandro Silva 2023-01-05
   dtFim: TDate;// Sandro Silva 2023-01-05
@@ -150,14 +149,12 @@ begin
     Exit;
   end;
 
+  bGerando := True;
+    
   IBQuery     := TIBQuery.Create(nil);
-//  IBQEmitente := TIBQuery.Create(nil);
- // IBQEmitente.Transaction := FIBTransaction;
   IBQuery.Transaction     := FIBTransaction;
 
   try
-
-    bGerando := True;
 
     dtGeracao := Date;
     hrGeracao := Time;
@@ -275,29 +272,6 @@ begin
   end;
 end;
 
-{ TRequisitosPafNfce0200 }
-{Sandro Silva 2023-02-13 inicio
-function TRequisitosPafNfce0200.AssinaturaDigitalPafNFCe(
-  sArquivo: String): String;
-// Assina XML de requisitos do PAF-NFCe
-var
-  IBQEmitente: TIBQuery;
-begin
-  IBQEmitente := TIBQuery.Create(nil);
-  IBQEmitente.Transaction := FIBTransaction;
-  IBQEmitente.Close;
-  IBQEmitente.SQL.Text :=
-    'select CGC ' +
-    'from EMITENTE ';
-  IBQEmitente.Open;
-
-  GetCertificado(True);
-
-  Result := AssinarMSXMLPafNfce(sArquivo, LimpaNumero(IBQEmitente.FieldByName('CGC').AsString), FCertificado, '""');
-
-end;
-}
-
 procedure TRequisitosPafNfce0200.ClassificaAliquotaSituacaoTributaria(
   var sAliquota, sSituacaoTributaria: String);
 begin
@@ -402,129 +376,14 @@ end;
 
 function TRequisitosPafNfce0200.GeraXmlPafNfce(sArquivo,
   nroArquivo: String): String;
-//var
-//  sXml: String;
-//  arquivo: TArquivo;
 begin
-  {Sandro Silva 2023-02-13 inicio
-  arquivo := TArquivo.Create;
 
-  try
-
-    try
-      arquivo.LerArquivo(sArquivo, False);
-      Result :=
-        PAF_NFC_E_ESPECIFICACAO_XML +
-        '<menuFiscal xmlns="http://www.sef.sc.gov.br/nfce">' +
-        '<arquivo nroArquivo="' + nroArquivo + '" data="' + FormatDateTime('ddmmyyyy', Date) + '" hora="' + FormatDateTime('HHnnss', Time) + '" ArqBD="Banco de dados interno" arqSist="PAF-NFC-e Interno">' +
-          '<![CDATA[' + Base64Encode(arquivo.Texto) + ']]></arquivo>' +
-        '<Signature />' +
-        '</menuFiscal>';
-
-    except
-
-    end;
-    if Result <> '' then
-    begin
-      try
-        arquivo.Texto := Result;
-        arquivo.SalvarArquivo(ChangeFileExt(sarquivo, '.XML'));
-
-        AssinaturaDigitalPafNFCe(arquivo.Texto);
-
-        if FileExists(ChangeFileExt(sarquivo, '.XML')) then
-          SmallMsg('O arquivo: ' + ChangeFileExt(sarquivo, '.XML') + ' foi gravado na pasta: ' + ExtractFilePath(ChangeFileExt(sarquivo, '.XML')));
-
-      except
-
-      end;
-    end;
-  finally
-    FreeAndNil(arquivo);
-  end;
-  }
   FspdNFCe.GerarXMLMenuFiscal(nroArquivo, 'Banco de dados interno', 'PAF-NFC-e Interno', sArquivo, True, ChangeFileExt(sarquivo, '.XML'));
 
   if FileExists(ChangeFileExt(sarquivo, '.XML')) then
     SmallMsg('O arquivo: ' + ChangeFileExt(sarquivo, '.XML') + ' foi gravado na pasta: ' + ExtractFilePath(ChangeFileExt(sarquivo, '.XML')));
-  {Sandro Silva 2023-02-13 fim}
-end;
-
-{Sandro Silva 2023-02-13 inicio
-function TRequisitosPafNfce0200.GetCertificado(
-  bPermitirSelecionar: Boolean): ICertificate2;
-var
-  Store: IStore3;
-  CertsLista: ICertificates2;
-  CertsSelecionado: ICertificates2;
-  CertDados: ICertificate;
-  iCert: Integer;
-  bAchou: Boolean;
-begin
-  Store := CoStore.Create;
-  Store.Open(CAPICOM_CURRENT_USER_STORE, 'My', CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED);
-
-  bAchou := False;
-
-  if FCertificadoSubjectName = '' then
-  begin
-    if bPermitirSelecionar then // Sandro Silva 2018-02-06 
-    begin
-
-      MensagemAlertaCertificado;
-
-      try
-        CertsLista := Store.Certificates as ICertificates2;
-        CertsSelecionado := CertsLista.Select('Certificado(s) Digital(is) disponível(is)', #13 + 'Selecione o Certificado Digital para uso no aplicativo PAF' + #13 + #13, False);
-        if not (CertsSelecionado.Count = 0) then
-        begin
-          CertDados := IInterface(CertsSelecionado.Item[1]) as ICertificate2;
-          FCertificadoSubjectName := CertDados.SubjectName;
-          bAchou := True;
-        end;
-      except
-        on E: Exception do
-        begin
-          Application.MessageBox(PChar('Não foi possível selecionar o certificado digital' + #13 + E.Message), 'Atenção', MB_ICONWARNING + MB_OK);
-        end;
-      end;
-    end;
-  end
-  else
-  begin
-    try
-      CertsLista := Store.Certificates as ICertificates2;
-      for iCert := 1 to CertsLista.Count do
-      begin
-        CertDados := ICertificate2(IInterface(CertsLista.Item[iCert]));
-        if AnsiContainsText(CertDados.SubjectName, Copy(FCertificadoSubjectName, 1, Pos(',', FCertificadoSubjectName))) then // Sandro Silva 2022-11-17 if CertDados.SubjectName = FCertificadoSubjectName then
-        begin
-          bAchou := True;
-          Break;
-        end;
-      end;
-    except
-
-    end;
-  end;
-  Result := CertDados as ICertificate2;
-
-  if bAChou = False then
-    Result := nil;
-
-  FCertificado := Result;
-
-  if CertsLista <> nil then
-    CertsLista := nil;
-
-  if CertsSelecionado <> nil then
-    CertsSelecionado := nil;
-
-  // causa exception "Privileged instruction" Store.Close; // Sandro Silva 2018-08-30
-  Store := nil;// Sandro Silva 2018-08-30
 
 end;
-{Sandro Silva 2023-02-13 fim}
 
 function TRequisitosPafNfce0200.IdentificacaoDaEmpresaDesenvolvedora: String;
 begin
@@ -554,49 +413,6 @@ begin
     'em equipamento diverso do especificado em “d.1”: “PAF-NFC-e Interno”'
 
 end;
-
-{Sandro Silva 2023-02-13 inicio
-procedure TRequisitosPafNfce0200.MensagemAlertaCertificado;
-begin
-  Application.MessageBox(PChar(
-                               'Selecione um certificado digital para ser usado com o PAF' + #13 + #13 +
-                               'O certificado digital é necessário para assinar os arquivos XML gerados '
-                                +chr(10)+ ''
-                                +chr(10)+'1 - Verifique se o seu certificado está instalado'
-                                +chr(10)+'2 - Verifique se o seu certificado está selecionado'
-                                +chr(10)+'3 - Seu certificado pode estar vencido'
-                                +chr(10)+'4 - Seu certificado pode ser inválido'
-                                +chr(10)
-                                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
-                                +chr(10)+''
-                                +chr(10)+'1. Certificados SERASA'
-                                +chr(10)+'    * A1'
-                                +chr(10)+'    * SmartCard'
-                                +chr(10)+'    * E-CNPJ'
-                                +chr(10)+'2. Certificados Certisign A1 e A3'
-                                +chr(10)+'3. Certificados dos Correios A1 e A3'
-                                +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                                +chr(10)
-                                +chr(10)+'Selecione um certificado acessando'
-                                +chr(10)+'F10 Menu Gerencial/NFC-e/Selecionar certificado digital'
-                                +chr(10)
-                                +chr(10)
-                                +chr(10)
-                                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                                    'Atenção', MB_ICONWARNING + MB_OK);
-end;
-}
-
-{Sandro Silva 2023-02-13 inicio
-procedure TRequisitosPafNfce0200.SetCertificado(
-  const Value: ICertificate2);
-begin
-  FCertificado := Value;
-  if Value <> nil then
-    FCertificadoSubjectName := Value.SubjectName;
-
-end;
-}
 
 procedure TRequisitosPafNfce0200.RequisitosDoPafNFCe(sAtualOnLine: String);
 const SELECT_ECF =
@@ -2602,13 +2418,9 @@ begin
   FVersao := Value;
   case FVersao of
     tPafNfceEr0100: FRequisitos := TRequisitosPafNfce0100.Create;
-    tPafNfceEr0200:
-    begin
-      FRequisitos := TRequisitosPafNfce0200.Create;
-      // Sandro Silva 2023-02-13 FRequisitos.CertificadoSubjectName := LerParametroIni(FRENTE_INI, SECAO_65, CHAVE_CERTIFICADO_DIGITAL, '');
-    end;
+    tPafNfceEr0200: FRequisitos := TRequisitosPafNfce0200.Create;
   else
-    FRequisitos := TRequisitosPafNfce0100.Create;
+    FRequisitos := TRequisitosPafNfce0200.Create;
   end;
 
   FRequisitos.IBTransaction := IBTransaction;
@@ -2627,14 +2439,6 @@ constructor TRequisitosPafNfceBase.Create;
 begin
   FIBQEmitente := TIBQuery.Create(nil);
 end;
-
-{Sandro Silva 2023-02-13 inicio
-procedure TRequisitosPafNfceBase.SetFCertificadoSubjectName(
-  const Value: String);
-begin
-  FCertificadoSubjectName := Value;
-end;
-}
 
 procedure TRequisitosPafNfceBase.SetIBTransaction(
   const Value: TIBTransaction);

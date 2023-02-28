@@ -1407,8 +1407,10 @@ type
     procedure ExcluiRZDuplicada(IBTransaction: TIBTransaction);
     procedure ExcluiDemaisDuplicado(IBTransaction: TIBTransaction);
     procedure BlocoXReducaoZ1(SerieECF: String; sDataRecricar: String);
+    {Sandro Silva 2023-02-28 inicio
     procedure BlocoXEstoque1(dtInicial: TDate; dtFinal: TDate;
       sDataRecricar: String);
+    }
     function BlocoxTransmitirPendente1(sTipo: String; sSerieECF: String;
       bAlerta: Boolean = True): Integer;
     function BlocoxConsultarRecibo1: Boolean;
@@ -1448,7 +1450,6 @@ type
     procedure TransmiteContingenciaAutomatico(data: TDate; Caixa: String);
     procedure LeConfiguracaoTipoEtiquetaBalanca;
     procedure VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
-    procedure ValidarAssinaturaACComNoCnpjSoftwareHouse;
     procedure EstoqueParcial;
   protected
     procedure WndProc(var Msg: TMessage); override;
@@ -10674,19 +10675,6 @@ begin
 
       Form1.sCaixa := Form1.PDV_NumeroDoCaixa(True);
       Audita('ACESSOU','FRENTE', '', 'ACESSOU O SISTEMA - Caixa: ' + Form1.sCaixa + ' ' + ExtractFileName(Application.ExeName) + ' Build: ' + LimpaNumero(Form22.sBuild),0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2019-03-06
-
-      {Sandro Silva 2023-01-05 inicio}
-      if (Form1.sModeloECF = '59') then
-      begin
-        if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE') or (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') then  // Sandro Silva 2023-01-13 if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE') then
-        begin
-          {Sandro Silva 2023-01-20 inicio
-          if _59.NumeroSerieSAT <> '' then
-            ValidarAssinaturaACComNoCnpjSoftwareHouse;
-          }
-        end;
-      end;
-      {Sandro Silva 2023-01-05 fim}
 
     end
     else
@@ -28284,6 +28272,11 @@ begin
   Selecionarcertificadodigital1Click(Sender);
 end;
 
+(*
+  {Sandro Silva 2022-12-06 Início Unochapeco}
+///
+/// Fernando-Unochapeco orientou que pode ser gerado manualmente o estoque anual
+///
 procedure TForm1.BlocoXEstoque1(dtInicial: TDate; dtFinal: TDate;
   sDataRecricar: String);
 //
@@ -28297,10 +28290,6 @@ var
 }
 begin
 
-  (*{Sandro Silva 2022-12-06 Início Unochapeco}
-  ///
-  /// Fernando-Unochapeco orientou que pode ser gerado manualmente o estoque anual
-  ///
   if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   begin
 
@@ -28397,9 +28386,9 @@ begin
 
     end;
   end;
-  *)
 
 end;
+*)
 
 procedure TForm1.EnvioaoFISCOESTOQUEClick(
   Sender: TObject);
@@ -32265,8 +32254,8 @@ begin
 end;
 
 procedure TForm1.VincularAssinaturaAC1Click(Sender: TObject);
-var
-  sResposta: String;
+//var
+//  sResposta: String;
 begin
   {Sandro Silva 2023-01-05 inicio
   if _59.AssinaturaAssociada = '' then
@@ -33898,11 +33887,11 @@ begin
 end;
 
 procedure TForm1.ConfiguraCredencialTecnospeed;
-var
-  CredencialTecnospeed: TCredenciaisTecnospeed;
+//var
+//  CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
   //Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
-  Form1.spdNFCe1.ConfigurarSoftwareHouse('03916076000664', '5236f0fc4fb818efe845ebff0d0457af');// Sandro Silva 2018-05-30
+  Form1.spdNFCe1.ConfigurarSoftwareHouse('03916076000664', '5236f0fc4fb818efe845ebff0d0457af');// Sandro Silva 2023-02-27
 
   {
   try
@@ -33958,26 +33947,6 @@ begin
                           'Persistindo o erro acesse www.smallsoft.com.br, Suporte e escolha Autorização de uso SAT ou MF-e' + #13 +
                           'Você receberá por e-mail um arquivo com a assinatura. Salve esse arquivo na pasta Windows'), 'Atenção', MB_OK + MB_ICONWARNING);
 
-end;
-
-procedure TForm1.ValidarAssinaturaACComNoCnpjSoftwareHouse;
-var
-  CNPJSHCripta: String;
-begin
-  CNPJSHCripta := LerParametroIni(Form1.sArquivo, 'R01','14', '');
-  if CNPJSHCripta <> '' then
-  begin
-    try
-      Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
-      CNPJSHCripta := Form1.LbBlowfish1.DecryptString(CNPJSHCripta);
-      if (LimpaNumero(CNPJSHCripta) <> '') and (LimpaNumero(CNPJSHCripta) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) then
-      begin
-        //GravarParametroIni(Form1.sArquivo, SECAO_59, 'Assinatura Associada', '');
-        VincularAssinaturaAC(True);
-      end;
-    except
-    end;
-  end;
 end;
 
 procedure TForm1.EstoqueParcial;

@@ -3910,8 +3910,8 @@ var
   IBTBLOCOX: TIBTransaction; // Sandro Silva 2017-11-13  HOMOLOGA 2017 para ler os dados atualizados no banco por outra transação
   IBQBLOCOX: TIBQuery; // Sandro Silva 2017-03-20
   sMensagemAlerta: String; // Sandro Silva 2018-09-21
-  bBlocoxRZPendente: Boolean;
-  bBlocoxEstoquePendente: Boolean;
+  // Sandro Silva 2023-02-28 bBlocoxRZPendente: Boolean;
+  // Sandro Silva 2023-02-28 bBlocoxEstoquePendente: Boolean;
   sDataPendencia: String; // Sandro Silva 2019-06-21 ER 02.06
   Retorno: TRetornoBlocoX; // Sandro Silva 2022-09-06
   function AlertaRZ(iQtd: Integer; sDataPendencia: String): String; // Sandro Silva 2019-06-21 ER 02.06 function AlertaRZ(iQtd: Integer): String;
@@ -3967,8 +3967,8 @@ var
       Result := '';
   end;
 begin
-  bBlocoxEstoquePendente := False; // Sandro Silva 2020-05-21
-  bBlocoxRZPendente      := False; // Sandro Silva 2020-05-21
+  // Sandro Silva 2023-02-28 bBlocoxEstoquePendente := False; // Sandro Silva 2020-05-21
+  // Sandro Silva 2023-02-28 bBlocoxRZPendente      := False; // Sandro Silva 2020-05-21
 
   try
   //ShowMessage('2748'); // Sandro Silva 2018-09-19
@@ -4031,6 +4031,7 @@ begin
         begin
           sMensagemAlerta := AlertaRZ(IBQBLOCOX.FieldByName('PENDENTE').AsInteger, sDataPendencia); // Sandro Silva 2019-06-21 ER 02.06   sMensagemAlerta := AlertaRZ(IBQBLOCOX.FieldByName('PENDENTE').AsInteger);
 
+          {Sandro Silva 2023-02-28 inicio
           if (Copy(Emitente.Configuracao.PerfilPAF,1,1) <> 'T') then // Sandro Silva 2019-06-25 ER 02.06 if (Copy(Emitente.Configuracao.PerfilPAF,1,1) <> 'T') and (Copy(Emitente.Configuracao.PerfilPAF,1,1) <> 'U') then // Sandro Silva 2017-11-10 Polimig
           begin
             if IBQBLOCOX.FieldByName('PENDENTE').AsInteger >= QTD_BLOQUEIO_XML_PENDENTE_RZ then // Sandro Silva 2018-10-18 if IBQBLOCOX.FieldByName('PENDENTE').AsInteger >= 10 then // Sandro Silva 2017-03-31  // Sandro Silva 2017-03-31
@@ -4040,6 +4041,7 @@ begin
           begin
             bBlocoxRZPendente := False;
           end;
+          }
         end;
       end;
 
@@ -4071,8 +4073,10 @@ begin
           sMensagemAlerta := sMensagemAlerta + #13 + #13;
         sMensagemAlerta := sMensagemAlerta + AlertaEstoque(IBQBLOCOX.FieldByName('PENDENTE').AsInteger, sDataPendencia); // Sandro Silva 2019-06-21 ER 02.06 sMensagemAlerta := sMensagemAlerta + AlertaEstoque(IBQBLOCOX.FieldByName('PENDENTE').AsInteger);
 
+        {Sandro Silva 2023-02-28 inicio
         if IBQBLOCOX.FieldByName('PENDENTE').AsInteger >= QTD_BLOQUEIO_XML_PENDENTE_ESTOQUE then // Sandro Silva 2018-10-18 if IBQBLOCOX.FieldByName('PENDENTE').AsInteger >= 10 then // Sandro Silva 2017-03-31  // Sandro Silva 2017-03-31
           bBlocoxEstoquePendente := False;
+        }
 
       end;
 
@@ -4115,6 +4119,7 @@ begin
         begin
           sMensagemAlerta := AlertaRZ(IBQBLOCOX.FieldByName('PENDENTE').AsInteger, sDataPendencia); // Sandro Silva 2019-06-21 ER 02.06 sMensagemAlerta := AlertaRZ(IBQBLOCOX.FieldByName('PENDENTE').AsInteger);
 
+          {Sandro Silva 2023-02-28 inicio
           if (Copy(Emitente.Configuracao.PerfilPAF,1,1) <> 'T') then // Sandro Silva 2019-06-25 ER 02.06 if (Copy(Emitente.Configuracao.PerfilPAF,1,1) <> 'T') and (Copy(Emitente.Configuracao.PerfilPAF,1,1) <> 'U') then // Sandro Silva 2017-11-10 Polimig
           begin
 
@@ -4128,6 +4133,8 @@ begin
             bBlocoxRZPendente := False;
             //ShowMessage('Teste 01 45524'); // Sandro Silva 2017-11-10 Polimig
           end;
+          }
+
         end;
       end;
 
@@ -4159,15 +4166,17 @@ begin
 
         // NOVAS REGRAS SOBRE BLOCO X DA ER 02.06 PARA SC – ATO DIAT Nº 011/2020
         // Art. 1º-A.
-        bBlocoxRZPendente := False;
+        // Sandro Silva 2023-02-28 bBlocoxRZPendente := False;
 
       end;
     end;
 
+    {Sandro Silva 2023-02-28 inicio
     if (Copy(Emitente.Configuracao.PerfilPAF,1,1) = 'T') then // Sandro Silva 2019-06-25 ER 02.06  if (Copy(Emitente.Configuracao.PerfilPAF,1,1) = 'T') or (Copy(Emitente.Configuracao.PerfilPAF,1,1) = 'U') then // Sandro Silva 2017-11-10 Polimig
     begin
       bBlocoxRZPendente := False;
     end;
+    }
 
     if (sTipo = 'ESTOQUE') or (sTipo = '') then
       LogFrente('Arquivos do ESTOQUE PENDENTES: ' + FormatFloat('0', IBQBLOCOX.FieldByName('PENDENTE').AsInteger)  + ' ' + Emitente.UF + ' Perfil ' + Copy(Emitente.Configuracao.PerfilPAF,1,1), Emitente.Configuracao.DiretorioAtual);
@@ -4241,9 +4250,11 @@ begin
 
     FreeAndNil(IBQBLOCOX); // Create(nil);
 
+    {Sandro Silva 2023-02-28 inicio
     // ATO DIAT 17 2017
     if CNAEDispensadoEnvioEstoque then
       bBlocoxEstoquePendente := False;
+    }
 
   except
     on E: Exception do
