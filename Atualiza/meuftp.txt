@@ -1,9 +1,0 @@
-smallftp
-q1OHjtEGhDeBsQkSk2+LJg==
-cd /publico
-
-put "c:\Projeto 2022\2022\log.txt"
-
-put c:\reduzida\20221009.sma
-put c:\reduzida\20211009.sma
-quit
