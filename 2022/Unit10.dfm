@@ -971,7 +971,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_foto
+      ActivePage = Orelha_TAGS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -4789,7 +4789,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 366
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -4810,7 +4810,7 @@ object Form10: TForm10
           Left = 385
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False

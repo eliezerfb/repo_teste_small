@@ -8909,6 +8909,7 @@ begin
   Memo1.Lines.Add('<condVeic>1"Condição do Veículo 1=Acabado; 2=Inacabado; 3=Semiacabado "</condVeic>');
   Memo1.Lines.Add('<cMod>"Código Marca Modelo Utilizar Tabela RENAVAM "</cMod>');
   Memo1.Lines.Add('<lota>5"Capacidade máxima de lotação Quantidade máxima permitida de passageiros sentados, inclusive o motorista. (v2.0) "</lota>');
+  Memo1.Lines.Add('<CNAEISSQN>"CNAE compatível com este serviço na prefeitura"</CNAEISSQN>'); // Sandro Silva 2023-02-28
 
   //
   StringGrid2.Cells[0,0] := 'Nome';
@@ -8990,7 +8991,10 @@ end;
 procedure TForm10.StringGrid2SelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
 begin
-  if ACol = 1 then	StringGrid2.Options:= StringGrid1.Options + [goEditing] else	StringGrid2.Options:=StringGrid1.Options - [goEditing];
+  if ACol = 1 then
+    StringGrid2.Options := StringGrid1.Options + [goEditing]
+  else
+    StringGrid2.Options := StringGrid1.Options - [goEditing];
 end;
 
 procedure TForm10.StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;

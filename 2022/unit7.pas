@@ -41490,6 +41490,7 @@ var
   //
   bMultiplosServicos : Boolean;
   sDescricaoDosServicos, sPadraoCidade, sCodigoCnae, sCodigoLocalPrestacao, sRetornoNFse, sArquivoXML : String;
+  sCodigoCnaePrestador: String; // Sandro Silva 2023-02-28 
   _file1, _file, _XML : TStringList;
   F: TextFile;
   I, J: Integer;
@@ -41956,6 +41957,7 @@ begin
             Writeln(F,'Operacao='                 +Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Operacao'                 ,'A')); //
             //
             sCodigoCnae := Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,''); // // CodigoCnae	Código do CNAE	T	 Obtido na prefeitura
+            sCodigoCnaePrestador := sCodigoCnae; // CNAE do prestador Sandro Silva 2023-02-28
             //
             Writeln(F,'');
             Mais1ini.Free;
@@ -41966,6 +41968,12 @@ begin
             Form7.ibDataSet4.Selectsql.Clear;
             Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet35DESCRICAO.AsString)+' ');  //
             Form7.ibDataSet4.Open;
+
+            {Sandro Silva 2023-02-28 inicio}
+            // Se tiver a tag <CNAEISSQN> preenchida na aba tags do estoque, deverá usá-la
+            if Trim(RetornaValorDaTagNoCampo('CNAEISSQN', Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+              sCodigoCnae := Trim(RetornaValorDaTagNoCampo('CNAEISSQN', Form7.ibDataSet4.FieldByname('TAGS_').AsString));
+            {Sandro Silva 2023-02-28 fim}
             //
             if AllTrim(RetornaValorDaTagNoCampo('CodigoTributacaoMunicipio',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
             begin
@@ -42220,6 +42228,14 @@ begin
                 Form7.ibDataSet4.Selectsql.Clear;
                 Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet35DESCRICAO.AsString)+' ');  //
                 Form7.ibDataSet4.Open;
+
+                {Sandro Silva 2023-02-28 inicio}
+                // Se tiver a tag <CNAEISSQN> preenchida na aba tags do estoque, deverá usá-la
+                sCodigoCnae := sCodigoCnaePrestador; // Por padrão usa o CNAE do prestador ([Informacoes obtidas na prefeitura] CodigoCnae=)
+                if Trim(RetornaValorDaTagNoCampo('CNAEISSQN', Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+                  sCodigoCnae := Trim(RetornaValorDaTagNoCampo('CNAEISSQN', Form7.ibDataSet4.FieldByname('TAGS_').AsString));
+                {Sandro Silva 2023-02-28 fim}
+
                 //
                 if I = 1 then
                 begin
