@@ -13617,6 +13617,10 @@ begin
   try
     dbGrid1.DataSource := Form7.DataSource13;
   except
+    on E: Exception do
+    begin
+
+    end;
   end;
   //
 end;
@@ -25099,7 +25103,16 @@ end;
 
 procedure TForm7.ibDataSet4CUSTOMEDIOChange(Sender: TField);
 begin
-  if ibDataSet4CUSTOMEDIO.Asfloat < 0 then ibDataSet4CUSTOMEDIO.Asfloat := 0;
+  if ibDataSet4CUSTOMEDIO.AsFloat < 0 then
+    ibDataSet4CUSTOMEDIO.AsFloat := 0;
+
+  try
+    // Tratando situação que o custo médio fica com valor "INF"
+    if AnsiContainsText(ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+      ibDataSet4CUSTOMEDIO.AsFloat := 0;
+  except
+
+  end;
 end;
 
 procedure TForm7.ibDataSet24DESCONTOChange(Sender: TField);
