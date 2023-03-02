@@ -122,10 +122,12 @@ implementation
 
 function ImagemIconesSmall: String;
 begin
+  {
   if FileExists('inicial\Small_21_.bmp') then // Provisório, para manter compatível versão 2021 e 2022
     Result := 'inicial\Small_21_.bmp'
   else
-    Result := 'inicial\Small_22_.bmp';
+  }
+  Result := 'inicial\Small_22_.bmp';
 end;
 
 function GetIP: String;
