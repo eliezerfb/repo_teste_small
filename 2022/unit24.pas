@@ -1160,7 +1160,6 @@ procedure TForm24.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   F : TextFile;
   sCustoCompra : String;
-  fCustoMedio: Real; // Sandro Silva 2023-03-01
 begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -1279,13 +1278,19 @@ begin
                           //
                           //
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
-                                                      + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
-                                                       / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
-                                                      ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
-                                                         Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
-                                                         Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
-                                                         Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                         )); //
+                                                                + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                  )); //
+
+                          {Sandro Silva 2023-03-02 inicio}
+                          if AnsiContainsText(Form7.ibDataSet4CUSTOCOMPR.AsString, 'INF') then
+                            Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0.00;
+                          {Sandro Silva 2023-03-02 fim}
+
                           //
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +

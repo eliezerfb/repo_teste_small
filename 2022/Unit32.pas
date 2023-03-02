@@ -64,6 +64,7 @@ var
   fTotal : Double;
   fVenda, fCompra, fAltera, fBalcao, fRese : Real;
   fCustoMedio: Real; // Sandro Silva 2023-03-01
+  fCustoCompra: Real; // Sandro Silva 2023-03-02
 begin
   //
   if not VerificaSeTemImpressora() then
@@ -196,15 +197,19 @@ end;
                      - fAltera
             )
             > 0 ) or (CheckBox1.Checked) then
-      begin
-
-
+      begin                   
 
         // --------------------------- //
         // Pelo custo da última compra //
         // --------------------------- //
         if RadioButton1.Checked then
         begin
+          {Sandro Silva 2023-03-02 inicio}
+          fCustoCompra := ibQuery4.FieldByName('CUSTOCOMPR').AsFloat;
+          if AnsiContainsText(ibQuery4.FieldByName('CUSTOCOMPR').AsString, 'INF') then
+            fCustoCompra := 0.00;
+          {Sandro Silva 2023-03-02 fim}
+
           Printer.Canvas.TextOut(iTamanho div 3, iLinha * iTamanho,
 
                      Copy(ibQuery4.FieldByName('CODIGO').AsString+'          ',1,10)                                         +  // CF
@@ -221,29 +226,25 @@ end;
 
                      ])                      +  // Quantidade
                      Replicate(' ',5) + Copy(ibQuery4.FieldByName('MEDIDA').AsString+'   ',1,3)             +  // Medida
-                     Replicate(' ',4)+ Format('%14.2n',[ibQuery4.FieldByName('CUSTOCOMPR').AsFloat]) +  // Custocompr
-                     Replicate(' ',3) + Format('%16.2n',[Arredonda(ibQuery4.FieldByName('CUSTOCOMPR').AsFloat,StrToInt(Form1.ConfPreco))      // Qtd * CUSTOATUAL
-                                     * (
-
-                                       ibQuery4.FieldByName('QTD_ATUAL').AsFloat
-                                       - fCompra
-                                       + fVenda
-                                       + fBalcao
-                                       + fRese
-                                       - fAltera
-
-
-                                     ) ]));
-          fTotal  :=  fTotal + (
-
-                     ibQuery4.FieldByName('QTD_ATUAL').AsFloat
-                     - fCompra
-                     + fVenda
-                     + fBalcao
-                     + fRese
-                     - fAltera
-
-          ) * Arredonda(ibQuery4.FieldByName('CUSTOCOMPR').AsFloat,StrToInt(Form1.ConfPreco));
+                     Replicate(' ',4)+ Format('%14.2n',[fCustoCompra]) +  // Custocompr
+                     Replicate(' ',3) + Format('%16.2n',[Arredonda(fCustoCompra, StrToInt(Form1.ConfPreco))      // Qtd * CUSTOATUAL
+                                                         * (
+                                                           ibQuery4.FieldByName('QTD_ATUAL').AsFloat
+                                                           - fCompra
+                                                           + fVenda
+                                                           + fBalcao
+                                                           + fRese
+                                                           - fAltera
+                                                           )
+                                                         ]));
+          fTotal  := fTotal + (
+                               ibQuery4.FieldByName('QTD_ATUAL').AsFloat
+                               - fCompra
+                               + fVenda
+                               + fBalcao
+                               + fRese
+                               - fAltera
+                              ) * Arredonda(fCustoCompra, StrToInt(Form1.ConfPreco));
         end;
         // ---------------- //
         // Pelo custo médio //
@@ -325,6 +326,7 @@ var
   F : TextFile;
   fVenda, fCompra, fAltera, fBalcao, fRese : Real;
   fCustoMedio: Real; // Sandro Silva 2023-03-01
+  fCustoCompra: Real; // Sandro Silva 2023-03-02
 begin
   //
   DeleteFile(pChar(Form1.sAtual+'\INVENTARIO.TXT'));   // Apaga o arquivo anterior
@@ -457,38 +459,44 @@ end;
         //
         if RadioButton1.Checked then
         begin
+          {Sandro Silva 2023-03-02 inicio}
+          fCustoCompra := ibQuery4.FieldByName('CUSTOCOMPR').AsFloat;
+          if AnsiContainsText(ibQuery4.FieldByName('CUSTOCOMPR').AsString, 'INF') then
+            fCustoCompra := 0.00;
+          {Sandro Silva 2023-03-02 fim}
+
           Writeln(F,
                      Copy(ibQuery4.FieldByName('CODIGO').AsString+'          ',1,10)                                         +  // CF
                      Replicate(' ',5) + Copy(ibQuery4.FieldByName('DESCRICAO').AsString + Replicate(' ',50),1,43)        +  // Descricao
                      Replicate(' ',5) + Format('%8.2n',[
-                     ibQuery4.FieldByName('QTD_ATUAL').AsFloat
-                     - fCompra
-                     + fVenda
-                     + fBalcao
-                     + fRese
-                     - fAltera
-                     ])                      +  // Quantidade
+                                                         ibQuery4.FieldByName('QTD_ATUAL').AsFloat
+                                                         - fCompra
+                                                         + fVenda
+                                                         + fBalcao
+                                                         + fRese
+                                                         - fAltera
+                                                       ])                      +  // Quantidade
 
                      Replicate(' ',5) + Copy(ibQuery4.FieldByName('MEDIDA').AsString+'   ',1,3)             +  // Medida
-                     Replicate(' ',4)+ Format('%14.2n',[ibQuery4.FieldByName('CUSTOCOMPR').AsFloat]) +  // Custocompr
-                     Replicate(' ',3) + Format('%16.2n',[Arredonda(ibQuery4.FieldByName('CUSTOCOMPR').AsFloat,StrToInt(Form1.ConfPreco))      // Qtd * CUSTOATUAL
-                                     * (
-                     ibQuery4.FieldByName('QTD_ATUAL').AsFloat
-                     - fCompra
-                     + fVenda
-                     + fBalcao
-                     + fRese
-                     - fAltera
-                                     ) ]));
+                     Replicate(' ',4)+ Format('%14.2n',[fCustoCompra]) +  // Custocompr
+                     Replicate(' ',3) + Format('%16.2n',[Arredonda(fCustoCompra, StrToInt(Form1.ConfPreco))      // Qtd * CUSTOATUAL
+                                                         * (
+                                                           ibQuery4.FieldByName('QTD_ATUAL').AsFloat
+                                                           - fCompra
+                                                           + fVenda
+                                                           + fBalcao
+                                                           + fRese
+                                                           - fAltera
+                                                           )
+                                                        ]));
           fTotal  :=  fTotal + (
-
-                     ibQuery4.FieldByName('QTD_ATUAL').AsFloat
-                     - fCompra
-                     + fVenda
-                     + fBalcao
-                     + fRese
-                     - fAltera
-          ) * Arredonda(ibQuery4.FieldByName('CUSTOCOMPR').AsFloat,StrToInt(Form1.ConfPreco));
+                                 ibQuery4.FieldByName('QTD_ATUAL').AsFloat
+                                 - fCompra
+                                 + fVenda
+                                 + fBalcao
+                                 + fRese
+                                 - fAltera
+                               ) * Arredonda(fCustoCompra,StrToInt(Form1.ConfPreco));
         end;
         // ---------------- //
         // Pelo custo médio //
@@ -496,9 +504,11 @@ end;
         if RadioButton2.Checked then
         begin
 
+          {Sandro Silva 2023-03-01 inicio}
           fCustoMedio := ibQuery4.FieldByName('CUSTOMEDIO').AsFloat;
           if AnsiContainsText(ibQuery4.FieldByName('CUSTOMEDIO').AsString, 'INF') then
             fCustoMedio := 0.00;
+          {Sandro Silva 2023-03-01 fim}
 
           Writeln(F,
                      Copy(ibQuery4.FieldByName('CODIGO').AsString+'          ',1,10)                               +  // CF
@@ -523,9 +533,8 @@ end;
                                                             + fRese
                                                             - fAltera
                                                             )
-                                                         ]
-                                                         )
-                                                         );
+                                                        ]
+                                                        ));
           fTotal  := fTotal + (
                                ibQuery4.FieldByName('QTD_ATUAL').AsFloat
                                - fCompra

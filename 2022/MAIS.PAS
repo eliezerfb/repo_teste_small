@@ -11013,7 +11013,7 @@ begin
     Form1.ibQuery1.SQL.Text :=
       'select first 1 CODIGO ' +
       'from ESTOQUE ' +
-      'where cast(customedio as varchar(1000)) containing ''INF'' ';
+      'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ';
     Form1.ibQuery1.Open;
     if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
     begin
@@ -11034,6 +11034,35 @@ begin
     end;
   end;
   {Sandro Silva 2023-03-01 fim}
+
+
+  {Sandro Silva 2023-03-02 inicio}
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select first 1 CODIGO ' +
+      'from ESTOQUE ' +
+      'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ';
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
+    begin
+
+      Mensagem22('validando o custo médio do estoque');
+
+      CommitaTudo(True);
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Text :=
+        'update ESTOQUE set CUSTOCOMPR = 0.00 ' +
+        'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ';
+      Form1.ibQuery1.ExecSQL;
+    end;
+  except
+    on E: Exception do
+    begin
+      ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message);
+    end;
+  end;
+  {Sandro Silva 2023-03-02 fim}
 
   Form7.Caption := sMensagem + '...';
   //
