@@ -366,8 +366,13 @@ begin
   sTX2 := '';
   GetDir(0,sAtual);
   //
+  {Sandro Silva 2023-03-10 inicio
   edtCNPJSoftwareHouse.Text  := '07426598000124';
   edtTokenSoftwareHouse.Text := '9830b685216a9c4613bc76c84098272d';
+  }
+  edtCNPJSoftwareHouse.Text  := '03916076000664';
+  edtTokenSoftwareHouse.Text := '5236f0fc4fb818efe845ebff0d0457af';
+  {Sandro Silva 2023-03-10 fim}
   //
   Mais1ini := TIniFile.Create(sAtual+'\nfseConfig.ini');
   //
