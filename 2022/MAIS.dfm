@@ -13669,6 +13669,7 @@ object Form1: TForm1
           end
           object N3101: TMenuItem
             Caption = '3.10'
+            Enabled = False
             OnClick = N3101Click
           end
           object N4001: TMenuItem
