@@ -1928,7 +1928,6 @@ type
     procedure Livrodereceitas1Click(Sender: TObject);
     procedure ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
     procedure SPEDPISCOFINS1Click(Sender: TObject);
-    procedure DawnloaddoXMLdiretamentedositedaSEFAZ1Click(Sender: TObject);
     procedure WebBrowser1NavigateComplete2(Sender: TObject;
       const pDisp: IDispatch; var URL: OleVariant);
     procedure WebBrowser1DownloadComplete(Sender: TObject);
@@ -36495,61 +36494,6 @@ begin
     ShellExecute( 0, 'Open', 'spedpiscofins.exe', '', '', SW_SHOW) else
       ShowMessage('O executável spedpiscofins.exe não foi encontrado na pasta de instalação do programa.');
 
-end;
-
-procedure TForm7.DawnloaddoXMLdiretamentedositedaSEFAZ1Click(
-  Sender: TObject);
-var
-  sNota : String;
-begin
-  //
-  //
-  sNota := AllTrim(Form1.Small_InputForm('Consultar validade da NF-e','Serviço temporário disponível apenas para NF-e emitida por usuário do SEFAZ VIRTUAL Rio Grande do Sul (SVRS).'+chr(10)+chr(10)+'Chave de acesso da NF-e:','')); // Nf de venda
-  //
-  if Length(AllTrim(LimpaNumero(sNota))) = 44 then
-  begin
-    //
-//    ShellExecute( 0, 'Open',pChar('https://www.sefaz.rs.gov.br/SSL_Client/NFE-CER-CON-XML.aspx?HML=false&ChaveAcesso='+sNOTA+
-//    '&section=nfe&dl=yes&VCCnpjEmi='+copy(sNota,7,14)+'&VCCnpjCpfDest='+LimpaNumero(Form7.ibDataSet13CGC.AsString)+'&LogConsultaId='),'', '', SW_SHOW);
-    //
-//    Form7.WebBrowser1.Navigate(pChar('logotip.jpg'));
-    //
-    Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-    //
-    try
-      //
-      Form7.WebBrowser1.Navigate(
-      pChar('https://www.sefaz.rs.gov.br/SSL_Client/NFE-CER-CON-XML.aspx?HML=false&ChaveAcesso='+sNOTA+
-      '&section=nfe&dl=yes&VCCnpjEmi='+copy(sNota,7,14)+'&VCCnpjCpfDest='+LimpaNumero(Form7.ibDataSet13CGC.AsString)+'&LogConsultaId=')
-      );
-      //
-      //
-      //
-      //
-{
-      while (Form7.Tag < 33) do
-      begin
-        Application.ProcessMessages;
-        sleep(100);
-      end;
-      //
-      while (Form7.Tag < 35) do
-      begin
-        Application.ProcessMessages;
-        sleep(100);
-      end;
-      //
-}
-    except end;
-    //
-//    Screen.Cursor             := crDefault;              // Cursor de Aguardo
-    //
-    // 42120101010272000135550010000051181000409446
-    //
-    //  ShellExecute( 0, 'Open',pChar('https://www.sefaz.rs.gov.br/SSL_Client/NFE-CER-CON-XML.aspx?HML=false&ChaveAcesso='+Form7.ibDataSet15NFEID.AsString+
-    //  '&section=nfe&VCCnpjEmi='+LimpaNumero(Form7.ibDAtaSet13CGC.AsSTring)+'&VCCnpjCpfDest='+LimpaNumero(Form7.ibDataSet2CGC.AsString)+'&LogConsultaId='),'', '', SW_SHOW);
-    //
-  end;
 end;
 
 procedure TForm7.WebBrowser1NavigateComplete2(Sender: TObject;
