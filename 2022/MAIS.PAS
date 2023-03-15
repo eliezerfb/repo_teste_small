@@ -8799,6 +8799,8 @@ begin
         ShowMessage('Número de série: ' + Form1.sSerial + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
       end;
       //
+
+      {Sandro Silva 2023-03-15 inicio
       if fDias <= 40 then
       begin
         //
@@ -8819,6 +8821,28 @@ begin
         end;
         //
       end;
+      }
+
+      //fDias := 7;
+
+      if fDias <= 8 then
+      begin
+        //
+        if fDias <> 0 then
+        begin
+          // Exibe mensagem de alerta dos dias restantes por 5 segundos
+          for I := 1 to 5 do
+          begin
+            //
+            Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
+            //
+            Sleep(1000);
+            //
+          end;
+        end;
+        //
+      end;
+      {Sandro Silva 2023-03-15 fim}
     end;
   except
   end;
