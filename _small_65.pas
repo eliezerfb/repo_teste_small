@@ -6549,7 +6549,9 @@ begin
       //
       while True do
       begin
-        Result := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1)); // Sandro Silva 2021-12-02 Result := StrZero(IncrementaGenerator('G_NUMERONFCE', 1), 6, 0);
+
+        Result := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1));
+
         Form1.ibQuery65.Close;
         Form1.ibQuery65.SQL.Text :=
           'select CAIXA, MODELO, REGISTRO, NUMERONF ' +
@@ -6558,19 +6560,17 @@ begin
           'where MODELO = ''65''' +
           ' and NUMERONF = ' + QuotedStr(Result);
         Form1.ibQuery65.Open;
-        if (Form1.ibQuery65.FieldByName('NUMERONF').AsString = '') or (Copy(Form1.ibQuery65.FieldByName('NFEID').AsString, 23, 3) <> RightStr('000' + _ECF65_SerieAtual(Form1.IBQuery65.Transaction), 3)) then // Sandro Silva 2021-11-12 if Form1.ibQuery65.FieldByName('NUMERONF').AsString = '' then
+        if (Form1.ibQuery65.FieldByName('NUMERONF').AsString = '') or (Copy(Form1.ibQuery65.FieldByName('NFEID').AsString, 23, 3) <> RightStr('000' + _ECF65_SerieAtual(Form1.IBQuery65.Transaction), 3)) then
         begin
           Break;
         end;
       end;
-      {Sandro Silva 2016-09-09 final}
+
       //
       try
         //
         Form1.ibDataset150.Close;
         Form1.ibDataset150.SelectSql.Clear;
-        //Sandro Silva 2015-04-23 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000''');
-        // Sandro Silva 2015-07-03 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(Form1.sCaixa));
         Form1.ibDataset150.SelectSQL.Text :=
           'select * ' +
           'from NFCE ' +
@@ -6580,15 +6580,11 @@ begin
         Form1.ibDataset150.Open;
         //
         Form1.IBDataSet150.Append;
-        //SmallMsg('Teste 01 3844'); // Sandro Silva 2016-04-28
 
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
-
-        {Sandro Silva 2015-04-24 inicio}
         Form1.IBDataSet150.FieldByName('CAIXA').AsString  := Form1.sCaixa;
         Form1.IBDataSet150.FieldByName('MODELO').AsString := '65';
-        {Sandro Silva 2015-04-24 final}
 
         Form1.IBDataSet150.Post;
 
@@ -7056,19 +7052,17 @@ begin
   if Form1.ibQuery65.FieldByname('NUMERONF').AsString=sCupom then
   begin
     if (
-        // Sandro Silva 2022-04-12 (Pos('<cStat>100</cStat>', Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0) and (Pos('<cStat>150</cStat>',Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0) and // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo Sandro Silva 2018-08-10
         (_ecf65_xmlAutorizado(Form1.ibQuery65.FieldByname('NFEXML').AsString) = False) and
         (Pos('<xEvento>Cancelamento</xEvento>', Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0) and
-        (Pos('<descEvento>Cancelamento', Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0) and // Sandro Silva 2021-10-01 (Pos('<descEvento>Cancelamento</descEvento>', Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0) and
-        (_ecf65_UsoDenegado(Form1.ibQuery65.FieldByname('NFEXML').AsString) = False) and // Sandro Silva 2020-05-14
-        // Sandro Silva 2016-04-29  ((Pos('contingência', Form1.ibQuery65.FieldByname('STATUS').AsString) = 0)))
+        (Pos('<descEvento>Cancelamento', Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0) and
+        (_ecf65_UsoDenegado(Form1.ibQuery65.FieldByname('NFEXML').AsString) = False) and
         ((Pos('contingência', Form1.ibQuery65.FieldByname('STATUS').AsString) = 0) and (Pos('<tpEmis>9</tpEmis>', Form1.ibQuery65.FieldByname('NFEXML').AsString) = 0))) // Não abrir NFCE.exe com a última contingência pendente
-        or (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) > 0) // Sandro Silva 2016-04-19
+        or (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) > 0)
          then
     begin
       // 2015-07-09 if Form1.bImportando = False then
       if (Form1.ClienteSmallMobile.sVendaImportando = '')
-        or (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) > 0)// Sandro Silva 2016-04-19
+        or (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) > 0)
       then
       begin
         Form1.icupom := StrToInt(sCupom);
