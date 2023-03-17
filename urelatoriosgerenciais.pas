@@ -1929,7 +1929,7 @@ begin
     sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais
       + chr(10) + sTituloRelat + chr(10) // Sandro Silva 2018-12-03 + chr(10) + Form1.sTipoDocumento2 + ' no Período' + chr(10)
       + 'Período: ' + FormatDateTime('dd/mm/yyyy', dtInicio) + ' a ' + FormatDateTime('dd/mm/yyyy', dtFinal) + chr(10) + Chr(10)
-      + sContingenciaPendente // Sandro Silva 2019-08-15  + IfThen(_ecf65_VerificaContingenciaPendentedeTransmissao(dtInicio, dtFinal, Form1.sCaixa), ALERTA_CONTINGENCIA_NAO_TRANSMITIDA + Chr(10) + Chr(10), '') // Sandro Silva 2019-08-14
+      + sContingenciaPendente
       + 'Número Data       Status     Chave de Acesso                               Valor' + Chr(10) + sCupomFiscalVinculado + Chr(10); // Sandro Silva 2019-06-04       + 'Número Data       Status     Chave de Acesso                          Valor' + Chr(10) + sCupomFiscalVinculado + Chr(10);
 
     if Form1.sModeloECF = '65' then

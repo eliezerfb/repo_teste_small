@@ -7466,7 +7466,6 @@ begin
                           Form1.IBDataSet150.SelectSQL.Text :=
                             'select * ' +
                             'from NFCE ' +
-                            // Sandro Silva 2021-11-18  'where REGISTRO = ' + QuotedStr(Form1.IBQuery65.FieldByName('REGISTRO').AsString);
                             'where MODELO = ''65'' ' +
                             ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
                             ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
@@ -9213,10 +9212,7 @@ var
   sl: TStringList;
   slXml: TStringList;
   sModelo: String;
-  //sAno: String;
   sSerie: String;
-  //iNNFINI: Integer;
-  //iNNFFIN: Integer;
   sID: String;
   sXML: String;
   sNPROT: String;
@@ -9224,7 +9220,7 @@ var
 begin
   sl := TStringList.Create;
   slXml := TStringList.Create;
-  
+
   _ecf65_SelecionaXmlInutilizacao(sl, sCaminhoXml + '*inu*.xml');
 
   for iInutil := 0 to sl.Count -1 do
@@ -9242,10 +9238,7 @@ begin
         begin
 
           sModelo := xmlNodeValue(slXml.Text, '//infInut/mod');
-          //sAno    := xmlNodeValue(slXml.Text, '//infInut/ano');
           sSerie  := xmlNodeValue(slXml.Text, '//infInut/serie');
-          //iNNFINI := StrToInt(xmlNodeValue(slXml.Text, '//infInut/nNFIni'));
-          //iNNFFIN := StrToInt(xmlNodeValue(slXml.Text, '//infInut/nNFFin'));
           sID     := LimpaNumero(xmlNodeValue(slXml.Text, '//infInut/@Id'));
           sNPROT  := xmlNodeValue(slXml.Text, '//infInut/nProt');
           sXML    := slXml.Text;
@@ -10032,6 +10025,9 @@ var
   sUFEmitente: String;
   ArquivoXml: TArquivo; // Sandro Silva 2020-06-16
 begin
+
+colocar log aqui para medir o tempo
+
   slArquivoEnvio := TStringList.Create;
   slListaXml     := TStringList.Create;
 
@@ -10382,6 +10378,10 @@ begin
               sXmlAutorizado := slArquivoEnvio.Text;
             end;
 
+            if Pos(#$C'Àþ'#9, sXmlAutorizado) > 0 then
+              sXmlAutorizado := StringReplace(sXmlAutorizado, #$C'Àþ'#9, '<?xm',[rfReplaceAll]);
+
+
             // Ter certeza que está com xml válido  e o digest do xml enviado é igual ao digest da autorização
             if (xmlNodeXml(sXmlAutorizado, '//NFe') <> '') and (xmlNodeXml(sXmlAutorizado, '//protNFe') <> '') and (xmlNodeValue(sXmlAutorizado, '//DigestValue') = xmlNodeValue(sXmlAutorizado, '//digVal')) then
             begin
@@ -10414,7 +10414,8 @@ begin
                   Form1.IBDataSet150.Edit;
                   Form1.IBDataSet150.FieldByName('NFEXML').AsString := sXmlAutorizado;
                   Form1.IBDataSet150.FieldByName('NFEID').AsString  := LimpaNumero(xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe'));
-                  Form1.IBDataSet150.FieldByName('TOTAL').AsFloat   := xmlNodeValueToFloat(IBQSALVA.ParamByName('NFEXML').AsString, '//vNF'); // Sandro Silva 2019-12-04
+                  // Sandro Silva 2023-03-17 Form1.IBDataSet150.FieldByName('TOTAL').AsFloat   := xmlNodeValueToFloat(IBQSALVA.ParamByName('NFEXML').AsString, '//vNF'); // Sandro Silva 2019-12-04
+                  Form1.IBDataSet150.FieldByName('TOTAL').AsFloat   := xmlNodeValueToFloat(sXmlAutorizado, '//vNF'); // Sandro Silva 2019-12-04
                   Form1.IBDataSet150.FieldByName('STATUS').AsString := sStatus;
                   Form1.IBDataSet150.Post;
 
