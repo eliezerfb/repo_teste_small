@@ -4840,6 +4840,13 @@ begin
   Form7.sCNPJContabilidade   := Mais1Ini.ReadString('XML','CNPJ da contabilidade','');
   //
   Form1.sVersaoLayout        := Mais1Ini.ReadString('NFE','Layout','4.00');
+  {Sandro Silva 2023-03-14 inicio}
+  if Form1.sVersaoLayout <> '4.00' then
+  begin
+    Mais1Ini.WriteString('NFE','Layout','4.00');
+    Form1.sVersaoLayout := '4.00';
+  end;
+  {Sandro Silva 2023-03-14 fim}
   Form1.sModoDbug            := Mais1Ini.ReadString('NFE','dbug','');
   //
   if Form1.sVersaoLayout = '4.00' then

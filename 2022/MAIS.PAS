@@ -13076,6 +13076,8 @@ begin
   if Mais1Ini.ReadString('ENVIO','Zipar XML','N')               = 'S'   then Form1.ZiparXMLnoenvioporemail1.Checked := True else Form1.ZiparXMLnoenvioporemail1.Checked := False;
   if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','N') = 'S'   then Form1.Enviardanfeporemail1.Checked := True else Form1.Enviardanfeporemail1.Checked := False;
   if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then Form1.ConsultarNFesemitidas1.Checked := True else Form1.ConsultarNFesemitidas1.Checked := False;
+
+  {Sandro Silva 2023-03-14 inicio
   //
   if Mais1Ini.ReadString('NFE','Layout','4.00')               = '4.00' then
   begin
@@ -13088,6 +13090,21 @@ begin
     Form1.N3101.Checked  := True;
     Form1.N4001.Checked  := False;
   end;
+  }
+  if Mais1Ini.ReadString('NFE','Layout','4.00') <> '4.00' then
+  begin
+    Mais1Ini.WriteString('NFE','Layout','4.00');
+  end;
+  Form1.N301.Checked   := False;
+  Form1.N3101.Checked  := False;
+  //
+  if Mais1Ini.ReadString('NFE','Layout','4.00') = '4.00' then
+  begin
+    Form1.N301.Checked   := False;
+    Form1.N3101.Checked  := False;
+    Form1.N4001.Checked  := True;
+  end;
+  {Sandro Silva 2023-03-14 fim}    
   //
   if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
   begin
