@@ -9254,7 +9254,8 @@ begin
     Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // // Form1Close
     Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
     //
-    while Form7.ibDataSet13.Active do Sleep(100);
+    while Form7.ibDataSet13.Active do
+      Sleep(100);
     //
     if FileExists(Alltrim(Form1.sAtual + '\small.fdb')) then
     begin
@@ -9323,6 +9324,21 @@ begin
         end;
         //
       end;
+      {Sandro Silva 2023-03-14 inicio - Ficha 6517}
+      // Backup configurações da NFS-e
+      if FileExists(Alltrim(Form1.sAtual + '\nfseConfig.ini')) then
+      begin
+        //
+        ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\nfseConfig.ini')+'" "'+sArquivo+'"'), '', SW_SHOWMAXIMIZED);
+        //
+        while ConsultaProcesso('szip.exe') do
+        begin
+          sleep(100);
+        end;
+        //
+      end;
+
+      {Sandro Silva 2023-03-14 fim}
       //
       ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\logo*.bmp')+'" "'+sArquivo+'"'), '', SW_SHOWMAXIMIZED);
       //
