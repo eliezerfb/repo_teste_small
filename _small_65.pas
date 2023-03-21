@@ -10005,7 +10005,9 @@ procedure _ecf65_CorrigeXmlNoBanco;
 // Algumas Sefaz retornaram xml fora do padrão, causando problemas no processamento da resposta
 // Alguns retornos não foram tratados e vendas ficaram sem os xml autorizado
 // Outros xml foram gravado com estrutura errada
+// Processa as notas dos últimos 15 dias
 const CondicaoCabecalhoXml = 'and not (nfexml starting ''<?xml version="1.0" encoding="UTF-8"?>'' or nfexml starting ''<?xml version="1.0"?>'')'; // assim para não ficar lento nos clientes de MG
+const CondicaoPeriodo = ' and DATA between current_date - 15 and current_date ';
 var
   sArquivoEnvio: String;
   sXml: WideString;
@@ -10026,7 +10028,7 @@ var
   ArquivoXml: TArquivo; // Sandro Silva 2020-06-16
 begin
 
-colocar log aqui para medir o tempo
+  LogFrente('Iniciando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
 
   slArquivoEnvio := TStringList.Create;
   slListaXml     := TStringList.Create;
@@ -10050,6 +10052,7 @@ colocar log aqui para medir o tempo
     'select * ' +
     'from NFCE ' +
     'where MODELO = ''65'' ' +
+    CondicaoPeriodo +
     ' and (((((coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''') or (coalesce(NFEXML, '''') containing ''<cStat>100</cStat>'') ) ' +  // autorizado sem ID // Sandro Silva 2020-06-05 'where (STATUS containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' +  // autorizado sem ID
     ' and (coalesce(NFEXML, '''') starting :NFEXML1 or coalesce(NFEXML, '''') starting :NFEXML2))) ' +
     ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' + CondicaoCabecalhoXml +
@@ -10059,7 +10062,10 @@ colocar log aqui para medir o tempo
   IBQCONSULTA.ParamByName('NFEXML1').AsString := '<?xml version="1.0" encoding="UTF-8"?><nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><?xml version="1.0" encoding="UTF-8"?><nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe"><NFe';
   IBQCONSULTA.ParamByName('NFEXML2').AsString := '<?xml version="1.0" encoding="UTF-8"?><nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><?xml version="1.0" encoding="UTF-8"?><nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><NFe';
   IBQCONSULTA.Open;
-  if (IBQCONSULTA.IsEmpty = False) or (sUFEmitente = 'MG') then
+
+  LogFrente('Executou query ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
+
+  if (IBQCONSULTA.IsEmpty = False) then // Sandro Silva 2023-03-21   if (IBQCONSULTA.IsEmpty = False) or (sUFEmitente = 'MG') then
   begin
     if (IBQCONSULTA.IsEmpty = False) then
     begin
@@ -10119,7 +10125,7 @@ colocar log aqui para medir o tempo
 
                   if xmlNodeXml(sXml, '//pag') <> '' then
                     _ecf65_GravaPagamentFromXML(sXml, IBQCONSULTA.FieldByName('NUMERONF').AsString, IBQCONSULTA.FieldByName('CAIXA').AsString); // Sandro Silva 2021-11-17 _ecf65_GravaPagamentFromXML(sXmlAutorizado, sNumeroNF, sCaixaNF);
-                    
+
                 end;
 
                 Commitatudo(True);  // TForm1.ConsultaChaveNFCe1Click()
@@ -10128,6 +10134,8 @@ colocar log aqui para medir o tempo
                 ArquivoXml.Texto := sXml;
                 ArquivoXml.SalvarArquivo(Form1.sAtual + '\XmlDestinatario\NFCE\' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe') + '-nfce.xml');
                 FreeAndNil(ArquivoXml);
+
+                LogFrente('Atualizou ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));// Sandro Silva 2023-03-21
 
               except
 
@@ -10152,11 +10160,14 @@ colocar log aqui para medir o tempo
         'select * ' +
         'from NFCE ' +
         'where MODELO = ''65'' ' +
+        CondicaoPeriodo +
         ' and ((coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') = '''') ' +  // autorizado sem ID
         ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' + CondicaoCabecalhoXml + ') ' +
         ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' and (coalesce(NFEXML, '''') starting ''<nfeProc'' and coalesce(NFEXML, '''') containing ''<?xml version='')) ' +  // autoriza com id e com xml mal formado
         ')';
       IBQCONSULTA.Open;
+
+      LogFrente('Executou query ' + IBQCONSULTA.SQL.Text);// Sandro Silva 2023-03-21
 
       while IBQCONSULTA.Eof = False do
       begin
@@ -10179,7 +10190,7 @@ colocar log aqui para medir o tempo
 
               if xmlNodeValue(sXml, '//protNFe/infProt/chNFe') <> '' then // Sandro Silva 2020-06-05
               begin
-              
+
                 try
 
                   Form1.IBDataSet150.Close;
@@ -10190,7 +10201,7 @@ colocar log aqui para medir o tempo
                     'where MODELO = ''65'' ' +
                     ' and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
                     ' and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
-                  Form1.IBDataSet150.Open;   
+                  Form1.IBDataSet150.Open;
 
                   // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
                   if RightStr('000' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 9) = _ecf65_NumeroNfFromChave(xmlNodeValue(sXml, '//chNFe')) then
@@ -10204,6 +10215,9 @@ colocar log aqui para medir o tempo
                     {Sandro Silva 2022-06-02 inicio}
                     Audita('RECUPERA1','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
                     {Sandro Silva 2022-06-02 fim}
+
+                    LogFrente('Recupera1 NFC-e ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));// Sandro Silva 2023-03-21
+
                   end;
 
                 except
@@ -10225,9 +10239,13 @@ colocar log aqui para medir o tempo
         'select * ' +
         'from NFCE ' +
         'where MODELO = ''65'' ' +
+        CondicaoPeriodo +
         ' and coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' +
         ' and (coalesce(NFEXML, '''') starting ''<nfeProc'' and coalesce(NFEXML, '''') not containing ''<?xml version='')';
       IBQCONSULTA.Open;
+
+      LogFrente('Executou query ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
+
       while IBQCONSULTA.Eof = False do
       begin
         if Trim(IBQCONSULTA.FieldByName('NFEXML').AsString) <> '' then
@@ -10256,6 +10274,8 @@ colocar log aqui para medir o tempo
               Audita('RECUPERA2','FRENTE', '', 'Corrigiu cabeçalho XML: ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
               {Sandro Silva 2022-06-02 fim}
 
+              LogFrente('Recupera2 NFC-e ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));
+
             except
 
             end;
@@ -10271,11 +10291,14 @@ colocar log aqui para medir o tempo
         'select * ' +
         'from NFCE ' +
         'where MODELO = ''65'' ' +
+        CondicaoPeriodo +
         ' and ((coalesce(STATUS, '''') = '''' and coalesce(NFEID, '''') = '''' and coalesce(NFEXML, '''') = '''') ' +
         ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' + CondicaoCabecalhoXml + ') ' + // Autorizada sem atualizar o nfce.nfexml com xml autorizado // Sandro Silva 2020-06-05
         ' or (coalesce(STATUS, '''') = ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') = '''' and coalesce(NFEXML, '''') containing ''9</tpEmis>'')' +  // Contingência com status errado
         ')';
       IBQCONSULTA.Open;
+
+      LogFrente('Executou sql ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
 
       while IBQCONSULTA.Eof = False do
       begin
@@ -10296,7 +10319,7 @@ colocar log aqui para medir o tempo
             if FileExists(PansiChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
             begin
 
-              //Seleciona todos os xml                                                                                                          //MODELO+SERIE 
+              //Seleciona todos os xml                                                                                                          //MODELO+SERIE
               // Sandro Silva 2021-11-17 _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
               _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65' + RightStr('00' + _ecf65_SerieAtual(IBQCONSULTA.Transaction), 3) + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
 
@@ -10305,6 +10328,8 @@ colocar log aqui para medir o tempo
                 slListaXml.LoadFromFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
 
                 sRetorno := ''; // Começa vazio Sandro Silva 2020-06-05
+
+                LogFrente('Localizou ' + IntToStr(slListaXml.Count) + ' xml da nota ' + sNumeroNF);// Sandro Silva 2023-03-21
 
                 for iArquivoEnvio := 0 to slListaXml.Count - 1 do
                 begin
@@ -10426,6 +10451,8 @@ colocar log aqui para medir o tempo
                   Audita('RECUPERA3','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
                   {Sandro Silva 2022-06-02 fim}
 
+                  LogFrente('Recuper3 NFC-e ' + xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe')); // Sandro Silva 2023-03-21
+
                 end;
               except
 
@@ -10482,6 +10509,7 @@ colocar log aqui para medir o tempo
                         Audita('RECUPERA4','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(sXmlEnvio, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
                         {Sandro Silva 2022-06-02 fim}
 
+                        LogFrente('Recupera4 NFC-e ' + xmlNodeValue(sXmlEnvio, '//protNFe/infProt/chNFe'));
                       end;
 
                     except
@@ -10524,6 +10552,8 @@ colocar log aqui para medir o tempo
   FreeAndNil(IBTSALVA);
   FreeAndNil(slArquivoEnvio);
   FreeAndNil(slListaXml);
+
+  LogFrente('Finalizando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
 end;
 
 procedure _ecf65_CorrigeRejeicaoChaveDeAcessoDifere(sNumeroNF: String;
