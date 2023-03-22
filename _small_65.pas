@@ -10007,7 +10007,11 @@ procedure _ecf65_CorrigeXmlNoBanco;
 // Outros xml foram gravado com estrutura errada
 // Processa as notas dos últimos 15 dias
 const CondicaoCabecalhoXml = 'and not (nfexml starting ''<?xml version="1.0" encoding="UTF-8"?>'' or nfexml starting ''<?xml version="1.0"?>'')'; // assim para não ficar lento nos clientes de MG
-const CondicaoPeriodo = ' and DATA between current_date - 15 and current_date ';
+//const CondicaoPeriodo = ' and DATA between current_date - 15 and current_date ';
+function CondicaoPeriodo(DataFinal: TDate): String;
+begin
+  Result := ' and DATA between '  + QuotedStr(FormatDateTime('yyyy-mm-dd', DataFinal - 15)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DataFinal));
+end;
 var
   sArquivoEnvio: String;
   sXml: WideString;
@@ -10026,7 +10030,14 @@ var
   iArquivoEnvio: Integer;
   sUFEmitente: String;
   ArquivoXml: TArquivo; // Sandro Silva 2020-06-16
+  dtUltimaNFCeEmitida: TDate; // Sandro Silva 2023-03-22
 begin
+
+  // Fez o processamento e a data do processamento é igual da data atual, não faz o processamento
+  // Para fazer uma vez por dia
+//  if (LerParametroIni(Form1.sAtual + '\NFE.INI', 'NFCE', 'Analise NFCe', '') <> '') and (StrToDate(LerParametroIni(Form1.sAtual + '\NFE.INI', 'NFCE', 'Analise NFCe', FormatDateTime('dd/mm/yyyy', Date))) = Date) then
+  if (StrToDate(LerParametroIni(Form1.sAtual + '\NFE.INI', 'NFCE', 'Analise NFCe', FormatDateTime('dd/mm/yyyy', Date -1))) = Date) then
+    Exit;
 
   LogFrente('Iniciando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
 
@@ -10045,6 +10056,15 @@ begin
   {Sandro Silva 2020-02-13 inicio}
   sUFEmitente := AnsiUpperCase(IBQCONSULTA.FieldByName('ESTADO').AsString);
 
+  IBQCONSULTA.Close;
+  IBQCONSULTA.SQL.Text := 'select max(DATA) as ULTIMANFCE from NFCE';
+  IBQCONSULTA.Open;
+
+  dtUltimaNFCeEmitida := Date;
+  if IBQCONSULTA.FieldByName('ULTIMANFCE').AsString <> '' then
+    dtUltimaNFCeEmitida := IBQCONSULTA.FieldByName('ULTIMANFCE').AsDateTime;
+
+
   // Corrigir problema causado pelos retornos fora do padrão do servidor NFC-e
   //NFC-e autorizadas sem ID
   IBQCONSULTA.Close;
@@ -10052,7 +10072,7 @@ begin
     'select * ' +
     'from NFCE ' +
     'where MODELO = ''65'' ' +
-    CondicaoPeriodo +
+    CondicaoPeriodo(dtUltimaNFCeEmitida) +
     ' and (((((coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''') or (coalesce(NFEXML, '''') containing ''<cStat>100</cStat>'') ) ' +  // autorizado sem ID // Sandro Silva 2020-06-05 'where (STATUS containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' +  // autorizado sem ID
     ' and (coalesce(NFEXML, '''') starting :NFEXML1 or coalesce(NFEXML, '''') starting :NFEXML2))) ' +
     ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' + CondicaoCabecalhoXml +
@@ -10160,7 +10180,7 @@ begin
         'select * ' +
         'from NFCE ' +
         'where MODELO = ''65'' ' +
-        CondicaoPeriodo +
+        CondicaoPeriodo(dtUltimaNFCeEmitida) +
         ' and ((coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') = '''') ' +  // autorizado sem ID
         ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' + CondicaoCabecalhoXml + ') ' +
         ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' and (coalesce(NFEXML, '''') starting ''<nfeProc'' and coalesce(NFEXML, '''') containing ''<?xml version='')) ' +  // autoriza com id e com xml mal formado
@@ -10239,7 +10259,7 @@ begin
         'select * ' +
         'from NFCE ' +
         'where MODELO = ''65'' ' +
-        CondicaoPeriodo +
+        CondicaoPeriodo(dtUltimaNFCeEmitida) +
         ' and coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' +
         ' and (coalesce(NFEXML, '''') starting ''<nfeProc'' and coalesce(NFEXML, '''') not containing ''<?xml version='')';
       IBQCONSULTA.Open;
@@ -10291,7 +10311,7 @@ begin
         'select * ' +
         'from NFCE ' +
         'where MODELO = ''65'' ' +
-        CondicaoPeriodo +
+        CondicaoPeriodo(dtUltimaNFCeEmitida) +
         ' and ((coalesce(STATUS, '''') = '''' and coalesce(NFEID, '''') = '''' and coalesce(NFEXML, '''') = '''') ' +
         ' or (coalesce(STATUS, '''') containing ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') <> '''' ' + CondicaoCabecalhoXml + ') ' + // Autorizada sem atualizar o nfce.nfexml com xml autorizado // Sandro Silva 2020-06-05
         ' or (coalesce(STATUS, '''') = ''Autorizado o uso da NFC-e'' and coalesce(NFEID, '''') = '''' and coalesce(NFEXML, '''') containing ''9</tpEmis>'')' +  // Contingência com status errado
@@ -10554,6 +10574,8 @@ begin
   FreeAndNil(slListaXml);
 
   LogFrente('Finalizando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
+
+  GravarParametroIni(Form1.sAtual + '\NFE.INI', 'NFCE', 'Analise NFCe', FormatDateTime('dd/mm/yyyy', Date));  
 end;
 
 procedure _ecf65_CorrigeRejeicaoChaveDeAcessoDifere(sNumeroNF: String;
