@@ -65,7 +65,8 @@ uses
   uAtualizaNovoCampoItens001CSOSN in 'uAtualizaNovoCampoItens001CSOSN.pas',
   uSmallNFeUtils in 'uSmallNFeUtils.pas',
   SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
-  ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas';
+  ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
+  uListaCnaes in 'uListaCnaes.pas';
 
 {$R *.RES}
 
