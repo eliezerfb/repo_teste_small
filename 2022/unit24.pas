@@ -1141,7 +1141,6 @@ except end;
   end;
   //
   Result := True;
-  //
 end;
 
 procedure TForm24.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1159,21 +1158,18 @@ var
   F : TextFile;
   sCustoCompra : String;
 begin
-  //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Form7.ibDataSet4.DisableControls;
   Form7.ibDataSet23.DisableControls;
-  //
+
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
-  //
+
   try
-    //
     DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));   // Apaga o arquivo anterior
     AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
     Rewrite(F);           // Abre para gravação
-    //
-    //
+
     try
       if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
         Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
@@ -1181,65 +1177,59 @@ begin
         Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
       if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then
         Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
+
+      if Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '' then
+        Form7.ibDataSet24MODELO.AsString  := Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2));
     except
       on E: Exception do
         ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
     end;
-    //
+
     if Form7.ibDataSet24.Modified then
     begin
       Form7.ibDataSet24.Post;
       Form7.ibDataSet24.Edit;
     end;
-    //
+
     DBMemo1.SetFocus;
-    //
+
     if AllTrim(Form7.ibDataSet24FORNECEDOR.AsString) <> '' then
     begin
       //////////////////////////////////////////////////////////////////////////////////
       // Atenção a rotina abaixo altera a quantidade no estoque                       //
       //////////////////////////////////////////////////////////////////////////////////
       Form1.bFlag := True;
-      //
+
       Writeln(F,'CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA');
       Writeln(F,Replicate('-',80));
       Writeln(F,'CUSTO MÉDIO  = ((QTD_ATUAL * CUSTOMEDIO ANTERIOR) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)');
       Writeln(F,'CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))');
       Writeln(F,Replicate('-',80));
-      //
+
       while not Form7.ibDataSet23.Eof do
       begin
-        //
         Form7.ibDataSet23.Edit;
-        //
+
         if (Form7.ibDataSet23QUANTIDADE.AsFloat > 0)  and (AllTrim (Form7.ibDataSet23DESCRICAO.AsString) <> '') then
         begin
-          //                                                                          //
-          // Procura o produto no estoque                                             //
-          //                                                                          //
-          Form7.ibDataSet4.Close;                                                //
-          Form7.ibDataSet4.Selectsql.Clear;                                      //
-          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');  //
+          // Procura o produto no estoque
+          Form7.ibDataSet4.Close;
+          Form7.ibDataSet4.Selectsql.Clear;
+          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
           Form7.ibDataSet4.Open;
           Form7.ibDataSet4.Edit;
-          //
+
           try
-            //
-            //                                                                                    //
-            //                                                                                   //
-            if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then          //
-            begin                                                                              //
-              //                                                   //
+            if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+            begin
               // SERIAIS - Repassa o valor pago e a data da compra //
-              //                                                   //
               if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
               begin
-                //
                 Form7.ibDataSet30.Close;
                 Form7.ibDataSet30.SelectSQL.Clear;
                 Form7.ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' and NFCOMPRA='+QuotedStr( Copy(Form7.ibDataSet24NUMERONF.AsString,4,6) )+' ');
                 Form7.ibDataSet30.Open;
-                //
+
                 while not Form7.ibDataSet30.Eof do
                 begin
                   Form7.ibDataSet30.Edit;
@@ -1249,20 +1239,15 @@ begin
                   Form7.ibDataSet30.Next;
                 end;
               end;
-              //
+
               try
                 try
-                  //
                   // Primeiro atualiza o custo depois a quantidade
-                  //
                   try
-                    //
                     if (Form7.ibDataSet23UNITARIO.Asfloat <> 0) then
                     begin
-                      //
                       if (AllTrim(Form7.ibDataSet14INTEGRACAO.AsString) <> '') then
                       begin
-                        //                                                                                                //
                         // Fórmula do custo de compra                                                                     //
                         // Custo Compra = (Valor Unitário + ICMSST + VIPI) + (( Valor Unitário / Valor das mercadorias )  //
                         //                 * ( frete + Seguro + Outras ))                                                 //
@@ -1272,9 +1257,6 @@ begin
                         //
                         if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
                         begin
-                          //
-                          //
-                          //
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
                                                       + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                        / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1282,8 +1264,8 @@ begin
                                                          Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
                                                          Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                          Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                         )); //
-                          //
+                                                         ));
+
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
                                           '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' +
@@ -1294,7 +1276,6 @@ begin
                                           Form7.ibDataSet24SEGURO.AsString + ' + ' +
                                           Form7.ibDataSet24DESPESAS.AsString + ' - ' +
                                           Form7.ibDataSet24DESCONTO.AsString + ' ))';
-                          //
 
 
                           // Fórmula do custo médio                                                //
@@ -1307,23 +1288,18 @@ begin
 
                           if not Form1.bMediaPonderadaFixa then
                           begin
-                            //
                             if Form7.ibDataSet23CUSTO.AsFloat = 0 then
                             begin
-                              //
                               if (Form7.ibDataSet4CUSTOMEDIO.AsFloat = 0) or (Form7.ibDataSet4QTD_ATUAL.AsFloat <= 0)  then
                               begin
-
                                 Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
 
                                 Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
                                 Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
                                 Writeln(F,'Custo de compra...: ' + sCustoCompra);
                                 Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
-
                               end else
                               begin
-
                                 Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
                                 Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
                                 Writeln(F,'Custo de compra...: ' + sCustoCompra);
@@ -1344,29 +1320,27 @@ begin
                                                            / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
 
                               end;
-                              //
+
                               Writeln(F,Replicate('-',80));
-                              //
                             end;
                           end;
-                          //
+
                           Form7.ibDataSet4.Post;
                           Form7.ibDataSet4.Edit;
                           Form7.ibDataSet4QTD_COMPRA.AsFloat    := Form7.ibDataSet4QTD_COMPRA.AsFloat + Form7.ibDataSet23QUANTIDADE.Asfloat;
-                          //
+
                           Form7.ibDataSet4FORNECEDOR.ReadOnly   := False;
                           Form7.ibDataSet4FORNECEDOR.AsString   := Form7.ibDataSet24FORNECEDOR.AsString;
                           Form7.ibDataSet4FORNECEDOR.ReadOnly   := True;
-                          //
+
                           Form7.ibDataSet4ULT_COMPRA.AsDateTime := Form7.ibDataSet24EMISSAO.AsDateTime;
                           Form7.ibDataSet4ALTERADO.AsString     := '0';
-                          //
+
                           if Form7.ibDataSet23LISTA.AsFloat <> 0 then
                           begin
                             Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
                             Form7.ibDataSet4ALTERADO.AsString  := '1';
                           end;
-                          //
                         end;
                         ///////////////////////////////////////////////////////////////////////////
                         // Fórmula do custo médio                                                //
@@ -1388,52 +1362,43 @@ begin
                                                                      )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat); // menos o crédito de ICMS
 
 
-
-
-                        //
                         Form7.ibDataSet4.Post;
-                        //
                       end;
-                      //
                     end;
                   except
                     on E: Exception do
                       ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message);
                   end;
-                  //
+
                   try
                     if Form7.ibDataSet23SINCRONIA.AsFloat <> Form7.ibDataSet23QUANTIDADE.AsFloat then
                     begin
-                      //
                       if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
                       begin
-                        //
                         // Atenção a rotina acima altera a quantidade no estoque
-                        //
                         Form7.ibDataSet4.Edit;
                         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet23QUANTIDADE.AsFloat;
                         // ShowMessage('Teste Entra no estoque '+Form7.ibDataSet23QUANTIDADE.AsString +' '+Form7.ibDataSet23DESCRICAO.AsString);
-                        //
+                        
                         // Atenção a rotina acima altera a quantidade no estoque
-                        //
+
                         Form7.ibDataSet4.Post;
-                        //
                       end;
-                      //
+
                       Form7.sModulo := 'NAO';
                       Form7.ibDataSet23SINCRONIA.AsFloat := Form7.ibDataSet23QUANTIDADE.AsFloat;        // Resolvi este problema as 4 da madrugada no NoteBook em casa
-                      //
                     end;
-                  except end;
-                  //
-                except end;
-                //
+                  except
+                  end;
+                except
+                end;
+
                 // ShowMessage('Teste entrou no estoque '+Form7.ibDataSet23QUANTIDADE.AsString+ ' '+Form7.ibDataSet23DESCRICAO.AsString);
-                //
+
                 Form7.sModulo := 'NAO';
-                //
-              except end;
-              //
+              except
+              end;
+
               try
                 //////////////////////////////////////////////////////////////////////////////////////////////////
                 // Fórmula do custo médio                                                                       //
@@ -1442,76 +1407,68 @@ begin
                 //////////////////////////////////////////////////////////////////////////////////////////////////
                 //
                 // ShowMessage(Form7.IBQuery99.FieldByName('vC').AsString+chr(10)+Form7.IBQuery99.FieldByName('vQ').AsString);
-                //
+
                 if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset4.Edit;
-                //
+
                 // Duas formas de calcular o custo médio
-                //
                 if Form1.bMediaPonderadaFixa then
                 begin
-                  //
                   Form7.ibDataSet23.Post;
                   Form7.ibDataSet23.Edit;
                   Form7.IBTransaction1.CommitRetaining;
-                  //
+
                   Form7.IBQuery99.Close;
                   Form7.IBQuery99.SQL.Clear;
                   Form7.IBQuery99.SQL.Add('select sum(CUSTO*QUANTIDADE)as vC, sum(QUANTIDADE) as vQ from ITENS002 where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' and Coalesce(CUSTO,0)<>0');
                   Form7.IBQuery99.Open;
-                  //
+
                   Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.IBQuery99.FieldByName('vC').AsFloat / Form7.IBQuery99.FieldByName('vQ').AsFloat;
-                  //
                 end;
-                //
+
                 // Grava a nova quantidade o novo fornecedor e a ultima compra no estoque //
-                //
                 Form7.ibDataset4.Post;
-                //
-              except end;
+              except
+              end;
             end;
-            //
-            //
-          except end;
-          //
+          except
+          end;
         end;
-        //
+
         try
           if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
             Form7.ibDataset4.Post;
-        except end;
-        //                                                                              //
-        Form7.ibDataSet23.Post;                                                        //
-        Form7.ibDataSet23.Next;                                                       //
-        //                                                                           //
-      end;                                                                          //
-      //
+        except
+        end;
+
+        Form7.ibDataSet23.Post;
+        Form7.ibDataSet23.Next;
+      end;
+
       Form1.bFlag := True;
       Form7.sModulo := 'COMPRAS';
-      //
-      //                                                                              //
-      // Atenção a rotina acima altera a quantidade no estoque                        //
+
+      // Atenção a rotina acima altera a quantidade no estoque
       /////////////////////////////////////////////////////////////////////////////////
-      //                                                             //
-      // Desdobramento das duplicatas                               //
-      //                                                           //
-      Form7.sModulo := 'COMPRA';                                  //
+      //
+      // Desdobramento das duplicatas
+      //
+      Form7.sModulo := 'COMPRA';
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
-      //
-      //
+
       ApagaIntegracaoComOCaixa2(True);
-      //
+
       if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
       begin
         IntegracaoComOCaixa2(True)
       end;
-      //                                                                             //
-      if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'PAGAR')  //
-      and (Form7.ibDataSet24TOTAL.AsFloat > 0) then                                //
+
+      if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'PAGAR')
+      and (Form7.ibDataSet24TOTAL.AsFloat > 0) then
       begin
         Form18.IdentificadorPlanoContas := Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString; // Sandro Silva 2022-12-29
-        //
-        Form18.ShowModal;                                                        //
+
+        Form18.ShowModal;
         {Sandro Silva 2022-12-29 inicio}
         if Form1.DisponivelSomenteParaNos then
         begin
@@ -1522,43 +1479,39 @@ begin
           Form7.ibDataSet24.Edit;
         end;
         {Sandro Silva 2022-12-29 fim}
-      end else                                                                  //
-      begin                                                                    //
-        ApagaAsDuplicatasAnteriores2(True);                                   //
-        Form7.ibDataSet24.Edit;                                              //
-        Form7.ibDataSet24DUPLICATAS.AsFloat := 0;                           //
-      end;                                                                 //
-      //                                                                  //
+      end else
+      begin
+        ApagaAsDuplicatasAnteriores2(True);
+        Form7.ibDataSet24.Edit;
+        Form7.ibDataSet24DUPLICATAS.AsFloat := 0;
+      end;
     end;
 
-    //                                                           //
-    // Lay-Out no form7                                         //
-    //                                                         //
-    Form7.ibDataSet23UNITARIO.Visible       := False;         //
-    Form7.ibDataSet23CFOP.Visible           := False;        //
-    Form7.ibDataSet23BASE.Visible           := False;       //
+    // Lay-Out no form7
+    Form7.ibDataSet23UNITARIO.Visible       := False;
+    Form7.ibDataSet23CFOP.Visible           := False;
+    Form7.ibDataSet23BASE.Visible           := False;
     Form7.ibDataSet23VICMS.Visible          := False;
     Form7.ibDataSet23VBC.Visible            := False;
     Form7.ibDataSet23VBCST.Visible          := False;
     Form7.ibDataSet23VICMSST.Visible        := False;
     Form7.ibDataSet23VIPI.Visible           := False;
-    Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;         //
-    //                                                    //
-    //
+    Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;
+
     dbGrid2.TitleFont.Color := clBlack;
-    //
+
     Screen.Cursor := crDefault; // Cursor de Aguardo
-    //
+
     Form7.IBQuery99.Close;
     Form7.IBQuery99.SQL.Clear;
     Form7.IBQuery99.SQL.Add('delete from ITENS002 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
     Form7.IBQuery99.Open;
-    //
-  except end;
-  //
+  except
+  end;
+
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet23.EnableControls;
-  //
+
   if Form7.Visible then
   begin
     Screen.Cursor            := crHourGlass;
@@ -1567,11 +1520,11 @@ begin
     Form7.Show;
     Screen.Cursor            := crDefault;
   end;
-  //
+
   try
     CloseFile(F);  // Fecha o arquivo
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm24.SMALL_DBEdit40Change(Sender: TObject);
