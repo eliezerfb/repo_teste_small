@@ -1178,7 +1178,7 @@ begin
       if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then
         Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
 
-      if Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '' then
+      if (Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '') and (Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '00') then
         Form7.ibDataSet24MODELO.AsString  := Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2));
     except
       on E: Exception do
