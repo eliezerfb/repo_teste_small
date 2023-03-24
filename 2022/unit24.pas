@@ -2735,11 +2735,9 @@ end;
 
 procedure TForm24.Label64Click(Sender: TObject);
 begin
-  //
   Form7.ibDataSet24.Edit;
-  Form7.ibDataSet24MODELO.AsString := Right('00'+Copy(Form1.Small_InputForm('Modelo da Nota Fiscal','Modelo da Nota Fiscal','01')+'  ',1,2),2);
+  Form7.ibDataSet24MODELO.AsString := Right('00'+Copy(Form1.Small_InputForm('Modelo da Nota Fiscal','',Form7.ibDataSet24MODELO.AsString)+'  ',1,2),2);
   Label64.Caption := 'Mod: '+Form7.ibDataSet24MODELO.AsString;
-  //
 end;
 
 procedure TForm24.Edit2Exit(Sender: TObject);

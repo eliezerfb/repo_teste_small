@@ -1421,11 +1421,9 @@ end;
 
 procedure TForm12.Label64Click(Sender: TObject);
 begin
-  //
   Form7.ibDataSet15.Edit;
-  Form7.ibDataSet15MODELO.AsString := LimpaNumero(Form1.Small_InputForm('Modelo da Nota Fiscal','Modelo da Nota Fiscal','55'));
+  Form7.ibDataSet15MODELO.AsString := LimpaNumero(Form1.Small_InputForm('Modelo da Nota Fiscal','',Form7.ibDataSet15MODELO.AsString));
   Label64.Caption := 'Mod: '+StrZero(StrToInt('0'+Form7.ibDataSet15MODELO.AsString),2,0);
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit40KeyUp(Sender: TObject; var Key: Word;
