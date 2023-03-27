@@ -17828,6 +17828,13 @@ object Form7: TForm7
       Origin = 'COMPRAS.NUMERONF'
       Size = 12
     end
+    object ibDataSet24MODELO: TIBStringField
+      DisplayLabel = 'Modelo'
+      FieldName = 'MODELO'
+      Origin = 'COMPRAS.MODELO'
+      Visible = False
+      Size = 2
+    end
     object ibDataSet24EMISSAO: TDateField
       DisplayLabel = 'Emiss'#227'o'
       DisplayWidth = 10
@@ -18045,12 +18052,6 @@ object Form7: TForm7
       Visible = False
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
-    end
-    object ibDataSet24MODELO: TIBStringField
-      FieldName = 'MODELO'
-      Origin = 'COMPRAS.MODELO'
-      Visible = False
-      Size = 2
     end
     object ibDataSet24REGISTRO: TIBStringField
       FieldName = 'REGISTRO'

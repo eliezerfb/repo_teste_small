@@ -1535,7 +1535,7 @@ begin
     // Lay-Out no form7                                         //
     //                                                         //
     Form7.ibDataSet23UNITARIO.Visible       := False;         //
-    Form7.ibDataSet23CFOP.Visible           := False;        //
+    Form7.ibDataSet23CFOP.Visible           := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       // 
     Form7.ibDataSet23BASE.Visible           := False;       //
     Form7.ibDataSet23VICMS.Visible          := False;
     Form7.ibDataSet23VBC.Visible            := False;

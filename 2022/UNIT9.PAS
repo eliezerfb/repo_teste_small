@@ -192,7 +192,6 @@ begin
   // inclusive mudar o valor das suas propriedades
   //
   Form9.Height := 5;
-
   //
   for I := 1 to Form7.iCampos do
   begin
