@@ -11667,8 +11667,23 @@ begin
         //
         // Campos
         //
+        {Sandro Silva 2023-03-27 inicio
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
         iCampos                := 25;
+        }
+        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 19 then
+        begin
+          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra));
+        end
+        else
+        begin
+          sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+        end;
+        iCampos                := 26;
+        Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
+        {Sandro Silva 2023-03-27 fim}
+
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
@@ -12689,6 +12704,7 @@ begin
       //
       try
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize]; // 2CONTAS
+        (*
         with ArquivoAberto do
         begin
           try
@@ -12724,6 +12740,40 @@ begin
           except
           end;
         end;
+        *)
+
+        try
+          for I := 1 to iCampos do
+          begin
+            ArquivoAberto.Fields[I-1].Visible := True;
+            if copy(sMostra+'FFFFFFFFFFFFFFFFFFFF',I,1) = 'F' then
+              ArquivoAberto.Fields[I-1].Visible := False;
+
+            {Sandro Silva 2022-12-16 inicio // Sandro Silva 2023-01-09
+            if sModulo = 'ESTOQUE' then
+            begin
+              if ArquivoAberto.Fields[I-1].FieldName = 'IDENTIFICADORPLANOCONTAS' then
+              begin
+                ArquivoAberto.Fields[I-1].Visible := Form1.CampoDisponivelParaUsuario(sModulo, ArquivoAberto.Fields[I-1].FieldName);
+              end;
+            end;
+            {Sandro Silva 2022-12-16 fim}
+
+
+            {Sandro Silva 2022-12-16 inicio}
+            if sModulo = 'RECEBER' then
+            begin
+              if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
+              begin
+                ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
+              end;
+            end;
+            {Sandro Silva 2022-12-16 fim}
+
+          end;
+        except
+        end;
+
       except
       end;
       //
@@ -15181,14 +15231,20 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           end;
           //
 //          if (Field.Name = 'ibDataSet15NFEPROTOCOLO') and (Length(AllTrim(Field.AsString))>=10) then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString+'   ',10,3))
-          if ((Field.Name = 'ibDataSet15NUMERONF') and (Copy(Field.AsString,10,3)='RPS')) then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9))
-           else if (Field.Name = 'ibDataSet15NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-            else if (Field.Name = 'ibDataSet7NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-              else if (Field.Name = 'ibDataSet24NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-                else if (Field.Name = 'ibDataSet8NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-                  else if (Field.FieldName = 'CONTATOS') then DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,sTex)
-                    else DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,StrTran(StrTran(Copy(Field.AsString,1,Field.DisplayWidth),chr(10),' '),chr(13),' '));
-
+          if ((Field.Name = 'ibDataSet15NUMERONF') and (Copy(Field.AsString,10,3)='RPS')) then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9))
+          else if (Field.Name = 'ibDataSet15NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.Name = 'ibDataSet7NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.Name = 'ibDataSet24NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.Name = 'ibDataSet8NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.FieldName = 'CONTATOS') then
+            DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,sTex)
+          else
+            DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,StrTran(StrTran(Copy(Field.AsString,1,Field.DisplayWidth),chr(10),' '),chr(13),' '));
 
         end;
       except
@@ -23383,7 +23439,13 @@ begin
       if sModulo = 'COMPRA' then
       begin
         Form7.ibDataSet8.First;
-        while not Form7.ibDataSet8.Eof do if Form7.ibDataSet8NUMERONF.AsString = Form7.ibDataSet24NUMERONF.AsString then Form7.ibDataSet8.Delete else Form7.ibDataSet8.Next;
+        while not Form7.ibDataSet8.Eof do
+        begin
+          if Form7.ibDataSet8NUMERONF.AsString = Form7.ibDataSet24NUMERONF.AsString then
+            Form7.ibDataSet8.Delete
+          else
+            Form7.ibDataSet8.Next;
+        end;
       end;
       //
       Screen.Cursor := crDefault; // Cursor de Aguardo

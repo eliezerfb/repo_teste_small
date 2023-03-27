@@ -31,7 +31,6 @@ object Form24: TForm24
     Top = 0
     Width = 1037
     Height = 694
-    VertScrollBar.Position = 96
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False
@@ -39,7 +38,7 @@ object Form24: TForm24
     TabOrder = 0
     object Panel1: TPanel
       Left = 10
-      Top = -86
+      Top = 10
       Width = 682
       Height = 745
       BevelOuter = bvNone
@@ -2318,7 +2317,7 @@ object Form24: TForm24
     end
     object Panel9: TPanel
       Left = 800
-      Top = -6
+      Top = 90
       Width = 200
       Height = 200
       BevelOuter = bvNone
@@ -2338,7 +2337,7 @@ object Form24: TForm24
     end
     object Panel5: TPanel
       Left = 700
-      Top = 215
+      Top = 311
       Width = 501
       Height = 386
       BevelOuter = bvNone
@@ -3022,7 +3021,7 @@ object Form24: TForm24
     end
     object ok: TButton
       Left = 593
-      Top = 664
+      Top = 760
       Width = 100
       Height = 30
       Caption = 'Ok'
@@ -3037,7 +3036,7 @@ object Form24: TForm24
     end
     object Button1: TButton
       Left = 896
-      Top = -88
+      Top = 8
       Width = 75
       Height = 25
       Caption = 'Button1'

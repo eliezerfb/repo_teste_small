@@ -5,6 +5,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, SmallFunc;
+  
 type
   TForm9 = class(TForm)
     ScrollBox1: TScrollBox;
