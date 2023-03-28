@@ -6172,20 +6172,14 @@ begin
             if Form1.spdNFCe1.NomeCertificado.Text <> '' then // Somente após selecionar um certificado Sandro Silva 2018-12-03
             begin
 
-              {Sandro Silva 2020-06-23 inicio
-              sRetorno := Form1.spdNFCe1.StatusDoServico;
-              }
               try
                 Form1.spdNFCe1.TimeOut := _ecf65_TimeOutPadraoConsultaStatusServicoNFCe; // Muda timeout para valor padrão, mais baixo que usado no envio de NFC-e
                 sRetorno := Form1.spdNFCe1.StatusDoServico;
               except
               end;
               Form1.spdNFCe1.TimeOut := _ecf65_TimeOutComunicacaoSefaz;  // Retorna o timeout configurado para comunicação com Sefaz
-              {Sandro Silva 2020-06-23 fim}
 
-              {Sandro Silva 2019-09-30 inicio}
               sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
-              {Sandro Silva 2019-09-30 fim}
 
               sRetorno := _ecf65_SimulaSemRetornoSefaz(sRetorno); // Sandro Silva 2020-06-25
                             
@@ -6268,13 +6262,11 @@ begin
               sStatus := Alltrim(Copy(sRetorno+'   ',Pos('<cStat>',sRetorno)+7,Pos('</cStat>',sRetorno)-Pos('<cStat>',sRetorno)-7));
             end else sStatus := '';
 
-            {Sandro Silva 2019-11-19 inicio}
             if Form1.UsaIntegradorFiscal() then
             begin
               if sStatus = '' then
                 sStatus := sRetorno;
             end;
-            {Sandro Silva 2019-11-19 fim}
 
             //
         //    if sStatus <> '239' then // Verção do XML do cabeçalho não suportada
@@ -6339,19 +6331,14 @@ begin
                      Application.ProcessMessages;
                      Application.BringToFront;
 
-                     {Sandro Silva 2019-11-19 inicio
-                     SmallMsg(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9));
-                     }
                      if Form1.UsaIntegradorFiscal() then
                      begin
-                       // '<Integrador><Identificador><Valor>112954021</Valor></Identificador><IntegradorResposta><Codigo>AP</Codigo><Valor>NFCE HABILITADA</Valor></IntegradorResposta><Resposta><retorno>112954021|000000|Impossível conectar-se ao servidor remoto||</retorno></Resposta></Integrador>'
                        SmallMsg('Integrador Fiscal retornou:' + #13 + Copy(sRetorno+'   ',Pos('<retorno>',sRetorno)+9,Pos('</retorno>',sRetorno)-Pos('<retorno>',sRetorno)-9));
                      end
                      else
                      begin
                        SmallMsg(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9));
                      end;
-                     {Sandro Silva 2019-11-19 fim}
 
                    end;
                    //
@@ -7042,7 +7029,7 @@ begin
 
   sCupom := FormataNumeroDoCupom(StrToInt(sCupom)); // Sandro Silva 2021-12-01
   //
-  Form1.ibQuery65.Close;  
+  Form1.ibQuery65.Close;
   Form1.ibQuery65.SQL.Clear;
   Form1.ibQuery65.SQL.Text := 'select * from NFCE where NUMERONF='+QuotedStr(sCupom)+' and CAIXA = ' + QuotedStr(Form1.sCaixa);
   Form1.ibQuery65.Open;
