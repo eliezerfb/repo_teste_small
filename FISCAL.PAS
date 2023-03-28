@@ -2816,7 +2816,7 @@ begin
                   Form1.ibDataSet7.Append;
                   Form1.ibDataSet7.FieldByName('NOME').AsString         := StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO','');
                   if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then
-                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa '+Form1.sCaixa+' Autor.'+Form1.sTransaca // Sandro Silva 2017-01-16
+                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa '+Form1.sCaixa+' Autor.' + Form1.sAutoriza // Sandro Silva 2023-03-28 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa '+Form1.sCaixa+' Autor.'+Form1.sTransaca
                   else
                     Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
                   Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas); // documento

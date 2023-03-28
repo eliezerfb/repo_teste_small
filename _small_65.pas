@@ -2437,6 +2437,7 @@ var
   IBQALTERACA: TIBQuery; // Query com mesma TTransaction de FORM1.IBDATASET27 para ler dados salvos no alteraca pelo FORM1.IBDATASET27 Sandro Silva 2019-08-05
   sStatusServico: String; // Sandro Silva 2019-08-09
   sMensagemAlertaUsoDenegado: String; // Sandro Silva 2020-05-21
+  sDadosTransacaoEletronicaNoComplemento: String; // Sandro Silva 2023-03-28
   function EncontraItemDataSet(sItemRejeicao: String): String;
   begin
 
@@ -2471,6 +2472,13 @@ var
       Result := '';
     end;
 
+  end;
+
+  procedure AddDadosTransacaoEletronicaNoComplemento(Bandeira: String; CodigoAutorizacao: String; Valor: Double);
+  begin
+    if sDadosTransacaoEletronicaNoComplemento <> '' then
+      sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + '|';
+    sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + Trim(Bandeira) + ' - ' + Trim(CodigoAutorizacao) + ' - R$' + FormatFloat('0.00', Valor);
   end;
 begin
 
@@ -4028,9 +4036,13 @@ begin
             Form1.spdNFCeDataSets1.Campo('vPag_YA03').Value := FormatFloatXML(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago); // Valor Líquido da Fatura
 
             Form1.spdNFCeDataSets1.Campo('tpIntegra_YA04a').Value := '1'; // 1=Pagamento integrado com o sistema de automação da empresa (Ex.: equipamento TEF, Comércio Eletrônico);
-            _ecf65_DadosCredenciadoraCartoes(Form1.spdNFCeDataSets1, sCNPJ_YA05, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca);
+            // Sandro Silva 2023-03-28 _ecf65_DadosCredenciadoraCartoes(Form1.spdNFCeDataSets1, sCNPJ_YA05, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca);
+            _ecf65_DadosCredenciadoraCartoes(Form1.spdNFCeDataSets1, sCNPJ_YA05, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao);
 
             Form1.spdNFCeDataSets1.SalvarPart('YA');
+
+            // Para adicionar nas informações complementares
+            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago);
 
           end;
         end
@@ -4043,7 +4055,6 @@ begin
             Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;
             //Localiza todos cadastros com OBS contendo o nome da rede ou que o relacionamento = credenciadora de cartão
             Form1.ibDataSet2.Close;
-            Form1.ibDataSet2.SelectSQL.Clear;
             Form1.ibDataSet2.SelectSQL.Text :=
               'select * ' +
               'from CLIFOR ' +
@@ -4092,6 +4103,8 @@ begin
 
             Form1.spdNFCeDataSets1.SalvarPart('YA');
 
+            // Para adicionar nas informações complementares
+            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago)
           end;
 
         end;
@@ -4229,6 +4242,8 @@ begin
 
       if Form1.ibDataSet25DIFERENCA_.AsFloat <> 0 then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + _ecf65_DadosCarneNoXML();// Pipe "|" faz quebra de linha Sandro Silva 2017-10-05  Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := svNF_W16 + ' ' + sValorRecebido + ' ' + sValorTroco + ' ' + Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value;
+
+      Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sDadosTransacaoEletronicaNoComplemento; // Sandro Silva 2023-03-28
 
       //
       // SAIDA
