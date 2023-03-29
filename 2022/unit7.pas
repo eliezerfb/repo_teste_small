@@ -5423,7 +5423,11 @@ begin
     //
     Form7.ibDataSet101.Close;
     Form7.ibDataSet101.SelectSql.Clear;
-    if P1 then Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,1) from rdb$database') else Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,0) from rdb$database');
+    if P1 then
+      Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,1) from rdb$database')
+    else
+      Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,0) from rdb$database');
+
     Form7.ibDataset101.Open;
     //
     if Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat > 9999999999 then
@@ -5441,7 +5445,8 @@ begin
       Form7.ibDataSet4.Disablecontrols;
       //
       try
-        if Form7.IBTransaction1.Active then Form7.IBTransaction1.Commit;
+        if Form7.IBTransaction1.Active then
+          Form7.IBTransaction1.Commit;
       except
         ShowMessage('Falha na conexão com o Banco de Dados. Erro 1848');
       end;
@@ -5544,6 +5549,7 @@ begin
         //
       end;
       //
+      Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-03-29
     end;
     //
   end;

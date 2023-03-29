@@ -11013,7 +11013,8 @@ begin
     Form1.ibQuery1.SQL.Text :=
       'select first 1 CODIGO ' +
       'from ESTOQUE ' +
-      'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ';
+      'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ' +
+      ' or cast(CUSTOMEDIO as varchar(1000)) containing ''NAN'' ';
     Form1.ibQuery1.Open;
     if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
     begin
@@ -11024,7 +11025,8 @@ begin
       Form1.ibQuery1.Close;
       Form1.ibQuery1.SQL.Text :=
         'update ESTOQUE set CUSTOMEDIO = 0.00 ' +
-        'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ';
+        'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ' +
+        ' or cast(CUSTOMEDIO as varchar(1000)) containing ''NAN'' ';
       Form1.ibQuery1.ExecSQL;
     end;
   except
@@ -11042,7 +11044,8 @@ begin
     Form1.ibQuery1.SQL.Text :=
       'select first 1 CODIGO ' +
       'from ESTOQUE ' +
-      'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ';
+      'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ' +
+      ' or cast(CUSTOCOMPR as varchar(1000)) containing ''NAN'' ';
     Form1.ibQuery1.Open;
     if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
     begin
@@ -11053,7 +11056,8 @@ begin
       Form1.ibQuery1.Close;
       Form1.ibQuery1.SQL.Text :=
         'update ESTOQUE set CUSTOCOMPR = 0.00 ' +
-        'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ';
+        'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ' +
+        ' or cast(CUSTOCOMPR as varchar(1000)) containing ''NAN'' ';
       Form1.ibQuery1.ExecSQL;
     end;
   except
@@ -11063,6 +11067,36 @@ begin
     end;
   end;
   {Sandro Silva 2023-03-02 fim}
+
+  {Sandro Silva 2023-03-29 inicio}
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select first 1 CODIGO ' +
+      'from ITENS002 ' +
+      'where cast(CUSTO as varchar(1000)) containing ''INF'' ' +
+      ' or cast(CUSTO as varchar(1000)) containing ''NAN'' ';
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
+    begin
+
+      Mensagem22('validando o custo os itens das compras');
+
+      CommitaTudo(True);
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Text :=
+        'update ITENS002 set CUSTO = 0.00 ' +
+        'where cast(CUSTO as varchar(1000)) containing ''INF'' ' +
+        ' or cast(CUSTO as varchar(1000)) containing ''NAN'' ';
+      Form1.ibQuery1.ExecSQL;
+    end;
+  except
+    on E: Exception do
+    begin
+      ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message);
+    end;
+  end;
+  {Sandro Silva 2023-03-29 fim}
 
   Form7.Caption := sMensagem + '...';
   //
