@@ -1542,7 +1542,22 @@ begin
     Form7.ibDataSet23VBCST.Visible          := False;
     Form7.ibDataSet23VICMSST.Visible        := False;
     Form7.ibDataSet23VIPI.Visible           := False;
-    Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;         //
+    // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;         //
+
+    {Sandro Silva 2023-03-29 inicio}
+    Form7.ibDataSet23UNITARIO_O.Visible     := False;
+    Form7.ibDataSet23QUANTIDADE.Visible     := True;
+    Form7.ibDataSet23QTD_ORIGINAL.Visible   := False;
+
+    Form7.ibDataSet23DESCRICAO.DisplayWidth    := 41;         //
+    Form7.ibDataSet23TOTAL.DisplayWidth        := 09;
+    Form7.ibDataSet23QUANTIDADE.DisplayWidth   := 09;
+    Form7.ibDataSet23QTD_ORIGINAL.DisplayWidth := 10;
+    Form7.ibDataSet23UNITARIO_O.DisplayWidth   := 10;
+
+    Form7.ibDataSet23QUANTIDADE.DisplayLabel    := 'Qtd';
+    {Sandro Silva 2023-03-29 fim}
+
     //                                                    //
     //
     dbGrid2.TitleFont.Color := clBlack;

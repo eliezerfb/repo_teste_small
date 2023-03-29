@@ -3,8 +3,3 @@ CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA
 CUSTO MÉDIO  = ((QTD_ATUAL * CUSTOMEDIO ANTERIOR) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)
 CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))
 --------------------------------------------------------------------------------
-Descrição.........: GADO BOVINO PARA CORTE/VACAS  SOLTEIRA 00215
-Código............: 00215
-Custo de compra...: 2820 = ( 2820 + (( 0 + 0) / 14))+ (( 2820 / 39480 ) *  ( 0 + 0 + 0 - 0 ))
-Custo médio.......: 2820 = 2820
---------------------------------------------------------------------------------

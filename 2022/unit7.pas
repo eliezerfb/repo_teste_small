@@ -11368,14 +11368,14 @@ begin
         //
         if (sModulo = 'COMPRA') then
         begin
-          dbGrid2.Left    := Form7.Width - 447 -5; // Form7.Width - 410 -5;
+          dbGrid2.Left    := Form7.Width - 447 - 5; // Form7.Width - 410 -5;
           dbGrid2.Top     := dbGrid1.Top;
           dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
           dbGrid2.Width   := 432;
         end
         else
         begin
-          dbGrid2.Left    := Form7.Width - 410 -5;
+          dbGrid2.Left    := Form7.Width - 410 - 5;
           dbGrid2.Top     := dbGrid1.Top;
           dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
           dbGrid2.Width   := 395;
