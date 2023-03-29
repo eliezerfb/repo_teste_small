@@ -11014,7 +11014,7 @@ begin
       'select first 1 CODIGO ' +
       'from ESTOQUE ' +
       'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ' +
-      ' or cast(CUSTOMEDIO as varchar(1000)) containing ''NAN'' ';
+      ' or upper(cast(CUSTOMEDIO as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
     Form1.ibQuery1.Open;
     if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
     begin
@@ -11026,7 +11026,7 @@ begin
       Form1.ibQuery1.SQL.Text :=
         'update ESTOQUE set CUSTOMEDIO = 0.00 ' +
         'where cast(CUSTOMEDIO as varchar(1000)) containing ''INF'' ' +
-        ' or cast(CUSTOMEDIO as varchar(1000)) containing ''NAN'' ';
+        ' or upper(cast(CUSTOMEDIO as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
       Form1.ibQuery1.ExecSQL;
     end;
   except
@@ -11045,7 +11045,7 @@ begin
       'select first 1 CODIGO ' +
       'from ESTOQUE ' +
       'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ' +
-      ' or cast(CUSTOCOMPR as varchar(1000)) containing ''NAN'' ';
+      ' or upper(cast(CUSTOCOMPR as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
     Form1.ibQuery1.Open;
     if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
     begin
@@ -11057,7 +11057,7 @@ begin
       Form1.ibQuery1.SQL.Text :=
         'update ESTOQUE set CUSTOCOMPR = 0.00 ' +
         'where cast(CUSTOCOMPR as varchar(1000)) containing ''INF'' ' +
-        ' or cast(CUSTOCOMPR as varchar(1000)) containing ''NAN'' ';
+        ' or upper(cast(CUSTOCOMPR as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
       Form1.ibQuery1.ExecSQL;
     end;
   except
@@ -11075,7 +11075,7 @@ begin
       'select first 1 CODIGO ' +
       'from ITENS002 ' +
       'where cast(CUSTO as varchar(1000)) containing ''INF'' ' +
-      ' or cast(CUSTO as varchar(1000)) containing ''NAN'' ';
+      ' or upper(cast(CUSTO as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
     Form1.ibQuery1.Open;
     if Form1.ibQuery1.FieldByName('CODIGO').AsString <> '' then
     begin
@@ -11087,7 +11087,7 @@ begin
       Form1.ibQuery1.SQL.Text :=
         'update ITENS002 set CUSTO = 0.00 ' +
         'where cast(CUSTO as varchar(1000)) containing ''INF'' ' +
-        ' or cast(CUSTO as varchar(1000)) containing ''NAN'' ';
+        ' or upper(cast(CUSTO as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
       Form1.ibQuery1.ExecSQL;
     end;
   except
