@@ -11366,10 +11366,20 @@ begin
         Form7.ibDataSet35UNITARIO.Visible := False;
         Form7.ibDataSet16UNITARIO.Visible := False;
         //
-        dbGrid2.Left    := Form7.Width - 410 -5;
-        dbGrid2.Top     := dbGrid1.Top;
-        dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
-        dbGrid2.Width   := 395;
+        if (sModulo = 'COMPRA') then
+        begin
+          dbGrid2.Left    := Form7.Width - 447 -5; // Form7.Width - 410 -5;
+          dbGrid2.Top     := dbGrid1.Top;
+          dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
+          dbGrid2.Width   := 432;
+        end
+        else
+        begin
+          dbGrid2.Left    := Form7.Width - 410 -5;
+          dbGrid2.Top     := dbGrid1.Top;
+          dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
+          dbGrid2.Width   := 395;
+        end;
         //
         dbGrid2.Visible := True;
         //
@@ -11378,10 +11388,20 @@ begin
         Panel9.width   := dbGrid2.Width;
         Panel9.Visible := True;
         //
-        dbGrid3.Left    := Form7.Width - 410 -5;
-        dbGrid3.Top     := Panel9.Top + Panel9.Height + 10;
-        dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
-        dbGrid3.Width   := 395;
+        if (sModulo = 'COMPRA') then
+        begin
+          dbGrid3.Left    := Form7.Width - 447 -5;
+          dbGrid3.Top     := Panel9.Top + Panel9.Height + 10;
+          dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
+          dbGrid3.Width   := 432;
+        end
+        else
+        begin
+          dbGrid3.Left    := Form7.Width - 410 -5;
+          dbGrid3.Top     := Panel9.Top + Panel9.Height + 10;
+          dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
+          dbGrid3.Width   := 395;
+        end;
         //
         dBgrid3.Visible        := True;
         //
@@ -11403,6 +11423,11 @@ begin
         Form7.ibDataSet23CST_ICMS.Visible       := False;
         Form7.ibDataSet23CST_IPI.Visible        := False;
         Form7.ibDataSet23CFOP.Visible           := False;
+        if (sModulo = 'COMPRA') then
+        begin
+          Form7.ibDataSet23CFOP.Visible           := True;
+
+        end;
         Form7.ibDataSet23VICMS.Visible          := False;
         Form7.ibDataSet23VBC.Visible            := False;
         Form7.ibDataSet23VBCST.Visible          := False;
@@ -11671,7 +11696,7 @@ begin
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
         iCampos                := 25;
         }
-        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 19 then
+        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 25 then
         begin
           sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
           sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra));
@@ -19769,15 +19794,15 @@ begin
   //
   if sModulo = 'OS' then
   begin
-    Form7.Panel9.Caption := Format('%14.2n',[Form7.ibDataSet3TOTAL_PECA.AsFloat]);
-    Form7.Panel10.Caption  := Format('%14.2n',[Form7.ibDataSet3TOTAL_SERV.AsFloat]);
+    Form7.Panel9.Caption  := Format('%14.2n',[Form7.ibDataSet3TOTAL_PECA.AsFloat]);
+    Form7.Panel10.Caption := Format('%14.2n',[Form7.ibDataSet3TOTAL_SERV.AsFloat]);
     Form7.Panel10.Repaint;
     Form7.Panel9.Repaint;
   end;
   //
   if sModulo = 'VENDA' then
   begin
-    Form7.Panel9.Caption := Format('%14.2n',[Form7.ibDataSet15MERCADORIA.AsFloat]);
+    Form7.Panel9.Caption  := Format('%14.2n',[Form7.ibDataSet15MERCADORIA.AsFloat]);
     Form7.Panel10.Caption := Format('%14.2n',[Form7.ibDataSet15SERVICOS.AsFloat]);
     Form7.Panel10.Repaint;
     Form7.Panel9.Repaint;
@@ -24111,7 +24136,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   //
 end;
 
@@ -24124,7 +24151,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet19BeforeInsert(DataSet: TDataSet);
@@ -24149,7 +24178,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   //
 end;
 
@@ -24165,7 +24196,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   //
 end;
 
@@ -24178,7 +24211,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet7BeforeInsert(DataSet: TDataSet);
@@ -24191,7 +24226,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   fValorAnterior := 0;
   //
 end;
@@ -24205,7 +24242,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet12BeforeInsert(DataSet: TDataSet);
@@ -24217,7 +24256,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet14BeforeInsert(DataSet: TDataSet);
