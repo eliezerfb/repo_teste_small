@@ -1441,6 +1441,7 @@ type
     ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
+    ibDataSet14FRETESOBREIPI: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -9689,7 +9690,21 @@ begin
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+
+  //Mauricio Parizotto 2023-03-28
+  if DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI' then
+  begin
+    Form7.ibDataSet14.Edit;
+    if (Form7.ibDataSet14FRETESOBREIPI.AsString = 'S') or (Form7.ibDataSet14FRETESOBREIPI.AsString = '') then
+      Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
+    else
+      Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
+
+    Screen.Cursor            := crDefault;
+    Abort;
+  end;
+
+
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
   begin
     Form7.ibDataSet14.Edit;
@@ -9698,7 +9713,7 @@ begin
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
   begin
     Form7.ibDataSet14.Edit;
@@ -9707,7 +9722,7 @@ begin
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+  
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
   begin
     Form7.ibDataSet14.Edit;
@@ -9716,7 +9731,7 @@ begin
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+  
   // --------------------------------------------------------------------------------- //
   // duplo clique no CGC                                                               //
   // --------------------------------------------------------------------------------- //
@@ -9736,13 +9751,11 @@ begin
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cnpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
       end else
       begin
-        //
         if bButton = IDNO  then
         begin
           sAsp := 'http://www.sintegra.gov.br/';
           ShellExecute( 0, 'Open',pChar(sASP),'', '', SW_SHOWMAXIMIZED);
         end;  
-        //
       end;
       Screen.Cursor            := crDefault;
       Abort;
@@ -9867,7 +9880,8 @@ begin
  if (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO') or
-    (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS')  then
+    (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS') or
+    (DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI')  then
  begin
    if Key <> chr(13) then
      Key := Chr(0);
@@ -15399,11 +15413,12 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         end;
       end;
     end;
-    //
+
     if (Field.Name = 'ibDataSet14SOBREIPI') or
        (Field.Name = 'ibDataSet14SOBREFRETE') or
        (Field.Name = 'ibDataSet14SOBRESEGURO') or
-       (Field.Name = 'ibDataSet14SOBREOUTRAS')  then
+       (Field.Name = 'ibDataSet14SOBREOUTRAS') or
+       (Field.Name = 'ibDataSet14FRETESOBREIPI')  then
     begin
       dbGrid1.Canvas.FillRect(Rect);
       dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'          ');
@@ -15417,6 +15432,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
         if Field.Name = 'ibDataSet14SOBREFRETE' then
         begin
           if (Alltrim(Form7.ibDataSet14SOBREFRETE.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBREFRETE.AsString) = 'S') then
@@ -15424,6 +15440,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
         if Field.Name = 'ibDataSet14SOBRESEGURO' then
         begin
           if (Alltrim(Form7.ibDataSet14SOBRESEGURO.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBRESEGURO.AsString) = 'S') then
@@ -15431,6 +15448,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
         if Field.Name = 'ibDataSet14SOBREOUTRAS' then
         begin
           if (Alltrim(Form7.ibDataSet14SOBREOUTRAS.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBREOUTRAS.AsString) = 'S') then
@@ -15438,10 +15456,18 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
+        if Field.Name = 'ibDataSet14FRETESOBREIPI' then
+        begin
+          if (Alltrim(Form7.ibDataSet14FRETESOBREIPI.AsString) = '') or (Alltrim(Form7.ibDataSet14FRETESOBREIPI.AsString) = 'S') then
+            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          else
+            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
+        end;
       end;
-      //
     end;
-    //
+
+
     if (Field.Name = 'ibDataSet14'+UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (Field.Name = 'ibDataSet14'+UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_') then
     begin
       DBGrid1.Canvas.Font.Color   := clRed;
