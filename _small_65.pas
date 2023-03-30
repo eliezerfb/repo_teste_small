@@ -4036,13 +4036,12 @@ begin
             Form1.spdNFCeDataSets1.Campo('vPag_YA03').Value := FormatFloatXML(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago); // Valor Líquido da Fatura
 
             Form1.spdNFCeDataSets1.Campo('tpIntegra_YA04a').Value := '1'; // 1=Pagamento integrado com o sistema de automação da empresa (Ex.: equipamento TEF, Comércio Eletrônico);
-            // Sandro Silva 2023-03-28 _ecf65_DadosCredenciadoraCartoes(Form1.spdNFCeDataSets1, sCNPJ_YA05, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca);
-            _ecf65_DadosCredenciadoraCartoes(Form1.spdNFCeDataSets1, sCNPJ_YA05, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao);
+            _ecf65_DadosCredenciadoraCartoes(Form1.spdNFCeDataSets1, sCNPJ_YA05, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca);
 
             Form1.spdNFCeDataSets1.SalvarPart('YA');
 
             // Para adicionar nas informações complementares
-            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago);
+            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago);
 
           end;
         end

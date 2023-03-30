@@ -868,7 +868,7 @@ begin
 
                         Form1.ibDataSet7.Append;
                         Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.sNomeRede;
-                        Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa ' + Form1.sCaixa + ' trans.' + Form1.sAutoriza; // Sandro Silva 2023-03-28 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa '+Form1.sCaixa+' trans.'+Form1.sTransaca;
+                        Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa ' + Form1.sCaixa + ' trans.' + Form1.sTransaca;
                         Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas);
                         Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := dValorDuplReceber;
                         Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := Date;
