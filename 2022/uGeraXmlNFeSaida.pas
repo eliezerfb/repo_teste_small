@@ -117,7 +117,7 @@ begin
   rpCOFINS        := Form7.ibDataSet14.FieldByname('PCOFINS').AsFloat;
 
   //Mauricio Parizotto 2023-03-28
-  vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) <> 'N';
+  vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
 
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
