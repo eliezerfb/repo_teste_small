@@ -9,7 +9,7 @@ uses
   SysUtils,
   Dialogs,
   SmallFunc in '..\..\componentes\Smallsoft\Delphi 7\smallfunc.pas',
-  SMALL_DBEDIT in '..\SMALL_DBEDIT.pas',
+  SMALL_DBEDIT in '..\..\componentes\Smallsoft\SMALL_DBEDIT.pas',
   Unit22 in 'Unit22.pas' {Form22},
   fiscal in 'FISCAL.PAS' {Form1},
   Unit2 in 'Unit2.pas' {Form2},
