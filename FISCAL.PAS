@@ -9969,6 +9969,17 @@ begin
       Form1.sCaixa := Form1.PDV_NumeroDoCaixa(True);
       Audita('ACESSOU','FRENTE', '', 'ACESSOU O SISTEMA - Caixa: ' + Form1.sCaixa + ' ' + ExtractFileName(Application.ExeName) + ' Build: ' + LimpaNumero(Form22.sBuild),0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2019-03-06
 
+      {Sandro Silva 2023-03-28 inicio}
+      Form1.ibQuery65.Close;
+      Form1.ibQuery65.SQL.Clear;
+      Form1.ibQuery65.SQL.Text := 'select max(REGISTRO) as MAIOR_REGISTRO, max(gen_id(G_NFCE, 0)) as VALOR_GENERATOR from NFCE';
+      Form1.ibQuery65.Open;
+      if Form1.IBQuery65.FieldByName('VALOR_GENERATOR').AsInteger < StrToIntDef(Form1.IBQuery65.FieldByName('MAIOR_REGISTRO').AsString, 0) then
+      begin
+        IncrementaGenerator('G_NFCE', StrToIntDef(Form1.IBQuery65.FieldByName('MAIOR_REGISTRO').AsString, 0) - Form1.IBQuery65.FieldByName('VALOR_GENERATOR').AsInteger);
+      end;
+      {Sandro Silva 2023-03-28 fim}
+
     end
     else
     begin
@@ -10045,11 +10056,8 @@ begin
   //
   try
     //
-    // Sandro Silva 2022-11-08 bInicializa := Form1.PDV_Inicializa(sPorta);
-    {Sandro Silva 2022-11-30 inicio}
     if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
       bInicializa := Form1.PDV_Inicializa(sPorta);
-    {Sandro Silva 2022-11-30 fim}
 
     {Sandro Silva 2022-07-13 inicio}
     if (Form1.sModeloECF = '65') then
