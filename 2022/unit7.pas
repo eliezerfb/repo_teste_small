@@ -41543,8 +41543,11 @@ begin
     Mais1Ini.WriteString('Informacoes obtidas na prefeitura','ExigibilidadeISS'         ,'1');
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Operacao'                 ,'') = '' then
     Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Operacao'                 ,'A');
+  {Sandro Silva 2023-03-22 inicio
+  Ficha 6611 - não usar o CNAE da tabela emitente (CNAE para produtos) para os serviços
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,'') = '' then
     Mais1Ini.WriteString('Informacoes obtidas na prefeitura','CodigoCnae'               ,pchar(Form7.ibDataSet13CNAE.AsString) );
+  }
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'') = '' then
     Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
   //
