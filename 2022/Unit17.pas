@@ -71,6 +71,7 @@ type
     procedure Button4Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure SMALL_DBEdit4Exit(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -82,7 +83,7 @@ var
 
 implementation
 
-uses Unit7, Unit10, Unit14, Unit19, Mais;
+uses Unit7, Unit10, Unit14, Unit19, Mais, uListaCnaes;
 
 {$R *.DFM}
 
@@ -291,7 +292,6 @@ begin
       Form7.ibDataSet13CGCSetText(Form7.ibDataset13CGC,Form17.SMALL_DBEdit7.Text);
     end;
   end;
-  //
 end;
 
 procedure TForm17.ComboBox1KeyDown(Sender: TObject; var Key: Word;
@@ -515,6 +515,13 @@ begin
     Form7.ibDataSet13MUNICIPIO.AsString := Text;
   //
   {Sandro Silva 2022-10-24 fim}
+end;
+
+procedure TForm17.FormCreate(Sender: TObject);
+begin
+  //Mauricio Parizotto 2023-03-23
+  ComboBox7.Items.Clear;
+  ComboBox7.Items.Text := getListaCnae;
 end;
 
 end.
