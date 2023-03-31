@@ -2907,7 +2907,7 @@ object Form24: TForm24
         OnChange = SMALL_DBEdit45Change
         OnKeyUp = ComboBox12KeyUp
       end
-      object Button2: TButton
+      object Button2: TBitBtn
         Left = 275
         Top = 25
         Width = 30
@@ -3019,7 +3019,7 @@ object Form24: TForm24
         OnKeyDown = Edit1KeyDown
       end
     end
-    object ok: TButton
+    object ok: TBitBtn
       Left = 593
       Top = 760
       Width = 100
@@ -3034,7 +3034,7 @@ object Form24: TForm24
       TabOrder = 3
       OnClick = OKClick
     end
-    object Button1: TButton
+    object Button1: TBitBtn
       Left = 896
       Top = 8
       Width = 75

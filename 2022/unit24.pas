@@ -6,7 +6,9 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
   DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, Variants, HtmlHelp, ShellApi, jpeg,
-  IBCustomDataSet;
+  IBCustomDataSet, Buttons
+  , StrUtils
+  ;
 
 type
 
@@ -126,7 +128,7 @@ type
     Edit1: TEdit;
     ibDataSet44: TIBDataSet;
     DBGrid3: TDBGrid;
-    Button2: TButton;
+    Button2: TBitBtn;
     ibDataSet44CODIGO: TIBStringField;
     ibDataSet44REFERENCIA: TIBStringField;
     ibDataSet44DESCRICAO: TIBStringField;
@@ -134,7 +136,7 @@ type
     imagenovo: TImage;
     Label22: TLabel;
     SMALL_DBEdit46: TSMALL_DBEdit;
-    ok: TButton;
+    ok: TBitBtn;
     Edit4: TEdit;
     DataSource44: TDataSource;
     Label26: TLabel;
@@ -151,7 +153,7 @@ type
     ComboBox13: TComboBox;
     Label89: TLabel;
     Image5: TImage;
-    Button1: TButton;
+    Button1: TBitBtn;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1258,13 +1260,18 @@ begin
                         if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
                         begin
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
-                                                      + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
-                                                       / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
-                                                      ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
-                                                         Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
-                                                         Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
-                                                         Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                         ));
+                                                                + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                  )); //
+
+                          {Sandro Silva 2023-03-02 inicio}
+                          if AnsiContainsText(Form7.ibDataSet4CUSTOCOMPR.AsString, 'INF') then
+                            Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0.00;
+                          {Sandro Silva 2023-03-02 fim}
 
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
@@ -1294,12 +1301,23 @@ begin
                               begin
                                 Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
 
+                                {Sandro Silva 2023-03-01 inicio}
+                                if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                {Sandro Silva 2023-03-01 fim}
+
                                 Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
                                 Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
                                 Writeln(F,'Custo de compra...: ' + sCustoCompra);
                                 Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
                               end else
                               begin
+
+                                {Sandro Silva 2023-03-01 inicio}
+                                if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                {Sandro Silva 2023-03-01 fim}
+
                                 Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
                                 Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
                                 Writeln(F,'Custo de compra...: ' + sCustoCompra);
@@ -1314,10 +1332,13 @@ begin
                                                                    '/ ('+Form7.ibDataSet23QUANTIDADE.AsString+' + '+Form7.ibDataSet4QTD_ATUAL.AsString+')'
                                                                    );
 
+                                Form7.ibDataSet4CUSTOMEDIO.AsFloat := ((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) + (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
+                                                                        / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
 
-                                Form7.ibDataSet4CUSTOMEDIO.AsFloat :=
-                                ((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) + (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
-                                                           / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
+                                {Sandro Silva 2023-03-01 inicio}
+                                if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                {Sandro Silva 2023-03-01 fim}
 
                               end;
 
@@ -1352,6 +1373,7 @@ begin
                         // Obs: O Custo de medio é a media ponderada dasoma do valor pago ao fornecedor mais as           //
                         // despesas proporcionais de frete seguro e outras menos o crédito de ICMS.                       //
                         //
+                        {Sandro Silva 2023-03-01 inicio
                         Form7.ibDataSet23CUSTO.Value          := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
                                                                   + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1360,8 +1382,17 @@ begin
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                      )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat); // menos o crédito de ICMS
-
-
+                        }
+                        Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
+                                                                  + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                     )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.AsFloat); // menos o crédito de ICMS
+                        {Sandro Silva 2023-03-01 fim}                                                                                                                     
+                        //
                         Form7.ibDataSet4.Post;
                       end;
                     end;
@@ -1423,7 +1454,12 @@ begin
                   Form7.IBQuery99.SQL.Add('select sum(CUSTO*QUANTIDADE)as vC, sum(QUANTIDADE) as vQ from ITENS002 where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' and Coalesce(CUSTO,0)<>0');
                   Form7.IBQuery99.Open;
 
-                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.IBQuery99.FieldByName('vC').AsFloat / Form7.IBQuery99.FieldByName('vQ').AsFloat;
+                  {Sandro Silva 2023-03-01 inicio}
+                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                  {Sandro Silva 2023-03-01 fim}
+
+                  //
                 end;
 
                 // Grava a nova quantidade o novo fornecedor e a ultima compra no estoque //
@@ -2438,12 +2474,25 @@ begin
   //
   Form7.ibDataSet23.EnableControls;
   //
-  if Form7.ibDataSet24FRETE12.AsString = '0' then Edit4.Text := '0-Remetente' else
-    if Form7.ibDataSet24FRETE12.AsString = '1' then Edit4.Text := '1-Destinatário' else
-      if Form7.ibDataSet24FRETE12.AsString = '2' then Edit4.Text := '2-Terceiros' else
-        if Form7.ibDataSet24FRETE12.AsString = '3' then Edit4.Text := '3-Próprio remetente' else
-          if Form7.ibDataSet24FRETE12.AsString = '4' then Edit4.Text := '4-Próprio destinatário' else
-           if Form7.ibDataSet24FRETE12.AsString = '9' then Edit4.Text := '9-Sem frete' else Edit4.Text := '';
+  if Form7.ibDataSet24FRETE12.AsString = '0' then
+    Edit4.Text := '0-Remetente'
+  else
+    if Form7.ibDataSet24FRETE12.AsString = '1' then
+      Edit4.Text := '1-Destinatário'
+    else
+      if Form7.ibDataSet24FRETE12.AsString = '2' then
+        Edit4.Text := '2-Terceiros'
+      else
+        if Form7.ibDataSet24FRETE12.AsString = '3' then
+          Edit4.Text := '3-Próprio remetente'
+        else
+          if Form7.ibDataSet24FRETE12.AsString = '4' then
+            Edit4.Text := '4-Próprio destinatário'
+          else
+            if Form7.ibDataSet24FRETE12.AsString = '9' then
+              Edit4.Text := '9-Sem frete'
+            else
+              Edit4.Text := '';
   //
   Form12.Edit4.Visible := True;
   //
@@ -2499,7 +2548,8 @@ begin
           end;
         end;
       end;
-    except end;
+    except
+    end;
     //
     // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final
     //
@@ -2511,7 +2561,8 @@ begin
       begin
         Edit8.Text := '0-Normal';
       end;
-    except end;
+    except
+    end;
     //
     //
     //
@@ -2659,8 +2710,10 @@ begin
   if Form1.Image202.Visible then
   begin
     //
-    if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
-    if (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Post;
+    if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset4.Post;
+    if (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset23.Post;
     //
     Form7.ibDataSet24.DisableControls;
     Form7.ibDataSet23.DisableControls;
@@ -2678,9 +2731,11 @@ begin
       Form7.sRPS := 'N';
       Form7.Show;
       //
-      if Form24.DBGrid1.CanFocus then Form24.DBGrid1.SetFocus;
+      if Form24.DBGrid1.CanFocus then
+        Form24.DBGrid1.SetFocus;
       Form7.ibDataSet23.Last;
-    except end;
+    except
+    end;
     //
     Form1.bFechaTudo           := True;
     //
@@ -2731,10 +2786,12 @@ begin
       //
       Form7.Show;
       //
-      if Form24.DBGrid1.CanFocus then Form24.DBGrid1.SetFocus;
+      if Form24.DBGrid1.CanFocus then
+        Form24.DBGrid1.SetFocus;
       Form7.ibDataSet23.Last;
       //
-    except end;
+    except
+    end;
     //
     Form1.bFechaTudo           := True;
     Form7.ibDataSet24.EnableControls;
@@ -2815,10 +2872,20 @@ end;
 procedure TForm24.Edit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
-  if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_DOWN then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_DOWN then
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_UP   then
+    if dBgrid2.Visible = True then
+      dBgrid2.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,-1,0);
   Key := VK_SHIFT;
 end;
 
@@ -2893,8 +2960,11 @@ end;
 procedure TForm24.Edit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_DOWN then if dBgrid33.CanFocus then dBgrid33.SetFocus;
-  if Key = VK_ESCAPE then Form24.Button2Click(Sender);
+  if Key = VK_DOWN then
+    if dBgrid33.CanFocus then
+      dBgrid33.SetFocus;
+  if Key = VK_ESCAPE then
+    Form24.Button2Click(Sender);
 end;
 
 procedure TForm24.Button2Click(Sender: TObject);
@@ -2970,8 +3040,8 @@ end;
 
 procedure TForm24.DBGrid33DblClick(Sender: TObject);
 var
-  bButton : Integer;
-  scodigo : String;
+  bButton: Integer;
+  scodigo: String;
 begin
   //
   if Form7.ibDataSet4DESCRICAO.AsString <> Form7.ibDataSet23DESCRICAO.AsString then
@@ -3000,7 +3070,8 @@ begin
         Form7.IBDataSet6FORNECEDOR.AsString   := Form7.ibDataSet24FORNECEDOR.AsString;
         Form7.IBDataSet6.Post;
       except
-        on E: Exception do  ShowMessage('Erro 2133: '+chr(10)+E.Message);
+        on E: Exception do
+          ShowMessage('Erro 2133: '+chr(10)+E.Message);
       end;
       //
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
@@ -3080,9 +3151,11 @@ end;
 procedure TForm24.SMALL_DBEdit42KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
 //  if Key = VK_RETURN then Form7.ibDataSet23.Next;
-  if Form7.ibDataSet23.Eof then Form24.SMALL_DBEdit22.SetFocus;
+  if Form7.ibDataSet23.Eof then
+    Form24.SMALL_DBEdit22.SetFocus;
 end;
 
 procedure TForm24.SMALL_DBEdit27Exit(Sender: TObject);
@@ -3108,12 +3181,20 @@ begin
     //
   end;
   //
-  if Form7.ibDataSet24FRETE12.AsString = '0' then Edit4.Text := '0-Remetente' else
-    if Form7.ibDataSet24FRETE12.AsString = '1' then Edit4.Text := '1-Destinatário' else
-      if Form7.ibDataSet24FRETE12.AsString = '2' then Edit4.Text := '2-Terceiros' else
-        if Form7.ibDataSet24FRETE12.AsString = '3' then Edit4.Text := '3-Próprio remetente' else
-          if Form7.ibDataSet24FRETE12.AsString = '4' then Edit4.Text := '4-Próprio destinatário' else
-           if Form7.ibDataSet24FRETE12.AsString = '9' then Edit4.Text := '9-Sem frete' else Edit4.Text := '';
+  if Form7.ibDataSet24FRETE12.AsString = '0' then
+    Edit4.Text := '0-Remetente'
+  else if Form7.ibDataSet24FRETE12.AsString = '1' then
+    Edit4.Text := '1-Destinatário'
+  else if Form7.ibDataSet24FRETE12.AsString = '2' then
+    Edit4.Text := '2-Terceiros'
+  else if Form7.ibDataSet24FRETE12.AsString = '3' then
+    Edit4.Text := '3-Próprio remetente'
+  else if Form7.ibDataSet24FRETE12.AsString = '4' then
+    Edit4.Text := '4-Próprio destinatário'
+  else if Form7.ibDataSet24FRETE12.AsString = '9' then
+    Edit4.Text := '9-Sem frete'
+  else
+    Edit4.Text := '';
   //
   Form24.Edit4.Visible := True;
   //
@@ -3161,11 +3242,13 @@ begin
     end;
   end;
   //
-  if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
+  if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
+    Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
   //
   try
     Form24.SMALL_DBEdit40.SetFocus;
-  except end;
+  except
+  end;
   //
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
   //
@@ -3174,7 +3257,7 @@ end;
 procedure TForm24.Edit8Click(Sender: TObject);
 begin
   //
-  Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação','Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)',LimpaNumero(Edit8.Text)));
+  Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação', 'Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)', LimpaNumero(Edit8.Text)));
   //
   if (LimpaNumero(Edit8.Text) = '1') then
   begin
@@ -3184,11 +3267,13 @@ begin
     Edit8.Text := '0-Normal';
   end;
   //
-  if Form7.ibDataSet24INDFINAL.AsString <> LimpaNumero(Edit8.Text) then Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
+  if Form7.ibDataSet24INDFINAL.AsString <> LimpaNumero(Edit8.Text) then
+    Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
   //
   try
     Form24.SMALL_DBEdit40.SetFocus;
-  except end;
+  except
+  end;
   //
   // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)
   //
@@ -3237,7 +3322,8 @@ begin
     end;
   end;
   //
-  if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
+  if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then
+    Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
   //
   try
     Form24.SMALL_DBEdit40.SetFocus;
@@ -3276,8 +3362,10 @@ begin
         //
         if AllTrim(Form7.IbDataSet4MEDIDAE.AsString) = '' then
         begin
-          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
-          if AllTrim(Form7.IbDataSet4MEDIDA.AsString) <> '' then Form7.ibDataSet4MEDIDAE.AsString := Form7.ibDataSet4MEDIDA.AsString else
+          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            Form7.ibDataset4.Edit;
+          if AllTrim(Form7.IbDataSet4MEDIDA.AsString) <> '' then
+            Form7.ibDataSet4MEDIDAE.AsString := Form7.ibDataSet4MEDIDA.AsString else
           begin
             Form7.ibDataSet4MEDIDAE.AsString := 'UND';
             Form7.ibDataSet4MEDIDA.AsString := 'UND';
@@ -3304,7 +3392,8 @@ begin
         ///
         if Form7.IbDataSet4FATORC.AsFloat <= 0 then
         begin
-          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            Form7.ibDataset4.Edit;
           Form7.ibDataSet4FATORC.AsFloat := 1;
         end;
         //
@@ -3316,7 +3405,8 @@ begin
       end;
     end;
   except
-    on E: Exception do  ShowMessage('Erro 8 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      ShowMessage('Erro 8 FC: '+chr(10)+E.Message);
   end;
   //
 end;
@@ -3326,7 +3416,8 @@ begin
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
-      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Edit;
       Form7.ibDataSet4MEDIDAE.AsString :=  ComboBox12.Text;
       Exemplo(True);
     end else
@@ -3345,7 +3436,8 @@ begin
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
-      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Edit;
       Form7.ibDataSet4MEDIDA.AsString  :=  ComboBox13.Text;
       Exemplo(True);
     end else
@@ -3363,7 +3455,8 @@ begin
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
-      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
+      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Post;
       Form7.ibDataset4.Edit;
       Exemplo(True);
     end else
@@ -3371,7 +3464,8 @@ begin
       Form24.Label89.Caption := '';
     end;
   except
-    on E: Exception do  ShowMessage('Erro 1 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      ShowMessage('Erro 1 FC: '+chr(10)+E.Message);
   end;
 end;
 
@@ -3381,9 +3475,11 @@ begin
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
-      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
+      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Post;
       Form7.ibDataset4.Edit;
-      if Form7.ibDataSet4FATORC.AsFloat = 0 then Form7.ibDataSet4FATORC.AsFloat :=1;
+      if Form7.ibDataSet4FATORC.AsFloat = 0 then
+        Form7.ibDataSet4FATORC.AsFloat :=1;
       Exemplo(True);
       //
       try
@@ -3404,7 +3500,8 @@ begin
       Form24.Label89.Caption := '';
     end;
   except
-    on E: Exception do  ShowMessage('Erro 2 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      ShowMessage('Erro 2 FC: '+chr(10)+E.Message);
   end;
 end;
 
@@ -3414,7 +3511,8 @@ begin
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
-      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
+      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Post;
       Form7.ibDataset4.Edit;
       Exemplo(True);
     end else
@@ -3429,7 +3527,8 @@ begin
     DbGrid1.SelectedIndex := 0;
     DbGrid1.SelectedIndex := 1;
   except
-    on E: Exception do  ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
   end;
   //
 end;
@@ -3437,8 +3536,10 @@ end;
 procedure TForm24.ComboBox12KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
   Key := VK_SHIFT;
 end;
 
@@ -3506,7 +3607,8 @@ begin
       //
       iA := Form7.Height - Panel1.Height - Ok.Height - 60;
       //
-      if iA < 0 then iA := 0;
+      if iA < 0 then
+        iA := 0;
 //      if iA > 0 then
       begin
         //
@@ -3518,9 +3620,12 @@ begin
           try
             if (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Popup') and (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Image') then
             begin
-              if TSMALL_DBEdit(Components[I]).Top > dBGrid1.Top then TSMALL_DBEdit(Components[I]).Top := TSMALL_DBEdit(Components[I]).Top + iA -75;
+              if TSMALL_DBEdit(Components[I]).Top > dBGrid1.Top then
+                TSMALL_DBEdit(Components[I]).Top := TSMALL_DBEdit(Components[I]).Top + iA -75;
             end;
-          except end;
+          except
+
+          end;
         end;
       end;
       //
