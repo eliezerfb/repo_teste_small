@@ -5,6 +5,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, SmallFunc;
+  
 type
   TForm9 = class(TForm)
     ScrollBox1: TScrollBox;
@@ -192,7 +193,6 @@ begin
   // inclusive mudar o valor das suas propriedades
   //
   Form9.Height := 5;
-
   //
   for I := 1 to Form7.iCampos do
   begin

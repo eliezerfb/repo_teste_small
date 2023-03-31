@@ -9226,12 +9226,18 @@ begin
         end;
       end else
       begin
-        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE 1'   then Form7.Vendas_1Click(Sender) else
-        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE 2'   then Form7.NotasfiscaisdesadavendasSrie11Click(Sender) else
-        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE XXX' then Form7.Vendas_XXXClick(Sender) else
-        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'COMPRA'    then Form7.Vendas_1Click(Sender) else
-        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE RPS' then Form7.Vendas_1Click(Sender) else
-        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE 920' then Form7.Vendas_1Click(Sender);
+        if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE 1'   then
+          Form7.Vendas_1Click(Sender)
+        else if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE 2'   then
+          Form7.NotasfiscaisdesadavendasSrie11Click(Sender)
+        else if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE XXX' then
+          Form7.Vendas_XXXClick(Sender)
+        else if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'COMPRA'    then
+          Form7.Vendas_1Click(Sender)
+        else if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE RPS' then
+          Form7.Vendas_1Click(Sender)
+        else if Mais1Ini.ReadString('NOTAS','default','SERIE 1') = 'SERIE 920' then
+          Form7.Vendas_1Click(Sender);
       end;
     end;
     //
@@ -14490,18 +14496,27 @@ begin
       //
       if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) then
       begin
-        if (Form12.Visible) then Form12.BringToFront else Form7.BringToFront;
+        if (Form12.Visible) then
+          Form12.BringToFront
+        else
+          Form7.BringToFront;
       end;
       //
       if ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
       begin
-        if (Form24.Visible) then Form24.BringToFront else Form7.BringToFront;
+        if (Form24.Visible) then
+          Form24.BringToFront
+        else
+          Form7.BringToFront;
       end;
     end else
     begin
       if (Form7.sModulo = 'OS') then
       begin
-        if (Form30.Visible) then Form30.BringToFront else Form7.BringToFront;
+        if (Form30.Visible) then
+          Form30.BringToFront
+        else
+          Form7.BringToFront;
       end else
       begin
         if Form10.Visible then
@@ -14540,13 +14555,13 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_8.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_8.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_8.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_8.bmp');
       Titulo('CONTROLE O '+chr(10)+
-       'ESTOQUE'
-       ,
-       'O controle de estoque bem'+chr(10)+
-       'organizado evita prejuízos'+chr(10)+
-       'e garante uma maior'+chr(10)+
-       'margem de lucro'
-      );
+             'ESTOQUE'
+             ,
+             'O controle de estoque bem'+chr(10)+
+             'organizado evita prejuízos'+chr(10)+
+             'e garante uma maior'+chr(10)+
+             'margem de lucro'
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14576,14 +14591,14 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_9.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_9.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_9.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_9.bmp');
       Titulo(
-        'UTILIZE A ORDEM '+chr(10)+
-        'DE SERVIÇOS'
-        ,
-        'A Ordem de Serviços facilita'+chr(10)+
-        'o atendimento ao cliente'+chr(10)+
-        'e organiza e mantém todo'+chr(10)+
-        'o trabalho documentado'
-      );
+            'UTILIZE A ORDEM '+chr(10)+
+            'DE SERVIÇOS'
+            ,
+            'A Ordem de Serviços facilita'+chr(10)+
+            'o atendimento ao cliente'+chr(10)+
+            'e organiza e mantém todo'+chr(10)+
+            'o trabalho documentado'
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14619,7 +14634,7 @@ begin
              'comunicação com clientes,'+chr(10)+
              'fornecedores, funcionários,'+chr(10)+
              'entre outros'
-      );
+             );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14656,7 +14671,7 @@ begin
              'As contas a receber bem controladas'+chr(10)+
              'diminuem o impacto que a inadimplência'+chr(10)+
              'pode ter em seu negócio'
-      );
+             );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14687,15 +14702,15 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
       Titulo(
-      'CONTROLE O '+chr(10)+
-      'CAIXA'
-      ,
-      'O fechamento exato do caixa permite'+chr(10)+
-      'total controle financeiro'+chr(10)+
-      'auxiliando na tomadas de'+chr(10)+
-      'decisões através da'+chr(10)+
-      'análise das contas'
-      );
+            'CONTROLE O '+chr(10)+
+            'CAIXA'
+            ,
+            'O fechamento exato do caixa permite'+chr(10)+
+            'total controle financeiro'+chr(10)+
+            'auxiliando na tomadas de'+chr(10)+
+            'decisões através da'+chr(10)+
+            'análise das contas'
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14725,15 +14740,15 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_5.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_5.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_5.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_5.bmp');
       Titulo(
-      'FIQUE DE OLHO NOS '+chr(10)+
-      'BANCOS'
-      ,
-      'O controle rigoroso das contas'+chr(10)+
-      'bancárias previne o pagamento'+chr(10)+
-      'de juros e permite um'+chr(10)+
-      'planejamento dos'+chr(10)+
-      'investimentos'
-      );
+            'FIQUE DE OLHO NOS '+chr(10)+
+            'BANCOS'
+            ,
+            'O controle rigoroso das contas'+chr(10)+
+            'bancárias previne o pagamento'+chr(10)+
+            'de juros e permite um'+chr(10)+
+            'planejamento dos'+chr(10)+
+            'investimentos'
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14763,14 +14778,14 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp');
       Titulo(
-      'CONFIGURE'+chr(10)+
-      'O SISTEMA'
-      ,
-      'A configuração correta, ajusta'+chr(10)+
-      'o sistema de acordo com as'+chr(10)+
-      'particularidades da'+chr(10)+
-      'sua empresa'
-      );
+            'CONFIGURE'+chr(10)+
+            'O SISTEMA'
+            ,
+            'A configuração correta, ajusta'+chr(10)+
+            'o sistema de acordo com as'+chr(10)+
+            'particularidades da'+chr(10)+
+            'sua empresa'
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14801,15 +14816,15 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_7.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_7.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_7.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_7.bmp');
       Titulo(
-      'FAÇA BACKUP'+chr(10)+
-      'TODOS OS'+chr(10)+
-      'DIAS'
-      ,
-      'O Backup é a única forma de'+chr(10)+
-      'manter seus dados'+chr(10)+
-      'seguros'+chr(10)+chr(10)+
-      Form1.Image208.Hint
-      );
+            'FAÇA BACKUP'+chr(10)+
+            'TODOS OS'+chr(10)+
+            'DIAS'
+            ,
+            'O Backup é a única forma de'+chr(10)+
+            'manter seus dados'+chr(10)+
+            'seguros'+chr(10)+chr(10)+
+            Form1.Image208.Hint
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14839,15 +14854,15 @@ begin
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_3.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_3.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_3.bmp');
       Titulo(
-        'ORGANIZE AS CONTAS'+chr(10)+
-        'A PAGAR'
-        ,
-        'As contas a pagar bem organizadas geram'+chr(10)+
-        'uma previsão dos compromissos'+chr(10)+
-        'financeiros facilitando o'+chr(10)+
-        'controle do fluxo'+chr(10)+
-        'de caixa'
-      );
+            'ORGANIZE AS CONTAS'+chr(10)+
+            'A PAGAR'
+            ,
+            'As contas a pagar bem organizadas geram'+chr(10)+
+            'uma previsão dos compromissos'+chr(10)+
+            'financeiros facilitando o'+chr(10)+
+            'controle do fluxo'+chr(10)+
+            'de caixa'
+            );
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -14975,16 +14990,16 @@ begin
     Label200.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_0.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_0.bmp') ; 
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_0.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_0.bmp') ;
       Titulo(
-      'ACOMPANHE OS'+chr(10)+
-      'INDICADORES'
-      ,
-      'Configure um painel de indicadores'+chr(10)+
-      'personalizado por usuário de'+chr(10)+
-      'acordo com as necessidades'+chr(10)+
-      'gerenciais da sua empresa'+chr(10)
-      );
+            'ACOMPANHE OS'+chr(10)+
+            'INDICADORES'
+            ,
+            'Configure um painel de indicadores'+chr(10)+
+            'personalizado por usuário de'+chr(10)+
+            'acordo com as necessidades'+chr(10)+
+            'gerenciais da sua empresa'+chr(10)
+            );
       Form1.BringToFront;
       //
       Form44.Width  := Form7.Width;
@@ -15087,7 +15102,8 @@ begin
         AgendaCommit(True);
         Commitatudo(True); // SQL - Commando
         AbreArquivos(False);
-        if not Form1.IBTransaction2.Active then Form1.IBTransaction2.Active := True;
+        if not Form1.IBTransaction2.Active then
+          Form1.IBTransaction2.Active := True;
         Form1.IBTransaction2.Commit;
         //
         Form5.BringToFront;
@@ -15450,9 +15466,10 @@ begin
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
-  if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim'
-    then Mais1Ini.WriteString('NFE','Consultar Nfes Emitidas','Não')
-      else Mais1Ini.WriteString('NFE','Consultar Nfes Emitidas','Sim');
+  if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
+    Mais1Ini.WriteString('NFE','Consultar Nfes Emitidas','Não')
+  else
+    Mais1Ini.WriteString('NFE','Consultar Nfes Emitidas','Sim');
   //
   Mais1Ini.Free;
   //
@@ -15574,7 +15591,8 @@ begin
     //
     Form1.Label201MouseLeave(Sender);
     //
-    if Form24.Visible then Form24.Show;
+    if Form24.Visible then
+      Form24.Show;
     //
   except
     on E: Exception do
@@ -15601,7 +15619,6 @@ begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_11.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_10.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_10.bmp');
       //
       Titulo(
-
             'CONTROLE AS NOTAS'+Chr(10)+'DE COMPRAS',
             'Controle as entradas de '+chr(10)+
             'mercadoria da sua'+chr(10)+
@@ -15641,9 +15658,7 @@ begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_12.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_12.bmp');
       //
       Titulo(
-
             'EMITA A NFS-e DE'+chr(10)+'SERVIÇOS',
-
             'A Nota Fiscal Eletrônica de Serviços além'+chr(10)+
             'de atender a legislação controla os'+chr(10)+
             'serviços prestados pela sua'+chr(10)+
@@ -16093,31 +16108,8 @@ begin
 end;
 
 procedure TForm1.ConfiguraCredencialTecnospeed;
-{Sandro Silva 2023-02-27 inicio
-var
-  CredencialTecnospeed: TCredenciaisTecnospeed;
-}
 begin
-
-  // Sandro Silva 2023-02-27 Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');
   Form7.spdNFe.ConfigurarSoftwareHouse('03916076000664', '5236f0fc4fb818efe845ebff0d0457af');// Sandro Silva 2023-02-27
-  {Sandro Silva 2023-02-27 inicio
-  try
-    CredencialTecnospeed := TCredenciaisTecnospeed.Create;
-    CredencialTecnospeed.PrivateKey := Form1.sPasta;
-    CredencialTecnospeed.LeCredencial(Form1.sAtual);
-
-    if CredencialTecnospeed.CNJP <> '' then
-      Form7.spdNFe.ConfigurarSoftwareHouse(CredencialTecnospeed.CNJP, CredencialTecnospeed.Token);
-
-    //ShowMessage( CredencialTecnospeed.CNJP + #13 + CredencialTecnospeed.Token);
-
-    FreeAndNil(CredencialTecnospeed);
-  except
-
-  end;
-  //
-  {Sandro Silva 2023-02-27 fim}
 end;
 
 procedure TForm1.ExibeRazaoSocialNoCaptionDoForm;
@@ -16168,16 +16160,6 @@ begin
       Result := DisponivelSomenteParaNos;
     end;
   end;
-  
-  {Sandro Silva 2023-01-04 inicio
-  if (sModulo = 'ESTOQUE') then
-  begin
-    if (AnsiUpperCase(sCampo) = 'IDENTIFICADORPLANOCONTAS') then
-    begin
-      Result := Result := DisponivelSomenteParaNos;
-    end;
-  end;
-  }
 
 end;
 

@@ -11366,10 +11366,20 @@ begin
         Form7.ibDataSet35UNITARIO.Visible := False;
         Form7.ibDataSet16UNITARIO.Visible := False;
         //
-        dbGrid2.Left    := Form7.Width - 410 -5;
-        dbGrid2.Top     := dbGrid1.Top;
-        dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
-        dbGrid2.Width   := 395;
+        if (sModulo = 'COMPRA') then
+        begin
+          dbGrid2.Left    := Form7.Width - 447 - 5; // Form7.Width - 410 -5;
+          dbGrid2.Top     := dbGrid1.Top;
+          dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
+          dbGrid2.Width   := 432;
+        end
+        else
+        begin
+          dbGrid2.Left    := Form7.Width - 410 - 5;
+          dbGrid2.Top     := dbGrid1.Top;
+          dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
+          dbGrid2.Width   := 395;
+        end;
         //
         dbGrid2.Visible := True;
         //
@@ -11378,10 +11388,20 @@ begin
         Panel9.width   := dbGrid2.Width;
         Panel9.Visible := True;
         //
-        dbGrid3.Left    := Form7.Width - 410 -5;
-        dbGrid3.Top     := Panel9.Top + Panel9.Height + 10;
-        dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
-        dbGrid3.Width   := 395;
+        if (sModulo = 'COMPRA') then
+        begin
+          dbGrid3.Left    := Form7.Width - 447 -5;
+          dbGrid3.Top     := Panel9.Top + Panel9.Height + 10;
+          dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
+          dbGrid3.Width   := 432;
+        end
+        else
+        begin
+          dbGrid3.Left    := Form7.Width - 410 -5;
+          dbGrid3.Top     := Panel9.Top + Panel9.Height + 10;
+          dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
+          dbGrid3.Width   := 395;
+        end;
         //
         dBgrid3.Visible        := True;
         //
@@ -11403,6 +11423,11 @@ begin
         Form7.ibDataSet23CST_ICMS.Visible       := False;
         Form7.ibDataSet23CST_IPI.Visible        := False;
         Form7.ibDataSet23CFOP.Visible           := False;
+        if (sModulo = 'COMPRA') then
+        begin
+          Form7.ibDataSet23CFOP.Visible           := True;
+
+        end;
         Form7.ibDataSet23VICMS.Visible          := False;
         Form7.ibDataSet23VBC.Visible            := False;
         Form7.ibDataSet23VBCST.Visible          := False;
@@ -11667,8 +11692,23 @@ begin
         //
         // Campos
         //
+        {Sandro Silva 2023-03-27 inicio
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
         iCampos                := 25;
+        }
+        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 25 then
+        begin
+          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra));
+        end
+        else
+        begin
+          sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+        end;
+        iCampos                := 26;
+        Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
+        {Sandro Silva 2023-03-27 fim}
+
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
@@ -12689,6 +12729,7 @@ begin
       //
       try
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize]; // 2CONTAS
+        (*
         with ArquivoAberto do
         begin
           try
@@ -12724,6 +12765,40 @@ begin
           except
           end;
         end;
+        *)
+
+        try
+          for I := 1 to iCampos do
+          begin
+            ArquivoAberto.Fields[I-1].Visible := True;
+            if copy(sMostra+'FFFFFFFFFFFFFFFFFFFF',I,1) = 'F' then
+              ArquivoAberto.Fields[I-1].Visible := False;
+
+            {Sandro Silva 2022-12-16 inicio // Sandro Silva 2023-01-09
+            if sModulo = 'ESTOQUE' then
+            begin
+              if ArquivoAberto.Fields[I-1].FieldName = 'IDENTIFICADORPLANOCONTAS' then
+              begin
+                ArquivoAberto.Fields[I-1].Visible := Form1.CampoDisponivelParaUsuario(sModulo, ArquivoAberto.Fields[I-1].FieldName);
+              end;
+            end;
+            {Sandro Silva 2022-12-16 fim}
+
+
+            {Sandro Silva 2022-12-16 inicio}
+            if sModulo = 'RECEBER' then
+            begin
+              if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
+              begin
+                ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
+              end;
+            end;
+            {Sandro Silva 2022-12-16 fim}
+
+          end;
+        except
+        end;
+
       except
       end;
       //
@@ -15181,14 +15256,20 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
           end;
           //
 //          if (Field.Name = 'ibDataSet15NFEPROTOCOLO') and (Length(AllTrim(Field.AsString))>=10) then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString+'   ',10,3))
-          if ((Field.Name = 'ibDataSet15NUMERONF') and (Copy(Field.AsString,10,3)='RPS')) then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9))
-           else if (Field.Name = 'ibDataSet15NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-            else if (Field.Name = 'ibDataSet7NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-              else if (Field.Name = 'ibDataSet24NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-                else if (Field.Name = 'ibDataSet8NUMERONF') then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
-                  else if (Field.FieldName = 'CONTATOS') then DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,sTex)
-                    else DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,StrTran(StrTran(Copy(Field.AsString,1,Field.DisplayWidth),chr(10),' '),chr(13),' '));
-
+          if ((Field.Name = 'ibDataSet15NUMERONF') and (Copy(Field.AsString,10,3)='RPS')) then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9))
+          else if (Field.Name = 'ibDataSet15NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.Name = 'ibDataSet7NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.Name = 'ibDataSet24NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.Name = 'ibDataSet8NUMERONF') then
+            dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString,10,3))
+          else if (Field.FieldName = 'CONTATOS') then
+            DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,sTex)
+          else
+            DbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,StrTran(StrTran(Copy(Field.AsString,1,Field.DisplayWidth),chr(10),' '),chr(13),' '));
 
         end;
       except
@@ -19713,15 +19794,15 @@ begin
   //
   if sModulo = 'OS' then
   begin
-    Form7.Panel9.Caption := Format('%14.2n',[Form7.ibDataSet3TOTAL_PECA.AsFloat]);
-    Form7.Panel10.Caption  := Format('%14.2n',[Form7.ibDataSet3TOTAL_SERV.AsFloat]);
+    Form7.Panel9.Caption  := Format('%14.2n',[Form7.ibDataSet3TOTAL_PECA.AsFloat]);
+    Form7.Panel10.Caption := Format('%14.2n',[Form7.ibDataSet3TOTAL_SERV.AsFloat]);
     Form7.Panel10.Repaint;
     Form7.Panel9.Repaint;
   end;
   //
   if sModulo = 'VENDA' then
   begin
-    Form7.Panel9.Caption := Format('%14.2n',[Form7.ibDataSet15MERCADORIA.AsFloat]);
+    Form7.Panel9.Caption  := Format('%14.2n',[Form7.ibDataSet15MERCADORIA.AsFloat]);
     Form7.Panel10.Caption := Format('%14.2n',[Form7.ibDataSet15SERVICOS.AsFloat]);
     Form7.Panel10.Repaint;
     Form7.Panel9.Repaint;
@@ -23383,7 +23464,13 @@ begin
       if sModulo = 'COMPRA' then
       begin
         Form7.ibDataSet8.First;
-        while not Form7.ibDataSet8.Eof do if Form7.ibDataSet8NUMERONF.AsString = Form7.ibDataSet24NUMERONF.AsString then Form7.ibDataSet8.Delete else Form7.ibDataSet8.Next;
+        while not Form7.ibDataSet8.Eof do
+        begin
+          if Form7.ibDataSet8NUMERONF.AsString = Form7.ibDataSet24NUMERONF.AsString then
+            Form7.ibDataSet8.Delete
+          else
+            Form7.ibDataSet8.Next;
+        end;
       end;
       //
       Screen.Cursor := crDefault; // Cursor de Aguardo
@@ -24049,7 +24136,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   //
 end;
 
@@ -24062,7 +24151,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet19BeforeInsert(DataSet: TDataSet);
@@ -24087,7 +24178,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   //
 end;
 
@@ -24103,7 +24196,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   //
 end;
 
@@ -24116,7 +24211,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet7BeforeInsert(DataSet: TDataSet);
@@ -24129,7 +24226,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
   fValorAnterior := 0;
   //
 end;
@@ -24143,7 +24242,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet12BeforeInsert(DataSet: TDataSet);
@@ -24155,7 +24256,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet14BeforeInsert(DataSet: TDataSet);
