@@ -187,7 +187,7 @@ var
 
 implementation
 
-uses fiscal, Unit10, Unit22, Unit6, Unit5, _small_59, _small_1,_small_2, _small_3,
+uses fiscal, Unit10, Unit22, Unit6, {Unit5, }_small_59, _small_1,_small_2, _small_3,
     {Sandro Silva 2021-07-22 inicio
    _small_4,
    _small_5,

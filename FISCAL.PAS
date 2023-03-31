@@ -1704,7 +1704,7 @@ uses
 
 
   , Unit2, Unit3, Unit6, Unit4, Unit7, Unit10, Unit12,
-  Unit13, Unit5, Unit22, formas,
+  Unit13, {Unit5,} Unit22, formas,
   _small_1,
   _small_2,
   _small_3, // dll carregada dinamicamente

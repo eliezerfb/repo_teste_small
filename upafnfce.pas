@@ -98,7 +98,7 @@ uses fiscal
   , unit7
   , ufuncoesfrente
   , SmallFunc
-  , uassinaxmlpafnfce
+//  , uassinaxmlpafnfce
   ;
 
 { TRequisitosPafNfce0100 }

@@ -21,7 +21,7 @@ uses fiscal
   , unit7
   , ufuncoesfrente
   , SmallFunc
-  , uassinaxmlpafnfce
+//  , uassinaxmlpafnfce
   ;
 
 procedure ClassificaAliquotaSituacaoTributaria(var sAliquota: String; var sSituacaoTributaria: String);
