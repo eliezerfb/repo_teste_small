@@ -20007,11 +20007,12 @@ begin
                     end else
                     begin
                       vlFreteRateadoItem := 0;
-                      
-                      if vFreteSobreIPI then
-                        vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat),2);
 
-                      vlBalseIPI := Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat + vlFreteRateadoItem;
+                      if vFreteSobreIPI then
+                        vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat)
+                                                         * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
+
+                      vlBalseIPI := Form7.ibDataSet101.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem;
 
                       Form7.ibDataSet15IPI.Value := Form7.ibDataSet15IPI.Value +
                                                     Arredonda2((vlBalseIPI * ( Form7.ibDataSet101.FieldByname('IPI').Value / 100 )),2);
