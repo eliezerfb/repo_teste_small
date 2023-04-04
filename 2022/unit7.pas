@@ -19855,6 +19855,12 @@ begin
       IBQESTOQUE.SQL.Add('select DESCRICAO, PRECO, TIPO_ITEM from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' '); // Ok
       IBQESTOQUE.Open;
 
+      //Mauricio Parizotto 2023-04-03
+      fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
+                                          ' From ITENS001 '+
+                                          ' Where NUMERONF='+QuotedStr(ibDAtaSet15NUMERONF.AsString),ibDAtaSet15.Transaction);
+
+
       if IBQESTOQUE.FieldByname('TIPO_ITEM').AsString = '09' then
       begin
         ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
@@ -19867,7 +19873,7 @@ begin
         begin
           if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
           begin
-            fTotalMercadoria := Form7.ibDataSet15MERCADORIA.AsFloat;
+            //fTotalMercadoria := Form7.ibDataSet15MERCADORIA.AsFloat;
 
             Form7.ibDataSet15.DisableControls;
             Form7.ibDataSet15.Edit;
@@ -20009,7 +20015,7 @@ begin
                       vlFreteRateadoItem := 0;
 
                       if vFreteSobreIPI then
-                        vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat)
+                        vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / fTotalMercadoria)
                                                          * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
 
                       vlBalseIPI := Form7.ibDataSet101.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem;

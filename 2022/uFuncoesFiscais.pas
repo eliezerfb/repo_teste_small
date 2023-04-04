@@ -16,6 +16,7 @@ uses
 
 
 function CampoICMporNatureza(vCampo,vNatureza : string; Transacao : TIBTransaction) : string;
+function RetornaValorSQL(vSQL : string;  Transacao : TIBTransaction) : variant;
 
 implementation
 
@@ -41,5 +42,23 @@ begin
 
   FreeAndNil(IBQTemp);
 end;
+
+
+function RetornaValorSQL(vSQL : string;  Transacao : TIBTransaction) : variant;
+var
+  IBQTemp: TIBQuery;
+begin
+  IBQTemp := Form7.CriaIBQuery(Transacao);
+
+  try
+    IBQTemp.SQL.Text := vSQL;
+    IBQTemp.Open;
+    Result := IBQTemp.Fields[0].AsVariant;
+  except
+  end;
+
+  FreeAndNil(IBQTemp);
+end;
+
 
 end.
