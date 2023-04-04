@@ -19835,13 +19835,15 @@ var
   IBQESTOQUE: TIBQuery; // Sandro Silva 2022-11-10 Para substituir Form7.IBDATASET99 que é usado em outros eventos disparados em cascatas
 
   vlBalseIPI, vlFreteRateadoItem : Double;
-  vFreteSobreIPI : Boolean;
+  vlBalseICMSItem, vlICMSItem : Double;
+  vFreteSobreIPI, vIPISobreICMS : Boolean;
 begin
   IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
   IBQESTOQUE.DisableControls;
 
   //Mauricio Parizotto 2023-03-28
   vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+  vIPISobreICMS  := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
 
   if Form7.sModulo <> 'NAO' then
   begin
@@ -19999,13 +20001,14 @@ begin
 
                   if (Copy(Form7.ibQuery14.FieldByname('CFOP').AsString,1,4) = '5101') or (Copy(Form7.ibQuery14.FieldByname('CFOP').AsString,1,4) = '6101') or (Pos('IPI',Form7.ibQuery14.FieldByname('OBS').AsString) <> 0) then
                   begin
-                    {Mauricio Parizotto 2023-03-30 Inicio}
                     // IPI
+                    {Mauricio Parizotto 2023-03-30 Inicio}
                     if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                     begin
                       Form7.ibDataSet15IPI.AsFloat         := Form7.ibDataSet15IPI.AsFloat + Arredonda2((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2);
 
-                      if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) then
+                      //if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) then
+                      if vIPISobreICMS then
                       begin
                         Form7.ibDataSet15BASEICM.AsFloat   := Form7.ibDataSet15BASEICM.AsFloat + Arredonda((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2); //
                         Form7.ibDataSet15ICMS.AsFloat      := Form7.ibDataSet15ICMS.AsFloat    + Arredonda(((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString))) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 )),2); // Acumula em 16 After post
@@ -20032,7 +20035,8 @@ begin
                     end;
 
                     // Calcula o ICM
-                    if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) and (ibDataSet101.FieldByname('IPI').AsFloat<>0) then
+                    //if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) and (ibDataSet101.FieldByname('IPI').AsFloat<>0) then
+                    if (vIPISobreICMS) and (ibDataSet101.FieldByname('IPI').AsFloat<>0) then
                     begin
                       if Form7.ibDataSet101.FieldByname('BASE').AsFloat > 0 then
                       begin
@@ -20049,8 +20053,14 @@ begin
                                                                                      (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '90')))
                           then
                           begin
-                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
-                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
+                            {Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post}
+
+                            vlBalseICMSItem := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            vlICMSItem      := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2);
+
+                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + vlBalseICMSItem;
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + vlICMSItem;
                           end;
 
                           // CALCULO DO IVA
@@ -20103,8 +20113,14 @@ begin
                                                                                      (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '90')))
                           then
                           begin
-                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
-                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
+                            {Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post}
+
+                            vlBalseICMSItem := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            vlICMSItem      := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2);
+
+                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + vlBalseICMSItem;
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + vlICMSItem;
                           end;
                         end;
                       end;
@@ -20310,8 +20326,24 @@ begin
                         begin
                           fSomaNaBase := 0;
 
-                          if ibDataSet15.FieldByname('FRETE').AsFloat    <> 0 then if (ibDataSet15.FieldByname('FRETE').AsFloat    / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('FRETE').AsFloat    / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor Total do Frete
-                          if ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then if (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando valor do Seguro
+                          if ibDataSet15.FieldByname('FRETE').AsFloat <> 0 then
+                          begin
+                            if (ibDataSet15.FieldByname('FRETE').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then
+                              fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('FRETE').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor Total do Frete
+
+                            //Frete Sobre IPI e IPI sobre ICMS
+                            if (vFreteSobreIPI) and (vIPISobreICMS) then
+                            begin
+                              vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / fTotalMercadoria)
+                                                               * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
+
+                              fSomaNaBase := fSomaNaBase + Arredonda2((vlFreteRateadoItem * ( Form7.ibDataSet101.FieldByname('IPI').Value / 100 )),2);
+                            end;
+                          end;
+
+                          if ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then
+                            if (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then
+                              fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando valor do Seguro
 
                           // Soma na base de calculo
                           if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
@@ -20319,7 +20351,9 @@ begin
                             if ibDataSet15.FieldByname('DESPESAS').AsFloat <> 0 then if (ibDataSet15.FieldByname('DESPESAS').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('DESPESAS').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor de outras
                           end;
 
-                          if ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then if (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase - (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor do frete descontando
+                          if ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then
+                            if (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then
+                              fSomaNaBase  := fSomanaBase - (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor do frete descontando
 
                           Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda((ibDataSet101.FieldByname('BASE').AsFloat*fSomaNaBase/100),2);
                           Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(((ibDataSet101.FieldByname('BASE').AsFloat*fSomaNaBase/100) * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
