@@ -4273,12 +4273,14 @@ begin
   begin
     //
     Form1.sMenuFiscal := 'Menu fiscal';
+
     //
     if (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '99') then
     begin
       Form1.sMenuFiscal := 'Menu';
       Form1.sHoraDoCupom := Form1.PDV_DataeHoraDaImpressora(True);
 
+      Form1.sDataDoCupom := Form1.PDV_DataMovimento(True); // Sandro Silva 2023-04-04
       //
       //if Form1.sModeloECF_Reserva = '65' then
       //  Form1.sHoraDoCupom := _ecf65_Dataehoradaimpressora(True);
