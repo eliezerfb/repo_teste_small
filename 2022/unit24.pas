@@ -249,6 +249,7 @@ type
     procedure ComboBox12KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Button1Click(Sender: TObject);
+    procedure SMALL_DBEdit41Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -1880,6 +1881,8 @@ procedure TForm24.SMALL_DBEdit41Change(Sender: TObject);
 begin
   if (Form24.Visible) and (Form7.ibDataSet18.Active) then
   begin
+    dBGrid2.Visible := True;
+
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * FROM TRANSPOR where Upper(NOME) like '+QuotedStr('%'+UpperCase(SMALL_DBEdit41.Text)+'%')+' order by upper(NOME)');
@@ -1887,14 +1890,12 @@ begin
     Form7.ibDataSet99.First;
     Form7.ibDataSet18.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]);
   end;
-  //
 end;
 
 procedure TForm24.SMALL_DBEdit41Enter(Sender: TObject);
 begin
-//  Form7.ibDataSet18.IndexFieldNames := 'NOME';
   dBGrid2.DataSource := Form7.DataSource18;
-  dBGrid2.Visible := True;
+  //dBGrid2.Visible := True;
   dBGrid2.Height  := 150;
   dBGrid2.Left    := SMALL_DBEdit41.Left;
   dbGrid2.Top     := SMALL_DBEdit41.Top + SMALL_DBEdit41.Height;
@@ -1912,8 +1913,7 @@ begin
     begin
       Form7.ibDataSet24.Edit;
       Form7.ibDataSet24TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
-    end
-    else
+    end else
     begin
 //      Form29.ShowModal;
       Form7.ibDataSet24.Edit;
@@ -1927,18 +1927,15 @@ begin
     Form7.ibDataSet24.Post;
     { Ver }
   end;
-  //
+
   if AllTrim(Form7.ibDataSet24TRANSPORTA.AsString) = '' then Form7.ibDataSet18.Append else
   begin
-    //
     if AllTrim(Form7.ibDataSet24FRETE12.AsString) = '' then
     begin
       if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then Form7.ibDataset24.Edit;
       Form7.ibDataSet24FRETE12.AsString := '1';
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm24.DBGrid33KeyPress(Sender: TObject; var Key: Char);
@@ -2008,12 +2005,9 @@ end;
 
 procedure TForm24.DBGrid1Enter(Sender: TObject);
 begin
-  //
   Form1.bFlag := False;
   dBGrid2.Visible    := False;
   dBGrid3.Visible    := False;
-  //
-  //
 end;
 
 procedure TForm24.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -2021,22 +2015,19 @@ procedure TForm24.DBGrid1KeyDown(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
-  //
-  //
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
     Key := VK_SHIFT;
     Abort;
   end;
-  //
-  //
+
   if ((Key = VK_DOWN) or (Key = VK_UP)) and (dBgrid3.CanFocus) then
   begin
     Key := VK_SHIFT;
     dBgrid3.SetFocus;
   end;
-  //
+
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet23DESCRICAO.AsString) = '') then DbGrid1.SelectedIndex := 0;
@@ -2100,14 +2091,12 @@ end;
 procedure TForm24.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
   //
   if DbGrid1.SelectedIndex = 0 then
   begin
-    //
     if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
     begin
       if not dBGrid3.Visible then
@@ -2115,17 +2104,14 @@ begin
         dBgrid3.Visible := True;
         dBGrid3.Height  := 170;
       end else
-      //
       Form1.bFlag := False;
       Form7.ibDataSet23.Edit;
       Form7.ibDataSet23.UpdateRecord;
       Form7.ibDataSet23.Edit;
       Form1.bFlag := True;
-      //
     end;
-    //
   end;
-  //
+
   if AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '' then
   begin
     if Form7.ibDataSet23CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
@@ -2136,9 +2122,8 @@ begin
       Form7.ibDataSet4.Open;
     end;
   end;
-  //
+
   MostraFoto(True);
-  //
 end;
 
 
@@ -2220,16 +2205,14 @@ end;
 
 procedure TForm24.DBGrid1ColExit(Sender: TObject);
 begin
-  //
 //  Form1.bFlag := True;
   Form7.ibDataSet23DESCRICAOChange(Form7.ibDataSet23DESCRICAO);
   Form7.ibDataSet23QTD_ORIGINALChange(Form7.ibDataSet23QTD_ORIGINAL);
   Form7.ibDataSet23UNITARIO_OChange(Form7.ibDataSet23UNITARIO_O);
-  //
+
   Form12.SMALL_DBEdit45.Repaint;
   Form12.SMALL_DBEdit44.Repaint;
   Form12.SMALL_DBEdit42.Repaint;
-  //
 end;
 
 procedure TForm24.FormResize(Sender: TObject);
@@ -3003,19 +2986,19 @@ begin
   begin
     if Form7.ibDataSet4DESCRICAO.AsString <> '' then
     begin
+      Form7.ibDataSet23.Edit;
+
       if AllTrim(Form7.ibDataSet23DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
       begin
-        Form7.ibDataSet23.Edit;
         Form7.ibDataSet23QUANTIDADE.AsFloat := 0;
       end;
-      Form7.ibDataSet23.Edit;
+
       Form1.bFlag := True;
       Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-      //
+      
       dBGrid3.Visible := False;
       dbGrid1.SelectedIndex := 1;
       dbGrid1.SetFocus;
-      //
     end;
   end;
 end;
@@ -3636,6 +3619,11 @@ begin
   Ok.Top      := Panel1.Top + Panel1.Height + 10;
   //
   //
+end;
+
+procedure TForm24.SMALL_DBEdit41Click(Sender: TObject);
+begin
+  dBGrid2.Visible := True;
 end;
 
 end.

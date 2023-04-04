@@ -22497,40 +22497,36 @@ end;
 procedure TForm7.ibDataSet23DESCRICAOChange(Sender: TField);
 var
   I : Integer;
-//  MeuBookMark: TBookmark;
   sCodigoAnterior : String;
   sSerial : string;
-  //
+
   // Pis cofins da Operação
-  //
   sCST_PIS_COFINS : String;
   rpPIS, rpCOFINS : Real;
-
 begin
-  //
   if (Form1.bFlag) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
   begin
-    //
-// Erro do vídeo
     Form7.ibDataSet23.DisableControls;
     Form7.ibDataSet4.DisableControls;
-    //
+
     // Só procura se estiver diferente
-    //
-    if ibDataSet14.FieldByname('CSTPISCOFINS').AsString <> ibDataSet24OPERACAO.AsString then ibDataSet14.Locate('NOME',ibDataSet24OPERACAO.AsString,[]);
-    //
+    if ibDataSet14.FieldByname('CSTPISCOFINS').AsString <> ibDataSet24OPERACAO.AsString then
+      ibDataSet14.Locate('NOME',ibDataSet24OPERACAO.AsString,[]);
+
     sCST_PIS_COFINS := ibDataSet14.FieldByname('CSTPISCOFINS').AsString;
     rpPIS           := ibDataSet14.FieldByname('PPIS').AsFloat;
     rpCOFINS        := ibDataSet14.FieldByname('PCOFINS').AsFloat;
-    //
-    if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
-    if ibDataSet23CFOP.AsString = '' then ibDataSet23CFOP.AsString := ibDataSet14CFOP.AsString;
-    //
+
+    if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset23.Edit;
+
+    if ibDataSet23CFOP.AsString = '' then
+      ibDataSet23CFOP.AsString := ibDataSet14CFOP.AsString;
+
     Form1.bflag := False;
-    //
+
     if (Form7.ibDataSet23DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.Value) then
     begin
-      //
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.SelectSQL.Clear;
       Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE order by upper(DESCRICAO)');
@@ -22538,9 +22534,8 @@ begin
       Form7.ibDataSet4.First;
       Form7.ibDataSet4.EnableControls;
       Form7.ibDataSet4.First;
-      {                      }
-      { Procura por: código  }
-      {                      }
+
+      //Procura por: código
       if (length(Alltrim(ibDataSet23DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(ibDataSet23DESCRICAO.AsString))<>'') then
       begin
         try
@@ -22548,295 +22543,256 @@ begin
             Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(ibDataSet23DESCRICAO.AsString)),5,0),[]);
         except end;
       end;
-      //
+
       if Pos(Alltrim(ibDataSet23DESCRICAO.AsString),ibDataSet4CODIGO.AsString) = 0 then
       begin
-        // Procura pela referencia //
+        // Procura pela referencia
         Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(ibDataSet23DESCRICAO.AsString),[]);
         // Se o produto não foi encontrado //
         if Alltrim(ibDataSet23DESCRICAO.AsString) <> AllTrim(ibDataSet4REFERENCIA.AsString) then
         begin
-          //
           // Procura pela descricão
-          //
           Form7.ibDataSet99.Close;
           Form7.ibDataSet99.SelectSQL.Clear;
 //          Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
           Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça verde
           Form7.ibDataSet99.Open;
           Form7.ibDataSet99.First;
-          //
+
 //        if not Form7.ibDataSet4.Locate('DESCRICAO',ibDataset99.FieldByname('DESCRICAO').AsString,[]) then
           if not Form7.ibDataSet4.Locate('CODIGO',ibDataset99.FieldByname('CODIGO').AsString,[]) then
           begin
-            Form7.ibDataSet4.Last;
-//            ibDataSet23DESCRICAO.AsString := '';
-//            Abort;
+            //Mauricio Parizotto 2023-04-04
+            Form7.ibDataSet23.Edit;
+            Form7.ibDataSet23QUANTIDADE.AsString := '';
+            Form7.ibDataSet23DESCRICAO.AsString := '';
+            Form7.ibDataSet23QTD_ORIGINAL.AsString := '';
+            Form7.ibDataSet23UNITARIO_O.AsString := '';
+
+            Form7.ibDataSet23UNITARIO.AsString := '';
+            Form7.ibDataSet23TOTAL.AsString := '';
+
+            ibDataSet4.EnableControls;
+            ibDataSet23.EnableControls;
+            Exit;
           end;
-          //
         end;
       end;
     end;
-    {                                           }
+
     {  Preenche os dados do arquivo ENTRADA.DBF }
     {  se o produto for encontrado              }
-    {                                           }
-    if not Form7.ibDataSet4.Eof then
+    //if not Form7.ibDataSet4.Eof then Mauricio Parizotto 2023-04-04
+    { Grava no arquivo ENTRADA.DBF: }
+    {                               }
+    { 1. Descricão do produto       }
+    { 2. Valor unitário             }
+    { 3. Quantidade                 }
+    { 4. Total                      }
+    { 5. Situação tributária        }
+    { 6. Percentual do IPI          }
+    { 7. Peso                       }
+    { 7. Código                     }
+    {                               }
+    Form7.ibDataSet23.Edit;
+
+    if AllTrim(Form7.ibDataSet23DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
     begin
-      {                               }
-      { Grava no arquivo ENTRADA.DBF: }
-      {                               }
-      { 1. Descricão do produto       }
-      { 2. Valor unitário             }
-      { 3. Quantidade                 }
-      { 4. Total                      }
-      { 5. Situação tributária        }
-      { 6. Percentual do IPI          }
-      { 7. Peso                       }
-      { 7. Código                     }
-      {                               }
-      //
-      Form7.ibDataSet23.Edit;
-      //
-      if AllTrim(Form7.ibDataSet23DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
-      begin
-        Form7.ibDataSet23CODIGO.AsString    := '';
-      end;
-      //
-      if (AllTrim(ibDataSet23CODIGO.AsString) <> '') and (ibDataSet23CODIGO.AsString <> ibDataSet4CODIGO.AsString) then
-      begin
-        //
-        sCodigoAnterior := ibDataSet4CODIGO.AsString;
-        ibDataSet4.Locate('CODIGO',ibDataSet23CODIGO.AsString,[]);
-        //
-        Form1.rReserva := 0;
-        //
-        Form7.ibDataSet10.Close;
-        Form7.ibDataSet10.SelectSQL.Clear;
-        Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
-        Form7.ibDataSet10.Open;
-        Form7.ibDataSet10.First;
-        //
-        if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
-        begin
-          try
-            // Deleta na compra
-            Form7.sModulo := 'ESTOQUE';
-            Form13.Button2.Enabled := False;
-            Form13.Label1.Caption := 'Deleta na compra';
-            Form13.ShowModal;  // Deleta na compra
-            Form13.Button2.Enabled := True;
-            Form7.sModulo := 'COMPRA';
-          except end;
-        end;
-        //
-//        ibDataSet4.IndexFieldNames := 'CODIGO';
-        ibDataSet4.Locate('CODIGO',sCodigoAnterior,[]);
-        //
-      end;
-//////////////////////////////////
-      //
-      Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-      //
-      // So altera se for um produto novo //
-      //
-      if AllTrim(Form7.ibDataSet23CODIGO.AsString) = '' then
-      begin
-        //
-        // se tem grade quantidade = zero
-        //
-        Form7.ibDataSet10.Close;
-        Form7.ibDataSet10.SelectSQL.Clear;
-        Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
-        Form7.ibDataSet10.Open;
-        Form7.ibDataSet10.First;
-        //
-        Form7.ibDataSet23.Edit;
-        //
-        if (Form7.ibDataSet4CODIGO.AsString <> Form7.ibDataSet10CODIGO.AsString) and (Form7.ibDataSet4.FieldByname('SERIE').Value <> 1) then
-        begin
-          Form7.ibDataSet23QUANTIDADE.AsFloat     := 1;
-          Form7.ibDataSet23QTD_ORIGINAL.AsFloat   := 1;
-        end;
-        //
-        // Form7.ibDataSet23UNITARIO_O.Asfloat   := 0;
-        // Form7.ibDataSet23UNITARIO.Asfloat     := 0;
-        //
-        Form7.ibDataSet23UNITARIO.Asfloat       := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
-        Form7.ibDataSet23UNITARIO_O.Asfloat     := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
-        //
-        Form7.ibDataSet23ST.AsString        := Form7.ibDataSet4ST.AsString;
-        Form7.ibDataSet23ICM.AsFloat        := 0;
-        Form7.ibDataSet23PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
-        Form7.ibDataSet23MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
-        Form7.ibDataSet23PESO.AsString      := Form7.ibDataSet4PESO.AsString;
-        //
-        if (AllTrim(Form7.ibDataSet23CST_ICMS.AsString)='') then
-        begin
-          if (AllTrim(Form7.ibDataSet23CST_ICMS.AsString)='') then if (AllTrim(Form7.ibDataSet14CST.AsString)<>'') then Form7.ibDataSet23CST_ICMS.AsString := Form7.ibDataSet14CST.AsString;
-        end;
-        if (AllTrim(Form7.ibDataSet23CST_ICMS.AsString)='') then
-        begin
-          if (AllTrim(Form7.ibDataSet4CST.AsString)<>'') then Form7.ibDataSet23CST_ICMS.AsString  := Form7.ibDataSet4CST.AsString;
-        end;
-        //
-        // certo
-        //
-        //
-      end;
-      //
-      if Alltrim(sCST_PIS_COFINS) <> '' then
-      begin
-        Form7.ibDataSet23CST_PIS_COFINS.AsString := sCST_PIS_COFINS;
-        Form7.ibDataSet23ALIQ_PIS.AsFloat        := rpPIS;
-        Form7.ibDataSet23ALIQ_COFINS.AsFloat     := rpCOFINS;
-      end else
-      begin
-        Form7.ibDataSet23CST_PIS_COFINS.AsString   := Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString;     // CST do PIS no ICM
-        Form7.ibDataSet23ALIQ_PIS.AsFloat          := Form7.ibDataSet4ALIQ_PIS_ENTRADA.AsFloat;
-        Form7.ibDataSet23ALIQ_COFINS.AsFloat       := Form7.ibDataSet4ALIQ_COFINS_ENTRADA.AsFloat;
-      end;
-      //
-      Form7.ibDataSet23CODIGO.AsString           := Form7.ibDataSet4CODIGO.AsString;
-      ///////////////////////
-      // Controle de serie //
-      ///////////////////////
+      Form7.ibDataSet23CODIGO.AsString    := '';
+    end;
 
-      if (Form7.ibDataSet4.FieldByname('SERIE').Value = 1) and (Form7.ibDataSet23QUANTIDADE.AsFloat=0) then
-      begin
-        //
-        sSerial := '99';
-        ibDataSet23QUANTIDADE.AsFloat := 0;
-        while AllTrim(sSerial) <> '' do
-        begin
-          //
-          I := 0;
-          //
-          while I <> 6 do
-          begin
-            //
-            sSerial := AllTrim(Form1.Small_InputForm('Compra de item','Número de série:',''));
-            //
-            if sSerial <> '' then
-            begin
-              //
-              ibDataSet100.Close;
-              ibDataSet100.SelectSQL.Clear;
-              ibDataSet100.SelectSQL.Add('select * from SERIE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' and SERIAL='+QuotedStr(sSerial)+' ');
-              ibDataSet100.Open;
-              //
-              if ibDAtaSet100.FieldByName('SERIAL').AsString = sSerial then
-              begin
-                I := Application.MessageBox(pChar(
-                                          chr(10) +'O número de série: '+sSerial+' já está cadastrado no produto: '+
-                                          chr(10)+Alltrim(ibDataSet4DESCRICAO.AsString)+' '+
-                                          chr(10)+
-                                          chr(10) +'Incluir novamente este número de série?'+Chr(10)+
-                                          chr(10)),
-                                          'Atenção',mb_YesNo + mb_DefButton2 +  MB_ICONWARNING);
-                if I <> 6 then sSerial := '';
-              end else I := 6;
-              //
-            end else I := 6;
-          end;
-          //
-          ibDataSet100.Close;
-          //
-          if sSerial <> '' then
-          begin
-            //
-            ibDataSet30.Append;
-            ibDataSet30CODIGO.AsString      := Form7.ibDataSet23CODIGO.AsString;
-            ibDataSet30SERIAL.AsString      := sSerial;
-            ibDataSet30NFCOMPRA.AsString    := Copy(Form7.ibDataSet24NUMERONF.AsString,4,6);
-            ibDataSet23QUANTIDADE.AsFloat   := ibDataSet23QUANTIDADE.AsFloat + 1;
-            ibDataSet23QTD_ORIGINAL.AsFloat := ibDataSet23QUANTIDADE.AsFloat;
-            ibDataSet30.Post;
-            //
-            Form24.DbGrid1.Refresh;
-            //
-          end;
-        end;
-      end;
-      //
-      //  the end SERIE
-      //
+    if (AllTrim(ibDataSet23CODIGO.AsString) <> '') and (ibDataSet23CODIGO.AsString <> ibDataSet4CODIGO.AsString) then
+    begin
+      sCodigoAnterior := ibDataSet4CODIGO.AsString;
+      ibDataSet4.Locate('CODIGO',ibDataSet23CODIGO.AsString,[]);
 
-      //
-      // Grade
-      //
+      Form1.rReserva := 0;
+
       Form7.ibDataSet10.Close;
       Form7.ibDataSet10.SelectSQL.Clear;
       Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
       Form7.ibDataSet10.Open;
       Form7.ibDataSet10.First;
-      //
-      try
-        //
-//        if not Jatem(Form7.ibDataSet23,Form7.ibDataSet23DESCRICAO,False) then
-        begin
-          if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
-          begin
-            //
-            // Quantiade na compra sempre 1
-            //
-            if (Form7.ibDataSet23QUANTIDADE.AsFloat = 0) then
-            begin
-              Form1.rReserva := 0;
-              Form13.Label1.Caption := 'Quantidade na compra';
-              Form13.ShowModal;  // Quantiade na compra sempre 1
-            end;
-          end;
-          //
-        end;
-      except end;
-      //
-      if (Form7.ibDataSet23QUANTIDADE.AsFloat = 0) and (Form7.ibDataSet23DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+
+      if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
       begin
-        if Form7.ibDataSet4.FieldByname('SERIE').Value <> 1 then
-        begin
-          Form7.ibDataSet23.Edit;
-          Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
-        end else
-        begin
-          Form7.ibDataSet23DESCRICAO.AsString := '';
-          Form7.ibDataSet23QUANTIDADE.AsString := '';
-          Form7.ibDataSet23UNITARIO.AsString := '';
-          Form7.ibDataSet23TOTAL.AsString := '';
-          Form7.ibDataSet23CFOP.AsString := '';
-          Form7.ibDataSet23ICM.AsString := '';
-          Form7.ibDataSet23CST_ICMS.AsString := '';
-          Form7.ibDataSet23CODIGO.AsString := '';
-          //
-          Form24.DbGrid1.SelectedIndex := 6;
-          //
-        end;
+        try
+          // Deleta na compra
+          Form7.sModulo := 'ESTOQUE';
+          Form13.Button2.Enabled := False;
+          Form13.Label1.Caption := 'Deleta na compra';
+          Form13.ShowModal;  // Deleta na compra
+          Form13.Button2.Enabled := True;
+          Form7.sModulo := 'COMPRA';
+        except end;
       end;
-      //
-      {         }
-      { the end }
-      {         }
+
+//        ibDataSet4.IndexFieldNames := 'CODIGO';
+      ibDataSet4.Locate('CODIGO',sCodigoAnterior,[]);
+    end;
+
+    Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+
+    // So altera se for um produto novo
+    if AllTrim(Form7.ibDataSet23CODIGO.AsString) = '' then
+    begin
+      // se tem grade quantidade = zero
+      Form7.ibDataSet10.Close;
+      Form7.ibDataSet10.SelectSQL.Clear;
+      Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+      Form7.ibDataSet10.Open;
+      Form7.ibDataSet10.First;
+
+      Form7.ibDataSet23.Edit;
+
+      if (Form7.ibDataSet4CODIGO.AsString <> Form7.ibDataSet10CODIGO.AsString) and (Form7.ibDataSet4.FieldByname('SERIE').Value <> 1) then
+      begin
+        Form7.ibDataSet23QUANTIDADE.AsFloat     := 1;
+        Form7.ibDataSet23QTD_ORIGINAL.AsFloat   := 1;
+      end;
+
+      // Form7.ibDataSet23UNITARIO_O.Asfloat   := 0;
+      // Form7.ibDataSet23UNITARIO.Asfloat     := 0;
+      Form7.ibDataSet23UNITARIO.Asfloat       := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+      Form7.ibDataSet23UNITARIO_O.Asfloat     := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+
+      Form7.ibDataSet23ST.AsString        := Form7.ibDataSet4ST.AsString;
+      Form7.ibDataSet23ICM.AsFloat        := 0;
+      Form7.ibDataSet23PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
+      Form7.ibDataSet23MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
+      Form7.ibDataSet23PESO.AsString      := Form7.ibDataSet4PESO.AsString;
+
+      if (AllTrim(Form7.ibDataSet23CST_ICMS.AsString)='') then
+      begin
+        if (AllTrim(Form7.ibDataSet23CST_ICMS.AsString)='') then if (AllTrim(Form7.ibDataSet14CST.AsString)<>'') then Form7.ibDataSet23CST_ICMS.AsString := Form7.ibDataSet14CST.AsString;
+      end;
+      if (AllTrim(Form7.ibDataSet23CST_ICMS.AsString)='') then
+      begin
+        if (AllTrim(Form7.ibDataSet4CST.AsString)<>'') then Form7.ibDataSet23CST_ICMS.AsString  := Form7.ibDataSet4CST.AsString;
+      end;
+    end;
+
+    if Alltrim(sCST_PIS_COFINS) <> '' then
+    begin
+      Form7.ibDataSet23CST_PIS_COFINS.AsString := sCST_PIS_COFINS;
+      Form7.ibDataSet23ALIQ_PIS.AsFloat        := rpPIS;
+      Form7.ibDataSet23ALIQ_COFINS.AsFloat     := rpCOFINS;
     end else
     begin
-//      Form1.bflag := True;
-      Form7.ibDataSet23.Edit;
-//      Form7.ibDataSet23DESCRICAO.AsString := '';
-      Form7.ibDataSet23QUANTIDADE.AsString := '';
-      Form7.ibDataSet23UNITARIO.AsString := '';
-      Form7.ibDataSet23TOTAL.AsString := '';
-//      Form7.ibDataSet23.Append;
+      Form7.ibDataSet23CST_PIS_COFINS.AsString   := Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString;     // CST do PIS no ICM
+      Form7.ibDataSet23ALIQ_PIS.AsFloat          := Form7.ibDataSet4ALIQ_PIS_ENTRADA.AsFloat;
+      Form7.ibDataSet23ALIQ_COFINS.AsFloat       := Form7.ibDataSet4ALIQ_COFINS_ENTRADA.AsFloat;
     end;
-    //
-//
-// Erro do vídeo
+
+    Form7.ibDataSet23CODIGO.AsString           := Form7.ibDataSet4CODIGO.AsString;
+
+    ///////////////////////
+    // Controle de serie //
+    ///////////////////////
+
+    if (Form7.ibDataSet4.FieldByname('SERIE').Value = 1) and (Form7.ibDataSet23QUANTIDADE.AsFloat=0) then
+    begin
+      sSerial := '99';
+      ibDataSet23QUANTIDADE.AsFloat := 0;
+      while AllTrim(sSerial) <> '' do
+      begin
+        I := 0;
+
+        while I <> 6 do
+        begin
+          sSerial := AllTrim(Form1.Small_InputForm('Compra de item','Número de série:',''));
+
+          if sSerial <> '' then
+          begin
+            ibDataSet100.Close;
+            ibDataSet100.SelectSQL.Clear;
+            ibDataSet100.SelectSQL.Add('select * from SERIE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' and SERIAL='+QuotedStr(sSerial)+' ');
+            ibDataSet100.Open;
+
+            if ibDAtaSet100.FieldByName('SERIAL').AsString = sSerial then
+            begin
+              I := Application.MessageBox(pChar(
+                                        chr(10) +'O número de série: '+sSerial+' já está cadastrado no produto: '+
+                                        chr(10)+Alltrim(ibDataSet4DESCRICAO.AsString)+' '+
+                                        chr(10)+
+                                        chr(10) +'Incluir novamente este número de série?'+Chr(10)+
+                                        chr(10)),
+                                        'Atenção',mb_YesNo + mb_DefButton2 +  MB_ICONWARNING);
+              if I <> 6 then sSerial := '';
+            end else I := 6;
+
+          end else I := 6;
+        end;
+
+        ibDataSet100.Close;
+
+        if sSerial <> '' then
+        begin
+          ibDataSet30.Append;
+          ibDataSet30CODIGO.AsString      := Form7.ibDataSet23CODIGO.AsString;
+          ibDataSet30SERIAL.AsString      := sSerial;
+          ibDataSet30NFCOMPRA.AsString    := Copy(Form7.ibDataSet24NUMERONF.AsString,4,6);
+          ibDataSet23QUANTIDADE.AsFloat   := ibDataSet23QUANTIDADE.AsFloat + 1;
+          ibDataSet23QTD_ORIGINAL.AsFloat := ibDataSet23QUANTIDADE.AsFloat;
+          ibDataSet30.Post;
+
+          Form24.DbGrid1.Refresh;
+        end;
+      end;
+    end;
+
+    //  the end SERIE
+
+    // Grade
+    Form7.ibDataSet10.Close;
+    Form7.ibDataSet10.SelectSQL.Clear;
+    Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+    Form7.ibDataSet10.Open;
+    Form7.ibDataSet10.First;
+
+    try
+//        if not Jatem(Form7.ibDataSet23,Form7.ibDataSet23DESCRICAO,False) then
+      begin
+        if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
+        begin
+          // Quantiade na compra sempre 1
+          if (Form7.ibDataSet23QUANTIDADE.AsFloat = 0) then
+          begin
+            Form1.rReserva := 0;
+            Form13.Label1.Caption := 'Quantidade na compra';
+            Form13.ShowModal;  // Quantiade na compra sempre 1
+          end;
+        end;
+      end;
+    except
+    end;
+
+    if (Form7.ibDataSet23QUANTIDADE.AsFloat = 0) and (Form7.ibDataSet23DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+    begin
+      if Form7.ibDataSet4.FieldByname('SERIE').Value <> 1 then
+      begin
+        Form7.ibDataSet23.Edit;
+        Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
+      end else
+      begin
+        Form7.ibDataSet23DESCRICAO.AsString := '';
+        Form7.ibDataSet23QUANTIDADE.AsString := '';
+        Form7.ibDataSet23UNITARIO.AsString := '';
+        Form7.ibDataSet23TOTAL.AsString := '';
+        Form7.ibDataSet23CFOP.AsString := '';
+        Form7.ibDataSet23ICM.AsString := '';
+        Form7.ibDataSet23CST_ICMS.AsString := '';
+        Form7.ibDataSet23CODIGO.AsString := '';
+        
+        Form24.DbGrid1.SelectedIndex := 6;
+      end;
+    end;
+
     ibDataSet4.EnableControls;
     ibDataSet23.EnableControls;
-    //
+
     Observacao2(False);
-    //
   end;
-  //
-  //
 end;
 
 procedure TForm7.ibDataSet23DESCRICAOSetText(Sender: TField;
