@@ -4020,41 +4020,40 @@ var
   iContadorCampoEstoque: Integer; // Sandro Silva 2022-12-20
   iTopSegundaColuna: Integer; // Sandro Silva 2022-12-20
 begin
-  //
   Form10.sNomeDoJPG := Form1.sAtual+'\tempo0000000000.jpg';
-  //
+  
   tInicio := time;
   Form10.orelhas.Visible := False;
-  //
+
   try
     Form7.ibDataSet13.Edit;
   except end;
-  //
+
   Orelhas.ActivePage := Orelha_cadastro;
-  //
+
   Form10.Width  := 845;
   Form10.Height := 650;
-  //
+
   Button5.Left  := Panel2.Width - Button5.Width - 10;
   Button6.Left  := Button5.Left - 10 - Button6.Width;
-  //
+
   Form7.ArquivoAberto.DisableControls;
   Form7.TabelaAberta.DisableControls;
-  //
+
   Orelhas.Left   := 5;
   Orelhas.Top    := 75;
   Orelhas.Width  := Form10.Width - 15;
   Orelhas.Height := Form10.Height - Orelhas.Top - 40 + (Form1.iVista*2);
-  //
+
   if Screen.Width <= 800 then
   begin
     Form10.Top    := 0 + Form1.iVista;
   end;
-  //
+
   sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
   sLinha         := StrZero(tStringGrid(Form7.DBGrid1).Row,4,0);
   sColuna        := StrZero(Form7.DbGrid1.SelectedIndex,2,0);
-  //
+
   Edit5.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
   Edit6.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
   Edit8.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
@@ -4064,25 +4063,25 @@ begin
   Edit10.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
   Edit12.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
   Edit13.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  //
+
   if Form7.sModulo = 'CLIENTES' then
   begin
     Panel3.Visible := True;
     Panel3.Top     := SMALL_DBEdit14.Top + 15;
     Panel3.Left    := 250;
-  end else Panel3.Visible := False;
-  //
-  Form10.Label45.Visible := False; // ?
-  //
+  end else
+    Panel3.Visible := False;
+
+  Form10.Label45.Visible := False;
+
   dBGrid3.Left := 100;
   iTop         := -5;
-  //
+
   try
-    //
     VerificaSeEstaSendoUsado(True);
-    //
+
     bProximo := False;
-    //
+
     if Form7.bSoLeitura then
       dbMemo1.Enabled := False
     else
@@ -4097,7 +4096,7 @@ begin
       dbMemo3.Enabled := True;
     if Form7.bSoLeitura then
       Form10.orelha_preco.TabVisible := False;
-    //
+
     if Form7.bSoLeitura then
     begin
       dbMemo1.Enabled := False;
@@ -4109,7 +4108,7 @@ begin
       dbMemo2.Enabled := True;
       dbMemo3.Enabled := True;
     end;
-    //
+
     //------------------------------
     //Todos os LAbel não visíveis
     //-------------------------------
@@ -4117,7 +4116,7 @@ begin
       TLabel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     for I := 0 to 30 do
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible := False;
-    //
+
     DbGrid1.visible := False;
     DbGrid3.visible := False;
     DBMemo1.Visible := False;
@@ -4151,24 +4150,19 @@ begin
 
     for I := 1 to Form7.iCampos do
     begin
-      //
       if Form1.CampoDisponivelParaUsuario(Form7.sModulo, Form7.ArquivoAberto.Fields[I - 1].FieldName) then
       begin
-
         if AllTrim(Form7.TabelaAberta.Fields[I-1].DisplayLabel) <> '...' then
         begin
-          //
           if not ((Form7.sModulo = 'CLIENTES') and (I >= 27)) then
           begin
-            //
             if not ((Form7.sModulo = 'ESTOQUE') and (I >= iContadorCampoEstoque)) then // Sandro Silva 2022-12-20 if not ((Form7.sModulo = 'ESTOQUE') and (I >= 23)) then
             begin
-              //
               if form7.sModulo = 'CLIENTES' then
                 iTop := iTop + 24
               else
                 iTop := iTop + 25;
-              //
+
               if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
               begin
                 if I = iTopSegundaColuna then // Sandro Silva 2022-12-20 if I = 16 then
@@ -4178,7 +4172,7 @@ begin
               end
               else if I = 18 then
                 iTop := 15;
-              //
+
               if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
               begin
                 if I > 25 then
@@ -4194,12 +4188,12 @@ begin
                 else
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
               end;
-              //
+
               TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Top     := iTop;
               TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Visible := True;
               TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
               TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Repaint;
-              //
+
               if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
               begin
                 if I > 25 then
@@ -4215,6 +4209,7 @@ begin
                 else
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
               end;
+
               {Sandro Silva 2022-12-20 inicio}
               if (Form7.sModulo = 'ESTOQUE') then
               begin
@@ -4226,8 +4221,8 @@ begin
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).AutoSize := True;
                 end;
               end;
+
               {Sandro Silva 2022-12-20 fim}
-              //
               if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
               begin
                 iTop := iTop - 25;
@@ -4235,16 +4230,15 @@ begin
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left               := 214;
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 314;
               end;
-              //
+
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataField  := ''; // Evita problemas
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataSource := Form7.DataSourceAtual;
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataField  := Form7.ArquivoAberto.Fields[I - 1].Fieldname;
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Visible    := True;
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Repaint;
-              //
+
               // Só leitura
-              //
               if (Form7.bSoLeitura) or (Form7.bEstaSendoUsado) or (Form7.ArquivoAberto.Fields[I-1].ReadOnly) then
               begin
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Enabled    := False;
@@ -4256,7 +4250,7 @@ begin
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).ReadOnly   := False;
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font.Color := clWindowText;
               end;
-              //
+
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).width := (Form7.ArquivoAberto.Fields[I - 1].Displaywidth * 9) + 10;
 
               if TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).width > 340 then
@@ -4265,7 +4259,7 @@ begin
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).MaxLength := Form7.ArquivoAberto.Fields[I - 1].Size
               else
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).MaxLength := 22;
-              //
+
               if (Form7.TabelaAberta.Fields[I-1].Fieldname = 'NOME') and
                                ((Form7.ArquivoAberto.Name = 'ibDataSet1') or
                                 (Form7.ArquivoAberto.Name = 'ibDataSet4') or
@@ -4284,16 +4278,19 @@ begin
                   begin
                     dBGrid1.DataSource := Form7.DataSource12; // contas bancárias
                   end;
+
                   // contas a receber
                   if Form7.sModulo = 'RECEBER' then
                   begin
                     dBGrid1.DataSource := Form7.DataSource2; // Clientes
                   end;
+
                   // Contas a pagar
                   if Form7.sModulo = 'PAGAR' then
                   begin
                     dBGrid1.DataSource := Form7.DataSource2; // Fornecedores
                   end;
+
                   // Estoque
                   if (Form7.sModulo = 'VENDA') or
                       (Form7.sModulo = 'COMPRA') or
@@ -4303,7 +4300,7 @@ begin
                   end;
                 except ShowMessage('Erro 2 comunique o suporte técnico.') end;
               end;
-              //
+
               try
                 if (Form7.ArquivoAberto.Fields[I - 1].ReadOnly = True) or (Form7.bSoLeitura) or (Form7.bEstaSendoUsado) then
                 begin
@@ -4320,7 +4317,7 @@ begin
               except
                 ShowMessage('Erro 3 comunique o suporte técnico.')
               end;
-              //
+
               if Form7.ArquivoAberto.Fields[I-1].Name = 'ibDataSet4FORNECEDOR' then
               begin
                 Form10.Label45.Visible := True;
@@ -4330,10 +4327,9 @@ begin
                                           'o nome do fornecedor e preenchido'+Chr(10)+
                                           'no evento da compra.';
               end;
-              //
+
               if Form7.ArquivoAberto.Fields[I - 1].Fieldname = 'CONTATOS' then
               begin
-                //
                 Form10.dbMemo2.DataSource := Form7.DataSourceAtual;
                 Form10.dbMemo2.DataField  := Form7.ArquivoAberto.Fields[I - 1].Fieldname;
                 Form10.dbMemo2.TabOrder   := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).TabOrder;
@@ -4341,12 +4337,11 @@ begin
                 Form10.dbMemo2.Height     := 105;
                 Form10.dbMemo2.Top        := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top;
                 Form10.dbMemo2.Left       := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left;
-                //
+
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Visible := False;
                 Form10.dbMemo2.Visible    := True;
-                //
+
                 // Só leitura ou quando está sendo usado
-                //
                 if Form7.bSoLeitura or Form7.bEstaSendoUsado then
                 begin
                   dbMemo2.Enabled    := False;
@@ -4356,35 +4351,31 @@ begin
                   dbMemo2.Enabled := True;
                   dbMemo2.Font.Color := clWindowText;
                 end;
-                //
+
                 iTop := iTop + 95;
                 Form10.dbMemo1.Height := 105;
-                //
               end;
-              //
+
               if Form7.ArquivoAberto.Fields[I - 1].Displaywidth >= 200 then
               begin
-                //
                 Form10.dbMemo1.DataSource := Form7.DataSourceAtual;
                 Form10.dbMemo1.DataField  := Form7.ArquivoAberto.Fields[I - 1].Fieldname;
                 Form10.dbMemo1.TabOrder   := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).TabOrder;
       //          Form10.dbMemo1.Width      := 240;
-                //
+
                 if Form7.sModulo = 'ESTOQUE' then
                   Form10.dbMemo1.Width := 280
                 else
                   Form10.dbMemo1.Width := 240 + 22;
-                //
+
                 Form10.dbMemo1.Height := 95;
                 Form10.dbMemo1.Top    := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top;
                 Form10.dbMemo1.Left   := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left;
-                //
+
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Visible := False;
                 Form10.dbMemo1.Visible := True;
-                //
-                //
+
                 // Só leitura ou quando está sendo usado
-                //
                 if Form7.bSoLeitura or Form7.bEstaSendoUsado then
                 begin
                   dbMemo1.Enabled    := False;
@@ -4394,37 +4385,31 @@ begin
                   dbMemo1.Enabled    := True;
                   dbMemo1.Font.Color := clWindowText;
                 end;
-                //
+
                 iTop := iTop + 85;
-                //
               end;
-              //
             end;
           end;
         end;
       end;
     end;
-    //
   except
     ShowMessage('Erro número  13 comunique o suporte técnico.');
   end;
-  //
+
   // if (Form7.sModulo = 'CLIENTES') then iTop := iTop + 15 else iTop := iTop + 30;
-  //
   Button9.Visible  := False;
   Button12.Visible := False;
   Button6.Visible  := False;
-  //
+
   if Form7.sModulo = 'CLIENTES' then
   begin
-    //
     // Recibo
-    //
     Form7.ibQuery1.Close;
     Form7.IBQuery1.SQL.Clear;
     Form7.IBQuery1.SQL.Add('select sum(VALOR_DUPL) as TOTAL from RECEBER  where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and coalesce(ATIVO,9)<>1  and Coalesce(VALOR_RECE,999999999)=0');
     Form7.IBQuery1.Open;
-    //
+
     if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
     begin
       if Form1.Image201.Visible then
@@ -4432,25 +4417,19 @@ begin
         Button6.Visible := True;
       end;
     end;
-    //
   end;
-  //
+
   if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
   begin
-    //
     if Form7.sModulo = 'RECEBER' then
     begin
-      //
       // Recibo
-      //
       Button9.Visible := True;
-      //
     end;
-    //
+
     // Replicar
-    //
     Button12.Visible := True;
-    //
+
     if Form7.bSoLeitura or Form7.bEstaSendoUsado then
     begin
       Button12.Enabled := False;
@@ -4458,13 +4437,12 @@ begin
     begin
       Button12.Enabled := True;
     end;
-    //
   end else
   begin
     Button9.Visible := False;
     Button12.Visible := False;
   end;
-  //
+
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
@@ -4477,10 +4455,8 @@ begin
   {Sandro Silva 2022-11-14 inicio}
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'VENDEDOR') then
   begin
-
     if Form7.ibDataSet13CGC.AsString = CNPJ_SMALLSOFT then
     begin
-
       //Add as relações comerciais
       ComboBox8.Clear;
       ComboBox8.Items.Add('');
@@ -4493,33 +4469,30 @@ begin
       ComboBox8.Items.Add('Distribuidor');
       ComboBox8.Items.Add('Vendedor');
       ComboBox8.Items.Add('Credenciadora de cartão');
+      ComboBox8.Items.Add('Instituição financeira');
       ComboBox8.Items.Add('Marketplace');
       ComboBox8.Items.Add('Revenda Inativa'); // adicionadas para uso na Smallsoft
       ComboBox8.Items.Add('Cliente Inativo'); // adicionadas para uso na Smallsoft
       ComboBox8.Sorted := True;
     end;
-    
   end;
   {Sandro Silva 2022-11-14 fim}
 
-  //
   Form7.ArquivoAberto.EnableControls;
   Form7.TabelaAberta.EnableControls;
-  //
+
   Form10.orelhas.Visible := True;
-  //
+
   AtualizaTela(True);
-  //
+
   DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-  //
+
   Label201.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
   Label201.ShowHint := True;
-  //
 end;
 
 procedure TForm10.Button9Click(Sender: TObject);
 begin
-  //
   if Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat <> 0 then
     Form7.fTotalDoRecibo := Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat
   else
@@ -4527,7 +4500,6 @@ begin
   Form7.sReciboProvenienteDe := 'Proveniente: dp. ' + Form7.ibDataSet7.FieldByName('DOCUMENTO').AsString + ', Referente ' + AllTrim(Form7.ibDataSet7.FieldByName('HISTORICO').AsString);
   Form7.sReciboRecebemosDe   := Form7.ibDataSet7.FieldByName('NOME').AsString;
   Form7.RECIBOClick(Sender);
-  //
 end;
 
 procedure TForm10.Button12Click(Sender: TObject);
