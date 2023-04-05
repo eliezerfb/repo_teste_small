@@ -20326,6 +20326,7 @@ begin
                         begin
                           fSomaNaBase := 0;
 
+                          //Soma o Frete no ICMS
                           if ibDataSet15.FieldByname('FRETE').AsFloat <> 0 then
                           begin
                             if (ibDataSet15.FieldByname('FRETE').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then

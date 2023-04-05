@@ -38,10 +38,10 @@ var
   fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO : Real;
   fDesconto, fFrete, fOutras, fSeguro : array[0..999] of double;
 
-  fPercentualFCP, fPercentualFCPST,fSomaNaBase, fRateioDoDesconto, vIVA60_B_ICMST : Real;
+  fRateioDoDesconto, fPercentualFCPST, fPercentualFCP, vIVA60_B_ICMST : Real;
 
   procedure GeraXmlNFeSaida;
-  procedure GeraXmlNFeSaidaTags;
+  procedure GeraXmlNFeSaidaTags(vFreteSobreIPI, vIPISobreICMS : Boolean; fSomaNaBase : Real);
 
 
 implementation
@@ -51,7 +51,7 @@ uses uFrmInformacoesRastreamento, uFuncoesFiscais;
 procedure GeraXmlNFeSaida;
 var
   spMVAST, spICMSST, sChave, sEx1, sEx2, sEx3, sEx4, sEx5, sEx6, sEx7, sEx8, sEx9, sEx10, sEx11, sEx12, sEx13, sEx14, sEx15, sEx16, sEx17, sEx18 : String;
-  fTotalDupl, fRateioDoDesconto, vTotalImpostoImportacao : Real;
+  fTotalDupl,  vTotalImpostoImportacao : Real;
   sCodigoANP : String;
   _file : TStringList;
   I, J, iAnoRef : integer;
@@ -61,7 +61,7 @@ var
   sCupomReferenciado : String;
   sDentroOuForadoEStado, sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
   vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS : Real;
-  fTotaldeTriubutos, fTotaldeTriubutos_uf, fTotaldeTriubutos_muni , fSomaNaBase, vIVA60_B_ICMST : Real;
+  fTotaldeTriubutos, fTotaldeTriubutos_uf, fTotaldeTriubutos_muni , fSomaNaBase : Real;
   Mais1Ini : tIniFile;
   // Pis cofins da Operação
   sCST_PIS_COFINS : String;
@@ -69,7 +69,7 @@ var
   bTributa : Boolean;
   //
   sDIFAL_OBS : String;
-  fAliquotaPadrao, fPercentualDeReducaoDeBC, fICMSDesonerado, vICMSDeson, fFCPST, fFCPUFDest, fICMSUFDest, fICMSUFREmet, fDIFAL, fIPIDevolvido, fPercentualFCP, fPercentualFCPST, fFCP: Real;
+  fAliquotaPadrao, fPercentualDeReducaoDeBC, fICMSDesonerado, vICMSDeson, fFCPST, fFCPUFDest, fICMSUFDest, fICMSUFREmet, fDIFAL, fIPIDevolvido,  fFCP: Real;
   //
   stpOp_VeiculosNovos,
   sChassi_VeiculosNovos,
@@ -99,7 +99,7 @@ var
   IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
 
   vlBalseIPI, vlFreteRateadoItem : Double;
-  vFreteSobreIPI : Boolean;
+  vFreteSobreIPI,vIPISobreICMS : Boolean;
 begin
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
@@ -118,6 +118,7 @@ begin
 
   //Mauricio Parizotto 2023-03-28
   vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+  vIPISobreICMS  := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
 
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
@@ -892,6 +893,7 @@ begin
   while not Form7.ibDataSet16.Eof do
   begin
     fPercentualFCP := 0;
+    fSomaNaBase    := 0;
 
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.Selectsql.Clear;
@@ -1148,23 +1150,27 @@ begin
         if Form7.ibDataSet15.FieldByname('FRETE').AsFloat    <> 0 then if (fFrete[I])    > 0.01 then Form7.spdNFeDataSets.Campo('vFrete_I15').Value   := StrTran(Alltrim(FormatFloat('##0.00',(fFrete[I]))),',','.');   // REGRA DE TRÊS ratiando o valor do frete Valor Total do Frete
         if Form7.ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then if (fseguro[I])   > 0.01 then Form7.spdNFeDataSets.Campo('vSeg_I16').Value     := StrTran(Alltrim(FormatFloat('##0.00',(fSeguro[I]))),',','.'); // REGRA DE TRÊS ratiando o valor do frete Valor Total do Seguro
 
-        fSomaNaBase := 0;
+        if Form7.ibDataSet15.FieldByname('FRETE').AsFloat    <> 0 then if (fFrete[I])    > 0.01 then
+          fSomaNaBase  := fSomanaBase + (fFrete[I]);    // REGRA DE TRÊS ratiando o valor Total do Frete
 
-        if Form7.ibDataSet15.FieldByname('FRETE').AsFloat    <> 0 then if (fFrete[I])    > 0.01 then fSomaNaBase  := fSomanaBase + (fFrete[I]);    // REGRA DE TRÊS ratiando o valor Total do Frete
-        if Form7.ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then if (fSeguro[I])   > 0.01 then fSomaNaBase  := fSomanaBase + (fSeguro[I]);   // REGRA DE TRÊS ratiando valor do Seguro
+        if Form7.ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then if (fSeguro[I])   > 0.01 then
+          fSomaNaBase  := fSomanaBase + (fSeguro[I]);   // REGRA DE TRÊS ratiando valor do Seguro
 
         if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
         begin
-          if Form7.ibDataSet15.FieldByname('DESPESAS').AsFloat <> 0 then if (fOutras[I])   > 0.01 then fSomaNaBAse  := fSomanaBase + (fOutras[I]);   // REGRA DE TRÊS ratiando o valor de outras
+          if Form7.ibDataSet15.FieldByname('DESPESAS').AsFloat <> 0 then if (fOutras[I])   > 0.01 then
+            fSomaNaBAse  := fSomanaBase + (fOutras[I]);   // REGRA DE TRÊS ratiando o valor de outras
         end;
 
-        if Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then if (fDesconto[I]) > 0.01 then fSomaNaBase  := fSomanaBase - (fDesconto[I]); // REGRA DE TRÊS ratiando o valor do frete descontando
+        if Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then if (fDesconto[I]) > 0.01 then
+          fSomaNaBase  := fSomanaBase - (fDesconto[I]); // REGRA DE TRÊS ratiando o valor do frete descontando
       end else
       begin
         fSomaNaBase := 0;
       end;
 
-      if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
+      //if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
+      if vIPISobreICMS then
       begin
         // ICM Sobre o IPI
         fSomaNaBase := fSomaNaBase + Form7.ibDataSet16.FieldByname('IPI').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat / 100;  // Soma o valor do IPI na base
@@ -1480,7 +1486,7 @@ begin
       end;
 
       //Gera Tas
-      GeraXmlNFeSaidaTags;
+      GeraXmlNFeSaidaTags(vFreteSobreIPI, vIPISobreICMS, fSomaNaBase);
 
       // FCP
       if Form1.sVersaoLayout = '4.00' then
@@ -2906,14 +2912,20 @@ end;
 
 
 
-procedure GeraXmlNFeSaidaTags;
+procedure GeraXmlNFeSaidaTags(vFreteSobreIPI, vIPISobreICMS : Boolean; fSomaNaBase : Real);
 var
   sReg : String;
   fIPIPorUnidade : Real;
   vIVA60_V_ICMST : Real;
   ItemNFe: TItemNFe;
   fAliquota : Real;
+  vlFreteRateadoItem, fTotalMercadoria : Real;
 begin
+  //Mauricio Parizotto 2023-04-03
+  fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
+                                      ' From ITENS001 '+
+                                      ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet15NUMERONF.AsString),Form7.ibDAtaSet15.Transaction);
+
   // TAGS - Saída
   //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
@@ -3003,9 +3015,22 @@ begin
         Form7.spdNFeDataSets.Campo('vICMS_N17').Value := '0'; // Valor do ICMS em Reais
       end else
       begin
+        //Soma a parte do IPI do Frete
+        if Form7.ibDataSet15.FieldByname('FRETE').AsFloat > 0 then
+        begin
+          if (vFreteSobreIPI) and (vIPISobreICMS) then
+          begin
+            vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / fTotalMercadoria)
+                                             * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat,2);
+
+            fSomaNaBase := fSomaNaBase + Arredonda2((vlFreteRateadoItem * ( Form7.ibDataSet16.FieldByname('IPI').Value / 100 )),2);
+          end;
+        end;
+
         fIPIPorUnidade := 0;
 
-        if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) then
+        //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) then
+        if vIPISobreICMS then
         begin
           // IPI Por Unidade
           fIPIPorUnidade := 0;
@@ -3068,7 +3093,8 @@ begin
             fIPIPorUnidade := (Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString))));
           end;
 
-          if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+          //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+          if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
           begin
             // CALCULO DO IVA
             if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
@@ -3798,7 +3824,8 @@ begin
               fIPIPorUnidade := (Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString))));
             end;
                     
-            if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+            //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+            if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
             begin
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
@@ -3958,7 +3985,8 @@ begin
             end;
 
             // Valor da Base de Calculo de ISMS St do item
-            if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+            //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+            if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
             begin
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
@@ -4233,7 +4261,8 @@ begin
               Form7.ibDataSet14.EnableControls;
             end;
 
-            if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+            //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
+            if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
             begin
               // IPI Por Unidade
               fIPIPorUnidade := 0;
