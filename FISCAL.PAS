@@ -11528,10 +11528,11 @@ begin
                       Form1.IntegradorCE.UltimoidPagamento := '';
                     end;
 
+
                   except
 
                   end;
-                end;
+                end; // Fim Cartão
                 //
                 if (Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat <> 0) then // Prazo
                 begin
@@ -11860,6 +11861,28 @@ begin
 
                   end;
                 end; // if (Form1.sModeloECF = '65') then
+
+                // Troca RECEBER.EMISSAO
+                Form1.ibDataSet7.First;
+                while Form1.ibDataSet7.Eof = False do
+                begin
+                  if Form1.ibDataSet7.FieldByName('NUMERONF').AsString = (Form1.ibDataSet27.FieldByName('PEDIDO').AsString + Form1.ibDataSet27.FieldByName('CAIXA').AsString) then 
+                  begin
+
+                    if Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime <> Form1.ibDataSet27.FieldByName('DATA').AsDateTime then
+                    begin
+                      try
+                        Form1.ibDataSet7.Edit;
+                        Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime := Form1.ibDataSet27.FieldByName('DATA').AsDateTime;
+                        Form1.ibDataSet7.Post;
+                      except
+                      end;
+                    end;
+
+                  end;
+                  Form1.ibDataSet7.Next;
+                end;
+
 
               end;// if bNFCeUsoDenegado = False then
             except  end;
