@@ -6308,7 +6308,8 @@ begin
     //
     try
       AbreArquivos(True);
-    except end;
+    except
+    end;
     //
 
    // se o tamanho do zip for menor de 10% do fdb
@@ -6321,7 +6322,8 @@ begin
     //
   end;
   //
-  if Form7.sModulo <> 'INDICADORES' then Form7.sModulo := '';
+  if Form7.sModulo <> 'INDICADORES' then
+    Form7.sModulo := '';
   //
   //iUsuariosAtivos := Form7.IBDatabaseInfo1.UserNames.Count;
   //
