@@ -66,14 +66,11 @@ uses
   uSmallNFeUtils in 'uSmallNFeUtils.pas',
   SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
   ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
-<<<<<<< HEAD
   uListaCnaes in 'uListaCnaes.pas',
-=======
   uGeraXmlNFeEntrada in 'uGeraXmlNFeEntrada.pas',
   uGeraXmlNFeSaida in 'uGeraXmlNFeSaida.pas',
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas';
->>>>>>> origin/f-6422
 
 {$R *.RES}
 
