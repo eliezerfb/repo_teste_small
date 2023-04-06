@@ -262,8 +262,18 @@ type
       Rebuild: Boolean);
     procedure Button3Click(Sender: TObject);
     procedure ComboBox1Exit(Sender: TObject);
+    procedure SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SMALL_DBEdit40Click(Sender: TObject);
+    procedure SMALL_DBEdit43Click(Sender: TObject);
+    procedure SMALL_DBEdit39Click(Sender: TObject);
+    procedure SMALL_DBEdit41Click(Sender: TObject);
 
   private
+    procedure AtivaPesquisaNaturezaOP;
+    procedure AtivaPesquisaVendedor;
+    procedure AtivaPesquisaCliente;
+    procedure AtivaPesquisaTransportadora;
     { Private declarations }
   public
     fVelho      : Real;
@@ -704,10 +714,8 @@ end;
 
 procedure TForm12.SMALL_DBEdit39Change(Sender: TObject);
 begin
-  //
   if (Form12.Visible) and (Form7.ibDataSet2.Active) then
   begin
-    //
     if Form1.bChaveSelecionaCliente then
     begin
       dBGrid2.Visible    := True;
@@ -719,52 +727,42 @@ begin
 //      Form7.ibDataSet2.EnableControls;
       dBGrid2.Repaint;
     end;
-    //
   end;
 end;
 
 procedure TForm12.SMALL_DBEdit39Enter(Sender: TObject);
 begin
-  //
   Form1.bChaveSelecionaCliente := True;
-  //
-  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then MostraFoto2(True);
-  //
-  dBGrid3.Visible    := False;
-  dBGrid2.DataSource := Form7.DataSource2;
-  dBGrid2.Visible    := False;
-  //
-  dBGrid2.Left       := SMALL_DBEdit39.Left;
-  dbGrid2.Top        := SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1;
-  dbGrid2.Width      := SMALL_DBEdit39.Width;
-  dBGrid2.Height     := 225; // Panel1.Height - dbGrid2.Top - 20;
-  //
-  dbGrid2.Columns[0].Width := dbGrid2.Width - 30;
-  dbGrid2.Columns[0].Width := 250;
-  dbGrid2.Columns[1].Visible := False;
-  //
+
+  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then
+    MostraFoto2(True);
+
+  AtivaPesquisaCliente;
+
   SMALL_DBEdit39.SelectAll;
-  //
 end;
 
 procedure TForm12.DBGrid2DblClick(Sender: TObject);
 begin
-  //
   Form7.ibDataSet15.Edit;
   Form7.ibDataSet15OPERACAO.AsString   := form7.ibDataSet14NOME.AsString;
   Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
   Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
   Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+
   if dbGrid2.Top = (SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1) then
     SMALL_DBEdit39.SetFocus;
+
   if dbGrid2.Top = (SMALL_DBEdit40.Top + SMALL_DBEdit40.Height -1) then
     SMALL_DBEdit40.SetFocus;
+
   if dbGrid2.Top = (SMALL_DBEdit41.Top + SMALL_DBEdit41.Height -1) then
     SMALL_DBEdit41.SetFocus;
+
   if dbGrid2.Top = (SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1) then
     SMALL_DBEdit43.SetFocus;
+    
   dBGrid2.Visible := False;
-  //
 end;
 
 procedure TForm12.DBGrid2KeyUp(Sender: TObject; var Key: Word;
@@ -792,132 +790,76 @@ end;
 
 procedure TForm12.SMALL_DBEdit40Enter(Sender: TObject);
 begin
-  //
   mkp(True);
-  //
+
   if (LimpaNumero(Edit2.Text) = '4') then
   begin
-    //
     // Devolução de mercadoria
-    //
     Form7.ibDataSet16IPI.Visible            := True;
     Form7.ibDataSet16CST_IPI.Visible        := True;
-//    Form7.ibDataSet16ICM.Visible            := True;
     Form7.ibDataSet16CST_ICMS.Visible       := True;
-//    Form7.ibDataSet16CFOP.Visible           := True;
     Form7.ibDataSet16VICMS.Visible          := True;
     Form7.ibDataSet16VBC.Visible            := True;
     Form7.ibDataSet16VBCST.Visible          := True;
     Form7.ibDataSet16VICMSST.Visible        := True;
     Form7.ibDataSet16VIPI.Visible           := True;
-    //
     Form7.ibDataSet16XPED.Visible           := False;
     Form7.ibDataSet16NITEMPED.Visible       := False;
-    //
     Panel2.Visible := True;
     Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
     Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
-    //
+
     Form12.Label2.Caption := 'Atenção!'+chr(10)+chr(10)+'Quando não for contribuinte do IPI'+chr(10)+
                                                         'deixar o campo CST IPI em branco (vai'+chr(10)+
                                                         'criar grupo IPIDevol).'+chr(10)+chr(10)+
                                                         'Quando for contribuinte do IPI deve preencher'+chr(10)+
                                                         'o campo CST IPI (vai criar grupo do IPI normal)'
-
-    //
   end else
   begin
-    //
     Form7.ibDataSet16IPI.Visible            := False;
     Form7.ibDataSet16CST_IPI.Visible        := False;
-//    Form7.ibDataSet16ICM.Visible            := False;
     Form7.ibDataSet16CST_ICMS.Visible       := False;
-//    Form7.ibDataSet16CFOP.Visible           := False;
     Form7.ibDataSet16VICMS.Visible          := False;
     Form7.ibDataSet16VBC.Visible            := False;
     Form7.ibDataSet16VBCST.Visible          := False;
     Form7.ibDataSet16VICMSST.Visible        := False;
     Form7.ibDataSet16VIPI.Visible           := False;
-    //
     Form7.ibDataSet16XPED.Visible           := True;
     Form7.ibDataSet16NITEMPED.Visible       := True;
-    //
     Panel2.Visible := False;
-    //
   end;
-  //
+
   if not dBGrid2.Visible then
   begin
     sOperacaoAntiga   := Form7.ibDAtaSet15OPERACAO.AsString;
     sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
   end;
-  //
+
   if Form7.sModulo <> 'RETRIBUTA' then
     Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet15.Enablecontrols;
-  //
-  dBGrid2.Visible := False;
-  dBGrid3.Visible := False;
-  // ------------------------- //
-  // Operação de venda ICM.DBF //
-  // ------------------------- //
-  dBGrid2.DataSource := Form7.DataSource14;
-  dBGrid2.Visible    := True;
-  //
-  if AllTrim(SMALL_DBEdit40.Text) = '' then
-  begin
-    Form7.ibDataSet14.DisableControls;
-    Form7.ibDataSet14.First;
-    while (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '5'+Copy(Form1.ConfCFOP,2,3))
-      and (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '6'+Copy(Form1.ConfCFOP,2,3))
-      and (not Form7.ibDataSet14.EOF) do
-      Form7.ibDataSet14.Next;
-      
-    Form7.ibDataSet14.EnableControls;
-    Form7.ibDataSet15.Edit;
-    SMALL_DBEdit40.Text := Form7.ibDataSet14NOME.AsString;
-  end else
-  begin
-    Form7.ibDataSet14.DisableControls;
-    Form7.ibDataSet14.Locate('NOME',AllTrim(Form7.ibDAtaSet15OPERACAO.AsString),[]);
-    Form7.ibDataSet14.EnableControls;
-  end;
-  //
-  Form7.ibDataSet14.EnableControls;
-  //
-  dBGrid2.Left       := SMALL_DBEdit40.Left;
-  dbGrid2.Top        := SMALL_DBEdit40.Top + SMALL_DBEdit40.Height -1;
-  dbGrid2.Width      := SMALL_DBEdit40.Width;
-  dBGrid2.Height     := 260; //Panel1.Height - dbGrid2.Top - 20;
-  //
-  dbGrid2.Columns[0].Width   := 250;
-  dbGrid2.Columns[1].Width   := 30;
-  dbGrid2.Columns[1].Visible := True;
-  //
+
+  AtivaPesquisaNaturezaOP;
+
   SMALL_DBEdit40.SelectAll;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit40Exit(Sender: TObject);
 begin
-  //
   // Joga p/obs a obs na tabela de icm  Limpando o que tinha
-  //
   Form7.ibDataSet14.Locate('NOME',AllTrim(SMALL_DBEdit40.Text),[]);
-  //
+
   if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
   begin
-    //
     Form7.ibQuery1.Close;
     Form7.ibQuery1.SQL.Clear;
     Form7.ibQuery1.SQL.Add('select * from ICM where NOME='+QuotedStr(sOperacaoAntiga)+' ');
     Form7.ibQuery1.Open;
-    //
+    
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet16.First;
     while not Form7.ibDataSet16.EOF do // Disable
     begin
-      //
       if Form7.ibDataSet16TOTAL.AsString <> '' then
       begin
         if Form7.ibDataSet16CFOP.AsString = Form7.ibQuery1.FieldByName('CFOP').AsString then
@@ -926,11 +868,11 @@ begin
           Form7.ibDataSet16CFOP.AsString := '';
         end;
       end;
-      //
+
       Form7.ibDataSet16.Next;
-      //
     end;
-// nao voltar Form7.ibDataSet16.EnableControls;
+
+  // nao voltar Form7.ibDataSet16.EnableControls;
     //
     Retributa(True);
 //    Form7.ibDataset16.Edit;
@@ -943,12 +885,10 @@ begin
       Form7.ibDataSet15FINNFE.AsString   := '4';
       SMALL_DBEdit40Enter(Sender);
     end;
-    //
   end;
-  //
+
   if SMALL_DBEdit40.Text <> '' then
   begin
-    //
     if (Pos( AnsiUpperCase(AllTrim(SMALL_DBEdit40.Text)), AnsiUpperCase(AllTrim(Form7.ibDataSet14NOME.AsString))) <> 0) then
     begin
       Form7.ibDataSet15.Edit;
@@ -961,29 +901,17 @@ begin
         if SMALL_DBEdit40.CanFocus then
           SMALL_DBEdit40.SetFocus;
       end;
-      //
     end;
   end;
-  //
-{
-  Retributa(True);
-  Form7.ibDataset16.Edit;
-  Form7.ibDataSet16.Post;
-  //
-  if pos('DEVOLUÇÃO',AnsiUppercase(SMALL_DBEdit40.Text)) <> 0 then
-  begin
-    Form12.Edit2.Text := '4-Devolução de mercadoria';
-  end;
-}
-  //
+
   Form7.ibDataSet16.EnableControls;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit40Change(Sender: TObject);
 begin
   if (Form12.Visible) and (Form7.ibDataSet14.Active) then
   begin
+    dBGrid2.Visible    := True;
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * FROM ICM where ((CFOP like '+QuotedStr('5%')+') or (CFOP like '+QuotedStr('6%')+') or (CFOP like '+QuotedStr('7%')+')) and Upper(NOME) like '+QuotedStr('%'+UpperCase(SMALL_DBEdit40.Text)+'%')+' order by upper(NOME)');
@@ -991,11 +919,10 @@ begin
     Form7.ibDataSet99.First;
     Form7.ibDataSet14.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]);
     Form7.IBDataSet99.EnableControls;
-    //
+    
     Form7.ibDataSet15.Enablecontrols;
     dBGrid2.DataSource := Form7.DataSource14;
     Form7.ibDataSet14.EnableControls;
-    //
   end;
 end;
 
@@ -1015,13 +942,8 @@ end;
 
 procedure TForm12.SMALL_DBEdit41Enter(Sender: TObject);
 begin
-  ListBox2.Visible := False;
-  dBGrid2.DataSource    := Form7.DataSource18;
-  dBGrid2.Visible       := True;
-  dBGrid2.Left          := SMALL_DBEdit41.Left;
-  dbGrid2.Top           := SMALL_DBEdit41.Top + SMALL_DBEdit41.Height -1;
-  dbGrid2.Width         := SMALL_DBEdit41.Width;
-  dBGrid2.Height        := Panel1.Height - dbGrid2.Top - 20;
+  AtivaPesquisaTransportadora;
+  
   SMALL_DBEdit41.SelectAll;
 end;
 
@@ -1072,9 +994,8 @@ procedure TForm12.SMALL_DBEdit43Change(Sender: TObject);
 begin
   if (Form12.Visible) and (Form7.ibDataSet9.Active) then
   begin
-    //
-    if not dBGrid2.Visible then SMALL_DBEdit43Enter(Sender);    
-    //
+    dBGrid2.Visible    := True;
+
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%VENDEDOR%')+' and Upper(NOME) like '+QuotedStr('%'+UpperCase(SMALL_DBEdit43.Text)+'%')+' order by upper(NOME)');
@@ -1086,28 +1007,13 @@ end;
 
 procedure TForm12.SMALL_DBEdit43Enter(Sender: TObject);
 begin
-  //
   Form7.ibDataSet15.Enablecontrols;
   if Form7.sModulo <> 'RETRIBUTA' then
     Form7.ibDataSet16.EnableControls;
-  //
-  dBGrid2.Visible := False;
-  dBGrid3.Visible := False;
-  //
-  // Vendedores
-  //
-  dBGrid2.DataSource         := Form7.DataSource9;
-  dBGrid2.Visible            := True;
-  dBGrid2.Left               := SMALL_DBEdit43.Left;
-  dbGrid2.Top                := SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1;
-  dbGrid2.Width              := SMALL_DBEdit43.Width;
-  dBGrid2.Height             := 161; //Panel1.Height - dbGrid2.Top - 20;
-  //
-  dbGrid2.Columns[0].Width   := SMALL_DBEdit43.Width -10;
-  dbGrid2.Columns[1].Visible := False;
-  //
+
+  AtivaPesquisaVendedor;
+
   SMALL_DBEdit43.SelectAll;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit43Exit(Sender: TObject);
@@ -1300,10 +1206,12 @@ procedure TForm12.FormKeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+
   if Form7.sModulo <> 'DESCONTO' then
   begin
     if Key = VK_RETURN then
       Perform(Wm_NextDlgCtl,0,0);
+
     if Key = VK_DOWN   then
     begin
       if dBgrid2.Visible = True then
@@ -1314,6 +1222,7 @@ begin
       if dBgrid2.Visible = True then
         dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
     end;
+    
     Key := VK_SHIFT;
   end else
   begin
@@ -2730,18 +2639,16 @@ end;
 procedure TForm12.SMALL_DBEdit39KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_RETURN then
   begin
-    //
     DBGrid2.Visible    := False;
+    Form7.ibDataSet16.First;
     Form7.ibDataSet16.EnableControls;
     DBGrid1.SetFocus;
     DbGrid1.SelectedIndex := 1;
     DbGrid1.SelectedIndex := 0;
-    //
   end;
-  //
+
   if Key = VK_DOWN   then
   begin
     if dBgrid2.Visible = True then
@@ -2759,7 +2666,6 @@ begin
   end;
 
   Key := VK_SHIFT;
-  //
 end;
 
 procedure TForm12.DBMemo1Enter(Sender: TObject);
@@ -3099,16 +3005,154 @@ end;
 
 procedure TForm12.ComboBox1Exit(Sender: TObject);
 begin
-  //
   try
     Form7.ibDataSet15MARKETPLACE.AsString := Form12.ComboBox1.Text;
-  except end;
-  //  
+  except
+  end;
+    
   Form12.SMALL_DBEdit40.SetFocus;
-  //
+end;
+
+
+procedure TForm12.AtivaPesquisaNaturezaOP;
+begin
+  dBGrid2.Visible := False;
+  dBGrid3.Visible := False;
+  // ------------------------- //
+  // Operação de venda ICM.DBF //
+  // ------------------------- //
+  dBGrid2.DataSource := Form7.DataSource14;
+  //dBGrid2.Visible    := True;
+
+
+  if AllTrim(SMALL_DBEdit40.Text) = '' then
+  begin
+    Form7.ibDataSet14.DisableControls;
+    Form7.ibDataSet14.First;
+    while (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '5'+Copy(Form1.ConfCFOP,2,3))
+      and (Copy(Form7.ibDataSet14CFOP.AsString,1,4) <> '6'+Copy(Form1.ConfCFOP,2,3))
+      and (not Form7.ibDataSet14.EOF) do
+      Form7.ibDataSet14.Next;
+      
+    Form7.ibDataSet14.EnableControls;
+    Form7.ibDataSet15.Edit;
+    SMALL_DBEdit40.Text := Form7.ibDataSet14NOME.AsString;
+  end else
+  begin
+    Form7.ibDataSet14.DisableControls;
+    Form7.ibDataSet14.Locate('NOME',AllTrim(Form7.ibDAtaSet15OPERACAO.AsString),[]);
+    Form7.ibDataSet14.EnableControls;
+  end;
+
+  Form7.ibDataSet14.EnableControls;
+
+  dBGrid2.Left       := SMALL_DBEdit40.Left;
+  dbGrid2.Top        := SMALL_DBEdit40.Top + SMALL_DBEdit40.Height -1;
+  dbGrid2.Width      := SMALL_DBEdit40.Width;
+  dBGrid2.Height     := 260; //Panel1.Height - dbGrid2.Top - 20;
+
+  dbGrid2.Columns[0].Width   := 250;
+  dbGrid2.Columns[1].Width   := 30;
+  dbGrid2.Columns[1].Visible := True;
+end;
+
+procedure TForm12.AtivaPesquisaVendedor;
+begin
+  dBGrid2.Visible := False;
+  dBGrid3.Visible := False;
+
+  dBGrid2.DataSource         := Form7.DataSource9;
+  //dBGrid2.Visible            := True;
+  dBGrid2.Left               := SMALL_DBEdit43.Left;
+  dbGrid2.Top                := SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1;
+  dbGrid2.Width              := SMALL_DBEdit43.Width;
+  dBGrid2.Height             := 161; //Panel1.Height - dbGrid2.Top - 20;
+
+  dbGrid2.Columns[0].Width   := SMALL_DBEdit43.Width -10;
+  dbGrid2.Columns[1].Visible := False;
+end;
+
+procedure TForm12.AtivaPesquisaCliente;
+begin
+  dBGrid3.Visible    := False;
+  dBGrid2.DataSource := Form7.DataSource2;
+  dBGrid2.Visible    := False;
+
+  dBGrid2.Left       := SMALL_DBEdit39.Left;
+  dbGrid2.Top        := SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1;
+  dbGrid2.Width      := SMALL_DBEdit39.Width;
+  dBGrid2.Height     := 225; // Panel1.Height - dbGrid2.Top - 20;
+  
+  dbGrid2.Columns[0].Width := dbGrid2.Width - 30;
+  dbGrid2.Columns[0].Width := 250;
+  dbGrid2.Columns[1].Visible := False;
+end;
+
+procedure TForm12.AtivaPesquisaTransportadora;
+begin
+  ListBox2.Visible := False;
+  dBGrid2.DataSource    := Form7.DataSource18;
+  //dBGrid2.Visible       := True;
+  dBGrid2.Left          := SMALL_DBEdit41.Left;
+  dbGrid2.Top           := SMALL_DBEdit41.Top + SMALL_DBEdit41.Height -1;
+  dbGrid2.Width         := SMALL_DBEdit41.Width;
+  dBGrid2.Height        := Panel1.Height - dbGrid2.Top - 20;
+end;
+
+procedure TForm12.SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+
+  if Form7.sModulo <> 'DESCONTO' then
+  begin
+    if Key = VK_RETURN then
+    begin
+      if SMALL_DBEdit43.CanFocus then
+        SMALL_DBEdit43.SetFocus;
+    end;
+
+    if Key = VK_DOWN   then
+    begin
+      if dBgrid2.Visible = True then
+        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
+    end;
+    if Key = VK_UP     then
+    begin
+      if dBgrid2.Visible = True then
+        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+    end;
+    
+    Key := VK_SHIFT;
+  end else
+  begin
+    Form7.sModulo := 'VENDA';
+  end;
+end;
+
+procedure TForm12.SMALL_DBEdit40Click(Sender: TObject);
+begin
+  dBgrid2.Visible := True;
+end;
+
+procedure TForm12.SMALL_DBEdit43Click(Sender: TObject);
+begin
+  dBgrid2.Visible := True;
+end;
+
+procedure TForm12.SMALL_DBEdit39Click(Sender: TObject);
+begin
+  dBgrid2.Visible := True;
+end;
+
+procedure TForm12.SMALL_DBEdit41Click(Sender: TObject);
+begin
+  dBGrid2.Visible       := True;
 end;
 
 end.
+
 
 
 

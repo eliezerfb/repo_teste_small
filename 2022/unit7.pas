@@ -1441,6 +1441,7 @@ type
     ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
+    ibDataSet14FRETESOBREIPI: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2183,7 +2184,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
-  Unit29, Unit48, ugeraxmlnfe;
+  Unit29, Unit48, ugeraxmlnfe, uFuncoesFiscais;
 
 {$R *.DFM}
 
@@ -9657,72 +9658,87 @@ begin
       Form7.ibDataSet8.Edit;
       if Form7.ibDataSet8ATIVO.AsFloat >=5 then
       begin
-        //
         Form7.ibDataSet8ATIVO.AsFloat := Form7.ibDataSet8ATIVO.AsFloat -5;
         Form7.ibDataSet8VALOR_PAGO.AsFloat := 0;
         Form7.ibDataSet8PAGAMENTO.AsString := '';
-        //
       end else
       begin
-        //
         Form7.ibDataSet8ATIVO.AsFloat := Form7.ibDataSet8ATIVO.AsFloat +5;
         Form7.ibDataSet8VALOR_PAGO.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat;
-        //
       end;
-      //
+
       SMALL_DBEdit2Change(Sender);
       Form7.ibDataSet8.Post;
-      //
-//      Form1.IBDataSet200.Close;
-//      Form1.IBDataSet200.Open;
-      //
+
       CalculaTotalRecebido(True);
-      //
     end;
-    //
     Screen.Cursor            := crDefault;
     Abort;
-    //
   end;
-  //
+
   // Duplo CLICK no ICM configuração
-  //
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI' then
   begin
     Form7.ibDataSet14.Edit;
-    if (Form7.ibDataSet14SOBREIPI.AsString = 'S') or (Form7.ibDataSet14SOBREIPI.AsString = '') then
-      Form7.ibDataSet14SOBREIPI.AsString := 'N' else Form7.ibDataSet14SOBREIPI.AsString := 'S';
+    if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
+      Form7.ibDataSet14SOBREIPI.AsString := 'N'
+    else
+      Form7.ibDataSet14SOBREIPI.AsString := 'S';
+
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+
+  //Mauricio Parizotto 2023-03-28
+  if DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI' then
+  begin
+    Form7.ibDataSet14.Edit;
+    if (Form7.ibDataSet14FRETESOBREIPI.AsString = 'S') then
+      Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
+    else
+      Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
+
+    Screen.Cursor            := crDefault;
+    Abort;
+  end;
+
+
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
   begin
     Form7.ibDataSet14.Edit;
-    if (Form7.ibDataSet14SOBREFRETE.AsString = 'S') or (Form7.ibDataSet14SOBREFRETE.AsString = '') then
-      Form7.ibDataSet14SOBREFRETE.AsString := 'N' else Form7.ibDataSet14SOBREFRETE.AsString := 'S';
+    if (Form7.ibDataSet14SOBREFRETE.AsString = 'S') then
+      Form7.ibDataSet14SOBREFRETE.AsString := 'N'
+    else
+      Form7.ibDataSet14SOBREFRETE.AsString := 'S';
+
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
   begin
     Form7.ibDataSet14.Edit;
-    if (Form7.ibDataSet14SOBRESEGURO.AsString = 'S') or (Form7.ibDataSet14SOBRESEGURO.AsString = '') then
-      Form7.ibDataSet14SOBRESEGURO.AsString := 'N' else Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
+    if (Form7.ibDataSet14SOBRESEGURO.AsString = 'S') then
+      Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
+    else
+      Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
+      
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+  
   if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
   begin
     Form7.ibDataSet14.Edit;
-    if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') or (Form7.ibDataSet14SOBREOUTRAS.AsString = '') then
-      Form7.ibDataSet14SOBREOUTRAS.AsString := 'N' else Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
+    if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
+      Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
+    else
+      Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
+      
     Screen.Cursor            := crDefault;
     Abort;
   end;
-  //
+  
   // --------------------------------------------------------------------------------- //
   // duplo clique no CGC                                                               //
   // --------------------------------------------------------------------------------- //
@@ -9742,13 +9758,11 @@ begin
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cnpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
       end else
       begin
-        //
         if bButton = IDNO  then
         begin
           sAsp := 'http://www.sintegra.gov.br/';
           ShellExecute( 0, 'Open',pChar(sASP),'', '', SW_SHOWMAXIMIZED);
         end;  
-        //
       end;
       Screen.Cursor            := crDefault;
       Abort;
@@ -9869,11 +9883,11 @@ procedure TForm7.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
 begin
- //
  if (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO') or
-    (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS')  then
+    (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS') or
+    (DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI')  then
  begin
    if Key <> chr(13) then
      Key := Chr(0);
@@ -15490,11 +15504,12 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         end;
       end;
     end;
-    //
+
     if (Field.Name = 'ibDataSet14SOBREIPI') or
        (Field.Name = 'ibDataSet14SOBREFRETE') or
        (Field.Name = 'ibDataSet14SOBRESEGURO') or
-       (Field.Name = 'ibDataSet14SOBREOUTRAS')  then
+       (Field.Name = 'ibDataSet14SOBREOUTRAS') or
+       (Field.Name = 'ibDataSet14FRETESOBREIPI')  then
     begin
       dbGrid1.Canvas.FillRect(Rect);
       dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'          ');
@@ -15503,43 +15518,54 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       begin
         if Field.Name = 'ibDataSet14SOBREIPI' then
         begin
-          if (Alltrim(Form7.ibDataSet14SOBREIPI.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBREIPI.AsString) = 'S') then
+          if (Alltrim(Form7.ibDataSet14SOBREIPI.AsString) = 'S') then
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
         if Field.Name = 'ibDataSet14SOBREFRETE' then
         begin
-          if (Alltrim(Form7.ibDataSet14SOBREFRETE.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBREFRETE.AsString) = 'S') then
+          if (Alltrim(Form7.ibDataSet14SOBREFRETE.AsString) = 'S') then
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
         if Field.Name = 'ibDataSet14SOBRESEGURO' then
         begin
-          if (Alltrim(Form7.ibDataSet14SOBRESEGURO.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBRESEGURO.AsString) = 'S') then
+          if (Alltrim(Form7.ibDataSet14SOBRESEGURO.AsString) = 'S') then
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
+
         if Field.Name = 'ibDataSet14SOBREOUTRAS' then
         begin
-          if (Alltrim(Form7.ibDataSet14SOBREOUTRAS.AsString) = '') or (Alltrim(Form7.ibDataSet14SOBREOUTRAS.AsString) = 'S') then
+          if (Alltrim(Form7.ibDataSet14SOBREOUTRAS.AsString) = 'S') then
+            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          else
+            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
+        end;
+
+        if Field.Name = 'ibDataSet14FRETESOBREIPI' then
+        begin
+          if (Alltrim(Form7.ibDataSet14FRETESOBREIPI.AsString) = 'S') then
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
           else
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
       end;
-      //
     end;
-    //
+
+
     if (Field.Name = 'ibDataSet14'+UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (Field.Name = 'ibDataSet14'+UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_') then
     begin
       DBGrid1.Canvas.Font.Color   := clRed;
       dbGrid1.Canvas.FillRect(Rect);
       dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Field.AsString);
     end;
-    //
+
     if Field.Name = 'ibDataSet7VENCIMENTO' then
     begin
       if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then
@@ -15548,7 +15574,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         DBGrid1.Canvas.Font.Color   := clBlack;
       dbGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
     end;
-    //
+
     {Sandro Silva 2022-12-19 inicio}
     if Field.Name = 'ibDataSet7MOVIMENTO' then
     begin
@@ -15561,7 +15587,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         dbGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet7MOVIMENTO.AsDateTime), 1, 3) );
       end;
     end;
-    //
+
     {Sandro Silva 2022-12-19 fim}
     if Field.Name = 'ibDataSet1DATA' then
     begin
@@ -15571,7 +15597,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         DBGrid1.Canvas.Font.Color   := clBlack;
       DBGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet1DATA.AsDateTime),1,3) );
     end;
-    //
+
     if Field.Name = 'ibDataSet15EMISSAO' then
     begin
       if (DayOfWeek(Form7.ibDataSet15EMISSAO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet15EMISSAO.AsDateTime) = 7) then
@@ -15606,10 +15632,9 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         DBGrid1.Canvas.Font.Color := clblack;
         SetBkMode(Handle, OldBkMode);
       //end;
-      //
     end;
-    //
-  except end;
+  except
+  end;
 end;
 
 procedure TForm7.Balancetegerencial1Click(Sender: TObject);
@@ -19899,48 +19924,50 @@ var
   tInicio : tTime;
   Hora, Min, Seg, cent: Word;
   IBQESTOQUE: TIBQuery; // Sandro Silva 2022-11-10 Para substituir Form7.IBDATASET99 que é usado em outros eventos disparados em cascatas
+
+  vlBalseIPI, vlFreteRateadoItem : Double;
+  vlBalseICMSItem, vlICMSItem : Double;
+  vFreteSobreIPI, vIPISobreICMS : Boolean;
 begin
-  //
-  //
   IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
   IBQESTOQUE.DisableControls;
 
+  //Mauricio Parizotto 2023-03-28
+  vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+  vIPISobreICMS  := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+
   if Form7.sModulo <> 'NAO' then
   begin
-    //                               //
     // Descrição em Branco não grava //
-    //                               //
     if Form7.sModulo = 'VENDA' then
     begin
-      //
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
-// tInicio := time;
-
-      //
       IBQESTOQUE.Close;
       IBQESTOQUE.SQL.Clear;
       IBQESTOQUE.SQL.Add('select DESCRICAO, PRECO, TIPO_ITEM from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' '); // Ok
       IBQESTOQUE.Open;
-      //
+
+      //Mauricio Parizotto 2023-04-03
+      fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
+                                          ' From ITENS001 '+
+                                          ' Where NUMERONF='+QuotedStr(ibDAtaSet15NUMERONF.AsString),ibDAtaSet15.Transaction);
+
+
       if IBQESTOQUE.FieldByname('TIPO_ITEM').AsString = '09' then
       begin
         ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
         Form7.ibDataSet16.Delete;
       end;
-      //
+
       try
-        //
         // Quando não tem produtos cadastrados e pq a NF e de complemento do ICMS
-        //
         if Form7.ibDataSet15FINNFE.AsString <> '2' then
         begin
-          //
           if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
           begin
-            //
-            fTotalMercadoria := Form7.ibDataSet15MERCADORIA.AsFloat;
-            //
+            //fTotalMercadoria := Form7.ibDataSet15MERCADORIA.AsFloat;
+
             Form7.ibDataSet15.DisableControls;
             Form7.ibDataSet15.Edit;
             Form7.ibDataSet15MERCADORIA.AsFloat := 0;
@@ -19950,35 +19977,32 @@ begin
             Form7.ibDataSet15IPI.AsFloat        := 0;
             Form7.ibDataSet15ISS.AsFloat        := 0;
             Form7.ibDataSet15PESOLIQUI.AsFloat  := 0;
-            //
+
             Form7.ibDataSet15BASESUBSTI.AsFloat := 0;
             Form7.ibDataSet15ICMSSUBSTI.AsFloat := 0;
-            //
+
             ItensDaNota := 0;
             fFCPRetido  := 0;
-            //
+
             sReg4  := Form7.ibDataSet4REGISTRO.AsString;
             sReg16 := Form7.ibDataSet16REGISTRO.AsString;
-            //
-            //
+
             Form7.ibDataSet4.DisableControls;
             Form7.ibDataSet101.DisableControls;
-            //
+
             Form7.ibDataSet101.Close;
             Form7.ibDataSet101.SelectSQL.Clear;
             Form7.ibDataSet101.SelectSQL.Add('select * from ITENS001 where NUMERONF='+QuotedStr(ibDAtaSet15NUMERONF.AsString)+' ');
             Form7.ibDataSet101.Open;
-            //
+
             Form7.ibDataSet101.First;
-            //
+
             if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
             begin
               while not Form7.ibDataSet101.Eof do // Disable
               begin
-                //
                 if Form7.ibDataSet101.FieldByname('QUANTIDADE').AsFloat <> 0 then
                 begin
-                  //
                   Form7.ibDataSet15MERCADORIA.AsFloat := Form7.ibDataSet15MERCADORIA.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
                   Form7.ibDataSet15BASEICM.AsFloat    := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(Form7.ibDataSet101.FieldByname('VBC').AsFloat,2);
                   Form7.ibDataSet15ICMS.AsFloat       := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(Form7.ibDataSet101.FieldByname('VICMS').AsFloat,2);
@@ -19986,41 +20010,35 @@ begin
                   Form7.ibDataSet15ICMSSUBSTI.AsFloat := Form7.ibDataSet15ICMSSUBSTI.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
                   Form7.ibDataSet15BASESUBSTI.AsFloat := Form7.ibDataSet15BASESUBSTI.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
                   Form7.ibDataSet15PESOLIQUI.AsFloat  := Form7.ibDataSet15PESOLIQUI.AsFloat  + Form7.ibDataSet101.FieldByname('PESO').AsFloat * Form7.ibDataSet101.FieldByname('QUANTIDADE').AsFloat;
-                  //
                 end;
-                //
+
                 Form7.ibDataSet101.Next;
-                //
               end;
             end else
             begin
-              //
               while not Form7.ibDataSet101.Eof do // Disable
               begin
-                //
                 Form7.ibDataSet4.Close;
                 Form7.ibDataSet4.Selectsql.Clear;
                 Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet101.FieldByname('CODIGO').AsString)+' ');  //
                 Form7.ibDataSet4.Open;
-                //
+
                 if Form7.ibDataSet101.FieldByname('DESCRICAO').AsString <> '' then ItensDaNota := ItensDaNota + 1;
-                //
+
                 try
                   if ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then fRateioDoDesconto  := Arredonda((ibDataSet15.FieldByname('DESCONTO').AsFloat / fTotalMErcadoria * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat),2) else fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
                 except
                   fRateioDoDesconto := 0;
                 end;
-                //
+
                 if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
                 begin
-                  //
                   // Nova rotina para posicionar na tabéla de CFOP
-                  //
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
                   Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
                   Form7.IBQuery14.Open;
-                  //
+
                   if Form7.IBQuery14.FieldByName('ST').AsString <> Form7.ibDataSet4ST.AsString then
                   begin
                     Form7.IBQuery14.Close;
@@ -20028,33 +20046,25 @@ begin
                     Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
                     Form7.IBQuery14.Open;
                   end;
-                  //
                 end else
                 begin
-                  //
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
                   Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
                   Form7.IBQuery14.Open;
-                  //
                 end;
-                //
+
                 if Form7.ibDataSet101.FieldByname('QUANTIDADE').AsFloat <> 0 then
                 begin
-                  //
                   Form7.ibDataSet15PESOLIQUI.AsFloat  := Form7.ibDataSet15PESOLIQUI.AsFloat  + Form7.ibDataSet101.FieldByname('PESO').AsFloat * Form7.ibDataSet101.FieldByname('QUANTIDADE').AsFloat;
-                  //
+
                   if (Pos(Alltrim(Form7.ibDataSet101.FieldByname('CFOP').AsString),Form1.CFOP5124) = 0) then// 5124 Industrialização efetuada para outra empresa não soma na base
                   begin
-                    //
                     Form7.ibDataSet15BASEISS.AsFloat    := Form7.ibDataSet15BASEISS.AsFloat    + (Form7.ibDataSet101.FieldByname('TOTAL').AsFloat * Form7.ibDataSet101.FieldByname('BASEISS').AsFloat / 100 );
                     if Form7.ibDataSet101.FieldByname('BASE').AsFloat > 0 then
                     begin
-                      //
   //                    if ((ibDAtaset13.FieldByname('CRT').AsString = '1') and (ibDataSet4.FieldByname('CSOSN').AsString = '900'))
-                      //
                       // NOTA DEVOLUCAO D E V
-                      //
                       if ((ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (ibDataSet4.FieldByname('CSOSN').AsString = '900') or (ibDataSet14.FieldByname('CSOSN').AsString = '900') ))
                       or ((ibDAtaset13.FieldByname('CRT').AsString <> '1') and (
                                                                                  (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '00') or
@@ -20068,60 +20078,62 @@ begin
                         Form7.ibDataSet15BASEICM.AsFloat    := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda((Form7.ibDataSet101.FieldByname('TOTAL').AsFloat * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
                         Form7.ibDataSet15ICMS.AsFloat       := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(( (Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 *  Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
                       end;
-                      //
                     end;
-                    //
+
                     Form7.ibDataSet15ISS.AsFloat        := Form7.ibDataSet15ISS.AsFloat        + ( Form7.ibDataSet101.FieldByname('TOTAL').AsFloat *  Form7.ibDataSet101.FieldByname('ISS').AsFloat / 100 );
-                    //
                   end;
-                  //
+
                   // Soma o CFOP 5124 ou 6124 no TOTAL da nota mas não soma na MERCADORIA
                   // 5124 Industrialização efetuada para outra empresa
-                  //
                   if (Form7.ibDataSet101.FieldByname('BASEISS').AsFloat <> 100) and (Pos(Alltrim(Form7.ibDataSet101.FieldByname('CFOP').AsString),Form1.CFOP5124) = 0) then // 5124 Industrialização efetuada para outra empresa não soma na base
                   begin
                     Form7.ibDataSet15MERCADORIA.AsFloat := Form7.ibDataSet15MERCADORIA.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
                   end;
-                  //
+
                   if (Copy(Form7.ibQuery14.FieldByname('CFOP').AsString,1,4) = '5101') or (Copy(Form7.ibQuery14.FieldByname('CFOP').AsString,1,4) = '6101') or (Pos('IPI',Form7.ibQuery14.FieldByname('OBS').AsString) <> 0) then
                   begin
-                    //
                     // IPI
-                    //
+                    {Mauricio Parizotto 2023-03-30 Inicio}
                     if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                     begin
-                      //
-                      Form7.ibDataSet15IPI.AsFloat         := Form7.ibDataSet15IPI.AsFloat + Arredonda2((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2); //
-                      //
-                      if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) then
+                      Form7.ibDataSet15IPI.AsFloat         := Form7.ibDataSet15IPI.AsFloat + Arredonda2((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2);
+
+                      //if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) then
+                      if vIPISobreICMS then
                       begin
                         Form7.ibDataSet15BASEICM.AsFloat   := Form7.ibDataSet15BASEICM.AsFloat + Arredonda((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2); //
                         Form7.ibDataSet15ICMS.AsFloat      := Form7.ibDataSet15ICMS.AsFloat    + Arredonda(((ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString))) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 )),2); // Acumula em 16 After post
                       end;
-                      //
                     end else
                     begin
-                      Form7.ibDataSet15IPI.Value         := Form7.ibDataSet15IPI.Value +
+                      vlFreteRateadoItem := 0;
+
+                      if vFreteSobreIPI then
+                        vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / fTotalMercadoria)
+                                                         * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
+
+                      vlBalseIPI := Form7.ibDataSet101.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem;
+
+                      Form7.ibDataSet15IPI.Value := Form7.ibDataSet15IPI.Value +
+                                                    Arredonda2((vlBalseIPI * ( Form7.ibDataSet101.FieldByname('IPI').Value / 100 )),2);
+
+                      {Form7.ibDataSet15IPI.Value         := Form7.ibDataSet15IPI.Value +
                                            Arredonda2((Form7.ibDataSet101.FieldByname('QUANTIDADE').Asfloat *
                                            Form7.ibDataSet101.FieldByname('UNITARIO').AsFloat   *
-                                           ( Form7.ibDataSet101.FieldByname('IPI').Value / 100 )),2); // 450 Valor IPI do item Uso o int para arredondar 2 casas
+                                           ( Form7.ibDataSet101.FieldByname('IPI').Value / 100 )),2); // 450 Valor IPI do item Uso o int para arredondar 2 casas}
 
-
+                      {Mauricio Parizotto 2023-03-30 Fim}
                     end;
-                    //
+
                     // Calcula o ICM
-                    //
-                    if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) and (ibDataSet101.FieldByname('IPI').AsFloat<>0) then
+                    //if ((Form7.ibQuery14.FieldByname('SOBREIPI').AsString = 'S')) and (ibDataSet101.FieldByname('IPI').AsFloat<>0) then
+                    if (vIPISobreICMS) and (ibDataSet101.FieldByname('IPI').AsFloat<>0) then
                     begin
                       if Form7.ibDataSet101.FieldByname('BASE').AsFloat > 0 then
                       begin
                         if Form7.ibDataSet4PIVA.AsFloat > 0 then
                         begin
-                          //
-  //                        if ((ibDAtaset13.FieldByname('CRT').AsString = '1') and (ibDataSet4.FieldByname('CSOSN').AsString = '900'))
-                          //
                           // NOTA DEVOLUCAO D E V
-                          //
                           if ((ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (ibDataSet4.FieldByname('CSOSN').AsString = '900') or (ibDataSet14.FieldByname('CSOSN').AsString = '900') ))
                           or ((ibDAtaset13.FieldByname('CRT').AsString <> '1') and (
                                                                                      (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '00') or
@@ -20132,20 +20144,23 @@ begin
                                                                                      (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '90')))
                           then
                           begin
-                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
-                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
+                            {Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post}
+
+                            vlBalseICMSItem := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            vlICMSItem      := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2);
+
+                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + vlBalseICMSItem;
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + vlICMSItem;
                           end;
-                          //
+
                           // CALCULO DO IVA
-                          //
                           if AliqICMdoCliente101() <= Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
                           begin
                             //
                             if pos('<BCST>',ibDataSet14OBS.AsString) <> 0 then
                             begin
-                              //
                               // VINICULAS
-                              //
                               try
                                 Form7.ibDataSet15BASESUBSTI.AsFloat := Arredonda(Form7.ibDataSet15BASESUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * StrToFloat(Copy(ibDataSet14OBS.AsString,pos('<BCST>',ibDataSet14OBS.AsString)+6,5)) / 100) * Form7.ibDataset4PIVA.AsFloat ),2); // Rateio desconto
                                 Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * StrToFloat(Copy(ibDataSet14OBS.AsString,pos('<BCST>',ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //  // Rateio desconto
@@ -20155,19 +20170,14 @@ begin
                               Form7.ibDataSet15BASESUBSTI.AsFloat := Arredonda(Form7.ibDataSet15BASESUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
                               Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //
                             end;
-                            //
+
                             // Desconta do ICMS substituido o ICMS normal
-                            //
                             Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat - ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * AliqICMdoCliente101() / 100 ),2); // Acumula em 16 After post
-                            //
                           end else
                           begin
-                            //
                             if pos('<BCST>',ibDataSet14OBS.AsString) <> 0 then
                             begin
-                              //
                               // VINICULAS
-                              //
                               try
                                 Form7.ibDataSet15BASESUBSTI.AsFloat := Arredonda(Form7.ibDataSet15BASESUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * StrToFloat(Copy(ibDataSet14OBS.AsString,pos('<BCST>',ibDataSet14OBS.AsString)+6,5)) / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
                                 Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * StrToFloat(Copy(ibDataSet14OBS.AsString,pos('<BCST>',ibDataSet14OBS.AsString)+6,5)) / 100 * AliqICMdoCliente101() / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //
@@ -20177,20 +20187,13 @@ begin
                               Form7.ibDataSet15BASESUBSTI.AsFloat := Arredonda(Form7.ibDataSet15BASESUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
                               Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat + ( ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * AliqICMdoCliente101() / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //
                             end;
-                            //
+
                             // Desconta do ICMS substituido o ICMS normal
-                            //
                             Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat - ((ibDataSet101.FieldByname('IPI').AsFloat * (ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula em 16 After post
-                            //
                           end;
-                          //
                         end else
                         begin
-                          //
-  //                        if ((ibDAtaset13.FieldByname('CRT').AsString = '1') and (ibDataSet4.FieldByname('CSOSN').AsString = '900'))
-                          //
                           // NOTA DEVOLUCAO D E V
-                          //
                           if ((ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (ibDataSet4.FieldByname('CSOSN').AsString = '900') or (ibDataSet14.FieldByname('CSOSN').AsString = '900') ))
                           or ((ibDAtaset13.FieldByname('CRT').AsString <> '1') and (
                                                                                      (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '00') or
@@ -20201,18 +20204,21 @@ begin
                                                                                      (Copy(LimpaNumero(ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '90')))
                           then
                           begin
-                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
-                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
+                            {Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post}
+
+                            vlBalseICMSItem := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 ),2);
+                            vlICMSItem      := Arredonda(( ((ibDataSet101.FieldByname('IPI').AsFloat * ibDataSet101.FieldByname('TOTAL').AsFloat) / 100) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2);
+
+                            Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + vlBalseICMSItem;
+                            Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + vlICMSItem;
                           end;
                         end;
                       end;
                     end;
-                    //
                   end;
-                  //
+
                   // Fundo de combate a pobresa
-                  //
-                  //
                   if (
                       (LimpaNumero(ibDAtaset13.FieldByname('CRT').AsString) <> '0') and
                       (
@@ -20232,7 +20238,6 @@ begin
                       )
                      ) then
                   begin
-                    //
                     // 1 - Simples nacional
                     // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
                     // 3 - Regime normal
@@ -20245,17 +20250,13 @@ begin
                     // <FCP>
 
 
-                    //
                     // fPercentualFCP 16 AfterPost
-                    //
+
                     if (Form7.ibDataSet16PFCPUFDEST.AsFloat <> 0) or (Form7.ibDataSet16PICMSUFDEST.AsFloat <> 0) then
                     begin
-                      //
                       // Quando preenche na nota não vai nada nessas tags
-                      //
                       fPercentualFCP := 0;
                       fPercentualFCPST := 0; // fPercentualFCP; // tributos da NF-e 16 AfterPost
-                      //
                     end else
                     begin
                       if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
@@ -20265,9 +20266,8 @@ begin
                       begin
                         fPercentualFCP := 0;
                       end;
-                      //
+
                       // fPercentualFCPST 16 AfterPost
-                      //
                       if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                       begin
                         fPercentualFCPST := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',Form7.ibDataSet4.FieldByname('TAGS_').AsString))); // tributos da NF-e 16 AfterPost
@@ -20276,7 +20276,7 @@ begin
                         fPercentualFCPST := 0; // fPercentualFCP; // tributos da NF-e 16 AfterPost
                       end;
                     end;
-                    //
+
                     if fPercentualFCP <> 0 then
                     begin
                       fFCP       := Arredonda((Form7.ibDataSet101.FieldByname('TOTAL').AsFloat*fPercentualFCP/100),2); // Valor do Fundo de Combate à Pobreza (FCP)
@@ -20284,10 +20284,9 @@ begin
                     begin
                       fFCP       := 0;
                     end;
-                    //
+
                     if fPercentualFCPST <> 0 then
                     begin
-                      //
                       if (UpperCase(Form7.ibDataSet2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
                       begin
                         fFCPRetido := ((fFCPRetido + Arredonda( (Form7.ibDataSet101.FieldByname('TOTAL').AsFloat * Form7.ibDataSet4PIVA.AsFloat * fPercentualFCPST / 100),2))-fFCP); // Valor do Fundo de Combate à Pobreza (FCP)
@@ -20295,37 +20294,28 @@ begin
                       begin
                         fFCPRetido := ((fFCPRetido + Arredonda( (Form7.ibDataSet101.FieldByname('TOTAL').AsFloat * Form7.ibDataSet4PIVA.AsFloat * fPercentualFCPST / 100),2))); // Valor do Fundo de Combate à Pobreza (FCP)
                       end;
-                      //
                     end;
-                    //
+
                     // FCP - Fundo de Combate a Pobresa
-                    //
                   end;
-                  //
+
                   // SUBSTITUIÇÃO TRIBUTÁRIA
-                  //
                   try
                     if Form7.ibDataSet4PIVA.AsFloat > 0 then
                     begin
-                      //
                       // IPI Por Unidade
-                      //
                       fIPIPorUnidade := 0;
                       if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                       begin
                         fIPIPorUnidade := (ibDataSet101.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString))));
                       end;
-                      //
+
                       // CALCULO DO IVA
-                      //
                       if AliqICMdoCliente101() <= Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
                       begin
-                        //
                         if pos('<BCST>',ibDataSet14OBS.AsString) <> 0 then
                         begin
-                          //
                           // VINICULAS
-                          //
                           try
                             //
                             Form7.ibDataSet15BASESUBSTI.AsFloat := Form7.ibDataSet15BASESUBSTI.AsFloat + Arredonda((
@@ -20347,33 +20337,26 @@ begin
                           end;
                         end else
                         begin
-                          //
                           Form7.ibDataSet15BASESUBSTI.AsFloat := Arredonda(Form7.ibDataSet15BASESUBSTI.AsFloat +
                           ((Form7.ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto + fIPIPorUnidade)
                            * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet4PIVA.AsFloat),2);
-                          //
 
                           Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat +
                           (((
                           ((Form7.ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade)
                           ) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100
                            *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2); // Não pode arredondar aqui
-                          //
                         end;
-                        //
+
                         // Desconta do ICMS substituido o ICMS normal
-                        //
                         Form7.ibDataSet15ICMSSUBSTI.AsFloat := Arredonda(Form7.ibDataSet15ICMSSUBSTI.AsFloat - (((Form7.ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)
                         ) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 *  AliqICMdoCliente101() / 100 ),2); // Acumula em 16 After post
                         //
                       end else
                       begin
-                        //
                         if pos('<BCST>',ibDataSet14OBS.AsString) <> 0 then
                         begin
-                          //
                           // VINICULAS
-                          //
                           try
                             Form7.ibDataSet15BASESUBSTI.AsFloat := Form7.ibDataSet15BASESUBSTI.AsFloat + Arredonda((
                             (Form7.ibDataSet101.FieldByname('TOTAL').AsFloat-fRateioDoDesconto + fIPIPorUnidade) *
@@ -20406,20 +20389,16 @@ begin
                         )) * Form7.ibDataSet101.FieldByname('BASE').AsFloat / 100 *   Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula em 16 After post
                         //
                       end;
-                      //
                     end;
                   except end;
-                  //
+
                   // Próximo
-                  //
                 end;
-                //
+
                 Form7.ibDataSet101.Next;
-                //
               end;
-              //
+
               // Passa novamente para calcular a regra de tres de frete desconto outras
-              //
               Form7.ibDataSet101.First;
               while not Form7.ibDataSet101.Eof do // Disable
               begin
@@ -20431,48 +20410,59 @@ begin
                     begin
                       if not ( Form7.ibDataSet4PIVA.AsFloat > 0 ) or (Copy(Form7.ibDataSet4.FieldByname('CST').AsString,2,2)='70') or (Copy(Form7.ibDataSet4.FieldByname('CST').AsString,2,2)='10') or (ibDataSet4.FieldByname('CSOSN').AsString = '900') then
                       begin
-                        //
                         if (LimpaNumero(ibDAtaset13.FieldByname('CRT').AsString) <> '1')
                         or (Copy(Form7.ibDataSet101.FieldByname('CFOP').AsString,2,3) = '201')
                         or (Copy(Form7.ibDataSet101.FieldByname('CFOP').AsString,2,3) = '202')
                         or (Copy(Form7.ibDataSet101.FieldByname('CFOP').AsString,2,3) = '411') then
                         begin
-                          //
                           fSomaNaBase := 0;
-                          //
-                          if ibDataSet15.FieldByname('FRETE').AsFloat    <> 0 then if (ibDataSet15.FieldByname('FRETE').AsFloat    / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('FRETE').AsFloat    / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor Total do Frete
-                          if ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then if (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando valor do Seguro
-                          //
+
+                          //Soma o Frete no ICMS
+                          if ibDataSet15.FieldByname('FRETE').AsFloat <> 0 then
+                          begin
+                            if (ibDataSet15.FieldByname('FRETE').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then
+                              fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('FRETE').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor Total do Frete
+
+                            //Frete Sobre IPI e IPI sobre ICMS
+                            if (vFreteSobreIPI) and (vIPISobreICMS) then
+                            begin
+                              vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / fTotalMercadoria)
+                                                               * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
+
+                              fSomaNaBase := fSomaNaBase + Arredonda2((vlFreteRateadoItem * ( Form7.ibDataSet101.FieldByname('IPI').Value / 100 )),2);
+                            end;
+                          end;
+
+                          if ibDataSet15.FieldByname('SEGURO').AsFloat   <> 0 then
+                            if (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then
+                              fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('SEGURO').AsFloat   / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando valor do Seguro
+
                           // Soma na base de calculo
-                          //
                           if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
                           begin
                             if ibDataSet15.FieldByname('DESPESAS').AsFloat <> 0 then if (ibDataSet15.FieldByname('DESPESAS').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase + (ibDataSet15.FieldByname('DESPESAS').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor de outras
                           end;
-                          //
-                          if ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then if (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then fSomaNaBase  := fSomanaBase - (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor do frete descontando
-                          //
+
+                          if ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then
+                            if (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat) > 0.01 then
+                              fSomaNaBase  := fSomanaBase - (ibDataSet15.FieldByname('DESCONTO').AsFloat / ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet101.FieldByname('TOTAL').AsFloat); // REGRA DE TRÊS ratiando o valor do frete descontando
+
                           Form7.ibDataSet15BASEICM.AsFloat  := Form7.ibDataSet15BASEICM.AsFloat    + Arredonda((ibDataSet101.FieldByname('BASE').AsFloat*fSomaNaBase/100),2);
                           Form7.ibDataSet15ICMS.AsFloat     := Form7.ibDataSet15ICMS.AsFloat       + Arredonda(((ibDataSet101.FieldByname('BASE').AsFloat*fSomaNaBase/100) * Form7.IbDataSet101.FieldByName('ICM').AsFloat / 100 ),2); // Acumula em 16 After post
-                          //
                         end;
                       end;
                     end;
                   end;
                 end;
                 Form7.ibDataSet101.Next;
-                //
               end;
             end;
-            //
+
             Form7.ibDataSet4.Locate('REGISTRO',sReg4,[]);
-            //
+
             // Particularidades do calculo do total do ICMS
-            //
             try
-              //
               // Verifica se pode usar tributação interestadual
-              //
               if UpperCase(Copy(Form7.ibDataSet2IE.AsString,1,2)) = 'PR' then // Quando é produtor rural não precisa ter CGC
               begin
                 sEstado := Form7.ibDataSet2ESTADO.AsString;
@@ -20483,32 +20473,24 @@ begin
                 if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
                 if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) < 18 then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
               end;
-              //
+
               sEstado := Form7.ibDataSet2ESTADO.AsString;
-              //
+
               if Pos('1'+sEstado+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX2') = 0 then sEstado := 'MG';
-              //
-            except end;
-            //
+            except
+            end;
+
             try
               Form7.ibDataSet15.Post;
               Form7.ibDataSet15.Edit;
             except end;
-            //
             // Libera a alteração
-            //
           end;
-          //
         end else
         begin
           Form12.SMALL_DBEdit16.ReadOnly := False;
         end;
-        //
       except end;
-      //
-      // DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-      // ShowMessage('Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0));
-      //
       Form7.ibDataSet15.EnableControls;
 
       {Sandro Silva 2022-11-08 inicio}
@@ -20516,29 +20498,23 @@ begin
         Form7.ibDataSet16.Locate('REGISTRO', sReg16, []);
       {Sandro Silva 2022-11-08 fim}
 
-      //
       Screen.Cursor := crDefault;
-      //
     end;
-    //
+
     if Form7.sModulo = 'OS' then
       TotalizaOS(True);
+      
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
-    //
   end;
-  //
+
   Form7.ibDataSet4.EnableControls;
   Form7.IBQuery14.Close;
   AgendaCommit(True);
-  //
+
   Form7.ibDataSet16.Tag := 0;
 
   FreeAndNil(IBQESTOQUE);
-
-  //         //
-  // The end //
-  //         //
 end;
 
 procedure TForm7.ibDataSet16BeforeDelete(DataSet: TDataSet);

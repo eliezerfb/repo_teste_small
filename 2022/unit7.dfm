@@ -1,6 +1,11 @@
 object Form7: TForm7
+<<<<<<< HEAD
   Left = 418
   Top = 33
+=======
+  Left = 656
+  Top = 199
+>>>>>>> origin/f-6422
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -15416,7 +15421,7 @@ object Form7: TForm7
       
         '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST, BCPIS, B' +
         'CCOFINS, '
-      '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS)'
+      '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -15432,7 +15437,7 @@ object Form7: TForm7
         'SEGURO, '
       
         '   :SOBREOUTRAS, :CST, :BCPIS, :BCCOFINS, :PPIS, :PCOFINS, :CSOS' +
-        'N, :CSTPISCOFINS)')
+        'N, :CSTPISCOFINS,:FRETESOBREIPI)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -15483,7 +15488,8 @@ object Form7: TForm7
       '  PPIS,'
       '  PCOFINS,'
       '  CSOSN,'
-      '  CSTPISCOFINS'
+      '  CSTPISCOFINS,'
+      '  FRETESOBREIPI'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -15540,7 +15546,8 @@ object Form7: TForm7
       '  PPIS = :PPIS,'
       '  PCOFINS = :PCOFINS,'
       '  CSOSN = :CSOSN,'
-      '  CSTPISCOFINS = :CSTPISCOFINS'
+      '  CSTPISCOFINS = :CSTPISCOFINS,'
+      '  FRETESOBREIPI = :FRETESOBREIPI'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -15836,6 +15843,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'SOBREOUTRAS'
       Origin = '"ICM"."SOBREOUTRAS"'
+      Size = 1
+    end
+    object ibDataSet14FRETESOBREIPI: TIBStringField
+      DisplayLabel = 'IPI sobre Frete'
+      DisplayWidth = 20
+      FieldName = 'FRETESOBREIPI'
+      Origin = 'ICM.FRETESOBREIPI'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
@@ -20743,7 +20757,8 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'c:\Projeto 2022\2022\small.fdb'
+    Connected = True
+    DatabaseName = 'D:\Desenvolvimento\Executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
@@ -21451,7 +21466,7 @@ object Form7: TForm7
     Top = 219
   end
   object IBTransaction1: TIBTransaction
-    Active = False
+    Active = True
     DefaultDatabase = IBDatabase1
     Params.Strings = (
       'isc_tpb_concurrency'
@@ -22062,7 +22077,11 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+<<<<<<< HEAD
       'm50a\vm50a\'
+=======
+      'm50avm50avm50a\vm50a\'
+>>>>>>> origin/f-6422
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22095,7 +22114,11 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+<<<<<<< HEAD
       '50a\vm50a\'
+=======
+      '50avm50avm50a\vm50a\'
+>>>>>>> origin/f-6422
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22406,7 +22429,12 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+<<<<<<< HEAD
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+=======
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm5' +
+      '0\DPEC'
+>>>>>>> origin/f-6422
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22434,7 +22462,12 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+<<<<<<< HEAD
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+=======
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50' +
+      '\DPEC'
+>>>>>>> origin/f-6422
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

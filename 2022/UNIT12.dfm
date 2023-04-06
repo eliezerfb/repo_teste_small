@@ -1,6 +1,6 @@
 object Form12: TForm12
-  Left = 575
-  Top = 236
+  Left = 570
+  Top = 170
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False
@@ -47,7 +47,6 @@ object Form12: TForm12
     Top = 0
     Width = 1020
     Height = 694
-    VertScrollBar.Position = 184
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -61,7 +60,7 @@ object Form12: TForm12
     TabOrder = 0
     object Panel1: TPanel
       Left = 10
-      Top = -174
+      Top = 10
       Width = 662
       Height = 825
       BevelOuter = bvNone
@@ -963,6 +962,7 @@ object Form12: TForm12
         ParentFont = False
         TabOrder = 0
         OnChange = SMALL_DBEdit43Change
+        OnClick = SMALL_DBEdit43Click
         OnEnter = SMALL_DBEdit43Enter
         OnExit = SMALL_DBEdit43Exit
         OnKeyDown = FormKeyUp
@@ -1003,6 +1003,7 @@ object Form12: TForm12
         ParentFont = False
         TabOrder = 1
         OnChange = SMALL_DBEdit39Change
+        OnClick = SMALL_DBEdit39Click
         OnEnter = SMALL_DBEdit39Enter
         OnExit = SMALL_DBEdit39Exit
         OnKeyDown = SMALL_DBEdit39KeyDown
@@ -1557,6 +1558,7 @@ object Form12: TForm12
         ParentFont = False
         TabOrder = 8
         OnChange = SMALL_DBEdit41Change
+        OnClick = SMALL_DBEdit41Click
         OnEnter = SMALL_DBEdit41Enter
         OnExit = SMALL_DBEdit41Exit
         OnKeyDown = SMALL_DBEdit41KeyDown
@@ -1981,9 +1983,10 @@ object Form12: TForm12
         ParentFont = False
         TabOrder = 54
         OnChange = SMALL_DBEdit40Change
+        OnClick = SMALL_DBEdit40Click
         OnEnter = SMALL_DBEdit40Enter
         OnExit = SMALL_DBEdit40Exit
-        OnKeyDown = FormKeyUp
+        OnKeyDown = SMALL_DBEdit40KeyDown
         OnKeyUp = SMALL_DBEdit40KeyUp
       end
       object DBGrid2: TDBGrid
@@ -2048,7 +2051,7 @@ object Form12: TForm12
     end
     object Panel6: TPanel
       Left = 0
-      Top = 654
+      Top = 838
       Width = 675
       Height = 40
       BevelOuter = bvNone
@@ -2091,7 +2094,7 @@ object Form12: TForm12
     end
     object Panel9: TPanel
       Left = 800
-      Top = -94
+      Top = 90
       Width = 200
       Height = 200
       BevelOuter = bvNone
@@ -2110,7 +2113,7 @@ object Form12: TForm12
     end
     object Button3: TBitBtn
       Left = 768
-      Top = -144
+      Top = 40
       Width = 75
       Height = 25
       Caption = 'Button3'
@@ -2126,7 +2129,7 @@ object Form12: TForm12
     end
     object Panel2: TPanel
       Left = 688
-      Top = 128
+      Top = 312
       Width = 433
       Height = 209
       BevelOuter = bvNone
