@@ -67,14 +67,13 @@ uses
   SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
   ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
   uListaCnaes in 'uListaCnaes.pas',
-<<<<<<< HEAD
   uGeraXmlNFeEntrada in 'uGeraXmlNFeEntrada.pas',
   uGeraXmlNFeSaida in 'uGeraXmlNFeSaida.pas',
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
-  uFuncoesFiscais in 'uFuncoesFiscais.pas';
-=======
-  uTransmiteNFSe in 'uTransmiteNFSe.pas';
->>>>>>> origin/f-6591+f-6782
+  uFuncoesFiscais in 'uFuncoesFiscais.pas',
+  uTransmiteNFSe in 'uTransmiteNFSe.pas'
+;
+
 
 {$R *.RES}
 
