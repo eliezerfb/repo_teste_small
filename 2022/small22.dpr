@@ -66,7 +66,8 @@ uses
   uSmallNFeUtils in 'uSmallNFeUtils.pas',
   SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
   ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
-  uListaCnaes in 'uListaCnaes.pas';
+  uListaCnaes in 'uListaCnaes.pas',
+  uTransmiteNFSe in 'uTransmiteNFSe.pas';
 
 {$R *.RES}
 
