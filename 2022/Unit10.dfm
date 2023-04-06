@@ -971,7 +971,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = Orelha_TAGS
+      ActivePage = orelha_cadastro
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -1754,7 +1754,8 @@ object Form10: TForm10
               'Representante'
               'Distribuidor'
               'Vendedor'
-              'Credenciadora de cart'#227'o '
+              'Credenciadora de cart'#227'o'
+              'Institui'#231#227'o financeira'
               'Marketplace')
           end
         end
@@ -4789,7 +4790,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 366
-          Height = 22
+          Height = 19
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -4810,7 +4811,7 @@ object Form10: TForm10
           Left = 385
           Top = 25
           Width = 125
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Enabled = False
