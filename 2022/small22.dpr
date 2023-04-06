@@ -67,7 +67,7 @@ uses
   SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
   ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
 <<<<<<< HEAD
-  uListaCnaes in 'uListaCnaes.pas';
+  uListaCnaes in 'uListaCnaes.pas',
 =======
   uGeraXmlNFeEntrada in 'uGeraXmlNFeEntrada.pas',
   uGeraXmlNFeSaida in 'uGeraXmlNFeSaida.pas',
