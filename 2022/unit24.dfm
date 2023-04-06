@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = -7
-  Top = 1
+  Left = 460
+  Top = 168
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -1863,6 +1863,7 @@ object Form24: TForm24
         ParentFont = False
         TabOrder = 9
         OnChange = SMALL_DBEdit41Change
+        OnClick = SMALL_DBEdit41Click
         OnEnter = SMALL_DBEdit41Enter
         OnExit = SMALL_DBEdit41Exit
         OnKeyDown = SMALL_DBEdit41KeyDown
