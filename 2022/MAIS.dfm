@@ -14117,6 +14117,7 @@ object Form1: TForm1
     IdleTimer = 0
     SQLDialect = 3
     TraceFlags = []
+    AllowStreamedConnected = False
     Left = 832
     Top = 260
   end
