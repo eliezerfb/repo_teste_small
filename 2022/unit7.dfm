@@ -1,6 +1,4 @@
 object Form7: TForm7
-  Left = 418
-  Top = 33
   Left = 656
   Top = 199
   BiDiMode = bdLeftToRight
@@ -17839,13 +17837,6 @@ object Form7: TForm7
       Origin = 'COMPRAS.NUMERONF'
       Size = 12
     end
-    object ibDataSet24MODELO: TIBStringField
-      DisplayLabel = 'Modelo'
-      FieldName = 'MODELO'
-      Origin = 'COMPRAS.MODELO'
-      Visible = False
-      Size = 2
-    end
     object ibDataSet24EMISSAO: TDateField
       DisplayLabel = 'Emiss'#227'o'
       DisplayWidth = 10
@@ -18063,6 +18054,12 @@ object Form7: TForm7
       Visible = False
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet24MODELO: TIBStringField
+      FieldName = 'MODELO'
+      Origin = 'COMPRAS.MODELO'
+      Visible = False
+      Size = 2
     end
     object ibDataSet24REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
@@ -22052,7 +22049,29 @@ object Form7: TForm7
     CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
     TipoCertificado = ckMemory
     DiretorioTemplates = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\'
+      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templatesvm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22063,8 +22082,29 @@ object Form7: TForm7
     EmailSettings.QtdeTentativas = 0
     EmailSettings.UseTLS = utNoTLSSupport
     DiretorioEsquemas = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\'
->>>>>>> origin/f-6422
+      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemasvm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22358,7 +22398,25 @@ object Form7: TForm7
     CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
     TipoCertificado = ckMemory
     DiretorioTemplates = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\DPEC'
+      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templatesvm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm5' +
+      '0\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22369,7 +22427,25 @@ object Form7: TForm7
     EmailSettings.QtdeTentativas = 0
     EmailSettings.UseTLS = utNoTLSSupport
     DiretorioEsquemas = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\DPEC'
+      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemasvm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50' +
+      '\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
