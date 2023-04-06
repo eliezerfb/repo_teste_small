@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 656
-  Top = 199
+  Left = 418
+  Top = 33
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -18780,6 +18780,11 @@ object Form7: TForm7
       Caption = 'Visualizar Nota Fiscal de Servi'#231'o (NFS-e)'
       Visible = False
       OnClick = Visu1Click
+    end
+    object LimparRetornosda1: TMenuItem
+      Caption = 'Limpar Retornos Nota Fiscal de Servi'#231'o (NFS-e)'
+      Visible = False
+      OnClick = LimparRetornosda1Click
     end
     object EnviarNFSeporemail1: TMenuItem
       Caption = 'Enviar NFS-e por e-mail'

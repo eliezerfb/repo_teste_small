@@ -710,140 +710,111 @@ procedure TForm48.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   try
-    //
     Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
-    //
+
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet4.DisableControls;
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet15.DisableControls;
     Form48.Hide;
-    //
+
     Form7.sModulo := 'RETRIBUTA';
 
     {Sandro Silva 2022-09-23 inicio}
-    // Teste na Small, importando Orçamento, não está gravando ISS e BASEISS em ITENS003 
+    // Teste na Small, importando Orçamento, não está gravando ISS e BASEISS em ITENS003
     if Form7.ibDataSet15MODELO.AsString = 'SV' then
       RecalcularIssDosItens; // Sandro Silva 2022-09-22
     {Sandro Silva 2022-09-23 fim}
 
-    //
     if Form7.ibDataSet15.Modified then
       Form7.ibDataSet15.Post;
-    //
+
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
-      //
       if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
       begin
-        //
         // Atenção a rotina abaixo altera a quantidade no estoque
-        //
         Form7.ibDataSet16.DisableControls;
         Form7.ibDataSet16.First;
         while not Form7.ibDataSet16.Eof do // disable
         begin
-          //
           // Procura o produto no estoque
-          //
           try
-            //
-            Form7.ibDataSet4.Close;                                                //
+            Form7.ibDataSet4.Close;
             Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
             Form7.ibDataSet4.Open;
-            //
+
             if Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
             begin
-              //
               if Form7.ibDataSet16SINCRONIA.AsFloat <> Form7.ibDataSet16QUANTIDADE.AsFloat then
               begin
                 if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
                 begin
                   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
                   begin
-                    //
                     Form7.ibDataSet4.Edit;
                     Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                     Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                     Form7.ibDataSet4.Post;
-                    //
-                    //                ShowMessage('Teste saiu do estoque '+Form7.ibDataSet16QUANTIDADE.AsString+ ' '+Form7.ibDataSet16DESCRICAO.AsString);
-                    //
                   end;
                 end;
-                //
+
                 Form7.sModulo := 'FECHAVENDA';
                 Form7.ibDataSet16.Edit;
                 Form7.ibDataSet16SINCRONIA.AsFloat := Form7.ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
                 Form7.ibDataSet16.Post;
-                //
               end;
             end;
           except
           end;
-          //
+
           Form7.sModulo := 'VENDA';
           Form7.ibDataSet16.Next;
-          //
         end;
-        //
         // Atenção a rotina acima altera a quantidade no estoque
-        //
       end;
 
-      //
       // Desdobramento das duplicatas
-      //
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-      //
+
       ApagaIntegracaoComOCaixa(True);
-      //
+
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0) then
       begin
         Form18.ShowModal;
       end else
       begin
-        //
         ApagaAsDuplicatasAnteriores(True);
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15DUPLICATAS.AsFloat := 0;
         Form7.ibDataSet15.Post;
-        //
+
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
           Form18.CheckBox1.Checked := True
         else
           Form18.CheckBox1.Checked := False;
         Mais1Ini.Free;
-        //
+
         if Form18.CheckBox1.Checked then
         begin
           Form7.bProximas := True;
           Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
           Form7.bProximas := False;
         end;
-        //
       end;
-      //
     end else
     begin
-      //
       // Se o cliente estiver em branco apaga
-      //
       Form7.ibDataSet15.Delete;
-      //
     end;
-    //
   except
   end;
-  //
-  //
+
   // Lay-Out no form7
-  //
   Form7.ibDataSet16UNITARIO.Visible       := False;
   Form7.ibDataSet16CFOP.Visible           := False;
   Form7.ibDataSet16XPED.Visible           := False;
@@ -852,29 +823,25 @@ begin
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 29;
   Form7.ibDataSet35TECNICO.Visible        := True;
   //    Form7.ibDataSet35UNITARIO.Visible       := False;
-  //
-  //
+
   Form7.ibDataSet4.Close;
   Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.sModulo := 'VENDA';
-  //
+
   Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet14.EnableControls;
   Form7.ibDataSet15.EnableControls;
-  //
+
   BaixaEstoqueDaNFeAutorizada('');
-  //
+
   Form7.Close;
   Form7.Show;
-  //
-  //
-  //
+
   // Para atender o PAF
-  //
   if ParamCount > 0 then
   begin
     if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
@@ -882,12 +849,11 @@ begin
 //      Form1.Close;
     end;
   end;
-  //
+
   Form1.ConfEspecie := Form7.ibDataSet15ESPECIE.AsString;
   Form1.ConfMarca   := Form7.ibDataSet15MARCA.AsString;
-  //
+
   // Apaga ítens em branco
-  //
   try
     Form7.IBQuery99.Close;
     Form7.IBQuery99.SQL.Clear;
@@ -895,7 +861,6 @@ begin
     Form7.IBQuery99.Open;
   except
   end;
-  //
 end;
 
 

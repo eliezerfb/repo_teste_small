@@ -12659,39 +12659,32 @@ end;
 
 procedure TForm1.Image201SClick(Sender: TObject);
 begin
-  //
   try
-    //
     if not Legal(True) then Abort;
-    //
     // NFS-e
-    //
     if Form1.bNotaServicoLiberada then
     begin
-      //
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
       FechaTudo(Form1.bFechaTudo);
-      //
+
       Form7.sModulo := 'VENDA';
       Form7.sTitulo := 'Nota Fiscal de Serviço Eletronica (NFS-e) e Recibo Provisório de Serviços (RPS) RPS';
       Form7.sRPS    := 'S';
-      //
+
       Form7.Show;
       Screen.Cursor := crDefault; // Cursor de Aguardo
-      //
     end;
-    //
+
     Form1.Label201MouseLeave(Sender);
-    //
-    if Form48.Visible then Form48.Show;
-    //
+
+    if Form48.Visible then
+      Form48.Show;
   except
     on E: Exception do
     begin
       Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
     end;
   end;
-  //
 end;
 
 procedure TForm1.Simples1Click(Sender: TObject);
