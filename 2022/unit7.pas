@@ -25785,12 +25785,11 @@ begin
         begin
           try
             begin
+              sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
+              fNFe := GeraXmlNFe;//(False);
+
               // Início geração do xml
               try
-
-                sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
-                fNFe := GeraXmlNFe;//(False);
-
                 fNFe := spdNFe.AssinarNota(fNFe);
                 Screen.Cursor            := crHourGlass;
               except
