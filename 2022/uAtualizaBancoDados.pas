@@ -987,6 +987,34 @@ begin
     if ExecutaComando('alter table RECEBER add INSTITUICAOFINANCEIRA varchar(60), add FORMADEPAGAMENTO varchar(60)') then
       ExecutaComando('commit');
   end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add INSTITUICAOFINANCEIRA varchar(60), add FORMADEPAGAMENTO varchar(60)') then
+      ExecutaComando('commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBCFCP') = False then
+  begin
+    if ExecutaComando('alter table ITENS001 add VBCFCP numeric(18, 2), ' +
+                                           'add PFCP numeric(18, 4), ' +
+                                           'add VFCP numeric(18, 2), ' +
+                                           'add VBCFCPST numeric(18, 2), ' +
+                                           'add PFCPST numeric(18, 4), ' +
+                                           'add VFCPST numeric(18, 2)') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VBCFCP') = False then
+  begin
+    if ExecutaComando('alter table ITENS002 add VBCFCP numeric(18, 2), ' +
+                                           'add PFCP numeric(18, 4), ' +
+                                           'add VFCP numeric(18, 2), ' +
+                                           'add VBCFCPST numeric(18, 2), ' +
+                                           'add PFCPST numeric(18, 4), ' +
+                                           'add VFCPST numeric(18, 2)') then
+      ExecutaComando('Commit');
+  end;
   {Sandro Silva 2023-04-10 fim}
 
   Form22.Repaint;
