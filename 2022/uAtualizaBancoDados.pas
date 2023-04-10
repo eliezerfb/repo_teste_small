@@ -19,11 +19,10 @@ uses
   ;
 
   procedure AtualizaBancoDeDados(sBuild : string);
-  function ExecutaComando(comando:string):Boolean;
 
 implementation
 
-uses Unit22, Unit13;
+uses Unit22, Unit13, uFuncoesBancoDados;
 
 
 procedure AtualizaBancoDeDados(sBuild : string);
@@ -977,7 +976,18 @@ begin
     ExecutaComando('commit');
   {Sandro Silva 2022-12-16 fim}
 
-  ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)'); // Mauricio Parizotto 2023-03-28
+  {Sandro Silva 2023-04-10 inicio
+  ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)');
+  }
+  if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
+    ExecutaComando('commit');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add INSTITUICAOFINANCEIRA varchar(60), add FORMADEPAGAMENTO varchar(60)') then
+      ExecutaComando('commit');
+  end;
+  {Sandro Silva 2023-04-10 fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
@@ -1041,23 +1051,6 @@ begin
 
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');
-end;
-
-
-function ExecutaComando(comando:string):Boolean;
-begin
-  Result := False;
-
-  try
-    Form1.ibDataset200.Close;
-    Form1.ibDataset200.SelectSql.Clear;
-    Form1.ibDataset200.SelectSql.Add(comando);
-    Form1.ibDataset200.Open;
-    Form1.ibDataset200.Close;
-
-    Result := True;
-  except
-  end;
 end;
 
 end.
