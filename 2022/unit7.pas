@@ -2055,7 +2055,7 @@ type
 
   private
     { Private declarations }
-    function ImportaNF(pP1: boolean; sP1: String):Boolean;
+    // function ImportaNF(pP1: boolean; sP1: String):Boolean;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
@@ -2186,7 +2186,12 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
-  Unit29, Unit48, ugeraxmlnfe, uFuncoesFiscais, uTransmiteNFSe;
+  Unit29, Unit48
+  , ugeraxmlnfe
+  , uFuncoesFiscais
+  , uTransmiteNFSe
+  , uImportaNFe
+  ;
 
 {$R *.DFM}
 
@@ -7404,6 +7409,7 @@ begin
   //
 end;
 
+(*
 function tForm7.ImportaNF(pP1: boolean; sP1: String):Boolean;
 var
   //
@@ -8239,6 +8245,7 @@ begin
   // Fim
   //
 end;
+*)
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
 var
@@ -36968,7 +36975,7 @@ begin
       if Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString)<>0 then
       begin
         //
-        Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
+        ImportaNF(True, Form7.ibDataset24NFEXML.AsString); // Sandro Silva 2023-04-10 Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
         Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
         //
       end;
