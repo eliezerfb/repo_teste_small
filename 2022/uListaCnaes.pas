@@ -8,173 +8,173 @@ implementation
 
 function getListaCnae:string;
 begin
-  Result := '111301 - Cultivo de arroz'+#13#10+
-            '111302 - Cultivo de milho'+#13#10+
-            '111303 - Cultivo de trigo'+#13#10+
-            '111399 - Cultivo de outros cereais não especificados anteriormente'+#13#10+
-            '112101 - Cultivo de algodão herbáceo'+#13#10+
-            '112102 - Cultivo de juta'+#13#10+
-            '112199 - Cultivo de outras fibras de lavoura temporária não especificadas anteriormente'+#13#10+
-            '113000 - Cultivo de cana-de-açúcar'+#13#10+
-            '114800 - Cultivo de fumo'+#13#10+
-            '115600 - Cultivo de soja'+#13#10+
-            '116401 - Cultivo de amendoim'+#13#10+
-            '116402 - Cultivo de girassol'+#13#10+
-            '116403 - Cultivo de mamona'+#13#10+
-            '116499 - Cultivo de outras oleaginosas de lavoura temporária não especificadas anteriormente'+#13#10+
-            '119901 - Cultivo de abacaxi'+#13#10+
-            '119902 - Cultivo de alho'+#13#10+
-            '119903 - Cultivo de batata-inglesa'+#13#10+
-            '119904 - Cultivo de cebola'+#13#10+
-            '119905 - Cultivo de feijão'+#13#10+
-            '119906 - Cultivo de mandioca'+#13#10+
-            '119907 - Cultivo de melão'+#13#10+
-            '119908 - Cultivo de melancia'+#13#10+
-            '119909 - Cultivo de tomate rasteiro'+#13#10+
-            '119999 - Cultivo de outras plantas de lavoura temporária não especificadas anteriormente'+#13#10+
-            '121101 - Horticultura, exceto morango'+#13#10+
-            '121102 - Cultivo de morango'+#13#10+
-            '122900 - Cultivo de flores e plantas ornamentais'+#13#10+
-            '131800 - Cultivo de laranja'+#13#10+
-            '132600 - Cultivo de uva'+#13#10+
-            '133401 - Cultivo de açaí'+#13#10+
-            '133402 - Cultivo de banana'+#13#10+
-            '133403 - Cultivo de caju'+#13#10+
-            '133404 - Cultivo de cítricos, exceto laranja'+#13#10+
-            '133405 - Cultivo de coco-da-baía'+#13#10+
-            '133406 - Cultivo de guaraná'+#13#10+
-            '133407 - Cultivo de maçã'+#13#10+
-            '133408 - Cultivo de mamão'+#13#10+
-            '133409 - Cultivo de maracujá'+#13#10+
-            '133410 - Cultivo de manga'+#13#10+
-            '133411 - Cultivo de pêssego'+#13#10+
-            '133499 - Cultivo de frutas de lavoura permanente não especificadas anteriormente'+#13#10+
-            '134200 - Cultivo de café'+#13#10+
-            '135100 - Cultivo de cacau'+#13#10+
-            '139301 - Cultivo de chá-da-índia'+#13#10+
-            '139302 - Cultivo de erva-mate'+#13#10+
-            '139303 - Cultivo de pimenta-do-reino'+#13#10+
-            '139304 - Cultivo de plantas para condimento, exceto pimenta-do-reino'+#13#10+
-            '139305 - Cultivo de dendê'+#13#10+
-            '139306 - Cultivo de seringueira'+#13#10+
-            '139399 - Cultivo de outras plantas de lavoura permanente não especificadas anteriormente'+#13#10+
-            '141501 - Produção de sementes certificadas, exceto de forrageiras para pasto'+#13#10+
-            '141502 - Produção de sementes certificadas de forrageiras para formação de pasto'+#13#10+
-            '142300 - Produção de mudas e outras formas de propagação vegetal, certificadas'+#13#10+
-            '151201 - Criação de bovinos para corte'+#13#10+
-            '151202 - Criação de bovinos para leite'+#13#10+
-            '151203 - Criação de bovinos, exceto para corte e leite'+#13#10+
-            '152101 - Criação de bufalinos'+#13#10+
-            '152102 - Criação de eqüinos'+#13#10+
-            '152103 - Criação de asininos e muares'+#13#10+
-            '153901 - Criação de caprinos'+#13#10+
-            '153902 - Criação de ovinos, inclusive para produção de lã'+#13#10+
-            '154700 - Criação de suínos'+#13#10+
-            '155501 - Criação de frangos para corte'+#13#10+
-            '155502 - Produção de pintos de um dia'+#13#10+
-            '155503 - Criação de outros galináceos, exceto para corte'+#13#10+
-            '155504 - Criação de aves, exceto galináceos'+#13#10+
-            '155505 - Produção de ovos'+#13#10+
-            '159801 - Apicultura'+#13#10+
-            '159802 - Criação de animais de estimação'+#13#10+
-            '159803 - Criação de escargô'+#13#10+
-            '159804 - Criação de bicho-da-seda'+#13#10+
-            '159899 - Criação de outros animais não especificados anteriormente'+#13#10+
-            '161001 - Serviço de pulverização e controle de pragas agrícolas'+#13#10+
-            '161002 - Serviço de poda de árvores para lavouras'+#13#10+
-            '161003 - Serviço de preparação de terreno, cultivo e colheita'+#13#10+
-            '161099 - Atividades de apoio à agricultura não especificadas anteriormente'+#13#10+
-            '162801 - Serviço de inseminação artificial em animais'+#13#10+
-            '162802 - Serviço de tosquiamento de ovinos'+#13#10+
-            '162803 - Serviço de manejo de animais'+#13#10+
-            '162899 - Atividades de apoio à pecuária não especificadas anteriormente'+#13#10+
-            '163600 - Atividades de pós-colheita'+#13#10+
-            '170900 - Caça e serviços relacionados'+#13#10+
-            '210101 - Cultivo de eucalipto'+#13#10+
-            '210102 - Cultivo de acácia-negra'+#13#10+
-            '210103 - Cultivo de pinus'+#13#10+
-            '210104 - Cultivo de teca'+#13#10+
-            '210105 - Cultivo de espécies madeireiras, exceto eucalipto, acácia-negra, pinus e teca'+#13#10+
-            '210106 - Cultivo de mudas em viveiros florestais'+#13#10+
-            '210107 - Extração de madeira em florestas plantadas'+#13#10+
-            '210108 - Produção de carvão vegetal - florestas plantadas'+#13#10+
-            '210109 - Produção de casca de acácia-negra - florestas plantadas'+#13#10+
-            '210199 - Produção de produtos não-madeireiros não especificados anteriormente em florestas plantadas'+#13#10+
-            '220901 - Extração de madeira em florestas nativas'+#13#10+
-            '220902 - Produção de carvão vegetal - florestas nativas'+#13#10+
-            '220903 - Coleta de castanha-do-pará em florestas nativas'+#13#10+
-            '220904 - Coleta de látex em florestas nativas'+#13#10+
-            '220905 - Coleta de palmito em florestas nativas'+#13#10+
-            '220906 - Conservação de florestas nativas'+#13#10+
-            '220999 - Coleta de produtos não-madeireiros não especificados anteriormente em florestas nativas'+#13#10+
-            '230600 - Atividades de apoio à produção florestal'+#13#10+
-            '311601 - Pesca de peixes em água salgada'+#13#10+
-            '311602 - Pesca de crustáceos e moluscos em água salgada'+#13#10+
-            '311603 - Coleta de outros produtos marinhos'+#13#10+
-            '311604 - Atividades de apoio à pesca em água salgada'+#13#10+
-            '312401 - Pesca de peixes em água doce'+#13#10+
-            '312402 - Pesca de crustáceos e moluscos em água doce'+#13#10+
-            '312403 - Coleta de outros produtos aquáticos de água doce'+#13#10+
-            '312404 - Atividades de apoio à pesca em água doce'+#13#10+
-            '321301 - Criação de peixes em água salgada e salobra'+#13#10+
-            '321302 - Criação de camarões em água salgada e salobra'+#13#10+
-            '321303 - Criação de ostras e mexilhões em água salgada e salobra'+#13#10+
-            '321304 - Criação de peixes ornamentais em água salgada e salobra'+#13#10+
-            '321305 - Atividades de apoio à aqüicultura em água salgada e salobra'+#13#10+
-            '321399 - Cultivos e semicultivos da aqüicultura em água salgada e salobra não especificados anteriormente'+#13#10+
-            '322101 - Criação de peixes em água doce'+#13#10+
-            '322102 - Criação de camarões em água doce'+#13#10+
-            '322103 - Criação de ostras e mexilhões em água doce'+#13#10+
-            '322104 - Criação de peixes ornamentais em água doce'+#13#10+
-            '322105 - Ranicultura'+#13#10+
-            '322106 - Criação de jacaré'+#13#10+
-            '322107 - Atividades de apoio à aqüicultura em água doce'+#13#10+
-            '322199 - Cultivos e semicultivos da aqüicultura em água doce não especificados anteriormente'+#13#10+
-            '500301 - Extração de carvão mineral'+#13#10+
-            '500302 - Beneficiamento de carvão mineral'+#13#10+
-            '600001 - Extração de petróleo e gás natural'+#13#10+
-            '600002 - Extração e beneficiamento de xisto'+#13#10+
-            '600003 - Extração e beneficiamento de areias betuminosas'+#13#10+
-            '710301 - Extração de minério de ferro'+#13#10+
-            '710302 - Pelotização, sinterização e outros beneficiamentos de minério de ferro'+#13#10+
-            '721901 - Extração de minério de alumínio'+#13#10+
-            '721902 - Beneficiamento de minério de alumínio'+#13#10+
-            '722701 - Extração de minério de estanho'+#13#10+
-            '722702 - Beneficiamento de minério de estanho'+#13#10+
-            '723501 - Extração de minério de manganês'+#13#10+
-            '723502 - Beneficiamento de minério de manganês'+#13#10+
-            '724301 - Extração de minério de metais preciosos'+#13#10+
-            '724302 - Beneficiamento de minério de metais preciosos'+#13#10+
-            '725100 - Extração de minerais radioativos'+#13#10+
-            '729401 - Extração de minérios de nióbio e titânio'+#13#10+
-            '729402 - Extração de minério de tungstênio'+#13#10+
-            '729403 - Extração de minério de níquel'+#13#10+
-            '729404 - Extração de minérios de cobre, chumbo, zinco e outros minerais metálicos não-ferrosos não especificados anteriormente'+#13#10+
-            '729405 - Beneficiamento de minérios de cobre, chumbo, zinco e outros minerais metálicos não-ferrosos não especificados anteriormente'+#13#10+
-            '810001 - Extração de ardósia e beneficiamento associado'+#13#10+
-            '810002 - Extração de granito e beneficiamento associado'+#13#10+
-            '810003 - Extração de mármore e beneficiamento associado'+#13#10+
-            '810004 - Extração de calcário e dolomita e beneficiamento associado'+#13#10+
-            '810005 - Extração de gesso e caulim'+#13#10+
-            '810006 - Extração de areia, cascalho ou pedregulho e beneficiamento associado'+#13#10+
-            '810007 - Extração de argila e beneficiamento associado'+#13#10+
-            '810008 - Extração de saibro e beneficiamento associado'+#13#10+
-            '810009 - Extração de basalto e beneficiamento associado'+#13#10+
-            '810010 - Beneficiamento de gesso e caulim associado à extração'+#13#10+
-            '810099 - Extração e britamento de pedras e outros materiais para construção e beneficiamento associado'+#13#10+
-            '891600 - Extração de minerais para fabricação de adubos, fertilizantes e outros produtos químicos'+#13#10+
-            '892401 - Extração de sal marinho'+#13#10+
-            '892402 - Extração de sal-gema'+#13#10+
-            '892403 - Refino e outros tratamentos do sal'+#13#10+
-            '893200 - Extração de gemas (pedras preciosas e semipreciosas)'+#13#10+
-            '899101 - Extração de grafita'+#13#10+
-            '899102 - Extração de quartzo'+#13#10+
-            '899103 - Extração de amianto'+#13#10+
-            '899199 - Extração de outros minerais não-metálicos não especificados anteriormente'+#13#10+
-            '910600 - Atividades de apoio à extração de petróleo e gás natural'+#13#10+
-            '990401 - Atividades de apoio à extração de minério de ferro'+#13#10+
-            '990402 - Atividades de apoio à extração de minerais metálicos não-ferrosos'+#13#10+
-            '990403 - Atividades de apoio à extração de minerais não-metálicos'+#13#10+
+  Result := '0111301 - Cultivo de arroz'+#13#10+
+            '0111302 - Cultivo de milho'+#13#10+
+            '0111303 - Cultivo de trigo'+#13#10+
+            '0111399 - Cultivo de outros cereais não especificados anteriormente'+#13#10+
+            '0112101 - Cultivo de algodão herbáceo'+#13#10+
+            '0112102 - Cultivo de juta'+#13#10+
+            '0112199 - Cultivo de outras fibras de lavoura temporária não especificadas anteriormente'+#13#10+
+            '0113000 - Cultivo de cana-de-açúcar'+#13#10+
+            '0114800 - Cultivo de fumo'+#13#10+
+            '0115600 - Cultivo de soja'+#13#10+
+            '0116401 - Cultivo de amendoim'+#13#10+
+            '0116402 - Cultivo de girassol'+#13#10+
+            '0116403 - Cultivo de mamona'+#13#10+
+            '0116499 - Cultivo de outras oleaginosas de lavoura temporária não especificadas anteriormente'+#13#10+
+            '0119901 - Cultivo de abacaxi'+#13#10+
+            '0119902 - Cultivo de alho'+#13#10+
+            '0119903 - Cultivo de batata-inglesa'+#13#10+
+            '0119904 - Cultivo de cebola'+#13#10+
+            '0119905 - Cultivo de feijão'+#13#10+
+            '0119906 - Cultivo de mandioca'+#13#10+
+            '0119907 - Cultivo de melão'+#13#10+
+            '0119908 - Cultivo de melancia'+#13#10+
+            '0119909 - Cultivo de tomate rasteiro'+#13#10+
+            '0119999 - Cultivo de outras plantas de lavoura temporária não especificadas anteriormente'+#13#10+
+            '0121101 - Horticultura, exceto morango'+#13#10+
+            '0121102 - Cultivo de morango'+#13#10+
+            '0122900 - Cultivo de flores e plantas ornamentais'+#13#10+
+            '0131800 - Cultivo de laranja'+#13#10+
+            '0132600 - Cultivo de uva'+#13#10+
+            '0133401 - Cultivo de açaí'+#13#10+
+            '0133402 - Cultivo de banana'+#13#10+
+            '0133403 - Cultivo de caju'+#13#10+
+            '0133404 - Cultivo de cítricos, exceto laranja'+#13#10+
+            '0133405 - Cultivo de coco-da-baía'+#13#10+
+            '0133406 - Cultivo de guaraná'+#13#10+
+            '0133407 - Cultivo de maçã'+#13#10+
+            '0133408 - Cultivo de mamão'+#13#10+
+            '0133409 - Cultivo de maracujá'+#13#10+
+            '0133410 - Cultivo de manga'+#13#10+
+            '0133411 - Cultivo de pêssego'+#13#10+
+            '0133499 - Cultivo de frutas de lavoura permanente não especificadas anteriormente'+#13#10+
+            '0134200 - Cultivo de café'+#13#10+
+            '0135100 - Cultivo de cacau'+#13#10+
+            '0139301 - Cultivo de chá-da-índia'+#13#10+
+            '0139302 - Cultivo de erva-mate'+#13#10+
+            '0139303 - Cultivo de pimenta-do-reino'+#13#10+
+            '0139304 - Cultivo de plantas para condimento, exceto pimenta-do-reino'+#13#10+
+            '0139305 - Cultivo de dendê'+#13#10+
+            '0139306 - Cultivo de seringueira'+#13#10+
+            '0139399 - Cultivo de outras plantas de lavoura permanente não especificadas anteriormente'+#13#10+
+            '0141501 - Produção de sementes certificadas, exceto de forrageiras para pasto'+#13#10+
+            '0141502 - Produção de sementes certificadas de forrageiras para formação de pasto'+#13#10+
+            '0142300 - Produção de mudas e outras formas de propagação vegetal, certificadas'+#13#10+
+            '0151201 - Criação de bovinos para corte'+#13#10+
+            '0151202 - Criação de bovinos para leite'+#13#10+
+            '0151203 - Criação de bovinos, exceto para corte e leite'+#13#10+
+            '0152101 - Criação de bufalinos'+#13#10+
+            '0152102 - Criação de eqüinos'+#13#10+
+            '0152103 - Criação de asininos e muares'+#13#10+
+            '0153901 - Criação de caprinos'+#13#10+
+            '0153902 - Criação de ovinos, inclusive para produção de lã'+#13#10+
+            '0154700 - Criação de suínos'+#13#10+
+            '0155501 - Criação de frangos para corte'+#13#10+
+            '0155502 - Produção de pintos de um dia'+#13#10+
+            '0155503 - Criação de outros galináceos, exceto para corte'+#13#10+
+            '0155504 - Criação de aves, exceto galináceos'+#13#10+
+            '0155505 - Produção de ovos'+#13#10+
+            '0159801 - Apicultura'+#13#10+
+            '0159802 - Criação de animais de estimação'+#13#10+
+            '0159803 - Criação de escargô'+#13#10+
+            '0159804 - Criação de bicho-da-seda'+#13#10+
+            '0159899 - Criação de outros animais não especificados anteriormente'+#13#10+
+            '0161001 - Serviço de pulverização e controle de pragas agrícolas'+#13#10+
+            '0161002 - Serviço de poda de árvores para lavouras'+#13#10+
+            '0161003 - Serviço de preparação de terreno, cultivo e colheita'+#13#10+
+            '0161099 - Atividades de apoio à agricultura não especificadas anteriormente'+#13#10+
+            '0162801 - Serviço de inseminação artificial em animais'+#13#10+
+            '0162802 - Serviço de tosquiamento de ovinos'+#13#10+
+            '0162803 - Serviço de manejo de animais'+#13#10+
+            '0162899 - Atividades de apoio à pecuária não especificadas anteriormente'+#13#10+
+            '0163600 - Atividades de pós-colheita'+#13#10+
+            '0170900 - Caça e serviços relacionados'+#13#10+
+            '0210101 - Cultivo de eucalipto'+#13#10+
+            '0210102 - Cultivo de acácia-negra'+#13#10+
+            '0210103 - Cultivo de pinus'+#13#10+
+            '0210104 - Cultivo de teca'+#13#10+
+            '0210105 - Cultivo de espécies madeireiras, exceto eucalipto, acácia-negra, pinus e teca'+#13#10+
+            '0210106 - Cultivo de mudas em viveiros florestais'+#13#10+
+            '0210107 - Extração de madeira em florestas plantadas'+#13#10+
+            '0210108 - Produção de carvão vegetal - florestas plantadas'+#13#10+
+            '0210109 - Produção de casca de acácia-negra - florestas plantadas'+#13#10+
+            '0210199 - Produção de produtos não-madeireiros não especificados anteriormente em florestas plantadas'+#13#10+
+            '0220901 - Extração de madeira em florestas nativas'+#13#10+
+            '0220902 - Produção de carvão vegetal - florestas nativas'+#13#10+
+            '0220903 - Coleta de castanha-do-pará em florestas nativas'+#13#10+
+            '0220904 - Coleta de látex em florestas nativas'+#13#10+
+            '0220905 - Coleta de palmito em florestas nativas'+#13#10+
+            '0220906 - Conservação de florestas nativas'+#13#10+
+            '0220999 - Coleta de produtos não-madeireiros não especificados anteriormente em florestas nativas'+#13#10+
+            '0230600 - Atividades de apoio à produção florestal'+#13#10+
+            '0311601 - Pesca de peixes em água salgada'+#13#10+
+            '0311602 - Pesca de crustáceos e moluscos em água salgada'+#13#10+
+            '0311603 - Coleta de outros produtos marinhos'+#13#10+
+            '0311604 - Atividades de apoio à pesca em água salgada'+#13#10+
+            '0312401 - Pesca de peixes em água doce'+#13#10+
+            '0312402 - Pesca de crustáceos e moluscos em água doce'+#13#10+
+            '0312403 - Coleta de outros produtos aquáticos de água doce'+#13#10+
+            '0312404 - Atividades de apoio à pesca em água doce'+#13#10+
+            '0321301 - Criação de peixes em água salgada e salobra'+#13#10+
+            '0321302 - Criação de camarões em água salgada e salobra'+#13#10+
+            '0321303 - Criação de ostras e mexilhões em água salgada e salobra'+#13#10+
+            '0321304 - Criação de peixes ornamentais em água salgada e salobra'+#13#10+
+            '0321305 - Atividades de apoio à aqüicultura em água salgada e salobra'+#13#10+
+            '0321399 - Cultivos e semicultivos da aqüicultura em água salgada e salobra não especificados anteriormente'+#13#10+
+            '0322101 - Criação de peixes em água doce'+#13#10+
+            '0322102 - Criação de camarões em água doce'+#13#10+
+            '0322103 - Criação de ostras e mexilhões em água doce'+#13#10+
+            '0322104 - Criação de peixes ornamentais em água doce'+#13#10+
+            '0322105 - Ranicultura'+#13#10+
+            '0322106 - Criação de jacaré'+#13#10+
+            '0322107 - Atividades de apoio à aqüicultura em água doce'+#13#10+
+            '0322199 - Cultivos e semicultivos da aqüicultura em água doce não especificados anteriormente'+#13#10+
+            '0500301 - Extração de carvão mineral'+#13#10+
+            '0500302 - Beneficiamento de carvão mineral'+#13#10+
+            '0600001 - Extração de petróleo e gás natural'+#13#10+
+            '0600002 - Extração e beneficiamento de xisto'+#13#10+
+            '0600003 - Extração e beneficiamento de areias betuminosas'+#13#10+
+            '0710301 - Extração de minério de ferro'+#13#10+
+            '0710302 - Pelotização, sinterização e outros beneficiamentos de minério de ferro'+#13#10+
+            '0721901 - Extração de minério de alumínio'+#13#10+
+            '0721902 - Beneficiamento de minério de alumínio'+#13#10+
+            '0722701 - Extração de minério de estanho'+#13#10+
+            '0722702 - Beneficiamento de minério de estanho'+#13#10+
+            '0723501 - Extração de minério de manganês'+#13#10+
+            '0723502 - Beneficiamento de minério de manganês'+#13#10+
+            '0724301 - Extração de minério de metais preciosos'+#13#10+
+            '0724302 - Beneficiamento de minério de metais preciosos'+#13#10+
+            '0725100 - Extração de minerais radioativos'+#13#10+
+            '0729401 - Extração de minérios de nióbio e titânio'+#13#10+
+            '0729402 - Extração de minério de tungstênio'+#13#10+
+            '0729403 - Extração de minério de níquel'+#13#10+
+            '0729404 - Extração de minérios de cobre, chumbo, zinco e outros minerais metálicos não-ferrosos não especificados anteriormente'+#13#10+
+            '0729405 - Beneficiamento de minérios de cobre, chumbo, zinco e outros minerais metálicos não-ferrosos não especificados anteriormente'+#13#10+
+            '0810001 - Extração de ardósia e beneficiamento associado'+#13#10+
+            '0810002 - Extração de granito e beneficiamento associado'+#13#10+
+            '0810003 - Extração de mármore e beneficiamento associado'+#13#10+
+            '0810004 - Extração de calcário e dolomita e beneficiamento associado'+#13#10+
+            '0810005 - Extração de gesso e caulim'+#13#10+
+            '0810006 - Extração de areia, cascalho ou pedregulho e beneficiamento associado'+#13#10+
+            '0810007 - Extração de argila e beneficiamento associado'+#13#10+
+            '0810008 - Extração de saibro e beneficiamento associado'+#13#10+
+            '0810009 - Extração de basalto e beneficiamento associado'+#13#10+
+            '0810010 - Beneficiamento de gesso e caulim associado à extração'+#13#10+
+            '0810099 - Extração e britamento de pedras e outros materiais para construção e beneficiamento associado'+#13#10+
+            '0891600 - Extração de minerais para fabricação de adubos, fertilizantes e outros produtos químicos'+#13#10+
+            '0892401 - Extração de sal marinho'+#13#10+
+            '0892402 - Extração de sal-gema'+#13#10+
+            '0892403 - Refino e outros tratamentos do sal'+#13#10+
+            '0893200 - Extração de gemas (pedras preciosas e semipreciosas)'+#13#10+
+            '0899101 - Extração de grafita'+#13#10+
+            '0899102 - Extração de quartzo'+#13#10+
+            '0899103 - Extração de amianto'+#13#10+
+            '0899199 - Extração de outros minerais não-metálicos não especificados anteriormente'+#13#10+
+            '0910600 - Atividades de apoio à extração de petróleo e gás natural'+#13#10+
+            '0990401 - Atividades de apoio à extração de minério de ferro'+#13#10+
+            '0990402 - Atividades de apoio à extração de minerais metálicos não-ferrosos'+#13#10+
+            '0990403 - Atividades de apoio à extração de minerais não-metálicos'+#13#10+
             '1011201 - Frigorífico - abate de bovinos'+#13#10+
             '1011202 - Frigorífico - abate de eqüinos'+#13#10+
             '1011203 - Frigorífico - abate de ovinos e caprinos'+#13#10+
