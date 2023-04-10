@@ -597,6 +597,7 @@ type
     RECIBO: TButton;
     ibDataSet15MODELO: TStringField;
     Colunas1: TMenuItem;
+    LimparRetornosda1: TMenuItem;
     MainMenu8: TMainMenu;
     MenuItem67: TMenuItem;
     MenuItem68: TMenuItem;
@@ -2185,7 +2186,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
-  Unit29, Unit48, ugeraxmlnfe, uFuncoesFiscais;
+  Unit29, Unit48, ugeraxmlnfe, uFuncoesFiscais, uTransmiteNFSe;
 
 {$R *.DFM}
 
