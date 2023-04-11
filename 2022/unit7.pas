@@ -23880,7 +23880,14 @@ end;
 procedure TForm7.ibDataSet24BeforeInsert(DataSet: TDataSet);
 begin
   //
-  try if Alltrim(Form7.ibDataSet24FORNECEDOR.AsString) = '' then Form7.ibDataSet24.Delete; except end;
+  if Form7.ibDataSet24.RecordCount > 0 then // tem registro selecionado
+  begin
+    try
+      if Alltrim(Form7.ibDataSet24FORNECEDOR.AsString) = '' then
+        Form7.ibDataSet24.Delete;
+    except
+    end;
+  end;
   //
   try
     ibDataSet99.Close;
