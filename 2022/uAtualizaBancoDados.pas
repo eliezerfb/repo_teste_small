@@ -979,7 +979,8 @@ begin
 
   ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)'); // Mauricio Parizotto 2023-03-28
 
-  ExecutaComando('Update EMITENTE set CNAE = ''0''||CNAE Where char_length(CNAE) = 6'); // Mauricio Parizotto 2023-04-06
+  if ExecutaComando('Update EMITENTE set CNAE = ''0''||trim(CNAE) Where char_length(trim(CNAE)) = 6') then // Mauricio Parizotto 2023-04-06
+    ExecutaComando('commit');
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
