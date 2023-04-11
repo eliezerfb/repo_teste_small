@@ -4216,41 +4216,33 @@ begin
   begin
     Form1.bPDF   := False;
   end;
-  //
+
   if Mais1Ini.ReadString('GERAL','MARKETPLACE ATIVO','Não') = 'Sim' then
   begin
-    //
     AutoMarketplace1.Checked := True;
-    //
+
     if not ConsultaProcesso('mkp.exe') then // Form1Ativate
     begin
-      //
       ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_SHOW); // Form1Ativate
-      //
     end;
-    //
   end else
   begin
     AutoMarketplace1.Checked := False;
   end;
-  //
+
   if Mais1Ini.ReadString('GERAL','MOBILE ATIVO','Não') = 'Sim' then
   begin
-    //
     AutoSmallMobile1.Checked := True;
-    //
+
     if not ConsultaProcesso('mobile.exe') then // Form1Ativate
     begin
-      //
       ShellExecute( 0, 'Open', 'mobile.exe', pChar(Form7.ibDataSet13CGC.AsString) , '', SW_SHOW); // Form1Ativate
-      //
     end;
-    //
   end else
   begin
     AutoSmallMobile1.Checked := False;
   end;
-  //
+  
   Form19.Edit7.Color := StrToInt('$'+AllTrim(Mais1Ini.ReadString('Html','Cor','EBEBEB')));
   Form19.Edit8.Color := StrToInt('$'+AllTrim(Mais1Ini.ReadString('Html','Cor','EBEBEB')));
   //
@@ -4422,23 +4414,18 @@ begin
     //
   end else
   begin
-    //
     Form1.ConfiguraesdaNFSe1.Visible := False;
     Form7.GerarNotaFiscaldeServio1.Visible := False;
     Form7.GerarNotaFiscaldeServio2.Visible := False;
-    //
   end;
-  //
+
   if Form1.bMKP then
   begin
-    //
     if not AutoMarketplace1.Checked then
     begin
       Form1.AutoMarketplace1Click(Sender);
     end;
   end;
-  //
-  //
 end;
 
 procedure TForm1.ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
@@ -5968,15 +5955,12 @@ procedure TForm1.Image202Click(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   if not (Form13.Tag = 99) then
   begin
     if not Legal(True) then Abort;
   end;
-  //
+
   // Teste
-  //
-  //
   try
     FechaTudo(bFechaTudo);
     Form7.sModulo  := 'ESTOQUE';
@@ -5984,22 +5968,17 @@ begin
     Form7.sTitulo  := 'Controle de estoque';
     Form7.sRPS := 'N';
     Form7.Show;
-    //
   except end;
-  //
+
   if Form13.Tag = 99 then
   begin
-    //
     for I := 1 to 5 do
     begin
       Form7.Close;
       Form7.Show;
     end;
-    //
     Form13.Tag := 0;
-    //
   end;
-  //
 end;
 
 procedure TForm1.Image206Click(Sender: TObject);
@@ -10767,48 +10746,36 @@ var
   fTotal, fTotal1, fTotal2 : Real;
   //
   Mais1Ini : tIniFile;
-  //
 begin
-  //
   if AllTrim(Form7.ibDataSet13.fieldByName('CGC').AsString) <> '' then
   begin
-    //
     if AutoMarketplace1.Checked then
     begin
       if not ConsultaProcesso('mkp.exe') then // Form1Ativate
       begin
-        //
 //        ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_SHOW); // Form1Ativate
         ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_HIDE); // Form1Ativate
-        //
       end;
     end;
-    //
+
     if AutoSmallMobile1.Checked then
     begin
-      //
       if not ConsultaProcesso('mobile.exe') then // Timer2Timer
       begin
-        //
         ShellExecute( 0, 'Open', 'mobile.exe', pChar(Form7.ibDataSet13CGC.AsString) , '', SW_SHOW); // Timer2Timer
-        //
       end;
     end;
-    //
+
     if AutoSmallMobile1.Checked then
     begin
-      //
       Timer2.Enabled            := False;
-      //
+
       if not ConsultaProcesso('mobile.exe') then // Timer2Timer
       begin
-        //
         ShellExecute( 0, 'Open', 'mobile.exe', pChar(Form7.ibDataSet13CGC.AsString) , '', SW_SHOW); // Timer2Timer
-        //
       end;
-      //
+
       try
-        //
         sTLista := TStringList.Create();
         sTLista.Clear;
         //
@@ -10824,9 +10791,7 @@ begin
           begin
             if Pos('.mob',Lowercase(sTLista[I])) <> 0 then
             begin
-              //
               // Cursor
-              //
               Screen.Cursor             := crAppStart;                   // Cursor de Aguardo
               Form1.Label200.Tag        := 1;
               //
@@ -12505,9 +12470,8 @@ procedure TForm1.AutoMarketplace1Click(Sender: TObject);
 var
   Mais1Ini : TiniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  //
+
   if AutoMarketplace1.Checked then
   begin
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Não');
@@ -12515,15 +12479,14 @@ begin
     Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // AutoSmallMobile1Click
 
     {Sandro Silva 2023-01-04 inicio}
-    Form1.bMKP := False; 
+    Form1.bMKP := False;
     {Sandro Silva 2023-01-04 fim}
   end else
   begin
-    //
     AutoMarketplace1.Checked := True;
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Sim');
     Form1.Timer2.Enabled := True;
-    //
+
     if Legal(True) then
     begin
       if not ConsultaProcesso('mkp.exe') then // Form1Ativate
@@ -12531,16 +12494,14 @@ begin
         ShellExecute( 0, 'Open', 'mkp.exe','','', SW_SHOW); // AutoSmallMobile1Click
       end;
     end;
-    //
+
     Form1.bMKP := True;
-    //
+
     Form1.Image202Click(Sender);
     ShowMessage('Ative agora os produtos para marketplace');
-    //
   end;
-  //
+
   Mais1ini.Free;
-  //
 end;
 
 procedure TForm1.Hub1Click(Sender: TObject);
