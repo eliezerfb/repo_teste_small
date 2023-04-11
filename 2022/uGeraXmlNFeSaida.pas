@@ -1686,7 +1686,7 @@ begin
           Form7.spdNFeDataSets.Campo('vBC_S07').Value        := StrTran(Alltrim(FormatFloat('##0.00', vBC_COFINS) ),',','.'); // Valor da Base de Cálculo do COFINS
           Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := StrTran(Alltrim(FormatFloat('##0.00',rpCOFINS)),',','.'); // Alíquota em Percencual do COFINS
           //Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))*rpCOFINS/100)),',','.'); // Valor do COFINS em Reais
-          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00', vBC_COFINS * (vBC_COFINS/100) ) ),',','.'); // Valor do COFINS em Reais
+          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00', vBC_COFINS * (rpCOFINS/100) ) ),',','.'); // Valor do COFINS em Reais
           // Exclusão do ICMS base do PISCOFINS FICHA 5375
         end else
         begin
