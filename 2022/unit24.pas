@@ -304,24 +304,32 @@ begin
   //
   // Altera o Grid de mercadorias para mostrar na NF
   //
-  Form7.ibDataSet23UNITARIO.Visible       := True;
-  Form7.ibDataSet23IPI.Visible            := True;
-  Form7.ibDataSet23ICM.Visible            := True;
-  Form7.ibDataSet23CST_ICMS.Visible       := True;
-  Form7.ibDataSet23CST_IPI.Visible        := True;
-  Form7.ibDataSet23CFOP.Visible           := True;
-  Form7.ibDataSet23BASE.Visible           := True;
+  Form7.ibDataSet23UNITARIO.Visible     := True;
+  Form7.ibDataSet23IPI.Visible          := True;
+  Form7.ibDataSet23ICM.Visible          := True;
+  Form7.ibDataSet23CST_ICMS.Visible     := True;
+  Form7.ibDataSet23CST_IPI.Visible      := True;
+  Form7.ibDataSet23CFOP.Visible         := True;
+  Form7.ibDataSet23BASE.Visible         := True;
   //
-  Form7.ibDataSet23VICMS.Visible          := True;
-  Form7.ibDataSet23VBC.Visible            := True;
-  Form7.ibDataSet23VBCST.Visible          := True;
-  Form7.ibDataSet23VICMSST.Visible        := True;
-  Form7.ibDataSet23VIPI.Visible           := True;
-  Form7.ibDataSet23QUANTIDADE.Visible     := False;
-  Form7.ibDataSet23UNITARIO.Visible       := False;
-  Form7.ibDataSet23QTD_ORIGINAL.Visible   := True;
-  Form7.ibDataSet23UNITARIO_O.Visible     := True;
-  Form7.ibDataSet23EAN_ORIGINAL.Visible   := True;
+  Form7.ibDataSet23VICMS.Visible        := True;
+  Form7.ibDataSet23VBC.Visible          := True;
+  Form7.ibDataSet23VBCST.Visible        := True;
+  Form7.ibDataSet23VICMSST.Visible      := True;
+  Form7.ibDataSet23VIPI.Visible         := True;
+  Form7.ibDataSet23QUANTIDADE.Visible   := False;
+  Form7.ibDataSet23UNITARIO.Visible     := False;
+  Form7.ibDataSet23QTD_ORIGINAL.Visible := True;
+  Form7.ibDataSet23UNITARIO_O.Visible   := True;
+  Form7.ibDataSet23EAN_ORIGINAL.Visible := True;
+  {Sandro Silva 2023-04-11 inicio}
+  Form7.ibDataSet23VBCFCP.Visible       := True;
+  Form7.ibDataSet23PFCP.Visible         := True;
+  Form7.ibDataSet23VFCP.Visible         := True;
+  Form7.ibDataSet23VBCFCPST.Visible     := True;
+  Form7.ibDataSet23PFCPST.Visible       := True;
+  Form7.ibDataSet23VFCPST.Visible       := True;
+  {Sandro Silva 2023-04-11 fim}
   //
   Form7.ibDataSet23DESCRICAO.DisplayWidth     := 27+8;
   Form7.ibDataSet23TOTAL.DisplayWidth         := 15;
@@ -1527,21 +1535,28 @@ begin
     //                                                           //
     // Lay-Out no form7                                         //
     //                                                         //
-    Form7.ibDataSet23UNITARIO.Visible       := False;         //
-    Form7.ibDataSet23CFOP.Visible           := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       // 
-    Form7.ibDataSet23BASE.Visible           := False;       //
-    Form7.ibDataSet23VICMS.Visible          := False;
-    Form7.ibDataSet23VBC.Visible            := False;
-    Form7.ibDataSet23VBCST.Visible          := False;
-    Form7.ibDataSet23VICMSST.Visible        := False;
-    Form7.ibDataSet23VIPI.Visible           := False;
+    Form7.ibDataSet23UNITARIO.Visible     := False;         //
+    Form7.ibDataSet23CFOP.Visible         := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       //
+    Form7.ibDataSet23BASE.Visible         := False;       //
+    Form7.ibDataSet23VICMS.Visible        := False;
+    Form7.ibDataSet23VBC.Visible          := False;
+    Form7.ibDataSet23VBCST.Visible        := False;
+    Form7.ibDataSet23VICMSST.Visible      := False;
+    Form7.ibDataSet23VIPI.Visible         := False;
     // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;         //
 
     {Sandro Silva 2023-03-29 inicio}
-    Form7.ibDataSet23UNITARIO_O.Visible     := False;
-    Form7.ibDataSet23QUANTIDADE.Visible     := True;
-    Form7.ibDataSet23QTD_ORIGINAL.Visible   := False;
-
+    Form7.ibDataSet23UNITARIO_O.Visible   := False;
+    Form7.ibDataSet23QUANTIDADE.Visible   := True;
+    Form7.ibDataSet23QTD_ORIGINAL.Visible := False;
+    {Sandro Silva 2023-04-11 inicio}
+    Form7.ibDataSet23VBCFCP.Visible       := False;
+    Form7.ibDataSet23PFCP.Visible         := False;
+    Form7.ibDataSet23VFCP.Visible         := False;
+    Form7.ibDataSet23VBCFCPST.Visible     := False;
+    Form7.ibDataSet23PFCPST.Visible       := False;
+    Form7.ibDataSet23VFCPST.Visible       := False;
+    {Sandro Silva 2023-04-11 fim}         
     Form7.ibDataSet23DESCRICAO.DisplayWidth    := 41;         //
     Form7.ibDataSet23TOTAL.DisplayWidth        := 09;
     Form7.ibDataSet23QUANTIDADE.DisplayWidth   := 09;
