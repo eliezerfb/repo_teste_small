@@ -154,6 +154,18 @@ type
     Label89: TLabel;
     Image5: TImage;
     Button1: TBitBtn;
+    SMALL_DBEdit51: TSMALL_DBEdit;
+    Label60: TLabel;
+    SMALL_DBEdit52: TSMALL_DBEdit;
+    Label61: TLabel;
+    SMALL_DBEdit53: TSMALL_DBEdit;
+    Label62: TLabel;
+    SMALL_DBEdit54: TSMALL_DBEdit;
+    Label63: TLabel;
+    SMALL_DBEdit55: TSMALL_DBEdit;
+    Label69: TLabel;
+    SMALL_DBEdit56: TSMALL_DBEdit;
+    Label70: TLabel;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -322,7 +334,7 @@ begin
   Form7.ibDataSet23QTD_ORIGINAL.Visible := True;
   Form7.ibDataSet23UNITARIO_O.Visible   := True;
   Form7.ibDataSet23EAN_ORIGINAL.Visible := True;
-  {Sandro Silva 2023-04-11 inicio}
+  {Sandro Silva 2023-04-11 inicio
   Form7.ibDataSet23VBCFCP.Visible       := True;
   Form7.ibDataSet23PFCP.Visible         := True;
   Form7.ibDataSet23VFCP.Visible         := True;
@@ -2689,8 +2701,9 @@ begin
     Panel9.Top    := Form24.Panel1.Top;
     Panel9.Left   := Panel1.Left + Panel1.Width + 10;
     //
-    Panel9.Width  := 1050  - Panel9.Left - 20;
+    Panel9.Width  := 1050 - Panel9.Left - 20;
     Panel9.Height := Panel9.Width;
+
     //
     Panel5.Top    := Panel9.Top + Panel9.Height + 10;
     Panel5.Left   := Panel9.Left;

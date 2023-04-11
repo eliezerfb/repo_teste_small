@@ -2061,6 +2061,7 @@ type
 
   private
     { Private declarations }
+    cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
@@ -13076,7 +13077,9 @@ begin
                                  Form7.ibDataSet24ICMSSUBSTI.AsFloat   +
                                  Form7.ibDataSet24DESPESAS.AsFloat     +
                                  Form7.ibDataSet24SEGURO.AsFloat       +
-                                 Form7.ibDataSet24IPI.AsFloat;
+                                 Form7.ibDataSet24IPI.AsFloat
+                                 + cTotalvFCPST
+                                 ;
    end else
    begin
      Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat -
@@ -13086,7 +13089,9 @@ begin
                                  Form7.ibDataSet24DESPESAS.AsFloat     +
                                  Form7.ibDataSet24FRETE.AsFloat        +
                                  Form7.ibDataSet24SEGURO.AsFloat       +
-                                 Form7.ibDataSet24IPI.AsFloat;
+                                 Form7.ibDataSet24IPI.AsFloat
+                                 + cTotalvFCPST
+                                 ;
    end;
    //
    if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
@@ -22096,6 +22101,7 @@ begin
       Form7.ibDataSet101.SelectSQL.Add('select * from ITENS002 where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
       Form7.ibDataSet101.Open;
       //
+      cTotalvFCPST := 0.00;// Sandro Silva 2023-04-11
       ibDataSet101.First;
       while not Form7.ibDataSet101.Eof do
       begin
@@ -22109,6 +22115,8 @@ begin
           Form7.ibDataSet24ICMS.AsFloat       := Form7.ibDataSet24ICMS.AsFloat       +  Arredonda(Form7.ibDataSet101.FieldByname('VICMS').AsFloat,2);
           Form7.ibDataSet24BASESUBSTI.AsFloat := Form7.ibDataSet24BASESUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
           Form7.ibDataSet24ICMSSUBSTI.AsFloat := Form7.ibDataSet24ICMSSUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
+
+          cTotalvFCPST := cTotalvFCPST + Arredonda(Form7.ibDataSet101.FieldByname('VFCPST').AsFloat,2); // Sandro Silva 2023-04-11
         except end;
         //
         ibDataSet101.Next;
