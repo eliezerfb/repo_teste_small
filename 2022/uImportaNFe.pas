@@ -657,7 +657,6 @@ begin
                         Form7.ibDataSet23vIPI.AsString      := StrTran(sIPI,'.',',');
                       except
                       end;
-                      //
                       try
                         Form7.ibDataSet23IPI.AsString       := StrTran(spIPI,'.',',');
                       except
@@ -674,6 +673,38 @@ begin
                         Form7.ibDataSet23CFOP.AsString   := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(NodeTmp.ChildNodes['CFOP'].Text,2,3);
                       except
                       end;
+
+                      {Sandro Silva 2023-04-11 inicio}
+                      try
+                        Form7.ibDataSet23VBCFCP.AsString := StringReplace(svBCFCP, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+
+                      try
+                        Form7.ibDataSet23PFCP.AsString := StringReplace(spFCP, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+
+                      try
+                        Form7.ibDataSet23VFCP.AsString := StringReplace(svFCP, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+
+                      try
+                        Form7.ibDataSet23VBCFCPST.AsString := StringReplace(svBCFCPST, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+
+                      try
+                        Form7.ibDataSet23PFCPST.AsString := StringReplace(spFCPST, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+
+                      try
+                        Form7.ibDataSet23VFCPST.AsString := StringReplace(svFCPST, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+                      {Sandro Silva 2023-04-11 fim}
                       //
                       Form7.ibDataSet23.Post;
                       Form7.ibDataSet23.Edit;
