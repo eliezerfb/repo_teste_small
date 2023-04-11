@@ -26,6 +26,8 @@ var
   Mais1Ini : tIniFile;
   _file1, _file, _XML : TStringList;
 
+  vRegistro : string;
+
   bMultiplosServicos : Boolean;
   sDescricaoDosServicos, sPadraoCidade, sCodigoCnae, sCodigoLocalPrestacao, sRetornoNFse, sArquivoXML : String;
   sCodigoCnaePrestador: String; // Sandro Silva 2023-02-28
@@ -1064,7 +1066,19 @@ begin
   end;
 
 
+  //Mauricio Parizotto 2023-04-11
   Form7.ibDataSet15.EnableControls;
+  vRegistro := Form7.ibDataSet15REGISTRO.AsString;
+
+  //Commita sem refazer select
+  Commitatudo(False);
+  AbreArquivos(False);
+
+  //Volta para o registro que estava
+  try
+    Form7.ibDataSet15.Locate('REGISTRO',vRegistro,[])
+  except
+  end;
 end;
 
 

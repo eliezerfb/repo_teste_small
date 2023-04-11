@@ -29,7 +29,7 @@ const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
-function Commitatudo(P1:Boolean): Boolean;
+function Commitatudo(RefazSelect:Boolean): Boolean;
 function AbreArquivos(P1:Boolean): Boolean;
 function AgendaCommit(P1:Boolean): Boolean;
 function DefineJanela(bP1 : Boolean) : Boolean;
@@ -5346,14 +5346,11 @@ begin
   //
 end;
 
-function Commitatudo(P1:Boolean): Boolean;
+function Commitatudo(RefazSelect:Boolean): Boolean;
 begin
-  //
   // bFechaTudo só é usado para incluir novos produtos e novos fornecedores na NF, COMPRA e OF
-  //
   if Form7.sModulo = 'COMPRA' then
   begin
-    //
     Form7.ibDataSet1.BufferChunks  := 500;
     Form7.ibDataSet27.BufferChunks := 500;
     Form7.ibDataSet25.BufferChunks := 500;
@@ -5382,10 +5379,8 @@ begin
     Form7.ibDataSet4.BufferChunks  := 500;
     Form7.ibDataSet5.BufferChunks  := 500;
     Form7.ibDataSet6.BufferChunks  := 500;
-    //
   end else
   begin
-    //
     Form7.ibDataSet1.BufferChunks  := 1000;
     Form7.ibDataSet27.BufferChunks := 1000;
     Form7.ibDataSet25.BufferChunks := 1000;
@@ -5414,26 +5409,23 @@ begin
     Form7.ibDataSet4.BufferChunks  := 1000;
     Form7.ibDataSet5.BufferChunks  := 1000;
     Form7.ibDataSet6.BufferChunks  := 1000;
-    //
   end;
-  //
+
   if Form1.bFechaTudo then
   begin
-    //
     // só commitatudo se houve realmente uma alteração no GDB - Talvês controlar com um generator
     // criar uma variável com um numero de 0 a 9999999999 cada vez que alterar o GDB incrementa
     // este generator depois confere com a variavel se nao é a mesma commita.
     // Sonhei isso e tenho certeza que funciona
-    //
     Form7.ibDataSet101.Close;
     Form7.ibDataSet101.SelectSql.Clear;
-    if P1 then
+    if RefazSelect then
       Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,1) from rdb$database')
     else
       Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,0) from rdb$database');
 
     Form7.ibDataset101.Open;
-    //
+
     if Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat > 9999999999 then
     begin
       Form7.ibDataset100.Close;
@@ -5441,20 +5433,19 @@ begin
       Form7.ibDataset100.SelectSql.Add('set generator G_MUTADO to 0');
       Form7.ibDataset100.Open;
     end;
-    //
+
     if (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat <> Form7.fMutado) then // or (Form7.ibDataSet100.FieldByname('GEN_ID').AsFloat = 0) then
     begin
-      //
       Form7.fMutado := Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat;
       Form7.ibDataSet4.Disablecontrols;
-      //
+
       try
         if Form7.IBTransaction1.Active then
           Form7.IBTransaction1.Commit;
       except
         ShowMessage('Falha na conexão com o Banco de Dados. Erro 1848');
       end;
-      //
+
       try
         HasHs('ESTOQUE',True);
         HasHs('REDUCOES',True);
@@ -5464,11 +5455,11 @@ begin
         HasHs('VENDAS',True);
         HasHs('ITENS001',True);
         HasHs('ORCAMENT',True);
-      except end;
-      //
-      if p1 then
+      except
+      end;
+
+      if RefazSelect then
       begin
-        //
         Form7.ibDataSet1.Selectsql.Clear;
         Form7.ibDataSet27.Selectsql.Clear;
         Form7.ibDataSet25.Selectsql.Clear;
@@ -5497,7 +5488,7 @@ begin
         Form7.ibDataSet4.Selectsql.Clear;
         Form7.ibDataSet5.Selectsql.Clear;
         Form7.ibDataSet6.Selectsql.Clear;
-        //
+
         Form7.ibDataSet1.Selectsql.Add('select * from CAIXA where DATA=CURRENT_DATE order by DATA, REGISTRO');
         Form7.ibDataSet27.Selectsql.Add('select * from ALTERACA where CODIGO='+QuotedStr('99999')+' ');
         Form7.ibDataSet25.Selectsql.Add('select * from FLUXO order by DATA');
@@ -5524,7 +5515,7 @@ begin
         Form7.ibDataSet3.Selectsql.Add('select * from OS where DATA=CURRENT_DATE ');
         Form7.ibDataSet5.Selectsql.Add('select * from MOVIMENT where NOME='+quotedStr('XXXXXXXXXX')+'');
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
-        //
+
         //  CAIXA
         //  ICM
         //  NOTA
@@ -5550,23 +5541,18 @@ begin
         //
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO=''99999'' order by upper(DESCRICAO)');
         Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where nome = ''X.X.X.X.X.X.'' order by upper(NOME)');
-        //
       end;
-      //
+
       Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-03-29
     end;
-    //
   end;
-  //
+
   Result := True;
-  //
 end;
 
 function AbreArquivos(P1:Boolean): Boolean;
 begin
-  //
   try
-    //
     if not Form7.ibDataSet13.active then Form7.ibDataSet13.active := True;
     if not Form7.ibDataSet25.active then Form7.ibDataSet25.active := True;
     if not Form7.ibDataSet28.active then Form7.ibDataSet28.active := True;
@@ -5597,7 +5583,6 @@ begin
     if not Form7.ibDataSet4.active  then Form7.ibDataSet4.active  := True;
     if not Form7.ibDataSet5.active  then Form7.ibDataSet5.active  := True;
     if not Form7.ibDataSet6.active  then Form7.ibDataSet6.active  := True;
-    //
   except
     on E: Exception do
     begin
@@ -5607,10 +5592,9 @@ begin
       Abort;
     end;
   end;
-  //
+
   if p1 then
   begin
-    //
     if Form7.ibDataSet1.Active then Form7.ibDataSet1.EnableControls;
     if Form7.ibDataSet27.Active then Form7.ibDataSet27.EnableControls;
     if Form7.ibDataSet25.Active then Form7.ibDataSet25.EnableControls;
@@ -5640,11 +5624,9 @@ begin
     if Form7.ibDataSet3.Active then Form7.ibDataSet3.EnableControls;
     if Form7.ibDataSet4.Active then Form7.ibDataSet4.EnableControls;
     if Form7.ibDataSet5.Active then  Form7.ibDataSet5.EnableControls;
-    //
   end;
-  //
+  
   Result := True;
-  //
 end;
 
 function TraduzSql(P1: String;P2 :Boolean): String;
