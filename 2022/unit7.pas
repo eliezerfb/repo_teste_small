@@ -12222,7 +12222,8 @@ begin
           Form7.ibDataSet13.Selectsql.Clear;
           Form7.ibDataSet13.Selectsql.Add('select * from EMITENTE');
           Form7.ibDataSet13.Open;
-        except end;
+        except
+        end;
 
         sAjuda := 'estoque.htm';
         
@@ -12257,26 +12258,17 @@ begin
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-        
-        {Sandro Silva 2023-01-04 inicio
-        if Form1.bMKP then
-        begin
-          sMostra   := 'TFTFTFFFFF'+Replicate('F',39)+'T';
-        end else
-        begin
-          // Sandro Silva 2022-12-20 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
-          sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 41));
-        end;
-        }
-        if Form1.bMKP then
+
+        {if Form1.bMKP then
         begin
           sMostra   := 'TFTFTFFFFF'+Replicate('F',40)+'T';
         end else
         begin
           // Sandro Silva 2022-12-20 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
           sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
-        end;
-        {Sandro Silva 2023-01-04 fim}
+        end;}
+        //Mauricio Parizotto 2023-12-04
+        sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
 
         iCampos   := 50; // Sandro Silva 2023-01-18 iCampos   := 51; // Sandro Silva 2023-01-04 iCampos   := 50;
         {Sandro Silva 2022-12-20 inicio
