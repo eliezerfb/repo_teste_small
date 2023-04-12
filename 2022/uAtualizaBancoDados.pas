@@ -18,12 +18,80 @@ uses
   , unit7
   ;
 
+  procedure DropViewProcedure;  
   procedure AtualizaBancoDeDados(sBuild : string);
 
 implementation
 
 uses Unit22, Unit13, uFuncoesBancoDados;
 
+procedure DropViewProcedure;
+begin
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select rdb$relation_name as OBJETO ' +
+      'from rdb$relations ' +
+      'where rdb$view_blr is not null ' +
+      'and (rdb$system_flag is null or rdb$system_flag = 0)';
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
+    begin
+      Application.ProcessMessages;
+      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
+    end;
+    while Form1.ibQuery1.Eof = False do
+    begin
+      Form1.ibQuery2.Close;
+      Form1.ibQuery2.SQL.Text := 'drop view ' + Form1.ibQuery1.FieldByName('OBJETO').AsString;
+      Form1.ibQuery2.ExecSQL;
+      Form1.ibQuery1.Next;
+    end;
+  except
+  end;
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select rdb$procedure_name as OBJETO ' +
+      'from rdb$procedures ' +
+      'where rdb$system_flag is null or rdb$system_flag = 0';
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
+    begin
+      Application.ProcessMessages;
+      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
+    end;
+    while Form1.ibQuery1.Eof = False do
+    begin
+      Form1.ibQuery2.Close;
+      Form1.ibQuery2.SQL.Text := 'drop procedure ' + Form1.ibQuery1.FieldByName('OBJETO').AsString;
+      Form1.ibQuery2.ExecSQL;
+      Form1.ibQuery1.Next;
+    end;
+  except
+  end;
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select rdb$trigger_name  as OBJETO ' +
+      'from rdb$triggers ' +
+      'where (rdb$system_flag = 0 or rdb$system_flag is null)';
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
+    begin
+      Application.ProcessMessages;
+      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
+    end;
+    while Form1.ibQuery1.Eof = False do
+    begin
+      Form1.ibQuery2.Close;
+      Form1.ibQuery2.SQL.Text := 'drop trigger ' + Form1.ibQuery1.FieldByName('OBJETO').AsString;
+      Form1.ibQuery2.ExecSQL;
+      Form1.ibQuery1.Next;
+    end;
+  except
+  end;
+end;
 
 procedure AtualizaBancoDeDados(sBuild : string);
 var
@@ -1016,6 +1084,13 @@ begin
       ExecutaComando('Commit');
   end;
   {Sandro Silva 2023-04-10 fim}
+  {Sandro Silva 2023-04-11 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'VFCPST') = False then
+  begin
+    if ExecutaComando('alter table COMPRAS add VFCPST numeric(18, 2)') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2023-04-11 fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');

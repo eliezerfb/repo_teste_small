@@ -23,10 +23,10 @@ uses
   function MontaTela(sP1: Boolean): Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
   function mensagem22(sP1 : String) : Boolean;
-  procedure DropViewProcedure;
+//  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023008'; // Sandro Silva 2023-04-10 const BUILD_DO_BANCO = '2023004';
+const BUILD_DO_BANCO = '2023010'; // Sandro Silva 2023-04-11 const BUILD_DO_BANCO = '2023008'; // Sandro Silva 2023-04-10 const BUILD_DO_BANCO = '2023004';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -1784,7 +1784,7 @@ begin
   CloseHandle(FSnapshotHandle);     
 end;
 
-
+{Sandro Silva 2023-04-12 inicio 
 procedure DropViewProcedure;
 begin
   try
@@ -1852,6 +1852,7 @@ begin
   except
   end;
 end;
+}
 
 procedure ValidaRazaoSmall;
 var

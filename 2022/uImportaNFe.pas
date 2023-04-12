@@ -607,17 +607,20 @@ begin
                       try
                         if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI')) then
                         begin
-                          try
-                            sIPI    := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['vIPI'].Text;
-                          except
-                          end;
-                          try
-                            spIPI   := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['pIPI'].Text;
-                          except
-                          end;
-                          try
-                            sCSTIPI := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['CST'].Text;
-                          except
+                          if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib')) then
+                          begin
+                            try
+                              sIPI    := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['vIPI'].Text;
+                            except
+                            end;
+                            try
+                              spIPI   := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['pIPI'].Text;
+                            except
+                            end;
+                            try
+                              sCSTIPI := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['CST'].Text;
+                            except
+                            end;
                           end;
                         end;
                       except
@@ -736,6 +739,12 @@ begin
           try Form7.ibDataSet24FRETE.AsString       := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFrete').Text,'.',','); except end;
           try Form7.ibDataSet24DESPESAS.AsString    := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vOutro').Text,'.',','); except end;
           try Form7.ibDataSet24SEGURO.AsString      := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vSeg').Text,'.',','); except end;
+          try
+            if Assigned(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFCPST')) then
+              Form7.ibDataSet24VFCPST.AsString      := StringReplace(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFCPST').Text, '.', ',', [rfReplaceAll]);
+          except
+          end;
+
           //
           try
             Form7.ibDataSet24NFEXML.AsString := sXML;

@@ -262,6 +262,7 @@ type
       Shift: TShiftState);
     procedure Button1Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
+    procedure SMALL_DBEdit56Exit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -3652,6 +3653,18 @@ end;
 procedure TForm24.SMALL_DBEdit41Click(Sender: TObject);
 begin
   dBGrid2.Visible := True;
+end;
+
+procedure TForm24.SMALL_DBEdit56Exit(Sender: TObject);
+begin
+  try
+    Form24.DBGrid1.SetFocus;
+    DbGrid1.SelectedIndex := 1;
+    DbGrid1.SelectedIndex := 0;
+  except
+    on E: Exception do
+      ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
+  end;
 end;
 
 end.

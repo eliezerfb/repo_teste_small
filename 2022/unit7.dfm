@@ -17784,7 +17784,8 @@ object Form7: TForm7
         'D, ANVISA, '
       
         '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES, IDENTIFI' +
-        'CADORPLANOCONTAS)'
+        'CADORPLANOCONTAS,'
+      '   VFCPST)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :FORNECEDOR, :OPERACAO, :EMISS' +
@@ -17804,7 +17805,7 @@ object Form7: TForm7
       
         '   :COMPLEMENTO, :NFEID, :ANVISA, :NVOL, :NFEXML, :MDESTINXML, :' +
         'FINNFE, '
-      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS)')
+      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -17851,7 +17852,8 @@ object Form7: TForm7
       '  FINNFE,'
       '  INDFINAL,'
       '  INDPRES,'
-      '  IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS,'
+      '  VFCPST'
       'from COMPRAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -17904,7 +17906,8 @@ object Form7: TForm7
       '  FINNFE = :FINNFE,'
       '  INDFINAL = :INDFINAL,'
       '  INDPRES = :INDPRES,'
-      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -18020,6 +18023,16 @@ object Form7: TForm7
       FieldName = 'BASESUBSTI'
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet24VFCPST: TIBBCDField
+      DisplayLabel = 'FCP ST'
+      FieldName = 'VFCPST'
+      Origin = 'COMPRAS.VFCPST'
+      OnChange = ibDataSet24MERCADORIAChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
     end
     object ibDataSet24TRANSPORTA: TStringField
       DisplayLabel = 'Transportadora'
@@ -20835,6 +20848,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'C:\Program Files (x86)\SmallSoft\Small Commerce\SMALL.FDB'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -22155,7 +22169,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22188,7 +22202,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50a\'
+      '50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22500,7 +22514,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\DPEC'
+      'vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22529,7 +22543,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\DPEC'
+      'm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -9,8 +9,8 @@ object Form24: TForm24
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL COMPRA (ENTRADA)'
-  ClientHeight = 694
-  ClientWidth = 1037
+  ClientHeight = 796
+  ClientWidth = 1218
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -29,8 +29,8 @@ object Form24: TForm24
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 0
-    Width = 1037
-    Height = 694
+    Width = 1218
+    Height = 796
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False
@@ -3214,6 +3214,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 14
+        OnExit = SMALL_DBEdit56Exit
         OnKeyUp = ComboBox12KeyUp
       end
       object DBGrid33: TDBGrid
