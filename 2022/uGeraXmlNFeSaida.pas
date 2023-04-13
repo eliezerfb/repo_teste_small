@@ -2693,12 +2693,12 @@ begin
 
   if AllTrim(Form7.ibDataSet15TRANSPORTA.AsString)<>'' then
   begin
-    if (Length(AllTrim(Form7.ibDataSet18.FieldByname('CGC').AsString)) = 0) then
+    {if (Length(AllTrim(Form7.ibDataSet18.FieldByname('CGC').AsString)) = 0) then
     begin
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15STATUS.AsString    := 'Erro: CNPJ da transportadora inválido';
       Abort;
-    end;
+    end; Ficha 6820}
 
     if (Length(AllTrim(Form7.ibDataSet18.FieldByname('CGC').AsString)) = 18) then
     begin
