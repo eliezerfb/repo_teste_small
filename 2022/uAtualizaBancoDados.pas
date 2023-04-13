@@ -979,6 +979,15 @@ begin
 
   ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)'); // Mauricio Parizotto 2023-03-28
 
+  if ExecutaComando('ALTER TABLE ICM ADD BCPISCOFINS NUMERIC(18,2)') then
+  begin
+    ExecutaComando('commit');
+
+    if ExecutaComando('Update ICM set BCPISCOFINS = COALESCE(BCCOFINS,BCPIS)') then
+      ExecutaComando('commit');
+  end;
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

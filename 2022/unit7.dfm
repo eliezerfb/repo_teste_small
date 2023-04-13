@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 418
-  Top = 33
+  Left = 387
+  Top = 124
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -15414,8 +15414,8 @@ object Form7: TForm7
         '   RJ_, RN_, RO_, RR_, RS_, SC_, SE_, SP_, TO_, EX_, OBS, CONTA,' +
         ' REGISTRO, '
       
-        '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST, BCPIS, B' +
-        'CCOFINS, '
+        '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  BCPISCO' +
+        'FINS, '
       '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI)'
       'values'
       
@@ -15431,8 +15431,8 @@ object Form7: TForm7
         '   :EX_, :OBS, :CONTA, :REGISTRO, :SOBREIPI, :SOBREFRETE, :SOBRE' +
         'SEGURO, '
       
-        '   :SOBREOUTRAS, :CST, :BCPIS, :BCCOFINS, :PPIS, :PCOFINS, :CSOS' +
-        'N, :CSTPISCOFINS,:FRETESOBREIPI)')
+        '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
+        'STPISCOFINS,:FRETESOBREIPI)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -15478,8 +15478,7 @@ object Form7: TForm7
       '  SOBRESEGURO,'
       '  SOBREOUTRAS,'
       '  CST,'
-      '  BCPIS,'
-      '  BCCOFINS,'
+      '  BCPISCOFINS,'
       '  PPIS,'
       '  PCOFINS,'
       '  CSOSN,'
@@ -15536,8 +15535,7 @@ object Form7: TForm7
       '  SOBRESEGURO = :SOBRESEGURO,'
       '  SOBREOUTRAS = :SOBREOUTRAS,'
       '  CST = :CST,'
-      '  BCPIS = :BCPIS,'
-      '  BCCOFINS = :BCCOFINS,'
+      '  BCPISCOFINS = :BCPISCOFINS,'
       '  PPIS = :PPIS,'
       '  PCOFINS = :PCOFINS,'
       '  CSOSN = :CSOSN,'
@@ -15853,11 +15851,10 @@ object Form7: TForm7
       Origin = 'ICM.CSTPISCOFINS'
       Size = 2
     end
-    object ibDataSet14BCCOFINS: TIBBCDField
-      DisplayLabel = 'BC COFINS'
-      DisplayWidth = 9
-      FieldName = 'BCCOFINS'
-      Origin = '"ICM"."BCCOFINS"'
+    object ibDataSet14BCPISCOFINS: TIBBCDField
+      DisplayLabel = 'BC PIS/COFINS'
+      FieldName = 'BCPISCOFINS'
+      Origin = 'ICM.BCPISCOFINS'
       Precision = 18
       Size = 2
     end
@@ -15868,14 +15865,6 @@ object Form7: TForm7
       Origin = '"ICM"."PCOFINS"'
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
-      Precision = 18
-      Size = 2
-    end
-    object ibDataSet14BCPIS: TIBBCDField
-      DisplayLabel = 'BC PIS'
-      DisplayWidth = 9
-      FieldName = 'BCPIS'
-      Origin = '"ICM"."BCPIS"'
       Precision = 18
       Size = 2
     end
@@ -20756,6 +20745,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'D:\Desenvolvimento\Executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -22076,7 +22066,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22109,7 +22099,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50a\vm50a\'
+      '50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22421,7 +22411,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      '\vm50\DPEC'
+      'vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22449,8 +22439,8 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\' +
-      'vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

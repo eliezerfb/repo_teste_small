@@ -12,7 +12,7 @@ uses
   , Dialogs
   , Math
   , DB
-  , IBQuery 
+  , IBQuery
   , ShellApi
   , SpdNFeDataSets
   , spdXMLUtils
@@ -25,7 +25,8 @@ uses
   , unit29
   , unit12
   , Mais
-  ,ugeraxmlnfe
+  ,ugeraxmlnfe,
+  ibdatabase
 ;
 
 
@@ -46,7 +47,7 @@ var
 
 implementation
 
-uses uFrmInformacoesRastreamento, uFuncoesFiscais;
+uses uFrmInformacoesRastreamento, uFuncoesFiscais, uCalculaCstPisCofins;
 
 procedure GeraXmlNFeSaida;
 var
@@ -61,14 +62,14 @@ var
   sCupomReferenciado : String;
   sDentroOuForadoEStado, sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
   vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS : Real;
-  vBC_PIS, vBC_COFINS : Real;
+  vBC_PIS : Real;
 
   fTotaldeTriubutos, fTotaldeTriubutos_uf, fTotaldeTriubutos_muni , fSomaNaBase : Real;
   Mais1Ini : tIniFile;
 
   // Pis cofins da Operação
   sCST_PIS_COFINS : String;
-  rpPIS, rpCOFINS, bcPIS_op, bcCOFINS_op : Real;
+  rpPIS, rpCOFINS, bcPISCOFINS_op : Real;
   bTributa : Boolean;
 
   sDIFAL_OBS : String;
@@ -105,6 +106,8 @@ var
 
   vFreteSobreIPI,vIPISobreICMS : Boolean;
 begin
+  CalculaCstPisCofins(Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
+
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -119,8 +122,7 @@ begin
   sCST_PIS_COFINS := Form7.ibDataSet14.FieldByname('CSTPISCOFINS').AsString;
   rpPIS           := Form7.ibDataSet14.FieldByname('PPIS').AsFloat;
   rpCOFINS        := Form7.ibDataSet14.FieldByname('PCOFINS').AsFloat;
-  bcPIS_op        := Form7.ibDataSet14.FieldByname('BCPIS').AsFloat;
-  bcCOFINS_op     := Form7.ibDataSet14.FieldByname('BCCOFINS').AsFloat;
+  bcPISCOFINS_op  := Form7.ibDataSet14.FieldByname('BCPISCOFINS').AsFloat;
 
   //Mauricio Parizotto 2023-03-28
   vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
@@ -1139,7 +1141,8 @@ begin
 
       try
         if Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat <> 0 then
-          fRateioDoDesconto  := Arredonda((Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat),2) else fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
+          fRateioDoDesconto  := Arredonda((Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat),2)
+        else fRateioDoDesconto := 0; // REGRA DE TRÊS ratiando o desconto no total
       except
         fRateioDoDesconto := 0;
       end;
@@ -1285,7 +1288,7 @@ begin
         Form29.Edit_07.Text := '';
 
         Form1.Small_InputForm_Dados('Detalhamento de Veículos novos: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
-                      
+
         sChassi_VeiculosNovos       := Form29.Edit_01.Text;
         sCCor_VeiculosNovos         := Form29.Edit_02.Text;
         sXCor_VeiculosNovos         := Form29.Edit_03.Text;
@@ -1511,7 +1514,6 @@ begin
       if AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) <> '' then
       begin
         // CST IPI
-        //
         // 00 Entrada com recuperação de crédito
         // 01 Entrada tributada com alíquota zero
         // 02 Entrada isenta
@@ -1526,7 +1528,6 @@ begin
         // 54 Saída imune
         // 55 Saída com suspensão
         // 99 Outras saídas
-        //
         if Form1.sVersaoLayout = '4.00' then
         begin
         end else
@@ -1580,169 +1581,39 @@ begin
       end;
 
       // CST PIS E CST COFINS
-      //
-      // 11 - Operação Tributável (base de cálculo = valor da operação alíquota normal (cumulativo/não cumulativo))
-      // 22 - Operação Tributável (base de cálculo = valor da operação (alíquota diferenciada))
-      // 33 - Operação Tributável (base de cálculo = quantidade vendida x alíquota por unidade de produto)
-      // 44 - Operação Tributável (tributação monofásica (alíquota zero))
-      // 55 - Operação Tributável (substituição tributária)
-      // 66 - Operação Tributável (alíquota zero)
-      // 77 - Operação Isenta da Contribuição
-      // 88 - Operação Sem Incidência da Contribuição
-      // 99 - Operação com Suspensão da Contribuição
-      // 99 - Outras Operações
-      //
-      // PIS
-      //
-      //
-      //
-      // Para calcular o PIS e o COFINS na NF-e:
-      //
       // 1 - Na OBS do produto incluir: PIS COFINS
       // 2 - Na tabela de ICM na natureza da opereção preencher: BC PIS, % PIS, BC COFINS, % COFINS e CST PIS COFINS=99
-      if AllTrim(sCST_PIS_COFINS) <> '' then
-      begin
-        // Pega o CST PIS COFINS e o PERCENTUAL da Tabela
-        Form7.spdNFeDataSets.Campo('CST_Q06').Value     := sCST_PIS_COFINS;
-        //if rpPIS <> 0 then
-        if (rpPIS * bcPIS_op <> 0) then
-        begin
-          // Descontei o rateio do desconto em 11/07/2022 NO PIS
-          vBC_PIS := (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) - StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',','));
-          vBC_PIS := vBC_PIS * (bcPIS_op / 100);//Mauricio Parizotto 2023-04-10
+      Form7.spdNFeDataSets.Campo('CST_Q06').Value   := Form7.ibDataSet16.FieldByname('CST_PIS_COFINS').AsString;
+      Form7.spdNFeDataSets.Campo('CST_S06').Value   := Form7.ibDataSet16.FieldByname('CST_PIS_COFINS').AsString;
 
-          Form7.spdNFeDataSets.Campo('vBC_Q07').Value     := StrTran(Alltrim(FormatFloat('##0.00', vBC_PIS) ),',','.'); // Valor da Base de Cálculo do PIS
-          Form7.spdNFeDataSets.Campo('pPIS_Q08').Value    := StrTran(Alltrim(FormatFloat('##0.00',rpPIS)),',','.'); // Alíquota em Percencual do PIS
-          //Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))*rpPIS/100)),',','.'); // Valor do PIS em Reais
-          Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := StrTran(Alltrim(FormatFloat('##0.00', vBC_PIS * (rpPIS/100) ) ),',','.');
-          // Exclusão do ICMS base do PISCOFINS FICHA 5375
-        end else
-        begin
-          Form7.spdNFeDataSets.Campo('vBC_Q07').Value     := '0.00'; // Valor da Base de Cálculo do PIS
-          Form7.spdNFeDataSets.Campo('pPIS_Q08').Value    := '0.00'; // Alíquota em Percencual do PIS
-          Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := '0.00'; // Valor do PIS em Reais
-        end;
-      end else
-      begin
-        if (Form7.ibDataSet4ALIQ_PIS_SAIDA.AsFloat <> 0) then
-        begin
-          // Pega o CST PIS COFINS e o PERCENTUAL do iten
-          Form7.spdNFeDataSets.Campo('CST_Q06').Value     := Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString;
-
-          if Copy(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString,1,2) = '03' then // Pis por unidade
-          begin
-            Form7.spdNFeDataSets.Campo('vBC_Q07').Value       := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)),',','.'); // Valor da Base de Cálculo do PIS
-            Form7.spdNFeDataSets.Campo('pPIS_Q08').Value      := '0.00';
-            Form7.spdNFeDataSets.Campo('vPIS_Q09').Value      := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat*Form7.ibDataSet4ALIQ_PIS_SAIDA.AsFloat)),',','.'); // Valor do PIS em Reais
-            Form7.spdNFeDataSets.Campo('qBCPROD_Q10').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Vendida
-            Form7.spdNFeDataSets.Campo('vAliqPROD_Q11').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet4ALIQ_PIS_SAIDA.AsFloat)),',','.'); // Alíquota do PIS (em reais)
-          end else
-          begin
-            Form7.spdNFeDataSets.Campo('pPIS_Q08').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet4ALIQ_PIS_SAIDA.AsFloat)),',','.'); // Alíquota em Percencual do PIS
-
-            if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then  // A tag BCPISCOFINS está preenchida
-            begin
-              Form7.spdNFeDataSets.Campo('vBC_Q07').Value     := StrTran(Alltrim(FormatFloat('##0.00', StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString))) )),',','.'); // Valor da Base de Cálculo do PIS
-              Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := StrTran(Alltrim(FormatFloat('##0.00', StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString))) *Form7.ibDataSet4ALIQ_PIS_SAIDA.AsFloat/100)),',','.'); // Valor do PIS em Reais
-            end else
-            begin
-              // Descontei o rateio do desconto em 11/07/2022 NO PIS
-              Form7.spdNFeDataSets.Campo('vBC_Q07').Value     := StrTran(Alltrim(FormatFloat('##0.00',(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))),',','.'); // Valor da Base de Cálculo do PIS
-              Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))*Form7.ibDataSet4ALIQ_PIS_SAIDA.AsFloat/100)),',','.'); // Valor do PIS em Reais
-              // Exclusão do ICMS base do PISCOFINS FICHA 5375
-            end;
-          end;
-        end else
-        begin
-          if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString) = '' then
-          begin
-            Form7.spdNFeDataSets.Campo('CST_Q06').Value     := '08';   // Codigo de Situacao Tributária - ver opções no Manual
-          end else
-          begin
-            Form7.spdNFeDataSets.Campo('CST_Q06').Value     := Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString;
-          end;
-
-          Form7.spdNFeDataSets.Campo('vBC_Q07').Value     := '0.00'; // Valor da Base de Cálculo do PIS
-          Form7.spdNFeDataSets.Campo('pPIS_Q08').Value    := '0.00'; // Alíquota em Percencual do PIS
-          Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := '0.00'; // Valor do PIS em Reais
-        end;
-      end;
+      // PIS
+      Form7.spdNFeDataSets.Campo('vBC_Q07').Value     := StrTran(Alltrim(FormatFloat('##0.00', Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat) ),',','.'); // Valor da Base de Cálculo do PIS
+      Form7.spdNFeDataSets.Campo('pPIS_Q08').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('ALIQ_PIS').AsFloat)),',','.'); // Alíquota em Percencual do PIS
+      if Form7.ibDataSet16.FieldByname('ALIQ_PIS').AsFloat > 0 then
+        Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := StrTran(Alltrim(FormatFloat('##0.00', Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat * (Form7.ibDataSet16.FieldByname('ALIQ_PIS').AsFloat/100) ) ),',','.')
+      else
+        Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := '0.00'; // Valor do PIS em Reais
 
       vPIS := vPIS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vPIS_Q09').AsString,',',''),'.',',')),2);
 
       // COFINS
-      if AllTrim(sCST_PIS_COFINS) <> '' then
-      begin
-        // Pega o CST PIS COFINS e o PERCENTUAL da Tabela
-        Form7.spdNFeDataSets.Campo('CST_S06').Value        := sCST_PIS_COFINS;
-
-        //if rpCOFINS <> 0 then
-        if (rpCOFINS * bcCOFINS_op <> 0) then
-        begin
-          // Descontei o rateio do desconto em 11/07/2022 no COFINS
-          vBC_COFINS := (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) - StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',','));
-          vBC_COFINS := vBC_COFINS * (bcCOFINS_op / 100); //Mauricio Parizotto 2023-04-10
-
-          Form7.spdNFeDataSets.Campo('vBC_S07').Value        := StrTran(Alltrim(FormatFloat('##0.00', vBC_COFINS) ),',','.'); // Valor da Base de Cálculo do COFINS
-          Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := StrTran(Alltrim(FormatFloat('##0.00',rpCOFINS)),',','.'); // Alíquota em Percencual do COFINS
-          //Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))*rpCOFINS/100)),',','.'); // Valor do COFINS em Reais
-          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00', vBC_COFINS * (rpCOFINS/100) ) ),',','.'); // Valor do COFINS em Reais
-          // Exclusão do ICMS base do PISCOFINS FICHA 5375
-        end else
-        begin
-          Form7.spdNFeDataSets.Campo('vBC_S07').Value        := '0.00'; // Valor da Base de Cálculo do COFINS
-          Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := '0.00'; // Alíquota em Percencual do COFINS
-          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := '0.00'; // Valor do COFINS em Reais
-        end;
-      end else
-      begin
-        if (Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat <> 0) then
-        begin
-          // Pega o CST PIS COFINS e o PERCENTUAL do iten
-          Form7.spdNFeDataSets.Campo('CST_S06').Value        := Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString;
-          //
-          if Copy(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString,1,2) = '03' then // Cofins por unidade
-          begin
-            Form7.spdNFeDataSets.Campo('vBC_S07').Value        := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)),',','.'); // Valor da Base de Cálculo do COFINS
-            Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := '0.00';
-            Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat*Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat)),',','.'); // Valor do COFINS em Reais
-            Form7.spdNFeDataSets.Campo('qBCPROD_S09').Value    := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Vendida
-            Form7.spdNFeDataSets.Campo('vAliqPROD_S10').Value  := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat)),',','.'); // Alíquota do COFINS (em reais)
-          end else
-          begin
-            Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat)),',','.'); // Alíquota em Percencual do COFINS
-
-            if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then  // A tag BCPISCOFINS está preenchida
-            begin
-              Form7.spdNFeDataSets.Campo('vBC_S07').Value        := StrTran(Alltrim(FormatFloat('##0.00', StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString))) )),',','.'); // Valor da Base de Cálculo do COFINS
-              Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00', StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString))) *Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat/100)),',','.'); // Valor do COFINS em Reais
-            end else
-            begin
-              // Descontei o rateio do desconto em 11/07/2022 no COFINS
-              Form7.spdNFeDataSets.Campo('vBC_S07').Value        := StrTran(Alltrim(FormatFloat('##0.00',(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))),',','.'); // Valor da Base de Cálculo do COFINS
-              Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat)),',','.'); // Alíquota em Percencual do COFINS
-              Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)-StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')))*Form7.ibDataSet4ALIQ_COFINS_SAIDA.AsFloat/100)),',','.'); // Valor do COFINS em Reais
-
-              // Exclusão do ICMS base do PISCOFINS FICHA 5375
-            end;
-          end;
-        end else
-        begin
-          if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString) = '' then
-          begin
-            Form7.spdNFeDataSets.Campo('CST_S06').Value     := '08';   // Codigo de Situacao Tributária - ver opções no Manual
-          end else
-          begin
-            Form7.spdNFeDataSets.Campo('CST_S06').Value     := Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString;
-          end;
-
-          Form7.spdNFeDataSets.Campo('vBC_S07').Value        := '0.00'; // Valor da Base de Cálculo do COFINS
-          Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := '0.00'; // Alíquota em Percencual do COFINS
-          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := '0.00'; // Valor do COFINS em Reais
-        end;
-      end;
+      Form7.spdNFeDataSets.Campo('vBC_S07').Value        := StrTran(Alltrim(FormatFloat('##0.00', Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat) ),',','.'); // Valor da Base de Cálculo do COFINS
+      Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := StrTran(Alltrim(FormatFloat('##0.00', Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat)),',','.'); // Alíquota em Percencual do COFINS
+      if Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat > 0 then
+        Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := StrTran(Alltrim(FormatFloat('##0.00', Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat * (Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat/100) ) ),',','.') // Valor do COFINS em Reais
+      else
+        Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := '0.00'; // Valor do COFINS em Reais
 
       vCOFINS := vCOFINS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vCOFINS_S11').AsString,',',''),'.',',')),2);
+
+      // Pis/Cofins por unidade
+      if Form7.spdNFeDataSets.Campo('CST_Q06').Value = '03' then
+      begin
+        Form7.spdNFeDataSets.Campo('qBCPROD_Q10').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Vendida
+        Form7.spdNFeDataSets.Campo('vAliqPROD_Q11').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('ALIQ_PIS').AsFloat)),',','.'); // Alíquota do PIS (em reais)
+        Form7.spdNFeDataSets.Campo('qBCPROD_S09').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Vendida
+        Form7.spdNFeDataSets.Campo('vAliqPROD_S10').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat)),',','.'); // Alíquota do COFINS (em reais)
+      end;
 
       // totalizador da nota complementar
       if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
@@ -2567,15 +2438,17 @@ begin
         Form7.spdNFeDataSets.Campo('indIncentivo_U17').Value   := '2';   // indIncentivo Indicador de incentivo Fiscal 1 – SIm; 2 – Não;
 
         // PIS Sobre Serviços
-        if (rpPIS * bcPIS_op <> 0) then
+        if (rpPIS * bcPISCOFINS_op <> 0) then
         begin
+          vBC_PIS := bcPISCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100;
           Form7.spdNFeDataSets.Campo('CST_Q06').Value   := Form7.ibDataSet14.FieldByname('CSTPISCOFINS').AsString; // Codigo de Situacao Tributária PIS - ver opções no Manual
-          Form7.spdNFeDataSets.Campo('vBC_Q07').Value   := StrTran(Alltrim(FormatFloat('##0.00', bcPIS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 )),',','.'); // Valor da Base de Cálculo do PIS
+          Form7.spdNFeDataSets.Campo('vBC_Q07').Value   := StrTran(Alltrim(FormatFloat('##0.00', vBC_PIS )),',','.'); // Valor da Base de Cálculo do PIS
           Form7.spdNFeDataSets.Campo('pPIS_Q08').Value  := StrTran(Alltrim(FormatFloat('##0.00',rpPIS)),',','.'); // Alíquota em Percencual do PIS
-          Form7.spdNFeDataSets.Campo('vPIS_Q09').Value  := StrTran(Alltrim(FormatFloat('##0.00',rpPIS * bcPIS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100)),',','.');  // Valor do PIS sobre serviços
-          vPIS_S := vPIS_S + Arredonda(rpPIS * bcPIS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100,2);
+          Form7.spdNFeDataSets.Campo('vPIS_Q09').Value  := StrTran(Alltrim(FormatFloat('##0.00',rpPIS * bcPISCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100)),',','.');  // Valor do PIS sobre serviços
+          vPIS_S := vPIS_S + Arredonda(rpPIS * bcPISCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100,2);
         end else
         begin
+          vBC_PIS := 0;
           Form7.spdNFeDataSets.Campo('CST_Q06').Value   := '08';   // Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,2); // Codigo de Situacao Tributária - ver opções no Manual
           Form7.spdNFeDataSets.Campo('vBC_Q07').Value   := '0.00'; // Valor da Base de Cálculo do PIS
           Form7.spdNFeDataSets.Campo('pPIS_Q08').Value  := '0.00'; // Alíquota em Percencual do PIS
@@ -2583,14 +2456,14 @@ begin
         end;
             
         // COFINS Sobre Serviços
-        if (rpCOFINS * bcCOFINS_op <> 0) then
+        if (rpCOFINS * bcPISCOFINS_op <> 0) then
         begin
           Form7.spdNFeDataSets.Campo('CST_S06').Value     := Form7.ibDataSet14.FieldByname('CSTPISCOFINS').AsString;  // Código de Situacao Tributária COFINS - ver opções no Manual
-          Form7.spdNFeDataSets.Campo('vBC_S07').Value     := StrTran(Alltrim(FormatFloat('##0.00', bcCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 )),',','.');; // Valor da Base de Cálculo do COFINS
+          Form7.spdNFeDataSets.Campo('vBC_S07').Value     := StrTran(Alltrim(FormatFloat('##0.00', bcPISCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 )),',','.');; // Valor da Base de Cálculo do COFINS
           Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value := StrTran(Alltrim(FormatFloat('##0.00',rpCOFINS)),',','.'); // Alíquota do COFINS em Percentual
-          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value := StrTran(Alltrim(FormatFloat('##0.00',rpCOFINS * bcCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100)),',','.');; // Valor do COFINS em Reais
+          Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value := StrTran(Alltrim(FormatFloat('##0.00',rpCOFINS * bcPISCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100)),',','.');; // Valor do COFINS em Reais
 
-          vCOFINS_S := vCOFINS_S + arredonda(rpCOFINS * bcCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100,2);
+          vCOFINS_S := vCOFINS_S + arredonda(rpCOFINS * bcPISCOFINS_op * Form7.ibDataSet35.FieldByname('TOTAL').AsFloat / 100 / 100,2);
         end else
         begin
           Form7.spdNFeDataSets.Campo('CST_S06').Value     := '08'; // Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,2); // Código de Situacao Tributária - ver opções no Manual
@@ -2636,14 +2509,14 @@ begin
         end;
 
         // Pis Sobre Serviços
-        if (rpPIS * bcPIS_op <> 0) then
+        if (rpPIS * bcPISCOFINS_op <> 0) then
         begin
 //                      Form7.spdNFeDataSets.Campo('vPIS_W21').Value  :=  StrTran(Alltrim(FormatFloat('##0.00',rpPIS * bcPIS_op * Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat / 100 / 100)),',','.');  // Valor do PIS sobre serviços
           Form7.spdNFeDataSets.Campo('vPIS_W21').Value  :=  StrTran(Alltrim(FormatFloat('##0.00',vPIS_S)),',','.');  // Valor do PIS sobre serviços
         end;
 
         // COFINS Sobre Serviços
-        if (rpCOFINS * bcCOFINS_op <> 0) then
+        if (rpCOFINS * bcPISCOFINS_op <> 0) then
         begin
           Form7.spdNFeDataSets.Campo('vCOFINS_W22').Value  :=  StrTran(Alltrim(FormatFloat('##0.00',vCOFINS_S)),',','.');  // Valor do COFINS sobre serviços
         end;
@@ -3989,7 +3862,6 @@ begin
 
       if Form7.ibDataSet16.FieldByname('BASE').AsFloat > 0 then
       begin
-
         if Form7.ibDataSet4PIVA.AsFloat > 0 then
         begin
           try
@@ -4166,12 +4038,10 @@ begin
     begin
       if Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '1' then
       begin
-        //
         Form7.spdNFeDataSets.campo('pRedBCEfet_N34').Value      := StrTran(Alltrim(FormatFloat('##0.00',100-Form7.ibDataSet14BASE.AsFloat)),',','.');                                                                                              // Percentual de redução da base de cálculo efetiva
         Form7.spdNFeDataSets.campo('vBCEfet_N35').Value         := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100))),',','.');                              // Valor da base de cálculo efetiva
         Form7.spdNFeDataSets.campo('pICMSEfet_N36').Value       := StrTran(Alltrim(FormatFloat('##0.00',Form7.AliqICMdoCliente16())),',','.');                                                                                                         // Alíquota do ICMS efetiva
         Form7.spdNFeDataSets.campo('vICMSEfet_N37').Value       := StrTran(Alltrim(FormatFloat('##0.00',Form7.AliqICMdoCliente16()*(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100))/100)),',','.'); // Valor do ICMS efetivo
-        //
       end else
       begin
         // Procura pela última compra deste item
@@ -4561,6 +4431,7 @@ ShowMessage('Teste: '+chr(10)+
     // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
   end;
 end;
+
 
 
 end.

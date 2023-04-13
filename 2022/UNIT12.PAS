@@ -290,7 +290,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48;
+  Unit24, Unit48, uCalculaCstPisCofins;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -1675,7 +1675,6 @@ procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   try
     if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
     if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
@@ -1683,9 +1682,8 @@ begin
   except
     on E: Exception do  ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
   end;
-  //
+
   try
-    //
     Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
     //
     Form7.ibDataSet16.DisableControls;
@@ -1693,28 +1691,25 @@ begin
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet15.DisableControls;
     Form12.Hide;
-    //
+
+    //Mauricio Parizotto 2023-04-13
+    CalculaCstPisCofins(Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
+
     Form7.sModulo := 'RETRIBUTA';
     //
     if Form7.ibDataSet15.Modified then Form7.ibDataSet15.Post;
     //
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
-      //
       if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
       begin
-        //
         // Atenção a rotina abaixo altera a quantidade no estoque
-        //
         Form7.ibDataSet16.DisableControls;
         Form7.ibDataSet16.First;
         while not Form7.ibDataSet16.Eof do // disable
         begin
-          //
           // Procura o produto no estoque
-          //
           try
-            //
             Form7.ibDataSet4.Close;                                                //
             Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
             Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
@@ -1729,37 +1724,28 @@ begin
                 begin
                   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
                   begin
-                    //
                     Form7.ibDataSet4.Edit;
                     Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                     Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                     Form7.ibDataSet4.Post;
-                    //
                     //                ShowMessage('Teste saiu do estoque '+Form7.ibDataSet16QUANTIDADE.AsString+ ' '+Form7.ibDataSet16DESCRICAO.AsString);
-                    //
                   end;
                 end;
-                //
+
                 Form7.sModulo := 'FECHAVENDA';
                 Form7.ibDataSet16.Edit;
                 Form7.ibDataSet16SINCRONIA.AsFloat := Form7.ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
                 Form7.ibDataSet16.Post;
-                //
               end;
             end;
           except end;
-          //
+
           Form7.sModulo := 'VENDA';
           Form7.ibDataSet16.Next;
-          //
         end;
-        //
         // Atenção a rotina acima altera a quantidade no estoque
-        //
       end;
 
-
-      //
       // Desdobramento das duplicatas
       //
       Form7.sModulo := 'VENDA';
