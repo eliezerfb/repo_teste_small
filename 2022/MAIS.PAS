@@ -3987,41 +3987,33 @@ begin
   begin
     Form1.bPDF   := False;
   end;
-  //
+
   if Mais1Ini.ReadString('GERAL','MARKETPLACE ATIVO','Não') = 'Sim' then
   begin
-    //
     AutoMarketplace1.Checked := True;
-    //
+
     if not ConsultaProcesso('mkp.exe') then // Form1Ativate
     begin
-      //
       ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_SHOW); // Form1Ativate
-      //
     end;
-    //
   end else
   begin
     AutoMarketplace1.Checked := False;
   end;
-  //
+
   if Mais1Ini.ReadString('GERAL','MOBILE ATIVO','Não') = 'Sim' then
   begin
-    //
     AutoSmallMobile1.Checked := True;
-    //
+
     if not ConsultaProcesso('mobile.exe') then // Form1Ativate
     begin
-      //
       ShellExecute( 0, 'Open', 'mobile.exe', pChar(Form7.ibDataSet13CGC.AsString) , '', SW_SHOW); // Form1Ativate
-      //
     end;
-    //
   end else
   begin
     AutoSmallMobile1.Checked := False;
   end;
-  //
+  
   Form19.Edit7.Color := StrToInt('$'+AllTrim(Mais1Ini.ReadString('Html','Cor','EBEBEB')));
   Form19.Edit8.Color := StrToInt('$'+AllTrim(Mais1Ini.ReadString('Html','Cor','EBEBEB')));
   //
@@ -4193,23 +4185,18 @@ begin
     //
   end else
   begin
-    //
     Form1.ConfiguraesdaNFSe1.Visible := False;
     Form7.GerarNotaFiscaldeServio1.Visible := False;
     Form7.GerarNotaFiscaldeServio2.Visible := False;
-    //
   end;
-  //
+
   if Form1.bMKP then
   begin
-    //
     if not AutoMarketplace1.Checked then
     begin
       Form1.AutoMarketplace1Click(Sender);
     end;
   end;
-  //
-  //
 end;
 
 procedure TForm1.ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
@@ -5739,15 +5726,12 @@ procedure TForm1.Image202Click(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   if not (Form13.Tag = 99) then
   begin
     if not Legal(True) then Abort;
   end;
-  //
+
   // Teste
-  //
-  //
   try
     FechaTudo(bFechaTudo);
     Form7.sModulo  := 'ESTOQUE';
@@ -5755,22 +5739,17 @@ begin
     Form7.sTitulo  := 'Controle de estoque';
     Form7.sRPS := 'N';
     Form7.Show;
-    //
   except end;
-  //
+
   if Form13.Tag = 99 then
   begin
-    //
     for I := 1 to 5 do
     begin
       Form7.Close;
       Form7.Show;
     end;
-    //
     Form13.Tag := 0;
-    //
   end;
-  //
 end;
 
 procedure TForm1.Image206Click(Sender: TObject);
@@ -10526,7 +10505,6 @@ end;
 
 procedure TForm1.Timer2Timer(Sender: TObject);
 var
-  //
   sTLista : TStringList;
   I, III : Integer;
   ArqIni : tIniFile;
@@ -10536,142 +10514,112 @@ var
   //
   dInicio, dFinal: tDate;
   fTotal, fTotal1, fTotal2 : Real;
-  //
   Mais1Ini : tIniFile;
-  //
 begin
-  //
   if AllTrim(Form7.ibDataSet13.fieldByName('CGC').AsString) <> '' then
   begin
-    //
     if AutoMarketplace1.Checked then
     begin
       if not ConsultaProcesso('mkp.exe') then // Form1Ativate
       begin
-        //
-//        ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_SHOW); // Form1Ativate
         ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_HIDE); // Form1Ativate
-        //
       end;
     end;
-    //
+
     if AutoSmallMobile1.Checked then
     begin
-      //
       if not ConsultaProcesso('mobile.exe') then // Timer2Timer
       begin
-        //
         ShellExecute( 0, 'Open', 'mobile.exe', pChar(Form7.ibDataSet13CGC.AsString) , '', SW_SHOW); // Timer2Timer
-        //
       end;
     end;
-    //
+
     if AutoSmallMobile1.Checked then
     begin
-      //
       Timer2.Enabled            := False;
-      //
+
       if not ConsultaProcesso('mobile.exe') then // Timer2Timer
       begin
-        //
         ShellExecute( 0, 'Open', 'mobile.exe', pChar(Form7.ibDataSet13CGC.AsString) , '', SW_SHOW); // Timer2Timer
-        //
       end;
-      //
+
       try
-        //
         sTLista := TStringList.Create();
         sTLista.Clear;
-        //
         Form1.DownloadSmallMobile1Click(DownloadSmallMobile1);
         //
 //        if (not Form10.visible) and (not Form12.visible) and (not Form24.visible) and (not Form30.visible) then
         begin
-          //
-          //
           DownloadMobile(LimpaNumero(Form7.ibDataSet13.fieldByName('CGC').AsString), '*.mob', sTLista);
           //
           for I := 0 to sTLista.Count -1 do
           begin
             if Pos('.mob',Lowercase(sTLista[I])) <> 0 then
             begin
-              //
               // Cursor
-              //
               Screen.Cursor             := crAppStart;                   // Cursor de Aguardo
               Form1.Label200.Tag        := 1;
-              //
+
               Application.ProcessMessages;
-              //
+
               try
                 Form10.AtualizaMobile(False);
               except end;
-              //
+
               DeleteFile(pChar(sTLista[I]));    // Apaga local
-              //
+
               Screen.Cursor             := crDefault;                   // Cursor normal
-              //
             end;
           end;
         end;
-        //
+
         DownloadMobile(LimpaNumero(Form7.ibDataSet13.fieldByName('CGC').AsString), '*.rel', sTLista);
-        //
+
         for I := 0 to sTLista.Count -1 do
         begin
-          //
           if Pos('.rel',Lowercase(sTLista[I])) <> 0 then
           begin
-            //
             // Cursor
-            //
             Screen.Cursor             := crAppStart;                   // Cursor de Aguardo
-            //
+
             Form1.Label200.Tag        := 1;
-            //
+
             Application.ProcessMessages;
-            //
+
             // Download do Arquivo
-            //
             ArqIni := TIniFile.Create(sTLista[I]);
-            //
+
             // Salva o cliente
-            //
             sRelatorio := ArqIni.ReadString('RELATORIO','TITULO','');
             sUsuario   := ArqIni.ReadString('RELATORIO','USUARIO','');
             sNome      := ArqIni.ReadString('RELATORIO','NOME','');
-            //
+
             ArqIni.Free;
-            //
+
             if (AllTrim(sRelatorio) <> '') and
                (AllTrim(sUsuario) <> '') and
                (AllTrim(sNome) <> '') then
             begin
-              //
               // terminado apaga o arquivo local e no FTP
-              //
               DeleteFile(pChar(sTLista[I]));    // Apaga local
-              //
+
               try
-                //
                 DeleteFile(pChar(sNome+'.HTM'));
                 AssignFile(F,pChar(sNome+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
                 Rewrite(F);                           // Abre para gravação
-                //
+
                 Writeln(F,'<html><head><title>'+AllTrim(Form7.ibDataSet13NOME.AsString) + ' - SMALL MOBILE</title></head>');
                 WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0">');
                 WriteLn(F,'<br><br><center><img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
                 WriteLn(F,'<br><br>');
-                //
+
                 if (sRelatorio <> 'MINHAS VENDAS') and (sRelatorio <> 'MEUS ORÇAMENTOS') and (sRelatorio <> 'CONTAS A PAGAR') and (sRelatorio <> 'CONTAS A RECEBER') then
                 begin
-                  //
                   // Cria os gráficos padrão no form5
-                  //
                   Form5.Caption := sRelatorio;
-                  //
+
                   Form7.sModuloAnterior := Form7.sModulo;
-                  //
+
                   if Form5.Visible then
                   begin
                     Form5.Close;
@@ -10682,29 +10630,24 @@ begin
                     Form5.Show;
                     Form5.Close;
                   end;
-                  //
+
                   if Form1.WindowState = wsMinimized then
                   begin
                     Form5.WindowState := wsMinimized;
                   end;
-                  //
+
                   Form7.sModulo := Form7.sModuloAnterior;
-                  //
                 end;
-                //
+
                 Form5.Caption := '';
-                //
-                //
+
                 if sRelatorio = 'INDICADORES' then
                 begin
-                  //
                   // WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>'+ sRelatorio +'</b></font>');
-                  //
                   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
                   Mais1Ini.UpdateFile;
-                  //
+
                   // Indicadores
-                  //
                   if StrToInt('0'+Mais1Ini.ReadString(sUsuario,'I03','0')) > 0 then WriteLn(F,'<br><img src="FluxoDeCaixaG.png" border="0" width=500 height=250>');
                   //
                   if StrToInt('0'+Mais1Ini.ReadString(sUsuario,'I02','0')) > 0 then WriteLn(F,'<br><img src="Inadimplencia90DiasG.png" border="0" width=500 height=250>');
@@ -10737,40 +10680,30 @@ begin
                   if StrToInt('0'+Mais1Ini.ReadString(sUsuario,'I15','0')) > 0 then WriteLn(F,'<br><img src="RegistrosNoCadastroG.png" border="0" width=500 height=250>');
                   //
                   Mais1Ini.Free;
-                  //
                 end;
-                //
+
                 if sRelatorio = 'FLUXO DE CAIXA' then
                 begin
-                  //
                   WriteLn(F,'<br><img src="FluxoDeCaixaG.png" border="0" width=500 height=250>');
-                  //
                 end;
-                //
+
                 if sRelatorio = 'VENDAS POR VENDEDOR' then
                 begin
-                  //
                   WriteLn(F,'<br><img src="VendasPorVendedorG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="VendasPorVendedorMesAnteriorG.png" border="0" width=500 height=250>');
-                  //
                 end;
-                //
+
                 // INADIMPLÊNCIA
-                //
                 if sRelatorio = 'INADIMPLÊNCIA' then
                 begin
-                  //
                   WriteLn(F,'<br><img src="Inadimplencia90DiasG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="Inadimplencia360DiasG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="InadimplenciaTotalDiasG.png" border="0" width=500 height=250>');
-                  //
                 end;
-                //
+
                 // Lucro
-                //
                 if sRelatorio = 'LUCRO' then
                 begin
-                  //
                   WriteLn(F,'<br><img src="FaturamentoMesG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="DespesasMesG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="LucroMesG.png" border="0" width=500 height=250>');
@@ -10778,26 +10711,21 @@ begin
                   WriteLn(F,'<br><img src="FaturamentoUltimosAnosG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="DespesasUltimosAnosG.png" border="0" width=500 height=250>');
                   WriteLn(F,'<br><img src="LucroUltimosAnosG.png" border="0" width=500 height=250>');
-                  //
                 end;
-                //
+
                 // Minhas vendas
-                //
                 if sRelatorio = 'MINHAS VENDAS' then
                 begin
-                  //
                   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>'+ sRelatorio +'</b></font><br>');
-                  //
                   try
-                    //
                     dInicio := StrToDate('01/'+StrZero(Month(Date),2,0)+'/'+StrZero(Year(Date),4,0));
                     dFinal  := StrToDate(StrZero(DiasDesteMes,2,0)+'/'+StrZero(Month(Date),2,0)+'/'+StrZero(Year(Date),4,0));
-                    //
+                    
                     Form1.ibQuery1.Close;
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select EMISSAO, CLIENTE, TOTAL, NUMERONF from VENDAS where (VENDEDOR= '+QuotedStr( sUsuario )+') and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' order by EMISSAO');
                     Form1.ibQuery1.Open;
-                    //
+
                     WriteLn(F,'<br>');
                     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
                     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
@@ -10805,32 +10733,28 @@ begin
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">Cliente<br></th>');
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">Total<br></th>');
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">NF<br></th>');
-                    //
+
                     WriteLn(F,'  </tr>');
-                    //
+
                     fTotal  := 0;
-                    //
+
                     while not Form1.IBQuery1.Eof do
                     begin
-                      //
                       Application.ProcessMessages;
-                      //
-                      //
                       WriteLn(F,'   <tr>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('EMISSAO').AsString+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIENTE').AsString+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form1.ibQuery1.FieldByname('TOTAL').AsFloat])+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('NUMERONF').AsString+'<br></font></td>');
                       WriteLn(F,'   </tr>');
-                      //
+                      
                       fTotal  := fTotal + Form1.ibQuery1.FieldByname('TOTAL').AsFloat;
-                      //
+
                       Form1.ibQuery1.Next;
-                      //
                     end;
-                    //
+
                     WriteLn(F,'   <tr>');
-                    //
+                    
                     if fTotal = 0 then
                     begin
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
@@ -10844,59 +10768,50 @@ begin
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotal])+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                     end;
-                    //
+
                     WriteLn(F,'   </tr>');
                     WriteLn(F,'  </table>');
-                    //
-                    //
                   except
                     on E: Exception do
                     begin
                       WriteLn(F,'  <br>Erro nos dados: '+E.Message);
                     end;
                   end;
-                  //
                 end;
-                //
+
                 // Minhas vendas
-                //
                 if sRelatorio = 'MEUS ORÇAMENTOS' then
                 begin
-                  //
                   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>'+ sRelatorio +'</b></font>');
-                  //
+
                   try
-                    //
                     // GRAFICO
-                    //
                     DeleteFile(pChar(Form1.sAtual+'\orcamentos.png'));
                     DeleteFile(pChar(Form1.sAtual+'\orcamentos.gra'));
-                    //                                                  //
+
                     // cria o gráfico de fluxo de caixa orçamentos.png //
-                    //                                                //
                     Mais1ini := TIniFile.Create(Form1.sAtual+'\orcamentos.gra');
-                    //
+
                     // Titulo
-                    //
                     Mais1Ini.WriteString('DADOS','3D','1');
                     Mais1Ini.WriteString('DADOS','MarcasS1','1');
                     Mais1Ini.WriteString('DADOS','Legenda','0');
                     Mais1Ini.WriteString('DADOS','TipoS1','4');
                     Mais1Ini.WriteString('DADOS','AlturaBmp','1000');
                     Mais1Ini.WriteString('DADOS','LarguraBmp','2000');
-                    //
+
                     Mais1Ini.WriteString('DADOS','Titulo','');
                     Mais1Ini.WriteString('DADOS','NomeBmp','orcamentos.png');
                     Mais1Ini.WriteString('DADOS','CorS1','$008FC26C');
-                    //
+
                     dInicio := StrToDate('01/'+StrZero(Month(Date),2,0)+'/'+StrZero(Year(Date),4,0));
                     dFinal  := StrToDate(StrZero(DiasDesteMes,2,0)+'/'+StrZero(Month(Date),2,0)+'/'+StrZero(Year(Date),4,0));
-                    //
+
                     Form1.ibQuery1.Close;
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select DATA, CLIFOR, sum(TOTAL) as VTOT, NUMERONF from ORCAMENT where (VENDEDOR= '+QuotedStr( sUsuario )+') and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by DATA, CLIFOR, NUMERONF order by DATA');
                     Form1.ibQuery1.Open;
-                    //
+                    
                     WriteLn(F,'<center><a href="'+Form1.sAtual+'\orcamentos.png"><img src="orcamentos.png" border="0" width=800 height=400></a>');
                     WriteLn(F,'<br>');
                     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
@@ -10905,29 +10820,27 @@ begin
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">Cliente<br></th>');
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">Total<br></th>');
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">NF<br></th>');
-                    //
+
                     WriteLn(F,'  </tr>');
-                    //
+                    
                     III     := 0;
                     fTotal  := 0;
                     fTotal1 := 0;
                     fTotal2 := 0;
-                    //
+
                     while not Form1.IBQuery1.Eof do
                     begin
-                      //
                       Application.ProcessMessages;
-                      //
-                      //
+
                       WriteLn(F,'   <tr>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('DATA').AsString+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIENTE').AsString+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form1.ibQuery1.FieldByname('VTOT').AsFloat])+'<br></font></td>');
                       WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('NUMERONF').AsString+'<br></font></td>');
                       WriteLn(F,'   </tr>');
-                      //
+
                       fTotal  := fTotal + Form1.ibQuery1.FieldByname('VTOT').AsFloat;
-                      //
+
                       if AllTrim(Form1.ibQuery1.FieldByname('NUMERONF').AsString)<>'' then
                       begin
                         fTotal1  := fTotal1 + Form1.ibQuery1.FieldByname('VTOT').AsFloat;
@@ -10935,11 +10848,10 @@ begin
                       begin
                         fTotal2  := fTotal2 + Form1.ibQuery1.FieldByname('VTOT').AsFloat;
                       end;
-                      //
+                      
                       Form1.ibQuery1.Next;
-                      //
                     end;
-                    //
+
                     WriteLn(F,'   <tr>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
@@ -10947,50 +10859,42 @@ begin
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                     WriteLn(F,'   </tr>');
                     WriteLn(F,'  </table>');
-                    //
+                    
                     Mais1Ini.WriteString('DADOS','XY'+StrZero(1,2,0),'S1<'+
                       StrTran(Format('%15.2n',[ftotal1]),'.','')
                         +'>S2<'+'0,00'+'>VX<'+StrZero(III,2,0)+'>LX<Faturados>');
                     Mais1Ini.WriteString('DADOS','XY'+StrZero(2,2,0),'S1<'+
                       StrTran(Format('%15.2n',[ftotal2]),'.','')
                         +'>S2<'+'0,00'+'>VX<'+StrZero(III,2,0)+'>LX< >');
-                    //
-                    //
+
                     Mais1Ini.Free;
                     ShellExecute( 0, 'Open', 'graficos.exe', 'orcamentos.gra SMALL', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\orcamentos.png') do sleep(100);
-                    //
                   except
                     on E: Exception do
                     begin
                       WriteLn(F,'  <br>Erro nos dados: '+E.Message);
                     end;
                   end;
-                  //
                 end;
-                //
+
                 // Contas a PAGAR
-                //
                 if sRelatorio = 'CONTAS A PAGAR' then
                 begin
-                  //
                   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>'+ sRelatorio +'</b></font>');
-                  //
+
                   try
-                    //
                     dInicio :=  Date -1;
                     dFinal  :=  Date + 30;
-                    //
+
                     dInicio := StrToDate(DateToStr(dInicio));
                     dFinal  := StrToDate(DateToStr(dFinal ));
-                    //
+
                     // GRAFICO
-                    //
                     DeleteFile(pChar(Form1.sAtual+'\PAGAR.png'));
                     DeleteFile(pChar(Form1.sAtual+'\PAGAR.gra'));
-                    //                                        //
-                    // cria o gráfico de receeber PAGAR.png //
-                    //                                        //
+
+                    // cria o gráfico de receeber PAGAR.png
                     Mais1ini := TIniFile.Create(Form1.sAtual+'\PAGAR.gra');
                     Mais1Ini.WriteString('DADOS','3D','0');
                     Mais1Ini.WriteString('DADOS','Titulo','');
@@ -11005,71 +10909,61 @@ begin
                     Mais1Ini.WriteString('DADOS','AlturaBmp','1000');
                     Mais1Ini.WriteString('DADOS','LarguraBmp','2000');
                     Mais1Ini.WriteString('DADOS','CorS1','$008FC26C'); // Verde
-                    //
+
                     Form1.ibQuery1.Close;
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select sum(VALOR_DUPL) as TOTAL, VENCIMENTO from PAGAR where VENCIMENTO<='+QuotedStr(DateToStrInvertida(dFinal))+' and VENCIMENTO>='+QuotedStr(DateToStrInvertida(dInicio))+'group by VENCIMENTO order by VENCIMENTO');
                     Form1.ibQuery1.Open;
-                    //
+
                     III := 0;
-                    //
+
                     Form1.ibQuery1.First;
                     while not Form1.ibQuery1.EOF do
                     begin
-                      //
                       Application.ProcessMessages;
-                      //
+                      
                       III := III + 1;
                       Mais1Ini.WriteString('DADOS','XY'+StrZero(III,2,0),'S1<'+
                       StrTran(Format('%15.2n',[Form1.ibQuery1.FieldByname('TOTAL').AsFloat]),'.','')
                         +'>S2<'+'0,00'
                                         +'>VX<'+StrZero(III,2,0)+'>LX<'+Copy(Form1.ibQuery1.FieldByname('VENCIMENTO').AsString,1,5)+'>');
-                      //
                       Form1.ibQuery1.Next;
-                      //
                     end;
-                    //
+
                     WriteLn(F,'     <center><a href="'+Form1.sAtual+'\PAGAR.png"><img src="PAGAR.png" border="0" width=800 height=400></a>');
-                    //
+
                     Mais1Ini.Free;
-                    //
+
                     ShellExecute( 0, 'Open', 'graficos.exe', 'PAGAR.gra SMALL', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\PAGAR.png') do sleep(100);
-                    //
+
                     Writeln(F,'<br><br><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
                     WriteLn(F,'</center>');
-                    //
                   except
                     on E: Exception do
                     begin
                       WriteLn(F,'  <br>Erro nos dados: '+E.Message);
                     end;
                   end;
-                  //
                 end;
-                //
+
                 // Contas a RECEBER
-                //
                 if sRelatorio = 'CONTAS A RECEBER' then
                 begin
-                  //
                   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>'+ sRelatorio +'</b></font>');
-                  //
+
                   try
-                    //
                     dInicio :=  Date -1;
                     dFinal  :=  Date + 30;
-                    //
+
                     dInicio := StrToDate(DateToStr(dInicio));
                     dFinal  := StrToDate(DateToStr(dFinal ));
-                    //
+
                     // GRAFICO
-                    //
                     DeleteFile(pChar(Form1.sAtual+'\RECEBER.png'));
                     DeleteFile(pChar(Form1.sAtual+'\RECEBER.gra'));
-                    //                                        //
+
                     // cria o gráfico de receeber RECEBER.png //
-                    //                                        //
                     Mais1ini := TIniFile.Create(Form1.sAtual+'\RECEBER.gra');
                     Mais1Ini.WriteString('DADOS','3D','0');
                     Mais1Ini.WriteString('DADOS','Titulo','');
@@ -11084,93 +10978,80 @@ begin
                     Mais1Ini.WriteString('DADOS','AlturaBmp','1000');
                     Mais1Ini.WriteString('DADOS','LarguraBmp','2000');
                     Mais1Ini.WriteString('DADOS','CorS1','$008FC26C'); // Verde
-                    //
+                    
                     Form1.ibQuery1.Close;
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select sum(VALOR_DUPL) as TOTAL, VENCIMENTO from RECEBER where VENCIMENTO<='+QuotedStr(DateToStrInvertida(dFinal))+' and VENCIMENTO>='+QuotedStr(DateToStrInvertida(dInicio))+'group by VENCIMENTO order by VENCIMENTO');
                     Form1.ibQuery1.Open;
-                    //
+                    
                     III := 0;
-                    //
+
                     Form1.ibQuery1.First;
                     while not Form1.ibQuery1.EOF do
                     begin
-                      //
                       Application.ProcessMessages;
-                      //
+
                       III := III + 1;
                       Mais1Ini.WriteString('DADOS','XY'+StrZero(III,2,0),'S1<'+
                       StrTran(Format('%15.2n',[Form1.ibQuery1.FieldByname('TOTAL').AsFloat]),'.','')
                         +'>S2<'+'0,00'
                                         +'>VX<'+StrZero(III,2,0)+'>LX<'+Copy(Form1.ibQuery1.FieldByname('VENCIMENTO').AsString,1,5)+'>');
-                      //
+
                       Form1.ibQuery1.Next;
-                      //
                     end;
-                    //
+
                     WriteLn(F,'     <center><a href="'+Form1.sAtual+'\RECEBER.png"><img src="RECEBER.png" border="0" width=800 height=400></a>');
-                    //
+
                     Mais1Ini.Free;
-                    //
+
                     ShellExecute( 0, 'Open', 'graficos.exe', 'RECEBER.gra SMALL', '', SW_SHOWMINNOACTIVE);
                     while not FileExists(Form1.sAtual+'\RECEBER.png') do sleep(100);
-                    //
+
                     Writeln(F,'<br><br><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
                     WriteLn(F,'</center>');
-                    //
                   except
                     on E: Exception do
                     begin
                       WriteLn(F,'  <br>Erro nos dados: '+E.Message);
                     end;
                   end;
-                  //
                 end;
-                //
+                
                 // The end
-                //
                 WriteLn(F,'<br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
                 + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
                 + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
-                //
+                
                 WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
                 WriteLn(F,'</html>');
-                //
+
                 CloseFile(F);                                    // Fecha o arquivo
-                //
+
                 HtmlParaPdf(pChar(sNome));
                 UploadMobile(pChar(sNome+'.pdf'));
-                //
-              except end;
+              except
+              end;
             end;
-            //
             Screen.Cursor             := crDefault;                   // Cursor normal
-            //
           end;
-          //
           sTLista.Clear;
           sTLista.Free;
-          //
         end;
-        //
-      except end;
-      //
-      //
+      except
+      end;
+
       // The End Importar Relatorios
-      //
       Form1.Label200.Tag    := 0;
       Timer2.Enabled        := True;
-      //
     end;
   end;
-  //
+
   if FileExists(Form1.sAtual+'\fechatudo.txt') then
   begin
     Form1.Close;
     sleep(1000);
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
-  //
 end;
 
 
@@ -12275,10 +12156,10 @@ end;
 procedure TForm1.AutoMarketplace1Click(Sender: TObject);
 var
   Mais1Ini : TiniFile;
+  sMostra  : string;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  //
+
   if AutoMarketplace1.Checked then
   begin
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Não');
@@ -12286,15 +12167,20 @@ begin
     Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // AutoSmallMobile1Click
 
     {Sandro Silva 2023-01-04 inicio}
-    Form1.bMKP := False; 
+    Form1.bMKP := False;
     {Sandro Silva 2023-01-04 fim}
   end else
   begin
-    //
     AutoMarketplace1.Checked := True;
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Sim');
+
+    //Ativa Coluna Marktplace para o usuário
+    sMostra   := Mais1Ini.ReadString('ESTOQUE', 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
+    sMostra  := Copy(sMostra,1,49)+'T'+Copy(sMostra,51,10);
+    Mais1Ini.WriteString('ESTOQUE','Mostrar',sMostra);
+
     Form1.Timer2.Enabled := True;
-    //
+
     if Legal(True) then
     begin
       if not ConsultaProcesso('mkp.exe') then // Form1Ativate
@@ -12302,16 +12188,14 @@ begin
         ShellExecute( 0, 'Open', 'mkp.exe','','', SW_SHOW); // AutoSmallMobile1Click
       end;
     end;
-    //
+
     Form1.bMKP := True;
-    //
+
     Form1.Image202Click(Sender);
     ShowMessage('Ative agora os produtos para marketplace');
-    //
   end;
-  //
+
   Mais1ini.Free;
-  //
 end;
 
 procedure TForm1.Hub1Click(Sender: TObject);
