@@ -1091,7 +1091,13 @@ begin
       ExecutaComando('Commit');
   end;
   {Sandro Silva 2023-04-11 fim}
-
+  {Sandro Silva 2023-04-12 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'VFCPST') = False then
+  begin
+    if ExecutaComando('alter table VENDAS add VFCPST numeric(18, 2)') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2023-04-12 fim}
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
