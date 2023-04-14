@@ -770,10 +770,9 @@ begin
         Form7.ibQuery1.Sql.Add('select count(REGISTRO) from GRUPO where coalesce(DESTINO, '''') <> '''' ');
         Form7.ibQuery1.Open;
 
-        if Form7.ibQuery1.FieldByname('COUNT').AsFloat > 0 then sCheck := sCheck + '1' else sCheck := sCheck + '0';
-
-      end
-      else
+        if Form7.ibQuery1.FieldByname('COUNT').AsFloat > 0 then
+          sCheck := sCheck + '1' else sCheck := sCheck + '0';
+      end else
       begin
         sCheck := sCheck + '0';
       end;
@@ -794,7 +793,6 @@ var
   Path: LPSTR;
   AMalloc: IMalloc;
 begin
-
   Path := StrAlloc(MAX_PATH);
   SHGetSpecialFolderLocation(Application.Handle, Folder, PIDL);
 
@@ -808,13 +806,11 @@ end;
 
 function ApagaArquivoNoDeskTop(sP1:String): boolean;
 begin
-  //
   DeleteFile(pChar(GetSystemPath(0)+'\'+sP1));
   DeleteFile(pChar('c:\Users\Public\Desktop\'+Sp1));
   DeleteFile(pChar('c:\Documents and Settings\All Users\Desktop\'+sP1));
-  //
+  
   Result := True;
-  //
 end;
 
 procedure CreateShortcut(FileName, Parameters, InitialDir, ShortcutName, ShortcutFolder : String);
@@ -856,10 +852,8 @@ begin
   Result := False;
 
   try
-
     if xmlNodeValue(sXML, '//infInut/cStat') = '102' then
     begin
-
       sModelo := xmlNodeValue(sXML, '//infInut/mod');
       sAno    := xmlNodeValue(sXML, '//infInut/ano');
       sSerie  := xmlNodeValue(sXML, '//infInut/serie');
@@ -902,70 +896,61 @@ end;
 
 function Aviso2(sP1: String) : Boolean;
 begin
-  //
   //  Form42.Show;
-  //
+  
   Form29.Button1.Visible := False;
   Form29.Label1.Caption  := sP1;
   Form29.Show;
   Form29.Repaint;
   Result := True;
-  //
 end;
 
 
 function Aviso(sP1: String) : Boolean;
 begin
-  //
   //  Form42.Show;
-  //
   Form29.Label1.Caption := sP1;
   Form29.ShowModal;
-  //
+  
   Result := True;
-  //
 end;
 
 function tForm1.Small_InputForm_Dados(sP1: String) : boolean;
 begin
-  //
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
-  //
+
   form29.Label3.Caption := sP1;
   Form29.Panel_Dados.Visible  := True;
-  //
+
   Form29.ShowModal;
-  //
+
   Form29.Panel_Dados.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
-  //
+  
   Result                := True;
-  //
 end;
 
 function tForm1.Small_InputForm(sP1, sP2, sP3: String) : String;
 begin
-  //
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
-  //
+
   Form29.Label1.Font.Size := 18;
   Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
-  //
+
   Form29.Edit1.Visible  := True;
   Form29.Edit1.Text     := sP3;
   Form29.Edit1.Left     := Form29.Label1.Left;
-  //
+
   Form29.ShowModal;
-  //
+
   Result                := Form29.Edit1.Text;
-  //
+
   Form29.Edit1.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
-  //
 end;
 
 
@@ -996,121 +981,107 @@ end;
 
 function tForm1.AvisoNFECompra(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
 //  Form1.ibQuery2.SQL.Add('select count(NUMERONF)as NN from COMPRAS where coalesce(NFEID,''0000000000000000000000000000000000000000000'')<>''0000000000000000000000000000000000000000000'' and coalesce(NFEXML,''X.X'')=''X.X'' and MERCADORIA=0');
   Form1.ibQuery2.SQL.Add('select count(NUMERONF)as NN from COMPRAS where Coalesce(MDESTINXML,''~'') like ''%<tpEvento>210210%'' and MERCADORIA=0');
   Form1.ibQuery2.Open;
   Form1.iAvisosNFECompra := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoCaixa(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from CAIXA where coalesce(NOME,'+QuotedStr('')+')='+QuotedStr('')+' ');
   Form1.ibQuery2.Open;
   Form1.iAvisosCaixa := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoClifor(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from CLIFOR where PROXDATA=CURRENT_DATE');
   Form1.ibQuery2.Open;
   Form1.iAvisosClifor := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoReceber(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
   Form1.ibQuery2.Open;
   Form1.iAvisosReceber := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoEstoque(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from ESTOQUE where QTD_ATUAL<QTD_MINIM and coalesce(ATIVO,0)<>1');
   Form1.ibQuery2.Open;
   Form1.iAvisosEstoque := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoOS(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from OS where DATA_PRO=CURRENT_DATE');
   Form1.ibQuery2.Open;
   Form1.iAvisosOS := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoIndicadores(bP1 : Boolean):Boolean;
 begin
-  //
   try
-    //
     iAvisosIndicadores := 0;
-    //
+    
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select gen_id(G_GRAFICO_RECEBER,0) from rdb$database');
     Form1.ibQuery2.Open;
-    //
-    if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then iAvisosIndicadores := iAvisosIndicadores + 1;
-    //
+
+    if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then
+      iAvisosIndicadores := iAvisosIndicadores + 1;
+
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select gen_id(G_GRAFICO_VENDAS,0) from rdb$database');
     Form1.ibQuery2.Open;
-    //
-    if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then iAvisosIndicadores := iAvisosIndicadores + 1;
-    //
+
+    if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then
+      iAvisosIndicadores := iAvisosIndicadores + 1;
+
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select gen_id(G_GRAFICO_CAIXA,0) from rdb$database');
     Form1.ibQuery2.Open;
-    //
-    if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then iAvisosIndicadores := iAvisosIndicadores + 1;
-    //
+
+    if Form1.ibQuery2.FieldByname('GEN_ID').AsString <> '1' then
+      iAvisosIndicadores := iAvisosIndicadores + 1;
   except
   end;
-  //
+
   Result := True;
-  //
 end;
 
 function tForm1.AvisoPagar(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from PAGAR where VALOR_PAGO=0 and VENCIMENTO=CURRENT_DATE');
@@ -1118,7 +1089,6 @@ begin
   Form1.iAvisosPagar := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
   //
   Result := True;
-  //
 end;
 
 function tForm1.AvisoConfig(bP1 : Boolean):Boolean;
@@ -1133,20 +1103,17 @@ begin
   if AllTrim(Form7.sCNPJContabilidade) = ''              then
     Form1.iAvisosConfig := Form1.iAvisosConfig + 1;
   Result := True;
-  //
 end;
 
 function tForm1.AvisoBanco(bP1 : Boolean):Boolean;
 begin
-  //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from MOVIMENT where coalesce(COMPENS,'+QuotedStr('26/09/1967')+')='+QuotedStr('26/09/1967')+' ');
   Form1.ibQuery2.Open;
   Form1.iAvisosBanco := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  //
+  
   Result := True;
-  //
 end;
 
 function GetWinDir: string;
@@ -1558,40 +1525,33 @@ begin
         //
       end;
       *)
-      //
+      
       if pos('[LOJA]',UpperCase(S)) <> 0 then
       begin
-        //
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial='
           +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
           +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
           ,'', '', SW_SHOWMAXIMIZED);
-        //
       end;
-      //
+
       if pos('[REVENDA]',UpperCase(S)) <> 0 then
       begin
-        //
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial='
           +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
           +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
           ,'', '', SW_SHOWMAXIMIZED);
-        //
       end;
-      //
+
       if pos('[AVISO]',UpperCase(S)) <> 0 then
       begin
-        //
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/aviso-via-small?serial='
           +AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))
           +'&cnpj='+LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString))
           ,'', '', SW_SHOWMAXIMIZED);
-        //
       end;
-      //
+
       if (pos('[BLOQUEADO1]',UpperCase(S)) <> 0) or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0) then
       begin
-        //
         Application.MessageBox(Pchar(
           'Este sistema não está liberado.'+
           Chr(10) +
@@ -1599,13 +1559,9 @@ begin
           'Continuar?' +
           Chr(10))
           ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-        //
       end;
-      //
     end;
-    //
   except end;
-  //
 end;
 
 {
@@ -1858,7 +1814,6 @@ var
   Mais2Ini: TIniFile;
   sRazao: String;
 begin
-  //
   try
     //Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Mais2ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
@@ -1882,34 +1837,30 @@ end;
 
 function InstalaAtualizacao(pP1, pP2: String) : Boolean;
 begin
-  //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+  
   try
     if FileExists(Form1.sAtual+'\'+pP1+'.~~1') then
     begin
-      //
       if pP2 = '7' then
       begin
-        //
         try
           FecharAplicacaoPID(ExtractFilePath(Application.ExeName) + 'cdf_to\jre\bin\javaw.exe'); // fecha aplicação da SEFAZ
           Sleep(1000); //tempo de aplicação fechar
         except end;
-        //
       end;
-      //
+
       Form1.Timer1.Enabled := False;
       Form1.Timer2.Enabled := False;
-      //
+
       Mensagem22('Aguarde instalando arquivos de atualização ('+pP2+')...');
-      //
+
       while FileExists(Form1.sAtual+'\'+pP1+'.exe') do
       begin
         DeleteFile(pChar(Form1.sAtual+'\'+pP1+'.exe'));
         Sleep(1000);
       end;
-      //
+
       while not FileExists(Form1.sAtual+'\'+pP1+'.exe') do
       begin
         CopyFile(pChar(Form1.sAtual+'\'+pP1+'.~~1'),pChar(Form1.sAtual+'\'+pP1+'.exe'),false);
@@ -1918,59 +1869,51 @@ begin
       //
 //      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\'+pP1+'.exe'),'/verysilent','', SW_SHOWNORMAL);
       if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then Winexec(pChar(Form1.sAtual+'\'+pP1+'.exe /verysilent'), SW_HIDE );
-      //
+
       while FileExists(Form1.sAtual+'\'+pP1+'.~~1') do
       begin
         DeleteFile(pChar(Form1.sAtual+'\'+pP1+'.~~1'));
         Sleep(100);
       end;
-      //
+
       while ConsultaProcesso(''+pP1+'.exe') do
       begin
         Application.ProcessMessages;
         sleep(100);
       end;
-      //
+
       if pP2 = '3' then
       begin
-        //
         try
-          //
           ShellExecute( 0, 'Open', 'ie4uinit.exe'  ,'-ClearIconCache'                                 ,'',SW_HIDE);
-          //
+
           if FileExists('c:\windows\explorer.exe') then
           begin
-            //
             Winexec('TASKKILL /F /IM explorer.exe' , SW_HIDE );
             Sleep(1000);
             Winexec('c:\windows\explorer.exe' , SW_SHOW );
-            //
           end;
         except end;
       end;
-      //
     end;
   except end;
-  //
+
   Screen.Cursor := crDefault;
-  //
+
   Result := True;
-  //
 end;
 
 
 
 function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 begin
-  //
   try
     UrlDownloadToFile(nil, PChar(pP1),PChar(pP2), 1, nil);
   except
    // on E: Exception do  ShowMessage('Erro ao baixar arquivo: '+chr(10)+pP1+chr(10)+E.Message);
   end;
-  //
+
   Result :=True;
-  //
 end;
 
 procedure TForm1.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
@@ -1992,24 +1935,22 @@ end;
 
 function Titulo(sP1, sP2: String): Boolean;
 begin
-  //
   Form1.Panel4.Visible  := False;
   Form1.Panel_3.Visible := False;
-  //
+
   Form1.Label1.Caption      := sP1;
-  //
+
   Form1.Label3.Top := Form1.Label1.Top + Form1.Label1.Height + 35;
-  //
+
   Form1.Label3.Caption      := sP2;
-  //
+
   if (Form1.iReduzida = 1) and
-  ((sP1 = 'MONITORE AS CONTAS'+chr(10)+'A RECEBER') or
-  (sP1 = 'ORGANIZE AS CONTAS'+chr(10)+'A PAGAR') or
-  (sP1 = 'CONTROLE O '+chr(10)+'CAIXA') or
-  (sP1 = 'FIQUE DE OLHO NOS '+chr(10)+'BANCOS'))
+    ((sP1 = 'MONITORE AS CONTAS'+chr(10)+'A RECEBER') or
+    (sP1 = 'ORGANIZE AS CONTAS'+chr(10)+'A PAGAR') or
+    (sP1 = 'CONTROLE O '+chr(10)+'CAIXA') or
+    (sP1 = 'FIQUE DE OLHO NOS '+chr(10)+'BANCOS'))
   then
   begin
-    //
     Form1.Panel3.Left     := Form1.Label3.Left;
 //    Form1.Panel3.Top      := Form1.Label_2.Top + Form1.Label_2.Height + 30;
     Form1.Panel3.Top      := Form1.Panel_3.Height - Form1.Panel3.Height - 70;
@@ -2072,7 +2013,6 @@ end;
 
 function UploadMobile(sFile: TFileName): boolean;
 begin
-  //
   if FileExists(pchar(Form1.sAtual+'\'+sFile)) then
   begin
     CopyFile(pchar(Form1.sAtual+'\'+sFile),pChar(Form1.sAtual+'\mobile\upload\'+sFile),false);
@@ -2082,9 +2022,8 @@ begin
     end;
     DeleteFile(pchar(Form1.sAtual+'\'+sFile));
   end;
-  //
+
   Result := True;
-  //
 end;
 
 procedure StatusMonitorAberto(sFileMob: String);
@@ -2112,32 +2051,21 @@ var
   I : Integer;
   sArquivo : String;
 begin
-  //
   tSl := tStringList.Create;
-  //
+
   ListaArq(Form1.sAtual+'\mobile\download\'+sExtensao,tsL); // Inocente
-//  ListaDeArquivos(Form1.sAtual+'\mobile\download',tsL); // Culpado
-  //
+
   for I := 0 to tsL.Count -1 do
   begin
-    //
     sArquivo := Form1.sAtual + '\mobile\download\' + AllTrim(tsL[I]);
-    //
-    // ShowMessage(LowerCase(sExtensao) +chr(10)+ LowerCase(sArquivo));
-    //
+
     if (pos(LowerCase(Copy(sExtensao,2,4)),LowerCase(sArquivo)) <> 0) then
     begin
-      //
       slArquivos.Add(sArquivo);
-      //
-      // ShowMEssage(sArquivo);
-      //
     end;
-    //
   end;
-  //
+
   tSl.Free;
-  //
 end;
 
 
@@ -2185,8 +2113,6 @@ begin
   Result := '<tr><td vAlign=Top align=Left><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+sP2+
             '</td><td vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Form1.ibQuery1.FieldByname('COUNT').AsString+'</td></tr>';
   Form1.ibQuery1.Close;
-
-  //
 end;
 
 
@@ -2195,20 +2121,16 @@ var
   f: TextFile;
   sLinha : String;
 begin
-  //
   if FileExists(sP1) then
   begin
-    //
     AssignFile(f,sP1);
     Reset(f);
-    //
+
     while not eof(f) Do
     begin
-      //
       ReadLn(f,sLinha);
-      //
+
       // Executa o comando
-      //
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
@@ -2217,14 +2139,10 @@ begin
       except
 //        ShowMessage(sLinha);
       end;
-      //
-      // Fim
-      //
     end;
   end;
-  //
+
   Result := True;
-  //
 end;
 
 
@@ -2243,78 +2161,66 @@ var
   sICMSST  ,
   sBCST    : String;
 begin
-  //
   Form1.ibQuery2.close;
   Form1.ibQuery2.Sql.Clear;
   Form1.ibQuery2.SQL.Add('select * from VENDAS where NUMERONF='+QuotedStr(sP1)); // Somente a nota atual
   Form1.ibQuery2.Open;
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   while not Form1.ibQuery2.Eof do
   begin
-    //
     // Metodo XML
-    //
     Mensagem22('Lendo XML da NFe '+Form1.ibQuery2.FieldByname('NUMERONF').AsString);
-    //
+
     if (Pos('<nfeProc',Form1.ibQuery2.FieldByname('NFEXML').AsString) <> 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'X') then
     begin
-      //
       try
         Form1.XMLDocument1.DOMVendor := GetDOMVendor('MSXML');
         Form1.XMLDocument1.XML.Text  := pchar(Form1.ibQuery2.FieldByname('NFEXML').AsString);
         Form1.XMLDocument1.Active    := True;
-        //
+
         NodePrim := Form1.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe');
         NodePai  := NodePrim.ChildNodes.FindNode('infNFe');
         NodeSec  := NodePai.ChildNodes.FindNode('det');
-        //
+
         NodeSec.ChildNodes.First;
-        //
+
         repeat
-          //
           NodeTmp  := NodeSec.ChildNodes['prod']; // tag <prod> dentro de <det>
           NodeTmp.ChildNodes.First;
-          //
+
           if Alltrim(NodeTmp.ChildNodes['xProd'].Text) <> '' then
           begin
-            //
             // ICM
-            //
             sICMS   := '0';
             sBC     := '0';
             sICMSST := '0';
             sBCST   := '0';
             spICMS  := '0';
-            //
+
             for I := 0 to 100 do
             begin
-              //
               if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0))) then
               begin
-                //
                 try sICMS   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMS'].Text);   except end;
                 try sBC     := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBC'].Text);     except end;
                 try sICMSST := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMSST'].Text); except end;
                 try sBCST   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBCST'].Text);   except end;
                 try spICMS  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['pICMS'].Text);  except end;
-                //
               end;
-              //
             end;
-            //
+
             try sDesc := NodeTmp.ChildNodes['xProd'].Text; except end;
             try sQtd  := NodeTmp.ChildNodes['qCom'].Text;  except end;
             try sTot  := NodeTmp.ChildNodes['vProd'].Text; except end;
-            //
+
             sIPI    := '0';
-            //
+            
             if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI')) then
             begin
                try sIPI  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['vIPI'].Text);  except end;
             end;
-            //
 {
             ShowMessage(
             sICMS   + Chr(10)+
@@ -2324,127 +2230,121 @@ begin
             spICMS  + Chr(10)+
             sIPI);
          }
-            //
+            
             Form7.ibQuery1.Close;
             Form7.ibQuery1.Sql.Clear;
             Form7.ibQuery1.Sql.Add('update ITENS001 set vICMS='+QuotedStr(sICMS)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
             Form7.ibQuery1.Open;
-            //
+
             try
-              //
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vICMS='+QuotedStr(sICMS)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
-              //
-            except end;
-            //
+            except
+            end;
+
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vBC='+QuotedStr(sBC)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
             except end;
-            //
+
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vBCST='+QuotedStr(sBCST)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
-            except end;
-            //
+            except
+            end;
+
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vICMSST='+QuotedStr(sICMSST)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
             except end;
-            //
+            
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vIPI='+QuotedStr(sIPI)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
-            except end;
-            //
+            except
+            end;
           end;
-          //
+          
           NodeSec := NodeSec.NextSibling; // Next
-          //
         until NodeSec = nil;
       except
-        //
         // Passa tudo com valor Zerado
-        //
         try
           Form1.ibQuery1.Close;
           Form1.ibQuery1.Sql.Clear;
           Form1.ibQuery1.Sql.Add('update ITENS001 set vICMS=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
           Form1.ibQuery1.Open;
         except end;
-        //
+
         try
           Form1.ibQuery1.Close;
           Form1.ibQuery1.Sql.Clear;
           Form1.ibQuery1.Sql.Add('update ITENS001 set vBC=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
           Form1.ibQuery1.Open;
         except end;
-        //
+
         try
           Form1.ibQuery1.Close;
           Form1.ibQuery1.Sql.Clear;
           Form1.ibQuery1.Sql.Add('update ITENS001 set vBCST=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
           Form1.ibQuery1.Open;
         except end;
-        //
+
         try
           Form1.ibQuery1.Close;
           Form1.ibQuery1.Sql.Clear;
           Form1.ibQuery1.Sql.Add('update ITENS001 set vICMSST=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
           Form1.ibQuery1.Open;
         except end;
-        //
+
         try
           Form1.ibQuery1.Close;
           Form1.ibQuery1.Sql.Clear;
           Form1.ibQuery1.Sql.Add('update ITENS001 set vIPI=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
           Form1.ibQuery1.Open;
         except end;
-        //
       end;
     end else
     begin
-      //
       // Passa tudo com valor Zerado
-      //
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
         Form1.ibQuery1.Sql.Add('update ITENS001 set vICMS=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
         Form1.ibQuery1.Open;
       except end;
-      //
+      
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
         Form1.ibQuery1.Sql.Add('update ITENS001 set vBC=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
         Form1.ibQuery1.Open;
       except end;
-      //
+
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
         Form1.ibQuery1.Sql.Add('update ITENS001 set vBCST=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
         Form1.ibQuery1.Open;
       except end;
-      //
+
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
         Form1.ibQuery1.Sql.Add('update ITENS001 set vICMSST=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
         Form1.ibQuery1.Open;
       except end;
-      //
+
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
@@ -2452,15 +2352,12 @@ begin
         Form1.ibQuery1.Open;
       except end;
     end;
-    //
+
     Form1.ibQuery2.Next;
-    //
   end;
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
   Result := True;
-  //
 end;
 
 
@@ -2468,9 +2365,8 @@ function MontaTela(sP1 : boolean):Boolean;
 var
   iTop, iFix, iFixL, iLeft : Integer;
 begin
-  //
   Form1.Align    := alClient;
-  //
+  
 {
   Form1.Panel_2.Left   := (Screen.Width) div 2;
   Form1.Panel_2.Width  := (Screen.Width) div 2;
@@ -2484,7 +2380,7 @@ begin
     Form1.Panel_2.Top    := Form1.Panel_0.Top + Form1.Panel_0.Height + 5 + 5;
   end;
 }
-  //
+
   Form1.Panel_3.Left   := 0; // (Screen.Width - (1000)) div 2;
   Form1.Panel_3.Top    := Form1.Panel_0.Top + Form1.Panel_0.Height;
   Form1.Panel_3.Height := Form1.Height - Form1.Panel_3.Top;
@@ -2492,30 +2388,27 @@ begin
   Form1.Panel4.Width   := Screen.Width;
   Form1.Panel4.Top     := Form1.Panel_3.Top;
   form1.Panel4.Height  := Screen.Height;
-  //
+
   Form7.Top    := Form1.Panel_3.Top + 30;
   Form7.Left   := 0;
   Form7.Width  := Form1.Width -6;
   Form7.Height := Form1.Height - Form7.Top -6;
-  //
+  
   iTop := 6;
   iFix := 0;
   iFixL := 70;
   iLeft := 5+5;
-
 
   // ------ //
   // Vendas //
   // ------ //
   if Form1.Image201.Visible = True then
   begin
-    //
     Form1.Image201.Top     := iTop;
     iTop             := iTop + iFix;
     Form1.Image201.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image201,Form1.Label201);
-    //
   end;
 
   // ------- //
@@ -2523,15 +2416,13 @@ begin
   // ------- //
   if Form1.Image201C.Visible = True then
   begin
-    //
     Form1.Image201C.Top     := iTop;
     iTop             := iTop + iFix;
     Form1.Image201C.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image201C,Form1.Label201C);
-    //
+
     // Avisos no NFe
-    //
     if Form1.iAvisosNFeCompra >= 100 then
     begin
       Form1.Image_Bola_NFe.Picture := Form1.ImageBola3.Picture;
@@ -2545,15 +2436,15 @@ begin
         Form1.Image_Bola_NFe.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_NFe.Top     := Form1.Image201C.Top -6+1-1;
     Form1.Image_Bola_NFe.Left    := Form1.Image201C.Left + Form1.Image201C.Width - 20;
     Form1.Label_Bola_NFe.Caption := AllTrim(IntToStr(Form1.iAvisosNFeCompra));
     Form1.Label_Bola_NFe.Width   := Form1.Image_Bola_NFe.Width;
-    //
+
     Form1.Label_Bola_NFe.Left    := Form1.Image_Bola_NFe.Left;
     Form1.Label_Bola_NFe.Top     := Form1.Image_Bola_NFe.Top +1-1;
-    //
+    
     if Form1.iAvisosNFeCompra <> 0 then
     begin
       Form1.Image_Bola_NFe.visible  := True;
@@ -2563,35 +2454,30 @@ begin
       Form1.Image_Bola_NFe.visible  := False;
       Form1.Label_Bola_NFe.Visible  := False;
     end;
-    //
   end;
   // --------- //
   // Serviços  //
   // --------- //
   if Form1.Image201S.Visible = True then
   begin
-    //
     Form1.Image201S.Top     := iTop;
     iTop             := iTop + iFix;
     Form1.Image201S.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image201S,Form1.Label201S);
-    //
   end;
   // ----------------- //
   // Ordem de serviços //
   // ----------------- //
   if Form1.Image201_.Visible = True then
   begin
-    //
     Form1.Image201_.Top     := iTop;
     iTop              := iTop + iFix;
     Form1.Image201_.Left    := iLeft;
     iLeft             := iLeft + iFixL;
     MostraLabels(Form1.Image201_,Form1.Label201_);
-    //
+
     // Avisos no OS
-    //
     if Form1.iAvisosOS >= 100 then
     begin
       Form1.Image_Bola_OS.Picture := Form1.ImageBola3.Picture;
@@ -2605,15 +2491,15 @@ begin
         Form1.Image_Bola_OS.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_OS.Top     := Form1.Image201_.Top -6+1-1;
     Form1.Image_Bola_OS.Left    := Form1.Image201_.Left + Form1.Image201_.Width - 20;
     Form1.Label_Bola_OS.Caption := AllTrim(IntToStr(Form1.iAvisosOS));
-    //
+
     Form1.Label_Bola_OS.Width   := Form1.Image_Bola_OS.Width;
     Form1.Label_Bola_OS.Left    := Form1.Image_Bola_OS.Left;
     Form1.Label_Bola_OS.Top     := Form1.Image_Bola_OS.Top +1-1;
-    //
+
     if Form1.iAvisosOS <> 0 then
     begin
       Form1.Image_Bola_OS.visible  := True;
@@ -2623,8 +2509,8 @@ begin
       Form1.Image_Bola_OS.visible  := False;
       Form1.Label_Bola_OS.Visible  := False;
     end;
-    //
   end;
+
   // -------- //
   // Estoque  //
   // -------- //
@@ -2635,9 +2521,8 @@ begin
     Form1.Image202.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image202,Form1.Label202);
-    //
+    
     // Avisos no Estoque
-    //
     if Form1.iAvisosEstoque >= 100 then
     begin
       Form1.Image_Bola_Estoque.Picture := Form1.ImageBola3.Picture;
@@ -2651,15 +2536,15 @@ begin
         Form1.Image_Bola_Estoque.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_Estoque.Top     := Form1.Image201.Top -6+1-1;
     Form1.Image_Bola_Estoque.Left    := Form1.Image202.Left + Form1.Image202.Width - 20;
     Form1.Label_Bola_Estoque.Caption := AllTrim(IntToStr(Form1.iAvisosEstoque));
-    //
+
     Form1.Label_Bola_Estoque.Width   := Form1.Image_Bola_Estoque.Width;
     Form1.Label_Bola_Estoque.Left    := Form1.Image_Bola_Estoque.Left;
     Form1.Label_Bola_Estoque.Top     := Form1.Image_Bola_Estoque.Top +1-1;
-    //
+
     if Form1.iAvisosEstoque <> 0 then
     begin
       Form1.Image_Bola_Estoque.visible  := True;
@@ -2669,8 +2554,8 @@ begin
       Form1.Image_Bola_Estoque.visible  := False;
       Form1.Label_Bola_Estoque.Visible  := False;
     end;
-    //
   end;
+
   // ----------------------- //
   // Clientes e Fornecedores //
   // ----------------------- //
@@ -2681,10 +2566,8 @@ begin
     Form1.Image203.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image203,Form1.Label203);
-    //
-    //
+
     // Avisos no CliFor
-    //
     if Form1.iAvisosCliFor >= 100 then
     begin
       Form1.Image_Bola_CliFor.Picture := Form1.ImageBola3.Picture;
@@ -2698,15 +2581,15 @@ begin
         Form1.Image_Bola_CliFor.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_CliFor.Top     := Form1.Image203.Top -6+1-1;
     Form1.Image_Bola_CliFor.Left    := Form1.Image203.Left + Form1.Image203.Width - 20;
     Form1.Label_Bola_CliFor.Caption := AllTrim(IntToStr(Form1.iAvisosCliFor));
-    //
+
     Form1.Label_Bola_CliFor.Width   := Form1.Image_Bola_CliFor.Width;
     Form1.Label_Bola_CliFor.Left    := Form1.Image_Bola_CliFor.Left;
     Form1.Label_Bola_CliFor.Top     := Form1.Image_Bola_CliFor.Top +1-1;
-    //
+
     if Form1.iAvisosCliFor <> 0 then
     begin
       Form1.Image_Bola_CliFor.visible  := True;
@@ -2716,8 +2599,8 @@ begin
       Form1.Image_Bola_CliFor.visible  := False;
       Form1.Label_Bola_CliFor.Visible  := False;
     end;
-    //
   end;
+
   // -------- //
   // Receber  //
   // -------- //
@@ -2728,9 +2611,8 @@ begin
     Form1.Image204.Left    := iLeft;
     iLeft                  := iLeft + iFixL;
     MostraLabels(Form1.Image204,Form1.Label204);
-    //
+
     // Avisos no Receber
-    //
     if Form1.iAvisosReceber >= 100 then
     begin
       Form1.Image_Bola_Receber.Picture := Form1.ImageBola3.Picture;
@@ -2744,15 +2626,15 @@ begin
         Form1.Image_Bola_Receber.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_Receber.Top     := Form1.Image204.Top -6+1-1;
     Form1.Image_Bola_Receber.Left    := Form1.Image204.Left + Form1.Image204.Width - 20;
     Form1.Label_Bola_Receber.Caption := AllTrim(IntToStr(Form1.iAvisosReceber));
-    //
+
     Form1.Label_Bola_Receber.Width   := Form1.Image_Bola_Receber.Width;
     Form1.Label_Bola_Receber.Top     := Form1.Image_Bola_Receber.Top +1-1;
     Form1.Label_Bola_Receber.Left    := Form1.Image_Bola_Receber.Left;
-    //
+
     if Form1.iAvisosReceber <> 0 then
     begin
       Form1.Image_Bola_Receber.visible  := True;
@@ -2762,8 +2644,8 @@ begin
       Form1.Image_Bola_Receber.visible  := False;
       Form1.Label_Bola_Receber.Visible  := False;
     end;
-    //
   end;
+
   // -------- //
   // Pagar    //
   // -------- //
@@ -2774,9 +2656,8 @@ begin
     Form1.Image210.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image210,Form1.Label210);
-    //
+
     // Avisos no Pagar
-    //
     if Form1.iAvisosPagar >= 100 then
     begin
       Form1.Image_Bola_Pagar.Picture := Form1.ImageBola3.Picture;
@@ -2790,15 +2671,15 @@ begin
         Form1.Image_Bola_Pagar.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_Pagar.Top     := Form1.Image210.Top -6+1-1;
     Form1.Image_Bola_Pagar.Left    := Form1.Image210.Left + Form1.Image210.Width - 20;
     Form1.Label_Bola_Pagar.Caption := AllTrim(IntToStr(Form1.iAvisosPagar));
-    //
+    
     Form1.Label_Bola_Pagar.Width   := Form1.Image_Bola_Pagar.Width;
     Form1.Label_Bola_Pagar.Left    := Form1.Image_Bola_Pagar.Left;
     Form1.Label_Bola_Pagar.Top     := Form1.Image_Bola_Pagar.Top +1-1;
-    //
+
     if Form1.iAvisosPagar <> 0 then
     begin
       Form1.Image_Bola_Pagar.visible  := True;
@@ -2808,8 +2689,8 @@ begin
       Form1.Image_Bola_Pagar.visible  := False;
       Form1.Label_Bola_Pagar.Visible  := False;
     end;
-    //
   end;
+
   // ----- //
   // Caixa //
   // ----- //
@@ -2820,9 +2701,8 @@ begin
     Form1.Image205.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image205,Form1.Label205);
-    //
+
     // Avisos no Caixa
-    //
     if Form1.iAvisosCaixa >= 100 then
     begin
       Form1.Image_Bola_Caixa.Picture := Form1.ImageBola3.Picture;
@@ -2836,15 +2716,15 @@ begin
         Form1.Image_Bola_Caixa.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+    
     Form1.Image_Bola_caixa.Top     := Form1.Image205.Top -6+1-1;
     Form1.Image_Bola_Caixa.Left    := Form1.Image205.Left + Form1.Image205.Width - 20;
     Form1.Label_Bola_Caixa.Caption := AllTrim(IntToStr(Form1.iAvisosCaixa));
-    //
+
     Form1.Label_Bola_Caixa.Width   := Form1.Image_Bola_Caixa.Width;
     Form1.Label_Bola_Caixa.Left    := Form1.Image_Bola_Caixa.Left;
     Form1.Label_Bola_Caixa.Top     := Form1.Image_Bola_Caixa.Top +1-1;
-    //
+    
     if Form1.iAvisosCaixa <> 0 then
     begin
       Form1.Image_Bola_Caixa.visible  := True;
@@ -2854,8 +2734,8 @@ begin
       Form1.Image_Bola_Caixa.visible  := False;
       Form1.Label_Bola_Caixa.Visible  := False;
     end;
-    //
   end;
+
   // ------- //
   // Bancos  //
   // ------- //
@@ -2866,9 +2746,8 @@ begin
     Form1.Image206.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image206,Form1.Label206);
-    //
+
     // Avisos no banco
-    //
     if Form1.iAvisosBanco >= 100 then
     begin
       Form1.Image_Bola_Banco.Picture := Form1.ImageBola3.Picture;
@@ -2882,16 +2761,15 @@ begin
         Form1.Image_Bola_Banco.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_banco.Top     := Form1.Image206.Top -6+1-1;
     Form1.Image_Bola_banco.Left    := Form1.Image206.Left + Form1.Image206.Width - 20;
     Form1.Label_Bola_banco.Caption := AllTrim(IntToStr(Form1.iAvisosbanco));
-    //
+
     Form1.Label_Bola_Banco.Width   := Form1.Image_Bola_Banco.Width;
     Form1.Label_Bola_banco.Left    := Form1.Image_Bola_banco.Left;
     Form1.Label_Bola_banco.Top     := Form1.Image_Bola_banco.Top +1-1;
-    //
-    //
+
     if Form1.iAvisosbanco <> 0 then
     begin
       Form1.Image_Bola_banco.visible  := True;
@@ -2901,8 +2779,8 @@ begin
       Form1.Image_Bola_banco.visible  := False;
       Form1.Label_Bola_banco.Visible  := False;
     end;
-    //
   end;
+
   // ---------------- //
   // Indicadores     //
   // ---------------- //
@@ -2913,9 +2791,8 @@ begin
     Form1.Image200.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image200,Form1.Label200);
-    //
+
     // Avisos no Indicadores
-    //
     if Form1.iAvisosIndicadores >= 100 then
     begin
       Form1.Image_Bola_Indicadores.Picture := Form1.ImageBola3.Picture;
@@ -2929,15 +2806,15 @@ begin
         Form1.Image_Bola_Indicadores.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+    
     Form1.Image_Bola_Indicadores.Top     := Form1.Image200.Top -6+1-1;
     Form1.Image_Bola_Indicadores.Left    := Form1.Image200.Left + Form1.Image200.Width - 20;
     Form1.Label_Bola_Indicadores.Caption := AllTrim(IntToStr(Form1.iAvisosIndicadores));
-    //
+
     Form1.Label_Bola_Indicadores.Width   := Form1.Image_Bola_Indicadores.Width;
     Form1.Label_Bola_Indicadores.Left    := Form1.Image_Bola_Indicadores.Left;
     Form1.Label_Bola_Indicadores.Top     := Form1.Image_Bola_Indicadores.Top +1-1;
-    //
+
     if Form1.iAvisosIndicadores <> 0 then
     begin
       Form1.Image_Bola_Indicadores.visible  := True;
@@ -2947,11 +2824,9 @@ begin
       Form1.Image_Bola_Indicadores.visible  := False;
       Form1.Label_Bola_Indicadores.Visible  := False;
     end;
-    //
   end;
-  //
+
   // CONFIG
-  //
   if Form1.Image207.Visible = True then
   begin
     Form1.Image207.Top     := iTop;
@@ -2959,9 +2834,8 @@ begin
     Form1.Image207.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(Form1.Image207,Form1.Label207);
-    //
+
     // Avisos no Config
-    //
     if Form1.iAvisosConfig >= 100 then
     begin
       Form1.Image_Bola_Config.Picture := Form1.ImageBola3.Picture;
@@ -2975,15 +2849,15 @@ begin
         Form1.Image_Bola_Config.Picture := Form1.ImageBola.Picture;
       end;
     end;
-    //
+
     Form1.Image_Bola_Config.Top     := Form1.Image207.Top -6+1-1;
     Form1.Image_Bola_Config.Left    := Form1.Image207.Left + Form1.Image207.Width - 20;
     Form1.Label_Bola_Config.Caption := AllTrim(IntToStr(Form1.iAvisosConfig));
-    //
+
     Form1.Label_Bola_Config.Width   := Form1.Image_Bola_Config.Width;
     Form1.Label_Bola_Config.Left    := Form1.Image_Bola_Config.Left;
     Form1.Label_Bola_Config.Top     := Form1.Image_Bola_Config.Top +1-1;
-    //
+    
     if Form1.iAvisosConfig <> 0 then
     begin
       Form1.Image_Bola_Config.visible  := True;
@@ -2993,8 +2867,8 @@ begin
       Form1.Image_Bola_Config.visible  := False;
       Form1.Label_Bola_Config.Visible  := False;
     end;
-    //
   end;
+
   // --------- //
   // Cópias   //
   // ------- //
@@ -3007,9 +2881,8 @@ begin
   begin
 //    Form1.Label_Perigo.Visible       := False;
   end;
-  //
+  
   Result := True;
-  //
 end;
 
 
@@ -3042,144 +2915,119 @@ var
   I : Integer;
   sLinha, sCampos, sValores : String;
 begin
-  //
   try
-    //
     with Form1 do
     begin
-      //
       if copy(UpperCase(Edit200.Text),1,10)= 'CONNECT TO' then
       begin
-        //
         Edit1.Text := Edit200.Text;
-        //
         try
-          //
           ibDataSet200.Close;
           dbGrid200.Visible := False;
           Edit200.Visible   := False;
-          //
+
           Commitatudo(True); // SQL - Commando
           AbreArquivos(False);
-          //
+
           MontaTela(True);
-          //
         except end;
-        //
+
         Form1.SQLCommandoexterno1Click(SQLCommandoexterno1);
         Abort;
       end;
-      //
+      
       if copy(UpperCase(Edit200.Text),1,11)= 'IMPORT FROM' then
       begin
-        //
         Edit200.Text := Alltrim(StrTran(UpperCase(Edit200.Text),'IMPORT FROM',''));
         sCaminho     := Copy(Edit200.Text+' ',1,Pos(' ',Edit200.Text+' ')-1);
-        //
+
         if FileExists(sCaminho) then
         begin
-          //
           try
             if (Form1.iReduzida<>2) then
             begin
-              //
-              //
               Form29.Panel1.Visible  := True;
               Aviso2('Atualizando tabela de municípios'+chr(10)+'e unidades de medida');
-              //
+
               Screen.Cursor := crHourGlass; // Cursor de Aguardo
               AssignFile(f,sCAminho);
               Reset(f);
-              //
+
               I := 0;
-              //
+
               while not eof(f) Do
               begin
-                //
                 ReadLn(f,sLinha);
-                //
+
                 // Executa o comando
-                //
                 try
                   ibDataSet200.Close;
                   ibDataSet200.SelectSQL.Clear;
                   ibDataSet200.SelectSQL.Add(sLinha);
                   ibDataSet200.Open;
                 except end;
-                //
+
                 I := I + 1;
                 Form29.Gauge1.Progress := 100 * I div 5650;
                 Form29.Gauge1.Repaint;
-                //
-                // Fim
-                //
               end;
-              //
+
               CloseFile(f);
-              //
+
               Form29.Close;
-              //
             end;
-            //
+
             Screen.Cursor        := crDefault;
-            //
           except
             ShowMessage('Erro de sintaxe no comando IMPORT FROM.');
           end;
-          //
-          if FileExists(Form1.sAtual+'\executa.sql') then DeleteFile(pChar(Form1.sAtual+'\executa.sql'));
-          //
-          //
+
+          if FileExists(Form1.sAtual+'\executa.sql') then
+            DeleteFile(pChar(Form1.sAtual+'\executa.sql'));
         end;
-        //
+
         Screen.Cursor := crDefault;
         Edit200.Text := '';
         if Edit200.CanFocus then Edit200.SetFocus;
-        //
+
         Commitatudo(True); // SQL - Commando
         AbreArquivos(False);
-        //
-        //
+
         Abort;
-        //
       end;
-      //
+
       if copy(UpperCase(Edit200.Text),1,11)= 'EXPORT FROM' then
       begin
-        //
         Edit200.Text := Alltrim(StrTran(UpperCase(Edit200.Text),'EXPORT FROM',''));
         sArquivo     := Copy(Edit200.Text,1,Pos(' ',Edit200.Text)-1);
         sCaminho     := Alltrim(StrTran(UpperCase(Edit200.Text),sArquivo+' ',''));
-        //
+
         if Pos('TO ',sCaminho) <> 0 then
         begin
           sCaminho := StrTran(sCaminho,'TO ','');
     //        ShowMessage(sArquivo+chr(10)+sCaminho);
           //
           if FileExists(sCaminho+'.SQL') then DeleteFile(pChar(sCaminho+'.SQL'));
-          //
+          
           try
-            //
             Screen.Cursor := crHourGlass; // Cursor de Aguardo
-            //
+
             ibDataSet200.Close;
             ibDataSet200.SelectSQL.Clear;
             ibDataSet200.SelectSQL.Add('select * from '+sArquivo);
             ibDataSet200.Open;
-            //
+
             AssignFile(f,sCAminho+'.SQL');
             Rewrite(f);
             Writeln(f,'delete from '+sArquivo);
-            //
+            
             while not ibDataSet200.Eof do
             begin
-              //
               sCampos  := '';
               sValores := '';
-              //
+
               for I := 0 to dbGrid200.FieldCount -1 do
               begin
-                //
                 if (Alltrim(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString) <> '')
                 and (Alltrim(dbGrid200.Fields[I].DisplayName) <> 'FOTO') then
                 begin
@@ -3189,9 +3037,7 @@ begin
                   if sVAlores <> '' then sValores := sValores+',';
                   //
                   sCampos  := sCampos + dbGrid200.Fields[I].DisplayName;
-                  //
                   // Integer
-                  //
                   if (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='SmallInt')
                   or (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='Integer')
                   or (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='LargeInt')
@@ -3200,18 +3046,14 @@ begin
                     sValores := sValores + QuotedStr(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString);
                   end else
                   begin
-                    //
                     // Float
-                    //
                     if (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='Float')
                     or (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='Currency') then
                     begin
                       sValores := sValores + QuotedStr(StrTran(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString,',','.'));
                     end else
                     begin
-                      //
                       // Date
-                      //
                       if (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='Date')
                       or (FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]='DateTime') then
                       begin
@@ -3221,9 +3063,7 @@ begin
                         +'/'+Copy(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString,1,2));
                       end else
                       begin
-                        //
                         // String e demais
-                        //
                         begin
                           sValores := sValores + QuotedStr(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString);
                         end;
@@ -3231,57 +3071,51 @@ begin
                     end;
                   end;
                 end;
-                //
               end;
-              //
+              
               Writeln(f,'insert into '+sArquivo+' ('+sCampos+') '+'values ('+StrTran(StrTran(sValores,Chr(10),''),Chr(13),'')+')');
-              //
+
               ibDataSet200.Next;
-              //
             end;
-            //
+
             Writeln(f,'select * from '+sArquivo);
-            //
+
             CloseFile(F);
-            //
           except
             ShowMessage(sArquivo+' não é uma tabéla válida.');
           end;
-          //
+
           Screen.Cursor := crDefault;
-          //
         end else
         begin
           ShowMessage('Erro de sintaxe no comando EXPORT FROM.');
         end;
-        //
+
         Edit200.Text := '';
         Abort;
-        //
       end;
-      //
+
       try
-        //
         Screen.Cursor := crHourGlass; // Cursor de Aguardo
-        //
-        if Pos('SELECT',UpperCase(ibDataSet200.SelectSQL.Text))<>0 then sSelectSql := ibDataSet200.SelectSQL.Text;
-        //
+
+        if Pos('SELECT',UpperCase(ibDataSet200.SelectSQL.Text))<>0 then
+          sSelectSql := ibDataSet200.SelectSQL.Text;
+
         ibDataSet200.Close;
         ibDataSet200.SelectSQL.Clear;
         ibDataSet200.DeleteSQL.Clear;
         ibDataSet200.ModifySQL.Clear;
         ibDataSet200.SelectSQL.Add(Edit200.Text);
         ibDataSet200.Open;
-        //
+
         if (Pos('SELECT',UpperCase(ibDataSet200.SelectSQL.Text)) = 0) and (Pos('SELECT',UpperCase(sSelectSql)) <> 0) then
         begin
-          //
           ibDataSet200.Close;
           ibDataSet200.SelectSQL.Clear;
           ibDataSet200.SelectSQL.Add(sSelectSql);
           ibDataSet200.Open;
         end;
-        //
+
         if (Pos('SELECT',UpperCase(ibDataSet200.SelectSQL.Text)) <> 0)
         and (Pos('SUM(',UpperCase(ibDataSet200.SelectSQL.Text)) = 0)
         and (Pos('COUNT(',UpperCase(ibDataSet200.SelectSQL.Text)) = 0)
@@ -3291,51 +3125,42 @@ begin
         and (Pos('.',UpperCase(ibDataSet200.SelectSQL.Text)) = 0)
         then
         begin
-          //
           try
-            //
             sArquivo := Copy(ibDataSet200.SelectSQL.Text+Replicate(' ',2000),pos('from',LowerCase(ibDataSet200.SelectSQL.Text))+5,2000);
             sArquivo := strTran(Copy(sArquivo,1,Pos(' ',sArquivo)),',','');
-            //
+            
             sDelete := 'delete from '+sArquivo+' where REGISTRO=:OLD_REGISTRO';
             sUpdate := 'update '+sArquivo+' set ';
-            //
+
             for I := 0 to ibDataSet200.FieldCount -1 do
             begin
               sUpdate := sUpdate + ibDataSet200.Fields[I].FieldName + '=:'+ibDataSet200.Fields[I].FieldName;
               if I = ibDataSet200.FieldCount -1 then sUpdate := sUpdate + ' ' else sUpdate := sUpdate + ', ';
             end;
-            //
+
             sUpdate := sUpdate + ' where REGISTRO=:OLD_REGISTRO';
-            //
+
             ibDataSet200.Close;
             ibDataSet200.DeleteSQL.Add(sDelete);
             ibDataSet200.ModifySql.Add(sUpdate);
             ibDataSet200.Open;
-            //
           except end;
-          //
         end;
-        //
+
         Edit200.Text := '';
-        //
       except
-        //
         ibDataSet200.Close;
         ibDataSet200.DeleteSQL.Clear;
         ibDataSet200.SelectSQL.Clear;
         ibDataSet200.SelectSQL.Add(sSelectSql);
         ibDataSet200.Open;
-        //
+
         ShowMessage('Erro no comando SQL: '+Edit200.Text);
-        //
       end;
     end;
   except end;
-  //
+
   Result := True;
-  //
-  //
 end;
 
 
@@ -3343,15 +3168,12 @@ function ExecutaSql2(sP1 : boolean):Boolean;
 var
   sSelectSql : String;
 begin
-  //
   with Form1 do
   begin
-    //
     if copy(UpperCase(Form1.Edit1.Text),1,10)= 'CONNECT TO' then
     begin
-      //
       Edit1.Text := Alltrim(StrTran(UpperCase(Edit1.Text),'CONNECT TO',''));
-      //
+      
       try
         Form1.IBDatabase1.Close;
         Form1.IBDatabase1.Params.Clear;
@@ -3364,92 +3186,76 @@ begin
       except
         ShowMessage('Não foi possível conectar');
       end;
-      //
+      
       Screen.Cursor := crDefault;
       Edit1.Text := '';
       Edit1.SetFocus;
       Abort;
-      //
     end;
-    //
+
     try
-      //
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      //
+      
       if Pos('SELECT',UpperCase(ibDataSet1.SelectSQL.Text))<>0 then sSelectSql := ibDataSet1.SelectSQL.Text;
-      //
+
       ibDataSet1.Close;
       ibDataSet1.SelectSQL.Clear;
       ibDataSet1.DeleteSQL.Clear;
       ibDataSet1.ModifySQL.Clear;
       ibDataSet1.SelectSQL.Add(Edit1.Text);
       ibDataSet1.Open;
-      //
+
       if (Pos('SELECT',UpperCase(ibDataSet1.SelectSQL.Text)) = 0) and (Pos('SELECT',UpperCase(sSelectSql)) <> 0) then
       begin
-        //
         ibDataSet1.Close;
         ibDataSet1.SelectSQL.Clear;
         ibDataSet1.SelectSQL.Add(sSelectSql);
         ibDataSet1.Open;
       end;
-      //
+
       Edit1.Text := '';
-      //
     except
-      //
       ibDataSet1.Close;
       ibDataSet1.DeleteSQL.Clear;
       ibDataSet1.SelectSQL.Clear;
       ibDataSet1.SelectSQL.Add(sSelectSql);
       ibDataSet1.Open;
-      //
+
       ShowMessage('Erro no comando SQL: '+Edit1.Text);
-      //
     end;
   end;
-  //
   Result := True;
-  //
 end;
 
 function Legal(sP1 : Boolean):Boolean;
 var
   I : Integer;
 begin
-  //
   // LEGAL
-  //
   Result := True;
-  //
+  
   try
-    //
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('select gen_id(G_LEGAL,0) from rdb$database');
     Form1.ibDataset200.Open;
-    //
+
     // ShowMessage(Form1.ibDataSet200.FieldByname('GEN_ID').AsString);
-    //
     if Form1.ibDataSet200.FieldByname('GEN_ID').AsString <> '0' then
     begin
-      //
       // ShowMessage(
       // DateToStr(Date+5) +chr(10)+ DateToStr(StrToDate(Copy(Form1.ibDataSet200.FieldByname('GEN_ID').AsString,7,2)+'/'+Copy(Form1.ibDataSet200.FieldByname('GEN_ID').AsString,5,2)+'/'+Copy(Form1.ibDataSet200.FieldByname('GEN_ID').AsString,1,4)))
       // );
-      //
       if Date >= StrToDate(Copy(Form1.ibDataSet200.FieldByname('GEN_ID').AsString,7,2)+'/'+Copy(Form1.ibDataSet200.FieldByname('GEN_ID').AsString,5,2)+'/'+Copy(Form1.ibDataSet200.FieldByname('GEN_ID').AsString,1,4))+31 then
       begin
-        //
         try
           Form1.ibDataset200.Close;
           Form1.ibDataset200.SelectSql.Clear;
           Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
           Form1.ibDataset200.Open;
         except end;
-        //
+
         // Pega os dados do Emitente
-        //
         try
           Form7.ibDataSet13.Active := True;
           // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
@@ -3460,17 +3266,16 @@ begin
             if Form1.CanFocus then Form1.SetFocus;
           end;
         except end;
-        //
+        
         Form1.RegistrodoProgramaonline1Click(Form1);
-        //
+
         for I := 1 to 10 do
         begin
           if not Regularize(True) then Sleep(200);
         end;
-        //
+
         if not Regularize(True) then
         begin
-          //
           Application.MessageBox(pChar('Não foi possível liberar o sistema para uso neste computador'+chr(10)+
                                     'com o número de série '+ Form1.sSerial +' para: '+chr(10)+chr(10)+
                                      AllTrim(Form7.ibDataSet13NOME.AsString)+chr(10)+chr(10)+
@@ -3480,129 +3285,104 @@ begin
                                      'Atenção', MB_ICONQUESTION + MB_YESNO);
 
           ShellExecute(Application.Handle, nil, PChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial=' + Form1.sSerial + '&cnpj=' + LimpaNumero(form7.ibDataSet13.FieldByName('CGC').AsString)), nil, nil, SW_SHOWMAXIMIZED);
-          //
+
           Result := False;
-          //
         end;
-        //
       end else
       begin
         Result := True;
       end;
-      //
     end else
     begin
       Result := True;
     end;
-    //
+
     Form1.ibDataset200.Close;
-    //
   except
     Result := True;
   end;
-  //
 end;
 
 function AtualizaPromocao(sP1 : Boolean):Boolean;
 begin
-  //
   Form22.Repaint;
   Mensagem22('Atualizando promoção...');
-  //
+
   try
-    //
     // Volta o preco fora da promoção
-    //
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=OFFPROMO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (PRECO=ONPROMO) ');
     Form7.ibDataSet99.Open;
-    //
   except end;
-  //
+  
   try
-    //
     // Guarda o preço anterior (normal) fora da promoção
-    //
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set OFFPROMO=PRECO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (OFFPROMO<>PRECO)');
     Form7.ibDataSet99.Open;
-    //
   except end;
-  //
+
   try
-    //
     // Altera para o preço promocional
-    //
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=ONPROMO where (CURRENT_DATE between PROMOINI and PROMOFIM) and (PRECO<>ONPROMO) ');
     Form7.ibDataSet99.Open;
-    //
   except end;
-  //
+
   Mensagem22('Aguarde...');
-  //
+
   Result := True;
-  //
 end;
 
 function AjustaRegistro(sP0, sP1: String):Boolean;
 var
   sReg, sMax: String;
 begin
-  //
   Mensagem22('Aguarde ajustando arquivos '+sP0+'...');
-  //
+
   try
-    //
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('create generator G_'+sP1+' ');
     Form1.ibDataset200.Open;
-    //
   except
   end;
-  //
+
   try
-    //
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('create generator G_HASH_'+sP1+' ');
     Form1.ibDataset200.Open;
-    //
   except
   end;
-  //
+
   try
-    //
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('set generator G_'+sP1+' to 0');
     Form1.ibDataset200.Open;
-    //
   except
   end;
-  //
+  
   try
-    //
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('update '+sP1+' set REGISTRO= substring(10000000000 +  Cast(gen_id(G_'+sP1+',1) as decimal) from 2 for 10) order by REGISTRO');
     Form1.ibDataset200.Open;
-    //
+
     try
       Form1.ibDataSet200.Close;
       Form1.ibDataSet200.SelectSQL.Clear;
       Form1.ibDataSet200.SelectSQL.Add('select gen_id(G_'+sP1+',0) as TOTALREG from rdb$database');
       Form1.ibDataSet200.Open;
-      //
+
       sReg := Form1.ibDataSet200.FieldByname('TOTALREG').AsString;
-      //
     except
     end;
-    //
+
     try
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSql.Clear;
@@ -3610,16 +3390,15 @@ begin
       Form1.ibDataset200.Open;
     except
     end;
-    //
+
     try
       if Form7.IBTransaction1.Active then
         Form7.IBTransaction1.Commit;
     except
       ShowMessage('Erro ao criar REGISTRO em: '+sP1);
     end;
-    //
+
     // chaves primárias
-    //
     try
       try
         Form1.ibDataset200.Close;
@@ -3635,21 +3414,17 @@ begin
         Form1.ibDataset200.Open;
       except
       end;
-      //
+
       try
         if Form7.IBTransaction1.Active then
           Form7.IBTransaction1.Commit;
       except
         ShowMessage('Erro ao criar Chave Primaria em: '+sP1);
       end;
-      //
     except
     end;
-    //
   except
-    //
     // Está sendo usado volta o GENERATOR
-    //
     try
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSQL.Clear;
@@ -3662,9 +3437,8 @@ begin
       Form1.ibDataset200.Open;
     except
     end;
-    //
   end;
-  //
+
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -3672,17 +3446,15 @@ begin
     Form1.ibDataset200.Open;
   except
   end;
-  //
+
   Result := True;
-  //
 end;
 
 function FechaTudo(bP1 : Boolean):Boolean;
 begin
-  //
   if Form5.Visible then Form5.Close;
   if Form5.Visible then Form10.Close;
-  //
+
   if Form1.bFechaTudo then
   begin
     if Form24.Visible then Form24.Close;
@@ -3690,14 +3462,13 @@ begin
     if Form30.Visible then Form30.Close;
     if Form48.Visible then Form48.Close;
   end;
-  //
+
   if Form7.Visible  then Form7.Close;
   if Form19.Visible then Form19.Close;
-  //
+
   if Form7.sModulo <> 'INDICADORES' then Form7.sModulo := '';
-  //
+
   Result := True;
-  //
 end;
 
 

@@ -29,7 +29,7 @@ const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
-function Commitatudo(P1:Boolean): Boolean;
+function Commitatudo(RefazSelect:Boolean): Boolean;
 function AbreArquivos(P1:Boolean): Boolean;
 function AgendaCommit(P1:Boolean): Boolean;
 function DefineJanela(bP1 : Boolean) : Boolean;
@@ -2060,6 +2060,7 @@ type
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
+    procedure EnviarConsultaImprimirDANFE;
   public
 
     // Public declarations
@@ -5346,14 +5347,11 @@ begin
   //
 end;
 
-function Commitatudo(P1:Boolean): Boolean;
+function Commitatudo(RefazSelect:Boolean): Boolean;
 begin
-  //
   // bFechaTudo só é usado para incluir novos produtos e novos fornecedores na NF, COMPRA e OF
-  //
   if Form7.sModulo = 'COMPRA' then
   begin
-    //
     Form7.ibDataSet1.BufferChunks  := 500;
     Form7.ibDataSet27.BufferChunks := 500;
     Form7.ibDataSet25.BufferChunks := 500;
@@ -5382,10 +5380,8 @@ begin
     Form7.ibDataSet4.BufferChunks  := 500;
     Form7.ibDataSet5.BufferChunks  := 500;
     Form7.ibDataSet6.BufferChunks  := 500;
-    //
   end else
   begin
-    //
     Form7.ibDataSet1.BufferChunks  := 1000;
     Form7.ibDataSet27.BufferChunks := 1000;
     Form7.ibDataSet25.BufferChunks := 1000;
@@ -5414,26 +5410,23 @@ begin
     Form7.ibDataSet4.BufferChunks  := 1000;
     Form7.ibDataSet5.BufferChunks  := 1000;
     Form7.ibDataSet6.BufferChunks  := 1000;
-    //
   end;
-  //
+
   if Form1.bFechaTudo then
   begin
-    //
     // só commitatudo se houve realmente uma alteração no GDB - Talvês controlar com um generator
     // criar uma variável com um numero de 0 a 9999999999 cada vez que alterar o GDB incrementa
     // este generator depois confere com a variavel se nao é a mesma commita.
     // Sonhei isso e tenho certeza que funciona
-    //
     Form7.ibDataSet101.Close;
     Form7.ibDataSet101.SelectSql.Clear;
-    if P1 then
+    if RefazSelect then
       Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,1) from rdb$database')
     else
       Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,0) from rdb$database');
 
     Form7.ibDataset101.Open;
-    //
+
     if Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat > 9999999999 then
     begin
       Form7.ibDataset100.Close;
@@ -5441,20 +5434,19 @@ begin
       Form7.ibDataset100.SelectSql.Add('set generator G_MUTADO to 0');
       Form7.ibDataset100.Open;
     end;
-    //
+
     if (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat <> Form7.fMutado) then // or (Form7.ibDataSet100.FieldByname('GEN_ID').AsFloat = 0) then
     begin
-      //
       Form7.fMutado := Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat;
       Form7.ibDataSet4.Disablecontrols;
-      //
+
       try
         if Form7.IBTransaction1.Active then
           Form7.IBTransaction1.Commit;
       except
         ShowMessage('Falha na conexão com o Banco de Dados. Erro 1848');
       end;
-      //
+
       try
         HasHs('ESTOQUE',True);
         HasHs('REDUCOES',True);
@@ -5464,11 +5456,11 @@ begin
         HasHs('VENDAS',True);
         HasHs('ITENS001',True);
         HasHs('ORCAMENT',True);
-      except end;
-      //
-      if p1 then
+      except
+      end;
+
+      if RefazSelect then
       begin
-        //
         Form7.ibDataSet1.Selectsql.Clear;
         Form7.ibDataSet27.Selectsql.Clear;
         Form7.ibDataSet25.Selectsql.Clear;
@@ -5497,7 +5489,7 @@ begin
         Form7.ibDataSet4.Selectsql.Clear;
         Form7.ibDataSet5.Selectsql.Clear;
         Form7.ibDataSet6.Selectsql.Clear;
-        //
+
         Form7.ibDataSet1.Selectsql.Add('select * from CAIXA where DATA=CURRENT_DATE order by DATA, REGISTRO');
         Form7.ibDataSet27.Selectsql.Add('select * from ALTERACA where CODIGO='+QuotedStr('99999')+' ');
         Form7.ibDataSet25.Selectsql.Add('select * from FLUXO order by DATA');
@@ -5524,7 +5516,7 @@ begin
         Form7.ibDataSet3.Selectsql.Add('select * from OS where DATA=CURRENT_DATE ');
         Form7.ibDataSet5.Selectsql.Add('select * from MOVIMENT where NOME='+quotedStr('XXXXXXXXXX')+'');
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
-        //
+
         //  CAIXA
         //  ICM
         //  NOTA
@@ -5550,23 +5542,18 @@ begin
         //
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO=''99999'' order by upper(DESCRICAO)');
         Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where nome = ''X.X.X.X.X.X.'' order by upper(NOME)');
-        //
       end;
-      //
+
       Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-03-29
     end;
-    //
   end;
-  //
+
   Result := True;
-  //
 end;
 
 function AbreArquivos(P1:Boolean): Boolean;
 begin
-  //
   try
-    //
     if not Form7.ibDataSet13.active then Form7.ibDataSet13.active := True;
     if not Form7.ibDataSet25.active then Form7.ibDataSet25.active := True;
     if not Form7.ibDataSet28.active then Form7.ibDataSet28.active := True;
@@ -5597,7 +5584,6 @@ begin
     if not Form7.ibDataSet4.active  then Form7.ibDataSet4.active  := True;
     if not Form7.ibDataSet5.active  then Form7.ibDataSet5.active  := True;
     if not Form7.ibDataSet6.active  then Form7.ibDataSet6.active  := True;
-    //
   except
     on E: Exception do
     begin
@@ -5607,10 +5593,9 @@ begin
       Abort;
     end;
   end;
-  //
+
   if p1 then
   begin
-    //
     if Form7.ibDataSet1.Active then Form7.ibDataSet1.EnableControls;
     if Form7.ibDataSet27.Active then Form7.ibDataSet27.EnableControls;
     if Form7.ibDataSet25.Active then Form7.ibDataSet25.EnableControls;
@@ -5640,11 +5625,9 @@ begin
     if Form7.ibDataSet3.Active then Form7.ibDataSet3.EnableControls;
     if Form7.ibDataSet4.Active then Form7.ibDataSet4.EnableControls;
     if Form7.ibDataSet5.Active then  Form7.ibDataSet5.EnableControls;
-    //
   end;
-  //
+  
   Result := True;
-  //
 end;
 
 function TraduzSql(P1: String;P2 :Boolean): String;
@@ -9414,58 +9397,52 @@ begin
     Abort;
     //
   end;
-  //
+  
   if Pos('STATUS',DBGrid1.SelectedField.Name) <> 0 then
   begin
     if not DenegadoOuCancelado(True) then
     begin
-      //
-      Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
-      //
+      EnviarConsultaImprimirDANFE;
+      
       if Form7.sRPS = 'S' then
       begin
         try
           Screen.Cursor := crHourGlass; // Cursor de Aguardo //
           if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) = 0 then
           begin
-            //
             Sleep(15000);
-            ConsultarNFSe1Click(Sender);
-            //
+
+              Form1.sConsultaNfse := 'SIM';
+              EnviarConsultaImprimirDANFE;
+              Form1.sConsultaNfse := 'NAO';
           end;
         except
         end;
-        //
+        
         EnviarNFSeporemail1Click(Sender);
-        //
+
         try
           try
             Form7.ibDAtaSet15.Post;
           except
           end;
-          //
+
           Screen.Cursor            := crHourGlass;
           AgendaCommit(True);
-          //
+          
           Form7.Close;
           Form7.Show;
-          //
+
           Screen.Cursor            := crDefault;
           Form7.ibDAtaSet15.Edit;
-          //
         except
         end;
-        //
         Screen.Cursor            := crDefault;
-        //
       end;
-      //
     end;
-    //
     Abort;
-    //
   end;
-  //
+  
   if Pos('NFEID',DBGrid1.SelectedField.Name) <> 0 then
   begin
     if sModulo = 'VENDA' then
@@ -34145,65 +34122,60 @@ begin
 end;
 
 procedure TForm7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender: TObject);
+begin
+  EnviarConsultaImprimirDANFE;
+end;
+
+procedure TForm7.EnviarConsultaImprimirDANFE;
 var
   Hora, Min, Seg, cent : Word;
   tInicio : tTime;
 begin
-  //
   if Form7.sRPS = 'S' then
   begin
-    //
-    ransmitirNotaFiscaldeServioNFSe1Click(Sender);
-    Screen.Cursor            := crDefault;
-    //
+    Screen.Cursor            := crHourGlass;
+    TransmiteNFSE;
+    Screen.Cursor            := crDefault
   end else
   begin
-    //
     tInicio := Time;
-    //
+
     if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
     begin
       Form7.ibDataSet15.DisableControls;
       try
-        //
         if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
         begin
-          //
           if (Length(LimpaNumero(Form7.ibDataSet15NFEID.AsString)) = 44) and (Pos('Duplicidade',Form7.ibDataSet15STATUS.AsString)<>0)then
           begin
-            //
-            Form7.N3ConsultarNFe1Click(Sender);
-            //
+            Form7.N3ConsultarNFe1Click(nil);
           end else
           begin
-            //
-            Form7.N1EnviarNFe1Click(Sender);
+            Form7.N1EnviarNFe1Click(nil);
             Screen.Cursor            := crHourGlass;
-            Form7.N2ConsultarrecibodaNFe1Click(Sender); Screen.Cursor            := crHourGlass;
-            //
+            Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
+
             if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
                (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
                (Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro') then
             begin
-              Form7.N3ConsultarNFe1Click(Sender);
+              Form7.N3ConsultarNFe1Click(nil);
             end;
-            //
           end;
         end;
-        //
+
         DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
         Form7.Panel7.Hint := 'Tempo para autorizar a NF-e: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0);
-        //
+
         if Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '' then
         begin
           try
-            Form7.N4ImprimirDANFE1Click(Sender);
+            Form7.N4ImprimirDANFE1Click(nil);
             Screen.Cursor  := crHourGlass;
-            Form7.N5EnviarDANFEporemail1Click(Sender);
+            Form7.N5EnviarDANFEporemail1Click(nil);
             Screen.Cursor  := crHourGlass;
           except end;
         end;
-        //
       except end;
       Form7.ibDataSet15.EnableControls;
     end;
@@ -34214,11 +34186,9 @@ begin
     if PermiteValidarSchema(Form7.ibDataSet15) then
       VerificarShemaXsd(Form7.ibDataSet15NFEXML.AsString, False);
     {Sandro Silva 2022-09-29 fim}
-    //
+    
     Screen.Cursor            := crDefault;
-    //
   end;
-  //
 end;
 
 procedure TForm7.N0TestarservidorNFe1Click(Sender: TObject);
@@ -34336,7 +34306,7 @@ begin
   bProximas := True;
   while not Form7.ibDataSet15.Eof do
   begin
-    Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
+    EnviarConsultaImprimirDANFE;
     Form7.ibDataSet15.Next;
   end;
   bProximas := False;
@@ -41380,25 +41350,21 @@ var
   F : TextFile;
   sPDF : String;
 begin
-  //
   if (validaEmail(Form7.ibDAtaSet2eMail.Asstring)) then
   begin
-    //
     BuscaNumeroNFSe(True);
-    //
+    
     fNFe := ConverteAcentos(Form7.ibDataSet15RECIBOXML.AsString);
-    //
+
     try
       sPDF := pChar(Form1.sAtual+'\NFSE\LOG\'+Right('000000000'+Copy(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,1,pos('/',Form7.ibDAtaSet15NFEPROTOCOLO.AsString)-1),9)+'.pdf');
     except end;
-    //
-    //
+
     if (FileExists(pChar(sPDF))) and (Form7.ibDataSet15EMITIDA.AsString = 'S') then
     begin
       Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue em anexo sua NFS-e em arquivo PDF.'+chr(10)+Form1.sPropaganda),pChar(sPDF),False);
     end else
     begin
-      //
       if RetornaValorDaTagNoCampo('LinkVisualizacaoNfse',fNFe) <> '' then
       begin
         Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('LinkVisualizacaoNfse',fNFe))+chr(10)+Form1.sPropaganda),'',False);
@@ -41409,31 +41375,27 @@ begin
           Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('link',fNFe))+chr(10)+Form1.sPropaganda),'',False);
         end else
         begin
-          //
           fNFe := ConverteAcentos(Form7.ibDataSet15RECIBOXML.AsString);
-          //
+          
           if RetornaValorDaTagNoCampo('codigo_html',fNFe) <> '' then
           begin
-            //
             Screen.Cursor            := crHourGlass;
-            //
+
             fNFe := RetornaValorDaTagNoCampo('codigo_html',fNFe);
             fNFe := StrTran(StrTran(StrTran(StrTran( FNfe,'&lt;','<'),'&gt;','>'),'&amp;nbsp;',' '),'&quot;','"');
             fNFe := StrTran( FNfe,'Software FiscalWeb- IPM Sistemas - Protegido por Lei.','<a href="https://www.smallsoft.com.br">www.smallsoft.com.br</a>');
-            //
+
             fNFe := '<codigo_html>'+fNFe+'</codigo_html>';
             AssignFile(F,pchar(Form1.sAtual+'\tempo.html'));  // Direciona o arquivo F para EXPORTA.TXT
             Rewrite(F);                  // Abre para gravação
             Write(F,fNFe);
             CloseFile(F); // Fecha o arquivo
-            //
             //    HtmlParaPdf(pchar(Form1.sAtual+'\tempo.htm'));
             //    ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\tempo.pdf'),'', '', SW_SHOWMAXIMIZED);
             //
             Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue em anexo sua NFS-e em arquivo HTML.'+chr(10)+Form1.sPropaganda),pChar(Form1.sAtual+'\tempo.html'),False);
-            //
+
             Screen.Cursor            := crDefault;
-            //
           end else
           begin
 //            ShowMessage('Não foi possível enviar o E-Mail da NFS-e.');
@@ -41442,7 +41404,6 @@ begin
       end;
     end;
   end;
-  //
 end;
 
 procedure TForm7.CancelarNFSe1Click(Sender: TObject);
@@ -41678,12 +41639,9 @@ end;
 
 procedure TForm7.ConsultarNFSe1Click(Sender: TObject);
 begin
-  //
   Form1.sConsultaNfse := 'SIM';
-  N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
-  //
+  EnviarConsultaImprimirDANFE;
   Form1.sConsultaNfse := 'NAO';
-  //
 end;
 
 procedure TForm7.ConfiguraesdaNFSe1Click(Sender: TObject);
