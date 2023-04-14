@@ -19,11 +19,10 @@ uses
   ;
 
   procedure AtualizaBancoDeDados(sBuild : string);
-  function ExecutaComando(comando:string):Boolean;
 
 implementation
 
-uses Unit22, Unit13;
+uses Unit22, Unit13, uFuncoesBancoDados;
 
 
 procedure AtualizaBancoDeDados(sBuild : string);
@@ -977,7 +976,46 @@ begin
     ExecutaComando('commit');
   {Sandro Silva 2022-12-16 fim}
 
-  ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)'); // Mauricio Parizotto 2023-03-28
+  {Sandro Silva 2023-04-10 inicio
+  ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)');
+  }
+  if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
+    ExecutaComando('commit');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add INSTITUICAOFINANCEIRA varchar(60), add FORMADEPAGAMENTO varchar(60)') then
+      ExecutaComando('commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add INSTITUICAOFINANCEIRA varchar(60), add FORMADEPAGAMENTO varchar(60)') then
+      ExecutaComando('commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBCFCP') = False then
+  begin
+    if ExecutaComando('alter table ITENS001 add VBCFCP numeric(18, 2), ' +
+                                           'add PFCP numeric(18, 4), ' +
+                                           'add VFCP numeric(18, 2), ' +
+                                           'add VBCFCPST numeric(18, 2), ' +
+                                           'add PFCPST numeric(18, 4), ' +
+                                           'add VFCPST numeric(18, 2)') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VBCFCP') = False then
+  begin
+    if ExecutaComando('alter table ITENS002 add VBCFCP numeric(18, 2), ' +
+                                           'add PFCP numeric(18, 4), ' +
+                                           'add VFCP numeric(18, 2), ' +
+                                           'add VBCFCPST numeric(18, 2), ' +
+                                           'add PFCPST numeric(18, 4), ' +
+                                           'add VFCPST numeric(18, 2)') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2023-04-10 fim}
 
   if ExecutaComando('Update EMITENTE set CNAE = ''0''||trim(CNAE) Where char_length(trim(CNAE)) = 6') then // Mauricio Parizotto 2023-04-06
     ExecutaComando('commit');
@@ -1044,23 +1082,6 @@ begin
 
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');
-end;
-
-
-function ExecutaComando(comando:string):Boolean;
-begin
-  Result := False;
-
-  try
-    Form1.ibDataset200.Close;
-    Form1.ibDataset200.SelectSql.Clear;
-    Form1.ibDataset200.SelectSql.Add(comando);
-    Form1.ibDataset200.Open;
-    Form1.ibDataset200.Close;
-
-    Result := True;
-  except
-  end;
 end;
 
 end.
