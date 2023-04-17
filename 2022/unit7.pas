@@ -16764,9 +16764,15 @@ begin
           //
           // RECEBER
           //
+          //RECEBER.NOME
           Form7.ibDataSet7.Close;
           Form7.ibDataSet7.SelectSQL.Clear;
           Form7.ibDataSet7.SelectSQL.Add('update RECEBER set NOME='+QuotedStr(sNomeNovo)+' where NOME='+QuotedStr(sNomeVolta)+'');
+          Form7.ibDataSet7.Open;
+          //RECEBER.INSTITUICAOFINANCEIRA
+          Form7.ibDataSet7.Close;
+          Form7.ibDataSet7.SelectSQL.Clear;
+          Form7.ibDataSet7.SelectSQL.Add('update RECEBER set INSTITUICAOFINANCEIRA='+QuotedStr(sNomeNovo)+' where INSTITUICAOFINANCEIRA='+QuotedStr(sNomeVolta)+'');
           Form7.ibDataSet7.Open;
           //
           // PAGAR
