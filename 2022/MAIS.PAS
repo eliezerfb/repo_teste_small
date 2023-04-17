@@ -6966,7 +6966,9 @@ begin
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   CommitaTudo(True); // bakcup Ok
-  //
+  //{Sandro Silva 2023-04-17 inicio
+  //Não é prudente excluir índice
+  //Não está funcionando o loop abaixo. dbGrid200.DataSource.DataSet não está ativo!
   try
     //
     // Apaga todos os indices
@@ -6994,14 +6996,14 @@ begin
     end;
     //
     Form1.ibQuery1.Close;
-    //
+
   except
     on E: Exception do
     begin
       Application.MessageBox(pChar(E.Message+'.. Ao remover índices.'),'Atenção',mb_Ok + MB_ICONWARNING);
     end;
   end;
-  //
+  //}
   iUsuariosAtivos := Form7.IBDatabaseInfo1.UserNames.Count;
   //
   if iUsuariosAtivos = 1 then

@@ -1098,9 +1098,9 @@ begin
   try
     Form7.TabelaAberta           := Form7.ibDataSet2;
 
-    ExecutaComando('delete from VENDEDOR where Coalesce(NOME,''X.X.X'' =''X.X.X'' ');
+    ExecutaComando('delete from VENDEDOR where coalesce(NOME,''X.X.X'') =''X.X.X'' ');
 
-    ExecutaComando('delete from CLIFOR where Coalesce(NOME,''X.X.X'' =''X.X.X'' ');
+    ExecutaComando('delete from CLIFOR where coalesce(NOME,''X.X.X'') =''X.X.X'' ');
 
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSQL.Clear;

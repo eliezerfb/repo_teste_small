@@ -11656,6 +11656,7 @@ begin
           // adiciona o valor T, na string, na posição que representa a coluna MODELO (Segunda posição)
           sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
           sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra));
+          Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
         end
         else
         begin
@@ -11669,7 +11670,8 @@ begin
           // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna VFCPST
           // adiciona o valor T, na string, na posição que representa a coluna VFCPST (décima oitava posição)
           sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
-          sMostra := Copy(sMostra, 1, 18) + 'T' + Copy(sMostra, 2, Length(sMostra));
+          sMostra := Copy(sMostra, 1, 16) + 'T' + Copy(sMostra, 2, Length(sMostra));
+          Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17          
         end
         else
         begin
