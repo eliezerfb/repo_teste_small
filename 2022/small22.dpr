@@ -71,8 +71,8 @@ uses
   uGeraXmlNFeSaida in 'uGeraXmlNFeSaida.pas',
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
-  uCalculaCstPisCofins in 'uCalculaCstPisCofins.pas',
-  uTransmiteNFSe in 'uTransmiteNFSe.pas';
+  uTransmiteNFSe in 'uTransmiteNFSe.pas',
+  uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas';
 
 {$R *.RES}
 

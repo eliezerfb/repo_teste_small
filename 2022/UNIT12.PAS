@@ -6,7 +6,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
-  DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, shellapi, Buttons, HtmlHelp, jpeg;
+  DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, shellapi, Buttons, HtmlHelp, jpeg,
+  uNotaFiscalEletronica;
 
 function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
@@ -276,6 +277,7 @@ type
     procedure AtivaPesquisaTransportadora;
     { Private declarations }
   public
+    vNotaFiscal : TNotaFiscalEletronica;
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
     bOk         : Boolean;
@@ -290,7 +292,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48, uCalculaCstPisCofins;
+  Unit24, Unit48;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -1668,7 +1670,8 @@ begin
   Form12.Button3Click(Sender);
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
+  vNotaFiscal := TNotaFiscalEletronica.create;
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1691,9 +1694,6 @@ begin
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet15.DisableControls;
     Form12.Hide;
-
-    //Mauricio Parizotto 2023-04-13
-    CalculaCstPisCofins(Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
 
     Form7.sModulo := 'RETRIBUTA';
     //
@@ -1747,53 +1747,43 @@ begin
       end;
 
       // Desdobramento das duplicatas
-      //
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-      //
+
       ApagaIntegracaoComOCaixa(True);
-      //
+
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0) then
       begin
         Form18.ShowModal;
       end else
       begin
-        //
         ApagaAsDuplicatasAnteriores(True);
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15DUPLICATAS.AsFloat := 0;
         Form7.ibDataSet15.Post;
-        //
+
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
           Form18.CheckBox1.Checked := True
         else
           Form18.CheckBox1.Checked := False;
         Mais1Ini.Free;
-        //
+
         if Form18.CheckBox1.Checked then
         begin
           Form7.bProximas := True;
           Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
           Form7.bProximas := False;
         end;
-        //
       end;
-      //
     end else
     begin
-      //
       // Se o cliente estiver em branco apaga
-      //
       Form7.ibDataSet15.Delete;
-      //
     end;
-    //
   except end;
-  //
-  //
+
   // Lay-Out no form7
-  //
   Form7.ibDataSet16UNITARIO.Visible       := False;
   Form7.ibDataSet16CFOP.Visible           := False;
   Form7.ibDataSet16XPED.Visible           := False;
@@ -1802,29 +1792,25 @@ begin
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 29;
   Form7.ibDataSet35TECNICO.Visible        := True;
   //    Form7.ibDataSet35UNITARIO.Visible       := False;
-  //
-  //
+
   Form7.ibDataSet4.Close;
   Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.sModulo := 'VENDA';
-  //
+
   Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet14.EnableControls;
   Form7.ibDataSet15.EnableControls;
-  //
+
   BaixaEstoqueDaNFeAutorizada('');
-  //
+
   Form7.Close;
   Form7.Show;
-  //
-  //
-  //
+
   // Para atender o PAF
-  //
   if ParamCount > 0 then
   begin
     if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
@@ -1832,19 +1818,29 @@ begin
 //      Form1.Close;
     end;
   end;
-  //
+
   Form1.ConfEspecie := Form7.ibDataSet15ESPECIE.AsString;
   Form1.ConfMarca   := Form7.ibDataSet15MARCA.AsString;
-  //
+
   // Apaga ítens em branco
-  //
   try
     Form7.IBQuery99.Close;
     Form7.IBQuery99.SQL.Clear;
     Form7.IBQuery99.SQL.Add('delete from ITENS001 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
     Form7.IBQuery99.Open;
   except end;
-  //
+
+  try
+    Form7.ibDataSet15.Edit;
+
+    if vNotaFiscal <> nil then
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+
+    Form7.ibDataSet15.Post;
+
+    FreeAndNil(vNotaFiscal);
+  except
+  end;
 end;
 
 

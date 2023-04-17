@@ -47,7 +47,7 @@ var
 
 implementation
 
-uses uFrmInformacoesRastreamento, uFuncoesFiscais, uCalculaCstPisCofins;
+uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda;
 
 procedure GeraXmlNFeSaida;
 var
@@ -106,8 +106,6 @@ var
 
   vFreteSobreIPI,vIPISobreICMS : Boolean;
 begin
-  CalculaCstPisCofins(Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
-
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -1056,9 +1054,7 @@ begin
               end;
 }
               //
-              Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').Value := StrTran(Alltrim(FormatFloat('##0.00',
-              fICMSDesonerado
-                )),',','.');  // Valor do ICMS desonerado
+              Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').Value := FormatFloatXML(fICMSDesonerado);  // Valor do ICMS desonerado
               //
               vICMSDeson := vICMSDeson + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').AsString,',',''),'.',','));
               //
@@ -1080,7 +1076,7 @@ begin
 
       Form7.spdNFeDataSets.Campo('qCom_I10').Value     := StrTran(Form7.ibDataSet16.FieldByname('QUANTIDADE').AsString,',','.'); // Quantidade Comercializada do Item
       Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := StrTran(Alltrim(FormatFloat('##0.'+Replicate('0',StrToInt(Form1.ConfPreco)),Form7.ibDataSet16.FieldByname('UNITARIO').AsFloat)),',','.'); // Valor Comercializado do Item
-      Form7.spdNFeDataSets.Campo('vProd_I11').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)),',','.'); // Valor Total Bruto do Item
+      Form7.spdNFeDataSets.Campo('vProd_I11').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat); // Valor Total Bruto do Item
 
       if AllTrim(Form7.ibDataSet4CEST.AsString) <> '' then
       begin
