@@ -41923,6 +41923,8 @@ begin
   fNFE := GeraXmlNFe;//(True);
   if Trim(fNFE) <> '' then
   begin
+
+    ShowMessage(fNFE);
     //
     try
       spdNFe.PreverDanfe(fNFE, '');

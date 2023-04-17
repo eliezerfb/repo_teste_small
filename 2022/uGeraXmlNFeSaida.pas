@@ -2891,7 +2891,7 @@ begin
         
     Form7.spdNFeDataSets.Y.Post; // Grava a Duplicata em questão.
   end;
-      
+
   // Dados Adicionais da NFe - Observações
   if RetornaValorDaTagNoCampo('infAdFisco', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
   begin
@@ -2901,7 +2901,7 @@ begin
                                                                ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
   end else
   begin
-    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := AllTrim(ConverteCaracterEspecialXML(Trim(Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
+    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := Trim(ConverteCaracterEspecialXML(Trim(Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
   end;
 
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS

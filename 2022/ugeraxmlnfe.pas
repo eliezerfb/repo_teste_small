@@ -124,7 +124,7 @@ begin
     
     if Form1.bModoSVC then
     begin
-      sJustificativa := ConverteCaracterEspecialXML(Form1.Small_InputForm('Atenção',chr(10)+'Para imprimir a nf-e em modo de SVC informe uma justificativa (min. 15 caracteres)'+chr(10)+chr(10), ''));
+      sJustificativa := ConverteAcentos2(Form1.Small_InputForm('Atenção',chr(10)+'Para imprimir a nf-e em modo de SVC informe uma justificativa (min. 15 caracteres)'+chr(10)+chr(10), ''));
       
       if Length(sJustificativa) >= 15 then
       begin
@@ -142,7 +142,7 @@ begin
     
     if Form1.bModoScan then
     begin
-      sJustificativa := ConverteCaracterEspecialXML(Form1.Small_InputForm('Atenção',chr(10)+'Para imprimir a nf-e em modo de SCAN informe uma justificativa (min. 15 caracteres)'+chr(10)+chr(10), ''));
+      sJustificativa := ConverteAcentos2(Form1.Small_InputForm('Atenção',chr(10)+'Para imprimir a nf-e em modo de SCAN informe uma justificativa (min. 15 caracteres)'+chr(10)+chr(10), ''));
 
       if Length(sJustificativa) >= 15 then
       begin
@@ -160,7 +160,7 @@ begin
     
     if Form7.bContingencia then
     begin
-      sJustificativa := ConverteCaracterEspecialXML(Form1.Small_InputForm('Atenção',chr(10)+
+      sJustificativa := ConverteAcentos2(Form1.Small_InputForm('Atenção',chr(10)+
                                         'Esta opção somente deve ser usada em caso de emergência, quando o servidor da receita não estiver disponível.'+Chr(10)+Chr(10)+
                                         'Quando o servidor estiver disponível novamente esta NF-e deverá ser transmitida e autorizada.'+Chr(10)+Chr(10)+
                                         'O formulário de contingência deve ser autorizado pelo fisco.'+Chr(10)+Chr(10)+
