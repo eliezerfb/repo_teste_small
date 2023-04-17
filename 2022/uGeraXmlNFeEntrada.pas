@@ -186,7 +186,7 @@ begin
 
   Form7.spdNFeDataSets.Campo('cUF_B02').Value     := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,2);  //Codigo da UF para o estado SC = '42'
   Form7.spdNFeDataSets.Campo('cNF_B03').Value     := '004640327'; // Código Interno do Sistema que está integrando com a NFe
-  Form7.spdNFeDataSets.Campo('natOp_B04').Value   := ConverteAcentos2(Form7.ibDataSet15.FieldByname('OPERACAO').AsString);
+  Form7.spdNFeDataSets.Campo('natOp_B04').Value   := ConverteCaracterEspecialXML(Form7.ibDataSet15.FieldByname('OPERACAO').AsString);
 
   if Copy(Form7.ibDataSet15.FieldByname('OPERACAO').AsString,1,13) = '999 - Estorno' then
   begin
@@ -458,21 +458,21 @@ begin
     Form7.spdNFeDataSets.Campo('CNPJ_C02').Value    := LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString); // CNPJ do Emitente
   end;
 
-  Form7.spdNFeDataSets.Campo('xNome_C03').Value   := ConverteAcentos2(Form7.ibDataSet13.FieldByname('NOME').AsString); // Razao Social ou Nome do Emitente
-  Form7.spdNFeDataSets.Campo('xFant_C04').Value   := ConverteAcentos2(Form7.ibDataSet13.FieldByname('NOME').AsString); ; // Nome Fantasia do Emitente
+  Form7.spdNFeDataSets.Campo('xNome_C03').Value   := ConverteCaracterEspecialXML(Form7.ibDataSet13.FieldByname('NOME').AsString); // Razao Social ou Nome do Emitente
+  Form7.spdNFeDataSets.Campo('xFant_C04').Value   := ConverteCaracterEspecialXML(Form7.ibDataSet13.FieldByname('NOME').AsString); ; // Nome Fantasia do Emitente
 
-  Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
+  Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteCaracterEspecialXML(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
   Form7.spdNFeDataSets.Campo('nro_C07').Value     := Numero_Sem_Endereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente
 
-  Form7.spdNFeDataSets.Campo('xBairro_C09').Value := ConverteAcentos2(Form7.ibDataSet13.FieldByname('COMPLE').AsString); // Bairro do Emitente
+  Form7.spdNFeDataSets.Campo('xBairro_C09').Value := ConverteCaracterEspecialXML(Form7.ibDataSet13.FieldByname('COMPLE').AsString); // Bairro do Emitente
 
   Form7.spdNFeDataSets.Campo('cMun_C10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
-  Form7.spdNFeDataSets.Campo('xMun_C11').Value    := ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString); // Nome da Cidade do Emitente
+  Form7.spdNFeDataSets.Campo('xMun_C11').Value    := ConverteCaracterEspecialXML(IBQUERY99.FieldByname('NOME').AsString); // Nome da Cidade do Emitente
 
   Form7.spdNFeDataSets.Campo('UF_C12').Value      := IBQUERY99.FieldByname('UF').AsString; // Código do Estado do Emitente (Tabela do IBGE)
   Form7.spdNFeDataSets.Campo('CEP_C13').Value     := LimpaNumero(Form7.ibDataSet13.FieldByname('CEP').AsString); // Cep do Emitente
 
-  if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
+  if Alltrim(ConverteCaracterEspecialXML(IBQUERY99.FieldByname('NOME').AsString))='' then
   begin
     Form7.ibDataSet15.Edit;
     Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
@@ -508,7 +508,7 @@ begin
     IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
     IBQUERY99.Open;
 
-    if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
+    if Alltrim(ConverteCaracterEspecialXML(IBQUERY99.FieldByname('NOME').AsString))='' then
     begin
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
@@ -542,16 +542,16 @@ begin
     begin
       if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18) then Form7.spdNFeDataSets.Campo('CNPJ_E02').Value := AllTrim(LimpaNumero(Form7.ibDAtaset2.FieldByname('CGC').AsString)); // CNPJ do Destinatário
       if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 14) then Form7.spdNFeDataSets.Campo('CPF_E03').Value  := AllTrim(LimpaNumero(Form7.ibDAtaset2.FieldByname('CGC').AsString)); // CPF do Destinatário
-      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
+      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteCaracterEspecialXML(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
     end;
 
-    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteCaracterEspecialXML(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
     Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
 
-    Form7.spdNFeDataSets.Campo('xBairro_E09').Value := Alltrim(ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString)); // Bairro do Destinatario
+    Form7.spdNFeDataSets.Campo('xBairro_E09').Value := Alltrim(ConverteCaracterEspecialXML(Form7.ibDAtaset2.FieldByname('COMPLE').AsString)); // Bairro do Destinatario
     Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
 
-    Form7.spdNFeDataSets.Campo('xMun_E11').Value    := Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString)); //Nome da Cidade do Destinatário
+    Form7.spdNFeDataSets.Campo('xMun_E11').Value    := Alltrim(ConverteCaracterEspecialXML(IBQUERY99.FieldByname('NOME').AsString)); //Nome da Cidade do Destinatário
     Form7.spdNFeDataSets.Campo('UF_E12').Value      := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
 
     Form7.spdNFeDataSets.Campo('CEP_E13').Value     := LimpaNumero(Form7.ibDAtaset2.FieldByname('CEP').AsString); // Cep do Destinatário
@@ -640,10 +640,10 @@ begin
   end else
   begin
     // Vendedor estrangeiro
-    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteCaracterEspecialXML(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
     Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
 
-    Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
+    Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteCaracterEspecialXML(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
     Form7.spdNFeDataSets.Campo('cMun_E10').Value    := '9999999';   // Código do Município do Destinatário (Tabela IBGE)
     Form7.spdNFeDataSets.Campo('xMun_E11').Value    := 'EXTERIOR'; //Nome da Cidade do Destinatário
     Form7.spdNFeDataSets.Campo('UF_E12').Value      := 'EX';      // Sigla do Estado do Destinatário
@@ -657,7 +657,7 @@ begin
       Form7.spdNFeDataSets.Campo('xNome_E04').Value   := 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'; // Razao social ou Nome do Destinatário
     end else
     begin
-      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
+      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteCaracterEspecialXML(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
     end;
 
     if Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '3' then
@@ -767,10 +767,10 @@ begin
       //
       Mais1ini.Free;
       //
-      Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+      Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteCaracterEspecialXML(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
       Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
       //
-      Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
+      Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteCaracterEspecialXML(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
       Form7.spdNFeDataSets.Campo('cMun_E10').Value    := '9999999'; // Código do Município do Destinatário (Tabela IBGE)
       Form7.spdNFeDataSets.Campo('xMun_E11').Value    := 'EXTERIOR'; //Nome da Cidade do Destinatário
       Form7.spdNFeDataSets.Campo('UF_E12').Value      := 'EX'; // Sigla do Estado do Destinatário
@@ -950,7 +950,7 @@ begin
       if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
         Form7.spdNFeDataSets.Campo('cEAN_I03').Value := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // EAN do Produto
 
-      Form7.spdNFeDataSets.Campo('xProd_I04').Value    := ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);// Descrição do PRoduto
+      Form7.spdNFeDataSets.Campo('xProd_I04').Value    := ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);// Descrição do PRoduto
 
       // NCM
       if Length(Alltrim(LimpaNumero(Form7.ibDataSet4.FieldByname('CF').AsString))) = 8 then
@@ -963,7 +963,7 @@ begin
       end;
 
       Form7.spdNFeDataSets.Campo('CFOP_I08').Value     := Alltrim(Form7.ibDAtaset23.FieldByname('CFOP').AsString); // CFOP incidente neste Item da NF
-      if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then Form7.spdNFeDataSets.Campo('uCom_I09').Value     := ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) // Unidade de Medida do Item
+      if Alltrim(ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then Form7.spdNFeDataSets.Campo('uCom_I09').Value     := ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) // Unidade de Medida do Item
         else Form7.spdNFeDataSets.Campo('uCom_I09').Value     := 'UND';
       Form7.spdNFeDataSets.Campo('qCom_I10').Value     := StrTran(Form7.ibDAtaset23.FieldByname('QUANTIDADE').AsString,',','.'); // Quantidade Comercializada do Item
 //                  Form7.spdNFeDataSets.Campo('qCom_I10').Value     := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDAtaset23.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Comercializada do Item
@@ -989,7 +989,7 @@ begin
       if Alltrim(Form7.spdNFeDataSets.Campo('NCM_I05').Value) = '' then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o NCM do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+        Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o NCM do produto '+ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
         Abort;
       end;
 
@@ -1030,7 +1030,7 @@ begin
         end;
       end else
       begin
-        if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) else Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := 'UND'; // Unidade de Medida Tributável do Item
+        if Alltrim(ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) else Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := 'UND'; // Unidade de Medida Tributável do Item
         Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := StrTran(Form7.ibDAtaset23.FieldByname('QUANTIDADE').AsString,',','.');  // Quantidade Tributável do Item
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := StrTran(Alltrim(FormatFloat('##0.'+Replicate('0',StrToInt(Form1.ConfPreco)),Form7.ibDAtaset23.FieldByname('UNITARIO').AsFloat)),',','.'); // Valor Tributável do Item
       end;
@@ -1458,7 +1458,7 @@ begin
       end else
       begin
         // Comentarios no corpo da nota
-        Form7.spdNFeDataSets.Campo('InfAdProd_V01').Value := AllTrim(AllTrim(Form7.spdNFeDataSets.Campo('InfAdProd_V01').Value) + ' ' + ConverteAcentos2(AllTrim(Form7.ibDAtaset23.FieldByname('DESCRICAO').AsString)));
+        Form7.spdNFeDataSets.Campo('InfAdProd_V01').Value := AllTrim(AllTrim(Form7.spdNFeDataSets.Campo('InfAdProd_V01').Value) + ' ' + ConverteCaracterEspecialXML(AllTrim(Form7.ibDAtaset23.FieldByname('DESCRICAO').AsString)));
       end;
     end;
 
@@ -1542,7 +1542,7 @@ begin
       Form7.spdNFeDataSets.Campo('CPF_X05').Value     := LimpaNumero(Form7.ibDataSet18.FieldByname('CGC').AsString); // CNPJ do Transportador
     end;
 
-    Form7.spdNFeDataSets.Campo('xNome_X06').Value    := ConverteAcentos2(Form7.ibDataSet18.FieldByname('NOME').AsString); // Nome do Transportador
+    Form7.spdNFeDataSets.Campo('xNome_X06').Value    := ConverteCaracterEspecialXML(Form7.ibDataSet18.FieldByname('NOME').AsString); // Nome do Transportador
 
     if AllTrim(Form7.ibDataSet18.FieldByname('IE').AsString) <> '' then
     begin
@@ -1558,8 +1558,8 @@ begin
       end;
     end;
 
-    Form7.spdNFeDataSets.Campo('xEnder_X08').Value   := ConverteAcentos2(Form7.ibDataSet18.FieldByname('ENDERECO').AsString); // Endereço do Transportador
-    Form7.spdNFeDataSets.Campo('xMun_X09').Value     := ConverteAcentos2(Form7.ibDataSet18.FieldByname('MUNICIPIO').AsString); // Nome do Município do Transportador
+    Form7.spdNFeDataSets.Campo('xEnder_X08').Value   := ConverteCaracterEspecialXML(Form7.ibDataSet18.FieldByname('ENDERECO').AsString); // Endereço do Transportador
+    Form7.spdNFeDataSets.Campo('xMun_X09').Value     := ConverteCaracterEspecialXML(Form7.ibDataSet18.FieldByname('MUNICIPIO').AsString); // Nome do Município do Transportador
     Form7.spdNFeDataSets.Campo('UF_X10').Value       := Form7.ibDataSet18.FieldByname('UF').AsString; // Sigla do Estado do Transportador
 
     if Length(StrTran(StrTran(Form7.ibDataSet15.FieldByname('PLACA').AsString,' ',''),'-','')) = 7 then
@@ -1584,9 +1584,9 @@ begin
 
   // Dados da Carga Transportada
   Form7.spdNFeDataSets.Campo('qVol_X27').Value     := LimpaNumero(Form7.ibDAtaset24.FieldByname('VOLUMES').AsString); // Quantidade de Volumes transportados
-  Form7.spdNFeDataSets.Campo('esp_X28').Value      := ConverteAcentos2(Form7.ibDAtaset24.FieldByname('ESPECIE').AsString); // Espécie de Carga Transportada
-  Form7.spdNFeDataSets.Campo('marca_X29').Value    := ConverteAcentos2(Form7.ibDAtaset24.FieldByname('MARCA').AsString); // MArca da Carga Transportada
-  Form7.spdNFeDataSets.Campo('nVol_X30').Value     := ConverteAcentos2(Form7.ibDAtaset24.FieldByname('NVOL').AsString);; // Numeração dos Volumes transportados
+  Form7.spdNFeDataSets.Campo('esp_X28').Value      := ConverteCaracterEspecialXML(Form7.ibDAtaset24.FieldByname('ESPECIE').AsString); // Espécie de Carga Transportada
+  Form7.spdNFeDataSets.Campo('marca_X29').Value    := ConverteCaracterEspecialXML(Form7.ibDAtaset24.FieldByname('MARCA').AsString); // MArca da Carga Transportada
+  Form7.spdNFeDataSets.Campo('nVol_X30').Value     := ConverteCaracterEspecialXML(Form7.ibDAtaset24.FieldByname('NVOL').AsString);; // Numeração dos Volumes transportados
 
   Form7.spdNFeDataSets.Campo('pesoL_X31').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDAtaset24.FieldByname('PESOLIQUI').AsFloat)),',','.'); // Peso Líquido
   Form7.spdNFeDataSets.Campo('pesoB_X32').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDAtaset24.FieldByname('PESOBRUTO').AsFloat)),',','.'); // Peso Bruto
@@ -1685,7 +1685,7 @@ begin
   Form7.spdNFeDataSets.Y.Post; // Grava a Duplicata em questão.
   // Dados Adicionais da NFe - Observações
   Form7.spdNFeDataSets.Campo('infAdFisco_Z02').Value := ''; // INteresse do Fisco
-  Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := AllTrim(ConverteAcentos2(AllTrim(Form7.ibDAtaset24COMPLEMENTO.AsString))); // Informacoes Complementares
+  Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := AllTrim(ConverteCaracterEspecialXML(AllTrim(Form7.ibDAtaset24COMPLEMENTO.AsString))); // Informacoes Complementares
 
   try
     Form7.ibDAtaset24.Edit;
@@ -2085,7 +2085,7 @@ begin
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteCaracterEspecialXML(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
       Abort;
     end;
     // CSOSN 101

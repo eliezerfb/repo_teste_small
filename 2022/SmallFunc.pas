@@ -39,6 +39,7 @@ uses
   function ConverteAcentos3(pP1:String):String;
   function ConverteAcentosIBPT(pP1:String):String;
   function ConverteAcentosPHP(pP1:String):String;
+  function ConverteCaracterEspecialXML(Value: String): String;  
   function Pack(pP1:TTable):Boolean;
   function Commit(pP1:TTable):Boolean;
   function Bisexto(AAno: Integer): Boolean;
@@ -917,6 +918,28 @@ begin
    end;
 end;
 
+function ConverteCaracterEspecialXML(Value: String): String;
+//Elimina caracteres especiais do texto usado em XML
+var
+  I: Integer;
+  sTexto: String;
+begin
+  sTexto := Value;
+  for I := 1 to 42 do
+    sTexto :=  StringReplace(sTexto,
+                             Copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç', I, 1),
+                             Copy('AAAAAEEEEIIIOOOUUCaaaaaaeeeeiiiiooooouuuuc', I, 1),
+                             [rfReplaceAll]);
+
+  Result := '';
+  for I := 1 to Length(sTexto) do
+  begin
+    if Pos(AnsiUpperCase(Copy(sTexto, I, 1)), '1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW!@#$%*()_+-=;:/|\?,.ºª') > 0 then
+      Result := Result + Copy(sTexto, I, 1)
+    else
+      Result := Result + ' ';
+  end;
+end;
 
 
 {Função PACK}
