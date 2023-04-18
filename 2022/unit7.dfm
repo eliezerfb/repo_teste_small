@@ -15413,9 +15413,8 @@ object Form7: TForm7
       
         '   RJ_, RN_, RO_, RR_, RS_, SC_, SE_, SP_, TO_, EX_, OBS, CONTA,' +
         ' REGISTRO, '
-      
-        '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  BCPISCO' +
-        'FINS, '
+      '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  '
+      '   BCPISCOFINS, '
       '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI)'
       'values'
       
@@ -15539,7 +15538,8 @@ object Form7: TForm7
       '  PPIS = :PPIS,'
       '  PCOFINS = :PCOFINS,'
       '  CSOSN = :CSOSN,'
-      '  CSTPISCOFINS = :CSTPISCOFINS'
+      '  CSTPISCOFINS = :CSTPISCOFINS,'
+      '  FRETESOBREIPI = :FRETESOBREIPI'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -15847,7 +15847,7 @@ object Form7: TForm7
     object ibDataSet14CSTPISCOFINS: TIBStringField
       DisplayLabel = 'CST PIS/COFINS'
       FieldName = 'CSTPISCOFINS'
-      Origin = 'ICM.CSTPISCOFINS'
+      Origin = '"ICM"."CSTPISCOFINS"'
       Size = 2
     end
     object ibDataSet14BCPISCOFINS: TIBBCDField
@@ -22064,7 +22064,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22097,7 +22097,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22409,7 +22409,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22438,7 +22438,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

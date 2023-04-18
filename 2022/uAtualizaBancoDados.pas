@@ -983,8 +983,20 @@ begin
   begin
     ExecutaComando('commit');
 
-    if ExecutaComando('Update ICM set BCPISCOFINS = COALESCE(BCCOFINS,BCPIS)') then
-      ExecutaComando('commit');
+    ExecutaComando(' Update ICM set '+
+                   '   BCPISCOFINS = '+
+                   '         Case'+
+                   '           When Coalesce(BCCOFINS,0) > Coalesce(BCPIS,0) then BCCOFINS'+
+                   '           Else BCPIS'+
+                   '         End');
+                   
+    ExecutaComando('commit');
+
+    ExecutaComando('ALTER TABLE ICM drop BCPIS');
+
+    ExecutaComando('ALTER TABLE ICM drop BCCOFINS');
+
+    ExecutaComando('commit');
   end;
 
 
