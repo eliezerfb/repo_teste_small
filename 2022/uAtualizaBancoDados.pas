@@ -123,9 +123,11 @@ begin
   DropViewProcedure;
 
   // MArketplace
-  ExecutaComando('alter table VENDAS add MARKETPLACE varchar(60)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'MARKETPLACE') = False then
+    ExecutaComando('alter table VENDAS add MARKETPLACE varchar(60)');
 
-  ExecutaComando('alter table ESTOQUE add MARKETPLACE VARCHAR(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'MARKETPLACE') = False then
+    ExecutaComando('alter table ESTOQUE add MARKETPLACE VARCHAR(1)');
 
   // Alterando o tamanho da RAZAO SOCIAL
   ExecutaComando('alter table AUDIT0RIA alter USUARIO type varchar(60)');
@@ -182,127 +184,134 @@ begin
 
   ExecutaComando('commit');
 
-  ExecutaComando('create table CODEBAR (REGISTRO VARCHAR(10), CODIGO VARCHAR(5),EAN VARCHAR(15), FORNECEDOR VARCHAR(60))');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CODEBAR') = False then
+    ExecutaComando('create table CODEBAR (REGISTRO VARCHAR(10), CODIGO VARCHAR(5),EAN VARCHAR(15), FORNECEDOR VARCHAR(60))');
 
-  ExecutaComando('create table INUTILIZACAO (REGISTRO VARCHAR(10) NOT NULL, MODELO VARCHAR(2), ANO INTEGER, SERIE SMALLINT, NINI INTEGER, NFIN INTEGER, NPROT VARCHAR(15), XML BLOB SUB_TYPE 1 SEGMENT SIZE 80, DATA Date)');
-
-  ExecutaComando('ALTER TABLE INUTILIZACAO ADD CONSTRAINT PK_INUTILIZACAO PRIMARY KEY (REGISTRO)');
-
-  ExecutaComando('CREATE SEQUENCE G_INUTILIZACAO');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'INUTILIZACAO') = False then
+  begin
+    ExecutaComando('create table INUTILIZACAO (REGISTRO VARCHAR(10) NOT NULL, MODELO VARCHAR(2), ANO INTEGER, SERIE SMALLINT, NINI INTEGER, NFIN INTEGER, NPROT VARCHAR(15), XML BLOB SUB_TYPE 1 SEGMENT SIZE 80, DATA Date)');
+    ExecutaComando('ALTER TABLE INUTILIZACAO ADD CONSTRAINT PK_INUTILIZACAO PRIMARY KEY (REGISTRO)');
+    ExecutaComando('CREATE SEQUENCE G_INUTILIZACAO');
+  end;
 
   // ESTOQUE TAG para incluir qualquer campo
-  ExecutaComando('alter table ESTOQUE add TAGS_ blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'TAGS_') = False then
+    ExecutaComando('alter table ESTOQUE add TAGS_ blob sub_type 1');
   Form7.ibDataSet4.Tag := IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO; // Sandro Silva 2022-09-12Form7.ibDataSet4.Tag := 999;
 
-  ExecutaComando('alter table ESTOQUE add QTD_PRO1 DOUBLE PRECISION');
-
-  ExecutaComando('alter table ESTOQUE add QTD_PRO2 DOUBLE PRECISION');
-
-  ExecutaComando('alter table ESTOQUE add DESCONT1 DOUBLE PRECISION');
-
-  ExecutaComando('alter table ESTOQUE add DESCONT2 DOUBLE PRECISION');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'QTD_PRO1') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add QTD_PRO1 DOUBLE PRECISION');
+    ExecutaComando('alter table ESTOQUE add QTD_PRO2 DOUBLE PRECISION');
+    ExecutaComando('alter table ESTOQUE add DESCONT1 DOUBLE PRECISION');
+    ExecutaComando('alter table ESTOQUE add DESCONT2 DOUBLE PRECISION');
+  end;
 
   // ESTOQUE CFOP para venda ao consumidor
-  ExecutaComando('alter table ESTOQUE add CFOP VARCHAR(4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CFOP') = False then
+    ExecutaComando('alter table ESTOQUE add CFOP VARCHAR(4)');
 
   // Fator de conversão
-  ExecutaComando('alter table ESTOQUE add MEDIDAE VARCHAR(3)');
-
-  ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'MEDIDAE') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add MEDIDAE VARCHAR(3)');
+    ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,2)');
+  end;
 
   // ESTOQUE FCI
-  ExecutaComando('alter table ESTOQUE add VALOR_PARCELA_IMPORTADA_EXTERIO NUMERIC(18,2)');
-
-  ExecutaComando('alter table ESTOQUE add CODIGO_FCI VARCHAR(36)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'VALOR_PARCELA_IMPORTADA_EXTERIO') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add VALOR_PARCELA_IMPORTADA_EXTERIO NUMERIC(18,2)');
+    ExecutaComando('alter table ESTOQUE add CODIGO_FCI VARCHAR(36)');
+  end;
 
   // REDUCOES
-  ExecutaComando('alter table REDUCOES add ESTOQUE VARCHAR(14)');
-
-  ExecutaComando('alter table REDUCOES add ESTOQUE VARCHAR(14)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'ESTOQUE') = False then
+    ExecutaComando('alter table REDUCOES add ESTOQUE VARCHAR(14)');
 
   // ITENS001 B2B
-  ExecutaComando('alter table ITENS001 add XPED VARCHAR(15)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'XPED') = False then
+    ExecutaComando('alter table ITENS001 add XPED VARCHAR(15)');
 
   // Percentual do ICMS relativo ao
   // Fundo de Combate à Pobreza
   // (FCP) na UF de destino
-  ExecutaComando('alter table ITENS001 add pFCPUFDest DOUBLE PRECISION');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'pFCPUFDest') = False then
+    ExecutaComando('alter table ITENS001 add pFCPUFDest DOUBLE PRECISION');
 
   // Alíquota interna da UF de destino
-  ExecutaComando('alter table ITENS001 add pICMSUFDest DOUBLE PRECISION');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'pICMSUFDest') = False then
+    ExecutaComando('alter table ITENS001 add pICMSUFDest DOUBLE PRECISION');
 
-  ExecutaComando('alter table ITENS001 add NITEMPED VARCHAR(6)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'NITEMPED') = False then
+    ExecutaComando('alter table ITENS001 add NITEMPED VARCHAR(6)');
 
 
-  if ExecutaComando('create table HASHS (TABELA VARCHAR(15), ENCRYPTHASH varchar(56))') then
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'HASHS') = False then
   begin
-    ExecutaComando('commit');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''ESTOQUE'')');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''REDUCOES'')');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''PAGAMENT'')');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''ALTERACA'')');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''ORCAMENT'')');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''VENDAS'')');
-
-    ExecutaComando('insert into HASHS (TABELA) values (''ITENS001'')');
+    if ExecutaComando('create table HASHS (TABELA VARCHAR(15), ENCRYPTHASH varchar(56))') then
+    begin
+      ExecutaComando('commit');
+      ExecutaComando('insert into HASHS (TABELA) values (''ESTOQUE'')');
+      ExecutaComando('insert into HASHS (TABELA) values (''REDUCOES'')');
+      ExecutaComando('insert into HASHS (TABELA) values (''PAGAMENT'')');
+      ExecutaComando('insert into HASHS (TABELA) values (''ALTERACA'')');
+      ExecutaComando('insert into HASHS (TABELA) values (''ORCAMENT'')');
+      ExecutaComando('insert into HASHS (TABELA) values (''VENDAS'')');
+      ExecutaComando('insert into HASHS (TABELA) values (''ITENS001'')');
+    end;
   end;
 
-  
+
   // ESTOQUE INDICE DE IMPOSTO APROXIMADO - IIA
-  ExecutaComando('alter table ESTOQUE add IIA DOUBLE PRECISION');
-
-  ExecutaComando('alter table ESTOQUE add IIA_UF DOUBLE PRECISION');
-
-  ExecutaComando('alter table ESTOQUE add IIA_MUNI DOUBLE PRECISION');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IIA') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add IIA DOUBLE PRECISION');
+    ExecutaComando('alter table ESTOQUE add IIA_UF DOUBLE PRECISION');
+    ExecutaComando('alter table ESTOQUE add IIA_MUNI DOUBLE PRECISION');
+  end;
 
   // ESTOQUE PROMOCAO
-  ExecutaComando('alter table ESTOQUE add ONPROMO NUMERIC(18,4)');
-
-  ExecutaComando('alter table ESTOQUE add OFFPROMO NUMERIC(18,4)');
-
-  ExecutaComando('alter table ESTOQUE add PROMOINI date');
-
-  ExecutaComando('alter table ESTOQUE add PROMOFIM date');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'ONPROMO') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add ONPROMO NUMERIC(18,4)');
+    ExecutaComando('alter table ESTOQUE add OFFPROMO NUMERIC(18,4)');
+    ExecutaComando('alter table ESTOQUE add PROMOINI date');
+    ExecutaComando('alter table ESTOQUE add PROMOFIM date');
+  end;
 
   // ESTOQUE IPI
-  ExecutaComando('alter table ESTOQUE add CST_IPI VARCHAR(2)');
-
-  ExecutaComando('alter table ESTOQUE add ENQ_IPI VARCHAR(3)');
-
-  ExecutaComando('alter table ESTOQUE add TIPO_ITEM VARCHAR(2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CST_IPI') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add CST_IPI VARCHAR(2)');
+    ExecutaComando('alter table ESTOQUE add ENQ_IPI VARCHAR(3)');
+    ExecutaComando('alter table ESTOQUE add TIPO_ITEM VARCHAR(2)');
+  end;
 
   // ESTOQUE PIS / COFINS
-  ExecutaComando('alter table ESTOQUE add CST_PIS_COFINS_ENTRADA VARCHAR(2)');
-
-  ExecutaComando('alter table ESTOQUE add ALIQ_PIS_ENTRADA NUMERIC(18,4)');
-
-  ExecutaComando('alter table ESTOQUE add ALIQ_COFINS_ENTRADA NUMERIC(18,4)');
-
-  ExecutaComando('alter table ESTOQUE add CST_PIS_COFINS_SAIDA VARCHAR(2)');
-
-  ExecutaComando('alter table ESTOQUE add ALIQ_PIS_SAIDA NUMERIC(18,4)');
-
-  ExecutaComando('alter table ESTOQUE add ALIQ_COFINS_SAIDA NUMERIC(18,4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CST_PIS_COFINS_ENTRADA') = False then
+  begin
+    ExecutaComando('alter table ESTOQUE add CST_PIS_COFINS_ENTRADA VARCHAR(2)');
+    ExecutaComando('alter table ESTOQUE add ALIQ_PIS_ENTRADA NUMERIC(18,4)');
+    ExecutaComando('alter table ESTOQUE add ALIQ_COFINS_ENTRADA NUMERIC(18,4)');
+    ExecutaComando('alter table ESTOQUE add CST_PIS_COFINS_SAIDA VARCHAR(2)');
+    ExecutaComando('alter table ESTOQUE add ALIQ_PIS_SAIDA NUMERIC(18,4)');
+    ExecutaComando('alter table ESTOQUE add ALIQ_COFINS_SAIDA NUMERIC(18,4)');
+  end;
 
   //  ITENS001 PIS COFINS
-  ExecutaComando('alter table ITENS001 add CST_PIS_COFINS VARCHAR(2)');
-
-  ExecutaComando('alter table ITENS001 add ALIQ_PIS NUMERIC(18,4)');
-
-  ExecutaComando('alter table ITENS001 add ALIQ_COFINS NUMERIC(18,4)');
-
-  ExecutaComando('alter table ITENS001 add CST_IPI CHAR(3)');
-
-  ExecutaComando('alter table ITENS001 add CST_ICMS CHAR(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'CST_PIS_COFINS') = False then
+  begin
+    ExecutaComando('alter table ITENS001 add CST_PIS_COFINS VARCHAR(2)');
+    ExecutaComando('alter table ITENS001 add ALIQ_PIS NUMERIC(18,4)');
+    ExecutaComando('alter table ITENS001 add ALIQ_COFINS NUMERIC(18,4)');
+    ExecutaComando('alter table ITENS001 add CST_IPI CHAR(3)');
+    ExecutaComando('alter table ITENS001 add CST_ICMS CHAR(3)');
+  end;
 
   // EAN13 do fornecedor
-  ExecutaComando('alter table ITENS002 add EAN_ORIGINAL CHAR(15)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'EAN_ORIGINAL') = False then
+    ExecutaComando('alter table ITENS002 add EAN_ORIGINAL CHAR(15)');
 
   // Fator de conversão
   try
@@ -389,10 +398,12 @@ begin
   end;
 
   // Apaga o campo temporario UNITARIO_O_
-  ExecutaComando('alter table ITENS002 drop UNITARIO_O_');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O_') then
+    ExecutaComando('alter table ITENS002 drop UNITARIO_O_');
 
   // Apaga o campo temporario QTD_ORIGINAL
-  ExecutaComando('alter table ITENS002 drop QTD_ORIGINAL_');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL_') then
+    ExecutaComando('alter table ITENS002 drop QTD_ORIGINAL_');
 
   // Grava
   ExecutaComando('commit');
@@ -420,46 +431,60 @@ begin
   end;
 
   //  ITENS002 CST ICMS
-  ExecutaComando('alter table ITENS002 add CST_ICMS VARCHAR(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_ICMS') = False then
+    ExecutaComando('alter table ITENS002 add CST_ICMS VARCHAR(3)');
 
   //  ITENS002 PIS COFINS
-  ExecutaComando('alter table ITENS002 add CST_PIS_COFINS VARCHAR(2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_PIS_COFINS') = False then
+    ExecutaComando('alter table ITENS002 add CST_PIS_COFINS VARCHAR(2)');
 
-  ExecutaComando('alter table ITENS002 add ALIQ_PIS NUMERIC(18,4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ALIQ_PIS') = False then
+    ExecutaComando('alter table ITENS002 add ALIQ_PIS NUMERIC(18,4)');
 
-  ExecutaComando('alter table ITENS002 add ALIQ_COFINS NUMERIC(18,4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ALIQ_COFINS') = False then
+    ExecutaComando('alter table ITENS002 add ALIQ_COFINS NUMERIC(18,4)');
 
-  // GRAVAR? O HISTORICO DO CSONS
-  ExecutaComando('ALTER TABLE ALTERACA ADD CSOSN VARCHAR(3)');
+  // GRAVAR? O HISTORICO DO CSOSN
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CSOSN') = False then
+    ExecutaComando('ALTER TABLE ALTERACA ADD CSOSN VARCHAR(3)');
 
   // ALTERACA NF de venda a consumidor (modelo 02)
-  ExecutaComando('alter table ALTERACA add SERIE CHAR(4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'SERIE') = False then
+  begin
+    ExecutaComando('alter table ALTERACA add SERIE CHAR(4)');
+    ExecutaComando('alter table ALTERACA add SUBSERIE CHAR(3)');
+  end;
 
-  ExecutaComando('alter table ALTERACA add SUBSERIE CHAR(3)');
-
-  ExecutaComando('alter table ALTERACA add CFOP CHAR(4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CFOP') = False then
+    ExecutaComando('alter table ALTERACA add CFOP CHAR(4)');
 
   // ALTERACA PIS COFINS
-  ExecutaComando('alter table ALTERACA add CST_ICMS CHAR(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CST_ICMS') = False then
+    ExecutaComando('alter table ALTERACA add CST_ICMS CHAR(3)');
 
-  ExecutaComando('alter table ALTERACA add CST_PIS_COFINS VARCHAR(2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CST_PIS_COFINS') = False then
+  begin
+    ExecutaComando('alter table ALTERACA add CST_PIS_COFINS VARCHAR(2)');
+    ExecutaComando('alter table ALTERACA add ALIQ_PIS NUMERIC(18,4)');
+    ExecutaComando('alter table ALTERACA add ALIQ_COFINS NUMERIC(18,4)');
+  end;
 
-  ExecutaComando('alter table ALTERACA add ALIQ_PIS NUMERIC(18,4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'OBS') = False then
+    ExecutaComando('alter table ALTERACA add OBS VARCHAR(40)');
 
-  ExecutaComando('alter table ALTERACA add ALIQ_COFINS NUMERIC(18,4)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'STATUS') = False then
+    ExecutaComando('alter table ALTERACA add STATUS VARCHAR(1)');
 
-  ExecutaComando('alter table ALTERACA add OBS VARCHAR(40)');
-
-  ExecutaComando('alter table ALTERACA add STATUS VARCHAR(1)');
-
-  ExecutaComando('alter table REDUCOES add CODIGOECF varchar(6)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'CODIGOECF') = False then
+    ExecutaComando('alter table REDUCOES add CODIGOECF varchar(6)');
 
   // Cancelamento extemporaneo
-  ExecutaComando('alter table VENDAS add DATA_CANCEL date');
-
-  ExecutaComando('alter table VENDAS add HORA_CANCEL varchar(8)');
-
-  ExecutaComando('alter table VENDAS add COD_SIT varchar(2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DATA_CANCEL') = False then
+  begin
+    ExecutaComando('alter table VENDAS add DATA_CANCEL date');
+    ExecutaComando('alter table VENDAS add HORA_CANCEL varchar(8)');
+    ExecutaComando('alter table VENDAS add COD_SIT varchar(2)');
+  end;
 
   // Imformações complementares VENDA
   ExecutaComando('alter table VENDAS add COMPLEMENTO blob sub_type 1');

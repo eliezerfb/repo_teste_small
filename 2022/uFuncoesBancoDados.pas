@@ -9,6 +9,7 @@ uses
   , IBQuery
 ;
 
+function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
@@ -20,6 +21,33 @@ implementation
 uses
   mais
   ;
+
+function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
+{Sandro Silva 2015-10-01 inicio
+Retorna True se encontrar a tabela informada}
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text :=
+      'select distinct F.RDB$RELATION_NAME as TABELA ' +
+      'from RDB$RELATION_FIELDS F ' +
+      'join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
+      'and R.RDB$VIEW_BLR is null ' +
+      'and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
+      'and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela);
+    IBQUERY.Open;
+    Result := (IBQUERY.FieldByName('TABELA').AsString <> '');
+  finally
+    IBTRANSACTION.Rollback;
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+end;
 
 function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
