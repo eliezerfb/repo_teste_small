@@ -255,6 +255,9 @@ uses Unit7, Mais, uFuncoesFiscais;
 
 function TITENS001List.Adiciona(DataSetItens: TibDataSet): TITENS001;
 begin
+  if DataSetItens.FieldByName('QUANTIDADE').AsFloat <= 0 then
+    Exit;
+
   Result := TITENS001.Create;
 
   Result.Numeronf       := DataSetItens.FieldByName('NUMERONF').AsString;
@@ -1159,9 +1162,16 @@ begin
       if AllTrim(Form7.ibDataSet2CGC.AsString) = '' then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString); // Quando é produtor rural tem que ter CPF
     end else
     begin
-      if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then sEstado := Form7.ibDataSet2ESTADO.AsString else sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-      if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-      if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) < 18 then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+      if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then
+        sEstado := Form7.ibDataSet2ESTADO.AsString
+      else
+        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+
+      if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then
+        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+
+      if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) < 18 then
+        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
     end;
 
     sEstado := Form7.ibDataSet2ESTADO.AsString;

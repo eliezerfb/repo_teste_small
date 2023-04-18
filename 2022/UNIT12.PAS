@@ -1134,10 +1134,8 @@ end;
 
 procedure TForm12.SMALL_DBEdit17Exit(Sender: TObject);
 begin
-  //
   if (Form12.Edit2.Text <> '2-Complementar') then
   begin
-    //
     // Nestas linhas foi Deus quem me ajudou
     //
 //    if Form7.ibDataSet15MERCADORIA.AsFloat <> Form12.fVELHO then
@@ -1147,21 +1145,16 @@ begin
       //
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
-      //
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit22Exit(Sender: TObject);
 begin
-  //
   Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
   Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
   //
   SMALL_DBEdit41.SetFocus;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit7Enter(Sender: TObject);
@@ -1850,9 +1843,8 @@ var
   I : Integer;
   sReg : String;
 begin
-  //
   Form7.ibDataSet16.EnableControls;
-  //
+
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
@@ -1860,22 +1852,21 @@ begin
     dbGrid1.SetFocus;
     Abort;
   end;
-  //
+
   if ((Key = VK_DOWN) or (Key = VK_UP)) and (dBgrid3.CanFocus) then
   begin
     Key := VK_SHIFT;
     dBgrid3.SetFocus;
   end;
-  //
+
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   try
     begin
       if Key = VK_RETURN then
       begin
-        //
         Form1.bFlag := True;
-        //
+
         if not (Form7.ibDataSet16.State in ([dsEdit, dsInsert])) then
         begin
           Form7.ibDataSet16.Edit;
@@ -1884,13 +1875,11 @@ begin
           Form7.ibDataSet16.UpdateRecord;
           Form7.ibDataSet16.Edit;
         end;
-        //
+
         if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '' then
         begin
-          //
           if DbGrid1.SelectedIndex = 0 then
           begin
-            //
             Form1.bFlag := True;
             //
             if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
@@ -1904,7 +1893,7 @@ begin
               Form7.ibDataSet16.Locate('REGISTRO',sReg,[]);
             end;
           end;
-          //
+
           I := DbGrid1.SelectedIndex;
           DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
           if I = DbGrid1.SelectedIndex  then
@@ -1913,7 +1902,6 @@ begin
             Form7.ibDataSet16.Next;
             if Form7.ibDataSet16.EOF then Form7.ibDataSet16.Append;
           end;
-          //
         end else
         begin
           Form7.ibDataSet16.Edit;

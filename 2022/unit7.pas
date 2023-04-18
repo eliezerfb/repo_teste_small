@@ -19229,8 +19229,6 @@ begin
   IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
   IBQESTOQUE.DisableControls;
 
-
-
   if Form7.sModulo <> 'NAO' then
   begin
     // Descrição em Branco não grava //
