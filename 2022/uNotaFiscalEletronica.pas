@@ -238,6 +238,7 @@ type
     procedure AtualizaDataSetItens(DataSetItens : TibDataSet);
     procedure CalculaCstPisCofins(DataSetNF, DataSetItens : TibDataSet);
     procedure CalculaImpostos;
+    function AliqICMdoCliente(oItem : TITENS001): double;
   public
     Calculando : Boolean;
     constructor Create; virtual;
@@ -782,6 +783,8 @@ begin
             begin
               FNotaFiscal.Baseicm    := FNotaFiscal.Baseicm  + Arredonda((oItem.TOTAL * oItem.BASE / 100 ),2);
               FNotaFiscal.Icms       := FNotaFiscal.Icms     + Arredonda(( (oItem.TOTAL) * oItem.BASE / 100 *  oItem.ICM / 100 ),2); // Acumula em 16 After post
+
+              oItem.Vbc              := Arredonda((oItem.TOTAL * oItem.BASE / 100 ),2);
               oItem.Vicms            := Arredonda(( (oItem.TOTAL) * oItem.BASE / 100 *  oItem.ICM / 100 ),2);
             end;
           end;
@@ -809,6 +812,8 @@ begin
             begin
               FNotaFiscal.Baseicm   := FNotaFiscal.Baseicm + Arredonda((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2); //
               FNotaFiscal.ICMS      := FNotaFiscal.ICMS    + Arredonda(((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString))) * oItem.BASE / 100 * oItem.ICM / 100 )),2); // Acumula em 16 After post
+
+              oItem.Vbc             := Arredonda((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2); //
               oItem.Vicms           := Arredonda(((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',form7.ibDataSet4.FieldByname('TAGS_').AsString))) * oItem.BASE / 100 * oItem.ICM / 100 )),2);
             end;
           end else
@@ -854,11 +859,13 @@ begin
 
                   FNotaFiscal.Baseicm  := FNotaFiscal.Baseicm + vlBalseICMSItem;
                   FNotaFiscal.Icms     := FNotaFiscal.Icms    + vlICMSItem;
+
+                  oItem.Vbc            := vlBalseICMSItem;
                   oItem.Vicms          := vlICMSItem;
                 end;
 
                 // CALCULO DO IVA
-                if AliqICMdoCliente101() <= Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
+                if AliqICMdoCliente(oItem) <= Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
                 begin
                   //
                   if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
@@ -866,16 +873,23 @@ begin
                     // VINICULAS
                     try
                       FNotaFiscal.Basesubsti := Arredonda(FNotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100) * Form7.ibDataset4PIVA.AsFloat ),2); // Rateio desconto
-                      FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //  // Rateio desconto
+                      FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula
+
+                      oItem.Vbcst            := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100) * Form7.ibDataset4PIVA.AsFloat ),2); // Rateio desconto
+                      oItem.Vicmsst          := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2);
                     except end;
                   end else
                   begin
                     FNotaFiscal.Basesubsti := Arredonda(FNotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
-                    FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //
+                    FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula
+
+                    oItem.Vbcst            := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
+                    oItem.Vicmsst          := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * Form7.ibDataset4PIVA.AsFloat),2);
                   end;
 
                   // Desconta do ICMS substituido o ICMS normal
-                  FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente101() / 100 ),2); // Acumula em 16 After post
+                  FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2); // Acumula
+                  oItem.Vicmsst          := Arredonda(oItem.Vicmsst - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2);
                 end else
                 begin
                   if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
@@ -883,16 +897,23 @@ begin
                     // VINICULAS
                     try
                       FNotaFiscal.Basesubsti := Arredonda(FNotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
-                      FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * AliqICMdoCliente101() / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //
+                      FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * AliqICMdoCliente(oItem) / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula
+
+                      oItem.Vbcst            := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
+                      oItem.Vicmsst          := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * AliqICMdoCliente(oItem) / 100) * Form7.ibDataset4PIVA.AsFloat),2); 
                     except end;
                   end else
                   begin
                     FNotaFiscal.Basesubsti := Arredonda(FNotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
-                    FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente101() / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula em 16 After post                        //
+                    FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100) * Form7.ibDataset4PIVA.AsFloat),2); // Acumula
+
+                    oItem.Vbcst            := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100) * Form7.ibDataset4PIVA.AsFloat ),2);
+                    oItem.Vicmsst          := Arredonda(( ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100) * Form7.ibDataset4PIVA.AsFloat),2); 
                   end;
 
                   // Desconta do ICMS substituido o ICMS normal
-                  FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula em 16 After post
+                  FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula
+                  oItem.Vicmsst          := Arredonda(oItem.Vicmsst - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); 
                 end;
               end else
               begin
@@ -912,6 +933,8 @@ begin
 
                   FNotaFiscal.Baseicm  := FNotaFiscal.Baseicm    + vlBalseICMSItem;
                   FNotaFiscal.Icms     := FNotaFiscal.Icms       + vlICMSItem;
+
+                  oItem.Vbc            := vlBalseICMSItem;
                   oItem.Vicms          := vlICMSItem;
                 end;
               end;
@@ -1010,21 +1033,31 @@ begin
             end;
 
             // CALCULO DO IVA
-            if AliqICMdoCliente101() <= Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
+            if AliqICMdoCliente(oItem) <= Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
             begin
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
                 // VINICULAS
                 try
                   FNotaFiscal.Basesubsti := FNotaFiscal.Basesubsti + Arredonda((
-                  (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
-                   * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataSet4PIVA.AsFloat),2);
-                  //
+                      (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                       * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataSet4PIVA.AsFloat),2);
+
                   FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti +
-                  (((
-                  (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
-                  ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100
-                   *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+                        (((
+                        (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                        ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100
+                         *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+
+                  oItem.Vbcst := Arredonda((
+                      (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                       * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataSet4PIVA.AsFloat),2);
+
+                  oItem.Vicmsst := Arredonda(
+                        (((
+                        (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                        ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100
+                         *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
                 except
                   on E: Exception do
                   begin
@@ -1039,15 +1072,25 @@ begin
                  * oItem.BASE / 100 * Form7.ibDataSet4PIVA.AsFloat),2);
 
                 FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti +
-                (((
-                ((oItem.TOTAL-fRateioDoDesconto) + fIPIPorUnidade)
-                ) * oItem.BASE / 100
-                 *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2); // Não pode arredondar aqui
+                    (((
+                    ((oItem.TOTAL-fRateioDoDesconto) + fIPIPorUnidade)
+                    ) * oItem.BASE / 100
+                     *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2); // Não pode arredondar aqui
+
+                oItem.Vbcst := Arredonda(
+                ((oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                 * oItem.BASE / 100 * Form7.ibDataSet4PIVA.AsFloat),2);
+
+                oItem.Vicmsst := Arredonda(
+                    (((
+                    ((oItem.TOTAL-fRateioDoDesconto) + fIPIPorUnidade)
+                    ) * oItem.BASE / 100
+                     *  Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* Form7.ibDataset4PIVA.AsFloat ),2); // Não pode arredondar aqui
               end;
 
               // Desconta do ICMS substituido o ICMS normal
-              FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - (((oItem.TOTAL-fRateioDoDesconto)
-              ) * oItem.BASE / 100 *  AliqICMdoCliente101() / 100 ),2); // Acumula em 16 After post
+              FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - (((oItem.TOTAL-fRateioDoDesconto) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2); // Acumula
+              oItem.Vicmsst          := Arredonda(oItem.Vicmsst - (((oItem.TOTAL-fRateioDoDesconto) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2); 
             end else
             begin
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
@@ -1055,33 +1098,58 @@ begin
                 // VINICULAS
                 try
                   FNotaFiscal.Basesubsti := FNotaFiscal.Basesubsti + Arredonda((
-                  (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade) *
-                  StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataset4PIVA.AsFloat),2);
-                  //
+                      (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade) *
+                      StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataset4PIVA.AsFloat),2);
+
                   FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti +
-                  (((
-                  (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
-                  ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100
-                   * AliqICMdoCliente101() / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+                      (((
+                      (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                      ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100
+                       * AliqICMdoCliente(oItem) / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+
+                  oItem.Vbcst := Arredonda((
+                      (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade) *
+                      StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataset4PIVA.AsFloat),2);
+
+                  oItem.Vicmsst := Arredonda(
+                      (((
+                      (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                      ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100
+                       * AliqICMdoCliente(oItem) / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+
                 except
                 end;
               end else
               begin
                 FNotaFiscal.Basesubsti := FNotaFiscal.Basesubsti + Arredonda((
-                (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade) *
-                oItem.BASE / 100 * Form7.ibDataset4PIVA.AsFloat),2);
-                
+                    (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade) *
+                    oItem.BASE / 100 * Form7.ibDataset4PIVA.AsFloat),2);
+
                 FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti +
-                (((
-                (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
-                ) * oItem.BASE / 100
-                 * AliqICMdoCliente101() / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+                    (((
+                    (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                    ) * oItem.BASE / 100
+                     * AliqICMdoCliente(oItem) / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
+
+                oItem.Vbcst := Arredonda((
+                    (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade) *
+                    oItem.BASE / 100 * Form7.ibDataset4PIVA.AsFloat),2);
+
+                oItem.Vicmsst := Arredonda(
+                    (((
+                    (oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
+                    ) * oItem.BASE / 100
+                     * AliqICMdoCliente(oItem) / 100 )* Form7.ibDataset4PIVA.AsFloat ),2);
               end;
 
               // Desconta do ICMS substituido o ICMS normal
               FNotaFiscal.Icmssubsti := Arredonda(FNotaFiscal.Icmssubsti - ((
-              ((oItem.TOTAL-fRateioDoDesconto)
-              )) * oItem.BASE / 100 *   Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula em 16 After post
+                  ((oItem.TOTAL-fRateioDoDesconto)
+                  )) * oItem.BASE / 100 *   Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula
+
+              oItem.Vicmsst := Arredonda(oItem.Vicmsst - ((
+                  ((oItem.TOTAL-fRateioDoDesconto)
+                  )) * oItem.BASE / 100 *   Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula
             end;
           end;
         except
@@ -1141,7 +1209,9 @@ begin
                     fSomaNaBase  := fSomanaBase - (FNotaFiscal.Desconto / FNotaFiscal.Mercadoria * oItem.TOTAL); // REGRA DE TRÊS ratiando o valor do frete descontando
 
                 FNotaFiscal.Baseicm := FNotaFiscal.Baseicm + Arredonda((oItem.BASE*fSomaNaBase/100),2);
-                FNotaFiscal.Icms    := FNotaFiscal.Icms    + Arredonda(((oItem.BASE*fSomaNaBase/100) * oItem.ICM / 100 ),2); // Acumula em 16 After post
+                FNotaFiscal.Icms    := FNotaFiscal.Icms    + Arredonda(((oItem.BASE*fSomaNaBase/100) * oItem.ICM / 100 ),2); // Acumula
+
+                oItem.Vbc          := oItem.Vbc + Arredonda((oItem.BASE*fSomaNaBase/100),2);
                 oItem.Vicms        := oItem.Vicms + Arredonda(((oItem.BASE*fSomaNaBase/100) * oItem.ICM / 100 ),2);
               end;
             end;
@@ -1238,6 +1308,29 @@ begin
   begin
     FNotaFiscal.Itens[i].Destroy;
   end;}
+end;
+
+
+// A PEDIDO DO
+// VANDERLEI PERETI
+// FONES: 49 35664136 / 91427178
+// EMAIL: comercial@vpinformatica.com.br
+
+function TNotaFiscalEletronica.AliqICMdoCliente(oItem : TITENS001): double;
+begin
+  if Form1.fAliqICMdoCliente <> 0 then
+  begin
+    if Form7.ibDataSet13ESTADO.AsString =  Form7.ibDataSet2ESTADO.AsString then
+    begin
+      Result :=  Form1.fAliqICMdoCliente;
+    end else
+    begin
+      Result := oItem.ICM;
+    end;
+  end else
+  begin
+    Result := oItem.ICM;
+  end;
 end;
 
 end.

@@ -43,7 +43,7 @@ function AbreArquivoNoFormatoCerto(sP1:String): boolean;
 function HtmlParaPdf(sP1:String): boolean;
 procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos( XmlEnviado: String; sRetorno: String);
 function BuscaNumeroNFSe(bP1: Boolean) : Boolean;
-function AliqICMdoCliente101: double;
+
 
 type
 
@@ -1059,6 +1059,7 @@ type
     ibDataSet14SOBREFRETE: TIBStringField;
     ibDataSet14SOBRESEGURO: TIBStringField;
     ibDataSet14SOBREOUTRAS: TIBStringField;
+    ibDataSet14FRETESOBREIPI: TIBStringField;
     Image10: TImage;
     Image11: TImage;
     ibDataSet15LOKED: TIBStringField;
@@ -1442,7 +1443,6 @@ type
     ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
-    ibDataSet14FRETESOBREIPI: TIBStringField;
     ibDataSet14BCPISCOFINS: TIBBCDField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
@@ -3996,27 +3996,7 @@ begin
   //
 end;
 
-// A PEDIDO DO
-// VANDERLEI PERETI
-// FONES: 49 35664136 / 91427178
-// EMAIL: comercial@vpinformatica.com.br
 
-function AliqICMdoCliente101: double;
-begin
-  if Form1.fAliqICMdoCliente <> 0 then
-  begin
-    if Form7.ibDataSet13ESTADO.AsString =  Form7.ibDataSet2ESTADO.AsString then
-    begin
-      Result :=  Form1.fAliqICMdoCliente;
-    end else
-    begin
-      Result := Form7.IbDataSet101.FieldByName('ICM').AsFloat;
-    end;
-  end else
-  begin
-    Result := Form7.IbDataSet101.FieldByName('ICM').AsFloat;
-  end;
-end;
 
 {Sandro Silva 2022-09-12 inicio
 // A PEDIDO DO
@@ -14852,6 +14832,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
         end;
 
+
         if Field.Name = 'ibDataSet14FRETESOBREIPI' then
         begin
           if (Alltrim(Form7.ibDataSet14FRETESOBREIPI.AsString) = 'S') then
@@ -19235,6 +19216,7 @@ begin
     if Form7.sModulo = 'VENDA' then
     begin
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
+      sReg16 := Form7.ibDataSet16REGISTRO.AsString;
 
       IBQESTOQUE.Close;
       IBQESTOQUE.SQL.Clear;
