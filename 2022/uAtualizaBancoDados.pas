@@ -487,27 +487,38 @@ begin
   end;
 
   // Imformações complementares VENDA
-  ExecutaComando('alter table VENDAS add COMPLEMENTO blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMENTO') = False then
+    ExecutaComando('alter table VENDAS add COMPLEMENTO blob sub_type 1');
 
-  ExecutaComando('alter table VENDAS add PLACA varchar(11)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'PLACA') = False then
+    ExecutaComando('alter table VENDAS add PLACA varchar(11)');
 
-  ExecutaComando('alter table VENDAS drop COMPLEMEN1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMEN1') then
+    ExecutaComando('alter table VENDAS drop COMPLEMEN1');
 
-  ExecutaComando('alter table VENDAS drop COMPLEMEN2');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMEN2') then
+    ExecutaComando('alter table VENDAS drop COMPLEMEN2');
 
-  ExecutaComando('alter table VENDAS drop COMPLEMEN3');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMEN3') then
+    ExecutaComando('alter table VENDAS drop COMPLEMEN3');
 
-  ExecutaComando('alter table VENDAS drop COMPLEMEN4');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMEN4') then
+    ExecutaComando('alter table VENDAS drop COMPLEMEN4');
 
-  ExecutaComando('alter table VENDAS drop COMPLEMEN5');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMEN5') then
+    ExecutaComando('alter table VENDAS drop COMPLEMEN5');
 
-  ExecutaComando('alter table VENDAS drop DESCRICAO1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DESCRICAO1') then
+    ExecutaComando('alter table VENDAS drop DESCRICAO1');
 
-  ExecutaComando('alter table VENDAS drop DESCRICAO2');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DESCRICAO2') then
+    ExecutaComando('alter table VENDAS drop DESCRICAO2');
 
-  ExecutaComando('alter table VENDAS drop DESCRICAO3');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DESCRICAO3') then
+    ExecutaComando('alter table VENDAS drop DESCRICAO3');
 
-  ExecutaComando('alter table VENDAS drop DESCRICAO4');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DESCRICAO4') then
+    ExecutaComando('alter table VENDAS drop DESCRICAO4');
 
   // Imformações complementares COMPRAS
   Form22.Repaint;
