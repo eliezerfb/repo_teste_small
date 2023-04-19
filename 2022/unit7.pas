@@ -19204,7 +19204,7 @@ end;
 
 procedure TForm7.ibDataSet16AfterPost(DataSet: TDataSet);
 var
-  sReg16, sEstado : String;
+  sReg16 : String;
   IBQESTOQUE: TIBQuery; 
 begin
   IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
@@ -19773,7 +19773,8 @@ begin
 
             sEstado := Form7.ibDataSet2ESTADO.AsString;
 
-            if Pos('1'+sEstado+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX2') = 0 then sEstado := 'MG';
+            if Pos('1'+sEstado+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX2') = 0 then
+              sEstado := 'MG';
 
             // CFOP Dinamico
             if (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '107') and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '108') then // Esta faixa não muda dentro e fora do estado DOUGLAS - Electra - Sara Suporte
