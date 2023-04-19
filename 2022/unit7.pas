@@ -11648,37 +11648,55 @@ begin
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
         iCampos                := 25;
         }
+        sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
         // Para quem atualizar da versão anterior da 2023.0.0.24 para esta irá
         // exibir os novos campos adicionados ao grid
-        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 25 then
+        if Length(sMostra) = 25 then // habilita a coluna DATA_SAI
+        begin
+          // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna DATA_SAI
+          // adiciona o valor T, na última posição de sMostra
+          //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := sMostra + 'T'; // habilita a coluna Data_SAI
+          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        //end
+        //else
+        //begin
+        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+        end;
+
+        if Length(sMostra) = 26 then // habilita a coluna MODELO
         begin
           // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna MODELO
           // adiciona o valor T, na string, na posição que representa a coluna MODELO (Segunda posição)
-          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
-          sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra));
-          Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
-        end
-        else
-        begin
-          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+          //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra)); // habilita a coluna MODELO
+          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        //end
+        //else
+        //begin
+        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
         end;
+
         //iCampos                := 26;
         //Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
         {Sandro Silva 2023-03-27 fim}
-        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 26 then
+        if Length(sMostra) = 27 then // habilita a coluna VFCPST
         begin
           // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna VFCPST
           // adiciona o valor T, na string, na posição que representa a coluna VFCPST (décima oitava posição)
-          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
-          sMostra := Copy(sMostra, 1, 17) + 'T' + Copy(sMostra, 18, Length(sMostra));
-          Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
-        end
-        else
-        begin
-          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+          //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := Copy(sMostra, 1, 18) + 'T' + Copy(sMostra, 19, Length(sMostra)); // habilita a coluna VFCPST
+          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        //end
+        //else
+        //begin
+        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
         end;
-        iCampos                := 27;
-        Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
+        if sMostra <> Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT') then
+          Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        iCampos                := 28;
+        //sMostra := Copy(Mais1Ini.ReadString(sModulo,'Mostrar','') + DupeString('T', iCampos), 1, iCampos);// Lê a configuração salva, completa com "T" conforme o total de campos definido e considera as primeiras posições conforme o total de campos definido
+        //Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
         {Sandro Silva 2023-04-12 fim}
 
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
@@ -11795,7 +11813,7 @@ begin
         begin
           // Menu
           Form7.Menu             := MainMenu10;
-          
+
           sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
         end;
 
