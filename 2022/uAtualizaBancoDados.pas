@@ -130,10 +130,12 @@ begin
     ExecutaComando('alter table ESTOQUE add MARKETPLACE VARCHAR(1)');
 
   // Alterando o tamanho da RAZAO SOCIAL
-  ExecutaComando('alter table AUDIT0RIA alter USUARIO type varchar(60)');
+  if TamanhoCampo(Form1.ibDataSet200.Transaction.DefaultDatabase, 'AUDIT0RIA', 'USUARIO') < 60 then
+    ExecutaComando('alter table AUDIT0RIA alter USUARIO type varchar(60)');
 
-  ExecutaComando('alter table OS alter TECNICO type varchar(60)');
-
+  if TamanhoCampo(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OS', 'TECNICO') < 60 then
+    ExecutaComando('alter table OS alter TECNICO type varchar(60)');
+AQUI
   ExecutaComando('alter table ITENS003 alter TECNICO type varchar(60)');
 
   ExecutaComando('alter table CLIFOR alter NOME type varchar(60)');
@@ -259,6 +261,7 @@ begin
       ExecutaComando('insert into HASHS (TABELA) values (''ORCAMENT'')');
       ExecutaComando('insert into HASHS (TABELA) values (''VENDAS'')');
       ExecutaComando('insert into HASHS (TABELA) values (''ITENS001'')');
+      ExecutaComando('commit');      
     end;
   end;
 
@@ -389,7 +392,7 @@ begin
       begin
         ExecutaComando('update ITENS002 set UNITARIO_O=UNITARIO, QTD_ORIGINAL=QUANTIDADE');
       end;
-      
+
       // Grava
       ExecutaComando('commit');
     except
@@ -408,6 +411,7 @@ begin
   // Grava
   ExecutaComando('commit');
 
+  {Sandro Silva 2023-04-19 inicio 
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -429,10 +433,26 @@ begin
     Form1.ibDataset200.Close;
   except
   end;
+  }
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL') = False then
+  begin
+    // tenta criar os campos
+    if ExecutaComando('alter table ITENS002 add QTD_ORIGINAL NUMERIC(18,9)') then
+    begin
+      if ExecutaComando('alter table ITENS002 add QTD_ORIGINAL NUMERIC(18,9)') then
+      begin
+        // Se conseguiu criar os 2 campos faz update
+        ExecutaComando('commit');
+        ExecutaComando('update ITENS002 set UNITARIO_O=UNITARIO, QTD_ORIGINAL=QUANTIDADE');
+        ExecutaComando('commit');
+      end;
+    end;
+  end;
 
   //  ITENS002 CST ICMS
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_ICMS') = False then
     ExecutaComando('alter table ITENS002 add CST_ICMS VARCHAR(3)');
+
 
   //  ITENS002 PIS COFINS
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_PIS_COFINS') = False then
@@ -467,6 +487,7 @@ begin
     ExecutaComando('alter table ALTERACA add CST_PIS_COFINS VARCHAR(2)');
     ExecutaComando('alter table ALTERACA add ALIQ_PIS NUMERIC(18,4)');
     ExecutaComando('alter table ALTERACA add ALIQ_COFINS NUMERIC(18,4)');
+    ExecutaComando('commit');
   end;
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'OBS') = False then
@@ -484,6 +505,7 @@ begin
     ExecutaComando('alter table VENDAS add DATA_CANCEL date');
     ExecutaComando('alter table VENDAS add HORA_CANCEL varchar(8)');
     ExecutaComando('alter table VENDAS add COD_SIT varchar(2)');
+    ExecutaComando('commit');
   end;
 
   // Imformações complementares VENDA
@@ -523,49 +545,58 @@ begin
   // Imformações complementares COMPRAS
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (Imformações complementares COMPRAS)');
- 
+
   try
-    ExecutaComando('alter table COMPRAS add COMPLEMENTO blob sub_type 1');
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'COMPLEMENTO') = False then
+    begin
+      ExecutaComando('alter table COMPRAS add COMPLEMENTO blob sub_type 1');
 
-    ExecutaComando('commit');
+      ExecutaComando('commit');
 
-    ExecutaComando('update COMPRAS set COMPLEMENTO=COMPLEMEN1||COMPLEMEN2||COMPLEMEN3||COMPLEMEN4||COMPLEMEN5');
+      ExecutaComando('update COMPRAS set COMPLEMENTO=COMPLEMEN1||COMPLEMEN2||COMPLEMEN3||COMPLEMEN4||COMPLEMEN5');
+      ExecutaComando('commit');
 
-    ExecutaComando('alter table COMPRAS drop COMPLEMEN1');
+      ExecutaComando('alter table COMPRAS drop COMPLEMEN1');
 
-    ExecutaComando('alter table COMPRAS drop COMPLEMEN2');
+      ExecutaComando('alter table COMPRAS drop COMPLEMEN2');
 
-    ExecutaComando('alter table COMPRAS drop COMPLEMEN3');
+      ExecutaComando('alter table COMPRAS drop COMPLEMEN3');
 
-    ExecutaComando('alter table COMPRAS drop COMPLEMEN4');
+      ExecutaComando('alter table COMPRAS drop COMPLEMEN4');
 
-    ExecutaComando('alter table COMPRAS drop COMPLEMEN5');
+      ExecutaComando('alter table COMPRAS drop COMPLEMEN5');
+      ExecutaComando('commit');
+    end;
   except
   end;
 
-  // COMPRAS NFEID
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (COMPRAS NFEID)');
 
-  ExecutaComando('alter table COMPRAS add NFEID varchar(44)');
+  // COMPRAS NFEID
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'NFEID') = False then
+    ExecutaComando('alter table COMPRAS add NFEID varchar(44)');
 
+  //ANVISA
   // VENDAS
-  ExecutaComando('alter table VENDAS add ANVISA integer default 0');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'ANVISA') = False then
+    ExecutaComando('alter table VENDAS add ANVISA integer default 0');
 
   // COMPRAS
-  ExecutaComando('alter table COMPRAS add ANVISA integer default 0');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'ANVISA') = False then
+    ExecutaComando('alter table COMPRAS add ANVISA integer default 0');
 
   // ITENS001
-  ExecutaComando('alter table ITENS001 add ANVISA integer default 0');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'ANVISA') = False then
+    ExecutaComando('alter table ITENS001 add ANVISA integer default 0');
 
   // ITENS002
-  ExecutaComando('alter table ITENS002 add ANVISA integer default 0');
-
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ANVISA') = False then
+    ExecutaComando('alter table ITENS002 add ANVISA integer default 0');
 
   // IVA
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (IVA)');
-
 
   try
     Mensagem22('Aguarde atualizando o campo IVA...');
@@ -598,6 +629,7 @@ begin
     Form1.ibDataset200.SelectSql.Add('update ESTOQUE set LIVRE4='+QuotedStr('')+' where substring(LIVRE4 from 1 for 5)='+QuotedStr('<pIVA')+' ');
     Form1.ibDataset200.Open;
     Form1.ibDataset200.Close;
+    ExecutaComando('commit');
   except
   end;
 
@@ -606,67 +638,88 @@ begin
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (NFC-e)');
 
-  ExecutaComando('create table NFCE (REGISTRO VARCHAR(10), DATA date, NUMERONF VARCHAR(6), STATUS VARCHAR(128), NFEID VARCHAR(44), NFERECIBO VARCHAR(15), NFEXML blob sub_type 1)');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE') = False then
+  begin
+    ExecutaComando('create table NFCE (REGISTRO VARCHAR(10), DATA date, NUMERONF VARCHAR(6), STATUS VARCHAR(128), NFEID VARCHAR(44), NFERECIBO VARCHAR(15), NFEXML blob sub_type 1)');
 
-  ExecutaComando('create generator G_NFCE ');
+    ExecutaComando('create generator G_NFCE ');
 
-  ExecutaComando('alter table NFCE add DATA date');
+    ExecutaComando('alter table NFCE add DATA date');
 
-  if ExecutaComando('create generator G_NUMERONFCE ') then
-    ExecutaComando('set generator G_NUMERONFCE to 0 ');
+    if ExecutaComando('create generator G_NUMERONFCE ') then
+      ExecutaComando('set generator G_NUMERONFCE to 0 ');
+      
+    ExecutaComando('commit');
+  end;
 
   // VENDAS FINALIDADE
-  ExecutaComando('alter table VENDAS add FINNFE varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'FINNFE') = False then
+    ExecutaComando('alter table VENDAS add FINNFE varchar(1)');
 
   // VENDAS CONSUMIDOR FINAL
-  ExecutaComando('alter table VENDAS add INDFINAL varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'INDFINAL') = False then
+    ExecutaComando('alter table VENDAS add INDFINAL varchar(1)');
 
   // VENDAS PRESENCIAL
-  ExecutaComando('alter table VENDAS add INDPRES varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'INDPRES') = False then
+    ExecutaComando('alter table VENDAS add INDPRES varchar(1)');
 
   // COMPRAS FINALIDADE
-  ExecutaComando('alter table COMPRAS add FINNFE varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'FINNFE') = False then
+    ExecutaComando('alter table COMPRAS add FINNFE varchar(1)');
 
   // COMPRAS CONSUMIDOR FINAL
-  ExecutaComando('alter table COMPRAS add INDFINAL varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'INDFINAL') = False then
+    ExecutaComando('alter table COMPRAS add INDFINAL varchar(1)');
 
   // COMPRAS PRESENCIAL
-  ExecutaComando('alter table COMPRAS add INDPRES varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'INDPRES') = False then
+    ExecutaComando('alter table COMPRAS add INDPRES varchar(1)');
 
-  
   // PAF
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (PAF)');
 
-  ExecutaComando('create table DEMAIS (REGISTRO VARCHAR(10), ECF VARCHAR(20), COO VARCHAR(6), GNF VARCHAR(6), GRG VARCHAR(6), CDC VARCHAR(6), DENOMINACAO VARCHAR(2), DATA date, HORA VARCHAR(8), ENCRYPTHASH varchar(56))');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DEMAIS') = False then
+  begin
+    ExecutaComando('create table DEMAIS (REGISTRO VARCHAR(10), ECF VARCHAR(20), COO VARCHAR(6), GNF VARCHAR(6), GRG VARCHAR(6), CDC VARCHAR(6), DENOMINACAO VARCHAR(2), DATA date, HORA VARCHAR(8), ENCRYPTHASH varchar(56))');
+    ExecutaComando('create generator G_DEMAIS ');
+    ExecutaComando('commit');    
+  end;
 
-  ExecutaComando('create generator G_DEMAIS ');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAOS') = False then
+    ExecutaComando('create table CONTAOS (CONTA VARCHAR(6), IDENTIFICADOR1 VARCHAR(15), IDENTIFICADOR2 VARCHAR(15), IDENTIFICADOR3 VARCHAR(15), IDENTIFICADOR4 VARCHAR(15), IDENTIFICADOR5 VARCHAR(15))');
 
-  ExecutaComando('create table CONTAOS (CONTA VARCHAR(6), IDENTIFICADOR1 VARCHAR(15), IDENTIFICADOR2 VARCHAR(15), IDENTIFICADOR3 VARCHAR(15), IDENTIFICADOR4 VARCHAR(15), IDENTIFICADOR5 VARCHAR(15))');
+  //ExecutaComando('create generator G_DEMAIS ');
 
-  ExecutaComando('create generator G_DEMAIS ');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'MEDIDA') = False then
+    ExecutaComando('create table MEDIDA (REGISTRO VARCHAR(10), SIGLA VARCHAR(6), DESCRICAO VARCHAR(30), OBS VARCHAR(30), PRIMARY KEY (SIGLA) )');
 
-  ExecutaComando('create table MEDIDA (REGISTRO VARCHAR(10), SIGLA VARCHAR(6), DESCRICAO VARCHAR(30), OBS VARCHAR(30), PRIMARY KEY (SIGLA) )');
-
-
+  ExecutaComando('commit');
+  
   // SPED
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (SPED)');
 
-  ExecutaComando('alter table ITENS001 add VICMS numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VICMS') = False then
+    ExecutaComando('alter table ITENS001 add VICMS numeric(18,2)');
 
-  ExecutaComando('alter table ITENS001 add VBC numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBC') = False then
+    ExecutaComando('alter table ITENS001 add VBC numeric(18,2)');
 
-  ExecutaComando('alter table ITENS001 add VBCST numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBCST') = False then
+    ExecutaComando('alter table ITENS001 add VBCST numeric(18,2)');
 
-  ExecutaComando('alter table ITENS001 add VICMSST numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VICMSST') = False then
+    ExecutaComando('alter table ITENS001 add VICMSST numeric(18,2)');
 
-
+  ExecutaComando('commit');
   // vIPI
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (vIPI)');
 
-  ExecutaComando('alter table ITENS001 add vIPI numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'vIPI') = False then
+    ExecutaComando('alter table ITENS001 add vIPI numeric(18,2)');
 
   ExecutaComando('commit');
 
@@ -675,24 +728,32 @@ begin
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (vICMS)');
 
-  ExecutaComando('alter table ITENS002 add VICMS numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VICMS') = False then
+    ExecutaComando('alter table ITENS002 add VICMS numeric(18,2)');
 
-  ExecutaComando('alter table ITENS002 add VBC numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VBC') = False then
+    ExecutaComando('alter table ITENS002 add VBC numeric(18,2)');
 
-  ExecutaComando('alter table ITENS002 add VBCST numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VBCST') = False then
+    ExecutaComando('alter table ITENS002 add VBCST numeric(18,2)');
 
-  ExecutaComando('alter table ITENS002 add VICMSST numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VICMSST') = False then
+    ExecutaComando('alter table ITENS002 add VICMSST numeric(18,2)');
 
-  ExecutaComando('alter table ITENS002 add vIPI numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'vIPI') = False then
+    ExecutaComando('alter table ITENS002 add vIPI numeric(18,2)');
 
-  ExecutaComando('alter table ITENS002 add CST_IPI varchar(2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_IPI') = False then
+    ExecutaComando('alter table ITENS002 add CST_IPI varchar(2)');
 
-  ExecutaComando('alter table ITENS002 add vPRECO numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'vPRECO') = False then
+    ExecutaComando('alter table ITENS002 add vPRECO numeric(18,2)');
 
   ExecutaComando('commit');
 
   // SPED Desconto
-  ExecutaComando('alter table ALTERACA add DESCONTO numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'DESCONTO') = False then
+    ExecutaComando('alter table ALTERACA add DESCONTO numeric(18,2)');
 
   ExecutaComando('commit');
 
@@ -700,6 +761,7 @@ begin
   Mensagem22('Aguarde alterando estrutura do banco de dados... (NUMERONF)');
 
   ExecutaComando('alter table RESUMO alter DOCUMENTO type varchar(12)');
+  ExecutaComando('commit');
 
   try
     Form1.ibDataset200.Close;
@@ -726,6 +788,8 @@ begin
       ExecutaComando('update PAGAR set NUMERONF='+QuotedStr('000')+'||SubString(NUMERONF from 1 for 6)||'+QuotedStr('00')+'||SubString(NUMERONF from 7 for 1) ');  // ok
 
       ExecutaComando('update PAGAR set DOCUMENTO='+QuotedStr('000')+'||SubString(DOCUMENTO from 1 for 7)');  // ok
+
+      ExecutaComando('commit');
     end;
   except
   end;
@@ -736,7 +800,7 @@ begin
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('select NUMERONF from VENDAS where NUMERONF=''999999'' ');
     Form1.ibDataset200.Open;
-    
+
     if Form1.ibDataSet200.FieldByName('NUMERONF').Size <= 7 then
     begin
       ExecutaComando('alter table VENDAS alter NUMERONF type varchar(12)');
@@ -760,6 +824,8 @@ begin
       ExecutaComando('update RECEBER set NUMERONF='+QuotedStr('000')+'||SubString(NUMERONF from 1 for 6)||'+QuotedStr('00')+'||SubString(NUMERONF from 7 for 1) ');  // ok
 
       ExecutaComando('update RECEBER set DOCUMENTO=SubString(DOCUMENTO from 1 for 1)||'+QuotedStr('000')+'||SubString(DOCUMENTO from 2 for 6)');  // ok
+
+      ExecutaComando('commit');
     end;
   except
   end;
@@ -773,166 +839,298 @@ begin
     if Form1.ibDataSet200.FieldByName('NUMERONF').Size <= 7 then
     begin
       ExecutaComando('alter table ORCAMENT alter NUMERONF type varchar(12)');
-
       ExecutaComando('commit');
-
       ExecutaComando('update ORCAMENT set NUMERONF='+QuotedStr('000')+'||SubString(NUMERONF from 1 for 6)||'+QuotedStr('00')+'||SubString(NUMERONF from 7 for 1) ');  // ok
+      ExecutaComando('commit');
     end;
   except
   end;
 
   // Nosso Numero
-  ExecutaComando('alter table RECEBER add NN varchar(10)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'NN') = False then
+  begin
+    ExecutaComando('alter table RECEBER add NN varchar(10)');
+    ExecutaComando('create generator G_NN');
+    ExecutaComando('commit');
+  end;
 
-  ExecutaComando('create generator G_NN');
+  // Anvisa
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'ANVISA') = False then
+    ExecutaComando('alter table COMPRAS add ANVISA integer default 0');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'ANVISA') = False then
+    ExecutaComando('alter table ALTERACA add ANVISA integer default 0');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CSOSN') = False then
+    ExecutaComando('alter table ESTOQUE add CSOSN varchar(3)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CEST') = False then
+    ExecutaComando('alter table ESTOQUE add CEST varchar(7)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CSOSN_NFCE') = False then
+    ExecutaComando('alter table ESTOQUE add CSOSN_NFCE varchar(3)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CST_NFCE') = False then
+    ExecutaComando('alter table ESTOQUE add CST_NFCE varchar(3)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'ALIQUOTA_NFCE') = False then
+    ExecutaComando('alter table ESTOQUE add ALIQUOTA_NFCE numeric(18,2)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table EMITENTE add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table ESTOQUE add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table VENDAS add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table ITENS001 add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table ALTERACA add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table PAGAMENT add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENT', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table ORCAMENT add ENCRYPTHASH varchar(56)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENT', 'COO') = False then
+    ExecutaComando('alter table ORCAMENT add COO varchar(6)');
 
   ExecutaComando('commit');
 
-  // Anvisa
-  ExecutaComando('alter table COMPRAS add ANVISA integer default 0');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'ENCRYPTHASH') = False then
+    ExecutaComando('alter table REDUCOES add ENCRYPTHASH varchar(56)');
 
-  ExecutaComando('alter table ALTERACA add ANVISA integer default 0');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'STATUS') = False then
+    ExecutaComando('alter table REDUCOES add STATUS varchar(1)');
 
-  ExecutaComando('alter table ESTOQUE add CSOSN varchar(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'COO') = False then
+    ExecutaComando('alter table ALTERACA add COO varchar(6)');
 
-  ExecutaComando('alter table ESTOQUE add CEST varchar(7)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CCF') = False then
+    ExecutaComando('alter table ALTERACA add CCF varchar(6)');
 
-  ExecutaComando('alter table ESTOQUE add CSOSN_NFCE varchar(3)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table ESTOQUE add CST_NFCE varchar(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'CCF') = False then
+    ExecutaComando('alter table PAGAMENT add CCF varchar(6)'); // Número de operações não fiscais executadas na impressora.
 
-  ExecutaComando('alter table ESTOQUE add ALIQUOTA_NFCE numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'COO') = False then
+    ExecutaComando('alter table PAGAMENT add COO varchar(6)'); // Número de operações não fiscais executadas na impressora.
 
-  ExecutaComando('alter table EMITENTE add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'GNF') = False then
+    ExecutaComando('alter table PAGAMENT add GNF varchar(6)'); // Número de operações não fiscais executadas na impressora.
 
-  ExecutaComando('alter table ESTOQUE add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'GRG') = False then
+    ExecutaComando('alter table PAGAMENT add GRG varchar(6)'); //  Numero do Relatório Gerencial
 
-  ExecutaComando('alter table VENDAS add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'CDC') = False then
+    ExecutaComando('alter table PAGAMENT add CDC varchar(6)'); // Número de conprovante de debito e credito
 
-  ExecutaComando('alter table ITENS001 add ENCRYPTHASH varchar(56)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table ALTERACA add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'CRT') = False then
+    ExecutaComando('alter table EMITENTE add CRT varchar(1)');
 
-  ExecutaComando('alter table PAGAMENT add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'CNAE') = False then
+    ExecutaComando('alter table EMITENTE add CNAE varchar(7)');
 
-  ExecutaComando('alter table ORCAMENT add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'LICENCA') = False then
+    ExecutaComando('alter table EMITENTE add LICENCA varchar(56)');
 
-  ExecutaComando('alter table ORCAMENT add COO varchar(6)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table REDUCOES add ENCRYPTHASH varchar(56)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CSOSN') = False then
+    ExecutaComando('alter table ICM add CSOSN varchar(3)');
 
-  ExecutaComando('alter table REDUCOES add STATUS varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'NVOL') = False then
+    ExecutaComando('alter table VENDAS add NVOL varchar(60)');
 
-  ExecutaComando('alter table ALTERACA add COO varchar(6)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'NVOL') = False then
+    ExecutaComando('alter table COMPRAS add NVOL varchar(60)');
 
-  ExecutaComando('alter table ALTERACA add CCF varchar(6)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'LOKED') = False then
+    ExecutaComando('alter table VENDAS add LOKED varchar(1)');
 
-  ExecutaComando('alter table PAGAMENT add CCF varchar(6)'); // Número de operações não fiscais executadas na impressora.
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'NFEPROTOCOLO') = False then
+    ExecutaComando('alter table VENDAS add NFEPROTOCOLO varchar(80)');
 
-  ExecutaComando('alter table PAGAMENT add COO varchar(6)'); // Número de operações não fiscais executadas na impressora.
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'STATUS') = False then
+    ExecutaComando('alter table VENDAS add STATUS varchar(128)');
 
-  ExecutaComando('alter table PAGAMENT add GNF varchar(6)'); // Número de operações não fiscais executadas na impressora.
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'NFEID') = False then
+    ExecutaComando('alter table VENDAS add NFEID varchar(44)');
 
-  ExecutaComando('alter table PAGAMENT add GRG varchar(6)'); //  Numero do Relatório Gerencial
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'NFERECIBO') = False then
+    ExecutaComando('alter table VENDAS add NFERECIBO varchar(15)');
 
-  ExecutaComando('alter table PAGAMENT add CDC varchar(6)'); // Número de conprovante de debito e credito
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'NFEXML') = False then
+    ExecutaComando('alter table VENDAS add NFEXML blob sub_type 1');
 
-  ExecutaComando('alter table EMITENTE add CRT varchar(1)');
+  ExecutaComando('commit');
+      
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'NFEXML') = False then
+    ExecutaComando('alter table COMPRAS add NFEXML blob sub_type 1');
 
-  ExecutaComando('alter table EMITENTE add CNAE varchar(7)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'MDESTINXML') = False then
+    ExecutaComando('alter table COMPRAS add MDESTINXML blob sub_type 1');
 
-  ExecutaComando('alter table EMITENTE add LICENCA varchar(56)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table ICM add CSOSN varchar(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'ICCE') = False then
+    ExecutaComando('alter table VENDAS add ICCE integer');
 
-  ExecutaComando('alter table VENDAS add NVOL varchar(60)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'CCEXML') = False then
+    ExecutaComando('alter table VENDAS add CCEXML blob sub_type 1');
 
-  ExecutaComando('alter table COMPRAS add NVOL varchar(60)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'RECIBOXML') = False then
+    ExecutaComando('alter table VENDAS add RECIBOXML blob sub_type 1');
 
-  ExecutaComando('alter table VENDAS add LOKED varchar(1)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table VENDAS add NFEPROTOCOLO varchar(80)');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'AUDIT0RIA') = False then
+    ExecutaComando('create table AUDIT0RIA (ATO varchar(10), MODULO varchar(10), USUARIO varchar(60), HISTORICO varchar(80), VALOR_DE numeric(18,2), VALOR_PARA numeric(18,2), DATA date, HORA varchar(8), REGISTRO varchar(10))');
 
-  ExecutaComando('alter table VENDAS add STATUS varchar(128)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IAT') = False then
+    ExecutaComando('alter table ESTOQUE add IAT varchar(01)');
 
-  ExecutaComando('alter table VENDAS add NFEID varchar(44)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IPPT') = False then
+    ExecutaComando('alter table ESTOQUE add IPPT varchar(01)');
 
-  ExecutaComando('alter table VENDAS add NFERECIBO varchar(15)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table VENDAS add NFEXML blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'SMALL') = False then
+    ExecutaComando('alter table REDUCOES add SMALL varchar(02)');
 
-  ExecutaComando('alter table COMPRAS add NFEXML blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'TIPOECF') = False then
+    ExecutaComando('alter table REDUCOES add TIPOECF varchar(07)');
 
-  ExecutaComando('alter table COMPRAS add MDESTINXML blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'MARCAECF') = False then
+    ExecutaComando('alter table REDUCOES add MARCAECF varchar(20)');
 
-  ExecutaComando('alter table VENDAS add ICCE integer');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'MODELOECF') = False then
+    ExecutaComando('alter table REDUCOES add MODELOECF varchar(20)');
 
-  ExecutaComando('alter table VENDAS add CCEXML blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'VERSAOSB') = False then
+    ExecutaComando('alter table REDUCOES add VERSAOSB varchar(10)');
 
-  ExecutaComando('alter table VENDAS add RECIBOXML blob sub_type 1');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'DATASB') = False then
+    ExecutaComando('alter table REDUCOES add DATASB varchar(08)');
 
-  ExecutaComando('create table AUDIT0RIA (ATO varchar(10), MODULO varchar(10), USUARIO varchar(60), HISTORICO varchar(80), VALOR_DE numeric(18,2), VALOR_PARA numeric(18,2), DATA date, HORA varchar(8), REGISTRO varchar(10))');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'HORASB') = False then
+    ExecutaComando('alter table REDUCOES add HORASB varchar(06)');
 
-  ExecutaComando('alter table ESTOQUE add IAT varchar(01)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table ESTOQUE add IPPT varchar(01)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CNPJ') = False then
+    ExecutaComando('alter table ALTERACA add CNPJ varchar(19)');
 
-  ExecutaComando('alter table REDUCOES add SMALL varchar(02)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table REDUCOES add TIPOECF varchar(07)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'MUNICIPIO') = False then
+    ExecutaComando('alter table EMITENTE alter MUNICIPIO type varchar(40)');
 
-  ExecutaComando('alter table REDUCOES add MARCAECF varchar(20)');
-
-  ExecutaComando('alter table REDUCOES add MODELOECF varchar(20)');
-
-  ExecutaComando('alter table REDUCOES add VERSAOSB varchar(10)');
-
-  ExecutaComando('alter table REDUCOES add DATASB varchar(08)');
-
-  ExecutaComando('alter table REDUCOES add HORASB varchar(06)');
-
-  ExecutaComando('alter table ALTERACA add CNPJ varchar(19)');
-
-  ExecutaComando('alter table EMITENTE alter MUNICIPIO type varchar(40)');
-
-  ExecutaComando('alter table TRANSPOR add ANTT varchar(20)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'TRANSPOR', 'ANTT') = False then
+    ExecutaComando('alter table TRANSPOR add ANTT varchar(20)');
 
   ExecutaComando('alter table TRANSPOR alter MUNICIPIO type varchar(40)');
 
   ExecutaComando('alter table CLIFOR alter CIDADE type varchar(40)');
 
-  if ExecutaComando('alter table CLIFOR alter CLIFOR type varchar(40)') then
-  begin
-    ExecutaComando('commit');
+  ExecutaComando('commit');
 
-    ExecutaComando('update CLIFOR set CLIFOR=''Cliente'' where CLIFOR=''C'' ');
+  try
 
-    ExecutaComando('update CLIFOR set CLIFOR=''Fornecedor'' where CLIFOR=''F'' ');
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Text :=
+      'select CLIFOR ' +
+      'from CLIFOR';
+    Form1.ibDataSet200.Open;
+
+    if Form1.ibDataSet200.FieldByName('CLIFOR').Size < 40 then
+    begin
+
+      if ExecutaComando('alter table CLIFOR alter CLIFOR type varchar(40)') then
+      begin
+        ExecutaComando('commit');
+        ExecutaComando('update CLIFOR set CLIFOR= ''Cliente'' where CLIFOR= ''C'' ');
+        ExecutaComando('update CLIFOR set CLIFOR= ''Fornecedor'' where CLIFOR= ''F'' ');
+        ExecutaComando('commit');
+      end;
+
+    end;
+  except
+
   end;
 
-  ExecutaComando('alter table CLIFOR add FOTO blob sub_type 0');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'FOTO') = False then
+    ExecutaComando('alter table CLIFOR add FOTO blob sub_type 0');
 
-  if ExecutaComando('alter table CLIFOR add WHATSAPP varchar(16)') then
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'WHATSAPP') = False then
   begin
-    ExecutaComando('commit');
-    
-    ExecutaComando('update CLIFOR set WHATSAPP=CELULAR');
+    if ExecutaComando('alter table CLIFOR add WHATSAPP varchar(16)') then
+    begin
+      ExecutaComando('commit');
+      ExecutaComando('update CLIFOR set WHATSAPP=CELULAR');
+      ExecutaComando('commit');
+    end;
   end;
 
   // PAF
-  ExecutaComando('alter table ESTOQUE alter REFERENCIA type varchar(14)');
+  try
+
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Text :=
+      'select REFERENCIA ' +
+      'from ESTOQUE';
+    Form1.ibDataSet200.Open;
+
+    if Form1.ibDataSet200.FieldByName('REFERENCIA').Size < 14 then
+    begin
+      ExecutaComando('alter table ESTOQUE alter REFERENCIA type varchar(14)');
+      ExecutaComando('commit');
+    end;
+  except
+  
+  end;
 
   // NF-e
-  ExecutaComando('alter table CLIFOR alter CIDADE type varchar(30)');
+  try
 
-  if ExecutaComando('create generator G_LEGAL ') then
-    ExecutaComando('set generator G_LEGAL to 0');
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Text :=
+      'select CIDADE ' +
+      'from CLIFOR';
+    Form1.ibDataSet200.Open;
 
-  ExecutaComando('create generator G_BUILD ');
+    if Form1.ibDataSet200.FieldByName('CIDADE').Size < 30 then
+    begin
+      ExecutaComando('alter table CLIFOR alter CIDADE type varchar(30)');
+      ExecutaComando('commit');
+    end;
 
-  ExecutaComando('create generator G_MUTADO ');
+  except
+  end;
 
-  ExecutaComando('alter table ORCAMENT add NUMERONF varchar(7)');
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_LEGAL') = False then
+  begin
+    if ExecutaComando('create generator G_LEGAL ') then
+      ExecutaComando('set generator G_LEGAL to 0');
+    ExecutaComando('commit');      
+  end;
+
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_BUILD') = False then
+    ExecutaComando('create generator G_BUILD ');
+
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_MUTADO') = False then
+    ExecutaComando('create generator G_MUTADO ');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENT', 'NUMERONF') = False then
+    ExecutaComando('alter table ORCAMENT add NUMERONF varchar(7)');
 
   if sBuild < '336' then
   begin
@@ -944,12 +1142,14 @@ begin
     CommitaTudo(True);
 
     ExecutaComando('update ORCAMENT set PEDIDO='+QuotedStr('0000')+'||SubString(PEDIDO  from 1 for 6) where SubString(PEDIDO from 7 for 3)='+QuotedStr('')+' ');
+    ExecutaComando('commit');
 
     ExecutaComando('alter table OS alter NUMERO type varchar(10)');
 
     CommitaTudo(True);
 
     ExecutaComando('update OS set NUMERO='+QuotedStr('0000')+'||SubString(NUMERO from 1 for 6) where SubString(NUMERO from 7 for 3)='+QuotedStr('')+' ');
+    ExecutaComando('commit');
 
     ExecutaComando('alter table OS alter NF type varchar(12)');
 
@@ -958,79 +1158,109 @@ begin
     CommitaTudo(True);
 
     ExecutaComando('update ITENS001 set NUMEROOS='+QuotedStr('0000')+'||SubString(NUMEROOS from 1 for 6) where SubString(NUMEROOS from 7 for 3)='+QuotedStr('')+' ');
+    ExecutaComando('commit');
 
     ExecutaComando('alter table ITENS003 alter NUMEROOS type varchar(10)');
 
     CommitaTudo(True);
 
     ExecutaComando('update ITENS003 set NUMEROOS='+QuotedStr('0000')+'||SubString(NUMEROOS from 1 for 6) where SubString(NUMEROOS from 7 for 3)='+QuotedStr('')+' ');
+    ExecutaComando('commit');    
   end;
 
   Form22.Repaint;
   Mensagem22('Aguarde alterando estrutura do banco de dados... (337)');
 
-
-  ExecutaComando('alter table EMITENTE add IM varchar(16)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'IM') = False then
+    ExecutaComando('alter table EMITENTE add IM varchar(16)');
 
   ExecutaComando('alter table ICM alter OBS type varchar(250)');
 
-  ExecutaComando('alter table ICM add CST varchar(3)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CST') = False then
+    ExecutaComando('alter table ICM add CST varchar(3)');
 
-  ExecutaComando('alter table ICM drop CSTCOFINS');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CSTCOFINS') then
+    ExecutaComando('alter table ICM drop CSTCOFINS');
 
-  ExecutaComando('alter table ICM add CSTPISCOFINS VARCHAR(2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CSTPISCOFINS') = False then
+    ExecutaComando('alter table ICM add CSTPISCOFINS VARCHAR(2)');
 
-  ExecutaComando('alter table ICM drop CSTPIS');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CSTPIS') then
+    ExecutaComando('alter table ICM drop CSTPIS');
 
-  ExecutaComando('alter table ICM add BCPIS numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCPIS') = False then
+    ExecutaComando('alter table ICM add BCPIS numeric(18,2)');
 
-  ExecutaComando('alter table ICM add BCCOFINS numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCCOFINS') = False then
+    ExecutaComando('alter table ICM add BCCOFINS numeric(18,2)');
 
-  ExecutaComando('alter table ICM add PPIS numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'PPIS') = False then
+    ExecutaComando('alter table ICM add PPIS numeric(18,2)');
 
-  ExecutaComando('alter table ICM add PCOFINS numeric(18,2)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'PCOFINS') = False then
+    ExecutaComando('alter table ICM add PCOFINS numeric(18,2)');
 
-  ExecutaComando('alter table ICM add SOBREIPI varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'SOBREIPI') = False then
+    ExecutaComando('alter table ICM add SOBREIPI varchar(1)');
 
-  ExecutaComando('alter table ICM add SOBREFRETE varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'SOBREFRETE') = False then
+    ExecutaComando('alter table ICM add SOBREFRETE varchar(1)');
 
-  ExecutaComando('alter table ICM add SOBRESEGURO varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'SOBRESEGURO') = False then
+    ExecutaComando('alter table ICM add SOBRESEGURO varchar(1)');
 
-  ExecutaComando('alter table ICM add SOBREOUTRAS varchar(1)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'SOBREOUTRAS') = False then
+    ExecutaComando('alter table ICM add SOBREOUTRAS varchar(1)');
+
+  ExecutaComando('commit');
 
   ExecutaComando('alter table OS alter PROBLEMA type varchar(128)');
 
-  ExecutaComando('alter table ALTERACA add HORA varchar(8)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'HORA') = False then
+    ExecutaComando('alter table ALTERACA add HORA varchar(8)');
 
-  ExecutaComando('alter table REDUCOES add HORA varchar(8)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'HORA') = False then
+    ExecutaComando('alter table REDUCOES add HORA varchar(8)');
 
-  ExecutaComando('alter table ALTERACA add DAV varchar(10)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'DAV') = False then
+    ExecutaComando('alter table ALTERACA add DAV varchar(10)');
 
-  ExecutaComando('alter table ALTERACA add TIPODAV varchar(10)');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'TIPODAV') = False then
+    ExecutaComando('alter table ALTERACA add TIPODAV varchar(10)');
 
-  ExecutaComando('alter table RESUMO add VALOR numeric(18,2)');
+  ExecutaComando('commit');
 
-  ExecutaComando('alter table PAGAR add ATIVO integer');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RESUMO', 'VALOR') = False then
+    ExecutaComando('alter table RESUMO add VALOR numeric(18,2)');
 
-  ExecutaComando('create table MUNICIPIOS (CODIGO varchar(7), NOME varchar(40), UF varchar(2), REGISTRO varchar(10))');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAR', 'ATIVO') = False then
+    ExecutaComando('alter table PAGAR add ATIVO integer');
 
-  ExecutaComando('create table IBPT (CODIGO varchar(8), Ex varchar(2), Tabela varchar(2), AliqNac NUMERIC(18,4),AlicImp NUMERIC(18,4),REGISTRO varchar(10))');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'MUNICIPIOS') = False then
+    ExecutaComando('create table MUNICIPIOS (CODIGO varchar(7), NOME varchar(40), UF varchar(2), REGISTRO varchar(10))');
+
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'IBPT') = False then
+    ExecutaComando('create table IBPT (CODIGO varchar(8), Ex varchar(2), Tabela varchar(2), AliqNac NUMERIC(18,4),AlicImp NUMERIC(18,4),REGISTRO varchar(10))');
 
   // Novo IBPT_
-  ExecutaComando('create table IBPT_ (CODIGO varchar(10),'+
-                'EX varchar(2),'+
-                'TIPO varchar(2),'+
-                'DESCRICAO varchar(500),'+
-                'NACIONALFEDERAL Numeric(18,4),'+
-                'IMPORTADOFEDERAL Numeric(18,4),'+
-                'ESTADUAL Numeric(18,4),'+
-                'MUNICIPAL Numeric(18,4),'+
-                'VIGENCIAINICIO varchar(10),'+
-                'VIGENCIAFIM varchar(10),'+
-                'CHAVE varchar(10),'+
-                'VERSAO varchar(10),'+
-                'FONTE varchar(10),'+
-                'REGISTRO varchar(10))');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'IBPT_') = False then
+  begin
+    ExecutaComando('create table IBPT_ (CODIGO varchar(10),'+
+                  'EX varchar(2),'+
+                  'TIPO varchar(2),'+
+                  'DESCRICAO varchar(500),'+
+                  'NACIONALFEDERAL Numeric(18,4),'+
+                  'IMPORTADOFEDERAL Numeric(18,4),'+
+                  'ESTADUAL Numeric(18,4),'+
+                  'MUNICIPAL Numeric(18,4),'+
+                  'VIGENCIAINICIO varchar(10),'+
+                  'VIGENCIAFIM varchar(10),'+
+                  'CHAVE varchar(10),'+
+                  'VERSAO varchar(10),'+
+                  'FONTE varchar(10),'+
+                  'REGISTRO varchar(10))');
+    ExecutaComando('commit');                  
+  end;
 
   ExecutaComando('alter table IBPT_ alter FONTE type varchar(30)');
 
@@ -1044,47 +1274,77 @@ begin
 
   ExecutaComando('alter table ORCAMENT alter VENDEDOR type varchar(35)');
 
-  {Sandro Silva 2022-10-04 inicio}
-  if ExecutaComando('ALTER TABLE ITENS001 ADD CSOSN VARCHAR(3)') then
-    ExecutaComando('commit');
-  {Sandro Silva 2022-10-04 fim}
+  ExecutaComando('commit');
+  
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'CSOSN') = False then
+  begin
+    {Sandro Silva 2022-10-04 inicio}
+    if ExecutaComando('ALTER TABLE ITENS001 ADD CSOSN VARCHAR(3)') then
+      ExecutaComando('commit');
+    {Sandro Silva 2022-10-04 fim}
+  end;
 
-  {Sandro Silva 2022-10-25 inicio}
-  if ExecutaComando('ALTER TABLE ITENS001 ADD VBC_PIS_COFINS NUMERIC(18,2)') then
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBC_PIS_COFINS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ITENS001 ADD VBC_PIS_COFINS NUMERIC(18,2)') then
+      ExecutaComando('commit');
+  end;
 
-  if ExecutaComando('ALTER TABLE ALTERACA ADD VBC_PIS_COFINS NUMERIC(18,2)') then
-    ExecutaComando('commit');
-  {Sandro Silva 2022-10-25 fim}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'VBC_PIS_COFINS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ALTERACA ADD VBC_PIS_COFINS NUMERIC(18,2)') then
+      ExecutaComando('commit');
+  end;
 
   {Sandro Silva 2022-12-16 inicio}
-  if ExecutaComando('ALTER TABLE RECEBER ADD MOVIMENTO DATE') then // Armazena a data que o valor foi creditado na conta banco
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'MOVIMENTO') = False then
+  begin
+    if ExecutaComando('ALTER TABLE RECEBER ADD MOVIMENTO DATE') then // Armazena a data que o valor foi creditado na conta banco
+      ExecutaComando('commit');
+  end;
 
   if ExecutaComando('alter table RECEBER alter DOCUMENTO type varchar(11)') then // Para poder marcar as parcelas migradas da Smallsoft para Zucchetti durante a incorporação
     ExecutaComando('commit');
 
-  if ExecutaComando('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60), ADD IDENTIFICADOR VARCHAR(10), ADD CONTACONTABILIDADE VARCHAR(20)') then // Para gerar relatórios contábeis
-    ExecutaComando('commit');
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60), ADD IDENTIFICADOR VARCHAR(10), ADD CONTACONTABILIDADE VARCHAR(20)') then // Para gerar relatórios contábeis
+      ExecutaComando('commit');
+  end;
 
-  if ExecutaComando('ALTER TABLE COMPRAS ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)') then // Para gerar relatórios contábeis
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'IDENTIFICADORPLANOCONTAS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE COMPRAS ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)') then // Para gerar relatórios contábeis
+      ExecutaComando('commit');
+  end;
 
-  if ExecutaComando('ALTER TABLE ESTOQUE ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IDENTIFICADORPLANOCONTAS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ESTOQUE ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
+      ExecutaComando('commit');
+  end;
 
-  if ExecutaComando('ALTER TABLE ITENS001 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'IDENTIFICADORPLANOCONTAS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ITENS001 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
+      ExecutaComando('commit');
+  end;
 
-  if ExecutaComando('ALTER TABLE ITENS003 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS003', 'IDENTIFICADORPLANOCONTAS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ITENS003 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
+      ExecutaComando('commit');
+  end;
   {Sandro Silva 2022-12-16 fim}
 
   {Sandro Silva 2023-04-10 inicio
   ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)');
   }
-  if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
-    ExecutaComando('commit');
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'FRETESOBREIPI') = False then
+  begin
+    if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
+      ExecutaComando('commit');
+  end;
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
   begin
@@ -1189,6 +1449,8 @@ begin
   end;
 
   ExecutaComando('update COMPRAS set NFEXML = null where coalesce(NFEXML, '''') <> '''' and (NFEXML not like ''%<chNFe>''||NFEID||''</chNFe>%'')');
+
+  ExecutaComando('commit');  
 
   Form13.Tag := 99;
 
