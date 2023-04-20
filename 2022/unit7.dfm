@@ -17338,7 +17338,8 @@ object Form7: TForm7
         'MSST, VIPI, '
       
         '   CST_IPI, VPRECO, CST_ICMS, QTD_ORIGINAL, UNITARIO_O, ANVISA, ' +
-        'EAN_ORIGINAL)'
+        'EAN_ORIGINAL, '
+      '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :BASE, :MEDI' +
@@ -17352,7 +17353,9 @@ object Form7: TForm7
       
         '   :VICMSST, :VIPI, :CST_IPI, :VPRECO, :CST_ICMS, :QTD_ORIGINAL,' +
         ' :UNITARIO_O, '
-      '   :ANVISA, :EAN_ORIGINAL)')
+      
+        '   :ANVISA, :EAN_ORIGINAL, :VBCFCP, :PFCP, :VFCP, :VBCFCPST, :PF' +
+        'CPST, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -17387,7 +17390,13 @@ object Form7: TForm7
       '  QTD_ORIGINAL,'
       '  UNITARIO_O,'
       '  ANVISA,'
-      '  EAN_ORIGINAL'
+      '  EAN_ORIGINAL,'
+      '  VBCFCP,'
+      '  PFCP,'
+      '  VFCP,'
+      '  VBCFCPST,'
+      '  PFCPST,'
+      '  VFCPST'
       'from ITENS002 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -17428,7 +17437,13 @@ object Form7: TForm7
       '  QTD_ORIGINAL = :QTD_ORIGINAL,'
       '  UNITARIO_O = :UNITARIO_O,'
       '  ANVISA = :ANVISA,'
-      '  EAN_ORIGINAL = :EAN_ORIGINAL'
+      '  EAN_ORIGINAL = :EAN_ORIGINAL,'
+      '  VBCFCP = :VBCFCP,'
+      '  PFCP = :PFCP,'
+      '  VFCP = :VFCP,'
+      '  VBCFCPST = :VBCFCPST,'
+      '  PFCPST = :PFCPST,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
@@ -17677,6 +17692,70 @@ object Form7: TForm7
       FixedChar = True
       Size = 15
     end
+    object ibDataSet23VBCFCP: TIBBCDField
+      DisplayLabel = 'BC FCP'
+      DisplayWidth = 9
+      FieldName = 'VBCFCP'
+      Origin = 'ITENS002.VBCFCP'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet23PFCP: TIBBCDField
+      DisplayLabel = '% FCP'
+      DisplayWidth = 9
+      FieldName = 'PFCP'
+      Origin = 'ITENS002.PFCP'
+      Visible = False
+      DisplayFormat = '##0.00'
+      Precision = 18
+      Size = 4
+    end
+    object ibDataSet23VFCP: TIBBCDField
+      DisplayLabel = 'FCP'
+      DisplayWidth = 9
+      FieldName = 'VFCP'
+      Origin = 'ITENS002.VFCP'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet23VBCFCPST: TIBBCDField
+      DisplayLabel = 'BC FCP ST'
+      DisplayWidth = 9
+      FieldName = 'VBCFCPST'
+      Origin = 'ITENS002.VBCFCPST'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet23PFCPST: TIBBCDField
+      DisplayLabel = '% FCP ST'
+      DisplayWidth = 9
+      FieldName = 'PFCPST'
+      Origin = 'ITENS002.PFCPST'
+      Visible = False
+      DisplayFormat = '##0.00'
+      Precision = 18
+      Size = 4
+    end
+    object ibDataSet23VFCPST: TIBBCDField
+      DisplayLabel = 'FCP ST'
+      DisplayWidth = 9
+      FieldName = 'VFCPST'
+      Origin = 'ITENS002.VFCPST'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
   end
   object DataSource23: TDataSource
     DataSet = ibDataSet23
@@ -17720,7 +17799,8 @@ object Form7: TForm7
         'D, ANVISA, '
       
         '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES, IDENTIFI' +
-        'CADORPLANOCONTAS)'
+        'CADORPLANOCONTAS,'
+      '   VFCPST)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :FORNECEDOR, :OPERACAO, :EMISS' +
@@ -17740,7 +17820,7 @@ object Form7: TForm7
       
         '   :COMPLEMENTO, :NFEID, :ANVISA, :NVOL, :NFEXML, :MDESTINXML, :' +
         'FINNFE, '
-      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS)')
+      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -17787,7 +17867,8 @@ object Form7: TForm7
       '  FINNFE,'
       '  INDFINAL,'
       '  INDPRES,'
-      '  IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS,'
+      '  VFCPST'
       'from COMPRAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -17840,7 +17921,8 @@ object Form7: TForm7
       '  FINNFE = :FINNFE,'
       '  INDFINAL = :INDFINAL,'
       '  INDPRES = :INDPRES,'
-      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -17851,6 +17933,12 @@ object Form7: TForm7
       FieldName = 'NUMERONF'
       Origin = 'COMPRAS.NUMERONF'
       Size = 12
+    end
+    object ibDataSet24MODELO: TIBStringField
+      DisplayLabel = 'Modelo'
+      FieldName = 'MODELO'
+      Origin = 'COMPRAS.MODELO'
+      Size = 2
     end
     object ibDataSet24EMISSAO: TDateField
       DisplayLabel = 'Emiss'#227'o'
@@ -17956,6 +18044,16 @@ object Form7: TForm7
       FieldName = 'BASESUBSTI'
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet24VFCPST: TIBBCDField
+      DisplayLabel = 'FCP ST'
+      FieldName = 'VFCPST'
+      Origin = 'COMPRAS.VFCPST'
+      OnChange = ibDataSet24MERCADORIAChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
     end
     object ibDataSet24TRANSPORTA: TStringField
       DisplayLabel = 'Transportadora'
@@ -18069,12 +18167,6 @@ object Form7: TForm7
       Visible = False
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
-    end
-    object ibDataSet24MODELO: TIBStringField
-      FieldName = 'MODELO'
-      Origin = 'COMPRAS.MODELO'
-      Visible = False
-      Size = 2
     end
     object ibDataSet24REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
