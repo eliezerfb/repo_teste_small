@@ -14298,6 +14298,21 @@ object Form7: TForm7
         OnClick = Aumentodepreo1Click
       end
     end
+    object Exibir7: TMenuItem
+      Caption = 'Exibir'
+      object odos1: TMenuItem
+        Caption = 'Todos'
+        OnClick = odos1Click
+      end
+      object Sativos1: TMenuItem
+        Caption = 'S'#243' ativos'
+        OnClick = Sativos1Click
+      end
+      object Sinativos1: TMenuItem
+        Caption = 'S'#243' inativos'
+        OnClick = Sinativos1Click
+      end
+    end
     object MenuItem31: TMenuItem
       Caption = '&Procura'
       OnClick = Image103Click

@@ -1443,6 +1443,10 @@ type
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
     ibDataSet14FRETESOBREIPI: TIBStringField;
+    Exibir7: TMenuItem;
+    odos1: TMenuItem;
+    Sativos1: TMenuItem;
+    Sinativos1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2049,6 +2053,9 @@ type
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
       const Text: String);
     procedure LimparRetornosda1Click(Sender: TObject);
+    procedure odos1Click(Sender: TObject);
+    procedure Sativos1Click(Sender: TObject);
+    procedure Sinativos1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -5634,27 +5641,30 @@ function TraduzSql(P1: String;P2 :Boolean): String;
 var
   I : Integer;
 begin
-  //
+  P1 := StrTran(P1,'COALESCE(ATIVO,0)=0', 'só ativos');
+  P1 := StrTran(P1,'COALESCE(ATIVO,0)=1', 'só inativos');
+
   P1 := StrTran(P1,'Coalesce', '');
   P1 := StrTran(P1, QuotedStr('~'),'');
   P1 := StrTran(P1,'PEDIDO', 'orçamento');
   P1 := StrTran(P1,'REGISTRO', 'Lançamento');
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('C')+')='+QuotedStr('C')+'', ' só clientes ');
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('F')+')='+QuotedStr('F')+'', ' só fornecedores ');
-  //
+
   P1 := StrTran(P1,'Coalesce(VALOR_RECE,0)=0', ' a receber ');
-  //
+
   P1 := StrTran(P1,' IE', ' Inscrição');
   P1 := StrTran(P1,'(IE)', ' Inscrição');
-  //
-  if Copy(Form7.TabelaAberta.SelectSQL.Text,1,12)='select first' then P1 := StrTran(P1, 'Listando' ,'Mostrando os últimos '+Form7.sMaxReg+' registros' );
-  //
+
+  if Copy(Form7.TabelaAberta.SelectSQL.Text,1,12)='select first' then
+    P1 := StrTran(P1, 'Listando' ,'Mostrando os últimos '+Form7.sMaxReg+' registros' );
+
   P1 := StrTran(P1,' and EMITIDA='+QuotedStr('X'), ', canceladas ');
   P1 := StrTran(P1,' and EMITIDA<>'+QuotedStr('S')+' and EMITIDA<>'+QuotedStr('X'), ', não impressas ');
   P1 := StrTran(P1, '(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0)<>0',' clientes com contas a receber ');
   P1 := StrTran(P1, '(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)<>0',' clientes com contas atrasadas ');
   P1 := StrTran(P1, '(select Coalesce(sum(VALOR_DUPL),0) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)=0',' clientes com contas em dia ');
-  //
+  
   P1 := StrTran(P1,'substring(DATANAS from 6 for 5)', ' aniverssário ');
   P1 := StrTran(P1, 'MOSTRAR<>'+QuotedStr('0'),' está atrasado ');
   P1 := StrTran(P1, 'MOSTRAR<>'+QuotedStr('1'),' está em dia ');
@@ -5678,19 +5688,19 @@ begin
   P1 := StrTran(P1, '%' ,'');
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
-  //
-  for I := 1 to Form7.TabelaAberta.FieldCount do if Form7.TabelaAberta.Fields[I-1].FieldName <> Form7.TabelaAberta.Fields[I-1].DisplayLabel then
-  begin
-    if (Form7.TabelaAberta.Fields[I-1].FieldName <> 'IPI')
-    and (copy(Form7.TabelaAberta.Fields[I-1].FieldName,1,3) <> 'CST')
-  then
+
+  for I := 1 to Form7.TabelaAberta.FieldCount do
+    if Form7.TabelaAberta.Fields[I-1].FieldName <> Form7.TabelaAberta.Fields[I-1].DisplayLabel then
     begin
-      P1 := StrTran(P1,' '+Form7.TabelaAberta.Fields[I-1].FieldName,' '+Form7.TabelaAberta.Fields[I-1].DisplayLabel);
+      if (Form7.TabelaAberta.Fields[I-1].FieldName <> 'IPI')
+      and (copy(Form7.TabelaAberta.Fields[I-1].FieldName,1,3) <> 'CST')
+    then
+      begin
+        P1 := StrTran(P1,' '+Form7.TabelaAberta.Fields[I-1].FieldName,' '+Form7.TabelaAberta.Fields[I-1].DisplayLabel);
+      end;
     end;
-  end;
-  //
+  
   Result := P1;
-  //
 end;
 
 
@@ -17992,7 +18002,6 @@ end;
 
 procedure TForm7.ibDataSet8VALOR_PAGOValidate(Sender: TField);
 begin
-  //
   if ibDataSet1.Locate('HISTORICO',copy('Pag. doc. '+ibDataSet8DOCUMENTO.AsString+'-'+ibDataSet8NOME.AsString,1,25),[loPartialKey]) then
   begin
     if AllTrim(Copy(ibDataSet1HISTORICO.AsString,1,25)) = AllTrim(copy('Pag. doc. '+ibDataSet8DOCUMENTO.AsString+'-'+ibDataSet8NOME.AsString,1,25)) then
@@ -18000,11 +18009,11 @@ begin
       ibDataSet1.Delete;
     end;
   end;
-  //
+
   if ibDataSet8VALOR_PAGO.Value > 0
     then if ibDataSet8PAGAMENTO.AsString = ''
       then ibDataSet8PAGAMENTO.AsDateTime := Date + Time;
-  //
+  
   if ibDataSet8VALOR_PAGO.Value <> 0 then // Se valor Zero apaga o antigo mas não grava o novo
   begin
     ibDataSet1.Append;
@@ -18014,12 +18023,10 @@ begin
     ibDataSet1NOME.AsString      := ibDataSet8CONTA.AsString;     // contas bancárias
     ibDataSet1.Post;
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet8NewRecord(DataSet: TDataSet);
 begin
-  //
   ibDataSet8REGISTRO.AsString := sProximo;
   ibDataSet8VALOR_PAGO.AsFloat    := 0;
   ibDataSet8VALOR_DUPL.AsFloat    := 0;
@@ -18027,44 +18034,37 @@ begin
   { Sugere sempre a data de vencimento de acordo com a configuração }
   ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
   ibDataSet8PORTADOR.AsString     := '';
-  //
 end;
 
 procedure TForm7.Mostrartodososclientesefornecedores1Click(
   Sender: TObject);
 begin
-  //
   sWhere := '';
-  //
+
   Form7.Close;
   Form7.Show;
-  //
+
   Mostrartodososclientesefornecedores1.Checked := False;
-  //
 end;
 
 procedure TForm7.Sosclientes1Click(Sender: TObject);
 begin
-  //
   sWhere := 'where CLIFOR='+QuotedStr('C')+ ' ';
-  //
+
   Form7.Close;
   Form7.Show;
-  //
+  
   Mostrartodososclientesefornecedores1.Checked := False;
-  //
 end;
 
 procedure TForm7.Sosfornecedores1Click(Sender: TObject);
 begin
-  //
   sWhere := 'where CLIFOR='+QuotedStr('F')+ ' ';
-  //
+  
   Form7.Close;
   Form7.Show;
-  //
+
   Mostrartodososclientesefornecedores1.Checked := False;
-  //
 end;
 
 procedure TForm7.Acertodecontasde2Click(Sender: TObject);
@@ -18206,21 +18206,18 @@ end;
 
 procedure TForm7.odas1Click(Sender: TObject);
 begin
-  //
   // Destaca o menu ativo
-  //
-  sWhere := ''; 
-  //
+  sWhere := '';
+
   Form7.Close;
   Form7.Show;
-  //
+
   Odas1.Checked         := True;
   Receber2.Checked       := False;
   Jrecebidas2.Checked    := False;
   Atrasadas3.Checked     := False;
   Avencer3.Checked       := False;
   Vencendohoje2.Checked := False;
-  //
 end;
 
 procedure TForm7.Receber2Click(Sender: TObject);
@@ -24783,14 +24780,12 @@ begin
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.Relatriodecorrelao1Click(Sender: TObject);
 var
   F : TextFile;
 begin
-  //
   DeleteFile(pChar(Form1.sAtual+'\CORRELACAO.TXT'));   // Apaga o arquivo anterior
   AssignFile(F,pchar(Form1.sAtual+'\CORRELACAO.TXT'));
   //
@@ -24841,38 +24836,31 @@ begin
   Form7.Show;
   //
   if FileExists(Form1.sAtual+'\CORRELACAO.TXT') then ShellExecute( 0, 'Open','notepad.exe',PChar('CORRELACAO.TXT'), '', SW_SHOW);
-  //
 end;
 
 procedure TForm7.Sosclientescomcontasatrasadas1Click(Sender: TObject);
 begin
-  //
   //sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)<>0'; // se mudar aqui mudar o traduz sql (Inadimplante)
   //2022-07-19 Estava considerando as contas inativas como em atraso. Alfredo precisa enviar cobranças apenas para quem realmente tem conta em atraso
   sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE and COALESCE(RECEBER.ATIVO, 0) <> 1)<>0 '; // se mudar aqui mudar o traduz sql (Inadimplante)
   //
   Form7.Close;
   Form7.Show;
-  //
 end;
 
 procedure TForm7.Sosclientescomsuascontasemdia1Click(Sender: TObject);
 begin
-  //
   sWhere := ' where (select Coalesce(sum(VALOR_DUPL),0) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)=0'; // se mudar aqui mudar o traduz sql (Inadimplante)
   Form7.Close;
   Form7.Show;
-  //
 end;
 
 procedure TForm7.Sosclientescomcontasareceber1Click(Sender: TObject);
 begin
-  //
-  //sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0)<>0'; // se mudar aqui mudar o traduz sql (Contas a receber) Mauricio Parizotto 2023-02-28 
+  //sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0)<>0'; // se mudar aqui mudar o traduz sql (Contas a receber) Mauricio Parizotto 2023-02-28
   sWhere := ' where (select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and COALESCE(RECEBER.ATIVO, 0) <> 1 )<>0'; // se mudar aqui mudar o traduz sql (Contas a receber)
   Form7.Close;
   Form7.Show;
-  //
 end;
 
 procedure TForm7.ibDataSet4INDEXADORChange(Sender: TField);
@@ -42626,6 +42614,30 @@ end;
 procedure TForm7.LimparRetornosda1Click(Sender: TObject);
 begin
   LimpaNFSE;
+end;
+
+procedure TForm7.odos1Click(Sender: TObject);
+begin
+  sWhere := '';
+
+  Form7.Close;
+  Form7.Show;
+end;
+
+procedure TForm7.Sativos1Click(Sender: TObject);
+begin
+  sWhere := ' where COALESCE(ATIVO,0)=0 ';
+  
+  Form7.Close;
+  Form7.Show;
+end;
+
+procedure TForm7.Sinativos1Click(Sender: TObject);
+begin
+  sWhere := ' where COALESCE(ATIVO,0)=1 ';
+  
+  Form7.Close;
+  Form7.Show;
 end;
 
 end.
