@@ -1443,6 +1443,13 @@ type
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
     ibDataSet14FRETESOBREIPI: TIBStringField;
+    ibDataSet23VBCFCP: TIBBCDField;
+    ibDataSet23PFCP: TIBBCDField;
+    ibDataSet23VFCP: TIBBCDField;
+    ibDataSet23VBCFCPST: TIBBCDField;
+    ibDataSet23PFCPST: TIBBCDField;
+    ibDataSet23VFCPST: TIBBCDField;
+    ibDataSet24VFCPST: TIBBCDField;
     Exibir7: TMenuItem;
     odos1: TMenuItem;
     Sativos1: TMenuItem;
@@ -2062,7 +2069,8 @@ type
 
   private
     { Private declarations }
-    function ImportaNF(pP1: boolean; sP1: String):Boolean;
+    // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
+    // function ImportaNF(pP1: boolean; sP1: String):Boolean;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
@@ -2194,7 +2202,12 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
-  Unit29, Unit48, ugeraxmlnfe, uFuncoesFiscais, uTransmiteNFSe;
+  Unit29, Unit48
+  , ugeraxmlnfe
+  , uFuncoesFiscais
+  , uTransmiteNFSe
+  , uImportaNFe
+  ;
 
 {$R *.DFM}
 
@@ -7397,6 +7410,7 @@ begin
   //
 end;
 
+(*
 function tForm7.ImportaNF(pP1: boolean; sP1: String):Boolean;
 var
   //
@@ -8232,6 +8246,7 @@ begin
   // Fim
   //
 end;
+*)
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
 var
@@ -11620,18 +11635,56 @@ begin
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
         iCampos                := 25;
         }
-        if Length(Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT')) = 25 then
+        sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+        // Para quem atualizar da versão anterior da 2023.0.0.24 para esta irá
+        // exibir os novos campos adicionados ao grid
+        if Length(sMostra) = 25 then // habilita a coluna DATA_SAI
         begin
-          sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
-          sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra));
-        end
-        else
-        begin
-          sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+          // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna DATA_SAI
+          // adiciona o valor T, na última posição de sMostra
+          //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := sMostra + 'T'; // habilita a coluna Data_SAI
+          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        //end
+        //else
+        //begin
+        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
         end;
-        iCampos                := 26;
-        Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
+
+        if Length(sMostra) = 26 then // habilita a coluna MODELO
+        begin
+          // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna MODELO
+          // adiciona o valor T, na string, na posição que representa a coluna MODELO (Segunda posição)
+          //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra)); // habilita a coluna MODELO
+          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        //end
+        //else
+        //begin
+        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+        end;
+
+        //iCampos                := 26;
+        //Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
         {Sandro Silva 2023-03-27 fim}
+        if Length(sMostra) = 27 then // habilita a coluna VFCPST
+        begin
+          // Se ainda é a primeira vez que entra no módulo depois que foi adicionado a coluna VFCPST
+          // adiciona o valor T, na string, na posição que representa a coluna VFCPST (décima oitava posição)
+          //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
+          sMostra := Copy(sMostra, 1, 18) + 'T' + Copy(sMostra, 19, Length(sMostra)); // habilita a coluna VFCPST
+          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        //end
+        //else
+        //begin
+        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
+        end;
+        if sMostra <> Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT') then
+          Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
+        iCampos                := 28;
+        //sMostra := Copy(Mais1Ini.ReadString(sModulo,'Mostrar','') + DupeString('T', iCampos), 1, iCampos);// Lê a configuração salva, completa com "T" conforme o total de campos definido e considera as primeiras posições conforme o total de campos definido
+        //Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
+        {Sandro Silva 2023-04-12 fim}
 
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
@@ -11747,7 +11800,7 @@ begin
         begin
           // Menu
           Form7.Menu             := MainMenu10;
-          
+
           sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
         end;
 
@@ -13042,7 +13095,9 @@ begin
                                  Form7.ibDataSet24ICMSSUBSTI.AsFloat   +
                                  Form7.ibDataSet24DESPESAS.AsFloat     +
                                  Form7.ibDataSet24SEGURO.AsFloat       +
-                                 Form7.ibDataSet24IPI.AsFloat;
+                                 Form7.ibDataSet24IPI.AsFloat
+                                 + Form7.ibDataSet24VFCPST.AsFloat
+                                 ;
    end else
    begin
      Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat -
@@ -13052,7 +13107,9 @@ begin
                                  Form7.ibDataSet24DESPESAS.AsFloat     +
                                  Form7.ibDataSet24FRETE.AsFloat        +
                                  Form7.ibDataSet24SEGURO.AsFloat       +
-                                 Form7.ibDataSet24IPI.AsFloat;
+                                 Form7.ibDataSet24IPI.AsFloat
+                                 + Form7.ibDataSet24VFCPST.AsFloat
+                                 ;
    end;
    //
    if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
@@ -22038,16 +22095,17 @@ begin
   begin
     try
       //
-      ibDataSet24.Edit;
-      ibDataSet24MERCADORIA.AsFloat := 0;
-      ibDataSet24ISS.AsFloat        := 0;
-      ibDataSet24SERVICOS.AsFloat   := 0;
+      Form7.ibDataSet24.Edit;
+      Form7.ibDataSet24MERCADORIA.AsFloat := 0;
+      Form7.ibDataSet24ISS.AsFloat        := 0;
+      Form7.ibDataSet24SERVICOS.AsFloat   := 0;
       //
-      ibDataSet24ICMS.AsFloat       := 0;
-      ibDataSet24BASEICM.AsFloat    := 0;
-      ibDataSet24ICMSSUBSTI.AsFloat := 0;
-      ibDataSet24BASESUBSTI.AsFloat := 0;
-      ibDataSet24IPI.AsFloat        := 0;
+      Form7.ibDataSet24ICMS.AsFloat       := 0;
+      Form7.ibDataSet24BASEICM.AsFloat    := 0;
+      Form7.ibDataSet24ICMSSUBSTI.AsFloat := 0;
+      Form7.ibDataSet24BASESUBSTI.AsFloat := 0;
+      Form7.ibDataSet24IPI.AsFloat        := 0;
+      Form7.ibDataSet24VFCPST.AsFloat     := 0.00;// Sandro Silva 2023-04-11
       //
       Form7.ibDataSet101.DisableControls;
       Form7.ibDataSet101.Close;
@@ -22055,7 +22113,7 @@ begin
       Form7.ibDataSet101.SelectSQL.Add('select * from ITENS002 where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
       Form7.ibDataSet101.Open;
       //
-      ibDataSet101.First;
+      Form7.ibDataSet101.First;
       while not Form7.ibDataSet101.Eof do
       begin
         //
@@ -22068,6 +22126,8 @@ begin
           Form7.ibDataSet24ICMS.AsFloat       := Form7.ibDataSet24ICMS.AsFloat       +  Arredonda(Form7.ibDataSet101.FieldByname('VICMS').AsFloat,2);
           Form7.ibDataSet24BASESUBSTI.AsFloat := Form7.ibDataSet24BASESUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
           Form7.ibDataSet24ICMSSUBSTI.AsFloat := Form7.ibDataSet24ICMSSUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
+
+          Form7.ibDataSet24VFCPST.AsFloat := Form7.ibDataSet24VFCPST.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VFCPST').AsFloat,2); // Sandro Silva 2023-04-11
         except end;
         //
         ibDataSet101.Next;
@@ -23839,7 +23899,14 @@ end;
 procedure TForm7.ibDataSet24BeforeInsert(DataSet: TDataSet);
 begin
   //
-  try if Alltrim(Form7.ibDataSet24FORNECEDOR.AsString) = '' then Form7.ibDataSet24.Delete; except end;
+  if Form7.ibDataSet24.RecordCount > 0 then // tem registro selecionado
+  begin
+    try
+      if Alltrim(Form7.ibDataSet24FORNECEDOR.AsString) = '' then
+        Form7.ibDataSet24.Delete;
+    except
+    end;
+  end;
   //
   try
     ibDataSet99.Close;
@@ -36924,7 +36991,7 @@ begin
       if Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString)<>0 then
       begin
         //
-        Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
+        ImportaNF(True, Form7.ibDataset24NFEXML.AsString); // Sandro Silva 2023-04-10 Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
         Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
         //
       end;

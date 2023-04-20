@@ -119,32 +119,15 @@ begin
       Mais1Ini.WriteString('RPS','Mostrar',Form7.sMostra);
     end else
     begin
-      Mais1Ini.WriteString(form7.sModulo,'Mostrar',Form7.sMostra);
+      Mais1Ini.WriteString(Form7.sModulo,'Mostrar',Form7.sMostra);
     end;
     //
     Mais1Ini.Free;
     //
-    {Sandro Silva 2022-12-20 inicio
-    with Form7 do
-    begin
-      with ArquivoAberto do
-      begin
-        for I := 1 to iCampos do
-        begin
-          if Copy(Form7.sMostra,I,1) = 'T' then
-            Fields[I-1].Visible := True
-          else
-            Fields[I-1].Visible := False;
-        end;
-      end;
-    end;
-    }
     for I := 1 to Form7.iCampos do
     begin
       Form7.ArquivoAberto.Fields[I-1].Visible := (Copy(Form7.sMostra,I,1) = 'T');
     end;
-
-    {Sandro Silva 2022-12-20 fim}
     //
   end;
   //

@@ -154,6 +154,18 @@ type
     Label89: TLabel;
     Image5: TImage;
     Button1: TBitBtn;
+    SMALL_DBEdit51: TSMALL_DBEdit;
+    Label60: TLabel;
+    SMALL_DBEdit52: TSMALL_DBEdit;
+    Label61: TLabel;
+    SMALL_DBEdit53: TSMALL_DBEdit;
+    Label62: TLabel;
+    SMALL_DBEdit54: TSMALL_DBEdit;
+    Label63: TLabel;
+    SMALL_DBEdit55: TSMALL_DBEdit;
+    Label69: TLabel;
+    SMALL_DBEdit56: TSMALL_DBEdit;
+    Label70: TLabel;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -250,6 +262,7 @@ type
       Shift: TShiftState);
     procedure Button1Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
+    procedure SMALL_DBEdit56Exit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -304,24 +317,32 @@ begin
   //
   // Altera o Grid de mercadorias para mostrar na NF
   //
-  Form7.ibDataSet23UNITARIO.Visible       := True;
-  Form7.ibDataSet23IPI.Visible            := True;
-  Form7.ibDataSet23ICM.Visible            := True;
-  Form7.ibDataSet23CST_ICMS.Visible       := True;
-  Form7.ibDataSet23CST_IPI.Visible        := True;
-  Form7.ibDataSet23CFOP.Visible           := True;
-  Form7.ibDataSet23BASE.Visible           := True;
+  Form7.ibDataSet23UNITARIO.Visible     := True;
+  Form7.ibDataSet23IPI.Visible          := True;
+  Form7.ibDataSet23ICM.Visible          := True;
+  Form7.ibDataSet23CST_ICMS.Visible     := True;
+  Form7.ibDataSet23CST_IPI.Visible      := True;
+  Form7.ibDataSet23CFOP.Visible         := True;
+  Form7.ibDataSet23BASE.Visible         := True;
   //
-  Form7.ibDataSet23VICMS.Visible          := True;
-  Form7.ibDataSet23VBC.Visible            := True;
-  Form7.ibDataSet23VBCST.Visible          := True;
-  Form7.ibDataSet23VICMSST.Visible        := True;
-  Form7.ibDataSet23VIPI.Visible           := True;
-  Form7.ibDataSet23QUANTIDADE.Visible     := False;
-  Form7.ibDataSet23UNITARIO.Visible       := False;
-  Form7.ibDataSet23QTD_ORIGINAL.Visible   := True;
-  Form7.ibDataSet23UNITARIO_O.Visible     := True;
-  Form7.ibDataSet23EAN_ORIGINAL.Visible   := True;
+  Form7.ibDataSet23VICMS.Visible        := True;
+  Form7.ibDataSet23VBC.Visible          := True;
+  Form7.ibDataSet23VBCST.Visible        := True;
+  Form7.ibDataSet23VICMSST.Visible      := True;
+  Form7.ibDataSet23VIPI.Visible         := True;
+  Form7.ibDataSet23QUANTIDADE.Visible   := False;
+  Form7.ibDataSet23UNITARIO.Visible     := False;
+  Form7.ibDataSet23QTD_ORIGINAL.Visible := True;
+  Form7.ibDataSet23UNITARIO_O.Visible   := True;
+  Form7.ibDataSet23EAN_ORIGINAL.Visible := True;
+  {Sandro Silva 2023-04-11 inicio
+  Form7.ibDataSet23VBCFCP.Visible       := True;
+  Form7.ibDataSet23PFCP.Visible         := True;
+  Form7.ibDataSet23VFCP.Visible         := True;
+  Form7.ibDataSet23VBCFCPST.Visible     := True;
+  Form7.ibDataSet23PFCPST.Visible       := True;
+  Form7.ibDataSet23VFCPST.Visible       := True;
+  {Sandro Silva 2023-04-11 fim}
   //
   Form7.ibDataSet23DESCRICAO.DisplayWidth     := 27+8;
   Form7.ibDataSet23TOTAL.DisplayWidth         := 15;
@@ -1527,21 +1548,28 @@ begin
     //                                                           //
     // Lay-Out no form7                                         //
     //                                                         //
-    Form7.ibDataSet23UNITARIO.Visible       := False;         //
-    Form7.ibDataSet23CFOP.Visible           := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       // 
-    Form7.ibDataSet23BASE.Visible           := False;       //
-    Form7.ibDataSet23VICMS.Visible          := False;
-    Form7.ibDataSet23VBC.Visible            := False;
-    Form7.ibDataSet23VBCST.Visible          := False;
-    Form7.ibDataSet23VICMSST.Visible        := False;
-    Form7.ibDataSet23VIPI.Visible           := False;
+    Form7.ibDataSet23UNITARIO.Visible     := False;         //
+    Form7.ibDataSet23CFOP.Visible         := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       //
+    Form7.ibDataSet23BASE.Visible         := False;       //
+    Form7.ibDataSet23VICMS.Visible        := False;
+    Form7.ibDataSet23VBC.Visible          := False;
+    Form7.ibDataSet23VBCST.Visible        := False;
+    Form7.ibDataSet23VICMSST.Visible      := False;
+    Form7.ibDataSet23VIPI.Visible         := False;
     // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;         //
 
     {Sandro Silva 2023-03-29 inicio}
-    Form7.ibDataSet23UNITARIO_O.Visible     := False;
-    Form7.ibDataSet23QUANTIDADE.Visible     := True;
-    Form7.ibDataSet23QTD_ORIGINAL.Visible   := False;
-
+    Form7.ibDataSet23UNITARIO_O.Visible   := False;
+    Form7.ibDataSet23QUANTIDADE.Visible   := True;
+    Form7.ibDataSet23QTD_ORIGINAL.Visible := False;
+    {Sandro Silva 2023-04-11 inicio}
+    Form7.ibDataSet23VBCFCP.Visible       := False;
+    Form7.ibDataSet23PFCP.Visible         := False;
+    Form7.ibDataSet23VFCP.Visible         := False;
+    Form7.ibDataSet23VBCFCPST.Visible     := False;
+    Form7.ibDataSet23PFCPST.Visible       := False;
+    Form7.ibDataSet23VFCPST.Visible       := False;
+    {Sandro Silva 2023-04-11 fim}         
     Form7.ibDataSet23DESCRICAO.DisplayWidth    := 41;         //
     Form7.ibDataSet23TOTAL.DisplayWidth        := 09;
     Form7.ibDataSet23QUANTIDADE.DisplayWidth   := 09;
@@ -2674,8 +2702,9 @@ begin
     Panel9.Top    := Form24.Panel1.Top;
     Panel9.Left   := Panel1.Left + Panel1.Width + 10;
     //
-    Panel9.Width  := 1050  - Panel9.Left - 20;
+    Panel9.Width  := 1050 - Panel9.Left - 20;
     Panel9.Height := Panel9.Width;
+
     //
     Panel5.Top    := Panel9.Top + Panel9.Height + 10;
     Panel5.Left   := Panel9.Left;
@@ -3626,8 +3655,16 @@ begin
   dBGrid2.Visible := True;
 end;
 
+procedure TForm24.SMALL_DBEdit56Exit(Sender: TObject);
+begin
+  try
+    Form24.DBGrid1.SetFocus;
+    DbGrid1.SelectedIndex := 1;
+    DbGrid1.SelectedIndex := 0;
+  except
+    on E: Exception do
+      ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
+  end;
+end;
+
 end.
-
-
-
-

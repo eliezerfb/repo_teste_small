@@ -9,8 +9,8 @@ object Form24: TForm24
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL COMPRA (ENTRADA)'
-  ClientHeight = 694
-  ClientWidth = 1037
+  ClientHeight = 796
+  ClientWidth = 1218
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -29,8 +29,8 @@ object Form24: TForm24
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 0
-    Width = 1037
-    Height = 694
+    Width = 1218
+    Height = 796
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False
@@ -623,7 +623,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label65: TLabel
-        Left = 195
+        Left = 179
         Top = 10
         Width = 156
         Height = 24
@@ -639,8 +639,8 @@ object Form24: TForm24
         Transparent = True
       end
       object Label66: TLabel
-        Left = 220
-        Top = 50
+        Left = 204
+        Top = 60
         Width = 29
         Height = 13
         Caption = 'Sa'#237'da'
@@ -653,8 +653,8 @@ object Form24: TForm24
         Transparent = True
       end
       object Label67: TLabel
-        Left = 305
-        Top = 50
+        Left = 289
+        Top = 60
         Width = 37
         Height = 13
         Caption = 'Entrada'
@@ -667,7 +667,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label68: TLabel
-        Left = 395
+        Left = 464
         Top = 60
         Width = 69
         Height = 13
@@ -1137,8 +1137,8 @@ object Form24: TForm24
         Transparent = True
       end
       object Label64: TLabel
-        Left = 195
-        Top = 75
+        Left = 369
+        Top = 60
         Width = 39
         Height = 13
         Caption = 'Mod: 01'
@@ -1152,7 +1152,7 @@ object Form24: TForm24
         OnClick = Label64Click
       end
       object Label22: TLabel
-        Left = 395
+        Left = 351
         Top = 10
         Width = 88
         Height = 13
@@ -2071,8 +2071,8 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object Edit5: TEdit
-        Left = 195
-        Top = 45
+        Left = 179
+        Top = 55
         Width = 20
         Height = 22
         Color = clWhite
@@ -2088,8 +2088,8 @@ object Form24: TForm24
         OnClick = Edit5Click
       end
       object Edit6: TEdit
-        Left = 280
-        Top = 45
+        Left = 264
+        Top = 55
         Width = 20
         Height = 22
         Color = clWhite
@@ -2144,8 +2144,8 @@ object Form24: TForm24
         OnKeyUp = SMALL_DBEdit43KeyUp
       end
       object Edit2: TEdit
-        Left = 470
-        Top = 60
+        Left = 539
+        Top = 55
         Width = 131
         Height = 22
         AutoSize = False
@@ -2243,10 +2243,10 @@ object Form24: TForm24
           end>
       end
       object SMALL_DBEdit46: TSMALL_DBEdit
-        Left = 395
+        Left = 351
         Top = 25
-        Width = 270
-        Height = 19
+        Width = 314
+        Height = 22
         BevelInner = bvNone
         BevelOuter = bvNone
         Color = clWhite
@@ -2254,7 +2254,7 @@ object Form24: TForm24
         DataSource = Form7.DataSource24
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
@@ -2340,7 +2340,7 @@ object Form24: TForm24
       Left = 700
       Top = 311
       Width = 501
-      Height = 386
+      Height = 444
       BevelOuter = bvNone
       BorderStyle = bsSingle
       Color = clWhite
@@ -2349,8 +2349,8 @@ object Form24: TForm24
       TabOrder = 2
       Visible = False
       object Label9: TLabel
-        Left = 15
-        Top = 90
+        Left = 183
+        Top = 58
         Width = 57
         Height = 13
         Caption = 'Novo Pre'#231'o'
@@ -2364,7 +2364,7 @@ object Form24: TForm24
       end
       object Label10: TLabel
         Left = 15
-        Top = 50
+        Top = 58
         Width = 54
         Height = 13
         Caption = 'Pre'#231'o atual'
@@ -2406,9 +2406,9 @@ object Form24: TForm24
         Visible = False
       end
       object imagenovo: TImage
-        Left = 148
-        Top = 56
-        Width = 130
+        Left = 92
+        Top = 52
+        Width = 29
         Height = 18
         Picture.Data = {
           07544269746D617032310000424D32310000000000003600000028000000DC00
@@ -2809,7 +2809,7 @@ object Form24: TForm24
       end
       object Label85: TLabel
         Left = 15
-        Top = 130
+        Top = 113
         Width = 105
         Height = 15
         AutoSize = False
@@ -2826,7 +2826,7 @@ object Form24: TForm24
       end
       object Label86: TLabel
         Left = 15
-        Top = 170
+        Top = 153
         Width = 105
         Height = 15
         AutoSize = False
@@ -2843,7 +2843,7 @@ object Form24: TForm24
       end
       object Label87: TLabel
         Left = 15
-        Top = 210
+        Top = 193
         Width = 105
         Height = 15
         AutoSize = False
@@ -2860,7 +2860,7 @@ object Form24: TForm24
       end
       object Label89: TLabel
         Left = 150
-        Top = 145
+        Top = 128
         Width = 274
         Height = 64
         AutoSize = False
@@ -2872,9 +2872,111 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
       end
-      object SMALL_DBEdit42: TSMALL_DBEdit
+      object Label60: TLabel
         Left = 15
-        Top = 105
+        Top = 245
+        Width = 80
+        Height = 15
+        AutoSize = False
+        Caption = 'BC FCP'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label63: TLabel
+        Left = 15
+        Top = 285
+        Width = 80
+        Height = 15
+        AutoSize = False
+        Caption = 'BC FCP ST'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label69: TLabel
+        Left = 115
+        Top = 285
+        Width = 80
+        Height = 15
+        AutoSize = False
+        Caption = '% FCP ST'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label61: TLabel
+        Left = 115
+        Top = 245
+        Width = 80
+        Height = 15
+        AutoSize = False
+        Caption = '% FCP'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label62: TLabel
+        Left = 216
+        Top = 245
+        Width = 80
+        Height = 15
+        AutoSize = False
+        Caption = 'FCP'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label70: TLabel
+        Left = 216
+        Top = 285
+        Width = 80
+        Height = 15
+        AutoSize = False
+        Caption = 'FCP ST'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object SMALL_DBEdit42: TSMALL_DBEdit
+        Left = 183
+        Top = 73
         Width = 121
         Height = 22
         DataField = 'LISTA'
@@ -2885,7 +2987,7 @@ object Form24: TForm24
       end
       object SMALL_DBEdit44: TSMALL_DBEdit
         Left = 15
-        Top = 65
+        Top = 73
         Width = 121
         Height = 22
         DataField = 'PRECO'
@@ -2922,7 +3024,7 @@ object Form24: TForm24
       end
       object ComboBox12: TComboBox
         Left = 15
-        Top = 145
+        Top = 128
         Width = 120
         Height = 22
         Style = csOwnerDrawVariable
@@ -2940,7 +3042,7 @@ object Form24: TForm24
       end
       object SMALL_DBEdit64: TSMALL_DBEdit
         Left = 15
-        Top = 185
+        Top = 168
         Width = 120
         Height = 22
         AutoSize = False
@@ -2962,7 +3064,7 @@ object Form24: TForm24
       end
       object ComboBox13: TComboBox
         Left = 15
-        Top = 225
+        Top = 208
         Width = 120
         Height = 22
         Style = csOwnerDrawVariable
@@ -2976,6 +3078,143 @@ object Form24: TForm24
         TabOrder = 5
         OnChange = ComboBox13Change
         OnExit = ComboBox13Exit
+        OnKeyUp = ComboBox12KeyUp
+      end
+      object Edit1: TEdit
+        Left = 15
+        Top = 335
+        Width = 290
+        Height = 22
+        TabOrder = 7
+        Visible = False
+        OnChange = Edit1Change
+        OnKeyDown = Edit1KeyDown
+      end
+      object SMALL_DBEdit51: TSMALL_DBEdit
+        Left = 15
+        Top = 260
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'VBCFCP'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 9
+        OnKeyUp = ComboBox12KeyUp
+      end
+      object SMALL_DBEdit55: TSMALL_DBEdit
+        Left = 115
+        Top = 300
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'PFCPST'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 13
+        OnKeyUp = ComboBox12KeyUp
+      end
+      object SMALL_DBEdit54: TSMALL_DBEdit
+        Left = 15
+        Top = 300
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'VBCFCPST'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 12
+        OnKeyUp = ComboBox12KeyUp
+      end
+      object SMALL_DBEdit52: TSMALL_DBEdit
+        Left = 115
+        Top = 260
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'PFCP'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 10
+        OnKeyUp = ComboBox12KeyUp
+      end
+      object SMALL_DBEdit53: TSMALL_DBEdit
+        Left = 216
+        Top = 260
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'VFCP'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 11
+        OnKeyUp = ComboBox12KeyUp
+      end
+      object SMALL_DBEdit56: TSMALL_DBEdit
+        Left = 216
+        Top = 300
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'VFCPST'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 14
+        OnExit = SMALL_DBEdit56Exit
         OnKeyUp = ComboBox12KeyUp
       end
       object DBGrid33: TDBGrid
@@ -3008,16 +3247,6 @@ object Form24: TForm24
             Width = 241
             Visible = True
           end>
-      end
-      object Edit1: TEdit
-        Left = 15
-        Top = 335
-        Width = 290
-        Height = 22
-        TabOrder = 7
-        Visible = False
-        OnChange = Edit1Change
-        OnKeyDown = Edit1KeyDown
       end
     end
     object ok: TBitBtn

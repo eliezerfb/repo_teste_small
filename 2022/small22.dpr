@@ -71,7 +71,8 @@ uses
   uGeraXmlNFeSaida in 'uGeraXmlNFeSaida.pas',
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
-  uTransmiteNFSe in 'uTransmiteNFSe.pas';
+  uTransmiteNFSe in 'uTransmiteNFSe.pas',
+  uImportaNFe in 'uImportaNFe.pas';
 
 {$R *.RES}
 
