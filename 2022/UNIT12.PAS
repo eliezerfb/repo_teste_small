@@ -7,7 +7,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
   DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, shellapi, Buttons, HtmlHelp, jpeg,
-  uNotaFiscalEletronica;
+  uNotaFiscalEletronicaCalc;
 
 function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
@@ -277,7 +277,7 @@ type
     procedure AtivaPesquisaTransportadora;
     { Private declarations }
   public
-    vNotaFiscal : TNotaFiscalEletronica;
+    vNotaFiscal : TNotaFiscalEletronicaCalc;
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
     bOk         : Boolean;
@@ -1664,7 +1664,7 @@ begin
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
 
-  vNotaFiscal := TNotaFiscalEletronica.create;
+  vNotaFiscal := TNotaFiscalEletronicaCalc.create;
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2074,24 +2074,21 @@ end;
 
 procedure TForm12.Emitirnotafiscaldevendasnobalco1Click(Sender: TObject);
 begin
-  //
   // Atualiza as ECF's que estão em uso
-  //
   Form7.ibDataSet14.DisableControls;
   Form7.ibDataSet14.Close;
   Form7.ibDataSet14.SelectSQL.Clear;
   Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
   Form7.ibDataSet14.Open;
   Form7.ibDataSet14.EnableControls;
-  //
+
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
     Form7.ibDataSet14.Locate('CFOP','5929',[]);
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
     Form7.ibDataSet14.Locate('CFOP','6929',[]);
-  //
+
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
-    //
     Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
     //
     Form7.sModulo := 'BALCAO';
@@ -2102,17 +2099,14 @@ begin
 //    Form7.ibDataSet16.Edit;
     if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
     Retributa(True);
-    //
   end else
   begin
     ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929');
   end;
-  //
 end;
 
 procedure TForm12.Importaroramentos1Click(Sender: TObject);
 begin
-  //
   Form7.sModulo := 'ORCAMENTO';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
@@ -2121,7 +2115,6 @@ begin
   Form7.ibDataSet16.Edit;
   Form7.ibDataSet16.Post;
   Retributa(True);
-  //
 end;
 
 procedure TForm12.Label28Click(Sender: TObject);
@@ -2820,7 +2813,6 @@ end;
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
-  //
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := True;
@@ -2828,7 +2820,6 @@ begin
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := False;
   end;
-  //
 end;
 
 procedure TForm12.Button3Click(Sender: TObject);
