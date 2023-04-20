@@ -4532,6 +4532,7 @@ begin
   InstalaAtualizacao('pastanfse','6');
   InstalaAtualizacao('pastanfce','7');
   InstalaAtualizacao('pastadllsat','8');
+  InstalaAtualizacao('pastaopenssl','2');  
   // Sandro Silva 2022-12-28 InstalaAtualizacao('cdf_to','9');
   InstalaAtualizacao('paf2022_','10');
   InstalaAtualizacao('paf2023_','10');// Sandro Silva 2022-12-28
