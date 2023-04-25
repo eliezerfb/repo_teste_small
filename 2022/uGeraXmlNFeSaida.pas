@@ -1544,8 +1544,6 @@ begin
       else
         Form7.spdNFeDataSets.Campo('vPIS_Q09').Value    := '0.00'; // Valor do PIS em Reais
 
-      vPIS := vPIS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vPIS_Q09').AsString,',',''),'.',',')),2);
-
       // COFINS
       Form7.spdNFeDataSets.Campo('vBC_S07').Value        := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat); // Valor da Base de Cálculo do COFINS
       Form7.spdNFeDataSets.Campo('pCOFINS_S08').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat); // Alíquota em Percencual do COFINS
@@ -1554,22 +1552,29 @@ begin
       else
         Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value    := '0.00'; // Valor do COFINS em Reais
 
-      vCOFINS := vCOFINS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vCOFINS_S11').AsString,',',''),'.',',')),2);
-
       // Pis/Cofins por unidade
       if Form7.spdNFeDataSets.Campo('CST_Q06').Value = '03' then
       begin
-        Form7.spdNFeDataSets.Campo('qBCPROD_Q10').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Vendida
+        //Pis
+        Form7.spdNFeDataSets.Campo('vPIS_Q09').Value      := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat*Form7.ibDataSet16.FieldByname('ALIQ_PIS').AsFloat)),',','.'); // Valor do PIS em Reais
+        Form7.spdNFeDataSets.Campo('qBCPROD_S09').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat)),',','.'); // Quantidade Vendida
         Form7.spdNFeDataSets.Campo('vAliqPROD_Q11').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('ALIQ_PIS').AsFloat)),',','.'); // Alíquota do PIS (em reais)
-        Form7.spdNFeDataSets.Campo('qBCPROD_S09').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Vendida
+
+        //Cofins
+        Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value   := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat*Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat)),',','.'); // Valor do COFINS em Reais
+        Form7.spdNFeDataSets.Campo('qBCPROD_Q10').Value   := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('VBC_PIS_COFINS').AsFloat)),',','.'); // Quantidade Vendida
         Form7.spdNFeDataSets.Campo('vAliqPROD_S10').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('ALIQ_COFINS').AsFloat)),',','.'); // Alíquota do COFINS (em reais)
       end;
+
+      vPIS := vPIS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vPIS_Q09').AsString,',',''),'.',',')),2);
+      vCOFINS := vCOFINS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vCOFINS_S11').AsString,',',''),'.',',')),2);
 
       // totalizador da nota complementar
       if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
       begin
         Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
+
 
         Form7.spdNFeDataSets.Campo('qCom_I10').Value     := '0.00'; // Quantidade Comercializada do Item
         Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := '0.00'; // Valor Comercializado do Item

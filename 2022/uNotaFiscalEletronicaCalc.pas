@@ -115,19 +115,13 @@ begin
     begin
       if (IBQProduto.FieldByname('ALIQ_PIS_SAIDA').AsFloat <> 0) then
       begin
-        oItem.CST_PIS_COFINS := IBQProduto.FieldByname('CST_PIS_COFINS_SAIDA').AsString;
+        oItem.CST_PIS_COFINS  := IBQProduto.FieldByname('CST_PIS_COFINS_SAIDA').AsString;
+        oItem.ALIQ_PIS        := IBQProduto.FieldByname('ALIQ_PIS_SAIDA').AsFloat;
+        oItem.ALIQ_COFINS     := IBQProduto.FieldByname('ALIQ_COFINS_SAIDA').AsFloat;
 
         // Pega o CST PIS COFINS e o PERCENTUAL do iten
-        if Copy(IBQProduto.FieldByname('CST_PIS_COFINS_SAIDA').AsString,1,2) = '03' then // Pis por unidade
+        if Copy(IBQProduto.FieldByname('CST_PIS_COFINS_SAIDA').AsString,1,2) <> '03' then
         begin
-          oItem.VBC_PIS_COFINS     := oItem.TOTAL; // Valor da Base de Cálculo
-          oItem.ALIQ_PIS           := 0;
-          oItem.ALIQ_COFINS        := 0;
-        end else
-        begin
-          oItem.ALIQ_PIS        := IBQProduto.FieldByname('ALIQ_PIS_SAIDA').AsFloat;
-          oItem.ALIQ_COFINS     := IBQProduto.FieldByname('ALIQ_COFINS_SAIDA').AsFloat;
-
           if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then  // A tag BCPISCOFINS está preenchida
           begin
             oItem.VBC_PIS_COFINS := StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('BCPISCOFINS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)));
@@ -148,6 +142,12 @@ begin
         oItem.ALIQ_COFINS     := 0;
         oItem.VBC_PIS_COFINS  := 0;
       end;
+    end;
+
+    // Pis/Cofins por unidade
+    if oItem.CST_PIS_COFINS = '03' then
+    begin
+      oItem.VBC_PIS_COFINS  := oItem.Quantidade; // Valor da Base de Cálculo
     end;
   end;
 
