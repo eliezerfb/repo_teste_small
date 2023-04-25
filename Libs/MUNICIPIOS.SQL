@@ -5563,4 +5563,5 @@ insert into MUNICIPIOS (CODIGO,NOME,UF,REGISTRO) values ('5222054','Vicentinópol
 insert into MUNICIPIOS (CODIGO,NOME,UF,REGISTRO) values ('5222203','Vila Boa','GO','0000005562')
 insert into MUNICIPIOS (CODIGO,NOME,UF,REGISTRO) values ('5222302','Vila Propício','GO','0000005563')
 insert into MUNICIPIOS (CODIGO,NOME,UF,REGISTRO) values ('5300108','Brasília','DF','0000005564')
-select * from MUNICIPIOS
+commit;
+select * from MUNICIPIOS;
