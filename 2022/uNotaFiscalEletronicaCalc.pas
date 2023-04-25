@@ -77,13 +77,14 @@ begin
     else
       vRaterioDesconto := 0;
 
-    //Verifica se tem CIT  
-    if IBQProduto.FieldByName('ST').AsString <> '' then
+    //Verifica se tem CIT e CST_PIS_COFINS da operação principal não estiver preenchido
+    if (IBQProduto.FieldByName('ST').AsString <> '')
+      and (sCST_PIS_COFINS = '') then
     begin
       IBQIcm.Close;
       IBQIcm.SQL.Text := ' Select *'+
-                          ' From ICM '+
-                          ' Where ST = '+QuotedStr(IBQProduto.FieldByName('ST').AsString);
+                         ' From ICM '+
+                         ' Where ST = '+QuotedStr(IBQProduto.FieldByName('ST').AsString);
       IBQIcm.Open;
                          
       if not IBQIcm.IsEmpty then
