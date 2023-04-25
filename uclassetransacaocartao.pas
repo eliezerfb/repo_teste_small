@@ -11,7 +11,9 @@ unit uclassetransacaocartao;
 interface
 
 uses
-  Classes, Controls, Contnrs;
+  Classes, Controls, Contnrs
+  , SysUtils
+  ;
 
 type
   TTipoModalidadeTransacao = (tModalidadeNenhum, tModalidadeCartao, tModalidadeCarteiraDigital, tModalidadePix, tModalidadeOutros);
@@ -111,6 +113,9 @@ begin
   Result.Bandeira        := sBandeira;
   //Result.CarteiraDigital := bCarteiraDigital;
   Result.Modalidade      := Modalidade;
+
+  if Trim(Result.NomeRede) = '' then // Sandro Silva 2023-04-25 f-6859
+    Result.NomeRede := Result.NomeDoTEF;
 
   Add(Result);
 
