@@ -10393,7 +10393,11 @@ begin
                           ShowMessage('Não é possível dar descontos com o preço abaixo do custo');
                           // Sandro Silva 2023-04-26 ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
                           Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
-                        end else ibDataSet16TOTAL.AsFloat := Arredonda(ibDataSet16TOTAL.Asfloat * fDesconto,StrToInt(Form1.ConfPreco));
+                        end
+                        else
+                        begin
+                          ibDataSet16TOTAL.AsFloat := Arredonda(ibDataSet16TOTAL.Asfloat * fDesconto,StrToInt(Form1.ConfPreco));
+                        end;
                         ibDataSet16.Post;
                         if Form7.ibDataSet16BASEISS.AsFloat <> 100 then
                         begin
