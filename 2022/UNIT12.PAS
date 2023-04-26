@@ -1056,17 +1056,15 @@ end;
 procedure TForm12.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_TAB    then
     Key := VK_RETURN;
   if Key = VK_ESCAPE then
     Key := VK_RETURN;
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
-  //
+
   if DbGrid1.SelectedIndex = 0 then
   begin
-    //
     if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
     begin
       if not dBGrid3.Visible then
@@ -1080,11 +1078,9 @@ begin
       Form7.ibDataSet16.UpdateRecord;
       Form7.ibDataSet16.Edit;
       Form1.bFlag := True;
-      //
     end;
-    //
   end;
-  //
+
   if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
   begin
     if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
@@ -1095,9 +1091,8 @@ begin
       Form7.ibDataSet4.Open;
     end;
   end;
-  //
+
   MostraFoto(True);
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit48Enter(Sender: TObject);
@@ -1109,9 +1104,8 @@ end;
 
 procedure TForm12.DBGrid1ColEnter(Sender: TObject);
 begin
-  // if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
-  Form7.ibDataSet16.EnableControls;
-  dbGrid1.Update;
+  //Form7.ibDataSet16.EnableControls;
+  //dbGrid1.Update;
   dBGrid3.Visible := False;
 end;
 
@@ -1180,20 +1174,20 @@ end;
 
 procedure TForm12.DBGrid1Enter(Sender: TObject);
 begin
-  //
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
-  //
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
+
   dBGrid2.Visible    := False;
   dBGrid3.Visible    := False;
-  //
+
   try
     Form7.bChave := True;
     if (DbGrid1.SelectedIndex = 0) then
       if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '' then
         if AllTrim(Form7.ibDataSet16UNITARIO.AsString) <> '' then Form7.ibDataSet16.Delete;
     Form7.bChave := False;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm12.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1267,25 +1261,18 @@ procedure TForm12.DBGrid1ColExit(Sender: TObject);
 var
   Sreg1: String;
 begin
-  //
-  //
   if UpperCase(Form1.ConfDuplo) <> 'SIM' then
   begin
     Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True)
-  end
-  else
+  end  else
   begin
-    Form7.ibDataSet16.DisableControls;
+    {Form7.ibDataSet16.DisableControls;
     sReg1 := Form7.ibDataSet16.FieldByname('REGISTRO').AsString;
     Form7.ibDataSet16.First;
     Form7.ibDataSet16.Locate('REGISTRO',sREg1,[]);
     if Form7.sModulo <> 'RETRIBUTA' then
-      Form7.ibDataSet16.EnableControls;
+      Form7.ibDataSet16.EnableControls; Mauricio Parizotto 2023-04-26 sem uso aparente}
   end;
-  //
-  // if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '' then Perform(Wm_NextDlgCtl,0,0);
-  //
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit4Exit(Sender: TObject);
@@ -1314,13 +1301,14 @@ end;
 procedure TForm12.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
 begin
-  //
   if Field.Name = 'ibDataSet16DESCRICAO' then
   begin
-    if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then DBGrid1.Canvas.Font.Color := clSilver else DBGrid1.Canvas.Font.Color := clBlack;
+    if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
+      DBGrid1.Canvas.Font.Color := clSilver
+    else
+      DBGrid1.Canvas.Font.Color := clBlack;
     dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Field.AsString);
   end;
-  //
 end;
 
 procedure TForm12.Label64Click(Sender: TObject);
