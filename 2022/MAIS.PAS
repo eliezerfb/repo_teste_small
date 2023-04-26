@@ -506,7 +506,7 @@ implementation
 
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
-  Unit26, Unit5, Unit37, Unit29, Unit42, Unit44, Unit13, Unit48,
+  Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados;
 
 {$R *.DFM}
