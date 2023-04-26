@@ -14,12 +14,13 @@ function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 function ExecutaComando(comando:string):Boolean;
+function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
 
 implementation
 
 uses
   mais
-  ;
+  , DB;
 
 function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
@@ -100,5 +101,27 @@ begin
   except
   end;
 end;
+
+
+function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text := vSQL;
+    IBQUERY.Open;
+    Result := IBQUERY.Fields[0].AsVariant;
+  finally
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+end;
+
+
 
 end.

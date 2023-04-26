@@ -11,7 +11,7 @@ uses
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
   oxmldom, XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
-  WinTypes, WinProcs,
+  WinTypes, WinProcs, uFuncoesBancoDados,
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
   , DBCtrls
   , SMALL_DBEdit
@@ -1196,12 +1196,12 @@ var
   sSerie, sInicio, s: String;
   bButton: Integer;
   CredencialTecnospeed: TCredenciaisTecnospeed;
+
+  vQtdConexoes : integer;
 begin
-  //
   Result := False;
-  //
+
   try
-    //
     documentoAtivo := Form1.WebBrowser1.Document;
     s := documentoAtivo.Body.OuterHTML;
 
@@ -1212,37 +1212,26 @@ begin
     CredencialTecnospeed.Free;
     {Sandro Silva 2022-12-15 fim}
 
-
-//      ShowMessage(s);
-//      s := '[INICIO=15/08/2018]' + s;
-    //
     if ValidaHostsWindows then
     begin
       s := '[PARATUDO]';
     end;
-    //
-    // ShowMessage(s);
-    //
+
     if pos('[INICIO', S) <> 0 then
     begin
       try
-        //
         sInicio := Copy(S, pos('[INICIO', S) + 8, 10);
-        //
-//          ShowMessage(sInicio);
-        //
         Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-        //
+
         Form1.ibQuery2.Close;
         Form1.ibQuery2.SQL.Clear;
         Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
         Form1.ibQuery2.ExecSQL;
-        //
+
         Form1.ibQuery2.Close;
         Form1.ibQuery2.SQL.Clear;
         Form1.ibQuery2.SQL.Add('commit');
         Form1.ibQuery2.ExecSQL;
-        //
       except
       end;
     end;
@@ -1250,90 +1239,64 @@ begin
     {Sandro Silva 2022-11-11 inicio}
     if ValidacaoNova then
     begin
-
       if pos('[LIMITE', S) <> 0 then
       begin
-
         try
-          //
           sInicio := Copy(S, pos('[LIMITE', S) + 8, 10);  // Contem a data limite de uso do sistema
-          //
-  //          ShowMessage(sInicio);
-          //
           Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-          //
+
           Form1.ibQuery2.Close;
           Form1.ibQuery2.SQL.Clear;
           Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
           Form1.ibQuery2.ExecSQL;
-          //
+
           Form1.ibQuery2.Close;
           Form1.ibQuery2.SQL.Clear;
           Form1.ibQuery2.SQL.Add('commit');
           Form1.ibQuery2.ExecSQL;
-          //
         except
         end;
-
       end;
-
     end;
     {Sandro Silva 2022-11-11 fim}
 
-    //
     if pos('[SERIE',S) <> 0 then
     begin
       try
-        //
         sSerie := Copy(S,pos('[SERIE',S)+7,13);
-        //
-//          ShowMessage(sSerie);
-        //
+
         if sSerie <> '' then
         begin
-          //
           if sSerie <> Form1.sSerial then
           begin
-            //
             Mais1ini := TIniFile.Create('WIND0WS.L0G');
             Mais1Ini.WriteString('LICENCA','Ser',sSerie); // Cadastro Licença de uso
             Mais1Ini.WriteString('RR','Ser',sSerie); // Cadastro Licença de uso
             Mais1Ini.Free;
-            //
-//            ShowMessage('Nova licença de uso instalada com sucesso.');
-            //
           end;
-          //
         end;
-        //
       except
       end;
     end;
-    //
+
     if (pos('REGULARIZE',UpperCase(S)) <> 0) or (pos('[BLOQUEADO1]',UpperCase(S)) <> 0) or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0) or (pos('[PARATUDO]',UpperCase(S)) <> 0) then
     begin
-      //
-      // ShowMessage('TESTE REGULARIZE OK');
-      //
       if (pos('[PARATUDO]',UpperCase(S)) <> 0) then
       begin
         if Legal_ok(True) then
         begin
           try
-            //
             Form1.ibDataset200.Close;
             Form1.ibDataset200.SelectSql.Clear;
             Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
             Form1.ibDataset200.Open;
-            //
+
             ShowMessage('Este sistema foi bloqueado');
-            //
           except
           end;
         end;
       end else
       begin
-        //
         if Legal_ok(True) then
         begin
           try
@@ -1344,15 +1307,11 @@ begin
           except
           end;
         end;
-        //
       end;
-      //
     end else
     begin
-      //
       if pos('LEGAL',UpperCase(S)) <> 0 then
       begin
-        //
         try
           Form1.ibDataset200.Close;
           Form1.ibDataset200.SelectSql.Clear;
@@ -1360,27 +1319,12 @@ begin
           Form1.ibDataset200.Open;
         except
         end;
-        //
+
         Result := True;
-        //
       end else
       begin
-        //
         if Legal_ok(True) then
         begin
-          //
-          // ShowMessage('Não foi possível acessar o servidor da Smallsoft para validar esta número de série.');
-          //
-//          if Assigned(Form1.WebBrowser2.Document) then
-//          begin
-            //
-//            documentoAtivo := Form1.WebBrowser2.Document;
-//            s := documentoAtivo.Body.OuterHTML;
-            //
-            // ShowMessage(s);
-            //
-//            if (pos('GOOGLE',UpperCase(S)) <> 0) or (pos('PESQUISAR',UpperCase(S)) <> 0) then // Conseguiu assesar o google ou o youtube
-//            begin
           try
             Form1.ibDataset200.Close;
             Form1.ibDataset200.SelectSql.Clear;
@@ -1388,144 +1332,56 @@ begin
             Form1.ibDataset200.Open;
           except
           end;
-//            end;
-           //
-//            end;
-          //
         end;
-        //
       end;
-      //
+
       if (pos('[BUILD]',UpperCase(S)) <> 0) or (pos('[VERSAO]',UpperCase(S)) <> 0) then
       begin
-        //
-        bButton := Application.MessageBox(Pchar(
-          'Uma nova versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
-          Chr(10) +
-          Chr(10) +
-          'Continuar?' +
-          Chr(10))
-          ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-        //
-        if bButton = IDYES then
+        //Verifica se só tem um usuário conectado
+        vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
+                                              'Select Count(*) From MON$ATTACHMENTS');
+        if vQtdConexoes = 1 then
         begin
-          //
-          if FileExists(Form1.sAtual+'\smallcon.exe') then
-          begin
-            //
-            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
-                                                           '20231002.sma '+
-                                                           '20231003.sma '+
-                                                           '20231004.sma '+
-                                                           '20231005.sma '+
-                                                           '20231006.sma '+
-                                                           '20231007.sma '+
-                                                           '20231008.sma '+
-                                                           '20231009.sma '+
-                                                           'nfce2023.sma '+
-                                                           '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
-                                                           , '', SW_SHOW);
+          bButton := Application.MessageBox(Pchar(
+                                            'Uma nova versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
+                                            Chr(10) +
+                                            Chr(10) +
+                                            'Continuar?' +
+                                            Chr(10))
+                                            ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
 
-            //
-          end
-          else
-            ShowMessage('Arquivo smallcon.exe não encontrado.');
-          //
-          Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "mobile.exe"', SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
-          //
+          if bButton = IDYES then
+          begin
+            if FileExists(Form1.sAtual+'\smallcon.exe') then
+            begin
+              ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
+                                                             '20231002.sma '+
+                                                             '20231003.sma '+
+                                                             '20231004.sma '+
+                                                             '20231005.sma '+
+                                                             '20231006.sma '+
+                                                             '20231007.sma '+
+                                                             '20231008.sma '+
+                                                             '20231009.sma '+
+                                                             'nfce2023.sma '+
+                                                             '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                             , '', SW_SHOW);
+
+            end
+            else
+              ShowMessage('Arquivo smallcon.exe não encontrado.');
+
+            Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE );
+            Winexec('TASKKILL /F /IM "mobile.exe"', SW_HIDE );
+            Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE ); 
+            Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE );
+            Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );
+            Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
+          end;
         end;
-        //
       end;
 
-      (*
-      if (pos('[BUILD]',UpperCase(S)) <> 0) then
-      begin
-        //
-        bButton := Application.MessageBox(Pchar(
-        'Uma nova Build do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
-        Chr(10) +
-        Chr(10) +
-        'Continuar?' +
-        Chr(10))
-        ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-        //
-        if bButton = IDYES then
-        begin
-          //
-          if FileExists(Form1.sAtual+'\smallcon.exe') then
-          begin
-            //
-            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20221001.sma '+
-                                                           '20221002.sma '+
-                                                           '20221003.sma '+
-                                                           '20221004.sma '+
-                                                           '20221005.sma '+
-                                                           '20221006.sma '+
-                                                           '20221007.sma '+
-                                                           '20221008.sma '+
-                                                           '20221009.sma '+
-                                                           'nfce2022.sma '+
-                                                           '2022_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
-                                                           , '', SW_SHOW);
 
-            //
-          end else ShowMessage('Arquivo smallcon.exe não encontrado.');
-          //
-          Winexec('TASKKILL /F /IM "smallcdf.exe"' , SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-          //
-        end;
-        //
-      end;
-
-      if (pos('[VERSAO]',UpperCase(S)) <> 0) then
-      begin
-        //
-        bButton := Application.MessageBox(Pchar(
-        'Uma nova Versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
-        Chr(10) +
-        Chr(10) +
-        'Continuar?' +
-        Chr(10))
-        ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-        //
-        if bButton = IDYES then
-        begin
-          //
-          if FileExists(Form1.sAtual+'\smallcon.exe') then
-          begin
-            //
-            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
-                                                           '20231002.sma '+
-                                                           '20231003.sma '+
-                                                           '20231004.sma '+
-                                                           '20231005.sma '+
-                                                           '20231006.sma '+
-                                                           '20231007.sma '+
-                                                           '20231008.sma '+
-                                                           '20231009.sma '+
-                                                           'nfce2023.sma '+
-                                                           '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
-                                                           , '', SW_SHOW);
-
-            //
-          end else ShowMessage('Arquivo smallcon.exe não encontrado.');
-          //
-          Winexec('TASKKILL /F /IM "smallcdf.exe"' , SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
-          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-          //
-        end;
-        //
-      end;
-      *)
-      
       if pos('[LOJA]',UpperCase(S)) <> 0 then
       begin
         ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial='
@@ -1561,7 +1417,8 @@ begin
           ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
       end;
     end;
-  except end;
+  except
+  end;
 end;
 
 {
@@ -5536,7 +5393,6 @@ var
   Mais1Ini : TIniFile;
   I        : Integer;
 begin
-  //
   sSerial := StrTran(UpperCase(AllTrim(Small_InputForm('Cadastro de licenças de uso','Número da licença:',sSerial))),'.','');
   //
   if (Length(alltrim(sSerial)) = 13) then //sistema novo
@@ -5561,7 +5417,6 @@ begin
     or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
     then
     begin
-      //
       I := StrToInt('0'+LimpaNumero(Copy(sSerial,7,5)));
       //
       if I = StrToInt('0'+LimpaNumero(Copy(Alltrim(Form22.sSerie),7+17,5))) then
@@ -5581,15 +5436,11 @@ begin
         ShowMessage('Este número de licença não foi liberado para este serial.');
       end;
     end;
-    //
   end else
   begin
-    //
     if (Length(alltrim(sSerial)) = 11) then //sistema novo
     begin
-      //
       sSerieS := StrTran(Form22.sSerie,'Número de série: ','');
-      //
       // ShowMEssage(
       // sSerial + chr(10) +
       // Copy(sSerieS,1,3) + Copy(sSerieS,6,6) + IntToStr(StrToInt(Modulo_11(Copy(sSerieS,2,2)+Copy(sSerieS,6,6)))+57));
@@ -5609,14 +5460,11 @@ begin
       begin
         if alltrim(sSerial) <> '' then ShoWMessage('Número de licença inválido.');
       end;
-      //
     end else
     begin
       if alltrim(sSerial) <> '' then ShoWMessage('Número de licença inválido.');
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm1.UsuriosAtivos1Click(Sender: TObject);
@@ -5625,30 +5473,23 @@ begin
 end;
 
 procedure TForm1.Instalarpackcomasltimasalteraes1Click(Sender: TObject);
+var
+  vQtdConexoes : integer;
 begin
-  //
-  {Sandro Silva 2022-12-28 inicio
-  if FileExists(Form1.sAtual+'\smallcon.exe') then
+  vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
+                                        'Select Count(*) From MON$ATTACHMENTS');
+
+  if vQtdConexoes > 1 then
   begin
-    //
-    ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20221001.sma '+
-                                             '20221002.sma '+
-                                             '20221003.sma '+
-                                             '20221004.sma '+
-                                             '20221005.sma '+
-                                             '20221006.sma '+
-                                             '20221007.sma '+
-                                             '20221008.sma '+
-                                             '20221009.sma '+
-                                             'nfce2022.sma '+
-                                             '2022_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
-                                             , '', SW_SHOW);
-                                             //
+    ShowMessage('Não foi possível iniciar a atualização.'+#13#10+
+                'Existem outros usuários com o sistema aberto.'+#13#10+
+                'Feche o sistema em todos os computadores e tente novamente.');
+    Exit;
   end;
-  }
+
+
   if FileExists(Form1.sAtual+'\smallcon.exe') then
   begin
-    //
     ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
                                                    '20231002.sma '+
                                                    '20231003.sma '+
@@ -5662,15 +5503,15 @@ begin
                                                    '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
                                               '',
                                               SW_SHOW);
-                                             //
   end;
   {Sandro Silva 2022-12-28 fim}
-  //
+
   Winexec('TASKKILL /F /IM "smallcdf.exe"' , SW_HIDE ); // Timer2Timer
   Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // Timer2Timer
   Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
-  Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-  //
+  Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+  Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
 end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
@@ -8132,23 +7973,19 @@ procedure TForm1.RegistrodoProgramaonline1Click(Sender: TObject);
 var
   sNFCE :String;
 begin
-  //
   sPublicCheck := GeraCheck;
-  //
+
   try
-    //
     try
-      //
       Form7.ibQuery1.Close;
       Form7.ibQuery1.Sql.Clear;
       Form7.ibQuery1.Sql.Add('select count(REGISTRO) from NFCE');
       Form7.ibQuery1.Open;
       //
       sNFCE := Form7.ibQuery1.FieldByname('COUNT').AsString;
-      //
-    except end;
-    //
-//    if ParamCount = 0 then
+    except
+    end;
+
     begin
       //
      {
@@ -8176,7 +8013,6 @@ begin
       }
       if ValidacaoNova = False then
       begin
-
         Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
                                       'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
                                       '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
@@ -8220,10 +8056,8 @@ begin
                                       '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
                                       );
         }
-      end
-      else
+      end else
       begin
-
         //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
         Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
                                       'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
@@ -8248,16 +8082,11 @@ begin
                                       );
 
       end;
-      //
     end;
-    //
-//    Form1.WebBrowser2.Navigate(pChar('http://www.google.com'));
-    //
-    //
-  except end;
-  //
-  Screen.Cursor             := crDefault;              // Cursor de Aguardo
-  //
+  except
+  end;
+
+  Screen.Cursor             := crDefault;
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -8421,19 +8250,17 @@ begin
       Form7.ibDataSet35TOTAL.DisplayFormat := Form7.ibDataSet4PRECO.EditFormat;
       //
     except
-      //
       ShowMessage('Para solucionar o problema siga os seguintes passos:'+chr(10)
       +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
       +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
       +chr(10)+'3 - Arquivo "smallcom.inf" pode estar danificado (O arquivo deve ser excluido)'
       +chr(10)+'4 - Reinstale o programa');
       // Form1.DestroyWindowHandle;
-      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      //
+      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+      Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+      Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
-    //
-  //  if not Form2.bFlag then Form1.Ajustararquivos1Click(Sender);
-    //
+
     ShortDateFormat := 'dd/mm/yyyy';
     //
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
