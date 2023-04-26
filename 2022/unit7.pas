@@ -2052,7 +2052,6 @@ type
 
   private
     { Private declarations }
-    sSerieNFSelecionada: String;
     function ImportaNF(pP1: boolean; sP1: String):Boolean;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
@@ -10837,6 +10836,7 @@ var
   tInicio : tTime;
   Hora, Min, Seg, cent : Word;
   bA : Boolean;
+  sSerieNFSelecionada: String;  
 begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo //
@@ -11862,6 +11862,7 @@ begin
         // Notas fiscais de saída (vendas) série 002
         //
         sWhere := 'where NUMERONF like '+QuotedStr('%'+Right(Form7.sTitulo,3))+ '  '+AllTrim(sWhere)+' ';
+        sSerieNFSelecionada := Right(Form7.sTitulo,3); // Série na nota foi selecionada para exibir
         //
         sOrderBy  := 'order by NUMERONF';
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
@@ -19879,7 +19880,7 @@ begin
   Mais1Ini.WriteString('NOTAS','default','SERIE 1');
   Mais1Ini.Free;
   //
-  sSerieNFSelecionada := '001';
+  //sSerieNFSelecionada := '001';
 end;
 
 procedure TForm7.Compras_1Click(Sender: TObject);
@@ -24087,7 +24088,7 @@ begin
   Mais1Ini.WriteString('NOTAS','default','SERIE 2');
   Mais1Ini.Free;
   //
-  sSerieNFSelecionada := '002';  
+  //sSerieNFSelecionada := '002';
 end;
 
 procedure TForm7.Rankingdedevedores1Click(Sender: TObject);
@@ -39964,7 +39965,7 @@ begin
   Mais1Ini.WriteString('NOTAS','default','SERIE XXX');
   Mais1Ini.Free;
   //
-  sSerieNFSelecionada := Form1.sSerieEspecial;
+  //sSerieNFSelecionada := Form1.sSerieEspecial;
 end;
 
 procedure TForm7.NotasfiscaisdesadavendassrieXXX1Click(Sender: TObject);
@@ -41309,7 +41310,7 @@ begin
   Mais1Ini.WriteString('NOTAS','default','SERIE 920');
   Mais1Ini.Free;
   //
-  sSerieNFSelecionada := '920';  
+  //sSerieNFSelecionada := '920';
 end;
 
 procedure TForm7.Re1Click(Sender: TObject);
