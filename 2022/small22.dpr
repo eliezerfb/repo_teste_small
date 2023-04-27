@@ -72,7 +72,8 @@ uses
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
-  uImportaNFe in 'uImportaNFe.pas';
+  uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas',
+  uNotaFiscalEletronicaCalc in 'uNotaFiscalEletronicaCalc.pas';
 
 {$R *.RES}
 

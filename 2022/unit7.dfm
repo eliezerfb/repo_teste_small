@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 418
-  Top = 33
+  Left = 286
+  Top = 73
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -15413,9 +15413,8 @@ object Form7: TForm7
       
         '   RJ_, RN_, RO_, RR_, RS_, SC_, SE_, SP_, TO_, EX_, OBS, CONTA,' +
         ' REGISTRO, '
-      
-        '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST, BCPIS, B' +
-        'CCOFINS, '
+      '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  '
+      '   BCPISCOFINS, '
       '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI)'
       'values'
       
@@ -15431,8 +15430,8 @@ object Form7: TForm7
         '   :EX_, :OBS, :CONTA, :REGISTRO, :SOBREIPI, :SOBREFRETE, :SOBRE' +
         'SEGURO, '
       
-        '   :SOBREOUTRAS, :CST, :BCPIS, :BCCOFINS, :PPIS, :PCOFINS, :CSOS' +
-        'N, :CSTPISCOFINS,:FRETESOBREIPI)')
+        '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
+        'STPISCOFINS,:FRETESOBREIPI)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -15478,8 +15477,7 @@ object Form7: TForm7
       '  SOBRESEGURO,'
       '  SOBREOUTRAS,'
       '  CST,'
-      '  BCPIS,'
-      '  BCCOFINS,'
+      '  BCPISCOFINS,'
       '  PPIS,'
       '  PCOFINS,'
       '  CSOSN,'
@@ -15536,8 +15534,7 @@ object Form7: TForm7
       '  SOBRESEGURO = :SOBRESEGURO,'
       '  SOBREOUTRAS = :SOBREOUTRAS,'
       '  CST = :CST,'
-      '  BCPIS = :BCPIS,'
-      '  BCCOFINS = :BCCOFINS,'
+      '  BCPISCOFINS = :BCPISCOFINS,'
       '  PPIS = :PPIS,'
       '  PCOFINS = :PCOFINS,'
       '  CSOSN = :CSOSN,'
@@ -15850,14 +15847,13 @@ object Form7: TForm7
     object ibDataSet14CSTPISCOFINS: TIBStringField
       DisplayLabel = 'CST PIS/COFINS'
       FieldName = 'CSTPISCOFINS'
-      Origin = 'ICM.CSTPISCOFINS'
+      Origin = '"ICM"."CSTPISCOFINS"'
       Size = 2
     end
-    object ibDataSet14BCCOFINS: TIBBCDField
-      DisplayLabel = 'BC COFINS'
-      DisplayWidth = 9
-      FieldName = 'BCCOFINS'
-      Origin = '"ICM"."BCCOFINS"'
+    object ibDataSet14BCPISCOFINS: TIBBCDField
+      DisplayLabel = 'BC PIS/COFINS'
+      FieldName = 'BCPISCOFINS'
+      Origin = 'ICM.BCPISCOFINS'
       Precision = 18
       Size = 2
     end
@@ -15868,14 +15864,6 @@ object Form7: TForm7
       Origin = '"ICM"."PCOFINS"'
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
-      Precision = 18
-      Size = 2
-    end
-    object ibDataSet14BCPIS: TIBBCDField
-      DisplayLabel = 'BC PIS'
-      DisplayWidth = 9
-      FieldName = 'BCPIS'
-      Origin = '"ICM"."BCPIS"'
       Precision = 18
       Size = 2
     end

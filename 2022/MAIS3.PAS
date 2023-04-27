@@ -65,10 +65,9 @@ var
   sSecoes :  TStrings;
   I : Integer;
 begin
-  //
   Senhas.Top             := Form22.Image1.Top + Form22.Image1.Height;
   Senhas.Left            := (Form22.Width div 2) - (Senhas.Width div 2) ;
-  // 
+   
   Form22.Button1.Visible := False;
   //
 //  if FileExists(Form1.sAtual+'\small_aviso_promocao_1.bmp') then
@@ -80,16 +79,16 @@ begin
 //  end;
   //
   Senhas.SENHA.SetFocus;
-  //
+
   sSecoes := TStringList.Create;
-  //
+
   Mais1ini := TIniFile.Create('MAIS1.INI');
   Usuario.Text := Mais1Ini.ReadString('Usuarios','Nome',Usuario.Text);
-  //
+
   Mais1Ini.Free;
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   Mais1Ini.ReadSections(sSecoes);
-  //
+
   for I := 0 to (sSecoes.Count - 1) do
   begin
     if Mais1Ini.ReadString(sSecoes[I],'Chave','ÁstreloPitecus') <> 'ÁstreloPitecus' then
@@ -106,19 +105,17 @@ begin
       end;
     end;
   end;
-  //
 end;
 
 procedure TSenhas.FormCreate(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create('MAIS1.INI');
   Usuario.Text := Mais1Ini.ReadString('Usuarios','Nome',Usuario.Text);
   Mais1Ini.Free;
-  if length(Usuario.Text) = 0 then Usuario.TabOrder := 0;
-  //
+  if length(Usuario.Text) = 0 then
+    Usuario.TabOrder := 0;
 end;
 
 procedure TSenhas.USUARIOKeyUp(Sender: TObject; var Key: Word;
@@ -142,7 +139,6 @@ procedure TSenhas.USUARIOExit(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   if UpperCase(AllTrim(USUARIO.Text)) = 'ADMINISTRADOR' then
   begin
     ShowMessage('Usuário inválido.');
@@ -150,14 +146,12 @@ begin
     USUARIO.SetFocus;
   end else
   begin
-    //
     try
       Mais1ini := TIniFile.Create(Form1.sAtual+'\'+USUARIO.Text+'.inf');
       Mais1Ini.WriteString('Senha','Usuário e senha válidos','Sim');
       Mais1Ini.Free;
     except end;
   end;
-  //
 end;
 
 procedure TSenhas.UsuarioKeyDown(Sender: TObject; var Key: Word;
@@ -169,10 +163,8 @@ end;
 procedure TSenhas.SENHAKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_RETURN then Senhas.Button1Click(Sender);
   if Key = VK_ESCAPE then Senhas.Button2Click(Sender);
-  //
 end;
 
 procedure TSenhas.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -181,7 +173,6 @@ var
   sSenha : String;
   I : Integer;
 begin
-  //
   if (AllTrim(Usuario.Text) <> '') and (Senha.Text<>'#####') then
   begin
     SenhaPub:=Senha.Text;
@@ -205,63 +196,53 @@ begin
         begin
           sSenha := '';
           Mais1Ini.WriteString(UsuarioPub,'Nome',UsuarioPub);
-          //
+
           for I := 1 to Length(Form99.Edit2.Text) do
             sSenha := sTrZero((Ord(Form99.Edit2.Text[I])*137)-I*7,5,0) +  sSenha;
-          //
+
           Mais1Ini.WriteString(UsuarioPub,'Chave',sSenha);
         end;
       end;
     end;
     Mais1Ini.Free;
     close;
-    //
   end else
   begin
-    //
     if Senha.Text <> '#####' then
     begin
       Usuario.SetFocus;
       Abort;
     end;
-    //
   end;
-  //
 end;
 
 procedure TSenhas.Button2Click(Sender: TObject);
 begin
-  //
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
-  //
+
   if AllTrim(Usuario.Text) = '' then Usuario.Text := '<Usuário>';
-  //
+
   SENHA.Text  := '#####';
   SenhaPub     := SENHAS.Text;
   UsuarioPub   := USUARIO.Text;
-  //
+
   Close;
-  //
 end;
 
 procedure TSenhas.FormShow(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
-  //
   try
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario.Text+'.inf');
     Form19.Image7Click(Sender);
-    //
+
     Form19.CheckBox8.Checked  := True;
     Form19.CheckBox10.Checked := False;
     Form19.CheckBox11.Checked := False;
-    //
+
     Mais1Ini.Free;
-    //
   except end;
-  //
 end;
 
 procedure TSenhas.Button1Click(Sender: TObject);
@@ -274,13 +255,10 @@ procedure TSenhas.SENHAEnter(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   if Senhas.SENHA.Text <> '' then
   begin
-    //
     for I := 1 to 3 do
     begin
-      //
       Senhas.Left := Senhas.Left +10;  Senhas.Repaint; sleep(20);
       Senhas.Left := Senhas.Left -10;  Senhas.Repaint; sleep(20);
       Senhas.Left := Senhas.Left +08;  Senhas.Repaint; sleep(15);
@@ -289,20 +267,17 @@ begin
       Senhas.Left := Senhas.Left -06;  Senhas.Repaint; sleep(10);
       Senhas.Left := Senhas.Left +04;  Senhas.Repaint; sleep(05);
       Senhas.Left := Senhas.Left -04;  Senhas.Repaint; sleep(05);
-      //
     end;
   end;
-  //
+
   Senhas.Senha.Text := '';
-  //
 end;
 
 procedure TSenhas.Image2Click(Sender: TObject);
 begin
-  //
   Form1.Ajustararquivos1Click(Sender);
   Senhas.BringToFront;
-  //
+  
 //  ShowMessage(pChar('http://www.smallsoft.com.br/promocao.php?cnpj='+Limpanumero(Form7.ibDAtaSet13CGC.AsString)+'&serial='+AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+''));
   //
   ShellExecute( 0, 'Open',pChar('http://www.smallsoft.com.br/promocao.php?cnpj='+Limpanumero(Form7.ibDAtaSet13CGC.AsString)+'&serial='+AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+''),'', '', SW_SHOWMAXIMIZED);
@@ -313,12 +288,10 @@ end;
 procedure TSenhas.SENHAMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
-  Panel2.Top     := SENHA.Top+10;
+  Panel2.Top     := SENHA.Top+8;
   Panel2.Left    := SENHA.Left + SENHA.Width -20;
   Panel2.Visible := True;
   Panel2.Repaint;
-  //
 end;
 
 procedure TSenhas.Image1Click(Sender: TObject);

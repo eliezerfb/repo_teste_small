@@ -6,7 +6,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
-  DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, shellapi, Buttons, HtmlHelp, jpeg;
+  DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, shellapi, Buttons, HtmlHelp, jpeg,
+  uNotaFiscalEletronicaCalc;
 
 function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
@@ -276,6 +277,7 @@ type
     procedure AtivaPesquisaTransportadora;
     { Private declarations }
   public
+    vNotaFiscal : TNotaFiscalEletronicaCalc;
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
     bOk         : Boolean;
@@ -1044,7 +1046,6 @@ end;
 
 procedure TForm12.SMALL_DBEdit17Enter(Sender: TObject);
 begin
-  Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
   fVELHO := Form7.ibDataSet15MERCADORIA.AsFloat;
   dBGrid2.Visible := False;
   dBGrid3.Visible := False;
@@ -1054,17 +1055,15 @@ end;
 procedure TForm12.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_TAB    then
     Key := VK_RETURN;
   if Key = VK_ESCAPE then
     Key := VK_RETURN;
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
-  //
+
   if DbGrid1.SelectedIndex = 0 then
   begin
-    //
     if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
     begin
       if not dBGrid3.Visible then
@@ -1078,11 +1077,9 @@ begin
       Form7.ibDataSet16.UpdateRecord;
       Form7.ibDataSet16.Edit;
       Form1.bFlag := True;
-      //
     end;
-    //
   end;
-  //
+
   if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
   begin
     if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
@@ -1093,9 +1090,8 @@ begin
       Form7.ibDataSet4.Open;
     end;
   end;
-  //
+
   MostraFoto(True);
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit48Enter(Sender: TObject);
@@ -1107,9 +1103,8 @@ end;
 
 procedure TForm12.DBGrid1ColEnter(Sender: TObject);
 begin
-  // if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
-  Form7.ibDataSet16.EnableControls;
-  dbGrid1.Update;
+  //Form7.ibDataSet16.EnableControls;
+  //dbGrid1.Update;
   dBGrid3.Visible := False;
 end;
 
@@ -1132,12 +1127,9 @@ end;
 
 procedure TForm12.SMALL_DBEdit17Exit(Sender: TObject);
 begin
-  //
   if (Form12.Edit2.Text <> '2-Complementar') then
   begin
-    //
     // Nestas linhas foi Deus quem me ajudou
-    //
 //    if Form7.ibDataSet15MERCADORIA.AsFloat <> Form12.fVELHO then
     begin
       Form7.ibDataSet15.Edit;
@@ -1145,21 +1137,16 @@ begin
       //
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
-      //
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit22Exit(Sender: TObject);
 begin
-  //
   Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
   Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
   //
   SMALL_DBEdit41.SetFocus;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit7Enter(Sender: TObject);
@@ -1185,20 +1172,20 @@ end;
 
 procedure TForm12.DBGrid1Enter(Sender: TObject);
 begin
-  //
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
-  //
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
+
   dBGrid2.Visible    := False;
   dBGrid3.Visible    := False;
-  //
+
   try
     Form7.bChave := True;
     if (DbGrid1.SelectedIndex = 0) then
       if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '' then
         if AllTrim(Form7.ibDataSet16UNITARIO.AsString) <> '' then Form7.ibDataSet16.Delete;
     Form7.bChave := False;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm12.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1228,9 +1215,7 @@ begin
   begin
     Form7.sModulo := 'VENDA';
   end;
-
 end;
-
 
 
 procedure TForm12.DBGrid3KeyDown(Sender: TObject; var Key: Word;
@@ -1272,25 +1257,18 @@ procedure TForm12.DBGrid1ColExit(Sender: TObject);
 var
   Sreg1: String;
 begin
-  //
-  //
   if UpperCase(Form1.ConfDuplo) <> 'SIM' then
   begin
     Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True)
-  end
-  else
+  end  else
   begin
-    Form7.ibDataSet16.DisableControls;
+    {Form7.ibDataSet16.DisableControls;
     sReg1 := Form7.ibDataSet16.FieldByname('REGISTRO').AsString;
     Form7.ibDataSet16.First;
     Form7.ibDataSet16.Locate('REGISTRO',sREg1,[]);
     if Form7.sModulo <> 'RETRIBUTA' then
-      Form7.ibDataSet16.EnableControls;
+      Form7.ibDataSet16.EnableControls; Mauricio Parizotto 2023-04-26 sem uso aparente}
   end;
-  //
-  // if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '' then Perform(Wm_NextDlgCtl,0,0);
-  //
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit4Exit(Sender: TObject);
@@ -1319,13 +1297,14 @@ end;
 procedure TForm12.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
 begin
-  //
   if Field.Name = 'ibDataSet16DESCRICAO' then
   begin
-    if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then DBGrid1.Canvas.Font.Color := clSilver else DBGrid1.Canvas.Font.Color := clBlack;
+    if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
+      DBGrid1.Canvas.Font.Color := clSilver
+    else
+      DBGrid1.Canvas.Font.Color := clBlack;
     dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Field.AsString);
   end;
-  //
 end;
 
 procedure TForm12.Label64Click(Sender: TObject);
@@ -1668,24 +1647,53 @@ begin
   Form12.Button3Click(Sender);
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
+  vNotaFiscal := TNotaFiscalEletronicaCalc.create;
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
 begin
-  //
+   // Apaga ítens em branco
   try
-    if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
-    if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
-    if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
+    Form7.IBQuery99.Close;
+    Form7.IBQuery99.SQL.Clear;
+    Form7.IBQuery99.SQL.Add('delete from ITENS001 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
+    Form7.IBQuery99.Open;
+  except
+  end;
+
+  //Confere valores preenchidos
+  try
+    Form7.ibDataSet15.Edit;
+    
+    if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then
+      Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
+
+    if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then
+      Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
+
+    if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
+      Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
   except
     on E: Exception do  ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
   end;
-  //
+
+  //Roda cálculo Final
   try
-    //
+    Form7.ibDataSet15.Edit;
+
+    if vNotaFiscal <> nil then
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+
+    FreeAndNil(vNotaFiscal);
+  except
+  end;
+
+
+  //Retributa
+  try
     Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
     //
     Form7.ibDataSet16.DisableControls;
@@ -1693,121 +1701,95 @@ begin
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet15.DisableControls;
     Form12.Hide;
-    //
+
     Form7.sModulo := 'RETRIBUTA';
-    //
-    if Form7.ibDataSet15.Modified then Form7.ibDataSet15.Post;
-    //
+    
+    if Form7.ibDataSet15.Modified then
+      Form7.ibDataSet15.Post;
+
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
-      //
       if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
       begin
-        //
         // Atenção a rotina abaixo altera a quantidade no estoque
-        //
         Form7.ibDataSet16.DisableControls;
         Form7.ibDataSet16.First;
         while not Form7.ibDataSet16.Eof do // disable
         begin
-          //
           // Procura o produto no estoque
-          //
           try
-            //
-            Form7.ibDataSet4.Close;                                                //
+            Form7.ibDataSet4.Close;                                                
             Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
             Form7.ibDataSet4.Open;
-            //
+
             if Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
             begin
-              //
               if Form7.ibDataSet16SINCRONIA.AsFloat <> Form7.ibDataSet16QUANTIDADE.AsFloat then
               begin
                 if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
                 begin
                   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
                   begin
-                    //
                     Form7.ibDataSet4.Edit;
                     Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                     Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                     Form7.ibDataSet4.Post;
-                    //
-                    //                ShowMessage('Teste saiu do estoque '+Form7.ibDataSet16QUANTIDADE.AsString+ ' '+Form7.ibDataSet16DESCRICAO.AsString);
-                    //
                   end;
                 end;
-                //
+
                 Form7.sModulo := 'FECHAVENDA';
                 Form7.ibDataSet16.Edit;
                 Form7.ibDataSet16SINCRONIA.AsFloat := Form7.ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
                 Form7.ibDataSet16.Post;
-                //
               end;
             end;
           except end;
-          //
+
           Form7.sModulo := 'VENDA';
           Form7.ibDataSet16.Next;
-          //
         end;
-        //
         // Atenção a rotina acima altera a quantidade no estoque
-        //
       end;
 
-
-      //
       // Desdobramento das duplicatas
-      //
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-      //
+
       ApagaIntegracaoComOCaixa(True);
-      //
+
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0) then
       begin
         Form18.ShowModal;
       end else
       begin
-        //
         ApagaAsDuplicatasAnteriores(True);
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15DUPLICATAS.AsFloat := 0;
         Form7.ibDataSet15.Post;
-        //
+
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
           Form18.CheckBox1.Checked := True
         else
           Form18.CheckBox1.Checked := False;
         Mais1Ini.Free;
-        //
+
         if Form18.CheckBox1.Checked then
         begin
           Form7.bProximas := True;
           Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
           Form7.bProximas := False;
         end;
-        //
       end;
-      //
     end else
     begin
-      //
       // Se o cliente estiver em branco apaga
-      //
       Form7.ibDataSet15.Delete;
-      //
     end;
-    //
   except end;
-  //
-  //
+
   // Lay-Out no form7
-  //
   Form7.ibDataSet16UNITARIO.Visible       := False;
   Form7.ibDataSet16CFOP.Visible           := False;
   Form7.ibDataSet16XPED.Visible           := False;
@@ -1816,29 +1798,25 @@ begin
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 29;
   Form7.ibDataSet35TECNICO.Visible        := True;
   //    Form7.ibDataSet35UNITARIO.Visible       := False;
-  //
-  //
+
   Form7.ibDataSet4.Close;
   Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.sModulo := 'VENDA';
-  //
+
   Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet14.EnableControls;
   Form7.ibDataSet15.EnableControls;
-  //
+
   BaixaEstoqueDaNFeAutorizada('');
-  //
+
   Form7.Close;
   Form7.Show;
-  //
-  //
-  //
+
   // Para atender o PAF
-  //
   if ParamCount > 0 then
   begin
     if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
@@ -1846,19 +1824,10 @@ begin
 //      Form1.Close;
     end;
   end;
-  //
+
   Form1.ConfEspecie := Form7.ibDataSet15ESPECIE.AsString;
   Form1.ConfMarca   := Form7.ibDataSet15MARCA.AsString;
-  //
-  // Apaga ítens em branco
-  //
-  try
-    Form7.IBQuery99.Close;
-    Form7.IBQuery99.SQL.Clear;
-    Form7.IBQuery99.SQL.Add('delete from ITENS001 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
-    Form7.IBQuery99.Open;
-  except end;
-  //
+
 end;
 
 
@@ -1866,11 +1835,9 @@ procedure TForm12.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   I : Integer;
-  sReg : String;
 begin
-  //
   Form7.ibDataSet16.EnableControls;
-  //
+
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
@@ -1878,37 +1845,32 @@ begin
     dbGrid1.SetFocus;
     Abort;
   end;
-  //
+
   if ((Key = VK_DOWN) or (Key = VK_UP)) and (dBgrid3.CanFocus) then
   begin
     Key := VK_SHIFT;
     dBgrid3.SetFocus;
   end;
-  //
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
+
   try
     begin
       if Key = VK_RETURN then
       begin
-        //
         Form1.bFlag := True;
-        //
+
         if not (Form7.ibDataSet16.State in ([dsEdit, dsInsert])) then
-        begin
           Form7.ibDataSet16.Edit;
-        end else
-        begin
-          Form7.ibDataSet16.UpdateRecord;
-          Form7.ibDataSet16.Edit;
-        end;
-        //
+
         if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '' then
         begin
-          //
           if DbGrid1.SelectedIndex = 0 then
           begin
-            //
             Form1.bFlag := True;
             //
             if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
@@ -1916,13 +1878,10 @@ begin
               Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
             end else
             begin
-              sReg := Form7.ibDataSet16REGISTRO.AsString;
-//              Form7.ibDataSet16DESCRICAO.AsString := ' '+AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
               Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
-              Form7.ibDataSet16.Locate('REGISTRO',sReg,[]);
             end;
           end;
-          //
+
           I := DbGrid1.SelectedIndex;
           DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
           if I = DbGrid1.SelectedIndex  then
@@ -1931,9 +1890,9 @@ begin
             Form7.ibDataSet16.Next;
             if Form7.ibDataSet16.EOF then Form7.ibDataSet16.Append;
           end;
-          //
         end else
         begin
+          //Sai do Grid
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16.Post;
           SMALL_DBEdit17.SetFocus;
@@ -1949,6 +1908,7 @@ begin
     end;
   except
   end;
+  
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '') then
     DbGrid1.SelectedIndex := 0;
 end;
@@ -2104,24 +2064,21 @@ end;
 
 procedure TForm12.Emitirnotafiscaldevendasnobalco1Click(Sender: TObject);
 begin
-  //
   // Atualiza as ECF's que estão em uso
-  //
   Form7.ibDataSet14.DisableControls;
   Form7.ibDataSet14.Close;
   Form7.ibDataSet14.SelectSQL.Clear;
   Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
   Form7.ibDataSet14.Open;
   Form7.ibDataSet14.EnableControls;
-  //
+
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
     Form7.ibDataSet14.Locate('CFOP','5929',[]);
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
     Form7.ibDataSet14.Locate('CFOP','6929',[]);
-  //
+
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
-    //
     Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
     //
     Form7.sModulo := 'BALCAO';
@@ -2132,17 +2089,14 @@ begin
 //    Form7.ibDataSet16.Edit;
     if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
     Retributa(True);
-    //
   end else
   begin
     ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929');
   end;
-  //
 end;
 
 procedure TForm12.Importaroramentos1Click(Sender: TObject);
 begin
-  //
   Form7.sModulo := 'ORCAMENTO';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
@@ -2151,7 +2105,6 @@ begin
   Form7.ibDataSet16.Edit;
   Form7.ibDataSet16.Post;
   Retributa(True);
-  //
 end;
 
 procedure TForm12.Label28Click(Sender: TObject);
@@ -2850,7 +2803,6 @@ end;
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
-  //
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := True;
@@ -2858,7 +2810,6 @@ begin
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := False;
   end;
-  //
 end;
 
 procedure TForm12.Button3Click(Sender: TObject);

@@ -6,11 +6,13 @@ function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): Stri
 function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
+function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 
 implementation
 
 uses
   SysUtils
+  , StrUtils
   , SmallFunc
   ;
 
@@ -91,4 +93,20 @@ begin
   Result := SqlSelectGraficoVendas(dtInicio, dtFinal);
 end;
 
+function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+// Sandro Silva 2015-12-10 Formata valor float com 2 casas decimais para usar nos elementos do xml da nfce
+// Parâmetros:
+// dValor: Valor a ser formatado
+// iPrecisao: Quantidade de casas decimais resultante no valor formatado. Por default formata com 2 casas. Ex.: 2 = 0,00; 3 = 0,000
+var
+  sMascara: String;
+begin
+  sMascara := '##0.' + DupeString('0', iPrecisao);
+  Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.'); // Quantidade Comercializada do Item
+end;
+
+
 end.
+
+
+
