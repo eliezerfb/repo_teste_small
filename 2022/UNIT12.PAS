@@ -1046,7 +1046,6 @@ end;
 
 procedure TForm12.SMALL_DBEdit17Enter(Sender: TObject);
 begin
-  Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
   fVELHO := Form7.ibDataSet15MERCADORIA.AsFloat;
   dBGrid2.Visible := False;
   dBGrid3.Visible := False;
@@ -1131,7 +1130,6 @@ begin
   if (Form12.Edit2.Text <> '2-Complementar') then
   begin
     // Nestas linhas foi Deus quem me ajudou
-    //
 //    if Form7.ibDataSet15MERCADORIA.AsFloat <> Form12.fVELHO then
     begin
       Form7.ibDataSet15.Edit;
@@ -1217,9 +1215,7 @@ begin
   begin
     Form7.sModulo := 'VENDA';
   end;
-
 end;
-
 
 
 procedure TForm12.DBGrid3KeyDown(Sender: TObject; var Key: Word;
@@ -1659,14 +1655,44 @@ procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
 begin
+   // Apaga ítens em branco
   try
-    if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
-    if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
-    if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
+    Form7.IBQuery99.Close;
+    Form7.IBQuery99.SQL.Clear;
+    Form7.IBQuery99.SQL.Add('delete from ITENS001 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
+    Form7.IBQuery99.Open;
+  except
+  end;
+
+  //Confere valores preenchidos
+  try
+    Form7.ibDataSet15.Edit;
+    
+    if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then
+      Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);
+
+    if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then
+      Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
+
+    if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
+      Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
   except
     on E: Exception do  ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
   end;
 
+  //Roda cálculo Final
+  try
+    Form7.ibDataSet15.Edit;
+
+    if vNotaFiscal <> nil then
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+
+    FreeAndNil(vNotaFiscal);
+  except
+  end;
+
+
+  //Retributa
   try
     Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
     //
@@ -1677,9 +1703,10 @@ begin
     Form12.Hide;
 
     Form7.sModulo := 'RETRIBUTA';
-    //
-    if Form7.ibDataSet15.Modified then Form7.ibDataSet15.Post;
-    //
+    
+    if Form7.ibDataSet15.Modified then
+      Form7.ibDataSet15.Post;
+
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
       if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
@@ -1691,14 +1718,13 @@ begin
         begin
           // Procura o produto no estoque
           try
-            Form7.ibDataSet4.Close;                                                //
+            Form7.ibDataSet4.Close;                                                
             Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
             Form7.ibDataSet4.Open;
-            //
+
             if Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
             begin
-              //
               if Form7.ibDataSet16SINCRONIA.AsFloat <> Form7.ibDataSet16QUANTIDADE.AsFloat then
               begin
                 if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
@@ -1709,7 +1735,6 @@ begin
                     Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                     Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                     Form7.ibDataSet4.Post;
-                    //                ShowMessage('Teste saiu do estoque '+Form7.ibDataSet16QUANTIDADE.AsString+ ' '+Form7.ibDataSet16DESCRICAO.AsString);
                   end;
                 end;
 
@@ -1803,25 +1828,6 @@ begin
   Form1.ConfEspecie := Form7.ibDataSet15ESPECIE.AsString;
   Form1.ConfMarca   := Form7.ibDataSet15MARCA.AsString;
 
-  // Apaga ítens em branco
-  try
-    Form7.IBQuery99.Close;
-    Form7.IBQuery99.SQL.Clear;
-    Form7.IBQuery99.SQL.Add('delete from ITENS001 where Coalesce(DESCRICAO,'''')='+QuotedStr('')+'');
-    Form7.IBQuery99.Open;
-  except end;
-
-  try
-    Form7.ibDataSet15.Edit;
-
-    if vNotaFiscal <> nil then
-      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
-
-    Form7.ibDataSet15.Post;
-
-    FreeAndNil(vNotaFiscal);
-  except
-  end;
 end;
 
 
@@ -1829,7 +1835,6 @@ procedure TForm12.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   I : Integer;
-  sReg : String;
 begin
   Form7.ibDataSet16.EnableControls;
 
@@ -1847,8 +1852,12 @@ begin
     dBgrid3.SetFocus;
   end;
 
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
+
   try
     begin
       if Key = VK_RETURN then
@@ -1856,13 +1865,7 @@ begin
         Form1.bFlag := True;
 
         if not (Form7.ibDataSet16.State in ([dsEdit, dsInsert])) then
-        begin
           Form7.ibDataSet16.Edit;
-        end else
-        begin
-          Form7.ibDataSet16.UpdateRecord;
-          Form7.ibDataSet16.Edit;
-        end;
 
         if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '' then
         begin
@@ -1875,10 +1878,7 @@ begin
               Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
             end else
             begin
-              sReg := Form7.ibDataSet16REGISTRO.AsString;
-//              Form7.ibDataSet16DESCRICAO.AsString := ' '+AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
               Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
-              Form7.ibDataSet16.Locate('REGISTRO',sReg,[]);
             end;
           end;
 
@@ -1892,6 +1892,7 @@ begin
           end;
         end else
         begin
+          //Sai do Grid
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16.Post;
           SMALL_DBEdit17.SetFocus;
@@ -1907,6 +1908,7 @@ begin
     end;
   except
   end;
+  
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '') then
     DbGrid1.SelectedIndex := 0;
 end;

@@ -8070,14 +8070,9 @@ end;
 
 function Totalizaservicos(sP1: Boolean):Boolean;
 begin
-  //
   // Servicos
-  //
-  // ShowMessage('Teste: '+Form7.sModulo );
-  //
   if Form7.sModulo = 'VENDA' then
   begin
-    //
     if (Form7.ibDataSet15NUMERONF.AsString = Form7.ibDataSet35NUMERONF.AsString) then //  Sandro Silva 2022-09-26
     begin
       // Totalizaservicos() é executando em vários OnChange de campos do DataSet da tabela VENDAS.
@@ -8129,13 +8124,9 @@ begin
         Form7.sModulo := 'VENDA';
         //
       end;
-      
     end;
-    //
   end;
-  //
   Result := True;
-  //
 end;
 
 
@@ -9707,39 +9698,37 @@ var
   sReg14: String;
   sReg16: String;
 begin
-  //
   // Não faz nada quando entra a 1 vez
-  //
+
   if Form7.sModulo <> 'CANCELA' then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
   begin
-    //
     if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
     begin
-      //                            
       Form7.ibDataSet16.DisableControls;
-      //
+
       try
         Form7.ibDataSet14.DisableControls;
         sReg14 := Form7.ibDataSet14REGISTRO.AsString;
         sReg16 := Form7.ibDataSet16REGISTRO.AsString;
+
         try
           Form7.ibDataSet14.First;
           while (Form7.ibDataSet14ISS.AsFloat = 0) and ( not Form7.ibDataSet14.EOF) do Form7.ibDataSet14.Next;
+
           if Form7.ibDataSet14ISS.AsFloat <> 0  then
           begin
             Form7.ibDataSet15.Edit;
-  //          Form7.ibDataSet15ISS.AsFloat := Form7.ibDataSet15SERVICOS.Value * Form7.ibDataSet14ISS.AsFloat / 100; // ISS
           end;
         except
         end;
+
         try
           Form7.ibDataSet14.Locate('REGISTRO',sReg14,[]);
           Form7.ibDataSet14.EnableControls;
         except
         end;
-        //
+
         // SIMPLES NACIONAL
-        //
         if Copy(Form7.ibDataSet14OBS.AsString,1,26) = 'PERMITE O REAPROVEITAMENTO' then
         begin
           try
@@ -9749,58 +9738,47 @@ begin
           except
           end;
         end;
-        //
+
         if Copy(Form7.ibDataSet14OBS.AsString,1,24) = 'PERMITE O APROVEITAMENTO' then
         begin
-          //
           // ObservacaoOperacao(False); // simplas nacional PERMITE O APROVEITAMENTO
-          //
           try
-            //
             // PERMITE O APROVEITAMENTO DO CRÉDITO DE ICMS NO VALOR DE R$; CORRESPONDENTE Á ALÍQUOTA DE 2,82%, NOS TERMOS DO ART. 23 DA LC 123
-            //
             try
               fAliquota := StrToFloat(Alltrim(StrTran(Copy(Form7.ibDataSet14OBS.AsString,90,4),'.',',')));
             except
               fAliquota := 2.82;
             end;
-            //
+
             Form7.IBQuery99.Close;
             Form7.IBQuery99.SQL.Clear;
             Form7.IBQuery99.SQL.Add('select sum(Itens001.TOTAL) from ITENS001 ,ESTOQUE where ESTOQUE.DESCRICAO=ITENS001.DESCRICAO and (ESTOQUE.CSOSN=''101'' or ESTOQUE.CSOSN=''201'' or ESTOQUE.CSOSN=''900'') and ITENS001.NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+' ');
             Form7.IBQuery99.Open;
-            //
+
             fST := Form7.IBQuery99.FieldByname('SUM').AsFloat;
-            //
+            
             if FST > 0 then
             begin
-              //
               if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) <> 0 then
               begin
                 if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
                 Form7.ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,Form7.sAproveitamento,'');                      // Retira o anterios
               end;
-              //
+
               Form7.sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[ fST * fAliquota / 100])) +'; ');  // Gera o novo e grava em sAproveitamento
-              //
+
               if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
               begin
                 if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
                 Form7.ibDataSet15COMPLEMENTO.AsString := Form7.sAproveitamento + Form7.ibDataSet15COMPLEMENTO.AsString;                                // Coloca o novo
               end;
-              //
             end;
-            //
           except
           end;
         end else
         begin
-          //                                   //
           // Joga p/obs a obs na tabela de icm //
-          //                                   /
-          //
           // 'Retenção de 4,65% correspondente a soma das aliquotas da CSLL da COFINS e PIS/PASEP. R$'
-          //
           if Copy(Form7.ibDataSet14OBS.AsString,1,8) = 'Retenção' then
           begin
             Form7.ibDataSet15COMPLEMENTO.AsString  := '';
@@ -9818,9 +9796,9 @@ begin
       end;
       //
       Form7.ibDataSet14.EnableControls;
-      //
-      //////////////////////////////////////////////////////////////////////////////////////////////////////
-      //
+
+
+      
       if Form7.sModulo = 'DESCONTO1' then
       begin
         //
@@ -9949,11 +9927,10 @@ begin
         Form7.ibDataSet16.Locate('REGISTRO',sReg16,[]);
         //
       end;
-      //
+
       // Retenção de 4,65% correspondente a soma das aliquotas da CSLL da COFINS e PIS/PASEP. R$
-      //
       fRetencao := 0;
-      //
+      
       if Copy(Form7.ibDataSet14OBS.AsString,1,8) = 'Retenção' then
       begin
         try
@@ -10065,22 +10042,17 @@ begin
       // Dedus o imposto de renda //
       // ------------------------ //
       // Servicos >= ConfLimite then IR = Servicos * (( ConfIR / 100) * 1) else IR = 0;
-      //
+      
       if Form7.ibDataSet15SERVICOS.AsFloat >= Form1.ConfLimite then
       begin
-        //
         // ObservacaoOperacao(True); // Retencao
-        //
         Form1.fRetencaoIR := (Form7.ibDataSet15SERVICOS.AsFloat * (( Form1.ConfIR / 100) * 1));
         Form7.ibDataSet15COMPLEMENTO.AsString := Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + 'Retenção de R$ '+ AllTrim(Format('%14.2n',[  (Form7.ibDataSet15SERVICOS.AsFloat * (( Form1.ConfIR / 100) * 1))  ]))  +' de IRRF';
-        //
       end else
       begin
-        //
         Form1.fRetencaoIR := 0;
-        //
       end;
-      //
+
       if Format('%12.2n',[Form7.ibDataSet15TOTAL.AsFloat]) <> Format('%12.2n',[( Form7.ibDataSet15MERCADORIA.Value  +
                                                                              Form7.ibDataSet15SERVICOS.Value    +
                                                                              Form7.ibDataSet15FRETE.Value       +
@@ -10122,7 +10094,7 @@ begin
         '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
         //
       end;
-      //
+
       if Form7.sModulo <> 'RETRIBUTA' then
         Form7.ibDataSet16.EnableControls;
       //
@@ -10132,30 +10104,22 @@ begin
       if AllTrim(Form1.CFOP5124) <> '' then // Ok
       begin
         try
-          //
           Form7.IBDataSet100.Close;
           Form7.ibDataSet100.SelectSQL.Clear;
           Form7.ibDataSet100.SelectSQL.Add('select sum(TOTAL) from ITENS001 where NUMERONF='+QuotedStr(IbDAtaSet15NUMERONF.AsString)+' and '+Form1.CFOP5124);
           Form7.ibDataSet100.Open;
-          //
           // Soma o CFOP 5104 ou 6124 no TOTAL da nota mas não soma na MERCADORIA
-          //
         except
         end;
       end;
-      //
     end;
-    
   end;
-  //
+  
   try
-    //
     // Abate o Desconto no ISS
-    //
     Totalizaservicos(True);
-    //
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm7.FormCreate(Sender: TObject);
@@ -13052,11 +13016,13 @@ end;
 procedure TForm7.ibDataSet15VOLUMESChange(Sender: TField);
 begin
   ibDataSet15.Edit;
+
   if ibDataSet15VOLUMES.AsFloat = 0 then
   begin
     ibDataSet15ESPECIE.AsString := '';
     ibDataSet15MARCA.AsString   := '';
   end;
+
   if ibDataSet15VOLUMES.AsFloat = 1 then
   begin
     if ibDataSet15ESPECIE.AsString = '' then
@@ -13064,6 +13030,7 @@ begin
     if ibDataSet15MARCA.AsString   = '' then
       ibDataSet15MARCA.AsString   := 'VARIAS';
   end;
+  
   if ibDataSet15VOLUMES.AsFloat > 1 then
   begin
     if ibDataSet15ESPECIE.AsString = '' then
@@ -19203,12 +19170,11 @@ begin
 end;
 
 procedure TForm7.ibDataSet16AfterPost(DataSet: TDataSet);
-var
-  sReg16 : String;
-  IBQESTOQUE: TIBQuery; 
+//var
+//  IBQESTOQUE: TIBQuery;
 begin
-  IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
-  IBQESTOQUE.DisableControls;
+  //IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
+  //IBQESTOQUE.DisableControls;
 
   if Form7.sModulo <> 'NAO' then
   begin
@@ -19216,9 +19182,8 @@ begin
     if Form7.sModulo = 'VENDA' then
     begin
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      sReg16 := Form7.ibDataSet16REGISTRO.AsString;
 
-      IBQESTOQUE.Close;
+      {IBQESTOQUE.Close;
       IBQESTOQUE.SQL.Clear;
       IBQESTOQUE.SQL.Add('select DESCRICAO, PRECO, TIPO_ITEM from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' '); // Ok
       IBQESTOQUE.Open;
@@ -19228,7 +19193,7 @@ begin
       begin
         ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
         Form7.ibDataSet16.Delete;
-      end;
+      end;}
 
       try
         // Quando não tem produtos cadastrados e pq a NF e de complemento do ICMS
@@ -19244,17 +19209,10 @@ begin
         begin
           Form12.SMALL_DBEdit16.ReadOnly := False;
         end;
-
       except
       end;
       
       Form7.ibDataSet15.EnableControls;
-
-      {Sandro Silva 2022-11-08 inicio}
-      if Trim(sReg16) <> '' then
-        Form7.ibDataSet16.Locate('REGISTRO', sReg16, []);
-      {Sandro Silva 2022-11-08 fim}
-
       Screen.Cursor := crDefault;
     end;
 
@@ -19269,9 +19227,7 @@ begin
   Form7.IBQuery14.Close;
   AgendaCommit(True);
 
-  Form7.ibDataSet16.Tag := 0;
-
-  FreeAndNil(IBQESTOQUE);
+  //FreeAndNil(IBQESTOQUE);
 end;
 
 procedure TForm7.ibDataSet16BeforeDelete(DataSet: TDataSet);
@@ -19351,8 +19307,6 @@ end;
 
 procedure TForm7.ibDataSet16NewRecord(DataSet: TDataSet);
 begin
-  //
-//  ibDataSet16.Edit;
   Form7.ibDataSet16REGISTRO.AsString   := sProximo;
   Form7.ibDataSet16SINCRONIA.AsFloat   := 0;                                    // Resolvi este problema as 4 da madrugada no NoteBook em casa
   //
@@ -19363,12 +19317,10 @@ begin
   begin
     Form7.ibDataSet16NUMERONF.AsString := Form7.ibDataset15NUMERONF.AsString;
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet16CFOPSetText(Sender: TField; const Text: String);
 begin
-  //
   if LimpaNumero(Text) <> '' then
   begin
     if (Length(LimpaNumero(Text)) <> 4) or  ((Copy(LimpaNumero(Text),1,1) <> '5') and (Copy(LimpaNumero(Text),1,1) <> '6') and (Copy(LimpaNumero(Text),1,1) <> '7')) then
@@ -19378,9 +19330,9 @@ begin
   end
   else
     Form7.ibDataSet16CFOP.AsString := '';
+    
   if Form7.ibDataSet16TOTAL.AsFloat <=0 then
     Form7.ibDataSet16CFOP.AsString := '';
-  //
 end;
 
 procedure TForm7.ibDataSet16DESCRICAOChange(Sender: TField);
@@ -19394,7 +19346,7 @@ var
   sRegistro1:  String;
   bFind: Boolean;
   I: Integer;
-  ItemNFe: TItemNFe; // Sandro Silva 2022-11-11
+  ItemNFe: TItemNFe; 
 begin
   try
     if (Form1.bFlag) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
@@ -19409,7 +19361,7 @@ begin
       begin
         if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
         begin
-          Form7.ibDataSet4.Close;                                                //
+          Form7.ibDataSet4.Close;                                                
           Form7.ibDataSet4.Selectsql.Clear;
           Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
           Form7.ibDataSet4.Open;
@@ -19423,10 +19375,10 @@ begin
         Form7.ibDataSet4.SelectSQL.Clear;
         Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 order by upper(DESCRICAO)');
         Form7.ibDataSet4.Open;
-        Form7.ibDataSet4.First;
+        //Form7.ibDataSet4.First;
         Form7.ibDataSet4.EnableControls;
-        Form7.ibDataSet4.First;
-        //
+        //Form7.ibDataSet4.First;
+
         // Procura por: código
         if (length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
         begin
@@ -19504,6 +19456,13 @@ begin
       else
         bFind := True;
       Form7.ibDataSet4.EnableControls;
+
+      //Mauricio Parizotto
+      if ibDataSet4.FieldByname('TIPO_ITEM').AsString = '09' then
+      begin
+        ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
+        Form7.ibDataSet16.Delete;
+      end;
 
       //  Preenche os dados do arquivo NOTA0001.DBF
       //  se o produto for encontrado
@@ -24863,7 +24822,7 @@ begin
               begin
                 PegaImpostosDoXML(Form7.ibDataSet15.FieldByName('NUMERONF').AsString);
               end;
-              //
+              
               try
                 //
                 // Relaciona a natureza da operação com o arquivo de vendas
@@ -26545,12 +26504,6 @@ end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
 begin
-  //
-  if Form7.ibDataSet16.Modified then
-    Form7.ibDataSet16.Tag := 1
-  else
-    Form7.ibDataSet16.Tag := 0;
-  //
   if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolucão
   begin
     try

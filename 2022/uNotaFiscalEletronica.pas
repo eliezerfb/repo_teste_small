@@ -343,9 +343,9 @@ begin
       begin
         DataSetItens.Edit;
 
-        DataSetItens.FieldByName('NUMERONF').AsString       := oItem.Numeronf;
-        DataSetItens.FieldByName('CODIGO').AsString         := oItem.Codigo;
-        DataSetItens.FieldByName('DESCRICAO').AsString      := oItem.Descricao;
+        //DataSetItens.FieldByName('NUMERONF').AsString       := oItem.Numeronf;
+        //DataSetItens.FieldByName('CODIGO').AsString         := oItem.Codigo;
+        //DataSetItens.FieldByName('DESCRICAO').AsString      := oItem.Descricao;
         DataSetItens.FieldByName('ST').AsString             := oItem.St;
         DataSetItens.FieldByName('IPI').AsFloat             := oItem.Ipi;
         DataSetItens.FieldByName('ICM').AsFloat             := oItem.Icm;
@@ -362,7 +362,7 @@ begin
         DataSetItens.FieldByName('BASEISS').AsFloat         := oItem.Baseiss;
         DataSetItens.FieldByName('ALIQUOTA').AsFloat        := oItem.Aliquota;
         DataSetItens.FieldByName('CFOP').AsString           := oItem.Cfop;
-        DataSetItens.FieldByName('NUMEROOS').AsString       := oItem.Numeroos;
+        //DataSetItens.FieldByName('NUMEROOS').AsString       := oItem.Numeroos;
         DataSetItens.FieldByName('VICMS').AsFloat           := oItem.Vicms;
         DataSetItens.FieldByName('VBC').AsFloat             := oItem.Vbc;
         DataSetItens.FieldByName('VBCST').AsFloat           := oItem.Vbcst;
@@ -373,15 +373,15 @@ begin
         DataSetItens.FieldByName('ALIQ_COFINS').AsFloat     := oItem.Aliq_cofins;
         DataSetItens.FieldByName('CST_IPI').AsString        := oItem.Cst_ipi;
         DataSetItens.FieldByName('CST_ICMS').AsString       := oItem.Cst_icms;
-        DataSetItens.FieldByName('XPED').AsString           := oItem.Xped;
+        //DataSetItens.FieldByName('XPED').AsString           := oItem.Xped;
         DataSetItens.FieldByName('NITEMPED').AsString       := oItem.Nitemped;
-        DataSetItens.FieldByName('ANVISA').AsInteger        := oItem.Anvisa;
+        //DataSetItens.FieldByName('ANVISA').AsInteger        := oItem.Anvisa;
         DataSetItens.FieldByName('PFCPUFDEST').AsFloat      := oItem.Pfcpufdest;
         DataSetItens.FieldByName('PICMSUFDEST').AsFloat     := oItem.Picmsufdest;
-        DataSetItens.FieldByName('ENCRYPTHASH').AsString    := oItem.Encrypthash;
+        //DataSetItens.FieldByName('ENCRYPTHASH').AsString    := oItem.Encrypthash;
         DataSetItens.FieldByName('CSOSN').AsString          := oItem.Csosn;
         DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat  :=  oItem.Vbc_pis_cofins;
-        DataSetItens.FieldByName('IDENTIFICADORPLANOCONTAS').AsString := oItem.Identificadorplanocontas;
+        //DataSetItens.FieldByName('IDENTIFICADORPLANOCONTAS').AsString := oItem.Identificadorplanocontas;
 
         DataSetItens.Post;
       end;
@@ -393,8 +393,8 @@ end;
 
 procedure TNotaFiscalEletronica.AtualizaDataSetNota(DataSetNF,DataSetItens : TibDataSet);
 begin
-  DataSetNF.FieldByName('NUMERONF').AsString        := FNotaFiscal.Numeronf;
-  DataSetNF.FieldByName('MODELO').AsString          := FNotaFiscal.Modelo;
+  //DataSetNF.FieldByName('NUMERONF').AsString        := FNotaFiscal.Numeronf;
+  //DataSetNF.FieldByName('MODELO').AsString          := FNotaFiscal.Modelo;
   DataSetNF.FieldByName('VENDEDOR').AsString        := FNotaFiscal.Vendedor;
   DataSetNF.FieldByName('CLIENTE').AsString         := FNotaFiscal.Cliente;
   DataSetNF.FieldByName('OPERACAO').AsString        := FNotaFiscal.Operacao;
@@ -403,7 +403,7 @@ begin
   DataSetNF.FieldByName('SEGURO').AsFloat           := FNotaFiscal.Seguro;
   DataSetNF.FieldByName('DESPESAS').AsFloat         := FNotaFiscal.Despesas;
   DataSetNF.FieldByName('DESCONTO').AsFloat         := FNotaFiscal.Desconto;
-  DataSetNF.FieldByName('VOLUMES').AsFloat          := FNotaFiscal.Volumes;
+  //DataSetNF.FieldByName('VOLUMES').AsFloat          := FNotaFiscal.Volumes;
   DataSetNF.FieldByName('ESPECIE').AsString         := FNotaFiscal.Especie;
   DataSetNF.FieldByName('MARCA').AsString           := FNotaFiscal.Marca;
   DataSetNF.FieldByName('TRANSPORTA').AsString      := FNotaFiscal.Transporta;

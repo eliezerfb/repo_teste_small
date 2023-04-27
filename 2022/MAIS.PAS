@@ -2234,131 +2234,114 @@ var
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
 
   sDesc    ,
-  sQtd     ,
-  sTot     ,
-  sIPI     ,
-  sICMS    ,
-  spICMS   ,
-  sBC      ,
-  sICMSST  ,
-  sBCST    : String;
+//  sQtd     ,
+//  sTot     ,
+  sIPI
+//  sICMS    ,
+//  spICMS,
+//  sBC      ,
+//  sICMSST  ,
+//  sBCST
+  : String;
 begin
-  //
   Form1.ibQuery2.close;
   Form1.ibQuery2.Sql.Clear;
   Form1.ibQuery2.SQL.Add('select * from VENDAS where NUMERONF='+QuotedStr(sP1)); // Somente a nota atual
   Form1.ibQuery2.Open;
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   while not Form1.ibQuery2.Eof do
   begin
-    //
     // Metodo XML
-    //
     Mensagem22('Lendo XML da NFe '+Form1.ibQuery2.FieldByname('NUMERONF').AsString);
-    //
+    
     if (Pos('<nfeProc',Form1.ibQuery2.FieldByname('NFEXML').AsString) <> 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'X') then
     begin
-      //
       try
         Form1.XMLDocument1.DOMVendor := GetDOMVendor('MSXML');
         Form1.XMLDocument1.XML.Text  := pchar(Form1.ibQuery2.FieldByname('NFEXML').AsString);
         Form1.XMLDocument1.Active    := True;
-        //
+
         NodePrim := Form1.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe');
         NodePai  := NodePrim.ChildNodes.FindNode('infNFe');
         NodeSec  := NodePai.ChildNodes.FindNode('det');
-        //
+
         NodeSec.ChildNodes.First;
-        //
+
         repeat
-          //
+
           NodeTmp  := NodeSec.ChildNodes['prod']; // tag <prod> dentro de <det>
           NodeTmp.ChildNodes.First;
-          //
+
           if Alltrim(NodeTmp.ChildNodes['xProd'].Text) <> '' then
           begin
-            //
             // ICM
-            //
-            sICMS   := '0';
-            sBC     := '0';
-            sICMSST := '0';
-            sBCST   := '0';
-            spICMS  := '0';
+            //sICMS   := '0';
+            //sBC     := '0';
+            //sICMSST := '0';
+            //sBCST   := '0';
+            //spICMS  := '0';
             //
             for I := 0 to 100 do
             begin
               //
               if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0))) then
               begin
-                //
-                try sICMS   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMS'].Text);   except end;
-                try sBC     := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBC'].Text);     except end;
-                try sICMSST := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMSST'].Text); except end;
-                try sBCST   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBCST'].Text);   except end;
-                try spICMS  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['pICMS'].Text);  except end;
-                //
+                //try sICMS   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMS'].Text);   except end;
+                //try sBC     := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBC'].Text);     except end;
+                //try sICMSST := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMSST'].Text); except end;
+                //try sBCST   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBCST'].Text);   except end;
+                //try spICMS  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['pICMS'].Text);  except end;
               end;
-              //
             end;
-            //
+
             try sDesc := NodeTmp.ChildNodes['xProd'].Text; except end;
-            try sQtd  := NodeTmp.ChildNodes['qCom'].Text;  except end;
-            try sTot  := NodeTmp.ChildNodes['vProd'].Text; except end;
-            //
+            //try sQtd  := NodeTmp.ChildNodes['qCom'].Text;  except end;
+            //try sTot  := NodeTmp.ChildNodes['vProd'].Text; except end;
+            
             sIPI    := '0';
-            //
+            
             if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI')) then
             begin
                try sIPI  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['vIPI'].Text);  except end;
             end;
-            //
-{
-            ShowMessage(
-            sICMS   + Chr(10)+
-            sBC     + Chr(10)+
-            sICMSST + Chr(10)+
-            sBCST   + Chr(10)+
-            spICMS  + Chr(10)+
-            sIPI);
-         }
-            //
-            Form7.ibQuery1.Close;
+
+
+            {Form7.ibQuery1.Close;
             Form7.ibQuery1.Sql.Clear;
             Form7.ibQuery1.Sql.Add('update ITENS001 set vICMS='+QuotedStr(sICMS)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
-            Form7.ibQuery1.Open;
-            //
-            try
+            Form7.ibQuery1.Open; Mauricio Parizotto grava no calcular}
+
+            {try
               //
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vICMS='+QuotedStr(sICMS)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
               //
-            except end;
-            //
-            try
+            except end; Mauricio Parizotto grava no calcular}
+
+            {try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vBC='+QuotedStr(sBC)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
-            except end;
-            //
-            try
+            except end; Mauricio Parizotto grava no calcular}
+
+            {try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vBCST='+QuotedStr(sBCST)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
-            except end;
-            //
-            try
+            except end; Mauricio Parizotto grava no calcular}
+
+            {try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vICMSST='+QuotedStr(sICMSST)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
-            except end;
+            except end; Mauricio Parizotto grava no calcular}
             //
             try
               Form1.ibQuery1.Close;
@@ -2454,13 +2437,11 @@ begin
     end;
     //
     Form1.ibQuery2.Next;
-    //
   end;
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   Result := True;
-  //
 end;
 
 
@@ -8705,7 +8686,7 @@ begin
         if not Form2.bFlag then Form1.Ajustararquivos1Click(Sender);
         //
         Audita('ACESSOU','SMALL', Senhas.UsuarioPub,'ACESSOU O SISTEMA',0,0); // Ato, Modulo, Usuário, Histórico, Valor
-        //
+        //                                                                       
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;
         //
