@@ -9432,7 +9432,7 @@ begin
       
       if Form7.sRPS = 'S' then
       begin
-        try
+        {try
           Screen.Cursor := crHourGlass; // Cursor de Aguardo //
           if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) = 0 then
           begin
@@ -9443,30 +9443,35 @@ begin
               Form1.sConsultaNfse := 'NAO';
           end;
         except
-        end;
+        end; Mauricio Parizotto 2023-04-28}
+
+        Application.ProcessMessages;
         
         EnviarNFSeporemail1Click(Sender);
 
-        try
-          try
+        {try
+          {try
             Form7.ibDAtaSet15.Post;
           except
           end;
 
           Screen.Cursor            := crHourGlass;
           AgendaCommit(True);
-          
+
           Form7.Close;
           Form7.Show;
 
           Screen.Cursor            := crDefault;
           Form7.ibDAtaSet15.Edit;
         except
-        end;
+        end; Mauricio Parizotto 2023-04-28}
+
         Screen.Cursor            := crDefault;
+        Form7.ibDataSet15.EnableControls;
       end;
     end;
-    Abort;
+
+    Exit;
   end;
   
   if Pos('NFEID',DBGrid1.SelectedField.Name) <> 0 then
