@@ -2170,6 +2170,7 @@ type
     function ObtemNumeroDocumentoReceber(sNumeroNF: String; TipoRPS: String;
       iSequencialParcela: Integer): String;
     function UltimaParcelaReceberDaNF(sNumeroNF: String): String; // Sandro Silva 2023-01-06
+    function CorrigeCustoCompraNaVenda(dCustoCompra: Double): Double; // Sandro Silva 2023-04-26
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -10390,8 +10391,13 @@ begin
                         if (((ibDataSet16TOTAL.Asfloat * fDesconto) / ibDataSet16QUANTIDADE.AsFloat) < ibDataSet4CUSTOCOMPR.AsFloat) and (Form1.ConfCusto = 'Não') then
                         begin
                           ShowMessage('Não é possível dar descontos com o preço abaixo do custo');
-                          ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
-                        end else ibDataSet16TOTAL.AsFloat := Arredonda(ibDataSet16TOTAL.Asfloat * fDesconto,StrToInt(Form1.ConfPreco));
+                          // Sandro Silva 2023-04-26 ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+                          Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
+                        end
+                        else
+                        begin
+                          ibDataSet16TOTAL.AsFloat := Arredonda(ibDataSet16TOTAL.Asfloat * fDesconto,StrToInt(Form1.ConfPreco));
+                        end;
                         ibDataSet16.Post;
                         if Form7.ibDataSet16BASEISS.AsFloat <> 100 then
                         begin
@@ -20479,7 +20485,7 @@ begin
         //
         // Procura por: código
         //
-        if (length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
+        if (Length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
         begin
           try
             if StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) <> 0 then
@@ -20742,7 +20748,8 @@ begin
                   Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
                 end else
                 begin
-                  Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
+                  // Sandro Silva 2023-04-26 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
+                  Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
                 end;
                 //
               end;
@@ -20751,7 +20758,7 @@ begin
               Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
               Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
               Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
-              Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
+              Form7.ibDataSet16CUSTO.AsFloat      := CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat); // Sandro Silva 2023-04-26 Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
               Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
               //
               // Grade
@@ -21372,7 +21379,8 @@ begin
           Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
         end else
         begin
-          Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+          // Sandro Silva 2023-04-26 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+          Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
         end;
         //
       end;
@@ -21476,7 +21484,8 @@ begin
           Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
         end else
         begin
-          Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco));
+          // Sandro Silva 2023-04-26 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco)); aqui
+          Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
         end;
         //
       end;
@@ -42711,6 +42720,16 @@ begin
   
   Form7.Close;
   Form7.Show;
+end;
+
+function TForm7.CorrigeCustoCompraNaVenda(dCustoCompra: Double): Double;
+begin
+  // Venda não é possível com valor zerado
+  // Valida se valor é zero definindo 0,01, igual como é feito para venda com o valor unitário sendo o preço de venda
+  if dCustoCompra = 0 then
+    Result := 0.01
+  else
+    Result := dCustoCompra;
 end;
 
 end.
