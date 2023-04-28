@@ -597,7 +597,7 @@ procedure TForm12.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 begin
   if dbGrid1.SelectedField.DataType = ftFloat then
      if Key = chr(46) then
-       key := chr(44);
+       Key := chr(44);
 end;
 
 
@@ -607,7 +607,8 @@ begin
     Form7.ibDataSet15.Edit;
     Form7.ibDataSet15.Post;
     Form7.ibDataSet18.Edit;
-  except end;
+  except
+  end;
 end;
 
 procedure TForm12.Image2Click(Sender: TObject);
@@ -1885,8 +1886,10 @@ begin
     dBgrid3.SetFocus;
   end;
   //
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
   try
     begin
       if Key = VK_RETURN then
