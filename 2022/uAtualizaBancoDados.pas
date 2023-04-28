@@ -131,12 +131,12 @@ begin
     ExecutaComando('alter table ESTOQUE add MARKETPLACE VARCHAR(1)');
 
   // Alterando o tamanho da RAZAO SOCIAL
-  if TamanhoCampo(Form1.ibDataSet200.Transaction.DefaultDatabase, 'AUDIT0RIA', 'USUARIO') < 60 then
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'AUDIT0RIA', 'USUARIO') < 60 then
     ExecutaComando('alter table AUDIT0RIA alter USUARIO type varchar(60)');
 
-  if TamanhoCampo(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OS', 'TECNICO') < 60 then
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'TECNICO') < 60 then
     ExecutaComando('alter table OS alter TECNICO type varchar(60)');
-AQUI
+
   ExecutaComando('alter table ITENS003 alter TECNICO type varchar(60)');
 
   ExecutaComando('alter table CLIFOR alter NOME type varchar(60)');
@@ -1459,6 +1459,23 @@ AQUI
 
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');
+end;
+
+
+function ExecutaComando(comando:string):Boolean;
+begin
+  Result := False;
+
+  try
+    Form1.ibDataset200.Close;
+    Form1.ibDataset200.SelectSql.Clear;
+    Form1.ibDataset200.SelectSql.Add(comando);
+    Form1.ibDataset200.Open;
+    Form1.ibDataset200.Close;
+
+    Result := True;
+  except
+  end;
 end;
 
 end.

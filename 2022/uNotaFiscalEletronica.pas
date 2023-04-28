@@ -53,6 +53,12 @@ type
     FCsosn : string;
     FVbc_pis_cofins : Double;
     FIdentificadorplanocontas : string;
+    FVBCFCP: Double;
+    FPFCPST: Double;
+    FVFCPST: Double;
+    FPFCP: Double;
+    FVFCP: Double;
+    FVBCFCPST: Double;
   published
     property Numeronf : string read FNumeronf write FNumeronf;
     property Codigo : string read FCodigo write FCodigo;
@@ -94,8 +100,13 @@ type
     property Csosn : string read FCsosn write FCsosn;
     property Vbc_pis_cofins : Double read FVbc_pis_cofins write FVbc_pis_cofins;
     property Identificadorplanocontas : string read FIdentificadorplanocontas write FIdentificadorplanocontas;
+    property VBCFCP: Double read FVBCFCP write FVBCFCP;
+    property PFCP: Double read FPFCP write FPFCP;
+    property VFCP: Double read FVFCP write FVFCP;
+    property VBCFCPST: Double read FVBCFCPST write FVBCFCPST;
+    property PFCPST: Double read FPFCPST write FPFCPST;
+    property VFCPST: Double read FVFCPST write FVFCPST;
   end;
-
 
   TITENS001List = class(TObjectList)
     private
@@ -132,6 +143,7 @@ type
     FIcms : Double;
     FIcmssubsti : Double;
     FBasesubsti : Double;
+    FVFCPST: Double;
     FAliquota : Double;
     FIss : Double;
     FIpi : Double;
@@ -192,6 +204,7 @@ type
     property Icms : Double read FIcms write FIcms;
     property Icmssubsti : Double read FIcmssubsti write FIcmssubsti;
     property Basesubsti : Double read FBasesubsti write FBasesubsti;
+    property VFCPST: Double read FVFCPST write FVFCPST;
     property Aliquota : Double read FAliquota write FAliquota;
     property Iss : Double read FIss write FIss;
     property Ipi : Double read FIpi write FIpi;
@@ -253,46 +266,52 @@ begin
 
   Result := TITENS001.Create;
 
-  Result.Numeronf       := DataSetItens.FieldByName('NUMERONF').AsString;
-  Result.Codigo         := DataSetItens.FieldByName('CODIGO').AsString;
-  Result.Descricao      := DataSetItens.FieldByName('DESCRICAO').AsString;
-  Result.St             := DataSetItens.FieldByName('ST').AsString;
-  Result.Ipi            := DataSetItens.FieldByName('IPI').AsFloat;
-  Result.Icm            := DataSetItens.FieldByName('ICM').AsFloat;
-  Result.Iss            := DataSetItens.FieldByName('ISS').AsFloat;
-  Result.Medida         := DataSetItens.FieldByName('MEDIDA').AsString;
-  Result.Quantidade     := DataSetItens.FieldByName('QUANTIDADE').AsFloat;
-  Result.Sincronia      := DataSetItens.FieldByName('SINCRONIA').AsFloat;
-  Result.Unitario       := DataSetItens.FieldByName('UNITARIO').AsFloat;
-  Result.Total          := DataSetItens.FieldByName('TOTAL').AsFloat;
-  Result.Lista          := DataSetItens.FieldByName('LISTA').AsFloat;
-  Result.Custo          := DataSetItens.FieldByName('CUSTO').AsFloat;
-  Result.Peso           := DataSetItens.FieldByName('PESO').AsFloat;
-  Result.Base           := DataSetItens.FieldByName('BASE').AsFloat;
-  Result.Baseiss        := DataSetItens.FieldByName('BASEISS').AsFloat;
-  Result.Aliquota       := DataSetItens.FieldByName('ALIQUOTA').AsFloat;
-  Result.Cfop           := DataSetItens.FieldByName('CFOP').AsString;
-  Result.Numeroos       := DataSetItens.FieldByName('NUMEROOS').AsString;
-  Result.Registro       := DataSetItens.FieldByName('REGISTRO').AsString;
-  Result.Vicms          := DataSetItens.FieldByName('VICMS').AsFloat;
-  Result.Vbc            := DataSetItens.FieldByName('VBC').AsFloat;
-  Result.Vbcst          := DataSetItens.FieldByName('VBCST').AsFloat;
-  Result.Vicmsst        := DataSetItens.FieldByName('VICMSST').AsFloat;
-  Result.Vipi           := DataSetItens.FieldByName('VIPI').AsFloat;
-  Result.Cst_pis_cofins := DataSetItens.FieldByName('CST_PIS_COFINS').AsString;
-  Result.Aliq_pis       := DataSetItens.FieldByName('ALIQ_PIS').AsFloat;
-  Result.Aliq_cofins    := DataSetItens.FieldByName('ALIQ_COFINS').AsFloat;
-  Result.Cst_ipi        := DataSetItens.FieldByName('CST_IPI').AsString;
-  Result.Cst_icms       := DataSetItens.FieldByName('CST_ICMS').AsString;
-  Result.Xped           := DataSetItens.FieldByName('XPED').AsString;
-  Result.Nitemped       := DataSetItens.FieldByName('NITEMPED').AsString;
-  Result.Anvisa         := DataSetItens.FieldByName('ANVISA').AsInteger;
-  Result.Pfcpufdest     := DataSetItens.FieldByName('PFCPUFDEST').AsFloat;
-  Result.Picmsufdest    := DataSetItens.FieldByName('PICMSUFDEST').AsFloat;
-  Result.Encrypthash    := DataSetItens.FieldByName('ENCRYPTHASH').AsString;
-  Result.Csosn          := DataSetItens.FieldByName('CSOSN').AsString;
-  Result.Vbc_pis_cofins := DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat;
+  Result.Numeronf                 := DataSetItens.FieldByName('NUMERONF').AsString;
+  Result.Codigo                   := DataSetItens.FieldByName('CODIGO').AsString;
+  Result.Descricao                := DataSetItens.FieldByName('DESCRICAO').AsString;
+  Result.St                       := DataSetItens.FieldByName('ST').AsString;
+  Result.Ipi                      := DataSetItens.FieldByName('IPI').AsFloat;
+  Result.Icm                      := DataSetItens.FieldByName('ICM').AsFloat;
+  Result.Iss                      := DataSetItens.FieldByName('ISS').AsFloat;
+  Result.Medida                   := DataSetItens.FieldByName('MEDIDA').AsString;
+  Result.Quantidade               := DataSetItens.FieldByName('QUANTIDADE').AsFloat;
+  Result.Sincronia                := DataSetItens.FieldByName('SINCRONIA').AsFloat;
+  Result.Unitario                 := DataSetItens.FieldByName('UNITARIO').AsFloat;
+  Result.Total                    := DataSetItens.FieldByName('TOTAL').AsFloat;
+  Result.Lista                    := DataSetItens.FieldByName('LISTA').AsFloat;
+  Result.Custo                    := DataSetItens.FieldByName('CUSTO').AsFloat;
+  Result.Peso                     := DataSetItens.FieldByName('PESO').AsFloat;
+  Result.Base                     := DataSetItens.FieldByName('BASE').AsFloat;
+  Result.Baseiss                  := DataSetItens.FieldByName('BASEISS').AsFloat;
+  Result.Aliquota                 := DataSetItens.FieldByName('ALIQUOTA').AsFloat;
+  Result.Cfop                     := DataSetItens.FieldByName('CFOP').AsString;
+  Result.Numeroos                 := DataSetItens.FieldByName('NUMEROOS').AsString;
+  Result.Registro                 := DataSetItens.FieldByName('REGISTRO').AsString;
+  Result.Vicms                    := DataSetItens.FieldByName('VICMS').AsFloat;
+  Result.Vbc                      := DataSetItens.FieldByName('VBC').AsFloat;
+  Result.Vbcst                    := DataSetItens.FieldByName('VBCST').AsFloat;
+  Result.Vicmsst                  := DataSetItens.FieldByName('VICMSST').AsFloat;
+  Result.Vipi                     := DataSetItens.FieldByName('VIPI').AsFloat;
+  Result.Cst_pis_cofins           := DataSetItens.FieldByName('CST_PIS_COFINS').AsString;
+  Result.Aliq_pis                 := DataSetItens.FieldByName('ALIQ_PIS').AsFloat;
+  Result.Aliq_cofins              := DataSetItens.FieldByName('ALIQ_COFINS').AsFloat;
+  Result.Cst_ipi                  := DataSetItens.FieldByName('CST_IPI').AsString;
+  Result.Cst_icms                 := DataSetItens.FieldByName('CST_ICMS').AsString;
+  Result.Xped                     := DataSetItens.FieldByName('XPED').AsString;
+  Result.Nitemped                 := DataSetItens.FieldByName('NITEMPED').AsString;
+  Result.Anvisa                   := DataSetItens.FieldByName('ANVISA').AsInteger;
+  Result.Pfcpufdest               := DataSetItens.FieldByName('PFCPUFDEST').AsFloat;
+  Result.Picmsufdest              := DataSetItens.FieldByName('PICMSUFDEST').AsFloat;
+  Result.Encrypthash              := DataSetItens.FieldByName('ENCRYPTHASH').AsString;
+  Result.Csosn                    := DataSetItens.FieldByName('CSOSN').AsString;
+  Result.Vbc_pis_cofins           := DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat;
   Result.Identificadorplanocontas := DataSetItens.FieldByName('IDENTIFICADORPLANOCONTAS').AsString;
+  Result.VBCFCP                   := DataSetItens.FieldByName('VBCFCP').AsFloat;
+  Result.PFCP                     := DataSetItens.FieldByName('PFCP').AsFloat;
+  Result.VFCP                     := DataSetItens.FieldByName('VFCP').AsFloat;
+  Result.VBCFCPST                 := DataSetItens.FieldByName('VBCFCPST').AsFloat;
+  Result.PFCPST                   := DataSetItens.FieldByName('PFCPST').AsFloat;
+  Result.VFCPST                   := DataSetItens.FieldByName('VFCPST').AsFloat;
 
   Add(Result);
 end;
@@ -382,6 +401,13 @@ begin
         DataSetItens.FieldByName('CSOSN').AsString          := oItem.Csosn;
         DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat  :=  oItem.Vbc_pis_cofins;
         //DataSetItens.FieldByName('IDENTIFICADORPLANOCONTAS').AsString := oItem.Identificadorplanocontas;
+
+        DataSetItens.FieldByName('VBCFCP').AsFloat          := oItem.VBCFCP;
+        DataSetItens.FieldByName('PFCP').AsFloat            := oItem.PFCP;
+        DataSetItens.FieldByName('VFCP').AsFloat            := oItem.VFCP;
+        DataSetItens.FieldByName('VBCFCPST').AsFloat        := oItem.VBCFCPST;
+        DataSetItens.FieldByName('PFCPST').AsFloat          := oItem.PFCPST;
+        DataSetItens.FieldByName('VFCPST').AsFloat          := oItem.VFCPST;
 
         DataSetItens.Post;
       end;

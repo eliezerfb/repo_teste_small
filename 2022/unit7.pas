@@ -1443,7 +1443,7 @@ type
     ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
-    ibDataSet14FRETESOBREIPI: TIBStringField;
+    //ibDataSet14FRETESOBREIPI: TIBStringField;
     ibDataSet23VBCFCP: TIBBCDField;
     ibDataSet23PFCP: TIBBCDField;
     ibDataSet23VFCP: TIBBCDField;
@@ -1451,6 +1451,12 @@ type
     ibDataSet23PFCPST: TIBBCDField;
     ibDataSet23VFCPST: TIBBCDField;
     ibDataSet24VFCPST: TIBBCDField;
+    ibDataSet16VBCFCP: TIBBCDField;
+    ibDataSet16PFCP: TIBBCDField;
+    ibDataSet16VFCP: TIBBCDField;
+    ibDataSet16VBCFCPST: TIBBCDField;
+    ibDataSet16PFCPST: TIBBCDField;
+    ibDataSet16VFCPST: TIBBCDField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
