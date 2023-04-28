@@ -54,7 +54,6 @@ var
   Size, Size2: DWord;
   Pt, Pt2: Pointer;
 begin
-  //
   Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
   GetMem (Pt, Size);
   GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
@@ -62,7 +61,6 @@ begin
   sBuild := 'Versão e Build: ' + PChar (pt2);
   FreeMem (Pt);
   iP := 1;
-  //
 end;
 
 procedure TForm22.FormClick(Sender: TObject);
