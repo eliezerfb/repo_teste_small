@@ -507,7 +507,8 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados;
+  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
+  uRetornaBuildEXE;
 
 {$R *.DFM}
 
@@ -8283,9 +8284,13 @@ begin
         Senhas.Position := poScreenCenter;
         Senhas.ShowModal;
         //
-        if not Form2.bFlag then Form1.Ajustararquivos1Click(Sender);
-        //
-        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,'ACESSOU O SISTEMA',0,0); // Ato, Modulo, Usuário, Histórico, Valor
+        if not Form2.bFlag then
+          Form1.Ajustararquivos1Click(Sender);
+
+        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,
+               'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
+                                                                .Retornar(True),
+               0,0); // Ato, Modulo, Usuário, Histórico, Valor
         //
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;

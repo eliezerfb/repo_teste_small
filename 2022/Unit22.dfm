@@ -6462,7 +6462,6 @@ object Form22: TForm22
   object Timer1: TTimer
     Enabled = False
     Interval = 333
-    OnTimer = Timer1Timer
     Left = 432
     Top = 256
   end
