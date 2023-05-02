@@ -12210,7 +12210,7 @@ begin
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','FTFTFTFTTTFFFFFTFFFFFFFTFT');
+        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTFTTTT' + Replicate('F', 19));
         iCampos   := 27;
 
         // Só FORNECEDORES
@@ -12316,7 +12316,7 @@ begin
           sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
         end;}
         //Mauricio Parizotto 2023-12-04
-        sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
+        sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41));
 
         iCampos   := 50; // Sandro Silva 2023-01-18 iCampos   := 51; // Sandro Silva 2023-01-04 iCampos   := 50;
         {Sandro Silva 2022-12-20 inicio
