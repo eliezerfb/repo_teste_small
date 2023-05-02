@@ -244,15 +244,15 @@ type
   TNotaFiscalEletronica = class
   protected
     FNotaFiscal: TVENDAS;
-    function GetTotalMercadoria : Double;
-    procedure AtualizaValoresNota(DataSetNF, DataSetItens : TibDataSet);
-    procedure AtualizaValoresItens(DataSetItens : TibDataSet);
-    procedure AtualizaDataSetNota(DataSetNF, DataSetItens : TibDataSet);
-    procedure AtualizaDataSetItens(DataSetItens : TibDataSet);
-  public  
+    function GetTotalMercadoria: Double;
+    procedure AtualizaValoresNota(DataSetNF, DataSetItens: TibDataSet);
+    procedure AtualizaValoresItens(DataSetItens: TibDataSet);
+    procedure AtualizaDataSetNota(DataSetNF, DataSetItens: TibDataSet);
+    procedure AtualizaDataSetItens(DataSetItens: TibDataSet);
+  public
     constructor Create; virtual;
     procedure LimpaItens;
-    property NotaFiscal : TVENDAS read FNotaFiscal write FNotaFiscal;
+    property NotaFiscal: TVENDAS read FNotaFiscal write FNotaFiscal;
   end;
 
 implementation
@@ -358,7 +358,7 @@ begin
     begin
       oItem := FNotaFiscal.FItens.GetItem(i);
 
-      if DataSetItens.Locate('REGISTRO',oItem.Registro,[]) then
+      if DataSetItens.Locate('REGISTRO', oItem.Registro, []) then
       begin
         DataSetItens.Edit;
 
@@ -399,7 +399,7 @@ begin
         DataSetItens.FieldByName('PICMSUFDEST').AsFloat     := oItem.Picmsufdest;
         //DataSetItens.FieldByName('ENCRYPTHASH').AsString    := oItem.Encrypthash;
         DataSetItens.FieldByName('CSOSN').AsString          := oItem.Csosn;
-        DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat  :=  oItem.Vbc_pis_cofins;
+        DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat  := oItem.Vbc_pis_cofins;
         //DataSetItens.FieldByName('IDENTIFICADORPLANOCONTAS').AsString := oItem.Identificadorplanocontas;
 
         DataSetItens.FieldByName('VBCFCP').AsFloat          := oItem.VBCFCP;

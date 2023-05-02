@@ -16588,7 +16588,9 @@ object Form7: TForm7
       
         '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH, CSOSN, VBC_PIS_COFINS' +
         ','
-      '   IDENTIFICADORPLANOCONTAS)'
+      
+        '   IDENTIFICADORPLANOCONTAS, VBCFCP, PFCP, VFCP, VBCFCPST, PFCPS' +
+        'T, VFCPST)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -16605,7 +16607,9 @@ object Form7: TForm7
       
         '   :ALIQ_PIS, :ALIQ_COFINS, :CST_IPI, :CST_ICMS, :ANVISA, :ENCRY' +
         'PTHASH, :CSOSN,'
-      '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS)')
+      
+        '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS, :VBCFCP, :PFCP, :' +
+        'VFCP, :VBCFCPST, :PFCPST, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16647,7 +16651,13 @@ object Form7: TForm7
       '  ENCRYPTHASH,'
       '  CSOSN,'
       '  VBC_PIS_COFINS,'
-      '  IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS,'
+      '  VBCFCP,'
+      '  PFCP,'
+      '  VFCP,'
+      '  VBCFCPST,'
+      '  PFCPST,'
+      '  VFCPST'
       'from ITENS001 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16695,7 +16705,13 @@ object Form7: TForm7
       '  ENCRYPTHASH = :ENCRYPTHASH,'
       '  CSOSN = :CSOSN,'
       '  VBC_PIS_COFINS = :VBC_PIS_COFINS,'
-      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
+      '  VBCFCP = :VBCFCP,'
+      '  PFCP = :PFCP,'
+      '  VFCP = :VFCP,'
+      '  VBCFCPST = :VBCFCPST,'
+      '  PFCPST = :PFCPST,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     DataSource = DataSource15
@@ -22200,7 +22216,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22233,7 +22249,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50a\'
+      '50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22545,7 +22561,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50\DPEC'
+      'vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22574,7 +22590,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50\DPEC'
+      'm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

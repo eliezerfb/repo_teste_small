@@ -1454,12 +1454,24 @@ begin
       begin
         // Nesta nova versão não haverá alteração no leiaute do DANFE. As informações relativas ao Fundo de Combate à Pobreza (FCP) devem ser informadas:
         // - No campo de "Informações Adicionais do Produto, tag: indAdProd", os valores informados por item nos campos (vBCFCP, pFCP, vFCP, vBCFCPST, pFCPST, vFCPST), quando existirem; e
-        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBCFCP_N17a').AsString,',',''),'.',','))   <> 0 then Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vBCFCP '  + Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value);
-        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('pFCP_N17b').AsString,',',''),'.',','))     <> 0 then Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' pFCP '    + Form7.spdNFeDataSets.campo('pFCP_N17b').Value);
-        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCP_N17c').AsString,',',''),'.',','))     <> 0 then Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vFCP '    + Form7.spdNFeDataSets.campo('vFCP_N17c').Value);
-        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBCFCPST_N23a').AsString,',',''),'.',',')) <> 0 then Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vBCFCPST '+ Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value);
-        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('pFCPST_N23b').AsString,',',''),'.',','))   <> 0 then Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' pFCPST '  + Form7.spdNFeDataSets.campo('pFCPST_N23b').Value);
-        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCPST_N23d').AsString,',',''),'.',','))   <> 0 then Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vFCPST '  + Form7.spdNFeDataSets.campo('vFCPST_N23d').Value);
+        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBCFCP_N17a').AsString,',',''),'.',','))   <> 0 then
+          Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vBCFCP '  + Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value);
+
+        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('pFCP_N17b').AsString,',',''),'.',','))     <> 0 then
+          Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' pFCP '    + Form7.spdNFeDataSets.campo('pFCP_N17b').Value);
+
+        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCP_N17c').AsString,',',''),'.',','))     <> 0 then
+          Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vFCP '    + Form7.spdNFeDataSets.campo('vFCP_N17c').Value);
+
+        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBCFCPST_N23a').AsString,',',''),'.',',')) <> 0 then
+          Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vBCFCPST '+ Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value);
+
+        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('pFCPST_N23b').AsString,',',''),'.',','))   <> 0 then
+          Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' pFCPST '  + Form7.spdNFeDataSets.campo('pFCPST_N23b').Value);
+
+        if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCPST_N23d').AsString,',',''),'.',','))   <> 0 then
+          Form7.spdNFeDataSets.campo('InfAdProd_V01').Value := AllTrim(Form7.spdNFeDataSets.campo('InfAdProd_V01').Value + ' vFCPST '  + Form7.spdNFeDataSets.campo('vFCPST_N23d').Value);
+
       end;
 
       // IPI
@@ -2770,6 +2782,7 @@ begin
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
   // ICMS
   // fPercentualFCP
+  {Sandro Silva 2023-04-02 inicio
   if (Form7.ibDataSet16PFCPUFDEST.AsFloat <> 0) or (Form7.ibDataSet16PICMSUFDEST.AsFloat <> 0) then
   begin
     // Quando preenche na nota não vai nada nessas tags
@@ -2795,7 +2808,9 @@ begin
       fPercentualFCPST := 0; // fPercentualFCP; // tributos da NF-e
     end;
   end;
-
+  }
+  fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat;
+  fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat;
 
   if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
   begin
@@ -3386,15 +3401,23 @@ begin
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '00' then
       begin
+        {
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
           Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*fPercentualFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
         end;
+        }
+        if (Form7.ibDataSet16.FieldByname('PFCP').AsFloat) <> 0 then
+        begin
+          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+        end;
       end;
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
       begin
+        {
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',',')));// Valor da Base de Cálculo do FCP
@@ -3415,20 +3438,42 @@ begin
             Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100) ); // Valor do FCP retido por Substituição Tributária
           end;
         end;
+        }
+        if (Form7.ibDataSet16.FieldByname('PFCP').AsFloat) <> 0 then
+        begin
+          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat);// Valor da Base de Cálculo do FCP
+          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+        end;
+
+        if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
+        begin
+          Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+          Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+
+          if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+          begin
+            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+          end else
+          begin
+            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+          end;
+        end;
       end;
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '20' then
       begin
-        if fPercentualFCP <> 0 then
+        if Form7.ibDataSet16.FieldByname('PFCP').AsFloat <> 0 then
         begin
-          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP
-          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
-          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*fPercentualFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
+          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
         end;
       end;
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
       begin
+        {
         if fPercentualFCP <> 0 then
         begin
           fCalculo := (Form7.ibDataSet16.FieldByname('BASE').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase )/100)*fPercentualFCP/100;
@@ -3447,15 +3492,24 @@ begin
             Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100)); // Valor do FCP retido por Substituição Tributária
           end;
         end;
+        }
+
+        if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
+        begin
+          Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+          Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end;
+
       end;
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
       begin
         if fPercentualFCP <> 0 then
         begin
-          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP
-          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
-          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*fPercentualFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
+          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
         end;
       end;
 
@@ -3470,6 +3524,7 @@ begin
 
       if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
       begin
+        {
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP
@@ -3488,6 +3543,27 @@ begin
           end else
           begin
             Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100)); // Valor do FCP retido por Substituição Tributária
+          end;
+        end;
+        }
+        if Form7.ibDataSet16.FieldByname('PFCP').AsFloat <> 0 then
+        begin
+          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
+          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+        end;
+
+        if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
+        begin
+          Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+          Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+
+          if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+          begin
+            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+          end else
+          begin
+            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
           end;
         end;
       end;
