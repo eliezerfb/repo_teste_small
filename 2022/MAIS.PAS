@@ -4073,14 +4073,12 @@ end;
 
 procedure TForm1.Cadastrodetransportadoras1Click(Sender: TObject);
 begin
-  //
   FechaTudo(bFechaTudo);
   Form7.Close;
   Form7.sModulo := 'TRANSPORT';
   Form7.sTitulo := 'Cadastro de transportadoras';
   Form7.sRPS := 'N';
   Form7.Show;
-  //
 end;
 
 procedure TForm1.Opes1Click(Sender: TObject);
@@ -5533,9 +5531,8 @@ end;
 
 procedure TForm1.Image203Click(Sender: TObject);
 begin
-  //
   if not Legal(True) then Abort;
-  //
+
   try
     FechaTudo(bFechaTudo);
     Form7.sModulo := 'CLIENTES';
@@ -5543,26 +5540,22 @@ begin
     Form7.sTitulo := 'Cadastro';
     Form7.sRPS := 'N';
     Form7.Show;
-    //
+
     if not bClientesLiberados then
     begin
       Form7.sTitulo := 'Cadastro fornecedores';
       Form7.sRPS := 'N';
       Form7.Caption := Form7.sTitulo;
     end;
-    //
+
     if not bFornecedoresLiberados then
     begin
       Form7.sTitulo := 'Cadastro de clientes';
       Form7.sRPS := 'N';
       Form7.Caption := Form7.sTitulo;
     end;
-    //
   except
-
   end;
-  //
-  //
 end;
 
 procedure TForm1.Image202Click(Sender: TObject);
