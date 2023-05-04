@@ -71,7 +71,13 @@ uses
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
-  uImportaNFe in 'uImportaNFe.pas';
+  uImportaNFe in 'uImportaNFe.pas',
+  uIRetornaEmailsPessoa in 'interfaces\uIRetornaEmailsPessoa.pas',
+  uRetornaEmailsPessoa in 'units\uRetornaEmailsPessoa.pas',
+  uIRetornaCaptionEmailPopUpDocs in 'interfaces\uIRetornaCaptionEmailPopUpDocs.pas',
+  uRetornaCaptionEmailPopUpDocs in 'units\uRetornaCaptionEmailPopUpDocs.pas',
+  uITestaEmail in 'interfaces\uITestaEmail.pas',
+  uTestaEmail in 'units\uTestaEmail.pas';
 
 {$R *.RES}
 

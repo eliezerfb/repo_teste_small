@@ -15,7 +15,8 @@ unit SmallFunc;
 interface
 
 uses
-  SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml, msxmldom, XMLDoc, inifiles, dateutils, Registry;
+  SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
+  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail;
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
   function DateToStrInvertida(Data:TdateTime): String;
@@ -105,8 +106,11 @@ uses
   function FusoHorarioPadrao(UF: String): String;
   function DefineFusoHorario(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; sFuso: String; bHorarioVerao: Boolean): String;
   function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; bHabilita: Boolean): String;
+  function ValidaEmail(AcEmail: String): Boolean;
 
 implementation
+
+uses uITestaEmail;
 
 function RetornaNomeDoComputador : string;
 var
@@ -2479,6 +2483,13 @@ begin
   //
   if Numero_Sem_Endereco(sP1) <> '0' then Result := StrTran(StrTran(StrTran(sP1,Numero_Sem_Endereco(sP1),''),',',''),'  ',' ') else Result :=  sP1;
   //
+end;
+
+function ValidaEmail(AcEmail: String): Boolean;
+begin
+  Result := TTestaEmail.New
+                       .setEmail(AcEmail)
+                       .Testar;
 end;
 
 end.
