@@ -9998,7 +9998,7 @@ begin
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.RadioButton1.Visible := True;
-  Form38.RadioButton2.Visible := True;
+  Form38.rbItemPorITem.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de compras';
@@ -10014,7 +10014,8 @@ begin
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.RadioButton1.Visible := True;
-  Form38.RadioButton2.Visible := True;
+  Form38.rbItemPorITem.Visible := True;
+  Form38.cbListarCodigos.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de vendas';
