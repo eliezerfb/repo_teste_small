@@ -22574,25 +22574,21 @@ end;
 procedure TForm7.ibDataSet23DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
-  //
   if Limpanumero(Text) <> Text then
   begin
-    //
-    // Localiza pela descricao
-    //
     Form7.ibDataSet4.DisableControls;
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.SelectSQL.Clear;
-    Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+' order by upper(DESCRICAO)');
+    Form7.ibDataSet4.SelectSQL.Add('select *');
+    Form7.ibDataSet4.SelectSQL.Add('from ESTOQUE');
+    Form7.ibDataSet4.SelectSQL.Add('where (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+')');
+    Form7.ibDataSet4.SelectSQL.Add('AND ((COALESCE(ATIVO,0)=0) OR ((ATIVO=1) AND (TIPO_ITEM=''01'')))');
+    Form7.ibDataSet4.SelectSQL.Add('order by upper(DESCRICAO)');
     Form7.ibDataSet4.Open;
     Form7.ibDataSet4.First;
     Form7.ibDataSet4.EnableControls;
-    //
-    //
   end;
-  //
   ibDataSet23DESCRICAO.AsString := Text;
-  //
 end;
 
 procedure TForm7.ibDataSet23QUANTIDADEChange(Sender: TField);
