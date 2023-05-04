@@ -868,6 +868,7 @@ function Legal_ok(IBDATABASE: TIBDatabase): Boolean;
 var
   qyAux: TIBQuery;
   trAux: TIBTransaction;
+  dtLimite: TDate;
 begin
   {Sandro Silva 2021-09-24 inicio
   try
@@ -914,9 +915,9 @@ begin
       end
       else
       begin
-        if (Date >= StrToDate(Copy(qyAux.FieldByname('LEGAL').AsString,7,2)+'/'+Copy(qyAux.FieldByname('LEGAL').AsString,5,2)+'/'+Copy(qyAux.FieldByname('LEGAL').AsString,1,4))+31)
-        or (Date < StrToDate(Copy(qyAux.FieldByname('LEGAL').AsString,7,2)+'/'+Copy(qyAux.FieldByname('LEGAL').AsString,5,2)+'/'+Copy(qyAux.FieldByname('LEGAL').AsString,1,4)))
-        then
+        dtLimite := StrToDate(Copy(qyAux.FieldByname('LEGAL').AsString,7,2)+'/'+Copy(qyAux.FieldByname('LEGAL').AsString,5,2)+'/'+Copy(qyAux.FieldByname('LEGAL').AsString,1,4));
+
+        if (Date >= dtLimite + 31) or (Date < dtLimite) then
         begin
           Result := False;
         end;
