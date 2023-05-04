@@ -3937,9 +3937,12 @@ begin
   Form22.Close;
   //
   try
+    {
     if Form7.IBDatabaseInfo1.UserNames.Count = 1
       then Form22.sAtivos :=  AllTrim(InttoStr(Form7.IBDatabaseInfo1.UserNames.Count))+' usuário ativo'
         else Form22.sAtivos :=  AllTrim(InttoStr(Form7.IBDatabaseInfo1.UserNames.Count))+' usuários ativos';
+    }
+    Form22.sAtivos :=  AllTrim(InttoStr(Form7.IBDatabaseInfo1.UserNames.Count)) + IfThen(Form7.IBDatabaseInfo1.UserNames.Count = 1, ' usuário ativo', ' usuários ativos');
   except
     Form22.sAtivos := '? usuários ativos';
   end;
