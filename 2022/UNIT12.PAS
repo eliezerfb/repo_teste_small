@@ -271,11 +271,13 @@ type
     procedure SMALL_DBEdit41Click(Sender: TObject);
 
   private
+    { Private declarations }
     procedure AtivaPesquisaNaturezaOP;
     procedure AtivaPesquisaVendedor;
     procedure AtivaPesquisaCliente;
     procedure AtivaPesquisaTransportadora;
-    { Private declarations }
+    procedure ExibeColunasFCP(bOculta: Boolean);
+    procedure ExibeColunasFCPST(bOculta: Boolean);
   public
     vNotaFiscal : TNotaFiscalEletronicaCalc;
     fVelho      : Real;
@@ -2166,6 +2168,10 @@ begin
     form12.Tag := 0;
     //
     try
+
+      ExibeColunasFCP(False);
+      ExibeColunasFCPST(False);
+
       if Form7.ibDataSet15FINNFE.AsString = '1' then
       begin
         Edit2.Text := '1-Normal';
@@ -2185,6 +2191,7 @@ begin
             if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
             begin
               Edit2.Text := '4-Devolução de mercadoria';
+              ExibeColunasFCPST(True);
             end else
             begin
               Edit2.Text := '1-Normal';
@@ -2652,6 +2659,8 @@ begin
   //
   Edit2.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe:','1-Normal'+chr(10)+'2-Complementar'+chr(10)+'3-de Ajuste'+chr(10)+'4-Devolução de mercadoria',LimpaNumero(Edit2.Text)));
   //
+  ExibeColunasFCPST(False);
+  ExibeColunasFCP(False);
   if (LimpaNumero(Edit2.Text) = '1') then
   begin
     Edit2.Text := '1-Normal';
@@ -2671,6 +2680,7 @@ begin
         if (LimpaNumero(Edit2.Text) = '4') then
         begin
           Edit2.Text := '4-Devolução de mercadoria';
+          ExibeColunasFCPST(True);
         end else
         begin
           Edit2.Text := '1-Normal';
@@ -3100,6 +3110,20 @@ end;
 procedure TForm12.SMALL_DBEdit41Click(Sender: TObject);
 begin
   dBGrid2.Visible       := True;
+end;
+
+procedure TForm12.ExibeColunasFCP(bOculta: Boolean);
+begin
+  Form7.ibDataSet16VBCFCP.Visible := bOculta;
+  Form7.ibDataSet16PFCP.Visible   := bOculta;
+  Form7.ibDataSet16VFCP.Visible   := bOculta;
+end;
+
+procedure TForm12.ExibeColunasFCPST(bOculta: Boolean);
+begin
+  Form7.ibDataSet16VBCFCPST.Visible := bOculta;
+  Form7.ibDataSet16PFCPST.Visible   := bOculta;
+  Form7.ibDataSet16VFCPST.Visible   := bOculta;
 end;
 
 end.

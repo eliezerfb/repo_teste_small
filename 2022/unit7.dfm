@@ -16009,7 +16009,7 @@ object Form7: TForm7
       
         '   RECIBOXML, PLACA, ANVISA, DATA_CANCEL, HORA_CANCEL, COD_SIT, ' +
         'FINNFE, '
-      '   INDFINAL, INDPRES, ENCRYPTHASH, MARKETPLACE)'
+      '   INDFINAL, INDPRES, ENCRYPTHASH, MARKETPLACE, VFCPST)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :CLIENTE, :OPERACAO, :EMISSAO,' +
@@ -16035,7 +16035,7 @@ object Form7: TForm7
       
         '   :ANVISA, :DATA_CANCEL, :HORA_CANCEL, :COD_SIT, :FINNFE, :INDF' +
         'INAL, :INDPRES, '
-      '   :ENCRYPTHASH, :MARKETPLACE)')
+      '   :ENCRYPTHASH, :MARKETPLACE, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16095,7 +16095,8 @@ object Form7: TForm7
       '  INDFINAL,'
       '  INDPRES,'
       '  ENCRYPTHASH,'
-      '  MARKETPLACE'
+      '  MARKETPLACE,'
+      '  VFCPST'
       'from VENDAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16161,7 +16162,8 @@ object Form7: TForm7
       '  INDFINAL = :INDFINAL,'
       '  INDPRES = :INDPRES,'
       '  ENCRYPTHASH = :ENCRYPTHASH,'
-      '  MARKETPLACE = :MARKETPLACE'
+      '  MARKETPLACE = :MARKETPLACE,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -16281,6 +16283,16 @@ object Form7: TForm7
       OnChange = ibDataSet15MERCADORIAChange
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet15VFCPST: TIBBCDField
+      DisplayLabel = 'FCP ST'
+      DisplayWidth = 10
+      FieldName = 'VFCPST'
+      Origin = 'VENDAS.VFCPST'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
     end
     object ibDataSet15TRANSPORTA: TStringField
       DisplayLabel = 'Transportadora'
@@ -16968,6 +16980,7 @@ object Form7: TForm7
       DisplayLabel = 'BC FCP'
       FieldName = 'VBCFCP'
       Origin = 'ITENS001.VBCFCP'
+      Visible = False
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
       Precision = 15
@@ -16977,6 +16990,7 @@ object Form7: TForm7
       DisplayLabel = '% FCP'
       FieldName = 'PFCP'
       Origin = 'ITENS001.PFCP'
+      Visible = False
       Precision = 15
       Size = 4
     end
@@ -16984,6 +16998,7 @@ object Form7: TForm7
       DisplayLabel = 'FCP'
       FieldName = 'VFCP'
       Origin = 'ITENS001.VFCP'
+      Visible = False
       Precision = 15
       Size = 2
     end
@@ -16991,6 +17006,7 @@ object Form7: TForm7
       DisplayLabel = 'BC FCP ST'
       FieldName = 'VBCFCPST'
       Origin = 'ITENS001.VBCFCPST'
+      Visible = False
       Precision = 15
       Size = 2
     end
@@ -16998,6 +17014,7 @@ object Form7: TForm7
       DisplayLabel = '% FCP ST'
       FieldName = 'PFCPST'
       Origin = 'ITENS001.PFCPST'
+      Visible = False
       Precision = 15
       Size = 4
     end
@@ -17005,6 +17022,7 @@ object Form7: TForm7
       DisplayLabel = 'FCP ST'
       FieldName = 'VFCPST'
       Origin = 'ITENS001.VFCPST'
+      Visible = False
       Precision = 15
       Size = 2
     end

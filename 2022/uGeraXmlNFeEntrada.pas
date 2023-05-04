@@ -25,6 +25,7 @@ uses
   , unit29
   , unit12
   , Mais
+  , uFuncoesRetaguarda
 ;
 
 var
@@ -1021,7 +1022,7 @@ begin
 
         if LimpaNumero(RetornaValorDaTagNoCampo('qTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
         begin
-          Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := Form7.FormatFloatXML(Form7.ibDAtaset23.FieldByname('QUANTIDADE').AsFloat * StrToFloat( RetornaValorDaTagNoCampo('qTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString)  ));  // Quantidade Tributável do Item
+          Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := FormatFloatXML(Form7.ibDAtaset23.FieldByname('QUANTIDADE').AsFloat * StrToFloat( RetornaValorDaTagNoCampo('qTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString)  ));  // Quantidade Tributável do Item
           Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := StrTran(Alltrim(FormatFloat('##0.'+Replicate('0',StrToInt(Form1.ConfPreco)),Form7.ibDAtaset23.FieldByname('TOTAL').AsFloat / StrToFloat(StrTran(Form7.spdNFeDataSets.Campo('qTrib_I14').AsString,'.',',')))),',','.'); // Valor Tributável do Item
         end else
         begin
@@ -1102,14 +1103,14 @@ begin
                     Abort;
                   end else
                   begin
-                    Form7.spdNFeDataSets.Campo('pGLP_LA03a').Value   := Form7.FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0),4);  // Percentual do GLP derivado do petróleo no produto GLP (cProdANP=210203001) E LA01 N 0-1 3v4 Informar em número decimal o percentual do GLP derivado de petróleo no produto GLP. Valores de 0 a 100.
-                    Form7.spdNFeDataSets.Campo('pGNn_LA03b').Value   := Form7.FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0),4);  // Percentual de Gás Natural Nacional – GLGNn para o produto GLP (cProdANP=210203001) E LA01 N 0-1 3v4 Informar em número decimal o percentual do Gás Natural Nacional – GLGNn para o produto GLP. Valores de 0 a 100.
-                    Form7.spdNFeDataSets.Campo('pGNi_LA03c').Value   := Form7.FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0),4);  // Percentual de Gás Natural Importado – GLGNi para o produto GLP (cProdANP=210203001) E LA01 N 0-1 3v4 Informar em número decimal o percentual do Gás Natural Importado – GLGNi para o produto GLP. Valores de 0 a 100.
+                    Form7.spdNFeDataSets.Campo('pGLP_LA03a').Value   := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0),4);  // Percentual do GLP derivado do petróleo no produto GLP (cProdANP=210203001) E LA01 N 0-1 3v4 Informar em número decimal o percentual do GLP derivado de petróleo no produto GLP. Valores de 0 a 100.
+                    Form7.spdNFeDataSets.Campo('pGNn_LA03b').Value   := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0),4);  // Percentual de Gás Natural Nacional – GLGNn para o produto GLP (cProdANP=210203001) E LA01 N 0-1 3v4 Informar em número decimal o percentual do Gás Natural Nacional – GLGNn para o produto GLP. Valores de 0 a 100.
+                    Form7.spdNFeDataSets.Campo('pGNi_LA03c').Value   := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0),4);  // Percentual de Gás Natural Importado – GLGNi para o produto GLP (cProdANP=210203001) E LA01 N 0-1 3v4 Informar em número decimal o percentual do Gás Natural Importado – GLGNi para o produto GLP. Valores de 0 a 100.
                   end;
                 end;
               end;
 
-              if RetornaValorDaTagNoCampo('vPart', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '' then Form7.spdNFeDataSets.Campo('vPart_LA03d').Value := Form7.FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('vPart', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)); // Valor de partida (cProdANP=210203001)
+              if RetornaValorDaTagNoCampo('vPart', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '' then Form7.spdNFeDataSets.Campo('vPart_LA03d').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('vPart', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)); // Valor de partida (cProdANP=210203001)
             end;
 
             Form7.spdNFeDataSets.SalvarPart('L1');

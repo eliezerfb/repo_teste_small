@@ -7,6 +7,7 @@ function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime): Str
 function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+function FormatXMLToFloat(sValor: String): Double;
 
 implementation
 
@@ -105,6 +106,10 @@ begin
   Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.'); // Quantidade Comercializada do Item
 end;
 
+function FormatXMLToFloat(sValor: String): Double;
+begin
+  Result := StrToFloatDef(StringReplace(sValor, '.', ',', [rfReplaceAll]), 0); 
+end;
 
 end.
 

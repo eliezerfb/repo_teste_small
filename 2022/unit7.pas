@@ -1457,6 +1457,7 @@ type
     ibDataSet16VBCFCPST: TIBBCDField;
     ibDataSet16PFCPST: TIBBCDField;
     ibDataSet16VFCPST: TIBBCDField;
+    ibDataSet15VFCPST: TIBBCDField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2159,7 +2160,7 @@ type
     iKey : Integer;
     //
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
-    function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+    // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
     function AliqICMdoCliente16: double;
     function Formata2CasasDecimais(Valor: Double): Currency;
     procedure SelecionaAliquotaIss(var IBQuery: TIBQuery; Operacao: String = '');
@@ -11340,6 +11341,7 @@ begin
           Form7.ibDataSet15FRETE.Visible := False;
           Form7.ibDataSet15SEGURO.Visible := False;
           Form7.ibDataSet15DESPESAS.Visible := False;
+          Form7.ibDataSet15VFCPST.Visible := False;
           Form7.ibDataSet15TRANSPORTA.Visible := False;
           Form7.ibDataSet15PLACA.Visible := False;
           Form7.ibDataSet15IDENTIFICADOR1.Visible := False;
@@ -11349,11 +11351,11 @@ begin
           Form7.ibDataSet15BASESUBSTI.Visible := False;
           Form7.ibDataSet15NFEPROTOCOLO.Visible := False;
           Form7.ibDataSet15NFERECIBO.Visible := False;
-          Form7.ibDataSet15NFEID.Visible := False;               
-          Form7.ibDataSet15NFEXML.Visible := False;              
-          Form7.ibDataSet15CCEXML.Visible := False;              
-          Form7.ibDataSet15RECIBOXML.Visible := False;           
-          Form7.ibDataSet15MODELO.Visible := False;              
+          Form7.ibDataSet15NFEID.Visible := False;
+          Form7.ibDataSet15NFEXML.Visible := False;
+          Form7.ibDataSet15CCEXML.Visible := False;
+          Form7.ibDataSet15RECIBOXML.Visible := False;
+          Form7.ibDataSet15MODELO.Visible := False;
           //
           Form7.ibDataSet15NUMERONF.Index         := 0;
           Form7.ibDataSet15NFEPROTOCOLO.Index     := 1;
@@ -11374,8 +11376,13 @@ begin
         end else
         begin
           // Campos
+          {Sandro Silva 2023-05-04 inicio
           sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
           iCampos                := 29;
+          }
+          sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+          iCampos                := 30;
+          {Sandro Silva 2023-05-04 fim}
           //
           Form7.ibDataSet15NUMERONF.DisplayLabel     := 'NF/Série';
           Form7.ibDataSet15NFEPROTOCOLO.DisplayLabel := 'Protocolo';
@@ -11396,20 +11403,21 @@ begin
           Form7.ibDataSet15FRETE.Index            := 13;
           Form7.ibDataSet15SEGURO.Index           := 14;
           Form7.ibDataSet15DESPESAS.Index         := 15;
-          Form7.ibDataSet15TRANSPORTA.Index       := 16;
-          Form7.ibDataSet15PLACA.Index            := 17;
-          Form7.ibDataSet15IDENTIFICADOR1.Index   := 18;
-          Form7.ibDataSet15BASEICM.Index          := 19;
-          Form7.ibDataSet15BASEISS.Index          := 20;
-          Form7.ibDataSet15ICMSSUBSTI.Index       := 21;
-          Form7.ibDataSet15BASESUBSTI.Index       := 22;
-          Form7.ibDataSet15NFEPROTOCOLO.Index     := 23;
-          Form7.ibDataSet15NFERECIBO.Index        := 24;
-          Form7.ibDataSet15NFEID.Index            := 25;
-          Form7.ibDataSet15NFEXML.Index           := 26;
-          Form7.ibDataSet15CCEXML.Index           := 27;
-          Form7.ibDataSet15RECIBOXML.Index        := 28;
-          Form7.ibDataSet15MODELO.Index           := 29;
+          Form7.ibDataSet15VFCPST.Index           := 16;
+          Form7.ibDataSet15TRANSPORTA.Index       := 17;
+          Form7.ibDataSet15PLACA.Index            := 18;
+          Form7.ibDataSet15IDENTIFICADOR1.Index   := 19;
+          Form7.ibDataSet15BASEICM.Index          := 20;
+          Form7.ibDataSet15BASEISS.Index          := 21;
+          Form7.ibDataSet15ICMSSUBSTI.Index       := 22;
+          Form7.ibDataSet15BASESUBSTI.Index       := 23;
+          Form7.ibDataSet15NFEPROTOCOLO.Index     := 24;
+          Form7.ibDataSet15NFERECIBO.Index        := 25;
+          Form7.ibDataSet15NFEID.Index            := 26;
+          Form7.ibDataSet15NFEXML.Index           := 27;
+          Form7.ibDataSet15CCEXML.Index           := 28;
+          Form7.ibDataSet15RECIBOXML.Index        := 29;
+          Form7.ibDataSet15MODELO.Index           := 30;
         end;
       end
       else
@@ -19681,7 +19689,22 @@ begin
               Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
               Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
               Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
-              
+
+              {Sandro Silva 2023-05-04 inicio}
+              // aqui preenche PFCP, PFCPST
+              Form7.ibDataSet16PFCP.AsFloat   := 0;
+              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+              begin
+                Form7.ibDataSet16PFCP.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e
+              end;
+
+              Form7.ibDataSet16PFCPST.AsFloat := 0;
+              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+              begin
+                Form7.ibDataSet16PFCPST.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e 16 AfterPost
+              end;
+              {Sandro Silva 2023-05-04 fim}                                         
+
               // Grade
               if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
               begin
@@ -33046,6 +33069,7 @@ begin
   end;
 end;
 
+{ Movido para uFuncoesRetaguarda
 function TForm7.FormatFloatXML(dValor: Double; iPrecisao: Integer): String;
 // Sandro Silva 2015-12-10 Formata valor float com as casas decimais para usar nos elementos do xml da nfce
 // Parâmetros:
@@ -33057,7 +33081,7 @@ begin
   sMascara := '##0.' + DupeString('0', iPrecisao);
   Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.');
 end;
-
+}
 // A PEDIDO DO
 // VANDERLEI PERETI
 // FONES: 49 35664136 / 91427178

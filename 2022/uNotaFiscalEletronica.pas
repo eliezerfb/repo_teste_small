@@ -59,6 +59,8 @@ type
     FPFCP: Double;
     FVFCP: Double;
     FVBCFCPST: Double;
+    procedure SetFVFCP(const Value: Double);
+    procedure SetFVFCPST(const Value: Double);
   published
     property Numeronf : string read FNumeronf write FNumeronf;
     property Codigo : string read FCodigo write FCodigo;
@@ -102,10 +104,10 @@ type
     property Identificadorplanocontas : string read FIdentificadorplanocontas write FIdentificadorplanocontas;
     property VBCFCP: Double read FVBCFCP write FVBCFCP;
     property PFCP: Double read FPFCP write FPFCP;
-    property VFCP: Double read FVFCP write FVFCP;
+    property VFCP: Double read FVFCP write SetFVFCP;
     property VBCFCPST: Double read FVBCFCPST write FVBCFCPST;
     property PFCPST: Double read FPFCPST write FPFCPST;
-    property VFCPST: Double read FVFCPST write FVFCPST;
+    property VFCPST: Double read FVFCPST write SetFVFCPST;
   end;
 
   TITENS001List = class(TObjectList)
@@ -429,6 +431,7 @@ begin
   DataSetNF.FieldByName('SEGURO').AsFloat           := FNotaFiscal.Seguro;
   DataSetNF.FieldByName('DESPESAS').AsFloat         := FNotaFiscal.Despesas;
   DataSetNF.FieldByName('DESCONTO').AsFloat         := FNotaFiscal.Desconto;
+  DataSetNF.FieldByName('VFCPST').AsFloat           := FNotaFiscal.VFCPST;  
   //DataSetNF.FieldByName('VOLUMES').AsFloat          := FNotaFiscal.Volumes;
   DataSetNF.FieldByName('ESPECIE').AsString         := FNotaFiscal.Especie;
   DataSetNF.FieldByName('MARCA').AsString           := FNotaFiscal.Marca;
@@ -507,6 +510,7 @@ begin
   FNotaFiscal.Seguro          := DataSetNF.FieldByName('SEGURO').AsFloat;
   FNotaFiscal.Despesas        := DataSetNF.FieldByName('DESPESAS').AsFloat;
   FNotaFiscal.Desconto        := DataSetNF.FieldByName('DESCONTO').AsFloat;
+  FNotaFiscal.VFCPST          := DataSetNF.FieldByName('VFCPST').AsFloat;  
   FNotaFiscal.Volumes         := DataSetNF.FieldByName('VOLUMES').AsFloat;
   FNotaFiscal.Especie         := DataSetNF.FieldByName('ESPECIE').AsString;
   FNotaFiscal.Marca           := DataSetNF.FieldByName('MARCA').AsString;
@@ -593,5 +597,27 @@ begin
   end;}
 end;
 
+
+{ TITENS001 }
+
+procedure TITENS001.SetFVFCP(const Value: Double);
+begin
+  FVFCP := Value;
+
+  // Zera campos de FCP ST
+  FVBCFCPST := 0.00;
+  FPFCPST   := 0.00;
+  FVFCPST   := 0.00;
+end;
+
+procedure TITENS001.SetFVFCPST(const Value: Double);
+begin
+  FVFCPST := Value;
+
+  // Zera campos de FCP
+  FVBCFCP := 0.00;
+  FPFCP   := 0.00;
+  FVFCP   := 0.00;
+end;
 
 end.
