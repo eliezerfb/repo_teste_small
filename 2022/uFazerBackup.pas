@@ -18,6 +18,7 @@ uses
 type
   TBackup = class
   private
+    FArquivoBKP: String;
     procedure Backup(sArquivo: String);
   public
     constructor Create;
@@ -36,7 +37,7 @@ begin
   if FileExists(Trim(sArquivo)) then
   begin
     //
-    ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + sArquivo + '"'), '', SW_SHOWMAXIMIZED);
+    ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + FArquivoBKP + '"'), '', SW_SHOWMAXIMIZED);
     //
     while ConsultaProcesso('szip.exe') do
     begin
@@ -62,16 +63,16 @@ end;
 function TBackup.FazerBackup(Sender: TObject): Integer;
 var
   Mais1Ini: TIniFile;
-  sArquivoBKP: String;
+  //sArquivoBKP: String;
   bButton: Integer;
 begin
   Result := IDCANCEL;
-  SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', sArquivoBKP);
+  SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', FArquivoBKP);
   //
-  if sArquivoBKP <> '' then
+  if FArquivoBKP <> '' then
   begin
     //
-    sArquivoBKP := StrTran(sArquivoBKP + '\' + Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date)) + '.zip', '\\', '\');
+    FArquivoBKP := StrTran(FArquivoBKP + '\' + Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date)) + '.zip', '\\', '\');
     //
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     //
@@ -92,9 +93,9 @@ begin
     if FileExists(Alltrim(Form1.sAtual + '\small.fdb')) then
     begin
 
-      while FileExists(sArquivoBKP) do
+      while FileExists(FArquivoBKP) do
       begin
-        DeleteFile(pChar(sArquivoBKP));
+        DeleteFile(pChar(FArquivoBKP));
         Sleep(100);
       end;
 
@@ -108,19 +109,19 @@ begin
       Backup(Form1.sAtual + '\etiquetas.inf');
       Backup(Form1.sAtual + '\etiquetase.ini');
 
-      while not FileExists(sArquivoBKP) do
+      while not FileExists(FArquivoBKP) do
       begin
         Sleep(100);
       end;
 
       Screen.Cursor := crDefault; // Cursor de Aguardo
 
-      if FileExists(sArquivoBKP) then
+      if FileExists(FArquivoBKP) then
       begin
-        if (Copy(UpperCase(Form1.sAtual), 1, 2) = Copy(UpperCase(sArquivoBKP), 1, 2)) and (Copy(sArquivoBKP, 2, 1) = ':') then
+        if (Copy(UpperCase(Form1.sAtual), 1, 2) = Copy(UpperCase(FArquivoBKP), 1, 2)) and (Copy(FArquivoBKP, 2, 1) = ':') then
         begin
           Application.MessageBox(Pchar(
-            'O Sistema fez uma cópia compactada do banco de dados em: ' + chr(10) + chr(10) + sArquivoBKP + chr(10) + chr(10)+
+            'O Sistema fez uma cópia compactada do banco de dados em: ' + chr(10) + chr(10) + FArquivoBKP + chr(10) + chr(10)+
             'Está cópia não está segura em caso de defeito de equipamento, roubo, formatação indevida ou em outra eventualidade. Faça uma cópia em um dispositivo externo.'+Chr(10)+Chr(10)+Chr(10))
             , 'Atenção', mb_Ok + MB_ICONWARNING);
 
@@ -128,7 +129,7 @@ begin
         end else
         begin
           Result := Application.MessageBox(Pchar(
-            'O Sistema fez uma cópia compactada do banco de dados em: ' + chr(10) + chr(10) + sArquivoBKP + chr(10) + chr(10) +
+            'O Sistema fez uma cópia compactada do banco de dados em: ' + chr(10) + chr(10) + FArquivoBKP + chr(10) + chr(10) +
             'Em caso de defeito de equipamento, roubo, formatação indevida do seu servidor ou em outra eventualidade está copia está realmente segura?'+Chr(10)+Chr(10)+Chr(10))
             ,'Atenção', mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
 
