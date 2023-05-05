@@ -2078,6 +2078,7 @@ type
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
     procedure EnviarConsultaImprimirDANFE;
     function RetornarWhereAtivoEstoqueCompra: String;
+    procedure LimparColunasItemCompra;
   public
 
     // Public declarations
@@ -22315,12 +22316,13 @@ begin
       Form7.ibDataSet4.First;
 
       //Procura por: código
-      if (length(Alltrim(ibDataSet23DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(ibDataSet23DESCRICAO.AsString))<>'') then
+      if (length(Alltrim(ibDataSet23DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(ibDataSet23DESCRICAO.AsString)) <> EmptyStr) then
       begin
         try
           if StrToInt(AllTrim(ibDataSet23DESCRICAO.AsString)) <> 0 then
             Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(ibDataSet23DESCRICAO.AsString)),5,0),[]);
-        except end;
+        except
+        end;
       end;
 
       if Pos(Alltrim(ibDataSet23DESCRICAO.AsString),ibDataSet4CODIGO.AsString) = 0 then
@@ -22414,8 +22416,13 @@ begin
       ibDataSet4.Locate('CODIGO',sCodigoAnterior,[]);
     end;
 
-    Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-
+    if (FbImportandoXML) or ((ibDataSet4ATIVO.AsInteger = 0) or ((ibDataSet4ATIVO.AsInteger = 1) and (ibDataSet4TIPO_ITEM.AsString = '01'))) then
+      Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString
+    else
+    begin
+      LimparColunasItemCompra;
+      Exit;
+    end;
     // So altera se for um produto novo
     if AllTrim(Form7.ibDataSet23CODIGO.AsString) = '' then
     begin
@@ -22558,15 +22565,8 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
       end else
       begin
-        Form7.ibDataSet23DESCRICAO.AsString := '';
-        Form7.ibDataSet23QUANTIDADE.AsString := '';
-        Form7.ibDataSet23UNITARIO.AsString := '';
-        Form7.ibDataSet23TOTAL.AsString := '';
-        Form7.ibDataSet23CFOP.AsString := '';
-        Form7.ibDataSet23ICM.AsString := '';
-        Form7.ibDataSet23CST_ICMS.AsString := '';
-        Form7.ibDataSet23CODIGO.AsString := '';
-        
+        LimparColunasItemCompra;
+
         Form24.DbGrid1.SelectedIndex := 6;
       end;
     end;
@@ -22576,6 +22576,18 @@ begin
 
     Observacao2(False);
   end;
+end;
+
+procedure TForm7.LimparColunasItemCompra;
+begin
+  Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+  Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
+  Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
+  Form7.ibDataSet23TOTAL.AsString := EmptyStr;
+  Form7.ibDataSet23CFOP.AsString := EmptyStr;
+  Form7.ibDataSet23ICM.AsString := EmptyStr;
+  Form7.ibDataSet23CST_ICMS.AsString := EmptyStr;
+  Form7.ibDataSet23CODIGO.AsString := EmptyStr;
 end;
 
 procedure TForm7.ibDataSet23DESCRICAOSetText(Sender: TField;
