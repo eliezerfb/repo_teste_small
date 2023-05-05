@@ -14,14 +14,14 @@ uses
   Math, pngimage, strUtils, Buttons;
 
 
-  procedure TransmiteNFSE;
+  function TransmiteNFSE : boolean;
   procedure LimpaNFSE;
 
 implementation
 
 uses Unit7, Mais;
 
-procedure TransmiteNFSE;
+function TransmiteNFSE : boolean;
 var
   Mais1Ini : tIniFile;
   _file1, _file, _XML : TStringList;
@@ -53,6 +53,8 @@ var
     end;
   end;
 begin
+  Result := False;
+
   // Zerezima
   fValorImpostosFederaisRetidos := 0;
 
@@ -173,10 +175,7 @@ begin
               Writeln(F,'<Motivo>'        + RetornaValorDaTagNoCampo('Motivo'      ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Motivo>')
             else
               Writeln(F,'<Motivo></Motivo>');
-
-//            if (sPadraoSistema = 'JOINVILLESC') then
-//            begin
-//            end else
+              
             begin
               if (sPadraoSistema = 'MEMORY') then
               begin
@@ -1038,6 +1037,7 @@ begin
                 on E: Exception do
                 begin
                   Application.MessageBox(pChar(E.Message),'Erro no retorno da NFS-e: ',mb_Ok + MB_ICONWARNING);
+                  Result := False;
                 end;
               end;
 
@@ -1055,11 +1055,13 @@ begin
         begin
           Screen.Cursor            := crDefault;
           ShowMessage('Não é possível emitir a nota de serviço com valor 0 (Zero).'); // Serviços Zerado
+          Result := False;
         end;
       end else
       begin
         Screen.Cursor            := crDefault;
         ShowMessage('NFS-e já emitida e autorizada.'); // Já foi autorizada
+        Result := False;
       end;
     end; // NFSE.EXE nao instalado
   except
@@ -1067,7 +1069,7 @@ begin
 
 
   //Mauricio Parizotto 2023-04-11
-  Form7.ibDataSet15.EnableControls;
+  Form7.ibDataSet15.DisableControls;
   vRegistro := Form7.ibDataSet15REGISTRO.AsString;
 
   //Commita sem refazer select
@@ -1076,9 +1078,11 @@ begin
 
   //Volta para o registro que estava
   try
-    Form7.ibDataSet15.Locate('REGISTRO',vRegistro,[])
+    Form7.ibDataSet15.Locate('REGISTRO',vRegistro,[]);
   except
   end;
+
+  Form7.ibDataSet15.EnableControls;
 end;
 
 
