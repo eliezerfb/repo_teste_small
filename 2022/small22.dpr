@@ -71,7 +71,8 @@ uses
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
-  uImportaNFe in 'uImportaNFe.pas';
+  uImportaNFe in 'uImportaNFe.pas',
+  uClientesFornecedores in 'uClientesFornecedores.pas';
 
 {$R *.RES}
 
