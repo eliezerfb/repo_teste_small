@@ -12006,7 +12006,7 @@ begin
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Sim');
 
     //Ativa Coluna Marktplace para o usuário
-    sMostra   := Mais1Ini.ReadString('ESTOQUE', 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
+    sMostra   := Mais1Ini.ReadString('ESTOQUE', 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41));
     sMostra  := Copy(sMostra,1,49)+'T'+Copy(sMostra,51,10);
     Mais1Ini.WriteString('ESTOQUE','Mostrar',sMostra);
 
