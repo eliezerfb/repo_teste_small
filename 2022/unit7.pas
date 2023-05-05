@@ -13032,7 +13032,8 @@ begin
             // Filtro auxiliar
             //
             // Sandro Silva 2023-04-24 TabelaAberta.SelectSQL.Add(AllTrim(sSelect)+' '+AllTrim(sWhere)+' and EMISSAO >'+QuotedStr( DateToStrInvertida(DATE - 30) )+' '+AllTrim(sOrderBy));
-            // Sandro Silva 2023-04-24 Ficha 6777
+            // Sandro Silva 2023-04-24 Ficha 6777   
+            // Sandro Silva 2023-05-05 TabelaAberta.SelectSQL.Add(Trim(sSelect) + ' ' + Trim(sWhere) + ' and EMISSAO > (select coalesce(max(EMISSAO), current_date) - 90 from VENDAS where NUMERONF like ''%' + sSerieNFSelecionada + ''') ' + ' ' + Trim(sOrderBy));
             TabelaAberta.SelectSQL.Add(Trim(sSelect) + ' ' + Trim(sWhere) + ' and EMISSAO > (select coalesce(max(EMISSAO), current_date) - 90 from VENDAS where NUMERONF like ''%' + sSerieNFSelecionada + ''') ' + ' ' + Trim(sOrderBy));
             //
           end else
