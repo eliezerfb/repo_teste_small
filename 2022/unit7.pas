@@ -22349,14 +22349,7 @@ begin
           begin
             //Mauricio Parizotto 2023-04-04
             Form7.ibDataSet23.Edit;
-            Form7.ibDataSet23QUANTIDADE.AsString := '';
-            Form7.ibDataSet23DESCRICAO.AsString := '';
-            Form7.ibDataSet23QTD_ORIGINAL.AsString := '';
-            Form7.ibDataSet23UNITARIO_O.AsString := '';
-
-            Form7.ibDataSet23UNITARIO.AsString := '';
-            Form7.ibDataSet23TOTAL.AsString := '';
-
+            LimparColunasItemCompra;
             ibDataSet4.EnableControls;
             ibDataSet23.EnableControls;
             Exit;
@@ -22420,7 +22413,10 @@ begin
       Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString
     else
     begin
+      Form7.ibDataSet23.Edit;
       LimparColunasItemCompra;
+      ibDataSet4.EnableControls;
+      ibDataSet23.EnableControls;
       Exit;
     end;
     // So altera se for um produto novo
@@ -22565,7 +22561,14 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
       end else
       begin
-        LimparColunasItemCompra;
+        Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+        Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
+        Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
+        Form7.ibDataSet23TOTAL.AsString := EmptyStr;
+        Form7.ibDataSet23CFOP.AsString := EmptyStr;
+        Form7.ibDataSet23ICM.AsString := EmptyStr;
+        Form7.ibDataSet23CST_ICMS.AsString := EmptyStr;
+        Form7.ibDataSet23CODIGO.AsString := EmptyStr;
 
         Form24.DbGrid1.SelectedIndex := 6;
       end;
@@ -22580,14 +22583,13 @@ end;
 
 procedure TForm7.LimparColunasItemCompra;
 begin
-  Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
   Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
+  Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+  Form7.ibDataSet23QTD_ORIGINAL.AsString := EmptyStr;
+  Form7.ibDataSet23UNITARIO_O.AsString := EmptyStr;
+
   Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
   Form7.ibDataSet23TOTAL.AsString := EmptyStr;
-  Form7.ibDataSet23CFOP.AsString := EmptyStr;
-  Form7.ibDataSet23ICM.AsString := EmptyStr;
-  Form7.ibDataSet23CST_ICMS.AsString := EmptyStr;
-  Form7.ibDataSet23CODIGO.AsString := EmptyStr;
 end;
 
 procedure TForm7.ibDataSet23DESCRICAOSetText(Sender: TField;
