@@ -52,7 +52,6 @@ procedure GeraXmlNFeSaida;
 var
   spMVAST, spICMSST, sChave, sEx1, sEx2, sEx3, sEx4, sEx5, sEx6, sEx7, sEx8, sEx9, sEx10, sEx11, sEx12, sEx13, sEx14, sEx15, sEx16, sEx17, sEx18 : String;
   fTotalDupl,  vTotalImpostoImportacao : Real;
-  sCodigoANP : String;
   _file : TStringList;
   I, J, iAnoRef : integer;
   sComplemento : String;
