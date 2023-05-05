@@ -71,7 +71,9 @@ uses
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
-  uImportaNFe in 'uImportaNFe.pas';
+  uImportaNFe in 'uImportaNFe.pas',
+  uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
+  uRetornaBuildEXE in 'units\uRetornaBuildEXE.pas';
 
 {$R *.RES}
 
