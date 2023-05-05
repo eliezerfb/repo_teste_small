@@ -773,13 +773,6 @@ type
     Panel9: TPanel;
     Panel10: TPanel;
     ibDataSet14CONTA: TStringField;
-    imageclaro: TImage;
-    imagetim: TImage;
-    imageoi: TImage;
-    imagevivo: TImage;
-    imagebr: TImage;
-    ImageConvencional: TImage;
-    ImageAma: TImage;
     Enviartorpedo1: TMenuItem;
     ibDataSet16NUMEROOS: TStringField;
     DBGrid4: TDBGrid;
@@ -14213,27 +14206,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image24.Picture.Graphic);
           if Field.Name = 'ibDataSet2CGC' then
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image24.Picture.Graphic);
-          //
-          if (Pos('CELULAR',UpperCase(Field.DisplayLabel)) <> 0) or (Pos('TELEFONE',UpperCase(Field.DisplayLabel)) <> 0) then
-          begin
-            //
-            //          4988163696
-            //
-            yRect := Rect;
-            YRect.Left   := Rect.Right - 40;
-            YREct.Bottom := Rect.Top   + 40;
-            //
-            if Copy(RetornaOperadora(Field.AsString),1,5) = 'Claro'         then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageClaro.Picture.Graphic);  // Claro
-            if Copy(RetornaOperadora(Field.AsString),1,4) = 'Vivo'          then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageVivo.Picture.Graphic);   // Vivo
-            if Copy(RetornaOperadora(Field.AsString),1,3) = 'Tim'           then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageTim.Picture.Graphic);   // Tim
-            if Copy(RetornaOperadora(Field.AsString),1,2) = 'Oi'            then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageOi.Picture.Graphic);   // Oi
-            if Copy(RetornaOperadora(Field.AsString),1,2) = 'Br'            then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageBr.Picture.Graphic);   // Br
-            if Copy(RetornaOperadora(Field.AsString),1,3) = 'Ama'           then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageAma.Picture.Graphic);   // iAmazonia
-            if Copy(RetornaOperadora(Field.AsString),1,12) = 'Convencional' then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageConvencional.Picture.Graphic);   // Convencional
-            //
-            //
-          end;
-          //
+
           if Pos('WHATSAPP',UpperCase(Field.DisplayLabel)) <> 0 then
           begin
             //

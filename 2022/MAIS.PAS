@@ -3432,7 +3432,7 @@ begin
       or (Pos('celular',LowerCase(Fields[I-1].DisplayLabel)) <> 0)
       or (Pos('fax',LowerCase(Fields[I-1].DisplayLabel)) <> 0) then
       begin
-        Fields[I-1].Displaywidth := 21;
+        Fields[I-1].Displaywidth := 18;
       end;
     end;
   end;
