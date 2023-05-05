@@ -72,6 +72,7 @@ uses
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
   uImportaNFe in 'uImportaNFe.pas',
+  uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
   uRetornaBuildEXE in 'units\uRetornaBuildEXE.pas';
 
