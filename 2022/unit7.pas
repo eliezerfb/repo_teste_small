@@ -2167,7 +2167,6 @@ type
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
-  function ValidaEmail(sP1: String):Boolean;
 //  Function Valida_Campo(ibDataSet_P:TibDataSet; Text:String; Indice,Mensagem:String):Boolean;
   function Valida_Campo(Arquivo: String; Text: String;
     Indice, Mensagem: String):Boolean;
@@ -2201,7 +2200,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFuncoesFiscais
   , uTransmiteNFSe
   , uImportaNFe
-  ;
+  , uRetornaCaptionEmailPopUpDocs
+  , uIRetornaCaptionEmailPopUpDocs;
 
 {$R *.DFM}
 
@@ -7821,29 +7821,6 @@ begin
   //
 end;
 
-function ValidaEmail(sP1: String):Boolean;
-var
-  I : Integer;
-begin
-  Result := False;
-  if (Pos('@',sP1)<>0) then Result := True;
-  if (Pos('@.',sP1)<>0) or
-     (Pos('.@',sP1)<>0) or
-     (Pos('..',sP1)<>0) then
-  begin
-    Result := False;
-  end;
-  //
-  for I := 1 to 57 do
-  begin
-    if Pos(Copy(' "!#$%®*()+=^]}{,|?¡¿¬ƒ√…» ÀÕŒœ”‘’⁄‹«·‡‚‰„ÈËÍÎÌÓÔÛÙı˙¸Á*',I,1),AllTrim(sP1)) <> 0 then
-    begin
-      Result := False;
-    end;
-  end;
-  //
-end;
-
 function Valida_Campo(Arquivo: String; Text: String;
   Indice, Mensagem: String): Boolean;
 begin
@@ -13229,7 +13206,7 @@ end;
 
 procedure TForm7.PopupMenu1Popup(Sender: TObject);
 var
-  sEmail, sEmail1 : String;
+  cEmails, cTransp: string;
 begin
   Ativo1.Visible := False;
   Receberestaconta1.Visible := False;
@@ -13481,38 +13458,26 @@ begin
         IImprimirCartadeCorreoEletronicaCCe1.Enabled := False;
         //
       end;
-      //
-      Form7.ibDataSet2.Close;
-      Form7.ibDataSet2.Selectsql.Clear;
-      Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
-      Form7.ibDataSet2.Open;
-      //
-      sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-      //
-      Form7.ibDataSet18.Locate('NOME',Form7.ibDataSet15TRANSPORTA.AsString,[]);
-      //
-      if Alltrim(Form7.ibDataSet15TRANSPORTA.AsString) = Alltrim(Form7.ibDataSet18NOME.AsString) then
+      cTransp := Form7.ibDataSet15TRANSPORTA.AsString;
+      if EnviarNFSeporemail1.Visible then // Se for ServiÁo n„o tem transportador
+        cTransp := EmptyStr;
+
+      cEmails := TRetornaCaptionEmailPopUpDocs.New
+                                              .SetDataBase(IBDatabase1)
+                                              .setCodigoClifor(Form7.ibDataSet15CLIENTE.AsString)
+                                              .setCodigoTranspor(cTransp)
+                                              .Retornar;
+
+      if N5EnviarDANFEporemail1.Visible then
       begin
-        sEmail1 := Form7.ibDataSet18EMAIL.AsString; // XML POR EMAIL
+        N5EnviarDANFEporemail1.Enabled := (cEmails <> EmptyStr);
+        N5EnviarDANFEporemail1.Caption := '5 - Enviar o XML e DANFE por e-mail ' + cEmails;
       end else
       begin
-        sEmail1  := '';
+        EnviarNFSeporemail1.Enabled := (cEmails <> EmptyStr);
+        EnviarNFSeporemail1.Caption := 'Enviar NFS-e por e-mail ' + cEmails;
       end;
-      //
-      if ibDataSet2NOME.AsString = ibDataSet15CLIENTE.AsString then
-      begin
-        //
-        if validaEmail(sEmail) or validaEmail(sEmail1) then
-        begin
-          N5EnviarDANFEporemail1.Enabled   := True;
-          N5EnviarDANFEporemail1.Caption   := '5 - Enviar o XML e DANFE por e-mail <'+sEmail+'>;<'+sEmail1+'>';
-        end else
-        begin
-          N5EnviarDANFEporemail1.Enabled   := False;
-          N5EnviarDANFEporemail1.Caption   := '5 - Enviar o XML e DANFE por e-mail <'+sEmail+'>;<'+sEmail1+'>';
-        end;
-        //
-      end;
+      
       //
       if Form7.ibDataSet15EMITIDA.AsString = 'X' then
       begin

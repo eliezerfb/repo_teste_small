@@ -74,7 +74,14 @@ uses
   uImportaNFe in 'uImportaNFe.pas',
   uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
-  uRetornaBuildEXE in 'units\uRetornaBuildEXE.pas';
+  uRetornaBuildEXE in 'units\uRetornaBuildEXE.pas',
+  uIRetornaEmailsPessoa in 'interfaces\uIRetornaEmailsPessoa.pas',
+  uRetornaEmailsPessoa in 'units\uRetornaEmailsPessoa.pas',
+  uIRetornaCaptionEmailPopUpDocs in 'interfaces\uIRetornaCaptionEmailPopUpDocs.pas',
+  uRetornaCaptionEmailPopUpDocs in 'units\uRetornaCaptionEmailPopUpDocs.pas',
+  uITestaEmail in 'interfaces\uITestaEmail.pas',
+  uTestaEmail in 'units\uTestaEmail.pas'
+  ;
 
 {$R *.RES}
 
