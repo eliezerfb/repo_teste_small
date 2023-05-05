@@ -2068,6 +2068,7 @@ type
 
 
   private
+    FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2076,6 +2077,7 @@ type
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
     procedure EnviarConsultaImprimirDANFE;
+    function RetornarWhereAtivoEstoqueCompra: String;
   public
 
     // Public declarations
@@ -10641,6 +10643,7 @@ end;
 procedure TForm7.FormCreate(Sender: TObject);
 begin
   //
+  FbImportandoXML := False;
   Form7.sAproveitamento := '';
   Form7.bMudei := False;
   dbGrid1.ReadOnly := True;
@@ -22331,7 +22334,11 @@ begin
           Form7.ibDataSet99.Close;
           Form7.ibDataSet99.SelectSQL.Clear;
 //          Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
-          Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça verde
+          Form7.ibDataSet99.SelectSQL.Add('select *');
+          Form7.ibDataSet99.SelectSQL.Add('from ESTOQUE');
+          Form7.ibDataSet99.SelectSQL.Add('where (upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString)))+')');
+          Form7.ibDataSet99.SelectSQL.Add(RetornarWhereAtivoEstoqueCompra);
+          Form7.ibDataSet99.SelectSQL.Add('order by upper(DESCRICAO)'); // Maça verde
           Form7.ibDataSet99.Open;
           Form7.ibDataSet99.First;
 
@@ -22582,13 +22589,20 @@ begin
     Form7.ibDataSet4.SelectSQL.Add('select *');
     Form7.ibDataSet4.SelectSQL.Add('from ESTOQUE');
     Form7.ibDataSet4.SelectSQL.Add('where (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+')');
-    Form7.ibDataSet4.SelectSQL.Add('AND ((COALESCE(ATIVO,0)=0) OR ((ATIVO=1) AND (TIPO_ITEM=''01'')))');
+    Form7.ibDataSet4.SelectSQL.Add(RetornarWhereAtivoEstoqueCompra);
     Form7.ibDataSet4.SelectSQL.Add('order by upper(DESCRICAO)');
     Form7.ibDataSet4.Open;
     Form7.ibDataSet4.First;
     Form7.ibDataSet4.EnableControls;
   end;
   ibDataSet23DESCRICAO.AsString := Text;
+end;
+
+function TForm7.RetornarWhereAtivoEstoqueCompra: String;
+begin
+  Result := EmptyStr;
+  if not FbImportandoXML then
+    Result := 'AND ((COALESCE(ATIVO,0)=0) OR ((ATIVO=1) AND (TIPO_ITEM=''01'')))';
 end;
 
 procedure TForm7.ibDataSet23QUANTIDADEChange(Sender: TField);
@@ -25178,7 +25192,12 @@ end;
 
 procedure TForm7.ImportarNotaFiscal1Click(Sender: TObject);
 begin
-  ImportaNF(True,'');
+  FbImportandoXML := True;
+  try
+    ImportaNF(True,'');
+  finally
+    FbImportandoXML := False;
+  end;
 end;
 
 procedure TForm7.IBDataSet2CIDADESetText(Sender: TField;
