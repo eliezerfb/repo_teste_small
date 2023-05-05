@@ -1346,6 +1346,25 @@ begin
     if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
       ExecutaComando('commit');
   end;
+  if ExecutaComando('ALTER TABLE ICM ADD BCPISCOFINS NUMERIC(18,2)') then
+  begin
+    ExecutaComando('commit');
+
+    ExecutaComando(' Update ICM set '+
+                   '   BCPISCOFINS = '+
+                   '         Case'+
+                   '           When Coalesce(BCCOFINS,0) > Coalesce(BCPIS,0) then BCCOFINS'+
+                   '           Else BCPIS'+
+                   '         End');
+
+    ExecutaComando('commit');
+
+    ExecutaComando('ALTER TABLE ICM drop BCPIS');
+
+    ExecutaComando('ALTER TABLE ICM drop BCCOFINS');
+
+    ExecutaComando('commit');
+  end;
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
   begin
