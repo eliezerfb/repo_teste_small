@@ -989,7 +989,7 @@ begin
                    '           When Coalesce(BCCOFINS,0) > Coalesce(BCPIS,0) then BCCOFINS'+
                    '           Else BCPIS'+
                    '         End');
-                   
+
     ExecutaComando('commit');
 
     ExecutaComando('ALTER TABLE ICM drop BCPIS');
