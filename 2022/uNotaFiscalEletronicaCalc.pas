@@ -785,6 +785,8 @@ begin
 
       AtualizaValoresNota(DataSetNF, DataSetItens);
 
+lentidão aqui ao devolver nota
+
       //Calcula Impostos
       CalculaImpostos;
 

@@ -32946,13 +32946,13 @@ begin
           Form7.sModulo                       := 'VENDA';
           Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet23DESCRICAO.AsString;
           Form1.bFlag                         := False;
-          //
+
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet23QUANTIDADE.AsFloat;
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16UNITARIO.AsFloat   := Form7.IbDataSet23UNITARIO.AsFloat;
           Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet23IPI.AsFloat;
-          //
+
           Form7.ibDataSet16VIPI.AsFloat       := Arredonda2(Form7.ibDataSet23VIPI.AsFloat,2);
           Form7.ibDataSet16ICM.Asfloat        := Form7.ibDataSet23ICM.Asfloat;
           Form7.ibDataSet16CST_ICMS.AsString  := Form7.ibDataSet23CST_ICMS.AsString;
@@ -32961,7 +32961,15 @@ begin
           Form7.ibDataSet16VBC.AsFloat        := Form7.ibDataSet23VBC.AsFloat;
           Form7.ibDataSet16VBCST.AsFloat      := Form7.ibDataSet23VBCST.AsFloat;
           Form7.ibDataSet16VICMSST.AsFloat    := Form7.ibDataSet23VICMSST.AsFloat;
-          //
+
+          // Campos FCP - Sandro Silva 2023-05-05
+          Form7.ibDataSet16VBCFCP.AsFloat     := Form7.ibDataSet23VBCFCP.AsFloat;
+          Form7.ibDataSet16PFCP.AsFloat       := Form7.ibDataSet23PFCP.AsFloat;
+          Form7.ibDataSet16VFCP.AsFloat       := Form7.ibDataSet23VFCP.AsFloat;
+          Form7.ibDataSet16VBCFCPST.AsFloat   := Form7.ibDataSet23VBCFCPST.AsFloat;
+          Form7.ibDataSet16PFCPST.AsFloat     := Form7.ibDataSet23PFCPST.AsFloat;
+          Form7.ibDataSet16VFCPST.AsFloat     := Form7.ibDataSet23VFCPST.AsFloat;
+
         end;
         //
       end;
