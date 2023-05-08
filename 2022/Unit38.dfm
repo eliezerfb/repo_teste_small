@@ -102,7 +102,7 @@ object Form38: TForm38
       TabStop = False
       Caption = 'Listar c'#243'digos'
       Enabled = False
-      TabOrder = 11
+      TabOrder = 10
       Visible = False
     end
     object Edit1: TEdit
@@ -110,7 +110,7 @@ object Form38: TForm38
       Top = 160
       Width = 25
       Height = 19
-      TabOrder = 10
+      TabOrder = 11
       Visible = False
       OnChange = Edit1Change
       OnExit = Edit1Exit

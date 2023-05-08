@@ -10050,6 +10050,7 @@ begin
   Form7.sModulo := 'Relatório de vendas (Cupom Fiscal)';
   Form38.Label17.Visible := True;
   Form38.Edit1.Visible   := True;
+  Form38.cbListarCodigos.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Label17.Visible := False;
   Form38.Edit1.Visible   := False;
