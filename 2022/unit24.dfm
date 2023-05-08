@@ -2393,9 +2393,9 @@ object Form24: TForm24
       object Label25: TLabel
         Left = 15
         Top = 320
-        Width = 207
+        Width = 266
         Height = 13
-        Caption = 'Alterar entrada para item C'#243'digo/Descri'#231#227'o:'
+        Caption = 'Alterar entrada para item C'#243'digo/C'#243'd. barras/Descri'#231#227'o:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clSilver
         Font.Height = -11

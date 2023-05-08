@@ -264,6 +264,7 @@ type
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure SMALL_DBEdit56Exit(Sender: TObject);
   private
+    function RetornarWhereAtivoEstoque: String;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -2935,19 +2936,18 @@ end;
 
 procedure TForm24.Edit1Change(Sender: TObject);
 begin
-  //
   if Edit1.Text <> '' then
   begin
-    //
     if Limpanumero(Edit1.Text) <> Edit1.Text then
     begin
-      //
-      // Localiza pela descricao
-      //
       Form24.ibDataSet44.DisableControls;
       Form24.ibDataSet44.Close;
       Form24.ibDataSet44.SelectSQL.Clear;
-      Form24.ibDataSet44.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Edit1.Text)+'%')+' order by upper(DESCRICAO)');
+      Form24.ibDataSet44.SelectSQL.Add('select *');
+      Form24.ibDataSet44.SelectSQL.Add('from ESTOQUE');
+      Form24.ibDataSet44.SelectSQL.Add('where (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Edit1.Text)+'%')+')');
+      Form24.ibDataSet44.SelectSQL.Add(RetornarWhereAtivoEstoque);
+      Form24.ibDataSet44.SelectSQL.Add('order by upper(DESCRICAO)');
       Form24.ibDataSet44.Open;
       Form24.ibDataSet44.First;
       Form24.ibDataSet44.EnableControls;
@@ -2958,15 +2958,24 @@ begin
       Form24.ibDataSet44.DisableControls;
       Form24.ibDataSet44.Close;
       Form24.ibDataSet44.SelectSQL.Clear;
-      Form24.ibDataSet44.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(StrZero( StrToInt(Limpanumero(Edit1.Text)),5,0))+' ');
+      Form24.ibDataSet44.SelectSQL.Add('select *');
+      Form24.ibDataSet44.SelectSQL.Add('from ESTOQUE');
+      Form24.ibDataSet44.SelectSQL.Add('where');
+      if Length(Limpanumero(Edit1.Text)) <= 5 then
+        Form24.ibDataSet44.SelectSQL.Add('(CODIGO='+QuotedStr(StrZero( StrToInt64(Limpanumero(Edit1.Text)),5,0))+')')
+      else
+        Form24.ibDataSet44.SelectSQL.Add('(REFERENCIA='+QuotedStr(Limpanumero(Edit1.Text))+')');
+      Form24.ibDataSet44.SelectSQL.Add(RetornarWhereAtivoEstoque);
       Form24.ibDataSet44.Open;
       Form24.ibDataSet44.First;
       Form24.ibDataSet44.EnableControls;
-      //
     end;
-    //
   end;
-  //
+end;
+
+function TForm24.RetornarWhereAtivoEstoque: String;
+begin
+  Result := 'AND ((COALESCE(ATIVO,0)=0) OR ((COALESCE(ATIVO,0)=1) AND (TIPO_ITEM=''01'')))';
 end;
 
 procedure TForm24.Edit1KeyDown(Sender: TObject; var Key: Word;
