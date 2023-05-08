@@ -155,7 +155,6 @@ begin
   FreeAndNil(IBQProduto);
 end;
 
-
 procedure TNotaFiscalEletronicaCalc.CalculaImpostos;
 var
   fFCP, fPercentualFCP, fPercentualFCPST, fTotalMercadoria, fRateioDoDesconto, fIPIPorUnidade, fSomaNaBase, TotalBASE, TotalICMS : Real;
@@ -233,6 +232,8 @@ begin
       oItem.Vicmsst := 0;
 
       IBQProduto.Close;
+      IBQProduto.DisableControls;
+      IBQProduto.UniDirectional := True;
       IBQProduto.SQL.Text := ' Select * From ESTOQUE'+
                              ' Where CODIGO='+QuotedStr(oItem.Codigo);
       IBQProduto.Open;
@@ -785,8 +786,6 @@ begin
 
       AtualizaValoresNota(DataSetNF, DataSetItens);
 
-lentidão aqui ao devolver nota
-
       //Calcula Impostos
       CalculaImpostos;
 
@@ -833,10 +832,12 @@ begin
   IBQIcm     := Form7.CriaIBQuery(Form7.ibDataSet15.Transaction);
 
   IBQIcmItem.Close;
+  IBQIcmItem.DisableControls;
   IBQIcmItem.SQL.Text := 'Select * From ICM';
   IBQIcmItem.Open;
 
   IBQIcm.Close;
+  IBQIcm.DisableControls;
   IBQIcm.SQL.Text := 'Select * From ICM';
   IBQIcm.Open;
 end;
@@ -864,6 +865,8 @@ begin
   try
     //Pega Info do Produto
     IBQProduto.Close;
+    IBQProduto.DisableControls;
+    IBQProduto.UniDirectional := True;
     IBQProduto.SQL.Text := ' select '+
                            ' TAGS_'+
                            ' from ESTOQUE'+

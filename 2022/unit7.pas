@@ -2206,7 +2206,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFuncoesFiscais
   , uTransmiteNFSe
   , uImportaNFe
-  ;
+  , uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -9735,7 +9735,10 @@ begin
 
         try
           Form7.ibDataSet14.First;
-          while (Form7.ibDataSet14ISS.AsFloat = 0) and ( not Form7.ibDataSet14.EOF) do Form7.ibDataSet14.Next;
+          while (Form7.ibDataSet14ISS.AsFloat = 0) and ( not Form7.ibDataSet14.EOF) do
+          begin
+            Form7.ibDataSet14.Next;
+          end;
 
           if Form7.ibDataSet14ISS.AsFloat <> 0  then
           begin
@@ -9778,7 +9781,7 @@ begin
             Form7.IBQuery99.Open;
 
             fST := Form7.IBQuery99.FieldByname('SUM').AsFloat;
-            
+
             if FST > 0 then
             begin
               if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) <> 0 then
@@ -9820,7 +9823,7 @@ begin
       Form7.ibDataSet14.EnableControls;
 
 
-      
+
       if Form7.sModulo = 'DESCONTO1' then
       begin
         //
@@ -9952,7 +9955,7 @@ begin
 
       // Retenção de 4,65% correspondente a soma das aliquotas da CSLL da COFINS e PIS/PASEP. R$
       fRetencao := 0;
-      
+
       if Copy(Form7.ibDataSet14OBS.AsString,1,8) = 'Retenção' then
       begin
         try
@@ -10064,7 +10067,7 @@ begin
       // Dedus o imposto de renda //
       // ------------------------ //
       // Servicos >= ConfLimite then IR = Servicos * (( ConfIR / 100) * 1) else IR = 0;
-      
+
       if Form7.ibDataSet15SERVICOS.AsFloat >= Form1.ConfLimite then
       begin
         // ObservacaoOperacao(True); // Retencao
@@ -10081,7 +10084,8 @@ begin
                                                                              Form7.ibDataSet15SEGURO.Value      +
                                                                              Form7.ibDataSet15IPI.Value         +
                                                                              Form7.ibDataSet15ICMSSUBSTI.Value  +
-                                                                             fFCPRetido      +
+                                                                             //fFCPRetido      +
+                                                                             Form7.ibDataSet15VFCPST.Value      +
                                                                              Form7.ibDataSet15DESPESAS.Value    -
                                                                              Form7.ibDataSet15DESCONTO.Value    -
                                                                              Form1.fRetencoes -
@@ -10094,7 +10098,8 @@ begin
                                                      Form7.ibDataSet15SEGURO.Value     + // Seguro +
                                                      Form7.ibDataSet15IPI.Value        + // Ipi +
                                                      Form7.ibDataSet15ICMSSUBSTI.Value + // Valor do ICMS substituição
-                                                     fFCPRetido     + // Fundo de combate a pobresa retido por st
+                                                     //fFCPRetido     + // Fundo de combate a pobresa retido por st
+                                                     Form7.ibDataSet15VFCPST.Value     + // Fundo de combate a pobresa retido por st
                                                      Form7.ibDataSet15DESPESAS.Value   - // Despesas
                                                      Form7.ibDataSet15DESCONTO.Value   - // Desconto
                                                      Form1.fRetencoes -                // ISS retido
@@ -10103,18 +10108,18 @@ begin
 
         Form12.SMALL_DBEdit16.ShowHint := True;
         Form12.SMALL_DBEdit16.Hint     :=
-        '+ Mercadoria: '+FloatToStr(Form7.ibDataSet15MERCADORIA.Value)+CHR(10)+
-        '+ Serviços: '+FloatToStr(Form7.ibDataSet15SERVICOS.Value)+CHR(10)+
-        '+ Frete: '+FloatToStr(Form7.ibDataSet15FRETE.Value)+CHR(10)+
-        '+ Seguro: '+FloatToStr(Form7.ibDataSet15SEGURO.Value)+CHR(10)+
-        '+ IPI: '+FloatToStr(Form7.ibDataSet15IPI.Value)+CHR(10)+
-        '+ ICMS Substituição: '+FloatToStr(Form7.ibDataSet15ICMSSUBSTI.Value)+CHR(10)+
-        '+ FCPST: '+FloatToStr(fFCPRetido)+CHR(10)+
-        '+ Despesas: '+FloatToStr(Form7.ibDataSet15DESPESAS.Value)+CHR(10)+
-        '- Desconto: '+FloatToStr(Form7.ibDataSet15DESCONTO.Value)+CHR(10)+
-        '- Retenções: '+FloatToStr(Form1.fRetencoes)+CHR(10)+
-        '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
-        //
+          '+ Mercadoria: '+FloatToStr(Form7.ibDataSet15MERCADORIA.Value)+CHR(10)+
+          '+ Serviços: '+FloatToStr(Form7.ibDataSet15SERVICOS.Value)+CHR(10)+
+          '+ Frete: '+FloatToStr(Form7.ibDataSet15FRETE.Value)+CHR(10)+
+          '+ Seguro: '+FloatToStr(Form7.ibDataSet15SEGURO.Value)+CHR(10)+
+          '+ IPI: '+FloatToStr(Form7.ibDataSet15IPI.Value)+CHR(10)+
+          '+ ICMS Substituição: '+FloatToStr(Form7.ibDataSet15ICMSSUBSTI.Value)+CHR(10)+
+          //'+ FCP ST: '+FloatToStr(fFCPRetido)+CHR(10)+
+          '+ FCP ST: '+FloatToStr(Form7.ibDataSet15VFCPST.Value)+CHR(10)+
+          '+ Despesas: '+FloatToStr(Form7.ibDataSet15DESPESAS.Value)+CHR(10)+
+          '- Desconto: '+FloatToStr(Form7.ibDataSet15DESCONTO.Value)+CHR(10)+
+          '- Retenções: '+FloatToStr(Form1.fRetencoes)+CHR(10)+
+          '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
       end;
 
       if Form7.sModulo <> 'RETRIBUTA' then
@@ -10136,7 +10141,7 @@ begin
       end;
     end;
   end;
-  
+
   try
     // Abate o Desconto no ISS
     Totalizaservicos(True);
@@ -19252,6 +19257,8 @@ begin
         begin
           if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
           begin
+
+            LogRetaguarda('TForm7.ibDataSet16AfterPost(  item ' + IntToStr(Form7.ibDataSet16.Recno)); // Sandro Silva 2023-05-08
             //Mauricio Parizotto 2023-04-17
             if Form12.vNotaFiscal <> nil then
               Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
@@ -19400,473 +19407,482 @@ var
   ItemNFe: TItemNFe; 
 begin
   try
-    if (Form1.bFlag) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
-    begin
-      Form1.bflag        := False;
-      bFind              := False;
-      fQuantidadeVendida := 1;
-
-      Form7.ibDataSet4.DisableControls;
-
-      if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
+    //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
+    try
+      if (Form1.bFlag) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
       begin
-        if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
-        begin
-          Form7.ibDataSet4.Close;                                                
-          Form7.ibDataSet4.Selectsql.Clear;
-          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
-          Form7.ibDataSet4.Open;
-        end;
-      end;
+        Form1.bFlag        := False;
+        bFind              := False;
+        fQuantidadeVendida := 1;
 
-      if Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString then
-      begin
         Form7.ibDataSet4.DisableControls;
-        Form7.ibDataSet4.Close;
-        Form7.ibDataSet4.SelectSQL.Clear;
-        Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 order by upper(DESCRICAO)');
-        Form7.ibDataSet4.Open;
-        //Form7.ibDataSet4.First;
-        Form7.ibDataSet4.EnableControls;
-        //Form7.ibDataSet4.First;
 
-        // Procura por: código
-        if (length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
+        if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
         begin
-          try
-            if StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) <> 0 then
-              bFind := Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),5,0),[]);
-          except
+          if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
+          begin
+            Form7.ibDataSet4.Close;
+            Form7.ibDataSet4.Selectsql.Clear;
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+            Form7.ibDataSet4.Open;
           end;
         end;
-        //
-        if Pos(Alltrim(Form7.ibDataSet16DESCRICAO.AsString), Form7.ibDataSet4CODIGO.AsString) = 0 then
+
+        if Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString then
         begin
-          // Procura pela referencia
-          bFind := Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(Form7.ibDataSet16DESCRICAO.AsString),[]);
-          if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
+          Form7.ibDataSet4.DisableControls;
+          Form7.ibDataSet4.Close;
+          Form7.ibDataSet4.SelectSQL.Clear;
+          Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 order by upper(DESCRICAO)');
+          Form7.ibDataSet4.Open;
+          //Form7.ibDataSet4.First;
+          Form7.ibDataSet4.EnableControls;
+          //Form7.ibDataSet4.First;
+
+          // Procura por: código
+          if (length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
           begin
-            bFind := Form7.ibDataSet4.Locate('REFERENCIA',AnsiUppercase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),[]);
-            if Alltrim(AnsiUppercase(Form7.ibDataSet16DESCRICAO.AsString)) = AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
-            begin
-              Form7.ibDataSet16DESCRICAO.AsString := Alltrim(AnsiUppercase(Form7.ibDataSet16DESCRICAO.AsString));
+            try
+              if StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) <> 0 then
+                bFind := Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),5,0),[]);
+            except
             end;
           end;
-
-          // Se o produto não foi encontrado //
-          if (Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString)) and (UpperCase(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString)) then
+          //
+          if Pos(Alltrim(Form7.ibDataSet16DESCRICAO.AsString), Form7.ibDataSet4CODIGO.AsString) = 0 then
           begin
-            // É produto pesado //
-            if (Length(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) = 13) and
-             (Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,1) = '2' ) then
+            // Procura pela referencia
+            bFind := Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(Form7.ibDataSet16DESCRICAO.AsString),[]);
+            if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
             begin
-              bFind := Form7.ibDataSet4.Locate('REFERENCIA',Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,7),[]);
-              if Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,7) = AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
+              bFind := Form7.ibDataSet4.Locate('REFERENCIA',AnsiUppercase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),[]);
+              if Alltrim(AnsiUppercase(Form7.ibDataSet16DESCRICAO.AsString)) = AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
               begin
-                try
-                  try
-                    Mais1ini               := TIniFile.Create('FRENTE.INI');
-                    sTipoEtiqueta          := Mais1Ini.ReadString('Frente de caixa' , 'Tipo etiqueta','KG');
-                    Mais1Ini.Free;
-                  except
-                    sTipoEtiqueta := 'KG';
-                  end;
+                Form7.ibDataSet16DESCRICAO.AsString := Alltrim(AnsiUppercase(Form7.ibDataSet16DESCRICAO.AsString));
+              end;
+            end;
 
-                  if sTipoEtiqueta = 'KG' then
-                  begin
-                    if UpperCase(AllTrim(Form7.ibDataSet4MEDIDA.AsString)) = 'KU' then
+            // Se o produto não foi encontrado //
+            if (Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString)) and (UpperCase(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <> AllTrim(Form7.ibDataSet4REFERENCIA.AsString)) then
+            begin
+              // É produto pesado //
+              if (Length(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) = 13) and
+               (Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,1) = '2' ) then
+              begin
+                bFind := Form7.ibDataSet4.Locate('REFERENCIA',Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,7),[]);
+                if Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),1,7) = AllTrim(Form7.ibDataSet4REFERENCIA.AsString) then
+                begin
+                  try
+                    try
+                      Mais1ini               := TIniFile.Create('FRENTE.INI');
+                      sTipoEtiqueta          := Mais1Ini.ReadString('Frente de caixa' , 'Tipo etiqueta','KG');
+                      Mais1Ini.Free;
+                    except
+                      sTipoEtiqueta := 'KG';
+                    end;
+
+                    if sTipoEtiqueta = 'KG' then
                     begin
-                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5));
+                      if UpperCase(AllTrim(Form7.ibDataSet4MEDIDA.AsString)) = 'KU' then
+                      begin
+                        fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5));
+                      end else
+                      begin
+                        fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5)) / 1000;
+                      end;
                     end else
                     begin
-                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5)) / 1000;
+                      fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5)) / Form7.ibDataSet4.FieldByname('PRECO').AsFloat;
                     end;
-                  end else
-                  begin
-                    fQuantidadeVendida := StrToFloat(Copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString),8,5)) / Form7.ibDataSet4.FieldByname('PRECO').AsFloat;
-                  end;
-                except
-                end;
-              end;
-            end else
-            begin
-              // Procura pela descricão
-              Form7.ibDataSet99.Close;
-              Form7.ibDataSet99.SelectSQL.Clear;
-              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
-//              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet16DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
-              Form7.ibDataSet99.Open;
-              Form7.ibDataSet99.First;
-//              if Pos(UpperCAse(AllTrim(ibDataSet16DESCRICAO.AsString)),UpperCase(ibDataset99.FieldByname('DESCRICAO').AsString))<>0 then bFind := Form7.ibDataSet4.Locate('DESCRICAO',ibDataset99.FieldByname('DESCRICAO').AsString,[]);
-              if Pos(UpperCAse(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),UpperCase(Form7.ibDataset99.FieldByname('DESCRICAO').AsString))<> 0 then
-                bFind := Form7.ibDataSet4.Locate('CODIGO',ibDataset99.FieldByname('CODIGO').AsString,[]); // ibDataSet16DESCRICAOChange
-            end;
-          end;
-        end;
-      end
-      else
-        bFind := True;
-      Form7.ibDataSet4.EnableControls;
-
-      //Mauricio Parizotto
-      if ibDataSet4.FieldByname('TIPO_ITEM').AsString = '09' then
-      begin
-        ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
-        Form7.ibDataSet16.Delete;
-      end;
-
-      //  Preenche os dados do arquivo NOTA0001.DBF
-      //  se o produto for encontrado
-      if bFind then
-      begin
-        // Grava no arquivo NOTA0001.DBF:
-        //
-        // 1. Descricão do produto
-        // 2. Valor unitário
-        // 3. Quantidade
-        // 4. Total
-        // 5. Situação tributária
-        // 6. Percentual do IPI
-        // 7. Peso
-        // 7. Código
-        //
-        Form7.ibDataSet16.Edit;
-        Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
-        {Sandro Silva 2022-12-20 inicio}
-        Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
-        if Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.AsString = '' then
-          Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Clear;
-        {Sandro Silva 2022-12-20 fim}
-        //
-        if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
-        begin
-          if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
-          begin
-            ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 1');
-            Form7.ibDataSet16DESCRICAO.AsString   := '';
-            Form7.ibDataSet16TOTAL.AsString       := '';
-            Form7.ibDataSet16UNITARIO.AsString    := '';
-            Form7.ibDataSet16QUANTIDADE.AsString  := '';
-            Form7.ibDataSet16CODIGO.AsString      := '';
-            Form7.ibDataSet16CFOP.AsString        := '';
-          end else
-          begin
-            if not Form41.Visible then
-            begin
-              ///////////////////////
-              // Controle de serie //
-              ///////////////////////
-              if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
-              begin
-                //
-                sCodigo := Form7.ibDataSet4.FieldByname('CODIGO').AsString;
-                Form7.ibDataSet16.Edit;
-                Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-                Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
-                //
-                Form7.ibDataSet16.Edit;
-                Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
-                //
-                sSerial_ := '99';
-                sMensagem := '';
-                //
-                while AllTrim(sSerial_) <> '' do
-                begin
-                  //
-                  try
-                    sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
-                  except end;
-                  //
-                  sSerial_ := AllTrim(Form1.Small_InputForm('Venda de item','Número de série:','')); // Nf de venda
-                  //
-                  if sSerial_ <> '' then
-                  begin
-                    Form7.ibDataSet30.Close;
-                    Form7.ibDataSet30.SelectSQL.Clear;
-                    Form7.ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString));
-                    Form7.ibDataSet30.Open;
-                    //
-                    while not ibDataSet30.Eof do
-                    begin
-                      try
-                        if ibDataSet30SERIAL.AsString = sSerial_ then
-                        begin
-                          if AllTrim(ibDataSet30NFVENDA.AsString) = '' then
-                          begin
-                            Form7.ibDataSet30.Edit;
-                            Form7.ibDataSet30NFVENDA.AsString     := Copy(Form7.ibDataSet15NUMERONF.AsString,4,6);
-                            Form7.ibDataSet30VALVENDA.AsFloat     := Form7.ibDataSet16UNITARIO.AsFloat;
-                            Form7.ibDataSet30DATVENDA.AsDateTime  := Form7.ibDataSet15EMISSAO.AsDateTime;
-                            Form7.ibDataSet16QUANTIDADE.AsFloat   := Form7.ibDataSet16QUANTIDADE.AsFloat + 1;
-                            fQuantidadeVendida              := Form7.ibDataSet16QUANTIDADE.AsFloat;
-                            Form7.ibDataSet16.Post;
-                            //
-                            Form1.bFlag := False;
-                            //
-                            Form7.ibDataSet16.Append;
-                            Form7.ibDataSet16DESCRICAO.AsString := 'SERIAL ' +  ibDataSet30SERIAL.AsString;
-                            Form7.ibDataSet16.Post;
-                            Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
-                            Form7.ibDataSet16.Edit;
-                            //
-                            try
-                              Form7.ibDataSet4.Close;
-                              Form7.ibDataSet4.Selectsql.Clear;
-                              Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(sCodigo)+' ');  //
-                              Form7.ibDataSet4.Open;
-                            except end;
-                            //
-                            Form1.bFlag := True;
-                            //
-                            sSerial_ := '0CONFIRMADO0';
-                            sMensagem := '';
-                          end else
-                          begin
-                            sMensagem := 'Número de série já vendido.';
-                          end;
-                        end;
-                        //
-                      except end;
-                      //
-                      Form7.ibDataSet30.Next;
-                    end;
-                  end;
-                  
-                  try
-                    if (sMensagem = 'Número de série já vendido.') then
-                      ShowMessage(sMensagem)
-                    else if (sSerial_ <> '0CONFIRMADO0') and (sSerial_ <> '') then
-                      ShowMessage('Número de série não encontrado no produto: '+Chr(10)+ibDataSet4DESCRICAO.AsString);
                   except
                   end;
                 end;
-              end;
-            end;
-
-            Form7.ibDataSet16.Edit;
-            Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-            Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
-            if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
-              Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
-            //
-            if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
-            begin
-              // Não faz nada está importando a NF para Devolução
-            end else
-            begin
-              // Desconto pelo convênio
-              if AllTrim(Form7.ibDataSet2CONVENIO.AsString) <> '' then
-              begin
-                Form7.ibDataSet29.Locate('NOME', Form7.ibDataSet2CONVENIO.AsString,[]);
-                if Form7.ibDataSet29DESCONTO.AsFloat <> 0 then
-                begin
-                  bButton := Application.MessageBox(Pchar('Confirma um desconto de: % ' + AllTrim(Format('%12.2n',[Form7.ibDataSet29DESCONTO.AsFloat])) +
-                    Chr(10) + 'Conforme convênio: ' + Form7.ibDataSet29NOME.AsString+
-                    Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-                    //
-                  if bButton = IDYES then
-                    Form7.ibDataSet16UNITARIO.AsFloat    := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
-                  else
-                    Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
-                end
-                else
-                  Form7.ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
               end else
               begin
-                // Venda pelo custo
-                if Pos('0',Form7.ibDataSet14INTEGRACAO.asString) = 0 then
-                begin
-                  Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-                end else
-                begin
-                  Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
-                end;
-              end;
-
-              Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
-              Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
-              Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
-              Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
-              Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
-              Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
-
-              {Sandro Silva 2023-05-04 inicio}
-              // aqui preenche PFCP, PFCPST
-              Form7.ibDataSet16PFCP.AsFloat   := 0;
-              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString)) <> '' then
-              begin
-                Form7.ibDataSet16PFCP.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e
-              end;
-
-              Form7.ibDataSet16PFCPST.AsFloat := 0;
-              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString)) <> '' then
-              begin
-                Form7.ibDataSet16PFCPST.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e 16 AfterPost
-              end;
-              {Sandro Silva 2023-05-04 fim}                                         
-
-              // Grade
-              if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
-              begin
-                Form7.ibDataSet10.Close;
-                Form7.ibDataSet10.SelectSQL.Clear;
-                Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
-                Form7.ibDataSet10.Open;
-                Form7.ibDataSet10.First;
-                //
-                Form7.ibDataSet16.Edit;
-                //
-                if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
-                begin
-                  // Cadastro do item na VENDA quantidade geralemtne = 1
-                  if (Form7.ibDataSet16QUANTIDADE.AsFloat = 0) or (Form7.ibDataSet4.FieldByname('SERIE').Value = 1) then
-                  begin
-                    Form1.rReserva := 0;
-                    Form13.Label1.Caption := 'Cadastro do item na venda';
-                    Form13.ShowModal; //  Cadastro do item na VENDA quantidade geralemtne = 1
-                    //
-                    // Mostra como comentário
-                    //
-                    Form7.ibDataSet16.Post;
-                    //
-                    sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
-                    //
-                    Form7.ibDataSet16.Append;
-                    Form7.ibDataSet16DESCRICAO.AsString := Form1.sGrade;
-                    Form7.ibDataSet16.Post;
-                    //
-                    Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
-                    //
-                    Form7.ibDataSet16.Edit;
-                  end;
-                end;
-              end;
-
-              if (Form7.ibDataSet16QUANTIDADE.AsFloat = 0) and (Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
-              begin
-                Form7.ibDataSet16.Edit;
-                Form7.ibDataSet16QUANTIDADE.AsFloat := fQuantidadeVendida;
+                // Procura pela descricão
+                Form7.ibDataSet99.Close;
+                Form7.ibDataSet99.SelectSQL.Clear;
+                Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
+  //              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet16DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
+                Form7.ibDataSet99.Open;
+                Form7.ibDataSet99.First;
+  //              if Pos(UpperCAse(AllTrim(ibDataSet16DESCRICAO.AsString)),UpperCase(ibDataset99.FieldByname('DESCRICAO').AsString))<>0 then bFind := Form7.ibDataSet4.Locate('DESCRICAO',ibDataset99.FieldByname('DESCRICAO').AsString,[]);
+                if Pos(UpperCAse(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)),UpperCase(Form7.ibDataset99.FieldByname('DESCRICAO').AsString))<> 0 then
+                  bFind := Form7.ibDataSet4.Locate('CODIGO',ibDataset99.FieldByname('CODIGO').AsString,[]); // ibDataSet16DESCRICAOChange
               end;
             end;
           end;
+        end
+        else
+          bFind := True;
+        Form7.ibDataSet4.EnableControls;
 
-          // Comentário do produto
-          for I := 1 to 9 do
-          begin
-            if (Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString) <> 0) and (Pos('</Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString) > Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)) then
-            begin
-              // Mostra como comentário
-              sModuloREs := Form7.sMoDulo;
-              Form7.sMoDulo := 'Não';
-
-              Form7.ibDataSet16.Post;
-
-              sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
-
-              Form7.ibDataSet16.Append;
-              Form1.bFlag := False;
-              Form7.ibDataSet16DESCRICAO.AsString := Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6);
-              Form7.ibDataSet16.Post;
-
-              Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
-
-              Form7.ibDataSet16.Edit;
-              Form7.sMoDulo := sModuloRes;
-            end;
-          end;
+        //Mauricio Parizotto
+        if ibDataSet4.FieldByname('TIPO_ITEM').AsString = '09' then
+        begin
+          ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
+          Form7.ibDataSet16.Delete;
         end;
 
-        if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'RETRIBUTA') then
+        //  Preenche os dados do arquivo NOTA0001.DBF
+        //  se o produto for encontrado
+        if bFind then
         begin
-          if Form7.ibDataSet15OPERACAO.AsString <> Form7.ibDataSet14NOME.AsString then
+          // Grava no arquivo NOTA0001.DBF:
+          //
+          // 1. Descricão do produto
+          // 2. Valor unitário
+          // 3. Quantidade
+          // 4. Total
+          // 5. Situação tributária
+          // 6. Percentual do IPI
+          // 7. Peso
+          // 7. Código
+          //
+          Form7.ibDataSet16.Edit;
+          Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
+          {Sandro Silva 2022-12-20 inicio}
+          Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
+          if Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.AsString = '' then
+            Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Clear;
+          {Sandro Silva 2022-12-20 fim}
+          //
+          if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
-            Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);       //
-          end;
-
-          try
-            // Verifica se pode usar tributação interestadual
-            if UpperCase(Copy(Form7.ibDataSet2IE.AsString,1,2)) = 'PR' then // Quando é produtor rural não precisa ter CGC
+            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
             begin
-              sEstado := UpperCAse(Form7.ibDataSet2ESTADO.AsString);
-              if AllTrim(Form7.ibDataSet2CGC.AsString) = '' then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString); // Quando é produtor rural tem que ter CPF
+              ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 1');
+              Form7.ibDataSet16DESCRICAO.AsString   := '';
+              Form7.ibDataSet16TOTAL.AsString       := '';
+              Form7.ibDataSet16UNITARIO.AsString    := '';
+              Form7.ibDataSet16QUANTIDADE.AsString  := '';
+              Form7.ibDataSet16CODIGO.AsString      := '';
+              Form7.ibDataSet16CFOP.AsString        := '';
             end else
             begin
-              if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then sEstado := Form7.ibDataSet2ESTADO.AsString else sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-              if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-              if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) <= 14 then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-            end;
-
-            sEstado := Form7.ibDataSet2ESTADO.AsString;
-
-            if Pos('1'+sEstado+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX2') = 0 then
-              sEstado := 'MG';
-
-            // CFOP Dinamico
-            if (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '107') and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '108') then // Esta faixa não muda dentro e fora do estado DOUGLAS - Electra - Sara Suporte
-            begin
-              if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '5') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '6') then
+              if not Form41.Visible then
               begin
-                try
-                  if AllTrim(Form7.ibDataSet2ESTADO.AsString) = 'EX' then
+                ///////////////////////
+                // Controle de serie //
+                ///////////////////////
+                if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
+                begin
+                  //
+                  sCodigo := Form7.ibDataSet4.FieldByname('CODIGO').AsString;
+                  Form7.ibDataSet16.Edit;
+                  Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+                  Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
+                  //
+                  Form7.ibDataSet16.Edit;
+                  Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
+                  //
+                  sSerial_ := '99';
+                  sMensagem := '';
+                  //
+                  while AllTrim(sSerial_) <> '' do
                   begin
-                    Form7.ibDataSet14.Edit;
-                    Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5);
-                    Form7.ibDataSet14.Post;
+                    //
+                    try
+                      sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
+                    except end;
+                    //
+                    sSerial_ := AllTrim(Form1.Small_InputForm('Venda de item','Número de série:','')); // Nf de venda
+                    //
+                    if sSerial_ <> '' then
+                    begin
+                      Form7.ibDataSet30.Close;
+                      Form7.ibDataSet30.SelectSQL.Clear;
+                      Form7.ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString));
+                      Form7.ibDataSet30.Open;
+                      //
+                      while not ibDataSet30.Eof do
+                      begin
+                        try
+                          if ibDataSet30SERIAL.AsString = sSerial_ then
+                          begin
+                            if AllTrim(ibDataSet30NFVENDA.AsString) = '' then
+                            begin
+                              Form7.ibDataSet30.Edit;
+                              Form7.ibDataSet30NFVENDA.AsString     := Copy(Form7.ibDataSet15NUMERONF.AsString,4,6);
+                              Form7.ibDataSet30VALVENDA.AsFloat     := Form7.ibDataSet16UNITARIO.AsFloat;
+                              Form7.ibDataSet30DATVENDA.AsDateTime  := Form7.ibDataSet15EMISSAO.AsDateTime;
+                              Form7.ibDataSet16QUANTIDADE.AsFloat   := Form7.ibDataSet16QUANTIDADE.AsFloat + 1;
+                              fQuantidadeVendida              := Form7.ibDataSet16QUANTIDADE.AsFloat;
+                              Form7.ibDataSet16.Post;
+                              //
+                              Form1.bFlag := False;
+                              //
+                              Form7.ibDataSet16.Append;
+                              Form7.ibDataSet16DESCRICAO.AsString := 'SERIAL ' +  ibDataSet30SERIAL.AsString;
+                              Form7.ibDataSet16.Post;
+                              Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
+                              Form7.ibDataSet16.Edit;
+                              //
+                              try
+                                Form7.ibDataSet4.Close;
+                                Form7.ibDataSet4.Selectsql.Clear;
+                                Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(sCodigo)+' ');  //
+                                Form7.ibDataSet4.Open;
+                              except end;
+                              //
+                              Form1.bFlag := True;
+                              //
+                              sSerial_ := '0CONFIRMADO0';
+                              sMensagem := '';
+                            end else
+                            begin
+                              sMensagem := 'Número de série já vendido.';
+                            end;
+                          end;
+                          //
+                        except end;
+                        //
+                        Form7.ibDataSet30.Next;
+                      end;
+                    end;
+
+                    try
+                      if (sMensagem = 'Número de série já vendido.') then
+                        ShowMessage(sMensagem)
+                      else if (sSerial_ <> '0CONFIRMADO0') and (sSerial_ <> '') then
+                        ShowMessage('Número de série não encontrado no produto: '+Chr(10)+ibDataSet4DESCRICAO.AsString);
+                    except
+                    end;
+                  end;
+                end;
+              end;
+
+              Form7.ibDataSet16.Edit;
+              Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+              Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
+              if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
+                Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
+              //
+              if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
+              begin
+                // Não faz nada está importando a NF para Devolução
+              end else
+              begin
+                // Desconto pelo convênio
+                if AllTrim(Form7.ibDataSet2CONVENIO.AsString) <> '' then
+                begin
+                  Form7.ibDataSet29.Locate('NOME', Form7.ibDataSet2CONVENIO.AsString,[]);
+                  if Form7.ibDataSet29DESCONTO.AsFloat <> 0 then
+                  begin
+                    bButton := Application.MessageBox(Pchar('Confirma um desconto de: % ' + AllTrim(Format('%12.2n',[Form7.ibDataSet29DESCONTO.AsFloat])) +
+                      Chr(10) + 'Conforme convênio: ' + Form7.ibDataSet29NOME.AsString+
+                      Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
+                      //
+                    if bButton = IDYES then
+                      Form7.ibDataSet16UNITARIO.AsFloat    := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
+                    else
+                      Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                  end
+                  else
+                    Form7.ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                end else
+                begin
+                  // Venda pelo custo
+                  if Pos('0',Form7.ibDataSet14INTEGRACAO.asString) = 0 then
+                  begin
+                    Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
                   end else
                   begin
-                    Form7.ibDataSet14.Edit;
-                    if (sEstado = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
-                      Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
-                    else
-                      Form7.ibDataSet14CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
-                    Form7.ibDataSet14.Post;
+                    Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
                   end;
-                  
-                  try
-                    if (Form12.Edit3.Text = '1-Consumidor Final') and (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) then
-                    begin
-                      Form7.ibDataSet16PFCPUFDEST.Visible := True;
-                      Form7.ibDataSet16PICMSUFDEST.Visible := True;
-                    end else
-                    begin
-                      Form7.ibDataSet16PFCPUFDEST.Visible := False;
-                      Form7.ibDataSet16PICMSUFDEST.Visible := False;
-                    end;
-                    //
-                    if AllTrim(Form7.ibDataSet2ESTADO.AsString)='EX' then
-                    begin
-                      Form7.ibDataSet16PFCPUFDEST.Visible := False;
-                      Form7.ibDataSet16PICMSUFDEST.Visible := False;
-                    end;
-                  except end;
+                end;
+
+                Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
+                Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
+                Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
+                Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
+                Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
+                Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
+
+                {Sandro Silva 2023-05-04 inicio}
+                // aqui preenche PFCP, PFCPST
+                Form7.ibDataSet16PFCP.AsFloat   := 0;
+                if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+                begin
+                  Form7.ibDataSet16PFCP.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e
+                end;
+
+                Form7.ibDataSet16PFCPST.AsFloat := 0;
+                if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+                begin
+                  Form7.ibDataSet16PFCPST.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e 16 AfterPost
+                end;
+                {Sandro Silva 2023-05-04 fim}
+
+                // Grade
+                if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
+                begin
+                  Form7.ibDataSet10.Close;
+                  Form7.ibDataSet10.SelectSQL.Clear;
+                  Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+                  Form7.ibDataSet10.Open;
+                  Form7.ibDataSet10.First;
                   //
-                except end;
+                  Form7.ibDataSet16.Edit;
+                  //
+                  if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
+                  begin
+                    // Cadastro do item na VENDA quantidade geralemtne = 1
+                    if (Form7.ibDataSet16QUANTIDADE.AsFloat = 0) or (Form7.ibDataSet4.FieldByname('SERIE').Value = 1) then
+                    begin
+                      Form1.rReserva := 0;
+                      Form13.Label1.Caption := 'Cadastro do item na venda';
+                      Form13.ShowModal; //  Cadastro do item na VENDA quantidade geralemtne = 1
+                      //
+                      // Mostra como comentário
+                      //
+                      Form7.ibDataSet16.Post;
+                      //
+                      sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
+                      //
+                      Form7.ibDataSet16.Append;
+                      Form7.ibDataSet16DESCRICAO.AsString := Form1.sGrade;
+                      Form7.ibDataSet16.Post;
+                      //
+                      Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
+                      //
+                      Form7.ibDataSet16.Edit;
+                    end;
+                  end;
+                end;
+
+                if (Form7.ibDataSet16QUANTIDADE.AsFloat = 0) and (Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+                begin
+                  Form7.ibDataSet16.Edit;
+                  Form7.ibDataSet16QUANTIDADE.AsFloat := fQuantidadeVendida;
+                end;
               end;
             end;
 
-            if Form7.ibDataSet14.FieldByName(sEstado+'_').AsFloat <> 0 then
+            // Comentário do produto
+            for I := 1 to 9 do
             begin
-              // Se o ST do produto for <> de zero pode
-              // ser que este produto tenha uma aliquota
-              // reduzida, ou tributado de ISS
-              if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
+              if (Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString) <> 0) and (Pos('</Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString) > Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)) then
               begin
-                // Nova rotina para posicionar na tabéla de CFOP
-                Form7.IBQuery14.Close;
-                Form7.IBQuery14.SQL.Clear;
-                Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
-                Form7.IBQuery14.Open;
+                // Mostra como comentário
+                sModuloREs := Form7.sMoDulo;
+                Form7.sMoDulo := 'Não';
 
-                if AllTrim(Form7.IBQuery14.FieldByName('ST').AsString) <> AllTrim(Form7.ibDataSet4ST.AsString) then
+                Form7.ibDataSet16.Post;
+
+                sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
+
+                Form7.ibDataSet16.Append;
+                Form1.bFlag := False;
+                Form7.ibDataSet16DESCRICAO.AsString := Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6);
+                Form7.ibDataSet16.Post;
+
+                Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
+
+                Form7.ibDataSet16.Edit;
+                Form7.sMoDulo := sModuloRes;
+              end;
+            end;
+          end;
+
+          if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'RETRIBUTA') then
+          begin
+            if Form7.ibDataSet15OPERACAO.AsString <> Form7.ibDataSet14NOME.AsString then
+            begin
+              Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);       //
+            end;
+
+            try
+              // Verifica se pode usar tributação interestadual
+              if UpperCase(Copy(Form7.ibDataSet2IE.AsString,1,2)) = 'PR' then // Quando é produtor rural não precisa ter CGC
+              begin
+                sEstado := UpperCAse(Form7.ibDataSet2ESTADO.AsString);
+                if AllTrim(Form7.ibDataSet2CGC.AsString) = '' then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString); // Quando é produtor rural tem que ter CPF
+              end else
+              begin
+                if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then sEstado := Form7.ibDataSet2ESTADO.AsString else sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+                if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+                if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) <= 14 then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+              end;
+
+              sEstado := Form7.ibDataSet2ESTADO.AsString;
+
+              if Pos('1'+sEstado+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX2') = 0 then
+                sEstado := 'MG';
+
+              // CFOP Dinamico
+              if (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '107') and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '108') then // Esta faixa não muda dentro e fora do estado DOUGLAS - Electra - Sara Suporte
+              begin
+                if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '5') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '6') then
+                begin
+                  try
+                    if AllTrim(Form7.ibDataSet2ESTADO.AsString) = 'EX' then
+                    begin
+                      Form7.ibDataSet14.Edit;
+                      Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5);
+                      Form7.ibDataSet14.Post;
+                    end else
+                    begin
+                      Form7.ibDataSet14.Edit;
+                      if (sEstado = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
+                        Form7.ibDataSet14CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
+                      else
+                        Form7.ibDataSet14CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
+                      Form7.ibDataSet14.Post;
+                    end;
+
+                    try
+                      if (Form12.Edit3.Text = '1-Consumidor Final') and (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) then
+                      begin
+                        Form7.ibDataSet16PFCPUFDEST.Visible := True;
+                        Form7.ibDataSet16PICMSUFDEST.Visible := True;
+                      end else
+                      begin
+                        Form7.ibDataSet16PFCPUFDEST.Visible := False;
+                        Form7.ibDataSet16PICMSUFDEST.Visible := False;
+                      end;
+                      //
+                      if AllTrim(Form7.ibDataSet2ESTADO.AsString)='EX' then
+                      begin
+                        Form7.ibDataSet16PFCPUFDEST.Visible := False;
+                        Form7.ibDataSet16PICMSUFDEST.Visible := False;
+                      end;
+                    except end;
+                    //
+                  except end;
+                end;
+              end;
+
+              if Form7.ibDataSet14.FieldByName(sEstado+'_').AsFloat <> 0 then
+              begin
+                // Se o ST do produto for <> de zero pode
+                // ser que este produto tenha uma aliquota
+                // reduzida, ou tributado de ISS
+                if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
+                begin
+                  // Nova rotina para posicionar na tabéla de CFOP
+                  Form7.IBQuery14.Close;
+                  Form7.IBQuery14.SQL.Clear;
+                  Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
+                  Form7.IBQuery14.Open;
+
+                  if AllTrim(Form7.IBQuery14.FieldByName('ST').AsString) <> AllTrim(Form7.ibDataSet4ST.AsString) then
+                  begin
+                    Form7.IBQuery14.Close;
+                    Form7.IBQuery14.SQL.Clear;
+                    Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
+                    Form7.IBQuery14.Open;
+                  end else
+                  begin
+                    // Joga p/obs a obs na tabela de icm
+                    ObservacaoProduto(False); // Obs do ibDAtaSet14 relacionado ao item
+                  end;
+                end else
                 begin
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
                   Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
                   Form7.IBQuery14.Open;
-                end else
-                begin
-                  // Joga p/obs a obs na tabela de icm
-                  ObservacaoProduto(False); // Obs do ibDAtaSet14 relacionado ao item
                 end;
               end else
               begin
@@ -19875,80 +19891,84 @@ begin
                 Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
                 Form7.IBQuery14.Open;
               end;
-            end else
-            begin
-              Form7.IBQuery14.Close;
-              Form7.IBQuery14.SQL.Clear;
-              Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
-              Form7.IBQuery14.Open;
+            except
             end;
-          except
-          end;
 
-          // Se o UF do cliente for inválido ocorre um erro
-          try
-            Form7.ibDataSet16.Edit;
+            // Se o UF do cliente for inválido ocorre um erro
+            try
+              Form7.ibDataSet16.Edit;
 
-            if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
-            begin
-              if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
+              if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
               begin
-                if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '7') and (Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '3') then // Exportação
+                if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
-                  try
-                    if (Form12.Edit3.Text = '1-Consumidor Final') and (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) then
+                  if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '7') and (Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '3') then // Exportação
+                  begin
+                    try
+                      if (Form12.Edit3.Text = '1-Consumidor Final') and (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) then
+                      begin
+                        Form7.ibDataSet16PFCPUFDEST.Visible  := True;
+                        Form7.ibDataSet16PICMSUFDEST.Visible := True;
+                      end else
+                      begin
+                        Form7.ibDataSet16PFCPUFDEST.Visible  := False;
+                        Form7.ibDataSet16PICMSUFDEST.Visible := False;
+                      end;
+                    except
+                    end;
+
+                    if AllTrim(Form7.ibDataSet2ESTADO.AsString) = 'EX' then
                     begin
-                      Form7.ibDataSet16PFCPUFDEST.Visible  := True;
-                      Form7.ibDataSet16PICMSUFDEST.Visible := True;
-                    end else
-                    begin
+                      Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5);
                       Form7.ibDataSet16PFCPUFDEST.Visible  := False;
                       Form7.ibDataSet16PICMSUFDEST.Visible := False;
+                    end else
+                    begin
+                      if (Form7.IBDataSet2ESTADO.AsString = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
+                        Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
+                      else
+                        Form7.ibDataSet16CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
                     end;
-                  except
-                  end;
-
-                  if AllTrim(Form7.ibDataSet2ESTADO.AsString) = 'EX' then
-                  begin
-                    Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5);
-                    Form7.ibDataSet16PFCPUFDEST.Visible  := False;
-                    Form7.ibDataSet16PICMSUFDEST.Visible := False;
-                  end else
-                  begin
-                    if (Form7.IBDataSet2ESTADO.AsString = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
-                      Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
-                    else
-                      Form7.ibDataSet16CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
                   end;
                 end;
-              end;
 
-              // certo
-              Form7.ibDataSet16IPI.AsFloat     := Form7.ibDataSet4IPI.AsFloat;
-              Form7.ibDataSet16ISS.AsFloat     := Form7.ibQuery14.FieldByName('ISS').AsFloat;
-              Form7.ibDataSet16BASE.AsFloat    := Form7.ibQuery14.FieldByName('BASE').AsFloat;
-              Form7.ibDataSet16BASEISS.AsFloat := Form7.ibQuery14.FieldByName('BASEISS').AsFloat;
-              Form7.ibDataSet16ICM.AsFloat     := Form7.ibQuery14.FieldByName(sEstado+'_').AsFloat;
+                // certo
+                Form7.ibDataSet16IPI.AsFloat     := Form7.ibDataSet4IPI.AsFloat;
+                Form7.ibDataSet16ISS.AsFloat     := Form7.ibQuery14.FieldByName('ISS').AsFloat;
+                Form7.ibDataSet16BASE.AsFloat    := Form7.ibQuery14.FieldByName('BASE').AsFloat;
+                Form7.ibDataSet16BASEISS.AsFloat := Form7.ibQuery14.FieldByName('BASEISS').AsFloat;
+                Form7.ibDataSet16ICM.AsFloat     := Form7.ibQuery14.FieldByName(sEstado+'_').AsFloat;
 
-              Form7.ibDataSet16CST_IPI.AsString     := Form7.ibDataSet4CST_IPI.AsString;   // Cst do IPI no estoque
-              Form7.ibDataSet16CST_ICMS.AsString    := Form7.ibDataSet4CST.AsString;       // CST do ICMS no estoque
+                Form7.ibDataSet16CST_IPI.AsString     := Form7.ibDataSet4CST_IPI.AsString;   // Cst do IPI no estoque
+                Form7.ibDataSet16CST_ICMS.AsString    := Form7.ibDataSet4CST.AsString;       // CST do ICMS no estoque
 
-              {Sandro Silva 2022-11-11 inicio}
-              try
-                if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
+                {Sandro Silva 2022-11-11 inicio}
+                try
+                  if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
+                  begin
+                    ItemNFe := TItemNFe.Create;
+                    CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
+                    Form7.ibDataSet16CSOSN.AsString := ItemNFe.CSOSN;
+                  end;
+                except
+
+                end;
+                if ItemNFe <> nil then
+                  FreeAndNil(ItemNFe);
+                {Sandro Silva 2022-11-11 fim}
+
+                {Sandro Silva 2022-09-28 inicio
+                if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
                 begin
-                  ItemNFe := TItemNFe.Create;
-                  CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
-                  Form7.ibDataSet16CSOSN.AsString := ItemNFe.CSOSN;
+                  Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
+                end else
+                begin
+                  Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
                 end;
-              except
-
+                }
               end;
-              if ItemNFe <> nil then
-                FreeAndNil(ItemNFe);
-              {Sandro Silva 2022-11-11 fim} 
-
-              {Sandro Silva 2022-09-28 inicio
+              {Sandro Silva 2022-09-28 inicio}
+              //Ficha 6273
               if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
               begin
                 Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
@@ -19956,68 +19976,60 @@ begin
               begin
                 Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
               end;
-              }
+              {Sandro Silva 2022-09-28 fim}
+              //
+            except
+              Form7.ibDataSet16.Edit;
+              Form7.ibDataSet16IPI.AsFloat      := 0;
+              Form7.ibDataSet16BASE.AsFloat     := 100;
+              Form7.ibDataSet16BASEISS.AsFloat  := 0;
+              Form7.ibDataSet16ISS.AsFloat      := 0;
+              Form7.ibDataSet16ICM.AsFloat      := 0;
             end;
-            {Sandro Silva 2022-09-28 inicio}
-            //Ficha 6273
-            if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
-            begin
-              Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
-            end else
-            begin
-              Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
-            end;
-            {Sandro Silva 2022-09-28 fim}
             //
-          except
-            Form7.ibDataSet16.Edit;
-            Form7.ibDataSet16IPI.AsFloat      := 0;
-            Form7.ibDataSet16BASE.AsFloat     := 100;
-            Form7.ibDataSet16BASEISS.AsFloat  := 0;
-            Form7.ibDataSet16ISS.AsFloat      := 0;
-            Form7.ibDataSet16ICM.AsFloat      := 0;
-          end;
-          //
-          if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
-          begin
-            if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
+            if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
             begin
-              if (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '30') or
-                 (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '40') or
-                 (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '41') or
-                 (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '50') or
-                 (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '60') then
+              if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
               begin
-                Form7.ibDataSet16BASE.AsFloat     := 0;
-              end;
-            end else  //
-            begin     // Estoque
-              if (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '30') or
-                 (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '40') or
-                 (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '41') or
-                 (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '50') or
-                 (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '60') then
-              begin
-                Form7.ibDataSet16BASE.AsFloat     := 0;
+                if (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '30') or
+                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '40') or
+                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '41') or
+                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '50') or
+                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '60') then
+                begin
+                  Form7.ibDataSet16BASE.AsFloat     := 0;
+                end;
+              end else  //
+              begin     // Estoque
+                if (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '30') or
+                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '40') or
+                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '41') or
+                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '50') or
+                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '60') then
+                begin
+                  Form7.ibDataSet16BASE.AsFloat     := 0;
+                end;
               end;
             end;
           end;
+        end else
+        begin
+          // DESCRICAO NO CORPO DA NOTA
+          Form7.ibDataSet16.Edit;
+          Form7.ibDataSet16QUANTIDADE.AsString := '';
         end;
-      end else
-      begin
-        // DESCRICAO NO CORPO DA NOTA
-        Form7.ibDataSet16.Edit;
-        Form7.ibDataSet16QUANTIDADE.AsString := '';
-      end;
 
-      Form1.bFlag := True;
+        Form1.bFlag := True;
+      end;
+    except
     end;
-  except
+    // DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
+    // Form12.Label65.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0);
+    //
+    Form7.IBQuery14.Close;
+  finally
+    // Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-05-08 Teste de otimização
   end;
-  // DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-  // Form12.Label65.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0);
-  //
-  Form7.IBQuery14.Close;
 end;
 
 
@@ -21173,7 +21185,7 @@ begin
     if ibDataSet23CFOP.AsString = '' then
       ibDataSet23CFOP.AsString := ibDataSet14CFOP.AsString;
 
-    Form1.bflag := False;
+    Form1.bFlag := False;
 
     if (Form7.ibDataSet23DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.Value) then
     begin
@@ -32875,126 +32887,138 @@ end;
 
 procedure TForm7.DevolverNF1Click(Sender: TObject);
 begin
-  //
-  Form1.Image201Click(Form1.Image201);
-  Form7.Image101Click(Form7.Image201);
-  //
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  Form7.ibDataSet15CLIENTE.AsString     := Form7.ibDataSet2NOME.AsString;
-  Form7.ibDataSet15DESCONTO.AsFloat     := Form7.ibDataSet24DESCONTO.AsFloat;
-  Form7.ibDataSet15COMPLEMENTO.AsString := 'ID da NF-e referenciada:' + Form7.ibDataSet24NFEID.AsString;
-  //
-//  Form7.ibDataSet14.DisableControls;
-  Form7.ibDataSet14.Close;
-  Form7.ibDataSet14.SelectSQL.Clear;
-  Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
-  Form7.ibDataSet14.Open;
-//  Form7.ibDataSet14.EnableControls;
-  //
-  Form7.ibDataSet14.Locate('NOME','DEVOLU',[loCaseInsensitive, loPartialKey]);
-  //
-  if pos('DEVOLU',UpperCase(Form7.ibDataSet14NOME.AsString)) = 0  then
-  begin
-    Form7.ibDataSet14.Append;
-    Form7.ibDataSet14CFOP.AsString := '6202';
-    Form7.ibDataSet14NOME.AsString := 'Devolução';
-    Form7.ibDataSet14.Post;
-  end;
-  //
-  Form12.Edit2.Text := '4-Devolução de mercadoria';
-  Form7.ibDataSet15OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
-  Form7.ibDataSet15FINNFE.AsString      := '4';
-  //
-  Form7.Tag := 999;
-  //
-  //
   try
-    Form7.ibDataSet15.Post;
-    Form7.ibDataSet15.Edit;
     //
-    Form7.ibDataSet23.First;
+    Form1.Image201Click(Form1.Image201);
+    Form7.Image101Click(Form7.Image201);
     //
-    while not Form7.ibDataSet23.Eof do
+    Form7.ibDataSet2.Close;
+    Form7.ibDataSet2.Selectsql.Clear;
+    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');  //
+    Form7.ibDataSet2.Open;
+    //
+    Form7.ibDataSet15CLIENTE.AsString     := Form7.ibDataSet2NOME.AsString;
+    Form7.ibDataSet15DESCONTO.AsFloat     := Form7.ibDataSet24DESCONTO.AsFloat;
+    Form7.ibDataSet15COMPLEMENTO.AsString := 'ID da NF-e referenciada:' + Form7.ibDataSet24NFEID.AsString;
+    //
+  //  Form7.ibDataSet14.DisableControls;
+    Form7.ibDataSet14.Close;
+    Form7.ibDataSet14.SelectSQL.Clear;
+    Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
+    Form7.ibDataSet14.Open;
+  //  Form7.ibDataSet14.EnableControls;
+    //
+    Form7.ibDataSet14.Locate('NOME','DEVOLU',[loCaseInsensitive, loPartialKey]);
+    //
+    if pos('DEVOLU',UpperCase(Form7.ibDataSet14NOME.AsString)) = 0  then
     begin
+      Form7.ibDataSet14.Append;
+      Form7.ibDataSet14CFOP.AsString := '6202';
+      Form7.ibDataSet14NOME.AsString := 'Devolução';
+      Form7.ibDataSet14.Post;
+    end;
+    //
+    Form12.Edit2.Text := '4-Devolução de mercadoria';
+    Form7.ibDataSet15OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
+    Form7.ibDataSet15FINNFE.AsString      := '4';
+    Form12.ExibeColunasFCPST(True); // Sandro Silva 2023-05-08
+    //
+    Form7.Tag := 999;
+    //
+    //
+    try
+      Form7.ibDataSet15.Post;
+      Form7.ibDataSet15.Edit;
       //
-      if AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '' then
+      Form7.ibDataSet23.First;
+      //
+      while not Form7.ibDataSet23.Eof do
       begin
+
+        Form12.vNotaFiscal.Calculando := True; // Sandro Silva 2023-05-08
+
         //
-        Form7.ibDataSet4.Close;
-        Form7.ibDataSet4.Selectsql.Clear;
-        Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
-        Form7.ibDataSet4.Open;
-        //
-        if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+        if AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '' then
         begin
           //
-          Form7.ibDataSet16.Append;
-          Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
-          Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
-          Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
-          Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
-          Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
-          Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
+          Form7.ibDataSet4.Close;
+          Form7.ibDataSet4.Selectsql.Clear;
+          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
+          Form7.ibDataSet4.Open;
           //
-          // Acerta os tributos e o CFOP
+          if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+          begin
+            //
+            Form7.ibDataSet16.Append;
+            Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
+            Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
+            Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
+            Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
+            Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
+            Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
+            //
+            // Acerta os tributos e o CFOP
+            //
+            Form1.bFlag                         := True;
+            Form7.sModulo                       := 'VENDA';
+            Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet23DESCRICAO.AsString;
+            Form1.bFlag                         := False;
+
+            Form7.ibDataSet16.Edit;
+            Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet23QUANTIDADE.AsFloat;
+            Form7.ibDataSet16.Edit;
+            Form7.ibDataSet16UNITARIO.AsFloat   := Form7.IbDataSet23UNITARIO.AsFloat;
+            Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet23IPI.AsFloat;
+
+            Form7.ibDataSet16VIPI.AsFloat       := Arredonda2(Form7.ibDataSet23VIPI.AsFloat,2);
+            Form7.ibDataSet16ICM.Asfloat        := Form7.ibDataSet23ICM.Asfloat;
+            Form7.ibDataSet16CST_ICMS.AsString  := Form7.ibDataSet23CST_ICMS.AsString;
+            Form7.ibDataSet16CFOP.AsString      := Form7.ibDataSet14CFOP.AsString;
+            Form7.ibDataSet16VICMS.AsFloat      := Form7.ibDataSet23VICMS.AsFloat;
+            Form7.ibDataSet16VBC.AsFloat        := Form7.ibDataSet23VBC.AsFloat;
+            Form7.ibDataSet16VBCST.AsFloat      := Form7.ibDataSet23VBCST.AsFloat;
+            Form7.ibDataSet16VICMSST.AsFloat    := Form7.ibDataSet23VICMSST.AsFloat;
+
+            // Campos FCP - Sandro Silva 2023-05-05
+            Form7.ibDataSet16VBCFCP.AsFloat     := Form7.ibDataSet23VBCFCP.AsFloat;
+            Form7.ibDataSet16PFCP.AsFloat       := Form7.ibDataSet23PFCP.AsFloat;
+            Form7.ibDataSet16VFCP.AsFloat       := Form7.ibDataSet23VFCP.AsFloat;
+            Form7.ibDataSet16VBCFCPST.AsFloat   := Form7.ibDataSet23VBCFCPST.AsFloat;
+            Form7.ibDataSet16PFCPST.AsFloat     := Form7.ibDataSet23PFCPST.AsFloat;
+            Form7.ibDataSet16VFCPST.AsFloat     := Form7.ibDataSet23VFCPST.AsFloat;
+
+          end;
           //
-          Form1.bFlag                         := True;
-          Form7.sModulo                       := 'VENDA';
-          Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet23DESCRICAO.AsString;
-          Form1.bFlag                         := False;
-
-          Form7.ibDataSet16.Edit;
-          Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet23QUANTIDADE.AsFloat;
-          Form7.ibDataSet16.Edit;
-          Form7.ibDataSet16UNITARIO.AsFloat   := Form7.IbDataSet23UNITARIO.AsFloat;
-          Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet23IPI.AsFloat;
-
-          Form7.ibDataSet16VIPI.AsFloat       := Arredonda2(Form7.ibDataSet23VIPI.AsFloat,2);
-          Form7.ibDataSet16ICM.Asfloat        := Form7.ibDataSet23ICM.Asfloat;
-          Form7.ibDataSet16CST_ICMS.AsString  := Form7.ibDataSet23CST_ICMS.AsString;
-          Form7.ibDataSet16CFOP.AsString      := Form7.ibDataSet14CFOP.AsString;
-          Form7.ibDataSet16VICMS.AsFloat      := Form7.ibDataSet23VICMS.AsFloat;
-          Form7.ibDataSet16VBC.AsFloat        := Form7.ibDataSet23VBC.AsFloat;
-          Form7.ibDataSet16VBCST.AsFloat      := Form7.ibDataSet23VBCST.AsFloat;
-          Form7.ibDataSet16VICMSST.AsFloat    := Form7.ibDataSet23VICMSST.AsFloat;
-
-          // Campos FCP - Sandro Silva 2023-05-05
-          Form7.ibDataSet16VBCFCP.AsFloat     := Form7.ibDataSet23VBCFCP.AsFloat;
-          Form7.ibDataSet16PFCP.AsFloat       := Form7.ibDataSet23PFCP.AsFloat;
-          Form7.ibDataSet16VFCP.AsFloat       := Form7.ibDataSet23VFCP.AsFloat;
-          Form7.ibDataSet16VBCFCPST.AsFloat   := Form7.ibDataSet23VBCFCPST.AsFloat;
-          Form7.ibDataSet16PFCPST.AsFloat     := Form7.ibDataSet23PFCPST.AsFloat;
-          Form7.ibDataSet16VFCPST.AsFloat     := Form7.ibDataSet23VFCPST.AsFloat;
-
         end;
         //
+        Form7.ibDataSet23.Next;
+        //
       end;
-      //
-      Form7.ibDataSet23.Next;
-      //
+    except end;
+    //
+    Form7.Tag := 0;
+    //
+    Form7.sModulo := 'VENDA';
+    Form7.ibDataSet16.Edit;
+    Form7.ibDataSet16.Post;
+    Form7.sModulo := 'OS';
+    Form7.ibDataSet16.Edit;
+    //
+    Form7.ibDataSet16.EnableControls;
+    Form7.ibDataSet16.MoveBy(-1);
+    Form7.ibDataSet16.MoveBy(1);
+    Form12.DBGrid1.Update;
+    if Form12.vNotaFiscal <> nil then
+    begin
+      Form12.vNotaFiscal.Calculando := False; // Sandro Silva 2023-05-08
+      Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15, Form7.ibDataSet16);
     end;
-  except end;
-  //
-  Form7.Tag := 0;
-  //
-  Form7.sModulo := 'VENDA';
-  Form7.ibDataSet16.Edit;
-  Form7.ibDataSet16.Post;
-  Form7.sModulo := 'OS';
-  Form7.ibDataSet16.Edit;
-  //
-  Form7.ibDataSet16.EnableControls;
-  Form7.ibDataSet16.MoveBy(-1);
-  Form7.ibDataSet16.MoveBy(1);
-  Form12.DBGrid1.Update;
-  Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
-  //
-  Form12.dbGrid1.SetFocus;
-  //
+    Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA); // Força o cálculo de totais e de impostos
+  finally
+
+  end;
+
+  Form12.dbGrid1.SetFocus;  
 end;
 
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);

@@ -6045,22 +6045,35 @@ begin
       //
     end else
     begin
-      //
+      {Sandro Silva 2023-05-08 inicio
       if Form1.bNotaVendaLiberada  then Form7.Vendas_1.Enabled := True else Form7.Vendas_1.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.NotasfiscaisdesadavendasSrie11.Enabled := True else Form7.NotasfiscaisdesadavendasSrie11.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.Notasfiscaisdesadavendassrie21.Enabled := True else Form7.NotasfiscaisdesadavendasSrie21.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.Vendas_XXX.Enabled := True else Form7.Vendas_XXX.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := True else Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.Vendas2.Enabled := True else Form7.Vendas2.Enabled := False;
-      //
-      Form7.Notasfiscaisdesadavendassrie9201.Enabled := False;
+      }
+      Form7.Vendas_1.Enabled                         := Form1.bNotaVendaLiberada;
+      Form7.NotasfiscaisdesadavendasSrie11.Enabled   := Form1.bNotaVendaLiberada;
+      Form7.Notasfiscaisdesadavendassrie21.Enabled   := Form1.bNotaVendaLiberada;
+      Form7.Vendas_XXX.Enabled                       := Form1.bNotaVendaLiberada;
+      Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := Form1.bNotaVendaLiberada;
+      Form7.Vendas2.Enabled                          := Form1.bNotaVendaLiberada;
+      {Sandro Silva 2023-05-08 fim}
+
+      Form7.Notasfiscaisdesadavendassrie9201.Enabled       := False;
       Form7.NotasfiscaisdesadavendascomCPFsrie9201.Enabled := False;
       //
     end;
-    //
+
+    {Sandro Silva 2023-05-08 inicio
     if Form1.bNotaCompraLiberada then Form7.Compras_1.Enabled := True else Form7.Compras_1.Enabled := False;
     if Form1.bNotaCompraLiberada then Form7.Compras2.Enabled := True else Form7.Compras2.Enabled := False;
-    //
+    }
+    Form7.Compras_1.Enabled := Form1.bNotaCompraLiberada;
+    Form7.Compras2.Enabled  := Form1.bNotaCompraLiberada;
+    {Sandro Silva 2023-05-08 fim}
+
     if Form1.sSerieEspecial <> 'XXX' then
     begin
       if AllTrim(Form1.sSerieEspecial) <> '' then
@@ -6110,7 +6123,8 @@ begin
     //
     Form1.Label201MouseLeave(Sender);
     //
-    if Form12.Visible then Form12.Show;
+    if Form12.Visible then
+      Form12.Show;
     //
   except
     on E: Exception do

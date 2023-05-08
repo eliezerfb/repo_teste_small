@@ -277,14 +277,14 @@ type
     procedure AtivaPesquisaCliente;
     procedure AtivaPesquisaTransportadora;
     procedure ExibeColunasFCP(bOculta: Boolean);
-    procedure ExibeColunasFCPST(bOculta: Boolean);
   public
+    { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
     bOk         : Boolean;
     fPrecoDoServico : array[0..99999] of real;
-    { Public declarations }
+    procedure ExibeColunasFCPST(bOculta: Boolean);
   end;
 
 var
@@ -294,7 +294,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48;
+  Unit24, Unit48, uFuncoesRetaguarda;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -573,7 +573,7 @@ begin
       while not Form7.ibDataSet16.EOF do // Disable
       begin
         //
-        Form1.bflag := True;
+        Form1.bFlag := True;
         Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
         Form7.ibDataSet16.Next;
         //
@@ -1686,6 +1686,8 @@ begin
   try
     Form7.ibDataSet15.Edit;
 
+    LogRetaguarda('TForm12.FormClose('); // Sandro Silva 2023-05-08
+
     if vNotaFiscal <> nil then
       vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
 
@@ -2661,6 +2663,7 @@ begin
   //
   ExibeColunasFCPST(False);
   ExibeColunasFCP(False);
+  {Sandro Silva 2023-05-08 inicio
   if (LimpaNumero(Edit2.Text) = '1') then
   begin
     Edit2.Text := '1-Normal';
@@ -2688,6 +2691,12 @@ begin
       end;
     end;
   end;
+  }
+  Edit2.Text := TextoIdentificadorFinalidadeNFe(Edit2.Text);
+  if (LimpaNumero(Edit2.Text) = '4') then
+    ExibeColunasFCPST(True);
+  {Sandro Silva 2023-05-08 fim}
+
   //
   if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then
     Form7.ibDataSet15FINNFE.AsString   := LimpaNumero(Edit2.Text);

@@ -259,6 +259,8 @@ type
 
 implementation
 
+uses Mais;
+
 { TITENS001List }
 
 function TITENS001List.Adiciona(DataSetItens: TibDataSet): TITENS001;
@@ -323,12 +325,10 @@ begin
   Result := TITENS001(inherited Items[Index]);
 end;
 
-
 procedure TITENS001List.SetItem(Index: Integer; const Value: TITENS001);
 begin
   Put(Index, Value);
 end;
-
 
 { TVENDAS }
 
@@ -343,18 +343,20 @@ begin
   FItens.Free;
 
   inherited;
-end;
-
+end;      
 
 { TNotaFiscalEletronica }
 
 procedure TNotaFiscalEletronica.AtualizaDataSetItens(DataSetItens: TibDataSet);
 var
-  i : integer;
-  oItem : TITENS001;
+  i: integer;
+  oItem: TITENS001;
+  bEstadoFlag: Boolean;
 begin
   try
     DataSetItens.DisableControls;
+
+    bEstadoFlag := Form1.bFlag; // Sandro Silva 2023-05-08
 
     for i := 0 to FNotaFiscal.FItens.Count -1 do
     begin
@@ -363,6 +365,8 @@ begin
       if DataSetItens.Locate('REGISTRO', oItem.Registro, []) then
       begin
         DataSetItens.Edit;
+
+        Form1.bFlag := False; // Sandro Silva 2023-05-08
 
         //DataSetItens.FieldByName('NUMERONF').AsString       := oItem.Numeronf;
         //DataSetItens.FieldByName('CODIGO').AsString         := oItem.Codigo;
@@ -412,9 +416,11 @@ begin
         DataSetItens.FieldByName('VFCPST').AsFloat          := oItem.VFCPST;
 
         DataSetItens.Post;
+        Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
       end;
     end;
   finally
+    Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
     DataSetItens.EnableControls;
   end
 end;

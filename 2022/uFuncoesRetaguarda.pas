@@ -8,12 +8,16 @@ function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String
 function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function FormatXMLToFloat(sValor: String): Double;
+function TextoIdentificadorFinalidadeNFe(Value: String): String;
+procedure LogRetaguarda(sTexto: String);
 
 implementation
 
 uses
   SysUtils
   , StrUtils
+  , Classes
+  , Forms
   , SmallFunc
   ;
 
@@ -108,7 +112,65 @@ end;
 
 function FormatXMLToFloat(sValor: String): Double;
 begin
-  Result := StrToFloatDef(StringReplace(sValor, '.', ',', [rfReplaceAll]), 0); 
+  Result := StrToFloatDef(StringReplace(sValor, '.', ',', [rfReplaceAll]), 0);
+end;
+
+function TextoIdentificadorFinalidadeNFe(Value: String): String;
+// Retorna o texto identificador do tipo de finalidade da NF-e
+begin
+  if (LimpaNumero(Value) = '1') then
+  begin
+    Result := '1-Normal';
+  end else
+  begin
+    if (LimpaNumero(Value) = '2') then
+    begin
+      Result := '2-Complementar';
+    end else
+    begin
+      if (LimpaNumero(Value) = '3') then
+      begin
+        Result := '3-de Ajuste';
+      end else
+      begin
+        if (LimpaNumero(Value) = '4') then
+        begin
+          Result := '4-Devolução de mercadoria';
+        end else
+        begin
+          Result := '1-Normal';
+        end;
+      end;
+    end;
+  end;
+
+end;
+
+procedure LogRetaguarda(sTexto: String);
+var
+  sl: TStringList;
+  sNomeLog: String;
+  sDirAtual: String;
+begin
+  /////////
+
+//  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Não' then
+//   Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
+
+  GetDir(0, sDirAtual);
+  ////////
+
+  sl := TStringList.Create;
+  try
+    sNomeLog := '\log\LogRetaguarda_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt';
+    if FileExists(ExtractFileDir(Application.ExeName) + sNomeLog) then
+      sl.LoadFromFile(ExtractFileDir(Application.ExeName) + sNomeLog);
+    sl.Add(FormatDateTime('dd/mm/yyyy HH:nn:ss.zzzz', Now) + ' - ' + sTexto);
+    sl.SaveToFile(ExtractFileDir(Application.ExeName) + sNomeLog);
+  except
+  end;
+  FreeAndNil(sl);
+  ChDir(sDirAtual); // Para voltar
 end;
 
 end.
