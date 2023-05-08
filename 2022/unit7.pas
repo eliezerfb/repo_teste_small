@@ -2064,6 +2064,8 @@ type
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
       const Text: String);
     procedure LimparRetornosda1Click(Sender: TObject);
+    procedure ibDataSet16PFCPSTChange(Sender: TField);
+    procedure ibDataSet16VBCFCPSTChange(Sender: TField);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2076,6 +2078,7 @@ type
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
+    procedure CalculaFCPSTAoIncluirProdutoDevolucao;
   public
     // Public declarations
 
@@ -10105,7 +10108,7 @@ begin
                                                      Form1.fRetencoes -                // ISS retido
                                                      fRetencao,2);                       //
 
-
+        {
         Form12.SMALL_DBEdit16.ShowHint := True;
         Form12.SMALL_DBEdit16.Hint     :=
           '+ Mercadoria: '+FloatToStr(Form7.ibDataSet15MERCADORIA.Value)+CHR(10)+
@@ -10120,7 +10123,23 @@ begin
           '- Desconto: '+FloatToStr(Form7.ibDataSet15DESCONTO.Value)+CHR(10)+
           '- Retenções: '+FloatToStr(Form1.fRetencoes)+CHR(10)+
           '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
+        }
       end;
+
+      Form12.SMALL_DBEdit16.ShowHint := True;
+      Form12.SMALL_DBEdit16.Hint     :=
+        '+ Mercadoria: '+FloatToStr(Form7.ibDataSet15MERCADORIA.Value)+CHR(10)+
+        '+ Serviços: '+FloatToStr(Form7.ibDataSet15SERVICOS.Value)+CHR(10)+
+        '+ Frete: '+FloatToStr(Form7.ibDataSet15FRETE.Value)+CHR(10)+
+        '+ Seguro: '+FloatToStr(Form7.ibDataSet15SEGURO.Value)+CHR(10)+
+        '+ IPI: '+FloatToStr(Form7.ibDataSet15IPI.Value)+CHR(10)+
+        '+ ICMS Substituição: '+FloatToStr(Form7.ibDataSet15ICMSSUBSTI.Value)+CHR(10)+
+        //'+ FCP ST: '+FloatToStr(fFCPRetido)+CHR(10)+
+        '+ FCP ST: '+FloatToStr(Form7.ibDataSet15VFCPST.Value)+CHR(10)+
+        '+ Despesas: '+FloatToStr(Form7.ibDataSet15DESPESAS.Value)+CHR(10)+
+        '- Desconto: '+FloatToStr(Form7.ibDataSet15DESCONTO.Value)+CHR(10)+
+        '- Retenções: '+FloatToStr(Form1.fRetencoes)+CHR(10)+
+        '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
 
       if Form7.sModulo <> 'RETRIBUTA' then
         Form7.ibDataSet16.EnableControls;
@@ -14165,7 +14184,8 @@ begin
     //
     // Relaciona as tabelas
     //
-    if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+    if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
+      Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
     //
     if Form7.ibDataSet2NOME.AsString <> Form7.ibDataSet15CLIENTE.AsString then
     begin
@@ -19702,15 +19722,13 @@ begin
                 {Sandro Silva 2023-05-04 inicio}
                 // aqui preenche PFCP, PFCPST
                 Form7.ibDataSet16PFCP.AsFloat   := 0;
-                if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString)) <> '' then
-                begin
-                  Form7.ibDataSet16PFCP.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e
-                end;
-
                 Form7.ibDataSet16PFCPST.AsFloat := 0;
-                if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+                if Form7.ibDataSet15FINNFE.AsString <> '4' then
                 begin
-                  Form7.ibDataSet16PFCPST.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e 16 AfterPost
+                  if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+                    Form7.ibDataSet16PFCP.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e
+                  if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString)) <> '' then
+                    Form7.ibDataSet16PFCPST.AsFloat := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4TAGS_.AsString))); // tributos da NF-e 16 AfterPost
                 end;
                 {Sandro Silva 2023-05-04 fim}
 
@@ -19797,12 +19815,18 @@ begin
               if UpperCase(Copy(Form7.ibDataSet2IE.AsString,1,2)) = 'PR' then // Quando é produtor rural não precisa ter CGC
               begin
                 sEstado := UpperCAse(Form7.ibDataSet2ESTADO.AsString);
-                if AllTrim(Form7.ibDataSet2CGC.AsString) = '' then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString); // Quando é produtor rural tem que ter CPF
+                if AllTrim(Form7.ibDataSet2CGC.AsString) = '' then
+                  sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString); // Quando é produtor rural tem que ter CPF
               end else
               begin
-                if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then sEstado := Form7.ibDataSet2ESTADO.AsString else sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-                if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-                if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) <= 14 then sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+                if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then
+                  sEstado := Form7.ibDataSet2ESTADO.AsString
+                else
+                  sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+                if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then
+                  sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+                if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) <= 14 then
+                  sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
               end;
 
               sEstado := Form7.ibDataSet2ESTADO.AsString;
@@ -20083,7 +20107,7 @@ end;
 
 procedure TForm7.ibDataSet16QUANTIDADEChange(Sender: TField);
 var
-  fDesconto : Real;
+  fDesconto: Real;
 begin
   //                                               //
   // Quando altera a quantidade recalcula o valor  //
@@ -20097,8 +20121,10 @@ begin
       //
       fDesconto := 0;
       //
-      if Form7.ibDataSet16QUANTIDADE.Asfloat >= Form7.ibDataSet4QTD_PRO1.AsFloat then fDesconto := form7.ibDataSet4DESCONT1.AsFloat;
-      if Form7.ibDataSet16QUANTIDADE.Asfloat >= Form7.ibDataSet4QTD_PRO2.AsFloat then fDesconto := form7.ibDataSet4DESCONT2.AsFloat;
+      if Form7.ibDataSet16QUANTIDADE.Asfloat >= Form7.ibDataSet4QTD_PRO1.AsFloat then
+        fDesconto := form7.ibDataSet4DESCONT1.AsFloat;
+      if Form7.ibDataSet16QUANTIDADE.Asfloat >= Form7.ibDataSet4QTD_PRO2.AsFloat then
+        fDesconto := form7.ibDataSet4DESCONT2.AsFloat;
       //
       if fDesconto <> 0 then
       begin
@@ -20126,8 +20152,6 @@ begin
         Form7.ibDataSet16UNITARIO.AsFloat := 0;
       end;
     end;
-    //
-    //
   end;
   //          //
   // the end  //
@@ -20412,7 +20436,14 @@ begin
           Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet16TOTAL.AsFloat / Form7.ibDataSet16QUANTIDADE.Asfloat,StrToInt(Form1.ConfPreco));
         end;
       end;
+
+      {Sandro Silva 2023-05-08 inicio}
+      // Calcula o FCP ST para devolução
+      CalculaFCPSTAoIncluirProdutoDevolucao;
+      {Sandro Silva 2023-05-08 fim}
+
     end;
+    
   except
   end;
   //
@@ -33852,7 +33883,36 @@ begin
   LimpaNFSE;
 end;
 
+procedure TForm7.CalculaFCPSTAoIncluirProdutoDevolucao;// Sandro Silva 2023-05-08
+begin
+  // Calcula o FCP ST para devolução
+  if Form7.ibDataSet15FINNFE.AsString = '4' then
+  begin
+    if (Form7.ibDataSet16TOTAL.Value > 0) and (Form7.ibDataSet16VBCFCPST.Value > 0) then
+    begin
+      if Arredonda(Form7.ibDataSet16VBCFCPST.AsFloat * Form7.ibDataSet16PFCPST.AsFloat / 100, 2) <> Form7.ibDataSet16VFCPST.AsFloat then
+      begin
+        //if Form7.ibDataSet16VBCFCPST.AsString = '' then
+        //  Form7.ibDataSet16VBCFCPST.AsFloat := Form7.ibDataSet16BASE.AsFloat;
+        Form7.ibDataSet16VFCPST.AsFloat   := Arredonda(Form7.ibDataSet16VBCFCPST.AsFloat * Form7.ibDataSet16PFCPST.AsFloat / 100, 2);
+      end;
+    end;
+  end;
+end;
 
+procedure TForm7.ibDataSet16PFCPSTChange(Sender: TField);
+//var
+//  dPFCPSTOld: Double;
+begin
+//  dPFCPSTOld := StrtoFloat(FormatFloat(Form7.ibDataSet16PFCPST.DisplayFormat, StrtoFloatDef(VarToStrDef(Form7.ibDataSet16PFCPST.OldValue, '0,00'), 0.00)));
+//  if (dPFCPSTOld <> Form7.ibDataSet16PFCPST.AsFloat) then
+  CalculaFCPSTAoIncluirProdutoDevolucao; // Sandro Silva 2023-05-08
+end;
 
+procedure TForm7.ibDataSet16VBCFCPSTChange(Sender: TField);
+begin
+//  if (StrtoFloatDef(VarToStrDef(Form7.ibDataSet16VBCFCPST.OldValue, '0,00'), 0.00) <> Form7.ibDataSet16VBCFCPST.Value) then
+    CalculaFCPSTAoIncluirProdutoDevolucao; // Sandro Silva 2023-05-08
+end;
 
 end.

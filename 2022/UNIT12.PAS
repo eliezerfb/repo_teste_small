@@ -13,9 +13,7 @@ function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
 
 type
-
-
-    TForm12 = class(TForm)
+  TForm12 = class(TForm)
     Label44: TLabel;
     Label55: TLabel;
     ScrollBox1: TScrollBox;
@@ -887,6 +885,7 @@ begin
     begin
       Form12.Edit2.Text := '4-Devolução de mercadoria';
       Form7.ibDataSet15FINNFE.AsString   := '4';
+      ExibeColunasFCPST(True);
       SMALL_DBEdit40Enter(Sender);
     end;
   end;
@@ -1385,6 +1384,7 @@ var
   Mais1Ini: TIniFile;
 //  tInicio : tTime;
 //  Hora, Min, Seg, cent : Word;
+  sModuloOld: String;
 begin
   //
   Form12.Tag := 1;
@@ -1651,6 +1651,10 @@ begin
   Screen.Cursor := crDefault; // Cursor de Aguardo
 
   vNotaFiscal := TNotaFiscalEletronicaCalc.create;
+//  sModuloOld := Form7.sModulo;
+//  Form7.sModulo := 'DESCONTO1';
+//  Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA); // Sandro Silva 2023-05-08
+//  Form7.sModulo := sModuloOld;
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);

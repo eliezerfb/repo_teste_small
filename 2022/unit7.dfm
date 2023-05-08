@@ -16978,6 +16978,7 @@ object Form7: TForm7
     end
     object ibDataSet16VBCFCP: TIBBCDField
       DisplayLabel = 'BC FCP'
+      DisplayWidth = 10
       FieldName = 'VBCFCP'
       Origin = 'ITENS001.VBCFCP'
       Visible = False
@@ -16988,41 +16989,58 @@ object Form7: TForm7
     end
     object ibDataSet16PFCP: TIBBCDField
       DisplayLabel = '% FCP'
+      DisplayWidth = 10
       FieldName = 'PFCP'
       Origin = 'ITENS001.PFCP'
       Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
       Precision = 15
       Size = 4
     end
     object ibDataSet16VFCP: TIBBCDField
       DisplayLabel = 'FCP'
+      DisplayWidth = 10
       FieldName = 'VFCP'
       Origin = 'ITENS001.VFCP'
       Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
       Precision = 15
       Size = 2
     end
     object ibDataSet16VBCFCPST: TIBBCDField
       DisplayLabel = 'BC FCP ST'
+      DisplayWidth = 10
       FieldName = 'VBCFCPST'
       Origin = 'ITENS001.VBCFCPST'
       Visible = False
+      OnChange = ibDataSet16VBCFCPSTChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
       Precision = 15
       Size = 2
     end
     object ibDataSet16PFCPST: TIBBCDField
       DisplayLabel = '% FCP ST'
+      DisplayWidth = 10
       FieldName = 'PFCPST'
       Origin = 'ITENS001.PFCPST'
       Visible = False
+      OnChange = ibDataSet16PFCPSTChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
       Precision = 15
       Size = 4
     end
     object ibDataSet16VFCPST: TIBBCDField
       DisplayLabel = 'FCP ST'
+      DisplayWidth = 10
       FieldName = 'VFCPST'
       Origin = 'ITENS001.VFCPST'
       Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
       Precision = 15
       Size = 2
     end
