@@ -1095,6 +1095,14 @@ begin
   if ExecutaComando('Update EMITENTE set CNAE = ''0''||trim(CNAE) Where char_length(trim(CNAE)) = 6') then // Mauricio Parizotto 2023-04-06
     ExecutaComando('commit');
 
+
+  //Mauricio Parizotto 2023-05-08
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'RECURSO') = False then
+  begin
+    if ExecutaComando('alter table EMITENTE add RECURSO BLOB SUB_TYPE TEXT') then
+      ExecutaComando('Commit');
+  end;
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
