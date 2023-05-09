@@ -15647,7 +15647,9 @@ begin
     if Form10.Visible then
       Form10.SMALL_DBEdit7.Text := Form7.ibDataSet4PRECO.AsString;
     Abort;
-  end else ibDataSet4ALTERADO.AsString := '1';
+  end
+  else
+    ibDataSet4ALTERADO.AsString := '1';
   //
   Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
   //

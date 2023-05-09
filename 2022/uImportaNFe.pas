@@ -234,8 +234,8 @@ begin
 
           Form24.Label64.Caption := 'Mod: '+Form7.ibDataSet24MODELO.AsString;
 
-          //if not Form7.ibDataSet14.Locate('CFOP','2102',[]) then
-          //  Form7.ibDataSet14.Locate('CFOP','1102',[]);
+          if not Form7.ibDataSet14.Locate('CFOP','2102',[]) then
+            Form7.ibDataSet14.Locate('CFOP','1102',[]);
 
           Form7.ibDataSet24OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
 
