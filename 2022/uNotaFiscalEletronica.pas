@@ -356,7 +356,7 @@ begin
   try
     DataSetItens.DisableControls;
 
-    bEstadoFlag := Form1.bFlag; // Sandro Silva 2023-05-08
+    bEstadoFlag := Form1.bFlagControlaLancamentoProduto; // Sandro Silva 2023-05-08
 
     for i := 0 to FNotaFiscal.FItens.Count -1 do
     begin
@@ -366,7 +366,7 @@ begin
       begin
         DataSetItens.Edit;
 
-        Form1.bFlag := False; // Sandro Silva 2023-05-08
+        Form1.bFlagControlaLancamentoProduto := False; // Sandro Silva 2023-05-08
 
         //DataSetItens.FieldByName('NUMERONF').AsString       := oItem.Numeronf;
         //DataSetItens.FieldByName('CODIGO').AsString         := oItem.Codigo;
@@ -416,11 +416,11 @@ begin
         DataSetItens.FieldByName('VFCPST').AsFloat          := oItem.VFCPST;
 
         DataSetItens.Post;
-        Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
+        Form1.bFlagControlaLancamentoProduto := bEstadoFlag; // Sandro Silva 2023-05-08
       end;
     end;
   finally
-    Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
+    Form1.bFlagControlaLancamentoProduto := bEstadoFlag; // Sandro Silva 2023-05-08
     DataSetItens.EnableControls;
   end
 end;

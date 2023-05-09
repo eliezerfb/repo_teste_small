@@ -4340,13 +4340,38 @@ begin
           Form7.spdNFeDataSets.Campo('vCredICMSSN_N30').VAlue   := FormatFloatXML(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)) * fAliquota / 100); // VAlor de crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)
         except
         end;
+
+        try
+          if Form7.ibDataSet16.FieldByname('PFCP').AsFloat <> 0 then
+          begin
+            Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
+            Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+            Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+          end;
+
+          if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
+          begin
+            Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+            Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+
+            if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+            begin
+              Form7.spdNFeDataSets.campo('vFCPST_N23d').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+            end else
+            begin
+              Form7.spdNFeDataSets.campo('vFCPST_N23d').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+            end;
+          end;
+        except
+        end;
+
       except
         on E: Exception do
         begin
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao calcular FCP.'),'Atenção',mb_Ok + MB_ICONWARNING);
         end;
       end;
-    end;
+    end; // if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
 
     if Form1.sVersaoLayout = '4.00' then
     begin

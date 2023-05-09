@@ -1222,7 +1222,7 @@ begin
       //////////////////////////////////////////////////////////////////////////////////
       // Atenção a rotina abaixo altera a quantidade no estoque                       //
       //////////////////////////////////////////////////////////////////////////////////
-      Form1.bFlag := True;
+      Form1.bFlagControlaLancamentoProduto := True;
 
       Writeln(F,'CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA');
       Writeln(F,Replicate('-',80));
@@ -1503,7 +1503,7 @@ begin
         Form7.ibDataSet23.Next;
       end;
 
-      Form1.bFlag := True;
+      Form1.bFlagControlaLancamentoProduto := True;
       Form7.sModulo := 'COMPRAS';
 
       // Atenção a rotina acima altera a quantidade no estoque
@@ -2033,7 +2033,7 @@ end;
 
 procedure TForm24.DBGrid1Enter(Sender: TObject);
 begin
-  Form1.bFlag := False;
+  Form1.bFlagControlaLancamentoProduto := False;
   dBGrid2.Visible    := False;
   dBGrid3.Visible    := False;
 end;
@@ -2070,7 +2070,7 @@ begin
       //
       if DbGrid1.SelectedIndex = 0 then
       begin
-        Form1.bFlag := True;
+        Form1.bFlagControlaLancamentoProduto := True;
         Form7.ibDataSet23.Edit;
         if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
           Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
@@ -2132,11 +2132,11 @@ begin
         dBgrid3.Visible := True;
         dBGrid3.Height  := 170;
       end else
-      Form1.bFlag := False;
+      Form1.bFlagControlaLancamentoProduto := False;
       Form7.ibDataSet23.Edit;
       Form7.ibDataSet23.UpdateRecord;
       Form7.ibDataSet23.Edit;
-      Form1.bFlag := True;
+      Form1.bFlagControlaLancamentoProduto := True;
     end;
   end;
 
@@ -2233,7 +2233,7 @@ end;
 
 procedure TForm24.DBGrid1ColExit(Sender: TObject);
 begin
-//  Form1.bFlag := True;
+//  Form1.bFlagControlaLancamentoProduto := True;
   Form7.ibDataSet23DESCRICAOChange(Form7.ibDataSet23DESCRICAO);
   Form7.ibDataSet23QTD_ORIGINALChange(Form7.ibDataSet23QTD_ORIGINAL);
   Form7.ibDataSet23UNITARIO_OChange(Form7.ibDataSet23UNITARIO_O);
@@ -3022,7 +3022,7 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := 0;
       end;
 
-      Form1.bFlag := True;
+      Form1.bFlagControlaLancamentoProduto := True;
       Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
       
       dBGrid3.Visible := False;
@@ -3102,7 +3102,7 @@ begin
       // ShowMessage(Form1.ibQuery1.Text);
       Form1.ibQuery1.Open;
       //
-      Form1.bFlag := False;
+      Form1.bFlagControlaLancamentoProduto := False;
       //
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
@@ -3532,7 +3532,7 @@ begin
       Form24.Label89.Caption := '';
     end;
     //
-    Form1.bFlag := False;
+    Form1.bFlagControlaLancamentoProduto := False;
     //
     Form24.DBGrid1.SetFocus;
     //

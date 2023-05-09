@@ -153,9 +153,7 @@ var
   sDirAtual: String;
 begin
   /////////
-
-//  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Não' then
-//   Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
+  Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
 
   GetDir(0, sDirAtual);
   ////////

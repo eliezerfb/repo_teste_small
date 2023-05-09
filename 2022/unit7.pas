@@ -9452,7 +9452,7 @@ begin
      Key := Chr(0);
  end;
  //
- if bFlag = True then
+ if Form7.bFlag = True then
  begin
 
    I := DbGrid1.SelectedIndex;
@@ -9489,7 +9489,7 @@ begin
    end;
  end
  else
-   bFlag := True;
+   Form7.bFlag := True;
 
  dBgrid1.Refresh;
 
@@ -10082,17 +10082,18 @@ begin
       end;
 
       if Format('%12.2n',[Form7.ibDataSet15TOTAL.AsFloat]) <> Format('%12.2n',[( Form7.ibDataSet15MERCADORIA.Value  +
-                                                                             Form7.ibDataSet15SERVICOS.Value    +
-                                                                             Form7.ibDataSet15FRETE.Value       +
-                                                                             Form7.ibDataSet15SEGURO.Value      +
-                                                                             Form7.ibDataSet15IPI.Value         +
-                                                                             Form7.ibDataSet15ICMSSUBSTI.Value  +
-                                                                             //fFCPRetido      +
-                                                                             Form7.ibDataSet15VFCPST.Value      +
-                                                                             Form7.ibDataSet15DESPESAS.Value    -
-                                                                             Form7.ibDataSet15DESCONTO.Value    -
-                                                                             Form1.fRetencoes -
-                                                                             fRetencao)]) then
+                                                                                 Form7.ibDataSet15SERVICOS.Value    +
+                                                                                 Form7.ibDataSet15FRETE.Value       +
+                                                                                 Form7.ibDataSet15SEGURO.Value      +
+                                                                                 Form7.ibDataSet15IPI.Value         +
+                                                                                 Form7.ibDataSet15ICMSSUBSTI.Value  +
+                                                                                 //fFCPRetido      +
+                                                                                 Form7.ibDataSet15VFCPST.Value      +
+                                                                                 Form7.ibDataSet15DESPESAS.Value    -
+                                                                                 Form7.ibDataSet15DESCONTO.Value    -
+                                                                                 Form1.fRetencoes -
+                                                                                 fRetencao)
+                                                                              ]) then
       begin
 
         Form7.ibDataSet15TOTAL.AsFloat :=  Arredonda(Form7.ibDataSet15MERCADORIA.Value + // Mercadoria +
@@ -10106,7 +10107,8 @@ begin
                                                      Form7.ibDataSet15DESPESAS.Value   - // Despesas
                                                      Form7.ibDataSet15DESCONTO.Value   - // Desconto
                                                      Form1.fRetencoes -                // ISS retido
-                                                     fRetencao,2);                       //
+                                                     fRetencao
+                                                     ,2);                       //
 
         {
         Form12.SMALL_DBEdit16.ShowHint := True;
@@ -10348,14 +10350,14 @@ begin
                                         'como a data válida?' + Chr(10))
                                          ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONQUESTION) <> IDYES then
         begin
-          bFlag := False;
+          Form7.bFlag := False;
         end else
         begin
           try
             Sender.AsString := Text;
           except
             begin
-              bFlag := False;
+              Form7.bFlag := False;
               ShowMessage('Esta data não é válida, digite-a novamente.');
             end;
           end;
@@ -10366,13 +10368,13 @@ begin
           Sender.AsString := Text;
         except
           begin
-            bFlag := False;
+            Form7.bFlag := False;
             ShowMessage('Esta data não é válida, digite-a novamente.');
           end;
         end;
       end;
     except
-      bFlag := False;
+      Form7.bFlag := False;
       ShowMessage('Esta data não é válida, digite-a novamente.');
     end;
   end;
@@ -17066,7 +17068,7 @@ begin
       Sender.AsString := Text;
     except
       begin
-        bFlag := False;
+        Form7.bFlag := False;
         ShowMessage('Esta data não é válida, digite-a novamente.');
       end;
     end;
@@ -19278,7 +19280,7 @@ begin
           if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
           begin
 
-            LogRetaguarda('TForm7.ibDataSet16AfterPost(  item ' + IntToStr(Form7.ibDataSet16.Recno)); // Sandro Silva 2023-05-08
+            // LogRetaguarda('TForm7.ibDataSet16AfterPost(  item ' + IntToStr(Form7.ibDataSet16.Recno)); // Sandro Silva 2023-05-08
             //Mauricio Parizotto 2023-04-17
             if Form12.vNotaFiscal <> nil then
               Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
@@ -19429,9 +19431,9 @@ begin
   try
     //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
     try
-      if (Form1.bFlag) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
+      if (Form1.bFlagControlaLancamentoProduto) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
       begin
-        Form1.bFlag        := False;
+        Form1.bFlagControlaLancamentoProduto        := False;
         bFind              := False;
         fQuantidadeVendida := 1;
 
@@ -19630,7 +19632,7 @@ begin
                               fQuantidadeVendida              := Form7.ibDataSet16QUANTIDADE.AsFloat;
                               Form7.ibDataSet16.Post;
                               //
-                              Form1.bFlag := False;
+                              Form1.bFlagControlaLancamentoProduto := False;
                               //
                               Form7.ibDataSet16.Append;
                               Form7.ibDataSet16DESCRICAO.AsString := 'SERIAL ' +  ibDataSet30SERIAL.AsString;
@@ -19645,7 +19647,7 @@ begin
                                 Form7.ibDataSet4.Open;
                               except end;
                               //
-                              Form1.bFlag := True;
+                              Form1.bFlagControlaLancamentoProduto := True;
                               //
                               sSerial_ := '0CONFIRMADO0';
                               sMensagem := '';
@@ -19791,7 +19793,7 @@ begin
                 sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
 
                 Form7.ibDataSet16.Append;
-                Form1.bFlag := False;
+                Form1.bFlagControlaLancamentoProduto := False;
                 Form7.ibDataSet16DESCRICAO.AsString := Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6);
                 Form7.ibDataSet16.Post;
 
@@ -20043,7 +20045,7 @@ begin
           Form7.ibDataSet16QUANTIDADE.AsString := '';
         end;
 
-        Form1.bFlag := True;
+        Form1.bFlagControlaLancamentoProduto := True;
       end;
     except
     end;
@@ -21197,7 +21199,7 @@ var
   sCST_PIS_COFINS : String;
   rpPIS, rpCOFINS : Real;
 begin
-  if (Form1.bFlag) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
+  if (Form1.bFlagControlaLancamentoProduto) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
   begin
     Form7.ibDataSet23.DisableControls;
     Form7.ibDataSet4.DisableControls;
@@ -21216,7 +21218,7 @@ begin
     if ibDataSet23CFOP.AsString = '' then
       ibDataSet23CFOP.AsString := ibDataSet14CFOP.AsString;
 
-    Form1.bFlag := False;
+    Form1.bFlagControlaLancamentoProduto := False;
 
     if (Form7.ibDataSet23DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.Value) then
     begin
@@ -27800,14 +27802,14 @@ begin
                                         'como a data válida?' + Chr(10))
                                          ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONQUESTION) <> IDYES then
         begin
-          bFlag := False;
+          Form7.bFlag := False;
         end else
         begin
           try
             Sender.AsString := Text;
           except
             begin
-              bFlag := False;
+              Form7.bFlag := False;
               ShowMessage('Esta data não é válida, digite-a novamente.');
             end;
           end;
@@ -27818,13 +27820,13 @@ begin
           Sender.AsString := Text;
         except
           begin
-            bFlag := False;
+            Form7.bFlag := False;
             ShowMessage('Esta data não é válida, digite-a novamente.');
           end;
         end;
       end;
     except
-      bFlag := False;
+      Form7.bFlag := False;
       ShowMessage('Esta data não é válida, digite-a novamente.');
     end;
   end;
@@ -32922,7 +32924,7 @@ begin
     //
     Form1.Image201Click(Form1.Image201);
     Form7.Image101Click(Form7.Image201);
-    //
+
     Form7.ibDataSet2.Close;
     Form7.ibDataSet2.Selectsql.Clear;
     Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');  //
@@ -32950,16 +32952,18 @@ begin
     end;
     //
     Form12.Edit2.Text := '4-Devolução de mercadoria';
-    Form7.ibDataSet15OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
-    Form7.ibDataSet15FINNFE.AsString      := '4';
+    Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+    Form7.ibDataSet15FINNFE.AsString   := '4';
     Form12.ExibeColunasFCPST(True); // Sandro Silva 2023-05-08
-    //
+
     Form7.Tag := 999;
-    //
-    //
+
     try
       Form7.ibDataSet15.Post;
       Form7.ibDataSet15.Edit;
+
+      Application.ProcessMessages; // Sandro Silva 2023-05-09
+
       //
       Form7.ibDataSet23.First;
       //
@@ -32990,10 +32994,10 @@ begin
             //
             // Acerta os tributos e o CFOP
             //
-            Form1.bFlag                         := True;
+            Form1.bFlagControlaLancamentoProduto := True;
             Form7.sModulo                       := 'VENDA';
             Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet23DESCRICAO.AsString;
-            Form1.bFlag                         := False;
+            Form1.bFlagControlaLancamentoProduto := False;
 
             Form7.ibDataSet16.Edit;
             Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet23QUANTIDADE.AsFloat;
@@ -33025,8 +33029,12 @@ begin
         Form7.ibDataSet23.Next;
         //
       end;
-    except end;
-    //
+    except
+    end;
+    //Form12.DBGrid1.SelectedIndex := 1; // Sandro Silva 2023-05-09
+    //Form7.ibDataSet16.EnableControls; // Sandro Silva 2023-05-09
+    //Form7.ibDataSet23.EnableControls; // Sandro Silva 2023-05-09
+
     Form7.Tag := 0;
     //
     Form7.sModulo := 'VENDA';
@@ -33177,8 +33185,7 @@ begin
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  //
-  //
+
   ConfiguraNFE(True);
 
   sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
@@ -33186,21 +33193,21 @@ begin
   fNFE := GeraXmlNFe;//(True);
   if Trim(fNFE) <> '' then
   begin
-    //
+
     try
       spdNFe.PreverDanfe(fNFE, '');
     except
       //Screen.Cursor            := crDefault;
     end;
   end;
-  //
+
   DecimalSeparator := ',';
   DateSeparator    := '/';
-  //
+
   Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
   Screen.Cursor            := crDefault;
-  //
+
   {Sandro Silva 2022-09-12 fim}
 end;
 

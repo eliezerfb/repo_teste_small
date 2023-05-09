@@ -473,7 +473,7 @@ begin
                       Form7.ibDataSet4.Edit;
                     end;
                     //
-                    Form1.bFlag := False;
+                    Form1.bFlagControlaLancamentoProduto := False;
                     Form7.sModulo := 'NAO';
                     //
                     Form7.ibDAtaSet23.Append;
@@ -754,7 +754,7 @@ begin
           //
           try
             Form7.ibDataSet24.Post;
-            Form1.bFlag := True;
+            Form1.bFlagControlaLancamentoProduto := True;
             Form7.sModulo := 'COMPRA';
             if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then
               Form7.ibDataset23.Edit;
@@ -849,7 +849,7 @@ begin
           Form7.ibDataSet24SAIDAH.AsString := Copy(xmlNodeValue(Form7.XMLDocument1.XML.Text,'//cteProc/CTe/infCte/ide/dhEmi'),12,8);// Hora da saída
           Form7.ibDataSet24NFEID.AsString  := xmlNodeValue(Form7.XMLDocument1.XML.Text,'//cteProc/protCTe/infProt/chCTe'); // COVID19
           //
-          Form1.bFlag := False;
+          Form1.bFlagControlaLancamentoProduto := False;
           Form7.sModulo := 'NAO';
           //
           if not Form7.ibDataSet4.Locate('DESCRICAO','Frete',[]) then
@@ -906,7 +906,7 @@ begin
   //
   try
     //
-    Form1.bFlag := True;
+    Form1.bFlagControlaLancamentoProduto := True;
     Form7.sModulo := 'COMPRA';
     //
     DecodeTime((Time - tInicio), Hora, Min, Seg, cent);

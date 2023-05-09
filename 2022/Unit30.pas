@@ -793,7 +793,7 @@ begin
   if DbGrid2.SelectedIndex = 0 then
   begin
     //
-    Form1.bflag := False;
+    Form1.bFlagControlaLancamentoProduto := False;
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
     //
@@ -839,7 +839,7 @@ begin
     ListBox2.Visible  := False;
     if Key <> Chr(13) then if not Form30.dBGrid3.Visible then Form30.dBGrid3.Visible := True; // Key press serviços
     //
-    Form1.bflag := False;
+    Form1.bFlagControlaLancamentoProduto := False;
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
     //
@@ -908,7 +908,7 @@ end;
 procedure TForm30.DBGrid2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  Form1.bFlag := True;
+  Form1.bFlagControlaLancamentoProduto := True;
   //
   if Key = VK_DOWN   then
   begin
@@ -1049,16 +1049,16 @@ begin
           Form7.ibDataSet16.Edit;
         end;
 {
-        Form1.bFlag := False;
+        Form1.bFlagControlaLancamentoProduto := False;
         Form7.ibDataSet16.UpdateRecord; // Teste 99
-        Form1.bFlag := True;
+        Form1.bFlagControlaLancamentoProduto := True;
 }
         //
-        Form1.bFlag := False;
+        Form1.bFlagControlaLancamentoProduto := False;
         Form7.ibDataSet16.Edit;
         Form7.ibDataSet16.UpdateRecord;
         Form7.ibDataSet16.Edit;
-        Form1.bFlag := True;
+        Form1.bFlagControlaLancamentoProduto := True;
         //
       end;
       if Key = VK_DOWN then if dBgrid3.CanFocus then dBgrid3.SetFocus;
@@ -1272,7 +1272,7 @@ begin
           //
           if DbGrid1.SelectedIndex = 0 then
           begin
-            Form1.bFlag := True;
+            Form1.bFlagControlaLancamentoProduto := True;
             Form7.ibDataSet16.Edit;
             if AnsiUpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString))))
              then

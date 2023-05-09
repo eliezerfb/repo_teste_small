@@ -443,7 +443,7 @@ type
     sPublicCheck, sSistema  : String;
     sConsultaNfse, sSerieEspecial, sArquivoRemessa, sVersaoLayout, sModoDbug, sModeloDocumentoFiscal, sRelogio, sAtual, sHtmlCor, sContrasteCor, sGrade : String;
     bHomologacao, bNotaVendaLiberada, bNotaCompraLiberada, bNotaServicoLiberada, bClientesLiberados, bFornecedoresLiberados, bFlag16Change, bChave16,
-    bFlag, bChaveDoTempo, bHtml1, bPDF, bConsultarNFesEmitidas, bFechaTudo, bChaveSemaforo: Boolean;
+    bFlagControlaLancamentoProduto, bChaveDoTempo, bHtml1, bPDF, bConsultarNFesEmitidas, bFechaTudo, bChaveSemaforo: Boolean;
     bModoScan : Boolean;
     bModoSVC : Boolean;
     CopiaHora: String;

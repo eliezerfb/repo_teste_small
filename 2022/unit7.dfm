@@ -16978,7 +16978,7 @@ object Form7: TForm7
     end
     object ibDataSet16VBCFCP: TIBBCDField
       DisplayLabel = 'BC FCP'
-      DisplayWidth = 10
+      DisplayWidth = 19
       FieldName = 'VBCFCP'
       Origin = 'ITENS001.VBCFCP'
       Visible = False
@@ -17011,7 +17011,7 @@ object Form7: TForm7
     end
     object ibDataSet16VBCFCPST: TIBBCDField
       DisplayLabel = 'BC FCP ST'
-      DisplayWidth = 10
+      DisplayWidth = 19
       FieldName = 'VBCFCPST'
       Origin = 'ITENS001.VBCFCPST'
       Visible = False
