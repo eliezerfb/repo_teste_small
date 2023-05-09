@@ -2057,7 +2057,7 @@ begin
       Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Form7.ibDataSet14.FieldByname('CSOSN').AsString;
     end else
     begin
-      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Form7.ibDataSet4.FieldByname('CSOSN').AsString;
+      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Trim(Form7.ibDataSet4.FieldByname('CSOSN').AsString);
     end;
 
     // N11 - Tem em todas
