@@ -66,11 +66,9 @@ type
     procedure rbItemPorITemClick(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
   private
-    { Private declarations }
     function StrToFloatFormat(sFormato: String; Valor: Real): Real;
     procedure DefinirEnabledListarCodigo;
   public
-    { Public declarations }
   end;
 
 var
@@ -5435,6 +5433,7 @@ begin
   begin
     cbListarCodigos.Top  := rbItemPorITem.Top + rbItemPorITem.Height + 5;
     cbListarCodigos.Left := rbItemPorITem.Left + 16;
+    DefinirEnabledListarCodigo;
   end;
   
   Button3Click(Button3);
