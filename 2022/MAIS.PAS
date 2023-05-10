@@ -2011,14 +2011,15 @@ var
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
 
   sDesc    ,
-  sQtd     ,
-  sTot     ,
-  sIPI     ,
-  sICMS    ,
-  spICMS   ,
-  sBC      ,
-  sICMSST  ,
-  sBCST    : String;
+//  sQtd     ,
+//  sTot     ,
+  sIPI
+//  sICMS    ,
+//  spICMS,
+//  sBC      ,
+//  sICMSST  ,
+//  sBCST
+  : String;
 begin
   Form1.ibQuery2.close;
   Form1.ibQuery2.Sql.Clear;
@@ -2052,49 +2053,43 @@ begin
           if Alltrim(NodeTmp.ChildNodes['xProd'].Text) <> '' then
           begin
             // ICM
-            sICMS   := '0';
-            sBC     := '0';
-            sICMSST := '0';
-            sBCST   := '0';
-            spICMS  := '0';
-
+            //sICMS   := '0';
+            //sBC     := '0';
+            //sICMSST := '0';
+            //sBCST   := '0';
+            //spICMS  := '0';
+            //
             for I := 0 to 100 do
             begin
               if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0))) then
               begin
-                try sICMS   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMS'].Text);   except end;
-                try sBC     := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBC'].Text);     except end;
-                try sICMSST := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMSST'].Text); except end;
-                try sBCST   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBCST'].Text);   except end;
-                try spICMS  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['pICMS'].Text);  except end;
+                //try sICMS   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMS'].Text);   except end;
+                //try sBC     := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBC'].Text);     except end;
+                //try sICMSST := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vICMSST'].Text); except end;
+                //try sBCST   := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['vBCST'].Text);   except end;
+                //try spICMS  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode('ICMS'+StrZero(I,2,0)).ChildNodes['pICMS'].Text);  except end;
               end;
             end;
 
             try sDesc := NodeTmp.ChildNodes['xProd'].Text; except end;
-            try sQtd  := NodeTmp.ChildNodes['qCom'].Text;  except end;
-            try sTot  := NodeTmp.ChildNodes['vProd'].Text; except end;
-
+            //try sQtd  := NodeTmp.ChildNodes['qCom'].Text;  except end;
+            //try sTot  := NodeTmp.ChildNodes['vProd'].Text; except end;
+            
             sIPI    := '0';
             
             if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI')) then
             begin
                try sIPI  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['vIPI'].Text);  except end;
             end;
-{
-            ShowMessage(
-            sICMS   + Chr(10)+
-            sBC     + Chr(10)+
-            sICMSST + Chr(10)+
-            sBCST   + Chr(10)+
-            spICMS  + Chr(10)+
-            sIPI);
-         }
-            
+
+            {
             Form7.ibQuery1.Close;
             Form7.ibQuery1.Sql.Clear;
             Form7.ibQuery1.Sql.Add('update ITENS001 set vICMS='+QuotedStr(sICMS)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
             Form7.ibQuery1.Open;
+            Mauricio Parizotto grava no calcular}
 
+            {
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
@@ -2102,14 +2097,18 @@ begin
               Form1.ibQuery1.Open;
             except
             end;
+            Mauricio Parizotto grava no calcular}
 
+            {
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vBC='+QuotedStr(sBC)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
             except end;
+            Mauricio Parizotto grava no calcular}
 
+            {
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
@@ -2117,13 +2116,16 @@ begin
               Form1.ibQuery1.Open;
             except
             end;
+            Mauricio Parizotto grava no calcular}
 
+            {
             try
               Form1.ibQuery1.Close;
               Form1.ibQuery1.Sql.Clear;
               Form1.ibQuery1.Sql.Add('update ITENS001 set vICMSST='+QuotedStr(sICMSST)+' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString)+' and DESCRICAO='+QuotedStr(sDesc)+'');
               Form1.ibQuery1.Open;
             except end;
+            Mauricio Parizotto grava no calcular}
             
             try
               Form1.ibQuery1.Close;
@@ -3585,9 +3587,12 @@ begin
   Form22.Close;
   //
   try
+    {
     if Form7.IBDatabaseInfo1.UserNames.Count = 1
       then Form22.sAtivos :=  AllTrim(InttoStr(Form7.IBDatabaseInfo1.UserNames.Count))+' usuário ativo'
         else Form22.sAtivos :=  AllTrim(InttoStr(Form7.IBDatabaseInfo1.UserNames.Count))+' usuários ativos';
+    }
+    Form22.sAtivos :=  AllTrim(InttoStr(Form7.IBDatabaseInfo1.UserNames.Count)) + IfThen(Form7.IBDatabaseInfo1.UserNames.Count = 1, ' usuário ativo', ' usuários ativos');
   except
     Form22.sAtivos := '? usuários ativos';
   end;
@@ -5654,22 +5659,35 @@ begin
       //
     end else
     begin
-      //
+      {Sandro Silva 2023-05-08 inicio
       if Form1.bNotaVendaLiberada  then Form7.Vendas_1.Enabled := True else Form7.Vendas_1.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.NotasfiscaisdesadavendasSrie11.Enabled := True else Form7.NotasfiscaisdesadavendasSrie11.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.Notasfiscaisdesadavendassrie21.Enabled := True else Form7.NotasfiscaisdesadavendasSrie21.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.Vendas_XXX.Enabled := True else Form7.Vendas_XXX.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := True else Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.Vendas2.Enabled := True else Form7.Vendas2.Enabled := False;
-      //
-      Form7.Notasfiscaisdesadavendassrie9201.Enabled := False;
+      }
+      Form7.Vendas_1.Enabled                         := Form1.bNotaVendaLiberada;
+      Form7.NotasfiscaisdesadavendasSrie11.Enabled   := Form1.bNotaVendaLiberada;
+      Form7.Notasfiscaisdesadavendassrie21.Enabled   := Form1.bNotaVendaLiberada;
+      Form7.Vendas_XXX.Enabled                       := Form1.bNotaVendaLiberada;
+      Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := Form1.bNotaVendaLiberada;
+      Form7.Vendas2.Enabled                          := Form1.bNotaVendaLiberada;
+      {Sandro Silva 2023-05-08 fim}
+
+      Form7.Notasfiscaisdesadavendassrie9201.Enabled       := False;
       Form7.NotasfiscaisdesadavendascomCPFsrie9201.Enabled := False;
       //
     end;
-    //
+
+    {Sandro Silva 2023-05-08 inicio
     if Form1.bNotaCompraLiberada then Form7.Compras_1.Enabled := True else Form7.Compras_1.Enabled := False;
     if Form1.bNotaCompraLiberada then Form7.Compras2.Enabled := True else Form7.Compras2.Enabled := False;
-    //
+    }
+    Form7.Compras_1.Enabled := Form1.bNotaCompraLiberada;
+    Form7.Compras2.Enabled  := Form1.bNotaCompraLiberada;
+    {Sandro Silva 2023-05-08 fim}
+
     if Form1.sSerieEspecial <> 'XXX' then
     begin
       if AllTrim(Form1.sSerieEspecial) <> '' then
@@ -5719,7 +5737,8 @@ begin
     //
     Form1.Label201MouseLeave(Sender);
     //
-    if Form12.Visible then Form12.Show;
+    if Form12.Visible then
+      Form12.Show;
     //
   except
     on E: Exception do
@@ -8286,12 +8305,9 @@ begin
         //
         if not Form2.bFlag then
           Form1.Ajustararquivos1Click(Sender);
-
-        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,
-               'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
-                                                                .Retornar(True),
-               0,0); // Ato, Modulo, Usuário, Histórico, Valor
-        //
+        
+        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,'ACESSOU O SISTEMA',0,0); // Ato, Modulo, Usuário, Histórico, Valor
+        //                                                                       
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;
         //

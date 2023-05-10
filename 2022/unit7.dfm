@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 418
-  Top = 33
+  Left = 380
+  Top = 81
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -14294,9 +14294,8 @@ object Form7: TForm7
       
         '   RJ_, RN_, RO_, RR_, RS_, SC_, SE_, SP_, TO_, EX_, OBS, CONTA,' +
         ' REGISTRO, '
-      
-        '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST, BCPIS, B' +
-        'CCOFINS, '
+      '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  '
+      '   BCPISCOFINS, '
       '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI)'
       'values'
       
@@ -14312,8 +14311,8 @@ object Form7: TForm7
         '   :EX_, :OBS, :CONTA, :REGISTRO, :SOBREIPI, :SOBREFRETE, :SOBRE' +
         'SEGURO, '
       
-        '   :SOBREOUTRAS, :CST, :BCPIS, :BCCOFINS, :PPIS, :PCOFINS, :CSOS' +
-        'N, :CSTPISCOFINS,:FRETESOBREIPI)')
+        '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
+        'STPISCOFINS,:FRETESOBREIPI)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14359,8 +14358,7 @@ object Form7: TForm7
       '  SOBRESEGURO,'
       '  SOBREOUTRAS,'
       '  CST,'
-      '  BCPIS,'
-      '  BCCOFINS,'
+      '  BCPISCOFINS,'
       '  PPIS,'
       '  PCOFINS,'
       '  CSOSN,'
@@ -14417,8 +14415,7 @@ object Form7: TForm7
       '  SOBRESEGURO = :SOBRESEGURO,'
       '  SOBREOUTRAS = :SOBREOUTRAS,'
       '  CST = :CST,'
-      '  BCPIS = :BCPIS,'
-      '  BCCOFINS = :BCCOFINS,'
+      '  BCPISCOFINS = :BCPISCOFINS,'
       '  PPIS = :PPIS,'
       '  PCOFINS = :PCOFINS,'
       '  CSOSN = :CSOSN,'
@@ -14731,14 +14728,13 @@ object Form7: TForm7
     object ibDataSet14CSTPISCOFINS: TIBStringField
       DisplayLabel = 'CST PIS/COFINS'
       FieldName = 'CSTPISCOFINS'
-      Origin = 'ICM.CSTPISCOFINS'
+      Origin = '"ICM"."CSTPISCOFINS"'
       Size = 2
     end
-    object ibDataSet14BCCOFINS: TIBBCDField
-      DisplayLabel = 'BC COFINS'
-      DisplayWidth = 9
-      FieldName = 'BCCOFINS'
-      Origin = '"ICM"."BCCOFINS"'
+    object ibDataSet14BCPISCOFINS: TIBBCDField
+      DisplayLabel = 'BC PIS/COFINS'
+      FieldName = 'BCPISCOFINS'
+      Origin = 'ICM.BCPISCOFINS'
       Precision = 18
       Size = 2
     end
@@ -14749,14 +14745,6 @@ object Form7: TForm7
       Origin = '"ICM"."PCOFINS"'
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
-      Precision = 18
-      Size = 2
-    end
-    object ibDataSet14BCPIS: TIBBCDField
-      DisplayLabel = 'BC PIS'
-      DisplayWidth = 9
-      FieldName = 'BCPIS'
-      Origin = '"ICM"."BCPIS"'
       Precision = 18
       Size = 2
     end
@@ -14902,7 +14890,7 @@ object Form7: TForm7
       
         '   RECIBOXML, PLACA, ANVISA, DATA_CANCEL, HORA_CANCEL, COD_SIT, ' +
         'FINNFE, '
-      '   INDFINAL, INDPRES, ENCRYPTHASH, MARKETPLACE)'
+      '   INDFINAL, INDPRES, ENCRYPTHASH, MARKETPLACE, VFCPST)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :CLIENTE, :OPERACAO, :EMISSAO,' +
@@ -14928,7 +14916,7 @@ object Form7: TForm7
       
         '   :ANVISA, :DATA_CANCEL, :HORA_CANCEL, :COD_SIT, :FINNFE, :INDF' +
         'INAL, :INDPRES, '
-      '   :ENCRYPTHASH, :MARKETPLACE)')
+      '   :ENCRYPTHASH, :MARKETPLACE, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -14988,7 +14976,8 @@ object Form7: TForm7
       '  INDFINAL,'
       '  INDPRES,'
       '  ENCRYPTHASH,'
-      '  MARKETPLACE'
+      '  MARKETPLACE,'
+      '  VFCPST'
       'from VENDAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -15054,7 +15043,8 @@ object Form7: TForm7
       '  INDFINAL = :INDFINAL,'
       '  INDPRES = :INDPRES,'
       '  ENCRYPTHASH = :ENCRYPTHASH,'
-      '  MARKETPLACE = :MARKETPLACE'
+      '  MARKETPLACE = :MARKETPLACE,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -15174,6 +15164,16 @@ object Form7: TForm7
       OnChange = ibDataSet15MERCADORIAChange
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet15VFCPST: TIBBCDField
+      DisplayLabel = 'FCP ST'
+      DisplayWidth = 10
+      FieldName = 'VFCPST'
+      Origin = 'VENDAS.VFCPST'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
     end
     object ibDataSet15TRANSPORTA: TStringField
       DisplayLabel = 'Transportadora'
@@ -15481,7 +15481,9 @@ object Form7: TForm7
       
         '   CST_IPI, CST_ICMS, ANVISA, ENCRYPTHASH, CSOSN, VBC_PIS_COFINS' +
         ','
-      '   IDENTIFICADORPLANOCONTAS)'
+      
+        '   IDENTIFICADORPLANOCONTAS, VBCFCP, PFCP, VFCP, VBCFCPST, PFCPS' +
+        'T, VFCPST)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -15498,7 +15500,9 @@ object Form7: TForm7
       
         '   :ALIQ_PIS, :ALIQ_COFINS, :CST_IPI, :CST_ICMS, :ANVISA, :ENCRY' +
         'PTHASH, :CSOSN,'
-      '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS)')
+      
+        '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS, :VBCFCP, :PFCP, :' +
+        'VFCP, :VBCFCPST, :PFCPST, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -15540,7 +15544,13 @@ object Form7: TForm7
       '  ENCRYPTHASH,'
       '  CSOSN,'
       '  VBC_PIS_COFINS,'
-      '  IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS,'
+      '  VBCFCP,'
+      '  PFCP,'
+      '  VFCP,'
+      '  VBCFCPST,'
+      '  PFCPST,'
+      '  VFCPST'
       'from ITENS001 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -15588,7 +15598,13 @@ object Form7: TForm7
       '  ENCRYPTHASH = :ENCRYPTHASH,'
       '  CSOSN = :CSOSN,'
       '  VBC_PIS_COFINS = :VBC_PIS_COFINS,'
-      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
+      '  VBCFCP = :VBCFCP,'
+      '  PFCP = :PFCP,'
+      '  VFCP = :VFCP,'
+      '  VBCFCPST = :VBCFCPST,'
+      '  PFCPST = :PFCPST,'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     DataSource = DataSource15
@@ -15840,6 +15856,74 @@ object Form7: TForm7
       Origin = 'ITENS001.IDENTIFICADORPLANOCONTAS'
       Visible = False
       Size = 10
+    end
+    object ibDataSet16VBCFCP: TIBBCDField
+      DisplayLabel = 'BC FCP'
+      DisplayWidth = 19
+      FieldName = 'VBCFCP'
+      Origin = 'ITENS001.VBCFCP'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 2
+    end
+    object ibDataSet16PFCP: TIBBCDField
+      DisplayLabel = '% FCP'
+      DisplayWidth = 10
+      FieldName = 'PFCP'
+      Origin = 'ITENS001.PFCP'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 4
+    end
+    object ibDataSet16VFCP: TIBBCDField
+      DisplayLabel = 'FCP'
+      DisplayWidth = 10
+      FieldName = 'VFCP'
+      Origin = 'ITENS001.VFCP'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 2
+    end
+    object ibDataSet16VBCFCPST: TIBBCDField
+      DisplayLabel = 'BC FCP ST'
+      DisplayWidth = 19
+      FieldName = 'VBCFCPST'
+      Origin = 'ITENS001.VBCFCPST'
+      Visible = False
+      OnChange = ibDataSet16VBCFCPSTChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 2
+    end
+    object ibDataSet16PFCPST: TIBBCDField
+      DisplayLabel = '% FCP ST'
+      DisplayWidth = 10
+      FieldName = 'PFCPST'
+      Origin = 'ITENS001.PFCPST'
+      Visible = False
+      OnChange = ibDataSet16PFCPSTChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 4
+    end
+    object ibDataSet16VFCPST: TIBBCDField
+      DisplayLabel = 'FCP ST'
+      DisplayWidth = 10
+      FieldName = 'VFCPST'
+      Origin = 'ITENS001.VFCPST'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 2
     end
   end
   object DataSource16: TDataSource
@@ -19729,7 +19813,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'D:\Desenvolvimento\Executaveis\Small Commerce\small.fdb'
+    DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
@@ -21023,7 +21107,8 @@ object Form7: TForm7
     DanfeSettings.ImprimirLocalRetiradaEntrega = True
     DanfeSettings.InfCplQuebrarLinhaAut = False
     DanfeSettings.MensagemIcmsDesonerado = False
-    Versao = '12.1.74.6434'
+    DanfeSettings.ImprimirVlrTotalDanfeSimplificado = False
+    Versao = '12.1.75.6488'
     CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
     TipoCertificado = ckMemory
     DiretorioTemplates = 
@@ -21049,7 +21134,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21082,7 +21167,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50a\'
+      '50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21372,7 +21457,8 @@ object Form7: TForm7
     DanfeSettings.ImprimirLocalRetiradaEntrega = True
     DanfeSettings.InfCplQuebrarLinhaAut = False
     DanfeSettings.MensagemIcmsDesonerado = False
-    Versao = '12.1.74.6434'
+    DanfeSettings.ImprimirVlrTotalDanfeSimplificado = False
+    Versao = '12.1.75.6488'
     CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
     TipoCertificado = ckMemory
     DiretorioTemplates = 
@@ -21394,7 +21480,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21423,7 +21509,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\DPEC'
+      'm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

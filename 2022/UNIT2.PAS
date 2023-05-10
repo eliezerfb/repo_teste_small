@@ -148,7 +148,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    bFlag : Boolean;
+    bFlag: Boolean;
   end;
 
 var
@@ -165,7 +165,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
@@ -190,7 +190,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox3.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B2','0');
@@ -213,7 +213,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox4.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B5','0');
@@ -238,7 +238,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox5.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B4','0');
@@ -263,7 +263,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox6.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B6','0');
@@ -290,7 +290,7 @@ begin
   //
   // Nova Senha
   //
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox8.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B1','0');
@@ -314,7 +314,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox14.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B7','0');
@@ -339,7 +339,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox16.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B8','0');
@@ -388,7 +388,7 @@ var
   I, J : Integer;
 begin
   //
-  bFlag := True;
+  Form2.bFlag := True;
   //
   if not ((Copy(Form22.sTitulo+Replicate(' ',33),1,33) <> 'Small Commerce + Ordem de Serviço') or
          (Copy(Form22.sTitulo+Replicate(' ',33),1,33) <> 'Small Mei + Ordem de Serviço'))  then
@@ -536,7 +536,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox2.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B10','0');
@@ -563,7 +563,7 @@ begin
   //
   // Nova Senha
   //
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox7.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B_','0');
@@ -606,7 +606,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox9.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B1_E','0');
@@ -629,7 +629,7 @@ var
   Mais1Ini: TIniFile;
 begin
   // Nova Senha
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox10.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B11','0');
@@ -712,7 +712,7 @@ begin
   // Quando ativa
   // Nova Senha
   //
-  bFlag := True;
+  Form2.bFlag := True;
   Form2.Tag := 99;
   //
   if AllTrim(Senhas.UsuarioPub) <> '' then
@@ -893,7 +893,7 @@ begin
     //
   end;
   //
-  bFlag := True;
+  Form2.bFlag := True;
   Form2.Tag := 0;
   Form1.FormShow(Sender);
   //
@@ -1209,7 +1209,7 @@ begin
   //
   // Nova Senha
   //
-  if bFlag then
+  if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox37.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B1_S','0');
