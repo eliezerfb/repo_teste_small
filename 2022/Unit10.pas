@@ -9,7 +9,8 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
   Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
   DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
-  xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs;
+  xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
+  uframePesquisaPadrao, uframePesquisaProduto;
 
 type
 
@@ -181,7 +182,7 @@ type
     orelha_composicao: TTabSheet;
     Edit5: TEdit;
     Edit6: TEdit;
-    DBGrid2: TDBGrid;
+    dbgComposicao: TDBGrid;
     SMALL_DBEdit33: TSMALL_DBEdit;
     SMALL_DBEdit34: TSMALL_DBEdit;
     SMALL_DBEdit35: TSMALL_DBEdit;
@@ -378,6 +379,7 @@ type
     OpenPictureDialog1: TOpenPictureDialog;
     SMALL_DBEdit73: TSMALL_DBEdit;
     Label107: TLabel;
+    framePesquisaProdComposicao: TframePesquisaProduto;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -394,13 +396,13 @@ type
       Rect: TRect; State: TGridDrawState);
     procedure StringGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure StringGrid1Click(Sender: TObject);
-    procedure DBGrid2KeyDown(Sender: TObject; var Key: Word;
+    procedure dbgComposicaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Button8Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure StringGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DBGrid2KeyPress(Sender: TObject; var Key: Char);
+    procedure dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
     procedure TabSheet4Show(Sender: TObject);
     procedure DBGrid3DblClick(Sender: TObject);
     procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -579,7 +581,20 @@ type
     procedure Image1Click(Sender: TObject);
     procedure CheckBox2Click(Sender: TObject);
     procedure ButtoOpenPictureDialog1n22Click(Sender: TObject);
+    procedure dbgComposicaoColEnter(Sender: TObject);
+    procedure dbgComposicaoColExit(Sender: TObject);
+    procedure dbgComposicaoKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure framePesquisaProdComposicaodbgItensPesqCellClick(
+      Column: TColumn);
+    procedure framePesquisaProdComposicaodbgItensPesqKeyPress(
+      Sender: TObject; var Key: Char);
+    procedure framePesquisaProdComposicaodbgItensPesqKeyDown(
+      Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    procedure ibDataSet28DESCRICAOChange(Sender: TField);
+    procedure DefinirVisibleConsultaProdComposicao;
+    procedure AtribuirItemPesquisaComposicao;
     { Private declarations }
   public
     { Public declarations }
@@ -1919,6 +1934,8 @@ var
   I : Integer;
 begin
   //
+  framePesquisaProdComposicao.Visible := False;
+  framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;  
   try
     for I := 0 to 29 do
     begin
@@ -2058,7 +2075,7 @@ begin
   //
 end;
 
-procedure TForm10.DBGrid2KeyDown(Sender: TObject; var Key: Word;
+procedure TForm10.dbgComposicaoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   sCodigo: String;
@@ -2069,8 +2086,8 @@ begin
       HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('composto.htm')));
     if Key = VK_DOWN   then
     begin
-      if dbGrid2.CanFocus then
-        dbGrid2.SetFocus;
+      if dbgComposicao.CanFocus then
+        dbgComposicao.SetFocus;
     end;
     if Key = VK_ESCAPE then
       Key := VK_RETURN;
@@ -2144,7 +2161,7 @@ begin
             ShowMessage('Produto não cadastrado.');
           end;
           //
-          DBGrid2.Update;
+          dbgComposicao.Update;
           //
           Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
           Form7.ibDataSet4.EnableControls;
@@ -2154,11 +2171,10 @@ begin
       end;
       //
       Form10.orelha_composicaoShow(Sender);
-      //
     end;
+    DefinirVisibleConsultaProdComposicao;    
   except
   end;
-  //
 end;
 
 procedure TForm10.Button8Click(Sender: TObject);
@@ -2516,25 +2532,29 @@ begin
   if (StringGrid1.Col = 0) and (StringGrid1.Row = 0) then StringGrid1.Row := 1;
 end;
 
-procedure TForm10.DBGrid2KeyPress(Sender: TObject; var Key: Char);
+procedure TForm10.dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
 begin
-  if dbGrid2.SelectedField.DataType = ftFloat then
+  if dbgComposicao.SelectedField.DataType = ftFloat then
      if Key = chr(46) then key := chr(44);
 
   if AllTrim(Form7.ibDataSet28.FieldByName('DESCRICAO').AsString) = '' then
   begin
     if Key = Chr(13) then Key := Chr(0);
+  end else
+  begin
+    if dbgComposicao.DataSource.DataSet.State in [dsEdit, dsInsert] then
+      framePesquisaProdComposicao.CarregarProdutos(Form7.ibDataSet28.FieldByName('DESCRICAO').AsString);
   end;
 
   if Key = chr(13) then
   begin
-    I := DbGrid2.SelectedIndex;
-    DbGrid2.SelectedIndex := DbGrid2.SelectedIndex  + 1;
-    if (I = DbGrid2.SelectedIndex) then
+    I := dbgComposicao.SelectedIndex;
+    dbgComposicao.SelectedIndex := dbgComposicao.SelectedIndex  + 1;
+    if (I = dbgComposicao.SelectedIndex) then
     begin
-      DbGrid2.SelectedIndex := 0;
+      dbgComposicao.SelectedIndex := 0;
       Form7.ibDataSet28.Next;
       if Form7.ibDataSet28.EOF then Form7.ibDataSet28.Append;
     end;
@@ -2545,13 +2565,13 @@ procedure TForm10.TabSheet4Show(Sender: TObject);
 begin
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
-    dbGrid2.Enabled  := False;
+    dbgComposicao.Enabled  := False;
     Button8.Enabled  := False;
     Button10.Enabled := False;
     Button11.Enabled := False;
   end else
   begin
-    dbGrid2.Enabled  := True;
+    dbgComposicao.Enabled  := True;
     Button8.Enabled  := True;
     Button10.Enabled := True;
     Button11.Enabled := True;
@@ -2989,9 +3009,10 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
-  //
   sNomeDoArquivoParaSalvar := 'Small Commerce.Txt';
-  //
+
+  framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
+  Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;  
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -3228,7 +3249,7 @@ begin
     if Form7.sModulo <> 'ICM' then
     begin
       Orelhas.ActivePage := orelha_cadastro;
-      if dbGrid2.CanFocus then dbGrid2.SetFocus;
+      if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
     end else
     begin
       Orelhas.ActivePage := Orelha_CFOP;
@@ -3284,7 +3305,7 @@ end;
 
 procedure TForm10.Edit6Enter(Sender: TObject);
 begin
-  if dbGrid2.CanFocus then dbGrid2.SetFocus;
+  if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
 end;
 
 procedure TForm10.FormActivate(Sender: TObject);
@@ -4446,7 +4467,7 @@ begin
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
-    if dbGrid2.CanFocus then dbGrid2.SetFocus;
+    if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
   end else
   begin
     Orelhas.ActivePage := Orelha_CFOP;
@@ -6558,7 +6579,7 @@ begin
   if not Form7.bSoLeitura then
   begin
     Orelhas.ActivePage := orelha_cadastro;
-    if dbGrid2.CanFocus then dbGrid2.SetFocus;
+    if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
   end;
   //
   if (Form7.sModulo = 'ESTOQUE') then
@@ -6580,7 +6601,6 @@ begin
   if (Form7.sModulo = 'ESTOQUE') then
   begin
     try
-      //
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
       //
       Form7.ibDataSet25ACUMULADO1.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
@@ -9068,21 +9088,84 @@ begin
     AtualizaTela(True);
     //
   end;
-  //
-  // ShowMessage(Form10.sNomeDoJPG);
-  //
+end;
+
+procedure TForm10.dbgComposicaoColEnter(Sender: TObject);
+begin
+  framePesquisaProdComposicao.Visible := False;
+end;
+
+procedure TForm10.ibDataSet28DESCRICAOChange(Sender: TField);
+begin
+  if Sender = Form7.ibDataSet28DESCRICAO then
+  begin
+    if (Trim(dbgComposicao.DataSource.DataSet.fieldbyname('DESCRICAO').AsString) = EmptyStr) then
+    begin
+      framePesquisaProdComposicao.Visible := False;
+      Exit;
+    end;
+
+    framePesquisaProdComposicao.CarregarProdutos(dbgComposicao.DataSource.DataSet.fieldbyname('DESCRICAO').AsString);
+  end;
+end;
+
+procedure TForm10.DefinirVisibleConsultaProdComposicao;
+begin
+  framePesquisaProdComposicao.Visible := (Form7.ibDataSet28.State in [dsEdit, dsInsert]);
+end;
+
+procedure TForm10.dbgComposicaoColExit(Sender: TObject);
+begin
+  ibDataSet28DESCRICAOChange(Form7.ibDataSet28DESCRICAO);
+end;
+
+procedure TForm10.dbgComposicaoKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if dbgComposicao.SelectedIndex = 0 then
+  begin
+    //
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
+    begin
+      if not framePesquisaProdComposicao.Visible then
+        framePesquisaProdComposicao.Visible := True
+      else
+        Form7.bFlag := False;
+
+      Form7.ibDataSet28.Edit;
+      Form7.ibDataSet28.UpdateRecord;
+      Form7.ibDataSet28.Edit;
+      Form7.bFlag := True;
+    end;
+  end;
+end;
+
+procedure TForm10.framePesquisaProdComposicaodbgItensPesqCellClick(
+  Column: TColumn);
+begin
+  AtribuirItemPesquisaComposicao;
+end;
+
+procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyPress(
+  Sender: TObject; var Key: Char);
+begin
+  if Key = chr(13) then
+    AtribuirItemPesquisaComposicao;
+end;
+
+procedure TForm10.AtribuirItemPesquisaComposicao;
+begin
+  if allTrim(framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString) <> EmptyStr then
+  begin
+    Form7.ibDataSet28.Edit;
+    Form7.ibDataSet28DESCRICAO.AsString := framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString;
+    dbgComposicao.SetFocus;
+  end;
+end;
+
+procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  framePesquisaProdComposicao.dbgItensPesqKeyDown(Sender, Key, Shift);
 end;
 
 end.
-
-
-// 415
-
-
-//
-//  if Pos('<'+Copy(Memo1.Lines[Memo1.CaretPos.Y],(pos('<',Memo1.Lines[Memo1.CaretPos.Y])+1), (pos('>',Memo1.Lines[Memo1.CaretPos.Y])-(pos('<',Memo1.Lines[Memo1.CaretPos.Y])+1)))+'>',Form7.ibDataSet4TAGS_.AsString) = 0 then
-//  begin
-//    ShowMessage(Memo1.Lines[Memo1.CaretPos.Y]);
-//    Form7.ibDataSet4TAGS_.AsString := AllTrim(Form7.ibDataSet4TAGS_.AsString) + chr(10)+Memo1.Lines[Memo1.CaretPos.Y];
-//  end;
-//

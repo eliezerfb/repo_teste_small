@@ -971,7 +971,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_cadastro
+      ActivePage = orelha_composicao
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -4790,7 +4790,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 366
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -4811,7 +4811,7 @@ object Form10: TForm10
           Left = 385
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False
@@ -4827,7 +4827,7 @@ object Form10: TForm10
           Text = 'Quantidade'
           OnEnter = Edit6Enter
         end
-        object DBGrid2: TDBGrid
+        object dbgComposicao: TDBGrid
           Left = 20
           Top = 46
           Width = 490
@@ -4848,8 +4848,11 @@ object Form10: TForm10
           TitleFont.Height = -11
           TitleFont.Name = 'Microsoft Sans Serif'
           TitleFont.Style = []
-          OnKeyDown = DBGrid2KeyDown
-          OnKeyPress = DBGrid2KeyPress
+          OnColEnter = dbgComposicaoColEnter
+          OnColExit = dbgComposicaoColExit
+          OnKeyDown = dbgComposicaoKeyDown
+          OnKeyPress = dbgComposicaoKeyPress
+          OnKeyUp = dbgComposicaoKeyUp
           Columns = <
             item
               Expanded = False
@@ -4967,6 +4970,25 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 8
           OnClick = Button11Click
+        end
+        inline framePesquisaProdComposicao: TframePesquisaProduto
+          Left = 515
+          Top = 25
+          Width = 286
+          Height = 272
+          TabOrder = 9
+          Visible = False
+          inherited pnlPrincipal: TPanel
+            Width = 286
+            Height = 272
+            inherited dbgItensPesq: TDBGrid
+              Width = 286
+              Height = 272
+              OnCellClick = framePesquisaProdComposicaodbgItensPesqCellClick
+              OnKeyDown = framePesquisaProdComposicaodbgItensPesqKeyDown
+              OnKeyPress = framePesquisaProdComposicaodbgItensPesqKeyPress
+            end
+          end
         end
       end
       object orelha_foto: TTabSheet
