@@ -264,6 +264,8 @@ type
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure SMALL_DBEdit56Exit(Sender: TObject);
   private
+    function RetornarWhereAtivoEstoque: String;
+    function RetornarWhereProdDiferenteItemPrincipal: String;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -2935,38 +2937,43 @@ end;
 
 procedure TForm24.Edit1Change(Sender: TObject);
 begin
-  //
-  if Edit1.Text <> '' then
+  if Edit1.Text <> EmptyStr then
   begin
-    //
+    Form24.ibDataSet44.DisableControls;
+    Form24.ibDataSet44.Close;
+    Form24.ibDataSet44.SelectSQL.Clear;
+    Form24.ibDataSet44.SelectSQL.Add('select *');
+    Form24.ibDataSet44.SelectSQL.Add('from ESTOQUE');
+    Form24.ibDataSet44.SelectSQL.Add('where');
+    Form24.ibDataSet44.SelectSQL.Add(RetornarWhereAtivoEstoque);
+    Form24.ibDataSet44.SelectSQL.Add('AND ' + RetornarWhereProdDiferenteItemPrincipal);
+
     if Limpanumero(Edit1.Text) <> Edit1.Text then
     begin
-      //
-      // Localiza pela descricao
-      //
-      Form24.ibDataSet44.DisableControls;
-      Form24.ibDataSet44.Close;
-      Form24.ibDataSet44.SelectSQL.Clear;
-      Form24.ibDataSet44.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Edit1.Text)+'%')+' order by upper(DESCRICAO)');
-      Form24.ibDataSet44.Open;
-      Form24.ibDataSet44.First;
-      Form24.ibDataSet44.EnableControls;
-      //
+      Form24.ibDataSet44.SelectSQL.Add('AND (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Edit1.Text)+'%')+')');
+      Form24.ibDataSet44.SelectSQL.Add('order by upper(DESCRICAO)');
     end else
     begin
-      //
-      Form24.ibDataSet44.DisableControls;
-      Form24.ibDataSet44.Close;
-      Form24.ibDataSet44.SelectSQL.Clear;
-      Form24.ibDataSet44.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(StrZero( StrToInt(Limpanumero(Edit1.Text)),5,0))+' ');
-      Form24.ibDataSet44.Open;
-      Form24.ibDataSet44.First;
-      Form24.ibDataSet44.EnableControls;
-      //
+      if Length(Limpanumero(Edit1.Text)) <= 5 then
+        Form24.ibDataSet44.SelectSQL.Add('AND (CODIGO='+QuotedStr(StrZero( StrToInt64(Limpanumero(Edit1.Text)),5,0))+')')
+      else
+        Form24.ibDataSet44.SelectSQL.Add('AND (REFERENCIA='+QuotedStr(Limpanumero(Edit1.Text))+')');
     end;
-    //
+    
+    Form24.ibDataSet44.Open;
+    Form24.ibDataSet44.First;
+    Form24.ibDataSet44.EnableControls;
   end;
-  //
+end;
+
+function TForm24.RetornarWhereProdDiferenteItemPrincipal: String;
+begin
+  Result := '(DESCRICAO<>'+QuotedStr(Form7.ibDataSet23DESCRICAO.AsString)+')';
+end;
+
+function TForm24.RetornarWhereAtivoEstoque: String;
+begin
+  Result := '((COALESCE(ATIVO,0)=0) OR ((COALESCE(ATIVO,0)=1) AND (TIPO_ITEM=''01'')))';
 end;
 
 procedure TForm24.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -2983,7 +2990,7 @@ procedure TForm24.Button2Click(Sender: TObject);
 begin
   if Label25.Visible = False then
   begin
-    //
+    ibDataSet44.Close;
     Label25.Top     := Label5.Top + 40;
     Edit1.Top       := SMALL_DBEdit45.Top + 40;
     dbGrid33.Top    := Edit1.Top + 20;
@@ -3349,7 +3356,8 @@ procedure TForm24.SMALL_DBEdit45Change(Sender: TObject);
 var
   I : Integer;
 begin
-  //
+  if Label25.Visible then // Simula o click para esconder o grid e fechar a consulta.
+    Button2Click(Self);
   try
     //
     if Form7.sModulo = 'COMPRA' then

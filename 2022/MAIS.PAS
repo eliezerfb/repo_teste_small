@@ -507,7 +507,8 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados;
+  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
+  uRetornaBuildEXE;
 
 {$R *.DFM}
 
@@ -3431,7 +3432,7 @@ begin
       or (Pos('celular',LowerCase(Fields[I-1].DisplayLabel)) <> 0)
       or (Pos('fax',LowerCase(Fields[I-1].DisplayLabel)) <> 0) then
       begin
-        Fields[I-1].Displaywidth := 21;
+        Fields[I-1].Displaywidth := 18;
       end;
     end;
   end;
@@ -8283,9 +8284,13 @@ begin
         Senhas.Position := poScreenCenter;
         Senhas.ShowModal;
         //
-        if not Form2.bFlag then Form1.Ajustararquivos1Click(Sender);
-        //
-        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,'ACESSOU O SISTEMA',0,0); // Ato, Modulo, Usuário, Histórico, Valor
+        if not Form2.bFlag then
+          Form1.Ajustararquivos1Click(Sender);
+
+        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,
+               'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
+                                                                .Retornar(True),
+               0,0); // Ato, Modulo, Usuário, Histórico, Valor
         //
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;
@@ -12006,7 +12011,7 @@ begin
     Mais1Ini.WriteString('GERAL','MARKETPLACE ATIVO','Sim');
 
     //Ativa Coluna Marktplace para o usuário
-    sMostra   := Mais1Ini.ReadString('ESTOQUE', 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
+    sMostra   := Mais1Ini.ReadString('ESTOQUE', 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41));
     sMostra  := Copy(sMostra,1,49)+'T'+Copy(sMostra,51,10);
     Mais1Ini.WriteString('ESTOQUE','Mostrar',sMostra);
 
