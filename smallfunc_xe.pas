@@ -92,8 +92,8 @@ procedure MostraImagemCoordenada(ImgOri: TImage; ImgDest: TImage; Linha:integer;
 function WindowsDir: String;
 function base64encode(const Text : AnsiString): AnsiString;
 function base64Decode(const Text : ansiString): ansiString;
-function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
-function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
+//function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction; Movido para uConectaBancoSmall
+//function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery; Movido para uConectaBancoSmall
 function IntToBin(pP1:Integer ):String;
 function DiretorioAplicacao: String;
 function MesExtenso(pP1:Integer):String;
@@ -110,7 +110,6 @@ procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
 procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 function SysWinDir: string;
 function SmallMsgBox(const Text, Caption: PChar; Flags: Longint): Integer;
-
 
 
 
@@ -941,9 +940,7 @@ begin
   end
 end;
 
-function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
-{ Sandro Silva 2011-04-12 inicio
-  Cria um objeto TIBTransaction }
+{function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
 begin
   Result := nil;
   try
@@ -959,11 +956,9 @@ begin
       //2013-09-27 ShowMessage(E.Message);
     end
   end;
-end;
+end; }
 
-function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
-{ Sandro Silva 2011-04-12 inicio
-  Cria um objeto TIBQuery }
+{function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 begin
   Result := nil;
   try
@@ -978,7 +973,7 @@ begin
       //2013-09-27 ShowMessage(E.Message);
     end
   end;
-end;
+end;}
 
 
 function IntToBin(pP1:Integer ):String;

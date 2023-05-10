@@ -3,22 +3,30 @@ unit uValidaSistema;
 interface
 
 uses
-  System.Classes, System.SysUtils, System.StrUtils, Vcl.Dialogs
+  System.Classes
+  , System.SysUtils
+  , System.StrUtils
+  , Vcl.Dialogs
   , Windows
   , System.IniFiles
   , Forms
   , IdBaseComponent
   , IBX.IBDatabase, IBX.IBQuery
-  , LbCipher, LbClass
   , ShellApi
-  , Vcl.DBCtrls
-  , Vcl.StdCtrls
-  , Vcl.Mask
-  , smallfunc_xe, uconstantes_chaves_privadas
+  , smallfunc_xe
+  , uconstantes_chaves_privadas
+  , uRecursosSistema
+  , REST.Json
+  , uConectaBancoSmall
+  , uCriptografia
   ;
 
-function BuscaSerialSmall:string;
+
+type Recurso = (rcOS, rcSped, rcSpedPisCofins, rcAnvisa, rcSintegra, rcComandas, rcMDFE, rcMobile, rcEtiquetas,
+                rcOrcamento, rcMKP, rcContasPagar, rcContasReceber, rcCaixa, rcBancos, rcIndicadores, rcInventarioP7);
+
 function ValidaSistema(IBDATABASE: TIBDatabase; bFechaSistema: Boolean = True; bValidacaoNova: Boolean = True):Boolean;
+function BuscaSerialSmall:string;
 function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 function Legal_ok(IBDATABASE: TIBDatabase): Boolean;
 
@@ -137,7 +145,7 @@ begin
                          'com o número de série '+ StrTran(Serial, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
                           AllTrim(Empresa)+chr(10)+chr(10)+
                           AllTrim(CNPJ)+chr(10)+chr(10)+
-                         'Código: 2020 '+chr(10)+chr(10)+
+                         'Código: 2023 '+chr(10)+chr(10)+
                          'Adquirir uma licença de uso atualizada?'),
                          'Atenção', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON1) = idYes then
     begin
@@ -184,12 +192,10 @@ end;
 
 
 
-function DiasParaExpirar(IBDATABASE: TIBDatabase;
-  bValidacaoNova: Boolean = True): Integer;
+function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 var
   qyAux: TIBQuery;
   trAux: TIBTransaction;
-  Blowfish: TLbBlowfish;
   sDataLimite: String; // Sandro Silva 2022-11-14
 begin
 
@@ -197,14 +203,9 @@ begin
     trAux := CriaIBTransaction(IBDATABASE);
     qyAux := CriaIBQuery(trAux);
 
-    Blowfish := TLbBlowfish.Create(Application);
-
     qyAux.Close;
-    qyAux.SQL.Clear;
-    qyAux.SQL.Add('select LICENCA from EMITENTE');
+    qyAux.SQL.Text := ' Select LICENCA from EMITENTE';
     qyAux.Open;
-
-    Blowfish.GenerateKey(CHAVE_CIFRAR); // Minha chave secreta
 
     if AllTrim(qyAux.FieldByname('LICENCA').AsString) <> '' then
     begin
@@ -212,7 +213,15 @@ begin
       Result := Trunc(365 - (Date - StrToDate(Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4))));
       }
       //sDataLimite := Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4);     //Mauricio Parizotto 2023-01-11
-      sDataLimite := Copy(Blowfish.DecryptString(AllTrim(qyAux.FieldByname('LICENCA').AsString)),7,2)+'/'+Copy(Blowfish.DecryptString(AllTrim(qyAux.FieldByname('LICENCA').AsString)),5,2)+'/'+Copy(Blowfish.DecryptString(AllTrim(qyAux.FieldByname('LICENCA').AsString)),1,4);
+      sDataLimite := Copy(
+                          SmallDecrypt(CHAVE_CIFRAR,AllTrim(qyAux.FieldByname('LICENCA').AsString))
+                          ,7,2)+'/'+
+                     Copy(
+                          SmallDecrypt(CHAVE_CIFRAR,AllTrim(qyAux.FieldByname('LICENCA').AsString))
+                          ,5,2)+'/'+
+                     Copy(
+                          SmallDecrypt(CHAVE_CIFRAR,AllTrim(qyAux.FieldByname('LICENCA').AsString))
+                          ,1,4);
 
       if bValidacaoNova = False then
       begin
@@ -227,7 +236,7 @@ begin
     begin
       Result := -1; // 0 dias ainda pode usar
       Application.MessageBox(PChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
-        'Entre antes no programa "Small" e confirme os dados no Cadastro do emitente.'), 'Atenção', MB_OK + MB_ICONWARNING);
+                                   'Entre antes no programa "Small" e confirme os dados no Cadastro do emitente.'), 'Atenção', MB_OK + MB_ICONWARNING);
       //FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
   except
@@ -236,7 +245,7 @@ begin
       if AnsiContainsText(E.Message, 'Column unknown') and AnsiContainsText(E.Message, 'LICENCA') then
       begin
         Application.MessageBox(PChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
-          'Entre antes no programa "Small" para ajustar os arquivos.'), 'Atenção', MB_OK + MB_ICONWARNING);
+                                     'Entre antes no programa "Small" para ajustar os arquivos.'), 'Atenção', MB_OK + MB_ICONWARNING);
         FecharAplicacao(ExtractFileName(Application.ExeName));
         Abort;
       end;
@@ -246,10 +255,7 @@ begin
 
   FreeAndNil(trAux);
   FreeAndNil(qyAux);
-  FreeAndNil(Blowfish);
 end;
-
-
 
 
 end.
