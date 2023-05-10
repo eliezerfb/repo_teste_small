@@ -571,7 +571,7 @@ begin
       while not Form7.ibDataSet16.EOF do // Disable
       begin
         //
-        Form1.bFlagControlaLancamentoProduto := True;
+        Form1.bFlag := True;
         Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
         Form7.ibDataSet16.Next;
         //
@@ -1086,11 +1086,11 @@ begin
         dBGrid3.Height  := Form12.Panel1.Height - dbGrid3.Top - 15;
       end else
       //
-      Form1.bFlagControlaLancamentoProduto := False;
+      Form1.bFlag := False;
       Form7.ibDataSet16.Edit;
       Form7.ibDataSet16.UpdateRecord;
       Form7.ibDataSet16.Edit;
-      Form1.bFlagControlaLancamentoProduto := True;
+      Form1.bFlag := True;
     end;
   end;
 
@@ -1883,7 +1883,7 @@ begin
     begin
       if Key = VK_RETURN then
       begin
-        Form1.bFlagControlaLancamentoProduto := True;
+        Form1.bFlag := True;
 
         if not (Form7.ibDataSet16.State in ([dsEdit, dsInsert])) then
           Form7.ibDataSet16.Edit;
@@ -1892,7 +1892,7 @@ begin
         begin
           if DbGrid1.SelectedIndex = 0 then
           begin
-            Form1.bFlagControlaLancamentoProduto := True;
+            Form1.bFlag := True;
             //
             if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
             begin
@@ -1922,9 +1922,9 @@ begin
       end else
       begin
         if Key = VK_DELETE then
-          Form1.bFlagControlaLancamentoProduto := True
+          Form1.bFlag := True
         else
-          Form1.bFlagControlaLancamentoProduto := False;
+          Form1.bFlag := False;
       end;
     end;
   except
@@ -2177,7 +2177,7 @@ begin
   //
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
   //
-  Form1.bFlagControlaLancamentoProduto  := True;
+  Form1.bFlag  := True;
   //
   ConfiguraNFE(True);
   //
@@ -2351,7 +2351,7 @@ begin
     Form12.Image5.Visible := False;
     Form12.Panel9.Visible := False;
     //
-    Form1.bFlagControlaLancamentoProduto := False;
+    Form1.bFlag := False;
     //
     Form12.Top     := Form7.Top;
     Form12.Left    := Form7.Left;

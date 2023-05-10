@@ -646,7 +646,7 @@ begin
                             //
                             // Acerta os tributos e o CFOP
                             //
-                            Form1.bFlagControlaLancamentoProduto := True;
+                            Form1.bFlag := True;
                             Form7.sModulo := 'VENDA';
                             Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet37DESCRICAO.AsString;
 
@@ -657,7 +657,7 @@ begin
                             {Sandro Silva 2023-01-06 fim}
 
                             Form7.sModulo := 'ORCAMENTO';
-                            Form1.bFlagControlaLancamentoProduto := False;
+                            Form1.bFlag := False;
                             //
                             Form7.ibDataSet16.Edit;
                             Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet37QUANTIDADE.AsFloat;
@@ -685,11 +685,11 @@ begin
                                 sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
                                 //
                                 Form7.ibDataSet16.Append;
-                                Form1.bFlagControlaLancamentoProduto := False;
+                                Form1.bFlag := False;
                                 Form7.ibDataSet16DESCRICAO.AsString := Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString))-6);
                                 Form7.ibDataSet16.Post;
                                 //
-                                // Form1.bFlagControlaLancamentoProduto := True;
+                                // Form1.bFlag := True;
                                 //
                                 Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
                                 //
@@ -867,11 +867,11 @@ begin
           //
           // Acerta os tributos e o CFOP
           //
-          Form1.bFlagControlaLancamentoProduto := True;
+          Form1.bFlag := True;
           Form7.sModulo := 'VENDA';
           Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet27DESCRICAO.AsString;
           Form7.sModulo := 'BALCAO';
-          Form1.bFlagControlaLancamentoProduto := False;
+          Form1.bFlag := False;
           //
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet27QUANTIDADE.AsFloat;

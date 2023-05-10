@@ -19434,9 +19434,9 @@ begin
   try
     //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
     try
-      if (Form1.bFlagControlaLancamentoProduto) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
+      if (Form1.bFlag) and (Alltrim(ibDataSet16DESCRICAO.AsString) <> '') then
       begin
-        Form1.bFlagControlaLancamentoProduto        := False;
+        Form1.bFlag        := False;
         bFind              := False;
         fQuantidadeVendida := 1;
 
@@ -19635,7 +19635,7 @@ begin
                               fQuantidadeVendida              := Form7.ibDataSet16QUANTIDADE.AsFloat;
                               Form7.ibDataSet16.Post;
                               //
-                              Form1.bFlagControlaLancamentoProduto := False;
+                              Form1.bFlag := False;
                               //
                               Form7.ibDataSet16.Append;
                               Form7.ibDataSet16DESCRICAO.AsString := 'SERIAL ' +  ibDataSet30SERIAL.AsString;
@@ -19650,7 +19650,7 @@ begin
                                 Form7.ibDataSet4.Open;
                               except end;
                               //
-                              Form1.bFlagControlaLancamentoProduto := True;
+                              Form1.bFlag := True;
                               //
                               sSerial_ := '0CONFIRMADO0';
                               sMensagem := '';
@@ -19796,7 +19796,7 @@ begin
                 sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
 
                 Form7.ibDataSet16.Append;
-                Form1.bFlagControlaLancamentoProduto := False;
+                Form1.bFlag := False;
                 Form7.ibDataSet16DESCRICAO.AsString := Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6);
                 Form7.ibDataSet16.Post;
 
@@ -20048,7 +20048,7 @@ begin
           Form7.ibDataSet16QUANTIDADE.AsString := '';
         end;
 
-        Form1.bFlagControlaLancamentoProduto := True;
+        Form1.bFlag := True;
       end;
     except
     end;
@@ -21202,7 +21202,7 @@ var
   sCST_PIS_COFINS : String;
   rpPIS, rpCOFINS : Real;
 begin
-  if (Form1.bFlagControlaLancamentoProduto) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
+  if (Form1.bFlag) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
   begin
     Form7.ibDataSet23.DisableControls;
     Form7.ibDataSet4.DisableControls;
@@ -21221,7 +21221,7 @@ begin
     if ibDataSet23CFOP.AsString = '' then
       ibDataSet23CFOP.AsString := ibDataSet14CFOP.AsString;
 
-    Form1.bFlagControlaLancamentoProduto := False;
+    Form1.bFlag := False;
 
     if (Form7.ibDataSet23DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.Value) then
     begin
@@ -33002,10 +33002,10 @@ begin
             //
             // Acerta os tributos e o CFOP
             //
-            Form1.bFlagControlaLancamentoProduto := True;
+            Form1.bFlag := True;
             Form7.sModulo                       := 'VENDA';
             Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet23DESCRICAO.AsString;
-            Form1.bFlagControlaLancamentoProduto := False;
+            Form1.bFlag := False;
 
             Form7.ibDataSet16.Edit;
             Form7.ibDataSet16QUANTIDADE.AsFloat := Form7.IbDataSet23QUANTIDADE.AsFloat;
