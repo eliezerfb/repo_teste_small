@@ -5291,9 +5291,10 @@ begin
     //
     // Relaciona a natureza da operação com o arquivo de vendas
     //
-    if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''
-      then Form7.ibDataSet14.Append
-         else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+    if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
+      Form7.ibDataSet14.Append
+    else
+      Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
     //
     // Relaciona os clientes com o arquivo de vendas
     //
@@ -6021,9 +6022,10 @@ begin
     //
     // Relaciona a natureza da operação com o arquivo de vendas
     //
-    if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''
-      then Form7.ibDataSet14.Append
-         else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+    if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
+      Form7.ibDataSet14.Append
+    else
+      Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
     //
     // Relaciona os clientes com o arquivo de vendas
     //
@@ -6729,9 +6731,10 @@ begin
   //
   // Relaciona a natureza da operação com o arquivo de vendas
   //
-  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''
-    then Form7.ibDataSet14.Append
-       else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
+    Form7.ibDataSet14.Append
+  else
+    Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
   //
   // Relaciona os clientes com o arquivo de vendas
   //
@@ -21811,7 +21814,9 @@ begin
         //
         // Produtos
         //
-        if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+        if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
+          Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+          
         Screen.Cursor := crHourGlass; // Cursor de Aguardo
         //
         Form7.ibDataSet16.DisableControls;
@@ -24948,9 +24953,10 @@ begin
                 //
                 // Relaciona a natureza da operação com o arquivo de vendas
                 //
-                if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''
-                then Form7.ibDataSet14.Append
-                   else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+                if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
+                  Form7.ibDataSet14.Append
+                else
+                  Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 //
                 if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
                 begin
@@ -25069,7 +25075,9 @@ begin
           if (Pos('<cStat>135</cStat>',sRetorno) <> 0) or (Pos('<cStat>136</cStat>',sRetorno) <> 0) or FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) then
           begin
             //
-            if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+            if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
+              Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+
             if Form7.ibDataSet14NOME.AsString = Form7.ibDataSet15OPERACAO.AsString then
             begin
               //

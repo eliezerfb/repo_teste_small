@@ -881,13 +881,15 @@ begin
     if Form7.ibDataSet16.Modified then
       Form7.ibDataSet16.Post;
     //
-    if pos('DEVOLUÇÃO',AnsiUppercase(SMALL_DBEdit40.Text)) <> 0 then
+    {Sandro Silva 2023-05-10 inicio
+    if pos('DEVOLUÇÃO',AnsiUpperCase(SMALL_DBEdit40.Text)) <> 0 then
     begin
       Form12.Edit2.Text := '4-Devolução de mercadoria';
       Form7.ibDataSet15FINNFE.AsString   := '4';
       ExibeColunasFCPST(True);
       SMALL_DBEdit40Enter(Sender);
     end;
+    }
   end;
 
   if SMALL_DBEdit40.Text <> '' then
@@ -896,6 +898,17 @@ begin
     begin
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+
+      {Sandro Silva 2023-05-10 inicio}
+      if pos('DEVOLUÇÃO',AnsiUpperCase(SMALL_DBEdit40.Text)) <> 0 then
+      begin
+        Form12.Edit2.Text := '4-Devolução de mercadoria';
+        Form7.ibDataSet15FINNFE.AsString   := '4';
+        ExibeColunasFCPST(True);
+        SMALL_DBEdit40Enter(Sender);
+      end;
+      {Sandro Silva 2023-05-10 fim}
+
       ObservacaoOperacao(False); // On exit
     end else
     begin
