@@ -526,6 +526,78 @@ begin
           // FCP - Fundo de Combate a Pobresa
         end;
         *)
+
+        {Sandro Silva 2023-05-11 inicio
+        // Fundo de combate a pobreza
+        if (oItem.PFCP = 0) and (oItem.PFCPST = 0) then
+        begin
+          fPercentualFCP   := 0;
+          fPercentualFCPST := 0;
+          if (
+              (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '0') and
+              (
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '10') or
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '30') or
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '70') or
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')
+              )
+             ) or
+             (
+              (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) = '1') and
+              (
+               (IBQProduto.FieldByname('CSOSN').AsString = '900')                           or
+               (IBQProduto.FieldByname('CSOSN').AsString = '201')                           or
+               (IBQProduto.FieldByname('CSOSN').AsString = '202')                           or
+               (IBQProduto.FieldByname('CSOSN').AsString = '203')
+              )
+             ) then
+          begin
+            // 1 - Simples nacional
+            // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
+            // 3 - Regime normal
+            //
+            // Fundo de combate a pobresa Retido deve somar no total da nota
+
+            if (oItem.PFCPUFDEST <> 0) or (oItem.PICMSUFDEST <> 0) then
+            begin
+              // Quando preenche na nota não vai nada nessas tags
+              fPercentualFCP   := 0;
+              fPercentualFCPST := 0;
+            end else
+            begin
+              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+                fPercentualFCP := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e
+
+              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+                fPercentualFCPST := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e 16 AfterPost
+
+            end;
+            // FCP - Fundo de Combate a Pobresa
+          end
+          else
+          begin
+
+            // CST 00: pFCP
+            // CST 20: pFCP
+            // CST 51: pFCP
+
+            if (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1') then
+            begin
+              if (
+                   (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString) + '000',2,2) = '00') or
+                   (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString) + '000',2,2) = '20') or
+                   (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString) + '000',2,2) = '51')
+                 ) then
+              if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+                fPercentualFCP := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e
+            end;
+          end;
+          oItem.PFCP   := fPercentualFCP;
+          oItem.PFCPST := fPercentualFCPST;
+        end;
+        {Sandro Silva 2023-05-11 fim}
+
+
         // SUBSTITUIÇÃO TRIBUTÁRIA
         try
           if IBQProduto.FieldByname('PIVA').AsFloat > 0 then
@@ -725,16 +797,17 @@ begin
       end;
     end; // for notafiscal.itens
 
-    // Aqui já deve ter feito o rateio de despesas e acréscimos e aplicado nos itens da nota
-    // Passa pelos itens da nota para calcular o FCP de cada um
-    for i := 0 to NotaFiscal.Itens.Count -1 do
-    begin
-      oItem := NotaFiscal.Itens.GetItem(i);
-      if oItem.QUANTIDADE <> 0 then
-        CalculaFCP( NotaFiscal, oItem);
-    end;
-
   end;
+
+  // Aqui já deve ter feito o rateio de despesas e acréscimos e aplicado nos itens da nota
+  // Passa pelos itens da nota para calcular o FCP de cada um
+  for i := 0 to NotaFiscal.Itens.Count -1 do
+  begin
+    oItem := NotaFiscal.Itens.GetItem(i);
+    if oItem.QUANTIDADE <> 0 then
+      CalculaFCP( NotaFiscal, oItem);
+  end;
+
 
   FreeAndNil(IBQProduto);
 
@@ -854,6 +927,8 @@ procedure TNotaFiscalEletronicaCalc.CalculaFCP(NotaFiscal: TVENDAS;
 var
   fFCPDescontar: Real; // Armazena o valor do FCP para descontar do FCPST. Não usar oItem.FCP para não ser gravado no campo do banco
   IBQProduto: TIBQuery;
+  fPercentualFCP: Real;
+  fPercentualFCPST: Real;
 begin
   // fPercentualFCP
   {
@@ -867,38 +942,102 @@ begin
     IBQProduto.Close;
     IBQProduto.DisableControls;
     IBQProduto.UniDirectional := True;
-    IBQProduto.SQL.Text := ' select '+
-                           ' TAGS_'+
-                           ' from ESTOQUE'+
-                           ' where DESCRICAO = '+QuotedStr(oItem.DESCRICAO);
+    IBQProduto.SQL.Text := ' select ' +
+                           ' TAGS_' +
+                           ', CST ' +
+                           ', CSOSN ' +
+                           ' from ESTOQUE' +
+                           ' where DESCRICAO = ' + QuotedStr(oItem.DESCRICAO);
     IBQProduto.Open;
 
-
+    //(*{Sandro Silva 2023-05-11 inicio}
     // Fundo de combate a pobresa Retido deve somar no total da nota
 
     if (oItem.PFCPUFDEST <> 0) or (oItem.PICMSUFDEST <> 0) then
     begin
       // Quando preenche na nota não vai nada nessas tags
-      oItem.PFCP   := 0;
-      oItem.PFCPST := 0;
+      oItem.PFCP   := 0.00;
+      oItem.PFCPST := 0.00;
     end else
     begin
 
-      { Ao selecionar produto grava o percentual
-      oItem.PFCP   := 0;
-      if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+      if (
+          (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '0') and
+          (
+           (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '10') or
+           (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '30') or
+           (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '70') or
+           (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')
+          )
+         ) or
+         (
+          (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) = '1') and
+          (
+           (IBQProduto.FieldByname('CSOSN').AsString = '900')                           or
+           (IBQProduto.FieldByname('CSOSN').AsString = '201')                           or
+           (IBQProduto.FieldByname('CSOSN').AsString = '202')                           or
+           (IBQProduto.FieldByname('CSOSN').AsString = '203')
+          )
+         ) then
       begin
-        oItem.PFCP := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e
+        // 1 - Simples nacional
+        // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
+        // 3 - Regime normal
+        //
+        // Fundo de combate a pobresa Retido deve somar no total da nota
+
+        if (oItem.PFCPUFDEST <> 0) or (oItem.PICMSUFDEST <> 0) then
+        begin
+          // Quando preenche na nota não vai nada nessas tags
+          fPercentualFCP   := 0.00;
+          fPercentualFCPST := 0.00;
+        end else
+        begin
+          if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+            fPercentualFCP := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e
+
+          if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+            fPercentualFCPST := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e 16 AfterPost
+
+        end;
+        // FCP - Fundo de Combate a Pobresa
+      end
+      else
+      begin
+
+        // CST 00: pFCP
+        // CST 20: pFCP
+        // CST 51: pFCP
+
+        if (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1') then
+        begin
+          if (
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString) + '000',2,2) = '00') or
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString) + '000',2,2) = '20') or
+               (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString) + '000',2,2) = '51')
+             ) then
+          if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+            fPercentualFCP := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e
+        end;
+
       end;
 
-      oItem.PFCPST := 0;
-      if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
+      if NotaFiscal.Finnfe <> '4' then
       begin
-        oItem.PFCPST := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',IBQProduto.FieldByname('TAGS_').AsString))); // tributos da NF-e 16 AfterPost
+        // Não é devolução usa os percentuais de FCP cadastrado
+        oItem.PFCP   := fPercentualFCP;
+        oItem.PFCPST := fPercentualFCPST;
+      end
+      else
+      begin
+
+        oItem.PFCP   := 0.00;
+        oItem.VBCFCP := 0.00;
+        oItem.VFCP   := 0.00;
       end;
-      }
+
     end;
-
+    //*)
 
     if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
     begin
@@ -975,6 +1114,7 @@ begin
 
         if Copy(LimpaNumero(oItem.Cst_icms) + '000', 2, 2) = '30' then
         begin
+          fFCPDescontar := 0.00;
           if oItem.PFCP <> 0 then
           begin
             fFCPDescontar := (oItem.Vbc * oItem.PFCP / 100);
@@ -1040,7 +1180,7 @@ begin
             Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*oItem.PFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
             }
             oItem.VBCFCP   := oItem.Vbc; // Valor da Base de Cálculo do FCP
-            oItem.PFCP     := oItem.PFCP; // Percentual do Fundo de Combate à Pobreza (FCP)
+            // Sandro Silva 2023-05-11 oItem.PFCP     := oItem.PFCP; // Percentual do Fundo de Combate à Pobreza (FCP)
             oItem.VFCP     := Arredonda(oItem.Vbc * oItem.PFCP / 100, 2); // Valor do Fundo de Combate à Pobreza (FCP)
 
           end;

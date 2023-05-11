@@ -1697,7 +1697,13 @@ begin
     if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
       Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
   except
+    {Sandro Silva 2023-05-11 inicio
     on E: Exception do  ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
+    }
+    on E: Exception do
+    begin
+      ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
+    end;
   end;
 
   //Roda cálculo Final

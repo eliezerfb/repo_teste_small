@@ -32118,9 +32118,9 @@ begin
             Form7.ibDataSet16VICMSST.AsFloat    := Form7.ibDataSet23VICMSST.AsFloat;
 
             // Campos FCP - Sandro Silva 2023-05-05
-            Form7.ibDataSet16VBCFCP.AsFloat     := Form7.ibDataSet23VBCFCP.AsFloat;
-            Form7.ibDataSet16PFCP.AsFloat       := Form7.ibDataSet23PFCP.AsFloat;
-            Form7.ibDataSet16VFCP.AsFloat       := Form7.ibDataSet23VFCP.AsFloat;
+            //Form7.ibDataSet16VBCFCP.AsFloat     := Form7.ibDataSet23VBCFCP.AsFloat;
+            //Form7.ibDataSet16PFCP.AsFloat       := Form7.ibDataSet23PFCP.AsFloat;
+            //Form7.ibDataSet16VFCP.AsFloat       := Form7.ibDataSet23VFCP.AsFloat;
             Form7.ibDataSet16VBCFCPST.AsFloat   := Form7.ibDataSet23VBCFCPST.AsFloat;
             Form7.ibDataSet16PFCPST.AsFloat     := Form7.ibDataSet23PFCPST.AsFloat;
             Form7.ibDataSet16VFCPST.AsFloat     := Form7.ibDataSet23VFCPST.AsFloat;
@@ -32297,7 +32297,7 @@ begin
   if Trim(fNFE) <> '' then
   begin
 
-    ShowMessage(fNFE);
+    // ShowMessage(fNFE);
     //
     try
       spdNFe.PreverDanfe(fNFE, '');

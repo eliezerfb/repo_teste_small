@@ -1293,7 +1293,7 @@ begin
   if ExecutaComando('alter table RECEBER alter DOCUMENTO type varchar(11)') then // Para poder marcar as parcelas migradas da Smallsoft para Zucchetti durante a incorporação
     ExecutaComando('commit');
 
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS') = False then
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS') then
   begin
     if ExecutaComando('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60), ADD IDENTIFICADOR VARCHAR(10), ADD CONTACONTABILIDADE VARCHAR(20)') then // Para gerar relatórios contábeis
       ExecutaComando('commit');

@@ -4873,7 +4873,8 @@ begin
           //
           Mais1Ini := TIniFile.Create(Form1.sAtual+'\small.ini');
           Url := Mais1Ini.ReadString('Firebird','Server url','');
-          if AllTrim(Mais1Ini.ReadString('Firebird','Server IP','')) <> '' then Url := Mais1Ini.ReadString('Firebird','Server IP','')+':'+Url;
+          if AllTrim(Mais1Ini.ReadString('Firebird','Server IP','')) <> '' then
+            Url := Mais1Ini.ReadString('Firebird','Server IP','')+':'+Url;
           Mais1Ini.Free;
           IBDatabase1.Close;
           IBDatabase1.Params.Clear;
