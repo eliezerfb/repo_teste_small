@@ -48,7 +48,7 @@ begin
   FqryRegistros.Open;
   FqryRegistros.FetchAll;
 
-  dbgItensPesq.Columns[Pred(dbgItensPesq.Columns.Count)].Width := dbgItensPesq.Width - 20;  
+  dbgItensPesq.Columns[Pred(dbgItensPesq.Columns.Count)].Width := dbgItensPesq.Width - 22;  
 end;
 
 constructor TframePesquisaProduto.Create(AOwner: TComponent);

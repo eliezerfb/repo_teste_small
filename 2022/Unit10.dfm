@@ -971,7 +971,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_composicao
+      ActivePage = orelha_cadastro
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -4789,7 +4789,7 @@ object Form10: TForm10
         object Edit5: TEdit
           Left = 20
           Top = 25
-          Width = 366
+          Width = 658
           Height = 22
           BevelInner = bvNone
           Color = clSilver
@@ -4808,7 +4808,7 @@ object Form10: TForm10
           OnEnter = Edit5Enter
         end
         object Edit6: TEdit
-          Left = 385
+          Left = 676
           Top = 25
           Width = 125
           Height = 22
@@ -4830,8 +4830,8 @@ object Form10: TForm10
         object dbgComposicao: TDBGrid
           Left = 20
           Top = 46
-          Width = 490
-          Height = 250
+          Width = 781
+          Height = 235
           Ctl3D = False
           DataSource = Form7.DataSource28
           Font.Charset = ANSI_CHARSET
@@ -4857,6 +4857,7 @@ object Form10: TForm10
             item
               Expanded = False
               FieldName = 'DESCRICAO'
+              Width = 655
               Visible = True
             end
             item
@@ -4972,18 +4973,18 @@ object Form10: TForm10
           OnClick = Button11Click
         end
         inline framePesquisaProdComposicao: TframePesquisaProduto
-          Left = 515
-          Top = 25
-          Width = 286
-          Height = 272
+          Left = 20
+          Top = 280
+          Width = 781
+          Height = 100
           TabOrder = 9
           Visible = False
           inherited pnlPrincipal: TPanel
-            Width = 286
-            Height = 272
+            Width = 781
+            Height = 100
             inherited dbgItensPesq: TDBGrid
-              Width = 286
-              Height = 272
+              Width = 781
+              Height = 100
               OnCellClick = framePesquisaProdComposicaodbgItensPesqCellClick
               OnKeyDown = framePesquisaProdComposicaodbgItensPesqKeyDown
               OnKeyPress = framePesquisaProdComposicaodbgItensPesqKeyPress

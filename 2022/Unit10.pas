@@ -2082,6 +2082,11 @@ var
 begin
   //
   try
+    if ((Key = VK_DOWN) or (Key = VK_UP)) and (framePesquisaProdComposicao.dbgItensPesq.CanFocus) then
+    begin
+      Key := VK_SHIFT;
+      framePesquisaProdComposicao.dbgItensPesq.SetFocus;
+    end;
     if Key = VK_F1     then
       HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('composto.htm')));
     if Key = VK_DOWN   then
@@ -2090,7 +2095,10 @@ begin
         dbgComposicao.SetFocus;
     end;
     if Key = VK_ESCAPE then
+      begin
       Key := VK_RETURN;
+      framePesquisaProdComposicao.Visible := False;
+    end;
     if (Key = VK_RETURN) or (Key = VK_TAB) or (Key = VK_DOWN) or (Key = VK_UP) then
     begin
       Form7.ibDataSet28.Edit;
