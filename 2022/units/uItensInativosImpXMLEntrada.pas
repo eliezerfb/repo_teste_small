@@ -76,7 +76,7 @@ begin
   cMsg := cMsg + sLineBreak + sLineBreak +
           'Para o correto lançamento da Nota de Compra, os itens serão reativados automaticamente.';
 
-  Application.MessageBox(pChar(cMsg),'Importação XML - Entrada',mb_Ok + MB_ICONINFORMATION);
+  Application.MessageBox(pChar(cMsg),'Atenção',mb_Ok + MB_ICONINFORMATION);
   ReativarItens;
 end;
 
