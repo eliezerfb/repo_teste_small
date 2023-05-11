@@ -625,7 +625,8 @@ var
 implementation
 
 uses Unit7, Mais, Unit14, Unit38, Unit16, Unit12, unit24, Unit22,
-  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils
+  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils, uTestaProdutoExiste,
+  uITestaProdutoExiste
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
   {Sandro Silva 2022-09-26 fim}
@@ -2079,6 +2080,7 @@ procedure TForm10.dbgComposicaoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   sCodigo: String;
+  oTestaProd: ITestaProdutoExiste;
 begin
   //
   try
@@ -2103,82 +2105,42 @@ begin
     begin
       Form7.ibDataSet28.Edit;
       Form7.ibDataSet28.UpdateRecord;
-      if Alltrim(Form7.ibDataSet28DESCRICAO.AsString) <> '' then
+
+      if Alltrim(Form7.ibDataSet28DESCRICAO.AsString) <> EmptyStr then
       begin
         if DbGrid1.SelectedIndex = 0 then
         begin
-          //
-          Form7.ibDataSet4.DisableControls;
           sCodigo := Form7.ibDataSet4CODIGO.AsString;
-          //
-          Form7.ibDataSet28.Edit;
-          //
-          // Procura por código
-          //
-          Form7.ibDataSet28.Edit;
-          if (length(Alltrim(Form7.ibDataSet28DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet28DESCRICAO.AsString))<>'') then
-          begin
-            try
-              if StrToInt(AllTrim(Form7.ibDataSet28DESCRICAO.AsString)) <> 0 then
-                Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(Form7.ibDataSet28DESCRICAO.AsString)),5,0),[]);
-            except
-            end;
-          end;
-          //
-          if Pos(Alltrim(Form7.ibDataSet28DESCRICAO.AsString),Form7.ibDataSet4.FieldByname('CODIGO').AsString) = 0 then
-          begin
-            // Procura pela referencia //
-            Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(Form7.ibDataSet28DESCRICAO.AsString),[]);
-            // Se o produto não foi encontrado //
-            if Alltrim(Form7.ibDataSet28DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
-            begin
-              // Procura pela descricão //
-//              if Pos(AnsiUpperCase(alltrim(Form7.ibDataSet28DESCRICAO.AsString)),AnsiUpperCase(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString)) = 0 then
-              begin
-                //
-                Form7.ibDataSet4.First;
-                //
-                while not Form7.ibDataSet4.Eof and (UpperCase(Form7.ibDataSet28DESCRICAO.AsString) <> UpperCAse(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString)) do
-                begin
-                  Form7.ibDataSet4.Next;
-                end;
-                Form7.ibDataSet4.EnableControls;
-              end;
-            end;
-          end;
-          //
-          if not Form7.ibDataSet4.Eof then
+          oTestaProd := TTestaProdutoExiste.New
+                                           .setDataBase(Form7.IBDatabase1)
+                                           .setTextoPesquisar(Form7.ibDataSet28DESCRICAO.AsString);
+
+          if oTestaProd.Testar then
           begin
             Form7.ibDataSet28.Edit;
-            if Form7.ibDataSet4.FieldByname('CODIGO').AsString <> sCodigo then
+            if oTestaProd.getQuery.FieldByname('CODIGO').AsString <> sCodigo then
             begin
-              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := Form7.ibDataSet4.FieldByname('DESCRICAO').AsString;
+              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := oTestaProd.getQuery.FieldByname('DESCRICAO').AsString;
               if Form7.ibDataSet28.FieldByName('QUANTIDADE').AsFloat <= 0 then
                 Form7.ibDataSet28.FieldByName('QUANTIDADE').AsFloat := 1;
               Form7.ibDataSet28.Post;
               Form7.ibDataSet28.Edit;
             end else
             begin
-              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString  := '';
-              Form7.ibDataSet28.FieldByName('QUANTIDADE').AsString := '';
-              ShowMessage('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+Form7.ibDataSet4.FieldByname('CODIGO').AsString +chr(10)+ sCodigo);
+              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString  := EmptyStr;
+              Form7.ibDataSet28.FieldByName('QUANTIDADE').AsString := EmptyStr;
+              ShowMessage('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+oTestaProd.getQuery.FieldByname('CODIGO').AsString +chr(10)+ sCodigo);
             end;
           end else
           begin
-            Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := '';
+            Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := EmptyStr;
             ShowMessage('Produto não cadastrado.');
           end;
-          //
+
           dbgComposicao.Update;
-          //
-          Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
-          Form7.ibDataSet4.EnableControls;
-          //
         end;
-        //
       end;
-      //
-      Form10.orelha_composicaoShow(Sender);
+      Self.orelha_composicaoShow(Sender);
     end;
     DefinirVisibleConsultaProdComposicao;
   except

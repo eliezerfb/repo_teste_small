@@ -82,7 +82,9 @@ uses
   uITestaEmail in 'interfaces\uITestaEmail.pas',
   uTestaEmail in 'units\uTestaEmail.pas',
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
-  uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame};
+  uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
+  uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
+  uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas';
 
 {$R *.RES}
 
