@@ -66,7 +66,7 @@ begin
 
   FibqItens.First;
 
-  cMsg := 'Os seguintes itens do XML estão inativos:';
+  cMsg := 'Foram encontrados produtos inativos nesta nota fiscal:';
   while not FibqItens.Eof do
   begin
     cMsg := cMsg + sLineBreak + FibqItens.FieldByName('codigo').AsString + ' - ' + FibqItens.FieldByName('descricao').AsString;
@@ -74,7 +74,7 @@ begin
     FibqItens.Next;
   end;
   cMsg := cMsg + sLineBreak + sLineBreak +
-          'Os mesmos serão reativados automaticamente para o correto lançamento da Nota de Compra.';
+          'Para o correto lançamento da Nota de Compra, os itens serão reativados automaticamente.';
 
   Application.MessageBox(pChar(cMsg),'Importação XML - Entrada',mb_Ok + MB_ICONINFORMATION);
   ReativarItens;

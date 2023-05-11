@@ -266,6 +266,7 @@ type
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
+    procedure VerificaItensInativos;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -286,7 +287,8 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45;
+uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
+  uItensInativosImpXMLEntrada;
 
 {$R *.DFM}
 
@@ -2516,7 +2518,41 @@ begin
   // Atenção a rotina acima altera a quantidade no estoque
   //
   sDataAntiga := DateToStrInvertida(Form7.ibDataSet24EMISSAO.AsDateTime);
-  //
+  
+  VerificaItensInativos;
+end;
+
+procedure TForm24.VerificaItensInativos;
+var
+  cProdutos: String;
+  nRecNo: Integer;
+begin
+  // Se tiver registro de itens vai validar os inativos
+  if DBGrid1.DataSource.DataSet.RecordCount > 0 then
+  begin
+    nRecNo := DBGrid1.DataSource.DataSet.RecNo;
+    DBGrid1.DataSource.DataSet.DisableControls;
+    try
+      DBGrid1.DataSource.DataSet.First;
+      while not DBGrid1.DataSource.DataSet.Eof do
+      begin
+        if DBGrid1.DataSource.DataSet.FieldByName('CODIGO').AsString <> EmptyStr then
+          cProdutos := cProdutos + QuotedStr(DBGrid1.DataSource.DataSet.FieldByName('CODIGO').AsString) + ',';
+
+        DBGrid1.DataSource.DataSet.Next;
+      end;
+
+      TItensInativosImpXMLEnt.New
+                             .setDataBase(Form7.IBDatabase1)
+                             .Executar(cProdutos);
+
+      if Form7.IBTransaction1.Active then
+        Form7.IBTransaction1.CommitRetaining;
+    finally
+      DBGrid1.DataSource.DataSet.RecNo := nRecNo;
+      DBGrid1.DataSource.DataSet.EnableControls;
+    end;
+  end;
 end;
 
 procedure TForm24.FormActivate(Sender: TObject);
