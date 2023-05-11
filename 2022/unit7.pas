@@ -2072,6 +2072,7 @@ type
     procedure EnviarConsultaImprimirDANFE;
     function RetornarWhereAtivoEstoqueCompra: String;
     procedure LimparColunasItemCompra;
+    procedure VerificaItensInativos;
   public
 
     // Public declarations
@@ -2204,7 +2205,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uTransmiteNFSe
   , uImportaNFe
   , uRetornaCaptionEmailPopUpDocs
-  , uIRetornaCaptionEmailPopUpDocs;
+  , uIRetornaCaptionEmailPopUpDocs
+  , uItensInativosImpXMLEntrada;
 
 {$R *.DFM}
 
@@ -8284,6 +8286,7 @@ begin
     begin
       if sModulo = 'COMPRA' then
       begin
+        VerificaItensInativos;
         Form24.Show;
       end
       else
@@ -8323,6 +8326,39 @@ begin
     end;
   end;
   //
+end;
+
+procedure TForm7.VerificaItensInativos;
+var
+  cProdutos: String;
+  nRecNo: Integer;
+begin
+  // Se tiver registro de itens vai validar os inativos
+  if Form24.DBGrid1.DataSource.DataSet.RecordCount > 0 then
+  begin
+    nRecNo := Form24.DBGrid1.DataSource.DataSet.RecNo;
+    Form24.DBGrid1.DataSource.DataSet.DisableControls;
+    try
+      Form24.DBGrid1.DataSource.DataSet.First;
+      while not Form24.DBGrid1.DataSource.DataSet.Eof do
+      begin
+        if Form24.DBGrid1.DataSource.DataSet.FieldByName('CODIGO').AsString <> EmptyStr then
+          cProdutos := cProdutos + QuotedStr(Form24.DBGrid1.DataSource.DataSet.FieldByName('CODIGO').AsString) + ',';
+
+        Form24.DBGrid1.DataSource.DataSet.Next;
+      end;
+
+      TItensInativosImpXMLEnt.New
+                             .setDataBase(Self.IBDatabase1)
+                             .Executar(cProdutos);
+
+      if Self.IBTransaction1.Active then
+        Self.IBTransaction1.CommitRetaining;
+    finally
+      Form24.DBGrid1.DataSource.DataSet.RecNo := nRecNo;
+      Form24.DBGrid1.DataSource.DataSet.EnableControls;
+    end;
+  end;
 end;
 
 procedure TForm7.ibDataSet5NewRecord(DataSet: TDataset);
