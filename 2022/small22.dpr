@@ -80,8 +80,9 @@ uses
   uIRetornaCaptionEmailPopUpDocs in 'interfaces\uIRetornaCaptionEmailPopUpDocs.pas',
   uRetornaCaptionEmailPopUpDocs in 'units\uRetornaCaptionEmailPopUpDocs.pas',
   uITestaEmail in 'interfaces\uITestaEmail.pas',
-  uTestaEmail in 'units\uTestaEmail.pas'
-  ;
+  uTestaEmail in 'units\uTestaEmail.pas',
+  uIItensInativosImpXMLEntrada in 'interfaces\uIItensInativosImpXMLEntrada.pas',
+  uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas';
 
 {$R *.RES}
 

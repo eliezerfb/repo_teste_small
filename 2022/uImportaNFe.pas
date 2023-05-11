@@ -19,6 +19,7 @@ uses
   , Mais
   , unit7
   , Unit24
+  , uItensInativosImpXMLEntrada
   ;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -26,6 +27,12 @@ function ImportaNF(pP1: boolean; sP1: String):Boolean;
 implementation
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
+
+function RetornarCodProdInativo: String;
+begin
+  Result := QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ',';
+end;
+
 var
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
   Hora, Min, Seg, cent : Word;
@@ -55,6 +62,7 @@ var
 
   sIdDest : integer;
   sIniCFOP : string;
+  sItens: String;
 begin
   Result := True;
 
@@ -304,6 +312,7 @@ begin
                       if (AllTrim(Form7.ibDataSet4REFERENCIA.AsString) = AllTrim(NodeTmp.ChildNodes['cEAN'].Text)) and (AllTrim(Form7.ibDataSet4REFERENCIA.AsString) <> '') then
                       begin
                         bProdutoCadastrado := True;
+                        sItens := sItens + RetornarCodProdInativo;
                       end;
                     end;
 
@@ -335,6 +344,7 @@ begin
                         if form7.ibDataSet4CODIGO.AsString = sCodigoDeBarrasDoFornecedor then
                         begin
                           bProdutoCadastrado := True;
+                          sItens := sItens + RetornarCodProdInativo;
                         end;
                       end;
                     end;
@@ -354,13 +364,9 @@ begin
                         Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' ');
                         Form7.ibDataSet4.Open;
 
-                        if AllTrim(Form7.ibDataSet4CODIGO.AsString) <> '' then
-                        begin
-                          bProdutoCadastrado := True;
-                        end else
-                        begin
-                          bProdutoCadastrado := False;
-                        end;
+                        bProdutoCadastrado := AllTrim(Form7.ibDataSet4CODIGO.AsString) <> EmptyStr;
+                        if bProdutoCadastrado then
+                          sItens := sItens + RetornarCodProdInativo;
                       end;
                     end;
 
@@ -833,6 +839,9 @@ begin
         Application.MessageBox(pChar(E.Message),'Estrutura do arquivo XML da NF-e inválida.',mb_Ok + MB_ICONWARNING);
       end;
     end;
+    TItensInativosImpXMLEnt.New
+                           .setDataBase(Form7.IBDatabase1)
+                           .Executar(sItens);
   except
     on E: Exception do
     begin
