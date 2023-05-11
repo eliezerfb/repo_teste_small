@@ -4804,7 +4804,7 @@ object Form10: TForm10
           ParentFont = False
           ReadOnly = True
           TabOrder = 0
-          Text = 'C'#243'digo/ Descri'#231#227'o'
+          Text = 'C'#243'digo/ C'#243'digo de barras/ Descri'#231#227'o'
           OnEnter = Edit5Enter
         end
         object Edit6: TEdit

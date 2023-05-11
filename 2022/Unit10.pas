@@ -2180,7 +2180,7 @@ begin
       //
       Form10.orelha_composicaoShow(Sender);
     end;
-    DefinirVisibleConsultaProdComposicao;    
+    DefinirVisibleConsultaProdComposicao;
   except
   end;
 end;
@@ -9119,7 +9119,8 @@ end;
 
 procedure TForm10.DefinirVisibleConsultaProdComposicao;
 begin
-  framePesquisaProdComposicao.Visible := (Form7.ibDataSet28.State in [dsEdit, dsInsert]);
+  framePesquisaProdComposicao.Visible := (Form7.ibDataSet28.State in [dsEdit, dsInsert])
+                                         and (dbgComposicao.Columns.Grid.SelectedField.FieldName = Form7.ibDataSet28DESCRICAO.FieldName)
 end;
 
 procedure TForm10.dbgComposicaoColExit(Sender: TObject);
@@ -9132,8 +9133,7 @@ procedure TForm10.dbgComposicaoKeyUp(Sender: TObject; var Key: Word;
 begin
   if dbgComposicao.SelectedIndex = 0 then
   begin
-    //
-    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
     begin
       if not framePesquisaProdComposicao.Visible then
         framePesquisaProdComposicao.Visible := True
