@@ -13339,6 +13339,7 @@ begin
     if sModulo = 'OS'  then
     begin
       Apagar2.Enabled := False;
+      Apagar2.Visible := False;
     end;
     //
     if sModulo = 'COMPRA'  then
