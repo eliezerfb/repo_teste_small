@@ -2202,6 +2202,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFuncoesFiscais
   , uTransmiteNFSe
   , uImportaNFe
+  , uFuncoesBancoDados
+  , uClientesFornecedores
   , uRetornaCaptionEmailPopUpDocs
   , uIRetornaCaptionEmailPopUpDocs;
 
@@ -15900,29 +15902,25 @@ var
   bButton : Integer;
   sNomeNovo, sNomevolta : String;
 begin
-  //
   if sModulo <> 'LOKED' then
   begin
-    //
     try
       Form7.TabelaAberta.DisableControls;
-    except end;
-    //
+    except
+    end;
+    
     // Está variavel foi Iniciada no BeforeEdit        //
     // Se o nome for alterado deve ser                 //
     // atualizado o arquivo VENDAS e o arquivo RECEBER //
-    //
     Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-    //
+
     try
-      //
       if (sNomeAnterior <> ibDataSet2NOME.AsString) and (sNomeAnterior <> '') and (sNumeroAnterior = ibDataSet2REGISTRO.AsString) then
       begin
-        //
         sNomeNovo  := ibDataSet2NOME.AsString;
         sNomeVolta := sNomeAnterior;
-        //
-        bButton := Application.MessageBox(Pchar('O nome do '+LowerCase(Form7.IBDataSet2CLIFOR.AsString)+' foi alterado' +
+
+        bButton := Application.MessageBox(Pchar('O nome foi alterado' +
                                                 Chr(10) +
                                                 Chr(10) + '     de: ' + sNomeAnterior +
                                                 Chr(10) + '  para: ' + sNomeNovo +
@@ -15934,108 +15932,23 @@ begin
                    Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
         if bButton = IDYES then
         begin
-          //
           Screen.Cursor := crHourGlass;
-          //
-          // CODEBAR
-          //
-          Form7.ibDataSet6.Close;
-          Form7.ibDataSet6.SelectSQL.Clear;
-          Form7.ibDataSet6.SelectSQL.Add('update CODEBAR set FORNECEDOR='+QuotedStr(sNomeNovo)+' where FORNECEDOR='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet6.Open;
-          //
-          // RECEBER
-          //
-          //RECEBER.NOME
-          Form7.ibDataSet7.Close;
-          Form7.ibDataSet7.SelectSQL.Clear;
-          Form7.ibDataSet7.SelectSQL.Add('update RECEBER set NOME='+QuotedStr(sNomeNovo)+' where NOME='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet7.Open;
-          //RECEBER.INSTITUICAOFINANCEIRA
-          Form7.ibDataSet7.Close;
-          Form7.ibDataSet7.SelectSQL.Clear;
-          Form7.ibDataSet7.SelectSQL.Add('update RECEBER set INSTITUICAOFINANCEIRA='+QuotedStr(sNomeNovo)+' where INSTITUICAOFINANCEIRA='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet7.Open;
-          //
-          // PAGAR
-          //
-          Form7.ibDataSet8.Close;
-          Form7.ibDataSet8.SelectSQL.Clear;
-          Form7.ibDataSet8.SelectSQL.Add('update PAGAR set NOME='+QuotedStr(sNomeNovo)+' where NOME='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet8.Open;
-          //
-          // OS
-          //
-          Form7.ibDataSet3.Close;
-          Form7.ibDataSet3.SelectSQL.Clear;
-          Form7.ibDataSet3.SelectSQL.Add('update OS set CLIENTE='+QuotedStr(sNomeNovo)+' where CLIENTE='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet3.Open;
-          //
-          // VENDAS
-          //
-          Form7.ibDataSet15.Close;
-          Form7.ibDataSet15.SelectSQL.Clear;
-          Form7.ibDataSet15.SelectSQL.Add('update VENDAS set CLIENTE='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where CLIENTE='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet15.Open;
-          //
-          // COMPRAS
-          //
-          Form7.ibDataSet24.Close;
-          Form7.ibDataSet24.SelectSQL.Clear;
-          Form7.ibDataSet24.SelectSQL.Add('update COMPRAS set FORNECEDOR='+QuotedStr(sNomeNovo)+' where FORNECEDOR='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet24.Open;
-          //
-          // ITENS DE COMPRA
-          //
-          Form7.ibDataSet23.Close;
-          Form7.ibDataSet23.SelectSQL.Clear;
-          Form7.ibDataSet23.SelectSQL.Add('update ITENS002 set FORNECEDOR='+QuotedStr(sNomeNovo)+' where FORNECEDOR='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet23.Open;
-          //
-          // ESTOQUE
-          //
-          Form7.ibDataSet4.Close;
-          Form7.ibDataSet4.SelectSQL.Clear;
-          Form7.ibDataSet4.SelectSQL.Add('update ESTOQUE set FORNECEDOR='+QuotedStr(sNomeNovo)+' where FORNECEDOR='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet4.Open;
-          //
-          // ORCAMENTO
-          //
-          Form7.ibDataSet27.Close;
-          Form7.ibDataSet27.SelectSQL.Clear;
-          Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set CLIFOR='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where CLIFOR='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet27.Open;
-          //
-          // ALTERACA
-          //
-          Form7.ibDataSet27.Close;
-          Form7.ibDataSet27.SelectSQL.Clear;
-          Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set CLIFOR='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where CLIFOR='+QuotedStr(sNomeVolta)+'');
-          Form7.ibDataSet27.Open;
-          //
-          // VENDEDORES
-          //
-          Form7.ibDataSet9.Close;                                                    //
-          Form7.ibDataSet9.Selectsql.Clear;                                          // Vendedores e CLIENTES relacionados
-          Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR where NOME='+QuotedStr(sNomeVolta)+''); //
-          Form7.ibDataSet9.DataSource := Nil;
-          Form7.ibDataSet9.Open;
-          //
-          if Form7.ibDataSet9NOME.AsString = sNomeVolta then
+
+          //Mauricio Parizotto 2023-05-04
+          if not AtualizaDescricaoCliFor(sNomeNovo,sNomeVolta,IBDatabase1) then
           begin
-            Form7.ibDataSet9.Edit;
-            Form7.ibDataSet9NOME.AsString := sNomeNovo;
-            Form7.ibDataSet9.Post;
-            //
-            Form7.ibDataSet9.Delete;
-            //
+            ibDataSet2.Edit;
+            sNomeAnterior := sNomeVolta;
+            ibDataSet2NOME.AsString := sNomeVolta;
+            ibDataSet2.Post;
           end;
-          //
+
+          // VENDEDORES - Sistema cria um novo tova vez
+          ExecutaComando('Delete from VENDEDOR where NOME = '+QuotedStr(sNomevolta),ibDataSet2.Transaction);
+
           Screen.Cursor := crDefault; // Cursor normal
-          //
         end else
         begin
-          //
           ibDataSet2.Locate('NOME',sNomeNovo,[]);
           if ibDataSet2NOME.AsString = sNomeNovo then
           begin
@@ -16044,29 +15957,17 @@ begin
             ibDataSet2NOME.AsString := sNomeVolta;
             ibDataSet2.Post;
           end;
-          //
-          // VENDEDORES
-          //
-          Form7.ibDataSet9.Close;                                                    //
-          Form7.ibDataSet9.Selectsql.Clear;                                          // Vendedores e CLIENTES relacionados
-          Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR where NOME='+QuotedStr(sNomeNovo)+''); //
-          Form7.ibDataSet9.DataSource := Nil;
-          Form7.ibDataSet9.Open;
-          //
-          if Form7.ibDataSet9NOME.AsString = sNomeNovo then
-          begin
-            Form7.ibDataSet9.Delete;
-          end;
-          //
+
+          // VENDEDORES - Sistema cria um novo tova vez.
+          ExecutaComando('Delete from VENDEDOR where NOME = '+QuotedStr(sNomeNovo),ibDataSet2.Transaction);
+          
         end;
       end;
     except ShowMessage('Erro 7/1 ao renomear o nome do cliente.') end;
-    //
+    
     Form7.TabelaAberta.EnableControls;
     AgendaCommit(True);
-    //
   end;
-  //
 end;
 
 procedure TForm7.Inadimlencia1Click(Sender: TObject);

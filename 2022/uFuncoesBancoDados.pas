@@ -13,7 +13,8 @@ function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
-function ExecutaComando(comando:string):Boolean;
+function ExecutaComando(comando:string):Boolean;  overload;
+function ExecutaComando(comando:string; IBTRANSACTION: TIBTransaction):Boolean; overload;
 function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
 
 implementation
@@ -86,20 +87,42 @@ begin
   end;
 end;
 
-function ExecutaComando(comando:string):Boolean;
+
+function ExecutaComando(comando:string):Boolean;  overload;
 begin
   Result := False;
 
   try
     Form1.ibDataset200.Close;
-    Form1.ibDataset200.SelectSql.Clear;
-    Form1.ibDataset200.SelectSql.Add(comando);
-    Form1.ibDataset200.Open;
+    Form1.ibDataset200.SelectSql.Text := comando;
+    Form1.ibDataset200.ExecSQL;
     Form1.ibDataset200.Close;
 
     Result := True;
   except
   end;
+end;
+
+
+function ExecutaComando(comando:string; IBTRANSACTION: TIBTransaction):Boolean;  overload;
+var
+  IBQUERY: TIBQuery;
+begin
+  Result := False;
+
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+
+  try
+    IBQUERY.DisableControls;
+    IBQUERY.Close;
+    IBQUERY.SQL.Text := comando;
+    IBQUERY.ExecSQL;
+
+    Result := True;
+  except
+  end;
+
+  FreeAndNil(IBQUERY);
 end;
 
 
