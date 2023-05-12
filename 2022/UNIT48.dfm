@@ -1,6 +1,6 @@
 object Form48: TForm48
-  Left = 14
-  Top = 115
+  Left = 285
+  Top = 183
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False
@@ -170,7 +170,7 @@ object Form48: TForm48
         Transparent = True
       end
       object Label9: TLabel
-        Left = 480
+        Left = 305
         Top = 109
         Width = 106
         Height = 13
@@ -506,8 +506,22 @@ object Form48: TForm48
           F3B118AAD89973D6936C28A28AB39C28A28A0028A28A00FFD9}
         Stretch = True
       end
-      object SMALL_DBEdit43: TSMALL_DBEdit
+      object Label4: TLabel
         Left = 480
+        Top = 109
+        Width = 73
+        Height = 13
+        Caption = 'Emiss'#227'o              '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGray
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+      end
+      object SMALL_DBEdit43: TSMALL_DBEdit
+        Left = 305
         Top = 124
         Width = 170
         Height = 22
@@ -541,7 +555,7 @@ object Form48: TForm48
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 2
+        TabOrder = 3
         OnChange = SMALL_DBEdit39Change
         OnEnter = SMALL_DBEdit39Enter
         OnExit = SMALL_DBEdit39Exit
@@ -564,7 +578,7 @@ object Form48: TForm48
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 6
+        TabOrder = 7
         OnExit = SMALL_DBEdit4Exit
       end
       object SMALL_DBEdit18: TSMALL_DBEdit
@@ -583,7 +597,7 @@ object Form48: TForm48
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 7
+        TabOrder = 8
       end
       object SMALL_DBEdit19: TSMALL_DBEdit
         Left = 145
@@ -601,7 +615,7 @@ object Form48: TForm48
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 9
+        TabOrder = 10
       end
       object SMALL_DBEdit16: TSMALL_DBEdit
         Left = 526
@@ -620,7 +634,7 @@ object Form48: TForm48
         ParentShowHint = False
         ReadOnly = True
         ShowHint = True
-        TabOrder = 10
+        TabOrder = 11
         OnKeyDown = SMALL_DBEdit40KeyDown
       end
       object DBGrid4: TDBGrid
@@ -640,7 +654,7 @@ object Form48: TForm48
         Options = [dgEditing, dgColumnResize, dgColLines, dgTabs, dgCancelOnExit]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 3
+        TabOrder = 4
         TitleFont.Charset = ANSI_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -11
@@ -665,7 +679,7 @@ object Form48: TForm48
         Font.Style = []
         MaxLength = 32768
         ParentFont = False
-        TabOrder = 5
+        TabOrder = 6
         OnKeyDown = DBMemo1KeyDown
       end
       object SMALL_DBEdit2: TSMALL_DBEdit
@@ -682,7 +696,7 @@ object Form48: TForm48
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 4
+        TabOrder = 5
         OnEnter = SMALL_DBEdit2Enter
         OnExit = SMALL_DBEdit2Exit
         OnKeyDown = SMALL_DBEdit40KeyDown
@@ -703,12 +717,12 @@ object Form48: TForm48
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 11
+        TabOrder = 12
       end
       object SMALL_DBEdit40: TSMALL_DBEdit
         Left = 10
         Top = 124
-        Width = 465
+        Width = 289
         Height = 22
         Color = clWhite
         DataField = 'OPERACAO'
@@ -729,7 +743,7 @@ object Form48: TForm48
       object DBGrid1: TDBGrid
         Left = 10
         Top = 144
-        Width = 465
+        Width = 289
         Height = 5
         Color = 15790320
         DataSource = Form7.DataSource14
@@ -740,7 +754,7 @@ object Form48: TForm48
         Font.Style = []
         Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         ParentFont = False
-        TabOrder = 12
+        TabOrder = 13
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -779,7 +793,7 @@ object Form48: TForm48
         Font.Style = []
         Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         ParentFont = False
-        TabOrder = 8
+        TabOrder = 9
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -818,7 +832,7 @@ object Form48: TForm48
         Font.Style = []
         Options = [dgColLines, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         ParentFont = False
-        TabOrder = 13
+        TabOrder = 14
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -840,6 +854,25 @@ object Form48: TForm48
             Width = 75
             Visible = True
           end>
+      end
+      object SMALL_DBEdit3: TSMALL_DBEdit
+        Left = 480
+        Top = 124
+        Width = 170
+        Height = 22
+        Color = clWhite
+        DataField = 'EMISSAO'
+        DataSource = Form7.DataSource15
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnEnter = SMALL_DBEdit3Enter
+        OnKeyDown = SMALL_DBEdit40KeyDown
+        OnKeyUp = SMALL_DBEdit43KeyUp
       end
     end
     object Panel6: TPanel
