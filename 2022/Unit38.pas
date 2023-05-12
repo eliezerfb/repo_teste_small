@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, IniFiles, SmallFunc, ShellApi, checklst,
-  Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons;
+  Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils;
 
 type
   TForm38 = class(TForm)
@@ -35,7 +35,7 @@ type
     DateTimePicker1: TDateTimePicker;
     DateTimePicker2: TDateTimePicker;
     RadioButton1: TRadioButton;
-    RadioButton2: TRadioButton;
+    rbItemPorITem: TRadioButton;
     CheckListBox1: TCheckListBox;
     Edit1: TEdit;
     Label17: TLabel;
@@ -53,6 +53,7 @@ type
     Label24: TLabel;
     Label25: TLabel;
     ComboBox1: TComboBox;
+    cbListarCodigos: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -62,15 +63,19 @@ type
     procedure Edit1Exit(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure rbItemPorITemClick(Sender: TObject);
+    procedure RadioButton1Click(Sender: TObject);
   private
-    { Private declarations }
     function StrToFloatFormat(sFormato: String; Valor: Real): Real;
+    procedure DefinirEnabledListarCodigo;
   public
-    { Public declarations }
   end;
 
 var
   Form38: TForm38;
+
+const
+  _cRelVendaCupom = 'Relatório de vendas (Cupom Fiscal)';
 
 implementation
 
@@ -4539,6 +4544,8 @@ begin
               WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+              if cbListarCodigos.Checked then
+                WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
               WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
@@ -4549,8 +4556,15 @@ begin
             begin
               WriteLn(F,sModulo);
               WriteLn(F,'');
-              WriteLn(F,'Cupom  Data       Descrição do item                   Quantidade     Unitário R$    Total R$       Caixa');
-              WriteLn(F,'------ ---------- ----------------------------------- -------------- -------------- -------------- -----');
+              if cbListarCodigos.Checked then
+              begin
+                WriteLn(F,'Cupom  Data       Código  Descrição do item                   Quantidade     Unitário R$    Total R$       Caixa');
+                WriteLn(F,'------ ---------- ------- ----------------------------------- -------------- -------------- -------------- -----');
+              end else
+              begin
+                WriteLn(F,'Cupom  Data       Descrição do item                   Quantidade     Unitário R$    Total R$       Caixa');
+                WriteLn(F,'------ ---------- ----------------------------------- -------------- -------------- -------------- -----');
+              end;
             end;
             //
             fTotal := 0;
@@ -4576,6 +4590,8 @@ begin
                     WriteLn(F,'   <tr>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+ibDataSet27PEDIDO.AsString+'<br></font></td>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(ibDataSet27DATA.AsDateTime)+'<br></font></td>');
+                    if cbListarCodigos.Checked then
+                      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(ibDataSet27CODIGO.AsString,'<',''),'>','')+'<br></font></td>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(ibDataSet27DESCRICAO.AsString,'<',''),'>','')+'<br></font></td>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibDataSet27QUANTIDADE.AsFloat])+'<br></font></td>');
                     WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[ibDataSet27UNITARIO.AsFloat])+'<br></font></td>');
@@ -4586,6 +4602,8 @@ begin
                   begin
                     Write(F,Copy(ibDataSet27PEDIDO.AsString+Replicate(' ',6),1,6)+' ');
                     Write(F,DateTimeToStr(ibDataSet27DATA.AsDateTime)+' ');
+                    if cbListarCodigos.Checked then
+                      Write(F,Copy(ibDataSet27CODIGO.AsString+Replicate(' ',7),1,7)+' ');
                     Write(F,Copy(ibDataSet27DESCRICAO.AsString+Replicate(' ',35),1,35)+' ');
                     Write(F,Format('%14.'+Form1.ConfCasas+'n',[ibDataSet27QUANTIDADE.AsFloat])+' ');
                     Write(F,Format('%14.'+Form1.ConfPreco+'n',[ibDataSet27UNITARIO.AsFloat])+' ');
@@ -4607,6 +4625,8 @@ begin
               WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
               WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              if cbListarCodigos.Checked then
+                WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
               WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
@@ -4618,9 +4638,16 @@ begin
               WriteLn(F,'</center>');
             end else
             begin
-              WriteLn(F,'                                                                                    --------------');
-              WriteLn(F,'                                                                                    '+Format('%14.'+Form1.ConfPreco+'n',[fTotal])+'');
-              WriteLn(F,'');
+              if cbListarCodigos.Checked then
+              begin
+                WriteLn(F,'                                                                                            --------------');
+                WriteLn(F,'                                                                                            '+Format('%14.'+Form1.ConfPreco+'n',[fTotal])+'');
+              end else
+              begin
+                WriteLn(F,'                                                                                    --------------');
+                WriteLn(F,'                                                                                    '+Format('%14.'+Form1.ConfPreco+'n',[fTotal])+'');
+              end;
+              WriteLn(F,EmptyStr);
               Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
             end;
             //
@@ -4806,7 +4833,7 @@ begin
               WriteLn(F,'');
             end;
             //
-            if RadioButton2.Checked then
+            if rbItemPorITem.Checked then
             begin
               //
               if sModulo =  'Relatório de compras' then
@@ -4824,8 +4851,8 @@ begin
                   WriteLn(F,'    </tr>');
                 end else
                 begin
-                  WriteLn(F,'Nota   Data       Descrição do item                   Quantidade     Comprado por   Custo compra');
-                  WriteLn(F,'------ ---------- ----------------------------------- -------------- -------------- --------------');
+                  WriteLn(F,'Nota      Data       Descrição do item                   Quantidade     Comprado por   Custo compra');
+                  WriteLn(F,'--------- ---------- ----------------------------------- -------------- -------------- --------------');
                 end;
                 //
                 Form7.IBDataSet24.Close;
@@ -4900,6 +4927,8 @@ begin
                   WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
                   WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
                   WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+                  if cbListarCodigos.Checked then
+                    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
                   WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
                   WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
                   WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Vendido por</font></th>');
@@ -4907,8 +4936,15 @@ begin
                   WriteLn(F,'    </tr>');
                 end else
                 begin
-                  WriteLn(F,'Nota   Data       Descrição do item                   Quantidade     Vendido por    Custo compra');
-                  WriteLn(F,'------ ---------- ----------------------------------- -------------- -------------- --------------');
+                  if cbListarCodigos.Checked then
+                  begin
+                    WriteLn(F,'Nota      Data       Código  Descrição do item                   Quantidade     Vendido por    Custo compra');
+                    WriteLn(F,'--------- ---------- ------- ----------------------------------- -------------- -------------- --------------');
+                  end else
+                  begin
+                    WriteLn(F,'Nota      Data       Descrição do item                   Quantidade     Vendido por    Custo compra');
+                    WriteLn(F,'--------- ---------- ----------------------------------- -------------- -------------- --------------');
+                  end;
                 end;
                 //
                 Form7.IBDataSet15.Close;
@@ -4953,6 +4989,8 @@ begin
                         WriteLn(F,'   <tr>');
                         WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(ibDataSet15NUMERONF.AsString,10,3)+'<br></font></td>');
                         WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
+                        if cbListarCodigos.Checked then
+                          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+ibDataSet16CODIGO.AsString+'<br></font></td>');
                         WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+ibDataSet16DESCRICAO.AsString+'<br></font></td>');
                         WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibDataSet16QUANTIDADE.AsFloat])+'<br></font></td>');
                         WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[ibDataSet16QUANTIDADE.AsFloat * ibDataSet16UNITARIO.AsFloat ])+'<br></font></td>');
@@ -4962,6 +5000,8 @@ begin
                       begin
                         Write(F,Copy(ibDataSet15NUMERONF.AsString+Replicate(' ',9),1,9)+' ');
                         Write(F,DateToStr(ibDataSet15EMISSAO.AsDateTime)+' ');
+                        if cbListarCodigos.Checked then
+                          Write(F,Copy(ibDataSet16CODIGO.AsString+Replicate(' ',7),1,7)+' ');
                         Write(F,Copy(ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35)+' ');
                         Write(F,Format('%14.'+Form1.ConfCasas+'n',[ibDataSet16QUANTIDADE.AsFloat])+' ');
                         Write(F,Format('%14.'+Form1.ConfPreco+'n',[ibDataSet16QUANTIDADE.AsFloat * ibDataSet16UNITARIO.AsFloat ])+' ');
@@ -4985,6 +5025,8 @@ begin
                 WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
                 WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                 WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+                if cbListarCodigos.Checked then
+                  WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                 WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                 WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                 WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
@@ -4994,8 +5036,15 @@ begin
                 //
               end else
               begin
-                WriteLn(F,'                                                                     -------------- --------------');
-                Write(F,'                                                                     '+ Format('%14.'+Form1.ConfPreco+'n',[fTotal])+' ');
+                if cbListarCodigos.Checked then
+                begin
+                  WriteLn(F,DupeString(' ',80) + '-------------- --------------');
+                  Write(F,DupeString(' ',80) + Format('%14.'+Form1.ConfPreco+'n',[fTotal])+' ');
+                end else
+                begin
+                  WriteLn(F,DupeString(' ',72) + '-------------- --------------');
+                  Write(F,DupeString(' ',72) + Format('%14.'+Form1.ConfPreco+'n',[fTotal])+' ');
+                end;
                 WriteLn(F,Format('%14.'+Form1.ConfPreco+'n',[fTotal1])+'');
                 WriteLn(F,'');
               end;
@@ -5334,14 +5383,11 @@ procedure TForm38.FormActivate(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
-  //
   Image1.Picture := Form7.Image205.Picture;
-  //
+
   if Form7.sModulo = 'Auditoria' then
   begin
-    //
     Form38.ComboBox1.Items.Clear;
-    //
     try
       Form7.IBDataSet100.Close;
       Form7.IBDataSet100.SelectSQL.Clear;
@@ -5352,35 +5398,45 @@ begin
         Form38.ComboBox1.Items.Add(Form7.IBDataSet100.FieldByname('USUARIO').AsString);
         Form7.IBDataSet100.Next;
       end;
-    except end;
-    //
+    except
+    end;
   end;
-  //
+
   Form7.IBDataSet100.Close;
-  //
+
   Form38.ComboBox1.Text := Form2.Usuario.Text;
-  //
-  if not Form7.ibDataSet4.Active then Form7.ibDataSet4.Open;
-  //
+  if not Form7.ibDataSet4.Active then
+    Form7.ibDataSet4.Open;
+    
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   DateTimePicker1.Date := StrtoDate(Mais1Ini.ReadString('Outros','Período Inicial',DateToStr(Date-360)));
   DateTimePicker2.Date := StrtoDate(Mais1Ini.ReadString('Outros','Período Final',DateToStr(Date)));
   Mais1Ini.Free;
-  //
   if Form7.sModulo = 'Ranking de devedores' then
   begin
-    //
     Form38.ComboBox1.Items.Clear;
     Form38.ComboBox1.Items.Add('Últimos três meses');
     Form38.ComboBox1.Items.Add('Últimos doze meses');
     Form38.ComboBox1.Items.Add('Todos');
-    //
     Form38.ComboBox1.ItemIndex := 0;
-    //
   end;
-  //
+
+  cbListarCodigos.Enabled := False;
+  cbListarCodigos.TabStop := False;
+  if Form7.sModulo = _cRelVendaCupom then
+  begin
+    cbListarCodigos.Top := DateTimePicker2.Top + DateTimePicker2.Height + 5;
+    cbListarCodigos.Left := DateTimePicker2.Left;
+    cbListarCodigos.Enabled := True;
+    cbListarCodigos.TabStop := True;
+  end else
+  begin
+    cbListarCodigos.Top  := rbItemPorITem.Top + rbItemPorITem.Height + 5;
+    cbListarCodigos.Left := rbItemPorITem.Left + 16;
+    DefinirEnabledListarCodigo;
+  end;
+  
   Button3Click(Button3);
-  //
 end;
 
 
@@ -5442,7 +5498,9 @@ begin
   Label2.Visible           := False;
   Label3.Visible           := False;
   RadioButton1.Visible     := False;
-  RadioButton2.Visible     := False;
+  rbItemPorITem.Visible    := False;
+  cbListarCodigos.Visible  := False;
+  cbListarCodigos.Checked  := False;
   DateTimePicker1.Visible  := False;
   DateTimePicker2.Visible  := False;
   Form38.Panel1.Visible    := False;
@@ -5477,6 +5535,26 @@ begin
   sValorFormat := StringReplace(sValorFormat, ' ', '', []);
   sValorFormat := StringReplace(sValorFormat, '.', '', []);
   Result := StrToFloatDef(sValorFormat, 0);
+end;
+
+procedure TForm38.DefinirEnabledListarCodigo;
+begin
+  if Form7.sModulo = _cRelVendaCupom then
+    Exit;
+  cbListarCodigos.Enabled := rbItemPorITem.Checked;
+  cbListarCodigos.TabStop := cbListarCodigos.Enabled;
+  if not cbListarCodigos.Enabled then
+    cbListarCodigos.Checked := False;
+end;
+
+procedure TForm38.rbItemPorITemClick(Sender: TObject);
+begin
+  DefinirEnabledListarCodigo;
+end;
+
+procedure TForm38.RadioButton1Click(Sender: TObject);
+begin
+  DefinirEnabledListarCodigo;
 end;
 
 end.

@@ -94,12 +94,23 @@ object Form38: TForm38
       ParentFont = False
       Visible = False
     end
+    object cbListarCodigos: TCheckBox
+      Left = 216
+      Top = 147
+      Width = 97
+      Height = 17
+      TabStop = False
+      Caption = 'Listar c'#243'digos'
+      Enabled = False
+      TabOrder = 10
+      Visible = False
+    end
     object Edit1: TEdit
       Left = 235
       Top = 160
       Width = 25
       Height = 19
-      TabOrder = 10
+      TabOrder = 11
       Visible = False
       OnChange = Edit1Change
       OnExit = Edit1Exit
@@ -182,8 +193,9 @@ object Form38: TForm38
       TabOrder = 8
       TabStop = True
       Visible = False
+      OnClick = RadioButton1Click
     end
-    object RadioButton2: TRadioButton
+    object rbItemPorITem: TRadioButton
       Left = 200
       Top = 130
       Width = 185
@@ -191,6 +203,7 @@ object Form38: TForm38
       Caption = 'Item por item'
       TabOrder = 9
       Visible = False
+      OnClick = rbItemPorITemClick
     end
     object Panel4: TPanel
       Left = 200
@@ -354,7 +367,7 @@ object Form38: TForm38
       Ctl3D = False
       ParentBackground = False
       ParentCtl3D = False
-      TabOrder = 11
+      TabOrder = 12
       Visible = False
       object Label18: TLabel
         Left = 5
@@ -450,7 +463,7 @@ object Form38: TForm38
       Ctl3D = False
       ParentBackground = False
       ParentCtl3D = False
-      TabOrder = 12
+      TabOrder = 13
       Visible = False
       object Label22: TLabel
         Left = 5
@@ -480,7 +493,7 @@ object Form38: TForm38
       Width = 160
       Height = 21
       ItemHeight = 13
-      TabOrder = 13
+      TabOrder = 14
       Text = 'ComboBox1'
       Visible = False
     end
