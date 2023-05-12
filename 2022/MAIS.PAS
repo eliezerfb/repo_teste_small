@@ -508,6 +508,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
+  uFazerBackup,
   uRetornaBuildEXE;
 
 {$R *.DFM}
@@ -5726,13 +5727,18 @@ end;
 
 procedure TForm1.Image208Click(Sender: TObject);
 var
+  {
   Mais1Ini : tIniFile;
   sArquivo : String;
   bButton : Integer;
+  }
+  Backup: TBackup;
 begin
   //
   Form7.sModulo := 'BACKUP';
   Form1.Label201MouseLeave(Sender);
+  (* // Sandro Silva 2023-05-04 Criado uListaBackup
+  
   SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', sArquivo);
   //
   if sArquivo <> '' then
@@ -5908,6 +5914,11 @@ begin
 
     //
   end;
+  *)
+  Backup := TBackup.Create;
+  if Backup.FazerBackup(Sender) = IDYES then
+    Form19.Button1Click(Sender);
+  FreeAndNil(Backup);
   //
   if Form7.sModulo <> 'INDICADORES' then
     Form7.sModulo := '';

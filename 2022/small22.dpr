@@ -71,6 +71,7 @@ uses
   uAtualizaBancoDados in 'uAtualizaBancoDados.pas',
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
+  uFazerBackup in 'uFazerBackup.pas',
   uImportaNFe in 'uImportaNFe.pas',
   uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
