@@ -4789,8 +4789,8 @@ object Form10: TForm10
         object Edit5: TEdit
           Left = 20
           Top = 25
-          Width = 366
-          Height = 19
+          Width = 658
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -4804,14 +4804,14 @@ object Form10: TForm10
           ParentFont = False
           ReadOnly = True
           TabOrder = 0
-          Text = 'C'#243'digo/ Descri'#231#227'o'
+          Text = 'C'#243'digo/ C'#243'digo de barras/ Descri'#231#227'o'
           OnEnter = Edit5Enter
         end
         object Edit6: TEdit
-          Left = 385
+          Left = 676
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False
@@ -4827,11 +4827,11 @@ object Form10: TForm10
           Text = 'Quantidade'
           OnEnter = Edit6Enter
         end
-        object DBGrid2: TDBGrid
+        object dbgComposicao: TDBGrid
           Left = 20
           Top = 46
-          Width = 490
-          Height = 250
+          Width = 781
+          Height = 235
           Ctl3D = False
           DataSource = Form7.DataSource28
           Font.Charset = ANSI_CHARSET
@@ -4848,12 +4848,16 @@ object Form10: TForm10
           TitleFont.Height = -11
           TitleFont.Name = 'Microsoft Sans Serif'
           TitleFont.Style = []
-          OnKeyDown = DBGrid2KeyDown
-          OnKeyPress = DBGrid2KeyPress
+          OnColEnter = dbgComposicaoColEnter
+          OnColExit = dbgComposicaoColExit
+          OnKeyDown = dbgComposicaoKeyDown
+          OnKeyPress = dbgComposicaoKeyPress
+          OnKeyUp = dbgComposicaoKeyUp
           Columns = <
             item
               Expanded = False
               FieldName = 'DESCRICAO'
+              Width = 655
               Visible = True
             end
             item
@@ -4967,6 +4971,25 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 8
           OnClick = Button11Click
+        end
+        inline framePesquisaProdComposicao: TframePesquisaProduto
+          Left = 20
+          Top = 280
+          Width = 781
+          Height = 100
+          TabOrder = 9
+          Visible = False
+          inherited pnlPrincipal: TPanel
+            Width = 781
+            Height = 100
+            inherited dbgItensPesq: TDBGrid
+              Width = 781
+              Height = 100
+              OnCellClick = framePesquisaProdComposicaodbgItensPesqCellClick
+              OnKeyDown = framePesquisaProdComposicaodbgItensPesqKeyDown
+              OnKeyPress = framePesquisaProdComposicaodbgItensPesqKeyPress
+            end
+          end
         end
       end
       object orelha_foto: TTabSheet

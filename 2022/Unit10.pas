@@ -9,7 +9,8 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
   Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
   DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
-  xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs;
+  xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
+  uframePesquisaPadrao, uframePesquisaProduto;
 
 type
 
@@ -181,7 +182,7 @@ type
     orelha_composicao: TTabSheet;
     Edit5: TEdit;
     Edit6: TEdit;
-    DBGrid2: TDBGrid;
+    dbgComposicao: TDBGrid;
     SMALL_DBEdit33: TSMALL_DBEdit;
     SMALL_DBEdit34: TSMALL_DBEdit;
     SMALL_DBEdit35: TSMALL_DBEdit;
@@ -378,6 +379,7 @@ type
     OpenPictureDialog1: TOpenPictureDialog;
     SMALL_DBEdit73: TSMALL_DBEdit;
     Label107: TLabel;
+    framePesquisaProdComposicao: TframePesquisaProduto;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -394,13 +396,13 @@ type
       Rect: TRect; State: TGridDrawState);
     procedure StringGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure StringGrid1Click(Sender: TObject);
-    procedure DBGrid2KeyDown(Sender: TObject; var Key: Word;
+    procedure dbgComposicaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Button8Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure StringGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DBGrid2KeyPress(Sender: TObject; var Key: Char);
+    procedure dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
     procedure TabSheet4Show(Sender: TObject);
     procedure DBGrid3DblClick(Sender: TObject);
     procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -579,7 +581,20 @@ type
     procedure Image1Click(Sender: TObject);
     procedure CheckBox2Click(Sender: TObject);
     procedure ButtoOpenPictureDialog1n22Click(Sender: TObject);
+    procedure dbgComposicaoColEnter(Sender: TObject);
+    procedure dbgComposicaoColExit(Sender: TObject);
+    procedure dbgComposicaoKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure framePesquisaProdComposicaodbgItensPesqCellClick(
+      Column: TColumn);
+    procedure framePesquisaProdComposicaodbgItensPesqKeyPress(
+      Sender: TObject; var Key: Char);
+    procedure framePesquisaProdComposicaodbgItensPesqKeyDown(
+      Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    procedure ibDataSet28DESCRICAOChange(Sender: TField);
+    procedure DefinirVisibleConsultaProdComposicao;
+    procedure AtribuirItemPesquisaComposicao;
     { Private declarations }
   public
     { Public declarations }
@@ -610,7 +625,8 @@ var
 implementation
 
 uses Unit7, Mais, Unit14, Unit38, Unit16, Unit12, unit24, Unit22,
-  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils
+  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils, uTestaProdutoExiste,
+  uITestaProdutoExiste
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
   {Sandro Silva 2022-09-26 fim}
@@ -1569,30 +1585,26 @@ begin
 end;
 
 procedure TForm10.SMALL_DBEdit1Enter(Sender: TObject);
-var
-  vDataField : string;
 begin
+  // -------------------------------
   with Sender as TSMALL_DBEdit do
     sPublicText := Text;
-
-  dBGrid3.Visible := False;
-
+  //
   try
     if (Form7.sModulo = 'CAIXA') then
     begin
       SMALL_DBEdit1.SelStart  := 0;
       SMALL_DBEdit1.SelLength := 2;
     end;
-
+    //
     with Sender as TSMALL_DBEdit do
     begin
+      //
       dBgrid3.Columns.Items[0].FieldName := 'NOME';
       dBgrid3.Columns.Items[0].Width     := 204;
-
-      vDataField := DataField;
-
+      //
       dBGrid1.Visible := False;
-      if (vDataField = 'NOME') and
+      if (DataField = 'NOME') and
                        (
                         (Form7.sModulo = 'CAIXA') or
                         (Form7.sModulo = 'RECEBER') or
@@ -1603,8 +1615,9 @@ begin
                        ) then
         dBGrid1.Visible := True;
 
-      if ((vDataField = 'CONTA') and (Form7.sModulo = 'RECEBER')) or ((vDataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
+      if ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER')) or ((DataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
       begin
+        //
         dBGrid1.Visible    := True;
         dBGrid1.Top        := Top + 19;
         dBGrid1.Left       := Left;
@@ -1612,11 +1625,13 @@ begin
         dBGrid1.Width      := Width;
         dBGrid1.Font       := Font;
         dBGrid1.DataSource := Form7.DataSource12; // Convênios
+        //
       end;
-
-      if ((vDataField = 'NOME') and (Form7.sModulo = 'RECEBER'))
-        or ((vDataField = 'NOME') and (Form7.sModulo = 'PAGAR'  )) then
+      //
+      if ((DataField = 'NOME') and (Form7.sModulo = 'RECEBER'))
+      or ((DataField = 'NOME') and (Form7.sModulo = 'PAGAR'  )) then
       begin
+        //
         dBGrid1.Visible    := True;
         dBGrid1.Top        := Top + 19;
         dBGrid1.Left       := Left;
@@ -1624,11 +1639,12 @@ begin
         dBGrid1.Width      := Width;
         dBGrid1.Font       := Font;
         dBGrid1.DataSource := Form7.DataSource2; // Clifor
+        //
       end;
-
+      //
       dBgrid3.Columns.Items[1].Visible   := False;
-
-      if (vDataField = 'CONVENIO') and (Form7.sModulo = 'CLIENTES') then
+      //
+      if (DataField = 'CONVENIO') and (Form7.sModulo = 'CLIENTES') then
       begin
         dBGrid3.Visible    := True;
         dBGrid3.Top        := Top + 19;
@@ -1637,57 +1653,68 @@ begin
         dBGrid3.Width      := Width;
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DataSource29; // Convênios
-      end;
-
-      if vDataField = 'CIDADE' then
+      end else
       begin
-        if Length(AllTrim(Form7.IBDataSet2ESTADO.AsString)) <> 2 then
+        //
+        if DataField = 'CIDADE' then
         begin
-          Form7.IBDataSet39.Close;
-          Form7.IBDataSet39.SelectSQL.Clear;
-          Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
-          Form7.IBDataSet39.Open;
+          //
+          if Length(AllTrim(Form7.IBDataSet2ESTADO.AsString)) <> 2 then
+          begin
+            Form7.IBDataSet39.Close;
+            Form7.IBDataSet39.SelectSQL.Clear;
+            Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
+            Form7.IBDataSet39.Open;
+          end else
+          begin
+            Form7.IBDataSet39.Close;
+            Form7.IBDataSet39.SelectSQL.Clear;
+            Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet2ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+            Form7.IBDataSet39.Open;
+          end;
+          //
+          dBGrid3.Visible    := True;
+          dBGrid3.Top        := Top + 19;
+          dBGrid3.Left       := Left;
+          dBGrid3.Height     := 260;
+          dBGrid3.Width      := Width;
+          dBGrid3.Font       := Font;
+          dBGrid3.DataSource := Form7.DataSource39; // Municipios
+          //
         end else
         begin
-          Form7.IBDataSet39.Close;
-          Form7.IBDataSet39.SelectSQL.Clear;
-          Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet2ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
-          Form7.IBDataSet39.Open;
+          if (DataField = 'MEDIDA') then
+          begin
+            //
+            Form7.IBDataSet49.Close;
+            Form7.IBDataSet49.SelectSQL.Clear;
+            Form7.IBDataSet49.SelectSQL.Add('select * from MEDIDA order by SIGLA');
+            Form7.IBDataSet49.Open;
+            //
+            //
+            dBGrid3.Visible    := True;
+            dBGrid3.Top        := Top + 19;
+            dBGrid3.Left       := Left;
+            dBGrid3.Height     := 260;
+            dBGrid3.Width      := Width+300;
+            //
+            dBgrid3.Columns.Items[0].FieldName := 'SIGLA';
+            dBgrid3.Columns.Items[0].Width     := 30;
+            //
+            dBgrid3.Columns.Items[1].FieldName := 'DESCRICAO';
+            dBgrid3.Columns.Items[1].Width     := 100;
+            dBgrid3.Columns.Items[1].Visible   := True;
+            //
+            dBGrid3.Font       := Font;
+            dBGrid3.DataSource := Form7.DataSource49; // Medida
+            //
+            //
+          end
+          else
+            dBGrid3.Visible := False;
         end;
-
-        dBGrid3.Visible    := True;
-        dBGrid3.Top        := Top + 19;
-        dBGrid3.Left       := Left;
-        dBGrid3.Height     := 260;
-        dBGrid3.Width      := Width;
-        dBGrid3.Font       := Font;
-        dBGrid3.DataSource := Form7.DataSource39; // Municipios
       end;
-
-      if (vDataField = 'MEDIDA') then
-      begin
-        Form7.IBDataSet49.Close;
-        Form7.IBDataSet49.SelectSQL.Clear;
-        Form7.IBDataSet49.SelectSQL.Add('select * from MEDIDA order by SIGLA');
-        Form7.IBDataSet49.Open;
-
-        dBGrid3.Visible    := True;
-        dBGrid3.Top        := Top + 19;
-        dBGrid3.Left       := Left;
-        dBGrid3.Height     := 260;
-        dBGrid3.Width      := Width+300;
-
-        dBgrid3.Columns.Items[0].FieldName := 'SIGLA';
-        dBgrid3.Columns.Items[0].Width     := 30;
-
-        dBgrid3.Columns.Items[1].FieldName := 'DESCRICAO';
-        dBgrid3.Columns.Items[1].Width     := 100;
-        dBgrid3.Columns.Items[1].Visible   := True;
-
-        dBGrid3.Font       := Font;
-        dBGrid3.DataSource := Form7.DataSource49; // Medida
-      end;
-
+      //
       if Form7.sModulo = 'CLIENTES' then
       begin
         Panel3.Visible := True;
@@ -1696,36 +1723,9 @@ begin
       end
       else
         Panel3.Visible := False;
-
-      //Mauricio Parizotto 2023-05-03
-      if (vDataField = 'MUNICIPIO') and (Form7.sModulo = 'TRANSPORT') then
-      begin
-        if Length(AllTrim(Form7.ibDataSet18UF.AsString)) <> 2 then
-        begin
-          // Procura em todo o Pais o estado está em branco
-          Form7.IBDataSet39.Close;
-          Form7.IBDataSet39.SelectSQL.Text := ' Select * from MUNICIPIOS order by NOME';
-          Form7.IBDataSet39.Open;
-        end else
-        begin
-          // Procura dentro do estado
-          Form7.IBDataSet39.Close;
-          Form7.IBDataSet39.SelectSQL.Text := ' Select * '+
-                                              ' From MUNICIPIOS'+
-                                              ' Where UF='+QuotedStr(Form7.ibDataSet18UF.AsString)+
-                                              ' Order by NOME';
-          Form7.IBDataSet39.Open;
-        end;
-
-        dBGrid3.Visible    := True;
-        dBGrid3.Top        := Top + 19;
-        dBGrid3.Left       := Left;
-        dBGrid3.Height     := 260;
-        dBGrid3.Width      := Width;
-        dBGrid3.Font       := Font;
-        dBGrid3.DataSource := Form7.DataSource39; // Municipios
-      end;
+      //
     end;
+    //
   except
     ShowMessage('Erro 10/77 comunique o suporte técnico.')
   end;
@@ -1733,14 +1733,16 @@ end;
 
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);
 begin
+  //
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') then
     sNomeDoArquivoParaSalvar := 'contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt'; // Lendo o arquivo para mostrar na tela
-
+  //
   try
     sText := '';
-
+    //
     with Sender as TSMALL_DBEdit do
     begin
+      //
       if (Form7.sModulo = 'ESTOQUE') and (Datafield = 'DESCRICAO') and (Form7.ibDataSet4DESCRICAO.AsString = '') then
       begin
         if SMALL_DBEdit5.Focused then
@@ -1750,7 +1752,7 @@ begin
           Abort;
         end;
       end;
-
+      //
       if ((DataField = 'NOME') or (DataField = 'CONTA') or (DataField = 'CIDADE') or (DataField = 'CONVENIO')) and
        ((Form7.sModulo = 'CAIXA' ) or
         (Form7.sModulo = 'RECEBER') or
@@ -1760,12 +1762,16 @@ begin
             (Form7.sModulo = 'CLIENTES') or
              (Form7.sModulo = 'ESTOQUE')) then
       begin
+        //
         // Caixa
+        //
         if ((DataField = 'NOME')  and (Form7.sModulo = 'CAIXA'  ))
         or ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))
         or ((DataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
         begin
+          //                    //
           // Procura pela conta //
+          //                    //
           try
             if (LengTh(AllTrim(Text)) <= 5) and (LengTh(AllTrim(Text)) >1) then
             begin
@@ -1778,19 +1784,20 @@ begin
                 else
                   Form7.ibDataSet7CONTA.AsString := form7.ibDataSet12NOME.AsString;
 
+
               end;
             end;
          except end;
         end;
-
+        //
         sText := AllTrim(Text);
-
+        //
         if sText <> '' then
         begin
           tProcura := Form7.ibDataSet12;
           if Form7.sModulo = 'CAIXA' then
             tProcura := Form7.ibDataSet12;
-
+          //
           if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
           begin
             if DataField = 'NOME' then
@@ -1798,28 +1805,34 @@ begin
             else
               tProcura := Form7.ibDataSet12;
           end;
-
+          //
           if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
             tProcura := Form7.ibDataSet21;
-
+          //
           if bGravaEscolha then
           begin
             if Pos(AnsiUpperCase(sText), AnsiUpperCase(AllTrim(tProcura.FieldByName('NOME').AsString))) <> 0 then
               GravaEscolha
             else
             begin
+              //
               if (Form7.sModulo <> 'CLIENTES') then
               begin
                 Text := '';
                 Abort;
               end;
+              //
             end;
           end;
         end;
       end;
+      //
     end;
+    //
   except
   end;
+  //
+  //
 end;
 
 
@@ -1827,35 +1840,33 @@ end;
 
 procedure TForm10.DBGrid1CellClick(Column: TColumn);
 begin
+  //
   GravaEscolha(); // Ok
+  //
 end;
 
 procedure TForm10.DBGrid1DblClick(Sender: TObject);
 begin
+  //
   GravaEscolha(); // Ok
-  if Form7.sModulo = 'CAIXA'   then
-    if SMALL_DBEdit3.CanFocus then
-      SMALL_DBEdit3.SetFocus;
-      
+  if Form7.sModulo = 'CAIXA'   then if SMALL_DBEdit3.CanFocus then SMALL_DBEdit3.SetFocus;
   if Form7.sModulo = 'RECEBER' then
   begin
     if (dBGrid1.DataSource.Name = 'DataSource12')  then if SMALL_DBEdit3.CanFocus then SMALL_DBEdit3.SetFocus;
     if (dBGrid1.DataSource.Name = 'DataSource2') then if SMALL_DBEdit5.CanFocus then  SMALL_DBEdit5.SetFocus;
   end;
-
   if Form7.sModulo = 'PAGAR'   then
   begin
     if (dBGrid1.DataSource.Name = 'DataSource12')  then if SMALL_DBEdit3.CanFocus  then SMALL_DBEdit3.SetFocus;
     if (dBGrid1.DataSource.Name = 'DataSource2') then if SMALL_DBEdit5.CanFocus  then SMALL_DBEdit5.SetFocus;
   end;
-
   if Form7.sModulo = 'ESTOQUE' then
   begin
     if SMALL_DBEdit6.CanFocus then
       SMALL_DBEdit6.SetFocus;
   end;
-
   dBGrid1.Visible := False;
+  //
 end;
 
 procedure TForm10.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -1867,55 +1878,24 @@ begin
 end;
 
 procedure TForm10.SMALL_DBEdit1Change(Sender: TObject);
-var
-  vDataField : string;
 begin
   try
     if Form10.Visible then
     begin
+      //
       with Sender as TSMALL_DBEdit do
       begin
-        vDataField := DataField;
-
-        if (vDataField = 'CONTA')
-          and ((Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR'))
-          and (Form7.ibDataSet12.Active) then
-        begin
+        //
+        if (DataField = 'CONTA')        and ((Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR')) and (Form7.ibDataSet12.Active) then
           Form7.ibDataSet12.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        if (vDataField = 'CONVENIO')
-          and (Form7.sModulo = 'CLIENTES')
-          and (Form7.ibDataSet29.Active) then
-        begin
+        if (DataField = 'CONVENIO')     and (Form7.sModulo = 'CLIENTES')                               and (Form7.ibDataSet29.Active) then
           Form7.ibDataSet29.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        if (vDataField = 'CIDADE')
-          and (Form7.sModulo = 'CLIENTES')
-          and (Form7.ibDataSet39.Active) then
-        begin
+        if (DataField = 'CIDADE')       and (Form7.sModulo = 'CLIENTES')                               and (Form7.ibDataSet39.Active) then
           Form7.ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        //Mauricio Parizotto
-        if (vDataField = 'MUNICIPIO')
-          and (Form7.sModulo = 'TRANSPORT')
-          and (Form7.ibDataSet39.Active) then
-        begin
-          Form7.ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        if (Form7.sModulo = 'CAIXA')
-          and (vDataField = 'NOME')
-          and (Form7.ibDataSet12.Active) then
-        begin
+        if (Form7.sModulo = 'CAIXA')    and (DataField = 'NOME')                                       and (Form7.ibDataSet12.Active) then
           Form7.ibDataSet12.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        if (Form7.sModulo = 'PAGAR')
-          and (vDataField = 'NOME')
-          and (Form7.ibDataSet2.Active ) then
+        //
+        if (Form7.sModulo = 'PAGAR')    and (DataField = 'NOME')                                       and (Form7.ibDataSet2.Active ) then
         begin
           Form7.ibDataSet2.DisableControls;
           Form7.ibDataSet2.Close;
@@ -1924,10 +1904,8 @@ begin
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
         end;
-
-        if (Form7.sModulo = 'RECEBER')
-          and (vDataField = 'NOME')
-          and (Form7.ibDataSet2.Active ) then
+        //
+        if (Form7.sModulo = 'RECEBER')  and (DataField = 'NOME')                                       and (Form7.ibDataSet2.Active ) then
         begin
           Form7.ibDataSet2.DisableControls;
           Form7.ibDataSet2.Close;
@@ -1936,32 +1914,29 @@ begin
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
         end;
-
-        if (Form7.sModulo = 'ESTOQUE')
-          and (vDataField = 'NOME')
-          and (Form7.ibDataSet21.Active) then
-        begin
+        //
+        if (Form7.sModulo = 'ESTOQUE')  and (DataField = 'NOME')    and (Form7.ibDataSet21.Active) then
           Form7.ibDataSet21.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        if (Form7.sModulo = 'ESTOQUE')
-          and (vDataField = 'MEDIDA')
-          and (Form7.ibDataSet49.Active) then
-        begin
+        if (Form7.sModulo = 'ESTOQUE')  and (DataField = 'MEDIDA')  and (Form7.ibDataSet49.Active) then
           Form7.IBDataSet49.Locate('SIGLA',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
+        //
       end;
     end;
+    //
   except end;
-
+  //
   if (Form7.sModulo = 'ESTOQUE') and (Form10.orelhas.ActivePage = Orelha_promo) then
     AtualizaTela(False)
+  //
 end;
 
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   I : Integer;
 begin
+  //
+  framePesquisaProdComposicao.Visible := False;
+  framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;  
   try
     for I := 0 to 29 do
     begin
@@ -1972,7 +1947,7 @@ begin
     end;
   except
   end;
-
+  //
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := Orelha_cadastro;
@@ -1980,19 +1955,20 @@ begin
   begin
     Orelhas.ActivePage := Orelha_CFOP;
   end;
-
+  //
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
-
+  //
   sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
-
+  //
   if Form7.Visible then
   begin
     if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
   end;
-
+  //
   Form10.Hide;
   GravaRegistro(True);
+  //
 end;
 
 procedure TForm10.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -2008,8 +1984,9 @@ var
   rQtd : Real;
   I, J : Integer;
 begin
+  //
   rQtd := 0;
-
+  //
   for I := 0 to 19 do
     for J := 0 to 19 do
       if AllTrim(Form10.StringGrid1.Cells[I,J]) <> '' then
@@ -2019,9 +1996,11 @@ begin
         except
           Form10.StringGrid1.Cells[I,J] := '0,00'
         end;
-
+        //
+  //
   Label39.Caption := 'Diferença: '+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd]);
-
+  //
+  //
   try
     if StringGrid1.Cells[aCol,aRow] <> '' then
     begin
@@ -2034,7 +2013,7 @@ begin
       end;
     end;
   except StringGrid1.Cells[aCol,aRow] := '' end;
-
+  //
   if ACol = 0 then
     StringGrid1.Canvas.Font.Color := clREd
     else
@@ -2042,12 +2021,17 @@ begin
         StringGrid1.Canvas.Font.Color := clBlue
           else StringGrid1.Canvas.Font.Color := clBlack;
 
+//  if not ((ARow <> 0) or (ACol <> 0)) then StringGrid1.Canvas.Brush.Color := clWindow;
+//  StringGrid1.Canvas.FillRect(Rect);
   StringGrid1.Canvas.FillRect(Rect);
 
+
+  //
   if ARow = 0 then
     StringGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2, Form10.StringGrid1.Cells[aCol,aRow])
   else
     StringGrid1.Canvas.TextOut(Rect.Right - StringGrid1.Canvas.TextWidth(Form10.StringGrid1.Cells[aCol,aRow]) -2 ,Rect.Top+2,  Form10.StringGrid1.Cells[aCol,aRow]);
+  //
 end;
 
 procedure TForm10.StringGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -2072,9 +2056,10 @@ procedure TForm10.StringGrid1Click(Sender: TObject);
 var
   i, iColunas, iLinhas: Integer;
 begin
+  //
   if (StringGrid1.Col = 0) and (StringGrid1.Row = 0) then
     StringGrid1.Row := 1;
-
+  //
   if (StringGrid1.Col <> 0) and (StringGrid1.Row <> 0) then
   begin
     iColunas := 0;
@@ -2088,101 +2073,76 @@ begin
     if StringGrid1.Row > iLinhas  then StringGrid1.Row :=
       iLinhas;
   end;
+  //
 end;
 
-procedure TForm10.DBGrid2KeyDown(Sender: TObject; var Key: Word;
+procedure TForm10.dbgComposicaoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   sCodigo: String;
+  oTestaProd: ITestaProdutoExiste;
 begin
+  //
   try
+    if ((Key = VK_DOWN) or (Key = VK_UP)) and (framePesquisaProdComposicao.dbgItensPesq.CanFocus) then
+    begin
+      Key := VK_SHIFT;
+      framePesquisaProdComposicao.dbgItensPesq.SetFocus;
+    end;
     if Key = VK_F1     then
       HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('composto.htm')));
     if Key = VK_DOWN   then
     begin
-      if dbGrid2.CanFocus then
-        dbGrid2.SetFocus;
+      if dbgComposicao.CanFocus then
+        dbgComposicao.SetFocus;
     end;
-
     if Key = VK_ESCAPE then
+      begin
       Key := VK_RETURN;
-
+      framePesquisaProdComposicao.Visible := False;
+    end;
     if (Key = VK_RETURN) or (Key = VK_TAB) or (Key = VK_DOWN) or (Key = VK_UP) then
     begin
       Form7.ibDataSet28.Edit;
       Form7.ibDataSet28.UpdateRecord;
-      if Alltrim(Form7.ibDataSet28DESCRICAO.AsString) <> '' then
+
+      if Alltrim(Form7.ibDataSet28DESCRICAO.AsString) <> EmptyStr then
       begin
         if DbGrid1.SelectedIndex = 0 then
         begin
-          Form7.ibDataSet4.DisableControls;
           sCodigo := Form7.ibDataSet4CODIGO.AsString;
+          oTestaProd := TTestaProdutoExiste.New
+                                           .setDataBase(Form7.IBDatabase1)
+                                           .setTextoPesquisar(Form7.ibDataSet28DESCRICAO.AsString);
 
-          Form7.ibDataSet28.Edit;
-
-          // Procura por código
-          Form7.ibDataSet28.Edit;
-          if (length(Alltrim(Form7.ibDataSet28DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet28DESCRICAO.AsString))<>'') then
-          begin
-            try
-              if StrToInt(AllTrim(Form7.ibDataSet28DESCRICAO.AsString)) <> 0 then
-                Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(Form7.ibDataSet28DESCRICAO.AsString)),5,0),[]);
-            except
-            end;
-          end;
-
-          if Pos(Alltrim(Form7.ibDataSet28DESCRICAO.AsString),Form7.ibDataSet4.FieldByname('CODIGO').AsString) = 0 then
-          begin
-            // Procura pela referencia //
-            Form7.ibDataSet4.Locate('REFERENCIA',AllTrim(Form7.ibDataSet28DESCRICAO.AsString),[]);
-            // Se o produto não foi encontrado //
-            if Alltrim(Form7.ibDataSet28DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
-            begin
-              // Procura pela descricão //
-              begin
-                Form7.ibDataSet4.First;
-
-                while not Form7.ibDataSet4.Eof and (UpperCase(Form7.ibDataSet28DESCRICAO.AsString) <> UpperCAse(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString)) do
-                begin
-                  Form7.ibDataSet4.Next;
-                end;
-
-                Form7.ibDataSet4.EnableControls;
-              end;
-            end;
-          end;
-
-          if not Form7.ibDataSet4.Eof then
+          if oTestaProd.Testar then
           begin
             Form7.ibDataSet28.Edit;
-            if Form7.ibDataSet4.FieldByname('CODIGO').AsString <> sCodigo then
+            if oTestaProd.getQuery.FieldByname('CODIGO').AsString <> sCodigo then
             begin
-              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := Form7.ibDataSet4.FieldByname('DESCRICAO').AsString;
+              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := oTestaProd.getQuery.FieldByname('DESCRICAO').AsString;
               if Form7.ibDataSet28.FieldByName('QUANTIDADE').AsFloat <= 0 then
                 Form7.ibDataSet28.FieldByName('QUANTIDADE').AsFloat := 1;
               Form7.ibDataSet28.Post;
               Form7.ibDataSet28.Edit;
             end else
             begin
-              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString  := '';
-              Form7.ibDataSet28.FieldByName('QUANTIDADE').AsString := '';
-              ShowMessage('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+Form7.ibDataSet4.FieldByname('CODIGO').AsString +chr(10)+ sCodigo);
+              Form7.ibDataSet28.FieldByName('DESCRICAO').AsString  := EmptyStr;
+              Form7.ibDataSet28.FieldByName('QUANTIDADE').AsString := EmptyStr;
+              ShowMessage('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+oTestaProd.getQuery.FieldByname('CODIGO').AsString +chr(10)+ sCodigo);
             end;
           end else
           begin
-            Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := '';
+            Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := EmptyStr;
             ShowMessage('Produto não cadastrado.');
           end;
 
-          DBGrid2.Update;
-
-          Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
-          Form7.ibDataSet4.EnableControls;
-
+          dbgComposicao.Update;
         end;
       end;
-      Form10.orelha_composicaoShow(Sender);
+      Self.orelha_composicaoShow(Sender);
     end;
+    DefinirVisibleConsultaProdComposicao;
   except
   end;
 end;
@@ -2192,41 +2152,46 @@ var
   sCodigo: String;
   F: TextFile;
 begin
+  //
   if Button8.CanFocus then
   begin
+    //
     Button8.SetFocus;
     if Form7.ibDataSet25ACUMULADO1.AsFloat <= fQuantidade then
     begin
+      //
       Form7.bFabrica := True;
-
+      //
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
-
+      //
       Form7.ibDataSet4.DisableControls;
-
+      //
       Form7.IBDataSet4.Close;
       Form7.IBDataSet4.SelectSQL.Clear;
       Form7.IBDataSet4.SelectSQL.Add('select * from ESTOQUE');
       Form7.IBDataSet4.Open;
-
+      //
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.EnableControls;
-
+      //
       Form7.ibDataSet28.First;
       while not Form7.ibDataSet28.Eof do
       begin
+        //
         Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+        //
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - (Form7.ibDataSet28QUANTIDADE.AsFloat * Form7.ibDataSet25ACUMULADO1.AsFloat );
         Form7.ibDataSet4.Post;
-
+        //
         Form7.ibDataSet28.Next;
+        //
       end;
-
+      //
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.Edit;
       Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet25ACUMULADO1.AsFloat;
-
+      //
       if Form1.bHtml1 then
       begin
         AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -2235,7 +2200,7 @@ begin
         WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
         WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
         WriteLn(F,'<br><font size=3 color=#000000><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><p><p>');
-
+        //
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=3><b>ORDEM DE PRODUÇÃO</b>');
         Writeln(F,'<br>');
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>FABRICAR '+FloatToStr(Form7.ibDataSet25ACUMULADO1.AsFloat)+ ' ' +UpperCase(Form7.ibDataSet4DESCRICAO.AsSTring)+'</b>');
@@ -2248,12 +2213,14 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO1.AsFloat)+'</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet28.First;
         while not Form7.ibDataSet28.Eof do
         begin
+          //
           Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+          //
+          //
           if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
           begin
             WriteLn(F,' <tr>');
@@ -2263,18 +2230,19 @@ begin
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO1.AsFloat])+'</td>');
             WriteLn(F,' </tr>');
           end;
-
+          //
           Form7.ibDataSet28.Next;
         end;
-
+        //
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
         WriteLn(F,'<br>');
         WriteLn(F,'</center><center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
         + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
         + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-
+        //
         // WWW
+        //
         if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
         begin
           WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -2282,18 +2250,21 @@ begin
         begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
         end;
-
+        //
         if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
         WriteLn(F,'</html>');
-
+        //
         CloseFile(F);
-
+        //
         AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
+        //
       end else
       begin
+        //
         Form7.ibDataSet28.First;
         if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
         begin
+          //
           AssignFile(F,pChar(Senhas.UsuarioPub+'.txt'));  // Direciona o arquivo F para EXPORTA.TXT
           Rewrite(F);                   //
           Writeln(F,'ORDEM DE PRODUÇÃO');
@@ -2304,12 +2275,14 @@ begin
           Writeln(F,'');
           Writeln(F,'Cód   Descrição                               Qtd        Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO1.AsFloat));
           Writeln(F,'----- --------------------------------------- ---------- --------------');
-
+          //
           Form7.ibDataSet28.First;
           while not Form7.ibDataSet28.Eof do
           begin
+            //
             Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+            //
+            //
             if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
             begin
               Writeln(F,Form7.ibDataSet4CODIGO.AsString+' '
@@ -2317,11 +2290,12 @@ begin
                        +Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+' '
                        +Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO1.AsFloat]));
             end;
-
+            //
             Form7.ibDataSet28.Next;
           end;
-
+          //
           // Totalizador
+          //
           Writeln(F,'----- --------------------------------------- ---------- --------------');
           Writeln(F,'');
           Writeln(F,'');
@@ -2333,16 +2307,20 @@ begin
           WriteLn(F,'www.smallsoft.com.br');
           CloseFile(F);
           ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
+          //
         end;
+        //
       end;
-
+      //
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.EnableControls;
-
+      //
       Form7.bFabrica := False;
-    end else
-      ShowMEssage('Não é possível fabricar essa quantidade.');
+      //
+    end else ShowMEssage('Não é possível fabricar essa quantidade.');
+    //
   end;
+  //
 end;
 
 procedure TForm10.Button10Click(Sender: TObject);
@@ -2350,47 +2328,53 @@ var
   sCodigo : String;
   F: TextFile;
 begin
+  //
   if Button10.CanFocus then
   Begin
+    //
     Button10.SetFocus;
     if Form7.ibDataSet25ACUMULADO2.AsFloat <= Form7.ibDataSet4QTD_ATUAL.AsFloat then
     begin
+      //
       Form7.bFabrica := True;
-
+      //
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
       Form7.ibDataSet4.DisableControls;
-
+      //
       Form7.IBDataSet4.Close;
       Form7.IBDataSet4.SelectSQL.Clear;
       Form7.IBDataSet4.SelectSQL.Add('select * from ESTOQUE');
       Form7.IBDataSet4.Open;
-
+      //
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
-
+      //
       Form7.ibDataSet28.First;
       while not Form7.ibDataSet28.Eof do
       begin
+        //
         Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+        //
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + (Form7.ibDataSet28QUANTIDADE.AsFloat * Form7.ibDataSet25ACUMULADO2.AsFloat );
         Form7.ibDataSet4.Post;
         Form7.ibDataSet28.Next;
+        //
       end;
-
+      //
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.Edit;
       Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet25ACUMULADO2.AsFloat;
-
+      //
       if Form1.bHtml1 then
       begin
+        //
         AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
         Rewrite(F);
         Writeln(F,'<html><head><title>'+AllTrim(Form7.ibDataSet13NOME.AsString) + ' - '+Form7.sModulo+'</title></head>');
         WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
         WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
         WriteLn(F,'<br><font size=3 color=#000000><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><p><p>');
-
+        //
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=3><b>ORDEM DE PRODUÇÃO</b>');
         Writeln(F,'<br>');
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>DESMONTAR '+FloatToStr(Form7.ibDataSet25ACUMULADO2.AsFloat)+ ' ' +UpperCase(Form7.ibDataSet4DESCRICAO.AsSTring)+'</b>');
@@ -2403,12 +2387,14 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO2.AsFloat)+'</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet28.First;
         while not Form7.ibDataSet28.Eof do
         begin
+          //
           Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+          //
+          //
           if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
           begin
             WriteLn(F,' <tr>');
@@ -2418,17 +2404,19 @@ begin
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO2.AsFloat])+'</td>');
             WriteLn(F,' </tr>');
           end;
-
+          //
           Form7.ibDataSet28.Next;
         end;
-
+        //
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
         WriteLn(F,'<br>');
         WriteLn(F,'</center><center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
         + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
         + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-
+        //
+        // WWW
+        //
         if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
         begin
           WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -2436,18 +2424,20 @@ begin
         begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
         end;
-
+        //
         if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
         WriteLn(F,'</html>');
-
+        //
         CloseFile(F);
-
+        //
         AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
+        //
       end else
       begin
         Form7.ibDataSet28.First;
         if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
         begin
+          //
           AssignFile(F,pChar(Senhas.UsuarioPub+'.txt'));  // Direciona o arquivo F para EXPORTA.TXT
           Rewrite(F);                   //
           Writeln(F,'ORDEM DE PRODUÇÃO');
@@ -2458,12 +2448,14 @@ begin
           Writeln(F,'');
           Writeln(F,'Cód   Descrição                               Qtd        Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO2.AsFloat));
           Writeln(F,'----- --------------------------------------- ---------- --------------');
-
+          //
           Form7.ibDataSet28.First;
           while not Form7.ibDataSet28.Eof do
           begin
+            //
             Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+            //
+            //
             if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
             begin
               Writeln(F,Form7.ibDataSet4CODIGO.AsString+' '
@@ -2471,11 +2463,12 @@ begin
                        +Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+' '
                        +Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO2.AsFloat]));
             end;
-
+            //
             Form7.ibDataSet28.Next;
           end;
-
+          //
           // Totalizador
+          //
           Writeln(F,'----- --------------------------------------- ---------- --------------');
           Writeln(F,'');
           Writeln(F,'');
@@ -2487,15 +2480,20 @@ begin
           WriteLn(F,'www.smallsoft.com.br');
           CloseFile(F);
           ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
+          //
         end;
+        //
       end;
-
+      //
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.EnableControls;
-
+      //
       Form7.bFabrica := False;
+      //
     end else ShowMEssage('Não é possível desmontar essa quantidade.');
+    //
   end;
+  //
 end;
 
 procedure TForm10.StringGrid1KeyUp(Sender: TObject; var Key: Word;
@@ -2504,25 +2502,29 @@ begin
   if (StringGrid1.Col = 0) and (StringGrid1.Row = 0) then StringGrid1.Row := 1;
 end;
 
-procedure TForm10.DBGrid2KeyPress(Sender: TObject; var Key: Char);
+procedure TForm10.dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
 begin
-  if dbGrid2.SelectedField.DataType = ftFloat then
+  if dbgComposicao.SelectedField.DataType = ftFloat then
      if Key = chr(46) then key := chr(44);
 
   if AllTrim(Form7.ibDataSet28.FieldByName('DESCRICAO').AsString) = '' then
   begin
     if Key = Chr(13) then Key := Chr(0);
+  end else
+  begin
+    if dbgComposicao.DataSource.DataSet.State in [dsEdit, dsInsert] then
+      framePesquisaProdComposicao.CarregarProdutos(Form7.ibDataSet28.FieldByName('DESCRICAO').AsString);
   end;
 
   if Key = chr(13) then
   begin
-    I := DbGrid2.SelectedIndex;
-    DbGrid2.SelectedIndex := DbGrid2.SelectedIndex  + 1;
-    if (I = DbGrid2.SelectedIndex) then
+    I := dbgComposicao.SelectedIndex;
+    dbgComposicao.SelectedIndex := dbgComposicao.SelectedIndex  + 1;
+    if (I = dbgComposicao.SelectedIndex) then
     begin
-      DbGrid2.SelectedIndex := 0;
+      dbgComposicao.SelectedIndex := 0;
       Form7.ibDataSet28.Next;
       if Form7.ibDataSet28.EOF then Form7.ibDataSet28.Append;
     end;
@@ -2533,13 +2535,13 @@ procedure TForm10.TabSheet4Show(Sender: TObject);
 begin
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
-    dbGrid2.Enabled  := False;
+    dbgComposicao.Enabled  := False;
     Button8.Enabled  := False;
     Button10.Enabled := False;
     Button11.Enabled := False;
   end else
   begin
-    dbGrid2.Enabled  := True;
+    dbgComposicao.Enabled  := True;
     Button8.Enabled  := True;
     Button10.Enabled := True;
     Button11.Enabled := True;
@@ -2548,6 +2550,7 @@ end;
 
 procedure TForm10.DBGrid3DblClick(Sender: TObject);
 begin
+  //
   GravaEscolha(); // Ok
   if Form10.dBGrid3.Height = 260 then
   begin
@@ -2556,6 +2559,7 @@ begin
   begin
     if Form10.SMALL_DBEdit19.CanFocus then Form10.SMALL_DBEdit19.SetFocus;
   end;
+  //
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -2607,12 +2611,13 @@ end;
 
 procedure TForm10.CheckBox1Click(Sender: TObject);
 begin
+  //
   if Form7.ibDataSet30.Modified then
   begin
     Form7.ibDataSet30.Edit;
     Form7.ibDataSet30.Post;
   end;
-
+  //
   if Form10.CheckBox1.Checked then
   begin
     Form10.CheckBox1.Checked := True;
@@ -2628,6 +2633,7 @@ begin
     Button16.Visible         := False;
     Button17.Visible         := False;
   end;
+  //
 end;
 
 procedure TForm10.DBGrid4KeyPress(Sender: TObject; var Key: Char);
@@ -2668,6 +2674,8 @@ procedure TForm10.Button15Click(Sender: TObject);
 var
   F: TextFile;
 begin
+  //
+  //
   if Form1.bHtml1 then
   begin
     CriaJpg('logotip.jpg');
@@ -2701,43 +2709,54 @@ begin
     WriteLn(F,'N série       NF Comp Pago           Data Comp  NF vend Recebido       Data venda');
     WriteLn(F,'------------- ------- -------------- ---------- ------- -------------- ----------');
   end;
-
+  //
   Form7.ibDataSet15.DisableControls;
-
+  //
   Form7.ibDataSet24.DisableControls;
-
+  //
   Form7.ibDataSet30.First;
   while not Form7.ibDataSet30.EOF do
   begin
+    //
     if Form1.bHtml1 then
     begin
+      //
       // NF de Compra
+      //
       WriteLn(F,' <tr>');
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30SERIAL.AsString+'</td>');
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30NFCOMPRA.AsString+'</td>');
       Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALCOMPRA.AsFloat])+'</td>'); // Valor
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30DATCOMPRA.AsString+'</td>');
+      //
       // NF de venda
+      //
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet30NFVENDA.AsString,1,6)+'</td>');
       Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALVENDA.AsFloat])+'</td>'); // Valor
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30DATVENDA.AsString+'</td>');
       WriteLn(F,' </tr>');
+      //
     end else
     begin
+      //
       // NF de Compra
+      //
       Write(F,Copy(Form7.ibDataSet30SERIAL.AsString+Replicate(' ',13),1,13)+' ');
       Write(F,Copy(Form7.ibDataSet30NFCOMPRA.AsString+Replicate(' ',7),1,7)+' ');
       Write(F,Format('%14.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALCOMPRA.AsFloat])+' '); // Valor
       Write(F,Form7.ibDataSet30DATCOMPRA.AsString+' ');
-
+      //
       // NF de venda
+      //
       Write(F,Copy(Copy(Form7.ibDataSet30NFVENDA.AsString,1,6)+Replicate(' ',7),1,7)+' ');
       Write(F,Format('%14.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALVENDA.AsFloat])+' '); // Valor
       WriteLn(F,Form7.ibDataSet30DATVENDA.AsString+' ');
+      //
     end;
+    //
     Form7.ibDataSet30.Next;
   end;
-
+  //
   if Form1.bHtml1 then
   begin
     WriteLn(F,' </tr>');
@@ -2745,7 +2764,9 @@ begin
     WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
     + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-
+    //
+    // WWW
+    //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
       WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -2753,12 +2774,13 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-
+    //
     if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
     WriteLn(F,'</html>');
     CloseFile(F);
-
+    //
     AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
+    //
   end else
   begin
     WriteLn(F,'');
@@ -2768,15 +2790,17 @@ begin
     CloseFile(F);
     ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
   end;
-
+  //
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet24.EnableControls;
+  //
 end;
 
 procedure TForm10.Button16Click(Sender: TObject);
 var
   F: TextFile;
 begin
+  //
   if Form1.bHtml1 then
   begin
     CriaJpg('logotip.jpg');
@@ -2803,6 +2827,7 @@ begin
     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30DATCOMPRA.AsString+'</td>');
     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30NFVENDA.AsString+'</td>');
     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30DATVENDA.AsString+'</td>');
+    //
   end else
   begin
     AssignFile(F,pChar(Senhas.UsuarioPub+'.txt'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -2819,9 +2844,10 @@ begin
     Write(F,Copy(Form7.ibDataSet30NFVENDA.AsString+Replicate(' ',7),1,7)+' ');
     Writeln(F,Form7.ibDataSet30DATVENDA.AsString+' ');
   end;
-
+  //
   if Form1.bHtml1 then
   begin
+    //
     WriteLn(F,' </tr>');
     WriteLn(F,'</table><p><p>');
     WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
@@ -2837,25 +2863,29 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-
+    //
     if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
     WriteLn(F,'</html>');
     CloseFile(F);
-
+    //
     AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
+    //
   end else
   begin
+    //
     WriteLn(F,'');
     WriteLn(F,'Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
     + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'');
-
+    //
     CloseFile(F);
     ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
+    //
   end;
-
+  //
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet24.EnableControls;
+  //
 end;
 
 procedure TForm10.DBGrid5KeyPress(Sender: TObject; var Key: Char);
@@ -2885,15 +2915,18 @@ end;
 
 procedure TForm10.Image201Click(Sender: TObject);
 begin
+  //
   Form10.Button4.SetFocus;
   Form10.Button4Click(Sender);
-
+  //
   if not Form7.bSoLeitura then
   begin
+    //
     if Form7.sModulo = 'ESTOQUE' then
     begin
       if (AllTrim(Form7.ibDataSet4CODIGO.AsString) <> '') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then
       begin
+
       end else
       begin
         Form7.ArquivoAberto.append;
@@ -2902,30 +2935,36 @@ begin
     begin
       try
         Form7.ArquivoAberto.append;
-      except end;
+      except end;  
     end;
+    //
   end;
-
+  //
   Form7.IBTransaction1.CommitRetaining;
   VerificaSeEstaSendoUsado(False);
   Form10.Show;
+  //
 end;
 
 procedure TForm10.Image205Click(Sender: TObject);
 begin
+  //
+//  Form10.Button4.SetFocus;
+//  Form10.Button4Click(Sender);
+  //
+  //
   try
     Form7.ArquivoAberto.MoveBy(1);
-  except
-  end;
-
+  except end;   
+  //
   try
     Form7.IBTransaction1.CommitRetaining;
     VerificaSeEstaSendoUsado(False);
     Form10.FormShow(Sender);
     Form10.FormActivate(Sender);
     if ((Form7.ArquivoAberto.eof) or (bNovo)) then Form10.Image201Click(Sender) else bNovo := False;
-  except
-  end;
+  except end;
+  //
 end;
 
 procedure TForm10.Panel_1Enter(Sender: TObject);
@@ -2941,6 +2980,9 @@ end;
 procedure TForm10.FormCreate(Sender: TObject);
 begin
   sNomeDoArquivoParaSalvar := 'Small Commerce.Txt';
+
+  framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
+  Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;  
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -2954,8 +2996,10 @@ var
   I, J : Integer;
   Mais1Ini: TIniFile;
 begin
+  //
   if not Form7.bSoLeitura then
   begin
+    //
     I := Application.MessageBox(Pchar('Tem certeza que quer excluir as informações'
                             + chr(10)+'da grade deste produto?'+ Chr(10)
                       + Chr(10))
@@ -2965,19 +3009,22 @@ begin
       for I := 0 to 19 do
        for J := 0 to 19 do
          StringGrid1.Cells[I,J] := '';
-
+      //
       Form7.ibDataSet10.DisableControls;
       Form7.ibDataSet10.First;
-
+      //
       while not Form7.ibDataSet10.EOF do
         if Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then Form7.ibDataSet10.Delete else Form7.ibDataSet10.Next;
-
+      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),Form10.StringGrid1.Cells[0,I]);
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),Form10.StringGrid1.Cells[I,0]);
       Mais1ini.Free;
+      //
     end;
+    //
   end;
+  //
 end;
 
 procedure TForm10.Button2Click(Sender: TObject);
@@ -2992,39 +3039,52 @@ var
   I, J : Integer;
   rQtd : Real;
 begin
+  //
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
   try
     rQtd := 0;
-
+    //
     for I := 0 to 19 do
       for J := 0 to 19 do
         if AllTrim(Form10.StringGrid1.Cells[I,J]) <> '' then
           if (I <> 0) and (J <> 0) then rQtd := rQtd + StrToFloat(LimpaNumeroDeixandoAVirgula(Form10.StringGrid1.Cells[I,J]));
-
+    //
     if rQtd <> 0 then
     begin
       if StrToFloat(Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd])) = 0 then
       begin
+        //
         // Fecha sempre qtd atual com grade
+        //
         Form7.ibDataSet10.Close;
         Form7.ibDataSet10.SelectSQL.Clear;
         Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
         Form7.ibDataSet10.Open;
-
+        //
         for I := 0 to 19 do
         begin
           for J := 0 to 19 do
           begin
+            //
             if (AllTrim(Form10.StringGrid1.Cells[I,0]) <> '') and (AllTrim(Form10.StringGrid1.Cells[0,J]) <> '') and (Form10.StringGrid1.Cells[I,J] = '') then Form10.StringGrid1.Cells[I,J] := '0,00';
-
+            //
             if AllTrim(form10.StringGrid1.Cells[I,J]) <> '' then
             begin
+              //
+{
+              Form7.ibDataSet10.Close;
+              Form7.ibDataSet10.SelectSQL.Clear;
+              Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' and COR='+QuotedStr(StrZero(I,2,0))+' and TAMANHO='+QuotedStr(StrZero(J,2,0))+'');
+              Form7.ibDataSet10.Open;
+}
+
               Form7.ibDataSet10.First;
               while (not Form7.ibDataSet10.Eof) and not ((Form7.ibDataSet10COR.AsString = StrZero(I,2,0)) and (Form7.ibDataSet10TAMANHO.AsString = StrZero(J,2,0))) do
               begin
                 Form7.ibDataSet10.Next;
               end;
-
+              //
+//              if (Form7.ibDataSet10CODIGO.AsString + Form7.ibDataSet10COR.AsString + Form7.ibDataSet10TAMANHO.AsString) = Form7.ibDataSet4CODIGO.AsString+StrZero(I,2,0)+StrZero(J,2,0) then
               if (Form7.ibDataSet10COR.AsString = StrZero(I,2,0)) and (Form7.ibDataSet10TAMANHO.AsString = StrZero(J,2,0)) then
               begin
                 if (I = 0) or (J = 0) then
@@ -3038,8 +3098,10 @@ begin
                   Form7.ibDataSet10QTD.AsString  := LimpaNumeroDeixandoAVirgula(Format('%12.'+Form1.ConfCasas+'n',[(StrToFloat(LimpaNumeroDeixandoAvirgula(form10.StringGrid1.Cells[I,J])))]));
                   Form7.ibDataSet10.Post;
                 end;
+                //
               end else
               begin
+                //
                 Form7.ibDataSet10.Append;
                 Form7.ibDataSet10CODIGO.AsString  := Form7.ibDataSet4CODIGO.AsString;
                 Form7.ibDataSet10COR.AsString     := StrZero(I,2,0);
@@ -3061,11 +3123,13 @@ begin
                   Form7.ibDataSet10ENTRADAS.AsString := Form7.ibDataSet10QTD.AsString;
                   Form7.ibDataSet10.Post;
                 end;
+                //
               end;
+              //
             end;
           end;
         end;
-
+        //
         if Form7.sModulo <> 'ICM' then
         begin
           Orelhas.ActivePage := Orelha_cadastro;
@@ -3073,6 +3137,7 @@ begin
         begin
           Orelhas.ActivePage := Orelha_CFOP;
         end;
+        //
       end else
       begin
         try
@@ -3080,13 +3145,14 @@ begin
           Abort;
         except end;
       end;
-
+      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),Form10.StringGrid1.Cells[0,I]);
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),Form10.StringGrid1.Cells[I,0]);
       Mais1ini.Free;
     end else
     begin
+      //
       if Form7.sModulo <> 'ICM' then
       begin
         Orelhas.ActivePage := Orelha_cadastro;
@@ -3094,8 +3160,9 @@ begin
       begin
         Orelhas.ActivePage := Orelha_CFOP;
       end;
+      //
     end;
-
+    //
     if (AllTrim(Form10.StringGrid1.Cells[0,1]) = '') and (AllTrim(Form10.StringGrid1.Cells[1,0]) = '') then
     begin
       Form7.ibDataSet10.Close;
@@ -3106,18 +3173,20 @@ begin
       while (Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (not Form7.ibDataSet10.EOF) do
         if Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then Form7.ibDataSet10.Delete else Form7.ibDataSet10.Next;
     end;
+    //
   except end;
-
+  //
   Screen.Cursor             := crDefault;
+  //
 end;
 
 procedure TForm10.Image202Click(Sender: TObject);
 begin
   Form20.ShowModal;
-
+  //
   Form7.iFoco := 0;
   Form10.Paint;
-
+  //
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
@@ -3126,6 +3195,7 @@ begin
   begin
     Orelhas.ActivePage := Orelha_CFOP;
   end;
+  //
 end;
 
 procedure TForm10.Label37MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -3141,17 +3211,22 @@ end;
 
 procedure TForm10.Image9Click(Sender: TObject);
 begin
+  //
+
   if not Form7.bSoLeitura then
   begin
+    //
     if Form7.sModulo <> 'ICM' then
     begin
       Orelhas.ActivePage := orelha_cadastro;
-      if dbGrid2.CanFocus then dbGrid2.SetFocus;
+      if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
     end else
     begin
       Orelhas.ActivePage := Orelha_CFOP;
     end;
+    //
   end;
+  //
 end;
 
 procedure TForm10.Label40MouseLeave(Sender: TObject);
@@ -3200,11 +3275,17 @@ end;
 
 procedure TForm10.Edit6Enter(Sender: TObject);
 begin
-  if dbGrid2.CanFocus then dbGrid2.SetFocus;
+  if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
 end;
 
 procedure TForm10.FormActivate(Sender: TObject);
+//var
+//  tInicio : tTime;
+//  Hora, Min, Seg, cent : Word;
 begin
+  //
+//  tInicio := time;
+  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
     if Form7.ibDataSet4MARKETPLACE.AsString = '1' then
@@ -3212,7 +3293,7 @@ begin
     else
       CheckBox2.Checked := False;
   end;
-
+  //
   if Form7.sModulo = 'CLIENTES' then
   begin
     Form10.Image1.Visible := True;
@@ -3220,14 +3301,14 @@ begin
   begin
     Form10.Image1.Visible := False;
   end;
-
+  //
   Image4.Picture.Bitmap := Image7.Picture.Bitmap;
-
+  //
   Image5.Left     := 20;
   Image5.Top      := 80;
   Image5.Width    := 640 div 2;
   Image5.Height   := 480 div 2;
-
+  //
   Form10.orelha_cadastro.TabVisible   := True;
   Form10.orelha_serial.TabVisible     := False;
   Form10.orelha_composicao.TabVisible := False;
@@ -3244,15 +3325,16 @@ begin
   Form10.orelha_CODEBAR.TabVisible    := False;
   Form10.orelha_TAGS.TabVisible       := False;
   Form10.orelha_MKT.TabVisible       := False;
-
+  //
   if Form7.sModulo = 'ICM' then
   begin
     Form10.orelha_cadastro.TabVisible   := False;
     Form10.orelha_CFOP.TabVisible       := True;
   end;
-
+  //
   if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
   begin
+    //
     Form10.orelha_cadastro.TabVisible   := True;
     Form10.orelha_serial.TabVisible     := True;
     Form10.orelha_composicao.TabVisible := True;
@@ -3267,26 +3349,41 @@ begin
     Form10.orelha_CODEBAR.TabVisible    := True;
     Form10.orelha_TAGS.TabVisible       := True;
     Form10.orelha_MKT.TabVisible        := True;
+    //
+{
+    if Form7.ibDataSet13CRT.AsString = '1' then
+    begin
+      Form10.Orelha_PISCOFINS.Enabled := True;
+    end else
+    begin
+      Form10.Orelha_PISCOFINS.Enabled := False;
+    end;
+}
+    //
   end;
-
+  //
   if Form7.sModulo = 'CLIENTES' then
   begin
+    //
     Form10.orelha_cadastro.TabVisible   := True;
     Form10.orelha_foto.TabVisible       := True;
-
+    //
     if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
     begin
       Form10.orelha_COMISSAO.TabVisible       := True;
     end;
+    //
   end;
-
+  //
   Image5.Picture  := Image3.Picture;
-
+  //
   bNovo := False;
-
+  //
   if Form7.sModulo = 'RECEBER' then
   begin
+    //
     // Campo CONTATO no cadastro de clientes
+    //
     Form10.SMALL_DBEdit26.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit26.DataField  := 'CONTATO';
     Form10.SMALL_DBEdit26.Top        := SMALL_DBEdit2.Top;
@@ -3294,52 +3391,56 @@ begin
     Form10.SMALL_DBEdit26.Visible    := True;
     Form10.SMALL_DBEdit26.Width      := 240;
     Form10.SMALL_DBEdit26.MaxLength  := Form7.IBDataSet2CONTATO.Size;
-
+    //
     Form10.Label26.Top        := Label2.Top;
     Form10.Label26.Left       := Label2.Left + 450;
     Form10.Label26.Visible    := True;
     Form10.Label26.Caption    := 'Contato:';
-
+    //
     // Campo TELEFONE no cadastro de clientes
+    //
     Form10.SMALL_DBEdit27.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit27.DataField  := 'FONE';
     Form10.SMALL_DBEdit27.Top        := SMALL_DBEdit3.Top;
     Form10.SMALL_DBEdit27.Left       := SMALL_DBEdit3.Left + 450;
     Form10.SMALL_DBEdit27.Visible    := True;
     Form10.SMALL_DBEdit27.Width      := 240;
-
+    //
     Form10.Label27.Top        := Label3.Top;
     Form10.Label27.Left       := Label3.Left + 450;
     Form10.Label27.Visible    := True;
     Form10.Label27.Caption    := 'Telefone:';
-
+    //
     // Campo CELULAR no cadastro de clientes
+    //
     Form10.SMALL_DBEdit28.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit28.DataField  := 'CELULAR';
     Form10.SMALL_DBEdit28.Top        := SMALL_DBEdit4.Top;
     Form10.SMALL_DBEdit28.Left       := SMALL_DBEdit4.Left + 450;
     Form10.SMALL_DBEdit28.Visible    := True;
     Form10.SMALL_DBEdit28.Width      := 240;
-
+    //
     Form10.Label28.Top        := Label4.Top;
     Form10.Label28.Left       := Label4.Left + 450;
     Form10.Label28.Visible    := True;
     Form10.Label28.Caption    := 'Celular:';
-
+    //
     // Campo EMAIL no cadastro de clientes
+    //
     Form10.SMALL_DBEdit29.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit29.DataField  := 'EMAIL';
     Form10.SMALL_DBEdit29.Top        := SMALL_DBEdit5.Top;
     Form10.SMALL_DBEdit29.Left       := SMALL_DBEdit5.Left + 450;
     Form10.SMALL_DBEdit29.Visible    := True;
     Form10.SMALL_DBEdit29.Width      := 240;
-
+    //
     Form10.Label29.Top        := Label5.Top;
     Form10.Label29.Left       := Label5.Left + 450;
     Form10.Label29.Visible    := True;
     Form10.Label29.Caption    := 'E-mail:';
-
+    //
     // Contatos
+    //
     Form10.dbMemo2.DataSource := Form7.DataSource2;
     Form10.dbMemo2.DataField  := 'CONTATOS';
     Form10.dbMemo2.TabOrder   := Form10.SMALL_DBEdit29.TabOrder + 1;
@@ -3348,51 +3449,66 @@ begin
     Form10.dbMemo2.Top        := SMALL_DBEdit6.Top;
     Form10.dbMemo2.Left       := SMALL_DBEdit6.Left + 450;
     Form10.dbMemo2.Visible    := True;
-
+    //
     Form10.Label23.Caption    := 'Contatos:';
     Form10.Label23.Visible    := True;
     Form10.Label23.Top        := Label6.Top;
     Form10.Label23.Left       := Label6.Left + 450;
     Form10.Label23.Width      := Label6.Width;
-
+    //
     if Form7.bSoLeitura or Form7.bEstaSendoUsado then
     begin
+      //
       Form10.SMALL_DBEdit26.ReadOnly := True;
       Form10.SMALL_DBEdit27.ReadOnly := True;
       Form10.SMALL_DBEdit28.ReadOnly := True;
       Form10.SMALL_DBEdit29.ReadOnly := True;
-
+      //
       Form10.SMALL_DBEdit26.Font.Color := clGrayText;
       Form10.SMALL_DBEdit27.Font.Color := clGrayText;
       Form10.SMALL_DBEdit28.Font.Color := clGrayText;
       Form10.SMALL_DBEdit29.Font.Color := clGrayText;
+      //
     end else
     begin
+      //
       Form10.SMALL_DBEdit26.ReadOnly := False;
       Form10.SMALL_DBEdit27.ReadOnly := False;
       Form10.SMALL_DBEdit28.ReadOnly := False;
       Form10.SMALL_DBEdit29.ReadOnly := False;
-
+      //
       Form10.SMALL_DBEdit26.Font.Color := clWindowText;
       Form10.SMALL_DBEdit27.Font.Color := clWindowText;
       Form10.SMALL_DBEdit28.Font.Color := clWindowText;
       Form10.SMALL_DBEdit29.Font.Color := clWindowText;
-
+      //
       try
+        //
         Form7.IBDataSet2.Edit;
+        //
       except
+        //
         Form10.SMALL_DBEdit26.ReadOnly := True;
         Form10.SMALL_DBEdit27.ReadOnly := True;
         Form10.SMALL_DBEdit28.ReadOnly := True;
         Form10.SMALL_DBEdit29.ReadOnly := True;
-
+        //
         Form10.SMALL_DBEdit26.Font.Color := clGrayText;
         Form10.SMALL_DBEdit27.Font.Color := clGrayText;
         Form10.SMALL_DBEdit28.Font.Color := clGrayText;
         Form10.SMALL_DBEdit29.Font.Color := clGrayText;
+        //
       end;
+      //
     end;
+    //
   end;
+  //
+//  DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
+  //
+//  Label202.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
+//  Label202.ShowHint := True;
+  //
 end;
 
 procedure TForm10.Label52MouseLeave(Sender: TObject);
@@ -3470,23 +3586,30 @@ var
   sNome : String;
   SmallIni : tIniFile;
 begin
+  //
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'ESTOQUE') then
   begin
+    //
     with Sender as TLabel do
     begin
+      //
       if not ((Form7.sModulo = 'ESTOQUE') and (Name='Label22')) then
       begin
         sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
         Caption := sNome+':';
         Repaint;
-
+        //
         SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
         SmallIni.WriteString(Form7.sModulo,NAME,sNome);
         SmallIni.Free;
       end;
+      //
     end;
+    //
     Mais.LeLabels(True);
+    //
   end;
+  //
 end;
 
 procedure TForm10.Label19MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -3564,38 +3687,44 @@ begin
     Form7.Show;
     AgendaCommit(True);
   end;
-
+  //
   Form10.close;
+  //
 end;
 
 procedure TForm10.Image23Click(Sender: TObject);
 begin
+  //
   try
+    //
     if Form7.sModulo = 'ESTOQUE' then
     begin
       if not Form7.bSoLeitura then
       begin
+        //
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-
+        //
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
         Form10.Panel_1Enter(Sender);
       end;
     end;
-    
+    //
     if Form7.sModulo = 'GRUPOS' then
     begin
       if not Form7.bSoLeitura then
       begin
+        //
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-
+        //
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
         Form10.Panel_1Enter(Sender);
       end;
     end;
-  except
-  end;
+    //
+  except end;
+  //
 end;
 
 procedure TForm10.SMALL_DBEdit1MouseMove(Sender: TObject; Shift: TShiftState;
@@ -3603,6 +3732,9 @@ procedure TForm10.SMALL_DBEdit1MouseMove(Sender: TObject; Shift: TShiftState;
 begin
   with Sender as TSMALL_DBEdit do
   begin
+    //
+    // if Form7.ArquivoAberto.Modified then Button7.Enabled := True;
+    //
     if (Pos('CELULAR',UpperCase(Field.DisplayLabel)) <> 0) or (Pos('TELEFONE',UpperCase(Field.DisplayLabel)) <> 0) or (Pos('FAX',UpperCase(Field.DisplayLabel)) <> 0) then
     begin
       Hint := RetornaOperadora(Field.AsString);
@@ -3617,6 +3749,9 @@ end;
 procedure TForm10.DBMemo1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  //
+  // Quando da 2 ENTER seguidos
+  //
   if Key = VK_RETURN then
   begin
     if bProximo then
@@ -3624,12 +3759,15 @@ begin
       Perform(Wm_NextDlgCtl,0,0);
     end else bProximo := True;
   end else bProximo := False;
+  //
 end;
 
 procedure TForm10.DBMemo2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  //
   // Quando da 2 ENTER seguidos
+  //
   if Key = VK_INSERT then
   begin
     if FileExists(Form1.sAtual+'\contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt') then // Lê o arquivo
@@ -3643,21 +3781,22 @@ begin
       except end;
     end;
   end;
-
+  //
   if Key = VK_RETURN then
   begin
     if bProximo then
     begin
       Perform(Wm_NextDlgCtl,0,0);
     end else bProximo := True;
-  end else
-    bProximo := False;
+  end else bProximo := False;
+  //
 end;
 
 procedure TForm10.DBMemo2Enter(Sender: TObject);
 begin
+  //
   sContatos := Form7.IBDataSet2CONTATOS.AsString;
-
+  //
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -3672,15 +3811,17 @@ begin
     if Form7.ArquivoAberto.Modified then Form7.ArquivoAberto.Post;
     Form7.ArquivoAberto.Edit;
   end;
-
+  //
   SendMessage(dbMemo2.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
   SendMessage(dbMemo2.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
   dbMemo2.SelStart := Length(dbMemo2.Text); //move o cursor pra o final da ultima linha
   dbMemo2.SetFocus;
+  //
 end;
 
 procedure TForm10.DBMemo2Exit(Sender: TObject);
 begin
+  //
   if StrTran(StrTran(StrTran(Form7.IBDataSet2CONTATOS.AsString,chr(10),''),chr(13),''),' ','') <> StrTran(StrTran(StrTran(sContatos,chr(10),''),chr(13),''),' ','') then
   begin
     if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then Form7.ibDataset2.Edit;
@@ -3692,7 +3833,7 @@ begin
       Audita('CONTATOS','SMALL', Senhas.UsuarioPub, Copy(Form7.IBDataSet2NOME.AsString, 1, 80),0,0); // Ato, Modulo, Usuário, Histórico, Valor
     /////////////////////////////////////////////// 2022-07-21
   end;
-
+  //
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -3719,9 +3860,11 @@ begin
         Form7.ArquivoAberto.Cancel;
       end;
     end;
-
+    //
     Form7.ArquivoAberto.Edit;
+    //
   end;
+  //
 end;
 
 procedure TForm10.FormDeactivate(Sender: TObject);
@@ -3740,21 +3883,27 @@ var
   sNome : String;
   SmallIni : tIniFile;
 begin
+  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
+    //
     with Sender as TLabel do
     begin
+      //
       sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
       Caption := sNome+':';
       Repaint;
-
+      //
       SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
       SmallIni.WriteString(Form7.sModulo,NAME,sNome);
       SmallIni.Free;
+      //
     end;
-
+    //
     Mais.LeLabels(True);
+    //
   end;
+  //
 end;
 
 procedure TForm10.Label25MouseLeave(Sender: TObject);
@@ -3811,27 +3960,34 @@ begin
       end;
     end;
   end;
+
   {Sandro Silva 2022-10-18 fim}
+
 end;
 
 procedure TForm10.Image5Click(Sender: TObject);
 begin
+  //
   try
+    //
     while FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-
+    //
     Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-
+    //
     Sleep(1000);
-
+    //
     ShellExecute( 0, 'Open',pChar(Form10.sNomeDoJPG),'','', SW_SHOWMAXIMIZED);
-    
+    //
     ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
     AtualizaTela(True);
+    //
   except
+
   end;
+  //
 end;
 
 procedure TForm10.WebBrowser1NavigateComplete2(Sender: TObject;
@@ -4196,6 +4352,7 @@ begin
                 Form10.dbMemo1.DataSource := Form7.DataSourceAtual;
                 Form10.dbMemo1.DataField  := Form7.ArquivoAberto.Fields[I - 1].Fieldname;
                 Form10.dbMemo1.TabOrder   := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).TabOrder;
+      //          Form10.dbMemo1.Width      := 240;
 
                 if Form7.sModulo = 'ESTOQUE' then
                   Form10.dbMemo1.Width := 280
@@ -4280,7 +4437,7 @@ begin
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
-    if dbGrid2.CanFocus then dbGrid2.SetFocus;
+    if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
   end else
   begin
     Orelhas.ActivePage := Orelha_CFOP;
@@ -4344,10 +4501,12 @@ var
   //sNumeroNF: String; // Sandro Silva 2023-01-06
   sParcelaReplicada: String; // Sandro Silva 2023-01-06
 begin
+  //
   Form7.iFoco := 0;
-
+  //
   with Form7 do
   begin
+    //
     if Form7.sModulo = 'RECEBER' then
     begin
       if AllTrim(ibDataSet7DOCUMENTO.AsString) <> '' then
@@ -4487,7 +4646,7 @@ begin
 
       ibDataSet7.Post;                              // Grava
     end;
-
+    //
     if sModulo = 'PAGAR' then
     begin
       if AllTrim(ibDataSet8DOCUMENTO.AsString) <> '' then
@@ -4578,7 +4737,7 @@ begin
                   vCampo[2] := strtran(vCampo[2],' fev.'  ,' mar.');
                   vCampo[2] := strtran(vCampo[2],' jan.'  ,' fev.');
                 end;
-
+      //
       ibDataSet8.Append;                            // Registro Novo
       ibDataSet8DOCUMENTO.asString    := vCampo[1]; // documento
       ibDataSet8HISTORICO.AsString    := vCampo[2]; // Histórico
@@ -4589,17 +4748,20 @@ begin
       ibDataSet8CONTA.AsString        := vCampo[7]; // Portador
       ibDataSet8.Post;                              // Grava
     end;
+    //
   end;
-
+  //
   if SMALL_DBEdit1.Visible = True then
   begin
     if SMALL_DBEdit1.CanFocus then
       SMALL_DBEdit1.SetFocus;
   end;
+  //
 end;
 
 procedure TForm10.Image203Click(Sender: TObject);
 var
+  //
   F: TextFile;
   I, J: Integer;
   sA : sTring;
@@ -4608,14 +4770,19 @@ var
   vGrade    : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
   vCompra   : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
   bChave    : Boolean;
+  //
+  // Contatos
+  //
 begin
+  //
   // Não exporta se o cliente estiver em branco
+  //
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
   if (Form7.sModulo = 'CLIENTES') and (AllTrim(Form7.ibDataSet2NOME.AsString) = '') then Abort;
   if (Form7.sModulo = 'FORNECED') and (AllTrim(Form7.ibDataSet2NOME.AsString) = '') then Abort;
-
+  //
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-
+  //
   try
     if (Form7.sModulo = 'PAGAR') then
     begin
@@ -4624,7 +4791,7 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(form7.ibDataSet8NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-
+    //
     if (Form7.sModulo = 'RECEBER') then
     begin
       Form7.ibDataSet2.Close;
@@ -4632,16 +4799,16 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(form7.ibDataSet7NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-
+    //
     if Form7.ArquivoAberto.Modified then
     begin
       Form7.ArquivoAberto.Edit;
       Form7.ArquivoAberto.Post;
       Form7.ArquivoAberto.Edit;
     end;
-
+    //
     Form7.iFoco := 0;
-    
+    //
     Form7.ArquivoAberto.DisableControls;
     Form7.ibDataSet27.DisableControls;
     Form7.ibDataSet26.DisableControls;
@@ -4654,11 +4821,11 @@ begin
     Form7.ibDataSet1.DisableControls;
     Form7.ibDataSet8.DisableControls;
     Form7.ibDataSet7.DisableControls;
-
+    //
     CriaJpg('logotip.jpg');
-
+    //
     Deletefile(pChar(Senhas.UsuarioPub+'.HTM'));
-
+    //
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);
     Writeln(F,'<html><head><title>'+AllTrim(Form7.ibDataSet13NOME.AsString) + ' - '+Form7.sModulo+'</title></head>');
@@ -4670,32 +4837,41 @@ begin
     WriteLn(F,'<table border=0 bgcolor=#FFFFFFFF cellspacing=1 cellpadding=4>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td>');
-
+    //
     // Exportar
+    //
     if (Form10.Visible) or (DateToStr(Form38.DateTimePicker1.Date) = '31/12/1899') then
     begin
+      //
       dInicio := StrToDate('31/12/1899');
       dFinal  := StrToDate('30/12/2899');
+      //
     end else
     begin
+      //
       dInicio :=  Form38.DateTimePicker1.Date;
       dFinal  :=  Form38.DateTimePicker2.Date;
-
+      //
       dInicio := StrToDate(DateToStr(dInicio));
       dFinal  := StrToDate(DateToStr(dFinal ));
+      //
     end;
-
-    if (Form7.sModulo = 'KARDEX') then
-      Form7.IBDataSet4.First;
-
+    //
+    if (Form7.sModulo = 'KARDEX') then Form7.IBDataSet4.First;
+    //
     bChave := True;
-
+    //
     while bChave do
     begin
+      //
       Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
+      //
       // Processa o movimento antes de imprimir a ficha pois pode alterar a qtd inicial//
+      //
       if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX') then
       begin
+        //
+//        try
           Form7.ibDataSet26.Open;
           Form7.ibDataSet26.First;
           while not Form7.ibDataSet26.EOF do
@@ -4703,35 +4879,40 @@ begin
             Form7.ibDataSet26.Delete;
             Form7.ibDataSet26.First;
           end;
-
+//        except end;
+        //
         Form7.ibDataSet26.Append;
         Form7.ibDataSet26.FieldByName('HISTORICO').AsString := 'Quantidade inicial';
-
+        //
         // Compras
+        //
         Form7.ibDataSet23.Close;
         Form7.ibDataSet23.SelectSQL.Clear;
         Form7.ibDataSet23.SelectSQL.Add('select * from ITENS002 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+'');
         Form7.ibDataSet23.Open;
         Form7.ibDataSet23.First;
-
+        //
         while not Form7.ibDataSet23.EOF do
         begin
+          //
           Form7.ibDataSet24.Close;
           Form7.ibDataSet24.SelectSQL.Clear;
           Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet23NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet23FORNECEDOR.AsString) ); //+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet23FORNECEDOR.AsString)+'');
           Form7.ibDataSet24.Open;
-
+          //
           if Form7.ibDataSet24NUMERONF.AsString = Form7.ibDataSet23NUMERONF.AsSTring then
           begin
             if Form7.ibDataSet23QUANTIDADE.AsFloat <> 0 then
             begin
+              //
               // Posiciona a operação
+              //
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet24OPERACAO.AsString)+' ');
               Form7.ibDataSet14.Open;
-
+              //
               if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
               begin
                 Form7.ibDataSet26.Append;
@@ -4746,29 +4927,33 @@ begin
           end;
           Form7.ibDataSet23.Next;
         end;
-
+        //
         Form7.ibDataSet27.Close;
         Form7.ibDataSet27.SelectSQL.Clear;
         Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+'');
         Form7.ibDataSet27.Open;
         Form7.ibDataSet27.First;
-
+        //
         while not Form7.ibDataSet27.Eof do
         begin
+          //
           if  (Copy(Form7.ibDataSet27TIPO.AsString,1,6) <> 'ORCAME')
           and (Copy(Form7.ibDataSet27TIPO.AsString,1,3) <> 'KIT')
           and (Copy(Form7.ibDataSet27TIPO.AsString,1,6) <> 'CANCEL') then
           begin
+            //
             if Form7.ibDataSet27VALORICM.AsFloat = 0 then
             begin
+              //
               Form7.ibDataSet26.Append;
               Form7.ibDataSet26.FieldByName('DATA').AsDateTime     := Form7.ibDataSet27DATA.AsDateTime;
               Form7.ibDataSet26.FieldByName('DOCUMENTO').AsString  := '000'+Form7.ibDataSet27PEDIDO.AsString+'000';
               Form7.ibDataSet26.FieldByName('VALOR').AsFloat       := Form7.ibDataSet27TOTAL.AsFloat;
-
+              //
               // Venda no balcao
+              //
               if (Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'BALCAO') or (Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'VENDA') then Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet27QUANTIDADE.AsFloat * -1 else Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet27QUANTIDADE.AsFloat;
-
+              //
               if Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'BALCAO' then
               begin
                  if AllTrim(Form7.ibDataSet27CLIFOR.AsString) <> '' then Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Venda para '+Form7.ibDataSet27CLIFOR.AsString
@@ -4780,33 +4965,37 @@ begin
                  if AllTrim(Form7.ibDataSet27CLIFOR.AsString) <> '' then Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'NF venda modelo 2 para '+Form7.ibDataSet27CLIFOR.AsString
                    else Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'NF venda Modelo 2 N: '+Form7.ibDataSet27PEDIDO.AsString;
               end;
-
+              //
               // Alteraca
+              //
               if Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'ALTERA' then
                 Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Alteração na ficha do item';
               if Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'FABRIC' then
                 Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Alteração na composição do item';
               // Resumo
               Form7.ibDataSet26.Post;
+              //
             end;
           end;
           Form7.ibDataSet27.Next;
         end;
-
+        //
         // Serviços
+        //
         Form7.ibDataSet35.Close;
         Form7.ibDataSet35.SelectSQL.Clear;
         Form7.ibDataSet35.SelectSQL.Add('select * from ITENS003 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+'');
         Form7.ibDataSet35.Open;
         Form7.ibDataSet35.First;
-
+        //
         while not Form7.ibDataSet35.Eof do
         begin
+          //
           Form7.ibDataSet15.Close;
           Form7.ibDataSet15.SelectSQL.Clear;
           Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where NUMERONF='+QuotedStr(Form7.ibDataSet35NUMERONF.AsString)+' and EMITIDA=''S'' ');
           Form7.ibDataSet15.Open;
-
+          //
           if Form7.ibDataSet15NUMERONF.AsString = Form7.ibDataSet35NUMERONF.AsString then
           begin
             Form7.ibDataSet26.Append;
@@ -4817,19 +5006,25 @@ begin
             Form7.ibDataSet26.FieldByName('VALOR').AsFloat       := Form7.ibDataSet35TOTAL.AsFloat;
             Form7.ibDataSet26.Post;
           end;
-
+          //
           Form7.ibDataSet35.Next;
+          //
         end;
 
+
+        //
         // OS
+        //
         Form7.ibDataSet16.Close;
         Form7.ibDataSet16.SelectSQL.Clear;
         Form7.ibDataSet16.SelectSQL.Add('select * from ITENS001 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+' and coalesce(QUANTIDADE,0) = coalesce(SINCRONIA,0)');
+//        Form7.ibDataSet16.SelectSQL.Add('select * from ITENS001 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+' ');
         Form7.ibDataSet16.Open;
         Form7.ibDataSet16.First;
-
+        //
         while not Form7.ibDataSet16.Eof do
         begin
+          //
           if AllTrim(Form7.ibDataSet16NUMERONF.AsString) = '' then
           begin
             Form7.ibDataSet26.Append;
@@ -4846,19 +5041,30 @@ begin
             Form7.ibDataSet15.SelectSQL.Clear;
             Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where NUMERONF='+QuotedStr(Form7.ibDataSet16NUMERONF.AsString)+' and EMITIDA=''S'' ');
             Form7.ibDataSet15.Open;
-
+            //
             if Form7.ibDataSet15NUMERONF.AsString = Form7.ibDataSet16NUMERONF.AsSTring then
             begin
+              //
               // Posiciona a operação
+              //
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
               Form7.ibDataSet14.Open;
               Form7.ibDataSet14.EnableControls;
-
+              {
+              Form7.ibDataSet14.DisableControls;
+              Form7.ibDataSet14.Close;
+              Form7.ibDataSet14.SelectSQL.Clear;
+              Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+              Form7.ibDataSet14.Open;
+              Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+}
+              //
               if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
               begin
+                //
                 Form7.ibDataSet26.Append;
                 Form7.ibDataSet26.FieldByName('DATA').AsDateTime     := Form7.ibDataSet15EMISSAO.AsDateTime;
                 Form7.ibDataSet26.FieldByName('DOCUMENTO').AsString  := Form7.ibDataSet15NUMERONF.AsString;
@@ -4866,21 +5072,26 @@ begin
                 Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := (Form7.ibDataSet16QUANTIDADE.AsFloat * -1);
                 Form7.ibDataSet26.FieldByName('VALOR').AsFloat       := Form7.ibDataSet16TOTAL.AsFloat;
                 Form7.ibDataSet26.Post;
+                //
               end;
+              //
             end;
+            //
           end;
           Form7.ibDataSet16.Next;
+          //
         end;
-
+        //
         // Arquivo Resumo.DBF
+        //
         try
           Form7.ibDataSet4.Edit;
           Form7.ibDataSet4QTD_INICIO.AsFloat := 0;
           Form7.ibDataSet4.Post;
         except end;
-
+        //
         Form7.ibDataSet26.First;
-
+        //
         while not Form7.ibDataSet26.EOF do
         begin
           Form7.ibDataSet4.Edit;
@@ -4888,28 +5099,32 @@ begin
           Form7.ibDataSet4.Post;
           Form7.ibDataSet26.Next;
         end;
-
+        //
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_INICIO.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat  - Form7.ibDataSet4QTD_INICIO.AsFloat;
         Form7.ibDataSet4.Post;
-
+        //
         Form7.ibDataSet26.Locate('HISTORICO','Quantidade inicial',[]);
         Form7.ibDataSet26.Edit;
         Form7.ibDataSet26.FieldByName('DATA').AsDateTime     := StrToDate('01/01/1900');
         Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet4QTD_INICIO.AsFloat;
         Form7.ibDataSet26.Post;
+        //
       end;
-
+      //
       if (Form7.sModulo <> 'KARDEX') then
       begin
+        //
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-
+        //
         for I := 1 to Form7.iCampos do
         begin
+          //
           if AllTrim(Form7.TabelaAberta.Fields[I-1].DisplayLabel) <> '...' then
           begin
             if (UpperCase(AllTrim(Form7.TabelaAberta.Fields[I-1].Name)) <> 'IBDATASET2CONTATOS') then
             begin
+              //
               if (Form7.TabelaAberta.Fields[I-1].Name = 'ibDataSet4QTD_ATUAL') or (Form7.TabelaAberta.Fields[I-1].Name = 'ibDataSet4QTD_MINIM') then
               begin
                 sA := Format('%10.'+Form1.ConfCasas+'n',[Form7.TabelaAberta.Fields[I-1].AsFloat]);
@@ -4933,28 +5148,31 @@ begin
                   end;
                 end;
               end;
-
+              //
               WriteLn(F,' <tr>');
               Writeln(F,'  <td width=120 align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>'+AllTrim(Form7.TabelaAberta.Fields[I-1].DisplayLabel)+':</td>');
               Writeln(F,'  <td width=300 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+sA+'</td>');
               Writeln(F,' </tr>');
+              //
             end;
           end;
         end;
       end;
-
+      //
       if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') then
       begin
+        //
         WriteLn(F,' <tr>');
         Writeln(F,'  <td width=120 align=Right valign=top bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Contatos:</td>');
         Writeln(F,'  <td width=300 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>');
         Writeln(F,StrTran(Form7.ibDataSet2CONTATOS.AsString,Char(10),'<br>')+'<br>');
         Writeln(F,'  </td>');
         Writeln(F,' </tr>');
+        //
       end;
-
+      //
       Writeln(F,'</table><p><p>');
-
+      //
       if Form7.sModulo = 'RECEBER' then
       begin
         if not ((Form7.sModulo = 'RECEBER')  and (AllTrim(Form7.ibDataSet7NOME.AsString) = '')) then
@@ -4962,6 +5180,7 @@ begin
           WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
           for I := 1 to 23 do
           begin
+            //
             if Form7.ibDataSet2.Fields[I-1].DataType = ftString   then
               sA := Form7.ibDataSet2.Fields[I-1].AsSTring
             else if Form7.ibDataSet2.Fields[I-1].DataType = ftFloat then
@@ -4972,18 +5191,21 @@ begin
               sA := Form7.ibDataSet2.Fields[I-1].AsSTring
             else
               sA := '';
-
+            //
             WriteLn(F,' <tr>');
             Writeln(F,'  <td width=150 align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>'+AllTrim(Form7.ibDataSet2.Fields[I-1].DisplayLabel)+':</td>');
             Writeln(F,'  <td width=450 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+sA+'</td>');
             Writeln(F,' </tr><p>');
+            //
           end;
           WriteLn(F,'</table>');
         end;
       end;
-
+      //
+  //////////////////////////
       if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
       begin
+        //
         if (Form7.sModulo = 'RECEBER') then
         begin
           Form7.ibDataSet2.Close;
@@ -4991,18 +5213,22 @@ begin
           Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(form7.ibDataSet7NOME.AsString)+' ');  //
           Form7.ibDataSet2.Open;
         end;
-
+        //
         if not ((Form7.sModulo = 'RECEBER') and (Form7.sModulo = 'PAGAR') and (AllTrim(Form7.ibDataSet7NOME.AsString) = '')) then
         begin
+          //
           fTotal := 0;
+          //
           // HISTÓRICO DAS VENDAS
+          //
           Form7.ibDataSet15.Close;
           Form7.ibDataSet15.SelectSQL.Clear;
           Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where CLIENTE='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and EMITIDA=''S'' order by EMISSAO, REGISTRO');
           Form7.ibDataSet15.Open;
-
+          //
           if not Form7.ibDataSet15.Eof then
           begin
+            //
             Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>HISTÓRICO DAS VENDAS</b>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             WriteLn(F,' <tr>');
@@ -5012,17 +5238,19 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor</td>');
             WriteLn(F,' </tr>');
-
+            //
             while not (Form7.ibDataSet15.EOF) do
             begin
+              //
               if (Form7.ibDataSet15EMISSAO.AsDateTime <= dFinal) and (Form7.ibDataSet15EMISSAO.AsDateTime >= dInicio) then
               begin
+                //
                 Form7.ibDataSet16.Close;
                 Form7.ibDataSet16.SelectSQL.Clear;
                 Form7.ibDataSet16.SelectSQL.Add('select * from ITENS001 where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+'  and coalesce(QUANTIDADE,0) = coalesce(SINCRONIA,0)');
                 Form7.ibDataSet16.Open;
                 Form7.ibDataSet16.First;
-
+                //
                 while not (Form7.ibDataSet16.EOF) do
                 begin
                   if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
@@ -5037,7 +5265,9 @@ begin
                     fTotal := fTotal + Form7.ibDataSet16UNITARIO.AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat;
                   end else
                   begin
+                    //
                     // Descrição no corpo da NF
+                    //
                     WriteLn(F,' <tr>');
                     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Data
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Doc
@@ -5051,8 +5281,9 @@ begin
               end;
               Form7.ibDataSet15.Next;
             end;
-
+            //
             // totalizador
+            //
             WriteLn(F,' <tr>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5061,16 +5292,19 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
             WriteLn(F,' </tr>');
             WriteLn(F,'</table>');
+            //
           end;
-
+          //
           // HISTÓRICO DOS SERVICOS
+          //
           Form7.ibDataSet15.Close;
           Form7.ibDataSet15.SelectSQL.Clear;
           Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where CLIENTE='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and EMITIDA=''S'' ');
           Form7.ibDataSet15.Open;
-
+          //
           if not Form7.ibDataSet15.Eof then
           begin
+            //
             Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>HISTÓRICO DOS SERVIÇOS</b>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             WriteLn(F,' <tr>');
@@ -5080,23 +5314,27 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Total</td>');
             WriteLn(F,' </tr>');
-
+            //
             fTotal := 0;
-
+            //
             while not (Form7.ibDataSet15.EOF) do
             begin
+              //
               if (Form7.ibDataSet15EMISSAO.AsDateTime <= dFinal) and (Form7.ibDataSet15EMISSAO.AsDateTime >= dInicio) then
               begin
+                //
                 Form7.ibDataSet35.Close;
                 Form7.ibDataSet35.SelectSQL.Clear;
                 Form7.ibDataSet35.SelectSQL.Add('select * from ITENS003 where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+'');
                 Form7.ibDataSet35.Open;
                 Form7.ibDataSet35.First;
-
+                //
                 while not (Form7.ibDataSet35.EOF) do
                 begin
+
                   WriteLn(F,' <tr>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet15EMISSAO.AsDateTime)      +'</td>'+  // Data
+//                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
@@ -5108,53 +5346,9 @@ begin
               end;
               Form7.ibDataSet15.Next;
             end;
-
+            //
             // totalizador
-            WriteLn(F,' <tr>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
-            WriteLn(F,' </tr>');
-            WriteLn(F,'</table>');
-          end;
-
-          // vendas no balcão
-          Form7.ibDataSet27.Close;
-          Form7.ibDataSet27.SelectSQL.Clear;
-          Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+')');
-          Form7.ibDataSet27.Open;
-
-          if not Form7.ibDataSet27.Eof then
-          begin
-            Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>VENDAS NO BALCÃO</b>');
-            WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-            WriteLn(F,' <tr>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Data</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Documento</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor</td>');
-            WriteLn(F,' </tr>');
-
-            fTotal := 0;
-
-            while not Form7.ibDataSet27.EOF do
-            begin
-              WriteLn(F,' <tr>');
-              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'</td>');  // Data
-              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'</td>'); // Doc
-              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet27DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao
-              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Quantidade
-              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet27UNITARIO.AsFloat* Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Valor
-              WriteLn(F,' </tr>');
-              fTotal := fTotal + Form7.ibDataSet27UNITARIO.AsFloat * Form7.ibDataSet27QUANTIDADE.AsFloat;
-
-              Form7.ibDataSet27.Next;
-            end;
-
-            // totalizador
+            //
             WriteLn(F,' <tr>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5165,15 +5359,68 @@ begin
             WriteLn(F,'</table>');
             //
           end;
-
+          //
+          // vendas no balcão
+          //
+          Form7.ibDataSet27.Close;
+          Form7.ibDataSet27.SelectSQL.Clear;
+          Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+')');
+          Form7.ibDataSet27.Open;
+          //
+          if not Form7.ibDataSet27.Eof then
+          begin
+            //
+            Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>VENDAS NO BALCÃO</b>');
+            WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+            WriteLn(F,' <tr>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Data</td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Documento</td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor</td>');
+            WriteLn(F,' </tr>');
+            //
+            fTotal := 0;
+            //
+            while not Form7.ibDataSet27.EOF do
+            begin
+              //
+              WriteLn(F,' <tr>');
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'</td>');  // Data
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'</td>'); // Doc
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet27DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao
+              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Quantidade
+              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet27UNITARIO.AsFloat* Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Valor
+              WriteLn(F,' </tr>');
+              fTotal := fTotal + Form7.ibDataSet27UNITARIO.AsFloat * Form7.ibDataSet27QUANTIDADE.AsFloat;
+              //
+              Form7.ibDataSet27.Next;
+              //
+            end;
+            //
+            // totalizador
+            //
+            WriteLn(F,' <tr>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
+            WriteLn(F,' </tr>');
+            WriteLn(F,'</table>');
+            //
+          end;
+          //
           // Orçamentos
+          //
           Form7.ibDataSet37.Close;
           Form7.ibDataSet37.SelectSQL.Clear;
           Form7.ibDataSet37.SelectSQL.Add('select * from ORCAMENT where CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and coalesce(VALORICM,0)=0 ');
           Form7.ibDataSet37.Open;
-          
+          //
           if not Form7.ibDataSet37.Eof then
           begin
+            //
             Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>ORÇAMENTOS</b>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             WriteLn(F,' <tr>');
@@ -5183,10 +5430,12 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor</td>');
             WriteLn(F,' </tr>');
-
+            //
             fTotal := 0;
+            //
             while not Form7.ibDataSet37.EOF do
             begin
+              //
               if Form7.ibDataSet37QUANTIDADE.AsFloat <> 0 then
               begin
                 WriteLn(F,' <tr>');
@@ -5205,11 +5454,13 @@ begin
                 Writeln(F,'  <td  nowrap colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao
                 WriteLn(F,' </tr>');
               end;
-
+              //
               Form7.ibDataSet37.Next;
+              //
             end;
-
+            //
             // totalizador
+            //
             WriteLn(F,' <tr>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5218,24 +5469,29 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
             WriteLn(F,' </tr>');
             WriteLn(F,'</table>');
+            //
           end;
-
+          //
           // CONTAS A RECEBER
+          //
           if not (Form1.iReduzida = 1) then
           begin
             if Form1.Image204.Visible then
             begin
+              //
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
               Form7.ibDataSet99.SelectSQL.Add('select * from RECEBER where NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'  and coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'' and coalesce(ATIVO,9)<>1');
               Form7.ibDataSet99.Open;
-
+              //
               if not Form7.ibDataSet99.Eof then
               begin
+                //
                 // Contas a receber esta liberada
+                //
                 fTotal  := 0;
                 fTotal1 := 0;
-                
+                //
                 Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>CONTAS A RECEBER</b>');
                 WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
                 WriteLn(F,' <tr>');
@@ -5245,11 +5501,12 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor</td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor Atual</td>');
                 WriteLn(F,' </tr>');
-
+                //
                 Form7.ibDataSet99.First;
-
+                //
                 while not Form7.ibDataSet99.Eof do
                 begin
+                  //
                   if Form7.ibDataSet99.FieldByName('VALOR_RECE').AsFloat = 0 then
                   begin
                     WriteLn(F,' <tr>');
@@ -5264,8 +5521,9 @@ begin
                   end;
                   Form7.ibDataSet99.Next;
                 end;
-
+                //
                 // Totalizador
+                //
                 WriteLn(F,' <tr>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5275,8 +5533,9 @@ begin
                 WriteLn(F,' </tr>');
                 WriteLn(F,'</table>');
                 fTotal  := 0;
-
+                //
                 // CONTAS JA RECEBIDAS
+                //
                 Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>CONTAS JÁ RECEBIDAS</b>');
                 WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
                 WriteLn(F,' <tr>');
@@ -5286,7 +5545,7 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor recebido</td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Recebido em</td>');
                 WriteLn(F,' </tr>');
-
+                //
                 Form7.ibDataSet99.First;
                 while not Form7.ibDataSet99.Eof do
                 begin
@@ -5303,8 +5562,9 @@ begin
                   end;
                   Form7.ibDataSet99.Next;
                 end;
-
+                //
                 // Totalizador
+                //
                 WriteLn(F,' <tr>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5313,21 +5573,26 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
                 WriteLn(F,' </tr>');
                 WriteLn(F,'</table>');
+                //
               end;
+              //
             end;
           end;
-
+          //
           // COMPRAS
+          //
           fTotal := 0;
-
+          //
           // HISTÓRICO DAS COMPRAS
+          //
           Form7.ibDataSet24.Close;
           Form7.ibDataSet24.SelectSQL.Clear;
           Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where FORNECEDOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'');
           Form7.ibDataSet24.Open;
-
+          //
           if not Form7.ibDataSet24.Eof then
           begin
+            //
             Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>HISTÓRICO DAS COMPRAS</b>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             WriteLn(F,' <tr>');
@@ -5337,17 +5602,19 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Valor</td>');
             WriteLn(F,' </tr>');
-
+            //
             while not (Form7.ibDataSet24.EOF) do
             begin
+              //
               if (Form7.ibDataSet24EMISSAO.AsDateTime <= dFinal) and (Form7.ibDataSet24EMISSAO.AsDateTime >= dInicio) then
               begin
+                //
                 Form7.ibDataSet23.Close;
                 Form7.ibDataSet23.SelectSQL.Clear;
                 Form7.ibDataSet23.SelectSQL.Add('select * from ITENS002 where NUMERONF='+QuotedStr(Form7.ibDataSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'');
                 Form7.ibDataSet23.Open;
                 Form7.ibDataSet23.First;
-
+                //
                 while not (Form7.ibDataSet23.EOF) do
                 begin
                   WriteLn(F,' <tr>');
@@ -5363,8 +5630,9 @@ begin
               end;
               Form7.ibDataSet24.Next;
             end;
-
+            //
             // totalizador
+            //
             WriteLn(F,' <tr>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5373,21 +5641,26 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
             WriteLn(F,' </tr>');
             WriteLn(F,'</table>');
+            //
           end;
-
+          //
           // Contas a Pagar
+          //
           if not (Form1.iReduzida = 1) then
           begin
             if Form1.Image210.Visible then
             begin
+              //
               // Contas a pagar esta liberada
+              //
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
               Form7.ibDataSet99.SelectSQL.Add('select * from PAGAR where NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'');
               Form7.ibDataSet99.Open;
-
+              //
               if not Form7.IBDataSet99.Eof then
               begin
+                //
                 fTotal := 0;
                 Writeln(F,'<p><font face="Verdana" size=2><b>CONTAS A PAGAR</b>');
                 WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
@@ -5397,7 +5670,7 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana" size=1>Vencimento</td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana" size=1>Valor</td>');
                 WriteLn(F,' </tr>');
-
+                //
                 Form7.ibDataSet99.First;
                 while not (Form7.ibDataSet99.Eof) do
                 begin
@@ -5413,8 +5686,9 @@ begin
                   end;
                   Form7.ibDataSet99.Next;
                 end;
-
+                //
                 // totalizador
+                //
                 WriteLn(F,' <tr>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5422,10 +5696,13 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
                 WriteLn(F,' </tr>');
                 WriteLn(F,'</table>');
-
+                //
                 // contas Pagas
+                //
+          ///////////////////////////////////
                 fTotal := 0;
                 Writeln(F,'<p><font face="Verdana" size=2><b>CONTAS PAGAS</b>');
+          //      WriteLn(F,'<table border=0 cellpadding=2 cellspacing=1>');
                 WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
                 WriteLn(F,' <tr>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana" size=1>Documento</td>');
@@ -5434,7 +5711,7 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana" size=1>Valor pago</td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana" size=1>Pago em</td>');
                 WriteLn(F,' </tr>');
-                
+                //
                 Form7.ibDataSet99.First;
                 while not (Form7.ibDataSet99.Eof) do
                 begin
@@ -5451,8 +5728,9 @@ begin
                   end;
                   Form7.ibDataSet99.Next;
                 end;
-
+                //
                 // totalizador
+                //
                 WriteLn(F,' <tr>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5461,27 +5739,33 @@ begin
                 WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
                 WriteLn(F,' </tr>');
                 WriteLn(F,'</table>');
+                //
               end;
             end;
           end;
         end;
       end;
+      //
+  ///////////////////////////////////////////////////////
 
       if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) and (Form7.ibDataSet4DESCRICAO.AsString <> '') then
       begin
+        //
         if Form7.sModulo <> 'KARDEX' then
         begin
+          //
           Form7.ibDataSet10.Close;
           Form7.ibDataSet10.SelectSQL.Clear;
           Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
           Form7.ibDataSet10.Open;
           Form7.ibDataSet10.First;
-
+          //
           if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
           begin
+            //
             for I := 0 to 19 do for J := 0 to 19 do vGrade[I,J] := '';
             for I := 0 to 19 do for J := 0 to 19 do vCompra[I,J] := '';
-            
+            //
             while (Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and not (Form7.ibDataSet10.EOF) do
             begin
               if AllTrim(Form7.ibDataSet10QTD.AsString) <> '' then
@@ -5494,7 +5778,7 @@ begin
               end;
               Form7.ibDataSet10.Next;
             end;
-
+            //
             WriteLn(F,'  </td><td vAlign=TOP>');
             Writeln(F,'   <p><font face="Microsoft Sans Serif" size=2><b>GRADE DAS ENTRADAS</b>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
@@ -5512,10 +5796,11 @@ begin
                 end;
               end;
             end;
-
+            //
             WriteLn(F,'   </table>');
-
+            //
             Writeln(F,'   <p><font face="Microsoft Sans Serif" size=2><b>GRADE DAS SAÍDAS</b>');
+    //       WriteLn(F,'   <table border=0 cellpadding=2 cellspacing=1><tr><td></td>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             for J := 0 to 19 do
             begin
@@ -5531,10 +5816,11 @@ begin
                 end;
               end;
             end;
-
+            //
             WriteLn(F,'   </table>');
-
+            //
             Writeln(F,'   <p><font face="Microsoft Sans Serif" size=2><b>GRADE EM ESTOQUE</b>');
+    //        WriteLn(F,'   <table border=0 cellpadding=2 cellspacing=1><tr><td></td>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             for J := 0 to 19 do
             begin
@@ -5550,26 +5836,28 @@ begin
                 end;
               end;
             end;
-
+            //
             WriteLn(F,'   </tr></table></td>');
             WriteLn(F,'    </tr>');
             WriteLn(F,'   </table></td>');
           end;
-
+          //
           // Composição
+          //
           Form7.ibDataSet28.Filter   := 'CODIGO='+Form7.ibDataSet4CODIGO.AsString;
           Form7.ibDataSet28.First;
-
+          //
           Form7.ibDataSet28.Close;
           Form7.ibDataSet28.SelectSQL.Clear;
           Form7.ibDataSet28.SelectSQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
           Form7.ibDataSet28.Open;
-
+          //
           if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
           begin
+            //
             Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>COMPOSIÇÃO DO PRODUTO</b>');
             WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-
+            //
             WriteLn(F,' <tr>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Código</td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
@@ -5577,14 +5865,17 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo</td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo X Qtd</td>');
             WriteLn(F,' </tr>');
-
+            //
             fTotal := 0;
-
+            //
             Form7.ibDataSet28.First;
             while not Form7.ibDataSet28.Eof do
             begin
+              //
+    //          Form7.ibDataSet4.IndexFieldNames := 'DESCRICAO';
               Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-
+              //
+              //
               if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
               begin
                 WriteLn(F,' <tr>');
@@ -5596,11 +5887,12 @@ begin
                 WriteLn(F,' </tr>');
                 fTotal := fTotal + (Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
               end;
-
+              //
               Form7.ibDataSet28.Next;
             end;
-
+            //
             // Totalizador
+            //
             WriteLn(F,' <tr>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5609,11 +5901,13 @@ begin
             WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
             WriteLn(F,' </tr>');
             WriteLn(F,'</table>');
+            //
           end;
-
+          //
           Form7.ibDataSet4.Locate('DESCRICAO',Alltrim(Form10.Caption),[]);
-
+          //
           // Imprime o arquivo em ordem de data
+          //
           Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>MOVIMENTAÇÃO DO ITEM</b>');
         end else
         begin
@@ -5621,6 +5915,7 @@ begin
           Writeln(F,'<td><font face="Microsoft Sans Serif" size=2><b>'+Form7.ibDataSet4CODIGO.AsString +' - '+ Form7.ibDataSet4DESCRICAO.AsString +'</b>');
           Writeln(F,'</tr></table>');
         end;
+  //      WriteLn(F,'<table border=0 cellpadding=2 cellspacing=1>');
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Data</td>');
@@ -5630,13 +5925,13 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Saldo do Estoque</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet26.Close;
         Form7.ibDataSet26.SelectSql.Clear;
         Form7.ibDataSet26.Selectsql.Add('select * from RESUMO order by DATA, REGISTRO');
         Form7.ibDataSet26.Open;
         fTotal := 0;
-
+        //
         while not Form7.ibDataSet26.EOF do
         begin
           fTotal := fTotal + Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat;
@@ -5653,8 +5948,9 @@ begin
           end;
           Form7.ibDataSet26.Next;
         end;
-
+        //
         // Totalizador
+        //
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5664,8 +5960,8 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[fTotal])+'</td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
+        //
       end;
-
       // Fecha o arquivo
       if Form7.sModulo = 'CONTAS' then
       begin
@@ -5677,7 +5973,8 @@ begin
         if Form7.dbGrid1.SelectedField.FieldName = 'DIA' then Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>TOTAL DO DIA '+DateToStr(Form38.MonthCalendar1.Date)+'</b>');
         if Form7.dbGrid1.SelectedField.FieldName = 'MES' then Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>TOTAL DO MÊS '+IntToStr(Month(Form38.MonthCalendar1.Date))+'/'+IntToStr(Year(Form38.MonthCalendar1.Date))+'</b>');
         if Form7.dbGrid1.SelectedField.FieldName = 'ANO' then Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>TOTAL DO ANO DE '+IntToStr(Year(Form38.MonthCalendar1.Date))+'</b>');
-
+        //
+  //      WriteLn(F,'<table border=0 cellpadding=2 cellspacing=1>');
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Data</td>');
@@ -5685,15 +5982,17 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Entrada</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Saída</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet1.First;
-
+        //
         fTotal  := 0; fTotal1 := 0;
-
+        //
         while not Form7.ibDataSet1.EOF do
         begin
+          //
           if Form7.ibDataSet12NOME.AsString = Form7.ibDataSet1NOME.AsString then
           begin
+            //
             if
             (((Form7.dbGrid1.SelectedField.FieldName = 'DIA') and (Form7.ibDataSet1DATA.AsDateTime = Form38.MonthCalendar1.Date)))
             or
@@ -5715,11 +6014,12 @@ begin
               fTotal  := fTotal + Form7.ibDataSet1ENTRADA.AsFloat;
               fTotal1 := fTotal1 + Form7.ibDataSet1SAIDA.AsFloat;
             end;
+            //
           end;
-
+          //
           Form7.ibDataSet1.Next;
         end;
-        
+        //
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5727,16 +6027,20 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.2n',[fTotal1])+'</td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
-
+        //
         Screen.Cursor := crDefault; // Cursor normal
         Form7.sModulo := 'CONTAS';
         Form7.DBGrid1.Repaint;
+        //
       end;
-
+      //
       if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'OS') then
       begin
+        //
         fTotal := 0;
+        //
         // Descrição dos itens
+        //
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição dos itens</td>');
@@ -5744,9 +6048,9 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Unitário</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Total</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet16.First;
-
+        //
         while not (Form7.ibDataSet16.EOF) do
         begin
           if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
@@ -5760,7 +6064,9 @@ begin
             fTotal := fTotal + Form7.ibDataSet16UNITARIO.AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat;
           end else
           begin
+            //
             // Descrição no corpo da NF
+            //
             WriteLn(F,' <tr>');
             Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
@@ -5770,8 +6076,9 @@ begin
           end;
           Form7.ibDataSet16.Next;
         end;
-
+        //
         // totalizador
+        //
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5779,10 +6086,11 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table><br>');
-
+        //
         fTotal := 0;
-
+        //
         // Descrição dos serviços
+        //
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição dos serviços</td>');
@@ -5790,9 +6098,9 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Total</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet35.First;
-
+        //
         while not (Form7.ibDataSet35.EOF) do
         begin
           if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then
@@ -5806,7 +6114,9 @@ begin
             fTotal := fTotal + Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat;
           end else
           begin
+            //
             // Descrição no corpo da NF
+            //
             WriteLn(F,' <tr>');
             Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
@@ -5814,11 +6124,13 @@ begin
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'); // Valor
             WriteLn(F,' </tr>');
           end;
-
+          //
           Form7.ibDataSet35.Next;
+          //
         end;
-
+        //
         // totalizador
+        //
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5826,13 +6138,16 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
+        //
       end;
-
+      //
       if (Form7.sModulo = 'COMPRA') then
       begin
+        //
         fTotal := 0;
-
+        //
         // Descrição dos itens
+        //
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição dos itens</td>');
@@ -5840,9 +6155,9 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Unitário</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Total</td>');
         WriteLn(F,' </tr>');
-
+        //
         Form7.ibDataSet23.First;
-
+        //
         while not (Form7.ibDataSet23.EOF) do
         begin
           if Form7.ibDataSet23QUANTIDADE.AsFloat <> 0 then
@@ -5856,7 +6171,9 @@ begin
             fTotal := fTotal + Form7.ibDataSet23UNITARIO.AsFloat * Form7.ibDataSet23QUANTIDADE.AsFloat;
           end else
           begin
+            //
             // Descrição no corpo da NF
+            //
             WriteLn(F,' <tr>');
             Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
@@ -5866,8 +6183,9 @@ begin
           end;
           Form7.ibDataSet23.Next;
         end;
-
+        //
         // totalizador
+        //
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -5875,8 +6193,9 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Verdana" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table><br>');
+        //
       end;
-
+      //
       if (Form7.sModulo = 'KARDEX') then
       begin
         Form7.IBDataSet4.Next;
@@ -5885,13 +6204,16 @@ begin
       begin
         bChave := False;
       end;
+      //
     end;
-
+    //
     if dInicio <> StrToDate('31/12/1899') then if (Form7.sModulo <> 'ESTOQUE') and (Form7.sModulo <> 'KARDEX') then Writeln(F,'<center><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br></center>');
     WriteLn(F,'</center><center><br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
     + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-
+    //
+    // WWW
+    //
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
       WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -5899,16 +6221,18 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-
+    //
     if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
     WriteLn(F,'</html>');
-
+    //
     CloseFile(F);
+    //
   except
     CloseFile(F);
   end;
-
+  //
   try
+    //
     Form7.ArquivoAberto.EnableControls;
     Form7.ibDataSet4.EnableControls;
     Form7.ibDataSet27.EnableControls;
@@ -5922,9 +6246,9 @@ begin
     Form7.ibDataSet1.EnableControls;
     Form7.ibDataSet8.EnableControls;
     Form7.ibDataSet7.EnableControls;
-  except
-  end;
-
+    //
+  except end;
+  //
   if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) then
   begin
     Form7.ibDataSet26.Open;
@@ -5934,20 +6258,21 @@ begin
       Form7.ibDataSet26.Delete;
       Form7.ibDataSet26.First;
     end;
-
+    //
     Form7.Close;
     Form7.Show;
-
+    //
     try
       Form7.ibDataSet28.Open;
       Form7.ibDataSet4.EnableControls;
-    except
-    end;
+    except end;
+    //
   end;
-
+  //
   AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
-
+  //
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
+  //
 end;
 
 procedure TForm10.Button11Click(Sender: TObject);
@@ -5959,47 +6284,48 @@ procedure TForm10.Button13Click(Sender: TObject);
 var
   jp : TJPEGImage;
 begin
+  //
   if Button13.Caption <> '&Captura' then
   begin
     try
+      //
       VideoCap1.visible    := True;
       Image5.Visible       := False;
       VideoCAp1.Left       := 5;
       VideoCAp1.Top        := 5;
-
+      //
       VideoCAp1.Width      := 640;
       VideoCAp1.Height     := 480;
-
+      //
       VideoCap1.visible    := True;
-
+      //
       try
         Videocap1.DriverIndex := 0;
-      except
-      end;
-
+      except end;
+      //
       try
         VideoCap1.VideoPreview := True;
         VideoCap1.CapAudio     := False;
       except end;
-
+      //
       Button13.Caption := '&Captura';
-
-    except
-    end;
+      //
+    except end;
   end else
   begin
     try
+      //
       VideoCap1.SaveToClipboard;
       Image5.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,ClipBoard.GetAsHandle(cf_Bitmap),0);
       VideoCap1.VideoPreview := False;
       VideoCap1.visible      := False;
-
+      //
       jp := TJPEGImage.Create;
       jp.Assign(Form10.Image5.Picture.Bitmap);
       jp.CompressionQuality := 100;
-
+      //
       jp.SaveToFile(Form10.sNomeDoJPG);
-
+      //
       Button13.Caption     := '&Webcam';
       Image5.Visible       := True;
 
@@ -6014,8 +6340,10 @@ begin
       //
       AtualizaTela(True);
       {Sandro Silva 2023-01-24 fim}
+      //
     except end;
   end;
+  //
 end;
 
 procedure TForm10.Label18MouseLeave(Sender: TObject);
@@ -6050,21 +6378,27 @@ var
   sNome : String;
   SmallIni : tIniFile;
 begin
+  //
   if (Form7.sModulo = 'ESTOQUE') then
   begin
+    //
     with Sender as TLabel do
     begin
+      //
       sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
       Caption := sNome+':';
       Repaint;
-
+      //
       SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
       SmallIni.WriteString(Form7.sModulo,NAME,sNome);
       SmallIni.Free;
+      //
     end;
-
+    //
     Mais.LeLabels(True);
+    //
   end;
+  //
 end;
 
 procedure TForm10.Orelha_gradeShow(Sender: TObject);
@@ -6073,6 +6407,7 @@ var
   I, J : Integer;
   bChave : Boolean;
 begin
+  //
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
     StringGrid1.Enabled := False;
@@ -6080,32 +6415,34 @@ begin
   begin
     StringGrid1.Enabled := True;
   end;
-
+  //
   StringGrid1.Col := 0;
   StringGrid1.Row := 0;
-
+  //
+//  if (Form10.Caption <> form7.ibDataSet4DESCRICAO.AsString) or (AllTrim(form7.ibDataSet4DESCRICAO.AsString) = '')  then
   begin
+    //
     StringGrid1.RowCount := 20;
-
+    //
     StringGrid1.Col := 1;
     StringGrid1.Row := 1;
-
+    //
     for I := 0 to 19 do
      for J := 0 to 19 do
        StringGrid1.Cells[I,J] := '';
-
+    //
     Form10.Caption := form7.ibDataSet4DESCRICAO.AsString;
     Form10.StringGrid1.Repaint;
-
+    //
     bChave := True;
-
+    //
     Form7.ibDataSet10.DisableControls;
     Form7.ibDataSet10.Close;
     Form7.ibDataSet10.SelectSQL.Clear;
     Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
     Form7.ibDataSet10.Open;
     Form7.ibDataSet10.First;
-
+    //
     while (Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and not (Form7.ibDataSet10.EOF) do
     begin
       if AllTrim(Form7.ibDataSet10QTD.AsString) <> '' then
@@ -6118,22 +6455,27 @@ begin
       end;
       Form7.ibDataSet10.Next;
     end;
-
+    //
     if bChave then
     begin
+      //
       // Lê os dados a partir de um .ini
+      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       for I := 1 to 19 do Form10.StringGrid1.Cells[0,I] := Mais1Ini.ReadString('Grade',pChar('X'+StrZero(I,2,0)),'');
       for I := 1 to 19 do Form10.StringGrid1.Cells[I,0] := Mais1Ini.ReadString('Grade',pChar('Y'+StrZero(I,2,0)),'');
       Mais1ini.Free;
+      //
     end;
   end;
+  //
 end;
 
 procedure TForm10.orelha_serialShow(Sender: TObject);
 begin
+  //
   if CheckBox1.CanFocus then CheckBox1.SetFocus;
-
+  //
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
     dbGrid4.ReadOnly    := True;
@@ -6143,15 +6485,15 @@ begin
     dbGrid4.ReadOnly    := False;
     CheckBox1.Enabled   := True;
   end;
-
+  //
   StringGrid1.Col := 0;
   StringGrid1.Row := 0;
-
+  //
   if (Form10.Caption <> Form7.ibDataSet4DESCRICAO.AsString) or (AllTrim(form7.ibDataSet4DESCRICAO.AsString) = '')  then
   begin
     Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
   end;
-  
+  //
   if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
   begin
     Form10.CheckBox1.Checked := True;
@@ -6171,18 +6513,25 @@ begin
     Button16.Visible         := False;
     Button17.Visible         := False;
   end;
-
+  //
   Form7.ibDataSet30.Last;
+  //
 end;
 
 procedure TForm10.orelha_fotoShow(Sender: TObject);
 begin
+  //
+  //
   // Nome certo da imagem
+  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
+    //
     Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet4REGISTRO.AsString+'.jpg';
+    //
   end else
   begin
+    //
     if Form7.sModulo = 'GRUPOS' then
     begin
       Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet21REGISTRO.AsString+'.jpg';
@@ -6190,18 +6539,19 @@ begin
     begin
       Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet2REGISTRO.AsString+'.jpg';
     end;
+    //
   end;
-  
+  //
   Button13.Caption       := '&Webcam';
   VideoCap1.visible      := False;
   Image5.Visible         := True;
-
+  //
   if not Form7.bSoLeitura then
   begin
     Orelhas.ActivePage := orelha_cadastro;
-    if dbGrid2.CanFocus then dbGrid2.SetFocus;
+    if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
   end;
-
+  //
   if (Form7.sModulo = 'ESTOQUE') then
   begin
     Button7.Visible := True;
@@ -6209,6 +6559,7 @@ begin
   begin
     Button7.Visible := False;
   end;
+  //
 end;
 
 procedure TForm10.orelha_composicaoShow(Sender: TObject);
@@ -6216,40 +6567,42 @@ var
   sCodigo : STring;
   fCusto  : Real;
 begin
+  //
   if (Form7.sModulo = 'ESTOQUE') then
   begin
     try
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
-
+      //
       Form7.ibDataSet25ACUMULADO1.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet25ACUMULADO1.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
       Form7.ibDataSet25ACUMULADO2.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet25ACUMULADO2.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
-
+      //
       Form7.ibDataSet28.DisableControls;
-
+      //
       Form7.ibDataSet28.Close;
       Form7.ibDataSet28.SelectSQL.Clear;
       Form7.ibDataSet28.SelectSQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(sCodigo)+' ');
       Form7.ibDataSet28.Open;
-
+      //
       Form7.ibDataSet25.Append;
       Form7.ibDataSet25ACUMULADO2.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat; // them que calcular o menor quantidade dividido pelo que vai
-
+      //
       fQuantidade      := 9999999999;
       fCusto           := 0;
-
+      //
       Button10.Enabled := False;
       Button8.Enabled  := False;
-
+      //
       Form7.ibDataSet28.First;
       while not Form7.ibDataSet28.Eof do
       begin
+        //
         Form7.ibQuery4.Close;
         Form7.ibQuery4.Sql.Clear;
         Form7.ibQuery4.SQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet28DESCRICAO.AsString)+' ');
         Form7.ibQuery4.Open;
-
+        //
         if (Form7.ibQuery4.FieldByName('DESCRICAO').AsString = Form7.ibDataSet28DESCRICAO.AsString) and (AllTrim(Form7.ibDataSet28DESCRICAO.AsString) <> '') then
         begin
           if fQuantidade > (Form7.ibQuery4.FieldByName('QTD_ATUAL').AsFloat / Form7.ibDataSet28QUANTIDADE.AsFloat)  then
@@ -6257,9 +6610,9 @@ begin
             Form7.ibDataSet25.Edit;
             fQuantidade := Form7.ibQuery4.FieldByName('QTD_ATUAL').AsFloat / Form7.ibDataSet28QUANTIDADE.AsFloat;
           end;
-
+          //
           fCusto := fCusto + (Form7.ibQuery4.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
-
+          //
           if Form7.bSoLeitura or Form7.bEstaSendoUsado then
           begin
             Button10.Enabled := False;
@@ -6269,19 +6622,20 @@ begin
             Button10.Enabled := True;
             Button8.Enabled  := True;
           end;
+          //
         end else
         begin
           Form7.ibDataSet28.Edit;
           Form7.ibDataSet28DESCRICAO.AsString := '';
           Form7.ibDataSet28CODIGO.AsString    := '';
         end;
-
+        //
         Form7.ibDataSet28.Next;
       end;
-
+      //
       Form7.ibDataSet25.Edit;
       if fQuantidade = 9999999999 then Form7.ibDataSet25ACUMULADO1.AsFloat := 0 else Form7.ibDataSet25ACUMULADO1.AsFloat := fQuantidade;
-
+      //
       if Button10.Enabled then
       begin
         try
@@ -6292,17 +6646,22 @@ begin
           end;
         except end;
       end;
+      //
     except end;
-
+    //
     Form7.ibDataSet28.EnableControls;
+    //
   end;
+  //
 end;
 
 procedure TForm10.orelha_ICMSShow(Sender: TObject);
 var
   I : Integer;
 begin
+  //
   // Antes de tudo Zera os combos
+  //
   ComboBox1.ItemIndex := -1;
   ComboBox2.ItemIndex := -1;
   ComboBox3.ItemIndex := -1;
@@ -6313,14 +6672,15 @@ begin
   ComboBox9.ItemIndex := -1;
   ComboBox10.ItemIndex := -1;
   ComboBox11.ItemIndex := -1;
-
+  //
   ComboBox14.ItemIndex := -1;
   ComboBox15.ItemIndex := -1;
-
+  //
   VerificaSeEstaSendoUsado(True);
-
+  //
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
+    //
     ComboBox1.Enabled := False;
     ComboBox2.Enabled := False;
     ComboBox3.Enabled := False;
@@ -6331,10 +6691,10 @@ begin
     ComboBox9.Enabled := False;
     ComboBox10.Enabled := False;
     ComboBox11.Enabled := False;
-
+    //
     ComboBox14.Enabled := False;
     ComboBox15.Enabled := False;
-
+    //
     SMALL_DBEdit31.Enabled    := False;
     SMALL_DBEdit37.Enabled    := False;
     SMALL_DBEdit38.Enabled    := False;
@@ -6343,7 +6703,7 @@ begin
     SMALL_DBEdit47.Enabled    := False;
     SMALL_DBEdit48.Enabled    := False;
     SMALL_DBEdit49.Enabled    := False;
-
+    //
     SMALL_DBEdit31.ReadOnly   := true;
     SMALL_DBEdit37.ReadOnly   := true;
     SMALL_DBEdit38.ReadOnly   := true;
@@ -6352,7 +6712,7 @@ begin
     SMALL_DBEdit47.ReadOnly   := true;
     SMALL_DBEdit48.ReadOnly   := true;
     SMALL_DBEdit49.ReadOnly   := true;
-
+    //
     SMALL_DBEdit31.Font.Color := clGrayText;
     SMALL_DBEdit37.Font.Color := clGrayText;
     SMALL_DBEdit38.Font.Color := clGrayText;
@@ -6361,6 +6721,7 @@ begin
     SMALL_DBEdit47.Font.Color := clGrayText;
     SMALL_DBEdit48.Font.Color := clGrayText;
     SMALL_DBEdit49.Font.Color := clGrayText;
+    //
   end else
   begin
     ComboBox1.Enabled := True;
@@ -6373,10 +6734,10 @@ begin
     ComboBox9.Enabled := True;
     ComboBox10.Enabled := True;
     ComboBox11.Enabled := True;
-
+    //
     ComboBox14.Enabled := True;
     ComboBox15.Enabled := True;
-
+    //
     SMALL_DBEdit31.Enabled    := True;
     SMALL_DBEdit37.Enabled    := True;
     SMALL_DBEdit38.Enabled    := True;
@@ -6385,7 +6746,7 @@ begin
     SMALL_DBEdit47.Enabled    := True;
     SMALL_DBEdit48.Enabled    := True;
     SMALL_DBEdit49.Enabled    := True;
-
+    //
     SMALL_DBEdit31.ReadOnly   := False;
     SMALL_DBEdit37.ReadOnly   := False;
     SMALL_DBEdit38.ReadOnly   := False;
@@ -6394,7 +6755,7 @@ begin
     SMALL_DBEdit47.ReadOnly   := False;
     SMALL_DBEdit48.ReadOnly   := False;
     SMALL_DBEdit49.ReadOnly   := False;
-
+    //
     SMALL_DBEdit31.Font.Color := ClWindowText;
     SMALL_DBEdit37.Font.Color := ClWindowText;
     SMALL_DBEdit38.Font.Color := ClWindowText;
@@ -6403,10 +6764,15 @@ begin
     SMALL_DBEdit47.Font.Color := ClWindowText;
     SMALL_DBEdit48.Font.Color := ClWindowText;
     SMALL_DBEdit49.Font.Color := ClWindowText;
+    //
   end;
-
+  //
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
+  //
+  //
+//  if (Form10.orelhas.ActivePage = Orelha_impostos) then
   begin
+    //
     if AllTrim(Form7.IbDataSet4ST.AsString) <> '' then
     begin
       Form7.ibDataSet14.Close;
@@ -6420,7 +6786,7 @@ begin
       Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where CFOP='+QuotedStr('5102')+' or CFOP='+QuotedStr('5101')+' ');
       Form7.ibDataSet14.Open;
     end;
-
+    //
     if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
     begin
       Form10.Label55.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
@@ -6428,9 +6794,9 @@ begin
     begin
       Form10.Label55.Caption := Form7.ibDataSet14NOME.AsString;
     end;
-
+    //
     Form7.ibDataSet14.Edit;
-
+    //
     _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
     _AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
     _AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
@@ -6458,7 +6824,7 @@ begin
     _PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
     _SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
     _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
-
+    //
     _RR.font.size := 8;
     _AP.font.size := 8;
     _AM.font.size := 8;
@@ -6486,7 +6852,7 @@ begin
     _PR.font.size := 8;
     _SC.font.size := 8;
     _RS.font.size := 8;
-
+    //
     if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Color := clRed else _RR.Font.Color := clSilver;
     if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Color := clRed else _AP.Font.Color := clSilver;
     if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Color := clRed else _AM.Font.Color := clSilver;
@@ -6514,32 +6880,37 @@ begin
     if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clSilver;
     if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clSilver;
     if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clSilver;
+    //
   end;
-
+  //
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
+    //
     Form10.Label36.Visible          := True;
     Form10.ComboBox4.Visible        := True;
     Form10.Label37.Visible          := False;
     Form10.ComboBox2.Visible        := False;
-
+    //
     Form10.Label72.Visible          := True;
     Form10.ComboBox15.Visible       := True;
     Form10.Label84.Visible          := False;
     Form10.ComboBox14.Visible       := False;
+    //
   end else
   begin
+    //
     Form10.Label36.Visible          := False;
     Form10.ComboBox4.Visible        := False;
     Form10.Label37.Visible          := True;
     Form10.ComboBox2.Visible        := True;
-
+    //
     Form10.Label72.Visible          := False;
     Form10.ComboBox15.Visible       := False;
     Form10.Label84.Visible          := True;
     Form10.ComboBox14.Visible       := True;
+    //
   end;
-
+  //
   if Form7.ibDataSet13ESTADO.AsString = 'SP' then
   begin
     Label83.Caption := StrTran(Label83.Caption,'NFC-e','SAT');
@@ -6553,11 +6924,12 @@ begin
     Label92.Caption := StrTran(Label92.Caption,'SAT','NFC-e');
     Label72.Caption := StrTran(Label72.Caption,'SAT','NFC-e');
   end;
-
+  //
   Form7.ibDataSet4.Edit;
-
+  //
   // P - Produção própria
   // T - Produção por terceiros
+  //
   for I := 0 to Form10.ComboBox5.Items.Count -1 do
   begin
     if Copy(Form10.ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
@@ -6565,8 +6937,10 @@ begin
       Form10.ComboBox5.ItemIndex := I;
     end;
   end;
+  //
   // A - Arredondamento
   // T - Truncamento
+  //
   for I := 0 to Form10.ComboBox6.Items.Count -1 do
   begin
     if Copy(Form10.ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
@@ -6574,6 +6948,7 @@ begin
       Form10.ComboBox6.ItemIndex := I;
     end;
   end;
+  //
   // 101 - Tributada pelo Simples Nacional com permissão de crédito
   // 102 - Tributada pelo Simples Nacional sem permissão de crédito
   // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
@@ -6596,6 +6971,7 @@ begin
       end;
     end;
   end;
+  //
   // 101 - Tributada pelo Simples Nacional com permissão de crédito
   // 102 - Tributada pelo Simples Nacional sem permissão de crédito
   // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
@@ -6618,11 +6994,12 @@ begin
       end;
     end;
   end;
-
+  //
   if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
   begin
     for I := 0 to Form10.ComboBox3.Items.Count -1 do
     begin
+      //
       // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
       // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
       // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
@@ -6637,13 +7014,15 @@ begin
       begin
         Form10.ComboBox3.ItemIndex := I;
       end;
+      //
     end;
   end;
-
+  //
   if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
   begin
     for I := 0 to Form10.ComboBox2.Items.Count -1 do
     begin
+      //
       // 00 - Tributada integralmente
       // 10 - Tributada e com cobrança de ICMS por substituição tributária
       // 20 - Com redução de base de cálculo
@@ -6655,17 +7034,20 @@ begin
       // 60 - ICMS Cobrado anteriormente por substituição tributária
       // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
       // 90 - Outras
+      //
       if Copy(Form10.ComboBox2.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST.AsString)+'000',2,2) then
       begin
         Form10.ComboBox2.ItemIndex := I;
       end;
+      //
     end;
   end;
-
+  //
   if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
   begin
     for I := 0 to Form10.ComboBox14.Items.Count -1 do
     begin
+      //
       // 00 - Tributada integralmente
       // 10 - Tributada e com cobrança de ICMS por substituição tributária
       // 20 - Com redução de base de cálculo
@@ -6677,13 +7059,15 @@ begin
       // 60 - ICMS Cobrado anteriormente por substituição tributária
       // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
       // 90 - Outras
+      //
       if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST_NFCE.AsString)+'000',2,2) then
       begin
         Form10.ComboBox14.ItemIndex := I;
       end;
+      //
     end;
   end;
-  
+  //
   // 50 - Saída Tributada
   // 51 - Saída Tributável com Alíquota Zero
   // 52 - Saída Isenta
@@ -6691,6 +7075,7 @@ begin
   // 54 - Saída Imune
   // 55 - Saída com Suspensão
   // 99 - Outras Saídas
+  //
   if AllTrim(Form7.ibDataSet4CST_IPI.AsString)<>'' then
   begin
     for I := 0 to Form10.ComboBox1.Items.Count -1 do
@@ -6701,6 +7086,7 @@ begin
       end;
     end;
   end;
+  //
   // 01-Operação Tributável com Alíquota Básica
   // 02-Operação Tributável com Alíquota Diferenciada
   // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
@@ -6734,6 +7120,7 @@ begin
   // 75-Operação de Aquisição por Substituição Tributária
   // 98-Outras Operações de Entrada
   // 99-Outras Operações
+  //
   if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)<>'' then
   begin
     for I := 0 to Form10.ComboBox7.Items.Count -1 do
@@ -6744,6 +7131,7 @@ begin
       end;
     end;
   end;
+  //
   // 01-Operação Tributável com Alíquota Básica
   // 02-Operação Tributável com Alíquota Diferenciada
   // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
@@ -6812,9 +7200,10 @@ begin
       end;
     end;
   end;
-
+  //
   if ComboBox9.CanFocus then ComboBox9.SetFocus;
   if Form10.SMALL_DBEDITY.CanFocus then Form10.SMALL_DBEDITY.SetFocus;
+  //
   // 5101 - Venda de produção do estabelecimento;
   // 5102 - Venda de mercadoria de terceiros;
   // 5103 - Venda de produção do estabelecimento efetuada fora do estabelecimento;
@@ -6824,6 +7213,7 @@ begin
   // 5656 - Venda de combustível ou lubrificante de terceiros, destinados a consumidor final;
   // 5667 - Venda de combustível ou lubrificante a consumidor ou usuário final estabelecido em outra Unidade da Federação;
   // 5933 - Prestação de serviço tributado pelo ISSQN (Nota Fiscal conjugada);
+  //
   if AllTrim(Form7.ibDataSet4CFOP.AsString)<>'' then
   begin
     for I := 0 to Form10.ComboBox11.Items.Count -1 do
@@ -6834,7 +7224,7 @@ begin
       end;
     end;
   end;
-
+  //
   if Copy(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString,1,3) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
@@ -6844,30 +7234,38 @@ begin
     Label43.Caption := '% PIS:';
     Label49.Caption := '% COFINS:';
   end;
+  //
 end;
 
 procedure TForm10.ComboBox5Change(Sender: TObject);
 begin
+  //
   // P - Produção própria
   // T - Produção por terceiros
+  //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4IPPT.AsString := Copy(Form10.ComboBox5.Items[Form10.ComboBox5.ItemIndex]+' ',1,1);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox6Change(Sender: TObject);
 begin
+  //
   // A - Arredondamento
   // T - Truncamento
+  //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4IAT.AsString := Copy(Form10.ComboBox6.Items[Form10.ComboBox6.ItemIndex]+' ',1,1);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox3Change(Sender: TObject);
 begin
+  //
   // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
   // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
   // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
@@ -6877,14 +7275,17 @@ begin
   // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
   // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
   // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
+  //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CST.AsString := Copy(Form10.ComboBox3.Items[Form10.ComboBox3.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST.AsString+'  ',2,2);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox2Change(Sender: TObject);
 begin
+  //
   // 00 - Tributada integralmente
   // 10 - Tributada e com cobrança de ICMS por substituição tributária
   // 20 - Com redução de base de cálculo
@@ -6901,10 +7302,12 @@ begin
   begin
     Form7.ibDataSet4CST.AsString := Copy(Form7.ibDataSet4CST.AsString+' ',1,1)+Copy(Form10.ComboBox2.Items[Form10.ComboBox2.ItemIndex]+'   ',1,2);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox1Change(Sender: TObject);
 begin
+  //
   // 50 - Saída Tributada
   // 51 - Saída Tributável com Alíquota Zero
   // 52 - Saída Isenta
@@ -6912,14 +7315,17 @@ begin
   // 54 - Saída Imune
   // 55 - Saída com Suspensão
   // 99 - Outras Saídas
+  //
   if Form10.caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CST_IPI.AsString := Copy(Form10.ComboBox1.Items[Form10.ComboBox1.ItemIndex]+'  ',1,2);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox4Change(Sender: TObject);
 begin
+  //
   // 101 - Tributada pelo Simples Nacional com permissão de crédito
   // 102 - Tributada pelo Simples Nacional sem permissão de crédito
   // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
@@ -6930,10 +7336,12 @@ begin
   // 400 - Não tributada pelo Simples Nacional
   // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
   // 900 - Outros
+  //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CSOSN.AsString := Copy(Form10.ComboBox4.Items[Form10.ComboBox4.ItemIndex]+'   ',1,3);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox7Change(Sender: TObject);
@@ -6977,7 +7385,7 @@ begin
   begin
     Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
   end;
-  
+  //
   if Copy(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString,1,3) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
@@ -6987,10 +7395,12 @@ begin
     Label43.Caption := '% PIS:';
     Label49.Caption := '% COFINS:';
   end;
+  //
 end;
 
 procedure TForm10.ComboBox9Change(Sender: TObject);
 begin
+  //
   // 00 - Mercadoria para Revenda
   // 01 - Matéria-Prima
   // 02 - Embalagem
@@ -7003,10 +7413,12 @@ begin
   // 09 - Serviços
   // 10 - Outros insumos
   // 99 - Outras
+  //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4TIPO_ITEM.AsString := Copy(Form10.ComboBox9.Items[Form10.ComboBox9.ItemIndex]+'  ',1,2);
   end;
+  //
 end;
 
 procedure TForm10.SMALL_DBEdit38Exit(Sender: TObject);
@@ -7072,17 +7484,20 @@ end;
 
 procedure TForm10.Orelha_precoShow(Sender: TObject);
 begin
+  //
   // Descrobre o percentual de Comissao
+  //
   Image6.Picture := Form34.Image1.Picture;
-
+  //
   if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
-
+  //
   Form7.ibDataSet13CVEN.AsFloat := 0;
   if Form7.ibDataSet4COMISSAO.AsFloat <> 0 then
   begin
     Form7.ibDataSet13CVEN.AsFloat := Form7.ibDataSet4COMISSAO.AsFloat;
   end else
   begin
+    //
     Form7.ibDataSet9.First;
     while not Form7.ibDataSet9.Eof do
     begin
@@ -7090,9 +7505,11 @@ begin
       if Form7.ibDataSet13CVEN.AsFloat <= Form7.ibDataSet9COMISSA2.AsFloat  then Form7.ibDataSet13CVEN.AsFloat := Form7.ibDataSet9COMISSA2.AsFloat;
       Form7.ibDataSet9.Next;
     end;
+    //
   end;
-
+  //
   Form7.ibDataSet13ICMS.AsFloat := 0;
+  //
   try
     if Form7.ibDataSet13ICMS.AsFloat = 0 then
     begin
@@ -7192,6 +7609,7 @@ begin
                 'Verifique os valores no plano de contas.'+Chr(10));
 
   end;
+  //
 end;
 
 procedure TForm10.SMALL_DBEdit47Enter(Sender: TObject);
@@ -7222,47 +7640,57 @@ var
   PercentualCalcul : Real;
   PrecoDeVenda : Real;
 begin
+  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
+    //
     try
+      //
       Form7.ibDataSet4.Edit;
-
+      //
       PercentualCalcul := 100 - ((
       Form7.ibDataSet13COPE.AsFloat +
       Form7.ibDataSet13ICMS.AsFloat +
       Form7.ibDataSet13IMPO.AsFloat +
       Form7.ibDataSet13CVEN.AsFloat +
       Form7.ibDataSet13LUCR.AsFloat));
-
+      //
       if PercentualCalcul >= 0 then
       begin
+        //
         //  CustoDeAquisicao := Form7.ibDataSet4CUSTOCOMPR.AsFloat - ( Form7.ibDataSet4CUSTOCOMPR.AsFloat * (Form7.ibDataSet4ICME.AsFloat / 100));
+        //
         CustoDeAquisicao := Form7.ibDataSet4CUSTOCOMPR.AsFloat - ( rCusto * (Form7.ibDataSet13ICME.AsFloat / 100));
+        //
         // CustoDeAquisicao := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
         // CustoDeAquisicao := 118.8;
+        //
         Edit16.Text := '-R$ '+Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat - CustoDeAquisicao]);
-
+        //
         if PercentualCalcul <> 0 then PrecoDeVenda := CustoDeAquisicao * 100 / PercentualCalcul else PrecoDeVenda := 0;
-
+        //
         Edit22.Text := '=R$ '+Format('%9.2n',[PrecoDeVenda]);
         Edit18.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13COPE.AsFloat / 100]);
         Edit17.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13ICMS.AsFloat / 100]);
         Edit19.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13IMPO.AsFloat / 100]);
         Edit20.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13CVEN.AsFloat / 100]);
         Edit21.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13LUCR.AsFloat / 100]);
-
+        //
         if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
         if Form7.ibDataSet4CUSTOCOMPR.AsFloat <> 0 then Form7.ibDataSet13RESE.AsFloat :=  ((PrecoDeVenda / Form7.ibDataSet4CUSTOCOMPR.AsFloat) * 100) - 100 else Form7.ibDataSet13RESE.AsFloat := 0;
+        //
       end else
       begin
         ShowMessage('Não foi possível efetuar o calculo. Verifique os percentuais usados.'+Chr(10)+'Ou calcule manualmente o preço deste produto.');
       end;
     except end;
   end;
+  //
 end;
 
 procedure TForm10.ComboBox10Change(Sender: TObject);
 begin
+  //
   // 01-Operação Tributável com Alíquota Básica
   // 02-Operação Tributável com Alíquota Diferenciada
   // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
@@ -7301,12 +7729,14 @@ begin
   begin
     Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString := Copy(Form10.ComboBox10.Items[Form10.ComboBox10.ItemIndex]+'  ',1,2);
   end;
+  //
 end;
 
 procedure TForm10.Orelha_PISCOFINSEnter(Sender: TObject);
 begin
-  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-    Form7.ibDataset4.Edit;
+  //
+  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+  //
 end;
 
 procedure TForm10.Orelha_IPIEnter(Sender: TObject);
@@ -7324,9 +7754,10 @@ end;
 
 procedure TForm10.ComboBox8Change(Sender: TObject);
 begin
+  //
   Form7.ArquivoAberto.Edit;
   Form7.ArquivoAberto.FieldByName('CLIFOR').AsString := Form10.ComboBox8.Text;
-
+  //
   if Form7.ibDataSet9NOME.AsString =  Form7.ibDataSet2NOME.AsString then
   begin
     if Form7.ibDataSet2CLIFOR.AsString <> 'Vendedor' then
@@ -7339,7 +7770,7 @@ begin
       Form7.ibDataSet9.Post;
     end;
   end;
-
+  //
   if Form7.ibDataSet2CLIFOR.AsString = 'Marketplace' then
   begin
     if AllTrim(RetornaValorDaTagNoCampo('idCadIntTran',Form7.ibDataSet2OBS.AsString)) = '' then
@@ -7350,10 +7781,12 @@ begin
   begin
     Form7.ibDataSet2OBS.AsString := StrTran(Form7.ibDataSet2OBS.AsString,'<idCadIntTran>0000</idCadIntTran>','');
   end;
+  //
 end;
 
 procedure TForm10.Orelha_promoEnter(Sender: TObject);
 begin
+  //
   if Form7.bSoLeitura then
   begin
     SMALL_DBEdit45.ReadOnly := True;
@@ -7365,6 +7798,7 @@ begin
     SMALL_DBEdit46.ReadOnly := False;
     SMALL_DBEdit50.ReadOnly := False;
   end;
+  //
 end;
 
 procedure TForm10.Button7Click(Sender: TObject);
@@ -7409,14 +7843,23 @@ var
   end;
 
 begin
+  //
   // Procura pelo código de barras no no google
+  //
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-
+  //
   Image5.Picture.SaveToFile('res'+Form7.IBDataSet4REGISTRO.AsString+'.jpg');
-
+  //
   try
+    //
     begin
+      //
+//        WebBrowser1.Left := 1;
+//        WebBrowser1.Top  := 1;
+//        WebBrowser1.Repaint;
+
       begin
+        //
         Form10.Tag       := 0;
         if (Length(Limpanumero(Form7.ibDataSet4REFERENCIA.AsString)) >= 12) and (Copy(Form7.ibDataSet4REFERENCIA.AsString,1,1)<>'2') then
         begin
@@ -7425,30 +7868,35 @@ begin
         begin
           WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+Form7.ibDataSet4DESCRICAO.AsString+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
         end;
-
+        //
         while (Form10.Tag < 33) do
         begin
           Application.ProcessMessages;
           sleep(100);
         end;
-        
+        //
         for I := 1 to 50 do
         begin
           Application.ProcessMessages;
           if Form10.Tag < 35 then
             sleep(100);
         end;
-
+        //
         WebBrowser1.Left := -20000;
-
+        //
         Screen.Cursor             := crDefault;              // Cursor de Aguardo
-
+        //
+        //
         documentoAtivo := WebBrowser1.Document;
         s := documentoAtivo.Body.OuterHTML;
-
+        //
         // Adicionando o código HTML ao MEMO
+        //
         try
+          //
+          //
           // Exemplo: 737052683522  3380814050918   884116107460  7894900010015
+          //
           Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
           J := 0;
           {Sandro Silva 2022-09-26 inicio
@@ -7590,17 +8038,21 @@ begin
       end;
     end;
   except end;
-  
+  //
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
+  //
 end;
 
 procedure TForm10.SMALL_DBEdit31Change(Sender: TObject);
 begin
+  //
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
+//  Form1.ibQuery1.SQL.Add('select * from IBPT_ where CODIGO like '+QuotedStr(Form7.ibDataSet4CF.AsString+'%'));
+//  Form1.ibQuery1.SQL.Add('select * from IBPT_ where '+QuotedStr(Form7.ibDataSet4CF.AsString)+' like CODIGO||''%''');
   Form1.ibQuery1.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and CODIGO='+QuotedStr(Form7.ibDataSet4CF.AsString));
   Form1.ibQuery1.Open;
-
+  //
   if Form1.ibQuery1.FieldByName('DESCRICAO').AsString <> '' then
   begin
     Form10.LabelDescricaoNCM.Caption := Copy(Form1.ibQuery1.FieldByName('DESCRICAO').AsString+Replicate(' ',50),1,50);
@@ -7608,8 +8060,9 @@ begin
   begin
     Form10.LabelDescricaoNCM.Caption := 'Código NCM não cadastrado na tabela do IBPT';
   end;
-  
+  //
   Form1.ibQuery1.Close;
+  //
 end;
 
 procedure TForm10.ORELHA_CFOPShow(Sender: TObject);
@@ -7754,6 +8207,7 @@ procedure TForm10._RRClick(Sender: TObject);
 begin
   with Sender as TLabel do
   begin
+    //
     if AllTrim(Form7.IbDataSet4ST.AsString) <> '' then
     begin
       Form7.ibDataSet14.Close;
@@ -7767,7 +8221,7 @@ begin
       Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where CFOP='+QuotedStr('5102')+' or CFOP='+QuotedStr('5101')+' ');
       Form7.ibDataSet14.Open;
     end;
-
+    //
     if Alltrim(Form7.IbDataSet4ST.AsString) <> '' then
     begin
       if AllTrim(Form7.IbDataSet4ST.AsString) <> AllTrim(Form7.IbDataSet14ST.AsString) then
@@ -7779,20 +8233,21 @@ begin
         Form7.IbDataSet14.Post;
       end;
     end;
-
+    //
     Form7.IbDataSet14.EnableControls;
     Form7.IbDataSet14.Edit;
-
+    //
     SMALL_DBEDITY.DataField := Copy(Caption,1,2)+'_';
     SMALL_DBEDITY.Top       := Top;
     SMALL_DBEDITY.Left      := Left;
     SMALL_DBEDITY.Visible   := True;
     SMALL_DBEDITY.Refresh;
-
+    //
     if Form10.SMALL_DBEDITY.CanFocus then
     begin
       Form10.SMALL_DBEDITY.SetFocus;
     end;
+    //
   end;
 end;
 
@@ -7962,6 +8417,7 @@ procedure TForm10.Orelha_CONVERSAOEnter(Sender: TObject);
 var
   I : Integer;
 begin
+  //
   ComboBox12.Items.Clear;
   ComboBox13.Items.Clear;
   //
@@ -7989,24 +8445,30 @@ begin
   //
   for I := 0 to ComboBox12.Items.Count do
   begin
+    //
     if Form7.ibDataSet4MEDIDAE.AsString = ComboBox12.Items[I] then
     begin
       ComboBox12.ItemIndex := I;
     end;
-
+    //
     if Form7.ibDataSet4MEDIDA.AsString = ComboBox13.Items[I] then
     begin
       ComboBox13.ItemIndex := I;
     end;
+    //
   end;
-
+  //
+  //ComboBox12.Text := Form7.ibDataSet4MEDIDAE.AsString;
+  //ComboBox13.Text := Form7.ibDataSet4MEDIDA.AsString;
+  //
   if Form7.IbDataSet4FATORC.AsFloat = 0 then
   begin
     if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
     Form7.ibDataSet4FATORC.AsFloat := 1;
   end;
-
+  //
   Exemplo(True);
+  //
 end;
 
 procedure TForm10.SMALL_DBEdit64Change(Sender: TObject);
@@ -8080,6 +8542,7 @@ begin
   begin
     Form7.ibDataSet4CST_NFCE.AsString := Copy(Form7.ibDataSet4CST.AsString+' ',1,1)+Copy(Form10.ComboBox14.Items[Form10.ComboBox14.ItemIndex]+'   ',1,2);
   end;
+  //
 end;
 
 procedure TForm10.ComboBox15Change(Sender: TObject);
@@ -8100,6 +8563,7 @@ begin
   begin
     Form7.ibDataSet4CSOSN_NFCE.AsString := Copy(Form10.ComboBox15.Items[Form10.ComboBox15.ItemIndex]+'   ',1,3);
   end;
+  //
 end;
 
 procedure TForm10.Button6Click(Sender: TObject);
@@ -8108,7 +8572,9 @@ var
   bButton : Integer;
   sNumeroNF : String;
 begin
+  //
   try
+    //
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('create generator G_RENEGOCIACAO');
@@ -8126,7 +8592,9 @@ begin
   //
   if Copy(Form7.ibDataSet7DOCUMENTO.AsString,1,2) = 'RE' then
   begin
+    //
     // Abre uma negociação já existente
+    //
     sNumeroNF := LimpaNumero(Form7.ibDataSet7HISTORICO.AsString);
     //
     Form7.ibQuery1.Close;
@@ -8146,7 +8614,9 @@ begin
     //
   end else
   begin
+    //
     // Nova negociação
+    //
     try
       //
       Form7.ibQuery2.Close;
@@ -8155,17 +8625,23 @@ begin
       Form7.ibQuery2.Open;
       //
       sNumeroNF := strZero(StrToInt(Form7.ibQuery2.FieldByname('GEN_ID').AsString),12,0);
+      //
     except end;
-
+    //
     // Total das parcelas em aberto
+    //
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.Selectsql.Clear;
     Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and coalesce(ATIVO,9)<>1 and Coalesce(VALOR_RECE,999999999)=0 order by VENCIMENTO');
     Form7.ibDataSet7.Open;
+    //
   end;
   //
   Form7.sTextoDoAcordo := 'Parcela    Vencimento   Valor R$      Atualizado R$ '+chr(13)+chr(10)+
                           '---------- ------------ ------------- --------------'+chr(13)+chr(10);
+  //
+  // zerezima
+  //
   fTotal1 := 0;
   fTotal2 := 0;
   //
@@ -8180,6 +8656,7 @@ begin
   Form7.sTextoDoAcordo := Form7.sTextoDoAcordo +
                           '                        ------------- ---------------'+chr(13)+chr(10)+
                           '                       '+Format('%15.2n',[fTotal1])+Format('%15.2n',[ftotal2])+chr(13)+chr(10);
+  //
   if fTotal1 <> 0 then
   begin
     //
@@ -8225,7 +8702,9 @@ begin
     Form18.Caption := 'Desdobramento das duplicatas';
     //
     Form7.ibDataSet15.Cancel;
+    //
   end;
+  //
 end;
 
 procedure TForm10.Button21Click(Sender: TObject);
@@ -8235,6 +8714,7 @@ var
   FileStream : TFileStream;
   I : Integer;
 begin
+  //
   Form7.ibDataSet2.DisableControls;
   //
   Form7.ibDataSet2.Close;
@@ -8246,6 +8726,7 @@ begin
   Form7.ibDataSet2.First;
   while not Form7.ibDataSet2.EOF do
   begin
+    //
     if Form7.ibDataSet2FOTO.BlobSize <> 0 then
     begin
       //
@@ -8284,6 +8765,8 @@ begin
   end;
   //
   Form7.ibDataSet2.EnableControls;
+  //
+
 end;
 
 procedure TForm10.Panel2DblClick(Sender: TObject);
@@ -8296,26 +8779,29 @@ var
   I : Integer;
   sEx, sTag, sValor, sExemplo, sDescricao : String;
 begin
+  //
   StringGrid2.ColWidths[0] := 150;
   StringGrid2.ColWidths[1] := 150;
   StringGrid2.ColWidths[2] := 150;
   StringGrid2.ColWidths[3] := 670;
-
+  //
   Memo1.Width   := 800;
   dbMemo3.Width := 1000;
-
+  //
   sEx := '';
-
+  //
   for I := 0 to Form10.DBMemo3.Lines.Count + 1 do
   begin
     if pos('<',dbMemo3.Lines.Strings[I]) <> 0 then
     begin
+      //
       sEx := sEx + StringReplace(dbMemo3.Lines.Strings[I], #$D#$A, '', [rfReplaceAll])+chr(10);
+      //
     end;
   end;
-
+  //
   Memo1.Lines.Clear;
-
+  //
   Memo1.Lines.Add('<Tributavel>0 "Situações tributárias obtidas na prefeitura"</Tributavel>');
   Memo1.Lines.Add('<CodigoTributacaoMunicipio>000 "Código do item da lista de serviço. Obtido na prefeitura"</CodigoTributacaoMunicipio>');
   Memo1.Lines.Add('<cServico>000 "Código do serviço prestado dentro do município. Obtido na prefeitura"</cServico>');
@@ -8399,8 +8885,12 @@ begin
     StringGrid2.RowCount := Form10.Memo1.Lines.Count + 1;
   {Sandro Silva 2022-09-12 fim}
 
+  //
   for I := 0 to Form10.Memo1.Lines.Count + 1 do
   begin
+    //
+//ShowMessage(stag);
+
     sTag       := AllTrim(Copy(Memo1.Lines.Strings[I],(pos('<',Memo1.Lines.Strings[I])+1), (pos('>',Memo1.Lines.Strings[I])-(pos('<',Memo1.Lines.Strings[I])+1))));
     sExemplo   := AllTrim(Copy(Memo1.Lines.Strings[I],Pos('<' + sTag + '>', Memo1.Lines.Strings[I]) + Length('<' + sTag + '>'),(Pos('</', Memo1.Lines.Strings[I])-(Pos('<' + sTag + '>', Memo1.Lines.Strings[I])+Length('<' + sTag + '>')))));
     //
@@ -8432,6 +8922,7 @@ begin
   end;
   //
   StringGrid2.EditorMode := True;
+  //
 end;
 
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);
@@ -8439,6 +8930,7 @@ var
   I : Integer;
   sEx : String;
 begin
+  //
   for I := 1 to 100 do
   begin
     if (AllTrim(StringGrid2.Cells[0,I])<>'') and (AllTrim(StringGrid2.Cells[1,I])<>'') then
@@ -8446,7 +8938,7 @@ begin
       sEx := sEx + '<'+AllTrim(StringGrid2.Cells[0,I])+'>'+AllTrim(StringGrid2.Cells[1,I])+'</'+AllTrim(StringGrid2.Cells[0,I])+'>'+chr(10);
     end;
   end;
-
+  //
   try
     if Form7.ibDataSet4TAGS_.AsString <> sEx then
     begin
@@ -8470,19 +8962,25 @@ end;
 procedure TForm10.StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 begin
+  //
   if ACol <> 1 then
   begin
+//    StringGrid2.Canvas.Brush.Color := $00F5F5F5;
     StringGrid2.Canvas.Font.Color  := clGray;
     StringGrid2.Canvas.FillRect(Rect);
   end;
-
+  //
   StringGrid2.Canvas.FillRect(Rect);
   StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
+  //
 end;
 
 procedure TForm10.Image1Click(Sender: TObject);
 begin
+  //
+//  if Form7.ibDataSet13CGC.AsString = CNPJ_SMALLSOFT then
   begin
+    //
     ShellExecute( 0, 'Open',pChar('https://www.google.com.br/maps/dir//'+
     AllTrim(ConverteAcentosPHP(Form7.ibDataSet2ENDERE.AsString))+' - '+
     AllTrim(ConverteAcentosPHP(Form7.ibDataSet2COMPLE.AsString))+' - '+
@@ -8490,11 +8988,14 @@ begin
     AllTrim(ConverteAcentosPHP(Form7.ibDataSet2CIDADE.AsString))+' - '+
     AllTrim(ConverteAcentosPHP(Form7.ibDataSet2ESTADO.AsString))+' '
     ),'', '', SW_SHOWMAXIMIZED);
+    //
   end;
+  //
 end;
 
 procedure TForm10.CheckBox2Click(Sender: TObject);
 begin
+  //
   if CheckBox2.Checked then
   begin
     if ProdutoValidoParaMarketplace(True) = '' then
@@ -8508,6 +9009,7 @@ begin
   end;
   //
   try
+    //
     if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
     //
     if CheckBox2.Checked then
@@ -8522,38 +9024,123 @@ begin
     Form7.ibDataset4.Edit;
     //
   except end;
+  //
 end;
 
 procedure TForm10.ButtoOpenPictureDialog1n22Click(Sender: TObject);
 begin
+  //
   OpenPictureDialog1.Execute;
   CHDir(Form1.sAtual);
-
+  //
   if FileExists(OpenPictureDialog1.FileName) then
   begin
+    //
     Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-
+    //
     while FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-
+    //
     CopyFile(pChar(OpenPictureDialog1.FileName),pChar(Form10.sNomeDoJPG),True);
-
+    //
     while not FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       Sleep(100);
     end;
-
+    //
     Screen.Cursor             := crDefault;              // Cursor de Aguardo
-
+    //
     Form10.Image3.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
     Form10.Image5.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
-
+    //
     AtualizaTela(True);
+    //
   end;
 end;
 
+procedure TForm10.dbgComposicaoColEnter(Sender: TObject);
+begin
+  framePesquisaProdComposicao.Visible := False;
+end;
+
+procedure TForm10.ibDataSet28DESCRICAOChange(Sender: TField);
+begin
+  if Sender = Form7.ibDataSet28DESCRICAO then
+  begin
+    if (Trim(dbgComposicao.DataSource.DataSet.fieldbyname('DESCRICAO').AsString) = EmptyStr) then
+    begin
+      framePesquisaProdComposicao.Visible := False;
+      Exit;
+    end;
+
+    framePesquisaProdComposicao.CarregarProdutos(dbgComposicao.DataSource.DataSet.fieldbyname('DESCRICAO').AsString);
+  end;
+end;
+
+procedure TForm10.DefinirVisibleConsultaProdComposicao;
+begin
+  Form7.ibDataSet28.Edit;
+  Form7.ibDataSet28.UpdateRecord;
+  Form7.ibDataSet28.Edit;
+
+  framePesquisaProdComposicao.Visible := (Form7.ibDataSet28.State in [dsEdit, dsInsert])
+                                         and (dbgComposicao.Columns.Grid.SelectedField.FieldName = Form7.ibDataSet28DESCRICAO.FieldName)
+                                         and (Form7.ibDataSet28DESCRICAO.AsString <> EmptyStr);
+end;
+
+procedure TForm10.dbgComposicaoColExit(Sender: TObject);
+begin
+  ibDataSet28DESCRICAOChange(Form7.ibDataSet28DESCRICAO);
+end;
+
+procedure TForm10.dbgComposicaoKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if dbgComposicao.SelectedIndex = 0 then
+  begin
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
+    begin
+      if not framePesquisaProdComposicao.Visible then
+        framePesquisaProdComposicao.Visible := True
+      else
+        Form7.bFlag := False;
+
+      Form7.ibDataSet28.Edit;
+      Form7.ibDataSet28.UpdateRecord;
+      Form7.ibDataSet28.Edit;
+      Form7.bFlag := True;
+    end;
+  end;
+end;
+
+procedure TForm10.framePesquisaProdComposicaodbgItensPesqCellClick(
+  Column: TColumn);
+begin
+  AtribuirItemPesquisaComposicao;
+end;
+
+procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyPress(
+  Sender: TObject; var Key: Char);
+begin
+  if Key = chr(13) then
+    AtribuirItemPesquisaComposicao;
+end;
+
+procedure TForm10.AtribuirItemPesquisaComposicao;
+begin
+  if allTrim(framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString) <> EmptyStr then
+  begin
+    Form7.ibDataSet28.Edit;
+    Form7.ibDataSet28DESCRICAO.AsString := framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString;
+    dbgComposicao.SetFocus;
+  end;
+end;
+
+procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  framePesquisaProdComposicao.dbgItensPesqKeyDown(Sender, Key, Shift);
+end;
+
 end.
-
-
