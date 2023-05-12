@@ -9081,8 +9081,13 @@ end;
 
 procedure TForm10.DefinirVisibleConsultaProdComposicao;
 begin
+  Form7.ibDataSet28.Edit;
+  Form7.ibDataSet28.UpdateRecord;
+  Form7.ibDataSet28.Edit;
+
   framePesquisaProdComposicao.Visible := (Form7.ibDataSet28.State in [dsEdit, dsInsert])
                                          and (dbgComposicao.Columns.Grid.SelectedField.FieldName = Form7.ibDataSet28DESCRICAO.FieldName)
+                                         and (Form7.ibDataSet28DESCRICAO.AsString <> EmptyStr);
 end;
 
 procedure TForm10.dbgComposicaoColExit(Sender: TObject);

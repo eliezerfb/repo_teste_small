@@ -75,7 +75,7 @@ begin
   FibqProds.SQL.Add('WHERE');
   FibqProds.SQL.Add('((COALESCE(ATIVO,0)=0) OR ((COALESCE(ATIVO,0)=1) AND (COALESCE(TIPO_ITEM,'+QuotedStr(EmptyStr)+')='+QuotedStr('01')+')))');
   if (LimpaNumero(FcTexto) = FcTexto) and (Length(LimpaNumero(FcTexto)) <= 5) then
-    FibqProds.SQL.Add('AND (ESTOQUE.CODIGO='+ QuotedStr(LimpaNumero(FcTexto))+')');
+    FibqProds.SQL.Add('AND (ESTOQUE.CODIGO='+ QuotedStr(StrZero(StrToIntDef((LimpaNumero(FcTexto)),0),5,0))+')');
   if (LimpaNumero(FcTexto) = FcTexto) and (Length(LimpaNumero(FcTexto)) > 5) then
     FibqProds.SQL.Add('AND (ESTOQUE.REFERENCIA='+ QuotedStr(LimpaNumero(FcTexto))+')');
   if (LimpaNumero(FcTexto) <> FcTexto) then
