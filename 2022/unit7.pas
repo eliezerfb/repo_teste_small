@@ -2036,7 +2036,6 @@ type
     procedure Visu1Click(Sender: TObject);
     procedure EnviarNFSeporemail1Click(Sender: TObject);
     procedure CancelarNFSe1Click(Sender: TObject);
-    procedure SMALL_DBEdit3Change(Sender: TObject);
     procedure ibDataSet35DESCRICAOSetText(Sender: TField;
       const Text: String);
     procedure GerarNotaFiscaldeServio1Click(Sender: TObject);
@@ -2056,6 +2055,8 @@ type
     procedure odos1Click(Sender: TObject);
     procedure Sativos1Click(Sender: TObject);
     procedure Sinativos1Click(Sender: TObject);
+    procedure ibDataSet18MUNICIPIOSetText(Sender: TField;
+      const Text: String);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2069,6 +2070,7 @@ type
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
     procedure EnviarConsultaImprimirDANFE;
+    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
   public
 
     // Public declarations
@@ -8482,10 +8484,7 @@ end;
 
 procedure TForm7.Image109Click(Sender: TObject);
 begin
-  //
-//  if (sModulo <> 'ICM') then
   begin
-    //
     if (dBgrid1.SelectedField.FieldName = 'QTD_MINIM') then
     begin
       if Form7.sWhere = 'where QTD_ATUAL <= QTD_MINIM' then
@@ -8495,13 +8494,10 @@ begin
     end
     else
       Form16.ShowModal;
-    //
+    
     Form7.Close;
     Form7.Show;
-    //
   end;
-//else ShowMessage('Opção não disponível!');
-  //
 end;
 
 procedure TForm7.DBGrid1DblClick(Sender: TObject);
@@ -23451,7 +23447,7 @@ var
   Mais1ini: tIniFile;
   I: Integer;
   NovItem1, NovItem2: TmenuItem;
-  GeraEnvioItem1, GeraEnvioItem2: TmenuItem;
+  GeraEnvioItem1: TmenuItem;
   bI: Boolean;
 begin
   //
@@ -24296,39 +24292,12 @@ begin
   ImportaNF(True,'');
 end;
 
-procedure TForm7.IBDataSet2CIDADESetText(Sender: TField;
-  const Text: String);
+procedure TForm7.IBDataSet2CIDADESetText(Sender: TField; const Text: String);
+var
+  vEstado : string;
 begin
-  //
-  if ibDataSet39NOME.AsString <> '' then
-  begin
-    //
-    if Length(AllTrim(Form7.IBDataSet2ESTADO.AsString)) <> 2 then
-    begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
-      Form7.IBDataSet39.Open;
-    end else
-    begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet2ESTADO.AsString)+ '  order by NOME'); // Procura dentro do estado
-      Form7.IBDataSet39.Open;
-    end;
-    //
-    ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-    //
-    if AllTrim(Text) = '' then
-      ibDataSet2CIDADE.AsString := Text
-    else if Pos(AnsiUpperCase(AllTrim(Text)),AnsiUpperCase(ibDataSet39NOME.AsString)) <> 0 then
-      ibDataSet2CIDADE.AsString := ibDataSet39NOME.AsString
-    else
-      ShowMessage('Município inválido.');
-  end
-  else
-    ibDataSet2CIDADE.AsString := Text;
-  //
+  vEstado := Form7.IBDataSet2ESTADO.AsString;
+  SelecionaMunicipio(vEstado,Text,(Sender as TStringField));
 end;
 
 procedure TForm7.Movimentaodositemskardex1Click(Sender: TObject);
@@ -40734,11 +40703,6 @@ begin
   //
 end;
 
-procedure TForm7.SMALL_DBEdit3Change(Sender: TObject);
-begin
-//  MostraNFSe(True);
-end;
-
 procedure TForm7.ibDataSet35DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
@@ -41295,8 +41259,7 @@ begin
         Form7.ibDataSet13MUNICIPIO.AsString := Form7.ibDataSet39NOME.AsString;
         if Form7.ibDataSet13ESTADO.AsString = '' then
           Form7.ibDataSet13ESTADO.AsString := Form7.IBDataSet39UF.AsString;
-      end
-      else
+      end  else
       begin
         //ShowMessage('Município inválido.');
         //Form17.SMALL_DBEdit4.SetFocus;
@@ -41841,6 +41804,56 @@ begin
     Result := 0.01
   else
     Result := dCustoCompra;
+end;
+
+//Mauricio Parizotto 2023-05-03
+procedure TForm7.SelecionaMunicipio(vEstado, vText : string; vCampoCidade : TStringField; Valida : Boolean = True);
+var
+  FiltroUF : string;
+begin
+  vCampoCidade.AsString := vText;
+
+  if ibDataSet39NOME.AsString <> '' then
+  begin
+    if Length(AllTrim(vEstado)) = 2 then
+    begin
+      // Procura dentro do estado
+      FiltroUF := ' Where UF='+QuotedStr(vEstado);
+    end;
+
+    Form7.IBDataSet39.Close;
+    Form7.IBDataSet39.SelectSQL.Text := ' Select * '+
+                                        ' From MUNICIPIOS '+
+                                        FiltroUF+
+                                        ' Order by NOME';
+    Form7.IBDataSet39.Open;
+
+    ibDataSet39.Locate('NOME',AllTrim(vText),[loCaseInsensitive, loPartialKey]);
+
+    if AllTrim(vText) <> '' then
+    begin
+      if Pos(AnsiUpperCase(AllTrim(vText)),AnsiUpperCase(ibDataSet39NOME.AsString)) <> 0 then
+      begin
+        vCampoCidade.AsString := ibDataSet39NOME.AsString
+      end else
+      begin
+        if Valida then
+        begin
+          ShowMessage('Município inválido.');
+          vCampoCidade.AsString := '';
+        end;
+      end;
+    end;
+  end;
+end;
+
+
+procedure TForm7.ibDataSet18MUNICIPIOSetText(Sender: TField; const Text: String);
+var
+  vEstado : string;
+begin
+  vEstado := Form7.ibDataSet18UF.AsString;
+  SelecionaMunicipio(vEstado,Text,(Sender as TStringField),False);
 end;
 
 end.

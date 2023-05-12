@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 418
-  Top = 33
+  Left = 306
+  Top = 64
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -11152,7 +11152,6 @@ object Form7: TForm7
     ParentFont = False
     TabOrder = 19
     Visible = False
-    OnChange = SMALL_DBEdit3Change
     OnKeyDown = SMALL_DBEdit1KeyDown
   end
   object MainMenu1: TMainMenu
@@ -15913,35 +15912,6 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
     Top = 575
-    object ibDataSet18NOME: TStringField
-      DisplayLabel = 'Nome'
-      DisplayWidth = 35
-      FieldName = 'NOME'
-      Size = 60
-    end
-    object ibDataSet18FONE: TStringField
-      DisplayLabel = 'Telefone'
-      DisplayWidth = 17
-      FieldName = 'FONE'
-      EditMask = '!\(#xx##\)########;1; '
-      Size = 16
-    end
-    object ibDataSet18ENDERECO: TStringField
-      DisplayLabel = 'Endere'#231'o'
-      FieldName = 'ENDERECO'
-      Size = 34
-    end
-    object ibDataSet18MUNICIPIO: TStringField
-      DisplayLabel = 'Munic'#237'pio'
-      DisplayWidth = 20
-      FieldName = 'MUNICIPIO'
-      Size = 40
-    end
-    object ibDataSet18UF: TStringField
-      FieldName = 'UF'
-      OnSetText = ibDataSet18UFSetText
-      Size = 2
-    end
     object ibDataSet18CGC: TStringField
       DisplayLabel = 'CPF/CNPJ'
       DisplayWidth = 20
@@ -15949,12 +15919,51 @@ object Form7: TForm7
       OnSetText = ibDataSet18CGCSetText
       Size = 19
     end
+    object ibDataSet18NOME: TStringField
+      DisplayLabel = 'Nome'
+      DisplayWidth = 35
+      FieldName = 'NOME'
+      Size = 60
+    end
+    object ibDataSet18ENDERECO: TStringField
+      DisplayLabel = 'Endere'#231'o'
+      DisplayWidth = 35
+      FieldName = 'ENDERECO'
+      Size = 34
+    end
+    object ibDataSet18MUNICIPIO: TStringField
+      DisplayLabel = 'Munic'#237'pio'
+      DisplayWidth = 20
+      FieldName = 'MUNICIPIO'
+      OnSetText = ibDataSet18MUNICIPIOSetText
+      Size = 40
+    end
+    object ibDataSet18UF: TStringField
+      FieldName = 'UF'
+      OnSetText = ibDataSet18UFSetText
+      Size = 2
+    end
     object ibDataSet18IE: TStringField
+      DisplayWidth = 20
       FieldName = 'IE'
       Size = 15
     end
+    object ibDataSet18FONE: TStringField
+      DisplayLabel = 'Telefone'
+      DisplayWidth = 20
+      FieldName = 'FONE'
+      EditMask = '!\(#xx##\)#########;1;'
+      Size = 16
+    end
+    object ibDataSet18EMAIL: TStringField
+      DisplayLabel = 'e-mail'
+      DisplayWidth = 35
+      FieldName = 'EMAIL'
+      Size = 80
+    end
     object ibDataSet18PLACA: TStringField
       DisplayLabel = 'Placa do Ve'#237'culo'
+      DisplayWidth = 20
       FieldName = 'PLACA'
       Size = 11
     end
@@ -15962,12 +15971,6 @@ object Form7: TForm7
       DisplayLabel = 'UF'
       FieldName = 'ESTADO'
       Size = 2
-    end
-    object ibDataSet18EMAIL: TStringField
-      DisplayLabel = 'e-mail'
-      DisplayWidth = 34
-      FieldName = 'EMAIL'
-      Size = 80
     end
     object ibDataSet18ANTT: TIBStringField
       FieldName = 'ANTT'
@@ -21049,7 +21052,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21082,7 +21085,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50a\'
+      '50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21394,7 +21397,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\DPEC'
+      'vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21423,7 +21426,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\DPEC'
+      'm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

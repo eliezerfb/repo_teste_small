@@ -70,7 +70,6 @@ type
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
-    procedure SMALL_DBEdit4Exit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -343,54 +342,9 @@ begin
         Form7.ibDataSet13MUNICIPIO.AsString := Form7.IBDataSet39NOME.AsString;
       end;  
     end;
-    //
+    
     dBGrid3.Visible    := False;
-    //
   end;
-{
-  //
-//  if dBGrid3.Visible then
-  begin
-    //
-    if AllTrim(Form7.ibDataSet13MUNICIPIO.AsString) <> '' then
-    begin
-      //
-      if Length(AllTrim(Form7.IBDataSet13ESTADO.AsString)) <> 2 then
-      begin
-        Form7.IBDataSet39.Close;
-        Form7.IBDataSet39.SelectSQL.Clear;
-        Form7.IBDataset39.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(AllTrim(Form7.ibDataSet13MUNICIPIO.AsString))+' ');
-        Form7.IBDataSet39.Open;
-      end else
-      begin
-        Form7.IBDataSet39.Close;
-        Form7.IBDataSet39.SelectSQL.Clear;
-        Form7.IBDataset39.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(AllTrim(Form7.ibDataSet13MUNICIPIO.AsString))+' and UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' ');
-        Form7.IBDataSet39.Open;
-      end;
-      //
-      if AllTrim(Form7.IBDataSet39NOME.AsString) <> '' then
-      begin
-        if (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then
-        begin
-          Form7.ibDataSet13MUNICIPIO.AsString := Form7.IBDataSet39NOME.AsString;
-        end;
-      end else
-      begin
-        if (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then
-        begin
-          ShowMEssage('Município inválido.');
-          Form7.ibDataSet13MUNICIPIO.AsString := '';
-          Form17.SMALL_DBEdit4.SetFocus;
-        end;
-      end;
-      //
-      dBGrid3.Visible    := False;
-    end;
-    //
-  end;
-}
-
 end;
 
 procedure TForm17.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -475,46 +429,6 @@ begin
       Mais1Ini.Free;
     end;
   end;
-end;
-
-procedure TForm17.SMALL_DBEdit4Exit(Sender: TObject);
-begin
-  {Sandro Silva 2022-10-24 inicio
-  //
-  if (Form7.ibDataSet39NOME.AsString <> '') or (Trim(SMALL_DBEdit4.Text) <> '') then
-  begin
-    //
-    if Length(AllTrim(Form7.ibDataSet13ESTADO.AsString)) <> 2 then
-    begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
-      Form7.IBDataSet39.Open;
-    end else
-    begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
-      Form7.IBDataSet39.Open;
-    end;
-    //
-    Form7.ibDataSet39.Locate('NOME',AllTrim(SMALL_DBEdit4.Text),[loCaseInsensitive, loPartialKey]);
-    //
-    if AllTrim(SMALL_DBEdit4.Text) = '' then
-      Form7.ibDataSet13MUNICIPIO.AsString := SMALL_DBEdit4.Text
-    else if Pos(AnsiUpperCase(AllTrim(SMALL_DBEdit4.Text)),AnsiUpperCase(Form7.ibDataSet39NOME.AsString)) <> 0 then
-      Form7.ibDataSet13MUNICIPIO.AsString := Form7.ibDataSet39NOME.AsString
-    else
-    begin
-      ShowMessage('Município inválido.');
-      SMALL_DBEdit4.SetFocus;
-      Abort;
-    end;
-  end
-  else
-    Form7.ibDataSet13MUNICIPIO.AsString := Text;
-  //
-  {Sandro Silva 2022-10-24 fim}
 end;
 
 procedure TForm17.FormCreate(Sender: TObject);
