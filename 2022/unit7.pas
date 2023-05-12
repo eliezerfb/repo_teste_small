@@ -19571,6 +19571,21 @@ begin
           if Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.AsString = '' then
             Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Clear;
           {Sandro Silva 2022-12-20 fim}
+
+          {Sandro Silva 2023-05-12 inicio}
+          // Valida se PFCP e PFCPST estão vazios (não é nota feita via opção compras/devolver)
+          if Form7.ibDataSet16PFCP.AsString = '' then
+          begin
+            if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+              Form7.ibDataSet16PFCP.AsFloat := StrToFloatDef(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4.FieldByname('TAGS_').AsString)), 0.00);
+          end;
+          if Form7.ibDataSet16PFCPST.AsString = '' then
+          begin
+            if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+              Form7.ibDataSet16PFCPST.AsFloat := StrToFloatDef(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4.FieldByname('TAGS_').AsString)), 0.00);
+          end;
+          {Sandro Silva 2023-05-12 fim}
+
           //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
@@ -33201,6 +33216,9 @@ begin
   fNFE := GeraXmlNFe;//(True);
   if Trim(fNFE) <> '' then
   begin
+
+    if Form1.DisponivelSomenteParaNos then
+      ShowMessage(fNFe);
 
     try
       spdNFe.PreverDanfe(fNFE, '');

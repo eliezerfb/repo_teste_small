@@ -875,9 +875,12 @@ begin
 
 
     // Fundo de combate a pobresa Retido deve somar no total da nota
+chegou aqui zerado
 
     if (oItem.PFCPUFDEST <> 0) or (oItem.PICMSUFDEST <> 0) then
     begin
+se mudar aqui perde o valor do banco e não busca mais do cadastro
+
       // Quando preenche na nota não vai nada nessas tags
       oItem.PFCP   := 0;
       oItem.PFCPST := 0;
