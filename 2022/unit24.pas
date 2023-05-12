@@ -1244,6 +1244,10 @@ begin
           Form7.ibDataSet4.Edit;
 
           try
+            //Remove marcação de prduto novo
+            if Form7.ibDataSet4ALTERADO.AsString = '3' then
+              Form7.ibDataSet4ALTERADO.AsString     := '0';
+
             if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
             begin
               // SERIAIS - Repassa o valor pago e a data da compra //
