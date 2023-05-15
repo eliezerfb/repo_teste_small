@@ -88,22 +88,21 @@ uses Unit7, Unit10, Unit14, Unit19, Mais, uListaCnaes;
 
 procedure TForm17.Button1Click(Sender: TObject);
 begin
-  //
   try
     dBGrid3.Visible    := False;
     Form7.ibDataSet13.Post;
-    Form1.RegistrodoProgramaonline1Click(Sender);
-    //
+    //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
+    Form1.RegistrodoPrograma(False);
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     AgendaCommit(True);
     Commitatudo(True); // SQL - Commando
     AbreArquivos(True);
     Screen.Cursor := crDefault; // Cursor de Aguardo
-    //
-  except end;
-  //
+  except
+  end;
+
   Close;
-  //
 end;
 
 procedure TForm17.FormActivate(Sender: TObject);

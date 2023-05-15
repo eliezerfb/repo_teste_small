@@ -86,7 +86,8 @@ uses
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
   uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
   uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
-  uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas';
+  uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas',
+  uFrmTermosUso in 'uFrmTermosUso.pas' {FrmTermosUso};
 
 {$R *.RES}
 
