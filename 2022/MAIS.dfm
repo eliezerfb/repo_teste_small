@@ -13710,6 +13710,10 @@ object Form1: TForm1
           Caption = 'Zipar XML ao enviar por e-mail'
           OnClick = ZiparXMLnoenvioporemail1Click
         end
+        object Mensagemparaenviodeemail1: TMenuItem
+          Caption = 'Mensagem para envio de e-mail'
+          OnClick = Mensagemparaenviodeemail1Click
+        end
         object Enviardanfeporemail1: TMenuItem
           Caption = 'Enviar DANFE por e-mail'
           OnClick = Enviardanfeporemail1Click
