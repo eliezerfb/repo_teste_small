@@ -258,6 +258,7 @@ type
     N18: TMenuItem;
     ConfiguraesdaNFSe2: TMenuItem;
     Debug1: TMenuItem;
+    Mensagemparaenviodeemail1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure Image205Click(Sender: TObject);
@@ -419,6 +420,7 @@ type
     procedure ConfiguraesdaNFSe2Click(Sender: TObject);
     procedure Debug1Click(Sender: TObject);
     procedure Image_bola_cliforClick(Sender: TObject);
+    procedure Mensagemparaenviodeemail1Click(Sender: TObject);
 
 
   private
@@ -12636,6 +12638,24 @@ begin
   begin
     Result := False;
     ShowMessage('Módulo de transmissão de NFS-e não instalado');
+  end;
+end;
+
+procedure TForm1.Mensagemparaenviodeemail1Click(Sender: TObject);
+var
+  Mais1Ini : TiniFile;
+  cMsg: string;
+begin
+  Mais1ini := TIniFile.Create(Form1.sAtual+'\SMALLCOM.INF');
+  try
+    cMsg := Form1.Small_InputForm('Mensagem para envio de e-mail',
+                                  EmptyStr,
+                                  Mais1Ini.ReadString('OUTROS','Propaganda',EmptyStr)
+                                 );
+
+    Mais1Ini.WriteString('OUTROS', 'Propaganda', cMsg);
+  finally
+    Mais1Ini.Free;
   end;
 end;
 
