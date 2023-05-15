@@ -2756,7 +2756,9 @@ begin
     //
   end;
   //
-  if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
+  // Sandro Silva 2023-05-15 if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
+  if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then
+    Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
   //
   try
     Form12.SMALL_DBEdit40.SetFocus;

@@ -609,21 +609,23 @@ end;
 procedure TITENS001.SetFVFCP(const Value: Double);
 begin
   FVFCP := Value;
-
+  {
   // Zera campos de FCP ST
   FVBCFCPST := 0.00;
   FPFCPST   := 0.00;
   FVFCPST   := 0.00;
+  }
 end;
 
 procedure TITENS001.SetFVFCPST(const Value: Double);
 begin
   FVFCPST := Value;
-
+  {
   // Zera campos de FCP
   FVBCFCP := 0.00;
   FPFCP   := 0.00;
   FVFCP   := 0.00;
+  }
 end;
 
 end.
