@@ -8867,7 +8867,7 @@ begin
   Memo1.Lines.Add('<pGLP>0,0000 "Informar em número decimal o % do GLP derivado de petróleo"</pGLP>');
   Memo1.Lines.Add('<pGNn>0,0000 "Informar em número decimal o % do Gás Natural Nacional"</pGNn>');
   Memo1.Lines.Add('<pGNi>0,0000 "Informar em número decimal o % do Gás Natural Importado"</pGNi>');
-  Memo1.Lines.Add('<adRemICMSRet>"Aliquota ad rem retido anteriormente"</adRemICMSRet>'); // Ficha 6906 Sandro Silva 2023-05-09
+  Memo1.Lines.Add('<adRemICMSRet>0,0000 "Alíquota ad rem retido anteriormente"</adRemICMSRet>'); // Ficha 6906 Sandro Silva 2023-05-09
   Memo1.Lines.Add('<vPart>0,00  "Valor de partida"</vPart>');
   Memo1.Lines.Add('<uTrib>UN    "Unidade tributável"</uTrib>');
   Memo1.Lines.Add('<qTrib>0     "Quantidade tributável"</qTrib>');
@@ -9005,6 +9005,8 @@ begin
   begin
 //    StringGrid2.Canvas.Brush.Color := $00F5F5F5;
     StringGrid2.Canvas.Font.Color  := clGray;
+    if gdSelected in State then
+      StringGrid2.Canvas.Font.Color  := clBlack; // Sandro Silva 2023-05-15
     StringGrid2.Canvas.FillRect(Rect);
   end;
   //
