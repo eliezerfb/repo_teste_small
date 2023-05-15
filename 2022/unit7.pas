@@ -33076,6 +33076,16 @@ begin
       Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15, Form7.ibDataSet16);
     end;
     Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA); // Força o cálculo de totais e de impostos
+
+    {Sandro Silva 2023-05-15 inicio}
+    // Para exibir os dados do destinatário na tela de lançamento da nota
+    Form7.ibDataSet2.Close;
+    Form7.ibDataSet2.Selectsql.Clear;
+    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+    Form7.ibDataSet2.Open;
+    {Sandro Silva 2023-05-15 fim}
+
+
   finally
 
   end;

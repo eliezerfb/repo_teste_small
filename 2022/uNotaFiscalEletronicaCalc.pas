@@ -881,7 +881,7 @@ begin
 
     if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then // Não é Devolução
     begin
-      oItem.VBCFCP   := oItem.Vbc;// Valor da Base de Cálculo do FCP
+      oItem.VBCFCP   := oItem.Total;// Valor da Base de Cálculo do FCP
       oItem.VBCFCPST := oItem.Vbcst; // Valor da Base de Cálculo do FCP ST
       oItem.VFCP     := 0.00;// Valor da Base de Cálculo do FCP
       oItem.VFCPST   := 0.00; // Valor da Base de Cálculo do FCP ST
@@ -898,7 +898,7 @@ begin
         begin
           if fPercentualFCP <> 0 then
           begin
-            oItem.VBCFCP := oItem.Vbc;// Valor da Base de Cálculo do FCP
+            oItem.VBCFCP := oItem.Total;// Valor da Base de Cálculo do FCP
             oItem.VFCP   := oItem.Vbc * fPercentualFCP / 100; // Valor do Fundo de Combate à Pobreza (FCP)
           end;
 
@@ -908,7 +908,7 @@ begin
         begin
           if fPercentualFCP <> 0 then
           begin
-            oItem.VBCFCP := oItem.Vbc;// Valor da Base de Cálculo do FCP
+            oItem.VBCFCP := oItem.Total;// Valor da Base de Cálculo do FCP
             oItem.vFCP   := oItem.Vbc * fPercentualFCP / 100; // Valor do Fundo de Combate à Pobreza (FCP)
           end;
 
@@ -929,7 +929,7 @@ begin
         begin
           if fPercentualFCP <> 0 then
           begin
-            oItem.VBCFCP := oItem.Vbcst; // Valor da Base de Cálculo do FCP
+            oItem.VBCFCP := oItem.Total;// Valor da Base de Cálculo do FCP
             oItem.VFCP   := oItem.Vbcst * fPercentualFCP / 100; // Valor do Fundo de Combate à Pobreza (FCP)
           end;
         end;
@@ -958,7 +958,7 @@ begin
         begin
           if fPercentualFCP <> 0 then
           begin
-            oItem.VBCFCP   := oItem.Vbc; // Valor da Base de Cálculo do FCP
+            oItem.VBCFCP   := oItem.Total;// Valor da Base de Cálculo do FCP
             oItem.VFCP     := Arredonda(oItem.Vbc * fPercentualFCP / 100, 2); // Valor do Fundo de Combate à Pobreza (FCP)
           end;
         end;
@@ -976,7 +976,7 @@ begin
         begin
           if fPercentualFCP <> 0 then
           begin
-            oItem.VBCFCP   := oItem.Vbc; // Valor da Base de Cálculo do FCP
+            oItem.VBCFCP   := oItem.Total;// Valor da Base de Cálculo do FCP
             oItem.VFCP     := Arredonda(oItem.Vbc * fPercentualFCP / 100, 2); // Valor do Fundo de Combate à Pobreza (FCP)
           end;
 
@@ -1084,7 +1084,7 @@ begin
       // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
     end;
   {Sandro Silva 2023-05-15 inicio}
-  oItem.PFCP    := fPercentualFCP;
+  oItem.PFCP   := fPercentualFCP;
   oItem.PFCPST := fPercentualFCPST;
   {Sandro Silva 2023-05-15 fim}
 

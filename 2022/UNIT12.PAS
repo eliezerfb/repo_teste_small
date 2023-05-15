@@ -1301,7 +1301,9 @@ end;
 procedure TForm12.SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  // Sandro Silva 2023-05-15 if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_F1     then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(SMALL_DBEdit39.Left,SMALL_DBEdit39.Top + 20);
