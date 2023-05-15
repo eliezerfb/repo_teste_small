@@ -1089,6 +1089,7 @@ begin
   {Sandro Silva 2023-05-15 fim}
 
   finally
+
   end;
 end;
 
