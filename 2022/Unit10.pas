@@ -1437,92 +1437,92 @@ end;
 procedure GravaEscolha;
 begin
   try
-    //
     // Caixa
-    //
     if Form7.sModulo = 'CAIXA' then
     begin
       Form7.ibDataSet1.Edit;
       Form7.ibDataSet1NOME.AsString := Form7.ibDataSet12NOME.AsString;     // contas bancárias
     end;
-    //
+
     // Contas a receber
-    //
     if Form7.sModulo = 'RECEBER' then
     begin
-      //
       Form7.ibDataSet7.Edit;
-      //
-      if Form10.dBGrid1.Height = 300 then Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
-          else Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
-      //
+
+      if Form10.dBGrid1.Height = 300 then
+        Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
+      else
+        Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
     end;
-    //
+
     // Contas a Pagar
-    //
     if Form7.sModulo = 'PAGAR' then
     begin
       Form7.ibDataSet8.Edit;
-      //
-      if Form10.dBGrid1.Height = 300 then Form7.ibDataSet8CONTA.AsString := Form7.ibDataSet12NOME.AsString
-          else Form7.ibDataSet8NOME.AsString  := Form7.ibDataSet2NOME.AsString;
-      //
+
+      if Form10.dBGrid1.Height = 300 then
+        Form7.ibDataSet8CONTA.AsString := Form7.ibDataSet12NOME.AsString
+      else
+        Form7.ibDataSet8NOME.AsString  := Form7.ibDataSet2NOME.AsString;
     end;
-    //
+
     // Estoque, Nota Fiscal de venda ou compra quando cadastra um produto novo pelo formulário
-    //
     if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
     begin
-      //
       // Medida
-      //
       if Form10.dBGrid3.Height = 260 then
       begin
         Form7.ibDataSet4.Edit;
-        Form7.ibDataSet4MEDIDA.AsString := Form7.ibDataSet49SIGLA.AsString;     // MEDIDA
+        Form7.ibDataSet4MEDIDA.AsString := Form7.ibDataSet49SIGLA.AsString;
         Form7.ibDataSet4.Post;
       end;
-      //
+
       // Grupos
-      //
       if Form10.dBGrid1.Height = 145 then
       begin
         Form7.ibDataSet4.Edit;
-        Form7.ibDataSet4NOME.AsString := Form7.ibDataSet21NOME.AsString;     // Grupos
+        Form7.ibDataSet4NOME.AsString := Form7.ibDataSet21NOME.AsString;
         Form7.ibDataSet4.Post;
       end;
     end;
-    //
+
     if Form7.sModulo = 'CLIENTES' then
     begin
       Form7.ibDataSet2.Edit;
       if Form10.dBGrid3.Height = 260 then
       begin
-        Form7.ibDataSet2CIDADE.AsString := Form7.ibDataSet39NOME.AsString;  // Cidade
+        Form7.ibDataSet2CIDADE.AsString := Form7.ibDataSet39NOME.AsString;  
       end else
       begin
-        Form7.ibDataSet2CONVENIO.AsString := Form7.ibDataSet29NOME.AsString;     // Convênio
+        Form7.ibDataSet2CONVENIO.AsString := Form7.ibDataSet29NOME.AsString;
       end;
-      //
+
       Form7.dBGrid3.Visible := False;
-      //
     end;
-    //
-  except end;
+
+    //Mauricio Parizotto 2023-05-16
+    if Form7.sModulo = 'TRANSPORT' then
+    begin
+      Form7.ibDataSet18.Edit;
+      if Form10.dBGrid3.Height = 260 then
+      begin
+        Form7.ibDataSet18MUNICIPIO.AsString := Form7.ibDataSet39NOME.AsString;
+      end;
+
+      Form7.dBGrid3.Visible := False;
+    end;
+  except
+  end;
 end;
 
 
 procedure TForm10.Image204Click(Sender: TObject);
 begin
-  //
-//  Form10.Button4.SetFocus;
-//  Form10.Button4Click(Sender);
-  //
   try
     Form7.ArquivoAberto.MoveBy(-1);
   except
   end;  
-  //
+  
   try
     Form7.IBTransaction1.CommitRetaining;
     VerificaSeEstaSendoUsado(False);
@@ -1534,7 +1534,6 @@ begin
       bNovo := False;
   except
   end;
-  //
 end;
 
 procedure TForm10.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -2549,13 +2548,39 @@ end;
 
 procedure TForm10.DBGrid3DblClick(Sender: TObject);
 begin
-  GravaEscolha(); // Ok
+  GravaEscolha();
+
+  {Mauricio Parizotto 2023-05-16 Inicio}
+  if Form7.sModulo = 'TRANSPORT' then
+  begin
+    Form7.ibDataSet18UF.FocusControl;
+    
+    Exit;
+  end;
+
+  if Form7.sModulo = 'CLIENTES' then
+  begin
+    if Form10.dBGrid3.Height = 260 then
+    begin
+      Form7.IBDataSet2ESTADO.FocusControl;
+    end else
+    begin
+      if Form10.SMALL_DBEdit19.CanFocus then
+        Form10.SMALL_DBEdit19.SetFocus;
+    end;
+
+    Exit;
+  end;
+  {Mauricio Parizotto 2023-05-16 Fim}
+
   if Form10.dBGrid3.Height = 260 then
   begin
-    if Form10.SMALL_DBEdit6.CanFocus then Form10.SMALL_DBEdit6.SetFocus
+    if Form10.SMALL_DBEdit6.CanFocus then
+      Form10.SMALL_DBEdit6.SetFocus
   end else
   begin
-    if Form10.SMALL_DBEdit19.CanFocus then Form10.SMALL_DBEdit19.SetFocus;
+    if Form10.SMALL_DBEdit19.CanFocus then
+      Form10.SMALL_DBEdit19.SetFocus;
   end;
 end;
 
