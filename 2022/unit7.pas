@@ -19988,12 +19988,12 @@ begin
 
                 {Sandro Silva 2022-11-11 inicio}
                 try
-                  if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
-                  begin
+                  //if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
+                  //begin
                     ItemNFe := TItemNFe.Create;
                     CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
                     Form7.ibDataSet16CSOSN.AsString := ItemNFe.CSOSN;
-                  end;
+                  //end;
                 except
 
                 end;
