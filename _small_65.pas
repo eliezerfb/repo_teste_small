@@ -3594,7 +3594,7 @@ begin
                 //
                 if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
                 begin // NÃO É SIMPLES NACIONAL
-                  if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|') = 0 then
+                  if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AsString + '|', '|40|41|50|') = 0 then
                   begin
                     Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
                   end;
@@ -3602,6 +3602,42 @@ begin
                 //
               end; // if LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString) <> '' then
               //
+
+              {Sandro Silva 2023-05-17 inicio}
+              //qBCMonoRet = será igual à quantidade do produto informado na nota
+              //adRemICMSRet = buscar da tag adRemICMSRet do cadastro do produto
+              //vICMSMonoRet = multiplicar o valor da tag qBCMonoRet pelo valor da tag adRemICMSRet
+              {
+              if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+              begin
+                // Simples nacional
+                if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString = '61' then
+                begin
+                  Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
+                  Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00));
+                  Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_N45').AsString := FormatFloatXML(XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString));
+                end;
+              end
+              else
+              begin
+                // Regime Normal
+                if Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61' then
+                begin
+                  Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
+                  Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00));
+                  Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_N45').AsString := FormatFloatXML(XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString));
+                end;
+              end;
+              }
+              if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61') or
+                (Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString = '61')
+               then
+              begin
+                Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
+                Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00));
+                Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_N45').AsString := FormatFloatXML(XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString));
+              end;
+              {Sandro Silva 2023-05-17 fim}
 
               // Cálculo da desoneração
               if (RetornaValorDaTagNoCampo('motDesICMS', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
