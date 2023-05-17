@@ -2210,7 +2210,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uClientesFornecedores
   , uRetornaCaptionEmailPopUpDocs
   , uIRetornaCaptionEmailPopUpDocs
-  , uItensInativosImpXMLEntrada;
+  , uItensInativosImpXMLEntrada,
+  , uTextoEmailFactory;
 
 {$R *.DFM}
 
@@ -4858,7 +4859,7 @@ begin
   //
   Form7.sFormatoDoDanfe      := Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato');
   Form7.sZiparXML            := Mais1Ini.ReadString('ENVIO','Zipar XML','N');
-  Form7.sEnviarDAnfePorEmail := Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','N');
+  Form7.sEnviarDAnfePorEmail := Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S');
   Form7.sCNPJContabilidade   := Mais1Ini.ReadString('XML','CNPJ da contabilidade','');
   //
   Form1.sVersaoLayout        := Mais1Ini.ReadString('NFE','Layout','4.00');
@@ -7419,14 +7420,17 @@ var
 {
   RetVal : Integer;
 }
+  i: Integer;
   Mais1Ini : tIniFile;
   sAtual : String;
   Msg: TMapiMessage;
   lpSender, lpRecepient, lpComCopia: TMapiRecipDesc;
+  FileAttachments: array of TMapiFileDesc;
   FileAttach: TMapiFileDesc;
   SM: TFNMapiSendMail;
   MAPIModule: HModule;
   Flags: Cardinal;
+  slAnexos: TStringList;
   //
 begin
   //
@@ -7535,14 +7539,25 @@ begin
         lpFiles := nil;
       end else
       begin
-        //
-        FillChar(FileAttach, SizeOf(FileAttach), 0);
-        //
-        FileAttach.nPosition    := Cardinal($FFFFFFFF);
-        FileAttach.lpFileType   := nil;
-        FileAttach.lpszPathName := PChar(sAnexo);
-        nFileCount              := 1;
-        lpFiles                 := @FileAttach;
+        slAnexos := RetornaListaQuebraLinha(sAnexo,';');
+        try
+          nFileCount := slAnexos.Count;
+          SetLength(FileAttachments, nFileCount);
+
+          lpFiles                 := @FileAttachments[0];
+          for i := 0 to Pred(slAnexos.Count) do
+          begin
+            FileAttach := FileAttachments[i];
+
+            FillChar(FileAttach, SizeOf(FileAttach), 0);
+            //
+            FileAttach.nPosition    := Cardinal($FFFFFFFF);
+            FileAttach.lpFileType   := nil;
+            FileAttach.lpszPathName := PChar(slAnexos[i]);
+          end;
+        finally
+          FreeAndNil(slAnexos);
+        end;
         //
       end;
       //
@@ -33431,6 +33446,10 @@ var
   sLote    : String;
   sEmail   : String;
   sEmail1  : String;
+  sCaminhoXML: String;
+  sCaminhoPDF: String;
+  sAnexo: String;
+  cMensagem: String;
 begin
   //
   Form7.ibDataSet2.Close;
@@ -33473,20 +33492,78 @@ begin
         //
         if (validaEmail(sEmail)) or (validaEmail(sEmail1)) then
         begin
-          //
           if sEnviarDAnfePorEmail = 'S' then
           begin
-            //
             while FileExists(pChar('danfe.pdf')) do
             begin
               DeleteFile(pChar('danfe.pdf'));
               Sleep(100);
             end;
-            //
             spdNFe.ExportarDanfe(sLote, fNfe, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1,Form1.sAtual+'\danfe.pdf');
-            //
+            sCaminhoPDF := Form1.sAtual+'\danfe.pdf';
+
+            if not FileExists(pChar('danfe.pdf')) then
+              sCaminhoPDF := EmptyStr;
+
+            if sZiparXML = 'S' then
+            begin
+              ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')+'" "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')+'"'), '', SW_SHOWMAXIMIZED);
+              while ConsultaProcesso('szip.exe') do
+              begin
+                Application.ProcessMessages;
+                sleep(100);
+              end;
+              while not FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')) do
+              begin
+                sleep(100);
+              end;
+              sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip';
+            end else
+                sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml';
+
+            if (sCaminhoPDF <> EmptyStr) or (sCaminhoXML <> EmptyStr) then
+            begin
+              if sCaminhoPDF <> EmptyStr then
+                sAnexo := sCaminhoPDF;
+              if (sCaminhoXML <> EmptyStr) then
+              begin
+                if sAnexo <> EmptyStr then
+                  sAnexo := sAnexo + ';';
+                sAnexo := sAnexo + sCaminhoXML;
+              end;
+
+              cMensagem := TTextoEmailFactory.New
+                                             .NFe
+                                             .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
+                                             .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
+                                             .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
+                                             .RetornarTexto;
+
+              if (validaEmail(sEmail)) then
+              begin
+                Unit7.EnviarEMail('',sEmail,'','DANFE (Documento Auxiliar da NF-e)',pchar(cMensagem),pChar(sAnexo),False);
+              end;
+              if (validaEmail(sEmail1)) then
+              begin
+                Unit7.EnviarEMail('',sEmail1,'','DANFE (Documento Auxiliar da NF-e)',pchar(cMensagem),pChar(sAnexo),False);
+              end;
+              if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
+              begin
+                Form7.ibDataSet15.Edit;
+                Form7.ibDataSet15EMITIDA.AsString := 'S'; // Emitida
+                Form7.ibDataSet15.Post;
+              end;
+            end;
+
+{            while FileExists(pChar('danfe.pdf')) do
+            begin
+              DeleteFile(pChar('danfe.pdf'));
+              Sleep(100);
+            end;
+            spdNFe.ExportarDanfe(sLote, fNfe, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1,Form1.sAtual+'\danfe.pdf');
             if FileExists(pChar('danfe.pdf')) then
             begin
+              sCaminhoPDF := Form1.sAtual+'\danfe.pdf';
               if (validaEmail(sEmail)) then
               begin
                 Unit7.EnviarEMail('',sEmail,'','DANFE (Documento Auxiliar da NF-e)',pchar('Segue em anexo seu DANFE em arquivo PDF.'+chr(10)+Form1.sPropaganda),pChar(Form1.sAtual+'\danfe.pdf'),False);
@@ -33496,77 +33573,60 @@ begin
                 Unit7.EnviarEMail('',sEmail1,'','DANFE (Documento Auxiliar da NF-e)',pchar('Segue em anexo DANFE em arquivo PDF para transportadora.'+chr(10)+Form1.sPropaganda),pChar(Form1.sAtual+'\danfe.pdf'),False);
               end;
             end;
-            //
           end;
-          //
           if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
           begin
             Form7.ibDataSet15.Edit;
             Form7.ibDataSet15EMITIDA.AsString := 'S'; // Imitida
             Form7.ibDataSet15.Post;
           end;
-          //
           if FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')) then
           begin
-            //
             if sZiparXML = 'S' then
             begin
-              //
               ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')+'" "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')+'"'), '', SW_SHOWMAXIMIZED);
-              //
               while ConsultaProcesso('szip.exe') do
               begin
                 Application.ProcessMessages;
                 sleep(100);
               end;
-              //
               while not FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')) do
               begin
                 sleep(100);
               end;
-              //
+              sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip';
               if (validaEmail(sEmail)) then
               begin
                 Unit7.EnviarEMail('',sEmail,'','NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
                 chr(10)+
                 chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip'),False);
               end;
-              //
               if (validaEmail(sEmail1)) then
               begin
                 Unit7.EnviarEMail('',sEmail1,'','NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo NF-e em arquivo XML para transportadora.'+chr(10)+Form1.sPropaganda+
                 chr(10)+
                 chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip'),False);
               end;
-              //
             end else
             begin
-              //
               if (validaEmail(sEmail)) then
               begin
                 Unit7.EnviarEMail('',sEmail,'','NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
                 chr(10)),pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml'),False);
               end;
-              //
               if (validaEmail(sEmail1)) then
               begin
                 Unit7.EnviarEMail('',sEmail1,'','NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo NF-e em arquivo XML para transportadora.'+chr(10)+Form1.sPropaganda+
                 chr(10)),pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml'),False);
               end;
-              //
-            end;
-            //
+            end;   }
           end;
-          //
         end;
-        //
       except
         Screen.Cursor            := crDefault;
       end;
-      //
       DecimalSeparator := ',';
       DateSeparator    := '/';
-      //
       Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
       Form7.Panel7.Repaint;
       Screen.Cursor            := crDefault;

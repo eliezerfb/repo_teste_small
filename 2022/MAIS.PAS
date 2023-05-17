@@ -9686,7 +9686,7 @@ begin
   if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = '' then Mais1Ini.WriteString('DANFE','Configurar','Não');
   if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = 'Sim' then ConfiguraodoDANFEparaNFe1.Visible := True else ConfiguraodoDANFEparaNFe1.Visible := False;
   if Mais1Ini.ReadString('ENVIO','Zipar XML','N')               = 'S'   then Form1.ZiparXMLnoenvioporemail1.Checked := True else Form1.ZiparXMLnoenvioporemail1.Checked := False;
-  if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','N') = 'S'   then Form1.Enviardanfeporemail1.Checked := True else Form1.Enviardanfeporemail1.Checked := False;
+  if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S') = 'S'   then Form1.Enviardanfeporemail1.Checked := True else Form1.Enviardanfeporemail1.Checked := False;
   if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then Form1.ConsultarNFesemitidas1.Checked := True else Form1.ConsultarNFesemitidas1.Checked := False;
 
   {Sandro Silva 2023-03-14 inicio
@@ -10056,9 +10056,10 @@ begin
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
-  if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','N') = 'S'
-    then Mais1Ini.WriteString('ENVIO','Enviar danfe por e-mail','N')
-      else Mais1Ini.WriteString('ENVIO','Enviar danfe por e-mail','S');
+  if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S') = 'S' then
+    Mais1Ini.WriteString('ENVIO','Enviar danfe por e-mail','N')
+  else
+    Mais1Ini.WriteString('ENVIO','Enviar danfe por e-mail','S');
   //
   Mais1Ini.Free;
   //
