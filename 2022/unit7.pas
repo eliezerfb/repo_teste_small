@@ -16138,7 +16138,6 @@ end;
 
 procedure TForm7.CurvaABC1Click(Sender: TObject);
 begin
-  //
   Form7.Close;
   sModuloAnterior := sModulo;
   Form38.Label2.Visible := True;
@@ -16147,26 +16146,18 @@ begin
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Curva ABC de clientes';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.CurvaABCdoestoque1Click(Sender: TObject);
 begin
-  //
-//  commitatudo(True);
-  //
-//  Form7.Close;
-//  Form7.Show;
-  //
   sModuloAnterior := sModulo;
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Curva ABC do estoque';
-  //
+
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Duplicata1Click(Sender: TObject);
