@@ -7434,7 +7434,8 @@ begin
   //
   try
     //
-    if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução Não deve mudar
+    // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução Não deve mudar
+    if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolução Não deve mudar
     begin
       //
       if pP1 then
@@ -18806,7 +18807,8 @@ begin
               if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
                 Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
               //
-              if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
+              // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
+              if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (Form7.Tag = 999) then // Devolucao Devolução
               begin
                 // Não faz nada está importando a NF para Devolução
               end else
@@ -19045,7 +19047,8 @@ begin
             try
               Form7.ibDataSet16.Edit;
 
-              if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
+              // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
+              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolução
               begin
                 if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
@@ -25738,7 +25741,8 @@ end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
 begin
-  if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolucão
+  // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolucão
+  if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolucão
   begin
     try
       if (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '5101') or (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '6101') or (Pos('IPI',Form7.ibDataSet14OBS.AsString) <> 0) then
@@ -33032,7 +33036,8 @@ end;
 procedure TForm7.CalculaFCPSTAoIncluirProdutoDevolucao;// Sandro Silva 2023-05-08
 begin
   // Calcula o FCP ST para devolução
-  if Form7.ibDataSet15FINNFE.AsString = '4' then
+  // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then
+  if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then
   begin
     if (Form7.ibDataSet16TOTAL.Value > 0) and (Form7.ibDataSet16VBCFCPST.Value > 0) then
     begin

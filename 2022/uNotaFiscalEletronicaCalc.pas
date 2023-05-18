@@ -190,7 +190,8 @@ begin
 
   IBQProduto := Form7.CriaIBQuery(Form7.ibDataSet15.Transaction);
 
-  if NotaFiscal.Finnfe = '4' then // Devolucao Devolução
+  // Sandro Silva 2023-05-18 if NotaFiscal.Finnfe = '4' then // Devolucao Devolução
+  if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) then // Devolucao Devolução
   begin
     for i := 0 to NotaFiscal.Itens.Count -1 do
     begin
@@ -1023,7 +1024,8 @@ begin
 
       end;
 
-      if NotaFiscal.Finnfe <> '4' then
+      // Sandro Silva 2023-05-18 if NotaFiscal.Finnfe <> '4' then
+      if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then
       begin
         // Não é devolução usa os percentuais de FCP cadastrado
         oItem.PFCP   := fPercentualFCP;

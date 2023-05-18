@@ -393,7 +393,8 @@ begin
     end;
   end else
   begin
-    if Form7.ibDataSet15FINNFE.AsString = '4' then
+    // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then
+    if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then
     begin
       sChave := '';
 
@@ -1531,7 +1532,8 @@ begin
           Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
 
-          if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
+          // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
+          if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
           begin
             Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
           end else
@@ -1611,7 +1613,8 @@ begin
       end;
 
       // Devolucao
-      if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
+      // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
+      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução
       begin
         // Imposto da NF de DEVOLUCAO devolução
         // neste ponto é possível informar os impostos com os valores da nota de entrada
@@ -1724,7 +1727,8 @@ begin
           Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
 
-          if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
+          // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
+          if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
           begin
             Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
           end else
@@ -1925,10 +1929,13 @@ begin
             // e Espírito Santo;
             // - 12% para os demais casos
             //
+            {Sandro Silva 2023-05-18 inicio
             if (Copy(Form7.ibDataSet4CST.AsString,1,1) = '1')
             or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '2')
             or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '3')
             or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '8') then // Produto importado
+            }
+            if ProdutoOrigemImportado(Copy(Form7.ibDataSet4CST.AsString, 1, 1)) then
             begin
               Form7.spdNFeDataSets.Campo('pICMSInter_NA09').Value        := '4.00'; // Alíquota interna da UF de destino
             end else
@@ -2063,10 +2070,13 @@ begin
           // e Espírito Santo;
           // - 12% para os demais casos
           //
+          {Sandro Silva 2023-05-18 inicio
           if (Copy(Form7.ibDataSet4CST.AsString,1,1) = '1')
           or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '2')
           or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '3')
           or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '8') then // Produto importado
+          }
+          if ProdutoOrigemImportado(Copy(Form7.ibDataSet4CST.AsString, 1, 1)) then
           begin
             Form7.spdNFeDataSets.Campo('pICMSInter_NA09').Value        := '4.00'; // Alíquota interna da UF de destino
           end else
@@ -2223,7 +2233,8 @@ begin
   Form7.spdNFeDataSets.Campo('vICMSDeson_W04a').Value    := FormatFloatXML(vICMSDeson); // Desonerado
 
   // No caso de nota fiscal de devolucao
-  if (Form7.ibDataSet15FINNFE.AsString = '4') and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
+  // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
+  if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
   begin
     Form7.spdNFeDataSets.campo('vIPIDevol_W12a').Value  := FormatFloatXML(Arredonda2(fIPIDevolvido,2)); // Valor Total do IPI devolvido
     Form7.spdNFeDataSets.Campo('vIPI_W12').Value        := '0.00'; // Valor Total do IPI
