@@ -14,6 +14,7 @@ type
     destructor Destroy; override;  
   public
     class function New: ITextoEmail;
+    function setDescrAnexo(AcDescr: String): ITextoEmail;
     function setDataEmissao(AdData: TDateTime): ITextoEmail;
     function setNumeroDocumento(AcNumeroDocumento: String): ITextoEmail;
     function setChaveAcesso(AcChaveAcesso: String): ITextoEmail;
@@ -59,7 +60,7 @@ function TTextoEmailNFe.RetornarTexto: String;
 begin
   Result := StringReplace(FcTexto, '<DESCRDOC>', 'NF-e', [rfReplaceAll]);
 
-  Result := FoIni.ReadString('Outros', 'Propaganda', EmptyStr) + SLineBreak +
+  Result := FoIni.ReadString('Outros', 'Propaganda', EmptyStr) + SLineBreak + SLineBreak +
             Result;
 end;
 
@@ -75,6 +76,13 @@ begin
   FoIni.Free;
   
   inherited;
+end;
+
+function TTextoEmailNFe.setDescrAnexo(AcDescr: String): ITextoEmail;
+begin
+  Result := Self;
+
+  FcTexto := StringReplace(FcTexto, '<DESCREXTANEXO>', AcDescr, [rfReplaceAll]);
 end;
 
 end.
