@@ -1302,9 +1302,7 @@ end;
 procedure TForm12.SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  // Sandro Silva 2023-05-15 if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
-  if Key = VK_F1     then
-    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(SMALL_DBEdit39.Left,SMALL_DBEdit39.Top + 20);
@@ -2763,9 +2761,7 @@ begin
     //
   end;
   //
-  // Sandro Silva 2023-05-15 if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
-  if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then
-    Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
+  if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
   //
   try
     Form12.SMALL_DBEdit40.SetFocus;

@@ -18694,21 +18694,6 @@ begin
           if Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.AsString = '' then
             Form7.ibDataSet16IDENTIFICADORPLANOCONTAS.Clear;
           {Sandro Silva 2022-12-20 fim}
-
-          {Sandro Silva 2023-05-12 inicio}
-          // Valida se PFCP e PFCPST estão vazios (não é nota feita via opção compras/devolver)
-          if Form7.ibDataSet16PFCP.AsString = '' then
-          begin
-            if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
-              Form7.ibDataSet16PFCP.AsFloat := StrToFloatDef(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP', Form7.ibDataSet4.FieldByname('TAGS_').AsString)), 0.00);
-          end;
-          if Form7.ibDataSet16PFCPST.AsString = '' then
-          begin
-            if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
-              Form7.ibDataSet16PFCPST.AsFloat := StrToFloatDef(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST', Form7.ibDataSet4.FieldByname('TAGS_').AsString)), 0.00);
-          end;
-          {Sandro Silva 2023-05-12 fim}
-
           //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
@@ -19106,12 +19091,12 @@ begin
 
                 {Sandro Silva 2022-11-11 inicio}
                 try
-                  //if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
-                  //begin
+                  if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
+                  begin
                     ItemNFe := TItemNFe.Create;
                     CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
                     Form7.ibDataSet16CSOSN.AsString := ItemNFe.CSOSN;
-                  //end;
+                  end;
                 except
 
                 end;
@@ -32171,16 +32156,6 @@ begin
       Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15, Form7.ibDataSet16);
     end;
     Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA); // Força o cálculo de totais e de impostos
-
-    {Sandro Silva 2023-05-15 inicio}
-    // Para exibir os dados do destinatário na tela de lançamento da nota
-    Form7.ibDataSet2.Close;
-    Form7.ibDataSet2.Selectsql.Clear;
-    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
-    Form7.ibDataSet2.Open;
-    {Sandro Silva 2023-05-15 fim}
-
-
   finally
 
   end;
@@ -32322,9 +32297,8 @@ begin
   if Trim(fNFE) <> '' then
   begin
 
-    if Form1.DisponivelSomenteParaNos then
-      ShowMessage(fNFe);
-
+    // ShowMessage(fNFE);
+    //
     try
       spdNFe.PreverDanfe(fNFE, '');
     except
