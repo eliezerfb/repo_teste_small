@@ -17827,6 +17827,9 @@ object Form7: TForm7
       Caption = 'L - Le os impostos do XML'
       Visible = False
     end
+    object N67: TMenuItem
+      Caption = '-'
+    end
     object CCartadeCorreoEletronicaCCe1: TMenuItem
       Caption = 'C - Carta de Corre'#231#227'o Eletronica (CC-e)'
       OnClick = CCartadeCorreoEletronicaCCe1Click
@@ -17834,6 +17837,12 @@ object Form7: TForm7
     object IImprimirCartadeCorreoEletronicaCCe1: TMenuItem
       Caption = 'I - Imprimir Carta de Corre'#231#227'o Eletronica (CC-e)'
       OnClick = IImprimirCartadeCorreoEletronicaCCe1Click
+    end
+    object EEnviarcartadecorreoporemail1: TMenuItem
+      Caption = 'E - Enviar Carta de Corre'#231#227'o Eletronica (CC-e) por e-mail'
+    end
+    object N68: TMenuItem
+      Caption = '-'
     end
     object Manifestaododestinatrio1: TMenuItem
       Caption = 'Manifesta'#231#227'o do destinat'#225'rio (Confirma'#231#227'o da Opera'#231#227'o)'

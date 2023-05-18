@@ -1447,6 +1447,9 @@ type
     odos1: TMenuItem;
     Sativos1: TMenuItem;
     Sinativos1: TMenuItem;
+    EEnviarcartadecorreoporemail1: TMenuItem;
+    N67: TMenuItem;
+    N68: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -13507,23 +13510,15 @@ begin
         N9ImprimirDANFEemformulriodecontingncia1.Enabled            := True;
         //
       end;
-      //
-      if Alltrim(Form7.ibDataSet15CCEXML.AsString) <> '' then
-      begin
-        //
-        IImprimirCartadeCorreoEletronicaCCe1.Enabled := True;
-        //
-      end else
-      begin
-        //
-        IImprimirCartadeCorreoEletronicaCCe1.Enabled := False;
-        //
-      end;
+
       // Manter consulta devido a outros lugares utilizar ibDataSet2 para pegar o e-mail (NFSe por exemplo)
       Form7.ibDataSet2.Close;
       Form7.ibDataSet2.Selectsql.Clear;
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
       Form7.ibDataSet2.Open;
+
+      IImprimirCartadeCorreoEletronicaCCe1.Enabled := Alltrim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr;
+      EEnviarcartadecorreoporemail1.Enabled        := Alltrim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr;
       
       cTransp := Form7.ibDataSet15TRANSPORTA.AsString;
       if EnviarNFSeporemail1.Visible then // Se for Serviço não tem transportador
@@ -13539,6 +13534,7 @@ begin
       begin
         N5EnviarDANFEporemail1.Enabled := (cEmails <> EmptyStr);
         N5EnviarDANFEporemail1.Caption := '5 - Enviar o XML e DANFE por e-mail ' + cEmails;
+        EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail ' + cEmails;
       end else
       begin
         EnviarNFSeporemail1.Enabled := (cEmails <> EmptyStr);
