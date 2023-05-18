@@ -168,9 +168,11 @@ type
     //Complemento : string, Blob
     FIcce : Integer;
     FNvol : string;
-    FAnvisa : Integer;
+    // Sandro Silva 2023-05-18 FAnvisa : Integer;
+    FAnvisa: String; // Precisa ser string para somente ter valor quando for o registro for tratado pelas rotinas do Anvisa
     FPlaca : string;
-    FData_cancel : TDateTime;
+    // Sandro Silva 2023-05-18 FData_cancel : TDateTime;
+    FData_cancel: String; // Precisa ser string para não gravar no banco 30/12/1899
     FHora_cancel : string;
     FCod_sit : string;
     FFinnfe : string;
@@ -228,9 +230,11 @@ type
     property Nferecibo : string read FNferecibo write FNferecibo;
     property Icce : Integer read FIcce write FIcce;
     property Nvol : string read FNvol write FNvol;
-    property Anvisa : Integer read FAnvisa write FAnvisa;
+    // Sandro Silva 2023-05-18 property Anvisa : Integer read FAnvisa write FAnvisa;
+    property Anvisa: String read FAnvisa write FAnvisa;
     property Placa : string read FPlaca write FPlaca;
-    property Data_cancel : TDateTime read FData_cancel write FData_cancel;
+    // Sandro Silva 2023-05-18 property Data_cancel : TDateTime read FData_cancel write FData_cancel;
+    property Data_cancel: String read FData_cancel write FData_cancel;
     property Hora_cancel : string read FHora_cancel write FHora_cancel;
     property Cod_sit : string read FCod_sit write FCod_sit;
     property Finnfe : string read FFinnfe write FFinnfe;
@@ -472,9 +476,9 @@ begin
   DataSetNF.FieldByName('NFERECIBO').AsString       := FNotaFiscal.Nferecibo;
   DataSetNF.FieldByName('ICCE').AsInteger           := FNotaFiscal.Icce;
   DataSetNF.FieldByName('NVOL').AsString            := FNotaFiscal.Nvol;
-  DataSetNF.FieldByName('ANVISA').AsInteger         := FNotaFiscal.Anvisa;
+  DataSetNF.FieldByName('ANVISA').AsString          := FNotaFiscal.Anvisa;
   DataSetNF.FieldByName('PLACA').AsString           := FNotaFiscal.Placa;
-  DataSetNF.FieldByName('DATA_CANCEL').AsDateTime   := FNotaFiscal.Data_cancel;
+  DataSetNF.FieldByName('DATA_CANCEL').AsString     := FNotaFiscal.Data_cancel;
   DataSetNF.FieldByName('HORA_CANCEL').AsString     := FNotaFiscal.Hora_cancel;
   DataSetNF.FieldByName('COD_SIT').AsString         := FNotaFiscal.Cod_sit;
   DataSetNF.FieldByName('FINNFE').AsString          := FNotaFiscal.Finnfe;
@@ -551,9 +555,9 @@ begin
   FNotaFiscal.Nferecibo       := DataSetNF.FieldByName('NFERECIBO').AsString;
   FNotaFiscal.Icce            := DataSetNF.FieldByName('ICCE').AsInteger;
   FNotaFiscal.Nvol            := DataSetNF.FieldByName('NVOL').AsString;
-  FNotaFiscal.Anvisa          := DataSetNF.FieldByName('ANVISA').AsInteger;
+  FNotaFiscal.Anvisa          := DataSetNF.FieldByName('ANVISA').AsString;
   FNotaFiscal.Placa           := DataSetNF.FieldByName('PLACA').AsString;
-  FNotaFiscal.Data_cancel     := DataSetNF.FieldByName('DATA_CANCEL').AsDateTime;
+  FNotaFiscal.Data_cancel     := DataSetNF.FieldByName('DATA_CANCEL').AsString;
   FNotaFiscal.Hora_cancel     := DataSetNF.FieldByName('HORA_CANCEL').AsString;
   FNotaFiscal.Cod_sit         := DataSetNF.FieldByName('COD_SIT').AsString;
   FNotaFiscal.Finnfe          := DataSetNF.FieldByName('FINNFE').AsString;
@@ -611,9 +615,9 @@ begin
   FVFCP := Value;
 
   // Zera campos de FCP ST
-  FVBCFCPST := 0.00;
-  FPFCPST   := 0.00;
-  FVFCPST   := 0.00;
+//  FVBCFCPST := 0.00;
+//  FPFCPST   := 0.00;
+//  FVFCPST   := 0.00;
 end;
 
 procedure TITENS001.SetFVFCPST(const Value: Double);
@@ -621,9 +625,9 @@ begin
   FVFCPST := Value;
 
   // Zera campos de FCP
-  FVBCFCP := 0.00;
-  FPFCP   := 0.00;
-  FVFCP   := 0.00;
+//  FVBCFCP := 0.00;
+//  FPFCP   := 0.00;
+//  FVFCP   := 0.00;
 end;
 
 end.
