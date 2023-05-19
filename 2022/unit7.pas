@@ -13499,6 +13499,12 @@ begin
         IImprimirCartadeCorreoEletronicaCCe1.Enabled := False;
         //
       end;
+      // Manter consulta devido a outros lugares utilizar ibDataSet2 para pegar o e-mail (NFSe por exemplo)
+      Form7.ibDataSet2.Close;
+      Form7.ibDataSet2.Selectsql.Clear;
+      Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+      Form7.ibDataSet2.Open;
+      
       cTransp := Form7.ibDataSet15TRANSPORTA.AsString;
       if EnviarNFSeporemail1.Visible then // Se for Serviço não tem transportador
         cTransp := EmptyStr;
