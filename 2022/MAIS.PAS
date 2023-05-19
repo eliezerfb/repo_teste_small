@@ -426,6 +426,7 @@ type
   private
     { Private declarations }
     procedure ExibeRazaoSocialNoCaptionDoForm;
+    function getPropaganda: String;
 
   public
 
@@ -451,7 +452,6 @@ type
     CopiaHora: String;
     CopiaSair: String;
     sPasta   : String;
-    sPropaganda : String;
     iReduzida, iTempo, iAvisosEstoque, iAvisosNFECompra, iAvisosCaixa, iAvisosBanco, iAvisosPagar, iAvisosReceber, iAvisosCliFor, iAvisosOS, iAvisosIndicadores, iAvisosConfig: Integer;
     sEscolhido: String;
     ConfCFOP: String;
@@ -491,6 +491,8 @@ type
     function DisponivelSomenteParaNos: Boolean;
     function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;
     function ExisteNfseExe(sDiretorio: String): Boolean;
+
+    property sPropaganda: String read getPropaganda;
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -8181,8 +8183,6 @@ begin
       //
       ConfFoto    := Mais1Ini.ReadString('Mobile','Fotos','Sim');
       //
-      sPropaganda := Mais1Ini.ReadString('Outros','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
-      //
       ConfLimite  := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 1.000,00'),'R$ ',''),'.',''),'.',''),'.',''));
       ConfIR      := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %'),' %',''),'.',''),'.',''),'.',''));
       //
@@ -12653,9 +12653,20 @@ begin
                                   EmptyStr,
                                   Mais1Ini.ReadString('OUTROS','Propaganda',EmptyStr)
                                  );
-    Form1.sPropaganda := cMsg;
 
     Mais1Ini.WriteString('OUTROS', 'Propaganda', cMsg);
+  finally
+    Mais1Ini.Free;
+  end;
+end;
+
+function TForm1.getPropaganda: String;
+var
+  Mais1Ini : TiniFile;
+begin
+  Mais1ini := TIniFile.Create(Form1.sAtual+'\SMALLCOM.INF');
+  try
+    Result := Mais1Ini.ReadString('OUTROS','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
   finally
     Mais1Ini.Free;
   end;
