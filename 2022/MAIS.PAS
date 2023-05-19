@@ -12509,9 +12509,10 @@ begin
       end else
       begin
         //Mauricio Parizotto 2023-05-15
+        //Campo termo_uso_aceito no site
         if InfTermo then
         begin
-          //sTermoUso := '&termo_uso=' +  DateTimeToStr(now); //Mauricio Parizotto 2023-05-15 Validar antes
+          sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now); 
         end;
 
         //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
