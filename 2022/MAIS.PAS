@@ -12653,6 +12653,7 @@ begin
                                   EmptyStr,
                                   Mais1Ini.ReadString('OUTROS','Propaganda',EmptyStr)
                                  );
+    Form1.sPropaganda := cMsg;
 
     Mais1Ini.WriteString('OUTROS', 'Propaganda', cMsg);
   finally

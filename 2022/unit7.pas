@@ -7414,23 +7414,26 @@ begin
   //
 end;
 
-
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
+type
+  TAttachAccessArray = array [0..0] of TMapiFileDesc;
+  PAttachAccessArray = ^TAttachAccessArray;
 var
 {
   RetVal : Integer;
 }
-  i: Integer;
   Mais1Ini : tIniFile;
   sAtual : String;
   Msg: TMapiMessage;
   lpSender, lpRecepient, lpComCopia: TMapiRecipDesc;
-  FileAttachments: array of TMapiFileDesc;
   FileAttach: TMapiFileDesc;
   SM: TFNMapiSendMail;
   MAPIModule: HModule;
   Flags: Cardinal;
   slAnexos: TStringList;
+  Attachments: PAttachAccessArray;  
+
+  i: Integer;
   //
 begin
   //
@@ -7539,26 +7542,28 @@ begin
         lpFiles := nil;
       end else
       begin
-        slAnexos := RetornaListaQuebraLinha(sAnexo,';');
+        slAnexos := RetornaListaQuebraLinha(sAnexo);
         try
-          nFileCount := slAnexos.Count;
-          SetLength(FileAttachments, nFileCount);
-
-          lpFiles                 := @FileAttachments[0];
-          for i := 0 to Pred(slAnexos.Count) do
+          if slAnexos.Count > 0 then
           begin
-            FileAttach := FileAttachments[i];
-
-            FillChar(FileAttach, SizeOf(FileAttach), 0);
-            //
-            FileAttach.nPosition    := Cardinal($FFFFFFFF);
-            FileAttach.lpFileType   := nil;
-            FileAttach.lpszPathName := PChar(slAnexos[i]);
-          end;
+            GetMem(Attachments, SizeOf(TMapiFileDesc) * slAnexos.Count);
+            for i := 0 to Pred(slAnexos.Count) do
+            begin
+              Attachments[i].ulReserved := 0;
+              Attachments[i].flFlags := 0;
+              Attachments[i].nPosition := ULONG($FFFFFFFF);
+              Attachments[i].lpszPathName := StrNew( PAnsichar(PChar(slAnexos.Strings[i]) ));
+              Attachments[i].lpszFileName :=
+              StrNew( PAnsichar(PChar( ExtractFileName(slAnexos.Strings[i]) ) ));
+              Attachments[i].lpFileType := nil;
+            end;
+          end
+          {endif};
+          nFileCount := slAnexos.Count;
+          lpFiles := @Attachments^;
         finally
           FreeAndNil(slAnexos);
         end;
-        //
       end;
       //
       // carrega dll e o método sPara envio do email

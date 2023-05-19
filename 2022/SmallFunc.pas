@@ -2498,7 +2498,7 @@ function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): 
 begin
   Result := TStringList.Create;
 
-  if Pos(AcCaracQuebra, AcTexto) <= 0 then
+  if (Pos(AcCaracQuebra, AcTexto) <= 0) and (Trim(AcTexto) <> EmptyStr) then
     Result.Add(AcTexto)
   else
   begin
