@@ -50,9 +50,9 @@ uses
   ufuncoestef in 'ufuncoestef.pas',
   usincronizamobile in 'usincronizamobile.pas',
   uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',
-  //uassinaxmlpafnfce in 'uassinaxmlpafnfce.pas',
   upafnfce in 'upafnfce.pas',
-  ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas';
+  ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
+  uTypesRecursos in '..\..\Small Commerce\unit_compartilhada\uTypesRecursos.pas';
 
 {$R *.RES}
 
