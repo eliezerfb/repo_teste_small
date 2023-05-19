@@ -419,6 +419,8 @@ type
     procedure ConfiguraesdaNFSe2Click(Sender: TObject);
     procedure Debug1Click(Sender: TObject);
     procedure Image_bola_cliforClick(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(Sender: TObject;
+      const pDisp: IDispatch; var URL: OleVariant);
 
 
   private
@@ -509,7 +511,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
   uFazerBackup,
-  uRetornaBuildEXE;
+  uRetornaBuildEXE, uCriptografia;
 
 {$R *.DFM}
 
@@ -12636,6 +12638,25 @@ begin
   begin
     Result := False;
     ShowMessage('Módulo de transmissão de NFS-e não instalado');
+  end;
+end;
+
+procedure TForm1.WebBrowser1DocumentComplete(Sender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vBody : string;
+  vRecurso : string;
+  documentoAtivo: variant;
+begin
+  try
+    documentoAtivo := WebBrowser1.Document;
+    vBody := documentoAtivo.Body.OuterHTML;
+
+    vRecurso := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
+    vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vRecurso);
+
+    ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+  except
   end;
 end;
 
