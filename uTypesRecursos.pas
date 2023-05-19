@@ -18,7 +18,9 @@ type Recurso = (rcOS,
                 rcCaixa,
                 rcBancos,
                 rcIndicadores,
-                rcInventarioP7);
+                rcInventarioP7,
+                rcQtdNFCE,
+                rcQtdNFE);
 
 
 implementation

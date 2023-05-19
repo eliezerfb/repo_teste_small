@@ -19,7 +19,10 @@ uses
   ;
 
   function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : Recurso; out DataLimite : TDate):Boolean;
-  function LimiteRecurso(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):Tdate;
+  function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):Tdate;
+
+  function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : Recurso):Integer;
+  function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):integer;
 
 implementation
 
@@ -80,8 +83,8 @@ begin
           if vRecursosSistema.CNPJ <> vCNPJ then
             Exit;
 
-          DataLimite := LimiteRecurso(vRecursosSistema,sRecurso) ;
-          Result     := DataLimite >= now;
+          DataLimite := RecursoData(vRecursosSistema,sRecurso) ;
+          Result     := DataLimite >= Date;
         finally
           FreeAndNil(vRecursosSistema);
         end;
@@ -94,7 +97,76 @@ begin
 end;
 
 
-function LimiteRecurso(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):Tdate;
+function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : Recurso):Integer;
+var
+  vRecursosSistema : TRecursosSistema;
+  vRecuso, vCNPJ : string;
+
+  qyAux: TIBQuery;
+  trAux: TIBTransaction;
+
+  {$Region'//// Limpa Numero ////'}
+  function LimpaNumero(pP1:String):String;
+  var
+     I:Integer;
+  begin
+     Result:='';
+     for I := 1 to length(pP1) do
+     begin
+       if Pos(Copy(pP1,I,1),'0123456789') > 0 then
+          Result:=Result+Copy(pP1,I,1);
+     end;
+  end;
+  {$Endregion}
+begin
+  Result := 0;
+
+  try
+    {$Region'//// Informações BD  ////'}
+    try
+      trAux := CriaIBTransaction(IBDATABASE);
+      qyAux := CriaIBQuery(trAux);
+
+      qyAux.Database := IBDATABASE;
+      qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
+      qyAux.Open;
+
+      vRecuso := qyAux.FieldByName('RECURSO').AsString;
+      vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+    finally
+      FreeAndNil(qyAux);
+      FreeAndNil(trAux);
+    end;
+    {$Endregion}
+
+    //Descriptografa
+    vRecuso := SmallDecrypt(CHAVE_CIFRAR_NOVA,vRecuso);
+
+    {$Region'//// Valida Informações do Recurso ////'}
+    if Trim(vRecuso) <> '' then
+    begin
+      try
+        try
+          vRecursosSistema := TJson.JsonToObject<TRecursosSistema>(vRecuso);
+
+          //Conteudo Criptografado deve bater com dados do emitente
+          if vRecursosSistema.CNPJ <> vCNPJ then
+            Exit;
+
+          Result := RecursoQtd(vRecursosSistema,sRecurso) ;
+        finally
+          FreeAndNil(vRecursosSistema);
+        end;
+      except
+      end;
+    end;
+    {$Endregion}
+  except
+  end;
+end;
+
+
+function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):Tdate;
 begin
   Result := StrToDate('01/01/1900');
 
@@ -121,6 +193,19 @@ begin
   end;
 end;
 
+
+function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):integer;
+begin
+  Result := 0;
+
+  try
+    case sRecurso of
+      rcQtdNFCE    : Result := vRecursosSistema.Recursos.QtdNFCE;
+      rcQtdNFE     : Result := vRecursosSistema.Recursos.QtdNFE;
+    end;
+  except
+  end;
+end;
 
 
 end.
