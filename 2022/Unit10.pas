@@ -3732,16 +3732,7 @@ procedure TForm10.SMALL_DBEdit1MouseMove(Sender: TObject; Shift: TShiftState;
 begin
   with Sender as TSMALL_DBEdit do
   begin
-    //
-    // if Form7.ArquivoAberto.Modified then Button7.Enabled := True;
-    //
-    if (Pos('CELULAR',UpperCase(Field.DisplayLabel)) <> 0) or (Pos('TELEFONE',UpperCase(Field.DisplayLabel)) <> 0) or (Pos('FAX',UpperCase(Field.DisplayLabel)) <> 0) then
-    begin
-      Hint := RetornaOperadora(Field.AsString);
-    end else
-    begin
-      Hint := Field.DisplayLabel;
-    end;
+    Hint := Field.DisplayLabel;
     ShowHint := True;
   end;
 end;
