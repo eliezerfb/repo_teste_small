@@ -3439,7 +3439,8 @@ begin
               _ecf65_IdentificaPercentuaisBaseICMS(dpRedBC_N14);
 
               dvBC_N15 := (dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem); // BC // Sandro Silva 2019-08-29
-              if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|61|') > 0 then
+              if (Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
+                 (Pos('|' + Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0) then
                 dvBC_N15 := 0.00;
 
               if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
