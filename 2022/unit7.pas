@@ -2062,6 +2062,7 @@ type
 
 
   private
+    FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2070,7 +2071,10 @@ type
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
     procedure EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
     procedure EnviarConsultaImprimirDANFE;
-    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
+    function RetornarWhereAtivoEstoqueCompra: String;
+    procedure LimparColunasItemCompra;
+    procedure VerificaItensInativos;
+    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);    
   public
 
     // Public declarations
@@ -2205,7 +2209,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFuncoesBancoDados
   , uClientesFornecedores
   , uRetornaCaptionEmailPopUpDocs
-  , uIRetornaCaptionEmailPopUpDocs;
+  , uIRetornaCaptionEmailPopUpDocs
+  , uItensInativosImpXMLEntrada;
 
 {$R *.DFM}
 
@@ -8285,6 +8290,7 @@ begin
     begin
       if sModulo = 'COMPRA' then
       begin
+        VerificaItensInativos;
         Form24.Show;
       end
       else
@@ -8324,6 +8330,39 @@ begin
     end;
   end;
   //
+end;
+
+procedure TForm7.VerificaItensInativos;
+var
+  cProdutos: String;
+  nRecNo: Integer;
+begin
+  // Se tiver registro de itens vai validar os inativos
+  if Form24.DBGrid1.DataSource.DataSet.RecordCount > 0 then
+  begin
+    nRecNo := Form24.DBGrid1.DataSource.DataSet.RecNo;
+    Form24.DBGrid1.DataSource.DataSet.DisableControls;
+    try
+      Form24.DBGrid1.DataSource.DataSet.First;
+      while not Form24.DBGrid1.DataSource.DataSet.Eof do
+      begin
+        if Form24.DBGrid1.DataSource.DataSet.FieldByName('CODIGO').AsString <> EmptyStr then
+          cProdutos := cProdutos + QuotedStr(Form24.DBGrid1.DataSource.DataSet.FieldByName('CODIGO').AsString) + ',';
+
+        Form24.DBGrid1.DataSource.DataSet.Next;
+      end;
+
+      TItensInativosImpXMLEnt.New
+                             .setDataBase(Self.IBDatabase1)
+                             .Executar(cProdutos);
+
+      if Self.IBTransaction1.Active then
+        Self.IBTransaction1.CommitRetaining;
+    finally
+      Form24.DBGrid1.DataSource.DataSet.RecNo := nRecNo;
+      Form24.DBGrid1.DataSource.DataSet.EnableControls;
+    end;
+  end;
 end;
 
 procedure TForm7.ibDataSet5NewRecord(DataSet: TDataset);
@@ -9779,6 +9818,7 @@ end;
 procedure TForm7.FormCreate(Sender: TObject);
 begin
   //
+  FbImportandoXML := False;
   Form7.sAproveitamento := '';
   Form7.bMudei := False;
   dbGrid1.ReadOnly := True;
@@ -21324,12 +21364,13 @@ begin
       Form7.ibDataSet4.First;
 
       //Procura por: código
-      if (length(Alltrim(ibDataSet23DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(ibDataSet23DESCRICAO.AsString))<>'') then
+      if (length(Alltrim(ibDataSet23DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(ibDataSet23DESCRICAO.AsString)) <> EmptyStr) then
       begin
         try
           if StrToInt(AllTrim(ibDataSet23DESCRICAO.AsString)) <> 0 then
             Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(ibDataSet23DESCRICAO.AsString)),5,0),[]);
-        except end;
+        except
+        end;
       end;
 
       if Pos(Alltrim(ibDataSet23DESCRICAO.AsString),ibDataSet4CODIGO.AsString) = 0 then
@@ -21343,7 +21384,11 @@ begin
           Form7.ibDataSet99.Close;
           Form7.ibDataSet99.SelectSQL.Clear;
 //          Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
-          Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça verde
+          Form7.ibDataSet99.SelectSQL.Add('select *');
+          Form7.ibDataSet99.SelectSQL.Add('from ESTOQUE');
+          Form7.ibDataSet99.SelectSQL.Add('where (upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(ibDataSet23DESCRICAO.AsString)))+')');
+          Form7.ibDataSet99.SelectSQL.Add(RetornarWhereAtivoEstoqueCompra);
+          Form7.ibDataSet99.SelectSQL.Add('order by upper(DESCRICAO)'); // Maça verde
           Form7.ibDataSet99.Open;
           Form7.ibDataSet99.First;
 
@@ -21352,14 +21397,7 @@ begin
           begin
             //Mauricio Parizotto 2023-04-04
             Form7.ibDataSet23.Edit;
-            Form7.ibDataSet23QUANTIDADE.AsString := '';
-            Form7.ibDataSet23DESCRICAO.AsString := '';
-            Form7.ibDataSet23QTD_ORIGINAL.AsString := '';
-            Form7.ibDataSet23UNITARIO_O.AsString := '';
-
-            Form7.ibDataSet23UNITARIO.AsString := '';
-            Form7.ibDataSet23TOTAL.AsString := '';
-
+            LimparColunasItemCompra;
             ibDataSet4.EnableControls;
             ibDataSet23.EnableControls;
             Exit;
@@ -21419,8 +21457,16 @@ begin
       ibDataSet4.Locate('CODIGO',sCodigoAnterior,[]);
     end;
 
-    Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-
+    if (FbImportandoXML) or ((ibDataSet4ATIVO.AsInteger = 0) or ((ibDataSet4ATIVO.AsInteger = 1) and (ibDataSet4TIPO_ITEM.AsString = '01'))) then
+      Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString
+    else
+    begin
+      Form7.ibDataSet23.Edit;
+      LimparColunasItemCompra;
+      ibDataSet4.EnableControls;
+      ibDataSet23.EnableControls;
+      Exit;
+    end;
     // So altera se for um produto novo
     if AllTrim(Form7.ibDataSet23CODIGO.AsString) = '' then
     begin
@@ -21563,15 +21609,15 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
       end else
       begin
-        Form7.ibDataSet23DESCRICAO.AsString := '';
-        Form7.ibDataSet23QUANTIDADE.AsString := '';
-        Form7.ibDataSet23UNITARIO.AsString := '';
-        Form7.ibDataSet23TOTAL.AsString := '';
-        Form7.ibDataSet23CFOP.AsString := '';
-        Form7.ibDataSet23ICM.AsString := '';
-        Form7.ibDataSet23CST_ICMS.AsString := '';
-        Form7.ibDataSet23CODIGO.AsString := '';
-        
+        Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+        Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
+        Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
+        Form7.ibDataSet23TOTAL.AsString := EmptyStr;
+        Form7.ibDataSet23CFOP.AsString := EmptyStr;
+        Form7.ibDataSet23ICM.AsString := EmptyStr;
+        Form7.ibDataSet23CST_ICMS.AsString := EmptyStr;
+        Form7.ibDataSet23CODIGO.AsString := EmptyStr;
+
         Form24.DbGrid1.SelectedIndex := 6;
       end;
     end;
@@ -21583,28 +21629,42 @@ begin
   end;
 end;
 
+procedure TForm7.LimparColunasItemCompra;
+begin
+  Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
+  Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+  Form7.ibDataSet23QTD_ORIGINAL.AsString := EmptyStr;
+  Form7.ibDataSet23UNITARIO_O.AsString := EmptyStr;
+
+  Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
+  Form7.ibDataSet23TOTAL.AsString := EmptyStr;
+end;
+
 procedure TForm7.ibDataSet23DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
-  //
   if Limpanumero(Text) <> Text then
   begin
-    //
-    // Localiza pela descricao
-    //
     Form7.ibDataSet4.DisableControls;
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.SelectSQL.Clear;
-    Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+' order by upper(DESCRICAO)');
+    Form7.ibDataSet4.SelectSQL.Add('select *');
+    Form7.ibDataSet4.SelectSQL.Add('from ESTOQUE');
+    Form7.ibDataSet4.SelectSQL.Add('where (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+')');
+    Form7.ibDataSet4.SelectSQL.Add(RetornarWhereAtivoEstoqueCompra);
+    Form7.ibDataSet4.SelectSQL.Add('order by upper(DESCRICAO)');
     Form7.ibDataSet4.Open;
     Form7.ibDataSet4.First;
     Form7.ibDataSet4.EnableControls;
-    //
-    //
   end;
-  //
   ibDataSet23DESCRICAO.AsString := Text;
-  //
+end;
+
+function TForm7.RetornarWhereAtivoEstoqueCompra: String;
+begin
+  Result := EmptyStr;
+  if not FbImportandoXML then
+    Result := 'AND ((COALESCE(ATIVO,0)=0) OR ((ATIVO=1) AND (TIPO_ITEM=''01'')))';
 end;
 
 procedure TForm7.ibDataSet23QUANTIDADEChange(Sender: TField);
@@ -24194,7 +24254,12 @@ end;
 
 procedure TForm7.ImportarNotaFiscal1Click(Sender: TObject);
 begin
-  ImportaNF(True,'');
+  FbImportandoXML := True;
+  try
+    ImportaNF(True,'');
+  finally
+    FbImportandoXML := False;
+  end;
 end;
 
 procedure TForm7.IBDataSet2CIDADESetText(Sender: TField; const Text: String);

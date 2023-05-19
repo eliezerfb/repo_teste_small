@@ -83,6 +83,8 @@ uses
   uRetornaCaptionEmailPopUpDocs in 'units\uRetornaCaptionEmailPopUpDocs.pas',
   uITestaEmail in 'interfaces\uITestaEmail.pas',
   uTestaEmail in 'units\uTestaEmail.pas',
+  uIItensInativosImpXMLEntrada in 'interfaces\uIItensInativosImpXMLEntrada.pas',
+  uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',  
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
   uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
   uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
