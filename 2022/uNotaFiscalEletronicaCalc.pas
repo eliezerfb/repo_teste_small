@@ -29,7 +29,6 @@ implementation
 
 uses Unit7, Mais, uFuncoesFiscais, StrUtils;
 
-
 procedure TNotaFiscalEletronicaCalc.CalculaCstPisCofins(DataSetNF, DataSetItens: TibDataSet);
 var
   IBQProduto: TIBQuery;
@@ -689,8 +688,22 @@ begin
         begin
           if oItem.BASE > 0 then
           begin
-            // Sandro Silva 2023-05-18 if not ( IBQProduto.FieldByName('PIVA').AsFloat > 0 ) or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='70') or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='10') or (IBQProduto.FieldByname('CSOSN').AsString = '900') then
-            if not ( IBQProduto.FieldByName('PIVA').AsFloat > 0 ) or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='70') or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='10') or (IBQProduto.FieldByname('CSOSN').AsString = '900') then
+
+            {Sandro Silva 2023-05-19 inicio}
+            IBQProduto.Close;
+            IBQProduto.DisableControls;
+            IBQProduto.UniDirectional := True;
+            IBQProduto.SQL.Text := ' Select * From ESTOQUE'+
+                                   ' Where CODIGO='+QuotedStr(oItem.Codigo);
+            IBQProduto.Open;
+            {Sandro Silva 2023-05-19 fim}
+
+            // Sandro Silva 2023-05-19 if not ( IBQProduto.FieldByName('PIVA').AsFloat > 0 ) or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='70') or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='10') or (IBQProduto.FieldByname('CSOSN').AsString = '900') then
+            if not ( IBQProduto.FieldByName('PIVA').AsFloat > 0 )
+                    or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='10')
+                    or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='70')
+                    or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='90')
+                    or (IBQProduto.FieldByname('CSOSN').AsString = '900') then
             begin
               if (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1')
               or (Copy(oItem.CFOP,2,3) = '201')
