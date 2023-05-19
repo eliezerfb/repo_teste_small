@@ -16,6 +16,8 @@ function SmallEncrypt(sChave,sValor:string):string;
 
 implementation
 
+//uses LbClass;
+
 function SmallDecrypt(sChave,sValor:string):string;
 var
   LbBlowfish : TLbBlowfish;
