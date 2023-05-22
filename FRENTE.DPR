@@ -52,7 +52,8 @@ uses
   uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',
   upafnfce in 'upafnfce.pas',
   ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
-  uTypesRecursos in '..\..\Small Commerce\unit_compartilhada\uTypesRecursos.pas';
+  uTypesRecursos in '..\..\Small Commerce\unit_compartilhada\uTypesRecursos.pas',
+  uClasseRecursos in '..\..\Small Commerce\unit_compartilhada\uClasseRecursos.pas';
 
 {$R *.RES}
 

@@ -5143,6 +5143,14 @@ begin
         FecharAplicacao(ExtractFileName(Application.ExeName));
 
       end;
+
+    end;
+
+    if ValidaQtdDocumentoFiscal = False then
+    begin
+        Form1.bStatusFiscal := False;
+        Result := False;
+
     end;
 
     if Result then

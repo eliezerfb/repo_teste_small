@@ -256,6 +256,7 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
+function ValidaQtdDocumentoFiscal: Boolean;
 
 var
   cWinDir: array[0..200] of Char;
@@ -265,7 +266,7 @@ var
 
 implementation
 
-uses StrUtils;
+uses StrUtils, uTypesRecursos, uClasseRecursos;
 
 //////////////////////////////
 {$IFDEF VER150}
@@ -1892,6 +1893,43 @@ begin
   if sForma = FORMA_PAGAMENTO_CHEQUE then
     Result := False;
 end;
+
+function ValidaQtdDocumentoFiscal: Boolean;
+const LimiteDocFiscal = 100;
+var
+  recurso: TResourceModule;
+  iQtd: Integer;
+begin
+  Result := False;
+  recurso := TResourceModule.Create(Application);
+  if recurso.Inicializa then
+  begin
+
+constar quantas nfce já foram no período
+  
+    iQtd := recurso.Quantidade(rcQtdNFCE);
+    case iQtd of
+      -1, 1..LimiteDocFiscal:  Result := True;
+    end;
+
+    if iQtd > LimiteDocFiscal then
+      SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
+                    'permitidos para esta versão do sistema'+chr(10)+
+                    'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
+                     AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
+                     AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
+                     'Código: 100 '+chr(10)+chr(10) +
+                     'Entre em contato com a Zucchetti'
+                     ),
+                     'Atenção', MB_ICONWARNING + MB_OK);
+
+  end;
+
+  if Recurso <> nil then
+   recurso.Free;
+
+end;
+
 
 { TTipoEntrega }
 
