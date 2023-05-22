@@ -26,6 +26,35 @@ uses
 
 implementation
 
+{$Region'//// CampoExiste  ////'}
+function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
+  sCampo: String): Boolean;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text :=
+      'select F.RDB$RELATION_NAME, F.RDB$FIELD_NAME ' +
+      'from RDB$RELATION_FIELDS F ' +
+      'join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
+      'and R.RDB$VIEW_BLR is null ' +
+      'and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
+      'and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
+      ' and F.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
+    IBQUERY.Open;
+    Result := (IBQUERY.IsEmpty = False);
+  finally
+    IBTRANSACTION.Rollback;
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+end;
+{$Endregion}
+
 function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : TRecursos; out DataLimite : TDate): Boolean;
 var
   vRecursosSistema : TRecursosSistema;
@@ -45,35 +74,6 @@ var
        if Pos(Copy(pP1,I,1),'0123456789') > 0 then
           Result:=Result+Copy(pP1,I,1);
      end;
-  end;
-  {$Endregion}
-
-  {$Region'//// CampoExiste  ////'}
-  function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
-    sCampo: String): Boolean;
-  var
-    IBQUERY: TIBQuery;
-    IBTRANSACTION: TIBTransaction;
-  begin
-    IBTRANSACTION := CriaIBTransaction(Banco);
-    IBQUERY := CriaIBQuery(IBTRANSACTION);
-    try
-      IBQUERY.Close;
-      IBQUERY.SQL.Text :=
-        'select F.RDB$RELATION_NAME, F.RDB$FIELD_NAME ' +
-        'from RDB$RELATION_FIELDS F ' +
-        'join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
-        'and R.RDB$VIEW_BLR is null ' +
-        'and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
-        'and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
-        ' and F.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
-      IBQUERY.Open;
-      Result := (IBQUERY.IsEmpty = False);
-    finally
-      IBTRANSACTION.Rollback;
-      FreeAndNil(IBQUERY);
-      FreeAndNil(IBTRANSACTION);
-    end;
   end;
   {$Endregion}
 
@@ -168,12 +168,21 @@ begin
       trAux := CriaIBTransaction(IBDATABASE);
       qyAux := CriaIBQuery(trAux);
 
-      qyAux.Database := IBDATABASE;
-      qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
-      qyAux.Open;
+      if CampoExisteFB(IBDATABASE, 'EMITENTE', 'RECURSO') then
+      begin
 
-      vRecuso := qyAux.FieldByName('RECURSO').AsString;
-      vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+        try
+          //qyAux.Database := IBDATABASE;
+          qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
+          qyAux.Open;
+
+          vRecuso := qyAux.FieldByName('RECURSO').AsString;
+          vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+        except
+
+        end;
+      end;
+
     finally
       FreeAndNil(qyAux);
       FreeAndNil(trAux);
