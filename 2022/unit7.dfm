@@ -17840,6 +17840,7 @@ object Form7: TForm7
     end
     object EEnviarcartadecorreoporemail1: TMenuItem
       Caption = 'E - Enviar Carta de Corre'#231#227'o Eletronica (CC-e) por e-mail'
+      OnClick = EEnviarcartadecorreoporemail1Click
     end
     object N68: TMenuItem
       Caption = '-'

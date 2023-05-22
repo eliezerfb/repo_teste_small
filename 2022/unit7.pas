@@ -2060,6 +2060,7 @@ type
     procedure Sinativos1Click(Sender: TObject);
     procedure ibDataSet18MUNICIPIOSetText(Sender: TField;
       const Text: String);
+    procedure EEnviarcartadecorreoporemail1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2077,7 +2078,8 @@ type
     function RetornarWhereAtivoEstoqueCompra: String;
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
-    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);    
+    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
+    procedure EnviarEmailCCe;
   public
 
     // Public declarations
@@ -13534,12 +13536,15 @@ begin
       begin
         N5EnviarDANFEporemail1.Enabled := (cEmails <> EmptyStr);
         N5EnviarDANFEporemail1.Caption := '5 - Enviar o XML e DANFE por e-mail ' + cEmails;
-        EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail ' + cEmails;
       end else
       begin
         EnviarNFSeporemail1.Enabled := (cEmails <> EmptyStr);
         EnviarNFSeporemail1.Caption := 'Enviar NFS-e por e-mail ' + cEmails;
       end;
+
+      EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail';
+      if EEnviarcartadecorreoporemail1.Enabled then
+        EEnviarcartadecorreoporemail1.Caption := EEnviarcartadecorreoporemail1.Caption + ' ' + cEmails;
       
       //
       if Form7.ibDataSet15EMITIDA.AsString = 'X' then
@@ -41892,6 +41897,81 @@ var
 begin
   vEstado := Form7.ibDataSet18UF.AsString;
   SelecionaMunicipio(vEstado,Text,(Sender as TStringField),False);
+end;
+
+procedure TForm7.EEnviarcartadecorreoporemail1Click(Sender: TObject);
+begin
+  EnviarEmailCCe;
+end;
+
+procedure TForm7.EnviarEmailCCe;
+var
+  cCaminhoXML: String;
+  cNomeArqXML: String;
+  cCaminhoPDF: string;
+  cNomeArqPDF: string;
+
+  slXML: TStringList;
+begin
+  if Form7.ibDataSet15CCEXML.AsString = EmptyStr then
+    Exit;
+
+  cCaminhoXML := Form1.sAtual + '\XmlDestinatario\';
+  cCaminhoPDF := Form1.sAtual + '\';
+  cNomeArqXML := Form7.ibDAtaSet15NFEID.AsString+'-CCe.xml';
+  cNomeArqPDF := 'CCe.pdf';
+
+  if not FileExists(cCaminhoXML) then
+  begin
+    slXML := TStringList.Create;
+    try
+      slXML.Text := Form7.ibDataSet15CCEXML.AsString;
+      slXML.SaveToFile(cCaminhoXML + cNomeArqXML);
+    finally
+      FreeAndNil(slXML);
+    end;
+  end;
+
+  if FileExists(cCaminhoPDF) then
+    DeleteFile(PChar(cCaminhoPDF));
+
+  ConfiguraNFE(True);    
+  spdNFe.ExportarCCe(slXML.Text, cCaminhoPDF + cNomeArqPDF);
+  Sleep(100);
+
+  if sZiparXML = 'S' then
+  begin
+    //
+    ShellExecute( 0, 'Open','szip.exe', pChar('backup "'+Alltrim(pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml'))+'" "'+
+    Alltrim(pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip'))+'"'),'', SW_SHOWMAXIMIZED);
+    //
+    while ConsultaProcesso('szip.exe') do
+    begin
+      Application.ProcessMessages;
+      sleep(100);
+    end;
+    //
+    while not FileExists( pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip')) do
+    begin
+      sleep(100);
+    end;
+    //
+    Unit7.EnviarEMail('',sEmail,'','Carta de correção Eletrônica (Cc-e)',pchar('Segue em anexo Carta de correção Eletrônica (Cc-e) em arquivo XML.'+chr(10)+Form1.sPropaganda+
+      chr(10)+
+      chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),
+      pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip')
+      ,False);
+    //
+  end else
+  begin
+    if (validaEmail(sEmail)) then
+    begin
+      Unit7.EnviarEMail('',sEmail,'','Carta de correção Eletrônica (Cc-e)',pchar('Segue em anexo Carta de correção Eletrônica (Cc-e) em arquivo XML.'+chr(10)+Form1.sPropaganda+
+        chr(10)),
+        pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml')
+        ,False);
+    end;
+  end;
 end;
 
 end.
