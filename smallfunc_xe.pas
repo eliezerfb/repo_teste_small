@@ -19,13 +19,19 @@ uses
   , Windows
   , System.IniFiles
   , Winapi.WinSock
-  , Forms
+  //, Forms
+  , Vcl.Forms
   , IdBaseComponent, IdCoder, IdCoder3to4, IdCoderMIME
   , Soap.EncdDecd
-  , Printers, ExtCtrls //2020-07-20
+  //, Printers
+  , Vcl.Printers
+  //, ExtCtrls //2020-07-20
+  , Vcl.ExtCtrls
   , IBX.IBDatabase, IBX.IBQuery // 2020-07-21
   , LbCipher, LbClass // 2020-07-21
-  , JPeg, Menus, Controls
+  , JPeg, Menus
+  //, Controls
+  , Vcl.Controls
   , DateUtils
   , ShellApi
   ,Vcl.DBCtrls

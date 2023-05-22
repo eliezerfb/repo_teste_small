@@ -3,7 +3,6 @@ unit uTypesRecursos;
 interface
 
 type
-  // Recursos disponíveis para usuário acessar
   TRecursos = ( //Recurso = (
                rcOS,
                rcSped,

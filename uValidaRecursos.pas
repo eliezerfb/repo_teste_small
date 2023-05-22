@@ -18,15 +18,15 @@ uses
   , uTypesRecursos
   ;
 
-  function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : Recurso; out DataLimite : TDate):Boolean;
-  function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):Tdate;
+  function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : TRecursos; out DataLimite : TDate): Boolean;
+  function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos): Tdate;
 
-  function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : Recurso):Integer;
-  function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):integer;
+  function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : TRecursos): Integer;
+  function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos): integer;
 
 implementation
 
-function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : Recurso; out DataLimite : TDate):Boolean;
+function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : TRecursos; out DataLimite : TDate): Boolean;
 var
   vRecursosSistema : TRecursosSistema;
   vRecuso, vCNPJ : string;
@@ -47,6 +47,36 @@ var
      end;
   end;
   {$Endregion}
+
+  {$Region'//// CampoExiste  ////'}
+  function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
+    sCampo: String): Boolean;
+  var
+    IBQUERY: TIBQuery;
+    IBTRANSACTION: TIBTransaction;
+  begin
+    IBTRANSACTION := CriaIBTransaction(Banco);
+    IBQUERY := CriaIBQuery(IBTRANSACTION);
+    try
+      IBQUERY.Close;
+      IBQUERY.SQL.Text :=
+        'select F.RDB$RELATION_NAME, F.RDB$FIELD_NAME ' +
+        'from RDB$RELATION_FIELDS F ' +
+        'join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
+        'and R.RDB$VIEW_BLR is null ' +
+        'and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
+        'and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
+        ' and F.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
+      IBQUERY.Open;
+      Result := (IBQUERY.IsEmpty = False);
+    finally
+      IBTRANSACTION.Rollback;
+      FreeAndNil(IBQUERY);
+      FreeAndNil(IBTRANSACTION);
+    end;
+  end;
+  {$Endregion}
+
 begin
   Result := False;
   DataLimite := StrToDate('01/01/1900');
@@ -57,17 +87,26 @@ begin
       trAux := CriaIBTransaction(IBDATABASE);
       qyAux := CriaIBQuery(trAux);
 
-      qyAux.Database := IBDATABASE;
-      qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
-      qyAux.Open;
+      if CampoExisteFB(IBDATABASE, 'EMITENTE', 'RECURSO') then
+      begin
+        try
+          //qyAux.Database := IBDATABASE;
+          qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
+          qyAux.Open;
 
-      vRecuso := qyAux.FieldByName('RECURSO').AsString;
-      vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+          vRecuso := qyAux.FieldByName('RECURSO').AsString;
+          vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+
+        except
+
+        end;
+      end;
     finally
       FreeAndNil(qyAux);
       FreeAndNil(trAux);
     end;
     {$Endregion}
+
 
     //Descriptografa
     vRecuso := SmallDecrypt(CHAVE_CIFRAR_NOVA,vRecuso);
@@ -92,12 +131,14 @@ begin
       end;
     end;
     {$Endregion}
+
   except
   end;
+
 end;
 
 
-function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : Recurso):Integer;
+function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : TRecursos):Integer;
 var
   vRecursosSistema : TRecursosSistema;
   vRecuso, vCNPJ : string;
@@ -166,7 +207,7 @@ begin
 end;
 
 
-function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):Tdate;
+function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos):Tdate;
 begin
   Result := StrToDate('01/01/1900');
 
@@ -194,7 +235,7 @@ begin
 end;
 
 
-function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : Recurso):integer;
+function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos):integer;
 begin
   Result := 0;
 
