@@ -7,9 +7,11 @@ uses
   IBX.IBDatabase, System.IniFiles, System.SysUtils, Vcl.Dialogs, Vcl.Forms,
   IBX.IBQuery;
 
+  //IBX
   function Conectar_SMALL(DataBase1 : TIBDatabase): Boolean;
   function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
   function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
+  function CampoExisteFB(Banco: TIBDatabase; sTabela: String; sCampo: String): Boolean;
 
 implementation
 
@@ -111,5 +113,33 @@ begin
     end
   end;
 end;
+
+
+function CampoExisteFB(Banco: TIBDatabase; sTabela: String; sCampo: String): Boolean;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text :=
+                        ' Select F.RDB$RELATION_NAME, F.RDB$FIELD_NAME ' +
+                        ' From RDB$RELATION_FIELDS F ' +
+                        '   Join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
+                        '     and R.RDB$VIEW_BLR is null ' +
+                        '     and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
+                        '     and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
+                        '     and F.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
+    IBQUERY.Open;
+    Result := (IBQUERY.IsEmpty = False);
+  finally
+    IBTRANSACTION.Rollback;
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+end;
+
 
 end.

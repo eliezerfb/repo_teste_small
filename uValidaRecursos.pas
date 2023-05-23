@@ -18,6 +18,8 @@ uses
   , uTypesRecursos
   ;
 
+  procedure InformacoesBD(IBDATABASE: TIBDatabase; out vRecuso, vCNPJ : string);
+
   function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : TRecursos; out DataLimite : TDate): Boolean;
   function RecursoData(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos): Tdate;
 
@@ -26,87 +28,18 @@ uses
 
 implementation
 
-{$Region'//// CampoExiste  ////'}
-function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
-  sCampo: String): Boolean;
-var
-  IBQUERY: TIBQuery;
-  IBTRANSACTION: TIBTransaction;
-begin
-  IBTRANSACTION := CriaIBTransaction(Banco);
-  IBQUERY := CriaIBQuery(IBTRANSACTION);
-  try
-    IBQUERY.Close;
-    IBQUERY.SQL.Text :=
-      'select F.RDB$RELATION_NAME, F.RDB$FIELD_NAME ' +
-      'from RDB$RELATION_FIELDS F ' +
-      'join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
-      'and R.RDB$VIEW_BLR is null ' +
-      'and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
-      'and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
-      ' and F.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
-    IBQUERY.Open;
-    Result := (IBQUERY.IsEmpty = False);
-  finally
-    IBTRANSACTION.Rollback;
-    FreeAndNil(IBQUERY);
-    FreeAndNil(IBTRANSACTION);
-  end;
-end;
-{$Endregion}
 
 function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : TRecursos; out DataLimite : TDate): Boolean;
 var
   vRecursosSistema : TRecursosSistema;
   vRecuso, vCNPJ : string;
-
-  qyAux: TIBQuery;
-  trAux: TIBTransaction;
-
-  {$Region'//// Limpa Numero ////'}
-  function LimpaNumero(pP1:String):String;
-  var
-     I:Integer;
-  begin
-     Result:='';
-     for I := 1 to length(pP1) do
-     begin
-       if Pos(Copy(pP1,I,1),'0123456789') > 0 then
-          Result:=Result+Copy(pP1,I,1);
-     end;
-  end;
-  {$Endregion}
-
 begin
   Result := False;
   DataLimite := StrToDate('01/01/1900');
 
   try
-    {$Region'//// Informações BD  ////'}
-    try
-      trAux := CriaIBTransaction(IBDATABASE);
-      qyAux := CriaIBQuery(trAux);
-
-      if CampoExisteFB(IBDATABASE, 'EMITENTE', 'RECURSO') then
-      begin
-        try
-          //qyAux.Database := IBDATABASE;
-          qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
-          qyAux.Open;
-
-          vRecuso := qyAux.FieldByName('RECURSO').AsString;
-          vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
-
-        except
-
-        end;
-      end;
-    finally
-      FreeAndNil(qyAux);
-      FreeAndNil(trAux);
-    end;
-    {$Endregion}
-
+    // Informações BD
+    InformacoesBD(IBDATABASE, vRecuso, vCNPJ);
 
     //Descriptografa
     vRecuso := SmallDecrypt(CHAVE_CIFRAR_NOVA,vRecuso);
@@ -131,10 +64,8 @@ begin
       end;
     end;
     {$Endregion}
-
   except
   end;
-
 end;
 
 
@@ -142,52 +73,12 @@ function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : TRecursos):Intege
 var
   vRecursosSistema : TRecursosSistema;
   vRecuso, vCNPJ : string;
-
-  qyAux: TIBQuery;
-  trAux: TIBTransaction;
-
-  {$Region'//// Limpa Numero ////'}
-  function LimpaNumero(pP1:String):String;
-  var
-     I:Integer;
-  begin
-     Result:='';
-     for I := 1 to length(pP1) do
-     begin
-       if Pos(Copy(pP1,I,1),'0123456789') > 0 then
-          Result:=Result+Copy(pP1,I,1);
-     end;
-  end;
-  {$Endregion}
 begin
   Result := 0;
 
   try
-    {$Region'//// Informações BD  ////'}
-    try
-      trAux := CriaIBTransaction(IBDATABASE);
-      qyAux := CriaIBQuery(trAux);
-
-      if CampoExisteFB(IBDATABASE, 'EMITENTE', 'RECURSO') then
-      begin
-
-        try
-          //qyAux.Database := IBDATABASE;
-          qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
-          qyAux.Open;
-
-          vRecuso := qyAux.FieldByName('RECURSO').AsString;
-          vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
-        except
-
-        end;
-      end;
-
-    finally
-      FreeAndNil(qyAux);
-      FreeAndNil(trAux);
-    end;
-    {$Endregion}
+    // Informações BD
+    InformacoesBD(IBDATABASE, vRecuso, vCNPJ);
 
     //Descriptografa
     vRecuso := SmallDecrypt(CHAVE_CIFRAR_NOVA,vRecuso);
@@ -238,6 +129,7 @@ begin
       rcBancos        : Result := vRecursosSistema.Recursos.Bancos;
       rcIndicadores   : Result := vRecursosSistema.Recursos.Indicadores;
       rcInventarioP7  : Result := vRecursosSistema.Recursos.InventarioP7;
+      rcMKP           : Result := vRecursosSistema.Recursos.MKP;
     end;
   except
   end;
@@ -254,6 +146,52 @@ begin
       rcQtdNFE     : Result := vRecursosSistema.Recursos.QtdNFE;
     end;
   except
+  end;
+end;
+
+
+procedure InformacoesBD(IBDATABASE: TIBDatabase; out vRecuso, vCNPJ : string);
+var
+  qyAux: TIBQuery;
+  trAux: TIBTransaction;
+  {$Region'//// Limpa Numero ////'}
+  function LimpaNumero(pP1:String):String;
+  var
+     I:Integer;
+  begin
+     Result:='';
+     for I := 1 to length(pP1) do
+     begin
+       if Pos(Copy(pP1,I,1),'0123456789') > 0 then
+          Result:=Result+Copy(pP1,I,1);
+     end;
+  end;
+  {$Endregion}
+begin
+  try
+    trAux := CriaIBTransaction(IBDATABASE);
+    qyAux := CriaIBQuery(trAux);
+
+    if CampoExisteFB(IBDATABASE, 'EMITENTE', 'RECURSO') then
+    begin
+      try
+        if CampoExisteFB(IBDATABASE, 'EMITENTE', 'RECURSO') then
+        begin
+          //qyAux.Database := IBDATABASE;
+          qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
+          qyAux.Open;
+
+          vRecuso := qyAux.FieldByName('RECURSO').AsString;
+          vCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+        end;
+      except
+        vRecuso := '';
+        vCNPJ   := '';
+      end;
+    end;
+  finally
+    FreeAndNil(qyAux);
+    FreeAndNil(trAux);
   end;
 end;
 
