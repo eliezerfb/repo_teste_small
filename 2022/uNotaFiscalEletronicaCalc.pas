@@ -308,16 +308,28 @@ begin
           {Mauricio Parizotto 2023-03-30 Inicio}
           if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
           begin
-            NotaFiscal.Ipi := NotaFiscal.Ipi + Arredonda2((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))),2);
+            // Sandro Silva 2023-05-23 NotaFiscal.Ipi := NotaFiscal.Ipi + Arredonda2((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))),2);
+            oItem.Vipi := Arredonda2((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))),2);
+            NotaFiscal.Ipi := NotaFiscal.Ipi + oItem.Vipi;
 
             //if ((IBQIcmItem.FieldByname('SOBREIPI').AsString = 'S')) then
             if vIPISobreICMS then
             begin
+              {Sandro Silva 2023-05-23 inicio
               NotaFiscal.Baseicm   := NotaFiscal.Baseicm + Arredonda((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))),2); //
               NotaFiscal.ICMS      := NotaFiscal.ICMS    + Arredonda(((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString))) * oItem.BASE / 100 * oItem.ICM / 100 )),2); // Acumula em 16 After post
 
               oItem.Vbc            := oItem.Vbc + Arredonda((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))),2); //
               oItem.Vicms          := oItem.Vicms + Arredonda(((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString))) * oItem.BASE / 100 * oItem.ICM / 100 )),2);
+              }
+              NotaFiscal.Baseicm   := NotaFiscal.Baseicm + Arredonda((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))) * oItem.BASE / 100, 2); //
+              NotaFiscal.ICMS      := NotaFiscal.ICMS    + Arredonda(((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString))) * oItem.BASE / 100 * oItem.ICM / 100 )),2); // Acumula em 16 After post
+
+
+              oItem.Vbc            := oItem.Vbc + Arredonda((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)))) * oItem.BASE / 100, 2); //
+              oItem.Vicms          := oItem.Vicms + Arredonda(((oItem.QUANTIDADE * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString))) * oItem.BASE / 100 * oItem.ICM / 100 )),2);
+
+              {Sandro Silva 2023-05-23 fim}
             end;
           end else
           begin
@@ -328,7 +340,9 @@ begin
 
             vlBalseIPI := oItem.TOTAL + vlFreteRateadoItem;
 
-            NotaFiscal.IPI := NotaFiscal.Ipi + Arredonda2((vlBalseIPI * ( oItem.IPI / 100 )), 2);
+            // Sandro Silva 2023-05-23 NotaFiscal.IPI := NotaFiscal.Ipi + Arredonda2((vlBalseIPI * ( oItem.IPI / 100 )), 2);
+            oItem.Vipi := Arredonda2((vlBalseIPI * ( oItem.IPI / 100 )), 2);
+            NotaFiscal.IPI := NotaFiscal.Ipi + + oItem.Vipi;
 
             {NotaFiscal.IPI.Value         := NotaFiscal.IPI.Value +
                                  Arredonda2((oItem.QUANTIDADE').Asfloat *

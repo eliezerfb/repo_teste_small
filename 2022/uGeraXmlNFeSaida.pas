@@ -3075,6 +3075,7 @@ begin
               begin
                 // VINICULAS
                 try
+                  {Sandro Silva 2023-05-23 inicio
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := StrTran(Alltrim(FormatFloat('##0.00', Arredonda((
                   arredonda(((
                   (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade)
@@ -3085,10 +3086,25 @@ begin
                   + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) // Teste inclui esta linha
                   ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat  / 100 )
                   ),2))),',','.'); // Valor do ICMS ST em Reais
+                  }
+
+                  // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
+                  // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
+                    StrTran(
+                        FormatFloat('##0.00',
+                          Arredonda(
+                               (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100))) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>',Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 * Form7.AliqICMdoCliente16() / 100 ) * Form7.ibDataSet4PIVA.AsFloat
+                             - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat  / 100)
+                          ,2)
+                        )
+                    ,',','.'); // Valor do ICMS ST em Reais
+
                 except
                 end;
               end else
               begin
+                {Sandro Silva 2023-05-23 inicio
                 Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := StrTran(Alltrim(FormatFloat('##0.00', Arredonda(
                 Arredonda(((
                 (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade)
@@ -3099,6 +3115,21 @@ begin
                 + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) // Teste inclui esta linha
                 ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat  / 100 )
                 ,2))),',','.'); // Valor do ICMS ST em Reais
+                }
+
+                // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
+                // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
+                Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
+                  StrTran(
+                      FormatFloat('##0.00',
+                        Arredonda(
+                            (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 )* Form7.ibDataSet4PIVA.AsFloat
+                             -
+                             ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100) ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat  / 100 )
+                        , 2)
+                      )
+                  ,',','.'); // Valor do ICMS ST em Reais
+                {Sandro Silva 2023-05-23 fim}
               end;
             end;
           end else
