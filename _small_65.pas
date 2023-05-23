@@ -872,6 +872,8 @@ var
   dpRedBC_N14: Real; // Sandro Silva 2019-02-08
   dvICMSDeson_N28a: Real; // Sandro Silva 2019-08-29
   dvICMSDeson_W04a: Real; // Sandro Silva 2019-08-29
+  vICMSMonoRet_N45: Real; // Sandro Silva 2023-05-19
+  vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
   //
   bOk: Boolean; // Sandro Silva 2015-06-02
   sLogErro: String; // Sandro Silva 2015-06-02
@@ -1292,7 +1294,7 @@ begin
         dvISS_W20        := 0; //2015-12-10
         dvFCP_W04h       := 0; // Sandro Silva 2018-02-19
         dvICMSDeson_W04a := 0.00; // Sandro Silva 2019-08-29
-
+        vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
         //
         // TOTAL Sem o Desconto
         //
@@ -1695,28 +1697,57 @@ begin
                 end else
                 begin // SIMPLES NACIONAL
                   Form1.spdNFCeDataSets1.Campo('orig_N11').Value    := Copy(LimpaNumero(Form1.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+
+
                   Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value  :=  Form1.ibDataSet4.FieldByname('CSOSN').AsString; // ESTOQUE.CSOSN
                   if Trim(Form1.ibDataSet4.FieldByname('CSOSN_NFCE').AsString) <> '' then // Se existir CSOSN para NFC-e usa a configuração
                   begin
                     Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value := LimpaNumero(Form1.ibDataSet4.FieldByname('CSOSN_NFCE').AsString); // ESTOQUE.CSOSN_NFCE // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
                   end;
-                  if Form1.ibDataSet27.FieldByname('CSOSN').AsString <> Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) then // ALTERACA.CSOSN <> do XML
+
+                  {Sandro Silva 2023-05-23 inicio}
+                  // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+                  if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '61' then
                   begin
-                    Form1.ibDataSet27.Edit;
-                    Form1.ibDataSet27.FieldByname('CSOSN').AsString := Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value); // Repassa para ALTERACA.CSOSN o valor atribuido ao XML
+                    // Ficha 6908
+                    // Simples nacional usa CST 61 no lugar do CSOSN
+                    Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Clear;
+                    Form1.spdNFCeDataSets1.Campo('CST_N12').AsString := '61';
+                    if Form1.ibDataSet27.FieldByname('CSOSN').AsString <> Trim(Form1.spdNFCeDataSets1.Campo('orig_N11').Value) + Trim(Form1.spdNFCeDataSets1.Campo('CST_N12').AsString) then
+                    begin
+                      Form1.ibDataSet27.Edit;
+                      Form1.ibDataSet27.FieldByname('CSOSN').Value := Trim(Form1.spdNFCeDataSets1.Campo('orig_N11').Value) + Trim(Form1.spdNFCeDataSets1.Campo('CST_N12').Value);
+                    end;
+                  end;
+                  {Sandro Silva 2023-05-23 fim}
 
-                    {Sandro Silva 2021-01-13 inicio
-                    if (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '102') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '103') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '300') then
-                      Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'I';
-                    if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '400' then
-                      Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'N';
-                    if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '500' then
-                      Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'F';
-                    {Sandro Silva 2021-01-13 fim}
+                  if (Form1.spdNFCeDataSets1.Campo('CST_N12').Value <> '61') and (Form1.ibDataSet27.FieldByname('CSOSN').AsString <> '') then // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+                  begin
 
+                    if Form1.ibDataSet27.FieldByname('CSOSN').AsString <> Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) then // ALTERACA.CSOSN <> do XML
+                    begin
+                      Form1.ibDataSet27.Edit;
+                      if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '' then
+                        Form1.ibDataSet27.FieldByname('CSOSN').Clear
+                      else
+                        Form1.ibDataSet27.FieldByname('CSOSN').AsString := Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value); // Repassa para ALTERACA.CSOSN o valor atribuido ao XML
+
+                      {Sandro Silva 2021-01-13 inicio
+                      if (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '102') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '103') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '300') then
+                        Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'I';
+                      if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '400' then
+                        Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'N';
+                      if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '500' then
+                        Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'F';
+                      {Sandro Silva 2021-01-13 fim}
+
+                    end;
                   end;
 
-                  if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '' then
+                  // Sandro Silva 2023-05-23 if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '' then
+                  if (Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '')
+                    and (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '') // // Simples nacional usa CST 61 no lugar do CSOSN
+                  then
                   begin
                     sStatus := 'Configure no Estoque, o CSOSN para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;// Sandro Silva 2018-04-11  sStatus := 'CSOSN não configurado para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;
                     sLogErro := 'Erro:22' + Chr(10) + sStatus +chr(10);  // Sandro Silva 2017-08-16  +chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema.'+chr(10)+'Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
@@ -1732,6 +1763,9 @@ begin
                 _ecf65_IdentificaPercentuaisBaseICMS(dpRedBC_N14);
 
                 dvBC_N15 := (dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem); // BC // Sandro Silva 2019-08-29
+                if (Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
+                   (Pos('|' + Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0) then
+                  dvBC_N15 := 0.00;
 
                 if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
                 begin
@@ -1782,21 +1816,21 @@ begin
                     //
                     dvICMS_N17 := 0.00;
                     // Diferente de 40=isenta;41=Não tributada;50=Suspensão
-                    if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|') = 0 then // Sandro Silva 2018-02-21  if (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '40') and  (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '41') and (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '50') then
+                    if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|61|') = 0 then // Sandro Silva 2023-05-23 if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|') = 0 then
                     begin
                       dvICMS_N17 := StrToFloat(FormatFloat('##0.00', (dvBC_N15 * (StrToIntDef(LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString), 0) / 10000))));// Sandro Silva 2018-02-19  dvICMS_N17 := StrToFloat(FormatFloat('##0.00', (dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem) * (StrToIntDef(LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString), 0) / 10000)));
                     end;
 
                     //
                     // Diferente de 40=Isenta; 41=Não tributada; 60=ST
-                    if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|') = 0 then // Sandro Silva 2018-02-21  if (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '40') and (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '41') and (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '60') then // 2015-10-19
+                    if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|61|') = 0 then // Sandro Silva 2023-05-23 if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|') = 0 then
                       rBaseICMS  := rBaseICMS + dvBC_N15;// Sandro Silva 2018-02-19  rBaseICMS  := rBaseICMS + (dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem);
 
                     if dvICMS_N17 > 0.00 then
                     begin
                       Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value := FormatFloatXML(dvICMS_N17); // Valor do ICMS em Reais
                     end
-                    else if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|') = 0 then
+                    else if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|61|') = 0 then // Sandro Silva 2023-05-23 else if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|') = 0 then
                     begin
                       Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value := FormatFloatXML(dvICMS_N17); // Valor do ICMS em Reais
                     end;
@@ -1887,8 +1921,11 @@ begin
                   //
                 end else
                 begin
+                  dvBC_N15 := 0.00;
                   //
-                  Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := '0.00';  // BC
+                  // Sandro Silva 2023-05-23 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := '0.00';  // BC
+                  Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
+
 
                   //
                   if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
@@ -1901,6 +1938,27 @@ begin
                   //
                 end; // if LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString) <> '' then      
 
+                {Sandro Silva 2023-05-17 inicio}
+                //qBCMonoRet = será igual à quantidade do produto informado na nota
+                //adRemICMSRet = buscar da tag adRemICMSRet do cadastro do produto
+                //vICMSMonoRet = multiplicar o valor da tag qBCMonoRet pelo valor da tag adRemICMSRet
+
+                // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+                if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61') then
+                begin
+
+                  Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
+                  Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
+
+                  Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').Value  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
+                  Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00));
+                  vICMSMonoRet_N45      := XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString);
+                  vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
+
+                  Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
+                end;
+                {Sandro Silva 2023-05-17 fim}
+
                 // Cálculo da desoneração
                 if (RetornaValorDaTagNoCampo('motDesICMS', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
                 begin
@@ -1908,7 +1966,7 @@ begin
                   Form1.spdNFCeDataSets1.Campo('vICMSDeson_N28a').Value := FormatFloatXML(dvICMSDeson_N28a);
                   dvICMSDeson_W04a := dvICMSDeson_W04a + dvICMSDeson_N28a;
                 end;
-                
+
                 //
                 if LimpaNumero(Form1.ibDataSet4.FieldByname('CST_PIS_COFINS_SAIDA').AsString) <> '' then
                 begin
@@ -3399,6 +3457,25 @@ begin
                   Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value := LimpaNumero(Form1.ibDataSet4.FieldByname('CSOSN_NFCE').AsString); // ESTOQUE.CSOSN_NFCE // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
                 end;
 
+                {Sandro Silva 2023-05-23 inicio}
+                if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '61' then
+                begin
+                  // Ficha 6908
+                  // Simples nacional usa CST 61 no lugar do CSOSN
+                  Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Clear;
+                  Form1.spdNFCeDataSets1.Campo('CST_N12').AsString := '61';
+
+                  {
+                  if Form1.ibDataSet27.FieldByname('CSOSN').AsString <> Trim(Form1.spdNFCeDataSets1.Campo('orig_N11').Value) + Trim(Form1.spdNFCeDataSets1.Campo('CST_N12').AsString) then
+                  begin
+                    Form1.ibDataSet27.Edit;
+                    Form1.ibDataSet27.FieldByname('CSOSN').Value := Trim(Form1.spdNFCeDataSets1.Campo('orig_N11').Value) + Trim(Form1.spdNFCeDataSets1.Campo('CST_N12').Value);
+                  end;
+                  }
+
+                end;
+                {Sandro Silva 2023-05-23 fim}
+
                 {Sandro Silva 2021-11-05 inicio}
                 // Ficha 5534
                 // Implementar validção de CSOSN 101 neste local
@@ -3409,23 +3486,33 @@ begin
                 end;
                 {Sandro Silva 2021-11-05 fim}
 
-                if Form1.ibDataSet27.FieldByname('CSOSN').AsString <> Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) then // ALTERACA.CSOSN <> do XML
-                begin
-                  Form1.ibDataSet27.Edit;
-                  Form1.ibDataSet27.FieldByname('CSOSN').AsString := Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value); // Repassa para ALTERACA.CSOSN o valor atribuido ao XML
 
-                  {Sandro Silva 2021-01-13 inicio
-                  if (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '102') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '103') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '300') then
-                    Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'I';
-                  if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '400' then
-                    Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'N';
-                  if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '500' then
-                    Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'F';
-                  {Sandro Silva 2021-01-13 fim}
+                // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+                if (Form1.spdNFCeDataSets1.Campo('CST_N12').Value <> '61') and (Form1.ibDataSet27.FieldByname('CSOSN').AsString <> '') then // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+                begin
+
+                  if Form1.ibDataSet27.FieldByname('CSOSN').AsString <> Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) then // ALTERACA.CSOSN <> do XML
+                  begin
+                    Form1.ibDataSet27.Edit;
+                    Form1.ibDataSet27.FieldByname('CSOSN').AsString := Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value); // Repassa para ALTERACA.CSOSN o valor atribuido ao XML
+
+                    {Sandro Silva 2021-01-13 inicio
+                    if (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '102') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '103') or (Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '300') then
+                      Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'I';
+                    if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '400' then
+                      Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'N';
+                    if Trim(Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value) = '500' then
+                      Form1.ibDataSet27.FieldByname('ALIQUICM').Value := 'F';
+                    {Sandro Silva 2021-01-13 fim}
+
+                  end;
 
                 end;
 
-                if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '' then
+                // Sandro Silva 2023-05-23 if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '' then
+                if (Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '')
+                  and (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '') // // Simples nacional usa CST 61 no lugar do CSOSN
+                then
                 begin
                   sStatus := 'Configure no Estoque, o CSOSN para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;// Sandro Silva 2018-04-11  sStatus := 'CSOSN não configurado para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;
                   sLogErro := sLogErroCredenciadoraCartao + 'Erro:22' + Chr(10) + sStatus +chr(10);   // Sandro Silva 2017-08-16  +chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema.'+chr(10)+'Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
@@ -3596,7 +3683,8 @@ begin
               begin
                 dvBC_N15 := 0.00;
                 //
-                Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := '0.00';  // BC
+                // Sandro Silva 2023-05-23 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := '0.00';  // BC
+                Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
 
                 //
                 if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
@@ -3615,9 +3703,8 @@ begin
               //adRemICMSRet = buscar da tag adRemICMSRet do cadastro do produto
               //vICMSMonoRet = multiplicar o valor da tag qBCMonoRet pelo valor da tag adRemICMSRet
 
-              if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61') or
-                (Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString = '61')
-               then
+              // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+              if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61') then
               begin
 
                 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
