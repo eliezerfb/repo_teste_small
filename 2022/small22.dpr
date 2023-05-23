@@ -84,7 +84,7 @@ uses
   uITestaEmail in 'interfaces\uITestaEmail.pas',
   uTestaEmail in 'units\uTestaEmail.pas',
   uIItensInativosImpXMLEntrada in 'interfaces\uIItensInativosImpXMLEntrada.pas',
-  uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',  
+  uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
   uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
   uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
@@ -93,7 +93,8 @@ uses
   uTextoEmailNFe in 'units\uTextoEmailNFe.pas',
   uSmallResourceString in '..\Commons\uSmallResourceString.pas',
   uITextoEmailFactory in 'interfaces\uITextoEmailFactory.pas',
-  uTextoEmailFactory in 'units\uTextoEmailFactory.pas';
+  uTextoEmailFactory in 'units\uTextoEmailFactory.pas',
+  uTextoEmailCCe in '..\..\Projeto-2022Ant\2022\Units\uTextoEmailCCe.pas';
 
 {$R *.RES}
 
