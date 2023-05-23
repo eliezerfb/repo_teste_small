@@ -256,7 +256,7 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
-function ValidaQtdDocumentoFiscal: Boolean;
+function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction): Boolean;
 
 var
   cWinDir: array[0..200] of Char;
@@ -1894,18 +1894,26 @@ begin
     Result := False;
 end;
 
-function ValidaQtdDocumentoFiscal: Boolean;
+function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction): Boolean;
 const LimiteDocFiscal = 100;
 var
   recurso: TResourceModule;
   iQtd: Integer;
+  IBQDOC: TIBQuery;
 begin
   Result := False;
   recurso := TResourceModule.Create(Application);
   if recurso.Inicializa then
   begin
 
-constar quantas nfce já foram no período
+    IBQDOC := CriaIBQuery(IBTRANSACTION);
+    IBQDOC.Close;
+    IBQDOC.SQL.Text :=
+      'select count(NUMERONF) ' +
+      'from NFCE ' +
+      'where DATA between :INI and :FIM ' +
+      'and ((MODELO = ''65'' and coalesce(NFEXML) containing ''<xMotivo>Autorizad'') or (MODELO = ''59'' and coalesce(NFEXML) containing ''Id="C'') )' 
+cancelados entram na conta
   
     iQtd := recurso.Quantidade(rcQtdNFCE);
     case iQtd of
