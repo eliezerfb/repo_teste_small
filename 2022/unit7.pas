@@ -4677,26 +4677,23 @@ end;
 
 function AbreArquivoNoFormatoCerto(sP1:String): boolean;
 begin
-  //
   if Copy(sP1,1,3) <> 'OS_' then sP1 := Senhas.UsuarioPub;
-  //
+
   if Form1.bPDF then
   begin
-    //
     Screen.Cursor            := crHourGlass;
     HtmlParaPdf(sP1);
     ShellExecute( 0, 'Open',pChar(sP1+'.pdf'),'', '', SW_SHOWMAXIMIZED);
     Screen.Cursor            := crDefault;
-    //
-  end else
-  begin
-    //
-    ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
-    //
+  //end else
   end;
-  //
+
+  if Form1.bHtml1 then
+  begin
+    ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
   Result := True;
-  //
 end;
 
 procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(
@@ -9131,7 +9128,6 @@ begin
      begin
        DbGrid1.SelectedIndex := 0;
        ArquivoAberto.Next;
-  //     if (ArquivoAberto.EOF) and (not dbGrid1.ReadOnly) then ArquivoAberto.Append;
      end;
    end;
    //
@@ -9139,7 +9135,6 @@ begin
    begin
      DbGrid1.SelectedIndex := 0;
      ArquivoAberto.Next;
-//     if ArquivoAberto.EOF then ArquivoAberto.Append;
    end;
  end
  else
@@ -9279,8 +9274,8 @@ begin
     Form39.CheckBox6.Visible := True;
     //
     Form39.Height := 80;
-    //
   end;
+
   Form9.Show;
   Form14.Caption := 'Assistente para lista de preços';
   Form14.Show;
@@ -34963,12 +34958,19 @@ procedure TForm7.Image205Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   Form39.Height := 80;
   Form9.Show;
   Form14.Caption := 'Assistente de relatórios';
   Form14.Show;
-  //
+
+  {Mauricio Parizotto 2023-05-24 Inicio}
+  Form39.CheckBox1.Visible := False;
+  Form39.CheckBox2.Visible := False;
+  Form39.CheckBox3.Visible := False;
+  Form39.CheckBox4.Visible := False;
+  Form39.CheckBox5.Visible := False;
+  {Mauricio Parizotto 2023-05-24 Fim}
+
   if Form7.sModulo = 'ESTOQUE' then
   begin
     { Lê as configurações no .INF }
@@ -34977,11 +34979,11 @@ begin
     Form39.CheckBox4.Caption := 'Preço '+AllTrim(Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7'))+' dias ' + Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00') +'%';
     Form39.CheckBox5.Caption := 'Preço '+AllTrim(Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14'))+' dias ' + Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00') +'%';
     Form39.CheckBox6.Caption := 'Preço '+AllTrim(Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21'))+' dias ' + Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00') +'%';
-    //
+
     Form39.Label1.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
     Form39.Label2.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
     Form39.Label3.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
-    //
+
     Form39.CheckBox1.Visible := True;
     Form39.CheckBox2.Visible := True;
     Form39.CheckBox3.Visible := True;
@@ -34989,90 +34991,83 @@ begin
     Form39.CheckBox5.Visible := False;
     Form39.CheckBox6.Visible := False;
     Form39.Height := 80;
-    //
+
     Form39.Show;
   end;
-  //
+
   if Form7.sModulo = 'CLIENTES' then
   begin
-    //
     if not (Form1.iReduzida = 1) then
     begin
-      //
       Form39.CheckBox4.Caption := 'Recebido       ';
       Form39.CheckBox5.Caption := 'A receber      ';
       Form39.CheckBox6.Caption := 'Atrasado       ';
-      //
+
       Form39.Label1.Caption := '';
       Form39.Label2.Caption := '';
       Form39.Label3.Caption := '';
-      //
-      Form39.CheckBox1.Visible := False;
-      Form39.CheckBox2.Visible := False;
-      Form39.CheckBox3.Visible := False;
+
+      //Form39.CheckBox1.Visible := False;
+      //Form39.CheckBox2.Visible := False;
+      //Form39.CheckBox3.Visible := False;
       Form39.CheckBox4.Visible := True;
       Form39.CheckBox5.Visible := True;
       Form39.CheckBox6.Visible := True;
-      //
+
       Form39.Show;
     end;
-    //
   end;
-  //
+
   if Form7.sModulo = 'FORNECED' then
   begin
-    //
     Form39.CheckBox4.Caption := 'Pago           ';
     Form39.CheckBox5.Caption := 'A pagar        ';
     Form39.CheckBox6.Caption := 'Atrasado       ';
-    //
+
     Form39.Label1.Caption := '';
     Form39.Label2.Caption := '';
     Form39.Label3.Caption := '';
-    //
-    Form39.CheckBox1.Visible := False;
-    Form39.CheckBox2.Visible := False;
-    Form39.CheckBox3.Visible := False;
+
+    //Form39.CheckBox1.Visible := False;
+    //Form39.CheckBox2.Visible := False;
+    //Form39.CheckBox3.Visible := False;
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
-    //
+
     Form39.Show;
   end;
-  //
+
   if Form7.sModulo = 'RECEBER' then
   begin
-    //
     Form39.CheckBox4.Caption := 'Endereço       ';
     Form39.CheckBox5.Caption := 'Cidade         ';
     Form39.CheckBox6.Caption := 'Telefone       ';
-    //
+    Form39.CheckBox7.Caption := 'Contato        ';
+    Form39.CheckBox8.Caption := 'WhatsApp       ';
+
     Form39.Label1.Caption := '';
     Form39.Label2.Caption := '';
     Form39.Label3.Caption := '';
-    //
-    Form39.CheckBox1.Visible := False;
-    Form39.CheckBox2.Visible := False;
-    Form39.CheckBox3.Visible := False;
+
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
-    //
+    Form39.CheckBox7.Visible := True;
+    Form39.CheckBox8.Visible := True;
+    Form39.Height := 115;
     Form39.Show;
   end;
-  //
+
   Form14.Button1.SetFocus;
-  //
 end;
 
 procedure TForm7.ibDataSet27BeforeDelete(DataSet: TDataSet);
 begin
-  //
   ibDataSet99.Close;
   ibDataSet99.SelectSql.Clear;
   ibDataset99.SelectSql.Add('select gen_id(G_HASH_ALTERACA,-1) from rdb$database');
   ibDataset99.Open;
-  //
 end;
 
 procedure TForm7.Button6Click(Sender: TObject);
