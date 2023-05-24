@@ -173,22 +173,33 @@ var
   oItem : TITENS001;
   i : integer;
 begin
-  //Zera Valores Nota
-  NotaFiscal.Mercadoria := 0;
-  NotaFiscal.Baseicm    := 0;
-  NotaFiscal.Baseiss    := 0;
-  NotaFiscal.Icms       := 0;
-  NotaFiscal.Ipi        := 0;
-  NotaFiscal.Iss        := 0;
-  NotaFiscal.Pesoliqui  := 0;
-  NotaFiscal.Basesubsti := 0;
-  NotaFiscal.Icmssubsti := 0;
-  NotaFiscal.VFCPST     := 0;
+  if NFeFinalidadeComplemento(NotaFiscal.Finnfe) = False then // Complemento
+  begin
+
+    //Zera Valores Nota
+    NotaFiscal.Mercadoria := 0;
+    NotaFiscal.Baseicm    := 0;
+    NotaFiscal.Baseiss    := 0;
+    NotaFiscal.Icms       := 0;
+    NotaFiscal.Ipi        := 0;
+    NotaFiscal.Iss        := 0;
+    NotaFiscal.Pesoliqui  := 0;
+    NotaFiscal.Basesubsti := 0;
+    NotaFiscal.Icmssubsti := 0;
+    NotaFiscal.VFCPST     := 0;
+  end;
 
   fFCPRetido            := 0;
 
+
   IBQProduto := Form7.CriaIBQuery(Form7.ibDataSet15.Transaction);
 
+
+  if NFeFinalidadeComplemento(NotaFiscal.Finnfe) then // Complemento
+  begin
+
+  end
+  else
   // Sandro Silva 2023-05-18 if NotaFiscal.Finnfe = '4' then // Devolucao Devolução
   if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) then // Devolucao Devolução
   begin

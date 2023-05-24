@@ -14,12 +14,18 @@ uses
   , unit7
 ;
 
+function NFeFinalidadeComplemento(sFinnfe: String): Boolean;
 function NFeFinalidadeDevolucao(sFinnfe: String): Boolean;
 function ProdutoOrigemImportado(sOrigem: String): Boolean;
 function CampoICMporNatureza(vCampo,vNatureza : string; Transacao : TIBTransaction) : string;
 function RetornaValorSQL(vSQL : string;  Transacao : TIBTransaction) : variant;
 
 implementation
+
+function NFeFinalidadeComplemento(sFinnfe: String): Boolean;
+begin
+  Result := sFinnfe = '2';
+end;
 
 function NFeFinalidadeDevolucao(sFinnfe: String): Boolean;
 begin

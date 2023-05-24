@@ -282,7 +282,9 @@ type
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
     bOk         : Boolean;
     fPrecoDoServico : array[0..99999] of real;
-    procedure ExibeColunasFCPST(bOculta: Boolean);
+    procedure ExibeColunasFCPST(bExibe: Boolean);
+    procedure ExibeColunaCSOSN(bExibe: Boolean);
+    procedure ExibeColunaCSTICMS(bExibe: Boolean);    
   end;
 
 var
@@ -812,6 +814,12 @@ begin
     Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
     Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
 
+    if Form7.ibDataSet13CRT.AsString = '1' then
+    begin
+      ExibeColunaCSOSN(True);
+      ExibeColunaCSTICMS(False);
+    end;
+
     Form12.Label2.Caption := 'Atenção!'+chr(10)+chr(10)+'Quando não for contribuinte do IPI'+chr(10)+
                                                         'deixar o campo CST IPI em branco (vai'+chr(10)+
                                                         'criar grupo IPIDevol).'+chr(10)+chr(10)+
@@ -906,6 +914,11 @@ begin
         Form12.Edit2.Text := '4-Devolução de mercadoria';
         Form7.ibDataSet15FINNFE.AsString   := '4';
         ExibeColunasFCPST(True);
+        if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+        begin
+          ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
+          ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+        end;
         SMALL_DBEdit40Enter(Sender);
       end;
       {Sandro Silva 2023-05-10 fim}
@@ -2195,6 +2208,7 @@ begin
 
       ExibeColunasFCP(False);
       ExibeColunasFCPST(False);
+      ExibeColunaCSOSN(False); // Sandro Silva 2023-05-24
 
       if Form7.ibDataSet15FINNFE.AsString = '1' then
       begin
@@ -2216,6 +2230,11 @@ begin
             begin
               Edit2.Text := '4-Devolução de mercadoria';
               ExibeColunasFCPST(True);
+              if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+              begin
+                ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
+                ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+              end;
             end else
             begin
               Edit2.Text := '1-Normal';
@@ -2685,6 +2704,8 @@ begin
   //
   ExibeColunasFCPST(False);
   ExibeColunasFCP(False);
+  ExibeColunaCSOSN(False); // Sandro Silva 2023-05-24
+
   {Sandro Silva 2023-05-08 inicio
   if (LimpaNumero(Edit2.Text) = '1') then
   begin
@@ -2716,7 +2737,14 @@ begin
   }
   Edit2.Text := TextoIdentificadorFinalidadeNFe(Edit2.Text);
   if (LimpaNumero(Edit2.Text) = '4') then
+  begin
     ExibeColunasFCPST(True);
+    if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+    begin
+      ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
+      ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+    end;
+  end;
   {Sandro Silva 2023-05-08 fim}
 
   //
@@ -3150,11 +3178,21 @@ begin
   Form7.ibDataSet16VFCP.Visible   := bOculta;
 end;
 
-procedure TForm12.ExibeColunasFCPST(bOculta: Boolean);
+procedure TForm12.ExibeColunasFCPST(bExibe: Boolean);
 begin
-  Form7.ibDataSet16VBCFCPST.Visible := bOculta;
-  Form7.ibDataSet16PFCPST.Visible   := bOculta;
-  Form7.ibDataSet16VFCPST.Visible   := bOculta;
+  Form7.ibDataSet16VBCFCPST.Visible := bExibe;
+  Form7.ibDataSet16PFCPST.Visible   := bExibe;
+  Form7.ibDataSet16VFCPST.Visible   := bExibe;
+end;
+
+procedure TForm12.ExibeColunaCSOSN(bExibe: Boolean);
+begin
+  Form7.ibDataSet16CSOSN.Visible    := bExibe;
+end;
+
+procedure TForm12.ExibeColunaCSTICMS(bExibe: Boolean);
+begin
+  Form7.ibDataSet16CST_ICMS.Visible := bExibe;
 end;
 
 end.

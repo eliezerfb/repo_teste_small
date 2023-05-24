@@ -32077,6 +32077,12 @@ begin
     Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
     Form7.ibDataSet15FINNFE.AsString   := '4';
     Form12.ExibeColunasFCPST(True); // Sandro Silva 2023-05-08
+    Form12.ExibeColunaCSOSN(False); // Sandro Silva 2023-05-23
+    if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-23
+    begin
+      Form12.ExibeColunaCSOSN(True); // Sandro Silva 2023-05-23
+      Form12.ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+    end;
 
     Form7.Tag := 999;
 
