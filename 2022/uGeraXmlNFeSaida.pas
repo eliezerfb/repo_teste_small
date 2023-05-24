@@ -3131,6 +3131,7 @@ begin
                         , 2)
                       )
                   ,',','.'); // Valor do ICMS ST em Reais
+
                 {Sandro Silva 2023-05-23 fim}
               end;
             end;
