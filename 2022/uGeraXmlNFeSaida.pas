@@ -1290,6 +1290,7 @@ begin
       end;
 
       // Combustíveis
+      sCodigoANP := '';// Iniciar varíavel vazia
       try
         if (copy(Form7.ibDataSet16CFOP.AsString,2,2)='65') or (copy(Form7.ibDataSet16CFOP.AsString,2,2)='66') then
         begin
@@ -1307,7 +1308,8 @@ begin
           begin
             if AllTrim(RetornaValorDaTagNoCampo('cProdANP',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) = '' then
             begin
-              if not (Form7.ibDataSet4.State in ([dsEdit, dsInsert])) then Form7.ibDataSet4.Edit;
+              if not (Form7.ibDataSet4.State in ([dsEdit, dsInsert])) then
+                Form7.ibDataSet4.Edit;
               Form7.ibDataSet4TAGS_.AsString := Form7.ibDataSet4TAGS_.AsString + chr(10) + '<cProdANP>'+sCodigoANP + '</cProdANP>';
               Form7.ibDataSet4.Post;
               Form7.ibDataSet4.Edit;

@@ -1037,6 +1037,7 @@ begin
       end;
 
       // Combustíveis
+      sCodigoANP := '';// Iniciar varíavel vazia      
       try
         if (copy(Form7.ibDAtaset23CFOP.AsString,2,2)='65') or (copy(Form7.ibDAtaset23CFOP.AsString,2,2)='66') then
         begin
