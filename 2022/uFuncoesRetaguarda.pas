@@ -3,7 +3,7 @@ unit uFuncoesRetaguarda;
 interface
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
-function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime): String;
+function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
 function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
 
@@ -37,30 +37,30 @@ begin
     ' group by CODIGO order by TOTAL desc';
 end;
 
-function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime): String;
+function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
 begin
-  Result :=
-    'select CLIENTE, sum(VTOTAL) as VTOTAL ' +
-    ' from ( ' +
-    ' select VENDAS.CLIENTE, sum(VENDAS.TOTAL) as VTOTAL ' +
-    ' from VENDAS ' +
-    ' where trim(coalesce(VENDAS.CLIENTE, '''')) <> '''' ' +
-    ' and VENDAS.EMITIDA = ''S'' ' +
-    ' and VENDAS.EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicio)) + '  and ' + QuotedStr(DateToStrInvertida(dtFinal)) +
-    ' group by VENDAS.CLIENTE ' +
-    ' union ' +
-    ' select ALTERACA.CLIFOR as CLIENTE, sum(ALTERACA.TOTAL) as VTOTAL ' +
-    ' from ALTERACA ' +
-    // Sandro Silva 2022-09-19 ' where trim(coalesce(ALTERACA.CLIFOR, '''')) <> '''' and ((ALTERACA.TIPO = ''BALCAO'') or (ALTERACA.TIPO = ''VENDA'')) and ALTERACA.DATA between ' + QuotedStr(DateToStrInvertida(dtInicio)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal)) +
-    ' left join NFCE on NFCE.NUMERONF = ALTERACA.PEDIDO and NFCE.CAIXA = ALTERACA.CAIXA ' +
-    ' where (NFCE.CAIXA is null or (NFCE.CAIXA is not null and (NFCE.STATUS containing ''autorizad'') or (NFCE.STATUS containing ''Finalizada''))  ) ' +
-    ' and trim(coalesce(ALTERACA.CLIFOR, '''')) <> '''' ' +
-    ' and ((ALTERACA.TIPO = ''BALCAO'') or (ALTERACA.TIPO = ''VENDA'')) ' +
-    ' and ALTERACA.DATA between ' + QuotedStr(DateToStrInvertida(dtInicio)) + '  and ' + QuotedStr(DateToStrInvertida(dtFinal)) +
-    ' group by ALTERACA.CLIFOR ' +
-    ') ' +
-    'group by CLIENTE ' +
-    'order by VTOTAL desc ';
+  Result := ' Select CLIENTE, sum(VTOTAL) as VTOTAL ' +
+            ' From ( ' +
+            '   Select VENDAS.CLIENTE, sum(VENDAS.TOTAL) as VTOTAL ' +
+            '   From VENDAS ' +
+            '   Where trim(coalesce(VENDAS.CLIENTE, '''')) <> '''' ' +
+            '     and VENDAS.EMITIDA = ''S'' ' +
+            '     and VENDAS.EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicio)) + '  and ' + QuotedStr(DateToStrInvertida(dtFinal)) +
+            vFiltroAddV+ //Mauricio Parizotto 2023-05-24
+            '   Group by VENDAS.CLIENTE ' +
+            '   union ' +
+            '   Select ALTERACA.CLIFOR as CLIENTE, sum(ALTERACA.TOTAL) as VTOTAL ' +
+            '   From ALTERACA ' +
+            // Sandro Silva 2022-09-19 ' where trim(coalesce(ALTERACA.CLIFOR, '''')) <> '''' and ((ALTERACA.TIPO = ''BALCAO'') or (ALTERACA.TIPO = ''VENDA'')) and ALTERACA.DATA between ' + QuotedStr(DateToStrInvertida(dtInicio)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal)) +
+            '     left join NFCE on NFCE.NUMERONF = ALTERACA.PEDIDO and NFCE.CAIXA = ALTERACA.CAIXA ' +
+            '   Where (NFCE.CAIXA is null or (NFCE.CAIXA is not null and (NFCE.STATUS containing ''autorizad'') or (NFCE.STATUS containing ''Finalizada''))  ) ' +
+            '     and trim(coalesce(ALTERACA.CLIFOR, '''')) <> '''' ' +
+            '     and ((ALTERACA.TIPO = ''BALCAO'') or (ALTERACA.TIPO = ''VENDA'')) ' +
+            '     and ALTERACA.DATA between ' + QuotedStr(DateToStrInvertida(dtInicio)) + '  and ' + QuotedStr(DateToStrInvertida(dtFinal)) +
+            '   Group by ALTERACA.CLIFOR ' +
+            ' ) ' +
+            ' Group by CLIENTE ' +
+            ' Order by VTOTAL desc ';
 end;
 
 function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;  // Ficha 6246

@@ -131,7 +131,7 @@ object Form38: TForm38
       TabOrder = 0
       OnClick = Button3Click
     end
-    object Button1: TBitBtn
+    object btnAvancar: TBitBtn
       Left = 215
       Top = 220
       Width = 100
@@ -144,7 +144,7 @@ object Form38: TForm38
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      OnClick = Button1Click
+      OnClick = btnAvancarClick
     end
     object Button2: TBitBtn
       Left = 330
@@ -204,52 +204,6 @@ object Form38: TForm38
       TabOrder = 9
       Visible = False
       OnClick = rbItemPorITemClick
-    end
-    object Panel4: TPanel
-      Left = 200
-      Top = 14
-      Width = 241
-      Height = 155
-      BevelOuter = bvNone
-      Color = clWhite
-      ParentBackground = False
-      TabOrder = 4
-      Visible = False
-      object Label8: TLabel
-        Left = 8
-        Top = 0
-        Width = 169
-        Height = 13
-        Caption = 'Selecione abaixo as opera'#231#245'es que'
-      end
-      object Label9: TLabel
-        Left = 8
-        Top = 16
-        Width = 90
-        Height = 13
-        Caption = 'devem ser listadas.'
-      end
-      object CheckListBox1: TCheckListBox
-        Left = 11
-        Top = 49
-        Width = 230
-        Height = 106
-        Hint = 'Opera'#231#245'es que devem ser listadas'
-        Ctl3D = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        IntegralHeight = True
-        ItemHeight = 13
-        ParentCtl3D = False
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-        Visible = False
-      end
     end
     object Panel3: TPanel
       Left = 200
@@ -351,7 +305,7 @@ object Form38: TForm38
         Align = alClient
         CalColors.BackColor = clWhite
         CalColors.TitleBackColor = 14456320
-        Date = 37168.877717268520000000
+        Date = 37168.349023171290000000
         ShowToday = False
         ShowTodayCircle = False
         TabOrder = 0
@@ -496,6 +450,52 @@ object Form38: TForm38
       TabOrder = 14
       Text = 'ComboBox1'
       Visible = False
+    end
+    object pnlSelOperacoes: TPanel
+      Left = 200
+      Top = 14
+      Width = 241
+      Height = 155
+      BevelOuter = bvNone
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 4
+      Visible = False
+      object Label8: TLabel
+        Left = 8
+        Top = 0
+        Width = 169
+        Height = 13
+        Caption = 'Selecione abaixo as opera'#231#245'es que'
+      end
+      object Label9: TLabel
+        Left = 8
+        Top = 16
+        Width = 90
+        Height = 13
+        Caption = 'devem ser listadas.'
+      end
+      object chkOperacoes: TCheckListBox
+        Left = 11
+        Top = 49
+        Width = 230
+        Height = 106
+        Hint = 'Opera'#231#245'es que devem ser listadas'
+        Ctl3D = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        IntegralHeight = True
+        ItemHeight = 13
+        ParentCtl3D = False
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Visible = False
+      end
     end
   end
 end
