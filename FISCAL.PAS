@@ -5146,10 +5146,20 @@ begin
 
     end;
 
-    if ValidaQtdDocumentoFiscal = False then
+    if ValidaQtdDocumentoFiscal(Form1.ibDataSet27.Transaction) = False then
     begin
-        Form1.bStatusFiscal := False;
-        Result := False;
+      Form1.bStatusFiscal := False;
+      Result := False;
+
+      SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
+                    'permitidos para esta versão do sistema'+chr(10)+
+                    'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
+                     AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
+                     AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
+                     'Código: 100 '+chr(10)+chr(10) +
+                     'Entre em contato com a Zucchetti'
+                     ),
+                     'Atenção', MB_ICONWARNING + MB_OK);
 
     end;
 

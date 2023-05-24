@@ -1896,40 +1896,56 @@ end;
 
 function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction): Boolean;
 const LimiteDocFiscal = 100;
+const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
+const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
+const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
 var
   recurso: TResourceModule;
-  iQtd: Integer;
+  iQtdEmitido: Integer;
+  iQtdPermitido: Integer;
   IBQDOC: TIBQuery;
+  dtDataServidor: TDate;
 begin
   Result := False;
+
+criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT 
+
   recurso := TResourceModule.Create(Application);
   if recurso.Inicializa then
   begin
 
-    IBQDOC := CriaIBQuery(IBTRANSACTION);
-    IBQDOC.Close;
-    IBQDOC.SQL.Text :=
-      'select count(NUMERONF) ' +
-      'from NFCE ' +
-      'where DATA between :INI and :FIM ' +
-      'and ((MODELO = ''65'' and coalesce(NFEXML) containing ''<xMotivo>Autorizad'') or (MODELO = ''59'' and coalesce(NFEXML) containing ''Id="C'') )' 
-cancelados entram na conta
-  
-    iQtd := recurso.Quantidade(rcQtdNFCE);
-    case iQtd of
-      -1, 1..LimiteDocFiscal:  Result := True;
-    end;
+    iQtdPermitido := recurso.Quantidade(rcQtdNFCE);
 
-    if iQtd > LimiteDocFiscal then
-      SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
-                    'permitidos para esta versão do sistema'+chr(10)+
-                    'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
-                     AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
-                     AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
-                     'Código: 100 '+chr(10)+chr(10) +
-                     'Entre em contato com a Zucchetti'
-                     ),
-                     'Atenção', MB_ICONWARNING + MB_OK);
+    Result := False;
+
+    if iQtdPermitido = -1 then
+    begin
+      Result := True;
+    end
+    else
+    begin
+      IBQDOC := CriaIBQuery(IBTRANSACTION);
+
+      IBQDOC.Close;
+      IBQDOC.SQL.Text := 'select current_date as DATAATUAL from rdb$database';
+      IBQDOC.Open;
+      dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
+
+      IBQDOC.Close;
+      IBQDOC.SQL.Text :=
+        'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
+        'from NFCE ' +
+        'where DATA between :INI and :FIM ' +
+        'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
+      IBQDOC.ParamByName('INI').AsString := FormatDateTime('yyyy-mm-', dtDataServidor) + '01';
+      IBQDOC.ParamByName('FIM').AsString := FormatDateTime('yyyy-mm-', dtDataServidor) + FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor)));
+      IBQDOC.Open;
+
+      iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
+
+      if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
+        Result := True;
+    end;
 
   end;
 
