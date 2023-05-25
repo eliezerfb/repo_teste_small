@@ -26,6 +26,7 @@ type
     FRecursos: TResourceModule;
     FQtdDocumentosFrente: Integer;
     FSerial: String;
+    FLimiteUsuarios: Integer;
     //function ValidaQtdDocumentoFrente: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
@@ -33,11 +34,11 @@ type
     procedure RefreshRecursos;
     function ValidaQtdDocumentoFrente: Boolean;
     function PermiteRecursoParaSerial: Boolean;
-    function LimiteUsuarios: Integer;
     property IBQTransaction: TIBTransaction read FIBTransaction write FIBTransaction;
     //property Recursos: TResourceModule read FRecursos write FRecursos;
     property QtdDocumentosFrente: Integer read FQtdDocumentosFrente write FQtdDocumentosFrente;
     property Serial: String read FSerial write FSerial;
+    property LimiteUsuarios: Integer read FLimiteUsuarios write FLimiteUsuarios;
   end;
 
 implementation
@@ -74,11 +75,6 @@ begin
   inherited;
 end;
 
-function TRecurcosDisponiveis.LimiteUsuarios: Integer;
-begin
-
-end;
-
 function TRecurcosDisponiveis.PermiteRecursoParaSerial: Boolean;
 begin
   Result := True;
@@ -90,13 +86,15 @@ procedure TRecurcosDisponiveis.RefreshRecursos;
 begin
   if FRecursos.Inicializada = False then
     FRecursos.Inicializa;
-    
+
   if FRecursos.Inicializada then
   begin
 
     // FSerial := ler do banco quando estiver usando Delphi unicode
 
     FQtdDocumentosFrente := FRecursos.Quantidade(rcQtdNFCE);
+    FSerial              := FRecursos.SerialSistema;
+    FLimiteUsuarios      := FRecursos.LimiteUsuarios;
 
   end;
 end;

@@ -19,6 +19,7 @@ uses
   , Windows
   , Dialogs
   , IBDatabase
+  , IniFiles
   , uTypesRecursos
   ;
 
@@ -28,6 +29,9 @@ type
   TResourceModule = class(TComponent)
   private
     FhDLL: THandle;
+
+    _SerialSistema: function: AnsiString; stdcall;
+    _LimiteUsuarios: function: Integer; stdcall;
     _LimiteRecurso: function(sRecurso : TRecursos): TDate; stdcall;
     _QuantidadeRecurso: function(sRecurso: TRecursos): integer; stdcall;
     FInicializada: Boolean;
@@ -39,7 +43,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Inicializa: Boolean;
-    function Limite(idRecurso: TRecursos): TDate;
+    function SerialSistema: String;
+    function LimiteUsuarios: Integer;
+    function DtLimiteUso(idRecurso: TRecursos): TDate;
     function Quantidade(idRecurso: TRecursos): Integer;
     property Inicializada: Boolean read FInicializada;
   published
@@ -74,6 +80,8 @@ begin
       begin
 
         //importando métodos dinamicamente
+        Import(@_SerialSistema, 'SerialSistema');
+        Import(@_LimiteUsuarios, 'LimiteUsuarios');
         Import(@_LimiteRecurso, 'LimiteRecurso');
         Import(@_QuantidadeRecurso, 'QuantidadeRecurso');
 
@@ -111,8 +119,10 @@ begin
 
       FhDLL := 0;
 
+      _SerialSistema     := nil;
+      _LimiteUsuarios    := nil;
       _LimiteRecurso     := nil;
-      _QuantidadeRecurso := nil;
+      _QuantidadeRecurso := nil;    
       
     except
     
@@ -144,7 +154,7 @@ begin
   FInicializada := Result;
 end;
 
-function TResourceModule.Limite(idRecurso: TRecursos): TDate;
+function TResourceModule.DtLimiteUso(idRecurso: TRecursos): TDate;
 begin
   Result := StrToDate('01/01/1900');
   try
@@ -160,6 +170,43 @@ begin
     Result := _QuantidadeRecurso(idRecurso);
   except
 
+  end;
+end;
+
+function TResourceModule.LimiteUsuarios: Integer;
+begin
+
+  try
+    Result := _LimiteUsuarios;
+  except
+    Result := 1;
+  end;
+end;
+
+function TResourceModule.SerialSistema: String;
+var
+  Ini: TIniFile;
+begin
+  try
+    Result := String(_SerialSistema);
+  except
+    on E: Exception do
+    begin
+      Result := '';
+
+      Ini := TIniFile.Create('WIND0WS.L0G');
+      try
+
+        // Versão 2020 em diante
+        if Ini.SectionExists('LICENCA') then
+          Result  := Ini.ReadString('LICENCA','Ser','');
+
+      except
+
+      end;
+      Ini.Free;
+
+    end;
   end;
 end;
 

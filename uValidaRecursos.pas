@@ -18,7 +18,9 @@ uses
   , uTypesRecursos
   ;
 
+  function SistemaSerial(IBDATABASE: TIBDatabase): String;
   function SistemaLimiteUsuarios(IBDATABASE: TIBDatabase): Integer;
+
   procedure InformacoesBD(IBDATABASE: TIBDatabase; out vRecuso, vCNPJ : string);
 
   function RecursoLiberado(IBDATABASE: TIBDatabase; sRecurso : TRecursos; out DataLimite : TDate): Boolean;
@@ -28,6 +30,44 @@ uses
   function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos): integer;
 
 implementation
+
+function SistemaSerial(IBDATABASE: TIBDatabase): String;
+var
+  vRecursosSistema : TRecursosSistema;
+  vRecuso, vCNPJ : string;
+begin
+  Result := '';
+
+  try
+    // Informações BD
+    InformacoesBD(IBDATABASE, vRecuso, vCNPJ);
+
+    //Descriptografa
+    vRecuso := SmallDecrypt(CHAVE_CIFRAR_NOVA,vRecuso);
+
+    {$Region'//// Valida Informações do Recurso ////'}
+    if Trim(vRecuso) <> '' then
+    begin
+      try
+        try
+          vRecursosSistema := TJson.JsonToObject<TRecursosSistema>(vRecuso);
+
+          //Conteudo Criptografado deve bater com dados do emitente
+          if vRecursosSistema.CNPJ <> vCNPJ then
+            Exit;
+
+          Result     := vRecursosSistema.Serial;
+        finally
+          FreeAndNil(vRecursosSistema);
+        end;
+      except
+      end;
+    end;
+    {$Endregion}
+  except
+  end;
+
+end;
 
 function SistemaLimiteUsuarios(IBDATABASE: TIBDatabase): Integer;
 var
