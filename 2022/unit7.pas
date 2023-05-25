@@ -2079,7 +2079,7 @@ type
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
-    procedure EnviarEmailCCe;
+    procedure EnviarEmailCCe(AcXML: String);
   public
 
     // Public declarations
@@ -35556,13 +35556,13 @@ begin
             Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
             Form7.ibDataSet2.Open;
 
-            EnviarEmailCCe;
-
             vXMLProt.LoadFromFile(pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml'));
 
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15CCEXML.AsString := vXMLProt.XML.Text;;
+            Form7.ibDataSet15CCEXML.AsString := vXMLProt.XML.Text;
             Form7.ibDataSet15.Post;
+
+            EnviarEmailCCe(vXMLProt.XML.Text);
 
             sRetorno := 'Carta de correção Eletrônica (Cc-e) vinculada a NF-e.';
 
@@ -41830,10 +41830,10 @@ end;
 
 procedure TForm7.EEnviarcartadecorreoporemail1Click(Sender: TObject);
 begin
-  EnviarEmailCCe;
+  EnviarEmailCCe(Form7.ibDataSet15CCEXML.AsString);
 end;
 
-procedure TForm7.EnviarEmailCCe;
+procedure TForm7.EnviarEmailCCe(AcXML: String);
 var
   cCaminhoXML: String;
   cNomeArqXML: String;
@@ -41846,7 +41846,7 @@ var
   cEmail: String;
   slXML: TStringList;
 begin
-  if Form7.ibDataSet15CCEXML.AsString = EmptyStr then
+  if AcXML = EmptyStr then
     Exit;
 
   cEmail := Form7.ibDataSet2EMAIL.AsString;
@@ -41863,7 +41863,7 @@ begin
   begin
     slXML := TStringList.Create;
     try
-      slXML.Text := Form7.ibDataSet15CCEXML.AsString;
+      slXML.Text := AcXML;
       slXML.SaveToFile(cCaminhoXML + cNomeArqXML + 'xml');
     finally
       FreeAndNil(slXML);
@@ -41874,7 +41874,7 @@ begin
     DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
 
   ConfiguraNFE(True);    
-  spdNFe.ExportarCCe(Form7.ibDataSet15CCEXML.AsString, cCaminhoPDF + cNomeArqPDF);
+  spdNFe.ExportarCCe(AcXML, cCaminhoPDF + cNomeArqPDF);
   Sleep(100);
 
   if sZiparXML = 'S' then
