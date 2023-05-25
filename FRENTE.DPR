@@ -53,7 +53,8 @@ uses
   upafnfce in 'upafnfce.pas',
   ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
   uTypesRecursos in '..\..\Small Commerce\unit_compartilhada\uTypesRecursos.pas',
-  uClasseRecursos in '..\..\Small Commerce\unit_compartilhada\uClasseRecursos.pas';
+  uClasseRecursos in '..\..\Small Commerce\unit_compartilhada\uClasseRecursos.pas',
+  uClasseValidaRecursos in '..\..\Small Commerce\unit_compartilhada\uClasseValidaRecursos.pas';
 
 {$R *.RES}
 

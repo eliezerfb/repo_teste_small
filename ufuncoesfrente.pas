@@ -33,7 +33,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , DBClient
   , uconstantes_chaves_privadas
   ;
-                     
+
 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'; // Sandro Silva 2021-07-28 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'MENU FISCAL INACESSÍVEL NESTA TELA';
 const CHAVE_PUBLICA = 'DF9F4DC6AF517A889BCE1181DEF8394455DBCD19768E8C785D9121E8DB9B9B104E5231EE8F8299D24451465178D3FC41D40DAFAF9C855824393FC964C747'+
                       '5C3993104443E8E73333D93C24E5D46B27D9A4DF5E6F0B05490B6C6829CEFA1030294DABC29E498A0F6096E8CE26B407B2E1B4939FDE6174EC1621BB3E988D29742D';
@@ -266,7 +266,7 @@ var
 
 implementation
 
-uses StrUtils, uTypesRecursos, uClasseRecursos;
+uses StrUtils, uClasseValidaRecursos;//, uTypesRecursos, uClasseRecursos;
 
 //////////////////////////////
 {$IFDEF VER150}
@@ -1895,6 +1895,7 @@ begin
 end;
 
 function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction): Boolean;
+{
 const LimiteDocFiscal = 100;
 const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
 const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
@@ -1905,10 +1906,23 @@ var
   iQtdPermitido: Integer;
   IBQDOC: TIBQuery;
   dtDataServidor: TDate;
+}
+var
+  Recurso: TRecurcosDisponiveis;
 begin
   Result := False;
-
-criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT 
+  try
+    Recurso := TRecurcosDisponiveis.Create(Application);
+    Recurso.IBQTransaction := IBTRANSACTION;
+    Recurso.RefreshRecursos;
+    Result := Recurso.ValidaQtdDocumentoFrente;
+  except
+  end;
+  if Recurso <> nil then
+    FreeAndNil(Recurso);
+  {
+  Result := False;
+//criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT
 
   recurso := TResourceModule.Create(Application);
   if recurso.Inicializa then
@@ -1951,7 +1965,7 @@ criar unit com objeto para amazenar as permissões e recursos, já executar os SQL
 
   if Recurso <> nil then
    recurso.Free;
-
+  }
 end;
 
 
