@@ -32081,7 +32081,7 @@ begin
     if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-23
     begin
       Form12.ExibeColunaCSOSN(True); // Sandro Silva 2023-05-23
-      Form12.ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+      Form12.ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //Form12.ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
     end;
 
     Form7.Tag := 999;
