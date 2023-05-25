@@ -7598,7 +7598,7 @@ var
   F : TextFile;
   sSerieS, sSerial, sLicenca  : String;
   Mais1Ini: TIniFile;
-  I, J, iR : Integer;
+  I, J, iLimiteUsuariosSimultaneos : Integer;
   url, IP, Alias : String;
   bCargaNova : Boolean;
   Hora, Min, Seg, cent : Word;
@@ -7613,7 +7613,10 @@ begin
   //
   Form22.Inicio := Time;
   //
-  if sLicenca = '' then iR := 2 else iR := 12;
+  if sLicenca = '' then
+    iLimiteUsuariosSimultaneos := 2
+  else
+    iLimiteUsuariosSimultaneos := 12;
   //
   Mais1ini := TIniFile.Create('WIND0WS.L0G');
 
@@ -7627,7 +7630,7 @@ begin
 
   // Versão 2020 em diante
   if Mais1Ini.SectionExists('LICENCA') then
-    sSerial  := Mais1Ini.ReadString('LICENCA','Ser',''); 
+    sSerial  := Mais1Ini.ReadString('LICENCA','Ser','');
 
   Form1.sSerialSmall     := sSerial; // Sandro Silva 2020-09-29
   Form1.sChaveMeiCifrada := Mais1Ini.ReadString('LICENCA','MEI',''); // Sandro Silva 2020-09-29
@@ -7715,23 +7718,23 @@ begin
   end else
   begin
     //
-    iR := 2;
+    iLimiteUsuariosSimultaneos := 2;
     //
-    if Copy(sSerial,4,1) = 'F' then iR := 2;
-    if Copy(sSerial,4,1) = 'E' then iR := 7;
-    if Copy(sSerial,4,1) = 'D' then iR := 12;
-    if Copy(sSerial,4,1) = 'C' then iR := 2;
-    if Copy(sSerial,4,1) = 'B' then iR := 7;
-    if Copy(sSerial,4,1) = 'A' then iR := 12;
-    if Copy(sSerial,4,1) = 'W' then iR := 24;
-    if Copy(sSerial,4,1) = 'S' then iR := 2;
+    if Copy(sSerial,4,1) = 'F' then iLimiteUsuariosSimultaneos := 2;
+    if Copy(sSerial,4,1) = 'E' then iLimiteUsuariosSimultaneos := 7;
+    if Copy(sSerial,4,1) = 'D' then iLimiteUsuariosSimultaneos := 12;
+    if Copy(sSerial,4,1) = 'C' then iLimiteUsuariosSimultaneos := 2;
+    if Copy(sSerial,4,1) = 'B' then iLimiteUsuariosSimultaneos := 7;
+    if Copy(sSerial,4,1) = 'A' then iLimiteUsuariosSimultaneos := 12;
+    if Copy(sSerial,4,1) = 'W' then iLimiteUsuariosSimultaneos := 24;
+    if Copy(sSerial,4,1) = 'S' then iLimiteUsuariosSimultaneos := 2;
 
-    if Copy(sSerial,4,1) = 'N' then iR := 12; // 12 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'O' then iR := 07; // 07 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'P' then iR := 02; // 02 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'Q' then iR := 12; // 12 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'R' then iR := 07; // 07 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'M' then iR := 02; // 02 Usuários Small Mei
+    if Copy(sSerial,4,1) = 'N' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei + OS
+    if Copy(sSerial,4,1) = 'O' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei + OS
+    if Copy(sSerial,4,1) = 'P' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei + OS
+    if Copy(sSerial,4,1) = 'Q' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei
+    if Copy(sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
+    if Copy(sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
 
     {Sandro Silva 2021-12-29 inicio
     //
@@ -7767,7 +7770,7 @@ begin
 
     {Sandro Silva 2021-12-29 fim}
     //
-    Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iR))+' usuários';
+    Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
     //
     I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
 
@@ -7867,7 +7870,7 @@ begin
   //
   Screen.Cursor := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
-  Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iR))+' usuários';
+  Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
   Form22.Label6.Width   := Screen.Width;
   //                                     //
   // Cria os arquivos no diretório atual //
@@ -8622,9 +8625,9 @@ begin
   //
   //  SmallMsg('Neste momento '+IntToStr(Form7.IBDatabaseInfo1.UserNames.Count)+' usuários estão usando o sistema.');
   //
-  if J > iR then
+  if J > iLimiteUsuariosSimultaneos then
   begin
-    SmallMsg('Este sistema está licenciado somente para '+IntToStr(iR)+' usuários'+Chr(10)+
+    SmallMsg('Este sistema está licenciado somente para '+IntToStr(iLimiteUsuariosSimultaneos)+' usuários'+Chr(10)+
              'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
              'Você pode adquirir licenças de uso adicionais acessando'+Chr(10)+// Sandro Silva 2022-12-02 Unochapeco 'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
              'smallsoft.com.br'); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
