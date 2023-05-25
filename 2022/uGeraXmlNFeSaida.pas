@@ -1585,7 +1585,8 @@ begin
       vCOFINS := vCOFINS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vCOFINS_S11').AsString,',',''),'.',',')),2);
 
       // totalizador da nota complementar
-      if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
+      // Sandro Silva 2023-05-25 if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
+      if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then // Complementar
       begin
         Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
@@ -1635,6 +1636,15 @@ begin
         begin
           Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := FormatFloatXML(Form7.ibDataSet16VICMS.AsFloat);     // Valor do ICMS em Reais
         end;
+
+        {Sandro Silva 2023-05-25 inicio}
+        // Se no código acima pICMS_N16 ficou zerado, descobre o valor a partir de vICMS_N17 dividido por vBC_N15
+        if FormatXMLToFloat(Form7.spdNFeDataSets.Campo('pICMS_N16').Value) = 0.00 then
+        begin
+          if (FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMS_N17').Value) > 0.00) and (FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vBC_N15').Value) > 0.00) then
+            Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML((FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMS_N17').Value) / FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vBC_N15').Value)) * 100); // Descobre o percentual de ICMS
+        end;
+        {Sandro Silva 2023-05-28 fim}
 
         if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') then
         begin
@@ -2545,9 +2555,12 @@ begin
         sComplemento := sComplemento + 'Trib aprox R$: ';
       end;
 
-      if fTotaldeTriubutos <> 0 then sComplemento := sComplemento + Alltrim(FormatFloat('##0.00', fTotaldeTriubutos )) + ' Federal ';
-      if fTotaldeTriubutos_uf <> 0 then sComplemento := sComplemento + Alltrim(FormatFloat('##0.00', fTotaldeTriubutos_uf )) + ' Estadual ';
-      if fTotaldeTriubutos_muni <> 0 then sComplemento := sComplemento + Alltrim(FormatFloat('##0.00', fTotaldeTriubutos_muni )) + ' Municipal ';
+      if fTotaldeTriubutos <> 0 then
+        sComplemento := sComplemento + Alltrim(FormatFloat('##0.00', fTotaldeTriubutos )) + ' Federal ';
+      if fTotaldeTriubutos_uf <> 0 then
+        sComplemento := sComplemento + Alltrim(FormatFloat('##0.00', fTotaldeTriubutos_uf )) + ' Estadual ';
+      if fTotaldeTriubutos_muni <> 0 then
+        sComplemento := sComplemento + Alltrim(FormatFloat('##0.00', fTotaldeTriubutos_muni )) + ' Municipal ';
 
       if fTotaldeTriubutos + fTotaldeTriubutos_uf + fTotaldeTriubutos_muni <> 0 then
       begin

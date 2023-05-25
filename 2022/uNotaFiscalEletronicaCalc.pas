@@ -217,6 +217,14 @@ begin
         NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda(oItem.Vbcst,2);
         NotaFiscal.Pesoliqui  := NotaFiscal.Pesoliqui  + oItem.Peso * oItem.Quantidade;
         NotaFiscal.VFCPST     := NotaFiscal.VFCPST     + Arredonda(oItem.VFCPST,2);
+        {Sandro Silva 2023-05-25 inicio}
+        //if oItem.Icm = 0.00 then
+        //begin
+          if (oItem.Vicms > 0.00) and (oItem.Vbc > 0.00) then
+            oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 2);  // Descobre o percentual de ICMS
+        //end;
+        {Sandro Silva 2023-05-25 fim}
+
       end;
     end;
   end else
