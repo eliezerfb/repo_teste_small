@@ -9272,6 +9272,9 @@ begin
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
+    Form39.CheckBox7.Visible := False;
+    Form39.CheckBox8.Visible := False;
+
     //
     Form39.Height := 80;
   end;
@@ -34156,6 +34159,8 @@ begin
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
+    Form39.CheckBox7.Visible := False;
+    Form39.CheckBox8.Visible := False;
     //
     Form39.Height := 80;
     //
@@ -34969,6 +34974,9 @@ begin
   Form39.CheckBox3.Visible := False;
   Form39.CheckBox4.Visible := False;
   Form39.CheckBox5.Visible := False;
+  Form39.CheckBox6.Visible := False;
+  Form39.CheckBox7.Visible := False;
+  Form39.CheckBox8.Visible := False;
   {Mauricio Parizotto 2023-05-24 Fim}
 
   if Form7.sModulo = 'ESTOQUE' then
@@ -34987,9 +34995,9 @@ begin
     Form39.CheckBox1.Visible := True;
     Form39.CheckBox2.Visible := True;
     Form39.CheckBox3.Visible := True;
-    Form39.CheckBox4.Visible := False;
-    Form39.CheckBox5.Visible := False;
-    Form39.CheckBox6.Visible := False;
+    //Form39.CheckBox4.Visible := False;
+    //Form39.CheckBox5.Visible := False;
+    //Form39.CheckBox6.Visible := False;
     Form39.Height := 80;
 
     Form39.Show;
@@ -35367,47 +35375,45 @@ procedure TForm7.Cardpio1Click(Sender: TObject);
 begin
   if Form7.sModulo = 'ESTOQUE' then
   begin
-    //
     Form7.Caption := 'Cardápio';
-    //
+
     Form39.CheckBox1.Visible := False;
     Form39.CheckBox2.Visible := False;
     Form39.CheckBox3.Visible := False;
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
-    //
+    Form39.CheckBox7.Visible := False;
+    Form39.CheckBox8.Visible := False;
+
     Form39.Height := 80;
-    //
   end;
-  //
+
   Form9.Show;
   Form14.Caption := 'Assistente para cardápio';
   Form14.Show;
-  //
 end;
 
 procedure TForm7.Livrodereceitas1Click(Sender: TObject);
 begin
-  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
-    //
     Form7.Caption := 'Receitas';
-    //
+
     Form39.CheckBox1.Visible := False;
     Form39.CheckBox2.Visible := False;
     Form39.CheckBox3.Visible := False;
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
-    //
+    Form39.CheckBox7.Visible := False;
+    Form39.CheckBox8.Visible := False;
+
     Form39.Height := 80;
-    //
   end;
-  //
+
   Form9.Show;
-  //
+
   if Form7.Livrodereceitas1.Caption = 'Relatório de composição...' then
   begin
     Form14.Caption := 'Relatório de composição';
@@ -35415,9 +35421,8 @@ begin
   begin
     Form14.Caption := 'Livro de receitas';
   end;
-  //
+  
   Form14.Show;
-  //
 end;
 
 procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
