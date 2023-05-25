@@ -4194,7 +4194,10 @@ begin
     end;
 
     // CSOSN 500
-    if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') then
+    // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') then
+    if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') or
+     ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '500') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
+     then
     begin
       if Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '1' then
       begin
@@ -4228,7 +4231,10 @@ begin
 
     // CSOSN 900
     // NOTA DEVOLUCAO D E V
-    if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
+    // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
+    if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900')
+     or ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
+     then
     begin
       // 900 – Outros – Classificam-se neste código as demais operações que não se enquadrem nos códigos 101, 102, 103, 201, 202, 203, 300, 400 e 500.
       //
@@ -4567,13 +4573,14 @@ begin
 
         if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') then
         begin
-//                            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := '0.00'; // Valor da Base de Cálculo do FCP retido anteriormente por ST
-//                            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
-//                            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
+          //                            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := '0.00'; // Valor da Base de Cálculo do FCP retido anteriormente por ST
+          //                            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
+          //                            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
         end;
 
         // NOTA DEVOLUCAO D E V
-        if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
+        // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
+        if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') then
         begin
           try
             // fPercentualFCPST
