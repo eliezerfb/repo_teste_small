@@ -32,6 +32,8 @@ type
     destructor Destroy; override;
     procedure RefreshRecursos;
     function ValidaQtdDocumentoFrente: Boolean;
+    function PermiteRecursoParaSerial: Boolean;
+    function LimiteUsuarios: Integer;
     property IBQTransaction: TIBTransaction read FIBTransaction write FIBTransaction;
     //property Recursos: TResourceModule read FRecursos write FRecursos;
     property QtdDocumentosFrente: Integer read FQtdDocumentosFrente write FQtdDocumentosFrente;
@@ -70,6 +72,18 @@ destructor TRecurcosDisponiveis.Destroy;
 begin
   FreeAndNil(FRecursos);
   inherited;
+end;
+
+function TRecurcosDisponiveis.LimiteUsuarios: Integer;
+begin
+
+end;
+
+function TRecurcosDisponiveis.PermiteRecursoParaSerial: Boolean;
+begin
+  Result := True;
+  if Copy(FSerial, 4, 1) = 'T' then
+    Result := False;
 end;
 
 procedure TRecurcosDisponiveis.RefreshRecursos;
