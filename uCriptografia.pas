@@ -3,11 +3,18 @@ unit uCriptografia;
 interface
 
 uses
+(*
     {$IF CompilerVersion >= 17.0}
       System.SysUtils
     {$ELSE}
       SysUtils
     {$IFEND}
+*)
+  {$IFDEF VER150}
+      SysUtils  
+  {$ELSE}
+      System.SysUtils  
+  {$ENDIF}
   , LbCipher
   , LbClass;
 

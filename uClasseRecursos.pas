@@ -30,6 +30,7 @@ type
     FhDLL: THandle;
     _LimiteRecurso: function(sRecurso : TRecursos): TDate; stdcall;
     _QuantidadeRecurso: function(sRecurso: TRecursos): integer; stdcall;
+    FInicializada: Boolean;
     function CarregaDLL: Boolean;
     procedure Import(var Proc: pointer; Name: PAnsiChar);
     procedure Desinicializa;
@@ -40,6 +41,7 @@ type
     function Inicializa: Boolean;
     function Limite(idRecurso: TRecursos): TDate;
     function Quantidade(idRecurso: TRecursos): Integer;
+    property Inicializada: Boolean read FInicializada;
   published
 
   end;
@@ -139,6 +141,7 @@ end;
 function TResourceModule.Inicializa: Boolean;
 begin
   Result := CarregaDLL;
+  FInicializada := Result;
 end;
 
 function TResourceModule.Limite(idRecurso: TRecursos): TDate;
