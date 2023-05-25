@@ -1736,7 +1736,7 @@ uses
   , uconstantes_chaves_privadas
   , urequisitospafnfce
   , upafnfce // Sandro Silva 2022-09-23
-  , ucredencialtecnospeed;
+  , ucredencialtecnospeed, uClasseValidaRecursos;
 
 {$R *.DFM}
 
@@ -5146,7 +5146,7 @@ begin
 
     end;
 
-    if ValidaQtdDocumentoFiscal(Form1.ibDataSet27.Transaction) = False then
+    if ValidaQtdDocumentoFiscal(Form1.ibDataSet27.Transaction, Recursos) = False then
     begin
       Form1.bStatusFiscal := False;
       Result := False;
@@ -7632,6 +7632,9 @@ begin
   if Mais1Ini.SectionExists('LICENCA') then
     sSerial  := Mais1Ini.ReadString('LICENCA','Ser','');
 
+
+  sSerial := SerialSistema(Recursos); // Sandro Silva 2023-05-25
+
   Form1.sSerialSmall     := sSerial; // Sandro Silva 2020-09-29
   Form1.sChaveMeiCifrada := Mais1Ini.ReadString('LICENCA','MEI',''); // Sandro Silva 2020-09-29
   //
@@ -7718,6 +7721,7 @@ begin
   end else
   begin
     //
+    {Sandro Silva 2023-05-25 inicio
     iLimiteUsuariosSimultaneos := 2;
     //
     if Copy(sSerial,4,1) = 'F' then iLimiteUsuariosSimultaneos := 2;
@@ -7735,6 +7739,10 @@ begin
     if Copy(sSerial,4,1) = 'Q' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei
     if Copy(sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
     if Copy(sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
+    }
+    iLimiteUsuariosSimultaneos := Recursos.LimiteUsuarios;
+    {Sandro Silva 2023-05-25 fim}
+
 
     {Sandro Silva 2021-12-29 inicio
     //
@@ -7829,6 +7837,7 @@ begin
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('Q'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 12 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('R'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 07 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Mei
+     or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('T'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 01 Usuário Small Go
        )
     // Sandro Silva 2022-11-30 and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 13) // Maior ou igual a S13. Segurança para evitar uso de serial muito antigo
         and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 14) // Maior ou igual a S14. Segurança para evitar uso de serial muito antigo
@@ -9363,6 +9372,11 @@ begin
   if Aplicacao = nil then
     Aplicacao := TMyApplication.Create(Application);
 
+  {Sandro Silva 2023-05-25 inicio}
+  if Recursos = nil then
+    Recursos := TRecurcosDisponiveis.Create(Application);
+  {Sandro Silva 2023-05-25 fim}
+
   //DadosTransacaoPOSElginPay := TTransacaoPOSElginPay.Create; // Sandro Silva 2022-02-10
   PosElginPay := TSmallElginPayPos.Create(Form1); // Sandro Silva 2022-02-11
 
@@ -9977,6 +9991,11 @@ begin
   //
   try
     AbreArquivos(True);
+
+    if Recursos = nil then
+      Recursos := TRecurcosDisponiveis.Create(Application);
+      Recursos.IBQTransaction := Form1.ibDataSet27.Transaction;
+
 
     {Sandro Silva 2022-11-04 inicio}
     // --------------- //

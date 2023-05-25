@@ -32,6 +32,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , ExtCtrls
   , DBClient
   , uconstantes_chaves_privadas
+  , uClasseValidaRecursos
   ;
 
 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'; // Sandro Silva 2021-07-28 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'MENU FISCAL INACESSÍVEL NESTA TELA';
@@ -256,17 +257,21 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
-function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction): Boolean;
+function SerialSistema(Recursos: TRecurcosDisponiveis): String;
+function LimiteUsuarios(Recursos: TRecurcosDisponiveis): Integer;
+function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction;
+  Recursos: TRecurcosDisponiveis): Boolean;
 
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
   Aplicacao: TMyApplication;
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
+  Recursos: TRecurcosDisponiveis;
 
 implementation
 
-uses StrUtils, uClasseValidaRecursos;//, uTypesRecursos, uClasseRecursos;
+uses StrUtils;//, uTypesRecursos, uClasseRecursos;
 
 //////////////////////////////
 {$IFDEF VER150}
@@ -1894,7 +1899,28 @@ begin
     Result := False;
 end;
 
-function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction): Boolean;
+function SerialSistema(Recursos: TRecurcosDisponiveis): String;
+begin
+  Result := '';
+  try
+    Recursos.RefreshRecursos;
+    Result := Recursos.Serial;
+  except
+  end;
+end;
+
+function LimiteUsuarios(Recursos: TRecurcosDisponiveis): Integer;
+begin
+  Result := 1;
+  try
+    Recursos.RefreshRecursos;
+    Result := Recursos.LimiteUsuarios;
+  except
+  end;
+end;
+
+function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction;
+  Recursos: TRecurcosDisponiveis): Boolean;
 {
 const LimiteDocFiscal = 100;
 const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
@@ -1907,19 +1933,19 @@ var
   IBQDOC: TIBQuery;
   dtDataServidor: TDate;
 }
-var
-  Recurso: TRecurcosDisponiveis;
+//var
+//  Recurso: TRecurcosDisponiveis;
 begin
   Result := False;
   try
-    Recurso := TRecurcosDisponiveis.Create(Application);
-    Recurso.IBQTransaction := IBTRANSACTION;
-    Recurso.RefreshRecursos;
-    Result := Recurso.ValidaQtdDocumentoFrente;
+   // Recurso := TRecurcosDisponiveis.Create(Application);
+    //Recurso.IBQTransaction := IBTRANSACTION;
+    Recursos.RefreshRecursos;
+    Result := Recursos.ValidaQtdDocumentoFrente;
   except
   end;
-  if Recurso <> nil then
-    FreeAndNil(Recurso);
+  //if Recurso <> nil then
+  //  FreeAndNil(Recurso);
   {
   Result := False;
 //criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT
