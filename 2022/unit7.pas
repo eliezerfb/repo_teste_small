@@ -12090,8 +12090,9 @@ begin
               sOrderBy := ''
             end else
             begin
+
               //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes sOrderBy  := 'group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
-              sOrderBy  := 'group by PEDIDO, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
+              sOrderBy  := 'group by ORCAMENTS.PEDIDO, ORCAMENTS.CLIFOR, ORCAMENTS.VENDEDOR, ORCAMENTS.NUMERONF order by ORCAMENTS.PEDIDO';
             end;
             //
             TabelaAberta.Close;
@@ -12102,6 +12103,9 @@ begin
         end;
       end;
     end;
+
+    if (sModulo = 'ORCAMENTO') then
+      TabelaAberta.FieldByName('Registro').Visible := False;
 
     if (sModulo <> 'CAIXA') and (sModulo <> 'BANCOS') then
     begin
