@@ -145,9 +145,8 @@ var
   I: Integer;
   iChecked: Integer; // Quantidade de checkbox
 begin
-  //
   bChave := False;
-  //
+
   Form9.Width := 215;
   Form9.Left  := Form1.Width - Form9.Width + Form7.Left -15;
   Form9.Top   := Form7.Top + 25;
@@ -164,19 +163,15 @@ begin
   end;
   {Sandro Silva 2023-01-04 fim}
 
-  //
   // Todos os CheckBox não visíveis
-  //
   for I := 0 to iChecked do // Sandro Silva 2023-01-04 for I := 0 to 48 do
     TcheckBox(Form9.Components[I+CheckBox1.ComponentIndex]).Visible := False;
 
-  //
   // ComponentIndex descobre qual o valor do primeiro checkbox no indice
   // Components acessa diretamente o indice do componente é possível
   // inclusive mudar o valor das suas propriedades
-  //
   Form9.Height := 5;
-  //
+
   for I := 1 to Form7.iCampos do
   begin
     try
@@ -196,15 +191,14 @@ begin
     except
     end;
   end;
-  //
+
   Form9.Height := form9.Height - 2;
   if Form9.Height < 110 then
     Form9.Height := 110;
   if Form9.Height > (Form7.Height -25) then
     Form9.Height := Form7.Height -25;
-  //
+
   bChave := True;
-  //
 end;
 
 end.

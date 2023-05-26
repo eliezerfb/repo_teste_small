@@ -624,7 +624,7 @@ var
   sContatos : String;
 implementation
 
-uses Unit7, Mais, Unit14, Unit38, Unit16, Unit12, unit24, Unit22,
+uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils, uTestaProdutoExiste,
   uITestaProdutoExiste
   {Sandro Silva 2022-09-26 inicio}

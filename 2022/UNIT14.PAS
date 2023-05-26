@@ -65,9 +65,7 @@ var
   //
   IBQCLIENTE: TIBQuery;
 begin
-  //                          //
   // Campos extras no estoque //
-  //                          //
   Button1.Enabled := False;
   iContador := 0;
   if (form7.sModulo = 'RECEBER') or (form7.sModulo = 'ESTOQUE') or (form7.sModulo = 'CLIENTES') or (form7.sModulo = 'FORNECED') then
@@ -75,9 +73,7 @@ begin
   else
     jCampos := 0;
   IBQCLIENTE := Form7.CriaIBQuery(Form7.IBDataSet2.Transaction); // Sandro Silva 2022-12-19
-  //
-  //  close;
-  //
+
   Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
   Form7.ArquivoAberto.DisableControls;
   MyBookmark := Form7.ArquivoAberto.GetBookmark;
@@ -89,17 +85,17 @@ begin
   for I := 0 to 100 do
     rTotal[I] := 0;
   sGRUPO := '';
-  //
+  
+  //Arquivo TXM
   if not Form1.bHtml1 then
   begin
-    //
     // Em arquivo
-    //
     AssignFile(F,pChar(Senhas.UsuarioPub+'.txt'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                  // Abre para gravação
     // Titulo //
     WriteLn(F,AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption));
-    WriteLn(F,' ');              // Linha em branco
+    WriteLn(F,' ');              
+
     // Cabeçalho conforme o DisplaiLabel
     sOp1 := '';
     sOp2 := '';
@@ -118,24 +114,19 @@ begin
                   Form7.ArquivoAberto.FieldByName(Form7.ArquivoAberto.Fields[I-1].FieldName).DisplayWidth
                   )+' '; // Display Labels
         end;
-
-// ------------------
       end else
       begin
          if Form7.sModulo = 'ESTOQUE' then
          begin
-           //
            // 1 Parcela
-           //
            if (I = Form7.iCampos + 1) then if Form39.CheckBox4.Checked then
            begin
              { Imprime o display Label no cabeçalho }
              sOP1 := sOp1 + Copy(Form39.CheckBox4.Caption,1,13)+' '; // Display Labels
              sOP2 := sOp2 + '------------- '; // Display Labels
            end;
-           //
+           
            // 2 Parcela
-           //
            if (I = Form7.iCampos + 2) then if Form39.CheckBox5.Checked then
            begin
              { Imprime o display Label no cabeçalho }
@@ -143,36 +134,32 @@ begin
              sOP1 := sOp1 + Copy(Form39.CheckBox5.Caption,1,13)+' '; // Display Labels
              sOP2 := sOp2 + '------------- '; // Display Labels
            end;
-           //
+
            // 3 Parcela
-           //
            if (I = Form7.iCampos + 3) then if Form39.CheckBox6.Checked then
            begin
              { Imprime o display Label no cabeçalho }
              sOP1 := sOp1 + Copy(Form39.CheckBox6.Caption,1,13)+' '; // Display Labels
              sOP2 := sOp2 + '------------- ';  // Display Labels
            end;
-           //
+
            // QTD X PRECO
-           //
            if (I = Form7.iCampos + 4) then if Form39.CheckBox1.Checked then
            begin
              { Imprime o display Label no cabeçalho }
              sOP1 := sOp1 + 'Qtd X preço   '; // Display Labels
              sOP2 := sOp2 + '------------- '; // Display Labels
            end;
-           //
+
            // QTD X CUSTO COMPRA
-           //
            if (I = Form7.iCampos + 5) then if Form39.CheckBox2.Checked then
            begin
              { Imprime o display Label no cabeçalho }
              sOP1 := sOp1 + 'Qtd X custo   '; // Display Labels
              sOP2 := sOp2 + '------------- '; // Display Labels
            end;
-           //
+
            // QTD X CUSTO MEDIO
-           //
            if (I = Form7.iCampos + 6) then if Form39.CheckBox3.Checked then
            begin
              { Imprime o display Label no cabeçalho }
@@ -180,7 +167,7 @@ begin
              sOP2 := sOp2 + '------------- '; // Display Labels
            end;
          end;
-         //
+         
          if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
          begin
            // Recebido
@@ -205,7 +192,7 @@ begin
              sOP2 := sOp2 + '------------- '; // Display Labels
            end;
          end;
-         //
+
          if (Form7.sModulo = 'RECEBER') then
          begin
            // Endereco
@@ -215,49 +202,60 @@ begin
              sOP1 := sOp1 + 'Endereço' + Replicate(' ',22)+' '; // Display Labels
              sOP2 := sOp2 + Replicate('-',30)+' '; // Display Labels
            end;
+
            // Cidade
            if (I = Form7.iCampos + 2) then if Form39.CheckBox5.Checked then
            begin
              { Imprime o display Label no cabeçalho }
-             sOP1 := sOp1 + 'Cidade' + Replicate(' ',20)+' '; // Display Labels
+             sOP1 := sOp1 + 'Cidade' + Replicate(' ',14)+' '; // Display Labels
              sOP2 := sOp2 + Replicate('-',20)+' '; // Display Labels
            end;
+
            // Telefone
            if (I = Form7.iCampos + 3) then if Form39.CheckBox6.Checked then
            begin
              { Imprime o display Label no cabeçalho }
-             sOP1 := sOp1 + 'Telefone      '; // Display Labels
+             sOP1 := sOp1 + 'Telefone         '; // Display Labels
+             sOP2 := sOp2 + Replicate('-',16)+' '; // Display Labels
+           end;
+
+           // Contato
+           if (I = Form7.iCampos + 4) then if Form39.CheckBox7.Checked then
+           begin
+             { Imprime o display Label no cabeçalho }
+             sOP1 := sOp1 + 'Contato         '; // Display Labels
              sOP2 := sOp2 + Replicate('-',15)+' '; // Display Labels
            end;
-         end;
-         //
-      end;
-// ------------------
 
+           // WhatsApp
+           if (I = Form7.iCampos + 5) then if Form39.CheckBox8.Checked then
+           begin
+             { Imprime o display Label no cabeçalho }
+             sOP1 := sOp1 + 'WhatsApp       '; // Display Labels
+             sOP2 := sOp2 + Replicate('-',16)+' '; // Display Labels
+           end;
+         end;
+      end;
     end;
-//    sOP1 := '';
-//    sOP2 := '';
+
     WriteLn(F,sOP1); // Linha de labels
     WriteLn(F,sOP2); // Linha pontilhada
     // Zeresima
     for I := 0 to 30 do fTotal[I] := 0;
-    //
+
     Form7.ArquivoAberto.First;             // Início do arquivo
     while (not Form7.ArquivoAberto.Eof) and (Form14.Caption <> 'Cancelar')  do   // Vai até o final do arquivo
     begin
-      //
       Application.ProcessMessages;
-      //
       // ----------------------------------------------------------- //
       // Calcula os valores do contas a receber se estiver abilitado //
       // ----------------------------------------------------------- //
       fRecebido := 0;
       fReceber  := 0;
       fAtrasado := 0;
-      //
-      //
+
       bImprimir := True;
-      //
+
       if Form7.sModulo = 'CLIENTES' then
         if Form7.ibDataSet2ATIVO.AsString='1' then
           bImprimir := False;
@@ -267,12 +265,10 @@ begin
       if Form7.sModulo = 'RECEBER'  then
         if Form7.ibDataSet7ATIVO.AsString='1' then
           bImprimir := False;
-      //
+      
       // Divide em grupos
-      //
       if (form7.sModulo = 'ESTOQUE')  or (Form7.Caption = 'Cardápio') then
       begin
-        //
         if pos('order by upper(NOME)',Form7.ibDataSet4.SelectSQL.Text) <> 0 then
         begin
           if sGRUPO <> Form7.ibDataSet4NOME.AsString then
@@ -283,11 +279,9 @@ begin
             sGRUPO := Form7.ibDataSet4NOME.AsString;
           end;
         end;
-        //
       end;
-      //
+
       // Divide o contas a receber por cliente
-      //
       if (form7.sModulo = 'RECEBER') then
       begin
         if pos('order by NOME',Form7.ibDataSet7.SelectSQL.Text) <> 0 then
@@ -300,24 +294,20 @@ begin
             sGRUPO := Form7.ibDataSet7NOME.AsString;
           end;
         end;
-        //
       end;
-      //
+
       if bImprimir then
       begin
-        //
-        //
         if Form7.sModulo = 'CLIENTES' then
         begin
           if (Form39.CheckBox4.Checked = True) or (Form39.CheckBox5.Checked = True) or
               (Form39.CheckBox6.Checked = True) then
           begin
-            //
             Form7.IBDataSet99.Close;
             Form7.IBDataSet99.SelectSQL.Clear;
             Form7.IBDataSet99.SelectSQL.Add('select * from RECEBER where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+'  and coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'' ');
             Form7.IBDataSet99.Open;
-            //
+
             while not Form7.ibDataSet99.Eof do
             begin
               Application.ProcessMessages;
@@ -335,8 +325,7 @@ begin
         // Calcula os valores do contas a receber se estiver abilitado //
         // ----------------------------------------------------------- //
         sOP := '';
-        //
-// ----------------------
+
         for I := 1 to Form7.iCampos  + jCampos  do
         begin
           if I <= Form7.iCampos then
@@ -345,9 +334,7 @@ begin
             begin
               if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
               begin
-                //
                 // formata o preço e a quantidade
-                //
                 sI := '2';
                 if Form7.ArquivoAberto.Fields[I-1].FieldName = 'INDEXADOR'  then sI := '4';
                 if Form7.ArquivoAberto.Fields[I-1].FieldName = 'CUSTOCOMPR' then sI := IntToStr(Length(AllTrim(Form7.ibDataSet4CUSTOCOMPR.DisplayFormat))-6);
@@ -358,7 +345,7 @@ begin
                 try
                   if StrToInt(sI) < 0 then sI := '0';
                 except sI := '0' end;
-                //
+                
                 sOp := sOP   + Format('%'+IntToStr(Form7.ArquivoAberto.Fields[I-1].DisplayWidth)+'.'+sI+'n',[Form7.ArquivoAberto.FieldByName(Form7.ArquivoAberto.Fields[I-1].FieldName).AsFloat])+ ' ';
                 if Form7.ArquivoAberto.Fields[I-1].FieldName <> 'PRECO' then fTotal[I] :=  fTotal[I] + Form7.ArquivoAberto.Fields[I-1].AsFloat;
               end else
@@ -367,12 +354,9 @@ begin
             end;
           end else
           begin
-// -----------------------------
             if Form7.sModulo = 'ESTOQUE' then
             begin
-              //
               // formata o preço e a quantidade
-              //
               sI := IntToStr(Length(AllTrim(Form7.ibDataSet4PRECO.DisplayFormat))-6);
               try
                 if StrToInt(sI) < 0 then sI := '0';
@@ -411,7 +395,7 @@ begin
                 fTotal[I] :=  fTotal[I] + Arredonda(Form7.ibDataSet4CUSTOMEDIO.AsFloat,StrToInt(form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat;
               end;
             end;
-            //
+            
             if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
             begin
               // Recebido
@@ -433,56 +417,67 @@ begin
                 fTotal[I] :=  fTotal[I] +  fAtrasado;
               end;
             end;
-            //
+
             if (Form7.sModulo = 'RECEBER') then
             begin
-              //                                           //
               // Procura pelo nome no cadastro de clientes //
-              //                                           //
-              if (Form39.CheckBox4.Checked) or (Form39.CheckBox5.Checked) or (Form39.CheckBox6.Checked) then
+              if (Form39.CheckBox4.Checked)
+                or (Form39.CheckBox5.Checked)
+                or (Form39.CheckBox6.Checked)
+                or (Form39.CheckBox7.Checked)
+                or (Form39.CheckBox8.Checked) then
               begin
-                //
                 Form7.ibDataSet2.Close;
                 Form7.ibDataSet2.Selectsql.Clear;
                 Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
                 Form7.ibDataSet2.Open;
-                //
               end;
-              //
-              // Endereço
-              //
+
               if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
               begin
+                // Endereço
                 if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
                 begin
                   sOp := sOP   + Copy(Form7.ibDataSet2ENDERE.AsString+Replicate(' ',30),1,30) + ' ';
                 end;
+
                 // Cidade
                 if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
                 begin
                   sOp := sOP   + Copy(Form7.ibDataSet2CIDADE.AsString+Replicate(' ',30),1,20) + ' ';
                 end;
+
                 // Telefone
                 if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                 begin
-                  sOp := sOP   + Copy(Form7.ibDataSet2FONE.AsString+Replicate(' ',30),1,17) + ' ';
+                  sOp := sOP   + Copy(Form7.ibDataSet2FONE.AsString+Replicate(' ',30),1,16) + ' ';
+                end;
+
+                // Contato
+                if (I = Form7.iCampos + 4) and (Form39.CheckBox7.Checked) then
+                begin
+                  sOp := sOP   + Copy(Form7.IBDataSet2CONTATO.AsString+Replicate(' ',30),1,15) + ' ';
+                end;
+
+                // WhatsApp
+                if (I = Form7.iCampos + 5) and (Form39.CheckBox8.Checked) then
+                begin
+                  sOp := sOP   + Copy(Form7.IBDataSet2WHATSAPP.AsString+Replicate(' ',30),1,16) + ' ';
                 end;
               end;
             end;
           end;
-// ------------------------------------------------
         end;
-        //
+
         WriteLn(F,sOP); // Linha de dados
-        //
       end;
-      if bImprimir then iContador := iContador + 1;
-      //
+
+      if bImprimir then
+        iContador := iContador + 1;
+
       Form7.ArquivoAberto.Next;
-      //
     end;
-// totais
-// --------------------------
+
     if (Form7.sModulo <> 'NOTA')
     and (Form7.sModulo <> 'CONFOS')
     and (Form7.sModulo <> 'CONFRECIBO')
@@ -493,7 +488,7 @@ begin
     then
     begin
       sOP    := '';
-      //
+      
       for I := 1 to Form7.iCampos  + jCampos  do
       begin
         if I <= Form7.iCampos then
@@ -526,7 +521,7 @@ begin
             if (I = Form7.iCampos + 6) and (Form39.CheckBox3.Checked) then
               if fTotal[I] <> 0 then sOP := sOP + Format('%13.2n',[fTotal[I]])  + ' ' else sOP := sOP + Replicate(' ',14);
           end;
-          //
+          
           if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
           begin
             // Recebido
@@ -539,15 +534,13 @@ begin
             if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
               if fTotal[I] <> 0 then sOP := sOP + Format('%13.2n',[fTotal[I]])  + ' ' else sOP := sOP + Replicate(' ',14);
           end;
-          //
         end;
       end;
     end else sOP := '';
-    //
+
     WriteLn(F,sOP2); // Linha tracejada
     WriteLn(F,sOP);  // Linha de totais
-// -----------------------------------------------
-    //
+
     WriteLn(F,'Número de registros: '+IntToStr(iContador));
     // Linha da data //
     WriteLn(F,Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
@@ -555,15 +548,15 @@ begin
         + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time));
     // Condição do relatório
     WriteLn(F,AllTrim(TraduzSql('Listando '+Form7.swhere+' '+Form7.sOrderBy,True)));
-    //
+
     CloseFile(F);                                    // Fecha o arquivo
     if Form14.Caption <> 'Cancelar' then
     begin
       ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'','', SW_SHOWMAXIMIZED);
     end;
-    //
   end;
-  //
+
+  //Arquivo HTML
   if Form1.bHtml1 then
   begin
     CriaJpg('logotip.jpg');
@@ -579,23 +572,17 @@ begin
     WriteLn(F,'<br>');              // Linha em branco
     WriteLn(F,'<br>');              // Linha em branco
     // Calcula a largura datamanho da ta bela
+
     // Cabeçalho conforme o DisplaiLabel
-    //
     if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Álbum de fotografias')  or (Form7.Caption = 'Cardápio') or (Form7.Caption = 'Receitas') then
     begin
-      //
       // Catálogo de produtos
-      //
       WriteLn(F,'<table border=0 cellspacing=0 cellpadding=4>');
-      //
-      //      WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-      //
     end else
     begin
-      //
       WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F,' <tr bgcolor=#' + Form1.sHtmlCor + '   align=left>');
-      //
+
       for I := 1 to Form7.iCampos + jCampos do
       begin
         if I <= Form7.iCampos then
@@ -656,7 +643,7 @@ begin
                iColunas := iColunas + 1;
              end;
            end;
-           //
+
            if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
            begin
              // Recebido
@@ -678,6 +665,7 @@ begin
                iColunas := iColunas + 1;
              end;
            end;
+
            if (Form7.sModulo = 'RECEBER') then
            begin
              // Endereço
@@ -686,93 +674,92 @@ begin
                WriteLn(F,'        <th nowrap><font face="verdana" size=2>'+ Copy(Form39.CheckBox4.Caption,1,13) +'</font></th>');
                iColunas := iColunas + 1;
              end;
+
              // Cidade
              if (I = Form7.iCampos + 2) then if Form39.CheckBox5.Checked then
              begin
                WriteLn(F,'        <th nowrap><font face="verdana" size=2>'+ Copy(Form39.CheckBox5.Caption,1,13) +'</font></th>');
                iColunas := iColunas + 1;
              end;
+
              // Telefone
              if (I = Form7.iCampos + 3) then if Form39.CheckBox6.Checked then
              begin
                WriteLn(F,'        <th nowrap><font face="verdana" size=2>'+ Copy(Form39.CheckBox6.Caption+Replicate(' ',15),1,15) +'</font></th>');
                iColunas := iColunas + 1;
              end;
+
+             // Contato
+             if (I = Form7.iCampos + 4) then if Form39.CheckBox7.Checked then
+             begin
+               WriteLn(F,'        <th nowrap><font face="verdana" size=2>'+ Copy(Form39.CheckBox7.Caption+Replicate(' ',15),1,15) +'</font></th>');
+               iColunas := iColunas + 1;
+             end;
+
+             // WhatsApp
+             if (I = Form7.iCampos + 5) then if Form39.CheckBox8.Checked then
+             begin
+               WriteLn(F,'        <th nowrap><font face="verdana" size=2>'+ Copy(Form39.CheckBox8.Caption+Replicate(' ',15),1,15) +'</font></th>');
+               iColunas := iColunas + 1;
+             end;
            end;
-           //
         end;
       end;
     end;
-    // ----------------------------
-    Form7.ArquivoAberto.First;             // Início do arquivo
+
+    // Início do arquivo
+    Form7.ArquivoAberto.First;
     while (not Form7.ArquivoAberto.Eof) and (Form14.Caption <> 'Cancelar') do   // Vai até o final do arquivo
     begin
-      //
       Application.ProcessMessages;
-      //
+
       if (Form7.Caption = 'Receitas') then
       begin
-        //
         Form7.ibDataSet99.Close;
         Form7.ibDataSet99.SelectSQL.Clear;
         Form7.IbDataSet99.SelectSQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
         Form7.IbDataSet99.Open;
-        //
       end;
-      //
+
       if (Form7.Caption = 'Receitas') and (Form7.IbDataSet99.FieldByname('CODIGO').AsString <> Form7.ibDataSet4CODIGO.AsString) then
       begin
-        //
         // Não Faz nada
-        //
         bImprimir := False;
-        //
       end else
       begin
-        //
         fRecebido := 0;
         fReceber  := 0;
         fAtrasado := 0;
-        //
+
         // Divide em grupos
-        //
         if (form7.sModulo = 'ESTOQUE')  or (Form7.Caption = 'Cardápio') or (Form7.Caption = 'Receitas') then
         begin
-          //
-          // ShowMessage('ORDER BY GRUPO'+Chr(10)+UpperCase(Form7.ibDataSet4.SelectSQL.Text));
-          //
           if pos('order by upper(NOME)',Form7.ibDataSet4.SelectSQL.Text) <> 0 then
           begin
             if sGRUPO <> Form7.ibDataSet4NOME.AsString then
             begin
-              //
               if FileExists(LimpaNome(Form7.ibDataSet4NOME.AsString)+'.BMP') then
               begin
                 WriteLn(F,'    </tr>');
                 WriteLn(F,'    <tr bgcolor=#FFFFFF>');
                 WriteLn(F,'        <td nowrap colspan='+StrZero(iColunas,3,0)+'>'+'<img src="'+LimpaNome(Form7.ibDataSet4NOME.AsString)+'.BMP'+'" alt="'+AllTrim(Form7.ibDataSet4NOME.AsString)+'">'+'<br></td>');
               end;
-              //
+
               WriteLn(F,'    </tr>');
               WriteLn(F,'    <tr bgcolor='+ Form1.sHtmlCor +'>');
               WriteLn(F,'        <td nowrap colspan='+StrZero(iColunas,3,0)+'><font face="verdana" size=2 ><b>'+AllTrim(Form7.ibDataSet4NOME.AsString)+'<br></td>');
               sGRUPO := Form7.ibDataSet4NOME.AsString;
-              //
             end;
           end;
-          //
         end;
-        //
+        
         // Divide em clientes
-        //
         if (form7.sModulo = 'RECEBER') then
         begin
-          //
           if pos('order by NOME',Form7.ibDataSet7.SelectSQL.Text) <> 0 then
           begin
             if sGRUPO <> Form7.ibDataSet7NOME.AsString then
             begin
-              //
               if sGrupo <> '' then
               begin
                 WriteLn(F,'    </tr>');
@@ -789,20 +776,19 @@ begin
                               + Format('%13.'+sI+'n',[fTotal[I]-rTotal[I]]) + '<br></font></td>')
                       else
                           WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
-                      //
+
                       rTotal[I] := fTotal[I]
-                      //
                     end;
                   end else
                   begin
-                    //
                     if (Form7.sModulo = 'RECEBER') then
                     begin
                       if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Endereço
                       if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Cidade
                       if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Telefone
+                      if (I = Form7.iCampos + 4) and (Form39.CheckBox7.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Contato
+                      if (I = Form7.iCampos + 5) and (Form39.CheckBox8.Checked) then WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // WhatsApp
                     end;
-                    //
                   end;
                 end;
               end;
@@ -812,12 +798,10 @@ begin
               sGRUPO := Form7.ibDataSet7NOME.AsString;
             end;
           end;
-          //
         end;
-        //
-        //
+
         bImprimir := True;
-        //
+
         if Form7.sModulo = 'CLIENTES' then
           if Form7.ibDataSet2ATIVO.AsString = '1' then
             bImprimir := False;
@@ -827,7 +811,7 @@ begin
         if Form7.sModulo = 'RECEBER'  then
           if Form7.ibDataSet7ATIVO.AsString = '1' then
             bImprimir := False;
-        //
+
         if bImprimir then
         begin
           if Form7.sModulo = 'CLIENTES' then
@@ -854,16 +838,15 @@ begin
               end;
             end;
           end;
+          
           // ----------------------------------------------------------- //
           // Calcula os valores do contas a receber se estiver abilitado //
           // ----------------------------------------------------------- //
           if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Álbum de fotografias') or (Form7.Caption = 'Cardápio')  or (Form7.Caption = 'Receitas') then
           begin
-            //
             WriteLn(F,'<tr bgcolor=#FFFFFF>');
             WriteLn(F,' <td vAlign=Center Height=200 Width=200>');
             begin
-              //
               if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Cardápio')  or (Form7.Caption = 'Receitas') then
               begin
                 if Form7.ibDataset4FOTO.BlobSize <> 0 then
@@ -877,10 +860,11 @@ begin
                     BlobStream.Free;
                     jp2.Free;
                   end;
-                end else Form10.Image5.Picture := Form10.Image3.Picture;
-                //
+                end else
+                  Form10.Image5.Picture := Form10.Image3.Picture;
+
                 Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg');
-                //
+
                 if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
                 begin
                   WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Width)),10,0)+'>');
@@ -888,12 +872,10 @@ begin
                 begin
                   WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Height)),10,0)+'>');
                 end;
-                //
               end;
-              //
+
               if (Form7.Caption = 'Álbum de fotografias') then
               begin
-                //
                 if Form7.ibDataset2FOTO.BlobSize <> 0 then
                 begin
                   BlobStream:= Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmRead);
@@ -906,9 +888,9 @@ begin
                     jp2.Free;
                   end;
                 end else Form10.Image5.Picture := Form10.Image3.Picture;
-                //
+
                 Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg');
-                //
+
                 if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
                 begin
                   WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet2NOME.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Width)),10,0)+'>');
@@ -916,16 +898,12 @@ begin
                 begin
                   WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet2NOME.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Height)),10,0)+'>');
                 end;
-                //
               end;
-              //
-              //
             end;
-            //
+
             WriteLn(F,' </td>');
             WriteLn(F,' <td vAlign=Center>');
-            //
-            //
+
             for I := 1 to Form7.iCampos + jCampos do
             begin
               if I <= Form7.iCampos then
@@ -934,7 +912,6 @@ begin
                 begin
                   if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
                   begin
-                    //
                     sI := '2';
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'INDEXADOR'  then sI := '4';
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'CUSTOCOMPR' then sI := IntToStr(Length(AllTrim(Form7.ibDataSet4CUSTOCOMPR.DisplayFormat))-6);
@@ -942,9 +919,8 @@ begin
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'PRECO'      then sI := IntToStr(Length(AllTrim(Form7.ibDataSet4PRECO.DisplayFormat))-6);
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'QTD_ATUAL'  then sI := IntToStr(Length(AllTrim(Form7.ibDataSet4QTD_ATUAL.DisplayFormat))-6);
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'QTD_MINIM'  then sI := IntToStr(Length(AllTrim(Form7.ibDataSet4QTD_ATUAL.DisplayFormat))-6);
-                    //
+
                     WriteLn(F,'    <font face="verdana" size=2>'+Form7.ArquivoAberto.Fields[I-1].DisplayLabel+': '+Format('%'+IntToStr(Form7.ArquivoAberto.Fields[I-1].DisplayWidth)+'.'+sI+'n',[Form7.ArquivoAberto.FieldByName(Form7.ArquivoAberto.Fields[I-1].FieldName).AsFloat])+'</font><br>');
-                    //
                   end else
                   begin
                     WriteLn(F,'    <font face="verdana" size=2>'+Form7.ArquivoAberto.Fields[I-1].DisplayLabel+': '+Form7.ArquivoAberto.Fields[I-1].AsString +'</font><br>');
@@ -952,18 +928,15 @@ begin
                 end;
               end;
             end;
-            //
+
             WriteLn(F,' </td>');
-//            WriteLn(F,'</tr>');
-            //
+
             // Ingredientes
-            //
             if (Form7.Caption = 'Receitas') then
             begin
-              //
               WriteLn(F,'  <td width=100></td>');
               WriteLn(F,'  <td>');
-              //
+
               if Form7.Livrodereceitas1.Caption = 'Relatório de composição...' then
               begin
                 WriteLn(F,'   <br><b>Composição</b><br>');
@@ -971,36 +944,30 @@ begin
               begin
                 WriteLn(F,'   <br><b>Ingredientes</b><br>');
               end;
-              //
+
               while not Form7.IBDataSet99.Eof do
               begin
                 WriteLn(F,'  <br>'+Form7.IBDataSet99.FieldByname('QUANTIDADE').AsString+'  '+Form7.IBDataSet99.FieldByname('DESCRICAO').AsString);
                 Form7.IBDataSet99.Next;
               end;
-              //
+
               WriteLn(F,' </td>');
-              //
             end;
-            //
+
             WriteLn(F,'</tr>');
-            //
           end else
           begin
-            //
             WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-            //
+
             for I := 1 to Form7.iCampos  + jCampos  do
             begin
-              //
               if I <= Form7.iCampos then
               begin
                 if Form7.ArquivoAberto.Fields[I-1].Visible = True then
                 begin
                   if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
                   begin
-                    //
                     // formata o preço e a quantidade
-                    //
                     sI := '2';
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'INDEXADOR'  then sI := '4';
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'CUSTOCOMPR' then sI := IntToStr(Length(AllTrim(Form7.ibDataSet4CUSTOCOMPR.DisplayFormat))-6);
@@ -1055,9 +1022,7 @@ begin
               begin
                 if Form7.sModulo = 'ESTOQUE' then
                 begin
-                  //
                   // formata o preço e a quantidade
-                  //
                   sI := IntToStr(Length(AllTrim(Form7.ibDataSet4PRECO.DisplayFormat))-6);
                   try
                     if StrToInt(sI) < 0 then sI := '0';
@@ -1096,7 +1061,7 @@ begin
                     fTotal[I] :=  fTotal[I] + Arredonda(Form7.ibDataSet4CUSTOMEDIO.AsFloat,StrToInt(Form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat;
                   end;
                 end;
-                //
+                
                 if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
                 begin
                   // Recebido
@@ -1121,13 +1086,22 @@ begin
                     fTotal[I] :=  fTotal[I] +  fAtrasado;
                   end;
                 end;
-                //
-                if (Form7.sModulo = 'RECEBER') and (Form39.CheckBox4.Checked or Form39.CheckBox5.Checked or Form39.CheckBox6.Checked) then
+
+                if (Form7.sModulo = 'RECEBER') and
+                  (
+                    Form39.CheckBox4.Checked
+                    or Form39.CheckBox5.Checked
+                    or Form39.CheckBox6.Checked
+                    or Form39.CheckBox7.Checked
+                    or Form39.CheckBox8.Checked
+                  ) then
                 begin
-                  //                                           //
                   // Procura pelo nome no cadastro de clientes //
-                  //                                           //
-                  if (Form39.CheckBox4.Checked) or (Form39.CheckBox5.Checked) or (Form39.CheckBox6.Checked) then
+                  if (Form39.CheckBox4.Checked)
+                    or (Form39.CheckBox5.Checked)
+                    or (Form39.CheckBox6.Checked)
+                    or (Form39.CheckBox7.Checked)
+                    or (Form39.CheckBox8.Checked) then
                   begin
                     if Form7.ibDataSet7NOME.AsString <> Form7.ibDataSet2NOME.AsString then
                     begin
@@ -1137,39 +1111,71 @@ begin
                       Form7.ibDataSet2.Open;
                     end;
                   end;
-                  // Endereço
+
                   if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
                   begin
+                    // Endereço
                     if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
                     begin
                       WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2>'
                       + Copy(Form7.ibDataSet2ENDERE.AsString + Replicate(' ',30),1,30) + '<br></font></td>');
                     end;
+
                     // Cidade
                     if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
                     begin
                       WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2>'
                       + Copy(Form7.ibDataSet2CIDADE.AsString+Replicate(' ',30),1,20) + '<br></font></td>');
                     end;
+
                     // Telefone
                     if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                     begin
                       WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2>'
                       + Copy(Form7.ibDataSet2FONE.AsString+Replicate(' ',17),1,17) + '<br></font></td>');
                     end;
+
+                    // Contato
+                    if (I = Form7.iCampos + 3) and (Form39.CheckBox7.Checked) then
+                    begin
+                      WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2>'
+                      + Copy(Form7.IBDataSet2CONTATO.AsString+Replicate(' ',17),1,17) + '<br></font></td>');
+                    end;
+
+                    // WhatsApp
+                    if (I = Form7.iCampos + 3) and (Form39.CheckBox8.Checked) then
+                    begin
+                      WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2>'
+                      + Copy(Form7.IBDataSet2WHATSAPP.AsString+Replicate(' ',17),1,17) + '<br></font></td>');
+                    end;
                   end else
                   begin
+                    // Endereço
                     if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
                     begin
                       WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2><br></font></td>');
                     end;
+
                     // Cidade
                     if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
                     begin
                       WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2><br></font></td>');
                     end;
+
                     // Telefone
                     if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
+                    begin
+                      WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2><br></font></td>');
+                    end;
+
+                    // Contato
+                    if (I = Form7.iCampos + 4) and (Form39.CheckBox7.Checked) then
+                    begin
+                      WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2><br></font></td>');
+                    end;
+
+                    // WhatsApp
+                    if (I = Form7.iCampos + 5) and (Form39.CheckBox8.Checked) then
                     begin
                       WriteLn(F,'        <td nowrap align=Left><font face="verdana" size=2><br></font></td>');
                     end;
@@ -1178,31 +1184,26 @@ begin
               end;
             end;
           end;
-          //
         end;
       end;
-      //
+
       Form7.ArquivoAberto.Next;
       if bImprimir then iContador := iContador + 1;
-      //
     end;
-    //
+
     if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Álbum de fotografias') or (Form7.Caption = 'Cardápio')  or (Form7.Caption = 'Receitas') then
     begin
       // Catálogo de produtos
     end else
     begin
-      //
       WriteLn(F,'    </tr>');
       // -------------------------- //
       // totais                     //
       // -------------------------- //
-      //
+
       // totaliza contas a receber quando esta somando por cliente
-      //
       if (form7.sModulo = 'RECEBER') then
       begin
-        //
         if pos('order by NOME',Form7.ibDataSet7.SelectSQL.Text) <> 0 then
         begin
           WriteLn(F,'    </tr>');
@@ -1219,28 +1220,26 @@ begin
                         + Format('%13.'+sI+'n',[fTotal[I]-rTotal[I]]) + '<br></font></td>')
                 else
                     WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
-                //
+
                 rTotal[I] := fTotal[I]
-                //
               end;
             end;
           end;
         end;
       end;
-      //
+
       // totaliza contas a receber quando esta somando por cliente
-      //
       if (Form7.sModulo <> 'NOTA')
-      and (Form7.sModulo <> 'CONFOS')
-      and (Form7.sModulo <> 'CONFRECIBO')
-      and (Form7.Caption <> 'Lista de preços')
-      and (Form7.sModulo <> 'VENDEDOR')
+        and (Form7.sModulo <> 'CONFOS')
+        and (Form7.sModulo <> 'CONFRECIBO')
+        and (Form7.Caption <> 'Lista de preços')
+        and (Form7.sModulo <> 'VENDEDOR')
       then
       begin
         WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
         sOP  := '';
         sI   := '2';
-        //
+
         for I := 1 to Form7.iCampos  + jCampos  do
         begin
           if I <= Form7.iCampos then
@@ -1289,7 +1288,7 @@ begin
                   WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
             end;
-            //
+
             if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
             begin
               // Recebido
@@ -1308,7 +1307,7 @@ begin
                   WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
             end;
-            //
+
             if (Form7.sModulo = 'RECEBER') then
             begin
               if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
@@ -1317,13 +1316,16 @@ begin
                 WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Cidade
               if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                 WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Telefone
+              if (I = Form7.iCampos + 4) and (Form39.CheckBox7.Checked) then
+                WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Contato
+              if (I = Form7.iCampos + 5) and (Form39.CheckBox8.Checked) then
+                WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // WhatsApp
             end;
-            //
           end;
         end;
       end;
     end;
-    //
+
     WriteLn(F,'</table>');
     // Linha da data //
     WriteLn(F,'<br><font face="verdana" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
@@ -1344,32 +1346,27 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-    //
-    if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
-    //
+
+    if not Form1.bPDF then
+      WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
+
     WriteLn(F,'</center>');
     WriteLn(F,'</html>');
     CloseFile(F);                                    // Fecha o arquivo
-    //
   end;
-// ----------------------------
 
   if IBQCLIENTE <> nil then
     FreeAndNil(IBQCLIENTE);
 
-  //
   Screen.Cursor   := crDefault;    // Cursor de Aguardo
   Form7.ArquivoAberto.GotoBookmark(MyBookmark);
   Form7.ArquivoAberto.EnableControls;
   Close;
-  //
+
   if Form14.Caption <> 'Cancelar' then
   begin
-    //
     AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
-    //
   end;
-  //
 end;
 
 procedure TForm14.Button3Click(Sender: TObject);
@@ -1380,28 +1377,24 @@ end;
 
 procedure TForm14.FormActivate(Sender: TObject);
 begin
-  //
   Form14.Image2.Picture := Form7.Image205.Picture;
   Button1.Enabled := True;
   Form14.Caption := 'Assistente de relatórios';
   Form14.Left := Screen.Width - Form14.Width - Form9.Width -12;
   Form14.Top  := Form7.Top + 25;
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then Image1.Picture.LoadFromFile('LOGOTIP.BMP') else Image1.Picture := Form1.Image1.Picture;
-  //
 end;
 
 procedure TForm14.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  //
   if Form7.Caption = 'Lista de preços' then Form7.Caption := 'Controle de estoque';
   if Form7.Caption = 'Catálogo de produtos' then Form7.Caption := 'Controle de estoque';
   if Form7.Caption = 'Cardápio' then Form7.Caption := 'Controle de estoque';
   if Form7.Caption = 'Receitas' then Form7.Caption := 'Controle de estoque';
   if Form7.Caption = 'Álbum de fotografias' then Form7.Caption := 'Cadastro de clientes e fornecedores';
-  //
+
   Form9.Close;
   Form39.Close;
-  //
 end;
 
 
