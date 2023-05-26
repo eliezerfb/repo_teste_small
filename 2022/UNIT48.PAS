@@ -187,7 +187,7 @@ begin
       Form7.ibDataSet16.First;
       while not Form7.ibDataSet16.EOF do // Disable
       begin
-        Form1.bflag := True;
+        Form1.bFlag := True; 
         Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
         Form7.ibDataSet16.Next;
       end;

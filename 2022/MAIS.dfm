@@ -1,7 +1,7 @@
 object Form1: TForm1
   Tag = 99
-  Left = 185
-  Top = 82
+  Left = 452
+  Top = 164
   Hint = 'Small Commerce'
   HelpContext = 1
   HorzScrollBar.Visible = False
@@ -6150,6 +6150,7 @@ object Form1: TForm1
     Width = 33
     Height = 25
     TabOrder = 4
+    OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
       4C00000069030000950200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -13709,6 +13710,10 @@ object Form1: TForm1
         object ZiparXMLnoenvioporemail1: TMenuItem
           Caption = 'Zipar XML ao enviar por e-mail'
           OnClick = ZiparXMLnoenvioporemail1Click
+        end
+        object Mensagemparaenviodeemail1: TMenuItem
+          Caption = 'Mensagem para envio de e-mail'
+          OnClick = Mensagemparaenviodeemail1Click
         end
         object Enviardanfeporemail1: TMenuItem
           Caption = 'Enviar DANFE por e-mail'

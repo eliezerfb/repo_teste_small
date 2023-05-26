@@ -73,6 +73,8 @@ uses
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
   uClientesFornecedores in 'uClientesFornecedores.pas',
   uFazerBackup in 'uFazerBackup.pas',
+  uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas',
+  uNotaFiscalEletronicaCalc in 'uNotaFiscalEletronicaCalc.pas',
   uImportaNFe in 'uImportaNFe.pas',
   uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
@@ -84,11 +86,18 @@ uses
   uITestaEmail in 'interfaces\uITestaEmail.pas',
   uTestaEmail in 'units\uTestaEmail.pas',
   uIItensInativosImpXMLEntrada in 'interfaces\uIItensInativosImpXMLEntrada.pas',
-  uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',  
+  uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
   uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
   uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
-  uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas';
+  uFrmTermosUso in 'uFrmTermosUso.pas' {FrmTermosUso},
+  uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas',
+  uCriptografia in '..\..\unit_compartilhada\uCriptografia.pas',
+  uITextoEmail in 'interfaces\uITextoEmail.pas',
+  uTextoEmailNFe in 'units\uTextoEmailNFe.pas',
+  uSmallResourceString in '..\Commons\uSmallResourceString.pas',
+  uITextoEmailFactory in 'interfaces\uITextoEmailFactory.pas',
+  uTextoEmailFactory in 'units\uTextoEmailFactory.pas';
 
 {$R *.RES}
 

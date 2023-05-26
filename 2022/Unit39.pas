@@ -8,7 +8,7 @@ uses
 
 type
   TForm39 = class(TForm)
-    Panel1: TPanel;
+    Panel10: TPanel;
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
     CheckBox6: TCheckBox;
@@ -18,6 +18,8 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    CheckBox7: TCheckBox;
+    CheckBox8: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -46,6 +48,9 @@ begin
   CheckBox4.Checked := False;
   CheckBox5.Checked := False;
   CheckBox6.Checked := False;
+  CheckBox7.Checked := False;
+  CheckBox8.Checked := False;
+
   Form39.Width := 180;
   Form39.Left  := Form14.Left + Form14.Width - Form39.Width;
   Form39.Top   := Form14.Top  + Form14.Height + 2;
