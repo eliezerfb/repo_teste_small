@@ -54,6 +54,8 @@ type
     Label25: TLabel;
     ComboBox1: TComboBox;
     cbListarCodigos: TCheckBox;
+    btnMarcarTodos: TBitBtn;
+    btnDesmarcarTodos: TBitBtn;
     procedure btnAvancarClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -65,6 +67,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure rbItemPorITemClick(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
+    procedure btnMarcarTodosClick(Sender: TObject);
+    procedure btnDesmarcarTodosClick(Sender: TObject);
   private
     function StrToFloatFormat(sFormato: String; Valor: Real): Real;
     procedure DefinirEnabledListarCodigo;
@@ -3741,9 +3745,26 @@ begin
     WriteLn(F,'   </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
 
+    {Mauricio Parizotto 2023-05-26 Inicio}
+    // Filtros ativos
+    WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+    WriteLn(F,'    <tr bgcolor=#FFFFFF align=left>');
+    WriteLn(F,'     <td><P><font face="Microsoft Sans Serif" size=1><b>Operações listadas:</b><br>');
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+      if chkOperacoes.Checked[I] then
+          Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(chkOperacoes.Items[I]));
+
+    Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+'Vendas por ECF, NFC-e ou SAT');
+    WriteLn(F,'');
+    Writeln(F,'      </td><br>');
+    WriteLn(F,'     </td>');
+    WriteLn(F,'    </table>');
+    {Mauricio Parizotto 2023-05-26 Fim}
+
     // Filtros ativos
     WriteLn(F,'<br><font size=1>'+TraduzSql('Listando '+Form7.swhere+' '+Form7.sOrderBy,True)+'</font>');
     WriteLn(F,'</center>');
+
   end else
   begin
     WriteLn(F,'');
@@ -5490,6 +5511,26 @@ begin
   end;
 end;
 
+
+procedure TForm38.btnMarcarTodosClick(Sender: TObject);
+var
+  i : integer;
+begin
+  for i := 0 to chkOperacoes.Items.Count -1 do
+  begin
+    chkOperacoes.Checked[i] := True;
+  end;
+end;
+
+procedure TForm38.btnDesmarcarTodosClick(Sender: TObject);
+var
+  i : integer;
+begin
+  for i := 0 to chkOperacoes.Items.Count -1 do
+  begin
+    chkOperacoes.Checked[i] := False;
+  end;
+end;
 
 end.
 

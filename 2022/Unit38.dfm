@@ -305,7 +305,7 @@ object Form38: TForm38
         Align = alClient
         CalColors.BackColor = clWhite
         CalColors.TitleBackColor = 14456320
-        Date = 37168.349023171290000000
+        Date = 37168.659512800930000000
         ShowToday = False
         ShowTodayCircle = False
         TabOrder = 0
@@ -455,7 +455,7 @@ object Form38: TForm38
       Left = 200
       Top = 14
       Width = 241
-      Height = 155
+      Height = 187
       BevelOuter = bvNone
       Color = clWhite
       ParentBackground = False
@@ -495,6 +495,36 @@ object Form38: TForm38
         ShowHint = True
         TabOrder = 0
         Visible = False
+      end
+      object btnMarcarTodos: TBitBtn
+        Left = 11
+        Top = 158
+        Width = 94
+        Height = 23
+        Caption = 'Marcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        OnClick = btnMarcarTodosClick
+      end
+      object btnDesmarcarTodos: TBitBtn
+        Left = 110
+        Top = 158
+        Width = 94
+        Height = 23
+        Caption = 'Desmarcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = btnDesmarcarTodosClick
       end
     end
   end
