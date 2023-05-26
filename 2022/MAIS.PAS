@@ -431,7 +431,6 @@ type
     function getPropaganda: String;
 
   public
-
     fDias : Real;
     sSerial, sMei, sModeloPAF , sNomePAF : String;
     dtStatusMonitorAberto: TDateTime;
@@ -471,6 +470,7 @@ type
     bMKP : Boolean;
 
     { Public declarations }
+    procedure RegistrodoPrograma(InfTermo: boolean);
     procedure WMUser (var msg: TMessage); message wm_User;
     function AvisoNFECompra(bP1 : Boolean):Boolean;
     function AvisoOS(bP1 : Boolean):Boolean;
@@ -515,7 +515,10 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
   uFazerBackup,
-  uRetornaBuildEXE, uCriptografia;
+  uRetornaBuildEXE
+  , uCriptografia
+  , uFrmTermosUso
+  , uSmallConsts;
 
 {$R *.DFM}
 
@@ -3134,8 +3137,9 @@ begin
             if Form1.CanFocus then Form1.SetFocus;
           end;
         except end;
-        
-        Form1.RegistrodoProgramaonline1Click(Form1);
+
+        //Form1.RegistrodoProgramaonline1Click(Form1); Mauricio Parizotto 2023-05-15
+        Form1.RegistrodoPrograma(False);
 
         for I := 1 to 10 do
         begin
@@ -4494,7 +4498,9 @@ begin
     Instalarpackcomasltimasalteraes1Click(Sender);
     // Form1.DestroyWindowHandle;
     Application.Terminate;
-    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+    Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
   //
@@ -5095,9 +5101,7 @@ begin
           //
           Form22.Repaint;
           Mensagem22('Atualizando valores no contas a receber...');
-          //
-//          Form1.RegistrodoProgramaonline1Click(Sender);
-          //
+
           if Form19.RadioButton1.Checked then
           begin
             try
@@ -7990,128 +7994,12 @@ begin
 end;
 
 procedure TForm1.RegistrodoProgramaonline1Click(Sender: TObject);
-var
-  sNFCE :String;
 begin
-  sPublicCheck := GeraCheck;
-
-  try
-    try
-      Form7.ibQuery1.Close;
-      Form7.ibQuery1.Sql.Clear;
-      Form7.ibQuery1.Sql.Add('select count(REGISTRO) from NFCE');
-      Form7.ibQuery1.Open;
-      //
-      sNFCE := Form7.ibQuery1.FieldByname('COUNT').AsString;
-    except
-    end;
-
-    begin
-      //
-     {
-     Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php'+
-                                    '?serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                    '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                    '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                    '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                    '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                    '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                    '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                    '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                    '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                    '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                    '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                    '&nfce='      + sNFCE +
-                                    '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                    '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                    '&conve='     + sConve  +
-                                    '&origem='    + sOrigem +
-                                    '&Check='     + Form1.sPublicCheck +
-                                    '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
-                                    //'&retorno=json'
-                                    );
-      }
-      if ValidacaoNova = False then
-      begin
-        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
-                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                      '&nfce='      + sNFCE +
-                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                      '&conve='     + sConve  +
-                                      '&origem='    + sOrigem +
-                                      '&Check='     + Form1.sPublicCheck +
-                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
-                                      );
-
-        {
-        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal2.php'+
-                                      '?serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                      '&nfce='      + sNFCE +
-                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                      '&conve='     + sConve  +
-                                      '&origem='    + sOrigem +
-                                      '&Check='     + Form1.sPublicCheck +
-                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
-                                      );
-        }
-      end else
-      begin
-        //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
-        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
-                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                      '&nfce='      + sNFCE +
-                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                      '&conve='     + sConve  +
-                                      '&origem='    + sOrigem +
-                                      '&Check='     + Form1.sPublicCheck +
-                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
-                                      //+ '&retorno=json'
-                                      );
-
-      end;
-    end;
-  except
-  end;
-
-  Screen.Cursor             := crDefault;
+  RegistrodoPrograma(False);
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
 var
-//  bFechaOPrograma : Boolean;
   sTag, sValor : String;
   I, J, iSenha : Integer;
   Mais1Ini: TIniFile;
@@ -8119,18 +8007,19 @@ var
   Retangulo : tRect;
   wndHandle : THandle;
   wndClass  : array[0..50] of char;
+  InfTermo : Boolean;
 begin
-  //
+  //Termos de Uso - Deve ficar no inicio antes de criar o arquivo smallcom.inf
+  InfTermo := GetTermoUso;
+
   try
-    //
     Mais1ini        := TIniFile.Create('FRENTE.INI');
     sModeloPAF      := Mais1Ini.ReadString('Frente de caixa','Modelo do ECF','02');
     sNomePAF        := Mais1Ini.ReadString('Frente de caixa','Nome do ECF','02');
     Mais1ini.Free;
-    //
+
     if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') or (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) ) then
     begin
-      //
       ShowMessage('Não foi possível iniciar o sistema'+chr(10)+
       chr(10)+
       chr(10)+'Verifique:'+
@@ -8141,47 +8030,43 @@ begin
       chr(10)+
       chr(10)+'       '+sAtual+
       chr(10));
-      //
+
       if (not FileExists(Form1.sAtual+'\graficos.exe')) then ShowMessage('O arquivo GRAFICOS.EXE não foi encontrado na pasta.');
       if (not FileExists(Form1.sAtual+'\retaguarda.chm')) then ShowMessage('O arquivo RETAGUARDA.CHM não foi encontrado na pasta.');
       if (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) then ShowMessage('O arquivo \inicial\small_22_.bmp não foi encontrado.');
-      //
+
       Form1.Instalarpackcomasltimasalteraes1Click(Instalarpackcomasltimasalteraes1);
-      //
+
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      //
     end;
-    //
+
     try
       if StrToInt(Copy(WinVersion,1,3))>=6 then iVista := 5 else iVista := 0;
       StrPCopy(@wndClass[0], 'Shell_TrayWnd');
       wndHandle:=FindWindow(@wndClass[0],nil);
       GetWindowRect(wndHandle,Retangulo);
     except end;
-    //
+
     // cópia Automatica
-    //
     try
-      //
       Mais1ini                     := TIniFile.Create('FRENTE.INI');
       Form1.sModeloDocumentoFiscal := Mais1Ini.ReadString('Frente de caixa'  , 'Modelo do ECF'           ,'01');
       Mais1ini.Free;
-      //
+
       Mais1ini           := TIniFile.Create(sAtual+'\smallcom.inf');
       if Mais1Ini.ReadString('Outros','CFOP Que Nao Soma Mercadoria','XXXX') = 'XXXX' then Mais1Ini.WriteString('Outros','CFOP Que Nao Soma Mercadoria','(CFOP='+QuotedStr('5124')+' or CFOP='+QuotedStr('6124')+' or CFOP='+QuotedStr('6125')+' or CFOP='+QuotedStr('5125')+')');
       CFOP5124           := Mais1Ini.ReadString('Outros','CFOP Que Nao Soma Mercadoria','');
-      //
+
       //    CFOP5124           := '';
-      //
       Form1.fAliqICMdoCliente := Mais1Ini.ReadFloat('Outros','ICMSSTInterno',0);
-      //
+
       CopiaSair          := Mais1Ini.ReadString('Cópia','Sair','9');
       ConfAceitaCGCDuplo := Mais1Ini.ReadString('Outros','Aceita CGC','Não');
       ConfCFOP           := Mais1Ini.ReadString('Outros','CFOP','5102');
-      //
+
       ConfItens      := 16;
       ConfSvc        := 16;
-      //
+
       ConfDupl1      := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
       ConfDupl2      := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
       ConfDupl3      := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','21');
@@ -8191,18 +8076,17 @@ begin
       ConfCusto      := Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim');
       ConfDuplo      := Mais1Ini.ReadString('Permitir','Duplos','Não');
       ConfNegat      := Mais1Ini.ReadString('Permitir','Estoque negativo','Sim');
-      //
+
       ConfFoto    := Mais1Ini.ReadString('Mobile','Fotos','Sim');
       //
       ConfLimite  := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 1.000,00'),'R$ ',''),'.',''),'.',''),'.',''));
       ConfIR      := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %'),' %',''),'.',''),'.',''),'.',''));
-      //
+
       if ConfItens < 3 then Form1.ConfItens := 3;
       if ConfLimite < 0 then ConfLimite := 10.000;
       fTaxa := StrToFloat(LimpaNumeroDeixandoAVirgula(Mais1Ini.ReadString('Outros','Taxa de juros','0')));
-      //
+
       // Casas Decimais
-      //
       ConfPreco := Mais1Ini.ReadString('Outros','Casas decimais no preço','2');
       if ConfPreco = '0' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0';
       if ConfPreco = '1' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.0';
@@ -8214,10 +8098,10 @@ begin
       if ConfPreco = '7' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.0000000';
       if ConfPreco = '8' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.00000000';
       if ConfPreco = '9' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.000000000';
-      //
+
       ConfCasas      := Mais1Ini.ReadString('Outros','Casas decimais na quantidade','2');
       ConfCasasServ  := Mais1Ini.ReadString('Outros','Casas decimais na quantidade de serviços','0');
-      //
+
       if ConfCasas = '0' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0';
       if ConfCasas = '1' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0';
       if ConfCasas = '2' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00';
@@ -8228,7 +8112,7 @@ begin
       if ConfCasas = '7' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0000000';
       if ConfCasas = '8' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00000000';
       if ConfCasas = '9' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000000000';
-      //
+
       Form7.ibDataSet4QTD_ATUAL.EditFormat      := copy(Form7.ibDataSet4QTD_ATUAL.DisplayFormat,3,10);
       Form7.ibDataSet4PRECO.EditFormat          := copy(Form7.ibDataSet4PRECO.DisplayFormat,3,10);
       Form7.ibDataSet16QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
@@ -8237,36 +8121,33 @@ begin
       Form7.ibDataSet16UNITARIO.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
       Form7.ibDataSet16TOTAL.EditFormat         := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet16TOTAL.DisplayFormat      := Form7.ibDataSet4PRECO.DisplayFormat;
-      //
+
       Form7.ibDataSet4CUSTOCOMPR.DisplayFormat  := Form7.ibDataSet4PRECO.DisplayFormat;
       Form7.ibDataSet4CUSTOCOMPR.EditFormat     := Form7.ibDataSet4PRECO.EditFormat;
-      //
+
       Form7.ibDataSet4CUSTOMEDIO.DisplayFormat  := Form7.ibDataSet4PRECO.DisplayFormat;
       Form7.ibDataSet4CUSTOMEDIO.EditFormat     := Form7.ibDataSet4PRECO.EditFormat;
-      //
+
       // Compra
-      //
       Form7.ibDataSet23QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet23QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
       Form7.ibDataSet23UNITARIO.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet23UNITARIO.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
       Form7.ibDataSet23TOTAL.EditFormat         := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet23TOTAL.DisplayFormat      := Form7.ibDataSet4PRECO.DisplayFormat;
-      //
+
       Form7.ibDataSet23UNITARIO_O.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet23UNITARIO_O.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
-      //
+
       Form7.ibDataSet23QTD_ORIGINAL.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet23QTD_ORIGINAL.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
-      //
+
       Form7.ibDataSet28QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet28QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
-      //
+
       // Servicos OS
-      //
       Form7.ibDataSet35UNITARIO.EditFormat := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet35TOTAL.DisplayFormat := Form7.ibDataSet4PRECO.EditFormat;
-      //
     except
       ShowMessage('Para solucionar o problema siga os seguintes passos:'+chr(10)
       +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
@@ -8280,39 +8161,38 @@ begin
     end;
 
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     if Senha = '' then
     begin
-      //
       iSenha := 0;
-      //
-  //    if bFechaOPrograma then Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      //
+
       while iSenha < 6 do
       begin
-        //
         Form22.Close;
         Form22.Show;
-        //
+
         Mensagem22('');
-        //
+
         Senhas.Position := poScreenCenter;
         Senhas.ShowModal;
-        //
+
         if not Form2.bFlag then
           Form1.Ajustararquivos1Click(Sender);
         
-        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,'ACESSOU O SISTEMA',0,0); // Ato, Modulo, Usuário, Histórico, Valor
-        //                                                                       
+        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,
+               'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
+                                                                .Retornar(True),
+               0,0); // Ato, Modulo, Usuário, Histórico, Valor
+                                                                       
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;
-        //
+
         Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
         Mais1Ini.UpdateFile;
         sSenhaX := Mais1Ini.ReadString(Usuario,'Chave','15706143431572013809150491382314104');
-        //
+
         sSenha := '';
         // ----------------------------- //
         // Fórmula para ler a nova senha //
@@ -8327,30 +8207,19 @@ begin
           iSenha := 6;
         end else
         begin
-          //
           iSenha := iSenha + 1;
-          //
-  //        if iSenha < 4 then
-  //        begin
-  //          ShowMessage(' '+Usuario+' esta senha é inválida.'+ chr(10)+
-  //                      ' Tente novamente digitando sua senha correta.'+ chr(10));
-  //        end;
-          //
         end;
       end;
-      //
     end;
-    //
+
     try
-      //
-      //
       Senha   := Senhas.SenhaPub;
       Usuario := Senhas.UsuarioPub;
-      //
+
       Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
       Mais1Ini.UpdateFile;
       sSenhaX := Mais1Ini.ReadString(Usuario,'Chave','15706143431572013809150491382314104');
-      //
+
       sSenha := '';
       // ----------------------------- //
       // Fórmula para ler a nova senha //
@@ -8372,11 +8241,11 @@ begin
             Mais1Ini.WriteString(Senhas.UsuarioPub,'B9','1');
           end;
         end;
-        //
+
         if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0) then Image201.Visible   := True else Image201.Visible   := False;
         if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0) then Image201C.Visible  := True else Image201C.Visible  := False;
         if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0) then Image201S.Visible  := True else Image201S.Visible  := False;
-        //
+
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B_','0'))  > 0 then Image201_.Visible := True else Image201_.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B2','0'))  > 0 then Image202.Visible  := True else Image202.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then Image203.Visible  := True else Image203.Visible := False;
@@ -8387,9 +8256,8 @@ begin
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then Image208.Visible  := True else Image208.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then Image210.Visible  := True else Image210.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then Image200.Visible  := True else Image200.Visible := False;
-        //
+
         // Indicadores
-        //
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I01','0')) > 0 then Form5.Panel1.Visible  := True else Form5.Panel1.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I02','0')) > 0 then Form5.Panel2.Visible  := True else Form5.Panel2.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I03','0')) > 0 then Form5.Panel3.Visible  := True else Form5.Panel3.Visible := False;
@@ -8414,9 +8282,8 @@ begin
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I22','0')) > 0 then Form5.Panel22.Visible  := True else Form5.Panel22.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I23','0')) > 0 then Form5.Panel23.Visible  := True else Form5.Panel23.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I24','0')) > 0 then Form5.Panel24.Visible  := True else Form5.Panel24.Visible := False;
-        //
+
         // Ordem de apresentaçao dos indicadores
-        //
         Form5.Panel1.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I01ORDEM','0'));
         Form5.Panel2.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I02ORDEM','0'));
         Form5.Panel3.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I03ORDEM','0'));
@@ -8441,14 +8308,12 @@ begin
         Form5.Panel22.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I22ORDEM','0'));
         Form5.Panel23.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I23ORDEM','0'));
         Form5.Panel24.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I24ORDEM','0'));
-        //
+
         // E Importante fazer na ordem certa ai o taborder acerta
-        //
         J := 0;
-        //
+
         for I := 23 downto 0 do
         begin
-          //
           if Form5.Panel1.Tag  = I then if Form5.Panel1.Visible  then Form5.Panel1.TabOrder  := 0;
           if Form5.Panel2.Tag  = I then if Form5.Panel2.Visible  then Form5.Panel2.TabOrder  := 0;
           if Form5.Panel3.Tag  = I then if Form5.Panel3.Visible  then Form5.Panel3.TabOrder  := 0;
@@ -8473,7 +8338,6 @@ begin
           if Form5.Panel22.Tag = I then if Form5.Panel22.Visible then Form5.Panel22.TabOrder := 0;
           if Form5.Panel23.Tag = I then if Form5.Panel23.Visible then Form5.Panel23.TabOrder := 0;
           if Form5.Panel24.Tag = I then if Form5.Panel24.Visible then Form5.Panel24.TabOrder := 0;
-          //
         end;
         // ---------- //
         // Configura //
@@ -8487,13 +8351,11 @@ begin
           Form1.Image207.Visible          := True;
         end else
         begin
-          //
           Form1.Image207.OnClick          := Form1.Image207Click;
           Form1.Label207.OnClick          := Form1.Image207Click;
           Form1.Label_bola_config.OnClick := Form1.Label_Bola_ConfigClick;
-          //
         end;
-        //
+
         Form7.Label208.Caption  := 'Liberar';
         //
         if Pos('Ordem de Serviço',Form22.sTitulo) = 0 then
@@ -8502,7 +8364,7 @@ begin
         begin
           Image201_.Visible := False;
         end;
-        //
+
         if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99')  then
         begin
           if (Form7.ibDataSet13ESTADO.AsString = 'TO') then // or (Form7.ibDataSet13ESTADO.AsString = 'SC') then
@@ -8510,31 +8372,18 @@ begin
             Image201_.Visible := False; // Sem OS
           end;
         end;
-        //
+
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0  then bNotaVendaLiberada   := True  else bNotaVendaLiberada  := False; // Venda
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0  then bNotaCompraLiberada  := True else bNotaCompraLiberada  := False; // compra
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0  then bNotaServicoLiberada := True else bNotaServicoLiberada := False; // compra
 
-        //
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0')) > 0  then bClientesLiberados := True else bClientesLiberados := False; // Clientes
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','0')) > 0  then bFornecedoresLiberados := True else bFornecedoresLiberados := False; // Fornecedores
-        //
+
         Form7.Exibir1.Visible := True;
         Form7.Mostrartodososclientesefornecedores1.Visible := True;
         Form7.N10.Visible := True;
-        //
-//        if Image200.Visible  then Label200.Visible  := False  else Label200.Visible   := False;
-//        if Image201.Visible  then Label201.Visible  := False  else Label201.Visible   := False;
-//        if Image201_.Visible then Label201_.Visible := False  else Label201_.Visible  := False;
-//        if Image202.Visible  then Label202.Visible  := False  else Label202.Visible   := False;
-//        if Image203.Visible  then Label203.Visible  := False  else Label203.Visible   := False;
-//        if Image204.Visible  then Label204.Visible  := False  else Label204.Visible   := False;
-//        if Image205.Visible  then Label205.Visible  := False  else Label205.Visible   := False;
-//        if Image206.Visible  then Label206.Visible  := False  else Label206.Visible   := False;
-//        if Image207.Visible  then Label207.Visible  := False  else Label207.Visible   := False;
-//        if Image208.Visible  then Label208.Visible  := False  else Label208.Visible   := False;
-//        if Image210.Visible  then Label210.Visible  := False  else Label210.Visible   := False;
-        //
+
         Label200.Visible   := False;
         Label201.Visible   := False;
         Label201C.Visible  := False;
@@ -8548,7 +8397,7 @@ begin
         Label207.Visible   := False;
         Label208.Visible   := False;
         Label210.Visible   := False;
-        //
+
         if Form5.Panel1.Visible
         or Form5.Panel2.Visible
         or Form5.Panel3.Visible
@@ -8565,7 +8414,7 @@ begin
         or Form5.Panel14.Visible
         or Form5.Panel15.Visible
         or Form5.Panel16.Visible then Form5.Tag := 1 else Form5.Tag := 0;
-        //
+
         if not Form1.bNotaVendaLiberada then
         begin
           Form7.Gerarnotafiscalsrie11.Enabled := False;
@@ -8575,21 +8424,18 @@ begin
           Form7.Gerarnotafiscalsrie11.Enabled := True;
           Form7.Gerarnotafiscalsrie21.Enabled := True;
         end;
-        //
       end else
       begin
-        //
         if Senha = '#####' then
         begin
           // Form1.DestroyWindowHandle;
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
         end else
         begin
-          //
           { Quando a senha não é válida }
           //
           Audita('SENHA','SMALL', Senhas.UsuarioPub,'SENHA INVÁLIDA: '+Senha,0,0); // Ato, Modulo, Usuário, Histórico, Valor
-          //
+
           Form1.ShowHint := True;
           Form1.Hint := chr(10)+
                          ' '+Usuario+chr(10)+chr(10)+
@@ -8604,16 +8450,14 @@ begin
                       ' Entre novamente no programa digitando'+ chr(10)+
                       ' a sua senha correta.'+ chr(10));
 
-  //        // Form1.DestroyWindowHandle;
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
         end;
       end;
-      //
+
       Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
       Mais1Ini.WriteString(AllTrim(Usuario),'Ativo','Sim');
       Mais1Ini.UpdateFile;
       Mais1Ini.Free;
-      //
     except
       ShowMessage('Para solucionar o problema siga os seguintes passos:'+chr(10)
       +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
@@ -8623,26 +8467,24 @@ begin
       // Form1.DestroyWindowHandle;
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
-    //
+
     MontaTela(True);
-    //
+    
     Form8.Width          := 310;
     Form8.Top            := Form1.Top + Form1.Height + 1 + (iVista*2);
     Form8.Left           := Screen.Width - 310 - (iVista);
     Form8.Height         := 120;
-    //
+
     // Para atender o PAF
-    //
     if ParamCount > 0 then
     begin
       if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
       begin
-  //      Form1.Top := 0 - Form1.Height - 5;
         Form1.Image201Click(Form1.Image201);
         Form7.Image101Click(Form7.Image201);
       end;
     end;
-    //
+    
     if (Copy(Form7.ibDataSet13CNAE.AsString,1,2) = '56') or // Restaurantes e similares
        (Form7.ibDataSet13CNAE.AsString = '4721101') or      // Padarias
        (Form7.ibDataSet13CNAE.AsString = '4721102') then
@@ -8659,52 +8501,41 @@ begin
       Form7.Livrodereceitas1.Visible      := True;
       Form7.Livrodereceitas1.Caption      := 'Relatório de composição...';
     end;
-    //
+
     // LEGAL
-    //
     try
       if Form7.ibDataSet39.Active then
       begin
         if FileExists(Form1.sAtual+'\leia-me.txt') then
         begin
-          Form1.RegistrodoProgramaonline1Click(Sender);
+          //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
+          RegistrodoPrograma(InfTermo);
           ValidaRazaoSmall; // Corrige o nome da small no arquio arquivoauxiliarcriptografadopafecfsmallsoft.ini de LTDA para EIRELI
         end;
       end;
     except end;
-    //
+
     // LEGAL
-    //
-    //  tInicio := Time;
-    //
     try
       if Form7.ibDataSet39.Active then
       begin
-        //
         // Verificar se é mei aqui
-        //
-        // if StrToInt(Copy(TimeToStr(Time),7,2)) > 58 then
-        //
         begin
-          Form1.RegistrodoProgramaonline1Click(Sender);
+          //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
+          RegistrodoPrograma(InfTermo);
         end;
       end;
     except end;
-    //
+
     // NF-e
-    //
     if Image201.Visible  then
     begin
       if not form2.Visible then
       begin
-        //
         ConfiguraNFE(True);
-        //
+
         if Form1.bConsultarNFesEmitidas then
         begin
-          //
-          // ShowMessage('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString);
-          //
           Mensagem22('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString);
           Form7.ConsultarNFesemitidasparameuCNPJ1Click(Form7.MenuItem1);
           AvisoNFECompra(True);
@@ -8713,106 +8544,94 @@ begin
         end;
       end;
     end;
-    //
+
     // OS
-    //
     if Image201_.Visible  then
     begin
       Mensagem22('Consultando OS agendadas para hoje');
       AvisoOS(True);
       Mensagem22('');
     end;
-    //
+
     // CLIFOR
-    //
     if Image203.Visible  then
     begin
       Mensagem22('Consultando agendamentos no cadastro');
       AvisoClifor(True);
       Mensagem22('');
     end;
-    //
+
     // CAIXA
-    //
     if Image205.Visible  then
     begin
       Mensagem22('Consultando pendências no caixa');
       AvisoCaixa(True);
       Mensagem22('');
     end;
-    //
+
     // BANCO
-    //
     if Image206.Visible  then
     begin
       Mensagem22('Consultando pendências no banco');
       AvisoBanco(True);
       Mensagem22('');
     end;
-    //
+
     // Receber
-    //
     if Image204.Visible  then
     begin
       Mensagem22('Consultando contas a receber para hoje');
       AvisoReceber(True);
       Mensagem22('');
     end;
-    //
+
     // Estoque
-    //
     if Image202.Visible  then
     begin
       Mensagem22('Consultando produtos com quantidade minima no estoque');
       AvisoEstoque(True);
       Mensagem22('');
     end;
-    //
+
     // PAGAR
-    //
     if Image210.Visible  then
     begin
       Mensagem22('Consultando contas a pagar para hoje');
       AvisoPagar(True);
       Mensagem22('');
     end;
-    //
+
     // INDICADORES
-    //
     if Image200.Visible  then
     begin
       Mensagem22('Consultando indicadores');
       AvisoIndicadores(True);
       Mensagem22('');
     end;
-    //
+
     // CONFIG
-    //
     if Image210.Visible  then
     begin
       Mensagem22('Consultando suas configurações');
       AvisoConfig(True);
       Mensagem22('');
     end;
-    //
+
     if Form7.ibDataSet4.Tag = IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO then // Sandro Silva 2022-09-12 if Form7.ibDataSet4.Tag = 999 then
     begin
-      //
       Form7.ibDataset4.Close;
       Form7.ibDataset4.SelectSql.Clear;
       Form7.ibDataset4.SelectSql.Add('select * from ESTOQUE');
       Form7.ibDataset4.Open;
-      //
+
       Form7.ibDataSet4.DisableControls;
-      //
+      
       while not Form7.ibDataset4.Eof do
       begin
-        //
         for I := 1 to 30 do
         begin
           if pos('<',Form7.ibDataset4OBS.AsString) <> 0 then
           begin
-            //
             try
               sTag   := Copy(Form7.ibDataset4OBS.AsString,(pos('<',Form7.ibDataset4OBS.AsString)+1), (pos('>',Form7.ibDataset4OBS.AsString)-(pos('<',Form7.ibDataset4OBS.AsString)+1)));
               sValor := Copy(Form7.ibDataset4OBS.AsString,Pos('<' + sTag + '>', Form7.ibDataset4OBS.AsString) + Length('<' + sTag + '>'),(Pos('</', Form7.ibDataset4OBS.AsString)-(Pos('<' + sTag + '>', Form7.ibDataset4OBS.AsString)+Length('<' + sTag + '>'))));
@@ -8821,12 +8640,10 @@ begin
               Form7.ibDataset4OBS.AsString := StrTran(Form7.ibDataset4OBS.AsString,('<' + sTag + '>' + sValor +  '</' + sTag + '>'),'');
               Form7.ibDataset4.Post;
             except end;
-            //
           end;
         end;
-        //
+
         // cProdANP
-        //
         if (Length(LimpaNumero(Form7.ibDataset4LIVRE1.AsString)) = 9) and (Length(AllTrim(Form7.ibDataset4LIVRE1.AsString)) = 9) then
         begin
           try
@@ -8836,9 +8653,8 @@ begin
             Form7.ibDataset4.Post;
           except end;
         end;
-        //
+
         // vUnid
-        //
         if (Copy(Form7.ibDataSet4LIVRE3.AsString,1,7) = '<vUnid=') then // Pereti trib ipi por valor unitário engarafados bebidas
         begin
           try
@@ -8848,7 +8664,7 @@ begin
             Form7.ibDataset4.Post;
           except end;
         end;
-        //
+
         if Pos('VAL',Form7.ibDataSet4OBS.AsString) <> 0 then
         begin
           if LimpaNumero(Copy(Form7.ibDataSet4OBS.AsString,Pos('VAL',Form7.ibDataSet4OBS.AsString)+3,3)) <> '' then
@@ -8861,32 +8677,23 @@ begin
             except end;
           end;
         end;
-        //
+
         Form7.ibDataset4.Next;
-        //
       end;
-      //
+
       Form7.ibDataSet4.EnableControls;
-      //
     end;
-    //
+
     Screen.Cursor := crDefault; // Cursor
     Form22.Close;
-    //
-    //
-    // ------- //
-    // The end //
-    // ------- //
   except
-
   end;
-  //
+
   if Form1.Tag = 99 then
   begin
     Form7.EnvioaoFISCOREDUOZ1Click(Sender);
     Form1.Tag := 0;
   end;
-  //
 end;
 
 procedure TForm1.Edit200DblClick(Sender: TObject);
@@ -12698,6 +12505,111 @@ begin
     ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
   except
   end;
+end;
+
+procedure TForm1.RegistrodoPrograma(InfTermo:boolean);
+var
+  sNFCE :String;
+  sTermoUso : string;
+begin
+  sPublicCheck := GeraCheck;
+
+  try
+    try
+      Form7.ibQuery1.Close;
+      Form7.ibQuery1.Sql.Clear;
+      Form7.ibQuery1.Sql.Add('select count(REGISTRO) from NFCE');
+      Form7.ibQuery1.Open;
+      //
+      sNFCE := Form7.ibQuery1.FieldByname('COUNT').AsString;
+    except
+    end;
+
+    begin
+      if ValidacaoNova = False then
+      begin
+        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
+                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                      '&nfce='      + sNFCE +
+                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                      '&conve='     + sConve  +
+                                      '&origem='    + sOrigem +
+                                      '&Check='     + Form1.sPublicCheck +
+                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
+                                      );
+
+        {
+        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal2.php'+
+                                      '?serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                      '&nfce='      + sNFCE +
+                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                      '&conve='     + sConve  +
+                                      '&origem='    + sOrigem +
+                                      '&Check='     + Form1.sPublicCheck +
+                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
+                                      );
+        }
+      end else
+      begin
+        //Mauricio Parizotto 2023-05-15
+        //Campo termo_uso_aceito no site
+        if InfTermo then
+        begin
+          sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now); 
+        end;
+
+        //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
+        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
+                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                      '&nfce='      + sNFCE +
+                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                      '&conve='     + sConve  +
+                                      '&origem='    + sOrigem +
+                                      '&Check='     + Form1.sPublicCheck +
+                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))+
+                                      sTermoUso
+                                      //+ '&retorno=json'
+                                      );
+
+      end;
+    end;
+  except
+  end;
+
+  Screen.Cursor             := crDefault;
 end;
 
 end.

@@ -90,6 +90,7 @@ uses
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
   uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
   uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
+  uFrmTermosUso in 'uFrmTermosUso.pas' {FrmTermosUso},
   uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas',
   uCriptografia in '..\..\unit_compartilhada\uCriptografia.pas',
   uITextoEmail in 'interfaces\uITextoEmail.pas',
