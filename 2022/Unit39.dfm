@@ -4,8 +4,8 @@ object Form39: TForm39
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Colunas'
-  ClientHeight = 82
-  ClientWidth = 152
+  ClientHeight = 117
+  ClientWidth = 164
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,11 +17,11 @@ object Form39: TForm39
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
+  object Panel10: TPanel
     Left = 0
     Top = 0
-    Width = 152
-    Height = 82
+    Width = 164
+    Height = 117
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
@@ -142,6 +142,36 @@ object Form39: TForm39
       Font.Style = []
       ParentFont = False
       TabOrder = 5
+      Visible = False
+    end
+    object CheckBox7: TCheckBox
+      Left = 10
+      Top = 70
+      Width = 120
+      Height = 17
+      Caption = '4'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
+      Visible = False
+    end
+    object CheckBox8: TCheckBox
+      Left = 10
+      Top = 90
+      Width = 120
+      Height = 17
+      Caption = '5'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 7
       Visible = False
     end
   end

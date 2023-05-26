@@ -16,7 +16,8 @@ interface
 
 uses
   SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
-  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail;
+  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes;
+
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
   function DateToStrInvertida(Data:TdateTime): String;
@@ -107,6 +108,7 @@ uses
   function DefineFusoHorario(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; sFuso: String; bHorarioVerao: Boolean): String;
   function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; bHabilita: Boolean): String;
   function ValidaEmail(AcEmail: String): Boolean;
+  function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
 
 implementation
 
@@ -2490,6 +2492,24 @@ begin
   Result := TTestaEmail.New
                        .setEmail(AcEmail)
                        .Testar;
+end;
+
+function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
+begin
+  Result := TStringList.Create;
+
+  if (Pos(AcCaracQuebra, AcTexto) <= 0) and (Trim(AcTexto) <> EmptyStr) then
+    Result.Add(AcTexto)
+  else
+  begin
+    while Pos(AcCaracQuebra, AcTexto) > 0 do
+    begin
+      Result.Add(Copy(AcTexto, 1, Pos(AcCaracQuebra, AcTexto)-Length(AcCaracQuebra)));
+      AcTexto := Copy(AcTexto, Pos(AcCaracQuebra, AcTexto) + Length(AcCaracQuebra), Length(AcTexto));
+    end;
+    if AcTexto <> EmptyStr then
+      Result.Add(AcTexto);
+  end;
 end;
 
 end.

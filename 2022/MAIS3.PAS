@@ -199,10 +199,10 @@ begin
         begin
           sSenha := '';
           Mais1Ini.WriteString(UsuarioPub,'Nome',UsuarioPub);
-          //
+
           for I := 1 to Length(Form99.Edit2.Text) do
             sSenha := sTrZero((Ord(Form99.Edit2.Text[I])*137)-I*7,5,0) +  sSenha;
-          //
+
           Mais1Ini.WriteString(UsuarioPub,'Chave',sSenha);
         end;
       end;

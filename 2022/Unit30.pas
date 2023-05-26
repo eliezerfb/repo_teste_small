@@ -785,7 +785,7 @@ end;
 
 procedure TForm30.DBGrid2KeyPress(Sender: TObject; var Key: Char);
 var
-  I : Integer;
+  I: Integer;
 begin
   //
   // Descriçao dos serviços
@@ -793,20 +793,22 @@ begin
   if DbGrid2.SelectedIndex = 0 then
   begin
     //
-    Form1.bflag := False;
+    Form1.bFlag := False;
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
     //
     for I := 0 to ListBox2.Items.Count -1 do
     begin
-      if AnsiUpperCase(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key) = AnSiUpperCase(Copy(ListBox2.Items[i],1,LenGth( AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key ))) then ListBox2.ItemIndex := I;
+      if AnsiUpperCase(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key) = AnSiUpperCase(Copy(ListBox2.Items[i],1,LenGth( AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key ))) then
+        ListBox2.ItemIndex := I;
     end;
     //
     ListBox2.Update;
     //
     if Key <> Chr(13) then
     begin
-      if not ListBox2.Visible then ListBox2.Visible := True; // Key press produtos
+      if not ListBox2.Visible then
+        ListBox2.Visible := True; // Key press produtos
     end else
     begin
 {
@@ -837,7 +839,7 @@ begin
     ListBox2.Visible  := False;
     if Key <> Chr(13) then if not Form30.dBGrid3.Visible then Form30.dBGrid3.Visible := True; // Key press serviços
     //
-    Form1.bflag := False;
+    Form1.bFlag := False;
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
     //
@@ -1273,8 +1275,10 @@ begin
             Form1.bFlag := True;
             Form7.ibDataSet16.Edit;
             if AnsiUpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString))))
-             then Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString
-               else Form7.ibDataSet16DESCRICAO.AsString := ' '+AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
+             then
+              Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString
+            else
+              Form7.ibDataSet16DESCRICAO.AsString := ' '+AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
           end;
           I := DbGrid1.SelectedIndex;
           DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
@@ -1282,7 +1286,8 @@ begin
           begin
             DbGrid1.SelectedIndex := 0;
             Form7.ibDataSet16.Next;
-            if Form7.ibDataSet16.EOF then Form7.ibDataSet16.Append;
+            if Form7.ibDataSet16.EOF then
+              Form7.ibDataSet16.Append;
           end;
         end else
         begin

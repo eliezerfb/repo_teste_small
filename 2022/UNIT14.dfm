@@ -1,6 +1,6 @@
 object Form14: TForm14
-  Left = 1507
-  Top = 136
+  Left = 718
+  Top = 139
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Assistente de relat'#243'rios'
