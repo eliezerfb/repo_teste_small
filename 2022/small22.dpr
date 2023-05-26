@@ -73,6 +73,8 @@ uses
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
   uClientesFornecedores in 'uClientesFornecedores.pas',
   uFazerBackup in 'uFazerBackup.pas',
+  uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas',
+  uNotaFiscalEletronicaCalc in 'uNotaFiscalEletronicaCalc.pas',
   uImportaNFe in 'uImportaNFe.pas',
   uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',

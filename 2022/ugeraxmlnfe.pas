@@ -80,6 +80,8 @@ var
   _file : TStringList;
 begin
   try
+    Form7.ibDataSet16.DisableControls; // Sandro Silva 2023-05-09
+    Form7.ibDataSet23.DisableControls; // Sandro Silva 2023-05-09
     Screen.Cursor            := crHourGlass;
     Form7.Panel7.Caption     := 'Verificando status do serviço...'+replicate(' ',100);
     Form7.Panel7.Repaint;
@@ -235,18 +237,24 @@ begin
 
       ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\dbug.txt'),'','', SW_SHOWMAXIMIZED);
       ShowMessage('Tecle Ok para continuar');
-      
+
       if FileExists(pChar(Form1.sAtual+'\dbug.txt')) then
       begin
         _file := TStringList.Create;
         _file.LoadFromFile(pChar(Form1.sAtual+'\dbug.txt'));
-        
+
         fNFe := _File.Text;
       end;
     end;
 
     Result := fNFe;
   finally
+    if Form7.ibDataSet16.Active then
+      Form7.ibDataSet16.First;
+    Form7.ibDataSet16.EnableControls; // Sandro Silva 2023-05-09
+    if Form7.ibDataSet23.Active then
+      Form7.ibDataSet23.First;
+    Form7.ibDataSet23.EnableControls; // Sandro Silva 2023-05-09
   end;
 end;
 

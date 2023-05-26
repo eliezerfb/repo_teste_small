@@ -1,6 +1,6 @@
 object Form12: TForm12
-  Left = 570
-  Top = 170
+  Left = 369
+  Top = 114
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False
@@ -13,7 +13,7 @@ object Form12: TForm12
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL VENDA (SA'#205'DA)'
-  ClientHeight = 694
+  ClientHeight = 888
   ClientWidth = 1020
   Color = clWhite
   Ctl3D = False
@@ -46,7 +46,7 @@ object Form12: TForm12
     Left = 0
     Top = 0
     Width = 1020
-    Height = 694
+    Height = 888
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -1068,7 +1068,7 @@ object Form12: TForm12
       object SMALL_DBEdit8: TSMALL_DBEdit
         Left = 572
         Top = 230
-        Width = 77
+        Width = 78
         Height = 22
         Color = clWhite
         DataField = 'CEP'
@@ -1182,7 +1182,7 @@ object Form12: TForm12
       object SMALL_DBEdit13: TSMALL_DBEdit
         Left = 500
         Top = 270
-        Width = 149
+        Width = 150
         Height = 22
         Color = clWhite
         DataField = 'IE'
@@ -1757,7 +1757,7 @@ object Form12: TForm12
       object DBGrid4: TDBGrid
         Left = 10
         Top = 490
-        Width = 512
+        Width = 513
         Height = 62
         Color = clWhite
         Ctl3D = False
@@ -1856,7 +1856,7 @@ object Form12: TForm12
       object ListBox2: TListBox
         Left = 10
         Top = 551
-        Width = 512
+        Width = 513
         Height = 5
         BevelInner = bvNone
         Color = 15790320
