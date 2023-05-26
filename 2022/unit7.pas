@@ -41857,75 +41857,83 @@ begin
   cCaminhoXML := Form1.sAtual + '\XmlDestinatario\';
   cCaminhoPDF := Form1.sAtual + '\';
   cNomeArqXML := Form7.ibDAtaSet15NFEID.AsString+'-CCe.';
-  cNomeArqPDF := 'CCe.pdf';
+  cNomeArqPDF := 'CCe_NF_' + Form7.ibDataSet15NUMERONF.AsString + '.pdf';
 
-  if not FileExists(cCaminhoXML + cNomeArqXML + 'xml') then
-  begin
-    slXML := TStringList.Create;
-    try
-      slXML.Text := AcXML;
-      slXML.SaveToFile(cCaminhoXML + cNomeArqXML + 'xml');
-    finally
-      FreeAndNil(slXML);
-    end;
-  end;
-
-  if FileExists(cCaminhoPDF + cNomeArqPDF) then
-    DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
-
-  ConfiguraNFE(True);    
-  spdNFe.ExportarCCe(AcXML, cCaminhoPDF + cNomeArqPDF);
-  Sleep(100);
-
-  if sZiparXML = 'S' then
-  begin
-    //
-    ShellExecute( 0, 'Open','szip.exe', pChar('backup "'+Alltrim(pChar(cCaminhoXML + cNomeArqXML + 'xml'))+'" "'+
-    Alltrim(pChar(cCaminhoXML + cNomeArqXML +'zip'))+'"'),'', SW_SHOWMAXIMIZED);
-    //
-    while ConsultaProcesso('szip.exe') do
+  try
+    if sEnviarDAnfePorEmail = 'S' then
     begin
-      Application.ProcessMessages;
-      sleep(100);
-    end;
-    //
-    while not FileExists( pChar(cCaminhoXML + cNomeArqXML + 'zip')) do
-    begin
-      sleep(100);
-    end;
-    cArqXML := cCaminhoXML + cNomeArqXML + 'zip';
-  end else
-    cArqXML := cCaminhoXML + cNomeArqXML + 'xml';
+      if not FileExists(cCaminhoXML + cNomeArqXML + 'xml') then
+      begin
+        slXML := TStringList.Create;
+        try
+          slXML.Text := AcXML;
+          slXML.SaveToFile(cCaminhoXML + cNomeArqXML + 'xml');
+        finally
+          FreeAndNil(slXML);
+        end;
+      end;
 
-  if FileExists(cCaminhoPDF + cNomeArqPDF) then
-  begin
-    cAnexo    := cCaminhoPDF + cNomeArqPDF;
-    cMsgAnexo := 'PDF';
-  end;
-  if (FileExists(cArqXML)) then
-  begin
-    if cAnexo <> EmptyStr then
+      if FileExists(cCaminhoPDF + cNomeArqPDF) then
+        DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
+
+      ConfiguraNFE(True);
+      spdNFe.ExportarCCe(AcXML, cCaminhoPDF + cNomeArqPDF);
+      Sleep(100);
+    end;
+    
+    if sZiparXML = 'S' then
     begin
-      cAnexo := cAnexo + ';';
-      cMsgAnexo := 'XML e o PDF';
+      //
+      ShellExecute( 0, 'Open','szip.exe', pChar('backup "'+Alltrim(pChar(cCaminhoXML + cNomeArqXML + 'xml'))+'" "'+
+      Alltrim(pChar(cCaminhoXML + cNomeArqXML +'zip'))+'"'),'', SW_SHOWMAXIMIZED);
+      //
+      while ConsultaProcesso('szip.exe') do
+      begin
+        Application.ProcessMessages;
+        sleep(100);
+      end;
+      //
+      while not FileExists( pChar(cCaminhoXML + cNomeArqXML + 'zip')) do
+      begin
+        sleep(100);
+      end;
+      cArqXML := cCaminhoXML + cNomeArqXML + 'zip';
     end else
-      cMsgAnexo := 'XML';
-    cAnexo := cAnexo + cArqXML;
+      cArqXML := cCaminhoXML + cNomeArqXML + 'xml';
+
+    if FileExists(cCaminhoPDF + cNomeArqPDF) then
+    begin
+      cAnexo    := cCaminhoPDF + cNomeArqPDF;
+      cMsgAnexo := 'PDF';
+    end;
+    if (FileExists(cArqXML)) then
+    begin
+      if cAnexo <> EmptyStr then
+      begin
+        cAnexo := cAnexo + ';';
+        cMsgAnexo := 'XML e o PDF';
+      end else
+        cMsgAnexo := 'XML';
+      cAnexo := cAnexo + cArqXML;
+    end;
+
+    if cAnexo = EmptyStr then
+      Exit;
+
+    cMensagem := TTextoEmailFactory.New
+                                   .CCe
+                                   .setDescrAnexo(cMsgAnexo)
+                                   .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
+                                   .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
+                                   .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
+                                   .setPropaganda(Form1.sPropaganda)
+                                   .RetornarTexto;
+
+    Unit7.EnviarEMail('',cEmail,'','Carta de correção Eletrônica emitida', pchar(cMensagem), cAnexo, False);
+  finally
+    if FileExists(cCaminhoPDF + cNomeArqPDF) then
+      DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
   end;
-
-  if cAnexo = EmptyStr then
-    Exit;
-
-  cMensagem := TTextoEmailFactory.New
-                                 .CCe
-                                 .setDescrAnexo(cMsgAnexo)
-                                 .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
-                                 .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
-                                 .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
-                                 .setPropaganda(Form1.sPropaganda)
-                                 .RetornarTexto;
-
-  Unit7.EnviarEMail('',cEmail,'','Carta de correção Eletrônica emitida', pchar(cMensagem), cAnexo, False);
 end;
 
 end.
