@@ -223,98 +223,108 @@ end;
 procedure TForm16.Button2Click(Sender: TObject);
 var
   sLogica : String;
+  cTabela: string;
 //  Inicio : TTime;
 begin
 //  Inicio := Time;
+  cTabela := EmptyStr;
+  if (Form7.sModulo = 'ORCAMENTO') then
+    cTabela := 'ORCAMENTS.';
+    
   Button1.Enabled := False;
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
-  with Form7 do
-  begin
-    //*********************
-    // Esconde ou mostra **
-    //*********************
-    with Sender as TButton do if CapTion = 'Listar' then sLogica := '' else sLogica := ' not ';
-    //********************************************
-    // Temos vários tipos de condição: Quando ? **
-    //********************************************
-    with ArquivoAberto do
+  try
+    with Form7 do
     begin
-      //
-      // Só é necessário alterar a variável Form7.sWhere
-      //
-      if dBgrid1.SelectedField.FieldName = 'CODIGO' then
+      //*********************
+      // Esconde ou mostra **
+      //*********************
+      with Sender as TButton do if CapTion = 'Listar' then sLogica := '' else sLogica := ' not ';
+      //********************************************
+      // Temos vários tipos de condição: Quando ? **
+      //********************************************
+      with ArquivoAberto do
       begin
-        ListBox1.Items.Add(sLogica+' (CODIGO >= '+QuotedStr(MaskEdit1.Text)+' and CODIGO <= '+QuotedStr(MaskEdit2.Text)+') ');
-      end else
-      begin
-        if (dBgrid1.SelectedField.FieldName = 'Desconto') and (Form7.sModulo='ORCAMENTO') then
+        //
+        // Só é necessário alterar a variável Form7.sWhere
+        //
+        if dBgrid1.SelectedField.FieldName = 'CODIGO' then
         begin
-          ListBox1.Items.Add(sLogica+
-          '((select coalesce(cast(sum(O1.TOTAL) as numeric(18,2)), 0.00) from ORCAMENT O1 where O1.DESCRICAO = ''Desconto'' and O1.PEDIDO = ORCAMENT.PEDIDO) >= '+ QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')) +' and (select coalesce(cast(sum(O1.TOTAL) as numeric(18,2)), 0.00) from ORCAMENT O1 where O1.DESCRICAO = ''Desconto'' and O1.PEDIDO = ORCAMENT.PEDIDO) <= '+ QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.')) +')'
-          );
+          ListBox1.Items.Add(sLogica+' (CODIGO >= '+QuotedStr(MaskEdit1.Text)+' and CODIGO <= '+QuotedStr(MaskEdit2.Text)+') ');
         end else
         begin
-          //
+          if (dBgrid1.SelectedField.FieldName = 'Desconto') and (Form7.sModulo='ORCAMENTO') then
+          begin
+            ListBox1.Items.Add(sLogica +
+                '((CAST('+cTabela+'DESCONTO AS NUMERIC(18,2)) >= ' + QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')) + ') AND (CAST('+cTabela+'DESCONTO AS NUMERIC(18,2)) <= ' + QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.')) + '))'
+                );
+            Exit;
+          end;
+
           if (dBgrid1.SelectedField.FieldName = 'Total bruto') and (Form7.sModulo='ORCAMENTO') then
           begin
             ListBox1.Items.Add(sLogica+
-            '((select cast(sum(coalesce(O1.TOTAL, 0.00)) as numeric(18,2)) from ORCAMENT O1 where O1.DESCRICAO <> ''Desconto'' and O1.PEDIDO = ORCAMENT.PEDIDO) >= '+ QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')) +' and (select cast(sum(coalesce(O1.TOTAL, 0.00)) as numeric(18,2)) from ORCAMENT O1 where O1.DESCRICAO <> ''Desconto'' and O1.PEDIDO = ORCAMENT.PEDIDO) <= '+QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.'))+')'
-            );
+                '((CAST('+cTabela+'TOTALBRUTO AS NUMERIC(18,2)) >= '+ QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')) + ') AND (CAST('+cTabela+'TOTALBRUTO AS NUMERIC(18,2)) <= ' + QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.')) + '))'
+                );
+            Exit;
+          end;
+
+          if (dBgrid1.SelectedField.FieldName = 'Total líquido') and (Form7.sModulo='ORCAMENTO') then
+          begin
+            ListBox1.Items.Add(sLogica+
+                '((CAST(('+cTabela+'TOTALBRUTO - '+cTabela+'DESCONTO) AS NUMERIC(18,2)) >= '+ QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')) + ') AND (CAST(('+cTabela+'TOTALBRUTO - '+cTabela+'DESCONTO) AS NUMERIC(18,2)) <= ' + QuotedStr(StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.')) + '))'
+                );
+            Exit;
+          end;
+          //
+          if dBgrid1.SelectedField.FieldName = 'CEP' then
+          begin
+            ListBox1.Items.Add(sLogica+' (CEP >= '+QuotedStr(MaskEdit1.Text)+' and CEP <= '+QuotedStr(MaskEdit2.Text)+') ');
           end else
           begin
-            //
-            if dBgrid1.SelectedField.FieldName = 'CEP' then
+            if dBgrid1.SelectedField.FieldName = 'Orçamento' then
             begin
-              ListBox1.Items.Add(sLogica+' (CEP >= '+QuotedStr(MaskEdit1.Text)+' and CEP <= '+QuotedStr(MaskEdit2.Text)+') ');
+              ListBox1.Items.Add(sLogica+' (Orçamento >= '+QuotedStr(MaskEdit1.Text)+' and Orçamento <= '+QuotedStr(MaskEdit2.Text)+') ');
             end else
             begin
-              if dBgrid1.SelectedField.FieldName = 'Orçamento' then
-              begin
-                ListBox1.Items.Add(sLogica+' (Orçamento >= '+QuotedStr(MaskEdit1.Text)+' and Orçamento <= '+QuotedStr(MaskEdit2.Text)+') ');
+              if dBgrid1.SelectedField.FieldName = 'DATANAS' then
+              begin                                             // 2007/09/01
+                ListBox1.Items.Add(sLogica+' substring(DATANAS from 6 for 5)>='+QuotedStr(StrTran(Copy(DateToStrInvertida(Form16.DateTimePicker1.Date),6,5),'/','-'))+' and substring(DATANAS from 6 for 5)<='+QuotedStr(StrTran(Copy(DateToStrInvertida(Form16.DateTimePicker2.Date),6,5),'/','-')));
               end else
               begin
-                if dBgrid1.SelectedField.FieldName = 'DATANAS' then
-                begin                                             // 2007/09/01
-                  ListBox1.Items.Add(sLogica+' substring(DATANAS from 6 for 5)>='+QuotedStr(StrTran(Copy(DateToStrInvertida(Form16.DateTimePicker1.Date),6,5),'/','-'))+' and substring(DATANAS from 6 for 5)<='+QuotedStr(StrTran(Copy(DateToStrInvertida(Form16.DateTimePicker2.Date),6,5),'/','-')));
-                end else
+                if dBgrid1.Selectedfield.DataType = ftString then
                 begin
-                  if dBgrid1.Selectedfield.DataType = ftString then
-                  begin
-                    ListBox1.Items.Add(sLogica+' upper( Coalesce('+dBgrid1.Selectedfield.FieldName+','+QuotedStr('~')+') ) like '+QuotedStr('%'+UpperCase(ConverteAcentos3(MaskEdit1.Text))+'%'));
-                  end;
-                  if dBgrid1.Selectedfield.DataType = ftMemo then // Não pode usar o upper
-                  begin
-                    ListBox1.Items.Add(sLogica+' '+dBgrid1.Selectedfield.FieldName+' like '+QuotedStr('%'+MaskEdit1.Text+'%'));
-                  end;
-                  //
-                  if dBgrid1.Selectedfield.DataType = ftDate then
-                  begin
-      //              ListBox1.Items.Add(sLogica+' coalesce('+dBgrid1.Selectedfield.FieldName+','+QuotedStr('1899/12/31')+') >= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker1.Date))+' and coalesce('+dBgrid1.Selectedfield.FieldName+','+QuotedStr('1899/12/31')+') <= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker2.Date))+'')
-                    ListBox1.Items.Add(sLogica+' '+dBgrid1.Selectedfield.FieldName+' >= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker1.Date))+' and '+dBgrid1.Selectedfield.FieldName+' <= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker2.Date))+' ')
-                  end;
-                  //
-                  if dBgrid1.Selectedfield.DataType = ftFloat then
-                  begin
-                    ListBox1.Items.Add(sLogica+' ('+dBgrid1.Selectedfield.FieldName+' >= '+QuotedStr(
-                    StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')
-                    )+' and '+dBgrid1.Selectedfield.FieldName+' <= '+QuotedStr(
-                    StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.')
-                    )+') ');
-                  end;
+                  ListBox1.Items.Add(sLogica+' upper( Coalesce('+cTabela+dBgrid1.Selectedfield.FieldName+','+QuotedStr('~')+') ) like '+QuotedStr('%'+UpperCase(ConverteAcentos3(MaskEdit1.Text))+'%'));
+                end;
+                if dBgrid1.Selectedfield.DataType = ftMemo then // Não pode usar o upper
+                begin
+                  ListBox1.Items.Add(sLogica+' '+cTabela+dBgrid1.Selectedfield.FieldName+' like '+QuotedStr('%'+MaskEdit1.Text+'%'));
+                end;
+                //
+                if dBgrid1.Selectedfield.DataType = ftDate then
+                begin
+                  ListBox1.Items.Add(sLogica+' '+cTabela+dBgrid1.Selectedfield.FieldName+' >= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker1.Date))+' and '+cTabela+dBgrid1.Selectedfield.FieldName+' <= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker2.Date))+' ')
+                end;
+                //
+                if dBgrid1.Selectedfield.DataType = ftFloat then
+                begin
+                  ListBox1.Items.Add(sLogica+' ('+cTabela+dBgrid1.Selectedfield.FieldName+' >= '+QuotedStr(
+                  StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')
+                  )+' and '+cTabela+dBgrid1.Selectedfield.FieldName+' <= '+QuotedStr(
+                  StrTran(LimpanumeroDeixandoAVirgula(MaskEdit2.Text),',','.')
+                  )+') ');
                 end;
               end;
             end;
           end;
         end;
       end;
+      //
     end;
-    //
+  finally
+    Screen.Cursor := crDefault; // Cursor de Aguardo
+    close;
   end;
-  //
-  Screen.Cursor := crDefault; // Cursor de Aguardo
-  close;
-  //
 end;
 
 procedure TForm16.Button3Click(Sender: TObject);

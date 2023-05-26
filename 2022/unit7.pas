@@ -2074,7 +2074,8 @@ type
     function RetornarWhereAtivoEstoqueCompra: String;
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
-    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);    
+    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
+    function RetornarSQLEstoqueOrcamentos: String;
   public
 
     // Public declarations
@@ -10061,7 +10062,7 @@ begin
       Form10.Close;
   except
   end;
-
+  
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
@@ -11263,14 +11264,13 @@ begin
 
         Form7.ibDataSet97.Close;
         Form7.ibDataSet97.Selectsql.Clear;
-        //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes Form7.ibDataSet97.Selectsql.Add('select PEDIDO as "Orçamento", DATA as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum ( case when DESCRICAO <> '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Total bruto", sum ( case when DESCRICAO  = '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Desconto", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO'); //
-        Form7.ibDataSet97.Selectsql.Add('select PEDIDO as "Orçamento", min(DATA) as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum ( case when DESCRICAO <> '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Total bruto", sum ( case when DESCRICAO  = '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Desconto", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT group by PEDIDO, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO'); //
+        Form7.ibDataSet97.Selectsql.Add(RetornarSQLEstoqueOrcamentos);
+        Form7.ibDataSet97.Selectsql.Add('ORDER BY ORCAMENTS.PEDIDO');
         Form7.ibDataSet97.Open;
         Form7.ibDataSet97.EnableControls;
 
-        // Form7.ibDataSet16.Selectsql.Add('select * from ITENS001 where NUMERONF=:NUMERONF order by NUMERONF, REGISTRO');
         Form7.IBDataSet97.FieldByName('Registro').Visible := False;
-        //
+
         sAjuda := 'orcamento.htm';
 
         // Campos
@@ -11286,11 +11286,13 @@ begin
         DataSourceAtual        := DataSource97;
 
         // Sql
-        //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes  sSelect   := 'select PEDIDO as "Orçamento", DATA as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum ( case when DESCRICAO <> '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Total bruto", sum ( case when DESCRICAO  = '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Desconto", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT'; //
-        sSelect   := 'select PEDIDO as "Orçamento", min(DATA) as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum ( case when DESCRICAO <> '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Total bruto", sum ( case when DESCRICAO  = '+QuotedStr('Desconto')+' then TOTAL else 0 end ) as "Desconto", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT'; //
+        sSelect   := RetornarSQLEstoqueOrcamentos;
+        // Devido a mudança na forma de montar os filtros do orçamento é necessario limpar caso esteja no padrão antigo 
+        if (Mais1Ini.ReadString(sModulo,'FILTRO','') <> EmptyStr) and (Pos('ORCAMENTS', Mais1Ini.ReadString(sModulo,'FILTRO','')) <= 0) then
+          Mais1Ini.WriteString(sModulo, 'FILTRO', EmptyStr);
+          
         sWhere    := StrTran(StrTran(StrTran(Mais1Ini.ReadString(sModulo,'FILTRO',''),'Cliente','CLIFOR'),'Doc. Fiscal','NUMERONF'),'Orçamento','PEDIDO');
-        //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes sOrderBy  := 'group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
-        sOrderBy  := 'group by PEDIDO, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
+        sOrderBy  := 'ORDER BY ORCAMENTS.PEDIDO';
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
@@ -12088,8 +12090,9 @@ begin
               sOrderBy := ''
             end else
             begin
+
               //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes sOrderBy  := 'group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
-              sOrderBy  := 'group by PEDIDO, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
+              sOrderBy  := 'group by ORCAMENTS.PEDIDO, ORCAMENTS.CLIFOR, ORCAMENTS.VENDEDOR, ORCAMENTS.NUMERONF order by ORCAMENTS.PEDIDO';
             end;
             //
             TabelaAberta.Close;
@@ -12100,6 +12103,9 @@ begin
         end;
       end;
     end;
+
+    if (sModulo = 'ORCAMENTO') then
+      TabelaAberta.FieldByName('Registro').Visible := False;
 
     if (sModulo <> 'CAIXA') and (sModulo <> 'BANCOS') then
     begin
@@ -12265,6 +12271,42 @@ begin
   Form7.Panel7.ShowHint := True;
 
   Screen.Cursor := crDefault;
+end;
+
+function TForm7.RetornarSQLEstoqueOrcamentos: String;
+var
+  slSQL: TStringList;
+begin
+  slSQL := TStringList.Create;
+  try
+    slSQL.Add('WITH ORCAMENTS AS (');
+    slSQL.Add('SELECT');
+    slSQL.Add('    ORCAMENT.PEDIDO');
+    slSQL.Add('    , MIN(ORCAMENT.DATA) AS DATA');
+    slSQL.Add('    , ORCAMENT.NUMERONF');
+    slSQL.Add('    , ORCAMENT.CLIFOR');
+    slSQL.Add('    , ORCAMENT.VENDEDOR');
+    slSQL.Add('    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO');
+    slSQL.Add('    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO');
+    slSQL.Add('FROM ORCAMENT');
+    slSQL.Add('GROUP BY ORCAMENT.PEDIDO, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR, ORCAMENT.NUMERONF');
+    slSQL.Add(')');
+    slSQL.Add('SELECT');
+    slSQL.Add('    ORCAMENTS.PEDIDO as "Orçamento"');
+    slSQL.Add('    , ORCAMENTS.DATA as "Data"');
+    slSQL.Add('    , ORCAMENTS.CLIFOR as "Cliente"');
+    slSQL.Add('    , ORCAMENTS.VENDEDOR as "Vendedor"');
+    slSQL.Add('    , TOTALBRUTO as "Total bruto"');
+    slSQL.Add('    , DESCONTO as "Desconto"');
+    slSQL.Add('    , (TOTALBRUTO - DESCONTO) as "Total líquido"');
+    slSQL.Add('    , ORCAMENTS.NUMERONF as "Doc. Fiscal"');
+    slSQL.Add('    , ORCAMENTS.PEDIDO as "Registro"');
+    slSQL.Add('FROM ORCAMENTS');
+
+    Result := slSQL.Text;
+  finally
+    FreeAndNil(slSQL);
+  end;
 end;
 
 procedure TForm7.DBGrid1KeyDown(Sender: TObject; var Key: Word;
