@@ -421,6 +421,8 @@ type
     procedure Debug1Click(Sender: TObject);
     procedure Image_bola_cliforClick(Sender: TObject);
     procedure Mensagemparaenviodeemail1Click(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(Sender: TObject;
+      const pDisp: IDispatch; var URL: OleVariant);
 
 
   private
@@ -513,7 +515,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
   uFazerBackup,
-  uRetornaBuildEXE;
+  uRetornaBuildEXE, uCriptografia;
 
 {$R *.DFM}
 
@@ -4585,46 +4587,41 @@ begin
     if (Copy(Form1.sSerial,4,1) = 'Q') or
        (Copy(Form1.sSerial,4,1) = 'R') or
        (Copy(Form1.sSerial,4,1) = 'M') then Form22.sTitulo := 'Small Mei';
-    //
+
     // Empresas MEI
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-    //
+
     if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'SIM' then
     begin
       Form1.iReduzida := 2;
     end else
     begin
-      //
       if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'NAO' then
       begin
         Form1.iReduzida := 0;
       end;
-      //
+
       // Note que agora é no WIND0WS.L0G individual em cada maquina
-      //
       Mais2ini := TIniFile.Create('WIND0WS.L0G');
-      //
+
       if (Mais2Ini.ReadString('LICENCA','MEI','NAO') = 'SIM') or (Length(Mais2Ini.ReadString('LICENCA','MEI','')) > 8) then
       begin
         Mais2Ini.WriteString('LICENCA','MEI','OK');
         Form1.iReduzida := 2;
       end;
       Mais2Ini.Free;
-      //
+
       if Form1.iReduzida = 2 then
       begin
         Mais1Ini.WriteString('LICENCA','MEI','SIM');
       end;
-      //
     end;
-    //
-    //
+
     if (Form1.iReduzida = 2) then
     begin
       Form22.sTitulo := StrTran(StrTran(Form22.sTitulo,'Commerce','Mei'),'Start','Mei');
     end;
-    //
+
     if (Form1.iReduzida = 1) then
     begin
       Form1.Planodecontas1.Enabled := False;
@@ -4633,7 +4630,7 @@ begin
       Form7.RegistroFiscal1.Enabled := False;
       Form7.ImportarOS1.Enabled := False;
     end;
-    //
+
     Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iR))+' usuários';
     //
     // é arqui a chave pra resolver os controles de seriais                                 X
@@ -4655,38 +4652,32 @@ begin
     or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('R'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 07 Usuários Small Mei
     or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Mei
     or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
+    //Mauricio Parizotto 2023-05-22
+    or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('T'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 01 Usuários Small Go
     then
     begin
-      //
       Form22.sSerie := 'Número de série: ' + Form1.sSerial;
-      //
     end else
     begin
-      //
-//ShowMessage(
-//(Copy(Form1.sSerial,4,10) +chr(10)+ StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')));
-
-
       ShowMessage('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
                   'não está liberado para uso neste computador, instale'+Chr(10)+
                   'novamente o sistema informando o número serial da'+Chr(10)+
                   'sua licença de uso.'+Chr(10)+Chr(10)+
                   'Código: 002 '+sLicenca);
 
-      // Form1.DestroyWindowHandle;
       Application.Terminate;
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
-    //
+
     sSerieS := StrTran(Form22.sSerie,'Número de série: ','');
-    //
+
     AutoSmallMobile1.Visible        := True;
     SincronizarSmallMobile1.Visible := True;
-    //
   end;
-  //
-  if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp');
-  //
+
+  if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then
+    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp');
+
   if (Form1.iReduzida = 1) then
   begin
     Form1.Caption     := 'Small Commerce (START)';
@@ -12669,6 +12660,26 @@ begin
     Result := Mais1Ini.ReadString('OUTROS','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
   finally
     Mais1Ini.Free;
+  end;
+end;
+
+
+procedure TForm1.WebBrowser1DocumentComplete(Sender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vBody : string;
+  vRecurso : string;
+  documentoAtivo: variant;
+begin
+  try
+    documentoAtivo := WebBrowser1.Document;
+    vBody := documentoAtivo.Body.OuterHTML;
+
+    vRecurso := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
+    vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vRecurso);
+
+    ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+  except
   end;
 end;
 
