@@ -2080,6 +2080,8 @@ type
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
     procedure EnviarEmailCCe(AcXML: String);
+    function getEnviarDanfePorEmail: String;
+    function getZiparXML: String;
   public
 
     // Public declarations
@@ -2094,7 +2096,7 @@ type
     bProximas : Boolean;
     bContingencia : Boolean;
     bFirst : Boolean;
-    sTextoDoAcordo, sFormatoDoDanfe, sZiparXML, sEnviarDAnfePorEmail, sCNPJContabilidade: String;
+    sTextoDoAcordo, sFormatoDoDanfe, sCNPJContabilidade: String;
     //
     sFuso     : String;
     sSistema  : String;
@@ -2175,6 +2177,8 @@ type
       iSequencialParcela: Integer): String;
     function UltimaParcelaReceberDaNF(sNumeroNF: String): String; // Sandro Silva 2023-01-06
     function CorrigeCustoCompraNaVenda(dCustoCompra: Double): Double; // Sandro Silva 2023-04-26
+    property sEnviarDanfePorEmail: String read getEnviarDanfePorEmail;
+    property sZiparXML: String read getZiparXML;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -4811,6 +4815,30 @@ begin
   //
 end;
 
+function TForm7.getEnviarDanfePorEmail: String;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\nfe.ini');
+  try
+    Result := oIni.ReadString('ENVIO','Enviar danfe por e-mail','S');
+  finally
+    oIni.Free;
+  end;
+end;
+
+function TForm7.getZiparXML: String;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\nfe.ini');
+  try
+    Result := oIni.ReadString('ENVIO','Zipar XML','N');
+  finally
+    oIni.Free;
+  end;
+end;
+
 function ConfiguraNFE(sP1:Boolean) : Boolean;
 var
   Mais1Ini: TIniFile;
@@ -4863,8 +4891,6 @@ begin
     Form1.HorarioDeVerao.Checked := True;
   //
   Form7.sFormatoDoDanfe      := Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato');
-  Form7.sZiparXML            := Mais1Ini.ReadString('ENVIO','Zipar XML','N');
-  Form7.sEnviarDAnfePorEmail := Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S');
   Form7.sCNPJContabilidade   := Mais1Ini.ReadString('XML','CNPJ da contabilidade','');
   //
   Form1.sVersaoLayout        := Mais1Ini.ReadString('NFE','Layout','4.00');
@@ -41904,11 +41930,9 @@ begin
       if FileExists(cCaminhoPDF + cNomeArqPDF) then
         DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
 
-      ConfiguraNFE(True);
       spdNFe.ExportarCCe(AcXML, cCaminhoPDF + cNomeArqPDF);
       Sleep(100);
     end;
-    
     if sZiparXML = 'S' then
     begin
       //
@@ -41928,7 +41952,6 @@ begin
       cArqXML := cCaminhoXML + cNomeArqXML + 'zip';
     end else
       cArqXML := cCaminhoXML + cNomeArqXML + 'xml';
-
     if FileExists(cCaminhoPDF + cNomeArqPDF) then
     begin
       cAnexo    := cCaminhoPDF + cNomeArqPDF;
