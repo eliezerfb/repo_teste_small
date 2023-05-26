@@ -90,7 +90,7 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=
+OutputDir=\desenvolvimento\executaveis\Small Commerce
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=2023
 MinorVer=0
 Release=0
-Build=18
+Build=20
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Nota Fiscal de Serviço Eletrônica
-FileVersion=2023.0.0.18
+FileVersion=2023.0.0.20
 InternalName=nfse.exe
 LegalCopyright=Zucchetti Software e Sistemas Ltda
 LegalTrademarks=Zucchetti Software e Sistemas Ltda
@@ -136,3 +136,9 @@ ProductVersion=2023
 Comments=smallsoft.com.br
 [Excluded Packages]
 c:\program files (x86)\borland\delphi7\Projects\Bpl\TPNGButton.bpl=(untitled)
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=\desenvolvimento\executaveis\Small Commerce
