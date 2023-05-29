@@ -97,7 +97,9 @@ uses
   uTextoEmailNFe in 'units\uTextoEmailNFe.pas',
   uSmallResourceString in '..\Commons\uSmallResourceString.pas',
   uITextoEmailFactory in 'interfaces\uITextoEmailFactory.pas',
-  uTextoEmailFactory in 'units\uTextoEmailFactory.pas';
+  uTextoEmailFactory in 'units\uTextoEmailFactory.pas',
+  uIRetornaLimiteDisponivel in 'interfaces\uIRetornaLimiteDisponivel.pas',
+  uRetornaLimiteDisponivel in 'units\uRetornaLimiteDisponivel.pas';
 
 {$R *.RES}
 

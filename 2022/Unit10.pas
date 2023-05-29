@@ -380,6 +380,8 @@ type
     SMALL_DBEdit73: TSMALL_DBEdit;
     Label107: TLabel;
     framePesquisaProdComposicao: TframePesquisaProduto;
+    lblLimiteCredDisponivel: TLabel;
+    eLimiteCredDisponivel: TEdit;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -595,6 +597,7 @@ type
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
+    procedure DefinirLimiteDisponivel;
     { Private declarations }
   public
     { Public declarations }
@@ -630,6 +633,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
   {Sandro Silva 2022-09-26 fim}
+  , uRetornaLimiteDisponivel
   ;
 
 {$R *.DFM}
@@ -1055,6 +1059,7 @@ begin
     //
   except
   end;
+  Form10.DefinirLimiteDisponivel;  
   //
   // Sandro Silva 2022-09-27 Result := True;
   //
@@ -1765,7 +1770,10 @@ begin
           Abort;
         end;
       end;
-      
+
+      if ((DataField = 'NOME') or (DataField = 'CREDITO')) then
+        DefinirLimiteDisponivel;
+
       if ((DataField = 'NOME') or (DataField = 'CONTA') or (DataField = 'CIDADE') or (DataField = 'CONVENIO')) and
        ((Form7.sModulo = 'CAIXA' ) or
         (Form7.sModulo = 'RECEBER') or
@@ -1971,7 +1979,21 @@ begin
   except end;
 
   if (Form7.sModulo = 'ESTOQUE') and (Form10.orelhas.ActivePage = Orelha_promo) then
-    AtualizaTela(False)
+    AtualizaTela(False);
+end;
+
+procedure TForm10.DefinirLimiteDisponivel;
+begin
+  eLimiteCredDisponivel.Text := EmptyStr;
+  if not Self.Showing then
+    Exit;
+
+  if (Form7.sModulo = 'CLIENTES') and (Form7.IBDataSet2CREDITO.AsCurrency > 0) then
+    eLimiteCredDisponivel.Text := FormatFloat(',0.00',TRetornaLimiteDisponivel.New
+                                                                              .SetDatabase(Form7.IBDatabase1)
+                                                                              .SetCliente(Form7.IBDataSet2NOME.AsString)
+                                                                              .CarregarDados(Form7.IBDataSet2CREDITO.AsCurrency)
+                                                                              .RetornarValor);
 end;
 
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -3884,9 +3906,12 @@ var
   iTopSegundaColuna: Integer; // Sandro Silva 2022-12-20
 begin
   Form10.sNomeDoJPG := Form1.sAtual+'\tempo0000000000.jpg';
-  
+
   tInicio := time;
   Form10.orelhas.Visible := False;
+
+  eLimiteCredDisponivel.Visible := False;
+  lblLimiteCredDisponivel.Visible := False;
 
   try
     Form7.ibDataSet13.Edit;
@@ -4092,6 +4117,14 @@ begin
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Top                := iTop;
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left               := 214;
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 314;
+              end;
+
+              if (Form7.sModulo = 'CLIENTES') and (Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'Limite de crédito:') then
+              begin
+                eLimiteCredDisponivel.Visible := True;
+                lblLimiteCredDisponivel.Visible := True;
+                eLimiteCredDisponivel.Top   := iTop;
+                lblLimiteCredDisponivel.Top := iTop + 1;
               end;
 
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
