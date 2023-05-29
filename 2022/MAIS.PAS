@@ -12500,9 +12500,13 @@ begin
     vBody := documentoAtivo.Body.OuterHTML;
 
     vRecurso := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
-    vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vRecurso);
 
-    ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+    //Mauricio Parizotto 2023-05-29
+    if AnsiContainsText(vRecurso,'Serial') then
+    begin
+      vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vRecurso);
+      ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+    end;
   except
   end;
 end;
