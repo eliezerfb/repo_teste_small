@@ -18851,7 +18851,7 @@ begin
                   //
                   // Venda pelo custo
                   //
-                  if Pos('0',Form7.ibDataSet14INTEGRACAO.asString) = 0 then
+                  if Pos('0',Form7.ibDataSet14INTEGRACAO.AsString) = 0 then // Se não tiver configuração de integração para usar o preço de compra na venda, usará o preço de venda cadastrado no estoque
                   begin
                     Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
                   end else
