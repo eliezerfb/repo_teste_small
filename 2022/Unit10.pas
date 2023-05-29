@@ -591,6 +591,7 @@ type
       Sender: TObject; var Key: Char);
     procedure framePesquisaProdComposicaodbgItensPesqKeyDown(
       Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DBGrid3CellClick(Column: TColumn);
   private
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
@@ -630,7 +631,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
   {Sandro Silva 2022-09-26 fim}
-  , Windows;
+  ;
 
 {$R *.DFM}
 
@@ -1595,6 +1596,9 @@ procedure TForm10.SMALL_DBEdit1Enter(Sender: TObject);
 var
   vDataField : string;
 begin
+  //Mauricio Parizotto 2023-05-29
+  bGravaEscolha := False;
+
   with Sender as TSMALL_DBEdit do
     sPublicText := Text;
 
@@ -2608,7 +2612,6 @@ begin
   if Form7.sModulo = 'TRANSPORT' then
   begin
     Form7.ibDataSet18UF.FocusControl;
-    
     Exit;
   end;
 
@@ -4225,6 +4228,11 @@ begin
                   end;
                 except ShowMessage('Erro 2 comunique o suporte técnico.') end;
               end;
+
+              //Mauricio Parizotto 2023-05-29
+              //Se foi setado para ReadOnly para o grid remove para editar pela tela
+              if Form7.ArquivoAberto.Fields[I - 1].Tag = 10 then
+                Form7.ArquivoAberto.Fields[I - 1].ReadOnly := False;
 
               try
                 if (Form7.ArquivoAberto.Fields[I - 1].ReadOnly = True) or (Form7.bSoLeitura) or (Form7.bEstaSendoUsado) then
@@ -8752,6 +8760,11 @@ end;
 procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   framePesquisaProdComposicao.dbgItensPesqKeyDown(Sender, Key, Shift);
+end;
+
+procedure TForm10.DBGrid3CellClick(Column: TColumn);
+begin
+  DBGrid3DblClick(nil);
 end;
 
 end.

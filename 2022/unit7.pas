@@ -2070,6 +2070,7 @@ type
     procedure Sinativos1Click(Sender: TObject);
     procedure ibDataSet18MUNICIPIOSetText(Sender: TField;
       const Text: String);
+    procedure ibDataSet7INSTITUICAOFINANCEIRAChange(Sender: TField);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -9383,7 +9384,11 @@ begin
   bFirst := False;
   //
   sAjuda := 'INDEX.HTM';
-  //
+
+  //Mauricio Parizotto 2023-05-29
+  //Campos Somente Leitura ao editar pelo Grid
+  ibDataSet7INSTITUICAOFINANCEIRA.Tag := 10;
+  ibDataSet7NOME.Tag := 10;
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -16670,19 +16675,32 @@ begin
 end;
 
 procedure TForm7.Image208Click(Sender: TObject);
+var
+  i : integer;
 begin
-  //
   if (Form7.sModulo = 'OS')    or
      (Form7.sModulo = 'VENDA') or
      (Form7.sModulo = 'ORCAMENTO') or
-     (Form7.sModulo = 'COMPRA')  then Abort;
-  //
+     (Form7.sModulo = 'COMPRA')  then
+     Abort;
+
   if Form7.DBGrid1.Options = [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize] then // Botão Libera
   begin
     Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];        // Botão Libera
     Form7.dbGrid1.ReadOnly  := False;
     Form7.Image208.Visible  := False; Form7.Label208.Caption  := 'Bloquear';
     Form7.Image308.Visible  := True;
+
+    //Mauricio Parizotto 2023-05-29
+    //Seta para ReadOnly para o grid não poder editar
+    try
+      for i := 0 to Form7.DBGrid1.DataSource.DataSet.FieldCount -1 do
+      begin
+      if Form7.DBGrid1.DataSource.DataSet.Fields[i].Tag = 10 then
+        Form7.DBGrid1.DataSource.DataSet.Fields[i]..ReadOnly := True;
+      end;
+    except
+    end;
   end else
   begin
     Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Botão Libera
@@ -16690,15 +16708,14 @@ begin
     Form7.Image308.Visible  := False;
     Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
   end;
-  //
+
   dBGrid1.Repaint;
-  //
+
   if ArquivoAberto.Active then
   begin
     if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
     if ArquivoAberto.MoveBy(+1) = 1 then ArquivoAberto.MoveBy(-1) else if ArquivoAberto.MoveBy(-1) = -1 then ArquivoAberto.MoveBy(+1);
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet8VALOR_DUPLChange(Sender: TField);
@@ -33197,6 +33214,42 @@ procedure TForm7.ibDataSet16VBCFCPSTChange(Sender: TField);
 begin
 //  if (StrtoFloatDef(VarToStrDef(Form7.ibDataSet16VBCFCPST.OldValue, '0,00'), 0.00) <> Form7.ibDataSet16VBCFCPST.Value) then
     CalculaFCPSTAoIncluirProdutoDevolucao; // Sandro Silva 2023-05-08
+end;
+
+procedure TForm7.ibDataSet7INSTITUICAOFINANCEIRAChange(Sender: TField);
+var
+  vDescricaoAntes : string;
+  vQtdParcelas : integer;
+begin
+  //Mauricio Parizotto 2023-05-29
+  //Verifica se mudou
+  vDescricaoAntes := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
+                                           ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
+                                           ' From RECEBER'+
+                                           ' Where REGISTRO ='+QuotedStr(ibDataSet7REGISTRO.AsString));
+
+  if ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
+  begin
+    if Trim(ibDataSet7NUMERONF.AsString) = '' then
+      Exit;
+      
+    vQtdParcelas := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
+                                         ' Select count(*)  '+
+                                         ' From RECEBER'+
+                                         ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString));
+
+    if vQtdParcelas > 1 then
+    begin
+      if MessageDlg('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?',
+                 mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      begin
+        ExecutaComando(' Update RECEBER'+
+                       '   set INSTITUICAOFINANCEIRA ='+QuotedStr(ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
+                       ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString),
+                       ibDataSet7.Transaction );
+      end;
+    end;
+  end;
 end;
 
 end.

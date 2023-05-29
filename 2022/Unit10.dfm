@@ -2611,7 +2611,7 @@ object Form10: TForm10
           TitleFont.Name = 'Fixedsys'
           TitleFont.Style = []
           Visible = False
-          OnCellClick = DBGrid1CellClick
+          OnCellClick = DBGrid3CellClick
           OnDblClick = DBGrid3DblClick
           OnKeyDown = DBGrid1KeyDown
           OnKeyPress = DBGrid3KeyPress
