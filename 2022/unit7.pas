@@ -16697,7 +16697,7 @@ begin
       for i := 0 to Form7.DBGrid1.DataSource.DataSet.FieldCount -1 do
       begin
       if Form7.DBGrid1.DataSource.DataSet.Fields[i].Tag = 10 then
-        Form7.DBGrid1.DataSource.DataSet.Fields[i]..ReadOnly := True;
+        Form7.DBGrid1.DataSource.DataSet.Fields[i].ReadOnly := True;
       end;
     except
     end;
