@@ -1455,6 +1455,9 @@ type
     ibDataSet16PFCPST: TIBBCDField;
     ibDataSet16VFCPST: TIBBCDField;
     ibDataSet15VFCPST: TIBBCDField;
+    ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
+    DSConsulta: TDataSource;
+    ibqConsulta: TIBDataSet;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -11074,7 +11077,8 @@ begin
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
-        iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
+        //iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
+        iCampos                := 17; // Mauricio Parizotto 2023-05-29
 
         // Menu
         Form7.Menu         := MainMenu7;

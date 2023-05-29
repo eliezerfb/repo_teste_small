@@ -630,7 +630,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
   {Sandro Silva 2022-09-26 fim}
-  ;
+  , Windows;
 
 {$R *.DFM}
 
@@ -1453,6 +1453,14 @@ begin
         Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
       else
         Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
+
+      //Mauricio Parizotto 2023-05-29
+      // Instituição Financeira
+      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
+      begin
+        Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+        Form10.dBGrid3.Visible := False;
+      end;
     end;
 
     // Contas a Pagar
@@ -1740,6 +1748,28 @@ begin
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DataSource39; // Municipios
       end;
+
+      //Mauricio Parizotto 2023-05-29
+      if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text := ' Select * '+
+                                            ' From CLIFOR'+
+                                            ' Where CLIFOR in (''Instituição financeira'',''Credenciadora de cartão'') '+
+                                            ' Order by NOME';
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top - 100;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := Width;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+      end;
     end;
   except
     ShowMessage('Erro 10/77 comunique o suporte técnico.')
@@ -1834,6 +1864,22 @@ begin
           end;
         end;
       end;
+
+      {Mauricio Parizotto 2023-05-29 Inicio}
+      if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
+      begin
+        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('NOME').AsString))) <> 0 then
+        begin
+          GravaEscolha;
+        end else
+        begin
+          DataSource.DataSet.Edit;
+          DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Exit;
+        end;
+      end;
+
+      {Mauricio Parizotto 2023-05-29 Inicio}
     end;
   except
   end;
@@ -1951,6 +1997,14 @@ begin
           Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where Upper(NOME) like '+QuotedStr('%'+UpperCase(Text)+'%')+' and coalesce(ATIVO,0)=0 order by NOME');
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
+        end;
+
+        //Mauricio Parizotto 2023-05-29
+        if (vDataField = 'INSTITUICAOFINANCEIRA')
+          and (Form7.sModulo = 'RECEBER')
+          and (Form7.ibqConsulta.Active) then
+        begin
+          Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
 
         if (Form7.sModulo = 'ESTOQUE')
@@ -2582,6 +2636,14 @@ begin
     if Form10.SMALL_DBEdit19.CanFocus then
       Form10.SMALL_DBEdit19.SetFocus;
   end;
+
+  {Mauricio Parizotto 2023-05-29 Inicio}
+  if (Form7.sModulo = 'RECEBER') and (DBGrid3.DataSource.Name = 'DSConsulta') then
+  begin
+    Form10.SMALL_DBEdit26.SetFocus;
+    Exit;
+  end;
+  {Mauricio Parizotto 2023-05-29 Fim}
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
