@@ -3616,14 +3616,14 @@ end;
 
 procedure TForm38.RelatorioCurvaABC_Clientes(var F: TextFile; dInicio, dFinal : TdateTime);
 var
-  fTotal, fTotal1, fTotal3, fTotal4 : Real;
+  fTotal, fTotal1, fTotal3, vPercAcumulado, vPercIndividual : Real;
   sOperacoes : string;
   I : integer;
 begin
   Form7.IBDataSet2.DisableControls;
 
   fTotal3 := 0;
-  fTotal4 := 0;
+  vPercAcumulado := 0;
 
   {Mauricio Parizotto 2023-05-24 Inicio}
   sOperacoes := '';
@@ -3712,11 +3712,31 @@ begin
           WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2FONE.AsString +'<br></font></td>');
           WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+DateToStr(Form7.ibDataSet2ULTIMACO.AsDateTime)+'<br></font></td>');
 
+          {Mauricio Parizotto 2023-05-29 Inicio}
+          
+          {
           fTotal4 := fTotal4 + (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
 
-          if fTotal4 < 70 then  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>') else
-           if fTotal4 < 90 then  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>') else
-             WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
+          if fTotal4 < 70 then
+            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>')
+          else
+            if fTotal4 < 90 then
+              WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
+            else
+                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
+          WriteLn(F,'    <td nowrap width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
+          }
+
+          vPercIndividual := (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+          vPercAcumulado  := vPercAcumulado + vPercIndividual;
+
+          if (vPercAcumulado < 70) or (vPercIndividual > 30) then
+            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>') //
+          else
+            if vPercAcumulado < 90 then
+              WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
+            else
+                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
           WriteLn(F,'    <td nowrap width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
 
           WriteLn(F,'   </tr>');
@@ -3729,10 +3749,17 @@ begin
           Write(F,Copy(Form7.ibDataSet2FONE.AsString+Replicate(' ',20),1,20)+' ');
           Write(F,DateToStr(Form7.ibDataSet2ULTIMACO.AsDateTime)+' ');
 
-          fTotal4 := fTotal4 + (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+          vPercIndividual := (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+          vPercAcumulado  := vPercAcumulado + vPercIndividual;
 
-          if fTotal4 < 70 then  WriteLn(F,'A  ') else
-           if fTotal4 < 90 then  WriteLn(F,'B  ') else WriteLn(F,'C  ');
+          //if vPercAcumulado < 70 then
+          if (vPercAcumulado < 70) or (vPercIndividual > 30) then
+            WriteLn(F,'A  ')
+          else
+            if vPercAcumulado < 90 then
+              WriteLn(F,'B  ') else WriteLn(F,'C  ');
+
+          {Mauricio Parizotto 2023-05-29 Fim}
         end;
       end;
     end;
