@@ -8,7 +8,7 @@
 { Autor: Sandro Luis da Silva                                             }
 { *********************************************************************** }
 
-unit uClasseRecursos;
+unit uClasseDllRecursos;
 
 interface
 
@@ -26,7 +26,7 @@ uses
 const FDLLName = 'recursos.dll';
 
 type
-  TResourceModule = class(TComponent)
+  TRecursosLicenca = class//class(TComponent)
   private
     FhDLL: THandle;
 
@@ -40,7 +40,7 @@ type
     procedure Desinicializa;
   protected
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create; // Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Inicializa: Boolean;
     function SerialSistema: String;
@@ -52,18 +52,20 @@ type
 
   end;
 
-procedure Register;
+//procedure Register;
 
 implementation
 
+{
 procedure Register;
 begin
-  RegisterComponents('Smallsoft', [TResourceModule]);
+  RegisterComponents('Smallsoft', [TRecursosLicenca]);
 end;
+}
 
-{ TResourceModule }
+{ TRecursosLicenca }
 
-function TResourceModule.CarregaDLL: Boolean;
+function TRecursosLicenca.CarregaDLL: Boolean;
 begin
   Result := False;
   if FhDLL = 0 then
@@ -103,12 +105,12 @@ begin
 
 end;
 
-constructor TResourceModule.Create(AOwner: TComponent);
+constructor TRecursosLicenca.Create; //Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited;// Create; //Create(AOwner);
 end;
 
-procedure TResourceModule.Desinicializa;
+procedure TRecursosLicenca.Desinicializa;
 begin
   // Controla descarregamento da DLL
   if FhDLL <> 0 then
@@ -118,6 +120,7 @@ begin
       FreeLibrary(FhDLL); //descarregando dll
 
       FhDLL := 0;
+      FInicializada := False;
 
       _SerialSistema     := nil;
       _LimiteUsuarios    := nil;
@@ -132,13 +135,13 @@ begin
 
 end;
 
-destructor TResourceModule.Destroy;
+destructor TRecursosLicenca.Destroy;
 begin
-  Desinicializa;
+//  Desinicializa;
   inherited;
 end;
 
-procedure TResourceModule.Import(var Proc: pointer; Name: PAnsiChar);
+procedure TRecursosLicenca.Import(var Proc: pointer; Name: PAnsiChar);
 begin
   if not Assigned(Proc) then
   begin
@@ -148,13 +151,13 @@ begin
   end;
 end;
 
-function TResourceModule.Inicializa: Boolean;
+function TRecursosLicenca.Inicializa: Boolean;
 begin
   Result := CarregaDLL;
   FInicializada := Result;
 end;
 
-function TResourceModule.DtLimiteUso(idRecurso: TRecursos): TDate;
+function TRecursosLicenca.DtLimiteUso(idRecurso: TRecursos): TDate;
 begin
   Result := StrToDate('01/01/1900');
   try
@@ -164,7 +167,7 @@ begin
   end;
 end;
 
-function TResourceModule.Quantidade(idRecurso: TRecursos): Integer;
+function TRecursosLicenca.Quantidade(idRecurso: TRecursos): Integer;
 begin
   try
     Result := _QuantidadeRecurso(idRecurso);
@@ -173,7 +176,7 @@ begin
   end;
 end;
 
-function TResourceModule.LimiteUsuarios: Integer;
+function TRecursosLicenca.LimiteUsuarios: Integer;
 begin
 
   try
@@ -183,7 +186,7 @@ begin
   end;
 end;
 
-function TResourceModule.SerialSistema: String;
+function TRecursosLicenca.SerialSistema: String;
 var
   Ini: TIniFile;
 begin

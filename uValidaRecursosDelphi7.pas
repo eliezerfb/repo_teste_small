@@ -1,0 +1,486 @@
+unit uValidaRecursosDelphi7;
+
+interface
+
+uses
+  Classes
+  , SysUtils
+  , StrUtils
+  , Controls
+  , Variants
+  , Windows
+  , IBDatabase
+  , IBQuery
+  , LbCipher, LbClass
+  , uconstantes_chaves_privadas
+  , uRecursosSistema
+  //, uConectaBancoSmall
+  , uCriptografia
+  , uTypesRecursos
+  , uLkJSON
+  ;
+
+type
+  TValidaRecurso = class
+  private
+    FIBDatabase: TIBDatabase;
+    FsRecurso: String;
+    FsCNPJ: string;
+    FrsRecursoSistema: TRecursosSistema;
+    procedure InformacoesBD();
+    procedure SetIBDatabase(const Value: TIBDatabase);
+    function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
+    function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
+    function CampoExisteFB(Banco: TIBDatabase; sTabela: String; sCampo: String): Boolean;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LeRecursos();
+    function SistemaSerial(): String;
+    function SistemaLimiteUsuarios(): Integer;
+    function RecursoLiberado(sRecurso: TRecursos; out DataLimite: TDate): Boolean;
+    function RecursoData(sRecurso: TRecursos): Tdate;
+
+    function RecursoQuantidade(sRecurso: TRecursos): Integer;
+    function RecursoQtd(sRecurso: TRecursos): Integer;
+    property IBDATABASE: TIBDatabase read FIBDatabase write SetIBDatabase;
+    property rsRecursoSistema: TRecursosSistema read FrsRecursoSistema write FrsRecursoSistema;
+  end;
+
+implementation
+
+{ TValidaRecurso }
+
+procedure TValidaRecurso.LeRecursos();
+var
+  js: TlkJSONobject;
+  iTemRc: TlkJSONobject;
+  s: String;
+  i: Integer;
+  function DataJsonToDate(Value: Variant): TDate;
+  var
+    sData: String;
+  begin
+    try
+      sData := VarToStrDef(Value, '1900-01-01');
+      sData := Copy(sData, 9, 2) + '/' + Copy(sData, 6, 2) + '/' + Copy(sData, 1, 4);
+      Result := StrToDateDef(sData, StrToDate('01/01/1900'));
+    except
+      Result := StrToDate('01/01/1900');
+    end;
+  end;
+begin
+
+  if FrsRecursoSistema = nil then
+    FrsRecursoSistema := TRecursosSistema.Create;
+
+  InformacoesBD;
+  FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA, FsRecurso);
+
+  js := TlkJSON.ParseText(FsRecurso) as TlkJSONobject;
+  if not assigned(js) then
+  begin
+    Exit;
+  end
+  else
+  begin
+
+    if js.Field['Serial'] <> nil then
+      FrsRecursoSistema.Serial   := js.Field['Serial'].Value;
+
+    if js.Field['CNPJ'] <> nil then
+      FrsRecursoSistema.CNPJ     := js.Field['CNPJ'].Value;
+    if js.Field['Usuarios'] <> nil then
+      FrsRecursoSistema.Usuarios := StrToInt(VarToStrDef(js.Field['Usuarios'].Value, '0'));
+
+    if js.Field['Produto'] <> nil then
+      FrsRecursoSistema.Produto  := js.Field['Produto'].Value;
+
+    if js.Field['Recursos'] <> nil then
+    begin
+      iTemRc := js.Field['Recursos'] as TlkJSONobject;
+      if iTemRc.Field['LimiteUso'] <> nil then
+      begin
+        if iTemRc.Field['LimiteUso'] <> nil then
+          FrsRecursoSistema.Recursos.LimiteUso := DataJsonToDate(iTemRc.Field['LimiteUso'].Value);
+
+        if iTemRc.Field['OS'] <> nil then
+          FrsRecursoSistema.Recursos.OS        := DataJsonToDate(iTemRc.Field['OS'].Value);
+
+        if iTemRc.Field['Sped'] <> nil then
+          FrsRecursoSistema.Recursos.Sped      := DataJsonToDate(iTemRc.Field['Sped'].Value);
+
+        if iTemRc.Field['SpedPisCofins'] <> nil then
+          FrsRecursoSistema.Recursos.SpedPisCofins := DataJsonToDate(iTemRc.Field['SpedPisCofins'].Value);
+
+        if iTemRc.Field['Anvisa'] <> nil then
+          FrsRecursoSistema.Recursos.Anvisa := DataJsonToDate(iTemRc.Field['Anvisa'].Value);
+
+        if iTemRc.Field['Sintegra'] <> nil then
+          FrsRecursoSistema.Recursos.Sintegra := DataJsonToDate(iTemRc.Field['Sintegra'].Value);
+
+        if iTemRc.Field['Comandas'] <> nil then
+          FrsRecursoSistema.Recursos.Comandas := DataJsonToDate(iTemRc.Field['Comandas'].Value);
+
+        if iTemRc.Field['MDFE'] <> nil then
+          FrsRecursoSistema.Recursos.MDFE := DataJsonToDate(iTemRc.Field['MDFE'].Value);
+
+        if iTemRc.Field['Mobile'] <> nil then
+          FrsRecursoSistema.Recursos.Mobile := DataJsonToDate(iTemRc.Field['Mobile'].Value);
+
+        if iTemRc.Field['Etiquetas'] <> nil then
+          FrsRecursoSistema.Recursos.Etiquetas := DataJsonToDate(iTemRc.Field['Etiquetas'].Value);
+
+        if iTemRc.Field['Orcamento'] <> nil then
+          FrsRecursoSistema.Recursos.Orcamento := DataJsonToDate(iTemRc.Field['Orcamento'].Value);
+
+        if iTemRc.Field['MKP'] <> nil then
+          FrsRecursoSistema.Recursos.MKP := DataJsonToDate(iTemRc.Field['MKP'].Value);
+
+        if iTemRc.Field['ContasPagar'] <> nil then
+          FrsRecursoSistema.Recursos.ContasPagar := DataJsonToDate(iTemRc.Field['ContasPagar'].Value);
+
+        if iTemRc.Field['ContasReceber'] <> nil then
+          FrsRecursoSistema.Recursos.ContasReceber := DataJsonToDate(iTemRc.Field['ContasReceber'].Value);
+
+        if iTemRc.Field['Caixa'] <> nil then
+          FrsRecursoSistema.Recursos.Caixa := DataJsonToDate(iTemRc.Field['Caixa'].Value);
+
+        if iTemRc.Field['Bancos'] <> nil then
+          FrsRecursoSistema.Recursos.Bancos := DataJsonToDate(iTemRc.Field['Bancos'].Value);
+
+        if iTemRc.Field['Indicadores'] <> nil then
+          FrsRecursoSistema.Recursos.Indicadores := DataJsonToDate(iTemRc.Field['Indicadores'].Value);
+
+        if iTemRc.Field['InventarioP7'] <> nil then
+          FrsRecursoSistema.Recursos.InventarioP7 := DataJsonToDate(iTemRc.Field['InventarioP7'].Value);
+
+        if iTemRc.Field['QtdNFE'] <> nil then
+          FrsRecursoSistema.Recursos.QtdNFE:= StrToInt(VarToStrDef(iTemRc.Field['QtdNFE'].Value, '0'));
+
+        if iTemRc.Field['QtdNFCE'] <> nil then
+          FrsRecursoSistema.Recursos.QtdNFCE := StrToInt(VarToStrDef(iTemRc.Field['QtdNFCE'].Value, '0'));
+
+      end;
+
+    end;
+
+  end;
+
+end;
+
+function TValidaRecurso.SistemaSerial(): String;
+//var
+//  rsRecursoSistema : TRecursosSistema;
+  //sRecurso, vCNPJ : string;
+begin
+  Result := '';
+
+  try
+    // Informações BD
+    //InformacoesBD(FsRecurso, vCNPJ);
+
+    //Descriptografa
+    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,FsRecurso);
+
+    if Trim(FsRecurso) <> '' then
+    begin
+      try
+        try
+          //Conteudo Criptografado deve bater com dados do emitente
+          if FrsRecursoSistema.CNPJ <> FsCNPJ then
+            Exit;
+
+          Result     := FrsRecursoSistema.Serial;
+        finally
+          //FreeAndNil(rsRecursoSistema);
+        end;
+      except
+      end;
+    end;
+  except
+  end;
+
+end;
+
+function TValidaRecurso.SistemaLimiteUsuarios(): Integer;
+//var
+  //rsRecursoSistema : TRecursosSistema;
+  //FsRecurso, vCNPJ : string;
+begin
+  Result := 1;
+
+  try
+    // Informações BD
+    //InformacoesBD(FIBDatabase, FsRecurso, vCNPJ);
+
+    //Descriptografa
+    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,FsRecurso);
+
+
+    if Trim(FsRecurso) <> '' then
+    begin
+      try
+        try
+          //rsRecursoSistema := TJson.JsonToObject<TRecursosSistema>(FsRecurso);
+
+          //Conteudo Criptografado deve bater com dados do emitente
+          if FrsRecursoSistema.CNPJ <> FsCNPJ then
+            Exit;
+
+          Result     := FrsRecursoSistema.Usuarios;
+        finally
+          //FreeAndNil(rsRecursoSistema);
+        end;
+      except
+      end;
+    end;
+  except
+  end;
+
+end;
+
+function TValidaRecurso.RecursoLiberado(sRecurso : TRecursos; out DataLimite : TDate): Boolean;
+//var
+  //rsRecursoSistema : TRecursosSistema;
+  //FsRecurso, vCNPJ : string;
+begin
+  Result := False;
+  DataLimite := StrToDate('01/01/1900');
+
+  try
+    // Informações BD
+    //InformacoesBD(FIBDatabase, FsRecurso, vCNPJ);
+
+    //Descriptografa
+    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,FsRecurso);
+
+    if Trim(FsRecurso) <> '' then
+    begin
+      try
+        try
+          //rsRecursoSistema := TJson.JsonToObject<TRecursosSistema>(FsRecurso);
+
+          //Conteudo Criptografado deve bater com dados do emitente
+          if FrsRecursoSistema.CNPJ <> FsCNPJ then
+            Exit;
+
+          DataLimite := RecursoData(sRecurso) ;
+          Result     := DataLimite >= Date;
+        finally
+          //FreeAndNil(rsRecursoSistema);
+        end;
+      except
+      end;
+    end;
+  except
+  end;
+end;
+
+function TValidaRecurso.RecursoQuantidade(sRecurso : TRecursos):Integer;
+//var
+  //rsRecursoSistema : TRecursosSistema;
+  //sRecurso, vCNPJ : string;
+begin
+  Result := 0;
+
+  try
+    // Informações BD
+    //InformacoesBD(FIBDatabase, sRecurso, vCNPJ);
+
+    //Descriptografa
+    //sRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,sRecurso);
+
+    if Trim(FsRecurso) <> '' then
+    begin
+      try
+        try
+          //rsRecursoSistema := TJson.JsonToObject<TRecursosSistema>(sRecurso);
+
+          //Conteudo Criptografado deve bater com dados do emitente
+          if FrsRecursoSistema.CNPJ <> FSCNPJ then
+            Exit;
+
+          Result := RecursoQtd(sRecurso) ;
+        finally
+          //FreeAndNil(rsRecursoSistema);
+        end;
+      except
+      end;
+    end;
+  except
+  end;
+end;
+
+function TValidaRecurso.RecursoData(sRecurso : TRecursos): Tdate;
+begin
+  Result := StrToDate('01/01/1900');
+
+  try
+    case sRecurso of
+      rcOS            : Result := FrsRecursoSistema.Recursos.OS;
+      rcSped          : Result := FrsRecursoSistema.Recursos.Sped;
+      rcSpedPisCofins : Result := FrsRecursoSistema.Recursos.SpedPisCofins;
+      rcAnvisa        : Result := FrsRecursoSistema.Recursos.Anvisa;
+      rcSintegra      : Result := FrsRecursoSistema.Recursos.Sintegra;
+      rcComandas      : Result := FrsRecursoSistema.Recursos.Comandas;
+      rcMDFE          : Result := FrsRecursoSistema.Recursos.MDFE;
+      rcMobile        : Result := FrsRecursoSistema.Recursos.Mobile;
+      rcEtiquetas     : Result := FrsRecursoSistema.Recursos.Etiquetas;
+      rcOrcamento     : Result := FrsRecursoSistema.Recursos.Orcamento;
+      rcContasPagar   : Result := FrsRecursoSistema.Recursos.ContasPagar;
+      rcContasReceber : Result := FrsRecursoSistema.Recursos.ContasReceber;
+      rcCaixa         : Result := FrsRecursoSistema.Recursos.Caixa;
+      rcBancos        : Result := FrsRecursoSistema.Recursos.Bancos;
+      rcIndicadores   : Result := FrsRecursoSistema.Recursos.Indicadores;
+      rcInventarioP7  : Result := FrsRecursoSistema.Recursos.InventarioP7;
+      rcMKP           : Result := FrsRecursoSistema.Recursos.MKP;
+    end;
+  except
+  end;
+end;
+
+function TValidaRecurso.RecursoQtd(sRecurso: TRecursos): Integer;
+begin
+  Result := 0;
+
+  try
+    case sRecurso of
+      rcQtdNFCE    : Result := FrsRecursoSistema.Recursos.QtdNFCE;
+      rcQtdNFE     : Result := FrsRecursoSistema.Recursos.QtdNFE;
+    end;
+  except
+  end;
+end;
+  
+procedure TValidaRecurso.InformacoesBD();
+var
+  qyAux: TIBQuery;
+  trAux: TIBTransaction;
+  function LimpaNumero(pP1:String):String;
+  var
+     I:Integer;
+  begin
+     Result:='';
+     for I := 1 to length(pP1) do
+     begin
+       if Pos(Copy(pP1,I,1),'0123456789') > 0 then
+          Result := Result+Copy(pP1,I,1);
+     end;
+  end;
+begin
+  try
+    trAux := CriaIBTransaction(FIBDatabase);
+    qyAux := CriaIBQuery(trAux);
+
+    if CampoExisteFB(FIBDatabase, 'EMITENTE', 'RECURSO') then
+    begin
+      try
+        if CampoExisteFB(FIBDatabase, 'EMITENTE', 'RECURSO') then
+        begin
+          //qyAux.Database := FIBDatabase;
+          qyAux.SQL.Text := 'Select CGC, RECURSO from EMITENTE';
+          qyAux.Open;
+
+          FsRecurso := qyAux.FieldByName('RECURSO').AsString;
+          FsCNPJ   := LimpaNumero(qyAux.FieldByName('CGC').AsString);
+        end;
+      except
+        FsRecurso := '';
+        FsCNPJ   := '';
+      end;
+    end;
+  finally
+    FreeAndNil(qyAux);
+    FreeAndNil(trAux);
+  end;
+end;
+
+constructor TValidaRecurso.Create;
+begin
+  inherited;
+
+end;
+
+destructor TValidaRecurso.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TValidaRecurso.SetIBDatabase(const Value: TIBDatabase);
+begin
+  FIBDatabase := Value;
+  if FIBDatabase <> nil then
+  begin
+    //InformacoesBD;
+    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA, FsRecurso);
+    LeRecursos;
+  end;
+end;
+
+function TValidaRecurso.CampoExisteFB(Banco: TIBDatabase; sTabela,
+  sCampo: String): Boolean;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text :=
+                        ' Select F.RDB$RELATION_NAME, F.RDB$FIELD_NAME ' +
+                        ' From RDB$RELATION_FIELDS F ' +
+                        '   Join RDB$RELATIONS R on F.RDB$RELATION_NAME = R.RDB$RELATION_NAME ' +
+                        '     and R.RDB$VIEW_BLR is null ' +
+                        '     and (R.RDB$SYSTEM_FLAG is null or R.RDB$SYSTEM_FLAG = 0) ' +
+                        '     and F.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
+                        '     and F.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
+    IBQUERY.Open;
+    Result := (IBQUERY.IsEmpty = False);
+  finally
+    IBTRANSACTION.Rollback;
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+end;
+
+function TValidaRecurso.CriaIBQuery(
+  IBTRANSACTION: TIBTransaction): TIBQuery;
+begin
+  Result := nil;
+  try
+    Result := TIBQuery.Create(nil);
+    Result.Database    := IBTRANSACTION.DefaultDatabase;
+    Result.Transaction := IBTRANSACTION;
+    if Result.Transaction.Active = False then // 2013-10-15 Evitar invalid transaction handle (expecting explicit transaction start)
+      Result.Transaction.Active := True;
+  except
+    on E: Exception do
+    begin
+      //2013-09-27 ShowMessage(E.Message);
+    end
+  end;
+end;
+
+function TValidaRecurso.CriaIBTransaction(
+  IBDatabase: TIBDatabase): TIBTransaction;
+begin
+  Result := nil;
+  try
+    Result := TIBTransaction.Create(nil);
+    Result.Params.Add('read_committed');
+    Result.Params.Add('rec_version');
+    Result.Params.Add('nowait');
+    Result.DefaultDatabase := IBDatabase;
+    Result.Active := True;  // 2013-10-15 Evitar invalid transaction handle (expecting explicit transaction start)
+  except
+    on E: Exception do
+    begin
+      //2013-09-27 ShowMessage(E.Message);
+    end
+  end;
+end;
+
+end.

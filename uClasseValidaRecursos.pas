@@ -16,29 +16,29 @@ uses
   , IBDatabase
   , IBQuery
   , uTypesRecursos
-  , uClasseRecursos
+  , uClasseDllRecursos
   ;
 
 type
-  TRecurcosDisponiveis = class(TComponent)
+  TRecurcosDisponiveisParaLicenca = class(TComponent)
   private
     FIBTransaction: TIBTransaction;
-    FRecursos: TResourceModule;
+    FRecursos: TRecursosLicenca;
     FQtdDocumentosFrente: Integer;
     FSerial: String;
     FLimiteUsuarios: Integer;
-    //function ValidaQtdDocumentoFrente: Boolean;
+    function GetSerial: String;
+    function GetLimiteUsuarios: Integer;
+    function GetQtdDocumentosFrente: Integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure RefreshRecursos;
     function ValidaQtdDocumentoFrente: Boolean;
     function PermiteRecursoParaSerial: Boolean;
     property IBQTransaction: TIBTransaction read FIBTransaction write FIBTransaction;
-    //property Recursos: TResourceModule read FRecursos write FRecursos;
-    property QtdDocumentosFrente: Integer read FQtdDocumentosFrente write FQtdDocumentosFrente;
-    property Serial: String read FSerial write FSerial;
-    property LimiteUsuarios: Integer read FLimiteUsuarios write FLimiteUsuarios;
+    property QtdDocumentosFrente: Integer read GetQtdDocumentosFrente write FQtdDocumentosFrente;
+    property Serial: String read GetSerial write FSerial;
+    property LimiteUsuarios: Integer read GetLimiteUsuarios write FLimiteUsuarios;
   end;
 
 implementation
@@ -60,47 +60,50 @@ begin
   end;
 end;
 
-{ TRecurcosDisponiveis }
+{ TRecurcosDisponiveisParaLicenca }
 
-constructor TRecurcosDisponiveis.Create(AOwner: TComponent);
+constructor TRecurcosDisponiveisParaLicenca.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FRecursos := TResourceModule.Create(AOwner);
+  FIBTransaction := TIBTransaction.Create(nil);
+  FRecursos := TRecursosLicenca.Create; // Create(AOwner);
   FRecursos.Inicializa;
 end;
 
-destructor TRecurcosDisponiveis.Destroy;
+destructor TRecurcosDisponiveisParaLicenca.Destroy;
 begin
-  FreeAndNil(FRecursos);
+  FRecursos.Free;
+  //FreeAndNil(FRecursos);
+// causa exception (não entendi porque)
   inherited;
 end;
 
-function TRecurcosDisponiveis.PermiteRecursoParaSerial: Boolean;
+function TRecurcosDisponiveisParaLicenca.GetLimiteUsuarios: Integer;
+begin
+  FLimiteUsuarios := FRecursos.LimiteUsuarios;
+  Result := FLimiteUsuarios;
+end;
+
+function TRecurcosDisponiveisParaLicenca.GetQtdDocumentosFrente: Integer;
+begin
+  FQtdDocumentosFrente := FRecursos.Quantidade(rcQtdNFCE);
+  Result := FQtdDocumentosFrente;
+end;
+
+function TRecurcosDisponiveisParaLicenca.GetSerial: String;
+begin
+  FSerial := FRecursos.SerialSistema;
+  Result := FSerial;
+end;
+
+function TRecurcosDisponiveisParaLicenca.PermiteRecursoParaSerial: Boolean;
 begin
   Result := True;
   if Copy(FSerial, 4, 1) = 'T' then
     Result := False;
 end;
 
-procedure TRecurcosDisponiveis.RefreshRecursos;
-begin
-  if FRecursos.Inicializada = False then
-    FRecursos.Inicializa;
-
-  if FRecursos.Inicializada then
-  begin
-
-    // FSerial := ler do banco quando estiver usando Delphi unicode
-
-    FQtdDocumentosFrente := FRecursos.Quantidade(rcQtdNFCE);
-    FSerial              := FRecursos.SerialSistema;
-    FLimiteUsuarios      := FRecursos.LimiteUsuarios;
-
-  end;
-end;
-
-function TRecurcosDisponiveis.ValidaQtdDocumentoFrente: Boolean;
-const LimiteDocFiscal = 100;
+function TRecurcosDisponiveisParaLicenca.ValidaQtdDocumentoFrente: Boolean;
 const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
 const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
 const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
@@ -117,7 +120,7 @@ begin
   if FRecursos.Inicializada then
   begin
 
-    iQtdPermitido := FQtdDocumentosFrente; // FRecursos.Quantidade(rcQtdNFCE);
+    iQtdPermitido := FRecursos.Quantidade(rcQtdNFCE);// FQtdDocumentosFrente; // FRecursos.Quantidade(rcQtdNFCE);
 
     Result := False;
 
@@ -140,20 +143,28 @@ begin
         IBQDOC.SQL.Text :=
           'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
           'from NFCE ' +
-          'where DATA between :INI and :FIM ' +
+          'where DATA >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
           'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
-        IBQDOC.ParamByName('INI').AsString := FormatDateTime('yyyy-mm-', dtDataServidor) + '01';
-        IBQDOC.ParamByName('FIM').AsString := FormatDateTime('yyyy-mm-', dtDataServidor) + FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor)));
+        IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+        //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
         IBQDOC.Open;
 
         iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
 
-        if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
+        IBQDOC.Close;
+
+        //if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
+        if (iQtdPermitido - iQtdEmitido) > 0 then
           Result := True;
+
       end;
+
     end;
 
   end;
+
+  if IBQDOC <> nil then
+    FreeAndNil(IBQDOC);
 
 end;
 
