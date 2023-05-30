@@ -39,8 +39,9 @@ type
     function SistemaSerial(): String;
     function SistemaLimiteUsuarios(): Integer;
     function RecursoLiberado(sRecurso: TRecursos; out DataLimite: TDate): Boolean;
-    function RecursoData(sRecurso: TRecursos): Tdate;
-
+    function RecursoData(sRecurso: TRecursos): TDate;
+    function PermiteRecursoParaSerial: Boolean;
+    function ValidaQtdDocumentoFrente: Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
     function RecursoQtd(sRecurso: TRecursos): Integer;
     property IBDATABASE: TIBDatabase read FIBDatabase write SetIBDatabase;
@@ -170,18 +171,10 @@ begin
 end;
 
 function TValidaRecurso.SistemaSerial(): String;
-//var
-//  rsRecursoSistema : TRecursosSistema;
-  //sRecurso, vCNPJ : string;
 begin
   Result := '';
 
   try
-    // Informações BD
-    //InformacoesBD(FsRecurso, vCNPJ);
-
-    //Descriptografa
-    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,FsRecurso);
 
     if Trim(FsRecurso) <> '' then
     begin
@@ -191,9 +184,8 @@ begin
           if FrsRecursoSistema.CNPJ <> FsCNPJ then
             Exit;
 
-          Result     := FrsRecursoSistema.Serial;
+          Result := FrsRecursoSistema.Serial;
         finally
-          //FreeAndNil(rsRecursoSistema);
         end;
       except
       end;
@@ -204,33 +196,20 @@ begin
 end;
 
 function TValidaRecurso.SistemaLimiteUsuarios(): Integer;
-//var
-  //rsRecursoSistema : TRecursosSistema;
-  //FsRecurso, vCNPJ : string;
 begin
   Result := 1;
 
   try
-    // Informações BD
-    //InformacoesBD(FIBDatabase, FsRecurso, vCNPJ);
-
-    //Descriptografa
-    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,FsRecurso);
-
 
     if Trim(FsRecurso) <> '' then
     begin
       try
         try
-          //rsRecursoSistema := TJson.JsonToObject<TRecursosSistema>(FsRecurso);
-
-          //Conteudo Criptografado deve bater com dados do emitente
           if FrsRecursoSistema.CNPJ <> FsCNPJ then
             Exit;
 
-          Result     := FrsRecursoSistema.Usuarios;
+          Result := FrsRecursoSistema.Usuarios;
         finally
-          //FreeAndNil(rsRecursoSistema);
         end;
       except
       end;
@@ -241,26 +220,16 @@ begin
 end;
 
 function TValidaRecurso.RecursoLiberado(sRecurso : TRecursos; out DataLimite : TDate): Boolean;
-//var
-  //rsRecursoSistema : TRecursosSistema;
-  //FsRecurso, vCNPJ : string;
 begin
   Result := False;
   DataLimite := StrToDate('01/01/1900');
 
   try
-    // Informações BD
-    //InformacoesBD(FIBDatabase, FsRecurso, vCNPJ);
-
-    //Descriptografa
-    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,FsRecurso);
 
     if Trim(FsRecurso) <> '' then
     begin
       try
         try
-          //rsRecursoSistema := TJson.JsonToObject<TRecursosSistema>(FsRecurso);
-
           //Conteudo Criptografado deve bater com dados do emitente
           if FrsRecursoSistema.CNPJ <> FsCNPJ then
             Exit;
@@ -268,7 +237,6 @@ begin
           DataLimite := RecursoData(sRecurso) ;
           Result     := DataLimite >= Date;
         finally
-          //FreeAndNil(rsRecursoSistema);
         end;
       except
       end;
@@ -278,24 +246,15 @@ begin
 end;
 
 function TValidaRecurso.RecursoQuantidade(sRecurso : TRecursos):Integer;
-//var
-  //rsRecursoSistema : TRecursosSistema;
-  //sRecurso, vCNPJ : string;
 begin
   Result := 0;
 
   try
-    // Informações BD
-    //InformacoesBD(FIBDatabase, sRecurso, vCNPJ);
-
-    //Descriptografa
-    //sRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,sRecurso);
 
     if Trim(FsRecurso) <> '' then
     begin
       try
         try
-          //rsRecursoSistema := TJson.JsonToObject<TRecursosSistema>(sRecurso);
 
           //Conteudo Criptografado deve bater com dados do emitente
           if FrsRecursoSistema.CNPJ <> FSCNPJ then
@@ -303,7 +262,7 @@ begin
 
           Result := RecursoQtd(sRecurso) ;
         finally
-          //FreeAndNil(rsRecursoSistema);
+
         end;
       except
       end;
@@ -352,7 +311,7 @@ begin
   except
   end;
 end;
-  
+
 procedure TValidaRecurso.InformacoesBD();
 var
   qyAux: TIBQuery;
@@ -413,8 +372,6 @@ begin
   FIBDatabase := Value;
   if FIBDatabase <> nil then
   begin
-    //InformacoesBD;
-    //FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA, FsRecurso);
     LeRecursos;
   end;
 end;
@@ -481,6 +438,78 @@ begin
       //2013-09-27 ShowMessage(E.Message);
     end
   end;
+end;
+
+function TValidaRecurso.PermiteRecursoParaSerial: Boolean;
+begin
+  Result := True;
+  if Copy(FrsRecursoSistema.Serial, 4, 1) = 'T' then
+    Result := False;
+end;
+
+function TValidaRecurso.ValidaQtdDocumentoFrente: Boolean;
+const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
+const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
+const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
+var
+  iQtdEmitido: Integer;
+  iQtdPermitido: Integer;
+  IBQDOC: TIBQuery;
+  dtDataServidor: TDate;
+  IBTRANSACTION: TIBTransaction;
+begin
+  Result := False;
+
+//criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT
+
+  //if FRecursos.Inicializada then
+  //begin
+
+  iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFCE;
+
+  Result := False;
+
+  if iQtdPermitido = -1 then
+  begin
+    Result := True;
+  end
+  else
+  begin
+    IBTRANSACTION := CriaIBTransaction(FIBDatabase);
+
+    IBQDOC := CriaIBQuery(IBTRANSACTION);
+
+    IBQDOC.Close;
+    IBQDOC.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
+    IBQDOC.Open;
+    dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
+
+    IBQDOC.Close;
+    IBQDOC.SQL.Text :=
+      'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
+      'from NFCE ' +
+      'where DATA >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
+      'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
+    IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+    //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
+    IBQDOC.Open;
+
+    iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
+
+    IBQDOC.Close;
+
+    //if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
+    if (iQtdPermitido - iQtdEmitido) > 0 then
+      Result := True;
+
+  end;
+
+  if IBQDOC <> nil then
+    FreeAndNil(IBQDOC);
+
+  if IBTRANSACTION <> nil then
+    FreeAndNil(IBTRANSACTION);
+
 end;
 
 end.

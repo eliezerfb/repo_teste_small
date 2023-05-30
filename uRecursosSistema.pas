@@ -3,9 +3,13 @@ unit uRecursosSistema;
 interface
 
 uses
+{$IFDEF VER150}
+  classes;
+{$ELSE}
   System.Generics.Collections, REST.Json.Types;
-
 {$M+}
+
+{$ENDIF}
 
 type
   TRecursos = class
