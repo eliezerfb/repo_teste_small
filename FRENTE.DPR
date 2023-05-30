@@ -52,9 +52,10 @@ uses
   uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',
   upafnfce in 'upafnfce.pas',
   ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
-  uTypesRecursos in '..\..\Small Commerce\unit_compartilhada\uTypesRecursos.pas',
-  uClasseRecursos in '..\..\Small Commerce\unit_compartilhada\uClasseRecursos.pas',
-  uClasseValidaRecursos in '..\..\Small Commerce\unit_compartilhada\uClasseValidaRecursos.pas';
+  uTypesRecursos in '..\unit_compartilhada\uTypesRecursos.pas',
+  uValidaRecursosDelphi7 in '..\unit_compartilhada\uValidaRecursosDelphi7.pas',
+  uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
+  uCriptografia in '..\unit_compartilhada\uCriptografia.pas';
 
 {$R *.RES}
 

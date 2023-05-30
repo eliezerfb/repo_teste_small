@@ -32,7 +32,8 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , ExtCtrls
   , DBClient
   , uconstantes_chaves_privadas
-  , uClasseValidaRecursos
+  //, uClasseValidaRecursos
+  , uValidaRecursosDelphi7
   ;
 
 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'; // Sandro Silva 2021-07-28 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'MENU FISCAL INACESSÍVEL NESTA TELA';
@@ -257,21 +258,20 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
-function SerialSistema(Recursos: TRecurcosDisponiveis): String;
-function LimiteUsuarios(Recursos: TRecurcosDisponiveis): Integer;
 function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction;
-  Recursos: TRecurcosDisponiveis): Boolean;
+  Recursos: TValidaRecurso): Boolean;
 
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
   Aplicacao: TMyApplication;
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
-  Recursos: TRecurcosDisponiveis;
+  //RecursosLicenca: TRecurcosDisponiveisParaLicenca;
+  ValidaRecursos: TValidaRecurso;
 
 implementation
 
-uses StrUtils;//, uTypesRecursos, uClasseRecursos;
+uses StrUtils, uTypesRecursos;
 
 //////////////////////////////
 {$IFDEF VER150}
@@ -1899,99 +1899,14 @@ begin
     Result := False;
 end;
 
-function SerialSistema(Recursos: TRecurcosDisponiveis): String;
-begin
-  Result := '';
-  try
-    Recursos.RefreshRecursos;
-    Result := Recursos.Serial;
-  except
-  end;
-end;
-
-function LimiteUsuarios(Recursos: TRecurcosDisponiveis): Integer;
-begin
-  Result := 1;
-  try
-    Recursos.RefreshRecursos;
-    Result := Recursos.LimiteUsuarios;
-  except
-  end;
-end;
-
 function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction;
-  Recursos: TRecurcosDisponiveis): Boolean;
-{
-const LimiteDocFiscal = 100;
-const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
-const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
-const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
-var
-  recurso: TResourceModule;
-  iQtdEmitido: Integer;
-  iQtdPermitido: Integer;
-  IBQDOC: TIBQuery;
-  dtDataServidor: TDate;
-}
-//var
-//  Recurso: TRecurcosDisponiveis;
+  Recursos: TValidaRecurso): Boolean;
 begin
   Result := False;
   try
-   // Recurso := TRecurcosDisponiveis.Create(Application);
-    //Recurso.IBQTransaction := IBTRANSACTION;
-    Recursos.RefreshRecursos;
     Result := Recursos.ValidaQtdDocumentoFrente;
   except
   end;
-  //if Recurso <> nil then
-  //  FreeAndNil(Recurso);
-  {
-  Result := False;
-//criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT
-
-  recurso := TResourceModule.Create(Application);
-  if recurso.Inicializa then
-  begin
-
-    iQtdPermitido := recurso.Quantidade(rcQtdNFCE);
-
-    Result := False;
-
-    if iQtdPermitido = -1 then
-    begin
-      Result := True;
-    end
-    else
-    begin
-      IBQDOC := CriaIBQuery(IBTRANSACTION);
-
-      IBQDOC.Close;
-      IBQDOC.SQL.Text := 'select current_date as DATAATUAL from rdb$database';
-      IBQDOC.Open;
-      dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
-
-      IBQDOC.Close;
-      IBQDOC.SQL.Text :=
-        'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
-        'from NFCE ' +
-        'where DATA between :INI and :FIM ' +
-        'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
-      IBQDOC.ParamByName('INI').AsString := FormatDateTime('yyyy-mm-', dtDataServidor) + '01';
-      IBQDOC.ParamByName('FIM').AsString := FormatDateTime('yyyy-mm-', dtDataServidor) + FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor)));
-      IBQDOC.Open;
-
-      iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
-
-      if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
-        Result := True;
-    end;
-
-  end;
-
-  if Recurso <> nil then
-   recurso.Free;
-  }
 end;
 
 
