@@ -1989,19 +1989,19 @@ begin
   eLimiteCredDisponivel.Text := EmptyStr;
   if not Self.Showing then
     Exit;
-
+  
   if (Form7.sModulo = 'CLIENTES') and (Form7.IBDataSet2CREDITO.AsCurrency > 0) then
   begin
     nValor := TRetornaLimiteDisponivel.New
                                       .SetDatabase(Form7.IBDatabase1)
                                       .SetCliente(Form7.IBDataSet2NOME.AsString)
-                                      .CarregarDados(Form7.IBDataSet2CREDITO.AsCurrency)
+                                      .setLimiteCredito(Form7.IBDataSet2CREDITO.AsCurrency)
+                                      .CarregarDados
                                       .RetornarValor;
 
-    if nValor <> 0 then
-      eLimiteCredDisponivel.Text := FormatFloat(',0.00', nValor)
-    else
-      eLimiteCredDisponivel.Text := FormatFloat(',0.00', Form7.IBDataSet2CREDITO.AsCurrency);
+
+
+    eLimiteCredDisponivel.Text := FormatFloat(',0.00', nValor);
   end;
 end;
 
