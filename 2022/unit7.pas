@@ -33222,33 +33222,36 @@ var
   vQtdParcelas : integer;
 begin
   //Mauricio Parizotto 2023-05-29
-  //Verifica se mudou
-  vDescricaoAntes := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
-                                           ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
-                                           ' From RECEBER'+
-                                           ' Where REGISTRO ='+QuotedStr(ibDataSet7REGISTRO.AsString));
+  try
+    //Verifica se mudou
+    vDescricaoAntes := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
+                                             ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
+                                             ' From RECEBER'+
+                                             ' Where REGISTRO ='+QuotedStr(ibDataSet7REGISTRO.AsString));
 
-  if ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
-  begin
-    if Trim(ibDataSet7NUMERONF.AsString) = '' then
-      Exit;
-      
-    vQtdParcelas := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
-                                         ' Select count(*)  '+
-                                         ' From RECEBER'+
-                                         ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString));
-
-    if vQtdParcelas > 1 then
+    if ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
     begin
-      if MessageDlg('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?',
-                 mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      if Trim(ibDataSet7NUMERONF.AsString) = '' then
+        Exit;
+      
+      vQtdParcelas := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
+                                           ' Select count(*)  '+
+                                           ' From RECEBER'+
+                                           ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString));
+
+      if vQtdParcelas > 1 then
       begin
-        ExecutaComando(' Update RECEBER'+
-                       '   set INSTITUICAOFINANCEIRA ='+QuotedStr(ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
-                       ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString),
-                       ibDataSet7.Transaction );
+        if Application.MessageBox(PansiChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
+                                  'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
+        begin
+          ExecutaComando(' Update RECEBER'+
+                         '   set INSTITUICAOFINANCEIRA ='+QuotedStr(ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
+                         ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString),
+                         ibDataSet7.Transaction );
+        end;
       end;
     end;
+  except
   end;
 end;
 
