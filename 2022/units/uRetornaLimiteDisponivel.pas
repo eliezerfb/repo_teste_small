@@ -64,6 +64,7 @@ begin
   Fqry.SQL.Add('LEFT JOIN RECEBER');
   Fqry.SQL.Add('    ON (RECEBER.NOME=CLIFOR.NOME)');
   Fqry.SQL.Add('    AND (COALESCE(RECEBER.VALOR_RECE,0) = 0)');
+  Fqry.SQL.Add('    AND (COALESCE(RECEBER.ATIVO,0)=0)');
   Fqry.SQL.Add('WHERE');
   Fqry.SQL.Add('(CLIFOR.NOME=:XNOME)');
   Fqry.SQL.Add('GROUP BY CLIFOR.CREDITO');

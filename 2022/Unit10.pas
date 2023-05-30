@@ -1983,17 +1983,26 @@ begin
 end;
 
 procedure TForm10.DefinirLimiteDisponivel;
+var
+  nValor: Currency;
 begin
   eLimiteCredDisponivel.Text := EmptyStr;
   if not Self.Showing then
     Exit;
 
   if (Form7.sModulo = 'CLIENTES') and (Form7.IBDataSet2CREDITO.AsCurrency > 0) then
-    eLimiteCredDisponivel.Text := FormatFloat(',0.00',TRetornaLimiteDisponivel.New
-                                                                              .SetDatabase(Form7.IBDatabase1)
-                                                                              .SetCliente(Form7.IBDataSet2NOME.AsString)
-                                                                              .CarregarDados(Form7.IBDataSet2CREDITO.AsCurrency)
-                                                                              .RetornarValor);
+  begin
+    nValor := TRetornaLimiteDisponivel.New
+                                      .SetDatabase(Form7.IBDatabase1)
+                                      .SetCliente(Form7.IBDataSet2NOME.AsString)
+                                      .CarregarDados(Form7.IBDataSet2CREDITO.AsCurrency)
+                                      .RetornarValor;
+
+    if nValor <> 0 then
+      eLimiteCredDisponivel.Text := FormatFloat(',0.00', nValor)
+    else
+      eLimiteCredDisponivel.Text := FormatFloat(',0.00', Form7.IBDataSet2CREDITO.AsCurrency);
+  end;
 end;
 
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
