@@ -8333,7 +8333,7 @@ var
   F : TextFile;
   sSerieS, sSerial, sLicenca  : String;
   Mais1Ini: TIniFile;
-  I, J, iLimiteUsuariosSimultaneos : Integer;
+  I, iUsuariosConectados, iLimiteUsuariosSimultaneos : Integer;
   url, IP, Alias : String;
   bCargaNova : Boolean;
   Hora, Min, Seg, cent : Word;
@@ -9367,14 +9367,23 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 
-  J := UsuariosConectados(Form1.IBDatabase1);
+  iUsuariosConectados := UsuariosConectados(Form1.IBDatabase1);
 
-  if J > iLimiteUsuariosSimultaneos then
+  if iUsuariosConectados > iLimiteUsuariosSimultaneos then
   begin
+    {Sandro Silva 2023-05-31 inicio
     SmallMsg('Este sistema está licenciado somente para '+IntToStr(iLimiteUsuariosSimultaneos)+' usuários'+Chr(10)+
-             'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
+             'neste momento '+IntToStr(iUsuariosConectados)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
              'Você pode adquirir licenças de uso adicionais acessando'+Chr(10)+// Sandro Silva 2022-12-02 Unochapeco 'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
              'smallsoft.com.br'); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
+    }
+    SmallMsgBox(PChar('Este sistema está licenciado somente para ' + IntToStr(iLimiteUsuariosSimultaneos) + ' usuário(s)' + Chr(10) +
+             'neste momento ' + IntToStr(iUsuariosConectados) + ' estão tentando usar o sistema.' + Chr(10) + Chr(10) +
+             'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+             'entre em contato com a Zucchetti pelo telefone 0800 645 2008')
+             , 'Atenção', MB_ICONWARNING
+             ); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
+    {Sandro Silva 2023-05-31 fim}
 
     Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
@@ -33528,6 +33537,9 @@ procedure TForm1.ppMenuFiscalPAFNFCePopup(Sender: TObject);
 begin
   PopupMenu1Popup(PopupMenu1);
   MesasAbertasPAFNFCe.Caption := sMesasOuContas+' abertas...';
+  MesasAbertasPAFNFCe.Visible := True;
+  if AnsiContainsText(Form1.sConcomitante, 'CONCOMITANTE') then // Sandro Silva 2023-05-31
+    MesasAbertasPAFNFCe.Visible := False;
   {Sandro Silva 2023-02-14 inicio
   SadasIdentificadaspeloCPFCNPJ1.Visible        := (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF));
   VendasIdentificadaspeloCPFCNPJPAFNFCe.Visible := (SadasIdentificadaspeloCPFCNPJ1.Visible = False);
