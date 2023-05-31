@@ -24691,6 +24691,7 @@ var
   sAnexo: String;
   cMensagem: String;
   cMsgAnexo: string;
+  cNomePDF: String;
 begin
   //
   Form7.ibDataSet2.Close;
@@ -24733,70 +24734,76 @@ begin
         //
         if (validaEmail(sEmail)) or (validaEmail(sEmail1)) then
         begin
-          if sEnviarDAnfePorEmail = 'S' then
-          begin
-            while FileExists(pChar('danfe.pdf')) do
+          cNomePDF := 'danfe_NF_' + Form7.ibDataSet15NUMERONF.AsString + '.pdf';
+          try
+            if sEnviarDAnfePorEmail = 'S' then
             begin
-              DeleteFile(pChar('danfe.pdf'));
-              Sleep(100);
-            end;
-            spdNFe.ExportarDanfe(sLote, fNfe, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1,Form1.sAtual+'\danfe.pdf');
-            sCaminhoPDF := Form1.sAtual+'\danfe.pdf';
-
-            if not FileExists(pChar('danfe.pdf')) then
-              sCaminhoPDF := EmptyStr;
-          end;
-
-          if sZiparXML = 'S' then
-          begin
-            ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')+'" "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')+'"'), '', SW_SHOWMAXIMIZED);
-            while ConsultaProcesso('szip.exe') do
-            begin
-              Application.ProcessMessages;
-              sleep(100);
-            end;
-            while not FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')) do
-            begin
-              sleep(100);
-            end;
-            sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip';
-          end else
-            sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml';
-
-          if (sCaminhoPDF <> EmptyStr) or (sCaminhoXML <> EmptyStr) then
-          begin
-            if sCaminhoPDF <> EmptyStr then
-            begin
-              sAnexo    := sCaminhoPDF;
-              cMsgAnexo := 'PDF';
-            end;
-            if (sCaminhoXML <> EmptyStr) then
-            begin
-              if sAnexo <> EmptyStr then
+              while FileExists(pChar(cNomePDF)) do
               begin
-                sAnexo := sAnexo + ';';
-                cMsgAnexo := 'XML e o PDF';
-              end else
-                cMsgAnexo := 'XML';
-              sAnexo := sAnexo + sCaminhoXML;
+                DeleteFile(pChar(cNomePDF));
+                Sleep(100);
+              end;
+              spdNFe.ExportarDanfe(sLote, fNfe, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1,Form1.sAtual+'\' + cNomePDF);
+              sCaminhoPDF := Form1.sAtual+'\'+cNomePDF;
+
+              if not FileExists(pChar(cNomePDF)) then
+                sCaminhoPDF := EmptyStr;
             end;
 
-            cMensagem := TTextoEmailFactory.New
-                                           .NFe
-                                           .setDescrAnexo(cMsgAnexo)
-                                           .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
-                                           .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
-                                           .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
-                                           .RetornarTexto;
+            if sZiparXML = 'S' then
+            begin
+              ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')+'" "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')+'"'), '', SW_SHOWMAXIMIZED);
+              while ConsultaProcesso('szip.exe') do
+              begin
+                Application.ProcessMessages;
+                sleep(100);
+              end;
+              while not FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')) do
+              begin
+                sleep(100);
+              end;
+              sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip';
+            end else
+              sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml';
 
-            if (validaEmail(sEmail)) then
+            if (sCaminhoPDF <> EmptyStr) or (sCaminhoXML <> EmptyStr) then
             begin
-              Unit7.EnviarEMail('',sEmail,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(sAnexo),False);
+              if sCaminhoPDF <> EmptyStr then
+              begin
+                sAnexo    := sCaminhoPDF;
+                cMsgAnexo := 'PDF';
+              end;
+              if (sCaminhoXML <> EmptyStr) then
+              begin
+                if sAnexo <> EmptyStr then
+                begin
+                  sAnexo := sAnexo + ';';
+                  cMsgAnexo := 'XML e o PDF';
+                end else
+                  cMsgAnexo := 'XML';
+                sAnexo := sAnexo + sCaminhoXML;
+              end;
+
+              cMensagem := TTextoEmailFactory.New
+                                             .NFe
+                                             .setDescrAnexo(cMsgAnexo)
+                                             .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
+                                             .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
+                                             .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
+                                             .RetornarTexto;
+
+              if (validaEmail(sEmail)) then
+              begin
+                Unit7.EnviarEMail('',sEmail,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(sAnexo),False);
+              end;
+              if (validaEmail(sEmail1)) then
+              begin
+                Unit7.EnviarEMail('',sEmail1,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(sAnexo),False);
+              end;
             end;
-            if (validaEmail(sEmail1)) then
-            begin
-              Unit7.EnviarEMail('',sEmail1,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(sAnexo),False);
-            end;
+          finally
+            if (sCaminhoPDF <> EmptyStr) and (FileExists(pChar(sCaminhoPDF))) then
+              DeleteFile(pChar(sCaminhoPDF));
           end;
           if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
           begin
