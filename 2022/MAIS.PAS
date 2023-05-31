@@ -12500,6 +12500,7 @@ begin
     vBody := documentoAtivo.Body.OuterHTML;
 
     vRecurso := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
+    vRecurso := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
     vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vRecurso);
 
     ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
