@@ -2173,7 +2173,8 @@ type
     fValorAnterior : Real;
     //
     iKey : Integer;
-    //
+
+    procedure RefreshDados;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
     function AliqICMdoCliente16: double;
@@ -11856,15 +11857,15 @@ end;
 procedure TForm7.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   Form7.iKey := Key;
-  //
+
   if Key = VK_F11  then
     Form7.Agrupar1Click(Sender);
   if Key = VK_F3   then
     Form20.Button1Click(Sender);
   if Key = VK_F5   then
   begin
+    {
     Screen.Cursor            := crHourGlass;
     AgendaCommit(True);
     //
@@ -11872,8 +11873,10 @@ begin
     Form7.Show;
     //
     Screen.Cursor            := crDefault;
+    Mauricio Parizotto 2023-05-31}
+
+    RefreshDados;
   end;
-  //
 end;
 
 procedure TForm7.Imprimircheque1Click(Sender: TObject);
@@ -33253,6 +33256,17 @@ begin
     end;
   except
   end;
+end;
+
+procedure TForm7.RefreshDados;
+begin
+  Screen.Cursor            := crHourGlass;
+  AgendaCommit(True);
+
+  Form7.Close;
+  Form7.Show;
+  
+  Screen.Cursor            := crDefault;
 end;
 
 end.

@@ -707,13 +707,11 @@ end;
 
 function GravaRegistro(sP1 : boolean):Boolean;
 begin
-  //
   if Form7.bEstaSendoUsado then
   begin
     Form7.ArquivoAberto.Cancel;
   end else
   begin
-    //
     if Form7.ArquivoAberto.Modified then
     begin
       Form7.ArquivoAberto.Post;
@@ -721,9 +719,8 @@ begin
     begin
       Form7.ArquivoAberto.Cancel;
     end;
-    //
   end;
-  //
+
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -731,55 +728,50 @@ begin
       begin
         Form7.IBDataSet2.Post;
       end;
-    except end;
+    except
+    end;
   end;
-  //
+
   try
     if Form7.ibDataSet13.Modified then
     begin
       Form7.IBDataSet13.Post;
     end;
-  except end;
-  //
+  except
+  end;
+
   Form7.IBTransaction1.CommitRetaining;
   Result := True;
-  //
 end;
 
 function Exemplo(sP1 : boolean):Boolean;
 begin
-  //
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDAE.AsString)+' ');
   Form1.ibQuery1.Open;
-  //
+
   Form10.Label89.Caption := 'Compra 1 '+Form1.IBQuery1.FieldByname('DESCRICAO').AsString+' e vende'+chr(10);
-  //
+
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDA.AsString)+' ');
   Form1.ibQuery1.Open;
-  //
+
   Form10.Label89.Caption := Form10.Label89.Caption + FloatToStr(Form7.ibDataSet4FATORC.AsFloat) + ' ' + Form1.IBQuery1.FieldByname('DESCRICAO').AsString;
-  //
+
   Result := True;
-  //
 end;
 
 function AtualizaTela(sP1 : boolean):Boolean;
 var
-  //
   I : Integer;
   FileStream : TFileStream;
   BlobStream : TStream;
   sTotal     : string;
   JP2         : TJPEGImage;
-  //
 begin
-  //
   // Posiciona o foco quando ativa
-  //
   Result := True;
   try
     if Form7.sModulo = 'ESTOQUE' then
@@ -805,7 +797,7 @@ begin
       end;
     end;
   except end;
-  //
+
   try
     if Form7.sModulo = 'CAIXA' then
     begin
@@ -824,9 +816,9 @@ begin
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
     end;
-    //
+
     Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
-    //
+
     if sP1 then
     begin
       if Form10.SMALL_DBEdit1.CanFocus then
@@ -840,14 +832,12 @@ begin
       else if Form10.SMALL_DBEdit5.CanFocus then
         Form10.SMALL_DBEdit5.SetFocus;
     end;
-    //
+
     Form10.Caption := 'Ficha';
-    //
+
     if Form7.sModulo = 'CLIENTES' then
     begin
-      //
 //      Form10.ComboBox8.Text := Form7.ArquivoAberto.FieldByName('CLIFOR').AsString;
-      //
       if AllTrim(Form7.ArquivoAberto.FieldByName('CLIFOR').AsString)<>'' then
       begin
         for I := 0 to Form10.ComboBox8.Items.Count -1 do
@@ -867,11 +857,10 @@ begin
           Form10.ComboBox8.ItemIndex := 0;
         end;
       end;
-      //
+
       Form10.Caption := form7.ibDataSet2NOME.AsString;
-      //
     end;
-    //
+
     if Form7.sModulo = 'RECEBER' then
     begin
       Form7.ibDataSet2.Close;
@@ -879,16 +868,14 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-    //
+
     if (Form7.sModulo = 'CLIENTES') then
     begin
-      //
       Form10.Image5.Picture := nil;
       Form10.Image3.Picture := nil;
-      //
+
       if FileExists(Form10.sNomeDoJPG) then
       begin
-        //
         if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
           Form7.ibDataset2.Edit;
         FileStream := TFileStream.Create(Form10.sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
@@ -899,11 +886,10 @@ begin
           FileStream.Free;
           BlobStream.Free;
         end;
-        //
+
         Deletefile(pChar(Form10.sNomeDoJPG));
-        //
       end;
-      //
+
       if Form7.ibDataset2FOTO.BlobSize <> 0 then
       begin
         BlobStream:= Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmRead);
@@ -921,23 +907,19 @@ begin
     end
     else
       Form10.Image5.Picture := Form10.Image3.Picture;
-    //
+
     if (Form7.sModulo = 'ESTOQUE') then
     begin
-      //
       Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
-      //
+
       Form10.Image5.Picture := nil;
       Form10.Image3.Picture := nil;
-      //
+
       if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
       begin
-        //
         // FOTOS ANTIGAS
-        //
         if FileExists(Form10.sNomeDoJPG) then
         begin
-          //
           if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
             Form7.ibDataset4.Edit;
           FileStream := TFileStream.Create(pChar(Form10.sNomeDoJPG),fmOpenRead or fmShareDenyWrite);
@@ -948,13 +930,10 @@ begin
             FileStream.Free;
             BlobStream.Free;
           end;
-          //
           // Form7.ibDataset4.Post;
-          //
           Deletefile(pChar(Form10.sNomeDoJPG));
-          //
         end;
-        //
+
         if Form7.ibDataset4FOTO.BlobSize <> 0 then
         begin
           BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO, bmRead);
@@ -978,19 +957,16 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
-    //
+
     if Form7.sModulo = 'GRUPOS' then
     begin
-      //
       Form10.Image5.Picture:=nil;
       Form10.Image3.Picture:=nil;
-      //
+
       if AllTrim(Form7.ibDataSet21NOME.AsString) <> '' then
       begin
-        //
         if FileExists(Form10.sNomeDoJPG) then
         begin
-          //
           if not (Form7.ibDataset21.State in ([dsEdit, dsInsert])) then Form7.ibDataset21.Edit;
           FileStream := TFileStream.Create(Form10.sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
           BlobStream := Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmWrite);
@@ -1000,13 +976,10 @@ begin
             FileStream.Free;
             BlobStream.Free;
           end;
-          //
           // Form7.ibDataset21.Post;
-          //
           Deletefile(pChar(Form10.sNomeDoJPG));
-          //
         end;
-        //
+        
         if Form7.ibDataset21FOTO.BlobSize <> 0 then
         begin
           BlobStream:= Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmRead);
@@ -1026,17 +999,14 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
-    //
+
     // Mantem a proporção da imagem
-    //
     try
-      //
       if Form10.Image5.Picture.Width <> 0 then
       begin
-        //
         Form10.Image5.Width   := 256;
         Form10.Image5.Height  := 256;
-        //
+
         if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
         begin
           Form10.Image5.Width  := StrToInt(StrZero((Form10.Image5.Picture.Width * (Form10.Image5.Width / Form10.Image5.Picture.Width)),10,0));
@@ -1046,57 +1016,46 @@ begin
           Form10.Image5.Width  := StrToInt(StrZero((Form10.Image5.Picture.Width * (Form10.Image5.Height / Form10.Image5.Picture.Height)),10,0));
           Form10.Image5.Height := StrToInt(StrZero((Form10.Image5.Picture.Height* (Form10.Image5.Height / Form10.Image5.Picture.Height)),10,0));
         end;
-        //
+
         Form10.Image5.Picture := Form10.Image5.Picture;
-        //
       end;
-      //  
     except
     end;
-    //
   except
   end;
-  //
   // Sandro Silva 2022-09-27 Result := True;
-  //
 end;
 
 function tForm10.AtualizaMobile(sP1: Boolean): Boolean;
 var
   s, sSenha: String;
-  //
+
   Mais1Ini: TIniFile;
   sSecoes: TStrings;
   I, iI: Integer;
   sCNPJ: String;
   _bmp: TBitmap;
   Picture: TPicture;
-  //
+
   jp: TJPEGImage;
   F: TExtFile;
   Rect: tRect;
   BlobStream: TStream;
   fDesconto: Real;
-  //
-//  Hora, Min, Seg, cent : Word;
-//  tInicio : tTime;
-  //
 begin
-  //
   try
     DownloadDoArquivo(PChar('http://www.smallsoft.com.br/2.php'),PChar('2.php'));
   except end;
-  //
+
   Form1.DownloadSmallMobile1Click(Form1.SincronizarSmallMobile1);
-  //
+
   DeleteFile(pChar(Form1.sAtual+'\estoque.sql'));
   DeleteFile(pChar(Form1.sAtual+'\clifor.sql'));
   DeleteFile(pChar(Form1.sAtual+'\usuarios.sql'));
-  //
+
   sCNPJ := AllTrim(LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString));
-  //
+
   try
-    //
     if sCNPJ <> '' then
     begin
       try
@@ -2035,6 +1994,7 @@ end;
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   I : Integer;
+  vRegistro : string;
 begin
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;  
@@ -2056,7 +2016,7 @@ begin
   begin
     Orelhas.ActivePage := Orelha_CFOP;
   end;
-  
+
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
   
@@ -2069,6 +2029,22 @@ begin
   
   Form10.Hide;
   GravaRegistro(True);
+
+  //Mauricio Parizotto 2023-05-31
+  //Fas refresh do grid e volta para o registro atual
+  if Form7.sModulo = 'RECEBER' then
+  begin
+    try
+      vRegistro := Form7.ibDataSet7REGISTRO.AsString;
+      Form7.ibDataSet7.DisableControls;
+      Form7.ibDataSet7.Close;
+      Form7.ibDataSet7.Open;
+      Form7.ibDataSet7.Locate('REGISTRO',vRegistro,[]);
+    except
+    end;
+
+    Form7.ibDataSet7.EnableControls;
+  end;
 end;
 
 procedure TForm10.DBGrid1KeyDown(Sender: TObject; var Key: Word;
