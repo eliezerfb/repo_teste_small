@@ -15682,13 +15682,15 @@ begin
   {Sandro Silva 2023-05-30 inicio}
   if ValidaRecursos.PermiteRecursoParaSerial = False then
   begin
-    Form1.MovimentoDia1.Enabled := False;
-    Form1.NFCenoperodo1.Enabled := False;
-    Form1.Vendaspor1.Enabled := False;
+    Form1.MovimentoDia1.Enabled   := False;
+    Form1.NFCenoperodo1.Enabled   := False;
+    Form1.Vendaspor1.Enabled      := False;
+    Form1.BalanaAutonoma1.Enabled := False;
+
+    Form1.bBalancaAutonoma := False;
+    Form1.BalanaAutonoma1.Checked := Form1.bBalancaAutonoma;
   end;
   {Sandro Silva 2023-05-30 fim}
-
-
 
   if Form1.sModeloECF = '12' then
   begin
