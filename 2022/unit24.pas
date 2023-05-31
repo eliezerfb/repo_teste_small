@@ -14,7 +14,7 @@ type
 
   TForm24 = class(TForm)
     ScrollBox1: TScrollBox;
-    Panel1: TPanel;
+    pnlNota: TPanel;
     Label3: TLabel;
     Label4: TLabel;
     Label2: TLabel;
@@ -155,17 +155,17 @@ type
     Image5: TImage;
     Button1: TBitBtn;
     SMALL_DBEdit51: TSMALL_DBEdit;
-    Label60: TLabel;
     SMALL_DBEdit52: TSMALL_DBEdit;
-    Label61: TLabel;
+    lblPFCP: TLabel;
     SMALL_DBEdit53: TSMALL_DBEdit;
-    Label62: TLabel;
+    lblFCP: TLabel;
     SMALL_DBEdit54: TSMALL_DBEdit;
-    Label63: TLabel;
+    lblBCFCPST: TLabel;
     SMALL_DBEdit55: TSMALL_DBEdit;
-    Label69: TLabel;
+    lblPFCPST: TLabel;
     SMALL_DBEdit56: TSMALL_DBEdit;
-    Label70: TLabel;
+    lblFCPST: TLabel;
+    lblBcFCP: TLabel;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -211,12 +211,10 @@ type
       Shift: TShiftState);
     procedure DBGrid1CellClick(Column: TColumn);
     procedure DBGrid1ColExit(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure DBGrid2Exit(Sender: TObject);
     procedure SMALL_DBEdit40KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SMALL_DBEdit9Exit(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure OkEnter(Sender: TObject);
     procedure SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -2249,11 +2247,6 @@ begin
   Form12.SMALL_DBEdit42.Repaint;
 end;
 
-procedure TForm24.FormResize(Sender: TObject);
-begin
-//  Form24.WindowState := WsMaximized;
-end;
-
 procedure TForm24.DBGrid2Exit(Sender: TObject);
 begin
   if (dbGrid2.Top = SMALL_DBEdit41.Top + SMALL_DBEdit41.Height)
@@ -2270,17 +2263,6 @@ end;
 procedure TForm24.SMALL_DBEdit9Exit(Sender: TObject);
 begin
   DbGrid1.SetFocus;
-end;
-
-procedure TForm24.FormCreate(Sender: TObject);
-begin
-  //
-//  Form24.BorderIcons := [biSystemMenu,biMaximize]; //[biSystemMenu];
-//  Form24.BorderStyle := bsSingle;
-  //
-  // Form24.BorderIcons := [biSystemMenu];
-  // Form24.BorderStyle := bsDialog;
-  //
 end;
 
 procedure TForm24.OkEnter(Sender: TObject);
@@ -2344,7 +2326,7 @@ begin
   //
   Grid_Compra(True);
   //
-  Panel1.Left                   := 10;
+  pnlNota.Left                   := 10;
   Form24.VertScrollBar.Position := 1;
   //
   Form7.ibDataSet14.DisableControls;
@@ -2704,8 +2686,8 @@ begin
     //
     // FOTO
     //
-    Panel9.Top    := Form24.Panel1.Top;
-    Panel9.Left   := Panel1.Left + Panel1.Width + 10;
+    Panel9.Top    := Form24.pnlNota.Top;
+    Panel9.Left   := pnlNota.Left + pnlNota.Width + 10;
     //
     Panel9.Width  := 1050 - Panel9.Left - 20;
     Panel9.Height := Panel9.Width;
@@ -2714,7 +2696,7 @@ begin
     Panel5.Top    := Panel9.Top + Panel9.Height + 10;
     Panel5.Left   := Panel9.Left;
     Panel5.Width  := 1050  - Panel5.Left - 20;
-    Panel5.Height := Panel1.Height - (Panel5.Top - Panel1.Top);
+    Panel5.Height := pnlNota.Height - (Panel5.Top - pnlNota.Top);
     //
     Label64.Caption := 'Mod: '+Form7.ibDataSet24MODELO.AsString;
     //
@@ -3571,15 +3553,12 @@ var
   Mais1Ini : tIniFile;
   iA, I : Integer;
 begin
-  //
   if dBGrid1.Top <> 225 then
   begin
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-    //
+
     if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
     begin
-      //
       Label15.Visible := False;
       Label16.Visible := False;
       Label17.Visible := False;
@@ -3591,7 +3570,7 @@ begin
       Label46.Visible := False;
       Label47.Visible := False;
       Label48.Visible := False;
-      //
+
       SMALL_DBEdit6.Visible  := False;
       SMALL_DBEdit7.Visible  := False;
       SMALL_DBEdit8.Visible  := False;
@@ -3603,45 +3582,47 @@ begin
       SMALL_DBEdit31.Visible  := False;
       SMALL_DBEdit32.Visible  := False;
       SMALL_DBEdit33.Visible := False;
-      //
+
       dBGrid1.Top    := 225;
       dBGrid1.Height := 126;
-      //
+
       Label49.Top := 555;
       Label50.Top := 555;
       Label51.Top := 555;
       Label52.Top := 555;
       Label53.Top := 555;
       Label54.Top := 555;
-      //
+
       SMALL_DBEdit15.Top := 570;
       SMALL_DBEdit34.Top := 570;
       SMALL_DBEdit35.Top := 570;
       SMALL_DBEdit36.Top := 570;
       SMALL_DBEdit37.Top := 570;
       SMALL_DBEdit38.Top := 570;
-      //
+
       Label1.Top  := 595;
       DBMemo1.Top := 610;
-      //
-      Panel1.Height := 625;
-      //
+
+      pnlNota.Height := 625;
+
       Mais1ini.Free;
-      //
-      iA := Form7.Height - Panel1.Height - Ok.Height - 60;
-      //
+
+      iA := Form7.Height - pnlNota.Height - Ok.Height - 60;
+
       if iA < 0 then
         iA := 0;
-//      if iA > 0 then
+
       begin
-        //
-        dBGrid1.Height := dBGrid1.Height + iA;
-        Panel1.Height  := Panel1.Height + iA;
-        //
+        dBGrid1.Height  := dBGrid1.Height + iA;
+        pnlNota.Height  := pnlNota.Height + iA;
+
         for I := 0 to Form12.ComponentCount-1 do
         begin
           try
-            if (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Popup') and (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Image') then
+            if (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Popup')
+              and (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Image')
+              //Mauricio Parizotto 2023-05-31 só os componente do pnlNota
+              and (TControl(Components[I]).Parent.Name = 'pnlNota')  then
             begin
               if TSMALL_DBEdit(Components[I]).Top > dBGrid1.Top then
                 TSMALL_DBEdit(Components[I]).Top := TSMALL_DBEdit(Components[I]).Top + iA -75;
@@ -3651,14 +3632,10 @@ begin
           end;
         end;
       end;
-      //
     end;
   end;
-  //
-//  Label89.Top := ComboBox13.Top + 30 -5;
-  Ok.Top      := Panel1.Top + Panel1.Height + 10;
-  //
-  //
+
+  Ok.Top      := pnlNota.Top + pnlNota.Height + 10;
 end;
 
 procedure TForm24.SMALL_DBEdit41Click(Sender: TObject);

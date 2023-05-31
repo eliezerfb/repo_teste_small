@@ -354,8 +354,6 @@ type
     procedure SVCSefazVirtualdeContingncia1Click(Sender: TObject);
     procedure Image205MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Image3MouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -391,7 +389,6 @@ type
     procedure N4001Click(Sender: TObject);
     procedure Panel4MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Panel_0DblClick(Sender: TObject);
     procedure Label_bola_NFEClick(Sender: TObject);
     procedure Label_bola_caixaClick(Sender: TObject);
     procedure Label_bola_bancoClick(Sender: TObject);
@@ -2237,20 +2234,6 @@ var
   iTop, iFix, iFixL, iLeft : Integer;
 begin
   Form1.Align    := alClient;
-  
-{
-  Form1.Panel_2.Left   := (Screen.Width) div 2;
-  Form1.Panel_2.Width  := (Screen.Width) div 2;
-  Form1.Panel_2.Height := (Screen.Width) div 2;
-  //
-  if (Form1.Width - Form1.Panel_2.Left) <= (Form1.Height - Form1.Panel_2.Top) then
-  begin
-    Form1.Panel_2.Top    := Form1.Height - Form1.Panel_2.Height + 5;
-  end else
-  begin
-    Form1.Panel_2.Top    := Form1.Panel_0.Top + Form1.Panel_0.Height + 5 + 5;
-  end;
-}
 
   Form1.Panel_3.Left   := 0; // (Screen.Width - (1000)) div 2;
   Form1.Panel_3.Top    := Form1.Panel_0.Top + Form1.Panel_0.Height;
@@ -4417,9 +4400,20 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     //
   end;
-  //
-  // then end
-  //
+
+  {Image200.Transparent := False;
+  Image201.Transparent := False;
+  Image201_.Transparent := False;
+  Image202.Transparent := False;
+  Image203.Transparent := False;
+  Image204.Transparent := False;
+  Image210.Transparent := False;
+  Image205.Transparent := False;
+  Image206.Transparent := False;
+  Image207.Transparent := False;
+  Image208.Transparent := False;
+  Image201C.Transparent := False;
+  Image201S.Transparent := False;}
 end;
 
 procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
@@ -6204,73 +6198,59 @@ end;
 
 procedure TForm1.Label201MouseLeave(Sender: TObject);
 begin
-  //
   // Nota
-  //
   Form44.Close;
-  //
+
   if not ((Form7.sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO')) then
   begin
     Form1.Panel_3.Visible := True;
   end;
-  //
+
   // Vendas
-  //
   if Label201.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'VENDA') then
     begin
-      //
       Image201.Picture := Image201_R.Picture;
       Label201.Font.Style := [];
       Label201.Font.Color := clBlack;
-      //
+
       Image201S.Picture    := Image201S_R.Picture;
       Label201S.Font.Style := [];
       Label201S.Font.Color := clBlack;
-      //
     end;
-    //
+
     if (Form7.sRPS = 'S') then
     begin
       Image201.Picture := Image201_R.Picture;
       Label201.Font.Style := [];
       Label201.Font.Color := clBlack;
     end;
-    //
   end;
-  //
+
   // Compras
-  //
   if Label201C.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'COMPRA') then
     begin
       Image201C.Picture    := Image201C_R.Picture;
       Label201C.Font.Style := [];
       Label201C.Font.Color := clBlack;
     end;
-    //
   end;
-  //
+
   // Serviços
-  //
   if Label201S.Font.Style <> [] then
   begin
-    //
     if (Form7.sRPS <> 'S') then
     begin
       Image201S.Picture    := Image201S_R.Picture;
       Label201S.Font.Style := [];
       Label201S.Font.Color := clBlack;
     end;
-    //
   end;
-  //
+
   // INDICADORES
-  //
   if Label200.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'INDICADORES') then
@@ -6278,12 +6258,10 @@ begin
       Image200.Picture := Image200_R.Picture;
       Label200.Font.Style := [];
       Label200.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
   end;
-  //
+
   // OS
-  //
   if Label201_.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'OS') then
@@ -6291,132 +6269,98 @@ begin
       Image201_.Picture := Image201__R.Picture;
       Label201_.Font.Style := [];
       Label201_.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
   end;
-  //
+
   // ESTOQUE
-  //
   if Label202.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'ESTOQUE') then
     begin
       Image202.Picture := Image202_R.Picture;
       Label202.Font.Style := [];
       Label202.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // CADATRO
-  //
   if Label203.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'CLIENTES') then
     begin
       Image203.Picture := Image203_R.Picture;
       Label203.Font.Style := [];
       Label203.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // RECEBER
-  //
   if Label204.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'RECEBER') then
     begin
       Image204.Picture := Image204_R.Picture;
       Label204.Font.Style := [];
       Label204.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // PAGAR
-  //
   if Label210.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'PAGAR') then
     begin
       Image210.Picture := Image210_R.Picture;
       Label210.Font.Style := [];
       Label210.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // CAIXA
-  //
   if Label205.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'CAIXA') then
     begin
       Image205.Picture := Image205_R.Picture;
       Label205.Font.Style := [];
       Label205.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // BANCOS
-  //
   if Label206.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'BANCOS') then
     begin
       Image206.Picture := Image206_R.Picture;
       Label206.Font.Style := [];
       Label206.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // CONFIG
-  //
   if Label207.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'CONFIG') then
     begin
       Image207.Picture := Image207_R.Picture;
       Label207.Font.Style := [];
       Label207.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   // BACKUP
-  //
   if Label208.Font.Style <> [] then
   begin
-    //
     if (Form7.sModulo <> 'BACKUP') then
     begin
       Image208.Picture := Image208_R.Picture;
       Label208.Font.Style := [];
       Label208.Font.Color := clBlack;
-      // Form1.Panel_0.Repaint;
     end;
-    //
   end;
-  //
+
   MontaTela(True);
-  //
 end;
 
 procedure TForm1.Label201MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -10759,27 +10703,13 @@ begin
 end;
 
 
-procedure TForm1.Image3MouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  //
-{
-  Form1.Label2.Caption := 'SMALL COMMERCE';
-  Form1.Label3.Caption := 'Suíte de Aplicativos Integrados. Completo para  Pequenas Empresas de Comércio.';
-}
-  //
-end;
-
 procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
-  //
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
     begin
-      //
       if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) then
       begin
         if (Form12.Visible) then
@@ -10787,7 +10717,7 @@ begin
         else
           Form7.BringToFront;
       end;
-      //
+
       if ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
       begin
         if (Form24.Visible) then
@@ -10822,9 +10752,7 @@ begin
         end;
       end;
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm1.Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -10940,9 +10868,7 @@ end;
 procedure TForm1.Label204MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move RECEBER
-  //
   if Label204.Font.Style <> [fsBold] then
   begin
     Image204.Picture    := Image204_X.Picture;
@@ -10959,19 +10885,17 @@ begin
              'pode ter em seu negócio'
              );
       Form1.BringToFront;
-            //
+
       Form44.Width  := Form7.Width;
       Form44.Top    := Form7.Top;
       Form44.Height := Form7.Height;
       Form44.LEft   := Form7.Left;
-      //
+
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
-
     end;
   end;
-  //
 end;
 
 procedure TForm1.Label205MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -11510,22 +11434,54 @@ end;
 procedure TForm1.Panel4MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
+  {
   if Form5.Visible then Form5.BringToFront;
   if Form7.Visible then Form7.BringToFront;
   if Form7.Visible and Form10.Visible then Form10.BringToFront;
   if Form12.Visible then Form12.BringToFront;
   if Form24.Visible then Form24.BringToFront;
   if Form48.Visible then Form48.BringToFront;
-end;
+  Mauricio Parizotto  }
 
-procedure TForm1.Panel_0DblClick(Sender: TObject);
-begin
-//  Form5.Show;
+  if Form5.Visible then
+  begin
+    Form5.BringToFront;
+    Exit;
+  end;
+
+  if Form7.Visible and Form10.Visible then
+  begin
+    Form10.BringToFront;
+    Exit;
+  end;
+
+  if Form12.Visible then
+  begin
+    Form12.BringToFront;
+    Exit;
+  end;
+
+  if Form24.Visible then
+  begin
+    Form24.BringToFront;
+    Exit;
+  end;
+
+  if Form48.Visible then
+  begin
+    Form48.BringToFront;
+    Exit;
+  end;
+
+  if Form7.Visible then
+  begin
+    Form7.BringToFront;
+    Exit;
+  end;
 end;
 
 procedure TForm1.Label_bola_NFEClick(Sender: TObject);
 begin
-  //
   if Form1.bNotaCompraLiberada then
   begin
     Form1.Image201Click(Sender);
