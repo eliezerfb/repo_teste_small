@@ -485,6 +485,7 @@ type
     function GetCNPJCertificado(SubjectName: String): String;
     function Small_InputForm(sP1, sP2, sP3: String) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
+    function Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0): String;    
     function NcmDeMedicamentos(sNcm: String): Boolean;
     function BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
       Shift: TShiftState): Word; // Sandro Silva 2022-10-18
@@ -954,6 +955,30 @@ begin
   Form29.Edit1.Visible  := True;
   Form29.Edit1.Text     := sP3;
   Form29.Edit1.Left     := Form29.Label1.Left;
+
+  Form29.ShowModal;
+
+  Result                := Form29.Edit1.Text;
+
+  Form29.Edit1.Visible  := False;
+  Form7.AlphaBlendValue := 255;
+  Form29.Edit1.Text     := '';
+end;
+
+function tForm1.Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0) : String;
+begin
+  Form7.AlphaBlend      := True;
+  Form7.AlphaBlendValue := 0;
+
+  Form29.Label1.Font.Size := 18;
+  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+
+  Form29.Edit1.Visible  := True;
+  Form29.Edit1.Text     := sP3;
+  Form29.Edit1.Left     := Form29.Label1.Left;
+
+  Form29.Edit1.MaxLength := AnMaxLength;
+  Form29.DefinirSomenteNumeros;
 
   Form29.ShowModal;
 

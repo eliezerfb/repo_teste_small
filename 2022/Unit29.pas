@@ -44,10 +44,12 @@ type
       Shift: TShiftState);
     procedure Edit_01KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure SomenteNumerosKeyPress(Sender: TObject; var Key: Char);
+    procedure SomenteNumerosChange(Sender: TObject);
   private
     { Private declarations }
   public
-    { Public declarations }
+    procedure DefinirSomenteNumeros;
   end;
 
 var
@@ -173,6 +175,9 @@ begin
   Panel1.Visible      := False;
   Panel_Dados.Visible  := False;
   //
+  Edit1.MaxLength  := 0;
+  Edit1.OnChange   := nil;
+  Edit1.OnKeyPress := nil;
 end;
 
 procedure TForm29.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -191,6 +196,26 @@ begin
   begin
     Perform(Wm_NextDlgCtl,0,0);
   end;
+end;
+
+procedure TForm29.DefinirSomenteNumeros;
+begin
+  Edit1.OnKeyPress := SomenteNumerosKeyPress;
+  Edit1.OnChange   := SomenteNumerosChange;
+end;
+
+procedure TForm29.SomenteNumerosKeyPress(Sender: TObject; var Key: Char);
+begin
+  // #8 - Backspace
+  // #13 - Enter
+  // #22 - Ctrl + V
+  if not (Key in ['0'..'9', Chr(8), #13, #22]) then
+    Key := #0
+end;
+
+procedure TForm29.SomenteNumerosChange(Sender: TObject);
+begin
+  Edit1.Text := LimpaNumero(Edit1.Text);
 end;
 
 end.
