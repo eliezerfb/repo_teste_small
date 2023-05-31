@@ -15694,6 +15694,8 @@ begin
     Form1.MovimentoDia1.Enabled   := False;
     Form1.NFCenoperodo1.Enabled   := False;
     Form1.Vendaspor1.Enabled      := False;
+    Form1.otalDirio1.Enabled      := False;
+    
     Form1.BalanaAutonoma1.Enabled := False;
 
     Form1.bBalancaAutonoma := False;
