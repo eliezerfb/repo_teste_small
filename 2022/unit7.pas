@@ -2070,7 +2070,6 @@ type
     procedure Sinativos1Click(Sender: TObject);
     procedure ibDataSet18MUNICIPIOSetText(Sender: TField;
       const Text: String);
-    procedure ibDataSet7INSTITUICAOFINANCEIRAChange(Sender: TField);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -33217,45 +33216,6 @@ procedure TForm7.ibDataSet16VBCFCPSTChange(Sender: TField);
 begin
 //  if (StrtoFloatDef(VarToStrDef(Form7.ibDataSet16VBCFCPST.OldValue, '0,00'), 0.00) <> Form7.ibDataSet16VBCFCPST.Value) then
     CalculaFCPSTAoIncluirProdutoDevolucao; // Sandro Silva 2023-05-08
-end;
-
-procedure TForm7.ibDataSet7INSTITUICAOFINANCEIRAChange(Sender: TField);
-var
-  vDescricaoAntes : string;
-  vQtdParcelas : integer;
-begin
-  //Mauricio Parizotto 2023-05-29
-  try
-    //Verifica se mudou
-    vDescricaoAntes := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
-                                             ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
-                                             ' From RECEBER'+
-                                             ' Where REGISTRO ='+QuotedStr(ibDataSet7REGISTRO.AsString));
-
-    if ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
-    begin
-      if Trim(ibDataSet7NUMERONF.AsString) = '' then
-        Exit;
-      
-      vQtdParcelas := ExecutaComandoEscalar(ibDataSet7.Transaction.DefaultDatabase,
-                                           ' Select count(*)  '+
-                                           ' From RECEBER'+
-                                           ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString));
-
-      if vQtdParcelas > 1 then
-      begin
-        if Application.MessageBox(PansiChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
-                                  'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
-        begin
-          ExecutaComando(' Update RECEBER'+
-                         '   set INSTITUICAOFINANCEIRA ='+QuotedStr(ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
-                         ' Where NUMERONF ='+QuotedStr(ibDataSet7NUMERONF.AsString),
-                         ibDataSet7.Transaction );
-        end;
-      end;
-    end;
-  except
-  end;
 end;
 
 procedure TForm7.RefreshDados;
