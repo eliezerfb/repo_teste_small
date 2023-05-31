@@ -8378,7 +8378,7 @@ begin
   except
   end;
 
-  sSerial := ValidaRecursos.rsRecursoSistema.Serial; // Sandro Silva 2023-05-25
+  sSerial := ValidaRecursos.SistemaSerial; // Sandro Silva 2023-05-25
 
   Form1.sSerialSmall     := sSerial; // Sandro Silva 2020-09-29
   Form1.sChaveMeiCifrada := Mais1Ini.ReadString('LICENCA','MEI',''); // Sandro Silva 2020-09-29
@@ -8485,7 +8485,7 @@ begin
     if Copy(sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
     if Copy(sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
     }
-    iLimiteUsuariosSimultaneos := ValidaRecursos.rsRecursoSistema.Usuarios;
+    iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios;
     {Sandro Silva 2023-05-25 fim}
 
 
