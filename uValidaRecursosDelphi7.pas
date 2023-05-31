@@ -498,17 +498,17 @@ begin
 
     IBQDOC.Close;
 
+    try
+      FreeAndNil(IBQDOC);
+      FreeAndNil(IBTRANSACTION);
+    except
+    end;
+
     //if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
     if (iQtdPermitido - iQtdEmitido) > 0 then
       Result := True;
 
   end;
-
-  if IBQDOC <> nil then
-    FreeAndNil(IBQDOC);
-
-  if IBTRANSACTION <> nil then
-    FreeAndNil(IBTRANSACTION);
 
 end;
 
