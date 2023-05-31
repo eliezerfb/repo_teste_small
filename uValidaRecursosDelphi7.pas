@@ -42,6 +42,7 @@ type
     function RecursoData(sRecurso: TRecursos): TDate;
     function PermiteRecursoParaSerial: Boolean;
     function ValidaQtdDocumentoFrente: Boolean;
+    function ValidaQtdDocumentoRetaguarda: Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
     function RecursoQtd(sRecurso: TRecursos): Integer;
     property IBDATABASE: TIBDatabase read FIBDatabase write SetIBDatabase;
@@ -460,11 +461,6 @@ var
 begin
   Result := False;
 
-//criar unit com objeto para amazenar as permissões e recursos, já executar os SQLs de limites para o Commerce e NFC-e/SAT
-
-  //if FRecursos.Inicializada then
-  //begin
-
   iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFCE;
 
   Result := False;
@@ -504,11 +500,70 @@ begin
     except
     end;
 
+    if (iQtdPermitido - iQtdEmitido) > 0 then
+      Result := True;
+
+  end;
+
+end;
+
+function TValidaRecurso.ValidaQtdDocumentoRetaguarda: Boolean;
+const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''55'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
+const SituacaoNFSeEmitidoOuCancelado  = ' (MODELO = ''SV'' and (coalesce(STATUS, '''') containing ''AUTORIZADA'' or coalesce(STATUS, '''') containing ''NFS-e cancelada'')) ';
+var
+  iQtdEmitido: Integer;
+  iQtdPermitido: Integer;
+  IBQDOC: TIBQuery;
+  dtDataServidor: TDate;
+  IBTRANSACTION: TIBTransaction;
+begin
+  Result := False;
+
+  iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFE;
+
+  Result := False;
+
+  if iQtdPermitido = -1 then
+  begin
+    Result := True;
+  end
+  else
+  begin
+    IBTRANSACTION := CriaIBTransaction(FIBDatabase);
+
+    IBQDOC := CriaIBQuery(IBTRANSACTION);
+
+    IBQDOC.Close;
+    IBQDOC.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
+    IBQDOC.Open;
+    dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
+
+    IBQDOC.Close;
+    IBQDOC.SQL.Text :=
+      'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
+      'from VENDAS ' +
+      'where EMISSAO >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
+      'and ( ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
+    IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+    //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
+    IBQDOC.Open;
+
+    iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
+
+    IBQDOC.Close;
+
+    try
+      FreeAndNil(IBQDOC);
+      FreeAndNil(IBTRANSACTION);
+    except
+    end;
+
     //if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
     if (iQtdPermitido - iQtdEmitido) > 0 then
       Result := True;
 
   end;
+
 
 end;
 
