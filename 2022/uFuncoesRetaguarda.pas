@@ -10,6 +10,7 @@ function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function FormatXMLToFloat(sValor: String): Double;
 function TextoIdentificadorFinalidadeNFe(Value: String): String;
 procedure LogRetaguarda(sTexto: String);
+function GetIP:string;
 
 implementation
 
@@ -18,6 +19,7 @@ uses
   , StrUtils
   , Classes
   , Forms
+  , Winsock
   , SmallFunc
   ;
 
@@ -169,6 +171,24 @@ begin
   end;
   FreeAndNil(sl);
   ChDir(sDirAtual); // Para voltar
+end;
+
+function GetIP:string;
+var
+  WSAData: TWSAData;
+  HostEnt: PHostEnt;
+  Name:string;
+begin
+  WSAStartup(2, WSAData);
+  SetLength(Name, 255);
+  Gethostname(PChar(Name), 255);
+  SetLength(Name, StrLen(PChar(Name)));
+  HostEnt := gethostbyname(PChar(Name));
+  with HostEnt^  do
+  begin
+    Result := Format('%d.%d.%d.%d',[Byte(h_addr^[0]),Byte(h_addr^[1]),Byte(h_addr^[2]),Byte(h_addr^[3])]);
+  end;
+  WSACleanup;
 end;
 
 end.

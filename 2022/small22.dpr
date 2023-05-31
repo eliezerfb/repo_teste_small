@@ -97,7 +97,11 @@ uses
   uTextoEmailNFe in 'units\uTextoEmailNFe.pas',
   uSmallResourceString in '..\Commons\uSmallResourceString.pas',
   uITextoEmailFactory in 'interfaces\uITextoEmailFactory.pas',
-  uTextoEmailFactory in 'units\uTextoEmailFactory.pas';
+  uTextoEmailFactory in 'units\uTextoEmailFactory.pas',
+  uValidaRecursosDelphi7 in '..\..\unit_compartilhada\uValidaRecursosDelphi7.pas',
+  uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
+  uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
+  uConectaBancoCommerce in 'uConectaBancoCommerce.pas';
 
 {$R *.RES}
 
@@ -105,18 +109,23 @@ var
   Hwnd: THandle;
 begin
   //
-  Hwnd := FindWindow('TForm1', 'SMALL COMMERCE');
-  //
+  Hwnd := FindWindow('TForm1', 'Small Commerce');
+
   if Hwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'SMALL START');
+    Hwnd := FindWindow('TForm1', 'Small Start');
   end;
-  //
+
   if Hwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'SMALL Mei');
+    Hwnd := FindWindow('TForm1', 'Small Mei');
   end;
-  //
+
+  if Hwnd = 0 then
+  begin
+    Hwnd := FindWindow('TForm1', 'Small Go');
+  end;
+
   try
     //
     if Hwnd = 0 then
@@ -126,7 +135,7 @@ begin
       Form22.Show;
       Form22.Update;
       //
-      Application.Title := 'SMALL COMMERCE';
+      Application.Title := 'Small Commerce';
       //
       Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm28, Form28);
