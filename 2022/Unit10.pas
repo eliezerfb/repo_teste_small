@@ -1409,10 +1409,13 @@ begin
     begin
       Form7.ibDataSet7.Edit;
 
-      if Form10.dBGrid1.Height = 300 then
-        Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
-      else
-        Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
+      if (Form10.dBGrid1.Visible) then
+      begin
+        if Form10.dBGrid1.Height = 300 then
+          Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
+        else
+          Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
+      end;
 
       //Mauricio Parizotto 2023-05-29
       // Instituição Financeira
