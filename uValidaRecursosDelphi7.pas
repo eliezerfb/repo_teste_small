@@ -177,6 +177,8 @@ begin
 
   try
 
+    LeRecursos;
+
     if Trim(FsRecurso) <> '' then
     begin
       try
@@ -201,6 +203,8 @@ begin
   Result := 1;
 
   try
+
+    LeRecursos;
 
     if Trim(FsRecurso) <> '' then
     begin
@@ -227,6 +231,8 @@ begin
 
   try
 
+    LeRecursos;
+    
     if Trim(FsRecurso) <> '' then
     begin
       try
@@ -246,12 +252,14 @@ begin
   end;
 end;
 
-function TValidaRecurso.RecursoQuantidade(sRecurso : TRecursos):Integer;
+function TValidaRecurso.RecursoQuantidade(sRecurso: TRecursos): Integer;
 begin
   Result := 0;
 
   try
 
+    LeRecursos;
+      
     if Trim(FsRecurso) <> '' then
     begin
       try
@@ -272,11 +280,14 @@ begin
   end;
 end;
 
-function TValidaRecurso.RecursoData(sRecurso : TRecursos): Tdate;
+function TValidaRecurso.RecursoData(sRecurso : TRecursos): TDate;
 begin
   Result := StrToDate('01/01/1900');
 
   try
+
+    LeRecursos;
+
     case sRecurso of
       rcOS            : Result := FrsRecursoSistema.Recursos.OS;
       rcSped          : Result := FrsRecursoSistema.Recursos.Sped;
@@ -305,6 +316,9 @@ begin
   Result := 0;
 
   try
+
+    LeRecursos;
+
     case sRecurso of
       rcQtdNFCE    : Result := FrsRecursoSistema.Recursos.QtdNFCE;
       rcQtdNFE     : Result := FrsRecursoSistema.Recursos.QtdNFE;
@@ -444,6 +458,9 @@ end;
 function TValidaRecurso.PermiteRecursoParaSerial: Boolean;
 begin
   Result := True;
+
+  LeRecursos;
+    
   if Copy(FrsRecursoSistema.Serial, 4, 1) = 'T' then
     Result := False;
 end;
@@ -460,6 +477,8 @@ var
   IBTRANSACTION: TIBTransaction;
 begin
   Result := False;
+
+  LeRecursos;  
 
   iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFCE;
 
@@ -508,7 +527,8 @@ begin
 end;
 
 function TValidaRecurso.ValidaQtdDocumentoRetaguarda: Boolean;
-const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''55'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
+const SituacaoMeiLancado = ' (MODELO = ''01'') ';
+const SituacaoNFeEmitidoOuCancelado = ' (MODELO = ''55'' and coalesce(NFEXML, '''') containing ''<xMotivo>'') ';
 const SituacaoNFSeEmitidoOuCancelado  = ' (MODELO = ''SV'' and (coalesce(STATUS, '''') containing ''AUTORIZADA'' or coalesce(STATUS, '''') containing ''NFS-e cancelada'')) ';
 var
   iQtdEmitido: Integer;
@@ -518,6 +538,8 @@ var
   IBTRANSACTION: TIBTransaction;
 begin
   Result := False;
+
+  LeRecursos;
 
   iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFE;
 
@@ -543,7 +565,7 @@ begin
       'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
       'from VENDAS ' +
       'where EMISSAO >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
-      'and ( ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
+      'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
     IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
     //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
     IBQDOC.Open;
