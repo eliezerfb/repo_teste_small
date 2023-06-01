@@ -23870,7 +23870,7 @@ var
   sRetorno : String;
   sRecibo : String;
 begin
-  if ValidaLimiteDeEmissaoDeVenda then
+  if ValidaLimiteDeEmissaoDeVenda = False then
   begin
     Exit;
   end;
