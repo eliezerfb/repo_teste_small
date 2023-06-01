@@ -2368,7 +2368,7 @@ begin
       Form1.sConcomitante := 'CONCOMITANTE';
 
     {Sandro Silva 2023-05-30 inicio}
-    if ValidaRecursos.PermiteRecursoParaSerial = False then
+    if ValidaRecursos.PermiteRecursoParaProduto = False then
       Form1.sConcomitante := 'CONCOMITANTE';
     {Sandro Silva 2023-05-30 fim}
 
@@ -4319,7 +4319,7 @@ begin
         Form1.Contadecliente1.Enabled   := True;
         Form1.ContadeclienteOS1.Enabled := True;
         }
-        if ValidaRecursos.PermiteRecursoParaSerial then 
+        if ValidaRecursos.PermiteRecursoParaProduto then 
         begin
           Form1.Concomitante.Enabled      := True;
           Form1.Mesas1.Enabled            := True;
@@ -8604,8 +8604,7 @@ begin
                'novamente o sistema informando o número serial da'+Chr(10)+
                'sua licença de uso.'+Chr(10)+Chr(13)+
                'Código: 002 '+sLicenca);
-      Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-        Form1.ClienteSmallMobile.sLogRetornoMobile);
+      Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
       //
       Form1.DestroyWindowHandle;
       Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
@@ -8621,7 +8620,7 @@ begin
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
     Form1.ImportarvendasdoSmallMobile1.Visible := True;
-    if ValidaRecursos.PermiteRecursoParaSerial = False then
+    if ValidaRecursos.PermiteRecursoParaProduto = False then
     begin
       Form1.ImportarvendasdoSmallMobile1.Enabled := False;
       Form1.ImportarvendasdoSmallMobile1.Checked := False; 
@@ -9372,7 +9371,7 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 
-  iUsuariosConectados := UsuariosConectados(Form1.IBDatabase1);
+  iUsuariosConectados := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosConectados := UsuariosConectados(Form1.IBDatabase1);
 
   if iUsuariosConectados > iLimiteUsuariosSimultaneos then
   begin
@@ -14983,7 +14982,7 @@ begin
    end
    else
    begin
-     iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
+     iUsuariosAtivos := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
      Form22.sAtivos := InttoStr(iUsuariosAtivos) + IfThen(iUsuariosAtivos = 1, ' usuário ativo', ' usuários ativos');
    end;
   except
@@ -15694,7 +15693,7 @@ begin
   ValorLimiteTotalNFCeEstabelecidoSefaz1.Visible := (Form1.sModeloECF = '65'); // Sandro Silva 2021-07-12
 
   {Sandro Silva 2023-05-30 inicio}
-  if ValidaRecursos.PermiteRecursoParaSerial = False then
+  if ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
     Form1.MovimentoDia1.Enabled   := False;
     Form1.NFCenoperodo1.Enabled   := False;
@@ -15884,7 +15883,7 @@ begin
       VersodoleiautedoCFeSAT1.Visible := True;
 
     {Sandro Silva 2023-05-30 inicio}
-    if ValidaRecursos.PermiteRecursoParaSerial = False then
+    if ValidaRecursos.PermiteRecursoParaProduto = False then
       DocumentoAuxiliardeVendaDAVOramento1.Enabled := False;
     {Sandro Silva 2023-05-30 fim}
     

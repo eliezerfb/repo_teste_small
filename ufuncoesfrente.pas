@@ -215,7 +215,7 @@ procedure GravaPendenciaAlteraca(IBDatabase: TIBDatabase; bOffLine: Boolean;
   sCaixa: String; sPedido: String; sItem: String; sTipo: String);
 function indRegraSAT(sCFOP: String): String;
 function TruncaValor(dValor: Double; iDecimais: Integer = 2): Double;
-function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
+//function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function TefUsado: String;
 procedure AdicionaCNPJRequisicaoTEF(var tfFile: TextFile; DataSet: TDataSet);
@@ -774,6 +774,7 @@ begin
   Result := (StrToInt(sTruncado) / iFator); // Result := (Trunc((dValor) * iFator) / iFator);
 end;
 
+{
 function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
 // Sandro Silva 2019-06-19 Retorna a quantidade de IPs conectados ao banco, por protocolo (TCP/IP - XNET)
 // Para controlar o número de usuário por licença
@@ -796,6 +797,7 @@ begin
   FreeAndNil(IBQIP);
   FreeAndNil(IBTIP);
 end;
+}
 
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 // Sandro Silva 2015-12-10 Formata valor float com 2 casas decimais para usar nos elementos do xml da nfce
