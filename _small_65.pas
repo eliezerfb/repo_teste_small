@@ -7225,393 +7225,861 @@ var
     Form1.sCaixa := sCaixaOld;
   end;
 begin
-  bTransmitiuContingencia := False; // Sandro Silva 2022-11-04
-
-  bProcessouNFCeSubstituidaNaoConstaNaSefaz := False; // Torna-se True quando identificado que é NFC-e para ser substituída e não conta na base da sefaz. Não precisa transmitir, faz inutilização do número
-
-  sArquivoLogContingencia := Form1.spdNFCe1.DiretorioLog + '\log_transmissao_contingencia_' + Form1.sCaixa + '_' + FormatDateTime('yyyymmddHHnnsszzz', Now) + '.html';
-
-  DeleteFile(PAnsiChar(sArquivoLogContingencia));
-
-  _ecf65_ConsultarStatusServico(False);
-
-  if (Form1.bStatusRede) and (Form1.NFCeemContingncia1.Checked = False) and (Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) = 0) and (Form1.bStatusECF) then 
+  if ValidaRecursos.ValidaQtdDocumentoRetaguarda = False then
+  begin
+    Form1.MensagemAlertaLimiteDocumentosEmitidos;
+  end
+  else
   begin
 
-    Form1.Timer2.Enabled := False;
-    Screen.Cursor := crHourGlass;
+    bTransmitiuContingencia := False; // Sandro Silva 2022-11-04
 
-    sLogErro := '';
+    bProcessouNFCeSubstituidaNaoConstaNaSefaz := False; // Torna-se True quando identificado que é NFC-e para ser substituída e não conta na base da sefaz. Não precisa transmitir, faz inutilização do número
 
-    try
-      _ecf65_bTransmitindoContingenciaNFCe := True; // Usado na rotinas de baixa/retorno no estoque para identificar qual ação disparou a movimentação Sandro Silva 2019-07-25
+    sArquivoLogContingencia := Form1.spdNFCe1.DiretorioLog + '\log_transmissao_contingencia_' + Form1.sCaixa + '_' + FormatDateTime('yyyymmddHHnnsszzz', Now) + '.html';
 
-      Commitatudo(True); // _ecf65_EnviarNFCeContingencia()
+    DeleteFile(PAnsiChar(sArquivoLogContingencia));
 
-      // Trata as NFC-e em contingência com Rejeição 562: Código Numérico informado na Chave de Acesso difere do Código Numérico da NF-e
-      Form1.IBQuery65.Close;
-      Form1.IBQuery65.SQL.Text :=
-        'select * ' +
-        'from NFCE ' +
-        'where (coalesce(STATUS, '''') containing ''Duplicidade'' and coalesce(STATUS, '''') containing ''[chNFe'' ' + // Duplicidade com diferença na chave de acesso do xml com a chave na Sefaz e sem chave salva no campo NFEID
-        'or coalesce(STATUS, '''') containing ''Rejeição: Duplicidade de NF-e, com diferença na Chave de Acesso'') ' +
-        ' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtData));
-      Form1.IBQuery65.Open;
-      while Form1.IBQuery65.Eof = False do
-      begin
+    _ecf65_ConsultarStatusServico(False);
 
-        _ecf65_CorrigeRejeicaoChaveDeAcessoDifere(Form1.IBQuery65.FieldByName('NUMERONF').AsString, Form1.IBQuery65.FieldByName('CAIXA').AsString, False);
+    if (Form1.bStatusRede) and (Form1.NFCeemContingncia1.Checked = False) and (Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) = 0) and (Form1.bStatusECF) then
+    begin
 
-        Form1.IBQuery65.Next;
-      end;
+      Form1.Timer2.Enabled := False;
+      Screen.Cursor := crHourGlass;
 
-      Commitatudo(True); // _ecf65_EnviarNFCeContingencia()
+      sLogErro := '';
+
+      try
+        _ecf65_bTransmitindoContingenciaNFCe := True; // Usado na rotinas de baixa/retorno no estoque para identificar qual ação disparou a movimentação Sandro Silva 2019-07-25
+
+        Commitatudo(True); // _ecf65_EnviarNFCeContingencia()
+
+        // Trata as NFC-e em contingência com Rejeição 562: Código Numérico informado na Chave de Acesso difere do Código Numérico da NF-e
+        Form1.IBQuery65.Close;
+        Form1.IBQuery65.SQL.Text :=
+          'select * ' +
+          'from NFCE ' +
+          'where (coalesce(STATUS, '''') containing ''Duplicidade'' and coalesce(STATUS, '''') containing ''[chNFe'' ' + // Duplicidade com diferença na chave de acesso do xml com a chave na Sefaz e sem chave salva no campo NFEID
+          'or coalesce(STATUS, '''') containing ''Rejeição: Duplicidade de NF-e, com diferença na Chave de Acesso'') ' +
+          ' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtData));
+        Form1.IBQuery65.Open;
+        while Form1.IBQuery65.Eof = False do
+        begin
+
+          _ecf65_CorrigeRejeicaoChaveDeAcessoDifere(Form1.IBQuery65.FieldByName('NUMERONF').AsString, Form1.IBQuery65.FieldByName('CAIXA').AsString, False);
+
+          Form1.IBQuery65.Next;
+        end;
+
+        Commitatudo(True); // _ecf65_EnviarNFCeContingencia()
             
-      Form1.IBQuery65.Close;
-      if sNumeroNF <> '' then
-        sCondicaoNFCeTransmite := // Uma nota
-          ' and NUMERONF = ' + QuotedStr(sNumeroNF) +
-          ' and CAIXA = ' + QuotedStr(sCaixa) +
-          ' and coalesce(STATUS, '''') not containing ''autorizad'' '
-      else
-        sCondicaoNFCeTransmite := // todas notas do dia em contingência ou com cancelamento por substituição
-          ' and ((coalesce(STATUS, '''') containing ''contingência'' or (coalesce(NFEXML, '''') containing ''<tpEmis>9</tpEmis>'' and coalesce(STATUS, '''') not containing ''autorizad'')) ' +
-                 'or (coalesce(NFEIDSUBSTITUTO, '''') <> '''' and coalesce(STATUS, '''') not containing ''cancela'')) '
-          ;
+        Form1.IBQuery65.Close;
+        if sNumeroNF <> '' then
+          sCondicaoNFCeTransmite := // Uma nota
+            ' and NUMERONF = ' + QuotedStr(sNumeroNF) +
+            ' and CAIXA = ' + QuotedStr(sCaixa) +
+            ' and coalesce(STATUS, '''') not containing ''autorizad'' '
+        else
+          sCondicaoNFCeTransmite := // todas notas do dia em contingência ou com cancelamento por substituição
+            ' and ((coalesce(STATUS, '''') containing ''contingência'' or (coalesce(NFEXML, '''') containing ''<tpEmis>9</tpEmis>'' and coalesce(STATUS, '''') not containing ''autorizad'')) ' +
+                   'or (coalesce(NFEIDSUBSTITUTO, '''') <> '''' and coalesce(STATUS, '''') not containing ''cancela'')) '
+            ;
 
-      Form1.IBQuery65.SQL.Text :=
-        'select * ' +
-        'from NFCE ' +
-        'where MODELO = ''65'' ' +
-        ' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtData)) +
-        ' and coalesce(STATUS, '''') not containing ''deneg'' ' + // Sandro Silva 2020-05-14
-        sCondicaoNFCeTransmite +
-        ' order by NFEIDSUBSTITUTO, DATA, NUMERONF, CAIXA '; // Ordenar para que as NFC-E com ID de substituição fiquem por último
-      Form1.IBQuery65.Open;
+        Form1.IBQuery65.SQL.Text :=
+          'select * ' +
+          'from NFCE ' +
+          'where MODELO = ''65'' ' +
+          ' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtData)) +
+          ' and coalesce(STATUS, '''') not containing ''deneg'' ' + // Sandro Silva 2020-05-14
+          sCondicaoNFCeTransmite +
+          ' order by NFEIDSUBSTITUTO, DATA, NUMERONF, CAIXA '; // Ordenar para que as NFC-E com ID de substituição fiquem por último
+        Form1.IBQuery65.Open;
 
-      if Form1.IBQuery65.FieldByName('REGISTRO').AsString <> '' then
-      begin
-        Form1.ClientDataSet1.Close;
-        Form1.ClientDataSet1.FileName := 'LogContingencia' + Form1.sCaixa + '.cds';
-        Form1.ClientDataSet1.CreateDataSet;
-      end;
+        if Form1.IBQuery65.FieldByName('REGISTRO').AsString <> '' then
+        begin
+          Form1.ClientDataSet1.Close;
+          Form1.ClientDataSet1.FileName := 'LogContingencia' + Form1.sCaixa + '.cds';
+          Form1.ClientDataSet1.CreateDataSet;
+        end;
 
-      while Form1.IBQuery65.Eof = False do
-      begin
-        try
-          sRetorno := ''; // Sandro Silva 2018-08-06
-          sArquivoXMLAutorizado := ''; // Sandro Silva 2018-08-06
+        while Form1.IBQuery65.Eof = False do
+        begin
+          try
+            sRetorno := ''; // Sandro Silva 2018-08-06
+            sArquivoXMLAutorizado := ''; // Sandro Silva 2018-08-06
 
-          if Form1.bStatusRede = False then
-            Break;
+            if Form1.bStatusRede = False then
+              Break;
 
-          if (xmlNodeValue(Form1.IBQuery65.FieldByName('NFEXML').AsString, '//emit/CNPJ') = LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))
-            or (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) // Para poder testar com bancos de clientes
-          then
-          begin
-
-            bTransmitiuContingencia := True; // Sandro Silva 2022-11-04
-
-            Form1.IBDataSet150.Close;
-            Form1.IBDataSet150.SelectSQL.Text :=
-              'select * ' +
-              'from NFCE ' +
-              'where MODELO = ''65'' ' +
-              ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-              ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
-            Form1.IBDataSet150.Open;
-
-            if ((xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpEmis') <> TPEMIS_NFCE_NORMAL) // Não é emissão normal
-                and (Trim(Form1.IBDataSet150.FieldByName('NFEXML').AsString) <> '')) // tem xml
-               or ((AnsiContainsText('|' + xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/cStat') + '|', '|100|150|') = False) // sem cstat autorizado
-                   and (Form1.IBDataSet150.FieldByName('NFEXML').AsString <> '')
-                   )
-              then
+            if (xmlNodeValue(Form1.IBQuery65.FieldByName('NFEXML').AsString, '//emit/CNPJ') = LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))
+              or (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) // Para poder testar com bancos de clientes
+            then
             begin
 
-              Form1.ExibePanelMensagem('Aguarde. Transmitindo notas do Caixa ' + Form1.IBQuery65.FieldByName('CAIXA').AsString + ', NFC-e: '  + Form1.IBQuery65.FieldByName('NUMERONF').AsString + '...');
+              bTransmitiuContingencia := True; // Sandro Silva 2022-11-04
 
-              sLote := Form1.IBQuery65.FieldByName('NUMERONF').AsString;
-              fNFe1 := Form1.IBQuery65.FieldByName('NFEXML').AsString;
+              Form1.IBDataSet150.Close;
+              Form1.IBDataSet150.SelectSQL.Text :=
+                'select * ' +
+                'from NFCE ' +
+                'where MODELO = ''65'' ' +
+                ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+              Form1.IBDataSet150.Open;
 
-              sArquivoXMLAutorizado := '';
+              if ((xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpEmis') <> TPEMIS_NFCE_NORMAL) // Não é emissão normal
+                  and (Trim(Form1.IBDataSet150.FieldByName('NFEXML').AsString) <> '')) // tem xml
+                 or ((AnsiContainsText('|' + xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/cStat') + '|', '|100|150|') = False) // sem cstat autorizado
+                     and (Form1.IBDataSet150.FieldByName('NFEXML').AsString <> '')
+                     )
+                then
+              begin
 
-              try
-                //Não assinar porque muda o digest value fNFe1 := Form1.spdNFCe1.AssinarNota(fNFe1); // Caso certificado foi renovado depois de ter gerado a nfce
+                Form1.ExibePanelMensagem('Aguarde. Transmitindo notas do Caixa ' + Form1.IBQuery65.FieldByName('CAIXA').AsString + ', NFC-e: '  + Form1.IBQuery65.FieldByName('NUMERONF').AsString + '...');
 
-                _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
+                sLote := Form1.IBQuery65.FieldByName('NUMERONF').AsString;
+                fNFe1 := Form1.IBQuery65.FieldByName('NFEXML').AsString;
 
-                if Copy(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')), 35, 1) = TPEMIS_NFCE_NORMAL then  // Tipo emissão normal
-                begin
-                  try // Sandro Silva 2021-09-13
-                    sRetorno := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
-                  except
+                sArquivoXMLAutorizado := '';
 
-                  end;
+                try
+                  //Não assinar porque muda o digest value fNFe1 := Form1.spdNFCe1.AssinarNota(fNFe1); // Caso certificado foi renovado depois de ter gerado a nfce
 
-                  sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+                  _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
 
-                  if Pos('<cStat>217</cStat>', sRetorno) > 0 then // Rejeição: NF-e não consta na base de dados da SEFAZ
+                  if Copy(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')), 35, 1) = TPEMIS_NFCE_NORMAL then  // Tipo emissão normal
                   begin
+                    try // Sandro Silva 2021-09-13
+                      sRetorno := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
+                    except
 
-                    //valida se NFC-e tem NFEIDSUBSTITUTO preenchido, indicando que deve ser cancelada por substituição
-                    // Nesse caso se obteve rejeição 217 - Não consta na base, não precisa transmitir, basta excluir do banco e depois realizar a inutilização do número
-                    if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
+                    end;
+
+                    sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+
+                    if Pos('<cStat>217</cStat>', sRetorno) > 0 then // Rejeição: NF-e não consta na base de dados da SEFAZ
                     begin
 
-                      {Sandro Silva 2021-10-04 inicio}
-                      bProcessouNFCeSubstituidaNaoConstaNaSefaz := True;
-
-                      try
-                        // Faz inutilização da numeração da NFC-e
-                        if AnsiContainsText(Trim(ConverteAcentos2(_ecf65_InutilizacaoNFCe(
-                                                                    Form1.IBDataSet150.FieldByName('NFEID').AsString,             // ID
-                                                                    Copy(Form1.IBDataSet150.FieldByName('NFEID').AsString, 3, 2), // Ano
-                                                                    '65',                                                         // Modelo
-                                                                    Copy(Form1.IBDataSet150.FieldByName('NFEID').AsString, 23, 3),// Série
-                                                                    Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração inicial
-                                                                    Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração final
-                                                                    Trim(ConverteAcentos2('Numeração não utilizada'))             // Justificativa
-                          ))), 'Rejeicao') = False then
-                        begin
-
-                          // Exclui os itens lançados
-                          Form1.ibDataSet27.Close;
-                          Form1.ibDataSet27.SelectSQL.Text :=
-                            'select * ' +
-                            'from ALTERACA ' +
-                            'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
-                            ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                          Form1.ibDataSet27.Open;
-
-                          while Form1.ibDataSet27.Eof = False do
-                          begin
-                            Form1.ibDataSet27.Delete;
-                          end;
-
-                          // Exclui as formas de pagamento
-                          Form1.ibDataSet28.Close;
-                          Form1.ibDataSet28.SelectSQL.Text :=
-                            'select * ' +
-                            'from PAGAMENT ' +
-                            'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
-                            ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                          Form1.ibDataSet28.Open;
-
-                          while Form1.ibDataSet28.Eof = False do
-                          begin
-                            Form1.ibDataSet28.Delete;
-                          end;
-
-                          {Sandro Silva 2021-11-03 inicio}
-                          //Exclui RECEBER
-                          Form1.ibDataSet7.Close;
-                          Form1.ibDataSet7.SelectSQL.Text :=
-                            'select * ' +
-                            'from RECEBER ' +
-                            'where NUMERONF='+QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString + Form1.IBDataSet150.FieldByName('CAIXA').AsString) +
-                            ' order by REGISTRO';
-                          Form1.ibDataSet7.Open;
-                          while Form1.ibDataSet7.Eof = False do
-                          begin
-                            Form1.ibDataSet7.Delete;
-                          end;
-                          {Sandro Silva 2021-11-03 fim}
-
-                          //Exclui a NFC-e
-                          Form1.IBDataSet150.Delete;
-                        end;
-
-                      except
-                      end;
-                      {Sandro Silva 2021-10-04 fim}
-                    end
-                    else
-                    begin
-
-                      // NCF-e não consta na SEFAZ. Transmite e cancela em seguida
-
-                      sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, Form1.IBDataSet150.FieldByName('NFEXML').AsString, False); // Transmitindo a NFC-e que não conseguiu transmitir durante a venda
-
-                      sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
-
-                      if _ecf65_xmlAutorizado(sRetorno) then // Autorizado
+                      //valida se NFC-e tem NFEIDSUBSTITUTO preenchido, indicando que deve ser cancelada por substituição
+                      // Nesse caso se obteve rejeição 217 - Não consta na base, não precisa transmitir, basta excluir do banco e depois realizar a inutilização do número
+                      if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
                       begin
 
-                        if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
-                        begin
+                        {Sandro Silva 2021-10-04 inicio}
+                        bProcessouNFCeSubstituidaNaoConstaNaSefaz := True;
 
-                          {Sandro Silva 2021-06-11 inicio}
-                          try
-                            Audita('EMISSAO','FRENTE', '', 'Contingencia Erro: 7844 ' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString + ' ' + Form1.IBDataSet150.FieldByName('CAIXA').AsString, 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
-                          except
+                        try
+                          // Faz inutilização da numeração da NFC-e
+                          if AnsiContainsText(Trim(ConverteAcentos2(_ecf65_InutilizacaoNFCe(
+                                                                      Form1.IBDataSet150.FieldByName('NFEID').AsString,             // ID
+                                                                      Copy(Form1.IBDataSet150.FieldByName('NFEID').AsString, 3, 2), // Ano
+                                                                      '65',                                                         // Modelo
+                                                                      Copy(Form1.IBDataSet150.FieldByName('NFEID').AsString, 23, 3),// Série
+                                                                      Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração inicial
+                                                                      Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração final
+                                                                      Trim(ConverteAcentos2('Numeração não utilizada'))             // Justificativa
+                            ))), 'Rejeicao') = False then
+                          begin
+
+                            // Exclui os itens lançados
+                            Form1.ibDataSet27.Close;
+                            Form1.ibDataSet27.SelectSQL.Text :=
+                              'select * ' +
+                              'from ALTERACA ' +
+                              'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
+                              ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                            Form1.ibDataSet27.Open;
+
+                            while Form1.ibDataSet27.Eof = False do
+                            begin
+                              Form1.ibDataSet27.Delete;
+                            end;
+
+                            // Exclui as formas de pagamento
+                            Form1.ibDataSet28.Close;
+                            Form1.ibDataSet28.SelectSQL.Text :=
+                              'select * ' +
+                              'from PAGAMENT ' +
+                              'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
+                              ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                            Form1.ibDataSet28.Open;
+
+                            while Form1.ibDataSet28.Eof = False do
+                            begin
+                              Form1.ibDataSet28.Delete;
+                            end;
+
+                            {Sandro Silva 2021-11-03 inicio}
+                            //Exclui RECEBER
+                            Form1.ibDataSet7.Close;
+                            Form1.ibDataSet7.SelectSQL.Text :=
+                              'select * ' +
+                              'from RECEBER ' +
+                              'where NUMERONF='+QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString + Form1.IBDataSet150.FieldByName('CAIXA').AsString) +
+                              ' order by REGISTRO';
+                            Form1.ibDataSet7.Open;
+                            while Form1.ibDataSet7.Eof = False do
+                            begin
+                              Form1.ibDataSet7.Delete;
+                            end;
+                            {Sandro Silva 2021-11-03 fim}
+
+                            //Exclui a NFC-e
+                            Form1.IBDataSet150.Delete;
                           end;
-                          {Sandro Silva 2021-06-11 fim}
 
-                          Form1.ExibePanelMensagem('Enviando Contingência. Aguardando tempo limite para cancelamento da NFC-e substituída'); // Sandro Silva 2021-06-16
-
-                          SmallMsgBox(PansiChar('NFC-e em duplicidade: ' + #13 + Form1.IBDataSet150.FieldByName('NFEID').AsString + #13 + Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString +
-                                                #13 + #13 + 'Será cancelada a NFC-e ' + Form1.IBDataSet150.FieldByName('NFEID').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
-
-                          Sleep(120000); // Aguarda 2 minutos para fazer o cancelamento em sequência. Algumas UF não permitem intervalo de tempo pequenos entre autorização e cancelamento
-
-                          Form1.CancelaraNFCe1Click(Form1.CancelaraNFCe1);
-
-                          Form1.IBDataSet150.Close;
-                          Form1.IBDataSet150.SelectSQL.Text :=
-                            'select * ' +
-                            'from NFCE ' +
-                            'where MODELO = ''65'' ' +
-                            ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                            ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
-                          Form1.IBDataSet150.Open;
-
-                          try
-                            sRetorno := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
-                          except
-                          end;
-
-                          sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
-
+                        except
                         end;
-                      end; // if ((Pos('<cStat>100</cStat>',sRetorno) <> 0) or (Pos('<cStat>150</cStat>',sRetorno) <> 0))) // Autorizado
+                        {Sandro Silva 2021-10-04 fim}
+                      end
+                      else
+                      begin
 
-                    end; // if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
+                        // NCF-e não consta na SEFAZ. Transmite e cancela em seguida
 
-                  end; // if Pos('<cStat>217</cStat>', sRetorno) > 0 then // Rejeição: NF-e não consta na base de dados da SEFAZ
-
-                end
-                else
-                begin
-                  // Tipo Emissão contingência
-
-                  {Sandro Silva 2021-11-03 inicio}
-                  // Validar se tem itens vendidos. Caso não tiver exclui a venda e inutiliza a numeração
-                  if _ecf65_TodosItensCancelados(Form1.ibDataSet27.Transaction, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString) then
-                  begin
-
-                    bProcessouNFCeSubstituidaNaoConstaNaSefaz := True;
-
-                    sID := Form1.IBDataSet150.FieldByName('NFEID').AsString;
-                    if LimpaNumero(sID) = '' then
-                      sID := LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id'));
-                    if LimpaNumero(sID) <> '' then
-                    begin
-
-                      try
-                        // Faz inutilização da numeração da NFC-e
-
-                        sRetorno := _ecf65_InutilizacaoNFCe(
-                                                            sID,                                                          // ID
-                                                            Copy(sID, 3, 2),                                              // Ano
-                                                            '65',                                                         // Modelo
-                                                            Copy(sID, 23, 3),                                             // Série
-                                                            Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração inicial
-                                                            Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração final
-                                                            Trim(ConverteAcentos2('Numeração não utilizada'))             // Justificativa
-                                                           );
+                        sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, Form1.IBDataSet150.FieldByName('NFEXML').AsString, False); // Transmitindo a NFC-e que não conseguiu transmitir durante a venda
 
                         sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
 
-                        if AnsiContainsText(Trim(ConverteAcentos2(sRetorno)), 'Rejeicao') = False then
+                        if _ecf65_xmlAutorizado(sRetorno) then // Autorizado
                         begin
 
-                          // Exclui os itens lançados
-                          Form1.ibDataSet27.Close;
-                          Form1.ibDataSet27.SelectSQL.Text :=
-                            'select * ' +
-                            'from ALTERACA ' +
-                            'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
-                            ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                          Form1.ibDataSet27.Open;
-
-                          while Form1.ibDataSet27.Eof = False do
-                          begin
-                            Form1.ibDataSet27.Delete;
-                          end;
-
-                          // Exclui as formas de pagamento
-                          Form1.ibDataSet28.Close;
-                          Form1.ibDataSet28.SelectSQL.Text :=
-                            'select * ' +
-                            'from PAGAMENT ' +
-                            'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
-                            ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                          Form1.ibDataSet28.Open;
-
-                          while Form1.ibDataSet28.Eof = False do
+                          if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
                           begin
 
-                            Form1.ibDataSet28.Delete;
+                            {Sandro Silva 2021-06-11 inicio}
+                            try
+                              Audita('EMISSAO','FRENTE', '', 'Contingencia Erro: 7844 ' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString + ' ' + Form1.IBDataSet150.FieldByName('CAIXA').AsString, 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
+                            except
+                            end;
+                            {Sandro Silva 2021-06-11 fim}
+
+                            Form1.ExibePanelMensagem('Enviando Contingência. Aguardando tempo limite para cancelamento da NFC-e substituída'); // Sandro Silva 2021-06-16
+
+                            SmallMsgBox(PansiChar('NFC-e em duplicidade: ' + #13 + Form1.IBDataSet150.FieldByName('NFEID').AsString + #13 + Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString +
+                                                  #13 + #13 + 'Será cancelada a NFC-e ' + Form1.IBDataSet150.FieldByName('NFEID').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
+
+                            Sleep(120000); // Aguarda 2 minutos para fazer o cancelamento em sequência. Algumas UF não permitem intervalo de tempo pequenos entre autorização e cancelamento
+
+                            Form1.CancelaraNFCe1Click(Form1.CancelaraNFCe1);
+
+                            Form1.IBDataSet150.Close;
+                            Form1.IBDataSet150.SelectSQL.Text :=
+                              'select * ' +
+                              'from NFCE ' +
+                              'where MODELO = ''65'' ' +
+                              ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                              ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                            Form1.IBDataSet150.Open;
+
+                            try
+                              sRetorno := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
+                            except
+                            end;
+
+                            sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+
+                          end;
+                        end; // if ((Pos('<cStat>100</cStat>',sRetorno) <> 0) or (Pos('<cStat>150</cStat>',sRetorno) <> 0))) // Autorizado
+
+                      end; // if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
+
+                    end; // if Pos('<cStat>217</cStat>', sRetorno) > 0 then // Rejeição: NF-e não consta na base de dados da SEFAZ
+
+                  end
+                  else
+                  begin
+                    // Tipo Emissão contingência
+
+                    {Sandro Silva 2021-11-03 inicio}
+                    // Validar se tem itens vendidos. Caso não tiver exclui a venda e inutiliza a numeração
+                    if _ecf65_TodosItensCancelados(Form1.ibDataSet27.Transaction, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString) then
+                    begin
+
+                      bProcessouNFCeSubstituidaNaoConstaNaSefaz := True;
+
+                      sID := Form1.IBDataSet150.FieldByName('NFEID').AsString;
+                      if LimpaNumero(sID) = '' then
+                        sID := LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id'));
+                      if LimpaNumero(sID) <> '' then
+                      begin
+
+                        try
+                          // Faz inutilização da numeração da NFC-e
+
+                          sRetorno := _ecf65_InutilizacaoNFCe(
+                                                              sID,                                                          // ID
+                                                              Copy(sID, 3, 2),                                              // Ano
+                                                              '65',                                                         // Modelo
+                                                              Copy(sID, 23, 3),                                             // Série
+                                                              Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração inicial
+                                                              Form1.IBDataSet150.FieldByName('NUMERONF').AsString,          // Numeração final
+                                                              Trim(ConverteAcentos2('Numeração não utilizada'))             // Justificativa
+                                                             );
+
+                          sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+
+                          if AnsiContainsText(Trim(ConverteAcentos2(sRetorno)), 'Rejeicao') = False then
+                          begin
+
+                            // Exclui os itens lançados
+                            Form1.ibDataSet27.Close;
+                            Form1.ibDataSet27.SelectSQL.Text :=
+                              'select * ' +
+                              'from ALTERACA ' +
+                              'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
+                              ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                            Form1.ibDataSet27.Open;
+
+                            while Form1.ibDataSet27.Eof = False do
+                            begin
+                              Form1.ibDataSet27.Delete;
+                            end;
+
+                            // Exclui as formas de pagamento
+                            Form1.ibDataSet28.Close;
+                            Form1.ibDataSet28.SelectSQL.Text :=
+                              'select * ' +
+                              'from PAGAMENT ' +
+                              'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
+                              ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                            Form1.ibDataSet28.Open;
+
+                            while Form1.ibDataSet28.Eof = False do
+                            begin
+
+                              Form1.ibDataSet28.Delete;
+                            end;
+
+                            //Exclui a NFC-e
+                            Form1.IBDataSet150.Delete;
+                          end
+                          else
+                          begin
+
+                            AdicionaLogCDS(False,
+                                           Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
+                                           sRetorno,
+                                           Form1.IBDataSet150.FieldByName('DATA').AsString,
+                                           Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
+                                           Form1.IBDataSet150.FieldByName('CAIXA').AsString
+                                           );
+
                           end;
 
-                          //Exclui a NFC-e
-                          Form1.IBDataSet150.Delete;
-                        end
-                        else
+                        except
+                        end;
+
+                      end;// if LimpaNumero(sID) = '' then
+
+                    end // if _ecf65_TodosItensCancelados(Form1.ibDataSet27.Transaction, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString) then
+                    {Sandro Silva 2021-11-03 fim}
+                    else
+                    begin
+                      try
+                        sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, fNFe1, False); // Transmitindo contingência
+
+                        sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+
+                      except
+                        on E: Exception do
                         begin
 
                           AdicionaLogCDS(False,
                                          Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                         sRetorno,
+                                         E.Message,
                                          Form1.IBDataSet150.FieldByName('DATA').AsString,
                                          Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
                                          Form1.IBDataSet150.FieldByName('CAIXA').AsString
                                          );
 
+                        end; // on E: Exception do
+                      end; // try
+
+                    end; // if _ecf65_TodosItensCancelados(Form1.ibDataSet27.Transaction, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString) then
+
+                  end;
+
+                  //consultar id qdo sem retorno?
+                  if (
+                       (AnsiContainsText(sRetorno, 'Duplicidade') and (AnsiContainsText(sRetorno, '<cStat>204</cStat>'))) // Duplicidade
+                       or (_ecf65_xmlAutorizado(sRetorno))
+                     )
+                    and (_ecf65_XmlNfceCancelado(sRetorno) = False) // Sandro Silva 2019-07-31
+                    then
+                  begin// Copiar recibo, consultar recibo e id, ver o que retornar e analisar como identificar se mesmo xml enviado anteriormente está em xmldestinatario
+
+                    try
+                      // Sandro Silva 2022-04-12 if ((Pos('<cStat>100</cStat>',sRetorno) <> 0) or (Pos('<cStat>150</cStat>',sRetorno) <> 0)) then // Autorizado
+                      if (_ecf65_xmlAutorizado(sRetorno)) then // Autorizado
+                      begin
+                        sRetornoConsultaRecibo := sRetorno
+                      end
+                      else
+                      begin
+                        try
+                          sRetornoConsultaRecibo := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
+                        except
+
                         end;
 
-                      except
+                        sRetornoConsultaRecibo := _ecf65_CorrigePadraoRespostaSefaz(sRetornoConsultaRecibo);
+
                       end;
 
-                    end;// if LimpaNumero(sID) = '' then
+                      if (_ecf65_xmlAutorizado(sRetornoConsultaRecibo))
+                        and (_ecf65_XmlNfceCancelado(sRetornoConsultaRecibo) = False) then
+                      begin
+                        // Se foi autorizada faz a montagem do xml assinado com os dados da autorização
+                        if xmlNodeXML(sRetornoConsultaRecibo, '//protNFe') <> '' then
+                        begin
 
-                  end // if _ecf65_TodosItensCancelados(Form1.ibDataSet27.Transaction, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString) then
-                  {Sandro Silva 2021-11-03 fim}
-                  else
+                          //conferir o digestvalue do retorno com o digest da nota enviada
+                          if xmlNodeValue(sRetornoConsultaRecibo, '//infProt/digVal') = xmlNodeValue(fNFe1, '//DigestValue') then
+                          begin
+
+                            if xmlNodeValue(fNFe1, '//infProt/digVal') = '' then // No xml lido do banco ainda não tem as tags de autorização. Caso consulte 2x a mesma chave
+                            begin
+                              sRetornoConsultaRecibo := ConcatencaNodeNFeComProtNFe(fNFe1, sRetornoConsultaRecibo);
+                            end
+                            else
+                            begin
+                              sRetornoConsultaRecibo := fNFe1; // XML lido do banco já tem as tags de autorização
+                            end;
+
+                            slNFCeAutorizada := TStringList.Create;
+                            slNFCeAutorizada.Text := sRetornoConsultaRecibo;
+                            slNFCeAutorizada.SaveToFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + LimpaNumero(xmlNodeValue(sRetornoConsultaRecibo, '//infNFe/@Id')) + '-nfce.xml');
+                            Sleep(100); // Sandro Silva 2021-11-03
+                            FreeAndNil(slNFCeAutorizada);
+
+                            sRetorno := sRetornoConsultaRecibo;
+                          end;
+
+                        end; // if xmlNodeXML(sRetornoConsultaRecibo, '//protNFe') <> '' then
+
+                      end; // if (Pos('<cStat>100</cStat>',sRetornoConsultaRecibo) <> 0) or (Pos('<cStat>150</cStat>',sRetornoConsultaRecibo) <> 0) then
+
+                    except
+
+                    end;
+
+                  end; // if AnsiContainsText(sRetorno, 'Duplicidade') and (AnsiContainsText(sRetorno, '<cStat>204</cStat>')) then
+
+                except
+                  on E: Exception do
                   begin
+
+                    AdicionaLogCDS(False,
+                                   Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
+                                   E.Message,
+                                   Form1.IBDataSet150.FieldByName('DATA').AsString,
+                                   Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
+                                   Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+
+                  end; // on E: Exception do
+                end; // try
+
+                Form1.ClientDataSet1.Filtered := False;
+
+                if bProcessouNFCeSubstituidaNaoConstaNaSefaz = False then // Sandro Silva 2021-10-04
+                begin
+
+                  if (_ecf65_xmlAutorizado(sRetorno)) // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
+                    and (_ecf65_XmlNfceCancelado(sRetorno) = False) then
+                  begin // Autorizada
+                    //
+                    sID   := xmlNodeValue(sRetorno, '//chNFe'); // Copia o ID da NFe p/ o Edit
+                    fNFe1 := _ecf65_LoadXmlDestinatario(sID);
+                    //
                     try
-                      sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, fNFe1, False); // Transmitindo contingência
+                      Form1.ibDataSet27.Close;
+                      Form1.ibDataSet27.SelectSQL.Text :=
+                        'select * ' +
+                        'from ALTERACA ' +
+                        'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
+                        ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                      Form1.ibDataSet27.Open;
+                      while Form1.ibDataSet27.Eof = False do
+                      begin
 
-                      sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+                        try
+                          Form1.ibDataSet27.Edit;
+                          Form1.ibDataSet27.FieldByName('COO').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
+                          Form1.ibDataSet27.FieldByName('CCF').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
+                          Form1.ibDataSet27.Post;
+                        except
+                        end;
 
+                        Form1.ibDataSet27.Next;
+                      end;
                     except
                       on E: Exception do
                       begin
 
-                        AdicionaLogCDS(False,
+                      end;
+                    end;
+
+                    sArquivoXMLAutorizado := fNFe1;
+
+                  end
+                  else
+                  begin  // cStat diferente de autorizado
+                    if _ecf65_XmlNfceCancelado(sRetorno) = False then
+                    begin
+                      if (xmlNodeValue(sRetorno, '//infProt/xMotivo') <> '')
+                        or (xmlNodeValue(sRetorno, '//retEnviNFe/xMotivo') <> '') then
+                      begin
+                        try
+                          Form1.IBDataSet150.Edit;
+                          if xmlNodeValue(sRetorno, '//infProt/xMotivo') = '' then
+                          begin
+                            Form1.IBDataSet150.FieldByName('STATUS').AsString := Copy(xmlNodeValue(sRetorno, '//retEnviNFe/xMotivo'), 1, Form1.IBDataSet150.FieldByName('STATUS').Size);
+                          end
+                          else
+                          begin
+                            Form1.IBDataSet150.FieldByName('STATUS').AsString := Copy(xmlNodeValue(sRetorno, '//infProt/xMotivo'), 1, Form1.IBDataSet150.FieldByName('STATUS').Size);
+                          end;
+                          Form1.IBDataSet150.Post;
+
+                        except
+
+                        end;
+                      end;
+
+                      if xmlNodeValue(sRetorno, '//xMotivo') <> '' then
+                      begin
+                        AdicionaLogCDS(False, // Sandro Silva 2019-08-09  True,
                                        Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                       E.Message,
-                                       Form1.IBDataSet150.FieldByName('DATA').AsString,
-                                       Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
-                                       Form1.IBDataSet150.FieldByName('CAIXA').AsString
-                                       );
+                                       xmlNodeValue(sRetorno, '//xMotivo'),
+                                       Form1.IBQuery65.FieldByName('DATA').AsString,
+                                       Form1.IBQuery65.FieldByName('NUMERONF').AsString,
+                                       Form1.IBQuery65.FieldByName('CAIXA').AsString)
+                      end;
 
-                      end; // on E: Exception do
-                    end; // try
+                    end; // if _ecf65_XmlNfceCancelado(sRetorno) then
 
-                  end; // if _ecf65_TodosItensCancelados(Form1.ibDataSet27.Transaction, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString) then
+                  end; // if (Pos('<cStat>100</cStat>', sRetorno) <> 0) or (Pos('<cStat>150</cStat>', sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
 
-                end;
+                  {Sandro Silva 2019-07-25 inicio}
+                  if Trim(sRetorno) = '' then
+                  begin
+                    AdicionaLogCDS(False,
+                                   Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
+                                   NFCE_NAO_HOUVE_RETORNO_SERVIDOR,
+                                   Form1.IBDataSet150.FieldByName('DATA').AsString,
+                                   Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
+                                   Form1.IBDataSet150.FieldByName('CAIXA').AsString
+                                   );
+                  end;
+                  {Sandro Silva 2019-07-25 fim}
 
-                //consultar id qdo sem retorno?
-                if (
-                     (AnsiContainsText(sRetorno, 'Duplicidade') and (AnsiContainsText(sRetorno, '<cStat>204</cStat>'))) // Duplicidade
-                     or (_ecf65_xmlAutorizado(sRetorno))
-                   )
-                  and (_ecf65_XmlNfceCancelado(sRetorno) = False) // Sandro Silva 2019-07-31
-                  then
-                begin// Copiar recibo, consultar recibo e id, ver o que retornar e analisar como identificar se mesmo xml enviado anteriormente está em xmldestinatario
-
-                  try
-                    // Sandro Silva 2022-04-12 if ((Pos('<cStat>100</cStat>',sRetorno) <> 0) or (Pos('<cStat>150</cStat>',sRetorno) <> 0)) then // Autorizado
-                    if (_ecf65_xmlAutorizado(sRetorno)) then // Autorizado
+                  if sArquivoXMLAutorizado <> '' then
+                  begin
+                    if _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id'))) <> '' then
                     begin
-                      sRetornoConsultaRecibo := sRetorno
-                    end
-                    else
-                    begin
+                      // Autorizou NFC-e
+                      // Atualiza dados da venda no banco
                       try
+
+                        {Sandro Silva 2021-11-19 inicio} 
+                        Form1.IBDataSet150.Close;
+                        Form1.IBDataSet150.SelectSQL.Text :=
+                          'select * ' +
+                          'from NFCE ' +
+                          'where MODELO = ''65'' ' +
+                          ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                          ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                        Form1.IBDataSet150.Open;
+                        {Sandro Silva 2021-11-19 fim}
+
+                        Form1.IBDataSet150.Edit;
+                        Form1.IBDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id')));
+                        if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpAmb') = TPAMB_HOMOLOGACAO then
+                          sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_HOMOLOGACAO// 'Autorizado o uso da NFC-e em ambiente de homologação';
+                        else
+                          sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_PRODUCAO;// 'Autorizado o uso da NFC-e';
+
+                        if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe') <> '' then
+                          Form1.IBDataSet150.FieldByName('NFEID').AsString := xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe'); // Só terá o ID preenchido depois de transmitida
+                        Form1.IBDataSet150.FieldByName('STATUS').AsString := sStatus;
+                        if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF') <> '' then
+                          Form1.IBDataSet150.FieldByName('TOTAL').AsFloat   := xmlNodeValueToFloat(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF'); // Ficha 4302 Sandro Silva 2018-12-05
+                        Form1.IBDataSet150.Post;
+
+                      except
+
+                      end;
+
+                      // Seleciona novamente os dados da NFC-e porque o campo CAIXA estava ficando vazio depois do post acima
+                      Form1.IBDataSet150.Close;
+                      Form1.IBDataSet150.SelectSQL.Text :=
+                        'select * ' +
+                        'from NFCE ' +
+                        'where MODELO = ''65'' ' +
+                        ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                        ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                      Form1.IBDataSet150.Open;
+                      sNfceIdSubstituto  := Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString;
+                      sNfceIdSubstituido := Form1.IBDataSet150.FieldByName('NFEID').AsString;
+
+                      if (sNfceIdSubstituido <> '') and (sNfceIdSubstituto <> '') then // Está substituindo outra NFC-e   // Sandro Silva 2019-07-31 if sNfceIdSubstituido <> '' then // Está substituindo outra NFC-e
+                      begin
+
+                        // Faz o cancelamento por substituição
+                        if _ecf65_CancelaNFCePorSubstituicao(
+                              sNfceIdSubstituido,
+                              'Nenhum retorno do Servidor da SEFAZ na transmissao da autorizacao de emissao do documento',
+                              sNfceIdSubstituto, //ID o substituto (contingência)
+                              sRetorno // Recebe o retorno do cancelamento para usar abaixo
+                              ) = False then
+                        begin
+                          try
+                            // Seleciona os dados da NFC-e a ser substituída
+                            Form1.IBDataSet150.Close;
+                            Form1.IBDataSet150.SelectSQL.Text :=
+                              'select * ' +
+                              'from NFCE ' +
+                              'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
+                            Form1.IBDataSet150.Open;
+
+                            if (Pos('<cStat>501</cStat>', sRetorno) > 0)   // Rejeição: Prazo de cancelamento superior ao previsto na Legislação
+                              or (Pos('<cStat>913</cStat>', sRetorno) > 0) //  Rejeição: NF-e Substituta Denegada ou Cancelada
+                              or (Pos('<cStat>914</cStat>', sRetorno) > 0) // Rejeição: Data de emissão da NF-e Substituta maior que 2 horas da data de emissão da NF-e a ser cancelada
+                              or (Pos('<cStat>915</cStat>', sRetorno) > 0) //  Rejeição: Valor total da NF-e Substituta difere do valor da NF-e a ser cancelada
+                              or (Pos('<cStat>916</cStat>', sRetorno) > 0) //  Rejeição: Valor total do ICMS da NF-e Substituta difere do valor da NF-e a ser cancelada
+                              or (Pos('<cStat>917</cStat>', sRetorno) > 0) //  Rejeição: Identificação do destinatário da NF-e Substituta difere da identificação do destinatário da NF-e a ser cancelada.
+                              or (Pos('<cStat>918</cStat>', sRetorno) > 0) //  Rejeição: Quantidade de itens da NF-e Substituta difere da quantidade de itens da NF-e a ser cancelada.
+                              or (Pos('<cStat>919</cStat>', sRetorno) > 0) //  Rejeição: Item da NF-e Substituta difere do mesmo item da NF-e a ser cancelada.
+                              or (Pos('<cStat>920</cStat>', sRetorno) > 0) //  Rejeição: Tipo de Emissão inválido no Cancelamento por Substituição
+                              then // Sandro Silva 2019-08-14 if (Pos('<cStat>501</cStat>', sRetorno) > 0)
+                              sLogErroEnvio := 'Cancelamento da NFC-e ' + sNfceIdSubstituido + ' por substituição não realizado. Considere emitir um NF-e de devolução: ' + xmlNodeValue(sRetorno, '//xMotivo')
+                            else
+                              sLogErroEnvio := 'Tente novamente mais tarde. Cancelamento da NFC-e ' + sNfceIdSubstituido + ' por substituição não realizado: ' + xmlNodeValue(sRetorno, '//xMotivo');
+
+                            AdicionaLogCDS(False, // Sandro Silva 2019-08-09  True,
+                                           Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
+                                           sLogErroEnvio,
+                                           Form1.IBQuery65.FieldByName('DATA').AsString,
+                                           Form1.IBQuery65.FieldByName('NUMERONF').AsString,
+                                           Form1.IBQuery65.FieldByName('CAIXA').AsString);
+
+                          except
+
+                          end;
+
+                        end
+                        else
+                        begin
+                          // Cancelamento foi aceito e registrado na SEFAZ
+                          if _ecf65_XmlNfceCancelado(sRetorno) then
+                          begin
+                            // Cancelamento por substituição registrado e vinculado
+                            // Atualiza dados de cancelamento da venda no banco
+                            try
+                              // Seleciona os dados da NFC-e substituida
+                              Form1.IBDataSet150.Close;
+                              Form1.IBDataSet150.SelectSQL.Text :=
+                                'select * ' +
+                                'from NFCE ' +
+                                'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
+                              Form1.IBDataSet150.Open;
+
+                              if (Form1.IBDataSet150.FieldByName('NFEID').AsString <> '') and (Form1.IBDataSet150.FieldByName('NFEID').AsString = sNfceIdSubstituido) then
+                              begin
+
+                                Form1.IBDataSet150.Edit;
+                                Form1.IBDataSet150.FieldByName('NFEXML').AsString := sRetorno;
+                                Form1.IBDataSet150.FieldByName('STATUS').AsString := NFCE_STATUS_CANCELAMENTO; // Sandro Silva 2021-12-07 'Cancelamento Registrado e vinculado a NFCe';
+                                Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').Clear;
+                                Form1.IBDataSet150.FieldByName('TOTAL').Clear;
+                                Form1.IBDataSet150.Post;
+
+                              end;
+
+                            except
+
+                            end;
+
+                          end
+                          else
+                          begin // Retorno não de cancelamento
+
+                            // Seleciona os dados da NFC-e a ser substituída
+                            Form1.IBDataSet150.Close;
+                            Form1.IBDataSet150.SelectSQL.Text :=
+                              'select * ' +
+                              'from NFCE ' +
+                              'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
+                            Form1.IBDataSet150.Open;
+
+                            if (Pos('<cStat>501</cStat>', sRetorno) > 0)   // Rejeição: Prazo de cancelamento superior ao previsto na Legislação
+                              or (Pos('<cStat>913</cStat>', sRetorno) > 0) //  Rejeição: NF-e Substituta Denegada ou Cancelada
+                              or (Pos('<cStat>914</cStat>', sRetorno) > 0) // Rejeição: Data de emissão da NF-e Substituta maior que 2 horas da data de emissão da NF-e a ser cancelada
+                              or (Pos('<cStat>915</cStat>', sRetorno) > 0) //  Rejeição: Valor total da NF-e Substituta difere do valor da NF-e a ser cancelada
+                              or (Pos('<cStat>916</cStat>', sRetorno) > 0) //  Rejeição: Valor total do ICMS da NF-e Substituta difere do valor da NF-e a ser cancelada
+                              or (Pos('<cStat>917</cStat>', sRetorno) > 0) //  Rejeição: Identificação do destinatário da NF-e Substituta difere da identificação do destinatário da NF-e a ser cancelada.
+                              or (Pos('<cStat>918</cStat>', sRetorno) > 0) //  Rejeição: Quantidade de itens da NF-e Substituta difere da quantidade de itens da NF-e a ser cancelada.
+                              or (Pos('<cStat>919</cStat>', sRetorno) > 0) //  Rejeição: Item da NF-e Substituta difere do mesmo item da NF-e a ser cancelada.
+                              or (Pos('<cStat>920</cStat>', sRetorno) > 0) //  Rejeição: Tipo de Emissão inválido no Cancelamento por Substituição
+                              then // Sandro Silva 2019-08-14 if (Pos('<cStat>501</cStat>', sRetorno) > 0)
+                              sLogErroEnvio := 'Cancelamento da NFC-e ' + sNfceIdSubstituido + ' por substituição não realizado. Considere emitir um NF-e de devolução: ' + xmlNodeValue(sRetorno, '//xMotivo')
+                            else
+                              sLogErroEnvio := 'Tente novamente mais tarde. Se o erro persistir, considere emitir NF-e de devolução. ' + IfThen(Trim(sRetorno) = '', NFCE_NAO_HOUVE_RETORNO_SERVIDOR, xmlNodeValue(sRetorno, '//xMotivo'));
+
+                            AdicionaLogCDS(False, // Sandro Silva 2019-08-09  True,
+                                           Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
+                                           sLogErroEnvio,
+                                           Form1.IBQuery65.FieldByName('DATA').AsString,
+                                           Form1.IBQuery65.FieldByName('NUMERONF').AsString,
+                                           Form1.IBQuery65.FieldByName('CAIXA').AsString);
+
+                          end; // if (Pos('<cStat>135</cStat>', sRetorno) > 0) and (Pos('<tpEvento>110112</tpEvento>', sRetorno) > 0) then
+
+                        end; // if _ecf65_CancelaNFCePorSubstituicao()
+
+                      end; // if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
+                      {Sandro Silva 2019-07-24 fim}
+
+                    end; // if _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id'))) <> '' then
+                  end; // if Trim(sRetorno) = '' then
+
+                  // Seleciona novamente os dados da NFC-e porque o campo CAIXA estava ficando vazio depois do post acima
+                  Form1.IBDataSet150.Close;
+                  Form1.IBDataSet150.SelectSQL.Text :=
+                    'select * ' +
+                    'from NFCE ' +
+                    'where MODELO = ''65'' ' +
+                    ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                    ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                  Form1.IBDataSet150.Open;
+
+                  // Grava as formas de pagamento contidas no xml ou exclui quando for cancelada
+                  if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//tPag') <> '' then
+                    _ecf65_GravaPagamentFromXML(Form1.IBDataSet150.FieldByName('NFEXML').AsString, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+
+                  if _ecf65_XmlNfceCancelado(Form1.IBDataSet150.FieldByName('NFEXML').AsString) then
+                    AtualizarDadosRelacionadosComNFCeCancelada(Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+
+                end;//
+
+                Commitatudo2(True); // Não pode ser commit de todas as tabelas porque fecha Form1.IBQuery65
+              end; // if (xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpEmis') <> '1')
+            end; // if (xmlNodeValue(Form1.IBQuery65.FieldByName('NFEXML').AsString, '//emit/CNPJ') = LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))
+          except
+          end;
+
+          Form1.IBQuery65.Next;
+
+          //
+          // Aqui adicionar um Sleep para evitar Consumo Indevido - 656?
+          // Ou adicionar Sleep(2000) a cada requisição realizada ao servidor?
+          //
+
+        end; // while Form1.IBQuery65.Eof = False do
+
+        //Passa por todas NFCe identificadas com problema, gera novamente o xml e transmite
+        if Form1.ClientDataSet1.IsEmpty = False then
+        begin
+          Form1.ClientDataSet1.First;
+          while Form1.ClientDataSet1.Eof = False do
+          begin
+
+            sArquivoXMLAutorizado := ''; // Sandro Silva 2018-08-06
+            sRetorno              := ''; // Sandro Silva 2018-08-06
+            fNFe1                 := ''; // Sandro Silva 2018-08-06
+
+            // Abrir e atualizar dados dos produtos apenas das NFC-e do caixa atual.
+            // Não tem como tratar vendas de outros caixas, as funções levam em consideração o caixa atual
+            // Sandro Silva 2018-03-07 Teste transmitir de todos caixas  if Form1.ClientDataSet1.FieldByName('CAIXA').AsString = Form1.sCaixa then
+            begin
+              Form1.IBDataSet150.Close;
+              Form1.IBDataSet150.SelectSQL.Text :=
+                'select * ' +
+                'from NFCE ' +
+                'where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
+                ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
+                ' and MODELO = ''65'' ';
+              Form1.IBDataSet150.Open;
+              if (Form1.IBDataSet150.FieldByName('NUMERONF').AsString = Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) and (Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString = '') then // Sandro Silva 2019-07-25 if Form1.IBDataSet150.FieldByName('NUMERONF').AsString = Form1.ClientDataSet1.FieldByName('NUMERONF').AsString then
+              begin
+                _ecf65_GeraXmlCorrigindoDados(StrToInt64Def(Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 0), Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                Commitatudo2(True); // Transmissão contingência NFC-e. Apenas Estoque e alteraca
+
+                Form1.IBDataSet150.Close;
+                Form1.IBDataSet150.SelectSQL.Text :=
+                  'select * ' +
+                  'from NFCE ' +
+                  'where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
+                  ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
+                  ' and MODELO = ''65'' ';
+                Form1.IBDataSet150.Open;
+
+                // Transmite o xml corrigido
+                try
+                  fNFe1 := Form1.IBDataSet150.FieldByName('NFEXML').AsString;
+                  fNFe1 := Form1.spdNFCe1.AssinarNota(fNFe1); // Caso certificado foi renovado depois de ter gerado a nfce
+
+                  _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
+
+                  sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, fNFe1, False); // Transmitindo contingência
+
+                  sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
+
+                except
+                  on E: Exception do
+                  begin
+
+                    Form1.ClientDataSet1.Edit;
+                    Form1.ClientDataSet1.FieldByName('LOG').AsString      := E.Message;
+                    Form1.ClientDataSet1.Post;
+
+                  end; // on E: Exception do
+                end; // try
+
+                // Sandro Silva 2022-04-12 if (Pos('<cStat>100</cStat>', sRetorno) <> 0) or (Pos('<cStat>150</cStat>', sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
+                if (_ecf65_xmlAutorizado(sRetorno)) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
+                begin
+                  //
+                  sID   := xmlNodeValue(sRetorno, '//chNFe'); // Copia o ID da NFe p/ o Edit
+                  fNFe1 := _ecf65_LoadXmlDestinatario(sID);
+                  //
+
+                  Form1.ibDataSet27.Close;
+                  Form1.ibDataSet27.SelectSQL.Text :=
+                    'select * ' +
+                    'from ALTERACA ' +
+                    'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
+                    ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                  Form1.ibDataSet27.Open;
+                  while Form1.ibDataSet27.Eof = False do
+                  begin
+
+                    try
+                      Form1.ibDataSet27.Edit;
+                      Form1.ibDataSet27.FieldByName('COO').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
+                      Form1.ibDataSet27.FieldByName('CCF').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
+                      Form1.ibDataSet27.Post;
+                    except
+                    end;
+
+                    Form1.ibDataSet27.Next;
+                  end;
+                  sArquivoXMLAutorizado := fNFe1;
+
+                  Form1.ClientDataSet1.Edit;
+                  Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString := 'S';
+                  Form1.ClientDataSet1.Post;
+
+                end
+                else
+                begin  // cStat diferente de autorizado
+                  {Sandro Silva 2018-08-10 inicio}
+                  if AnsiContainsText(sRetorno, 'Duplicidade') and (AnsiContainsText(sRetorno, '<cStat>204</cStat>')) then
+                  begin// Copiar recibo, consultar recibo e id, ver o que retornar e analisar como identificar se mesmo xml enviado anteriormente está em xmldestinatario
+                    try
+                      try // Sandro Silva 2021-09-13
                         sRetornoConsultaRecibo := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
                       except
 
@@ -7619,108 +8087,37 @@ begin
 
                       sRetornoConsultaRecibo := _ecf65_CorrigePadraoRespostaSefaz(sRetornoConsultaRecibo);
 
-                    end;
-
-                    if (_ecf65_xmlAutorizado(sRetornoConsultaRecibo))
-                      and (_ecf65_XmlNfceCancelado(sRetornoConsultaRecibo) = False) then
-                    begin
-                      // Se foi autorizada faz a montagem do xml assinado com os dados da autorização
-                      if xmlNodeXML(sRetornoConsultaRecibo, '//protNFe') <> '' then
+                      if (_ecf65_xmlAutorizado(sRetornoConsultaRecibo)) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo // Sandro Silva 2018-08-10
                       begin
-
-                        //conferir o digestvalue do retorno com o digest da nota enviada
-                        if xmlNodeValue(sRetornoConsultaRecibo, '//infProt/digVal') = xmlNodeValue(fNFe1, '//DigestValue') then
+                        // Se foi autorizada faz a montagem do xml assinado com os dados da autorização
+                        if xmlNodeXML(sRetornoConsultaRecibo, '//protNFe') <> '' then
                         begin
 
-                          if xmlNodeValue(fNFe1, '//infProt/digVal') = '' then // No xml lido do banco ainda não tem as tags de autorização. Caso consulte 2x a mesma chave
+                          fNFe1 := _ecf65_LoadXmlDestinatario(xmlNodeValue(sRetornoConsultaRecibo, '//infProt/chNFe')); // Lê o arquivo contendo o xml inicialmente autorizado
+
+                          //conferir o digestvalue do retorno com a nota autorizada
+                          if xmlNodeValue(sRetornoConsultaRecibo, '//infProt/digVal') = xmlNodeValue(fNFe1, '//DigestValue') then
                           begin
-                            sRetornoConsultaRecibo := ConcatencaNodeNFeComProtNFe(fNFe1, sRetornoConsultaRecibo);
-                          end
-                          else
-                          begin
-                            sRetornoConsultaRecibo := fNFe1; // XML lido do banco já tem as tags de autorização
+
+                            sRetorno := ConcatencaNodeNFeComProtNFe(fNFe1, sRetornoConsultaRecibo);
+
+                            slNFCeAutorizada := TStringList.Create;
+                            slNFCeAutorizada.Text := sRetorno;
+                            slNFCeAutorizada.SaveToFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Copy(Form1.spdNFCeDataSets1.Campo('Id_A03').AsString,4,44) + '-nfce.xml');
+                            FreeAndNil(slNFCeAutorizada);
+
+                            sArquivoXMLAutorizado := sRetorno;
                           end;
 
-                          slNFCeAutorizada := TStringList.Create;
-                          slNFCeAutorizada.Text := sRetornoConsultaRecibo;
-                          slNFCeAutorizada.SaveToFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + LimpaNumero(xmlNodeValue(sRetornoConsultaRecibo, '//infNFe/@Id')) + '-nfce.xml');
-                          Sleep(100); // Sandro Silva 2021-11-03
-                          FreeAndNil(slNFCeAutorizada);
-
-                          sRetorno := sRetornoConsultaRecibo;
                         end;
-
-                      end; // if xmlNodeXML(sRetornoConsultaRecibo, '//protNFe') <> '' then
-
-                    end; // if (Pos('<cStat>100</cStat>',sRetornoConsultaRecibo) <> 0) or (Pos('<cStat>150</cStat>',sRetornoConsultaRecibo) <> 0) then
-
-                  except
-
-                  end;
-
-                end; // if AnsiContainsText(sRetorno, 'Duplicidade') and (AnsiContainsText(sRetorno, '<cStat>204</cStat>')) then
-
-              except
-                on E: Exception do
-                begin
-
-                  AdicionaLogCDS(False,
-                                 Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                 E.Message,
-                                 Form1.IBDataSet150.FieldByName('DATA').AsString,
-                                 Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
-                                 Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-
-                end; // on E: Exception do
-              end; // try
-
-              Form1.ClientDataSet1.Filtered := False;
-
-              if bProcessouNFCeSubstituidaNaoConstaNaSefaz = False then // Sandro Silva 2021-10-04
-              begin
-
-                if (_ecf65_xmlAutorizado(sRetorno)) // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
-                  and (_ecf65_XmlNfceCancelado(sRetorno) = False) then
-                begin // Autorizada
-                  //
-                  sID   := xmlNodeValue(sRetorno, '//chNFe'); // Copia o ID da NFe p/ o Edit
-                  fNFe1 := _ecf65_LoadXmlDestinatario(sID);
-                  //
-                  try
-                    Form1.ibDataSet27.Close;
-                    Form1.ibDataSet27.SelectSQL.Text :=
-                      'select * ' +
-                      'from ALTERACA ' +
-                      'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
-                      ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                    Form1.ibDataSet27.Open;
-                    while Form1.ibDataSet27.Eof = False do
-                    begin
-
-                      try
-                        Form1.ibDataSet27.Edit;
-                        Form1.ibDataSet27.FieldByName('COO').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
-                        Form1.ibDataSet27.FieldByName('CCF').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
-                        Form1.ibDataSet27.Post;
-                      except
                       end;
-
-                      Form1.ibDataSet27.Next;
-                    end;
-                  except
-                    on E: Exception do
-                    begin
+                    except
 
                     end;
-                  end;
-
-                  sArquivoXMLAutorizado := fNFe1;
-
-                end
-                else
-                begin  // cStat diferente de autorizado
-                  if _ecf65_XmlNfceCancelado(sRetorno) = False then
+                  end
+                  else
                   begin
+                    {Sandro Silva 2018-08-10 fim}
                     if (xmlNodeValue(sRetorno, '//infProt/xMotivo') <> '')
                       or (xmlNodeValue(sRetorno, '//retEnviNFe/xMotivo') <> '') then
                     begin
@@ -7740,545 +8137,160 @@ begin
 
                       end;
                     end;
-
-                    if xmlNodeValue(sRetorno, '//xMotivo') <> '' then
-                    begin
-                      AdicionaLogCDS(False, // Sandro Silva 2019-08-09  True,
-                                     Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                     xmlNodeValue(sRetorno, '//xMotivo'),
-                                     Form1.IBQuery65.FieldByName('DATA').AsString,
-                                     Form1.IBQuery65.FieldByName('NUMERONF').AsString,
-                                     Form1.IBQuery65.FieldByName('CAIXA').AsString)
-                    end;
-
-                  end; // if _ecf65_XmlNfceCancelado(sRetorno) then
-
+                  end;
+                  if xmlNodeValue(sRetorno, '//xMotivo') <> '' then
+                  begin
+                    Form1.ClientDataSet1.Edit;
+                    Form1.ClientDataSet1.FieldByName('LOG').AsString      := xmlNodeValue(sRetorno, '//xMotivo');
+                    Form1.ClientDataSet1.Post;
+                  end;
                 end; // if (Pos('<cStat>100</cStat>', sRetorno) <> 0) or (Pos('<cStat>150</cStat>', sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
-
-                {Sandro Silva 2019-07-25 inicio}
-                if Trim(sRetorno) = '' then
-                begin
-                  AdicionaLogCDS(False,
-                                 Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                 NFCE_NAO_HOUVE_RETORNO_SERVIDOR,
-                                 Form1.IBDataSet150.FieldByName('DATA').AsString,
-                                 Form1.IBDataSet150.FieldByName('NUMERONF').AsString,
-                                 Form1.IBDataSet150.FieldByName('CAIXA').AsString
-                                 );
-                end;
-                {Sandro Silva 2019-07-25 fim}
 
                 if sArquivoXMLAutorizado <> '' then
                 begin
                   if _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id'))) <> '' then
                   begin
-                    // Autorizou NFC-e
                     // Atualiza dados da venda no banco
                     try
-
-                      {Sandro Silva 2021-11-19 inicio} 
-                      Form1.IBDataSet150.Close;
-                      Form1.IBDataSet150.SelectSQL.Text :=
-                        'select * ' +
-                        'from NFCE ' +
-                        'where MODELO = ''65'' ' +
-                        ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                        ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
-                      Form1.IBDataSet150.Open;
-                      {Sandro Silva 2021-11-19 fim}
-
-                      Form1.IBDataSet150.Edit;
-                      Form1.IBDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id')));
                       if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpAmb') = TPAMB_HOMOLOGACAO then
-                        sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_HOMOLOGACAO// 'Autorizado o uso da NFC-e em ambiente de homologação';
+                        sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_HOMOLOGACAO// 'Autorizado o uso da NFC-e em ambiente de homologação'
                       else
                         sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_PRODUCAO;// 'Autorizado o uso da NFC-e';
 
+                      Form1.IBDataSet150.Edit;
+                      Form1.IBDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id')));
                       if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe') <> '' then
-                        Form1.IBDataSet150.FieldByName('NFEID').AsString := xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe'); // Só terá o ID preenchido depois de transmitida
+                        Form1.IBDataSet150.FieldByName('NFEID').AsString := xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe');
                       Form1.IBDataSet150.FieldByName('STATUS').AsString := sStatus;
                       if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF') <> '' then
-                        Form1.IBDataSet150.FieldByName('TOTAL').AsFloat   := xmlNodeValueToFloat(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF'); // Ficha 4302 Sandro Silva 2018-12-05
+                        Form1.IBDataSet150.FieldByName('TOTAL').AsFloat  := xmlNodeValueToFloat(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF'); // Ficha 4302 Sandro Silva 2018-12-05
                       Form1.IBDataSet150.Post;
 
-                    except
+                      {Sandro Silva 2022-06-02 inicio}
+                      // Grava as formas de pagamento contidas no xml ou exclui quando for cancelada
+                      if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//tPag') <> '' then
+                        _ecf65_GravaPagamentFromXML(Form1.IBDataSet150.FieldByName('NFEXML').AsString, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
 
-                    end;
+                      if _ecf65_XmlNfceCancelado(Form1.IBDataSet150.FieldByName('NFEXML').AsString) then
+                        AtualizarDadosRelacionadosComNFCeCancelada(Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
+                      {Sandro Silva 2022-06-02 fim}
 
-                    // Seleciona novamente os dados da NFC-e porque o campo CAIXA estava ficando vazio depois do post acima
-                    Form1.IBDataSet150.Close;
-                    Form1.IBDataSet150.SelectSQL.Text :=
-                      'select * ' +
-                      'from NFCE ' +
-                      'where MODELO = ''65'' ' +
-                      ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                      ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
-                    Form1.IBDataSet150.Open;
-                    sNfceIdSubstituto  := Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString;
-                    sNfceIdSubstituido := Form1.IBDataSet150.FieldByName('NFEID').AsString;
-
-                    if (sNfceIdSubstituido <> '') and (sNfceIdSubstituto <> '') then // Está substituindo outra NFC-e   // Sandro Silva 2019-07-31 if sNfceIdSubstituido <> '' then // Está substituindo outra NFC-e
-                    begin
-
-                      // Faz o cancelamento por substituição
-                      if _ecf65_CancelaNFCePorSubstituicao(
-                            sNfceIdSubstituido,
-                            'Nenhum retorno do Servidor da SEFAZ na transmissao da autorizacao de emissao do documento',
-                            sNfceIdSubstituto, //ID o substituto (contingência)
-                            sRetorno // Recebe o retorno do cancelamento para usar abaixo
-                            ) = False then
-                      begin
-                        try
-                          // Seleciona os dados da NFC-e a ser substituída
-                          Form1.IBDataSet150.Close;
-                          Form1.IBDataSet150.SelectSQL.Text :=
-                            'select * ' +
-                            'from NFCE ' +
-                            'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
-                          Form1.IBDataSet150.Open;
-
-                          if (Pos('<cStat>501</cStat>', sRetorno) > 0)   // Rejeição: Prazo de cancelamento superior ao previsto na Legislação
-                            or (Pos('<cStat>913</cStat>', sRetorno) > 0) //  Rejeição: NF-e Substituta Denegada ou Cancelada
-                            or (Pos('<cStat>914</cStat>', sRetorno) > 0) // Rejeição: Data de emissão da NF-e Substituta maior que 2 horas da data de emissão da NF-e a ser cancelada
-                            or (Pos('<cStat>915</cStat>', sRetorno) > 0) //  Rejeição: Valor total da NF-e Substituta difere do valor da NF-e a ser cancelada
-                            or (Pos('<cStat>916</cStat>', sRetorno) > 0) //  Rejeição: Valor total do ICMS da NF-e Substituta difere do valor da NF-e a ser cancelada
-                            or (Pos('<cStat>917</cStat>', sRetorno) > 0) //  Rejeição: Identificação do destinatário da NF-e Substituta difere da identificação do destinatário da NF-e a ser cancelada.
-                            or (Pos('<cStat>918</cStat>', sRetorno) > 0) //  Rejeição: Quantidade de itens da NF-e Substituta difere da quantidade de itens da NF-e a ser cancelada.
-                            or (Pos('<cStat>919</cStat>', sRetorno) > 0) //  Rejeição: Item da NF-e Substituta difere do mesmo item da NF-e a ser cancelada.
-                            or (Pos('<cStat>920</cStat>', sRetorno) > 0) //  Rejeição: Tipo de Emissão inválido no Cancelamento por Substituição
-                            then // Sandro Silva 2019-08-14 if (Pos('<cStat>501</cStat>', sRetorno) > 0)
-                            sLogErroEnvio := 'Cancelamento da NFC-e ' + sNfceIdSubstituido + ' por substituição não realizado. Considere emitir um NF-e de devolução: ' + xmlNodeValue(sRetorno, '//xMotivo')
-                          else
-                            sLogErroEnvio := 'Tente novamente mais tarde. Cancelamento da NFC-e ' + sNfceIdSubstituido + ' por substituição não realizado: ' + xmlNodeValue(sRetorno, '//xMotivo');
-
-                          AdicionaLogCDS(False, // Sandro Silva 2019-08-09  True,
-                                         Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                         sLogErroEnvio,
-                                         Form1.IBQuery65.FieldByName('DATA').AsString,
-                                         Form1.IBQuery65.FieldByName('NUMERONF').AsString,
-                                         Form1.IBQuery65.FieldByName('CAIXA').AsString);
-
-                        except
-
-                        end;
-
-                      end
-                      else
-                      begin
-                        // Cancelamento foi aceito e registrado na SEFAZ
-                        if _ecf65_XmlNfceCancelado(sRetorno) then
-                        begin
-                          // Cancelamento por substituição registrado e vinculado
-                          // Atualiza dados de cancelamento da venda no banco
-                          try
-                            // Seleciona os dados da NFC-e substituida
-                            Form1.IBDataSet150.Close;
-                            Form1.IBDataSet150.SelectSQL.Text :=
-                              'select * ' +
-                              'from NFCE ' +
-                              'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
-                            Form1.IBDataSet150.Open;
-
-                            if (Form1.IBDataSet150.FieldByName('NFEID').AsString <> '') and (Form1.IBDataSet150.FieldByName('NFEID').AsString = sNfceIdSubstituido) then
-                            begin
-
-                              Form1.IBDataSet150.Edit;
-                              Form1.IBDataSet150.FieldByName('NFEXML').AsString := sRetorno;
-                              Form1.IBDataSet150.FieldByName('STATUS').AsString := NFCE_STATUS_CANCELAMENTO; // Sandro Silva 2021-12-07 'Cancelamento Registrado e vinculado a NFCe';
-                              Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').Clear;
-                              Form1.IBDataSet150.FieldByName('TOTAL').Clear;
-                              Form1.IBDataSet150.Post;
-
-                            end;
-
-                          except
-
-                          end;
-
-                        end
-                        else
-                        begin // Retorno não de cancelamento
-
-                          // Seleciona os dados da NFC-e a ser substituída
-                          Form1.IBDataSet150.Close;
-                          Form1.IBDataSet150.SelectSQL.Text :=
-                            'select * ' +
-                            'from NFCE ' +
-                            'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
-                          Form1.IBDataSet150.Open;
-
-                          if (Pos('<cStat>501</cStat>', sRetorno) > 0)   // Rejeição: Prazo de cancelamento superior ao previsto na Legislação
-                            or (Pos('<cStat>913</cStat>', sRetorno) > 0) //  Rejeição: NF-e Substituta Denegada ou Cancelada
-                            or (Pos('<cStat>914</cStat>', sRetorno) > 0) // Rejeição: Data de emissão da NF-e Substituta maior que 2 horas da data de emissão da NF-e a ser cancelada
-                            or (Pos('<cStat>915</cStat>', sRetorno) > 0) //  Rejeição: Valor total da NF-e Substituta difere do valor da NF-e a ser cancelada
-                            or (Pos('<cStat>916</cStat>', sRetorno) > 0) //  Rejeição: Valor total do ICMS da NF-e Substituta difere do valor da NF-e a ser cancelada
-                            or (Pos('<cStat>917</cStat>', sRetorno) > 0) //  Rejeição: Identificação do destinatário da NF-e Substituta difere da identificação do destinatário da NF-e a ser cancelada.
-                            or (Pos('<cStat>918</cStat>', sRetorno) > 0) //  Rejeição: Quantidade de itens da NF-e Substituta difere da quantidade de itens da NF-e a ser cancelada.
-                            or (Pos('<cStat>919</cStat>', sRetorno) > 0) //  Rejeição: Item da NF-e Substituta difere do mesmo item da NF-e a ser cancelada.
-                            or (Pos('<cStat>920</cStat>', sRetorno) > 0) //  Rejeição: Tipo de Emissão inválido no Cancelamento por Substituição
-                            then // Sandro Silva 2019-08-14 if (Pos('<cStat>501</cStat>', sRetorno) > 0)
-                            sLogErroEnvio := 'Cancelamento da NFC-e ' + sNfceIdSubstituido + ' por substituição não realizado. Considere emitir um NF-e de devolução: ' + xmlNodeValue(sRetorno, '//xMotivo')
-                          else
-                            sLogErroEnvio := 'Tente novamente mais tarde. Se o erro persistir, considere emitir NF-e de devolução. ' + IfThen(Trim(sRetorno) = '', NFCE_NAO_HOUVE_RETORNO_SERVIDOR, xmlNodeValue(sRetorno, '//xMotivo'));
-
-                          AdicionaLogCDS(False, // Sandro Silva 2019-08-09  True,
-                                         Form1.IBDataSet150.FieldByName('REGISTRO').AsString,
-                                         sLogErroEnvio,
-                                         Form1.IBQuery65.FieldByName('DATA').AsString,
-                                         Form1.IBQuery65.FieldByName('NUMERONF').AsString,
-                                         Form1.IBQuery65.FieldByName('CAIXA').AsString);
-
-                        end; // if (Pos('<cStat>135</cStat>', sRetorno) > 0) and (Pos('<tpEvento>110112</tpEvento>', sRetorno) > 0) then
-
-                      end; // if _ecf65_CancelaNFCePorSubstituicao()
-
-                    end; // if Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString <> '' then
-                    {Sandro Silva 2019-07-24 fim}
-
-                  end; // if _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id'))) <> '' then
-                end; // if Trim(sRetorno) = '' then
-
-                // Seleciona novamente os dados da NFC-e porque o campo CAIXA estava ficando vazio depois do post acima
-                Form1.IBDataSet150.Close;
-                Form1.IBDataSet150.SelectSQL.Text :=
-                  'select * ' +
-                  'from NFCE ' +
-                  'where MODELO = ''65'' ' +
-                  ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                  ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
-                Form1.IBDataSet150.Open;
-
-                // Grava as formas de pagamento contidas no xml ou exclui quando for cancelada
-                if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//tPag') <> '' then
-                  _ecf65_GravaPagamentFromXML(Form1.IBDataSet150.FieldByName('NFEXML').AsString, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-
-                if _ecf65_XmlNfceCancelado(Form1.IBDataSet150.FieldByName('NFEXML').AsString) then
-                  AtualizarDadosRelacionadosComNFCeCancelada(Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-
-              end;//
-
-              Commitatudo2(True); // Não pode ser commit de todas as tabelas porque fecha Form1.IBQuery65
-            end; // if (xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpEmis') <> '1')
-          end; // if (xmlNodeValue(Form1.IBQuery65.FieldByName('NFEXML').AsString, '//emit/CNPJ') = LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))
-        except
-        end;
-
-        Form1.IBQuery65.Next;
-
-        //
-        // Aqui adicionar um Sleep para evitar Consumo Indevido - 656?
-        // Ou adicionar Sleep(2000) a cada requisição realizada ao servidor?
-        //
-
-      end; // while Form1.IBQuery65.Eof = False do
-
-      //Passa por todas NFCe identificadas com problema, gera novamente o xml e transmite
-      if Form1.ClientDataSet1.IsEmpty = False then
-      begin
-        Form1.ClientDataSet1.First;
-        while Form1.ClientDataSet1.Eof = False do
-        begin
-
-          sArquivoXMLAutorizado := ''; // Sandro Silva 2018-08-06
-          sRetorno              := ''; // Sandro Silva 2018-08-06
-          fNFe1                 := ''; // Sandro Silva 2018-08-06
-
-          // Abrir e atualizar dados dos produtos apenas das NFC-e do caixa atual.
-          // Não tem como tratar vendas de outros caixas, as funções levam em consideração o caixa atual
-          // Sandro Silva 2018-03-07 Teste transmitir de todos caixas  if Form1.ClientDataSet1.FieldByName('CAIXA').AsString = Form1.sCaixa then
-          begin
-            Form1.IBDataSet150.Close;
-            Form1.IBDataSet150.SelectSQL.Text :=
-              'select * ' +
-              'from NFCE ' +
-              'where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
-              ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
-              ' and MODELO = ''65'' ';
-            Form1.IBDataSet150.Open;
-            if (Form1.IBDataSet150.FieldByName('NUMERONF').AsString = Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) and (Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString = '') then // Sandro Silva 2019-07-25 if Form1.IBDataSet150.FieldByName('NUMERONF').AsString = Form1.ClientDataSet1.FieldByName('NUMERONF').AsString then
-            begin
-              _ecf65_GeraXmlCorrigindoDados(StrToInt64Def(Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 0), Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-              Commitatudo2(True); // Transmissão contingência NFC-e. Apenas Estoque e alteraca
-
-              Form1.IBDataSet150.Close;
-              Form1.IBDataSet150.SelectSQL.Text :=
-                'select * ' +
-                'from NFCE ' +
-                'where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
-                ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
-                ' and MODELO = ''65'' ';
-              Form1.IBDataSet150.Open;
-
-              // Transmite o xml corrigido
-              try
-                fNFe1 := Form1.IBDataSet150.FieldByName('NFEXML').AsString;
-                fNFe1 := Form1.spdNFCe1.AssinarNota(fNFe1); // Caso certificado foi renovado depois de ter gerado a nfce
-
-                _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
-
-                sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, fNFe1, False); // Transmitindo contingência
-
-                sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
-
-              except
-                on E: Exception do
-                begin
-
-                  Form1.ClientDataSet1.Edit;
-                  Form1.ClientDataSet1.FieldByName('LOG').AsString      := E.Message;
-                  Form1.ClientDataSet1.Post;
-
-                end; // on E: Exception do
-              end; // try
-
-              // Sandro Silva 2022-04-12 if (Pos('<cStat>100</cStat>', sRetorno) <> 0) or (Pos('<cStat>150</cStat>', sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
-              if (_ecf65_xmlAutorizado(sRetorno)) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
-              begin
-                //
-                sID   := xmlNodeValue(sRetorno, '//chNFe'); // Copia o ID da NFe p/ o Edit
-                fNFe1 := _ecf65_LoadXmlDestinatario(sID);
-                //
-
-                Form1.ibDataSet27.Close;
-                Form1.ibDataSet27.SelectSQL.Text :=
-                  'select * ' +
-                  'from ALTERACA ' +
-                  'where PEDIDO = ' + QuotedStr(Form1.IBDataSet150.FieldByName('NUMERONF').AsString) +
-                  ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                Form1.ibDataSet27.Open;
-                while Form1.ibDataSet27.Eof = False do
-                begin
-
-                  try
-                    Form1.ibDataSet27.Edit;
-                    Form1.ibDataSet27.FieldByName('COO').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
-                    Form1.ibDataSet27.FieldByName('CCF').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
-                    Form1.ibDataSet27.Post;
-                  except
-                  end;
-
-                  Form1.ibDataSet27.Next;
-                end;
-                sArquivoXMLAutorizado := fNFe1;
-
-                Form1.ClientDataSet1.Edit;
-                Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString := 'S';
-                Form1.ClientDataSet1.Post;
-
-              end
-              else
-              begin  // cStat diferente de autorizado
-                {Sandro Silva 2018-08-10 inicio}
-                if AnsiContainsText(sRetorno, 'Duplicidade') and (AnsiContainsText(sRetorno, '<cStat>204</cStat>')) then
-                begin// Copiar recibo, consultar recibo e id, ver o que retornar e analisar como identificar se mesmo xml enviado anteriormente está em xmldestinatario
-                  try
-                    try // Sandro Silva 2021-09-13
-                      sRetornoConsultaRecibo := Form1.spdNFCe1.ConsultarNF(LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id')));
-                    except
-
-                    end;
-
-                    sRetornoConsultaRecibo := _ecf65_CorrigePadraoRespostaSefaz(sRetornoConsultaRecibo);
-
-                    if (_ecf65_xmlAutorizado(sRetornoConsultaRecibo)) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo // Sandro Silva 2018-08-10
-                    begin
-                      // Se foi autorizada faz a montagem do xml assinado com os dados da autorização
-                      if xmlNodeXML(sRetornoConsultaRecibo, '//protNFe') <> '' then
-                      begin
-
-                        fNFe1 := _ecf65_LoadXmlDestinatario(xmlNodeValue(sRetornoConsultaRecibo, '//infProt/chNFe')); // Lê o arquivo contendo o xml inicialmente autorizado
-
-                        //conferir o digestvalue do retorno com a nota autorizada
-                        if xmlNodeValue(sRetornoConsultaRecibo, '//infProt/digVal') = xmlNodeValue(fNFe1, '//DigestValue') then
-                        begin
-
-                          sRetorno := ConcatencaNodeNFeComProtNFe(fNFe1, sRetornoConsultaRecibo);
-
-                          slNFCeAutorizada := TStringList.Create;
-                          slNFCeAutorizada.Text := sRetorno;
-                          slNFCeAutorizada.SaveToFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Copy(Form1.spdNFCeDataSets1.Campo('Id_A03').AsString,4,44) + '-nfce.xml');
-                          FreeAndNil(slNFCeAutorizada);
-
-                          sArquivoXMLAutorizado := sRetorno;
-                        end;
-
-                      end;
-                    end;
-                  except
-
-                  end;
-                end
-                else
-                begin
-                  {Sandro Silva 2018-08-10 fim}
-                  if (xmlNodeValue(sRetorno, '//infProt/xMotivo') <> '')
-                    or (xmlNodeValue(sRetorno, '//retEnviNFe/xMotivo') <> '') then
-                  begin
-                    try
-                      Form1.IBDataSet150.Edit;
-                      if xmlNodeValue(sRetorno, '//infProt/xMotivo') = '' then
-                      begin
-                        Form1.IBDataSet150.FieldByName('STATUS').AsString := Copy(xmlNodeValue(sRetorno, '//retEnviNFe/xMotivo'), 1, Form1.IBDataSet150.FieldByName('STATUS').Size);
-                      end
-                      else
-                      begin
-                        Form1.IBDataSet150.FieldByName('STATUS').AsString := Copy(xmlNodeValue(sRetorno, '//infProt/xMotivo'), 1, Form1.IBDataSet150.FieldByName('STATUS').Size);
-                      end;
-                      Form1.IBDataSet150.Post;
+                      Form1.ClientDataSet1.Edit;
+                      Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString := 'S';
+                      Form1.ClientDataSet1.Post;
 
                     except
 
                     end;
                   end;
                 end;
-                if xmlNodeValue(sRetorno, '//xMotivo') <> '' then
-                begin
-                  Form1.ClientDataSet1.Edit;
-                  Form1.ClientDataSet1.FieldByName('LOG').AsString      := xmlNodeValue(sRetorno, '//xMotivo');
-                  Form1.ClientDataSet1.Post;
-                end;
-              end; // if (Pos('<cStat>100</cStat>', sRetorno) <> 0) or (Pos('<cStat>150</cStat>', sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
+                Commitatudo2(True);
 
-              if sArquivoXMLAutorizado <> '' then
-              begin
-                if _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id'))) <> '' then
-                begin
-                  // Atualiza dados da venda no banco
-                  try
-                    if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpAmb') = TPAMB_HOMOLOGACAO then
-                      sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_HOMOLOGACAO// 'Autorizado o uso da NFC-e em ambiente de homologação'
-                    else
-                      sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_PRODUCAO;// 'Autorizado o uso da NFC-e';
-
-                    Form1.IBDataSet150.Edit;
-                    Form1.IBDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id')));
-                    if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe') <> '' then
-                      Form1.IBDataSet150.FieldByName('NFEID').AsString := xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infProt/chNFe');
-                    Form1.IBDataSet150.FieldByName('STATUS').AsString := sStatus;
-                    if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF') <> '' then
-                      Form1.IBDataSet150.FieldByName('TOTAL').AsFloat  := xmlNodeValueToFloat(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//vNF'); // Ficha 4302 Sandro Silva 2018-12-05
-                    Form1.IBDataSet150.Post;
-
-                    {Sandro Silva 2022-06-02 inicio}
-                    // Grava as formas de pagamento contidas no xml ou exclui quando for cancelada
-                    if xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//tPag') <> '' then
-                      _ecf65_GravaPagamentFromXML(Form1.IBDataSet150.FieldByName('NFEXML').AsString, Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-
-                    if _ecf65_XmlNfceCancelado(Form1.IBDataSet150.FieldByName('NFEXML').AsString) then
-                      AtualizarDadosRelacionadosComNFCeCancelada(Form1.IBDataSet150.FieldByName('NUMERONF').AsString, Form1.IBDataSet150.FieldByName('CAIXA').AsString);
-                    {Sandro Silva 2022-06-02 fim}
-
-                    Form1.ClientDataSet1.Edit;
-                    Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString := 'S';
-                    Form1.ClientDataSet1.Post;
-
-                  except
-
-                  end;
-                end;
+                ///////////////////////////////////////////////////////////////////////////
               end;
-              Commitatudo2(True);
-
-              ///////////////////////////////////////////////////////////////////////////
             end;
+            Form1.ClientDataSet1.Next;
           end;
-          Form1.ClientDataSet1.Next;
+
         end;
 
-      end;
+      finally
+        _ecf65_bTransmitindoContingenciaNFCe := False; // Sandro Silva 2019-07-25
 
-    finally
-      _ecf65_bTransmitindoContingenciaNFCe := False; // Sandro Silva 2019-07-25
-
-      sLogErro := '';
-      if Form1.ClientDataSet1.IsEmpty = False then
-      begin
-        if sNumeroNF <> '' then
+        sLogErro := '';
+        if Form1.ClientDataSet1.IsEmpty = False then
         begin
-          if Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString <> 'S' then
-          begin
-            Application.MessageBox(PAnsiChar('Data: ' + Form1.ClientDataSet1.FieldByName('DATA').AsString + #13 +
-                                             'Numero: ' + Form1.ClientDataSet1.FieldByName('NUMERONF').AsString + #13 +
-                                             'Caixa: ' + Form1.ClientDataSet1.FieldByName('CAIXA').AsString + #13 +
-                                             'Alerta: ' + Form1.ClientDataSet1.FieldByName('LOG').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
-          end;
-        end
-        else
-        begin
-          Form1.ClientDataSet1.First;
-
-          while Form1.ClientDataSet1.Eof = False do
+          if sNumeroNF <> '' then
           begin
             if Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString <> 'S' then
             begin
-              sLogErro := sLogErro + '<tr>';
-              sLogErro := sLogErro + '<td>' + Form1.ClientDataSet1.FieldByName('DATA').AsString + '</td>' +
-                                     '<td>' + Form1.ClientDataSet1.FieldByName('NUMERONF').AsString + '</td>' +
-                                     '<td>' + Form1.ClientDataSet1.FieldByName('CAIXA').AsString + '</td>' +
-                                     '<td>' + Form1.ClientDataSet1.FieldByName('LOG').AsString + '</td>';
-              sLogErro := sLogErro + '</tr>';
+              Application.MessageBox(PAnsiChar('Data: ' + Form1.ClientDataSet1.FieldByName('DATA').AsString + #13 +
+                                               'Numero: ' + Form1.ClientDataSet1.FieldByName('NUMERONF').AsString + #13 +
+                                               'Caixa: ' + Form1.ClientDataSet1.FieldByName('CAIXA').AsString + #13 +
+                                               'Alerta: ' + Form1.ClientDataSet1.FieldByName('LOG').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
             end;
-
-            Form1.ClientDataSet1.Next;
-          end;
-          if sLogErro <> '' then
+          end
+          else
           begin
-            sLogErro := '<html><head><title>' + Form1.ibDataSet13.FieldByName('NOME').AsString + '</title></head>' +
-                          '<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center> ' +
-                            '<img src="logotip.jpg"> ' +
-                            '<br><font face="Microsoft Sans Serif" size=2><b>' + Form1.ibDataSet13.FieldByName('NOME').AsString + '</b></font> '+
-                            '<br><font face="Microsoft Sans Serif" size=2><b><p>Log da Transmissão de NFC-e<p></b></font> ' +
-                            '<table width="100%" border="1" style="border-collapse:collapse">' +
-                              '<tr style="font">' +
-                                '<th>Data</th>' +
-                                '<th>Número</th>' +
-                                '<th>Caixa</th>' +
-                                '<th>Log</th>' +
-                              '</tr>' +
-                              sLogErro +
-                            '</table>' +
-                            '<br><font face="Microsoft Sans Serif" size=2><b><p>Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + '<p></b></font> ' + // Sandro Silva 2018-04-24
-                          '</body>' +
-                        '</html>';
+            Form1.ClientDataSet1.First;
 
-            re := TRichEdit.Create(Application);
-            re.Visible    := False;
-            re.Parent     := Form1;
-            re.PlainText  := True;
-            re.WordWrap   := False;
-            re.ScrollBars := ssBoth;
-            re.Clear;
-            re.Lines.Add(sLogErro);
-            re.Lines.SaveToFile(sArquivoLogContingencia);
-            Sleep(250);
-            FreeAndNil(re);
+            while Form1.ClientDataSet1.Eof = False do
+            begin
+              if Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString <> 'S' then
+              begin
+                sLogErro := sLogErro + '<tr>';
+                sLogErro := sLogErro + '<td>' + Form1.ClientDataSet1.FieldByName('DATA').AsString + '</td>' +
+                                       '<td>' + Form1.ClientDataSet1.FieldByName('NUMERONF').AsString + '</td>' +
+                                       '<td>' + Form1.ClientDataSet1.FieldByName('CAIXA').AsString + '</td>' +
+                                       '<td>' + Form1.ClientDataSet1.FieldByName('LOG').AsString + '</td>';
+                sLogErro := sLogErro + '</tr>';
+              end;
+
+              Form1.ClientDataSet1.Next;
+            end;
+            if sLogErro <> '' then
+            begin
+              sLogErro := '<html><head><title>' + Form1.ibDataSet13.FieldByName('NOME').AsString + '</title></head>' +
+                            '<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center> ' +
+                              '<img src="logotip.jpg"> ' +
+                              '<br><font face="Microsoft Sans Serif" size=2><b>' + Form1.ibDataSet13.FieldByName('NOME').AsString + '</b></font> '+
+                              '<br><font face="Microsoft Sans Serif" size=2><b><p>Log da Transmissão de NFC-e<p></b></font> ' +
+                              '<table width="100%" border="1" style="border-collapse:collapse">' +
+                                '<tr style="font">' +
+                                  '<th>Data</th>' +
+                                  '<th>Número</th>' +
+                                  '<th>Caixa</th>' +
+                                  '<th>Log</th>' +
+                                '</tr>' +
+                                sLogErro +
+                              '</table>' +
+                              '<br><font face="Microsoft Sans Serif" size=2><b><p>Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + '<p></b></font> ' + // Sandro Silva 2018-04-24
+                            '</body>' +
+                          '</html>';
+
+              re := TRichEdit.Create(Application);
+              re.Visible    := False;
+              re.Parent     := Form1;
+              re.PlainText  := True;
+              re.WordWrap   := False;
+              re.ScrollBars := ssBoth;
+              re.Clear;
+              re.Lines.Add(sLogErro);
+              re.Lines.SaveToFile(sArquivoLogContingencia);
+              Sleep(250);
+              FreeAndNil(re);
+            end;
           end;
         end;
-      end;
 
-      if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
-        Form1.Timer2.Enabled := True;
+        if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
+          Form1.Timer2.Enabled := True;
 
-      Screen.Cursor := crDefault;
-    end; // try/finally
-  end
-  else
-  begin
-    if (Form1.NFCeemContingncia1.Checked) and ((Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) > 0) or (Form1.bStatusECF = False)) then // Sandro Silva 2020-06-25 if (Form1.NFCeemContingncia1.Checked) and (Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) > 0) then
-      Application.MessageBox('Não é possível transmitir NFC-e estando em modo contingência', 'Atenção', MB_ICONWARNING + MB_OK)
+        Screen.Cursor := crDefault;
+      end; // try/finally
+
+
+
+
+    end
     else
-      Application.MessageBox('Não é possível gerar NFC-e em modo Off-line', 'Atenção', MB_ICONWARNING + MB_OK);
-  end; // if (Form1.bStatusRede) and (Form1.NFCeemContingncia1.Checked = False) and (Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) = 0) and (Form1.bStatusECF) then
+    begin
+      if (Form1.NFCeemContingncia1.Checked) and ((Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) > 0) or (Form1.bStatusECF = False)) then // Sandro Silva 2020-06-25 if (Form1.NFCeemContingncia1.Checked) and (Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) > 0) then
+        Application.MessageBox('Não é possível transmitir NFC-e estando em modo contingência', 'Atenção', MB_ICONWARNING + MB_OK)
+      else
+        Application.MessageBox('Não é possível gerar NFC-e em modo Off-line', 'Atenção', MB_ICONWARNING + MB_OK);
+    end; // if (Form1.bStatusRede) and (Form1.NFCeemContingncia1.Checked = False) and (Pos('sem serviço', AnsiLowerCase(Form1.sStatusECF)) = 0) and (Form1.bStatusECF) then
 
-  {Sandro Silva 2022-11-04 inicio}
-  try
-    if bTransmitiuContingencia then
-      Audita('CANCELA','FRENTE', '', 'Transmissão contingência NFC-e ' + Form1.sCaixa, 0,0); // Ato, Modulo, Usuário, Histórico, Valor
-  except
+    {Sandro Silva 2022-11-04 inicio}
+    try
+      if bTransmitiuContingencia then
+        Audita('CANCELA','FRENTE', '', 'Transmissão contingência NFC-e ' + Form1.sCaixa, 0,0); // Ato, Modulo, Usuário, Histórico, Valor
+    except
+
+    end;
+    {Sandro Silva 2022-11-04 fim}
 
   end;
-  {Sandro Silva 2022-11-04 fim}
-
 
   Form1.ClientDataSet1.Close;
   CommitaTudo(True); // _ecf65_EnviarNFCeContingencia()

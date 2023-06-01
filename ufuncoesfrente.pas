@@ -258,8 +258,7 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
-function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction;
-  Recursos: TValidaRecurso): Boolean;
+//function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 
 var
   cWinDir: array[0..200] of Char;
@@ -1899,8 +1898,8 @@ begin
     Result := False;
 end;
 
-function ValidaQtdDocumentoFiscal(IBTRANSACTION: TIBTransaction;
-  Recursos: TValidaRecurso): Boolean;
+{
+function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 begin
   Result := False;
   try
@@ -1908,7 +1907,7 @@ begin
   except
   end;
 end;
-
+}
 
 { TTipoEntrega }
 

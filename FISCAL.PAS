@@ -1659,6 +1659,7 @@ type
     function SecaoFrente(): String;
     function ImportarDaPesquisa(sTipo: String): String;
     procedure ConfiguraCredencialTecnospeed;
+    procedure MensagemAlertaLimiteDocumentosEmitidos;    
   end;
 
 var
@@ -5165,11 +5166,13 @@ begin
 
     end;
 
-    if ValidaQtdDocumentoFiscal(Form1.ibDataSet27.Transaction, ValidaRecursos) = False then
+    // Sandro Silva 2023-05-01 if ValidaQtdDocumentoFiscal(ValidaRecursos) = False then
+    if ValidaRecursos.ValidaQtdDocumentoFrente = False then
     begin
       Form1.bStatusFiscal := False;
       Result := False;
 
+      {Sandro Silva 2023-06-01 inicio
       SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
                     'permitidos para esta versão do sistema'+chr(10)+
                     'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
@@ -5180,6 +5183,8 @@ begin
                      'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
                      ),
                      'Atenção', MB_ICONWARNING + MB_OK);
+      }
+      Form1.MensagemAlertaLimiteDocumentosEmitidos;
 
     end;
 
@@ -17194,42 +17199,42 @@ begin
   if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   begin
     try
-        if BlocoxValidarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
-          SalvarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
+      if BlocoxValidarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
+        SalvarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
 
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-        if BlocoxValidarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '');
-          SalvarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
+      if BlocoxValidarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '');
+        SalvarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
 
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-        if BlocoxValidarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
-          SalvarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
+      if BlocoxValidarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
+        SalvarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
 
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-        if BlocoxValidarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
-          SalvarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
-        
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
-        
+      if BlocoxValidarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
+        SalvarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
+
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+
     except
     end;
   end;
@@ -31380,9 +31385,25 @@ begin
   if Form1.sModeloECF = '14' then Result := _ecf14_Pagamento(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_Pagamento(pP1);
   if Form1.sModeloECF = '17' then Result := _ecf17_Pagamento(pP1);
+  {Sandro Silva 2023-06-01 inicio
   if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_Pagamento(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_Pagamento(pP1);
+  }
+  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
+  begin
+    if ValidaRecursos.ValidaQtdDocumentoFrente then
+    begin
+      if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
+      if Form1.sModeloECF = '65' then Result := _ecf65_Pagamento(pP1);
+      if Form1.sModeloECF = '99' then Result := _ecf99_Pagamento(pP1);
+    end
+    else
+    begin
+      Form1.MensagemAlertaLimiteDocumentosEmitidos;
+    end;
+  end;
+  {Sandro Silva 2023-06-01 fim}
 
   {Sandro Silva 2021-07-22 inicio
   if Form1.sModeloECF = '04' then Result := _ecf04_Pagamento(pP1);
@@ -34166,6 +34187,21 @@ begin
   //
   Form1.sSuperCodigo := '';
   Form1.ibQuery1.Close;  //
+end;
+
+procedure TForm1.MensagemAlertaLimiteDocumentosEmitidos;
+begin
+  SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
+                  'permitidos para esta versão do sistema'+chr(10)+
+                  'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
+                   AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
+                   AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
+                   'Código: 100 '+chr(10)+chr(10) +
+                   'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+                   'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
+                   ),
+                   'Atenção', MB_ICONWARNING + MB_OK);
+
 end;
 
 end.
