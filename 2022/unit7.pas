@@ -33311,6 +33311,8 @@ begin
   Resumodasvendas1.Enabled                 := True;
   Resumodascompras1.Enabled                := True;
   Previsodecompra1.Enabled                 := True;
+  ImportarOramento1.Enabled                := True;
+  
   DuplicatestaNFe1.Enabled                 := True;
 
   if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
@@ -33334,8 +33336,10 @@ begin
     Resumodasvendas1.Enabled                 := False;
     Resumodascompras1.Enabled                := False;
     Previsodecompra1.Enabled                 := False;
+    ImportarOramento1.Enabled                := False;
 
     DuplicatestaNFe1.Enabled                 := False;
+
 
  end;
 

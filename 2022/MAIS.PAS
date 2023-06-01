@@ -183,7 +183,7 @@ type
     CNPJdacontabilidade1: TMenuItem;
     Instalarpackcomasltimasalteraes1: TMenuItem;
     FileListBox1: TFileListBox;
-    Panel3: TPanel;
+    pnInformacaoObterSmallComFuncoes: TPanel;
     Label4: TLabel;
     LbBlowfish1: TLbBlowfish;
     Button1: TButton;
@@ -424,6 +424,7 @@ type
     procedure Mensagemparaenviodeemail1Click(Sender: TObject);
     procedure WebBrowser1DocumentComplete(Sender: TObject;
       const pDisp: IDispatch; var URL: OleVariant);
+    procedure Configuraes1Click(Sender: TObject);
 
 
   private
@@ -1807,7 +1808,7 @@ begin
   end;
 end;
 
-function Titulo(sP1, sP2: String): Boolean;
+function Titulo(sP1, sP2: String; const sModulo: String = ''): Boolean;
 begin
   Form1.Panel4.Visible  := False;
   Form1.Panel_3.Visible := False;
@@ -1818,22 +1819,32 @@ begin
 
   Form1.Label3.Caption      := sP2;
 
+  {Sandro Silva 2023-06-01 inicio
   if (Form1.iReduzida = 1) and
     ((sP1 = 'MONITORE AS CONTAS'+chr(10)+'A RECEBER') or
     (sP1 = 'ORGANIZE AS CONTAS'+chr(10)+'A PAGAR') or
     (sP1 = 'CONTROLE O '+chr(10)+'CAIXA') or
     (sP1 = 'FIQUE DE OLHO NOS '+chr(10)+'BANCOS'))
   then
+  }
+  if (Form1.ValidaRecursos.PermiteRecursoParaSerial = False) and
+    ((sModulo = 'RECEBER') or
+     (sModulo = 'PAGAR') or
+     (sModulo = 'CAIXA') or
+     (sModulo = 'BANCOS') or
+     (sModulo = 'INDICADORES') or
+     (sModulo = 'SERVIÇO')
+    )
+  then
   begin
-    Form1.Panel3.Left     := Form1.Label3.Left;
-//    Form1.Panel3.Top      := Form1.Label_2.Top + Form1.Label_2.Height + 30;
-    Form1.Panel3.Top      := Form1.Panel_3.Height - Form1.Panel3.Height - 70;
-    Form1.Label3.Caption := Form1.Label3.Caption + chr(10) + chr(10) + 'Este módulo não está liberado'+chr(10)+'no Small Start';
-    Form1.Panel3.Visible := True;
+    Form1.pnInformacaoObterSmallComFuncoes.Left     := Form1.Label3.Left;
+    Form1.pnInformacaoObterSmallComFuncoes.Top      := Form1.Panel_3.Height - Form1.pnInformacaoObterSmallComFuncoes.Height - 70;
+    Form1.Label3.Caption := Form1.Label3.Caption + chr(10) + chr(10) + 'Este módulo não está liberado'; // Sandro Silva 2023-06-01 Form1.Label3.Caption := Form1.Label3.Caption + chr(10) + chr(10) + 'Este módulo não está liberado'+chr(10)+'no Small Start';
+    Form1.pnInformacaoObterSmallComFuncoes.Visible := True;
     //
   end else
   begin
-    Form1.Panel3.Visible := False;
+    Form1.pnInformacaoObterSmallComFuncoes.Visible := False;
   end;
   //
 //  Form1.Label_1.BringToFront;
@@ -1843,8 +1854,7 @@ begin
   //
   Result := True;
   //
-end;
-
+end;     
 
 procedure ListaArq(sCaminho: String; slArq: TStringList);
 // var
@@ -9608,6 +9618,14 @@ begin
   if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S') = 'S'   then Form1.Enviardanfeporemail1.Checked := True else Form1.Enviardanfeporemail1.Checked := False;
   if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then Form1.ConsultarNFesemitidas1.Checked := True else Form1.ConsultarNFesemitidas1.Checked := False;
 
+  {Sandro Silva 2023-06-01 inicio}
+  if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
+  begin
+    Form1.ConsultarNFesemitidas1.Checked := False;
+    Form1.ConsultarNFesemitidas1.Enabled := False;
+  end;
+  {Sandro Silva 2023-06-01 fim}
+
   {Sandro Silva 2023-03-14 inicio
   //
   if Mais1Ini.ReadString('NFE','Layout','4.00')               = '4.00' then
@@ -10986,6 +11004,7 @@ begin
             'o atendimento ao cliente'+chr(10)+
             'e organiza e mantém todo'+chr(10)+
             'o trabalho documentado'
+            , 'SERVIÇO'            
             );
       Form1.BringToFront;
             //
@@ -11059,6 +11078,7 @@ begin
              'As contas a receber bem controladas'+chr(10)+
              'diminuem o impacto que a inadimplência'+chr(10)+
              'pode ter em seu negócio'
+             , 'RECEBER'
              );
       Form1.BringToFront;
             //
@@ -11098,6 +11118,7 @@ begin
             'auxiliando na tomadas de'+chr(10)+
             'decisões através da'+chr(10)+
             'análise das contas'
+            , 'CAIXA'
             );
       Form1.BringToFront;
             //
@@ -11136,6 +11157,7 @@ begin
             'de juros e permite um'+chr(10)+
             'planejamento dos'+chr(10)+
             'investimentos'
+            , 'BANCOS'
             );
       Form1.BringToFront;
             //
@@ -11250,6 +11272,7 @@ begin
             'financeiros facilitando o'+chr(10)+
             'controle do fluxo'+chr(10)+
             'de caixa'
+            , 'PAGAR'
             );
       Form1.BringToFront;
             //
@@ -11387,6 +11410,7 @@ begin
             'personalizado por usuário de'+chr(10)+
             'acordo com as necessidades'+chr(10)+
             'gerenciais da sua empresa'+chr(10)
+            , 'INDICADORES'
             );
       Form1.BringToFront;
       //
@@ -12058,6 +12082,7 @@ begin
             'de atender a legislação controla os'+chr(10)+
             'serviços prestados pela sua'+chr(10)+
             'empresa'
+            , 'SERVIÇO'
             );
       //
       Form1.BringToFront;
@@ -12744,6 +12769,16 @@ begin
   else
     Result := True;
 
+end;
+
+procedure TForm1.Configuraes1Click(Sender: TObject);
+begin
+  {Sandro Silva 2023-06-01 inicio}
+  if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
+  begin
+    ConfiguraesdaNFSe1.Enabled := False;
+  end;
+  {Sandro Silva 2023-06-01 fim}
 end;
 
 end.
