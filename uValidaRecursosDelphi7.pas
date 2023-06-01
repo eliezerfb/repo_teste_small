@@ -534,7 +534,8 @@ end;
 
 function TValidaRecurso.ValidaQtdDocumentoFrente: Boolean;
 const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
-const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
+//const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
+const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and ((coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''') or (coalesce(NFEXML, '''') containing ''<tpEmis>9'') or (coalesce(STATUS, '''') containing ''NFC-e emitida em modo de contingência'') )) ';
 const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
 var
   iQtdEmitido: Integer;
@@ -549,7 +550,7 @@ begin
 
   iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFCE;
 
-  Result := False;
+//  Result := False;
 
   if iQtdPermitido = -1 then
   begin
