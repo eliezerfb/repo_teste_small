@@ -3711,7 +3711,7 @@ begin
                 Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
 
                 Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').Value  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
-                Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').Value := FormatFloat(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
+aqui                Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
                 vICMSMonoRet_N45      := XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString);
                 vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
 
