@@ -3688,6 +3688,8 @@ begin
         end;
       end;
     end;
+
+
     // final TAGS saaída por CST - CRT 2 ou 3 - Regime normal
   end;
 
@@ -4635,6 +4637,17 @@ begin
         end;
       end;
     end;
+
+    {Sandro Silva 2023-06-01 inicio}
+    if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '61' then
+    begin
+      // Ficha 6907
+      // Simples nacional usa CST 61 no lugar do CSOSN
+      Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Clear;
+      Form1.spdNFCeDataSets1.Campo('CST_N12').AsString := '61';
+    end;
+    {Sandro Silva 2023-06-01 fim}
+
 
     // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
   end;
