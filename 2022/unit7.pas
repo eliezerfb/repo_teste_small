@@ -9366,21 +9366,29 @@ end;
 
 procedure TForm7.FormCreate(Sender: TObject);
 begin
-  //
   FbImportandoXML := False;
   Form7.sAproveitamento := '';
   Form7.bMudei := False;
   dbGrid1.ReadOnly := True;
   Form7.Label208.Caption  := 'Liberar';
-  //
+
   // NF-e
-  //
   bProximas := False;
   bContingencia := False;
   bFirst := False;
-  //
+
   sAjuda := 'INDEX.HTM';
-  //
+
+  //Mauricio Parizotto 2023-06-01
+  Image201.Transparent := False;
+  Image202.Transparent := False;
+  Image203.Transparent := False;
+  Image205.Transparent := False;
+  Image204.Transparent := False;
+  Image208.Transparent := False;
+  Image206.Transparent := False;
+  Image308.Transparent := False;
+  Image209.Transparent := False;
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);

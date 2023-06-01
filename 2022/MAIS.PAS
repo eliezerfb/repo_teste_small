@@ -1802,7 +1802,7 @@ end;
 function Titulo(sP1, sP2: String): Boolean;
 begin
   Form1.Panel4.Visible  := False;
-  Form1.Panel_3.Visible := False;
+  //Form1.Panel_3.Visible := False;
 
   Form1.Label1.Caption      := sP1;
 
@@ -1818,23 +1818,17 @@ begin
   then
   begin
     Form1.Panel3.Left     := Form1.Label3.Left;
-//    Form1.Panel3.Top      := Form1.Label_2.Top + Form1.Label_2.Height + 30;
     Form1.Panel3.Top      := Form1.Panel_3.Height - Form1.Panel3.Height - 70;
     Form1.Label3.Caption := Form1.Label3.Caption + chr(10) + chr(10) + 'Este módulo não está liberado'+chr(10)+'no Small Start';
     Form1.Panel3.Visible := True;
-    //
   end else
   begin
     Form1.Panel3.Visible := False;
   end;
-  //
-//  Form1.Label_1.BringToFront;
-//  Form1.Label_2.BringToFront;
-  //
+
   Form1.Panel_3.Visible := True;
-  //
+
   Result := True;
-  //
 end;
 
 
@@ -4401,7 +4395,9 @@ begin
     //
   end;
 
-  {Image200.Transparent := False;
+  {Mauricio Parizotto 2023-05-31 Inicio}
+  //Alterado para não gerar piscação dos icones ao passar o moues
+  Image200.Transparent := False;
   Image201.Transparent := False;
   Image201_.Transparent := False;
   Image202.Transparent := False;
@@ -4413,7 +4409,21 @@ begin
   Image207.Transparent := False;
   Image208.Transparent := False;
   Image201C.Transparent := False;
-  Image201S.Transparent := False;}
+  Image201S.Transparent := False;
+
+  Image_Bola_indicadores.Transparent := False;
+  Image_Bola_NFe.Transparent := False;
+  Image_bola_OS.Transparent := False;
+  Image_Bola_Estoque.Transparent := False;
+  Image_bola_clifor.Transparent := False;
+  Image_bola_receber.Transparent := False;
+  Image_bola_pagar.Transparent := False;
+  Image_bola_caixa.Transparent := False;
+  Image_bola_banco.Transparent := False;
+  Image_bola_config.Transparent := False;
+
+  Image4.Transparent := False;
+  {Mauricio Parizotto 2023-05-31 Fim}
 end;
 
 procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
@@ -6366,18 +6376,16 @@ end;
 procedure TForm1.Label201MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone NF-e
-  //
   if Label201.Font.Style <> [fsBold] then
   begin
     Image201.Picture    := Image201_X.Picture;
     Label201.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      //
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_10.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_10.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_10.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_10.bmp');
-      //
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_10.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_10.bmp');
+
       Titulo(
 
             'EMITA A NF-e DE'+chr(10)+'VENDA',
@@ -6389,6 +6397,7 @@ begin
 
             );
       //
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -6399,6 +6408,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -10758,16 +10768,16 @@ end;
 procedure TForm1.Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone ESTOQUE
-  //
   if Label202.Font.Style <> [fsBold] then
   begin
     Image202.Picture    := Image202_X.Picture;
     Label202.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_8.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_8.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_8.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_8.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_8.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_8.bmp') ;
+
       Titulo('CONTROLE O '+chr(10)+
              'ESTOQUE'
              ,
@@ -10776,6 +10786,7 @@ begin
              'e garante uma maior'+chr(10)+
              'margem de lucro'
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -10786,6 +10797,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -10794,16 +10806,16 @@ end;
 procedure TForm1.Label201_MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone OS
-  //
   if Label201_.Font.Style <> [fsBold] then
   begin
     Image201_.Picture    := Image201__X.Picture;
     Label201_.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_9.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_9.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_9.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_9.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_9.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_9.bmp') ;
+
       Titulo(
             'UTILIZE A ORDEM '+chr(10)+
             'DE SERVIÇOS'
@@ -10813,6 +10825,7 @@ begin
             'e organiza e mantém todo'+chr(10)+
             'o trabalho documentado'
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -10823,6 +10836,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -10831,16 +10845,16 @@ end;
 procedure TForm1.Label203MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone CADASTRO
-  //
   if Label203.Font.Style <> [fsBold] then
   begin
     Image203.Picture    := Image203_X.Picture;
     Label203.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_1.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_1.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_1.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_1.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_1.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_1.bmp') ; 
+
       Titulo('MANTENHA O CADASTRO'+chr(10)+'ATUALIZADO',
              'O cadastro com as informações'+chr(10)+
              'corretamente registradas'+chr(10)+
@@ -10849,6 +10863,7 @@ begin
              'fornecedores, funcionários,'+chr(10)+
              'entre outros'
              );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -10859,10 +10874,10 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
-  //
 end;
 
 procedure TForm1.Label204MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -10875,7 +10890,9 @@ begin
     Label204.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_2.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_2.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_2.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_2.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_2.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_2.bmp') ;
+
       Titulo(
              'MONITORE AS CONTAS'+chr(10)+
              'A RECEBER'
@@ -10884,6 +10901,7 @@ begin
              'diminuem o impacto que a inadimplência'+chr(10)+
              'pode ter em seu negócio'
              );
+      {
       Form1.BringToFront;
 
       Form44.Width  := Form7.Width;
@@ -10894,6 +10912,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
     end;
   end;
 end;
@@ -10901,16 +10920,16 @@ end;
 procedure TForm1.Label205MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move CAIXA
-  //
   if Label205.Font.Style <> [fsBold] then
   begin
     Image205.Picture    := Image205_X.Picture;
     Label205.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ;
+
       Titulo(
             'CONTROLE O '+chr(10)+
             'CAIXA'
@@ -10921,6 +10940,7 @@ begin
             'decisões através da'+chr(10)+
             'análise das contas'
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -10931,6 +10951,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -10939,16 +10960,16 @@ end;
 procedure TForm1.Label206MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move BANCOS
-  //
   if Label206.Font.Style <> [fsBold] then
   begin
     Image206.Picture    := Image206_X.Picture;
     Label206.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_5.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_5.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_5.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_5.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_5.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_5.bmp') ;
+
       Titulo(
             'FIQUE DE OLHO NOS '+chr(10)+
             'BANCOS'
@@ -10959,6 +10980,7 @@ begin
             'planejamento dos'+chr(10)+
             'investimentos'
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -10969,6 +10991,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -10977,16 +11000,16 @@ end;
 procedure TForm1.Label207MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move CONFIG
-  //
   if Label207.Font.Style <> [fsBold] then
   begin
     Image207.Picture    := Image207_X.Picture;
     Label207.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ;
+
       Titulo(
             'CONFIGURE'+chr(10)+
             'O SISTEMA'
@@ -10996,6 +11019,7 @@ begin
             'particularidades da'+chr(10)+
             'sua empresa'
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -11006,25 +11030,25 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
-  //
 end;
 
 procedure TForm1.Label208MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move BACKUP
-  //
   if Label208.Font.Style <> [fsBold] then
   begin
     Image208.Picture    := Image208_X.Picture;
     Label208.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_7.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_7.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_7.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_7.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_7.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_7.bmp') ;
+
       Titulo(
             'FAÇA BACKUP'+chr(10)+
             'TODOS OS'+chr(10)+
@@ -11035,6 +11059,7 @@ begin
             'seguros'+chr(10)+chr(10)+
             Form1.Image208.Hint
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -11045,6 +11070,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -11053,16 +11079,16 @@ end;
 procedure TForm1.Label210MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move PAGAR
-  //
   if Label210.Font.Style <> [fsBold] then
   begin
     Image210.Picture    := Image210_X.Picture;
     Label210.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_3.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_3.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_3.bmp');
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_3.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ; 
+
       Titulo(
             'ORGANIZE AS CONTAS'+chr(10)+
             'A PAGAR'
@@ -11073,6 +11099,7 @@ begin
             'controle do fluxo'+chr(10)+
             'de caixa'
             );
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -11083,6 +11110,7 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
+      Mauricio Parizotto 2023-05-31}
 
     end;
   end;
@@ -11191,16 +11219,16 @@ end;
 procedure TForm1.Label200MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone MOBILE
-  //
   if Label200.Font.Style <> [fsBold] then
   begin
     Image200.Picture    := Image200_X.Picture;
     Label200.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_0.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_0.bmp') ;
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_0.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_0.bmp') ;
+
       Titulo(
             'ACOMPANHE OS'+chr(10)+
             'INDICADORES'
@@ -11210,6 +11238,7 @@ begin
             'acordo com as necessidades'+chr(10)+
             'gerenciais da sua empresa'+chr(10)
             );
+      {
       Form1.BringToFront;
       //
       Form44.Width  := Form7.Width;
@@ -11220,12 +11249,10 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
-      //
+      Mauricio Parizotto 2023-05-31}
+      
     end;
   end;
-  //
-//  if Form5.Visible then Form5.BringToFront;
-  //
 end;
 
 procedure TForm1.AutoSmallMobile1Click(Sender: TObject);
@@ -11851,18 +11878,16 @@ end;
 procedure TForm1.LAbel201CMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone NF-e
-  //
   if Label201C.Font.Style <> [fsBold] then
   begin
     Image201C.Picture    := Image201C_X.Picture;
     Label201C.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      //
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_11.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_10.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_10.bmp');
-      //
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_11.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ; 
+
       Titulo(
             'CONTROLE AS NOTAS'+Chr(10)+'DE COMPRAS',
             'Controle as entradas de '+chr(10)+
@@ -11871,6 +11896,7 @@ begin
             'automática'
             );
       //
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -11881,27 +11907,25 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
-      //
+      Mauricio Parizotto 2023-05-31}
+
     end;
   end;
-
 end;
 
 procedure TForm1.Label201SMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //
   // Mouse move icone NF-e
-  //
   if Label201S.Font.Style <> [fsBold] then
   begin
     Image201S.Picture    := Image201S_X.Picture;
     Label201S.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      //
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_12.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_12.bmp');
-      //
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_12.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_12.bmp');
+
       Titulo(
             'EMITA A NFS-e DE'+chr(10)+'SERVIÇOS',
             'A Nota Fiscal Eletrônica de Serviços além'+chr(10)+
@@ -11909,7 +11933,8 @@ begin
             'serviços prestados pela sua'+chr(10)+
             'empresa'
             );
-      //
+
+      {
       Form1.BringToFront;
             //
       Form44.Width  := Form7.Width;
@@ -11920,10 +11945,10 @@ begin
       Form44.Close;
       Form44.Show;
       Form44.BringToFront;
-      //
+      Mauricio Parizotto 2023-05-31}
+
     end;
   end;
-  //
 end;
 
 procedure TForm1.Image201SClick(Sender: TObject);

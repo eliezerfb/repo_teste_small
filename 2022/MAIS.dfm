@@ -11995,18 +11995,6 @@ object Form1: TForm1
       Transparent = True
       Visible = False
     end
-    object Image_Bola_NFe: TImage
-      Left = 184
-      Top = 0
-      Width = 20
-      Height = 20
-      AutoSize = True
-      ParentShowHint = False
-      ShowHint = False
-      Stretch = True
-      Transparent = True
-      Visible = False
-    end
     object Image_bola_banco: TImage
       Left = 848
       Top = 0
@@ -13325,27 +13313,6 @@ object Form1: TForm1
       Visible = False
       OnClick = Label_bola_indicadoresClick
     end
-    object Label_bola_NFE: TLabel
-      Left = 184
-      Top = 1
-      Width = 20
-      Height = 16
-      Alignment = taCenter
-      AutoSize = False
-      Caption = '11'
-      Color = clWhite
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-      Layout = tlBottom
-      Visible = False
-      OnClick = Label_bola_NFEClick
-    end
     object Label_bola_OS: TLabel
       Left = 272
       Top = 1
@@ -13526,6 +13493,39 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = Label_bola_cliforClick
+    end
+    object Image_Bola_NFe: TImage
+      Left = 184
+      Top = 0
+      Width = 20
+      Height = 20
+      AutoSize = True
+      ParentShowHint = False
+      ShowHint = False
+      Stretch = True
+      Transparent = True
+      Visible = False
+    end
+    object Label_bola_NFE: TLabel
+      Left = 184
+      Top = 1
+      Width = 20
+      Height = 16
+      Alignment = taCenter
+      AutoSize = False
+      Caption = '11'
+      Color = clWhite
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+      Layout = tlBottom
+      Visible = False
+      OnClick = Label_bola_NFEClick
     end
   end
   object DBGrid200: TDBGrid
