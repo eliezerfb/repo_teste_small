@@ -47,9 +47,10 @@ type
     procedure SomenteNumerosKeyPress(Sender: TObject; var Key: Char);
     procedure SomenteNumerosChange(Sender: TObject);
   private
-    { Private declarations }
+    FnMaxLength: Integer;
   public
     procedure DefinirSomenteNumeros;
+    property MaxLength: Integer read FnMaxLength write FnMaxLength;
   end;
 
 var
@@ -175,7 +176,7 @@ begin
   Panel1.Visible      := False;
   Panel_Dados.Visible  := False;
   //
-  Edit1.MaxLength  := 0;
+  FnMaxLength      := 0;
   Edit1.OnChange   := nil;
   Edit1.OnKeyPress := nil;
 end;
@@ -206,16 +207,22 @@ end;
 
 procedure TForm29.SomenteNumerosKeyPress(Sender: TObject; var Key: Char);
 begin
+  // #1 - Ctrl + A
+  // #3 - Ctrl + C
   // #8 - Backspace
   // #13 - Enter
   // #22 - Ctrl + V
-  if not (Key in ['0'..'9', Chr(8), #13, #22]) then
-    Key := #0
+  // #24 - Ctrl + X
+  if (not (Key in ['0'..'9', Chr(1), Chr(3), Chr(8), Chr(13), Chr(22), Chr(24)])) // Permite 0 a 9 e as comandos
+     or ((not (Key in [Chr(1), Chr(3), Chr(8), Chr(22), Chr(24)])) and (FnMaxLength > 0) and (FnMaxLength < Length(Edit1.Text)+1)) then // Permite apagar e valida o MaxLength
+    Key := Chr(0);
 end;
 
 procedure TForm29.SomenteNumerosChange(Sender: TObject);
 begin
   Edit1.Text := LimpaNumero(Edit1.Text);
+  if FnMaxLength > 0 then
+    Edit1.Text := Copy(Edit1.Text, 1, FnMaxLength);
 end;
 
 end.

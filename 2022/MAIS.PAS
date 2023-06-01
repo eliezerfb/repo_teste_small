@@ -977,7 +977,7 @@ begin
   Form29.Edit1.Text     := sP3;
   Form29.Edit1.Left     := Form29.Label1.Left;
 
-  Form29.Edit1.MaxLength := AnMaxLength;
+  Form29.MaxLength := AnMaxLength;
   Form29.DefinirSomenteNumeros;
 
   Form29.ShowModal;
