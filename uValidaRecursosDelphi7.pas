@@ -503,10 +503,9 @@ begin
     IBQDOC.SQL.Text :=
       'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
       'from NFCE ' +
-      'where DATA >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
+      'where DATA >= :INI  ' + 
       'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
     IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
-    //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
     IBQDOC.Open;
 
     iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
