@@ -8043,7 +8043,7 @@ begin
       if Form7.sRPS = 'S' then
       begin
 
-        if Form1.ValidaRecursos.PermiteRecursoParaSerial then
+        if Form1.ValidaRecursos.PermiteRecursoParaProduto then
         begin
 
           if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda then
@@ -30818,7 +30818,7 @@ var
   sHora, sData, sRetorno : String;
   Mais1Ini : tIniFile;
 begin
-  if Form1.ValidaRecursos.PermiteRecursoParaSerial then // Sandro Silva 2023-05-31
+  if Form1.ValidaRecursos.PermiteRecursoParaProduto then // Sandro Silva 2023-05-31
   begin
 
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
@@ -33315,7 +33315,7 @@ begin
   
   DuplicatestaNFe1.Enabled                 := True;
 
-  if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
+  if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
     Oramento1.Enabled                 := False;
     Inventrio1.Enabled                := False;

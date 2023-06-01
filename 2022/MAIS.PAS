@@ -524,7 +524,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uCriptografia
   , uFrmTermosUso
   , uSmallConsts
-  , uConectaBancoCommerce;
+  , uConectaBancoCommerce, uTypesRecursos;
 
 {$R *.DFM}
 
@@ -1827,7 +1827,7 @@ begin
     (sP1 = 'FIQUE DE OLHO NOS '+chr(10)+'BANCOS'))
   then
   }
-  if (Form1.ValidaRecursos.PermiteRecursoParaSerial = False) and
+  if (Form1.ValidaRecursos.PermiteRecursoParaProduto = False) and
     ((sModulo = 'RECEBER') or
      (sModulo = 'PAGAR') or
      (sModulo = 'CAIXA') or
@@ -3883,7 +3883,7 @@ begin
   end;
 
   AutoMarketplace1.Checked := False;
-  if ValidaRecursos.PermiteRecursoParaSerial then
+  if ValidaRecursos.PermiteRecursoParaProduto then
   begin
 
     if Mais1Ini.ReadString('GERAL','MARKETPLACE ATIVO','Não') = 'Sim' then
@@ -3905,7 +3905,7 @@ begin
   end;
 
   AutoSmallMobile1.Checked := False;
-  if ValidaRecursos.PermiteRecursoParaSerial then
+  if ValidaRecursos.PermiteRecursoParaProduto then
   begin
     if Mais1Ini.ReadString('GERAL','MOBILE ATIVO','Não') = 'Sim' then
     begin
@@ -4478,6 +4478,7 @@ var
   I, iUsuariosConectados, iLimiteUsuariosSimultaneos, II : Integer;
   bLegal : Boolean;
   fJuro : Real;
+  dtLimite: TDate;
 begin
   //
   // controle de licenças de uso
@@ -4612,6 +4613,13 @@ begin
     iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios; // Sandro Silva 2023-05-31
     //
     iReduzida := 0;
+
+    //
+    // Alterado aqui a iReduzida de forma paleativa para atender prazo de lançamento do Small Go,
+    // mas precisa ser revisto com mais tempo o impacto de eliminar essa variável
+    //
+    
+    {Sandro Silva 2023-06-01 inicio
     //
     // Quando iReduzida for 2 é Mei
     //
@@ -4624,9 +4632,10 @@ begin
 
     if Copy(Form1.sSerial,4,1) = 'S' then  iReduzida := 1; // 02 Usuários Small Start
     if Copy(Form1.sSerial,4,1) = 'T' then  iReduzida := 1; // 01 Usuários Small Go
+    }
 
+    {Sandro Silva 2023-06-01 inicio
     Form22.sTitulo := 'Small Commerce';
-
     if (Copy(Form1.sSerial,4,1) = 'A') or
        (Copy(Form1.sSerial,4,1) = 'B') or
        (Copy(Form1.sSerial,4,1) = 'C') or
@@ -4644,7 +4653,16 @@ begin
       Form22.sTitulo := 'Small Mei';
 
     if (Copy(Form1.sSerial,4,1) = 'T') then
-      Form22.sTitulo := 'Small Go'; 
+      Form22.sTitulo := 'Small Go';
+
+    }
+    Form22.sTitulo := ValidaRecursos.rsRecursoSistema.Produto;
+
+    if AnsiContainsText(ValidaRecursos.rsRecursoSistema.Produto, ' Go') then
+      iReduzida := 1;
+
+    if ValidaRecursos.RecursoLiberado(rcOS, dtLimite) then
+      Form22.sTitulo := ValidaRecursos.rsRecursoSistema.Produto + ' + Ordem de Serviço';
 
     // Empresas MEI
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
@@ -4652,6 +4670,7 @@ begin
     if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'SIM' then
     begin
       Form1.iReduzida := 2;
+      Form22.sTitulo := Form22.sTitulo + ' - Mei';
     end else
     begin
       {Sandro Silva 2023-05-31 inicio
@@ -4674,15 +4693,22 @@ begin
       if Form1.iReduzida = 2 then
       begin
         Mais1Ini.WriteString('LICENCA','MEI','SIM');
+
+        Form22.sTitulo := Form22.sTitulo + ' - Mei';
+
       end;
+
     end;
 
+    {
     if (Form1.iReduzida = 2) then
     begin
-      Form22.sTitulo := StrTran(StrTran(Form22.sTitulo,'Commerce','Mei'),'Start','Mei');
+      //Form22.sTitulo := StrTran(StrTran(Form22.sTitulo,'Commerce','Mei'),'Start','Mei');
+      Form22.sTitulo := Form22.sTitulo + ' - Mei');
     end;
-
-    if (Form1.iReduzida = 1) or (ValidaRecursos.PermiteRecursoParaSerial = False) then // Sandro Silva 2023-05-31 if (Form1.iReduzida = 1) then
+    }
+    {
+    if (Form1.iReduzida = 1) or (ValidaRecursos.PermiteRecursoParaProduto = False) then // Sandro Silva 2023-05-31 if (Form1.iReduzida = 1) then
     begin
       Form1.Planodecontas1.Enabled  := False;
       Form7.SPEDFiscal1.Enabled     := False;
@@ -4690,6 +4716,7 @@ begin
       Form7.RegistroFiscal1.Enabled := False;
       Form7.ImportarOS1.Enabled     := False;
     end;
+    }
 
     Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
     //
@@ -5026,7 +5053,7 @@ begin
     {Sandro Silva 2023-05-31 inicio
     ShowMessage('Este sistema está licenciado somente para '+IntToStr(iLimiteUsuariosSimultaneos)+' usuário(s)'+Chr(10)+
                 'neste momento '+IntToStr(iUsuariosConectados)+' estão tentando usar o sistema.'+Chr(10)+chr(10)+
-                IfThen(Form1.ValidaRecursos.PermiteRecursoParaSerial,
+                IfThen(Form1.ValidaRecursos.PermiteRecursoParaProduto,
                   'Você pode adquirir licenças de uso adicionais entrando',
                   'Você pode adquirir licenças de uso entrando')+Chr(10)+
                 //'em contato com a SmallSoft.');
@@ -6692,7 +6719,7 @@ begin
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   //
   CommitaTudo(True); // bakcup Ok
-  //{Sandro Silva 2023-04-17 inicio
+  {Sandro Silva 2023-04-17 inicio
   //Não é prudente excluir índice
   //Não está funcionando o loop abaixo. dbGrid200.DataSource.DataSet não está ativo!
   try
@@ -6729,7 +6756,7 @@ begin
       Application.MessageBox(pChar(E.Message+'.. Ao remover índices.'),'Atenção',mb_Ok + MB_ICONWARNING);
     end;
   end;
-  //}
+  }
   iUsuariosAtivos := Form7.IBDatabaseInfo1.UserNames.Count;
   //
   if iUsuariosAtivos = 1 then
@@ -8646,7 +8673,7 @@ begin
 
         if Form1.bConsultarNFesEmitidas then
         begin
-          if Form1.ValidaRecursos.PermiteRecursoParaSerial then // Sandro Silva 2023-05-31
+          if Form1.ValidaRecursos.PermiteRecursoParaProduto then // Sandro Silva 2023-05-31
           begin
             Mensagem22('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString);
             Form7.ConsultarNFesemitidasparameuCNPJ1Click(Form7.MenuItem1);
@@ -9620,7 +9647,7 @@ begin
   if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then Form1.ConsultarNFesemitidas1.Checked := True else Form1.ConsultarNFesemitidas1.Checked := False;
 
   {Sandro Silva 2023-06-01 inicio}
-  if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
+  if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
     Form1.ConsultarNFesemitidas1.Checked := False;
     Form1.ConsultarNFesemitidas1.Enabled := False;
@@ -12105,7 +12132,7 @@ end;
 procedure TForm1.Image201SClick(Sender: TObject);
 begin
   try
-    if Form1.ValidaRecursos.PermiteRecursoParaSerial then
+    if Form1.ValidaRecursos.PermiteRecursoParaProduto then
     begin
       if not Legal(True) then Abort;
       // NFS-e
@@ -12763,7 +12790,7 @@ end;
 function TForm1.ValidaRecursoExibeMensagemIndisponivel: Boolean;
 begin
   Result := False;
-  if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
+  if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
     Form1.MensagemRecursoIndisponivel('Não disponível para esta versão do sistema');
   end
@@ -12775,7 +12802,7 @@ end;
 procedure TForm1.Configuraes1Click(Sender: TObject);
 begin
   {Sandro Silva 2023-06-01 inicio}
-  if Form1.ValidaRecursos.PermiteRecursoParaSerial = False then
+  if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
     ConfiguraesdaNFSe1.Enabled := False;
   end;
