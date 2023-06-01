@@ -5193,7 +5193,7 @@ begin
           // HISTÓRICO DOS SERVICOS          
           Form7.ibDataSet15.Close;
           Form7.ibDataSet15.SelectSQL.Clear;
-          Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where CLIENTE='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and EMITIDA=''S'' ');
+          Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where CLIENTE='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and EMITIDA=''S'' ORDER BY EMISSAO, REGISTRO');
           Form7.ibDataSet15.Open;
           
           if not Form7.ibDataSet15.Eof then
@@ -5250,7 +5250,10 @@ begin
           // vendas no balcão
           Form7.ibDataSet27.Close;
           Form7.ibDataSet27.SelectSQL.Clear;
-          Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+')');
+          Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where (CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+')');
+          Form7.ibDataSet27.SelectSQL.Add('and (DATA<='+QuotedStr(DateToStrInvertida(dFinal))+') and (DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')');
+          Form7.ibDataSet27.SelectSQL.Add('and ((TIPO='+QuotedStr('BALCAO')+') or (TIPO='+QuotedStr('VENDA')+'))');
+          Form7.ibDataSet27.SelectSQL.Add('ORDER BY DATA, PEDIDO');
           Form7.ibDataSet27.Open;
           
           if not Form7.ibDataSet27.Eof then
@@ -5295,7 +5298,8 @@ begin
           // Orçamentos
           Form7.ibDataSet37.Close;
           Form7.ibDataSet37.SelectSQL.Clear;
-          Form7.ibDataSet37.SelectSQL.Add('select * from ORCAMENT where CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and coalesce(VALORICM,0)=0 ');
+          Form7.ibDataSet37.SelectSQL.Add('select * from ORCAMENT where (CLIFOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+')');
+          Form7.ibDataSet37.SelectSQL.Add('and (DATA<='+QuotedStr(DateToStrInvertida(dFinal))+') and (DATA>='+QuotedStr(DateToStrInvertida(dInicio))+') and (coalesce(VALORICM,0)=0)');
           Form7.ibDataSet37.Open;
           
           if not Form7.ibDataSet37.Eof then
@@ -5354,7 +5358,9 @@ begin
             begin
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
-              Form7.ibDataSet99.SelectSQL.Add('select * from RECEBER where NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'  and coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'' and coalesce(ATIVO,9)<>1');
+              Form7.ibDataSet99.SelectSQL.Add('select * from RECEBER where (NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+')');
+              Form7.ibDataSet99.SelectSQL.Add('and (coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'') and (coalesce(ATIVO,9)<>1)');
+              Form7.ibDataSet99.SelectSQL.Add('ORDER BY VENCIMENTO, DOCUMENTO');
               Form7.ibDataSet99.Open;
               
               if not Form7.ibDataSet99.Eof then
@@ -5450,7 +5456,7 @@ begin
           // HISTÓRICO DAS COMPRAS
           Form7.ibDataSet24.Close;
           Form7.ibDataSet24.SelectSQL.Clear;
-          Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where FORNECEDOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'');
+          Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where (FORNECEDOR='+QuotedStr(Form7.ibDataSet2NOME.AsString)+')');
           Form7.ibDataSet24.Open;
           
           if not Form7.ibDataSet24.Eof then
@@ -5510,7 +5516,8 @@ begin
               // Contas a pagar esta liberada
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
-              Form7.ibDataSet99.SelectSQL.Add('select * from PAGAR where NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+'');
+              Form7.ibDataSet99.SelectSQL.Add('select * from PAGAR where (NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+')');
+              Form7.ibDataSet99.SelectSQL.Add('ORDER BY VENCIMENTO, DOCUMENTO');
               Form7.ibDataSet99.Open;
               
               if not Form7.IBDataSet99.Eof then
