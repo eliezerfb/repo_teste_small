@@ -29,17 +29,20 @@ var
 begin
   Result := '';
 
-  try
+  if sValor <> '' then
+  begin
     try
-      LbBlowfish := TLbBlowfish.Create(nil);
+      try
+        LbBlowfish := TLbBlowfish.Create(nil);
 
-      LbBlowfish.GenerateKey(sChave);
-      Result := LbBlowfish.DecryptString(sValor);
-    finally
-      FreeAndNil(LbBlowfish);
+        LbBlowfish.GenerateKey(sChave);
+        Result := LbBlowfish.DecryptString(sValor);
+      finally
+        FreeAndNil(LbBlowfish);
+      end;
+    except
+      Result := '';
     end;
-  except
-    Result := '';
   end;
 end;
 

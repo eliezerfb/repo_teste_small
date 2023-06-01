@@ -42,7 +42,7 @@ type
     function SistemaLimiteUsuarios(): Integer;
     function RecursoLiberado(sRecurso: TRecursos; out DataLimite: TDate): Boolean;
     function RecursoData(sRecurso: TRecursos): TDate;
-    function PermiteRecursoParaSerial: Boolean;
+    function PermiteRecursoParaProduto: Boolean;
     function ValidaQtdDocumentoFrente: Boolean;
     function ValidaQtdDocumentoRetaguarda: Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
@@ -56,6 +56,7 @@ implementation
 { TValidaRecurso }
 
 procedure TValidaRecurso.LeRecursos();
+const sDataLimitePadrao = '01/01/1900';
 var
   Mais1ini: tIniFile;
   js: TlkJSONobject;
@@ -69,9 +70,9 @@ var
     try
       sData := VarToStrDef(Value, '1900-01-01');
       sData := Copy(sData, 9, 2) + '/' + Copy(sData, 6, 2) + '/' + Copy(sData, 1, 4);
-      Result := StrToDateDef(sData, StrToDate('01/01/1900'));
+      Result := StrToDateDef(sData, StrToDate(sDataLimitePadrao));
     except
-      Result := StrToDate('01/01/1900');
+      Result := StrToDate(sDataLimitePadrao);
     end;
   end;
 begin
@@ -82,103 +83,150 @@ begin
   InformacoesBD;
   FsRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA, FsRecurso);
 
+  FrsRecursoSistema.Serial   := '';
+  FrsRecursoSistema.CNPJ     := '';
+  FrsRecursoSistema.Usuarios := 1;
+
   js := TlkJSON.ParseText(FsRecurso) as TlkJSONobject;
+  {
   if not assigned(js) then
   begin
 
     // Quando não tiver preenchido EMITENTE.RECURSO usará o serial do wind0ws.l0g
     // Necessário para permitir a instalação e primeira abertura do sistema
 
-    Mais1ini := TIniFile.Create('WIND0WS.L0G');
-    FrsRecursoSistema.Serial := Mais1Ini.ReadString('LICENCA','Ser','');
-    Mais1ini.Free;
-    FrsRecursoSistema.Usuarios := 1;
 
-    Exit;
   end
   else
+  }
+  if assigned(js) then
   begin
+    FrsRecursoSistema.Serial   := '';
+    FrsRecursoSistema.CNPJ     := '';
 
     if js.Field['Serial'] <> nil then
-      FrsRecursoSistema.Serial   := js.Field['Serial'].Value;
+      if js.Field['Serial'].Value <> null then
+        FrsRecursoSistema.Serial   := js.Field['Serial'].Value;
 
     if js.Field['CNPJ'] <> nil then
-      FrsRecursoSistema.CNPJ     := js.Field['CNPJ'].Value;
-    if js.Field['Usuarios'] <> nil then
-      FrsRecursoSistema.Usuarios := StrToInt(VarToStrDef(js.Field['Usuarios'].Value, '0'));
+      if js.Field['CNPJ'].Value <> null then
+        FrsRecursoSistema.CNPJ     := js.Field['CNPJ'].Value;
 
-    if js.Field['Produto'] <> nil then
-      FrsRecursoSistema.Produto  := js.Field['Produto'].Value;
-
-    if js.Field['Recursos'] <> nil then
+    if (FrsRecursoSistema.Serial <> '') and (FrsRecursoSistema.CNPJ <> '') then
     begin
-      iTemRc := js.Field['Recursos'] as TlkJSONobject;
-      if iTemRc.Field['LimiteUso'] <> nil then
+
+      if js.Field['Usuarios'] <> nil then
+        FrsRecursoSistema.Usuarios := StrToInt(VarToStrDef(js.Field['Usuarios'].Value, '0'));
+
+      if js.Field['Produto'] <> nil then
+        FrsRecursoSistema.Produto  := js.Field['Produto'].Value;
+
+      if js.Field['Recursos'] <> nil then
       begin
+        iTemRc := js.Field['Recursos'] as TlkJSONobject;
+
         if iTemRc.Field['LimiteUso'] <> nil then
-          FrsRecursoSistema.Recursos.LimiteUso := DataJsonToDate(iTemRc.Field['LimiteUso'].Value);
+        begin
 
-        if iTemRc.Field['OS'] <> nil then
-          FrsRecursoSistema.Recursos.OS        := DataJsonToDate(iTemRc.Field['OS'].Value);
+          if iTemRc.Field['LimiteUso'] <> nil then
+            FrsRecursoSistema.Recursos.LimiteUso := DataJsonToDate(iTemRc.Field['LimiteUso'].Value);
 
-        if iTemRc.Field['Sped'] <> nil then
-          FrsRecursoSistema.Recursos.Sped      := DataJsonToDate(iTemRc.Field['Sped'].Value);
+          if iTemRc.Field['OS'] <> nil then
+            FrsRecursoSistema.Recursos.OS        := DataJsonToDate(iTemRc.Field['OS'].Value);
 
-        if iTemRc.Field['SpedPisCofins'] <> nil then
-          FrsRecursoSistema.Recursos.SpedPisCofins := DataJsonToDate(iTemRc.Field['SpedPisCofins'].Value);
+          if iTemRc.Field['Sped'] <> nil then
+            FrsRecursoSistema.Recursos.Sped      := DataJsonToDate(iTemRc.Field['Sped'].Value);
 
-        if iTemRc.Field['Anvisa'] <> nil then
-          FrsRecursoSistema.Recursos.Anvisa := DataJsonToDate(iTemRc.Field['Anvisa'].Value);
+          if iTemRc.Field['SpedPisCofins'] <> nil then
+            FrsRecursoSistema.Recursos.SpedPisCofins := DataJsonToDate(iTemRc.Field['SpedPisCofins'].Value);
 
-        if iTemRc.Field['Sintegra'] <> nil then
-          FrsRecursoSistema.Recursos.Sintegra := DataJsonToDate(iTemRc.Field['Sintegra'].Value);
+          if iTemRc.Field['Anvisa'] <> nil then
+            FrsRecursoSistema.Recursos.Anvisa := DataJsonToDate(iTemRc.Field['Anvisa'].Value);
 
-        if iTemRc.Field['Comandas'] <> nil then
-          FrsRecursoSistema.Recursos.Comandas := DataJsonToDate(iTemRc.Field['Comandas'].Value);
+          if iTemRc.Field['Sintegra'] <> nil then
+            FrsRecursoSistema.Recursos.Sintegra := DataJsonToDate(iTemRc.Field['Sintegra'].Value);
 
-        if iTemRc.Field['MDFE'] <> nil then
-          FrsRecursoSistema.Recursos.MDFE := DataJsonToDate(iTemRc.Field['MDFE'].Value);
+          if iTemRc.Field['Comandas'] <> nil then
+            FrsRecursoSistema.Recursos.Comandas := DataJsonToDate(iTemRc.Field['Comandas'].Value);
 
-        if iTemRc.Field['Mobile'] <> nil then
-          FrsRecursoSistema.Recursos.Mobile := DataJsonToDate(iTemRc.Field['Mobile'].Value);
+          if iTemRc.Field['MDFE'] <> nil then
+            FrsRecursoSistema.Recursos.MDFE := DataJsonToDate(iTemRc.Field['MDFE'].Value);
 
-        if iTemRc.Field['Etiquetas'] <> nil then
-          FrsRecursoSistema.Recursos.Etiquetas := DataJsonToDate(iTemRc.Field['Etiquetas'].Value);
+          if iTemRc.Field['Mobile'] <> nil then
+            FrsRecursoSistema.Recursos.Mobile := DataJsonToDate(iTemRc.Field['Mobile'].Value);
 
-        if iTemRc.Field['Orcamento'] <> nil then
-          FrsRecursoSistema.Recursos.Orcamento := DataJsonToDate(iTemRc.Field['Orcamento'].Value);
+          if iTemRc.Field['Etiquetas'] <> nil then
+            FrsRecursoSistema.Recursos.Etiquetas := DataJsonToDate(iTemRc.Field['Etiquetas'].Value);
 
-        if iTemRc.Field['MKP'] <> nil then
-          FrsRecursoSistema.Recursos.MKP := DataJsonToDate(iTemRc.Field['MKP'].Value);
+          if iTemRc.Field['Orcamento'] <> nil then
+            FrsRecursoSistema.Recursos.Orcamento := DataJsonToDate(iTemRc.Field['Orcamento'].Value);
 
-        if iTemRc.Field['ContasPagar'] <> nil then
-          FrsRecursoSistema.Recursos.ContasPagar := DataJsonToDate(iTemRc.Field['ContasPagar'].Value);
+          if iTemRc.Field['MKP'] <> nil then
+            FrsRecursoSistema.Recursos.MKP := DataJsonToDate(iTemRc.Field['MKP'].Value);
 
-        if iTemRc.Field['ContasReceber'] <> nil then
-          FrsRecursoSistema.Recursos.ContasReceber := DataJsonToDate(iTemRc.Field['ContasReceber'].Value);
+          if iTemRc.Field['ContasPagar'] <> nil then
+            FrsRecursoSistema.Recursos.ContasPagar := DataJsonToDate(iTemRc.Field['ContasPagar'].Value);
 
-        if iTemRc.Field['Caixa'] <> nil then
-          FrsRecursoSistema.Recursos.Caixa := DataJsonToDate(iTemRc.Field['Caixa'].Value);
+          if iTemRc.Field['ContasReceber'] <> nil then
+            FrsRecursoSistema.Recursos.ContasReceber := DataJsonToDate(iTemRc.Field['ContasReceber'].Value);
 
-        if iTemRc.Field['Bancos'] <> nil then
-          FrsRecursoSistema.Recursos.Bancos := DataJsonToDate(iTemRc.Field['Bancos'].Value);
+          if iTemRc.Field['Caixa'] <> nil then
+            FrsRecursoSistema.Recursos.Caixa := DataJsonToDate(iTemRc.Field['Caixa'].Value);
 
-        if iTemRc.Field['Indicadores'] <> nil then
-          FrsRecursoSistema.Recursos.Indicadores := DataJsonToDate(iTemRc.Field['Indicadores'].Value);
+          if iTemRc.Field['Bancos'] <> nil then
+            FrsRecursoSistema.Recursos.Bancos := DataJsonToDate(iTemRc.Field['Bancos'].Value);
 
-        if iTemRc.Field['InventarioP7'] <> nil then
-          FrsRecursoSistema.Recursos.InventarioP7 := DataJsonToDate(iTemRc.Field['InventarioP7'].Value);
+          if iTemRc.Field['Indicadores'] <> nil then
+            FrsRecursoSistema.Recursos.Indicadores := DataJsonToDate(iTemRc.Field['Indicadores'].Value);
 
-        if iTemRc.Field['QtdNFE'] <> nil then
-          FrsRecursoSistema.Recursos.QtdNFE:= StrToInt(VarToStrDef(iTemRc.Field['QtdNFE'].Value, '0'));
+          if iTemRc.Field['InventarioP7'] <> nil then
+            FrsRecursoSistema.Recursos.InventarioP7 := DataJsonToDate(iTemRc.Field['InventarioP7'].Value);
 
-        if iTemRc.Field['QtdNFCE'] <> nil then
-          FrsRecursoSistema.Recursos.QtdNFCE := StrToInt(VarToStrDef(iTemRc.Field['QtdNFCE'].Value, '0'));
+          if iTemRc.Field['QtdNFE'] <> nil then
+            FrsRecursoSistema.Recursos.QtdNFE:= StrToInt(VarToStrDef(iTemRc.Field['QtdNFE'].Value, '0'));
+
+          if iTemRc.Field['QtdNFCE'] <> nil then
+            FrsRecursoSistema.Recursos.QtdNFCE := StrToInt(VarToStrDef(iTemRc.Field['QtdNFCE'].Value, '0'));
+
+        end;
 
       end;
 
-    end;
+    end
+    else
+    begin
+      FrsRecursoSistema.Usuarios := 1;
+      FrsRecursoSistema.Produto  := 'Small Commerce';
 
+      FrsRecursoSistema.Recursos.LimiteUso     := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.OS            := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Sped          := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.SpedPisCofins := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Anvisa        := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Sintegra      := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Comandas      := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.MDFE          := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Mobile        := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Etiquetas     := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Orcamento     := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.MKP           := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.ContasPagar   := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.ContasReceber := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Caixa         := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Bancos        := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.Indicadores   := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.InventarioP7  := StrToDate(sDataLimitePadrao);
+      FrsRecursoSistema.Recursos.QtdNFE        := 0;
+      FrsRecursoSistema.Recursos.QtdNFCE       := 0;
+    end; //if (FrsRecursoSistema.Serial <> '') and (FrsRecursoSistema.CNPJ <> '') then
+
+  end;
+
+  if Trim(FrsRecursoSistema.Serial) = '' then
+  begin
+    Mais1ini := TIniFile.Create('WIND0WS.L0G');
+    FrsRecursoSistema.Serial := Mais1Ini.ReadString('LICENCA','Ser','');
+    Mais1ini.Free;
   end;
 
 end;
@@ -471,13 +519,16 @@ begin
   end;
 end;
 
-function TValidaRecurso.PermiteRecursoParaSerial: Boolean;
+function TValidaRecurso.PermiteRecursoParaProduto: Boolean;
 begin
   Result := True;
 
   LeRecursos;
     
-  if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') or (FrsRecursoSistema.CNPJ = '') then // Sandro Silva 2023-06-01 if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') then
+  //if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') or (FrsRecursoSistema.CNPJ = '') then // Sandro Silva 2023-06-01 if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') then
+  if (Trim(FrsRecursoSistema.Produto) = '')
+   or (AnsiContainsText(Trim(FrsRecursoSistema.Produto), ' Go'))
+   or (Trim(FrsRecursoSistema.CNPJ) = '') then 
     Result := False;
 end;
 

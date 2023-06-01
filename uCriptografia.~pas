@@ -3,11 +3,18 @@ unit uCriptografia;
 interface
 
 uses
+(*
     {$IF CompilerVersion >= 17.0}
       System.SysUtils
     {$ELSE}
       SysUtils
     {$IFEND}
+*)
+  {$IFDEF VER150}
+      SysUtils  
+  {$ELSE}
+      System.SysUtils  
+  {$ENDIF}
   , LbCipher
   , LbClass;
 
@@ -16,25 +23,26 @@ function SmallEncrypt(sChave,sValor:string):string;
 
 implementation
 
-//uses LbClass;
-
 function SmallDecrypt(sChave,sValor:string):string;
 var
   LbBlowfish : TLbBlowfish;
 begin
   Result := '';
 
-  try
+  if Valor <> '' then
+  begin
     try
-      LbBlowfish := TLbBlowfish.Create(nil);
+      try
+        LbBlowfish := TLbBlowfish.Create(nil);
 
-      LbBlowfish.GenerateKey(sChave);
-      Result := LbBlowfish.DecryptString(sValor);
-    finally
-      FreeAndNil(LbBlowfish);
+        LbBlowfish.GenerateKey(sChave);
+        Result := LbBlowfish.DecryptString(sValor);
+      finally
+        FreeAndNil(LbBlowfish);
+      end;
+    except
+      Result := '';
     end;
-  except
-    Result := '';
   end;
 end;
 
