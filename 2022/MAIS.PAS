@@ -4376,7 +4376,7 @@ begin
 
   ValidaRecursos := TValidaRecurso.Create; // Sandro Silva 2023-05-31
 
-  {Sandro Silva 2023-05-31 inicio
+  {Sandro Silva 2023-06-01 inicio
   Mais1ini := TIniFile.Create('WIND0WS.L0G');
   Form1.sSerial := Mais1Ini.ReadString('LICENCA','Ser','');
   Mais1ini.Free;
@@ -4608,6 +4608,7 @@ begin
     if Copy(Form1.sSerial,4,1) = 'S' then iLimiteUsuariosSimultaneos := 02;  // 02 Usuários Small Start
     if Copy(Form1.sSerial,4,1) = 'W' then iLimiteUsuariosSimultaneos := 256; // 256 Usuários Small Commerce
     }
+
     iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios; // Sandro Silva 2023-05-31
     //
     iReduzida := 0;
