@@ -9,9 +9,11 @@ uses
   , Controls
   , Variants
   , Windows
+  , IniFiles
   , IBDatabase
   , IBQuery
-  , LbCipher, LbClass
+  , LbCipher
+  , LbClass
   , uconstantes_chaves_privadas
   , uRecursosSistema
   //, uConectaBancoSmall
@@ -55,6 +57,7 @@ implementation
 
 procedure TValidaRecurso.LeRecursos();
 var
+  Mais1ini: tIniFile;
   js: TlkJSONobject;
   iTemRc: TlkJSONobject;
   s: String;
@@ -82,6 +85,15 @@ begin
   js := TlkJSON.ParseText(FsRecurso) as TlkJSONobject;
   if not assigned(js) then
   begin
+
+    // Quando não tiver preenchido EMITENTE.RECURSO usará o serial do wind0ws.l0g
+    // Necessário para permitir a instalação e primeira abertura do sistema
+
+    Mais1ini := TIniFile.Create('WIND0WS.L0G');
+    FrsRecursoSistema.Serial := Mais1Ini.ReadString('LICENCA','Ser','');
+    Mais1ini.Free;
+    FrsRecursoSistema.Usuarios := 1;
+
     Exit;
   end
   else
@@ -192,6 +204,10 @@ begin
         end;
       except
       end;
+    end
+    else
+    begin
+      Result := FrsRecursoSistema.Serial;
     end;
   except
   end;
@@ -461,7 +477,7 @@ begin
 
   LeRecursos;
     
-  if Copy(FrsRecursoSistema.Serial, 4, 1) = 'T' then
+  if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') or (FrsRecursoSistema.CNPJ = '') then // Sandro Silva 2023-06-01 if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') then
     Result := False;
 end;
 
