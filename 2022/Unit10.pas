@@ -346,7 +346,6 @@ type
     Button6: TBitBtn;
     Label98: TLabel;
     SMALL_DBEdit68: TSMALL_DBEdit;
-    Button21: TBitBtn;
     GroupBox3: TGroupBox;
     Label44: TLabel;
     SMALL_DBEdit45: TSMALL_DBEdit;
@@ -572,7 +571,6 @@ type
     procedure ComboBox14Change(Sender: TObject);
     procedure ComboBox15Change(Sender: TObject);
     procedure Button6Click(Sender: TObject);
-    procedure Button21Click(Sender: TObject);
     procedure Panel2DblClick(Sender: TObject);
     procedure Orelha_TAGSShow(Sender: TObject);
     procedure Orelha_TAGSExit(Sender: TObject);
@@ -593,11 +591,13 @@ type
       Sender: TObject; var Key: Char);
     procedure framePesquisaProdComposicaodbgItensPesqKeyDown(
       Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DBGrid3CellClick(Column: TColumn);
   private
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
     procedure DefinirLimiteDisponivel;
+    procedure AlteracaoInstituicaoFinanceira;
     { Private declarations }
   public
     { Public declarations }
@@ -634,6 +634,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   , WinInet
   {Sandro Silva 2022-09-26 fim}
   , uRetornaLimiteDisponivel
+  , uFuncoesBancoDados
   ;
 
 {$R *.DFM}
@@ -710,13 +711,11 @@ end;
 
 function GravaRegistro(sP1 : boolean):Boolean;
 begin
-  //
   if Form7.bEstaSendoUsado then
   begin
     Form7.ArquivoAberto.Cancel;
   end else
   begin
-    //
     if Form7.ArquivoAberto.Modified then
     begin
       Form7.ArquivoAberto.Post;
@@ -724,9 +723,8 @@ begin
     begin
       Form7.ArquivoAberto.Cancel;
     end;
-    //
   end;
-  //
+
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -734,55 +732,50 @@ begin
       begin
         Form7.IBDataSet2.Post;
       end;
-    except end;
+    except
+    end;
   end;
-  //
+
   try
     if Form7.ibDataSet13.Modified then
     begin
       Form7.IBDataSet13.Post;
     end;
-  except end;
-  //
+  except
+  end;
+
   Form7.IBTransaction1.CommitRetaining;
   Result := True;
-  //
 end;
 
 function Exemplo(sP1 : boolean):Boolean;
 begin
-  //
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDAE.AsString)+' ');
   Form1.ibQuery1.Open;
-  //
+
   Form10.Label89.Caption := 'Compra 1 '+Form1.IBQuery1.FieldByname('DESCRICAO').AsString+' e vende'+chr(10);
-  //
+
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDA.AsString)+' ');
   Form1.ibQuery1.Open;
-  //
+
   Form10.Label89.Caption := Form10.Label89.Caption + FloatToStr(Form7.ibDataSet4FATORC.AsFloat) + ' ' + Form1.IBQuery1.FieldByname('DESCRICAO').AsString;
-  //
+
   Result := True;
-  //
 end;
 
 function AtualizaTela(sP1 : boolean):Boolean;
 var
-  //
   I : Integer;
   FileStream : TFileStream;
   BlobStream : TStream;
   sTotal     : string;
   JP2         : TJPEGImage;
-  //
 begin
-  //
   // Posiciona o foco quando ativa
-  //
   Result := True;
   try
     if Form7.sModulo = 'ESTOQUE' then
@@ -808,7 +801,7 @@ begin
       end;
     end;
   except end;
-  //
+
   try
     if Form7.sModulo = 'CAIXA' then
     begin
@@ -827,9 +820,9 @@ begin
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
     end;
-    //
+
     Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
-    //
+
     if sP1 then
     begin
       if Form10.SMALL_DBEdit1.CanFocus then
@@ -843,14 +836,12 @@ begin
       else if Form10.SMALL_DBEdit5.CanFocus then
         Form10.SMALL_DBEdit5.SetFocus;
     end;
-    //
+
     Form10.Caption := 'Ficha';
-    //
+
     if Form7.sModulo = 'CLIENTES' then
     begin
-      //
 //      Form10.ComboBox8.Text := Form7.ArquivoAberto.FieldByName('CLIFOR').AsString;
-      //
       if AllTrim(Form7.ArquivoAberto.FieldByName('CLIFOR').AsString)<>'' then
       begin
         for I := 0 to Form10.ComboBox8.Items.Count -1 do
@@ -870,11 +861,10 @@ begin
           Form10.ComboBox8.ItemIndex := 0;
         end;
       end;
-      //
+
       Form10.Caption := form7.ibDataSet2NOME.AsString;
-      //
     end;
-    //
+
     if Form7.sModulo = 'RECEBER' then
     begin
       Form7.ibDataSet2.Close;
@@ -882,16 +872,14 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-    //
+
     if (Form7.sModulo = 'CLIENTES') then
     begin
-      //
       Form10.Image5.Picture := nil;
       Form10.Image3.Picture := nil;
-      //
+
       if FileExists(Form10.sNomeDoJPG) then
       begin
-        //
         if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
           Form7.ibDataset2.Edit;
         FileStream := TFileStream.Create(Form10.sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
@@ -902,11 +890,10 @@ begin
           FileStream.Free;
           BlobStream.Free;
         end;
-        //
+
         Deletefile(pChar(Form10.sNomeDoJPG));
-        //
       end;
-      //
+
       if Form7.ibDataset2FOTO.BlobSize <> 0 then
       begin
         BlobStream:= Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmRead);
@@ -924,23 +911,19 @@ begin
     end
     else
       Form10.Image5.Picture := Form10.Image3.Picture;
-    //
+
     if (Form7.sModulo = 'ESTOQUE') then
     begin
-      //
       Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
-      //
+
       Form10.Image5.Picture := nil;
       Form10.Image3.Picture := nil;
-      //
+
       if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
       begin
-        //
         // FOTOS ANTIGAS
-        //
         if FileExists(Form10.sNomeDoJPG) then
         begin
-          //
           if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
             Form7.ibDataset4.Edit;
           FileStream := TFileStream.Create(pChar(Form10.sNomeDoJPG),fmOpenRead or fmShareDenyWrite);
@@ -951,13 +934,10 @@ begin
             FileStream.Free;
             BlobStream.Free;
           end;
-          //
           // Form7.ibDataset4.Post;
-          //
           Deletefile(pChar(Form10.sNomeDoJPG));
-          //
         end;
-        //
+
         if Form7.ibDataset4FOTO.BlobSize <> 0 then
         begin
           BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO, bmRead);
@@ -981,19 +961,16 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
-    //
+
     if Form7.sModulo = 'GRUPOS' then
     begin
-      //
       Form10.Image5.Picture:=nil;
       Form10.Image3.Picture:=nil;
-      //
+
       if AllTrim(Form7.ibDataSet21NOME.AsString) <> '' then
       begin
-        //
         if FileExists(Form10.sNomeDoJPG) then
         begin
-          //
           if not (Form7.ibDataset21.State in ([dsEdit, dsInsert])) then Form7.ibDataset21.Edit;
           FileStream := TFileStream.Create(Form10.sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
           BlobStream := Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmWrite);
@@ -1003,13 +980,10 @@ begin
             FileStream.Free;
             BlobStream.Free;
           end;
-          //
           // Form7.ibDataset21.Post;
-          //
           Deletefile(pChar(Form10.sNomeDoJPG));
-          //
         end;
-        //
+        
         if Form7.ibDataset21FOTO.BlobSize <> 0 then
         begin
           BlobStream:= Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmRead);
@@ -1029,17 +1003,14 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
-    //
+
     // Mantem a proporção da imagem
-    //
     try
-      //
       if Form10.Image5.Picture.Width <> 0 then
       begin
-        //
         Form10.Image5.Width   := 256;
         Form10.Image5.Height  := 256;
-        //
+
         if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
         begin
           Form10.Image5.Width  := StrToInt(StrZero((Form10.Image5.Picture.Width * (Form10.Image5.Width / Form10.Image5.Picture.Width)),10,0));
@@ -1049,58 +1020,48 @@ begin
           Form10.Image5.Width  := StrToInt(StrZero((Form10.Image5.Picture.Width * (Form10.Image5.Height / Form10.Image5.Picture.Height)),10,0));
           Form10.Image5.Height := StrToInt(StrZero((Form10.Image5.Picture.Height* (Form10.Image5.Height / Form10.Image5.Picture.Height)),10,0));
         end;
-        //
+
         Form10.Image5.Picture := Form10.Image5.Picture;
-        //
       end;
-      //  
     except
     end;
-    //
   except
   end;
   Form10.DefinirLimiteDisponivel;  
   //
   // Sandro Silva 2022-09-27 Result := True;
-  //
 end;
 
 function tForm10.AtualizaMobile(sP1: Boolean): Boolean;
 var
   s, sSenha: String;
-  //
+
   Mais1Ini: TIniFile;
   sSecoes: TStrings;
   I, iI: Integer;
   sCNPJ: String;
   _bmp: TBitmap;
   Picture: TPicture;
-  //
+
   jp: TJPEGImage;
   F: TExtFile;
   Rect: tRect;
   BlobStream: TStream;
   fDesconto: Real;
-  //
-//  Hora, Min, Seg, cent : Word;
-//  tInicio : tTime;
-  //
 begin
-  //
   try
     DownloadDoArquivo(PChar('http://www.smallsoft.com.br/2.php'),PChar('2.php'));
   except end;
-  //
+
   Form1.DownloadSmallMobile1Click(Form1.SincronizarSmallMobile1);
-  //
+
   DeleteFile(pChar(Form1.sAtual+'\estoque.sql'));
   DeleteFile(pChar(Form1.sAtual+'\clifor.sql'));
   DeleteFile(pChar(Form1.sAtual+'\usuarios.sql'));
-  //
+
   sCNPJ := AllTrim(LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString));
-  //
+
   try
-    //
     if sCNPJ <> '' then
     begin
       try
@@ -1454,10 +1415,21 @@ begin
     begin
       Form7.ibDataSet7.Edit;
 
-      if Form10.dBGrid1.Height = 300 then
-        Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
-      else
-        Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
+      if (Form10.dBGrid1.Visible) then
+      begin
+        if Form10.dBGrid1.Height = 300 then
+          Form7.ibDataSet7CONTA.AsString := Form7.ibDataSet12NOME.AsString
+        else
+          Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
+      end;
+
+      //Mauricio Parizotto 2023-05-29
+      // Instituição Financeira
+      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
+      begin
+        Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+        Form10.dBGrid3.Visible := False;
+      end;
     end;
 
     // Contas a Pagar
@@ -1545,8 +1517,8 @@ procedure TForm10.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
-
     bGravaEscolha := False;
+
     if Form7.bFlag = True then
     begin
       if Key = VK_RETURN then
@@ -1554,7 +1526,7 @@ begin
         bGravaEscolha := True;
         Perform(Wm_NextDlgCtl,0,0);
       end;
-      //
+      
       if dBgrid1.Visible then
       begin
         if (Key = VK_UP) or (Key = VK_DOWN) then
@@ -1585,13 +1557,15 @@ begin
   except
     ShowMessage('Erro 10/6 comunique o suporte técnico.')
   end;
-  //
 end;
 
 procedure TForm10.SMALL_DBEdit1Enter(Sender: TObject);
 var
   vDataField : string;
 begin
+  //Mauricio Parizotto 2023-05-29
+  bGravaEscolha := False;
+
   with Sender as TSMALL_DBEdit do
     sPublicText := Text;
 
@@ -1745,6 +1719,28 @@ begin
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DataSource39; // Municipios
       end;
+
+      //Mauricio Parizotto 2023-05-29
+      if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text := ' Select * '+
+                                            ' From CLIFOR'+
+                                            ' Where CLIFOR in (''Instituição financeira'',''Credenciadora de cartão'') '+
+                                            ' Order by NOME';
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top - 100;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := Width;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+      end;
     end;
   except
     ShowMessage('Erro 10/77 comunique o suporte técnico.')
@@ -1842,6 +1838,22 @@ begin
           end;
         end;
       end;
+
+      {Mauricio Parizotto 2023-05-29 Inicio}
+      if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
+      begin
+        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('NOME').AsString))) <> 0 then
+        begin
+          GravaEscolha;
+        end else
+        begin
+          DataSource.DataSet.Edit;
+          DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Exit;
+        end;
+      end;
+
+      {Mauricio Parizotto 2023-05-29 Inicio}
     end;
   except
   end;
@@ -1961,6 +1973,14 @@ begin
           Form7.ibDataSet2.EnableControls;
         end;
 
+        //Mauricio Parizotto 2023-05-29
+        if (vDataField = 'INSTITUICAOFINANCEIRA')
+          and (Form7.sModulo = 'RECEBER')
+          and (Form7.ibqConsulta.Active) then
+        begin
+          Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+        end;
+
         if (Form7.sModulo = 'ESTOQUE')
           and (vDataField = 'NOME')
           and (Form7.ibDataSet21.Active) then
@@ -2008,9 +2028,10 @@ end;
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   I : Integer;
+  vRegistro : string;
 begin
   framePesquisaProdComposicao.Visible := False;
-  framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;  
+  framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
   try
     for I := 0 to 29 do
     begin
@@ -2029,7 +2050,7 @@ begin
   begin
     Orelhas.ActivePage := Orelha_CFOP;
   end;
-  
+
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
   
@@ -2042,6 +2063,22 @@ begin
   
   Form10.Hide;
   GravaRegistro(True);
+
+  //Mauricio Parizotto 2023-05-31
+  if Form7.sModulo = 'RECEBER' then
+  begin
+    //Fas refresh do grid e volta para o registro atual
+    try
+      vRegistro := Form7.ibDataSet7REGISTRO.AsString;
+      Form7.ibDataSet7.DisableControls;
+      Form7.ibDataSet7.Close;
+      Form7.ibDataSet7.Open;
+      Form7.ibDataSet7.Locate('REGISTRO',vRegistro,[]);
+    except
+    end;
+
+    Form7.ibDataSet7.EnableControls;
+  end;
 end;
 
 procedure TForm10.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -2585,7 +2622,6 @@ begin
   if Form7.sModulo = 'TRANSPORT' then
   begin
     Form7.ibDataSet18UF.FocusControl;
-    
     Exit;
   end;
 
@@ -2613,6 +2649,14 @@ begin
     if Form10.SMALL_DBEdit19.CanFocus then
       Form10.SMALL_DBEdit19.SetFocus;
   end;
+
+  {Mauricio Parizotto 2023-05-29 Inicio}
+  if (Form7.sModulo = 'RECEBER') and (DBGrid3.DataSource.Name = 'DSConsulta') then
+  begin
+    Form10.SMALL_DBEdit26.SetFocus;
+    Exit;
+  end;
+  {Mauricio Parizotto 2023-05-29 Fim}
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -4205,6 +4249,11 @@ begin
                   end;
                 except ShowMessage('Erro 2 comunique o suporte técnico.') end;
               end;
+
+              //Mauricio Parizotto 2023-05-29
+              //Se foi setado para ReadOnly para o grid remove para editar pela tela
+              if Form7.ArquivoAberto.Fields[I - 1].Tag = 10 then
+                Form7.ArquivoAberto.Fields[I - 1].ReadOnly := False;
 
               try
                 if (Form7.ArquivoAberto.Fields[I - 1].ReadOnly = True) or (Form7.bSoLeitura) or (Form7.bEstaSendoUsado) then
@@ -7125,6 +7174,11 @@ end;
 
 procedure TForm10.Button4Click(Sender: TObject);
 begin
+  //Mauricio Parizotto 2023-05-31
+  if Form7.sModulo = 'RECEBER' then
+    AlteracaoInstituicaoFinanceira;
+
+  
   Orelha_cadastro.Visible := True;
   Orelhas.ActivePage := Orelha_cadastro;
   Close;
@@ -8317,64 +8371,6 @@ begin
   end;
 end;
 
-procedure TForm10.Button21Click(Sender: TObject);
-var
-  BlobStream : TStream;
-  JP2    : TJPEGImage;
-  FileStream : TFileStream;
-  I : Integer;
-begin
-  Form7.ibDataSet2.DisableControls;
-  //
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.SelectSQL.Clear;
-  Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where Upper(CLIFOR)='+QuotedStr('VENDEDOR')+' order by upper(NOME)');
-  Form7.ibDataSet2.Open;
-  Form7.ibDataSet2.First;
-  //
-  Form7.ibDataSet2.First;
-  while not Form7.ibDataSet2.EOF do
-  begin
-    if Form7.ibDataSet2FOTO.BlobSize <> 0 then
-    begin
-      //
-      I := Form7.ibDataSet2FOTO.BlobSize;
-      //
-      BlobStream:= Form7.ibDataSet2.CreateBlobStream(Form7.ibDataSet2FOTO,bmRead);
-      jp2 := TJPEGImage.Create;
-      jp2.LoadFromStream(BlobStream);
-      Form10.Image5.Picture.Assign(jp2);
-      //
-      Form10.Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-      JpgResize(Form10.sNomeDoJPG,1024);
-      //
-      if FileExists(Form10.sNomeDoJPG) then
-      begin
-        //
-        if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then Form7.ibDataset2.Edit;
-        FileStream := TFileStream.Create(Form10.sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
-        BlobStream := Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmWrite);
-        BlobStream.CopyFrom(FileStream,FileStream.Size);
-        FileStream.Free;
-        BlobStream.Free;
-        //
-        Form7.ibDataset2.Post;
-        //
-        Deletefile(pChar(Form10.sNomeDoJPG));
-        //
-      end;
-      //
-      ShowMEssage('De: '+IntToStr(I)+' para: '+IntToStr(Form7.ibDataSet2FOTO.BlobSize)+' Diminuiu: '+FloatToStr(((1-( Form7.ibDataSet2FOTO.BlobSize/I))*100))+' %');
-      //
-    end;
-    //
-    Form7.ibDataSet2.Next;
-    //
-  end;
-  //
-  Form7.ibDataSet2.EnableControls;
-end;
-
 procedure TForm10.Panel2DblClick(Sender: TObject);
 begin
   Form10.Panel2.ShowHint := True;
@@ -8725,6 +8721,51 @@ end;
 procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   framePesquisaProdComposicao.dbgItensPesqKeyDown(Sender, Key, Shift);
+end;
+
+procedure TForm10.DBGrid3CellClick(Column: TColumn);
+begin
+  DBGrid3DblClick(nil);
+end;
+
+
+procedure TForm10.AlteracaoInstituicaoFinanceira;
+var
+  vDescricaoAntes : string;
+  vQtdParcelas : integer;
+begin
+  //Mauricio Parizotto 2023-05-29
+  try
+    //Verifica se mudou
+    vDescricaoAntes := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
+                                             ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
+                                             ' From RECEBER'+
+                                             ' Where REGISTRO ='+QuotedStr(Form7.ibDataSet7REGISTRO.AsString));
+
+    if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
+    begin
+      if Trim(Form7.ibDataSet7NUMERONF.AsString) = '' then
+        Exit;
+
+      vQtdParcelas := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
+                                           ' Select count(*)  '+
+                                           ' From RECEBER'+
+                                           ' Where NUMERONF ='+QuotedStr(Form7.ibDataSet7NUMERONF.AsString));
+
+      if vQtdParcelas > 1 then
+      begin
+        if Application.MessageBox(PansiChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
+                                  'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
+        begin
+          ExecutaComando(' Update RECEBER'+
+                         '   set INSTITUICAOFINANCEIRA ='+QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
+                         ' Where NUMERONF ='+QuotedStr(Form7.ibDataSet7NUMERONF.AsString),
+                         Form7.ibDataSet7.Transaction );
+        end;
+      end;
+    end;
+  except
+  end;
 end;
 
 end.

@@ -832,16 +832,6 @@ object Form10: TForm10
         OnMouseMove = Label205MouseMove
         OnMouseLeave = Label205MouseLeave
       end
-      object Button21: TBitBtn
-        Left = 608
-        Top = 48
-        Width = 75
-        Height = 25
-        Caption = 'Button21'
-        TabOrder = 0
-        Visible = False
-        OnClick = Button21Click
-      end
     end
     object Panel2: TPanel
       Left = 0
@@ -2630,7 +2620,7 @@ object Form10: TForm10
           TitleFont.Name = 'Fixedsys'
           TitleFont.Style = []
           Visible = False
-          OnCellClick = DBGrid1CellClick
+          OnCellClick = DBGrid3CellClick
           OnDblClick = DBGrid3DblClick
           OnKeyDown = DBGrid1KeyDown
           OnKeyPress = DBGrid3KeyPress

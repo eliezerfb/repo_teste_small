@@ -289,7 +289,7 @@ end;
 procedure TSenhas.SENHAMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  Panel2.Top     := SENHA.Top+10;
+  Panel2.Top     := SENHA.Top+8;
   Panel2.Left    := SENHA.Left + SENHA.Width -20;
   Panel2.Visible := True;
   Panel2.Repaint;

@@ -1458,6 +1458,9 @@ type
     ibDataSet16PFCPST: TIBBCDField;
     ibDataSet16VFCPST: TIBBCDField;
     ibDataSet15VFCPST: TIBBCDField;
+    ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
+    DSConsulta: TDataSource;
+    ibqConsulta: TIBDataSet;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2176,7 +2179,8 @@ type
     fValorAnterior : Real;
     //
     iKey : Integer;
-    //
+
+    procedure RefreshDados;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
     function AliqICMdoCliente16: double;
@@ -9439,7 +9443,11 @@ begin
   bFirst := False;
   //
   sAjuda := 'INDEX.HTM';
-  //
+
+  //Mauricio Parizotto 2023-05-29
+  //Campos Somente Leitura ao editar pelo Grid
+  ibDataSet7INSTITUICAOFINANCEIRA.Tag := 10;
+  ibDataSet7NOME.Tag := 10;
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -11133,7 +11141,8 @@ begin
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
-        iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
+        //iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
+        iCampos                := 17; // Mauricio Parizotto 2023-05-29
 
         // Menu
         Form7.Menu         := MainMenu7;
@@ -11906,15 +11915,15 @@ end;
 procedure TForm7.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   Form7.iKey := Key;
-  //
+
   if Key = VK_F11  then
     Form7.Agrupar1Click(Sender);
   if Key = VK_F3   then
     Form20.Button1Click(Sender);
   if Key = VK_F5   then
   begin
+    {
     Screen.Cursor            := crHourGlass;
     AgendaCommit(True);
     //
@@ -11922,8 +11931,10 @@ begin
     Form7.Show;
     //
     Screen.Cursor            := crDefault;
+    Mauricio Parizotto 2023-05-31}
+
+    RefreshDados;
   end;
-  //
 end;
 
 procedure TForm7.Imprimircheque1Click(Sender: TObject);
@@ -16721,19 +16732,32 @@ begin
 end;
 
 procedure TForm7.Image208Click(Sender: TObject);
+var
+  i : integer;
 begin
-  //
   if (Form7.sModulo = 'OS')    or
      (Form7.sModulo = 'VENDA') or
      (Form7.sModulo = 'ORCAMENTO') or
-     (Form7.sModulo = 'COMPRA')  then Abort;
-  //
+     (Form7.sModulo = 'COMPRA')  then
+     Abort;
+
   if Form7.DBGrid1.Options = [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize] then // Botão Libera
   begin
     Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];        // Botão Libera
     Form7.dbGrid1.ReadOnly  := False;
     Form7.Image208.Visible  := False; Form7.Label208.Caption  := 'Bloquear';
     Form7.Image308.Visible  := True;
+
+    //Mauricio Parizotto 2023-05-29
+    //Seta para ReadOnly para o grid não poder editar
+    try
+      for i := 0 to Form7.DBGrid1.DataSource.DataSet.FieldCount -1 do
+      begin
+      if Form7.DBGrid1.DataSource.DataSet.Fields[i].Tag = 10 then
+        Form7.DBGrid1.DataSource.DataSet.Fields[i].ReadOnly := True;
+      end;
+    except
+    end;
   end else
   begin
     Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Botão Libera
@@ -16741,15 +16765,14 @@ begin
     Form7.Image308.Visible  := False;
     Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
   end;
-  //
+
   dBGrid1.Repaint;
-  //
+
   if ArquivoAberto.Active then
   begin
     if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
     if ArquivoAberto.MoveBy(+1) = 1 then ArquivoAberto.MoveBy(-1) else if ArquivoAberto.MoveBy(-1) = -1 then ArquivoAberto.MoveBy(+1);
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet8VALOR_DUPLChange(Sender: TField);
@@ -33294,6 +33317,17 @@ procedure TForm7.ibDataSet16VBCFCPSTChange(Sender: TField);
 begin
 //  if (StrtoFloatDef(VarToStrDef(Form7.ibDataSet16VBCFCPST.OldValue, '0,00'), 0.00) <> Form7.ibDataSet16VBCFCPST.Value) then
     CalculaFCPSTAoIncluirProdutoDevolucao; // Sandro Silva 2023-05-08
+end;
+
+procedure TForm7.RefreshDados;
+begin
+  Screen.Cursor            := crHourGlass;
+  AgendaCommit(True);
+
+  Form7.Close;
+  Form7.Show;
+  
+  Screen.Cursor            := crDefault;
 end;
 
 end.
