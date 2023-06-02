@@ -3048,7 +3048,14 @@ begin
   sNomeDoArquivoParaSalvar := 'Small Commerce.Txt';
 
   framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
-  Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;  
+  Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;
+
+  //Mauricio Parizotto 2023-06-01
+  Image201.Transparent := False;
+  Image202.Transparent := False;
+  Image203.Transparent := False;
+  Image205.Transparent := False;
+  Image204.Transparent := False;
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,

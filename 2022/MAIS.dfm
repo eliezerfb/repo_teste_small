@@ -1,7 +1,7 @@
 object Form1: TForm1
   Tag = 99
-  Left = 452
-  Top = 164
+  Left = 268
+  Top = 64
   Hint = 'Small Commerce'
   HelpContext = 1
   HorzScrollBar.Visible = False
@@ -10,7 +10,7 @@ object Form1: TForm1
   BorderStyle = bsSingle
   Caption = 'Small'
   ClientHeight = 809
-  ClientWidth = 1177
+  ClientWidth = 1211
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -6449,7 +6449,6 @@ object Form1: TForm1
     ParentShowHint = False
     ShowHint = False
     TabOrder = 9
-    OnDblClick = Panel_0DblClick
     object Image201: TImage
       Left = 105
       Top = 0
@@ -11996,18 +11995,6 @@ object Form1: TForm1
       Transparent = True
       Visible = False
     end
-    object Image_Bola_NFe: TImage
-      Left = 184
-      Top = 0
-      Width = 20
-      Height = 20
-      AutoSize = True
-      ParentShowHint = False
-      ShowHint = False
-      Stretch = True
-      Transparent = True
-      Visible = False
-    end
     object Image_bola_banco: TImage
       Left = 848
       Top = 0
@@ -13326,27 +13313,6 @@ object Form1: TForm1
       Visible = False
       OnClick = Label_bola_indicadoresClick
     end
-    object Label_bola_NFE: TLabel
-      Left = 184
-      Top = 1
-      Width = 20
-      Height = 16
-      Alignment = taCenter
-      AutoSize = False
-      Caption = '11'
-      Color = clWhite
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-      Layout = tlBottom
-      Visible = False
-      OnClick = Label_bola_NFEClick
-    end
     object Label_bola_OS: TLabel
       Left = 272
       Top = 1
@@ -13527,6 +13493,39 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = Label_bola_cliforClick
+    end
+    object Image_Bola_NFe: TImage
+      Left = 184
+      Top = 0
+      Width = 20
+      Height = 20
+      AutoSize = True
+      ParentShowHint = False
+      ShowHint = False
+      Stretch = True
+      Transparent = True
+      Visible = False
+    end
+    object Label_bola_NFE: TLabel
+      Left = 184
+      Top = 1
+      Width = 20
+      Height = 16
+      Alignment = taCenter
+      AutoSize = False
+      Caption = '11'
+      Color = clWhite
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+      Layout = tlBottom
+      Visible = False
+      OnClick = Label_bola_NFEClick
     end
   end
   object DBGrid200: TDBGrid

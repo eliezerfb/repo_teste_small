@@ -44,6 +44,7 @@ type
       Shift: TShiftState);
     procedure Edit_01KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -191,6 +192,12 @@ begin
   begin
     Perform(Wm_NextDlgCtl,0,0);
   end;
+end;
+
+procedure TForm29.FormCreate(Sender: TObject);
+begin
+  Gauge1.Font.Name := 'MS Serif'; //Problema fonte borada no Delphi 7
+  Gauge1.Font.Style := [fsBold];
 end;
 
 end.
