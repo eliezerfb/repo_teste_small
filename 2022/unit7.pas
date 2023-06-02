@@ -8046,7 +8046,7 @@ begin
         if Form1.ValidaRecursos.PermiteRecursoParaProduto then
         begin
 
-          if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda then
+          if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda(Date) then
           begin
 
             Form7.ibDataSet15.Append;
@@ -33280,7 +33280,7 @@ end;
 function TForm7.ValidaLimiteDeEmissaoDeVenda: Boolean;
 begin
   Result := False;
-  if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda = False then
+  if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda(Date) = False then
   begin
     Form1.MensagemRecursoIndisponivel(
       'Você já emitiu o número limite de documentos fiscais'+chr(10)+
