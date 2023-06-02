@@ -97,7 +97,7 @@ uses
   uTextoEmailNFe in 'units\uTextoEmailNFe.pas',
   uITextoEmailFactory in 'interfaces\uITextoEmailFactory.pas',
   uTextoEmailFactory in 'units\uTextoEmailFactory.pas',
-  uTextoEmailCCe in '..\..\Projeto-2022Ant\2022\Units\uTextoEmailCCe.pas',
+  uTextoEmailCCe in 'units\uTextoEmailCCe.pas',
   uSmallResourceString in '..\..\unit_compartilhada\uSmallResourceString.pas';
 
 {$R *.RES}
