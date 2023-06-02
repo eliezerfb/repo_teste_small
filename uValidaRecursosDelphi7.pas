@@ -45,7 +45,7 @@ type
     function RecursoData(sRecurso: TRecursos): TDate;
     function PermiteRecursoParaProduto: Boolean;
     function ValidaQtdDocumentoFrente: Boolean;
-    function ValidaQtdDocumentoRetaguarda({dtBaseVerificar: TDate}): Boolean;
+    function ValidaQtdDocumentoRetaguarda(dtBaseVerificar: TDate): Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
     function RecursoQtd(sRecurso: TRecursos): Integer;
     property IBDATABASE: TIBDatabase read FIBDatabase write SetIBDatabase;
@@ -592,7 +592,7 @@ begin
 
 end;
 
-function TValidaRecurso.ValidaQtdDocumentoRetaguarda({dtBaseVerificar: TDate}): Boolean;
+function TValidaRecurso.ValidaQtdDocumentoRetaguarda(dtBaseVerificar: TDate): Boolean;
 const SituacaoMeiLancado = ' (MODELO = ''01'') ';
 const SituacaoNFeEmitidoOuCancelado = ' (MODELO = ''55'' and coalesce(NFEXML, '''') containing ''<xMotivo>'') ';
 const SituacaoNFSeEmitidoOuCancelado  = ' (MODELO = ''SV'' and (coalesce(STATUS, '''') containing ''AUTORIZADA'' or coalesce(STATUS, '''') containing ''NFS-e cancelada'')) ';
@@ -632,7 +632,7 @@ begin
       'from VENDAS ' +
       'where EMISSAO >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
       'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
-    //IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+    IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
     //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
     IBQDOC.Open;
 
