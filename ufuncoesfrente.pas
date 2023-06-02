@@ -32,8 +32,10 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , ExtCtrls
   , DBClient
   , uconstantes_chaves_privadas
+  //, uClasseValidaRecursos
+  , uValidaRecursosDelphi7
   ;
-                     
+
 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'; // Sandro Silva 2021-07-28 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'MENU FISCAL INACESSÍVEL NESTA TELA';
 const CHAVE_PUBLICA = 'DF9F4DC6AF517A889BCE1181DEF8394455DBCD19768E8C785D9121E8DB9B9B104E5231EE8F8299D24451465178D3FC41D40DAFAF9C855824393FC964C747'+
                       '5C3993104443E8E73333D93C24E5D46B27D9A4DF5E6F0B05490B6C6829CEFA1030294DABC29E498A0F6096E8CE26B407B2E1B4939FDE6174EC1621BB3E988D29742D';
@@ -213,7 +215,7 @@ procedure GravaPendenciaAlteraca(IBDatabase: TIBDatabase; bOffLine: Boolean;
   sCaixa: String; sPedido: String; sItem: String; sTipo: String);
 function indRegraSAT(sCFOP: String): String;
 function TruncaValor(dValor: Double; iDecimais: Integer = 2): Double;
-function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
+//function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function TefUsado: String;
 procedure AdicionaCNPJRequisicaoTEF(var tfFile: TextFile; DataSet: TDataSet);
@@ -256,16 +258,19 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
+//function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
   Aplicacao: TMyApplication;
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
+  //RecursosLicenca: TRecurcosDisponiveisParaLicenca;
+  ValidaRecursos: TValidaRecurso;
 
 implementation
 
-uses StrUtils;
+uses StrUtils, uTypesRecursos;
 
 //////////////////////////////
 {$IFDEF VER150}
@@ -769,6 +774,7 @@ begin
   Result := (StrToInt(sTruncado) / iFator); // Result := (Trunc((dValor) * iFator) / iFator);
 end;
 
+{
 function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
 // Sandro Silva 2019-06-19 Retorna a quantidade de IPs conectados ao banco, por protocolo (TCP/IP - XNET)
 // Para controlar o número de usuário por licença
@@ -791,6 +797,7 @@ begin
   FreeAndNil(IBQIP);
   FreeAndNil(IBTIP);
 end;
+}
 
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 // Sandro Silva 2015-12-10 Formata valor float com 2 casas decimais para usar nos elementos do xml da nfce
@@ -1892,6 +1899,17 @@ begin
   if sForma = FORMA_PAGAMENTO_CHEQUE then
     Result := False;
 end;
+
+{
+function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
+begin
+  Result := False;
+  try
+    Result := Recursos.ValidaQtdDocumentoFrente;
+  except
+  end;
+end;
+}
 
 { TTipoEntrega }
 

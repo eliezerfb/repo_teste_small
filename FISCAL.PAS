@@ -144,6 +144,8 @@ uses
 
   procedure ExibeScrollCupom(bVisible: Boolean); // Sandro Silva 2016-08-03
   function Audita(sAto, sModulo, sUsuario, sHistorico: String; ValorDe, ValorPara: Double): Boolean;
+  function ValidaOffLine(Mais1Ini: TIniFile; bCargaNova: Boolean;
+    url, IP, Alias: String; Hora, Min, Seg, cent: Word; tInicio: tTime): Boolean;
   function AbreArquivos(pP1: Boolean): Boolean;
   function ValorTotalDoDia(pP1: Boolean): Boolean;
   function SmallCripto(pP1: String): String;
@@ -1657,6 +1659,7 @@ type
     function SecaoFrente(): String;
     function ImportarDaPesquisa(sTipo: String): String;
     procedure ConfiguraCredencialTecnospeed;
+    procedure MensagemAlertaLimiteDocumentosEmitidos;    
   end;
 
 var
@@ -1736,7 +1739,9 @@ uses
   , uconstantes_chaves_privadas
   , urequisitospafnfce
   , upafnfce // Sandro Silva 2022-09-23
-  , ucredencialtecnospeed;
+  , ucredencialtecnospeed
+  //, uClasseValidaRecursos
+  , uValidaRecursosDelphi7;
 
 {$R *.DFM}
 
@@ -2353,7 +2358,6 @@ function TipoDeConta(P1:Boolean): Boolean;
 var
   Mais2Ini: TIniFile;
 begin
-  //
   Mais2ini := TIniFile.Create(Form1.sArquivo);  
   try
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
@@ -2362,6 +2366,11 @@ begin
       Form1.sConcomitante := Form1.LbBlowfish1.DecryptString(Mais2Ini.ReadString('CONCOMITANTE','I','CONCOMITANTE'))
     else
       Form1.sConcomitante := 'CONCOMITANTE';
+
+    {Sandro Silva 2023-05-30 inicio}
+    if ValidaRecursos.PermiteRecursoParaProduto = False then
+      Form1.sConcomitante := 'CONCOMITANTE';
+    {Sandro Silva 2023-05-30 fim}
 
     if Mais2Ini.ReadString('UF','I','') <> '' then // 2015-10-20
       Form1.sUF           := Form1.LbBlowfish1.DecryptString(Mais2Ini.ReadString('UF','I',''));
@@ -4298,16 +4307,27 @@ begin
       if (((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99'))) then
       begin
         Form1.MeiosdePagto1.Visible     := True; // 2015-09-08
-        //
+
         Form1.Concomitante.Visible      := True;
         Form1.Mesas1.Visible            := True;
         Form1.Contadecliente1.Visible   := True;
         Form1.ContadeclienteOS1.Visible := True;
-        //
+
+        {Sandro Silva 2023-05-30 inicio
         Form1.Concomitante.Enabled      := True;
         Form1.Mesas1.Enabled            := True;
         Form1.Contadecliente1.Enabled   := True;
         Form1.ContadeclienteOS1.Enabled := True;
+        }
+        if ValidaRecursos.PermiteRecursoParaProduto then 
+        begin
+          Form1.Concomitante.Enabled      := True;
+          Form1.Mesas1.Enabled            := True;
+          Form1.Contadecliente1.Enabled   := True;
+          Form1.ContadeclienteOS1.Enabled := True;
+        end;
+        {Sandro Silva 2023-05-30 fim}
+
       end;
       //
       Form1.EspelhoMFD1.Visible := False;
@@ -4771,7 +4791,7 @@ begin
           // sTotalDia := '999999999999999999';
           sTotalDia := Right(StrZero(StrToFloatDef(sTotalDia, 0),18,0),12);
           //
-          if StrToFloatDef(sTotalDia, 0) <> 0 then  
+          if StrToFloatDef(sTotalDia, 0) <> 0 then
           begin
             //
             Mais2ini := TIniFile.Create(Form1.sArquivo);
@@ -5143,6 +5163,17 @@ begin
         FecharAplicacao(ExtractFileName(Application.ExeName));
 
       end;
+
+    end;
+
+    // Sandro Silva 2023-05-01 if ValidaQtdDocumentoFiscal(ValidaRecursos) = False then
+    if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor, tmdLancando) = False then
+    begin
+      Form1.bStatusFiscal := False;
+      Result := False;
+
+      Form1.MensagemAlertaLimiteDocumentosEmitidos;
+
     end;
 
     if Result then
@@ -7575,12 +7606,727 @@ begin
   Form1.ibDataset200.EnableControls;
 end;
 
+function ValidaOffLine(Mais1Ini: TIniFile; bCargaNova: Boolean;
+  url, IP, Alias: String; Hora, Min, Seg, cent: Word;
+  tInicio: tTime): Boolean;
+var
+  F: TextFile;
+  i: Integer;
+begin
+  try
+    //
+    // por segurança sempre vai fazer a carga
+    //
+    //Screen.Cursor := crHourGlass;    // Cursor de Aguardo
+    //tInicio := time;
+    //
+    // Extrai o caminho do executável
+    Form1.sPastaDoExecutavel := StrTran(AnsiLowerCase(Application.ExeName),'\frente.exe','');
+    Form1.sPastaDoExecutavel := StrTran(Form1.sPastaDoExecutavel,'\nfce.exe','');
+    Form1.sPastaDoExecutavel := StrTran(Form1.sPastaDoExecutavel,'\' + ExtractFileName(Application.ExeName), '');
+
+    if PAFNFCe then // Sandro Silva 2020-12-09 if Pos('pafnfce.exe', AnsiLowerCase(ExtractFileName(Application.ExeName))) > 0 then
+      Form1.sPastaDoExecutavel := ExtractFileDir(Application.ExeName);
+
+    if Pos('pafdief.exe', AnsiLowerCase(ExtractFileName(Application.ExeName))) > 0 then
+      Form1.sPastaDoExecutavel := ExtractFileDir(Application.ExeName);
+
+    bCargaNova := False;
+    //
+    if Alltrim(Form1.sPastaDoExecutavel) = '' then
+      Form1.sPastaDoExecutavel := '\desenvolvimento\fontes\delphi\' + Copy(Build, 1, 4) + '\Projeto-Frente-de-Caixa'; // Quando executa pelo delphi
+    //
+    GetDir(0,Form1.sAtual);
+    //
+    //
+    if FileExists(Form1.sAtualOnLine+'\small.ini') and not FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
+    begin
+
+      // Está online
+      //
+      // ONLINE
+      //
+
+      //
+      //
+      Form1.bStatusRede := True; // Liga o botão rede no Abrearquivos
+      StatusRede(True,90);
+      //
+      ChDir(Form1.sAtualOnLine);
+      //
+      //
+      if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65') and (Form1.sModeloECF_Reserva <> '99') then
+      begin
+
+        if Form1.sAtualOnLine <> Form1.sPastadoExecutavel then
+        begin
+          //
+          if FileExists(Form1.sAtualOnLine+'\off13.fdb') then
+          begin
+            Form22.Label6.Caption     := 'Aguarde... Copiando base off13.fdb';
+            Form22.Label6.Repaint;
+            // Atualiza o off13.fdb na estação
+            CopyFile(pchar(Form1.sAtualOnLine+'\off13.fdb'),pchar(Form1.sPastadoExecutavel+'\off13.fdb'),True);
+            //Sleep(7000); // Sandro Silva 2019-08-22 Aguardar até copiar o off13.fdb para a estação
+          end;
+          //
+        end;
+
+      end; //       if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65') then
+
+      //
+      Mais1Ini := TIniFile.Create(Form1.sAtual+'\small.ini');
+      Url      := Mais1Ini.ReadString('Firebird','Server url','');
+      IP       := AllTrim(Mais1Ini.ReadString('Firebird','Server IP',''));
+      Alias    := AllTrim(Mais1Ini.ReadString('Firebird','Alias',''));
+
+      LogFrente('Teste 01: IP ' + Form1.sAtual+'\small.ini' + ' ' + ip);
+
+      //
+      if IP = '' then
+        IP := GetIp;
+
+      LogFrente('Teste 01: depois getip ' + ' ' + ip);
+
+      //
+      if IP <> '' then
+        Url := IP+':'+Url+'\small.fdb' // Sandro Silva 2019-03-15 Url := IP+':'+Url+'\small' + EXTENSAO_BANCO
+      else
+        Url:= Url+'\small.fdb'; // Sandro Silva 2019-03-15 Url:= Url+'\small' + EXTENSAO_BANCO;
+      //
+      if Alltrim(Alias) <> '' then
+      begin
+        Url := IP+':'+Alias;
+      end;
+      //
+      Mais1Ini.Free;
+      //
+      Form22.Label6.Caption := Form1.sAtual;
+      Form22.sIniciandoEm   := 'Iniciando em: '+Form1.sAtual;
+      Form22.sUrlDoGdb      := 'Url do FDB:   '+AllTrim(Url);
+      //
+      try
+        Form1.IBDatabase1.Close;
+        Form1.IBDatabase1.Params.Clear;
+        Form1.IbDatabase1.DatabaseName := Url;
+        Form1.IBDatabase1.Params.Add('USER_NAME=SYSDBA');
+        Form1.IBDatabase1.Params.Add('PASSWORD=masterkey');
+        Form1.IBDatabase1.Open;
+        Form1.IBTransaction1.Active := True;
+        Form1.IBTransaction2.Active := True;
+        //
+      except
+        on E: Exception do
+        begin
+          Screen.Cursor := crDefault;
+
+          LogFrente('Teste 01: 9863 ' + E.Message);
+          LogFrente('Teste 01: 9863 ' + Form1.IbDatabase1.DatabaseName);
+
+          SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos.');
+          Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
+            Form1.ClienteSmallMobile.sLogRetornoMobile);
+          Form1.DestroyWindowHandle;
+          Application.Terminate;
+          Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName));
+        end;
+      end;
+      //
+      // O Nome da variável está invertido em relação a situação da rede. bOffline True significa que deve gravar os dados nos arquivos .off
+      Form1.bOffLine         := True;  /// Marca True para gravar nos arquivos .off
+      Form1.Label1.Caption   := 'On line';
+      //
+      // copiar sempre para .off
+      // quando entra em off converter para dentro do offline.gdb quando nao existe ja o offline.gdb
+      //
+
+      //
+      // estoque.off
+      //
+
+      //
+      // Exportação manual seria legal se tivesse a possibilidade de exportar somente alguns campos
+      //
+      //SmallMsg('Teste gerar dados off' + #13 +
+      //            'Pasta do executável: ' + Form1.sPastaDoExecutavel + #13 +
+      //            'Pasta atual: ' + Form1.sAtual);
+      if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+      begin
+        if UpperCase(Form1.sPastadoExecutavel) <> UpperCase(Form1.sAtual) then
+        begin
+          //
+          Form22.Label6.Caption := 'Aguarde exportando ESTOQUE.OFF para base off line';
+          Form22.Label6.Repaint;
+          //
+          while FileExists(pchar(Form1.sPastadoExecutavel+'\estoque.off')) do
+          begin
+            DeleteFile(pchar(Form1.sPastadoExecutavel+'\estoque.off'));
+            Sleep(10);
+          end;
+          //
+          Form1.IBQuery1.Close;
+          Form1.IBQuery1.SQL.Clear;
+          Form1.IBQuery1.SQL.Add('select * from ESTOQUE');
+          Form1.IBQuery1.Open;
+
+          //
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\estoque.off'));
+          Rewrite(F);
+          Form1.ibQuery1.First;
+          I := 0;
+          while not Form1.ibQuery1.Eof do
+          begin
+            I := I + 1;
+            try
+              WriteLN(F,'insert into ESTOQUE (CODIGO, REFERENCIA, CST, DESCRICAO, MEDIDA, PRECO, QTD_ATUAL, REGISTRO, ST, CF, CEST, IIA, IIA_UF, IIA_MUNI) values ('
+              +QuotedStr(Form1.ibQuery1.FieldByName('CODIGO').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('REFERENCIA').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('CST').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('DESCRICAO').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('MEDIDA').AsString)+', '
+              +QuotedStr(StrTran(Form1.ibQuery1.FieldByName('PRECO').AsString,',','.'))+', '
+              +QuotedStr(StrTran(Form1.ibQuery1.FieldByName('QTD_ATUAL').AsString,',','.'))+', '
+              +QuotedStr(StrZero(I,10,0))+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('ST').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('CF').AsString)+', '// Sandro Silva 2016-08-15
+              +QuotedStr(Form1.ibQuery1.FieldByName('CEST').AsString)+', '// Sandro Silva 2016-08-15
+              +'nullif(' + QuotedStr(StrTran(Form1.ibQuery1.FieldByName('IIA').AsString, ',', '.'))+', ''''), '
+              +'nullif(' + QuotedStr(StrTran(Form1.ibQuery1.FieldByName('IIA_UF').AsString, ',', '.'))+', ''''), '
+              +'nullif(' + QuotedStr(StrTran(Form1.ibQuery1.FieldByName('IIA_MUNI').AsString, ',', '.'))+', '''')'
+              +' )');
+            except
+            end;
+            Form1.ibQuery1.Next;
+          end;
+          //
+          Form1.ibQuery1.Close;
+          //
+          CloseFile(F);
+
+          //
+          // icm.off
+          //
+          Form22.Label6.Caption := 'Aguarde exportando ICM.off para base off line';
+          Form22.Label6.Repaint;
+          //
+          while FileExists(pchar(Form1.sPastadoExecutavel+'\icm.off')) do
+          begin
+            DeleteFile(pchar(Form1.sPastadoExecutavel+'\icm.off'));
+            Sleep(10);
+          end;
+          //
+          Form1.IBExtract1.Items.Clear;
+          Form1.IBExtract1.ExtractObject(eoData, 'ICM', [etIndex]);
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\icm.off'));
+          Rewrite(F);
+          WriteLN(F,Form1.IBExtract1.Items.Text);
+          CloseFile(F);
+          //
+          // emitente.off
+          //
+          Form22.Label6.Caption := 'Aguarde exportando EMITENTE.off para base off line';
+          Form22.Label6.Repaint;
+          //
+          Form1.IBQuery1.Close;
+          Form1.IBQuery1.SQL.Clear;
+          Form1.IBQuery1.SQL.Add('select * from EMITENTE');
+          Form1.IBQuery1.Open;
+          //
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\emitente.off'));
+          Rewrite(F);
+          WriteLN(F,'insert into EMITENTE (ESTADO, CGC, IE, REGISTRO, NOME, ENDERECO, COMPLE, MUNICIPIO, CEP, CRT, CNAE, IM, ENCRYPTHASH, LICENCA) '
+                                 +'values ('+QuotedStr(Form1.ibQuery1.FieldByName('ESTADO').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('CGC').AsString)+','
+                                            +QuotedStr(Form1.ibQuery1.FieldByName('IE').AsString)+','+QuotedStr('0000000000')+ ','
+                                            +QuotedStr(Form1.ibQuery1.FieldByName('NOME').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('ENDERECO').AsString)+','
+                                            +QuotedStr(Form1.ibQuery1.FieldByName('COMPLE').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('MUNICIPIO').AsString)+','
+                                            +QuotedStr(Form1.ibQuery1.FieldByName('CEP').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('CRT').AsString)+','             // Sandro Silva 2019-08-20
+                                            +QuotedStr(Form1.ibQuery1.FieldByName('CNAE').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('IM').AsString)+','             // Sandro Silva 2019-08-20
+                                            +QuotedStr(Form1.ibQuery1.FieldByName('ENCRYPTHASH').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('LICENCA').AsString)     // Sandro Silva 2019-08-20
+                                            +')');
+          CloseFile(F);
+
+          Form1.ibQuery1.Close;
+          //
+          // vendedor.off
+          //
+          while FileExists(pchar(Form1.sPastadoExecutavel+'\vendedor.off')) do
+          begin
+            DeleteFile(pchar(Form1.sPastadoExecutavel+'\vendedor.off'));
+            Sleep(10);
+          end;
+          //
+          Form1.IBExtract1.Items.Clear;
+          Form1.IBExtract1.ExtractObject(eoData, 'VENDEDOR', [etIndex]);
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\vendedor.off'));
+          Rewrite(F);
+          WriteLN(F,Form1.IBExtract1.Items.Text);
+          CloseFile(F);
+          //
+          // convenio.off
+          //
+          while FileExists(pchar(Form1.sPastadoExecutavel+'\convenio.off')) do
+          begin
+            DeleteFile(pchar(Form1.sPastadoExecutavel+'\convenio.off'));
+            Sleep(10);
+          end;
+          //
+          Form1.IBExtract1.Items.Clear;
+          Form1.IBExtract1.ExtractObject(eoData, 'CONVENIO', [etIndex]);
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\convenio.off'));
+          Rewrite(F);
+          WriteLN(F,Form1.IBExtract1.Items.Text);
+          CloseFile(F);
+          //
+          // clifor.off
+          //
+          Form22.Label6.Caption := 'Aguarde exportando CLIFOR.off para base off line';
+          Form22.Label6.Repaint;
+          //
+          Form1.IBQuery1.Close;
+          Form1.IBQuery1.SQL.Clear;
+          Form1.IBQuery1.SQL.Add('select * from CLIFOR where coalesce(ATIVO,0) = 0 and trim(coalesce(NOME,'''')) <> '''' ');
+          Form1.IBQuery1.Open;
+          //
+
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\clifor.off'));
+          Rewrite(F);
+          Form1.ibQuery1.First;
+          I := 0;
+          while not Form1.ibQuery1.Eof do
+          begin
+            I := I + 1;
+            try
+              WriteLN(F,'insert into CLIFOR (NOME, CGC, IE, CEP, CIDADE, COMPLE, ENDERE, ESTADO, REGISTRO) values ('
+              +QuotedStr(Form1.ibQuery1.FieldByName('NOME').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('CGC').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('IE').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('CEP').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('CIDADE').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('COMPLE').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('ENDERE').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('ESTADO').AsString)+', '
+              +QuotedStr(StrZero(I,10,0))+' )');
+            except end;
+            Form1.ibQuery1.Next;
+          end;
+          //
+          Form1.ibQuery1.Close;
+          CloseFile(F);
+
+          Form22.Label6.Caption := 'Aguarde exportando ECFS.off para base off line';
+          Form22.Label6.Repaint;
+          //
+          while FileExists(pchar(Form1.sPastadoExecutavel+'\ecfs.off')) do
+          begin
+            DeleteFile(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));
+            Sleep(10);
+          end;
+          //
+          Form1.IBQuery1.Close;
+          Form1.IBQuery1.SQL.Clear;
+          Form1.IBQuery1.SQL.Add('select * from ECFS');
+          Form1.IBQuery1.Open;
+
+          //
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\ecfs.off'));
+          Rewrite(F);
+          Form1.ibQuery1.First;
+          while not Form1.ibQuery1.Eof do
+          begin
+            try
+              WriteLN(F,'insert into ECFS (SERIE, ENCRYPTHASH) values ('
+              +QuotedStr(Form1.ibQuery1.FieldByName('SERIE').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('ENCRYPTHASH').AsString)+' )');
+            except end;
+            Form1.ibQuery1.Next;
+          end;
+          //
+          Form1.ibQuery1.Close;
+          //
+          CloseFile(F);
+
+          //
+          // IBPT
+          //
+          Form22.Label6.Caption := 'Aguarde exportando IBPT_.off para base off line';
+          Form22.Label6.Repaint;
+
+          Form1.IBQuery1.Close;
+          Form1.IBQuery1.SQL.Clear;
+          Form1.IBQuery1.SQL.Add('select * from IBPT_');
+          Form1.IBQuery1.Open;
+          //
+          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\IBPT_.off'));
+          Rewrite(F);
+          Form1.ibQuery1.First;
+          I := 0;
+          while not Form1.ibQuery1.Eof do
+          begin
+            I := I + 1;
+            try
+              WriteLN(F,'insert into IBPT_ (CODIGO, EX, TIPO, DESCRICAO, NACIONALFEDERAL, IMPORTADOFEDERAL, '
+                                          +'ESTADUAL, MUNICIPAL, VIGENCIAINICIO, VIGENCIAFIM, CHAVE, VERSAO, '
+                                          + 'FONTE, REGISTRO) values ('
+              +QuotedStr(Form1.ibQuery1.FieldByName('CODIGO').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('EX').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('TIPO').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('DESCRICAO').AsString)+', '
+              +QuotedStr(Form1.ibQuery1.FieldByName('NACIONALFEDERAL').AsString)+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('IMPORTADOFEDERAL').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('ESTADUAL').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('MUNICIPAL').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('VIGENCIAINICIO').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('VIGENCIAFIM').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('CHAVE').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('VERSAO').AsString,',','.'))+', '
+              +QuotedStr(StrTRan(Form1.ibQuery1.FieldByName('FONTE').AsString,',','.'))+', '
+              +QuotedStr(StrZero(I,10,0))+' )');
+            except end;
+            Form1.ibQuery1.Next;
+          end;
+          //
+          Form1.ibQuery1.Close;
+          //
+          CloseFile(F);
+
+          //
+          // Falta fazer exportação manual exportar apenas alguns campos
+          //
+        end;
+      end;// if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') then
+      //
+    end else
+    begin
+
+      // Ficou em offline Sandro Silva 2019-03-14
+
+      //
+      // OFFLINE
+      //
+
+      //
+      Form1.bStatusRede     := False; // Apaga o botão rede no abrearquivos
+      StatusRede(True,90);
+      //
+      //
+      if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65') and (Form1.sModeloECF_Reserva <> '99') then
+      begin
+
+        if FileExists(pchar(Form1.sPastadoExecutavel+'\estoque.off')) or FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
+        begin
+
+          //
+          ChDir(Form1.sPastadoExecutavel);
+          //
+          if not FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
+          begin
+            //
+            if FileExists(Form1.sPastadoExecutavel+'\off13.fdb') then
+            begin
+
+              Form22.Label6.Caption     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';
+              Form22.Label6.Repaint;
+              GetDir(0,Form1.sAtual);
+              // Cria o banco offline se ainda não existir. Deve informar no Copy() o parâmetro bFailExist = True para ñão sobrepor em casos de não realizar a descarga
+              CopyFile(pchar(Form1.sPastadoExecutavel+'\off13.fdb'),pchar(Form1.sPastadoExecutavel+'\offline.fdb'),True);
+              bCargaNova := True;
+
+            end else
+            begin
+              //
+              Screen.Cursor := crDefault;
+
+              LogFrente('Teste 01: 10180');
+
+              SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos......');
+              Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
+                Form1.ClienteSmallMobile.sLogRetornoMobile);
+              Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE );
+              FecharAplicacao(ExtractFileName(Application.ExeName));
+            end;
+          end;
+
+          //
+          if Alltrim(Form1.sPastaDoExecutavel) = '' then
+          begin
+            Form1.sPastaDoExecutavel := '\desenvolvimento\fontes\delphi\' + Copy(LimpaNumero(Form22.sBuild), 1, 4) + '\Projeto-Frente-de-Caixa'; // Quando executa pelo delphi
+          end;
+
+          //
+          if FileExists(Form1.sPastaDoExecutavel+'\offline.fdb') then
+          begin
+
+            //
+            Form1.sAtual := Form1.sPastaDoExecutavel;
+            CHDir(Form1.sAtual);
+            Url := GetIp+':'+Form1.sAtual;
+            //
+            Form22.sIniciandoEm   := 'Iniciando em: '+Form1.sAtual;
+            Form22.sUrlDoGdb      := 'Url do FDB:   '+AllTrim(Url);
+            Form22.Repaint;
+            //
+            try
+              Form1.IBDatabase1.Close;
+            except
+              Form1.IBDatabase1.ForceClose;
+              Form1.IBDatabase1.Close;
+            end;
+            //
+            Form1.bOffLine := False;  // Marca False para não gravar mais nos arquivos .off
+            //
+            //
+            try
+              Form1.IBDatabase1.Params.Clear;
+              Form1.IbDatabase1.DatabaseName := Url+'\offline.fdb';
+              Form1.IBDatabase1.Params.Add('USER_NAME=SYSDBA');
+              Form1.IBDatabase1.Params.Add('PASSWORD=masterkey');
+              Form1.IbDatabase1.Open;
+
+              //SmallMsg('Teste conectou offline.fdb');
+
+              Form1.IBTransaction1.Active := True;
+              Form1.IBTransaction2.Active := True;
+              //
+
+              Commitatudo(True); // No início abre arquivos
+              //
+            except
+              on E: Exception do
+              begin
+                //SmallMsg('Teste erro ao conectar offline.fdb' + #13 + E.Message);
+                //
+                Screen.Cursor := crDefault;
+                SmallMsg('Entre antes no programa de retaguarda para ajustar os arquivos. Erro: 5');
+                 // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+                Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+                Form1.DestroyWindowHandle;
+                Application.Terminate;
+                Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
+                FecharAplicacao(ExtractFileName(Application.ExeName));
+              end;
+              //
+            end;
+            //
+
+            //SmallMsg('Teste carga no pdv ' + BoolToStr(bCargaNova));
+
+            if bCargaNova then
+            begin
+              //
+              Form22.Label6.Caption := 'Aguarde a CARGA do PDV';
+              Form22.Label6.Repaint;
+
+              try
+                Form1.IBQuery1.Close;
+                Form1.IBQuery1.SQL.Clear;
+                Form1.IBQuery1.SQL.Text :=
+                  'select max(REGISTRO) as ULTIMO from ALTERACA';
+                Form1.IBQuery1.Open;
+
+                if (IncrementaGenerator('G_ALTERCA', 0) < StrToIntDef(Form1.IBQuery1.FieldByName('ULTIMO').AsString, 0)) then
+                  IncrementaGenerator('G_ALTERCA', StrToIntDef(Form1.IBQuery1.FieldByName('ULTIMO').AsString, 0) - IncrementaGenerator('G_ALTERCA', 0));
+              except
+
+              end;
+
+              try
+                Commitatudo(True);// bCargaNova // 2015-11-10
+              except
+              end;
+
+              //
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\estoque.off'));  except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\icm.off'));      except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\emitente.off')); except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\vendedor.off')); except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\convenio.off')); except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\clifor.off'));   except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\ibpt_.off'));    except end; // Sandro Silva 2016-08-16
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\alteraca.off')); except end;
+              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));     except end;// 2015-10-01
+              //Após importar deve atualizar assina registros das tabelas
+
+              try
+                Commitatudo(True); // Após importaSQL // 2015-11-10
+              except
+              end;
+
+              // Assina registro emitente offline
+              Form1.ibDataSet13.Close;
+              Form1.ibDataSet13.SelectSQL.Text :=
+                'select * from EMITENTE ';
+              Form1.ibDataSet13.Open;
+              while Form1.ibDataSet13.Eof = False do
+              begin
+                Form1.ibDataSet13.Edit;
+                Form1.ibDataSet13.Post;
+                Form1.ibDataSet13.Next;
+              end;
+
+              // Calcula hash dos registros importados
+              Form1.ibDataSet4.Close;
+              Form1.ibDataSet4.SelectSQL.Text :=
+                'select * from ESTOQUE';
+              Form1.ibDataSet4.Open;
+              Form1.ibDataSet4.First;
+              while Form1.ibDataSet4.Eof = False do
+              begin
+                Form1.ibDataSet4.Edit;
+                Form1.ibDataSet4.Post;
+                Form1.ibDataSet4.Next;
+              end;
+
+              // Calcula os hash iniciais para as tabelas controladas
+              IniciaHashOffLine('DEMAIS');
+              IniciaHashOffLine('REDUCOES');
+              IniciaHashOffLine('PAGAMENT');
+              IniciaHashOffLine('ALTERACA');
+              IniciaHashOffLine('ESTOQUE');
+
+              try
+                GravaUltimaReducao(True); // 2015-11-10 Descarga offline
+              except
+                //LogFrente('Teste 01: Erro gravar última redução no offline');
+              end;
+
+              try
+                Commitatudo(True); // Após GravaUltimaReducao() // 2015-11-10
+              except
+              end;
+
+              try
+                //LogFrente('Teste 01: Assinando tabela: ESTOQUE');
+                HasHs('ESTOQUE', True);
+                //LogFrente('Teste 01: Assinando tabela: ALTERACA');
+                HasHs('ALTERACA', True);
+                //LogFrente('Teste 01: Assinando tabela: REDUCOES');
+                HasHs('REDUCOES', True);
+                //LogFrente('Teste 01: Assinando tabela: DEMAIS');
+                HasHs('DEMAIS', True);
+                //LogFrente('Teste 01: Assinando tabela: PAGAMENT');
+                HasHs('PAGAMENT', True); // 2015-11-09
+
+                // Acertar em AjustaHASH
+                //LogFrente('Teste 01: Assinando tabela: VENDAS');
+                HasHs('VENDAS', True); // Sandro Silva 2017-11-09 Polimig
+                //LogFrente('Teste 01: Assinando tabela: ITENS001');
+                HasHs('ITENS001', True); // Sandro Silva 2017-11-09 Polimig
+
+                Commitatudo(True); // HASH após importar offline // 2015-11-09
+
+                if not HASHs('DEMAIS',False) then LogFrente('Teste 01: DEMAIS HASHS False');
+                if not HASHs('REDUCOES',False) then LogFrente('Teste 01: REDUCOES HASHS False');
+                if not HASHs('PAGAMENT',False) then LogFrente('Teste 01: PAGAMENT HASHS False');
+                if not HASHs('ALTERACA',False) then LogFrente('Teste 01: ALTERACA HASHS False');
+                if not HASHs('ESTOQUE',False)  then LogFrente('Teste 01: ESTOQUE HASHS False');
+
+              except
+
+              end;
+
+              //
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\alteraca.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\estoque.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\icm.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\emitente.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\vendedor.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\convenio.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\clifor.off'));
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));// 2015-10-01
+              DeleteFile(pchar(Form1.sPastadoExecutavel+'\ibpt_.off'));// Sandro Silva 2016-08-16
+              //
+              Form22.Label6.Caption := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
+              //
+              DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
+              Form1.Label_7.Hint := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
+              //
+            end; // if bCargaNova then
+            //
+            Form1.sMesas := '0';
+            //
+            DestroiMesas(True);
+            //
+            Form1.bOffLine := True;
+            Form1.Label1.Caption := 'Off line';
+            Form1.Label1.Repaint;
+
+            //
+          end
+          else
+          begin
+
+            //SmallMsg('Teste não encontrou ' + #13 + Form1.sPastaDoExecutavel+'\offline.fdb');
+
+          end;
+        end else
+        begin
+
+          Screen.Cursor := crDefault;
+
+          if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = '\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
+          begin
+
+            LogFrente('Teste 01: 10434');
+
+            SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos.');
+
+          end else
+          begin
+            SmallMsg('Verifique:'+Chr(10)+Chr(10)+
+                        'Se a sua conexão de rede está disponível.'+Chr(10)+
+                        Chr(10)+
+                        Form1.IBDatabase1.DatabaseName+Chr(10)+
+                        Form1.IBDatabase2.DatabaseName+Chr(10)+
+                        Chr(10)+
+                        '');
+          end;
+
+          Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
+
+          Form1.DestroyWindowHandle;
+          Application.Terminate;
+          Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName));
+
+          Abort; // 2015-09-19
+        end;
+
+      end;// if é PAF
+
+    end;
+
+    // Abrindo os arquivos
+
+    Commitatudo(True); // No início abre arquivos
+
+    Form1.DeletaDataSet25; // AbreArquivos()
+    Form1.ibDataSet25.Append;
+    //
+  except
+
+    if Form1.ClienteSmallMobile.ImportandoMobile then
+      Form1.ClienteSmallMobile.LogRetornoMobile('Não foi possível ativar os arquivos do banco de dados "Client Server"')
+    else
+      SmallMsgBox(Pchar('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.'),'Atenção',mb_IconError+mb_Ok);
+    Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
+    Form1.DestroyWindowHandle;
+    Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
+
+    FecharAplicacao(ExtractFileName(Application.ExeName));
+
+    Abort;
+
+  end;
+
+end;
+
 function AbreArquivos(pP1: Boolean): Boolean;
 var
   F : TextFile;
   sSerieS, sSerial, sLicenca  : String;
   Mais1Ini: TIniFile;
-  I, J, iR : Integer;
+  I, iUsuariosConectados, iLimiteUsuariosSimultaneos : Integer;
   url, IP, Alias : String;
   bCargaNova : Boolean;
   Hora, Min, Seg, cent : Word;
@@ -7595,10 +8341,13 @@ begin
   //
   Form22.Inicio := Time;
   //
-  if sLicenca = '' then iR := 2 else iR := 12;
+  if sLicenca = '' then
+    iLimiteUsuariosSimultaneos := 1 // Sandro Silva 2023-05-30 iLimiteUsuariosSimultaneos := 2
+  else
+    iLimiteUsuariosSimultaneos := 12;
   //
   Mais1ini := TIniFile.Create('WIND0WS.L0G');
-
+  {
   // Versão 2018
   if Mais1Ini.SectionExists('SC') then
     sSerial  := Mais1Ini.ReadString('SC','Ser',''); // 2018
@@ -7609,7 +8358,20 @@ begin
 
   // Versão 2020 em diante
   if Mais1Ini.SectionExists('LICENCA') then
-    sSerial  := Mais1Ini.ReadString('LICENCA','Ser',''); 
+    sSerial  := Mais1Ini.ReadString('LICENCA','Ser','');
+  }
+
+
+  ValidaOffLine(Mais1Ini, bCargaNova, url, IP, Alias, Hora, Min, Seg, cent, tInicio);  // Estava abaixo, mudei para function se precisar
+
+  try
+    if ValidaRecursos = nil then
+      ValidaRecursos := TValidaRecurso.Create;
+    ValidaRecursos.IBDATABASE := Form1.ibDataSet27.Transaction.DefaultDatabase;
+  except
+  end;
+
+  sSerial := ValidaRecursos.SistemaSerial; // Sandro Silva 2023-05-25
 
   Form1.sSerialSmall     := sSerial; // Sandro Silva 2020-09-29
   Form1.sChaveMeiCifrada := Mais1Ini.ReadString('LICENCA','MEI',''); // Sandro Silva 2020-09-29
@@ -7697,23 +8459,28 @@ begin
   end else
   begin
     //
-    iR := 2;
+    {Sandro Silva 2023-05-25 inicio
+    iLimiteUsuariosSimultaneos := 2;
     //
-    if Copy(sSerial,4,1) = 'F' then iR := 2;
-    if Copy(sSerial,4,1) = 'E' then iR := 7;
-    if Copy(sSerial,4,1) = 'D' then iR := 12;
-    if Copy(sSerial,4,1) = 'C' then iR := 2;
-    if Copy(sSerial,4,1) = 'B' then iR := 7;
-    if Copy(sSerial,4,1) = 'A' then iR := 12;
-    if Copy(sSerial,4,1) = 'W' then iR := 24;
-    if Copy(sSerial,4,1) = 'S' then iR := 2;
+    if Copy(sSerial,4,1) = 'F' then iLimiteUsuariosSimultaneos := 2;
+    if Copy(sSerial,4,1) = 'E' then iLimiteUsuariosSimultaneos := 7;
+    if Copy(sSerial,4,1) = 'D' then iLimiteUsuariosSimultaneos := 12;
+    if Copy(sSerial,4,1) = 'C' then iLimiteUsuariosSimultaneos := 2;
+    if Copy(sSerial,4,1) = 'B' then iLimiteUsuariosSimultaneos := 7;
+    if Copy(sSerial,4,1) = 'A' then iLimiteUsuariosSimultaneos := 12;
+    if Copy(sSerial,4,1) = 'W' then iLimiteUsuariosSimultaneos := 24;
+    if Copy(sSerial,4,1) = 'S' then iLimiteUsuariosSimultaneos := 2;
 
-    if Copy(sSerial,4,1) = 'N' then iR := 12; // 12 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'O' then iR := 07; // 07 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'P' then iR := 02; // 02 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'Q' then iR := 12; // 12 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'R' then iR := 07; // 07 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'M' then iR := 02; // 02 Usuários Small Mei
+    if Copy(sSerial,4,1) = 'N' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei + OS
+    if Copy(sSerial,4,1) = 'O' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei + OS
+    if Copy(sSerial,4,1) = 'P' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei + OS
+    if Copy(sSerial,4,1) = 'Q' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei
+    if Copy(sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
+    if Copy(sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
+    }
+    iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios;
+    {Sandro Silva 2023-05-25 fim}
+
 
     {Sandro Silva 2021-12-29 inicio
     //
@@ -7749,7 +8516,7 @@ begin
 
     {Sandro Silva 2021-12-29 fim}
     //
-    Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iR))+' usuários';
+    Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
     //
     I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
 
@@ -7808,6 +8575,7 @@ begin
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('Q'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 12 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('R'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 07 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Mei
+     or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('T'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 01 Usuário Small Go
        )
     // Sandro Silva 2022-11-30 and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 13) // Maior ou igual a S13. Segurança para evitar uso de serial muito antigo
         and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 14) // Maior ou igual a S14. Segurança para evitar uso de serial muito antigo
@@ -7824,8 +8592,7 @@ begin
                'novamente o sistema informando o número serial da'+Chr(10)+
                'sua licença de uso.'+Chr(10)+Chr(13)+
                'Código: 002 '+sLicenca);
-      Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-        Form1.ClienteSmallMobile.sLogRetornoMobile);
+      Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
       //
       Form1.DestroyWindowHandle;
       Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
@@ -7841,6 +8608,11 @@ begin
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
     Form1.ImportarvendasdoSmallMobile1.Visible := True;
+    if ValidaRecursos.PermiteRecursoParaProduto = False then
+    begin
+      Form1.ImportarvendasdoSmallMobile1.Enabled := False;
+      Form1.ImportarvendasdoSmallMobile1.Checked := False; 
+    end;
   end else
   begin
     Form1.ImportarvendasdoSmallMobile1.Visible := False;
@@ -7849,7 +8621,7 @@ begin
   //
   Screen.Cursor := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
-  Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iR))+' usuários';
+  Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
   Form22.Label6.Width   := Screen.Width;
   //                                     //
   // Cria os arquivos no diretório atual //
@@ -7858,6 +8630,8 @@ begin
 
   //SmallMsg('Teste 1 6000');
   //
+
+  (*
   try
     //
     // por segurança sempre vai fazer a carga
@@ -8507,15 +9281,8 @@ begin
         end else
         begin
 
-          //SmallMsg('Teste Não encontrou ' + #13 +
-          //  Form1.sPastadoExecutavel+'\estoque.off' + #13 + ' ou ' + #13 + Form1.sPastadoExecutavel+'\offline.gdb'
-          //);
-
-          //
           Screen.Cursor := crDefault;
-          //
-          //if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,13) = 'C:\PROJETO 20' then
-          // Sandro Silva 2022-11-29 if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = 'D:\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
+
           if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = '\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
           begin
 
@@ -8533,9 +9300,9 @@ begin
                         Chr(10)+
                         '');
           end;
-          // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+
           Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
-          //
+
           Form1.DestroyWindowHandle;
           Application.Terminate;
           Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
@@ -8547,23 +9314,15 @@ begin
       end;// if é PAF
 
     end;
-    //
+
     // Abrindo os arquivos
-    //
+
     Commitatudo(True); // No início abre arquivos
-    //
+
     Form1.DeletaDataSet25; // AbreArquivos()
     Form1.ibDataSet25.Append;
     //
   except
-    //on E: Exception do
-    //begin
-      //SmallMsg('Teste 1 ' + E.Message);
-    //
-    // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
-    // Sandro Silva 2022-08-08 LogRetornoMobile('Não foi possível ativar os arquivos do banco de dados "Client Server"')
-    // else
-    // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);// Sandro Silva 2016-05-05
 
     if Form1.ClienteSmallMobile.ImportandoMobile then
       Form1.ClienteSmallMobile.LogRetornoMobile('Não foi possível ativar os arquivos do banco de dados "Client Server"')
@@ -8576,9 +9335,10 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
 
     Abort;
-    //end;
-    //
+
   end;
+  *)
+
   //
   if (Copy(sSerial,4,1) = 'S') and (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   begin
@@ -8594,46 +9354,49 @@ begin
                          'Small Commerce', MB_ICONQUESTION + MB_YESNO) = idYes then
       ShellExecute(Application.Handle, nil, PChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial=' + sSerial + '&cnpj=' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)), nil, nil, SW_SHOWMAXIMIZED);
 
-    // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Form1.DestroyWindowHandle;
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 
-  J := UsuariosConectados(Form1.IBDatabase1);
-  //
-  //  SmallMsg('Neste momento '+IntToStr(Form7.IBDatabaseInfo1.UserNames.Count)+' usuários estão usando o sistema.');
-  //
-  if J > iR then
+  iUsuariosConectados := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosConectados := UsuariosConectados(Form1.IBDatabase1);
+
+  if iUsuariosConectados > iLimiteUsuariosSimultaneos then
   begin
-    SmallMsg('Este sistema está licenciado somente para '+IntToStr(iR)+' usuários'+Chr(10)+
-             'neste momento '+IntToStr(J)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
+    {Sandro Silva 2023-05-31 inicio
+    SmallMsg('Este sistema está licenciado somente para '+IntToStr(iLimiteUsuariosSimultaneos)+' usuários'+Chr(10)+
+             'neste momento '+IntToStr(iUsuariosConectados)+' estão tentando usar o sistema.'+Chr(10)+chr(13)+
              'Você pode adquirir licenças de uso adicionais acessando'+Chr(10)+// Sandro Silva 2022-12-02 Unochapeco 'Você pode adquirir licenças de uso adicionais entrando'+Chr(10)+
              'smallsoft.com.br'); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
-    // Sandro Silva 2022-08-08 EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
+    }
+    SmallMsgBox(PChar('Este sistema está licenciado somente para ' + IntToStr(iLimiteUsuariosSimultaneos) + ' usuário(s)' + Chr(10) +
+             'neste momento ' + IntToStr(iUsuariosConectados) + ' estão tentando usar o sistema.' + Chr(10) + Chr(10) +
+             'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+             'entre em contato com a Zucchetti pelo telefone 0800 645 2008')
+             , 'Atenção', MB_ICONWARNING
+             ); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
+    {Sandro Silva 2023-05-31 fim}
+
     Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
     Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
-  //
-  Screen.Cursor := crDefault;
-  //
-  // Esta pasta é gravada no .ini para voltar on line
-  //
-// SmallMsg('Teste: '+chr(10)+chr(10)+Form1.sAtual+chr(10)+Form1.sPastaDoExecutavel);
 
+  Screen.Cursor := crDefault;
+
+  // Esta pasta é gravada no .ini para voltar on line
   if (Form1.sAtual <> Form1.sPastaDoExecutavel) then
   begin
     Mais1ini  := TIniFile.Create('FRENTE.INI');
     Mais1Ini.WriteString('On line','Pasta',pchar(Form1.sAtualOnLine));  // AbreArquivos()
     Mais1ini.Free;
   end;
-  //
+
   Form1.Timer1.Enabled := True;
   Form1.TimerHora.Enabled := True;// // Sandro Silva 2018-04-24
-  //
+
   Result := True;
-  //
+
 end;
 
 function GravaUltimaReducao(pP1: boolean): boolean;
@@ -9333,7 +10096,6 @@ var
   sSecoes :  TStrings;
   Mais1Ini: TIniFile;
   sExeName: String;
-  //iItemMenu: Integer;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
   AjustarBufferChuncks(Form1);
@@ -9342,7 +10104,11 @@ begin
   if Aplicacao = nil then
     Aplicacao := TMyApplication.Create(Application);
 
-  //DadosTransacaoPOSElginPay := TTransacaoPOSElginPay.Create; // Sandro Silva 2022-02-10
+  {Sandro Silva 2023-05-25 inicio}
+  if ValidaRecursos = nil then
+    ValidaRecursos := TValidaRecurso.Create;
+  {Sandro Silva 2023-05-25 fim}
+
   PosElginPay := TSmallElginPayPos.Create(Form1); // Sandro Silva 2022-02-11
 
   TipoEntrega := TTipoEntrega.Create(Application); // Sandro Silva 2020-06-01
@@ -14204,7 +14970,7 @@ begin
    end
    else
    begin
-     iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
+     iUsuariosAtivos := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
      Form22.sAtivos := InttoStr(iUsuariosAtivos) + IfThen(iUsuariosAtivos = 1, ' usuário ativo', ' usuários ativos');
    end;
   except
@@ -14914,6 +15680,21 @@ begin
   EnviaremailcomXMLePDFacadavenda1.Visible       := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')); // Ficha 4736 Sandro Silva 2019-08-02
   ValorLimiteTotalNFCeEstabelecidoSefaz1.Visible := (Form1.sModeloECF = '65'); // Sandro Silva 2021-07-12
 
+  {Sandro Silva 2023-05-30 inicio}
+  if ValidaRecursos.PermiteRecursoParaProduto = False then
+  begin
+    Form1.MovimentoDia1.Enabled   := False;
+    Form1.NFCenoperodo1.Enabled   := False;
+    Form1.Vendaspor1.Enabled      := False;
+    Form1.otalDirio1.Enabled      := False;
+    
+    Form1.BalanaAutonoma1.Enabled := False;
+
+    Form1.bBalancaAutonoma := False;
+    Form1.BalanaAutonoma1.Checked := Form1.bBalancaAutonoma;
+  end;
+  {Sandro Silva 2023-05-30 fim}
+
   if Form1.sModeloECF = '12' then
   begin
     CortaPapel1.Visible := True;
@@ -15088,6 +15869,12 @@ begin
     DAVemitidos1.Visible                           := True;
     if Form1.sModeloECF = '59' then
       VersodoleiautedoCFeSAT1.Visible := True;
+
+    {Sandro Silva 2023-05-30 inicio}
+    if ValidaRecursos.PermiteRecursoParaProduto = False then
+      DocumentoAuxiliardeVendaDAVOramento1.Enabled := False;
+    {Sandro Silva 2023-05-30 fim}
+    
   end else
   begin
     DocumentoAuxiliardeVendaDAVOramento1.Visible   := False;
@@ -15319,6 +16106,8 @@ begin
     FecharAplicacao('pesado.exe');
 
   ClienteSmallMobile.Free; // Sandro Silva 2022-08-04
+
+//  RecursosLicenca.Free;
 end;
 
 procedure TForm1.ibDataSet25RECEBERChange(Sender: TField);
@@ -16397,42 +17186,42 @@ begin
   if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   begin
     try
-        if BlocoxValidarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
-          SalvarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
+      if BlocoxValidarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
+        SalvarHashPasta('REDUCAO', PASTA_REDUCOES_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
 
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-        if BlocoxValidarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '');
-          SalvarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
+      if BlocoxValidarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '');
+        SalvarHashPasta('ESTOQUE', PASTA_ESTOQUE_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
 
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-        if BlocoxValidarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
-          SalvarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
+      if BlocoxValidarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
+        SalvarHashPasta('REDUCAO', PASTA_RECIBOS_REDUCOES_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
 
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-        if BlocoxValidarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml') = False then
-        begin
-          Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
-          SalvarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml');
-          ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
-        end;
-        
-        //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
-        
+      if BlocoxValidarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml') = False then
+      begin
+        Form1.BlocoxRestaurarArquivos1('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, Form1.sNumeroDeSerieDaImpressora);
+        SalvarHashPasta('ESTOQUE', PASTA_RECIBOS_ESTOQUE_BLOCO_X, '*.xml');
+        ChDir(Form1.sAtual); // Sandro Silva 2018-09-18
+      end;
+
+      //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + ' 7328 ' +  TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
+
     except
     end;
   end;
@@ -28809,6 +29598,21 @@ end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
+  {Sandro Silva 2023-05-30 inicio}
+  // Timers habilitados causando exception ao fechar a aplicação;
+  Timer1.Enabled    := False;
+  Timer2.Enabled    := False;
+  TimerHora.Enabled := False;
+  Timer3.Enabled    := False;
+
+  try
+    if ValidaRecursos <> nil then
+      ValidaRecursos.Free;
+  except
+  end;
+
+  {Sandro Silva 2023-05-30 fim}
+
   // Erro access violation. Não descobri o que causa
   try
     if _59 <> nil then
@@ -28824,6 +29628,7 @@ begin
       PosElginPay.Free; // Sandro Silva 2022-02-11
   except
   end;
+
 
 end;
 
@@ -30567,9 +31372,25 @@ begin
   if Form1.sModeloECF = '14' then Result := _ecf14_Pagamento(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_Pagamento(pP1);
   if Form1.sModeloECF = '17' then Result := _ecf17_Pagamento(pP1);
+  {Sandro Silva 2023-06-01 inicio
   if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_Pagamento(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_Pagamento(pP1);
+  }
+  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
+  begin
+    if ValidaRecursos.ValidaQtdDocumentoFrente(Form1.ibDataSet27.FieldByName('DATA').AsDateTime, tmdLancando) then
+    begin
+      if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
+      if Form1.sModeloECF = '65' then Result := _ecf65_Pagamento(pP1);
+      if Form1.sModeloECF = '99' then Result := _ecf99_Pagamento(pP1);
+    end
+    else
+    begin
+      Form1.MensagemAlertaLimiteDocumentosEmitidos;
+    end;
+  end;
+  {Sandro Silva 2023-06-01 fim}
 
   {Sandro Silva 2021-07-22 inicio
   if Form1.sModeloECF = '04' then Result := _ecf04_Pagamento(pP1);
@@ -32726,6 +33547,9 @@ procedure TForm1.ppMenuFiscalPAFNFCePopup(Sender: TObject);
 begin
   PopupMenu1Popup(PopupMenu1);
   MesasAbertasPAFNFCe.Caption := sMesasOuContas+' abertas...';
+  MesasAbertasPAFNFCe.Visible := True;
+  if AnsiContainsText(Form1.sConcomitante, 'CONCOMITANTE') then // Sandro Silva 2023-05-31
+    MesasAbertasPAFNFCe.Visible := False;
   {Sandro Silva 2023-02-14 inicio
   SadasIdentificadaspeloCPFCNPJ1.Visible        := (LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) = LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF));
   VendasIdentificadaspeloCPFCNPJPAFNFCe.Visible := (SadasIdentificadaspeloCPFCNPJ1.Visible = False);
@@ -33350,6 +34174,21 @@ begin
   //
   Form1.sSuperCodigo := '';
   Form1.ibQuery1.Close;  //
+end;
+
+procedure TForm1.MensagemAlertaLimiteDocumentosEmitidos;
+begin
+  SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
+                  'permitidos para esta versão do sistema'+chr(10)+
+                  'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
+                   AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
+                   AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
+                   'Código: 100 '+chr(10)+chr(10) +
+                   'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+                   'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
+                   ),
+                   'Atenção', MB_ICONWARNING + MB_OK);
+
 end;
 
 end.
