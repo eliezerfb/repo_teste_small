@@ -560,7 +560,7 @@ var
   begin
     Result := ' (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + SituacaoNFCeNaoTransmitidaContingencia + ' or ' + SituacaoNFCeCancelada + '))';
     if TipoMomento = tmdTransmitindo then
-       Result := ' (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + ' or ' + SituacaoNFCeCancelada + '))';
+       Result := ' (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + SituacaoNFCeCancelada + '))';
   end;
 begin
   Result := False;
