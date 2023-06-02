@@ -98,7 +98,9 @@ uses
   uITextoEmailFactory in 'interfaces\uITextoEmailFactory.pas',
   uTextoEmailFactory in 'units\uTextoEmailFactory.pas',
   uTextoEmailCCe in 'units\uTextoEmailCCe.pas',
-  uSmallResourceString in '..\..\unit_compartilhada\uSmallResourceString.pas';
+  uSmallResourceString in '..\..\unit_compartilhada\uSmallResourceString.pas',
+  uITestaClienteDevendo in 'interfaces\uITestaClienteDevendo.pas',
+  uTestaClienteDevendo in 'units\uTestaClienteDevendo.pas';
 
 {$R *.RES}
 

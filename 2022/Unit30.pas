@@ -161,6 +161,7 @@ type
     procedure Label_fecha_0Click(Sender: TObject);
 
   private
+    procedure DefinirCorClienteDevedor;
     { Private declarations }
   public
     { Public declarations }
@@ -175,7 +176,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit12, Unit41, Unit19, Unit22, Unit24, Mais3, preco1,
-  Unit10;
+  Unit10, uTestaClienteDevendo;
 
 {$R *.dfm}
 
@@ -290,7 +291,8 @@ begin
       end;  
       //
     end;
-  end;
+  end else
+    DefinirCorClienteDevedor;  
   //
   ListBox1.Visible := False;
   //
@@ -670,6 +672,16 @@ begin
     Form7.ibDataSet3CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
   end;
   //
+  DefinirCorClienteDevedor;
+end;
+
+procedure TForm30.DefinirCorClienteDevedor;
+begin
+  SMALL_DBEdit3.Font.Color := TTestaClienteDevendo.New
+                                                  .setDataBase(Form7.IBDatabase1)
+                                                  .setCliente(SMALL_DBEdit3.Text)
+                                                  .CarregarDados
+                                                  .RetornarCor;
 end;
 
 procedure TForm30.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1322,6 +1334,7 @@ end;
 
 procedure TForm30.FormShow(Sender: TObject);
 begin
+  DefinirCorClienteDevedor;
   //
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
