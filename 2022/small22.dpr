@@ -100,7 +100,9 @@ uses
   uTextoEmailCCe in 'units\uTextoEmailCCe.pas',
   uSmallResourceString in '..\..\unit_compartilhada\uSmallResourceString.pas',
   uITestaClienteDevendo in 'interfaces\uITestaClienteDevendo.pas',
-  uTestaClienteDevendo in 'units\uTestaClienteDevendo.pas';
+  uTestaClienteDevendo in 'units\uTestaClienteDevendo.pas',
+  uIRetornaLimiteDisponivel in 'interfaces\uIRetornaLimiteDisponivel.pas',
+  uRetornaLimiteDisponivel in 'units\uRetornaLimiteDisponivel.pas';
 
 {$R *.RES}
 
