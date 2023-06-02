@@ -4479,6 +4479,7 @@ var
   bLegal : Boolean;
   fJuro : Real;
   dtLimite: TDate;
+  bEmpresaMei: Boolean;
 begin
   //
   // controle de licenças de uso
@@ -4486,24 +4487,24 @@ begin
   Form22.Inicio := Time;
   bLegal := True;
   Form1.bMediaPonderadaFixa := False;
-  //
+
   try
-    //
+
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     Mais1Ini.WriteString('Uso','Uso','1');
     Mais1Ini.Free;
-    //
+
   except
-    //
+
     ShowMessage('Execute este programa como administrador. Altere o atalho na aba compatibilidade.');
     // Form1.DestroyWindowHandle;
     // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName));
-    //
+
   end;
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-  //
+
   try
     //
     // verifica se o susário tem direito de leitura e gravação
@@ -4618,7 +4619,7 @@ begin
     // Alterado aqui a iReduzida de forma paleativa para atender prazo de lançamento do Small Go,
     // mas precisa ser revisto com mais tempo o impacto de eliminar essa variável
     //
-    
+
     {Sandro Silva 2023-06-01 inicio
     //
     // Quando iReduzida for 2 é Mei
@@ -4665,12 +4666,14 @@ begin
       Form22.sTitulo := ValidaRecursos.rsRecursoSistema.Produto + ' + Ordem de Serviço';
 
     // Empresas MEI
+    bEmpresaMei := False;
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
 
     if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'SIM' then
     begin
       Form1.iReduzida := 2;
       Form22.sTitulo := Form22.sTitulo + ' - Mei';
+      bEmpresaMei := True;
     end else
     begin
       {Sandro Silva 2023-05-31 inicio
@@ -4695,7 +4698,7 @@ begin
         Mais1Ini.WriteString('LICENCA','MEI','SIM');
 
         Form22.sTitulo := Form22.sTitulo + ' - Mei';
-
+        bEmpresaMei := True;
       end;
 
     end;
@@ -4768,6 +4771,7 @@ begin
 
   if (Form1.iReduzida = 1) then
   begin
+    {Sandro Silva 2023-06-02 inicio
     if Copy(Form1.sSerial, 4, 1) = 'S' then
     begin
       Form1.Caption     := 'Small Commerce (Start)';
@@ -4784,6 +4788,7 @@ begin
     end
     else
     begin
+    }
       Form1.Caption     := 'Small Go';
       Application.Title := 'Small Go';
 
@@ -4796,7 +4801,7 @@ begin
              'necessidade de emissão de'+chr(10)+
              'NF-e, NFC-e e SAT.');
 
-    end;
+    //end;
   end;
   //
   if (Form1.iReduzida = 0) then
@@ -4816,7 +4821,8 @@ begin
          'comércio');
   end;
   //
-  if (Form1.iReduzida = 2) then
+  // Sandro Silva 2023-06-02 if (Form1.iReduzida = 2) then
+  if bEmpresaMei then
   begin
     //
     Form1.Caption := 'Small Commerce (MEI)';
@@ -4847,12 +4853,15 @@ begin
 
   if Trim(sCertificado) = '' then
   begin
+    {Sandro Silva 2023-06-02 inicio
     if (Copy(Form1.sSerial,4,1) <> 'N') and
        (Copy(Form1.sSerial,4,1) <> 'O') and
        (Copy(Form1.sSerial,4,1) <> 'P') and
        (Copy(Form1.sSerial,4,1) <> 'Q') and
        (Copy(Form1.sSerial,4,1) <> 'R') and
        (Copy(Form1.sSerial,4,1) <> 'M') then
+    }
+    if not bEmpresaMei then
     begin
       Form1.SelecionarCertificadoDigital1Click(Form1.SelecionarCertificadoDigital1); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
     end;
@@ -4860,6 +4869,7 @@ begin
 
 
   (* // Sandro Silva 2023-05-31
+  Criei uConectaBancoCommerce com function ConectaBancoCommerce para isolar esse código e melhorar no futuro (usar método de conexão padrão)
   with Form7 do
   begin
     bFlag := True;
