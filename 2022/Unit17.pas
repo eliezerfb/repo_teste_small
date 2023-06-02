@@ -230,6 +230,8 @@ var
   Mais1Ini : tIniFile;
 begin
   //
+  // Mover as validações envolvendo certifica para evento Form17.onActive
+  //
   try
     //
     if Form7.ibDataSet13CGC.AsString = '' then

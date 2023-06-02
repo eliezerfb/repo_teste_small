@@ -140,7 +140,8 @@ C:\Program Files (x86)\Borland\Delphi7\Projects\Bpl\spdNFCe_D7.bpl=Tecnospeed - 
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlOutputDirectorry]
-Count=3
+Count=4
 Item0=D:\Desenvolvimento\Executaveis\Small Commerce
-Item1=C:\Program Files (x86)\SmallSoft\Small Commerce 2021
-Item2=\desenvolvimento\executaveis\Small Commerce
+Item1=C:\Program Files (x86)\SmallSoft\Small XXXXX
+Item2=C:\Program Files (x86)\SmallSoft\Small Commerce 2021
+Item3=\desenvolvimento\executaveis\Small Commerce

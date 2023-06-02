@@ -12701,6 +12701,7 @@ begin
     except
     end;
 
+    (* // Sandro Silva 2023-06-02
     begin
       if ValidacaoNova = False then
       begin
@@ -12753,7 +12754,7 @@ begin
         //Campo termo_uso_aceito no site
         if InfTermo then
         begin
-          sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now); 
+          sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now);
         end;
 
         //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
@@ -12781,6 +12782,40 @@ begin
                                       );
 
       end;
+    end;
+    *)
+    if LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString) <> '' then
+    begin
+      //Mauricio Parizotto 2023-05-15
+      //Campo termo_uso_aceito no site
+      if InfTermo then
+      begin
+        sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now);
+      end;
+
+      //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+ // legal local dev
+      Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
+                                    'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+                                    '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+                                    '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+                                    '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+                                    '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+                                    '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+                                    '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+                                    '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+                                    '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+                                    '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+                                    '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+                                    '&nfce='      + sNFCE +
+                                    '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+                                    '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+                                    '&conve='     + sConve  +
+                                    '&origem='    + sOrigem +
+                                    '&Check='     + Form1.sPublicCheck +
+                                    '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))+
+                                    sTermoUso
+                                    //+ '&retorno=json' // opção para quando tiver mudado o componente e usar recurso de API propriamente dito. Retornará somente o JSON
+                                    );
     end;
   except
   end;
