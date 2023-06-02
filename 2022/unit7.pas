@@ -24793,7 +24793,6 @@ begin
   begin
     if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') then
     begin
-      //
       Screen.Cursor            := crHourGlass;
       Form7.Panel7.Caption := 'Imprimindo o DANFE'+replicate(' ',100);
       Form7.Panel7.Repaint;
@@ -24805,11 +24804,9 @@ begin
       fNFE :=  Form7.ibDataSet15NFEXML.AsString;
       //
       // Recupera na tabela VENDAS o XML
-      //
       try
-        //
         sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-        //
+
         if Alltrim(Form7.ibDataSet15TRANSPORTA.AsString) = Alltrim(Form7.ibDataSet18NOME.AsString) then
         begin
           sEmail1 := Form7.ibDataSet18EMAIL.AsString; // XML POR EMAIL
@@ -24817,7 +24814,7 @@ begin
         begin
           sEmail1  := '';
         end;
-        //
+
         if (validaEmail(sEmail)) or (validaEmail(sEmail1)) then
         begin
           cNomePDF := 'danfe_NF_' + Form7.ibDataSet15NUMERONF.AsString + '.pdf';
@@ -24829,50 +24826,51 @@ begin
                 DeleteFile(pChar(cNomePDF));
                 Sleep(100);
               end;
+
               spdNFe.ExportarDanfe(sLote, fNfe, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1,Form1.sAtual+'\' + cNomePDF);
               sCaminhoPDF := Form1.sAtual+'\'+cNomePDF;
 
               if not FileExists(pChar(cNomePDF)) then
                 sCaminhoPDF := EmptyStr;
             end;
+
             spdNFe.ExportarDanfe(sLote, fNfe, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1,Form1.sAtual+'\' + cNomePDF);
             sCaminhoPDF := Form1.sAtual+'\'+cNomePDF;
 
             if not FileExists(pChar(cNomePDF)) then
               sCaminhoPDF := EmptyStr;
-          end;
 
-          if sZiparXML = 'S' then
-          begin            
-            ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')+'" "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')+'"'), '', SW_SHOWMAXIMIZED);
-            while ConsultaProcesso('szip.exe') do
+            if sZiparXML = 'S' then
             begin
-              Application.ProcessMessages;
-              sleep(100);
-            end;
-            while not FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')) do
-            begin
-              sleep(100);
-            end;
-            sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip';
-          end else
-            sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml';
-
-          if (sCaminhoPDF <> EmptyStr) or (sCaminhoXML <> EmptyStr) then
-          begin
-            cAnexo    := sCaminhoPDF;
-            cMsgAnexo := 'PDF';
-          end;
-          if (sCaminhoXML <> EmptyStr) then
-          begin
-            if cAnexo <> EmptyStr then
-            begin
-              cAnexo := cAnexo + ';';
-              cMsgAnexo := 'XML e o PDF';
+              ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml')+'" "'+pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')+'"'), '', SW_SHOWMAXIMIZED);
+              while ConsultaProcesso('szip.exe') do
+              begin
+                Application.ProcessMessages;
+                sleep(100);
+              end;
+              while not FileExists(pChar(Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip')) do
+              begin
+                sleep(100);
+              end;
+              sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.zip';
             end else
-              cMsgAnexo := 'XML';
-            cAnexo := cAnexo + sCaminhoXML;
-          end;
+              sCaminhoXML := Form1.sAtual+'\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-nfe.xml';
+
+            if (sCaminhoPDF <> EmptyStr) or (sCaminhoXML <> EmptyStr) then
+            begin
+              cAnexo    := sCaminhoPDF;
+              cMsgAnexo := 'PDF';
+            end;
+            if (sCaminhoXML <> EmptyStr) then
+            begin
+              if cAnexo <> EmptyStr then
+              begin
+                cAnexo := cAnexo + ';';
+                cMsgAnexo := 'XML e o PDF';
+              end else
+                cMsgAnexo := 'XML';
+              cAnexo := cAnexo + sCaminhoXML;
+            end;
 
             cMensagem := TTextoEmailFactory.New
                                            .NFe
