@@ -2088,7 +2088,7 @@ type
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
     function RetornarSQLEstoqueOrcamentos: String;
-    function ValidaLimiteDeEmissaoDeVenda: Boolean;
+    function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
   public
     // Public declarations
 
@@ -8064,7 +8064,7 @@ begin
       else
       begin
 
-        if ValidaLimiteDeEmissaoDeVenda then
+        if ValidaLimiteDeEmissaoDeVenda(Form1.ValidaRecursos.DataDoServidor) then
         begin
 
           Form7.ibDataSet15.Append;
@@ -8200,7 +8200,7 @@ begin
     if Pos('STATUS',DBGrid1.SelectedField.Name) <> 0 then
     begin
 
-      if ValidaLimiteDeEmissaoDeVenda then
+      if ValidaLimiteDeEmissaoDeVenda(DBGrid1.DataSource.DataSet.FieldByName('EMISSAO').AsDateTime) then
       begin
 
         if not DenegadoOuCancelado(True) then
@@ -23870,7 +23870,7 @@ var
   sRetorno : String;
   sRecibo : String;
 begin
-  if ValidaLimiteDeEmissaoDeVenda = False then
+  if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) = False then
   begin
     Exit;
   end;
@@ -24570,7 +24570,7 @@ begin
   begin
     tInicio := Time;
 
-    if ValidaLimiteDeEmissaoDeVenda then
+    if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) then
     begin
 
       if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
@@ -25187,7 +25187,7 @@ begin
     Form7.ibDataSet15.DisableControls;
     try
 
-      if ValidaLimiteDeEmissaoDeVenda then
+      if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) then
       begin
 
         if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') then
@@ -33277,10 +33277,10 @@ begin
     CalculaFCPSTAoIncluirProdutoDevolucao; // Sandro Silva 2023-05-08
 end;
 
-function TForm7.ValidaLimiteDeEmissaoDeVenda: Boolean;
+function TForm7.ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
 begin
   Result := False;
-  if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda(Date) = False then
+  if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda(dtBaseVerificar) = False then
   begin
     Form1.MensagemRecursoIndisponivel(
       'Você já emitiu o número limite de documentos fiscais'+chr(10)+
