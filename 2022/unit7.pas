@@ -28,7 +28,7 @@ const SIMPLES_NACIONAL = '1';
 const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 
-function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
+function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 function Commitatudo(RefazSelect:Boolean): Boolean;
 function AbreArquivos(P1:Boolean): Boolean;
 function AgendaCommit(P1:Boolean): Boolean;
@@ -1448,6 +1448,9 @@ type
     odos1: TMenuItem;
     Sativos1: TMenuItem;
     Sinativos1: TMenuItem;
+    EEnviarcartadecorreoporemail1: TMenuItem;
+    N67: TMenuItem;
+    N68: TMenuItem;
     ibDataSet16VBCFCP: TIBBCDField;
     ibDataSet16PFCP: TIBBCDField;
     ibDataSet16VFCP: TIBBCDField;
@@ -2067,6 +2070,7 @@ type
     procedure Sinativos1Click(Sender: TObject);
     procedure ibDataSet18MUNICIPIOSetText(Sender: TField;
       const Text: String);
+    procedure EEnviarcartadecorreoporemail1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2086,7 +2090,10 @@ type
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
-    function RetornarSQLEstoqueOrcamentos: String;
+    function RetornarSQLEstoqueOrcamentos: String;   
+    procedure EnviarEmailCCe(AcXML: String);
+    function getEnviarDanfePorEmail: String;
+    function getZiparXML: String;
   public
     // Public declarations
 
@@ -2181,6 +2188,8 @@ type
       iSequencialParcela: Integer): String;
     function UltimaParcelaReceberDaNF(sNumeroNF: String): String; // Sandro Silva 2023-01-06
     function CorrigeCustoCompraNaVenda(dCustoCompra: Double): Double; // Sandro Silva 2023-04-26
+    property sEnviarDanfePorEmail: String read getEnviarDanfePorEmail;
+    property sZiparXML: String read getZiparXML;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -4343,6 +4352,30 @@ begin
   //
 end;
 
+function TForm7.getEnviarDanfePorEmail: String;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\nfe.ini');
+  try
+    Result := oIni.ReadString('ENVIO','Enviar danfe por e-mail','S');
+  finally
+    oIni.Free;
+  end;
+end;
+
+function TForm7.getZiparXML: String;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\nfe.ini');
+  try
+    Result := oIni.ReadString('ENVIO','Zipar XML','N');
+  finally
+    oIni.Free;
+  end;
+end;
+
 function ConfiguraNFE(sP1:Boolean) : Boolean;
 var
   Mais1Ini: TIniFile;
@@ -4395,8 +4428,6 @@ begin
     Form1.HorarioDeVerao.Checked := True;
   //
   Form7.sFormatoDoDanfe      := Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato');
-  Form7.sZiparXML            := Mais1Ini.ReadString('ENVIO','Zipar XML','N');
-  Form7.sEnviarDAnfePorEmail := Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S');
   Form7.sCNPJContabilidade   := Mais1Ini.ReadString('XML','CNPJ da contabilidade','');
   //
   Form1.sVersaoLayout        := Mais1Ini.ReadString('NFE','Layout','4.00');
@@ -6954,7 +6985,30 @@ begin
   //
 end;
 
-function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: string; bConfirma: Boolean): Integer;
+function processExists(exeFileName: string): Boolean;
+var
+  ContinueLoop: BOOL;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+begin
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+  Result := False;
+  while Integer(ContinueLoop) <> 0 do
+  begin
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(exeFileName)) or (UpperCase(FProcessEntry32.szExeFile) = UpperCase(exeFileName))) then
+    begin
+      Result := True;
+    end;
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  end;
+  CloseHandle(FSnapshotHandle);
+end;
+
+function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
+const
+  _cNomeMailEXE = 'email.exe';
 type
   TAttachAccessArray = array [0..0] of TMapiFileDesc;
   PAttachAccessArray = ^TAttachAccessArray;
@@ -6996,7 +7050,12 @@ begin
       sleep(10);
     end;
     //
-    ShellExecute( 0, 'Open', pChar(Form1.sAtual+'\email.exe') , pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW);
+    ShellExecute( 0, 'Open', pChar(Form1.sAtual+'\'+_cNomeMailEXE) , pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+cAnexo+'"'), '', SW_Show);
+    // Deve aguardar o processo do mail finalizar o processo de envio
+    while processExists(_cNomeMailEXE) do
+    begin
+      Sleep(250);
+    end;
     //
     Result := 1;
     //
@@ -7076,13 +7135,13 @@ begin
         end;
       end;
       // arquivo anexo
-      if (sAnexo = '') then
+      if (cAnexo = '') then
       begin
         nFileCount := 0;
         lpFiles := nil;
       end else
       begin
-        slAnexos := RetornaListaQuebraLinha(sAnexo);
+        slAnexos := RetornaListaQuebraLinha(cAnexo);
         try
           if slAnexos.Count > 0 then
           begin
@@ -13087,23 +13146,15 @@ begin
         N9ImprimirDANFEemformulriodecontingncia1.Enabled            := True;
         //
       end;
-      //
-      if Alltrim(Form7.ibDataSet15CCEXML.AsString) <> '' then
-      begin
-        //
-        IImprimirCartadeCorreoEletronicaCCe1.Enabled := True;
-        //
-      end else
-      begin
-        //
-        IImprimirCartadeCorreoEletronicaCCe1.Enabled := False;
-        //
-      end;
+
       // Manter consulta devido a outros lugares utilizar ibDataSet2 para pegar o e-mail (NFSe por exemplo)
       Form7.ibDataSet2.Close;
       Form7.ibDataSet2.Selectsql.Clear;
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
       Form7.ibDataSet2.Open;
+
+      IImprimirCartadeCorreoEletronicaCCe1.Enabled := Alltrim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr;
+      EEnviarcartadecorreoporemail1.Enabled        := Alltrim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr;
       
       cTransp := Form7.ibDataSet15TRANSPORTA.AsString;
       if EnviarNFSeporemail1.Visible then // Se for Serviço não tem transportador
@@ -13124,6 +13175,10 @@ begin
         EnviarNFSeporemail1.Enabled := (cEmails <> EmptyStr);
         EnviarNFSeporemail1.Caption := 'Enviar NFS-e por e-mail ' + cEmails;
       end;
+
+      EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail';
+      if EEnviarcartadecorreoporemail1.Enabled then
+        EEnviarcartadecorreoporemail1.Caption := EEnviarcartadecorreoporemail1.Caption + ' ' + cEmails;
       
       //
       if Form7.ibDataSet15EMITIDA.AsString = 'X' then
@@ -24688,7 +24743,7 @@ var
   sEmail1  : String;
   sCaminhoXML: String;
   sCaminhoPDF: String;
-  sAnexo: String;
+  cAnexo: String;
   cMensagem: String;
   cMsgAnexo: string;
 begin
@@ -24767,18 +24822,18 @@ begin
           begin
             if sCaminhoPDF <> EmptyStr then
             begin
-              sAnexo    := sCaminhoPDF;
+              cAnexo    := sCaminhoPDF;
               cMsgAnexo := 'PDF';
             end;
             if (sCaminhoXML <> EmptyStr) then
             begin
-              if sAnexo <> EmptyStr then
+              if cAnexo <> EmptyStr then
               begin
-                sAnexo := sAnexo + ';';
+                cAnexo := cAnexo + ';';
                 cMsgAnexo := 'XML e o PDF';
               end else
                 cMsgAnexo := 'XML';
-              sAnexo := sAnexo + sCaminhoXML;
+              cAnexo := cAnexo + sCaminhoXML;
             end;
 
             cMensagem := TTextoEmailFactory.New
@@ -24787,15 +24842,16 @@ begin
                                            .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
                                            .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
                                            .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
+                                           .setPropaganda(Form1.sPropaganda)
                                            .RetornarTexto;
 
             if (validaEmail(sEmail)) then
             begin
-              Unit7.EnviarEMail('',sEmail,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(sAnexo),False);
+              Unit7.EnviarEMail('',sEmail,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(cAnexo),False);
             end;
             if (validaEmail(sEmail1)) then
             begin
-              Unit7.EnviarEMail('',sEmail1,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(sAnexo),False);
+              Unit7.EnviarEMail('',sEmail1,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(cAnexo),False);
             end;
           end;
           if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
@@ -26723,30 +26779,26 @@ end;
 
 procedure TForm7.CCartadeCorreoEletronicaCCe1Click(Sender: TObject);
 var
-  sCartaCorrecao, sRetorno, sMotivo, sIDLote, sEmail : String;
+  sCartaCorrecao, sRetorno, sMotivo, sIDLote : String;
   vXMLProt: TXMLDocument;
 begin
-  //
   try
-    //
     if Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '' then
     begin
-      //
       Screen.Cursor            := crHourGlass;
       Form7.Panel7.Caption          := 'Carta de correção de NF-e...'+replicate(' ',100);
       Form7.Panel7.Repaint;
-      //
+
       vXMLProt        := TXMLDocument.Create(Form7.XMLDocument1);
-      //
+
       ConfiguraNFE(True);
-      //
+
       try
-        //
         Form36.Top := Form7.Top;
         Form36.Left := Form7.Left;
         Form36.Width  := Form7.Width;
         Form36.Height  := Form7.Height;
-        //
+
         Form36.Label1.Caption := chr(10)+
         'Para enviar uma carta de correção para a NF-e: '+Form7.ibDataSet15NUMERONF.AsString+' insira um texto livre (min. 30 caracteres).'+chr(10)+
         chr(10)+
@@ -26759,151 +26811,83 @@ begin
         chr(10)+
         'O texto da correção é um texto livre com tamanho limitado a 1000 caracteres e inexiste modelo ou padrão do texto, assim o emissor deve descrever de'+chr(10)+
         'forma clara e objetiva a correção que deve ser considerada.';
-        //
+
         Form36.ShowModal;
         sCartaCorrecao := ConverteAcentos2(Form36.Memo1.Text);
-        //
-{
-        sCartaCorrecao := ConverteAcentos2(Form1.Small_InputForm('Atenção',
-        chr(10)+
-        'Para enviar uma carta de correção para a NF-e: '+Form7.ibDataSet15NUMERONF.AsString+' insira um texto livre (min. 30 caracteres).'+chr(10)+
-        chr(10)+
-        'O Ajuste SINIEF 01/07 veda a correção das seguintes informações relacionadas com o Fato Gerador do ICMS da NF-e:'+chr(10)+
-        'I - as variáveis que determinam o valor do imposto tais como: base de cálculo, alíquota, diferença de preço, quantidade, valor da operação ou da prestação;'+chr(10)+
-        'II - a correção de dados cadastrais que implique mudança do remetente ou do destinatário;'+chr(10)+
-        'III - a data de emissão ou de saída.'+chr(10)+
-        chr(10)+
-        'Uma NF-e pode ter até 20 cartas de correção e a última carta substitui as anteriores, assim o emissor deve consolidar o texto na nova carta de correção.'+chr(10)+
-        chr(10)+
-        'O texto da correção é um texto livre com tamanho limitado a 1000 caracteres e inexiste modelo ou padrão do texto, assim o emissor deve descrever de forma'+chr(10)+
-        'clara e objetiva a correção que deve ser considerada.'+chr(10)+
-        chr(10)+
-        chr(10), ''));
-}
-        //
+
         if Length(sCartaCorrecao) >= 30 then
         begin
-          //
+
           Screen.Cursor            := crHourGlass;
-          //
+
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(ibDataSet13ESTADO.AsString))+' ');
           Form7.ibDataset99.Open;
-          //
-          // ddmmyyyyhhnnss
-          //
+
           Form7.ibDataSet15.Edit;
           Form7.ibDataSet15ICCE.AsInteger := Form7.ibDataSet15ICCE.AsInteger + 1;
           Form7.ibDataSet15.Post;
-          //
+
           sIDLote := ibDataSet15.FieldByname('NUMERONF').AsString;
-          //
+
           sCartaCorrecao := StringReplace (sCartaCorrecao, #13#10, ' ', [rfReplaceAll]);
           sRetorno := spdNFe.EnviarCCe(Alltrim(Form7.ibDataSet15NFEID.AsString),AllTrim(sCartaCorrecao),FormatDateTime('yyyy-mm-dd"T"hh:nn:"00"',Now),Copy(ibDAtaSet99.FieldByname('CODIGO').AsString,1,2),sIDLote,Form7.ibDataSet15ICCE.AsInteger,Form7.sFuso);
           sleep(3000);
-          //
-          // ShowMessage(sRetorno);
-          //
+
           if FileExists( pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml')) then
           begin
-            //
             Form7.ibDataSet2.Close;
             Form7.ibDataSet2.Selectsql.Clear;
             Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
             Form7.ibDataSet2.Open;
-            //
-            sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-            //
-            if sZiparXML = 'S' then
-            begin
-              //
-              ShellExecute( 0, 'Open','szip.exe', pChar('backup "'+Alltrim(pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml'))+'" "'+
-              Alltrim(pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip'))+'"'),'', SW_SHOWMAXIMIZED);
-              //
-              while ConsultaProcesso('szip.exe') do
-              begin
-                Application.ProcessMessages;
-                sleep(100);
-              end;
-              //
-              while not FileExists( pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip')) do
-              begin
-                sleep(100);
-              end;
-              //
-              Unit7.EnviarEMail('',sEmail,'','Carta de correção Eletrônica (Cc-e)',pchar('Segue em anexo Carta de correção Eletrônica (Cc-e) em arquivo XML.'+chr(10)+Form1.sPropaganda+
-                chr(10)+
-                chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),
-                pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.zip')
-                ,False);
-              //
-            end else
-            begin
-              if (validaEmail(sEmail)) then
-              begin
-                Unit7.EnviarEMail('',sEmail,'','Carta de correção Eletrônica (Cc-e)',pchar('Segue em anexo Carta de correção Eletrônica (Cc-e) em arquivo XML.'+chr(10)+Form1.sPropaganda+
-                  chr(10)),
-                  pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml')
-                  ,False);
-              end;
-            end;
-            //
+
             vXMLProt.LoadFromFile(pChar(Form1.sAtual + '\XmlDestinatario\'+Alltrim(Form7.ibDataSet15NFEID.AsString)+'-CCe.xml'));
-            //
+
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15CCEXML.AsString := vXMLProt.XML.Text;;
+            Form7.ibDataSet15CCEXML.AsString := vXMLProt.XML.Text;
             Form7.ibDataSet15.Post;
-            //
-            // spdCCe.EnviarXMLCCeDestinatario(edArquivoXmlDest.Text);
-            //
+
+            EnviarEmailCCe(vXMLProt.XML.Text);
+
             sRetorno := 'Carta de correção Eletrônica (Cc-e) vinculada a NF-e.';
-            //
+
             ShowMessage(sRetorno);
-            //
           end else
           begin
-            //
             sMotivo :=  Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
             sRetorno := StrTran(sRetorno,'<xMotivo>'+sMotivo+'</xMotivo>','');
-            //
+
             if Pos('<xMotivo>',sRetorno) <> 0 then
             begin
               sMotivo := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
             end;
-            //
+
             ShowMessage(sMotivo);
-            //
+
             sRetorno := 'Erro ao gerar Cc-e para NF-e '+Form7.ibDataSet15NUMERONF.AsString;
-            //
           end;
-          //
-          //
         end else
         begin
-          //
           if AllTrim(sCartaCorrecao) <> '' then
           begin
             ShowMessage('O texto livre da Carta de Correção Eletrônica (Cc-e) tem que ter no minimo 30 caracteres.');
           end;
-          //
         end;
-        //
-      except end;
-      //
+      except
+      end;
     end;
-    //
-  except end;
-  //
+  except
+  end;
   DecimalSeparator := ',';
   DateSeparator    := '/';
   Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
   Screen.Cursor            := crDefault;
-  //
+
   Form7.Close;
   Form7.Show;
-  //
+
 end;
 
 procedure TForm7.IBDataSet128BeforeInsert(DataSet: TDataSet);
@@ -33172,6 +33156,112 @@ begin
   vEstado := Form7.ibDataSet18UF.AsString;
   SelecionaMunicipio(vEstado,Text,(Sender as TStringField),False);
 end;
+
+procedure TForm7.EEnviarcartadecorreoporemail1Click(Sender: TObject);
+begin
+  EnviarEmailCCe(Form7.ibDataSet15CCEXML.AsString);
+end;
+
+procedure TForm7.EnviarEmailCCe(AcXML: String);
+var
+  cCaminhoXML: String;
+  cNomeArqXML: String;
+  cArqXML: String;
+  cCaminhoPDF: string;
+  cNomeArqPDF: string;
+  cMensagem: String;
+  cAnexo: string;
+  cMsgAnexo: String;
+  cEmail: String;
+  slXML: TStringList;
+begin
+  if AcXML = EmptyStr then
+    Exit;
+
+  cEmail := Form7.ibDataSet2EMAIL.AsString;
+
+  if (cEmail = EmptyStr) or (not validaEmail(cEmail)) then
+    Exit;
+
+  cCaminhoXML := Form1.sAtual + '\XmlDestinatario\';
+  cCaminhoPDF := Form1.sAtual + '\';
+  cNomeArqXML := Form7.ibDAtaSet15NFEID.AsString+'-CCe.';
+  cNomeArqPDF := 'CCe_NF_' + Form7.ibDataSet15NUMERONF.AsString + '.pdf';
+
+  try
+    if sEnviarDAnfePorEmail = 'S' then
+    begin
+      if not FileExists(cCaminhoXML + cNomeArqXML + 'xml') then
+      begin
+        slXML := TStringList.Create;
+        try
+          slXML.Text := AcXML;
+          slXML.SaveToFile(cCaminhoXML + cNomeArqXML + 'xml');
+        finally
+          FreeAndNil(slXML);
+        end;
+      end;
+
+      if FileExists(cCaminhoPDF + cNomeArqPDF) then
+        DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
+
+      spdNFe.ExportarCCe(AcXML, cCaminhoPDF + cNomeArqPDF);
+      Sleep(100);
+    end;
+    if sZiparXML = 'S' then
+    begin
+      //
+      ShellExecute( 0, 'Open','szip.exe', pChar('backup "'+Alltrim(pChar(cCaminhoXML + cNomeArqXML + 'xml'))+'" "'+
+      Alltrim(pChar(cCaminhoXML + cNomeArqXML +'zip'))+'"'),'', SW_SHOWMAXIMIZED);
+      //
+      while ConsultaProcesso('szip.exe') do
+      begin
+        Application.ProcessMessages;
+        sleep(100);
+      end;
+      //
+      while not FileExists( pChar(cCaminhoXML + cNomeArqXML + 'zip')) do
+      begin
+        sleep(100);
+      end;
+      cArqXML := cCaminhoXML + cNomeArqXML + 'zip';
+    end else
+      cArqXML := cCaminhoXML + cNomeArqXML + 'xml';
+    if FileExists(cCaminhoPDF + cNomeArqPDF) then
+    begin
+      cAnexo    := cCaminhoPDF + cNomeArqPDF;
+      cMsgAnexo := 'PDF';
+    end;
+    if (FileExists(cArqXML)) then
+    begin
+      if cAnexo <> EmptyStr then
+      begin
+        cAnexo := cAnexo + ';';
+        cMsgAnexo := 'XML e o PDF';
+      end else
+        cMsgAnexo := 'XML';
+      cAnexo := cAnexo + cArqXML;
+    end;
+
+    if cAnexo = EmptyStr then
+      Exit;
+
+    cMensagem := TTextoEmailFactory.New
+                                   .CCe
+                                   .setDescrAnexo(cMsgAnexo)
+                                   .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
+                                   .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
+                                   .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
+                                   .setPropaganda(Form1.sPropaganda)
+                                   .RetornarTexto;
+
+    Unit7.EnviarEMail('',cEmail,'','Carta de correção Eletrônica emitida', pchar(cMensagem), cAnexo, False);
+  finally
+    if FileExists(cCaminhoPDF + cNomeArqPDF) then
+      DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
+  end;
+end;
+
 
 procedure TForm7.CalculaFCPSTAoIncluirProdutoDevolucao;// Sandro Silva 2023-05-08
 begin
