@@ -97,6 +97,8 @@ begin
   if not assigned(js) then
   begin
 
+  
+
     // Quando não tiver preenchido EMITENTE.RECURSO usará o serial do wind0ws.l0g
     // Necessário para permitir a instalação e primeira abertura do sistema
 
