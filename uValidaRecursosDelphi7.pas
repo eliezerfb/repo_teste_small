@@ -34,6 +34,7 @@ type
     function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
     function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
     function CampoExisteFB(Banco: TIBDatabase; sTabela: String; sCampo: String): Boolean;
+    function LerSerialWindowsLog: String;
   public
     constructor Create;
     destructor Destroy; override;
@@ -44,7 +45,7 @@ type
     function RecursoData(sRecurso: TRecursos): TDate;
     function PermiteRecursoParaProduto: Boolean;
     function ValidaQtdDocumentoFrente: Boolean;
-    function ValidaQtdDocumentoRetaguarda: Boolean;
+    function ValidaQtdDocumentoRetaguarda({dtBaseVerificar: TDate}): Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
     function RecursoQtd(sRecurso: TRecursos): Integer;
     property IBDATABASE: TIBDatabase read FIBDatabase write SetIBDatabase;
@@ -58,7 +59,6 @@ implementation
 procedure TValidaRecurso.LeRecursos();
 const sDataLimitePadrao = '01/01/1900';
 var
-  Mais1ini: tIniFile;
   js: TlkJSONobject;
   iTemRc: TlkJSONobject;
   s: String;
@@ -224,16 +224,15 @@ begin
 
   if Trim(FrsRecursoSistema.Serial) = '' then
   begin
-    Mais1ini := TIniFile.Create('WIND0WS.L0G');
-    FrsRecursoSistema.Serial := Mais1Ini.ReadString('LICENCA','Ser','');
-    Mais1ini.Free;
+    FrsRecursoSistema.Serial := LerSerialWindowsLog;
   end;
 
 end;
 
 function TValidaRecurso.SistemaSerial(): String;
 begin
-  Result := '';
+  //Result := '';
+  Result := LerSerialWindowsLog;
 
   try
 
@@ -593,7 +592,7 @@ begin
 
 end;
 
-function TValidaRecurso.ValidaQtdDocumentoRetaguarda: Boolean;
+function TValidaRecurso.ValidaQtdDocumentoRetaguarda({dtBaseVerificar: TDate}): Boolean;
 const SituacaoMeiLancado = ' (MODELO = ''01'') ';
 const SituacaoNFeEmitidoOuCancelado = ' (MODELO = ''55'' and coalesce(NFEXML, '''') containing ''<xMotivo>'') ';
 const SituacaoNFSeEmitidoOuCancelado  = ' (MODELO = ''SV'' and (coalesce(STATUS, '''') containing ''AUTORIZADA'' or coalesce(STATUS, '''') containing ''NFS-e cancelada'')) ';
@@ -633,7 +632,7 @@ begin
       'from VENDAS ' +
       'where EMISSAO >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
       'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
-    IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+    //IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
     //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
     IBQDOC.Open;
 
@@ -654,6 +653,15 @@ begin
   end;
 
 
+end;
+
+function TValidaRecurso.LerSerialWindowsLog: String;
+var
+  Mais1ini: tIniFile;
+begin
+  Mais1ini := TIniFile.Create('WIND0WS.L0G');
+  FrsRecursoSistema.Serial := Mais1Ini.ReadString('LICENCA','Ser','');
+  Mais1ini.Free;
 end;
 
 end.
