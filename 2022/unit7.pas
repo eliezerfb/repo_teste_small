@@ -2107,7 +2107,7 @@ type
     bProximas : Boolean;
     bContingencia : Boolean;
     bFirst : Boolean;
-    sTextoDoAcordo, sFormatoDoDanfe, sZiparXML, sEnviarDAnfePorEmail, sCNPJContabilidade: String;
+    sTextoDoAcordo, sFormatoDoDanfe, sCNPJContabilidade: String;
     //
     sFuso     : String;
     sSistema  : String;
