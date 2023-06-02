@@ -660,7 +660,7 @@ var
   Mais1ini: tIniFile;
 begin
   Mais1ini := TIniFile.Create('WIND0WS.L0G');
-  FrsRecursoSistema.Serial := Mais1Ini.ReadString('LICENCA','Ser','');
+  Result := Mais1Ini.ReadString('LICENCA','Ser','');
   Mais1ini.Free;
 end;
 
