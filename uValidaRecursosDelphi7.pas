@@ -23,6 +23,8 @@ uses
   ;
 
 type
+  TipoMomentoDocumento = (tmdLancando, tmdTransmitindo);
+
   TValidaRecurso = class
   private
     FIBDatabase: TIBDatabase;
@@ -44,7 +46,7 @@ type
     function RecursoLiberado(sRecurso: TRecursos; out DataLimite: TDate): Boolean;
     function RecursoData(sRecurso: TRecursos): TDate;
     function PermiteRecursoParaProduto: Boolean;
-    function ValidaQtdDocumentoFrente: Boolean;
+    function ValidaQtdDocumentoFrente(dtBaseVerificar: TDate; TipoMomento: TipoMomentoDocumento): Boolean;
     function ValidaQtdDocumentoRetaguarda(dtBaseVerificar: TDate): Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
     function RecursoQtd(sRecurso: TRecursos): Integer;
@@ -534,21 +536,36 @@ begin
     Result := False;
 end;
 
-function TValidaRecurso.ValidaQtdDocumentoFrente: Boolean;
+function TValidaRecurso.ValidaQtdDocumentoFrente(dtBaseVerificar: TDate; TipoMomento: TipoMomentoDocumento): Boolean;
 const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
-//const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''' ) ';
-const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and ((coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''') or (coalesce(NFEXML, '''') containing ''<tpEmis>9'') or (coalesce(STATUS, '''') containing ''NFC-e emitida em modo de contingência'') )) ';
+
+// const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and ((coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''') or (coalesce(NFEXML, '''') containing ''<tpEmis>9'') or (coalesce(STATUS, '''') containing ''NFC-e emitida em modo de contingência'') )) ';
+const SituacaoNFCeAutorizadaCanceladoNormal = '(coalesce(NFEXML, '''') containing ''<tpEmis>1'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''') ';// -- emissão normal autorizada
+const SituacaoNFCeAutorizadaContingencia = '(coalesce(NFEXML, '''') containing ''<tpEmis>9'' and coalesce(NFEXML, '''') containing ''<xMotivo>'') ';// -- emissão contingência autorizada
+const SituacaoNFCeNaoTransmitidaContingencia = '(coalesce(NFEXML, '''') containing ''<tpEmis>9'' and coalesce(NFEXML, '''') not containing ''<xMotivo>'') ';// -- emissão contingência não autorizada
+const SituacaoNFCeCancelada = '(coalesce(NFEXML, '''') containing ''<tpEvento>110111'') ';// -- canceladas
+//const SituacaoNFCe = ' or (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + SituacaoNFCeNaoAutorizaContingencia + ' or ' + SituacaoNFCeCancelada + '))';
+
 const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
 var
   iQtdEmitido: Integer;
   iQtdPermitido: Integer;
   IBQDOC: TIBQuery;
-  dtDataServidor: TDate;
+//  dtDataServidor: TDate;
   IBTRANSACTION: TIBTransaction;
+  function SituacaoNFCe(TipoMomento: TipoMomentoDocumento): String;
+  // TipoMomento define se está lançando ou transmitindo
+  // Se informar lançando conta as notas em contigência não transmitidas
+  // Se informar transmitindo não conta as notas em contigência não transmitidas
+  begin
+    Result := ' (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + SituacaoNFCeNaoTransmitidaContingencia + ' or ' + SituacaoNFCeCancelada + '))';
+    if TipoMomento = tmdTransmitindo then
+       Result := ' (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + ' or ' + SituacaoNFCeCancelada + '))';
+  end;
 begin
   Result := False;
 
-  LeRecursos;  
+  LeRecursos;
 
   iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFCE;
 
@@ -563,19 +580,23 @@ begin
     IBTRANSACTION := CriaIBTransaction(FIBDatabase);
 
     IBQDOC := CriaIBQuery(IBTRANSACTION);
-
+    {
     IBQDOC.Close;
     IBQDOC.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
     IBQDOC.Open;
     dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
+    }
 
     IBQDOC.Close;
     IBQDOC.SQL.Text :=
       'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
       'from NFCE ' +
-      'where DATA >= :INI  ' + 
-      'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCeEmitidoOuCancelado + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
-    IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+      //'where DATA >= :INI  ' +
+      'where (extract(month from DATA) = :MES and extract(year from DATA) = :ANO) ' +
+      'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCe(TipoMomento) + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
+    //IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+    IBQDOC.ParamByName('MES').AsInteger := MonthOf(dtBaseVerificar);
+    IBQDOC.ParamByName('ANO').AsInteger := YearOf(dtBaseVerificar);
     IBQDOC.Open;
 
     iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
@@ -647,8 +668,8 @@ begin
       'where (extract(month from EMISSAO) = :MES and extract(year from EMISSAO) = :ANO) ' +
       'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
     IBQDOC.ParamByName('MES').AsInteger := MonthOf(dtBaseVerificar);
-    IBQDOC.ParamByName('ANO').AsInteger := YearOf(dtBaseVerificar);    
-    IBQDOC.Open;  
+    IBQDOC.ParamByName('ANO').AsInteger := YearOf(dtBaseVerificar);
+    IBQDOC.Open;
 
     iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
 
