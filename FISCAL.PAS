@@ -5167,23 +5167,11 @@ begin
     end;
 
     // Sandro Silva 2023-05-01 if ValidaQtdDocumentoFiscal(ValidaRecursos) = False then
-    if ValidaRecursos.ValidaQtdDocumentoFrente = False then
+    if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor) = False then
     begin
       Form1.bStatusFiscal := False;
       Result := False;
 
-      {Sandro Silva 2023-06-01 inicio
-      SmallMsgBox(PChar('Você já emitiu o número limite de documentos fiscais'+chr(10)+
-                    'permitidos para esta versão do sistema'+chr(10)+
-                    'com o número de série '+ StrTran(Form22.sSerie, 'Número de série: ', '') +', para: '+chr(10)+chr(10)+
-                     AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
-                     AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
-                     'Código: 100 '+chr(10)+chr(10) +
-                     'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-                     'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
-                     ),
-                     'Atenção', MB_ICONWARNING + MB_OK);
-      }
       Form1.MensagemAlertaLimiteDocumentosEmitidos;
 
     end;
@@ -31391,7 +31379,7 @@ begin
   }
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
-    if ValidaRecursos.ValidaQtdDocumentoFrente then
+    if ValidaRecursos.ValidaQtdDocumentoFrente(Form1.ibDataSet27.FieldByName('DATA').AsDateTime) then
     begin
       if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
       if Form1.sModeloECF = '65' then Result := _ecf65_Pagamento(pP1);

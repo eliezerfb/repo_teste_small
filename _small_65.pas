@@ -7225,7 +7225,7 @@ var
     Form1.sCaixa := sCaixaOld;
   end;
 begin
-  if ValidaRecursos.ValidaQtdDocumentoRetaguarda = False then
+  if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor) = False then
   begin
     Form1.MensagemAlertaLimiteDocumentosEmitidos;
   end
