@@ -5167,7 +5167,7 @@ begin
     end;
 
     // Sandro Silva 2023-05-01 if ValidaQtdDocumentoFiscal(ValidaRecursos) = False then
-    if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor) = False then
+    if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor, tmdLancando) = False then
     begin
       Form1.bStatusFiscal := False;
       Result := False;
@@ -31379,7 +31379,7 @@ begin
   }
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
-    if ValidaRecursos.ValidaQtdDocumentoFrente(Form1.ibDataSet27.FieldByName('DATA').AsDateTime) then
+    if ValidaRecursos.ValidaQtdDocumentoFrente(Form1.ibDataSet27.FieldByName('DATA').AsDateTime, tmdLancando) then
     begin
       if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
       if Form1.sModeloECF = '65' then Result := _ecf65_Pagamento(pP1);

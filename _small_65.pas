@@ -289,7 +289,7 @@ uses
   , umfe
   , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
-  ;
+  , uValidaRecursosDelphi7;
 
 function AlertaCredenciadoraCartao(sNomeRede: String): String;
 begin
@@ -7225,7 +7225,7 @@ var
     Form1.sCaixa := sCaixaOld;
   end;
 begin
-  if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor) = False then
+  if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor, tmdTransmitindo) = False then
   begin
     Form1.MensagemAlertaLimiteDocumentosEmitidos;
   end
