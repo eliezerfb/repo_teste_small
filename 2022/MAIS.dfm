@@ -10,7 +10,7 @@ object Form1: TForm1
   BorderStyle = bsSingle
   Caption = 'Small'
   ClientHeight = 809
-  ClientWidth = 1211
+  ClientWidth = 1191
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -5934,7 +5934,7 @@ object Form1: TForm1
       TabOrder = 0
       Text = 'Edit2'
     end
-    object Panel3: TPanel
+    object pnInformacaoObterSmallComFuncoes: TPanel
       Left = 72
       Top = 336
       Width = 400
@@ -13616,6 +13616,7 @@ object Form1: TForm1
     end
     object Configuraes1: TMenuItem
       Caption = 'Configura'#231#245'es'
+      OnClick = Configuraes1Click
       object TabeladeICMparatodososestados1: TMenuItem
         Caption = 'Configura'#231#227'o de ICMS e ISS...'
         OnClick = TabeladeICMparatodososestados1Click
