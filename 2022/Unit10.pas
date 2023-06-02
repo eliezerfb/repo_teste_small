@@ -7467,6 +7467,7 @@ var
   documentoAtivo : variant;
   J , I : Integer;
   iSrc: Integer;
+  vDescricaoBusca : string;
 
   function DownloadArquivoImg(const AOrigem: String; ADestino: String): Boolean;
   const BufferSize = 1024;
@@ -7518,7 +7519,10 @@ begin
           WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+Form7.ibDataSet4REFERENCIA.AsString+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
         end else
         begin
-          WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+Form7.ibDataSet4DESCRICAO.AsString+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
+          vDescricaoBusca := UTF8Encode(Form7.ibDataSet4DESCRICAO.AsString);
+
+          //WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+Form7.ibDataSet4DESCRICAO.AsString+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
+          WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+vDescricaoBusca+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
         end;
         
         while (Form10.Tag < 33) do
@@ -7611,16 +7615,11 @@ begin
             sLinkDaFoto := WebBrowser1.OleObject.Document.Images.Item(iSrc).Src;
             if (sLinkDaFoto <> '') then
             begin
-
               try
                 // Faz o download dA Imagem sLinkDaFoto e salva no 'c:\tempo.jpg'
-                //try
                   DownloadArquivoImg(PChar(sLinkDaFoto), PChar(Form10.sNomeDoJPG));
-                //finally
-                  //
                   if FileExists(Form10.sNomeDoJPG) then
                   begin
-                    //
                     //try
                       // Sandro Silva 2022-09-27 AtualizaTela(True);
                     if AtualizaTela(True) then
@@ -7660,11 +7659,7 @@ begin
                         end;
                       end;
                     end;
-                    //end;
                   end;
-                  //
-                //end;
-                //
               except
                 ShowMessage('Download falhou!!!');
               end;
@@ -7681,8 +7676,6 @@ begin
           {Sandro Silva 2022-09-26 fim}
 
           Screen.Cursor             := crDefault;              // Cursor de Aguardo
-          //
-          //
         except end;
       end;
     end;
