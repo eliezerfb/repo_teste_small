@@ -48,11 +48,14 @@ type
     function ValidaQtdDocumentoRetaguarda(dtBaseVerificar: TDate): Boolean;
     function RecursoQuantidade(sRecurso: TRecursos): Integer;
     function RecursoQtd(sRecurso: TRecursos): Integer;
+    function DataDoServidor: TDate;
     property IBDATABASE: TIBDatabase read FIBDatabase write SetIBDatabase;
     property rsRecursoSistema: TRecursosSistema read FrsRecursoSistema write FrsRecursoSistema;
   end;
 
 implementation
+
+uses DateUtils;
 
 { TValidaRecurso }
 
@@ -600,7 +603,7 @@ var
   iQtdEmitido: Integer;
   iQtdPermitido: Integer;
   IBQDOC: TIBQuery;
-  dtDataServidor: TDate;
+  //dtDataServidor: TDate;
   IBTRANSACTION: TIBTransaction;
 begin
   Result := False;
@@ -620,12 +623,14 @@ begin
     IBTRANSACTION := CriaIBTransaction(FIBDatabase);
 
     IBQDOC := CriaIBQuery(IBTRANSACTION);
-
+    {
     IBQDOC.Close;
     IBQDOC.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
     IBQDOC.Open;
-    dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
+    }
+    //dtDataServidor := DataDoServidor;// IBQDOC.FieldByName('DATAATUAL').AsDateTime;
 
+    {
     IBQDOC.Close;
     IBQDOC.SQL.Text :=
       'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
@@ -633,8 +638,17 @@ begin
       'where EMISSAO >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
       'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
     IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
-    //IBQDOC.ParamByName('FIM').AsString := FormatFloat('00', DaysInAMonth(YearOf(dtDataServidor), MonthOf(dtDataServidor))) + FormatDateTime('/mm/yyyy', dtDataServidor);
     IBQDOC.Open;
+    }
+    IBQDOC.Close;
+    IBQDOC.SQL.Text :=
+      'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
+      'from VENDAS ' +
+      'where (extract(month from EMISSAO) = :MES and extract(year from EMISSAO) = :ANO) ' +
+      'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
+    IBQDOC.ParamByName('MES').AsInteger := MonthOf(dtBaseVerificar);
+    IBQDOC.ParamByName('ANO').AsInteger := YearOf(dtBaseVerificar);    
+    IBQDOC.Open;  
 
     iQtdEmitido := IBQDOC.FieldByName('DOCUMENTOSEMITIDOS').AsInteger;
 
@@ -646,7 +660,6 @@ begin
     except
     end;
 
-    //if (iQtdEmitido >= 1) and (iQtdEmitido <= iQtdPermitido) then
     if (iQtdPermitido - iQtdEmitido) > 0 then
       Result := True;
 
@@ -662,6 +675,26 @@ begin
   Mais1ini := TIniFile.Create('WIND0WS.L0G');
   Result := Mais1Ini.ReadString('LICENCA','Ser','');
   Mais1ini.Free;
+end;
+
+function TValidaRecurso.DataDoServidor: TDate;
+var
+  IBTRANSACTION: TIBTransaction;
+  IBQ: TIBQuery;
+begin
+  IBTRANSACTION := CriaIBTransaction(FIBDatabase);
+  IBQ := CriaIBQuery(IBTRANSACTION);
+
+  Result := Date;
+  try
+    IBQ.Close;
+    IBQ.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
+    IBQ.Open;
+    Result := IBQ.FieldByName('DATAATUAL').AsDateTime;
+  except
+  end;
+  FreeAndNil(IBQ);
+  FreeAndNil(IBTRANSACTION);
 end;
 
 end.
