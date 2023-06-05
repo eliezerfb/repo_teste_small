@@ -11,9 +11,9 @@ type
   TTipoForm = (tfAdquirente, tfFabricanteSAT, tfPOS, tfTEF);
 
   TForm10 = class(TForm)
-    Panel1: TPanel;
-    Button1: TBitBtn;
-    Button2: TBitBtn;
+    pnBotoes: TPanel;
+    btnMais: TBitBtn;
+    btnMenos: TBitBtn;
     Button3: TBitBtn;
     Panel2: TPanel;
     ListBox1: TListBox;
@@ -24,10 +24,12 @@ type
     procedure ListBox1DblClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btnMaisClick(Sender: TObject);
+    procedure btnMenosClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FTipoForm: TTipoForm;
     FbFuncoesADM: Boolean;
@@ -75,28 +77,16 @@ begin
 end;
 
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
-//var
-//  Mais1Ini : TiniFile;
 begin
   case FTipoForm of
     tfTEF:
       begin
-       {Sandro Silva 2022-06-24 inicio
-        //
-        // Form10 devera devolver sDiretorio, sResp, sReq, sExec
-        //
-        Mais1ini := TIniFile.Create('FRENTE.INI');
-        Mais1Ini.WriteString('Frente de caixa','TEF USADO',Form10.sNomeDoTEF);
-        //
-        Form1.sDiretorio := AllTrim(Mais1Ini.ReadString(Form10.sNomeDoTEF,'Pasta','XXXXXXXX'));
-        Form1.sReq       := AllTrim(Mais1Ini.ReadString(Form10.sNomeDoTEF,'Req','REQ'));
-        Form1.sResp      := AllTrim(Mais1Ini.ReadString(Form10.sNomeDoTEF,'Resp','RESP'));
-        Form1.sExec      := AllTrim(Mais1Ini.ReadString(Form10.sNomeDoTEF,'Exec','XXX.XXX'));
-        Mais1Ini.Free;
-        //
-        }
+        {Sandro Silva 2023-06-05 inicio
         AcionaTEF;
-        {Sandro Silva 2022-06-24 fim}
+        }
+        if ModalResult = mrOk then
+          AcionaTEF;
+        {Sandro Silva 2023-06-05 fim}
       end;
     tfPOS:
       begin
@@ -127,35 +117,17 @@ begin
   sSecoes  := TStringList.Create;
   Mais1ini := TIniFile.Create('FRENTE.INI');
   Mais1Ini.ReadSections(sSecoes);
-  //
+
   case FTipoForm of
     tfTEF:
       begin
-        {
-        Form10.sNomeDoTEF := AllTrim(Mais1Ini.ReadString('Frente de caixa','TEF USADO','TEF_DISC'));
-        //
-        J := 0;
-        //
-        for I := 0 to (sSecoes.Count - 1) do
-        begin
-          if Mais1Ini.ReadString(sSecoes[I],'bAtivo','Não') = 'Sim' then
-          begin
-            ListBox1.Items.Add(sSecoes[I]);
-            if Form10.sNomeDoTEF = sSecoes[I] then
-              ListBox1.ItemIndex := J;
-            J := J + 1;
-          end;
-        end;
-        //
-        }
         ListarTEFAtivos(False); // Sandro Silva 2022-06-24
       end;
     tfPOS:
       begin
-        //
-        //
+
         J := 0;
-        //
+
         for I := 0 to (sSecoes.Count - 1) do
         begin
           if Mais1Ini.ReadString(sSecoes[I],'CARTAO ACEITO','NAO') = 'SIM' then
@@ -166,7 +138,7 @@ begin
             J := J + 1;
           end;
         end;
-        //
+
       end;
     tfAdquirente:
       begin
@@ -227,41 +199,39 @@ end;
 procedure TForm10.ListBox1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_RETURN then
   begin
-    //
     case FTipoForm of
       tfTEF, tfPOS:
         begin
           SelecionarAdministradora;
+          ModalResult := mrOk; // Sandro Silva 2023-06-05
         end;
       tfAdquirente:
         begin
           SelecionarAdquirente;
+          Close;
         end;
     end;
-    Close;
-    //
+    // Sandro Silva 2023-06-05 Close;
   end;
-  //
 end;
 
 procedure TForm10.ListBox1DblClick(Sender: TObject);
 begin
-  //
   case FTipoForm of
     tfTEF, tfPOS:
       begin
         SelecionarAdministradora;
+        ModalResult := mrOk; // Sandro Silva 2023-06-05
       end;
     tfAdquirente:
       begin
         SelecionarAdquirente;
+        Close;        
       end;
   end;
-  Close;
-  //
+  // Sandro Silva 2023-06-05 Close;
 end;
 
 procedure TForm10.FormShow(Sender: TObject);
@@ -271,25 +241,26 @@ var
   I, J : Integer;
 begin
   {Sandro Silva 2021-09-21 inicio}
-  Button1.Top  := AjustaAltura(8);
-  Button2.Top  := Button1.Top;
-  Button3.Top  := Button1.Top;
-  Button1.Left := AjustaLargura(15);
-  Button3.Left := Form10.Width - Button3.Width - Button1.Left;
-  Button2.Left := Button1.Left + Button1.Width + AjustaLargura(15) + (Form10.Width - Button1.Width - Button2.Width - Button3.Width - AjustaLargura(30)) div 3;
+  btnMais.Top  := AjustaAltura(8);
+  btnMenos.Top  := btnMais.Top;
+  Button3.Top  := btnMais.Top;
+  btnMais.Left := AjustaLargura(15);
+  Button3.Left := Form10.Width - Button3.Width - btnMais.Left;
+  btnMenos.Left := btnMais.Left + btnMais.Width + AjustaLargura(15) + (Form10.Width - btnMais.Width - btnMenos.Width - Button3.Width - AjustaLargura(30)) div 3;
   {Sandro Silva 2021-09-21 fim}
 
+  ModalResult := mrNone; // Sandro Silva 2023-06-05
   //
   sSecoes := TStringList.Create;
   Mais1ini := TIniFile.Create('FRENTE.INI');
   case FTipoForm of
     tfPOS:
       begin
-        //
+
         Mais1Ini.ReadSections(sSecoes);
-        //
+
         J := 0;
-        //
+
         for I := 0 to (sSecoes.Count - 1) do
         begin
           if Mais1Ini.ReadString(sSecoes[I],'CARTAO ACEITO','NAO') = 'SIM' then
@@ -297,25 +268,24 @@ begin
             J := J + 1;
           end;
         end;
-        //
+
         if J=0 then
         begin
-          //
+
           if Mais1Ini.ReadString('VISA CREDITO','CARTAO ACEITO','XXX') = 'XXX' then
           begin
             Mais1Ini.WriteString('VISA CREDITO','CARTAO ACEITO','SIM');
           end;
-          //
+
           if Mais1Ini.ReadString('VISA DEBITO','CARTAO ACEITO','XXX') = 'XXX' then
           begin
             Mais1Ini.WriteString('VISA DEBITO','CARTAO ACEITO','SIM');
           end;
-          //
         end;
       end;
     tfTEF:
       begin
-      //
+
       end;
     tfAdquirente:
       begin
@@ -332,7 +302,7 @@ begin
 
             if Mais1Ini.ReadString(sSecoes.Strings[I], 'Nome', '') = Form1.sUltimaAdquirenteUsada then
               ListBox1.ItemIndex := ListBox1.Count - 1; // Seleciona no LIstBox
-              
+
           end;
         end;
         ListBox1.SetFocus; // Sandro Silva 2017-05-19
@@ -341,12 +311,14 @@ begin
   sSecoes.Free;
   Mais1ini.Free;
 
+  Application.ProcessMessages; // Sandro Silva 2023-06-05
+  Application.BringToFront; // Sandro Silva 2023-06-05
 end;
 
 procedure TForm10.Button3Click(Sender: TObject);
 begin
-  //
-  if AnsiUpperCase(Button3.Caption) = 'OK' then // Sandro Silva 2017-11-07 Polimig 
+
+  if AnsiUpperCase(Button3.Caption) = 'OK' then // Sandro Silva 2017-11-07 Polimig
   begin
     try
       case FTipoForm of
@@ -365,22 +337,22 @@ begin
   else
     bMenuFiscal := True;// Sandro Silva 2017-11-07 Polimig
   Close;
-  //    
+  //
 end;
 
-procedure TForm10.Button1Click(Sender: TObject);
+procedure TForm10.btnMaisClick(Sender: TObject);
 var
   Mais1Ini: TIniFile;
   sNovo : String;
 begin
-  //
+
   sNovo := 'XXX';
   while sNovo <> '' do
   begin
-    //
+
     sNovo := Form1.Small_InputBox('Incluir cartão','Nome e tipo, exemplo: VISA CREDITO, tecle <OK> em branco para sair:','');
     sNovo := AnsiUpperCase(ConverteAcentos(sNovo));// Acerta o texto se digitado com acento e em minúsculo;
-    //
+
     if (pos('CREDITO',sNovo)<>0) or (pos('DEBITO',sNovo)<>0) then
     begin
       if ListBox1.Items.IndexOf(UpperCase(sNOVO)) > -1 then
@@ -397,9 +369,8 @@ begin
 
       AjustaFormCartoes;
 
-      //
       SmallMsg('Cartão '+sNovo+' aceito.');
-      //
+
     end else
     begin
       if Alltrim(sNovo)<>'' then SmallMsg('Use o nome do cartão + a palavra DEBITO ou CREDITO.');
@@ -407,11 +378,11 @@ begin
   end;
 end;
 
-procedure TForm10.Button2Click(Sender: TObject);
+procedure TForm10.btnMenosClick(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
+
   if ListBox1.ItemIndex < 0 then
   begin
     SmallMsg('Selecione um cartão');
@@ -430,24 +401,17 @@ begin
     Form10.Height := Form10.Height - AjustaAltura(30); // Sandro Silva 2021-09-21 Form10.Height - Form1.AjustaAltura(30); // Sandro Silva 2021-08-27 Form10.Height := Form10.Height - 30;
   end;
   AjustaFormCartoes;
-  //
+
 end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
   // Ajusta tamanho form e posição dos botões
+  Form10.KeyPreview := True; // Sandro Silva 2023-06-05
   AjustaResolucao(Form10);
   Form10.OnPaint := Form10.OnResize;
   Form10.Width   := AjustaLargura(330);
 
-  {
-  Button1.Top  := AjustaAltura(8);
-  Button2.Top  := Button1.Top;
-  Button3.Top  := Button1.Top;
-  Button1.Left := AjustaLargura(15);
-  Button3.Left := Form10.Width - Button3.Width - Button1.Left;
-  Button2.Left := Button1.Left + Button1.Width + AjustaLargura(15) + (Form10.Width - Button1.Width - Button2.Width - Button3.Width - AjustaLargura(30)) div 3;
-  }
 end;
 
 procedure TForm10.FormResize(Sender: TObject);
@@ -462,28 +426,15 @@ procedure TForm10.AjustaFormCartoes;
 {Sandro Silva 2014-06-30 inicio
 Ajusta as dimensões do form dos cartões}
 begin
-  {Sandro Silva 2021-08-27 inicio
-  // Ajusta o form conforme a quantidade de cartões configurados
-  Form10.Height := (ListBox1.Items.Count * 30) + 1;
-
-  //Ajusta altura quando botões estão visíveis
-  if Panel1.Visible then
-    Form10.Height := Form10.Height + 40;
-
-  if (Form10.Height) > 400 then
-    Form10.Height := 400;
-  }
-
   // Ajusta o form conforme a quantidade de cartões configurados
   Form10.Height := (ListBox1.Items.Count * 30) + AjustaAltura(1); // Sandro Silva 2021-09-21 Form10.Height := (ListBox1.Items.Count * 30) + Form1.AjustaAltura(1);
 
   //Ajusta altura quando botões estão visíveis
-  if Panel1.Visible then
+  if pnBotoes.Visible then
     Form10.Height := Form10.Height + AjustaAltura(40); // Sandro Silva 2021-09-21  Form10.Height := Form10.Height + Form1.AjustaAltura(40); // Sandro Silva 2021-08-27 40;
 
   if (Form10.Height) > AjustaAltura(400) then // Sandro Silva 2021-09-21 if (Form10.Height) > Form1.AjustaAltura(400) then
     Form10.Height := AjustaAltura(400); // Sandro Silva 2021-09-21 Form10.Height := Form1.AjustaAltura(400);
-  {Sandro Silva 2021-08-27 fim}
 
   Form10.Visible := True; // Para usuário não ver o form sendo redimensionado
 end;
@@ -498,7 +449,7 @@ begin
     if ListBox1.ItemIndex >= 0 then // não ocorrer exception quando não seleciona um cartão e fecha a tela
     begin
       Form10.sNomeDoTEF := ListBox1.Items[ListBox1.ItemIndex];
-      if (Form10.Panel1.Visible = False) and (Form1.sTef <> 'Sim') then
+      if (Form10.pnBotoes.Visible = False) and (Form1.sTef <> 'Sim') then
       begin
         {Sandro Silva 2022-06-15 inicio}
         Form1.sTransaca := '';
@@ -582,28 +533,7 @@ begin
               if (Form1.sParcelas = LimpaNumero(Form1.sParcelas)) and (StrToIntDef(Form1.sParcelas, 0) > 0) then
                 Break;
             end;
-          end
-          else
-          begin
-            {Sandro Silva 2022-06-15 inicio
-            Form1.sTransaca := '';
-            Form1.sAutoriza := ''; // Sandro Silva 2018-07-03
-            Form1.sNomeRede := Trim(StringReplace(StringReplace(AnsiUpperCase(ConverteAcentos(ListBox1.Items[ListBox1.ItemIndex])), 'CREDITO', '', [rfReplaceAll]), 'DEBITO', '', [rfReplaceAll]));
-            Form1.sTipoParc := '0';
-            Form1.sParcelas := '1';
-            }
           end;
-
-        end
-        else
-        begin
-          {Sandro Silva 2022-06-15 inicio
-          Form1.sTransaca := '';
-          Form1.sAutoriza := ''; // Sandro Silva 2018-07-03
-          Form1.sNomeRede := Trim(StringReplace(StringReplace(AnsiUpperCase(ConverteAcentos(ListBox1.Items[ListBox1.ItemIndex])), 'CREDITO', '', [rfReplaceAll]), 'DEBITO', '', [rfReplaceAll]));
-          Form1.sTipoParc := '0';
-          Form1.sParcelas := '1';
-          }
         end;
       end;
     end;
@@ -722,9 +652,9 @@ begin
       Mais1Ini.ReadSections(sSecoes);
 
       Form10.sNomeDoTEF := AllTrim(Mais1Ini.ReadString('Frente de caixa','TEF USADO','TEF_DISC'));
-      //
+
       J := 0;
-      //
+
       ListBox1.Clear;
       for I := 0 to (sSecoes.Count - 1) do
       begin
@@ -753,12 +683,22 @@ begin
     end;
     if SelecionarUnicoCadastrado = False then
       Result := True;
-    //
+
   finally
     sSecoes.Free; // Sandro Silva 2017-05-19
     Mais1Ini.Free;
   end;
 
+end;
+
+procedure TForm10.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+  begin
+    ModalResult := mrCancel;
+//    Close;
+  end;
 end;
 
 end.

@@ -5,6 +5,7 @@ interface
 uses
   Windows
   , Classes
+  , Controls
   , ShellApi
   , FileCtrl
   , Forms
@@ -117,6 +118,7 @@ begin
       Inc(iTentativa);
       if iTentativa > MAX_TENTATIVA_ABRIR_TEF then
       begin
+        Application.ProcessMessages;
         if Application.MessageBox(PChar('Não foi possível iniciar automaticamente o gerenciador padrão do TEF ' +  NomeTefIni + chr(10)+
                                         'Tentar iniciar novamente?'),
                                         'Operador', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON1) = idNo then
@@ -125,22 +127,26 @@ begin
           Break;
         end;
       end;
-      //
+
       if FileExists(p_Exec) then
       begin
         if iTentativa > MAX_TENTATIVA_ABRIR_TEF then
           iTentativa := 1;
 
-        //
         if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, sVendaImportando) > 0 then
+        begin
           Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda') // Sandro Silva 2022-08-08 LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+        end
         else
+        begin
+          Application.ProcessMessages;
           Application.MessageBox(PChar('O gerenciador padrão do TEF ' + NomeTefIni + ' não está ativo'+chr(10)+'e será ativado automaticamente!' + Chr(10) + 'Tentativa ' + IntToStr(iTentativa) + ' de ' + IntToStr(MAX_TENTATIVA_ABRIR_TEF)),'Operador',mb_Ok + MB_ICONEXCLAMATION);
-        //
+        end;
+
         try
           ChDir('c:\'+p_diretorio);
         except end;
-        //
+
         try
 
           ShellExecute(0, 'open', pChar(p_Exec), '', '', sw_normal);
@@ -390,10 +396,14 @@ begin
           begin
             if Form10.ListarTEFAtivos(True) = False then
             begin
+              // Sandro Silva 2023-06-05
               Form10.ShowModal;
+              //if Form10.ShowModal = mrCancel then
+                Break;
             end;
           end;
           {Sandro Silva 2022-06-24 fim}
+
           if Form1.UsaIntegradorFiscal() then
           begin
 
@@ -401,7 +411,10 @@ begin
             // Sandro Silva 2021-11-29 bIniciarTEF := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(dValorPagarCartao), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
             bIniciarTEF := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(dValorPagarCartao), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False);
 
-          end;// if Form1.UsaIntegradorFiscal() then 
+          end;// if Form1.UsaIntegradorFiscal() then
+
+          //if Form10.ModalResult = mrCancel then
+          //  bIniciarTEF := False;
 
           if bIniciarTEF then
           begin
@@ -421,18 +434,23 @@ begin
             //
             if not FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS') then
             begin
-              //
+
               if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
+              begin
                 Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda') // Sandro Silva 2022-08-08 LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+              end
               else
+              begin
+                Application.ProcessMessages;
                 Application.MessageBox('O gerenciador padrão do TEF não está ativo.','Operador',mb_Ok + MB_ICONEXCLAMATION);
-              //
+              end;
+
               TEFLimparPastaRetorno('c:\'+Form1.sDiretorio+'\'+Form1.sRESP); // Form1.TEFLimparPastaRetorno('c:\'+Form1.sDiretorio+'\'+Form1.sRESP);
               DeleteFile('c:\'+Form1.sDiretorio+'\'+Form1.sREQ+'\INTPOS.001');
               DeleteFile('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS');
-              //
+
               Result := False;
-              //
+
             end else
             begin
 
@@ -1296,13 +1314,13 @@ begin
   Form10.TipoForm  := tfTEF; // Sandro Silva 2017-05-18
   if Form1.touch_F9.Visible then
   begin
-    Form10.FuncoesAdmTEF   := True; // Sandro Silva 2017-11-07 Polimig
-    Form10.Panel1.Visible  := True; // Sandro Silva 2017-11-07 Polimig
-    Form10.Button1.Visible := False; // Sandro Silva 2017-11-07 Polimig
-    Form10.Button2.Visible := False; // Sandro Silva 2017-11-07 Polimig
-    Form10.Button3.Caption := 'Menu Fiscal'; // Sandro Silva 2017-11-07 Polimig
-    Form10.Button3.Width   := AjustaLargura(120); // Sandro Silva 2021-09-21 Form10.Button3.Width   := 120; // Sandro Silva 2017-11-07 Polimig
-    Form10.Button3.Left    := AjustaLargura(207) - AjustaLargura(45); // Sandro Silva 2021-09-21 Form10.Button3.Left    := 207 - 45; // Sandro Silva 2017-11-07 Polimig
+    Form10.FuncoesAdmTEF    := True; // Sandro Silva 2017-11-07 Polimig
+    Form10.pnBotoes.Visible := True; // Sandro Silva 2017-11-07 Polimig
+    Form10.btnMais.Visible  := False; // Sandro Silva 2017-11-07 Polimig
+    Form10.btnMenos.Visible := False; // Sandro Silva 2017-11-07 Polimig
+    Form10.Button3.Caption  := 'Menu Fiscal'; // Sandro Silva 2017-11-07 Polimig
+    Form10.Button3.Width    := AjustaLargura(120); // Sandro Silva 2021-09-21 Form10.Button3.Width   := 120; // Sandro Silva 2017-11-07 Polimig
+    Form10.Button3.Left     := AjustaLargura(207) - AjustaLargura(45); // Sandro Silva 2021-09-21 Form10.Button3.Left    := 207 - 45; // Sandro Silva 2017-11-07 Polimig
   end;
 
   while AllTrim(Form1.sDIRETORIO) = '' do
@@ -1313,13 +1331,13 @@ begin
     end;
   end;
 
-  Form10.Button1.Visible := True; // Sandro Silva 2017-11-07 Polimig
-  Form10.Button2.Visible := True; // Sandro Silva 2017-11-07 Polimig
-  Form10.Button3.Caption := 'Ok'; // Sandro Silva 2017-11-07 Polimig
-  Form10.Button3.Width   := AjustaLargura(75); // Sandro Silva 2021-09-21 Form10.Button3.Width   := 75; // Sandro Silva 2017-11-07 Polimig
-  Form10.Button3.Left    := AjustaLargura(207); // Sandro Silva 2021-09-21 Form10.Button3.Left    := 207; // Sandro Silva 2017-11-07 Polimig
+  Form10.btnMais.Visible  := True; // Sandro Silva 2017-11-07 Polimig
+  Form10.btnMenos.Visible := True; // Sandro Silva 2017-11-07 Polimig
+  Form10.Button3.Caption  := 'Ok'; // Sandro Silva 2017-11-07 Polimig
+  Form10.Button3.Width    := AjustaLargura(75); // Sandro Silva 2021-09-21 Form10.Button3.Width   := 75; // Sandro Silva 2017-11-07 Polimig
+  Form10.Button3.Left     := AjustaLargura(207); // Sandro Silva 2021-09-21 Form10.Button3.Left    := 207; // Sandro Silva 2017-11-07 Polimig
 
-  Form10.Panel1.Visible := False; // Sandro Silva 2021-11-11
+  Form10.pnBotoes.Visible := False; // Sandro Silva 2021-11-11
 
   if Form10.bMenuFiscal then
   begin

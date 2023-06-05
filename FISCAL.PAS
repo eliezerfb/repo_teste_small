@@ -26536,10 +26536,10 @@ end;
 procedure TForm1.CartesdecreditoedebitoPOS1Click(Sender: TObject);
 begin
   Timer2.Enabled := False; // Sandro Silva 2016-03-23
-  Form10.Panel1.Visible := True;
+  Form10.pnBotoes.Visible := True;
   Form10.TipoForm := tfPOS; // Sandro Silva 2017-05-18
   Form10.ShowModal;
-  Form10.Panel1.Visible := False;
+  Form10.pnBotoes.Visible := False;
 
   if Form1.UsaIntegradorFiscal then
   begin

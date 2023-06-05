@@ -17,11 +17,12 @@ object Form10: TForm10
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
+  object pnBotoes: TPanel
     Left = 0
     Top = 151
     Width = 297
@@ -34,7 +35,7 @@ object Form10: TForm10
     ParentCtl3D = False
     TabOrder = 0
     Visible = False
-    object Button1: TBitBtn
+    object btnMais: TBitBtn
       Left = 15
       Top = 8
       Width = 75
@@ -47,9 +48,9 @@ object Form10: TForm10
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
-      OnClick = Button1Click
+      OnClick = btnMaisClick
     end
-    object Button2: TBitBtn
+    object btnMenos: TBitBtn
       Left = 111
       Top = 7
       Width = 75
@@ -62,7 +63,7 @@ object Form10: TForm10
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
-      OnClick = Button2Click
+      OnClick = btnMenosClick
     end
     object Button3: TBitBtn
       Left = 207
