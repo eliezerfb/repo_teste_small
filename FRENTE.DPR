@@ -50,9 +50,12 @@ uses
   ufuncoestef in 'ufuncoestef.pas',
   usincronizamobile in 'usincronizamobile.pas',
   uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',
-  //uassinaxmlpafnfce in 'uassinaxmlpafnfce.pas',
   upafnfce in 'upafnfce.pas',
-  ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas';
+  ucredencialtecnospeed in '..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
+  uTypesRecursos in '..\unit_compartilhada\uTypesRecursos.pas',
+  uValidaRecursosDelphi7 in '..\unit_compartilhada\uValidaRecursosDelphi7.pas',
+  uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
+  uCriptografia in '..\unit_compartilhada\uCriptografia.pas';
 
 {$R *.RES}
 
