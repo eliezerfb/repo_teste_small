@@ -1,6 +1,6 @@
 object Form12: TForm12
-  Left = 369
-  Top = 114
+  Left = 612
+  Top = 73
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False

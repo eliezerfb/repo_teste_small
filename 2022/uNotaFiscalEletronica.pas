@@ -269,7 +269,8 @@ uses Mais;
 
 function TITENS001List.Adiciona(DataSetItens: TibDataSet): TITENS001;
 begin
-  if DataSetItens.FieldByName('QUANTIDADE').AsFloat <= 0 then
+  //if DataSetItens.FieldByName('QUANTIDADE').AsFloat <= 0 then Complemento quantidade pode vir como 0
+  if (DataSetItens.FieldByName('QUANTIDADE').AsFloat <= 0) and (DataSetItens.FieldByName('UNITARIO').AsFloat <= 0) then
     Exit;
 
   Result := TITENS001.Create;

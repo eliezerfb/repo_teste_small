@@ -8993,7 +8993,8 @@ begin
   // Não faz nada quando entra a 1 vez
   if Form7.sModulo <> 'CANCELA' then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
   begin
-    if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
+    //if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
+    if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') then //Mauricio Parizotto 2023-06-05 se necessário ajustar o código para  (Form7.ibDataSet15FINNFE.AsString <> '2')
     begin
       Form7.ibDataSet16.DisableControls;
 
@@ -18381,44 +18382,34 @@ procedure TForm7.Vendas_1Click(Sender: TObject);
 var
   Mais1Ini : tIniFile;
 begin
-  //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   FechaTudo(Form1.bFechaTudo);
-  //
+
   Form7.sModulo := 'VENDA';
   Form7.sTitulo := 'Notas fiscais de saída (vendas) série 001';
   Form7.sRPS := 'N';
   Form7.Show;
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   Mais1Ini.WriteString('NOTAS','default','SERIE 1');
   Mais1Ini.Free;
-  //
-  //sSerieNFSelecionada := '001';
 end;
 
 procedure TForm7.Compras_1Click(Sender: TObject);
 begin
-  //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   FechaTudo(Form1.bFechaTudo);
-  //
+
   Form7.sModulo := 'COMPRA';
   Form7.sTitulo := 'Notas fiscais de entrada (compras)';
   Form7.sRPS := 'N';
   Form7.Show;
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
 end;
 
 procedure TForm7.ibDataSet16AfterPost(DataSet: TDataSet);
-//var
-//  IBQESTOQUE: TIBQuery;
 begin
-  //IBQESTOQUE := CriaIBQuery(Form7.IBDataSet99.Transaction);
-  //IBQESTOQUE.DisableControls;
-
   if Form7.sModulo <> 'NAO' then
   begin
     // Descrição em Branco não grava //
@@ -18426,18 +18417,8 @@ begin
     begin
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
-      {IBQESTOQUE.Close;
-      IBQESTOQUE.SQL.Clear;
-      IBQESTOQUE.SQL.Add('select DESCRICAO, PRECO, TIPO_ITEM from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' '); // Ok
-      IBQESTOQUE.Open;
-
-
-      if IBQESTOQUE.FieldByname('TIPO_ITEM').AsString = '09' then
-      begin
-        ShowMessage('O tipo do item NÃO deve ser "09 - Serviço" na guia ICMS.'+chr(10)+'Os serviços devem ser informados na tabela abaixo.' );
-        Form7.ibDataSet16.Delete;
-      end;}
-
+      {Mauricio Parizotto 2023-06-05 Inicio}
+      {
       try
         // Quando não tem produtos cadastrados e pq a NF e de complemento do ICMS
         if Form7.ibDataSet15FINNFE.AsString <> '2' then
@@ -18457,7 +18438,24 @@ begin
         end;
       except
       end;
-      
+      }
+
+      try
+        if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
+        begin
+          //Mauricio Parizotto 2023-04-17
+          if Form12.vNotaFiscal <> nil then
+            Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+        end;
+      except
+      end;
+
+      if Form7.ibDataSet15FINNFE.AsString = '2' then
+      begin
+        Form12.SMALL_DBEdit16.ReadOnly := False;
+      end;
+      {Mauricio Parizotto 2023-06-05 Fim}
+
       Form7.ibDataSet15.EnableControls;
       Screen.Cursor := crDefault;
     end;
@@ -19309,26 +19307,21 @@ procedure TForm7.ibDataSet16QUANTIDADEChange(Sender: TField);
 var
   fDesconto: Real;
 begin
-  //                                               //
   // Quando altera a quantidade recalcula o valor  //
   // total, mas só quando o valor total é alterado //
-  //                                               //
   if AllTrim(Form7.ibDataSet16QUANTIDADE.AsString) <> '' then
   begin
-    //
     if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
     begin
-      //
       fDesconto := 0;
-      //
+
       if Form7.ibDataSet16QUANTIDADE.Asfloat >= Form7.ibDataSet4QTD_PRO1.AsFloat then
         fDesconto := form7.ibDataSet4DESCONT1.AsFloat;
       if Form7.ibDataSet16QUANTIDADE.Asfloat >= Form7.ibDataSet4QTD_PRO2.AsFloat then
         fDesconto := form7.ibDataSet4DESCONT2.AsFloat;
-      //
+
       if fDesconto <> 0 then
       begin
-//        if Form7.ibDataSet4PRECO.AsFloat = Form7.ibDataSet16UNITARIO.AsFloat then
         if Form7.sModulo <> 'ORCAMENTO' then
         begin
           if Application.MessageBox(Pchar('Confirma um desconto de: ' + AllTrim(Format('%12.2n',[fDesconto])) + ' % no produto: ' + Form7.ibDataSet4PRECO.AsString),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION) = IDYES then
@@ -19337,36 +19330,30 @@ begin
           end;
         end;
       end;
-      //
+
       if Arredonda(Form7.ibDataSet16TOTAL.AsFloat,4) <> Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat *  Form7.ibDataSet16UNITARIO.AsFloat,4) then
       begin
         Form7.ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat * Form7.ibDataSet16UNITARIO.AsFloat,4);
       end;
-      //
-      //
     end else
     begin
-      if Form7.ibDataSet16TOTAL.AsFloat <> 0 then
+      //if Form7.ibDataSet16TOTAL.AsFloat <> 0 then Mauricio Parizotto 2023-06-05
+      if (Form7.ibDataSet16TOTAL.AsFloat <> 0) and
+        not (NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString)) then
       begin
         Form7.ibDataSet16TOTAL.AsFloat    := 0;
         Form7.ibDataSet16UNITARIO.AsFloat := 0;
       end;
     end;
   end;
-  //          //
-  // the end  //
-  //          //
 end;
 
 procedure TForm7.ibDataSet16QUANTIDADESetText(Sender: TField;
   const Text: String);
 begin
-  //
   // Quando o produto não ta cadastrado fica como comentário em cinza
-  //
   if ibDataSet16QUANTIDADE.AsFloat <> StrToFloat(Text) then
   begin
-    //
     if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
     begin
       Form7.ibDataSet4.Close;
@@ -19374,7 +19361,7 @@ begin
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' ');
       Form7.ibDataSet4.Open;
     end;
-    //
+
     if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then
     begin
       Form7.ibDataSet16UNITARIO.AsString   := '';
@@ -19390,16 +19377,16 @@ begin
       Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
       Form7.ibDataSet10.Open;
       Form7.ibDataSet10.First;
-      //
+
       if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
       begin
         Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
       end else
       begin
-        //
         // Controle de número de Serie
-        //
-        if StrToFloat(LimpaNumero('0'+Text)) <> 0 then
+        //if StrToFloat(LimpaNumero('0'+Text)) <> 0 then Mauricio Parizotto 2023-06-05
+        if (StrToFloat(LimpaNumero('0'+Text)) <> 0)
+          or (NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString)) then
         begin
           if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then                                      //
           begin                                                                    //
@@ -19432,20 +19419,12 @@ begin
           end;
         end else
         begin
-          //
           // Não permite quantidade negativa
-          //
           Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
-          //
         end;
       end;
     end;
-    //
   end;
-  //
-  //
-  // the end
-  //
 end;
 
 procedure TForm7.ibDataSet16UNITARIOChange(Sender: TField);
