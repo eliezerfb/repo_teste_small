@@ -2678,8 +2678,8 @@ begin
       // Dados do emitente
       //
       Form1.spdNFCeDataSets1.Campo('CNPJ_C02').Value    := LimpaNumero(Form1.ibDataSet13.FieldByname('CGC').AsString); // CNPJ do Emitente
-      Form1.spdNFCeDataSets1.Campo('xNome_C03').Value   := Trim(ConverteAcentos2(Form1.ibDataSet13.FieldByname('NOME').AsString)); // Razao Social ou Nome do Emitente
-      Form1.spdNFCeDataSets1.Campo('xFant_C04').Value   := Trim(ConverteAcentos2(Form1.ibDataSet13.FieldByname('NOME').AsString)); // Nome Fantasia do Emitente
+      Form1.spdNFCeDataSets1.Campo('xNome_C03').Value   := Trim(ConverteAcentosNome(Form1.ibDataSet13.FieldByname('NOME').AsString)); // Razao Social ou Nome do Emitente // Sandro Silva 2023-06-05 Trim(ConverteAcentos2(Form1.ibDataSet13.FieldByname('NOME').AsString)); // Razao Social ou Nome do Emitente
+      Form1.spdNFCeDataSets1.Campo('xFant_C04').Value   := Trim(ConverteAcentosNome(Form1.ibDataSet13.FieldByname('NOME').AsString)); // Nome Fantasia do Emitente // Sandro Silva 2023-06-05 Trim(ConverteAcentos2(Form1.ibDataSet13.FieldByname('NOME').AsString)); // Nome Fantasia do Emitente 
       Form1.spdNFCeDataSets1.Campo('xLgr_C06').Value    := Trim(ConverteAcentos2(Endereco_Sem_Numero(Form1.ibDataSet13.FieldByname('ENDERECO').AsString))); // Logradouro do Emitente
       Form1.spdNFCeDataSets1.Campo('nro_C07').Value     := Trim(Numero_Sem_Endereco(Form1.ibDataSet13.FieldByname('ENDERECO').AsString)); // Numero do Logradouro do Emitente
       Form1.spdNFCeDataSets1.Campo('xBairro_C09').Value := Trim(ConverteAcentos2(Form1.ibDataSet13.FieldByname('COMPLE').AsString)); // Bairro do Emitente
@@ -2827,7 +2827,7 @@ begin
             //
             // Ronei - Alteracao feita a pedido de Lucilene - Auditora fiscal do TO
             //
-            Form1.spdNFCeDataSets1.Campo('xNome_E04').Value := Trim(ConverteAcentos2(Form1.ibDataSet2.FieldByName('NOME').AsString)); //  Sandro Silva 2018-10-31  AllTrim(Form1.ibDataSet2.FieldByName('NOME').AsString); // Razao social ou Nome do Destinatário
+            Form1.spdNFCeDataSets1.Campo('xNome_E04').Value := Trim(ConverteAcentosNome(Form1.ibDataSet2.FieldByName('NOME').AsString)); // Sandro Silva 2023-06-05 Trim(ConverteAcentos2(Form1.ibDataSet2.FieldByName('NOME').AsString));
             //
           end;
           //
@@ -2912,7 +2912,7 @@ begin
           begin
             //
             if AllTrim(Form2.Edit8.Text)<>'' then
-              Form1.spdNFCeDataSets1.Campo('xNome_E04').Value := Trim(ConverteAcentos2(AllTrim(Form2.Edit8.Text))); //  Sandro Silva 2018-10-31  AllTrim(Form2.Edit8.Text); // else Form1.spdNFCeDataSets1.Campo('xNome_E04').Value := 'VENDA A CONSUMIDOR'; // Razao social ou Nome do Destinatário
+              Form1.spdNFCeDataSets1.Campo('xNome_E04').Value := Trim(ConverteAcentosNome(Trim(Form2.Edit8.Text))); // Sandro Silva 2023-06-05 Trim(ConverteAcentos2(AllTrim(Form2.Edit8.Text))); //  Sandro Silva 2018-10-31  AllTrim(Form2.Edit8.Text); // else Form1.spdNFCeDataSets1.Campo('xNome_E04').Value := 'VENDA A CONSUMIDOR'; // Razao social ou Nome do Destinatário
             //
           end;
           //
