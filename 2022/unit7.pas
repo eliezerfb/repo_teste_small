@@ -12915,6 +12915,7 @@ begin
   CancelarNFe1.Visible                             := False;
   CCartadeCorreoEletronicaCCe1.Visible             := False;
   IImprimirCartadeCorreoEletronicaCCe1.Visible     := False;
+  EEnviarcartadecorreoporemail1.Visible            := False; // Sandro Silva 2023-06-05 Faltou no card 6107
   N6EnviarNFeConsultareImprimirDANFE1.Visible      := False;
   N9ImprimirDANFEemformulriodecontingncia1.Visible := False;
   VVerificaresquemashema1.Visible                  := False;
@@ -13053,6 +13054,7 @@ begin
         CancelarNFe1.Visible                             := True;
         CCartadeCorreoEletronicaCCe1.Visible             := True;
         IImprimirCartadeCorreoEletronicaCCe1.Visible     := True;
+        EEnviarcartadecorreoporemail1.Visible            := True; // Sandro Silva 2023-06-05 Faltou no card 6107
         N6EnviarNFeConsultareImprimirDANFE1.Visible      := True;
         N9ImprimirDANFEemformulriodecontingncia1.Visible := True;
         VVerificaresquemashema1.Visible                  := True;
@@ -13113,6 +13115,8 @@ begin
         N5EnviarDANFEporemail1.Enabled       := True;
         CancelarNFe1.Enabled                 := True;
         CCartadeCorreoEletronicaCCe1.Enabled := True;
+        IImprimirCartadeCorreoEletronicaCCe1.Enabled := Trim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr; // Sandro Silva 2023-06-05 Deve ficar enable se for venda com NF-e
+        EEnviarcartadecorreoporemail1.Enabled        := Trim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr; // Sandro Silva 2023-06-05 Deve ficar enable se for venda com NF-e
         //
         N9ImprimirDANFEemformulriodecontingncia1.Enabled            := False;
       end else
@@ -13124,6 +13128,9 @@ begin
 //        if Alltrim(Form7.ibDataSet15NFERECIBO.AsString) = '' then N3ConsultarNFe1.Enabled := False else N3ConsultarNFe1.Enabled := True;
         CancelarNFe1.Enabled                 := False;
         CCartadeCorreoEletronicaCCe1.Enabled := False;
+        IImprimirCartadeCorreoEletronicaCCe1.Enabled := False; // Sandro Silva 2023-06-05 Deve ficar enable se for venda com NF-e
+        EEnviarcartadecorreoporemail1.Enabled        := False; // Sandro Silva 2023-06-05 Deve ficar enable se for venda com NF-e
+
         //
         N9ImprimirDANFEemformulriodecontingncia1.Enabled            := True;
         //
@@ -13135,9 +13142,11 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
       Form7.ibDataSet2.Open;
 
+      {Sandro Silva 2023-06-05 inicio
       IImprimirCartadeCorreoEletronicaCCe1.Enabled := Alltrim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr;
       EEnviarcartadecorreoporemail1.Enabled        := Alltrim(Form7.ibDataSet15CCEXML.AsString) <> EmptyStr;
-      
+      }
+
       cTransp := Form7.ibDataSet15TRANSPORTA.AsString;
       if EnviarNFSeporemail1.Visible then // Se for Serviço não tem transportador
         cTransp := EmptyStr;
