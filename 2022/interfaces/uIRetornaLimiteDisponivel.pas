@@ -13,6 +13,7 @@ type
   function setLimiteCredito: IRetornaLimiteDisponivel; overload;
   function setLimiteCredito(AnValorCredito: Currency = 0): IRetornaLimiteDisponivel; overload;
   function RetornarValor: Currency;
+  function RetornarValorContasReceber: Currency;
   function TestarLimiteDisponivel: Boolean;
   function CarregarDados: IRetornaLimiteDisponivel;
   end;

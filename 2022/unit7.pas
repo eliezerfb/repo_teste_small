@@ -2238,7 +2238,9 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRetornaCaptionEmailPopUpDocs
   , uIRetornaCaptionEmailPopUpDocs
   , uItensInativosImpXMLEntrada
-  , uTextoEmailFactory;
+  , uTextoEmailFactory
+  , uRetornaLimiteDisponivel
+  , uIRetornaLimiteDisponivel;
 
 {$R *.DFM}
 
@@ -13465,17 +13467,13 @@ end;
 
 procedure TForm7.ibDataSet15TOTALChange(Sender: TField);
 var
-  fCredito: Real;
+  nCredito: Real;
+  oLimDisp: IRetornaLimiteDisponivel;
 begin
-  //
   if (Form7.sModulo = 'VENDA') then
   begin
-    //
-    // Relaciona as tabelas
-    //
     if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-    //
     if Form7.ibDataSet2NOME.AsString <> Form7.ibDataSet15CLIENTE.AsString then
     begin
       Form7.ibDataSet2.Close;
@@ -13483,44 +13481,38 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-    //
     if (Form7.ibDataSet2CREDITO.AsFloat <> 0) and (ibDataSet15TOTAL.Asfloat <> 0) and (ibDataSet15EMITIDA.AsString <> 'S') then
     begin
-      //
       if UpperCase(Form7.ibDataSet14INTEGRACAO.AsString) = 'RECEBER' then
       begin
-        Form7.ibDataSet99.Close;
-        Form7.ibDataSet99.Selectsql.Clear;
-        Form7.IbDataSet99.SelectSQL.Add('select sum(VALOR_DUPL) from RECEBER where VALOR_RECE = 0 and NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' ');
-        Form7.ibDataSet99.Open;
-        //
-        fCredito := Form7.ibDataSet2CREDITO.AsFloat - ibDataSet15TOTAL.Asfloat - ibDataSet99.FieldByname('SUM').AsFloat;
-        //
-        if (fCredito < 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'S') then
+        oLimDisp := TRetornaLimiteDisponivel.New
+                                            .setDataBase(IBDatabase1)
+                                            .setCliente(Form7.ibDataSet2NOME.AsString)
+                                            .CarregarDados;
+
+        nCredito := oLimDisp.RetornarValor - ibDataSet15TOTAL.Asfloat;
+
+        if (nCredito < 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'S') then
         begin
-          ShowMessage('Atenção:'+Chr(10)
-                                                 +Chr(10)
-                                       +'Cliente: '+Form7.ibDataSet2NOME.AsString + Chr(10)
-                                       + Chr(10)
-                                       +'Limite de crédito: R$ '+Format('%10.2n',[Form7.ibDataSet2CREDITO.AsFloat]) + '                ' + Chr(10)
-                                       +'Contas a receber: R$ '+Format('%10.2n',[Form7.ibDataSet99.FieldByname('SUM').AsFloat]) + Chr(10)
-                                       +'Total da nota: R$ '+Format('%10.2n',[Form7.ibDataSet15TOTAL.Asfloat]) + Chr(10)
-                                       +Chr(10)
-                                       +'Limite de crédito excedido em: R$ '+Format('%10.2n',[(fCredito)*-1])
-                                       + Chr(10)+chr(10)+chr(10)
-                                       +'           MUDE A FORMA DE PAGAMENTO.                      '
-                                       + Chr(10));
+          ShowMessage('Atenção:'+sLineBreak
+                                + sLineBreak
+                                + 'Cliente: '+Form7.ibDataSet2NOME.AsString + sLineBreak
+                                + sLineBreak
+                                + 'Limite de crédito: R$ '+Format('%10.2n',[Form7.ibDataSet2CREDITO.AsFloat]) + '                ' + sLineBreak
+                                + 'Contas a receber: R$ '+Format('%10.2n',[oLimDisp.RetornarValorContasReceber]) + sLineBreak
+                                + 'Total da nota: R$ '+Format('%10.2n',[Form7.ibDataSet15TOTAL.Asfloat]) + sLineBreak
+                                + sLineBreak
+                                + 'Limite de crédito excedido em: R$ '+Format('%10.2n',[(nCredito)*-1])
+                                + sLineBreak+sLineBreak+sLineBreak
+                                + '           MUDE A FORMA DE PAGAMENTO.                      '
+                                + sLineBreak);
 
           Form7.ibDataSet14.Locate('INTEGRACAO','CAIXA',[loCaseInsensitive, loPartialKey]);
           Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
         end;
-        //
-        Form7.ibDataSet99.Close;
-        //
       end;
     end;
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet18UFSetText(Sender: TField; const Text: String);

@@ -21,6 +21,7 @@ type
     function setLimiteCredito(AnValorCredito: Currency = 0): IRetornaLimiteDisponivel; overload;
     function CarregarDados: IRetornaLimiteDisponivel;
     function RetornarValor: Currency;
+    function RetornarValorContasReceber: Currency;
     function TestarLimiteDisponivel: Boolean;
   end;
 
@@ -48,6 +49,8 @@ begin
 end;
 
 function TRetornaLimiteDisponivel.CarregarDados: IRetornaLimiteDisponivel;
+const
+  _cCampoReceber = 'SUM(COALESCE(RECEBER.VALOR_DUPL,0))';
 var
   cCredito: String;
 begin
@@ -63,8 +66,9 @@ begin
   Fqry.Close;
   Fqry.SQL.Clear;
   Fqry.SQL.Add('SELECT');
-  Fqry.SQL.Add('    COUNT(CLIFOR.NOME) AS QTDE');
-  Fqry.SQL.Add('    , CAST(COALESCE(' + cCredito + ',0) - SUM(COALESCE(RECEBER.VALOR_DUPL,0)) AS NUMERIC(18,2)) AS VALOR');
+  Fqry.SQL.Add('    ' + _cCampoReceber + ' AS TOTRECEBER');
+  Fqry.SQL.Add('    , COUNT(CLIFOR.NOME) AS QTDE');
+  Fqry.SQL.Add('    , CAST(COALESCE(' + cCredito + ',0) - '+_cCampoReceber+' AS NUMERIC(18,2)) AS VALOR');
   Fqry.SQL.Add('FROM CLIFOR');
   Fqry.SQL.Add('LEFT JOIN RECEBER');
   Fqry.SQL.Add('    ON (RECEBER.NOME=CLIFOR.NOME)');
@@ -141,6 +145,14 @@ begin
   Result := Self;
   
   FnVlrLimite := AnValorCredito;
+end;
+
+function TRetornaLimiteDisponivel.RetornarValorContasReceber: Currency;
+begin
+  Result := 0;
+
+  if not Fqry.IsEmpty then
+    Result := Fqry.Fieldbyname('TOTRECEBER').AsCurrency;
 end;
 
 end.
