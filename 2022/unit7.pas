@@ -13489,9 +13489,6 @@ begin
       //
       if UpperCase(Form7.ibDataSet14INTEGRACAO.AsString) = 'RECEBER' then
       begin
-        //
-        // Soma o valor das contas a receber
-        //
         Form7.ibDataSet99.Close;
         Form7.ibDataSet99.Selectsql.Clear;
         Form7.IbDataSet99.SelectSQL.Add('select sum(VALOR_DUPL) from RECEBER where VALOR_RECE = 0 and NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' ');
@@ -13501,7 +13498,6 @@ begin
         //
         if (fCredito < 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'S') then
         begin
-          //
           ShowMessage('Atenção:'+Chr(10)
                                                  +Chr(10)
                                        +'Cliente: '+Form7.ibDataSet2NOME.AsString + Chr(10)
@@ -13514,10 +13510,9 @@ begin
                                        + Chr(10)+chr(10)+chr(10)
                                        +'           MUDE A FORMA DE PAGAMENTO.                      '
                                        + Chr(10));
-          //
+
           Form7.ibDataSet14.Locate('INTEGRACAO','CAIXA',[loCaseInsensitive, loPartialKey]);
           Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
-          //
         end;
         //
         Form7.ibDataSet99.Close;
