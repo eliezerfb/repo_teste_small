@@ -425,9 +425,9 @@ type
 
 
   private
-    { Private declarations }
     procedure ExibeRazaoSocialNoCaptionDoForm;
     function getPropaganda: String;
+    function RetornarWhereNotasManifestar: String;
 
   public
     fDias : Real;
@@ -1024,8 +1024,7 @@ begin
   Form1.ibQuery2.SQL.Clear;
   Form1.ibQuery2.SQL.Add('select count(NUMERONF)as NN');
   Form1.ibQuery2.SQL.Add('from COMPRAS');
-  Form1.ibQuery2.SQL.Add('where ((Coalesce(MDESTINXML,''~'') like ''%<tpEvento>210210%'') and (MERCADORIA=0))');
-  Form1.ibQuery2.SQL.Add('or ((Coalesce(MDESTINXML,'''')='''') and (COALESCE(NFEID,'''')<>''''))');
+  Form1.ibQuery2.SQL.Add('where ' + RetornarWhereNotasManifestar);
   Form1.ibQuery2.Open;
   Form1.iAvisosNFECompra := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
 
@@ -11704,6 +11703,12 @@ begin
   end;
 end;
 
+function TForm1.RetornarWhereNotasManifestar: String;
+begin
+  Result := '((Coalesce(MDESTINXML,''~'') like ''%<tpEvento>210210%'') and (MERCADORIA=0))' + sLineBreak +
+            'OR ((Coalesce(MDESTINXML,'''')='''') AND (COALESCE(REPLACE(NFEID, ''0'', ''''),'''')<>''''))';
+end;
+
 procedure TForm1.Label_bola_NFEClick(Sender: TObject);
 begin
   if Form1.bNotaCompraLiberada then
@@ -11716,8 +11721,7 @@ begin
     try
       Form7.ibDataSet24.Close;
       Form7.ibDataSet24.SelectSQL.Clear;
-      Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where Coalesce(MDESTINXML,''~'') like ''%<tpEvento>210210%'' and MERCADORIA=0');
-//      Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where coalesce(NFEID,''0000000000000000000000000000000000000000000'')<>''0000000000000000000000000000000000000000000'' and coalesce(NFEXML,''X.X'')=''X.X'' and MERCADORIA=0');
+      Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar);
       Form7.ibDataSet24.Open;
     except end;
     //
