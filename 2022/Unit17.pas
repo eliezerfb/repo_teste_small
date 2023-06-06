@@ -107,7 +107,6 @@ end;
 
 procedure TForm17.FormActivate(Sender: TObject);
 begin
-  //
   if Form1.iReduzida = 2 then
   begin
     Form17.CheckBox1.Visible := True;
@@ -116,34 +115,37 @@ begin
   begin
     Form17.CheckBox1.Visible := False;
   end;
-  //
+
   Form17.Tag := 0;
-  //
+
   Button4.Visible := False;
   Button2.Visible := True;
   Button1.Visible := True;
-  //
+
   try
     if Form7.ibDataSet13.Active then
     begin
-      //
       Form7.ibDataSet13.First;
       try
-        if Form7.ibDataSet13.Eof then Form7.ibDataSet13.Append else Form7.ibDataSet13.Edit;
-      except end;
-      if Form7.ibDataSet13ESTADO.AsString = '  ' then Form7.ibDataSet13ESTADO.AsString := '';
-      //
+        if Form7.ibDataSet13.Eof then
+          Form7.ibDataSet13.Append
+        else
+          Form7.ibDataSet13.Edit;
+      except
+      end;
+
+      if Form7.ibDataSet13ESTADO.AsString = '  ' then
+        Form7.ibDataSet13ESTADO.AsString := '';
+
       Form7.bFlag := False;
       Form7.ibDataSet13.Active := True;
       Form7.ibDataSet13.Edit;
       if SMALL_DBEdit7.CanFocus then SMALL_DBEdit7.SetFocus;
-      //
-      //
+
       Image2.Picture.Bitmap :=  Form7.Image204.Picture.Bitmap;
-      //
     end;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm17.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
@@ -155,7 +157,7 @@ begin
   begin
     Perform(Wm_NextDlgCtl,0,0);
   end;
-  //
+
   if dBgrid3.Visible then
   begin
     if (Key = VK_UP) or (Key = VK_DOWN) then
@@ -178,19 +180,18 @@ end;
 
 procedure TForm17.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  //
-  //
   try
     Form7.ibDataSet13.Cancel;
     Form1.AvisoConfig(True);
   except
   end;
-  //
+
   if Form1.iReduzida = 99 then
   begin
-    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+    Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
-  //
 end;
 
 procedure TForm17.Button2Click(Sender: TObject);
@@ -201,16 +202,14 @@ end;
 
 procedure TForm17.Image2Click(Sender: TObject);
 begin
-  //
   Form7.sModulo := 'EMITENTE';
-  //
+
   Form7.dbGrid1.Datasource     := Form7.DataSource13;
   Form7.ArquivoAberto          := Form7.DataSource13.Dataset;
   Form7.TabelaAberta           := Form7.ibDataSet13;
   Form7.iCampos                := 12;
-  //
+
   Form10.Image203Click(Sender);
-  //
 end;
 
 procedure TForm17.ComboBox1Change(Sender: TObject);
@@ -229,36 +228,29 @@ var
   I : Integer;
   Mais1Ini : tIniFile;
 begin
-  //
   // Mover as validações envolvendo certifica para evento Form17.onActive
-  //
   try
-    //
     if Form7.ibDataSet13CGC.AsString = '' then
     begin
-      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
       sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
       Mais1ini.Free;
-      //
+
       if AllTrim(sCertificado) = '' then
       begin
         if Copy(Form1.sSerial,4,1) <> 'M' then
         begin
           Form1.SelecionarCertificadoDigital1Click(Sender);
-        end;  
+        end;
       end;
-      //
     end;
-    //
   except
   end;
-  //
+
   Button1.Left  := Panel2.Width - Button1.Width - 10;
   Button2.Left  := Button1.Left - 140;
-  //
+
   // CRT
-  //
   for I := 0 to ComboBox1.Items.Count -1 do
   begin
     if Copy(ComboBox1.Items[I],1,1) = AllTrim(Form7.ibDataSet13CRT.AsString) then
@@ -266,9 +258,8 @@ begin
       ComboBox1.ItemIndex := I;
     end;
   end;
-  //
+
   // CNAE
-  //
   for I := 0 to ComboBox7.Items.Count -1 do
   begin
     if Copy(ComboBox7.Items[I],1,7) = AllTrim(Form7.ibDataSet13CNAE.AsString) then
@@ -276,12 +267,12 @@ begin
       ComboBox7.ItemIndex := I;
     end;
   end;
-  //
+
   Commitatudo(True); // SQL - Commando
-  AbreArquivos(True); 
-  //
+  AbreArquivos(True);
+
   Form7.ibDataSet13.Edit;
-  //
+
   if AllTrim(Form7.ibDataSet13CGC.AsString) = '' then
   begin
     if Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text) <> '' then
@@ -318,16 +309,17 @@ begin
     begin
       Form7.IBDataSet39.Close;
       Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+      Form7.IBDataSet39.SelectSQL.Add(' Select * from MUNICIPIOS'+
+                                      ' Where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+
+                                      ' Order by NOME'); // Procura dentro do estado
       Form7.IBDataSet39.Open;
     end;
-    //
+
     Form7.ibDataSet39.Locate('NOME',AllTrim(Form7.IBDataSet13MUNICIPIO.AsString),[loCaseInsensitive, loPartialKey]);
-    //
+
     dBGrid3.Height     := 200;
     dBGrid3.DataSource := Form7.DataSource39; // Municipios
     dBGrid3.Visible    := True;
-    //
   except
   end;
 end;
@@ -368,7 +360,6 @@ end;
 
 procedure TForm17.SMALL_DBEdit4Change(Sender: TObject);
 begin
-  //
   try
     if not dbGrid3.Visible then
     begin
@@ -376,25 +367,28 @@ begin
     end;
   except
   end;
-  //
+
   try
     if Length(AllTrim(Form7.IBDataSet13ESTADO.AsString)) = 2 then
     begin
       Form7.IBDataSet39.Close;
       Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataset39.SelectSQL.Add('select * from MUNICIPIOS where Upper(NOME) like '+QuotedStr(AnsiUppercase(SMALL_DBEdit4.Text)+'%')+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' order by NOME');
+      Form7.IBDataset39.SelectSQL.Add(' Select * from MUNICIPIOS '+
+                                      ' Where Upper(NOME) like '+QuotedStr(AnsiUppercase(SMALL_DBEdit4.Text)+'%')+' '+
+                                      '   and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+
+                                      ' Order by NOME');
       Form7.IBDataSet39.Open;
     end else
     begin
       Form7.IBDataSet39.Close;
       Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataset39.SelectSQL.Add('select * from MUNICIPIOS where Upper(NOME) like '+QuotedStr(Uppercase(SMALL_DBEdit4.Text)+'%')+' '+' order by NOME');
+      Form7.IBDataset39.SelectSQL.Add(' Select * from MUNICIPIOS'+
+                                      ' Where Upper(NOME) like '+QuotedStr(Uppercase(SMALL_DBEdit4.Text)+'%')+' '+
+                                      ' Order by NOME');
       Form7.IBDataSet39.Open;
     end;
-    //
   except
   end;
-  //
 end;
 
 procedure TForm17.SMALL_DBEdit7Exit(Sender: TObject);
@@ -414,7 +408,6 @@ var
 begin
   if not Form17.CheckBox1.Checked then
   begin
-    //
     if Application.MessageBox(Pchar(
       'Confirma que esta empresa NÃO é um Microempreendedor Individual (MEI)?'+
       Chr(10) +

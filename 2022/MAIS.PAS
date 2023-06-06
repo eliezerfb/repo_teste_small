@@ -4065,7 +4065,8 @@ begin
       or (ValidaEmitenteMunicipio = False) then
     begin
       Form17.ShowModal;
-      if Form1.CanFocus then Form1.SetFocus;
+      if Form1.CanFocus then
+        Form1.SetFocus;
     end else
     begin
       //
@@ -6383,8 +6384,6 @@ end;
 procedure TForm1.Label201MouseLeave(Sender: TObject);
 begin
   // Nota
-  Form44.Close;
-
   if not ((Form7.sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO')) then
   begin
     Form1.Panel_3.Visible := True;
@@ -8889,10 +8888,10 @@ begin
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
   Mais1ini.Free;
   //
-  Form17.Hide;
+//  Form17.Hide; Mauricio Parizotto 2023-06-06 travando a tela
   Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
   frmSelectCertificate.ShowModal;
-  Form17.Hide;
+//  Form17.Hide; Mauricio Parizotto 2023-06-06 travando a tela
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));

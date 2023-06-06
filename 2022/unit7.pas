@@ -4556,31 +4556,26 @@ var
   tInicio : tTime;
   I : Integer;
 begin
-  //
   ConfiguraNFE(True);
   Form7.spdNFe.Ambiente := spdNFeType.akProducao;
-  //
+
   sM := '';
   tInicio := Time;
-  //
+
   sRetorno    := '';
-  //
+
   if Length(Limpanumero(xmlNodeValue(sRetorno,'//CEP'))) <> 8 then
   begin
-    //
     Mais1ini := TIniFile.Create(Form7.spdNFe.ArquivoServidoresProd);
-    //
+
     for I := 1 to 28 do
     begin
-      //
       sEstado := AllTrim(Copy(AllTrim(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'SCSPRSACALAMAPBACEDFESGOMAMGMSMTPAPBPEPIPRRJRNRORRSETO      ',(I*2)-1,2));
-      //
+
       if sEstado <> '' then
       begin
-        //
         if Length(Limpanumero(xmlNodeValue(sRetorno,'//CEP'))) <> 8 then
         begin
-          //
           try
             if Length(LimpaNumero(sP1)) = 14 then
             begin
@@ -4592,31 +4587,20 @@ begin
           except
 
           end;
-          //
-          // ShowMessage(sRetorno);
-          //
         end;
-        //
+
         DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
         sM := sM + Form1.sVersaoLayout + sEstado+': '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
         tInicio := Time;
-        //
       end;
     end;
-    //
+
     mais1ini.Free;
-    //
   end;
-  //
-//  ShowMessage(sM);
-//  ShowMessage(sRetorno);
-  //
-//  Form10.Panel2.Hint := sM;
-  //
+
   ConfiguraNFE(True);
   Result := sRetorno;
-  //
-end;    
+end;
 
 function DistribuicaoNFe2(sP1: String) : Boolean;
 var
@@ -15233,7 +15217,6 @@ var
   sRetorno : String;
   I: Integer;
 begin
-  //
   if LimpaNumero(Text) <> '' then
   begin
     if CpfCgc(LimpaNumero(Text)) then
@@ -15243,22 +15226,18 @@ begin
   end
   else
     ibDataSet13CGC.AsString := '';
-  //
+
   if (AllTrim(Form7.IBDataSet13NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet13CGC.AsString))<>'') then
   begin
-    //
     Screen.Cursor            := crHourGlass;
-    //
+
     try
-      //
       if (Length(LimpaNumero(Form7.ibDataSet13CGC.AsString)) = 14) or (Length(LimpaNumero(Form7.ibDataSet13CGC.AsString)) = 11) then
       begin
-        //
         sRetorno := ConsultaCadastro(Form7.ibDataSet13CGC.AsString);
-        //
+
         if AllTrim(xmlNodeValue(sRetorno,'//xNome')) <> '' then
         begin
-          //
           Form7.ibDataset13IE.AsString       := xmlNodeValue(sRetorno,'//IE');
           Form7.ibDataset13ESTADO.AsString   := xmlNodeValue(sRetorno,'//UF');
           Form7.ibDataset13NOME.AsString     := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
@@ -15266,7 +15245,7 @@ begin
           Form7.ibDataset13COMPLE.AsString   := PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')));
           Form7.ibDataset13CEP.AsString      := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
           Form7.ibDataset13CNAE.AsString     := xmlNodeValue(sRetorno,'//CNAE');
-          //
+
           for I := 0 to Form17.ComboBox7.Items.Count -1 do
           begin
             if Copy(Form17.ComboBox7.Items[I],1,7) = AllTrim(Form7.ibDataSet13CNAE.AsString) then
@@ -15274,39 +15253,24 @@ begin
               Form17.ComboBox7.ItemIndex := I;
             end;
           end;
-          //
+
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
           Form7.ibDataset99.Open;
-          //
+
           Form7.ibDataset13MUNICIPIO.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
-          //
-          {
-          if xmlNodeValue(sRetorno,'//XregApur') = 'SIMPLES NACIONAL' then
-          begin
-            Form17.ComboBox1.ItemIndex    := 0;
-            Form7.ibDataset13CRT.AsString := '1';
-          end else
-          begin
-            Form17.ComboBox1.ItemIndex    := 2;
-            Form7.ibDataset13CRT.AsString := '3';
-          end;
-          }
+
           Form17.ComboBox1.ItemIndex    := 0;
           Form7.ibDataset13CRT.AsString := '1';
-          //
         end;
       end;
-      //
     except
 
     end;
-    //
   end;
-  //
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.ibDataSet18CGCSetText(Sender: TField; const Text: String);
