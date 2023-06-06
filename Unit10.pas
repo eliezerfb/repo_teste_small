@@ -81,9 +81,10 @@ begin
   case FTipoForm of
     tfTEF:
       begin
-        {Sandro Silva 2023-06-05 inicio
+
         AcionaTEF;
-        }
+
+        {
         if ModalResult = mrOk then
           AcionaTEF;
         {Sandro Silva 2023-06-05 fim}
@@ -205,7 +206,10 @@ begin
       tfTEF, tfPOS:
         begin
           SelecionarAdministradora;
-          ModalResult := mrOk; // Sandro Silva 2023-06-05
+          if FTipoForm = tfPOS then
+            ModalResult := mrOk; // Sandro Silva 2023-06-05
+          if FTipoForm = tfTEF then
+            Close;
         end;
       tfAdquirente:
         begin
@@ -223,12 +227,17 @@ begin
     tfTEF, tfPOS:
       begin
         SelecionarAdministradora;
-        ModalResult := mrOk; // Sandro Silva 2023-06-05
+
+        if FTipoForm = tfPOS then
+          ModalResult := mrOk; // Sandro Silva 2023-06-05
+        if FTipoForm = tfTEF then
+          Close;
+
       end;
     tfAdquirente:
       begin
         SelecionarAdquirente;
-        Close;        
+        Close;
       end;
   end;
   // Sandro Silva 2023-06-05 Close;
@@ -249,7 +258,13 @@ begin
   btnMenos.Left := btnMais.Left + btnMais.Width + AjustaLargura(15) + (Form10.Width - btnMais.Width - btnMenos.Width - Button3.Width - AjustaLargura(30)) div 3;
   {Sandro Silva 2021-09-21 fim}
 
+  {Sandro Silva 2023-06-06 inicio}
   ModalResult := mrNone; // Sandro Silva 2023-06-05
+
+  KeyPreview := False;
+  if FTipoForm = tfPOS then
+    KeyPreview := True;
+  {Sandro Silva 2023-06-06 fim}
   //
   sSecoes := TStringList.Create;
   Mais1ini := TIniFile.Create('FRENTE.INI');
@@ -407,7 +422,7 @@ end;
 procedure TForm10.FormCreate(Sender: TObject);
 begin
   // Ajusta tamanho form e posição dos botões
-  Form10.KeyPreview := True; // Sandro Silva 2023-06-05
+//  Form10.KeyPreview := True; // Sandro Silva 2023-06-05
   AjustaResolucao(Form10);
   Form10.OnPaint := Form10.OnResize;
   Form10.Width   := AjustaLargura(330);

@@ -27,7 +27,11 @@ function CampoTEF(sArquivoTEF: String; sCampo: String): String;
 function TEFImpressaoPendentePorTransacao(sCupom: String): Boolean;
 procedure TEFAguardarRetornoStatus(sDiretorioResposta,
   sIdentificaTransacaoTEF: String);
-
+function TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
+function TEFContaArquivos(sTipoComCaminho: String): Integer;
+function TEFValorTotalAutorizado(): Currency;
+function TEFValorTransacao(sArquivoTEF: String): Currency;
+procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
 
 implementation
 
@@ -256,7 +260,7 @@ begin
   Form1.TransacoesCartao.Transacoes.Clear; // Sandro Silva 2017-08-29
   bConfirmarTransacao := False;
 
-  dTotalTransacionado := Form1.TEFValorTotalAutorizado();
+  dTotalTransacionado := TEFValorTotalAutorizado();
 
   sCupomReduzidoAutorizado := '';
   sCupomAutorizado         := '';
@@ -265,26 +269,26 @@ begin
 
   if dTotalTransacionado > 0 then
   begin
-    sCupom710 := Form1.TEFTextoImpressaoCupomAutorizado('710-'); // Texto cupom reduzido
+    sCupom710 := TEFTextoImpressaoCupomAutorizado('710-'); // Texto cupom reduzido
     if AllTrim(sCupom710) <> '' then
     begin
-      sCupomReduzidoAutorizado := sCupomReduzidoAutorizado + Chr(10) + Form1.TEFTextoImpressaoCupomAutorizado('711-') + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
+      sCupomReduzidoAutorizado := sCupomReduzidoAutorizado + Chr(10) + TEFTextoImpressaoCupomAutorizado('711-') + '     ' + DupeString('-', 40);
 
     end
     else
     begin
-      sCupom712 := Form1.TEFTextoImpressaoCupomAutorizado('712-'); // Quantidade linhas via cliente
+      sCupom712 := TEFTextoImpressaoCupomAutorizado('712-'); // Quantidade linhas via cliente
       if AllTrim(sCupom712) <> '' then
-        sCupomAutorizado := Form1.TEFTextoImpressaoCupomAutorizado('713'); // Texto via cliente
+        sCupomAutorizado := TEFTextoImpressaoCupomAutorizado('713'); // Texto via cliente
     end;
     //
-    sCupom714 := Form1.TEFTextoImpressaoCupomAutorizado('714-'); // Quantidade linhas via estabelecimento
+    sCupom714 := TEFTextoImpressaoCupomAutorizado('714-'); // Quantidade linhas via estabelecimento
     if AllTrim(sCupom714) <> '' then
     begin
-      sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + Form1.TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
+      sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
     end else
     begin
-      sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + Form1.TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
+      sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
     end;
     //
     if AllTrim(StrTran(sCupomAutorizado,chr(10),'')) = '' then
@@ -304,7 +308,7 @@ begin
 
       dValorPagarCartao := dTotalEmCartao - dTotalTransacionado;
 
-      if (Form1.iNumeroMaximoDeCartoes > 1) and (Form1.bModoMultiplosCartoes) then 
+      if (Form1.iNumeroMaximoDeCartoes > 1) and (Form1.bModoMultiplosCartoes) then
       begin
         while True do
         begin
@@ -359,7 +363,7 @@ begin
             Form1.ExibePanelMensagem('Confirmando a transação do ' + IntToStr(iContaCartao) + 'º cartão'); // Sandro Silva 2017-06-22
 
             // Faz backup dos dados de autorização anterior
-            CopyFile(pChar('c:\' + Form1.sDiretorio + '.RES'), pChar(DIRETORIO_BKP_TEF + '\' + Form1.sDiretorio + FormatFloat('00', Form1.TEFContaArquivos(DIRETORIO_BKP_TEF + '\' + Form1.sDiretorio +'*.BKP') + 1) + '.BKP'), False);
+            CopyFile(pChar('c:\' + Form1.sDiretorio + '.RES'), pChar(DIRETORIO_BKP_TEF + '\' + Form1.sDiretorio + FormatFloat('00', TEFContaArquivos(DIRETORIO_BKP_TEF + '\' + Form1.sDiretorio +'*.BKP') + 1) + '.BKP'), False);
 
             // Confirmando a transação TEF
             AssignFile(F,Pchar('c:\'+Form1.sDiretorio+'\'+Form1.sREQ+'\IntPos.tmp'));
@@ -397,7 +401,7 @@ begin
             if Form10.ListarTEFAtivos(True) = False then
             begin
               // Sandro Silva 2023-06-05
-              Form10.ShowModal;                   não conseguiu confirmar a transação, descontou do valor da venda seguinte
+              Form10.ShowModal;                   //não conseguiu confirmar a transação, descontou do valor da venda seguinte
               //if Form10.ShowModal = mrCancel then
                 Break;
             end;
@@ -408,7 +412,6 @@ begin
           begin
 
             Form1.IntegradorCE.SelecionarDadosAdquirente('FRENTE.INI', Form10.sNomeDoTEF, Form1.sUltimaAdquirenteUsada);
-            // Sandro Silva 2021-11-29 bIniciarTEF := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(dValorPagarCartao), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
             bIniciarTEF := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(dValorPagarCartao), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False);
 
           end;// if Form1.UsaIntegradorFiscal() then
@@ -806,10 +809,11 @@ begin
                       begin
                         Form1.ExibePanelMensagem(sMensagem);
                         //
-                        for I := 1 to 40 do
+                        // Simula 40 milissegundos
+                        for I := 1 to 4 do //for I := 1 to 40 do
                         begin
                           Application.ProcessMessages;
-                          Sleep(1);
+                          Sleep(10); //Sleep(1);
                         end;
                         //
                       end;
@@ -2330,6 +2334,201 @@ begin
     if (iTimeOut * 250) > 30000 then // Aguarda 1 min (60.000 milisegundos)
       Break;
   end;
+end;
+
+function TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
+var
+  slArquivos: TStringList;
+  sDirAtual: String;
+  i: Integer;
+  sArquivoTEF: String;
+  sNomeArquivo: String;
+begin
+  GetDir(0, sDirAtual);
+  slArquivos := TStringList.Create;
+  Result := '';
+  try
+    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
+
+    for I := 0 to slArquivos.Count -1 do
+    begin
+      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
+      //
+      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
+      // Último caractere do nome deve ser número maior ou igual a zero
+      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
+      if StrToIntDef(Right(sNomeArquivo, 1), -1) >= 0 then
+      begin // Apenas arquivos dos primeiros cartões, não do último
+        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
+        begin
+          if CampoTEF(sArquivoTEF, '009-000') = '0' then
+            Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
+        end;
+      end;
+    end; // for I := 0 to slDownload.Count -1 do
+  finally
+    FreeAndNil(slArquivos);
+  end;
+
+  ChDir(sDirAtual);
+end;
+
+function TEFContaArquivos(sTipoComCaminho: String): Integer;
+var
+  sDirAtual: String;
+  S: TSearchREc;
+  I: Integer;
+begin
+  GetDir(0, sDirAtual);
+  Result := 0;
+  try
+    //
+    I := FindFirst( pChar(sTipoComCaminho), faAnyFile, S);
+    //
+    while I = 0 do
+    begin
+      I := FindNext(S);
+      Inc(Result);
+    end;
+    //
+    FindClose(S);
+  except
+  end;
+
+  ChDir(sDirAtual);
+end;
+
+function TEFValorTotalAutorizado(): Currency; // Sandro Silva 2017-06-14
+var
+  slArquivos: TStringList;
+  sDirAtual: String;
+  i: Integer;
+  sArquivoTEF: String;
+  sNomeArquivo: String;
+  sNomeTEFAutorizacao: String;
+  sDebitoOuCreditoAutorizado: String;
+  bRespostaValidadosFiscal: Boolean; // Sandro Silva 2018-07-03
+  ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
+begin
+  GetDir(0, sDirAtual);
+  slArquivos := TStringList.Create;
+  Result := 0.00;
+
+  try
+    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
+
+    for I := 0 to slArquivos.Count -1 do
+    begin
+      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
+      //
+      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
+      // Último caractere do nome deve ser número maior ou igual a zero
+      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
+
+      sNomeTEFAutorizacao := Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(IntToStr(I)));
+
+      sDebitoOuCreditoAutorizado := 'CREDITO';
+      ModalidadeTransacao := tModalidadeCarteiraDigital; // Sandro Silva 2021-07-05
+      with TStringList.Create do
+      begin
+        LoadFromFile(sArquivoTEF);
+        if AnsiContainsText(AnsiUpperCase(ConverteAcentos(Text)), ' DEBIT') then // Sandro Silva 2021-08-03 if AnsiContainsText(AnsiUpperCase(Text), ' DEBIT') then
+        begin
+          sDebitoOuCreditoAutorizado := 'DEBITO';
+          ModalidadeTransacao := tModalidadeCartao; // Sandro Silva 2021-07-05
+        end;
+
+        if AnsiContainsText(AnsiUpperCase(ConverteAcentos(Text)), ' CREDIT') then // Sandro Silva 2021-08-03 if AnsiContainsText(AnsiUpperCase(Text), ' CREDIT') then
+        begin
+          ModalidadeTransacao := tModalidadeCartao; // Sandro Silva 2021-07-05
+        end;
+
+        if AnsiContainsText(AnsiUpperCase(Text), 'PIX ') then
+        begin
+          ModalidadeTransacao := tModalidadePix; // Sandro Silva 2021-07-05
+        end;
+
+        Free;
+      end;
+
+      if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
+      begin // Apenas arquivos dos primeiros cartões, não do último
+        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
+        begin
+          if CampoTEF(sArquivoTEF, '009-000') = '0' then
+          begin
+
+            if Form1.UsaIntegradorFiscal() then
+            begin
+
+              Form1.IntegradorCE.SelecionarDadosAdquirente('FRENTE.INI', sNomeTEFAutorizacao, Form1.sUltimaAdquirenteUsada);
+              bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(TEFValorTransacao(sArquivoTEF)), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False); // Sandro Silva 2021-11-29 bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(Form1.TEFValorTransacao(sArquivoTEF)), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
+
+            end
+            else
+              bRespostaValidadosFiscal := True;
+
+            if bRespostaValidadosFiscal then
+            begin
+
+              Result := Result + TEFValorTransacao(sArquivoTEF);
+              Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
+            end;
+
+          end;
+        end;
+      end; //if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
+    end; // for I := 0 to slDownload.Count -1 do
+  finally
+    FreeAndNil(slArquivos);
+  end;
+
+  ChDir(sDirAtual);
+end;
+
+function TEFValorTransacao(sArquivoTEF: String): Currency;
+begin
+  Result := (StrToIntDef(LimpaNumero(CampoTEF(sArquivoTEF, '003-000')), 0) / 100);
+end;
+
+procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
+var
+  slArquivos: TStringList;
+  sDirAtual: String;
+  i: Integer;
+  sArquivo: String;
+  sTipo: String;
+begin
+  GetDir(0, sDirAtual);
+  slArquivos := TStringList.Create;
+  try
+    sTipo := '*.BKP';
+    while sTipo <> '' do
+    begin
+      slArquivos.Clear;
+      ListaDeArquivos(slArquivos, diretorio_bkp_tef, sTipo);
+
+      for I := 0 to slArquivos.Count -1 do
+      begin
+        sArquivo := diretorio_bkp_tef + '\' + AllTrim(slArquivos[I]);
+        //
+        //if AnsiContainsText(ExtractFileName(sArquivo), FsDiretorio) then
+        //begin
+          //
+          DeleteFile(PChar(sArquivo));
+          //
+        //end;
+      end; // for I := 0 to slDownload.Count -1 do
+      if sTipo = '*.BKP' then
+        sTipo := '*.BKC'
+      else
+        sTipo := '';
+    end;
+  finally
+    FreeAndNil(slArquivos);
+  end;
+
+  ChDir(sDirAtual);
 end;
 
 end.

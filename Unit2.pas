@@ -204,7 +204,7 @@ uses fiscal, Unit10, Unit22, Unit6, {Unit5, }_small_59, _small_1,_small_2, _smal
    _small_15,
    _small_17,
    _small_99,
-  Unit7, Unit12, ufuncoesfrente;
+  Unit7, Unit12, ufuncoesfrente, ufuncoestef;
 
 {$R *.DFM}
 
@@ -540,10 +540,10 @@ begin
   if Form1.ibDataSet25.FieldByName('PAGAR').AsFloat <= 0 then
     Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := 0;
 
-  if (Form1.TEFValorTotalAutorizado > 0)
-    and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < Form1.TEFValorTotalAutorizado) then
+  if (TEFValorTotalAutorizado > 0)
+    and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < TEFValorTotalAutorizado) then
   begin
-    Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := Form1.TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+    Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
   end;
 
 end;
@@ -1985,9 +1985,9 @@ begin
         Form1.ibDataSet25.Edit;
       Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := StrToFloat(FormatFloat('0.00', fTotal1)); // Sandro Silva 2021-12-23 fTotal1;
       Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0;
-      if Form1.TEFValorTotalAutorizado > 0 then
+      if TEFValorTotalAutorizado > 0 then
       begin
-        Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := Form1.TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+        Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
       end;
 
       Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0;

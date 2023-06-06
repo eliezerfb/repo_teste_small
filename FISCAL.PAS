@@ -1430,9 +1430,7 @@ type
     function Produto(sTexto: String; var sQuantidade: String;
       var sValor: String): String;
     function ConfiguraCaminhoComunicaoServidorSat: Boolean;
-    procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
     function TransacaoComPoS(TipoConexaoPOS: TTipoConexaoPOS): Boolean;
-    function TEFValorTransacao(sArquivoTEF: String): Currency;
     procedure AjustaAlteracaDesconto;
     procedure GerarArquivoMF(sTipoArquivo: String);
     procedure GerarArquivoMFD(sTipoArquivo: String);
@@ -1613,10 +1611,6 @@ type
     procedure AjustarDiferencaParcelasCartao(dTotalTransacaoCartao: Currency;
       dValorFormaPagtoCartao: Currency; iTotalParcelasVenda: Integer;
       iParcelasTransacao: Integer);
-
-    function TEFValorTotalAutorizado(): Currency;
-    function TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
-    function TEFContaArquivos(sTipoComCaminho: String): Integer;
 
     function PDV_CupomAberto: Boolean;
     function PDV_ImpressaoNaoSujeitoaoICMS(sTexto: String;
@@ -11459,53 +11453,52 @@ begin
           sMensagemPromocional := Mais1Ini.ReadString('Frente de caixa'  , 'Mensagem' , MensagemPromocionalDefault);
           Mais1Ini.Free;
           //
-          //if True then
-          //begin
-            //
-            // Valor Aproximado dos Tributos IIA Indicie de Imposto Aproximado
-            //
+          //
+          // Valor Aproximado dos Tributos IIA Indicie de Imposto Aproximado
+          //
 
-            if (Form1.sModeloECF <> '99') then // Sandro Silva 2020-09-23
-            begin
+          if (Form1.sModeloECF <> '99') then // Sandro Silva 2020-09-23
+          begin
 
-              try
+            try
+              Form1.IBQuery1.Close;
+              Form1.IBQuery1.SQL.Clear;
+              Form1.IBQuery1.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
+                                          + 'sum(cast((ESTOQUE.IIA_UF*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS2, '
+                                          + 'sum(cast((ESTOQUE.IIA_MUNI*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS3 '
+                                   + 'from ALTERACA,ESTOQUE where PEDIDO=' + QuotedStr(Form1.ibDataSet27.FieldByname('PEDIDO').AsString)
+                                   + ' and CAIXA='+QuotedStr(Form1.ibDataSet27.FieldByname('CAIXA').AsString)
+                                   + ' and TIPO<>''CANCEL'''
+                                   + ' and ESTOQUE.CODIGO=ALTERACA.CODIGO and (ALTERACA.DESCRICAO<>''Desconto'' and ALTERACA.DESCRICAO<>''Acréscimo'')');
+              Form1.IBQuery1.Open;
+
+              if (Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat)  > 0 then
+              begin
+                sM := 'Trib aprox R$: ';
+                if Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat > 0 then
+                  sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Federal ';
+                if Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat > 0 then
+                  sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Estadual ';
+                if Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat > 0 then
+                  sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Municipal ';
+
+                Form1.fTributos_federais   := Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat;
+                Form1.fTributos_estaduais  := Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat;
+                Form1.fTributos_municipais := Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat;
+                //
                 Form1.IBQuery1.Close;
                 Form1.IBQuery1.SQL.Clear;
-                Form1.IBQuery1.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
-                                            + 'sum(cast((ESTOQUE.IIA_UF*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS2, '
-                                            + 'sum(cast((ESTOQUE.IIA_MUNI*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS3 '
-                                     + 'from ALTERACA,ESTOQUE where PEDIDO=' + QuotedStr(Form1.ibDataSet27.FieldByname('PEDIDO').AsString)
-                                     + ' and CAIXA='+QuotedStr(Form1.ibDataSet27.FieldByname('CAIXA').AsString)
-                                     + ' and TIPO<>''CANCEL'''
-                                     + ' and ESTOQUE.CODIGO=ALTERACA.CODIGO and (ALTERACA.DESCRICAO<>''Desconto'' and ALTERACA.DESCRICAO<>''Acréscimo'')');
-                //
+                Form1.IBQuery1.SQL.Add('select first 1 distinct CHAVE, FONTE from IBPT_ '); // Sandro Silva 2016-08-16 Seleciona apenas 1 linha da tabela
                 Form1.IBQuery1.Open;
                 //
-                if (Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat)  > 0 then
-                begin
-                  sM := 'Trib aprox R$: ';
-                  if Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat > 0 then sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Federal ';
-                  if Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat > 0 then sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Estadual ';
-                  if Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat > 0 then sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Municipal ';
-
-                  //
-                  Form1.fTributos_federais   := Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat;
-                  Form1.fTributos_estaduais  := Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat;
-                  Form1.fTributos_municipais := Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat;
-                  //
-                  Form1.IBQuery1.Close;
-                  Form1.IBQuery1.SQL.Clear;
-                  Form1.IBQuery1.SQL.Add('select first 1 distinct CHAVE, FONTE from IBPT_ '); // Sandro Silva 2016-08-16 Seleciona apenas 1 linha da tabela
-                  Form1.IBQuery1.Open;
-                  //
-                  sM := sM + chr(10) + 'Fonte: ' + Form1.IBQuery1.FieldByName('FONTE').AsString + ' ' + Form1.IBQuery1.FieldByName('CHAVE').AsString;
-                end;
-              except
-                  on E: Exception do SmallMsg('Erro 567: '+chr(10)+chr(10)+ E.Message +chr(10)+chr(10)+ Form1.IBQuery1.SQL.Text);
+                sM := sM + chr(10) + 'Fonte: ' + Form1.IBQuery1.FieldByName('FONTE').AsString + ' ' + Form1.IBQuery1.FieldByName('CHAVE').AsString;
               end;
-              //
+            except
+              on E: Exception do SmallMsg('Erro 567: '+chr(10)+chr(10)+ E.Message +chr(10)+chr(10)+ Form1.IBQuery1.SQL.Text);
             end;
-          //end;
+            //
+          end;
+
           //
           Form1.sMensagemNFMod02 := ''; // Sandro Silva 2017-11-07 Polimig
           if AllTrim(sReferenteNFModelo2) <> '' then
@@ -11999,25 +11992,24 @@ begin
               // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(False);  // Enable  Keyboard & mouse
             end;
           end;
-          //
+
           if bNaoAbriu then
           begin
-            //
+
             bFecha := True;
-            //
+
             bFecha := Form1.PDV_FechaCupom(True);
 
             //SmallMsg('Teste 1 Sequência fechando cupom fiscal');
 
-            //
             ValorTotalDoDia(True);
-            //
+
             if bFecha then
             begin
               // Sandro Silva 2016-03-01 ExibirMsgMenuF10Indisponivel(False); // Sandro Silva 2016-03-01
-              //
+
               Commitatudo2(False); // Fecha o cupom grava o desconto ou o acréscimo e o fechamento
-              //
+
             end;
             //
             Form1.Label_7.Caption := 'Forma de pagamento';
@@ -30375,201 +30367,6 @@ begin
     SendMessage(Form1.Memo1.Handle, WM_VSCROLL, SB_BOTTOM, 0);
   except
   end;
-end;
-
-procedure TForm1.TEFDeletarCopiasArquivos(FsDiretorio: String);
-var
-  slArquivos: TStringList;
-  sDirAtual: String;
-  i: Integer;
-  sArquivo: String;
-  sTipo: String;
-begin
-  GetDir(0, sDirAtual);
-  slArquivos := TStringList.Create;
-  try
-    sTipo := '*.BKP';
-    while sTipo <> '' do
-    begin
-      slArquivos.Clear;
-      ListaDeArquivos(slArquivos, diretorio_bkp_tef, sTipo);
-
-      for I := 0 to slArquivos.Count -1 do
-      begin
-        sArquivo := diretorio_bkp_tef + '\' + AllTrim(slArquivos[I]);
-        //
-        //if AnsiContainsText(ExtractFileName(sArquivo), FsDiretorio) then
-        //begin
-          //
-          DeleteFile(PChar(sArquivo));
-          //
-        //end;
-      end; // for I := 0 to slDownload.Count -1 do
-      if sTipo = '*.BKP' then
-        sTipo := '*.BKC'
-      else
-        sTipo := '';
-    end;
-  finally
-    FreeAndNil(slArquivos);
-  end;
-
-  ChDir(sDirAtual);
-end;
-
-function TForm1.TEFValorTotalAutorizado(): Currency; // Sandro Silva 2017-06-14
-var
-  slArquivos: TStringList;
-  sDirAtual: String;
-  i: Integer;
-  sArquivoTEF: String;
-  sNomeArquivo: String;
-  sNomeTEFAutorizacao: String;
-  sDebitoOuCreditoAutorizado: String;
-  bRespostaValidadosFiscal: Boolean; // Sandro Silva 2018-07-03
-  ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
-begin
-  GetDir(0, sDirAtual);
-  slArquivos := TStringList.Create;
-  Result := 0.00;
-
-  try
-    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
-
-    for I := 0 to slArquivos.Count -1 do
-    begin
-      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
-      //
-      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
-      // Último caractere do nome deve ser número maior ou igual a zero
-      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
-
-      sNomeTEFAutorizacao := Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(IntToStr(I)));
-
-      sDebitoOuCreditoAutorizado := 'CREDITO';
-      ModalidadeTransacao := tModalidadeCarteiraDigital; // Sandro Silva 2021-07-05
-      with TStringList.Create do
-      begin
-        LoadFromFile(sArquivoTEF);
-        if AnsiContainsText(AnsiUpperCase(ConverteAcentos(Text)), ' DEBIT') then // Sandro Silva 2021-08-03 if AnsiContainsText(AnsiUpperCase(Text), ' DEBIT') then
-        begin
-          sDebitoOuCreditoAutorizado := 'DEBITO';
-          ModalidadeTransacao := tModalidadeCartao; // Sandro Silva 2021-07-05
-        end;
-
-        if AnsiContainsText(AnsiUpperCase(ConverteAcentos(Text)), ' CREDIT') then // Sandro Silva 2021-08-03 if AnsiContainsText(AnsiUpperCase(Text), ' CREDIT') then
-        begin
-          ModalidadeTransacao := tModalidadeCartao; // Sandro Silva 2021-07-05
-        end;
-
-        if AnsiContainsText(AnsiUpperCase(Text), 'PIX ') then
-        begin
-          ModalidadeTransacao := tModalidadePix; // Sandro Silva 2021-07-05
-        end;        
-
-        Free;
-      end;
-
-      if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
-      begin // Apenas arquivos dos primeiros cartões, não do último
-        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
-        begin
-          if CampoTEF(sArquivoTEF, '009-000') = '0' then
-          begin
-
-            if Form1.UsaIntegradorFiscal() then
-            begin
-
-              Form1.IntegradorCE.SelecionarDadosAdquirente('FRENTE.INI', sNomeTEFAutorizacao, Form1.sUltimaAdquirenteUsada);
-              bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(Form1.TEFValorTransacao(sArquivoTEF)), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False); // Sandro Silva 2021-11-29 bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(Form1.TEFValorTransacao(sArquivoTEF)), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
-
-            end
-            else
-              bRespostaValidadosFiscal := True;
-
-            if bRespostaValidadosFiscal then
-            begin
-
-              Result := Result + Form1.TEFValorTransacao(sArquivoTEF);
-              Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
-            end;
-
-          end;
-        end;
-      end; //if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
-    end; // for I := 0 to slDownload.Count -1 do
-  finally
-    FreeAndNil(slArquivos);
-  end;
-
-  ChDir(sDirAtual);
-end;
-
-function TForm1.TEFValorTransacao(sArquivoTEF: String): Currency;
-begin
-  Result := (StrToIntDef(LimpaNumero(CampoTEF(sArquivoTEF, '003-000')), 0) / 100);
-end;
-
-function TForm1.TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
-var
-  slArquivos: TStringList;
-  sDirAtual: String;
-  i: Integer;
-  sArquivoTEF: String;
-  sNomeArquivo: String;
-begin
-  GetDir(0, sDirAtual);
-  slArquivos := TStringList.Create;
-  Result := '';
-  try
-    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
-
-    for I := 0 to slArquivos.Count -1 do
-    begin
-      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
-      //
-      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
-      // Último caractere do nome deve ser número maior ou igual a zero
-      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
-      if StrToIntDef(Right(sNomeArquivo, 1), -1) >= 0 then
-      begin // Apenas arquivos dos primeiros cartões, não do último
-        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
-        begin
-          if CampoTEF(sArquivoTEF, '009-000') = '0' then
-            Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
-        end;
-      end;
-    end; // for I := 0 to slDownload.Count -1 do
-  finally
-    FreeAndNil(slArquivos);
-  end;
-
-  ChDir(sDirAtual);
-end;
-
-function TForm1.TEFContaArquivos(sTipoComCaminho: String): Integer;
-var
-  sDirAtual: String;
-  S: TSearchREc;
-  I: Integer;
-begin
-  GetDir(0, sDirAtual);
-  Result := 0;
-  try
-    //
-    I := FindFirst( pChar(sTipoComCaminho), faAnyFile, S);
-    //
-    while I = 0 do
-    begin
-      I := FindNext(S);
-      Inc(Result);
-    end;
-    //
-    FindClose(S);
-  except
-  end;
-
-  ChDir(sDirAtual);
 end;
 
 function TForm1.PDV_CupomAberto: Boolean;
