@@ -73,7 +73,7 @@ type
     Label36: TLabel;
     Label37: TLabel;
     Label38: TLabel;
-    SMALL_DBEdit16: TSMALL_DBEdit;
+    edtTotalNota: TSMALL_DBEdit;
     SMALL_DBEdit25: TSMALL_DBEdit;
     SMALL_DBEdit24: TSMALL_DBEdit;
     SMALL_DBEdit23: TSMALL_DBEdit;
@@ -2219,7 +2219,7 @@ begin
         if Form7.ibDataSet15FINNFE.AsString = '2' then
         begin
           Edit2.Text := '2-Complementar';
-          Form12.SMALL_DBEdit16.ReadOnly := False;
+          Form12.edtTotalNota.ReadOnly := False;
         end else
         begin
           if Form7.ibDataSet15FINNFE.AsString = '3' then
@@ -2404,13 +2404,12 @@ begin
   //      Form7.Top := 0 - form7.Height - 10;
       end;
     end;
-    //
+
     try
       Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
-    except end;
-    //
+    except
+    end;
   end;
-  //
 end;
 
 procedure TForm12.DBGrid4Enter(Sender: TObject);
@@ -2960,7 +2959,7 @@ begin
       SMALL_DBEdit23.Top := 415;
       SMALL_DBEdit24.Top := 415;
       SMALL_DBEdit25.Top := 415;
-      SMALL_DBEdit16.Top := 415;
+      edtTotalNota.Top := 415;
       //
       Label39.Top := 440;
       Label40.Top := 440;

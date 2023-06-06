@@ -1681,7 +1681,7 @@ object Form24: TForm24
         OnEnter = SMALL_DBEdit20Enter
         OnKeyUp = FormKeyUp
       end
-      object SMALL_DBEdit16: TSMALL_DBEdit
+      object edtTotalNota: TSMALL_DBEdit
         Left = 524
         Top = 489
         Width = 141

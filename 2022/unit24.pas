@@ -62,7 +62,7 @@ type
     Label36: TLabel;
     Label37: TLabel;
     Label38: TLabel;
-    SMALL_DBEdit16: TSMALL_DBEdit;
+    edtTotalNota: TSMALL_DBEdit;
     SMALL_DBEdit25: TSMALL_DBEdit;
     SMALL_DBEdit18: TSMALL_DBEdit;
     SMALL_DBEdit23: TSMALL_DBEdit;
@@ -2506,19 +2506,16 @@ end;
 
 procedure TForm24.FormActivate(Sender: TObject);
 begin
-  //
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
-  //
   Form24.Top     := Form7.Top;
   Form24.Left    := Form7.Left;
   Form24.Width   := Form7.Width;
   Form24.Height  := Form7.Height;
-  //
+
   if Form24.Tag = 1 then
   begin
-    //
     Form24.Tag := 0;
-    //
+
     try
       if Form7.ibDataSet24FINNFE.AsString = '1' then
       begin
@@ -2528,7 +2525,8 @@ begin
         if Form7.ibDataSet24FINNFE.AsString = '2' then
         begin
           Edit7.Text := '2-Complementar';
-          Form12.SMALL_DBEdit16.ReadOnly := False;
+          //Form12.SMALL_DBEdit16.ReadOnly := False;
+          edtTotalNota.ReadOnly := False;
         end else
         begin
           if Form7.ibDataSet24FINNFE.AsString = '3' then
@@ -2548,9 +2546,8 @@ begin
       end;
     except
     end;
-    //
+
     // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final
-    //
     try
       if Form7.ibDataSet24INDFINAL.AsString = '1' then
       begin
@@ -2561,9 +2558,7 @@ begin
       end;
     except
     end;
-    //
-    //
-    //
+
     // Indicador de presença do comprador no estabelecimento comercial no momento da operação:
     //  0=Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste)
     //  1=Operação presencial
@@ -2571,24 +2566,20 @@ begin
     //  3=Operação não presencial, Teleatendimento
     //  4=NFC-e em operação com entrega em domicílio
     //  9=Operação não presencial, outros.
-    //
     try
       //
       if AllTrim(Form7.ibDataSet24INDPRES.AsString) = '' then
       begin
-        //
         try
           Form7.ibQuery1.Close;
           Form7.ibQuery1.SQL.Clear;
           Form7.ibQuery1.SQL.Add('select first 1 INDPRES from VENDAS where coalesce(INDPRES,''X'')<>''X'' order by NUMERONF desc');
           Form7.ibQuery1.Open;
-          //
+
           Form7.ibDataSet24INDPRES.AsString := Form7.ibQuery1.FieldByName('INDPRES').AsString;
-          //
         except end;
-        //
       end;
-      //
+
       if Form7.ibDataSet24INDPRES.AsString = '0' then
       begin
         Edit9.Text := '0=Não se aplica';
@@ -2629,9 +2620,7 @@ begin
         end;
       end;
     except end;
-    //
-    // THE END;
-    //
+
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
     Form7.ibDataSet14.SelectSQL.Clear;
@@ -2639,69 +2628,64 @@ begin
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or SubString(CFOP from 1 for 1) = ''3''  order by upper(NOME)');
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
-    //
-    //
+
     if Alltrim(Form7.ibDAtaSet24OPERACAO.AsString) <> '' then
     begin
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Locate('NOME',AllTrim(Form7.ibDAtaSet24OPERACAO.AsString),[]);
       Form7.ibDataSet14.EnableControls;
     end;
-    //
+
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * FROM ICM where ((CFOP like '+QuotedStr('1%')+') or (CFOP like '+QuotedStr('2%')+') or (CFOP like '+QuotedStr('3%')+')) and Upper(NOME) like '+QuotedStr('%'+UpperCase(SMALL_DBEdit40.Text)+'%')+' order by upper(NOME)');
     Form7.ibDataSet99.Open;
-    //
+
     Form7.ibDataSet99.EnableControls;
     Form7.ibDataSet14.EnableControls;
     //
     Form24.Image5.Picture := nil;
     Form24.Image5.Visible := False;
     Form24.Panel9.Visible := False;
-    //
+
     // Form Ativate
-    //
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
     Form7.ibDataSet18.EnableControls;
     Form7.ibDataSet8.EnableControls;
     Form7.ibDataSet2.EnableControls;
-    //
+
     if Form7.ibDataSet24NUMERONF.AsString = '000000000' then
     begin
-      //
       Edit2.Text := '000000000/000';
       Edit2.ReadOnly := False;
       Edit2.SetFocus;
       Edit2.SelectAll;
-      //
     end else
     begin
       Edit2.Text := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet24NUMERONF.AsString,10,3);
       Edit2.ReadOnly := True;
       SMALL_DBEdit40.SetFocus;
     end;
-    //
+
     // FOTO
-    //
     Panel9.Top    := Form24.pnlNota.Top;
     Panel9.Left   := pnlNota.Left + pnlNota.Width + 10;
-    //
+
     Panel9.Width  := 1050 - Panel9.Left - 20;
     Panel9.Height := Panel9.Width;
 
-    //
     Panel5.Top    := Panel9.Top + Panel9.Height + 10;
     Panel5.Left   := Panel9.Left;
     Panel5.Width  := 1050  - Panel5.Left - 20;
     Panel5.Height := pnlNota.Height - (Panel5.Top - pnlNota.Top);
-    //
+
     Label64.Caption := 'Mod: '+Form7.ibDataSet24MODELO.AsString;
-    //
   end;
-  //
+
+  //Mauricio Parizotto 2023-06-06
+  Form7.HintTotalNotaCompra;
 end;
 
 procedure TForm24.Incluirnovoitemnoestoque1Click(Sender: TObject);
