@@ -11,9 +11,9 @@ type
     FibqProds: TIBQuery;
     FcTexto: String;
     constructor Create;
-    destructor Destroy; override;
     procedure Consultar;
   public
+    destructor Destroy; override;
     class function New: ITestaProdutoExiste;
     function setDataBase(AoDataBase: TIBDataBase): ITestaProdutoExiste;
     function setTextoPesquisar(AcTexto: String): ITestaProdutoExiste;

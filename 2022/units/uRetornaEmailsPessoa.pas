@@ -13,8 +13,8 @@ type
     FcCodigoCad: String;
     FcTabela: String;
     constructor Create;
-    destructor Destroy; override;
   public
+    destructor Destroy; override;
     class function New: IRetornarEmailsPessoa;
     function setDataBase(AoDataBase: TIBDataBase): IRetornarEmailsPessoa;
     function setTabela(AcTabela: String): IRetornarEmailsPessoa;
