@@ -397,7 +397,7 @@ begin
             if Form10.ListarTEFAtivos(True) = False then
             begin
               // Sandro Silva 2023-06-05
-              Form10.ShowModal;
+              Form10.ShowModal;                   não conseguiu confirmar a transação, descontou do valor da venda seguinte
               //if Form10.ShowModal = mrCancel then
                 Break;
             end;
