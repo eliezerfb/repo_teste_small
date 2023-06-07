@@ -3818,7 +3818,9 @@ begin
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '300') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '400') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '500') and
-        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') then
+        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') and
+        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '61')
+        then
     begin
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);

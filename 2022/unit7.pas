@@ -4455,10 +4455,11 @@ begin
     //
     Form7.spdNFe.TimeOut                      := 60000*3;
     Form7.spdNFe.VersaoManual                 := vm60;
-    Form7.spdNFeDataSets.VersaoEsquema        := pl_009;
+    Form7.spdNFeDataSets.VersaoEsquema        := pl_009k; // Sandro Silva 2023-06-07 pl_009;
     Form7.spdNFe.DiretorioEsquemas            := Form1.sAtual + '\nfe\Esquemas\vm60';
     Form7.spdNFe.DiretorioTemplates           := Form1.sAtual + '\nfe\Templates\vm60';
     Form7.spdNFeDataSets.XMLDicionario        := Form1.sAtual + '\nfe\Templates\vm60\Conversor\NFeDataSets.xml';
+  {Sandro Silva 2023-06-07 inicio
     //
   end else
   begin
@@ -4474,6 +4475,7 @@ begin
     Form7.spdNFe.DiretorioTemplates           := Form1.sAtual + '\nfe\Templates\vm50a';
     Form7.spdNFeDataSets.XMLDicionario        := Form1.sAtual + '\nfe\Templates\vm50a\Conversor\NFeDataSets.xml';
     //
+  }
   end;
   //
   try
