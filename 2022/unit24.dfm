@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = 460
-  Top = 168
+  Left = 175
+  Top = 45
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -20,9 +20,7 @@ object Form24: TForm24
   OldCreateOrder = True
   OnActivate = FormActivate
   OnClose = FormClose
-  OnCreate = FormCreate
   OnKeyUp = FormKeyUp
-  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -36,7 +34,7 @@ object Form24: TForm24
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 0
-    object Panel1: TPanel
+    object pnlNota: TPanel
       Left = 10
       Top = 10
       Width = 682
@@ -2872,7 +2870,7 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
       end
-      object Label60: TLabel
+      object lblBcFCP: TLabel
         Left = 15
         Top = 245
         Width = 80
@@ -2889,7 +2887,7 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
-      object Label63: TLabel
+      object lblBCFCPST: TLabel
         Left = 15
         Top = 285
         Width = 80
@@ -2906,7 +2904,7 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
-      object Label69: TLabel
+      object lblPFCPST: TLabel
         Left = 115
         Top = 285
         Width = 80
@@ -2923,7 +2921,7 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
-      object Label61: TLabel
+      object lblPFCP: TLabel
         Left = 115
         Top = 245
         Width = 80
@@ -2940,7 +2938,7 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
-      object Label62: TLabel
+      object lblFCP: TLabel
         Left = 216
         Top = 245
         Width = 80
@@ -2957,7 +2955,7 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
-      object Label70: TLabel
+      object lblFCPST: TLabel
         Left = 216
         Top = 285
         Width = 80

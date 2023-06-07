@@ -11,14 +11,20 @@ type
   public
     class function New: ITextoEmailFactory;
     function NFe: ITextoEmail;
+    function CCe: ITextoEmail;    
   end;
 
 implementation
 
 uses
-  uTextoEmailNFe;
+  uTextoEmailNFe, uTextoEmailCCe;
 
 { TTextoEmailFactory }
+
+function TTextoEmailFactory.CCe: ITextoEmail;
+begin
+  Result := TTextoEmailCCe.New;
+end;
 
 class function TTextoEmailFactory.New: ITextoEmailFactory;
 begin

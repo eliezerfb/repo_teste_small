@@ -17,6 +17,7 @@ object Form7: TForm7
   Menu = MainMenu1
   OldCreateOrder = True
   ParentBiDiMode = False
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
@@ -12436,6 +12437,7 @@ object Form7: TForm7
       '  NUMERONF,'
       '  REGISTRO,'
       '  NN,'
+      '  INSTITUICAOFINANCEIRA,'
       '  MOVIMENTO'
       'from RECEBER '
       'where'
@@ -12462,6 +12464,7 @@ object Form7: TForm7
       '  NUMERONF = :NUMERONF,'
       '  REGISTRO = :REGISTRO,'
       '  NN = :NN,'
+      '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA,'
       '  MOVIMENTO = :MOVIMENTO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
@@ -12567,7 +12570,7 @@ object Form7: TForm7
     end
     object ibDataSet7PORTADOR: TStringField
       DisplayLabel = 'Portador'
-      DisplayWidth = 35
+      DisplayWidth = 33
       FieldName = 'PORTADOR'
       Origin = 'RECEBER.PORTADOR'
       OnSetText = ibDataSet7PORTADORSetText
@@ -12575,6 +12578,7 @@ object Form7: TForm7
     end
     object ibDataSet7CODEBAR: TStringField
       DisplayLabel = 'C'#243'digo de barras'
+      DisplayWidth = 33
       FieldName = 'CODEBAR'
       Origin = 'RECEBER.CODEBAR'
       Size = 50
@@ -12590,6 +12594,13 @@ object Form7: TForm7
       FieldName = 'NUMERONF'
       Origin = 'RECEBER.NUMERONF'
       Size = 12
+    end
+    object ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField
+      DisplayLabel = 'Institui'#231#227'o Finan.'
+      DisplayWidth = 33
+      FieldName = 'INSTITUICAOFINANCEIRA'
+      Origin = 'RECEBER.INSTITUICAOFINANCEIRA'
+      Size = 60
     end
     object ibDataSet7REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
@@ -17911,6 +17922,9 @@ object Form7: TForm7
       Caption = 'L - Le os impostos do XML'
       Visible = False
     end
+    object N67: TMenuItem
+      Caption = '-'
+    end
     object CCartadeCorreoEletronicaCCe1: TMenuItem
       Caption = 'C - Carta de Corre'#231#227'o Eletronica (CC-e)'
       OnClick = CCartadeCorreoEletronicaCCe1Click
@@ -17918,6 +17932,13 @@ object Form7: TForm7
     object IImprimirCartadeCorreoEletronicaCCe1: TMenuItem
       Caption = 'I - Imprimir Carta de Corre'#231#227'o Eletronica (CC-e)'
       OnClick = IImprimirCartadeCorreoEletronicaCCe1Click
+    end
+    object EEnviarcartadecorreoporemail1: TMenuItem
+      Caption = 'E - Enviar Carta de Corre'#231#227'o Eletronica (CC-e) por e-mail'
+      OnClick = EEnviarcartadecorreoporemail1Click
+    end
+    object N68: TMenuItem
+      Caption = '-'
     end
     object Manifestaododestinatrio1: TMenuItem
       Caption = 'Manifesta'#231#227'o do destinat'#225'rio (Confirma'#231#227'o da Opera'#231#227'o)'
@@ -21137,8 +21158,8 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50' +
-      'a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      'vm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21171,8 +21192,8 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a' +
-      '\'
+      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
+      'm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21485,7 +21506,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21514,7 +21535,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21625,5 +21646,140 @@ object Form7: TForm7
     CachedUpdates = False
     Left = 136
     Top = 148
+  end
+  object DSConsulta: TDataSource
+    DataSet = ibqConsulta
+    Left = 800
+    Top = 632
+  end
+  object ibqConsulta: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = IBDataSet2AfterDelete
+    AfterPost = IBDataSet2AfterPost
+    BeforeDelete = ibDataSet2BeforeDelete
+    BeforeEdit = ibDataSet2BeforeEdit
+    BeforeInsert = IBDataSet2BeforeInsert
+    BeforePost = IBDataSet2BeforePost
+    OnDeleteError = IBDataSet2DeleteError
+    OnEditError = IBDataSet2EditError
+    OnNewRecord = ibDataSet2NewRecord
+    OnPostError = IBDataSet2PostError
+    OnUpdateError = IBDataSet2UpdateError
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from CLIFOR'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into CLIFOR'
+      
+        '  (NOME, CONTATO, IE, CGC, ENDERE, COMPLE, CIDADE, ESTADO, CEP, ' +
+        'FONE, FAX, '
+      
+        '   EMAIL, OBS, CELULAR, CREDITO, CONVENIO, IDENTIFICADOR1, IDENT' +
+        'IFICADOR2, '
+      
+        '   IDENTIFICADOR3, IDENTIFICADOR4, IDENTIFICADOR5, DATANAS, CADA' +
+        'STRO, ULTIMACO, '
+      
+        '   PROXDATA, CUSTO, COMPRA, ATIVO, MOSTRAR, CLIFOR, CONTATOS, RE' +
+        'GISTRO, '
+      '   FOTO, WHATSAPP)'
+      'values'
+      
+        '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
+        'O, :CEP, '
+      
+        '   :FONE, :FAX, :EMAIL, :OBS, :CELULAR, :CREDITO, :CONVENIO, :ID' +
+        'ENTIFICADOR1, '
+      
+        '   :IDENTIFICADOR2, :IDENTIFICADOR3, :IDENTIFICADOR4, :IDENTIFIC' +
+        'ADOR5, '
+      
+        '   :DATANAS, :CADASTRO, :ULTIMACO, :PROXDATA, :CUSTO, :COMPRA, :' +
+        'ATIVO, '
+      '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  NOME,'
+      '  CONTATO,'
+      '  IE,'
+      '  CGC,'
+      '  ENDERE,'
+      '  COMPLE,'
+      '  CIDADE,'
+      '  ESTADO,'
+      '  CEP,'
+      '  FONE,'
+      '  FAX,'
+      '  EMAIL,'
+      '  OBS,'
+      '  CELULAR,'
+      '  CREDITO,'
+      '  CONVENIO,'
+      '  IDENTIFICADOR1,'
+      '  IDENTIFICADOR2,'
+      '  IDENTIFICADOR3,'
+      '  IDENTIFICADOR4,'
+      '  IDENTIFICADOR5,'
+      '  DATANAS,'
+      '  CADASTRO,'
+      '  ULTIMACO,'
+      '  PROXDATA,'
+      '  CUSTO,'
+      '  COMPRA,'
+      '  ATIVO,'
+      '  MOSTRAR,'
+      '  CLIFOR,'
+      '  CONTATOS,'
+      '  REGISTRO,'
+      '  FOTO,'
+      '  WHATSAPP'
+      'from CLIFOR '
+      'where'
+      '  REGISTRO = :REGISTRO')
+    ModifySQL.Strings = (
+      'update CLIFOR'
+      'set'
+      '  NOME = :NOME,'
+      '  CONTATO = :CONTATO,'
+      '  IE = :IE,'
+      '  CGC = :CGC,'
+      '  ENDERE = :ENDERE,'
+      '  COMPLE = :COMPLE,'
+      '  CIDADE = :CIDADE,'
+      '  ESTADO = :ESTADO,'
+      '  CEP = :CEP,'
+      '  FONE = :FONE,'
+      '  FAX = :FAX,'
+      '  EMAIL = :EMAIL,'
+      '  OBS = :OBS,'
+      '  CELULAR = :CELULAR,'
+      '  CREDITO = :CREDITO,'
+      '  CONVENIO = :CONVENIO,'
+      '  IDENTIFICADOR1 = :IDENTIFICADOR1,'
+      '  IDENTIFICADOR2 = :IDENTIFICADOR2,'
+      '  IDENTIFICADOR3 = :IDENTIFICADOR3,'
+      '  IDENTIFICADOR4 = :IDENTIFICADOR4,'
+      '  IDENTIFICADOR5 = :IDENTIFICADOR5,'
+      '  DATANAS = :DATANAS,'
+      '  CADASTRO = :CADASTRO,'
+      '  ULTIMACO = :ULTIMACO,'
+      '  PROXDATA = :PROXDATA,'
+      '  CUSTO = :CUSTO,'
+      '  COMPRA = :COMPRA,'
+      '  ATIVO = :ATIVO,'
+      '  MOSTRAR = :MOSTRAR,'
+      '  CLIFOR = :CLIFOR,'
+      '  CONTATOS = :CONTATOS,'
+      '  REGISTRO = :REGISTRO,'
+      '  FOTO = :FOTO,'
+      '  WHATSAPP = :WHATSAPP'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 768
+    Top = 632
   end
 end

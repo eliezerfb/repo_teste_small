@@ -3,21 +3,20 @@ unit uTextoEmailNFe;
 interface
 
 uses
-  uITextoEmail, uSmallResourceString, IniFiles;
+  uITextoEmail, uSmallResourceString;
 
 type
   TTextoEmailNFe = class(TInterfacedObject, ITextoEmail)
   private
-    FoIni: TIniFile;
     FcTexto: String;
     constructor Create;
-    destructor Destroy; override;  
   public
     class function New: ITextoEmail;
     function setDescrAnexo(AcDescr: String): ITextoEmail;
     function setDataEmissao(AdData: TDateTime): ITextoEmail;
     function setNumeroDocumento(AcNumeroDocumento: String): ITextoEmail;
     function setChaveAcesso(AcChaveAcesso: String): ITextoEmail;
+    function setPropaganda(AcPropaganda: String): ITextoEmail;
     function RetornarTexto: String;
   end;
 
@@ -59,23 +58,11 @@ end;
 function TTextoEmailNFe.RetornarTexto: String;
 begin
   Result := StringReplace(FcTexto, '<DESCRDOC>', 'NF-e', [rfReplaceAll]);
-
-  Result := FoIni.ReadString('Outros', 'Propaganda', EmptyStr) + SLineBreak + SLineBreak +
-            Result;
 end;
 
 constructor TTextoEmailNFe.Create;
 begin
   FcTexto := _cMsgTextoEmailDoc;
-
-  FoIni   := TIniFile.Create(GetCurrentDir+'\smallcom.inf');
-end;
-
-destructor TTextoEmailNFe.Destroy;
-begin
-  FoIni.Free;
-  
-  inherited;
 end;
 
 function TTextoEmailNFe.setDescrAnexo(AcDescr: String): ITextoEmail;
@@ -83,6 +70,13 @@ begin
   Result := Self;
 
   FcTexto := StringReplace(FcTexto, '<DESCREXTANEXO>', AcDescr, [rfReplaceAll]);
+end;
+
+function TTextoEmailNFe.setPropaganda(AcPropaganda: String): ITextoEmail;
+begin
+  Result := Self;
+
+  FcTexto := AcPropaganda + sLineBreak + sLineBreak + FcTexto;
 end;
 
 end.

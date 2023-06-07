@@ -13,7 +13,7 @@ type
     Panel2: TPanel;
     Image1: TImage;
     Button3: TBitBtn;
-    Button1: TBitBtn;
+    btnAvancar: TBitBtn;
     Button2: TBitBtn;
     Panel5: TPanel;
     Label10: TLabel;
@@ -21,7 +21,7 @@ type
     Label12: TLabel;
     Label13: TLabel;
     MonthCalendar1: TMonthCalendar;
-    Panel4: TPanel;
+    pnlSelOperacoes: TPanel;
     Label8: TLabel;
     Label9: TLabel;
     Panel3: TPanel;
@@ -36,7 +36,7 @@ type
     DateTimePicker2: TDateTimePicker;
     RadioButton1: TRadioButton;
     rbItemPorITem: TRadioButton;
-    CheckListBox1: TCheckListBox;
+    chkOperacoes: TCheckListBox;
     Edit1: TEdit;
     Label17: TLabel;
     Panel1: TPanel;
@@ -54,7 +54,9 @@ type
     Label25: TLabel;
     ComboBox1: TComboBox;
     cbListarCodigos: TCheckBox;
-    procedure Button1Click(Sender: TObject);
+    btnMarcarTodos: TBitBtn;
+    btnDesmarcarTodos: TBitBtn;
+    procedure btnAvancarClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -65,6 +67,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure rbItemPorITemClick(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
+    procedure btnMarcarTodosClick(Sender: TObject);
+    procedure btnDesmarcarTodosClick(Sender: TObject);
   private
     function StrToFloatFormat(sFormato: String; Valor: Real): Real;
     procedure DefinirEnabledListarCodigo;
@@ -160,7 +164,7 @@ begin
   Result := True;
 end;
 
-procedure TForm38.Button1Click(Sender: TObject);
+procedure TForm38.btnAvancarClick(Sender: TObject);
 var
   F: TextFile;
   dInicio, dFinal : TdateTime;
@@ -195,14 +199,23 @@ begin
     RelatorioBalanca(F);
   end else
   begin
-    if (Form7.sModulo <> 'CLIENTES') and (Form7.sModulo <> 'FORNECED') and (Form7.sModulo <> 'CONTAS') and (Form7.sModulo <> 'CONTATOS') then
+    if (Form7.sModulo <> 'CLIENTES')
+      and (Form7.sModulo <> 'FORNECED')
+      and (Form7.sModulo <> 'CONTAS')
+      and (Form7.sModulo <> 'CONTATOS') then
     begin
-      if (CheckListBox1.Visible = False) and ((Form7.sModulo = 'Relatório de vendas') or (Form7.sModulo = 'Relatório de compras') or (Form7.sModulo = 'Resumo das vendas')) then
+      //Filtro Por Operação
+      if (chkOperacoes.Visible = False)
+        and ((Form7.sModulo = 'Relatório de vendas')
+          or (Form7.sModulo = 'Relatório de compras')
+          or (Form7.sModulo = 'Resumo das vendas')
+          or (Form7.sModulo = 'Curva ABC de clientes') // Mauricio Parizotto 2023-05-24
+          ) then
       begin
         // Cria um item para cada operação de venda
         Button3.Enabled          := True;
-        CheckListBox1.Visible    := True;
-        Panel4.Visible           := True;
+        chkOperacoes.Visible     := True;
+        pnlSelOperacoes.Visible  := True;
 
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSql.Clear;
@@ -210,25 +223,28 @@ begin
         Form7.ibDataSet14.Open;
         Form7.ibDataSet14.First;
 
-        CheckListBox1.Items.Clear;
+        chkOperacoes.Items.Clear;
 
         while (not Form7.ibDataSet14.EOF) and (Form38.Caption <> 'Cancelar') do
         begin
           Application.ProcessMessages;
 
-          if ((Form7.sModulo = 'Relatório de vendas') or (Form7.sModulo = 'Resumo das vendas')) then
+          //if ((Form7.sModulo = 'Relatório de vendas') or (Form7.sModulo = 'Resumo das vendas')) then
+          if (Form7.sModulo = 'Relatório de vendas')
+              or (Form7.sModulo = 'Resumo das vendas')
+              or (Form7.sModulo = 'Curva ABC de clientes') then
           begin
             if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '5') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '6') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') then
             begin
               if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then
               begin
-                CheckListBox1.Items.add(Form7.ibDataSet14NOME.AsString);
+                chkOperacoes.Items.add(Form7.ibDataSet14NOME.AsString);
                 if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'CAIXA') or (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,7) = 'RECEBER') then
                 begin
-                  CheckListBox1.Checked[(CheckListBox1.Items.Count -1)] := True;
+                  chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := True;
                 end else
                 begin
-                  CheckListBox1.Checked[(CheckListBox1.Items.Count -1)] := False;
+                  chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := False;
                 end;
               end;
             end;
@@ -238,13 +254,15 @@ begin
           begin
             if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '2') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3') then
             begin
-              if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then CheckListBox1.Items.add(Form7.ibDataSet14NOME.AsString);
+              if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then
+                chkOperacoes.Items.add(Form7.ibDataSet14NOME.AsString);
+
               if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'CAIXA') or (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'PAGAR') then
               begin
-                CheckListBox1.Checked[(CheckListBox1.Items.Count -1)] := True;
+                chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := True;
               end else
               begin
-                CheckListBox1.Checked[(CheckListBox1.Items.Count -1)] := False;
+                chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := False;
               end;
             end;
           end;
@@ -464,7 +482,7 @@ begin
     end;
   end;
 
-  Form38.Button1.Enabled := True;
+  btnAvancar.Enabled := True;
 
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') or (Form7.sModulo = 'CONTAS') or (Form7.sModulo = 'CONTATOS') then
   begin
@@ -558,8 +576,8 @@ end;
 procedure TForm38.Button3Click(Sender: TObject);
 begin
   button3.Enabled         := False;
-  Panel4.Visible          := False;
-  CheckListBox1.visible   := False;
+  pnlSelOperacoes.Visible := False;
+  chkOperacoes.visible    := False;
 
   Form38.Caption          := Form7.sModulo;
   if Form7.sModulo =  'Relatório de compras' then RadioButton1.Caption := 'Relatório de crédito de ICMS'
@@ -570,13 +588,13 @@ begin
 
   if Form7.sModulo = 'CONTAS' then
   begin
-    Form38.Button1.SetFocus;
+    btnAvancar.SetFocus;
     Form38.CapTion := 'Plano de contas';
   end;
 
   if Form7.sModulo = 'CONTATOS' then
   begin
-    Form38.Button1.SetFocus;
+    btnAvancar.SetFocus;
     Form38.CapTion := 'Contatos de hora em hora';
   end;
 
@@ -2584,7 +2602,7 @@ var
 begin
   Screen.Cursor  := crAppStart;    // Cursor de Aguardo
 
-  Form38.Button1.Enabled := False;
+  btnAvancar.Enabled := False;
 
   if Form1.bHtml1 then
   begin
@@ -2756,7 +2774,7 @@ var
   F1: TextFile;
 begin
   Screen.Cursor  := crAppStart;    // Cursor de Aguardo
-  Form38.Button1.Enabled := False;
+  btnAvancar.Enabled := False;
   
   if Form1.bHtml1 then
   begin
@@ -2972,7 +2990,7 @@ var
   fTotal : Real;
 begin
   Screen.Cursor  := crAppStart;    // Cursor de Aguardo
-  Form38.Button1.Enabled := False;
+  btnAvancar.Enabled := False;
 
   if Form1.bHtml1 then
   begin
@@ -3115,7 +3133,7 @@ begin
   Form7.ibDataSet4.Open;
   Form7.ibDataSet4.First;
 
-  Form38.Button1.Enabled := False;
+  Form38.btnAvancar.Enabled := False;
 
   if Form1.bHtml1 then
   begin
@@ -3148,11 +3166,11 @@ begin
 
   sOperacoes := '';
 
-  for I := 0 to (CheckListBox1.Items.Count -1) do
+  for I := 0 to (chkOperacoes.Items.Count -1) do
   begin
-    if not CheckListBox1.Checked[I] then
+    if not chkOperacoes.Checked[I] then
     begin
-      sOperacoes := sOperacoes + ' and VENDAS.OPERACAO<>'+QuotedStr(CheckListBox1.Items[I])+' ';
+      sOperacoes := sOperacoes + ' and VENDAS.OPERACAO<>'+QuotedStr(chkOperacoes.Items[I])+' ';
     end;
   end;
 
@@ -3450,9 +3468,9 @@ begin
     WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#FFFFFF align=left>');
     WriteLn(F,'     <td><P><font face="Microsoft Sans Serif" size=1><b>Operações listadas:</b><br>');
-    for I := 0 to (CheckListBox1.Items.Count -1) do
-      if CheckListBox1.Checked[I] then
-          Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(CheckListBox1.Items[I]));
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+      if chkOperacoes.Checked[I] then
+          Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(chkOperacoes.Items[I]));
 
     Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+'Vendas por ECF, NFC-e ou SAT');
     WriteLn(F,'');
@@ -3507,9 +3525,9 @@ begin
     WriteLn(F,TraduzSql('Listando '+Form7.swhere+' '+Form7.sOrderBy,True));
     WriteLn(F,'');
     WriteLn(F,'Operações listadas:');
-    for I := 0 to (CheckListBox1.Items.Count -1) do
-      if CheckListBox1.Checked[I] then
-          Writeln(F,AllTrim(CheckListBox1.Items[I]));
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+      if chkOperacoes.Checked[I] then
+          Writeln(F,AllTrim(chkOperacoes.Items[I]));
     WriteLn(F,'Vendas por ECF, NFC-e ou SAT');
     WriteLn(F,'');
   end;
@@ -3521,7 +3539,7 @@ end;
 procedure TForm38.RelatorioAuditoria(var F: TextFile; dInicio, dFinal : TdateTime);
 begin
   Screen.Cursor  := crAppStart;    // Cursor de Aguardo
-  Form38.Button1.Enabled := False;
+  Form38.btnAvancar.Enabled := False;
 
   if Form1.bHtml1 then
   begin
@@ -3598,18 +3616,32 @@ end;
 
 procedure TForm38.RelatorioCurvaABC_Clientes(var F: TextFile; dInicio, dFinal : TdateTime);
 var
-  fTotal, fTotal1, fTotal3, fTotal4 : Real;
+  fTotal, fTotal1, fTotal3, vPercAcumulado, vPercIndividual : Real;
+  sOperacoes : string;
+  I : integer;
 begin
   Form7.IBDataSet2.DisableControls;
 
   fTotal3 := 0;
-  fTotal4 := 0;
+  vPercAcumulado := 0;
+
+  {Mauricio Parizotto 2023-05-24 Inicio}
+  sOperacoes := '';
+
+  for I := 0 to (chkOperacoes.Items.Count -1) do
+  begin
+    if not chkOperacoes.Checked[I] then
+    begin
+      sOperacoes := sOperacoes + ' and VENDAS.OPERACAO<>'+QuotedStr(chkOperacoes.Items[I])+' ';
+    end;
+  end;
 
   // Vendas com NF
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
-  Form7.IBDataSet99.SelectSQL.Add(SqlSelectCurvaAbcClientes(dinicio, dfinal));
+  Form7.IBDataSet99.SelectSQL.Add(SqlSelectCurvaAbcClientes(dinicio, dfinal, sOperacoes));
   Form7.IBDataSet99.Open;
+  {Mauricio Parizotto 2023-05-24 Fim}
 
   Form7.ibDataSet99.First;
   while (not Form7.ibDataSet99.EOF) and (Form38.Caption <> 'Cancelar') do
@@ -3680,11 +3712,31 @@ begin
           WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2FONE.AsString +'<br></font></td>');
           WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+DateToStr(Form7.ibDataSet2ULTIMACO.AsDateTime)+'<br></font></td>');
 
+          {Mauricio Parizotto 2023-05-29 Inicio}
+          
+          {
           fTotal4 := fTotal4 + (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
 
-          if fTotal4 < 70 then  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>') else
-           if fTotal4 < 90 then  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>') else
-             WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
+          if fTotal4 < 70 then
+            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>')
+          else
+            if fTotal4 < 90 then
+              WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
+            else
+                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
+          WriteLn(F,'    <td nowrap width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
+          }
+
+          vPercIndividual := (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+          vPercAcumulado  := vPercAcumulado + vPercIndividual;
+
+          if (vPercAcumulado < 70) or (vPercIndividual > 30) then
+            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>') //
+          else
+            if vPercAcumulado < 90 then
+              WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
+            else
+                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
           WriteLn(F,'    <td nowrap width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
 
           WriteLn(F,'   </tr>');
@@ -3697,10 +3749,17 @@ begin
           Write(F,Copy(Form7.ibDataSet2FONE.AsString+Replicate(' ',20),1,20)+' ');
           Write(F,DateToStr(Form7.ibDataSet2ULTIMACO.AsDateTime)+' ');
 
-          fTotal4 := fTotal4 + (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+          vPercIndividual := (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+          vPercAcumulado  := vPercAcumulado + vPercIndividual;
 
-          if fTotal4 < 70 then  WriteLn(F,'A  ') else
-           if fTotal4 < 90 then  WriteLn(F,'B  ') else WriteLn(F,'C  ');
+          //if vPercAcumulado < 70 then
+          if (vPercAcumulado < 70) or (vPercIndividual > 30) then
+            WriteLn(F,'A  ')
+          else
+            if vPercAcumulado < 90 then
+              WriteLn(F,'B  ') else WriteLn(F,'C  ');
+
+          {Mauricio Parizotto 2023-05-29 Fim}
         end;
       end;
     end;
@@ -3713,9 +3772,26 @@ begin
     WriteLn(F,'   </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
 
+    {Mauricio Parizotto 2023-05-26 Inicio}
+    // Filtros ativos
+    WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+    WriteLn(F,'    <tr bgcolor=#FFFFFF align=left>');
+    WriteLn(F,'     <td><P><font face="Microsoft Sans Serif" size=1><b>Operações listadas:</b><br>');
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+      if chkOperacoes.Checked[I] then
+          Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(chkOperacoes.Items[I]));
+
+    Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+'Vendas por ECF, NFC-e ou SAT');
+    WriteLn(F,'');
+    Writeln(F,'      </td><br>');
+    WriteLn(F,'     </td>');
+    WriteLn(F,'    </table>');
+    {Mauricio Parizotto 2023-05-26 Fim}
+
     // Filtros ativos
     WriteLn(F,'<br><font size=1>'+TraduzSql('Listando '+Form7.swhere+' '+Form7.sOrderBy,True)+'</font>');
     WriteLn(F,'</center>');
+
   end else
   begin
     WriteLn(F,'');
@@ -3733,7 +3809,7 @@ procedure TForm38.RelatorioCurvaABC_Estoque(var F: TextFile; dInicio, dFinal : T
 var
   fTotal1, fTotal4, fTotal5 : Real;
 begin
-  Form38.Button1.Enabled := False;
+  Form38.btnAvancar.Enabled := False;
 
   if Form1.bHtml1 then
   begin
@@ -5021,9 +5097,9 @@ begin
   begin
     Application.ProcessMessages;
     bCil := False;
-    for I := 0 to (CheckListBox1.Items.Count -1) do
-       if CheckListBox1.Checked[I] then
-         if CheckListBox1.Items[I] = Form7.ibDataSet15OPERACAO.AsString then
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+       if chkOperacoes.Checked[I] then
+         if chkOperacoes.Items[I] = Form7.ibDataSet15OPERACAO.AsString then
             bCil := True;
     if bCil then
     begin
@@ -5109,11 +5185,11 @@ begin
   begin
     Application.ProcessMessages;
     bCil := False;
-    for I := 0 to (CheckListBox1.Items.Count -1) do
+    for I := 0 to (chkOperacoes.Items.Count -1) do
     begin
-      if CheckListBox1.Checked[I] then
+      if chkOperacoes.Checked[I] then
       begin
-        if CheckListBox1.Items[I] =Form7.ibDataSet15OPERACAO.AsString then
+        if chkOperacoes.Items[I] =Form7.ibDataSet15OPERACAO.AsString then
         begin
           bcil := True;
         end;
@@ -5209,9 +5285,9 @@ begin
   begin
     Application.ProcessMessages;
     bCil := False;
-    for I := 0 to (CheckListBox1.Items.Count -1) do
-       if CheckListBox1.Checked[I] then
-         if CheckListBox1.Items[I] = Form7.ibDataSet24OPERACAO.AsString then
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+       if chkOperacoes.Checked[I] then
+         if chkOperacoes.Items[I] = Form7.ibDataSet24OPERACAO.AsString then
             bCil := True;
     if bCil then
     begin
@@ -5288,9 +5364,9 @@ begin
   begin
     Application.ProcessMessages;
     bCil := False;
-    for I := 0 to (CheckListBox1.Items.Count -1) do
-       if CheckListBox1.Checked[I] then
-         if CheckListBox1.Items[I] = Form7.ibDataSet24OPERACAO.AsString then
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+       if chkOperacoes.Checked[I] then
+         if chkOperacoes.Items[I] = Form7.ibDataSet24OPERACAO.AsString then
             bCil := True;
     if bCil then
     begin
@@ -5434,9 +5510,9 @@ begin
       WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F,'    <tr bgcolor=#FFFFFF align=left>');
       WriteLn(F,'     <td><P><font face="Microsoft Sans Serif" size=1><b>Operações listadas:</b><br>');
-      for I := 0 to (CheckListBox1.Items.Count -1) do
-        if CheckListBox1.Checked[I] then
-            Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(CheckListBox1.Items[I]));
+      for I := 0 to (chkOperacoes.Items.Count -1) do
+        if chkOperacoes.Checked[I] then
+            Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(chkOperacoes.Items[I]));
       Writeln(F,'      </td><br>');
       WriteLn(F,'     </td>');
       WriteLn(F,'    </table>');
@@ -5444,9 +5520,9 @@ begin
     begin
       WriteLn(F,'');
       WriteLn(F,'Operações listadas:');
-      for I := 0 to (CheckListBox1.Items.Count -1) do
-        if CheckListBox1.Checked[I] then
-            Writeln(F,AllTrim(CheckListBox1.Items[I]));
+      for I := 0 to (chkOperacoes.Items.Count -1) do
+        if chkOperacoes.Checked[I] then
+            Writeln(F,AllTrim(chkOperacoes.Items[I]));
       WriteLn(F,'');
     end;
   end;
@@ -5462,6 +5538,26 @@ begin
   end;
 end;
 
+
+procedure TForm38.btnMarcarTodosClick(Sender: TObject);
+var
+  i : integer;
+begin
+  for i := 0 to chkOperacoes.Items.Count -1 do
+  begin
+    chkOperacoes.Checked[i] := True;
+  end;
+end;
+
+procedure TForm38.btnDesmarcarTodosClick(Sender: TObject);
+var
+  i : integer;
+begin
+  for i := 0 to chkOperacoes.Items.Count -1 do
+  begin
+    chkOperacoes.Checked[i] := False;
+  end;
+end;
 
 end.
 

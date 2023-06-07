@@ -373,9 +373,9 @@ begin
   end;
 
   // Complemento de ICMS
-  if Form7.ibDataSet15FINNFE.AsString = '2' then
+  if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then
   begin
-    sChave                                      := Form1.Small_InputForm('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '');
+    sChave                                      := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
 
     try
       if sChave <> '' then
@@ -406,9 +406,9 @@ begin
       // Só pede se não está na obs
       if Length(LimpaNumero(sChave)) <> 44 then
       begin
-        sChave                                      := Form1.Small_InputForm('NFe', pChar('Chave de acesso da NF-e de devolução referenciada'+chr(10)+
+        sChave                                      := Form1.Small_InputForm_ApenasNumeros('NFe', pChar('Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                                                                                           '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
-                                                                                          'cupom fiscal referenciado') , sChave);
+                                                                                          'cupom fiscal referenciado'), sChave, 44);
       end;
 
       try

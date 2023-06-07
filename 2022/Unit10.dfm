@@ -832,16 +832,6 @@ object Form10: TForm10
         OnMouseMove = Label205MouseMove
         OnMouseLeave = Label205MouseLeave
       end
-      object Button21: TBitBtn
-        Left = 608
-        Top = 48
-        Width = 75
-        Height = 25
-        Caption = 'Button21'
-        TabOrder = 0
-        Visible = False
-        OnClick = Button21Click
-      end
     end
     object Panel2: TPanel
       Left = 0
@@ -1692,6 +1682,25 @@ object Form10: TForm10
           Alignment = taRightJustify
           AutoSize = False
           Caption = 'Label1'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          Visible = False
+        end
+        object lblLimiteCredDisponivel: TLabel
+          Left = 208
+          Top = 325
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Limite dispon'#237'vel:'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -2611,7 +2620,7 @@ object Form10: TForm10
           TitleFont.Name = 'Fixedsys'
           TitleFont.Style = []
           Visible = False
-          OnCellClick = DBGrid1CellClick
+          OnCellClick = DBGrid3CellClick
           OnDblClick = DBGrid3DblClick
           OnKeyDown = DBGrid1KeyDown
           OnKeyPress = DBGrid3KeyPress
@@ -2651,6 +2660,25 @@ object Form10: TForm10
           OnKeyDown = SMALL_DBEdit1KeyDown
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
+        end
+        object eLimiteCredDisponivel: TEdit
+          Left = 308
+          Top = 320
+          Width = 121
+          Height = 20
+          TabStop = False
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 36
+          Visible = False
         end
       end
       object orelha_ICMS: TTabSheet

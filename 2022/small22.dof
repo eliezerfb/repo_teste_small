@@ -90,7 +90,7 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=\desenvolvimento\executaveis\Small Commerce
+OutputDir=D:\Desenvolvimento\Executaveis\Small Commerce
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=2023
 MinorVer=0
 Release=0
-Build=46
+Build=50
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Small Commerce
-FileVersion=2023.0.0.46
+FileVersion=2023.0.0.50
 InternalName=small22
 LegalCopyright=Zucchetti Software e Sistemas Ltda
 LegalTrademarks=Zucchetti Software e Sistemas Ltda
@@ -140,7 +140,8 @@ C:\Program Files (x86)\Borland\Delphi7\Projects\Bpl\spdNFCe_D7.bpl=Tecnospeed - 
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlOutputDirectorry]
-Count=3
-Item0=\desenvolvimento\executaveis\Small Commerce
-Item1=C:\Program Files (x86)\SmallSoft\Small Commerce 2021
-Item2=D:\Desenvolvimento\Executaveis\Small Commerce
+Count=4
+Item0=D:\Desenvolvimento\Executaveis\Small Commerce
+Item1=C:\Program Files (x86)\SmallSoft\Small XXXXX
+Item2=C:\Program Files (x86)\SmallSoft\Small Commerce 2021
+Item3=\desenvolvimento\executaveis\Small Commerce
