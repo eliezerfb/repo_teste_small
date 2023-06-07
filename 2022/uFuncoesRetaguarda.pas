@@ -6,6 +6,8 @@ function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): Stri
 function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
 function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
+function XmlValueToFloat(Value: String;
+  SeparadorDecimalXml: String = '.'): Double;
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function FormatXMLToFloat(sValor: String): Double;
 function TextoIdentificadorFinalidadeNFe(Value: String): String;
@@ -98,6 +100,23 @@ end;
 function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;  // Ficha 6246
 begin
   Result := SqlSelectGraficoVendas(dtInicio, dtFinal);
+end;
+
+function XmlValueToFloat(Value: String;
+  SeparadorDecimalXml: String = '.'): Double;
+// Sandro Silva 2023-05-17
+// Converte valor float de tags xml para Float
+begin
+  if SeparadorDecimalXml = ',' then
+    Value := StringReplace(Value, '.', '', [rfReplaceAll]);// Elimina os pontos
+
+  if SeparadorDecimalXml = '.' then
+  begin
+    Value := StringReplace(Value, ',', '', [rfReplaceAll]); // Elimina a vírgula
+    Value := StringReplace(Value, '.', ',', [rfReplaceAll]); // Troca o ponto pela vírgula
+  end;
+
+  Result := StrToFloatDef(Value, 0.00);
 end;
 
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
