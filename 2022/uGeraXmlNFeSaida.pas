@@ -41,6 +41,8 @@ var
 
   fRateioDoDesconto, {fPercentualFCPST, fPercentualFCP, }vIVA60_B_ICMST : Real;
 
+  vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
+
   procedure GeraXmlNFeSaida;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
 
@@ -782,6 +784,7 @@ begin
     fDesconto[I] := 0;
   end;
 
+  vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-06-07
 
   I := 0;
   //
@@ -2807,6 +2810,7 @@ var
   fAliquota : Real;
   vlFreteRateadoItem, fTotalMercadoria : Real;
   fPercentualFCP, fPercentualFCPST: Real; // Sandro Silva 2023-05-15
+  vICMSMonoRet_N45: Real; // Sandro Silva 2023-06-07
 begin
   //Mauricio Parizotto 2023-04-03
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
@@ -3691,7 +3695,7 @@ begin
 
 
     // final TAGS saaída por CST - CRT 2 ou 3 - Regime normal
-  end;
+  end; // if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
 
 
   if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
@@ -4639,18 +4643,41 @@ begin
     end;
 
     {Sandro Silva 2023-06-01 inicio}
-    if Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value = '61' then
+    if Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '61' then
     begin
       // Ficha 6907
       // Simples nacional usa CST 61 no lugar do CSOSN
-      Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Clear;
-      Form1.spdNFCeDataSets1.Campo('CST_N12').AsString := '61';
+      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
+      Form7.spdNFeDataSets.Campo('CST_N12').AsString := '61';
     end;
     {Sandro Silva 2023-06-01 fim}
 
-
     // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
+  end; //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+
+
+  {Sandro Silva 2023-06-07 inicio}
+  //qBCMonoRet = será igual à quantidade do produto informado na nota
+  //adRemICMSRet = buscar da tag adRemICMSRet do cadastro do produto
+  //vICMSMonoRet = multiplicar o valor da tag qBCMonoRet pelo valor da tag adRemICMSRet
+
+  // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
+  if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '61') then
+  begin
+
+    Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
+    Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
+
+    Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
+    Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
+    vICMSMonoRet_N45      := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
+    vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
+
+    Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
   end;
+  {Sandro Silva 2023-06-07 fim}
+
+
 end;
 
 end.
