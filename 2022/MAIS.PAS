@@ -428,6 +428,7 @@ type
     { Private declarations }
     procedure ExibeRazaoSocialNoCaptionDoForm;
     function getPropaganda: String;
+    procedure DefinirBuildEXEDAT;
 
   public
     fDias : Real;
@@ -4502,6 +4503,19 @@ begin
   ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15 
 end;
 
+procedure TForm1.DefinirBuildEXEDAT;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+  try
+    if StrToFloat(LimpaNumero(oIni.ReadString('Geral','Build 2020','2020.0.0.0'))) <> StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:',''))) then
+      oIni.WriteString('Geral','Build 2023',StrTran(Form22.sBuild,'Versão e Build:',''));
+  finally
+    oIni.Free;
+  end;
+end;
+
 procedure TForm1.Ajustararquivos1Click(Sender: TObject);
 var
   sCertificado, sSerieS, sBuild, sLicenca  : String;
@@ -4557,8 +4571,9 @@ begin
   if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
   begin
     ShowMessage('A build: '+Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.');
+
     Instalarpackcomasltimasalteraes1Click(Sender);
-    // Form1.DestroyWindowHandle;
+
     Application.Terminate;
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
@@ -4566,10 +4581,7 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 
-  if StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2020','2020.0.0.0'))) <> StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:',''))) then
-  begin
-    Mais1Ini.WriteString('Geral','Build 2023',StrTran(Form22.sBuild,'Versão e Build:',''));
-  end;
+  DefinirBuildEXEDAT;
   {Sandro Silva 2022-12-28 fim}
 
   {Sandro Silva 2023-05-31 inicio
@@ -5647,6 +5659,10 @@ procedure TForm1.Instalarpackcomasltimasalteraes1Click(Sender: TObject);
 var
   vQtdConexoes : integer;
 begin
+  // Necessario conectar com o BD antes, caso contrario ira usar o caminho definido na propriedade (dfm) do IBDataBase (unit7) - Dailon - 2023/06/07 (FICHA - 7019)
+  if (not Form1.ibDataSet200.Transaction.DefaultDatabase.Connected) then
+    ConectaBancoCommerce;
+
   vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
                                         'Select Count(*) From MON$ATTACHMENTS');
 
