@@ -6730,11 +6730,22 @@ begin
   begin
     for I := 0 to Form10.ComboBox4.Items.Count -1 do
     begin
-      //
+
+      {Sandro Silva 2023-05-09 inicio
       if Copy(Form10.ComboBox4.Items[I],1,3) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
       begin
         Form10.ComboBox4.ItemIndex := I;
       end;
+      }
+      // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
+      if Trim(Form7.ibDataSet4CSOSN.AsString) <> '' then
+      begin
+        if Copy(Form10.ComboBox4.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
+        begin
+          Form10.ComboBox4.ItemIndex := I;
+        end;
+      end;
+
     end;
   end;
   
@@ -6754,10 +6765,21 @@ begin
     for I := 0 to Form10.ComboBox15.Items.Count -1 do
     begin
       //
+      {Sandro Silva 2023-05-09 inicio
       if Copy(Form10.ComboBox15.Items[I],1,3) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
       begin
         Form10.ComboBox15.ItemIndex := I;
       end;
+      }
+      // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
+      if Trim(Form7.ibDataSet4CSOSN_NFCE.AsString) <> '' then
+      begin
+        if Copy(Form10.ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
+        begin
+          Form10.ComboBox15.ItemIndex := I;
+        end;
+      end;
+      {Sandro Silva 2023-05-09 fim}
     end;
   end;
   
@@ -7084,7 +7106,8 @@ begin
   
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
-    Form7.ibDataSet4CSOSN.AsString := Copy(Form10.ComboBox4.Items[Form10.ComboBox4.ItemIndex]+'   ',1,3);
+    // Sandro Silva 2023-05-09 Form7.ibDataSet4CSOSN.AsString := Copy(Form10.ComboBox4.Items[Form10.ComboBox4.ItemIndex]+'   ',1,3);
+    Form7.ibDataSet4CSOSN.AsString := Trim(Copy(Form10.ComboBox4.Items[Form10.ComboBox4.ItemIndex]+'   ',1,3));
   end;
 end;
 
@@ -7170,8 +7193,10 @@ end;
 procedure TForm10.ComboBox9KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
 end;
 
 procedure TForm10.orelha_cadastroShow(Sender: TObject);
@@ -8255,7 +8280,8 @@ begin
   //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
-    Form7.ibDataSet4CSOSN_NFCE.AsString := Copy(Form10.ComboBox15.Items[Form10.ComboBox15.ItemIndex]+'   ',1,3);
+    // Sandro Silva 2023-05-09 Form7.ibDataSet4CSOSN_NFCE.AsString := Copy(Form10.ComboBox15.Items[Form10.ComboBox15.ItemIndex]+'   ',1,3);
+    Form7.ibDataSet4CSOSN_NFCE.AsString := Trim(Copy(Form10.ComboBox15.Items[Form10.ComboBox15.ItemIndex]+'   ',1,3));
   end;
 end;
 
@@ -8444,6 +8470,7 @@ begin
   Memo1.Lines.Add('<pGLP>0,0000 "Informar em número decimal o % do GLP derivado de petróleo"</pGLP>');
   Memo1.Lines.Add('<pGNn>0,0000 "Informar em número decimal o % do Gás Natural Nacional"</pGNn>');
   Memo1.Lines.Add('<pGNi>0,0000 "Informar em número decimal o % do Gás Natural Importado"</pGNi>');
+  Memo1.Lines.Add('<adRemICMSRet>0,0000 "Alíquota ad rem retido anteriormente"</adRemICMSRet>'); // Ficha 6906 Sandro Silva 2023-05-09
   Memo1.Lines.Add('<vPart>0,00  "Valor de partida"</vPart>');
   Memo1.Lines.Add('<uTrib>UN    "Unidade tributável"</uTrib>');
   Memo1.Lines.Add('<qTrib>0     "Quantidade tributável"</qTrib>');
@@ -8550,7 +8577,8 @@ begin
   try
     if Form7.ibDataSet4TAGS_.AsString <> sEx then
     begin
-      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Edit;
       Form7.ibDataSet4TAGS_.AsString := sEx;
       Form7.ibDataSet4.Post;
       Form7.ibDataset4.Edit;
@@ -8573,6 +8601,8 @@ begin
   if ACol <> 1 then
   begin
     StringGrid2.Canvas.Font.Color  := clGray;
+    if gdSelected in State then
+      StringGrid2.Canvas.Font.Color  := clBlack; // Sandro Silva 2023-05-15
     StringGrid2.Canvas.FillRect(Rect);
   end;
   

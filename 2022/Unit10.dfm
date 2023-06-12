@@ -961,7 +961,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_cadastro
+      ActivePage = Orelha_TAGS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3162,6 +3162,9 @@ object Form10: TForm10
             '50 - Suspens'#227'o'
             '51 - Diferimento'
             '60 - ICMS Cobrado anteriormente por ST'
+            
+              '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
+              'nte'
             '70 - Com red. de base de c'#225'lculo e cob. do ICMS por ST'
             '90 - Outras')
         end
@@ -3605,7 +3608,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 21
+            Height = 24
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -3781,7 +3784,10 @@ object Form10: TForm10
             
               '500 - ICMS cobrado anteriormente por ST (substitu'#237'do) ou por ant' +
               'ecipa'#231#227'o'
-            '900 - Outros')
+            '900 - Outros'
+            
+              '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
+              'nte')
         end
         object ComboBox11: TComboBox
           Left = 110
@@ -3850,6 +3856,9 @@ object Form10: TForm10
             '40 - Isenta'
             '41 - N'#227'o tributada'
             '60 - ICMS Cobrado anteriormente por ST'
+            
+              '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
+              'nte'
             '90 - Outras')
         end
         object ComboBox15: TComboBox
@@ -3880,7 +3889,10 @@ object Form10: TForm10
             
               '500 - ICMS cobrado anteriormente por ST (substitu'#237'do) ou por ant' +
               'ecipa'#231#227'o'
-            '900 - Outros')
+            '900 - Outros'
+            
+              '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
+              'nte')
         end
         object SMALL_DBEdit66: TSMALL_DBEdit
           Left = 110
