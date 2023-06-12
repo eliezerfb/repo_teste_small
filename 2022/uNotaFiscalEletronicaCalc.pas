@@ -43,9 +43,6 @@ var
   oItem : TITENS001;
   i : integer;
 begin
-  if NFeFinalidadeComplemento(NotaFiscal.Finnfe) then
-    Exit;
-
   IBQProduto := Form7.CriaIBQuery(DataSetNF.Transaction);
 
   IBQIcm.Locate('NOME',NotaFiscal.Operacao,[]);
@@ -719,8 +716,6 @@ begin
     end;
   end;
 
-  {Mauricio Parizotto  2023-06-05 Inicio}
-  {
   // Aqui já deve ter feito o rateio de despesas e acréscimos e aplicado nos itens da nota
   // Passa pelos itens da nota para calcular o FCP de cada um
   NotaFiscal.VFCPST := 0.00;
@@ -731,22 +726,6 @@ begin
       CalculaFCP( NotaFiscal, oItem);
     NotaFiscal.VFCPST := NotaFiscal.VFCPST + Arredonda(oItem.VFCPST, 2); // Sandro Silva 2023-05-18
   end;
-  }
-
-  if not(NFeFinalidadeComplemento(NotaFiscal.Finnfe))  then
-  begin
-    // Aqui já deve ter feito o rateio de despesas e acréscimos e aplicado nos itens da nota
-    // Passa pelos itens da nota para calcular o FCP de cada um
-    NotaFiscal.VFCPST := 0.00;
-    for i := 0 to NotaFiscal.Itens.Count -1 do
-    begin
-      oItem := NotaFiscal.Itens.GetItem(i);
-      if oItem.QUANTIDADE <> 0 then
-        CalculaFCP( NotaFiscal, oItem);
-      NotaFiscal.VFCPST := NotaFiscal.VFCPST + Arredonda(oItem.VFCPST, 2); // Sandro Silva 2023-05-18
-    end;
-  end;
-  {Mauricio Parizotto  2023-06-05 Fim}
 
   FreeAndNil(IBQProduto);
 end;
