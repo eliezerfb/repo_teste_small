@@ -38,6 +38,7 @@ uses
   function ConverteCpfCgc(pP1:String):String;
   function ConverteAcentos(pP1:String):String;
   function ConverteAcentos2(pP1:String):String;
+  function ConverteAcentosNome(pP1:String):String;
   function ConverteAcentos3(pP1:String):String;
   function ConverteAcentosIBPT(pP1:String):String;
   function ConverteAcentosPHP(pP1:String):String;
@@ -896,6 +897,21 @@ begin
      if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,/.-()%') > 0 then
         Result := Result+Copy(pP1,I,1) else Result := Result+' ';
    end;
+end;
+
+function ConverteAcentosNome(pP1:String):String;
+var
+  I:Integer;
+begin
+  pP1 := ConverteAcentos(pP1);
+  Result:='';
+  for I := 1 to length(pP1) do
+  begin
+    if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,/.-()%&') > 0 then
+      Result := Result+Copy(pP1,I,1)
+    else
+      Result := Result+' ';
+  end;
 end;
 
 function ConverteAcentosIBPT(pP1:String):String;

@@ -459,8 +459,8 @@ begin
     Form7.spdNFeDataSets.Campo('CNPJ_C02').Value    := LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString); // CNPJ do Emitente
   end;
 
-  Form7.spdNFeDataSets.Campo('xNome_C03').Value   := ConverteAcentos2(Form7.ibDataSet13.FieldByname('NOME').AsString); // Razao Social ou Nome do Emitente
-  Form7.spdNFeDataSets.Campo('xFant_C04').Value   := ConverteAcentos2(Form7.ibDataSet13.FieldByname('NOME').AsString); ; // Nome Fantasia do Emitente
+  Form7.spdNFeDataSets.Campo('xNome_C03').Value   := ConverteAcentosNome(Form7.ibDataSet13.FieldByname('NOME').AsString); // Razao Social ou Nome do Emitente
+  Form7.spdNFeDataSets.Campo('xFant_C04').Value   := ConverteAcentosNome(Form7.ibDataSet13.FieldByname('NOME').AsString); ; // Nome Fantasia do Emitente
 
   Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
   Form7.spdNFeDataSets.Campo('nro_C07').Value     := Numero_Sem_Endereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente
@@ -543,7 +543,7 @@ begin
     begin
       if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18) then Form7.spdNFeDataSets.Campo('CNPJ_E02').Value := AllTrim(LimpaNumero(Form7.ibDAtaset2.FieldByname('CGC').AsString)); // CNPJ do Destinatário
       if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 14) then Form7.spdNFeDataSets.Campo('CPF_E03').Value  := AllTrim(LimpaNumero(Form7.ibDAtaset2.FieldByname('CGC').AsString)); // CPF do Destinatário
-      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
+      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentosNome(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
     end;
 
     Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
@@ -658,7 +658,7 @@ begin
       Form7.spdNFeDataSets.Campo('xNome_E04').Value   := 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'; // Razao social ou Nome do Destinatário
     end else
     begin
-      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
+      Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentosNome(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
     end;
 
     if Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '3' then
@@ -1544,7 +1544,7 @@ begin
       Form7.spdNFeDataSets.Campo('CPF_X05').Value     := LimpaNumero(Form7.ibDataSet18.FieldByname('CGC').AsString); // CNPJ do Transportador
     end;
 
-    Form7.spdNFeDataSets.Campo('xNome_X06').Value    := ConverteAcentos2(Form7.ibDataSet18.FieldByname('NOME').AsString); // Nome do Transportador
+    Form7.spdNFeDataSets.Campo('xNome_X06').Value    := ConverteAcentosNome(Form7.ibDataSet18.FieldByname('NOME').AsString); // Nome do Transportador
 
     if AllTrim(Form7.ibDataSet18.FieldByname('IE').AsString) <> '' then
     begin
@@ -1701,14 +1701,12 @@ end;
 
 procedure GeraXmlNFeEntradaTags;
 var
-  fPercentualFCP : Real;
-  fAliquota : Real;
+  fAliquota: Real;
 begin
   //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
   // ICMS
-  fPercentualFCP := 0;
-  //
+  fAliquota := 0;
   if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
   begin
     // 1 - Simples nacional

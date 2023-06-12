@@ -10,10 +10,10 @@ type
   private
     FibqItens: TIBQuery;
     constructor Create;
-    destructor Destroy; override;
     procedure CarregarItensInativos(AcItens: String);
     procedure ReativarItens;
   public
+    destructor Destroy; override;
     class function New: IItensInativosImpXMLEntrada;
     function setDataBase(AoDataBase: TIBDataBase): IItensInativosImpXMLEntrada;
     function Executar(AcItens: String): IItensInativosImpXMLEntrada;
