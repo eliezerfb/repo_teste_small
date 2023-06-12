@@ -32407,7 +32407,7 @@ begin
   begin
 
     if Form1.DisponivelSomenteParaNos then
-      ShowMessage(fNFe);
+      Clipboard.AsText := fNFe; // salva na área de tranferência
 
     //
     try
