@@ -217,6 +217,8 @@ function indRegraSAT(sCFOP: String): String;
 function TruncaValor(dValor: Double; iDecimais: Integer = 2): Double;
 //function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+function XmlValueToFloat(Value: String;
+  SeparadorDecimalXml: String = '.'): Double;
 function TefUsado: String;
 procedure AdicionaCNPJRequisicaoTEF(var tfFile: TextFile; DataSet: TDataSet);
 function BandeiraSemCreditoDebito(sBandeira: String): String;
@@ -809,6 +811,23 @@ var
 begin
   sMascara := '##0.' + DupeString('0', iPrecisao);
   Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.'); // Quantidade Comercializada do Item
+end;
+
+function XmlValueToFloat(Value: String;
+  SeparadorDecimalXml: String = '.'): Double;
+// Sandro Silva 2023-05-17
+// Converte valor float de tags xml para Float
+begin
+  if SeparadorDecimalXml = ',' then
+    Value := StringReplace(Value, '.', '', [rfReplaceAll]);// Elimina os pontos
+
+  if SeparadorDecimalXml = '.' then
+  begin
+    Value := StringReplace(Value, ',', '', [rfReplaceAll]); // Elimina a vírgula
+    Value := StringReplace(Value, '.', ',', [rfReplaceAll]); // Troca o ponto pela vírgula
+  end;
+  
+  Result := StrToFloatDef(Value, 0.00);
 end;
 
 function TefUsado: String;
