@@ -1,6 +1,6 @@
 object Form12: TForm12
-  Left = 369
-  Top = 114
+  Left = 370
+  Top = 56
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False
@@ -1371,7 +1371,7 @@ object Form12: TForm12
         TabOrder = 29
         OnKeyUp = FormKeyUp
       end
-      object SMALL_DBEdit16: TSMALL_DBEdit
+      object edtTotalNota: TSMALL_DBEdit
         Left = 528
         Top = 570
         Width = 122

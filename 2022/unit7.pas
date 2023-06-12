@@ -2099,6 +2099,7 @@ type
     function getEnviarDanfePorEmail: String;
     function getZiparXML: String;
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
+    procedure HintTotalNotaVenda(fRetencao : Real);
   public
     // Public declarations
 
@@ -2196,6 +2197,7 @@ type
     function CorrigeCustoCompraNaVenda(dCustoCompra: Double): Double; // Sandro Silva 2023-04-26
     property sEnviarDanfePorEmail: String read getEnviarDanfePorEmail;
     property sZiparXML: String read getZiparXML;
+    procedure HintTotalNotaCompra;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -9350,8 +9352,9 @@ begin
 
       end;
 
-      Form12.SMALL_DBEdit16.ShowHint := True;
-      Form12.SMALL_DBEdit16.Hint     :=
+      {Mauricio Parizotto 2023-06-06 trocado pela procedure
+      Form12.edtTotalNota.ShowHint := True;
+      Form12.edtTotalNota.Hint     :=
         '+ Mercadoria: '+FloatToStr(Form7.ibDataSet15MERCADORIA.Value)+CHR(10)+
         '+ Serviços: '+FloatToStr(Form7.ibDataSet15SERVICOS.Value)+CHR(10)+
         '+ Frete: '+FloatToStr(Form7.ibDataSet15FRETE.Value)+CHR(10)+
@@ -9364,6 +9367,8 @@ begin
         '- Desconto: '+FloatToStr(Form7.ibDataSet15DESCONTO.Value)+CHR(10)+
         '- Retenções: '+FloatToStr(Form1.fRetencoes)+CHR(10)+
         '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
+      }
+      HintTotalNotaVenda(fRetencao);
 
       if Form7.sModulo <> 'RETRIBUTA' then
         Form7.ibDataSet16.EnableControls;
@@ -11917,7 +11922,6 @@ end;
 
 procedure TForm7.ibDataSet24MERCADORIAChange(Sender: TField);
 begin
-  //
   if Alltrim(Form7.ibDataSet24FRETE12.AsString) <> '1' then
   begin
      Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat -
@@ -11929,8 +11933,8 @@ begin
                                  Form7.ibDataSet24IPI.AsFloat
                                  + Form7.ibDataSet24VFCPST.AsFloat
                                  ;
-   end else
-   begin
+  end else
+  begin
      Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat -
                                  Form7.ibDataSet24DESCONTO.AsFloat     +
                                  Form7.ibDataSet24SERVICOS.AsFloat     +
@@ -11941,11 +11945,13 @@ begin
                                  Form7.ibDataSet24IPI.AsFloat
                                  + Form7.ibDataSet24VFCPST.AsFloat
                                  ;
-   end;
-   //
-   if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
-     Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24TOTAL.AsFloat + Form7.ibDataSet24ICMS.AsFloat;
-   //
+  end;
+
+  if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
+    Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24TOTAL.AsFloat + Form7.ibDataSet24ICMS.AsFloat;
+
+  //Mauricio Parizotto 2023-06-06
+  HintTotalNotaCompra;
 end;
 
 procedure TForm7.ibDataSet2BeforeEdit(DataSet: TDataSet);
@@ -18449,7 +18455,7 @@ begin
           end;
         end else
         begin
-          Form12.SMALL_DBEdit16.ReadOnly := False;
+          Form12.edtTotalNota.ReadOnly := False;
         end;
       except
       end;
@@ -33406,5 +33412,36 @@ begin
   
   Screen.Cursor            := crDefault;
 end;
+
+procedure TForm7.HintTotalNotaCompra;
+begin
+  Form24.edtTotalNota.ShowHint := True;
+  Form24.edtTotalNota.Hint     := '+ Mercadoria: '+FloatToStr(Form7.ibDataSet24MERCADORIA.Value)+CHR(10)+
+                                  '+ Serviços: '+FloatToStr(Form7.ibDataSet24SERVICOS.Value)+CHR(10)+
+                                  '+ Frete: '+FloatToStr(Form7.ibDataSet24FRETE.Value)+CHR(10)+
+                                  '+ Seguro: '+FloatToStr(Form7.ibDataSet24SEGURO.Value)+CHR(10)+
+                                  '+ IPI: '+FloatToStr(Form7.ibDataSet24IPI.Value)+CHR(10)+
+                                  '+ ICMS Substituição: '+FloatToStr(Form7.ibDataSet24ICMSSUBSTI.Value)+CHR(10)+
+                                  '+ FCP ST: '+FloatToStr(Form7.ibDataSet24VFCPST.Value)+CHR(10)+
+                                  '+ Despesas: '+FloatToStr(Form7.ibDataSet24DESPESAS.Value)+CHR(10)+
+                                  '- Desconto: '+FloatToStr(Form7.ibDataSet24DESCONTO.Value)+CHR(10);
+end;
+
+procedure TForm7.HintTotalNotaVenda(fRetencao : Real);
+begin
+  Form12.edtTotalNota.ShowHint := True;
+  Form12.edtTotalNota.Hint     := '+ Mercadoria: '+FloatToStr(Form7.ibDataSet15MERCADORIA.Value)+CHR(10)+
+                                  '+ Serviços: '+FloatToStr(Form7.ibDataSet15SERVICOS.Value)+CHR(10)+
+                                  '+ Frete: '+FloatToStr(Form7.ibDataSet15FRETE.Value)+CHR(10)+
+                                  '+ Seguro: '+FloatToStr(Form7.ibDataSet15SEGURO.Value)+CHR(10)+
+                                  '+ IPI: '+FloatToStr(Form7.ibDataSet15IPI.Value)+CHR(10)+
+                                  '+ ICMS Substituição: '+FloatToStr(Form7.ibDataSet15ICMSSUBSTI.Value)+CHR(10)+
+                                  '+ FCP ST: '+FloatToStr(Form7.ibDataSet15VFCPST.Value)+CHR(10)+
+                                  '+ Despesas: '+FloatToStr(Form7.ibDataSet15DESPESAS.Value)+CHR(10)+
+                                  '- Desconto: '+FloatToStr(Form7.ibDataSet15DESCONTO.Value)+CHR(10)+
+                                  '- Retenções: '+FloatToStr(Form1.fRetencoes)+CHR(10)+
+                                  '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
+end;
+
 
 end.
