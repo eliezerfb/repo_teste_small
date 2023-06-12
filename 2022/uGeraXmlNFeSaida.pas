@@ -2793,7 +2793,7 @@ begin
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := Trim(ConverteCaracterEspecialXML(Trim(Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
   end;
 
-  {Sandro Silva 2023-06-07 inicio
+  {Sandro Silva 2023-06-07 inicio}
   // Ativar quando Tecnospeed deixar de incluir essa inform. complementar por conta própria na visualização do danfe
   if vICMSMonoRet_N45Total > 0.00 then
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
