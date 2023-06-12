@@ -2793,6 +2793,12 @@ begin
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := Trim(ConverteCaracterEspecialXML(Trim(Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
   end;
 
+  {Sandro Silva 2023-06-07 inicio
+  // Ativar quando Tecnospeed deixar de incluir essa inform. complementar por conta própria na visualização do danfe
+  if vICMSMonoRet_N45Total > 0.00 then
+    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+  {Sandro Silva 2023-06-07 fim}
+
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS
   // SAIDA
 end;
@@ -3818,7 +3824,9 @@ begin
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '300') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '400') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '500') and
-        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') then
+        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') and
+        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '61')
+        then
     begin
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
