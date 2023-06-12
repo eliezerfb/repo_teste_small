@@ -54,7 +54,6 @@ uses
   Unit36 in 'Unit36.pas' {Form36},
   Unit5 in 'Unit5.pas' {Form5},
   Unit29 in 'Unit29.pas' {Form29},
-  Unit44 in 'Unit44.pas' {Form44},
   Unit45 in 'Unit45.pas' {Form45},
   ugeraxmlnfe in 'ugeraxmlnfe.pas',
   uFrmInformacoesRastreamento in 'uFrmInformacoesRastreamento.pas' {FrmInformacoesRastreamento},
@@ -188,7 +187,6 @@ begin
   Application.CreateForm(TForm36, Form36);
   Application.CreateForm(TForm5, Form5);
   Application.CreateForm(TForm29, Form29);
-  Application.CreateForm(TForm44, Form44);
   Application.CreateForm(TForm45, Form45);
   Application.Run;
       //
