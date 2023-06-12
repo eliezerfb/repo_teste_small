@@ -8323,7 +8323,7 @@ end;
 
 function AbreArquivos(pP1: Boolean): Boolean;
 var
-  F : TextFile;
+//  F : TextFile;
   sSerieS, sSerial, sLicenca  : String;
   Mais1Ini: TIniFile;
   I, iUsuariosConectados, iLimiteUsuariosSimultaneos : Integer;
