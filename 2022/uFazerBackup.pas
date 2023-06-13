@@ -33,19 +33,15 @@ uses Unit7;
 
 procedure TBackup.Backup(sArquivo: String);
 begin
-
   if FileExists(Trim(sArquivo)) then
   begin
-    //
     ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + FArquivoBKP + '"'), '', SW_SHOWMAXIMIZED);
-    //
+
     while ConsultaProcesso('szip.exe') do
     begin
       Sleep(100);
     end;
-    //
   end;
-
 end;
 
 constructor TBackup.Create;
@@ -63,27 +59,27 @@ end;
 function TBackup.FazerBackup(Sender: TObject): Integer;
 var
   Mais1Ini: TIniFile;
-  //sArquivoBKP: String;
   bButton: Integer;
 begin
   Result := IDCANCEL;
   SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', FArquivoBKP);
-  //
+
   if FArquivoBKP <> '' then
   begin
-    //
     FArquivoBKP := StrTran(FArquivoBKP + '\' + Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date)) + '.zip', '\\', '\');
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     try
-      Commitatudo(True); // SQL - Commando
-    except end;
+      Commitatudo(True); 
+    except
+    end;
+
     try
       FechaTudo(Form1.bFechaTudo);
       Form7.ibDataSet13.Close;
     except end;
-    //
+
     Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // // Form1Close
     Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
 
@@ -92,7 +88,6 @@ begin
 
     if FileExists(Alltrim(Form1.sAtual + '\small.fdb')) then
     begin
-
       while FileExists(FArquivoBKP) do
       begin
         DeleteFile(pChar(FArquivoBKP));
@@ -138,17 +133,13 @@ begin
             Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
             Mais1Ini.WriteString('Backup','Último backup',DateToStr(date));
           end;
-
         end;
-
-      end
-      else
+      end  else
       begin
         Result := IDCANCEL;
         Application.MessageBox(Pchar(
           'Erro não foi possível fazer o backup. Aquivo: ' + chr(10) + chr(10) + Alltrim(Form1.sAtual + '\small.fdb') + chr(10) + chr(10) + 'não encontrado')
           , 'Atenção', mb_Ok + MB_ICONWARNING);
-
       end;
     end;
   end;
