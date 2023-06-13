@@ -4906,7 +4906,11 @@ begin
        (Copy(Form1.sSerial,4,1) <> 'R') and
        (Copy(Form1.sSerial,4,1) <> 'M') then
     }
-    if not bEmpresaMei then
+    //if not bEmpresaMei then Mauricio Parizotto 2023-06-13
+    Form7.ibDataSet13.Close;
+    Form7.ibDataSet13.Open;
+
+    if (not bEmpresaMei) and (Form7.ibDataSet13CGC.AsString = '') then
     begin
       Form1.SelecionarCertificadoDigital1Click(Form1.SelecionarCertificadoDigital1); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
     end;
@@ -8889,18 +8893,11 @@ end;
 
 procedure TForm1.SelecionarCertificadoDigital1Click(Sender: TObject);
 var
-  //
   Mais1ini: TIniFile;
   sCertificado: String;
-  //
 begin
-  //
-  {Sandro Silva 2022-12-15 inicio
-  Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
-  }
   Form1.ConfiguraCredencialTecnospeed;
-  {Sandro Silva 2022-12-15 fim}
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
   Mais1ini.Free;
@@ -8913,10 +8910,10 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
   Mais1ini.Free;
-  //
+
   if AllTrim(sCertificado) = '' then
   begin
-    //
+    {Mauricio Parizotto 2023-06-13
     if Application.MessageBox(Pchar('Para emitir Documentos Fiscais é necessário instalar um'+#13+
                                     'Certificado Digital.'+#13+#13+
                                     'Continuar sem instalar o Certificado Digital não é'+#13+
@@ -8924,11 +8921,19 @@ begin
                                     'Se não estiver instalado recomendamos sair do programa'+#13+
                                     'e instalar antes de cadastrar o emitente.')
     ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING) = IDYES then
+    }
+    if Application.MessageBox(Pchar('Para emitir Documentos Fiscais é necessário instalar um'+#13+
+                                    'Certificado Digital.'+#13+#13+
+                                    'Continuar sem instalar o Certificado Digital não é'+#13+
+                                    'recomendavel.'+#13+#13+
+                                    'Deseja prosseguir com a abertura do sistema sem certificado digital?')
+                                    ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING) <> IDYES then
     begin
-      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+      //Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+      //Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
   end;
-  //
 end;
 
 procedure TForm1.estarservidorNFE1Click(Sender: TObject);
