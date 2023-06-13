@@ -66,8 +66,8 @@ const sDataLimitePadrao = '01/01/1900';
 var
   js: TlkJSONobject;
   iTemRc: TlkJSONobject;
-  s: String;
-  i: Integer;
+//  s: String;
+//  i: Integer;
   function DataJsonToDate(Value: Variant): TDate;
   var
     sData: String;
@@ -626,10 +626,8 @@ var
   iQtdEmitido: Integer;
   iQtdPermitido: Integer;
   IBQDOC: TIBQuery;
-  //dtDataServidor: TDate;
   IBTRANSACTION: TIBTransaction;
 begin
-  Result := False;
 
   LeRecursos;
 
@@ -646,23 +644,7 @@ begin
     IBTRANSACTION := CriaIBTransaction(FIBDatabase);
 
     IBQDOC := CriaIBQuery(IBTRANSACTION);
-    {
-    IBQDOC.Close;
-    IBQDOC.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
-    IBQDOC.Open;
-    }
-    //dtDataServidor := DataDoServidor;// IBQDOC.FieldByName('DATAATUAL').AsDateTime;
-
-    {
-    IBQDOC.Close;
-    IBQDOC.SQL.Text :=
-      'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
-      'from VENDAS ' +
-      'where EMISSAO >= :INI  ' + // Sandro Silva 2023-05-30'where DATA between :INI and :FIM ' +
-      'and ( ' + SituacaoMeiLancado + '  or ' + SituacaoNFeEmitidoOuCancelado + '  or ' + SituacaoNFSeEmitidoOuCancelado + ' )';
-    IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
-    IBQDOC.Open;
-    }
+   
     IBQDOC.Close;
     IBQDOC.SQL.Text :=
       'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
