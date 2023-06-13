@@ -4907,10 +4907,11 @@ begin
        (Copy(Form1.sSerial,4,1) <> 'M') then
     }
     //if not bEmpresaMei then Mauricio Parizotto 2023-06-13
-    Form7.ibDataSet13.Close;
-    Form7.ibDataSet13.Open;
 
-    if (not bEmpresaMei) and (Form7.ibDataSet13CGC.AsString = '') then
+    if (not bEmpresaMei) and (ExecutaComandoEscalar(Form7.IBDatabase1,
+                                                    ' Select Coalesce(E.CGC,'''') '+
+                                                    ' From RDB$DATABASE R '+
+                                                    '   Left Join EMITENTE E on 1=1') = '' ) then
     begin
       Form1.SelecionarCertificadoDigital1Click(nil); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
     end;
@@ -8904,6 +8905,7 @@ begin
   //
 //  Form17.Hide; Mauricio Parizotto 2023-06-06 travando a tela
   Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
+  Application.ProcessMessages; //Mauricio Parizotto 2023-06-13 - Para tela não abrir por trás
   frmSelectCertificate.ShowModal;
 //  Form17.Hide; Mauricio Parizotto 2023-06-06 travando a tela
   //
@@ -8925,8 +8927,8 @@ begin
     if Application.MessageBox(Pchar('Para emitir Documentos Fiscais é necessário instalar um'+#13+
                                     'Certificado Digital.'+#13+#13+
                                     'Continuar sem instalar o Certificado Digital não é'+#13+
-                                    'recomendavel.'+#13+#13+
-                                    'Deseja prosseguir com a abertura do sistema sem certificado digital?')
+                                    'recomendável.'+#13+#13+
+                                    'Continuar sem certificado digital?')
                                     ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING) <> IDYES then
     begin
       //Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
