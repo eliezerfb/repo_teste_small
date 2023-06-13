@@ -4912,7 +4912,7 @@ begin
 
     if (not bEmpresaMei) and (Form7.ibDataSet13CGC.AsString = '') then
     begin
-      Form1.SelecionarCertificadoDigital1Click(Form1.SelecionarCertificadoDigital1); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
+      Form1.SelecionarCertificadoDigital1Click(nil); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
     end;
   end;
 

@@ -224,11 +224,12 @@ end;
 
 procedure TForm17.FormShow(Sender: TObject);
 var
-  sCertificado : String;
+  //sCertificado : String;
   I : Integer;
-  Mais1Ini : tIniFile;
+  //Mais1Ini : tIniFile;
 begin
   // Mover as validações envolvendo certifica para evento Form17.onActive
+  {Mauricio Parizotto 2023-06-13 Estava abrindo 2x
   try
     if Form7.ibDataSet13CGC.AsString = '' then
     begin
@@ -246,6 +247,7 @@ begin
     end;
   except
   end;
+  }
 
   Button1.Left  := Panel2.Width - Button1.Width - 10;
   Button2.Left  := Button1.Left - 140;

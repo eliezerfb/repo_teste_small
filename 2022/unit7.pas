@@ -4487,18 +4487,6 @@ begin
   except
     on E: Exception do
     begin
-      {Sandro Silva 2022-09-12 inicio
-      if Mais1Ini.ReadString('NFE','Certificado','') <> '' then
-      begin
-        if AnsiContainsText(E.Message, '"Certificado não encontrado."') then
-        begin
-          //ShowMessage('Selecione o Certificado Digital');
-          Form1.SelecionarCertificadoDigital1Click(Form1.SelecionarCertificadoDigital1);
-          ConfiguraNFE(sP1);
-          Exit;
-        end;
-      end;
-      {Sandro Silva 2022-09-12 fim}
     end;
   end;
   //
