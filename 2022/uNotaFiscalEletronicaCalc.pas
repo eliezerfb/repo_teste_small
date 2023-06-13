@@ -173,8 +173,8 @@ var
   oItem : TITENS001;
   i : integer;
 begin
-  {Mauricio Parizotto 2023-06-05 Inicio}
-  {if NFeFinalidadeComplemento(NotaFiscal.Finnfe) = False then // Complemento
+  //Se não for complemento zera totais 
+  if NFeFinalidadeComplemento(NotaFiscal.Finnfe) = False then
   begin
     //Zera Valores Nota
     NotaFiscal.Mercadoria := 0;
@@ -187,7 +187,7 @@ begin
     NotaFiscal.Basesubsti := 0;
     NotaFiscal.Icmssubsti := 0;
     NotaFiscal.VFCPST     := 0;
-  end;}
+  end;
 
   fFCPRetido            := 0;
 
