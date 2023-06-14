@@ -12,6 +12,7 @@ type
   function setCliente(AcCliente: String): IRetornaLimiteDisponivel;
   function setLimiteCredito: IRetornaLimiteDisponivel; overload;
   function setLimiteCredito(AnValorCredito: Currency = 0): IRetornaLimiteDisponivel; overload;
+  function setNumeroNFReceber(AcNumeroNF: String): IRetornaLimiteDisponivel;
   function RetornarValor: Currency;
   function RetornarValorContasReceber: Currency;
   function TestarLimiteDisponivel: Boolean;

@@ -2198,6 +2198,7 @@ type
     property sEnviarDanfePorEmail: String read getEnviarDanfePorEmail;
     property sZiparXML: String read getZiparXML;
     procedure HintTotalNotaCompra;
+    function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -13459,10 +13460,16 @@ begin
 end;
 
 procedure TForm7.ibDataSet15TOTALChange(Sender: TField);
+begin
+  TestarLimiteDisponivel;
+end;
+
+function TForm7.TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
 var
   nCredito: Real;
   oLimDisp: IRetornaLimiteDisponivel;
 begin
+  Result := True;
   if (Form7.sModulo = 'VENDA') then
   begin
     if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
@@ -13481,27 +13488,27 @@ begin
         oLimDisp := TRetornaLimiteDisponivel.New
                                             .setDataBase(IBDatabase1)
                                             .setCliente(Form7.ibDataSet2NOME.AsString)
+                                            .setNumeroNFReceber(Form7.ibDataSet15NUMERONF.AsString)
                                             .CarregarDados;
 
         nCredito := oLimDisp.RetornarValor - ibDataSet15TOTAL.Asfloat;
 
         if (nCredito < 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'S') then
         begin
-          ShowMessage('Atenção:'+sLineBreak
-                                + sLineBreak
-                                + 'Cliente: '+Form7.ibDataSet2NOME.AsString + sLineBreak
-                                + sLineBreak
-                                + 'Limite de crédito: R$ '+Format('%10.2n',[Form7.ibDataSet2CREDITO.AsFloat]) + '                ' + sLineBreak
-                                + 'Contas a receber: R$ '+Format('%10.2n',[oLimDisp.RetornarValorContasReceber]) + sLineBreak
-                                + 'Total da nota: R$ '+Format('%10.2n',[Form7.ibDataSet15TOTAL.Asfloat]) + sLineBreak
-                                + sLineBreak
-                                + 'Limite de crédito excedido em: R$ '+Format('%10.2n',[(nCredito)*-1])
-                                + sLineBreak+sLineBreak+sLineBreak
-                                + '           MUDE A FORMA DE PAGAMENTO.                      '
-                                + sLineBreak);
-
-          Form7.ibDataSet14.Locate('INTEGRACAO','CAIXA',[loCaseInsensitive, loPartialKey]);
-          Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+          Result := False;
+          if AbMostraMsg then
+            ShowMessage('Atenção:'+sLineBreak
+                                  + sLineBreak
+                                  + 'Cliente: '+Form7.ibDataSet2NOME.AsString + sLineBreak
+                                  + sLineBreak
+                                  + 'Limite de crédito: R$ '+Format('%10.2n',[Form7.ibDataSet2CREDITO.AsFloat]) + '                ' + sLineBreak
+                                  + 'Contas a receber: R$ '+Format('%10.2n',[oLimDisp.RetornarValorContasReceber]) + sLineBreak
+                                  + 'Total da nota: R$ '+Format('%10.2n',[Form7.ibDataSet15TOTAL.Asfloat]) + sLineBreak
+                                  + sLineBreak
+                                  + 'Limite de crédito excedido em: R$ '+Format('%10.2n',[(nCredito)*-1])
+                                  + sLineBreak+sLineBreak+sLineBreak
+                                  + '           MUDE A FORMA DE PAGAMENTO.                      '
+                                  + sLineBreak);
         end;
       end;
     end;
@@ -23801,6 +23808,9 @@ var
   sRetorno : String;
   sRecibo : String;
 begin
+  if not TestarLimiteDisponivel then
+    Exit;
+
   if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) = False then
   begin
     Exit;

@@ -275,6 +275,8 @@ type
     procedure AtivaPesquisaCliente;
     procedure AtivaPesquisaTransportadora;
     procedure ExibeColunasFCP(bOculta: Boolean);
+    function getPodeFecharTela: Boolean;
+    function TestarLimiteDisponivel: Boolean;
   public
     { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -285,6 +287,8 @@ type
     procedure ExibeColunasFCPST(bExibe: Boolean);
     procedure ExibeColunaCSOSN(bExibe: Boolean);
     procedure ExibeColunaCSTICMS(FINNFE: String; CRT: String); // procedure ExibeColunaCSTICMS(bExibe: Boolean);
+
+    property PodeFecharTela: Boolean read getPodeFecharTela;
   end;
 
 var
@@ -1726,10 +1730,20 @@ begin
 
     // LogRetaguarda('TForm12.FormClose('); // Sandro Silva 2023-05-08
 
-    if vNotaFiscal <> nil then
-      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+    Form7.ibDataSet15TOTAL.OnChange := nil;
+    try
+      if vNotaFiscal <> nil then
+        vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
 
-    FreeAndNil(vNotaFiscal);
+      if not TestarLimiteDisponivel then
+      begin
+        Action := caNone;
+        Exit;
+      end;
+    finally
+      Form7.ibDataSet15TOTAL.OnChange := Form7.ibDataSet15TOTALChange;
+      FreeAndNil(vNotaFiscal);
+    end;
   except
   end;
 
@@ -2528,8 +2542,21 @@ begin
   //
 end;
 
+function TForm12.TestarLimiteDisponivel: Boolean;
+begin
+  Result := False;
+  if not Form7.TestarLimiteDisponivel then
+  begin
+    SMALL_DBEdit40.SetFocus;
+    Exit;
+  end;
+  Result := True;  
+end;
+
 procedure TForm12.Button2Click(Sender: TObject);
 begin
+  if not TestarLimiteDisponivel then
+    Exit;
   //
   Form12.DBGrid1.SelectedIndex := 0;
   //
@@ -3197,6 +3224,18 @@ begin
   Form7.ibDataSet16CST_ICMS.DisplayLabel := 'CST ICMS';
   if (FINNFE = '4') and (CRT = '1') then // Devolução e simples nacional
     Form7.ibDataSet16CST_ICMS.DisplayLabel := 'Origem';
+end;
+
+function TForm12.getPodeFecharTela: Boolean;
+begin
+  Result := True;
+
+  if not Self.Showing then
+    Exit;
+  if Form7.TestarLimiteDisponivel then
+    Exit;
+
+  Result := False;
 end;
 
 end.

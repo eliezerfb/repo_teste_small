@@ -10,6 +10,7 @@ type
   private
     Fqry: TIBQuery;
     FcCliente: String;
+    FcNumeroNF: String;
     FnVlrLimite: Currency;
   public
     constructor Create;
@@ -19,6 +20,7 @@ type
     function setCliente(AcCliente: String): IRetornaLimiteDisponivel;
     function setLimiteCredito: IRetornaLimiteDisponivel; overload;
     function setLimiteCredito(AnValorCredito: Currency = 0): IRetornaLimiteDisponivel; overload;
+    function setNumeroNFReceber(AcNumeroNF: String): IRetornaLimiteDisponivel;    
     function CarregarDados: IRetornaLimiteDisponivel;
     function RetornarValor: Currency;
     function RetornarValorContasReceber: Currency;
@@ -68,7 +70,10 @@ begin
   Fqry.SQL.Add('SELECT');
   Fqry.SQL.Add('    ' + _cCampoReceber + ' AS TOTRECEBER');
   Fqry.SQL.Add('    , COUNT(CLIFOR.NOME) AS QTDE');
-  Fqry.SQL.Add('    , CAST(COALESCE(' + cCredito + ',0) - '+_cCampoReceber+' AS NUMERIC(18,2)) AS VALOR');
+  Fqry.SQL.Add('    , CAST((COALESCE(' + cCredito + ',0) - '+_cCampoReceber + ')');
+  if FcNumeroNF <> EmptyStr then
+    Fqry.SQL.Add('      + COALESCE((SELECT REC2.VALOR_DUPL FROM RECEBER AS REC2 WHERE (REC2.NUMERONF='+QuotedStr(FcNumeroNF)+')),0)');
+  Fqry.SQL.Add(' AS NUMERIC(18,2)) AS VALOR');
   Fqry.SQL.Add('FROM CLIFOR');
   Fqry.SQL.Add('LEFT JOIN RECEBER');
   Fqry.SQL.Add('    ON (RECEBER.NOME=CLIFOR.NOME)');
@@ -153,6 +158,13 @@ begin
 
   if not Fqry.IsEmpty then
     Result := Fqry.Fieldbyname('TOTRECEBER').AsCurrency;
+end;
+
+function TRetornaLimiteDisponivel.setNumeroNFReceber(AcNumeroNF: String): IRetornaLimiteDisponivel;
+begin
+  Result := Self;
+
+  FcNumeroNF := AcNumeroNF;
 end;
 
 end.
