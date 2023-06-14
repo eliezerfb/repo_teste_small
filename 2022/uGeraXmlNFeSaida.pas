@@ -1588,7 +1588,6 @@ begin
       // Sandro Silva 2023-05-25 if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
       if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then // Complementar
       begin
-        Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
         {Mauricio Parizotto 2023-06-05
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
         Form7.spdNFeDataSets.Campo('qCom_I10').Value     := '0.00'; // Quantidade Comercializada do Item
@@ -1599,6 +1598,7 @@ begin
         //Só zera valores se não for nota de complemento de valor
         if Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value = '0.01' then
         begin
+          Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
           Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
           Form7.spdNFeDataSets.Campo('qCom_I10').Value     := '0.00'; // Quantidade Comercializada do Item
           Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := '0.00'; // Valor Comercializado do Item
