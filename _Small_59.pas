@@ -553,8 +553,10 @@ begin
 
       _59.TipoEquipamento := TIPO_EQUIPAMENTO_MFE;
 
+      {Sandro Silva 2023-06-14 inicio
       if Form1.UsaIntegradorFiscal('') then
         _59.ModoOperacao    := moIntegradorMFE;
+      }
 
       {Sandro Silva 2021-08-23 inicio}
       if FileExists('c:\Program Files (x86)\SEFAZ-CE\Driver MFE\Biblioteca de funções\mfe.dll') or FileExists('c:\Program Files\SEFAZ-CE\Driver MFE\Biblioteca de funções\mfe.dll') then
@@ -583,7 +585,7 @@ begin
       _59.DriverMFE01_05_15_Superior := (Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_VERSAO_DRIVER_MFE_1_05, 'Não')) = 'Sim');
       {Sandro Silva 2021-08-23 fim}
 
-
+      {Sandro Silva 2023-06-14 inicio
       if Form1.bBalancaAutonoma = False then // Sandro Silva 2019-01-23
       begin
 
@@ -611,7 +613,8 @@ begin
         end; //if Form1.UsaIntegradorFiscal(_59.Emitente.UF) then
 
       end;
-
+      }
+      
       if Form1.sCaixa = '' then
       begin
         Form1.sCaixa := LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, 'Caixa', ''); // Sandro Silva 2018-07-03
@@ -625,6 +628,7 @@ begin
       Form1.IntegradorCE.Caixa             := Form1.sCaixa; // Sandro Silva 2018-07-03
       _59.IntegradorMFE := Form1.IntegradorCE; // Aponta o componente Integrador dentro do SAT para o componente criado no form1 usado também para NFC-e Sandro Silva 2018-07-03
 
+      {Sandro Silva 2023-06-14 inicio
       if Form1.UsaIntegradorFiscal() then
       begin
 
@@ -637,6 +641,7 @@ begin
         end;
 
       end;
+      }
 
     {Sandro Silva 2021-08-27 inicio
     end
@@ -912,9 +917,10 @@ begin
       SalvarConfiguracao(FRENTE_INI, SECAO_FRENTE_CAIXA, 'Caixa', _59.Caixa);
     end;
 
+    {Sandro Silva 2023-06-14 inicio
     if Form1.UsaIntegradorFiscal(Form1.ibDataSet13.FieldByName('ESTADO').AsString) then // Sandro Silva 2022-07-12
     begin
-    
+
       if Trim(LerParametroIni(FRENTE_INI, SECAO_MFE, CHAVE_VENDA_NO_CARTAO, '')) = '' then
       begin
 
@@ -942,15 +948,6 @@ begin
       if Form1.sUltimaAdquirenteUsada = '' then
         Form1.sUltimaAdquirenteUsada := AdquirentePadrao;
 
-      {Sandro Silva 2022-07-11 inicio
-      _59.Caixa := LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, 'Caixa', '');
-      if _59.Caixa = '' then
-      begin
-        _59.Caixa := _ecf59_ConfiguraCaixaSAT(_59.Caixa, True); // Sandro Silva 2021-03-05 _59.Caixa      := _ecf59_ConfiguraCaixaSAT(_59.Caixa); // Sandro Silva 2017-02-22
-        SalvarConfiguracao(FRENTE_INI, SECAO_FRENTE_CAIXA, 'Caixa', _59.Caixa);
-      end;
-      }
-
       sChaveAcessoValidador := LerParametroIni(FRENTE_INI, SECAO_MFE, CHAVE_CHAVE_ACESSO_VALIDADOR, Form1.IntegradorCE.ChaveAcessoValidador); // Sandro Silva 2018-07-03  sChaveAcessoValidador := LerParametroIni(FRENTE_INI, SECAO_MFE, CHAVE_CHAVE_ACESSO_VALIDADOR, _59.IntegradorMFE.ChaveAcessoValidador); // '25CFE38D-3B92-46C0-91CA-CFF751A82D3D';
       if sChaveAcessoValidador = '' then
       begin
@@ -962,9 +959,9 @@ begin
       end;
       Form1.IntegradorCE.codigoDeAtivacao     := _59.CodigoAtivacao;
       Form1.IntegradorCE.ChaveAcessoValidador := sChaveAcessoValidador;
-      
+
     end; // if Form1.UsaIntegradorFiscal(Form1.ibDataSet13.FieldByName('ESTADO').AsString) then
-    
+    }
   end;
 
   _59.MensagemPromocional := Form1.sMensagemPromocional;
@@ -1121,7 +1118,7 @@ begin
         Form1.ExtrairLogdoSAT1.Visible                     := True;
         Form1.SATInicializaoAlternativa1.Visible           := True;
 
-        {Sandro Silva 2021-08-23 inicio}
+        {Sandro Silva 2023-06-14 inicio
         if Form1.UsaIntegradorFiscal() then
         begin
           if (Form1.ibDataSet13.FieldByName('ESTADO').AsString = 'CE') then
@@ -1130,7 +1127,7 @@ begin
           end;
           Form1.DriverMFE010515ousuperior1.Checked := _59.DriverMFE01_05_15_Superior;
         end;
-        {Sandro Silva 2021-08-23 fim}
+        }
 
         if (_59.ModoOperacao <> moIntegradorMFE) then
         begin

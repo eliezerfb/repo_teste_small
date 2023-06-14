@@ -28,8 +28,10 @@ uses
 const OPERACAO_ADMINISTRATIVA = 0;
 const NOME_POS_ONLINE_ELGIN   = 'POS ElginPay';
 
+{Sandro Silva 2023-06-14 inicio
 type
   TTipoConexaoPOS = (tcxPosOffLine, tcxPosOnlineElginPay);
+}
 
 type
   TConfiguracaoConectaPOS = class

@@ -189,11 +189,13 @@ begin
   //
   // LogFrente('Teste 01: Saindo do form10.activate');
 
+  {Sandro Silva 2023-06-14 inicio
   if FTipoForm = tfPOS then
   begin
     if Form1.UsaIntegradorFiscal then
       Form1.sNomeRede := ''; // Precisa selecionar a Rede do cartão
   end;
+  }
 
 end;
 
@@ -484,9 +486,11 @@ begin
 
             while (Trim(Form1.sTransaca) = '') do
             begin
+              {Sandro Silva 2023-06-14 inicio
               if Form1.UsaIntegradorFiscal() then
                 Form1.sTransaca := Form1.Small_InputBox('AUTORIZAÇÃO','Insira agora o cartão no terminal POS e realize a transação' + #13 + 'Informe o número da AUTORIZAÇÃO para operação com POS ' + Form1.IntegradorCE.SerialPOS + ':', Form1.sTransaca)
               else
+              }
                 Form1.sTransaca := Form1.Small_InputBox('AUTORIZAÇÃO','Informe o número da AUTORIZAÇÃO para operação com POS:', Form1.sTransaca);
 
               if (Trim(Form1.sTransaca) <> '') or (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'CE') then
@@ -520,9 +524,11 @@ begin
 
             while True do
             begin
+              {Sandro Silva 2023-06-14 inicio
               if Form1.UsaIntegradorFiscal() then
                 Form1.sParcelas := Trim(Form1.Small_InputBox(PARCELAS_EM_CARTAO, 'Informe o número de PARCELAS para operação com POS ' + Form1.IntegradorCE.SerialPOS + ':', Form1.sParcelas))
               else
+              }
                 Form1.sParcelas := Trim(Form1.Small_InputBox(PARCELAS_EM_CARTAO, 'Informe o número de PARCELAS para operação com POS:', Form1.sParcelas));
 
               if StrToIntDef(Form1.sParcelas, 0) > 62 then
@@ -584,6 +590,7 @@ begin
       begin
         if IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'Ativo', 'Sim') = 'Sim' then
         begin
+          {Sandro Silva 2023-06-14 inicio
           if (Form1.UsaIntegradorFiscal()) then
           begin
             Form1.IntegradorCE.ChaveRequisicao       := IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'Chave Requisicao', '');
@@ -591,6 +598,7 @@ begin
             if UsaKitDesenvolvimentoSAT = False then // Usar o ID do Serial POS configurado quando não estiver usando Kit desenvolvimento
               Form1.IntegradorCE.SerialPOS             := IniADQUIRENTE.ReadString(sSecoes.Strings[I], 'Serial POS', '');
           end;
+          }
 
           Form1.sUltimaAdquirenteUsada := ListBox1.Items[ListBox1.ItemIndex];
           sNomeAdquirente := ListBox1.Items[ListBox1.ItemIndex]; // Sandro Silva 2017-09-01

@@ -408,6 +408,7 @@ begin
           end;
           {Sandro Silva 2022-06-24 fim}
 
+          {Sandro Silva 2023-06-14 inicio
           if Form1.UsaIntegradorFiscal() then
           begin
 
@@ -415,6 +416,7 @@ begin
             bIniciarTEF := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(dValorPagarCartao), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False);
 
           end;// if Form1.UsaIntegradorFiscal() then
+          }
 
           //if Form10.ModalResult = mrCancel then
           //  bIniciarTEF := False;
@@ -605,8 +607,10 @@ begin
                   sCupom714       := '';
                   sCupom715       := '';
 
+                  {Sandro Silva 2023-06-14 inicio
                   if Form1.UsaIntegradorFiscal then
                     Form1.IntegradorCE.TransacaoFinanceira.Resposta := '';
+                  }
 
                   {Sandro Silva 2021-08-03 inicio
                   if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log BlocoX', '') = 'Sim' then
@@ -625,10 +629,12 @@ begin
 
                     sRespostaTef := sRespostaTef + #13 + Form1.sLinha; // Sandro Silva 2021-09-03
 
+                    {Sandro Silva 2023-06-14 inicio
                     if Form1.UsaIntegradorFiscal() then
                     begin
                       Form1.IntegradorCE.TransacaoFinanceira.Resposta := Form1.IntegradorCE.TransacaoFinanceira.Resposta + Form1.sLinha + #10;
                     end;
+                    }
                     
                     //
                     Form1.sLinha := StrTran(Form1.sLinha,chr(0),' ');
@@ -743,10 +749,12 @@ begin
                   end;
                   {Sandro Silva 2021-09-03 fim}
 
+                  {Sandro Silva 2023-06-14 inicio
                   if Form1.UsaIntegradorFiscal() then
                   begin
                     EnviarStatusPagamentoValidadorFiscal;
                   end;
+                  }
 
                   //
                   // Quais vias serão impressas conforme fluxo
@@ -2458,6 +2466,7 @@ begin
           if CampoTEF(sArquivoTEF, '009-000') = '0' then
           begin
 
+            {Sandro Silva 2023-06-14 inicio
             if Form1.UsaIntegradorFiscal() then
             begin
 
@@ -2466,6 +2475,7 @@ begin
 
             end
             else
+            }
               bRespostaValidadosFiscal := True;
 
             if bRespostaValidadosFiscal then
