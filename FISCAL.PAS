@@ -5030,12 +5030,10 @@ begin
       else
       begin
 
-        Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
-          Form1.ClienteSmallMobile.sLogRetornoMobile);
+        Form1.ClienteSmallMobile.EnviarLogParaMobile(Form1.ClienteSmallMobile.sLogRetornoMobile);
         Form1.DestroyWindowHandle;
         FecharAplicacao(ExtractFileName(Application.ExeName));
         FecharAplicacao(ExtractFileName(Application.ExeName));
-        //FecharAplicacao(ExtractFileName(Application.ExeName));
       end;
 
     end;
@@ -5166,7 +5164,7 @@ begin
 
     end;
 
-    // Sandro Silva 2023-05-01 if ValidaQtdDocumentoFiscal(ValidaRecursos) = False then
+    {Sandro Silva 2023-06-14 inicio
     if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor, tmdLancando) = False then
     begin
       Form1.bStatusFiscal := False;
@@ -5175,6 +5173,29 @@ begin
       Form1.MensagemAlertaLimiteDocumentosEmitidos;
 
     end;
+    }
+    if Form1.ibDataSet13.FieldByName('RECURSO').AsString = '' then
+    begin
+      Form1.bStatusFiscal := False;
+      Result := False;
+
+      SmallMsgBox(PChar('Sistema bloqueado para movimentações'+chr(10)+chr(10)+
+                        'Abra o Small, confirme os dados no cadastro do Emitente' + Chr(10) +
+                        'e entre em um dos módulos do Small'),
+                        'Atenção', MB_ICONWARNING + MB_OK);
+    end
+    else
+    begin
+      if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor, tmdLancando) = False then
+      begin
+        Form1.bStatusFiscal := False;
+        Result := False;
+
+        Form1.MensagemAlertaLimiteDocumentosEmitidos;
+
+      end;
+    end;
+    {Sandro Silva 2023-06-14 fim}
 
     if Result then
     begin
