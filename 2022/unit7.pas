@@ -23808,9 +23808,6 @@ var
   sRetorno : String;
   sRecibo : String;
 begin
-  if not TestarLimiteDisponivel then
-    Exit;
-
   if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) = False then
   begin
     Exit;
