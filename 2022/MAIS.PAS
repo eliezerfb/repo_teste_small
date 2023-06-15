@@ -12712,6 +12712,7 @@ begin
     begin	
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+      ExecutaComando('Commit;');
 	end;
   except
   end;
