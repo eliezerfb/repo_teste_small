@@ -4398,7 +4398,7 @@ begin
   Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
   {Sandro Silva 2022-12-15 fim}
 
-  Aguardando tecnospeed confirmar se propriedade está funcionando como proposta, suporte da tecnospeed informou que pode ter inconsistência no funcionamento
+//  Aguardando tecnospeed confirmar se propriedade está funcionando como proposta, suporte da tecnospeed informou que pode ter inconsistência no funcionamento
   Form7.spdNFe.DanfeSettings.MensagemIcmsMonofasico := False; // Sandro Silva 2023-06-13
 
   //
