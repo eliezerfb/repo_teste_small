@@ -12157,7 +12157,7 @@ object Form7: TForm7
       Origin = 'ESTOQUE.FATORC'
       Visible = False
       Precision = 18
-      Size = 2
+      Size = 4
     end
     object ibDataSet4IIA_UF: TFloatField
       FieldName = 'IIA_UF'
@@ -15650,8 +15650,8 @@ object Form7: TForm7
       FieldName = 'QUANTIDADE'
       OnChange = ibDataSet16QUANTIDADEChange
       OnSetText = ibDataSet16QUANTIDADESetText
-      DisplayFormat = '#,##0.00'
-      EditFormat = '##0.00'
+      DisplayFormat = '#,##0.0000'
+      EditFormat = '##0.0000'
     end
     object ibDataSet16UNITARIO: TFloatField
       DisplayLabel = 'Unit'#225'rio'

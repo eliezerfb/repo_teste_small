@@ -218,7 +218,7 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'MEDIDAE') = False then
   begin
     ExecutaComando('alter table ESTOQUE add MEDIDAE VARCHAR(3)');
-    ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,2)');
+    ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,4)');
   end;
 
   // ESTOQUE FCI
