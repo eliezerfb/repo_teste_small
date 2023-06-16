@@ -29,7 +29,7 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_relatorios
+    ActivePage = Orelha_perfil
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -1115,7 +1115,7 @@ object Form19: TForm19
         Top = 60
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
       end
       object ComboBoxNF2: TComboBox
@@ -1123,7 +1123,7 @@ object Form19: TForm19
         Top = 90
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
       end
       object ComboBoxImpressora: TComboBox
@@ -1131,7 +1131,7 @@ object Form19: TForm19
         Top = 280
         Width = 300
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 2
         Text = 'ComboBoxImpressora'
         Visible = False
@@ -1141,7 +1141,7 @@ object Form19: TForm19
         Top = 30
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
       end
       object ComboBoxORCA: TComboBox
@@ -1149,7 +1149,7 @@ object Form19: TForm19
         Top = 120
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 4
       end
     end
@@ -1214,23 +1214,13 @@ object Form19: TForm19
         Height = 75
         Visible = False
       end
-      object Button1: TButton
-        Left = 368
-        Top = 240
-        Width = 75
-        Height = 25
-        Caption = 'Button1'
-        TabOrder = 0
-        Visible = False
-        OnClick = Button1Click
-      end
       object CheckBox11: TCheckBox
         Left = 300
         Top = 340
         Width = 80
         Height = 15
         Caption = 'Rel'#243'gio'
-        TabOrder = 1
+        TabOrder = 0
       end
       object CheckBox10: TCheckBox
         Left = 150
@@ -1238,7 +1228,7 @@ object Form19: TForm19
         Width = 110
         Height = 15
         Caption = 'Alinhar '#224' esquerda'
-        TabOrder = 2
+        TabOrder = 1
       end
       object CheckBox8: TCheckBox
         Left = 10
@@ -1246,7 +1236,7 @@ object Form19: TForm19
         Width = 119
         Height = 15
         Caption = 'Mostrar legenda'
-        TabOrder = 3
+        TabOrder = 2
         OnClick = CheckBox8Click
       end
     end

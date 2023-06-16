@@ -92,7 +92,6 @@ type
     MaskEdit8: TMaskEdit;
     Image7: TImage;
     Image9: TImage;
-    Button1: TButton;
     CheckBox11: TCheckBox;
     CheckBox10: TCheckBox;
     CheckBox8: TCheckBox;
@@ -804,13 +803,11 @@ procedure TForm19.FormHide(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
-  //
   if bChave then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     Mais1Ini.WriteString('Outros','Data','26/09/1967');
   end;
-  //
 end;
 
 procedure TForm19.Edit7Enter(Sender: TObject);
@@ -827,32 +824,19 @@ procedure TForm19.Image7Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   Form19.Image9.Picture.Bitmap := Form19.Image7.Picture.Bitmap;
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   Mais1Ini.WriteString('Perfil','tela_3d','1');
   Mais1Ini.Free;
   Form1.sContrasteCor := 'PRETO';
   Form19.Button1Click(Sender);
-  //
 end;
 
 procedure TForm19.Button1Click(Sender: TObject);
 var
   r1 : tRect;
 begin
-  //
   begin
-    //
-//    Form1.Color         := Form19.Image9.Picture.BitMap.canvas.pixels[5,595];
-//    Form7.Color         := Form19.Image9.Picture.BitMap.canvas.pixels[5,595];
-//    Form10.Color        := Form19.Image9.Picture.BitMap.canvas.pixels[5,595];
-//    Form4.Color         := Form19.Image9.Picture.BitMap.canvas.pixels[5,595];
-//    Form1.Color         := $00F0F0F0; // clWhite;
-//    Form7.Color         := $00F0F0F0; //clWhite; // $00ECC435;
-//    Form10.Color        := $00F0F0F0; //clWhite;
-//    Form4.Color         := $00F0F0F0; //clWhite;
-    //
     Form7.Image201.Picture := Form1.Image201.Picture;
     Form7.Image202.Picture := Form1.Image201.Picture;
     Form7.Image203.Picture := Form1.Image201.Picture;
@@ -862,33 +846,33 @@ begin
     Form7.Image208.Picture := Form1.Image201.Picture;
     Form7.Image209.Picture := Form1.Image201.Picture;
     Form7.Image308.Picture := Form1.Image201.Picture;
-    //
+
     if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
     begin
-      //
-      if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then Form19.Image7.Picture.LoadFromFile(Form1.sAtual+'\inicial\small_22_.bmp');
+      if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
+        Form19.Image7.Picture.LoadFromFile(Form1.sAtual+'\inicial\small_22_.bmp');
+
       Form19.Image9.Picture.Bitmap := Form19.Image7.Picture.Bitmap;
-      //
+
       // BOTOES PRINCIPAIS
-      //
       r1.Top     := 30;
       r1.Bottom  := 30 + 70;
-      //
+
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
-      //
+
       Form1.Image201.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image201.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
-      //
+
       Form1.Image201_.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image201_.Picture.Bitmap.TransParentColor := Form1.Image201_.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       r1.Left    := 10 + (70 * 2);
       r1.Right   := 10 + (70 * 3);
-      //
+
       Form1.Image202.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image202.Picture.Bitmap.TransParentColor := Form1.Image202.Picture.BitMap.canvas.pixels[1,1];
       //
@@ -1028,30 +1012,26 @@ begin
       //
       Form10.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image205.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       // Botão Small Mobile
-      //
       if not (Form1.iReduzida = 1) then
       begin
-        //
         r1.Left    := 10 + (70 * 2);  //
         r1.Right   := 10 + (70 * 3);  //
         //
         Form1.Image200.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
         Form1.Image200.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-        //
       end;
-      //
+
       r1.Left    := 10 + (70 * 3);  //
       r1.Right   := 10 + (70 * 4);  //
-      //
+
       Form1.Image_Raio_1.Picture     := Form1.Image200.Picture;
-      //
+
       Form1.Image_Raio_1.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image_Raio_1.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       // PERIGO BACKUP
-      //
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 *10);
       //
@@ -1063,9 +1043,8 @@ begin
       Form1.Image_Perigo_2.Picture   := Form1.Image208.Picture;
       //
       Form1.Image_Raio_2.Picture     := Form1.Image200.Picture;
-      //
+
       // BOTOES PRINCIPAIS DESTACADOS
-      //
       Form1.Image203_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
       Form1.Image200_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
       Form1.Image201_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
@@ -1156,9 +1135,8 @@ begin
       //
       Form1.Image201C_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image201C_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       // BOTOES SECUNDARIOS DESTACADOS
-      //
       Form7.Image201_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
       Form7.Image202_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
       Form7.Image203_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
@@ -1168,7 +1146,7 @@ begin
       Form7.Image209_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
       Form7.Image208_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
       Form7.Image308_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      //
+
       r1.Top     := 330 + 70;
       r1.Bottom  := 330 + 70 + 70;
       //
@@ -1225,9 +1203,8 @@ begin
       //
       Form7.Image308_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form7.Image308_X.Picture.Bitmap.TransParentColor := Form1.Image208_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       // BOTOES TERCIARIOS Form10 DESTACADOS
-      //
       Form10.Image201_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
       Form10.Image202_X.Picture.Bitmap       := Form7.Image203_X.Picture.Bitmap;
       Form10.Image203_X.Picture.Bitmap       := Form7.Image204_X.Picture.Bitmap;
@@ -1249,24 +1226,21 @@ begin
       //
       Form10.Image205_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       // Botão Small Mobile
-      //
       r1.Left    := 10 + (70 * 2);  //
       r1.Right   := 10 + (70 * 3);  //
       //
       Form1.Image200_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image200_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
     end;
-    //
   end;
-  //
+
   Form1.Image200_R.Picture  := Form1.Image200.Picture;
   Form1.Image201_R.Picture  := Form1.Image201.Picture;
   Form1.Image201C_R.Picture := Form1.Image201C.Picture;
   Form1.Image201S_R.Picture := Form1.Image201S.Picture;
-  //
+
   Form1.Image201__R.Picture := Form1.Image201_.Picture;
   Form1.Image202_R.Picture  := Form1.Image202.Picture;
   Form1.Image203_R.Picture  := Form1.Image203.Picture;
@@ -1276,7 +1250,7 @@ begin
   Form1.Image206_R.Picture  := Form1.Image206.Picture;
   Form1.Image207_R.Picture  := Form1.Image207.Picture;
   Form1.Image208_R.Picture  := Form1.Image208.Picture;
-  //
+
   Form7.Image201_R.Picture.Bitmap := Form7.Image201.Picture.Bitmap;
   Form7.Image202_R.Picture.Bitmap := Form7.Image202.Picture.Bitmap;
   Form7.Image203_R.Picture.Bitmap := Form7.Image203.Picture.Bitmap;
@@ -1286,35 +1260,14 @@ begin
   Form7.Image209_R.Picture.Bitmap := Form7.Image209.Picture.Bitmap;
   Form7.Image208_R.Picture.Bitmap := Form7.Image208.Picture.Bitmap;
   Form7.Image308_R.Picture.Bitmap := Form7.Image308.Picture.Bitmap;
-  //
+
   Form10.Image201_R.Picture.Bitmap       := Form10.Image201.Picture.Bitmap;
   Form10.Image202_R.Picture.Bitmap       := Form10.Image202.Picture.Bitmap;
   Form10.Image203_R.Picture.Bitmap       := Form10.Image203.Picture.Bitmap;
   Form10.Image204_R.Picture.Bitmap       := Form10.Image204.Picture.Bitmap;
   Form10.Image205_R.Picture.Bitmap       := Form10.Image205.Picture.Bitmap;
-  //
+
   MontaTela(True);
-  //
-{
-  try
-    Form1.Image201.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\201.bmp');
-    Form1.Image201_.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\201_.bmp');
-    Form1.Image201__R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\201_R.bmp');
-    Form1.Image202_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\202.bmp');
-    Form1.Image203_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\203.bmp');
-    Form1.Image204_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\204.bmp');
-    Form1.Image210_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\210.bmp');
-    Form1.Image205_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\205.bmp');
-    Form1.Image206_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\206.bmp');
-    Form1.Image207_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\207.bmp');
-    Form1.Image208_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\208.bmp');
-    Form1.Image200_R.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\200.bmp');
-    Form1.Image201C.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\201C.bmp');
-    Form1.Image201S.Picture.SaveToFile('C:\Users\Ronei Ivo Weber\Desktop\1\201S.bmp');
-  except end;
-}
-  //
-  //
 end;
 
 procedure TForm19.FormShow(Sender: TObject);
