@@ -11540,8 +11540,21 @@ end;
 
 function TForm1.RetornarWhereNotasManifestar: String;
 begin
+  {Sandro Silva 2023-06-15 inicio
   Result := '((Coalesce(MDESTINXML,''~'') like ''%<tpEvento>210210%'') and (MERCADORIA=0))' + sLineBreak +
             'OR ((Coalesce(MDESTINXML,'''')='''') AND (COALESCE(REPLACE(NFEID, ''0'', ''''),'''')<>''''))';
+  }
+  Result :=
+    'substring(NFEID from 21 for 2) = ''55'' and ' + sLineBreak + // listar apenas 55=NF-e
+    '(' + sLineBreak +
+    '  (' + sLineBreak +
+    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' + sLineBreak +
+    '  )' + sLineBreak +
+    '  or' + sLineBreak +
+    '  (' + sLineBreak +
+    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' + sLineBreak +
+    '  )' + sLineBreak +
+    ')';   
 end;
 
 procedure TForm1.Label_bola_NFEClick(Sender: TObject);
@@ -11556,7 +11569,8 @@ begin
     try
       Form7.ibDataSet24.Close;
       Form7.ibDataSet24.SelectSQL.Clear;
-      Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar);
+      // Sandro Silva 2023-06-15 Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar);
+      Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar + ' order by EMISSAO, FORNECEDOR');
       Form7.ibDataSet24.Open;
     except end;
     //
