@@ -1630,8 +1630,9 @@ begin
 
       // Devolucao
       // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
-      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução
+      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       begin
+
         // Imposto da NF de DEVOLUCAO devolução
         // neste ponto é possível informar os impostos com os valores da nota de entrada
         // não importa que já foram informados o que vai valer são estes valores
@@ -1649,6 +1650,18 @@ begin
         begin
           Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := FormatFloatXML(Form7.ibDataSet16VICMS.AsFloat);     // Valor do ICMS em Reais
         end;
+
+        {Sandro Silva 2023-06-13 inicio}
+        if (Pos('|' + Form7.spdNFeDataSets.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
+           (Pos('|' + Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0) then
+        begin
+          Form7.spdNFeDataSets.Campo('vBC_N15').Value       := '0.00';
+          Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := '0.00';
+          Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
+          Form7.spdNFeDataSets.Campo('CST_N12').AsString    := '61';
+        end;
+        {Sandro Silva 2023-06-13 fim}
+
 
         {Sandro Silva 2023-05-25 inicio}
         // Se no código acima pICMS_N16 ficou zerado, descobre o valor a partir de vICMS_N17 dividido por vBC_N15
@@ -2906,7 +2919,8 @@ begin
     end;
     }
     try
-      if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
+      // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
+      if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
       begin
         Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
         Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
@@ -3802,7 +3816,8 @@ begin
     Form7.spdNFeDataSets.Campo('orig_N11').Value   := ItemNFe.Origem;
     FreeAndNil(ItemNFe);
     }
-    if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
+    // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
+    if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
     begin
       Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value := Form7.ibDataSet16.FieldByname('CSOSN').AsString;
 
@@ -4667,8 +4682,14 @@ begin
     begin
       // Ficha 6907
       // Simples nacional usa CST 61 no lugar do CSOSN
-      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
-      Form7.spdNFeDataSets.Campo('CST_N12').AsString := '61';
+      if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1')
+      or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
+      //if Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61'
+      then
+      begin
+        Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
+        Form7.spdNFeDataSets.Campo('CST_N12').AsString := '61';
+      end;
     end;
     {Sandro Silva 2023-06-01 fim}
 
@@ -4682,7 +4703,9 @@ begin
   //vICMSMonoRet = multiplicar o valor da tag qBCMonoRet pelo valor da tag adRemICMSRet
 
   // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
-  if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '61') then
+  if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '61')
+    or (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '61') // Sandro Silva 2023-06-12
+  then
   begin
 
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
