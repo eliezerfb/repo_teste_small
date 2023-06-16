@@ -1488,6 +1488,19 @@ begin
 
       Form7.dBGrid3.Visible := False;
     end;
+
+    //Mauricio Parizotto 2023-06-16
+    if Form7.sModulo = '2CONTAS' then
+    begin
+      Form7.ibDataSet11.Edit;
+
+      // Instituição Financeira
+      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
+      begin
+        Form7.ibDataSet11INSTITUICAOFINANCEIRA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+        Form10.dBGrid3.Visible := False;
+      end;
+    end;
   except
   end;
 end;
@@ -1741,6 +1754,29 @@ begin
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DSConsulta;
       end;
+
+      //Mauricio Parizotto 2023-06-16
+      if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = '2CONTAS') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text := ' Select * '+
+                                            ' From CLIFOR'+
+                                            ' Where CLIFOR in (''Instituição financeira'',''Credenciadora de cartão'') '+
+                                            ' Order by NOME';
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top + 19;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := Width;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
+      end;
     end;
   except
     ShowMessage('Erro 10/77 comunique o suporte técnico.')
@@ -1852,8 +1888,22 @@ begin
           Exit;
         end;
       end;
-
       {Mauricio Parizotto 2023-05-29 Inicio}
+
+      {Mauricio Parizotto 2023-06-16 Inicio}
+      if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = '2CONTAS') and (bGravaEscolha) then
+      begin
+        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('NOME').AsString))) <> 0 then
+        begin
+          GravaEscolha;
+        end else
+        begin
+          DataSource.DataSet.Edit;
+          DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Exit;
+        end;
+      end;
+      {Mauricio Parizotto 2023-06-16 Inicio}
     end;
   except
   end;
@@ -1976,6 +2026,14 @@ begin
         //Mauricio Parizotto 2023-05-29
         if (vDataField = 'INSTITUICAOFINANCEIRA')
           and (Form7.sModulo = 'RECEBER')
+          and (Form7.ibqConsulta.Active) then
+        begin
+          Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+        end;
+
+        //Mauricio Parizotto 2023-06-16
+        if (vDataField = 'INSTITUICAOFINANCEIRA')
+          and (Form7.sModulo = '2CONTAS')
           and (Form7.ibqConsulta.Active) then
         begin
           Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);

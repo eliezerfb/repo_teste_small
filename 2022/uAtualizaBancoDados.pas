@@ -1358,12 +1358,6 @@ begin
       ExecutaComando('commit');
   end;
 
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
-  begin
-    if ExecutaComando('alter table RECEBER add INSTITUICAOFINANCEIRA varchar(60), add FORMADEPAGAMENTO varchar(60)') then
-      ExecutaComando('commit');
-  end;
-
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBCFCP') = False then
   begin
     if ExecutaComando('alter table ITENS001 add VBCFCP numeric(18, 2), ' +
@@ -1412,6 +1406,13 @@ begin
       ExecutaComando('Commit');
   end;
   {Sandro Silva 2023-04-12 fim}
+
+  //Mauricio Parizotto 2023-06-16
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'INSTITUICAOFINANCEIRA') = False then
+  begin
+    if ExecutaComando('alter table BANCOS add INSTITUICAOFINANCEIRA varchar(60)') then
+      ExecutaComando('Commit');
+  end;
 
   Form22.Repaint;
   Mensagem22('Aguarde...');

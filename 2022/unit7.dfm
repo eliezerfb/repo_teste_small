@@ -13723,12 +13723,12 @@ object Form7: TForm7
       'insert into BANCOS'
       
         '  (NOME, AGENCIA, CONTA, PLANO, SALDO1, SALDO2, SALDO3, ARQUIVO,' +
-        ' REGISTRO)'
+        ' REGISTRO,INSTITUICAOFINANCEIRA)'
       'values'
       
         '  (:NOME, :AGENCIA, :CONTA, :PLANO, :SALDO1, :SALDO2, :SALDO3, :' +
         'ARQUIVO, '
-      '   :REGISTRO)')
+      '   :REGISTRO,:INSTITUICAOFINANCEIRA)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -13739,7 +13739,8 @@ object Form7: TForm7
       '  SALDO2,'
       '  SALDO3,'
       '  ARQUIVO,'
-      '  REGISTRO'
+      '  REGISTRO,'
+      '  INSTITUICAOFINANCEIRA'
       'from BANCOS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -13756,7 +13757,8 @@ object Form7: TForm7
       '  SALDO2 = :SALDO2,'
       '  SALDO3 = :SALDO3,'
       '  ARQUIVO = :ARQUIVO,'
-      '  REGISTRO = :REGISTRO'
+      '  REGISTRO = :REGISTRO,'
+      '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -13770,7 +13772,7 @@ object Form7: TForm7
     object ibDataSet11AGENCIA: TStringField
       DisplayLabel = 'Ag'#234'ncia'
       FieldName = 'AGENCIA'
-      Size = 10
+      Size = 16
     end
     object ibDataSet11CONTA: TStringField
       DisplayLabel = 'Conta Corrente'
@@ -13779,7 +13781,7 @@ object Form7: TForm7
     end
     object ibDataSet11PLANO: TStringField
       DisplayLabel = 'Plano de Contas'
-      DisplayWidth = 11
+      DisplayWidth = 16
       FieldName = 'PLANO'
       OnSetText = ibDataSet11PLANOSetText
       EditMask = '99999;1;_'
@@ -13787,11 +13789,17 @@ object Form7: TForm7
     end
     object ibDataSet11SALDO3: TFloatField
       DisplayLabel = 'Saldo do Banco'
-      DisplayWidth = 12
+      DisplayWidth = 16
       FieldName = 'SALDO3'
       Visible = False
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
+    end
+    object ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField
+      DisplayLabel = 'Institui'#231#227'o Finan.'
+      FieldName = 'INSTITUICAOFINANCEIRA'
+      Origin = 'BANCOS.INSTITUICAOFINANCEIRA'
+      Size = 60
     end
     object ibDataSet11ARQUIVO: TStringField
       DisplayLabel = 'Arquivo'
@@ -21160,7 +21168,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50a\'
+      'vm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21194,7 +21202,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50a\'
+      'm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21508,7 +21516,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21537,7 +21545,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
