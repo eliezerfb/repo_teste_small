@@ -1,10 +1,11 @@
 object frmSelectCertificate: TfrmSelectCertificate
   Left = 379
   Top = 292
-  Width = 509
-  Height = 398
   BorderIcons = []
+  BorderStyle = bsSingle
   Caption = 'Selecione o certificado'
+  ClientHeight = 359
+  ClientWidth = 493
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
