@@ -42,6 +42,7 @@ var
   fRateioDoDesconto, {fPercentualFCPST, fPercentualFCP, }vIVA60_B_ICMST : Real;
 
   vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
+  sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
 
   procedure GeraXmlNFeSaida;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
@@ -785,6 +786,7 @@ begin
   end;
 
   vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-06-07
+  sMensagemIcmMonofasicoSobreCombustiveis := ''; // Sandro Silva 2023-06-16
 
   I := 0;
   //
@@ -2818,10 +2820,12 @@ begin
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := Trim(ConverteCaracterEspecialXML(Trim(Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
   end;
 
-  {Sandro Silva 2023-06-07 inicio
+  {Sandro Silva 2023-06-07 inicio}
   // Ativar quando Tecnospeed deixar de incluir essa inform. complementar por conta própria na visualização do danfe
-  if vICMSMonoRet_N45Total > 0.00 then
-    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+  // Sandro Silva 2023-06-16 if vICMSMonoRet_N45Total > 0.00 then
+  // Sandro Silva 2023-06-16Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+  if sMensagemIcmMonofasicoSobreCombustiveis <> '' then
+    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
   {Sandro Silva 2023-06-07 fim}
 
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS
@@ -4707,6 +4711,8 @@ begin
     or (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '61') // Sandro Silva 2023-06-12
   then
   begin
+
+    sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
 
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
