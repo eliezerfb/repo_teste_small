@@ -975,7 +975,6 @@ var
   ftotal1 : Real;
   Total : Real;
 begin
-  //
   if Form7.sModulo = 'VENDA' then // Ok
   begin
     Total := 0;
@@ -1181,6 +1180,7 @@ begin
             if Form18.ComboBox1.Text <> '<Imprimir Carnê>' then
             begin
               Form1.sEscolhido       := Form18.ComboBox1.Text;
+              Form1.sBancoBoleto     := '';
               Form25.btnEnviaEmailTodos.Visible := True; // Sandro Silva 2022-12-23 Form25.Button8.Visible := True;
               Form25.ShowModal;
               Form25.btnEnviaEmailTodos.Visible := False; // Sandro Silva 2022-12-23 Form25.Button8.Visible := False;
