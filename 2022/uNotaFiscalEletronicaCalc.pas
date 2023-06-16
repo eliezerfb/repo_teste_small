@@ -173,9 +173,9 @@ var
   oItem : TITENS001;
   i : integer;
 begin
-  if NFeFinalidadeComplemento(NotaFiscal.Finnfe) = False then // Complemento
+  //Se não for complemento zera totais 
+  if NFeFinalidadeComplemento(NotaFiscal.Finnfe) = False then
   begin
-
     //Zera Valores Nota
     NotaFiscal.Mercadoria := 0;
     NotaFiscal.Baseicm    := 0;
@@ -191,15 +191,24 @@ begin
 
   fFCPRetido            := 0;
 
-
   IBQProduto := Form7.CriaIBQuery(Form7.ibDataSet15.Transaction);
-
 
   if NFeFinalidadeComplemento(NotaFiscal.Finnfe) then // Complemento
   begin
+    //Zera Valores Nota
+    NotaFiscal.Mercadoria := 0;
 
-  end
-  else
+    //Complemento de valor
+    for i := 0 to NotaFiscal.Itens.Count -1 do
+    begin
+      oItem := NotaFiscal.Itens.GetItem(i);
+
+      if Arredonda(oItem.Unitario,2) > Arredonda(0.01,2) then // 0.01 é complemento de icms ai não soma
+        NotaFiscal.Mercadoria := NotaFiscal.Mercadoria + Arredonda(oItem.Total,2);
+    end;
+  end;
+  {Mauricio Parizotto 2023-06-05 Fim}
+
   // Sandro Silva 2023-05-18 if NotaFiscal.Finnfe = '4' then // Devolucao Devolução
   if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) then // Devolucao Devolução
   begin
@@ -227,7 +236,9 @@ begin
 
       end;
     end;
-  end else
+  end;
+
+  if not(NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe)))  then
   begin
     //Mauricio Parizotto 2023-04-03
     fTotalMercadoria := GetTotalMercadoria;
@@ -702,57 +713,21 @@ begin
           end;
         end;
       end;
-    end; // for notafiscal.itens
-
+    end;
   end;
 
   // Aqui já deve ter feito o rateio de despesas e acréscimos e aplicado nos itens da nota
   // Passa pelos itens da nota para calcular o FCP de cada um
-  NotaFiscal.VFCPST := 0.00;  
+  NotaFiscal.VFCPST := 0.00;
   for i := 0 to NotaFiscal.Itens.Count -1 do
   begin
     oItem := NotaFiscal.Itens.GetItem(i);
     if oItem.QUANTIDADE <> 0 then
       CalculaFCP( NotaFiscal, oItem);
-    NotaFiscal.VFCPST := NotaFiscal.VFCPST + Arredonda(oItem.VFCPST, 2); // Sandro Silva 2023-05-18      
+    NotaFiscal.VFCPST := NotaFiscal.VFCPST + Arredonda(oItem.VFCPST, 2); // Sandro Silva 2023-05-18
   end;
-
 
   FreeAndNil(IBQProduto);
-
-  // Particularidades do calculo do total do ICMS
-  {Sem uso aparente
-  Mauricio Parizotto 2023-04-19
-  Eliminar no futuro
-
-  try
-    // Verifica se pode usar tributação interestadual
-    if UpperCase(Copy(Form7.ibDataSet2IE.AsString,1,2)) = 'PR' then // Quando é produtor rural não precisa ter CGC
-    begin
-      sEstado := Form7.ibDataSet2ESTADO.AsString;
-      if AllTrim(Form7.ibDataSet2CGC.AsString) = '' then
-        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString); // Quando é produtor rural tem que ter CPF
-    end else
-    begin
-      if AllTrim((Limpanumero(Form7.ibDataSet2IE.AsString))) <> '' then
-        sEstado := Form7.ibDataSet2ESTADO.AsString
-      else
-        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-
-      if not CpfCgc(LimpaNumero(Form7.ibDataSet2CGC.AsString)) then
-        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-
-      if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) < 18 then
-        sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-    end;
-
-    sEstado := Form7.ibDataSet2ESTADO.AsString;
-
-    if Pos('1'+sEstado+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX2') = 0 then
-      sEstado := 'MG';
-  except
-  end;
-  }
 end;
 
 

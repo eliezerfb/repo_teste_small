@@ -294,7 +294,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48, uFuncoesRetaguarda;
+  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -1327,7 +1327,8 @@ procedure TForm12.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
 begin
   if Field.Name = 'ibDataSet16DESCRICAO' then
   begin
-    if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
+    //if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then Mauricio Parizotto 2023-06-05
+    if (Form7.ibDataSet16QUANTIDADE.AsFloat = 0) and not (NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString)) then
       DBGrid1.Canvas.Font.Color := clSilver
     else
       DBGrid1.Canvas.Font.Color := clBlack;

@@ -1591,13 +1591,23 @@ begin
       // Sandro Silva 2023-05-25 if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
       if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then // Complementar
       begin
-        Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
+        {Mauricio Parizotto 2023-06-05
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
-
-
         Form7.spdNFeDataSets.Campo('qCom_I10').Value     := '0.00'; // Quantidade Comercializada do Item
         Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := '0.00'; // Valor Comercializado do Item
         Form7.spdNFeDataSets.Campo('vProd_I11').Value    := '0.00'; // Valor Total Bruto do Item
+        }
+
+        //Só zera valores se não for nota de complemento de valor
+        if Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value = '0.01' then
+        begin
+          Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
+          Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
+          Form7.spdNFeDataSets.Campo('qCom_I10').Value     := '0.00'; // Quantidade Comercializada do Item
+          Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := '0.00'; // Valor Comercializado do Item
+          Form7.spdNFeDataSets.Campo('vProd_I11').Value    := '0.00'; // Valor Total Bruto do Item
+        end;
+
 
         Form7.spdNFeDataSets.Campo('vBC_N15').Value         := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASEICM').AsFloat); // BC
 //                  Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := StrTran(Alltrim(FormatFloat('##0.00',100)),',','.'); // Alíquota do ICMS em Percentual
@@ -2284,7 +2294,9 @@ begin
   Form7.spdNFeDataSets.Campo('vCOFINS_W14').Value := FormatFloatXML(vCOFINS); // Valor Total do COFINS
   Form7.spdNFeDataSets.Campo('vOutro_W15').Value  := FormatFloatXML(Form7.ibDataSet15.FieldByname('DESPESAS').AsFloat); // OUtras Despesas Acessórias
 
-  if Form7.ibDataSet15FINNFE.AsString = '2' then // Complemento de ICMS
+  //if Form7.ibDataSet15FINNFE.AsString = '2' then // Complemento de ICMS // Mauricio Parizotto 2023-06-05  - Entrou complento de valor
+  if (Form7.ibDataSet15FINNFE.AsString = '2')
+    and (Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat = 0.01) then // Complemento de ICMS
   begin
     Form7.spdNFeDataSets.Campo('vProd_W07').Value   := '0.00'; // Valor Total de Produtos e Serviços
   end else
