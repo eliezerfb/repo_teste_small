@@ -18411,7 +18411,7 @@ begin
 
       if Form7.ibDataSet15FINNFE.AsString = '2' then
       begin
-        Form12.SMALL_DBEdit16.ReadOnly := False;
+        Form12.edtTotalNota.ReadOnly := False;
       end;
       {Mauricio Parizotto 2023-06-05 Fim}
 
