@@ -34,7 +34,8 @@ var
   // Rateio
   fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO : Real;
   fDesconto, fFrete, fOutras, fSeguro : array[0..999] of double;
-  vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-13
+  // Sandro Silva 2023-06-16 vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-13
+  sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
 
 
   procedure GeraXmlNFeEntrada;
@@ -902,7 +903,8 @@ begin
 
   I := 0;
   vTotalImpostoImportacao := 0;
-  vICMSMonoRet_N45Total   := 0.00; // Sandro Silva 2023-06-13
+  // Sandro Silva 2023-06-16 vICMSMonoRet_N45Total   := 0.00; // Sandro Silva 2023-06-13
+  sMensagemIcmMonofasicoSobreCombustiveis := ''; // Sandro Silva 2023-06-16
 
   Form7.ibDAtaset23.First;
   while not Form7.ibDAtaset23.Eof do
@@ -1692,9 +1694,11 @@ begin
   Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := AllTrim(ConverteAcentos2(AllTrim(Form7.ibDAtaset24COMPLEMENTO.AsString))); // Informacoes Complementares
 
   {Sandro Silva 2023-06-13 inicio}
-  if vICMSMonoRet_N45Total > 0.00 then
+  // Sandro Silva 2023-06-16 if vICMSMonoRet_N45Total > 0.00 then
+  if sMensagemIcmMonofasicoSobreCombustiveis <> '' then // Sandro Silva 2023-06-16
   begin
-    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+    // Sandro Silva 2023-06-16 Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+    Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
   end;
   {Sandro Silva 2023-06-13 fim}
 
@@ -2458,13 +2462,15 @@ begin
   if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '61') then
   begin
 
+    sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+    
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
 
     Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
     Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
     vICMSMonoRet_N45      := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
-    vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
+    // Sandro Silva 2023-06-16 vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
 
     Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
   end;
