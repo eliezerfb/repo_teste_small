@@ -1039,8 +1039,10 @@ begin
         // Tipo de Emissão
         //
         Form1.spdNFCeDataSets1.Campo('tpEmis_B22').Value  := xmlNodeValue(Form1.ibDataset150.FieldByName('NFEXML').AsString, '//ide/tpEmis');// '1'; // 1- Emissão normal (não em contingência); 2- Contingência FS-IA, com impressão do DANFE em formulário de segurança; 3- Contingência SCAN (Sistema de Contingência do Ambiente Nacional); 4- Contingência DPEC (Declaração Prévia da Emissão em Contingência); 5- Contingência FS-DA, com impressão do DANFE em formulário de segurança; 6- Contingência SVC-AN (SEFAZ Virtual de Contingência do AN); 7- Contingência SVC-RS (SEFAZ Virtual de Contingência do RS); 9- Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e); Nota: As opções de contingência 3, 4, 6 e 7 (SCAN, DPEC e SVC) não estão disponíveis no momento atual.
+        {Sandro Silva 2023-06-14 inicio
         if Form1.UsaIntegradorFiscal() then  // Sandro Silva 2019-10-16
           Form1.spdNFCeDataSets1.Campo('tpEmis_B22').Value  := TPEMIS_NFCE_NORMAL;
+        }
         //
         // Contingência
         //
@@ -5061,12 +5063,14 @@ begin
         if AnsiContainsText(sStatus, 'Autoriza') or AnsiContainsText(sStatus, NFCE_EMITIDA_EM_CONTINGENCIA) then // Sandro Silva 2019-07-22
         begin
 
+          {Sandro Silva 2023-06-14 inicio
           if (Form1.UsaIntegradorFiscal()) then
           begin
             //Repassar idRespostaFiscal para todos as formasde pagto usadas
             EnviarRespostaFiscalValidadorFiscal(LimpaNumero(sID));
 
           end;
+          }
 
           if AnsiContainsText(sStatus, 'conting') then
           begin
@@ -5852,14 +5856,14 @@ begin
     sStatus :=  xmlNodeValue(sRetorno, '//cStat');
     Result   := xmlNodeValue(sRetorno, '//xMotivo');
 
-    {Sandro Silva 2019-11-19 inicio}
+    {Sandro Silva 2023-06-14 inicio
     if Form1.UsaIntegradorFiscal() then
     begin
       // '<Integrador><Identificador><Valor>112954021</Valor></Identificador><IntegradorResposta><Codigo>AP</Codigo><Valor>NFCE HABILITADA</Valor></IntegradorResposta><Resposta><retorno>112954021|000000|Impossível conectar-se ao servidor remoto||</retorno></Resposta></Integrador>'
       if sStatus = '' then
         sException := 'Integrador Fiscal retornou:' + #13 + Copy(sRetorno+'   ',Pos('<retorno>',sRetorno)+9,Pos('</retorno>',sRetorno)-Pos('<retorno>',sRetorno)-9) + #13 + sException;
     end;
-    {Sandro Silva 2019-11-19 fim}
+    }
 
     if sStatus = '109' then
     begin
@@ -6264,6 +6268,7 @@ begin
         GravarParametroIni(ExtractFilePath(Application.ExeName) + 'NFE.INI', 'NFCE', 'Número do Token NFCE', Form1.spdNFCe1.DanfceSettings.TokenNFCe);
       {Sandro Silva 2022-05-02 fim}
 
+      {Sandro Silva 2023-06-14 inicio 
       if Form1.UsaIntegradorFiscal() then
       begin
 
@@ -6296,6 +6301,7 @@ begin
           Form1.sUltimaAdquirenteUsada := AdquirentePadrao;
 
       end; // if Form1.UsaIntegradorFiscal() then
+      }
     end; // if Form1.sModeloECF = '65' then
 
     if Form1.sStatusECF <> 'CAIXA LIVRE' then
@@ -6405,11 +6411,13 @@ begin
               sStatus := Alltrim(Copy(sRetorno+'   ',Pos('<cStat>',sRetorno)+7,Pos('</cStat>',sRetorno)-Pos('<cStat>',sRetorno)-7));
             end else sStatus := '';
 
+            {Sandro Silva 2023-06-14 inicio
             if Form1.UsaIntegradorFiscal() then
             begin
               if sStatus = '' then
                 sStatus := sRetorno;
             end;
+            }
 
             //
         //    if sStatus <> '239' then // Verção do XML do cabeçalho não suportada
@@ -6474,14 +6482,16 @@ begin
                      Application.ProcessMessages;
                      Application.BringToFront;
 
+                     {Sandro Silva 2023-06-14 inicio
                      if Form1.UsaIntegradorFiscal() then
                      begin
                        SmallMsg('Integrador Fiscal retornou:' + #13 + Copy(sRetorno+'   ',Pos('<retorno>',sRetorno)+9,Pos('</retorno>',sRetorno)-Pos('<retorno>',sRetorno)-9));
                      end
                      else
                      begin
+                     }
                        SmallMsg(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9));
-                     end;
+                     //end;
 
                    end;
                    //
@@ -8443,10 +8453,12 @@ end; // Fim EnviarNFCeContingencia
 
 procedure _ecf65_NumeroSessaoIntegradorFiscal;
 begin
+  {Sandro Silva 2023-06-14 inicio
   if Form1.UsaIntegradorFiscal() then
   begin
     Form1.spdNFCe1.Integrador.NumeroSessao := StrToInt(FormatDateTime('HHnnsszzz', Time));
   end;
+  }
 end;
 
 procedure _ecf65_RateioAcrescimo(dTotalVenda: Double; dAcrescimoTotal: Double;

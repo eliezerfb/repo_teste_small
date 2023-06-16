@@ -54,7 +54,7 @@ uses Unit2, fiscal, Unit15, _Small_IntegradorFiscal, umfe;
 
 procedure TFDadosPOS.Button1Click(Sender: TObject);
 begin
-
+{Sandro Silva 2023-06-14 inicio
   if Form1.UsaIntegradorFiscal() then
   begin
     Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.idFila            := Form1.IntegradorCE.UltimoidPagamento;
@@ -63,8 +63,9 @@ begin
     Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.NumerodeAprovacao := Edit3.Text;
     Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Bandeira          := Edit4.Text;
     Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Adquirente        := Edit5.Text;
-    Form1.sTransaca := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.CodigoAutorizacao; // Sandro Silva 2018-10-22 
+    Form1.sTransaca := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.CodigoAutorizacao; // Sandro Silva 2018-10-22
   end;
+  }
   ModalResult := mrOk;
 end;
 
@@ -124,6 +125,7 @@ end;
 
 procedure TFDadosPOS.FormShow(Sender: TObject);
 begin
+  {Sandro Silva 2023-06-14 inicio
   if (Form1.UsaIntegradorFiscal()) then
   begin
 
@@ -147,6 +149,7 @@ begin
       Edit5.Text := Form1.sUltimaAdquirenteUsada;
 
   end;
+  }
 end;
 
 end.

@@ -56,7 +56,8 @@ uses
   uValidaRecursosDelphi7 in '..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
-  _small_65 in '_small_65.pas';
+  _small_65 in '_small_65.pas',
+  uFuncoesPOS in 'uFuncoesPOS.pas';
 
 {$R *.RES}
 

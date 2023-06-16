@@ -83,7 +83,7 @@ uses
   ExtCtrls, StdCtrls, Printers, OleCtrls, ShellAPI, Mask, Variants, Winsock
   , Db, DBCtrls, DBTables, DBClient, DBGrids, Registry, Types, SysConst
   , Buttons, IniFiles, Clipbrd, Menus, Grids, FileCtrl, jpeg, ComCtrls
-  , MidasLib, StrUtils, DateUtils, ShlObj, ActiveX, ComObj, SHDocVw, Math
+  , MidasLib, StrUtils, DateUtils, ShlObj, ActiveX, ComObj, SHDocVw//, Math
   {$IFDEF VER150}
   , IBDatabase, IBCustomDataSet, IBDatabaseInfo, IBQuery, IBExtract
   {$ELSE}
@@ -1430,9 +1430,7 @@ type
     function Produto(sTexto: String; var sQuantidade: String;
       var sValor: String): String;
     function ConfiguraCaminhoComunicaoServidorSat: Boolean;
-    procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
-    function TransacaoComPoS(TipoConexaoPOS: TTipoConexaoPOS): Boolean;
-    function TEFValorTransacao(sArquivoTEF: String): Currency;
+// Sandro Silva 2023-06-14    function TransacaoComPoS(TipoConexaoPOS: TTipoConexaoPOS): Boolean;
     procedure AjustaAlteracaDesconto;
     procedure GerarArquivoMF(sTipoArquivo: String);
     procedure GerarArquivoMFD(sTipoArquivo: String);
@@ -1614,10 +1612,6 @@ type
       dValorFormaPagtoCartao: Currency; iTotalParcelasVenda: Integer;
       iParcelasTransacao: Integer);
 
-    function TEFValorTotalAutorizado(): Currency;
-    function TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
-    function TEFContaArquivos(sTipoComCaminho: String): Integer;
-
     function PDV_CupomAberto: Boolean;
     function PDV_ImpressaoNaoSujeitoaoICMS(sTexto: String;
       bPDF: Boolean = False): Boolean;
@@ -1741,7 +1735,7 @@ uses
   , upafnfce // Sandro Silva 2022-09-23
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
-  , uValidaRecursosDelphi7;
+  , uValidaRecursosDelphi7, uFuncoesPOS;
 
 {$R *.DFM}
 
@@ -2571,6 +2565,7 @@ begin
   FreeAndNil(Form27);
 end;
 
+(* // Sandro Silva 2023-06-14
 function TForm1.TransacaoComPoS(TipoConexaoPOS: TTipoConexaoPOS): Boolean;
 var
   bPoSok: Boolean;
@@ -2612,6 +2607,7 @@ begin
         begin
 
           Application.ProcessMessages; // Sandro Silva 2017-06-30
+          {Sandro Silva 2023-06-14 inicio
           if Form1.UsaIntegradorFiscal() then
           begin
             if Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count > 0 then
@@ -2620,6 +2616,7 @@ begin
                 dValorPagarCartao := StrToFloatDef(Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count - 1].ValorTotalVenda, 0);
             end
           end;
+          }
           dValorPagarCartao := StrToFloatDef(Form1.Small_InputBox(PAGAMENTO_EM_CARTAO,'Informe o valor para pagamento com o ' + IntToStr(iContaCartao + 1) + 'º de ' + IntToStr(Form1.iNumeroMaximoDeCartoes) + ' cartões:', FormatFloat('0.00', dValorPagarCartao)), 0);
 
           dValorPagarCartao := StrToFloatDef(FormatFloat('0.00', dValorPagarCartao), 0); // Sandro Silva 2017-01-09 Arredonda para 2 casas o valor informado
@@ -2675,6 +2672,7 @@ begin
       begin
 
         bPoSok := True;
+        {Sandro Silva 2023-06-14 inicio
         if Form1.UsaIntegradorFiscal() then
         begin
           if (Form1.ClienteSmallMobile.sVendaImportando = '') then
@@ -2695,6 +2693,7 @@ begin
             bPoSok := EnviarPagamentoValidadorFiscal('CARTAO POS', Abs(dValorPagarCartao), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False); // Sandro Silva 2021-11-29 bPoSok := EnviarPagamentoValidadorFiscal('CARTAO POS', Abs(dValorPagarCartao), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
 
         end;
+        }
 
         if (dValorPagarCartao <> 0)  then // Cartão sim - cheque não
         begin
@@ -2759,6 +2758,10 @@ begin
                 Form1.ExibePanelMensagem('Selecionando Bandeira do cartão', True);
 
                 Form10.ShowModal;
+                {Sandro Silva 2023-06-14 inicio}
+                if Form10.ModalResult <> mrOk then
+                  bPosOk := False;
+                {Sandro Silva 2023-06-14 fim}
 
                 if Form1.sIdentificaPOS = 'Sim' then
                 begin
@@ -2782,6 +2785,7 @@ begin
               {Sandro Silva 2022-02-09 fim}
             end;
 
+            {Sandro Silva 2023-06-14 inicio
             if UsaIntegradorFiscal() then
             begin
               if Trim(Form1.sNomeRede) = '' then
@@ -2789,6 +2793,7 @@ begin
               else
                 bPoSok := VerificarStatusValidadorFiscal(dValorPagarCartao);
             end;
+            }
           end;// if bPoSOk then // Sandro Silva 2018-07-03
 
           if bPoSok then
@@ -2859,6 +2864,7 @@ begin
         //
         if bPoSok then// Sandro Silva 2017-05-16
         begin
+          {Sandro Silva 2023-06-14 inicio
           if Form1.UsaIntegradorFiscal() then
           begin
             try
@@ -2870,10 +2876,12 @@ begin
 
             end;
           end;
-
+          }
+          {Sandro Silva 2023-06-14 inicio
           if UsaIntegradorFiscal() then
             Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRede, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransaca, Form1.sAutoriza, Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count - 1].RespostaFiscal.Bandeira, ModalidadeTransacao)
           else
+          }
             Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRede, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransaca, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao); 
 
           dTotalTransacionado := dTotalTransacionado + dValorPagarCartao; // Sandro Silva 2017-06-16
@@ -2904,6 +2912,7 @@ begin
   end; // while dTotalTransacionado < dTotalEmCartao do
 
 end;
+*)
 
 function TForm1.Demais(sP1:String): Boolean;
 var
@@ -9785,6 +9794,7 @@ begin
       Form1.spdNFCe1.MaxSizeLoteEnvio                  := 500;
       Form1.spdNFCe1.EntregaXML                        := exEmail;
       Form1.spdNFCe1.HashCertificado                   := '00000000000000000000000000000000';
+      {Sandro Silva 2023-06-14 inicio
       if Form1.UsaIntegradorFiscal(Form1.ibDataSet13.FieldByName('ESTADO').AsString) then
       begin
         sCaminhoIntegrador := LerParametroIni(FRENTE_INI, SECAO_MFE, CHAVE_CAMINHO_INTEGRADOR_FISCAL, Form1.IntegradorCE.CaminhoIntegrador); // 'c:\Integrador';
@@ -9815,7 +9825,7 @@ begin
           Form1.spdNFCe1.Integrador.DiretorioEntrada       := sCaminhoIntegrador + '\INPUT';
           Form1.spdNFCe1.Integrador.DiretorioSaida         := sCaminhoIntegrador + '\OUTPUT';
           Form1.spdNFCe1.Integrador.TimeOut                := 60;
-          
+
         end;
 
         if Form1.sModeloECF = '65' then
@@ -9830,13 +9840,15 @@ begin
         end;
 
       end;
-
+      }
     end;
 
+    {Sandro Silva 2023-06-14 inicio
     if Form1.UsaIntegradorFiscal() then
     begin
       Form1.IntegradorCE.Caixa                := Form1.sCaixa; // Sandro Silva 2018-07-03
     end;
+    }
 
     Form1.NmerodoCredencimentodoPAFECF1.Visible        := False; // Sandro Silva 2017-08-04
     Form1.NmerodoCredencimentodaImpressoraECF1.Visible := False; // Sandro Silva 2017-08-04
@@ -10064,6 +10076,7 @@ begin
         // Sandro Silva 2021-01-11  Form1.NFCeemContingncia1.Enabled := (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') and (Form1.UsaIntegradorFiscal() = False); // Sandro Silva 2018-07-03  AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC';
         Form1.NFCeemContingncia1.Enabled := ((AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') and (Form1.UsaIntegradorFiscal() = False) or (PAFNFCe));
 
+        {Sandro Silva 2023-06-14 inicio
         if Form1.UsaIntegradorFiscal() then
         begin
           Form1.IntegradorFiscal1.Visible := True;
@@ -10071,6 +10084,7 @@ begin
           Form1.AdquirentesPOS1.Visible   := True;
           Form1.N27.Visible               := True;
        end;
+       }
 
       end;
 
@@ -11042,6 +11056,7 @@ begin
 
     end;
 
+    {Sandro Silva 2023-06-14 inicio
     if bInicializa then
     begin
       try
@@ -11061,6 +11076,7 @@ begin
       end;
 
     end;
+    }
 
     if LerParametroIni('FRENTE.INI', 'NFCE','MOBILE', 'Não') = 'Sim' then
     begin // Sandro Silva 2015-05-25
@@ -11197,10 +11213,12 @@ begin
   //
   Form1.Timer1.Enabled := False;
 
+  {Sandro Silva 2023-06-14 inicio
   if Form1.UsaIntegradorFiscal() then
   begin
     Form1.IntegradorCE.EnviarFormaPagamento.Clear;
   end;
+  }
   //
   try
     //
@@ -11481,53 +11499,52 @@ begin
           sMensagemPromocional := Mais1Ini.ReadString('Frente de caixa'  , 'Mensagem' , MensagemPromocionalDefault);
           Mais1Ini.Free;
           //
-          //if True then
-          //begin
-            //
-            // Valor Aproximado dos Tributos IIA Indicie de Imposto Aproximado
-            //
+          //
+          // Valor Aproximado dos Tributos IIA Indicie de Imposto Aproximado
+          //
 
-            if (Form1.sModeloECF <> '99') then // Sandro Silva 2020-09-23
-            begin
+          if (Form1.sModeloECF <> '99') then // Sandro Silva 2020-09-23
+          begin
 
-              try
+            try
+              Form1.IBQuery1.Close;
+              Form1.IBQuery1.SQL.Clear;
+              Form1.IBQuery1.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
+                                          + 'sum(cast((ESTOQUE.IIA_UF*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS2, '
+                                          + 'sum(cast((ESTOQUE.IIA_MUNI*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS3 '
+                                   + 'from ALTERACA,ESTOQUE where PEDIDO=' + QuotedStr(Form1.ibDataSet27.FieldByname('PEDIDO').AsString)
+                                   + ' and CAIXA='+QuotedStr(Form1.ibDataSet27.FieldByname('CAIXA').AsString)
+                                   + ' and TIPO<>''CANCEL'''
+                                   + ' and ESTOQUE.CODIGO=ALTERACA.CODIGO and (ALTERACA.DESCRICAO<>''Desconto'' and ALTERACA.DESCRICAO<>''Acréscimo'')');
+              Form1.IBQuery1.Open;
+
+              if (Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat)  > 0 then
+              begin
+                sM := 'Trib aprox R$: ';
+                if Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat > 0 then
+                  sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Federal ';
+                if Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat > 0 then
+                  sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Estadual ';
+                if Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat > 0 then
+                  sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Municipal ';
+
+                Form1.fTributos_federais   := Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat;
+                Form1.fTributos_estaduais  := Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat;
+                Form1.fTributos_municipais := Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat;
+                //
                 Form1.IBQuery1.Close;
                 Form1.IBQuery1.SQL.Clear;
-                Form1.IBQuery1.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
-                                            + 'sum(cast((ESTOQUE.IIA_UF*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS2, '
-                                            + 'sum(cast((ESTOQUE.IIA_MUNI*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS3 '
-                                     + 'from ALTERACA,ESTOQUE where PEDIDO=' + QuotedStr(Form1.ibDataSet27.FieldByname('PEDIDO').AsString)
-                                     + ' and CAIXA='+QuotedStr(Form1.ibDataSet27.FieldByname('CAIXA').AsString)
-                                     + ' and TIPO<>''CANCEL'''
-                                     + ' and ESTOQUE.CODIGO=ALTERACA.CODIGO and (ALTERACA.DESCRICAO<>''Desconto'' and ALTERACA.DESCRICAO<>''Acréscimo'')');
-                //
+                Form1.IBQuery1.SQL.Add('select first 1 distinct CHAVE, FONTE from IBPT_ '); // Sandro Silva 2016-08-16 Seleciona apenas 1 linha da tabela
                 Form1.IBQuery1.Open;
                 //
-                if (Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat + Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat)  > 0 then
-                begin
-                  sM := 'Trib aprox R$: ';
-                  if Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat > 0 then sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Federal ';
-                  if Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat > 0 then sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Estadual ';
-                  if Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat > 0 then sM := sM + AllTrim(Format('%12.2n',[Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat*(1-(Form1.fDescontoNoTotal / Form1.fTotal))])) +' Municipal ';
-
-                  //
-                  Form1.fTributos_federais   := Form1.IBQuery1.FieldByName('TRIBUTOS1').AsFloat;
-                  Form1.fTributos_estaduais  := Form1.IBQuery1.FieldByName('TRIBUTOS2').AsFloat;
-                  Form1.fTributos_municipais := Form1.IBQuery1.FieldByName('TRIBUTOS3').AsFloat;
-                  //
-                  Form1.IBQuery1.Close;
-                  Form1.IBQuery1.SQL.Clear;
-                  Form1.IBQuery1.SQL.Add('select first 1 distinct CHAVE, FONTE from IBPT_ '); // Sandro Silva 2016-08-16 Seleciona apenas 1 linha da tabela
-                  Form1.IBQuery1.Open;
-                  //
-                  sM := sM + chr(10) + 'Fonte: ' + Form1.IBQuery1.FieldByName('FONTE').AsString + ' ' + Form1.IBQuery1.FieldByName('CHAVE').AsString;
-                end;
-              except
-                  on E: Exception do SmallMsg('Erro 567: '+chr(10)+chr(10)+ E.Message +chr(10)+chr(10)+ Form1.IBQuery1.SQL.Text);
+                sM := sM + chr(10) + 'Fonte: ' + Form1.IBQuery1.FieldByName('FONTE').AsString + ' ' + Form1.IBQuery1.FieldByName('CHAVE').AsString;
               end;
-              //
+            except
+              on E: Exception do SmallMsg('Erro 567: '+chr(10)+chr(10)+ E.Message +chr(10)+chr(10)+ Form1.IBQuery1.SQL.Text);
             end;
-          //end;
+            //
+          end;
+
           //
           Form1.sMensagemNFMod02 := ''; // Sandro Silva 2017-11-07 Polimig
           if AllTrim(sReferenteNFModelo2) <> '' then
@@ -12021,25 +12038,24 @@ begin
               // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(False);  // Enable  Keyboard & mouse
             end;
           end;
-          //
+
           if bNaoAbriu then
           begin
-            //
+
             bFecha := True;
-            //
+
             bFecha := Form1.PDV_FechaCupom(True);
 
             //SmallMsg('Teste 1 Sequência fechando cupom fiscal');
 
-            //
             ValorTotalDoDia(True);
-            //
+
             if bFecha then
             begin
               // Sandro Silva 2016-03-01 ExibirMsgMenuF10Indisponivel(False); // Sandro Silva 2016-03-01
-              //
+
               Commitatudo2(False); // Fecha o cupom grava o desconto ou o acréscimo e o fechamento
-              //
+
             end;
             //
             Form1.Label_7.Caption := 'Forma de pagamento';
@@ -12286,6 +12302,7 @@ begin
                         Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago)); // Sandro Silva 2017-08-25  StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('PAGAR').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat;
                         Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                        {Sandro Silva 2023-06-14 inicio
                         if (UsaIntegradorFiscal()) then // Sandro Silva 2017-06-28 if Form1.sModeloECF = '59' then
                         begin
                           GravarRespostaFiscalValidadorFiscal(Form1.ibDataSet28.FieldByName('DATA').AsDateTime,
@@ -12302,6 +12319,7 @@ begin
                                                       Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira // Sandro Silva 2018-07-03
                                                       );
                         end;
+                        }
 
                         //
                         Form1.ibDataSet28.Post;
@@ -12310,11 +12328,13 @@ begin
                       end;
                     end; // for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do
 
+                    {Sandro Silva 2023-06-14 inicio
                     if Form1.UsaIntegradorFiscal() then
                     begin
                       Form1.IntegradorCE.EnviarFormaPagamento.Formas.Clear; // Sandro Silva 2018-07-03
                       Form1.IntegradorCE.UltimoidPagamento := '';
                     end;
+                    }
 
 
                   except
@@ -13171,8 +13191,10 @@ begin
           if (bChave = True)   then
           begin
 
+            {Sandro Silva 2023-06-14 inicio
             if Form1.UsaIntegradorFiscal() then
               Form1.ExibePanelMensagem('Finalizando TEF'); // Sandro Silva 2018-07-03
+            }
 
             // Confirmando a transação TEF
             AssignFile(F,Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
@@ -14110,6 +14132,7 @@ begin
 
   Form1.Minimizarnabandeja1.Enabled := False;
 
+  {Sandro Silva 2023-06-14 inicio
   if Form1.sModeloECF = '59' then
   begin
     if Form1.UsaIntegradorFiscal('') then
@@ -14118,6 +14141,7 @@ begin
         Form1.ExibePanelMensagem('Consultando Integrador Fiscal');
     end;
   end;
+  }
 
   //
   if TestaTudo(True) then // Abre cupom
@@ -17341,6 +17365,7 @@ begin
   end; // if ((Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '59')) and (Form1.UsaIntegradorFiscal() = False) then
 
 
+  {Sandro Silva 2023-06-14 inicio
   if (Form1.sModeloECF = '59') then
   begin
 
@@ -17357,7 +17382,7 @@ begin
     end;
 
   end;
-
+  }
 
   Display(Form1.sStatusECF,Form1.sF);
   Form1.sStatusECF_RES := Form1.sStatusECF;
@@ -23448,10 +23473,12 @@ begin
     HasHs('PAGAMENT', True);
   except end;
 
+  {Sandro Silva 2023-06-14 inicio
   if UsaIntegradorFiscal() then
   begin
     ExcluirIdentificadorVFPE(DataSet.FieldByName('PEDIDO').AsString, DataSet.FieldByName('CAIXA').AsString, DataSet.FieldByName('FORMA').AsString);
   end;
+  }
 end;
 
 procedure TForm1.IBDataSet38BeforeDelete(DataSet: TDataSet);
@@ -26558,16 +26585,18 @@ end;
 procedure TForm1.CartesdecreditoedebitoPOS1Click(Sender: TObject);
 begin
   Timer2.Enabled := False; // Sandro Silva 2016-03-23
-  Form10.Panel1.Visible := True;
+  Form10.pnBotoes.Visible := True;
   Form10.TipoForm := tfPOS; // Sandro Silva 2017-05-18
   Form10.ShowModal;
-  Form10.Panel1.Visible := False;
+  Form10.pnBotoes.Visible := False;
 
+  {Sandro Silva 2023-06-14 inicio
   if Form1.UsaIntegradorFiscal then
   begin
     // Configura as Adquirentes de para transação com cartão
     Form1.AdquirentesPOS1.Click;
   end;
+  }
 
   if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
     Timer2.Enabled := True;
@@ -29898,15 +29927,19 @@ end;
 
 procedure TForm1.ConfiguraCaminhodeComunicaoIntegrador1Click(Sender: TObject);
 begin
+{Sandro Silva 2023-06-14 inicio
   if (UsaIntegradorFiscal()) then
     ConfiguraCaminhoIntegradorFiscal;
+}
 end;
 
 procedure TForm1.CdigodeIdentificaodoEstabelecimentoJuntoaSEFAZ1Click(
   Sender: TObject);
 begin
+{Sandro Silva 2023-06-14 inicio
   if UsaIntegradorFiscal() then
     ConfiguraChaveAcessoValidadorFiscal;
+}
 end;
 
 procedure TForm1.AdquirentesPOS1Click(Sender: TObject);
@@ -30397,201 +30430,6 @@ begin
     SendMessage(Form1.Memo1.Handle, WM_VSCROLL, SB_BOTTOM, 0);
   except
   end;
-end;
-
-procedure TForm1.TEFDeletarCopiasArquivos(FsDiretorio: String);
-var
-  slArquivos: TStringList;
-  sDirAtual: String;
-  i: Integer;
-  sArquivo: String;
-  sTipo: String;
-begin
-  GetDir(0, sDirAtual);
-  slArquivos := TStringList.Create;
-  try
-    sTipo := '*.BKP';
-    while sTipo <> '' do
-    begin
-      slArquivos.Clear;
-      ListaDeArquivos(slArquivos, diretorio_bkp_tef, sTipo);
-
-      for I := 0 to slArquivos.Count -1 do
-      begin
-        sArquivo := diretorio_bkp_tef + '\' + AllTrim(slArquivos[I]);
-        //
-        //if AnsiContainsText(ExtractFileName(sArquivo), FsDiretorio) then
-        //begin
-          //
-          DeleteFile(PChar(sArquivo));
-          //
-        //end;
-      end; // for I := 0 to slDownload.Count -1 do
-      if sTipo = '*.BKP' then
-        sTipo := '*.BKC'
-      else
-        sTipo := '';
-    end;
-  finally
-    FreeAndNil(slArquivos);
-  end;
-
-  ChDir(sDirAtual);
-end;
-
-function TForm1.TEFValorTotalAutorizado(): Currency; // Sandro Silva 2017-06-14
-var
-  slArquivos: TStringList;
-  sDirAtual: String;
-  i: Integer;
-  sArquivoTEF: String;
-  sNomeArquivo: String;
-  sNomeTEFAutorizacao: String;
-  sDebitoOuCreditoAutorizado: String;
-  bRespostaValidadosFiscal: Boolean; // Sandro Silva 2018-07-03
-  ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
-begin
-  GetDir(0, sDirAtual);
-  slArquivos := TStringList.Create;
-  Result := 0.00;
-
-  try
-    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
-
-    for I := 0 to slArquivos.Count -1 do
-    begin
-      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
-      //
-      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
-      // Último caractere do nome deve ser número maior ou igual a zero
-      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
-
-      sNomeTEFAutorizacao := Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(IntToStr(I)));
-
-      sDebitoOuCreditoAutorizado := 'CREDITO';
-      ModalidadeTransacao := tModalidadeCarteiraDigital; // Sandro Silva 2021-07-05
-      with TStringList.Create do
-      begin
-        LoadFromFile(sArquivoTEF);
-        if AnsiContainsText(AnsiUpperCase(ConverteAcentos(Text)), ' DEBIT') then // Sandro Silva 2021-08-03 if AnsiContainsText(AnsiUpperCase(Text), ' DEBIT') then
-        begin
-          sDebitoOuCreditoAutorizado := 'DEBITO';
-          ModalidadeTransacao := tModalidadeCartao; // Sandro Silva 2021-07-05
-        end;
-
-        if AnsiContainsText(AnsiUpperCase(ConverteAcentos(Text)), ' CREDIT') then // Sandro Silva 2021-08-03 if AnsiContainsText(AnsiUpperCase(Text), ' CREDIT') then
-        begin
-          ModalidadeTransacao := tModalidadeCartao; // Sandro Silva 2021-07-05
-        end;
-
-        if AnsiContainsText(AnsiUpperCase(Text), 'PIX ') then
-        begin
-          ModalidadeTransacao := tModalidadePix; // Sandro Silva 2021-07-05
-        end;        
-
-        Free;
-      end;
-
-      if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
-      begin // Apenas arquivos dos primeiros cartões, não do último
-        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
-        begin
-          if CampoTEF(sArquivoTEF, '009-000') = '0' then
-          begin
-
-            if Form1.UsaIntegradorFiscal() then
-            begin
-
-              Form1.IntegradorCE.SelecionarDadosAdquirente('FRENTE.INI', sNomeTEFAutorizacao, Form1.sUltimaAdquirenteUsada);
-              bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(Form1.TEFValorTransacao(sArquivoTEF)), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False); // Sandro Silva 2021-11-29 bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(Form1.TEFValorTransacao(sArquivoTEF)), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
-
-            end
-            else
-              bRespostaValidadosFiscal := True;
-
-            if bRespostaValidadosFiscal then
-            begin
-
-              Result := Result + Form1.TEFValorTransacao(sArquivoTEF);
-              Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
-            end;
-
-          end;
-        end;
-      end; //if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
-    end; // for I := 0 to slDownload.Count -1 do
-  finally
-    FreeAndNil(slArquivos);
-  end;
-
-  ChDir(sDirAtual);
-end;
-
-function TForm1.TEFValorTransacao(sArquivoTEF: String): Currency;
-begin
-  Result := (StrToIntDef(LimpaNumero(CampoTEF(sArquivoTEF, '003-000')), 0) / 100);
-end;
-
-function TForm1.TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
-var
-  slArquivos: TStringList;
-  sDirAtual: String;
-  i: Integer;
-  sArquivoTEF: String;
-  sNomeArquivo: String;
-begin
-  GetDir(0, sDirAtual);
-  slArquivos := TStringList.Create;
-  Result := '';
-  try
-    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
-
-    for I := 0 to slArquivos.Count -1 do
-    begin
-      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
-      //
-      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
-      // Último caractere do nome deve ser número maior ou igual a zero
-      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
-      if StrToIntDef(Right(sNomeArquivo, 1), -1) >= 0 then
-      begin // Apenas arquivos dos primeiros cartões, não do último
-        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
-        begin
-          if CampoTEF(sArquivoTEF, '009-000') = '0' then
-            Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
-        end;
-      end;
-    end; // for I := 0 to slDownload.Count -1 do
-  finally
-    FreeAndNil(slArquivos);
-  end;
-
-  ChDir(sDirAtual);
-end;
-
-function TForm1.TEFContaArquivos(sTipoComCaminho: String): Integer;
-var
-  sDirAtual: String;
-  S: TSearchREc;
-  I: Integer;
-begin
-  GetDir(0, sDirAtual);
-  Result := 0;
-  try
-    //
-    I := FindFirst( pChar(sTipoComCaminho), faAnyFile, S);
-    //
-    while I = 0 do
-    begin
-      I := FindNext(S);
-      Inc(Result);
-    end;
-    //
-    FindClose(S);
-  except
-  end;
-
-  ChDir(sDirAtual);
 end;
 
 function TForm1.PDV_CupomAberto: Boolean;
@@ -31811,6 +31649,7 @@ procedure TForm1.ransmitirRespostaFiscalPendente1Click(Sender: TObject);
 var
   iPendentes: Integer;
 begin
+  {Sandro Silva 2023-06-14 inicio
   try
     if (Form1.UsaIntegradorFiscal()) then // Sandro Silva 2018-07-03 if (Form1.sModeloECF = '59') and (_ecf59_Tipodaimpressora = 'MFE') then
     begin
@@ -31842,7 +31681,7 @@ begin
   except
 
   end;
-
+  }
 end;
 
 procedure TForm1.AjustarDiferencaParcelasCartao(dTotalTransacaoCartao: Currency;
@@ -32388,22 +32227,10 @@ end;
 function TForm1.UsaIntegradorFiscal(UF: String = ''): Boolean;
 // Sandro Silva 2018-06-29 Valida se na UF é obrigatório usar o Integrador Fiscal. Inicialmente apenas CE
 begin
-  {Sandro Silva 2022-05-17 inicio
+  {Sandro Silva 2023-06-14 inicio
 
   Sefaz/CE desativa Integrador fiscal
   https://www.sefaz.ce.gov.br/2022/05/11/comunicado-desativacao-integrador-e-validador-fiscal/
-
-  if Trim(UF) = '' then
-    UF := Form1.IBDataSet13.FieldByName('ESTADO').AsString;
-  UF := '|' + AnsiUpperCase(UF) + '|';
-
-            //(NFC-e e UF-CE) ou MFE
-  Result := ((Form1.sModeloECF  = '65') and AnsiContainsText('|CE|', UF)) or ((Form1.sModeloECF  = '59') and (_ecf59_Tipodaimpressora = 'MFE'));
-
-  if Form1.bBalancaAutonoma then // Sandro Silva 2019-01-23
-    Result := False;
-
-  }
 
   if Trim(UF) = '' then
     UF := Form1.IBDataSet13.FieldByName('ESTADO').AsString;
@@ -32418,8 +32245,9 @@ begin
 
   if FileExists('c:\Program Files (x86)\SEFAZ-CE\Driver MFE\Biblioteca de funções\mfe.dll') or FileExists('c:\Program Files\SEFAZ-CE\Driver MFE\Biblioteca de funções\mfe.dll') then
       Result := False;
-
-  {Sandro Silva 2022-05-17 fim}
+  }
+  Result := False;
+  {Sandro Silva 2023-06-14 fim}
 end;
 
 procedure TForm1.VincularAssinaturaAC1Click(Sender: TObject);
