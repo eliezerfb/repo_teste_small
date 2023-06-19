@@ -11647,21 +11647,20 @@ end;
 
 procedure TForm1.Label_bola_receberClick(Sender: TObject);
 begin
-  //
   Form1.Image204Click(Sender);
-  //
+
   Form7.ibDataSet7.DisableControls;
-  //
+
   try
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.SelectSQL.Clear;
     Form7.ibDataSet7.SelectSQL.Add('select * from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
     Form7.ibDataSet7.Open;
-  except end;
-  //
+  except
+  end;
+
   Form7.ibDataSet7.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosReceber)+' contas para receber hoje.');
-  //
 end;
 
 procedure TForm1.Label_Bola_estoqueClick(Sender: TObject);

@@ -873,7 +873,7 @@ begin
   begin
     try
       sInstituicaoFinanceira := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
-                                                      ' Select INSTITUICAOFINANCEIRA From BANCOS '+
+                                                      ' Select Coalesce(INSTITUICAOFINANCEIRA,'''') From BANCOS '+
                                                       ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
     except
       sInstituicaoFinanceira := '';
@@ -973,14 +973,14 @@ begin
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.ComboBox1.Text := 'Unibanco';
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
-        Form26.CheckBox1.State := cbChecked
+        Form26.chkCNAB400.State := cbChecked
       else
-        Form26.CheckBox1.State := cbUnchecked;
+        Form26.chkCNAB400.State := cbUnchecked;
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB240','') = 'Sim' then
-        Form26.CheckBox2.State := cbChecked
+        Form26.chkCNAB240.State := cbChecked
       else
-        Form26.CheckBox2.State := cbUnchecked;
+        Form26.chkCNAB240.State := cbUnchecked;
 
       // Data atualizada com juros de mora
       if Mais1Ini.ReadString(Form1.sEscolhido,'Mora','Não') = 'Sim' then
@@ -1173,11 +1173,11 @@ begin
     Mais1Ini.WriteString(Form1.sEscolhido,'Livre',AllTrim(Form26.MaskEdit45.Text));  //     Campo livre
     Mais1Ini.WriteString(Form1.sEscolhido,'Mora','Não');
 
-    if Form26.CheckBox1.State = cbChecked then
+    if Form26.chkCNAB400.State = cbChecked then
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Sim')
     else
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Não');
-    if Form26.CheckBox2.State = cbChecked then
+    if Form26.chkCNAB240.State = cbChecked then
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Sim')
     else
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Não');
