@@ -1461,6 +1461,7 @@ type
     ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
     DSConsulta: TDataSource;
     ibqConsulta: TIBDataSet;
+    ibDataSet7FORMADEPAGAMENTO: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);

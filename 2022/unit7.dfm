@@ -12409,7 +12409,7 @@ object Form7: TForm7
       
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
-      '   NUMERONF, REGISTRO, NN, MOVIMENTO)'
+      '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO)'
       'values'
       
         '  (:HISTORICO, :PORTADOR, :DOCUMENTO, :NOME, :EMISSAO, :VENCIMEN' +
@@ -12417,7 +12417,7 @@ object Form7: TForm7
       
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
-      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO)')
+      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO)')
     RefreshSQL.Strings = (
       'Select '
       '  HISTORICO,'
@@ -12438,7 +12438,8 @@ object Form7: TForm7
       '  REGISTRO,'
       '  NN,'
       '  INSTITUICAOFINANCEIRA,'
-      '  MOVIMENTO'
+      '  MOVIMENTO,'
+      '  FORMADEPAGAMENTO'
       'from RECEBER '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -12465,7 +12466,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO,'
       '  NN = :NN,'
       '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA,'
-      '  MOVIMENTO = :MOVIMENTO'
+      '  MOVIMENTO = :MOVIMENTO,'
+      '  FORMADEPAGAMENTO = :FORMADEPAGAMENTO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -12613,6 +12615,13 @@ object Form7: TForm7
       Origin = 'RECEBER.NN'
       Visible = False
       Size = 10
+    end
+    object ibDataSet7FORMADEPAGAMENTO: TIBStringField
+      DisplayLabel = 'Forma de Pagamento'
+      FieldName = 'FORMADEPAGAMENTO'
+      Origin = 'RECEBER.FORMADEPAGAMENTO'
+      Visible = False
+      Size = 60
     end
   end
   object DataSource7: TDataSource
@@ -19837,6 +19846,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -21160,7 +21170,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21194,7 +21204,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21508,7 +21518,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21537,7 +21547,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

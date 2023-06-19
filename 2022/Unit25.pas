@@ -2757,6 +2757,8 @@ begin
   //Mauricio Parizotto 2023-06-16
   if sInstituicaoFinanceira <> '' then
     Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
+
+  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
     
   Form7.ibDataSet7.Post;
 end;
