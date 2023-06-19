@@ -99,11 +99,9 @@ object Form18: TForm18
       OnColEnter = DBGrid1ColEnter
       OnColExit = DBGrid1ColExit
       OnDrawDataCell = DBGrid1DrawDataCell
-      OnDrawColumnCell = DBGrid1DrawColumnCell
       OnEnter = DBGrid1Enter
       OnKeyDown = DBGrid1KeyDown
       OnKeyPress = DBGrid1KeyPress
-      OnKeyUp = DBGrid1KeyUp
     end
     object ComboBox1: TComboBox
       Left = 10
@@ -186,39 +184,5 @@ object Form18: TForm18
       Visible = False
       OnClick = CheckBox1Click
     end
-    object dblFormasDePagamento: TDBLookupComboBox
-      Left = 280
-      Top = 112
-      Width = 145
-      Height = 22
-      DataField = 'FORMADEPAGAMENTO'
-      DataSource = Form7.DataSource7
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'System'
-      Font.Style = [fsBold]
-      KeyField = 'FORMA'
-      ListField = 'FORMA'
-      ListSource = DSFORMADEPAGAMENTO
-      ParentFont = False
-      TabOrder = 6
-      Visible = False
-      OnEnter = dblFormasDePagamentoEnter
-      OnKeyUp = dblFormasDePagamentoKeyUp
-    end
-  end
-  object DSFORMADEPAGAMENTO: TDataSource
-    DataSet = IBQFORMASDEPAGAMENTO
-    Left = 464
-    Top = 40
-  end
-  object IBQFORMASDEPAGAMENTO: TIBQuery
-    Database = Form7.IBDatabase1
-    Transaction = Form7.IBTransaction1
-    BufferChunks = 1000
-    CachedUpdates = False
-    Left = 424
-    Top = 40
   end
 end

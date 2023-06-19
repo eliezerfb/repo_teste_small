@@ -172,7 +172,7 @@ begin
   // inclusive mudar o valor das suas propriedades
   Form9.Height := 5;
 
-  for I := 1 to Form7.iCampos do
+  for I := 1 to Form7.iCampos do aqui
   begin
     try
       TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
@@ -185,6 +185,14 @@ begin
       }
       TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := Form7.ArquivoAberto.Fields[I-1].Visible;
       {Sandro Silva 2023-01-04 fim}
+
+      {Sandro Silva 2023-06-19 inicio}
+      if Form7.sModulo = 'RECEBER' then
+      begin
+        if Form7.ArquivoAberto.Fields[I-1].FieldName = 'FORMADEPAGAMENTO' then
+          TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := False;
+      end;
+      {Sandro Silva 2023-06-19 fim}
 
       if Form9.Height < Screen.Height then
         Form9.Height := Form9.Height + 25;

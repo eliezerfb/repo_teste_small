@@ -9614,7 +9614,16 @@ begin
       Form10.Close;
   except
   end;
-  
+
+  {Sandro Silva 2023-06-19 inicio}
+  if Form7.sModulo <> 'VENDA' then
+  begin
+    Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
+    Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
+    Form7.ibDataSet7PORTADOR.Index := 12;
+  end;
+  {Sandro Silva 2023-06-19 fim}
+
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
@@ -10533,6 +10542,11 @@ begin
         Form7.ibDataSet7VENCIMENTO.Visible := True;
         Form7.ibDataSet7VALOR_DUPL.Visible := True;
         Form7.ibDataSet7NOME.Visible       := True;
+        {Sandro Silva 2023-06-19 inicio}
+        Form7.ibDataSet7FORMADEPAGAMENTO.Visible := True; // Sandro Silva 2023-06-16
+        Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 10;
+        Form7.ibDataSet7FORMADEPAGAMENTO.Index := 12;
+        {Sandro Silva 2023-06-16 fim}
 
         // Liga os dbGrids aos dataSurces
         dbGrid2.Datasource     := DataSource16;
