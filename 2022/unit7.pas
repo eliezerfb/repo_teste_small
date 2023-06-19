@@ -2061,7 +2061,6 @@ type
     procedure RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
     procedure DuplicatestaNFe1Click(Sender: TObject);
     procedure PrvisualizarDANFE1Click(Sender: TObject);
-    procedure ibDataSet35DESCRICAOChange(Sender: TField);
     procedure RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
       const Text: String);
@@ -7502,20 +7501,14 @@ function ObservacaoOperacao(pP1:Boolean):Boolean;
 var
   sRef : String;
 begin
-  //
   // Relacionado a operacao
-  //
   try
-    //
     // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução Não deve mudar
     if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolução Não deve mudar
     begin
-      //
       if pP1 then
       begin
-        //
         // Quando o parametro pP1 e true se nao contem limpa tudo e poe
-        //
         if (Copy(Form7.ibDataSet14OBS.AsString,1,24) = 'PERMITE O APROVEITAMENTO') then
         begin
           if (Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') then
@@ -7527,7 +7520,6 @@ begin
         begin
           if Pos(Alltrim(Form7.ibDataSet14OBS.AsString),Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
           begin
-            //
             sRef := '';
             if Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,30) = 'NF REFERENTE AO CUPOM FISCAL: ' then
               sRef := Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,36+11);
@@ -7535,16 +7527,14 @@ begin
               sRef := Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,29);
             if Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,27) = 'NF REFERENTE AO ORÇAMENTO: ' then
               sRef := Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,33);
-            //
+
             Form7.ibDataSet15COMPLEMENTO.AsString := sRef + AllTrim(Form7.ibDataSet14OBS.AsString);
-            //
+
             Form12.sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
-            //
           end;
         end;
       end else
       begin
-        //
         if (Copy(Form7.ibDataSet14OBS.AsString,1,24) = 'PERMITE O APROVEITAMENTO') then
         begin
           if (Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') then
@@ -7554,7 +7544,6 @@ begin
           end;
         end else
         begin
-          //
           if Pos(AllTrim(Form7.ibDataSet14OBS.AsString),Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
           begin
             //
@@ -7565,7 +7554,7 @@ begin
                 Form7.ibDataSet15COMPLEMENTO.AsString := '';
               end;
             end;
-            //
+
             if (Pos( LimpaLEtras(AllTrim(Form7.ibDataSet14OBS.AsString)), LimpaLetras(AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString)) ) = 0) then
             begin
               if (Pos(AllTrim(Form12.sObservacaoAntiga), Form7.ibDataSet15COMPLEMENTO.AsString) = 0) then
@@ -7574,80 +7563,62 @@ begin
               end else
               begin
                 if Pos(AllTrim(Form12.sObservacaoAntiga), AllTrim(Form7.ibDataSet14OBS.AsString)) = 0 then
-    //            if AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString) <> alltrim(Form12.sObservacaoAntiga) then
                 begin
                   Form7.ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,AllTrim(Form12.sObservacaoAntiga), AllTrim(Form7.ibDataSet14OBS.AsString));
                 end else
                 begin
                   Form7.ibDataSet15COMPLEMENTO.AsString := StringReplace(Form7.ibDataSet15COMPLEMENTO.AsString,AllTrim(Form12.sObservacaoAntiga),AllTrim(Form7.ibDataSet14OBS.AsString),[rfIgnoreCase]);
-    //              Form7.ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,AllTrim(Form12.sObservacaoAntiga), '');
-    //              Form7.ibDataSet15COMPLEMENTO.AsString := AllTrim(Form7.ibDataSet14OBS.AsString);
                 end;
               end;
             end;
-            //
+
             Form12.sObservacaoAntiga := AllTrim(Form7.ibDataSet14OBS.AsString);
-            //
           end;
         end;
       end;
     end;
   except
   end;
-  //
-  // Ok
-  //
+
   if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
   begin
-    //
     // Teste do PAF-ECF quando importa um cupom para NF
-    //
     if Pos( StrTran(ParamStr(1),'URB','') ,Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
     begin
       Form7.ibDataSet15COMPLEMENTO.AsString := 'MD-5: '+(StrTran(ParamStr(1),'URB',''))+ ' ' + AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString);
       Form12.DBMemo1.ReadOnly := True;
     end;
   end;
-  //
+
   Result := True;
-  //
-end;     
+end;
 
 function Observacao2(pP1:Boolean):Boolean;
 begin
-  //
   if (pP1) then
   begin
-    //
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24COMPLEMENTO.AsString := Form7.ibDataSet14OBS.AsString;
-    //
   end else
   begin
-    //
     if Pos(Alltrim(Form7.ibDataSet14OBS.AsString),Form7.ibDataSet24COMPLEMENTO.AsString) = 0 then
     begin
       Form7.ibDataSet24.Edit;
       Form7.ibDataSet24COMPLEMENTO.AsString := AllTrim(Form7.ibDataSet24COMPLEMENTO.AsString) + ' ' + Form7.ibDataSet14OBS.AsString;
     end;
-    //
   end;
-  //
+
   if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
   begin
-    //
     // Teste do PAF-ECF quando importa um cupom para NF
-    //
     if Pos( StrTran(ParamStr(1),'URB','') ,Form7.ibDataSet24COMPLEMENTO.AsString) = 0 then
     begin
       Form7.ibDataSet24COMPLEMENTO.AsString := 'MD-5: '+(StrTran(ParamStr(1),'URB',''))+ ' ' + AllTrim(Form7.ibDataSet24COMPLEMENTO.AsString);
     end;
   end;
-  //
+
   Result := True;
-  //
 end;
-//  
 
 procedure TForm7.Sair1Click(Sender: TObject);
 begin
@@ -18826,7 +18797,7 @@ begin
               Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
               if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
                 Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
-              //
+              
               // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
               if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (Form7.Tag = 999) then // Devolucao Devolução
               begin
@@ -19123,7 +19094,6 @@ begin
                 Form7.ibDataSet16CST_IPI.AsString     := Form7.ibDataSet4CST_IPI.AsString;   // Cst do IPI no estoque
                 Form7.ibDataSet16CST_ICMS.AsString    := Form7.ibDataSet4CST.AsString;       // CST do ICMS no estoque
 
-                {Sandro Silva 2022-11-11 inicio}
                 try
                   if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then
                   begin
@@ -19134,20 +19104,11 @@ begin
                 except
 
                 end;
+                
                 if ItemNFe <> nil then
                   FreeAndNil(ItemNFe);
-                {Sandro Silva 2022-11-11 fim}
-
-                {Sandro Silva 2022-09-28 inicio
-                if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
-                begin
-                  Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
-                end else
-                begin
-                  Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
-                end;
-                }
               end;
+
               {Sandro Silva 2022-09-28 inicio}
               //Ficha 6273
               if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
@@ -19158,7 +19119,28 @@ begin
                 Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
               end;
               {Sandro Silva 2022-09-28 fim}
-              //
+
+
+              {Mauricio Parizotto 2023-06-19 inicio}
+              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao
+              begin
+                //Só preenche se campos estiverem em branco
+                try
+                  if (Form7.ibDataSet13.FieldByName('CRT').AsString = '1')
+                    and (Form7.ibDataSet16CSOSN.AsString = '') then
+                  begin
+                    Form7.ibDataSet16CSOSN.AsString := CampoICMporNatureza('CSOSN',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
+                  end;
+
+                  if (Form7.ibDataSet13.FieldByName('CRT').AsString <> '1')
+                    and (Form7.ibDataSet16CST_ICMS.AsString = '') then
+                  begin
+                    Form7.ibDataSet16CST_ICMS.AsString := CampoICMporNatureza('CST',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
+                  end;
+                except
+                end;
+              end;
+              {Mauricio Parizotto 2023-06-19 fim}
             except
               Form7.ibDataSet16.Edit;
               Form7.ibDataSet16IPI.AsFloat      := 0;
@@ -19167,7 +19149,7 @@ begin
               Form7.ibDataSet16ISS.AsFloat      := 0;
               Form7.ibDataSet16ICM.AsFloat      := 0;
             end;
-            //
+
             if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
             begin
               if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
@@ -32060,7 +32042,6 @@ end;
 procedure TForm7.DevolverNF1Click(Sender: TObject);
 begin
   try
-    //
     Form1.Image201Click(Form1.Image201);
     Form7.Image101Click(Form7.Image201);
 
@@ -32068,20 +32049,18 @@ begin
     Form7.ibDataSet2.Selectsql.Clear;
     Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');  //
     Form7.ibDataSet2.Open;
-    //
+
     Form7.ibDataSet15CLIENTE.AsString     := Form7.ibDataSet2NOME.AsString;
     Form7.ibDataSet15DESCONTO.AsFloat     := Form7.ibDataSet24DESCONTO.AsFloat;
     Form7.ibDataSet15COMPLEMENTO.AsString := 'ID da NF-e referenciada:' + Form7.ibDataSet24NFEID.AsString;
-    //
-  //  Form7.ibDataSet14.DisableControls;
+
     Form7.ibDataSet14.Close;
     Form7.ibDataSet14.SelectSQL.Clear;
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
     Form7.ibDataSet14.Open;
-  //  Form7.ibDataSet14.EnableControls;
-    //
+
     Form7.ibDataSet14.Locate('NOME','DEVOLU',[loCaseInsensitive, loPartialKey]);
-    //
+
     if pos('DEVOLU',UpperCase(Form7.ibDataSet14NOME.AsString)) = 0  then
     begin
       Form7.ibDataSet14.Append;
@@ -32089,7 +32068,7 @@ begin
       Form7.ibDataSet14NOME.AsString := 'Devolução';
       Form7.ibDataSet14.Post;
     end;
-    //
+
     Form12.Edit2.Text := '4-Devolução de mercadoria';
     Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
     Form7.ibDataSet15FINNFE.AsString   := '4';
@@ -32109,26 +32088,21 @@ begin
 
       Application.ProcessMessages; // Sandro Silva 2023-05-09
 
-      //
       Form7.ibDataSet23.First;
-      //
+
       while not Form7.ibDataSet23.Eof do
       begin
-
         Form12.vNotaFiscal.Calculando := True; // Sandro Silva 2023-05-08
 
-        //
         if AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '' then
         begin
-          //
           Form7.ibDataSet4.Close;
           Form7.ibDataSet4.Selectsql.Clear;
           Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
           Form7.ibDataSet4.Open;
-          //
+
           if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
           begin
-            //
             Form7.ibDataSet16.Append;
             Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
             Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
@@ -32136,9 +32110,8 @@ begin
             Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
             Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
             Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
-            //
+
             // Acerta os tributos e o CFOP
-            //
             Form1.bFlag := True;
             Form7.sModulo                       := 'VENDA';
             Form7.ibDataSet16DESCRICAO.AsString := Form7.IbDataSet23DESCRICAO.AsString;
@@ -32166,13 +32139,10 @@ begin
             Form7.ibDataSet16VBCFCPST.AsFloat   := Form7.ibDataSet23VBCFCPST.AsFloat;
             Form7.ibDataSet16PFCPST.AsFloat     := Form7.ibDataSet23PFCPST.AsFloat;
             Form7.ibDataSet16VFCPST.AsFloat     := Form7.ibDataSet23VFCPST.AsFloat;
-
           end;
-          //
         end;
-        //
+
         Form7.ibDataSet23.Next;
-        //
       end;
     except
     end;
@@ -32181,13 +32151,13 @@ begin
     //Form7.ibDataSet23.EnableControls; // Sandro Silva 2023-05-09
 
     Form7.Tag := 0;
-    //
+
     Form7.sModulo := 'VENDA';
     Form7.ibDataSet16.Edit;
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'OS';
     Form7.ibDataSet16.Edit;
-    //
+
     Form7.ibDataSet16.EnableControls;
     Form7.ibDataSet16.MoveBy(-1);
     Form7.ibDataSet16.MoveBy(1);
@@ -32206,7 +32176,6 @@ begin
     Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
     Form7.ibDataSet2.Open;
     {Sandro Silva 2023-05-15 fim}
-
   finally
 
   end;
@@ -32216,21 +32185,18 @@ end;
 
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Relatório de produtos monofásicos (NF-e)';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.DuplicatestaNFe1Click(Sender: TObject);
 var
-  //
   sDesVetor : array[0..999] of String;
 //  sCodVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
@@ -32238,9 +32204,7 @@ var
   //
   vCli, vOpe : String;
   I, J : Integer;
-  //
 begin
-  //
   vCli := Form7.ibDataSet15CLIENTE.AsString;
   vOpe := Form7.ibDataSet15OPERACAO.AsString;
   //
@@ -32278,7 +32242,6 @@ begin
   //
   Form7.sModulo := 'VENDA';
   Image106Click(Sender);
-  //
 end;
 
 function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
@@ -32387,11 +32350,6 @@ begin
     IBQuery.SQL.Add('where NOME = ' + QuotedStr(Operacao));
 
   IBQuery.Open;
-end;
-
-procedure TForm7.ibDataSet35DESCRICAOChange(Sender: TField);
-begin
-////
 end;
 
 function TForm7.PermiteValidarSchema(DataSet: TDataSet): Boolean;

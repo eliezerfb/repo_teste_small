@@ -58,18 +58,6 @@ implementation
 
 uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida;
 
-{Sandro Silva 2022-11-11 inicio
-procedure AtualizaItens001CSOSN(sCSOSN: String);
-begin
-
-  if not (Form7.ibDataSet16.State in [dsEdit, dsInsert]) then
-    Form7.ibDataSet16.Edit;
-  Form7.ibDataSet16CSOSN.AsString := sCSOSN;
-
-end;
-{Sandro Silva 2022-11-11 fim}
-
-
 
 function GeraXmlNFe: String;
 var
