@@ -75,7 +75,6 @@ uses
   uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas',
   uNotaFiscalEletronicaCalc in 'uNotaFiscalEletronicaCalc.pas',
   uImportaNFe in 'uImportaNFe.pas',
-  uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
   uRetornaBuildEXE in 'units\uRetornaBuildEXE.pas',
   uIRetornaEmailsPessoa in 'interfaces\uIRetornaEmailsPessoa.pas',
@@ -105,7 +104,21 @@ uses
   uValidaRecursosDelphi7 in '..\..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
-  uConectaBancoCommerce in 'uConectaBancoCommerce.pas';
+  uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
+  uICodBarrasPesavel in '..\..\unit_compartilhada\interfaces\uICodBarrasPesavel.pas',
+  uCodBarrasPesavel in '..\..\unit_compartilhada\uCodBarrasPesavel.pas',
+  uArquivoDATINFPadrao in '..\..\unit_compartilhada\uArquivoDATINFPadrao.pas',
+  uArquivosDAT in '..\..\unit_compartilhada\uArquivosDAT.pas',
+  uSectionDATPadrao in '..\..\unit_compartilhada\uSectionDATPadrao.pas',
+  uSectionGeralDAT in '..\..\unit_compartilhada\uSectionGeralDAT.pas',
+  uSectionGeralUsuarioINF in '..\..\unit_compartilhada\uSectionGeralUsuarioINF.pas',
+  uSectionUsoINF in '..\..\unit_compartilhada\uSectionUsoINF.pas',
+  uUsuarioINF in '..\..\unit_compartilhada\uUsuarioINF.pas',
+  uEstoqueDAT in '..\..\unit_compartilhada\uEstoqueDAT.pas',
+  uSmallConsts in '..\..\unit_compartilhada\uSmallConsts.pas',
+  uSmallComINF in '..\..\unit_compartilhada\uSmallComINF.pas',
+  uFrenteINI in '..\..\unit_compartilhada\uFrenteINI.pas',
+  uSectionFrentedeCaixaINI in '..\..\unit_compartilhada\uSectionFrentedeCaixaINI.pas';
 
 {$R *.RES}
 
