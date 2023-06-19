@@ -1762,7 +1762,7 @@ begin
         Form7.ibqConsulta.Close;
         Form7.ibqConsulta.SelectSQL.Text := ' Select * '+
                                             ' From CLIFOR'+
-                                            ' Where CLIFOR in (''Instituição financeira'',''Credenciadora de cartão'') '+
+                                            ' Where CLIFOR = ''Instituição financeira'' '+
                                             ' Order by NOME';
         Form7.ibqConsulta.Open;
 
