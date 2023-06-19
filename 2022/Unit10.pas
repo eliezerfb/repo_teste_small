@@ -1753,6 +1753,7 @@ begin
         dBGrid3.Width      := Width;
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
       end;
 
       //Mauricio Parizotto 2023-06-16
@@ -1885,6 +1886,7 @@ begin
         begin
           DataSource.DataSet.Edit;
           DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Form10.dBGrid3.Visible := False;
           Exit;
         end;
       end;
@@ -1900,6 +1902,8 @@ begin
         begin
           DataSource.DataSet.Edit;
           DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Form10.dBGrid3.Visible := False;
+
           Exit;
         end;
       end;
@@ -3114,6 +3118,9 @@ begin
   Image203.Transparent := False;
   Image205.Transparent := False;
   Image204.Transparent := False;
+
+  //Mauricio Parizotto 2023-06-19
+  DBGrid3.TabStop := False;
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
