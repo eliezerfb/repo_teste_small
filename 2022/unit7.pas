@@ -27,6 +27,7 @@ uses
 const SIMPLES_NACIONAL = '1';
 const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
+const CAMPO_SOMENTE_LEITURA__NO_GRID = 10;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 function Commitatudo(RefazSelect:Boolean): Boolean;
@@ -9393,9 +9394,9 @@ begin
 
   //Mauricio Parizotto 2023-05-29
   //Campos Somente Leitura ao editar pelo Grid
-  ibDataSet7INSTITUICAOFINANCEIRA.Tag := 10;
-  ibDataSet7NOME.Tag := 10;
-  ibDataSet7FORMADEPAGAMENTO := 10;
+  ibDataSet7INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
+  ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
+  ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
   Image202.Transparent := False;

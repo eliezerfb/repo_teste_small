@@ -4264,7 +4264,7 @@ begin
 
               //Mauricio Parizotto 2023-05-29
               //Se foi setado para ReadOnly para o grid remove para editar pela tela
-              if Form7.ArquivoAberto.Fields[I - 1].Tag = 10 then
+              if Form7.ArquivoAberto.Fields[I - 1].Tag = CAMPO_SOMENTE_LEITURA__NO_GRID then
                 Form7.ArquivoAberto.Fields[I - 1].ReadOnly := False;
 
               try

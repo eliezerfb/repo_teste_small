@@ -823,8 +823,8 @@ begin
           slPickList.Add('15-Boleto Bancário');
           slPickList.Add('16-Depósito Bancário');
           slPickList.Add('17-Pagamento Instantâneo (PIX)');
-          slPickList.Add('18-Transferência bancária, Carteira Digital');
-          slPickList.Add('19-Programa de fidelidade, Cashback, Crédito Virtual');
+          slPickList.Add('18-Transfer.bancária, Carteira Digital');
+          slPickList.Add('19-Progr.de fidelidade, Cashback, Crédito Virtual');
           slPickList.Add('99-Outros');
 
           //colocar a lista na coluna correta
