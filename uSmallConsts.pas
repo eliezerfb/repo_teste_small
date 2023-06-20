@@ -10,6 +10,8 @@ const
   _cNao = 'Não';
   _cOKUpper  = 'OK';
   _cOkCamel  = 'Ok';
+  _cMedidaKU = 'KU';
+  _cMedidaKG = 'KG';
 
   //Incrementar a cada alteração do termo
   _cVersaoTermoUso = 1;
@@ -29,6 +31,10 @@ const
   _cSectionGeralUsuario           = 'GERAL';
   _cIdentGeralUsuMarketPlaceAtivo = 'MARKETPLACE ATIVO';
   _cIdentGeralUsuMobileAtivo      = 'MOBILE ATIVO';
+
+  //SECTION Frente de Caixa (FRENTE.INI)
+  _cSectionFrenteCaixa = 'Frente de Caixa';
+  _cIdentFrenteCaixaTipoEtiqueta = 'Tipo etiqueta';
 
 implementation
 
