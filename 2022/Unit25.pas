@@ -50,6 +50,7 @@ type
     procedure btnCNAB240Click(Sender: TObject);
   private
     { Private declarations }
+    sInstituicaoFinanceira : string;
   public
     { Public declarations }
     sNossoNum : String;
@@ -65,7 +66,7 @@ var
 
 implementation
 
-uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40;
+uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados;
 
 {$R *.DFM}
 
@@ -86,20 +87,19 @@ var
   rRect: Trect;
   jpgTemp: String; // Sandro Silva 2022-12-28
 begin
-  //
   try
     jpgTemp := 'boleto_temp_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzz', Now) + '.tmp'; // Sandro Silva 2022-12-28
-    //
+
     Form25.Image2.Width  := (Form25.Image1.Width  + 40) * 1;
     Form25.Image2.Height := (Form25.Image1.Height + 40) * 1;
-    //
+
     rRect.Top    := 20;
     rRect.Left   := 20;
     rRect.Bottom := rRect.Top  + Form25.Image1.Picture.Graphic.Height;
     rRect.Right  := rRect.Left + Form25.Image1.Picture.Graphic.Width;
-    //
+
     Form25.Image2.Canvas.StretchDraw(rRect, Form25.Image1.Picture.Graphic);
-    //
+
     jp := TJPEGImage.Create;
     jp.Assign(Form25.Image2.Picture.Bitmap);
     jp.CompressionQuality := 100;
@@ -113,12 +113,10 @@ begin
       DeleteFile(FileNameJpg);
 
     RenameFile(jpgTemp, FileNameJpg); // Sandro Silva 2022-12-28
-    //
   except
   end;
-  //
+
   Result := True;
-  //
 end;
 
 function Altura(MM : Double) : Longint;
@@ -126,7 +124,6 @@ var
   mmPointY : Real;
   PageSize, OffSetUL : TPoint;
 begin
-  //
   if Form25.Tag = 0 then  // Impressão na impressora
   begin
     mmPointY := Printer.PageHeight / GetDeviceCaps(Printer.Handle,VERTSIZE);
@@ -136,11 +133,8 @@ begin
     Result := round(Result * 1.45);
   end else
   begin
-    //
     // Em PDF
-    //
     Result := Round(MM  * 5);
-    //
   end;
 end;
 
@@ -159,11 +153,8 @@ begin
     Result := round(Result * 1.1);
   end else
   begin
-    //
     // Em PDF
-    //
     Result := Round(MM * 3.8);
-    //
   end;
 end;
 
@@ -184,13 +175,12 @@ var
   hDMode : THandle;
   PDMode : PDEVMODE;
 begin
-  //
   Form7.ibDataSet11.Active := True;
   Form7.ibDataSet11.First;
-  //
+
   while (AllTrim(Copy(Form1.sEscolhido+Replicate(' ',40),23,40)) <> AllTrim(Form7.ibDataSet11NOME.AsString)) and (not Form7.ibDataSet11.EOF) do
     Form7.ibDataSet11.Next;
-  //
+
   if AllTrim(Form26.MaskEdit42.Text) = '' then
   begin
     if Pos('AILOS',UpperCase(Form7.ibDataSet11NOME.AsString))    <> 0 then Form26.MaskEdit42.Text := '085';
@@ -206,17 +196,15 @@ begin
     if Pos('BANRISUL',UpperCase(Form7.ibDataSet11NOME.AsString)) <> 0 then Form26.MaskEdit42.Text := '041';
     if Pos('SANTANDER',UpperCase(Form7.ibDataSet11NOME.AsString))<> 0 then Form26.MaskEdit42.Text := '033';
   end;
-  //
+
   try
-    //
     // Nosso Número
-    //
     Form7.ibDataSet7.Edit;
     if AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then
     begin
       Form7.ibDataSet7DOCUMENTO.AsString := StrZero(Form7.ibDataSet7.Recno,6,0)+'0';
     end;
-    //
+
     if Form7.ibDataSet7NN.AsString = '' then
     begin
       Form7.ibDataSet99.Close;
@@ -225,31 +213,27 @@ begin
       Form7.ibDataset99.Open;
       Form7.ibDataSet7.Edit;
       Form7.ibDataSet7NN.AsString := strZero(StrToInt(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
-      //
+
       Form7.ibDataSet7.Post;
       Form7.ibDataset99.Close;
-      //
     end;
-    //
+
     if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
-      //
       // Data atualizada com juros de mora
-      //
       Form26.MaskEdit49.Text := StrZero( DATE - StrtoDate('01/01/'+InttoStr(Year(Date))),3,0)+Right(IntToStr(Year(DAte)),2);
-      //
     end else
     begin
       Form26.MaskEdit49.Text := StrZero( Form7.ibDataSet7VENCIMENTO.AsDAteTime - StrtoDate('01/01/'+InttoStr(Year(Date))),3,0)+Right(IntToStr(Year(DAte)),2);
     end;
-    //
+
     Form26.MaskEdit47.Text := Form7.ibDataSet7NN.AsString;
     Form26.MaskEdit43.Text := Form26.MaskEdit43.Text + Modulo_11_febraban(LimpaNumero(Form26.MaskEdit43.Text));  // Modulo 11
     Form25.sNumero         := '';
-    //
+
     if Length(Form26.MaskEdit45.Text) <> 25 then
       Form26.MaskEdit45.Text := '0000000000000000000000000';
-    //
+    
     if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
       Form25.sNumero := LimpaNumero(
@@ -273,17 +257,14 @@ begin
     // --------------------------------------------------- //
     if bP1 then
     begin
-      //
       Printer.PrinterIndex := Printer.PrinterIndex;
       Printer.GetPrinter(Device, Driver, Port, hDMode);
-      //
+
       if hDMode <> 0 then begin
         pDMode := GlobalLock(hDMode);
         if pDMode <> nil then
         begin
-          //
           // papel A4
-          //
           pDMode^.dmFields := pDMode^.dmFields or dm_PaperSize;
           pDMode^.dmPaperSize := DMPAPER_A4;
           //
@@ -296,12 +277,10 @@ begin
           //
           Printer.Title              := 'Bloqueto de cobrança bancária';  // Este título é visto no spoool da impressora
           Printer.BeginDoc;                                // Inicia o documento de impressão
-          //
         end;
       end;
-      //
+
       Impressao        := Printer.Canvas;
-      //
     end else
     begin
       Form25.Image1.Height := 1039;
@@ -309,18 +288,15 @@ begin
       Impressao.Pen.Color  := clWhite;
       Impressao.Rectangle(0,0,Form25.Image1.Width,1200);
     end;
-    //
-    //
+
     Impressao.Pen.Color   := clBlack;
     Impressao.Pen.Width   := 1;                 // Largura da Linha + (J * 40 * Tamanho)
-    //
-    //
+
     for J := 1 to 2 do
     begin
-      //
       Impressao.Font.Name   := 'Times New Roman';      // Fonte
       Impressao.Font.sTyle  := [fsBold];             // Estilo da fonte
-      //
+
       if Form25.Tag = 0 then  // Impressão na impressora
       begin
         if J = 1 then iVia := 6 else ivia := 105 + 4;
@@ -330,8 +306,7 @@ begin
         if J = 1 then iVia := 0 else ivia := 105;
         Impressao.Font.Size   := 12;             // Tamanho da Fonte
       end;
-      //
-      //
+
       Impressao.TextOut(largura(63),altura(6+iVia),
         Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
         '9'+                              // Moeda
@@ -360,26 +335,19 @@ begin
       Impressao.Font.Name   := 'Times New Roman';      // Fonte
       Impressao.Font.Size   := 12;          // Tamanho da Fonte
       Impressao.Font.sTyle  := [fsBold];    // Estilo da fonte
-      //
+
       sBanco := 'banco'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+'.bmp'; // banco001.bmp = Banco do Brasil; banco237.bmp = Bradesco
-      //
+
       if FileExists(sBanco) then
       begin
-        //
         Form25.Image7.Picture.LoadFromFile(sBanco);
-        //
-        //
-//        rRect.Bottom  := rRect.Top  + Altura(Form25.Image7.Picture.Graphic.Height div 5);
-//        rRect.Right   := rRect.Left + Largura(Round(Form25.Image7.Picture.Graphic.Width / 3.8));
-        //
+
         if Form25.Tag = 0 then  // Impressão na impressora
         begin
-          //
           rRect.Top     := Altura(iVia+3);
           rRect.Left    := Largura(1);
           rRect.Bottom  := rRect.Top  + (40 * Round(Printer.PageWidth / GetDeviceCaps(Printer.Handle,HORZSIZE) / 4));
           rRect.Right   := rRect.Left + (168 * Round(Printer.PageWidth / GetDeviceCaps(Printer.Handle,HORZSIZE) / 4));
-          //
         end else
         begin
           rRect.Top     := Altura(iVia+2);
@@ -387,18 +355,15 @@ begin
           rRect.Bottom  := rRect.Top  + Form25.Image7.Picture.Graphic.Height;
           rRect.Right   := rRect.Left + Form25.Image7.Picture.Graphic.Width;
         end;
-        //
+
         Impressao.StretchDraw(rRect,Form25.Image7.Picture.Graphic);
-        //                                                                 Form25.Image7.Picture.Graphic
       end else
       begin
-        //
         Impressao.TextOut(largura(-8+8),altura(5+iVia),Copy(AllTrim(Form7.ibDataSet11NOME.AsString)+Replicate(' ',26),1,26)); // Nome do banco
-        //
       end;
-      //
+
       Impressao.Font.Size   := 14;          // Tamanho da Fonte
-      //
+
       if Length(LimpaNumero(Form26.MaskEdit42.Text)) = 3 then
       begin
         Impressao.TextOut(largura(-8+58),altura(6+iVia),Copy(Form26.MaskEdit42.Text,1,3));   // Código do banco mais o dígito verificador
@@ -406,31 +371,31 @@ begin
       begin
         Impressao.TextOut(largura(-8-2+58),altura(6+iVia),Form26.MaskEdit42.Text);   // Código do banco mais o dígito verificador
       end;
-      //
+
       Impressao.Font.Size   := 8;          // Tamanho da Fonte
       Impressao.Font.sTyle  := [];         // Estilo da fonte
-      //
+
       Impressao.TextOut(largura(-8+009),altura(11+iVia),'Local de pagamento');
       Impressao.TextOut(largura(-8+151-8),altura(11+iVia),'Vencimento');
       Impressao.TextOut(largura(-8+009),altura(18+iVia),'Beneficiário');
       Impressao.TextOut(largura(-8+106-8),altura(18+iVia),'CNPJ/CPF');
       Impressao.TextOut(largura(-8+151-8),altura(18+iVia),'Agência/Código Beneficiário');
-      //
+
       Impressao.TextOut(largura(-8+009),altura(25+iVia),'Data do documento');
       Impressao.TextOut(largura(-8+037),altura(25+iVia),'Nr. do documento');
       Impressao.TextOut(largura(-8+068),altura(25+iVia),'Espécie doc.');
       Impressao.TextOut(largura(-8+088),altura(25+iVia),'Aceite');
       Impressao.TextOut(largura(-8+098),altura(25+iVia),'Data processamento');
       Impressao.TextOut(largura(-8+151-8),altura(25+iVia),'Nosso número');
-      //
+
       Impressao.TextOut(largura(-8+009),altura(32+iVia),'Uso do banco');
       Impressao.TextOut(largura(-8+037),altura(32+iVia),'Carteira');
       Impressao.TextOut(largura(-8+058),altura(32+iVia),'Espécie Moeda');
       Impressao.TextOut(largura(-8+078),altura(32+iVia),'Quantidade');
-      //
+
       Impressao.TextOut(largura(-8+116-8),altura(32+iVia),'Valor');
       Impressao.TextOut(largura(-8+151-8),altura(32+iVia),'(=)Valor do documento');
-      //
+
       if (J = 1) then
       begin
         Impressao.TextOut(largura(-8+009),altura(39+iVia),'Nome do Beneficiário/CPF/CNPJ/Endereço');
@@ -438,18 +403,18 @@ begin
       begin
         Impressao.TextOut(largura(-8+009),altura(39+iVia),'Instruções: (Todas as informações deste bloqueto são de exclusiva responsabilidade do Beneficiário)');
       end;
-      //
+
       Impressao.TextOut(largura(-8+151-8),altura(39+iVia),'(-)Desconto');
-      //
+
       Impressao.TextOut(largura(-8+151-8),altura(45+iVia),'(-)Outras deduções/Abatimento');
       Impressao.TextOut(largura(-8+151-8),altura(51+iVia),'(+)Mora/Multa/Juros');
       Impressao.TextOut(largura(-8+151-8),altura(57+iVia),'(+)Outros acrécimos');
-      //
+
       Impressao.TextOut(largura(-8+009),altura(63+iVia),'Nome do Pagador/CPF/CNPJ/Endereço');
       Impressao.TextOut(largura(-8+151-8),altura(63+iVia),'(=)Valor cobrado');
       Impressao.TextOut(largura(-8+009),altura(78+iVia),'Sacador Avalista');
       Impressao.TextOut(largura(-8+151-8),altura(70+iVia),'Cod. Baixa:');
-      //
+
       if Form25.Tag = 0 then  // Impressão na impressora
       begin
         if J = 1 then Impressao.TextOut(largura(-8+135-10+9),altura(78+iVia),'Autenticação mecânica/RECIBO DO Pagador');
@@ -459,16 +424,14 @@ begin
         if J = 1 then Impressao.TextOut(largura(-8+135-20+10),altura(78+iVia),'Autenticação mecânica/RECIBO DO Pagador');
         if J = 2 then Impressao.TextOut(largura(-8+135-20),altura(78+iVia),'Autenticação mecânica/FICHA DE COMPENSAÇÃO');
       end;
-      //
+
       // Preenchimento
-      //
       Impressao.Font.Name   := 'Courier New';  // Fonte
       Impressao.Font.Size   := 11;             // Tamanho da Fonte
-      //
+
       Impressao.TextOut(largura(-8+009),altura(14+iVia),AllTrim(Form25.Edit1.Text));                        // Local de pagamento
-      //
+
       // Data atualizada com juros de mora
-      //
       if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
       begin
         Impressao.TextOut(largura(-8+151-8),altura(14+iVia),Right(Replicate(' ',30)+DateToStr(DATE),16)); // Vencimento
@@ -476,25 +439,22 @@ begin
       begin
         Impressao.TextOut(largura(-8+151-8),altura(14+iVia),Right(Replicate(' ',30)+Form7.ibDataSet7VENCIMENTO.AsString,16)); // Vencimento
       end;
-      //
+
       Impressao.TextOut(largura(-8+009),altura(21+iVia),AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35))); // Beneficiário
       Impressao.TextOut(largura(-8+98),altura(21+iVia),AllTrim(Form7.ibDataSet13CGC.AsString));        // CNPJ
-      //
+
       // Código do Beneficiário
-      //
       Impressao.TextOut(largura(-8+151-8),altura(21+iVia),Right(Replicate(' ',30)+AllTrim(Form26.MaskEdit44.Text)+'/'+AllTrim(Form26.MaskEdit46.Text),16));
-      //
+
       Impressao.TextOut(largura(-8+009),altura(28+iVia),Form7.ibDataSet7EMISSAO.AsString); // Data do documento
       Impressao.TextOut(largura(-8+040),altura(28+iVia),AllTrim(Form7.ibDataset7DOCUMENTO.AsString));
       Impressao.TextOut(largura(-8+073),altura(28+iVia),'DM');            // DM
       Impressao.TextOut(largura(-8+090),altura(28+iVia),'N');             // N
       Impressao.TextOut(largura(-8+105),altura(28+iVia),Form7.ibDataSet7EMISSAO.AsString); // Data do processamento
-      //
+
       // Nosso Número / Cód. Documento
-      //
       if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then // SANTANDER
       begin
-        //
         // Módulo 11 para cálculo de dígito verificador de agência, código de Beneficiário e nosso-número
         // do banco do brasil conforme http://www.bb.com.br/appbb/portal/emp/ep/srv/CobrancaIntegrBB.jsp#6
         //
@@ -503,73 +463,56 @@ begin
         Impressao.Font.Size   := 10;             // Tamanho da Fonte
         Impressao.TextOut(largura(-8+151-6),altura(28+iVia),Right(Replicate(' ',30)+Form25.sNossoNum,13+3));
         Impressao.Font.Size   := 11;             // Tamanho da Fonte
-        //
       end else
       begin
         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '001' then // Banco do Brasil
         begin
-          //
           // Módulo 11 para cálculo de dígito verificador de agência, código de Beneficiário e nosso-número
           // do banco do brasil conforme http://www.bb.com.br/appbb/portal/emp/ep/srv/CobrancaIntegrBB.jsp#6
-          //
           Form25.sNossoNum := Copy(Right('000000'+LimpaNumero(Form26.MaskEdit50.Text),7),1,7)+Copy(StrZero(StrToFloat('0'+LimpaNumero(Form7.ibDataSet7NN.AsString)),10,0),1,010);
-          //
+
           Impressao.Font.Size   := 10;             // Tamanho da Fonte
           Impressao.TextOut(largura(-8+151-6),altura(28+iVia), Right(Replicate(' ',30)+Form25.sNossoNum,17));
           Impressao.Font.Size   := 11;             // Tamanho da Fonte
-          //
         end else
         begin
-          //
           if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '341' then // Itaú ITAU
           begin
-            //
             Form25.sNossoNum := AllTrim(LimpaNumero(Form26.MaskEdit43.Text)) + '/'
               + StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),8,0) +'-'+
               Modulo_10(Copy(Form26.MaskEdit44.Text+'0000',1,4)+Copy(Form26.MaskEdit46.Text+'00000',1,5)+Copy(Form26.MaskEdit43.Text+'000',1,3)+Right('00000000'+Form26.MaskEdit47.Text,8));
             Impressao.TextOut(largura(-8+151-8),altura(28+iVia),Form25.sNossoNum);
-            //
-            //
           end else
           begin
-            //
             if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237' then // BRADESCO
             begin
-              //
               Form25.sNossoNum := AllTrim(LimpaNumero(Form26.MaskEdit43.Text)) + '/' + '0'+ Form26.MaskEdit47.Text + '-' + Modulo_11_bradesco(LimpaNumero(Form26.MaskEdit43.Text)+'0'+LimpaNumero(Form26.MaskEdit47.Text));
               Impressao.TextOut(largura(-8+151-8),altura(28+iVia),Form25.sNossoNum);
-              //
             end else
             begin
-              //
               if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
               begin
-                //
                 Form25.sNossoNum := (StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)) +'-'+
                   Modulo_Duplo_Digito_Banrisul((StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)));
                 Impressao.TextOut(largura(-8+151-8),altura(28+iVia),Right(Replicate(' ',30)+Form25.sNossoNum,16));
-                //
               end else
               begin
                 if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104' then // CAIXA
                 begin
-                  //
                   Form25.sNossoNum := AllTrim(LimpaNumero(Form26.MaskEdit43.Text)) + '/'
                     + StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),15,0) +'-'+
                     Modulo_11((
                       StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit43.Text)),2,0)+
                       StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),15,0)
                       ));
-                  //
+
                   Impressao.Font.Size   := 9;             // Tamanho da Fonte
                   Impressao.TextOut(largura(-8+151-8)+4,altura(28+iVia), Right(Replicate(' ',30)+Form25.sNossoNum,20));
                   Impressao.Font.Size   := 11;             // Tamanho da Fonte
-                  //
                 end else
                 begin
                   if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then // SICOOB
                   begin
-                    //
                     Form25.sNossoNum := Right(Replicate(' ',30)+
                       StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),7,0)+'-'+
                       Modulo_sicoob(
@@ -577,58 +520,41 @@ begin
                         StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),10,0)+
                         StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),7,0))
                         ,16);
-                    //
+
                     Impressao.TextOut(largura(-8+151-8),altura(28+iVia), Right(Replicate(' ',30)+Form25.sNossoNum,16));
-                    //
                   end else
                   begin
-                    //
                     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then // SICREDI
                     begin
-                      //
-                      // AA/BXXXXX-D
-                      //
-                      //
                       Form25.sNossoNum := Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'/2'+Copy(Form7.ibDataSet7NN.AsString,6,5)+'-'+Modulo_11(LimpaNumero(Form26.MaskEdit44.Text)+LimpaNumero(Form26.MaskEdit46.Text)+Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'2'+Right(StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),15,0),5));
-                      //
+
                       Impressao.TextOut(largura(-8+151-8),altura(28+iVia), Right(Replicate(' ',30)+Form25.sNossoNum,16));
-                      //
                     end else
                     begin
                       if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '085' then // AILOS
                       begin
-                        //
-                        // AA/BXXXXX-D
-                        //
-                        //
                         Form25.sNossoNum := Right('00000000'+LimpaNumero(Form26.MaskEdit46.Text),8) + Right('00000000'+LimpaNumero(Form26.MaskEdit47.Text),9);
-                        //
+
                         Impressao.Font.Size   := 10;             // Tamanho da Fonte
                         Impressao.TextOut(largura(-8+151-6),altura(28+iVia), Right(Replicate(' ',30)+Form25.sNossoNum,17));
                         Impressao.Font.Size   := 11;             // Tamanho da Fonte
-                        //
                       end else
                       begin
-                        //
                         Form25.sNossoNum := (AllTrim(LimpaNumero(Form26.MaskEdit43.Text)) + '/'
                         + (StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)) +'-'+
                         Modulo_11((StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0))));
-                        //
+
                         Impressao.TextOut(largura(-8+151-8),altura(28+iVia),Right(Replicate(' ',30)+Form25.sNossoNum,16));
-                        //
                       end;
-                      //
                     end;
-                    //
                   end;
                 end;
               end;
             end;
-            //
           end;
         end;
       end;
-      //
+
       if ((AllTrim(Form26.MaskEdit43.Text) = '24') or (AllTrim(Form26.MaskEdit43.Text) = '14'))  and ((Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104')) then
       begin
         if Form26.MaskEdit45.Text <> 'CCCCCCC00020004NNNNNNNNND' then
@@ -642,12 +568,11 @@ begin
       begin
         Impressao.TextOut(largura(-8+039),altura(35+iVia),Copy(Form26.MaskEdit43.Text+'  ',1,3));
       end;
-      //
+
       Impressao.TextOut(largura(-8+062),altura(35+iVia),'R$');
       Impressao.TextOut(largura(-8+151-8),altura(35+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Valor do documento
-      //
+
       // Data atualizada com juros de mora
-      //
       if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
       begin
         if (Form7.ibDataSet7VALOR_JURO.AsFloat - Form7.ibDataSet7VALOR_DUPL.AsFloat) >= 0.01 then
@@ -656,9 +581,9 @@ begin
           Impressao.TextOut(Largura(-8+151-8),Altura(66+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat]),16)); // Valor cobrado
         end;
       end;
-      //
+
       Impressao.Font.Size   := 9;              // Tamanho da Fonte
-      //
+
       if (J = 1) then
       begin
         Impressao.TextOut(largura(-8+010),altura(43+iVia),AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35))+' CNPJ/CPF: '+Form7.ibDataSet13CGC.AsString);
@@ -666,22 +591,18 @@ begin
         Impressao.TextOut(largura(-8+010),altura(49+iVia),AllTrim(Form7.ibDataSet13CEP.AsString)+' '+AllTrim(Form7.ibDataSet13MUNICIPIO.AsString)+' '+AllTrim(Form7.ibDataSet13ESTADO.AsString)); // Endereço do emitente
       end else
       begin
-        //
         Impressao.TextOut(largura(-8+010),altura(43+iVia),Form25.Edit4.Text); // Texto
         Impressao.TextOut(largura(-8+010),altura(46+iVia),Form25.Edit5.Text); // Texto
         Impressao.TextOut(largura(-8+010),altura(49+iVia),Form25.Edit6.Text); // Texto
-        //
+
         // RENEGOCIACAO
-        //
         if Copy(Form7.ibDataSet7HISTORICO.AsString,1,16) = 'CODIGO DO ACORDO' then
         begin
           Form25.Edit7.Visible := False;
           Impressao.TextOut(largura(-8+010),altura(52+iVia),Form7.ibDataSet7HISTORICO.AsString); // Texto
         end else
         begin
-          //
           // Data atualizada com juros de mora
-          //
           if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
           begin
             Impressao.TextOut(largura(-8+010),altura(52+iVia),'VENCIMENTO ORIGINAL: '+Form7.ibDataSet7VENCIMENTO.AsString); // Texto
@@ -692,43 +613,40 @@ begin
             Form25.Edit7.Visible := True;
           end;
         end;
-        //
       end;
-      //
+
       Impressao.TextOut(largura(-8+010),altura(64+3+iVia),AllTrim(Copy(Form7.ibDataSet2NOME.AsString+Replicate(' ',35),1,35))+' CNPJ/CPF: '+Form7.ibDataSet2CGC.AsString);
       Impressao.TextOut(largura(-8+010),altura(67+3+iVia),AllTrim(Form7.ibDataSet2ENDERE.AsString) + ' - ' + AllTrim(Form7.ibDataSet2COMPLE.AsString)); // CEP e Cidade do Pagador
       Impressao.TextOut(largura(-8+010),altura(70+3+iVia),AllTrim(Form7.ibDataSet2CEP.AsString)+' '+AllTrim(Form7.ibDataSet2CIDADE.AsString)+' '+AllTrim(Form7.ibDataSet2ESTADO.AsString)); // Endereço do Pagador
-      //
+
       if (J = 1) and ((Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104')) then
       begin
         Impressao.TextOut(Largura(002),Altura(81+2+iVia),'SAC CAIXA: 0800 726 0101 (informações, reclamações, sugestões e elogios)');
         Impressao.TextOut(Largura(002),Altura(84+2+iVia),'Para pessoas com deficiência auditiva ou de fala: 0800 726 2492');
         Impressao.TextOut(Largura(002),Altura(87+2+iVia),'Ouvidoria: 0800 725 7474 www.caixa.gov.br');
       end;
-      //
+
       if (J = 1) and ((Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041')) then
       begin
         Impressao.TextOut(Largura(002),Altura(81+2+iVia),'SAC BANRISUL - 0800 646 1515');
         Impressao.TextOut(Largura(002),Altura(84+2+iVia),'OUVIDORIA BANRISUL - 0800 644 2200');
       end;
-      //
+
       if J = 2 then
       begin
-        //
         Impressao.Font.Name   := 'Interleaved 2of5 Text';   // Fonte
         Impressao.Font.Size   := 19;                        // Tamanho da Fonte
         Impressao.Font.sTyle  := [];                        // Estilo da fonte
-        //
+
         Impressao.TextOut(largura(-8+009),altura(081+4+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
         Impressao.TextOut(largura(-8+009),altura(084+4+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
         Impressao.TextOut(largura(-8+009),altura(86.5+4+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
-        //
+
         Impressao.Font.Name   := 'Microsoft Sans Serif';               // Fonte
         Impressao.Font.Size   := 6;                       // Tamanho da Fonte
         Impressao.TextOut(largura(-8+009),altura(90+4+iVia),Replicate(' ',200));
-        //
       end;
-      //
+      
       Impressao.Pen.Width   := 2;
       Impressao.MoveTo(largura(-8+055),altura(06+iVia)); // Linha mais larga ao lado do código do banco
       Impressao.Lineto(largura(-8+055),altura(11+iVia)); //
@@ -825,8 +743,6 @@ begin
       Impressao.Lineto(largura(-8+150-8),altura(70+iVia));   //
       Impressao.Lineto(largura(-8+150-8),altura(70+iVia));   //
       Impressao.Lineto(largura(-8+200-18),altura(70+iVia));   //
-      //
-
 
       if J = 2 then
       begin
@@ -834,43 +750,36 @@ begin
         // Picote //
         ////////////
         Impressao.Pen.Width   := 1;                     // Largura da Linha
-        //
+
         // Picote
-        //
         for I := 1 to (170 div 2) do
         begin
           Impressao.MoveTo(largura(1+(I*2)),altura(-6+iVia));  //
           Impressao.Lineto(largura(1+(I*2)+1),altura(-6+iVia));  //
         end;
-        //
+
         // Tesourinha
-        //
         Impressao.Font.Name   := 'Wingdings';             // Fonte
         Impressao.Font.Size   := 15;                      // Tamanho da Fonte
         Impressao.TextOut(largura(1),altura(-8+iVia),'#');
       end;
-      //
+
       // -------------------------------------------------- //
       // Final da Impressão do Bloqueto em Código de Barras //
       // -------------------------------------------------- //
-      //
     end;
-    //
+
     // final da impressao das vias controlado pelo J
-    //
     if bP1 then
     begin
-      //
       Printer.EndDoc;
-      //
     end else
     begin
       Form25.Image1.Refresh;
       Form25.Image1.Top := -525;
     end;
-    //
+
     Result     := True;
-    //
   except
     on E: Exception do
     begin
@@ -895,46 +804,39 @@ begin
       {Sandro Silva 2022-12-28 fim}
       Result     := False;
     end;
-    
   end;
-  //
-  //
+
   {Sandro Silva 2022-12-23 inicio
   if bGravaPortadorNossoNumCodeBar then
   begin
     Form25.GravaPortadorNossoNumCodeBar;
   end;
   {Sandro Silva 2022-12-23 fim}
-
 end;
 
 
 procedure TForm25.btnAnteriorClick(Sender: TObject);
 begin
-  //
   Form7.ibDataSet7.MoveBy(-1);
-  //
+
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  //
+
   FormActivate(Sender);
-  //
 end;
 
 procedure TForm25.btnProximoClick(Sender: TObject);
 begin
-  //
   Form7.ibDataSet7.MoveBy(1);
-  //
+
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  //
+  
   FormActivate(Sender);
-  //
 end;
 
 procedure TForm25.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -966,24 +868,33 @@ var
   Mais1Ini: TIniFile;
   I: Integer;
 begin
-  //
+  //Mauricio Parizotto 2023-06-16
+  if Form1.sBancoBoleto <> '' then
+  begin
+    try
+      sInstituicaoFinanceira := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
+                                                      ' Select Coalesce(INSTITUICAOFINANCEIRA,'''') From BANCOS '+
+                                                      ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
+    except
+      sInstituicaoFinanceira := '';
+    end;
+  end else
+  begin
+    sInstituicaoFinanceira := '';
+  end;
+
   try
-    //
     Form25.Caption := StrTran(Form1.sEscolhido,'Boleto','Bloqueto');
     
     for I:= 1 to 65 do vLinha[I]  := ' ';
     for I:= 1 to 20 do vLinha[I]  := ' ';
     for I:= 1 to 20 do vCampo[I]  := ' ';
 
-    //
     if Trim(Form1.sEscolhido) <> '' then // Sandro Silva 2022-12-22 Só entra se o
     begin
-
-      //
       // Carrega as configurações para boleto conforme o portador setado em Form1.sEscolhido
-      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-      //
+
       Form26.MaskEdit1.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L1','1');   //     local de pagamento ---> 1    4
       Form26.MaskEdit2.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L2','1');   //             vencimento ---> 1   51
       Form26.MaskEdit3.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L3','5');   //         data documento ---> 5    4
@@ -1004,7 +915,7 @@ begin
       Form26.MaskEdit18.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L18','17'); //       estado do Pagador ---> 15   8
       Form26.MaskEdit19.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L19','15'); //          CGC do Pagador ---> 15   8
       Form26.MaskEdit20.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L20','00'); //          Valor extenso ---> 00   0
-      //
+
       Form26.MaskEdit21.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C1','4');  //     local de pagamento ---> 1    4
       Form26.MaskEdit22.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C2','51'); //             vencimento ---> 1   51
       Form26.MaskEdit23.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C3','04'); //         data documento ---> 5    4
@@ -1026,27 +937,27 @@ begin
       Form26.MaskEdit39.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C19','50'); //          CGC do Pagador ---> 15   8
       Form26.MaskEdit40.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C20','0'); //          Valor extenso ---> 00   0
       Form26.MaskEdit41.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Altura','24');   //  tamanho da página ---> 24
-      //
+
       Form26.MaskEdit400.Text := AllTrim(Mais1Ini.ReadString(Form1.sEscolhido,'Tamanho do valor por extenso','00')); // Valor extenso ---> 00   0
-      //
+
       Form26.MaskEdit51.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'Repetir a 2 coluna em','00');  //     Repetir a 2 coluna em
-      //
+
       Edit1.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Local','');      //     local de pagamento ---> 1    4
       Edit2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Espécie','DM');  //      espécie documento ---> 5   32
       Edit3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Aceite','');     //                 aceite ---> 5   36
-      //
+
       Edit4.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções1','');  // linha 1 das instruções ---> 10   4
       Edit5.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções2','');  // linha 2 das instruções ---> 10   4
       Edit6.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções3','');  // linha 3 das instruções ---> 10   4
       Edit7.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções4','');  // linha 4 das instruções ---> 10   4
-      //
+
       Form26.MaskEdit42.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do banco','');
       Form26.MaskEdit43.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Carteria','');
       Form26.MaskEdit50.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do convênio','');
       Form26.MaskEdit44.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Agência','');
       Form26.MaskEdit46.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Conta','');
       Form26.MaskEdit45.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Livre','0000000000000000000000000');
-      //
+
       if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.ComboBox1.Text := 'SICREDI - Com registro';
       if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then Form26.ComboBox1.Text := 'SICOOB - Sem registro';
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.ComboBox1.Text := 'SICOOB - Com registro';
@@ -1060,19 +971,18 @@ begin
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40YY' then Form26.ComboBox1.Text := 'Banrisul - Com registro';
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.ComboBox1.Text := 'Itaú - Com registro';
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.ComboBox1.Text := 'Unibanco';
-      //
+
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
-        Form26.CheckBox1.State := cbChecked
+        Form26.chkCNAB400.State := cbChecked
       else
-        Form26.CheckBox1.State := cbUnchecked;
-      
+        Form26.chkCNAB400.State := cbUnchecked;
+
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB240','') = 'Sim' then
-        Form26.CheckBox2.State := cbChecked
+        Form26.chkCNAB240.State := cbChecked
       else
-        Form26.CheckBox2.State := cbUnchecked;
-      //
+        Form26.chkCNAB240.State := cbUnchecked;
+
       // Data atualizada com juros de mora
-      //
       if Mais1Ini.ReadString(Form1.sEscolhido,'Mora','Não') = 'Sim' then
       begin
         Form25.chkDataAtualizadaJurosMora.Checked := True; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := True;
@@ -1080,9 +990,8 @@ begin
       begin
         Form25.chkDataAtualizadaJurosMora.Checked := False; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := False;
       end;
-      //
+
       Mais1Ini.Free;
-      //
     end;
   except
 
@@ -1090,21 +999,19 @@ begin
 
   if btnImprimirTodos.CanFocus then // Sandro Silva 2022-12-23 if Button4.CanFocus then
     btnImprimirTodos.SetFocus; // Sandro Silva 2022-12-23 Button4.SetFocus;
-  //
 end;
 
 procedure TForm25.FormActivate(Sender: TObject);
 var
   sEmail : String;
 begin
-  //
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  //
+
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-  //
+
   if validaEmail(sEmail) then
   begin
     btnEnviaEmail.Visible := True; // Sandro Silva 2022-12-23 Button7.Visible := True;
@@ -1112,57 +1019,19 @@ begin
   begin
     btnEnviaEmail.Visible := False; // Sandro Silva 2022-12-23 Button7.Visible := False;
   end;
-  //
+  
   Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
-  //
-end; 
+end;
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
 begin
-  //
   if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
   begin
-    //
     if GeraImagemDoBoletoComOCodigoDeBarras(True) then
     begin
-      //
       if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
       begin
-        {Sandro Silva 2022-12-22 inicio
-        //
-        Form7.ibDataSet7.Edit;
-        Form7.ibDataSet7PORTADOR.AsString  := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
-        Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
-        Form7.ibDataSet7CODEBAR.AsString   := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                                              '9'+                              // Moeda
-                                              Copy(sNumero,20,1)+               // Campo Livre 20 a 21 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,21,4)+               // Campo Livre 21 a 24 do código de barras
-                                              Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(sNumero,20,1)+Copy(sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
-                                              //
-                                              '  '+
-                                              Copy(sNumero,25,5)+               // Campo Livre 25 a 29 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,30,5)+               // Campo Livre 30 a 34 do código de barras
-                                              Modulo_10(Copy(sNumero,25,10))+   // Digito verificador
-                                              '  '+
-                                              Copy(sNumero,35,5)+               // Campo Livre 35 a 39 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,40,5)+               // Campo Livre 40 a 44 do código de barras
-                                              Modulo_10(Copy(sNumero,35,10))+   // Digito verificador
-                                              //
-                                              '  '+
-                                              Copy(sNumero,5,1)+                // Dígito de verificação geral posição 5 do codebat
-                                              '  '+
-                                              Copy(sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
-                                              Copy(sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
-
-        //
-        Form7.ibDataSet7.Post;
-        }
         GravaPortadorNossoNumCodeBar;
-        {Sandro Silva 2022-12-22 fim}
-        //
       end;
     end;
   end else
@@ -1171,21 +1040,15 @@ begin
     +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
     +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
   end;
-  //
-//  if Form7.ibDataSet7.Eof then Form25.Close;
-  //
 end;
 
 procedure TForm25.btnImprimirTodosClick(Sender: TObject);
 begin
-  //
   try
     bOk := True; // No caso de um Except
-    //
-    // ShowMessage(Form7.ibDataSet7.SelectSQL.Text);
-    //
+
     Form7.ibDataSet7.First;
-    //
+
     begin
       if (LimpaNumero(Form26.MaskEdit42.Text) = '') then
       begin
@@ -1193,36 +1056,26 @@ begin
         ShowMessage('Configure o código do banco.');
       end;
     end;
-    //
+
     try
       while (not Form7.ibDataSet7.EOF) and (bOk) do
       begin
-        //
         Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
         Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
-//        if Form7.ibDataSet7.Eof then Form25.Close;
-        //
       end;
     except
       ShowMessage('Erro na impressão do boleto.');
     end;
-    //
-  except end;
-  //
-//  try
-//    Close;
- // except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm25.btnCriaImagemBoletoClick(Sender: TObject);
 begin
-  //
   Form25.Tag := 1; // Para saber se é impressão em PDF
   GeraImagemDoBoletoComOCodigoDeBarras(False);
   Form25.Tag := 0; // Para saber se é impressão é na impressora
   CriaBoletoJPG('boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg');
-  //
 end;
 
 procedure TForm25.btnEnviaEmailClick(Sender: TObject);
@@ -1230,30 +1083,24 @@ var
   sEmail : String;
   PDF: TPrintPDF;
 begin
-  //
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-  //
+
   if validaEmail(sEmail) then
   begin
-    //
     if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
     begin
-      //
       // Apaga o PDF anterior
-      //
       while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') do
       begin
         DeleteFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
         sleep(1000);
       end;
-      //
+
       // Cria o PDF
-      //
       // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
       PDF := TPrintPDF.Create(Self);
-      //
+
       // Configurações do documento
-      //
       PDF.TITLE       := 'Boletos';
       PDF.Creator     := 'Small Commerce';
       PDF.Author      := 'Small Commerce';
@@ -1262,74 +1109,34 @@ begin
       PDF.Subject     := 'Boletos de cobrança';
       PDF.JPEGQuality := 100;
       PDF.Compress    := False;
-      //
+
       // Tamanho do A4 21,0 cm x 29,7 cm
-      //
       PDF.PageWidth   :=  735;
       PDF.PageHeight  :=  1039;
-      //
+
       // Nome do arquivo para salvar
-      //
       PDF.FileName    := Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf';// sFileCFeSAT;
-      //
+
       // Inicia o documento pdf
-      //
       PDF.BeginDoc;
-      //
+
       PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-      //
+
       // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-      //
       PDF.EndDoc;
-      //
+
       // Fecha o documento pdf
-      //
       if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then
       begin
-        //
         if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
         begin
-          //
           try
-            {Sandro Silva 2022-12-22 inicio
-            Form7.ibDataSet7.Edit;
-            Form7.ibDataSet7PORTADOR.AsString := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
-            Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
-            Form7.ibDataSet7CODEBAR.AsString   := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                                                  '9'+                              // Moeda
-                                                  Copy(sNumero,20,1)+               // Campo Livre 20 a 21 do código de barras
-                                                  '.'+                              // Ponto para facilitar a digitação
-                                                  Copy(sNumero,21,4)+               // Campo Livre 21 a 24 do código de barras
-                                                  Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(sNumero,20,1)+Copy(sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
-                                                  //
-                                                  '  '+
-                                                  Copy(sNumero,25,5)+               // Campo Livre 25 a 29 do código de barras
-                                                  '.'+                              // Ponto para facilitar a digitação
-                                                  Copy(sNumero,30,5)+               // Campo Livre 30 a 34 do código de barras
-                                                  Modulo_10(Copy(sNumero,25,10))+   // Digito verificador
-                                                  '  '+
-                                                  Copy(sNumero,35,5)+               // Campo Livre 35 a 39 do código de barras
-                                                  '.'+                              // Ponto para facilitar a digitação
-                                                  Copy(sNumero,40,5)+               // Campo Livre 40 a 44 do código de barras
-                                                  Modulo_10(Copy(sNumero,35,10))+   // Digito verificador
-                                                  //
-                                                  '  '+
-                                                  Copy(sNumero,5,1)+                // Dígito de verificação geral posição 5 do codebat
-                                                  '  '+
-                                                  Copy(sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
-                                                  Copy(sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
-            Form7.ibDataSet7.Post;
-            }
             GravaPortadorNossoNumCodeBar;
-            {Sandro Silva 2022-12-22 fim}
-            //
           except
           end;
-          //
         end;
-        //
+
         Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'), False);
-        //
       end;
     end else
     begin
@@ -1344,20 +1151,18 @@ procedure TForm25.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   try
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-    //
+
     Mais1Ini.WriteString(Form1.sEscolhido,'Local',AllTrim(Edit1.Text));    //     local de pagamento ---> 1    4
     Mais1Ini.WriteString(Form1.sEscolhido,'Espécie',AllTrim(Edit2.Text));                 //      espécie documento ---> 5   32
     Mais1Ini.WriteString(Form1.sEscolhido,'Aceite',AllTrim(Edit3.Text));   //                 aceite ---> 5   36
-    //
+
     Mais1Ini.WriteString(Form1.sEscolhido,'Instruções1',AllTrim(Edit4.Text));  // linha 1 das instruções ---> 10   4
     Mais1Ini.WriteString(Form1.sEscolhido,'Instruções2',AllTrim(Edit5.Text));  // linha 2 das instruções ---> 10   4
     Mais1Ini.WriteString(Form1.sEscolhido,'Instruções3',AllTrim(Edit6.Text));  // linha 3 das instruções ---> 10   4
     Mais1Ini.WriteString(Form1.sEscolhido,'Instruções4',AllTrim(Edit7.Text));  // linha 4 das instruções ---> 10   4
-    //
+    
     Mais1Ini.WriteString(Form1.sEscolhido,'Código do banco',AllTrim(Form26.MaskEdit42.Text));  //     Repetir a 2 coluna em
 
     Mais1Ini.WriteString(Form1.sEscolhido,'Carteria',AllTrim(Form26.MaskEdit43.Text));  //     Repetir a 2 coluna em
@@ -1367,18 +1172,17 @@ begin
     Mais1Ini.WriteString(Form1.sEscolhido,'Conta',AllTrim(Form26.MaskEdit46.Text));  //     Repetir a 2 coluna em
     Mais1Ini.WriteString(Form1.sEscolhido,'Livre',AllTrim(Form26.MaskEdit45.Text));  //     Campo livre
     Mais1Ini.WriteString(Form1.sEscolhido,'Mora','Não');
-    //
-    if Form26.CheckBox1.State = cbChecked then
+
+    if Form26.chkCNAB400.State = cbChecked then
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Sim')
     else
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB400','Não');
-    if Form26.CheckBox2.State = cbChecked then
+    if Form26.chkCNAB240.State = cbChecked then
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Sim')
     else
       Mais1Ini.WriteString(Form1.sEscolhido,'CNAB240','Não');
-    //
+
     // Data atualizada com juros de mora
-    //
     if (chkDataAtualizadaJurosMora.Checked) then // Sandro Silva 2022-12-28 if (CheckBox1.Checked) then
     begin
       Mais1Ini.WriteString(Form1.sEscolhido,'Mora','Sim');
@@ -1386,12 +1190,10 @@ begin
     begin
       Mais1Ini.WriteString(Form1.sEscolhido,'Mora','Não');
     end;
-    //
+
     Mais1Ini.Free;
-    //
   except
   end;
-  //
 end;
 
 procedure TForm25.chkDataAtualizadaJurosMoraClick(Sender: TObject);
@@ -1406,31 +1208,24 @@ var
   PDF: TPrintPDF;
   YY : Integer;
 begin
-  //
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-  //
+
   if validaEmail(sEmail) then
   begin
-    //
     // Apaga o PDF anterior
-    //
-//    Form7.ibDataSet7.First;
-    //
     sArquivo := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9)+'_.pdf';
-    //
+
     while FileExists(Form1.sAtual+'\'+sArquivo) do
     begin
       DeleteFile(Form1.sAtual+'\'+sArquivo);
       sleep(1000);
     end;
-    //
+
     // Cria o PDF
-    //
     // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
     PDF := TPrintPDF.Create(Self);
-    //
+
     // Configurações do documento
-    //
     PDF.TITLE       := 'Boletos'+StrTran(StrTran(sArquivo,'/',''),'.','');
     PDF.Creator     := 'Small';
     PDF.Author      := 'Small';
@@ -1439,20 +1234,17 @@ begin
     PDF.Subject     := 'Boletos de cobrança';
     PDF.JPEGQuality := 100;
     PDF.Compress    := False;
-    //
+
     // Tamanho do A4 21,0 cm x 29,7 cm
-    //
     PDF.PageWidth   :=  735;
     PDF.PageHeight  :=  1039;
-    //
+
     // Nome do arquivo para salvar
-    //
     PDF.FileName    := sArquivo;
-    //
+
     // Inicia o documento pdf
-    //
     PDF.BeginDoc;
-    //
+
     YY := 0;
     //
     Form7.ibDataSet7.First;
@@ -1462,115 +1254,66 @@ begin
       begin
         if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
         begin
-          //
           while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
           begin
             DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
             sleep(1000);
           end;
-          //
+
           Form25.Show;
           Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
-          //
+
           while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
           begin
             Sleep(1000);
           end;
-          //
+
           // Print Image
-          //
           YY := YY + 1;
           if YY >= 2 then PDF.NewPage; // Add New Page
-          //
+
           PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-          //
-          // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-          //
         end;
       end;
-      //
+
       if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
       begin
-        {Sandro Silva 2022-12-22 inicio
-        Form7.ibDataSet7.Edit;
-        Form7.ibDataSet7PORTADOR.AsString  := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
-        Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
-        Form7.ibDataSet7CODEBAR.AsString   := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                                              '9'+                              // Moeda
-                                              Copy(sNumero,20,1)+               // Campo Livre 20 a 21 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,21,4)+               // Campo Livre 21 a 24 do código de barras
-                                              Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(sNumero,20,1)+Copy(sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
-                                              //
-                                              '  '+
-                                              Copy(sNumero,25,5)+               // Campo Livre 25 a 29 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,30,5)+               // Campo Livre 30 a 34 do código de barras
-                                              Modulo_10(Copy(sNumero,25,10))+   // Digito verificador
-                                              '  '+
-                                              Copy(sNumero,35,5)+               // Campo Livre 35 a 39 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,40,5)+               // Campo Livre 40 a 44 do código de barras
-                                              Modulo_10(Copy(sNumero,35,10))+   // Digito verificador
-                                              //
-                                              '  '+
-                                              Copy(sNumero,5,1)+                // Dígito de verificação geral posição 5 do codebat
-                                              '  '+
-                                              Copy(sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
-                                              Copy(sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
-
-        Form7.ibDataSet7.Post;
-        }
         GravaPortadorNossoNumCodeBar;
-        {Sandro Silva 2022-12-22 fim}
       end;
-      //
+
       Screen.Cursor            := crHourGlass;
-      //
+
       Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
       Form7.Repaint;
-//      if Form7.ibDataSet7.Eof then Form25.Close;
-      //
     end;
-    //
+
     // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-    //
     PDF.EndDoc;
-    //
+
     // Fecha o documento pdf
-    //
     if FileExists(Form1.sAtual+'\'+sArquivo) then
     begin
       Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\'+sArquivo), False);
     end;
-    //
   end;
-  //
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm25.btnCNAB400Click(Sender: TObject);
 var
-  //
   vTotal : Real;
   I : Integer;
   F: TextFile;
   sCodigoDaCarteira, sComandoMovimento, sIdoComplemento, sIdentificacaoBanco, sParcela, sCPFOuCNPJ, sCPFOuCNPJ_EMITENTE: String;
   iReg, iRemessa : Integer;
-  //
 begin
-  //
-  // ShowMessage(form7.ibDataSet7.SelectSQL.Text);
-  //
   try
-    //
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then // SICOOB
     begin
       sIdentificacaoBanco := '756BANCOOBCED';
     end else
     begin
-      //
       if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '001' then // BANCO DO BRASIL
       begin
         sIdentificacaoBanco := '001BANCODOBRASIL';
@@ -1608,18 +1351,16 @@ begin
           end;
         end;
       end;
-      //
     end;
-    //
+
     try
       ForceDirectories(pchar(Form1.sAtual + '\remessa'));
     except end;
-    //
+
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237' then // BRADESCO
     begin
-      //
       Form1.sArquivoRemessa := '';
-      //
+
       for I := 0 to 99 do
       begin
         if Form1.sArquivoRemessa = '' then
@@ -1630,54 +1371,47 @@ begin
           end;
         end;
       end;
-      //
     end else
     begin
       Form1.sArquivoRemessa := Copy(StrTran(DateToStr(Date),'/','_')+DiaDaSemana(Date)+replicate('_',10),1,14)+StrTran(TimeToStr(Time),':','_')+'.txt';
     end;
-    //
+
     AssignFile(F,Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
     Rewrite(F);   // Abre para gravação
-    //
+
     // Criar um generator para cada banco
-    //
     try
       try
-        //
         Form7.ibDataset99.Close;
         Form7.ibDataset99.SelectSql.Clear;
         Form7.ibDataset99.SelectSql.Add('select gen_id(G_'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+',1) from rdb$database');
         Form7.ibDataset99.Open;
-        //
+
         iRemessa := StrToInt(Form7.ibDataset99.FieldByname('GEN_ID').AsString);
-        //
       except
-        //
         try
-          //
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSql.Add('create generator G_'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3));
           Form7.ibDataset99.Open;
-          //
+          
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSql.Add('set generator G_'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+' to 1');
           Form7.ibDataset99.Open;
-          //
+
         except end;
-        //
+
         iRemessa := 1;
-        //
       end;
-    except iRemessa := 1 end;
-    //
+    except
+      iRemessa := 1
+    end;
+
     try
       if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
       begin
-        //
         // SICOOB HEADER
-        //
         WriteLn(F,
           Copy('0',1,001)                                                                           + // 001 ok Identificação do Registro Header: “0” (zero)
           Copy('1',1,001)                                                                           + // 002 ok Tipo de Operação: “1” (um)
@@ -1702,9 +1436,7 @@ begin
       begin
         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104' then // CAIXA
         begin
-          //
           // CAIXA HEADER
-          //
           WriteLn(F,
             Copy('0',1,001)                                                                           + // 01- 001 a 001 9(001) Identificação do Registro Header: “0” (zero)
             Copy('1',1,001)                                                                           + // 02- 002 a 002 9(001) Tipo de Operação: “1” (um)
@@ -1725,12 +1457,9 @@ begin
             );
         end else
         begin
-          //
           if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237' then // BRADESCO
           begin
-            //
             // BRADESCO
-            //
             WriteLn(F,
               Copy('0',1,001)                                                                           + // 01 - 001 a 001 - 9(001) Identificação do Registro (0)
               Copy('1',1,001)                                                                           + // 02 - 002 a 002 - 9(001) Identificação do Arquivo Remessa (1)
@@ -1749,15 +1478,11 @@ begin
               Copy('000001',1,006)                                                                      + // 15 - 395 a 400 - 9(006) Nº Seqüencial do Registro de Um em Um (000001)
               ''
               );
-            //
           end else
           begin
-            //
             // ITAÚ HEADER ITAU
-            //
             if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '341' then // Itaú ITAU
             begin
-              //
               WriteLn(F,
                 Copy('0',1,001)                                                                           + // 001 a 001 - 9(001) TIPO DE REGISTRO    - IDENTIFICAÇÃO DO REGISTRO HEADER             - 0
                 Copy('1',1,001)                                                                           + // 002 a 002 - 9(001) OPERAÇÃO            - TIPO DE OPERAÇÃO - REMESSA                   - 1
@@ -1779,9 +1504,7 @@ begin
                 );
             end else
             begin
-              //
               // SANTANDER HEADER
-              //
               if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then // SANTANDER
               begin
                 //
@@ -1807,14 +1530,11 @@ begin
                   Copy('000001',1,006)                                                                      + // 19 395 a 400 - 9(006) Número sequencial do registro no arquivo = 000001
                   ''
                   );
-                //
               end else
               begin
                 if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
                 begin
-                  //
                   // BANRISUL HEADER
-                  //
                   WriteLn(F,
                     Copy('01REMESSA',1,009)                                                                   + // 01 001 a 009 -   9 (x) 01REMESSA (constante) - Campo obrigatório
                     Copy(Replicate(' ',17),1,017)                                                             + // 02 010 a 026 -  17 (x) BRANCOS
@@ -1837,12 +1557,9 @@ begin
                     Copy('000001',1,006)                                                                      + // 16 395 a 400 -   6 (x) 000001 (constante)
                     ''
                     );
-                  //
                 end else
                 begin
-                  //
                   // Banco do Brasil  HEADER
-                  //
                   WriteLn(F,
                     Copy('0',1,001)                                                                           + // 01.0 001 a 001 9(001) Identificação do Registro Header: “0” (zero)
                     Copy('1',1,001)                                                                           + // 02.0 002 a 002 9(001) Tipo de Operação: “1” (um)
@@ -1865,53 +1582,43 @@ begin
                     Copy('000001',1,006)                                                                      + // 19.0 395 a 400 9(006) Seqüencial do Registro:”000001”
                     ''
                     );
-                  //
                 end;
               end;
             end;
           end;
         end;
       end;
-      //
     except
       on E: Exception do
       begin
         Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
       end;
     end;
-    //
+
     // Zerezima
-    //
-    // Form7.ibDataSet11.Locate('NOME',StrTran(Form1.sEscolhido,'Boleto de cobrança do ',''),[loCaseInsensitive, loPartialKey]);
-    // ShowMessage(StrTran(Form1.sEscolhido,'Boleto de cobrança do ','')+chr(10)+Form7.ibDataSet11NOME.AsString);
-    //
     iReg := 1;
     vTotal := 0;
-    //
+
     Form7.ibDataSet7.DisableControls;
     Form7.ibDataSet7.First;
-    //
+
     while not Form7.ibDataSet7.Eof do
     begin
-      //
       if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
       begin
-        //
         if (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')') or
            (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')BAIXA') or
            (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')VENCIMENTO') or
            (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')EXCLUIR') then
         begin
-          //
           Form7.ibDataSet2.Close;
           Form7.ibDataSet2.Selectsql.Clear;
           Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
           Form7.ibDataSet2.Open;
-          //
+
           try
-            //
             if Length(LimpaNumero(Form7.IBDataSet2CGC.AsString)) = 14 then sCPFOuCNPJ := '02' else sCPFOuCNPJ := '01';
-            //
+
             if Ord(Form7.ibDataSet7DOCUMENTO.AsString[Length(Trim(Form7.ibDataSet7DOCUMENTO.AsString))]) >= 64 then
             begin
               sParcela := StrZero((Ord(Form7.ibDataSet7DOCUMENTO.AsString[Length(Trim(Form7.ibDataSet7DOCUMENTO.AsString))])-64),2,0); //converte a letra em número
@@ -1919,11 +1626,10 @@ begin
             begin
               sParcela := '01';
             end;
-            //
+
             iReg := iReg + 1;
-            //
+
             try
-              //
               // 01 = Registro de Títulos
               // 02 = Solicitação de Baixa
               // 04 = Concessão de Abatimento
@@ -1938,18 +1644,17 @@ begin
               // 34 = Baixa - Pagamento Direto ao Beneficiário
               // 34 = Pagamento Direto ao Beneficiário
               sComandoMovimento := '01';
-              //
+
               if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text)+'000',1,3)+')BAIXA'       then sComandoMovimento := '02';
               if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text)+'000',1,3)+')VENCIMENTO'  then sComandoMovimento := '06';
               if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text)+'000',1,3)+')EXCLUIR'     then sComandoMovimento := '99';
-              //
+
               if (sComandoMovimento = '06') and (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104') then
               begin
                 sComandoMovimento := '05';
               end;
-              //
+
               // Altera para não ir de novo
-              //
               if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')BAIXA' then
               begin
                 Form7.ibDataSet7.Edit;
@@ -1964,14 +1669,11 @@ begin
                   Form7.ibDataSet7.Post;
                 end;
               end;
-              //
+
               try
-                //
                 if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
                 begin
-                  //
                   // SICOOB REMESSA
-                  //
                   WriteLn(F,
                     Copy('1',1,001)                                                          + // Ok 1 Identificação do Registro Detalhe: 1 (um)
                     Copy('02',1,002)                                                         + // Ok 2 "Tipo de Inscrição do Beneficiário: ""01"" = CPF ""02"" = CNPJ  "
@@ -2030,17 +1732,13 @@ begin
                     Copy(StrZero(iReg,6,0),1,006)                                            + // 54 Ok Seqüencial do Registro: Incrementado em 1 a cada registro
                     ''
                     );
-                  //
                 end else
                 begin
-                  //
                   if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104' then // CAIXA
                   begin
-                    //
                     // CAIXA REMESSA
-                    //
                     if Length(LimpaNumero(Form7.IBDataSet13CGC.AsString)) = 14 then sCPFOuCNPJ_EMITENTE := '02' else sCPFOuCNPJ_EMITENTE := '01';
-                    //
+
                     WriteLn(F,
                       Copy('1',1,001)                                                                          + // 01.1 - 001 a 001 - 9(001) Preencher ‘1’
                       Copy(sCPFOuCNPJ_EMITENTE,1,002)                                                          + // 02.1 - 002 a 003 - 9(002) Preencher com o tipo de Inscrição da Empresa Beneficiária: ‘01’ = CPF ou ‘02’ = CNPJ
@@ -2092,15 +1790,11 @@ begin
                       Copy(StrZero(iReg,6,0),1,006)                                                            + // 45.1 - 395 a 400 - 9(006) Número Sequencial do Registro no Arquivo
                       ''
                       );
-                    //
                   end else
                   begin
-                    //
                     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237' then // BRADESCO
                     begin
-                      //
                       // BRADESCO
-                      //
                       WriteLn(F,
                         Copy('1',1,001)                                                                              + // 01.1 - 001 a 001  - 9(001) Identificação do Registro
                         Copy('00000',1,005)                                                                          + // 02.1 - 002 a 006  - 9(005) Agência de Débito (opcional)
@@ -2157,22 +1851,16 @@ begin
                         Copy(StrZero(iReg,6,0),1,006)                                                                + // 44.1 - 395 a 400  - 9(006) Nº Seqüencial do Registro
                         ''
                         );
-                      //
                     end else
                     begin
-                      //
                       // SANTANDER
-                      //
                       if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then
                       begin
                         if LimpaNumero(Form7.ibDataSet11CONTA.AsString) <> '' then
                         begin
-                          //
                           if LimpaNumero(Form7.ibDataSet11CONTA.AsString) <> '' then
                           begin
-                            //
                             try
-                              //
                               Form7.ibDataSet11.Edit;
                               if Length(LimpaNumero(Form7.ibDataSet11CONTA.AsString)) <= 8 then
                               begin
@@ -2181,17 +1869,16 @@ begin
                               begin
                                 Form7.ibDataSet11CONTA.AsString := Right('0000000000'+LimpaNumero(Form7.ibDataSet11CONTA.AsString),10);
                               end;
-                              //
+
                               Form7.ibDataSet11.Post;
-                              //
-                            except end;
-                            //
+                            except
+                            end;
                           end;
                         end;
-                        //
+
                         if Length(LimpaNumero(Form7.IBDataSet13CGC.AsString)) = 14 then sCPFOuCNPJ_EMITENTE := '02' else sCPFOuCNPJ_EMITENTE := '01';
                         if Length(LimpaNumero(Form7.ibDataSet11CONTA.AsString)) = 10 then sIdoComplemento     := 'I' else sIdoComplemento := '0';
-                        //
+                        
                         WriteLn(F,
                           Copy('1',1,001)                                                                          + // 001.1 - 001 a 001 - 9(001) Código do registro = 1
                           Copy(sCPFOuCNPJ_EMITENTE,1,002)                                                          + // 002.1 - 002 a 003 - 9(002) Tipo de inscrição do cedente: 01 = CPF 02 = CGC
@@ -2250,17 +1937,13 @@ begin
                           Copy(StrZero(iReg,6,0),1,006)                                                            + // 050.1 - 395 a 400 - 9(006) Número sequencial do registro no arquivo
                           ''
                           );
-                        //
                       end else
                       begin
-                        //
                         // ITAÚ REMESSA ITAU
-                        //
                         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '341' then // Itaú ITAU
                         begin
-                          //
                           sCodigoDaCarteira := 'I';
-                          //
+
                           if Form26.MaskEdit43.Text = '108' then sCodigoDaCarteira := 'I';
                           if Form26.MaskEdit43.Text = '180' then sCodigoDaCarteira := 'I';
                           if Form26.MaskEdit43.Text = '121' then sCodigoDaCarteira := 'I';
@@ -2272,9 +1955,9 @@ begin
                           if Form26.MaskEdit43.Text = '147' then sCodigoDaCarteira := 'E';
                           if Form26.MaskEdit43.Text = '112' then sCodigoDaCarteira := 'I';
                           if Form26.MaskEdit43.Text = '115' then sCodigoDaCarteira := 'I';
-                          //
+
                           if Length(LimpaNumero(Form7.IBDataSet13CGC.AsString)) = 14 then sCPFOuCNPJ_EMITENTE := '02' else sCPFOuCNPJ_EMITENTE := '01';
-                          //
+
                           WriteLn(F,
                             Copy('1',1,001)                                                                          + // 001 a 001 - 9(01) IDENTIFICAÇÃO DO REGISTRO TRANSAÇÃO
                             Copy(sCPFOuCNPJ_EMITENTE,1,002)                                                          + // 002 a 003 - 9(02) TIPO DE INSCRIÇÃO DA EMPRESA
@@ -2328,14 +2011,11 @@ begin
                             Copy(StrZero(iReg,6,0),1,006)                                                            + // 395 a 400 - 9(06) Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
                             ''
                             );
-                          //
                         end else
                         begin
                           if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
                           begin
-                            //
                             // BANRISUL REMESSA
-                            //
                             WriteLn(F,
                               Copy('1',1,001)                                                                          + // 001 a 001 - x(01) TIPO DE REGISTRO: 1 (constante)
                               Copy(Replicate(' ',16),1,016)                                                            + // 002 a 017 - x(16) BRANCOS
@@ -2389,12 +2069,9 @@ begin
                               Copy(StrZero(iReg,6,0),1,006)                                                            + // 395 a 400 - x(06) NÚMERO SEQUENCIAL DO REGISTRO
                               ''
                               );
-                            //
                           end else
                           begin
-                            //
                             // Banco do Brasil REMESSA
-                            //
                             WriteLn(F,
                               Copy('7',1,001)                                                                          + // 01.7 001 a 001 9(001) Identificação do Registro Detalhe: 7 (sete)
                               Copy('02',1,002)                                                                         + // 02.7 002 a 003 9(002) Tipo de Inscrição do Cedente 22
@@ -2452,47 +2129,37 @@ begin
                               Copy(StrZero(iReg,6,0),1,006)                                                            + // 50.7 395 a 400 9(006) Seqüencial de Registro 35
                               ''
                               );
-                            //
                           end;
                         end;
                       end;
                     end;
                   end;
                 end;
-                //
               except
                 on E: Exception do
                 begin
                   Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
                 end;
               end;
-              //
             except
               on E: Exception do
               begin
                 Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
               end;
             end;
-            //
+
             vTotal := vTotal + Form7.ibDataSet7VALOR_DUPL.AsFloat;
-            //
-          except end;
-          //
+          except
+          end;
         end;
       end;
-      //
       Form7.ibDataSet7.Next;
-      //
     end;
-    //
-    //
+
     // TAILER
-    //
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
     begin
-      //
       // BANRISUL TAILER
-      //
       WriteLn(F,
         Copy('9',1,001)                                                                                                            + // 001 a 001 - 9(001)      Código do registro = 9
         Copy(Replicate(' ',26),1,26)                                                                                               + // 002 a 027 - X(26)       Brancos
@@ -2501,15 +2168,11 @@ begin
         Copy(StrZero(iReg+1,6,0),1,006)                                                                                            + // 395 a 400 - 9(006)      Número sequencial do registro no arquivo
         ''
         );
-      //
     end else
     begin
-      //
       if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
       begin
-        //
         // SICOOB TAILER
-        //
         WriteLn(F,
           Copy('9',1,001)                                                                                                            + // 1 Identificação Registro Trailler: "9"
           Copy(Replicate(' ',193),1,193)                                                                                             + // 2 Complemento do Registro: Brancos
@@ -2521,15 +2184,11 @@ begin
           Copy(StrZero(iReg+1,6,0),1,006)                                                                                            + // 8 Seqüencial do Registro: Incrementado em 1 a cada registro
           ''
           );
-        //
       end else
       begin
-        //
         if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then
         begin
-          //
           // SANTANDER TAILER
-          //
           WriteLn(F,
             Copy('9',1,001)                                                                                                            + // 001 a 001 - 9(001)      Código do registro = 9
             Copy(StrZero(iReg+1,6,0),1,006)                                                                                            + // 002 a 007 - 9(006)      Quantidade de documentos no arquivo informação obrigatória)
@@ -2538,50 +2197,39 @@ begin
             Copy(StrZero(iReg+1,6,0),1,006)                                                                                            + // 395 a 400 - 9(006)      Número sequencial do registro no arquivo
             ''
             );
-          //
         end else
         begin
-          //
           WriteLn(F,
             Copy('9',1,001)                                                                                                            + // 01.9 001 a 001 9(001) Identificação do Registro Trailer: “9”
             Copy(Replicate(' ',393),1,393)                                                                                             + // 02.9 002 a 394 X(393) Complemento do Registro: “Brancos”
             Copy(StrZero(iReg+1,6,0),1,006)                                                                                            + // 03.9 395 a 400 9(006) Número Seqüencial do Registro no Arquivo
             ''
             );
-          //
         end;
-        //
       end;
     end;
-    //
+
     CloseFile(F); // Fecha o arquivo
-    //
+
     if iReg = 1 then
     begin
-      //
       DeleteFile(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
       Form1.sArquivoRemessa := '';
-      //
+      
       ShowMessage('Não existe movimento, o arquivo não foi gerado.');
-      //
     end;
-    //
-    // if FileExists(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa) then ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa),'', '', SW_SHOW);
-    //
   except
     on E: Exception do
     begin
       Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
     end;
   end;
-  //
+
   Form7.ibDataSet7.EnableControls;
-  //
 end;
 
 procedure TForm25.btnCNAB240Click(Sender: TObject);
 var
-  //
   vTotal : Real;
   F: TextFile;
   sDigitoAgencia,
@@ -2599,89 +2247,75 @@ var
   sLayoutdoLote, sDensidade, sLayoutArquivo,
   sCodigoDoConvenio, sNomeDoBanco, sComandoMovimento, sParcela, sCPFOuCNPJ: String;
   I, iReg, iRemessa, iLote : Integer;
-  //
 begin
-  //
   // CNAB 240
-  //
   try
-    //
     try
       ForceDirectories(pchar(Form1.sAtual + '\remessa'));
-    except end;
-    //
+    except
+    end;
+
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then
     begin
-      //
       // SICREDI
-      //
       Form1.sArquivoRemessa := AllTrim(Form26.MaskEdit46.Text)+Copy('123456789OND',Month(Date),1)+StrZero(Day(date),2,0)+'.CRM';
-      //
+
       I := 0;
-      //
+
       while FileExists(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa) do
       begin
         I := I + 1;
         Form1.sArquivoRemessa := AllTrim(Form26.MaskEdit46.Text)+Copy('123456789OND',Month(Date),1)+StrZero(Day(date),2,0)+'.'+StrZero(I,3,0);
       end;
-      //
     end else
     begin
       Form1.sArquivoRemessa := Copy(StrTran(DateToStr(Date),'/','_')+DiaDaSemana(Date)+replicate('_',10),1,14)+StrTran(TimeToStr(Time),':','_')+'.txt';
     end;
-    //
+
     AssignFile(F,Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
     Rewrite(F);   // Abre para gravação
-    //
+
     // Criar um generator para cada banco
-    //
     try
       try
-        //
         Form7.ibDataset99.Close;
         Form7.ibDataset99.SelectSql.Clear;
         Form7.ibDataset99.SelectSql.Add('select gen_id(G_'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+',1) from rdb$database');
         Form7.ibDataset99.Open;
-        //
+
         iRemessa := StrToInt(Form7.ibDataset99.FieldByname('GEN_ID').AsString);
-        //
       except
-        //
         try
-          //
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSql.Add('create generator G_'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3));
           Form7.ibDataset99.Open;
-          //
+
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSql.Add('set generator G_'+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+' to 1');
           Form7.ibDataset99.Open;
-          //
-        except end;
-        //
+        except
+        end;
+
         iRemessa := 1;
-        //
       end;
-    except iRemessa := 1 end;
-    //
+    except
+      iRemessa := 1
+    end;
+
     // Zerezima
-    //
     iReg    := 2;
     vTotal  := 0;
     iLote   := 1;
-//    iContas := 1;
-    //
+
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '001' then
     begin
-      //
       // BANCO DO BRASIL
-      //
       if Pos('-',Form26.MaskEdit44.Text) = 0 then ShowMessage('Configure o código da agência 0000-0');
       if Pos('-',Form26.MaskEdit46.Text) = 0 then ShowMessage('Configure o Número da Código do Cedente 00000-0');
       if Pos('/',Form26.MaskEdit43.Text) = 0 then ShowMessage('Configure a carteira/variação 00/000');
-      //
+
       sCodigoDoConvenio      := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),9,0),1,9)+'0014'+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',1,2)+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',4,3)+'  ';
       sNomeDoBanco           := 'BANCO DO BRASIL S.A.';
       sCodigoDoConvenio      := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),9,0),1,9)+'0014'+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',1,2)+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',4,3)+'  ';
@@ -2698,15 +2332,11 @@ begin
       sCodigoParaBaixa       := '0';
       sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0';
-      //
     end else
     begin
-      //
       if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
       begin
-        //
         // SICOOB
-        //
         sNomeDoBanco           := 'SICOOB';
         sCodigoDoConvenio      := Copy(Replicate(' ',20),1,20);
         sLayoutArquivo         := '081';
@@ -2722,15 +2352,11 @@ begin
         sCodigoParaBaixa       := '0';
         sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
         sDigitoAgencia         := '0';
-        //
       end else
       begin
-        //
         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then
         begin
-          //
           // SICREDI
-          //
           sNomeDoBanco           := 'SICREDI';
           sCodigoDoConvenio      := Copy(Replicate(' ',20),1,20);
           sLayoutArquivo         := '081';
@@ -2746,15 +2372,11 @@ begin
           sCodigoParaBaixa       := '1';
           sDVDaAgencia           := ' ';
           sDigitoAgencia         := '0';
-          //
         end else
         begin
-          //
           if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '085' then
           begin
-            //
             // AILOS
-            //
             sNomeDoBanco           := 'AILOS';
             sCodigoDoConvenio      := Copy(AllTrim(Form26.MaskEdit50.Text)+REplicate(' ',20),1,20);
             sLayoutArquivo         := '087';
@@ -2770,10 +2392,8 @@ begin
             sCodigoParaBaixa       := '2';
             sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
             sDigitoAgencia         := ' ';
-            //
           end else
           begin
-            //
             sNomeDoBanco           := 'BANCO PADRAO CNAB';
             sCodigoDoConvenio      := Copy(Replicate(' ',20),1,20);
             sLayoutArquivo         := '000';
@@ -2789,20 +2409,14 @@ begin
             sCodigoParaBaixa       := '0';
             sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
             sDigitoAgencia         := '0';
-            //
           end;
-          //
         end;
-        //
       end;
     end;
-    //
+    
     try
-      //
       // Registro Header de Arquivo (Tipo = 0)
-      //
       // Banco do Brasil  HEADER
-      //
       WriteLn(F,Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                       + // 001 a 003 (003) Código do Banco na Compensação
         '0000'                                                                                    + // 004 a 007 (004) Lote de Serviço
         '0'                                                                                       + // 008 a 008 (001) Tipo de Registro "0" header
@@ -2828,9 +2442,8 @@ begin
         Copy(Replicate(' ',20),1,20)                                                              + // 192 a 211 (020) Para Uso Reservado da Empresa
         Copy(Replicate(' ',29),1,29)                                                              // 212 a 240 (029) Uso Exclusivo FEBRABAN / CNAB
         );
-      //
+
       // Registro Header de Lote (Tipo = 1)
-      //
       WriteLn(F,Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                       + // 001 a 003 (003) Código do Banco na Compensação
         '0001'                                                                                    + // 004 a 007 (004) Lote de Serviço
         '1'                                                                                       + // 008 a 008 (001) Tipo de Registro
@@ -2855,41 +2468,36 @@ begin
         Copy('00000000',1,8)                                                                      + // 200 a 207 (008) Data do Crédito
         Copy(Replicate(' ',33),1,33)                                                              // 208 a 240 (033) Uso Exclusivo FEBRABAN / CNAB
         );
-      //
     except
       on E: Exception do
       begin
         Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
       end;
     end;
-    //
+
     Form7.ibDataSet7.DisableControls;
     Form7.ibDataSet7.First;
-    //
+
     while not Form7.ibDataSet7.Eof do
     begin
-      //
       if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
       begin
-        //
         if (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')') or
            (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')BAIXA') or
            (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')VENCIMENTO') or
            (UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')EXCLUIR') then
         begin
-          //
           try
-            //
             Form7.ibDataSet2.Close;
             Form7.ibDataSet2.Selectsql.Clear;
             Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
             Form7.ibDataSet2.Open;
-            //
+
             sCPFOuCNPJ := '01';
             if Length(LimpaNumero(Form7.IBDataSet2CGC.AsString)) = 14 then sCPFOuCNPJ := '02' else sCPFOuCNPJ := '01';
-            //
+
             sParcela := '01';
-            //
+
             if Ord(Form7.ibDataSet7DOCUMENTO.AsString[Length(Trim(Form7.ibDataSet7DOCUMENTO.AsString))]) >= 64 then
             begin
               sParcela := StrZero((Ord(Form7.ibDataSet7DOCUMENTO.AsString[Length(Trim(Form7.ibDataSet7DOCUMENTO.AsString))])-64),2,0); //converte a letra em número
@@ -2897,7 +2505,7 @@ begin
             begin
               sParcela := '01';
             end;
-            //
+
             if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
             begin
               sNumerodoDocumento := Copy(StrZero(StrToFloat('0'+LimpaNumero(Form7.ibDataset7NOSSONUM.AsString)),10,0)+sParcela+'014     ',1,20);
@@ -2905,28 +2513,24 @@ begin
             begin
               sNumerodoDocumento := Copy(LimpaNumero(Form7.ibDataset7NOSSONUM.AsString)+Replicate(' ',20),1,20);
             end;
-            //
           except
             on E: Exception do
             begin
               Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
             end;
           end;
-          //
+
           try
-            //
             // Código de Movimento usados pelo Small Commerce
-            //
             // '01' = Entrada de Títulos
             // '02' = Pedido de Baixa
             // '06' = Alteração de Vencimento
-            //
             sComandoMovimento := '01';
-            //
+
             if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text)+'000',1,3)+')BAIXA'       then sComandoMovimento := '02';
             if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text)+'000',1,3)+')VENCIMENTO'  then sComandoMovimento := '06';
             if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text)+'000',1,3)+')EXCLUIR'     then sComandoMovimento := '99';
-            //
+
             if UpperCase(AllTrim(Form7.ibDataSet7PORTADOR.AsString)) = 'BANCO ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')BAIXA' then
             begin
               Form7.ibDataSet7.Edit;
@@ -2941,16 +2545,13 @@ begin
                 Form7.ibDataSet7.Post;
               end;
             end;
-            //
-            //
+
+
             try
-              //
               // Registros de Detalhe (Tipo = 3)
-              //
               // Registro Detalhe - Segmento P (Obrigatório - Remessa)
-              //
               iReg := iReg + 1;
-              //
+
               if (Form1.fTaxa = 0) and (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748') then
               begin
                 sCodigodoJurosdeMora := '3';          // Código do Juros de Mora
@@ -2962,7 +2563,7 @@ begin
                                         Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime+1),4,2)       +
                                         Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime+1),7,4),1,008); // Data do Juros de Mora
               end;
-              //
+              
               WriteLn(F,
                 Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
                 Copy('0001',1,4)                                                                          + // 004 a 007 (004) Lote de Serviço
@@ -3011,11 +2612,11 @@ begin
                 Copy(Right('0000000000',10),1,10)                                                         + // 230 a 239 (10) Nº do Contrato da Operação de Créd.
                 Copy(' ',1,1)                                                                               // 240 a 240 (001) Uso Exclusivo FEBRABAN / CNAB
                 );
-              //
+
               // Registro Detalhe - Segmento Q (Obrigatório - Remessa)
-              //
+
               iReg := iReg + 1;
-              //
+
               WriteLn(F,
                 Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
                 Copy('0001',1,4)                                                                          + // 004 a 007 (004) Lote de Serviço
@@ -3024,9 +2625,8 @@ begin
                 Copy('Q',1,1)                                                                             + // 014 a 014 (001) Cód. Segmento do Registro Detalhe
                 Copy(' ',1,1)                                                                             + // 015 a 015 (001) Uso Exclusivo FEBRABAN/CNAB
                 Copy(sComandoMovimento,1,2)                                                               + // 016 a 017 (002) Código de Movimento Remessa
-                //
+
                 // Dados do Pagador
-                //
                 Copy(sCPFOuCNPJ,2,1)                                                                      + // 018 a 018 (001) Tipo de Inscrição da Empresa
                 Copy(Right(Replicate('0',15)+LimpaNumero(Form7.IBDataSet2CGC.AsString),15),1,015)         + // 019 a 033 (015) Número de Inscrição da Empresa
                 Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,040)                    + // 034 a 073 (040) Nome da Empresa
@@ -3036,34 +2636,29 @@ begin
                 Copy(UpperCase(Form7.IbDataSet2CEP.AsString)+Replicate(' ',3),7,003)                                       + // 134 a 136 (003) Sufixo do CEP
                 Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2CIDADE.AsString))+Replicate(' ',15),1,015)                  + // 137 a 151 (015)Cidade
                 Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2ESTADO.AsString))+Replicate(' ',2),1,002)                   + // 152 a 153 (002) Unidade da Federação
-                //
+
                 // Avalista
-                //
                 Copy('0',1,1)                                                                             + // 154 a 154 (001) Tipo de Inscrição da Empresa Avalista
                 Copy(Replicate('0',15),1,015)                                                             + // 155 a 169 (015) Número de Inscrição da Empresa avalista
                 Copy(Replicate(' ',40),1,040)                                                             + // 170 a 209 (040) Nome da Empresa avalista
-                //
-                //
-                //
+
                 Copy(Replicate('0',3),1,3)                                                                 + // 210 a 212 (003) Cód. Bco. Corresp. na Compensação
                 Copy(Replicate(' ',20),1,20)                                                               + // 213 a 232 (020) Nosso Nº no Banco Correspondente 213 a 232 (020)
                 Copy(Replicate(' ',8),1,8)                                                                   // 233 a 240 (008) Uso Exclusivo FEBRABAN / CNAB
                 );
-              //
             except
               on E: Exception do
               begin
                 Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
               end;
             end;
-            //
           except
             on E: Exception do
             begin
               Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
             end;
           end;
-          //
+
           try
             vTotal := vTotal + Form7.ibDataSet7VALOR_DUPL.AsFloat;
           except
@@ -3072,17 +2667,14 @@ begin
               Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
             end;
           end;
-          //
         end;
       end;
-      //
+
       Form7.ibDataSet7.Next;
-      //
     end;
+
     try
-      //
       // Registro Trailer de Lote (Tipo = 5)
-      //
       WriteLn(F,
         Copy(AllTrim(Form26.MaskEdit42.Text),1,3)     + // 001 a 003 (003) Código do Banco na Compensação
         '0001'                                        + // 004 a 007 (004) Lote de Serviço
@@ -3092,9 +2684,8 @@ begin
         Copy(StrZero(0,92,0),1,092)                   + // 024 a 115 (092) Zeros
         Copy(Replicate(' ',125),1,125)                  // 116 a 240 (125) Brancos
         );
-      //
+
       // Registro Trailer de Arquivo (Tipo = 9)
-      //
       WriteLn(F,
         Copy(AllTrim(Form26.MaskEdit42.Text),1,3) +   // 001 a 003 (003) Código do Banco na Compensação
         Copy('9999',1,004)                        +   // 004 a 007 (004) Lote de Serviço
@@ -3105,45 +2696,36 @@ begin
         Copy(StrZero(0,6,0),1,006)                +   // 030 a 035 (006) Qtde de Contas p/ Conc. (Lotes)
         Copy(Replicate(' ',205),1,205)                // 036 a 240 (205) Uso Exclusivo FEBRABAN/CNAB
         );
-      //
+
       CloseFile(F); // Fecha o arquivo
-      //
     except
       on E: Exception do
       begin
         Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
       end;
     end;
-    //
+
     if iReg = 2 then
     begin
-      //
       DeleteFile(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
       Form1.sArquivoRemessa := '';
-      //
+
       ShowMessage('Não existe movimento, o arquivo não foi gerado.');
-      //
     end;
-    //
-//  ShowMessage(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
-//    if FileExists(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa) then ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa),'', '', SW_SHOW);
-    //
+
   except
     on E: Exception do
     begin
       Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
     end;
   end;
-  //
+
   Form7.ibDataSet7.EnableControls;
-  //
 end;
 
 procedure TForm25.GravaPortadorNossoNumCodeBar;
 begin
-  //
   // Precisa estar posicionado no registro certo
-  //
   Form7.ibDataSet7.Edit;
   Form7.ibDataSet7PORTADOR.AsString  := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
   Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
@@ -3171,6 +2753,13 @@ begin
                                         Copy(Form25.sNumero,6,4)+                     // 6 a 9 do código de barras - fator de vencimento
                                         Copy(Form25.sNumero,10,10)                  // 10 a 19 do código de barras - valor nominal
                                         );
+                                        
+  //Mauricio Parizotto 2023-06-16
+  if sInstituicaoFinanceira <> '' then
+    Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
+
+  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
+    
   Form7.ibDataSet7.Post;
 end;
 

@@ -1727,7 +1727,7 @@ object Form26: TForm26
         'SICREDI - Com registro'
         'Unibanco')
     end
-    object CheckBox1: TCheckBox
+    object chkCNAB400: TCheckBox
       Left = 288
       Top = 312
       Width = 97
@@ -1735,7 +1735,7 @@ object Form26: TForm26
       Caption = 'CNAB 400'
       TabOrder = 11
     end
-    object CheckBox2: TCheckBox
+    object chkCNAB240: TCheckBox
       Left = 416
       Top = 312
       Width = 97

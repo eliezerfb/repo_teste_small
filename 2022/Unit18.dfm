@@ -98,7 +98,7 @@ object Form18: TForm18
       OnKeyDown = DBGrid1KeyDown
       OnKeyPress = DBGrid1KeyPress
     end
-    object ComboBox1: TComboBox
+    object cboDocCobranca: TComboBox
       Left = 10
       Top = 305
       Width = 560

@@ -129,8 +129,8 @@ type
     Label001: TLabel;
     Label002: TLabel;
     Label003: TLabel;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
+    chkCNAB400: TCheckBox;
+    chkCNAB240: TCheckBox;
     procedure FormActivate(Sender: TObject);
     procedure MaskEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -375,7 +375,6 @@ end;
 
 procedure TForm26.ComboBox1Change(Sender: TObject);
 begin
-  //
   if Form26.ComboBox1.Text = 'AILOS - Sistema de Cooperativas de Crédito'   then Form26.MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
   if Form26.ComboBox1.Text = 'SICOOB - Sem registro'                        then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
   if Form26.ComboBox1.Text = 'SICOOB - Com registro'                        then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
@@ -390,11 +389,16 @@ begin
   if Form26.ComboBox1.Text = 'Banrisul - Com registro'                      then Form26.MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
   if Form26.ComboBox1.Text = 'Itaú - Com registro'                          then Form26.MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
   if Form26.ComboBox1.Text = 'Unibanco'                                     then Form26.MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
-  //
 end;
 
 procedure TForm26.Button2Click(Sender: TObject);
 begin
+  if (not chkCNAB400.Checked) and (not chkCNAB240.Checked) then
+  begin
+    Application.MessageBox(pChar('Informe se é CNAB400 ou CNAB240.'),'Atenção',mb_Ok + MB_ICONWARNING);
+    Exit;
+  end;
+
   Close;
 end;
 
@@ -410,9 +414,6 @@ begin
       end;
     end;
   end;
-  //
-  // Form26.MaskEdit44Exit(Sender);
-  //
 end;
 
 procedure TForm26.MaskEdit42Exit(Sender: TObject);
@@ -437,10 +438,8 @@ begin
   //
   if (Alltrim(Form26.MaskEdit45.Text) = '') or (Alltrim(Form26.MaskEdit45.Text) = '0000000000000000000000000') then
   begin
-    //
     if Length(LimpaNumero(MaskEdit42.Text)) >= 3 then
     begin
-      //
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '085' then MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '756' then MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS001';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '748' then MaskEdit45.Text := '11YY2NNNNNVAAAAAACCCCC10D';
@@ -470,13 +469,8 @@ begin
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.ComboBox1.Text := 'Banrisul - Com registro';
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.ComboBox1.Text := 'Itaú - Com registro';
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.ComboBox1.Text := 'Unibanco';
-      //
     end;
-    //
   end;
-  //
-  // Form26.MaskEdit44Exit(Sender);
-  //
 end;
 
 end.

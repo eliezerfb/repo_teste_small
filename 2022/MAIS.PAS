@@ -456,6 +456,7 @@ type
     sPasta   : String;
     iReduzida, iTempo, iAvisosEstoque, iAvisosNFECompra, iAvisosCaixa, iAvisosBanco, iAvisosPagar, iAvisosReceber, iAvisosCliFor, iAvisosOS, iAvisosIndicadores, iAvisosConfig: Integer;
     sEscolhido: String;
+    sBancoBoleto: String;
     ConfCFOP: String;
     CFOP5124: String;
     ConfCasas : String;
@@ -3761,29 +3762,30 @@ end;
 
 procedure Tform1.EscolheOBloqueto(Sender:TObject);
 begin
-  { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  //with Sender as TMenuItem do sEscolhido := Caption;
   with Sender as TMenuItem do
-    sEscolhido := Caption;
-  sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  //  sEscolhido := Caption;
+    sBancoBoleto := Caption;
+
+  //sEscolhido := 'Boleto de cobrança do '+sEscolhido;
+  sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.ShowModal;
-  //
 end;
 
 procedure Tform1.EscolheCNAB400(Sender:TObject);
 begin
-  { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  //with Sender as TMenuItem do sEscolhido := Caption;
   with Sender as TMenuItem do
-    sEscolhido := Caption;
-  sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  //  sEscolhido := Caption;
+    sBancoBoleto := Caption;
+
+  //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
-  //Form25.Button9.Click;
+
   Form25.btnCNAB400.Click; // Sandro Silva 2022-12-23 Form25.Button9.Click;
   Form25.Close;
-  //
+
   if Form1.sArquivoRemessa <> '' then
   begin
     ShowMessage('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 400 para o BANCO '+
@@ -3791,22 +3793,22 @@ begin
     Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10));
   end;
-  //
 end;
 
 procedure Tform1.EscolheCNAB240(Sender:TObject);
 begin
-  { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  //with Sender as TMenuItem do sEscolhido := Caption;
   with Sender as TMenuItem do
-    sEscolhido := Caption;
-  sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  //  sEscolhido := Caption;
+      sBancoBoleto := Caption;
+
+  //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
-  //Form25.Button10.Click;
+  
   Form25.btnCNAB240.Click; // Sandro Silva 2022-12-23 Form25.Button10.Click;
   Form25.Close;
-  //
+
   if Form1.sArquivoRemessa <> '' then
   begin
     ShowMessage('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 240 para o BANCO '+
@@ -3814,7 +3816,6 @@ begin
     Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10));
   end;
-  //
 end;
 
 procedure Tform1.ExecutaOPlugin(Sender:TObject);
@@ -3825,12 +3826,9 @@ end;
 
 procedure TForm1.FormActivate(Sender: TObject);
 var
-//  Hora, Min, Seg, cent : Word;
-//  tInicio : tTime;
   Mais1Ini: TIniFile;
   sPastaDoPaf : String;
 begin
-  //
   Form1.sConsultaNfse   := 'NAO';
   Timer2.Interval       := 10000;
   Form1.Image4.Width    := 1024;
@@ -11659,21 +11657,20 @@ end;
 
 procedure TForm1.Label_bola_receberClick(Sender: TObject);
 begin
-  //
   Form1.Image204Click(Sender);
-  //
+
   Form7.ibDataSet7.DisableControls;
-  //
+
   try
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.SelectSQL.Clear;
     Form7.ibDataSet7.SelectSQL.Add('select * from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
     Form7.ibDataSet7.Open;
-  except end;
-  //
+  except
+  end;
+
   Form7.ibDataSet7.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosReceber)+' contas para receber hoje.');
-  //
 end;
 
 procedure TForm1.Label_Bola_estoqueClick(Sender: TObject);
