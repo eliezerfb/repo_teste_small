@@ -1461,6 +1461,7 @@ type
     ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
     DSConsulta: TDataSource;
     ibqConsulta: TIBDataSet;
+    ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -9394,6 +9395,7 @@ begin
   //Campos Somente Leitura ao editar pelo Grid
   ibDataSet7INSTITUICAOFINANCEIRA.Tag := 10;
   ibDataSet7NOME.Tag := 10;
+  ibDataSet11INSTITUICAOFINANCEIRA.Tag := 10;
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
   Image202.Transparent := False;
@@ -11323,8 +11325,9 @@ begin
         sWhere    := '';
         sOrderBy  := 'order by upper(NOME)';
         sREgistro := '0000000001';
-        sMostra   := 'TTTTT';
-        iCampos   := 5;
+        //sMostra   := 'TTTTT'; Mauricio Parizotto 2023-06-16
+        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');
+        iCampos   := 6;
       end else
       begin
         Image209.Visible := True; // Filtros
