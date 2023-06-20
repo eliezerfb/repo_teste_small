@@ -848,7 +848,7 @@ object Form10: TForm10
       ShowHint = True
       TabOrder = 2
       OnDblClick = Panel2DblClick
-      object Button5: TBitBtn
+      object btnOK: TBitBtn
         Left = 655
         Top = 8
         Width = 120

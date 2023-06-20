@@ -1462,7 +1462,8 @@ type
     ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
     DSConsulta: TDataSource;
     ibqConsulta: TIBDataSet;
-    ibDataSet7FORMADEPAGAMENTO: TStringField;
+    ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
+    ibDataSet7FORMADEPAGAMENTO: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -9397,6 +9398,7 @@ begin
   //Campos Somente Leitura ao editar pelo Grid
   ibDataSet7INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
   ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
+  ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
   ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
@@ -11341,8 +11343,9 @@ begin
         sWhere    := '';
         sOrderBy  := 'order by upper(NOME)';
         sREgistro := '0000000001';
-        sMostra   := 'TTTTT';
-        iCampos   := 5;
+        //sMostra   := 'TTTTT'; Mauricio Parizotto 2023-06-16
+        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');
+        iCampos   := 6;
       end else
       begin
         Image209.Visible := True; // Filtros
@@ -21574,48 +21577,39 @@ var
   I, II, J : Integer;
   PDF: TPrintPDF;
 begin
-  //
   Form40.Tag := 0;
   Form40.CheckBox1.Visible := True;
   Form40.ShowModal;
-  //
-  //
+
   if Form1.Tag = 1 then
   begin
-    //
     bButton := Application.MessageBox(Pchar('Quer realmente mandar este e-mail de cobrança para os clientes' + chr(10) +
               Chr(10) + 'filtrados?' +
               Chr(10) +
               Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-    //
+
     try
-      //
       if bButton = IDYES then
       begin
-        //
         I := 0;
         Form7.ibDataSet7.First;
-        //
+
         // Retorna onde parou
-        //
         Mais1ini := TIniFile.Create('frente.ini');
         sRegistro := Mais1Ini.ReadString('mail','registro','FIM') ;
-        //
+
         if sRegistro <> 'FIM' then
         begin
-          //
           bButton := Application.MessageBox(Pchar('Quer recomeçar de onde parou?'),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
           if bButton = IDYES then
           begin
-            //
             while (not Form7.ibDataSet7.Eof) and (sRegistro <> Form7.ibDataSet7.FieldByName('REGISTRO').AsString) do
             begin
-              //
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
-              //
+
               if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
               begin
                 if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
@@ -21623,14 +21617,12 @@ begin
                   I := I + 1;
                 end;
               end;
-              //
+
               Form7.ibDataSet7.Next;
-              //
             end;
-            //
+
             if sRegistro = Form7.ibDataSet7.FieldByName('REGISTRO').AsString then
             begin
-              //
               if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
               begin
                 if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
@@ -21638,63 +21630,48 @@ begin
                   I := I + 1;
                 end;
               end;
-              //
+
               Form7.ibDataSet7.Next;
-              //
             end;
-            //
           end;
-          //
         end;
-        //
+
         Mais1ini.Free;
-        //
+        
         while not Form7.ibDataSet7.Eof do
         begin
-          //
           try
-            //
             // Não relacionar os inativos
-            //
             if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
             begin
-              //                                                                    //
-              // Relaciona os clientes com o arquivo de vendas                     //
-              //                                                                  //
+              // Relaciona os clientes com o arquivo de vendas
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
-              //
+
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
-                //
                 sArquivo := '';
-                //
+
                 if Form7.sModulo = 'RECEBER' then
                 begin
-                  //
                   if Form40.CheckBox1.Checked then
                   begin
-                    //
                     while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') do
                     begin
                       DeleteFile(pchar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'));
                       Sleep(1000);
                     end;
-                    //
+
                     MyBookMark := Form7.ibDataSet7.GetBookmark();
                     Form7.ibDataSet7.DisableControls;
-                    //
                     try
-                      //
                       // Cria o PDF
-                      //
                       // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
                       PDF := TPrintPDF.Create(Self);
-                      //
+
                       // Configurações do documento
-                      //
                       PDF.TITLE       := 'Boletos';
                       PDF.Creator     := 'Small Commerce';
                       PDF.Author      := 'Small Commerce';
@@ -21703,7 +21680,7 @@ begin
                       PDF.Subject     := 'Boletos de cobrança';
                       PDF.JPEGQuality := 100;
                       PDF.Compress    := False;
-                      //
+                      
                       // Tamanho do A4 21,0 cm x 29,7 cm
                       //
                       PDF.PageWidth   :=  735;
@@ -21722,18 +21699,15 @@ begin
                         DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
                         Sleep(1000);
                       end;
-                      //
+
                       Form1.sEscolhido := '';
-                      //
+                      Form1.sBancoBoleto := '';
+
                       try
-                        //
                         sSecoes := TStringList.Create;
                         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
                         Mais1Ini.ReadSections(sSecoes);
-                        //
-                        // BANCO (001)
-                        // REMESSA (001)
-                        //
+
                         for J := 0 to (sSecoes.Count - 1) do
                         begin
                           if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
@@ -21744,49 +21718,41 @@ begin
                             Form1.sEscolhido := sSecoes[J];
                           end;
                         end;
-                        //
+
                         Mais1Ini.Free;
-                        //
                       except
                       end;
-                      //
-//                      if AllTrim(Form1.sEscolhido) <> '' then
+
                       begin
-                        //
                         Form25.Show; // Em Form7.Emaildecobrana1Click()
                         Form7.Repaint;
-                        //
+
                         while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                         begin
                           Sleep(1000);
                         end;
-                        //
+
                         PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-                        //
-                        // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-                        //
+
                         PDF.EndDoc;
-                        //
+
                         // Fecha o pdf
-                        //
                         if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then
                           sArquivo := Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'
                         else
                           sArquivo := '';
-                        //
                       end;
-                      //
                     except
                     end;
-                    //
+
                     Form25.Close;
                     Form7.Repaint;
-                    //
+
                     Form7.ibDataSet7.EnableControls;
                     Form7.ibDataSet7.GotoBookmark(MyBookMark);
                   end;
                 end;
-                //
+                
                 sASsunto := Form40.Edit1.Text;
                 sAssunto := StrTran(sASsunto,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
                 //
@@ -22440,18 +22406,15 @@ var
   GeraEnvioItem1: TmenuItem;
   bI: Boolean;
 begin
-  //
   Gerarboletoeenviodeemaildecobranatotalizadoporcliente1.Visible := Form1.DisponivelSomenteParaNos; // Sandro Silva 2022-12-26
   GerCNAB400.Visible := True;
   GerCNAB240.Visible := True;
-  //
+
   ibDataSet11.First;
-  //
+
   while not ibDataSet11.eof do
   begin
-    //
     // Bloquetos
-    //
     bI := True;
     for I := 0 to Bloquetos1.Count -1 do
     begin
@@ -22461,7 +22424,6 @@ begin
 
     if bI then
     begin
-      //
       NovItem1 := TMenuItem.Create(Bloquetos1);
       NovItem1.Caption := ibDataSet11NOME.Value;
       Bloquetos1.Add(NovItem1);
@@ -22473,11 +22435,9 @@ begin
       Gerarboletoeenviodeemaildecobranatotalizadoporcliente1.Add(GeraEnvioItem1);
       GeraEnvioItem1.OnClick := EscolheOBancoParaGerarBoletoEEnviarEmail;
       {Sandro Silva 2022-12-26 fim}
-      //
     end;
-    //
+
     // CNAB 400
-    //
     bI := True;
     for I := 0 to GerCNAB400.Count -1 do
     begin
@@ -22487,16 +22447,13 @@ begin
 
     if bI then
     begin
-      //
       NovItem2 := TMenuItem.Create(GerCNAB400);
       NovItem2.Caption := ibDataSet11NOME.Value;
       GerCNAB400.Add(NovItem2);
       NovItem2.OnClick := Form1.EscolheCNAB400;
-      //
     end;
-    //
+
     // CNAB 240
-    //
     bI := True;
     for I := 0 to GerCNAB240.Count -1 do
     begin
@@ -22506,17 +22463,14 @@ begin
 
     if bI then
     begin
-      //
       NovItem2 := TMenuItem.Create(GerCNAB240);
       NovItem2.Caption := ibDataSet11NOME.Value;
       GerCNAB240.Add(NovItem2);
       NovItem2.OnClick := Form1.EscolheCNAB240;
-      //
     end;
     ibDataSet11.Next;
-    //
   end;
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
   for I := 0 to GerCNAB240.Count -1 do
   begin
@@ -22534,12 +22488,11 @@ begin
       GerCNAB400.Items[I].Enabled := False;
   end;
   Mais1ini.Free;
-  //
+
   if Form7.ibDataSet7VALOR_RECE.AsFloat <> 0 then
     Imprimirrecibo2.Enabled := True
   else
     Imprimirrecibo2.Enabled := False;
-  //
 end;
 
 procedure TForm7.ibDataSet1CalcFields(DataSet: TDataSet);
@@ -22557,14 +22510,12 @@ end;
 
 procedure TForm7.Rankingdedevedores2Click(Sender: TObject);
 begin
-  //
   Form38.ComboBox1.Visible  := True;
   sModuloAnterior := sModulo;
   Form7.sWhere := '';
   Form38.Panel6.Visible := True;
   Form7.sModulo                   := 'Ranking de devedores';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.ibDataSet11BeforeInsert(DataSet: TDataSet);
@@ -28705,133 +28656,107 @@ var
   MyBookMark1 : TBookMark;
   PDF: TPrintPDF;
   sArquivoPDF: String; // Sandro Silva 2022-12-22
-
 begin
-  //
   Form40.Tag := 9;
   Form40.CheckBox1.Visible := True;
   Form40.ShowModal;
-  //
-  //
+
   if Form1.Tag = 1 then
   begin
-    //
     bButton := Application.MessageBox(Pchar('Quer realmente mandar este e-mail de cobrança para os clientes' + chr(10) +
               Chr(10) + 'filtrados?' +
               Chr(10) +
               Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-    //
+
     try
-      //
       if bButton = IDYES then
       begin
-        //
         I := 0;
         Form7.ibDataSet7.First;
-        //
+
         // Retorna onde parou
-        //
         Mais1ini := TIniFile.Create('frente.ini');
         sRegistro := Mais1Ini.ReadString('mail','registro','FIM') ;
-        //
+
         if sRegistro <> 'FIM' then
         begin
-          //
           bButton := Application.MessageBox(Pchar('Quer recomeçar de onde parou?'),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-          //
+
           if bButton = IDYES then
           begin
-            //
             while (not Form7.ibDataSet7.Eof) and (sRegistro <> Form7.ibDataSet7.FieldByName('REGISTRO').AsString) do
             begin
-              //
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
-              //
+
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
-              //
+
               Form7.ibDataSet7.Next;
-              //
             end;
-            //
+
             if sRegistro = Form7.ibDataSet7.FieldByName('REGISTRO').AsString then
             begin
-              //
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
-              //
+
               Form7.ibDataSet7.Next;
-              //
             end;
-            //
           end else
           begin
             sMandados := '';
           end;
-          //
         end;
-        //
+
         Mais1ini.Free;
         Screen.Cursor            := crHourGlass;
-        //
+
         YY := 0;
-        //
+
         while not Form7.ibDataSet7.Eof do
         begin
-          //
           if (Pos(Form7.ibDataSet7NOME.AsString,sMandados)=0) and (Form7.ibDataSet7ATIVO.AsFloat=0) then
           begin
             try
-              //
-              //                                                                    //
-              // Relaciona os clientes com o arquivo de vendas                     //
-              //                                                                  //
+              // Relaciona os clientes com o arquivo de vendas
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
-              //
+
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
-                //
                 sArquivo := '';
                 sArquivoPDF := Form1.sAtual+'\boletos_' + LimpaNumero(Form7.IBDataSet2CGC.AsString) + '.pdf'; // Sandro Silva 2022-12-22
-                //
+
                 if Form7.sModulo = 'RECEBER' then
                 begin
-                  //
                   if Form40.CheckBox1.Checked then
                   begin
-                    //
                     while FileExists(sArquivoPDF) do  // Sandro Silva 2022-12-22 while FileExists(Form1.sAtual+'\boletos.pdf') do
                     begin
                       DeleteFile(pChar(sArquivoPDF)); // Sandro Silva 2022-12-22 DeleteFile(pChar(Form1.sAtual+'\boletos.pdf'));
                       Sleep(1000);
                     end;
-                    //
+
                     MyBookMark := Form7.ibDataSet7.GetBookmark();
                     Form7.ibDataSet7.DisableControls;
-                    //
+
                     try
-                      //
                       // Grava o local para voltar
-                      //
                       MyBookMark1 := Form7.ibDataSet7.GetBookMark();
-                      //
+
                       // Cria o PDF
-                      //
                       // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
                       PDF := TPrintPDF.Create(Self);
-                      //
+
                       // Configurações do documento
-                      //
                       PDF.TITLE       := 'Boletos';
                       PDF.Creator     := 'Small Commerce';
                       PDF.Author      := 'Small Commerce';
@@ -28840,43 +28765,39 @@ begin
                       PDF.Subject     := 'Boletos de cobrança';
                       PDF.JPEGQuality := 100;
                       PDF.Compress    := False;
-                      //
+
                       // Tamanho do A4 21,0 cm x 29,7 cm
-                      //
                       PDF.PageWidth   :=  735;
                       PDF.PageHeight  :=  1039;
-                      //
+
                       // Nome do arquivo para salvar
-                      //
                       PDF.FileName    := sArquivoPDF;// sFileCFeSAT; // Sandro Silva 2022-12-22 PDF.FileName    := Form1.sAtual+'\boletos.pdf';// sFileCFeSAT;
                       {Start Printing...}
                       PDF.BeginDoc;
-                      //
+
                       Form7.ibDataSet7.First;
                       while not Form7.ibDataSet7.Eof do
                       begin
-
                         if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
                         begin
                           if ibDataSet7ATIVO.AsString <> '1' then // Não imprime boleto inativo
                           begin
                             if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
                             begin
-                              //
                               while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                               begin
                                 DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
                                 Sleep(1000);
                               end;
-                              //
+
                               Form1.sEscolhido := '';
-                              //
+                              Form1.sBancoBoleto := '';
+
                               try
-                                //
                                 sSecoes := TStringList.Create;
                                 Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
                                 Mais1Ini.ReadSections(sSecoes);
-                                //
+
                                 for J := 0 to (sSecoes.Count - 1) do
                                 begin
                                   if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
@@ -28887,15 +28808,13 @@ begin
                                     Form1.sEscolhido := sSecoes[J];
                                   end;
                                 end;
-                                //
+
                                 Mais1Ini.Free;
-                                //
                               except
                               end;
-                              //
+                              
                               if (AllTrim(Form1.sEscolhido) <> '') or (Form1.DisponivelSomenteParaNos) then // Sandro Silva 2022-12-22 if AllTrim(Form1.sEscolhido) <> '' then
                               begin
-                                //
                                 Form25.Show; // Em Form7.Emaildecobrana2Click()
 
                                 {Sandro Silva 2022-12-23 inicio}
@@ -28914,79 +28833,69 @@ begin
                                 {Sandro Silva 2022-12-23 fim}
 
                                 Form7.Repaint;
-                                //
+                                
                                 while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                                 begin
                                   Sleep(1000);
                                 end;
-                                //
+
                                 // Print Image
-                                //
                                 YY := YY + 1;
                                 if YY >= 2 then
                                   PDF.NewPage; // Add New Page
-                                //
+
                                 PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-                                //
-                                // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-                                //
                               end;
                             end;
                           end;
                         end;
-                        //
+
                         Screen.Cursor            := crHourGlass;
                         Form7.ibDataSet7.Next;
                         Form25.Close;
                         Form7.Repaint;
-                        //
                       end;
-                      //
+                      
                       Form7.ibDataSet7.GotoBookmark(MyBookMark1);
-                      //
+                      
                       PDF.EndDoc;
                       if FileExists(sArquivoPDF) then // Sandro Silva 2022-12-22 if FileExists(Form1.sAtual+'\boletos.pdf') then
                         sArquivo := sArquivoPDF // Sandro Silva 2022-12-22 sArquivo := Form1.sAtual + '\boletos.pdf'
                       else
                         sArquivo := '';
-                      //
                     except
                     end;
-                    //
+
                     Form25.Close;
                     Form7.Repaint;
-                    //
+
                     Form7.ibDataSet7.EnableControls;
                     Form7.ibDataSet7.GotoBookmark(MyBookMark);
-                    //
                     // Fecha o pdf
-                    //
                   end;
                 end;
-                //
+
                 sASsunto := Form40.Edit1.Text;
                 sAssunto := StrTran(sASsunto,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
-                //
+
                 sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-                //
+
                 sMsg := Form40.Memo1.Lines.Text;
-                //
+
                 // CLIENTES
-                //
                 if I <> 0 then
                 begin
                   for II := 1 to 700 do
                   begin
-                    //
                     try
                       Sleep((60*60) div StrToInt(LimpaNumero(Form40.MaskEdit1.Text)));
-                    except end;
-                    //
+                    except
+                    end;
+
                     Application.ProcessMessages;
-                    //
                   end;
                 end;
-                //
+
                 sMsg := StrTran(sMsg,'<NOME>'          ,Form7.ibDataSet2.FieldByName('NOME'     ).AsString);
                 sMsg := StrTran(sMsg,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
                 sMsg := StrTran(sMsg,'<IE>'            ,Form7.ibDataSet2.FieldByName('IE'       ).AsString);
@@ -29023,14 +28932,11 @@ begin
                 sMsg := StrTran(sMsg,'<CEP_EMITENTE>',        Form7.ibDataSet13CEP.AsString);
                 sMsg := StrTran(sMsg,'<CIDADE_EMITENTE>',     Form7.ibDataSet13MUNICIPIO.AsString);
                 sMsg := StrTran(sMsg,'<UF_EMITENTE>',         UpperCase(Form7.ibDataSet13ESTADO.AsString));
-                //
+                
                 // TOTAL ATRASADO - Total acumulado
-                //
                 if Pos('<PARCELAS_VENCIDAS>',sMsg) <> 0 then
                 begin
-                  //
                   // sql para somar o total atrasado deste cliente
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select * from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' order by VENCIMENTO');
@@ -29048,35 +28954,27 @@ begin
                                 'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+
                                 IfThen(Trim(Form7.ibQuery1.fieldByname('CODEBAR').AsString) <> '', 'Código de barras: '+Form7.ibQuery1.fieldByname('CODEBAR').AsString, '')+chr(10)+chr(10)// Sandro Silva 2023-02-10
                                 ;
-                    //
                     Form7.ibQuery1.Next;
                   end;
-                  //
+
                   sMsg := StrTran(sMsg,'<PARCELAS_VENCIDAS>'    ,sParcelas);
-                  //
                 end;
-                //
+
                 // TOTAL ATRASADO - Total acumulado
-                //
                 if Pos('<TOTAL_ATRASADO>',sMsg) <> 0 then
                 begin
-                  //
                   // sql para somar o total atrasado deste cliente
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select sum(VALOR_DUPL) from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' group by NOME');
                   Form7.ibQuery1.Open;
                   //
                   sMsg := StrTran(sMsg,'<TOTAL_ATRASADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
-                  //
                 end;
                 //
                 if Pos('<TOTAL_ATUALIZADO>',sMsg) <> 0 then
                 begin
-                  //
                   // sql para somar o total atrasado deste cliente
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select sum(VALOR_JURO) from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' group by NOME');
@@ -29101,28 +28999,21 @@ begin
                 //
                 Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail´s enviados.';
                 Form7.Panel1.Repaint;
-                //
               end;
-              //
+              
               sMandados := sMandados + Form7.ibDataSet7NOME.AsString;
-              //
             except end;
-            //
          end;
-         //
+
          Form7.ibDataSet7.Next;
-         //
         end;
       end;
-      //
     except end;
-    //
+
     Screen.Cursor            := crDefault;
     Form7.Panel1.Visible := False;
     Form7.Repaint;
-    //
   end;
-  //
 end;
 
 procedure TForm7.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -31091,21 +30982,20 @@ begin
                           begin
                             if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
                             begin
-                              //
                               while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                               begin
                                 DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
                                 sleep(1000);
                               end;
-                              //
+
                               Form1.sEscolhido := '';
-                              //
+                              Form1.sBancoBoleto := '';
+
                               try
-                                //
                                 sSecoes := TStringList.Create;
                                 Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
                                 Mais1Ini.ReadSections(sSecoes);
-                                //
+
                                 for J := 0 to (sSecoes.Count - 1) do
                                 begin
                                   if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
@@ -31116,73 +31006,66 @@ begin
                                     Form1.sEscolhido := sSecoes[J];
                                   end;
                                 end;
-                                //
+
                                 Mais1Ini.Free;
-                                //
+
                               except end;
-                              //
+
                               if AllTrim(Form1.sEscolhido) <> '' then
                               begin
-                                //
                                 Form25.Show;
                                 Form7.Repaint;
-                                //
+
                                 while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                                 begin
                                   Sleep(1000);
                                 end;
-                                //
+
                                 // Print Image
-                                //
                                 YY := YY + 1;
                                 if YY >= 2 then PDF.NewPage; // Add New Page
                                 //
                                 PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-                                //
+
                                 // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-                                //
                               end;
                             end;
                           end;
                         end;
-                        //
+
                         Screen.Cursor            := crHourGlass;
                         Form7.ibDataSet7.Next;
                         Form25.Close;
                         Form7.Repaint;
-                        //
                       end;
-                      //
+
                       Form7.ibDataSet7.GotoBookmark(MyBookMark1);
-                      //
+
                       PDF.EndDoc;
                       if FileExists(sArquivoPDF) then // Sandro Silva 2022-12-22 if FileExists(Form1.sAtual+'\boletos.pdf') then
                         sArquivo := sArquivoPDF // Sandro Silva 2022-12-22 sArquivo := Form1.sAtual + '\boletos.pdf'
                       else
                         sArquivo := '';
-                      //
                     except end;
-                    //
+
                     Form25.Close;
                     Form7.Repaint;
-                    //
+
                     Form7.ibDataSet7.EnableControls;
                     Form7.ibDataSet7.GotoBookmark(MyBookMark);
-                    //
+
                     // Fecha o pdf
-                    //
                   end;
                 end;
-                //
+
                 sASsunto := Form40.Edit1.Text;
                 sAssunto := StrTran(sASsunto,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
-                //
+
                 sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-                //
+
                 sMsg := Form40.Memo1.Lines.Text;
-                //
+
                 // CLIENTES
-                //
                 sMsg := StrTran(sMsg,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
                 sMsg := StrTran(sMsg,'<NOME>'          ,Form7.ibDataSet2.FieldByName('NOME'     ).AsString);
                 sMsg := StrTran(sMsg,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
@@ -32568,14 +32451,13 @@ end;
 
 procedure TForm7.EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
 begin
-  {Sandro Silva 2022-12-26 inicio}
   // Para envio de boletos referente a incorporação da Zucchetti
   Form1.sEscolhido := 'Boleto de cobrança do ' + TMenuItem(Sender).Caption;
+  Form1.sBancoBoleto := TMenuItem(Sender).Caption;
   Form25.Show; // Para carregar parâmetros e gerar corretamente o código de barras/nosso número
   Form25.Close;
   // Sandro Silva 2022-12-28 Emaildecobrana2Click(Sender); // Executando o click de modo provisório devido a pouco tempo para atender a incorporação da Zucchetti, analisar para evitar uso de eventos em cascata.
   Form7.EmailAtualizaBoletoscobranaClick(Sender);// Executando o click de modo provisório devido a pouco tempo para atender a incorporação da Zucchetti, analisar para evitar uso de eventos em cascata.
-  {Sandro Silva 2022-12-26 fim}
 end;
 
 procedure TForm7.EmailAtualizaBoletoscobranaClick(Sender: TObject);
@@ -32591,36 +32473,27 @@ var
   PDF: TPrintPDF;
   sArquivoPDF: String; // Sandro Silva 2022-12-22 
 begin
-  //
   Form40.Tag := ID_TIPO_COBRANCA_ATUALIZA_BOLETOS;
   Form40.CheckBox1.Visible := True;
   Form40.ShowModal;
-  //
-  //
+
   if Form1.Tag = 1 then
   begin
-    //
     bButton := Application.MessageBox(Pchar('Quer realmente mandar este e-mail de cobrança para os clientes' + chr(10) +
                  Chr(10) + 'filtrados?' +
                  Chr(10) +
                  Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-        //
     try
-      //
       if bButton = IDYES then
       begin
-        //
         I := 0;
         Form7.ibDataSet7.First;
-        //
         // Retorna onde parou
-        //
         Mais1ini  := TIniFile.Create('frente.ini');
         sRegistro := Mais1Ini.ReadString('mail','registro','FIM') ;
         //
         if sRegistro <> 'FIM' then
         begin
-          //
           bButton := Application.MessageBox(Pchar('Quer recomeçar de onde parou?'),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
           //
           if bButton = IDYES then
@@ -32640,31 +32513,26 @@ begin
               end;
               //
               Form7.ibDataSet7.Next;
-              //
             end;
             //
             if sRegistro = Form7.ibDataSet7.FieldByName('REGISTRO').AsString then
             begin
-              //
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
-              //
+
               Form7.ibDataSet7.Next;
-              //
             end;
-            //
           end else
           begin
             sMandados := '';
           end;
-          //
         end;
-        //
+
         Mais1ini.Free;
         Screen.Cursor            := crHourGlass;
-        //
+        
         YY := 0;
         //
         while not Form7.ibDataSet7.Eof do
@@ -32746,21 +32614,20 @@ begin
                           begin
                             if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
                             begin
-                              //
                               while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                               begin
                                 DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
                                 Sleep(1000);
                               end;
-                              //
+
                               Form1.sEscolhido := '';
-                              //
+                              Form1.sBancoBoleto := '';
+
                               try
-                                //
                                 sSecoes := TStringList.Create;
                                 Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
                                 Mais1Ini.ReadSections(sSecoes);
-                                //
+
                                 for J := 0 to (sSecoes.Count - 1) do
                                 begin
                                   if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
@@ -32771,15 +32638,14 @@ begin
                                     Form1.sEscolhido := sSecoes[J];
                                   end;
                                 end;
-                                //
+
                                 Mais1Ini.Free;
-                                //
                               except
                               end;
-                              //
+
                               if (AllTrim(Form1.sEscolhido) <> '') or (Form1.DisponivelSomenteParaNos) then // Sandro Silva 2022-12-22 if AllTrim(Form1.sEscolhido) <> '' then
                               begin
-                                //
+                                Form1.sBancoBoleto     := '';
                                 Form25.Show; // Em Form7.Emaildecobrana2Click()
 
                                 {Sandro Silva 2022-12-23 inicio}
@@ -32798,80 +32664,68 @@ begin
                                 {Sandro Silva 2022-12-23 fim}
 
                                 Form7.Repaint;
-                                //
+
                                 while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                                 begin
                                   Sleep(1000);
                                 end;
-                                //
+
                                 // Print Image
-                                //
                                 YY := YY + 1;
                                 if YY >= 2 then
                                   PDF.NewPage; // Add New Page
-                                //
+
                                 PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-                                //
-                                // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-                                //
                               end;
                             end;
                           end;
                         end;
-                        //
+
                         Screen.Cursor            := crHourGlass;
                         Form7.ibDataSet7.Next;
                         Form25.Close;
                         Form7.Repaint;
-                        //
                       end;
-                      //
+
                       Form7.ibDataSet7.GotoBookmark(MyBookMark1);
-                      //
+
                       PDF.EndDoc;
                       if FileExists(sArquivoPDF) then // Sandro Silva 2022-12-22 if FileExists(Form1.sAtual+'\boletos.pdf') then
                         sArquivo := sArquivoPDF // Sandro Silva 2022-12-22 sArquivo := Form1.sAtual + '\boletos.pdf'
                       else
                         sArquivo := '';
-                      //
                     except
                     end;
-                    //
+
                     Form25.Close;
                     Form7.Repaint;
-                    //
+
                     Form7.ibDataSet7.EnableControls;
                     Form7.ibDataSet7.GotoBookmark(MyBookMark);
-                    //
-                    // Fecha o pdf
-                    //
                   end;
                 end;
-                //
+
                 sASsunto := Form40.Edit1.Text;
                 sAssunto := StrTran(sASsunto,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
-                //
+
                 sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-                //
+
                 sMsg := Form40.Memo1.Lines.Text;
-                //
+
                 // CLIENTES
-                //
                 if I <> 0 then
                 begin
                   for II := 1 to 700 do
                   begin
-                    //
                     try
                       Sleep((60*60) div StrToInt(LimpaNumero(Form40.MaskEdit1.Text)));
                     except
                     end;
-                    //
+
                     Application.ProcessMessages;
-                    //
                   end;
                 end;
-                //
+                
                 sMsg := StrTran(sMsg,'<NOME>'          ,Form7.ibDataSet2.FieldByName('NOME'     ).AsString);
                 sMsg := StrTran(sMsg,'<CONTATO>'       ,Form7.ibDataSet2.FieldByName('CONTATO'  ).AsString);
                 sMsg := StrTran(sMsg,'<IE>'            ,Form7.ibDataSet2.FieldByName('IE'       ).AsString);
@@ -32913,16 +32767,14 @@ begin
                 //
                 if Pos('<PARCELAS_VENCIDAS>',sMsg) <> 0 then
                 begin
-                  //
                   // sql para somar o total atrasado deste cliente
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select * from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' order by VENCIMENTO');
                   Form7.ibQuery1.Open;
-                  //
+
                   sParcelas := '';
-                  //
+
                   while not Form7.ibQuery1.eof do
                   begin
                     sParcelas := sParcelas +
@@ -32933,83 +32785,67 @@ begin
                                 'Atualizado: '+Copy(Format('%10.2n',[Form7.ibQuery1.fieldByname('VALOR_JURO').AsFloat])+Replicate(' ',10),1,10)+chr(10)+
                                 IfThen(Trim(Form7.ibQuery1.fieldByname('CODEBAR').AsString) <> '', 'Código de barras: '+Form7.ibQuery1.fieldByname('CODEBAR').AsString, '')+chr(10)+chr(10)// Sandro Silva 2023-02-10
                                 ;
-                    //
+
                     Form7.ibQuery1.Next;
                   end;
-                  //
+
                   sMsg := StrTran(sMsg,'<PARCELAS_VENCIDAS>'    ,sParcelas);
-                  //
                 end;
-                //
+
                 // TOTAL ATRASADO - Total acumulado
-                //
                 if Pos('<TOTAL_ATRASADO>',sMsg) <> 0 then
                 begin
-                  //
                   // sql para somar o total atrasado deste cliente
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select sum(VALOR_DUPL) from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' group by NOME');
                   Form7.ibQuery1.Open;
-                  //
+                  
                   sMsg := StrTran(sMsg,'<TOTAL_ATRASADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
-                  //
                 end;
-                //
+
                 if Pos('<TOTAL_ATUALIZADO>',sMsg) <> 0 then
                 begin
-                  //
                   // sql para somar o total atrasado deste cliente
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select sum(VALOR_JURO) from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' group by NOME');
                   Form7.ibQuery1.Open;
-                  //
+
                   sMsg := StrTran(sMsg,'<TOTAL_ATUALIZADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
-                  //
                 end;
-                //
+
                 EnviarEMail('',sEmail,'',sAssunto,sMSG,sArquivo, False);
-                //
+
                 I := I + 1;
-                //
+
                 Mais1ini := TIniFile.Create('frente.ini');
                 Mais1Ini.WriteString('mail','Registro',pchar(Form7.ibDataSet7.FieldByName('REGISTRO').AsString));
                 Mais1Ini.Free;
-                //
-                //
+
                 Form7.Panel1.Top  := (Form7.Height - Panel1.Height) div 2;
                 Form7.Panel1.Left := (Form7.Width - Panel1.Width) div 2;
                 Form7.Panel1.Visible := True;
-                //
+
                 Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail´s enviados.';
                 Form7.Panel1.Repaint;
-                //
               end;
-              //
+
               sMandados := sMandados + Form7.ibDataSet7NOME.AsString;
-              //
             except
             end;
-            //
          end;
-         //
+
          Form7.ibDataSet7.Next;
-         //
         end;
       end;
-      //
     except
     end;
-    //
+
     Screen.Cursor        := crDefault;
     Form7.Panel1.Visible := False;
     Form7.Repaint;
-    //
   end;
-  //
 end;
 
 function TForm7.CaracteresParaSequencialDocumentos: String;

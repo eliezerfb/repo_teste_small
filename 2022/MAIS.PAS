@@ -27,7 +27,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023014'; // Sandro Silva 2023-05-26 const BUILD_DO_BANCO = '2023012'; // Sandro Silva 2023-05-12 const BUILD_DO_BANCO = '2023010'; // Sandro Silva 2023-04-11 const BUILD_DO_BANCO = '2023008'; // Sandro Silva 2023-04-10 const BUILD_DO_BANCO = '2023004';
+const BUILD_DO_BANCO = '2023016'; // Sandro Silva 2023-06-20 const BUILD_DO_BANCO = '2023014'; // Sandro Silva 2023-05-26 const BUILD_DO_BANCO = '2023012'; 
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -36,6 +36,7 @@ const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografad
 
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 const ValidacaoNova = True; //False;
+const PRAZO_MANIFESTAR = '180';
 
 type 
     TForm1 = class(TForm)
@@ -455,6 +456,7 @@ type
     sPasta   : String;
     iReduzida, iTempo, iAvisosEstoque, iAvisosNFECompra, iAvisosCaixa, iAvisosBanco, iAvisosPagar, iAvisosReceber, iAvisosCliFor, iAvisosOS, iAvisosIndicadores, iAvisosConfig: Integer;
     sEscolhido: String;
+    sBancoBoleto: String;
     ConfCFOP: String;
     CFOP5124: String;
     ConfCasas : String;
@@ -1023,9 +1025,17 @@ function tForm1.AvisoNFECompra(bP1 : Boolean):Boolean;
 begin
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
+  {Sandro Silva 2023-06-20 inicio
   Form1.ibQuery2.SQL.Add('select count(NUMERONF)as NN');
   Form1.ibQuery2.SQL.Add('from COMPRAS');
   Form1.ibQuery2.SQL.Add('where ' + RetornarWhereNotasManifestar);
+  }
+  Form1.ibQuery2.SQL.Text :=
+    'select count(NUMERONF)as NN ' +
+    'from COMPRAS ' +
+    'where ' + RetornarWhereNotasManifestar;
+
+  {Sandro Silva 2023-06-20 fim}
   Form1.ibQuery2.Open;
   Form1.iAvisosNFECompra := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
 
@@ -3752,29 +3762,30 @@ end;
 
 procedure Tform1.EscolheOBloqueto(Sender:TObject);
 begin
-  { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  //with Sender as TMenuItem do sEscolhido := Caption;
   with Sender as TMenuItem do
-    sEscolhido := Caption;
-  sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  //  sEscolhido := Caption;
+    sBancoBoleto := Caption;
+
+  //sEscolhido := 'Boleto de cobrança do '+sEscolhido;
+  sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.ShowModal;
-  //
 end;
 
 procedure Tform1.EscolheCNAB400(Sender:TObject);
 begin
-  { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  //with Sender as TMenuItem do sEscolhido := Caption;
   with Sender as TMenuItem do
-    sEscolhido := Caption;
-  sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  //  sEscolhido := Caption;
+    sBancoBoleto := Caption;
+
+  //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
-  //Form25.Button9.Click;
+
   Form25.btnCNAB400.Click; // Sandro Silva 2022-12-23 Form25.Button9.Click;
   Form25.Close;
-  //
+
   if Form1.sArquivoRemessa <> '' then
   begin
     ShowMessage('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 400 para o BANCO '+
@@ -3782,22 +3793,22 @@ begin
     Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10));
   end;
-  //
 end;
 
 procedure Tform1.EscolheCNAB240(Sender:TObject);
 begin
-  { as é um operador usado com o wiht}
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
-  //with Sender as TMenuItem do sEscolhido := Caption;
   with Sender as TMenuItem do
-    sEscolhido := Caption;
-  sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  //  sEscolhido := Caption;
+      sBancoBoleto := Caption;
+
+  //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
+  sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
-  //Form25.Button10.Click;
+  
   Form25.btnCNAB240.Click; // Sandro Silva 2022-12-23 Form25.Button10.Click;
   Form25.Close;
-  //
+
   if Form1.sArquivoRemessa <> '' then
   begin
     ShowMessage('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 240 para o BANCO '+
@@ -3805,7 +3816,6 @@ begin
     Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10));
   end;
-  //
 end;
 
 procedure Tform1.ExecutaOPlugin(Sender:TObject);
@@ -3816,12 +3826,9 @@ end;
 
 procedure TForm1.FormActivate(Sender: TObject);
 var
-//  Hora, Min, Seg, cent : Word;
-//  tInicio : tTime;
   Mais1Ini: TIniFile;
   sPastaDoPaf : String;
 begin
-  //
   Form1.sConsultaNfse   := 'NAO';
   Timer2.Interval       := 10000;
   Form1.Image4.Width    := 1024;
@@ -11545,15 +11552,16 @@ begin
             'OR ((Coalesce(MDESTINXML,'''')='''') AND (COALESCE(REPLACE(NFEID, ''0'', ''''),'''')<>''''))';
   }
   Result :=
-    'substring(NFEID from 21 for 2) = ''55'' and ' + sLineBreak + // listar apenas 55=NF-e
-    '(' + sLineBreak +
-    '  (' + sLineBreak +
-    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' + sLineBreak +
-    '  )' + sLineBreak +
-    '  or' + sLineBreak +
-    '  (' + sLineBreak +
-    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' + sLineBreak +
-    '  )' + sLineBreak +
+    'EMISSAO >= (current_date - ' + PRAZO_MANIFESTAR + ') and ' + // emitida dentro de limite de tempo para fazer o manifesto 
+    'substring(NFEID from 21 for 2) = ''55'' and ' +  // listar apenas 55=NF-e
+    '(' + 
+    '  (' + 
+    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' + 
+    '  )' + 
+    '  or' + 
+    '  (' + 
+    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' + 
+    '  )' + 
     ')';   
 end;
 
@@ -11578,7 +11586,7 @@ begin
     //
   end;
   //
-  Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');
+  Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML nos últimos ' + PRAZO_MANIFESTAR + ' dias.'); // Sandro Silva 2023-06-20 Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');
   //
 end;
 
@@ -11649,21 +11657,20 @@ end;
 
 procedure TForm1.Label_bola_receberClick(Sender: TObject);
 begin
-  //
   Form1.Image204Click(Sender);
-  //
+
   Form7.ibDataSet7.DisableControls;
-  //
+
   try
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.SelectSQL.Clear;
     Form7.ibDataSet7.SelectSQL.Add('select * from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
     Form7.ibDataSet7.Open;
-  except end;
-  //
+  except
+  end;
+
   Form7.ibDataSet7.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosReceber)+' contas para receber hoje.');
-  //
 end;
 
 procedure TForm1.Label_Bola_estoqueClick(Sender: TObject);

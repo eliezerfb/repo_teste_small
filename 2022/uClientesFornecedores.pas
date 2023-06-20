@@ -59,6 +59,16 @@ begin
         Exit;
       end;
 
+      // BANCOS.INSTITUICAOFINANCEIRA
+      if not ExecutaComando(' update BANCOS set INSTITUICAOFINANCEIRA='+QuotedStr(sNomeNovo)+
+                            ' where INSTITUICAOFINANCEIRA='+QuotedStr(sNomeAtual),
+                            IBTRANSACTION) then
+      begin
+        Result := False;
+        vMensagem := #13#10+'Contas Bancárias - Instituição';
+        Exit;
+      end;
+
       // PAGAR
       if not ExecutaComando(' update PAGAR set NOME='+QuotedStr(sNomeNovo)+
                             ' where NOME='+QuotedStr(sNomeAtual),

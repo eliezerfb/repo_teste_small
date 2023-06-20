@@ -15,7 +15,7 @@ type
     SMALL_DBEdit1: TSMALL_DBEdit;
     DBGrid1: TDBGrid;
     Label7: TLabel;
-    ComboBox1: TComboBox;
+    cboDocCobranca: TComboBox;
     Button4: TBitBtn;
     Panel9: TPanel;
     Label45: TLabel;
@@ -56,7 +56,7 @@ var
 
 implementation
 
-uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3;
+uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados;
 
 {$R *.DFM}
 
@@ -645,13 +645,10 @@ var
   I, J: Integer;
   Mais1Ini: tIniFile;
   sSecoes:  TStrings;
+  sBancoIni : string;
 begin
-  //
-  // ShowMessage(Form7.ibDataSet15TOTAL.AsString);
-  //
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
-    //
     Total := 0;
     Form7.ibDataSet7.First;
     while not Form7.ibDataSet7.Eof do
@@ -677,24 +674,23 @@ begin
     Form18.SMALL_DBEdit1.Enabled := True;
     Form18.DBGrid1.Enabled       := True;
   end;
-  //
+
   try
-    //
-    if AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString) = 'CAIXA' then Form18.Close; // else if Alltrim(SMALL_DBEdit1.Text) = '' then SMALL_DBEdit1.Text := '1';
-    //
+    if AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString) = 'CAIXA' then
+       Form18.Close; // else if Alltrim(SMALL_DBEdit1.Text) = '' then SMALL_DBEdit1.Text := '1';
+
     if SMALL_DBEdit1.CanFocus then
     begin
       SMALL_DBEdit1.SetFocus;
       SMALL_DBEdit1.SelectAll;
     end;
-    //
+
     if (AllTrim(Form7.ibDataSet14CONTA.AsString) = '') then
     begin
       Form7.ibDataSet12.First;
-  //    if bDesdobra then
+
       if Form7.SModulo <> 'CLIENTES' then  // Ok
       begin
-
         Form43.IdentificadorPlanoContas := FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
 
         Form43.ShowModal; // OK
@@ -709,24 +705,23 @@ begin
     begin
       sConta := Form7.ibDataSet14CONTA.AsString;
     end;
-    //
+
     Panel9.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-    //
+
     if (Form7.sModulo <> 'VENDA') and (Form7.sModulo <> 'COMPRA') and (Form7.sModulo <> 'CLIENTES') then
       Form7.sModulo := 'VENDA';
-    //
+
     CheckBox1.Visible := False;
-    //
+
     if Form7.SModulo = 'CLIENTES' then  // Ok
     begin
-      //
       Form7.ibQuery1.Close;
       Form7.IBQuery1.SQL.Clear;
       Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=9 where coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and VALOR_RECE=0');
       Form7.IBQuery1.Open;
-      //
+
       CheckBox1.Visible := False;
-      //
+      
       Form7.ibDataSet7.EnableControls;
       for I := 1 to Form7.ibDataSet7.FieldCount do  Form7.ibDataSet7.Fields[I-1].Visible := False;
       Form7.ibDataSet7DOCUMENTO.Visible  := True;
@@ -739,48 +734,54 @@ begin
       // Preenche o combobox com os bancos *
       // configurados no controle bancário *
       // ***********************************
-      ComboBox1.Items.Clear;
-      ComboBox1.Items.Add('<Não imprimir documento>');
-      //
+      cboDocCobranca.Items.Clear;
+      cboDocCobranca.Items.Add('<Não imprimir documento>');
+
       try
-        //
         sSecoes := TStringList.Create;
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         Mais1Ini.ReadSections(sSecoes);
-        //
+
         for J := 0 to (sSecoes.Count - 1) do
         begin
           if (Mais1Ini.ReadString(sSecoes[J],'CNAB400','Não') = 'Sim') or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','Não') = 'Sim') then
           begin
-            ComboBox1.Items.Add(sSecoes[J]);
+            //cboDocCobranca.Items.Add(sSecoes[J]);  Mauricio Parizotto 2023-06-19
+
+            sBancoIni := trim(StringReplace(sSecoes[J],'Boleto de cobrança do ','',[rfReplaceAll]));
+
+            if ExecutaComandoEscalar(Form7.IBDatabase1,
+                                     ' Select Count(*) From BANCOS '+
+                                     ' Where NOME = '+QuotedStr(sBancoIni)) > 0 then
+            begin
+              cboDocCobranca.Items.Add(sSecoes[J]);
+            end;
           end;
         end;
-        //
+
         Mais1Ini.Free;
-        //
-      except end;
-      //
-      ComboBox1.Items.Add('<Imprimir Duplicata>');
-      ComboBox1.Items.Add('<Imprimir Carnê>');
-      //
-      Combobox1.Visible   := True;
-      Combobox1.ItemIndex := 0;
+      except
+      end;
+
+      cboDocCobranca.Items.Add('<Imprimir Duplicata>');
+      cboDocCobranca.Items.Add('<Imprimir Carnê>');
+
+      cboDocCobranca.Visible   := True;
+      cboDocCobranca.ItemIndex := 0;
       Label7.Visible      := True;
-      //
+
       dbGrid1.DataSource := Form7.DataSource7;
-      //
+
       if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then
       begin
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15DUPLICATAS.AsFloat := 1;
         Form7.ibDataSet15.Post;
       end;
-      //
     end;
-    //
+
     if Form7.SModulo = 'VENDA' then // Ok
     begin
-      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
         CheckBox1.Checked := True
@@ -872,34 +873,42 @@ begin
       // Preenche o combobox com os bancos *
       // configurados no controle bancário *
       // ***********************************
-      ComboBox1.Items.Clear;
-      ComboBox1.Items.Add('<Não imprimir documento>');
-      //
+      cboDocCobranca.Items.Clear;
+      cboDocCobranca.Items.Add('<Não imprimir documento>');
+
       try
-        //
         sSecoes := TStringList.Create;
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         Mais1Ini.ReadSections(sSecoes);
-        //
+
         for J := 0 to (sSecoes.Count - 1) do
         begin
           if (Mais1Ini.ReadString(sSecoes[J],'CNAB400','Não') = 'Sim') or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','Não') = 'Sim') then
           begin
-            ComboBox1.Items.Add(sSecoes[J]);
+            //cboDocCobranca.Items.Add(sSecoes[J]);  Mauricio Parizotto 2023-06-19
+
+            sBancoIni := trim(StringReplace(sSecoes[J],'Boleto de cobrança do ','',[rfReplaceAll]));
+
+            if ExecutaComandoEscalar(Form7.IBDatabase1,
+                                     ' Select Count(*) From BANCOS '+
+                                     ' Where NOME = '+QuotedStr(sBancoIni)) > 0 then
+            begin
+              cboDocCobranca.Items.Add(sSecoes[J]);
+            end;
           end;
         end;
-        //
+
         Mais1Ini.Free;
-        //
-      except end;
-      //
-      ComboBox1.Items.Add('<Imprimir Duplicata>');
-      ComboBox1.Items.Add('<Imprimir Carnê>');
-      //
-      Combobox1.Visible   := True;
-      Combobox1.ItemIndex := 0;
+      except
+      end;
+
+      cboDocCobranca.Items.Add('<Imprimir Duplicata>');
+      cboDocCobranca.Items.Add('<Imprimir Carnê>');
+
+      cboDocCobranca.Visible   := True;
+      cboDocCobranca.ItemIndex := 0;
       Label7.Visible      := True;
-      //
+
       dbGrid1.DataSource := Form7.DataSource7;
       if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then
       begin
@@ -907,15 +916,13 @@ begin
         Form7.ibDataSet15DUPLICATAS.AsFloat := 1;
         Form7.ibDataSet15.Post;
       end;
-      //
     end;
-    //
+
     if Form7.SModulo = 'COMPRA' then
     begin
-      //
-      Combobox1.Visible := False;
+      cboDocCobranca.Visible := False;
       Label7.Visible    := False;
-      //
+
       Form7.ibDataSet8.EnableControls;
       for I := 1 to Form7.ibDataSet8.FieldCount do
         Form7.ibDataSet8.Fields[I-1].Visible := False;
@@ -923,11 +930,11 @@ begin
       Form7.ibDataSet8VENCIMENTO.Visible := True;
       Form7.ibDataSet8VALOR_DUPL.Visible := True;
       Form7.ibDataSet8PORTADOR.Visible   := True;
-      //
+
       Label45.Caption := Format('%12.2n',[Form7.ibDataSet24TOTAL.AsFloat]);
       SMALL_DBEdit1.DataSource := Form7.DataSource24;
       dbGrid1.DataSource := Form7.DataSource8;
-      //
+
       if Form7.ibDataSet24DUPLICATAS.AsFloat = 0 then
       begin
         Form7.ibDataSet24.Edit;
@@ -935,13 +942,13 @@ begin
         Form7.ibDataSet24.Post;
       end;
     end;
-    //
+
     if SMALL_DBEdit1.CanFocus then
     begin
       SMALL_DBEdit1.SetFocus;
       SMALL_DBEdit1.SelectAll;
     end;
-    //
+
     Form18.SMALL_DBEdit1Exit(Sender);
     //
   except end;
@@ -1062,7 +1069,6 @@ var
   Total : Real;
   bTemBoleto: Boolean;
 begin
-  //
   if Form7.sModulo = 'VENDA' then // Ok
   begin
     Total := 0;
@@ -1072,15 +1078,13 @@ begin
       Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
       Form7.ibDataSet7.Next;
     end;
-    //
+
     if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
     begin
-      //
       ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
-      //
+      
       SMALL_DBEdit1.SetFocus;
       Abort;
-      //
     end;
 
     {Sandro Silva 2023-06-16 inicio}
@@ -1099,15 +1103,12 @@ begin
     {Sandro Silva 2023-06-16 fim}
 
   end;
-  //
+  
   try
     Form18.Close;
-    //
     if Form7.sModulo = 'CLIENTES' then
     begin
-      //
       // ACORDO
-      //
       Form7.sTextoDoAcordo := 'TERMO DE RENEGOCIAÇÃO DE DÍVIDA '+Form7.ibDataSet15NUMERONF.AsString+chr(13)+chr(10)+chr(13)+chr(10)+
                               'Na presente data ('+DateToStr(Date)+') é regido o acordo de novação de dívida entre a empresa ('+Form7.ibDataSet13NOME.AsString+') '+
                               'sendo assim pessoa jurídica de direito privado, inscrita no CNPJ ('+Form7.ibDataSet13CGC.AsString+'), com sede em ('+
@@ -1126,11 +1127,10 @@ begin
                               'O Devedor pagará ao Credor ('+Form7.ibDataSet15DUPLICATAS.AsString+') parcela(s) conforme tabela abaixo. '+chr(13)+chr(10)+chr(13)+chr(10)+
                               'Parcela    Vencimento   Valor R$'+chr(13)+chr(10)+
                               '---------- ------------ -------------'+chr(13)+chr(10);
-      //
+
       // Zeresima
-      //
       fTotal1 := 0;
-      //
+
       Form7.ibDataSet7.First;
       while not Form7.ibDataSet7.Eof do
       begin
@@ -1138,11 +1138,11 @@ begin
          ftotal1 := fTotal1 + Form7.ibDataSet7VALOR_DUPL.AsFloat;
          Form7.ibDataSet7.Next;
       end;
-      //
+
       Form7.sTextoDoAcordo := Form7.sTextoDoAcordo +
                               '                        -------------'+chr(13)+chr(10)+
                               '                      '+Format('%15.2n',[ftotal1])+chr(13)+chr(10);
-      //
+
       Form7.sTextoDoAcordo := Form7.sTextoDoAcordo +
       chr(13)+chr(10)+
       'O Devedor efetuará o pagamento na data de vencimento de cada parcela conforme combinado entre ambas as partes. '+
@@ -1209,82 +1209,73 @@ begin
         // ----------------------------- //
         if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
         begin
-          //
           Form7.ibQuery1.Close;
           Form7.IBQuery1.SQL.Clear;
           Form7.IBQuery1.SQL.Add('update RECEBER set PORTADOR='+QuotedStr('ACORDO '+Form7.ibDataSet15NUMERONF.AsString)+' where coalesce(ATIVO,0)=9 and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
           Form7.IBQuery1.Open;
-          //
+
           Form7.ibQuery1.Close;
           Form7.IBQuery1.SQL.Clear;
           Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=1 where coalesce(ATIVO,0)=9 and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
           Form7.IBQuery1.Open;
-          //
+          
           Form7.IBDataSet2.Edit;
           Form7.IBDataSet2MOSTRAR.AsFloat := 0;
-          //
         end else
         begin
-          //
           // Volta tudo
-          //
           Form7.ibQuery1.Close;
           Form7.IBQuery1.SQL.Clear;
           Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=0 where coalesce(ATIVO,0)=9  and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
           Form7.IBQuery1.Open;
-          //
+
           Form7.ibDataSet7.First;
           while not Form7.ibDataSet7.Eof do
           begin
             Form7.ibDataSet7.Delete;
             Form7.ibDataSet7.First;
           end;
-          //
         end;
       end else
       begin
-        //
         // Volta tudo
-        //
         Form7.ibQuery1.Close;
         Form7.IBQuery1.SQL.Clear;
         Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=0 where coalesce(ATIVO,0)=9  and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
         Form7.IBQuery1.Open;
-        //
+
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
         begin
           Form7.ibDataSet7.Delete;
           Form7.ibDataSet7.First;
         end;
-        //
       end;
     end;
-    //
+
     if Form7.sModulo = 'VENDA' then
     begin
-      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
         Form18.CheckBox1.Checked := True
       else
         Form18.CheckBox1.Checked := False;
       Mais1Ini.Free;
-      //
+
       if Form18.CheckBox1.Checked then
       begin
         Form7.bProximas := True;
         Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
         Form7.bProximas := False;
       end;
-      //
+
       if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Form18.CheckBox1.Checked = False) then
       begin
-        if (Form18.ComboBox1.Text <> '<Não imprimir documento>') and (AllTrim(Form18.ComboBox1.Text) <> '') then
+        if (Form18.cboDocCobranca.Text <> '<Não imprimir documento>') and (AllTrim(Form18.cboDocCobranca.Text) <> '') then
         begin
-          if Form18.ComboBox1.Text <> '<Imprimir Duplicata>' then
+          if Form18.cboDocCobranca.Text <> '<Imprimir Duplicata>' then
           begin
-            if Form18.ComboBox1.Text <> '<Imprimir Carnê>' then
+            if Form18.cboDocCobranca.Text <> '<Imprimir Carnê>' then
             begin
               {Sandro Silva 2023-06-20 inicio
               Form1.sEscolhido       := Form18.ComboBox1.Text;
@@ -1307,7 +1298,8 @@ begin
               if bTemBoleto then
               begin
 
-                Form1.sEscolhido       := Form18.ComboBox1.Text;
+                Form1.sEscolhido       := Form18.cboDocCobranca.Text;
+                Form1.sBancoBoleto     := Trim(StringReplace(Form18.cboDocCobranca.Text,'Boleto de cobrança do ','',[rfReplaceAll]));
                 Form25.btnEnviaEmailTodos.Visible := True; // Sandro Silva 2022-12-23 Form25.Button8.Visible := True;
                 Form25.ShowModal;
               end;
@@ -1327,7 +1319,6 @@ begin
           end;
         end;
       end;
-      //
     end;
   except
   end;

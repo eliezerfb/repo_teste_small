@@ -289,7 +289,7 @@ type
     Image204: TImage;
     Image205: TImage;
     Panel2: TPanel;
-    Button5: TBitBtn;
+    btnOK: TBitBtn;
     Button9: TBitBtn;
     Button12: TBitBtn;
     Panel1: TPanel;
@@ -1488,6 +1488,19 @@ begin
 
       Form7.dBGrid3.Visible := False;
     end;
+
+    //Mauricio Parizotto 2023-06-16
+    if Form7.sModulo = '2CONTAS' then
+    begin
+      Form7.ibDataSet11.Edit;
+
+      // Instituição Financeira
+      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
+      begin
+        Form7.ibDataSet11INSTITUICAOFINANCEIRA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+        Form10.dBGrid3.Visible := False;
+      end;
+    end;
   except
   end;
 end;
@@ -1740,6 +1753,30 @@ begin
         dBGrid3.Width      := Width;
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
+      end;
+
+      //Mauricio Parizotto 2023-06-16
+      if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = '2CONTAS') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text := ' Select * '+
+                                            ' From CLIFOR'+
+                                            ' Where CLIFOR = ''Instituição financeira'' '+
+                                            ' Order by NOME';
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top + 19;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := Width;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
       end;
     end;
   except
@@ -1849,11 +1886,28 @@ begin
         begin
           DataSource.DataSet.Edit;
           DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Form10.dBGrid3.Visible := False;
           Exit;
         end;
       end;
-
       {Mauricio Parizotto 2023-05-29 Inicio}
+
+      {Mauricio Parizotto 2023-06-16 Inicio}
+      if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = '2CONTAS') and (bGravaEscolha) then
+      begin
+        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('NOME').AsString))) <> 0 then
+        begin
+          GravaEscolha;
+        end else
+        begin
+          DataSource.DataSet.Edit;
+          DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Form10.dBGrid3.Visible := False;
+
+          Exit;
+        end;
+      end;
+      {Mauricio Parizotto 2023-06-16 Inicio}
     end;
   except
   end;
@@ -1976,6 +2030,14 @@ begin
         //Mauricio Parizotto 2023-05-29
         if (vDataField = 'INSTITUICAOFINANCEIRA')
           and (Form7.sModulo = 'RECEBER')
+          and (Form7.ibqConsulta.Active) then
+        begin
+          Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+        end;
+
+        //Mauricio Parizotto 2023-06-16
+        if (vDataField = 'INSTITUICAOFINANCEIRA')
+          and (Form7.sModulo = '2CONTAS')
           and (Form7.ibqConsulta.Active) then
         begin
           Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
@@ -2657,6 +2719,14 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2023-05-29 Fim}
+
+  {Mauricio Parizotto 2023-06-20 Inicio}
+  if (Form7.sModulo = '2CONTAS') and (DBGrid3.DataSource.Name = 'DSConsulta') then
+  begin
+    if btnOK.CanFocus then
+      btnOK.SetFocus;
+  end;
+  {Mauricio Parizotto 2023-06-20 Fim}
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -3056,6 +3126,9 @@ begin
   Image203.Transparent := False;
   Image205.Transparent := False;
   Image204.Transparent := False;
+
+  //Mauricio Parizotto 2023-06-19
+  DBGrid3.TabStop := False;
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -3982,8 +4055,8 @@ begin
   Form10.Width  := 845;
   Form10.Height := 650;
 
-  Button5.Left  := Panel2.Width - Button5.Width - 10;
-  Button6.Left  := Button5.Left - 10 - Button6.Width;
+  btnOK.Left  := Panel2.Width - btnOK.Width - 10;
+  Button6.Left  := btnOK.Left - 10 - Button6.Width;
 
   Form7.ArquivoAberto.DisableControls;
   Form7.TabelaAberta.DisableControls;
