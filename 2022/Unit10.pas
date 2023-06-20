@@ -289,7 +289,7 @@ type
     Image204: TImage;
     Image205: TImage;
     Panel2: TPanel;
-    Button5: TBitBtn;
+    btnOK: TBitBtn;
     Button9: TBitBtn;
     Button12: TBitBtn;
     Panel1: TPanel;
@@ -2719,6 +2719,14 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2023-05-29 Fim}
+
+  {Mauricio Parizotto 2023-06-20 Inicio}
+  if (Form7.sModulo = '2CONTAS') and (DBGrid3.DataSource.Name = 'DSConsulta') then
+  begin
+    if btnOK.CanFocus then
+      btnOK.SetFocus;
+  end;
+  {Mauricio Parizotto 2023-06-20 Fim}
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -4047,8 +4055,8 @@ begin
   Form10.Width  := 845;
   Form10.Height := 650;
 
-  Button5.Left  := Panel2.Width - Button5.Width - 10;
-  Button6.Left  := Button5.Left - 10 - Button6.Width;
+  btnOK.Left  := Panel2.Width - btnOK.Width - 10;
+  Button6.Left  := btnOK.Left - 10 - Button6.Width;
 
   Form7.ArquivoAberto.DisableControls;
   Form7.TabelaAberta.DisableControls;

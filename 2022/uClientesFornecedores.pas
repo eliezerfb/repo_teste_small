@@ -65,7 +65,7 @@ begin
                             IBTRANSACTION) then
       begin
         Result := False;
-        vMensagem := #13#10+'Contas a Receber - Instituição';
+        vMensagem := #13#10+'Contas Bancárias - Instituição';
         Exit;
       end;
 
