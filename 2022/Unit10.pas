@@ -4142,6 +4142,11 @@ begin
               TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
               TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Repaint;
 
+              {Sandro Silva 2023-06-20 inicio}
+              if (Form7.sModulo = 'RECEBER') and (Form7.TabelaAberta.Fields[I-1].FieldName = 'FORMADEPAGAMENTO') then
+                TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := 'Forma de Pag.:';
+              {Sandro Silva 2023-06-20 fim}
+
               if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
               begin
                 if I > 25 then

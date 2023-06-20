@@ -9395,6 +9395,7 @@ begin
   //Campos Somente Leitura ao editar pelo Grid
   ibDataSet7INSTITUICAOFINANCEIRA.Tag := 10;
   ibDataSet7NOME.Tag := 10;
+  ibDataSet7FORMADEPAGAMENTO := 10;
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
   Image202.Transparent := False;
