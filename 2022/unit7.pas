@@ -2200,6 +2200,7 @@ type
     property sEnviarDanfePorEmail: String read getEnviarDanfePorEmail;
     property sZiparXML: String read getZiparXML;
     procedure HintTotalNotaCompra;
+    function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -33396,5 +33397,10 @@ begin
                                   '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
 end;
 
+
+function TForm7.FormaDePagamentoGeraBoleto(sForma: String): Boolean;
+begin
+  Result := (Pos(('|' + Copy(sForma, 1, 2) + '|'), '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+end;
 
 end.

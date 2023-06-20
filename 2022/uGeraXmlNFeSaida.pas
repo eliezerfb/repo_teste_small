@@ -2707,7 +2707,8 @@ begin
       begin
 //                    Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '1';   // Pagamento a prazo
 //                  Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '05';  // Forma de pagamento
-        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // Duplicata Mercantil
+        // Sandro Silva 2023-06-20 Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // Duplicata Mercantil
+        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // 14-Duplicata Mercantil
       end else
       begin
 //                    Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '0';   // Pagamento a vista

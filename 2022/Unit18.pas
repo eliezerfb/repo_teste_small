@@ -44,7 +44,6 @@ type
   private
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
-    InBox: Boolean;
     procedure ExibeFormasDePagamento;
   public
     sConta : String;
@@ -1061,6 +1060,7 @@ var
   sSenhaX, sSenha : String;
   ftotal1 : Real;
   Total : Real;
+  bTemBoleto: Boolean;
 begin
   //
   if Form7.sModulo = 'VENDA' then // Ok
@@ -1265,7 +1265,10 @@ begin
     begin
       //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-      if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then Form18.CheckBox1.Checked := True else  Form18.CheckBox1.Checked := False;
+      if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
+        Form18.CheckBox1.Checked := True
+      else
+        Form18.CheckBox1.Checked := False;
       Mais1Ini.Free;
       //
       if Form18.CheckBox1.Checked then
@@ -1283,10 +1286,33 @@ begin
           begin
             if Form18.ComboBox1.Text <> '<Imprimir Carnê>' then
             begin
+              {Sandro Silva 2023-06-20 inicio
               Form1.sEscolhido       := Form18.ComboBox1.Text;
               Form25.btnEnviaEmailTodos.Visible := True; // Sandro Silva 2022-12-23 Form25.Button8.Visible := True;
               Form25.ShowModal;
               Form25.btnEnviaEmailTodos.Visible := False; // Sandro Silva 2022-12-23 Form25.Button8.Visible := False;
+              }
+              bTemBoleto := False;
+              Form7.ibDataSet7.First;
+              while Form7.ibDataSet7.Eof = False do
+              begin
+                if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then 
+                begin
+                  bTemBoleto := True;
+                  Break;
+                end;
+                Form7.ibDataSet7.Next;
+              end;
+
+              if bTemBoleto then
+              begin
+
+                Form1.sEscolhido       := Form18.ComboBox1.Text;
+                Form25.btnEnviaEmailTodos.Visible := True; // Sandro Silva 2022-12-23 Form25.Button8.Visible := True;
+                Form25.ShowModal;
+              end;
+              Form25.btnEnviaEmailTodos.Visible := False; // Sandro Silva 2022-12-23 Form25.Button8.Visible := False;
+              {Sandro Silva 2023-06-20 fim}
             end else
             begin
               Form7.Close;
@@ -1303,7 +1329,8 @@ begin
       end;
       //
     end;
-  except end;
+  except
+  end;
   //
 end;
 

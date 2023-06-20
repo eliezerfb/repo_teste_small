@@ -50,6 +50,9 @@ type
     procedure btnCNAB240Click(Sender: TObject);
   private
     { Private declarations }
+    bOk : Boolean; // Sandro Silva 2023-06-20
+    procedure ImprimirBoleto;
+    procedure ValidaEmailPagador;
   public
     { Public declarations }
     sNossoNum : String;
@@ -58,7 +61,7 @@ type
   end;
 
 var
-  bOk : Boolean;
+// Sandro Silva 2023-06-20  bOk : Boolean;
   Form25: TForm25;
   vCampo:  array [1..20]  of String;    // Cria uma matriz com 20 elementos
   vLinha:  array [1..65]  of STring;    // Linhas
@@ -323,11 +326,17 @@ begin
       //
       if Form25.Tag = 0 then  // Impressão na impressora
       begin
-        if J = 1 then iVia := 6 else ivia := 105 + 4;
+        if J = 1 then
+          iVia := 6
+        else
+          ivia := 105 + 4;
         Impressao.Font.Size   := 13;             // Tamanho da Fonte
       end else
       begin
-        if J = 1 then iVia := 0 else ivia := 105;
+        if J = 1 then
+          iVia := 0
+        else
+          ivia := 105;
         Impressao.Font.Size   := 12;             // Tamanho da Fonte
       end;
       //
@@ -911,30 +920,48 @@ end;
 
 procedure TForm25.btnAnteriorClick(Sender: TObject);
 begin
-  //
   Form7.ibDataSet7.MoveBy(-1);
-  //
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  FormActivate(Sender);
-  //
+
+  if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then // Sandro Silva 2023-06-20
+  begin
+    {Sandro Silva 2023-06-20 inicio
+    Form7.ibDataSet2.Close;
+    Form7.ibDataSet2.Selectsql.Clear;
+    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+    Form7.ibDataSet2.Open;         
+    //
+    FormActivate(Sender);
+    }
+    ValidaEmailPagador;
+    Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+
+  end
+  else
+    Form7.ibDataSet7.MoveBy(1);
+
 end;
 
 procedure TForm25.btnProximoClick(Sender: TObject);
 begin
-  //
   Form7.ibDataSet7.MoveBy(1);
-  //
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  FormActivate(Sender);
-  //
+
+  if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then // Sandro Silva 2023-06-20
+  begin
+
+    {Sandro Silva 2023-06-20 inicio
+    Form7.ibDataSet2.Close;
+    Form7.ibDataSet2.Selectsql.Clear;
+    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+    Form7.ibDataSet2.Open;
+    //
+    FormActivate(Sender);
+    }
+    ValidaEmailPagador;
+    Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+    {Sandro Silva 2023-06-20 fim}
+  end
+  else
+    Form7.ibDataSet7.MoveBy(-1);
 end;
 
 procedure TForm25.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -1094,6 +1121,7 @@ begin
 end;
 
 procedure TForm25.FormActivate(Sender: TObject);
+{Sandro Silva 2023-06-20 inicio
 var
   sEmail : String;
 begin
@@ -1113,56 +1141,23 @@ begin
     btnEnviaEmail.Visible := False; // Sandro Silva 2022-12-23 Button7.Visible := False;
   end;
   //
+}
+begin
+  ValidaEmailPagador;
   Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
   //
 end; 
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
 begin
-  //
+  {Sandro Silva 2023-06-20 inicio
   if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
   begin
-    //
     if GeraImagemDoBoletoComOCodigoDeBarras(True) then
     begin
-      //
       if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
       begin
-        {Sandro Silva 2022-12-22 inicio
-        //
-        Form7.ibDataSet7.Edit;
-        Form7.ibDataSet7PORTADOR.AsString  := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
-        Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
-        Form7.ibDataSet7CODEBAR.AsString   := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                                              '9'+                              // Moeda
-                                              Copy(sNumero,20,1)+               // Campo Livre 20 a 21 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,21,4)+               // Campo Livre 21 a 24 do código de barras
-                                              Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(sNumero,20,1)+Copy(sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
-                                              //
-                                              '  '+
-                                              Copy(sNumero,25,5)+               // Campo Livre 25 a 29 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,30,5)+               // Campo Livre 30 a 34 do código de barras
-                                              Modulo_10(Copy(sNumero,25,10))+   // Digito verificador
-                                              '  '+
-                                              Copy(sNumero,35,5)+               // Campo Livre 35 a 39 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,40,5)+               // Campo Livre 40 a 44 do código de barras
-                                              Modulo_10(Copy(sNumero,35,10))+   // Digito verificador
-                                              //
-                                              '  '+
-                                              Copy(sNumero,5,1)+                // Dígito de verificação geral posição 5 do codebat
-                                              '  '+
-                                              Copy(sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
-                                              Copy(sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
-
-        //
-        Form7.ibDataSet7.Post;
-        }
         GravaPortadorNossoNumCodeBar;
-        {Sandro Silva 2022-12-22 fim}
-        //
       end;
     end;
   end else
@@ -1171,9 +1166,9 @@ begin
     +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
     +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
   end;
-  //
-//  if Form7.ibDataSet7.Eof then Form25.Close;
-  //
+  }
+  ImprimirBoleto;
+  {Sandro Silva 2023-06-20 fim}
 end;
 
 procedure TForm25.btnImprimirTodosClick(Sender: TObject);
@@ -1198,8 +1193,20 @@ begin
       while (not Form7.ibDataSet7.EOF) and (bOk) do
       begin
         //
+        {Sandro Silva 2023-06-20 inicio
         Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
         Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
+        }
+        if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+        begin
+          ImprimirBoleto; // Sandro Silva 2023-06-20 Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
+          //Form25.btnProximoClick(Sender);
+          ValidaEmailPagador;
+          Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+        end;
+        Form7.ibDataSet7.Next;
+        {Sandro Silva 2023-06-20 fim}
+
 //        if Form7.ibDataSet7.Eof then Form25.Close;
         //
       end;
@@ -1491,38 +1498,7 @@ begin
       //
       if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
       begin
-        {Sandro Silva 2022-12-22 inicio
-        Form7.ibDataSet7.Edit;
-        Form7.ibDataSet7PORTADOR.AsString  := 'REMESSA ('+Copy(AllTrim(Form26.MaskEdit42.Text+'000'),1,3)+')';
-        Form7.ibDataSet7NOSSONUM.AsString  := sNossoNum;
-        Form7.ibDataSet7CODEBAR.AsString   := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                                              '9'+                              // Moeda
-                                              Copy(sNumero,20,1)+               // Campo Livre 20 a 21 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,21,4)+               // Campo Livre 21 a 24 do código de barras
-                                              Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(sNumero,20,1)+Copy(sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
-                                              //
-                                              '  '+
-                                              Copy(sNumero,25,5)+               // Campo Livre 25 a 29 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,30,5)+               // Campo Livre 30 a 34 do código de barras
-                                              Modulo_10(Copy(sNumero,25,10))+   // Digito verificador
-                                              '  '+
-                                              Copy(sNumero,35,5)+               // Campo Livre 35 a 39 do código de barras
-                                              '.'+                              // Ponto para facilitar a digitação
-                                              Copy(sNumero,40,5)+               // Campo Livre 40 a 44 do código de barras
-                                              Modulo_10(Copy(sNumero,35,10))+   // Digito verificador
-                                              //
-                                              '  '+
-                                              Copy(sNumero,5,1)+                // Dígito de verificação geral posição 5 do codebat
-                                              '  '+
-                                              Copy(sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
-                                              Copy(sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
-
-        Form7.ibDataSet7.Post;
-        }
         GravaPortadorNossoNumCodeBar;
-        {Sandro Silva 2022-12-22 fim}
       end;
       //
       Screen.Cursor            := crHourGlass;
@@ -3172,6 +3148,47 @@ begin
                                         Copy(Form25.sNumero,10,10)                  // 10 a 19 do código de barras - valor nominal
                                         );
   Form7.ibDataSet7.Post;
+end;
+
+procedure TForm25.ImprimirBoleto;
+begin
+  if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
+  begin
+    if GeraImagemDoBoletoComOCodigoDeBarras(True) then
+    begin
+      if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
+      begin
+        GravaPortadorNossoNumCodeBar;
+      end;
+    end;
+  end else
+  begin
+    ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+    +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
+    +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
+  end;
+end;
+
+procedure TForm25.ValidaEmailPagador;
+var
+  sEmail : String;
+begin
+  //
+  Form7.ibDataSet2.Close;
+  Form7.ibDataSet2.Selectsql.Clear;
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+  Form7.ibDataSet2.Open;
+  //
+  sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
+  //
+  if validaEmail(sEmail) then
+  begin
+    btnEnviaEmail.Visible := True; // Sandro Silva 2022-12-23 Button7.Visible := True;
+  end else
+  begin
+    btnEnviaEmail.Visible := False; // Sandro Silva 2022-12-23 Button7.Visible := False;
+  end;
+
 end;
 
 end.
