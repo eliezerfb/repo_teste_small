@@ -2075,6 +2075,7 @@ type
       const Text: String);
     procedure EEnviarcartadecorreoporemail1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure ibDataSet15SAIDADChange(Sender: TField);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -33379,5 +33380,16 @@ begin
                                   '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
 end;
 
+
+procedure TForm7.ibDataSet15SAIDADChange(Sender: TField);
+begin
+  ibDataSet15SAIDAD.OnChange := nil;
+  try
+  if ibDataSet15SAIDAD.Value = 0 then
+    ibDataSet15SAIDAD.Clear;
+  finally
+    ibDataSet15SAIDAD.OnChange := ibDataSet15SAIDADChange;
+  end;
+end;
 
 end.
