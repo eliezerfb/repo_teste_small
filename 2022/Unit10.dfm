@@ -3830,7 +3830,10 @@ object Form10: TForm10
               'rio final estabelecido em outra Unidade da Federa'#231#227'o;'
             
               '5933 - Presta'#231#227'o de servi'#231'o tributado pelo ISSQN (Nota Fiscal co' +
-              'njugada);')
+              'njugada);'
+            
+              '5949 - Outra sa'#237'da de mercadoria ou presta'#231#227'o de servi'#231'o n'#227'o esp' +
+              'ecificado;')
         end
         object ComboBox14: TComboBox
           Left = 110
