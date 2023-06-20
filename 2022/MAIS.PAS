@@ -36,6 +36,7 @@ const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografad
 
 const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 const ValidacaoNova = True; //False;
+const PRAZO_MANIFESTAR = '180';
 
 type 
     TForm1 = class(TForm)
@@ -1023,9 +1024,17 @@ function tForm1.AvisoNFECompra(bP1 : Boolean):Boolean;
 begin
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
+  {Sandro Silva 2023-06-20 inicio
   Form1.ibQuery2.SQL.Add('select count(NUMERONF)as NN');
   Form1.ibQuery2.SQL.Add('from COMPRAS');
   Form1.ibQuery2.SQL.Add('where ' + RetornarWhereNotasManifestar);
+  }
+  Form1.ibQuery2.SQL.Text :=
+    'select count(NUMERONF)as NN ' +
+    'from COMPRAS ' +
+    'where ' + RetornarWhereNotasManifestar;
+
+  {Sandro Silva 2023-06-20 fim}
   Form1.ibQuery2.Open;
   Form1.iAvisosNFECompra := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
 
@@ -11545,15 +11554,16 @@ begin
             'OR ((Coalesce(MDESTINXML,'''')='''') AND (COALESCE(REPLACE(NFEID, ''0'', ''''),'''')<>''''))';
   }
   Result :=
-    'substring(NFEID from 21 for 2) = ''55'' and ' + sLineBreak + // listar apenas 55=NF-e
-    '(' + sLineBreak +
-    '  (' + sLineBreak +
-    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' + sLineBreak +
-    '  )' + sLineBreak +
-    '  or' + sLineBreak +
-    '  (' + sLineBreak +
-    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' + sLineBreak +
-    '  )' + sLineBreak +
+    'EMISSAO >= (current_date - ' + PRAZO_MANIFESTAR + ') and ' + // emitida dentro de limite de tempo para fazer o manifesto 
+    'substring(NFEID from 21 for 2) = ''55'' and ' +  // listar apenas 55=NF-e
+    '(' + 
+    '  (' + 
+    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' + 
+    '  )' + 
+    '  or' + 
+    '  (' + 
+    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' + 
+    '  )' + 
     ')';   
 end;
 
@@ -11578,7 +11588,7 @@ begin
     //
   end;
   //
-  Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');
+  Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML nos últimos ' + PRAZO_MANIFESTAR + ' dias.'); // Sandro Silva 2023-06-20 Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');
   //
 end;
 
