@@ -826,24 +826,20 @@ end;
 
 procedure TForm25.btnAnteriorClick(Sender: TObject);
 begin
+
   Form7.ibDataSet7.MoveBy(-1);
 
-  if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then // Sandro Silva 2023-06-20
-  begin
-    {Sandro Silva 2023-06-20 inicio
-    Form7.ibDataSet2.Close;
-    Form7.ibDataSet2.Selectsql.Clear;
-    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
-    Form7.ibDataSet2.Open;         
-    //
-    FormActivate(Sender);
-    }
-    ValidaEmailPagador;
-    Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+  {Sandro Silva 2023-06-20 inicio
+  Form7.ibDataSet2.Close;
+  Form7.ibDataSet2.Selectsql.Clear;
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+  Form7.ibDataSet2.Open;
+  //
+  FormActivate(Sender);
+  }
+  ValidaEmailPagador;
+  Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
 
-  end
-  else
-    Form7.ibDataSet7.MoveBy(1);
 
 end;
 
@@ -851,23 +847,17 @@ procedure TForm25.btnProximoClick(Sender: TObject);
 begin
   Form7.ibDataSet7.MoveBy(1);
 
-  if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then // Sandro Silva 2023-06-20
-  begin
+  {Sandro Silva 2023-06-20 inicio
+  Form7.ibDataSet2.Close;
+  Form7.ibDataSet2.Selectsql.Clear;
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+  Form7.ibDataSet2.Open;
+  //
+  FormActivate(Sender);
+  }
+  ValidaEmailPagador;
+  Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
 
-    {Sandro Silva 2023-06-20 inicio
-    Form7.ibDataSet2.Close;
-    Form7.ibDataSet2.Selectsql.Clear;
-    Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
-    Form7.ibDataSet2.Open;
-    //
-    FormActivate(Sender);
-    }
-    ValidaEmailPagador;
-    Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
-    {Sandro Silva 2023-06-20 fim}
-  end
-  else
-    Form7.ibDataSet7.MoveBy(-1);
 end;
 
 procedure TForm25.Edit1KeyDown(Sender: TObject; var Key: Word;

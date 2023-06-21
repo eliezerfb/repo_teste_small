@@ -1,6 +1,15 @@
 unit uFuncoesRetaguarda;
 
 interface
+uses
+  SysUtils
+  , StrUtils
+  , Classes
+  , Forms
+  , Winsock
+  , DBGrids
+  , SmallFunc
+  ;
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
 function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
@@ -12,18 +21,12 @@ function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function FormatXMLToFloat(sValor: String): Double;
 function TextoIdentificadorFinalidadeNFe(Value: String): String;
 procedure LogRetaguarda(sTexto: String);
-function GetIP:string;
+function GetIP: String;
+procedure GetFormasDePagamentoNFe(slForma: TStringList);
+function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
+function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
 
 implementation
-
-uses
-  SysUtils
-  , StrUtils
-  , Classes
-  , Forms
-  , Winsock
-  , SmallFunc
-  ;
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
 begin
@@ -208,6 +211,63 @@ begin
     Result := Format('%d.%d.%d.%d',[Byte(h_addr^[0]),Byte(h_addr^[1]),Byte(h_addr^[2]),Byte(h_addr^[3])]);
   end;
   WSACleanup;
+end;
+
+procedure GetFormasDePagamentoNFe(slForma: TStringList);
+begin
+
+  slForma.Clear;
+  slForma.Add('01-Dinheiro');
+  slForma.Add('02-Cheque');
+  slForma.Add('03-Cartão de Crédito');
+  slForma.Add('04-Cartão de Débito');
+  slForma.Add('05-Crédito de Loja');
+  slForma.Add('10-Vale Alimentação');
+  slForma.Add('11-Vale Refeição');
+  slForma.Add('12-Vale Presente');
+  slForma.Add('13-Vale Combustível');
+  slForma.Add('14-Duplicata Mercantil');
+  slForma.Add('15-Boleto Bancário');
+  slForma.Add('16-Depósito Bancário');
+  slForma.Add('17-Pagamento Instantâneo (PIX)');
+  slForma.Add('18-Transfer.bancária, Carteira Digital');
+  slForma.Add('19-Progr.de fidelidade, Cashback, Crédito Virtual');
+  slForma.Add('99-Outros');
+
+end;
+
+function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
+var
+  i: Integer;
+begin
+  Result := '';
+
+  for i := 0 to slFormas.Count -1 do
+  begin
+    if sForma <> '' then
+    begin
+      if Copy(slFormas.Strings[i], 1, Length(sForma)) = sForma then
+      begin
+        Result := slFormas.Strings[i];
+        Break;
+      end;
+    end;
+  end;
+end;
+
+function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to DBGrid.Columns.Count - 1 do
+  begin
+    if AnsiUpperCase(DBGrid.Columns[i].FieldName) = AnsiUpperCase(sNomeColuna) then
+    begin
+      Result := i;
+      Break;
+    end;
+  end;
 end;
 
 end.

@@ -27,7 +27,8 @@ uses
 const SIMPLES_NACIONAL = '1';
 const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
-const CAMPO_SOMENTE_LEITURA__NO_GRID = 10;
+const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
+const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 function Commitatudo(RefazSelect:Boolean): Boolean;
@@ -2078,6 +2079,8 @@ type
       const Text: String);
     procedure EEnviarcartadecorreoporemail1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure ibDataSet7FilterRecord(DataSet: TDataSet;
+      var Accept: Boolean);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -9396,10 +9399,10 @@ begin
 
   //Mauricio Parizotto 2023-05-29
   //Campos Somente Leitura ao editar pelo Grid
-  ibDataSet7INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
-  ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
-  ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
-  ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA__NO_GRID;
+  ibDataSet7INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
   Image202.Transparent := False;
@@ -33237,6 +33240,16 @@ end;
 function TForm7.FormaDePagamentoGeraBoleto(sForma: String): Boolean;
 begin
   Result := (Pos(('|' + Copy(sForma, 1, 2) + '|'), '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+end;
+
+procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;
+  var Accept: Boolean);
+begin
+  //Aplica filtro na contas a receber para listar apenas aquelas que podem gerar boleto quando estiver gerando a partir da tela de desdobramento de parcelas da nota
+  if Form7.ibDataSet7.Tag = ID_FILTRAR_FORMAS_GERAM_BOLETO then
+  begin
+    Accept := Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+  end;
 end;
 
 end.

@@ -96,10 +96,12 @@ object Form18: TForm18
       TitleFont.Height = -13
       TitleFont.Name = 'Microsoft Sans Serif'
       TitleFont.Style = []
+      OnCellClick = DBGrid1CellClick
       OnColEnter = DBGrid1ColEnter
       OnColExit = DBGrid1ColExit
       OnDrawDataCell = DBGrid1DrawDataCell
       OnEnter = DBGrid1Enter
+      OnExit = DBGrid1Exit
       OnKeyDown = DBGrid1KeyDown
       OnKeyPress = DBGrid1KeyPress
     end

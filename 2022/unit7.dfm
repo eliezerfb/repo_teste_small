@@ -12472,6 +12472,7 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
     DataSource = DataSource15
+    OnFilterRecord = ibDataSet7FilterRecord
     Left = 8
     Top = 410
     object ibDataSet7ATIVO: TSmallintField

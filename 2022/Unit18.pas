@@ -41,14 +41,17 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure DBGrid1ColExit(Sender: TObject);
+    procedure DBGrid1CellClick(Column: TColumn);
+    procedure DBGrid1Exit(Sender: TObject);
   private
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
     procedure ExibeFormasDePagamento;
+    procedure CarregacboDocCobranca; 
   public
+    { Public declarations }
     sConta : String;
     property IdentificadorPlanoContas: String read FIdentificadorPlanoContas write FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
-    { Public declarations }
   end;
 
 var
@@ -56,7 +59,8 @@ var
 
 implementation
 
-uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados;
+uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
+  uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -355,6 +359,7 @@ var
 begin
   //
   try
+
     if Key = chr(46) then
       Key := chr(44);
     if (Key = chr(13)) or (Key = Chr(9) ) then
@@ -620,32 +625,38 @@ procedure TForm18.SMALL_DBEdit16KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
-  if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
-  except end;
+    if Key = VK_RETURN then
+      Perform(Wm_NextDlgCtl,0,0);
+    if Key = VK_UP then
+      Perform(Wm_NextDlgCtl,-1,0);
+    if Key = VK_DOWN then
+      Perform(Wm_NextDlgCtl,0,0);
+  except
+  end;
 
 end;
 
 procedure TForm18.Label10MouseLeave(Sender: TObject);
 begin
-  with Sender as tLabel do Font.Style := [];
+  with Sender as tLabel do
+    Font.Style := [];
 end;
 
 procedure TForm18.Label10MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  with Sender as tLabel do Font.Style := [fsBold];
+  with Sender as tLabel do
+    Font.Style := [fsBold];
 end;
 
 procedure TForm18.FormShow(Sender: TObject);
 var
   slPickList: TStringList;
   Total: Real;
-  I, J: Integer;
+  I: Integer;
   Mais1Ini: tIniFile;
-  sSecoes:  TStrings;
-  sBancoIni : string;
+  //sSecoes:  TStrings;
+  //sBancoIni : string;
 begin
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
@@ -723,7 +734,8 @@ begin
       CheckBox1.Visible := False;
       
       Form7.ibDataSet7.EnableControls;
-      for I := 1 to Form7.ibDataSet7.FieldCount do  Form7.ibDataSet7.Fields[I-1].Visible := False;
+      for I := 1 to Form7.ibDataSet7.FieldCount do
+        Form7.ibDataSet7.Fields[I-1].Visible := False;
       Form7.ibDataSet7DOCUMENTO.Visible  := True;
       Form7.ibDataSet7VENCIMENTO.Visible := True;
       Form7.ibDataSet7VALOR_DUPL.Visible := True;
@@ -734,6 +746,7 @@ begin
       // Preenche o combobox com os bancos *
       // configurados no controle bancário *
       // ***********************************
+      {Sandro Silva 2023-06-21 inicio
       cboDocCobranca.Items.Clear;
       cboDocCobranca.Items.Add('<Não imprimir documento>');
 
@@ -768,6 +781,8 @@ begin
 
       cboDocCobranca.Visible   := True;
       cboDocCobranca.ItemIndex := 0;
+      }
+      CarregacboDocCobranca;
       Label7.Visible      := True;
 
       dbGrid1.DataSource := Form7.DataSource7;
@@ -810,6 +825,7 @@ begin
         slPickList := TStringList.Create;
 
         try
+          {
           slPickList.Add('01-Dinheiro');
           slPickList.Add('02-Cheque');
           slPickList.Add('03-Cartão de Crédito');
@@ -826,7 +842,8 @@ begin
           slPickList.Add('18-Transfer.bancária, Carteira Digital');
           slPickList.Add('19-Progr.de fidelidade, Cashback, Crédito Virtual');
           slPickList.Add('99-Outros');
-
+          }
+          GetFormasDePagamentoNFe(slPickList);
           //colocar a lista na coluna correta
           for i:= 0 to DBGrid1.Columns.Count - 1 do
           begin
@@ -873,6 +890,7 @@ begin
       // Preenche o combobox com os bancos *
       // configurados no controle bancário *
       // ***********************************
+      {
       cboDocCobranca.Items.Clear;
       cboDocCobranca.Items.Add('<Não imprimir documento>');
 
@@ -907,6 +925,9 @@ begin
 
       cboDocCobranca.Visible   := True;
       cboDocCobranca.ItemIndex := 0;
+      }
+      CarregacboDocCobranca;
+
       Label7.Visible      := True;
 
       dbGrid1.DataSource := Form7.DataSource7;
@@ -998,9 +1019,29 @@ procedure TForm18.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   I : Integer;
+  slFormas: TStringList;
+  sForma: String;
 begin
 
   try
+  {Sandro Silva 2023-06-21 inicio} 
+    if TDBGrid(Sender).SelectedField.FieldName = 'FORMADEPAGAMENTO' then
+    begin
+      if (Key = VK_DOWN) OR (Key = VK_UP) then
+      begin
+        slFormas := TStringList.Create;
+        GetFormasDePagamentoNFe(slFormas);
+        sForma := ValidaFormadePagamentoDigitada(TDBGrid(Sender).SelectedField.AsString, slFormas);
+        if TDBGrid(Sender).SelectedField.AsString <> sForma then
+        begin
+          TDBGrid(Sender).DataSource.DataSet.Edit;
+          TDBGrid(Sender).SelectedField.AsString := sForma;
+        end;
+        slFormas.Free;
+      end;
+    end;
+    {Sandro Silva 2023-06-21 fim}
+
     if (Key = VK_RETURN) then
     begin
       I := DbGrid1.SelectedIndex;
@@ -1088,13 +1129,12 @@ begin
     end;
 
     {Sandro Silva 2023-06-16 inicio}
-    {
+
     // Limpa picklist das formas de pagamento a receber
     for i := 0 to DBGrid1.Columns.Count -1 do
     begin
       DBGrid1.Columns[i].PickList.Clear;
     end;
-    }
 
     Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
     Form18.Width := 600; // Largura normal
@@ -1134,9 +1174,9 @@ begin
       Form7.ibDataSet7.First;
       while not Form7.ibDataSet7.Eof do
       begin
-         Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + Copy(Form7.ibDataSet7DOCUMENTO.AsString+Replicate(' ',10),1,10) +' '+DateTimeToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime)+' '+Format('%15.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat])+chr(13)+chr(10);
-         ftotal1 := fTotal1 + Form7.ibDataSet7VALOR_DUPL.AsFloat;
-         Form7.ibDataSet7.Next;
+        Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + Copy(Form7.ibDataSet7DOCUMENTO.AsString+Replicate(' ',10),1,10) +' '+DateTimeToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime)+' '+Format('%15.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat])+chr(13)+chr(10);
+        ftotal1 := fTotal1 + Form7.ibDataSet7VALOR_DUPL.AsFloat;
+        Form7.ibDataSet7.Next;
       end;
 
       Form7.sTextoDoAcordo := Form7.sTextoDoAcordo +
@@ -1218,7 +1258,7 @@ begin
           Form7.IBQuery1.SQL.Clear;
           Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=1 where coalesce(ATIVO,0)=9 and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
           Form7.IBQuery1.Open;
-          
+
           Form7.IBDataSet2.Edit;
           Form7.IBDataSet2MOSTRAR.AsFloat := 0;
         end else
@@ -1283,26 +1323,20 @@ begin
               Form25.ShowModal;
               Form25.btnEnviaEmailTodos.Visible := False; // Sandro Silva 2022-12-23 Form25.Button8.Visible := False;
               }
-              bTemBoleto := False;
-              Form7.ibDataSet7.First;
-              while Form7.ibDataSet7.Eof = False do
-              begin
-                if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then 
-                begin
-                  bTemBoleto := True;
-                  Break;
-                end;
-                Form7.ibDataSet7.Next;
-              end;
-
-              if bTemBoleto then
-              begin
+              try
+                Form7.ibDataSet7.Tag := ID_FILTRAR_FORMAS_GERAM_BOLETO;
+                Form7.ibDataSet7.DisableControls;
 
                 Form1.sEscolhido       := Form18.cboDocCobranca.Text;
-                Form1.sBancoBoleto     := Trim(StringReplace(Form18.cboDocCobranca.Text,'Boleto de cobrança do ','',[rfReplaceAll]));
-                Form25.btnEnviaEmailTodos.Visible := True; // Sandro Silva 2022-12-23 Form25.Button8.Visible := True;
+                Form25.btnEnviaEmailTodos.Visible := True;
                 Form25.ShowModal;
+                Form25.btnEnviaEmailTodos.Visible := False;
+
+              finally
+                Form7.ibDataSet7.EnableControls;
+                Form7.ibDataSet7.Tag := 0;
               end;
+
               Form25.btnEnviaEmailTodos.Visible := False; // Sandro Silva 2022-12-23 Form25.Button8.Visible := False;
               {Sandro Silva 2023-06-20 fim}
             end else
@@ -1342,28 +1376,163 @@ procedure TForm18.DBGrid1ColExit(Sender: TObject);
 var
   iRecno: Integer;
   sForma: String;
+  iForma: Integer;
 begin
   if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
   begin
+
     if DBGrid1.Columns[DBGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
     begin
 
-      iRecno := DBGrid1.DataSource.DataSet.RecNo;
-      sForma := DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString;
+      DBGrid1.DataSource.DataSet.DisableControls;
+      try
 
+        iRecno := DBGrid1.DataSource.DataSet.RecNo;
+        sForma := ValidaFormadePagamentoDigitada(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, TStringList(DBGrid1.Columns[DBGrid1.SelectedIndex].PickList)); 
+
+        if DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString <> sForma then
+          DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
+
+        if sForma <> '' then 
+        begin
+
+          while DBGrid1.DataSource.DataSet.Eof = False do
+          begin
+            if DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString = '' then
+            begin
+              DBGrid1.DataSource.DataSet.Edit;
+              DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
+            end;
+            DBGrid1.DataSource.DataSet.Next;
+          end;
+
+          DBGrid1.DataSource.DataSet.RecNo := iRecno;
+
+        end
+        else
+        begin
+
+          DBGrid1.DataSource.DataSet.Edit;
+          DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := '';
+
+        end;
+
+      finally
+        DBGrid1.DataSource.DataSet.EnableControls;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm18.DBGrid1CellClick(Column: TColumn);
+begin
+  ExibeFormasDePagamento;
+end;
+
+procedure TForm18.DBGrid1Exit(Sender: TObject);
+var
+  slFormas: TStringList;
+  sForma: String;
+  iRecno: Integer;
+  sMensagem: String;
+  iRecnoFormaErrada: Integer;
+begin
+  if Form7.sModulo = 'VENDA' then
+  begin
+    try
+      DBGrid1.DataSource.DataSet.DisableControls;
+      sMensagem := '';
+      slFormas := TStringList.Create;
+      GetFormasDePagamentoNFe(slFormas);
+
+      iRecnoFormaErrada := -1;
+      iRecno := DBGrid1.DataSource.DataSet.RecNo;
+      DBGrid1.DataSource.DataSet.First;
       while DBGrid1.DataSource.DataSet.Eof = False do
       begin
-        if DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString = '' then
+
+        sForma := ValidaFormadePagamentoDigitada(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, slFormas);
+        if (sForma <> DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
         begin
+          if sForma = '' then
+          begin
+            sMensagem := 'Forma de pagamento incorreta informada';
+            iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;
+          end;
           DBGrid1.DataSource.DataSet.Edit;
           DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
         end;
         DBGrid1.DataSource.DataSet.Next;
       end;
-      DBGrid1.DataSource.DataSet.RecNo := iRecno;
-      
+
+      DBGrid1.DataSource.DataSet.Recno := iRecno;
+
+    finally
+      slFormas.Free;
+      DBGrid1.DataSource.DataSet.EnableControls;
+
+      if sMensagem <> '' then
+      begin
+        DBGrid1.SetFocus;
+        if iRecnoFormaErrada <> -1 then
+        begin
+          DBGrid1.DataSource.DataSet.Recno := iRecnoFormaErrada;
+          DBGrid1.SelectedIndex := IndexColumnFromName(DBGrid1, 'FORMADEPAGAMENTO');
+        end;
+        ShowMessage(sMensagem);
+      end;
+
     end;
   end;
+end;
+
+procedure TForm18.CarregacboDocCobranca;
+var
+  Mais1Ini: tIniFile;
+  sSecoes:  TStrings;
+  J: Integer;
+  sBancoIni: String;
+begin
+  // ***********************************
+  // Preenche o combobox com os bancos *
+  // configurados no controle bancário *
+  // ***********************************
+  cboDocCobranca.Items.Clear;
+  cboDocCobranca.Items.Add('<Não imprimir documento>');
+
+  try
+    sSecoes := TStringList.Create;
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+    Mais1Ini.ReadSections(sSecoes);
+
+    for J := 0 to (sSecoes.Count - 1) do
+    begin
+      if (Mais1Ini.ReadString(sSecoes[J],'CNAB400','Não') = 'Sim') or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','Não') = 'Sim') then
+      begin
+        //cboDocCobranca.Items.Add(sSecoes[J]);  Mauricio Parizotto 2023-06-19
+
+        sBancoIni := trim(StringReplace(sSecoes[J],'Boleto de cobrança do ','',[rfReplaceAll]));
+
+        if ExecutaComandoEscalar(Form7.IBDatabase1,
+                                 ' Select Count(*) From BANCOS '+
+                                 ' Where NOME = '+QuotedStr(sBancoIni)) > 0 then
+        begin
+          cboDocCobranca.Items.Add(sSecoes[J]);
+        end;
+      end;
+    end;
+
+    Mais1Ini.Free;
+  except
+  end;
+
+  cboDocCobranca.Items.Add('<Imprimir Duplicata>');
+  cboDocCobranca.Items.Add('<Imprimir Carnê>');
+
+  cboDocCobranca.Visible   := True;
+  cboDocCobranca.ItemIndex := 0;
+
+  sSecoes.Free;
 end;
 
 end.
