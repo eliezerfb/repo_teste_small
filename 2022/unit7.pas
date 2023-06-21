@@ -3916,12 +3916,17 @@ begin
   end;
 end;
 
+function TestarEstadosAlteraEmitadaNota: Boolean;
+begin
+  Result := ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2) or (Form7.sRPS = 'S');
+end;
+
 function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
 begin
   //
   // Atenção a rotina abaixo altera a quantidade no estoque
   //
-  if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2) or (Form7.sRPS = 'S') then
+  if TestarEstadosAlteraEmitadaNota then
   begin
     try
       //
@@ -13481,7 +13486,7 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-    if (Form7.ibDataSet2CREDITO.AsFloat <> 0) and (ibDataSet15TOTAL.Asfloat <> 0) and (ibDataSet15EMITIDA.AsString <> 'S') then
+    if (Form7.ibDataSet2CREDITO.AsFloat <> 0) and (ibDataSet15TOTAL.Asfloat <> 0) and ((ibDataSet15EMITIDA.AsString <> 'S') or (TestarEstadosAlteraEmitadaNota)) then
     begin
       if UpperCase(Form7.ibDataSet14INTEGRACAO.AsString) = 'RECEBER' then
       begin
@@ -13493,7 +13498,7 @@ begin
 
         nCredito := oLimDisp.RetornarValor - ibDataSet15TOTAL.Asfloat;
 
-        if (nCredito < 0) and (Form7.ibDataSet15EMITIDA.AsString <> 'S') then
+        if (nCredito < 0) then
         begin
           Result := False;
           if AbMostraMsg then
