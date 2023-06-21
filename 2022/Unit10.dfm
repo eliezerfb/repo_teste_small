@@ -1712,12 +1712,13 @@ object Form10: TForm10
           Transparent = True
           Visible = False
         end
-        object Panel3: TPanel
+        object pnRelacaoComercial: TPanel
           Left = 208
           Top = 300
           Width = 375
           Height = 22
           BevelOuter = bvNone
+          BorderStyle = bsSingle
           Color = clWhite
           Ctl3D = False
           ParentCtl3D = False

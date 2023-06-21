@@ -13550,6 +13550,10 @@ var
   yRect, xRect : tREct;
   sTex : String;
 begin
+  // Teste evitar exception de transaction em Form7.FormClose()
+  if TDBGrid(Sender).DataSource.DataSet.Active = False then
+    Exit;
+
   //
   try
     //

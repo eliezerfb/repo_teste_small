@@ -49,7 +49,7 @@ type
     Label28: TLabel;
     Label29: TLabel;
     Label30: TLabel;
-    Panel3: TPanel;
+    pnRelacaoComercial: TPanel;
     Label56: TLabel;
     ComboBox8: TComboBox;
     SMALL_DBEdit1: TSMALL_DBEdit;
@@ -1697,12 +1697,12 @@ begin
 
       if Form7.sModulo = 'CLIENTES' then
       begin
-        Panel3.Visible := True;
-        Panel3.Top     := Form10.DBMemo2.Top + Form10.DBMemo2.Height + 5;
-        Panel3.Left    := Form10.Label23.Left;
+        pnRelacaoComercial.Visible := True;
+        pnRelacaoComercial.Top     := Form10.DBMemo2.Top + Form10.DBMemo2.Height + 5;
+        pnRelacaoComercial.Left    := Form10.Label23.Left;
       end
       else
-        Panel3.Visible := False;
+        pnRelacaoComercial.Visible := False;
 
       //Mauricio Parizotto 2023-05-03
       if (vDataField = 'MUNICIPIO') and (Form7.sModulo = 'TRANSPORT') then
@@ -1778,6 +1778,63 @@ begin
         dBGrid3.DataSource := Form7.DSConsulta;
         dBGrid3.Columns[0].Width := 310;
       end;
+
+      {Sandro Silva 2023-06-21 inicio}
+      if (vDataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text :=
+          'select FORMA ' +
+          'from (' +
+          'select cast(''01-Dinheiro'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''02-Cheque'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''03-Cartão de Crédito'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''04-Cartão de Débito'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''05-Crédito de Loja'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''10-Vale Alimentação'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''11-Vale Refeição'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''12-Vale Presente'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''13-Vale Combustível'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''14-Duplicata Mercanti'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''15-Boleto Bancário'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''16-Depósito Bancário'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''17-Pagamento Instantâneo (PIX)'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''18-Transferência bancária, Carteira Digital'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''19-Programa de fidelidade, Cashback, Crédito Virtual'' as varchar(60)) as forma from rdb$database ' +
+          'union ' +
+          'select cast(''99-Outros'' as varchar(60)) as forma from rdb$database ' +
+          ') q ' +
+          'order by forma';                  
+
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('FORMA',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top - 100;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := Width;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
+      end;
+      {Sandro Silva 2023-06-21 fim}
     end;
   except
     ShowMessage('Erro 10/77 comunique o suporte técnico.')
@@ -3115,6 +3172,11 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
+  {Sandro Silva 2023-06-21 inicio}
+  pnRelacaoComercial.BorderStyle := bsNone;
+  pnRelacaoComercial.BevelOuter  := bvNone;
+  {Sandro Silva 2023-06-21 fim}
+
   sNomeDoArquivoParaSalvar := 'Small Commerce.Txt';
 
   framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
@@ -3393,6 +3455,11 @@ end;
 
 procedure TForm10.FormActivate(Sender: TObject);
 begin
+  {Sandro Silva 2023-06-21 inicio}
+  dbcFormasDePagamento.Visible := False;
+  lbFormasDePagamento.Visible  := dbcFormasDePagamento.Visible;
+  {Sandro Silva 2023-06-21 fim}
+
   if Form7.sModulo = 'ESTOQUE' then
   begin
     if Form7.ibDataSet4MARKETPLACE.AsString = '1' then
@@ -3580,6 +3647,15 @@ begin
         Form10.SMALL_DBEdit29.Font.Color := clGrayText;
       end;
     end;
+
+    {Sandro Silva 2023-06-21 inicio}
+    dbcFormasDePagamento.Top := Form10.DBMemo2.Top + Form10.DBMemo2.Height + 5;
+    lbFormasDePagamento.Top := dbcFormasDePagamento.Top;
+    dbcFormasDePagamento.Left := Form10.dbMemo2.Left;
+    lbFormasDePagamento.Left := dbcFormasDePagamento.Left - lbFormasDePagamento.Width - 5;
+    dbcFormasDePagamento.Visible := True;
+    lbFormasDePagamento.Visible  := dbcFormasDePagamento.Visible;
+    {Sandro Silva 2023-06-21 fim}
   end;
 end;
 
@@ -4087,11 +4163,11 @@ begin
 
   if Form7.sModulo = 'CLIENTES' then
   begin
-    Panel3.Visible := True;
-    Panel3.Top     := SMALL_DBEdit14.Top + 15;
-    Panel3.Left    := 250;
+    pnRelacaoComercial.Visible := True;
+    pnRelacaoComercial.Top     := SMALL_DBEdit14.Top + 15;
+    pnRelacaoComercial.Left    := 250;
   end else
-    Panel3.Visible := False;
+    pnRelacaoComercial.Visible := False;
 
   Form10.Label45.Visible := False;
 
