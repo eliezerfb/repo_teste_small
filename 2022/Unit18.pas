@@ -1108,7 +1108,6 @@ var
   sSenhaX, sSenha : String;
   ftotal1 : Real;
   Total : Real;
-  bTemBoleto: Boolean;
 begin
   if Form7.sModulo = 'VENDA' then // Ok
   begin
@@ -1376,7 +1375,6 @@ procedure TForm18.DBGrid1ColExit(Sender: TObject);
 var
   iRecno: Integer;
   sForma: String;
-  iForma: Integer;
 begin
   if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
   begin
@@ -1439,13 +1437,13 @@ var
 begin
   if Form7.sModulo = 'VENDA' then
   begin
+    slFormas := TStringList.Create;
+    iRecnoFormaErrada := -1;
     try
       DBGrid1.DataSource.DataSet.DisableControls;
       sMensagem := '';
-      slFormas := TStringList.Create;
       GetFormasDePagamentoNFe(slFormas);
 
-      iRecnoFormaErrada := -1;
       iRecno := DBGrid1.DataSource.DataSet.RecNo;
       DBGrid1.DataSource.DataSet.First;
       while DBGrid1.DataSource.DataSet.Eof = False do
@@ -1500,8 +1498,8 @@ begin
   cboDocCobranca.Items.Clear;
   cboDocCobranca.Items.Add('<Não imprimir documento>');
 
+  sSecoes := TStringList.Create;  
   try
-    sSecoes := TStringList.Create;
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     Mais1Ini.ReadSections(sSecoes);
 
