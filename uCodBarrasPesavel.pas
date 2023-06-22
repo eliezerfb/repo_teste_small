@@ -68,6 +68,8 @@ begin
         if (UpperCase(AllTrim(FqryDados.FieldByName('MEDIDA').AsString)) = _cMedidaKU) or (UpperCase(AllTrim(FqryDados.FieldByName('MEDIDA').AsString)) = _cMedidaKG) then
           FnQtde := StrToFloatDef(FormatFloat('0.0000', FnValor / FqryDados.FieldByName('PRECO').AsFloat), (FnValor / FqryDados.FieldByName('PRECO').AsFloat));
       end;
+
+      FnValor := 0;
     end;
   except
     FnValor := 0;
