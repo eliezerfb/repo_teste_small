@@ -3253,6 +3253,8 @@ end;
 
 procedure TForm12.edtTotalNotaChange(Sender: TObject);
 begin
+  if (not Self.Showing) then
+    Exit;
   if (not edtTotalNota.DataSource.DataSet.Active) then
     Exit;
   if Form7.TestarLimiteDisponivel then

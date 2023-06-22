@@ -55,9 +55,11 @@ const
   _cCampoReceber = 'SUM(COALESCE(RECEBER.VALOR_DUPL,0))';
 var
   cCredito: String;
+  cCampoReceberNota: String;
 begin
   Result := Self;
 
+  cCampoReceberNota := 'COALESCE((SELECT REC2.VALOR_DUPL FROM RECEBER AS REC2 WHERE (REC2.NUMERONF='+QuotedStr(FcNumeroNF)+')),0)';
   cCredito := 'CLIFOR.CREDITO';
   if FnVlrLimite > 0 then
     cCredito := StringReplace(CurrToStr(FnVlrLimite), ',','.', []);
@@ -68,11 +70,14 @@ begin
   Fqry.Close;
   Fqry.SQL.Clear;
   Fqry.SQL.Add('SELECT');
-  Fqry.SQL.Add('    ' + _cCampoReceber + ' AS TOTRECEBER');
+  Fqry.SQL.Add('    ' + _cCampoReceber);
+  if FcNumeroNF <> EmptyStr then
+    Fqry.SQL.Add('      - ' + cCampoReceberNota);
+  Fqry.SQL.Add('    AS TOTRECEBER');
   Fqry.SQL.Add('    , COUNT(CLIFOR.NOME) AS QTDE');
   Fqry.SQL.Add('    , CAST((COALESCE(' + cCredito + ',0) - '+_cCampoReceber + ')');
   if FcNumeroNF <> EmptyStr then
-    Fqry.SQL.Add('      + COALESCE((SELECT REC2.VALOR_DUPL FROM RECEBER AS REC2 WHERE (REC2.NUMERONF='+QuotedStr(FcNumeroNF)+')),0)');
+    Fqry.SQL.Add('      + ' + cCampoReceberNota);
   Fqry.SQL.Add(' AS NUMERIC(18,2)) AS VALOR');
   Fqry.SQL.Add('FROM CLIFOR');
   Fqry.SQL.Add('LEFT JOIN RECEBER');
@@ -158,6 +163,9 @@ begin
 
   if not Fqry.IsEmpty then
     Result := Fqry.Fieldbyname('TOTRECEBER').AsCurrency;
+
+  if Result < 0 then
+    Result := 0;
 end;
 
 function TRetornaLimiteDisponivel.setNumeroNFReceber(AcNumeroNF: String): IRetornaLimiteDisponivel;
