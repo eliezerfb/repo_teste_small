@@ -814,10 +814,13 @@ begin
       Form7.ibDataSet7PORTADOR.Visible         := True;
 
       {Sandro Silva 2023-06-16 inicio}
-      Form18.Width := 906; // Largura normal
-      Form7.ibDataSet7FORMADEPAGAMENTO.Visible := True; // Sandro Silva 2023-06-16
+      Form18.Width := 1000;// 906; // Largura normal
+      Form7.ibDataSet7FORMADEPAGAMENTO.Visible     := True; // Sandro Silva 2023-06-16
+      Form7.ibDataSet7AUTORIZACAOTRANSACAO.Visible := True; // Sandro Silva 2023-06-22
+      Form7.ibDataSet7BANDEIRA.Visible             := True; // Sandro Silva 2023-06-22
+
       Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 10;
-      Form7.ibDataSet7FORMADEPAGAMENTO.Index := 12;
+      Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 12;
 
       {Sandro Silva 2023-06-19 inicio}
       if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
@@ -825,24 +828,6 @@ begin
         slPickList := TStringList.Create;
 
         try
-          {
-          slPickList.Add('01-Dinheiro');
-          slPickList.Add('02-Cheque');
-          slPickList.Add('03-Cartão de Crédito');
-          slPickList.Add('04-Cartão de Débito');
-          slPickList.Add('05-Crédito de Loja');
-          slPickList.Add('10-Vale Alimentação');
-          slPickList.Add('11-Vale Refeição');
-          slPickList.Add('12-Vale Presente');
-          slPickList.Add('13-Vale Combustível');
-          slPickList.Add('14-Duplicata Mercantil');
-          slPickList.Add('15-Boleto Bancário');
-          slPickList.Add('16-Depósito Bancário');
-          slPickList.Add('17-Pagamento Instantâneo (PIX)');
-          slPickList.Add('18-Transfer.bancária, Carteira Digital');
-          slPickList.Add('19-Progr.de fidelidade, Cashback, Crédito Virtual');
-          slPickList.Add('99-Outros');
-          }
           GetFormasDePagamentoNFe(slPickList);
           //colocar a lista na coluna correta
           for i:= 0 to DBGrid1.Columns.Count - 1 do
@@ -860,28 +845,6 @@ begin
       end;
       {Sandro Silva 2023-06-19 fim}
 
-      {
-      cbFormasDePagamento.Items.Clear;
-
-      cbFormasDePagamento.Items.Add('01-Dinheiro');
-      cbFormasDePagamento.Items.Add('02-Cheque');
-      cbFormasDePagamento.Items.Add('03-Cartão de Crédito');
-      cbFormasDePagamento.Items.Add('04-Cartão de Débito');
-      cbFormasDePagamento.Items.Add('05-Crédito de Loja');
-      cbFormasDePagamento.Items.Add('10-Vale Alimentação');
-      cbFormasDePagamento.Items.Add('11-Vale Refeição');
-      cbFormasDePagamento.Items.Add('12-Vale Presente');
-      cbFormasDePagamento.Items.Add('13-Vale Combustível');
-      cbFormasDePagamento.Items.Add('14-Duplicata Mercantil');
-      cbFormasDePagamento.Items.Add('15-Boleto Bancário');
-      cbFormasDePagamento.Items.Add('16-Depósito Bancário');
-      cbFormasDePagamento.Items.Add('17-Pagamento Instantâneo (PIX)');
-      cbFormasDePagamento.Items.Add('18-Transferência bancária, Carteira Digital');
-      cbFormasDePagamento.Items.Add('19-Programa de fidelidade, Cashback, Crédito Virtual');
-      cbFormasDePagamento.Items.Add('99-Outros');
-
-      cbFormasDePagamento.Visible := True;
-      }
       {Sandro Silva 2023-06-16 fim}
 
       Label45.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)]);
@@ -1386,7 +1349,7 @@ begin
       try
 
         iRecno := DBGrid1.DataSource.DataSet.RecNo;
-        sForma := ValidaFormadePagamentoDigitada(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, TStringList(DBGrid1.Columns[DBGrid1.SelectedIndex].PickList)); 
+        sForma := ValidaFormadePagamentoDigitada(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, TStringList(DBGrid1.Columns[DBGrid1.SelectedIndex].PickList));
 
         if DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString <> sForma then
           DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;

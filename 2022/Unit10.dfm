@@ -848,11 +848,15 @@ object Form10: TForm10
       ShowHint = True
       TabOrder = 2
       OnDblClick = Panel2DblClick
+      DesignSize = (
+        840
+        40)
       object btnOK: TBitBtn
         Left = 655
         Top = 8
         Width = 120
         Height = 25
+        Anchors = [akLeft, akTop, akRight]
         Caption = '&Ok'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
@@ -900,6 +904,7 @@ object Form10: TForm10
         Top = 8
         Width = 252
         Height = 25
+        Anchors = [akLeft, akTop, akRight]
         Caption = 'Renegociar d'#237'vida'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText

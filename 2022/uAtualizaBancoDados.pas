@@ -1414,6 +1414,20 @@ begin
       ExecutaComando('Commit');
   end;
 
+  {Sandro Silva 2023-06-22 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'AUTORIZACAOTRANSACAO') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add AUTORIZACAOTRANSACAO varchar(20)') then
+      ExecutaComando('Commit');
+  end;
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'BANDEIRA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add BANDEIRA varchar(20)') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2023-06-22 fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

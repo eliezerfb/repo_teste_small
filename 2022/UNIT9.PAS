@@ -175,8 +175,8 @@ begin
 
   for I := 1 to Form7.iCampos do
   begin
-    if (Form7.ArquivoAberto.Fields[I-1].FieldName <> 'FORMADEPAGAMENTO') then
-    begin
+    //if (Form7.ArquivoAberto.Fields[I-1].FieldName <> 'FORMADEPAGAMENTO') then
+    //begin
       try
         TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
         TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Caption := Form7.ArquivoAberto.Fields[I-1].DisplayLabel;
@@ -193,7 +193,7 @@ begin
           Form9.Height := Form9.Height + 25;
       except
       end;
-    end;
+    //end;
   end;
 
   Form9.Height := form9.Height - 2;

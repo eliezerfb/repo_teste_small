@@ -1423,6 +1423,15 @@ begin
           Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
       end;
 
+      {Sandro Silva 2023-06-22 inicio}
+      // Forma De Pagamento
+      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
+      begin
+        Form7.ibDataSet7FORMADEPAGAMENTO.AsString := Form7.ibqConsulta.FieldByName('FORMA').AsString;
+        Form10.dBGrid3.Visible := False;
+      end;
+      {Sandro Silva 2023-06-22 fim}
+
       //Mauricio Parizotto 2023-05-29
       // Instituição Financeira
       if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
@@ -1733,6 +1742,27 @@ begin
         dBGrid3.DataSource := Form7.DataSource39; // Municipios
       end;
 
+      {Sandro Silva 2023-06-22 inicio}
+      if (vDataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text := SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO;
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top + 19;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := Width;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
+      end;
+      {Sandro Silva 2023-06-22 fim}
+
       //Mauricio Parizotto 2023-05-29
       if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') then
       begin
@@ -1784,54 +1814,19 @@ begin
       begin
         // Procura
         Form7.ibqConsulta.Close;
-        Form7.ibqConsulta.SelectSQL.Text :=
-          'select FORMA ' +
-          'from (' +
-          'select cast(''01-Dinheiro'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''02-Cheque'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''03-Cartão de Crédito'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''04-Cartão de Débito'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''05-Crédito de Loja'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''10-Vale Alimentação'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''11-Vale Refeição'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''12-Vale Presente'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''13-Vale Combustível'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''14-Duplicata Mercanti'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''15-Boleto Bancário'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''16-Depósito Bancário'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''17-Pagamento Instantâneo (PIX)'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''18-Transferência bancária, Carteira Digital'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''19-Programa de fidelidade, Cashback, Crédito Virtual'' as varchar(60)) as forma from rdb$database ' +
-          'union ' +
-          'select cast(''99-Outros'' as varchar(60)) as forma from rdb$database ' +
-          ') q ' +
-          'order by forma';                  
-
+        Form7.ibqConsulta.SelectSQL.Text := SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO;
         Form7.ibqConsulta.Open;
 
-        Form7.ibqConsulta.Locate('FORMA',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+        Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
 
         dBGrid3.Visible    := True;
-        dBGrid3.Top        := Top - 100;
+        dBGrid3.Top        := Top + 19;
         dBGrid3.Left       := Left;
         dBGrid3.Height     := 100;
         dBGrid3.Width      := Width;
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DSConsulta;
+        dBgrid3.Columns.Items[0].FieldName := 'FORMA';        
         dBGrid3.Columns[0].Width := 310;
       end;
       {Sandro Silva 2023-06-21 fim}
@@ -1932,6 +1927,22 @@ begin
           end;
         end;
       end;
+
+      {Sandro Silva 2023-06-22 inicio}
+      if (DataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
+      begin
+        if Pos(AnsiUpperCase(Text), AnsiUpperCase(Trim(Form7.ibqConsulta.FieldByName('NOME').AsString))) <> 0 then
+        begin
+          GravaEscolha;
+        end else
+        begin
+          DataSource.DataSet.Edit;
+          DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Form10.dBGrid3.Visible := False;
+          Exit;
+        end;
+      end;
+      {Sandro Silva 2023-06-22 fim}
 
       {Mauricio Parizotto 2023-05-29 Inicio}
       if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
@@ -2083,6 +2094,15 @@ begin
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
         end;
+
+        {Sandro Silva 2023-06-22 inicio}
+        if (vDataField = 'FORMADEPAGAMENTO')
+          and (Form7.sModulo = 'RECEBER')
+          and (Form7.ibqConsulta.Active) then
+        begin
+          Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
+        end;
+        {Sandro Silva 2023-06-22 fim}
 
         //Mauricio Parizotto 2023-05-29
         if (vDataField = 'INSTITUICAOFINANCEIRA')
@@ -3454,12 +3474,9 @@ begin
 end;
 
 procedure TForm10.FormActivate(Sender: TObject);
+var
+  iWidthCampos: Integer;
 begin
-  {Sandro Silva 2023-06-21 inicio}
-  dbcFormasDePagamento.Visible := False;
-  lbFormasDePagamento.Visible  := dbcFormasDePagamento.Visible;
-  {Sandro Silva 2023-06-21 fim}
-
   if Form7.sModulo = 'ESTOQUE' then
   begin
     if Form7.ibDataSet4MARKETPLACE.AsString = '1' then
@@ -3525,7 +3542,7 @@ begin
   end;
   
   if Form7.sModulo = 'CLIENTES' then
-  begin    
+  begin
     Form10.orelha_cadastro.TabVisible   := True;
     Form10.orelha_foto.TabVisible       := True;
     
@@ -3541,6 +3558,7 @@ begin
   
   if Form7.sModulo = 'RECEBER' then
   begin
+    {Sandro Silva 2023-06-22 inicio
     // Campo CONTATO no cadastro de clientes
     Form10.SMALL_DBEdit26.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit26.DataField  := 'CONTATO';
@@ -3549,12 +3567,12 @@ begin
     Form10.SMALL_DBEdit26.Visible    := True;
     Form10.SMALL_DBEdit26.Width      := 240;
     Form10.SMALL_DBEdit26.MaxLength  := Form7.IBDataSet2CONTATO.Size;
-    
+
     Form10.Label26.Top        := Label2.Top;
     Form10.Label26.Left       := Label2.Left + 450;
     Form10.Label26.Visible    := True;
     Form10.Label26.Caption    := 'Contato:';
-    
+
     // Campo TELEFONE no cadastro de clientes
     Form10.SMALL_DBEdit27.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit27.DataField  := 'FONE';
@@ -3562,12 +3580,12 @@ begin
     Form10.SMALL_DBEdit27.Left       := SMALL_DBEdit3.Left + 450;
     Form10.SMALL_DBEdit27.Visible    := True;
     Form10.SMALL_DBEdit27.Width      := 240;
-    
+
     Form10.Label27.Top        := Label3.Top;
     Form10.Label27.Left       := Label3.Left + 450;
     Form10.Label27.Visible    := True;
     Form10.Label27.Caption    := 'Telefone:';
-    
+
     // Campo CELULAR no cadastro de clientes
     Form10.SMALL_DBEdit28.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit28.DataField  := 'CELULAR';
@@ -3575,12 +3593,12 @@ begin
     Form10.SMALL_DBEdit28.Left       := SMALL_DBEdit4.Left + 450;
     Form10.SMALL_DBEdit28.Visible    := True;
     Form10.SMALL_DBEdit28.Width      := 240;
-    
+
     Form10.Label28.Top        := Label4.Top;
     Form10.Label28.Left       := Label4.Left + 450;
     Form10.Label28.Visible    := True;
     Form10.Label28.Caption    := 'Celular:';
-    
+
     // Campo EMAIL no cadastro de clientes
     Form10.SMALL_DBEdit29.DataSource := Form7.DataSource2;
     Form10.SMALL_DBEdit29.DataField  := 'EMAIL';
@@ -3588,12 +3606,12 @@ begin
     Form10.SMALL_DBEdit29.Left       := SMALL_DBEdit5.Left + 450;
     Form10.SMALL_DBEdit29.Visible    := True;
     Form10.SMALL_DBEdit29.Width      := 240;
-    
+
     Form10.Label29.Top        := Label5.Top;
     Form10.Label29.Left       := Label5.Left + 450;
     Form10.Label29.Visible    := True;
     Form10.Label29.Caption    := 'E-mail:';
-    
+
     // Contatos
     Form10.dbMemo2.DataSource := Form7.DataSource2;
     Form10.dbMemo2.DataField  := 'CONTATOS';
@@ -3603,20 +3621,93 @@ begin
     Form10.dbMemo2.Top        := SMALL_DBEdit6.Top;
     Form10.dbMemo2.Left       := SMALL_DBEdit6.Left + 450;
     Form10.dbMemo2.Visible    := True;
-    
+
     Form10.Label23.Caption    := 'Contatos:';
     Form10.Label23.Visible    := True;
     Form10.Label23.Top        := Label6.Top;
     Form10.Label23.Left       := Label6.Left + 450;
     Form10.Label23.Width      := Label6.Width;
-    
+    }
+
+    iWidthCampos := 325;
+
+    // Campo CONTATO no cadastro de clientes
+    Form10.SMALL_DBEdit26.DataSource := Form7.DataSource2;
+    Form10.SMALL_DBEdit26.DataField  := 'CONTATO';
+    Form10.SMALL_DBEdit26.Top        := SMALL_DBEdit5.Top;
+    Form10.SMALL_DBEdit26.Left       := SMALL_DBEdit5.Left + 460; //450;
+    Form10.SMALL_DBEdit26.Visible    := True;
+    Form10.SMALL_DBEdit26.Width      := iWidthCampos;
+    Form10.SMALL_DBEdit26.MaxLength  := Form7.IBDataSet2CONTATO.Size;
+
+    Form10.Label26.Top        := Label5.Top;
+    Form10.Label26.Left       := Label5.Left + 460; //450;
+    Form10.Label26.Visible    := True;
+    Form10.Label26.Caption    := 'Contato:';
+
+    // Campo TELEFONE no cadastro de clientes
+    Form10.SMALL_DBEdit27.DataSource := Form7.DataSource2;
+    Form10.SMALL_DBEdit27.DataField  := 'FONE';
+    Form10.SMALL_DBEdit27.Top        := SMALL_DBEdit6.Top;
+    Form10.SMALL_DBEdit27.Left       := SMALL_DBEdit6.Left + 460; //450;
+    Form10.SMALL_DBEdit27.Visible    := True;
+    Form10.SMALL_DBEdit27.Width      := iWidthCampos;
+
+    Form10.Label27.Top        := Label6.Top;
+    Form10.Label27.Left       := Label6.Left + 460; //450;
+    Form10.Label27.Visible    := True;
+    Form10.Label27.Caption    := 'Telefone:';
+
+    // Campo CELULAR no cadastro de clientes
+    Form10.SMALL_DBEdit28.DataSource := Form7.DataSource2;
+    Form10.SMALL_DBEdit28.DataField  := 'CELULAR';
+    Form10.SMALL_DBEdit28.Top        := SMALL_DBEdit7.Top;
+    Form10.SMALL_DBEdit28.Left       := SMALL_DBEdit7.Left + 460; //450;
+    Form10.SMALL_DBEdit28.Visible    := True;
+    Form10.SMALL_DBEdit28.Width      := iWidthCampos;
+
+    Form10.Label28.Top        := Label7.Top;
+    Form10.Label28.Left       := Label7.Left + 460; //450;
+    Form10.Label28.Visible    := True;
+    Form10.Label28.Caption    := 'Celular:';
+
+    // Campo EMAIL no cadastro de clientes
+    Form10.SMALL_DBEdit29.DataSource := Form7.DataSource2;
+    Form10.SMALL_DBEdit29.DataField  := 'EMAIL';
+    Form10.SMALL_DBEdit29.Top        := SMALL_DBEdit8.Top;
+    Form10.SMALL_DBEdit29.Left       := SMALL_DBEdit8.Left + 460; //450;
+    Form10.SMALL_DBEdit29.Visible    := True;
+    Form10.SMALL_DBEdit29.Width      := iWidthCampos;
+
+    Form10.Label29.Top        := Label8.Top;
+    Form10.Label29.Left       := Label8.Left + 460; //450;
+    Form10.Label29.Visible    := True;
+    Form10.Label29.Caption    := 'E-mail:';
+
+    // Contatos
+    Form10.dbMemo2.DataSource := Form7.DataSource2;
+    Form10.dbMemo2.DataField  := 'CONTATOS';
+    Form10.dbMemo2.TabOrder   := Form10.SMALL_DBEdit29.TabOrder + 1;
+    Form10.dbMemo2.Width      := iWidthCampos;
+    Form10.dbMemo2.Height     := 320 - 100;
+    Form10.dbMemo2.Top        := SMALL_DBEdit9.Top;
+    Form10.dbMemo2.Left       := SMALL_DBEdit9.Left + 460; //450;
+    Form10.dbMemo2.Visible    := True;
+
+    Form10.Label23.Caption    := 'Contatos:';
+    Form10.Label23.Visible    := True;
+    Form10.Label23.Top        := Label9.Top;
+    Form10.Label23.Left       := Label9.Left + 460; //450;
+    Form10.Label23.Width      := Label9.Width;
+    {Sandro Silva 2023-06-22 fim}
+
     if Form7.bSoLeitura or Form7.bEstaSendoUsado then
     begin
       Form10.SMALL_DBEdit26.ReadOnly := True;
       Form10.SMALL_DBEdit27.ReadOnly := True;
       Form10.SMALL_DBEdit28.ReadOnly := True;
       Form10.SMALL_DBEdit29.ReadOnly := True;
-      
+
       Form10.SMALL_DBEdit26.Font.Color := clGrayText;
       Form10.SMALL_DBEdit27.Font.Color := clGrayText;
       Form10.SMALL_DBEdit28.Font.Color := clGrayText;
@@ -3648,14 +3739,6 @@ begin
       end;
     end;
 
-    {Sandro Silva 2023-06-21 inicio}
-    dbcFormasDePagamento.Top := Form10.DBMemo2.Top + Form10.DBMemo2.Height + 5;
-    lbFormasDePagamento.Top := dbcFormasDePagamento.Top;
-    dbcFormasDePagamento.Left := Form10.dbMemo2.Left;
-    lbFormasDePagamento.Left := dbcFormasDePagamento.Left - lbFormasDePagamento.Width - 5;
-    dbcFormasDePagamento.Visible := True;
-    lbFormasDePagamento.Visible  := dbcFormasDePagamento.Visible;
-    {Sandro Silva 2023-06-21 fim}
   end;
 end;
 
@@ -4116,10 +4199,12 @@ var
 begin
   Form10.sNomeDoJPG := Form1.sAtual+'\tempo0000000000.jpg';
 
+  Panel_branco.Width := 840; // Sandro Silva 2023-06-22
+
   tInicio := time;
   Form10.orelhas.Visible := False;
 
-  eLimiteCredDisponivel.Visible := False;
+  eLimiteCredDisponivel.Visible   := False;
   lblLimiteCredDisponivel.Visible := False;
 
   try
@@ -4131,8 +4216,8 @@ begin
   Form10.Width  := 845;
   Form10.Height := 650;
 
-  btnOK.Left  := Panel2.Width - btnOK.Width - 10;
-  Button6.Left  := btnOK.Left - 10 - Button6.Width;
+  btnOK.Left   := Panel2.Width - btnOK.Width - 10;
+  Button6.Left := btnOK.Left - 10 - Button6.Width;
 
   Form7.ArquivoAberto.DisableControls;
   Form7.TabelaAberta.DisableControls;
@@ -4233,17 +4318,14 @@ begin
     if Form7.sModulo = 'ESTOQUE' then
     begin
       iContadorCampoEstoque := 23; // Sandro Silva 2023-01-18 iContadorCampoEstoque := 24;
-      {Sandro Silva 2023-01-04 inicio
-      iTopSegundaColuna := 17;
-      if Form1.CampoDisponivelParaUsuario(Form7.sModulo, 'IDENTIFICADORPLANOCONTAS') then
-      begin
-        iTopSegundaColuna := 16;
-      end;
-      }
       iTopSegundaColuna := 16;
-      {Sandro Silva 2023-01-04 fim}
     end;
     {Sandro Silva 2022-12-20 fim}
+
+    {Sandro Silva 2023-06-22 inicio}
+    if Form7.sModulo = 'RECEBER' then
+      iTopSegundaColuna := 18;
+    {Sandro Silva 2023-06-22 fim}
 
     for I := 1 to Form7.iCampos do
     begin
@@ -4260,10 +4342,21 @@ begin
               else
                 iTop := iTop + 25;
 
-              if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
+              if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
               begin
-                if I = iTopSegundaColuna then // Sandro Silva 2022-12-20 if I = 16 then
+                {Sandro Silva 2023-06-22 inicio
+                if I = iTopSegundaColuna then
                   iTop := 170 - 25;
+                }
+                if I = iTopSegundaColuna then
+                begin
+                  if (Form7.sModulo = 'RECEBER') then
+                    iTop := iTop - 400
+                  else
+                    iTop := 170 - 25;
+                end;
+                {Sandro Silva 2023-06-22 fim}
+
                 if I = 26 then
                   iTop := 20;
               end
@@ -4276,6 +4369,12 @@ begin
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 380 + 100
                 else if I > 15 then
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 200 + 100
+                else
+                  TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
+              end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
+              begin
+                if I > 17 then
+                  TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 100
                 else
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
               end else
@@ -4304,12 +4403,19 @@ begin
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 300 + 100
                 else
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
+              end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
+              begin
+                if I > 17 then
+                  TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 460 + 100
+                else
+                  TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
               end else
               begin
                 if I > 17 then
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 460 + 70
                 else
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
+
               end;
 
               {Sandro Silva 2022-12-20 inicio}
@@ -4335,10 +4441,10 @@ begin
 
               if (Form7.sModulo = 'CLIENTES') and (Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'Limite de crédito:') then
               begin
-                eLimiteCredDisponivel.Visible := True;
+                eLimiteCredDisponivel.Visible   := True;
                 lblLimiteCredDisponivel.Visible := True;
-                eLimiteCredDisponivel.Top   := iTop;
-                lblLimiteCredDisponivel.Top := iTop + 1;
+                eLimiteCredDisponivel.Top       := iTop;
+                lblLimiteCredDisponivel.Top     := iTop + 1;
               end;
 
               TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
@@ -4361,9 +4467,9 @@ begin
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font.Color := clWindowText;
               end;
 
-              TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).width := (Form7.ArquivoAberto.Fields[I - 1].Displaywidth * 9) + 10;
+              TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I - 1].Displaywidth * 9) + 10;
 
-              if TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).width > 340 then
+              if TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Width > 340 then
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Width := 340;
               if (Form7.ArquivoAberto.Fields[I-1].DataType <> ftFloat) then
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).MaxLength := Form7.ArquivoAberto.Fields[I - 1].Size
@@ -4374,7 +4480,7 @@ begin
                                ((Form7.ArquivoAberto.Name = 'ibDataSet1') or
                                 (Form7.ArquivoAberto.Name = 'ibDataSet4') or
                                 (Form7.ArquivoAberto.Name = 'ibDataSet7') or
-                                 (Form7.ArquivoAberto.Name = 'ibDataSet8')) then
+                                (Form7.ArquivoAberto.Name = 'ibDataSet8')) then
               begin
                 try
                   dBGrid1.Top     := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top + TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Height -1;
@@ -4537,6 +4643,10 @@ begin
   begin
     if Form7.sModulo = 'RECEBER' then
     begin
+      {Sandro Silva 2023-06-22 inicio}
+      Form10.Width  := 945;
+      Panel_branco.Width  := Form10.Width - 15;
+      {Sandro Silva 2023-06-22 fim}      
       // Recibo
       Button9.Visible := True;
     end;
@@ -4603,6 +4713,11 @@ begin
 
   Label201.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
   Label201.ShowHint := True;
+
+  {Sandro Silva 2023-06-22 inicio} 
+  Form10.Left := (Form7.Width - Form10.Width) div 2;
+  Form10.Repaint;
+  {Sandro Silva 2023-06-22 inicio}
 end;
 
 procedure TForm10.Button9Click(Sender: TObject);
@@ -8377,7 +8492,8 @@ end;
 
 procedure TForm10.ComboBox3Enter(Sender: TObject);
 begin
-  with Sender as tComboBox do SendMessage(Handle, CB_SETDROPPEDWIDTH, Form10.Width - Left - 30, 0);
+  with Sender as tComboBox do
+    SendMessage(Handle, CB_SETDROPPEDWIDTH, Form10.Width - Left - 30, 0);
 end;
 
 procedure TForm10.Orelha_codebarEnter(Sender: TObject);
@@ -8925,7 +9041,6 @@ procedure TForm10.DBGrid3CellClick(Column: TColumn);
 begin
   DBGrid3DblClick(nil);
 end;
-
 
 procedure TForm10.AlteracaoInstituicaoFinanceira;
 var

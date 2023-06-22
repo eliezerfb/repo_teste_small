@@ -1465,6 +1465,8 @@ type
     ibqConsulta: TIBDataSet;
     ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
     ibDataSet7FORMADEPAGAMENTO: TStringField;
+    ibDataSet7AUTORIZACAOTRANSACAO: TStringField;
+    ibDataSet7BANDEIRA: TStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -9627,7 +9629,7 @@ begin
   if Form7.sModulo <> 'VENDA' then
   begin
     Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
-    Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
+    //Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
     Form7.ibDataSet7PORTADOR.Index := 12;
   end;
   {Sandro Silva 2023-06-19 fim}
@@ -10184,6 +10186,9 @@ begin
 
       if (sModulo = 'RECEBER') then
       begin
+
+        Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 17; // Sandro Silva 2023-06-22
+
         ComboBox1.Items.Clear;
         ComboBox1.Items.Add('<Dinheiro/Cheque>');
         ComboBox1.ItemIndex := 0;
@@ -10261,7 +10266,7 @@ begin
         Form7.ibDataSet25.Active := True;
         Form7.ibDataSet25.Append;
       end;
-      
+
       if (sModulo = 'PAGAR') then
       begin
         ComboBox1.Items.Clear;
@@ -10551,9 +10556,11 @@ begin
         Form7.ibDataSet7VALOR_DUPL.Visible := True;
         Form7.ibDataSet7NOME.Visible       := True;
         {Sandro Silva 2023-06-19 inicio}
-        Form7.ibDataSet7FORMADEPAGAMENTO.Visible := True; // Sandro Silva 2023-06-16
+        Form7.ibDataSet7FORMADEPAGAMENTO.Visible     := True; // Sandro Silva 2023-06-16
+        Form7.ibDataSet7AUTORIZACAOTRANSACAO.Visible := True; // Sandro Silva 2023-06-22
+        Form7.ibDataSet7BANDEIRA.Visible             := True; // Sandro Silva 2023-06-22
         Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 10;
-        Form7.ibDataSet7FORMADEPAGAMENTO.Index := 12;
+        Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 12;
         {Sandro Silva 2023-06-16 fim}
 
         // Liga os dbGrids aos dataSurces
@@ -11119,9 +11126,9 @@ begin
         Vencendohoje2.Checked  := False;
 
         // Campos
-        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFTTTT'); // Sandro Silva 2023-06-22 sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
         //iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
-        iCampos                := 17; // Mauricio Parizotto 2023-05-29
+        iCampos                := 20;// Sandro Silva 2023-06-22 iCampos                := 17; // Mauricio Parizotto 2023-05-29
 
         // Menu
         Form7.Menu         := MainMenu7;
@@ -13550,10 +13557,6 @@ var
   yRect, xRect : tREct;
   sTex : String;
 begin
-  // Teste evitar exception de transaction em Form7.FormClose()
-  if TDBGrid(Sender).DataSource.DataSet.Active = False then
-    Exit;
-
   //
   try
     //
