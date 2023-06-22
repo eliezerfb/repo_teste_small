@@ -19126,12 +19126,15 @@ begin
               begin
                 //Só preenche se campos estiverem em branco
                 try
-                  if (Form7.ibDataSet13.FieldByName('CRT').AsString = '1')
-                    and (Form7.ibDataSet16CSOSN.AsString = '') then
+                  if (Form7.ibDataSet13.FieldByName('CRT').AsString = '1') then
                   begin
-                    Form7.ibDataSet16CSOSN.AsString := CampoICMporNatureza('CSOSN',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
-                    Form7.ibDataSet16CST_ICMS.AsString := '0';
+                    if Form7.ibDataSet16CSOSN.AsString = '' then
+                      Form7.ibDataSet16CSOSN.AsString := CampoICMporNatureza('CSOSN',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
+
+                    if Form7.ibDataSet16CST_ICMS.AsString = '' then
+                      Form7.ibDataSet16CST_ICMS.AsString := '0';
                   end;
+
 
                   if (Form7.ibDataSet13.FieldByName('CRT').AsString <> '1')
                     and (Form7.ibDataSet16CST_ICMS.AsString = '') then
