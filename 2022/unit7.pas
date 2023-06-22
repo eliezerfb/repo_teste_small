@@ -13475,7 +13475,7 @@ var
   oLimDisp: IRetornaLimiteDisponivel;
 begin
   Result := True;
-  if (Form7.sModulo = 'VENDA') then
+  if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') then
   begin
     if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
