@@ -243,7 +243,7 @@ function ConsultaProcesso(sP1: String): Boolean;
 function NomeModeloDocumento(sModeloDocumento: String): String;
 procedure OpcoesMenuVisivel(Menu: TMenuItem; Visible: Boolean);
 function TempoDecorridoPorExtenso(dtDataF, dtDataI: Tdate; ttHoraF, ttHoraI: TTime): String;
-function SerialMEI(sSerial: String): Boolean;
+// Sandro Silva 2023-06-23 function SerialMEI(sSerial: String): Boolean;
 function PAFNFCe: Boolean;
 function NFCe: Boolean;
 function MEI: Boolean;
@@ -260,6 +260,8 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
+function SelectSQLGerenciadorVendasF10(sModeloECF: String;
+  sModeloECF_Reserva: String; Data: TDate): String;
 //function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 
 var
@@ -1534,6 +1536,7 @@ begin
   end;
 end;
 
+(*{Sandro Silva 2023-06-23 inicio}
 function SerialMEI(sSerial: String): Boolean;
 // Retorna True se o serial é de empresa enquadrada como MEI
 begin
@@ -1575,6 +1578,7 @@ begin
   end;
   {Sandro Silva 2021-12-29 fim}
 end;
+*)
 
 function Build: String;
 var
@@ -1606,7 +1610,9 @@ end;
 
 function MEI: Boolean;
 begin
-  Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
+  // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
+  Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
+  //Result := (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0);
 end;
 
 function SAT: Boolean;
@@ -1917,6 +1923,15 @@ begin
     Result := False;
   if sForma = FORMA_PAGAMENTO_CHEQUE then
     Result := False;
+end;
+
+function SelectSQLGerenciadorVendasF10(sModeloECF: String;
+  sModeloECF_Reserva: String; Data: TDate): String;
+begin
+ Result:=
+  'select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Data)) +
+  IfThen((sModeloECF = '99') or (sModeloECF_Reserva = '99'), ' and MODELO = ''99'' ', ' ') +
+  ' order by NUMERONF ';
 end;
 
 {
