@@ -3355,13 +3355,25 @@ end;
 
 function FechaTudo(bP1 : Boolean):Boolean;
 begin
+  Result := False;
+  
   if Form5.Visible then Form5.Close;
   if Form5.Visible then Form10.Close;
 
   if Form1.bFechaTudo then
   begin
     if Form24.Visible then Form24.Close;
-    if Form12.Visible then Form12.Close;
+    if (Form12.Visible) then
+    begin
+      if (Form12.PodeFecharTela) then
+        Form12.Close
+      else
+      begin
+        if not Form12.Showing then
+          Form12.Show;
+        Exit;
+      end;
+    end;
     if Form30.Visible then Form30.Close;
     if Form48.Visible then Form48.Close;
   end;
@@ -3616,7 +3628,8 @@ begin
     if not (Form1.iReduzida = 1) then
     begin
       try
-        FechaTudo(bFechaTudo);
+        if not FechaTudo(bFechaTudo) then
+          Exit;
         Form7.sModulo := 'CAIXA';
         Form1.Label201MouseLeave(Sender);
         Form7.sTitulo := 'Livro caixa';
@@ -4140,7 +4153,8 @@ end;
 
 procedure TForm1.Cadastrodetransportadoras1Click(Sender: TObject);
 begin
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form7.Close;
   Form7.sModulo := 'TRANSPORT';
   Form7.sTitulo := 'Cadastro de transportadoras';
@@ -4157,7 +4171,8 @@ end;
 procedure TForm1.Planodecontas1Click(Sender: TObject);
 begin
   //
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   Form7.sModuloAnterior := Form7.sModulo;
   Form7.sModulo := 'CONTAS';
@@ -4314,7 +4329,8 @@ begin
   end;
   //
   Regularize(True);
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   if form1.DBGrid200.Visible then
   begin
@@ -4507,7 +4523,8 @@ end;
 
 procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
 begin
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form17.ShowModal;
   ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15 
 end;
@@ -5555,7 +5572,8 @@ end;
 procedure TForm1.Comissodevendedores1Click(Sender: TObject);
 begin
   //
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form7.Close;
   Form7.sModulo := 'VENDEDOR';
   Form7.sTitulo := 'Cadastro dos vendedores';
@@ -5574,7 +5592,8 @@ end;
 procedure TForm1.Grupos1Click(Sender: TObject);
 begin
   //
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form7.Close;
   Form7.sModulo := 'GRUPOS';
   Form7.sTitulo := 'Grupos de mercadorias no estoque';
@@ -5723,7 +5742,8 @@ end;
 procedure TForm1.Cadastrodeconvnios1Click(Sender: TObject);
 begin
   //
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form7.Close;
   Form7.sModulo := 'CONVENIO';
   Form7.sTitulo := 'Cadastro de convênios';
@@ -5737,7 +5757,9 @@ begin
   if not Legal(True) then Abort;
 
   try
-    FechaTudo(bFechaTudo);
+    if not FechaTudo(bFechaTudo) then
+      Exit;
+
     Form7.sModulo := 'CLIENTES';
     Form1.Label201MouseLeave(Sender);
     Form7.sTitulo := 'Cadastro';
@@ -5772,7 +5794,8 @@ begin
 
   // Teste
   try
-    FechaTudo(bFechaTudo);
+    if not FechaTudo(bFechaTudo) then
+      Exit;
     Form7.sModulo  := 'ESTOQUE';
     Form1.Label201MouseLeave(Sender);
     Form7.sTitulo  := 'Controle de estoque';
@@ -5802,7 +5825,8 @@ begin
     if not (Form1.iReduzida = 1) then
     begin
       try
-        FechaTudo(bFechaTudo);
+        if not FechaTudo(bFechaTudo) then
+          Exit;
         Form7.sModulo := 'BANCOS';
         Form1.Label201MouseLeave(Sender);
         Form7.sTitulo := 'Controle bancário';
@@ -5821,6 +5845,9 @@ begin
   try
     //
     if not Legal(True) then Abort;
+
+    if not FechaTudo(bFechaTudo) then
+      Exit;
     //
     // NFe com CPF
     //
@@ -5948,6 +5975,9 @@ procedure TForm1.Image208Click(Sender: TObject);
 var
   Backup: TBackup;
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
+
   Form7.sModulo := 'BACKUP';
   Form1.Label201MouseLeave(Sender);
 
@@ -5965,14 +5995,13 @@ procedure TForm1.Image207Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   Form7.sAjuda := 'config.htm';
   Form7.sModulo := 'CONFIG';
   Form1.Label201MouseLeave(Sender);
   //
-  try
-    FechaTudo(bFechaTudo);
-  except end;
   //
   try
     //
@@ -6058,7 +6087,8 @@ begin
     if not (Form1.iReduzida = 1) then
     begin
       try
-        FechaTudo(bFechaTudo);
+        if not FechaTudo(bFechaTudo) then
+          Exit;
         Form7.sModulo := 'RECEBER';
         Form1.Label201MouseLeave(Sender);
         Form7.sTitulo := 'Contas a receber';
@@ -6080,7 +6110,8 @@ begin
     if not (Form1.iReduzida = 1) then
     begin
       try
-        FechaTudo(bFechaTudo);
+        if not FechaTudo(bFechaTudo) then
+          Exit;
         Form7.sModulo := 'PAGAR';
         Form1.Label201MouseLeave(Sender);
         Form7.sTitulo := 'Contas a pagar';
@@ -6097,7 +6128,8 @@ begin
   if not Legal(True) then Abort;
   //
   try
-    FechaTudo(bFechaTudo);
+    if not FechaTudo(bFechaTudo) then
+      Exit;
     Form7.sModulo := 'OS';
     Form1.Label201MouseLeave(Sender);
     Form7.sTitulo := 'Ordem de serviço';
@@ -6112,7 +6144,8 @@ end;
 procedure TForm1.Cadastrodetcnicos1Click(Sender: TObject);
 begin
   //
-  FechaTudo(bFechaTudo);
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form7.Close;
   Form7.sModulo := 'TECNICO';
   Form7.sTitulo := 'Cadastro de técnicos';
@@ -11324,6 +11357,8 @@ end;
 
 procedure TForm1.Image200Click(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
 
   if ValidaRecursoExibeMensagemIndisponivel then
   begin
@@ -11334,7 +11369,8 @@ begin
     try
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
       //
-      FechaTudo(bFechaTudo);
+      if not FechaTudo(bFechaTudo) then
+        Exit;
       try
         if form7.Visible then Form7.Close;
         if form10.Visible then Form10.Close;
@@ -11567,6 +11603,8 @@ end;
 
 procedure TForm1.Label_bola_NFEClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   if Form1.bNotaCompraLiberada then
   begin
     Form1.Image201Click(Sender);
@@ -11592,7 +11630,8 @@ end;
 
 procedure TForm1.Label_bola_caixaClick(Sender: TObject);
 begin
-  //
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form1.Image205Click(Sender);
   //
   Form7.ibDataSet1.DisableControls;
@@ -11611,6 +11650,8 @@ end;
 
 procedure TForm1.Label_bola_bancoClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form1.Image206Click(Sender);
   Form7.Lanamentosnocompensados1Click(Sender);
   Aviso('Temos '+InttoStr(Form1.iAvisosBanco)+' lançamentos não conciliados.');
@@ -11619,7 +11660,8 @@ end;
 
 procedure TForm1.Label_bola_pagarClick(Sender: TObject);
 begin
-  //
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form1.Image210Click(Sender);
   //
   Form7.ibDataSet8.DisableControls;
@@ -11638,6 +11680,8 @@ end;
 
 procedure TForm1.Label_bola_cliforClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   Form1.Image203Click(Sender);
   //
@@ -11657,6 +11701,8 @@ end;
 
 procedure TForm1.Label_bola_receberClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   Form1.Image204Click(Sender);
 
   Form7.ibDataSet7.DisableControls;
@@ -11675,6 +11721,8 @@ end;
 
 procedure TForm1.Label_Bola_estoqueClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   Form1.Image202Click(Sender);
   //
@@ -11696,6 +11744,8 @@ procedure TForm1.Label_Bola_ConfigClick(Sender: TObject);
 var
   sMSG : String;
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   if Form7.Visible then Form7.Close;
   if Form10.Visible then Form10.Close;
@@ -11743,6 +11793,8 @@ end;
 
 procedure TForm1.Label_bola_OSClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   Image201_Click(Sender);
   //
@@ -11903,6 +11955,8 @@ end;
 
 procedure TForm1.Image201CClick(Sender: TObject);
 begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
   //
   try
     //
@@ -12019,14 +12073,18 @@ begin
       if Form1.bNotaServicoLiberada then
       begin
         Screen.Cursor := crHourGlass; // Cursor de Aguardo
-        FechaTudo(Form1.bFechaTudo);
+        try
+          if not FechaTudo(bFechaTudo) then
+            Exit;
 
-        Form7.sModulo := 'VENDA';
-        Form7.sTitulo := 'Nota Fiscal de Serviço Eletronica (NFS-e) e Recibo Provisório de Serviços (RPS) RPS';
-        Form7.sRPS    := 'S';
+          Form7.sModulo := 'VENDA';
+          Form7.sTitulo := 'Nota Fiscal de Serviço Eletronica (NFS-e) e Recibo Provisório de Serviços (RPS) RPS';
+          Form7.sRPS    := 'S';
 
-        Form7.Show;
-        Screen.Cursor := crDefault; // Cursor de Aguardo
+          Form7.Show;
+        finally
+          Screen.Cursor := crDefault; // Cursor de Aguardo
+        end;
       end;
 
       Form1.Label201MouseLeave(Sender);
@@ -12125,7 +12183,8 @@ begin
           Commitatudo(True); // SQL - Commando
         except end;
         try
-          FechaTudo(bFechaTudo);
+          if not FechaTudo(bFechaTudo) then
+            Exit;
           Form7.ibDataSet13.Close;
         except end;
         //

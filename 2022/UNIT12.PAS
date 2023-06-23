@@ -267,6 +267,7 @@ type
     procedure SMALL_DBEdit43Click(Sender: TObject);
     procedure SMALL_DBEdit39Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
+    procedure edtTotalNotaChange(Sender: TObject);
 
   private
     { Private declarations }
@@ -275,6 +276,8 @@ type
     procedure AtivaPesquisaCliente;
     procedure AtivaPesquisaTransportadora;
     procedure ExibeColunasFCP(bOculta: Boolean);
+    function getPodeFecharTela: Boolean;
+    function TestarLimiteDisponivel: Boolean;
   public
     { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -285,6 +288,8 @@ type
     procedure ExibeColunasFCPST(bExibe: Boolean);
     procedure ExibeColunaCSOSN(bExibe: Boolean);
     procedure ExibeColunaCSTICMS(FINNFE: String; CRT: String); // procedure ExibeColunaCSTICMS(bExibe: Boolean);
+
+    property PodeFecharTela: Boolean read getPodeFecharTela;
   end;
 
 var
@@ -1285,17 +1290,22 @@ procedure TForm12.DBGrid1ColExit(Sender: TObject);
 var
   Sreg1: String;
 begin
-  if UpperCase(Form1.ConfDuplo) <> 'SIM' then
-  begin
-    Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True)
-  end  else
-  begin
-    {Form7.ibDataSet16.DisableControls;
-    sReg1 := Form7.ibDataSet16.FieldByname('REGISTRO').AsString;
-    Form7.ibDataSet16.First;
-    Form7.ibDataSet16.Locate('REGISTRO',sREg1,[]);
-    if Form7.sModulo <> 'RETRIBUTA' then
-      Form7.ibDataSet16.EnableControls; Mauricio Parizotto 2023-04-26 sem uso aparente}
+  Form7.ibDataSet15TOTAL.OnChange := nil;
+  try
+    if UpperCase(Form1.ConfDuplo) <> 'SIM' then
+    begin
+      Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True);
+    end  else
+    begin
+      {Form7.ibDataSet16.DisableControls;
+      sReg1 := Form7.ibDataSet16.FieldByname('REGISTRO').AsString;
+      Form7.ibDataSet16.First;
+      Form7.ibDataSet16.Locate('REGISTRO',sREg1,[]);
+      if Form7.sModulo <> 'RETRIBUTA' then
+        Form7.ibDataSet16.EnableControls; Mauricio Parizotto 2023-04-26 sem uso aparente}
+    end;
+  finally
+    Form7.ibDataSet15TOTAL.OnChange := Form7.ibDataSet15TOTALChange;
   end;
 end;
 
@@ -1726,10 +1736,27 @@ begin
 
     // LogRetaguarda('TForm12.FormClose('); // Sandro Silva 2023-05-08
 
-    if vNotaFiscal <> nil then
+    Form7.ibDataSet15TOTAL.OnChange := nil;
+
+    if vNotaFiscal = nil then
+    begin
+      vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+      vNotaFiscal.Calculando := False;
+    end;
+
+    try
       vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
 
-    FreeAndNil(vNotaFiscal);
+      if not TestarLimiteDisponivel then
+      begin
+        Action := caNone;
+        Exit;
+      end;
+    finally
+      Form7.ibDataSet15TOTAL.OnChange := Form7.ibDataSet15TOTALChange;
+      if  Action <> caNone then
+        FreeAndNil(vNotaFiscal);
+    end;
   except
   end;
 
@@ -2528,8 +2555,21 @@ begin
   //
 end;
 
+function TForm12.TestarLimiteDisponivel: Boolean;
+begin
+  Result := False;
+  if not Form7.TestarLimiteDisponivel then
+  begin
+    SMALL_DBEdit40.SetFocus;
+    Exit;
+  end;
+  Result := True;  
+end;
+
 procedure TForm12.Button2Click(Sender: TObject);
 begin
+  if not TestarLimiteDisponivel then
+    Exit;
   //
   Form12.DBGrid1.SelectedIndex := 0;
   //
@@ -3197,6 +3237,28 @@ begin
   Form7.ibDataSet16CST_ICMS.DisplayLabel := 'CST ICMS';
   if (FINNFE = '4') and (CRT = '1') then // Devolução e simples nacional
     Form7.ibDataSet16CST_ICMS.DisplayLabel := 'Origem';
+end;
+
+function TForm12.getPodeFecharTela: Boolean;
+begin
+  Result := True;
+
+  if not Self.Showing then
+    Exit;
+  if Form7.TestarLimiteDisponivel then
+    Exit;
+
+  Result := False;
+end;
+
+procedure TForm12.edtTotalNotaChange(Sender: TObject);
+begin
+  if (not Self.Showing) then
+    Exit;
+  if (not edtTotalNota.DataSource.DataSet.Active) then
+    Exit;
+  if Form7.TestarLimiteDisponivel then
+    Exit;
 end;
 
 end.

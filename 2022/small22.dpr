@@ -75,7 +75,6 @@ uses
   uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas',
   uNotaFiscalEletronicaCalc in 'uNotaFiscalEletronicaCalc.pas',
   uImportaNFe in 'uImportaNFe.pas',
-  uSmallConsts in '..\Commons\uSmallConsts.pas',
   uIRetornaBuildEXE in 'interfaces\uIRetornaBuildEXE.pas',
   uRetornaBuildEXE in 'units\uRetornaBuildEXE.pas',
   uIRetornaEmailsPessoa in 'interfaces\uIRetornaEmailsPessoa.pas',
@@ -105,7 +104,8 @@ uses
   uValidaRecursosDelphi7 in '..\..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
-  uConectaBancoCommerce in 'uConectaBancoCommerce.pas';
+  uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
+  uSmallConsts in '..\..\unit_compartilhada\uSmallConsts.pas';
 
 {$R *.RES}
 

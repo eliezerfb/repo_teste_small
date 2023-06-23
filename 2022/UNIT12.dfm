@@ -1389,6 +1389,7 @@ object Form12: TForm12
         ReadOnly = True
         ShowHint = True
         TabOrder = 30
+        OnChange = edtTotalNotaChange
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit25: TSMALL_DBEdit
