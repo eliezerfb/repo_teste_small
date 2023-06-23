@@ -15300,6 +15300,7 @@ object Form7: TForm7
       FieldName = 'SAIDAD'
       Origin = 'VENDAS.SAIDAD'
       Visible = False
+      OnChange = ibDataSet15SAIDADChange
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
