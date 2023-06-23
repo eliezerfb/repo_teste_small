@@ -941,9 +941,15 @@ begin
           else
             Form7.spdNFeDataSets.Campo('cProd_I02').Value   := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // Código de BARRAS
 
+      // EAN do Produto
       Form7.spdNFeDataSets.Campo('cEAN_I03').Value := 'SEM GTIN'; // EAN do Produto
-      if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
-        Form7.spdNFeDataSets.Campo('cEAN_I03').Value := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // EAN do Produto
+      if (RetornaValorDaTagNoCampo('cEAN', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
+        Form7.spdNFeDataSets.Campo('cEAN_I03').Value := RetornaValorDaTagNoCampo('cEAN', Form7.ibDataSet4.FieldByname('TAGS_').AsString)
+      else
+      begin
+        if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
+          Form7.spdNFeDataSets.Campo('cEAN_I03').Value := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // EAN do Produto
+      end;
 
       Form7.spdNFeDataSets.Campo('xProd_I04').Value    := Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString));// Descrição do PRoduto
 
@@ -1151,13 +1157,20 @@ begin
         Form7.spdNFeDataSets.Campo('indTot_I17b').Value   := '0'; // 0 - O valor do Item NÃO compõe o valor total da nota 1 - O valor do Item compõe o valor total da nota
       end;
 
-      Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := 'SEM GTIN'; // EAN do Produto
-
-      if (RetornaValorDaTagNoCampo('cEANTrib', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '') and (Form7._ecf65_ValidaGtinNFCe(RetornaValorDaTagNoCampo('cEANTrib', Form7.ibDataSet4.FieldByname('TAGS_').AsString))) then
+      // EAN do Produto
+      Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := 'SEM GTIN';
+      if (RetornaValorDaTagNoCampo('cEANTrib', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
         Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := RetornaValorDaTagNoCampo('cEANTrib', Form7.ibDataSet4.FieldByname('TAGS_').AsString)
       else
-        if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
-          Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // EAN do Produto
+      begin
+        if (RetornaValorDaTagNoCampo('cEAN', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
+          Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := RetornaValorDaTagNoCampo('cEAN', Form7.ibDataSet4.FieldByname('TAGS_').AsString)
+        else
+        begin
+          if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
+            Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString);
+        end;
+      end;
 
       // Quantidade tributável
       if RetornaValorDaTagNoCampo('uTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '' then
