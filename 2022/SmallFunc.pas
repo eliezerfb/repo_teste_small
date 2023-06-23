@@ -2337,25 +2337,18 @@ begin
   begin
     Result := Result + Chr( (StrToInt(Copy(sP,(I*2)-1,2))+130) );
   end;
-  //
 end;
 
-//------------------------------------------------------------------------
 function Arredonda(fP1 : Real; iP2 : Integer): Real;
 begin
-  //
   Result := StrToFloat(StrTran(Format('%14.'+IntToStr(iP2)+'n',[fP1]),'.',''));
-  //
 end;
 
 function Arredonda2(fP1 : Double; iP2 : Integer): Double;
 begin
-  //
   // Problema de campos no bd double precision ou valores com dizima resolvi desta forma mas nao entendo como isso funciona
-  //
   fp1 := StrToFloat(FloatToStr(fP1));
   Result := StrToFloat(StrTran(Format('%14.'+IntToStr(iP2)+'n',[fP1]),'.',''));
-  //
 end;
 
 
