@@ -29848,8 +29848,9 @@ begin
   //
   if (Form1.iReduzida = 1) then
   begin
-    ShowMessage('Este campo não pode ser alterado na versão START. Para controlar o limite de crédito é necessário liberar a versão COMMERCE.');
     IBDataSet2CREDITO.AsString := '';
+    // Sandro Silva 2023-06-23 ShowMessage('Este campo não pode ser alterado na versão START. Para controlar o limite de crédito é necessário liberar a versão COMMERCE.');
+    Application.MessageBox('Este campo não pode ser alterado nesta versão do SMALL.' + Chr(13) + Chr(13) + 'Para controlar o limite de crédito é necessário liberar a versão SMALL COMMERCE.', 'Atenção', MB_OK + MB_ICONWARNING);
   end else
   begin
     IBDataSet2CREDITO.AsString := Text;
