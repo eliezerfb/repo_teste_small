@@ -19782,7 +19782,6 @@ object Form7: TForm7
       DisplayLabel = 'Descri'#231#227'o dos servi'#231'os'
       DisplayWidth = 29
       FieldName = 'DESCRICAO'
-      OnChange = ibDataSet35DESCRICAOChange
       OnSetText = ibDataSet35DESCRICAOSetText
       Size = 45
     end
