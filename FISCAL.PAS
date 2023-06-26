@@ -2198,6 +2198,9 @@ begin
   end;  
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 09ef43d (Revert "Ajustando")
 
   Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE
 =======
@@ -2211,6 +2214,7 @@ begin
   Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE 
   Form1.Label_10.Repaint; // 2015-09-08
 
+<<<<<<< HEAD
   {Sandro Silva 2023-06-23 inicio}
   Form1.Label_10.Tag := ZERO
   if em venda ou movimentação
@@ -2218,6 +2222,8 @@ begin
   {Sandro Silva 2023-06-23 fim}
   //
 >>>>>>> parent of 28bb618 (Ajustando gerencial)
+=======
+>>>>>>> parent of 09ef43d (Revert "Ajustando")
   if Form1.sGertec <> 'Não' then
   begin
     Form1.DisplayGertec(sP1);
@@ -15722,6 +15728,7 @@ var
   Mais1ini : TIniFile;
   iItem: Integer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 begin    
 =======
 begin
@@ -15729,6 +15736,9 @@ begin
 >>>>>>> parent of 28bb618 (Ajustando gerencial)
 =======
 >>>>>>> parent of 28bb618 (Ajustando gerencial)
+=======
+begin    
+>>>>>>> parent of 09ef43d (Revert "Ajustando")
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //
   x1024x768.Visible := False;

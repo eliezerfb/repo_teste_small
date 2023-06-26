@@ -42,6 +42,9 @@ const CHAVE_PUBLICA = 'DF9F4DC6AF517A889BCE1181DEF8394455DBCD19768E8C785D9121E8D
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 09ef43d (Revert "Ajustando")
 const TEXTO_CAIXA_LIVRE            = 'CAIXA LIVRE';
 const TEXTO_CAIXA_EM_VENDA         = 'EM VENDA';
 =======
