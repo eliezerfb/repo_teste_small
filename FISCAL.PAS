@@ -2195,10 +2195,16 @@ begin
   begin
     sP2 := 'F10 Menu Configurações';
   end;  
-
+  //
   Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE
   Form1.Label_10.Repaint; // 2015-09-08
 
+  {Sandro Silva 2023-06-23 inicio}
+  Form1.Label_10.Tag := ID_IDENTIFICACAO_CAIXA_LIVRE;
+  if Form1.Label_10.Caption = RetornaTextoEmVenda(Form1.sModeloECF_Reserva) then
+    Form1.Label_10.Tag := ID_IDENTIFICACAO_EM_VENDA;
+  {Sandro Silva 2023-06-23 fim}
+  //
   if Form1.sGertec <> 'Não' then
   begin
     Form1.DisplayGertec(sP1);
@@ -10194,12 +10200,11 @@ begin
   begin
     Form1.Caption := 'Aplicativo emissor CF-e';
   end;
-  {Sandro Silva 2023-06-26 inicio 
   if (sExeName = 'mei.exe') or (MEI) then // Sandro Silva 2021-03-19 if (sExeName = 'mei.exe') then
   begin
     Form1.Caption := 'Aplicativo MEI';
   end;
-  }
+
   if (PAFNFCe) then
   begin
     Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
@@ -15702,7 +15707,9 @@ procedure TForm1.PopupMenu1Popup(Sender: TObject);
 var
   Mais1ini : TIniFile;
   iItem: Integer;
-begin    
+begin
+ajustar nome opção relatorio gerencial
+
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //
   x1024x768.Visible := False;
@@ -15710,10 +15717,6 @@ begin
   Form1.IdentificarCredenciadoraPoS1.Visible     := False; // Sandro Silva 2018-11-20
   EnviaremailcomXMLePDFacadavenda1.Visible       := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')); // Ficha 4736 Sandro Silva 2019-08-02
   ValorLimiteTotalNFCeEstabelecidoSefaz1.Visible := (Form1.sModeloECF = '65'); // Sandro Silva 2021-07-12
-
-  Vendaspor1.Caption                           := 'Resumo de Vendas...';
-  Imprimiroramento1.Caption                    := 'Imprimir Orçamento - Documento Auxiliar de Venda (DAV) ...';
-  DocumentoAuxiliardeVendaDAVOramento1.Caption := 'Orçamento - Documento Auxiliar de Venda (DAV) ...';
 
   {Sandro Silva 2023-05-30 inicio}
   if ValidaRecursos.PermiteRecursoParaProduto = False then
@@ -15796,12 +15799,12 @@ begin
     Mesasabertas2.Caption           := sMesasOuContas + ' abertas...';
 
     Ligardesligarhorriodevero1.Visible := False;
-    Gaveta1.Visible                    := False;
+    Gaveta1.Visible := False;
 
     ransmitirContingncia2.Enabled := (NFCeemContingncia1.Checked = False) and (Form1.UsaIntegradorFiscal() = False); // Sandro Silva 2019-10-16 (NFCeemContingncia1.Checked = False);
     NmerodoCredencimentodoPAFECF1.Visible := False; // Sandro Silva 2016-09-02
 
-    BalanaAutonoma1.Visible                := True;
+    BalanaAutonoma1.Visible := True;
     Produtolanadonapesagemautonoma1.Visible  := True;
     Mesainicialparapesagensautonoma1.Visible := True;
 
@@ -15809,10 +15812,6 @@ begin
   else
   if (Form1.sModeloECF = '99')then
   begin
-    Vendaspor1.Caption                           := 'Resumo de ' + Form1.sTipoDocumento2 + '...';
-    Imprimiroramento1.Caption                    := 'Imprimir Orçamento...';
-    DocumentoAuxiliardeVendaDAVOramento1.Caption := 'Orçamento...';
-
     Confernciademesa1.Caption      := 'Conferência de '+sMesaOuConta + '...';
     ransfernciademesa1.Caption     := 'Transferência de '+sMesaOuConta + '...';
     ransfernciaentremesas1.Caption := 'Transferências entre '+sMesasOuContas + '...';
