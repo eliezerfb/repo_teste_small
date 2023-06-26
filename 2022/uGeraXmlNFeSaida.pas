@@ -2843,7 +2843,7 @@ var
   vIVA60_V_ICMST : Real;
   ItemNFe: TItemNFe;
   fAliquota : Real;
-  vlFreteRateadoItem, fTotalMercadoria : Real;
+  fTotalMercadoria : Real;
   fPercentualFCP, fPercentualFCPST: Real; // Sandro Silva 2023-05-15
   vICMSMonoRet_N45: Real; // Sandro Silva 2023-06-07
 begin
@@ -2986,34 +2986,6 @@ begin
         Form7.spdNFeDataSets.Campo('vICMS_N17').Value := '0'; // Valor do ICMS em Reais
       end else
       begin
-        //Soma a parte do IPI do Frete
-        {if Form7.ibDataSet15.FieldByname('FRETE').AsFloat > 0 then
-        begin
-          if (vFreteSobreIPI) and (vIPISobreICMS) then
-          begin
-            vlFreteRateadoItem := Arredonda((Form7.ibDataSet15.FieldByname('FRETE').AsFloat / fTotalMercadoria)
-                                             * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat,2);
-
-            fSomaNaBase := fSomaNaBase + Arredonda2((vlFreteRateadoItem * ( Form7.ibDataSet16.FieldByname('IPI').Value / 100 )),2);
-          end;
-        end;
-
-        fIPIPorUnidade := 0;
-
-        if vIPISobreICMS then
-        begin
-          // IPI Por Unidade
-          fIPIPorUnidade := 0;
-          if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
-          begin
-            fIPIPorUnidade := (Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString))));
-          end;
-        end;
-
-        Form7.spdNFeDataSets.Campo('vBC_N15').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('BASE').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fIPIPorUnidade + fSomaNaBase )/100);  // BC
-        Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fIPIPorUnidade + fSomaNaBase )/100*Form7.ibDataSet16.FieldByname('BASE').AsFloat/100);     // Valor do ICMS em Reais
-        Mauricio Parizotto 2023-04-20 Calculo está na uNotaFiscalEletronicaCalc}
-
         Form7.spdNFeDataSets.Campo('vBC_N15').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBC').AsFloat);   // BC
         Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VICMS').AsFloat); // Valor do ICMS em Reais
       end;
@@ -3376,8 +3348,6 @@ begin
         end;
       end;
     end;
-
-//////////////////////////////////////
 
 
     if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then

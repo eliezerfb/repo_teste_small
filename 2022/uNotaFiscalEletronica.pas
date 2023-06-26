@@ -59,6 +59,14 @@ type
     FPFCP: Double;
     FVFCP: Double;
     FVBCFCPST: Double;
+
+    //Campos Virtuais
+    FFreteRateado : Double;
+    FDescontoRateado : Double;
+    FSeguroRateado : Double;
+    FDespesaRateado : Double;
+
+
     procedure SetFVFCP(const Value: Double);
     procedure SetFVFCPST(const Value: Double);
   published
@@ -108,6 +116,12 @@ type
     property VBCFCPST: Double read FVBCFCPST write FVBCFCPST;
     property PFCPST: Double read FPFCPST write FPFCPST;
     property VFCPST: Double read FVFCPST write SetFVFCPST;
+
+    //Campos Virtuais
+    property FreteRateado : Double read FFreteRateado write FFreteRateado;
+    property DescontoRateado : Double read FDescontoRateado write FDescontoRateado;
+    property SeguroRateado : Double read FSeguroRateado write FSeguroRateado;
+    property DespesaRateado : Double read FDespesaRateado write FDespesaRateado;
   end;
 
   TITENS001List = class(TObjectList)
