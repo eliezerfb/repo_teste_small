@@ -2197,8 +2197,13 @@ begin
     sP2 := 'F10 Menu Configurações';
   end;  
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE
+=======
+  //
+  Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE 
+>>>>>>> parent of 28bb618 (Ajustando gerencial)
   Form1.Label_10.Repaint; // 2015-09-08
 
 =======
@@ -15720,6 +15725,9 @@ var
 begin    
 =======
 begin
+<<<<<<< HEAD
+>>>>>>> parent of 28bb618 (Ajustando gerencial)
+=======
 >>>>>>> parent of 28bb618 (Ajustando gerencial)
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //

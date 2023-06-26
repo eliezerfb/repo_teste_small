@@ -41,8 +41,11 @@ const CHAVE_PUBLICA = 'DF9F4DC6AF517A889BCE1181DEF8394455DBCD19768E8C785D9121E8D
                       '5C3993104443E8E73333D93C24E5D46B27D9A4DF5E6F0B05490B6C6829CEFA1030294DABC29E498A0F6096E8CE26B407B2E1B4939FDE6174EC1621BB3E988D29742D';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const TEXTO_CAIXA_LIVRE            = 'CAIXA LIVRE';
 const TEXTO_CAIXA_EM_VENDA         = 'EM VENDA';
+=======
+>>>>>>> parent of 28bb618 (Ajustando gerencial)
 =======
 >>>>>>> parent of 28bb618 (Ajustando gerencial)
 
@@ -1621,6 +1624,7 @@ begin
   // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
   Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   if Result = False then
   begin
@@ -1643,6 +1647,9 @@ begin
 
     end;
   end;
+=======
+  //Result := (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0);
+>>>>>>> parent of 28bb618 (Ajustando gerencial)
 =======
   //Result := (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0);
 >>>>>>> parent of 28bb618 (Ajustando gerencial)
