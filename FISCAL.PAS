@@ -2171,8 +2171,7 @@ begin
   begin
     if PAFNFCe = False then
       sp2 := StringReplace(sp2, 'Menu Fiscal Indisponível nesta tela. ', '',[rfReplaceAll]);
-  end;
-
+  end;               
 
   if PAFNFCe then
   begin
@@ -2197,13 +2196,13 @@ begin
     sP2 := 'F10 Menu Configurações';
   end;  
   //
-  Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE 
+  Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE
   Form1.Label_10.Repaint; // 2015-09-08
 
   {Sandro Silva 2023-06-23 inicio}
-  Form1.Label_10.Tag := ZERO
-  if em venda ou movimentação
-    Form1.Label_10.Tag := emvenda
+  Form1.Label_10.Tag := ID_IDENTIFICACAO_CAIXA_LIVRE;
+  if Form1.Label_10.Caption = RetornaTextoEmVenda(Form1.sModeloECF_Reserva) then
+    Form1.Label_10.Tag := ID_IDENTIFICACAO_EM_VENDA;
   {Sandro Silva 2023-06-23 fim}
   //
   if Form1.sGertec <> 'Não' then
@@ -5704,7 +5703,7 @@ begin
       Form1.sTipoDocumento2 := 'CF-e';//Sandro Silva 2018-08-01
   end;
   if (Form1.sModeloECF_Reserva = '99') then
-    Form1.sTipoDocumento2 := 'Venda'; // Sandro Silva 2023-06-23 Form1.sTipoDocumento2 := 'Venda';
+    Form1.sTipoDocumento2 := 'Lançamento'; // Sandro Silva 2023-06-23 Form1.sTipoDocumento2 := 'Venda';
   //
   //
   Result := True;
@@ -8391,7 +8390,7 @@ begin
 
   if (Form1.sModeloECF = '99') then
   begin
-    if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))  // Sandro Silva 2021-03-19 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe')) = False) and (Form1.sModeloECF = '99')
+    if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'gerencial.exe') = False) and (MEI = False))  // Sandro Silva 2023-06-26 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))
       and (AnsiContainsText(ExtractFileDir(Application.ExeName), Copy(Build, 1, 4) + '\Projeto-Frente-de-Caixa') = False) // Para poder executar pelo delphi com F9
     then
       sSerial := '';
@@ -14306,7 +14305,7 @@ begin
             Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom))+' order by ITEM'); // Sandro Silva 2020-10-15 Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0))+' order by ITEM');
             Form1.IBQuery1.Open;
 
-            Form1.Memo3.Lines.Add(StrZero(Form1.icupom,3,0)); 
+            Form1.Memo3.Lines.Add(StrZero(Form1.icupom,3,0));
             Form1.Memo3.Lines.Add(sMesaOuConta+' '+Form1.IBQuery1.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString);
           end
           else
@@ -14620,11 +14619,11 @@ begin
           end;
           }
           if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
-            Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
-          else if (Form1.sModeloECF_Reserva = '99') then
-            Display('EM MOVIMENTO','Entre com EAN 13, Código ou Descrição')
+            Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+          //else if (Form1.sModeloECF_Reserva = '99') then
+          //  Display('EM MOVIMENTO','Entre com EAN 13, Código ou Descrição')
           else
-            Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+            Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
           end;
           {Sandro Silva 2023-06-23 fim}
         //
@@ -15709,6 +15708,8 @@ var
   Mais1ini : TIniFile;
   iItem: Integer;
 begin
+ajustar nome opção relatorio gerencial
+
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //
   x1024x768.Visible := False;
@@ -20013,7 +20014,7 @@ begin
         Form1.sModeloECF := Form1.sModeloECF_Reserva;
         Form1.Button2Click(Sender); // Abre um novo cumpom
         //
-        if Form1.Label_10.Caption = 'EM VENDA' then
+        if Form1.Label_10.Caption = RetornaTextoEmVenda(Form1.sModeloECF_Reserva) then // Sandro Silva 2023-06-26 if Form1.Label_10.Caption = 'EM VENDA' then
         begin
           //
 
@@ -22190,11 +22191,11 @@ begin
               Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
             }
             if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
-              Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
-            else if (Form1.sModeloECF_Reserva = '99') then
-              Display('EM MOVIMENTAÇÃO','Entre com EAN 13, Código ou Descrição')
+              Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+            //else if (Form1.sModeloECF_Reserva = '99') then
+            //  Display('EM MOVIMENTAÇÃO','Entre com EAN 13, Código ou Descrição')
             else
-              Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+              Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
 
             {Sandro Silva 2023-06-23 fim}
           end
@@ -22349,11 +22350,11 @@ begin
           Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
         }
         if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
-          Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
-        else if (Form1.sModeloECF_Reserva = '99') then
-          Display('EM MOVIMENTAÇÃO','Entre com EAN 13, Código ou Descrição')
+          Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+        //else if (Form1.sModeloECF_Reserva = '99') then
+        //  Display('EM MOVIMENTAÇÃO','Entre com EAN 13, Código ou Descrição')
         else
-          Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+          Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
 
         {Sandro Silva 2023-06-23 fim}
       end
