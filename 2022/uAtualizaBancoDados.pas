@@ -218,7 +218,7 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'MEDIDAE') = False then
   begin
     ExecutaComando('alter table ESTOQUE add MEDIDAE VARCHAR(3)');
-    ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,4)');
+    ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,2)');// Sandro Silva 2023-06-26 ExecutaComando('alter table ESTOQUE add FATORC NUMERIC(18,4)');
   end;
 
   // ESTOQUE FCI
@@ -1490,10 +1490,10 @@ begin
         if (Form1.ibDataSet200.FieldByName('DECIMAIS').AsInteger = 4) then
         begin
 
-          if ExecutaComando('alter table ESTOQUE add FATORCTEMP numeric(18, 2)') then
+          if ExecutaComando('alter table ESTOQUE add FATORCTEMP numeric(18, 4)') then
             ExecutaComando('Commit');
 
-          ExecutaComando(' update ESTOQUE set ' +
+          ExecutaComando('update ESTOQUE set ' +
                          'FATORCTEMP = FATORC ' +
                          'where (FATORC > 0) ' +
                          'and coalesce(FATORCTEMP, 0) = 0');
@@ -1505,8 +1505,8 @@ begin
           if ExecutaComando('alter table ESTOQUE add FATORC numeric(18, 2)') then
             ExecutaComando('Commit');
 
-          ExecutaComando(' update ESTOQUE set ' +
-                         'FATORC = FATORCTEMP ' +
+          ExecutaComando('update ESTOQUE set ' +
+                         'FATORC = cast(FATORCTEMP as numeric(18, 2)) ' +
                          'where (coalesce(FATORC, 0) = 0) ' +
                          'and (FATORCTEMP > 0)');
           ExecutaComando('commit');
