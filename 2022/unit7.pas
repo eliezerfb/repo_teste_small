@@ -2077,6 +2077,7 @@ type
     procedure EEnviarcartadecorreoporemail1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure ibDataSet15SAIDADChange(Sender: TField);
+    procedure IBDatabase1AfterConnect(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -33201,6 +33202,42 @@ begin
   finally
     ibDataSet15SAIDAD.OnChange := ibDataSet15SAIDADChange;
   end;
+end;
+
+procedure TForm7.IBDatabase1AfterConnect(Sender: TObject);
+//var
+//  ibt: TIBTransaction;
+//  ibq: TIBQuery;
+begin
+{
+  // Artifício para contornar problema causado da mudança para 4 casas decimais
+  // No frente.exe paf não foi alterado porque necessita novo credenciamento
+  ibt := TIBTransaction.Create(nil);
+  ibt.DefaultDatabase := TIBDatabase(Sender);
+  ibq := TIBQuery.Create(nil);
+  ibq.Transaction := ibt;
+
+  try
+    ibq.Close;
+    ibq.SQL.Text :=
+      'select F.RDB$FIELD_NAME, S.RDB$FIELD_SCALE as ESCALA ' +
+      'from RDB$RELATION_FIELDS F ' +
+      'join RDB$FIELDS S on F.RDB$FIELD_SOURCE = S.RDB$FIELD_NAME ' +
+      'where upper(F.RDB$RELATION_NAME) = ''ESTOQUE'' ' +
+      'and upper(F.RDB$FIELD_NAME) = ''FATORC'' ' ;
+    ibq.Open;
+    if ibDataSet4FATORC.Size <> Abs(ibq.FieldByName('ESCALA').AsInteger) then
+    begin
+
+      ibDataSet4FATORC.Size := Abs(ibq.FieldByName('ESCALA').AsInteger);
+      //ShowMessage('Ajustou para ' + IntToStr(Abs(ibq.FieldByName('ESCALA').AsInteger)));
+    end;
+  except
+
+  end;
+  FreeAndNil(ibq);
+  FreeAndNil(ibt);
+}
 end;
 
 end.

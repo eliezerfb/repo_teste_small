@@ -1414,8 +1414,11 @@ begin
       ExecutaComando('Commit');
   end;
 
-{Dailon Parisotto 2023-06-15 inicio}
+  (* // Sandro Silva 2023-06-26
+  No frente.exe paf não foi alterado porque necessita novo credenciamento
+  Habilitar a mudança de tamanho nas casas decimais somente quando o frente estiver preparado
 
+  {Dailon Parisotto 2023-06-15 inicio}
   if (CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'FATORC')) then
   begin
     try
@@ -1466,7 +1469,61 @@ begin
     end;
   end;
   {Dailon Parisotto 2023-06-15 fim}
-  
+  *)
+
+  if (CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'FATORC')) then
+  begin
+    try
+      try
+        Form1.ibDataSet200.Close;
+        Form1.ibDataSet200.SelectSQL.Clear;
+        Form1.ibDataSet200.SelectSQL.Text :=
+          'select ' +
+          '    B.RDB$FIELD_SCALE * -1 as DECIMAIS ' +
+          'from RDB$RELATION_FIELDS A ' +
+          'inner join RDB$FIELDS B '  +
+          '    on (A.RDB$FIELD_SOURCE = B.RDB$FIELD_NAME) ' +
+          'where (A.RDB$RELATION_NAME = ''ESTOQUE'') ' +
+          'and (A.RDB$FIELD_NAME = ''FATORC'') ';
+        Form1.ibDataSet200.Open;
+
+        if (Form1.ibDataSet200.FieldByName('DECIMAIS').AsInteger = 4) then
+        begin
+
+          if ExecutaComando('alter table ESTOQUE add FATORCTEMP numeric(18, 2)') then
+            ExecutaComando('Commit');
+
+          ExecutaComando(' update ESTOQUE set ' +
+                         'FATORCTEMP = FATORC ' +
+                         'where (FATORC > 0) ' +
+                         'and coalesce(FATORCTEMP, 0) = 0');
+          ExecutaComando('commit');
+
+          if ExecutaComando('alter table ESTOQUE drop FATORC') then
+            ExecutaComando('Commit');
+
+          if ExecutaComando('alter table ESTOQUE add FATORC numeric(18, 2)') then
+            ExecutaComando('Commit');
+
+          ExecutaComando(' update ESTOQUE set ' +
+                         'FATORC = FATORCTEMP ' +
+                         'where (coalesce(FATORC, 0) = 0) ' +
+                         'and (FATORCTEMP > 0)');
+          ExecutaComando('commit');
+
+          if ExecutaComando('alter table ESTOQUE drop FATORCTEMP') then
+            ExecutaComando('Commit');
+        end;
+      finally
+        Form1.ibDataSet200.Close;
+        Form1.ibDataSet200.SelectSQL.Clear;
+      end;
+    except
+    end;
+  end;
+
+  {Sandro Silva 2023-06-26 fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
