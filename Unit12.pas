@@ -207,7 +207,8 @@ begin
   {Sandro Silva 2018-03-19 inicio}
   if Key = VK_ESCAPE then
   begin
-    if (Pos('Alerta', Form12.Label1.Caption) > 0) and (AnsiContainsText(Form12.Label2.Caption, 'Não é possível efetuar a venda') or AnsiContainsText(Form12.Label2.Caption, 'Não foi possível importar')) then // Usar na venda direta e importações Sandro Silva 2018-10-24 if (Pos('Alerta', Form12.Label1.Caption) > 0) and (AnsiContainsText(Form12.Label2.Caption, 'Não é possível efetuar a venda')) then
+    // Sandro Silva 2023-06-23 if (Pos('Alerta', Form12.Label1.Caption) > 0) and (AnsiContainsText(Form12.Label2.Caption, 'Não é possível efetuar a venda') or AnsiContainsText(Form12.Label2.Caption, 'Não foi possível importar')) then // Usar na venda direta e importações
+    if (Pos('Alerta', Form12.Label1.Caption) > 0) and (AnsiContainsText(Form12.Label2.Caption, 'Não é possível efetuar a venda') or AnsiContainsText(Form12.Label2.Caption, 'Não é possível efetuar a movimenta') or AnsiContainsText(Form12.Label2.Caption, 'Não foi possível importar')) then // Usar na venda direta e importações
     begin
       Button1Click(Sender);
     end;
