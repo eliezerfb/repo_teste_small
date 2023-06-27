@@ -130,7 +130,7 @@ begin
     FecharAplicacao('pafnfce.exe');
     FecharAplicacao('frente.exe');
     FecharAplicacao('mei.exe');
-    FecharAplicacao('gerencial.exe'); // Sandro Silva 2023-06-23
+
   end;
 
   if (PAFNFCe) then
@@ -178,17 +178,10 @@ begin
       Application.Title := 'Aplicativo emissor de CF-e';
     end;
 
-    {Sandro Silva 2023-06-23 inicio
     if (sExeName = 'mei.exe') or (MEI) then // Sandro Silva 2021-03- if sExeName = 'mei.exe' then
     begin
       Application.Title := 'Aplicativo MEI';
     end;
-    }   
-    if (sExeName = 'gerencial.exe') or (MEI) then
-    begin
-      Application.Title := 'Aplicativo Gerencial';
-    end;
-    {Sandro Silva 2023-06-23 fim}
 
     Application.HelpFile := '';
     Application.CreateForm(TForm1, Form1);

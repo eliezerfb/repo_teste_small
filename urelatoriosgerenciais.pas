@@ -1574,14 +1574,7 @@ begin
         slMovimento.Sorted := True;
         slMovimento.Sort;
 
-        {Sandro Silva 2023-06-23 inicio}
-        if Form1.sModeloECF_Reserva = '99' then
-        begin
-          slMovimento.Text := StringReplace(slMovimento.Text, 'Venda ', 'Movim.', [rfReplaceAll]);  
-        end;
-        {Sandro Silva 2023-06-23 fim}
-
-        sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais
+       sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais
           // Sandro Silva 2018-03-21  + '-----------------------------------------------' + Chr(10)
           + ImprimeTracos() + Chr(10)
           + 'Movimento do dia: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpMovimentoDia.Date) + ' a ' + FormatDateTime('dd/mm/yyyy', Form7.dtpMovimentoDiaF.Date) + chr(10);
