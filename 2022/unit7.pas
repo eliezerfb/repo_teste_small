@@ -44,6 +44,9 @@ function HtmlParaPdf(sP1:String): boolean;
 procedure ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos( XmlEnviado: String; sRetorno: String);
 function BuscaNumeroNFSe(bP1: Boolean) : Boolean;
 
+function ConsultaCadastro(sP1: String) : String;
+function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean;
+
 
 type
 
@@ -2064,8 +2067,6 @@ type
     procedure DuplicatestaNFe1Click(Sender: TObject);
     procedure PrvisualizarDANFE1Click(Sender: TObject);
     procedure RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
-    procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
-      const Text: String);
     procedure LimparRetornosda1Click(Sender: TObject);
     procedure ibDataSet16PFCPSTChange(Sender: TField);
     procedure ibDataSet16VBCFCPSTChange(Sender: TField);
@@ -2078,6 +2079,8 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ibDataSet15SAIDADChange(Sender: TField);
     procedure IBDatabase1AfterConnect(Sender: TObject);
+    procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
+      const Text: String);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -22211,7 +22214,9 @@ begin
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-  except Abort end;
+  except
+    Abort
+  end;
 end;
 
 procedure TForm7.ibDataSet21BeforeInsert(DataSet: TDataSet);
@@ -32361,53 +32366,6 @@ begin
   Form38.ShowModal; // Ok
 end;
 
-procedure TForm7.ibDataSet13MUNICIPIOSetText(Sender: TField;
-  const Text: String);
-begin
-  {Sandro Silva 2022-10-24 inicio}
-  if Screen.ActiveForm = Form17 then
-  begin
-    //
-    if (Form7.ibDataSet39NOME.AsString <> '') or (Trim(Text) <> '') then
-    begin
-      //
-      if Length(AllTrim(Form7.ibDataSet13ESTADO.AsString)) <> 2 then
-      begin
-        Form7.IBDataSet39.Close;
-        Form7.IBDataSet39.SelectSQL.Clear;
-        Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
-        Form7.IBDataSet39.Open;
-      end else
-      begin
-        Form7.IBDataSet39.Close;
-        Form7.IBDataSet39.SelectSQL.Clear;
-        Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
-        Form7.IBDataSet39.Open;
-      end;
-      //
-      Form7.ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-      //
-      if AllTrim(Text) = '' then
-        Form7.ibDataSet13MUNICIPIO.AsString := Text
-      else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibDataSet39NOME.AsString)) <> 0 then
-      begin
-        Form7.ibDataSet13MUNICIPIO.AsString := Form7.ibDataSet39NOME.AsString;
-        if Form7.ibDataSet13ESTADO.AsString = '' then
-          Form7.ibDataSet13ESTADO.AsString := Form7.IBDataSet39UF.AsString;
-      end  else
-      begin
-        //ShowMessage('Município inválido.');
-        //Form17.SMALL_DBEdit4.SetFocus;
-        //Abort;
-      end;
-    end
-    else
-      Form7.ibDataSet13MUNICIPIO.AsString := Text;
-    //
-  end;
-  {Sandro Silva 2022-10-24 fim}
-end;
-
 procedure TForm7.EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
 begin
   // Para envio de boletos referente a incorporação da Zucchetti
@@ -33239,5 +33197,47 @@ begin
   FreeAndNil(ibt);
 }
 end;
+
+
+
+procedure TForm7.ibDataSet13MUNICIPIOSetText(Sender: TField;
+  const Text: String);
+begin
+  if Screen.ActiveForm = Form17 then
+  begin
+    //
+    if (Form17.ibdMunicipiosNOME.AsString <> '') or (Trim(Text) <> '') then
+    begin
+      //
+      if Length(AllTrim(Form7.ibDataSet13ESTADO.AsString)) <> 2 then
+      begin
+        Form17.ibdMunicipios.Close;
+        Form17.ibdMunicipios.SelectSQL.Clear;
+        Form17.ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
+        Form17.ibdMunicipios.Open;
+      end else
+      begin
+        Form17.ibdMunicipios.Close;
+        Form17.ibdMunicipios.SelectSQL.Clear;
+        Form17.ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+        Form17.ibdMunicipios.Open;
+      end;
+      //
+      Form17.ibdMunicipios.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+      //
+      if AllTrim(Text) = '' then
+        Form7.ibDataSet13MUNICIPIO.AsString := Text
+      else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(Form17.ibdMunicipiosNOME.AsString)) <> 0 then
+      begin
+        Form7.ibDataSet13MUNICIPIO.AsString := Form17.ibdMunicipiosNOME.AsString;
+        if Form7.ibDataSet13ESTADO.AsString = '' then
+          Form7.ibDataSet13ESTADO.AsString := Form17.ibdMunicipiosUF.AsString;
+      end;
+    end
+    else
+      Form7.ibDataSet13MUNICIPIO.AsString := Text;
+  end;
+end;
+
 
 end.

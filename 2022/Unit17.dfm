@@ -260,7 +260,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'NOME'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -282,7 +282,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'CONTATO'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -304,7 +304,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'ENDERECO'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -326,7 +326,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'MUNICIPIO'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -349,7 +349,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'CEP'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -371,7 +371,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'ESTADO'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -393,7 +393,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'CGC'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -416,7 +416,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'IE'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -438,7 +438,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'TELEFO'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -460,7 +460,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'COMPLE'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -482,7 +482,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'EMAIL'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -504,7 +504,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'HP'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -526,7 +526,7 @@ object Form17: TForm17
       BevelOuter = bvNone
       Ctl3D = True
       DataField = 'IM'
-      DataSource = Form7.DataSource13
+      DataSource = DSEmitente
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -578,7 +578,7 @@ object Form17: TForm17
         '2 - Simples nacional - Excesso de Sublimite de Receita Bruta'
         '3 - Regime normal')
     end
-    object DBGrid3: TDBGrid
+    object dbgPesquisa: TDBGrid
       Left = 110
       Top = 185
       Width = 500
@@ -600,8 +600,8 @@ object Form17: TForm17
       TitleFont.Name = 'Fixedsys'
       TitleFont.Style = []
       Visible = False
-      OnDblClick = DBGrid3DblClick
-      OnKeyPress = DBGrid3KeyPress
+      OnDblClick = dbgPesquisaDblClick
+      OnKeyPress = dbgPesquisaKeyPress
       Columns = <
         item
           Expanded = False
@@ -697,6 +697,308 @@ object Form17: TForm17
       TabOrder = 2
       Visible = False
       OnClick = Button4Click
+    end
+  end
+  object ibdMunicipios: TIBDataSet
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    AutoCalcFields = False
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from MUNICIPIOS'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into MUNICIPIOS'
+      '  (CODIGO, NOME, REGISTRO, UF)'
+      'values'
+      '  (:CODIGO, :NOME, :REGISTRO, :UF)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  CODIGO,'
+      '  NOME,'
+      '  UF,'
+      '  REGISTRO'
+      'from MUNICIPIOS '
+      'where'
+      '  REGISTRO = :REGISTRO')
+    SelectSQL.Strings = (
+      'select * from MUNICIPIOS order by NOME')
+    ModifySQL.Strings = (
+      'update MUNICIPIOS'
+      'set'
+      '  CODIGO = :CODIGO,'
+      '  NOME = :NOME,'
+      '  REGISTRO = :REGISTRO,'
+      '  UF = :UF'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Filtered = True
+    Left = 632
+    Top = 139
+    object ibdMunicipiosCODIGO: TIBStringField
+      FieldName = 'CODIGO'
+      Origin = '"MUNICIPIOS"."CODIGO"'
+      Size = 7
+    end
+    object ibdMunicipiosNOME: TIBStringField
+      DisplayWidth = 21
+      FieldName = 'NOME'
+      Origin = '"MUNICIPIOS"."NOME"'
+      Size = 40
+    end
+    object ibdMunicipiosUF: TIBStringField
+      FieldName = 'UF'
+      Origin = '"MUNICIPIOS"."UF"'
+      Size = 2
+    end
+    object ibdMunicipiosREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = '"MUNICIPIOS"."REGISTRO"'
+      Size = 10
+    end
+  end
+  object DSMunicipios: TDataSource
+    DataSet = ibdMunicipios
+    Left = 664
+    Top = 139
+  end
+  object DSEmitente: TDataSource
+    DataSet = ibdEmitente
+    Left = 666
+    Top = 197
+  end
+  object ibdEmitente: TIBDataSet
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    AfterPost = ibdEmitenteAfterPost
+    BeforeInsert = ibdEmitenteBeforeInsert
+    BeforePost = ibdEmitenteBeforePost
+    OnDeleteError = ibdEmitenteDeleteError
+    OnEditError = ibdEmitenteEditError
+    OnNewRecord = ibdEmitenteNewRecord
+    OnPostError = ibdEmitentePostError
+    OnUpdateError = ibdEmitenteUpdateError
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from EMITENTE'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into EMITENTE'
+      
+        '  (NOME, CONTATO, ENDERECO, COMPLE, MUNICIPIO, CEP, ESTADO, CGC,' +
+        ' IE, TELEFO, '
+      
+        '   EMAIL, HP, COPE, RESE, CVEN, IMPO, LUCR, ICME, ICMS, REGISTRO' +
+        ', CRT, '
+      '   CNAE, IM, ENCRYPTHASH)'
+      'values'
+      
+        '  (:NOME, :CONTATO, :ENDERECO, :COMPLE, :MUNICIPIO, :CEP, :ESTAD' +
+        'O, :CGC, '
+      
+        '   :IE, :TELEFO, :EMAIL, :HP, :COPE, :RESE, :CVEN, :IMPO, :LUCR,' +
+        ' :ICME, '
+      '   :ICMS, :REGISTRO, :CRT, :CNAE, :IM, :ENCRYPTHASH)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  NOME,'
+      '  CONTATO,'
+      '  ENDERECO,'
+      '  COMPLE,'
+      '  MUNICIPIO,'
+      '  CEP,'
+      '  ESTADO,'
+      '  CGC,'
+      '  IE,'
+      '  TELEFO,'
+      '  EMAIL,'
+      '  HP,'
+      '  COPE,'
+      '  RESE,'
+      '  CVEN,'
+      '  IMPO,'
+      '  LUCR,'
+      '  ICME,'
+      '  ICMS,'
+      '  REGISTRO,'
+      '  CRT,'
+      '  CNAE,'
+      '  IM,'
+      '  ENCRYPTHASH'
+      'from EMITENTE '
+      'where'
+      '  REGISTRO = :REGISTRO')
+    SelectSQL.Strings = (
+      'select * from EMITENTE'
+      '')
+    ModifySQL.Strings = (
+      'update EMITENTE'
+      'set'
+      '  NOME = :NOME,'
+      '  CONTATO = :CONTATO,'
+      '  ENDERECO = :ENDERECO,'
+      '  COMPLE = :COMPLE,'
+      '  MUNICIPIO = :MUNICIPIO,'
+      '  CEP = :CEP,'
+      '  ESTADO = :ESTADO,'
+      '  CGC = :CGC,'
+      '  IE = :IE,'
+      '  TELEFO = :TELEFO,'
+      '  EMAIL = :EMAIL,'
+      '  HP = :HP,'
+      '  COPE = :COPE,'
+      '  RESE = :RESE,'
+      '  CVEN = :CVEN,'
+      '  IMPO = :IMPO,'
+      '  LUCR = :LUCR,'
+      '  ICME = :ICME,'
+      '  ICMS = :ICMS,'
+      '  REGISTRO = :REGISTRO,'
+      '  CRT = :CRT,'
+      '  CNAE = :CNAE,'
+      '  IM = :IM,'
+      '  ENCRYPTHASH = :ENCRYPTHASH'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 634
+    Top = 197
+    object ibdEmitenteCGC: TStringField
+      DisplayLabel = 'CPF/CNPJ'
+      FieldName = 'CGC'
+      OnSetText = ibdEmitenteCGCSetText
+      Size = 18
+    end
+    object ibdEmitenteNOME: TStringField
+      DisplayLabel = 'Raz'#227'o Social:'
+      DisplayWidth = 35
+      FieldName = 'NOME'
+      Size = 60
+    end
+    object ibdEmitenteCONTATO: TStringField
+      DisplayLabel = 'Respons'#225'vel'
+      FieldName = 'CONTATO'
+      Size = 35
+    end
+    object ibdEmitenteENDERECO: TStringField
+      DisplayLabel = 'Endere'#231'o'
+      FieldName = 'ENDERECO'
+      Size = 35
+    end
+    object ibdEmitenteCOMPLE: TStringField
+      DisplayLabel = 'Bairro'
+      FieldName = 'COMPLE'
+    end
+    object ibdEmitenteCEP: TStringField
+      FieldName = 'CEP'
+      EditMask = '#####-###;1; '
+      Size = 9
+    end
+    object ibdEmitenteMUNICIPIO: TStringField
+      DisplayLabel = 'Munic'#237'pio'
+      DisplayWidth = 40
+      FieldName = 'MUNICIPIO'
+      OnSetText = ibdEmitenteMUNICIPIOSetText
+      Size = 40
+    end
+    object ibdEmitenteESTADO: TStringField
+      DisplayLabel = 'Estado'
+      FieldName = 'ESTADO'
+      OnSetText = ibdEmitenteESTADOSetText
+      Size = 2
+    end
+    object ibdEmitenteIE: TStringField
+      FieldName = 'IE'
+      Size = 16
+    end
+    object ibdEmitenteIM: TIBStringField
+      FieldName = 'IM'
+      Origin = '"EMITENTE"."IM"'
+      Size = 16
+    end
+    object ibdEmitenteTELEFO: TStringField
+      DisplayLabel = 'Telefone'
+      DisplayWidth = 21
+      FieldName = 'TELEFO'
+      EditMask = '!\(#xx##\)#########;1; '
+      Size = 16
+    end
+    object ibdEmitenteEMAIL: TStringField
+      DisplayLabel = 'e-mail'
+      FieldName = 'EMAIL'
+      Size = 70
+    end
+    object ibdEmitenteHP: TStringField
+      DisplayLabel = 'P'#225'gina na internet'
+      FieldName = 'HP'
+      Size = 130
+    end
+    object ibdEmitenteCOPE: TFloatField
+      DisplayLabel = '% Custo Operacional'
+      FieldName = 'COPE'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteRESE: TFloatField
+      DisplayLabel = 'reserva'
+      FieldName = 'RESE'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteCVEN: TFloatField
+      FieldName = 'CVEN'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteIMPO: TFloatField
+      FieldName = 'IMPO'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteLUCR: TFloatField
+      FieldName = 'LUCR'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteICME: TFloatField
+      FieldName = 'ICME'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteICMS: TFloatField
+      FieldName = 'ICMS'
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+    end
+    object ibdEmitenteCRT: TIBStringField
+      FieldName = 'CRT'
+      Origin = 'EMITENTE.CRT'
+      Size = 1
+    end
+    object ibdEmitenteCNAE: TIBStringField
+      FieldName = 'CNAE'
+      Origin = 'EMITENTE.CNAE'
+      Size = 7
+    end
+    object ibdEmitenteREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = 'EMITENTE.REGISTRO'
+      Size = 10
+    end
+    object ibdEmitenteENCRYPTHASH: TIBStringField
+      FieldName = 'ENCRYPTHASH'
+      Origin = 'EMITENTE.ENCRYPTHASH'
+      Visible = False
+      Size = 56
+    end
+    object ibdEmitenteLICENCA: TIBStringField
+      FieldName = 'LICENCA'
+      Origin = 'EMITENTE.LICENCA'
+      Visible = False
+      Size = 56
     end
   end
 end

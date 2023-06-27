@@ -8755,13 +8755,11 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
   Mais1ini.Free;
-  //
-//  Form17.Hide; Mauricio Parizotto 2023-06-06 travando a tela
+
   Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
   Application.ProcessMessages; //Mauricio Parizotto 2023-06-13 - Para tela não abrir por trás
   frmSelectCertificate.ShowModal;
-//  Form17.Hide; Mauricio Parizotto 2023-06-06 travando a tela
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
   Mais1ini.Free;
