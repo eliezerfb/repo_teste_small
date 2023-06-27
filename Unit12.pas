@@ -192,6 +192,7 @@ begin
   {Sandro Silva 2021-07-30 inicio}
   Label3.Visible := False;
   Label3.Caption := '';
+  //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
   if PAFNFCe then
   begin
     Label3.Visible := True;

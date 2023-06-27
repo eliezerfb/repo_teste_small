@@ -1604,6 +1604,10 @@ function PAFNFCe: Boolean;
 begin
   // Sandro Silva 2021-03-19 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim');
   Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE');
+  {Sandro Silva 2023-06-27 inicio}
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
+  {Sandro Silva 2023-06-27 fim}
 end;
 
 function NFCe: Boolean;
