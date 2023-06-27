@@ -2249,7 +2249,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uItensInativosImpXMLEntrada
   , uTextoEmailFactory
   , uRetornaLimiteDisponivel
-  , uIRetornaLimiteDisponivel;
+  , uIRetornaLimiteDisponivel, uListaCnaes;
 
 {$R *.DFM}
 
@@ -9615,7 +9615,14 @@ begin
      or (Form1.ValidaEmitenteMunicipio = False) then
     begin
       try
-        Form17.ShowModal;
+        try
+          Form17 := TForm17.Create(nil);
+          Form17.ShowModal;
+        finally
+          FreeAndNil(Form17);
+        end;
+
+
         if Form1.CanFocus then
           Form1.SetFocus;
       except
@@ -15089,6 +15096,7 @@ procedure TForm7.ibDataSet2CGCSetText(Sender: TField; const Text: String);
 var
   sRetorno : String;
   I : Integer;
+  vComboCNAE : TComboBox;
 begin
   //
   {Sandro Silva 2022-12-15 inicio 
@@ -15123,22 +15131,17 @@ begin
       ibDataSet2CGC.AsString := '';
   end;
 
-  //
   if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
   begin
-    //
     Screen.Cursor            := crHourGlass;
-    //
+
     try
-      //
       if (Length(LimpaNumero(Form7.ibDataSet2CGC.AsString)) = 14) then
       begin
-        //
         sRetorno := ConsultaCadastro(Form7.ibDataSet2CGC.AsString);
-        //
+
         if AllTrim(xmlNodeValue(sRetorno,'//xNome')) <> '' then
         begin
-          //
           Form7.IBDataSet2IE.AsString     := xmlNodeValue(sRetorno,'//IE');
           Form7.IBDataSet2ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
           Form7.IBDataSet2NOME.AsString   := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
@@ -15146,9 +15149,9 @@ begin
           Form7.IBDataSet2COMPLE.AsString := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro')));
           Form7.IBDataSet2CEP.AsString    := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
           Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + xmlNodeValue(sRetorno,'//CNAE') + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
-          //
+
           // CNAE
-          //
+          {
           for I := 0 to Form17.ComboBox7.Items.Count -1 do
           begin
             if Copy(Form17.ComboBox7.Items[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
@@ -15156,23 +15159,36 @@ begin
               Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(Form17.ComboBox7.Items[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
             end;
           end;
-          //
+          Mauricio Parizotto 2023-06-27}
+
+          try
+            vComboCNAE := TComboBox.Create(nil);
+            vComboCNAE.Items.Text := getListaCnae;
+
+            for I := 0 to vComboCNAE.Items.Count -1 do
+            begin
+              if Copy(vComboCNAE.Items[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+              begin
+                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(vComboCNAE.Items[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+              end;
+            end;
+          finally
+            FreeAndNil(vComboCNAE);
+          end;
+
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
           Form7.ibDataset99.Open;
-          //
+
           Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
-          //
         end;
       end;
-      //
-    except end;
-    //
+    except
+    end;
   end;
-  //
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.ibDataSet7DOCUMENTOSetText(Sender: TField;
@@ -15196,6 +15212,7 @@ var
   sRetorno : String;
   I: Integer;
 begin
+  {
   if LimpaNumero(Text) <> '' then
   begin
     if CpfCgc(LimpaNumero(Text)) then
@@ -15250,6 +15267,7 @@ begin
   end;
 
   Screen.Cursor            := crDefault;
+  Mauricio Parizotto 2023-06-27}
 end;
 
 procedure TForm7.ibDataSet18CGCSetText(Sender: TField; const Text: String);
@@ -33203,6 +33221,7 @@ end;
 procedure TForm7.ibDataSet13MUNICIPIOSetText(Sender: TField;
   const Text: String);
 begin
+  {
   if Screen.ActiveForm = Form17 then
   begin
     //
@@ -33237,6 +33256,7 @@ begin
     else
       Form7.ibDataSet13MUNICIPIO.AsString := Text;
   end;
+  Mauricio Parizotto 2023-06-27}
 end;
 
 

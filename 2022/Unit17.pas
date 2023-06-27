@@ -247,7 +247,8 @@ end;
 procedure TForm17.Button2Click(Sender: TObject);
 begin
   dbgPesquisa.Visible    := False;
-  Form14.Button2Click(Sender);
+  //Form14.Button2Click(Sender);
+  Form19.ShowModal;
 end;
 
 procedure TForm17.Image2Click(Sender: TObject);
@@ -465,7 +466,6 @@ begin
   ComboBox7.Items.Text := getListaCnae;
 
   DSEmitente.DataSet := ibdEmitente;
-  //DSEmitente.DataSet := Form7.ibDataSet13;
 end;
 
 procedure TForm17.ibdEmitenteESTADOSetText(Sender: TField; const Text: String);
@@ -614,7 +614,6 @@ procedure TForm17.ibdEmitenteMUNICIPIOSetText(Sender: TField;
 begin
   if (ibdMunicipiosNOME.AsString <> '') or (Trim(Text) <> '') then
   begin
-    //
     if Length(AllTrim(ibdEmitenteESTADO.AsString)) <> 2 then
     begin
       ibdMunicipios.Close;
@@ -628,9 +627,9 @@ begin
       ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(ibdEmitenteESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
       ibdMunicipios.Open;
     end;
-    //
+
     ibdMunicipios.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-    //
+    
     if AllTrim(Text) = '' then
       ibdEmitenteMUNICIPIO.AsString := Text
     else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibdMunicipiosNOME.AsString)) <> 0 then

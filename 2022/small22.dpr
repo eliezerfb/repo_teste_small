@@ -157,7 +157,6 @@ begin
   Application.CreateForm(TForm48, Form48);
   Application.CreateForm(TForm10, Form10);
   Application.CreateForm(TForm16, Form16);
-  Application.CreateForm(TForm17, Form17);
   Application.CreateForm(TForm99, Form99);
   Application.CreateForm(TForm18, Form18);
   Application.CreateForm(TForm20, Form20);

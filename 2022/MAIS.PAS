@@ -3164,8 +3164,16 @@ begin
           if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
             or (Form1.ValidaEmitenteMunicipio = False) then
           begin
-            Form17.ShowModal;
-            if Form1.CanFocus then Form1.SetFocus;
+            try
+              Form17 := TForm17.Create(nil);
+              Form17.ShowModal;
+            finally
+              FreeAndNil(Form17);
+            end;
+
+
+            if Form1.CanFocus then
+              Form1.SetFocus;
           end;
         except end;
 
@@ -4086,7 +4094,13 @@ begin
     if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
       or (ValidaEmitenteMunicipio = False) then
     begin
-      Form17.ShowModal;
+      try
+        Form17 := TForm17.Create(nil);
+        Form17.ShowModal;
+      finally
+        FreeAndNil(Form17);
+      end;
+
       if Form1.CanFocus then
         Form1.SetFocus;
     end else
@@ -4109,9 +4123,14 @@ begin
   //
   if Form1.iREduzida = 99 then
   begin
-    Form17.ShowModal;
+    try
+      Form17 := TForm17.Create(nil);
+      Form17.ShowModal;
+    finally
+      FreeAndNil(Form17);
+    end;
   end;
-  //
+  
   if (Image201S.Visible) then
   begin
     //
@@ -4525,7 +4544,14 @@ procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form17.ShowModal;
+
+  try
+    Form17 := TForm17.Create(nil);
+    Form17.ShowModal;
+  finally
+    FreeAndNil(Form17);
+  end;
+
   ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15 
 end;
 
@@ -11744,10 +11770,10 @@ var
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  //
+  
   if Form7.Visible then Form7.Close;
   if Form10.Visible then Form10.Close;
-  //
+
   try
     sMSG := '';
     if Pos('@',Form7.ibDataSet13EMAIL.AsString)      = 0    then
@@ -11764,14 +11790,14 @@ begin
       sMSG := sMSG + 'Configure o CNPJ da contabilidade.'+chr(10);
   except
   end;
-  //
+
   if AllTrim(sMSG) <> '' then
   begin
     sMSG := 'Temos que acertar isso: '+ chr(10) + chr(10) + sMSG +chr(10);
   end;
-  //
+
   Aviso(sMSG);
-  //
+
   try
     if (Pos('@',Form7.ibDataSet13EMAIL.AsString)=0) or
        (LimpaNumero(Form7.ibDataSet13TELEFO.AsString)='') or
@@ -11779,14 +11805,19 @@ begin
       or (Form1.ValidaEmitenteMunicipio = False)
     then
     begin
-      Form17.ShowModal;
+      try
+        Form17 := TForm17.Create(nil);
+        Form17.ShowModal;
+      finally
+        FreeAndNil(Form17);
+      end;
     end;
     if AllTrim(Form7.sCNPJContabilidade) = '' then
     begin
       Form1.CNPJdacontabilidade1Click(Sender);
     end;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm1.Label_bola_OSClick(Sender: TObject);
