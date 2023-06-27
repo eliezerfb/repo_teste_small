@@ -3117,6 +3117,8 @@ procedure TForm10.FormCreate(Sender: TObject);
 begin
   sNomeDoArquivoParaSalvar := 'Small Commerce.Txt';
 
+  orelhas.ActivePage := orelha_cadastro; // Sandro Silva 2023-06-27
+
   framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
   Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;
 
@@ -3431,12 +3433,13 @@ begin
   Form10.orelha_COMISSAO.TabVisible   := False;
   Form10.orelha_CODEBAR.TabVisible    := False;
   Form10.orelha_TAGS.TabVisible       := False;
-  Form10.orelha_MKT.TabVisible       := False;
+  Form10.orelha_MKT.TabVisible        := False;
   
   if Form7.sModulo = 'ICM' then
   begin
     Form10.orelha_cadastro.TabVisible   := False;
     Form10.orelha_CFOP.TabVisible       := True;
+    Form10.Orelha_PISCOFINS.TabVisible  := True; // Sandro Silva 2023-06-27
   end;
   
   if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
@@ -4061,6 +4064,12 @@ begin
   Form7.ArquivoAberto.DisableControls;
   Form7.TabelaAberta.DisableControls;
 
+  {Sandro Silva 2023-06-27 inicio}
+  orelha_cadastro.PageIndex  :=  0;
+  Orelha_PISCOFINS.PageIndex :=  3;
+  ORELHA_CFOP.PageIndex      := 10;
+  {Sandro Silva 2023-06-27 fim}
+
   Orelhas.Left   := 5;
   Orelhas.Top    := 75;
   Orelhas.Width  := Form10.Width - 15;
@@ -4479,9 +4488,15 @@ begin
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
-    if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
+    if dbgComposicao.CanFocus then
+      dbgComposicao.SetFocus;
   end else
   begin
+    {Sandro Silva 2023-06-27 inicio}
+    ORELHA_CFOP.PageIndex      := 0;
+    Orelha_PISCOFINS.PageIndex := 1;
+    {Sandro Silva 2023-06-27 fim}
+
     Orelhas.ActivePage := Orelha_CFOP;
   end;
 
@@ -7221,11 +7236,12 @@ begin
   // 98-Outras Operações de Entrada
   // 99-Outras Operações
   //
+  {Sandro Silva 2023-06-27 inicio
   if Form10.Caption = Form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
   end;
-  
+
   if Copy(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString,1,3) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
@@ -7234,7 +7250,26 @@ begin
   begin
     Label43.Caption := '% PIS:';
     Label49.Caption := '% COFINS:';
-  end;  
+  end;
+  }
+  if Form7.sModulo = 'ESTOQUE' then
+  begin
+    if Form10.Caption = Form7.ibDataSet4DESCRICAO.AsString then
+    begin
+      Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
+    end;
+  end;
+
+  if Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2) = '03' then
+  begin
+    Label43.Caption := 'R$ PIS:';
+    Label49.Caption := 'R$ COFINS:';
+  end else
+  begin
+    Label43.Caption := '% PIS:';
+    Label49.Caption := '% COFINS:';
+  end;
+  {Sandro Silva 2023-06-27 fim}
 end;
 
 procedure TForm10.ComboBox9Change(Sender: TObject);
@@ -7566,12 +7601,14 @@ end;
 
 procedure TForm10.Orelha_PISCOFINSEnter(Sender: TObject);
 begin
-  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset4.Edit;
 end;
 
 procedure TForm10.Orelha_IPIEnter(Sender: TObject);
 begin
-  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
+  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset4.Edit;
 end;
 
 procedure TForm10.orelha_cadastroExit(Sender: TObject);
@@ -8296,7 +8333,8 @@ end;
 
 procedure TForm10.ComboBox3Enter(Sender: TObject);
 begin
-  with Sender as tComboBox do SendMessage(Handle, CB_SETDROPPEDWIDTH, Form10.Width - Left - 30, 0);
+  with Sender as tComboBox do
+    SendMessage(Handle, CB_SETDROPPEDWIDTH, Form10.Width - Left - 30, 0);
 end;
 
 procedure TForm10.Orelha_codebarEnter(Sender: TObject);
