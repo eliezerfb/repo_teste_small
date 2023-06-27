@@ -10,7 +10,7 @@ object Form1: TForm1
   BorderStyle = bsSingle
   Caption = 'Small'
   ClientHeight = 809
-  ClientWidth = 1191
+  ClientWidth = 1389
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET

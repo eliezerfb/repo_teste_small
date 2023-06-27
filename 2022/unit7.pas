@@ -4859,16 +4859,14 @@ end;
 
 function DefineJanela(bP1 : Boolean) : Boolean;
 begin
-  //
   Form7.DbGrid1.Top    := 110-15;
   Form7.DbGrid1.Left   := 10;
   Form7.dbGrid1.Width  := Form1.Width - 30;
   Form7.dbGrid1.Height := Form7.Height - Form7.DbGrid1.Top - 60 -26;
   Form7.Panel7.Visible := True;
-  //
+
   if (Form7.sModulo='CONFOS') or (Form7.sModulo='CONFRECIBO') or (Form7.sModulo = 'NOTA') then
   begin
-    //
     Form7.DbGrid1.Top     := 0;
     Form7.DbGrid1.Left    := 10;
     Form7.DbGrid1.Width   := 400;
@@ -4878,19 +4876,15 @@ begin
     Form7.Width           := 410;
     Form7.Panel4.Visible  := False;
     Form1.Panel_3.Visible := False;
-    //
   end else
   begin
-    //
     Form7.Panel_0.Visible := True;
     Form7.Width  := Form1.Width -6;
     Form7.Panel4.Visible  := True;
     Form1.Panel_3.Visible := True;
-    //
   end;
-  //
+  
   Result := True;
-  //
 end;
 
 
@@ -9648,9 +9642,7 @@ begin
       ibDataSet16.DisableControls;
       ibDataSet23.DisableControls;
       ibDataSet12.DisableControls;
-//      Commitatudo(True);
-//      AgendaCommit(False);
-      //
+
       AtualizaPromocao(True);
       bA := False;
 
@@ -9807,10 +9799,7 @@ begin
               Form7.ibDataSet4.SelectSQL.Clear;
               Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
               Form7.ibDataSet4.Open;
-              //
-  //            ShowMessage(ibDataSet4.SelectSQL.Text
-  //            +chr(10)+Form7.ibDataSet4CODIGO.AsString+chr(10)+Form7.ibDataSet23CODIGO.AsString);
-              //
+
               if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet23CODIGO.AsString then
               begin
                 ibDataSet4.Edit;
@@ -9880,13 +9869,11 @@ begin
             Form7.ibDataSet4.Selectsql.Clear;
             Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.IBQuery5.FieldByname('DESCRICAO').AsString)+' ');  //
             Form7.ibDataSet4.Open;
-            //
-  //          ShowMessage('Fabricando '+Form7.IBQuery5.FieldByname('QTD_ATUAL').AsString+' '+Form7.IBQuery5.FieldByname('DESCRICAO').AsString);
-            //
+
             Form7.ibDataSet4.Edit;
             Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + (Form7.IBQuery5.FieldByname('QTD_ATUAL').AsFloat*-1);
             Form7.ibDataSet4.Post;
-            //
+
             Form7.bFabrica := False;
           end;
 
@@ -10025,36 +10012,32 @@ begin
       Mais1Ini.Free;
     except end;
 
-  //  try
-      //
+
       Form7.Caption := StrTran(sTitulo,'(RPS) RPS','(RPS)');
       Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-      //
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Le a fonte no .INF}                                                                                         //
-      //                                                                                                            //
       try
         if AllTrim(sModulo) <> '' then
         begin
-          //
-          DBGrid1.Font.Name  := Mais1Ini.ReadString(sModulo,'FonteName_','Microsoft Sans Serif');                         //
-          DBGrid1.Font.Size  := StrToInt(Mais1Ini.ReadString(sModulo,'FonteSize_','10'));                                 //
-          DBGrid1.Font.Color := StrToInt(Mais1Ini.ReadString(sModulo,'FonteColor_','0'));                                 //
-          //                                                                                                        //
+          DBGrid1.Font.Name  := Mais1Ini.ReadString(sModulo,'FonteName_','Microsoft Sans Serif');
+          DBGrid1.Font.Size  := StrToInt(Mais1Ini.ReadString(sModulo,'FonteSize_','10'));
+          DBGrid1.Font.Color := StrToInt(Mais1Ini.ReadString(sModulo,'FonteColor_','0'));
+          
           if Mais1Ini.ReadString(sModulo,'FonteY_','') = ''         then
             DBGrid1.Font.Style := [];                  //
           if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsItalic' then
             DBGrid1.Font.Style := [fsItalic];         //
           if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsBold'   then
-            DBGrid1.Font.Style := [fsBold];          //
-          //                                                                                                    //
-          DBGrid1.TitleFont.Name  := DBGrid1.Font.Name;   //
-          DBGrid1.TitleFont.Size  := DBGrid1.Font.Size +2;    //
-          DBGrid1.TitleFont.Color := DBGrid1.Font.Color;    //
-          DBGrid1.TitleFont.sTyle := [];                     //
-          //
+            DBGrid1.Font.Style := [fsBold];
+
+          DBGrid1.TitleFont.Name  := DBGrid1.Font.Name;
+          DBGrid1.TitleFont.Size  := DBGrid1.Font.Size +2;
+          DBGrid1.TitleFont.Color := DBGrid1.Font.Color;
+          DBGrid1.TitleFont.sTyle := [];
         end;
-      except end;
+      except
+      end;
       //////////////////////////////////////////////////////
       // Abilita ou desabilita os campos                   //
       ////////////////////////////////////////////////////////
@@ -12208,25 +12191,20 @@ end;
 procedure TForm7.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1ini : tIniFile;
-//  tInicio : tTime;
-//  Hora, Min, Seg, cent : Word;
 begin
-  //
   try
-    //
     if Form7.sTitulo = 'Cadastro dos vendedores' then
       sModulo := 'VENDEDOR'; // Não grava o Filtro registro coluna etc
-    //
+
     if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (TabelaAberta.Active) then
     begin
-//      tInicio := Time;
       Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-      //
+
       if Form7.sRPS = 'S' then //ver onde está setando para 'S'
       begin
         sModulo := 'RPS';
       end;
-      //
+
       if AllTrim(Form7.sWhere) = 'where' then
         Form7.sWhere := '';
       Mais1Ini.WriteString(sModulo,'FILTRO',AllTrim(Form7.sWhere));
@@ -12234,21 +12212,16 @@ begin
       Mais1Ini.WriteString(sModulo,'COLUNA',StrZero(DbGrid1.SelectedIndex,2,0));
       Mais1Ini.WriteString(sModulo,'LINHA',StrZero(TStringGrid(DBGrid1).Row,4,0));
       Mais1Ini.Free;
-      //
-//aqui sempre está apontando para módulo de vendas, por quê?
+
       if sModulo = 'RPS' then
       begin
         sModulo := 'VENDA';
       end;
-      //
-//      DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
     end;
-    //
   except
   end;
-  //
+
   try
-    //
     if Form9.Visible  then
       Form9.Close;
     if Form14.Visible then
@@ -12261,60 +12234,57 @@ begin
       Form16.Close;
     if Form4.Visible  then
       Form4.Close;
-    //
   except
   end;
-  //
+
   try
-    //
     Form38.Caption := 'Cancelar';
     Form6.Tag := 36;
-    //
+
     if Form7.sModulo = 'COMPRA' then
     begin
       Form1.AvisoNFECompra(True);
     end;
-    //
+
     if Form7.sModulo = 'CAIXA' then
     begin
       Form1.AvisoCaixa(True);
     end;
-    //
+
     if Form7.sModulo = 'BANCOS' then
     begin
       Form1.AvisoBanco(True);
     end;
-    //
+
     if Form7.sModulo = 'ESTOQUE' then
     begin
       Form1.AvisoEstoque(True);
     end;
-    //
+
     if Form7.sModulo = 'PAGAR' then
     begin
       Form1.AvisoPagar(True);
     end;
-    //
+
     if Form7.sModulo = 'OS' then
     begin
       Form1.AvisoOS(True);
     end;
-    //
+
     if Form7.sModulo = 'RECEBER' then
     begin
       Form1.AvisoReceber(True);
     end;
-    //
+
     if Form7.sModulo = 'CLIENTES' then
     begin
       Form1.AvisoCliFor(True);
     end;
-    //
+
     Form1.AvisoIndicadores(True);
-    //
   except
   end;
-  //
+
   try
     dbGrid1.DataSource := Form7.DataSource13;
   except
@@ -12323,7 +12293,6 @@ begin
 
     end;
   end;
-  //
 end;
 
 procedure TForm7.RegistroFiscal1Click(Sender: TObject);
@@ -13612,11 +13581,9 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
                   end;
                 end;
               end;
-              //
             end;
-            //
           end;
-          //
+
           if sModulo = 'CONVENIO' then
           begin
             if ibDataSet2ATIVO.AsString='1'  then DBGrid1.Canvas.Font.Color := clSilver else
@@ -13628,7 +13595,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
               end;
             end;
           end;
-          //
+          
           if sModulo = 'FORNECED' then
           begin
             if ibDataSet2ATIVO.AsString='1' then DBGrid1.Canvas.Font.Color := clSilver else
@@ -29539,26 +29506,23 @@ begin
       WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Tempo para gerar este relatório: '+TimeToStr(Time - tInicio)+'</center>');
       if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
       WriteLn(F,'</html>');
-      //
+      
       CloseFile(F);                                    // Fecha o arquivo
-      //
+
       Screen.Cursor := crDefault; // Cursor de Aguardo
-      //
     end;
-    //
+
     Screen.Cursor := crDefault; // Cursor de Aguardo
     Form7.ibDataset2.EnableControls;
     Form7.sModulo := 'CLIENTES';
     Form7.Close;
     Form7.Show;
-    //
+
     AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-    //
   except
   end;
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
 end;
 
 procedure TForm7.ibDataSet4CESTSetText(Sender: TField; const Text: String);

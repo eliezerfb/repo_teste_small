@@ -264,7 +264,6 @@ begin
   //
   if AllTrim(Mais1Ini.ReadString(Usuario,'B7','0')) <> '1' then
   begin
-    //
     Form19.Orelha_prazo.TabVisible       := False;
     Form19.Orelha_Ajustes.TabVisible     := False;
     Form19.Orelha_IR.TabVisible          := False;
@@ -274,10 +273,8 @@ begin
     Form19.Orelha_Juros.TabVisible       := False;
     Form19.Orelha_Atendimento.TabVisible := False;
     Form19.Orelha_Perfil.TabVisible      := False;
-    //
   end else
   begin
-    //
     Form19.Orelha_prazo.TabVisible       := True;
     Form19.Orelha_Ajustes.TabVisible     := True;
     Form19.Orelha_IR.TabVisible          := True;
@@ -287,35 +284,33 @@ begin
     Form19.Orelha_Juros.TabVisible       := True;
     Form19.Orelha_Atendimento.TabVisible := True;
     Form19.Orelha_Perfil.TabVisible      := False;
-    //
   end;
-  //
+
   Mais1Ini.Free;
-  //
+
   Mais2ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   Mais3ini := TIniFile.Create('retaguarda.ini');
-  //
+
   RadioButton3.Checked := False;
   RadioButton4.Checked := False;
   RadioButton5.Checked := False;
-  //
+
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '1' then RadioButton3.Checked := True;
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '2' then RadioButton4.Checked := True;
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '3' then RadioButton5.Checked := True;
-  //
+
   try
-    //
     ColorDialog1.Color := StrToInt('$'+Mais2Ini.ReadString('Html','Cor','EBEBEB'));
     Edit7.Color := StrToInt('$'+AllTrim(Format('%18.0x',[ColorDialog1.Color])));
     Edit8.Color := StrToInt('$'+AllTrim(Format('%18.0x',[ColorDialog1.Color])));
   except end;
-  //
+
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
     Image1.Picture.LoadFromFile('LOGOTIP.BMP') else Form19.Image1.Picture := Form1.Image1.Picture;
-  //
+
   Image1.Width  := Image1.Picture.Width div 2;
   Image1.Height := Image1.Picture.Height div 2;
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
   Mais2ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   { -- Mais1Ini.WriteString(Mais.sEscolhido,'L'+alltrim(IntToStr(I)), -- }

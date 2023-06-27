@@ -4174,7 +4174,8 @@ procedure TForm1.Cadastrodetransportadoras1Click(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form7.Close;
+
+  //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'TRANSPORT';
   Form7.sTitulo := 'Cadastro de transportadoras';
   Form7.sRPS := 'N';
@@ -4189,29 +4190,25 @@ end;
 
 procedure TForm1.Planodecontas1Click(Sender: TObject);
 begin
-  //
   if not FechaTudo(bFechaTudo) then
     Exit;
-  //
+
   Form7.sModuloAnterior := Form7.sModulo;
   Form7.sModulo := 'CONTAS';
   Form7.sTitulo := 'Plano de contas';
   Form7.sRPS := 'N';
-  //
-//  Form7.Close;
+
   Form7.Show;
-  //
+
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := False;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
   Form38.Button2.Visible := True;
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
-//  if Form38.Caption <> 'Cancelar' then
+
   begin
-    //
     Form7.ibDataSet12DIA.ReadOnly := False;
     Form7.ibDataSet12MES.ReadOnly := False;
     Form7.ibDataSet12ANO.ReadOnly := False;
@@ -4224,7 +4221,7 @@ begin
     Form7.ibDataSet12.First;
     //
     Form7.ibDataSet12.DisableControls;
-    //
+
     while not Form7.ibDataSet12.EOF do
     begin
       Form7.ibDataSet12.Edit;
@@ -4235,15 +4232,14 @@ begin
       Form7.ibDataSet12.Post;
       Form7.ibDataSet12.Next;
     end;
-    //
+
     // Saldo
-    //
     Form7.IBDataSet100.Close;
     Form7.ibDataSet100.SelectSQL.Clear;
     Form7.ibDataSet100.SelectSQL.Add('select NOME, sum(ENTRADA)as VENTRADA, sum(SAIDA)as VSAIDA from CAIXA group by NOME');
     Form7.ibDataSet100.Open;
     Form7.ibDataSet100.First;
-    //
+
     while not Form7.IBDataSet100.Eof do
     begin
       if Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString) <> '' then
@@ -4330,7 +4326,6 @@ begin
   Form7.Close;
   Form7.sModulo := 'CONTAS';
   Form7.Show;
-  //
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -5597,15 +5592,14 @@ end;
 
 procedure TForm1.Comissodevendedores1Click(Sender: TObject);
 begin
-  //
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form7.Close;
+
+  //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'VENDEDOR';
   Form7.sTitulo := 'Cadastro dos vendedores';
   Form7.sRPS := 'N';
   Form7.Show;
-  //
 end;
 
 procedure TForm1.FormKeyUp(Sender: TObject; var Key: Word;
@@ -5617,10 +5611,10 @@ end;
 
 procedure TForm1.Grupos1Click(Sender: TObject);
 begin
-  //
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form7.Close;
+
+  //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'GRUPOS';
   Form7.sTitulo := 'Grupos de mercadorias no estoque';
   Form7.sRPS := 'N';
@@ -5639,11 +5633,9 @@ begin
   //
   if (Length(alltrim(sSerial)) = 13) then //sistema novo
   begin
-    //
     I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
-    //
+
     // é arqui a chave pra resolver os controles de seriais                                 X
-    //
     if (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 12 Usuários + OS
     or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 07 Usuários + OS
     or (Copy(Form1.sSerial,4,10) = StrTran(StrTran(UpperCase('C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + OS
@@ -5663,7 +5655,6 @@ begin
       //
       if I = StrToInt('0'+LimpaNumero(Copy(Alltrim(Form22.sSerie),7+17,5))) then
       begin
-        //
         Mais1ini := TIniFile.Create('WIND0WS.L0G');
         Mais1Ini.WriteString('LICENCA','Ser',sSerial); // 2019 - Cadastro Licença de uso de 2019
         Mais1Ini.Free;
@@ -5672,7 +5663,6 @@ begin
         // Form1.DestroyWindowHandle;
         Application.Terminate;
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        //
       end else
       begin
         ShowMessage('Este número de licença não foi liberado para este serial.');
@@ -5767,20 +5757,20 @@ end;
 
 procedure TForm1.Cadastrodeconvnios1Click(Sender: TObject);
 begin
-  //
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form7.Close;
+
+  //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'CONVENIO';
   Form7.sTitulo := 'Cadastro de convênios';
   Form7.sRPS := 'N';
   Form7.Show;
-  //
 end;
 
 procedure TForm1.Image203Click(Sender: TObject);
 begin
-  if not Legal(True) then Abort;
+  if not Legal(True) then
+    Abort;
 
   try
     if not FechaTudo(bFechaTudo) then
@@ -6169,15 +6159,14 @@ end;
 
 procedure TForm1.Cadastrodetcnicos1Click(Sender: TObject);
 begin
-  //
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form7.Close;
+
+  //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'TECNICO';
   Form7.sTitulo := 'Cadastro de técnicos';
   Form7.sRPS := 'N';
   Form7.Show;
-  //
 end;
 
 procedure TForm1.Calendrio1Click(Sender: TObject);
