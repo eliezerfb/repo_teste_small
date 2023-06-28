@@ -22,7 +22,9 @@ uses
   TLHelp32,
   PsAPI, ComObj, ActiveX, TnPdf, Math, pngimage, strUtils, Buttons,
   spdNFeDPEC, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP;
+  IdHTTP
+  , uFuncoesRetaguarda
+  ;
 
 const SIMPLES_NACIONAL = '1';
 const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
@@ -2240,7 +2242,6 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImportaNFe
   , uFuncoesBancoDados
   , uClientesFornecedores
-  , uFuncoesRetaguarda
   , uRetornaCaptionEmailPopUpDocs
   , uIRetornaCaptionEmailPopUpDocs
   , uItensInativosImpXMLEntrada

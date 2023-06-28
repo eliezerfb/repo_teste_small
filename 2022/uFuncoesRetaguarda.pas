@@ -25,6 +25,9 @@ uses
   , SmallFunc
   ;
 
+type
+  TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
+
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
 begin
   // Como ratear VENDA.DESCONTO, VENDAS.OUTRAS, VENDA.SEGURO, VENDAS.FRETE (ST, FCP?) nos ITENS001
