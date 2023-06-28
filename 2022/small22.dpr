@@ -166,9 +166,6 @@ begin
   Application.CreateForm(TForm27, Form27);
   Application.CreateForm(TForm31, Form31);
   Application.CreateForm(TForm32, Form32);
-  Application.CreateForm(TForm33, Form33);
-  Application.CreateForm(TForm34, Form34);
-  Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TForm38, Form38);
   Application.CreateForm(TForm39, Form39);
   Application.CreateForm(TForm41, Form41);
@@ -180,13 +177,13 @@ begin
   Application.CreateForm(TForm35, Form35);
   Application.CreateForm(TForm8, Form8);
   Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-  Application.CreateForm(TForm23, Form23);
   Application.CreateForm(TForm6, Form6);
   Application.CreateForm(TForm11, Form11);
   Application.CreateForm(TForm36, Form36);
   Application.CreateForm(TForm5, Form5);
   Application.CreateForm(TForm29, Form29);
   Application.CreateForm(TForm45, Form45);
+  Application.CreateForm(TForm37, Form37);
   Application.Run;
       //
     end else

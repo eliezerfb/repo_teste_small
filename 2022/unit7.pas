@@ -8724,9 +8724,12 @@ end;
 
 procedure TForm7.Imprimircarta1Click(Sender: TObject);
 begin
-  //
-  Form33.ShowModal;
-  //
+  try
+    Form33 := TForm33.Create(nil);
+    Form33.ShowModal;
+  finally
+    FreeAndNil(Form33);
+  end;
 end;
 
 procedure TForm7.Oramento1Click(Sender: TObject);
@@ -8860,9 +8863,12 @@ end;
 
 procedure TForm7.Etiquetas1Click(Sender: TObject);
 begin
-  //
-  Form15.ShowModal;
-  //
+  try
+    Form15 := TForm15.Create(nil);
+    Form15.ShowModal;
+  finally
+    FreeAndNil(Form15);
+  end;
 end;
 
 procedure TForm7.Contasbancrias1Click(Sender: TObject);
@@ -11871,7 +11877,12 @@ end;
 
 procedure TForm7.Imprimircheque1Click(Sender: TObject);
 begin
-  Form23.ShowModal;
+  try
+    Form23 := TForm23.create(nil);
+    Form23.ShowModal;
+  finally
+    FreeAndNil(Form23);
+  end;
 end;
 
 procedure TForm7.ibDataSet24MERCADORIAChange(Sender: TField);
@@ -12305,7 +12316,12 @@ end;
 
 procedure TForm7.Aumentodepreo1Click(Sender: TObject);
 begin
-  Form34.ShowModal;
+  try
+    Form34 := TForm34.Create(nil);
+    Form34.ShowModal;
+  finally
+    FreeAndNil(Form34);
+  end;
 end;
 
 procedure TForm7.ibDataSet2ESTADOSetText(Sender: TField; const Text: String);
@@ -18099,39 +18115,45 @@ end;
 
 procedure TForm7.Imprimiretiquetaparacobrana1Click(Sender: TObject);
 begin
-  //
   Screen.Cursor  := crHourGlass;    // Cursor de Aguardo
   Form7.IBDataSet100.DisableControls;
   Form7.IBDataSet2.DisableControls;
-  //
+  
   Form7.IBDataSet100.Close;
   Form7.IBDataSet100.SelectSQL.Clear;
   Form7.IBDataSet100.SelectSQL.Add('update CLIFOR set COMPRA=(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)');
   Form7.IBDataSet100.Open;
-  //
+
   Form7.sModulo := 'CLIENTES';
   sWhere := ' where COMPRA<>0 ';
   Form7.IBDataSet2.EnableControls;
   Screen.Cursor  := crDefault;    // Cursor de Aguardo
-  //
+
   Form7.Close;
   Form7.Show;
-  //
-  Form15.CheckBox2.Checked := True;
-  Form15.ShowModal;
-  //
+
+  try
+    Form15 := TForm15.Create(nil);
+    Form15.CheckBox2.Checked := True;
+    Form15.ShowModal;
+  finally
+    FreeAndNil(Form15);
+  end;
+
   Form7.Close;
-  //
+
   Form7.sModulo := 'RECEBER';
   Form7.Show;
-  //
 end;
 
 procedure TForm7.Imprimircartadecobrana1Click(Sender: TObject);
 begin
-  //
-  Form33.ShowModal;
-  //
+  try
+    Form33 := TForm33.Create(nil);
+    Form33.ShowModal;
+  finally
+    FreeAndNil(Form33);
+  end;
 end;
 
 procedure TForm7.ibDataSet2CEPSetText(Sender: TField; const Text: String);
@@ -22359,10 +22381,13 @@ end;
 
 procedure TForm7.Etiquetaparamaladireta1Click(Sender: TObject);
 begin
-  //
-  Form15.CheckBox2.Checked := True;
-  Form15.ShowModal;
-  //
+  try
+    Form15 := TForm15.Create(nil);
+    Form15.CheckBox2.Checked := True;
+    Form15.ShowModal;
+  finally
+    FreeAndNil(Form15);
+  end;
 end;
 
 procedure TForm7.ibDataset40AfterPost(DataSet: TDataSet);
