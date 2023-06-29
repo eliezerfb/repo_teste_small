@@ -961,7 +961,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = ORELHA_CFOP
+      ActivePage = Orelha_PISCOFINS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3608,7 +3608,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 24
+            Height = 21
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -4151,7 +4151,7 @@ object Form10: TForm10
           Left = 10
           Top = 10
           Width = 790
-          Height = 120
+          Height = 126
           Caption = 'Sa'#237'da'
           TabOrder = 0
           object Label42: TLabel
@@ -4198,6 +4198,24 @@ object Form10: TForm10
             Alignment = taRightJustify
             AutoSize = False
             Caption = '% COFINS'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object lbBCPISCOFINS: TLabel
+            Left = 0
+            Top = 99
+            Width = 95
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '% Base'
             Color = clBtnHighlight
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
@@ -4283,12 +4301,33 @@ object Form10: TForm10
             TabOrder = 2
             OnKeyDown = ComboBox9KeyDown
           end
+          object dbeIcmBCPISCOFINS: TSMALL_DBEdit
+            Left = 100
+            Top = 99
+            Width = 60
+            Height = 20
+            AutoSize = False
+            BevelInner = bvLowered
+            BevelOuter = bvNone
+            Ctl3D = True
+            DataField = 'BCPISCOFINS'
+            DataSource = Form7.DataSource14
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -13
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentCtl3D = False
+            ParentFont = False
+            TabOrder = 3
+            OnKeyDown = ComboBox9KeyDown
+          end
         end
         object gbPisCofinsEntrada: TGroupBox
           Left = 10
           Top = 160
           Width = 790
-          Height = 120
+          Height = 126
           Caption = 'Entrada'
           TabOrder = 1
           object Label38: TLabel
@@ -4564,7 +4603,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4583,7 +4622,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4602,7 +4641,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4621,7 +4660,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4640,7 +4679,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4659,7 +4698,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4678,7 +4717,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4833,7 +4872,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 658
-          Height = 22
+          Height = 19
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -4854,7 +4893,7 @@ object Form10: TForm10
           Left = 676
           Top = 25
           Width = 125
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Enabled = False
@@ -13232,8 +13271,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __AP: TLabel
-          Left = 615
-          Top = 41
+          Left = 616
+          Top = 44
           Width = 15
           Height = 14
           Caption = 'AP'
@@ -13277,8 +13316,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __RO: TLabel
-          Left = 542
-          Top = 120
+          Left = 544
+          Top = 126
           Width = 15
           Height = 14
           Caption = 'RO'
@@ -13322,8 +13361,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __MA: TLabel
-          Left = 657
-          Top = 81
+          Left = 659
+          Top = 87
           Width = 18
           Height = 14
           Caption = 'MA'
@@ -13337,8 +13376,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __CE: TLabel
-          Left = 694
-          Top = 84
+          Left = 696
+          Top = 86
           Width = 14
           Height = 14
           Caption = 'CE'
@@ -13442,8 +13481,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __PI: TLabel
-          Left = 676
-          Top = 101
+          Left = 677
+          Top = 105
           Width = 10
           Height = 14
           Caption = 'PI'
@@ -13472,8 +13511,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __DF: TLabel
-          Left = 632
-          Top = 149
+          Left = 646
+          Top = 154
           Width = 13
           Height = 14
           Caption = 'DF'
@@ -13487,8 +13526,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __GO: TLabel
-          Left = 625
-          Top = 160
+          Left = 621
+          Top = 164
           Width = 16
           Height = 14
           Caption = 'GO'
@@ -13518,7 +13557,7 @@ object Form10: TForm10
         end
         object __SP: TLabel
           Left = 635
-          Top = 193
+          Top = 195
           Width = 14
           Height = 14
           Caption = 'SP'
@@ -13532,8 +13571,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __MG: TLabel
-          Left = 661
-          Top = 169
+          Left = 659
+          Top = 174
           Width = 18
           Height = 14
           Caption = 'MG'
@@ -13547,8 +13586,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __ES: TLabel
-          Left = 696
-          Top = 185
+          Left = 691
+          Top = 184
           Width = 13
           Height = 14
           Caption = 'ES'
@@ -13562,8 +13601,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __RJ: TLabel
-          Left = 680
-          Top = 204
+          Left = 679
+          Top = 201
           Width = 13
           Height = 14
           Caption = 'RJ'
@@ -13577,8 +13616,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __PR: TLabel
-          Left = 615
-          Top = 209
+          Left = 614
+          Top = 212
           Width = 14
           Height = 14
           Caption = 'PR'
@@ -13593,7 +13632,7 @@ object Form10: TForm10
         end
         object __SC: TLabel
           Left = 625
-          Top = 226
+          Top = 228
           Width = 15
           Height = 14
           Caption = 'SC'
@@ -13607,8 +13646,8 @@ object Form10: TForm10
           OnClick = __RRClick
         end
         object __RS: TLabel
-          Left = 606
-          Top = 241
+          Left = 607
+          Top = 243
           Width = 14
           Height = 14
           Caption = 'RS'
@@ -13869,8 +13908,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
-          OnExit = dbeIcmCFOPExit
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEdit54: TSMALL_DBEdit
           Left = 150
@@ -13891,7 +13932,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 1
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEdit55: TSMALL_DBEdit
           Left = 150
@@ -13960,7 +14004,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 5
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEdit58: TSMALL_DBEdit
           Left = 150
@@ -13981,7 +14028,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 6
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEdit59: TSMALL_DBEdit
           Left = 150
@@ -14002,7 +14052,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 8
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEdit60: TSMALL_DBEdit
           Left = 150
@@ -14023,7 +14076,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 9
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEditX: TSMALL_DBEdit
           Left = 518
@@ -14067,7 +14123,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 7
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object SMALL_DBEdit47: TSMALL_DBEdit
           Left = 150
@@ -14088,7 +14147,10 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 10
-          OnKeyDown = ComboBox9KeyDown
+          OnChange = SMALL_DBEdit1Change
+          OnEnter = SMALL_DBEdit1Enter
+          OnExit = SMALL_DBEdit1Exi
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object DBCheckSobreIPI: TDBCheckBox
           Left = 108
@@ -14101,8 +14163,8 @@ object Form10: TForm10
           DataSource = Form7.DataSource14
           TabOrder = 11
           ValueChecked = 'S'
-          ValueUnchecked = 'N;null'
-          OnKeyDown = ComboBox9KeyDown
+          ValueUnchecked = 'N'
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object DBCheckSobreOutras: TDBCheckBox
           Left = 255
@@ -14116,7 +14178,7 @@ object Form10: TForm10
           TabOrder = 12
           ValueChecked = 'S'
           ValueUnchecked = 'N'
-          OnKeyDown = ComboBox9KeyDown
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object DBCheckSobreFrete: TDBCheckBox
           Left = 402
@@ -14124,13 +14186,13 @@ object Form10: TForm10
           Width = 100
           Height = 17
           Alignment = taLeftJustify
-          Caption = 'ICMS sobre Frete'
+          Caption = 'IPI sobre Frete'
           DataField = 'SOBREFRETE'
           DataSource = Form7.DataSource14
           TabOrder = 13
           ValueChecked = 'S'
           ValueUnchecked = 'N'
-          OnKeyDown = ComboBox9KeyDown
+          OnKeyDown = SMALL_DBEdit1KeyDown
         end
         object DBMemo4: TDBMemo
           Left = 150
@@ -14149,23 +14211,6 @@ object Form10: TForm10
           TabOrder = 14
           OnKeyDown = DBMemo1KeyDown
         end
-        object cbIntegracaoFinanceira: TComboBox
-          Left = 150
-          Top = 74
-          Width = 90
-          Height = 21
-          Style = csDropDownList
-          ItemHeight = 13
-          ItemIndex = 0
-          TabOrder = 2
-          OnExit = cbIntegracaoFinanceiraExit
-          OnKeyDown = ComboBox9KeyDown
-          Items.Strings = (
-            ''
-            'Caixa'
-            'Pagar'
-            'Receber')
-        end
         object cbMovimentacaoEstoque: TComboBox
           Left = 150
           Top = 99
@@ -14175,12 +14220,31 @@ object Form10: TForm10
           ItemHeight = 13
           ItemIndex = 0
           TabOrder = 3
+          OnEnter = ComboBoxEnter
           OnExit = cbMovimentacaoEstoqueExit
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
             'N'#227'o movimenta o Estoque'
             'Usar custo de compra nas notas')
+        end
+        object cbIntegracaoFinanceira: TComboBox
+          Left = 150
+          Top = 74
+          Width = 90
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          ItemIndex = 0
+          TabOrder = 2
+          OnEnter = ComboBoxEnter
+          OnExit = cbIntegracaoFinanceiraExit
+          OnKeyDown = ComboBox9KeyDown
+          Items.Strings = (
+            ''
+            'Caixa'
+            'Pagar'
+            'Receber')
         end
       end
       object ORELHA_COMISSAO: TTabSheet

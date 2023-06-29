@@ -393,10 +393,12 @@ type
     DBCheckSobreFrete: TDBCheckBox;
     Label110: TLabel;
     DBMemo4: TDBMemo;
-    cbIntegracaoFinanceira: TComboBox;
     cbMovimentacaoEstoque: TComboBox;
     Label111: TLabel;
     IBQPLANOCONTAS: TIBQuery;
+    dbeIcmBCPISCOFINS: TSMALL_DBEdit;
+    lbBCPISCOFINS: TLabel;
+    cbIntegracaoFinanceira: TComboBox;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -609,7 +611,8 @@ type
     procedure DBGrid3CellClick(Column: TColumn);
     procedure cbIntegracaoFinanceiraExit(Sender: TObject);
     procedure cbMovimentacaoEstoqueExit(Sender: TObject);
-    procedure dbeIcmCFOPExit(Sender: TObject);
+    procedure DBMemo4Enter(Sender: TObject);
+    procedure ComboBoxEnter(Sender: TObject);
   private
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
@@ -1848,6 +1851,8 @@ begin
         dBGrid3.DataSource := Form7.DSConsulta;
         //dBGrid3.Columns[0].Width := 310;
       end;
+      if (vDataField = 'CFOP') and (Form7.sModulo = 'ICM') then
+        TSMALL_DBEdit(Sender).SelStart := 1;
       {Sandro Silva 2023-06-28 fim}
 
     end;
@@ -1998,6 +2003,8 @@ begin
           Exit;
         end;
       end;
+      if (DataField = 'CFOP') and (Form7.sModulo = 'ICM')then
+        DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
 
     end;
@@ -2150,7 +2157,7 @@ begin
           and (Form7.sModulo = 'ICM')
           and (Form7.ibqConsulta.Active) then
         begin
-          if Trim(Text) <> '' then
+          if Trim(TSMALL_DBEdit(Sender).Text) <> '' then
             Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
         end;
         {Sandro Silva 2023-06-28 fim}
@@ -3182,7 +3189,7 @@ procedure TForm10.Image201Click(Sender: TObject);
 begin
   Form10.Button4.SetFocus;
   Form10.Button4Click(Sender);
-  
+
   if not Form7.bSoLeitura then
   begin
     if Form7.sModulo = 'ESTOQUE' then
@@ -3192,12 +3199,12 @@ begin
 
       end else
       begin
-        Form7.ArquivoAberto.append;
+        Form7.ArquivoAberto.Append;
       end;
     end else
     begin
       try
-        Form7.ArquivoAberto.append;
+        Form7.ArquivoAberto.Append;
       except end;  
     end;
   end;
@@ -3579,6 +3586,8 @@ begin
 
   gbPisCofinsEntrada.Visible := True;
   gbPisCofinsSaida.Caption := 'Saída';
+  dbeIcmBCPISCOFINS.Visible := False;
+  lbBCPISCOFINS.Visible     := False;
   {Sandro Silva 2023-06-28 fim}
 
   if Form7.sModulo = 'ICM' then
@@ -3591,8 +3600,11 @@ begin
     dbepCofinsSaida.DataSource := Form7.DataSource14;
     dbepCofinsSaida.DataField  := 'PCOFINS';
 
-    gbPisCofinsSaida.Caption := 'PIS/Cofins';
+    gbPisCofinsSaida.Caption := '';//'PIS/COFINS';
     gbPisCofinsEntrada.Visible := False;
+
+    dbeIcmBCPISCOFINS.Visible := True;
+    lbBCPISCOFINS.Visible     := True;
 
     Form10.orelha_cadastro.TabVisible   := False;
     Form10.orelha_CFOP.TabVisible       := True;
@@ -4153,7 +4165,6 @@ begin
         (Form7.sModulo = 'CLIENTES') or
         (Form7.sModulo = 'ESTOQUE')
       ))
-      or ((TSMALL_DBEdit(Sender).DataField = 'CONTA') and (Form7.sModulo = 'ICM'))
        then
     begin
       if (Trim(TSMALL_DBEdit(Sender).Text) = '') and (TSMALL_DBEdit(Sender).Field.OldValue <> '') then
@@ -7504,10 +7515,10 @@ begin
 
   if Form7.sModulo = 'ICM' then
   begin
-    if Form10.Caption = Form7.ibDataSet14NOME.AsString then
-    begin
+    //if Form10.Caption = Form7.ibDataSet14NOME.AsString then
+    //begin
       Form7.ibDataSet14CSTPISCOFINS.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
-    end;
+    //end;
   end;
 
 
@@ -9189,6 +9200,15 @@ procedure TForm10.AtualizaObjComValorDoBanco;
 begin
   if (Form7.sModulo = 'ICM') {and (orelhas.ActivePage = ORELHA_CFOP)} and Form10.Active {and (Form7.ibDataSet14.State in [dsEdit, dsInsert])} then
   begin
+
+    Form7.ibDataSet14.Edit;
+    if Form7.ibDataSet14SOBREIPI.AsString <> 'S' then
+      Form7.ibDataSet14SOBREIPI.AsString := 'N';
+    if Form7.ibDataSet14SOBREOUTRAS.AsString <> 'S' then
+      Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
+    if Form7.ibDataSet14SOBREFRETE.AsString <> 'S' then
+      Form7.ibDataSet14SOBREFRETE.AsString := 'N';
+
     DBCheckSobreIPI.Checked    := Form7.ibDataSet14SOBREIPI.AsString = 'S';
     DBCheckSobreOutras.Checked := Form7.ibDataSet14SOBREOUTRAS.AsString = 'S';
     DBCheckSobreFrete.Checked  := Form7.ibDataSet14SOBREFRETE.AsString = 'S';
@@ -9261,19 +9281,25 @@ begin
     begin
       Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '=', '', [rfReplaceAll]);
       Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '0', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '0';
+      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '=';
     end else if cbMovimentacaoEstoque.Text = TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS then
     begin
       Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '=', '', [rfReplaceAll]);
       Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '0', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '=';
+      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '0';
     end;
   end;
 end;
 
-procedure TForm10.dbeIcmCFOPExit(Sender: TObject);
+procedure TForm10.DBMemo4Enter(Sender: TObject);
 begin
-  dbeIcmCFOP.Text := Trim(dbeIcmCFOP.Text);  
+  DBMemo4.MaxLength := Form7.ibDataSet14OBS.Size;
+end;
+
+procedure TForm10.ComboBoxEnter(Sender: TObject);
+begin
+  dBGrid3.Visible := False;
+  dBGrid1.Visible := False;  
 end;
 
 end.
