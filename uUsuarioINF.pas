@@ -3,19 +3,22 @@ unit uUsuarioINF;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionGeralUsuarioINF;
+  uArquivoDATINFPadrao, uSectionGeralUsuarioINF, uSectionHTMLUsuarioINF;
 
 type
   TUsuarioINF = class(TArquivoDATINFPadrao)
   private
     FcUsuario: string;
     FoGeral: TSectionGeralUsuario;
+    FoHtml: TSectionHTMLUsuario;
     function getGeral: TSectionGeralUsuario;
+    function getHtml: TSectionHTMLUsuario;
   public
     constructor Create(AcUsuario: String); overload;
     destructor Destroy; override;
 
     property Geral: TSectionGeralUsuario read getGeral;
+    property Html: TSectionHTMLUsuario read getHtml;
   protected
     function NomeArquivo: String; override;  
   end;
@@ -48,6 +51,14 @@ begin
     FoGeral := TSectionGeralUsuario.Create(FoIni);
 
   Result := FoGeral;
+end;
+
+function TUsuarioINF.getHtml: TSectionHTMLUsuario;
+begin
+  if not Assigned(FoHtml) then
+    FoHtml := TSectionHTMLUsuario.Create(FoIni);
+
+  Result := FoHtml;
 end;
 
 function TUsuarioINF.NomeArquivo: String;

@@ -18,6 +18,9 @@ resourcestring
 
   _cOrcamentoNaoEncontrado = 'Orçamento %s não encontrado.' + SLineBreak + SLineBreak +
                              'O número do orçamento será restaurado para a sequência automática do sistema.';
+  _cPeriodoDataInvalida = 'As datas informadas não são válidas.';
+  _cSemDocumentoMarcadoImpressao = 'Selecione ao menos um documento para impressão.';
+  _cSemDadosParaImprimir = 'Nenhum dado encontrado para a impressão, verifique os filtros informados.';
 
 implementation
 

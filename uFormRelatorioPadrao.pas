@@ -1,0 +1,97 @@
+unit uFormRelatorioPadrao;
+
+interface
+
+//Form38 novo
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, ExtCtrls, IBDatabase,
+  uSmallEnumerados, uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao;
+
+type
+  TfrmRelatorioPadrao = class(TForm)
+    btnCancelar: TBitBtn;
+    ImgRel: TImage;
+    btnImprimir: TBitBtn;
+    procedure btnCancelarClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnImprimirClick(Sender: TObject);
+  private
+    FoDataBase: TIBDataBase;
+    FcUsuario: String;  
+    function getImagem: TPicture;
+    procedure setImagem(const Value: TPicture);
+    function getDataBase: TIBDatabase;
+    procedure setDataBase(const Value: TIBDatabase);
+    function getUsuario: String;
+    procedure setUsuario(const Value: String);
+  public
+    property DataBase: TIBDatabase read getDataBase write setDataBase;
+    property Imagem: TPicture read getImagem write setImagem;
+    property Usuario: String read getUsuario write setUsuario;
+  protected
+    procedure Imprimir;
+    function Estrutura: IEstruturaTipoRelatorioPadrao; virtual; abstract;
+  end;
+
+var
+  frmRelatorioPadrao: TfrmRelatorioPadrao;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmRelatorioPadrao.btnCancelarClick(Sender: TObject);
+begin
+  Self.Close;
+end;
+
+function TfrmRelatorioPadrao.getDataBase: TIBDatabase;
+begin
+  Result := FoDataBase;
+end;
+
+function TfrmRelatorioPadrao.getImagem: TPicture;
+begin
+  Result := ImgRel.Picture;
+end;
+
+procedure TfrmRelatorioPadrao.setDataBase(const Value: TIBDatabase);
+begin
+  FoDataBase := Value;
+end;
+
+procedure TfrmRelatorioPadrao.setImagem(const Value: TPicture);
+begin
+  ImgRel.Picture := Value;
+end;
+
+procedure TfrmRelatorioPadrao.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_ESCAPE: btnCancelarClick(Self);
+  end;
+end;
+
+function TfrmRelatorioPadrao.getUsuario: String;
+begin
+  Result := FcUsuario;
+end;
+
+procedure TfrmRelatorioPadrao.setUsuario(const Value: String);
+begin
+  FcUsuario := Value;
+end;
+
+procedure TfrmRelatorioPadrao.Imprimir;
+begin
+  Estrutura.Imprimir;
+end;
+
+procedure TfrmRelatorioPadrao.btnImprimirClick(Sender: TObject);
+begin
+  Imprimir;
+end;
+
+end.
