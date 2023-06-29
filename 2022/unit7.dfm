@@ -19374,7 +19374,7 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de vendas (Nota Fiscal)...'
         OnClick = Relatriodevendas1Click
       end
-      object MenuItem142: TMenuItem
+      object RelVendasServico: TMenuItem
         Caption = 'Relat'#243'rio de servi'#231'os (Nota Fiscal)...'
         OnClick = Relatriodeservios1Click
       end
@@ -19386,11 +19386,11 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de produtos monof'#225'sicos (Cupom Fiscal)...'
         OnClick = Relatriodeprodutosmonofsico1Click
       end
-      object Re1: TMenuItem
-        Caption = 'Relat'#225'rio de Complemento/Restitui'#231#227'o por ICMS ST...'
-        OnClick = Re1Click
+      object RelCompRestICMS: TMenuItem
+        Caption = 'Relat'#243'rio de Complemento/Restitui'#231#227'o por ICMS ST...'
+        OnClick = RelCompRestICMSClick
       end
-      object MenuItem151: TMenuItem
+      object RelResumoVendas: TMenuItem
         Caption = 'Resumo das vendas...'
         OnClick = Resumodasvendas1Click
       end
@@ -19562,7 +19562,7 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de compras...'
         OnClick = Relatriodeconpras1Click
       end
-      object MenuItem197: TMenuItem
+      object PrevCompra: TMenuItem
         Caption = 'Previs'#227'o de compras...'
         OnClick = Previsodecompra1Click
       end
@@ -19854,7 +19854,6 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
-    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -21179,7 +21178,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21213,7 +21212,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50a\'
+      'm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21527,7 +21526,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21556,7 +21555,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
