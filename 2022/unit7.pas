@@ -1468,6 +1468,7 @@ type
     ibqConsulta: TIBDataSet;
     ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
     ibDataSet7FORMADEPAGAMENTO: TIBStringField;
+    RelatriodevendasporclienteNFeCupom1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2083,6 +2084,7 @@ type
     procedure IBDatabase1AfterConnect(Sender: TObject);
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
       const Text: String);
+    procedure RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2251,6 +2253,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uTextoEmailFactory
   , uRetornaLimiteDisponivel
   , uIRetornaLimiteDisponivel, uListaCnaes;
+  , uChamaRelatorioCommerceFactory
+  , uAssinaturaDigital;
 
 {$R *.DFM}
 
@@ -4702,42 +4706,9 @@ end;
 
 
 function AssinaturaDigital(sP1:String): String;
-var
-  HashDoArquivo: string;
-  F : TextFile;
 begin
-  //
-  with form1 do
-  begin
-    //
-    HashDoArquivo := MD5Print(MD5File(pChar(sP1)));
-    Form7.LbRSASSA1.HashMethod := hmMD5;
-    Form7.LbRSASSA1.KeySize := aks1024;
-    //
-    Form7.LbRSASSA1.PrivateKey.ExponentAsString :=  '75C2624A448186B59016FE623' +
-                                              'EF23ED97137C8D5F273C15EE813D2AEFD322C2AFBF868ADBB5096A78CD' +
-                                              'EA9D678CA9370EE0C79FAD21FEC0ECE440149D09367077B46A33F829B3' +
-                                              '28CAFF49F0B884AA672F9F65D632F44A492D4E92D9B33526CB8DD84416' +
-                                              '9240235E8F49F74C8CD1B4626A423009FC777935B091CB751895E5F6A';
-    //
-    Form7.LbRSASSA1.PrivateKey.ModulusAsString := '656B072B31EF964B1C3D31F8BC' +
-                                            '9BD945E7A675307DEB790B748B1197B0DFC4E4D1064ECCD625C3248970'+
-                                            'E4F29FC6D8F0D0385A53A9A3E7DB20C258C982CFC47B798E54EE655D55'+
-                                            '92269559B8DDB864E57D46ECFBFE594A572C0C9E3DA8DD2BDEBE63BDD2'+
-                                            '9583C66553B3969F73602CF3CAC29C78A6F3DC491507AD2C4F818077';
-    //
-    Form7.LbRSASSA1.SignString(HashDoArquivo);
-    Result := Form7.LbRSASSA1.Signature.IntStr;
-    //
-    try
-      //
-      AssignFile(F, sP1);
-      Append(F);
-      Writeln(F,'EAD'+Result);
-      CloseFile(F);
-      //
-    except end;
-  end;
+  Result := TAssinaturaDigital.New
+                              .AssinarArquivo(sP1);
 end;
 
 function Audita(pP1, pP2, pP3, pP4 : String; pP5, pP6: Double) : Boolean;
@@ -33014,8 +32985,6 @@ begin
 }
 end;
 
-
-
 procedure TForm7.ibDataSet13MUNICIPIOSetText(Sender: TField;
   const Text: String);
 begin
@@ -33057,5 +33026,16 @@ begin
   Mauricio Parizotto 2023-06-27}
 end;
 
+
+procedure TForm7.RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
+begin
+  CriaJpg('logotip.jpg');
+  TChamaRelatorioFactory.New
+                        .VendasPorCliente
+                        .setDataBase(IBDatabase1)
+                        .setImagem(Image205.Picture)
+                        .setUsuario(Usuario)
+                        .ChamarTela;
+end;
 
 end.

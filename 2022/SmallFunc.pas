@@ -16,7 +16,8 @@ interface
 
 uses
   SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
-  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls;
+  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
+  ShellAPI, jpeg;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
@@ -113,6 +114,7 @@ uses
   function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
   procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
   procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
+  function HtmlToPDF(AcArquivo: String): Boolean;
 
 implementation
 
@@ -130,8 +132,8 @@ end;
 
 
 function FusoHorarioPadrao(UF: String): String;
-// Retorna o fuso horário padrão para a UF
-// Abaixo as UF estão ordenadas por região (Sul, sudeste, Centro-Oeste, Norte, Nordeste)
+// Retorna o fuso horï¿½rio padrï¿½o para a UF
+// Abaixo as UF estï¿½o ordenadas por regiï¿½o (Sul, sudeste, Centro-Oeste, Norte, Nordeste)
 begin
   Result := '';
   UF := AnsiUpperCase(UF);
@@ -140,39 +142,39 @@ begin
     Result := '-03:00';
   if UF = 'SC' then // Santa Catarina
     Result := '-03:00';
-  if UF = 'PR' then // Paraná
+  if UF = 'PR' then // Paranï¿½
     Result := '-03:00';
 
   //Sudeste
-  if UF = 'SP' then // São Paulo
+  if UF = 'SP' then // Sï¿½o Paulo
     Result := '-03:00';
   if UF = 'RJ' then // Rio de Janeiro
     Result := '-03:00';
   if UF = 'MG' then // Minas Gerais
     Result := '-03:00';
-  if UF = 'ES' then //Espírito Santo
+  if UF = 'ES' then //Espï¿½rito Santo
     Result := '-03:00';
 
   //Centro-Oeste
-  if UF = 'GO' then // Goiás
+  if UF = 'GO' then // Goiï¿½s
     Result := '-03:00';
   if UF = 'MT' then //Mato Grosso
     Result := '-04:00';
   if UF = 'MS' then // Mato Grosso do Sul
     Result := '-04:00';
-  if UF = 'DF' then // Brasília (DF)    Hora Legal
+  if UF = 'DF' then // Brasï¿½lia (DF)    Hora Legal
     Result := '-03:00';
 
   //Norte
   if UF = 'AM' then // Amazonas
     Result := '-04:00';
-  if UF = 'AP' then // Amapá
+  if UF = 'AP' then // Amapï¿½
     Result := '-03:00';
   if UF = 'AC' then // Acre
     Result := '-05:00';
-  if UF = 'PA' then // Pará
+  if UF = 'PA' then // Parï¿½
     Result := '-03:00';
-  if UF = 'RO' then // Rondônia
+  if UF = 'RO' then // Rondï¿½nia
     Result := '-04:00';
   if UF = 'RR' then // Roraima
     Result := '-04:00';
@@ -184,15 +186,15 @@ begin
     Result := '-03:00';
   if UF = 'BA' then // Bahia
     Result := '-03:00';
-  if UF = 'CE' then // Ceará
+  if UF = 'CE' then // Cearï¿½
     Result := '-03:00';
-  if UF = 'MA' then // Maranhão
+  if UF = 'MA' then // Maranhï¿½o
     Result := '-03:00';
-  if UF = 'PB' then // Paraíba
+  if UF = 'PB' then // Paraï¿½ba
     Result := '-03:00';
   if UF = 'PE' then // Pernambuco
     Result := '-03:00';
-  if UF = 'PI' then // Piauí
+  if UF = 'PI' then // Piauï¿½
     Result := '-03:00';
   if UF = 'RN' then // Rio Grande do Norte
     Result := '-03:00';
@@ -205,10 +207,10 @@ begin
 end;
 
 function DefineFusoHorario(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; sFuso: String; bHorarioVerao: Boolean): String;
-// Define o fuso horário no arquivo .ini de configurações
+// Define o fuso horï¿½rio no arquivo .ini de configuraï¿½ï¿½es
 // Exemplos de uso:
-// DefineFusoHorario('nfe.ini','nfe','fuso', 'SC', '', True); // Definirá automáticamente o fuso horário com -03:00, que o fuso de Santa Catarina e em seguida Habilita Horário de Verão. Usar esta maneira após usuário configurar o emitente, quando ainda não há fuso horário definido.
-// DefineFusoHorario('nfe.ini','nfe','fuso', '', '-02:00'); // Desconsidera a UF e define o fuso horário que quiser. Usar esta maneira na rotina de configuração de fuso horário.
+// DefineFusoHorario('nfe.ini','nfe','fuso', 'SC', '', True); // Definirï¿½ automï¿½ticamente o fuso horï¿½rio com -03:00, que o fuso de Santa Catarina e em seguida Habilita Horï¿½rio de Verï¿½o. Usar esta maneira apï¿½s usuï¿½rio configurar o emitente, quando ainda nï¿½o hï¿½ fuso horï¿½rio definido.
+// DefineFusoHorario('nfe.ini','nfe','fuso', '', '-02:00'); // Desconsidera a UF e define o fuso horï¿½rio que quiser. Usar esta maneira na rotina de configuraï¿½ï¿½o de fuso horï¿½rio.
 //
 var
   Ini: TIniFile;
@@ -227,11 +229,11 @@ end;
 
 function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String;
   ChaveIni: String; sUF: String; bHabilita: Boolean): String;
-// Habilita ou desabilita o fuso horário para o horário de verão
-// Trata apenas a condição do Brasil, onde todos os fusos são Negativos
+// Habilita ou desabilita o fuso horï¿½rio para o horï¿½rio de verï¿½o
+// Trata apenas a condiï¿½ï¿½o do Brasil, onde todos os fusos sï¿½o Negativos
 // Exemplo de uso:
-// HabilitaHorarioVerao('nfe.ini','nfe','fuso', 'SC', True); Ativa horário de verão para o fuso
-// HabilitaHorarioVerao('nfe.ini','nfe','fuso', 'SC', False); Desativa horário de verão para o fuso
+// HabilitaHorarioVerao('nfe.ini','nfe','fuso', 'SC', True); Ativa horï¿½rio de verï¿½o para o fuso
+// HabilitaHorarioVerao('nfe.ini','nfe','fuso', 'SC', False); Desativa horï¿½rio de verï¿½o para o fuso
 var
   Ini: TIniFile;
   sFuso: String;
@@ -244,7 +246,7 @@ begin
   begin
     sFuso := StringReplace(sFuso, '-', '', [rfReplaceAll]); // Elimina o sinal negativo
 
-    if bHabilita then // Entrando no horário de verão
+    if bHabilita then // Entrando no horï¿½rio de verï¿½o
       sFuso := Copy(TimeToStr(IncHour(StrToTime(sFuso), -1)), 1, 5)
     else
       sFuso := Copy(TimeToStr(IncHour(StrToTime(sFuso), 1)), 1, 5);
@@ -264,7 +266,7 @@ end;
 
 procedure FecharAplicacao(sNomeExecutavel: String);
 begin
-  //Mais eficiente para encerrar as aplicações
+  //Mais eficiente para encerrar as aplicaï¿½ï¿½es
   //Substitui os comandos "Application.Terminate" e "Halt(1)"
   //FecharAplicacao(ExtractFileName(Application.ExeName));
   WinExec(PChar('TASKKILL /F /IM "'+sNomeExecutavel+'"'),SW_HIDE);
@@ -393,7 +395,7 @@ var
    Acumulado,I,Controle:integer;
 begin
   try
-    {acumula a soma da multiplicação dos digitos}
+    {acumula a soma da multiplicaï¿½ï¿½o dos digitos}
     Pp1:=alltrim(pP1);
     Controle:=2;
     Acumulado:=0;
@@ -422,7 +424,7 @@ function Modulo_11(pP1:String):String;
 var
    Acumulado,I,Controle:integer;
 begin
-   //acumula a soma da multiplicação dos digitos
+   //acumula a soma da multiplicaï¿½ï¿½o dos digitos
    try
      Pp1:=alltrim(pP1);
      Controle:=2;
@@ -447,7 +449,7 @@ var
    Acumulado,I,Controle:integer;
 begin
    try
-     {acumula a soma da multiplicação dos digitos}
+     {acumula a soma da multiplicaï¿½ï¿½o dos digitos}
      Pp1:=alltrim(pP1);
      Controle:=2;
      Acumulado:=0;
@@ -470,7 +472,7 @@ var
    Acumulado,I,Controle:integer;
 begin
   try
-    {acumula a soma da multiplicação dos digitos}
+    {acumula a soma da multiplicaï¿½ï¿½o dos digitos}
     Pp1:=alltrim(pP1);
     Controle:=2;
     Acumulado:=0;
@@ -504,7 +506,7 @@ begin
   try
     //
     // Modulo 10
-    // acumula a soma da multiplicação dos digitos
+    // acumula a soma da multiplicaï¿½ï¿½o dos digitos
     //
     J := 0;
     Z := 2;
@@ -570,7 +572,7 @@ var
   I, J, Z : Integer;
 begin
   try
-    {acumula a soma da multiplicação dos digitos}
+    {acumula a soma da multiplicaï¿½ï¿½o dos digitos}
     J := 0;
     Z := 2;
     for I := Length(pP1) downto 1 do
@@ -666,7 +668,7 @@ begin
    for I:= 1 to length(sTemp) do
    begin
      if Result >= 0 then
-       if (StrToInt(Copy(sTemp,I,1))) > 1 then Result:=-1 else // se o n for > 1 não é binário
+       if (StrToInt(Copy(sTemp,I,1))) > 1 then Result:=-1 else // se o n for > 1 nï¿½o ï¿½ binï¿½rio
           Result := Result+ (StrToInt(Copy(sTemp,I,1)) * Potencia(2,I-1));
    end;
 end;
@@ -716,7 +718,7 @@ begin
       end;
    end;
 end;
-{--- fim da função PrimeiraMaiúscula ---}
+{--- fim da funï¿½ï¿½o PrimeiraMaiï¿½scula ---}
 
 Function Replicate(pP1:String; pP2:Integer):String;
 Var I:Integer;
@@ -739,10 +741,10 @@ begin
     {se for CGC}
     if length(pP1) = 14 then
        begin
-          DIGITOS := Copy(pP1, 13, 2); {dígitos informados}
+          DIGITOS := Copy(pP1, 13, 2); {dï¿½gitos informados}
           MULT := '543298765432';
           CONTROLE := '';
-          {loop de verificação}
+          {loop de verificaï¿½ï¿½o}
           {J := 1;}
           for J := 1 to 2 do
            begin
@@ -756,8 +758,8 @@ begin
               CONTROLE := CONTROLE+IntToStr(DIGITO);
               MULT := '654329876543'
            end;
-           {compara os dígitos calculados(CONTROLE)}
-           {com os dígitos informados (DIGITOS)}
+           {compara os dï¿½gitos calculados(CONTROLE)}
+           {com os dï¿½gitos informados (DIGITOS)}
            if CONTROLE <> DIGITOS then
               Result := FALSE
            else
@@ -766,14 +768,14 @@ begin
     {se for CPF}
     else if length(pP1) = 11 then
        begin
-          DIGITOS := Copy(pP1, 10, 2); {dígitos informados}
+          DIGITOS := Copy(pP1, 10, 2); {dï¿½gitos informados}
           MULT := '100908070605040302';
           CONTROLE := '';
-          {loop de verificação}
+          {loop de verificaï¿½ï¿½o}
           for J := 1 to 2 do
            begin
               SOMA := 0;
-              K:=0; {coloquei para não dar erro}
+              K:=0; {coloquei para nï¿½o dar erro}
               for I := 1 to 9 do
                 begin
                    if I = 1 then K:=1
@@ -787,8 +789,8 @@ begin
               CONTROLE := CONTROLE+IntToStr(DIGITO);
               MULT := '111009080706050403'
            end;
-           {compara os dígitos calculados(CONTROLE)}
-           {com os dígitos informados (DIGITOS)}
+           {compara os dï¿½gitos calculados(CONTROLE)}
+           {com os dï¿½gitos informados (DIGITOS)}
            if CONTROLE <> DIGITOS then
               Result := FALSE
            else
@@ -819,7 +821,7 @@ begin
    Result:='';
    for I := 1 to length(pP1) do
    begin
-     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZÇÀÈÌÒÙÁÉÍÓÚÂÊÎÔÛÄÏÖÜÃÕ') > 0 then
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½') > 0 then
         Result:=Result+Copy(pP1,I,1);
    end;
 end;
@@ -873,7 +875,7 @@ begin
    Result:=pP1;
    for I := 1 to 44 do
      Result :=  strtran( Result
-                      ,copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç*º',I,1)
+                      ,copy('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*ï¿½',I,1)
                       ,copy('AAAAAEEEEIIIOOOUUCaaaaaaeeeeiiiiooooouuuuc .',I,1));
 end;
 
@@ -884,7 +886,7 @@ begin
    Result:=pP1;
    for I := 1 to 44 do
      Result :=  strtran( Result
-                      ,copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç*º',I,1)
+                      ,copy('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*ï¿½',I,1)
                       ,copy('____________________________________________',I,1));
 end;
 
@@ -952,14 +954,14 @@ begin
   sTexto := Value;
   for I := 1 to 42 do
     sTexto :=  StringReplace(sTexto,
-                             Copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç', I, 1),
+                             Copy('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', I, 1),
                              Copy('AAAAAEEEEIIIOOOUUCaaaaaaeeeeiiiiooooouuuuc', I, 1),
                              [rfReplaceAll]);
 
   Result := '';
   for I := 1 to Length(sTexto) do
   begin
-    if Pos(AnsiUpperCase(Copy(sTexto, I, 1)), '1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW!@#$%*()_+-=;:/|\?,.ºª') > 0 then
+    if Pos(AnsiUpperCase(Copy(sTexto, I, 1)), '1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW!@#$%*()_+-=;:/|\?,.ï¿½ï¿½') > 0 then
       Result := Result + Copy(sTexto, I, 1)
     else
       Result := Result + ' ';
@@ -967,8 +969,8 @@ begin
 end;
 
 
-{Função PACK}
-{parâmetros: pP1= nome do DataBase ou diretório, pP2=nome do arquivo,}
+{Funï¿½ï¿½o PACK}
+{parï¿½metros: pP1= nome do DataBase ou diretï¿½rio, pP2=nome do arquivo,}
 Function Pack(pP1:TTable):boolean;
 var
   ArquivoDbf:file;
@@ -997,7 +999,7 @@ begin
             BlockWrite(ArquivoDbf,Buffer,SizeOf(Buffer));
         end;
       end;
-      // Altera a página de código //
+      // Altera a pï¿½gina de cï¿½digo //
       Seek(ArquivoDbf,29);
       BlockRead(ArquivoDbf,Buffer,SizeOf(Buffer),RegistrosLidos);
       Buffer[1]:='X';
@@ -1308,7 +1310,7 @@ begin
     end
 end;
 
-{Funçao STRTRAN busca e troca uma parte de uma string em outra}
+{Funï¿½ao STRTRAN busca e troca uma parte de uma string em outra}
 {pP1 String, pP2 trecho a ser substituido, pP3 trecho novo}
 {function StrTran(pP1,pP2,pP3:String):String;
 var
@@ -1343,7 +1345,7 @@ begin
     end;
 end; }
 
-//    Funçao STRTRAN busca e troca uma parte de uma string em outra
+//    Funï¿½ao STRTRAN busca e troca uma parte de uma string em outra
 //               pP1 String, pP2 trecho a ser substituido, pP3 trecho novo    //
 Function StrTran(sP1,sP2,sP3 : string):String;
 //pP1 String, pP2 trecho a ser substituido, pP3 trecho novo
@@ -1409,8 +1411,8 @@ begin
    end;
 end;
 
-{função EXTENSO
- pP1 valor numérico, pP2 moeda (real, dolar), retorna uma string}
+{funï¿½ï¿½o EXTENSO
+ pP1 valor numï¿½rico, pP2 moeda (real, dolar), retorna uma string}
 
 {
 function Extenso(pP1:double):String;
@@ -1452,7 +1454,7 @@ begin
                              'vinte    '+
                              'trinta   '+
                              'quarenta '+
-                             'cinqüenta'+
+                             'cinqï¿½enta'+
                              'sessenta '+
                              'setenta  '+
                              'oitenta  '+
@@ -1466,7 +1468,7 @@ begin
            R:= R + trim(Copy('      '+
                              'um    '+
                              'dois  '+
-                             'três  '+
+                             'trï¿½s  '+
                              'quatro'+
                              'cinco '+
                              'seis  '+
@@ -1478,9 +1480,9 @@ begin
         begin
           R:=R+' '+trim(Copy('        '+
                              'mil,    '+
-                             'milhões,'+
-                             'bilhões,'+
-                             'trilhões',(I-1)*8+1,8));
+                             'milhï¿½es,'+
+                             'bilhï¿½es,'+
+                             'trilhï¿½es',(I-1)*8+1,8));
         end;
         if I = 0 then
            R:=R+' centavos';
@@ -1490,7 +1492,7 @@ begin
    R:=StrTran(R,'  ',' ');
    R:=StrTran(R,'dez e um',    'onze');
    R:=StrTran(R,'dez e dois',  'doze');
-   R:=StrTran(R,'dez e três',  'treze');
+   R:=StrTran(R,'dez e trï¿½s',  'treze');
    R:=StrTran(R,'dez e quatro','catorze');
    R:=StrTran(R,'dez e cinco', 'quinze');
    R:=StrTran(R,'dez e seis',  'dezesseis');
@@ -1500,10 +1502,10 @@ begin
    R:=StrTran(R,'cem e',       'cento e');
    R:=StrTran(R,'e e',        'e');
    R:=StrTran(R,'e e',        'e');
-   R:=StrTran(R,'ões e',      'ões');
-   R:=StrTran(R,'um milhões',  'um milhão');
-   R:=StrTran(R,'um bilhões',  'um bilhão');
-   R:=StrTran(R,'um trilhões', 'um trilhão');
+   R:=StrTran(R,'ï¿½es e',      'ï¿½es');
+   R:=StrTran(R,'um milhï¿½es',  'um milhï¿½o');
+   R:=StrTran(R,'um bilhï¿½es',  'um bilhï¿½o');
+   R:=StrTran(R,'um trilhï¿½es', 'um trilhï¿½o');
    R:=StrTran(R,', reais',     ' reais');
    R:=StrTran(R,', e',         ' e');
    //
@@ -1555,7 +1557,7 @@ begin
                            'vinte    '+
                            'trinta   '+
                            'quarenta '+
-                           'cinqüenta'+
+                           'cinqï¿½enta'+
                            'sessenta '+
                            'setenta  '+
                            'oitenta  '+
@@ -1569,7 +1571,7 @@ begin
         Result := Result + trim(Copy('      '+
                          'um    '+
                          'dois  '+
-                         'três  '+
+                         'trï¿½s  '+
                          'quatro'+
                          'cinco '+
                          'seis  '+
@@ -1579,16 +1581,16 @@ begin
       end;
       if I <> 0 then Result := Result +' '+trim(Copy('        '+
                            'mil,    '+
-                           'milhões,'+
-                           'bilhões,'+
-                           'trilhões',(I-1)*8+1,8));
+                           'milhï¿½es,'+
+                           'bilhï¿½es,'+
+                           'trilhï¿½es',(I-1)*8+1,8));
       if I = 0 then Result := Result +' centavos';
     end;
   end;
   Result:=StrTran(Result,'  ',' ');
   Result:=StrTran(Result,'dez e um',    'onze');
   Result:=StrTran(Result,'dez e dois',  'doze');
-  Result:=StrTran(Result,'dez e três',  'treze');
+  Result:=StrTran(Result,'dez e trï¿½s',  'treze');
   Result:=StrTran(Result,'dez e quatro','catorze');
   Result:=StrTran(Result,'dez e cinco', 'quinze');
   Result:=StrTran(Result,'dez e seis',  'dezesseis');
@@ -1598,10 +1600,10 @@ begin
   Result:=StrTran(Result,'cem e',       'cento e');
   Result:=StrTran(Result,'e e',        'e');
   Result:=StrTran(Result,'e e',        'e');
-  Result:=StrTran(Result,'ões e',      'ões');
-  Result:=StrTran(Result,'um milhões',  'um milhão');
-  Result:=StrTran(Result,'um bilhões',  'um bilhão');
-  Result:=StrTran(Result,'um trilhões', 'um trilhão');
+  Result:=StrTran(Result,'ï¿½es e',      'ï¿½es');
+  Result:=StrTran(Result,'um milhï¿½es',  'um milhï¿½o');
+  Result:=StrTran(Result,'um bilhï¿½es',  'um bilhï¿½o');
+  Result:=StrTran(Result,'um trilhï¿½es', 'um trilhï¿½o');
   Result:=StrTran(Result,', reais',     ' reais');
   Result:=StrTran(Result,', e',         ' e');
   if Copy(AllTrim(Result),1,8)='reais e ' then Delete(Result,1,8);
@@ -1615,7 +1617,7 @@ begin
    Result:='';
    if (pP1 >= 1) and (pP1 <= 12) then
    begin
-      Result:=Copy('Janeiro  FevereiroMarço    Abril    Maio     Junho    '+
+      Result:=Copy('Janeiro  FevereiroMarï¿½o    Abril    Maio     Junho    '+
                    'Julho    Agosto   Setembro Outubro  Novembro Dezembro ',
                    ((pP1-1)*9)+1,9);
    end;
@@ -1730,7 +1732,7 @@ begin
   CalcCartao:=0;
   For I := 1 to length(NumeroCartao) do
   begin
-     if (I mod 2) = 0 then // posicao par só acumula
+     if (I mod 2) = 0 then // posicao par sï¿½ acumula
         Calcs:=StrToInt(Copy(NumeroCartao,I,1))
      else
        begin
@@ -1739,7 +1741,7 @@ begin
        end;
      CalcCartao:=CalcCartao+Calcs;
   end;
-  if (CalcCartao < 150) and ((CalcCartao mod 10) = 0) then //se o resto da divisão por 10 for zero
+  if (CalcCartao < 150) and ((CalcCartao mod 10) = 0) then //se o resto da divisï¿½o por 10 for zero
     Result:=True
   else
     Result:=False;
@@ -1779,7 +1781,7 @@ var
   DC:HDC;
   BitsPorPixel: Integer;
 begin
-  Dc := GetDc(0); // 0 = vídeo
+  Dc := GetDc(0); // 0 = vï¿½deo
   BitsPorPixel := GetDeviceCaps(Dc,BitsPixel);
   Result := 2 shl (BitsPorPixel - 1);
 end;
@@ -1793,7 +1795,7 @@ var
    hDMode : THandle;
 begin
    Result:=True;
-   // Retorna a impressora padrão do windows
+   // Retorna a impressora padrï¿½o do windows
    try
       Printer.GetPrinter(Device, Driver, Port, hDMode);
    except
@@ -1822,14 +1824,14 @@ begin
     if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - Rio de janeiro';
   end;
   //
-  // Amazônia
+  // Amazï¿½nia
   //
   if (Copy(sNumero,1,2) >= '91') and (Copy(sNumero,1,2) <= '99') then
   begin
-    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Amazônia celular - Amazônia';
-    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Vivo - Amazônia';
-    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Amazônia';
-    if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '83') then Result := 'Tim - Amazônia';
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Amazï¿½nia celular - Amazï¿½nia';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Vivo - Amazï¿½nia';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Amazï¿½nia';
+    if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '83') then Result := 'Tim - Amazï¿½nia';
   end;
   //
   // Minas Gerais
@@ -1892,27 +1894,27 @@ begin
     if (Copy(sNumero,3,2) = '95')                                  then Result := 'Claro - Distrito Federal';
   end;
   //
-  // São Paulo
+  // Sï¿½o Paulo
   //
   if (Copy(sNumero,1,2) >= '11') and (Copy(sNumero,1,2) <= '19') then
   begin
     //
     if (Copy(sNumero,1,2) = '11') then
     begin
-      if (Copy(sNumero,3,3) >= '996') and (Copy(sNumero,3,3) <= '999') then Result := 'Vivo - São Paulo';
-      if (Copy(sNumero,3,3) >= '971') and (Copy(sNumero,3,3) <= '974') then Result := 'Vivo - São Paulo';
-      if (Copy(sNumero,3,3) >= '991') and (Copy(sNumero,3,3) <= '994') then Result := 'Claro - São Paulo';
-      if (Copy(sNumero,3,3) >= '981') and (Copy(sNumero,3,3) <= '986') then Result := 'Tim - São Paulo';
-      if (Copy(sNumero,3,3) = '995')                                  then Result := 'Vivo - São Paulo';
-      if (Copy(sNumero,3,3) = '976') and (Copy(sNumero,3,3) = '989')   then Result := 'Claro - São Paulo';
+      if (Copy(sNumero,3,3) >= '996') and (Copy(sNumero,3,3) <= '999') then Result := 'Vivo - Sï¿½o Paulo';
+      if (Copy(sNumero,3,3) >= '971') and (Copy(sNumero,3,3) <= '974') then Result := 'Vivo - Sï¿½o Paulo';
+      if (Copy(sNumero,3,3) >= '991') and (Copy(sNumero,3,3) <= '994') then Result := 'Claro - Sï¿½o Paulo';
+      if (Copy(sNumero,3,3) >= '981') and (Copy(sNumero,3,3) <= '986') then Result := 'Tim - Sï¿½o Paulo';
+      if (Copy(sNumero,3,3) = '995')                                  then Result := 'Vivo - Sï¿½o Paulo';
+      if (Copy(sNumero,3,3) = '976') and (Copy(sNumero,3,3) = '989')   then Result := 'Claro - Sï¿½o Paulo';
     end else
     begin
-      if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - São Paulo';
-      if (Copy(sNumero,3,2) >= '71') and (Copy(sNumero,3,2) <= '74') then Result := 'Vivo - São Paulo';
-      if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - São Paulo';
-      if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '86') then Result := 'Tim - São Paulo';
-      if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - São Paulo';
-      if (Copy(sNumero,3,2) = '76') and (Copy(sNumero,3,2) = '89')   then Result := 'Claro - São Paulo';
+      if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Sï¿½o Paulo';
+      if (Copy(sNumero,3,2) >= '71') and (Copy(sNumero,3,2) <= '74') then Result := 'Vivo - Sï¿½o Paulo';
+      if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Sï¿½o Paulo';
+      if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '86') then Result := 'Tim - Sï¿½o Paulo';
+      if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - Sï¿½o Paulo';
+      if (Copy(sNumero,3,2) = '76') and (Copy(sNumero,3,2) = '89')   then Result := 'Claro - Sï¿½o Paulo';
     end;
     //
   end;
@@ -1925,14 +1927,14 @@ begin
     if (Copy(sNumero,3,2) = '9')  then Result := 'Sercomtel - Londrina e Tamarana, PR';
   end;
   //
-  // Pelotas e região
+  // Pelotas e regiï¿½o
   //
   if (Copy(sNumero,1,2) >= '53') then
   begin
-    if (Copy(sNumero,3,4) = '9911')                                    then Result := 'Tim - Pelotas e região';
-    if (Copy(sNumero,3,4) = '9913')                                    then Result := 'Tim - Pelotas e região';
-    if (Copy(sNumero,3,4) = '9939')                                    then Result := 'Tim - Pelotas e região';
-    if (Copy(sNumero,3,4) >= '9981') and (Copy(sNumero,3,4) <= '9989') then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) = '9911')                                    then Result := 'Tim - Pelotas e regiï¿½o';
+    if (Copy(sNumero,3,4) = '9913')                                    then Result := 'Tim - Pelotas e regiï¿½o';
+    if (Copy(sNumero,3,4) = '9939')                                    then Result := 'Tim - Pelotas e regiï¿½o';
+    if (Copy(sNumero,3,4) >= '9981') and (Copy(sNumero,3,4) <= '9989') then Result := 'Tim - Pelotas e regiï¿½o';
   end;
   //
 end;
@@ -1965,7 +1967,7 @@ var
          begin
            Acumulado:=0;
          end;
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      pNumero:=alltrim(pNumero);
      Controle:=2;
      for I:=length(pNumero) downto 1 do
@@ -1986,7 +1988,7 @@ var
   var
      Acumulado,I,Controle:integer;
   begin
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      Pp1:=alltrim(pP1);
      Controle:=2;
      Acumulado:=0;
@@ -2007,7 +2009,7 @@ var
   var
      Acumulado,I,Controle:integer;
   begin
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      pNumero:=alltrim(pNumero);
      Acumulado:=0;
      Controle:=2;
@@ -2028,7 +2030,7 @@ var
   var
      I,Acumulado:integer;
   begin
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      Acumulado:=0;
      for I:=1 to length(Pp1) do
      begin
@@ -2043,11 +2045,11 @@ var
      Acumulado,I,Controle:integer;
      sSoma:String;
   begin
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      pNumero:=alltrim(pNumero);
      Controle:=2;
      Acumulado:=0;
-     // módulo louco 21
+     // mï¿½dulo louco 21
      sSoma:='';
      for I:=length(pNumero) downto 1 do
      begin
@@ -2073,11 +2075,11 @@ var
      Acumulado,I,Controle:integer;
      aI: array[1..8] of integer;
   begin
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      pNumero:=alltrim(pNumero);
      Controle:=2;
      Acumulado:=0;
-     if pTipo='2' then // módulo 11
+     if pTipo='2' then // mï¿½dulo 11
       begin
         for I:=length(pNumero) downto 1 do
         begin
@@ -2089,7 +2091,7 @@ var
         Acumulado:=(Acumulado mod 11);
       end
      else
-      begin // módulo louco
+      begin // mï¿½dulo louco
         aI[1]:=1; aI[2]:=3; aI[3]:=4; aI[4]:=5; aI[5]:=6; aI[6]:=7; aI[7]:=8; aI[8]:=10;
         for I:=length(pNumero) downto 1 do
         begin
@@ -2107,7 +2109,7 @@ var
   var
      Acumulado,I,Controle:integer;
   begin
-     //acumula a soma da multiplicação dos digitos
+     //acumula a soma da multiplicaï¿½ï¿½o dos digitos
      pNumero:=alltrim(pNumero);
      Controle:=2;
      Acumulado:=0;
@@ -2150,10 +2152,10 @@ begin
    UF:=AllTrim(UpperCase(UF));
    if Pos(UF,'AC,AL,AM,AP,BA,CE,DF,ES,GO,MA,MG,MS,MT,PA,PB,PE,PI,PR,RJ,RN,RO,RR,RS,SC,SE,SP,TO') > 0 then
    begin
-      // extrai somente os números
+      // extrai somente os nï¿½meros
       sSoNumero:=LimpaNumero(sNumero);
-      if UF='TO' then // deve-se extrair dois dígitos
-         // se não for os números abaixo, deixa com 11 dígitos e bTamanho ficará falso
+      if UF='TO' then // deve-se extrair dois dï¿½gitos
+         // se nï¿½o for os nï¿½meros abaixo, deixa com 11 dï¿½gitos e bTamanho ficarï¿½ falso
          if (Copy(sSoNumero,3,2)='01') or (Copy(sSoNumero,3,2)='02') or (Copy(sSoNumero,3,2)='03') or (Copy(sSoNumero,3,2)='99') then
             sSoNumero:=Copy(sSoNumero,1,2)+Copy(sSoNumero,5,7);
       if UF='RO' then
@@ -2268,7 +2270,7 @@ begin
                   if Copy(sSoNumero,9,1) = sDigito1 then Result:=True;
                 end
                else
-                begin // comercio ou indústria
+                begin // comercio ou indï¿½stria
                   sDigito1:=Modulo_SP(Copy(sSoNumero,1,8),'1');
                   sDigito2:=Modulo_SP(Copy(sSoNumero,1,8)+sDigito1+Copy(sSoNumero,10,2),'2');
                   if Copy(sSoNumero,9,1)+Copy(sSoNumero,12,1) = sDigito1+sDigito2 then Result:=True;
@@ -2277,7 +2279,7 @@ begin
             else
              if UF='PR' then
               begin
-                if (length(sSoNumero)=10) then //inscrição nova
+                if (length(sSoNumero)=10) then //inscriï¿½ï¿½o nova
                  begin
                    sDigito1:=Modulo_11ComLimite(Copy(sSoNumero,1,8),7);
                    sDigito2:=Modulo_11ComLimite(Copy(sSoNumero,1,8)+sDigito1,7);
@@ -2285,7 +2287,7 @@ begin
                  end
                 else
                  begin
-                   if (length(sSoNumero)=8) then // inscrição Antiga
+                   if (length(sSoNumero)=8) then // inscriï¿½ï¿½o Antiga
                      if Copy(LimpaLetras(sNumero),1,1)=PR_Antiga(sSoNumero) then Result:=True;
                  end;
               end
@@ -2305,7 +2307,7 @@ begin
                    if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_11ComLimite(Copy(sSoNumero,1,Length(sSoNumero)-1),7) then Result:=True;
                  end
                 else
-                  // verifica o módulo 11
+                  // verifica o mï¿½dulo 11
                   if Copy(sSoNumero,Length(sSoNumero),1) = Modulo_11(Copy(sSoNumero,1,Length(sSoNumero)-1)) then Result:=True;
       end;
       if length(sSoNumero)=0 then Result:=True; // se for em branco aceita
@@ -2396,7 +2398,7 @@ end;
 
 function DiaDaSemana(pP1:TDateTime):String;
 begin
-  Result := Copy('DomingoSegundaTerça  Quarta Quinta Sexta  Sábado ',((DayOfWeek(pP1)-1)*7)+1,7);
+  Result := Copy('DomingoSegundaTerï¿½a  Quarta Quinta Sexta  Sï¿½bado ',((DayOfWeek(pP1)-1)*7)+1,7);
 end;
 
 function WinVersion: string;
@@ -2494,7 +2496,7 @@ begin
   end;
 
   base10:= soma;
-  //Verifica se base10 é múltiplo de 10
+  //Verifica se base10 ï¿½ mï¿½ltiplo de 10
   if not (base10 mod 10 = 0) then
   begin
     while not (base10 mod 10 = 0) do
@@ -2503,7 +2505,7 @@ begin
     end;
   end;
   resultado:= base10 - soma;
-  //Verifica se o resultado encontrado é igual ao caractere de controle
+  //Verifica se o resultado encontrado ï¿½ igual ao caractere de controle
   if resultado = strtoint(AGTIN[Length(AGTIN)]) then
     Result:= True
   else
@@ -2577,7 +2579,6 @@ begin
   end;
 end;
 
-
 procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
 begin
   If Tipo='L' then
@@ -2610,13 +2611,11 @@ begin
 
   If Tipo='A' then
   begin
-    If not (key in ['A'..'Z','0'..'9',#8, ' ', ',', '.', '^', '~', '´', '`', '/', '?', '°', ';', ':', '<', '>',
+    If not (key in ['A'..'Z','0'..'9',#8, ' ', ',', '.', '^', '~', 'ï¿½', '`', '/', '?', 'ï¿½', ';', ':', '<', '>',
                       '[', ']', '\', '|', '{', '}', '+', '=', '-', '_', '(', ')', '*', '&', '"', '%', '$', '#', '@', '!']) then
        key:=#0 ;
   end;
 end;
-
-
 
 procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 var
@@ -2627,6 +2626,63 @@ begin
   If (key = ',') and not (AnsiContainsText(vTextSelecionado, ',')) then //Se tiver com virgula selecionada vai substituir, logo, pode usar virgula
     If AnsiContainsStr(edit.Text,',') then
       key := #0;
+end;
+
+function HtmlToPDF(AcArquivo: String): Boolean;
+var
+  cCaminhoEXE: String;
+begin
+  cCaminhoEXE := GetCurrentDir;
+  try
+    //
+    while FileExists(pChar(AcArquivo+'.pdf')) do
+    begin
+      //
+      try
+        DeleteFile(pChar(AcArquivo+'.pdf'));
+        DeleteFile(pChar(AcArquivo+'_.pdf'));
+      except end;
+      //
+      Sleep(10);
+      //
+    end;
+    //
+    chdir(pChar(cCaminhoEXE+'\HTMLtoPDF'));
+    //
+    while FileExists(pChar('tempo_ok.pdf')) do
+    begin
+      DeleteFile(pChar('tempo_ok.pdf'));
+      Sleep(10);
+    end;
+    //
+    while FileExists(pChar('tempo.pdf')) do
+    begin
+      DeleteFile(pChar('tempo.pdf'));
+      Sleep(10);
+    end;
+    //
+    ShellExecute( 0, 'runas', pChar('html2pdf'),pchar('"'+cCaminhoEXE+'\'+AcArquivo+'.htm" "tempo.pdf"'), '', SW_HIDE);
+    Sleep(10);
+    //
+    while not FileExists(pChar(cCaminhoEXE+'\HTMLtoPDF\tempo_ok.pdf')) do
+    begin
+      RenameFile(pChar(cCaminhoEXE+'\HTMLtoPDF\tempo.pdf'),pChar(cCaminhoEXE+'\HTMLtoPDF\tempo_ok.pdf'));
+      Sleep(10);
+    end;
+    //
+    chdir(pChar(cCaminhoEXE));
+    //
+    CopyFile(pChar(cCaminhoEXE+'\HTMLtoPDF\tempo_ok.pdf'), pChar(AcArquivo+'_.pdf'),False);
+    //
+    while not FileExists(pChar(AcArquivo+'.pdf')) do
+    begin
+      RenameFile(pChar(AcArquivo+'_.pdf'), pChar(AcArquivo+'.pdf'));
+      Sleep(10);
+    end;
+    //
+  except end;
+  //
+  Result := True;
 end;
 
 end.

@@ -13052,6 +13052,10 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de vendas (Cupom Fiscal)...'
         OnClick = Imprimirpedidosdevenda1Click
       end
+      object RelatriodevendasporclienteNFeCupom1: TMenuItem
+        Caption = 'Relat'#243'rio de vendas por cliente (Nota Fiscal/Cupom)'
+        OnClick = RelatriodevendasporclienteNFeCupom1Click
+      end
       object Relatriodeprodutosmonofsicos1: TMenuItem
         Caption = 'Relat'#243'rio de produtos monof'#225'sicos (Cupom Fiscal)...'
         OnClick = Relatriodeprodutosmonofsico1Click
