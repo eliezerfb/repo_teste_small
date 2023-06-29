@@ -845,6 +845,30 @@ begin
       end;
       {Sandro Silva 2023-06-19 fim}
 
+      {Sandro Silva 2023-06-29 inicio
+      if Form7.ibDataSet7BANDEIRA.Visible then
+      begin
+        slPickList := TStringList.Create;
+
+        try
+          GetBanderiasOperadorasNFe(slPickList);
+          //colocar a lista na coluna correta
+          for i:= 0 to DBGrid1.Columns.Count - 1 do
+          begin
+            if AnsiUpperCase(DBGrid1.Columns[i].FieldName) = 'BANDEIRA' then
+            begin
+              DBGrid1.Columns[i].PickList := slPickList;
+              Break;
+            end;
+          end;
+
+        finally
+          slPickList.Free;
+        end;
+      end;
+      {Sandro Silva 2023-06-29 fim}
+
+
       {Sandro Silva 2023-06-16 fim}
 
       Label45.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)]);

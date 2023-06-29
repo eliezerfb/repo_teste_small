@@ -104,6 +104,7 @@ var
   stPag_YA02: String; // Sandro Silva 2023-06-29
   dQtdAcumulado: Double;
   IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
+  IBQCREDENCIADORA: TIBQuery;
 
   vlBalseIPI, vlFreteRateadoItem : Double;
 
@@ -2761,6 +2762,7 @@ begin
 
     Form7.ibDataSet7.First;
     stPag_YA02 := '';
+    IBQCREDENCIADORA := Form7.CriaIBQuery(Form7.ibDataSet7.Transaction);
     while not Form7.ibDataSet7.Eof do
     begin
 
@@ -2791,17 +2793,24 @@ begin
 
       if (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '03') or (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '04') then
       begin
+        IBQCREDENCIADORA.Close;
+        IBQCREDENCIADORA.SQL.Text :=
+          'select * ' +
+          'from CLIFOR ' +
+          'where NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString);
+        IBQCREDENCIADORA.Open;
         // Se for Cartão
         Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
-        Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := '';  // CNPJ da Credenciadora de cartão de crédito e/ou débito
-        Form7.spdNFeDataSets.campo('tBand_YA06').Value      := '';  // Bandeira da operadora de cartão de crédito e/ou débito
-        Form7.spdNFeDataSets.campo('cAut_YA07').Value       := '';  // Número de autorização da operação cartão de crédito e/ou débito
+        Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
+        Form7.spdNFeDataSets.campo('tBand_YA06').Value      := CodigotBandNF(Form7.ibDataSet7BANDEIRA.AsString);  // Bandeira da operadora de cartão de crédito e/ou débito
+        Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);  // Número de autorização da operação cartão de crédito e/ou débito
       end;
 
       Form7.spdNFeDataSets.SalvarPart('YA');
 
       Form7.ibDataSet7.Next;
     end;
+    FreeAndNil(IBQCREDENCIADORA);
     Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
 
   end;
@@ -2840,6 +2849,43 @@ begin
     fTotalDupl := 0;
 
     Form7.ibDataSet7.First;
+    {Sandro Silva 2023-06-29 inicio
+while not Form7.ibDataSet7.Eof do
+    begin
+      // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
+      // fazer várias inserções para a Mesma NFe como demonstracao
+      // Dados da Fatura
+      //
+      // Duplicatas
+      //
+      J := J + 1;
+
+      Form7.spdNFeDataSets.IncluirCobranca;
+      Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := StrZero(J,3,0); // Número da parcela
+//                  Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := Form7.ibDataSet7DOCUMENTO.AsString; // Número da Duplicata
+      Form7.spdNFeDataSets.Campo('dVenc_Y09').Value := StrTran(DateToStrInvertida(Form7.ibDataSet7VENCIMENTO.AsDateTime),'/','-');; // Data de Vencimento da Duplicata
+      Form7.spdNFeDataSets.Campo('vDup_Y10').Value  := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat); // Valor da Duplicata
+          
+      // Soma o total das parcelas
+      try
+        fTotalDupl := fTotalDupl + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vDup_Y10').AsString,',',''),'.',','));
+
+        Form7.ibDataSet7.Next;
+
+        if Form7.ibDataSet7.Eof then
+        begin
+          if fTotalDupl <> StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) then
+          begin
+            // Soma a diferença na última
+            Form7.spdNFeDataSets.Campo('vDup_Y10').Value := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat +  (StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) - fTotalDupl)  );
+          end;
+        end;
+      except
+      end;
+          
+      Form7.spdNFeDataSets.SalvarCobranca;
+    end;
+    }
 
     while not Form7.ibDataSet7.Eof do
     begin
@@ -2895,7 +2941,7 @@ begin
         Form7.spdNFeDataSets.SalvarCobranca;
       end;
     end;
-
+    {Sandro Silva 2023-06-29 fim}
     Form7.spdNFeDataSets.Y.Post; // Grava a Duplicata em questão.
   end;
 
@@ -2922,10 +2968,6 @@ begin
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS
   // SAIDA
 end;
-
-
-
-
 
 procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
 var

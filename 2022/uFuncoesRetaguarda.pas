@@ -22,7 +22,9 @@ function FormatXMLToFloat(sValor: String): Double;
 function TextoIdentificadorFinalidadeNFe(Value: String): String;
 procedure LogRetaguarda(sTexto: String);
 function GetIP: String;
+procedure GetBanderiasOperadorasNFe(slForma: TStringList);
 procedure GetFormasDePagamentoNFe(slForma: TStringList);
+function CodigotBandNF(sBandeira: String): String;
 function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
 function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
 
@@ -213,6 +215,40 @@ begin
   WSACleanup;
 end;
 
+procedure GetBanderiasOperadorasNFe(slForma: TStringList);
+begin
+
+  slForma.Clear;
+  slForma.Add('01-Visa');
+  slForma.Add('02-Mastercard');
+  slForma.Add('03-American Express');
+  slForma.Add('04-Sorocred');
+  slForma.Add('05-Diners Club');
+  slForma.Add('06-Elo');
+  slForma.Add('07-Hipercard');
+  slForma.Add('08-Aura');
+  slForma.Add('09-Cabal');
+  slForma.Add('10-Alelo');
+  slForma.Add('11-Banes Card');
+  slForma.Add('12-CalCard');
+  slForma.Add('13-Credz');
+  slForma.Add('14-Discover');
+  slForma.Add('15-GoodCard');
+  slForma.Add('16-GreenCard');
+  slForma.Add('17-Hiper');
+  slForma.Add('18-JcB');
+  slForma.Add('19-Mais');
+  slForma.Add('20-MaxVan');
+  slForma.Add('21-Policard');
+  slForma.Add('22-RedeCompras');
+  slForma.Add('23-Sodexo');
+  slForma.Add('24-ValeCard');
+  slForma.Add('25-Verocheque');
+  slForma.Add('26-VR');
+  slForma.Add('27-Ticket');
+  slForma.Add('99-Outros');
+end;
+
 procedure GetFormasDePagamentoNFe(slForma: TStringList);
 begin
 
@@ -233,6 +269,67 @@ begin
   slForma.Add('18-Transfer.bancária, Carteira Digital');
   slForma.Add('19-Progr.de fidelidade, Cashback, Crédito Virtual');
   slForma.Add('99-Outros');
+
+end;
+
+function CodigotBandNF(sBandeira: String): String;
+begin
+  sBandeira := AnsiUpperCase(sBandeira);
+  Result := '99'; // Começa como outros
+  if Pos('VISA', sBandeira) > 0 then
+    Result := '01';
+  if Pos('MASTERCARD', sBandeira) > 0 then
+    Result := '02';
+  if Pos('AMERICAN EXPRESS', sBandeira) > 0 then
+    Result := '03';
+  if Pos('SOROCRED', sBandeira) > 0 then
+    Result := '04';
+  if Pos('DINERS', sBandeira) > 0 then
+    Result := '05';
+  if Pos('ELO', sBandeira) > 0 then
+    Result := '06';
+  if Pos('HIPERCARD', sBandeira) > 0 then
+    Result := '07';
+  if Pos('AURA', sBandeira) > 0 then
+    Result := '08';
+  if Pos('CABAL', sBandeira) > 0 then
+    Result := '09';
+  if Pos('ALELO', sBandeira) > 0 then
+    Result := '10';
+  if Pos('BANES CARD', sBandeira) > 0 then
+    Result := '11';
+  if Pos('CALCARD', sBandeira) > 0 then
+    Result := '12';
+  if Pos('CREDZ', sBandeira) > 0 then
+    Result := '13';
+  if Pos('DISCOVER', sBandeira) > 0 then
+    Result := '14';
+  if Pos('GOODCARD', sBandeira) > 0 then
+    Result := '15';
+  if Pos('GREENCARD', sBandeira) > 0 then
+    Result := '16';
+  if (Pos('HIPER', sBandeira) > 0) and (Pos('HIPERCARD', sBandeira) = 0) then
+    Result := '17';
+  if Pos('JCB', sBandeira) > 0 then
+    Result := '18';
+  if Pos('MAIS', sBandeira) > 0 then
+    Result := '19';
+  if Pos('MAXVAN', sBandeira) > 0 then
+    Result := '20';
+  if Pos('POLICARD', sBandeira) > 0 then
+    Result := '21';
+  if Pos('REDECOMPRAS', sBandeira) > 0 then
+    Result := '22';
+  if Pos('SODEXO', sBandeira) > 0 then
+    Result := '23';
+  if Pos('VALECARD', sBandeira) > 0 then
+    Result := '24';
+  if Pos('VEROCHEQUE', sBandeira) > 0 then
+    Result := '25';
+  if Pos('VR', sBandeira) > 0 then
+    Result := '26';
+  if Pos('TICKET', sBandeira) > 0 then
+    Result := '27';
 
 end;
 

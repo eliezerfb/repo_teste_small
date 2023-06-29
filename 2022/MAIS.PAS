@@ -1810,9 +1810,7 @@ begin
   Screen.Cursor := crDefault;
 
   Result := True;
-end;
-
-
+end;                                
 
 function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 begin
