@@ -961,7 +961,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = Orelha_PISCOFINS
+      ActivePage = ORELHA_CFOP
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -14155,7 +14155,7 @@ object Form10: TForm10
         object DBCheckSobreIPI: TDBCheckBox
           Left = 108
           Top = 294
-          Width = 90
+          Width = 92
           Height = 17
           Alignment = taLeftJustify
           Caption = 'ICMS sobre IPI'
@@ -14183,11 +14183,11 @@ object Form10: TForm10
         object DBCheckSobreFrete: TDBCheckBox
           Left = 402
           Top = 294
-          Width = 100
+          Width = 89
           Height = 17
           Alignment = taLeftJustify
           Caption = 'IPI sobre Frete'
-          DataField = 'SOBREFRETE'
+          DataField = 'FRETESOBREIPI'
           DataSource = Form7.DataSource14
           TabOrder = 13
           ValueChecked = 'S'
@@ -14209,7 +14209,9 @@ object Form10: TForm10
           MaxLength = 32768
           ParentFont = False
           TabOrder = 14
+          OnEnter = DBMemo4Enter
           OnKeyDown = DBMemo1KeyDown
+          OnKeyPress = DBMemo4KeyPress
         end
         object cbMovimentacaoEstoque: TComboBox
           Left = 150

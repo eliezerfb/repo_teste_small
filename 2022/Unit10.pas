@@ -613,6 +613,7 @@ type
     procedure cbMovimentacaoEstoqueExit(Sender: TObject);
     procedure DBMemo4Enter(Sender: TObject);
     procedure ComboBoxEnter(Sender: TObject);
+    procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
   private
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
@@ -3995,7 +3996,8 @@ begin
     begin
       Form7.IBDataSet2CONTATOS.Clear;
       try
-        if Form7.IBDataSet2.Modified then Form7.IBDataSet2.Post;
+        if Form7.IBDataSet2.Modified then
+          Form7.IBDataSet2.Post;
         Form7.IBDataSet2.Edit;
         Form7.IBDataSet2CONTATOS.LoadFromFile(pChar('contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt'));
         Deletefile(pchar('contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt'));
@@ -9226,10 +9228,10 @@ begin
       cbIntegracaoFinanceira.ItemIndex := 3;
 
     if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '=') then
-      cbIntegracaoFinanceira.ItemIndex := 1;
+      cbMovimentacaoEstoque.ItemIndex := 1;
 
     if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '0') then
-      cbIntegracaoFinanceira.ItemIndex := 2;
+      cbMovimentacaoEstoque.ItemIndex := 2;
   end;
 end;
 
@@ -9294,12 +9296,29 @@ end;
 procedure TForm10.DBMemo4Enter(Sender: TObject);
 begin
   DBMemo4.MaxLength := Form7.ibDataSet14OBS.Size;
+  
+  SendMessage(DBMemo4.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
+  SendMessage(DBMemo4.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
+  DBMemo4.SelStart := Length(DBMemo4.Text); //move o cursor pra o final da ultima linha
+  DBMemo4.SetFocus;
+
 end;
 
 procedure TForm10.ComboBoxEnter(Sender: TObject);
 begin
   dBGrid3.Visible := False;
-  dBGrid1.Visible := False;  
+  dBGrid1.Visible := False;
+end;
+
+procedure TForm10.DBMemo4KeyPress(Sender: TObject; var Key: Char);
+begin
+  {Sandro Silva 2023-06-29 inicio}
+  if Length(DBMemo4.Text) >= Form7.ibDataSet14OBS.Size then
+  begin
+    if not (Ord(Key) in [VK_BACK, VK_RETURN, 27..43]) then
+      Key := #0;
+  end;
+  {Sandro Silva 2023-06-29 fim}
 end;
 
 end.
