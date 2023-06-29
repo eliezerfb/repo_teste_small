@@ -8,7 +8,7 @@ object Form1: TForm1
   VertScrollBar.Visible = False
   AlphaBlendValue = 250
   BorderStyle = bsSingle
-  Caption = 'Small'
+  Caption = 'form'
   ClientHeight = 809
   ClientWidth = 1191
   Color = clWhite
