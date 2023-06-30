@@ -1194,6 +1194,17 @@ begin
     AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
     Rewrite(F);           // Abre para gravação
 
+    if Form7.ibDataSet24.Modified then
+    begin
+      Form7.ibDataSet24.Post;
+      Form7.ibDataSet24.Edit;
+    end;
+
+    // Tudo que for feito alteração no DATASET24 coloque depois da linha abaixo
+    // caso contrário pode ocorrer de tentar alterar valores e o dataset não ta
+    // no estado de alteração (vai dar erro).
+    DBMemo1.SetFocus;
+
     try
       if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
         Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
@@ -1202,20 +1213,14 @@ begin
       if Form7.ibDataSet24INDPRES.AsString  <> LimpaNumero(Edit9.Text) then
         Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
 
-      if (Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '') and (Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '00') then
+      if (Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '')
+        and (Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2)) <> '00')
+        and (Form7.ibDataSet24MODELO.AsString <> Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2))) then
         Form7.ibDataSet24MODELO.AsString  := Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2));
     except
       on E: Exception do
         ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
     end;
-
-    if Form7.ibDataSet24.Modified then
-    begin
-      Form7.ibDataSet24.Post;
-      Form7.ibDataSet24.Edit;
-    end;
-
-    DBMemo1.SetFocus;
 
     if AllTrim(Form7.ibDataSet24FORNECEDOR.AsString) <> '' then
     begin
@@ -2505,6 +2510,8 @@ begin
 end;
 
 procedure TForm24.FormActivate(Sender: TObject);
+var
+  cIndPres: String;
 begin
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
   Form24.Top     := Form7.Top;
@@ -2567,7 +2574,8 @@ begin
     //  4=NFC-e em operação com entrega em domicílio
     //  9=Operação não presencial, outros.
     try
-      //
+      cIndPres := '1';
+      
       if AllTrim(Form7.ibDataSet24INDPRES.AsString) = '' then
       begin
         try
@@ -2576,36 +2584,36 @@ begin
           Form7.ibQuery1.SQL.Add('select first 1 INDPRES from VENDAS where coalesce(INDPRES,''X'')<>''X'' order by NUMERONF desc');
           Form7.ibQuery1.Open;
 
-          Form7.ibDataSet24INDPRES.AsString := Form7.ibQuery1.FieldByName('INDPRES').AsString;
+          cIndPres := Form7.ibQuery1.FieldByName('INDPRES').AsString;
         except end;
       end;
 
-      if Form7.ibDataSet24INDPRES.AsString = '0' then
+      if cIndPres = '0' then
       begin
         Edit9.Text := '0=Não se aplica';
       end else
       begin
-        if Form7.ibDataSet24INDPRES.AsString = '1' then
+        if cIndPres = '1' then
         begin
           Edit9.Text := '1=Operação presencial';
         end else
         begin
-          if Form7.ibDataSet24INDPRES.AsString = '2' then
+          if cIndPres = '2' then
           begin
             Edit9.Text := '2=Operação não presencial, pela Internet';
           end else
           begin
-            if Form7.ibDataSet24INDPRES.AsString = '3' then
+            if cIndPres = '3' then
             begin
               Edit9.Text := '3=Operação não presencial, Teleatendimento';
             end else
             begin
-              if Form7.ibDataSet24INDPRES.AsString = '4' then
+              if cIndPres = '4' then
               begin
                 Edit9.Text := '4=NFC-e em operação com entrega em domicílio';
               end else
               begin
-                if Form7.ibDataSet24INDPRES.AsString = '9' then
+                if cIndPres = '9' then
                 begin
                   Edit9.Text := '9=Operação não presencial, outros';
                 end else
