@@ -7,7 +7,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, DBCtrls, Mask, SMALL_DBEdit, ExtCtrls, HtmlHelp, ShellApi, Grids,
   DBGrids, SmallFunc, strutils, 
-  WinTypes, WinProcs, IniFiles, Buttons, DB, ComCtrls, Clipbrd, OleCtrls, SHDocVw, Registry;
+  WinTypes, WinProcs, IniFiles, Buttons, DB, ComCtrls, Clipbrd, OleCtrls, SHDocVw, Registry,
+  IBCustomDataSet;
 
 type
   TForm17 = class(TForm)
@@ -46,10 +47,43 @@ type
     Panel2: TPanel;
     Button2: TBitBtn;
     Button1: TBitBtn;
-    DBGrid3: TDBGrid;
+    dbgPesquisa: TDBGrid;
     WebBrowser3: TWebBrowser;
     Button4: TBitBtn;
     CheckBox1: TCheckBox;
+    ibdMunicipios: TIBDataSet;
+    ibdMunicipiosCODIGO: TIBStringField;
+    ibdMunicipiosNOME: TIBStringField;
+    ibdMunicipiosUF: TIBStringField;
+    ibdMunicipiosREGISTRO: TIBStringField;
+    DSMunicipios: TDataSource;
+    DSEmitente: TDataSource;
+    ibdEmitente: TIBDataSet;
+    ibdEmitenteCGC: TStringField;
+    ibdEmitenteNOME: TStringField;
+    ibdEmitenteCONTATO: TStringField;
+    ibdEmitenteENDERECO: TStringField;
+    ibdEmitenteCOMPLE: TStringField;
+    ibdEmitenteCEP: TStringField;
+    ibdEmitenteMUNICIPIO: TStringField;
+    ibdEmitenteESTADO: TStringField;
+    ibdEmitenteIE: TStringField;
+    ibdEmitenteIM: TIBStringField;
+    ibdEmitenteTELEFO: TStringField;
+    ibdEmitenteEMAIL: TStringField;
+    ibdEmitenteHP: TStringField;
+    ibdEmitenteCOPE: TFloatField;
+    ibdEmitenteRESE: TFloatField;
+    ibdEmitenteCVEN: TFloatField;
+    ibdEmitenteIMPO: TFloatField;
+    ibdEmitenteLUCR: TFloatField;
+    ibdEmitenteICME: TFloatField;
+    ibdEmitenteICMS: TFloatField;
+    ibdEmitenteCRT: TIBStringField;
+    ibdEmitenteCNAE: TIBStringField;
+    ibdEmitenteREGISTRO: TIBStringField;
+    ibdEmitenteENCRYPTHASH: TIBStringField;
+    ibdEmitenteLICENCA: TIBStringField;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
@@ -64,13 +98,29 @@ type
       Shift: TShiftState);
     procedure SMALL_DBEdit4Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
-    procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
-    procedure DBGrid3DblClick(Sender: TObject);
+    procedure dbgPesquisaKeyPress(Sender: TObject; var Key: Char);
+    procedure dbgPesquisaDblClick(Sender: TObject);
     procedure SMALL_DBEdit4Change(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure ibdEmitenteESTADOSetText(Sender: TField; const Text: String);
+    procedure ibdEmitenteCGCSetText(Sender: TField; const Text: String);
+    procedure ibdEmitenteAfterPost(DataSet: TDataSet);
+    procedure ibdEmitenteBeforePost(DataSet: TDataSet);
+    procedure ibdEmitenteBeforeInsert(DataSet: TDataSet);
+    procedure ibdEmitenteNewRecord(DataSet: TDataSet);
+    procedure ibdEmitenteDeleteError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+    procedure ibdEmitenteEditError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+    procedure ibdEmitentePostError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+    procedure ibdEmitenteUpdateError(DataSet: TDataSet; E: EDatabaseError;
+      UpdateKind: TUpdateKind; var UpdateAction: TIBUpdateAction);
+    procedure ibdEmitenteMUNICIPIOSetText(Sender: TField;
+      const Text: String);
   private
     { Private declarations }
   public
@@ -82,15 +132,15 @@ var
 
 implementation
 
-uses Unit7, Unit10, Unit14, Unit19, Mais, uListaCnaes;
+uses Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3;
 
 {$R *.DFM}
 
 procedure TForm17.Button1Click(Sender: TObject);
 begin
   try
-    dBGrid3.Visible    := False;
-    Form7.ibDataSet13.Post;
+    dbgPesquisa.Visible    := False;
+    DSEmitente.DataSet.Post;
     //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
     Form1.RegistrodoPrograma(False);
 
@@ -109,11 +159,11 @@ procedure TForm17.FormActivate(Sender: TObject);
 begin
   if Form1.iReduzida = 2 then
   begin
-    Form17.CheckBox1.Visible := True;
-    Form17.CheckBox1.Checked := True;
+    CheckBox1.Visible := True;
+    CheckBox1.Checked := True;
   end else
   begin
-    Form17.CheckBox1.Visible := False;
+    CheckBox1.Visible := False;
   end;
 
   Form17.Tag := 0;
@@ -123,23 +173,23 @@ begin
   Button1.Visible := True;
 
   try
-    if Form7.ibDataSet13.Active then
+    if DSEmitente.DataSet.Active then
     begin
-      Form7.ibDataSet13.First;
+      DSEmitente.DataSet.First;
       try
-        if Form7.ibDataSet13.Eof then
-          Form7.ibDataSet13.Append
+        if DSEmitente.DataSet.Eof then
+          DSEmitente.DataSet.Append
         else
-          Form7.ibDataSet13.Edit;
+          DSEmitente.DataSet.Edit;
       except
       end;
 
-      if Form7.ibDataSet13ESTADO.AsString = '  ' then
-        Form7.ibDataSet13ESTADO.AsString := '';
+      if DSEmitente.DataSet.FieldByName('ESTADO').AsString = '  ' then
+        DSEmitente.DataSet.FieldByName('ESTADO').AsString := '';
 
       Form7.bFlag := False;
-      Form7.ibDataSet13.Active := True;
-      Form7.ibDataSet13.Edit;
+      DSEmitente.DataSet.Active := True;
+      DSEmitente.DataSet.Edit;
       if SMALL_DBEdit7.CanFocus then SMALL_DBEdit7.SetFocus;
 
       Image2.Picture.Bitmap :=  Form7.Image204.Picture.Bitmap;
@@ -158,12 +208,12 @@ begin
     Perform(Wm_NextDlgCtl,0,0);
   end;
 
-  if dBgrid3.Visible then
+  if dbgPesquisa.Visible then
   begin
     if (Key = VK_UP) or (Key = VK_DOWN) then
     begin
-      if dBgrid3.CanFocus then
-        dBgrid3.SetFocus;
+      if dbgPesquisa.CanFocus then
+        dbgPesquisa.SetFocus;
     end;
   end else
   begin
@@ -181,7 +231,7 @@ end;
 procedure TForm17.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   try
-    Form7.ibDataSet13.Cancel;
+    DSEmitente.DataSet.Cancel;
     Form1.AvisoConfig(True);
   except
   end;
@@ -196,17 +246,18 @@ end;
 
 procedure TForm17.Button2Click(Sender: TObject);
 begin
-  dBGrid3.Visible    := False;
-  Form14.Button2Click(Sender);
+  dbgPesquisa.Visible    := False;
+  //Form14.Button2Click(Sender);
+  Form19.ShowModal;
 end;
 
 procedure TForm17.Image2Click(Sender: TObject);
 begin
   Form7.sModulo := 'EMITENTE';
 
-  Form7.dbGrid1.Datasource     := Form7.DataSource13;
-  Form7.ArquivoAberto          := Form7.DataSource13.Dataset;
-  Form7.TabelaAberta           := Form7.ibDataSet13;
+  Form7.dbGrid1.Datasource     := DSEmitente;
+  Form7.ArquivoAberto          := DSEmitente.Dataset;
+  Form7.TabelaAberta           := TIBDataSet(DSEmitente.DataSet);
   Form7.iCampos                := 12;
 
   Form10.Image203Click(Sender);
@@ -214,48 +265,31 @@ end;
 
 procedure TForm17.ComboBox1Change(Sender: TObject);
 begin
-  Form7.ibDataSet13CRT.AsString := Copy(ComboBox1.Items[ComboBox1.ItemIndex],1,1);
+  DSEmitente.DataSet.FieldByName('CRT').AsString := Copy(ComboBox1.Items[ComboBox1.ItemIndex],1,1);
 end;
 
 procedure TForm17.ComboBox7Change(Sender: TObject);
 begin
-  Form7.ibDataSet13CNAE.AsString := Copy(ComboBox7.Items[ComboBox7.ItemIndex],1,7);
+  DSEmitente.DataSet.FieldByName('CNAE').AsString := Copy(ComboBox7.Items[ComboBox7.ItemIndex],1,7);
 end;
 
 procedure TForm17.FormShow(Sender: TObject);
 var
-  //sCertificado : String;
   I : Integer;
-  //Mais1Ini : tIniFile;
 begin
-  // Mover as validações envolvendo certifica para evento Form17.onActive
-  {Mauricio Parizotto 2023-06-13 Estava abrindo 2x
-  try
-    if Form7.ibDataSet13CGC.AsString = '' then
-    begin
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
-      Mais1ini.Free;
-
-      if AllTrim(sCertificado) = '' then
-      begin
-        if Copy(Form1.sSerial,4,1) <> 'M' then
-        begin
-          Form1.SelecionarCertificadoDigital1Click(Sender);
-        end;
-      end;
-    end;
-  except
-  end;
-  }
-
   Button1.Left  := Panel2.Width - Button1.Width - 10;
   Button2.Left  := Button1.Left - 140;
+
+  Commitatudo(True); // SQL - Commando
+  AbreArquivos(True);
+
+  ibdEmitente.Close;
+  ibdEmitente.Open;
 
   // CRT
   for I := 0 to ComboBox1.Items.Count -1 do
   begin
-    if Copy(ComboBox1.Items[I],1,1) = AllTrim(Form7.ibDataSet13CRT.AsString) then
+    if Copy(ComboBox1.Items[I],1,1) = AllTrim(DSEmitente.DataSet.FieldByName('CRT').AsString) then
     begin
       ComboBox1.ItemIndex := I;
     end;
@@ -264,25 +298,24 @@ begin
   // CNAE
   for I := 0 to ComboBox7.Items.Count -1 do
   begin
-    if Copy(ComboBox7.Items[I],1,7) = AllTrim(Form7.ibDataSet13CNAE.AsString) then
+    if Copy(ComboBox7.Items[I],1,7) = AllTrim(DSEmitente.DataSet.FieldByName('CNAE').AsString) then
     begin
       ComboBox7.ItemIndex := I;
     end;
   end;
 
-  Commitatudo(True); // SQL - Commando
-  AbreArquivos(True);
+  DSEmitente.DataSet.Edit;
 
-  Form7.ibDataSet13.Edit;
-
-  if AllTrim(Form7.ibDataSet13CGC.AsString) = '' then
+  if AllTrim(DSEmitente.DataSet.FieldByName('CGC').AsString) = '' then
   begin
     if Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text) <> '' then
     begin
-      if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then
-        Form7.ibDataset13.Edit;
-      Form17.SMALL_DBEdit7.Text := FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text));
-      Form7.ibDataSet13CGCSetText(Form7.ibDataset13CGC,Form17.SMALL_DBEdit7.Text);
+      if not (DSEmitente.DataSet.State in ([dsEdit, dsInsert])) then
+        DSEmitente.DataSet.Edit;
+
+      SMALL_DBEdit7.Text := FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text));
+      //Form7.ibDataSet13CGCSetText(DSEmitente.DataSet.FieldByName('CGC'),SMALL_DBEdit7.Text);
+      ibdEmitenteCGCSetText(DSEmitente.DataSet.FieldByName('CGC'),SMALL_DBEdit7.Text);
     end;
   end;
 end;
@@ -301,59 +334,58 @@ end;
 procedure TForm17.SMALL_DBEdit4Enter(Sender: TObject);
 begin
   try
-    if Length(AllTrim(Form7.IBDataSet13ESTADO.AsString)) <> 2 then
+    if Length(AllTrim(DSEmitente.DataSet.FieldByName('ESTADO').AsString)) <> 2 then
     begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
-      Form7.IBDataSet39.Open;
+      ibdMunicipios.Close;
+      ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS '+
+                                      ' Order by NOME'; // Procura em todo o Pais o estado está em branco
+      ibdMunicipios.Open;
     end else
     begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataSet39.SelectSQL.Add(' Select * from MUNICIPIOS'+
-                                      ' Where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+
-                                      ' Order by NOME'); // Procura dentro do estado
-      Form7.IBDataSet39.Open;
+      ibdMunicipios.Close;
+      ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS'+
+                                      ' Where UF='+QuotedStr(DSEmitente.DataSet.FieldByName('ESTADO').AsString)+
+                                      ' Order by NOME'; // Procura dentro do estado
+      ibdMunicipios.Open;
     end;
 
-    Form7.ibDataSet39.Locate('NOME',AllTrim(Form7.IBDataSet13MUNICIPIO.AsString),[loCaseInsensitive, loPartialKey]);
+    ibdMunicipios.Locate('NOME',AllTrim(DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString),[loCaseInsensitive, loPartialKey]);
 
-    dBGrid3.Height     := 200;
-    dBGrid3.DataSource := Form7.DataSource39; // Municipios
-    dBGrid3.Visible    := True;
+    dbgPesquisa.Height     := 200;
+    dbgPesquisa.DataSource := DSMunicipios; // Municipios
+    dbgPesquisa.Visible    := True;
   except
   end;
 end;
 
 procedure TForm17.SMALL_DBEdit6Enter(Sender: TObject);
 begin
-  if dBGrid3.Visible then
+  if dbgPesquisa.Visible then
   begin
-    if (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then
+    if (DSEmitente.DataSet.State in ([dsEdit, dsInsert])) then
     begin
-      if AllTrim(Form7.IBDataSet39NOME.AsString) <> '' then
+      if AllTrim(ibdMunicipiosNOME.AsString) <> '' then
       begin
-        Form7.ibDataSet13MUNICIPIO.AsString := Form7.IBDataSet39NOME.AsString;
-      end;  
+        DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString := ibdMunicipiosNOME.AsString;
+      end;
     end;
     
-    dBGrid3.Visible    := False;
+    dbgPesquisa.Visible    := False;
   end;
 end;
 
-procedure TForm17.DBGrid3KeyPress(Sender: TObject; var Key: Char);
+procedure TForm17.dbgPesquisaKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = chr(13) then
   begin
-    DBGrid3DblClick(Sender);
+    dbgPesquisaDblClick(Sender);
   end;
 end;
 
-procedure TForm17.DBGrid3DblClick(Sender: TObject);
+procedure TForm17.dbgPesquisaDblClick(Sender: TObject);
 begin
   try
-    Form7.ibDataSet13MUNICIPIO.AsString := Form7.IBDataSet39NOME.AsString;
+    DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString := ibdMunicipiosNOME.AsString;
     if SMALL_DBEdit4.CanFocus then
       SMALL_DBEdit4.SetFocus;
   except
@@ -363,31 +395,30 @@ end;
 procedure TForm17.SMALL_DBEdit4Change(Sender: TObject);
 begin
   try
-    if not dbGrid3.Visible then
+    if (not dbgPesquisa.Visible) and (Form17.Visible) then
+    //if (not dbgPesquisa.Visible) then
     begin
-      Form17.SMALL_DBEdit4Enter(Sender);
+      SMALL_DBEdit4Enter(Sender);
     end;
   except
   end;
 
   try
-    if Length(AllTrim(Form7.IBDataSet13ESTADO.AsString)) = 2 then
+    if Length(AllTrim(DSEmitente.DataSet.FieldByName('ESTADO').AsString)) = 2 then
     begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataset39.SelectSQL.Add(' Select * from MUNICIPIOS '+
+      ibdMunicipios.Close;
+      ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS '+
                                       ' Where Upper(NOME) like '+QuotedStr(AnsiUppercase(SMALL_DBEdit4.Text)+'%')+' '+
-                                      '   and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+
-                                      ' Order by NOME');
-      Form7.IBDataSet39.Open;
+                                      '   and UF='+QuotedStr(UpperCase(DSEmitente.DataSet.FieldByName('ESTADO').AsString))+
+                                      ' Order by NOME';
+      ibdMunicipios.Open;
     end else
     begin
-      Form7.IBDataSet39.Close;
-      Form7.IBDataSet39.SelectSQL.Clear;
-      Form7.IBDataset39.SelectSQL.Add(' Select * from MUNICIPIOS'+
+      ibdMunicipios.Close;
+      ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS'+
                                       ' Where Upper(NOME) like '+QuotedStr(Uppercase(SMALL_DBEdit4.Text)+'%')+' '+
-                                      ' Order by NOME');
-      Form7.IBDataSet39.Open;
+                                      ' Order by NOME';
+      ibdMunicipios.Open;
     end;
   except
   end;
@@ -395,7 +426,8 @@ end;
 
 procedure TForm17.SMALL_DBEdit7Exit(Sender: TObject);
 begin
-  Form7.ibDataSet13CGCSetText(Form7.ibDataSet13CGC,LimpaNumero(Form17.SMALL_DBEdit7.Text));
+  //Form7.ibDataSet13CGCSetText(DSEmitente.DataSet.FieldByName('CGC'),LimpaNumero(Form17.SMALL_DBEdit7.Text));
+  ibdEmitenteCGCSetText(DSEmitente.DataSet.FieldByName('CGC'),LimpaNumero(Form17.SMALL_DBEdit7.Text));
 end;
 
 procedure TForm17.Button4Click(Sender: TObject);
@@ -408,7 +440,7 @@ procedure TForm17.CheckBox1Click(Sender: TObject);
 var
   Mais1Ini : tIniFile;
 begin
-  if not Form17.CheckBox1.Checked then
+  if not CheckBox1.Checked then
   begin
     if Application.MessageBox(Pchar(
       'Confirma que esta empresa NÃO é um Microempreendedor Individual (MEI)?'+
@@ -418,7 +450,7 @@ begin
       Chr(10))
       ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING) = IDYES then
     begin
-      Form17.CheckBox1.Visible := False;
+      CheckBox1.Visible := False;
       Form1.iReduzida          := 0;
       Mais1ini                 := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       Mais1Ini.WriteString('LICENCA','MEI','NAO');
@@ -432,6 +464,184 @@ begin
   //Mauricio Parizotto 2023-03-23
   ComboBox7.Items.Clear;
   ComboBox7.Items.Text := getListaCnae;
+
+  DSEmitente.DataSet := ibdEmitente;
+end;
+
+procedure TForm17.ibdEmitenteESTADOSetText(Sender: TField; const Text: String);
+begin
+  if (Pos('1'+UpperCase(Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
+     = 0) and (AllTrim(Text)<>'') then
+  begin
+    ShowMessage('Estado inválido');
+    ibdEmitenteESTADO.AsString := UpperCase(ibdEmitenteESTADO.AsString);
+  end else
+  begin
+    ibdEmitenteESTADO.AsString := UpperCase(Text);
+  end;
+end;
+
+procedure TForm17.ibdEmitenteCGCSetText(Sender: TField; const Text: String);
+var
+  sRetorno : String;
+  I: Integer;
+begin
+  if LimpaNumero(Text) <> '' then
+  begin
+    if CpfCgc(LimpaNumero(Text)) then
+      ibdEmitenteCGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)))
+    else
+      ShowMessage('CPF ou CNPJ inválido!');
+  end
+  else
+    ibdEmitenteCGC.AsString := '';
+
+  if (AllTrim(ibdEmitenteNOME.AsString) = '') and (AllTrim(LimpaNumero(ibdEmitenteCGC.AsString))<>'') then
+  begin
+    Screen.Cursor            := crHourGlass;
+
+    try
+      if (Length(LimpaNumero(ibdEmitenteCGC.AsString)) = 14) or (Length(LimpaNumero(ibdEmitenteCGC.AsString)) = 11) then
+      begin
+        sRetorno := ConsultaCadastro(ibdEmitenteCGC.AsString);
+
+        if AllTrim(xmlNodeValue(sRetorno,'//xNome')) <> '' then
+        begin
+          ibdEmitenteIE.AsString       := xmlNodeValue(sRetorno,'//IE');
+          ibdEmitenteESTADO.AsString   := xmlNodeValue(sRetorno,'//UF');
+          ibdEmitenteNOME.AsString     := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
+          ibdEmitenteENDERECO.AsString := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
+          ibdEmitenteCOMPLE.AsString   := PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')));
+          ibdEmitenteCEP.AsString      := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
+          ibdEmitenteCNAE.AsString     := xmlNodeValue(sRetorno,'//CNAE');
+
+          for I := 0 to Form17.ComboBox7.Items.Count -1 do
+          begin
+            if Copy(Form17.ComboBox7.Items[I],1,7) = AllTrim(ibdEmitenteCNAE.AsString) then
+            begin
+              Form17.ComboBox7.ItemIndex := I;
+            end;
+          end;
+
+          Form7.ibDataset99.Close;
+          Form7.ibDataset99.SelectSql.Clear;
+          Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
+          Form7.ibDataset99.Open;
+
+          ibdEmitenteMUNICIPIO.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+
+          ComboBox1.ItemIndex    := 0;
+          ibdEmitenteCRT.AsString := '1';
+        end;
+      end;
+    except
+
+    end;
+  end;
+
+  Screen.Cursor            := crDefault;
+end;
+
+procedure TForm17.ibdEmitenteAfterPost(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
+
+procedure TForm17.ibdEmitenteBeforePost(DataSet: TDataSet);
+begin
+  AssinaRegistro('EMITENTE',DataSet, True);
+end;
+
+procedure TForm17.ibdEmitenteBeforeInsert(DataSet: TDataSet);
+begin
+  try
+    Form7.ibDataSet99.Close;
+    Form7.ibDataSet99.SelectSql.Clear;
+    Form7.ibDataset99.SelectSql.Add('select gen_id(G_EMITENTE,1) from rdb$database');
+    Form7.ibDataset99.Open;
+    Form7.sProximo := strZero(StrToInt(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+    Form7.ibDataset99.Close;
+  except
+    Abort
+  end;
+end;
+
+procedure TForm17.ibdEmitenteNewRecord(DataSet: TDataSet);
+begin
+  ibdEmitenteREGISTRO.AsString := Form7.sProximo;
+end;
+
+procedure TForm17.ibdEmitenteDeleteError(DataSet: TDataSet;
+  E: EDatabaseError; var Action: TDataAction);
+begin
+  Abort;
+end;
+
+procedure TForm17.ibdEmitenteEditError(DataSet: TDataSet;
+  E: EDatabaseError; var Action: TDataAction);
+begin
+  Abort;
+end;
+
+procedure TForm17.ibdEmitentePostError(DataSet: TDataSet;
+  E: EDatabaseError; var Action: TDataAction);
+begin
+  DataSet.Cancel;
+  Abort;
+end;
+
+procedure TForm17.ibdEmitenteUpdateError(DataSet: TDataSet;
+  E: EDatabaseError; UpdateKind: TUpdateKind;
+  var UpdateAction: TIBUpdateAction);
+begin
+  try
+    if (ibdEmitenteCGC.AsString = CNPJ_SMALLSOFT) then
+    begin
+      // Comercial da Small está perdendo dados de contatos
+      if AnsiContainsText(E.Message, 'deadlock') then
+        Audita('CONTATOS','SMALL', Senhas.UsuarioPub, Form7.smodulo + ' Conflito L23774 ' + RightStr(E.Message, 50),0,0) // Ato, Modulo, Usuário, Histórico, Valor
+      else
+        Audita('CONTATOS','SMALL', Senhas.UsuarioPub, Form7.smodulo + ' ' + Copy('Salvar contatos L23776 ' + E.Message, 1, 80),0,0); // Ato, Modulo, Usuário, Histórico, Valor
+    end;
+  except
+  end;
+
+  Abort;
+end;
+
+procedure TForm17.ibdEmitenteMUNICIPIOSetText(Sender: TField;
+  const Text: String);
+begin
+  if (ibdMunicipiosNOME.AsString <> '') or (Trim(Text) <> '') then
+  begin
+    if Length(AllTrim(ibdEmitenteESTADO.AsString)) <> 2 then
+    begin
+      ibdMunicipios.Close;
+      ibdMunicipios.SelectSQL.Clear;
+      ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
+      ibdMunicipios.Open;
+    end else
+    begin
+      ibdMunicipios.Close;
+      ibdMunicipios.SelectSQL.Clear;
+      ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(ibdEmitenteESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+      ibdMunicipios.Open;
+    end;
+
+    ibdMunicipios.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+    
+    if AllTrim(Text) = '' then
+      ibdEmitenteMUNICIPIO.AsString := Text
+    else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibdMunicipiosNOME.AsString)) <> 0 then
+    begin
+      ibdEmitenteMUNICIPIO.AsString := ibdMunicipiosNOME.AsString;
+      if ibdEmitenteESTADO.AsString = '' then
+        ibdEmitenteESTADO.AsString := ibdMunicipiosUF.AsString;
+    end;
+  end else
+  begin
+    ibdEmitenteMUNICIPIO.AsString := Text;
+  end;
 end;
 
 end.

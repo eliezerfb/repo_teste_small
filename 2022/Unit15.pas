@@ -250,9 +250,6 @@ var
   ArqIni  : TiniFile;
   sOpcoes : string;
 begin
-  //
-  // Form35.Button5.Caption := '&Nova etiqueta';
-  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
     ArqINI := TiniFile.create(Form1.sAtual + '\etiquetas.inf');
@@ -263,13 +260,12 @@ begin
     ArqIni.WriteString('CONFIG', 'Número de etiquetas', sOpcoes);
     ArqIni.Free;
   end;
-  //
+  
   Form35.ComboBox1.Items := Form15.ComboBox1.Items;
   Form35.ComboBox1.Text  := Form15.ComboBox1.Text;
-  //
+
   Form35.ShowModal;
   Form15.ComboBox1Change(Sender);
-  //
 end;
 
 
