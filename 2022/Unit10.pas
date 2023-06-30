@@ -8547,6 +8547,7 @@ begin
   Memo1.Lines.Add('<vPart>0,00  "Valor de partida"</vPart>');
   Memo1.Lines.Add('<uTrib>UN    "Unidade tributável"</uTrib>');
   Memo1.Lines.Add('<qTrib>0     "Quantidade tributável"</qTrib>');
+  Memo1.Lines.Add('<cEAN>       "EAN do produto à ser informado no XML"</cEAN>');
   Memo1.Lines.Add('<cEANTrib>   "EAN tributável do Produto"</cEANTrib>');
   Memo1.Lines.Add('<cProd>      "Código Original do fornecdor do Produto ou Serviço"</cProd>');
   Memo1.Lines.Add('<vUnid>0,99  "Valor do IPI por Unidade"</vUnid>');
