@@ -1745,7 +1745,8 @@ begin
     end;
 
     try
-      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+      //vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16); Mauricio Parizotto 2023-06-26
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16, False);
 
       if not TestarLimiteDisponivel then
       begin
@@ -1993,27 +1994,24 @@ procedure TForm12.DBGrid4KeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
 begin
-  //
   if DbGrid4.SelectedIndex = 0 then
   begin
-    //
     if not ListBox2.Visible then ListBox2.Visible := True;
-    //
+
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
-    //
+
     for I := 0 to ListBox2.Items.Count -1 do
     begin
       if AnsiUpperCase(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key) = AnSiUpperCase(Copy(ListBox2.Items[i],1,LenGth( AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key ))) then ListBox2.ItemIndex := I;
     end;
-    //
+
     ListBox2.Update;
-    //
-  end else ListBox2.Visible  := False;
-  //
+  end else
+    ListBox2.Visible  := False;
+
   if dbGrid1.SelectedField.DataType = ftFloat then
      if Key = chr(46) then key := chr(44);
-  //
 end;
 
 procedure TForm12.DBGrid4KeyUp(Sender: TObject; var Key: Word;
@@ -2021,17 +2019,15 @@ procedure TForm12.DBGrid4KeyUp(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
-  //
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   try
     begin
       if Key = VK_RETURN then
       begin
-        //
         Form7.ibDataSet35.Edit;
         Form7.ibDataSet35.UpdateRecord;
-        //
+        
         if AllTrim(Form7.ibDataSet35DESCRICAO.AsString) <> '' then
         begin
           I := DbGrid4.SelectedIndex;
@@ -2044,24 +2040,21 @@ begin
           end;
         end else
         begin
-          //
           Form7.ibDataSet35.Edit;
           Form7.ibDataSet35.Post;
           SMALL_DBEdit22.SetFocus;
-          //
         end;
       end;
     end;
-    //
-  except end;
-  //
-  if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet35DESCRICAO.AsString) = '') then DbGrid4.SelectedIndex := 0;
-  //
+  except
+  end;
+
+  if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet35DESCRICAO.AsString) = '') then
+    DbGrid4.SelectedIndex := 0;
 end;
 
 procedure TForm12.SMALL_DBEdit38Exit(Sender: TObject);
 begin
-  //
   if Form1.sVersaoLayout = '4.00' then
   begin
     if (Form7.ibDataSet15FRETE12.AsString <> '0')
@@ -2071,7 +2064,6 @@ begin
     and (Form7.ibDataSet15FRETE12.AsString <> '4')
     and (Form7.ibDataSet15FRETE12.AsString <> '9') then
     begin
-      //
       Application.MessageBox('Valores válidos:' + Chr(10) +
                             Chr(10) +
                             '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
@@ -2082,9 +2074,8 @@ begin
                             '9 - Sem Ocorrência de transporte.'
                 ,'Valor inválido',mb_IconError+mb_Ok);
       Form7.ibDataSet15FRETE12.AsString := '0';
-      //
     end;
-    //
+
     if Form7.ibDataSet15FRETE12.AsString = '0' then Edit1.Text := '0-Remetente' else
       if Form7.ibDataSet15FRETE12.AsString = '1' then Edit1.Text := '1-Destinatário' else
         if Form7.ibDataSet15FRETE12.AsString = '2' then Edit1.Text := '2-Terceiros' else
@@ -2099,7 +2090,6 @@ begin
     and (Form7.ibDataSet15FRETE12.AsString <> '2')
     and (Form7.ibDataSet15FRETE12.AsString <> '9') then
     begin
-      //
       Application.MessageBox('Valores válidos:' + Chr(10) +
                 Chr(10) +
                 '0 - Por conta do emitente'+ Chr(10) +
@@ -2108,25 +2098,23 @@ begin
                 '9 - Sem frete'
                 ,'Valor inválido',mb_IconError+mb_Ok);
       Form7.ibDataSet15FRETE12.AsString := '0';
-      //
     end;
-    //
+
     if Form7.ibDataSet15FRETE12.AsString = '0' then Edit1.Text := '0-Emitente' else
       if Form7.ibDataSet15FRETE12.AsString = '1' then Edit1.Text := '1-Destinatário' else
         if Form7.ibDataSet15FRETE12.AsString = '2' then Edit1.Text := '2-Terceiros' else
           if Form7.ibDataSet15FRETE12.AsString = '9' then Edit1.Text := '9-Sem frete' else Edit1.Text := '';
     //
   end;
-  //
+
   Form12.Edit1.Visible := True;
   Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
-  //
+
   if not DBMemo1.Focused then
   begin
     dbGrid1.SetFocus;
     DBMemo1.SetFocus;
   end;
-  //
 end;
 
 procedure TForm12.Emitirnotafiscaldevendasnobalco1Click(Sender: TObject);
@@ -2147,11 +2135,11 @@ begin
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
     Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
-    //
+
     Form7.sModulo := 'BALCAO';
     Form41.ShowModal;
     Form7.sModulo := 'VENDA';
-    //
+
     Form7.ibDataSet16.First;
 //    Form7.ibDataSet16.Edit;
     if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
@@ -2167,7 +2155,7 @@ begin
   Form7.sModulo := 'ORCAMENTO';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
-  //
+
   Form7.ibDataSet16.First;
   Form7.ibDataSet16.Edit;
   Form7.ibDataSet16.Post;
@@ -2179,22 +2167,18 @@ var
   sNome : String;
   SmallIni : tIniFile;
 begin
-  //
   with Sender as TLabel do
   begin
-    //
     sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),'','');
     if AllTrim(sNome) <> '' then Caption := sNome else sNome := Caption;
     Repaint;
-    //
+
     SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
     SmallIni.WriteString('VENDAS',NAME,sNome);
     SmallIni.Free;
-    //
   end;
-  //
+
   Mais.LeLabels(True);
-  //
 end;
 
 procedure TForm12.Label28MouseLeave(Sender: TObject);
@@ -2220,20 +2204,16 @@ end;
 
 procedure TForm12.FormActivate(Sender: TObject);
 begin
-  //
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
-  //
   Form1.bFlag  := True;
-  //
+
   ConfiguraNFE(True);
-  //
+
   if Form12.Tag = 1 then
   begin
-    //
     form12.Tag := 0;
-    //
-    try
 
+    try
       ExibeColunasFCP(False);
       ExibeColunasFCPST(False);
       ExibeColunaCSOSN(False); // Sandro Silva 2023-05-24
@@ -2272,14 +2252,13 @@ begin
         end;
       end;
     except end;
-    //
+
     // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final
-    //
     try
       if Form7.ibDataSet15INDFINAL.AsString = '1' then
       begin
         Edit3.Text := '1-Consumidor Final';
-        //
+
         if (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) and (Form7.ibDataSet2ESTADO.AsString <> 'EX') then
         begin
           Form7.ibDataSet16PFCPUFDEST.Visible := True;
@@ -2289,26 +2268,22 @@ begin
           Form7.ibDataSet16PFCPUFDEST.Visible := False;
           Form7.ibDataSet16PICMSUFDEST.Visible := False;
         end;
-        //
       end else
       begin
         Edit3.Text := '0-Normal';
-        //
+
         Form7.ibDataSet16PFCPUFDEST.Visible := False;
         Form7.ibDataSet16PICMSUFDEST.Visible := False;
-        //
       end;
-      //
+
       if AllTrim(Form7.ibDataSet2ESTADO.AsString)='EX' then
       begin
         Form7.ibDataSet16PFCPUFDEST.Visible := False;
         Form7.ibDataSet16PICMSUFDEST.Visible := False;
       end;
-      //
-    except end;
-    //
-    //
-    //
+    except
+    end;
+
     // Indicador de presença do comprador no estabelecimento comercial no momento da operação:
     //  0=Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste)
     //  1=Operação presencial
@@ -2318,22 +2293,19 @@ begin
     //  9=Operação não presencial, outros.
     //
     try
-      //
       if AllTrim(Form7.ibDataSet15INDPRES.AsString) = '' then
       begin
-        //
         try
           Form7.ibQuery1.Close;
           Form7.ibQuery1.SQL.Clear;
           Form7.ibQuery1.SQL.Add('select first 1 INDPRES from VENDAS where coalesce(INDPRES,''X'')<>''X'' order by NUMERONF desc');
           Form7.ibQuery1.Open;
-          //
+
           Form7.ibDataSet15INDPRES.AsString := Form7.ibQuery1.FieldByName('INDPRES').AsString;
-          //
-        except end;
-        //
+        except
+        end;
       end;
-      //
+
       if Form7.ibDataSet15INDPRES.AsString = '0' then
       begin
         Edit6.Text := '0=Não se aplica';
@@ -2369,9 +2341,7 @@ begin
                     Edit6.Text := '9=Operação não presencial, outros';
                   end else
                   begin
-                    //
                     Edit6.Text := '1=Operação presencial';
-                    //
                   end;
                 end;
               end;
@@ -2379,52 +2349,50 @@ begin
           end;
         end;
       end;
-      //
+
       mkp(True);
-      //
-    except end;
-    //
+    except
+    end;
+
     // THE END;
-    //
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
     Form7.ibDataSet14.SelectSQL.Clear;
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
-    //
+
     if Alltrim(Form7.ibDAtaSet15OPERACAO.AsString) <> '' then
     begin
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Locate('NOME',AllTrim(Form7.ibDAtaSet15OPERACAO.AsString),[]);
       Form7.ibDataSet14.EnableControls;
     end;
-    //
+
     Form12.Image5.Picture := nil;
     Form12.Image5.Visible := False;
     Form12.Panel9.Visible := False;
-    //
+
     Form1.bFlag := False;
-    //
+
     Form12.Top     := Form7.Top;
     Form12.Left    := Form7.Left;
     Form12.Width   := Form7.Width;
     Form12.Height  := Form7.Height;
-    //
+
     Form7.ibDataSet16UNITARIO.Visible := True;
     Form7.ibDataSet35UNITARIO.Visible := True;
     ScrollBox1.VertScrollBar.Position := 1;
-    //
+
     // FOTO
-    //
     Panel9.Top    := Form12.Panel1.Top;
     Panel9.Left   := Panel1.Left + Panel1.Width + 5;
     Panel9.Width  := Screen.Width - Panel9.Left - 10;
     Panel9.Height := 300;
-    //
+
     if Panel9.Width  > 300 then Panel9.Width := 300;
     if Panel9.Height > 300 then Panel9.Height := 300;
-    //
+
     if ParamCount > 0 then
     begin
       if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
@@ -2444,53 +2412,43 @@ procedure TForm12.DBGrid4Enter(Sender: TObject);
 var
   I          : Integer;
 begin
-  //
   // Autocompletar serviços
-  //
   ListBox2.Visible := False;
   dBGrid2.Visible := False;
   dBGrid3.Visible := False;
   ListBox2.Items.Clear;
-  //
+
   Form7.ibDataSet99.Close;
   Form7.ibDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select DESCRICAO, PRECO from ESTOQUE where TIPO_ITEM='+QuotedStr('09')+' order by DESCRICAO'); // Ok
   Form7.ibDataSet99.Open;
-  //
+
   for I := 1 to 9999 do fPrecoDoServico[I] := 0;
   I := 0;
-  //
+
   if Form7.ibDataSet99.FieldByname('DESCRICAO').AsString <> '' then
   begin
-    //
     while not Form7.ibDataSet99.Eof do
     begin
-      //
       ListBox2.Items.Add(AllTrim(Form7.ibDataSet99.FieldByname('DESCRICAO').AsString));
       fPrecoDoServico[I] := Form7.ibDataSet99.FieldByname('PRECO').AsFloat;
       I := I + 1;
-      //
+
       Form7.ibDataSet99.Next;
-      //
     end;
-    //
   end;
-  //
+
   ListBox2.Left     := dbGrid4.Left-1;
   ListBox2.Top      := dbGrid4.Top + dbGrid4.Height -1;
   ListBox2.Height   := 200;
   ListBox2.Width    := dbGrid4.Width+2;
-  //
-  // THE END AUTOCOMPLETAR
-  //
+
   ListBox2.Visible       := False;
-  //
 end;
 
 procedure TForm12.DBGrid4KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_DOWN  then
   begin
     if ListBox2.Visible then
@@ -2507,7 +2465,6 @@ begin
       Abort;
     end;
   end;
-  //
 end;
 
 procedure TForm12.ListBox2Click(Sender: TObject);
@@ -2524,7 +2481,6 @@ end;
 procedure TForm12.ListBox2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_DOWN   then
   begin
     ListBox2.ItemIndex := ListBox2.ItemIndex + 1;
@@ -2540,7 +2496,6 @@ begin
     Form12.ListBox2Click(Sender);
   
   end;
-  //
 end;
 
 procedure TForm12.DBGrid4ColEnter(Sender: TObject);
@@ -2550,9 +2505,7 @@ end;
 
 procedure TForm12.Button2Enter(Sender: TObject);
 begin
-  //
   ScrollBox1.VertScrollBar.Position := 200;
-  //
 end;
 
 function TForm12.TestarLimiteDisponivel: Boolean;
@@ -2570,15 +2523,15 @@ procedure TForm12.Button2Click(Sender: TObject);
 begin
   if not TestarLimiteDisponivel then
     Exit;
-  //
+
   Form12.DBGrid1.SelectedIndex := 0;
-  //
+
   try
     bOk := True;
     Form12.Close;
     Form7.Image101Click(Sender);
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm12.Incluirnovoitemnoestoque1Click(Sender: TObject);
@@ -2587,44 +2540,40 @@ var
 begin
   if Form1.Image202.Visible then
   begin
-    //
     sTitulo := Form7.sTitulo;
-    //
+
     Form7.ibDataSet15.DisableControls;
     Form7.ibDataSet16.DisableControls;
-    //
+
     try
-      //
       try
         if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
           Form7.ibDataset4.Post;
       except
       end;
-      //
+
       Form1.bFechaTudo           := False;
       Form1.Image202Click(Sender);
       Form7.Close;
       Form7.iKey := 0;
       Form7.ibDataSet4.Append; // Incluir novo item pela nota de compra
       Form10.ShowModal;
-      //
+
       Form7.sModulo := 'VENDA';
       Form7.sTitulo := sTitulo;
-      //
+
       Form7.Show;
-      //
+
       if Form12.DBGrid1.CanFocus then
         Form12.DBGrid1.SetFocus;
       Form7.ibDataSet16.Last;
-      //
     except
     end;
-    //
+
     Form1.bFechaTudo           := True;
     Form7.ibDataSet15.EnableControls;
     if Form7.sModulo <> 'RETRIBUTA' then
       Form7.ibDataSet16.EnableControls;
-    //
   end;
 end;
 
@@ -2634,9 +2583,8 @@ var
 begin
   if Form1.Image203.Visible then
   begin
-    //
     sTitulo := Form7.sTitulo;
-    //
+
     Form7.ibDataSet15.DisableControls;
     Form7.ibDataSet16.DisableControls;
     try
@@ -2645,17 +2593,18 @@ begin
       Form7.ibDataSet2.Append;
       Form7.Close;
       Form10.ShowModal;
-      //
+
       Form7.sModulo := 'VENDA';
       Form7.sTitulo := sTitulo;
-      //
+
       Form7.Show;
-      //
+
       if Form12.DBGrid1.CanFocus then
         Form12.DBGrid1.SetFocus;
       Form7.ibDataSet16.Last;
-      //
-    except end;
+    except
+    end;
+    
     Form1.bFechaTudo           := True;
     Form7.ibDataSet15.EnableControls;
     if Form7.sModulo <> 'RETRIBUTA' then
@@ -2714,11 +2663,9 @@ end;
 
 procedure TForm12.DBMemo1Enter(Sender: TObject);
 begin
-  //
   ListBox2.Visible := False;
   dBGrid2.Visible := False;
   dBGrid3.Visible := False;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit41KeyUp(Sender: TObject; var Key: Word;
@@ -2740,9 +2687,8 @@ end;
 
 procedure TForm12.Edit2Click(Sender: TObject);
 begin
-  //
   Edit2.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe:','1-Normal'+chr(10)+'2-Complementar'+chr(10)+'3-de Ajuste'+chr(10)+'4-Devolução de mercadoria',LimpaNumero(Edit2.Text)));
-  //
+
   ExibeColunasFCPST(False);
   ExibeColunasFCP(False);
   ExibeColunaCSOSN(False); // Sandro Silva 2023-05-24
@@ -2927,15 +2873,12 @@ var
   Mais1Ini : tIniFile;
   iA, I : Integer;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  //
+
   if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
   begin
-    //
     if dBGrid1.Top <> 225 then
     begin
-      //
       Label15.Visible := False;
       Label16.Visible := False;
       Label17.Visible := False;
@@ -2943,7 +2886,7 @@ begin
       Label19.Visible := False;
       Label20.Visible := False;
       Label21.Visible := False;
-      //
+
       SMALL_DBEdit6.Visible  := False;
       SMALL_DBEdit7.Visible  := False;
       SMALL_DBEdit8.Visible  := False;
@@ -2951,9 +2894,9 @@ begin
       SMALL_DBEdit11.Visible := False;
       SMALL_DBEdit12.Visible := False;
       SMALL_DBEdit13.Visible := False;
-      //
+
       dBGrid1.Top := 225;
-      //
+
       Label1.Visible         := False;
       Label6.Visible         := False;
       Label57.Visible        := False;
@@ -2963,87 +2906,86 @@ begin
       SMALL_DBEdit18.Visible := False;
       SMALL_DBEdit19.Visible := False;
       dbGrid4.Visible        := False;
-      //
+
       Label45.Visible := False;
       Label46.Visible := False;
       Label47.Visible := False;
       Label48.Visible := False;
-      //
+
       SMALL_DBEdit26.Visible  := False;
       SMALL_DBEdit31.Visible  := False;
       SMALL_DBEdit32.Visible  := False;
       SMALL_DBEdit33.Visible := False;
-      //
+
       Label23.Top := 360;
       Label31.Top := 360;
       Label32.Top := 360;
       Label33.Top := 360;
       Label69.Top := 360;
       Label29.Top := 360;
-      //
+
       SMALL_DBEdit20.Top := 375;
       SMALL_DBEdit21.Top := 375;
       SMALL_DBEdit44.Top := 375;
       SMALL_DBEdit45.Top := 375;
       SMALL_DBEdit2.Top  := 375;
       SMALL_DBEdit17.Top := 375;
-      //
+
       Label28.Top := 400;
       Label34.Top := 400;
       Label35.Top := 400;
       Label36.Top := 400;
       Label37.Top := 400;
       Label38.Top := 400;
-      //
+
       SMALL_DBEdit42.Top := 415;
       SMALL_DBEdit22.Top := 415;
       SMALL_DBEdit23.Top := 415;
       SMALL_DBEdit24.Top := 415;
       SMALL_DBEdit25.Top := 415;
       edtTotalNota.Top := 415;
-      //
+
       Label39.Top := 440;
       Label40.Top := 440;
       Label41.Top := 440;
       Label42.Top := 440;
       Label43.Top := 440;
-      //
+
       SMALL_DBEdit41.Top := 455;
       SMALL_DBEdit27.Top := 455;
       Edit1.Top          := 455;
       SMALL_DBEdit28.Top := 455;
       SMALL_DBEdit29.Top := 455;
       SMALL_DBEdit30.Top := 455;
-      //
+      
       Label49.Top := 480;
       Label50.Top := 480;
       Label51.Top := 480;
       Label52.Top := 480;
       Label53.Top := 480;
       Label54.Top := 480;
-      //
+
       SMALL_DBEdit15.Top := 495;
       SMALL_DBEdit34.Top := 495;
       SMALL_DBEdit35.Top := 495;
       SMALL_DBEdit36.Top := 495;
       SMALL_DBEdit37.Top := 495;
       SMALL_DBEdit38.Top := 495;
-      //
+
       Label5.Top  := 520;
       DBMemo1.Top := 535;
-      //
+
       Panel1.Height := 625;
-      //
+
       Mais1ini.Free;
-      //
+
       iA := Form12.Height - Panel1.Height - Panel6.Height - 50;
-      //
+
       if iA > 0 then
       begin
-        //
         dBGrid1.Height := dBGrid1.Height + iA;
         Panel1.Height  := Panel1.Height + iA;
-        //
+
         for I := 0 to Form12.ComponentCount-1 do
         begin
           try
@@ -3054,14 +2996,12 @@ begin
           except end;
         end;
       end;
-      //
+
       dBGrid3.Top := dBGrid1.Top + dBGrid1.Height;
-      //
     end;
   end;
-  //
+
   Panel6.Top      := Panel1.Top + Panel1.Height + 5;
-  //
 end;
 
 procedure TForm12.ComboBox1Exit(Sender: TObject);

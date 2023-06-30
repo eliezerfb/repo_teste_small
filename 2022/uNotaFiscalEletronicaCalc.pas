@@ -15,10 +15,11 @@ type
     procedure CalculaCstPisCofins(DataSetNF, DataSetItens: TibDataSet);
     procedure CalculaFCP(NotaFiscal: TVENDAS; oItem: TITENS001);
     procedure CalculaImpostos;
+    procedure CalculaPesoLiquido;
     function AliqICMdoCliente(oItem: TITENS001): Double;
   public
     Calculando: Boolean;
-    procedure CalculaValores(DataSetNF, DataSetItens: TibDataSet);
+    procedure CalculaValores(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq : Boolean = True);
     constructor Create; Override;
     destructor Destroy; Override;
   end;
@@ -183,7 +184,7 @@ begin
     NotaFiscal.Icms       := 0;
     NotaFiscal.Ipi        := 0;
     NotaFiscal.Iss        := 0;
-    NotaFiscal.Pesoliqui  := 0;
+    //NotaFiscal.Pesoliqui  := 0; Mauricio Parizotto 2023-06-26
     NotaFiscal.Basesubsti := 0;
     NotaFiscal.Icmssubsti := 0;
     NotaFiscal.VFCPST     := 0;
@@ -295,7 +296,7 @@ begin
 
       if oItem.Quantidade <> 0 then
       begin
-        NotaFiscal.Pesoliqui := NotaFiscal.Pesoliqui + oItem.Peso * oItem.Quantidade;
+        //NotaFiscal.Pesoliqui := NotaFiscal.Pesoliqui + oItem.Peso * oItem.Quantidade; Mauricio Parizotto 2023-06-26
 
         if (Pos(Alltrim(oItem.Cfop),Form1.CFOP5124) = 0) then// 5124 Industrialização efetuada para outra empresa não soma na base
         begin
@@ -732,7 +733,7 @@ begin
 end;
 
 
-procedure TNotaFiscalEletronicaCalc.CalculaValores(DataSetNF, DataSetItens: TibDataSet);
+procedure TNotaFiscalEletronicaCalc.CalculaValores(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq : Boolean = True);
 var
   sReg16 : string;
 begin
@@ -749,6 +750,10 @@ begin
 
       //Calcula CST PIS COFINS
       CalculaCstPisCofins(DataSetNF, DataSetItens);
+
+      //Calcula Peso Líquido
+      if CalcPesoLiq then
+        CalculaPesoLiquido;
 
       AtualizaDataSetNota(DataSetNF,DataSetItens);
 
@@ -1171,6 +1176,27 @@ begin
 
   finally
     FreeAndNil(IBQProduto);
+  end;
+end;
+
+procedure TNotaFiscalEletronicaCalc.CalculaPesoLiquido;
+var
+  i : integer;
+  oItem : TITENS001;
+begin
+  if not(NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe))) then
+  begin
+    NotaFiscal.Pesoliqui  := 0;
+
+    for i := 0 to NotaFiscal.Itens.Count -1 do
+    begin
+      oItem := NotaFiscal.Itens.GetItem(i);
+      
+      if oItem.Quantidade <> 0 then
+      begin
+        NotaFiscal.Pesoliqui := NotaFiscal.Pesoliqui + oItem.Peso * oItem.Quantidade;
+      end;
+    end;
   end;
 end;
 
