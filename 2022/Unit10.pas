@@ -12,8 +12,8 @@ uses
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery;
 
-const TEXTO_NAO_MOVIMENTA_ESTOQUE = 'Não movimenta o Estoque';
-const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = 'Usar o custo de compra nas notas';
+const TEXTO_NAO_MOVIMENTA_ESTOQUE          = '= Não movimenta o Estoque';
+const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = '0 Usar o custo de compra nas notas';
 
 type
 

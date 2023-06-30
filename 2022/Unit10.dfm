@@ -14216,12 +14216,13 @@ object Form10: TForm10
         object cbMovimentacaoEstoque: TComboBox
           Left = 150
           Top = 99
-          Width = 178
+          Width = 195
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
-          ItemIndex = 0
+          ItemIndex = 2
           TabOrder = 3
+          Text = 'Usar custo de compra nas notas'
           OnEnter = ComboBoxEnter
           OnExit = cbMovimentacaoEstoqueExit
           OnKeyDown = ComboBox9KeyDown
