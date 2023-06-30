@@ -390,7 +390,7 @@ type
     SMALL_DBEdit47: TSMALL_DBEdit;
     DBCheckSobreIPI: TDBCheckBox;
     DBCheckSobreOutras: TDBCheckBox;
-    DBCheckSobreFrete: TDBCheckBox;
+    DBCheckFRETESOBREIPI: TDBCheckBox;
     Label110: TLabel;
     DBMemo4: TDBMemo;
     cbMovimentacaoEstoque: TComboBox;
@@ -5293,7 +5293,7 @@ begin
         Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet4QTD_INICIO.AsFloat;
         Form7.ibDataSet26.Post;        
       end;
-      
+
       if (Form7.sModulo <> 'KARDEX') then
       begin
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
@@ -9208,12 +9208,12 @@ begin
       Form7.ibDataSet14SOBREIPI.AsString := 'N';
     if Form7.ibDataSet14SOBREOUTRAS.AsString <> 'S' then
       Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
-    if Form7.ibDataSet14SOBREFRETE.AsString <> 'S' then
-      Form7.ibDataSet14SOBREFRETE.AsString := 'N';
+    if Form7.ibDataSet14FRETESOBREIPI.AsString <> 'S' then
+      Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
 
-    DBCheckSobreIPI.Checked    := Form7.ibDataSet14SOBREIPI.AsString = 'S';
-    DBCheckSobreOutras.Checked := Form7.ibDataSet14SOBREOUTRAS.AsString = 'S';
-    DBCheckSobreFrete.Checked  := Form7.ibDataSet14SOBREFRETE.AsString = 'S';
+    DBCheckSobreIPI.Checked       := Form7.ibDataSet14SOBREIPI.AsString = 'S';
+    DBCheckSobreOutras.Checked    := Form7.ibDataSet14SOBREOUTRAS.AsString = 'S';
+    DBCheckFRETESOBREIPI.Checked  := Form7.ibDataSet14FRETESOBREIPI.AsString = 'S';
 
     cbIntegracaoFinanceira.ItemIndex := 0;
     cbMovimentacaoEstoque.ItemIndex  := 0;

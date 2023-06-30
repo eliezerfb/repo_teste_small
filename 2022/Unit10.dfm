@@ -14180,7 +14180,7 @@ object Form10: TForm10
           ValueUnchecked = 'N'
           OnKeyDown = SMALL_DBEdit1KeyDown
         end
-        object DBCheckSobreFrete: TDBCheckBox
+        object DBCheckFRETESOBREIPI: TDBCheckBox
           Left = 402
           Top = 294
           Width = 89
