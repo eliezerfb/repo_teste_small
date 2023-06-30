@@ -4840,39 +4840,21 @@ begin
 
   if (Form1.iReduzida = 1) then
   begin
-    {Sandro Silva 2023-06-02 inicio
-    if Copy(Form1.sSerial, 4, 1) = 'S' then
-    begin
-      Form1.Caption     := 'Small Commerce (Start)';
-      Application.Title := 'Small Start';
 
-      Titulo(
-             'SMALL START, SIMPLES'+chr(10)+
-             'FÁCIL E VERSÁTIL',
+    Form1.Caption     := 'Small Go';
+    Application.Title := 'Small Go';
 
-             'O Small Start é fácil de instalar,'+chr(10)+
-             'simples de usar e atende a'+chr(10)+
-             'necessidade de emissão de'+chr(10)+
-             'NF-e, NFC-e e SAT.');
-    end
-    else
-    begin
-    }
-      Form1.Caption     := 'Small Go';
-      Application.Title := 'Small Go';
+    Titulo(
+           'SMALL GO, SIMPLES'+chr(10)+
+           'FÁCIL E VERSÁTIL',
 
-      Titulo(
-             'SMALL GO, SIMPLES'+chr(10)+
-             'FÁCIL E VERSÁTIL',
+           'O Small Go é fácil de instalar,'+chr(10)+
+           'simples de usar e atende a'+chr(10)+
+           'necessidade de emissão de'+chr(10)+
+           'NF-e, NFC-e e SAT.');
 
-             'O Small Go é fácil de instalar,'+chr(10)+
-             'simples de usar e atende a'+chr(10)+
-             'necessidade de emissão de'+chr(10)+
-             'NF-e, NFC-e e SAT.');
-
-    //end;
   end;
-  //
+
   if (Form1.iReduzida = 0) then
   begin
     //
