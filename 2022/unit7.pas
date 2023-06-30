@@ -734,9 +734,9 @@ type
     MainMenu10: TMainMenu;
     MenuItem13: TMenuItem;
     MenuItem141: TMenuItem;
-    MenuItem142: TMenuItem;
+    RelVendasServico: TMenuItem;
     MenuItem143: TMenuItem;
-    MenuItem151: TMenuItem;
+    RelResumoVendas: TMenuItem;
     MenuItem164: TMenuItem;
     MenuItem165: TMenuItem;
     MenuItem166: TMenuItem;
@@ -753,7 +753,7 @@ type
     MainMenu11: TMainMenu;
     MenuItem183: TMenuItem;
     MenuItem196: TMenuItem;
-    MenuItem197: TMenuItem;
+    PrevCompra: TMenuItem;
     MenuItem205: TMenuItem;
     MenuItem206: TMenuItem;
     MenuItem207: TMenuItem;
@@ -1383,7 +1383,7 @@ type
     EnviarmensagemWhatsAppparatodos1: TMenuItem;
     Notasfiscaisdesadavendassrie9201: TMenuItem;
     NotasfiscaisdesadavendascomCPFsrie9201: TMenuItem;
-    Re1: TMenuItem;
+    RelCompRestICMS: TMenuItem;
     ClculodoCustodaltimaNota1: TMenuItem;
     Manifesto1: TMenuItem;
     PositivoVerde: TImage;
@@ -2044,7 +2044,7 @@ type
     procedure EnviarmensagemWhatsAppparatodos1Click(Sender: TObject);
     procedure ibDataSet4OBSValidate(Sender: TField);
     procedure Notasfiscaisdesadavendassrie9201Click(Sender: TObject);
-    procedure Re1Click(Sender: TObject);
+    procedure RelCompRestICMSClick(Sender: TObject);
     procedure ClculodoCustodaltimaNota1Click(Sender: TObject);
     procedure Manifesto1Click(Sender: TObject);
     procedure EnvioaoFISCOREDUOZ1Click(Sender: TObject);
@@ -31240,7 +31240,7 @@ begin
   //sSerieNFSelecionada := '920';
 end;
 
-procedure TForm7.Re1Click(Sender: TObject);
+procedure TForm7.RelCompRestICMSClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -33087,6 +33087,14 @@ begin
   
   DuplicatestaNFe1.Enabled                 := True;
 
+  RelVendasServico.Enabled                 := True;
+  Relatriodeprodutosmonofsico1.Enabled     := True;
+  RelCompRestICMS.Enabled                  := True;
+  RelResumoVendas.Enabled                  := True;
+  Relatriodecorrelao1.Enabled              := True;
+
+  PrevCompra.Enabled                       := True;
+
   if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
     Oramento1.Enabled                 := False;
@@ -33112,7 +33120,13 @@ begin
 
     DuplicatestaNFe1.Enabled                 := False;
 
+    RelVendasServico.Enabled                 := False;
+    Relatriodeprodutosmonofsico1.Enabled     := False;
+    RelCompRestICMS.Enabled                  := False;
+    RelResumoVendas.Enabled                  := False;
+    Relatriodecorrelao1.Enabled              := False;
 
+    PrevCompra.Enabled                       := False;
  end;
 
 end;

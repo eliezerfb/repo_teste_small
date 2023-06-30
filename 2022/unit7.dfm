@@ -19374,7 +19374,7 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de vendas (Nota Fiscal)...'
         OnClick = Relatriodevendas1Click
       end
-      object MenuItem142: TMenuItem
+      object RelVendasServico: TMenuItem
         Caption = 'Relat'#243'rio de servi'#231'os (Nota Fiscal)...'
         OnClick = Relatriodeservios1Click
       end
@@ -19386,11 +19386,11 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de produtos monof'#225'sicos (Cupom Fiscal)...'
         OnClick = Relatriodeprodutosmonofsico1Click
       end
-      object Re1: TMenuItem
-        Caption = 'Relat'#225'rio de Complemento/Restitui'#231#227'o por ICMS ST...'
-        OnClick = Re1Click
+      object RelCompRestICMS: TMenuItem
+        Caption = 'Relat'#243'rio de Complemento/Restitui'#231#227'o por ICMS ST...'
+        OnClick = RelCompRestICMSClick
       end
-      object MenuItem151: TMenuItem
+      object RelResumoVendas: TMenuItem
         Caption = 'Resumo das vendas...'
         OnClick = Resumodasvendas1Click
       end
@@ -19562,7 +19562,7 @@ object Form7: TForm7
         Caption = 'Relat'#243'rio de compras...'
         OnClick = Relatriodeconpras1Click
       end
-      object MenuItem197: TMenuItem
+      object PrevCompra: TMenuItem
         Caption = 'Previs'#227'o de compras...'
         OnClick = Previsodecompra1Click
       end
