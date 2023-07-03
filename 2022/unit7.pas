@@ -11230,7 +11230,7 @@ begin
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-        sMostra   := Replicate('T',47);
+        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 46)); // Sandro Silva 2023-07-03 sMostra   := Replicate('T',47);
         // Sandro Silva 2023-07-03 iCampos   := 44;
         iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5;
       end;
@@ -12935,10 +12935,10 @@ begin
       else
         Pagarestaconta1.Enabled := False;
     end;
-    //
+    {Sandro Silva 2023-07-03 inicio
     if sModulo = 'ICM' then
       Abort;
-    //
+    }
     if sModulo = 'CLIENTES' then
     begin
       if ibDataSet2ATIVO.AsString='1' then
