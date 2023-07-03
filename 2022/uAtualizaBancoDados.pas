@@ -645,6 +645,44 @@ begin
     ExecutaComando('commit');
   end;
 
+  {Sandro Silva 2023-07-03 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'CAIXA') = False then
+  begin
+
+    // Criando o campo
+    if ExecutaComando('ALTER TABLE NFCE ADD CAIXA VARCHAR(3)') then
+    begin
+      ExecutaComando('commit');
+
+      // Atualizando o campo criado
+      if ExecutaComando('update NFCE set ' +
+        'CAIXA = (select first 1 A.CAIXA from ALTERACA A where A.DATA = NFCE.DATA and A.PEDIDO = NFCE.NUMERONF) ' +
+        'where coalesce(CAIXA, '''') = '''' ') then
+        ExecutaComando('commit');
+
+    end;
+
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'MODELO') = False then
+  begin
+
+    //Criando campo
+    if ExecutaComando('ALTER TABLE NFCE ADD MODELO VARCHAR(2)') then
+    begin
+      ExecutaComando('commit');
+
+      // Atualizando o campo criado
+      if ExecutaComando('update NFCE set ' +
+        'MODELO = case when (NFEXML containing ''<infCFe'') and (NFEXML containing ''Id="CFe'') then ''59'' else ''65'' end ' +
+        'where coalesce(MODELO, '''') = '''' ') then
+        ExecutaComando('commit');
+
+    end;
+
+  end;
+  {Sandro Silva 2023-07-03 fim}
+    
   // VENDAS FINALIDADE
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'FINNFE') = False then
     ExecutaComando('alter table VENDAS add FINNFE varchar(1)');
