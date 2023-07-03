@@ -1181,11 +1181,45 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CSTPIS') then
     ExecutaComando('alter table ICM drop CSTPIS');
 
+  {Sandro Silva 2023-07-03 inicio
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCPIS') = False then
     ExecutaComando('alter table ICM add BCPIS numeric(18,2)');
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCCOFINS') = False then
     ExecutaComando('alter table ICM add BCCOFINS numeric(18,2)');
+  }
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCPISCOFINS') = False then
+  begin
+
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCPIS') = False then
+      ExecutaComando('alter table ICM add BCPIS numeric(18,2)');
+
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCCOFINS') = False then
+      ExecutaComando('alter table ICM add BCCOFINS numeric(18,2)');
+
+    if ExecutaComando('ALTER TABLE ICM ADD BCPISCOFINS NUMERIC(18,2)') then
+    begin
+      ExecutaComando('commit');
+
+      ExecutaComando(' Update ICM set '+
+                     '   BCPISCOFINS = '+
+                     '         Case'+
+                     '           When Coalesce(BCCOFINS,0) > Coalesce(BCPIS,0) then BCCOFINS'+
+                     '           Else BCPIS'+
+                     '         End');
+
+      ExecutaComando('commit');
+
+      ExecutaComando('ALTER TABLE ICM drop BCPIS');
+
+      ExecutaComando('ALTER TABLE ICM drop BCCOFINS');
+
+      ExecutaComando('commit');
+    end;
+
+  end;
+  {Sandro Silva 2023-07-03 fim}
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'PPIS') = False then
     ExecutaComando('alter table ICM add PPIS numeric(18,2)');
@@ -1331,25 +1365,6 @@ begin
   begin
     if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
       ExecutaComando('commit');
-  end;
-  if ExecutaComando('ALTER TABLE ICM ADD BCPISCOFINS NUMERIC(18,2)') then
-  begin
-    ExecutaComando('commit');
-
-    ExecutaComando(' Update ICM set '+
-                   '   BCPISCOFINS = '+
-                   '         Case'+
-                   '           When Coalesce(BCCOFINS,0) > Coalesce(BCPIS,0) then BCCOFINS'+
-                   '           Else BCPIS'+
-                   '         End');
-
-    ExecutaComando('commit');
-
-    ExecutaComando('ALTER TABLE ICM drop BCPIS');
-
-    ExecutaComando('ALTER TABLE ICM drop BCCOFINS');
-
-    ExecutaComando('commit');
   end;
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'INSTITUICAOFINANCEIRA') = False then
