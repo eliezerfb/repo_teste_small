@@ -18,8 +18,9 @@ type
     cboDocCobranca: TComboBox;
     Button4: TBitBtn;
     Panel9: TPanel;
-    Label45: TLabel;
+    lblTotal: TLabel;
     CheckBox1: TCheckBox;
+    edtQtdParc: TEdit;
     procedure SMALL_DBEdit1Exit(Sender: TObject);
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -40,13 +41,16 @@ type
     procedure Button4Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure edtQtdParcEnter(Sender: TObject);
+    procedure edtQtdParcExit(Sender: TObject);
   private
-    FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
+    FIdentificadorPlanoContas: String;
     { Private declarations }
   public
     sConta : String;
+    vlrRenegociacao : Double;
+    nrRenegociacao : string;
     property IdentificadorPlanoContas: String read FIdentificadorPlanoContas write FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
-//    bDesdobra : boolean;
     { Public declarations }
   end;
 
@@ -55,7 +59,8 @@ var
 
 implementation
 
-uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados;
+uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
+  uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -65,17 +70,15 @@ Var
   I : Integer;
   dDiferenca : Double;
 begin
-  //
   ShortDateFormat := 'dd/mm/yyyy';
-  //
+
   try
-    //
+    {
     if Form7.sModulo = 'CLIENTES' then
     begin
-      //
       // Cria as duplicatas
       // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
-      //
+
       I := 0;
       Form7.ibDataSet7.First;
       while not Form7.ibDataSet7.Eof do
@@ -83,20 +86,18 @@ begin
         I := I + 1;
         Form7.ibDataSet7.Next;
       end;
-      //
+
       if I <> Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) then
       begin
-        //
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
         begin
           Form7.ibDataSet7.Delete;
           Form7.ibDataSet7.First;
         end;
-        //
+
         for I := 1 to Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) do
         begin
-          //
           Form7.ibDataSet7.Append;
           Form7.ibDataSet7NUMERONF.AsString                          := Form7.ibDataSet15NUMERONF.AsString;
           Form7.ibDataSet7DOCUMENTO.Value                            := 'RE'+Right(Form7.ibDataSet15NUMERONF.AsString,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
@@ -122,11 +123,9 @@ begin
             Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
           //
           Form7.ibDataSet7.Post;
-          //
         end;
-        //
+
         // Valor quebrado
-        //
         dDiferenca := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
@@ -134,27 +133,22 @@ begin
           dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
           Form7.ibDataSet7.Next;
         end;
-        //
+        
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
         if dDiferenca <> 0 then
           Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-        //
       end;
-      //
-    end;
-    //
+    end; 
     Form7.ibDataSet7.First;
-    //
-  except end;
-  //
+    Mauricio Parizotto 2023-06-30}
+  except
+  end;
+
   try
-    //
     if Form7.sModulo = 'VENDA' then // Ok
     begin
-      //
       // RECEBER
-      //
       Form7.ibDataSet15.Edit;
       //
       if Form7.ibDataSet15.Modified then
@@ -162,10 +156,9 @@ begin
          Form7.ibDataSet15.Post;
          Form7.ibDataSet15.Edit;
       end;
-      //
+
       // Cria as duplicatas
       // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
-      //
       I := 0;
       Form7.ibDataSet7.First;
       while not Form7.ibDataSet7.Eof do
@@ -173,23 +166,21 @@ begin
         I := I + 1;
         Form7.ibDataSet7.Next;
       end;
-      //
+
       if I <> Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) then
       begin
-        //
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
         begin
           Form7.ibDataSet7.Delete;
           Form7.ibDataSet7.First;
         end;
-        //
+
         for I := 1 to Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) do
         begin
-          //
           Form7.ibDataSet7.Append;
           Form7.ibDataSet7NUMERONF.AsString := Form7.ibDataSet15NUMERONF.AsString;
-          //
+
           if Form7.sRPS <> 'S' then
           begin
             if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '002' then
@@ -203,9 +194,9 @@ begin
           begin
             Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,1)+'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,3,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
           end;
-          //
+
           Form7.ibDataSet7VALOR_DUPL.AsFloat          := Arredonda((Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR) / Form7.ibDataSet15DUPLICATAS.AsFloat,2);;
-          //
+
           if Form7.sRPS <> 'S' then
           begin
             Form7.ibDataSet7HISTORICO.Value := 'NFE NAO AUTORIZADA';
@@ -213,7 +204,7 @@ begin
           begin
             Form7.ibDataSet7HISTORICO.AsString := 'RPS número: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);
           end;
-          //
+
           Form7.ibDataSet7EMISSAO.asDateTime    := Form7.ibDataSet15EMISSAO.AsDateTime;
           Form7.ibDataSet7NOME.Value            := Form7.ibDataSet15CLIENTE.Value;
           Form7.ibDataSet7CONTA.AsString        := sConta;
@@ -232,13 +223,11 @@ begin
             Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
           if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
             Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
-          //
+
           Form7.ibDataSet7.Post;
-          //
         end;
-        //
+
         // Valor quebrado
-        //
         dDiferenca := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
@@ -246,36 +235,29 @@ begin
           dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
           Form7.ibDataSet7.Next;
         end;
-        //
+
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
         if dDiferenca <> 0 then
           Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-        //
       end;
-      //
       Form7.ibDataSet7.First;
-      //
     end;
   except
   end;
-  //
+
   try
-    //
     if Form7.sModulo = 'COMPRA' then
     begin
-      //
       // PAGAR
-      //
       if Form7.ibDataSet24.Modified then
       begin
          Form7.ibDataSet24.Post;
          Form7.ibDataSet24.Edit;
       end;
-      //
+
       // Cria as duplicatas
       // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
-      //
       I := 0;
       Form7.ibDataSet8.First;
       while not Form7.ibDataSet8.Eof do
@@ -283,20 +265,18 @@ begin
         I := I + 1;
         Form7.ibDataSet8.Next;
       end;
-      //
+
       if I <> Trunc(Form7.ibDataSet24DUPLICATAS.AsFloat) then
       begin
-        //
         Form7.ibDataSet8.First;
         while not Form7.ibDataSet8.Eof do
         begin
           Form7.ibDataSet8.Delete;
           Form7.ibDataSet8.First;
         end;
-        //
+        
         for I := 1 to Trunc(Form7.ibDataSet24DUPLICATAS.AsFloat) do
         begin
-          //
           Form7.ibDataSet8.Append;
           Form7.ibDataSet8NUMERONF.AsString   := Form7.ibDataSet24NUMERONF.AsString;
           Form7.ibDataSet8DOCUMENTO.Value     := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
@@ -317,11 +297,9 @@ begin
               ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
                -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
           Form7.ibDataSet8.Post;
-          //
         end;
-        //
+
         // Valor quebrado
-        //
         dDiferenca := Form7.ibDataSet24TOTAL.AsFloat;
         Form7.ibDataSet8.First;
         while not Form7.ibDataSet8.Eof do
@@ -329,21 +307,17 @@ begin
           dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet8VALOR_DUPL.AsFloat]));
           Form7.ibDataSet8.Next;
         end;
-        //
+
         Form7.ibDataSet8.First;
         Form7.ibDataSet8.Edit;
         if dDiferenca <> 0 then
           Form7.ibDataSet8VALOR_DUPL.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat + ddiferenca;
       end;
-      //
+
       Form7.ibDataSet8.First;
     end;
   except
   end;
-  //
-  /////////////
-  // the end //
-  /////////////
 end;
 
 procedure TForm18.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -352,13 +326,12 @@ var
   MyBookmark: TBookmark;
   iRegistro, iDuplicatas: Integer;
 begin
-  //
   try
     if Key = chr(46) then
       Key := chr(44);
     if (Key = chr(13)) or (Key = Chr(9) ) then
     begin
-      //
+      {
       if Form7.sModulo = 'CLIENTES' then
       begin
         MyBookmark  := Form7.ibDataSet7.GetBookmark;
@@ -366,7 +339,6 @@ begin
           Button4.SetFocus
         else
         begin
-          //
           iRegistro   := Form7.ibDataSet7.Recno;
           ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
           iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
@@ -387,7 +359,7 @@ begin
             end;
             Form7.ibDataSet7.Next;
           end;
-          //
+
           ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
           Form7.ibDataSet7.First;
           while not Form7.ibDataSet7.Eof do
@@ -395,19 +367,19 @@ begin
             dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
             Form7.ibDataSet7.Next;
           end;
-          //
+
           Form7.ibDataSet7.First;
           Form7.ibDataSet7.Edit;
           if dDiferenca <> 0 then
             Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-          //
+
           Form7.ibDataSet7.GotoBookmark(MyBookmark);
           Form7.ibDataSet7.FreeBookmark(MyBookmark);
           Form7.ibDataSet7.EnableControls;
-          //
         end;
       end;
-      //
+      Mauricio Parizotto 2023-06-30}
+
       if Form7.sModulo = 'VENDA' then // Ok
       begin
         MyBookmark  := Form7.ibDataSet7.GetBookmark;
@@ -415,7 +387,6 @@ begin
           Button4.SetFocus
         else
         begin
-          //
           iRegistro   := Form7.ibDataSet7.Recno;
           ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
           iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
@@ -437,7 +408,7 @@ begin
             end;
             Form7.ibDataSet7.Next;
           end;
-          //
+
           ddiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
           Form7.ibDataSet7.First;
           while not Form7.ibDataSet7.Eof do
@@ -445,19 +416,17 @@ begin
             dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
             Form7.ibDataSet7.Next;
           end;
-          //
+
           Form7.ibDataSet7.First;
           Form7.ibDataSet7.Edit;
           if dDiferenca <> 0 then Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-          //
+
           Form7.ibDataSet7.GotoBookmark(MyBookmark);
           Form7.ibDataSet7.FreeBookmark(MyBookmark);
           Form7.ibDataSet7.EnableControls;
-  //        Dbgrid1.Enabled := True;
-          //
         end;
       end;
-      //
+
       if Form7.sModulo = 'COMPRA' then
       begin
         MyBookmark  := Form7.ibDataSet8.GetBookmark;
@@ -465,11 +434,10 @@ begin
           Button4.SetFocus
         else
         begin
-          //
           iRegistro   := Form7.ibDataSet8.Recno;
           ddiferenca  := Form7.ibDataSet24TOTAL.Value;
           iDuplicatas := Trunc(Form7.ibDataSet24DUPLICATAS.AsFloat);
-          //
+
           Form7.ibDataSet8.DisableControls;
   //        Dbgrid1.Enabled := false;
           Form7.ibDataSet8.First;
@@ -487,7 +455,7 @@ begin
             end;
             Form7.ibDataSet8.Next;
           end;
-          //
+
           ddiferenca  := Form7.ibDataSet24TOTAL.Value;
           Form7.ibDataSet8.First;
           while not Form7.ibDataSet8.Eof do
@@ -495,44 +463,45 @@ begin
             dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet8VALOR_DUPL.AsFloat]));
             Form7.ibDataSet8.Next;
           end;
-          //
+
           Form7.ibDataSet8.First;
           Form7.ibDataSet8.Edit;
           if dDiferenca <> 0 then
             Form7.ibDataSet8VALOR_DUPL.AsFloat := Form7.ibDataSet8VALOR_DUPL.AsFloat + ddiferenca;
-          //
+
           Form7.ibDataSet8.GotoBookmark(MyBookmark);
           Form7.ibDataSet8.FreeBookmark(MyBookmark);
           Form7.ibDataSet8.EnableControls;
-  //        Dbgrid1.Enabled := True;
-          //
         end;
       end;
     end;
   except
 
   end;
-
 end;
 
 procedure TForm18.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
-    if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-    if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
-    if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
-  except end;
+    if Key = VK_RETURN then
+      Perform(Wm_NextDlgCtl,0,0);
 
+    if Key = VK_UP then
+      Perform(Wm_NextDlgCtl,-1,0);
+
+    if Key = VK_DOWN then
+      Perform(Wm_NextDlgCtl,0,0);
+  except
+  end;
 end;
 
 procedure TForm18.SMALL_DBEdit1Enter(Sender: TObject);
 var
   Total : Real;
 begin
-  //
   try
-    //
+    {
     if Form7.sModulo = 'CLIENTES' then // Ok
     begin
       Total := 0;
@@ -542,23 +511,22 @@ begin
         Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
         Form7.ibDataSet7.Next;
       end;
-      //
+
       if (Abs(Total - Form7.ibDataSet15TOTAL.AsFloat) > 0.01) and (Total<>0) then
       begin
-        //
         ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da renegociação. As parcelas serão recalculadas.');
-        //
+
         while not Form7.ibDataSet7.Eof do
         begin
           Form7.ibDataSet7.Delete;
           Form7.ibDataSet7.First;
         end;
-        //
+
         SMALL_DBEdit1Exit(Sender);
-        //
       end;
     end;
-    //
+    Mauricio Parizotto 2023-06-30}
+
     if Form7.sModulo = 'VENDA' then // Ok
     begin
       Total := 0;
@@ -568,25 +536,22 @@ begin
         Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
         Form7.ibDataSet7.Next;
       end;
-      //
+
       if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
       begin
         ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
-        //
+        
         while not Form7.ibDataSet7.Eof do
         begin
           Form7.ibDataSet7.Delete;
           Form7.ibDataSet7.First;
         end;
         SMALL_DBEdit1Exit(Sender);
-        //
       end;
     end;
-    //
-    //
+
     if Form7.sModulo = 'COMPRA' then
     begin
-      //
       Total := 0;
       Form7.ibDataSet8.First;
       while not Form7.ibDataSet8.Eof do
@@ -594,34 +559,29 @@ begin
         Total := Total + Form7.ibDataSet8VALOR_DUPL.AsFloat;
         Form7.ibDataSet8.Next;
       end;
-      //
+
       if (Abs(Total - Form7.ibDataSet24TOTAL.AsFloat) > 0.01) and (Total<>0) then
       begin
-        //
         ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
         Form7.ibDataSet8.First;
         while not Form7.ibDataSet8.Eof do Form7.ibDataSet8.Delete;
         SMALL_DBEdit1Exit(Sender);
-        //
       end;
-      //
     end;
-    //
     DbGrid1.Update;
-    //
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm18.SMALL_DBEdit16KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
-  if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
-  except end;
-
+    if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
+    if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
+    if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
+  except
+  end;
 end;
 
 procedure TForm18.Label10MouseLeave(Sender: TObject);
@@ -663,28 +623,47 @@ begin
        Form18.DBGrid1.Enabled       := False;
      end;
 
-     Label45.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat)]);
+     lblTotal.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat)]);
   end else
   begin
-    Form18.SMALL_DBEdit1.Enabled := True;
     Form18.DBGrid1.Enabled       := True;
+    
+    if Form7.sModulo <> 'CLIENTES' then
+    begin
+      SMALL_DBEdit1.Enabled := True;
+    end else
+    begin
+      edtQtdParc.Visible    := True;
+      edtQtdParc.Left := SMALL_DBEdit1.Left;
+      SMALL_DBEdit1.Visible := False;
+    end;
   end;
 
   try
     if AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString) = 'CAIXA' then
-       Form18.Close; // else if Alltrim(SMALL_DBEdit1.Text) = '' then SMALL_DBEdit1.Text := '1';
+       Form18.Close;
 
-    if SMALL_DBEdit1.CanFocus then
+    if Form7.sModulo <> 'CLIENTES' then
     begin
-      SMALL_DBEdit1.SetFocus;
-      SMALL_DBEdit1.SelectAll;
+      if SMALL_DBEdit1.CanFocus then
+      begin
+        SMALL_DBEdit1.SetFocus;
+        SMALL_DBEdit1.SelectAll;
+      end;
+    end else
+    begin
+      if edtQtdParc.CanFocus then
+      begin
+        edtQtdParc.SetFocus;
+        edtQtdParc.SelectAll;
+      end;
     end;
 
     if (AllTrim(Form7.ibDataSet14CONTA.AsString) = '') then
     begin
       Form7.ibDataSet12.First;
 
-      if Form7.SModulo <> 'CLIENTES' then  // Ok
+      if Form7.SModulo <> 'CLIENTES' then
       begin
         Form43.IdentificadorPlanoContas := FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
 
@@ -708,7 +687,7 @@ begin
 
     CheckBox1.Visible := False;
 
-    if Form7.SModulo = 'CLIENTES' then  // Ok
+    if Form7.SModulo = 'CLIENTES' then
     begin
       Form7.ibQuery1.Close;
       Form7.IBQuery1.SQL.Clear;
@@ -723,8 +702,9 @@ begin
       Form7.ibDataSet7VENCIMENTO.Visible := True;
       Form7.ibDataSet7VALOR_DUPL.Visible := True;
       Form7.ibDataSet7PORTADOR.Visible   := True;
-      Label45.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat)]);
-      SMALL_DBEdit1.DataSource := Form7.DataSource15;
+      //lblTotal.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat)]);
+      lblTotal.Caption := Format('%12.2n',[(vlrRenegociacao)]);
+      //SMALL_DBEdit1.DataSource := Form7.DataSource15;
       // ***********************************
       // Preenche o combobox com os bancos *
       // configurados no controle bancário *
@@ -767,12 +747,12 @@ begin
 
       dbGrid1.DataSource := Form7.DataSource7;
 
-      if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then
+      {if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then
       begin
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15DUPLICATAS.AsFloat := 1;
         Form7.ibDataSet15.Post;
-      end;
+      end;  Mauricio Parizotto 2023-06-30 }
     end;
 
     if Form7.SModulo = 'VENDA' then // Ok
@@ -787,7 +767,7 @@ begin
       Form7.ibDataSet7VENCIMENTO.Visible := True;
       Form7.ibDataSet7VALOR_DUPL.Visible := True;
       Form7.ibDataSet7PORTADOR.Visible   := True;
-      Label45.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)]);
+      lblTotal.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)]);
       SMALL_DBEdit1.DataSource := Form7.DataSource15;
       // ***********************************
       // Preenche o combobox com os bancos *
@@ -851,7 +831,7 @@ begin
       Form7.ibDataSet8VALOR_DUPL.Visible := True;
       Form7.ibDataSet8PORTADOR.Visible   := True;
 
-      Label45.Caption := Format('%12.2n',[Form7.ibDataSet24TOTAL.AsFloat]);
+      lblTotal.Caption := Format('%12.2n',[Form7.ibDataSet24TOTAL.AsFloat]);
       SMALL_DBEdit1.DataSource := Form7.DataSource24;
       dbGrid1.DataSource := Form7.DataSource8;
 
@@ -863,16 +843,27 @@ begin
       end;
     end;
 
-    if SMALL_DBEdit1.CanFocus then
+    if Form7.sModulo <> 'CLIENTES' then
     begin
-      SMALL_DBEdit1.SetFocus;
-      SMALL_DBEdit1.SelectAll;
-    end;
+      if SMALL_DBEdit1.CanFocus then
+      begin
+        SMALL_DBEdit1.SetFocus;
+        SMALL_DBEdit1.SelectAll;
+      end;
 
-    Form18.SMALL_DBEdit1Exit(Sender);
-    //
-  except end;
-  //
+      SMALL_DBEdit1Exit(Sender);
+    end else
+    begin
+      if edtQtdParc.CanFocus then
+      begin
+        edtQtdParc.SetFocus;
+        edtQtdParc.SelectAll;
+      end;
+
+      edtQtdParcExit(Sender);
+    end;
+  except
+  end;
 end;
 
 procedure TForm18.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -890,18 +881,17 @@ begin
     if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then DBGrid1.Canvas.Font.Color   := clRed else DBGrid1.Canvas.Font.Color   := clBlack;
     dbGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
   end;
-  //
+
   dbGrid1.Canvas.Brush.Color := Form7.Panel7.Color;
   dbGrid1.Canvas.Pen.Color   := clRed;
-  //
+
   xRect.Left   := REct.Left;
   xRect.Top    := -1;
   xRect.Right  := Rect.Right;
   xRect.Bottom := Rect.Bottom - Rect.Top + 0;
-  //
+
   dbGrid1.Canvas.FillRect(xRect);
-  //
-  //
+
   with dbgrid1.Canvas do
   begin
     OldBkMode := SetBkMode(Handle, TRANSPARENT);
@@ -910,8 +900,8 @@ begin
     dbgrid1.Canvas.Font.Color := clblack;
     SetBkMode(Handle, OldBkMode);
   end;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm18.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -919,7 +909,6 @@ procedure TForm18.DBGrid1KeyDown(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
-  //
   try
     if (Key = VK_RETURN) then
     begin
@@ -932,7 +921,8 @@ begin
         if dBgrid1.DataSource.DataSet.EOF then Button4.SetFocus;
       end;
     end;
-  except end;
+  except
+  end;
 end;
 
 procedure TForm18.DBGrid1ColEnter(Sender: TObject);
@@ -949,26 +939,25 @@ end;
 
 procedure TForm18.Button4Click(Sender: TObject);
 begin
-  Form18.Close;
+  Close;
 end;
 
 procedure TForm18.CheckBox1Click(Sender: TObject);
 var
   Mais1ini : tInifile;
 begin
-  //
-try
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-  if CheckBox1.Checked then
-  begin
-    Mais1Ini.WriteString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Sim');
-  end else
-  begin
-    Mais1Ini.WriteString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não');
+  try
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+    if CheckBox1.Checked then
+    begin
+      Mais1Ini.WriteString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Sim');
+    end else
+    begin
+      Mais1Ini.WriteString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não');
+    end;
+    Mais1Ini.Free;
+  except
   end;
-  Mais1Ini.Free;
-  except end;
-  //
 end;
 
 procedure TForm18.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -977,11 +966,11 @@ var
   bButton : Integer;
   F : TextFile;
   I : Integer;
-  sSenhaX, sSenha : String;
+  //sSenhaX, sSenha : String;
   ftotal1 : Real;
   Total : Real;
 begin
-  if Form7.sModulo = 'VENDA' then // Ok
+  if Form7.sModulo = 'VENDA' then
   begin
     Total := 0;
     Form7.ibDataSet7.First;
@@ -1078,13 +1067,12 @@ begin
       WriteLn(F,Form7.sTextoDoAcordo);
       CloseFile(F); // Fecha o arquivo
       ShellExecute( 0, 'Open',pchar('ACORDO'+Form7.ibDataSet15NUMERONF.AsString+'.txt'),'','', SW_SHOWMAXIMIZED);
-      //
-      // THE END ACORDO
-      //
+
       bButton := Application.MessageBox(Pchar('Confirma a renegociação?'),'Atenção', mb_YesNo + mb_DefButton2 + MB_ICONQUESTION);
-      //
+
       if bButton = IDYES then
       begin
+        {
         Form22.Show;
         Form22.Label6.Caption := '';
         Form22.Label6.Width   := Screen.Width;
@@ -1103,7 +1091,10 @@ begin
                         Copy(sSenhaX,(I*5)-4,5)
                         )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
         // ----------------------------- //
-        if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
+        Mauricio Parizotto 2023-07-03}
+
+        //if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
+        if GetSenhaAdmin then
         begin
           Form7.ibQuery1.Close;
           Form7.IBQuery1.SQL.Clear;
@@ -1114,7 +1105,7 @@ begin
           Form7.IBQuery1.SQL.Clear;
           Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=1 where coalesce(ATIVO,0)=9 and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
           Form7.IBQuery1.Open;
-          
+
           Form7.IBDataSet2.Edit;
           Form7.IBDataSet2MOSTRAR.AsFloat := 0;
         end else
@@ -1193,6 +1184,133 @@ begin
   except
   end;
 end;
+
+procedure TForm18.edtQtdParcEnter(Sender: TObject);
+var
+  Total : Real;
+begin
+  try
+    if Form7.sModulo = 'CLIENTES' then // Ok
+    begin
+      Total := 0;
+      Form7.ibDataSet7.First;
+      while not Form7.ibDataSet7.Eof do
+      begin
+        Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
+        Form7.ibDataSet7.Next;
+      end;
+
+      //if (Abs(Total - Form7.ibDataSet15TOTAL.AsFloat) > 0.01) and (Total<>0) then
+      if (Abs(Total - vlrRenegociacao) > 0.01) and (Total<>0) then
+      begin
+        ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da renegociação. As parcelas serão recalculadas.');
+
+        while not Form7.ibDataSet7.Eof do
+        begin
+          Form7.ibDataSet7.Delete;
+          Form7.ibDataSet7.First;
+        end;
+
+        edtQtdParcExit(Sender);
+      end;
+    end;
+
+    DbGrid1.Update;
+  except
+  end;
+end;
+
+procedure TForm18.edtQtdParcExit(Sender: TObject);
+Var
+  I : Integer;
+  dDiferenca : Double;
+  QtdParc : integer;
+begin
+  ShortDateFormat := 'dd/mm/yyyy';
+
+  QtdParc := StrToIntDef(edtQtdParc.Text,1);
+
+  try
+    if Form7.sModulo = 'CLIENTES' then
+    begin
+      // Cria as duplicatas
+      // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
+
+      I := 0;
+      Form7.ibDataSet7.First;
+      while not Form7.ibDataSet7.Eof do
+      begin
+        I := I + 1;
+        Form7.ibDataSet7.Next;
+      end;
+
+      if I <> QtdParc then
+      begin
+        Form7.ibDataSet7.First;
+        while not Form7.ibDataSet7.Eof do
+        begin
+          Form7.ibDataSet7.Delete;
+          Form7.ibDataSet7.First;
+        end;
+
+        //for I := 1 to Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) do
+        for I := 1 to QtdParc do
+        begin
+          Form7.ibDataSet7.Append;
+          //Form7.ibDataSet7NUMERONF.AsString                          := Form7.ibDataSet15NUMERONF.AsString;
+          Form7.ibDataSet7NUMERONF.AsString                          := nrRenegociacao;
+          //Form7.ibDataSet7DOCUMENTO.Value                            := 'RE'+Right(Form7.ibDataSet15NUMERONF.AsString,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
+          Form7.ibDataSet7DOCUMENTO.Value                            := 'RE'+Right(nrRenegociacao,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
+          //Form7.ibDataSet7VALOR_DUPL.AsFloat                         := Arredonda((Form7.ibDataSet15TOTAL.AsFloat) / Form7.ibDataSet15DUPLICATAS.AsFloat,2);
+          Form7.ibDataSet7VALOR_DUPL.AsFloat                         := Arredonda((vlrRenegociacao) / QtdParc,2);
+          //Form7.ibDataSet7HISTORICO.Value                            := 'CODIGO DO ACORDO '+Form7.ibDataSet15NUMERONF.AsString;
+          Form7.ibDataSet7HISTORICO.Value                            := 'CODIGO DO ACORDO '+nrRenegociacao;
+          Form7.ibDataSet7EMISSAO.asDateTime                         := Date;
+          Form7.ibDataSet7NOME.Value                                 := Form7.ibDataSet2NOME.Value;
+          Form7.ibDataSet7CONTA.AsString                             := sConta;
+
+          if I = 1 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
+          if I = 2 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
+          if I = 3 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
+          if I > 3 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit6.Text))+((StrToInt(AllTrim(Form19.MaskEdit6.Text))-StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
+
+          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
+          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
+            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
+          
+          Form7.ibDataSet7.Post;
+        end;
+
+        // Valor quebrado
+        //dDiferenca := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+        dDiferenca := (vlrRenegociacao - Form1.fRetencaoIR);
+        Form7.ibDataSet7.First;
+        
+        while not Form7.ibDataSet7.Eof do
+        begin
+          dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+          Form7.ibDataSet7.Next;
+        end;
+        
+        Form7.ibDataSet7.First;
+        Form7.ibDataSet7.Edit;
+        if dDiferenca <> 0 then
+          Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+      end;
+    end;
+
+    Form7.ibDataSet7.First;
+  except
+  end;
+end;
+
+
+
 
 end.
 

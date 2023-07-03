@@ -19670,23 +19670,21 @@ procedure TForm7.ibDataSet15NewRecord(DataSet: TDataSet);
 var
   sN, sNovoNumero : String;
 begin
-  //
   IBDataSet99.Close;
   IBDataSet99.SelectSQL.Clear;
   IBDataSet99.SelectSQL.Add('select gen_id(G_NSU,1) from rdb$database');
   IBDataSet99.Open;
   sNSU := StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0);
   IBDataSet99.Close;
-  //
+
   try
-    //
     Form7.IBDataSet99.Close;
     Form7.IBDataSet99.SelectSQL.Clear;
-    //
+
     // Notas fiscais de saída (vendas) série 001
     // Notas fiscais de saída (vendas) série 002
     // Notas fiscais de saída (vendas) série XXX
-    //
+
     if Form7.sTitulo = 'Notas fiscais de saída (vendas) série 001' then
     begin
       Form7.ibDataset99.SelectSql.Add('select gen_id(G_SERIE1,1) from rdb$database');
@@ -19706,29 +19704,23 @@ begin
         end;
       end;
     end;
-    //
+
     Form7.IBDataSet99.Open;
-    //
   except
-    //
     on E: Exception do
     begin
       ShowMessage(E.Message);
     end
-    //
   end;
-  //
+
   // Notas fiscais de saída (vendas) série 001
   // Notas fiscais de saída (vendas) série 002
   // Notas fiscais de saída (vendas) série XXX
-  //
-  //
   sNovoNumero := StrZero(StrtoFloat(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),9,0)+Right(Form7.sTitulo,3);
   sN          := StrZero(StrtoFloat(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),9,0);
-  //
+
   if sN = '000000001' then
   begin
-    //
     while Application.MessageBox(pChar(
     chr(10) +'Iniciar a numeração de '+ sN +' para a série '+ Right(Form7.sTitulo,3) +'?'),
     'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION) <> idYes do
@@ -19740,8 +19732,7 @@ begin
         sN := '000000001';
       end;
     end;
-    //
-    //
+
     if Application.MessageBox(pChar('Você tem certeza que quer iniciar a numeração de '+ sN +' para a série '+Right(Form7.sTitulo,3)+'? Considere pedir ajuda ao seu contador.'),'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONQUESTION) = idYes then
     begin
       sNovoNumero := sN+Right(Form7.sTitulo,3);
@@ -19749,20 +19740,12 @@ begin
     begin
       sN := '000000001';
     end;
-    //
-//    if Right(Form7.sTitulo,3) = 'RPS' then
-//    begin
-//      if sN = '000000001' then
-//      begin
-//        sN := '090000001';
-//      end;
-//    end;
-    //
+
     sNovoNumero := sN+Right(Form7.sTitulo,3);
-    //
+
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
-    //
+
     if Form7.sTitulo = 'Notas fiscais de saída (vendas) série 001' then
     begin
       Form1.ibQuery1.SQL.Add('set generator G_SERIE1 to '+SN+' ');
@@ -19788,16 +19771,12 @@ begin
         end;
       end;
     end;
-    //
-    //
-    // ShowMessage(Form1.ibQuery1.TExt);
-    //
+
     Form1.ibQuery1.ExecSQL;
-    //
   end;
-  //
+
   Form7.IBDataSet99.Close;
-  //
+  
   Form7.ibDataSet15.Edit;
   Form7.ibDataSet15REGISTRO.AsString   := sProximo;
   Form7.ibDataSet15NSU.AsString        := sNSU;
@@ -19822,24 +19801,21 @@ begin
   Form7.ibDataSet15EMISSAO.Value       := Date;
   Form7.ibDataSet15SAIDAD.Value        := Date;
   Form7.ibDataSet15SAIDAH.Value        := TimeToStr(Time);
-  //
+
   if Right(Form7.sTitulo,3) = 'RPS' then
   begin
     Form7.ibDataSet15MODELO.Value        := 'SV';
   end;
-  //
+
   Form7.ibDataSet15.Post;
-  //
+  
   if Form12.Visible then
     Form7.ibDataSet2.Append;
-  //
 end;
 
 procedure TForm7.ibDataSet2MAESetText(Sender: TField; const Text: String);
 begin
-  //
   // Labels inteligentes
-  //
   if Pos('$',Sender.DisplayLabel) <> 0 then
   begin
     Sender.AsString  := AllTrim(Format('%22.2n',[StrToFloat(LimpaNumeroDeixandoAvirgula('0'+Text))]));
@@ -19853,20 +19829,19 @@ begin
       Sender.AsString := Text;
     end;
   end;
-  //
+
   if Form10.Visible then
   begin
     if (pos('<',Sender.AsString)<>0) and (pos('>',Sender.AsString)<>0) then
     begin
       ShowMessage('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.');
     end;
-    //
+
     if Length(LimpaNumero(Sender.AsString))=9 then
     begin
       ShowMessage('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.');
     end;
   end;
-  //
 end;
 
 procedure TForm7.Imprimirdocumento1Click(Sender: TObject);

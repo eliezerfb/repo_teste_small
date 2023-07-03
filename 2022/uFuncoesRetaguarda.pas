@@ -2,27 +2,34 @@ unit uFuncoesRetaguarda;
 
 interface
 
-function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
-function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
-function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
-function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
-function XmlValueToFloat(Value: String;
-  SeparadorDecimalXml: String = '.'): Double;
-function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
-function FormatXMLToFloat(sValor: String): Double;
-function TextoIdentificadorFinalidadeNFe(Value: String): String;
-procedure LogRetaguarda(sTexto: String);
-function GetIP:string;
+  function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
+  function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
+  function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+  function FormatXMLToFloat(sValor: String): Double;
+  function TextoIdentificadorFinalidadeNFe(Value: String): String;
+  procedure LogRetaguarda(sTexto: String);
+  function GetIP:string;
+  function GetSenhaAdmin : Boolean;
 
 implementation
 
 uses
   SysUtils
+  , Windows
   , StrUtils
+  , Dialogs
   , Classes
   , Forms
   , Winsock
   , SmallFunc
+  , IniFiles
+  , Unit22
+  , Unit3
+  , Mais
+  , Controls
   ;
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
@@ -209,6 +216,46 @@ begin
   end;
   WSACleanup;
 end;
+
+function GetSenhaAdmin : Boolean;
+var
+  Mais1Ini : tIniFile;
+  sSenhaX, sSenha : string;
+  I : integer;
+begin
+  Result := False;
+
+  Form22.Show;
+  Form22.Label6.Caption := '';
+  Form22.Label6.Width   := Screen.Width;
+  Form22.Label6.Repaint;
+  Senhas2.ShowModal;
+  Form22.Close;
+  Senha2:=Senhas2.SenhaPub2;
+  Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+  sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
+  sSenha := '';
+  // ----------------------------- //
+  // Fórmula para ler a nova senha //
+  // ----------------------------- //
+  for I := 1 to (Length(sSenhaX) div 5) do
+    sSenha := Chr((StrToInt(
+                  Copy(sSenhaX,(I*5)-4,5)
+                  )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
+  // ----------------------------- //
+
+  Result := AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2);
+
+  if Result = False then
+  begin
+    if Application.MessageBox(PansiChar('Senha inválida. Deseja tentar novamente?'),
+                              'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
+    begin
+      Result := GetSenhaAdmin;
+    end;
+  end;
+end;
+
 
 end.
 

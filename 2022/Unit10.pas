@@ -343,7 +343,7 @@ type
     SMALL_DBEdit67: TSMALL_DBEdit;
     Label96: TLabel;
     Label97: TLabel;
-    Button6: TBitBtn;
+    btnRenogiarDivida: TBitBtn;
     Label98: TLabel;
     SMALL_DBEdit68: TSMALL_DBEdit;
     GroupBox3: TGroupBox;
@@ -570,7 +570,7 @@ type
       Shift: TShiftState);
     procedure ComboBox14Change(Sender: TObject);
     procedure ComboBox15Change(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
+    procedure btnRenogiarDividaClick(Sender: TObject);
     procedure Panel2DblClick(Sender: TObject);
     procedure Orelha_TAGSShow(Sender: TObject);
     procedure Orelha_TAGSExit(Sender: TObject);
@@ -4056,7 +4056,7 @@ begin
   Form10.Height := 650;
 
   btnOK.Left  := Panel2.Width - btnOK.Width - 10;
-  Button6.Left  := btnOK.Left - 10 - Button6.Width;
+  btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;
 
   Form7.ArquivoAberto.DisableControls;
   Form7.TabelaAberta.DisableControls;
@@ -4433,7 +4433,7 @@ begin
   // if (Form7.sModulo = 'CLIENTES') then iTop := iTop + 15 else iTop := iTop + 30;
   Button9.Visible  := False;
   Button12.Visible := False;
-  Button6.Visible  := False;
+  btnRenogiarDivida.Visible  := False;
 
   if Form7.sModulo = 'CLIENTES' then
   begin
@@ -4447,7 +4447,7 @@ begin
     begin
       if Form1.Image201.Visible then
       begin
-        Button6.Visible := True;
+        btnRenogiarDivida.Visible := True;
       end;
     end;
   end;
@@ -8358,7 +8358,7 @@ begin
   end;
 end;
 
-procedure TForm10.Button6Click(Sender: TObject);
+procedure TForm10.btnRenogiarDividaClick(Sender: TObject);
 var
   ftotal1, fTotal2 : Real;
   bButton : Integer;
@@ -8369,62 +8369,72 @@ begin
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('create generator G_RENEGOCIACAO');
     Form1.ibQuery2.ExecSQL;
-    //
-  except end;
-  //
+  except
+  end;
+
   Form7.sTextoDoAcordo := '';
-  //
+
   Form7.ibDataSet7.Close;
-  Form7.ibDataSet7.Selectsql.Clear;
-  Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where SubString(DOCUMENTO from 1 for 2)=''RE'' and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and coalesce(ATIVO,9)<>1 and Coalesce(VALOR_RECE,999999999)=0 order by VENCIMENTO');
+  Form7.ibDataSet7.Selectsql.Text := ' Select * from RECEBER '+
+                                     ' Where SubString(DOCUMENTO from 1 for 2)=''RE'' '+
+                                     '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                     '   and coalesce(ATIVO,9)<>1 '+
+                                     '   and Coalesce(VALOR_RECE,999999999)=0 '+
+                                     ' Order by VENCIMENTO';
   Form7.ibDataSet7.Open;
   Form7.ibDataSet7.Last;
-  //
+
   if Copy(Form7.ibDataSet7DOCUMENTO.AsString,1,2) = 'RE' then
   begin
     // Abre uma negociação já existente    
     sNumeroNF := LimpaNumero(Form7.ibDataSet7HISTORICO.AsString);
-    //
+
     Form7.ibQuery1.Close;
     Form7.IBQuery1.SQL.Clear;
-    Form7.IBQuery1.SQL.Add('update RECEBER set PORTADOR='''', ATIVO=0 where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) + ' and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
+    Form7.IBQuery1.SQL.Add(' update RECEBER set PORTADOR='''', ATIVO=0 '+
+                           ' where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
+                           ' and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
     Form7.IBQuery1.Open;
-    //
+
     Form7.IBDataSet2.Edit;
     Form7.IBDataSet2MOSTRAR.AsFloat := 1;
-    //
+
     // Total das parcelas em aberto
-    //
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.Selectsql.Clear;
-    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and coalesce(ATIVO,9)<>1 and SubString(DOCUMENTO from 1 for 2)<>''RE'' and Coalesce(VALOR_RECE,999999999)=0 order by VENCIMENTO');
+    Form7.ibDataSet7.Selectsql.Add(' Select * from RECEBER '+
+                                   ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                   '   and coalesce(ATIVO,9)<>1 and SubString(DOCUMENTO from 1 for 2)<>''RE'' and Coalesce(VALOR_RECE,999999999)=0 '+
+                                   ' Order by VENCIMENTO');
     Form7.ibDataSet7.Open;
-    //
   end else
   begin
     // Nova negociação
     try
-      //
       Form7.ibQuery2.Close;
       Form7.ibQuery2.SQL.Clear;
       Form7.ibQuery2.SQL.Add('select gen_id(G_RENEGOCIACAO,1) from rdb$database');
       Form7.ibQuery2.Open;
-      //
+
       sNumeroNF := strZero(StrToInt(Form7.ibQuery2.FieldByname('GEN_ID').AsString),12,0);
-    except end;
-    
+    except
+    end;
+
     // Total das parcelas em aberto
     Form7.ibDataSet7.Close;
-    Form7.ibDataSet7.Selectsql.Clear;
-    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and coalesce(ATIVO,9)<>1 and Coalesce(VALOR_RECE,999999999)=0 order by VENCIMENTO');
+    Form7.ibDataSet7.Selectsql.Text := ' Select * from RECEBER '+
+                                       ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                       '   and coalesce(ATIVO,9)<>1 '+
+                                       '   and Coalesce(VALOR_RECE,999999999)=0 '+
+                                       ' Order by VENCIMENTO';
     Form7.ibDataSet7.Open;
   end;
-  //
+  
   Form7.sTextoDoAcordo := 'Parcela    Vencimento   Valor R$      Atualizado R$ '+chr(13)+chr(10)+
                           '---------- ------------ ------------- --------------'+chr(13)+chr(10);
   fTotal1 := 0;
   fTotal2 := 0;
-  //
+  
   while not Form7.ibDataSet7.Eof do
   begin
     Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + Copy(Form7.ibDataSet7DOCUMENTO.AsString+Replicate(' ',10),1,10) +' '+DateTimeToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime)+' '+Format('%15.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat])+' '+Format('%15.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat])+chr(13)+chr(10);
@@ -8432,15 +8442,14 @@ begin
     fTotal2 := fTotal2 + Form7.ibDataSet7VALOR_JURO.AsFloat;
     Form7.ibDataSet7.Next;
   end;
-  //
+
   Form7.sTextoDoAcordo := Form7.sTextoDoAcordo +
                           '                        ------------- ---------------'+chr(13)+chr(10)+
                           '                       '+Format('%15.2n',[fTotal1])+Format('%15.2n',[ftotal2])+chr(13)+chr(10);  
   if fTotal1 <> 0 then
   begin
-    //
     bButton := Application.MessageBox(Pchar('Considerar o valor atualizado com juros?'),'Atenção', mb_YesNo + mb_DefButton2 + MB_ICONQUESTION);
-    //
+
     if bButton = IDYES then
     begin
       Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + chr(13) + chr(10) + 'Valor atualizado calculado com a taxa de juros de '+AllTrim(Format('%15.4n',[Form1.fTaxa]))+' ao dia.'+chr(13)+chr(10);
@@ -8449,8 +8458,8 @@ begin
     begin
       Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + chr(13) + chr(10) + 'Valor atualizado calculado com a taxa de juros de '+AllTrim(Format('%15.4n',[Form1.fTaxa]))+' ao dia foi desconsiderado.'+chr(13)+chr(10);
     end;
-    //
-    Form7.ibDataSet15.Close;
+    
+    {Form7.ibDataSet15.Close;
     Form7.ibDataSet15.SelectSql.Clear;
     Form7.ibDataset15.SelectSql.Add('select first 1 * from VENDAS order by NUMERONF');
     Form7.ibDataset15.Open;
@@ -8459,28 +8468,35 @@ begin
     Form7.ibDataSet15DUPLICATAS.AsFloat  := 0;
     Form7.ibDataSet15TOTAL.AsFloat       := fTotal1;
     Form7.ibDataSet15CLIENTE.AsString    := Form7.IBDataSet2NOME.AsString;
-    Form7.ibDataSet15NUMERONF.AsString   := sNumeroNF;
-    //
+    Form7.ibDataSet15NUMERONF.AsString   := sNumeroNF; Mauricio Parizotto 2023-06-30}
+
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.Selectsql.Clear;
-    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NUMERONF='+QuotedStr(sNumeroNF)+' and  NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' order by REGISTRO');
+    Form7.ibDataSet7.Selectsql.Add(' Select * from RECEBER '+
+                                   ' Where NUMERONF='+QuotedStr(sNumeroNF)+
+                                   '   and  NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                   ' Order by REGISTRO');
     Form7.ibDataSet7.Open;
-    //
-    while not Form7.ibDataSet7.Eof do
+
+
+    {while not Form7.ibDataSet7.Eof do
     begin
       Form7.ibDataSet15DUPLICATAS.AsFloat := Form7.ibDataSet15DUPLICATAS.AsFloat + 1;
       Form7.ibDataSet7.Next;
     end;
     //
-    if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then Form7.ibDataSet15DUPLICATAS.AsFloat  := 1;
+    if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then
+      Form7.ibDataSet15DUPLICATAS.AsFloat  := 1;
     //
-    Form7.ibDataset7.First;
-    //
+    Form7.ibDataset7.First; Mauricio Parizotto 2023-06-30}
+
     Form18.Caption := 'Renegociação de dívida';
+    Form18.vlrRenegociacao := fTotal1;
+    Form18.nrRenegociacao := sNumeroNF;
     Form18.ShowModal;
     Form18.Caption := 'Desdobramento das duplicatas';
-    //
-    Form7.ibDataSet15.Cancel;
+
+    //Form7.ibDataSet15.Cancel;
   end;
 end;
 
