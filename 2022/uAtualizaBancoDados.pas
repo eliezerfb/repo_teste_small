@@ -1218,6 +1218,23 @@ begin
       ExecutaComando('commit');
     end;
 
+  end
+  else
+  begin
+    // Se existir ICM.BCPISCOFINS não deve existir ICM.BCPIS e ICM.BCCOFINS
+
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCPIS') then
+    begin
+      if ExecutaComando('alter table ICM drop BCPIS') then
+        ExecutaComando('commit');
+    end;
+
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'BCCOFINS') then
+    begin
+      if ExecutaComando('alter table ICM drop BCCOFINS') then
+        ExecutaComando('commit');
+    end;
+
   end;
   {Sandro Silva 2023-07-03 fim}
 
