@@ -26,6 +26,8 @@ function ImportaNF(pP1: boolean; sP1: String):Boolean;
 
 implementation
 
+uses uFuncoesRetaguarda;
+
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
 
 function RetornarCodProdInativo: String;
@@ -701,6 +703,17 @@ begin
               Form7.ibDataSet24VFCPST.AsString      := StringReplace(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFCPST').Text, '.', ',', [rfReplaceAll]);
           except
           end;
+
+          {Sandro Silva 2023-07-03 inicio}
+          try
+            if xmlNodeValue(SXML, '//vol/pesoB') <> '' then
+              Form7.ibDataSet24PESOBRUTO.AsFloat := XmlValueToFloat(xmlNodeValue(SXML, '//vol/pesoB'));
+            if xmlNodeValue(SXML, '//vol/pesoL') <> '' then
+              Form7.ibDataSet24PESOLIQUI.AsFloat := XmlValueToFloat(xmlNodeValue(SXML, '//vol/pesoL'));
+          except
+          
+          end;
+          {Sandro Silva 2023-07-03 fim}
 
           try
             Form7.ibDataSet24NFEXML.AsString := sXML;
