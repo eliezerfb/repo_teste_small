@@ -10397,15 +10397,8 @@ begin
           // adiciona o valor T, na string, na posição que representa a coluna MODELO (Segunda posição)
           //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
           sMostra := Copy(sMostra, 1, 1) + 'T' + Copy(sMostra, 2, Length(sMostra)); // habilita a coluna MODELO
-          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
-        //end
-        //else
-        //begin
-        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
         end;
 
-        //iCampos                := 26;
-        //Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
         {Sandro Silva 2023-03-27 fim}
         if Length(sMostra) = 27 then // habilita a coluna VFCPST
         begin
@@ -10413,17 +10406,10 @@ begin
           // adiciona o valor T, na string, na posição que representa a coluna VFCPST (décima oitava posição)
           //sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT');
           sMostra := Copy(sMostra, 1, 18) + 'T' + Copy(sMostra, 19, Length(sMostra)); // habilita a coluna VFCPST
-          //Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
-        //end
-        //else
-        //begin
-        //  sMostra := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTFFT');
         end;
         if sMostra <> Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTFFT') then
           Mais1Ini.WriteString(sModulo,'Mostrar', sMostra); // Sandro Silva 2023-04-17
         iCampos                := 28;
-        //sMostra := Copy(Mais1Ini.ReadString(sModulo,'Mostrar','') + DupeString('T', iCampos), 1, iCampos);// Lê a configuração salva, completa com "T" conforme o total de campos definido e considera as primeiras posições conforme o total de campos definido
-        //Form7.ibDataSet15.FieldByName('MODELO').Visible := True;
         {Sandro Silva 2023-04-12 fim}
 
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
@@ -11245,8 +11231,8 @@ begin
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
         sMostra   := Replicate('T',47);
-        iCampos   := 44;
-        iCampos   := 5;
+        // Sandro Silva 2023-07-03 iCampos   := 44;
+        iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5;
       end;
 
       if sModulo = 'TRANSPORT' then
