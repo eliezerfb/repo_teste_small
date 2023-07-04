@@ -39,7 +39,8 @@ begin
   FoQry.SQL.Add('    ALTERACA.DATA AS "Data"');
   FoQry.SQL.Add('    , ALTERACA.PEDIDO AS "Número"');
   FoQry.SQL.Add('    , ALTERACA.CLIFOR AS "Cliente"');
-  FoQry.SQL.Add('    , ALTERACA.ITEM ||'' - ''|| ALTERACA.DESCRICAO AS "Produto"');
+  FoQry.SQL.Add('    , ALTERACA.ITEM AS "Código"');
+  FoQry.SQL.Add('    , ALTERACA.DESCRICAO AS "Descrição"');
   FoQry.SQL.Add('    , CAST(ALTERACA.TOTAL AS NUMERIC(18,2)) AS "Total"');
   FoQry.SQL.Add('FROM ALTERACA');
   FoQry.SQL.Add('WHERE');

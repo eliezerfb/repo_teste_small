@@ -37,9 +37,10 @@ begin
   FoQry.SQL.Clear;
   FoQry.SQL.Add('SELECT');
   FoQry.SQL.Add('    VENDAS.EMISSAO AS "Data"');
-  FoQry.SQL.Add('    , VENDAS.NUMERONF AS "Número da NF"');
+  FoQry.SQL.Add('    , SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9) ||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS "Número da NF"');
   FoQry.SQL.Add('    , VENDAS.CLIENTE AS "Cliente"');
-  FoQry.SQL.Add('    , ITENS001.CODIGO || '' - '' || ITENS001.DESCRICAO AS "Produto"');
+  FoQry.SQL.Add('    , ITENS001.CODIGO AS "Código"'); 
+  FoQry.SQL.Add('    , ITENS001.DESCRICAO AS "Descrição"');
   FoQry.SQL.Add('    , CAST(ITENS001.TOTAL AS NUMERIC(18,2)) AS "Valor"');
   FoQry.SQL.Add('FROM VENDAS');
   FoQry.SQL.Add('INNER JOIN ITENS001');

@@ -37,7 +37,7 @@ begin
   FoQry.SQL.Clear;
   FoQry.SQL.Add('SELECT');
   FoQry.SQL.Add('    VENDAS.EMISSAO AS "Data"');
-  FoQry.SQL.Add('    , VENDAS.NUMERONF AS "Número da NF"');
+  FoQry.SQL.Add('    , SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9) ||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS "Número da NF"');
   FoQry.SQL.Add('    , VENDAS.CLIENTE AS "Cliente"');
   FoQry.SQL.Add('    , CAST(VENDAS.TOTAL AS NUMERIC(18,2)) AS "Total"');
   FoQry.SQL.Add('FROM VENDAS');

@@ -51,7 +51,7 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
     Top = 88
     Width = 225
     Height = 49
-    Caption = 'Relatorio'
+    Caption = 'Relat'#243'rio'
     TabOrder = 2
     object cbNota: TCheckBox
       Left = 8
