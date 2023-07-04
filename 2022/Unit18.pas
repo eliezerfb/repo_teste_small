@@ -46,7 +46,7 @@ type
   private
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
-    procedure ExibeFormasDePagamento;
+    procedure ExibeOpcoes;
     procedure CarregacboDocCobranca; 
   public
     { Public declarations }
@@ -822,6 +822,9 @@ begin
       Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 10;
       Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 12;
 
+      Form7.ibDataSet7PORTADOR.DisplayWidth := 20;
+      Form7.ibDataSet7DOCUMENTO.DisplayWidth := 11;
+
       {Sandro Silva 2023-06-19 inicio}
       if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
       begin
@@ -844,6 +847,32 @@ begin
         end;
       end;
       {Sandro Silva 2023-06-19 fim}
+
+      {Sandro Silva 2023-07-04 inicio}
+      if Form7.ibDataSet7BANDEIRA.Visible then
+      begin
+        slPickList := TStringList.Create;
+
+        try
+          GetBanderiasOperadorasNFe(slPickList);
+          slPickList.Add('');
+          slPickList.Sorted := True;
+          slPickList.Sort;
+          //colocar a lista na coluna correta
+          for i:= 0 to DBGrid1.Columns.Count - 1 do
+          begin
+            if AnsiUpperCase(DBGrid1.Columns[i].FieldName) = 'BANDEIRA' then
+            begin
+              DBGrid1.Columns[i].PickList := slPickList;
+              Break;
+            end;
+          end;
+
+        finally
+          slPickList.Free;
+        end;
+      end;
+      {Sandro Silva 2023-07-04 fim}
 
       {Sandro Silva 2023-06-29 inicio
       if Form7.ibDataSet7BANDEIRA.Visible then
@@ -1032,6 +1061,9 @@ begin
     if (Key = VK_RETURN) then
     begin
       I := DbGrid1.SelectedIndex;
+
+      VALIDAR SE FORMA PERMITE COLUNAS SEGUINTES
+
       DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
       if I = DbGrid1.SelectedIndex  then
       begin
@@ -1051,7 +1083,7 @@ begin
     if (Form7.sModulo = 'VENDA') and (DbGrid1.SelectedIndex = 0) then
       DbGrid1.SelectedIndex := 1;
 
-    ExibeFormasDePagamento; // Sandro Silva 2023-06-19
+    ExibeOpcoes; // Sandro Silva 2023-06-19
   except
   end;
   
@@ -1126,6 +1158,8 @@ begin
     Form18.Width := 600; // Largura normal
     Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
     Form7.ibDataSet7PORTADOR.Index := 12;
+    Form7.ibDataSet7PORTADOR.DisplayWidth  := 33;
+    Form7.ibDataSet7DOCUMENTO.DisplayWidth := 12;
     {Sandro Silva 2023-06-16 fim}
 
   end;
@@ -1345,9 +1379,10 @@ begin
   //
 end;
 
-procedure TForm18.ExibeFormasDePagamento;
+procedure TForm18.ExibeOpcoes;
 begin
-  if (DbGrid1.Columns[DbGrid1.SelectedIndex].PickList.Count > 0) and (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO') then
+  if (DbGrid1.Columns[DbGrid1.SelectedIndex].PickList.Count > 0) and
+    ((DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO') or (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')) then
   begin
     keybd_event(VK_F2,0,0,0);
     keybd_event(VK_F2,0,KEYEVENTF_KEYUP,0);
@@ -1411,7 +1446,7 @@ end;
 
 procedure TForm18.DBGrid1CellClick(Column: TColumn);
 begin
-  ExibeFormasDePagamento;
+  ExibeOpcoes;
 end;
 
 procedure TForm18.DBGrid1Exit(Sender: TObject);

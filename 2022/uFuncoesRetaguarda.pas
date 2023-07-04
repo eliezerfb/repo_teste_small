@@ -217,8 +217,8 @@ end;
 
 procedure GetBanderiasOperadorasNFe(slForma: TStringList);
 begin
-
   slForma.Clear;
+  {
   slForma.Add('01-Visa');
   slForma.Add('02-Mastercard');
   slForma.Add('03-American Express');
@@ -247,6 +247,36 @@ begin
   slForma.Add('26-VR');
   slForma.Add('27-Ticket');
   slForma.Add('99-Outros');
+  }
+  slForma.Add('Visa');
+  slForma.Add('Mastercard');
+  slForma.Add('American Express');
+  slForma.Add('Sorocred');
+  slForma.Add('Diners Club');
+  slForma.Add('Elo');
+  slForma.Add('Hipercard');
+  slForma.Add('Aura');
+  slForma.Add('Cabal');
+  slForma.Add('Alelo');
+  slForma.Add('Banes Card');
+  slForma.Add('CalCard');
+  slForma.Add('Credz');
+  slForma.Add('Discover');
+  slForma.Add('GoodCard');
+  slForma.Add('GreenCard');
+  slForma.Add('Hiper');
+  slForma.Add('JcB');
+  slForma.Add('Mais');
+  slForma.Add('MaxVan');
+  slForma.Add('Policard');
+  slForma.Add('RedeCompras');
+  slForma.Add('Sodexo');
+  slForma.Add('ValeCard');
+  slForma.Add('Verocheque');
+  slForma.Add('VR');
+  slForma.Add('Ticket');
+  slForma.Add('Outros');
+
 end;
 
 procedure GetFormasDePagamentoNFe(slForma: TStringList);

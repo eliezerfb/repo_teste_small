@@ -9631,6 +9631,8 @@ begin
     Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
     //Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
     Form7.ibDataSet7PORTADOR.Index := 12;
+    Form7.ibDataSet7PORTADOR.DisplayWidth  := 33;
+    Form7.ibDataSet7DOCUMENTO.DisplayWidth := 12;
   end;
   {Sandro Silva 2023-06-19 fim}
 
