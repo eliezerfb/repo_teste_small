@@ -1017,22 +1017,7 @@ begin
                   Form7.IBQuery14.Open;
                 end;
               end;
-{
-              if (Form7.ibDataSet16BASE.Asfloat <> 100) and (Form7.ibDataSet16BASE.Asfloat <> 0) then
-              begin
-                fICMSDesonerado := (Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)/100*100/100) -
-                                   (Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)/100*Form7.ibDataSet16.FieldByname('BASE').AsFloat/100);
-              end else
-              begin
-                Form7.IBQuery14.Close;
-                Form7.IBQuery14.SQL.Clear;
-                Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
-                Form7.IBQuery14.Open;
-                //
-                fICMSDesonerado := (Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)/100*100/100)-
-                                   (Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)/100*100/100);
-              end;
-}
+
               Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').Value := FormatFloatXML(fICMSDesonerado);  // Valor do ICMS desonerado
               //
               vICMSDeson := vICMSDeson + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').AsString,',',''),'.',','));
@@ -1661,7 +1646,9 @@ begin
           Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := FormatFloatXML(Form7.ibDataSet16VICMS.AsFloat);     // Valor do ICMS em Reais
         end;
 
-        if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '40') and (Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '41') then
+        if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '40') and
+          (Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '50') and //Mauricio Parizotto 2023-07-04
+          (Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '41') then
         begin
           Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := FormatFloatXML(Form7.ibDataSet16VICMS.AsFloat);     // Valor do ICMS em Reais
         end;
@@ -4708,8 +4695,6 @@ begin
     Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
   end;
   {Sandro Silva 2023-06-07 fim}
-
-
 end;
 
 end.
