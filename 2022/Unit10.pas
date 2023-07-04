@@ -5267,7 +5267,7 @@ begin
                 Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := (Form7.ibDataSet16QUANTIDADE.AsFloat * -1);
                 Form7.ibDataSet26.FieldByName('VALOR').AsFloat       := Form7.ibDataSet16TOTAL.AsFloat;
                 Form7.ibDataSet26.Post;
-              end;              
+              end;
             end;            
           end;
           Form7.ibDataSet16.Next;          
@@ -5298,7 +5298,7 @@ begin
         Form7.ibDataSet26.Edit;
         Form7.ibDataSet26.FieldByName('DATA').AsDateTime     := StrToDate('01/01/1900');
         Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet4QTD_INICIO.AsFloat;
-        Form7.ibDataSet26.Post;        
+        Form7.ibDataSet26.Post;
       end;
 
       if (Form7.sModulo <> 'KARDEX') then
@@ -5331,6 +5331,7 @@ begin
                     sA := Format('%10.4n',[Form7.TabelaAberta.Fields[I-1].AsFloat])
                   end else
                   begin
+                    {Sandro Silva 2023-07-04 inicio
                     if Form7.TabelaAberta.Fields[I-1].DataType = ftString   then
                       sA := Form7.TabelaAberta.Fields[I-1].AsSTring
                     else if Form7.TabelaAberta.Fields[I-1].DataType = ftFloat then
@@ -5341,6 +5342,18 @@ begin
                       sA := Form7.TabelaAberta.Fields[I-1].AsSTring
                     else
                       sA := '';
+                    }
+                    case Form7.TabelaAberta.Fields[I-1].DataType of
+                      ftString:
+                        sA := Form7.TabelaAberta.Fields[I-1].AsSTring;
+                      ftFloat, ftBCD:
+                        sA := Format('%10.2n',[Form7.TabelaAberta.Fields[I-1].AsFloat]);
+                      ftDatetime, ftDate:
+                        sA := Form7.TabelaAberta.Fields[I-1].AsSTring;
+                    else
+                      sA := '';
+                    end;
+                    {Sandro Silva 2023-07-04 fim}
                   end;
                 end;
               end;

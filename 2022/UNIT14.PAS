@@ -1246,21 +1246,30 @@ begin
           begin
             if Form7.ArquivoAberto.Fields[I-1].Visible = True then
             begin
-              // Imprime o total
-              if (Pos('SALD',Form7.ArquivoAberto.Fields[I-1].Name) = 0) and (fTotal[I] <> 0) then
-                  WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
-                      + Format('%13.'+sI+'n',[fTotal[I]]) + '<br></font></td>')
-              else
-                  WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
-              {Sandro Silva 2022-12-19 inicio}
-              if Form7.sModulo = 'RECEBER' then
+
+              if Form7.sModulo = 'ICM' then
               begin
-                if (Form7.ArquivoAberto.Fields[I-1].FieldName = 'NOME') and (Form1.DisponivelSomenteParaNos) then
+                 // para o módulo ICM não totaliza as colunas
+                 WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
+              end
+              else
+              begin
+                // Imprime o total
+                if (Pos('SALD',Form7.ArquivoAberto.Fields[I-1].Name) = 0) and (fTotal[I] <> 0) then
+                    WriteLn(F,'        <td nowrap align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                        + Format('%13.'+sI+'n',[fTotal[I]]) + '<br></font></td>')
+                else
+                    WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
+                {Sandro Silva 2022-12-19 inicio}
+                if Form7.sModulo = 'RECEBER' then
                 begin
-                  WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
+                  if (Form7.ArquivoAberto.Fields[I-1].FieldName = 'NOME') and (Form1.DisponivelSomenteParaNos) then
+                  begin
+                    WriteLn(F,'        <td nowrap align=right><br><font face="verdana" size=2></font></td>');
+                  end;
                 end;
+                {Sandro Silva 2022-12-19 fim}
               end;
-              {Sandro Silva 2022-12-19 fim}
             end;
           end else
           begin
