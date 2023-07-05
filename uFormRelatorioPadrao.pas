@@ -13,10 +13,12 @@ type
   TfrmRelatorioPadrao = class(TForm)
     btnCancelar: TBitBtn;
     ImgRel: TImage;
-    btnImprimir: TBitBtn;
+    btnAvancar: TBitBtn;
+    btnVoltar: TBitBtn;
     procedure btnCancelarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure btnImprimirClick(Sender: TObject);
+    procedure btnAvancarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FoDataBase: TIBDataBase;
     FcUsuario: String;  
@@ -89,9 +91,17 @@ begin
   Estrutura.Imprimir;
 end;
 
-procedure TfrmRelatorioPadrao.btnImprimirClick(Sender: TObject);
+procedure TfrmRelatorioPadrao.btnAvancarClick(Sender: TObject);
 begin
   Imprimir;
+  Self.Close;  
+end;
+
+procedure TfrmRelatorioPadrao.FormShow(Sender: TObject);
+begin
+  // Deve ser igual ao da unit38.
+  Self.ClientHeight := 262;
+  Self.ClientWidth  := 454;
 end;
 
 end.
