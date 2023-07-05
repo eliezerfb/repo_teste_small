@@ -20,6 +20,8 @@ type
     Panel9: TPanel;
     Label45: TLabel;
     CheckBox1: TCheckBox;
+    IBQINSTITUICAOFINANCEIRA: TIBQuery;
+    IBQBANCOS: TIBQuery;
     procedure SMALL_DBEdit1Exit(Sender: TObject);
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -46,12 +48,17 @@ type
   private
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
-    procedure ExibeOpcoes;
-    procedure CarregacboDocCobranca; 
+    procedure ExibeOpcoesPreencherColunas;
+    procedure CarregacboDocCobranca;
+    procedure GetBancosNFe(slBanco: TStringList);
+    procedure GetInstituicaoFinanceira(slInstituicao: TStringList);
+    function FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
+    function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   public
     { Public declarations }
     sConta : String;
     property IdentificadorPlanoContas: String read FIdentificadorPlanoContas write FIdentificadorPlanoContas; // Sandro Silva 2022-12-29
+    procedure SetPickListParaColuna;
   end;
 
 var
@@ -60,7 +67,7 @@ var
 implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
-  uFuncoesRetaguarda;
+  uFuncoesRetaguarda, StrUtils;
 
 {$R *.DFM}
 
@@ -651,7 +658,7 @@ end;
 
 procedure TForm18.FormShow(Sender: TObject);
 var
-  slPickList: TStringList;
+//  slPickList: TStringList;
   Total: Real;
   I: Integer;
   Mais1Ini: tIniFile;
@@ -825,78 +832,30 @@ begin
       Form7.ibDataSet7PORTADOR.DisplayWidth := 20;
       Form7.ibDataSet7DOCUMENTO.DisplayWidth := 11;
 
-      {Sandro Silva 2023-06-19 inicio}
-      if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
-      begin
-        slPickList := TStringList.Create;
+      {Sandro Silva 2023-07-05 inicio}
+      IBQBANCOS.Close;
+      IBQBANCOS.SQL.Text :=
+        'select NOME, INSTITUICAOFINANCEIRA ' +
+        'from BANCOS ' +
+        'order by NOME';
+      IBQBANCOS.Open;
 
-        try
-          GetFormasDePagamentoNFe(slPickList);
-          //colocar a lista na coluna correta
-          for i:= 0 to DBGrid1.Columns.Count - 1 do
-          begin
-            if AnsiUpperCase(DBGrid1.Columns[i].FieldName) = 'FORMADEPAGAMENTO' then
-            begin
-              DBGrid1.Columns[i].PickList := slPickList;
-              Break;
-            end;
-          end;
+      IBQINSTITUICAOFINANCEIRA.Close;
+      IBQINSTITUICAOFINANCEIRA.SQL.Text :=
+        'select NOME ' +
+        'from CLIFOR ' +
+        'where CLIFOR in (''Credenciadora de cartão'', ''Instituição financeira'') ' +
+        'order by NOME';
+      IBQINSTITUICAOFINANCEIRA.Open;
 
-        finally
-          slPickList.Free;
-        end;
-      end;
-      {Sandro Silva 2023-06-19 fim}
-
-      {Sandro Silva 2023-07-04 inicio}
-      if Form7.ibDataSet7BANDEIRA.Visible then
-      begin
-        slPickList := TStringList.Create;
-
-        try
-          GetBanderiasOperadorasNFe(slPickList);
-          slPickList.Add('');
-          slPickList.Sorted := True;
-          slPickList.Sort;
-          //colocar a lista na coluna correta
-          for i:= 0 to DBGrid1.Columns.Count - 1 do
-          begin
-            if AnsiUpperCase(DBGrid1.Columns[i].FieldName) = 'BANDEIRA' then
-            begin
-              DBGrid1.Columns[i].PickList := slPickList;
-              Break;
-            end;
-          end;
-
-        finally
-          slPickList.Free;
-        end;
-      end;
-      {Sandro Silva 2023-07-04 fim}
-
-      {Sandro Silva 2023-06-29 inicio
-      if Form7.ibDataSet7BANDEIRA.Visible then
-      begin
-        slPickList := TStringList.Create;
-
-        try
-          GetBanderiasOperadorasNFe(slPickList);
-          //colocar a lista na coluna correta
-          for i:= 0 to DBGrid1.Columns.Count - 1 do
-          begin
-            if AnsiUpperCase(DBGrid1.Columns[i].FieldName) = 'BANDEIRA' then
-            begin
-              DBGrid1.Columns[i].PickList := slPickList;
-              Break;
-            end;
-          end;
-
-        finally
-          slPickList.Free;
-        end;
-      end;
-      {Sandro Silva 2023-06-29 fim}
-
+      GetFormasDePagamentoNFe(Form7.slPickListFormaDePagamento);
+      GetBanderiasOperadorasNFe(Form7.slPickListBandeira);
+      Form7.slPickListBandeira.Add('');
+      Form7.slPickListBandeira.Sorted := True;
+      Form7.slPickListBandeira.Sort;
+      GetBancosNFe(Form7.slPickListBanco);
+      GetInstituicaoFinanceira(Form7.slPickListInstituicao);
+      {Sandro Silva 2023-07-05 fim}
 
       {Sandro Silva 2023-06-16 fim}
 
@@ -1005,8 +964,11 @@ begin
     begin
       dbGrid1.Canvas.Brush.Color := clWhite;
       dbGrid1.Canvas.Font := dbGrid1.Font;
-      if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then DBGrid1.Canvas.Font.Color   := clRed else DBGrid1.Canvas.Font.Color   := clBlack;
-      dbGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
+      if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then
+        DBGrid1.Canvas.Font.Color   := clRed
+      else
+        DBGrid1.Canvas.Font.Color   := clBlack;
+      dbGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime), 1, 3) );
     end;
 
     dbGrid1.Canvas.Brush.Color := Form7.Panel7.Color;
@@ -1023,7 +985,7 @@ begin
     begin
       OldBkMode := SetBkMode(Handle, TRANSPARENT);
       dbgrid1.Canvas.Font := dbgrid1.TitleFont;
-      TextOut(Rect.Left+2,2,AllTrim(Field.DisplayLabel));
+      TextOut(Rect.Left + 2, 2, AllTrim(Field.DisplayLabel));
       dbgrid1.Canvas.Font.Color := clblack;
       SetBkMode(Handle, OldBkMode);
     end;
@@ -1062,8 +1024,6 @@ begin
     begin
       I := DbGrid1.SelectedIndex;
 
-      VALIDAR SE FORMA PERMITE COLUNAS SEGUINTES
-
       DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
       if I = DbGrid1.SelectedIndex  then
       begin
@@ -1083,7 +1043,32 @@ begin
     if (Form7.sModulo = 'VENDA') and (DbGrid1.SelectedIndex = 0) then
       DbGrid1.SelectedIndex := 1;
 
-    ExibeOpcoes; // Sandro Silva 2023-06-19
+    {Sandro Silva 2023-07-04 inicio}
+    {
+    if (Form7.sModulo = 'VENDA') then
+    begin
+
+      if Form7.ibDataSet7BANDEIRA.Visible then
+      begin
+        if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListBandeira;
+      end;
+
+
+      if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
+      begin
+
+        if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListFormaDePagamento;
+
+      end;
+
+    end;
+    }
+    SetPickListParaColuna;
+    {Sandro Silva 2023-07-04 fim}
+
+    ExibeOpcoesPreencherColunas; // Sandro Silva 2023-06-19
   except
   end;
   
@@ -1379,10 +1364,16 @@ begin
   //
 end;
 
-procedure TForm18.ExibeOpcoes;
+procedure TForm18.ExibeOpcoesPreencherColunas;
 begin
+  {Sandro Silva 2023-07-05 inicio
   if (DbGrid1.Columns[DbGrid1.SelectedIndex].PickList.Count > 0) and
-    ((DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO') or (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')) then
+    ((DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
+     or
+     ((DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')
+     or
+     (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'PORTADOR')
+    ) then
   begin
     keybd_event(VK_F2,0,0,0);
     keybd_event(VK_F2,0,KEYEVENTF_KEYUP,0);
@@ -1391,6 +1382,33 @@ begin
     keybd_event(VK_DOWN,0,KEYEVENTF_KEYUP,0);
     keybd_event(VK_MENU,0,KEYEVENTF_KEYUP,0);
   end;
+  }
+  if (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
+     or
+     (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')
+     or
+     (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'PORTADOR')
+     or
+     (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'AUTORIZACAOTRANSACAO')
+     then
+  begin
+    DbGrid1.Columns[DbGrid1.SelectedIndex].ReadOnly := True;
+
+    if (DbGrid1.Columns[DbGrid1.SelectedIndex].PickList.Count > 0) then
+    begin
+      DbGrid1.Columns[DbGrid1.SelectedIndex].ReadOnly := False;
+
+      keybd_event(VK_F2,0,0,0);
+      keybd_event(VK_F2,0,KEYEVENTF_KEYUP,0);
+      keybd_event(VK_MENU,0,0,0);
+      keybd_event(VK_DOWN,0,0,0);
+      keybd_event(VK_DOWN,0,KEYEVENTF_KEYUP,0);
+      keybd_event(VK_MENU,0,KEYEVENTF_KEYUP,0);
+    end;
+
+
+  end;
+
 end;
 
 procedure TForm18.DBGrid1ColExit(Sender: TObject);
@@ -1413,7 +1431,7 @@ begin
         if DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString <> sForma then
           DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
 
-        if sForma <> '' then 
+        if sForma <> '' then
         begin
 
           while DBGrid1.DataSource.DataSet.Eof = False do
@@ -1446,7 +1464,7 @@ end;
 
 procedure TForm18.DBGrid1CellClick(Column: TColumn);
 begin
-  ExibeOpcoes;
+  ExibeOpcoesPreencherColunas;
 end;
 
 procedure TForm18.DBGrid1Exit(Sender: TObject);
@@ -1456,6 +1474,7 @@ var
   iRecno: Integer;
   sMensagem: String;
   iRecnoFormaErrada: Integer;
+  sColunaPosicionar: String;
 begin
   if Form7.sModulo = 'VENDA' then
   begin
@@ -1465,6 +1484,12 @@ begin
       DBGrid1.DataSource.DataSet.DisableControls;
       sMensagem := '';
       GetFormasDePagamentoNFe(slFormas);
+
+      DbGrid1.Columns[IndexColumnFromName(DBGrid1, 'FORMADEPAGAMENTO')].ReadOnly := False;
+      DbGrid1.Columns[IndexColumnFromName(DBGrid1, 'BANDEIRA')].ReadOnly := False;
+      DbGrid1.Columns[IndexColumnFromName(DBGrid1, 'PORTADOR')].ReadOnly := False;
+      DbGrid1.Columns[IndexColumnFromName(DBGrid1, 'AUTORIZACAOTRANSACAO')].ReadOnly := False;
+
 
       iRecno := DBGrid1.DataSource.DataSet.RecNo;
       DBGrid1.DataSource.DataSet.First;
@@ -1478,10 +1503,60 @@ begin
           begin
             sMensagem := 'Forma de pagamento incorreta informada';
             iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;
+            sColunaPosicionar := 'FORMADEPAGAMENTO';
           end;
           DBGrid1.DataSource.DataSet.Edit;
           DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
         end;
+        {
+        // Se for cartão passa para o campo portador e nome a bandeira do cartão
+        if Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|03|04|') > 0 then
+        begin
+          if Trim(DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString) <> '' then
+          begin
+            DBGrid1.DataSource.DataSet.Edit;
+            DBGrid1.DataSource.DataSet.FieldByName('PORTADOR').AsString := DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString;
+            DBGrid1.DataSource.DataSet.FieldByName('NOME').AsString     := DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString;
+          end;
+        end;
+        }
+
+        if FormaDePagamentoEnvolveBancos(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then // envolvem bancos
+        begin
+          IBQBANCOS.First;
+          if IBQBANCOS.Locate('NOME', DBGrid1.DataSource.DataSet.FieldByName('PORTADOR').AsString, []) then
+          begin
+            DBGrid1.DataSource.DataSet.Edit;
+            DBGrid1.DataSource.DataSet.FieldByName('INSTITUICAOFINANCEIRA').AsString := IBQBANCOS.FieldByName('INSTITUICAOFINANCEIRA').AsString;
+          end;
+        end;
+
+        if FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then // envolvem instituição financeiras/credenciadoras
+        begin
+          if IBQINSTITUICAOFINANCEIRA.Locate('NOME', DBGrid1.DataSource.DataSet.FieldByName('PORTADOR').AsString, []) then
+          begin
+            DBGrid1.DataSource.DataSet.Edit;
+            DBGrid1.DataSource.DataSet.FieldByName('INSTITUICAOFINANCEIRA').AsString := IBQINSTITUICAOFINANCEIRA.FieldByName('NOME').AsString;
+
+          end;
+
+          if Trim(DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString) = '' then
+          begin
+            sMensagem := 'Informe a bandeira do cartão de crédito/débito';
+            iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;
+            sColunaPosicionar := 'BANDEIRA';
+          end;
+
+          if Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = '' then
+          begin
+            sMensagem := 'Informe o número da autorização do cartão de crédito/débito';
+            iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;
+            sColunaPosicionar := 'AUTORIZACAOTRANSACAO';
+          end;
+
+        end;
+
+
         DBGrid1.DataSource.DataSet.Next;
       end;
 
@@ -1497,7 +1572,7 @@ begin
         if iRecnoFormaErrada <> -1 then
         begin
           DBGrid1.DataSource.DataSet.Recno := iRecnoFormaErrada;
-          DBGrid1.SelectedIndex := IndexColumnFromName(DBGrid1, 'FORMADEPAGAMENTO');
+          DBGrid1.SelectedIndex := IndexColumnFromName(DBGrid1, sColunaPosicionar);
         end;
         ShowMessage(sMensagem);
       end;
@@ -1553,6 +1628,81 @@ begin
   cboDocCobranca.ItemIndex := 0;
 
   sSecoes.Free;
+end;
+
+procedure TForm18.GetBancosNFe(slBanco: TStringList);
+begin
+  slBanco.Clear;
+  IBQBANCOS.First;
+  while IBQBANCOS.Eof = False do
+  begin
+    slBanco.Add(IBQBANCOS.FieldByName('NOME').AsString);
+    IBQBANCOS.Next;
+  end; // while IBQ.Eof = False do
+
+end;
+
+procedure TForm18.GetInstituicaoFinanceira(slInstituicao: TStringList);
+begin
+  slInstituicao.Clear;
+  IBQINSTITUICAOFINANCEIRA.First;
+  while IBQINSTITUICAOFINANCEIRA.Eof = False do
+  begin
+
+    slInstituicao.Add(IBQINSTITUICAOFINANCEIRA.FieldByName('NOME').AsString);
+    IBQINSTITUICAOFINANCEIRA.Next;
+  end; // while IBQ.Eof = False do
+end;
+
+procedure TForm18.SetPickListParaColuna;
+begin
+  if Form7.sModulo = 'VENDA' then
+  begin
+
+    if Form7.ibDataSet7BANDEIRA.Visible then
+    begin
+      if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
+      begin
+        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList.Clear;
+
+        if FormaDePagamentoEnvolveCartao(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListBandeira;
+
+      end;
+    end;
+
+
+    if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
+    begin
+
+      if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
+        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListFormaDePagamento;
+
+    end;
+
+    if Form18.DBGrid1.SelectedField.FieldName = 'PORTADOR' then
+    begin
+
+      Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList.Clear;
+      if FormaDePagamentoEnvolveBancos(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+        Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList := Form7.slPickListBanco;
+
+      if FormaDePagamentoEnvolveCartao(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+        Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList := Form7.slPickListInstituicao;
+
+    end
+  end;
+
+end;
+
+function TForm18.FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
+begin
+  Result := (Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
+end;
+
+function TForm18.FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
+begin
+  Result := (Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
 end;
 
 end.

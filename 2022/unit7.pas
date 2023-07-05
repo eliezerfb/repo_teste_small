@@ -2083,6 +2083,8 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ibDataSet7FilterRecord(DataSet: TDataSet;
       var Accept: Boolean);
+    procedure ibDataSet7AfterScroll(DataSet: TDataSet);
+    procedure FormDestroy(Sender: TObject);
 
     {    procedure EscondeBarra(Visivel: Boolean);}
 
@@ -2191,6 +2193,13 @@ type
     //
     iKey : Integer;
 
+    {Sandro Silva 2023-07-05 inicio}
+    slPickListBandeira: TStringList;
+    slPickListFormaDePagamento: TStringList;
+    slPickListBanco: TStringList;
+    slPickListInstituicao: TStringList;
+    {Sandro Silva 2023-07-05 fim}
+
     procedure RefreshDados;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
@@ -2251,7 +2260,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uItensInativosImpXMLEntrada
   , uTextoEmailFactory
   , uRetornaLimiteDisponivel
-  , uIRetornaLimiteDisponivel;
+  , uIRetornaLimiteDisponivel, Unit18;
 
 {$R *.DFM}
 
@@ -9386,6 +9395,13 @@ end;
 
 procedure TForm7.FormCreate(Sender: TObject);
 begin
+  {Sandro Silva 2023-07-05 inicio}
+  slPickListBandeira         := TStringList.Create;
+  slPickListFormaDePagamento := TStringList.Create;
+  slPickListBanco            := TStringList.Create;
+  slPickListInstituicao      := TStringList.Create;
+  {Sandro Silva 2023-07-05 fim}
+
   FbImportandoXML := False;
   Form7.sAproveitamento := '';
   Form7.bMudei := False;
@@ -12363,7 +12379,7 @@ begin
 
     end;
   end;
-  //
+
 end;
 
 procedure TForm7.RegistroFiscal1Click(Sender: TObject);
@@ -30196,31 +30212,46 @@ begin
 //    bButton := Application.MessageBox(Pchar('Alterar o portador para todas as duplicatas? '),'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
 //    if bButton = IDYes then
       begin
-        //
-        MyBookmark    := Form7.ibDataSet7.GetBookmark;
-        //
-        Form7.ibDataSet7.DisableControls;
-        Form7.ibDataSet7.First;
-        //
-        while not Form7.ibDataSet7.Eof do
+
+        if Pos('|' + Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) + '|', '||15|') > 0 then
         begin
+
+          MyBookmark    := Form7.ibDataSet7.GetBookmark;
+
+          Form7.ibDataSet7.DisableControls;
+          Form7.ibDataSet7.First;
           //
-          if Text <> Form7.ibDataSet7PORTADOR.AsString then
+          while not Form7.ibDataSet7.Eof do
           begin
-            Form7.ibDataSet7.Edit;
-            Form7.ibDataSet7PORTADOR.AsString := Text;
+            //{Sandro Silva 2023-07-05 inicio
+            if Text <> Form7.ibDataSet7PORTADOR.AsString then
+            begin
+              Form7.ibDataSet7.Edit;
+              Form7.ibDataSet7PORTADOR.AsString := Text;
+            end;
+            {
+            if Pos('|' + Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) + '|', '||15|') > 0 then
+            begin
+              if Text <> Form7.ibDataSet7PORTADOR.AsString then
+              begin
+                Form7.ibDataSet7.Edit;
+                Form7.ibDataSet7PORTADOR.AsString := Text;
+              end;
+            end;
+            {Sandro Silva 2023-07-05 inicio}
+            Form7.ibDataSet7.Next;
+            //
           end;
           //
-          Form7.ibDataSet7.Next;
+          Form7.ibDataSet7.Edit;
           //
-        end;
-        //
-        Form7.ibDataSet7.Edit;
-        //
-        Form7.ibDataSet7.GotoBookmark(MyBookmark);
-        Form7.ibDataSet7.FreeBookmark(MyBookmark);
-        Form7.ibDataSet7.EnableControls;
-        //
+          Form7.ibDataSet7.GotoBookmark(MyBookmark);
+          Form7.ibDataSet7.FreeBookmark(MyBookmark);
+          Form7.ibDataSet7.EnableControls;
+        end
+        else
+          Form7.ibDataSet7PORTADOR.AsString := Text;
+
       end;
       //
     except end;
@@ -33259,6 +33290,24 @@ begin
   begin
     Accept := Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
   end;
+end;
+
+procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
+begin
+  if Form18 <> nil then
+  begin
+    Form18.SetPickListParaColuna;
+  end;
+end;
+
+procedure TForm7.FormDestroy(Sender: TObject);
+begin
+  {Sandro Silva 2023-07-05 inicio}
+  slPickListBandeira.Free;
+  slPickListFormaDePagamento.Free;
+  slPickListBanco.Free;
+  slPickListInstituicao.Free;
+  {Sandro Silva 2023-07-05 fim}
 end;
 
 end.

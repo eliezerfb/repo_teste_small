@@ -105,7 +105,8 @@ uses
   uValidaRecursosDelphi7 in '..\..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
-  uConectaBancoCommerce in 'uConectaBancoCommerce.pas';
+  uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
+  uFuncoesBancoDados in 'uFuncoesBancoDados.pas';
 
 {$R *.RES}
 

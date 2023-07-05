@@ -1826,7 +1826,7 @@ begin
         dBGrid3.Width      := Width;
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DSConsulta;
-        dBgrid3.Columns.Items[0].FieldName := 'FORMA';        
+        dBgrid3.Columns.Items[0].FieldName := 'NOME';        
         dBGrid3.Columns[0].Width := 310;
       end;
       {Sandro Silva 2023-06-21 fim}

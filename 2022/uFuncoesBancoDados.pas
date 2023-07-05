@@ -12,40 +12,39 @@ uses
 const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
   'select NOME ' +
   'from (' +
-  'select cast(''01-Dinheiro'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''01-Dinheiro'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''02-Cheque'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''02-Cheque'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''03-Cartão de Crédito'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''03-Cartão de Crédito'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''04-Cartão de Débito'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''04-Cartão de Débito'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''05-Crédito de Loja'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''05-Crédito de Loja'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''10-Vale Alimentação'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''10-Vale Alimentação'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''11-Vale Refeição'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''11-Vale Refeição'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''12-Vale Presente'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''12-Vale Presente'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''13-Vale Combustível'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''13-Vale Combustível'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''14-Duplicata Mercanti'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''14-Duplicata Mercanti'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''15-Boleto Bancário'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''15-Boleto Bancário'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''16-Depósito Bancário'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''16-Depósito Bancário'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''17-Pagamento Instantâneo (PIX)'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''17-Pagamento Instantâneo (PIX)'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''18-Transferência bancária, Carteira Digital'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''18-Transferência bancária, Carteira Digital'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''19-Programa de fidelidade, Cashback, Crédito Virtual'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''19-Programa de fidelidade, Cashback, Crédito Virtual'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''99-Outros'' as varchar(60)) as forma from rdb$database ' +
+  'select cast(''99-Outros'' as varchar(60)) as NOME from rdb$database ' +
   ') q ' +
-  'order by forma';
-
+  'order by NOME';                                 
 
 
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;

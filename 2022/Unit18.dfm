@@ -187,4 +187,20 @@ object Form18: TForm18
       OnClick = CheckBox1Click
     end
   end
+  object IBQINSTITUICAOFINANCEIRA: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 328
+    Top = 80
+  end
+  object IBQBANCOS: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 328
+    Top = 40
+  end
 end

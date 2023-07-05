@@ -20,6 +20,7 @@ object Form7: TForm7
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   OnMouseMove = FormMouseMove
   OnShow = FormShow
@@ -693,8 +694,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label20: TLabel
-    Left = 470
-    Top = 574
+    Left = 462
+    Top = 590
     Width = 40
     Height = 13
     Caption = 'Conf OS'
@@ -12387,6 +12388,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet7AfterDelete
     AfterPost = ibDataSet7AfterPost
+    AfterScroll = ibDataSet7AfterScroll
     BeforeDelete = ibDataSet7BeforeDelete
     BeforeEdit = ibDataSet7BeforeEdit
     BeforeInsert = ibDataSet7BeforeInsert
