@@ -2252,7 +2252,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uItensInativosImpXMLEntrada
   , uTextoEmailFactory
   , uRetornaLimiteDisponivel
-  , uIRetornaLimiteDisponivel, uListaCnaes;
+  , uIRetornaLimiteDisponivel
+  , uListaCnaes
   , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital;
 

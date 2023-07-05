@@ -142,7 +142,9 @@ uses
   uDadosEmitente in '..\..\unit_compartilhada\uDadosEmitente.pas',
   uDadosVendasPorClienteCupomDAO in 'units\uDadosVendasPorClienteCupomDAO.pas',
   uDadosVendasPorClienteCupomItemAItemDAO in 'units\uDadosVendasPorClienteCupomItemAItemDAO.pas',
-  uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas';
+  uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas',
+  uIRetornaOperacoesRelatorio in 'interfaces\uIRetornaOperacoesRelatorio.pas',
+  uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas';
 
 {$R *.RES}
 

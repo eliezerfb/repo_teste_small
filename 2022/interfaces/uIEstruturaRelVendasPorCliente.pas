@@ -3,7 +3,7 @@ unit uIEstruturaRelVendasPorCliente;
 interface
 
 uses
-  uIEstruturaTipoRelatorioPadrao, IBDatabase;
+  uIEstruturaTipoRelatorioPadrao, IBDatabase, Classes;
 
 type
   IEstruturaRelVendasPorCliente = interface
@@ -13,6 +13,7 @@ type
   function setItemAItem(AbItemAItem: Boolean): IEstruturaRelVendasPorCliente;
   function setDataInicial(AdData: TDateTime): IEstruturaRelVendasPorCliente;
   function setDataFinal(AdData: TDateTime): IEstruturaRelVendasPorCliente;
+  function setOperacoes(AslItens: TStrings): IEstruturaRelVendasPorCliente;
   function ImprimeNota(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
   function ImprimeCupom(AbImprime: Boolean): IEstruturaRelVendasPorCliente;  
   function Estrutura: IEstruturaTipoRelatorioPadrao;

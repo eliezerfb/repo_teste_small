@@ -38,14 +38,14 @@ begin
   FoQry.SQL.Add('SELECT');
   FoQry.SQL.Add('    ALTERACA.DATA AS "Data"');
   FoQry.SQL.Add('    , ALTERACA.PEDIDO AS "Número"');
-  FoQry.SQL.Add('    , ALTERACA.CLIFOR AS "Cliente"');
+  FoQry.SQL.Add('    , COALESCE(ALTERACA.CLIFOR,'''') AS "Cliente"');
   FoQry.SQL.Add('    , ALTERACA.ITEM AS "Código"');
   FoQry.SQL.Add('    , ALTERACA.DESCRICAO AS "Descrição"');
   FoQry.SQL.Add('    , CAST(ALTERACA.TOTAL AS NUMERIC(18,2)) AS "Total"');
   FoQry.SQL.Add('FROM ALTERACA');
   FoQry.SQL.Add('WHERE');
   FoQry.SQL.Add(FcWhere);
-  FoQry.SQL.Add('ORDER BY ALTERACA.CLIFOR, ALTERACA.DATA, ALTERACA.PEDIDO');
+  FoQry.SQL.Add('ORDER BY COALESCE(ALTERACA.CLIFOR,''''), ALTERACA.DATA, ALTERACA.PEDIDO');
   FoQry.Open;
 end;
 
