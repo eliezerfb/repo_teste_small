@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
-  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes;
+  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
@@ -110,10 +110,12 @@ uses
   function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; bHabilita: Boolean): String;
   function ValidaEmail(AcEmail: String): Boolean;
   function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
+  procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
+  procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 
 implementation
 
-uses uITestaEmail;
+uses uITestaEmail, StrUtils;
 
 function RetornaNomeDoComputador : string;
 var
@@ -2427,10 +2429,8 @@ var
   SomaPar,
   SomaImpar:Integer;
 begin
-  //
   if (Length(LimpaNumero(sP1))=13) and (Length(LimpaNumero(sP1))=Length(sP1)) then
   begin
-    //
     SomaPar:=0;
     SomaImpar:=0;
     //
@@ -2449,23 +2449,19 @@ begin
   begin
     Result := False;
   end;
-  //
 end;
 
 
 function CaracteresHTML(pP1:String):String;
 begin
-  //
   pP1 := StrTran(pP1,'<',' ');
   pP1 := StrTran(pP1,'>',' ');
   //
   Result := ConverteAcentos(pP1);
-  //
 end;
 
 function Numero_Sem_Endereco(sP1:String): String;
 begin
-  //
   if Limpanumero(sP1) = '' then
   begin
     Result := '0';
@@ -2485,15 +2481,15 @@ begin
       Result := Limpanumero(sP1);
     end;
   end;
-  //
 end;
 
 
 function Endereco_Sem_Numero(sP1:String): String;
 begin
-  //
-  if Numero_Sem_Endereco(sP1) <> '0' then Result := StrTran(StrTran(StrTran(sP1,Numero_Sem_Endereco(sP1),''),',',''),'  ',' ') else Result :=  sP1;
-  //
+  if Numero_Sem_Endereco(sP1) <> '0' then
+    Result := StrTran(StrTran(StrTran(sP1,Numero_Sem_Endereco(sP1),''),',',''),'  ',' ')
+  else
+    Result :=  sP1;
 end;
 
 function ValidaEmail(AcEmail: String): Boolean;
@@ -2519,6 +2515,58 @@ begin
     if AcTexto <> EmptyStr then
       Result.Add(AcTexto);
   end;
+end;
+
+
+procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
+begin
+  If Tipo='L' then
+  begin
+   If not (key in ['A'..'Z',#8, ' ']) then
+     key:=#0 ;
+  end;
+
+  //Inteiro
+  If Tipo='I' then
+  begin
+    If not (key in ['0'..'9',#8]) then
+      key:=#0;
+
+    If (Key in ['E','e']) then
+      key:=#0;
+  end;
+
+  //Float
+  If Tipo='F' then
+  begin
+    If not (key in ['0'..'9',#8,',']) then
+      key:=#0;
+
+    If (Key in ['E','e']) then
+     key:=#0;
+
+    ValidaAceitaApenasUmaVirgula(TCustomEdit(Sender),Key);
+  end;
+
+  If Tipo='A' then
+  begin
+    If not (key in ['A'..'Z','0'..'9',#8, ' ', ',', '.', '^', '~', '´', '`', '/', '?', '°', ';', ':', '<', '>',
+                      '[', ']', '\', '|', '{', '}', '+', '=', '-', '_', '(', ')', '*', '&', '"', '%', '$', '#', '@', '!']) then
+       key:=#0 ;
+  end;
+end;
+
+
+
+procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
+var
+  vTextSelecionado: string;
+begin
+  vTextSelecionado := Copy(edit.Text, edit.SelStart + 1, edit.SelLength);
+                          
+  If (key = ',') and not (AnsiContainsText(vTextSelecionado, ',')) then //Se tiver com virgula selecionada vai substituir, logo, pode usar virgula
+    If AnsiContainsStr(edit.Text,',') then
+      key := #0;
 end;
 
 end.

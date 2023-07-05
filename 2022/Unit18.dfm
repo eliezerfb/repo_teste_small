@@ -187,6 +187,7 @@ object Form18: TForm18
       OnEnter = edtQtdParcEnter
       OnExit = edtQtdParcExit
       OnKeyDown = SMALL_DBEdit1KeyDown
+      OnKeyPress = edtQtdParcKeyPress
     end
   end
 end

@@ -43,6 +43,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQtdParcEnter(Sender: TObject);
     procedure edtQtdParcExit(Sender: TObject);
+    procedure edtQtdParcKeyPress(Sender: TObject; var Key: Char);
   private
     FIdentificadorPlanoContas: String;
     { Private declarations }
@@ -631,8 +632,11 @@ begin
     if Form7.sModulo <> 'CLIENTES' then
     begin
       SMALL_DBEdit1.Enabled := True;
+      SMALL_DBEdit1.Visible := True;
+      edtQtdParc.Visible    := False;
     end else
     begin
+      edtQtdParc.Text := '1';
       edtQtdParc.Visible    := True;
       edtQtdParc.Left := SMALL_DBEdit1.Left;
       SMALL_DBEdit1.Visible := False;
@@ -1309,8 +1313,10 @@ begin
   end;
 end;
 
-
-
+procedure TForm18.edtQtdParcKeyPress(Sender: TObject; var Key: Char);
+begin
+  ValidaValor(Sender,Key,'I');
+end;
 
 end.
 
