@@ -221,6 +221,9 @@ begin
     end;
   end;
 
+  if FlsImpressao.Text <> EmptyStr then
+    FlsImpressao.Add(EmptyStr);
+    
   FlsImpressao.Add(FcTitulo);
   FlsImpressao.Add(EmptyStr);
 
@@ -271,6 +274,7 @@ begin
   begin
     if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
     begin
+      FlsImpressao.Add(EmptyStr);
       if FoEstruturaRel.FiltrosRodape.getTitulo <> EmptyStr then
         FlsImpressao.Add(FoEstruturaRel.FiltrosRodape.getTitulo);
 
