@@ -1343,23 +1343,6 @@ end;
 
 procedure TForm18.ExibeOpcoesPreencherColunas;
 begin
-  {Sandro Silva 2023-07-05 inicio
-  if (DbGrid1.Columns[DbGrid1.SelectedIndex].PickList.Count > 0) and
-    ((DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
-     or
-     ((DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')
-     or
-     (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'PORTADOR')
-    ) then
-  begin
-    keybd_event(VK_F2,0,0,0);
-    keybd_event(VK_F2,0,KEYEVENTF_KEYUP,0);
-    keybd_event(VK_MENU,0,0,0);
-    keybd_event(VK_DOWN,0,0,0);
-    keybd_event(VK_DOWN,0,KEYEVENTF_KEYUP,0);
-    keybd_event(VK_MENU,0,KEYEVENTF_KEYUP,0);
-  end;
-  }
   if (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
      or
      (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')
@@ -1482,19 +1465,7 @@ begin
           DBGrid1.DataSource.DataSet.Edit;
           DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
         end;
-        {
-        // Se for cartão passa para o campo portador e nome a bandeira do cartão
-        if Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|03|04|') > 0 then
-        begin
-          if Trim(DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString) <> '' then
-          begin
-            DBGrid1.DataSource.DataSet.Edit;
-            DBGrid1.DataSource.DataSet.FieldByName('PORTADOR').AsString := DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString;
-            DBGrid1.DataSource.DataSet.FieldByName('NOME').AsString     := DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString;
-          end;
-        end;
-        }
-
+        
         if FormaDePagamentoEnvolveBancos(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then // envolvem bancos
         begin
           IBQBANCOS.First;
@@ -1679,6 +1650,4 @@ begin
   Result := (Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
 end;
 
-end.
-
-
+end.    
