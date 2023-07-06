@@ -11,6 +11,7 @@ type
   TEstruturaTipoRelatorioPadrao = class(TInterfacedObject, IEstruturaTipoRelatorioPadrao)
   private
     FoArquivoDAT: TArquivosDAT;
+    FoEstruturaRel: IEstruturaRelatorioPadrao;
     FcTitulo: String;
     FQryDados: TIBQuery;
     FlsImpressao: TStringList;
@@ -113,11 +114,15 @@ var
   bTemColunaValor: Boolean;
   cAux: String;
   cTotal: String;
+  cCamposNaoTot: String;
 begin
   bTemColunaValor := False;
 
+  FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
   if Trim(FlsImpressao.Text) = EmptyStr then
-    DefineInicialHTML;
+    DefineInicialHTML
+  else
+    FlsImpressao.Add('<br>');
 
   FlsImpressao.Add('<br><font size=4 color=#000000><b>' + FcTitulo + '</b></font><br></center><br>');
   FlsImpressao.Add('<center>');
@@ -125,7 +130,7 @@ begin
   FlsImpressao.Add(' <tr>');
   //Colunas
   for i := 0 to Pred(FQryDados.Fields.Count) do
-    FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1>' + FQryDados.Fields[i].FieldName + '</td>');
+    FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1><b>' + FQryDados.Fields[i].FieldName + '</td>');
   FlsImpressao.Add(' </tr>');
   while not FQryDados.Eof do
   begin
@@ -149,7 +154,7 @@ begin
     FlsImpressao.Add('   <tr bgcolor=#EBEBEB >');
     for i := 0 to Pred(FQryDados.Fields.Count) do
     begin
-      if TestarFieldValor(FQryDados.Fields[i]) then
+      if (TestarFieldValor(FQryDados.Fields[i])) and (Pos(';' + FQryDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         cTotal := FormataCulunaValor(SomarValor(FQryDados.Fields[i]), (FQryDados.Fields[i] as TBCDField).Size);
         FlsImpressao.Add('    <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + cTotal);
@@ -161,6 +166,27 @@ begin
   end;
 
   FlsImpressao.Add('</table>');
+
+  if Assigned(FoEstruturaRel.FiltrosRodape) then
+  begin
+    if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
+    begin
+      FlsImpressao.Add('   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+      FlsImpressao.Add('    <tr bgcolor=#FFFFFF align=left>');
+      FlsImpressao.Add('     <td><P><font face="Microsoft Sans Serif" size=1><b>'+FoEstruturaRel.FiltrosRodape.getTitulo+'</b><br>');
+
+
+      for I := 0 to Pred(FoEstruturaRel.FiltrosRodape.getItens.Count) do
+        FlsImpressao.Add('     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(FoEstruturaRel.FiltrosRodape.getItens[I]));
+
+      FlsImpressao.Add('');
+      FlsImpressao.Add('      </td><br>');
+      FlsImpressao.Add('     </td>');
+      FlsImpressao.Add('    </table>');
+    end;
+    if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
+      FlsImpressao.Add('<br><font size=1>'+FoEstruturaRel.FiltrosRodape.getFiltroData+'</font>');
+  end;
 end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontaDadosTXT;
@@ -170,12 +196,15 @@ var
   cLinhaTemp: String;
   cTotal: String;
   cTexto: String;
+  cCamposNaoTot: String;
 begin
   if FcNomeArquivo = EmptyStr then
     FcNomeArquivo := Copy(FcTitulo,1,5);
 
   if FileExists(FcNomeArquivo+'.txt') then
     DeleteFile(FcNomeArquivo+'.txt');
+
+  FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
 
   for i := 0 to Pred(FQryDados.Fields.Count) do
   begin
@@ -222,7 +251,7 @@ begin
     cLinhaTotal := EmptyStr;
     for i := 0 to Pred(FQryDados.Fields.Count) do
     begin
-      if TestarFieldValor(FQryDados.Fields[i]) then
+      if (TestarFieldValor(FQryDados.Fields[i])) and (Pos(';' + FQryDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         cTotal := FormataCulunaValor(SomarValor(FQryDados.Fields[i]), (FQryDados.Fields[i] as TBCDField).Size);
 
@@ -236,6 +265,20 @@ begin
         cLinhaTotal := cLinhaTotal + Replicate(' ', _nTamanhoEntreColuna);
     end;
     FlsImpressao.Add(cLinhaTotal);
+  end;
+
+  if Assigned(FoEstruturaRel.FiltrosRodape) then
+  begin
+    if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
+    begin
+      if FoEstruturaRel.FiltrosRodape.getTitulo <> EmptyStr then
+        FlsImpressao.Add(FoEstruturaRel.FiltrosRodape.getTitulo);
+
+      for I := 0 to Pred(FoEstruturaRel.FiltrosRodape.getItens.Count) do
+        FlsImpressao.Add(AllTrim(FoEstruturaRel.FiltrosRodape.getItens[I]));
+    end;
+    if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
+      FlsImpressao.Add(FoEstruturaRel.FiltrosRodape.getFiltroData);
   end;
 end;
 
@@ -334,6 +377,8 @@ end;
 function TEstruturaTipoRelatorioPadrao.GerarImpressao(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
 begin
   Result := Self;
+
+  FoEstruturaRel := AoEstruturaRel;
 
   AoEstruturaRel.getTitulo(FcTitulo);
   AoEstruturaRel.getQuery(FQryDados);
