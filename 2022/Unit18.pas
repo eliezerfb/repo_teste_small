@@ -981,14 +981,14 @@ begin
 
     dbGrid1.Canvas.FillRect(xRect);
 
-    with dbgrid1.Canvas do
-    begin
+    //with dbgrid1.Canvas do
+    //begin
       OldBkMode := SetBkMode(Handle, TRANSPARENT);
       dbgrid1.Canvas.Font := dbgrid1.TitleFont;
-      TextOut(Rect.Left + 2, 2, AllTrim(Field.DisplayLabel));
+      dbgrid1.Canvas.TextOut(Rect.Left + 2, 2, Trim(Field.DisplayLabel));
       dbgrid1.Canvas.Font.Color := clblack;
       SetBkMode(Handle, OldBkMode);
-    end;
+    //end;
   except
   end;
 end;
@@ -1043,30 +1043,7 @@ begin
     if (Form7.sModulo = 'VENDA') and (DbGrid1.SelectedIndex = 0) then
       DbGrid1.SelectedIndex := 1;
 
-    {Sandro Silva 2023-07-04 inicio}
-    {
-    if (Form7.sModulo = 'VENDA') then
-    begin
-
-      if Form7.ibDataSet7BANDEIRA.Visible then
-      begin
-        if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
-          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListBandeira;
-      end;
-
-
-      if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
-      begin
-
-        if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
-          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListFormaDePagamento;
-
-      end;
-
-    end;
-    }
     SetPickListParaColuna;
-    {Sandro Silva 2023-07-04 fim}
 
     ExibeOpcoesPreencherColunas; // Sandro Silva 2023-06-19
   except
@@ -1392,11 +1369,9 @@ begin
      (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'AUTORIZACAOTRANSACAO')
      then
   begin
-    DbGrid1.Columns[DbGrid1.SelectedIndex].ReadOnly := True;
 
     if (DbGrid1.Columns[DbGrid1.SelectedIndex].PickList.Count > 0) then
     begin
-      DbGrid1.Columns[DbGrid1.SelectedIndex].ReadOnly := False;
 
       keybd_event(VK_F2,0,0,0);
       keybd_event(VK_F2,0,KEYEVENTF_KEYUP,0);
@@ -1405,7 +1380,6 @@ begin
       keybd_event(VK_DOWN,0,KEYEVENTF_KEYUP,0);
       keybd_event(VK_MENU,0,KEYEVENTF_KEYUP,0);
     end;
-
 
   end;
 
