@@ -144,7 +144,10 @@ uses
   uDadosVendasPorClienteCupomItemAItemDAO in 'units\uDadosVendasPorClienteCupomItemAItemDAO.pas',
   uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas',
   uIRetornaOperacoesRelatorio in 'interfaces\uIRetornaOperacoesRelatorio.pas',
-  uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas';
+  uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas',
+  uIFiltrosRodapeRelatorio in '..\..\unit_compartilhada\interfaces\uIFiltrosRodapeRelatorio.pas',
+  uFiltrosRodapeRelatorioVendasClienteNota in 'units\uFiltrosRodapeRelatorioVendasClienteNota.pas',
+  uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas';
 
 {$R *.RES}
 

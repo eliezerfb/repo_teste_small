@@ -3,22 +3,41 @@ unit uEstruturaRelVendasPorClienteCupom;
 interface
 
 uses
-  uIEstruturaRelatorioPadrao, uIDadosImpressaoDAO, IBQuery;
+  uIEstruturaRelatorioPadrao, uIDadosImpressaoDAO, IBQuery,
+  uIFiltrosRodapeRelatorio;
 
 type
   TEstruturaRelVendasPorClienteCupom = class(TInterfacedObject, IEstruturaRelatorioPadrao)
   private
     FoDados: IDadosImpressaoDAO;
+    FoFiltrosRodape: IFiltrosRodapeRelatorio;    
+    constructor Create;
   public
     class function New: IEstruturaRelatorioPadrao;
     function getTitulo(out AcTitulo: String): IEstruturaRelatorioPadrao;
     function setDAO(AoDao: IDadosImpressaoDAO): IEstruturaRelatorioPadrao;
+    function getColunasNaoTotalizar(out AcColunas: String): IEstruturaRelatorioPadrao;
+    function FiltrosRodape: IFiltrosRodapeRelatorio;
     function getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
   end;
   
 implementation
 
+uses SysUtils, uFiltrosRodapeRelatorioVendasClienteCupom;
+
 { TEstruturaRelVendasPorClienteCupom }
+
+function TEstruturaRelVendasPorClienteCupom.getColunasNaoTotalizar(out AcColunas: String): IEstruturaRelatorioPadrao;
+begin
+  Result := Self;
+
+  AcColunas := EmptyStr;
+end;
+
+function TEstruturaRelVendasPorClienteCupom.FiltrosRodape: IFiltrosRodapeRelatorio;
+begin
+  Result := FoFiltrosRodape;
+end;
 
 function TEstruturaRelVendasPorClienteCupom.getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
 begin
@@ -44,6 +63,11 @@ begin
   Result := Self;
   
   FoDados := AoDao;
+end;
+
+constructor TEstruturaRelVendasPorClienteCupom.Create;
+begin
+  FoFiltrosRodape := TFiltroRodapeRelVendasClienteCupom.New;
 end;
 
 end.

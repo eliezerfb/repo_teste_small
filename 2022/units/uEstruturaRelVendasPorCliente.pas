@@ -18,6 +18,7 @@ type
     constructor Create;
     function RetornarWhereNota: String;
     function RetornarWhereCupom: String;
+    function RetornarDescricaoFiltroData: String;
   public
     destructor Destroy; override;
     class function New: IEstruturaRelVendasPorCliente;
@@ -36,7 +37,8 @@ implementation
 
 uses
   uEstruturaTipoRelatorioPadrao, uEstruturaRelVendasPorClienteNota,
-  uDadosVendasPorClienteFactory, uEstruturaRelVendasPorClienteCupom;
+  uDadosVendasPorClienteFactory, uEstruturaRelVendasPorClienteCupom,
+  uIEstruturaRelatorioPadrao;
 
 { TEstruturaRelVendasPorCliente }
 
@@ -51,37 +53,56 @@ begin
 end;
 
 function TEstruturaRelVendasPorCliente.ImprimeNota(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
+var
+  i: Integer;
+  oEstruturaClienteNota: IEstruturaRelatorioPadrao;
 begin
   Result := Self;
 
   if not AbImprime then
     Exit;
 
-  FoEstrutura.GerarImpressao(TEstruturaRelVendasPorClienteNota.New
+  oEstruturaClienteNota := TEstruturaRelVendasPorClienteNota.New
                                                               .setDAO(TDadosVendasPorClienteFactory.New
                                                                                                    .RetornarDAONota(FbItemAItem)
                                                                                                    .setDataBase(FoDataBase)
                                                                                                    .setWhere(RetornarWhereNota)
                                                                                                    .CarregarDados
-                                                                     )
-                            );  
+                                                                     );
+
+  oEstruturaClienteNota.FiltrosRodape.setFiltroData(RetornarDescricaoFiltroData);
+  
+  for i := 0 to Pred(FlsOperacoes.Count) do
+    oEstruturaClienteNota.FiltrosRodape.AddItem(FlsOperacoes[i]);
+
+  FoEstrutura.GerarImpressao(oEstruturaClienteNota);  
 end;
 
 function TEstruturaRelVendasPorCliente.ImprimeCupom(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
+var
+  oEstruturaClienteCupom: IEstruturaRelatorioPadrao;
 begin
   Result := Self;
 
   if not AbImprime then
     Exit;
 
-  FoEstrutura.GerarImpressao(TEstruturaRelVendasPorClienteCupom.New
+  oEstruturaClienteCupom := TEstruturaRelVendasPorClienteCupom.New
                                                               .setDAO(TDadosVendasPorClienteFactory.New
                                                                                                    .RetornarDAOCupom(FbItemAItem)
                                                                                                    .setDataBase(FoDataBase)
                                                                                                    .setWhere(RetornarWhereCupom)
                                                                                                    .CarregarDados
-                                                                     )
-                            );
+                                                                     );
+
+  oEstruturaClienteCupom.FiltrosRodape.setFiltroData(RetornarDescricaoFiltroData);
+
+  FoEstrutura.GerarImpressao(oEstruturaClienteCupom);
+end;
+
+function TEstruturaRelVendasPorCliente.RetornarDescricaoFiltroData: String;
+begin
+  Result := 'Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim);
 end;
 
 function TEstruturaRelVendasPorCliente.RetornarWhereNota: String;
