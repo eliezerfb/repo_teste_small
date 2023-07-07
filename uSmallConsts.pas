@@ -30,11 +30,14 @@ const
   // SECTION USUARIO ({USUARIO}.INF)
   _cSectionGeralUsuario           = 'GERAL';
   _cSectionHtml                   = 'Html';  
+  _cSectionOutros                 = 'Outros';
   _cIdentGeralUsuMarketPlaceAtivo = 'MARKETPLACE ATIVO';
   _cIdentGeralUsuMobileAtivo      = 'MOBILE ATIVO';
   _cIdentHtmlHtml1        = _cSectionHtml+'1';
   _cIdentHtmlCor          = 'Cor';
-
+  _cIdentPeriodoInicial   = 'Período Inicial';
+  _cIdentPeriodoFinal     = 'Período Final';
+  
   //SECTION Frente de Caixa (FRENTE.INI)
   _cSectionFrenteCaixa = 'Frente de Caixa';
   _cIdentFrenteCaixaTipoEtiqueta = 'Tipo etiqueta';

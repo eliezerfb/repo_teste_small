@@ -14,6 +14,7 @@ object frmRelatorioPadrao: TfrmRelatorioPadrao
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96

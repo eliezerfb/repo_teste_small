@@ -12,7 +12,7 @@ type
   function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
   function getFiltroData: String;
   function getTitulo: String;
-  function getItens: TStrings;
+  function getItens: TStringList;
   end;
 
 implementation

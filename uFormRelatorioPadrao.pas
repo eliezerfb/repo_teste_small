@@ -6,8 +6,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, IBDatabase,
-  uSmallEnumerados, uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao;
+  Dialogs, StdCtrls, Buttons, ExtCtrls, IBDatabase, uSmallEnumerados,
+  uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao, uArquivosDAT;
 
 type
   TfrmRelatorioPadrao = class(TForm)
@@ -19,20 +19,23 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnAvancarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FoDataBase: TIBDataBase;
-    FcUsuario: String;  
+    FcUsuario: String;
     function getImagem: TPicture;
     procedure setImagem(const Value: TPicture);
     function getDataBase: TIBDatabase;
     procedure setDataBase(const Value: TIBDatabase);
     function getUsuario: String;
     procedure setUsuario(const Value: String);
+    procedure CriaArquivoDAT;
   public
     property DataBase: TIBDatabase read getDataBase write setDataBase;
     property Imagem: TPicture read getImagem write setImagem;
     property Usuario: String read getUsuario write setUsuario;
   protected
+    FoArquivoDAT: TArquivosDAT;
     procedure Imprimir;
     function Estrutura: IEstruturaTipoRelatorioPadrao; virtual; abstract;
   end;
@@ -84,6 +87,13 @@ end;
 procedure TfrmRelatorioPadrao.setUsuario(const Value: String);
 begin
   FcUsuario := Value;
+
+  CriaArquivoDAT;  
+end;
+
+procedure TfrmRelatorioPadrao.CriaArquivoDAT;
+begin
+  FoArquivoDAT := TArquivosDAT.Create(FcUsuario);
 end;
 
 procedure TfrmRelatorioPadrao.Imprimir;
@@ -94,7 +104,8 @@ end;
 procedure TfrmRelatorioPadrao.btnAvancarClick(Sender: TObject);
 begin
   Imprimir;
-  Self.Close;  
+
+  Self.Close;
 end;
 
 procedure TfrmRelatorioPadrao.FormShow(Sender: TObject);
@@ -102,6 +113,12 @@ begin
   // Deve ser igual ao da unit38.
   Self.ClientHeight := 262;
   Self.ClientWidth  := 454;
+end;
+
+procedure TfrmRelatorioPadrao.FormDestroy(Sender: TObject);
+begin
+  if Assigned(FoArquivoDAT) then
+    FreeAndNil(FoArquivoDAT);
 end;
 
 end.
