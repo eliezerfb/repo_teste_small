@@ -185,7 +185,7 @@ begin
       FlsImpressao.Add('    </table>');
     end;
     if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
-      FlsImpressao.Add('<br><font size=1>'+FoEstruturaRel.FiltrosRodape.getFiltroData+'</font>');
+      FlsImpressao.Add('<br><font face="Microsoft Sans Serif" size=1>'+FoEstruturaRel.FiltrosRodape.getFiltroData+'</font>');
   end;
 end;
 
