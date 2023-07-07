@@ -13,7 +13,7 @@ type
     FdDataIni: TDateTime;
     FdDataFim: TDateTime;
     FoDataBase: TIBDatabase;
-    FlsOperacoes: TStrings;
+    FlsOperacoes: TStringList;
     FoEstrutura: IEstruturaTipoRelatorioPadrao;
     constructor Create;
     function RetornarWhereNota: String;
@@ -27,7 +27,7 @@ type
     function setItemAItem(AbItemAItem: Boolean): IEstruturaRelVendasPorCliente;
     function setDataInicial(AdData: TDateTime): IEstruturaRelVendasPorCliente;
     function setDataFinal(AdData: TDateTime): IEstruturaRelVendasPorCliente;
-    function setOperacoes(AslItens: TStrings): IEstruturaRelVendasPorCliente;
+    function setOperacoes(AslItens: TStringList): IEstruturaRelVendasPorCliente;
     function ImprimeNota(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
     function ImprimeCupom(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
     function Estrutura: IEstruturaTipoRelatorioPadrao;
@@ -44,6 +44,8 @@ uses
 
 constructor TEstruturaRelVendasPorCliente.Create;
 begin
+  FlsOperacoes := TStringList.Create;
+
   FoEstrutura := TEstruturaTipoRelatorioPadrao.New;
 end;
 
@@ -75,7 +77,7 @@ begin
   for i := 0 to Pred(FlsOperacoes.Count) do
     oEstruturaClienteNota.FiltrosRodape.AddItem(FlsOperacoes[i]);
 
-  FoEstrutura.GerarImpressao(oEstruturaClienteNota);  
+  FoEstrutura.GerarImpressao(oEstruturaClienteNota);
 end;
 
 function TEstruturaRelVendasPorCliente.ImprimeCupom(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
@@ -189,11 +191,14 @@ begin
   FoEstrutura.setUsuario(AcUsuario);
 end;
 
-function TEstruturaRelVendasPorCliente.setOperacoes(AslItens: TStrings): IEstruturaRelVendasPorCliente;
+function TEstruturaRelVendasPorCliente.setOperacoes(AslItens: TStringList): IEstruturaRelVendasPorCliente;
+var
+  i: Integer;
 begin
   Result := Self;
 
-  FlsOperacoes := AslItens;
+  for i := 0 to Pred(AslItens.Count) do
+    FlsOperacoes.Add(AslItens[i]);
 end;
 
 destructor TEstruturaRelVendasPorCliente.Destroy;

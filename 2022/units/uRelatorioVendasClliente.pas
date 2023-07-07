@@ -30,10 +30,14 @@ type
     procedure btnDesmarcarTodosOperClick(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
+    FlsItensOperacoes: TStringList;
     function FazValidacoes: Boolean;
     procedure AjustaLayout;
-    function RetornarItensMarcadosOperacao: TStrings;
+    function RetornarItensMarcadosOperacao: TStringList;
   public
   protected
     function Estrutura: IEstruturaTipoRelatorioPadrao; override;
@@ -46,7 +50,7 @@ implementation
 
 uses
   SmallFunc, uEstruturaRelVendasPorCliente, uSmallResourceString,
-  uRetornaOperacoesRelatorio;
+  uRetornaOperacoesRelatorio, uSectionOutrosUsuarioINF;
 
 {$R *.dfm}
 
@@ -70,8 +74,8 @@ procedure TfrmRelVendasPorCliente.FormShow(Sender: TObject);
 begin
   inherited;
   AjustaLayout;  
-  dtInicial.Date := StrToDate('01/' + IntToStr(Month(Date)) + '/' + IntToStr(Year(Date)));
-  dtFinal.Date := StrToDate(IntToStr(DiasPorMes(Year(Date), Month(Date)))+ '/' + IntToStr(Month(Date)) + '/' + IntToStr(Year(Date)));
+  dtInicial.Date := FoArquivoDAT.Usuario.Outros.PeriodoInicial;
+  dtFinal.Date   := FoArquivoDAT.Usuario.Outros.PeriodoFinal;
 end;
 
 function TfrmRelVendasPorCliente.FazValidacoes: Boolean;
@@ -130,29 +134,31 @@ end;
 procedure TfrmRelVendasPorCliente.btnAvancarClick(Sender: TObject);
 begin
   if (pnlSelOperacoes.Visible) or (not cbNota.Checked) then
-    inherited;
-    
-  if (pnlPrincipal.Visible) and (cbNota.Checked) then
+    inherited
+  else
   begin
-    pnlPrincipal.Visible := False;
-    pnlSelOperacoes.Visible := True;
-    TRetornaOperacoesRelatorio.New
-                              .setDataBase(DataBase)
-                              .setOperacaoVenda
-                              .CarregaDados
-                              .DefineItens(chkOperacoes);
+    if (pnlPrincipal.Visible) and (cbNota.Checked) then
+    begin
+      pnlPrincipal.Visible := False;
+      pnlSelOperacoes.Visible := True;
+      TRetornaOperacoesRelatorio.New
+                                .setDataBase(DataBase)
+                                .setOperacaoVenda
+                                .CarregaDados
+                                .DefineItens(chkOperacoes);
+    end;
+    btnVoltar.Enabled := (not pnlPrincipal.Visible);
   end;
-  btnVoltar.Enabled := (not pnlPrincipal.Visible);  
 end;
 
-function TfrmRelVendasPorCliente.RetornarItensMarcadosOperacao: TStrings;
+function TfrmRelVendasPorCliente.RetornarItensMarcadosOperacao: TStringList;
 var
   i: Integer;
 begin
+  Result := FlsItensOperacoes;
+
   if not cbNota.Checked then
     Exit;
-
-  Result := TStringList.Create;
 
   for I := 0 to Pred(chkOperacoes.Items.Count) do
   begin
@@ -170,6 +176,26 @@ begin
   end;
 
   btnVoltar.Enabled := (not pnlPrincipal.Visible);
+  inherited;
+end;
+
+procedure TfrmRelVendasPorCliente.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  FoArquivoDAT.Usuario.Outros.PeriodoInicial := dtInicial.Date;
+  FoArquivoDAT.Usuario.Outros.PeriodoFinal   := dtFinal.Date;
+  inherited;
+end;
+
+procedure TfrmRelVendasPorCliente.FormCreate(Sender: TObject);
+begin
+  inherited;
+  FlsItensOperacoes := TStringList.Create;
+end;
+
+procedure TfrmRelVendasPorCliente.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FlsItensOperacoes);
   inherited;
 end;
 

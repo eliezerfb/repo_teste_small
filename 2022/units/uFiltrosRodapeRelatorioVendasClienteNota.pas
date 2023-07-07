@@ -18,7 +18,7 @@ type
     function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
     function getFiltroData: String;
     function getTitulo: String;
-    function getItens: TStrings;
+    function getItens: TStringList;
   end;
 
 implementation
@@ -50,7 +50,7 @@ begin
   Result := FcFiltroData;
 end;
 
-function TFiltroRodapeRelVendasClienteNota.getItens: TStrings;
+function TFiltroRodapeRelVendasClienteNota.getItens: TStringList;
 begin
   Result := FlsItens;
 end;

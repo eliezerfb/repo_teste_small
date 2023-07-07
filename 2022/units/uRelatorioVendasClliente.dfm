@@ -4,6 +4,8 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
   Caption = 'Relat'#243'rio Vendas por cliente'
   ClientWidth = 762
   OldCreateOrder = True
+  OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited btnCancelar: TBitBtn

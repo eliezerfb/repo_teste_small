@@ -18,7 +18,7 @@ type
     function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
     function getFiltroData: String;
     function getTitulo: String;
-    function getItens: TStrings;
+    function getItens: TStringList;
   end;
 
 implementation
@@ -41,7 +41,8 @@ end;
 
 destructor TFiltroRodapeRelVendasClienteCupom.Destroy;
 begin
-  FreeAndNil(FlsItens);
+  if Assigned(FlsItens) then
+    FreeAndNil(FlsItens);
   inherited;
 end;
 
@@ -50,7 +51,7 @@ begin
   Result := FcFiltroData;
 end;
 
-function TFiltroRodapeRelVendasClienteCupom.getItens: TStrings;
+function TFiltroRodapeRelVendasClienteCupom.getItens: TStringList;
 begin
   Result := FlsItens;
 end;
