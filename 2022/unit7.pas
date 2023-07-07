@@ -2422,79 +2422,6 @@ begin
 
 end;
 
-(* // Sandro Silva 2022-09-12
-function MostraNFSe(bP1 : Boolean): Boolean;
-var
-  F : TextFile;
-  wNFSe : WideString;
-begin
-  //
-  try
-    //
-    if Form7.WebBrowser2.Visible then
-    begin
-      //
-      wNFSe := ConverteAcentos(Form7.ibDataSet15RECIBOXML.AsString);
-      //
-      if RetornaValorDaTagNoCampo('codigo_html',wNFSe) <> '' then
-      begin
-        //
-        wNFSe := RetornaValorDaTagNoCampo('codigo_html',wNFSe);
-        wNFSe := StrTran(StrTran(StrTran(StrTran( wNFSe,'&lt;','<'),'&gt;','>'),'&amp;nbsp;',' '),'&quot;','"');
-//          wNFSe := StrTran(wNFSe,'Software FiscalWeb- IPM Sistemas - Protegido por Lei.','<a href="https://www.smallsoft.com.br">www.smallsoft.com.br</a>');
-//          wNFSe := ConverteAcentos(wNFSe);
-        //
-        wNFSe := '<html>'+wNFSe+'<html>';
-        AssignFile(F,pchar(Form1.sAtual+'\tempo.html'));  // Direciona o arquivo F para EXPORTA.TXT
-        Rewrite(F);                  // Abre para gravação
-        Write(F,wNFSe);
-        CloseFile(F); // Fecha o arquivo
-        Form7.WebBrowser2.Navigate(pChar(Form1.sAtual+'\tempo.html'));
-        //
-      end else
-      begin
-        //
-        AssignFile(F,pchar(Form1.sAtual+'\tempo.htm'));  // Direciona o arquivo F para EXPORTA.TXT
-        Rewrite(F);                  // Abre para gravação
-        Writeln(F,'<html><head><title>Arquivo não encontrado</title></head>');
-        WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-        //
-        WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=4>Arquivo da NFS-e não encontrado</font><br></center>');
-        WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1></b>Atualizado em'+Copy(DateTimeToStr(Date),1,2)+' de '
-        + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
-        + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-        //
-        // WWW
-        //
-        CloseFile(F);
-        //
-        Form7.WebBrowser2.Navigate(pChar(Form1.sAtual+'\tempo.htm'));
-        //
-      end;
-      //
-    end;
-  except end;
-  //
-  Result := True;
-  //
-end;
-*)
-
-{Sandro Silva 2022-09-12 inicio 
-function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
-// Sandro Silva 2019-06-11
-// Valida se o Gtin informado é válido, usando ValidaEAN() e comparando o prefixo
-// Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
-begin
-  Result := ValidaEAN13(LimpaNumero(sEan));
-  if Result then
-  begin
-    if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then
-      Result := False;
-  end;
-end;
-}
-
 function Manifesto(iP1: integer) : Boolean;
 var
   sJustificativa, sRetorno : String;
@@ -13497,9 +13424,7 @@ var
   yRect, xRect : tREct;
   sTex : String;
 begin
-  //
   try
-    //
     dbGrid1.Canvas.Pen.Width    := 0;
     dbGrid1.Canvas.Pen.Color    := clWhite;
     //
@@ -13533,27 +13458,22 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
     if not (gdFocused in State) and not (gdFixed in State) and not (gdSelected in State) then
     begin
       try
-        //
         if (Field.DataType <> ftFloat) and (Field.DataType <> ftBCD) then
         begin
-          //
           if sModulo = 'CLIENTES' then
           begin
-            //
             if ibDataSet2ATIVO.AsString='1'  then DBGrid1.Canvas.Font.Color := clSilver else
             begin
-              //
               if ibDataSet2MOSTRAR.AsString='1'  then DBGrid1.Canvas.Font.Color := clRed else DBGrid1.Canvas.Font.Color := clBlack;
-              //
+
               if (Field.FieldName = 'EMAIL') and (ValidaEmail(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 DBGrid1.Canvas.Font.Color := clBlue;
                 DBGrid1.Canvas.Font.Style := [fsUnderline];
               end;
-              //
+
               if Field.FieldName = 'IE' then
               begin
-                //
                 if (Length(AllTrim(Form7.ibDataSet2CGC.AsString)) = 18) and (UpperCase(AllTrim(Form7.ibDataSet2IE.AsString))<>'ISENTO') then
                 begin
                   if ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString) then
@@ -13562,7 +13482,6 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
                     DBGrid1.Canvas.Font.Style := [fsUnderline];
                   end else DBGrid1.Canvas.Font.Color := clBlack;
                 end;
-                //
               end;
               //
               // O dígito 9 (nove) será acrescentado à esquerda dos atuais números, passando a ter o formato: 9XXXX-XXXX.
@@ -13571,7 +13490,6 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
               //
               if Field.FieldName = 'CELULAR' then
               begin
-                //
                 if (Copy(Form7.IBDataSet2CELULAR.AsString,1,7) = '(0xx11)') and (Length(AllTrim(Form7.IBDataSet2CELULAR.AsString))=15) then
                 begin
                   if Copy(RetornaOperadora(Form7.IBDataSet2CELULAR.AsString),1,12) <> 'Convencional' then
@@ -13610,7 +13528,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
               end;
             end;
           end;
-          //
+
           if sModulo = 'TRANSPORT' then
           begin
             if (Field.Name = 'ibDataSet18EMAIL') and (ValidaEmail(Form7.ibDataSet18EMAIL.AsString)) then
@@ -13619,56 +13537,33 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
               DBGrid1.Canvas.Font.Style := [fsUnderline];
             end;
           end;
-          //
+
           if sModulo = 'ESTOQUE' then
           begin
-            //
             if ibDataSet4ATIVO.AsString='1'  then DBGrid1.Canvas.Font.Color := clSilver else
             begin
-              //
               if Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.ibDataSet4QTD_MINIM.AsFloat then
               begin
                 DBGrid1.Canvas.Font.Color := clRed;
               end;
-              //
+
               // Composição Ok
-              //
               if (Field.Name = 'ibDataSet4DESCRICAO') and (not Form10.Visible) then
               begin
-{
-                if not (Form7.IBDataSet99.Active) or (Copy(Form7.IbDataSet99.SelectSQL.Text,1,22) <> 'select * from COMPOSTO') then
-                begin
-                  //
-                  // ShowMessage(Form7.IbDataSet99.SelectSQL.Text);
-                  //
-                  Form7.ibDataSet99.Close;
-                  Form7.ibDataSet99.SelectSQL.Clear;
-                  Form7.IbDataSet99.SelectSQL.Add('select * from COMPOSTO');
-                  Form7.IbDataSet99.Open;
-                  //
-                end;
-                //
-                if Form7.IBDataset99.Locate('CODIGO',Form7.ibDataSet4CODIGO.AsString,[]) then DBGrid1.Canvas.Font.Color := clGreen;
-}
-
                 Form7.ibDataSet99.Close;
                 Form7.ibDataSet99.SelectSQL.Clear;
                 Form7.IbDataSet99.SelectSQL.Add('select CODIGO from COMPOSTO where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
                 Form7.IbDataSet99.Open;
-                //
-                if Form7.ibDataSet4CODIGO.AsString = Form7.IbDataSet99.FieldByname('CODIGO').AsString then DBGrid1.Canvas.Font.Color := clGreen;
-                //
-//                if not AssinaRegistro('ESTOQUE',form7.ibDataSet4, False) then
-//                begin
-//                  DBGrid1.Canvas.Font.Color := clLime;
-//                end;
-                //
+
+                if Form7.ibDataSet4CODIGO.AsString = Form7.IbDataSet99.FieldByname('CODIGO').AsString then
+                  DBGrid1.Canvas.Font.Color := clGreen;
               end;
-              //
+
               if Field.FieldName = 'REFERENCIA' then
               begin
                 try
-                  if not ValidaEAN13(Form7.ibDataSet4REFERENCIA.AsString) then
+                  //if not ValidaEAN13(Form7.ibDataSet4REFERENCIA.AsString) then Mauricio Parizotto 2023-07-05
+                  if not ValidaEAN(Form7.ibDataSet4REFERENCIA.AsString) then
                   begin
                     DBGrid1.Canvas.Font.Color := clRed;
                     DBGrid1.Canvas.Font.Style := [fsUnderline];
@@ -13678,30 +13573,26 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
                   DBGrid1.Canvas.Font.Style := [fsUnderline];
                 end;
               end;
-              //
+
               if Form7.ibDataSet4MEDIDA.AsString <> '' then
               begin
-                //
                 if Field.FieldName = 'MEDIDA' then
                 begin
-                  //
                   Form7.IBDataSet99.Close;
                   Form7.IBDataSet99.SelectSQL.Clear;
                   Form7.IBDataSet99.SelectSQL.Add('select SIGLA from MEDIDA where SIGLA='+QuotedStr(Form7.IBDataSet4MEDIDA.AsString)+'');
                   Form7.IBDataSet99.Open;
-                  //
+
                   if Form7.ibDataSet4MEDIDA.AsString <> Form7.IBDataSet99.FieldByname('SIGLA').AsString then
                   begin
                     DBGrid1.Canvas.Font.Color := clRed;
                     DBGrid1.Canvas.Font.Style := [fsUnderline];
                   end else DBGrid1.Canvas.Font.Color := clBlack;
-                  //
                 end;
               end;
-              //
             end;
           end;
-          //
+
           if sModulo = 'RECEBER' then
           begin
             if ibDataSet7Vencimento.Value < date then DBGrid1.Canvas.Font.Color := clRed;
@@ -13709,21 +13600,21 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
             if ibDataSet7Valor_Rece.Value <> 0   then DBGrid1.Canvas.Font.Color := clGreen;
             if ibDataSet7ATIVO.AsString=  '1'    then DBGrid1.Canvas.Font.Color := clSilver;
           end;
-          //
+
           if sModulo = 'OS' then
           begin
             if ibDataSet3SITUACAO.AsString = 'Fechada'    then DBGrid1.Canvas.Font.Color := clGreen;
             if ibDataSet3SITUACAO.AsString = 'Aberta'     then DBGrid1.Canvas.Font.Color := clRed;
             if ibDataSet3SITUACAO.AsString = 'Agendada'   then DBGrid1.Canvas.Font.Color := clBlack;
           end;
-          //
+
           if sModulo = 'PAGAR' then
           begin
             if ibDataSet8Vencimento.Value < date then DBGrid1.Canvas.Font.Color := clRed;
             if ibDataSet8Vencimento.Value = date then DBGrid1.Canvas.Font.Color := clBlue;
             if ibDataSet8Valor_Pago.Value <> 0 then DBGrid1.Canvas.Font.Color := clGreen;
           end;
-          //
+
           if sModulo = 'CAIXA' then
           begin
             if ibDataSet1.FieldByName('DATA').Value <> date then DBGrid1.Canvas.Font.Color := clGray;
@@ -13732,20 +13623,17 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
               if ibDataSet1.FieldByName('DATA').Value <> date then DBGrid1.Canvas.Font.Color := $009F9FFF else DBGrid1.Canvas.Font.Color :=  clRed;
             end;
           end;
-          //
+          
           if sModulo = 'ICM' then
           begin
-            //
             if (Copy(ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(ibDataSet14CFOP.AsString,1,1) = '2')  then DBGrid1.Canvas.Font.Color := clGreen;
             if (Copy(ibDataSet14CFOP.AsString,1,1) = '5') or (Copy(ibDataSet14CFOP.AsString,1,1) = '6')  then DBGrid1.Canvas.Font.Color := clBlue;
             if (Copy(ibDataSet14CFOP.AsString,1,1) = '3') or (Copy(ibDataSet14CFOP.AsString,1,1) = '7')  then DBGrid1.Canvas.Font.Color := clSilver;
             if (Copy(ibDataSet14CFOP.AsString,1,1) = ' ') then DBGrid1.Canvas.Font.Color := clBlack;
-            //
           end;
-          //
+
           if sModulo = 'ORCAMENTO' then
           begin
-            //
             try
               if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
                 DBGrid1.Canvas.Font.Color := clBlack
@@ -13753,52 +13641,42 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
                 DBGrid1.Canvas.Font.Color  := $00EAB231;
             except
             end;
-            //
           end;
-          //
+
           if sModulo = 'VENDA' then
           begin
-            //
             if (Field.Name = 'ibDataSet15NUMERONF')     then
               DBGrid1.Canvas.Font.Style := [fsBold];
-{
-            if Form7.ibDataSet15EMITIDA.AsString <> 'S' then DBGrid1.Canvas.Font.Color := clRed;
-            if Form7.ibDataSet15EMITIDA.AsString = 'X' then DBGrid1.Canvas.Font.Color := clSilver;
-            if Form7.ibDataSet15STATUS.AsString = 'Autorizado o uso da NF-e' then DBGrid1.Canvas.Font.Color := $00EAB231;
-}
-            //
+
             if Form7.ibDataSet15EMITIDA.AsString = 'S' then
               DBGrid1.Canvas.Font.Color  := clBlack
             else
               DBGrid1.Canvas.Font.Color  := clRed;
-            //
+
             if alltrim(Form7.ibDataSet15NFERECIBO.AsString)    <> '' then
               DBGrid1.Canvas.Font.Color := clBlue;
-//            if alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '' then DBGrid1.Canvas.Font.Color  := $00EAB231;
+
             if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0 then
               DBGrid1.Canvas.Font.Color  := $00EAB231;
+
             if Form7.sRPS = 'S' then
             begin
               if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) <> 0 then
                 DBGrid1.Canvas.Font.Color  := $00EAB231;
             end;
-            //
+
             if Form7.ibDataSet15EMITIDA.AsString = 'X' then
               DBGrid1.Canvas.Font.Color := clSilver;
-            //
-            //
           end;
-          //
+
           if sModulo = 'COMPRA' then
           begin
-            //
             if (Field.Name = 'ibDataSet24NUMERONF')     then
               DBGrid1.Canvas.Font.Style := [fsBold];
-            //
           end;
-          //
+
           dbGrid1.Canvas.FillRect(Rect);
-          //
+
           if Field.Name = 'ibDataSet3CGC' then
             dbGrid1.Canvas.StretchDraw(Rect,Form7.Image24.Picture.Graphic);
           if Field.Name = 'ibDataSet18CGC' then
@@ -13808,23 +13686,19 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
 
           if Pos('WHATSAPP',UpperCase(Field.DisplayLabel)) <> 0 then
           begin
-            //
-            //          4988163696
-            //
             yRect := Rect;
             YRect.Left   := Rect.Right - 40;
             YREct.Bottom := Rect.Top   + 40;
-            //
-            if LimpaNumero(Field.AsString) <> '' then dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageWhatsApp.Picture.Graphic);  // Claro
-            //
+
+            if LimpaNumero(Field.AsString) <> '' then
+              dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageWhatsApp.Picture.Graphic);  // Claro
           end;
-          //
+
           if (Field.FieldName = 'CONTATOS') then
           begin
             sTex := Right(Field.AsString,100);
           end;
-          //
-//          if (Field.Name = 'ibDataSet15NFEPROTOCOLO') and (Length(AllTrim(Field.AsString))>=10) then dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9)+'/'+Copy(Field.AsString+'   ',10,3))
+
           if ((Field.Name = 'ibDataSet15NUMERONF') and (Copy(Field.AsString,10,3)='RPS')) then
             dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Copy(Field.AsString,1,9))
           else if (Field.Name = 'ibDataSet15NUMERONF') then
@@ -13848,108 +13722,76 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         except end;
       end;
     end;
-    //
+
     if Field.Name = 'ibDataSet5COMPENS' then
     begin
-      //
       if Form7.ibDataSet5COMPENS.AsString = '' then
       begin
         dbGrid1.Canvas.FillRect(Rect);
         DBGrid1.Canvas.Font.Color   := clRed;
         dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'<Clique Duplo>');
       end;
-      //
     end;
-    //
+
     if Field.Name = 'ibDataSet1NOME' then
     begin
-      //
       if Form7.ibDataSet1NOME.AsString = '' then
       begin
         dbGrid1.Canvas.FillRect(Rect);
         DBGrid1.Canvas.Font.Color   := clRed;
         dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'<Plano de Contas>');
       end;
-      //
     end;
-    //
+
     if Field.Name = 'ibDataSet24MDESTINXML' then
     begin
-      //
-      // Código do evento:
-      // 210200 – Confirmação da Operação
-      // 210210 – Ciência da Operação
-      // 210220 – Desconhecimento da Operação
-      // 210240 – Operação não Realizada
-      //
       yRect := Rect;
       YRect.Left   := Rect.Right - 20;
       YREct.Bottom := Rect.Top   + 40;
-      //
+
       dbGrid1.Canvas.FillRect(Rect);
-      //
+
       if Pos('<tpEvento>210200',Form7.ibDataSet24MDESTINXML.AsString)<>0 then
       begin
-        //
-        // 210200 – Confirmação da Operação
-        //
         DBGrid1.Canvas.Font.Color   := $00EAB231;
         dbGrid1.Canvas.StretchDraw(yRect,Form7.Positivo.Picture.Graphic);  // Positivo
         dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Operação confirmada');
-        //
       end else
       begin
-        //
         if (Pos('<tpEvento>210210',Form7.ibDataSet24MDESTINXML.AsString)<>0)  then
         begin
           if (Length(LimpaNumero(Form7.ibDataSet24NFEID.AsString)) = 44) and (Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString)=0) and (Form7.ibDataSet24MERCADORIA.Asfloat = 0) then
           begin
-            //
             // Ciência da operação
-            //
             DBGrid1.Canvas.Font.Color   := clMaroon;
             dbGrid1.Canvas.StretchDraw(yRect,Form7.PositivoDownloadXML.Picture.Graphic);
             dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Ciencia da Operacao - Importe o XML');
           end else
           begin
-            //
             // 210210 – Ciência da Operação
-            //
             DBGrid1.Canvas.Font.Color   := clGreen;
             dbGrid1.Canvas.StretchDraw(yRect,Form7.PositivoVerde.Picture.Graphic);  // Positivo
             dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Ciente da Operação');
-            //
           end;
-          //
         end else
         begin
-          //
           if (Pos('<tpEvento>21020',Form7.ibDataSet24MDESTINXML.AsString)<>0) then
           begin
-            //
             // 210220 – Desconhecimento da Operação
-            //
             DBGrid1.Canvas.Font.Color := clSilver;
             dbGrid1.Canvas.StretchDraw(yRect,Form7.PositivoDownloadXML.Picture.Graphic);  // Positivo
             dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Desconhecimento da Operação');
-            //
           end else
           begin
-            //
             if (Pos('<tpEvento>210240',Form7.ibDataSet24MDESTINXML.AsString)<>0) then
             begin
-              //
               // 210240 – Operação não Realizada
-              //
               DBGrid1.Canvas.Font.Color := clSilver;
               dbGrid1.Canvas.StretchDraw(yRect,Form7.PositivoDownloadXML.Picture.Graphic);  // Positivo
               dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Operação não Realizada');
-              //
             end else
             begin
-              //
               // Manifestar ciencia
-              //
               if (Length(LimpaNumero(Form7.ibDataSet24NFEID.AsString)) = 44) then
               begin
                 DBGrid1.Canvas.Font.Color   := clRed;
@@ -13965,14 +13807,13 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         end;
       end;
     end;
-    //
+    
     if Field.Name = 'ibDataSet15STATUS' then
     begin
-      //
       yRect := Rect;
       YRect.Left       := Rect.Right - 20;
       YRect.Bottom     := Rect.Top + 40;
-      //
+
       if Form7.sRPS = 'S' then
       begin
         if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) <> 0 then
@@ -13984,7 +13825,6 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         end
       end else
       begin
-        //
         if Form7.ibDataSet15EMITIDA.AsString = 'X' then
         begin
           dbGrid1.Canvas.StretchDraw(yRect,Form7.Image1.Picture.Graphic)
@@ -13998,26 +13838,22 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
             dbGrid1.Canvas.StretchDraw(yRect,Form7.Image9.Picture.Graphic);
           end;
         end;
-        //
       end;
     end;
-    //
+
     if sModulo = 'ESTOQUE' then
     begin
       if Field.Name = 'ibDataSet4MARKETPLACE' then
       begin
         if (Form7.ibDataSet4MARKETPLACE.AsString = '1') then
         begin
-          //
           dbGrid1.Canvas.StretchDraw(Rect,Form7.Image13.Picture.Graphic);
-          //dbGrid1.Canvas.StretchDraw(Rect,Form7.Image14.Picture.Graphic);
         end else
         begin
           dbGrid1.Canvas.StretchDraw(Rect,Form7.Image14.Picture.Graphic);
         end;
       end;
     end;
-    //
 
     if sModulo = 'RECEBER' then
     begin
@@ -14035,7 +13871,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         end;
       end;
     end;
-    //
+
     if sModulo = 'PAGAR' then
     begin
       if Field.Name = 'ibDataSet8ATIVO' then
@@ -14152,32 +13988,28 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
         DBGrid1.Canvas.Font.Color   := clBlack;
       DBGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet15EMISSAO.AsDateTime), 1, 3) );
     end;
-    //
+
     begin
-      //
       DBGrid1.Canvas.Brush.Color := Form7.Panel7.Color;
       DBGrid1.Canvas.Pen.Color   := clRed;
-//      dbGrid1.Canvas.Brush.Color := clRed;
-//      dbGrid1.Canvas.Pen.Color   := clRed;
-      //
+
       xRect.Left   := REct.Left;
       xRect.Top    := -2;
       xRect.Right  := Rect.Right;
       xRect.Bottom := Rect.Bottom - Rect.Top + 3;
-      //
-//      dbGrid1.Canvas.StretchDraw(xREct,Form1.Botao_Titulo.Picture.Graphic);  // Claro
+
       dbGrid1.Canvas.FillRect(xRect);
-      //
-      if Pos(Field.FieldName,sOrderBy) <> 0 then DBGrid1.Canvas.Font.Style := [fsBold] else DBGrid1.Canvas.Font.Style := [];
-      //
-      //with dbGrid1.Canvas do
-      //begin
-        OldBkMode := SetBkMode(Handle, TRANSPARENT);
-        DBGrid1.Canvas.Font.Color := clblack;
-        DBGrid1.Canvas.TextOut(Rect.Left + 3, 3, AllTrim(Field.DisplayLabel));
-        DBGrid1.Canvas.Font.Color := clblack;
-        SetBkMode(Handle, OldBkMode);
-      //end;
+
+      if Pos(Field.FieldName,sOrderBy) <> 0 then
+        DBGrid1.Canvas.Font.Style := [fsBold]
+      else
+        DBGrid1.Canvas.Font.Style := [];
+
+      OldBkMode := SetBkMode(Handle, TRANSPARENT);
+      DBGrid1.Canvas.Font.Color := clblack;
+      DBGrid1.Canvas.TextOut(Rect.Left + 3, 3, AllTrim(Field.DisplayLabel));
+      DBGrid1.Canvas.Font.Color := clblack;
+      SetBkMode(Handle, OldBkMode);
     end;
   except
   end;
@@ -32123,10 +31955,10 @@ end;
 
 function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 // Sandro Silva 2019-06-11
-// Valida se o Gtin informado é válido, usando ValidaEAN() e comparando o prefixo
 // Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
 begin
-  Result := ValidaEAN13(LimpaNumero(sEan));
+  //Result := ValidaEAN13(LimpaNumero(sEan)); Mauricio Parizotto 2023-07-05
+  Result := ValidaEAN(LimpaNumero(sEan)); 
   if Result then
   begin
     if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then

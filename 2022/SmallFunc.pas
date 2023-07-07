@@ -98,7 +98,8 @@ uses
   function ZeroESQ(sP1 : string):String;
   function LimpaNumeroVirg(pP1:String):String;
   function LimpaNumeroDeixandoABarra(pP1:String):String;
-  function ValidaEAN13(sP1:String):Boolean;
+//  function ValidaEAN13(sP1:String):Boolean;
+  function ValidaEAN(AGTIN:String):Boolean;
   function xmlNodeValue(sXML: String; sNode: String): String;
   function TruncaDecimal(pP1: Real; pP2: Integer): Real;
   procedure FecharAplicacao(sNomeExecutavel: String);
@@ -2418,7 +2419,7 @@ begin
   Result := Device;
 end;
 
-
+{
 function ValidaEAN13(sP1:String):Boolean;
   function Par(Cod:Integer):Boolean;
   begin
@@ -2433,22 +2434,81 @@ begin
   begin
     SomaPar:=0;
     SomaImpar:=0;
-    //
+
     for i:=1 to 12 do
     if Par(i) then
     SomaPar:=SomaPar+StrToInt(sP1[i])
     else SomaImpar:=SomaImpar+StrToInt(sP1[i]);
-    //
+
     SomaPar:=SomaPar*3;
     i:=0;
     while i < (SomaPar+SomaImpar) do
     Inc(i,10);
-    //
+    
     if Copy(sP1,13,1) = IntToStr(i-(SomaPar+SomaImpar)) then Result := True else Result := False;
   end else
   begin
     Result := False;
   end;
+end;
+Mauricio Parizotto 2023-07-05}
+
+function ValidaEAN(AGTIN:String):Boolean;
+  function Par(Cod:Integer):Boolean;
+  begin
+    Result:= Cod Mod 2 = 0 ;
+  end;
+var
+  i,
+  soma, resultado, base10: integer;
+begin
+  Result := False;
+
+  if (Length(LimpaNumero(AGTIN)) <> Length(AGTIN)) then
+  begin
+    Exit;
+  end;
+  
+  if not (Length(AGTIN) in [8,12,13,14]) then
+  begin
+    Exit;
+  end;
+
+  soma:= 0;
+  for i:= 1 to (Length(AGTIN) -1) do
+  begin
+    if Length(AGTIN) = 13 then
+    begin
+      if Odd(i) then
+        soma:= soma + (strtoint(AGTIN[i]) * 1)
+      else
+        soma:= soma + (strtoint(AGTIN[i]) * 3);
+    end
+    else
+    begin
+      if Odd(i) then
+        soma:= soma + (strtoint(AGTIN[i]) * 3)
+      else
+        soma:= soma + (strtoint(AGTIN[i]) * 1);
+    end;
+  end;
+
+  base10:= soma;
+  //Verifica se base10 é múltiplo de 10
+  if not (base10 mod 10 = 0) then
+  begin
+    while not (base10 mod 10 = 0) do
+    begin
+      base10:= base10 + 1;
+    end;
+  end;
+  resultado:= base10 - soma;
+  //Verifica se o resultado encontrado é igual ao caractere de controle
+  if resultado = strtoint(AGTIN[Length(AGTIN)]) then
+    Result:= True
+  else
+    Result:= False;
+
 end;
 
 
