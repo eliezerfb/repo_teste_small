@@ -12974,7 +12974,7 @@ begin
       Apagar2.Enabled := False;
       Apagar2.Visible := False;
     end;
-    //
+
     if sModulo = 'COMPRA'  then
     begin
       N6VisualizarDANFE1.Caption := 'Visualizar DANFE'; // Sandro Silva 2023-02-14
@@ -12984,17 +12984,14 @@ begin
       ManifestaododestinatrioDesc1.Visible             := True;
       Manifestaaododestinatrio1.Visible                := True;
     end;
-    //
+
     if sModulo = 'VENDA'  then
     begin
-      //
       // NF-e
-      //
       Apagar2.Visible                                  := False;
-      //
+
       if Form7.sRPS <> 'S' then
       begin
-        //
         N0TestarservidorNFe1.Visible                     := True;
         N1enviarNFe1.Visible                             := True;
         N2ConsultarrecibodaNFe1.Visible                  := True;
@@ -13047,21 +13044,24 @@ begin
         N3ConsultarNFe1.Enabled          := False;
         RRecuperaroXMLdestaNFe1.Enabled  := False;
       end;
-      //
-      //
+
       if Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '' then
       begin
-        //
         N4ImprimirDANFE1.Enabled    := True;
         N6VisualizarDANFE1.Enabled  := True;
-        //
+
         N1enviarNFe1.Enabled                 := False;
-//        N2ConsultarrecibodaNFe1.Enabled  := False;
-//        N3ConsultarNFe1.Enabled          := False;
         if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Form7.ibDataSet15EMITIDA.AsString = 'X') then
           N4ImprimirDANFE1.Enabled := True
         else
           N4ImprimirDANFE1.Enabled := False;
+
+        //Mauricio Parizotto 2023-07-04
+        if AnsiContainsText(UpperCase(Form7.ibDataSet15STATUS.AsString),'DENEGAD')  then
+        begin
+          N4ImprimirDANFE1.Enabled    := False;
+          N6VisualizarDANFE1.Enabled  := False;
+        end;
 
         N5EnviarDANFEporemail1.Enabled       := True;
         CancelarNFe1.Enabled                 := True;
