@@ -895,7 +895,7 @@ object Form10: TForm10
         Visible = False
         OnClick = Button12Click
       end
-      object Button6: TBitBtn
+      object btnRenogiarDivida: TBitBtn
         Left = 392
         Top = 8
         Width = 252
@@ -909,7 +909,7 @@ object Form10: TForm10
         ParentFont = False
         TabOrder = 3
         Visible = False
-        OnClick = Button6Click
+        OnClick = btnRenogiarDividaClick
       end
     end
     object Panel1: TPanel

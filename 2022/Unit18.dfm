@@ -1,6 +1,6 @@
 object Form18: TForm18
-  Left = 341
-  Top = 173
+  Left = 615
+  Top = 215
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Desdobramento das contas'
@@ -58,7 +58,7 @@ object Form18: TForm18
     object SMALL_DBEdit1: TSMALL_DBEdit
       Left = 10
       Top = 25
-      Width = 140
+      Width = 109
       Height = 22
       BevelInner = bvNone
       Ctl3D = False
@@ -142,7 +142,7 @@ object Form18: TForm18
       Caption = ' '
       Color = clWhite
       TabOrder = 4
-      object Label45: TLabel
+      object lblTotal: TLabel
         Left = 239
         Top = 1
         Width = 28
@@ -175,6 +175,19 @@ object Form18: TForm18
       TabOrder = 5
       Visible = False
       OnClick = CheckBox1Click
+    end
+    object edtQtdParc: TEdit
+      Left = 128
+      Top = 24
+      Width = 89
+      Height = 22
+      TabOrder = 6
+      Text = '1'
+      Visible = False
+      OnEnter = edtQtdParcEnter
+      OnExit = edtQtdParcExit
+      OnKeyDown = SMALL_DBEdit1KeyDown
+      OnKeyPress = edtQtdParcKeyPress
     end
   end
 end
