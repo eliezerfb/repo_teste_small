@@ -49,7 +49,7 @@ begin
   FoQry.SQL.Add('    MIN(ALTERACA.DATA) AS "Data"');
   FoQry.SQL.Add('    , ALTERACA.PEDIDO AS "Número"');
   FoQry.SQL.Add('    , ALTERACA.CLIFOR AS "Cliente"');
-  FoQry.SQL.Add('    , DADOSAGRUPADOS.VALOR AS "Valor"');
+  FoQry.SQL.Add('    , DADOSAGRUPADOS.VALOR AS "Total"');
   FoQry.SQL.Add('FROM ALTERACA');
   FoQry.SQL.Add('INNER JOIN DADOSAGRUPADOS');
   FoQry.SQL.Add('    ON (DADOSAGRUPADOS.PEDIDO=ALTERACA.PEDIDO)');

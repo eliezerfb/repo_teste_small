@@ -41,7 +41,7 @@ begin
   FoQry.SQL.Add('    , COALESCE(ALTERACA.CLIFOR,'''') AS "Cliente"');
   FoQry.SQL.Add('    , ALTERACA.ITEM AS "Código"');
   FoQry.SQL.Add('    , ALTERACA.DESCRICAO AS "Descrição"');
-  FoQry.SQL.Add('    , CAST(ALTERACA.TOTAL AS NUMERIC(18,2)) AS "Total"');
+  FoQry.SQL.Add('    , CAST(ALTERACA.TOTAL AS NUMERIC(18,2)) AS "Valor"');
   FoQry.SQL.Add('FROM ALTERACA');
   FoQry.SQL.Add('WHERE');
   FoQry.SQL.Add(FcWhere);
