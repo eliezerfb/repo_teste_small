@@ -149,7 +149,7 @@ begin
     FQryDados.Next;
   end;
 
-  if bTemColunaValor then
+  if (bTemColunaValor) or (FQryDados.IsEmpty) then
   begin
     FlsImpressao.Add('   <tr bgcolor=#EBEBEB >');
     for i := 0 to Pred(FQryDados.Fields.Count) do
@@ -441,9 +441,6 @@ end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontarDados;
 begin
-  if FQryDados.IsEmpty then
-    Exit;
-    
   case FoArquivoDAT.Usuario.Html.TipoRelatorio of
     ttiHTML, ttiPDF: MontaDadosHTML;
     ttiTXT: MontaDadosTXT;
