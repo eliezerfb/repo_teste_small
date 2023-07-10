@@ -187,7 +187,9 @@ begin
 
           while sNomeDaEmpresa = Form1.IBQuery2.FieldByName('NOME').AsString do
           begin
-            sNomeDaEmpresa := Copy(sNomeDaEmpresa,1,Length(sNomeDaEmpresa)-2);
+            //sNomeDaEmpresa := Copy(sNomeDaEmpresa,1,Length(sNomeDaEmpresa)-2); mauricio parizotto 2023-07-10
+            sNomeDaEmpresa := Copy(sNomeDaEmpresa,1,55)+' '+ Copy(sCnpjCpf,9,4);
+
 
             Form1.ibQuery2.Close;
             Form1.ibQuery2.SQL.Clear;
