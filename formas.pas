@@ -552,7 +552,7 @@ begin
     if Form1.sModeloECF_Reserva = '65' then
       Label2.Caption := 'Índice na NFC-e';
     if Form1.sModeloECF_Reserva = '99' then
-      Label2.Caption := 'Índice na movimentação'; // Sandro Silva 2023-06-23 Label2.Caption := 'Índice na Venda';
+      Label2.Caption := 'Índice na Venda';
 
     chkUsandoTefCarteirasDigitais.Visible := True; // Sandro Silva 2021-08-30
 

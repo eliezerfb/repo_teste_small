@@ -7,7 +7,6 @@ uses
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, SmallFunc, DB, DBCtrls,
   SMALL_DBEdit, IniFiles, ShellApi, FileCtrl, jpeg, frame_teclado_1,
   Buttons, htmlhelp
-  , StrUtils
   , uajustaresolucao
   ;
 
@@ -602,8 +601,7 @@ begin
                       +Chr(10)
                       +'Limite de crédito: '+Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[Form1.ibDataSet2.FieldByName('CREDITO').AsFloat]) + '                ' + Chr(10)
                       +'Contas a receber: '+Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[(-Form1.ibDataSet2.FieldByName('CREDITO').AsFloat + Form1.ibDataSet25.FieldByName('RECEBER').AsFloat + fCredito)*-1]) + Chr(10)
-                      + ifThen(Form1.sModeloECF_Reserva = '99', 'Total do movimento: ', 'Total da venda: ')+ // Sandro Silva 2023-06-23 +'Total da venda: '+
-                      Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]) + Chr(10)
+                      +'Total da venda: '+Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]) + Chr(10)
                       +Chr(10)
                       +'Limite de crédito excedido em: '+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[(fCredito)*-1])
                       + Chr(10));

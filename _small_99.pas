@@ -183,7 +183,7 @@ var
 begin
   //             
   //Result := False;
-  Application.Title := 'Aplicativo Gerencial'; // Sandro Silva 2023-06-23 Application.Title    := 'Aplicativo MEI';
+  Application.Title    := 'Aplicativo MEI';
 
   Mobile_99 := TMobile.Create(nil); // Sandro Silva 2016-08-25
 
@@ -200,8 +200,7 @@ begin
     CreateDir(ExtractFilePath(Application.ExeName) + 'VENDAS');
   ForceDirectories(ExtractFilePath(Application.ExeName) + 'VENDAS');
 
-  Form1.NFCe1.Caption := 'Gerencial'; // Sandro Silva 2023-06-23 'MEI';
-
+  Form1.NFCe1.Caption := 'MEI';
   for iItem := 0 to Form1.NFCe1.Count - 1 do
   begin
     Form1.NFCe1.Items[iItem].Visible := False;
@@ -229,8 +228,8 @@ begin
   {Sandro Silva 2020-10-14 fim}
 
   Form1.NFCenoperodo1.Caption                   := 'Documentos no período...'; // Sandro Silva 2020-08-24 Form1.NomeModeloDocumento('59') + ' no período...';  // Sandro Silva 2018-07-03  'CF-e-SAT no período'; // Sandro Silva 2018-06-04
-  Form1.GerenciadordeNFCe1.Caption              := 'Gerenciador'; // Sandro Silva 2023-06-23 'Gerenciador de Vendas';
-  Form1.ImprimirDANFCE1.Caption                 := 'Imprimir o Comprovante da Movimentação'; // Sandro Silva 2023-06-23 'Imprimir o Comprovante da Venda';
+  Form1.GerenciadordeNFCe1.Caption              := 'Gerenciador de Vendas'; // Sandro Silva 2020-08-24 'Gerenciador de ' + Form1.NomeModeloDocumento('59');  // Sandro Silva 2018-07-03 NOME_CUPOM_59;// 2014-04-02 'Gerenciador de S@T-CFe';
+  Form1.ImprimirDANFCE1.Caption                 := 'Imprimir o Comprovante da Venda'; // Sandro Silva 2021-04-28
   //
   DecimalSeparator := ',';
   DateSeparator    := '/';
@@ -1314,7 +1313,7 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(PansiChar(E.Message+chr(10)+chr(10)+'Ao visualizar a movimentação'),'Atenção',mb_Ok + MB_ICONWARNING);
+      Application.MessageBox(PansiChar(E.Message+chr(10)+chr(10)+'Ao visualizar a venda'),'Atenção',mb_Ok + MB_ICONWARNING);
       Result := False;
     end;
   end;
@@ -2341,7 +2340,7 @@ begin
           PDF.TITLE       := ExtractFileName(sFilePDF);
           PDF.Creator     := 'Zucchetti - ' + ExtractFileName(Application.ExeName);// Sandro Silva 2022-12-02 Unochapeco
           PDF.Author      := ConverteAcentos2(Form1.ibDataSet13.FieldByName('NOME').AsString);
-          PDF.Keywords    := 'MOVIMENTO';
+          PDF.Keywords    := 'VENDA';
           PDF.Producer    := 'Zucchetti - ' + ExtractFileName(Application.ExeName);// Sandro Silva 2022-12-02 Unochapeco
           {Set Filename to save}
           if sFileExport = '' then // 2015-06-30

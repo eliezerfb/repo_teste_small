@@ -40,17 +40,6 @@ const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'
 const CHAVE_PUBLICA = 'DF9F4DC6AF517A889BCE1181DEF8394455DBCD19768E8C785D9121E8DB9B9B104E5231EE8F8299D24451465178D3FC41D40DAFAF9C855824393FC964C747'+
                       '5C3993104443E8E73333D93C24E5D46B27D9A4DF5E6F0B05490B6C6829CEFA1030294DABC29E498A0F6096E8CE26B407B2E1B4939FDE6174EC1621BB3E988D29742D';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 09ef43d (Revert "Ajustando")
-const TEXTO_CAIXA_LIVRE            = 'CAIXA LIVRE';
-const TEXTO_CAIXA_EM_VENDA         = 'EM VENDA';
-=======
->>>>>>> parent of 28bb618 (Ajustando gerencial)
-=======
->>>>>>> parent of 28bb618 (Ajustando gerencial)
 
 const COR_AZUL = $00EAB231; // Sandro Silva 2021-08-17
 
@@ -254,7 +243,7 @@ function ConsultaProcesso(sP1: String): Boolean;
 function NomeModeloDocumento(sModeloDocumento: String): String;
 procedure OpcoesMenuVisivel(Menu: TMenuItem; Visible: Boolean);
 function TempoDecorridoPorExtenso(dtDataF, dtDataI: Tdate; ttHoraF, ttHoraI: TTime): String;
-// Sandro Silva 2023-06-23 function SerialMEI(sSerial: String): Boolean;
+function SerialMEI(sSerial: String): Boolean;
 function PAFNFCe: Boolean;
 function NFCe: Boolean;
 function MEI: Boolean;
@@ -271,8 +260,6 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
-function SelectSQLGerenciadorVendasF10(sModeloECF: String;
-  sModeloECF_Reserva: String; Data: TDate): String;
 //function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 
 var
@@ -1547,7 +1534,6 @@ begin
   end;
 end;
 
-(*{Sandro Silva 2023-06-23 inicio}
 function SerialMEI(sSerial: String): Boolean;
 // Retorna True se o serial é de empresa enquadrada como MEI
 begin
@@ -1589,7 +1575,6 @@ begin
   end;
   {Sandro Silva 2021-12-29 fim}
 end;
-*)
 
 function Build: String;
 var
@@ -1620,42 +1605,8 @@ begin
 end;
 
 function MEI: Boolean;
-var
-  sCaminhoDev: String;
-  sNomeProjeto: String;
 begin
-  // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
-  Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-  if Result = False then
-  begin
-    try
-      // Artifício para executar com F9
-      with TStringList.Create do
-      begin
-
-        sCaminhoDev  := '\desenvolvimento\fontes\delphi\Small Commerce\Projeto-Frente-de-Caixa\';
-        sNomeProjeto := 'frente.dpr';
-
-        LoadFromFile(sCaminhoDev + sNomeProjeto);
-        if (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and AnsiContainsText(Text, 'program frente;') and AnsiContainsText(AnsiUpperCase(Text), AnsiUpperCase('ufuncoesfrente in ''ufuncoesfrente.pas''')) then
-        begin
-          Result := True;
-        end;
-        Free;
-      end;
-    except
-
-    end;
-  end;
-=======
-  //Result := (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0);
->>>>>>> parent of 28bb618 (Ajustando gerencial)
-=======
-  //Result := (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0);
->>>>>>> parent of 28bb618 (Ajustando gerencial)
+  Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
 end;
 
 function SAT: Boolean;
@@ -1966,15 +1917,6 @@ begin
     Result := False;
   if sForma = FORMA_PAGAMENTO_CHEQUE then
     Result := False;
-end;
-
-function SelectSQLGerenciadorVendasF10(sModeloECF: String;
-  sModeloECF_Reserva: String; Data: TDate): String;
-begin
- Result:=
-  'select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Data)) +
-  IfThen((sModeloECF = '99') or (sModeloECF_Reserva = '99'), ' and MODELO = ''99'' ', ' ') +
-  ' order by NUMERONF ';
 end;
 
 {
