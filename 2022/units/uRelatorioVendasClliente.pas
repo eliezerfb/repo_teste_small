@@ -25,7 +25,6 @@ type
     cbCupom: TCheckBox;
     cbItemAItem: TCheckBox;
     procedure FormShow(Sender: TObject);
-    procedure btnImprimirClick(Sender: TObject);
     procedure btnMarcarTodosOperClick(Sender: TObject);
     procedure btnDesmarcarTodosOperClick(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
@@ -81,7 +80,7 @@ end;
 function TfrmRelVendasPorCliente.FazValidacoes: Boolean;
 begin
   Result := False;
-  
+
   if ((dtInicial.Date = 0) or (dtFinal.Date = 0)) or (dtInicial.Date > dtFinal.Date) then
   begin
     ShowMessage(_cPeriodoDataInvalida);
@@ -96,14 +95,6 @@ begin
   end;
 
   Result := True;
-end;
-
-procedure TfrmRelVendasPorCliente.btnImprimirClick(Sender: TObject);
-begin
-  if not FazValidacoes then
-    Exit;
-    
-  inherited;
 end;
 
 procedure TfrmRelVendasPorCliente.btnMarcarTodosOperClick(Sender: TObject);
@@ -139,6 +130,8 @@ begin
   begin
     if (pnlPrincipal.Visible) and (cbNota.Checked) then
     begin
+      if not FazValidacoes then
+        Exit;
       pnlPrincipal.Visible := False;
       pnlSelOperacoes.Visible := True;
       TRetornaOperacoesRelatorio.New

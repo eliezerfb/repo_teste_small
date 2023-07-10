@@ -130,7 +130,8 @@ begin
         AStr.Add(cOperacao);
       end;
       AStr.Add(')');
-    end;
+    end else
+      AStr.Add('AND (VENDAS.OPERACAO='''')');
     Result := AStr.Text;
   finally
     FreeAndNil(AStr);
