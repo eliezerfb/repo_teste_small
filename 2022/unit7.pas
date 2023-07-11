@@ -2125,6 +2125,9 @@ type
     function getZiparXML: String;
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
     procedure HintTotalNotaVenda(fRetencao : Real);
+    function TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+    procedure VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
+    procedure DefineQuantidadeSaldoDisponivelNota;
     procedure CalculaTotalNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
     procedure DefineLayoutFiltro;
@@ -19132,6 +19135,25 @@ begin
   //
 end;
 
+procedure TForm7.DefineQuantidadeSaldoDisponivelNota;
+begin
+  if (Form1.ConfNegat <> 'Não') then
+    Exit;
+  if (ibDataSet16TOTAL.Value > 0) then
+    Exit;
+  // Se ta inserindo um item novo e a quantidade 1 for maior q a disponivel seta a disponivel.
+  if (ibDataSet4QTD_ATUAL.AsCurrency > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (ibDataSet4QTD_ATUAL.AsCurrency < Form7.ibDataSet16QUANTIDADE.AsFloat) then
+  begin
+    ShowMessage('O item atual possuí apenas ' + ibDataSet4QTD_ATUAL.AsString + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');  
+    ibDataSet16QUANTIDADE.OnChange := nil;
+    try
+      ibDataSet16QUANTIDADE.AsFloat := ibDataSet4QTD_ATUAL.AsCurrency;
+    finally
+      ibDataSet16QUANTIDADE.OnChange := ibDataSet16QUANTIDADEChange;
+    end;
+  end;
+end;
+
 procedure TForm7.ibDataSet16QUANTIDADEChange(Sender: TField);
 var
   fDesconto: Real;
@@ -19140,6 +19162,8 @@ begin
   // total, mas só quando o valor total é alterado //
   if AllTrim(Form7.ibDataSet16QUANTIDADE.AsString) <> '' then
   begin
+    DefineQuantidadeSaldoDisponivelNota;
+    
     if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
     begin
       fDesconto := 0;
@@ -19173,6 +19197,59 @@ begin
         Form7.ibDataSet16TOTAL.AsFloat    := 0;
         Form7.ibDataSet16UNITARIO.AsFloat := 0;
       end;
+    end;
+
+    if (Form7.ibDataSet16QUANTIDADE.Value > 0) then
+      VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
+  end;
+end;
+
+function TForm7.TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+begin
+  Result := True;
+
+  if (Form1.ConfNegat <> 'Não') then
+    Exit;
+
+  if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
+  begin
+    if (AnQtdeInformada > ibDataSet4QTD_ATUAL.AsCurrency) then
+    begin
+      // Necessario remover os eventos para não mostrar mensagem 2 vezes
+      Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
+      Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
+      try
+        Result := False;
+        ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 3');
+      finally
+        Form7.ibDataSet16QUANTIDADE.OnSetText := ibDataSet16QUANTIDADESetText;
+        Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm7.VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
+begin
+  if Form7.ibDataSet16DESCRICAO.AsString = EmptyStr then
+    Exit;
+    
+  if ibDataSet16QUANTIDADE.AsFloat < 0 then
+    ibDataSet16QUANTIDADE.AsFloat := 0
+  else
+  begin
+    if not TestarSaldoEstoqueDisponivelNota(AnQtdeInformada) then
+    begin
+      Form7.ibDataSet16DESCRICAO.AsString   := EmptyStr;
+      Form7.ibDataSet16TOTAL.AsString       := EmptyStr;
+      Form7.ibDataSet16UNITARIO.AsString    := EmptyStr;
+      Form7.ibDataSet16QUANTIDADE.AsString  := EmptyStr;
+      Form7.ibDataSet16CODIGO.AsString      := EmptyStr;
+      Form7.ibDataSet16CFOP.AsString        := EmptyStr;
+    end else
+    begin
+      if ibDataSet16QUANTIDADE.AsFloat <> AnQtdeInformada then
+        ibDataSet16QUANTIDADE.AsFloat := AnQtdeInformada;
     end;
   end;
 end;
@@ -19220,32 +19297,8 @@ begin
           if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then                                      //
           begin                                                                    //
             Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
-          end else                                                                 //
-          begin                                                                    //
-            /////////////////////////////////////////////////////////////////////////////
-            // Não permite quantidade negativa                                         //
-            /////////////////////////////////////////////////////////////////////////////
-            if ibDataSet16QUANTIDADE.AsFloat < 0 then ibDataSet16QUANTIDADE.AsFloat := 0 else
-            begin
-              if (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
-              begin
-                if (StrToFloat(Text) > ibDataSet4QTD_ATUAL.AsCurrency) then
-                begin
-                  ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 3');
-                  Form7.ibDataSet16DESCRICAO.AsString   := '';
-                  Form7.ibDataSet16TOTAL.AsString       := '';
-                  Form7.ibDataSet16UNITARIO.AsString    := '';
-                  Form7.ibDataSet16QUANTIDADE.AsString  := '';
-                  Form7.ibDataSet16CODIGO.AsString      := '';
-                  Form7.ibDataSet16CFOP.AsString        := '';
-                end
-                else
-                  ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
-              end
-              else
-                ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
-            end;
-          end;
+          end else                                                                 //                                                                //
+            VerificaSaldoEstoqueDispItemNota(StrToFloat(Text));
         end else
         begin
           // Não permite quantidade negativa
