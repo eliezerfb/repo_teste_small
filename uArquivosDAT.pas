@@ -20,7 +20,7 @@ interface
 }
 
 uses
-  uEstoqueDAT, uSmallComINF, uUsuarioINF, uFrenteINI;
+  uEstoqueDAT, uSmallComINF, uUsuarioINF, uFrenteINI, uNFeINI;
 
 type
   TArquivosDAT = class
@@ -30,21 +30,23 @@ type
     FoSmallCom: TSmallComINF;
     FoUsuario: TUsuarioINF;
     FoFrente: TFreteINI;
+    FoNFe: TNFeINI;
     function getEstoque: TEstoqueDAT;
     function getSmallCom: TSmallComINF;
     function getUsuario: TUsuarioINF;
     procedure DestruirObjetos;
     function getFrente: TFreteINI;
+    function getNFeIni: TNFeINI;
   public
     constructor Create(AcUsuario: String);
     destructor Destroy; override;
     procedure RecarregarArquivos;
 
-
     property Estoque: TEstoqueDAT read getEstoque;
     property SmallCom: TSmallComINF read getSmallCom;
     property Usuario: TUsuarioINF read getUsuario;
     property Frente: TFreteINI read getFrente;
+    property NFe: TNFeINI read getNFeIni;
   end;
 
 implementation
@@ -102,6 +104,10 @@ begin
     FreeAndNil(FoSmallCom);
   if Assigned(FoUsuario) then
     FreeAndNil(FoUsuario);
+  if Assigned(FoFrente) then
+    FreeAndNil(FoFrente);
+  if Assigned(FoNFe) then
+    FreeAndNil(FoNFe);
 end;
 
 function TArquivosDAT.getFrente: TFreteINI;
@@ -110,6 +116,14 @@ begin
     FoFrente := TFreteINI.Create;
 
   Result := FoFrente;
+end;
+
+function TArquivosDAT.getNFeIni: TNFeINI;
+begin
+  if not Assigned(FoNFe) then
+    FoNFe := TNFeINI.Create;
+
+  Result := FoNFe;
 end;
 
 end.

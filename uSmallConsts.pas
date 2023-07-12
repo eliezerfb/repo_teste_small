@@ -13,6 +13,9 @@ const
   _cMedidaKU = 'KU';
   _cMedidaKG = 'KG';
 
+  _cAmbienteHomologacao = 'Homologacao';
+  _cAmbienteProducao = 'Producao';  
+
   //Incrementar a cada alteração do termo
   _cVersaoTermoUso = 1;
 
@@ -41,6 +44,10 @@ const
   //SECTION Frente de Caixa (FRENTE.INI)
   _cSectionFrenteCaixa = 'Frente de Caixa';
   _cIdentFrenteCaixaTipoEtiqueta = 'Tipo etiqueta';
+
+  //SECTION NFE (NFe.ini)
+  _cSectionNFE = 'NFE';
+  _cIdentNFEAmbiente = 'Ambiente';
 
   _cPrivateKeyExponent = '75C2624A448186B59016FE623' +
                          'EF23ED97137C8D5F273C15EE813D2AEFD322C2AFBF868ADBB5096A78CD' +
