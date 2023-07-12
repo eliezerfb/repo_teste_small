@@ -5149,16 +5149,28 @@ begin
         end;
         
         Form7.ibDataSet27.Close;
-        Form7.ibDataSet27.SelectSQL.Clear;
-        Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+'');
+        {
+        Form7.ibDataSet27.SelectSQL.Text := ' Select *'+
+                                            ' From ALTERACA '+
+                                            ' Where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString);
+        Mauricio Parizotto 2023-07-12}
+        Form7.ibDataSet27.SelectSQL.Text := ' Select *'+
+                                            ' From ALTERACA '+
+                                            ' Where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+
+                                            '   and TIPO <> ''ORCAME'' '+
+                                            '   and TIPO <> ''KIT'' '+
+                                            '   and TIPO <> ''CANCEL'' ' ;
+
         Form7.ibDataSet27.Open;
         Form7.ibDataSet27.First;
         
         while not Form7.ibDataSet27.Eof do
         begin
+          {
           if  (Copy(Form7.ibDataSet27TIPO.AsString,1,6) <> 'ORCAME')
           and (Copy(Form7.ibDataSet27TIPO.AsString,1,3) <> 'KIT')
           and (Copy(Form7.ibDataSet27TIPO.AsString,1,6) <> 'CANCEL') then
+          Mauricio Parizotto 2023-07-12 }
           begin
             if Form7.ibDataSet27VALORICM.AsFloat = 0 then
             begin
@@ -5168,18 +5180,26 @@ begin
               Form7.ibDataSet26.FieldByName('VALOR').AsFloat       := Form7.ibDataSet27TOTAL.AsFloat;
               
               // Venda no balcao
-              if (Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'BALCAO') or (Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'VENDA') then Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet27QUANTIDADE.AsFloat * -1 else Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet27QUANTIDADE.AsFloat;
+              if (Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'BALCAO')
+                or (Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'VENDA') then
+                Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet27QUANTIDADE.AsFloat * -1
+              else
+                Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet27QUANTIDADE.AsFloat;
               
               if Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'BALCAO' then
               begin
-                 if AllTrim(Form7.ibDataSet27CLIFOR.AsString) <> '' then Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Venda para '+Form7.ibDataSet27CLIFOR.AsString
-                   else Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Venda direta ao consumidor CF'+Form7.ibDataSet27PEDIDO.AsString;
+                if AllTrim(Form7.ibDataSet27CLIFOR.AsString) <> '' then
+                  Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Venda para '+Form7.ibDataSet27CLIFOR.AsString
+                else
+                  Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'Venda direta ao consumidor CF'+Form7.ibDataSet27PEDIDO.AsString;
               end;
 
               if Copy(Form7.ibDataSet27TIPO.AsString,1,6) = 'VENDA' then
               begin
-                 if AllTrim(Form7.ibDataSet27CLIFOR.AsString) <> '' then Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'NF venda modelo 2 para '+Form7.ibDataSet27CLIFOR.AsString
-                   else Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'NF venda Modelo 2 N: '+Form7.ibDataSet27PEDIDO.AsString;
+                if AllTrim(Form7.ibDataSet27CLIFOR.AsString) <> '' then
+                  Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'NF venda modelo 2 para '+Form7.ibDataSet27CLIFOR.AsString
+                else
+                  Form7.ibDataSet26.FieldByName('HISTORICO').AsString  := 'NF venda Modelo 2 N: '+Form7.ibDataSet27PEDIDO.AsString;
               end;
               
               // Alteraca
