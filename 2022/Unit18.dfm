@@ -15,6 +15,7 @@ object Form18: TForm18
   OldCreateOrder = True
   Position = poScreenCenter
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -101,7 +102,6 @@ object Form18: TForm18
       OnColExit = DBGrid1ColExit
       OnDrawDataCell = DBGrid1DrawDataCell
       OnEnter = DBGrid1Enter
-      OnExit = DBGrid1Exit
       OnKeyDown = DBGrid1KeyDown
       OnKeyPress = DBGrid1KeyPress
     end
@@ -122,6 +122,7 @@ object Form18: TForm18
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 2
+      OnEnter = cboDocCobrancaEnter
       Items.Strings = (
         '<N'#227'o imprimir documento>')
     end
@@ -152,7 +153,7 @@ object Form18: TForm18
       Caption = ' '
       Color = clWhite
       TabOrder = 4
-      object Label45: TLabel
+      object lbTotalParcelas: TLabel
         Left = 239
         Top = 1
         Width = 28

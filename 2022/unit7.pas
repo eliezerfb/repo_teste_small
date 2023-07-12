@@ -33279,7 +33279,8 @@ end;
 
 function TForm7.FormaDePagamentoGeraBoleto(sForma: String): Boolean;
 begin
-  Result := (Pos(('|' + Copy(sForma, 1, 2) + '|'), '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+// Sandro Silva 2023-07-12  Result := (Pos(('|' + Copy(sForma, 1, 2) + '|'), '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
 end;
 
 procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;

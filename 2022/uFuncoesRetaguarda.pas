@@ -24,6 +24,7 @@ procedure LogRetaguarda(sTexto: String);
 function GetIP: String;
 procedure GetBanderiasOperadorasNFe(slBandeira: TStringList);
 procedure GetFormasDePagamentoNFe(slForma: TStringList);
+function IdFormasDePagamentoNFe(sDescricaoForma: String): String;
 function CodigotBandNF(sBandeira: String): String;
 function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
 function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
@@ -283,23 +284,58 @@ procedure GetFormasDePagamentoNFe(slForma: TStringList);
 begin
 
   slForma.Clear;
-  slForma.Add('01-Dinheiro');
-  slForma.Add('02-Cheque');
-  slForma.Add('03-Cartão de Crédito');
-  slForma.Add('04-Cartão de Débito');
-  slForma.Add('05-Crédito de Loja');
-  slForma.Add('10-Vale Alimentação');
-  slForma.Add('11-Vale Refeição');
-  slForma.Add('12-Vale Presente');
-  slForma.Add('13-Vale Combustível');
-  slForma.Add('14-Duplicata Mercantil');
-  slForma.Add('15-Boleto Bancário');
-  slForma.Add('16-Depósito Bancário');
-  slForma.Add('17-Pagamento Instantâneo (PIX)');
-  slForma.Add('18-Transfer.bancária, Carteira Digital');
-  slForma.Add('19-Progr.de fidelidade, Cashback, Crédito Virtual');
-  slForma.Add('99-Outros');
+  slForma.Add('Dinheiro');
+  slForma.Add('Cheque');
+  slForma.Add('Cartão de Crédito');
+  slForma.Add('Cartão de Débito');
+  slForma.Add('Crédito de Loja');
+  slForma.Add('Vale Alimentação');
+  slForma.Add('Vale Refeição');
+  slForma.Add('Vale Presente');
+  slForma.Add('Vale Combustível');
+  slForma.Add('Duplicata Mercantil');
+  slForma.Add('Boleto Bancário');
+  slForma.Add('Depósito Bancário');
+  slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add('Transfer.bancária, Carteira Digital');
+  slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
+  slForma.Add('Outros');
 
+end;
+
+function IdFormasDePagamentoNFe(sDescricaoForma: String): String;
+begin
+  Result := '99';
+  if sDescricaoForma = 'Dinheiro' then
+    Result := '01';
+  if sDescricaoForma = 'Cheque' then
+    Result := '02';
+  if sDescricaoForma = 'Cartão de Crédito' then
+    Result := '03';
+  if sDescricaoForma = 'Cartão de Débito' then
+    Result := '04';
+  if sDescricaoForma = 'Crédito de Loja' then
+    Result := '05';
+  if sDescricaoForma = 'Vale Alimentação' then
+    Result := '10';
+  if sDescricaoForma = 'Vale Refeição' then
+    Result := '11';
+  if sDescricaoForma = 'Vale Presente' then
+    Result := '12';
+  if sDescricaoForma = 'Vale Combustível' then
+    Result := '13';
+  if sDescricaoForma = 'Duplicata Mercantil' then
+    Result := '14';
+  if sDescricaoForma = 'Boleto Bancário' then
+    Result := '15';
+  if sDescricaoForma = 'Depósito Bancário' then
+    Result := '16';
+  if sDescricaoForma = 'Pagamento Instantâneo (PIX)' then
+    Result := '17';
+  if sDescricaoForma = 'Transfer.bancária, Carteira Digital' then
+    Result := '18';
+  if sDescricaoForma = 'Progr.de fidelidade, Cashback, Crédito Virtual' then
+    Result := '19';
 end;
 
 function CodigotBandNF(sBandeira: String): String;
