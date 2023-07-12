@@ -2110,6 +2110,7 @@ type
     function getZiparXML: String;
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
     procedure HintTotalNotaVenda(fRetencao : Real);
+    procedure DefinirCaptionHomologacaoPopUpMenuDocs;
   public
     // Public declarations
 
@@ -2210,6 +2211,7 @@ type
     procedure HintTotalNotaCompra;
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
     function GetMensagemCertificado(vLocal:string=''): string;
+    function TestarNFeHomologacao: Boolean;
   end;
   
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -2256,7 +2258,9 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uIRetornaLimiteDisponivel
   , uListaCnaes
   , uChamaRelatorioCommerceFactory
-  , uAssinaturaDigital;
+  , uAssinaturaDigital
+  , uArquivosDAT
+  , uSmallEnumerados;
 
 {$R *.DFM}
 
@@ -4475,6 +4479,18 @@ begin
 
   Result := True;
 end;
+
+function TForm7.TestarNFeHomologacao: Boolean;
+var
+  oArqDat: TArquivosDAT;
+begin
+  oArqDat := TArquivosDAT.Create(Usuario);
+  try
+    Result := (oArqDat.NFe.NFE.Ambiente = tanfHomologacao);
+  finally
+    FreeAndNil(oArqDat);
+  end;
+end;     
 
 function ConsultaCadastro(sP1: String) : String;
 var
@@ -12733,7 +12749,9 @@ begin
   //
   // NF-e
   //
+  N1EnviarNFe1.Caption := '1 - Enviar NF-e';
   N6VisualizarDANFE1.Caption := '6 - Visualizar DANFE'; // Sandro Silva 2023-02-14
+  N6EnviarNFeConsultareImprimirDANFE1.Caption := '8 - Enviar NF-e, Consultar e Imprimir DANFE';
   PrvisualizarDANFE1.Visible                       := False;
   CancelarNFSe1.Visible                            := False;
   EnviarNFSeporemail1.Visible                      := False;
@@ -13030,6 +13048,21 @@ begin
   PrvisualizarDANFE1.Visible := CancelarNFe1.Visible;
   PrvisualizarDANFE1.Enabled := ((Trim(Form7.ibDataSet15.FieldByName('NFEPROTOCOLO').AsString) = '') and (Form7.ibDataSet15.FieldByName('MODELO').AsString = '55'));
   {Sandro Silva 2022-09-12 fim}
+
+  DefinirCaptionHomologacaoPopUpMenuDocs;
+end;
+
+procedure TForm7.DefinirCaptionHomologacaoPopUpMenuDocs;
+const
+  _cHomologacao = ' (HOMOLOGAÇÃO)';
+begin
+  if not TestarNFeHomologacao then
+    Exit;
+    
+  if (N1EnviarNFe1.Visible) then
+    N1EnviarNFe1.Caption := N1EnviarNFe1.Caption + _cHomologacao;
+  if (N6EnviarNFeConsultareImprimirDANFE1.Visible) then
+    N6EnviarNFeConsultareImprimirDANFE1.Caption := N6EnviarNFeConsultareImprimirDANFE1.Caption + _cHomologacao;
 end;
 
 procedure TForm7.Ativo1Click(Sender: TObject);
