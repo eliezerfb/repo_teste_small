@@ -1474,6 +1474,12 @@ type
     ibDataSet7FORMADEPAGAMENTO: TStringField;
     ibDataSet7AUTORIZACAOTRANSACAO: TStringField;
     ibDataSet7BANDEIRA: TStringField;
+    CDSItensNotaAux: TClientDataSet;
+    CDSItensNotaAuxDESCRICAO: TStringField;
+    CDSItensNotaAuxQTDE: TCurrencyField;
+    CDSItensNotaAuxINDICE: TIntegerField;
+    CDSItensNotaAuxCODIGO: TStringField;
+
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
@@ -2100,7 +2106,7 @@ type
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
       const Text: String);
     procedure RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
-
+    procedure ibDataSet16AfterOpen(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2131,6 +2137,9 @@ type
     procedure CalculaTotalNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
     procedure DefineLayoutFiltro;
+    procedure AtualizarListaItensAuxiliar;
+    function RetornarTotalQuantidadeItem(AcITem: String): Currency;
+    function RetornarSaldoDisponivelItemNota(AcItem: String): Currency;
   public
     // Public declarations
 
@@ -18234,6 +18243,8 @@ begin
     begin
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
+
+      AtualizarListaItensAuxiliar;
       {Mauricio Parizotto 2023-06-05 Inicio}
       {
       try
@@ -18289,6 +18300,47 @@ begin
   AgendaCommit(True);
 
   //FreeAndNil(IBQESTOQUE);
+end;
+
+procedure TForm7.AtualizarListaItensAuxiliar;
+var
+  nRecNo: Integer;
+begin
+  if (Form1.ConfNegat <> 'Não') then
+    Exit;
+
+  if CDSItensNotaAux.Active then
+    CDSItensNotaAux.Close;
+
+  CDSItensNotaAux.CreateDataSet;
+
+  if not Form12.Showing then
+    Exit;
+  if (ibDataSet16.IsEmpty) then
+    Exit;
+    
+  nRecNo := Form7.ibDataSet16.RecNo;
+  ibDataSet16.DisableControls;
+  try
+    ibDataSet16.First;
+    while not ibDataSet16.Eof do
+    begin
+      if ibDataSet16DESCRICAO.AsString <> EmptyStr then
+      begin
+        CDSItensNotaAux.Append;
+        CDSItensNotaAuxINDICE.AsInteger   := ibDataSet16.RecNo;
+        CDSItensNotaAuxCODIGO.AsString    := ibDataSet16CODIGO.AsString;
+        CDSItensNotaAuxDESCRICAO.AsString := ibDataSet16DESCRICAO.AsString;
+        CDSItensNotaAuxQTDE.AsCurrency    := ibDataSet16QUANTIDADE.AsCurrency;
+        CDSItensNotaAux.Post;
+      end;
+
+      ibDataSet16.Next;
+    end;
+  finally
+    Form7.ibDataSet16.RecNo := nRecNo;
+    ibDataSet16.EnableControls;
+  end;
 end;
 
 procedure TForm7.ibDataSet16BeforeDelete(DataSet: TDataSet);
@@ -18577,15 +18629,8 @@ begin
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
             if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
-            begin
-              ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 1');
-              Form7.ibDataSet16DESCRICAO.AsString   := '';
-              Form7.ibDataSet16TOTAL.AsString       := '';
-              Form7.ibDataSet16UNITARIO.AsString    := '';
-              Form7.ibDataSet16QUANTIDADE.AsString  := '';
-              Form7.ibDataSet16CODIGO.AsString      := '';
-              Form7.ibDataSet16CFOP.AsString        := '';
-            end else
+              VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat)
+            else
             begin
               if not Form41.Visible then
               begin
@@ -18963,10 +19008,13 @@ begin
                       Form7.ibDataSet16PICMSUFDEST.Visible := False;
                     end else
                     begin
-                      if (Form7.IBDataSet2ESTADO.AsString = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
-                        Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
-                      else
-                        Form7.ibDataSet16CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
+                      if (Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr) then
+                      begin
+                        if (Form7.IBDataSet2ESTADO.AsString = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
+                          Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
+                        else
+                          Form7.ibDataSet16CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
+                      end;
                     end;
                   end;
                 end;
@@ -18998,12 +19046,12 @@ begin
 
               {Sandro Silva 2022-09-28 inicio}
               //Ficha 6273
-              if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
+              if (Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr) then
               begin
-                Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
-              end else
-              begin
-                Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
+                if (AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> EmptyStr) then
+                  Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3)
+                else
+                  Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
               end;
               {Sandro Silva 2022-09-28 fim}
 
@@ -19136,21 +19184,60 @@ begin
 end;
 
 procedure TForm7.DefineQuantidadeSaldoDisponivelNota;
+var
+  AnQtdeDisponivel: Currency;
 begin
   if (Form1.ConfNegat <> 'Não') then
     Exit;
   if (ibDataSet16TOTAL.Value > 0) then
     Exit;
+
+  AnQtdeDisponivel := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
+  
   // Se ta inserindo um item novo e a quantidade 1 for maior q a disponivel seta a disponivel.
-  if (ibDataSet4QTD_ATUAL.AsCurrency > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (ibDataSet4QTD_ATUAL.AsCurrency < Form7.ibDataSet16QUANTIDADE.AsFloat) then
+  if (AnQtdeDisponivel > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (AnQtdeDisponivel < Form7.ibDataSet16QUANTIDADE.AsCurrency) then
   begin
-    ShowMessage('O item atual possuí apenas ' + ibDataSet4QTD_ATUAL.AsString + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');  
+    ShowMessage('O item atual possuí ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), AnQtdeDisponivel) + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');
     ibDataSet16QUANTIDADE.OnChange := nil;
     try
-      ibDataSet16QUANTIDADE.AsFloat := ibDataSet4QTD_ATUAL.AsCurrency;
+      ibDataSet16QUANTIDADE.AsCurrency := AnQtdeDisponivel;
     finally
       ibDataSet16QUANTIDADE.OnChange := ibDataSet16QUANTIDADEChange;
     end;
+  end;
+end;
+
+function TForm7.RetornarSaldoDisponivelItemNota(AcItem: String): Currency;
+begin
+  Result := (ibDataSet4QTD_ATUAL.AsCurrency - RetornarTotalQuantidadeItem(AcItem));
+end;
+
+function TForm7.RetornarTotalQuantidadeItem(AcITem: String): Currency;
+begin
+  Result := 0;
+
+  if CDSItensNotaAux.IsEmpty then
+    Exit;
+
+  try
+    CDSItensNotaAux.Filtered := False;
+    CDSItensNotaAux.Filter := '(CODIGO=' + QuotedStr(AcITem) + ')';
+    CDSItensNotaAux.Filtered := True;
+
+    if CDSItensNotaAux.IsEmpty then
+      Exit;
+
+    CDSItensNotaAux.First;
+    while not CDSItensNotaAux.Eof do
+    begin
+      if (ibDataSet16.RecNo <> CDSItensNotaAuxINDICE.AsInteger) then
+        Result := Result + CDSItensNotaAuxQTDE.AsCurrency;
+
+      CDSItensNotaAux.Next;
+    end;
+  finally
+    CDSItensNotaAux.Filtered := False;
+    CDSItensNotaAux.Filter := EmptyStr;
   end;
 end;
 
@@ -19188,6 +19275,8 @@ begin
       begin
         Form7.ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat * Form7.ibDataSet16UNITARIO.AsFloat,4);
       end;
+
+      VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
     end else
     begin
       //if Form7.ibDataSet16TOTAL.AsFloat <> 0 then Mauricio Parizotto 2023-06-05
@@ -19198,13 +19287,12 @@ begin
         Form7.ibDataSet16UNITARIO.AsFloat := 0;
       end;
     end;
-
-    if (Form7.ibDataSet16QUANTIDADE.Value > 0) then
-      VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
   end;
 end;
 
 function TForm7.TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+var
+  nSaldoDisp: Currency;
 begin
   Result := True;
 
@@ -19213,14 +19301,17 @@ begin
 
   if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
   begin
-    if (AnQtdeInformada > ibDataSet4QTD_ATUAL.AsCurrency) then
+    nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
+
+    if (nSaldoDisp < 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
       // Necessario remover os eventos para não mostrar mensagem 2 vezes
       Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
       Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
       try
         Result := False;
-        ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 3');
+        ShowMessage('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
+                    'Saldo disponível: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.');
       finally
         Form7.ibDataSet16QUANTIDADE.OnSetText := ibDataSet16QUANTIDADESetText;
         Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
@@ -19238,6 +19329,15 @@ begin
     ibDataSet16QUANTIDADE.AsFloat := 0
   else
   begin
+
+    if ibDataSet4DESCRICAO.AsString <> ibDataSet16DESCRICAO.AsString then
+    begin
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Clear;
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+      Form7.ibDataSet4.Open;
+    end;
+
     if not TestarSaldoEstoqueDisponivelNota(AnQtdeInformada) then
     begin
       Form7.ibDataSet16DESCRICAO.AsString   := EmptyStr;
@@ -19270,9 +19370,9 @@ begin
 
     if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then
     begin
-      Form7.ibDataSet16UNITARIO.AsString   := '';
-      Form7.ibDataSet16TOTAL.AsString      := '';
-      Form7.ibDataSet16QUANTIDADE.AsString := '';
+      Form7.ibDataSet16UNITARIO.AsString   := EmptyStr;
+      Form7.ibDataSet16TOTAL.AsString      := EmptyStr;
+      Form7.ibDataSet16QUANTIDADE.AsString := EmptyStr;
     end else
     begin
       /////////////////////////////////////////////////////////////////////////
@@ -19297,8 +19397,9 @@ begin
           if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then                                      //
           begin                                                                    //
             Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
-          end else                                                                 //                                                                //
-            VerificaSaldoEstoqueDispItemNota(StrToFloat(Text));
+          end else
+            Form7.ibDataSet16QUANTIDADE.AsString := Text;                                                                                                                                 
+//            VerificaSaldoEstoqueDispItemNota(StrToFloat(Text));
         end else
         begin
           // Não permite quantidade negativa
@@ -19900,6 +20001,9 @@ end;
 
 procedure TForm7.ibDataSet16AfterDelete(DataSet: TDataSet);
 begin
+  if Form7.sModulo = 'VENDA' then
+    AtualizarListaItensAuxiliar;
+    
   if Form7.sModulo = 'OS' then
     TotalizaOS(True);
   AgendaCommit(True);
@@ -33065,7 +33169,6 @@ begin
   Mauricio Parizotto 2023-06-27}
 end;
 
-
 procedure TForm7.RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
 begin
   CriaJpg('logotip.jpg');
@@ -33143,6 +33246,11 @@ end;
 function TForm7.RetornarAliquotaICM(AcUF: String): Currency;
 begin
   Result := ibDataSet14.fieldbyname(AcUF+'_').AsCurrency;
+end;
+
+procedure TForm7.ibDataSet16AfterOpen(DataSet: TDataSet);
+begin
+  AtualizarListaItensAuxiliar;
 end;
 
 end.
