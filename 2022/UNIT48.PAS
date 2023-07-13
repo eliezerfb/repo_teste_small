@@ -57,6 +57,7 @@ type
     Button3: TBitBtn;
     SMALL_DBEdit3: TSMALL_DBEdit;
     Label4: TLabel;
+    lblHomologacao: TLabel;
     procedure DBLookupComboBox2Exit(Sender: TObject);
     procedure SMALL_DBEdit39Exit(Sender: TObject);
     procedure SMALL_DBEdit39Change(Sender: TObject);
@@ -120,6 +121,7 @@ type
   private
     { Private declarations }
     procedure RecalcularIssDosItens;
+    procedure DefineVisibleHomologacao;
   public
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
@@ -471,6 +473,11 @@ begin
   Form7.sModulo := 'VENDA';
 end;
 
+procedure TForm48.DefineVisibleHomologacao;
+begin
+  lblHomologacao.Visible := Form7.TestarNFSeHomologacao;
+end;
+
 procedure TForm48.FormShow(Sender: TObject);
 begin
   Form48.Tag := 1;
@@ -479,6 +486,7 @@ begin
 
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
+  DefineVisibleHomologacao;
   if not Form7.ibDAtaSet18.Active then
     Form7.ibDAtaSet18.Active := True;
 

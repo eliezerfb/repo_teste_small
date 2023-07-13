@@ -2212,6 +2212,7 @@ type
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
     function GetMensagemCertificado(vLocal:string=''): string;
     function TestarNFeHomologacao: Boolean;
+    function TestarNFSeHomologacao: Boolean;    
   end;
   
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -2260,7 +2261,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
   , uArquivosDAT
-  , uSmallEnumerados;
+  , uSmallEnumerados, uNFSeINI;
 
 {$R *.DFM}
 
@@ -4490,7 +4491,19 @@ begin
   finally
     FreeAndNil(oArqDat);
   end;
-end;     
+end;
+
+function TForm7.TestarNFSeHomologacao: Boolean;
+var
+  oArqDat: TArquivosDAT;
+begin
+  oArqDat := TArquivosDAT.Create(Usuario);
+  try
+    Result := (oArqDat.NFSe.NFSE.Ambiente = tanfsHomologacao);
+  finally
+    FreeAndNil(oArqDat);
+  end;
+end;
 
 function ConsultaCadastro(sP1: String) : String;
 var
