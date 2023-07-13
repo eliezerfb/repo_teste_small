@@ -54,7 +54,6 @@ type
     procedure GetBancosNFe(slBanco: TStringList);
     procedure GetInstituicaoFinanceira(slInstituicao: TStringList);
     function FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
-    function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
     function ValidarDesdobramentoParcela: Boolean;
   public
     { Public declarations }
@@ -1387,6 +1386,7 @@ begin
       keybd_event(VK_DOWN,0,0,0);
       keybd_event(VK_DOWN,0,KEYEVENTF_KEYUP,0);
       keybd_event(VK_MENU,0,KEYEVENTF_KEYUP,0);
+
     end;
 
   end;
@@ -1619,12 +1619,6 @@ function TForm18.FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
 begin
   // Sandro Silva 2023-07-12 Result := (Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
   Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
-end;
-
-function TForm18.FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
-begin
-  // Sandro Silva 2023-07-12  Result := (Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
-  Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
 end;
 
 function TForm18.ValidarDesdobramentoParcela: Boolean;

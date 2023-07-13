@@ -28,6 +28,8 @@ function IdFormasDePagamentoNFe(sDescricaoForma: String): String;
 function CodigotBandNF(sBandeira: String): String;
 function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
 function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
+function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
+function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
 
 implementation
 
@@ -431,6 +433,16 @@ begin
       Break;
     end;
   end;
+end;
+
+function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
+begin
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
+end;
+
+function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
+begin
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
 end;
 
 end.

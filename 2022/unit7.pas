@@ -10,7 +10,8 @@ uses
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, MD5, xmldom, XMLIntf,
   msxmldom, XMLDoc, oxmldom,
-  xercesxmldom, Windows, OleCtrls,
+  //xercesxmldom,
+  Windows, OleCtrls,
   SHDocVw, FileCtrl,
   SpdNFeDataSets, spdXMLUtils,
   spdNFeType,
@@ -2215,7 +2216,6 @@ type
     property sEnviarDanfePorEmail: String read getEnviarDanfePorEmail;
     property sZiparXML: String read getZiparXML;
     procedure HintTotalNotaCompra;
-    function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   end;
   //
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -33276,20 +33276,13 @@ begin
                                   '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
 end;
 
-
-function TForm7.FormaDePagamentoGeraBoleto(sForma: String): Boolean;
-begin
-// Sandro Silva 2023-07-12  Result := (Pos(('|' + Copy(sForma, 1, 2) + '|'), '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
-  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
-end;
-
 procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 begin
   //Aplica filtro na contas a receber para listar apenas aquelas que podem gerar boleto quando estiver gerando a partir da tela de desdobramento de parcelas da nota
   if Form7.ibDataSet7.Tag = ID_FILTRAR_FORMAS_GERAM_BOLETO then
   begin
-    Accept := Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
   end;
 end;
 

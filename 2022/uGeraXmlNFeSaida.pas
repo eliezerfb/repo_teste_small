@@ -2783,7 +2783,7 @@ begin
       // 99=Outros
       //
 
-      stPag_YA02 := Copy(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString), 1, 2);
+      stPag_YA02 := IdFormasDePagamentoNFe(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)); // Sandro Silva 2023-07-13 stPag_YA02 := Copy(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString), 1, 2);
       if stPag_YA02 = '' then
         stPag_YA02 := '14'; // 14=Duplicata Mercantil
 
@@ -2791,7 +2791,8 @@ begin
       Form7.spdNFeDataSets.campo('vPag_YA03').Value       := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat);
 
 
-      if (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '03') or (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '04') then
+      //if (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '03') or (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '04') then
+      if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
       begin
         IBQCREDENCIADORA.Close;
         IBQCREDENCIADORA.SQL.Text :=
@@ -2889,7 +2890,7 @@ while not Form7.ibDataSet7.Eof do
 
     while not Form7.ibDataSet7.Eof do
     begin
-      if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+      if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
       begin
         // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
         // fazer várias inserções para a Mesma NFe como demonstracao

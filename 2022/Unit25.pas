@@ -69,7 +69,8 @@ var
 
 implementation
 
-uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados;
+uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
+  uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -1094,7 +1095,7 @@ begin
         Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
         Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
         }
-        if Form7.FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+        if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
         begin
           ImprimirBoleto; // Sandro Silva 2023-06-20 Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
           //Form25.btnProximoClick(Sender);
@@ -2802,7 +2803,7 @@ begin
   if sInstituicaoFinanceira <> '' then
     Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
 
-  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
+  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := 'Boleto Bancário'; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
     
   Form7.ibDataSet7.Post;
 end;
