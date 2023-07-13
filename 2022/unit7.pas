@@ -24,6 +24,7 @@ uses
   spdNFeDPEC, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
   IdHTTP
   , uFuncoesRetaguarda
+  , uSmallConsts
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -4441,9 +4442,17 @@ begin
     Form7.spdNFe.UF := 'SC';
   end;
 
-  if (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Homologacao') and (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Producao') then Mais1Ini.WriteString('NFE','Ambiente','Homologacao');
-  if Mais1Ini.ReadString('NFE','Ambiente','Homologacao') = 'Homologacao' then Form1.bHomologacao := True else Form1.bHomologacao := False;
-  if Mais1Ini.ReadString('NFE','Ambiente','Homologacao') = 'Homologacao' then Form7.spdNFe.Ambiente := spdNFeType.akHomologacao else Form7.spdNFe.Ambiente := spdNFeType.akProducao;
+  if (Mais1Ini.ReadString('NFE','Ambiente', _cAmbienteHomologacao) <> _cAmbienteHomologacao) and (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) then
+    Form1.DefineAmbienteNFe(_cAmbienteHomologacao);
+    
+  if Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) = _cAmbienteHomologacao then
+    Form1.bHomologacao := True
+  else
+    Form1.bHomologacao := False;
+  if Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) = _cAmbienteHomologacao then
+    Form7.spdNFe.Ambiente := spdNFeType.akHomologacao
+  else
+    Form7.spdNFe.Ambiente := spdNFeType.akProducao;
 
   if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
     Form1.bConsultarNFesEmitidas := True
@@ -5212,7 +5221,7 @@ begin
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
-  if (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Producao') or (Mais1Ini.ReadString('NFE','Formulario','Não') <> 'Não') then
+  if (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) or (Mais1Ini.ReadString('NFE','Formulario','Não') <> 'Não') then
   begin
     Mais1ini.Free;
     //

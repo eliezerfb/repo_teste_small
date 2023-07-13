@@ -16,6 +16,7 @@ uses
   , DBCtrls
   , SMALL_DBEdit
   , uValidaRecursosDelphi7
+  , uSmallEnumerados
   ;
 
   function LeLabels(sP1: Boolean): Boolean;
@@ -501,6 +502,7 @@ type
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
+    procedure DefineAmbienteNFe(AcAmbiente: String);    
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -528,7 +530,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uCriptografia
   , uFrmTermosUso
   , uSmallConsts
-  , uConectaBancoCommerce, uTypesRecursos;
+  , uConectaBancoCommerce
+  , uTypesRecursos
+  , uArquivosDAT;
 
 {$R *.DFM}
 
@@ -5069,14 +5073,7 @@ begin
     Form1.ibDataset200.Close;
     //
     if sBuild = '999' then
-    begin
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      Mais1Ini.WriteString('NFE','Ambiente','Producao');
-      Mais1Ini.Free;
-      //
-    end;
-    //
+      DefineAmbienteNFe(_cAmbienteProducao);
   except end;
   //
   // Genarator G_NSU_DOWNLOAD_XML
@@ -8066,7 +8063,7 @@ begin
                'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
                                                                 .Retornar(True),
                0,0); // Ato, Modulo, Usuário, Histórico, Valor
-                                                                       
+
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;
 
@@ -8708,15 +8705,16 @@ begin
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
     //
-    if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then Mais1Ini.WriteString('NFE','Certificado','');
-    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then Mais1Ini.WriteString('NFE','Ambiente','Homologacao');
-    if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX'))     = 'XXXXX' then Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
-    if Alltrim(Mais1Ini.ReadString('XML','Pasta da contabilidade','XXXXX')) = 'XXXXX' then Mais1Ini.WriteString('XML','Pasta da contabilidade','');
-    //
-    // if Alltrim(Mais1Ini.ReadString('NFE','Limite','100'))          = '100' then Mais1Ini.WriteString('NFE','Limite','100');
-    //
+    if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then
+      Mais1Ini.WriteString('NFE','Certificado','');
+    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then
+      DefineAmbienteNFe(_cAmbienteHomologacao);
+    if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX'))     = 'XXXXX' then
+      Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
+    if Alltrim(Mais1Ini.ReadString('XML','Pasta da contabilidade','XXXXX')) = 'XXXXX' then
+      Mais1Ini.WriteString('XML','Pasta da contabilidade','');
+
     Mais1ini.Free;
-    //
     ShellExecute( 0, 'Open',Pchar(sAtual+'\nfe.ini'),'', '', SW_SHOW);
   end else
     ShowMessage('Senha do administrador inválida.');
@@ -8803,7 +8801,7 @@ var
   Mais1ini: TIniFile;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  if (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Producao') then
+  if (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) then
   begin
     ShellExecute( 0, 'Open', 'http://hom.nfe.fazenda.gov.br/PORTAL/disponibilidade.aspx?versao=0.00&tipoConteudo=Skeuqr8PQBY=','', '', SW_SHOW);
   end else
@@ -9262,7 +9260,7 @@ begin
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
     //
-    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente','')) = 'Producao' then
+    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente','')) = _cAmbienteProducao then
     begin
       //
       I := Application.MessageBox(Pchar('Tem certeza que quer mudar para o ambiente de HOMOLOGAÇÃO?'
@@ -9272,7 +9270,7 @@ begin
                               ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
       if I = IDYES then
       begin
-        Mais1Ini.WriteString('NFE','Ambiente','Homologacao');
+        DefineAmbienteNFe(_cAmbienteHomologacao);
         ShowMessage('Definido ambiente: Homologação');
       end;
       //
@@ -9286,7 +9284,7 @@ begin
                               ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
       if I = IDYES then
       begin
-        Mais1Ini.WriteString('NFE','Ambiente','Producao');
+        DefineAmbienteNFe(_cAmbienteProducao);
         ShowMessage('Definido ambiente: Produção');
       end;
       //
@@ -9294,6 +9292,29 @@ begin
   end else ShowMessage('Senha do administrador inválida.');
   //
   Mais1ini.Free;
+end;
+
+procedure TForm1.DefineAmbienteNFe(AcAmbiente: String);
+var
+  oArq: TArquivosDAT;
+  enAmbienteAnt: tAmbienteNFe;
+begin
+  // Não precisa passar usuário.
+  oArq := TArquivosDAT.Create(EmptyStr);
+  try
+    enAmbienteAnt := oArq.NFe.NFE.Ambiente;
+    if enAmbienteAnt = oArq.NFe.NFE.AmbienteStrToEnum(AcAmbiente) then
+      Exit;
+
+    oArq.NFe.NFE.Ambiente := oArq.NFe.NFE.AmbienteStrToEnum(AcAmbiente);
+
+    Audita('ALTEROU','SMALL', Senhas.UsuarioPub, AnsiUpperCase('Alterou Ambiente NFe - DE: ' + oArq.NFe.NFE.AmbienteToStr(enAmbienteAnt) +
+           ' PARA: ' + oArq.NFe.NFE.AmbienteToStr(oArq.NFe.NFE.Ambiente)),0,0);
+
+    Form7.IBDataSet100.Transaction.CommitRetaining;
+  finally
+    FreeAndNil(oArq);
+  end;
 end;
 
 procedure TForm1.ConfiguraodoDANFEparaNFe1Click(Sender: TObject);
@@ -9353,7 +9374,7 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
   Formatododanfe1.Caption := 'Formato do DANFE: '+Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato'));
-  Ambiente1.Caption       := 'Ambiente: '+Alltrim(Mais1Ini.ReadString('NFE','Ambiente','Homologacao'));
+  Ambiente1.Caption       := 'Ambiente: '+Alltrim(Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao));
   //
   if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = '' then Mais1Ini.WriteString('DANFE','Configurar','Não');
   if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = 'Sim' then ConfiguraodoDANFEparaNFe1.Visible := True else ConfiguraodoDANFEparaNFe1.Visible := False;
