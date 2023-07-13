@@ -19303,7 +19303,7 @@ begin
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
 
-    if (nSaldoDisp < 0) or (nSaldoDisp < AnQtdeInformada) then
+    if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
       // Necessario remover os eventos para não mostrar mensagem 2 vezes
       Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
@@ -19324,13 +19324,13 @@ procedure TForm7.VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
 begin
   if Form7.ibDataSet16DESCRICAO.AsString = EmptyStr then
     Exit;
-    
+
   if ibDataSet16QUANTIDADE.AsFloat < 0 then
     ibDataSet16QUANTIDADE.AsFloat := 0
   else
   begin
 
-    if ibDataSet4DESCRICAO.AsString <> ibDataSet16DESCRICAO.AsString then
+    if (AnsiUpperCase(ibDataSet4DESCRICAO.AsString) <> AnsiUpperCase(ibDataSet16DESCRICAO.AsString)) then
     begin
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
