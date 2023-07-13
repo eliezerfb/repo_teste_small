@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 380
-  Top = 81
+  Left = 414
+  Top = 302
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -2460,7 +2460,7 @@ object Form7: TForm7
     Top = 400
     Width = 33
     Height = 25
-    TabOrder = 18
+    TabOrder = 17
     ControlData = {
       4C00000069030000950200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -2478,7 +2478,7 @@ object Form7: TForm7
     Ctl3D = True
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 15
+    TabOrder = 14
     Visible = False
     object Image201_X: TImage
       Left = 0
@@ -5079,7 +5079,7 @@ object Form7: TForm7
     Ctl3D = True
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 16
+    TabOrder = 15
     Visible = False
     object Image201_R: TImage
       Left = 0
@@ -7805,30 +7805,9 @@ object Form7: TForm7
     ParentFont = False
     TabOrder = 4
   end
-  object Panel7: TPanel
-    Left = 504
-    Top = 410
-    Width = 100
-    Height = 24
-    BevelOuter = bvNone
-    BorderStyle = bsSingle
-    Color = 15790320
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
-    ParentBackground = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = False
-    TabOrder = 7
-    OnClick = Image109Click
-    OnMouseMove = Panel7MouseMove
-  end
   object DBGrid4: TDBGrid
     Left = 504
-    Top = 453
+    Top = 459
     Width = 100
     Height = 30
     BiDiMode = bdLeftToRight
@@ -7881,7 +7860,7 @@ object Form7: TForm7
     Width = 75
     Height = 25
     Caption = 'Button9'
-    TabOrder = 9
+    TabOrder = 8
     Visible = False
   end
   object WebBrowser1: TWebBrowser
@@ -7889,7 +7868,7 @@ object Form7: TForm7
     Top = 0
     Width = 361
     Height = 291
-    TabOrder = 10
+    TabOrder = 9
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
@@ -7918,7 +7897,7 @@ object Form7: TForm7
     ParentBackground = False
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 10
     Visible = False
     OnClick = Panel1Click
   end
@@ -7932,7 +7911,7 @@ object Form7: TForm7
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
-    TabOrder = 12
+    TabOrder = 11
     Visible = False
     object Button2: TButton
       Left = 260
@@ -8005,7 +7984,7 @@ object Form7: TForm7
     Ctl3D = False
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 13
+    TabOrder = 12
     OnMouseMove = Panel4MouseMove
   end
   object Panel_0: TPanel
@@ -8020,7 +7999,7 @@ object Form7: TForm7
     ParentCtl3D = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 14
+    TabOrder = 13
     OnMouseMove = Panel_0MouseMove
     object Image208: TImage
       Left = 350
@@ -10822,7 +10801,7 @@ object Form7: TForm7
     ParentBackground = False
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 7
     object Label23: TLabel
       Left = 44
       Top = 76
@@ -11129,7 +11108,7 @@ object Form7: TForm7
     Width = 75
     Height = 25
     Caption = 'Button10'
-    TabOrder = 17
+    TabOrder = 16
     Visible = False
     OnClick = Button10Click
   end
@@ -11151,9 +11130,66 @@ object Form7: TForm7
     Font.Style = []
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 19
+    TabOrder = 18
     Visible = False
     OnKeyDown = SMALL_DBEdit1KeyDown
+  end
+  object pnlFiltro: TPanel
+    Left = 505
+    Top = 409
+    Width = 113
+    Height = 44
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    Color = 15790320
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 19
+    object lblHomologacao: TLabel
+      Left = 0
+      Top = 0
+      Width = 113
+      Height = 19
+      Align = alCustom
+      AutoSize = False
+      Caption = '  Homologa'#231#227'o - sem valor fiscal'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Panel7: TPanel
+      Left = 0
+      Top = 18
+      Width = 113
+      Height = 26
+      Align = alCustom
+      BevelOuter = bvNone
+      BorderStyle = bsSingle
+      Color = 15790320
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentBackground = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 0
+      OnClick = Image109Click
+      OnMouseMove = Panel7MouseMove
+    end
   end
   object MainMenu1: TMainMenu
     AutoHotkeys = maManual

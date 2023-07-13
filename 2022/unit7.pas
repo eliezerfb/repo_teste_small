@@ -871,7 +871,6 @@ type
     ibDataSet35REGISTRO: TIBStringField;
     ibDataSet18REGISTRO: TIBStringField;
     ibDataSet14REGISTRO: TIBStringField;
-    Panel7: TPanel;
     ibDataSet12REGISTRO: TIBStringField;
     ibDataSet19REGISTRO: TIBStringField;
     ibDataSet3REGISTRO: TIBStringField;
@@ -1470,6 +1469,9 @@ type
     ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
     ibDataSet7FORMADEPAGAMENTO: TIBStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
+    pnlFiltro: TPanel;
+    lblHomologacao: TLabel;
+    Panel7: TPanel;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2112,6 +2114,7 @@ type
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
     procedure HintTotalNotaVenda(fRetencao : Real);
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
+    procedure DefineLayoutFiltro;
   public
     // Public declarations
 
@@ -11592,14 +11595,13 @@ begin
     except
       dbGrid1.SelectedIndex := 0;
     end;
-    
+
     // Este bloco tem toda a demora
-    Panel7.Top      := dbGrid1.Top + dbGrid1.Height -1;
-    Panel7.Left     := dbGrid1.Left;
-    Panel7.width    := dbGrid1.Width;
+    DefineLayoutFiltro;
     //
     Form7.Panel7.Caption   := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
+    Form7.pnlFiltro.Repaint;
     //
     //  Panel7.Visible  := True;
     //
@@ -11722,6 +11724,41 @@ begin
   Form7.Panel7.ShowHint := True;
 
   Screen.Cursor := crDefault;
+end;
+
+procedure TForm7.DefineLayoutFiltro;
+begin
+  // Layout Padrão
+  pnlFiltro.width      := dbGrid1.Width;
+  pnlFiltro.Left       := dbGrid1.Left;
+  pnlFiltro.Height     := 24;
+  lblHomologacao.Top   := 0;
+  lblHomologacao.Width := pnlFiltro.width;
+
+  // Esconde a borda
+  Panel7.Left := -1;
+  Panel7.Width := pnlFiltro.Width + 2;
+  Panel7.Top := -1;
+  Panel7.Height := pnlFiltro.Height + 2;
+
+  lblHomologacao.Visible := False;
+  if (sModulo = 'VENDA') then
+  begin
+    if Form7.sRPS = 'S' then
+      lblHomologacao.Visible := TestarNFSeHomologacao
+    else
+      lblHomologacao.Visible := TestarNFeHomologacao;
+
+    if lblHomologacao.Visible then
+    begin
+      pnlFiltro.Height := pnlFiltro.Height + lblHomologacao.Height;
+      Panel7.Top := lblHomologacao.Top + lblHomologacao.Height;
+      // Diminui do Grid o LABEL
+      DBGrid1.Height := DBGrid1.Height - lblHomologacao.Height; 
+    end;
+  end;
+
+  pnlFiltro.Top := dbGrid1.Top + dbGrid1.Height -1;
 end;
 
 function TForm7.RetornarSQLEstoqueOrcamentos: String;
@@ -12771,9 +12808,10 @@ begin
   //
   // NF-e
   //
-  N1EnviarNFe1.Caption := '1 - Enviar NF-e';
-  N6VisualizarDANFE1.Caption := '6 - Visualizar DANFE'; // Sandro Silva 2023-02-14
+  N1EnviarNFe1.Caption                        := '1 - Enviar NF-e';
+  N6VisualizarDANFE1.Caption                  := '6 - Visualizar DANFE'; // Sandro Silva 2023-02-14
   N6EnviarNFeConsultareImprimirDANFE1.Caption := '8 - Enviar NF-e, Consultar e Imprimir DANFE';
+  ransmitirNotaFiscaldeServioNFSe1.Caption    := 'Transmitir Nota Fiscal de Serviço (NFS-e)';
   PrvisualizarDANFE1.Visible                       := False;
   CancelarNFSe1.Visible                            := False;
   EnviarNFSeporemail1.Visible                      := False;
@@ -13078,13 +13116,18 @@ procedure TForm7.DefinirCaptionHomologacaoPopUpMenuDocs;
 const
   _cHomologacao = ' (HOMOLOGAÇÃO)';
 begin
-  if not TestarNFeHomologacao then
-    Exit;
-    
-  if (N1EnviarNFe1.Visible) then
-    N1EnviarNFe1.Caption := N1EnviarNFe1.Caption + _cHomologacao;
-  if (N6EnviarNFeConsultareImprimirDANFE1.Visible) then
-    N6EnviarNFeConsultareImprimirDANFE1.Caption := N6EnviarNFeConsultareImprimirDANFE1.Caption + _cHomologacao;
+  if TestarNFeHomologacao then
+  begin
+    if (N1EnviarNFe1.Visible) then
+      N1EnviarNFe1.Caption := N1EnviarNFe1.Caption + _cHomologacao;
+    if (N6EnviarNFeConsultareImprimirDANFE1.Visible) then
+      N6EnviarNFeConsultareImprimirDANFE1.Caption := N6EnviarNFeConsultareImprimirDANFE1.Caption + _cHomologacao;
+  end;
+  if TestarNFSeHomologacao then
+  begin
+    if ransmitirNotaFiscaldeServioNFSe1.Visible then
+      ransmitirNotaFiscaldeServioNFSe1.Caption := ransmitirNotaFiscaldeServioNFSe1.Caption + _cHomologacao;
+  end;
 end;
 
 procedure TForm7.Ativo1Click(Sender: TObject);
