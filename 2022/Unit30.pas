@@ -1529,7 +1529,7 @@ end;
 
 procedure TForm30.Incluirnovoitemnoestoque1Click(Sender: TObject);
 begin
-  if Form1.Image202.Visible then
+  if Form1.imgEstoque.Visible then
   begin
     //
     Form7.ibDataSet3.DisableControls;
@@ -1537,7 +1537,7 @@ begin
     //
     try
       Form1.bFechaTudo           := False;
-      Form1.Image202Click(Sender);
+      Form1.imgEstoqueClick(Sender);
       Form7.Close;
       Form7.iKey := 0;
       Form7.ibDataSet4.Append; // Incluir novo item pelo menu estoque
@@ -1553,13 +1553,13 @@ end;
 
 procedure TForm30.Incluirnovocliente1Click(Sender: TObject);
 begin
-  if Form1.Image202.Visible then
+  if Form1.imgEstoque.Visible then
   begin
     Form7.ibDataSet3.DisableControls;
     Form7.ibDataSet16.DisableControls;
     try
       Form1.bFechaTudo           := False;
-      Form1.Image203Click(Sender);
+      Form1.imgCliForClick(Sender);
       Form7.Close;
       Form7.ibDataSet3.Edit;
       Form7.ibDataSet3CLIENTE.AsString := '';

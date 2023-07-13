@@ -274,7 +274,7 @@ begin
   //
   // volta tudo ao original
   //
-  Form34.Image1.Picture := Form1.Image202.Picture;
+  Form34.Image1.Picture := Form1.imgEstoque.Picture;
   //
   Button5.Visible := False;
   Button6.Visible := False;

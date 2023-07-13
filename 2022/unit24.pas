@@ -2698,7 +2698,7 @@ end;
 
 procedure TForm24.Incluirnovoitemnoestoque1Click(Sender: TObject);
 begin
-  if Form1.Image202.Visible then
+  if Form1.imgEstoque.Visible then
   begin
     //
     if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
@@ -2711,7 +2711,7 @@ begin
     //
     try
       Form1.bFechaTudo           := False;
-      Form1.Image202Click(Sender);
+      Form1.imgEstoqueClick(Sender);
       Form7.Close;
       Form7.iKey := 0;
       Form7.ibDataSet4.Append; // Incluir novo item pela nota de compra
@@ -2757,14 +2757,14 @@ var
   sTitulo : String;
 begin
   //
-  if Form1.Image202.Visible then
+  if Form1.imgEstoque.Visible then
   begin
     sTitulo := Form7.sTitulo;
     Form7.ibDataSet24.DisableControls;
     Form7.ibDataSet23.DisableControls;
     try
       Form1.bFechaTudo           := False;
-      Form1.Image203Click(Sender);
+      Form1.imgCliForClick(Sender);
       Form7.ibDataSet2.Append;
       Form7.Close;
       Form10.ShowModal;

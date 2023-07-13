@@ -21,7 +21,6 @@ uses
   function LeLabels(sP1: Boolean): Boolean;
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
   function FechaTudo(bP1: Boolean): Boolean;
-  function MontaTela(sP1: Boolean): Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
   function mensagem22(sP1 : String) : Boolean;
 //  procedure DropViewProcedure;
@@ -153,16 +152,16 @@ type
     Image4: TImage;
     Panel4: TPanel;
     Panel_0: TPanel;
-    Image201: TImage;
-    Image201_: TImage;
-    Image202: TImage;
-    Image203: TImage;
-    Image204: TImage;
-    Image210: TImage;
-    Image205: TImage;
-    Image206: TImage;
-    Image207: TImage;
-    Image208: TImage;
+    imgVendas: TImage;
+    imgOrdemServico: TImage;
+    imgEstoque: TImage;
+    imgCliFor: TImage;
+    imgContaReceber: TImage;
+    imgContaPagar: TImage;
+    imgCaixa: TImage;
+    imgBancos: TImage;
+    imgConfiguracoes: TImage;
+    imgBackup: TImage;
     Label201: TLabel;
     Label201_: TLabel;
     Label202: TLabel;
@@ -174,7 +173,7 @@ type
     Label207: TLabel;
     Label208: TLabel;
     Label200: TLabel;
-    Image200: TImage;
+    imgIndicadores: TImage;
     Image200_R: TImage;
     Image200_X: TImage;
     PopupMenu2: TPopupMenu;
@@ -244,9 +243,9 @@ type
     Hub1: TMenuItem;
     N15: TMenuItem;
     LAbel201C: TLabel;
-    Image201C: TImage;
+    imgCompras: TImage;
     Label201S: TLabel;
-    Image201S: TImage;
+    imgServicos: TImage;
     Image201C_X: TImage;
     Image201S_X: TImage;
     Image201C_R: TImage;
@@ -261,9 +260,12 @@ type
     ConfiguraesdaNFSe2: TMenuItem;
     Debug1: TMenuItem;
     Mensagemparaenviodeemail1: TMenuItem;
+    Image3: TImage;
+    Image_bola_vendas: TImage;
+    Label_Bola_vendas: TLabel;
 
     procedure NovoFormExit(Sender:TObject);
-    procedure Image205Click(Sender: TObject);
+    procedure imgCaixaClick(Sender: TObject);
     procedure Sobreoprograma1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
@@ -291,16 +293,16 @@ type
     procedure Instalarpackcomasltimasalteraes1Click(Sender: TObject);
     procedure Postit1Click(Sender: TObject);
     procedure Cadastrodeconvnios1Click(Sender: TObject);
-    procedure Image203Click(Sender: TObject);
-    procedure Image202Click(Sender: TObject);
-    procedure Image206Click(Sender: TObject);
-    procedure Image201Click(Sender: TObject);
-    procedure Image208Click(Sender: TObject);
-    procedure Image207Click(Sender: TObject);
+    procedure imgCliForClick(Sender: TObject);
+    procedure imgEstoqueClick(Sender: TObject);
+    procedure imgBancosClick(Sender: TObject);
+    procedure imgVendasClick(Sender: TObject);
+    procedure imgBackupClick(Sender: TObject);
+    procedure imgConfiguracoesClick(Sender: TObject);
     procedure wwwsmallsoftcombr1Click(Sender: TObject);
-    procedure Image204Click(Sender: TObject);
-    procedure Image210Click(Sender: TObject);
-    procedure Image201_Click(Sender: TObject);
+    procedure imgContaReceberClick(Sender: TObject);
+    procedure imgContaPagarClick(Sender: TObject);
+    procedure imgOrdemServicoClick(Sender: TObject);
     procedure Cadastrodetcnicos1Click(Sender: TObject);
     procedure Calendrio1Click(Sender: TObject);
     procedure Label201MouseLeave(Sender: TObject);
@@ -353,7 +355,7 @@ type
     procedure ConfiguraodaNFemformulrionumerado1Click(Sender: TObject);
     procedure N3101Click(Sender: TObject);
     procedure SVCSefazVirtualdeContingncia1Click(Sender: TObject);
-    procedure Image205MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure imgCaixaMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
@@ -383,7 +385,7 @@ type
     procedure Label200MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure AutoSmallMobile1Click(Sender: TObject);
-    procedure Image200Click(Sender: TObject);
+    procedure imgIndicadoresClick(Sender: TObject);
     procedure CNPJdacontabilidade1Click(Sender: TObject);
     procedure Label4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -406,12 +408,12 @@ type
     procedure Modoinventrio1Click(Sender: TObject);
     procedure AutoMarketplace1Click(Sender: TObject);
     procedure Hub1Click(Sender: TObject);
-    procedure Image201CClick(Sender: TObject);
+    procedure imgComprasClick(Sender: TObject);
     procedure LAbel201CMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure Label201SMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Image201SClick(Sender: TObject);
+    procedure imgServicosClick(Sender: TObject);
     procedure Simples1Click(Sender: TObject);
     procedure Complexo1Click(Sender: TObject);
     procedure ConverterosdadosparaSmallSaaS1Click(Sender: TObject);
@@ -422,6 +424,7 @@ type
     procedure WebBrowser1DocumentComplete(Sender: TObject;
       const pDisp: IDispatch; var URL: OleVariant);
     procedure Configuraes1Click(Sender: TObject);
+    procedure Label_Bola_vendasClick(Sender: TObject);
 
 
   private
@@ -500,6 +503,7 @@ type
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
 
     property sPropaganda: String read getPropaganda;
+    function MontaTela(sP1: Boolean): Boolean;
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -2174,19 +2178,19 @@ begin
 end;
 
 
-function MontaTela(sP1 : boolean):Boolean;
+function TForm1.MontaTela(sP1 : boolean):Boolean;
 var
   iTop, iFix, iFixL, iLeft : Integer;
 begin
   Form1.Align    := alClient;
 
-  Form1.Panel_3.Left   := 0; // (Screen.Width - (1000)) div 2;
-  Form1.Panel_3.Top    := Form1.Panel_0.Top + Form1.Panel_0.Height;
-  Form1.Panel_3.Height := Form1.Height - Form1.Panel_3.Top;
-  Form1.Panel_3.Width  := Screen.Width;
-  Form1.Panel4.Width   := Screen.Width;
-  Form1.Panel4.Top     := Form1.Panel_3.Top;
-  form1.Panel4.Height  := Screen.Height;
+  Panel_3.Left   := 0; // (Screen.Width - (1000)) div 2;
+  Panel_3.Top    := Panel_0.Top + Form1.Panel_0.Height;
+  Panel_3.Height := Form1.Height - Form1.Panel_3.Top;
+  Panel_3.Width  := Screen.Width;
+  Panel4.Width   := Screen.Width;
+  Panel4.Top     := Panel_3.Top;
+  Panel4.Height  := Screen.Height;
 
   Form7.Top    := Form1.Panel_3.Top + 30;
   Form7.Left   := 0;
@@ -2201,484 +2205,509 @@ begin
   // ------ //
   // Vendas //
   // ------ //
-  if Form1.Image201.Visible = True then
+  if imgVendas.Visible = True then
   begin
-    Form1.Image201.Top     := iTop;
+    imgVendas.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image201.Left    := iLeft;
+    imgVendas.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image201,Form1.Label201);
+    MostraLabels(imgVendas,Label201);
+
+    {Mauricio Parizotto 2023-07-13 Inicio}
+    Image_bola_vendas.Top     := imgVendas.Top -6+1-1;
+    Image_bola_vendas.Left    := imgVendas.Left + imgVendas.Width - 20;
+
+    Label_Bola_vendas.Caption := AllTrim(IntToStr(1));
+    Label_Bola_vendas.Width   := Image_Bola_NFe.Width;
+    Label_Bola_vendas.Left    := Image_bola_vendas.Left;
+    Label_Bola_vendas.Top     := Image_bola_vendas.Top +1-1;
+
+    //Avisos
+    Image_bola_vendas.Picture := ImageBola.Picture;
+
+    if Form7.GetMensagemCertificado <> '' then
+    begin
+      Image_bola_vendas.visible  := True;
+      Label_Bola_vendas.Visible  := True;
+    end else
+    begin
+      Image_bola_vendas.visible  := False;
+      Label_Bola_vendas.Visible  := False;
+    end;
+    {Mauricio Parizotto 2023-07-13 Fim}
   end;
 
   // ------- //
   // Compras //
   // ------- //
-  if Form1.Image201C.Visible = True then
+  if imgCompras.Visible = True then
   begin
-    Form1.Image201C.Top     := iTop;
+    imgCompras.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image201C.Left    := iLeft;
+    imgCompras.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image201C,Form1.Label201C);
+    MostraLabels(imgCompras,Form1.Label201C);
 
     // Avisos no NFe
     if Form1.iAvisosNFeCompra >= 100 then
     begin
-      Form1.Image_Bola_NFe.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_NFe.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosNFeCompra >= 10 then
+      if iAvisosNFeCompra >= 10 then
       begin
-        Form1.Image_Bola_NFe.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_NFe.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_NFe.Picture := Form1.ImageBola.Picture;
+        Image_Bola_NFe.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_NFe.Top     := Form1.Image201C.Top -6+1-1;
-    Form1.Image_Bola_NFe.Left    := Form1.Image201C.Left + Form1.Image201C.Width - 20;
-    Form1.Label_Bola_NFe.Caption := AllTrim(IntToStr(Form1.iAvisosNFeCompra));
-    Form1.Label_Bola_NFe.Width   := Form1.Image_Bola_NFe.Width;
+    Image_Bola_NFe.Top     := imgCompras.Top -6+1-1;
+    Image_Bola_NFe.Left    := imgCompras.Left + imgCompras.Width - 20;
 
-    Form1.Label_Bola_NFe.Left    := Form1.Image_Bola_NFe.Left;
-    Form1.Label_Bola_NFe.Top     := Form1.Image_Bola_NFe.Top +1-1;
+    Label_Bola_NFe.Caption := AllTrim(IntToStr(iAvisosNFeCompra));
+    Label_Bola_NFe.Width   := Image_Bola_NFe.Width;
+    Label_Bola_NFe.Left    := Image_Bola_NFe.Left;
+    Label_Bola_NFe.Top     := Image_Bola_NFe.Top +1-1;
     
-    if Form1.iAvisosNFeCompra <> 0 then
+    if iAvisosNFeCompra <> 0 then
     begin
-      Form1.Image_Bola_NFe.visible  := True;
-      Form1.Label_Bola_NFe.Visible  := True;
+      Image_Bola_NFe.visible  := True;
+      Label_Bola_NFe.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_NFe.visible  := False;
-      Form1.Label_Bola_NFe.Visible  := False;
+      Image_Bola_NFe.visible  := False;
+      Label_Bola_NFe.Visible  := False;
     end;
   end;
+
   // --------- //
   // Serviços  //
   // --------- //
-  if Form1.Image201S.Visible = True then
+  if imgServicos.Visible = True then
   begin
-    Form1.Image201S.Top     := iTop;
+    imgServicos.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image201S.Left    := iLeft;
+    imgServicos.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image201S,Form1.Label201S);
+    MostraLabels(imgServicos,Label201S);
   end;
+
   // ----------------- //
   // Ordem de serviços //
   // ----------------- //
-  if Form1.Image201_.Visible = True then
+  if imgOrdemServico.Visible = True then
   begin
-    Form1.Image201_.Top     := iTop;
+    imgOrdemServico.Top     := iTop;
     iTop              := iTop + iFix;
-    Form1.Image201_.Left    := iLeft;
+    imgOrdemServico.Left    := iLeft;
     iLeft             := iLeft + iFixL;
-    MostraLabels(Form1.Image201_,Form1.Label201_);
+    MostraLabels(imgOrdemServico,Label201_);
 
     // Avisos no OS
-    if Form1.iAvisosOS >= 100 then
+    if iAvisosOS >= 100 then
     begin
-      Form1.Image_Bola_OS.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_OS.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosOS >= 10 then
+      if iAvisosOS >= 10 then
       begin
-        Form1.Image_Bola_OS.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_OS.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_OS.Picture := Form1.ImageBola.Picture;
+        Image_Bola_OS.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_OS.Top     := Form1.Image201_.Top -6+1-1;
-    Form1.Image_Bola_OS.Left    := Form1.Image201_.Left + Form1.Image201_.Width - 20;
-    Form1.Label_Bola_OS.Caption := AllTrim(IntToStr(Form1.iAvisosOS));
+    Image_Bola_OS.Top     := imgOrdemServico.Top -6+1-1;
+    Image_Bola_OS.Left    := imgOrdemServico.Left + imgOrdemServico.Width - 20;
+    Label_Bola_OS.Caption := AllTrim(IntToStr(Form1.iAvisosOS));
 
-    Form1.Label_Bola_OS.Width   := Form1.Image_Bola_OS.Width;
-    Form1.Label_Bola_OS.Left    := Form1.Image_Bola_OS.Left;
-    Form1.Label_Bola_OS.Top     := Form1.Image_Bola_OS.Top +1-1;
+    Label_Bola_OS.Width   := Image_Bola_OS.Width;
+    Label_Bola_OS.Left    := Image_Bola_OS.Left;
+    Label_Bola_OS.Top     := Image_Bola_OS.Top +1-1;
 
-    if Form1.iAvisosOS <> 0 then
+    if iAvisosOS <> 0 then
     begin
-      Form1.Image_Bola_OS.visible  := True;
-      Form1.Label_Bola_OS.Visible  := True;
+      Image_Bola_OS.visible  := True;
+      Label_Bola_OS.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_OS.visible  := False;
-      Form1.Label_Bola_OS.Visible  := False;
+      Image_Bola_OS.visible  := False;
+      Label_Bola_OS.Visible  := False;
     end;
   end;
 
   // -------- //
   // Estoque  //
   // -------- //
-  if Form1.Image202.Visible = True then
+  if imgEstoque.Visible = True then
   begin
-    Form1.Image202.Top     := iTop;
+    imgEstoque.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image202.Left    := iLeft;
+    imgEstoque.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image202,Form1.Label202);
+    MostraLabels(imgEstoque,Label202);
     
     // Avisos no Estoque
     if Form1.iAvisosEstoque >= 100 then
     begin
-      Form1.Image_Bola_Estoque.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Estoque.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosEstoque >= 10 then
+      if iAvisosEstoque >= 10 then
       begin
-        Form1.Image_Bola_Estoque.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Estoque.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Estoque.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Estoque.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_Estoque.Top     := Form1.Image201.Top -6+1-1;
-    Form1.Image_Bola_Estoque.Left    := Form1.Image202.Left + Form1.Image202.Width - 20;
-    Form1.Label_Bola_Estoque.Caption := AllTrim(IntToStr(Form1.iAvisosEstoque));
+    Image_Bola_Estoque.Top     := imgVendas.Top -6+1-1;
+    Image_Bola_Estoque.Left    := imgVendas.Left + imgVendas.Width - 20;
+    Label_Bola_Estoque.Caption := AllTrim(IntToStr(iAvisosEstoque));
 
-    Form1.Label_Bola_Estoque.Width   := Form1.Image_Bola_Estoque.Width;
-    Form1.Label_Bola_Estoque.Left    := Form1.Image_Bola_Estoque.Left;
-    Form1.Label_Bola_Estoque.Top     := Form1.Image_Bola_Estoque.Top +1-1;
+    Label_Bola_Estoque.Width   := Image_Bola_Estoque.Width;
+    Label_Bola_Estoque.Left    := Image_Bola_Estoque.Left;
+    Label_Bola_Estoque.Top     := Image_Bola_Estoque.Top +1-1;
 
-    if Form1.iAvisosEstoque <> 0 then
+    if iAvisosEstoque <> 0 then
     begin
-      Form1.Image_Bola_Estoque.visible  := True;
-      Form1.Label_Bola_Estoque.Visible  := True;
+      Image_Bola_Estoque.visible  := True;
+      Label_Bola_Estoque.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_Estoque.visible  := False;
-      Form1.Label_Bola_Estoque.Visible  := False;
+      Image_Bola_Estoque.visible  := False;
+      Label_Bola_Estoque.Visible  := False;
     end;
   end;
 
   // ----------------------- //
   // Clientes e Fornecedores //
   // ----------------------- //
-  if Form1.Image203.Visible = True then
+  if imgCliFor.Visible = True then
   begin
-    Form1.Image203.Top     := iTop;
+    imgCliFor.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image203.Left    := iLeft;
+    imgCliFor.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image203,Form1.Label203);
+    MostraLabels(imgCliFor,Form1.Label203);
 
     // Avisos no CliFor
     if Form1.iAvisosCliFor >= 100 then
     begin
-      Form1.Image_Bola_CliFor.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_CliFor.Picture := Form1.ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosCliFor >= 10 then
+      if iAvisosCliFor >= 10 then
       begin
-        Form1.Image_Bola_CliFor.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_CliFor.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_CliFor.Picture := Form1.ImageBola.Picture;
+        Image_Bola_CliFor.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_CliFor.Top     := Form1.Image203.Top -6+1-1;
-    Form1.Image_Bola_CliFor.Left    := Form1.Image203.Left + Form1.Image203.Width - 20;
-    Form1.Label_Bola_CliFor.Caption := AllTrim(IntToStr(Form1.iAvisosCliFor));
+    Image_Bola_CliFor.Top     := imgCliFor.Top -6+1-1;
+    Image_Bola_CliFor.Left    := imgCliFor.Left + imgCliFor.Width - 20;
+    Label_Bola_CliFor.Caption := AllTrim(IntToStr(iAvisosCliFor));
 
-    Form1.Label_Bola_CliFor.Width   := Form1.Image_Bola_CliFor.Width;
-    Form1.Label_Bola_CliFor.Left    := Form1.Image_Bola_CliFor.Left;
-    Form1.Label_Bola_CliFor.Top     := Form1.Image_Bola_CliFor.Top +1-1;
+    Label_Bola_CliFor.Width   := Image_Bola_CliFor.Width;
+    Label_Bola_CliFor.Left    := Image_Bola_CliFor.Left;
+    Label_Bola_CliFor.Top     := Image_Bola_CliFor.Top +1-1;
 
-    if Form1.iAvisosCliFor <> 0 then
+    if iAvisosCliFor <> 0 then
     begin
-      Form1.Image_Bola_CliFor.visible  := True;
-      Form1.Label_Bola_CliFor.Visible  := True;
+      Image_Bola_CliFor.visible  := True;
+      Label_Bola_CliFor.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_CliFor.visible  := False;
-      Form1.Label_Bola_CliFor.Visible  := False;
+      Image_Bola_CliFor.visible  := False;
+      Label_Bola_CliFor.Visible  := False;
     end;
   end;
 
   // -------- //
   // Receber  //
   // -------- //
-  if Form1.Image204.Visible = True then
+  if imgContaReceber.Visible = True then
   begin
-    Form1.Image204.Top     := iTop;
+    imgContaReceber.Top     := iTop;
     iTop                   := iTop + iFix;
-    Form1.Image204.Left    := iLeft;
+    imgContaReceber.Left    := iLeft;
     iLeft                  := iLeft + iFixL;
-    MostraLabels(Form1.Image204,Form1.Label204);
+    MostraLabels(imgContaReceber,Label204);
 
     // Avisos no Receber
-    if Form1.iAvisosReceber >= 100 then
+    if iAvisosReceber >= 100 then
     begin
-      Form1.Image_Bola_Receber.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Receber.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosReceber >= 10 then
+      if iAvisosReceber >= 10 then
       begin
-        Form1.Image_Bola_Receber.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Receber.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Receber.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Receber.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_Receber.Top     := Form1.Image204.Top -6+1-1;
-    Form1.Image_Bola_Receber.Left    := Form1.Image204.Left + Form1.Image204.Width - 20;
-    Form1.Label_Bola_Receber.Caption := AllTrim(IntToStr(Form1.iAvisosReceber));
+    Image_Bola_Receber.Top     := imgContaReceber.Top -6+1-1;
+    Image_Bola_Receber.Left    := imgContaReceber.Left + imgContaReceber.Width - 20;
+    Label_Bola_Receber.Caption := AllTrim(IntToStr(iAvisosReceber));
 
-    Form1.Label_Bola_Receber.Width   := Form1.Image_Bola_Receber.Width;
-    Form1.Label_Bola_Receber.Top     := Form1.Image_Bola_Receber.Top +1-1;
-    Form1.Label_Bola_Receber.Left    := Form1.Image_Bola_Receber.Left;
+    Label_Bola_Receber.Width   := Image_Bola_Receber.Width;
+    Label_Bola_Receber.Top     := Image_Bola_Receber.Top +1-1;
+    Label_Bola_Receber.Left    := Image_Bola_Receber.Left;
 
-    if Form1.iAvisosReceber <> 0 then
+    if iAvisosReceber <> 0 then
     begin
-      Form1.Image_Bola_Receber.visible  := True;
-      Form1.Label_Bola_Receber.Visible  := True;
+      Image_Bola_Receber.visible  := True;
+      Label_Bola_Receber.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_Receber.visible  := False;
-      Form1.Label_Bola_Receber.Visible  := False;
+      Image_Bola_Receber.visible  := False;
+      Label_Bola_Receber.Visible  := False;
     end;
   end;
 
   // -------- //
   // Pagar    //
   // -------- //
-  if Form1.Image210.Visible = True then
+  if imgContaPagar.Visible = True then
   begin
-    Form1.Image210.Top     := iTop;
+    imgContaPagar.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image210.Left    := iLeft;
+    imgContaPagar.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image210,Form1.Label210);
+    MostraLabels(imgContaPagar,Label210);
 
     // Avisos no Pagar
-    if Form1.iAvisosPagar >= 100 then
+    if iAvisosPagar >= 100 then
     begin
-      Form1.Image_Bola_Pagar.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Pagar.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosPagar >= 10 then
+      if iAvisosPagar >= 10 then
       begin
-        Form1.Image_Bola_Pagar.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Pagar.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Pagar.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Pagar.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_Pagar.Top     := Form1.Image210.Top -6+1-1;
-    Form1.Image_Bola_Pagar.Left    := Form1.Image210.Left + Form1.Image210.Width - 20;
-    Form1.Label_Bola_Pagar.Caption := AllTrim(IntToStr(Form1.iAvisosPagar));
-    
-    Form1.Label_Bola_Pagar.Width   := Form1.Image_Bola_Pagar.Width;
-    Form1.Label_Bola_Pagar.Left    := Form1.Image_Bola_Pagar.Left;
-    Form1.Label_Bola_Pagar.Top     := Form1.Image_Bola_Pagar.Top +1-1;
+    Image_Bola_Pagar.Top     := imgContaPagar.Top -6+1-1;
+    Image_Bola_Pagar.Left    := imgContaPagar.Left + imgContaPagar.Width - 20;
+    Label_Bola_Pagar.Caption := AllTrim(IntToStr(iAvisosPagar));
 
-    if Form1.iAvisosPagar <> 0 then
+    Label_Bola_Pagar.Width   := Image_Bola_Pagar.Width;
+    Label_Bola_Pagar.Left    := Image_Bola_Pagar.Left;
+    Label_Bola_Pagar.Top     := Image_Bola_Pagar.Top +1-1;
+
+    if iAvisosPagar <> 0 then
     begin
-      Form1.Image_Bola_Pagar.visible  := True;
-      Form1.Label_Bola_Pagar.Visible  := True;
+      Image_Bola_Pagar.visible  := True;
+      Label_Bola_Pagar.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_Pagar.visible  := False;
-      Form1.Label_Bola_Pagar.Visible  := False;
+      Image_Bola_Pagar.visible  := False;
+      Label_Bola_Pagar.Visible  := False;
     end;
   end;
 
   // ----- //
   // Caixa //
   // ----- //
-  if Form1.Image205.Visible = True then
+  if imgCaixa.Visible = True then
   begin
-    Form1.Image205.Top     := iTop;
+    imgCaixa.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image205.Left    := iLeft;
+    imgCaixa.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image205,Form1.Label205);
+    MostraLabels(imgCaixa,Label205);
 
     // Avisos no Caixa
     if Form1.iAvisosCaixa >= 100 then
     begin
-      Form1.Image_Bola_Caixa.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Caixa.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosCaixa >= 10 then
+      if iAvisosCaixa >= 10 then
       begin
-        Form1.Image_Bola_Caixa.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Caixa.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Caixa.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Caixa.Picture := ImageBola.Picture;
       end;
     end;
     
-    Form1.Image_Bola_caixa.Top     := Form1.Image205.Top -6+1-1;
-    Form1.Image_Bola_Caixa.Left    := Form1.Image205.Left + Form1.Image205.Width - 20;
-    Form1.Label_Bola_Caixa.Caption := AllTrim(IntToStr(Form1.iAvisosCaixa));
+    Image_Bola_caixa.Top     := imgCaixa.Top -6+1-1;
+    Image_Bola_Caixa.Left    := imgCaixa.Left + imgCaixa.Width - 20;
+    Label_Bola_Caixa.Caption := AllTrim(IntToStr(Form1.iAvisosCaixa));
 
-    Form1.Label_Bola_Caixa.Width   := Form1.Image_Bola_Caixa.Width;
-    Form1.Label_Bola_Caixa.Left    := Form1.Image_Bola_Caixa.Left;
-    Form1.Label_Bola_Caixa.Top     := Form1.Image_Bola_Caixa.Top +1-1;
+    Label_Bola_Caixa.Width   := Image_Bola_Caixa.Width;
+    Label_Bola_Caixa.Left    := Image_Bola_Caixa.Left;
+    Label_Bola_Caixa.Top     := Image_Bola_Caixa.Top +1-1;
     
-    if Form1.iAvisosCaixa <> 0 then
+    if iAvisosCaixa <> 0 then
     begin
-      Form1.Image_Bola_Caixa.visible  := True;
-      Form1.Label_Bola_Caixa.Visible  := True;
+      Image_Bola_Caixa.visible  := True;
+      Label_Bola_Caixa.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_Caixa.visible  := False;
-      Form1.Label_Bola_Caixa.Visible  := False;
+      Image_Bola_Caixa.visible  := False;
+      Label_Bola_Caixa.Visible  := False;
     end;
   end;
 
   // ------- //
   // Bancos  //
   // ------- //
-  if Form1.Image206.Visible = True then
+  if imgBancos.Visible = True then
   begin
-    Form1.Image206.Top     := iTop;
+    imgBancos.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image206.Left    := iLeft;
+    imgBancos.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image206,Form1.Label206);
+    MostraLabels(imgBancos,Label206);
 
     // Avisos no banco
-    if Form1.iAvisosBanco >= 100 then
+    if iAvisosBanco >= 100 then
     begin
-      Form1.Image_Bola_Banco.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Banco.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosBanco >= 10 then
+      if iAvisosBanco >= 10 then
       begin
-        Form1.Image_Bola_Banco.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Banco.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Banco.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Banco.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_banco.Top     := Form1.Image206.Top -6+1-1;
-    Form1.Image_Bola_banco.Left    := Form1.Image206.Left + Form1.Image206.Width - 20;
-    Form1.Label_Bola_banco.Caption := AllTrim(IntToStr(Form1.iAvisosbanco));
+    Image_Bola_banco.Top     := imgBancos.Top -6+1-1;
+    Image_Bola_banco.Left    := imgBancos.Left + imgBancos.Width - 20;
+    Label_Bola_banco.Caption := AllTrim(IntToStr(iAvisosbanco));
 
-    Form1.Label_Bola_Banco.Width   := Form1.Image_Bola_Banco.Width;
-    Form1.Label_Bola_banco.Left    := Form1.Image_Bola_banco.Left;
-    Form1.Label_Bola_banco.Top     := Form1.Image_Bola_banco.Top +1-1;
+    Label_Bola_Banco.Width   := Image_Bola_Banco.Width;
+    Label_Bola_banco.Left    := Image_Bola_banco.Left;
+    Label_Bola_banco.Top     := Image_Bola_banco.Top +1-1;
 
-    if Form1.iAvisosbanco <> 0 then
+    if iAvisosbanco <> 0 then
     begin
-      Form1.Image_Bola_banco.visible  := True;
-      Form1.Label_Bola_banco.Visible  := True;
+      Image_Bola_banco.visible  := True;
+      Label_Bola_banco.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_banco.visible  := False;
-      Form1.Label_Bola_banco.Visible  := False;
+      Image_Bola_banco.visible  := False;
+      Label_Bola_banco.Visible  := False;
     end;
   end;
 
   // ---------------- //
   // Indicadores     //
   // ---------------- //
-  if Form1.Image200.Visible = True then
+  if imgIndicadores.Visible = True then
   begin
-    Form1.Image200.Top     := iTop;
+    imgIndicadores.Top     := iTop;
     iTop             := iTop + iFix;
-    Form1.Image200.Left    := iLeft;
+    imgIndicadores.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image200,Form1.Label200);
+    MostraLabels(imgIndicadores,Label200);
 
     // Avisos no Indicadores
-    if Form1.iAvisosIndicadores >= 100 then
+    if iAvisosIndicadores >= 100 then
     begin
-      Form1.Image_Bola_Indicadores.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Indicadores.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosIndicadores >= 10 then
+      if iAvisosIndicadores >= 10 then
       begin
-        Form1.Image_Bola_Indicadores.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Indicadores.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Indicadores.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Indicadores.Picture := ImageBola.Picture;
       end;
     end;
     
-    Form1.Image_Bola_Indicadores.Top     := Form1.Image200.Top -6+1-1;
-    Form1.Image_Bola_Indicadores.Left    := Form1.Image200.Left + Form1.Image200.Width - 20;
-    Form1.Label_Bola_Indicadores.Caption := AllTrim(IntToStr(Form1.iAvisosIndicadores));
+    Image_Bola_Indicadores.Top     := imgIndicadores.Top -6+1-1;
+    Image_Bola_Indicadores.Left    := imgIndicadores.Left + imgIndicadores.Width - 20;
+    Label_Bola_Indicadores.Caption := AllTrim(IntToStr(iAvisosIndicadores));
 
-    Form1.Label_Bola_Indicadores.Width   := Form1.Image_Bola_Indicadores.Width;
-    Form1.Label_Bola_Indicadores.Left    := Form1.Image_Bola_Indicadores.Left;
-    Form1.Label_Bola_Indicadores.Top     := Form1.Image_Bola_Indicadores.Top +1-1;
+    Label_Bola_Indicadores.Width   := Image_Bola_Indicadores.Width;
+    Label_Bola_Indicadores.Left    := Image_Bola_Indicadores.Left;
+    Label_Bola_Indicadores.Top     := Image_Bola_Indicadores.Top +1-1;
 
-    if Form1.iAvisosIndicadores <> 0 then
+    if iAvisosIndicadores <> 0 then
     begin
-      Form1.Image_Bola_Indicadores.visible  := True;
-      Form1.Label_Bola_Indicadores.Visible  := True;
+      Image_Bola_Indicadores.visible  := True;
+      Label_Bola_Indicadores.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_Indicadores.visible  := False;
-      Form1.Label_Bola_Indicadores.Visible  := False;
+      Image_Bola_Indicadores.visible  := False;
+      Label_Bola_Indicadores.Visible  := False;
     end;
   end;
 
   // CONFIG
-  if Form1.Image207.Visible = True then
+  if imgConfiguracoes.Visible = True then
   begin
-    Form1.Image207.Top     := iTop;
+    imgConfiguracoes.Top     := iTop;
     iTop             := iTop  + iFix;
-    Form1.Image207.Left    := iLeft;
+    imgConfiguracoes.Left    := iLeft;
     iLeft            := iLeft + iFixL;
-    MostraLabels(Form1.Image207,Form1.Label207);
+    MostraLabels(imgConfiguracoes,Label207);
 
     // Avisos no Config
     if Form1.iAvisosConfig >= 100 then
     begin
-      Form1.Image_Bola_Config.Picture := Form1.ImageBola3.Picture;
+      Image_Bola_Config.Picture := ImageBola3.Picture;
     end else
     begin
-      if Form1.iAvisosConfig >= 10 then
+      if iAvisosConfig >= 10 then
       begin
-        Form1.Image_Bola_Config.Picture := Form1.ImageBola2.Picture;
+        Image_Bola_Config.Picture := ImageBola2.Picture;
       end else
       begin
-        Form1.Image_Bola_Config.Picture := Form1.ImageBola.Picture;
+        Image_Bola_Config.Picture := ImageBola.Picture;
       end;
     end;
 
-    Form1.Image_Bola_Config.Top     := Form1.Image207.Top -6+1-1;
-    Form1.Image_Bola_Config.Left    := Form1.Image207.Left + Form1.Image207.Width - 20;
-    Form1.Label_Bola_Config.Caption := AllTrim(IntToStr(Form1.iAvisosConfig));
+    Image_Bola_Config.Top     := imgConfiguracoes.Top -6+1-1;
+    Image_Bola_Config.Left    := imgConfiguracoes.Left + imgConfiguracoes.Width - 20;
+    Label_Bola_Config.Caption := AllTrim(IntToStr(iAvisosConfig));
 
-    Form1.Label_Bola_Config.Width   := Form1.Image_Bola_Config.Width;
-    Form1.Label_Bola_Config.Left    := Form1.Image_Bola_Config.Left;
-    Form1.Label_Bola_Config.Top     := Form1.Image_Bola_Config.Top +1-1;
+    Label_Bola_Config.Width   := Image_Bola_Config.Width;
+    Label_Bola_Config.Left    := Image_Bola_Config.Left;
+    Label_Bola_Config.Top     := Image_Bola_Config.Top +1-1;
     
-    if Form1.iAvisosConfig <> 0 then
+    if iAvisosConfig <> 0 then
     begin
-      Form1.Image_Bola_Config.visible  := True;
-      Form1.Label_Bola_Config.Visible  := True;
+      Image_Bola_Config.visible  := True;
+      Label_Bola_Config.Visible  := True;
     end else
     begin
-      Form1.Image_Bola_Config.visible  := False;
-      Form1.Label_Bola_Config.Visible  := False;
+      Image_Bola_Config.visible  := False;
+      Label_Bola_Config.Visible  := False;
     end;
   end;
 
   // --------- //
   // Cópias   //
   // ------- //
-  if Form1.Image208.Visible = True then
+  if imgBackup.Visible = True then
   begin
-    Form1.Image208.Top     := iTop;
-    Form1.Image208.Left    := iLeft;
-    MostraLabels(Form1.Image208,Form1.Label208);
+    imgBackup.Top     := iTop;
+    imgBackup.Left    := iLeft;
+    MostraLabels(imgBackup,Label208);
   end else
   begin
-//    Form1.Label_Perigo.Visible       := False;
+//    Label_Perigo.Visible       := False;
   end;
   
   Result := True;
@@ -3476,40 +3505,33 @@ begin
     tsP2.Repaint;
     //
   end;
-  //
- // tSp2.visible     := False;
-  //
+
   if tSp2.Caption = 'Backup' then
   begin
-    //
-    if Form1.Image208.Visible then
+    if Form1.imgBackup.Visible then
     begin
-      //
       try
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         if (StrtoDate(Mais1Ini.ReadString('Backup','Último backup','26/09/1967')) + 1) < Date then
         begin
           if Mais1Ini.ReadString('Backup','Último backup','?') = '?' then
           begin
-            Form1.Image208.Hint := 'Banco de dados em risco,'+chr(10)+'sem backup seguro';
+            Form1.imgBackup.Hint := 'Banco de dados em risco,'+chr(10)+'sem backup seguro';
           end else
           begin
-            Form1.Image208.Hint := 'Banco de dados em risco, último'+chr(10)+'backup em '+Alltrim(Mais1Ini.ReadString('Backup','Último backup','?'));
+            Form1.imgBackup.Hint := 'Banco de dados em risco, último'+chr(10)+'backup em '+Alltrim(Mais1Ini.ReadString('Backup','Último backup','?'));
           end;
         end else
         begin
-          Form1.Image208.Hint := 'Último backup em '+Mais1Ini.ReadString('Backup','Último backup','?');
+          Form1.imgBackup.Hint := 'Último backup em '+Mais1Ini.ReadString('Backup','Último backup','?');
         end;
       except
-        Form1.Image208.Hint := 'Banco de dados em risco,'+chr(10)+'sem backup seguro';
+        Form1.imgBackup.Hint := 'Banco de dados em risco,'+chr(10)+'sem backup seguro';
       end;
-      //
     end;
-    //
   end;
-  //
+
   Result := True;
-  //
 end;
 
 procedure Tform1.NovoFormExit(Sender:TObject);
@@ -3522,7 +3544,7 @@ begin
   Application.Restore;
 end;
 
-procedure TForm1.Image205Click(Sender: TObject);
+procedure TForm1.imgCaixaClick(Sender: TObject);
 begin
 
   if not Legal(True) then Abort;
@@ -4024,15 +4046,12 @@ begin
     end;
   end;
   
-  if (Image201S.Visible) then
+  if (imgServicos.Visible) then
   begin
-    //
     // Libera NFSE.EXE
-    //
     Form1.ConfiguraesdaNFSe1.Visible := True;
     Form7.GerarNotaFiscaldeServio1.Visible := True;
     Form7.GerarNotaFiscaldeServio2.Visible := True;
-    //
   end else
   begin
     Form1.ConfiguraesdaNFSe1.Visible := False;
@@ -4399,19 +4418,19 @@ begin
 
   {Mauricio Parizotto 2023-05-31 Inicio}
   //Alterado para não gerar piscação dos icones ao passar o moues
-  Image200.Transparent := False;
-  Image201.Transparent := False;
-  Image201_.Transparent := False;
-  Image202.Transparent := False;
-  Image203.Transparent := False;
-  Image204.Transparent := False;
-  Image210.Transparent := False;
-  Image205.Transparent := False;
-  Image206.Transparent := False;
-  Image207.Transparent := False;
-  Image208.Transparent := False;
-  Image201C.Transparent := False;
-  Image201S.Transparent := False;
+  imgIndicadores.Transparent := False;
+  imgVendas.Transparent := False;
+  imgOrdemServico.Transparent := False;
+  imgEstoque.Transparent := False;
+  imgCliFor.Transparent := False;
+  imgContaReceber.Transparent := False;
+  imgContaPagar.Transparent := False;
+  imgCaixa.Transparent := False;
+  imgBancos.Transparent := False;
+  imgConfiguracoes.Transparent := False;
+  imgBackup.Transparent := False;
+  imgCompras.Transparent := False;
+  imgServicos.Transparent := False;
 
   Image_Bola_indicadores.Transparent := False;
   Image_Bola_NFe.Transparent := False;
@@ -4423,6 +4442,7 @@ begin
   Image_bola_caixa.Transparent := False;
   Image_bola_banco.Transparent := False;
   Image_bola_config.Transparent := False;
+  Image_bola_vendas.Transparent := False;
 
   Image4.Transparent := False;
   {Mauricio Parizotto 2023-05-31 Fim}
@@ -5642,7 +5662,7 @@ begin
   Form7.Show;
 end;
 
-procedure TForm1.Image203Click(Sender: TObject);
+procedure TForm1.imgCliForClick(Sender: TObject);
 begin
   if not Legal(True) then
     Abort;
@@ -5674,7 +5694,7 @@ begin
   end;
 end;
 
-procedure TForm1.Image202Click(Sender: TObject);
+procedure TForm1.imgEstoqueClick(Sender: TObject);
 var
   I : Integer;
 begin
@@ -5705,7 +5725,7 @@ begin
   end;
 end;
 
-procedure TForm1.Image206Click(Sender: TObject);
+procedure TForm1.imgBancosClick(Sender: TObject);
 begin
 
   if not Legal(True) then Abort;
@@ -5728,7 +5748,7 @@ begin
   end;
 end;
 
-procedure TForm1.Image201Click(Sender: TObject);
+procedure TForm1.imgVendasClick(Sender: TObject);
 var
   Mais1ini : tIniFile;
 begin
@@ -5862,7 +5882,7 @@ begin
 end;
 
 
-procedure TForm1.Image208Click(Sender: TObject);
+procedure TForm1.imgBackupClick(Sender: TObject);
 var
   Backup: TBackup;
 begin
@@ -5882,7 +5902,7 @@ begin
     Form7.sModulo := '';
 end;
 
-procedure TForm1.Image207Click(Sender: TObject);
+procedure TForm1.imgConfiguracoesClick(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
@@ -5923,10 +5943,8 @@ begin
       Grupos1.Enabled := False;
       SQLMododecomando1.Enabled := False;
       ConfiguraodaNFe2.Enabled := False;
-      //
     end else
     begin
-      //
       Comissodevendedores1.Enabled := True;
       Cadastrodeconvnios1.Enabled  := True;
       TabeladeICMparatodososestados1.Enabled := True;
@@ -5936,7 +5954,7 @@ begin
       Instalarpackcomasltimasalteraes1.Enabled := True;
       Cadastrodoemitente1.Enabled := True;
       Cadastrodetcnicos1.Enabled := True;
-      //
+
       if (Form1.iReduzida = 1) then
       begin
         Planodecontas1.Enabled := False;
@@ -5944,22 +5962,20 @@ begin
       begin
         Planodecontas1.Enabled := True;
       end;
-      //
+
       Cadastrodetransportadoras1.Enabled := True;
       Grupos1.Enabled                    := True;
       SQLMododecomando1.Enabled          := True;
       ConfiguraodaNFe2.Enabled           := True;
-      //
     end;
-    //
-    PopupMenu1.Popup(Form1.Image207.Left,Form1.Image207.Top + Form1.Image207.Height + 35);
-    //
+
+    PopupMenu1.Popup(Form1.imgConfiguracoes.Left,Form1.imgConfiguracoes.Top + Form1.imgConfiguracoes.Height + 35);
+
     Mais1Ini.Free;
-    //
-  except end;
-  //
+  except
+  end;
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
 end;
 
 procedure TForm1.wwwsmallsoftcombr1Click(Sender: TObject);
@@ -5967,7 +5983,7 @@ begin
   ShellExecute( 0, 'Open','http://www.smallsoft.com.br','', '', SW_SHOWMAXIMIZED);
 end;
 
-procedure TForm1.Image204Click(Sender: TObject);
+procedure TForm1.imgContaReceberClick(Sender: TObject);
 begin
 
   if not Legal(True) then Abort;
@@ -5990,7 +6006,7 @@ begin
   end;
 end;
 
-procedure TForm1.Image210Click(Sender: TObject);
+procedure TForm1.imgContaPagarClick(Sender: TObject);
 begin
 
   if not Legal(True) then Abort;
@@ -6013,7 +6029,7 @@ begin
   end;
 end;
 
-procedure TForm1.Image201_Click(Sender: TObject);
+procedure TForm1.imgOrdemServicoClick(Sender: TObject);
 begin
   //
   if not Legal(True) then Abort;
@@ -6159,18 +6175,18 @@ begin
   begin
     if (Form7.sModulo <> 'VENDA') then
     begin
-      Image201.Picture := Image201_R.Picture;
+      imgVendas.Picture := Image201_R.Picture;
       Label201.Font.Style := [];
       Label201.Font.Color := clBlack;
 
-      Image201S.Picture    := Image201S_R.Picture;
+      imgServicos.Picture    := Image201S_R.Picture;
       Label201S.Font.Style := [];
       Label201S.Font.Color := clBlack;
     end;
 
     if (Form7.sRPS = 'S') then
     begin
-      Image201.Picture := Image201_R.Picture;
+      imgVendas.Picture := Image201_R.Picture;
       Label201.Font.Style := [];
       Label201.Font.Color := clBlack;
     end;
@@ -6181,7 +6197,7 @@ begin
   begin
     if (Form7.sModulo <> 'COMPRA') then
     begin
-      Image201C.Picture    := Image201C_R.Picture;
+      imgCompras.Picture    := Image201C_R.Picture;
       Label201C.Font.Style := [];
       Label201C.Font.Color := clBlack;
     end;
@@ -6192,7 +6208,7 @@ begin
   begin
     if (Form7.sRPS <> 'S') then
     begin
-      Image201S.Picture    := Image201S_R.Picture;
+      imgServicos.Picture    := Image201S_R.Picture;
       Label201S.Font.Style := [];
       Label201S.Font.Color := clBlack;
     end;
@@ -6203,7 +6219,7 @@ begin
   begin
     if (Form7.sModulo <> 'INDICADORES') then
     begin
-      Image200.Picture := Image200_R.Picture;
+      imgIndicadores.Picture := Image200_R.Picture;
       Label200.Font.Style := [];
       Label200.Font.Color := clBlack;
     end;
@@ -6214,7 +6230,7 @@ begin
   begin
     if (Form7.sModulo <> 'OS') then
     begin
-      Image201_.Picture := Image201__R.Picture;
+      imgOrdemServico.Picture := Image201__R.Picture;
       Label201_.Font.Style := [];
       Label201_.Font.Color := clBlack;
     end;
@@ -6225,7 +6241,7 @@ begin
   begin
     if (Form7.sModulo <> 'ESTOQUE') then
     begin
-      Image202.Picture := Image202_R.Picture;
+      imgEstoque.Picture := Image202_R.Picture;
       Label202.Font.Style := [];
       Label202.Font.Color := clBlack;
     end;
@@ -6236,7 +6252,7 @@ begin
   begin
     if (Form7.sModulo <> 'CLIENTES') then
     begin
-      Image203.Picture := Image203_R.Picture;
+      imgCliFor.Picture := Image203_R.Picture;
       Label203.Font.Style := [];
       Label203.Font.Color := clBlack;
     end;
@@ -6247,7 +6263,7 @@ begin
   begin
     if (Form7.sModulo <> 'RECEBER') then
     begin
-      Image204.Picture := Image204_R.Picture;
+      imgContaReceber.Picture := Image204_R.Picture;
       Label204.Font.Style := [];
       Label204.Font.Color := clBlack;
     end;
@@ -6258,7 +6274,7 @@ begin
   begin
     if (Form7.sModulo <> 'PAGAR') then
     begin
-      Image210.Picture := Image210_R.Picture;
+      imgContaPagar.Picture := Image210_R.Picture;
       Label210.Font.Style := [];
       Label210.Font.Color := clBlack;
     end;
@@ -6269,7 +6285,7 @@ begin
   begin
     if (Form7.sModulo <> 'CAIXA') then
     begin
-      Image205.Picture := Image205_R.Picture;
+      imgCaixa.Picture := Image205_R.Picture;
       Label205.Font.Style := [];
       Label205.Font.Color := clBlack;
     end;
@@ -6280,7 +6296,7 @@ begin
   begin
     if (Form7.sModulo <> 'BANCOS') then
     begin
-      Image206.Picture := Image206_R.Picture;
+      imgBancos.Picture := Image206_R.Picture;
       Label206.Font.Style := [];
       Label206.Font.Color := clBlack;
     end;
@@ -6291,7 +6307,7 @@ begin
   begin
     if (Form7.sModulo <> 'CONFIG') then
     begin
-      Image207.Picture := Image207_R.Picture;
+      imgConfiguracoes.Picture := Image207_R.Picture;
       Label207.Font.Style := [];
       Label207.Font.Color := clBlack;
     end;
@@ -6302,7 +6318,7 @@ begin
   begin
     if (Form7.sModulo <> 'BACKUP') then
     begin
-      Image208.Picture := Image208_R.Picture;
+      imgBackup.Picture := Image208_R.Picture;
       Label208.Font.Style := [];
       Label208.Font.Color := clBlack;
     end;
@@ -6317,7 +6333,7 @@ begin
   // Mouse move icone NF-e
   if Label201.Font.Style <> [fsBold] then
   begin
-    Image201.Picture    := Image201_X.Picture;
+    imgVendas.Picture    := Image201_X.Picture;
     Label201.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -7745,13 +7761,13 @@ begin
   tInicio := time;
   with form7 do
   begin
-    Form1.Image205Click(Sender); // Caixa
+    Form1.imgCaixaClick(Sender); // Caixa
     Form7.Vendas_1Click(Sender); // Vendas
-    Form1.Image202Click(Sender); // Estoque
-    Form1.Image203Click(Sender); // Clientes
-    Form1.Image204Click(Sender); // Receber
-    Form1.Image210Click(Sender); // Pagar
-    Form1.Image206Click(Sender); // Bancos
+    Form1.imgEstoqueClick(Sender); // Estoque
+    Form1.imgCliForClick(Sender); // Clientes
+    Form1.imgContaReceberClick(Sender); // Receber
+    Form1.imgContaPagarClick(Sender); // Pagar
+    Form1.imgBancosClick(Sender); // Bancos
     Form7.Close;
   end;
   
@@ -8116,20 +8132,20 @@ begin
           end;
         end;
 
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0) then Image201.Visible   := True else Image201.Visible   := False;
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0) then Image201C.Visible  := True else Image201C.Visible  := False;
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0) then Image201S.Visible  := True else Image201S.Visible  := False;
+        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0) then imgVendas.Visible   := True else imgVendas.Visible   := False;
+        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0) then imgCompras.Visible  := True else imgCompras.Visible  := False;
+        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0) then imgServicos.Visible  := True else imgServicos.Visible  := False;
 
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B_','0'))  > 0 then Image201_.Visible := True else Image201_.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B2','0'))  > 0 then Image202.Visible  := True else Image202.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then Image203.Visible  := True else Image203.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B4','0'))  > 0 then Image204.Visible  := True else Image204.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B5','0'))  > 0 then Image205.Visible  := True else Image205.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B6','0'))  > 0 then Image206.Visible  := True else Image206.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B7','0'))  > 0 then Image207.Visible  := True else Image207.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then Image208.Visible  := True else Image208.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then Image210.Visible  := True else Image210.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then Image200.Visible  := True else Image200.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B_','0'))  > 0 then imgOrdemServico.Visible := True else imgOrdemServico.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B2','0'))  > 0 then imgEstoque.Visible  := True else imgEstoque.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then imgCliFor.Visible  := True else imgCliFor.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B4','0'))  > 0 then imgContaReceber.Visible  := True else imgContaReceber.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B5','0'))  > 0 then imgCaixa.Visible  := True else imgCaixa.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B6','0'))  > 0 then imgBancos.Visible  := True else imgBancos.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B7','0'))  > 0 then imgConfiguracoes.Visible  := True else imgConfiguracoes.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then imgBackup.Visible  := True else imgBackup.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then imgContaPagar.Visible  := True else imgContaPagar.Visible := False;
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then imgIndicadores.Visible  := True else imgIndicadores.Visible := False;
 
         // Indicadores
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I01','0')) > 0 then Form5.Panel1.Visible  := True else Form5.Panel1.Visible := False;
@@ -8216,34 +8232,32 @@ begin
         // ---------- //
         // Configura //
         // -------- //
-        if (not Form1.Image207.Visible) or (Form1.Label207.Tag = 1) then
+        if (not Form1.imgConfiguracoes.Visible) or (Form1.Label207.Tag = 1) then
         begin
-          Form1.Image207.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
+          Form1.imgConfiguracoes.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
           Form1.Label207.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
-          Form1.Label_bola_config.OnClick := Form1.Image207Click;
+          Form1.Label_bola_config.OnClick := Form1.imgConfiguracoesClick;
           Form1.Label207.Tag              := 1;
-          Form1.Image207.Visible          := True;
+          Form1.imgConfiguracoes.Visible          := True;
         end else
         begin
-          Form1.Image207.OnClick          := Form1.Image207Click;
-          Form1.Label207.OnClick          := Form1.Image207Click;
+          Form1.imgConfiguracoes.OnClick          := Form1.imgConfiguracoesClick;
+          Form1.Label207.OnClick          := Form1.imgConfiguracoesClick;
           Form1.Label_bola_config.OnClick := Form1.Label_Bola_ConfigClick;
         end;
 
         Form7.Label208.Caption  := 'Liberar';
-        //
+
         if Pos('Ordem de Serviço',Form22.sTitulo) = 0 then
-//        if not ((Copy(Form22.sTitulo+Replicate(' ',33),1,33) <> 'Small Commerce + Ordem de Serviço') or
-//               (Copy(Form22.sTitulo+Replicate(' ',33),1,33) <> 'Small Mei + Ordem de Serviço'))  then
         begin
-          Image201_.Visible := False;
+          imgOrdemServico.Visible := False;
         end;
 
         if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99')  then
         begin
           if (Form7.ibDataSet13ESTADO.AsString = 'TO') then // or (Form7.ibDataSet13ESTADO.AsString = 'SC') then
           begin
-            Image201_.Visible := False; // Sem OS
+            imgOrdemServico.Visible := False; // Sem OS
           end;
         end;
 
@@ -8354,7 +8368,7 @@ begin
     begin
       if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
       begin
-        Form1.Image201Click(Form1.Image201);
+        Form1.imgVendasClick(Form1.imgVendas);
         Form7.Image101Click(Form7.Image201);
       end;
     end;
@@ -8402,7 +8416,7 @@ begin
     except end;
 
     // NF-e
-    if Image201.Visible  then
+    if imgVendas.Visible  then
     begin
       if not form2.Visible then
       begin
@@ -8412,7 +8426,10 @@ begin
         begin
           if Form1.ValidaRecursos.PermiteRecursoParaProduto then // Sandro Silva 2023-05-31
           begin
-            Mensagem22('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString);
+            //Mensagem22('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString); Mauricio Parizotto 2023-07-12
+            Mensagem22('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+
+                       Form7.GetMensagemCertificado('ABERTURA'));
+
             Form7.ConsultarNFesemitidasparameuCNPJ1Click(Form7.MenuItem1);
             AvisoNFECompra(True);
             Sleep(1000*2);
@@ -8423,7 +8440,7 @@ begin
     end;
 
     // OS
-    if Image201_.Visible  then
+    if imgOrdemServico.Visible  then
     begin
       Mensagem22('Consultando OS agendadas para hoje');
       AvisoOS(True);
@@ -8431,7 +8448,7 @@ begin
     end;
 
     // CLIFOR
-    if Image203.Visible  then
+    if imgCliFor.Visible  then
     begin
       Mensagem22('Consultando agendamentos no cadastro');
       AvisoClifor(True);
@@ -8439,7 +8456,7 @@ begin
     end;
 
     // CAIXA
-    if Image205.Visible  then
+    if imgCaixa.Visible  then
     begin
       Mensagem22('Consultando pendências no caixa');
       AvisoCaixa(True);
@@ -8447,7 +8464,7 @@ begin
     end;
 
     // BANCO
-    if Image206.Visible  then
+    if imgBancos.Visible  then
     begin
       Mensagem22('Consultando pendências no banco');
       AvisoBanco(True);
@@ -8455,7 +8472,7 @@ begin
     end;
 
     // Receber
-    if Image204.Visible  then
+    if imgContaReceber.Visible  then
     begin
       Mensagem22('Consultando contas a receber para hoje');
       AvisoReceber(True);
@@ -8463,7 +8480,7 @@ begin
     end;
 
     // Estoque
-    if Image202.Visible  then
+    if imgEstoque.Visible  then
     begin
       Mensagem22('Consultando produtos com quantidade minima no estoque');
       AvisoEstoque(True);
@@ -8471,7 +8488,7 @@ begin
     end;
 
     // PAGAR
-    if Image210.Visible  then
+    if imgContaPagar.Visible  then
     begin
       Mensagem22('Consultando contas a pagar para hoje');
       AvisoPagar(True);
@@ -8479,7 +8496,7 @@ begin
     end;
 
     // INDICADORES
-    if Image200.Visible  then
+    if imgIndicadores.Visible  then
     begin
       Mensagem22('Consultando indicadores');
       AvisoIndicadores(True);
@@ -8487,7 +8504,7 @@ begin
     end;
 
     // CONFIG
-    if Image210.Visible  then
+    if imgContaPagar.Visible  then
     begin
       Mensagem22('Consultando suas configurações');
       AvisoConfig(True);
@@ -9674,21 +9691,21 @@ procedure TForm1.Timer1Timer(Sender: TObject);
 begin
   if Label208.Font.Style <> [fsBold] then
   begin
-    if Copy(Form1.Image208.Hint,1,23) = 'Banco de dados em risco' then
+    if Copy(Form1.imgBackup.Hint,1,23) = 'Banco de dados em risco' then
     begin
       if Form1.Image_Perigo_2.Tag = 0 then
       begin
-        Form1.Image208.Picture    := Form1.Image_Perigo_1.Picture;
+        Form1.imgBackup.Picture    := Form1.Image_Perigo_1.Picture;
         Form1.Image_Perigo_2.Tag  := 1;
         Form1.Label208.Font.Color := $00F0F0F0;
       end else
       begin
-        Form1.Image208.Picture    := Form1.Image_Perigo_2.Picture;
+        Form1.imgBackup.Picture    := Form1.Image_Perigo_2.Picture;
         Form1.Label208.Font.Color := clBlack;
         Form1.Image_Perigo_2.Tag  := 0;
       end;
       
-      Form1.Image208.Repaint;
+      Form1.imgBackup.Repaint;
     end;
   end;
 end;
@@ -10562,7 +10579,7 @@ begin
   if bModoSVC then SVCSefazVirtualdeContingncia1.Checked := True else SVCSefazVirtualdeContingncia1.Checked := False;
 end;
 
-procedure TForm1.Image205MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm1.imgCaixaMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
 {
@@ -10633,7 +10650,7 @@ begin
   // Mouse move icone ESTOQUE
   if Label202.Font.Style <> [fsBold] then
   begin
-    Image202.Picture    := Image202_X.Picture;
+    imgEstoque.Picture    := Image202_X.Picture;
     Label202.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10658,7 +10675,7 @@ begin
   // Mouse move icone OS
   if Label201_.Font.Style <> [fsBold] then
   begin
-    Image201_.Picture    := Image201__X.Picture;
+    imgOrdemServico.Picture    := Image201__X.Picture;
     Label201_.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10685,7 +10702,7 @@ begin
   // Mouse move icone CADASTRO
   if Label203.Font.Style <> [fsBold] then
   begin
-    Image203.Picture    := Image203_X.Picture;
+    imgCliFor.Picture    := Image203_X.Picture;
     Label203.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10710,7 +10727,7 @@ begin
   // Mouse move RECEBER
   if Label204.Font.Style <> [fsBold] then
   begin
-    Image204.Picture    := Image204_X.Picture;
+    imgContaReceber.Picture    := Image204_X.Picture;
     Label204.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10736,7 +10753,7 @@ begin
   // Mouse move CAIXA
   if Label205.Font.Style <> [fsBold] then
   begin
-    Image205.Picture    := Image205_X.Picture;
+    imgCaixa.Picture    := Image205_X.Picture;
     Label205.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10764,7 +10781,7 @@ begin
   // Mouse move BANCOS
   if Label206.Font.Style <> [fsBold] then
   begin
-    Image206.Picture    := Image206_X.Picture;
+    imgBancos.Picture    := Image206_X.Picture;
     Label206.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10792,7 +10809,7 @@ begin
   // Mouse move CONFIG
   if Label207.Font.Style <> [fsBold] then
   begin
-    Image207.Picture    := Image207_X.Picture;
+    imgConfiguracoes.Picture    := Image207_X.Picture;
     Label207.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10818,7 +10835,7 @@ begin
   // Mouse move BACKUP
   if Label208.Font.Style <> [fsBold] then
   begin
-    Image208.Picture    := Image208_X.Picture;
+    imgBackup.Picture    := Image208_X.Picture;
     Label208.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10833,7 +10850,7 @@ begin
             'O Backup é a única forma de'+chr(10)+
             'manter seus dados'+chr(10)+
             'seguros'+chr(10)+chr(10)+
-            Form1.Image208.Hint
+            Form1.imgBackup.Hint
             );
     end;
   end;
@@ -10845,7 +10862,7 @@ begin
   // Mouse move PAGAR
   if Label210.Font.Style <> [fsBold] then
   begin
-    Image210.Picture    := Image210_X.Picture;
+    imgContaPagar.Picture    := Image210_X.Picture;
     Label210.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -10966,7 +10983,7 @@ begin
   // Mouse move icone MOBILE
   if Label200.Font.Style <> [fsBold] then
   begin
-    Image200.Picture    := Image200_X.Picture;
+    imgIndicadores.Picture    := Image200_X.Picture;
     Label200.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -11016,7 +11033,7 @@ begin
   Mais1ini.Free;
 end;
 
-procedure TForm1.Image200Click(Sender: TObject);
+procedure TForm1.imgIndicadoresClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
@@ -11247,11 +11264,11 @@ begin
     Exit;
   if Form1.bNotaCompraLiberada then
   begin
-    Form1.Image201Click(Sender);
+    Form1.imgVendasClick(Sender);
     Form7.Compras_1Click(Sender);
-    //
+    
     Form7.ibDataSet24.DisableControls;
-    //
+
     try
       Form7.ibDataSet24.Close;
       Form7.ibDataSet24.SelectSQL.Clear;
@@ -11259,40 +11276,37 @@ begin
       Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar + ' order by EMISSAO, FORNECEDOR');
       Form7.ibDataSet24.Open;
     except end;
-    //
+
     Form7.ibDataSet24.EnableControls;
-    //
   end;
-  //
+
   Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML nos últimos ' + PRAZO_MANIFESTAR + ' dias.'); // Sandro Silva 2023-06-20 Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');
-  //
 end;
 
 procedure TForm1.Label_bola_caixaClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form1.Image205Click(Sender);
-  //
+  Form1.imgCaixaClick(Sender);
+
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
     Form7.ibDataSet1.Close;
     Form7.ibDataSet1.SelectSQL.Clear;
     Form7.ibDataSet1.SelectSQL.Add('select * from CAIXA  where coalesce(NOME,'+QuotedStr('')+')='+QuotedStr('')+' ');
     Form7.ibDataSet1.Open;
   except end;
-  //
+
   Form7.ibDataSet1.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosCaixa)+' lançamentos no caixa não identificados'+chr(10)+'no (Plano De contas).');
-  //
 end;
 
 procedure TForm1.Label_bola_bancoClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form1.Image206Click(Sender);
+  Form1.imgBancosClick(Sender);
   Form7.Lanamentosnocompensados1Click(Sender);
   Aviso('Temos '+InttoStr(Form1.iAvisosBanco)+' lançamentos não conciliados.');
   Screen.Cursor            := crDefault;
@@ -11302,48 +11316,47 @@ procedure TForm1.Label_bola_pagarClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form1.Image210Click(Sender);
-  //
+  Form1.imgContaPagarClick(Sender);
+
   Form7.ibDataSet8.DisableControls;
-  //
+
   try
     Form7.ibDataSet8.Close;
     Form7.ibDataSet8.SelectSQL.Clear;
     Form7.ibDataSet8.SelectSQL.Add('select * from PAGAR where VALOR_PAGO=0 and VENCIMENTO=CURRENT_DATE');
     Form7.ibDataSet8.Open;
-  except end;
-  //
+  except
+  end;
+
   Form7.ibDataSet8.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosPagar)+' contas para pagar hoje.');
-  //
 end;
 
 procedure TForm1.Label_bola_cliforClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  //
-  Form1.Image203Click(Sender);
-  //
+
+  Form1.imgCliForClick(Sender);
+
   Form7.ibDataSet2.DisableControls;
-  //
+
   try
     Form7.ibDataSet2.Close;
     Form7.ibDataSet2.SelectSQL.Clear;
     Form7.ibDataSet2.SelectSQL.Add('select * from CLIFOR where PROXDATA=CURRENT_DATE');
     Form7.ibDataSet2.Open;
   except end;
-  //
+
   Form7.ibDataSet2.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosClifor)+' clientes agendados para hoje.');
-  //
 end;
 
 procedure TForm1.Label_bola_receberClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  Form1.Image204Click(Sender);
+  Form1.imgContaReceberClick(Sender);
 
   Form7.ibDataSet7.DisableControls;
 
@@ -11363,21 +11376,20 @@ procedure TForm1.Label_Bola_estoqueClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  //
-  Form1.Image202Click(Sender);
-  //
+
+  Form1.imgEstoqueClick(Sender);
+
   Form7.ibDataSet4.DisableControls;
-  //
+
   try
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.SelectSQL.Clear;
     Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where QTD_ATUAL<QTD_MINIM and  coalesce(ATIVO,0)<>1');
     Form7.ibDataSet4.Open;
   except end;
-  //
+
   Form7.ibDataSet4.EnableControls;
   Aviso('Temos '+InttoStr(Form1.iAvisosEstoque)+' itens abaixo da quantidade mínima.');
-  //
 end;
 
 procedure TForm1.Label_Bola_ConfigClick(Sender: TObject);
@@ -11441,7 +11453,7 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-  Image201_Click(Sender);
+  imgOrdemServicoClick(Sender);
 
   Form7.ibDataSet3.DisableControls;
 
@@ -11460,7 +11472,7 @@ end;
 
 procedure TForm1.Label_bola_indicadoresClick(Sender: TObject);
 begin
-  Image200Click(Sender);
+  imgIndicadoresClick(Sender);
 end;
 
 procedure TForm1.HorarioDeVeraoClick(Sender: TObject);
@@ -11574,7 +11586,7 @@ begin
 
     Form1.bMKP := True;
 
-    Form1.Image202Click(Sender);
+    Form1.imgEstoqueClick(Sender);
     ShowMessage('Ative agora os produtos para marketplace');
   end;
 
@@ -11586,7 +11598,7 @@ begin
   ShellExecute( 0, 'Open', pChar('https://www.smallhub.com.br/login?doc='+Limpanumero(Form7.ibDAtaSet13CGC.AsString)),'', '', SW_SHOW); // MArketPlace
 end;
 
-procedure TForm1.Image201CClick(Sender: TObject);
+procedure TForm1.imgComprasClick(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
@@ -11621,7 +11633,7 @@ begin
   // Mouse move icone NF-e
   if Label201C.Font.Style <> [fsBold] then
   begin
-    Image201C.Picture    := Image201C_X.Picture;
+    imgCompras.Picture    := Image201C_X.Picture;
     Label201C.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -11645,7 +11657,7 @@ begin
   // Mouse move icone NF-e
   if Label201S.Font.Style <> [fsBold] then
   begin
-    Image201S.Picture    := Image201S_X.Picture;
+    imgServicos.Picture    := Image201S_X.Picture;
     Label201S.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
@@ -11664,7 +11676,7 @@ begin
   end;
 end;
 
-procedure TForm1.Image201SClick(Sender: TObject);
+procedure TForm1.imgServicosClick(Sender: TObject);
 begin
   try
     if Form1.ValidaRecursos.PermiteRecursoParaProduto then
@@ -11873,7 +11885,6 @@ var
   F: TextFile;
   Mais1Ini : tIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfseConfig.ini');
   //
 //  if AllTrim(Mais1Ini.ReadString('NFSE','Arquivos',''))           = '' then Mais1Ini.WriteString('NFSE','Arquivos',Form1.sAtual+'\NFSE');
@@ -11921,16 +11932,12 @@ begin
     ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
     //
   end;
-  //
-  //
-  //
+
   if FileExists(pChar(Form1.sAtual+'\NFSE\CidadesHomologadas.XML')) then
   begin
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfseConfig.ini');
     //
     try
-      //
       _file := TStringList.Create;
       _file.LoadFromFile(pChar(Form1.sAtual+'\NFSE\CidadesHomologadas.XML'));
       //
@@ -11945,15 +11952,11 @@ begin
       end;
       //
       Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Padrao',RetornaValorDaTagNoCampo('Padrao',sPadraoCidade));
-      //
     except
       Mais1Ini.WriteString('Informacoes obtidas na prefeitura','MultiplosServicos','NAO');
     end;
-    //
     Mais1ini.Free;
-    //
-  end else
-  //
+  end;
 end;
 
 procedure TForm1.Debug1Click(Sender: TObject);
@@ -11963,7 +11966,7 @@ end;
 
 procedure TForm1.Image_bola_cliforClick(Sender: TObject);
 begin
-  Form1.Image203Click(Sender);
+  Form1.imgCliForClick(Sender);
 
   Form7.ibDataSet2.DisableControls;
 
@@ -12373,6 +12376,26 @@ begin
     ConfiguraesdaNFSe1.Enabled := False;
   end;
   {Sandro Silva 2023-06-01 fim}
+end;
+
+procedure TForm1.Label_Bola_vendasClick(Sender: TObject);
+var
+  sMSG : String;
+begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
+  
+  if Form7.Visible then Form7.Close;
+  if Form10.Visible then Form10.Close;
+
+  sMSG := Form7.GetMensagemCertificado;
+
+  if AllTrim(sMSG) <> '' then
+  begin
+    sMSG := 'Temos que acertar isso: '+ chr(10) + chr(10) + sMSG +chr(10);
+  end;
+
+  Aviso(sMSG);
 end;
 
 end.
