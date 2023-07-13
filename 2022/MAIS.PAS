@@ -2365,8 +2365,8 @@ begin
       end;
     end;
 
-    Image_Bola_Estoque.Top     := imgVendas.Top -6+1-1;
-    Image_Bola_Estoque.Left    := imgVendas.Left + imgVendas.Width - 20;
+    Image_Bola_Estoque.Top     := imgEstoque.Top -6+1-1;
+    Image_Bola_Estoque.Left    := imgEstoque.Left + imgVendas.Width - 20;
     Label_Bola_Estoque.Caption := AllTrim(IntToStr(iAvisosEstoque));
 
     Label_Bola_Estoque.Width   := Image_Bola_Estoque.Width;
@@ -12392,7 +12392,7 @@ begin
 
   if AllTrim(sMSG) <> '' then
   begin
-    sMSG := 'Temos que acertar isso: '+ chr(10) + chr(10) + sMSG +chr(10);
+    sMSG := sMSG +chr(10);
   end;
 
   Aviso(sMSG);
