@@ -1027,6 +1027,7 @@ type
     ESTOQUEMUDANADEREGIME1: TMenuItem;
     ESTOQUEATUAL1: TMenuItem;
     SadasIdentificadaspeloCPFCNPJ1: TMenuItem;
+    itemMenugerencial: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1651,7 +1652,7 @@ type
     procedure CancelaVendaAtualNoBanco(sPedido: String; sData: String;
       bValidacaoObrigatoria: Boolean);
     function SecaoFrente(): String;
-    function ImportarDaPesquisa(sTipo: String): String;
+    function ImportarDaPesquisa(Tipo: TTipoPesquisa): String;
     procedure ConfiguraCredencialTecnospeed;
     procedure MensagemAlertaLimiteDocumentosEmitidos;    
   end;
@@ -5101,7 +5102,7 @@ begin
 
     end;
     }
-    bMEIValido := MEI;
+    bMEIValido := Gerencial;
     {Sandro Silva 2023-06-23 fim}
 
     {Sandro Silva 2023-06-14 inicio
@@ -8350,7 +8351,7 @@ begin
      ) and (MEI) then // Sandro Silva 2021-03-19 ) and (AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe')) then
      sSerial := '';
   }
-  if (LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Licenca', 'MEI', '') <> 'SIM') and (MEI) then
+  if (LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Licenca', 'MEI', '') <> 'SIM') and (Gerencial) then
      sSerial := '';
   {Sandro Silva 2021-12-29 fim}
 
@@ -8375,7 +8376,7 @@ begin
   }
   if (Form1.sModeloECF = '99') then
   begin
-    if (MEI) then
+    if (Gerencial) then
     begin
 
       Application.Title := 'Aplicativo Gerencial'; // Sandro Silva 2023-06-23 Application.Title := 'Aplicativo MEI';
@@ -8386,7 +8387,7 @@ begin
 
   if (Form1.sModeloECF = '99') then
   begin
-    if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'gerencial.exe') = False) and (MEI = False))  // Sandro Silva 2023-06-26 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))
+    if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'gerencial.exe') = False) and (Gerencial = False))  // Sandro Silva 2023-06-26 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))
       and (AnsiContainsText(ExtractFileDir(Application.ExeName), Copy(Build, 1, 4) + '\Projeto-Frente-de-Caixa') = False) // Para poder executar pelo delphi com F9
     then
       sSerial := '';
@@ -8406,7 +8407,7 @@ begin
                 'sua licença de uso.'+Chr(10)+Chr(13)+
                 'Código: 001 '+sLicenca);
       }
-      if MEI then
+      if Gerencial then
         SmallMsg('Sistema bloqueado'+Chr(10)+
                               'Este sistema só pode ser usado por empresa'+Chr(10)+
                               'enquadrada como Microempreendedor Individual (MEI)'+Chr(10)+Chr(13)+
@@ -8481,8 +8482,8 @@ begin
       Form22.sTitulo := 'Small Commerce (MEI)';
     }
     Form22.sTitulo := 'Small';
-    if MEI then
-      Form22.sTitulo := 'Small (MEI)';
+    if Gerencial then
+      Form22.sTitulo := 'Small (Gerencial)'; // Sandro Silva 2023-07-13 Form22.sTitulo := 'Small (MEI)';
     {Sandro Silva 2022-04-11 fim}
 
     {Sandro Silva 2021-12-29 fim}
@@ -10374,7 +10375,7 @@ begin
     Form1.sModeloECF   := '59';
   end;
 
-  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') or MEI then
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') or Gerencial then
     Form1.sModeloECF       := '99';
   {Sandro Silva 2023-06-27 fim}
 
@@ -15736,6 +15737,11 @@ begin
   Imprimiroramento1.Caption                    := 'Imprimir Orçamento - Documento Auxiliar de Venda (DAV) ...';
   DocumentoAuxiliardeVendaDAVOramento1.Caption := 'Orçamento - Documento Auxiliar de Venda (DAV) ...';
 
+  {Sandro Silva 2023-07-13 inicio}
+  if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then
+    itemMenugerencial.Caption := 'Importar gerencial';
+  {Sandro Silva 2023-07-13 fim}
+
   {Sandro Silva 2023-05-30 inicio}
   if ValidaRecursos.PermiteRecursoParaProduto = False then
   begin
@@ -18933,7 +18939,7 @@ begin
             try // Sandro Silva 2017-06-30
 
               if (Form1.sModeloECF = '59') or ((Form1.sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then // Sandro Silva 2020-12-11 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then 
-                sOrcame := ImportarDaPesquisa('ORCA') // Sandro Silva 2019-07-12
+                sOrcame := ImportarDaPesquisa(tpPesquisaOrca) // Sandro Silva 2019-07-12
               else
                 sOrcame := StrZero(StrToInt('0'+Limpanumero(Small_InputBox('Importar orçamento...','Número do orçamento:',''))),10,0);
               //
@@ -19390,7 +19396,7 @@ begin
             // Importa os Itens da OS
             //
             if (Form1.sModeloECF = '59') or ((sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then // Sandro Silva 2020-12-11 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-              sOs :=  ImportarDaPesquisa('OS') // Sandro Silva 2019-07-12
+              sOs :=  ImportarDaPesquisa(tpPesquisaOS) // Sandro Silva 2019-07-12
             else
               sOs :=  StrZero(StrToIntDef(Limpanumero(Small_InputBox('Importar OS','Número da OS:','')), 0),10,0);
             //
@@ -33275,12 +33281,12 @@ begin
   Form1.VersoLeiauteSat0081.Checked := True;
 end;
 
-function TForm1.ImportarDaPesquisa(sTipo: String): String;
+function TForm1.ImportarDaPesquisa(Tipo: TTipoPesquisa): String;
 begin
   if FPesquisaParaImportar = nil then
     Application.CreateForm(TFPesquisaParaImportar, FPesquisaParaImportar);
   FPesquisaParaImportar.IdSelecionado := '';
-  FPesquisaParaImportar.TipoPesquisa := sTipo;
+  FPesquisaParaImportar.TipoPesquisa := Tipo;
   FPesquisaParaImportar.ShowModal;
   Result := FPesquisaParaImportar.IdSelecionado;
 end;

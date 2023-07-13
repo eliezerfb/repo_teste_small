@@ -647,7 +647,7 @@ begin
   //  auxiliar criptografado, inacessível.    //
   //----------------------------------------- //
   if (Form1.sModeloECF = '59') or ((Form1.sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then // Sandro Silva 2020-12-15 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-    sOrcame := Form1.ImportarDaPesquisa('ORCA') // Sandro Silva 2019-07-12
+    sOrcame := Form1.ImportarDaPesquisa(tpPesquisaOrca) // Sandro Silva 2019-07-12
   else
     sOrcame := StrZero(StrToInt('0'+Limpanumero(Form1.Small_InputBox('Imprimir orçamento...','Número do orçamento:',''))),10,0);
   //

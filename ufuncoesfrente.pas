@@ -85,6 +85,9 @@ const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
 const NUMERO_FORMAS_EXTRAS = 8;
 
 type
+  TTipoPesquisa = (tpPesquisaOS, tpPesquisaOrca, tpPesquisaGerencial);
+
+type
   TTipoInfoCombo = (tiInfoComboModeloSAT, tiInfoComboImpressoras, tiInfoComboFusoHorario, tiInfoComboContaClienteOS);
 
 type
@@ -249,7 +252,7 @@ function TempoDecorridoPorExtenso(dtDataF, dtDataI: Tdate; ttHoraF, ttHoraI: TTi
 // Sandro Silva 2023-06-23 function SerialMEI(sSerial: String): Boolean;
 function PAFNFCe: Boolean;
 function NFCe: Boolean;
-function MEI: Boolean;
+function Gerencial: Boolean;
 function SAT: Boolean;
 function MFE: Boolean;
 function Build: String;
@@ -1616,7 +1619,7 @@ begin
   Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE');
 end;
 
-function MEI: Boolean;
+function Gerencial: Boolean;
 var
   sCaminhoDev: String;
   sNomeProjeto: String;
@@ -1631,13 +1634,15 @@ begin
       with TStringList.Create do
       begin
 
-        sCaminhoDev  := '\desenvolvimento\fontes\delphi\Small Commerce\Projeto-Frente-de-Caixa\';
-        sNomeProjeto := 'frente.dpr';
-
-        LoadFromFile(sCaminhoDev + sNomeProjeto);
-        if (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and AnsiContainsText(Text, 'program frente;') and AnsiContainsText(AnsiUpperCase(Text), AnsiUpperCase('ufuncoesfrente in ''ufuncoesfrente.pas''')) then
+        sCaminhoDev  := '\desenvolvimento\executaveis\Small Commerce\';
+        sNomeProjeto := 'artificio.txt';
+        if FileExists(sCaminhoDev + sNomeProjeto) then
         begin
-          Result := True;
+          LoadFromFile(sCaminhoDev + sNomeProjeto);
+          if (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and AnsiContainsText(Text, 'program frente;') and AnsiContainsText(AnsiUpperCase(Text), AnsiUpperCase('ufuncoesfrente in ''ufuncoesfrente.pas''')) then
+          begin
+            Result := True;
+          end;
         end;
         Free;
       end;

@@ -7,6 +7,7 @@ uses
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
   Grids, DBGrids, DB, IBCustomDataSet, IBQuery
   , StrUtils
+  , ufuncoesfrente
   ;
 
 type
@@ -39,15 +40,16 @@ type
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
-    FTipoPesquisa: String;
+    FTipoPesquisa: TTipoPesquisa;
     FIdSelecionado: String;
     procedure SelecionaOrcamento;
     procedure SelecionaPesquisa;
     procedure SelecionaOS;
+    procedure SelecionaGerencial;
     { Private declarations }
   public
     { Public declarations }
-    property TipoPesquisa: String read FTipoPesquisa write FTipoPesquisa;
+    property TipoPesquisa: TTipoPesquisa read FTipoPesquisa write FTipoPesquisa;
     property IdSelecionado: String read FIdSelecionado write FIdSelecionado;
   end;
 
@@ -59,7 +61,7 @@ implementation
 uses
   fiscal
   , SmallFunc
-  , ufuncoesfrente
+//  , ufuncoesfrente
   , uajustaresolucao
   ;
 
@@ -68,10 +70,14 @@ uses
 procedure TFPesquisaParaImportar.Button1Click(Sender: TObject);
 begin
   FPesquisaParaImportar.IdSelecionado := Edit1.Text;
-  if FTipoPesquisa = 'ORCA' then
+  if FTipoPesquisa = tpPesquisaOrca then
     FPesquisaParaImportar.IdSelecionado := StrZero(StrToInt64Def(Limpanumero(FPesquisaParaImportar.IdSelecionado), 0), 10, 0);
-  if FTipoPesquisa = 'OS' then
+  if FTipoPesquisa = tpPesquisaOS then
     FPesquisaParaImportar.IdSelecionado := StrZero(StrToInt64Def(Limpanumero(FPesquisaParaImportar.IdSelecionado), 0), 10, 0);
+  {Sandro Silva 2023-07-13 inicio}
+  if FTipoPesquisa = tpPesquisaGerencial then
+    FPesquisaParaImportar.IdSelecionado := StrZero(StrToInt64Def(Limpanumero(FPesquisaParaImportar.IdSelecionado), 0), 10, 0);
+  {Sandro Silva 2023-07-13 fim}
   ModalResult := mrOk;
 end;
 
@@ -148,20 +154,30 @@ begin
   DateTimePicker1.Visible := True;
   Edit1.Text := '';
 
-  if FTipoPesquisa = 'ORCA' then
+  if FTipoPesquisa = tpPesquisaORCA then
   begin
     Label1.Caption := 'Importar orçamento...';
     Label2.Caption := 'Número do orçamento ou Nome do cliente:';
 
     SelecionaOrcamento;
   end;
-  if FTipoPesquisa = 'OS' then
+  if FTipoPesquisa = tpPesquisaOS then
   begin
     Label1.Caption := 'Importar OS';
     Label2.Caption := 'Número da OS ou Nome do cliente:';
 
     SelecionaOS;
   end;
+
+  {Sandro Silva 2023-07-13 inicio}
+  if FTipoPesquisa = tpPesquisaGerencial then
+  begin
+    Label1.Caption := 'Importar Gerencial';
+    Label2.Caption := 'Número do Gerencial ou Nome do cliente:';
+
+    //SelecionaOS;
+  end;
+  {Sandro Silva 2023-07-13 fim}
 end;
 
 procedure TFPesquisaParaImportar.BitBtn2Click(Sender: TObject);
@@ -219,14 +235,20 @@ end;
 
 procedure TFPesquisaParaImportar.SelecionaPesquisa;
 begin
-  if FTipoPesquisa = 'ORCA' then
+  if FTipoPesquisa = tpPesquisaORCA then
   begin
     SelecionaOrcamento;
   end;
-  if FTipoPesquisa = 'OS' then
+  if FTipoPesquisa = tpPesquisaOS then
   begin
     SelecionaOS;
   end;
+  {Sandro Silva 2023-07-13 inicio}
+  if FTipoPesquisa = tpPesquisaGerencial then
+  begin
+    //SelecionaOS;
+  end;
+  {Sandro Silva 2023-07-13 fim}
 end;
 
 procedure TFPesquisaParaImportar.DateTimePicker1Change(Sender: TObject);
@@ -244,10 +266,14 @@ end;
 
 procedure TFPesquisaParaImportar.DBGrid1DblClick(Sender: TObject);
 begin
-  if FTipoPesquisa = 'ORCA' then
+  if FTipoPesquisa = tpPesquisaORCA then
     Edit1.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
-  if FTipoPesquisa = 'OS' then
+  if FTipoPesquisa = tpPesquisaOS then
     Edit1.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+  {Sandro Silva 2023-07-13 inicio}
+  if FTipoPesquisa = tpPesquisaGerencial then
+    Edit1.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+  {Sandro Silva 2023-07-13 fim}
   Button1Click(Sender);
 end;
 
@@ -259,17 +285,24 @@ end;
 
 procedure TFPesquisaParaImportar.IBQPESQUISAAfterOpen(DataSet: TDataSet);
 begin
-  if FTipoPesquisa = 'ORCA' then
+  if FTipoPesquisa = tpPesquisaORCA then
   begin
     DataSet.FieldByName('Cliente').DisplayWidth  := AjustaLargura(40);
     DataSet.FieldByName('Vendedor').DisplayWidth := AjustaLargura(18);
   end;
 
-  if FTipoPesquisa = 'OS' then
+  if FTipoPesquisa = tpPesquisaOS then
   begin
     DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(40);
     DataSet.FieldByName('Técnico').DisplayWidth := AjustaLargura(18);
   end;
+  {Sandro Silva 2023-07-13 inicio}
+  if FTipoPesquisa = tpPesquisaGerencial then
+  begin
+    DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(40);
+    DataSet.FieldByName('Vendedor').DisplayWidth := AjustaLargura(18);
+  end;
+  {Sandro Silva 2023-07-13 fim}
 end;
 
 procedure TFPesquisaParaImportar.DBGrid1DrawColumnCell(Sender: TObject;
@@ -326,6 +359,28 @@ begin
     (Sender As TDBGrid).Canvas.TextRect(Rect, xCalc, yCalc, sTexto);
 
   end; //if Column.Field <> nil then
+
+end;
+
+procedure TFPesquisaParaImportar.SelecionaGerencial;
+var
+  sCondicao: String;
+begin
+  sCondicao := '';
+  if (LimpaNumero(Edit1.Text) <> Edit1.Text) then
+  begin
+    sCondicao := ' and CLIENTE containing ' + QuotedStr(Edit1.Text);
+  end;
+  IBQPESQUISA.Close;
+  IBQPESQUISA.SQL.Text :=
+    'select NUMERONF as "Número", DATA as "Data", CLIENTE as "Cliente", , ' +
+    'TOTAL as "Total" ' +
+    'from NFCE ' +
+    'where DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date - 30)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date)) + ' ' + // Últimos 30 dias da data
+    ' and SITUACAO = ''Finalizada'' ' +
+    sCondicao +
+    'order by DATA desc, NUMERONF desc';
+  IBQPESQUISA.Open;
 
 end;
 
