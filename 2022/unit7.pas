@@ -30216,69 +30216,59 @@ var
   sDocumento, sBanco, sMensagem, sLinha: String;
   sDataDoCredito: String; // Sandro Silva 2022-12-21
 begin
-  //
   sBanco := '000';
-  //
+
   if not Form7.OpenDialog4.Execute then
     Exit;
-  //
+
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
-    //
     Form7.ibDataSet7.DisableControls;
-    //
+
     AssignFile(f, Form7.OpenDialog4.FileName);
     Reset(f);
-    //
+
     Form7.ibDataSet25DIFERENCA_.AsFloat := 0;
     sMensagem := '';
     I := 0;
-    //
+
     while not Eof(f) Do
     begin
-      //
       ReadLn(f,sLinha);  // Lendo a primeira linha do documento retornado. Obtem o código do banco, número do documento e o código de movimento de retorno
-      //
+
       if Length(sLinha) = 240 then // É CNAB 240
       begin
-        //
         sBanco := Copy(sLinha,1,3);
-        //
+
         if (Copy(sLinha,014,01) = 'T') then
         begin
-          //
           sDocumento := AllTrim(Copy(sLinha,59,15));
-          //
+
           if Copy(sLinha,016,02) = '06' then // Código de movimento de retorno 06 - Liquidação
           begin
-            //
             Form7.ibDataSet7.Close;
             Form7.ibDataSet7.Selectsql.Clear;
             Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(sDocumento)+' ');
             Form7.ibDataSet7.Open;
-            //
+
             if Form7.ibDataSet7DOCUMENTO.AsString = sDocumento then
             begin
-              //
               ReadLn(f,sLinha); // Avança alinha para ler os detalhes do documento
-              //
+
               if (Copy(sLinha,014,01) = 'U') then  // U Registro detalhe
               begin
-                //
                 if Form7.ibDataSet7ATIVO.AsFloat < 5 then
                 begin
-                  //
                   sMensagem := sMensagem + 'Número documento: ' + sdocumento + ' Valor: R$ '+  FloatToStr(StrToFloat(Copy(sLinha,78,015))/100);
-                  //
+
                   if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
                   begin
-                    //
                     Form7.SMALL_DBEdit1.Visible := True;
                     Form7.Edit2.Text            := Form7.SMALL_DBEdit2.Text;
-                    //
+
                     Form7.ibDataSet7.Edit;
                     Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
-                    //
+
                     Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,78,015))/100;
                     Form7.ibDataSet7PORTADOR.AsString  := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
                     {Sandro Silva 2022-12-21 inicio}
@@ -30289,25 +30279,24 @@ begin
                       Form7.ibDataSet7MOVIMENTO.AsDateTime := StrToDate(sDataDoCredito);
                     end;
                     {Sandro Silva 2022-12-21 fim}
-                    //
+
                     Form7.ibDataSet7.Post;
-                    //
+
                     Form1.IBDataSet200.Close;
                     Form1.IBDataSet200.Open;
-                    //
+
                     Form7.ibQuery1.Close;
                     Form7.IBQuery1.SQL.Clear;
                     Form7.IBQuery1.SQL.Add('select sum(VALOR_RECE) from RECEBER where ATIVO >= 5');
                     Form7.IBQuery1.Open;
-                    //
+
                     Form7.Panel10.Caption := 'R$'+Format('%14.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat]);
                     Form7.Panel10.Repaint;
-                    //
+
                     Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  Form7.ibDataSet7VALOR_RECE.AsFloat;
-                    //
+
                     SMALL_DBEdit1.SetFocus;
                     I := I + 1;
-                    //
                   end else
                   begin
                     sMensagem := sMensagem + ' documento já estava quitado. ';
@@ -30317,16 +30306,12 @@ begin
                   sMensagem := sMensagem + ' documento já estava marcado. ';
                 end;
               end;
-              //
+              
               sMensagem := sMensagem + chr(10);
-              //
-              //
             end else
             begin
-              //
               sMensagem := sMensagem + ' documento não encontrado '+chr(10);
               ReadLn(f,sLinha);
-              //
             end;
           end else
           begin
@@ -30338,30 +30323,25 @@ begin
         ShowMessage('Aquivo fora do padrão CNAB 240');
         Exit;
       end;
-      //
-      // Fim
-      //
     end;
-    //
+
     CloseFile(F);
-    //
+
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.Selectsql.Clear;
     Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where ATIVO>=5');
     Form7.ibDataSet7.Open;
-    //
+
     Form7.ibDataSet7.Enablecontrols;
-    //
+
     sMensagem := sMensagem + chr(10) + chr(10) +
       'Duplicatas recebidos: '+ IntToStr(I )+chr(10)+chr(10) +
       'Total recebido R$: '+Form7.ibDataSet25DIFERENCA_.AsString+chr(10)+chr(10);
-    //
+
     ShowMessage(sMensagem);
-    //
+
     Form7.SMALL_DBEdit6.SetFocus;
-    //
   end;
-  //
 end;
 
 procedure TForm7.ConsultarNFesemitidasparameuCNPJ1Click(Sender: TObject);
