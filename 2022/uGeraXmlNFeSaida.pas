@@ -1614,8 +1614,12 @@ begin
 
 
         Form7.spdNFeDataSets.Campo('vBC_N15').Value         := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASEICM').AsFloat); // BC
-//                  Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := StrTran(Alltrim(FormatFloat('##0.00',100)),',','.'); // Alíquota do ICMS em Percentual
-        Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := FormatFloatXML(0); // Alíquota do ICMS em Percentual
+
+        if (Form7.ibDataSet15.FieldByname('BASEICM').AsCurrency > 0) and (Form7.ibDataSet15.FieldByname('ICMS').AsCurrency > 0) then
+          Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100) // Alíquota do ICMS em Percentual
+        else
+          Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(0); // Alíquota do ICMS em Percentual
+
         Form7.spdNFeDataSets.Campo('vICMS_N17').Value       := FormatFloatXML(Form7.ibDataSet15.FieldByname('ICMS').AsFloat);     // Valor do ICMS em Reais
 
         Form7.spdNFeDataSets.Campo('vbCST_N21').Value       := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASESUBSTI').AsFloat); // Valor cobrado anteriormente por ST
