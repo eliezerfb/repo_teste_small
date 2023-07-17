@@ -1207,18 +1207,13 @@ end;
 
 function Legal_ok(sP1 : Boolean):Boolean;
 begin
-  //
   // LEGAL
-  //
   try
-    //
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('select gen_id(G_LEGAL,0) from rdb$database');
     Form1.ibDataset200.Open;
-    //
-    // ShowMessage(Form1.ibDataSet200.FieldByname('GEN_ID').AsString);
-    //
+
     if Form1.ibDataSet200.FieldByname('GEN_ID').AsString <> '0' then
     begin
       Result := False;
@@ -1226,13 +1221,9 @@ begin
     begin
       Result := True;
     end;
-    //
   except
-    //
     Result := True;
-    //
   end;
-  //
 end;
 
 
@@ -8406,7 +8397,7 @@ begin
     begin
       if not form2.Visible then
       begin
-        ConfiguraNFE(True);
+        ConfiguraNFE;
 
         if Form1.bConsultarNFesEmitidas then
         begin
@@ -8718,7 +8709,7 @@ procedure TForm1.InutilizarNFe1Click(Sender: TObject);
 var
   sID, sRetorno, aAno, aModelo, aSerie, aIni, aFim, txtJustificativa: string;
 begin
-  ConfiguraNFE(True);
+  ConfiguraNFE;
   //
   aAno := Small_InputForm('NFe', 'Insira o ano da NF-e a ser inutilizada', '');
   //
@@ -9294,7 +9285,7 @@ var
   sLote : String;
 begin
   Screen.Cursor            := crHourGlass;
-  ConfiguraNFE(True);
+  ConfiguraNFE;
   //
   try
     sLote      := '00001';
@@ -10553,7 +10544,7 @@ begin
   Form1.sVersaoLayout := '3.10';
   Mais1ini.Free;
 
-  ConfiguraNFE(True);
+  ConfiguraNFE;
 end;
 
 procedure TForm1.SVCSefazVirtualdeContingncia1Click(Sender: TObject);
@@ -11169,7 +11160,7 @@ begin
   Form1.sVersaoLayout := '4.00';
   Mais1ini.Free;
   
-  ConfiguraNFE(True);
+  ConfiguraNFE;
 end;
 
 procedure TForm1.Panel4MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -11477,8 +11468,9 @@ end;
 procedure TForm1.PopupMenu1Popup(Sender: TObject);
 begin
   try
-    ConfiguraNFE(True);
-  except end;  
+    ConfiguraNFE;
+  except
+  end;
 end;
 
 procedure TForm1.ConsultarNFesemitidas1Click(Sender: TObject);

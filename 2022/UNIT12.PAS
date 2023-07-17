@@ -2207,7 +2207,7 @@ begin
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
   Form1.bFlag  := True;
 
-  ConfiguraNFE(True);
+  ConfiguraNFE;
 
   if Form12.Tag = 1 then
   begin
