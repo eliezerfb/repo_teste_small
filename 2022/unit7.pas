@@ -19197,7 +19197,7 @@ begin
   // Se ta inserindo um item novo e a quantidade 1 for maior q a disponivel seta a disponivel.
   if (AnQtdeDisponivel > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (AnQtdeDisponivel < Form7.ibDataSet16QUANTIDADE.AsCurrency) then
   begin
-    ShowMessage('O item atual possuí ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), AnQtdeDisponivel) + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');
+    ShowMessage('O item atual possui ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), AnQtdeDisponivel) + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');
     ibDataSet16QUANTIDADE.OnChange := nil;
     try
       ibDataSet16QUANTIDADE.AsCurrency := AnQtdeDisponivel;
@@ -19305,13 +19305,15 @@ begin
 
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
+      if ibDataSet4QTD_ATUAL.AsCurrency < 0 then
+        nSaldoDisp := ibDataSet4QTD_ATUAL.AsCurrency;
       // Necessario remover os eventos para não mostrar mensagem 2 vezes
       Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
       Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
       try
         Result := False;
         ShowMessage('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
-                    'Saldo disponível: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.');
+                    'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.');
       finally
         Form7.ibDataSet16QUANTIDADE.OnSetText := ibDataSet16QUANTIDADESetText;
         Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
