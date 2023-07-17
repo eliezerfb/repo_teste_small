@@ -658,7 +658,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   {Sandro Silva 2022-09-26 fim}
   , uRetornaLimiteDisponivel
   , uFuncoesBancoDados
-  ;
+  , uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -5003,7 +5003,7 @@ var
   F: TextFile;
   I, J: Integer;
   sA : sTring;
-  fTotal1, fTotal : Double;
+  fTotal1, fTotal, vQtdInicial : Double;
   dInicio, dFinal : TdateTime;
   vGrade    : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
   vCompra   : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
@@ -5097,18 +5097,20 @@ begin
       // Processa o movimento antes de imprimir a ficha pois pode alterar a qtd inicial//
       if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX') then
       begin
-          Form7.ibDataSet26.Open;
+        {
+        Form7.ibDataSet26.Open;
+        Form7.ibDataSet26.First;
+        while not Form7.ibDataSet26.EOF do
+        begin
+          Form7.ibDataSet26.Delete;
           Form7.ibDataSet26.First;
-          while not Form7.ibDataSet26.EOF do
-          begin
-            Form7.ibDataSet26.Delete;
-            Form7.ibDataSet26.First;
-          end;
+        end;
 
         Form7.ibDataSet26.Append;
         Form7.ibDataSet26.FieldByName('HISTORICO').AsString := 'Quantidade inicial';
 
-        // Compras       
+
+        // Compras
         Form7.ibDataSet23.Close;
         Form7.ibDataSet23.SelectSQL.Clear;
         Form7.ibDataSet23.SelectSQL.Add('select * from ITENS002 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+'');
@@ -5147,30 +5149,22 @@ begin
           end;
           Form7.ibDataSet23.Next;
         end;
-        
+
+
         Form7.ibDataSet27.Close;
-        {
+
         Form7.ibDataSet27.SelectSQL.Text := ' Select *'+
                                             ' From ALTERACA '+
                                             ' Where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString);
-        Mauricio Parizotto 2023-07-12}
-        Form7.ibDataSet27.SelectSQL.Text := ' Select *'+
-                                            ' From ALTERACA '+
-                                            ' Where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+
-                                            '   and TIPO <> ''ORCAME'' '+
-                                            '   and TIPO <> ''KIT'' '+
-                                            '   and TIPO <> ''CANCEL'' ' ;
 
         Form7.ibDataSet27.Open;
         Form7.ibDataSet27.First;
-        
+
         while not Form7.ibDataSet27.Eof do
         begin
-          {
           if  (Copy(Form7.ibDataSet27TIPO.AsString,1,6) <> 'ORCAME')
           and (Copy(Form7.ibDataSet27TIPO.AsString,1,3) <> 'KIT')
           and (Copy(Form7.ibDataSet27TIPO.AsString,1,6) <> 'CANCEL') then
-          Mauricio Parizotto 2023-07-12 }
           begin
             if Form7.ibDataSet27VALORICM.AsFloat = 0 then
             begin
@@ -5213,21 +5207,22 @@ begin
           end;
           Form7.ibDataSet27.Next;
         end;
-        
+
+
         // Serviços
         Form7.ibDataSet35.Close;
         Form7.ibDataSet35.SelectSQL.Clear;
         Form7.ibDataSet35.SelectSQL.Add('select * from ITENS003 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString)+'');
         Form7.ibDataSet35.Open;
         Form7.ibDataSet35.First;
-        
+
         while not Form7.ibDataSet35.Eof do
         begin
           Form7.ibDataSet15.Close;
           Form7.ibDataSet15.SelectSQL.Clear;
           Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where NUMERONF='+QuotedStr(Form7.ibDataSet35NUMERONF.AsString)+' and EMITIDA=''S'' ');
           Form7.ibDataSet15.Open;
-          
+
           if Form7.ibDataSet15NUMERONF.AsString = Form7.ibDataSet35NUMERONF.AsString then
           begin
             Form7.ibDataSet26.Append;
@@ -5238,7 +5233,7 @@ begin
             Form7.ibDataSet26.FieldByName('VALOR').AsFloat       := Form7.ibDataSet35TOTAL.AsFloat;
             Form7.ibDataSet26.Post;
           end;
-          
+
           Form7.ibDataSet35.Next;
         end;
 
@@ -5292,16 +5287,17 @@ begin
           end;
           Form7.ibDataSet16.Next;          
         end;
-        
-        // Arquivo Resumo.DBF        
+
+        // Total
         try
           Form7.ibDataSet4.Edit;
           Form7.ibDataSet4QTD_INICIO.AsFloat := 0;
           Form7.ibDataSet4.Post;
-        except end;
-        
+        except
+        end;
+
         Form7.ibDataSet26.First;
-        
+
         while not Form7.ibDataSet26.EOF do
         begin
           Form7.ibDataSet4.Edit;
@@ -5309,16 +5305,19 @@ begin
           Form7.ibDataSet4.Post;
           Form7.ibDataSet26.Next;
         end;
-        
+
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_INICIO.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat  - Form7.ibDataSet4QTD_INICIO.AsFloat;
         Form7.ibDataSet4.Post;
-        
+
         Form7.ibDataSet26.Locate('HISTORICO','Quantidade inicial',[]);
         Form7.ibDataSet26.Edit;
         Form7.ibDataSet26.FieldByName('DATA').AsDateTime     := StrToDate('01/01/1900');
         Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat  := Form7.ibDataSet4QTD_INICIO.AsFloat;
         Form7.ibDataSet26.Post;
+
+        }
+
       end;
 
       if (Form7.sModulo <> 'KARDEX') then
@@ -6086,29 +6085,54 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Saldo do Estoque</td>');
         WriteLn(F,' </tr>');
         
-        Form7.ibDataSet26.Close;
+        {Form7.ibDataSet26.Close;
         Form7.ibDataSet26.SelectSql.Clear;
         Form7.ibDataSet26.Selectsql.Add('select * from RESUMO order by DATA, REGISTRO');
-        Form7.ibDataSet26.Open;
-        fTotal := 0;
-        
-        while not Form7.ibDataSet26.EOF do
+        Form7.ibDataSet26.Open;}
+
+        //Mauricio Parizotto 2023-07-17
+
+        //Calcula quantidade inicial
+        try
+          vQtdInicial := ExecutaComandoEscalar(Form7.IBDatabase1,
+                                               ' Select Coalesce(sum(quantidade),0) '+
+                                               ' From ('+SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString)+') A');
+
+
+          vQtdInicial := Form7.ibDataSet4QTD_ATUAL.AsFloat - vQtdInicial;
+
+          Form7.ibDataSet4.Edit;
+          Form7.ibDataSet4QTD_INICIO.AsFloat := vQtdInicial;
+          Form7.ibDataSet4.Post;
+        except
+          vQtdInicial := 0;
+        end;
+
+        Form7.IBDataSet97.Close;
+        Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString);
+        Form7.IBDataSet97.DisableControls;
+        Form7.IBDataSet97.Open;
+
+
+        fTotal := vQtdInicial;
+
+        while not Form7.IBDataSet97.EOF do
         begin
-          fTotal := fTotal + Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat;
-          if Form7.ibDataSet26.FieldByName('HISTORICO').AsString <> 'Quantidade inicial' then
+          fTotal := fTotal + Form7.IBDataSet97.FieldByName('QUANTIDADE').AsFloat;
+          if Form7.IBDataSet97.FieldByName('HISTORICO').AsString <> 'Quantidade inicial' then
           begin
             WriteLn(F,' <tr>');
-            Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet26.FieldByName('DATA').AsDateTime)+'</td>');
-            Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet26.FieldByname('DOCUMENTO').AsString,1,9)+'/'+Copy(Form7.ibDataSet26.FieldByname('DOCUMENTO').AsString,10,3)+'</td>');
-            Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet26.FieldByName('HISTORICO').AsString+'</td>');
-            Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet26.FieldByName('VALOR').AsFloat])+'</td>');
-            Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet26.FieldByName('QUANTIDADE').AsFloat])+'</td>');
+            Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.IBDataSet97.FieldByName('DATA').AsDateTime)+'</td>');
+            Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.IBDataSet97.FieldByname('DOCUMENTO').AsString,1,9)+'/'+Copy(Form7.IBDataSet97.FieldByname('DOCUMENTO').AsString,10,3)+'</td>');
+            Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.IBDataSet97.FieldByName('HISTORICO').AsString+'</td>');
+            Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.IBDataSet97.FieldByName('VALOR').AsFloat])+'</td>');
+            Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.IBDataSet97.FieldByName('QUANTIDADE').AsFloat])+'</td>');
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[fTotal])+'</td>');
             WriteLn(F,' </tr>');
           end;
-          Form7.ibDataSet26.Next;
+          Form7.IBDataSet97.Next;
         end;
-        
+
         // Totalizador
         WriteLn(F,' <tr>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
@@ -6119,6 +6143,9 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[fTotal])+'</td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
+
+
+        Form7.IBDataSet97.EnableControls;
       end;
 
       // Fecha o arquivo
