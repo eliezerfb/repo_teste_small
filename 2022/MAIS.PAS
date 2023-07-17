@@ -502,7 +502,7 @@ type
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
-    procedure DefineAmbienteNFe(AcAmbiente: String);    
+    procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);    
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -5073,7 +5073,7 @@ begin
     Form1.ibDataset200.Close;
     //
     if sBuild = '999' then
-      DefineAmbienteNFe(_cAmbienteProducao);
+      DefineAmbienteNFe(_cAmbienteProducao, 'Mais.Ajustararquivo1Click');
   except end;
   //
   // Genarator G_NSU_DOWNLOAD_XML
@@ -8708,7 +8708,7 @@ begin
     if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then
       Mais1Ini.WriteString('NFE','Certificado','');
     if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then
-      DefineAmbienteNFe(_cAmbienteHomologacao);
+      DefineAmbienteNFe(_cAmbienteHomologacao, 'Mais.ConfigurarNFEINI1Click');
     if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX'))     = 'XXXXX' then
       Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
     if Alltrim(Mais1Ini.ReadString('XML','Pasta da contabilidade','XXXXX')) = 'XXXXX' then
@@ -9270,7 +9270,7 @@ begin
                               ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
       if I = IDYES then
       begin
-        DefineAmbienteNFe(_cAmbienteHomologacao);
+        DefineAmbienteNFe(_cAmbienteHomologacao, 'Mais.Ambiente1Click1');
         ShowMessage('Definido ambiente: Homologação');
       end;
       //
@@ -9284,7 +9284,7 @@ begin
                               ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
       if I = IDYES then
       begin
-        DefineAmbienteNFe(_cAmbienteProducao);
+        DefineAmbienteNFe(_cAmbienteProducao, 'Mais.Ambiente1Click2');
         ShowMessage('Definido ambiente: Produção');
       end;
       //
@@ -9294,10 +9294,11 @@ begin
   Mais1ini.Free;
 end;
 
-procedure TForm1.DefineAmbienteNFe(AcAmbiente: String);
+procedure TForm1.DefineAmbienteNFe(AcAmbiente, AcRotina: String);
 var
   oArq: TArquivosDAT;
   enAmbienteAnt: tAmbienteNFe;
+  cMsgPadrao: String;
 begin
   // Não precisa passar usuário.
   oArq := TArquivosDAT.Create(EmptyStr);
@@ -9308,8 +9309,12 @@ begin
 
     oArq.NFe.NFE.Ambiente := oArq.NFe.NFE.AmbienteStrToEnum(AcAmbiente);
 
-    Audita('ALTEROU','SMALL', Senhas.UsuarioPub, AnsiUpperCase('Alterou Ambiente NFe - DE: ' + oArq.NFe.NFE.AmbienteToStr(enAmbienteAnt) +
-           ' PARA: ' + oArq.NFe.NFE.AmbienteToStr(oArq.NFe.NFE.Ambiente)),0,0);
+    cMsgPadrao := 'Alterou Ambiente NFe - DE: ' + oArq.NFe.NFE.AmbienteToStr(enAmbienteAnt) +
+                  ' PARA: ' + oArq.NFe.NFE.AmbienteToStr(oArq.NFe.NFE.Ambiente);
+
+    cMsgPadrao := Copy(AcRotina, 1, (80 - length(cMsgPadrao) - 2)) + ', ' + cMsgPadrao;
+
+    Audita('ALTEROU','SMALL', Senhas.UsuarioPub, AnsiUpperCase(cMsgPadrao),0,0);
 
     Form7.IBDataSet100.Transaction.CommitRetaining;
   finally
