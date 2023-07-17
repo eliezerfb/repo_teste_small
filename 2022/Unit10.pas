@@ -6411,13 +6411,13 @@ begin
   
   if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) then
   begin
-    Form7.ibDataSet26.Open;
+    {Form7.ibDataSet26.Open;
     Form7.ibDataSet26.First;
     while not Form7.ibDataSet26.EOF do
     begin
       Form7.ibDataSet26.Delete;
       Form7.ibDataSet26.First;
-    end;
+    end;}
     
     Form7.Close;
     Form7.Show;
