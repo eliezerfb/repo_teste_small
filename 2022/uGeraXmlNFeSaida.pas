@@ -3403,12 +3403,9 @@ begin
 
       // Tag OBS no ICMS <pDIF>33,33</pDIF>
       if RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
-      begin
-        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      :=  FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString), 0));
-      end else
-      begin
+        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := StrTran(FormatFloat('##0.0000', Arredonda(StrToFloatDef(RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString), 0),4)),',','.')
+      else
         Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := '100';
-      end;
 
       // Fórmula complexa poderia ser simplificada mas foi testada e está funcionando
       Form7.spdNFeDataSets.Campo('vICMSDif_N16c').Value :=
