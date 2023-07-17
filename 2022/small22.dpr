@@ -148,7 +148,11 @@ uses
   uIFiltrosRodapeRelatorio in '..\..\unit_compartilhada\interfaces\uIFiltrosRodapeRelatorio.pas',
   uFiltrosRodapeRelatorioVendasClienteNota in 'units\uFiltrosRodapeRelatorioVendasClienteNota.pas',
   uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas',
-  uSectionOutrosUsuarioINF in '..\..\unit_compartilhada\uSectionOutrosUsuarioINF.pas';
+  uSectionOutrosUsuarioINF in '..\..\unit_compartilhada\uSectionOutrosUsuarioINF.pas',
+  uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
+  uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
+  uSectionsNFeINI in '..\..\unit_compartilhada\uSectionsNFeINI.pas',
+  uSectionsNFSeINI in '..\..\unit_compartilhada\uSectionsNFSeINI.pas';
 
 {$R *.RES}
 
