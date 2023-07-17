@@ -11902,6 +11902,9 @@ var
   _file : TStringList;
   F: TextFile;
   Mais1Ini : tIniFile;
+  oArqDAT: TArquivosDAT;
+  enAmbienteAnt: tAmbienteNFSe;
+  cMsgPadrao: string;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfseConfig.ini');
   //
@@ -11926,29 +11929,51 @@ begin
   }
   if Form1.ExisteNfseExe(Form1.sAtual) then
   begin
-    //
-    while FileExists(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
-    begin
-      DeleteFile(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2'));
-      Sleep(1000);
+    oArqDAT := TArquivosDAT.Create(EmptyStr);
+    try
+      enAmbienteAnt := oArqDAT.NFSe.NFSE.Ambiente;
+
+      while FileExists(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
+      begin
+        DeleteFile(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2'));
+        Sleep(1000);
+      end;
+      //
+      AssignFile(F,pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
+      Rewrite(F);
+      //
+      Writeln(F,'Config=Sim');
+      //
+      CloseFile(F);
+      //
+      // Aguarda até criar o arquivo
+      //
+      while not FileExists(pChar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
+      begin
+        Sleep(1000);
+      end;
+      //
+      ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
+      while processExists('NFSE.EXE') do
+      begin
+        Sleep(250);
+      end;
+
+      if oArqDAT.NFSe.NFSE.Ambiente <> enAmbienteAnt then
+      begin
+        cMsgPadrao := 'Alterou Ambiente NFSe - DE: ' + oArqDAT.NFSe.NFSe.AmbienteToStr(enAmbienteAnt) +
+                      ' PARA: ' + oArqDAT.NFSe.NFSe.AmbienteToStr(oArqDAT.NFSe.NFSe.Ambiente);
+
+        cMsgPadrao := Copy('ConfiguraesdaNFSe2Click', 1, (80 - length(cMsgPadrao) - 2)) + ', ' + cMsgPadrao;
+
+        Audita('ALTEROU','SMALL', Senhas.UsuarioPub, AnsiUpperCase(cMsgPadrao),0,0);
+
+        Form7.IBDataSet100.Transaction.CommitRetaining;
+      end;
+
+    finally
+      FreeAndNil(oArqDAT);
     end;
-    //
-    AssignFile(F,pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
-    Rewrite(F);
-    //
-    Writeln(F,'Config=Sim');
-    //
-    CloseFile(F);
-    //
-    // Aguarda até criar o arquivo
-    //
-    while not FileExists(pChar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
-    begin
-      Sleep(1000);
-    end;
-    //
-    ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
-    //
   end;
 
   if FileExists(pChar(Form1.sAtual+'\NFSE\CidadesHomologadas.XML')) then
