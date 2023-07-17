@@ -177,7 +177,7 @@ begin
             //OS
             ' Select '+
             ' 	CURRENT_DATE DATA,'+
-            ' 	I.NUMERONF DOCUMENTO,'+
+            ' 	RIGHT(''00000000''|| I.NUMEROOS, 9) ||''000'' DOCUMENTO,'+
             ' 	''Reservado na OS aberta'' HISTORICO,'+
             ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
             ' 	I.TOTAL VALOR'+
