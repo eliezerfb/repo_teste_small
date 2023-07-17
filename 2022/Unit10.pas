@@ -4640,7 +4640,7 @@ begin
 
     if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
     begin
-      if Form1.Image201.Visible then
+      if Form1.imgVendas.Visible then
       begin
         btnRenogiarDivida.Visible := True;
       end;
@@ -5652,7 +5652,7 @@ begin
           // CONTAS A RECEBER
           if not (Form1.iReduzida = 1) then
           begin
-            if Form1.Image204.Visible then
+            if Form1.imgContaReceber.Visible then
             begin
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
@@ -5809,7 +5809,7 @@ begin
           // Contas a Pagar
           if not (Form1.iReduzida = 1) then
           begin
-            if Form1.Image210.Visible then
+            if Form1.imgContaPagar.Visible then
             begin
               // Contas a pagar esta liberada
               Form7.ibDataSet99.Close;

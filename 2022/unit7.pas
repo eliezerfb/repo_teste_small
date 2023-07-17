@@ -2209,8 +2209,9 @@ type
     property sZiparXML: String read getZiparXML;
     procedure HintTotalNotaCompra;
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
+    function GetMensagemCertificado(vLocal:string=''): string;
   end;
-  //
+  
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
 //  Function Valida_Campo(ibDataSet_P:TibDataSet; Text:String; Indice,Mensagem:String):Boolean;
   function Valida_Campo(Arquivo: String; Text: String;
@@ -2231,7 +2232,7 @@ type
   function RetornaValorDaTagNoCampoCRLF(sTag: String; sObs: String): String;
   function Manifesto(iP1: integer) : Boolean;
   function ProdutoValidoParaMarketplace(bP1 : Boolean): String;
-  //
+  
 var
   Form7: TForm7;
 implementation
@@ -8468,7 +8469,7 @@ begin
         Mais1Ini.WriteString('BANCOS','BANCO',ibDataSet11NOME.AsString);
         Mais1Ini.Free;
         close;
-        Form1.Image206Click(Sender);
+        Form1.imgBancosClick(Sender);
       end;  
 
       if sModulo = 'OS' then
@@ -15065,23 +15066,22 @@ begin
   end
   else
     ibDataSet4ALTERADO.AsString := '1';
-  //
+
   Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-  //
 end;
 
 procedure TForm7.Balancetegerancialmensal1Click(Sender: TObject);
 begin
   Form1.Planodecontas1Click(Sender);
   Balancetegerencial1Click(Sender);
-  Form1.Image205Click(Sender);
+  Form1.imgCaixaClick(Sender);
 end;
 
 procedure TForm7.Balancetegerencialanual2Click(Sender: TObject);
 begin
   Form1.Planodecontas1Click(Sender);
   Balancetegerencialanual1Click(Sender);
-  Form1.Image205Click(Sender);
+  Form1.imgCaixaClick(Sender);
 end;
 
 procedure TForm7.ibDataSet9BeforeEdit(DataSet: TDataSet);
@@ -19622,24 +19622,20 @@ end;
 
 procedure TForm7.Imprimirdocumento1Click(Sender: TObject);
 begin
-  //
-  Form1.Image201Click(Sender);
+  Form1.imgVendasClick(Sender);
   Form7.ibDataSet3.First;
-  //
+
   while not Form7.ibDataSet3.Eof do
   begin
-    //
     if form7.ibDataSet3NF.AsString = '' then
     begin
       Form12.Close;
       Form7.ibDataSet3.Next;
     end;
-    //
   end;
-  //
-  Form1.Image201Click(Sender);
-  Form1.Image201_Click(Sender);
-  //
+
+  Form1.imgVendasClick(Sender);
+  Form1.imgOrdemServicoClick(Sender);
 end;
 
 procedure TForm7.Enviartorpedo1Click(Sender: TObject);
@@ -30279,59 +30275,48 @@ var
 begin
   if Form1.ValidaRecursos.PermiteRecursoParaProduto then // Sandro Silva 2023-05-31
   begin
-
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     sHora    := Mais1Ini.ReadString('Outros','HoraConsultarDistribuicao','00:00:00');
     sData    := Mais1Ini.ReadString('Outros','DataConsultarDistribuicao','26/09/1967');
     Mais1Ini.Free;
-    //
+
     // Bloquear por uma hora
-    //
-    // ShowMessage('Teste: '+TimeToStr(StrToTime(sHora) + StrToTime('01:00:00')));
-    //
     if (( StrToTime(sHora) + StrToTime('01:00:00')  )  < Time) or (sData <> DateToStr(Date)) then
     begin
-      //
       // Bloquear por uma hora
-      //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       Mais1Ini.WriteString('Outros','HoraConsultarDistribuicao',TimeToStr(Time));
       Mais1Ini.WriteString('Outros','DataConsultarDistribuicao',DateToStr(Date));
       Mais1Ini.Free;
-      //
+      
       // Alterado para permitir matriz e filial com o mesmo certificado
       // CNPJ raíz do certificado é igual ao CNPJ raíz do emitente
       if (Copy(FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text)),1,10)= Copy(Form7.ibDataset13CGC.AsString,1,10)) or (Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text)='')  then
       begin
-        //
         // Bloquear por uma hora
-        //
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         Mais1Ini.WriteString('Outros','HoraConsultarDistribuicao',TimeToStr(Time));
         Mais1Ini.WriteString('Outros','DataConsultarDistribuicao',DateToStr(Date));
         Mais1Ini.Free;
-        //
+
         // Alterado para permitir matriz e filial com o mesmo certificado
         // CNPJ raíz do certificado é igual ao CNPJ raíz do emitente
         if (Copy(FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text)),1,10)= Copy(Form7.ibDataset13CGC.AsString,1,10)) or (Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text)='')  then
         begin
-          //
           Screen.Cursor            := crHourGlass;
-          //
+
           try
-            //
             // Código da UF
-            //
             ibDataset99.Close;
             ibDataset99.SelectSql.Clear;
             ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(ibDataSet13ESTADO.AsString))+' ');
             ibDataset99.Open;
-            //
+
             Form1.ibQuery2.Close;
             Form1.ibQuery2.SQL.Clear;
             Form1.ibQuery2.SQL.Add('select gen_id(G_NSU_DOWNLOAD_XML,0) from rdb$database');
             Form1.ibQuery2.Open;
-            //
+
             sRetorno := spdNFe.ConsultarDistribuicaoDFe(
                                pChar(Copy(ibDAtaSet99.FieldByname('CODIGO').AsString,1,2)),
                                pChar(LimpaNumero(Form7.ibDataSet13CGC.AsString)),
@@ -30350,65 +30335,56 @@ begin
             end;
             {Sandro Silva 2023-01-04 fim}
 
-            //
             // Erro do vídeo
-            //
             Form7.ibDataSet23.DisableControls;
             Form7.ibDataSet4.DisableControls;
-            //
+
             // Erro do vídeo
-            //
             DownloadListaDeNFesEmitidas(sRetorno); // Baixa uma lista de nf-e´s que foram emitidas para o CNPJ
-            //
+
             Form7.ibDataSet23.EnableControls;
             Form7.ibDataSet4.EnableControls;
-            //
           except
             on E: Exception do
             begin
               ShowMessage('Erro 38778 ao baixar lista de NF-e´s emitidas: '+E.Message);
             end
           end;
-          //
+
           Screen.Cursor            := crDefault;
-          //
         end;
       end;
-      //
+
       Form7.ibDataSet24.DisableControls;
-      //
+
       try
         Form7.ibDataSet24.Close;
         Form7.ibDataSet24.SelectSQL.Clear;
         Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where coalesce(NFEID,''0000000000000000000000000000000000000000000'')<>''0000000000000000000000000000000000000000000'' and coalesce(NFEXML,''X.X'')=''X.X'' and MERCADORIA=0 and EMISSAO >= (current_date - 11) ');
         Form7.ibDataSet24.Open;
-      except end;
-      //
+      except
+      end;
+
       // Faz a ciência da operação automaticamente
-      //
       try
-        //
         Form7.ibDataSet24.First;
-        //
+
         while not Form7.ibDataSet24.Eof do
         begin
           Manifesto(2); // 2: Ciência da operação
           Form7.ibDataSet24.Next;
         end;
-        //
-      except end;
-      //
+      except
+      end;
+
       Form7.ibDataSet24.EnableControls;
-      //
     end else
     begin
-      //
-      Form22.Label6.Caption := 'Última consulta de NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+' foi as '+sHora;
+      Form22.Label6.Caption := 'Última consulta de NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+' foi as '+sHora+
+                                Form7.GetMensagemCertificado('ABERTURA');
       Form22.Label6.Width   := Screen.Width;
       Form22.Label6.Repaint;
-      //
     end;
-
   end;
 end;
 
@@ -31522,53 +31498,41 @@ end;
 
 procedure TForm7.GerarNotaFiscaldeServio1Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal de Servico
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
-      Form1.Image201SClick(Sender);                       // Nota Fiscal de Servico
+      Form1.imgServicosClick(Sender);                       // Nota Fiscal de Servico
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NFS-e não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.GerarNotaFiscaldeServio2Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
       Form7.Close;
-      //
-      Form1.Image201SClick(Sender);                       // Nota fiscal Nota Fiscal de Servico
+
+      Form1.imgServicosClick(Sender);                       // Nota fiscal Nota Fiscal de Servico
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.ConsultarNFSe1Click(Sender: TObject);
@@ -31619,7 +31583,7 @@ end;
 procedure TForm7.DevolverNF1Click(Sender: TObject);
 begin
   try
-    Form1.Image201Click(Form1.Image201);
+    Form1.imgVendasClick(Form1.imgVendas);
     Form7.Image101Click(Form7.Image201);
 
     Form7.ibDataSet2.Close;
@@ -32933,6 +32897,32 @@ begin
                         .setImagem(Image205.Picture)
                         .setUsuario(Usuario)
                         .ChamarTela;
+end;
+
+function TForm7.GetMensagemCertificado(vLocal:string='') : string;
+var
+  DtVencimento : TDateTime;
+begin
+  Result := '';
+
+  if vLocal = 'ABERTURA' then
+  begin
+    Result := #13#10;
+  end;
+
+  try
+    DtVencimento := spdNFe.GetVencimentoCertificado;
+
+    if DtVencimento >= Date then
+      Result := Result+'Seu certificado digital irá vencer em '+FormatFloat('0', DtVencimento - Date) + ' dia(s) '+'('+DateToStr(DtVencimento)+').'
+    else
+      Result := Result+'Seu certificado digital venceu no dia '+DateToStr(DtVencimento);
+
+    //Só exibe se vencimento for menor que 30 dias
+    if ((DtVencimento - Date) > 30) and (vLocal <> 'ABERTURA' ) then
+      Result := '';
+  except
+  end;
 end;
 
 end.

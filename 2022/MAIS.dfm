@@ -5801,6 +5801,18 @@ object Form1: TForm1
     Transparent = True
     Visible = False
   end
+  object Image3: TImage
+    Left = 1032
+    Top = 0
+    Width = 20
+    Height = 20
+    AutoSize = True
+    ParentShowHint = False
+    ShowHint = False
+    Stretch = True
+    Transparent = True
+    Visible = False
+  end
   object Panel_3: TPanel
     Left = 1
     Top = 200
@@ -6449,7 +6461,7 @@ object Form1: TForm1
     ParentShowHint = False
     ShowHint = False
     TabOrder = 9
-    object Image201: TImage
+    object imgVendas: TImage
       Left = 105
       Top = 0
       Width = 70
@@ -6927,9 +6939,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image201Click
+      OnClick = imgVendasClick
     end
-    object Image201_: TImage
+    object imgOrdemServico: TImage
       Left = 200
       Top = 0
       Width = 70
@@ -7407,9 +7419,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image201_Click
+      OnClick = imgOrdemServicoClick
     end
-    object Image202: TImage
+    object imgEstoque: TImage
       Left = 295
       Top = 0
       Width = 70
@@ -7887,9 +7899,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image202Click
+      OnClick = imgEstoqueClick
     end
-    object Image203: TImage
+    object imgCliFor: TImage
       Left = 390
       Top = 0
       Width = 70
@@ -8368,9 +8380,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image203Click
+      OnClick = imgCliForClick
     end
-    object Image204: TImage
+    object imgContaReceber: TImage
       Left = 485
       Top = 0
       Width = 70
@@ -8848,9 +8860,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image204Click
+      OnClick = imgContaReceberClick
     end
-    object Image210: TImage
+    object imgContaPagar: TImage
       Left = 580
       Top = 0
       Width = 70
@@ -9328,9 +9340,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image210Click
+      OnClick = imgContaPagarClick
     end
-    object Image205: TImage
+    object imgCaixa: TImage
       Left = 675
       Top = 0
       Width = 70
@@ -9808,10 +9820,10 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image205Click
-      OnMouseMove = Image205MouseMove
+      OnClick = imgCaixaClick
+      OnMouseMove = imgCaixaMouseMove
     end
-    object Image206: TImage
+    object imgBancos: TImage
       Left = 770
       Top = 0
       Width = 70
@@ -10289,9 +10301,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image206Click
+      OnClick = imgBancosClick
     end
-    object Image207: TImage
+    object imgConfiguracoes: TImage
       Left = 865
       Top = 0
       Width = 70
@@ -10769,9 +10781,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image207Click
+      OnClick = imgConfiguracoesClick
     end
-    object Image208: TImage
+    object imgBackup: TImage
       Left = 960
       Top = 0
       Width = 70
@@ -11248,7 +11260,7 @@ object Form1: TForm1
       ShowHint = True
       Stretch = True
       Transparent = True
-      OnClick = Image208Click
+      OnClick = imgBackupClick
     end
     object Label201: TLabel
       Left = 105
@@ -11269,7 +11281,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image201Click
+      OnClick = imgVendasClick
       OnMouseMove = Label201MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11292,7 +11304,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image201_Click
+      OnClick = imgOrdemServicoClick
       OnMouseMove = Label201_MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11315,7 +11327,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image202Click
+      OnClick = imgEstoqueClick
       OnMouseMove = Label202MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11338,7 +11350,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image203Click
+      OnClick = imgCliForClick
       OnMouseMove = Label203MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11361,7 +11373,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image204Click
+      OnClick = imgContaReceberClick
       OnMouseMove = Label204MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11384,7 +11396,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image210Click
+      OnClick = imgContaPagarClick
       OnMouseMove = Label210MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11407,7 +11419,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image205Click
+      OnClick = imgCaixaClick
       OnMouseMove = Label205MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11430,7 +11442,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image206Click
+      OnClick = imgBancosClick
       OnMouseMove = Label206MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11453,7 +11465,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image207Click
+      OnClick = imgConfiguracoesClick
       OnMouseMove = Label207MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -11476,11 +11488,11 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image208Click
+      OnClick = imgBackupClick
       OnMouseMove = Label208MouseMove
       OnMouseLeave = Label201MouseLeave
     end
-    object Image200: TImage
+    object imgIndicadores: TImage
       Left = 10
       Top = 0
       Width = 70
@@ -11958,7 +11970,7 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image200Click
+      OnClick = imgIndicadoresClick
     end
     object Label200: TLabel
       Left = 10
@@ -11979,7 +11991,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image200Click
+      OnClick = imgIndicadoresClick
       OnMouseMove = Label200MouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -12286,7 +12298,7 @@ object Form1: TForm1
       Transparent = True
       Visible = False
     end
-    object Image201C: TImage
+    object imgCompras: TImage
       Left = 1045
       Top = 0
       Width = 70
@@ -12764,9 +12776,9 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image201CClick
+      OnClick = imgComprasClick
     end
-    object Image201S: TImage
+    object imgServicos: TImage
       Left = 1135
       Top = 0
       Width = 70
@@ -13244,7 +13256,7 @@ object Form1: TForm1
       Stretch = True
       Transparent = True
       Visible = False
-      OnClick = Image201SClick
+      OnClick = imgServicosClick
     end
     object LAbel201C: TLabel
       Left = 1045
@@ -13265,7 +13277,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image201CClick
+      OnClick = imgComprasClick
       OnMouseMove = LAbel201CMouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -13288,7 +13300,7 @@ object Form1: TForm1
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image201Click
+      OnClick = imgVendasClick
       OnMouseMove = Label201SMouseMove
       OnMouseLeave = Label201MouseLeave
     end
@@ -13526,6 +13538,39 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = Label_bola_NFEClick
+    end
+    object Image_bola_vendas: TImage
+      Left = 1032
+      Top = 0
+      Width = 20
+      Height = 20
+      AutoSize = True
+      ParentShowHint = False
+      ShowHint = False
+      Stretch = True
+      Transparent = True
+      Visible = False
+    end
+    object Label_Bola_vendas: TLabel
+      Left = 1032
+      Top = 1
+      Width = 20
+      Height = 16
+      Alignment = taCenter
+      AutoSize = False
+      Caption = '11'
+      Color = clWhite
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+      Layout = tlBottom
+      Visible = False
+      OnClick = Label_Bola_vendasClick
     end
   end
   object DBGrid200: TDBGrid
