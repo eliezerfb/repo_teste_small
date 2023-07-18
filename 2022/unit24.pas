@@ -123,9 +123,9 @@ type
     SMALL_DBEdit45: TSMALL_DBEdit;
     Label5: TLabel;
     DBMemo1: TDBMemo;
-    Label25: TLabel;
+    lblAlteraEntrada: TLabel;
     DBGrid33: TDBGrid;
-    Edit1: TEdit;
+    edtAlteraEntrada: TEdit;
     ibDataSet44: TIBDataSet;
     DBGrid3: TDBGrid;
     Button2: TBitBtn;
@@ -166,6 +166,8 @@ type
     SMALL_DBEdit56: TSMALL_DBEdit;
     lblFCPST: TLabel;
     lblBcFCP: TLabel;
+    Label7: TLabel;
+    SMALL_DBEdit16: TSMALL_DBEdit;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -233,15 +235,14 @@ type
       Shift: TShiftState);
     procedure DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
       Field: TField; State: TGridDrawState);
-    procedure Edit1Change(Sender: TObject);
-    procedure Edit1KeyDown(Sender: TObject; var Key: Word;
+    procedure edtAlteraEntradaChange(Sender: TObject);
+    procedure edtAlteraEntradaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Button2Click(Sender: TObject);
     procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGrid33DblClick(Sender: TObject);
-    procedure SMALL_DBEdit42Exit(Sender: TObject);
     procedure SMALL_DBEdit42KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SMALL_DBEdit27Exit(Sender: TObject);
@@ -260,7 +261,7 @@ type
       Shift: TShiftState);
     procedure Button1Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
-    procedure SMALL_DBEdit56Exit(Sender: TObject);
+    procedure SMALL_DBEdit16Exit(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -2071,7 +2072,6 @@ begin
   //
   if Key = VK_RETURN then
   begin
-    //
     Form7.ibDataSet23.Edit;
     //
     if AllTrim(Form7.ibDataSet23DESCRICAO.AsString) <> '' then
@@ -2084,10 +2084,6 @@ begin
         if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
           Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
 
-          //
-          // Urgente
-          // else Form7.ibDataSet23DESCRICAO.AsString := ' '+AllTrim(Form7.ibDataSet23DESCRICAO.AsString);
-          //
       end;
       //
       I := DbGrid1.SelectedIndex;
@@ -2095,28 +2091,20 @@ begin
       //
       if I = DbGrid1.SelectedIndex  then
       begin
-        //
         DbGrid1.SelectedIndex := 0;
         Form7.ibDataSet23.Next;
         if Form7.ibDataSet23.EOF then Form7.ibDataSet23.Append;
-        //
       end;
-      //
     end else
     begin
-      //
       Form7.ibDataSet23.Edit;
       Form7.ibDataSet23.Post;
       //
       Perform(Wm_NextDlgCtl,0,0);
-      // SMALL_DBEdit17.SetFocus;
-      // SMALL_DBEdit17.SelectAll;
-      //
     end;
   end;
   //
   Form7.ibDataSet4.EnableControls;
-  //
 end;
 
 procedure TForm24.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -2912,9 +2900,9 @@ begin
   //
 end;
 
-procedure TForm24.Edit1Change(Sender: TObject);
+procedure TForm24.edtAlteraEntradaChange(Sender: TObject);
 begin
-  if Edit1.Text <> EmptyStr then
+  if edtAlteraEntrada.Text <> EmptyStr then
   begin
     Form24.ibDataSet44.DisableControls;
     Form24.ibDataSet44.Close;
@@ -2925,16 +2913,16 @@ begin
     Form24.ibDataSet44.SelectSQL.Add(RetornarWhereAtivoEstoque);
     Form24.ibDataSet44.SelectSQL.Add('AND ' + RetornarWhereProdDiferenteItemPrincipal);
 
-    if Limpanumero(Edit1.Text) <> Edit1.Text then
+    if Limpanumero(edtAlteraEntrada.Text) <> edtAlteraEntrada.Text then
     begin
-      Form24.ibDataSet44.SelectSQL.Add('AND (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Edit1.Text)+'%')+')');
+      Form24.ibDataSet44.SelectSQL.Add('AND (upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(edtAlteraEntrada.Text)+'%')+')');
       Form24.ibDataSet44.SelectSQL.Add('order by upper(DESCRICAO)');
     end else
     begin
-      if Length(Limpanumero(Edit1.Text)) <= 5 then
-        Form24.ibDataSet44.SelectSQL.Add('AND (CODIGO='+QuotedStr(StrZero( StrToInt64(Limpanumero(Edit1.Text)),5,0))+')')
+      if Length(Limpanumero(edtAlteraEntrada.Text)) <= 5 then
+        Form24.ibDataSet44.SelectSQL.Add('AND (CODIGO='+QuotedStr(StrZero( StrToInt64(Limpanumero(edtAlteraEntrada.Text)),5,0))+')')
       else
-        Form24.ibDataSet44.SelectSQL.Add('AND (REFERENCIA='+QuotedStr(Limpanumero(Edit1.Text))+')');
+        Form24.ibDataSet44.SelectSQL.Add('AND (REFERENCIA='+QuotedStr(Limpanumero(edtAlteraEntrada.Text))+')');
     end;
     
     Form24.ibDataSet44.Open;
@@ -2953,7 +2941,7 @@ begin
   Result := '((COALESCE(ATIVO,0)=0) OR ((COALESCE(ATIVO,0)=1) AND (TIPO_ITEM=''01'')))';
 end;
 
-procedure TForm24.Edit1KeyDown(Sender: TObject; var Key: Word;
+procedure TForm24.edtAlteraEntradaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN then
@@ -2965,31 +2953,30 @@ end;
 
 procedure TForm24.Button2Click(Sender: TObject);
 begin
-  if Label25.Visible = False then
+  if lblAlteraEntrada.Visible = False then
   begin
     ibDataSet44.Close;
-    Label25.Top     := Label5.Top + 40;
-    Edit1.Top       := SMALL_DBEdit45.Top + 40;
-    dbGrid33.Top    := Edit1.Top + 20;
-    //
+    lblAlteraEntrada.Top     := Label5.Top + 40;
+    edtAlteraEntrada.Top    := SMALL_DBEdit45.Top + 40;
+    dbGrid33.Top    := edtAlteraEntrada.Top + 20;
+
     dbGrid33.Height := Panel5.Height - dbGrid33.Top - 15;
-    //
-    Label25.Visible    := True;
-    Edit1.Visible      := True;
-    dbGrid33.Visible   := True;
-    //
-    if Edit1.CanFocus then Edit1.SetFocus;
-    //
+
+    lblAlteraEntrada.Visible    := True;
+    edtAlteraEntrada.Visible    := True;
+    dbGrid33.Visible            := True;
+
+    if edtAlteraEntrada.CanFocus then
+      edtAlteraEntrada.SetFocus;
   end else
   begin
-    Label25.Visible    := False;
-    Edit1.Visible      := False;
+    lblAlteraEntrada.Visible    := False;
+    edtAlteraEntrada.Visible      := False;
     dbGrid33.Visible   := False;
-    //
+    
     Form24.DBGrid1.SetFocus;
     DbGrid1.SelectedIndex := 0;
     DbGrid1.SelectedIndex := 1;
-    //
   end;
 end;
 
@@ -3112,36 +3099,23 @@ begin
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form24.ibDataSet44CODIGO.AsString)+' ');  //
       Form7.ibDataSet4.Open;
       //
-      Form24.Edit1.Text :=  '';
+      Form24.edtAlteraEntrada.Text :=  '';
       //
       Form7.ibDataSet23.Locate('DESCRICAO',Form24.ibDataSet44DESCRICAO.AsString,[]);
       Form7.bMudei := True;
-      //
     end else
     begin
-      //
-      Form24.Edit1.Text :=  '';
-      //
+      Form24.edtAlteraEntrada.Text :=  '';
     end;
-    //
-    //
-    Label25.Visible    := False;
-    Edit1.Visible      := False;
-    dbGrid33.Visible   := False;
-    //
+
+    lblAlteraEntrada.Visible   := False;
+    edtAlteraEntrada.Visible   := False;
+    dbGrid33.Visible           := False;
   end;
-  //
+
   Form24.DBGrid1.SetFocus;
   DbGrid1.SelectedIndex := 0;
   DbGrid1.SelectedIndex := 1;
-  //
-//  if SMALL_DBEdit42.CanFocus then SMALL_DBEdit42.SetFocus;
-  //
-end;
-
-procedure TForm24.SMALL_DBEdit42Exit(Sender: TObject);
-begin
-  //  Form7.ibDataSet23.Next;
 end;
 
 procedure TForm24.SMALL_DBEdit42KeyUp(Sender: TObject; var Key: Word;
@@ -3333,30 +3307,28 @@ procedure TForm24.SMALL_DBEdit45Change(Sender: TObject);
 var
   I : Integer;
 begin
-  if Label25.Visible then // Simula o click para esconder o grid e fechar a consulta.
+  if lblAlteraEntrada.Visible then // Simula o click para esconder o grid e fechar a consulta.
     Button2Click(Self);
   try
-    //
     if Form7.sModulo = 'COMPRA' then
     begin
       if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') and (Form7.ibDataSet4.Active) then
       begin
-        //
         ComboBox12.Items.Clear;
         ComboBox13.Items.Clear;
-        //
+
         Form7.IBDataSet49.Close;
         Form7.IBDataSet49.SelectSQL.Clear;
         Form7.IBDataSet49.SelectSQL.Add('select * from MEDIDA order by SIGLA');
         Form7.IBDataSet49.Open;
-        //
+        
         while not Form7.IBDataSet49.Eof do
         begin
           ComboBox12.Items.Add(Form7.IBDataSet49SIGLA.AsString);
           ComboBox13.Items.Add(Form7.IBDataSet49SIGLA.AsString);
           Form7.IBDataSet49.Next;
         end;
-        //
+
         if AllTrim(Form7.IbDataSet4MEDIDAE.AsString) = '' then
         begin
           if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
@@ -3368,34 +3340,28 @@ begin
             Form7.ibDataSet4MEDIDA.AsString := 'UND';
           end;
         end;
-        //
+
         for I := 0 to ComboBox12.Items.Count do
         begin
-          //
           if Form7.ibDataSet4MEDIDAE.AsString = ComboBox12.Items[I] then
           begin
             ComboBox12.ItemIndex := I;
           end;
-          //
+
           if Form7.ibDataSet4MEDIDA.AsString = ComboBox13.Items[I] then
           begin
             ComboBox13.ItemIndex := I;
           end;
-          //
         end;
-        //
-        //ComboBox12.Text := Form7.ibDataSet4MEDIDAE.AsString;
-        //ComboBox13.Text := Form7.ibDataSet4MEDIDA.AsString;
-        ///
+
         if Form7.IbDataSet4FATORC.AsFloat <= 0 then
         begin
           if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
             Form7.ibDataset4.Edit;
           Form7.ibDataSet4FATORC.AsFloat := 1;
         end;
-        //
+
         Exemplo(True);
-        //
       end else
       begin
         Form24.Label89.Caption := '';
@@ -3405,7 +3371,6 @@ begin
     on E: Exception do
       ShowMessage('Erro 8 FC: '+chr(10)+E.Message);
   end;
-  //
 end;
 
 procedure TForm24.ComboBox12Change(Sender: TObject);
@@ -3429,7 +3394,6 @@ end;
 
 procedure TForm24.ComboBox13Change(Sender: TObject);
 begin
-  //
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
@@ -3444,7 +3408,6 @@ begin
   except
     on E: Exception do  ShowMessage('Erro 3 FC: '+chr(10)+E.Message);
   end;
-  //
 end;
 
 procedure TForm24.ComboBox12Exit(Sender: TObject);
@@ -3635,15 +3598,14 @@ begin
   dBGrid2.Visible := True;
 end;
 
-procedure TForm24.SMALL_DBEdit56Exit(Sender: TObject);
+procedure TForm24.SMALL_DBEdit16Exit(Sender: TObject);
 begin
   try
     Form24.DBGrid1.SetFocus;
     DbGrid1.SelectedIndex := 1;
     DbGrid1.SelectedIndex := 0;
   except
-    on E: Exception do
-      ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
+
   end;
 end;
 
