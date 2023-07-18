@@ -1323,6 +1323,7 @@ begin
                 {Sandro Silva 2023-07-12 fim}
 
                 Form1.sEscolhido       := Form18.cboDocCobranca.Text;
+                Form1.sBancoBoleto     := Trim(StringReplace(Form18.cboDocCobranca.Text, 'Boleto de cobrança do', '', [rfReplaceAll]));
                 Form25.btnEnviaEmailTodos.Visible := True;
                 Form25.ShowModal;
                 Form25.btnEnviaEmailTodos.Visible := False;
@@ -1358,6 +1359,8 @@ begin
     Form7.ibDataSet7PORTADOR.Index := 12;
     Form7.ibDataSet7PORTADOR.DisplayWidth  := 33;
     Form7.ibDataSet7DOCUMENTO.DisplayWidth := 12;
+    Form7.ibDataSet7.Tag := 0; // Sandro Silva 2023-07-18
+    Form1.sBancoBoleto     := ''; // Sandro Silva 2023-07-18
     {Sandro Silva 2023-07-12 fim}
   except
   end;
