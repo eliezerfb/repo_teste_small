@@ -1387,6 +1387,7 @@ type
     procedure ESTOQUESUSPENSOOUBAIXADEIE1Click(Sender: TObject);
     procedure ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
     procedure ESTOQUEATUAL1Click(Sender: TObject);
+    procedure ibDataSet13AfterOpen(DataSet: TDataSet);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -6258,6 +6259,7 @@ begin
       if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SC') then
       begin
 
+        {Sandro Silva 2023-07-18 inicio
         // ShowMessage('teste 01 7425 '); // Sandro Silva 2021-04-27
 
         if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE') then // Sandro Silva 2021-08-10 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then// Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> 'PAFNFCE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
@@ -6276,7 +6278,13 @@ begin
 
         Form1.Caption     := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
         Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
-
+        }
+        if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE')
+          or ((AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') and(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF))) then
+        begin
+          Form1.Caption     := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+          Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+        end;
       end;
     end;
     {Sandro Silva 2021-03-16 fim}
@@ -6289,6 +6297,7 @@ begin
       if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) <> 'SC') then
       begin
 
+        {Sandro Silva 2023-07-18 inicio
         if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') then
         begin
 
@@ -6297,7 +6306,7 @@ begin
           //ShowMessage('Teste 7428 UF não é SC Gravou PAFNFCE=Não'); // Sandro Silva 2021-03-17
 
         end;
-
+        }
         Form1.Caption     := 'Aplicativo emissor NFC-e';
         Application.Title := 'Aplicativo emissor NFC-e';
 
@@ -6314,6 +6323,7 @@ begin
       if ((AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') or (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'SP') ) then // Sandro Silva 2021-04-27 if (AnsiUpperCase(Trim(Form1.ibDataSet13.FieldByName('ESTADO').AsString)) = 'CE') and (Form1.sModeloECF = '59') then
       begin
 
+        {Sandro Silva 2023-07-18 inicio
         if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = '') then // Sandro Silva 2021-04-27 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> 'MFE') then // Sandro Silva 2021-03-19 if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') <> 'Sim') then
         begin
 
@@ -6331,6 +6341,7 @@ begin
           //Form1.Caption := 'Aplicativo emissor de CF-e';
           //Application.Title := 'Aplicativo emissor de CF-e';
         end;
+        }
 
         Form1.Caption     := 'Aplicativo emissor de CF-e';
         Application.Title := 'Aplicativo emissor de CF-e';
@@ -10086,6 +10097,8 @@ begin
   if ValidaRecursos = nil then
     ValidaRecursos := TValidaRecurso.Create;
   {Sandro Silva 2023-05-25 fim}
+
+  DadosEmitentePDV := TDadosEmitente.Create; // Sandro Silva 2023-07-18
 
   PosElginPay := TSmallElginPayPos.Create(Form1); // Sandro Silva 2022-02-11
 
@@ -24268,11 +24281,12 @@ procedure TForm1.NFCeemContingncia1Click(Sender: TObject);
 
         if sNovoModeloDocumento = '59' then
         begin
-          if LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> '' then
+          //if LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> '' then
+          if Form1.sModeloECF = '65' then
           begin
             if NFCE then
             begin
-              GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'SAT');
+              // Sandro Silva 2023-07-18 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'SAT');
               GravarParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', 'NFCE');
               GravarParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', Form1.sCaixa);
             end;
@@ -24294,6 +24308,8 @@ procedure TForm1.NFCeemContingncia1Click(Sender: TObject);
       else
       begin
         {Sandro Silva 2021-05-20 inicio}
+        // Está em contingência
+        {Sandro Silva 2023-07-18 inicio
         if LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> '' then
         begin
 
@@ -24323,9 +24339,33 @@ procedure TForm1.NFCeemContingncia1Click(Sender: TObject);
         end
         else
         begin
-        {Sandro Silva 2021-05-20 fim}
           SmallMsgBox(PChar('Finalizando modo contingência'), 'Atenção', MB_ICONWARNING + MB_OK);
         end;
+        }
+        if LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '') <> '' then
+        begin
+          if (Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0) or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0 then
+            Form1.sModeloECF   := '65';
+
+          if (Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0) or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0 then
+            Form1.sModeloECF   := '59';
+
+          Form1.sCaixa := LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '');
+          GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Caixa', Form1.sCaixa);
+          //GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', LerParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', ''));
+
+          //GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'SAT');
+          GravarParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', '');
+          GravarParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '');
+
+        end;
+
+        GetDir(0,Form1.sAtual);
+        FecharAplicacao(Application.ExeName);
+
+        ShellExecute( 0, 'Open', pChar(Form1.sAtual + ExtractFileName(Application.ExeName)), '', '', SW_SHOW);
+
+        {Sandro Silva 2023-07-18 fim}
       end;
 
       Result := True;
@@ -34116,6 +34156,13 @@ begin
                    ),
                    'Atenção', MB_ICONWARNING + MB_OK);
 
+end;
+
+procedure TForm1.ibDataSet13AfterOpen(DataSet: TDataSet);
+begin
+  DadosEmitentePDV.Razao := DataSet.FieldByName('NOME').AsString;
+  DadosEmitentePDV.CNPJ  := DataSet.FieldByName('CGC').AsString;
+  DadosEmitentePDV.UF    := DataSet.FieldByName('ESTADO').AsString;
 end;
 
 end.

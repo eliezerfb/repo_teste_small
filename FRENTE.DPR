@@ -154,7 +154,7 @@ begin
     begin
       //Se fechou app estando em contingência, ao abrir acerta dados para sempre iniciar em modo normal (não contingência)
       GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Caixa', LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', ''));
-      GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', LerParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', ''));
+      // Sandro Silva 2023-07-18 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', LerParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', ''));
       
       GravarParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', '');
       GravarParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '');
@@ -163,10 +163,12 @@ begin
 
     Application.Initialize;
     Application.Title    := 'Programa Aplicativo Fiscal (PAF-ECF)';
+    {Sandro Silva 2023-07-18 inicio
     if (PAFNFCe) then
     begin
       Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
     end;
+    }
 
     if (sExeName = 'nfce.exe') or (NFCe) then // if sExeName = 'nfce.exe' then
     begin

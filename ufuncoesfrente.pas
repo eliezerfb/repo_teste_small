@@ -85,6 +85,13 @@ const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
 const NUMERO_FORMAS_EXTRAS = 8;
 
 type
+  TDadosEmitente = class
+    Razao: String;
+    CNPJ: String;
+    UF: String;    
+  end;
+
+type
   TTipoPesquisa = (tpPesquisaOS, tpPesquisaOrca, tpPesquisaGerencial);
 
 type
@@ -278,6 +285,7 @@ var
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
   //RecursosLicenca: TRecurcosDisponiveisParaLicenca;
   ValidaRecursos: TValidaRecurso;
+  DadosEmitentePDV: TDadosEmitente;
 
 implementation
 
@@ -1606,7 +1614,15 @@ function PAFNFCe: Boolean;
 //Retorna True se o executável é PAF emissor de NFC-e
 begin
   // Sandro Silva 2021-03-19 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim');
-  Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE');
+  // Sandro Silva 2023-07-18 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE');
+  if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '65') then
+  begin
+    if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') then
+      Result := True
+    else if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') and (DadosEmitentePDV.UF = 'SC') and (LimpaNumero(DadosEmitentePDV.CNPJ) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) then
+      Result := True;
+  end;
+
   {Sandro Silva 2023-06-27 inicio}
   if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
     Result := False;
@@ -1616,7 +1632,10 @@ end;
 function NFCe: Boolean;
 //Retorna True se o executável é NFC-e
 begin
-  Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE');
+  // Sandro Silva 2023-07-18 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE');
+  Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '65');
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
 end;
 
 function Gerencial: Boolean;
@@ -1625,8 +1644,8 @@ var
   sNomeProjeto: String;
 begin
   // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
-  Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
-
+  Result := ((Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) or ((Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '99') )); // Sandro Silva 2023-07-18 Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
+  {
   if Result = False then
   begin
     try
@@ -1650,16 +1669,21 @@ begin
 
     end;
   end;
+  }
 end;
 
 function SAT: Boolean;
 begin
-  Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'SAT');
+  // Sandro Silva 2023-07-18 Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'SAT');
+  Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+    and (DadosEmitentePDV.UF = 'SP') ;
 end;
 
 function MFE: Boolean;
 begin
-  Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MFE');
+  // Sandro Silva 2023-07-18 Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MFE');
+  Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+    and (DadosEmitentePDV.UF = 'CE') ;
 end;
 
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
