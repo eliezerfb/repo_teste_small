@@ -119,6 +119,7 @@ begin
   Result := //Compra
             ' Select '+
             ' 	C.EMISSAO DATA,'+
+            '   1 Ordem,'+
             ' 	C.NUMERONF DOCUMENTO,'+
             ' 	''Entrada de ''||C.FORNECEDOR HISTORICO,'+
             ' 	I.QUANTIDADE,'+
@@ -133,6 +134,10 @@ begin
             //Venda
             ' Select '+
             ' 	DATA DATA,'+
+            ' 	Case'+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''BALCAO'') or (SUBSTRING(TIPO from 1 for 6) = ''VENDA'') then  999 '+
+            ' 		Else 2'+
+            '   End Ordem,'+
             ' 	''000''||PEDIDO||''000'' DOCUMENTO,		'+
             ' 	Case'+
             ' 		When (SUBSTRING(TIPO from 1 for 6) = ''BALCAO'') then'+
@@ -164,6 +169,7 @@ begin
             //Serviços 
             ' Select '+
             ' 	V.EMISSAO DATA,'+
+            '   999 Ordem,'+
             ' 	V.NUMERONF DOCUMENTO,'+
             ' 	''Saída para ''||V.CLIENTE HISTORICO,'+
             ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
@@ -177,6 +183,7 @@ begin
             //OS
             ' Select '+
             ' 	CURRENT_DATE DATA,'+
+            '   999 Ordem,'+
             ' 	RIGHT(''00000000''|| I.NUMEROOS, 9) ||''000'' DOCUMENTO,'+
             ' 	''Reservado na OS aberta'' HISTORICO,'+
             ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
@@ -190,6 +197,7 @@ begin
             //Venda
             ' Select '+
             ' 	V.EMISSAO DATA,'+
+            '   999 Ordem,'+
             ' 	V.NUMERONF DOCUMENTO,'+
             ' 	''Saída para ''||CLIENTE HISTORICO,'+
             ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
@@ -202,7 +210,7 @@ begin
             ' 	and V.EMITIDA=''S'''+
             ' 	and coalesce(T.INTEGRACAO,'''') not like ''%=%'''+
 
-            ' Order by 1,2'
+            ' Order by 1,2,3'
             ;
 
 end;
