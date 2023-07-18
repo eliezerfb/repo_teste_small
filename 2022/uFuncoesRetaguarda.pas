@@ -127,7 +127,7 @@ begin
             ' 	Inner Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDOR = I.FORNECEDOR'+
             ' 	Left Join ICM T on T.NOME = C.OPERACAO'+
             ' Where DESCRICAO='+QuotedStr(vProduto)+
-            ' 	and T.INTEGRACAO not like ''%=%'''+
+            ' 	and coalesce(T.INTEGRACAO,'''') not like ''%=%'''+
             ' Union All'+
 
             //Venda
@@ -200,9 +200,9 @@ begin
             ' Where DESCRICAO='+QuotedStr(vProduto)+
             ' 	and coalesce(QUANTIDADE,0) = coalesce(SINCRONIA,0)'+
             ' 	and V.EMITIDA=''S'''+
-            ' 	and T.INTEGRACAO not like ''%=%'''+
+            ' 	and coalesce(T.INTEGRACAO,'''') not like ''%=%'''+
 
-            ' Order by 1'
+            ' Order by 1,2'
             ;
 
 end;

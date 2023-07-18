@@ -5123,7 +5123,7 @@ begin
           Form7.ibDataSet24.SelectSQL.Clear;
           Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet23NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet23FORNECEDOR.AsString) ); //+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet23FORNECEDOR.AsString)+'');
           Form7.ibDataSet24.Open;
-          
+
           if Form7.ibDataSet24NUMERONF.AsString = Form7.ibDataSet23NUMERONF.AsSTring then
           begin
             if Form7.ibDataSet23QUANTIDADE.AsFloat <> 0 then
@@ -5134,7 +5134,7 @@ begin
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet24OPERACAO.AsString)+' ');
               Form7.ibDataSet14.Open;
-              
+
               if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
               begin
                 Form7.ibDataSet26.Append;
@@ -5150,7 +5150,7 @@ begin
           Form7.ibDataSet23.Next;
         end;
 
-
+        
         Form7.ibDataSet27.Close;
 
         Form7.ibDataSet27.SelectSQL.Text := ' Select *'+
