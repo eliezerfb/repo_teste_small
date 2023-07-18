@@ -363,8 +363,8 @@ procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   //
   Form1.Label207.Tag     := 0;
-  Form1.Image207.OnClick          := Form1.Image207Click;
-  Form1.Label207.OnClick          := Form1.Image207Click;
+  Form1.imgConfiguracoes.OnClick          := Form1.imgConfiguracoesClick;
+  Form1.Label207.OnClick          := Form1.imgConfiguracoesClick;
   Form1.Label_bola_config.OnClick := Form1.Label_Bola_ConfigClick;
   //
   close;
@@ -560,45 +560,40 @@ procedure TForm2.CheckBox7Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   // Nova Senha
-  //
   if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox7.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B_','0');
     if CheckBox7.State = cbChecked   then Mais1Ini.WriteString(Senhas.UsuarioPub,'B_','1');
-    //
+
     with Sender as TCheckBox do
     begin
       if State = cbUnchecked then Label_7.Caption := 'Não liberado';
       if State = cbChecked then Label_7.Caption := 'Leitura e gravação';
     end;
-    //
+    
     Mais1Ini.Free;
     if Form2.Tag <> 99 then Form1.FormShow(Sender);
   end;
-  //
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 begin
-  //
-  Image1.Picture      :=  Form1.Image201.Picture;
-  Image1__2.Picture   :=  Form1.Image201C.Picture;
-  Image1__3.Picture   :=  Form1.Image201S.Picture;
-  //
-  Image_.Picture   :=  Form1.Image201_.Picture;
-  Image2.Picture   :=  Form1.Image202.Picture;
-  Image3.Picture   :=  Form1.Image203.Picture;
-  Image4.Picture   :=  Form1.Image204.Picture;
-  Image5.Picture   :=  Form1.Image205.Picture;
-  Image6.Picture   :=  Form1.Image206.Picture;
-  Image7.Picture   :=  Form1.Image207.Picture;
-  Image9.Picture   :=  Form1.Image200.Picture;
-  Image8.Picture   :=  Form1.Image208.Picture;
-  Image10.Picture  :=  Form1.Image210.Picture;
-  //
+  Image1.Picture      :=  Form1.imgVendas.Picture;
+  Image1__2.Picture   :=  Form1.imgCompras.Picture;
+  Image1__3.Picture   :=  Form1.imgServicos.Picture;
+  
+  Image_.Picture   :=  Form1.imgOrdemServico.Picture;
+  Image2.Picture   :=  Form1.imgEstoque.Picture;
+  Image3.Picture   :=  Form1.imgCliFor.Picture;
+  Image4.Picture   :=  Form1.imgContaReceber.Picture;
+  Image5.Picture   :=  Form1.imgCaixa.Picture;
+  Image6.Picture   :=  Form1.imgBancos.Picture;
+  Image7.Picture   :=  Form1.imgConfiguracoes.Picture;
+  Image9.Picture   :=  Form1.imgIndicadores.Picture;
+  Image8.Picture   :=  Form1.imgBackup.Picture;
+  Image10.Picture  :=  Form1.imgContaPagar.Picture;
 end;
 
 procedure TForm2.CheckBox9Click(Sender: TObject);

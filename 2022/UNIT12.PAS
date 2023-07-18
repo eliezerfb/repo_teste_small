@@ -2207,7 +2207,7 @@ begin
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
   Form1.bFlag  := True;
 
-  ConfiguraNFE(True);
+  ConfiguraNFE;
 
   if Form12.Tag = 1 then
   begin
@@ -2538,7 +2538,7 @@ procedure TForm12.Incluirnovoitemnoestoque1Click(Sender: TObject);
 var
   sTitulo : String;
 begin
-  if Form1.Image202.Visible then
+  if Form1.imgEstoque.Visible then
   begin
     sTitulo := Form7.sTitulo;
 
@@ -2553,7 +2553,7 @@ begin
       end;
 
       Form1.bFechaTudo           := False;
-      Form1.Image202Click(Sender);
+      Form1.imgEstoqueClick(Sender);
       Form7.Close;
       Form7.iKey := 0;
       Form7.ibDataSet4.Append; // Incluir novo item pela nota de compra
@@ -2581,7 +2581,7 @@ procedure TForm12.Incluirnovocliente1Click(Sender: TObject);
 var
   sTitulo : String;
 begin
-  if Form1.Image203.Visible then
+  if Form1.imgCliFor.Visible then
   begin
     sTitulo := Form7.sTitulo;
 
@@ -2589,7 +2589,7 @@ begin
     Form7.ibDataSet16.DisableControls;
     try
       Form1.bFechaTudo           := False;
-      Form1.Image203Click(Sender);
+      Form1.imgCliForClick(Sender);
       Form7.ibDataSet2.Append;
       Form7.Close;
       Form10.ShowModal;

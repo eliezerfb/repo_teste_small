@@ -16,7 +16,8 @@ interface
 
 uses
   SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
-  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls;
+  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
+  ShellAPI, jpeg;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
@@ -113,6 +114,7 @@ uses
   function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
   procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
   procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
+  function HtmlToPDF(AcArquivo: String): Boolean;
 
 implementation
 
@@ -2629,6 +2631,63 @@ begin
       key := #0;
 end;
 
+function HtmlToPDF(AcArquivo: String): Boolean;
+var
+  cCaminhoEXE: String;
+begin
+  cCaminhoEXE := GetCurrentDir;
+  try
+    //
+    while FileExists(pChar(AcArquivo+'.pdf')) do
+    begin
+      //
+      try
+        DeleteFile(pChar(AcArquivo+'.pdf'));
+        DeleteFile(pChar(AcArquivo+'_.pdf'));
+      except end;
+      //
+      Sleep(10);
+      //
+    end;
+    //
+    chdir(pChar(cCaminhoEXE+'\HTMLtoPDF'));
+    //
+    while FileExists(pChar('tempo_ok.pdf')) do
+    begin
+      DeleteFile(pChar('tempo_ok.pdf'));
+      Sleep(10);
+    end;
+    //
+    while FileExists(pChar('tempo.pdf')) do
+    begin
+      DeleteFile(pChar('tempo.pdf'));
+      Sleep(10);
+    end;
+    //
+    ShellExecute( 0, 'runas', pChar('html2pdf'),pchar('"'+cCaminhoEXE+'\'+AcArquivo+'.htm" "tempo.pdf"'), '', SW_HIDE);
+    Sleep(10);
+    //
+    while not FileExists(pChar(cCaminhoEXE+'\HTMLtoPDF\tempo_ok.pdf')) do
+    begin
+      RenameFile(pChar(cCaminhoEXE+'\HTMLtoPDF\tempo.pdf'),pChar(cCaminhoEXE+'\HTMLtoPDF\tempo_ok.pdf'));
+      Sleep(10);
+    end;
+    //
+    chdir(pChar(cCaminhoEXE));
+    //
+    CopyFile(pChar(cCaminhoEXE+'\HTMLtoPDF\tempo_ok.pdf'), pChar(AcArquivo+'_.pdf'),False);
+    //
+    while not FileExists(pChar(AcArquivo+'.pdf')) do
+    begin
+      RenameFile(pChar(AcArquivo+'_.pdf'), pChar(AcArquivo+'.pdf'));
+      Sleep(10);
+    end;
+    //
+  except end;
+  //
+  Result := True;
+end;
+
 end.
 
 
@@ -2679,4 +2738,3 @@ end.
 //                                                                     //
 //  All rights reserved                                                //
 //                                                                     //
-

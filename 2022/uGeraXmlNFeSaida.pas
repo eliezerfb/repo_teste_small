@@ -1164,7 +1164,7 @@ begin
 
         if LimpaNumero(RetornaValorDaTagNoCampo('qTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
         begin
-          Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat( RetornaValorDaTagNoCampo('qTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString)  ));  // Quantidade Tributável do Item
+          Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := FormatFloatXML(Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat( RetornaValorDaTagNoCampo('qTrib',Form7.ibDataSet4.FieldByname('TAGS_').AsString)), 4);  // Quantidade Tributável do Item
           Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := FormatFloatXML(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat / StrToFloat(StrTran(Form7.spdNFeDataSets.Campo('qTrib_I14').AsString,'.',',')),10); // Valor Tributável do Item
         end else
         begin
@@ -1173,7 +1173,11 @@ begin
         end;
       end else
       begin
-        if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString) else Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := 'UND'; // Unidade de Medida Tributável do Item
+        if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then
+          Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)
+        else
+          Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := 'UND'; // Unidade de Medida Tributável do Item
+
         Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := StrTran(Form7.ibDataSet16.FieldByname('QUANTIDADE').AsString,',','.');  // Quantidade Tributável do Item
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := StrTran(Alltrim(FormatFloat('##0.'+Replicate('0',StrToInt(Form1.ConfPreco)),Form7.ibDataSet16.FieldByname('UNITARIO').AsFloat)),',','.'); // Valor Tributável do Item
       end;
@@ -3399,12 +3403,9 @@ begin
 
       // Tag OBS no ICMS <pDIF>33,33</pDIF>
       if RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
-      begin
-        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      :=  FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString), 0));
-      end else
-      begin
+        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := StrTran(FormatFloat('##0.0000', Arredonda(StrToFloatDef(RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString), 0),4)),',','.')
+      else
         Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := '100';
-      end;
 
       // Fórmula complexa poderia ser simplificada mas foi testada e está funcionando
       Form7.spdNFeDataSets.Campo('vICMSDif_N16c').Value :=

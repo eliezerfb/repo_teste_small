@@ -310,11 +310,13 @@ begin
   begin
     if Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text) <> '' then
     begin
+      //Mauricio Parizotto 2023-07-10
+      Form7.spdNFe.CNPJ := LimpaNumero(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text));
+
       if not (DSEmitente.DataSet.State in ([dsEdit, dsInsert])) then
         DSEmitente.DataSet.Edit;
 
       SMALL_DBEdit7.Text := FormataCpfCgc(Form1.GetCNPJCertificado(Form7.spdNFe.NomeCertificado.Text));
-      //Form7.ibDataSet13CGCSetText(DSEmitente.DataSet.FieldByName('CGC'),SMALL_DBEdit7.Text);
       ibdEmitenteCGCSetText(DSEmitente.DataSet.FieldByName('CGC'),SMALL_DBEdit7.Text);
     end;
   end;

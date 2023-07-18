@@ -46,7 +46,7 @@ begin
   Edit1.Text            := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
   Mais1ini.Free;
   //
-  Image1.Picture := Form1.Image201.Picture;
+  Image1.Picture := Form1.imgVendas.Picture;
   ShortDateFormat := 'dd/mm/yyyy';   {Bug 2000 free}
   //
 end;

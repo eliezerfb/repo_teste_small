@@ -74,7 +74,7 @@ begin
     Form7.Panel7.Caption     := 'Verificando status do serviço...'+replicate(' ',100);
     Form7.Panel7.Repaint;
 
-    ConfiguraNFE(True);
+    ConfiguraNFE;
 
     if LimpaNumero(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString)) = '' then
     begin

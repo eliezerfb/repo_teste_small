@@ -832,15 +832,15 @@ var
   r1 : tRect;
 begin
   begin
-    Form7.Image201.Picture := Form1.Image201.Picture;
-    Form7.Image202.Picture := Form1.Image201.Picture;
-    Form7.Image203.Picture := Form1.Image201.Picture;
-    Form7.Image204.Picture := Form1.Image201.Picture;
-    Form7.Image205.Picture := Form1.Image201.Picture;
-    Form7.Image206.Picture := Form1.Image201.Picture;
-    Form7.Image208.Picture := Form1.Image201.Picture;
-    Form7.Image209.Picture := Form1.Image201.Picture;
-    Form7.Image308.Picture := Form1.Image201.Picture;
+    Form7.Image201.Picture := Form1.imgVendas.Picture;
+    Form7.Image202.Picture := Form1.imgVendas.Picture;
+    Form7.Image203.Picture := Form1.imgVendas.Picture;
+    Form7.Image204.Picture := Form1.imgVendas.Picture;
+    Form7.Image205.Picture := Form1.imgVendas.Picture;
+    Form7.Image206.Picture := Form1.imgVendas.Picture;
+    Form7.Image208.Picture := Form1.imgVendas.Picture;
+    Form7.Image209.Picture := Form1.imgVendas.Picture;
+    Form7.Image308.Picture := Form1.imgVendas.Picture;
 
     if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
     begin
@@ -856,233 +856,229 @@ begin
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
 
-      Form1.Image201.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
+      Form1.imgVendas.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgVendas.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
 
-      Form1.Image201_.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201_.Picture.Bitmap.TransParentColor := Form1.Image201_.Picture.BitMap.canvas.pixels[1,1];
+      Form1.imgOrdemServico.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgOrdemServico.Picture.Bitmap.TransParentColor := Form1.imgOrdemServico.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 2);
       r1.Right   := 10 + (70 * 3);
 
-      Form1.Image202.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image202.Picture.Bitmap.TransParentColor := Form1.Image202.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form1.imgEstoque.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgEstoque.Picture.Bitmap.TransParentColor := Form1.imgEstoque.Picture.BitMap.canvas.pixels[1,1];
+      
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
-      //
-      Form1.Image203.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image203.Picture.Bitmap.TransParentColor := Form1.Image203.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgCliFor.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgCliFor.Picture.Bitmap.TransParentColor := Form1.imgCliFor.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 4);
       r1.Right   := 10 + (70 * 5);
-      //
-      Form1.Image204.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image204.Picture.Bitmap.TransParentColor := Form1.Image204.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgContaReceber.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgContaReceber.Picture.Bitmap.TransParentColor := Form1.imgContaReceber.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 5);
       r1.Right   := 10 + (70 * 6);
-      //
-      Form1.Image210.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image210.Picture.Bitmap.TransParentColor := Form1.Image210.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgContaPagar.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgContaPagar.Picture.Bitmap.TransParentColor := Form1.imgContaPagar.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 6);
       r1.Right   := 10 + (70 * 7);
-      //
-      Form1.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image205.Picture.Bitmap.TransParentColor := Form1.Image205.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgCaixa.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgCaixa.Picture.Bitmap.TransParentColor := Form1.imgCaixa.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 7);
       r1.Right   := 10 + (70 * 8);
-      //
-      Form1.Image206.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image206.Picture.Bitmap.TransParentColor := Form1.Image206.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgBancos.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgBancos.Picture.Bitmap.TransParentColor := Form1.imgBancos.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 8);
       r1.Right   := 10 + (70 * 9);
-      //
-      Form1.Image207.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image207.Picture.Bitmap.TransParentColor := Form1.Image207.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgConfiguracoes.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgConfiguracoes.Picture.Bitmap.TransParentColor := Form1.imgConfiguracoes.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 *10);
-      //
-      Form1.Image208.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image208.Picture.Bitmap.TransParentColor := Form1.Image208.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgBackup.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgBackup.Picture.Bitmap.TransParentColor := Form1.imgBackup.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 10);
       r1.Right   := 10 + (70 * 11);
-      //
-      Form1.Image201S.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201S.Picture.Bitmap.TransParentColor := Form1.Image201S.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgServicos.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgServicos.Picture.Bitmap.TransParentColor := Form1.imgServicos.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 11);
       r1.Right   := 10 + (70 * 12);
-      //
-      Form1.Image201C.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201C.Picture.Bitmap.TransParentColor := Form1.Image201C.Picture.BitMap.canvas.pixels[1,1];
-      //
+
+      Form1.imgCompras.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgCompras.Picture.Bitmap.TransParentColor := Form1.imgCompras.Picture.BitMap.canvas.pixels[1,1];
+
       // BOTOES SECUNDARIOS
-      //
       r1.Top     := 30 + 70;
       r1.Bottom  := 30 + 70 + 70;
-      //
+
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
-      //
+
       Form7.Image201.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image201.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
-      r1.Left    := 10 + (70 * 1);  //
-      r1.Right   := 10 + (70 * 2);  //
-      //
+      Form7.Image201.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
+      r1.Left    := 10 + (70 * 1);
+      r1.Right   := 10 + (70 * 2);
+
       Form7.Image202.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image202.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
-      r1.Left    := 10 + (70 * 2);  //
-      r1.Right   := 10 + (70 * 3);  //
-      //
+      Form7.Image202.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
+      r1.Left    := 10 + (70 * 2);
+      r1.Right   := 10 + (70 * 3);
+
       Form7.Image203.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image203.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
-      r1.Left    := 10 + (70 * 3);  //
-      r1.Right   := 10 + (70 * 4);  //
-      //
+      Form7.Image203.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
+      r1.Left    := 10 + (70 * 3);
+      r1.Right   := 10 + (70 * 4);
+
       Form7.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image205.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
-      r1.Left    := 10 + (70 * 4);  //
-      r1.Right   := 10 + (70 * 5);  //
-      //
+      Form7.Image205.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
+      r1.Left    := 10 + (70 * 4);
+      r1.Right   := 10 + (70 * 5);
+
       Form7.Image204.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image204.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form7.Image204.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 5);
       r1.Right   := 10 + (70 * 6);
       Form7.Image206.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image206.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form7.Image206.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 6);
       r1.Right   := 10 + (70 * 7);
-      //
+
       Form7.Image209.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image209.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
-      //
+      Form7.Image209.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 8);
       r1.Right   := 10 + (70 * 9);
-      //
+
       Form7.Image208.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image208.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form7.Image208.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 * 10);
-      //
+
       Form7.Image308.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image308.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form7.Image308.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
       // BOTOES TERCIARIOS Form10
-      //
       Form10.Image201.Picture.Bitmap       := Form7.Image201.Picture.Bitmap;
       Form10.Image202.Picture.Bitmap       := Form7.Image203.Picture.Bitmap;
       Form10.Image203.Picture.Bitmap       := Form7.Image204.Picture.Bitmap;
-      //
+
       Form10.Image204.Picture.Bitmap       := Form7.Image201.Picture.Bitmap;
       Form10.Image205.Picture.Bitmap       := Form7.Image201.Picture.Bitmap;
-      //
+
       r1.Top     := 30 + 70 + 70;
       r1.Bottom  := 30 + 70 + 70 + 70;
-      //
+
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
-      //
+
       Form10.Image204.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form10.Image204.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
-      r1.Left    := 10 + (70 * 1);  //
-      r1.Right   := 10 + (70 * 2);  //
-      //
+      Form10.Image204.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
+      r1.Left    := 10 + (70 * 1);
+      r1.Right   := 10 + (70 * 2);
+
       Form10.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form10.Image205.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
+      Form10.Image205.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       // Botão Small Mobile
       if not (Form1.iReduzida = 1) then
       begin
-        r1.Left    := 10 + (70 * 2);  //
-        r1.Right   := 10 + (70 * 3);  //
-        //
-        Form1.Image200.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-        Form1.Image200.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
+        r1.Left    := 10 + (70 * 2);
+        r1.Right   := 10 + (70 * 3);
+
+        Form1.imgIndicadores.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+        Form1.imgIndicadores.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
       end;
 
-      r1.Left    := 10 + (70 * 3);  //
-      r1.Right   := 10 + (70 * 4);  //
+      r1.Left    := 10 + (70 * 3);
+      r1.Right   := 10 + (70 * 4);
 
-      Form1.Image_Raio_1.Picture     := Form1.Image200.Picture;
+      Form1.Image_Raio_1.Picture     := Form1.imgIndicadores.Picture;
 
       Form1.Image_Raio_1.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image_Raio_1.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
+      Form1.Image_Raio_1.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       // PERIGO BACKUP
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 *10);
-      //
-      Form1.Image_Perigo_1.Picture   := Form1.Image208.Picture;
-      //
+
+      Form1.Image_Perigo_1.Picture   := Form1.imgBackup.Picture;
+
       Form1.Image_Perigo_1.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image_Perigo_1.Picture.Bitmap.TransParentColor := Form1.Image208.Picture.BitMap.canvas.pixels[1,1];
-      //
-      Form1.Image_Perigo_2.Picture   := Form1.Image208.Picture;
-      //
-      Form1.Image_Raio_2.Picture     := Form1.Image200.Picture;
+      Form1.Image_Perigo_1.Picture.Bitmap.TransParentColor := Form1.imgBackup.Picture.BitMap.canvas.pixels[1,1];
+
+      Form1.Image_Perigo_2.Picture   := Form1.imgBackup.Picture;
+
+      Form1.Image_Raio_2.Picture     := Form1.imgIndicadores.Picture;
 
       // BOTOES PRINCIPAIS DESTACADOS
-      Form1.Image203_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image200_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image201_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image201__X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form1.Image202_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image203_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image204_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image210_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image205_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image206_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image207_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image208_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      Form1.Image201C_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form1.Image201S_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-//    Form1.Image308_X.Picture.Bitmap  := Form1.Image203.Picture.Bitmap;
-      //
+      Form1.Image203_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image200_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image201_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image201__X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image202_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image203_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image204_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image210_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image205_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image206_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image207_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image208_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image201C_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form1.Image201S_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+
       r1.Top     := 330;
       r1.Bottom  := 330 + 70;
-      //
+
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
-      //
+
       Form1.Image201_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201_X.Picture.Bitmap.TransParentColor := Form1.Image201.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form1.Image201_X.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
-      //
+
       Form1.Image201__X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image201__X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       r1.Left    := 10 + (70 * 2);
       r1.Right   := 10 + (70 * 3);
-      //
+
       Form1.Image202_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image202_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
-      //
+
       Form1.Image203_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form1.Image203_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+      
       r1.Left    := 10 + (70 * 4);
       r1.Right   := 10 + (70 * 5);
       //
@@ -1132,15 +1128,15 @@ begin
       Form1.Image201C_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
 
       // BOTOES SECUNDARIOS DESTACADOS
-      Form7.Image201_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image202_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image203_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image205_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image204_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image206_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image209_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image208_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
-      Form7.Image308_X.Picture.Bitmap := Form1.Image203.Picture.Bitmap;
+      Form7.Image201_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image202_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image203_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image205_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image204_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image206_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image209_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image208_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
+      Form7.Image308_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
 
       r1.Top     := 330 + 70;
       r1.Bottom  := 330 + 70 + 70;
@@ -1231,20 +1227,20 @@ begin
     end;
   end;
 
-  Form1.Image200_R.Picture  := Form1.Image200.Picture;
-  Form1.Image201_R.Picture  := Form1.Image201.Picture;
-  Form1.Image201C_R.Picture := Form1.Image201C.Picture;
-  Form1.Image201S_R.Picture := Form1.Image201S.Picture;
+  Form1.Image200_R.Picture  := Form1.imgIndicadores.Picture;
+  Form1.Image201_R.Picture  := Form1.imgVendas.Picture;
+  Form1.Image201C_R.Picture := Form1.imgCompras.Picture;
+  Form1.Image201S_R.Picture := Form1.imgServicos.Picture;
 
-  Form1.Image201__R.Picture := Form1.Image201_.Picture;
-  Form1.Image202_R.Picture  := Form1.Image202.Picture;
-  Form1.Image203_R.Picture  := Form1.Image203.Picture;
-  Form1.Image204_R.Picture  := Form1.Image204.Picture;
-  Form1.Image210_R.Picture  := Form1.Image210.Picture;
-  Form1.Image205_R.Picture  := Form1.Image205.Picture;
-  Form1.Image206_R.Picture  := Form1.Image206.Picture;
-  Form1.Image207_R.Picture  := Form1.Image207.Picture;
-  Form1.Image208_R.Picture  := Form1.Image208.Picture;
+  Form1.Image201__R.Picture := Form1.imgOrdemServico.Picture;
+  Form1.Image202_R.Picture  := Form1.imgEstoque.Picture;
+  Form1.Image203_R.Picture  := Form1.imgCliFor.Picture;
+  Form1.Image204_R.Picture  := Form1.imgContaReceber.Picture;
+  Form1.Image210_R.Picture  := Form1.imgContaPagar.Picture;
+  Form1.Image205_R.Picture  := Form1.imgCaixa.Picture;
+  Form1.Image206_R.Picture  := Form1.imgBancos.Picture;
+  Form1.Image207_R.Picture  := Form1.imgConfiguracoes.Picture;
+  Form1.Image208_R.Picture  := Form1.imgBackup.Picture;
 
   Form7.Image201_R.Picture.Bitmap := Form7.Image201.Picture.Bitmap;
   Form7.Image202_R.Picture.Bitmap := Form7.Image202.Picture.Bitmap;
@@ -1262,7 +1258,7 @@ begin
   Form10.Image204_R.Picture.Bitmap       := Form10.Image204.Picture.Bitmap;
   Form10.Image205_R.Picture.Bitmap       := Form10.Image205.Picture.Bitmap;
 
-  MontaTela(True);
+  Form1.MontaTela(True);
 end;
 
 procedure TForm19.FormShow(Sender: TObject);
