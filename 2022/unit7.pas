@@ -19323,6 +19323,8 @@ begin
 end;
 
 procedure TForm7.VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
+var
+  cPesq: String;
 begin
   if Form7.ibDataSet16DESCRICAO.AsString = EmptyStr then
     Exit;
@@ -19336,7 +19338,19 @@ begin
     begin
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+      Form7.ibDataSet4.Selectsql.Add('select *');
+      Form7.ibDataSet4.Selectsql.Add('from ESTOQUE');
+      Form7.ibDataSet4.Selectsql.Add('where');
+      if (LimpaNumero(ibDataSet16DESCRICAO.AsString) = ibDataSet16DESCRICAO.AsString) and (Length(ibDataSet16DESCRICAO.AsString) <= 5) then
+      begin
+        cPesq := ibDataSet16DESCRICAO.AsString;
+        if Length(cPesq) < 5 then
+          cPesq := Replicate('0', 5 - Length(cPesq)) + cPesq;
+          
+        Form7.ibDataSet4.Selectsql.Add('(CODIGO='+QuotedStr(cPesq)+')');
+      end else
+        Form7.ibDataSet4.Selectsql.Add('(DESCRICAO='+QuotedStr(cPesq)+')');
+
       Form7.ibDataSet4.Open;
     end;
 
