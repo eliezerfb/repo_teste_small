@@ -1195,17 +1195,17 @@ begin
     AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
     Rewrite(F);           // Abre para gravação
 
-    if Form7.ibDataSet24.Modified then
-    begin
-      Form7.ibDataSet24.Post;
-      Form7.ibDataSet24.Edit;
-    end;
-
     // Tudo que for feito alteração no DATASET24 coloque depois da linha abaixo
     // caso contrário pode ocorrer de tentar alterar valores e o dataset não ta
     // no estado de alteração (vai dar erro).
-    DBMemo1.SetFocus;
+    if Form7.ibDataSet24.Modified then
+      Form7.ibDataSet24.Post;
 
+    if Form7.ibDataSet24.State = dsBrowse then
+      Form7.ibDataSet24.Edit;
+
+    DBMemo1.SetFocus;
+    
     try
       if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
         Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
