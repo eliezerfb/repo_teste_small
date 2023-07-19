@@ -2210,6 +2210,7 @@ type
     procedure HintTotalNotaCompra;
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
     function GetMensagemCertificado(vLocal:string=''): string;
+    function RetornarAliquotaICM(AcUF: String): Currency;
   end;
   
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
@@ -32923,6 +32924,11 @@ begin
       Result := '';
   except
   end;
+end;
+
+function TForm7.RetornarAliquotaICM(AcUF: String): Currency;
+begin
+  Result := ibDataSet14.fieldbyname(AcUF+'_').AsCurrency;
 end;
 
 end.
