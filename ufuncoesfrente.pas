@@ -216,7 +216,9 @@ function FloatToStrAlignR(Value: Double; CasasDecimais: Integer; CasasDireita: I
 function SemMarcaTag(Value: String): String;
 function AliquotaISSConfigura(IBTransaction: TIBTransaction): String;
 function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
-  iQtd: Integer = 1): String;
+  iQtd: Integer = 1): String; 
+function IncGeneratorToInt(IBDataBase: TIBDatabase; sGenerator: String;
+  iQtd: Integer = 1): Int64;
 function ValidaCPFCNPJ(sNumero: String): Boolean;
 function RetornaValorDaTagNoCampo(sTag: String; sObs: String): String;
 function ShellExecuteAndWait(Operation, FileName, Parameter, Directory: String;
@@ -641,6 +643,27 @@ begin
     IBQTEMP.SQL.Text := 'select gen_id(' + sGenerator + ', '+ IntToStr(iQtd) +') as NUMERO from rdb$database';
     IBQTEMP.Open;
     Result := IBQTEMP.FieldByName('NUMERO').AsString;
+    IBQTEMP.Transaction.Rollback;
+  except
+  end;
+  FreeAndNil(IBQTEMP);
+  FreeAndNil(IBTTEMP);
+end;
+
+function IncGeneratorToInt(IBDataBase: TIBDatabase; sGenerator: String;
+  iQtd: Integer = 1): Int64;
+var
+  IBTTEMP: TIBTransaction;
+  IBQTEMP: TIBQuery;
+begin
+  IBTTEMP := CriaIBTransaction(IBDataBase);
+  IBQTEMP := CriaIBQuery(IBTTEMP);
+  Result := 0;
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := 'select gen_id(' + sGenerator + ', '+ IntToStr(iQtd) +') as NUMERO from rdb$database';
+    IBQTEMP.Open;
+    Result := IBQTEMP.FieldByName('NUMERO').AsInteger;
     IBQTEMP.Transaction.Rollback;
   except
   end;

@@ -1028,6 +1028,7 @@ type
     ESTOQUEATUAL1: TMenuItem;
     SadasIdentificadaspeloCPFCNPJ1: TMenuItem;
     itemMenugerencial: TMenuItem;
+    IBDataSet150GERENCIAL: TStringField;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1388,6 +1389,7 @@ type
     procedure ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
     procedure ESTOQUEATUAL1Click(Sender: TObject);
     procedure ibDataSet13AfterOpen(DataSet: TDataSet);
+    procedure itemMenugerencialClick(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1655,7 +1657,8 @@ type
     function SecaoFrente(): String;
     function ImportarDaPesquisa(Tipo: TTipoPesquisa): String;
     procedure ConfiguraCredencialTecnospeed;
-    procedure MensagemAlertaLimiteDocumentosEmitidos;    
+    procedure MensagemAlertaLimiteDocumentosEmitidos;
+    procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
   end;
 
 var
@@ -1677,7 +1680,7 @@ var
 
   function AssinaturaDigital(sP1:String): String;
   function ConfiguraNFCE(sP1:Boolean) : Boolean;
-  procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
+  //procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
   function IncrementaGenerator(sGenerator: String; iNumero: Integer): Int64; // Sandro Silva 2017-12-15  Integer;
   function QtdVendaSemCommit(sCodigo: String): Real; // Sandro Silva 2019-03-18 function QtdVendaSemCommit(sCodigo: String): Integer;
   function QtdCanceladaSemCommit(sCodigo: String): Real; // Sandro Silva 2019-03-18 function QtdCanceladaSemCommit(sCodigo: String): Integer;
@@ -1737,7 +1740,7 @@ uses
   , upafnfce // Sandro Silva 2022-09-23
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
-  , uValidaRecursosDelphi7, uFuncoesPOS;
+  , uValidaRecursosDelphi7, uFuncoesPOS, uImportaGerencial;
 
 {$R *.DFM}
 
@@ -1915,112 +1918,6 @@ begin
     Form1.MeiosdePagto1.Enabled                  := True
   else
     Form1.MeiosdePagto1.Enabled                := bHabilita;
-end;
-
-procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String;
-  sNumero: String; sCaixaOld: String; sCaixaNew: String;
-  sNumeroDocumento: String; sSituacao: String);
-// Atualiza o Número do documento nas tabelas detalhes
-var
-  IBQuery: TIBQuery;
-  bAtualizaOrigemImportacao: Boolean; // Sandro Silva 2021-08-17
-begin
-  IBQuery := CriaIBQuery(IBTransaction);
-  try
-    if (sNumero <> '') and (sTipo = 'ORÇAMENTO') then
-    begin
-      //Sandro Silva 2015-05-18 Salva NUMERONF em ORCAMENT
-      try
-        Form1.ibDataSet37.Close;
-        Form1.ibDataSet37.SelectSQL.Text :=
-          'select * ' +
-          'from ORCAMENT ' +
-          'where PEDIDO = ' + QuotedStr(sNumero) +
-          ' and coalesce(CAIXA, '''') = ' + QuotedStr(sCaixaOld);
-        Form1.ibDataSet37.Open;
-        while Form1.ibDataSet37.Eof = False do
-        begin
-
-          // Ficha 5414
-          // Somente seleciona estoque se escolher bImportarServicoDeOsOrcamento = False
-          bAtualizaOrigemImportacao := True;
-          if bImportarServicoDeOsOrcamento = False then
-          begin
-            // Usando query separada para evitar problema de posicionamento de registro selecionado em relação ao item sendo lançado na venda
-            IBQuery.Close;
-            IBQuery.SQL.Text :=
-              'select CODIGO, DESCRICAO, TIPO_ITEM ' +
-              'from ESTOQUE ' +
-              'where CODIGO = ' + QuotedStr(Form1.ibDataSet37.FieldByName('CODIGO').AsString);
-            IBQuery.Open;
-
-            if (IBQuery.FieldByName('TIPO_ITEM').AsString <> '09') // Não é serviço
-              or (bImportarServicoDeOsOrcamento) // Ou Respodeu para importar serviço
-            then
-              bAtualizaOrigemImportacao := True
-            else
-              bAtualizaOrigemImportacao := False;
-          end;
-
-          if bAtualizaOrigemImportacao then
-          begin
-            Form1.ibDataSet37.Edit;
-            Form1.ibDataSet37.FieldByName('NUMERONF').AsString := sNumeroDocumento;
-            Form1.ibDataSet37.FieldByName('CAIXA').AsString    := sCaixaNew;
-            Form1.ibDataSet37.Post;
-          end;
-          {Sandro Silva 2021-08-17 fim}
-          
-          Form1.ibDataSet37.Next;
-        end;
-
-      except
-
-      end;
-
-    end;
-
-    if (sNumero <> '') and (sTipo = 'OS') then
-    begin
-      //Sandro Silva 2015-05-19 Salva ITENS001.NUMERONF, ITENS003.NUMERONF, OS.NF e OS.SITUACAO
-      try
-        //Tabela ITENS001
-        IBQuery.Close;
-        IBQuery.SQL.Text :=
-          'update ITENS001 set ' +
-          'NUMERONF = ' + QuotedStr(sNumeroDocumento + 'I') +
-          ' where NUMEROOS = ' + QuotedStr(sNumero);
-        IBQuery.ExecSQL;
-
-        // Ficha 5414
-        if bImportarServicoDeOsOrcamento then
-        begin
-          //Tabela ITENS003
-          IBQuery.Close;
-          IBQuery.SQL.Text :=
-            'update ITENS003 set ' +
-            'NUMERONF = ' + QuotedStr(sNumeroDocumento + 'I') +
-            ' where NUMEROOS = ' + QuotedStr(sNumero);
-          IBQuery.ExecSQL;
-        end;
-        {Sandro Silva 2021-08-17 fim}
-
-        // Tabela OS
-        IBQuery.Close;
-        IBQuery.SQL.Text :=
-          'update OS set ';
-        if sSituacao <> '' then
-          IBQuery.SQL.Add('SITUACAO = ' + QuotedStr('Fechada') + ', ');
-
-        IBQuery.SQL.Add('NF = ' + QuotedStr(sNumeroDocumento + 'I') +
-                        ' where NUMERO = ' + QuotedStr(sNumero));
-        IBQuery.ExecSQL;
-      except
-      end;
-    end;
-  finally
-    FreeAndNil(IBQuery);
-  end;
 end;
 
 function GeraArquivoCriptografado(pP1: String): Boolean;
@@ -12176,7 +12073,7 @@ begin
 
               if bNFCeUsoDenegado = False then // Sandro Silva 2020-05-18
               begin
-
+usar esse código para consiguir montar tpag
                 if (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat <> 0) then   // Total do documento
                 begin
                   try
@@ -14256,7 +14153,7 @@ begin
         fTotalPago              := 0;
         Form1.sCupomTEF         := '';
         Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
-        
+
         Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
         Form1.sValorTot   := '';
         Form1.sValorSaque := '';
@@ -25201,6 +25098,7 @@ begin
             iRowsAffected := Form1.ibDataSet27.RecordCount;
 
           except
+
           end;
 
           if Form1.sModeloECF = '65' then // Só faz para NFCE. Para o SAT é atualizado abaixo usando .Post
@@ -25234,7 +25132,7 @@ begin
             sTIPODAV := IBQDADOS.FieldByName('TIPODAV').AsString;
             sDAV     := IBQDADOS.FieldByName('DAV').AsString;
 
-            AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, sCaixaNew, sNumeroNFNew, '');// Sandro Silva 2018-03-06  AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, Form1.sCaixa, sNumeroNFNew, '');
+            Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, sCaixaNew, sNumeroNFNew, '');// Sandro Silva 2018-03-06  AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, Form1.sCaixa, sNumeroNFNew, '');
 
             Commitatudo(True);// Salva para que as 2 transaction vejam dados
 
@@ -33328,7 +33226,9 @@ begin
   FPesquisaParaImportar.IdSelecionado := '';
   FPesquisaParaImportar.TipoPesquisa := Tipo;
   FPesquisaParaImportar.ShowModal;
-  Result := FPesquisaParaImportar.IdSelecionado;
+  Result := '';
+  if FPesquisaParaImportar.ModalResult = mrOk then
+    Result := FPesquisaParaImportar.IdSelecionado;
 end;
 
 procedure TForm1.ConsultaChaveNFCe1Click(Sender: TObject);
@@ -34163,6 +34063,148 @@ begin
   DadosEmitentePDV.Razao := DataSet.FieldByName('NOME').AsString;
   DadosEmitentePDV.CNPJ  := DataSet.FieldByName('CGC').AsString;
   DadosEmitentePDV.UF    := DataSet.FieldByName('ESTADO').AsString;
+end;
+
+procedure TForm1.itemMenugerencialClick(Sender: TObject);
+var
+  Importar: TImportaGerencial;
+begin
+  // Importa gerencial para nfc-e
+  Importar := TImportaGerencial.Create;
+  Importar.Caixa := Form1.sCaixa;
+  Importar.ModeloDocumento := Form1.sModeloECF;
+  Importar.IBTransaction := Form1.ibDataSet27.Transaction;
+  Importar.IBDataSet27  := Form1.IBDataSet27;
+  Importar.IBDataSet30  := Form1.IBDataSet30;
+  Importar.IBDataset150 := Form1.IBDataSet150;
+  Importar.IBDataSet7   := Form1.IBDataSet7;
+  Importar.IBDataSet28  := Form1.IBDataSet28;
+  Importar.NumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
+  if Importar.Importar then
+  begin
+    try
+      Form1.icupom := StrToInt(Importar.NumeroNF);
+
+      fazer inverso que dataset25 faz gravando em ibdataset28
+
+      _ecf65_EnviarNFCe(True);
+      
+      DeletaDataSet25;
+    except
+
+    end;
+    Commitatudo(True);
+  end
+  else
+    Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
+
+  FreeAndNil(Importar);      
+end;
+
+procedure TForm1.AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String;
+  sNumero: String; sCaixaOld: String; sCaixaNew: String;
+  sNumeroDocumento: String; sSituacao: String);
+// Atualiza o Número do documento nas tabelas detalhes
+var
+  IBQuery: TIBQuery;
+  bAtualizaOrigemImportacao: Boolean; // Sandro Silva 2021-08-17
+begin
+  IBQuery := CriaIBQuery(IBTransaction);
+  try
+    if (sNumero <> '') and (sTipo = 'ORÇAMENTO') then
+    begin
+      //Sandro Silva 2015-05-18 Salva NUMERONF em ORCAMENT
+      try
+        Form1.ibDataSet37.Close;
+        Form1.ibDataSet37.SelectSQL.Text :=
+          'select * ' +
+          'from ORCAMENT ' +
+          'where PEDIDO = ' + QuotedStr(sNumero) +
+          ' and coalesce(CAIXA, '''') = ' + QuotedStr(sCaixaOld);
+        Form1.ibDataSet37.Open;
+        while Form1.ibDataSet37.Eof = False do
+        begin
+
+          // Ficha 5414
+          // Somente seleciona estoque se escolher bImportarServicoDeOsOrcamento = False
+          bAtualizaOrigemImportacao := True;
+          if bImportarServicoDeOsOrcamento = False then
+          begin
+            // Usando query separada para evitar problema de posicionamento de registro selecionado em relação ao item sendo lançado na venda
+            IBQuery.Close;
+            IBQuery.SQL.Text :=
+              'select CODIGO, DESCRICAO, TIPO_ITEM ' +
+              'from ESTOQUE ' +
+              'where CODIGO = ' + QuotedStr(Form1.ibDataSet37.FieldByName('CODIGO').AsString);
+            IBQuery.Open;
+
+            if (IBQuery.FieldByName('TIPO_ITEM').AsString <> '09') // Não é serviço
+              or (bImportarServicoDeOsOrcamento) // Ou Respodeu para importar serviço
+            then
+              bAtualizaOrigemImportacao := True
+            else
+              bAtualizaOrigemImportacao := False;
+          end;
+
+          if bAtualizaOrigemImportacao then
+          begin
+            Form1.ibDataSet37.Edit;
+            Form1.ibDataSet37.FieldByName('NUMERONF').AsString := sNumeroDocumento;
+            Form1.ibDataSet37.FieldByName('CAIXA').AsString    := sCaixaNew;
+            Form1.ibDataSet37.Post;
+          end;
+          {Sandro Silva 2021-08-17 fim}
+
+          Form1.ibDataSet37.Next;
+        end;
+
+      except
+
+      end;
+
+    end;
+
+    if (sNumero <> '') and (sTipo = 'OS') then
+    begin
+      //Sandro Silva 2015-05-19 Salva ITENS001.NUMERONF, ITENS003.NUMERONF, OS.NF e OS.SITUACAO
+      try
+        //Tabela ITENS001
+        IBQuery.Close;
+        IBQuery.SQL.Text :=
+          'update ITENS001 set ' +
+          'NUMERONF = ' + QuotedStr(sNumeroDocumento + 'I') +
+          ' where NUMEROOS = ' + QuotedStr(sNumero);
+        IBQuery.ExecSQL;
+
+        // Ficha 5414
+        if bImportarServicoDeOsOrcamento then
+        begin
+          //Tabela ITENS003
+          IBQuery.Close;
+          IBQuery.SQL.Text :=
+            'update ITENS003 set ' +
+            'NUMERONF = ' + QuotedStr(sNumeroDocumento + 'I') +
+            ' where NUMEROOS = ' + QuotedStr(sNumero);
+          IBQuery.ExecSQL;
+        end;
+        {Sandro Silva 2021-08-17 fim}
+
+        // Tabela OS
+        IBQuery.Close;
+        IBQuery.SQL.Text :=
+          'update OS set ';
+        if sSituacao <> '' then
+          IBQuery.SQL.Add('SITUACAO = ' + QuotedStr('Fechada') + ', ');
+
+        IBQuery.SQL.Add('NF = ' + QuotedStr(sNumeroDocumento + 'I') +
+                        ' where NUMERO = ' + QuotedStr(sNumero));
+        IBQuery.ExecSQL;
+      except
+      end;
+    end;
+  finally
+    FreeAndNil(IBQuery);
+  end;
 end;
 
 end.

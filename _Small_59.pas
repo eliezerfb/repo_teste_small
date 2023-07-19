@@ -2212,7 +2212,7 @@ begin
             Form1.ibDataSet27.Next;
           end; // while
 
-          AtualizaDetalhe(Form1.ibDataSet27.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sCFe, 'Fechada');
+          Form1.AtualizaDetalhe(Form1.ibDataSet27.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sCFe, 'Fechada');
 
           // Seleciona novamente os dados para usar na sequência da venda
           Form1.ibDataSet27.Close;

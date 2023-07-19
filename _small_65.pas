@@ -4002,14 +4002,14 @@ begin
       end;
 
       //
-      Form1.spdNFCeDataSets1.Campo('vII_W11').Value      := '0.00'; // Valor Total do II
-      Form1.spdNFCeDataSets1.Campo('vIPI_W12').Value     := '0.00'; // Valor Total do IPI
+      Form1.spdNFCeDataSets1.Campo('vII_W11').Value        := '0.00'; // Valor Total do II
+      Form1.spdNFCeDataSets1.Campo('vIPI_W12').Value       := '0.00'; // Valor Total do IPI
 
-      Form1.spdNFCeDataSets1.campo('vIPIDevol_W12a').Value  := '0.00';//Novo
-      Form1.spdNFCeDataSets1.Campo('vPIS_W13').Value     := FormatFloatXML(dvPIS_W13); // Sandro Silva 2016-09-30  '0.00'; // Valor Toal do PIS
-      Form1.spdNFCeDataSets1.Campo('vCOFINS_W14').Value  := FormatFloatXML(dvCofins_W14); // Sandro Silva 2016-09-30  '0.00'; // Valor Total do COFINS
-      Form1.spdNFCeDataSets1.Campo('vNF_W16').Value      := StrTran(Alltrim(FormatFloat('##0.00',fValorProdutos + dvServ_W18 - fDesconto + dvOutro_W15)),',','.'); // Valor Total da NFe - Versão Trial só aceita NF até R$ 1.00
-      Form1.spdNFCeDataSets1.Campo('modFrete_X02').Value := '9'; //Modalidade do frete: 0- Por conta do emitente; 1- Por conta do destinatário/remetente; 2- Por conta de terceiros; 9- Sem frete.
+      Form1.spdNFCeDataSets1.campo('vIPIDevol_W12a').Value := '0.00';//Novo
+      Form1.spdNFCeDataSets1.Campo('vPIS_W13').Value       := FormatFloatXML(dvPIS_W13); // Sandro Silva 2016-09-30  '0.00'; // Valor Toal do PIS
+      Form1.spdNFCeDataSets1.Campo('vCOFINS_W14').Value    := FormatFloatXML(dvCofins_W14); // Sandro Silva 2016-09-30  '0.00'; // Valor Total do COFINS
+      Form1.spdNFCeDataSets1.Campo('vNF_W16').Value        := StrTran(Alltrim(FormatFloat('##0.00',fValorProdutos + dvServ_W18 - fDesconto + dvOutro_W15)),',','.'); // Valor Total da NFe - Versão Trial só aceita NF até R$ 1.00
+      Form1.spdNFCeDataSets1.Campo('modFrete_X02').Value   := '9'; //Modalidade do frete: 0- Por conta do emitente; 1- Por conta do destinatário/remetente; 2- Por conta de terceiros; 9- Sem frete.
       //
       // Valor Aproximado dos Tributos IIA Indicie de Imposto Aproximado
       //
@@ -4844,7 +4844,7 @@ begin
 
                 Form1.ibDataset150.Close;
                 Form1.ibDataset150.SelectSql.Clear;
-                Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+                Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
                 Form1.ibDataset150.Open;
 
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
@@ -4907,7 +4907,7 @@ begin
                 Mais1Ini.WriteString('NFCE', 'CUPOM', sNovoNumero);
                 Mais1Ini.Free;
 
-                AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sNovoNumero, 'Fechada');
+                Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sNovoNumero, 'Fechada');
 
                 //
                 if FormataNumeroDoCupom(Form1.iCupom) <> sNovoNumero then // Sandro Silva 2021-11-29 if StrZero(Form1.iCupom,6,0) <> sNovoNumero then
@@ -9843,7 +9843,7 @@ begin
         sTIPODAV := 'OS';
       end;
 
-      AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixa, sCaixa, sNovoNumero, 'Fechada');
+      Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixa, sCaixa, sNovoNumero, 'Fechada');
 
       //
       if FormataNumeroDoCupom(Form1.iCupom) <> sNovoNumero then // Sandro Silva 2021-11-29 if StrZero(Form1.iCupom,6,0) <> sNovoNumero then

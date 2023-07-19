@@ -238,8 +238,10 @@ begin
       end;
     end;
     //
-    if Form1.sGaveta = '255' then Form1.Label_7.Caption := 'Gaveta aberta' else
-           Form1.Label_7.Caption := '';
+    if Form1.sGaveta = '255' then
+      Form1.Label_7.Caption := 'Gaveta aberta'
+    else
+      Form1.Label_7.Caption := '';
     //
   end;
   /////////////////
@@ -320,7 +322,8 @@ end;
 
 procedure TForm2.DBGrid2KeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = chr(13) then Form2.DBGrid2DblClick(Sender);
+  if Key = chr(13) then
+    Form2.DBGrid2DblClick(Sender);
 end;
 
 procedure TForm2.SMALL_DBEdit2KeyDown(Sender: TObject; var Key: Word;
@@ -798,42 +801,50 @@ end;
 
 procedure TForm2.SMALL_DBEdit9Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR01').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR01').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR01').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR01').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit10Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR02').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR02').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR02').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR02').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit11Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR03').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR03').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR03').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR03').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit12Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR04').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR04').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR04').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR04').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit13Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR05').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR05').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR05').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR05').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit14Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR06').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR06').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR06').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR06').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit15Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR07').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR07').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR07').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR07').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit16Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR08').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR08').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR08').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR08').AsFloat := 0;
 end;
 
 procedure TForm2.Button5Click(Sender: TObject);

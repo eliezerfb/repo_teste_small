@@ -14,7 +14,7 @@ type
   TFPesquisaParaImportar = class(TForm)
     Label2: TLabel;
     Label1: TLabel;
-    Edit1: TEdit;
+    edPesquisa: TEdit;
     Button1: TBitBtn;
     Panel2: TPanel;
     Frame_teclado1: TFrame_teclado;
@@ -27,7 +27,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Image6Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure Edit1KeyDown(Sender: TObject; var Key: Word;
+    procedure edPesquisaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -39,6 +39,7 @@ type
     procedure IBQPESQUISAAfterOpen(DataSet: TDataSet);
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid1CellClick(Column: TColumn);
   private
     FTipoPesquisa: TTipoPesquisa;
     FIdSelecionado: String;
@@ -69,16 +70,19 @@ uses
 
 procedure TFPesquisaParaImportar.Button1Click(Sender: TObject);
 begin
-  FPesquisaParaImportar.IdSelecionado := Edit1.Text;
+  FIdSelecionado := edPesquisa.Text;
   if FTipoPesquisa = tpPesquisaOrca then
-    FPesquisaParaImportar.IdSelecionado := StrZero(StrToInt64Def(Limpanumero(FPesquisaParaImportar.IdSelecionado), 0), 10, 0);
+    FIdSelecionado := StrZero(StrToInt64Def(Limpanumero(FIdSelecionado), 0), 10, 0);
   if FTipoPesquisa = tpPesquisaOS then
-    FPesquisaParaImportar.IdSelecionado := StrZero(StrToInt64Def(Limpanumero(FPesquisaParaImportar.IdSelecionado), 0), 10, 0);
+    FIdSelecionado := StrZero(StrToInt64Def(Limpanumero(FIdSelecionado), 0), 10, 0);
   {Sandro Silva 2023-07-13 inicio}
   if FTipoPesquisa = tpPesquisaGerencial then
-    FPesquisaParaImportar.IdSelecionado := StrZero(StrToInt64Def(Limpanumero(FPesquisaParaImportar.IdSelecionado), 0), 10, 0);
+    FIdSelecionado := StrZero(StrToInt64Def(Limpanumero(FIdSelecionado), 0), 10, 0);
   {Sandro Silva 2023-07-13 fim}
-  ModalResult := mrOk;
+  if FIdSelecionado = '' then
+    ModalResult := mrCancel
+  else
+    ModalResult := mrOk;
 end;
 
 procedure TFPesquisaParaImportar.Image6Click(Sender: TObject);
@@ -88,32 +92,31 @@ end;
 
 procedure TFPesquisaParaImportar.FormActivate(Sender: TObject);
 begin
-  //
-  //
+
   FPesquisaParaImportar.Frame_teclado1.Led_FISCAL.Picture := Form1.Frame_teclado1.Led_FISCAL.Picture;
   FPesquisaParaImportar.Frame_teclado1.Led_FISCAL.Hint    := Form1.Frame_teclado1.Led_FISCAL.Hint;
-  //
+
   FPesquisaParaImportar.Frame_teclado1.Led_ECF.Picture := Form1.Frame_teclado1.Led_ECF.Picture;
   FPesquisaParaImportar.Frame_teclado1.Led_ECF.Hint    := Form1.Frame_teclado1.Led_ECF.Hint;
-  //
+
   FPesquisaParaImportar.Frame_teclado1.Led_REDE.Picture := Form1.Frame_teclado1.Led_REDE.Picture;
   FPesquisaParaImportar.Frame_teclado1.Led_REDE.Hint    := Form1.Frame_teclado1.Led_REDE.Hint;
-  //
-  Edit1.Visible := True;
-  ActiveControl := Edit1; // Sandro Silva 2018-10-24
-  if Edit1.CanFocus then
+
+  edPesquisa.Visible := True;
+  ActiveControl := edPesquisa; // Sandro Silva 2018-10-24
+  if edPesquisa.CanFocus then
   begin
-    Edit1.SetFocus;
+    edPesquisa.SetFocus;
   end;
-  //
+  
 end;
 
-procedure TFPesquisaParaImportar.Edit1KeyDown(Sender: TObject; var Key: Word;
+procedure TFPesquisaParaImportar.edPesquisaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
   begin
-    if (LimpaNumero(Edit1.Text) <> Edit1.Text) or (Trim(Edit1.Text) = '') then
+    if (LimpaNumero(edPesquisa.Text) <> edPesquisa.Text) or (Trim(edPesquisa.Text) = '') then
     begin
       SelecionaPesquisa;
     end
@@ -152,7 +155,7 @@ procedure TFPesquisaParaImportar.FormShow(Sender: TObject);
 begin
   DateTimePicker1.Date := Date;
   DateTimePicker1.Visible := True;
-  Edit1.Text := '';
+  edPesquisa.Text := '';
 
   if FTipoPesquisa = tpPesquisaORCA then
   begin
@@ -175,14 +178,14 @@ begin
     Label1.Caption := 'Importar Gerencial';
     Label2.Caption := 'Número do Gerencial ou Nome do cliente:';
 
-    //SelecionaOS;
+    SelecionaGerencial;
   end;
   {Sandro Silva 2023-07-13 fim}
 end;
 
 procedure TFPesquisaParaImportar.BitBtn2Click(Sender: TObject);
 begin
-  FPesquisaParaImportar.IdSelecionado := '';
+  FIdSelecionado := '';
   Close;
 end;
 
@@ -191,9 +194,9 @@ var
   sCondicao: String;
 begin
   sCondicao := '';
-  if (LimpaNumero(Edit1.Text) <> Edit1.Text) then
+  if (LimpaNumero(edPesquisa.Text) <> edPesquisa.Text) then
   begin
-    sCondicao := ' and CLIFOR containing ' + QuotedStr(Edit1.Text);
+    sCondicao := ' and CLIFOR containing ' + QuotedStr(edPesquisa.Text);
   end;
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=
@@ -214,9 +217,9 @@ var
   sCondicao: String;
 begin
   sCondicao := '';
-  if (LimpaNumero(Edit1.Text) <> Edit1.Text) then
+  if (LimpaNumero(edPesquisa.Text) <> edPesquisa.Text) then
   begin
-    sCondicao := ' and CLIENTE containing ' + QuotedStr(Edit1.Text);
+    sCondicao := ' and CLIENTE containing ' + QuotedStr(edPesquisa.Text);
   end;
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=
@@ -246,7 +249,7 @@ begin
   {Sandro Silva 2023-07-13 inicio}
   if FTipoPesquisa = tpPesquisaGerencial then
   begin
-    //SelecionaOS;
+    SelecionaGerencial;
   end;
   {Sandro Silva 2023-07-13 fim}
 end;
@@ -267,12 +270,12 @@ end;
 procedure TFPesquisaParaImportar.DBGrid1DblClick(Sender: TObject);
 begin
   if FTipoPesquisa = tpPesquisaORCA then
-    Edit1.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
   if FTipoPesquisa = tpPesquisaOS then
-    Edit1.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
   {Sandro Silva 2023-07-13 inicio}
   if FTipoPesquisa = tpPesquisaGerencial then
-    Edit1.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
   {Sandro Silva 2023-07-13 fim}
   Button1Click(Sender);
 end;
@@ -280,7 +283,7 @@ end;
 procedure TFPesquisaParaImportar.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  Edit1.Text := '';
+  edPesquisa.Text := '';
 end;
 
 procedure TFPesquisaParaImportar.IBQPESQUISAAfterOpen(DataSet: TDataSet);
@@ -300,7 +303,7 @@ begin
   if FTipoPesquisa = tpPesquisaGerencial then
   begin
     DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(40);
-    DataSet.FieldByName('Vendedor').DisplayWidth := AjustaLargura(18);
+    DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(18);
   end;
   {Sandro Silva 2023-07-13 fim}
 end;
@@ -367,21 +370,35 @@ var
   sCondicao: String;
 begin
   sCondicao := '';
-  if (LimpaNumero(Edit1.Text) <> Edit1.Text) then
+  if (LimpaNumero(edPesquisa.Text) <> edPesquisa.Text) then
   begin
-    sCondicao := ' and CLIENTE containing ' + QuotedStr(Edit1.Text);
+    if Length(LimpaNumero(edPesquisa.Text)) in [11, 14] then
+      sCondicao := ' and A.CNPJ = ' + QuotedStr(FormataCpfCgc(LimpaNumero(edPesquisa.Text)))
+    else
+      sCondicao := ' and A.CLIFOR containing ' + QuotedStr(edPesquisa.Text);
   end;
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=
-    'select NUMERONF as "Número", DATA as "Data", CLIENTE as "Cliente", , ' +
-    'TOTAL as "Total" ' +
-    'from NFCE ' +
-    'where DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date - 30)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date)) + ' ' + // Últimos 30 dias da data
-    ' and SITUACAO = ''Finalizada'' ' +
+    'select N.NUMERONF as "Número", N.DATA as "Data" ' +
+    ', A.CLIFOR as "Cliente" ' +
+    ', N.TOTAL as "Total" ' +
+    ', max(coalesce(A.VALORICM, '''')) as "Doc. Fiscal" ' +
+    'from NFCE N ' +
+    'join ALTERACA A on A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
+    'where N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date - 30)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date)) + ' ' + // Últimos 30 dias da data
+    ' and N.MODELO = ''99'' ' +
+    ' and N.STATUS = ''Finalizada'' ' +
     sCondicao +
-    'order by DATA desc, NUMERONF desc';
+    'group by N.NUMERONF, N.DATA, A.CLIFOR, N.TOTAL ' +
+    'order by N.DATA desc, N.NUMERONF desc';
   IBQPESQUISA.Open;
 
+end;
+
+procedure TFPesquisaParaImportar.DBGrid1CellClick(Column: TColumn);
+begin
+  if Trim(edPesquisa.Text) = '' then
+    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
 end;
 
 end.

@@ -57,7 +57,8 @@ uses
   uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
   _small_65 in '_small_65.pas',
-  uFuncoesPOS in 'uFuncoesPOS.pas';
+  uFuncoesPOS in 'uFuncoesPOS.pas',
+  uImportaGerencial in 'uImportaGerencial.pas';
 
 {$R *.RES}
 
@@ -194,25 +195,25 @@ begin
 
     Application.HelpFile := '';
     Application.CreateForm(TForm1, Form1);
-    Application.CreateForm(TForm2, Form2);
-    Application.CreateForm(TForm3, Form3);
-    Application.CreateForm(TForm4, Form4);
-    Application.CreateForm(TForm7, Form7);
-    Application.CreateForm(TForm10, Form10);
-    Application.CreateForm(TForm13, Form13);
-    Application.CreateForm(TForm6, Form6);
-    Application.CreateForm(TFormasP, FormasP);
-    Application.CreateForm(TForm8, Form8);
-    Application.CreateForm(TForm9, Form9);
-    Application.CreateForm(TForm11, Form11);
-    Application.CreateForm(TForm12, Form12);
-    Application.CreateForm(TForm14, Form14);
-    Application.CreateForm(TForm15, Form15);
-    Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-    Application.CreateForm(TFDadosPOS, FDadosPOS);
-    Application.CreateForm(TFCadAdquirentes, FCadAdquirentes);
-    Application.CreateForm(TForm27, Form27);
-    Application.Run;
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TForm3, Form3);
+  Application.CreateForm(TForm4, Form4);
+  Application.CreateForm(TForm7, Form7);
+  Application.CreateForm(TForm10, Form10);
+  Application.CreateForm(TForm13, Form13);
+  Application.CreateForm(TForm6, Form6);
+  Application.CreateForm(TFormasP, FormasP);
+  Application.CreateForm(TForm8, Form8);
+  Application.CreateForm(TForm9, Form9);
+  Application.CreateForm(TForm11, Form11);
+  Application.CreateForm(TForm12, Form12);
+  Application.CreateForm(TForm14, Form14);
+  Application.CreateForm(TForm15, Form15);
+  Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
+  Application.CreateForm(TFDadosPOS, FDadosPOS);
+  Application.CreateForm(TFCadAdquirentes, FCadAdquirentes);
+  Application.CreateForm(TForm27, Form27);
+  Application.Run;
     //
   end else
   begin
