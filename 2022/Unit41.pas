@@ -743,13 +743,13 @@ begin
   IBQCupom := Form7.CriaIBQuery(Form7.ibDataSet13.Transaction);
 
   try
-
     IBQCupom.Close;
     //Form7.IbDataSet27.SelectSQL.Clear;
     //Form7.IbDataSet27.SelectSQL.Add('Select * from ALTERACA where PEDIDO='+QuotedStr(MaskEdit1.Text)+' and CAIXA='+QuotedStr(MaskEdit2.Text)+' and coalesce(VALORICM,''0'')=''0'' ');
     IBQCupom.SQL.Text := ' Select '+
                          '   A.*,'+
-                         '   Coalesce(N.MODELO,'''') Modelo '+
+                         '   Coalesce(N.MODELO,'''') Modelo, '+
+                         '   UPPER(N.STATUS) StatusNFCE'+
                          ' From ALTERACA A'+
                          '   	Left Join NFCE N on N.NUMERONF = A.PEDIDO and N.CAIXA = A.CAIXA'+ // Precisa ser Left Join pois vendas de ECF não tem na tabela NFCE
                          ' Where A.PEDIDO='+QuotedStr(MaskEdit1.Text)+
@@ -792,6 +792,14 @@ begin
       end else
       begin
         ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929');
+        Exit;
+      end;
+    end else
+    begin
+      //Cupom Gerencial
+      if IBQCupom.FieldByName('StatusNFCE').AsString <> 'FINALIZADA' then
+      begin
+        ShowMEssage('Cupom gerencial não finalizado.');
         Exit;
       end;
     end;
