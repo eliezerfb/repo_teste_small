@@ -7902,26 +7902,20 @@ begin
     Form7.Close;
     Form7.Show;
   except end;
-  //
 end;
 
 procedure TForm7.Image101Click(Sender: TObject);
 begin
-  //
   Form7.bEstaSendoUsado := False;
-  //
+
   if sModulo = 'OS' then
   begin
-    //
     Form7.ibDataSet3.Append;
     Form7.ibDataSet3DATA_PRO.AsDateTime := Date;
     Form7.ibDataSet3HORA_PRO.AsString   := TimeToStr(Time);
     Form30.Show;
-    //
-  end
-  else
+  end else
   begin
-    //
     if sModulo = 'VENDA' then
     begin
 
@@ -7953,28 +7947,19 @@ begin
 
         if Form1.ValidaRecursos.PermiteRecursoParaProduto then
         begin
-
           if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda(Date) then
           begin
-
             Form7.ibDataSet15.Append;
             Form48.Show;
-
           end;
-
-        end
-        else
+        end else
         begin
           Form1.MensagemRecursoIndisponivel('NFS-e não está disponível para esta licença');
         end;
-
-      end
-      else
+      end else
       begin
-
         if ValidaLimiteDeEmissaoDeVenda(Form1.ValidaRecursos.DataDoServidor) then
         begin
-
           Form7.ibDataSet15.Append;
 
           if ParamCount > 0 then
@@ -7988,16 +7973,11 @@ begin
           end
           else
             Form12.Show;
-
         end;
-
-
       end;
       {Sandro Silva 2023-05-31 fim}
-    end
-    else
+    end  else
     begin
-      //
       if sModulo = 'COMPRA' then
       begin
         Form7.ibDataSet24.Append;
@@ -8006,17 +7986,16 @@ begin
       begin
         if sModulo = 'ORCAMENTO' then
         begin
-          //
           ShellExecute( 0, 'Open', 'orca.exe', '', '', SW_SHOW);
           sleep(1000);
-          //
+
           while ConsultaProcesso('orca.exe') or ConsultaProcesso('ORCA.EXE') do
           begin
             Form7.Caption := 'Aguarde o fechamento do programa de orcamentos...';
             Application.ProcessMessages;
             sleep(100);
           end;
-          //
+          
           Form7.Caption := '';
           AgendaCommit(True);
           Form7.Close;
@@ -22608,47 +22587,35 @@ end;
 
 procedure TForm7.Gerarnotafiscalsrie11Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
       Form7.Close;
       Form7.Vendas_1Click(Sender);                        // Nota fiscal série 1
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.Gerarnotafiscalsrie21Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
       Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
-      //
     end;
-    //
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
@@ -22793,42 +22760,35 @@ end;
 
 procedure TForm7.ArquivotextoNotaFiscalPaulista1Click(Sender: TObject);
 begin
-  //
   if UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'SP' then if FileExists(Form1.sAtual+'\sintegra.exe') then ShellExecute( 0, 'Open', 'sintegra.exe', 'PAULISTA', '', SW_SHOW) else ShowMessage('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.');
   if UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'AL' then if FileExists(Form1.sAtual+'\sintegra.exe') then ShellExecute( 0, 'Open', 'sintegra.exe', 'ALAGOANA', '', SW_SHOW) else ShowMessage('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.');
-  //
 end;
 
 procedure TForm7.ibDataSet4BeforeInsert(DataSet: TDataSet);
 begin
-  //
   try
 //    if Alltrim(Form7.ibDataSet4DESCRICAO.AsString)='' then Form7.ibDataSet4.Delete;
   except end;
-  //
+
   try
-    //
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
     ibDataset99.SelectSql.Add('select gen_id(G_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-    //
+
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
-    //
   except end;
-  //
 end;
 
 procedure TForm7.ImprimirtodasasOSfiltradas1Click(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   I := Application.MessageBox(pChar(
                             chr(10) +'Quer realmente imprimir todas as OS filtradas?'
                             +chr(10)+
@@ -22836,16 +22796,13 @@ begin
                             'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
   if I = 6 then
   begin
-    //
     Form7.ibDataSet3.First;
     while not Form7.ibDataSet3.Eof do
     begin
       Form7.ImprimirOrdemdeServio1Click(Sender);
       Form7.ibDataSet3.Next;
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet3SITUACAOSetText(Sender: TField;
@@ -22858,24 +22815,20 @@ procedure TForm7.ibDataSet11AfterPost(DataSet: TDataSet);
 var
   sNomeNovo, sNomevolta : String;
 begin
-  //
   // NOME DO BANCO
-  //
   if (sNomeAnterior <> ibDataSet11NOME.AsString) and (sNomeAnterior <> '')  and (sNumeroAnterior = ibDataSet11REGISTRO.AsString) then
   begin
     sNomeNovo  := ibDataSet11NOME.AsString;
     sNomeVolta := sNomeAnterior;
-    //
+
     // MOVIMENTO
-    //
     Form7.ibDataSet5.Close;
     Form7.ibDataSet5.SelectSQL.Clear;
     Form7.ibDataSet5.SelectSQL.Add('update MOVIMENT set NOME='+QuotedStr(sNomeNovo)+' where upper(NOME)='+QuotedStr(UpperCase(sNomeVolta))+'');
     Form7.ibDataSet5.Open;
   end;
-  //
+
   AgendaCommit(True);
-  //
 end;
   
 procedure TForm7.ibDataSet11BeforeEdit(DataSet: TDataSet);
@@ -22890,38 +22843,32 @@ end;
 
 procedure TForm7.Notasfiscaiscanceladas1Click(Sender: TObject);
 begin
-  //
   sWhere := sWhere + ' and EMITIDA='+QuotedStr('X');
   Form7.Close;
   Form7.Show;
-  //
+
   Notasfiscaiscanceladas1.Checked := True;
   Notasfiscaisabertas1.Checked    := False;
-  //
 end;
 
 procedure TForm7.Notasfiscaisabertas1Click(Sender: TObject);
 begin
-  //
   sWhere := sWhere + ' and EMITIDA<>'+QuotedStr('S')+' and EMITIDA<>'+QuotedStr('X');
   Form7.Close;
   Form7.Show;
-  //
+
   Notasfiscaiscanceladas1.Checked := False;
   Notasfiscaisabertas1.Checked    := True;
-  //
 end;
 
 procedure TForm7.odas4Click(Sender: TObject);
 begin
-  //
   sWhere := '';
   Form7.Close;
   Form7.Show;
-  //
+
   Notasfiscaiscanceladas1.Checked := True;
   Notasfiscaisabertas1.Checked    := False;
-  //
 end;
 
 procedure TForm7.Exportar1Click(Sender: TObject);
@@ -22931,46 +22878,39 @@ end;
 
 procedure TForm7.ImportarOS1Click(Sender: TObject);
 begin
-  //
   AgendaCommit(True);
   Form7.Close;
   Form7.Show;
-  //
+
   Form7.Image101Click(Sender);
   Form12.ImportarOS2Click(Sender);
-  //
 end;
 
 procedure TForm7.ImportarCupomFiscal1Click(Sender: TObject);
 begin
-  //
   AgendaCommit(True);
   Form7.Close;
   Form7.Show;
-  //
+
   Form7.Image101Click(Sender);
   Form12.Emitirnotafiscaldevendasnobalco1Click(Sender);
-  //
 end;
 
 procedure TForm7.ImportarOramento1Click(Sender: TObject);
 begin
-  //
   AgendaCommit(True);
-  //
+
   Form7.Close;
   Form7.Show;
-  //
+
   Form7.ibDataSet97.Close;
   Form7.ibDataSet97.Selectsql.Clear;
   Form7.ibDataSet97.Selectsql.Add('select PEDIDO as "Orçamento", DATA as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum(TOTAL) as "Total", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO');  //
   Form7.ibDataSet97.Open;
   Form7.ibDataSet97.EnableControls;
-  //
-  //
+
   Form7.Image101Click(Sender);
   Form12.Importaroramentos1Click(Sender);
-  //
 end;
 
 procedure TForm7.ImportarNotaFiscal1Click(Sender: TObject);
@@ -25533,53 +25473,40 @@ end;
 
 procedure TForm7.GerarNotaFiscalSrie12Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.GerarNotaFiscalSrie22Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
-
 end;
 
 procedure TForm7.Relatriodeoramentospendentes2Click(Sender: TObject);

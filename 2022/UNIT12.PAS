@@ -2120,6 +2120,7 @@ end;
 procedure TForm12.Emitirnotafiscaldevendasnobalco1Click(Sender: TObject);
 begin
   // Atualiza as ECF's que estão em uso
+  {Mauricio Parizotto 2023-07-19 Inicio
   Form7.ibDataSet14.DisableControls;
   Form7.ibDataSet14.Close;
   Form7.ibDataSet14.SelectSQL.Clear;
@@ -2141,13 +2142,33 @@ begin
     Form7.sModulo := 'VENDA';
 
     Form7.ibDataSet16.First;
-//    Form7.ibDataSet16.Edit;
-    if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
+
+    if form7.ibDataSet16.Modified then
+      Form7.ibDataSet16.Post;
     Retributa(True);
   end else
   begin
     ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929');
   end;
+
+  Com importação do gerencial, essa validação vai ficar em outro local }
+
+  Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+
+  Form7.sModulo := 'BALCAO';
+  Form41.ShowModal;
+  Form7.sModulo := 'VENDA';
+
+  Form7.ibDataSet16.First;
+
+  if form7.ibDataSet16.Modified then
+    Form7.ibDataSet16.Post
+  else
+    Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
+
+  Retributa(True);
+
+  {Mauricio Parizotto 2023-07-19 Fim}
 end;
 
 procedure TForm12.Importaroramentos1Click(Sender: TObject);
