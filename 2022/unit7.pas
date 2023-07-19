@@ -19341,9 +19341,9 @@ begin
       Form7.ibDataSet4.Selectsql.Add('select *');
       Form7.ibDataSet4.Selectsql.Add('from ESTOQUE');
       Form7.ibDataSet4.Selectsql.Add('where');
+      cPesq := ibDataSet16DESCRICAO.AsString;
       if (LimpaNumero(ibDataSet16DESCRICAO.AsString) = ibDataSet16DESCRICAO.AsString) and (Length(ibDataSet16DESCRICAO.AsString) <= 5) then
       begin
-        cPesq := ibDataSet16DESCRICAO.AsString;
         if Length(cPesq) < 5 then
           cPesq := Replicate('0', 5 - Length(cPesq)) + cPesq;
           
