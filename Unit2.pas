@@ -2203,7 +2203,7 @@ begin
   Form1.bVolta := False;
   Form2.Close;
   Panel3.Visible := False;
-  Form1.Label_10.Caption := Form1.sStatusECF;
+  Form1.lbDisplayPDV.Caption := Form1.sStatusECF;
   //
 end;
 

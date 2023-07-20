@@ -662,7 +662,7 @@ type
     Label_11: TLabel;
     Label_12: TLabel;
     Label_13: TLabel;
-    Label_10: TLabel;
+    lbDisplayPDV: TLabel;
     Label13: TLabel;
     touch_F3: TImage;
     touch_F2: TImage;
@@ -2096,8 +2096,8 @@ begin
     sP2 := 'F10 Menu Configurações';
   end;  
 
-  Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE
-  Form1.Label_10.Repaint; // 2015-09-08
+  Form1.lbDisplayPDV.Caption := sP1; // Define se em venda, CAIXA LIVRE
+  Form1.lbDisplayPDV.Repaint; // 2015-09-08
 
   if Form1.sGertec <> 'Não' then
   begin
@@ -10971,7 +10971,7 @@ begin
   lbReferenciaItemCupom.Font := Memo1.Font;// Usado calcular altura linhas do Form1.Memo1 Sandro Silva 2016-08-03
 
   Label13.Height := Label13.Height + AjustaAltura(1);
-  Label13.Width  := Label_10.Width;
+  Label13.Width  := Form1.lbDisplayPDV.Width;
   Label8.Width   := Label8.Width + (Label_11.BoundsRect.Right - Label8.BoundsRect.Right);
   Label9.Width   := Label8.Width;
   Label10.Width  := Label8.Width;
@@ -12605,8 +12605,8 @@ begin
             I := I + 1;
             if I > 10 then I := 1;
             //
-            Form1.Label_10.Caption := 'Feche a gaveta'+Replicate('.',I);
-            Form1.Label_10.Repaint;
+            Form1.lbDisplayPDV.Caption := 'Feche a gaveta'+Replicate('.',I);
+            Form1.lbDisplayPDV.Repaint;
             //
             Form1.sGaveta := Form1.PDV_StatusGaveta(True);
             //
@@ -17809,7 +17809,7 @@ begin
   if Copy(Edit1.Text,1,1) = '<' then
   begin
     if (Form1.bBalancaAutonoma = False) and (bPesou = False) then // Sandro Silva 2018-12-18  Não está usando balança autônoma e não pesou
-      Label_10.Caption := 'Abrindo conta';
+      Form1.lbDisplayPDV.Caption := 'Abrindo conta';
   end else
   begin
     //
@@ -17826,13 +17826,13 @@ begin
           begin
             if not Button7.Enabled and (Edit1.Text <> '') then
               Display(Edit1.Text,'Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
-            if Length(Label_10.Caption) = 1 then
+            if Length(Form1.lbDisplayPDV.Caption) = 1 then
               Display(Edit1.Text,'Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
           end else
           begin
             if not Button7.Enabled and (Edit1.Text <> '') then
               Display(Edit1.Text,'Entre com EAN 13, Código ou Descrição');
-            if Length(Label_10.Caption) = 1 then
+            if Length(Form1.lbDisplayPDV.Caption) = 1 then
               Display(Edit1.Text,'Entre com EAN 13, Código ou Descrição');
           end;
         end
@@ -17842,13 +17842,13 @@ begin
           begin
             if not Button7.Enabled and (Edit1.Text <> '') then
               Display(Edit1.Text,'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
-            if Length(Label_10.Caption) = 1 then
+            if Length(Form1.lbDisplayPDV.Caption) = 1 then
               Display(Edit1.Text,'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
           end else
           begin
             if not Button7.Enabled and (Edit1.Text <> '') then
               Display(Edit1.Text,'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição');
-            if Length(Label_10.Caption) = 1 then
+            if Length(Form1.lbDisplayPDV.Caption) = 1 then
               Display(Edit1.Text,'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição');
           end;
         end;
@@ -18109,7 +18109,7 @@ begin
           if fQuantidadeVendida = 0 then
           begin
             Edit1.Text := '';
-            Label_10.Caption := '';
+            Form1.lbDisplayPDV.Caption := '';
             SmallMsg('Comando inválido.');
           end;
 
@@ -18132,9 +18132,9 @@ begin
             StrZero(StrToInt(AllTrim(Edit1.Text))*-1,6,0) // Elimina o caractere '-' e formata com 6 dígitos o número do item Ex. item '000001'
           except
             SmallMsg('Comando inválido.');
-            Label_10.Caption := '';
+            Form1.lbDisplayPDV.Caption := '';
             Edit1.Text := '';
-            Form1.ibDataSet4.EnableControls; // Sandro Silva 2020-11-06 
+            Form1.ibDataSet4.EnableControls; // Sandro Silva 2020-11-06
             Abort;
           end;
           //
@@ -19838,7 +19838,7 @@ begin
     begin
       if dbGrid2.Visible then
       begin
-         Label_10.Caption := '';
+         Form1.lbDisplayPDV.Caption := '';
          Edit1.Text       := '';
          dbGrid2.Visible := False;
       end else
@@ -19955,7 +19955,7 @@ begin
         Form1.sModeloECF := Form1.sModeloECF_Reserva;
         Form1.Button2Click(Sender); // Abre um novo cumpom
         //
-        if Form1.Label_10.Caption = RetornaTextoEmVenda(Form1.sModeloECF_Reserva) then // Sandro Silva 2023-06-26 if Form1.Label_10.Caption = 'EM VENDA' then
+        if Form1.lbDisplayPDV.Caption = RetornaTextoEmVenda(Form1.sModeloECF_Reserva) then // Sandro Silva 2023-06-26 if Form1.lbDisplayPDV.Caption = 'EM VENDA' then
         begin
           //
 
@@ -34069,6 +34069,12 @@ procedure TForm1.itemMenugerencialClick(Sender: TObject);
 var
   Importar: TImportaGerencial;
 begin
+  if PDV_CupomAberto then
+  begin
+    Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
+    Exit;
+  end;
+  Form1.sStatusECF := 'Gerando ' + Form1.sTipoDocumento2;
   // Importa gerencial para nfc-e
   Importar := TImportaGerencial.Create;
   Importar.Caixa := Form1.sCaixa;
@@ -34103,9 +34109,11 @@ begin
     DeletaDataSet25;
     Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
   end;
+  FreeAndNil(Importar);
   Form1.TransacoesCartao.Transacoes.Clear;
+  Form1.sStatusECF := 'CAIXA LIVRE';
+  Screen.Cursor := crDefault;
 
-  FreeAndNil(Importar);      
 end;
 
 procedure TForm1.AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String;
