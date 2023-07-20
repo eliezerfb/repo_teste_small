@@ -3171,7 +3171,13 @@ end;
 
 procedure TForm12.SMALL_DBEdit41Click(Sender: TObject);
 begin
-  dBGrid2.Visible       := True;
+  dBGrid2.Visible := True;
+  if not SMALL_DBEdit41.Focused then
+  begin
+    SMALL_DBEdit41.SetFocus;
+    SMALL_DBEdit41.SelectAll;
+    SMALL_DBEdit41Change(Self);    
+  end;
 end;
 
 procedure TForm12.ExibeColunasFCP(bOculta: Boolean);
