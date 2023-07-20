@@ -34082,7 +34082,7 @@ begin
   Importar.IBDataSet25  := Form1.ibDataSet25;
   Importar.TransacoesCartao := Form1.TransacoesCartao;
   Importar.NomeDoTEF        := Form10.sNomeDoTEF;
-  Importar.DebitoOuCredito  := Form1.sDebitoOuCredito
+  Importar.DebitoOuCredito  := Form1.sDebitoOuCredito;
 
   Importar.NumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
   if Importar.Importar then

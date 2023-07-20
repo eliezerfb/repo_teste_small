@@ -73,7 +73,9 @@ begin
     (FIBDataSet30 = nil) or
     (FIBDataset150 = nil) or
     (FIBDataSet7 = nil) or
-    (FIBDataSet28 = nil) then
+    (FIBDataSet28 = nil) or
+    (FIBDataSet25 = nil)
+    then
     Exit;
 
   IBQCONSULTA := CriaIBQuery(FIBTransaction);
@@ -233,6 +235,35 @@ begin
       FIBDataSet27.Open;
       FIBDataSet27.Last;
 
+      // Receber
+      FIBDataSet7.Close;
+      FIBDataSet7.SelectSQL.Text :=
+        'select * ' +
+        'from RECEBER ' +
+        'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(StrToInt(FNumeroGerencial)) + RightStr(sCaixaOld, 3)) +
+        ' order by REGISTRO';
+      FIBDataSet7.Open;
+
+      FIBDataSet7.First;
+      while FIBDataSet7.Eof = False do
+      begin
+        if (FIBDataSet7.FieldByName('NUMERONF').AsString = FNumeroGerencial + Copy(sCaixaOld, 1, 3)) then
+        begin
+          try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
+            FIBDataSet7.Edit;
+            FIBDataSet7.FieldByName('NUMERONF').AsString  := sNovoNumero + Copy(FCaixa, 1, 3);
+            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, FNumeroGerencial, FormataNumeroDoCupom(StrToInt(sNovoNumero)), [rfReplaceAll]);
+            FIBDataSet7.FieldByName('DOCUMENTO').AsString := FCaixa + sNovoNumero + RightStr(FIBDataSet7.FieldByName('DOCUMENTO').AsString, 1);
+            FIBDataSet7.FieldByName('EMISSAO').AsDateTime := dtDataNovo;
+            FIBDataSet7.Post;
+          except
+          end;
+        end;
+        FIBDataSet7.Next;
+      end;                     
+
+      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml
+
       //Pagament
       FIBDataSet28.Close;
       FIBDataSet28.SelectSQL.Text :=
@@ -247,15 +278,17 @@ begin
           try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
             FIBDataSet28.Edit;
             FIBDataSet28.FieldByName('PEDIDO').AsString := sNovoNumero;
-            FIBDataSet28.FieldByName('CAIXA').AsString  :=  FCaixa;
+            FIBDataSet28.FieldByName('CAIXA').AsString  := FCaixa;
             FIBDataSet28.FieldByName('DATA').AsDateTime := dtDataNovo;
             FIBDataSet28.Post;
           except
           end;
         end;
 
+      // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
+
 /////////////////////////////////////////////////////////////////////////////////////
-        FIBDataSet25.Append;
+        //FIBDataSet25.Append;
 
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
           FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1));
@@ -263,12 +296,39 @@ begin
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Cheque
           FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
 
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Dinheiro
+        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '02' then // Dinheiro
+        begin
           FIBDataSet25.FieldByName('ACUMULADO2').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
+        end;
+        {
+        if (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '03') or // Cartão
+          (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '17') or // Pagto Instantâneo
+          (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '18') then // Carteira digital
+        begin
+
+          if (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '03') then
+          begin
+
+            FIBDATASET7.First;
+            while FIBDATASET7.Eof = False do
+            begin
+              if FIBDATASET7.FieldByName('VALOR_DUPL').AsFloat = FIBDataSet28.FieldByName('VALOR').AsFloat then
+              begin
+                if AnsiContainsText(ConverteAcentosXML(FIBDATASET7.FieldByName('HISTORICO').AsString), 'CARTAO') then
+                  FNomeDoTEF := ConverteAcentosXML(AnsiUpperCase(StringReplace(FIBDataSet28.FieldByName('FORMA').AsString, '03 Cartao ', '', [rfReplaceAll])));
+
+              end;
+              FIBDATASET7.Next;
+            end;
+
+
+
+            FTransacoesCartao.Transacoes.Adicionar(
+          end;
 
                 if (FIBDataSet25.FieldByName('PAGAR').AsFloat <> 0) then // Cartao
                 begin
-                  
+
                   try
                     for iTransacaoCartao := 0 to FTransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
                     begin
@@ -297,7 +357,7 @@ begin
                           FIBDataSet28.FieldByName('FORMA').AsString     := '17 Pagto Instantaneo';
 
                         FIBDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', FTransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago));
-                        FIBDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; 
+                        FIBDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString;
                         FIBDataSet28.Post;
 
                       except
@@ -310,6 +370,7 @@ begin
 
                   end;
                 end; // Fim Cartão
+        end;
                 //
                 if (FIBDataSet25.FieldByName('DIFERENCA_').AsFloat <> 0) then // Prazo
                 begin
@@ -361,12 +422,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('1', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -392,12 +451,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('2', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -423,12 +480,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('3', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -454,12 +509,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('4', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -485,12 +538,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('5', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -516,12 +567,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('6', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -547,12 +596,10 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('7', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
                 //
@@ -578,14 +625,13 @@ begin
                   except
                   end;
 
-                  {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('8', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
                   end;
-                  {Sandro Silva 2021-07-27 fim}
 
                 end;
+
                 // Sempre cria Troco
                 begin
                   //
@@ -609,75 +655,12 @@ begin
                   except
                   end;
                 end;
-
-                //Aqui confere as formas de pagamento para NFC-e se não existir forma corretamente importa do xml?
-                if (Form1.sModeloECF = '65') then
-                begin
-
-                  FIBDataSet28.First;
-                  FIBDataSet28.Last;
-
-                  if FIBDataSet28.RecordCount < 3 then
-                  begin
-
-                    Audita('VENDA','FRENTE', Form15.UsuarioPub, 'IMPORTOU PAGAMENTOS DO XML DEPOIS DE FECHAR VENDA ' + Form1.ibDataSet27.FieldByName('PEDIDO').AsString + ' CX ' + Form1.ibDataSet27.FieldByName('CAIXA').AsString, 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
-
-                    Form1.IBDataSet150.Close;
-                    Form1.IBDataSet150.SelectSQL.Text :=
-                      'select * ' +
-                      'from NFCE ' +
-                      'where MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                      ' and NUMERONF = ' + QuotedStr(Form1.ibDataSet27.FieldByName('PEDIDO').AsString) +
-                      ' and CAIXA = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CAIXA').AsString);
-                    Form1.IBDataSet150.Open;
-
-                    if Form1.IBDataSet150.FieldByName('NFEXML').AsString <> '' then
-                    begin
-                      _ecf65_GravaPagamentFromXML(Form1.IBDataSet150.FieldByName('NFEXML').AsString, Form1.ibDataSet27.FieldByName('PEDIDO').AsString, Form1.ibDataSet27.FieldByName('CAIXA').AsString);
-                    end;
-
-                  end;
-                end; // if (Form1.sModeloECF = '65') then
-
-
-
-
-
-
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////
         FIBDataSet28.Next;
       end;
-
-      // Receber
-      FIBDataSet7.Close;
-      FIBDataSet7.SelectSQL.Text :=
-        'select * ' +
-        'from RECEBER ' +
-        'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(StrToInt(FNumeroGerencial)) + RightStr(sCaixaOld, 3)) +
-        ' order by REGISTRO';
-      FIBDataSet7.Open;
-
-      FIBDataSet7.First;
-      while FIBDataSet7.Eof = False do
-      begin
-        if (FIBDataSet7.FieldByName('NUMERONF').AsString = FNumeroGerencial + Copy(sCaixaOld, 1, 3)) then
-        begin
-          try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
-            FIBDataSet7.Edit;
-            FIBDataSet7.FieldByName('NUMERONF').AsString  := sNovoNumero + Copy(FCaixa, 1, 3);
-            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, FNumeroGerencial, FormataNumeroDoCupom(StrToInt(sNovoNumero)), [rfReplaceAll]);
-            FIBDataSet7.FieldByName('DOCUMENTO').AsString := FCaixa + sNovoNumero + RightStr(FIBDataSet7.FieldByName('DOCUMENTO').AsString, 1);
-            FIBDataSet7.FieldByName('EMISSAO').AsDateTime := dtDataNovo;
-            FIBDataSet7.Post;
-          except
-          end;
-        end;
-        FIBDataSet7.Next;
-      end;
-
-      // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
 
 
 

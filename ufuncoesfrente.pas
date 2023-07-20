@@ -279,6 +279,7 @@ function SelectSQLGerenciadorVendasF10(sModeloECF: String;
   sModeloECF_Reserva: String; Data: TDate): String;
 function RetornaTextoEmVenda(sModelo: String): String;  
 //function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
+procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
 
 var
   cWinDir: array[0..200] of Char;
@@ -2023,6 +2024,18 @@ begin
   Result := TEXTO_CAIXA_EM_VENDA;
   if sModelo = '99' then
     Result := 'EM LANÇAMENTO';
+end;
+
+procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
+begin
+  if ibDataSet25.FieldByName('PAGAR').AsFloat <= 0 then
+    ibDataSet25.FieldByName('PAGAR').AsFloat := 0;
+
+  if (TEFValorTotalAutorizado > 0)
+    and (ibDataSet25.FieldByName('PAGAR').AsFloat < TEFValorTotalAutorizado) then
+  begin
+    ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+  end;
 end;
 
 {

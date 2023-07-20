@@ -2113,7 +2113,7 @@ end;
 
 procedure TForm2.SMALL_DBEdit2Enter(Sender: TObject);
 begin
-  with Sender as TDBEdit do SelectAll;
+  TDBEdit(Sender).SelectAll;
 end;
 
 procedure TForm2.touch_F8Click(Sender: TObject);
