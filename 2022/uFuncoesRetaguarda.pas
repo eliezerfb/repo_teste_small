@@ -441,8 +441,16 @@ begin
 end;
 
 function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
+var
+  sIdForma: String;
 begin
-  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+  // Pode ser que o usuário não informe a forma de pagamento na tela de desdobramento da parcelas da nota
+  // Nesse caso deverá permitir gerar boleto destar parcelas
+  if sForma = '' then
+    sIdForma := ''
+  else
+    sIdForma := IdFormasDePagamentoNFe(sForma);
+  Result := (Pos('|' + sIdForma + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
 end;
 
 end.

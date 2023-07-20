@@ -2783,7 +2783,10 @@ begin
       // 99=Outros
       //
 
-      stPag_YA02 := IdFormasDePagamentoNFe(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)); // Sandro Silva 2023-07-13 stPag_YA02 := Copy(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString), 1, 2);
+      if Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '' then
+        stPag_YA02 := '' 
+      else
+        stPag_YA02 := IdFormasDePagamentoNFe(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)); // Sandro Silva 2023-07-13 stPag_YA02 := Copy(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString), 1, 2);
       if stPag_YA02 = '' then
         stPag_YA02 := '14'; // 14=Duplicata Mercantil
 

@@ -1625,12 +1625,10 @@ end;
 
 function TForm18.FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
 begin
-  // Sandro Silva 2023-07-12 Result := (Pos('|' + Copy(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, 1, 2) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
   Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
 end;
 
-function TForm18.ValidarDesdobramentoParcela: Boolean;
-
+function TForm18.ValidarDesdobramentoParcela: Boolean; 
 var
   slFormas: TStringList;
   sForma: String;
