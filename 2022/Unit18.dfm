@@ -51,6 +51,7 @@ object Form18: TForm18
       Top = 290
       Width = 121
       Height = 13
+      Anchors = [akLeft, akBottom]
       Caption = 'Documento de cobran'#231'a:'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -79,7 +80,7 @@ object Form18: TForm18
       Top = 60
       Width = 560
       Height = 200
-      Anchors = [akLeft, akTop, akRight]
+      Anchors = [akLeft, akTop, akRight, akBottom]
       Ctl3D = False
       DataSource = Form7.DataSource7
       FixedColor = clWindow
@@ -102,6 +103,7 @@ object Form18: TForm18
       OnColExit = DBGrid1ColExit
       OnDrawDataCell = DBGrid1DrawDataCell
       OnEnter = DBGrid1Enter
+      OnExit = DBGrid1Exit
       OnKeyDown = DBGrid1KeyDown
       OnKeyPress = DBGrid1KeyPress
     end
@@ -111,7 +113,7 @@ object Form18: TForm18
       Width = 560
       Height = 21
       Style = csDropDownList
-      Anchors = [akLeft, akTop, akRight]
+      Anchors = [akLeft, akRight, akBottom]
       Ctl3D = False
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -147,7 +149,7 @@ object Form18: TForm18
       Top = 259
       Width = 560
       Height = 22
-      Anchors = [akLeft, akTop, akRight]
+      Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
       Caption = ' '
@@ -174,6 +176,7 @@ object Form18: TForm18
       Top = 345
       Width = 343
       Height = 17
+      Anchors = [akLeft, akBottom]
       Caption = 
         'Enviar NF-e, Consultar e Imprimir DANFE antes do doc de  cobran'#231 +
         'a'

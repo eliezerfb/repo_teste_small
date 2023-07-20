@@ -46,6 +46,7 @@ type
     procedure DBGrid1CellClick(Column: TColumn);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure cboDocCobrancaEnter(Sender: TObject);
+    procedure DBGrid1Exit(Sender: TObject);
   private
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
@@ -815,13 +816,15 @@ begin
       for I := 1 to Form7.ibDataSet7.FieldCount do
         Form7.ibDataSet7.Fields[I-1].Visible := False;
 
-      Form7.ibDataSet7DOCUMENTO.Visible        := True;
-      Form7.ibDataSet7VENCIMENTO.Visible       := True;
-      Form7.ibDataSet7VALOR_DUPL.Visible       := True;
-      Form7.ibDataSet7PORTADOR.Visible         := True;
+      Form7.ibDataSet7DOCUMENTO.Visible  := True;
+      Form7.ibDataSet7VENCIMENTO.Visible := True;
+      Form7.ibDataSet7VALOR_DUPL.Visible := True;
+      Form7.ibDataSet7PORTADOR.Visible   := True;
 
       {Sandro Silva 2023-06-16 inicio}
-      Form18.Width := 1000;// 906; // Largura normal
+      Form18.Width  := 995;//1000;// 906; // Largura normal
+      Form18.Height := 444; //500;
+
       lbTotalParcelas.Alignment := taLeftJustify;
       lbTotalParcelas.Left      := 5;
       Form7.ibDataSet7FORMADEPAGAMENTO.Visible     := True; // Sandro Silva 2023-06-16
@@ -1056,6 +1059,7 @@ end;
 procedure TForm18.DBGrid1Enter(Sender: TObject);
 begin
   DbGrid1.SelectedIndex := 1;
+  Form7.ibDataSet7.Tag := ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS; // Bloqueia fazer append/insert no dataset
 end;
 
 procedure TForm18.Button4Click(Sender: TObject);
@@ -1352,7 +1356,8 @@ begin
     end;
     {Sandro Silva 2023-07-12 inicio}
     Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
-    Form18.Width := 600; // Largura normal
+    Form18.Width  := 600; // Largura normal
+    Form18.Height := 421; // Altura normal
     lbTotalParcelas.Alignment := taRightJustify;
     lbTotalParcelas.Left      := 239;
     Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
@@ -1743,6 +1748,11 @@ begin
     DBGrid1.DataSource.DataSet.First;
     DBGrid1.SelectedIndex := IndexColumnFromName(DBGrid1, 'VENCIMENTO');
   end;
+end;
+
+procedure TForm18.DBGrid1Exit(Sender: TObject);
+begin
+  Form7.ibDataSet7.Tag := 0; // Permiter fazer append/insert no dataset
 end;
 
 end.

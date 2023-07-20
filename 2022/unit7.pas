@@ -30,6 +30,7 @@ const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
 const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
+const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 function Commitatudo(RefazSelect:Boolean): Boolean;
@@ -22059,6 +22060,10 @@ end;
 
 procedure TForm7.ibDataSet7BeforeInsert(DataSet: TDataSet);
 begin
+  {Sandro Silva 2023-07-20 inicio}
+  if Form7.ibDataSet7.Tag = ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS then
+    Abort;
+  {Sandro Silva 2023-07-20 fim}
   //
   try
     ibDataSet99.Close;
