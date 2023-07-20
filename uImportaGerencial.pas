@@ -6,11 +6,11 @@ uses
   SysUtils, Controls, StrUtils
   , IBDatabase, IBCustomDataSet, IBQuery
   , ufuncoesfrente
+  , uclassetransacaocartao
   ;
 
 type
-  TImportaGerencial = class
-
+  TImportaGerencial = class 
   private
     FIBTransaction: TIBTransaction;
     FCaixa: String;
@@ -22,8 +22,11 @@ type
     FIBDataSet7: TIBDataSet;
     FIBDataSet28: TIBDataSet;
     FNumeroNF: String;
-    procedure SetNumeroGerencial(const Value: String);
-
+    FIBDataSet25: TIBDataSet;
+    FTransacoesCartao: TTransacaoFinanceira;
+    FNomeDoTEF: String;
+    FDebitoOuCredito: String;
+    procedure SetNumeroGerencial(const Value: String);  
   public
     function Importar: Boolean;
     property IBTransaction: TIBTransaction read FIBTransaction write FIBTransaction;
@@ -31,7 +34,11 @@ type
     property IBDataSet27: TIBDataSet read FIBDataSet27 write FIBDataSet27;
     property IBDataSet28: TIBDataSet read FIBDataSet28 write FIBDataSet28;
     property IBDataSet7: TIBDataSet read FIBDataSet7 write FIBDataSet7;
-    property IBDataSet30: TIBDataSet read FIBDataSet30 write FIBDataSet30; 
+    property IBDataSet30: TIBDataSet read FIBDataSet30 write FIBDataSet30;
+    property IBDataSet25: TIBDataSet read FIBDataSet25 write FIBDataSet25;
+    property TransacoesCartao: TTransacaoFinanceira read FTransacoesCartao write FTransacoesCartao;
+    property NomeDoTEF: String read FNomeDoTEF write FNomeDoTEF;
+    property DebitoOuCredito: String read FDebitoOuCredito write FDebitoOuCredito;
     property Caixa: String read FCaixa write FCaixa;
     property ModeloDocumento: String read FModeloDocumento write FModeloDocumento;
     property NumeroGerencial: String read FNumeroGerencial write SetNumeroGerencial;
@@ -246,6 +253,400 @@ begin
           except
           end;
         end;
+
+/////////////////////////////////////////////////////////////////////////////////////
+        FIBDataSet25.Append;
+
+        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
+          FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1));
+
+        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Cheque
+          FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
+
+        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Dinheiro
+          FIBDataSet25.FieldByName('ACUMULADO2').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
+
+                if (FIBDataSet25.FieldByName('PAGAR').AsFloat <> 0) then // Cartao
+                begin
+                  
+                  try
+                    for iTransacaoCartao := 0 to FTransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
+                    begin
+                      try
+                        if Pos('CREDITO', FNomeDoTEF) <> 0 then
+                          FDebitoOuCredito := 'CREDITO';
+                        if Pos('DEBITO', FNomeDoTEF) <> 0 then
+                          FDebitoOuCredito := 'DEBITO';
+                        if Trim(FDebitoOuCredito) = '' then
+                          FDebitoOuCredito := 'DEBITO';
+
+                        FIBDataSet28.Append;
+                        FIBDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
+                        FIBDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO);
+                        FIBDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF);
+                        FIBDataSet28.FieldByName('PEDIDO').AsString    := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                        FIBDataSet28.FieldByName('GNF').AsString       := FormataNumeroDoCupom(iGnf);
+                        FIBDataSet28.FieldByName('CAIXA').AsString     := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                        FIBDataSet28.FieldByName('CLIFOR').AsString    := sConveniado;
+                        FIBDataSet28.FieldByName('VENDEDOR').AsString  := sVendedor;
+                        FIBDataSet28.FieldByName('FORMA').AsString     := '03 Cartao ' + FTransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito;
+
+                        if FTransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadeCarteiraDigital then
+                          FIBDataSet28.FieldByName('FORMA').AsString     := '18 Carteira Digital';
+                        if FTransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadePix then
+                          FIBDataSet28.FieldByName('FORMA').AsString     := '17 Pagto Instantaneo';
+
+                        FIBDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', FTransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago));
+                        FIBDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; 
+                        FIBDataSet28.Post;
+
+                      except
+                      end;
+                    end; // for iTransacaoCartao := 0 to FTransacoesCartao.Transacoes.Count -1 do
+
+
+
+                  except
+
+                  end;
+                end; // Fim Cartão
+                //
+                if (FIBDataSet25.FieldByName('DIFERENCA_').AsFloat <> 0) then // Prazo
+                begin
+                  //
+                  try
+                    sFormaPrazo := '04 A prazo';
+                    if Form1.sModeloECF = '65' then
+                      sFormaPrazo := '04 A prazo NFC-e';
+
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString       := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString       := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString    := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('GNF').AsString       := FormataNumeroDoCupom(iGnf); // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('GNF').AsString       := StrZero(iGnf, 6, 0);
+                    FIBDataSet28.FieldByName('CAIXA').AsString     := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString    := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString  := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString     := sFormaPrazo;
+                    FIBDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('DIFERENCA_').AsFloat));// Sandro Silva 2016-09-05  FIBDataSet25.FieldByName('DIFERENCA_').Asfloat;
+                    FIBDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR01').AsFloat <> 0) then // Extra 1
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString       := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString       := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString    := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString     := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString    := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString  := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString     := '05 ' + AllTrim(Form2.Label18.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR01').AsFloat)); // Sandro Silva 2016-09-05 FIBDataSet25.FieldByName('VALOR01').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('1', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR02').AsFloat <> 0) then // Extra 2
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '06 ' + AllTrim(Form2.Label19.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR02').AsFloat));// Sandro Silva 2016-09-05  FIBDataSet25.FieldByName('VALOR02').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('2', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR03').AsFloat <> 0) then // Extra 3
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '07 ' + AllTrim(Form2.Label20.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR03').AsFloat)); // Sandro Silva 2016-09-05 FIBDataSet25.FieldByName('VALOR03').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('3', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR04').AsFloat <> 0) then // Extra 4
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '08 ' + AllTrim(Form2.Label21.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR04').AsFloat)); // Sandro Silva 2016-09-05 FIBDataSet25.FieldByName('VALOR04').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('4', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR05').AsFloat <> 0) then // Extra 5
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '09 ' + AllTrim(Form2.Label22.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR05').AsFloat));// Sandro Silva 2016-09-05  FIBDataSet25.FieldByName('VALOR05').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('5', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR06').AsFloat <> 0) then // Extra 6
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '10 ' + AllTrim(Form2.Label23.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR06').AsFloat)); // Sandro Silva 2016-09-05 FIBDataSet25.FieldByName('VALOR06').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('6', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR07').AsFloat <> 0) then // Extra 7
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '11 ' + AllTrim(Form2.Label24.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR07').AsFloat));// Sandro Silva 2016-09-05 FIBDataSet25.FieldByName('VALOR07').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('7', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                //
+                if (FIBDataSet25.FieldByName('VALOR08').AsFloat <> 0) then // Extra 8
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '12 ' + AllTrim(Form2.Label25.Caption);
+                    FIBDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('VALOR08').AsFloat));// Sandro Silva 2016-09-05  FIBDataSet25.FieldByName('VALOR08').AsFloat;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+
+                  {Sandro Silva 2021-07-27 inicio}
+                  try
+                    FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), FIBDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('8', sCaixa, StrZero(iCOO, 6, 0), FIBDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                  except
+                  end;
+                  {Sandro Silva 2021-07-27 fim}
+
+                end;
+                // Sempre cria Troco
+                begin
+                  //
+                  try
+                    FIBDataSet28.Append;
+                    //
+                    FIBDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
+                    FIBDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
+                    FIBDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 FIBDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
+                    FIBDataSet28.FieldByName('PEDIDO').AsString   := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
+                    FIBDataSet28.FieldByName('CAIXA').AsString    := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
+                    FIBDataSet28.FieldByName('CLIFOR').AsString   := sConveniado;
+                    FIBDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
+                    FIBDataSet28.FieldByName('FORMA').AsString    := '13 Troco';
+                    if FIBDataSet25.FieldByName('ACUMULADO3').AsFloat <> 0 then
+                      FIBDataSet28.FieldByName('VALOR').AsFloat    := StrToFloat(FormatFloat('0.00', Abs(FIBDataSet25.FieldByName('ACUMULADO3').AsFloat)));// Sandro Silva 2017-05-20  StrToFloat(FormatFloat('0.00', FIBDataSet25.FieldByName('ACUMULADO3').AsFloat * -1));// Sandro Silva 2016-09-05 FIBDataSet25.FieldByName('ACUMULADO3').AsFloat * -1;
+                    FIBDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+                    //
+                    FIBDataSet28.Post;
+                    //
+                  except
+                  end;
+                end;
+
+                //Aqui confere as formas de pagamento para NFC-e se não existir forma corretamente importa do xml?
+                if (Form1.sModeloECF = '65') then
+                begin
+
+                  FIBDataSet28.First;
+                  FIBDataSet28.Last;
+
+                  if FIBDataSet28.RecordCount < 3 then
+                  begin
+
+                    Audita('VENDA','FRENTE', Form15.UsuarioPub, 'IMPORTOU PAGAMENTOS DO XML DEPOIS DE FECHAR VENDA ' + Form1.ibDataSet27.FieldByName('PEDIDO').AsString + ' CX ' + Form1.ibDataSet27.FieldByName('CAIXA').AsString, 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
+
+                    Form1.IBDataSet150.Close;
+                    Form1.IBDataSet150.SelectSQL.Text :=
+                      'select * ' +
+                      'from NFCE ' +
+                      'where MODELO = ' + QuotedStr(Form1.sModeloECF) +
+                      ' and NUMERONF = ' + QuotedStr(Form1.ibDataSet27.FieldByName('PEDIDO').AsString) +
+                      ' and CAIXA = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CAIXA').AsString);
+                    Form1.IBDataSet150.Open;
+
+                    if Form1.IBDataSet150.FieldByName('NFEXML').AsString <> '' then
+                    begin
+                      _ecf65_GravaPagamentFromXML(Form1.IBDataSet150.FieldByName('NFEXML').AsString, Form1.ibDataSet27.FieldByName('PEDIDO').AsString, Form1.ibDataSet27.FieldByName('CAIXA').AsString);
+                    end;
+
+                  end;
+                end; // if (Form1.sModeloECF = '65') then
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
         FIBDataSet28.Next;
       end;
 
@@ -275,6 +676,10 @@ begin
         end;
         FIBDataSet7.Next;
       end;
+
+      // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
+
+
 
       Result := True;
 

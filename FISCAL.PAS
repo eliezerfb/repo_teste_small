@@ -12073,7 +12073,7 @@ begin
 
               if bNFCeUsoDenegado = False then // Sandro Silva 2020-05-18
               begin
-usar esse código para consiguir montar tpag
+
                 if (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat <> 0) then   // Total do documento
                 begin
                   try
@@ -12555,7 +12555,7 @@ usar esse código para consiguir montar tpag
                 Form1.ibDataSet7.First;
                 while Form1.ibDataSet7.Eof = False do
                 begin
-                  if Form1.ibDataSet7.FieldByName('NUMERONF').AsString = (Form1.ibDataSet27.FieldByName('PEDIDO').AsString + Form1.ibDataSet27.FieldByName('CAIXA').AsString) then 
+                  if Form1.ibDataSet7.FieldByName('NUMERONF').AsString = (Form1.ibDataSet27.FieldByName('PEDIDO').AsString + Form1.ibDataSet27.FieldByName('CAIXA').AsString) then
                   begin
 
                     if Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime <> Form1.ibDataSet27.FieldByName('DATA').AsDateTime then
@@ -34079,16 +34079,19 @@ begin
   Importar.IBDataset150 := Form1.IBDataSet150;
   Importar.IBDataSet7   := Form1.IBDataSet7;
   Importar.IBDataSet28  := Form1.IBDataSet28;
+  Importar.IBDataSet25  := Form1.ibDataSet25;
+  Importar.TransacoesCartao := Form1.TransacoesCartao;
+  Importar.NomeDoTEF        := Form10.sNomeDoTEF;
+  Importar.DebitoOuCredito  := Form1.sDebitoOuCredito
+
   Importar.NumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
   if Importar.Importar then
   begin
     try
       Form1.icupom := StrToInt(Importar.NumeroNF);
 
-      fazer inverso que dataset25 faz gravando em ibdataset28
-
       _ecf65_EnviarNFCe(True);
-      
+
       DeletaDataSet25;
     except
 
@@ -34096,7 +34099,11 @@ begin
     Commitatudo(True);
   end
   else
+  begin
+    DeletaDataSet25;
     Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
+  end;
+  Form1.TransacoesCartao.Transacoes.Clear;
 
   FreeAndNil(Importar);      
 end;
