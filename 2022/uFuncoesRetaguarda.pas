@@ -286,6 +286,7 @@ procedure GetFormasDePagamentoNFe(slForma: TStringList);
 begin
 
   slForma.Clear;
+  {
   slForma.Add('Dinheiro');
   slForma.Add('Cheque');
   slForma.Add('Cartão de Crédito');
@@ -299,6 +300,23 @@ begin
   slForma.Add('Boleto Bancário');
   slForma.Add('Depósito Bancário');
   slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add('Transfer.bancária, Carteira Digital');
+  slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
+  slForma.Add('Outros');
+  }
+  slForma.Add('Dinheiro');
+  slForma.Add('Cartão de Crédito');
+  slForma.Add('Cartão de Débito');
+  slForma.Add('Boleto Bancário');
+  slForma.Add('Depósito Bancário');
+  slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add('Cheque');
+  slForma.Add('Crédito de Loja');
+  slForma.Add('Vale Alimentação');
+  slForma.Add('Vale Refeição');
+  slForma.Add('Vale Presente');
+  slForma.Add('Vale Combustível');
+  slForma.Add('Duplicata Mercantil');
   slForma.Add('Transfer.bancária, Carteira Digital');
   slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
   slForma.Add('Outros');

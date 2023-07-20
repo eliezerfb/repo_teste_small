@@ -1326,11 +1326,17 @@ begin
                 Form7.ibDataSet7.DisableControls;
                 {Sandro Silva 2023-07-12 fim}
 
-                Form1.sEscolhido       := Form18.cboDocCobranca.Text;
-                Form1.sBancoBoleto     := Trim(StringReplace(Form18.cboDocCobranca.Text, 'Boleto de cobrança do', '', [rfReplaceAll]));
-                Form25.btnEnviaEmailTodos.Visible := True;
-                Form25.ShowModal;
-                Form25.btnEnviaEmailTodos.Visible := False;
+                //Posiciona na primeira parcela do desdobramento
+                Form7.ibDataSet7.First; // Sandro Silva 2023-07-20
+
+                if Form7.ibDataSet7VALOR_DUPL.AsString <> '' then
+                begin
+                  Form1.sEscolhido       := Form18.cboDocCobranca.Text;
+                  Form1.sBancoBoleto     := Trim(StringReplace(Form18.cboDocCobranca.Text, 'Boleto de cobrança do', '', [rfReplaceAll]));
+                  Form25.btnEnviaEmailTodos.Visible := True;
+                  Form25.ShowModal;
+                  Form25.btnEnviaEmailTodos.Visible := False;
+                end;
 
               finally
                 Form7.ibDataSet7.EnableControls;
