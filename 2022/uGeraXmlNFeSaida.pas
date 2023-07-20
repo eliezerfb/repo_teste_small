@@ -2791,8 +2791,11 @@ begin
         stPag_YA02 := '14'; // 14=Duplicata Mercantil
 
       Form7.spdNFeDataSets.campo('tPag_YA02').Value       := stPag_YA02;  // Forma de pagamento
+      {Sandro Silva 2023-07-20 inicio}
+      if stPag_YA02 = '99' then
+        Form7.spdNFeDataSets.campo('xPag_YA02a').Value       := 'Outras Formas';
+      {Sandro Silva 2023-07-20 fim}
       Form7.spdNFeDataSets.campo('vPag_YA03').Value       := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat);
-
 
       //if (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '03') or (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '04') then
       if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
