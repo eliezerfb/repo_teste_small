@@ -1865,6 +1865,7 @@ object Form24: TForm24
         OnEnter = SMALL_DBEdit41Enter
         OnExit = SMALL_DBEdit41Exit
         OnKeyDown = SMALL_DBEdit41KeyDown
+        OnKeyUp = SMALL_DBEdit41KeyUp
       end
       object SMALL_DBEdit31: TSMALL_DBEdit
         Left = 501
