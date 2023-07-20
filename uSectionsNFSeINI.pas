@@ -11,6 +11,7 @@ type
     function getAmbiente: tAmbienteNFSe;
     procedure setAmbiente(const Value: tAmbienteNFSe);
   public
+    function AmbienteToStr(AenAmbiente: tAmbienteNFSe): String;
     property Ambiente: tAmbienteNFSe read getAmbiente write setAmbiente;
   protected
     function Section: String; override;
@@ -35,6 +36,13 @@ end;
 procedure TSectionNFSEINI.setAmbiente(const Value: tAmbienteNFSe);
 begin
   FoIni.WriteInteger(Section, _cIdentNFEAmbiente, Ord(Value));
+end;
+
+function TSectionNFSEINI.AmbienteToStr(AenAmbiente: tAmbienteNFSe): String;
+begin
+  Result := _cAmbienteHomologacao;
+  if AenAmbiente = tanfsProducao then
+    Result := _cAmbienteProducao;
 end;
 
 end.
