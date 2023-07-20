@@ -2112,6 +2112,7 @@ type
     function getZiparXML: String;
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
     procedure HintTotalNotaVenda(fRetencao : Real);
+    procedure CalculaTotalNota;
   public
     // Public declarations
 
@@ -11761,38 +11762,7 @@ end;
 
 procedure TForm7.ibDataSet24MERCADORIAChange(Sender: TField);
 begin
-  if Alltrim(Form7.ibDataSet24FRETE12.AsString) <> '1' then
-  begin
-     Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat
-                                       - Form7.ibDataSet24DESCONTO.AsFloat
-                                       + Form7.ibDataSet24SERVICOS.AsFloat
-                                       + Form7.ibDataSet24ICMSSUBSTI.AsFloat
-                                       + Form7.ibDataSet24DESPESAS.AsFloat
-                                       + Form7.ibDataSet24SEGURO.AsFloat       
-                                       + Form7.ibDataSet24IPI.AsFloat
-                                       + Form7.ibDataSet24VFCPST.AsFloat
-                                       - Form7.ibDataSet24ICMS_DESONERADO.AsFloat
-                                       ;
-  end else
-  begin
-     Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat
-                                       - Form7.ibDataSet24DESCONTO.AsFloat
-                                       + Form7.ibDataSet24SERVICOS.AsFloat
-                                       + Form7.ibDataSet24ICMSSUBSTI.AsFloat
-                                       + Form7.ibDataSet24DESPESAS.AsFloat
-                                       + Form7.ibDataSet24FRETE.AsFloat
-                                       + Form7.ibDataSet24SEGURO.AsFloat
-                                       + Form7.ibDataSet24IPI.AsFloat
-                                       + Form7.ibDataSet24VFCPST.AsFloat
-                                       - Form7.ibDataSet24ICMS_DESONERADO.AsFloat
-                                       ;
-  end;
-
-  if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
-    Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24TOTAL.AsFloat + Form7.ibDataSet24ICMS.AsFloat;
-
-  //Mauricio Parizotto 2023-06-06
-  HintTotalNotaCompra;
+  //CalculaTotalNota;
 end;
 
 procedure TForm7.ibDataSet2BeforeEdit(DataSet: TDataSet);
@@ -11807,7 +11777,6 @@ end;
 
 procedure TForm7.ibDataSet5ENTRADA_Change(Sender: TField);
 begin
-  //
   if ibDataSet5ENTRADA_.AsFloat < 0 then
     ibDataSet5ENTRADA_.AsFloat := 0;
   if ibDataSet5ENTRADA_.AsFloat <> 0 then
@@ -11818,7 +11787,6 @@ begin
   if Form7.sModulo = 'BANCOS' then
     SaldoBanco(True);
   ibDataSet5.Edit;
-  //
 end;
 
 procedure TForm7.ibDataSet5SAIDA_Change(Sender: TField);
@@ -11833,35 +11801,20 @@ begin
   if Form7.sModulo = 'BANCOS' then
     SaldoBanco(True);
   ibDataSet5.Edit;
-  //
 end;
 
 procedure TForm7.ibDataSet1ENTRADAChange(Sender: TField);
 begin
-  //
-//  try
-//    if ibDataSet1ENTRADA.AsFloat < 0 then ibDataSet1ENTRADA.AsFloat := 0;
-//    if ibDataSet1ENTRADA.AsFloat <> 0 then if ibDataSet1SAIDA.AsFloat <> 0 then ibDataSet1SAIDA.AsFloat := 0;
-//  except end;  
-  //
   if sModulo = 'CAIXA' then CalculaSaldo(True);
   IntegraBanco(Sender);
   ibDataSet1.Edit;
-  //
 end;
 
 procedure TForm7.ibDataSet1SAIDAChange(Sender: TField);
 begin
-  //
-//  try
-//    if ibDataSet1SAIDA.AsFloat < 0 then ibDataSet1SAIDA.AsFloat := 0;
-//    if ibDataSet1SAIDA.AsFloat <> 0 then if ibDataSet1ENTRADA.AsFloat <> 0 then ibDataSet1ENTRADA.AsFloat := 0;
-//  except end;
-  //
   if sModulo = 'CAIXA' then CalculaSaldo(True);
   IntegraBanco(Sender);
   ibDataSet1.Edit;
-  //
 end;
 
 procedure TForm7.ibDataSet2NOMESetText(Sender: TField; const Text: String);
@@ -11905,14 +11858,12 @@ procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
 begin
-  //
   if Form7.iKey = VK_Down then
   begin
     iKey := 0;
     Abort;
   end else
   begin
-    //
     IBDataSet99.Close;
     IBDataSet99.SelectSQL.Clear;
     IBDataSet99.SelectSQL.Add('select gen_id(G_CODIGO,1) from rdb$database');
@@ -11950,9 +11901,7 @@ begin
     AgendaCommit(True);
     //
     Form7.sModulo := 'ESTOQUE';
-    //
   end;
-  //
 end;
 
 procedure TForm7.Fluxodecaixa2Click(Sender: TObject);
@@ -19947,6 +19896,7 @@ begin
       Form7.ibDataSet101.Open;
 
       Form7.ibDataSet101.First;
+
       while not Form7.ibDataSet101.Eof do
       begin
         try
@@ -19963,6 +19913,9 @@ begin
         
         ibDataSet101.Next;
       end;
+
+      //Mauricio Parizotto 2023-07-19
+      CalculaTotalNota;
     except
     end;
 
@@ -32922,6 +32875,42 @@ begin
       Result := '';
   except
   end;
+end;
+
+procedure TForm7.CalculaTotalNota;
+begin
+  if Alltrim(Form7.ibDataSet24FRETE12.AsString) <> '1' then
+  begin
+     Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat
+                                       - Form7.ibDataSet24DESCONTO.AsFloat
+                                       + Form7.ibDataSet24SERVICOS.AsFloat
+                                       + Form7.ibDataSet24ICMSSUBSTI.AsFloat
+                                       + Form7.ibDataSet24DESPESAS.AsFloat
+                                       + Form7.ibDataSet24SEGURO.AsFloat       
+                                       + Form7.ibDataSet24IPI.AsFloat
+                                       + Form7.ibDataSet24VFCPST.AsFloat
+                                       - Form7.ibDataSet24ICMS_DESONERADO.AsFloat
+                                       ;
+  end else
+  begin
+     Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24MERCADORIA.AsFloat
+                                       - Form7.ibDataSet24DESCONTO.AsFloat
+                                       + Form7.ibDataSet24SERVICOS.AsFloat
+                                       + Form7.ibDataSet24ICMSSUBSTI.AsFloat
+                                       + Form7.ibDataSet24DESPESAS.AsFloat
+                                       + Form7.ibDataSet24FRETE.AsFloat
+                                       + Form7.ibDataSet24SEGURO.AsFloat
+                                       + Form7.ibDataSet24IPI.AsFloat
+                                       + Form7.ibDataSet24VFCPST.AsFloat
+                                       - Form7.ibDataSet24ICMS_DESONERADO.AsFloat
+                                       ;
+  end;
+
+  if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
+    Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24TOTAL.AsFloat + Form7.ibDataSet24ICMS.AsFloat;
+
+  //Mauricio Parizotto 2023-06-06
+  HintTotalNotaCompra;
 end;
 
 end.
