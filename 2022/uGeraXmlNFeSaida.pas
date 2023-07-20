@@ -2818,7 +2818,20 @@ begin
       Form7.ibDataSet7.Next;
     end;
     FreeAndNil(IBQCREDENCIADORA);
-    Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
+    if stPag_YA02 = '' then
+    begin
+      Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+
+      if Copy(Uppercase(Form7.ibDataSet14.FieldByname('INTEGRACAO').AsString)+'       ',1,7) = 'RECEBER' then
+        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14'  // 14-Duplicata Mercantil
+      else
+        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '01';  // Forma de pagamento
+
+      Form7.spdNFeDataSets.campo('vPag_YA03').Value       :=  Form7.spdNFeDataSets.Campo('vNF_W16').Value;
+      Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
+    end
+    else
+      Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
 
   end;
   {Sandro Silva 2023-06-29 fim}
