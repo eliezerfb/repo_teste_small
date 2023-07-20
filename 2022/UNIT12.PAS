@@ -301,7 +301,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais;
+  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -988,7 +988,7 @@ procedure TForm12.SMALL_DBEdit41Exit(Sender: TObject);
 begin
   if SMALL_DBEdit41.Text <> '' then
   begin
-    if Pos( AnsiUpperCase(SMALL_DBEdit41.Text), AnsiUpperCase(AllTrim(Form7.ibDataSet18NOME.AsString))) <> 0 then
+    if Pos( AnsiUpperCase(AllTrim(SMALL_DBEdit41.Text)), AnsiUpperCase(AllTrim(Form7.ibDataSet18NOME.AsString))) <> 0 then
     begin
       //
       Form7.ibDataSet15.Edit;
@@ -1201,8 +1201,22 @@ end;
 procedure TForm12.SMALL_DBEdit41KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else DBMemo1.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  case Key of
+    VK_DOWN:
+    begin
+      if (dBgrid2.Visible) then
+        dBgrid2.SetFocus
+      else
+        DBMemo1.SetFocus;
+    end;
+    VK_UP:
+    begin
+      if (dBgrid2.Visible) then
+        dBgrid2.SetFocus
+      else
+        Perform(Wm_NextDlgCtl,-1,0);
+    end;
+  end;
 end;
 
 procedure TForm12.DBGrid1Enter(Sender: TObject);

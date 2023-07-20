@@ -262,6 +262,9 @@ type
     procedure Button1Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure SMALL_DBEdit16Exit(Sender: TObject);
+    procedure SMALL_DBEdit56Exit(Sender: TObject);
+    procedure SMALL_DBEdit41KeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -1946,7 +1949,7 @@ begin
   if sText <> '' then
   begin
     tProcura := Form7.ibDataSet18;
-    if Pos(AnsiUpperCase(sText),AnsiUpperCase(AllTrim(tProcura.FieldByName('NOME').AsString))) <> 0
+    if Pos(AnsiUpperCase(AllTrim(sText)),AnsiUpperCase(AllTrim(tProcura.FieldByName('NOME').AsString))) <> 0
     then
     begin
       Form7.ibDataSet24.Edit;
@@ -2184,11 +2187,22 @@ end;
 procedure TForm24.SMALL_DBEdit41KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
-
+  case Key of
+    VK_DOWN:
+    begin
+      if dBgrid2.Visible then
+        dBgrid2.SetFocus
+      else
+        Perform(Wm_NextDlgCtl,0,0);
+    end;
+    VK_UP:
+    begin
+      if dBgrid2.Visible then
+        dBgrid2.SetFocus
+      else
+        Perform(Wm_NextDlgCtl,-1,0);
+    end;
+  end;
 end;
 
 procedure TForm24.OKClick(Sender: TObject);
@@ -3607,6 +3621,12 @@ begin
   except
 
   end;
+end;
+
+procedure TForm24.SMALL_DBEdit41KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SMALL_DBEdit28.SetFocus;
 end;
 
 end.
