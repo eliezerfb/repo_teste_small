@@ -50,7 +50,10 @@ type
     procedure btnCNAB240Click(Sender: TObject);
   private
     { Private declarations }
+    bOk : Boolean; // Sandro Silva 2023-06-20
     sInstituicaoFinanceira : string;
+    procedure ImprimirBoleto;
+    procedure ValidaEmailPagador;
   public
     { Public declarations }
     sNossoNum : String;
@@ -59,14 +62,15 @@ type
   end;
 
 var
-  bOk : Boolean;
+// Sandro Silva 2023-06-20  bOk : Boolean;
   Form25: TForm25;
   vCampo:  array [1..20]  of String;    // Cria uma matriz com 20 elementos
   vLinha:  array [1..65]  of STring;    // Linhas
 
 implementation
 
-uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados;
+uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
+  uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -299,11 +303,17 @@ begin
 
       if Form25.Tag = 0 then  // Impressão na impressora
       begin
-        if J = 1 then iVia := 6 else ivia := 105 + 4;
+        if J = 1 then
+          iVia := 6
+        else
+          ivia := 105 + 4;
         Impressao.Font.Size   := 13;             // Tamanho da Fonte
       end else
       begin
-        if J = 1 then iVia := 0 else ivia := 105;
+        if J = 1 then
+          iVia := 0
+        else
+          ivia := 105;
         Impressao.Font.Size   := 12;             // Tamanho da Fonte
       end;
 
@@ -817,26 +827,38 @@ end;
 
 procedure TForm25.btnAnteriorClick(Sender: TObject);
 begin
+
   Form7.ibDataSet7.MoveBy(-1);
 
+  {Sandro Silva 2023-06-20 inicio
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-
+  //
   FormActivate(Sender);
+  }
+  ValidaEmailPagador;
+  Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+
+
 end;
 
 procedure TForm25.btnProximoClick(Sender: TObject);
 begin
   Form7.ibDataSet7.MoveBy(1);
 
+  {Sandro Silva 2023-06-20 inicio
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  
+  //
   FormActivate(Sender);
+  }
+  ValidaEmailPagador;
+  Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+
 end;
 
 procedure TForm25.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -1002,6 +1024,7 @@ begin
 end;
 
 procedure TForm25.FormActivate(Sender: TObject);
+{Sandro Silva 2023-06-20 inicio
 var
   sEmail : String;
 begin
@@ -1019,12 +1042,16 @@ begin
   begin
     btnEnviaEmail.Visible := False; // Sandro Silva 2022-12-23 Button7.Visible := False;
   end;
-  
+  //
+}
+begin
+  ValidaEmailPagador;
   Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
 end;
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
 begin
+  {Sandro Silva 2023-06-20 inicio
   if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
   begin
     if GeraImagemDoBoletoComOCodigoDeBarras(True) then
@@ -1040,6 +1067,9 @@ begin
     +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
     +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
   end;
+  }
+  ImprimirBoleto;
+  {Sandro Silva 2023-06-20 fim}
 end;
 
 procedure TForm25.btnImprimirTodosClick(Sender: TObject);
@@ -1060,8 +1090,23 @@ begin
     try
       while (not Form7.ibDataSet7.EOF) and (bOk) do
       begin
+        //
+        {Sandro Silva 2023-06-20 inicio
         Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
         Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
+        }
+        if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+        begin
+          ImprimirBoleto; // Sandro Silva 2023-06-20 Form25.btnImprimirClick(Sender);// Sandro Silva 2022-12-23 Form25.Button6Click(Sender);
+          //Form25.btnProximoClick(Sender);
+          ValidaEmailPagador;
+          Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+        end;
+        Form7.ibDataSet7.Next;
+        {Sandro Silva 2023-06-20 fim}
+
+//        if Form7.ibDataSet7.Eof then Form25.Close;
+        //
       end;
     except
       ShowMessage('Erro na impressão do boleto.');
@@ -2758,9 +2803,50 @@ begin
   if sInstituicaoFinanceira <> '' then
     Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
 
-  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
+  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := 'Boleto Bancário'; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
     
   Form7.ibDataSet7.Post;
+end;
+
+procedure TForm25.ImprimirBoleto;
+begin
+  if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
+  begin
+    if GeraImagemDoBoletoComOCodigoDeBarras(True) then
+    begin
+      if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
+      begin
+        GravaPortadorNossoNumCodeBar;
+      end;
+    end;
+  end else
+  begin
+    ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+    +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
+    +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
+  end;
+end;
+
+procedure TForm25.ValidaEmailPagador;
+var
+  sEmail : String;
+begin
+  //
+  Form7.ibDataSet2.Close;
+  Form7.ibDataSet2.Selectsql.Clear;
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+  Form7.ibDataSet2.Open;
+  //
+  sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
+  //
+  if validaEmail(sEmail) then
+  begin
+    btnEnviaEmail.Visible := True; // Sandro Silva 2022-12-23 Button7.Visible := True;
+  end else
+  begin
+    btnEnviaEmail.Visible := False; // Sandro Silva 2022-12-23 Button7.Visible := False;
+  end;
+
 end;
 
 end.

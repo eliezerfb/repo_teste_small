@@ -10,7 +10,8 @@ uses
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, MD5, xmldom, XMLIntf,
   msxmldom, XMLDoc, oxmldom,
-  xercesxmldom, Windows, OleCtrls,
+  //xercesxmldom,
+  Windows, OleCtrls,
   SHDocVw, FileCtrl,
   SpdNFeDataSets, spdXMLUtils,
   spdNFeType,
@@ -30,6 +31,9 @@ uses
 const SIMPLES_NACIONAL = '1';
 const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
+const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
+const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
+const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 function Commitatudo(RefazSelect:Boolean): Boolean;
@@ -1467,7 +1471,9 @@ type
     DSConsulta: TDataSource;
     ibqConsulta: TIBDataSet;
     ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
-    ibDataSet7FORMADEPAGAMENTO: TIBStringField;
+    ibDataSet7FORMADEPAGAMENTO: TStringField;
+    ibDataSet7AUTORIZACAOTRANSACAO: TStringField;
+    ibDataSet7BANDEIRA: TStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
@@ -2085,6 +2091,10 @@ type
       const Text: String);
     procedure EEnviarcartadecorreoporemail1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure ibDataSet7FilterRecord(DataSet: TDataSet;
+      var Accept: Boolean);
+    procedure ibDataSet7AfterScroll(DataSet: TDataSet);
+    procedure FormDestroy(Sender: TObject);    
     procedure ibDataSet15SAIDADChange(Sender: TField);
     procedure IBDatabase1AfterConnect(Sender: TObject);
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
@@ -2201,6 +2211,13 @@ type
     //
     iKey : Integer;
 
+    {Sandro Silva 2023-07-05 inicio}
+    slPickListBandeira: TStringList;
+    slPickListFormaDePagamento: TStringList;
+    slPickListBanco: TStringList;
+    slPickListInstituicao: TStringList;
+    {Sandro Silva 2023-07-05 fim}
+
     procedure RefreshDados;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
@@ -2265,6 +2282,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uTextoEmailFactory
   , uRetornaLimiteDisponivel
   , uIRetornaLimiteDisponivel
+  , Unit18
   , uListaCnaes
   , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
@@ -9271,6 +9289,13 @@ end;
 
 procedure TForm7.FormCreate(Sender: TObject);
 begin
+  {Sandro Silva 2023-07-05 inicio}
+  slPickListBandeira         := TStringList.Create;
+  slPickListFormaDePagamento := TStringList.Create;
+  slPickListBanco            := TStringList.Create;
+  slPickListInstituicao      := TStringList.Create;
+  {Sandro Silva 2023-07-05 fim}
+
   FbImportandoXML := False;
   Form7.sAproveitamento := '';
   Form7.bMudei := False;
@@ -9286,9 +9311,10 @@ begin
 
   //Mauricio Parizotto 2023-05-29
   //Campos Somente Leitura ao editar pelo Grid
-  ibDataSet7INSTITUICAOFINANCEIRA.Tag := 10;
-  ibDataSet7NOME.Tag := 10;
-  ibDataSet11INSTITUICAOFINANCEIRA.Tag := 10;
+  ibDataSet7INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
   Image202.Transparent := False;
@@ -9508,7 +9534,18 @@ begin
       Form10.Close;
   except
   end;
-  
+
+  {Sandro Silva 2023-06-19 inicio}
+  if Form7.sModulo <> 'VENDA' then
+  begin
+    Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
+    //Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
+    Form7.ibDataSet7PORTADOR.Index := 12;
+    Form7.ibDataSet7PORTADOR.DisplayWidth  := 33;
+    Form7.ibDataSet7DOCUMENTO.DisplayWidth := 12;
+  end;
+  {Sandro Silva 2023-06-19 fim}
+
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
@@ -10057,6 +10094,9 @@ begin
 
       if (sModulo = 'RECEBER') then
       begin
+
+        Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 17; // Sandro Silva 2023-06-22
+
         ComboBox1.Items.Clear;
         ComboBox1.Items.Add('<Dinheiro/Cheque>');
         ComboBox1.ItemIndex := 0;
@@ -10134,7 +10174,7 @@ begin
         Form7.ibDataSet25.Active := True;
         Form7.ibDataSet25.Append;
       end;
-      
+
       if (sModulo = 'PAGAR') then
       begin
         ComboBox1.Items.Clear;
@@ -10409,6 +10449,13 @@ begin
         Form7.ibDataSet7VENCIMENTO.Visible := True;
         Form7.ibDataSet7VALOR_DUPL.Visible := True;
         Form7.ibDataSet7NOME.Visible       := True;
+        {Sandro Silva 2023-06-19 inicio}
+        Form7.ibDataSet7FORMADEPAGAMENTO.Visible     := True; // Sandro Silva 2023-06-16
+        Form7.ibDataSet7AUTORIZACAOTRANSACAO.Visible := True; // Sandro Silva 2023-06-22
+        Form7.ibDataSet7BANDEIRA.Visible             := True; // Sandro Silva 2023-06-22
+        Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 10;
+        Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 12;
+        {Sandro Silva 2023-06-16 fim}
 
         // Liga os dbGrids aos dataSurces
         dbGrid2.Datasource     := DataSource16;
@@ -10973,9 +11020,9 @@ begin
         Vencendohoje2.Checked  := False;
 
         // Campos
-        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFTTTT'); // Sandro Silva 2023-06-22 sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTFFFFT');
         //iCampos                := 16; // Sandro Silva 2022-12-29 iCampos                := 15;
-        iCampos                := 17; // Mauricio Parizotto 2023-05-29
+        iCampos                := 20;// Sandro Silva 2023-06-22 iCampos                := 17; // Mauricio Parizotto 2023-05-29
 
         // Menu
         Form7.Menu         := MainMenu7;
@@ -21800,6 +21847,10 @@ end;
 
 procedure TForm7.ibDataSet7BeforeInsert(DataSet: TDataSet);
 begin
+  {Sandro Silva 2023-07-20 inicio}
+  if Form7.ibDataSet7.Tag = ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS then
+    Abort;
+  {Sandro Silva 2023-07-20 fim}
   //
   try
     ibDataSet99.Close;
@@ -29899,31 +29950,46 @@ begin
 //    bButton := Application.MessageBox(Pchar('Alterar o portador para todas as duplicatas? '),'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
 //    if bButton = IDYes then
       begin
-        //
-        MyBookmark    := Form7.ibDataSet7.GetBookmark;
-        //
-        Form7.ibDataSet7.DisableControls;
-        Form7.ibDataSet7.First;
-        //
-        while not Form7.ibDataSet7.Eof do
+
+        if Pos('|' + Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) + '|', '||15|') > 0 then
         begin
+
+          MyBookmark    := Form7.ibDataSet7.GetBookmark;
+
+          Form7.ibDataSet7.DisableControls;
+          Form7.ibDataSet7.First;
           //
-          if Text <> Form7.ibDataSet7PORTADOR.AsString then
+          while not Form7.ibDataSet7.Eof do
           begin
-            Form7.ibDataSet7.Edit;
-            Form7.ibDataSet7PORTADOR.AsString := Text;
+            //{Sandro Silva 2023-07-05 inicio
+            if Text <> Form7.ibDataSet7PORTADOR.AsString then
+            begin
+              Form7.ibDataSet7.Edit;
+              Form7.ibDataSet7PORTADOR.AsString := Text;
+            end;
+            {
+            if Pos('|' + Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) + '|', '||15|') > 0 then
+            begin
+              if Text <> Form7.ibDataSet7PORTADOR.AsString then
+              begin
+                Form7.ibDataSet7.Edit;
+                Form7.ibDataSet7PORTADOR.AsString := Text;
+              end;
+            end;
+            {Sandro Silva 2023-07-05 inicio}
+            Form7.ibDataSet7.Next;
+            //
           end;
           //
-          Form7.ibDataSet7.Next;
+          Form7.ibDataSet7.Edit;
           //
-        end;
-        //
-        Form7.ibDataSet7.Edit;
-        //
-        Form7.ibDataSet7.GotoBookmark(MyBookmark);
-        Form7.ibDataSet7.FreeBookmark(MyBookmark);
-        Form7.ibDataSet7.EnableControls;
-        //
+          Form7.ibDataSet7.GotoBookmark(MyBookmark);
+          Form7.ibDataSet7.FreeBookmark(MyBookmark);
+          Form7.ibDataSet7.EnableControls;
+        end
+        else
+          Form7.ibDataSet7PORTADOR.AsString := Text;
+
       end;
       //
     except end;
@@ -32828,6 +32894,33 @@ begin
                                   '- Retenção de IR: '+FloatToStr(fRetencao)+CHR(10);
 end;
 
+procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;
+  var Accept: Boolean);
+begin
+  //Aplica filtro na contas a receber para listar apenas aquelas que podem gerar boleto quando estiver gerando a partir da tela de desdobramento de parcelas da nota
+  if Form7.ibDataSet7.Tag = ID_FILTRAR_FORMAS_GERAM_BOLETO then
+  begin
+    Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+  end;
+end;
+
+procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
+begin
+  if Form18 <> nil then
+  begin
+    Form18.SetPickListParaColuna;
+  end;
+end;
+
+procedure TForm7.FormDestroy(Sender: TObject);
+begin
+  {Sandro Silva 2023-07-05 inicio}
+  slPickListBandeira.Free;
+  slPickListFormaDePagamento.Free;
+  slPickListBanco.Free;
+  slPickListInstituicao.Free;
+  {Sandro Silva 2023-07-05 fim}
+end;
 
 procedure TForm7.ibDataSet15SAIDADChange(Sender: TField);
 begin

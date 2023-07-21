@@ -105,6 +105,7 @@ uses
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
   uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
+  uFuncoesBancoDados in 'uFuncoesBancoDados.pas',
   uSmallConsts in '..\..\unit_compartilhada\uSmallConsts.pas',
   uFormRelatorioPadrao in '..\..\unit_compartilhada\uFormRelatorioPadrao.pas' {frmRelatorioPadrao},
   uRelatorioVendasClliente in 'units\uRelatorioVendasClliente.pas' {frmRelVendasPorCliente},

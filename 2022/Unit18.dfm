@@ -15,6 +15,7 @@ object Form18: TForm18
   OldCreateOrder = True
   Position = poScreenCenter
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -29,6 +30,9 @@ object Form18: TForm18
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 0
+    DesignSize = (
+      584
+      382)
     object Label4: TLabel
       Left = 10
       Top = 10
@@ -47,6 +51,7 @@ object Form18: TForm18
       Top = 290
       Width = 121
       Height = 13
+      Anchors = [akLeft, akBottom]
       Caption = 'Documento de cobran'#231'a:'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -75,6 +80,7 @@ object Form18: TForm18
       Top = 60
       Width = 560
       Height = 200
+      Anchors = [akLeft, akTop, akRight, akBottom]
       Ctl3D = False
       DataSource = Form7.DataSource7
       FixedColor = clWindow
@@ -92,9 +98,12 @@ object Form18: TForm18
       TitleFont.Height = -13
       TitleFont.Name = 'Microsoft Sans Serif'
       TitleFont.Style = []
+      OnCellClick = DBGrid1CellClick
       OnColEnter = DBGrid1ColEnter
+      OnColExit = DBGrid1ColExit
       OnDrawDataCell = DBGrid1DrawDataCell
       OnEnter = DBGrid1Enter
+      OnExit = DBGrid1Exit
       OnKeyDown = DBGrid1KeyDown
       OnKeyPress = DBGrid1KeyPress
     end
@@ -104,6 +113,7 @@ object Form18: TForm18
       Width = 560
       Height = 21
       Style = csDropDownList
+      Anchors = [akLeft, akRight, akBottom]
       Ctl3D = False
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -114,6 +124,7 @@ object Form18: TForm18
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 2
+      OnEnter = cboDocCobrancaEnter
       Items.Strings = (
         '<N'#227'o imprimir documento>')
     end
@@ -122,6 +133,7 @@ object Form18: TForm18
       Top = 345
       Width = 100
       Height = 25
+      Anchors = [akRight, akBottom]
       Caption = '&Ok'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -137,12 +149,13 @@ object Form18: TForm18
       Top = 259
       Width = 560
       Height = 22
+      Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
       Caption = ' '
       Color = clWhite
       TabOrder = 4
-      object lblTotal: TLabel
+      object lbTotalParcelas: TLabel
         Left = 239
         Top = 1
         Width = 28
@@ -163,6 +176,7 @@ object Form18: TForm18
       Top = 345
       Width = 343
       Height = 17
+      Anchors = [akLeft, akBottom]
       Caption = 
         'Enviar NF-e, Consultar e Imprimir DANFE antes do doc de  cobran'#231 +
         'a'
@@ -175,7 +189,7 @@ object Form18: TForm18
       TabOrder = 5
       Visible = False
       OnClick = CheckBox1Click
-    end
+    end    
     object edtQtdParc: TEdit
       Left = 128
       Top = 24
@@ -189,5 +203,21 @@ object Form18: TForm18
       OnKeyDown = SMALL_DBEdit1KeyDown
       OnKeyPress = edtQtdParcKeyPress
     end
+  end
+  object IBQINSTITUICAOFINANCEIRA: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 328
+    Top = 80
+  end
+  object IBQBANCOS: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 328
+    Top = 40
   end
 end

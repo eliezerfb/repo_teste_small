@@ -144,6 +144,7 @@ procedure TForm9.FormShow(Sender: TObject);
 var
   I: Integer;
   iChecked: Integer; // Quantidade de checkbox
+  iCamposExibir: Integer;
 begin
   bChave := False;
 
@@ -174,22 +175,25 @@ begin
 
   for I := 1 to Form7.iCampos do
   begin
-    try
-      TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
-      TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Caption := Form7.ArquivoAberto.Fields[I-1].DisplayLabel;
-      {Sandro Silva 2023-01-04 inicio
-      if Form7.ArquivoAberto.Fields[I-1].Visible = True then
-        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
-      else
-        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
-      }
-      TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := Form7.ArquivoAberto.Fields[I-1].Visible;
-      {Sandro Silva 2023-01-04 fim}
+    //if (Form7.ArquivoAberto.Fields[I-1].FieldName <> 'FORMADEPAGAMENTO') then
+    //begin
+      try
+        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Visible := True;
+        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Caption := Form7.ArquivoAberto.Fields[I-1].DisplayLabel;
+        {Sandro Silva 2023-01-04 inicio
+        if Form7.ArquivoAberto.Fields[I-1].Visible = True then
+          TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := True
+        else
+          TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
+        }
+        TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := Form7.ArquivoAberto.Fields[I-1].Visible;
+        {Sandro Silva 2023-01-04 fim}
 
-      if Form9.Height < Screen.Height then
-        Form9.Height := Form9.Height + 25;
-    except
-    end;
+        if Form9.Height < Screen.Height then
+          Form9.Height := Form9.Height + 25;
+      except
+      end;
+    //end;
   end;
 
   Form9.Height := form9.Height - 2;

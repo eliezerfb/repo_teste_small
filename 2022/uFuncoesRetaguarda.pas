@@ -2,21 +2,6 @@ unit uFuncoesRetaguarda;
 
 interface
 
-  function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
-  function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
-  function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
-  function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
-  function SqlSelectMovimentacaoItem(vProduto : string): String;
-  function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
-  function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
-  function FormatXMLToFloat(sValor: String): Double;
-  function TextoIdentificadorFinalidadeNFe(Value: String): String;
-  procedure LogRetaguarda(sTexto: String);
-  function GetIP:string;
-  function GetSenhaAdmin : Boolean;
-
-implementation
-
 uses
   SysUtils
   , Windows
@@ -32,6 +17,29 @@ uses
   , Mais
   , Controls
   ;
+
+  function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
+  function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function SqlSelectMovimentacaoItem(vProduto : string): String;
+  function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
+  function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
+  function FormatXMLToFloat(sValor: String): Double;
+  function TextoIdentificadorFinalidadeNFe(Value: String): String;
+  procedure LogRetaguarda(sTexto: String);
+  function GetIP:string;
+  function GetSenhaAdmin : Boolean;
+  procedure GetBanderiasOperadorasNFe(slBandeira: TStringList);
+  procedure GetFormasDePagamentoNFe(slForma: TStringList);
+  function IdFormasDePagamentoNFe(sDescricaoForma: String): String;
+  function CodigotBandNF(sBandeira: String): String;
+  function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
+  function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
+  function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
+  function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
+
+implementation
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
@@ -361,6 +369,259 @@ begin
       Result := GetSenhaAdmin;
     end;
   end;
+procedure GetBanderiasOperadorasNFe(slBandeira: TStringList);
+begin
+  slBandeira.Clear;
+  {
+  slBandeira.Add('01-Visa');
+  slBandeira.Add('02-Mastercard');
+  slBandeira.Add('03-American Express');
+  slBandeira.Add('04-Sorocred');
+  slBandeira.Add('05-Diners Club');
+  slBandeira.Add('06-Elo');
+  slBandeira.Add('07-Hipercard');
+  slBandeira.Add('08-Aura');
+  slBandeira.Add('09-Cabal');
+  slBandeira.Add('10-Alelo');
+  slBandeira.Add('11-Banes Card');
+  slBandeira.Add('12-CalCard');
+  slBandeira.Add('13-Credz');
+  slBandeira.Add('14-Discover');
+  slBandeira.Add('15-GoodCard');
+  slBandeira.Add('16-GreenCard');
+  slBandeira.Add('17-Hiper');
+  slBandeira.Add('18-JcB');
+  slBandeira.Add('19-Mais');
+  slBandeira.Add('20-MaxVan');
+  slBandeira.Add('21-Policard');
+  slBandeira.Add('22-RedeCompras');
+  slBandeira.Add('23-Sodexo');
+  slBandeira.Add('24-ValeCard');
+  slBandeira.Add('25-Verocheque');
+  slBandeira.Add('26-VR');
+  slBandeira.Add('27-Ticket');
+  slBandeira.Add('99-Outros');
+  }
+  slBandeira.Add('Visa');
+  slBandeira.Add('Mastercard');
+  slBandeira.Add('American Express');
+  slBandeira.Add('Sorocred');
+  slBandeira.Add('Diners Club');
+  slBandeira.Add('Elo');
+  slBandeira.Add('Hipercard');
+  slBandeira.Add('Aura');
+  slBandeira.Add('Cabal');
+  slBandeira.Add('Alelo');
+  slBandeira.Add('Banes Card');
+  slBandeira.Add('CalCard');
+  slBandeira.Add('Credz');
+  slBandeira.Add('Discover');
+  slBandeira.Add('GoodCard');
+  slBandeira.Add('GreenCard');
+  slBandeira.Add('Hiper');
+  slBandeira.Add('JcB');
+  slBandeira.Add('Mais');
+  slBandeira.Add('MaxVan');
+  slBandeira.Add('Policard');
+  slBandeira.Add('RedeCompras');
+  slBandeira.Add('Sodexo');
+  slBandeira.Add('ValeCard');
+  slBandeira.Add('Verocheque');
+  slBandeira.Add('VR');
+  slBandeira.Add('Ticket');
+  slBandeira.Add('Outros');
+
+end;
+
+procedure GetFormasDePagamentoNFe(slForma: TStringList);
+begin
+
+  slForma.Clear;
+  {
+  slForma.Add('Dinheiro');
+  slForma.Add('Cheque');
+  slForma.Add('Cartão de Crédito');
+  slForma.Add('Cartão de Débito');
+  slForma.Add('Crédito de Loja');
+  slForma.Add('Vale Alimentação');
+  slForma.Add('Vale Refeição');
+  slForma.Add('Vale Presente');
+  slForma.Add('Vale Combustível');
+  slForma.Add('Duplicata Mercantil');
+  slForma.Add('Boleto Bancário');
+  slForma.Add('Depósito Bancário');
+  slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add('Transfer.bancária, Carteira Digital');
+  slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
+  slForma.Add('Outros');
+  }
+  slForma.Add('Dinheiro');
+  slForma.Add('Cartão de Crédito');
+  slForma.Add('Cartão de Débito');
+  slForma.Add('Boleto Bancário');
+  slForma.Add('Depósito Bancário');
+  slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add('Cheque');
+  slForma.Add('Crédito de Loja');
+  slForma.Add('Vale Alimentação');
+  slForma.Add('Vale Refeição');
+  slForma.Add('Vale Presente');
+  slForma.Add('Vale Combustível');
+  slForma.Add('Duplicata Mercantil');
+  slForma.Add('Transfer.bancária, Carteira Digital');
+  slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
+  slForma.Add('Outros');
+
+end;
+
+function IdFormasDePagamentoNFe(sDescricaoForma: String): String;
+begin
+  Result := '99';
+  if sDescricaoForma = 'Dinheiro' then
+    Result := '01';
+  if sDescricaoForma = 'Cheque' then
+    Result := '02';
+  if sDescricaoForma = 'Cartão de Crédito' then
+    Result := '03';
+  if sDescricaoForma = 'Cartão de Débito' then
+    Result := '04';
+  if sDescricaoForma = 'Crédito de Loja' then
+    Result := '05';
+  if sDescricaoForma = 'Vale Alimentação' then
+    Result := '10';
+  if sDescricaoForma = 'Vale Refeição' then
+    Result := '11';
+  if sDescricaoForma = 'Vale Presente' then
+    Result := '12';
+  if sDescricaoForma = 'Vale Combustível' then
+    Result := '13';
+  if sDescricaoForma = 'Duplicata Mercantil' then
+    Result := '14';
+  if sDescricaoForma = 'Boleto Bancário' then
+    Result := '15';
+  if sDescricaoForma = 'Depósito Bancário' then
+    Result := '16';
+  if sDescricaoForma = 'Pagamento Instantâneo (PIX)' then
+    Result := '17';
+  if sDescricaoForma = 'Transfer.bancária, Carteira Digital' then
+    Result := '18';
+  if sDescricaoForma = 'Progr.de fidelidade, Cashback, Crédito Virtual' then
+    Result := '19';
+end;
+
+function CodigotBandNF(sBandeira: String): String;
+begin
+  sBandeira := AnsiUpperCase(sBandeira);
+  Result := '99'; // Começa como outros
+  if Pos('VISA', sBandeira) > 0 then
+    Result := '01';
+  if Pos('MASTERCARD', sBandeira) > 0 then
+    Result := '02';
+  if Pos('AMERICAN EXPRESS', sBandeira) > 0 then
+    Result := '03';
+  if Pos('SOROCRED', sBandeira) > 0 then
+    Result := '04';
+  if Pos('DINERS', sBandeira) > 0 then
+    Result := '05';
+  if Pos('ELO', sBandeira) > 0 then
+    Result := '06';
+  if Pos('HIPERCARD', sBandeira) > 0 then
+    Result := '07';
+  if Pos('AURA', sBandeira) > 0 then
+    Result := '08';
+  if Pos('CABAL', sBandeira) > 0 then
+    Result := '09';
+  if Pos('ALELO', sBandeira) > 0 then
+    Result := '10';
+  if Pos('BANES CARD', sBandeira) > 0 then
+    Result := '11';
+  if Pos('CALCARD', sBandeira) > 0 then
+    Result := '12';
+  if Pos('CREDZ', sBandeira) > 0 then
+    Result := '13';
+  if Pos('DISCOVER', sBandeira) > 0 then
+    Result := '14';
+  if Pos('GOODCARD', sBandeira) > 0 then
+    Result := '15';
+  if Pos('GREENCARD', sBandeira) > 0 then
+    Result := '16';
+  if (Pos('HIPER', sBandeira) > 0) and (Pos('HIPERCARD', sBandeira) = 0) then
+    Result := '17';
+  if Pos('JCB', sBandeira) > 0 then
+    Result := '18';
+  if Pos('MAIS', sBandeira) > 0 then
+    Result := '19';
+  if Pos('MAXVAN', sBandeira) > 0 then
+    Result := '20';
+  if Pos('POLICARD', sBandeira) > 0 then
+    Result := '21';
+  if Pos('REDECOMPRAS', sBandeira) > 0 then
+    Result := '22';
+  if Pos('SODEXO', sBandeira) > 0 then
+    Result := '23';
+  if Pos('VALECARD', sBandeira) > 0 then
+    Result := '24';
+  if Pos('VEROCHEQUE', sBandeira) > 0 then
+    Result := '25';
+  if Pos('VR', sBandeira) > 0 then
+    Result := '26';
+  if Pos('TICKET', sBandeira) > 0 then
+    Result := '27';
+
+end;
+
+function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
+var
+  i: Integer;
+begin
+  Result := '';
+
+  for i := 0 to slFormas.Count -1 do
+  begin
+    if sForma <> '' then
+    begin
+      if Copy(slFormas.Strings[i], 1, Length(sForma)) = sForma then
+      begin
+        Result := slFormas.Strings[i];
+        Break;
+      end;
+    end;
+  end;
+end;
+
+function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to DBGrid.Columns.Count - 1 do
+  begin
+    if AnsiUpperCase(DBGrid.Columns[i].FieldName) = AnsiUpperCase(sNomeColuna) then
+    begin
+      Result := i;
+      Break;
+    end;
+  end;
+end;
+
+function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
+begin
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
+end;
+
+function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
+var
+  sIdForma: String;
+begin
+  // Pode ser que o usuário não informe a forma de pagamento na tela de desdobramento da parcelas da nota
+  // Nesse caso deverá permitir gerar boleto destar parcelas
+  if sForma = '' then
+    sIdForma := ''
+  else
+    sIdForma := IdFormasDePagamentoNFe(sForma);
+  Result := (Pos('|' + sIdForma + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+end;
+
 end;
 
 end.
