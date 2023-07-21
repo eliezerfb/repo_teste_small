@@ -2754,14 +2754,8 @@ begin
   begin
     Form7.spdNFeDataSets.IncluirPart('YA');
     Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '90';  // Sem Pagamento
-    // Sem Pagamento
     Form7.spdNFeDataSets.campo('vPag_YA03').Value       := '0.00';
     //                  Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
-    // Se for Cartão
-    Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
-    Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := '';  // CNPJ da Credenciadora de cartão de crédito e/ou débito
-    Form7.spdNFeDataSets.campo('tBand_YA06').Value      := '';  // Bandeira da operadora de cartão de crédito e/ou débito
-    Form7.spdNFeDataSets.campo('cAut_YA07').Value       := '';  // Número de autorização da operação cartão de crédito e/ou débito
 
     Form7.spdNFeDataSets.SalvarPart('YA');
   end
