@@ -32,7 +32,7 @@ uses
 
 
 var
-  sCodigoANP : string;
+  sCodigoANP, sDentroOuForadoEStado : string;
   vIVA60_V_ICMST : Real;
 
   // Rateio
@@ -62,7 +62,7 @@ var
   sRetorno : String;
   sRecibo : String;
   sCupomReferenciado : String;
-  sDentroOuForadoEStado, sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
+  sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
   vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS : Real;
   vBC_PIS : Real;
 
@@ -3372,7 +3372,12 @@ begin
       Form7.spdNFeDataSets.Campo('modBCST_N18').Value   := '4'; // Modalidade de determinação da Base de Cálculo do ICMS ST - ver Manual
 
       Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat); // Alíquota do ICMS em Percentual
-      Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(Form7.AliqICMdoCliente16()); // Alíquota do ICMS em Percentual
+
+      if sDentroOuForadoEStado = '6' then
+        // Se for fora do estado tem que pega a ALIQUOTA do EMITENTE
+        Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(Form7.RetornarAliquotaICM(Form7.ibDataSet13ESTADO.AsString)) // Alíquota do ICMS em Percentual
+      else
+        Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(Form7.AliqICMdoCliente16()); // Alíquota do ICMS em Percentual
     end;
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '40') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '41') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '50') then
