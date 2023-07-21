@@ -2251,7 +2251,8 @@ type
     function TestarNFSeHomologacao: Boolean;    
     function RetornarAliquotaICM(AcUF: String): Currency;
   end;
-  
+
+  function TestarNatOperacaoMovEstoque: Boolean;
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
 //  Function Valida_Campo(ibDataSet_P:TibDataSet; Text:String; Indice,Mensagem:String):Boolean;
   function Valida_Campo(Arquivo: String; Text: String;
@@ -4005,7 +4006,7 @@ begin
           //
           if Form7.ibDataSet16SINCRONIA.AsFloat <> Form7.ibDataSet16QUANTIDADE.AsFloat then
           begin
-            if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
+            if TestarNatOperacaoMovEstoque then
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
               begin
@@ -18628,7 +18629,7 @@ begin
           //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
-            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
+            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then
               VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat)
             else
             begin
@@ -19183,6 +19184,11 @@ begin
   //
 end;
 
+function TestarNatOperacaoMovEstoque: Boolean;
+begin
+  Result := (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0);
+end;
+
 procedure TForm7.DefineQuantidadeSaldoDisponivelNota;
 var
   AnQtdeDisponivel: Currency;
@@ -19191,18 +19197,20 @@ begin
     Exit;
   if (ibDataSet16TOTAL.Value > 0) then
     Exit;
-
-  AnQtdeDisponivel := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
-  
-  // Se ta inserindo um item novo e a quantidade 1 for maior q a disponivel seta a disponivel.
-  if (AnQtdeDisponivel > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (AnQtdeDisponivel < Form7.ibDataSet16QUANTIDADE.AsCurrency) then
+  if TestarNatOperacaoMovEstoque then
   begin
-    ShowMessage('O item atual possui ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), AnQtdeDisponivel) + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');
-    ibDataSet16QUANTIDADE.OnChange := nil;
-    try
-      ibDataSet16QUANTIDADE.AsCurrency := AnQtdeDisponivel;
-    finally
-      ibDataSet16QUANTIDADE.OnChange := ibDataSet16QUANTIDADEChange;
+    AnQtdeDisponivel := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
+
+    // Se ta inserindo um item novo e a quantidade 1 for maior q a disponivel seta a disponivel.
+    if (AnQtdeDisponivel > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (AnQtdeDisponivel < Form7.ibDataSet16QUANTIDADE.AsCurrency) then
+    begin
+      ShowMessage('O item atual possui ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), AnQtdeDisponivel) + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');
+      ibDataSet16QUANTIDADE.OnChange := nil;
+      try
+        ibDataSet16QUANTIDADE.AsCurrency := AnQtdeDisponivel;
+      finally
+        ibDataSet16QUANTIDADE.OnChange := ibDataSet16QUANTIDADEChange;
+      end;
     end;
   end;
 end;
@@ -19299,7 +19307,7 @@ begin
   if (Form1.ConfNegat <> 'Não') then
     Exit;
 
-  if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
+  if TestarNatOperacaoMovEstoque then
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
 
@@ -21009,7 +21017,7 @@ begin
                 //
                 // Quando nao baixa estoque tambem nao pode devolver
                 //
-                if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929') then
+                if (TestarNatOperacaoMovEstoque) and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929') then
                 begin
                   Form7.ibDataSet4.Edit;
                   Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet16SINCRONIA.AsFloat; // Só retorna o SINCRONIA que realmente saiu do estoque. No caso de nf qua ainda não foi autorizada SINCRONIA é igual a 0 (zero)
@@ -21276,7 +21284,7 @@ begin
         //
         if (Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet23CODIGO.AsString) and (Form7.ibDataSet4CODIGO.AsString <>'') then
         begin
-          if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
+          if TestarNatOperacaoMovEstoque then
           begin
             Form7.ibDataSet4.Edit;
             Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet23QUANTIDADE.AsFloat;
