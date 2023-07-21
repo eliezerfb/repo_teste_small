@@ -6,6 +6,7 @@ interface
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
+  function SqlSelectMovimentacaoItem(vProduto : string): String;
   function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
   function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
   function FormatXMLToFloat(sValor: String): Double;
@@ -111,6 +112,109 @@ function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime)
 begin
   Result := SqlSelectGraficoVendas(dtInicio, dtFinal);
 end;
+
+
+function SqlSelectMovimentacaoItem(vProduto : string): String;
+begin
+  Result := //Compra
+            ' Select '+
+            ' 	C.EMISSAO DATA,'+
+            '   1 Ordem,'+
+            ' 	C.NUMERONF DOCUMENTO,'+
+            ' 	''Entrada de ''||C.FORNECEDOR HISTORICO,'+
+            ' 	I.QUANTIDADE,'+
+            ' 	I.TOTAL VALOR'+
+            ' From ITENS002 I'+
+            ' 	Inner Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDOR = I.FORNECEDOR'+
+            ' 	Left Join ICM T on T.NOME = C.OPERACAO'+
+            ' Where DESCRICAO='+QuotedStr(vProduto)+
+            ' 	and coalesce(T.INTEGRACAO,'''') not like ''%=%'''+
+            ' Union All'+
+
+            //Venda
+            ' Select '+
+            ' 	DATA DATA,'+
+            ' 	Case'+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''BALCAO'') or (SUBSTRING(TIPO from 1 for 6) = ''VENDA'') then  999 '+
+            ' 		Else 2'+
+            '   End Ordem,'+
+            ' 	''000''||PEDIDO||''000'' DOCUMENTO,		'+
+            ' 	Case'+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''BALCAO'') then'+
+            ' 			case'+
+            ' 				when (COALESCE(CLIFOR,'''') <> '''' )  then ''Venda para ''||CLIFOR'+
+            ' 				else ''Venda direta ao consumidor CF ''||PEDIDO		'+
+            ' 			end'+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''VENDA'') then'+
+            ' 			case'+
+            ' 				when (COALESCE(CLIFOR,'''') <> '''' )  then ''NF venda modelo 2 para ''||CLIFOR'+
+            ' 				else ''NF venda Modelo 2 N: ''||PEDIDO		'+
+            ' 			end'+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''ALTERA'') then ''Alteração na ficha do item'''+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''FABRIC'') then ''Alteração na composição do item''	'+
+            ' 	End HISTORICO,'+
+            ' 	Case'+
+            ' 		When (SUBSTRING(TIPO from 1 for 6) = ''BALCAO'') or (SUBSTRING(TIPO from 1 for 6) = ''VENDA'') then  QUANTIDADE * -1'+
+            ' 		Else QUANTIDADE'+
+            ' 	End QUANTIDADE,'+
+            ' 	TOTAL VALOR'+
+            ' From ALTERACA '+
+            ' Where DESCRICAO='+QuotedStr(vProduto)+
+            ' 	and TIPO <> ''ORCAME'' '+
+            ' 	and TIPO <> ''KIT'' '+
+            ' 	and TIPO <> ''CANCEL'' '+
+            ' 	and Coalesce(VALORICM,0) = 0 '+ // Se não for 0 é para outra coisa
+            ' Union All	'+
+
+            //Serviços 
+            ' Select '+
+            ' 	V.EMISSAO DATA,'+
+            '   999 Ordem,'+
+            ' 	V.NUMERONF DOCUMENTO,'+
+            ' 	''Saída para ''||V.CLIENTE HISTORICO,'+
+            ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
+            ' 	I.TOTAL VALOR'+
+            ' From ITENS003 I'+
+            ' 	Inner Join VENDAS V on V.NUMERONF = I.NUMERONF'+
+            ' Where DESCRICAO='+QuotedStr(vProduto)+
+            '   and V.EMITIDA=''S'' '+
+            ' Union All	'+
+
+            //OS
+            ' Select '+
+            ' 	CURRENT_DATE DATA,'+
+            '   999 Ordem,'+
+            ' 	RIGHT(''00000000''|| I.NUMEROOS, 9) ||''000'' DOCUMENTO,'+
+            ' 	''Reservado na OS aberta'' HISTORICO,'+
+            ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
+            ' 	I.TOTAL VALOR'+
+            ' From ITENS001 I	'+
+            ' Where DESCRICAO='+QuotedStr(vProduto)+
+            ' 	and coalesce(QUANTIDADE,0) = coalesce(SINCRONIA,0)'+
+            ' 	and coalesce(NUMERONF,'''') = '''''+
+            ' Union All	'+
+            
+            //Venda
+            ' Select '+
+            ' 	V.EMISSAO DATA,'+
+            '   999 Ordem,'+
+            ' 	V.NUMERONF DOCUMENTO,'+
+            ' 	''Saída para ''||CLIENTE HISTORICO,'+
+            ' 	I.QUANTIDADE * -1 QUANTIDADE,'+
+            ' 	I.TOTAL VALOR'+
+            ' From ITENS001 I'+
+            ' 	Inner Join VENDAS V on V.NUMERONF = I.NUMERONF'+
+            ' 	Left Join ICM T on T.NOME = V.OPERACAO'+
+            ' Where DESCRICAO='+QuotedStr(vProduto)+
+            ' 	and coalesce(QUANTIDADE,0) = coalesce(SINCRONIA,0)'+
+            ' 	and V.EMITIDA=''S'''+
+            ' 	and coalesce(T.INTEGRACAO,'''') not like ''%=%'''+
+
+            ' Order by 1,2,3'
+            ;
+
+end;
+
 
 function XmlValueToFloat(Value: String;
   SeparadorDecimalXml: String = '.'): Double;
