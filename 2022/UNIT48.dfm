@@ -68,7 +68,7 @@ object Form48: TForm48
       ParentBackground = False
       TabOrder = 0
       object Label65: TLabel
-        Left = 141
+        Left = 146
         Top = 24
         Width = 397
         Height = 24
@@ -184,8 +184,8 @@ object Form48: TForm48
         Transparent = False
       end
       object Label71: TLabel
-        Left = 273
-        Top = 55
+        Left = 278
+        Top = 69
         Width = 132
         Height = 24
         Caption = '000000000/RPS'
@@ -509,7 +509,7 @@ object Form48: TForm48
       object Label4: TLabel
         Left = 480
         Top = 109
-        Width = 73
+        Width = 81
         Height = 13
         Caption = 'Emiss'#227'o              '
         Font.Charset = DEFAULT_CHARSET
@@ -519,6 +519,20 @@ object Form48: TForm48
         Font.Style = []
         ParentFont = False
         Transparent = False
+      end
+      object lblHomologacao: TLabel
+        Left = 219
+        Top = 49
+        Width = 249
+        Height = 20
+        Caption = 'Homologa'#231#227'o - sem valor fiscal'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clRed
+        Font.Height = -16
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Visible = False
       end
       object SMALL_DBEdit43: TSMALL_DBEdit
         Left = 305
