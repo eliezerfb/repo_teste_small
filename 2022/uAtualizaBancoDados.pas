@@ -1594,6 +1594,25 @@ begin
 
   {Sandro Silva 2023-06-26 fim}
 
+
+
+  {Mauricio Parizotto 2023-07-18 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ICMS_DESONERADO') = False then
+  begin
+    if ExecutaComando('alter table ITENS002 add ICMS_DESONERADO numeric(18,2)') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'ICMS_DESONERADO') = False then
+  begin
+    if ExecutaComando('alter table COMPRAS add ICMS_DESONERADO numeric(18,2)') then
+      ExecutaComando('Commit');
+  end;
+
+  {Mauricio Parizotto 2023-07-18 fim}
+
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

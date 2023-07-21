@@ -61,6 +61,7 @@ var
   svBCFCPST: String;
   spFCPST: String;
   svFCPST: String;
+  svICMSDESON: String;
 
   sIdDest : integer;
   sIniCFOP : string;
@@ -481,6 +482,8 @@ begin
                       svFCPST   := '0.00';
                       {Sandro Silva 2023-04-10 fim}
 
+                      svICMSDESON := '0.00';
+
                       // Ver como resolver ester try Quando nao existem os campos
                       if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS00/CST')) <> '' then
                         sICMSTag := 'ICMS00';
@@ -551,6 +554,9 @@ begin
                         if Trim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).XML, '//vFCPST')) <> '' then
                           svFCPST := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['vFCPST'].Text;
                         {Sandro Silva 2023-04-10 fim}
+
+                        if Trim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).XML, '//vICMSDeson')) <> '' then
+                          svICMSDESON := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['vICMSDeson'].Text;
 
                       end;
 
@@ -665,7 +671,13 @@ begin
                       except
                       end;
                       {Sandro Silva 2023-04-11 fim}
-                      //
+
+                      //Mauricio Parizotto 2023-07-18
+                      try
+                        Form7.ibDataSet23ICMS_DESONERADO.AsString := StringReplace(svICMSDESON, '.', ',', [rfReplaceAll]);
+                      except
+                      end;
+
                       Form7.ibDataSet23.Post;
                       Form7.ibDataSet23.Edit;
                     except
@@ -692,13 +704,14 @@ begin
           except
           end;
           
-          try Form7.ibDataSet24NFEID.VAlue          := Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('protNFe').ChildNodes.FindNode('infProt').ChildNodes.FindNode('chNFe').Text;  except end;
-          try Form7.ibDataSet24ICMSSUBSTI.AsString  := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vST').Text,'.',','); except end;
-          try Form7.ibDataSet24BASESUBSTI.AsString  := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vBCST').Text,'.',','); except end;
-          try Form7.ibDataSet24DESCONTO.AsString    := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vDesc').Text,'.',','); except end;
-          try Form7.ibDataSet24FRETE.AsString       := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFrete').Text,'.',','); except end;
-          try Form7.ibDataSet24DESPESAS.AsString    := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vOutro').Text,'.',','); except end;
-          try Form7.ibDataSet24SEGURO.AsString      := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vSeg').Text,'.',','); except end;
+          try Form7.ibDataSet24NFEID.VAlue              := Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('protNFe').ChildNodes.FindNode('infProt').ChildNodes.FindNode('chNFe').Text;  except end;
+          try Form7.ibDataSet24ICMSSUBSTI.AsString      := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vST').Text,'.',','); except end;
+          try Form7.ibDataSet24BASESUBSTI.AsString      := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vBCST').Text,'.',','); except end;
+          try Form7.ibDataSet24DESCONTO.AsString        := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vDesc').Text,'.',','); except end;
+          try Form7.ibDataSet24FRETE.AsString           := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFrete').Text,'.',','); except end;
+          try Form7.ibDataSet24DESPESAS.AsString        := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vOutro').Text,'.',','); except end;
+          try Form7.ibDataSet24SEGURO.AsString          := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vSeg').Text,'.',','); except end;
+          try Form7.ibDataSet24ICMS_DESONERADO.AsString := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vICMSDeson').Text,'.',','); except end;
 
           try
             if Assigned(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFCPST')) then

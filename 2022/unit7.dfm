@@ -16361,7 +16361,7 @@ object Form7: TForm7
       
         '   CST_IPI, VPRECO, CST_ICMS, QTD_ORIGINAL, UNITARIO_O, ANVISA, ' +
         'EAN_ORIGINAL, '
-      '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST)'
+      '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST,ICMS_DESONERADO)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :BASE, :MEDI' +
@@ -16377,7 +16377,7 @@ object Form7: TForm7
         ' :UNITARIO_O, '
       
         '   :ANVISA, :EAN_ORIGINAL, :VBCFCP, :PFCP, :VFCP, :VBCFCPST, :PF' +
-        'CPST, :VFCPST)')
+        'CPST, :VFCPST,:ICMS_DESONERADO)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16418,7 +16418,8 @@ object Form7: TForm7
       '  VFCP,'
       '  VBCFCPST,'
       '  PFCPST,'
-      '  VFCPST'
+      '  VFCPST,'
+      '  ICMS_DESONERADO'
       'from ITENS002 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16465,7 +16466,8 @@ object Form7: TForm7
       '  VFCP = :VFCP,'
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  ICMS_DESONERADO = :ICMS_DESONERADO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
@@ -16778,6 +16780,16 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
+    object ibDataSet23ICMS_DESONERADO: TIBBCDField
+      DisplayLabel = 'ICMS DESONERADO'
+      FieldName = 'ICMS_DESONERADO'
+      Origin = 'ITENS002.ICMS_DESONERADO'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
   end
   object DataSource23: TDataSource
     DataSet = ibDataSet23
@@ -16822,7 +16834,7 @@ object Form7: TForm7
       
         '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES, IDENTIFI' +
         'CADORPLANOCONTAS,'
-      '   VFCPST)'
+      '   VFCPST,ICMS_DESONERADO)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :FORNECEDOR, :OPERACAO, :EMISS' +
@@ -16842,7 +16854,9 @@ object Form7: TForm7
       
         '   :COMPLEMENTO, :NFEID, :ANVISA, :NVOL, :NFEXML, :MDESTINXML, :' +
         'FINNFE, '
-      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST)')
+      
+        '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST, :ICM' +
+        'S_DESONERADO)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16890,7 +16904,8 @@ object Form7: TForm7
       '  INDFINAL,'
       '  INDPRES,'
       '  IDENTIFICADORPLANOCONTAS,'
-      '  VFCPST'
+      '  VFCPST,'
+      '  ICMS_DESONERADO'
       'from COMPRAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16944,7 +16959,8 @@ object Form7: TForm7
       '  INDFINAL = :INDFINAL,'
       '  INDPRES = :INDPRES,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  ICMS_DESONERADO = :ICMS_DESONERADO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -17238,6 +17254,13 @@ object Form7: TForm7
       Origin = 'COMPRAS.IDENTIFICADORPLANOCONTAS'
       Visible = False
       Size = 10
+    end
+    object ibDataSet24ICMS_DESONERADO: TIBBCDField
+      FieldName = 'ICMS_DESONERADO'
+      Origin = 'COMPRAS.ICMS_DESONERADO'
+      Visible = False
+      Precision = 18
+      Size = 2
     end
   end
   object DataSource24: TDataSource
@@ -21218,7 +21241,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21252,7 +21275,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21566,8 +21589,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm5' +
-      '0\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      '\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21596,8 +21619,8 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50' +
-      '\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\' +
+      'DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = 175
-  Top = 45
+  Left = 188
+  Top = 8
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -9,7 +9,7 @@ object Form24: TForm24
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL COMPRA (ENTRADA)'
-  ClientHeight = 796
+  ClientHeight = 885
   ClientWidth = 1218
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -28,7 +28,7 @@ object Form24: TForm24
     Left = 0
     Top = 0
     Width = 1218
-    Height = 796
+    Height = 885
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False
@@ -2388,9 +2388,9 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
-      object Label25: TLabel
+      object lblAlteraEntrada: TLabel
         Left = 15
-        Top = 320
+        Top = 368
         Width = 266
         Height = 13
         Caption = 'Alterar entrada para item C'#243'digo/C'#243'd. barras/Descri'#231#227'o:'
@@ -2972,6 +2972,23 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
+      object Label7: TLabel
+        Left = 15
+        Top = 325
+        Width = 90
+        Height = 15
+        AutoSize = False
+        Caption = 'ICMS Desonerado'
+        Color = clBtnHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clSilver
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
       object SMALL_DBEdit42: TSMALL_DBEdit
         Left = 183
         Top = 73
@@ -2980,7 +2997,6 @@ object Form24: TForm24
         DataField = 'LISTA'
         DataSource = Form7.DataSource23
         TabOrder = 2
-        OnExit = SMALL_DBEdit42Exit
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit44: TSMALL_DBEdit
@@ -3078,15 +3094,15 @@ object Form24: TForm24
         OnExit = ComboBox13Exit
         OnKeyUp = ComboBox12KeyUp
       end
-      object Edit1: TEdit
+      object edtAlteraEntrada: TEdit
         Left = 15
-        Top = 335
+        Top = 383
         Width = 290
         Height = 22
         TabOrder = 7
         Visible = False
-        OnChange = Edit1Change
-        OnKeyDown = Edit1KeyDown
+        OnChange = edtAlteraEntradaChange
+        OnKeyDown = edtAlteraEntradaKeyDown
       end
       object SMALL_DBEdit51: TSMALL_DBEdit
         Left = 15
@@ -3212,12 +3228,11 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 14
-        OnExit = SMALL_DBEdit56Exit
         OnKeyUp = ComboBox12KeyUp
       end
       object DBGrid33: TDBGrid
         Left = 15
-        Top = 356
+        Top = 404
         Width = 290
         Height = 85
         Color = 16042061
@@ -3245,6 +3260,28 @@ object Form24: TForm24
             Width = 241
             Visible = True
           end>
+      end
+      object SMALL_DBEdit16: TSMALL_DBEdit
+        Left = 15
+        Top = 340
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'ICMS_DESONERADO'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 15
+        OnExit = SMALL_DBEdit16Exit
+        OnKeyUp = ComboBox12KeyUp
       end
     end
     object ok: TBitBtn
