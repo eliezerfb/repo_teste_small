@@ -16,6 +16,7 @@ uses
   , Unit3
   , Mais
   , Controls
+  , DBGrids 
   ;
 
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -369,6 +370,8 @@ begin
       Result := GetSenhaAdmin;
     end;
   end;
+end;
+
 procedure GetBanderiasOperadorasNFe(slBandeira: TStringList);
 begin
   slBandeira.Clear;
@@ -620,8 +623,6 @@ begin
   else
     sIdForma := IdFormasDePagamentoNFe(sForma);
   Result := (Pos('|' + sIdForma + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
-end;
-
 end;
 
 end.
