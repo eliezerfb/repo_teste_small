@@ -10743,10 +10743,28 @@ begin
         Mais1Ini.WriteString('Auttar','Resp','Resp');
         Mais1Ini.WriteString('Auttar','Exec','C:\Program Files (x86)\Auttar\IntegradorTEF-IP\IntegradorTEF-IP.EXE');
         Mais1Ini.WriteString('Auttar','bAtivo','Sim');
-        //
       end;
     end;
 
+    {Sandro Silva 2023-07-20 inicio}
+    // Ficha 7153 
+    if Mais1Ini.ReadString('ZPOS','Pasta','XXX') = 'XXX' then
+    begin
+      Mais1Ini.WriteString('ZPOS', 'Pasta', 'ZPOS');
+      Mais1Ini.WriteString('ZPOS', 'Req', 'Req');
+      Mais1Ini.WriteString('ZPOS', 'Resp', 'Resp');
+      Mais1Ini.WriteString('ZPOS', 'Exec', 'C:\ZPOS\ZPOS.exe');
+      Mais1Ini.WriteString('ZPOS', 'bAtivo', 'Sim');
+    end;
+    if Mais1Ini.ReadString('TEF Elgin', 'Pasta', 'XXX') = 'XXX' then
+    begin
+      Mais1Ini.WriteString('TEF Elgin', 'Pasta', 'TEF_Elgin');
+      Mais1Ini.WriteString('TEF Elgin', 'Req', 'Req');
+      Mais1Ini.WriteString('TEF Elgin', 'Resp', 'Resp');
+      Mais1Ini.WriteString('TEF Elgin', 'Exec', 'C:\TEF_ELGIN\TEFPassivo\E1_TEFPay_Passivo.exe');
+      Mais1Ini.WriteString('TEF Elgin', 'bAtivo', 'Sim');
+    end;
+    {Sandro Silva 2023-07-20 fim}
   end else
   begin
     //
