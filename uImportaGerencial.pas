@@ -288,8 +288,6 @@ begin
       // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
 
 /////////////////////////////////////////////////////////////////////////////////////
-        //FIBDataSet25.Append;
-
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
           FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1));
 
@@ -319,9 +317,7 @@ begin
 
               end;
               FIBDATASET7.Next;
-            end;
-
-
+            end;  
 
             FTransacoesCartao.Transacoes.Adicionar(
           end;

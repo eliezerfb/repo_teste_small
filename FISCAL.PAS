@@ -34111,7 +34111,11 @@ begin
   end;
   FreeAndNil(Importar);
   Form1.TransacoesCartao.Transacoes.Clear;
-  Form1.sStatusECF := 'CAIXA LIVRE';
+  if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+    Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
+  else
+    Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+
   Screen.Cursor := crDefault;
 
 end;
