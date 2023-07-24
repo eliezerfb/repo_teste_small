@@ -364,7 +364,7 @@ begin
 
   if Result = False then
   begin
-    if Application.MessageBox(PansiChar('Senha inválida. Deseja tentar novamente?'),
+    if Application.MessageBox(PChar('Senha inválida. Deseja tentar novamente?'),
                               'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
     begin
       Result := GetSenhaAdmin;

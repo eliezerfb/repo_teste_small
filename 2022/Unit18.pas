@@ -86,7 +86,11 @@ Var
   I : Integer;
   dDiferenca : Double;
 begin
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
 
   try
     {
@@ -1440,7 +1444,11 @@ Var
   dDiferenca : Double;
   QtdParc : integer;
 begin
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
 
   QtdParc := StrToIntDef(edtQtdParc.Text,1);
 

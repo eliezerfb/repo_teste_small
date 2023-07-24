@@ -9649,7 +9649,7 @@ begin
 
       if vQtdParcelas > 1 then
       begin
-        if Application.MessageBox(PansiChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
+        if Application.MessageBox(PChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
                                   'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
         begin
           ExecutaComando(' Update RECEBER'+

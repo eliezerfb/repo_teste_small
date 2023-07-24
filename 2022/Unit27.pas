@@ -71,8 +71,13 @@ begin
     //
     DeleteFile(pChar(Form1.sAtual+'\fluxo.png'));
     DeleteFile(pChar(Form1.sAtual+'\FLUXO.GRA'));
-    //
-    ShortDateFormat := 'dd/mm/yyyy';   {Bug 2000 free}
+
+    {$IFDEF VER150}
+    ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     dInicio :=  DateTimePicker1.Date;
     dFinal  :=  DateTimePicker2.Date;
     //
@@ -537,13 +542,16 @@ end;
 
 procedure TForm27.FormActivate(Sender: TObject);
 begin
-  //
   Image1.Picture := Form7.Image205.Picture;
-  //
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2000 free}
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   DateTimePicker1.Date    := Date;
   DateTimePicker2.Date    := Date + 60; // SomaDias(Date, 30);
-  //
 end;
 
 procedure TForm27.DateTimePicker2Exit(Sender: TObject);

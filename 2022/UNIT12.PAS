@@ -1471,13 +1471,15 @@ begin
   ResizeLogoDanfe(True);
   //
   // Logotipo
-  //
-  ShortDateFormat := 'dd/mm/yyyy';   // Bug 2000 free
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+  {$ENDIF}
+
   Label71.Caption := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3);
-  //
-//  Form12.ScrollBox1.Color  := Form7.Color; // Perfil de cores
-//  Form12.Panel6.Color      := Form7.Color; // Perfil de cores
-  //
+
   Panel1.Left     := 10; // (ScrollBox1.Width - Panel1.Width) div 2;
   Panel6.Left     := 5;
   Panel6.Top      := Panel1.Top + Panel1.Height + 5;

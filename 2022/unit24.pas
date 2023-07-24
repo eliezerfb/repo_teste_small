@@ -2368,13 +2368,16 @@ begin
     SMALL_DBEdit13.Enabled := True;
     //
   end;
-  //
+
   // Arquivo de forneced por ordem de nome
-  //
-  ShortDateFormat := 'dd/mm/yyyy';   // Bug 2000 free
-  //
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   // Relaciona a natureza da operação com o arquivo de vendas
-  //
   if AllTrim(Form7.ibDataSet24OPERACAO.AsString) = ''
     then Form7.ibDataSet14.Append
        else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);

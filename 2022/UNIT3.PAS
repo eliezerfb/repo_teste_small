@@ -6,9 +6,6 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99, SmallFunc, ShellApi, HtmlHelp;
 
-  {WinTypes, WinProcs, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ExtCtrls, DB, DBTables, Mask, DBCtrls;}
-
 type
     TSenhas2 = class(TForm)
     Panel1: TPanel;

@@ -97,7 +97,6 @@ begin
     Label1.Caption := 'Vendedor: ' + Copy(Form7.ibDataSet9NOME.AsString,1,35);
     CheckBox2.Visible := True;
   end;
-  //
 end;
 
 procedure TForm37.Button1Click(Sender: TObject);
@@ -108,7 +107,6 @@ var
   sVendedor : String;
   sPedido, sConvenio : String;
 begin
-  //
   if Form37.Panel3.Visible then
   begin
     Form37.Panel3.Visible := False;
@@ -116,16 +114,20 @@ begin
     Form37.Label1.Caption := 'Convênio: ' + Copy(Form7.ibDataSet29NOME.AsString,1,20);
   end else
   begin
-    //
-    ShortDateFormat := 'dd/mm/yyyy';   {Bug 2000 free}
+    {$IFDEF VER150}
+    ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     dInicio :=  DateTimePicker1.Date;
     dFinal  :=  DateTimePicker2.Date;
-    //
+
     Screen.Cursor  := crHourGlass;    // Cursor de Aguardo
-    //
+
     dInicio := StrToDate(DateToStr(dInicio));
     dFinal  := StrToDate(DateToStr(dFinal ));
-    //
+
     DeleteFile(pChar(Senhas.UsuarioPub+'.HTM'));
     DeleteFile(Form1.sAtual+'\COMISSAO.GRA');
     DeleteFile(Form1.sAtual+'\COMISSAO.gif');

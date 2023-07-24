@@ -6,11 +6,15 @@ uses
 
 
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
-  DBTables, Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
+  Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
   mais3, unit2,unit3, IniFiles, Unit4, Unit10, SmallFunc, Registry, HtmlHelp,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
-  oxmldom, XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
+  {$IFDEF VER150}
+  oxmldom,
+  {$ELSE}
+  {$ENDIF}
+  XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
   , DBCtrls
@@ -3788,8 +3792,12 @@ begin
   //  ShowMessage('Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10));
   //
   CHDir(Form1.sAtual);
-  //
+
+  {$IFDEF VER150}
   if (DecimalSeparator <> ',') or (DateSeparator <> '/') then
+  {$ELSE}
+  if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
+  {$ENDIF}
   begin
     Application.MessageBox(Pchar('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                                  'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
@@ -3806,7 +3814,7 @@ begin
                                  'o separador de data que deve ser "/".')
 
                                  ,'Atenção',mb_Ok + MB_ICONWARNING);
-//    // Form1.DestroyWindowHandle;
+
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
   //
@@ -8036,7 +8044,11 @@ begin
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
 
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
@@ -8780,16 +8792,20 @@ begin
               sRetorno := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
               ShowMessage('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+sRetorno);
             end;
-            //
-            //
+
+            {$IFDEF VER150}
             DecimalSeparator := ',';
             DateSeparator    := '/';
+            {$ELSE}
+            FormatSettings.DecimalSeparator := ',';
+            FormatSettings.DateSeparator    := '/';
+            {$ENDIF}
           end;
         end;
       end;
     end;
   end;
-  //
+
   Screen.Cursor            := crDefault;
 end;
 

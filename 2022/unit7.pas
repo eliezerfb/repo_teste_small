@@ -4,18 +4,22 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Grids, DBGrids, DB, DBTables, ExtCtrls, Menus, Unit9, IniFiles,
+  Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
   StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, MD5, xmldom, XMLIntf,
-  msxmldom, XMLDoc, oxmldom,
+  msxmldom, XMLDoc,
+  {$IFDEF VER150}
+  oxmldom, spdXMLUtils, spdType, CAPICOM_TLB,
+  {$ELSE}
+  {$ENDIF}
   //xercesxmldom,
   Windows, OleCtrls,
   SHDocVw, FileCtrl,
-  SpdNFeDataSets, spdXMLUtils,
+  SpdNFeDataSets, MSXML5_TLB,
   spdNFeType,
-  spdNFe, spdType, CAPICOM_TLB, MSXML5_TLB,
+  spdNFe,
   DdeMan,
   Gauges,
   LzExpand,
@@ -5233,7 +5237,6 @@ end;
 
 function ImprimeOuNaoANota(pP1:Boolean):Boolean;
 var
-  //
   vLinha: array [0..200]  of String;  // Cria uma matriz com 100 elementos
                                       // isso eu aprendi num sonho
   vCampo: array [0..3000] of Variant; // Cria uma matriz com 1000 elementos
@@ -5241,16 +5244,19 @@ var
   F: TextFile;
   Mais1ini, Mais2Ini: TIniFile;
   bMaisItens  : Boolean;
-  //
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
   if (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) or (Mais1Ini.ReadString('NFE','Formulario','Não') <> 'Não') then
   begin
     Mais1ini.Free;
-    //
-    ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+
+    {$IFDEF VER150}
+    ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    {$ENDIF}
+
     iPagina         := 72;
     Mais1ini        := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     ConfItens       := StrToInt(Mais1Ini.ReadString('Nota Fiscal','Itens','16'));
@@ -5958,13 +5964,11 @@ begin
   end;
   //
   Result := True;
-  //
 end;
 
 
 function ImprimeOuNaoANotaZZ(pP1:Boolean):Boolean;
 var
-  //
   vLinha: array [0..200]  of String;  // Cria uma matriz com 100 elementos
                                       // isso eu aprendi num sonho
   vCampo: array [0..3000] of Variant; // Cria uma matriz com 1000 elementos
@@ -5972,16 +5976,18 @@ var
   F: TextFile;
   Mais1ini, Mais2Ini: TIniFile;
   bMaisItens  : Boolean;
-  //
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  //
+
   begin
-    //
     Mais1ini.Free;
-    //
-    ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+
+    {$IFDEF VER150}
+    ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    {$ENDIF}
+
     iPagina         := 72;
     Mais1ini        := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     ConfItens       := StrToInt(Mais1Ini.ReadString('Nota Fiscal','Itens','16'));
@@ -6688,18 +6694,19 @@ end;
 
 function ExportaNF(pP1:Boolean):Boolean;
 var
-  //
   vCampo: array [0..30000] of Variant; // Cria uma matriz com 1000 elementos
   I, J : Integer; // e conteúdo variável
   F: TextFile;
-  //
 begin
-  //
   Result := True;
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
-  //
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   // Relaciona a natureza da operação com o arquivo de vendas
-  //
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -15475,11 +15482,14 @@ var
   iOp1 : Real;
   iAno, I : Integer;
 begin
-  //
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
-  //
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
   Rewrite(F);                           // Abre para gravação
   Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - INADIMPLÊNCIA')+'</title></head>');
@@ -15693,16 +15703,19 @@ var
   sNome : String;
   bChave : boolean;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     for I := 1 to 4 do v1[I] := 0;
-    //
+
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -23565,10 +23578,15 @@ begin
       end;
       //
     except end;
-    //
+
+    {$IFDEF VER150}
     DecimalSeparator := ',';
     DateSeparator    := '/';
-    //
+    {$ELSE}
+    FormatSettings.DecimalSeparator := ',';
+    FormatSettings.DateSeparator    := '/';
+    {$ENDIF}
+
     Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     //
@@ -23708,8 +23726,13 @@ begin
             end;
           except end;
 
+          {$IFDEF VER150}
           DecimalSeparator := ',';
           DateSeparator    := '/';
+          {$ELSE}
+          FormatSettings.DecimalSeparator := ',';
+          FormatSettings.DateSeparator    := '/';
+          {$ENDIF}
 
           Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
           Form7.Panel7.Repaint;
@@ -23797,17 +23820,19 @@ begin
       end;
       //
     except end;
-    //
+
+    {$IFDEF VER150}
     DecimalSeparator := ',';
     DateSeparator    := '/';
-    //
+    {$ELSE}
+    FormatSettings.DecimalSeparator := ',';
+    FormatSettings.DateSeparator    := '/';
+    {$ENDIF}
+
     Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     Screen.Cursor            := crDefault;
-    //
-
   end;
-  //
 end;
 
 procedure TForm7.N3ConsultarNFe1Click(Sender: TObject);
@@ -24238,12 +24263,17 @@ begin
         end;
         //
       except end;
-      //
+
+      {$IFDEF VER150}
       DecimalSeparator := ',';
       DateSeparator    := '/';
+      {$ELSE}
+      FormatSettings.DecimalSeparator := ',';
+      FormatSettings.DateSeparator    := '/';
+      {$ENDIF}
+
       Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
       Form7.Panel7.Repaint;
-      //
     end;
     //
   except end;
@@ -24441,14 +24471,17 @@ begin
         //
       end;
     end;
-    //
   end;
-  //
+
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
-  //
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.ransmitirNFe1Click(Sender: TObject);
@@ -24662,14 +24695,20 @@ begin
       except
         Screen.Cursor            := crDefault;
       end;
+
+      {$IFDEF VER150}
       DecimalSeparator := ',';
       DateSeparator    := '/';
+      {$ELSE}
+      FormatSettings.DecimalSeparator := ',';
+      FormatSettings.DateSeparator    := '/';
+      {$ENDIF}
+
       Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
       Form7.Panel7.Repaint;
       Screen.Cursor            := crDefault;
     end;
-  end; // else ShowMessage('Cliente não cadastrado');
-  //
+  end;
 end;
 
 procedure TForm7.N6VisualizarDANFE1Click(Sender: TObject);
@@ -24677,51 +24716,6 @@ var
   sFormato, sLote : String;
   bTentarVisualizar: Boolean; // Sandro Silva 2023-02-14
 begin
-  //
-  {Sandro Silva 2023-02-14 inicio
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') then
-  begin
-    Screen.Cursor            := crHourGlass;
-    Form7.Panel7.Caption := 'Visualizando o DANFE'+replicate(' ',100);
-    Form7.Panel7.Repaint;
-    //
-    ConfiguraNFE(True);
-    //
-    // Recupera na tabela VENDAS o XML
-    //
-    fNFE :=  Form7.ibDataSet15NFEXML.AsString;
-
-    //
-    // Recupera na tabela VENDAS o XML
-    //
-    if Form7.ibDataSet15EMITIDA.AsString = 'X' then
-    begin
-      sFormato := Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento;
-    end else
-    begin
-      sFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
-    end;
-    //
-    try
-      spdNFe.VisualizarDanfe(sLote, fNFe, sFormato);
-    except
-      Screen.Cursor            := crDefault;
-    end;
-    //
-    DecimalSeparator := ',';
-    DateSeparator    := '/';
-    //
-    Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
-    Form7.Panel7.Repaint;
-    Screen.Cursor            := crDefault;
-  end;
-  //
-  }
   bTentarVisualizar := False;
   if sModulo = 'VENDA' then
   begin
@@ -24751,12 +24745,9 @@ begin
     sFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
     if sModulo = 'VENDA' then
     begin
-
       fNFE :=  Form7.ibDataSet15NFEXML.AsString;
 
-      //
       // Recupera na tabela VENDAS o XML
-      //
       if Form7.ibDataSet15EMITIDA.AsString = 'X' then
       begin
         sFormato := Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento;
@@ -24768,22 +24759,25 @@ begin
       fNFE :=  Form7.ibDataSet24NFEXML.AsString;
       Form7.spdNFe.DanfeSettings.LogotipoEmitente := '';
     end;
-    //
+
     try
       spdNFe.VisualizarDanfe(sLote, fNFe, sFormato);
     except
       Screen.Cursor            := crDefault;
     end;
-    //
+
+    {$IFDEF VER150}
     DecimalSeparator := ',';
     DateSeparator    := '/';
-    //
+    {$ELSE}
+    FormatSettings.DecimalSeparator := ',';
+    FormatSettings.DateSeparator    := '/';
+    {$ENDIF}
+
     Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     Screen.Cursor            := crDefault;
   end;
-  //
-
 end;
 
 procedure TForm7.ibDataset40NewRecord(DataSet: TDataSet);
@@ -24917,11 +24911,15 @@ begin
 
   end;
 
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
-  //
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.Agrupar1Click(Sender: TObject);
@@ -25560,7 +25558,6 @@ begin
     // Form7.spdNFe.Ambiente := akProducao;
     //
     try
-      //
       sRetorno := spdNFe.ConsultarNF(Alltrim(sNota));
       //
       ShowMessage(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9));
@@ -25571,13 +25568,19 @@ begin
   begin
     ShowMessage('Chave de acesso da NF-e inválido');
   end;
-  //
+
   Screen.Cursor            := crDefault;
+
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Form7.Panel7.Caption  := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
-  //
 end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
@@ -26585,8 +26588,15 @@ begin
     end;
   except
   end;
+
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
   Screen.Cursor            := crDefault;
@@ -26724,8 +26734,12 @@ var
   F: TextFile;
   Mais1Ini : tInifile;
 begin
-  //
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
   Rewrite(F);                           // Abre para gravação
@@ -26733,9 +26747,8 @@ begin
   WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
   WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#c0c0c0><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font>');
-  //
+
   // Tabela de inadimplência
-  //
   WriteLn(F,'<br><br>');              // Linha em branco
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>Resumo da inadimplência</b></font>');
   WriteLn(F,'<center><br><br>');
@@ -27368,9 +27381,7 @@ var
   MesInicial, I : Integer;
   fContatos, fTotal1, fTotal2 : Real;
   dContador, dInicio, dFinal : TdateTime;
-  //
 begin
-  //
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := True;
@@ -27381,12 +27392,15 @@ begin
   Form7.sModulo := 'CLIENTES';
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   if Form38.Caption <> 'Cancelar' then
   begin
-    //
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     //
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
@@ -27569,27 +27583,28 @@ var
   MesInicial, I : Integer;
   fTotal1, fTotal2 : Real;
   dContador, dInicio, dFinal : TdateTime;
-  //
 begin
-  //
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
   Form38.Button2.Visible := True;
-  //
+
   Form7.sModulo := 'CLIENTES';
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   if Form38.Caption <> 'Cancelar' then
   begin
-    //
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - CLIENTES CONTACTADOS POR DIA')+'</title></head>');
@@ -27741,28 +27756,29 @@ var
   JP2    : TJPEGImage;
   //
   tInicio : tTime;
-  //
 begin
-  //
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
   Form38.Button2.Visible := True;
-  //
+
   Form7.sModulo := 'CLIENTES';
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   tInicio := Time;
-  //
+
   if Form38.Caption <> 'Cancelar' then
   begin
-    //
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+    
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - CLIENTES CONTACTADOS POR DIA')+'</title></head>');
@@ -28841,14 +28857,17 @@ var
   I : Integer;
   F: TextFile;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    {$ENDIF}
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -28858,12 +28877,10 @@ begin
     WriteLn(F,'<br><font face="verdana" size=3 color=#000000><b>ANÁLISE ANUAL</b></font>');
     WriteLn(F,'<br><center>');   // Linha em branco
     WriteLn(F,'<br>');           // Linha em branco
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
-    //
     // Faturamento
-    //
     DeleteFile(pChar(Form1.sAtual+'\faturamento.gra'));
     DeleteFile(pChar(Form1.sAtual+'\faturamento.png'));
     //                               //
@@ -29043,7 +29060,6 @@ end;
 procedure TForm7.Clientescontactadospormsporvendedor1Click(
   Sender: TObject);
 var
-  //
   F: TextFile;
   III : Integer;
   ftotalContatos, fTotal, fTotal1, fTotal2, fTotal3 : Real;
@@ -29054,30 +29070,29 @@ var
   //
   tInicio : tTime;
   mais2ini, Mais1ini : tIniFile;
-  //
 begin
-  //
   Form7.IBDataSet2.DisableControls;
-  //
   try
-    //
     Form7.sModulo := 'CONTATOS';
     Form38.Panel5.Visible := True;
     Form38.Button2.Visible := True;
     Form38.ShowModal; // Ok
     Form38.Panel5.Visible := False;
     Form38.Button2.Visible := True;
-    //
+
     Form7.sModulo := 'CLIENTES';
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     tInicio := Time;
-    //
+
     if Form38.Caption <> 'Cancelar' then
     begin
-      //
+      {$IFDEF VER150}
       ShortDateFormat := 'dd/mm/yyyy';
-      //
+      {$ELSE}
+      FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+      {$ENDIF}
+
       AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
       Rewrite(F);                           // Abre para gravação
       Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - CLIENTES CONTACTADOS POR MÊS')+'</title></head>');
@@ -29707,14 +29722,18 @@ var
   I : Integer;
   F: TextFile;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -30006,14 +30025,17 @@ var
   I : Integer;
   F: TextFile;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -31950,7 +31972,6 @@ begin
     if Form1.DisponivelSomenteParaNos then
       Clipboard.AsText := fNFe; // salva na área de tranferência
 
-    //
     try
       spdNFe.PreverDanfe(fNFE, '');
     except
@@ -31958,8 +31979,13 @@ begin
     end;
   end;
 
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
 
   Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
