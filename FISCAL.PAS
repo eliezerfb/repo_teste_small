@@ -12183,6 +12183,21 @@ begin
                         Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago)); // Sandro Silva 2017-08-25  StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('PAGAR').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat;
                         Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                        {Sandro Silva 2023-07-24 inicio}
+                        GravaDadosTransacaoEletronica(Form1.IBDataSet28.Transaction,
+                          Form1.ibDataSet28.FieldByName('DATA').AsDateTime,
+                          Form1.ibDataSet28.FieldByName('PEDIDO').AsString,
+                          Form1.ibDataSet28.FieldByName('CAIXA').AsString,
+                          Form1.ibDataSet28.FieldByName('FORMA').AsString,
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago,
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca,
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede,
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao, // Sandro Silva 2018-07-03
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira // Sandro Silva 2018-07-03
+                          );
+
+                        {Sandro Silva 2023-07-24 fim}
+
                         {Sandro Silva 2023-06-14 inicio
                         if (UsaIntegradorFiscal()) then // Sandro Silva 2017-06-28 if Form1.sModeloECF = '59' then
                         begin

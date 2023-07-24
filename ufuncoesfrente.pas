@@ -280,6 +280,11 @@ function SelectSQLGerenciadorVendasF10(sModeloECF: String;
 function RetornaTextoEmVenda(sModelo: String): String;  
 //function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
+function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  dtData: TDate; sPedido: String; sCaixa: String; sForma: String;
+  dValor: Double; sTransacao: String;
+  sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
+
 
 var
   cWinDir: array[0..200] of Char;
@@ -2036,6 +2041,43 @@ begin
   begin
     ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
   end;
+end;
+
+function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  dtData: TDate; sPedido: String; sCaixa: String; sForma: String;
+  dValor: Double; sTransacao: String;
+  sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
+var
+  IBQTRANSACAO: TIBQuery;
+  sRegistro: String;
+  iForma: Integer;
+begin
+  Result := True;
+
+  IBQTRANSACAO := CriaIBQuery(IBTransaction);
+
+  try
+    IBQTRANSACAO.Close;
+    IBQTRANSACAO.SQL.Text :=
+      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
+      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
+    sRegistro := FormatFloat('0000000000', IncrementaGenerator('G_VFPE', 1));
+    IBQTRANSACAO.ParamByName('REGISTRO').AsString         := sRegistro;
+    IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
+    IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
+    IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
+    IBQTRANSACAO.ParamByName('FORMA').AsString            := sForma;
+    IBQTRANSACAO.ParamByName('VALOR').AsFloat             := dValor;
+    IBQTRANSACAO.ParamByName('TRANSACAO').AsString        := Copy(sTransacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'TRANSACAO'));
+    IBQTRANSACAO.ParamByName('NOMEREDE').AsString         := Copy(sNomeRede, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'NOMEREDE'));
+    IBQTRANSACAO.ParamByName('AUTORIZACAO').AsString      := Copy(sAutorizacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'AUTORIZACAO'));
+    IBQTRANSACAO.ParamByName('BANDEIRA').AsString         := Copy(sBandeira, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'BANDEIRA'));
+    IBQTRANSACAO.ExecSQL;
+  except
+  end;
+
+  FreeAndNil(IBQTRANSACAO);
+
 end;
 
 {
