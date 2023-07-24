@@ -10756,13 +10756,13 @@ begin
       Mais1Ini.WriteString('ZPOS', 'Exec', 'C:\ZPOS\ZPOS.exe');
       Mais1Ini.WriteString('ZPOS', 'bAtivo', 'Sim');
     end;
-    if Mais1Ini.ReadString('TEF Elgin', 'Pasta', 'XXX') = 'XXX' then
+    if Mais1Ini.ReadString('Elgin', 'Pasta', 'XXX') = 'XXX' then
     begin
-      Mais1Ini.WriteString('TEF Elgin', 'Pasta', 'TEF_Elgin');
-      Mais1Ini.WriteString('TEF Elgin', 'Req', 'Req');
-      Mais1Ini.WriteString('TEF Elgin', 'Resp', 'Resp');
-      Mais1Ini.WriteString('TEF Elgin', 'Exec', 'C:\TEF_ELGIN\TEFPassivo\E1_TEFPay_Passivo.exe');
-      Mais1Ini.WriteString('TEF Elgin', 'bAtivo', 'Sim');
+      Mais1Ini.WriteString('Elgin', 'Pasta', 'CLIENTE');
+      Mais1Ini.WriteString('Elgin', 'Req', 'Req');
+      Mais1Ini.WriteString('Elgin', 'Resp', 'Resp');
+      Mais1Ini.WriteString('Elgin', 'Exec', 'C:\ELGIN\TEFPassivo\E1_TEFPay_Passivo.exe');
+      Mais1Ini.WriteString('Elgin', 'bAtivo', 'Sim');
     end;
     {Sandro Silva 2023-07-20 fim}
   end else
