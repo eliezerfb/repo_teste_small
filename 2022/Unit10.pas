@@ -2954,7 +2954,10 @@ begin
       Form10.SMALL_DBEdit6.SetFocus
   end else
   begin
-    {Sandro Silva 2023-07-24 inicio}
+    {Sandro Silva 2023-07-24 inicio
+    if Form10.SMALL_DBEdit19.CanFocus then
+      Form10.SMALL_DBEdit19.SetFocus;
+    }
     if (Form7.sModulo = 'RECEBER') then
     begin
 
@@ -2962,21 +2965,23 @@ begin
       begin
         if LocalizaDBEditPosicionar('FORMADEPAGAMENTO') <> nil then
           LocalizaDBEditPosicionar('FORMADEPAGAMENTO').SetFocus;//Form10.SMALL_DBEdit26.SetFocus;
-      end;
-
-      if (DBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO) then
+      end
+      else if (DBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO) then
       begin
         if LocalizaDBEditPosicionar('AUTORIZACAOTRANSACAO') <> nil then
           LocalizaDBEditPosicionar('AUTORIZACAOTRANSACAO').SetFocus;
-      end;
-
-      Exit;
-
+      end
+      else
+        if Form10.SMALL_DBEdit19.CanFocus then
+          Form10.SMALL_DBEdit19.SetFocus;
+    end
+    else
+    begin
+      if Form10.SMALL_DBEdit19.CanFocus then
+        Form10.SMALL_DBEdit19.SetFocus;
     end;
     {Sandro Silva 2023-07-24 fim}
 
-    if Form10.SMALL_DBEdit19.CanFocus then
-      Form10.SMALL_DBEdit19.SetFocus;
   end;
 
   {Mauricio Parizotto 2023-05-29 Inicio}
@@ -2991,13 +2996,9 @@ begin
   begin
 
     if (DBGrid3.Tag = ID_CONSULTANDO_INSTITUICAO_FINANCEIRA) then
-      LocalizaDBEditPosicionar('FORMADEPAGAMENTO').SetFocus;//Form10.SMALL_DBEdit26.SetFocus;
-
-
-    if (DBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO) then
-    begin
+      LocalizaDBEditPosicionar('FORMADEPAGAMENTO').SetFocus//Form10.SMALL_DBEdit26.SetFocus;
+    else if (DBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO) then
       LocalizaDBEditPosicionar('AUTORIZACAOTRANSACAO').SetFocus;
-    end;
 
     Exit;
 
