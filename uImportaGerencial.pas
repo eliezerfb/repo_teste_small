@@ -163,7 +163,7 @@ begin
         ' and coalesce(A.ITEM, '''') = '''' ';
       FIBDataSet27.Open;
 
-      dDescontoTotalCupom := 0.00; // 2015-12-10
+      FDescontoNoTotal := 0.00; // 2015-12-10
       while FIBDataSet27.Eof = False do
       begin
 
