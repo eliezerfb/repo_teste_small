@@ -4512,12 +4512,12 @@ begin
       iTopSegundaColuna := 18;
     {Sandro Silva 2023-06-22 fim}
     
-    if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente 
+    if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente
     begin
       for I := 1 to Form7.iCampos do
       begin
-        if Form1.CampoDisponivelParaUsuario(Form7.sModulo, Form7.ArquivoAberto.Fields[I - 1].FieldName) then        
-        begin   
+        if Form1.CampoDisponivelParaUsuario(Form7.sModulo, Form7.ArquivoAberto.Fields[I - 1].FieldName) then
+        begin
           if AllTrim(Form7.TabelaAberta.Fields[I-1].DisplayLabel) <> '...' then
           begin
             if not ((Form7.sModulo = 'CLIENTES') and (I >= 27)) then
@@ -4549,39 +4549,7 @@ begin
                 end
                 else if I = 18 then
                   iTop := 15;
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
                 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
                   if I > 25 then
@@ -4603,30 +4571,7 @@ begin
                   else
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
                 end;
-              
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Top     := iTop;
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Visible := True;
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
@@ -4637,9 +4582,7 @@ begin
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := 'Forma de Pag.:';
                 {Sandro Silva 2023-06-20 fim}
 
-               
-               
-               
+                {Sandro Silva 2023-07-24 inicio
                 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
                   if I > 25 then
@@ -4661,25 +4604,31 @@ begin
                   else
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
                 end;
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+                }
+                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
+                begin
+                  if I > 25 then
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 480 + 100
+                  else if I > 15 then
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 300 + 100
+                  else
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
+                end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
+                begin
+                  if I > 17 then
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 460 + 100
+                  else
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
+                end else
+                begin
+                  if I > 17 then
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 460 + 70
+                  else
+                    TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
+
+                end;
+                {Sandro Silva 2023-07-24 fim}
+
                 {Sandro Silva 2022-12-20 inicio}
                 if (Form7.sModulo = 'ESTOQUE') then
                 begin
@@ -4691,10 +4640,6 @@ begin
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).AutoSize := True;
                   end;
                 end;
-
-                
-                
-                
                 
                 {Sandro Silva 2022-12-20 fim}
                 if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
@@ -4838,12 +4783,6 @@ begin
                   begin
                     dbMemo2.Enabled := True;
                     dbMemo2.Font.Color := clWindowText;
-
-
-
-
-
-
                   end;
 
                   iTop := iTop + 95;
@@ -4885,7 +4824,7 @@ begin
             end;
           end;
         end;
-      end;
+      end; // for I := 1 to Form7.iCampos do
     end; // if Form7.sModulo <> 'ICM' then
 
   except
