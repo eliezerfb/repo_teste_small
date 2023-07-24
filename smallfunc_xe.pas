@@ -116,6 +116,7 @@ procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
 procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 function SysWinDir: string;
 function SmallMsgBox(const Text, Caption: PChar; Flags: Longint): Integer;
+function Day(Data:TdateTime): Integer;
 
 
 
@@ -1200,6 +1201,14 @@ begin
 end;
 
 
+function Day(Data:TdateTime): Integer;
+var
+   DataD:TDateTime;
+begin
+   DataD:=Date;
+   if Data <> DataD then DataD:=Data;
+   result:=StrToInt(Copy(DateToStr(DataD),1,2));
+end;
 
 
 
