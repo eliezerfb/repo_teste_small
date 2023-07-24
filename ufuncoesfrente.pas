@@ -284,7 +284,9 @@ function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   dtData: TDate; sPedido: String; sCaixa: String; sForma: String;
   dValor: Double; sTransacao: String;
   sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
-
+function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  sPedidoOld: String; sCaixaOld: String;
+  dtData: TDate; sPedido: String; sCaixa: String): Boolean;
 
 var
   cWinDir: array[0..200] of Char;
@@ -2061,7 +2063,7 @@ begin
     IBQTRANSACAO.SQL.Text :=
       'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
       ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
-    sRegistro := FormatFloat('0000000000', IncrementaGenerator('G_VFPE', 1));
+    sRegistro := FormatFloat('0000000000', IncGeneratorToInt(IBTransaction.DefaultDatabase, 'G_VFPE', 1));
     IBQTRANSACAO.ParamByName('REGISTRO').AsString         := sRegistro;
     IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
     IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
@@ -2074,11 +2076,47 @@ begin
     IBQTRANSACAO.ParamByName('BANDEIRA').AsString         := Copy(sBandeira, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'BANDEIRA'));
     IBQTRANSACAO.ExecSQL;
   except
+    Result := False;
   end;
 
   FreeAndNil(IBQTRANSACAO);
 
 end;
+
+function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  sPedidoOld: String; sCaixaOld: String;
+  dtData: TDate; sPedido: String; sCaixa: String): Boolean;
+var
+  IBQTRANSACAO: TIBQuery;
+  iForma: Integer;
+begin
+  Result := True;
+
+  IBQTRANSACAO := CriaIBQuery(IBTransaction);
+
+  try
+    IBQTRANSACAO.Close;
+    IBQTRANSACAO.SQL.Text :=
+      'update TRANSACAOELETRONICA set ' +
+      'DATA = :DATA, ' +
+      'PEDIDO = :PEDIDO, ' +
+      'CAIXA = :CAIXA ' +
+      'where PEDIDO = :PEDIDOOLD ' +
+      ' and CAIXA = :CAIXAOLD ';
+    IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
+    IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
+    IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
+    IBQTRANSACAO.ParamByName('PEDIDOOLD').AsString        := sPedidoOld;
+    IBQTRANSACAO.ParamByName('CAIXAOLD').AsString         := sCaixaOld;
+    IBQTRANSACAO.ExecSQL;
+  except
+    Result := False;
+  end;
+
+  FreeAndNil(IBQTRANSACAO);
+
+end;
+
 
 {
 function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;

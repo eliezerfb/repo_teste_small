@@ -34104,12 +34104,19 @@ begin
   Importar.TransacoesCartao := Form1.TransacoesCartao;
   Importar.NomeDoTEF        := Form10.sNomeDoTEF;
   Importar.DebitoOuCredito  := Form1.sDebitoOuCredito;
+  Importar.sConveniado      := Form1.sConveniado;
+  Importar.sVendedor        := Form1.sVendedor;
+  Importar.DescontoNoTotal  := Form1.fDescontoNoTotal;
 
   Importar.NumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
   if Importar.Importar then
   begin
     try
       Form1.icupom := StrToInt(Importar.NumeroNF);
+
+      Form2.Edit10.Text := '';
+      Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
+      Form2.Edit8.Text  := Importar.DadosCliente.Nome;
 
       _ecf65_EnviarNFCe(True);
 
