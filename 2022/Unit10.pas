@@ -4,7 +4,7 @@ unit Unit10;
 interface
 
 uses
-
+  Windows,
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
   Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
@@ -14,6 +14,9 @@ uses
 
 const TEXTO_NAO_MOVIMENTA_ESTOQUE          = '= Não movimenta o Estoque';
 const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = '0 Usar o custo de compra nas notas';
+
+const ID_CONSULTANDO_INSTITUICAO_FINANCEIRA = 1;
+const ID_CONSULTANDO_FORMA_DE_PAGAMENTO     = 2;
 
 type
 
@@ -648,6 +651,7 @@ var
   bProximo : Boolean;
   sText    : String;
   sContatos : String;
+
 implementation
 
 uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
@@ -1446,20 +1450,33 @@ begin
           Form7.ibDataSet7NOME.AsString  := Form7.ibDataSet2NOME.AsString;
       end;
 
-      {Sandro Silva 2023-06-22 inicio}
+      {Sandro Silva 2023-07-24 inicio
       // Forma De Pagamento
       if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
       begin
-        Form7.ibDataSet7FORMADEPAGAMENTO.AsString := Form7.ibqConsulta.FieldByName('FORMA').AsString;
+        Form7.ibDataSet7FORMADEPAGAMENTO.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
         Form10.dBGrid3.Visible := False;
       end;
-      {Sandro Silva 2023-06-22 fim}
 
       //Mauricio Parizotto 2023-05-29
       // Instituição Financeira
       if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
       begin
         Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+        Form10.dBGrid3.Visible := False;
+      end;
+      }
+      if (Form10.dBGrid3.Visible) then
+      begin
+        // Forma De Pagamento
+        if Form10.dBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO then
+          Form7.ibDataSet7FORMADEPAGAMENTO.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+
+        //Mauricio Parizotto 2023-05-29
+        // Instituição Financeira
+        if Form10.dBGrid3.Tag = ID_CONSULTANDO_INSTITUICAO_FINANCEIRA then
+          Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
+
         Form10.dBGrid3.Visible := False;
       end;
     end;
@@ -1628,6 +1645,8 @@ var
 begin
   //Mauricio Parizotto 2023-05-29
   bGravaEscolha := False;
+  
+  dBGrid3.Tag := 0;
 
   with Sender as TSMALL_DBEdit do
     sPublicText := Text;
@@ -1795,6 +1814,7 @@ begin
 
         Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
 
+        dBGrid3.Tag        := ID_CONSULTANDO_FORMA_DE_PAGAMENTO;
         dBGrid3.Visible    := True;
         dBGrid3.Top        := Top + 19;
         dBGrid3.Left       := Left;
@@ -1819,6 +1839,7 @@ begin
 
         Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
 
+        dBGrid3.Tag        := ID_CONSULTANDO_INSTITUICAO_FINANCEIRA;
         dBGrid3.Visible    := True;
         dBGrid3.Top        := Top - 100;
         dBGrid3.Left       := Left;
@@ -2088,13 +2109,26 @@ end;
 procedure TForm10.DBGrid1DblClick(Sender: TObject);
 begin
   GravaEscolha(); // Ok
-  if Form7.sModulo = 'CAIXA'   then 
-  	if SMALL_DBEdit3.CanFocus then 
+  if Form7.sModulo = 'CAIXA'   then
+  begin
+  	if SMALL_DBEdit3.CanFocus then
   		SMALL_DBEdit3.SetFocus;
+  end;
+
   if Form7.sModulo = 'RECEBER' then
   begin
-    if (dBGrid1.DataSource.Name = 'DataSource12')  then if SMALL_DBEdit3.CanFocus then SMALL_DBEdit3.SetFocus;
-    if (dBGrid1.DataSource.Name = 'DataSource2') then if SMALL_DBEdit5.CanFocus then  SMALL_DBEdit5.SetFocus;
+    if (dBGrid1.DataSource.Name = 'DataSource12')  then
+    begin
+      if SMALL_DBEdit3.CanFocus then
+        SMALL_DBEdit3.SetFocus;
+    end;
+
+    if (dBGrid1.DataSource.Name = 'DataSource2') then
+    begin
+      if SMALL_DBEdit5.CanFocus then
+        SMALL_DBEdit5.SetFocus;
+    end;
+
   end;
 
   if Form7.sModulo = 'PAGAR'   then
@@ -2873,6 +2907,22 @@ begin
 end;
 
 procedure TForm10.DBGrid3DblClick(Sender: TObject);
+  function LocalizaDBEditPosicionar(FieldName: String): TDBEdit;
+  var
+    I: Integer;
+  begin
+    for i := 0 to Form10.ComponentCount -1 do
+    begin
+      if (Form10.Components[i].ClassType = TDBEdit) or (Form10.Components[i].ClassType = TSMALL_DBEdit) then
+      begin
+        if AnsiUpperCase(TDBEDit(Form10.Components[i]).DataField) = AnsiUpperCase(FieldName) then
+        begin
+          Result := TDBEDit(Form10.Components[i]);
+          Break;
+        end;
+      end;
+    end;
+  end;
 begin
   GravaEscolha();
 
@@ -2904,16 +2954,55 @@ begin
       Form10.SMALL_DBEdit6.SetFocus
   end else
   begin
+    {Sandro Silva 2023-07-24 inicio}
+    if (Form7.sModulo = 'RECEBER') then
+    begin
+
+      if (DBGrid3.Tag = ID_CONSULTANDO_INSTITUICAO_FINANCEIRA) then
+      begin
+        if LocalizaDBEditPosicionar('FORMADEPAGAMENTO') <> nil then
+          LocalizaDBEditPosicionar('FORMADEPAGAMENTO').SetFocus;//Form10.SMALL_DBEdit26.SetFocus;
+      end;
+
+      if (DBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO) then
+      begin
+        if LocalizaDBEditPosicionar('AUTORIZACAOTRANSACAO') <> nil then
+          LocalizaDBEditPosicionar('AUTORIZACAOTRANSACAO').SetFocus;
+      end;
+
+      Exit;
+
+    end;
+    {Sandro Silva 2023-07-24 fim}
+
     if Form10.SMALL_DBEdit19.CanFocus then
       Form10.SMALL_DBEdit19.SetFocus;
   end;
 
   {Mauricio Parizotto 2023-05-29 Inicio}
+  {Sandro Silva 2023-07-24 inicio
   if (Form7.sModulo = 'RECEBER') and (DBGrid3.DataSource.Name = 'DSConsulta') then
   begin
     Form10.SMALL_DBEdit26.SetFocus;
     Exit;
   end;
+  }
+  if (Form7.sModulo = 'RECEBER') then
+  begin
+
+    if (DBGrid3.Tag = ID_CONSULTANDO_INSTITUICAO_FINANCEIRA) then
+      LocalizaDBEditPosicionar('FORMADEPAGAMENTO').SetFocus;//Form10.SMALL_DBEdit26.SetFocus;
+
+
+    if (DBGrid3.Tag = ID_CONSULTANDO_FORMA_DE_PAGAMENTO) then
+    begin
+      LocalizaDBEditPosicionar('AUTORIZACAOTRANSACAO').SetFocus;
+    end;
+
+    Exit;
+
+  end;
+  {Sandro Silva 2023-07-24 fim}
   {Mauricio Parizotto 2023-05-29 Fim}
 
   {Mauricio Parizotto 2023-06-20 Inicio}
