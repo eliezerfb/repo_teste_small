@@ -2249,9 +2249,10 @@ type
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
     function GetMensagemCertificado(vLocal:string=''): string;
     function TestarNFeHomologacao: Boolean;
-    function TestarNFSeHomologacao: Boolean;    
+    function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
     procedure AtualizarListaItensAuxiliar;    
+    procedure AuditaAlteracaoEstoqueManual;    
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -18058,7 +18059,7 @@ begin
         ShowMessage('A quantidade do estoque não pode ser alterada manualmente.'
         +chr(10)+chr(10)+'Para alterar a quantidade deste item somente emitindo um dos seguintes documentos fiscais:'
         +chr(10)+chr(10)+'NF-e de entrada (compra)'
-        +chr(10)+'NF-e de saída (venda)'
+        +chr(10)+'NF-e de saída (venda)'            
         +chr(10)+'NFC-e de saída (venda)'
         +chr(10)+'Cupom Fiscal (venda)'+chr(10));
       end;
@@ -18066,25 +18067,14 @@ begin
   except
     Form7.ibDataSet4QTD_ATUAL.AsString := Text;
   end;
-  //
-{
-  if (NaoHouveMovimento(Form7.ibDataSet4CODIGO.AsString))
-  or (Form7.sModulo <> 'ESTOQUE')
-  or ((UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'SP'))
-  or ((Pos('CONSUMO',UpperCase(Form7.ibDataSet4NOME.AsString)) <> 0)) then
-  begin
-    Form7.ibDataSet4QTD_ATUAL.AsString := Text;
-  end else
-  begin
-    ShowMessage('A quantidade do estoque não pode ser alterada manualmente.'
-    +chr(10)+chr(10)+'Para alterar a quantidade deste item somente emitindo um dos seguintes documentos fiscais:'
-    +chr(10)+chr(10)+'NF-e de entrada (compra)'
-    +chr(10)+'NF-e de saída (venda)'
-    +chr(10)+'NFC-e de saída (venda)'
-    +chr(10)+'Cupom Fiscal (venda)'+chr(10));
-  end;
-  //
-}
+end;
+
+procedure TForm7.AuditaAlteracaoEstoqueManual;
+begin
+  if sModulo <> 'ESTOQUE' then
+    Exit;
+  if (Form7.ibDataSet4QTD_ATUAL.OldValue <> Form7.ibDataSet4QTD_ATUAL.Value) then
+    Audita('ALTEROU','SMALL', Senhas.UsuarioPub, Form7.smodulo + ' - ' + ibDataSet4CODIGO.AsString + ' - SALDO ESTOQUE', Form7.ibDataSet4QTD_ATUAL.OldValue, Form7.ibDataSet4QTD_ATUAL.Value);
 end;
 
 procedure TForm7.Resumodevendas1Click(Sender: TObject);

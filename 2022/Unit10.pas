@@ -624,6 +624,7 @@ type
     procedure DefinirLimiteDisponivel;
     procedure AlteracaoInstituicaoFinanceira;
     procedure AtualizaObjComValorDoBanco;
+    procedure AuditaAlteracaoSaldoEstoque;
     { Private declarations }
   public
     { Public declarations }
@@ -735,9 +736,16 @@ begin
   //
 end;
 
+procedure TForm10.AuditaAlteracaoSaldoEstoque;
+begin
+  Form7.AuditaAlteracaoEstoqueManual;
+end;
 
 function GravaRegistro(sP1 : boolean):Boolean;
 begin
+  if Form7.sModulo = 'ESTOQUE' then
+    Form10.AuditaAlteracaoSaldoEstoque;
+
   if Form7.bEstaSendoUsado then
   begin
     Form7.ArquivoAberto.Cancel;
