@@ -34100,47 +34100,58 @@ begin
   Form1.sStatusECF := 'Gerando ' + Form1.sTipoDocumento2;
   // Importa gerencial para nfc-e
   Importar := TImportaGerencial.Create;
-  Importar.Caixa := Form1.sCaixa;
-  Importar.ModeloDocumento := Form1.sModeloECF;
-  Importar.IBTransaction := Form1.ibDataSet27.Transaction;
-  Importar.IBDataSet27  := Form1.IBDataSet27;
-  Importar.IBDataSet30  := Form1.IBDataSet30;
-  Importar.IBDataset150 := Form1.IBDataSet150;
-  Importar.IBDataSet7   := Form1.IBDataSet7;
-  Importar.IBDataSet28  := Form1.IBDataSet28;
-  Importar.IBDataSet25  := Form1.ibDataSet25;
-  Importar.TransacoesCartao := Form1.TransacoesCartao;
-  Importar.NomeDoTEF        := Form10.sNomeDoTEF;
-  Importar.DebitoOuCredito  := Form1.sDebitoOuCredito;
-  Importar.sConveniado      := Form1.sConveniado;
-  Importar.sVendedor        := Form1.sVendedor;
-  Importar.DescontoNoTotal  := Form1.fDescontoNoTotal;
+  try
+    Importar.Caixa := Form1.sCaixa;
+    Importar.ModeloDocumento := Form1.sModeloECF;
+    Importar.IBTransaction := Form1.ibDataSet27.Transaction;
+    Importar.IBDataSet27  := Form1.IBDataSet27;
+    Importar.IBDataSet30  := Form1.IBDataSet30;
+    Importar.IBDataset150 := Form1.IBDataSet150;
+    Importar.IBDataSet7   := Form1.IBDataSet7;
+    Importar.IBDataSet28  := Form1.IBDataSet28;
+    Importar.IBDataSet25  := Form1.ibDataSet25;
+    Importar.TransacoesCartao := Form1.TransacoesCartao;
+    Importar.NomeDoTEF        := Form10.sNomeDoTEF;
+    Importar.DebitoOuCredito  := Form1.sDebitoOuCredito;
+    Importar.sConveniado      := Form1.sConveniado;
+    Importar.sVendedor        := Form1.sVendedor;
+    Importar.DescontoNoTotal  := Form1.fDescontoNoTotal;
+    Importar.ValorTotalTEFPago := Form1.fTEFPago;
 
-  Importar.NumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
-  if Importar.Importar then
-  begin
-    try
-      Form1.icupom := StrToInt(Importar.NumeroNF);
+    Importar.NumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
+    if Importar.Importar then
+    begin
+      try
+        Form1.icupom := StrToInt(Importar.NumeroNF);
 
-      Form2.Edit10.Text := '';
-      Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
-      Form2.Edit8.Text  := Importar.DadosCliente.Nome;
+        Form2.Edit10.Text := '';
+        Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
+        Form2.Edit8.Text  := Importar.DadosCliente.Nome;
 
-      _ecf65_EnviarNFCe(True);
+        _ecf65_EnviarNFCe(True);
 
+        DeletaDataSet25;
+      except
+
+      end;
+      Commitatudo(True);
+    end
+    else
+    begin
       DeletaDataSet25;
-    except
-
+      Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
     end;
-    Commitatudo(True);
-  end
-  else
-  begin
-    DeletaDataSet25;
-    Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
+  finally
+    FreeAndNil(Importar);
+    Form1.TransacoesCartao.Transacoes.Clear;
+    Form10.sNomeDoTEF      := '';
+    Form1.sDebitoOuCredito := '';
+    Form1.sConveniado      := '';;
+    Form1.sVendedor        := '';
+    Form1.fDescontoNoTotal := 0.00;
+    Form1.fTEFPago         := 0.00;
   end;
-  FreeAndNil(Importar);
-  Form1.TransacoesCartao.Transacoes.Clear;
+
   if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
     Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
   else

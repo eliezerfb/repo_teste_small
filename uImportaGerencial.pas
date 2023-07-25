@@ -41,6 +41,7 @@ type
     FVendedor: String;
     FDadosCliente: TDadosCliente;
     FDescontoNoTotal: Double;
+    FValorTotalTEFPago: Double;
     procedure SetNumeroGerencial(const Value: String);
   public
     constructor Create;
@@ -64,6 +65,7 @@ type
     property sVendedor: String read FVendedor write FVendedor;
     property DescontoNoTotal: Double read FDescontoNoTotal write FDescontoNoTotal;
     property DadosCliente: TDadosCliente read FDadosCliente write FDadosCliente;
+    property ValorTotalTEFPago: Double read FValorTotalTEFPago write FValorTotalTEFPago;
 
   end;
 
@@ -362,24 +364,22 @@ begin
         FVendedor   := FIBDataSet28.FieldByName('VENDEDOR').AsString;
 
 /////////////////////////////////////////////////////////////////////////////////////
-        case StrToIntDef(Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2), -1) of aqui
-
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
-          FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1));
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Cheque
-          FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '02' then // Dinheiro
         begin
-          FIBDataSet25.FieldByName('ACUMULADO2').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-        end;
-
-        if (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '03') or // Cartão
+          FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1))
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Cheque
+        begin
+          FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '02' then // Dinheiro
+        begin
+          FIBDataSet25.FieldByName('ACUMULADO2').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '03') or // Cartão
           (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '17') or // Pagto Instantâneo
           (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '18') then // Carteira digital
         begin
-
           IBQTRANSACAOELETRONICA.Close;
           IBQTRANSACAOELETRONICA.SQL.Text :=
             'select ' +
@@ -401,9 +401,11 @@ begin
           IBQTRANSACAOELETRONICA.Open;
 
           dTotalForma := 0.00;
+          FValorTotalTEFPago := 0.00;
           while IBQTRANSACAOELETRONICA.Eof = False do
           begin
-            dTotalForma := dTotalForma + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
+            dTotalForma := IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
+            FValorTotalTEFPago := FValorTotalTEFPago + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
 
             ModalidadeTransacao := tModalidadeCartao;
             if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '17' then
@@ -426,35 +428,43 @@ begin
 
           FIBDataSet25.FieldByName('PAGAR').AsFloat := dTotalForma;
 
-        end;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then // PRAZO
-          FIBDataSet25.FieldByName('DIFERENCA_').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '05' then // Extra 1
-          FIBDataSet25.FieldByName('VALOR01').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '06' then // Extra 2
-          FIBDataSet25.FieldByName('VALOR02').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '07' then // Extra 3
-          FIBDataSet25.FieldByName('VALOR03').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '08' then // Extra 4
-          FIBDataSet25.FieldByName('VALOR04').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '09' then // Extra 5
-          FIBDataSet25.FieldByName('VALOR05').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '10' then // Extra 6
-          FIBDataSet25.FieldByName('VALOR06').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '11' then // Extra 7
-          FIBDataSet25.FieldByName('VALOR07').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
-        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '12' then // Extra 6
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then // PRAZO
+        begin
+          FIBDataSet25.FieldByName('DIFERENCA_').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '05' then // Extra 1
+        begin
+          FIBDataSet25.FieldByName('VALOR01').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '06' then // Extra 2
+        begin
+          FIBDataSet25.FieldByName('VALOR02').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '07' then // Extra 3
+        begin
+          FIBDataSet25.FieldByName('VALOR03').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '08' then // Extra 4
+        begin
+          FIBDataSet25.FieldByName('VALOR04').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '09' then // Extra 5
+        begin
+          FIBDataSet25.FieldByName('VALOR05').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '10' then // Extra 6
+        begin
+          FIBDataSet25.FieldByName('VALOR06').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '11' then // Extra 7
+        begin
+          FIBDataSet25.FieldByName('VALOR07').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '12' then // Extra 8
+        begin
           FIBDataSet25.FieldByName('VALOR08').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
-
+        end;
 /////////////////////////////////////////////////////////////////////////////////////
         FIBDataSet28.Next;
       end;

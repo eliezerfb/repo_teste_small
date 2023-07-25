@@ -2060,14 +2060,15 @@ begin
   try
     IBQTRANSACAO.Close;
     IBQTRANSACAO.SQL.Text :=
-      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
-      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
+      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, GNF, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
+      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :GNF, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
     sRegistro := FormatFloat('0000000000', IncGeneratorToInt(IBTransaction.DefaultDatabase, 'G_VFPE', 1));
     IBQTRANSACAO.ParamByName('REGISTRO').AsString         := sRegistro;
     IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
     IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
     IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
-    IBQTRANSACAO.ParamByName('MODELO').AsString           := sModelo;    
+    IBQTRANSACAO.ParamByName('MODELO').AsString           := sModelo;
+    IBQTRANSACAO.ParamByName('GNF').AsString              := sGNF;    
     IBQTRANSACAO.ParamByName('FORMA').AsString            := sForma;
     IBQTRANSACAO.ParamByName('VALOR').AsFloat             := dValor;
     IBQTRANSACAO.ParamByName('TRANSACAO').AsString        := Copy(sTransacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'TRANSACAO'));
