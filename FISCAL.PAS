@@ -31852,27 +31852,20 @@ begin
         Form1.ibDataset150.SelectSQL.Text := ' Select * from NFCE '+
                                              ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
                                              '   and  NFEXML containing ' + QuotedStr(sPesquisa) +
-                                             ' Order by NUMERONF ';
+                                             ' Order by DATA, NUMERONF ';
         Form1.ibDataset150.Open;
       end else
       begin
-        if (Length(sPesquisa) = 11) then
-        begin
-          sPesquisa := ' and CPF = ' + QuotedStr(FormataCpfCgc(sPesquisa));
-        end;
-
-        if (Length(sPesquisa) = 14) then
-        begin
-          sPesquisa := ' and CNPJ = ' + QuotedStr(FormataCpfCgc(sPesquisa));
-        end;
+        sPesquisa := ' and CNPJ = ' + QuotedStr(FormataCpfCgc(sPesquisa));
 
         Form1.ibDataset150.Close;
         Form1.ibDataset150.SelectSQL.Text := ' Select N.* '+
                                              ' From NFCE N '+
-                                             '   Left Join ALTERACA A on A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
                                              ' Where N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                                             sPesquisa+
-                                             ' Order by N.NUMERONF ';
+                                             '   and EXISTS (Select 1 From ALTERACA A'+
+                                             '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
+                                             '               '+sPesquisa+')'+
+                                             ' Order by DATA, NUMERONF ';
         Form1.ibDataset150.Open;
       end;
       {Mauricio Parizotto 2023-07-24 Fim}
@@ -31913,9 +31906,10 @@ begin
       Form1.ibDataset150.Close;
       Form1.ibDataset150.SelectSQL.Text := ' Select N.* '+
                                            ' From NFCE N '+
-                                           '   Left Join ALTERACA A on A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
                                            ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                                           '   and A.CLIFOR containing '+QuotedStr(sPesquisa)+
+                                           '   and EXISTS (Select 1 From ALTERACA A'+
+                                           '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
+                                           '                 and A.CLIFOR containing'+QuotedStr(sPesquisa)+')'+
                                            ' Order by N.DATA, N.NUMERONF ';
       Form1.ibDataset150.Open;
     end;
