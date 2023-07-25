@@ -12007,6 +12007,11 @@ begin
                 if Form1.sModeloECF = '15' then iGNF := StrToInt('0'+LimpaNumero(_ecf15_GNF(True)))+1; //
                 if Form1.sModeloECF = '17' then iGNF := StrToInt('0'+LimpaNumero(_ecf17_GNF(True)))+1; //
                 //
+                {Sandro Silva 2023-07-25 inicio}
+                if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
+                  iGNF := StrToIntDef(IncGenerator(Form1.ibDataSet27.Transaction.DefaultDatabase, 'G_GNF', 1), 0);
+                {Sandro Silva 2023-07-25 fim}
+
 
                 //AtualizaCROCripta; // 2015-09-24
 
@@ -12188,6 +12193,8 @@ begin
                           Form1.ibDataSet28.FieldByName('DATA').AsDateTime,
                           Form1.ibDataSet28.FieldByName('PEDIDO').AsString,
                           Form1.ibDataSet28.FieldByName('CAIXA').AsString,
+                          Form1.sModeloECF,
+                          Form1.ibDataSet28.FieldByName('GNF').AsString,
                           Form1.ibDataSet28.FieldByName('FORMA').AsString,
                           Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago,
                           Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca,
@@ -14197,6 +14204,7 @@ begin
         if Form1.sModeloECF = '14' then iGNF := StrToInt('0'+_ecf14_GNF(True));
         if Form1.sModeloECF = '15' then iGNF := StrToInt('0'+_ecf15_GNF(True));
         if Form1.sModeloECF = '17' then iGNF := StrToInt('0'+_ecf17_GNF(True)); // ok 2015-08-2
+
         // --------------------- //
         //  Retorno do Subtotal  //
         // --------------------- //

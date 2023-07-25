@@ -91,6 +91,7 @@ var
   IBQTRANSACAOELETRONICA: TIBQuery;
   sDataOld: String;
   sCaixaOld: String;
+  sModeloOld: String;
   sNovoNumero: String;
   dtDataNovo: TDate;
   sDAV: String;
@@ -117,14 +118,15 @@ begin
   try
     IBQCONSULTA.Close;
     IBQCONSULTA.SQL.Text :=
-      'select DATA, CAIXA from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and N.STATUS = ''Finalizada'' ';
+      'select NUMERONF, DATA, CAIXA, MODELO from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and STATUS = ''Finalizada'' ';
     IBQCONSULTA.Open;
 
-    if IBQCONSULTA.FieldByName('DATA').AsString <> '' then
+    if IBQCONSULTA.FieldByName('NUMERONF').AsString <> '' then
     begin
 
-      sDataOld  := IBQCONSULTA.FieldByName('DATA').AsString;
-      sCaixaOld := IBQCONSULTA.FieldByName('CAIXA').AsString;
+      sDataOld   := IBQCONSULTA.FieldByName('DATA').AsString;
+      sCaixaOld  := IBQCONSULTA.FieldByName('CAIXA').AsString;
+      sModeloOld := IBQCONSULTA.FieldByName('MODELO').AsString;
 
       IBQCONSULTA.Close;
       IBQCONSULTA.SQL.Clear;
@@ -321,6 +323,7 @@ begin
             FIBDataSet7.Edit;
             FIBDataSet7.FieldByName('NUMERONF').AsString  := sNovoNumero + Copy(FCaixa, 1, 3);
             FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, FNumeroGerencial, FormataNumeroDoCupom(StrToInt(sNovoNumero)), [rfReplaceAll]);
+            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'caixa ' + sCaixaOld, 'caixa ' + FCaixa, [rfReplaceAll]);
             FIBDataSet7.FieldByName('DOCUMENTO').AsString := FCaixa + sNovoNumero + RightStr(FIBDataSet7.FieldByName('DOCUMENTO').AsString, 1);
             FIBDataSet7.FieldByName('EMISSAO').AsDateTime := dtDataNovo;
             FIBDataSet7.Post;
@@ -353,12 +356,14 @@ begin
           end;
         end;
 
-      // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
+        // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
 
-      FConveniado := FIBDataSet28.FieldByName('CLIFOR').AsString;
-      FVendedor   := FIBDataSet28.FieldByName('VENDEDOR').AsString;
+        FConveniado := FIBDataSet28.FieldByName('CLIFOR').AsString;
+        FVendedor   := FIBDataSet28.FieldByName('VENDEDOR').AsString;
 
 /////////////////////////////////////////////////////////////////////////////////////
+        case StrToIntDef(Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2), -1) of aqui
+
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
           FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1));
 
@@ -375,26 +380,6 @@ begin
           (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '18') then // Carteira digital
         begin
 
-          {
-          if (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '03') then
-          begin
-
-            FIBDATASET7.First;
-            while FIBDATASET7.Eof = False do
-            begin
-              if FIBDATASET7.FieldByName('VALOR_DUPL').AsFloat = FIBDataSet28.FieldByName('VALOR').AsFloat then
-              begin
-                if AnsiContainsText(ConverteAcentosXML(FIBDATASET7.FieldByName('HISTORICO').AsString), 'CARTAO') then
-                  FNomeDoTEF := ConverteAcentosXML(AnsiUpperCase(StringReplace(FIBDataSet28.FieldByName('FORMA').AsString, '03 Cartao ', '', [rfReplaceAll])));
-
-              end;
-              FIBDATASET7.Next;
-            end;
-
-            FTransacoesCartao.Transacoes.Adicionar(
-          end;
-          }
-
           IBQTRANSACAOELETRONICA.Close;
           IBQTRANSACAOELETRONICA.SQL.Text :=
             'select ' +
@@ -407,17 +392,18 @@ begin
             'from TRANSACAOELETRONICA ' +
             'where PEDIDO = :PEDIDO '+
             ' and CAIXA = :CAIXA ' +
-            ' and FORMA = :FORMA ';
+            ' and FORMA = :FORMA ' +
+            ' and GNF = :GNF ';
           IBQTRANSACAOELETRONICA.ParamByName('PEDIDO').AsString := FNumeroGerencial;
           IBQTRANSACAOELETRONICA.ParamByName('CAIXA').AsString  := sCaixaOld;
           IBQTRANSACAOELETRONICA.ParamByName('FORMA').AsString  := FIBDataSet28.FieldByName('FORMA').AsString;
+          IBQTRANSACAOELETRONICA.ParamByName('GNF').AsString    := FIBDataSet28.FieldByName('GNF').AsString;          
           IBQTRANSACAOELETRONICA.Open;
 
           dTotalForma := 0.00;
           while IBQTRANSACAOELETRONICA.Eof = False do
           begin
             dTotalForma := dTotalForma + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
-
 
             ModalidadeTransacao := tModalidadeCartao;
             if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '17' then
@@ -439,52 +425,7 @@ begin
           end; // while IBQ.Eof = False do
 
           FIBDataSet25.FieldByName('PAGAR').AsFloat := dTotalForma;
-                (*
-                if (FIBDataSet25.FieldByName('PAGAR').AsFloat <> 0) then // Cartao
-                begin
 
-                  try
-                    for iTransacaoCartao := 0 to FTransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
-                    begin
-                      try
-                        if Pos('CREDITO', FNomeDoTEF) <> 0 then
-                          FDebitoOuCredito := 'CREDITO';
-                        if Pos('DEBITO', FNomeDoTEF) <> 0 then
-                          FDebitoOuCredito := 'DEBITO';
-                        if Trim(FDebitoOuCredito) = '' then
-                          FDebitoOuCredito := 'DEBITO';
-
-                        FIBDataSet28.Append;
-                        FIBDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
-                        FIBDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO);
-                        FIBDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF);
-                        FIBDataSet28.FieldByName('PEDIDO').AsString    := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
-                        FIBDataSet28.FieldByName('GNF').AsString       := FormataNumeroDoCupom(iGnf);
-                        FIBDataSet28.FieldByName('CAIXA').AsString     := Form1.ibDataSet27.FieldByName('CAIXA').AsString;
-                        FIBDataSet28.FieldByName('CLIFOR').AsString    := sConveniado;
-                        FIBDataSet28.FieldByName('VENDEDOR').AsString  := sVendedor;
-                        FIBDataSet28.FieldByName('FORMA').AsString     := '03 Cartao ' + FTransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito;
-
-                        if FTransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadeCarteiraDigital then
-                          FIBDataSet28.FieldByName('FORMA').AsString     := '18 Carteira Digital';
-                        if FTransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadePix then
-                          FIBDataSet28.FieldByName('FORMA').AsString     := '17 Pagto Instantaneo';
-
-                        FIBDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', FTransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago));
-                        FIBDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString;
-                        FIBDataSet28.Post;
-
-                      except
-                      end;
-                    end; // for iTransacaoCartao := 0 to FTransacoesCartao.Transacoes.Count -1 do
-
-
-
-                  except
-
-                  end;
-                end; // Fim Cartão
-                *)
         end;
 
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then // PRAZO
@@ -518,7 +459,7 @@ begin
         FIBDataSet28.Next;
       end;
 
-      AtualizaDadosTransacaoEletronica(FIBDataSet28.Transaction, FNumeroGerencial, sCaixaOld, dtDataNovo, sNovoNumero, FCaixa);
+      AtualizaDadosTransacaoEletronica(FIBDataSet28.Transaction, FNumeroGerencial, sCaixaOld, sModeloOld, dtDataNovo, sNovoNumero, FCaixa, FModeloDocumento);
 
       Result := True;
 

@@ -281,13 +281,12 @@ function RetornaTextoEmVenda(sModelo: String): String;
 //function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
 function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
-  dtData: TDate; sPedido: String; sCaixa: String; sForma: String;
-  dValor: Double; sTransacao: String;
+  dtData: TDate; sPedido: String; sCaixa: String; sModelo: String;
+  sGNF: String; sForma: String; dValor: Double; sTransacao: String;
   sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
 function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
-  sPedidoOld: String; sCaixaOld: String;
-  dtData: TDate; sPedido: String; sCaixa: String): Boolean;
-
+  sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
+  sPedido: String; sCaixa: String; sModelo: String): Boolean;
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -2046,8 +2045,8 @@ begin
 end;
 
 function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
-  dtData: TDate; sPedido: String; sCaixa: String; sForma: String;
-  dValor: Double; sTransacao: String;
+  dtData: TDate; sPedido: String; sCaixa: String; sModelo: String;
+  sGNF: String; sForma: String; dValor: Double; sTransacao: String;
   sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
 var
   IBQTRANSACAO: TIBQuery;
@@ -2061,13 +2060,14 @@ begin
   try
     IBQTRANSACAO.Close;
     IBQTRANSACAO.SQL.Text :=
-      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
-      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
+      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
+      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
     sRegistro := FormatFloat('0000000000', IncGeneratorToInt(IBTransaction.DefaultDatabase, 'G_VFPE', 1));
     IBQTRANSACAO.ParamByName('REGISTRO').AsString         := sRegistro;
     IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
     IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
     IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
+    IBQTRANSACAO.ParamByName('MODELO').AsString           := sModelo;    
     IBQTRANSACAO.ParamByName('FORMA').AsString            := sForma;
     IBQTRANSACAO.ParamByName('VALOR').AsFloat             := dValor;
     IBQTRANSACAO.ParamByName('TRANSACAO').AsString        := Copy(sTransacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'TRANSACAO'));
@@ -2084,8 +2084,8 @@ begin
 end;
 
 function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
-  sPedidoOld: String; sCaixaOld: String;
-  dtData: TDate; sPedido: String; sCaixa: String): Boolean;
+  sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
+  sPedido: String; sCaixa: String; sModelo: String): Boolean;
 var
   IBQTRANSACAO: TIBQuery;
   iForma: Integer;
@@ -2100,14 +2100,18 @@ begin
       'update TRANSACAOELETRONICA set ' +
       'DATA = :DATA, ' +
       'PEDIDO = :PEDIDO, ' +
-      'CAIXA = :CAIXA ' +
+      'CAIXA = :CAIXA, ' +
+      'MODELO = :MODELO ' +
       'where PEDIDO = :PEDIDOOLD ' +
-      ' and CAIXA = :CAIXAOLD ';
-    IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
-    IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
-    IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
-    IBQTRANSACAO.ParamByName('PEDIDOOLD').AsString        := sPedidoOld;
-    IBQTRANSACAO.ParamByName('CAIXAOLD').AsString         := sCaixaOld;
+      ' and CAIXA = :CAIXAOLD ' +
+      ' and MODELO = :MODELOOLD ';
+    IBQTRANSACAO.ParamByName('DATA').AsDate        := dtData;
+    IBQTRANSACAO.ParamByName('PEDIDO').AsString    := sPedido;
+    IBQTRANSACAO.ParamByName('CAIXA').AsString     := sCaixa;
+    IBQTRANSACAO.ParamByName('MODELO').AsString    := sModelo;
+    IBQTRANSACAO.ParamByName('PEDIDOOLD').AsString := sPedidoOld;
+    IBQTRANSACAO.ParamByName('CAIXAOLD').AsString  := sCaixaOld;
+    IBQTRANSACAO.ParamByName('MODELOOLD').AsString := sModeloOld;
     IBQTRANSACAO.ExecSQL;
   except
     Result := False;
