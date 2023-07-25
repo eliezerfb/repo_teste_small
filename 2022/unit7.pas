@@ -19480,6 +19480,8 @@ begin
 end;
 
 procedure TForm7.ibDataSet16UNITARIOChange(Sender: TField);
+var
+  cModuloAnt: String;
 begin
   //
   // Verifica se ta cadastrado
@@ -19502,10 +19504,16 @@ begin
       //
       // Se o produto ta com prço zerado tem que preencher com 0.001 lei de MG
       //
-      if Form7.ibDataSet4PRECO.Value = 0 then
-      begin
-        Form7.ibDataSet4.Edit;
-        Form7.ibDataSet4PRECO.Value := 0.01;
+      cModuloAnt := Form7.sModulo;
+      try
+        if Form7.ibDataSet4PRECO.Value = 0 then
+        begin
+          Form7.ibDataSet4.Edit;
+          Form7.ibDataSet4PRECO.Value := 0.01;
+        end;
+      finally
+        // Estava trocando o modulo para ESTOQUE
+        Form7.sModulo := cModuloAnt;
       end;
       //
       // Não aceita zerado
