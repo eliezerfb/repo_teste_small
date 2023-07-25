@@ -117,7 +117,7 @@ begin
   try
     IBQCONSULTA.Close;
     IBQCONSULTA.SQL.Text :=
-      'select DATA, CAIXA from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ' + QuotedStr('99');
+      'select DATA, CAIXA from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and N.STATUS = ''Finalizada'' ';
     IBQCONSULTA.Open;
 
     if IBQCONSULTA.FieldByName('DATA').AsString <> '' then
@@ -147,7 +147,6 @@ begin
       FIBDataset150.FieldByName('MODELO').AsString    := FModeloDocumento;
       FIBDataset150.FieldByName('GERENCIAL').AsString := FNumeroGerencial;
       FIBDataset150.Post;
-
 
       // Seleciona o desconto no total
       // Seleciona os desconto lançados para a venda (tanto nos itens qto no total do cupom)
