@@ -2137,9 +2137,10 @@ type
     procedure CalculaTotalNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
     procedure DefineLayoutFiltro;
-    procedure AtualizarListaItensAuxiliar;
     function RetornarTotalQuantidadeItem(AcITem: String): Currency;
     function RetornarSaldoDisponivelItemNota(AcItem: String): Currency;
+    procedure LimparLinhaItemSemItem;
+    procedure LimpaCamposItensNota;
   public
     // Public declarations
 
@@ -2250,6 +2251,7 @@ type
     function TestarNFeHomologacao: Boolean;
     function TestarNFSeHomologacao: Boolean;    
     function RetornarAliquotaICM(AcUF: String): Currency;
+    procedure AtualizarListaItensAuxiliar;    
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -18244,8 +18246,6 @@ begin
     begin
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
-
-      AtualizarListaItensAuxiliar;
       {Mauricio Parizotto 2023-06-05 Inicio}
       {
       try
@@ -18270,20 +18270,27 @@ begin
       }
 
       try
-        if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
-        begin
-          //Mauricio Parizotto 2023-04-17
-          if Form12.vNotaFiscal <> nil then
-            Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+        try
+          if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
+          begin
+            //Mauricio Parizotto 2023-04-17
+            if Form12.vNotaFiscal <> nil then
+              Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+          end;
+        except
         end;
-      except
+        if Form7.ibDataSet15FINNFE.AsString = '2' then
+        begin
+          Form12.edtTotalNota.ReadOnly := False;
+        end;
+        {Mauricio Parizotto 2023-06-05 Fim}
+
+      finally
+        // Tratamento para limpar o valor unitario e o total quando não tem ITEM (DESCRIÇÃO/CODIGO) - Stack overflow
+        LimparLinhaItemSemItem;
       end;
 
-      if Form7.ibDataSet15FINNFE.AsString = '2' then
-      begin
-        Form12.edtTotalNota.ReadOnly := False;
-      end;
-      {Mauricio Parizotto 2023-06-05 Fim}
+      AtualizarListaItensAuxiliar;
 
       Form7.ibDataSet15.EnableControls;
       Screen.Cursor := crDefault;
@@ -18291,7 +18298,7 @@ begin
 
     if Form7.sModulo = 'OS' then
       TotalizaOS(True);
-      
+
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
   end;
@@ -18301,6 +18308,50 @@ begin
   AgendaCommit(True);
 
   //FreeAndNil(IBQESTOQUE);
+end;
+
+procedure TForm7.LimparLinhaItemSemItem;
+var
+  nRecNo: Integer;
+begin
+  if ibDataSet16.IsEmpty then
+    Exit;
+    
+  nRecNo := Form7.ibDataSet16.RecNo;
+  Form7.ibDataSet16.DisableControls;
+  try
+    Form7.ibDataSet16.First;
+    while not Form7.ibDataSet16.Eof do
+    begin
+      if (Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = EmptyStr)
+          and (Form7.ibDataSet16QUANTIDADE.AsCurrency = 0)
+          and (Form7.ibDataSet16UNITARIO.AsCurrency > 0) then
+      begin
+        if Form7.ibDataSet16.State <> dsEdit then
+          Form7.ibDataSet16.Edit;
+
+        LimpaCamposItensNota;
+
+        if Form7.ibDataSet16.State = dsEdit then
+          Form7.ibDataSet16.Post;
+      end;
+      Form7.ibDataSet16.Next;
+    end;
+  finally
+    Form7.ibDataSet16.RecNo := nRecNo;
+    Form7.ibDataSet16.EnableControls;
+  end;
+end;
+
+procedure TForm7.LimpaCamposItensNota;
+begin
+  Form7.ibDataSet16CODIGO.AsString     := EmptyStr;
+  Form7.ibDataSet16DESCRICAO.AsString  := EmptyStr;
+  Form7.ibDataSet16TOTAL.AsString      := EmptyStr;
+  Form7.ibDataSet16UNITARIO.AsString   := EmptyStr;
+  Form7.ibDataSet16QUANTIDADE.AsString := EmptyStr;
+  Form7.ibDataSet16CODIGO.AsString     := EmptyStr;
+  Form7.ibDataSet16CFOP.AsString       := EmptyStr;
 end;
 
 procedure TForm7.AtualizarListaItensAuxiliar;
@@ -19363,14 +19414,8 @@ begin
     end;
 
     if not TestarSaldoEstoqueDisponivelNota(AnQtdeInformada) then
-    begin
-      Form7.ibDataSet16DESCRICAO.AsString   := EmptyStr;
-      Form7.ibDataSet16TOTAL.AsString       := EmptyStr;
-      Form7.ibDataSet16UNITARIO.AsString    := EmptyStr;
-      Form7.ibDataSet16QUANTIDADE.AsString  := EmptyStr;
-      Form7.ibDataSet16CODIGO.AsString      := EmptyStr;
-      Form7.ibDataSet16CFOP.AsString        := EmptyStr;
-    end else
+      LimpaCamposItensNota
+    else
     begin
       if ibDataSet16QUANTIDADE.AsFloat <> AnQtdeInformada then
         ibDataSet16QUANTIDADE.AsFloat := AnQtdeInformada;
