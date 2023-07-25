@@ -2307,7 +2307,7 @@ object Form12: TForm12
       OnClick = ImportarOS2Click
     end
     object Emitirnotafiscaldevendasnobalco1: TMenuItem
-      Caption = 'Importar cupom fiscal.... (Usar CFOP 5929, 6929)'
+      Caption = 'Importar cupom....'
       OnClick = Emitirnotafiscaldevendasnobalco1Click
     end
     object Importaroramentos1: TMenuItem

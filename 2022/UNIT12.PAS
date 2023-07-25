@@ -2880,6 +2880,7 @@ end;
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
+  {
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := True;
@@ -2887,6 +2888,8 @@ begin
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := False;
   end;
+  Mauricio Parizotto 2023-07-25 Vai validar depois}
+  Emitirnotafiscaldevendasnobalco1.Enabled := True;
 end;
 
 procedure TForm12.Button3Click(Sender: TObject);
