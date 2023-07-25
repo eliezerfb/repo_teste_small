@@ -262,7 +262,6 @@ type
     procedure Button1Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure SMALL_DBEdit16Exit(Sender: TObject);
-    procedure SMALL_DBEdit56Exit(Sender: TObject);
     procedure SMALL_DBEdit41KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
