@@ -33060,6 +33060,7 @@ begin
   end;
 
   try
+    ConfiguraNFE; // Sandro Silva 2023-07-21 Precisa carregar a configuração para usar o componente spdNFe
     DtVencimento := spdNFe.GetVencimentoCertificado;
 
     if DtVencimento >= Date then
