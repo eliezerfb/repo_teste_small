@@ -219,7 +219,7 @@ begin
   begin
     if Key = VK_UP then
     begin
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
     end;
     if Key = VK_DOWN then
     begin

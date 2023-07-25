@@ -1152,7 +1152,7 @@ begin
     try
       if Key = VK_RETURN then if dBgrid4.Visible = True then dBgrid4.SetFocus else Perform(Wm_NextDlgCtl,0,0);
       if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-      if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+      if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
     except end;
   end else
   begin
@@ -1195,14 +1195,14 @@ procedure TForm12.SMALL_DBEdit52KeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then Button2.SetFocus;
   if Key = VK_TAB    then Button2.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm12.SMALL_DBEdit41KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else DBMemo1.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm12.DBGrid1Enter(Sender: TObject);
@@ -1242,7 +1242,7 @@ begin
     if Key = VK_UP     then
     begin
       if dBgrid2.Visible = True then
-        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
     end;
     
     Key := VK_SHIFT;
@@ -2636,7 +2636,7 @@ begin
   if Key = VK_TAB    then
     Button2.SetFocus;
   if Key = VK_UP     then
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm12.SMALL_DBEdit39KeyDown(Sender: TObject; var Key: Word;
@@ -2665,7 +2665,7 @@ begin
     if dBgrid2.Visible = True then
       dBgrid2.SetFocus
     else
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
   end;
 
   Key := VK_SHIFT;
@@ -3132,7 +3132,7 @@ begin
     if Key = VK_UP     then
     begin
       if dBgrid2.Visible = True then
-        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
     end;
     
     Key := VK_SHIFT;

@@ -1625,7 +1625,7 @@ begin
           end else
           begin
             if Key = VK_UP then
-              Perform(Wm_NextDlgCtl,-1,0);
+              Perform(Wm_NextDlgCtl,1,0);
             if Key = VK_DOWN then
               Perform(Wm_NextDlgCtl,0,0);
           end;
@@ -3046,7 +3046,7 @@ begin
       else
       begin
         if Key = VK_UP then
-          Perform(Wm_NextDlgCtl,-1,0);
+          Perform(Wm_NextDlgCtl,1,0);
         if Key = VK_DOWN then
           Perform(Wm_NextDlgCtl,0,0);
       end;
@@ -8237,7 +8237,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin

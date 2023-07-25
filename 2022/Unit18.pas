@@ -508,7 +508,7 @@ begin
     if Key = VK_RETURN then
       Perform(Wm_NextDlgCtl,0,0);
     if Key = VK_UP then
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
     if Key = VK_DOWN then
       Perform(Wm_NextDlgCtl,0,0);
   except
@@ -599,7 +599,7 @@ begin
     if Key = VK_RETURN then 
       Perform(Wm_NextDlgCtl,0,0);
     if Key = VK_UP then 
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
     if Key = VK_DOWN then 
       Perform(Wm_NextDlgCtl,0,0);
   except 
