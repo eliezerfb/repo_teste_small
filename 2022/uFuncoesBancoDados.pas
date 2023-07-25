@@ -9,6 +9,44 @@ uses
   , IBQuery
 ;
 
+const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
+  'select NOME ' +
+  'from (' +
+  'select cast(''01'' as varchar(2)) as ID, cast(''Dinheiro'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''02'' as varchar(2)) as ID, cast(''Cheque'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''03'' as varchar(2)) as ID, cast(''Cartão de Crédito'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''04'' as varchar(2)) as ID, cast(''Cartão de Débito'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''05'' as varchar(2)) as ID, cast(''Crédito de Loja'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''10'' as varchar(2)) as ID, cast(''Vale Alimentação'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''11'' as varchar(2)) as ID, cast(''Vale Refeição'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''12'' as varchar(2)) as ID, cast(''Vale Presente'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''13'' as varchar(2)) as ID, cast(''Vale Combustível'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''14'' as varchar(2)) as ID, cast(''Duplicata Mercanti'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''15'' as varchar(2)) as ID, cast(''Boleto Bancário'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''16'' as varchar(2)) as ID, cast(''Depósito Bancário'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''17'' as varchar(2)) as ID, cast(''Pagamento Instantâneo (PIX)'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''18'' as varchar(2)) as ID, cast(''Transferência bancária, Carteira Digital'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''19'' as varchar(2)) as ID, cast(''Programa de fidelidade, Cashback, Crédito Virtual'' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''99'' as varchar(2)) as ID, cast(''Outros'' as varchar(60)) as NOME from rdb$database ' +
+  ') q ' +
+  'order by NOME';
+
+
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;

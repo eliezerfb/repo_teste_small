@@ -151,6 +151,7 @@ type
     Label2: TLabel;
     ComboBox1: TComboBox;
     Label7: TLabel;
+    lblHomologacao: TLabel;
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure DBLookupComboBox2Exit(Sender: TObject);
     procedure Image2Click(Sender: TObject);
@@ -278,6 +279,7 @@ type
     procedure ExibeColunasFCP(bOculta: Boolean);
     function getPodeFecharTela: Boolean;
     function TestarLimiteDisponivel: Boolean;
+    procedure DefineVisibleHomologacao;
   public
     { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -1417,6 +1419,11 @@ begin
   //
 end;
 
+procedure TForm12.DefineVisibleHomologacao;
+begin
+  lblHomologacao.Visible := Form7.TestarNFeHomologacao;
+end;
+
 procedure TForm12.FormShow(Sender: TObject);
 var
   Mais1Ini: TIniFile;
@@ -1431,6 +1438,7 @@ begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   //
+  DefineVisibleHomologacao;
   if not Form7.ibDAtaSet18.Active then Form7.ibDAtaSet18.Active := True;
   //
   Form7.ibDataSet16.DisableControls;

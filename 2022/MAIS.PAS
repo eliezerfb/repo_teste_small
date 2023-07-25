@@ -16,6 +16,7 @@ uses
   , DBCtrls
   , SMALL_DBEdit
   , uValidaRecursosDelphi7
+  , uSmallEnumerados
   ;
 
   function LeLabels(sP1: Boolean): Boolean;
@@ -26,7 +27,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023020'; // Sandro Silva 2023-07-07 BUILD_DO_BANCO = '2023018'; // Sandro Silva 2023-06-26 BUILD_DO_BANCO = '2023016'; // Sandro Silva 2023-06-20 const BUILD_DO_BANCO = '2023014';  
+const BUILD_DO_BANCO = '2023022'; // Sandro Silva 2023-07-20 '2023020'; // Sandro Silva 2023-07-07 BUILD_DO_BANCO = '2023018'; // Sandro Silva 2023-06-26 BUILD_DO_BANCO = '2023016';   
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -501,6 +502,7 @@ type
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
+    procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);    
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -528,7 +530,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uCriptografia
   , uFrmTermosUso
   , uSmallConsts
-  , uConectaBancoCommerce, uTypesRecursos;
+  , uConectaBancoCommerce
+  , uTypesRecursos
+  , uArquivosDAT;
 
 {$R *.DFM}
 
@@ -1801,9 +1805,7 @@ begin
   Screen.Cursor := crDefault;
 
   Result := True;
-end;
-
-
+end;                                
 
 function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 begin
@@ -5069,14 +5071,7 @@ begin
     Form1.ibDataset200.Close;
     //
     if sBuild = '999' then
-    begin
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      Mais1Ini.WriteString('NFE','Ambiente','Producao');
-      Mais1Ini.Free;
-      //
-    end;
-    //
+      DefineAmbienteNFe(_cAmbienteProducao, 'Mais.Ajustararquivo1Click');
   except end;
   //
   // Genarator G_NSU_DOWNLOAD_XML
@@ -8066,7 +8061,7 @@ begin
                'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
                                                                 .Retornar(True),
                0,0); // Ato, Modulo, Usuário, Histórico, Valor
-                                                                       
+
         Senha   := Senhas.SenhaPub;
         Usuario := Senhas.UsuarioPub;
 
@@ -8708,15 +8703,16 @@ begin
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
     //
-    if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then Mais1Ini.WriteString('NFE','Certificado','');
-    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then Mais1Ini.WriteString('NFE','Ambiente','Homologacao');
-    if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX'))     = 'XXXXX' then Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
-    if Alltrim(Mais1Ini.ReadString('XML','Pasta da contabilidade','XXXXX')) = 'XXXXX' then Mais1Ini.WriteString('XML','Pasta da contabilidade','');
-    //
-    // if Alltrim(Mais1Ini.ReadString('NFE','Limite','100'))          = '100' then Mais1Ini.WriteString('NFE','Limite','100');
-    //
+    if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then
+      Mais1Ini.WriteString('NFE','Certificado','');
+    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then
+      DefineAmbienteNFe(_cAmbienteHomologacao, 'Mais.ConfigurarNFEINI1Click');
+    if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX'))     = 'XXXXX' then
+      Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
+    if Alltrim(Mais1Ini.ReadString('XML','Pasta da contabilidade','XXXXX')) = 'XXXXX' then
+      Mais1Ini.WriteString('XML','Pasta da contabilidade','');
+
     Mais1ini.Free;
-    //
     ShellExecute( 0, 'Open',Pchar(sAtual+'\nfe.ini'),'', '', SW_SHOW);
   end else
     ShowMessage('Senha do administrador inválida.');
@@ -8803,7 +8799,7 @@ var
   Mais1ini: TIniFile;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  if (Mais1Ini.ReadString('NFE','Ambiente','Homologacao') <> 'Producao') then
+  if (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) then
   begin
     ShellExecute( 0, 'Open', 'http://hom.nfe.fazenda.gov.br/PORTAL/disponibilidade.aspx?versao=0.00&tipoConteudo=Skeuqr8PQBY=','', '', SW_SHOW);
   end else
@@ -9262,7 +9258,7 @@ begin
     //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
     //
-    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente','')) = 'Producao' then
+    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente','')) = _cAmbienteProducao then
     begin
       //
       I := Application.MessageBox(Pchar('Tem certeza que quer mudar para o ambiente de HOMOLOGAÇÃO?'
@@ -9272,7 +9268,7 @@ begin
                               ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
       if I = IDYES then
       begin
-        Mais1Ini.WriteString('NFE','Ambiente','Homologacao');
+        DefineAmbienteNFe(_cAmbienteHomologacao, 'Mais.Ambiente1Click1');
         ShowMessage('Definido ambiente: Homologação');
       end;
       //
@@ -9286,7 +9282,7 @@ begin
                               ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
       if I = IDYES then
       begin
-        Mais1Ini.WriteString('NFE','Ambiente','Producao');
+        DefineAmbienteNFe(_cAmbienteProducao, 'Mais.Ambiente1Click2');
         ShowMessage('Definido ambiente: Produção');
       end;
       //
@@ -9294,6 +9290,34 @@ begin
   end else ShowMessage('Senha do administrador inválida.');
   //
   Mais1ini.Free;
+end;
+
+procedure TForm1.DefineAmbienteNFe(AcAmbiente, AcRotina: String);
+var
+  oArq: TArquivosDAT;
+  enAmbienteAnt: tAmbienteNFe;
+  cMsgPadrao: String;
+begin
+  // Não precisa passar usuário.
+  oArq := TArquivosDAT.Create(EmptyStr);
+  try
+    enAmbienteAnt := oArq.NFe.NFE.Ambiente;
+    if enAmbienteAnt = oArq.NFe.NFE.AmbienteStrToEnum(AcAmbiente) then
+      Exit;
+
+    oArq.NFe.NFE.Ambiente := oArq.NFe.NFE.AmbienteStrToEnum(AcAmbiente);
+
+    cMsgPadrao := 'Alterou Ambiente NFe - DE: ' + oArq.NFe.NFE.AmbienteToStr(enAmbienteAnt) +
+                  ' PARA: ' + oArq.NFe.NFE.AmbienteToStr(oArq.NFe.NFE.Ambiente);
+
+    cMsgPadrao := Copy(AcRotina, 1, (80 - length(cMsgPadrao) - 2)) + ', ' + cMsgPadrao;
+
+    Audita('ALTEROU','SMALL', Senhas.UsuarioPub, AnsiUpperCase(cMsgPadrao),0,0);
+
+    Form7.IBDataSet100.Transaction.CommitRetaining;
+  finally
+    FreeAndNil(oArq);
+  end;
 end;
 
 procedure TForm1.ConfiguraodoDANFEparaNFe1Click(Sender: TObject);
@@ -9353,7 +9377,7 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
   Formatododanfe1.Caption := 'Formato do DANFE: '+Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato'));
-  Ambiente1.Caption       := 'Ambiente: '+Alltrim(Mais1Ini.ReadString('NFE','Ambiente','Homologacao'));
+  Ambiente1.Caption       := 'Ambiente: '+Alltrim(Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao));
   //
   if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = '' then Mais1Ini.WriteString('DANFE','Configurar','Não');
   if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = 'Sim' then ConfiguraodoDANFEparaNFe1.Visible := True else ConfiguraodoDANFEparaNFe1.Visible := False;
@@ -11876,6 +11900,9 @@ var
   _file : TStringList;
   F: TextFile;
   Mais1Ini : tIniFile;
+  oArqDAT: TArquivosDAT;
+  enAmbienteAnt: tAmbienteNFSe;
+  cMsgPadrao: string;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfseConfig.ini');
   //
@@ -11900,29 +11927,51 @@ begin
   }
   if Form1.ExisteNfseExe(Form1.sAtual) then
   begin
-    //
-    while FileExists(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
-    begin
-      DeleteFile(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2'));
-      Sleep(1000);
+    oArqDAT := TArquivosDAT.Create(EmptyStr);
+    try
+      enAmbienteAnt := oArqDAT.NFSe.NFSE.Ambiente;
+
+      while FileExists(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
+      begin
+        DeleteFile(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2'));
+        Sleep(1000);
+      end;
+      //
+      AssignFile(F,pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
+      Rewrite(F);
+      //
+      Writeln(F,'Config=Sim');
+      //
+      CloseFile(F);
+      //
+      // Aguarda até criar o arquivo
+      //
+      while not FileExists(pChar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
+      begin
+        Sleep(1000);
+      end;
+      //
+      ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
+      while processExists('NFSE.EXE') do
+      begin
+        Sleep(250);
+      end;
+
+      if oArqDAT.NFSe.NFSE.Ambiente <> enAmbienteAnt then
+      begin
+        cMsgPadrao := 'Alterou Ambiente NFSe - DE: ' + oArqDAT.NFSe.NFSe.AmbienteToStr(enAmbienteAnt) +
+                      ' PARA: ' + oArqDAT.NFSe.NFSe.AmbienteToStr(oArqDAT.NFSe.NFSe.Ambiente);
+
+        cMsgPadrao := Copy('ConfiguraesdaNFSe2Click', 1, (80 - length(cMsgPadrao) - 2)) + ', ' + cMsgPadrao;
+
+        Audita('ALTEROU','SMALL', Senhas.UsuarioPub, AnsiUpperCase(cMsgPadrao),0,0);
+
+        Form7.IBDataSet100.Transaction.CommitRetaining;
+      end;
+
+    finally
+      FreeAndNil(oArqDAT);
     end;
-    //
-    AssignFile(F,pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
-    Rewrite(F);
-    //
-    Writeln(F,'Config=Sim');
-    //
-    CloseFile(F);
-    //
-    // Aguarda até criar o arquivo
-    //
-    while not FileExists(pChar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
-    begin
-      Sleep(1000);
-    end;
-    //
-    ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
-    //
   end;
 
   if FileExists(pChar(Form1.sAtual+'\NFSE\CidadesHomologadas.XML')) then

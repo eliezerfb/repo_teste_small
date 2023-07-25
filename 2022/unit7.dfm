@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 380
-  Top = 81
+  Left = 414
+  Top = 302
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -20,6 +20,7 @@ object Form7: TForm7
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   OnMouseMove = FormMouseMove
   OnShow = FormShow
@@ -693,8 +694,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label20: TLabel
-    Left = 470
-    Top = 574
+    Left = 462
+    Top = 590
     Width = 40
     Height = 13
     Caption = 'Conf OS'
@@ -2460,7 +2461,7 @@ object Form7: TForm7
     Top = 400
     Width = 33
     Height = 25
-    TabOrder = 18
+    TabOrder = 17
     ControlData = {
       4C00000069030000950200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -2478,7 +2479,7 @@ object Form7: TForm7
     Ctl3D = True
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 15
+    TabOrder = 14
     Visible = False
     object Image201_X: TImage
       Left = 0
@@ -5079,7 +5080,7 @@ object Form7: TForm7
     Ctl3D = True
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 16
+    TabOrder = 15
     Visible = False
     object Image201_R: TImage
       Left = 0
@@ -7805,30 +7806,9 @@ object Form7: TForm7
     ParentFont = False
     TabOrder = 4
   end
-  object Panel7: TPanel
-    Left = 504
-    Top = 410
-    Width = 100
-    Height = 24
-    BevelOuter = bvNone
-    BorderStyle = bsSingle
-    Color = 15790320
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
-    ParentBackground = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = False
-    TabOrder = 7
-    OnClick = Image109Click
-    OnMouseMove = Panel7MouseMove
-  end
   object DBGrid4: TDBGrid
     Left = 504
-    Top = 453
+    Top = 459
     Width = 100
     Height = 30
     BiDiMode = bdLeftToRight
@@ -7881,7 +7861,7 @@ object Form7: TForm7
     Width = 75
     Height = 25
     Caption = 'Button9'
-    TabOrder = 9
+    TabOrder = 8
     Visible = False
   end
   object WebBrowser1: TWebBrowser
@@ -7889,7 +7869,7 @@ object Form7: TForm7
     Top = 0
     Width = 361
     Height = 291
-    TabOrder = 10
+    TabOrder = 9
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
@@ -7918,7 +7898,7 @@ object Form7: TForm7
     ParentBackground = False
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 10
     Visible = False
     OnClick = Panel1Click
   end
@@ -7932,7 +7912,7 @@ object Form7: TForm7
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
-    TabOrder = 12
+    TabOrder = 11
     Visible = False
     object Button2: TButton
       Left = 260
@@ -8005,7 +7985,7 @@ object Form7: TForm7
     Ctl3D = False
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 13
+    TabOrder = 12
     OnMouseMove = Panel4MouseMove
   end
   object Panel_0: TPanel
@@ -8020,7 +8000,7 @@ object Form7: TForm7
     ParentCtl3D = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 14
+    TabOrder = 13
     OnMouseMove = Panel_0MouseMove
     object Image208: TImage
       Left = 350
@@ -10822,7 +10802,7 @@ object Form7: TForm7
     ParentBackground = False
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 7
     object Label23: TLabel
       Left = 44
       Top = 76
@@ -11129,7 +11109,7 @@ object Form7: TForm7
     Width = 75
     Height = 25
     Caption = 'Button10'
-    TabOrder = 17
+    TabOrder = 16
     Visible = False
     OnClick = Button10Click
   end
@@ -11151,9 +11131,66 @@ object Form7: TForm7
     Font.Style = []
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 19
+    TabOrder = 18
     Visible = False
     OnKeyDown = SMALL_DBEdit1KeyDown
+  end
+  object pnlFiltro: TPanel
+    Left = 505
+    Top = 409
+    Width = 113
+    Height = 44
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    Color = 15790320
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 19
+    object lblHomologacao: TLabel
+      Left = 0
+      Top = 0
+      Width = 113
+      Height = 19
+      Align = alCustom
+      AutoSize = False
+      Caption = '  Homologa'#231#227'o - sem valor fiscal'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object Panel7: TPanel
+      Left = 0
+      Top = 18
+      Width = 113
+      Height = 26
+      Align = alCustom
+      BevelOuter = bvNone
+      BorderStyle = bsSingle
+      Color = 15790320
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentBackground = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 0
+      OnClick = Image109Click
+      OnMouseMove = Panel7MouseMove
+    end
   end
   object MainMenu1: TMainMenu
     AutoHotkeys = maManual
@@ -12387,6 +12424,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet7AfterDelete
     AfterPost = ibDataSet7AfterPost
+    AfterScroll = ibDataSet7AfterScroll
     BeforeDelete = ibDataSet7BeforeDelete
     BeforeEdit = ibDataSet7BeforeEdit
     BeforeInsert = ibDataSet7BeforeInsert
@@ -12409,7 +12447,8 @@ object Form7: TForm7
       
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
-      '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO)'
+      '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO,'
+      '   AUTORIZACAOTRANSACAO, BANDEIRA)'
       'values'
       
         '  (:HISTORICO, :PORTADOR, :DOCUMENTO, :NOME, :EMISSAO, :VENCIMEN' +
@@ -12417,7 +12456,8 @@ object Form7: TForm7
       
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
-      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO)')
+      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO,'
+      '   :AUTORIZACAOTRANSACAO, :BANDEIRA)')
     RefreshSQL.Strings = (
       'Select '
       '  HISTORICO,'
@@ -12439,7 +12479,9 @@ object Form7: TForm7
       '  NN,'
       '  INSTITUICAOFINANCEIRA,'
       '  MOVIMENTO,'
-      '  FORMADEPAGAMENTO'
+      '  FORMADEPAGAMENTO,'
+      '  AUTORIZACAOTRANSACAO,'
+      '  BANDEIRA'
       'from RECEBER '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -12467,11 +12509,14 @@ object Form7: TForm7
       '  NN = :NN,'
       '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA,'
       '  MOVIMENTO = :MOVIMENTO,'
-      '  FORMADEPAGAMENTO = :FORMADEPAGAMENTO'
+      '  FORMADEPAGAMENTO = :FORMADEPAGAMENTO,'
+      '  AUTORIZACAOTRANSACAO = :AUTORIZACAOTRANSACAO,'
+      '  BANDEIRA = :BANDEIRA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
     DataSource = DataSource15
+    OnFilterRecord = ibDataSet7FilterRecord
     Left = 8
     Top = 410
     object ibDataSet7ATIVO: TSmallintField
@@ -12604,6 +12649,25 @@ object Form7: TForm7
       Origin = 'RECEBER.INSTITUICAOFINANCEIRA'
       Size = 60
     end
+    object ibDataSet7FORMADEPAGAMENTO: TStringField
+      DisplayLabel = 'Forma de Pagamento'
+      DisplayWidth = 35
+      FieldName = 'FORMADEPAGAMENTO'
+      Origin = 'RECEBER.FORMADEPAGAMENTO'
+      Size = 60
+    end
+    object ibDataSet7AUTORIZACAOTRANSACAO: TStringField
+      DisplayLabel = 'Autoriza'#231#227'o'
+      DisplayWidth = 8
+      FieldName = 'AUTORIZACAOTRANSACAO'
+      Origin = 'RECEBER.AUTORIZACAOTRANSACAO'
+    end
+    object ibDataSet7BANDEIRA: TStringField
+      DisplayLabel = 'Bandeira'
+      DisplayWidth = 15
+      FieldName = 'BANDEIRA'
+      Origin = 'RECEBER.BANDERIA'
+    end
     object ibDataSet7REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
       Origin = 'RECEBER.REGISTRO'
@@ -12615,13 +12679,6 @@ object Form7: TForm7
       Origin = 'RECEBER.NN'
       Visible = False
       Size = 10
-    end
-    object ibDataSet7FORMADEPAGAMENTO: TIBStringField
-      DisplayLabel = 'Forma de Pagamento'
-      FieldName = 'FORMADEPAGAMENTO'
-      Origin = 'RECEBER.FORMADEPAGAMENTO'
-      Visible = False
-      Size = 60
     end
   end
   object DataSource7: TDataSource
@@ -16325,7 +16382,7 @@ object Form7: TForm7
       
         '   CST_IPI, VPRECO, CST_ICMS, QTD_ORIGINAL, UNITARIO_O, ANVISA, ' +
         'EAN_ORIGINAL, '
-      '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST)'
+      '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST,ICMS_DESONERADO)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :BASE, :MEDI' +
@@ -16341,7 +16398,7 @@ object Form7: TForm7
         ' :UNITARIO_O, '
       
         '   :ANVISA, :EAN_ORIGINAL, :VBCFCP, :PFCP, :VFCP, :VBCFCPST, :PF' +
-        'CPST, :VFCPST)')
+        'CPST, :VFCPST,:ICMS_DESONERADO)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16382,7 +16439,8 @@ object Form7: TForm7
       '  VFCP,'
       '  VBCFCPST,'
       '  PFCPST,'
-      '  VFCPST'
+      '  VFCPST,'
+      '  ICMS_DESONERADO'
       'from ITENS002 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16429,7 +16487,8 @@ object Form7: TForm7
       '  VFCP = :VFCP,'
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  ICMS_DESONERADO = :ICMS_DESONERADO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
@@ -16742,6 +16801,16 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
+    object ibDataSet23ICMS_DESONERADO: TIBBCDField
+      DisplayLabel = 'ICMS DESONERADO'
+      FieldName = 'ICMS_DESONERADO'
+      Origin = 'ITENS002.ICMS_DESONERADO'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
   end
   object DataSource23: TDataSource
     DataSet = ibDataSet23
@@ -16786,7 +16855,7 @@ object Form7: TForm7
       
         '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES, IDENTIFI' +
         'CADORPLANOCONTAS,'
-      '   VFCPST)'
+      '   VFCPST,ICMS_DESONERADO)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :FORNECEDOR, :OPERACAO, :EMISS' +
@@ -16806,7 +16875,9 @@ object Form7: TForm7
       
         '   :COMPLEMENTO, :NFEID, :ANVISA, :NVOL, :NFEXML, :MDESTINXML, :' +
         'FINNFE, '
-      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST)')
+      
+        '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST, :ICM' +
+        'S_DESONERADO)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16854,7 +16925,8 @@ object Form7: TForm7
       '  INDFINAL,'
       '  INDPRES,'
       '  IDENTIFICADORPLANOCONTAS,'
-      '  VFCPST'
+      '  VFCPST,'
+      '  ICMS_DESONERADO'
       'from COMPRAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16908,7 +16980,8 @@ object Form7: TForm7
       '  INDFINAL = :INDFINAL,'
       '  INDPRES = :INDPRES,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  ICMS_DESONERADO = :ICMS_DESONERADO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
@@ -17202,6 +17275,13 @@ object Form7: TForm7
       Origin = 'COMPRAS.IDENTIFICADORPLANOCONTAS'
       Visible = False
       Size = 10
+    end
+    object ibDataSet24ICMS_DESONERADO: TIBBCDField
+      FieldName = 'ICMS_DESONERADO'
+      Origin = 'COMPRAS.ICMS_DESONERADO'
+      Visible = False
+      Precision = 18
+      Size = 2
     end
   end
   object DataSource24: TDataSource
@@ -21182,7 +21262,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21216,7 +21296,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21530,8 +21610,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm5' +
-      '0\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      'vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21560,8 +21640,8 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50' +
-      '\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
+      'm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

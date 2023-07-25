@@ -105,6 +105,7 @@ uses
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
   uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
+  uFuncoesBancoDados in 'uFuncoesBancoDados.pas',
   uSmallConsts in '..\..\unit_compartilhada\uSmallConsts.pas',
   uFormRelatorioPadrao in '..\..\unit_compartilhada\uFormRelatorioPadrao.pas' {frmRelatorioPadrao},
   uRelatorioVendasClliente in 'units\uRelatorioVendasClliente.pas' {frmRelVendasPorCliente},
@@ -150,8 +151,8 @@ uses
   uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas',
   uSectionOutrosUsuarioINF in '..\..\unit_compartilhada\uSectionOutrosUsuarioINF.pas',
   uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
-  uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
   uSectionsNFeINI in '..\..\unit_compartilhada\uSectionsNFeINI.pas',
+  uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
   uSectionsNFSeINI in '..\..\unit_compartilhada\uSectionsNFSeINI.pas';
 
 {$R *.RES}
@@ -159,7 +160,6 @@ uses
 var
   Hwnd: THandle;
 begin
-  //
   Hwnd := FindWindow('TForm1', 'Small Commerce');
 
   if Hwnd = 0 then
@@ -178,72 +178,64 @@ begin
   end;
 
   try
-    //
     if Hwnd = 0 then
     begin
-      //
       Form22 := TForm22.Create(Application);
       Form22.Show;
       Form22.Update;
-      //
+
       Application.Title := 'Small Commerce';
-      //
+
       Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm28, Form28);
-  Application.CreateForm(TForm2, Form2);
-  Application.CreateForm(TSenhas, Senhas);
-  Application.CreateForm(TSenhas2, Senhas2);
-  Application.CreateForm(TForm24, Form24);
-  Application.CreateForm(TForm30, Form30);
-  Application.CreateForm(TSenhas2, Senhas2);
-  Application.CreateForm(TForm7, Form7);
-  Application.CreateForm(TForm9, Form9);
-  Application.CreateForm(TForm14, Form14);
-  Application.CreateForm(TForm19, Form19);
-  Application.CreateForm(TForm12, Form12);
-  Application.CreateForm(TForm48, Form48);
-  Application.CreateForm(TForm10, Form10);
-  Application.CreateForm(TForm16, Form16);
-  Application.CreateForm(TForm99, Form99);
-  Application.CreateForm(TForm18, Form18);
-  Application.CreateForm(TForm20, Form20);
-  Application.CreateForm(TForm21, Form21);
-  Application.CreateForm(TForm25, Form25);
-  Application.CreateForm(TForm26, Form26);
-  Application.CreateForm(TForm27, Form27);
-  Application.CreateForm(TForm31, Form31);
-  Application.CreateForm(TForm32, Form32);
-  Application.CreateForm(TForm38, Form38);
-  Application.CreateForm(TForm39, Form39);
-  Application.CreateForm(TForm41, Form41);
-  Application.CreateForm(TForm43, Form43);
-  Application.CreateForm(TForm4, Form4);
-  Application.CreateForm(TForm13, Form13);
-  Application.CreateForm(TForm40, Form40);
-  Application.CreateForm(TForm15, Form15);
-  Application.CreateForm(TForm35, Form35);
-  Application.CreateForm(TForm8, Form8);
-  Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-  Application.CreateForm(TForm6, Form6);
-  Application.CreateForm(TForm11, Form11);
-  Application.CreateForm(TForm36, Form36);
-  Application.CreateForm(TForm5, Form5);
-  Application.CreateForm(TForm29, Form29);
-  Application.CreateForm(TForm45, Form45);
-  Application.CreateForm(TForm37, Form37);
-  Application.Run;
-      //
+      Application.CreateForm(TForm28, Form28);
+      Application.CreateForm(TForm2, Form2);
+      Application.CreateForm(TSenhas, Senhas);
+      Application.CreateForm(TSenhas2, Senhas2);
+      Application.CreateForm(TForm24, Form24);
+      Application.CreateForm(TForm30, Form30);
+      Application.CreateForm(TSenhas2, Senhas2);
+      Application.CreateForm(TForm7, Form7);
+      Application.CreateForm(TForm9, Form9);
+      Application.CreateForm(TForm14, Form14);
+      Application.CreateForm(TForm19, Form19);
+      Application.CreateForm(TForm12, Form12);
+      Application.CreateForm(TForm48, Form48);
+      Application.CreateForm(TForm10, Form10);
+      Application.CreateForm(TForm16, Form16);
+      Application.CreateForm(TForm99, Form99);
+      Application.CreateForm(TForm18, Form18);
+      Application.CreateForm(TForm20, Form20);
+      Application.CreateForm(TForm21, Form21);
+      Application.CreateForm(TForm25, Form25);
+      Application.CreateForm(TForm26, Form26);
+      Application.CreateForm(TForm27, Form27);
+      Application.CreateForm(TForm31, Form31);
+      Application.CreateForm(TForm32, Form32);
+      Application.CreateForm(TForm38, Form38);
+      Application.CreateForm(TForm39, Form39);
+      Application.CreateForm(TForm41, Form41);
+      Application.CreateForm(TForm43, Form43);
+      Application.CreateForm(TForm4, Form4);
+      Application.CreateForm(TForm13, Form13);
+      Application.CreateForm(TForm40, Form40);
+      Application.CreateForm(TForm15, Form15);
+      Application.CreateForm(TForm35, Form35);
+      Application.CreateForm(TForm8, Form8);
+      Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
+      Application.CreateForm(TForm6, Form6);
+      Application.CreateForm(TForm11, Form11);
+      Application.CreateForm(TForm36, Form36);
+      Application.CreateForm(TForm5, Form5);
+      Application.CreateForm(TForm29, Form29);
+      Application.CreateForm(TForm45, Form45);
+      Application.CreateForm(TForm37, Form37);
+      Application.Run;
     end else
     begin
-      //
       if not IsWindowVisible(Hwnd) then PostMessage(Hwnd, wm_User,0,0);
       SetForegroundWindow(Hwnd);
-      //
     end;
-    //
   except
-    //
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-    //
   end;
 end.

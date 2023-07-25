@@ -17,7 +17,7 @@ interface
 uses
   SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
   msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
-  ShellAPI, jpeg;
+  ShellAPI, jpeg, TLHelp32;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
@@ -115,6 +115,7 @@ uses
   procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
   procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
   function HtmlToPDF(AcArquivo: String): Boolean;
+  function processExists(exeFileName: string): Boolean;  
 
 implementation
 
@@ -2686,6 +2687,27 @@ begin
   except end;
   //
   Result := True;
+end;
+
+function processExists(exeFileName: string): Boolean;
+var
+  ContinueLoop: BOOL;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+begin
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+  Result := False;
+  while Integer(ContinueLoop) <> 0 do
+  begin
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(exeFileName)) or (UpperCase(FProcessEntry32.szExeFile) = UpperCase(exeFileName))) then
+    begin
+      Result := True;
+    end;
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  end;
+  CloseHandle(FSnapshotHandle);
 end;
 
 end.

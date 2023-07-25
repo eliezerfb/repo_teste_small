@@ -88,7 +88,7 @@ object Form12: TForm12
       end
       object Label66: TLabel
         Left = 240
-        Top = 50
+        Top = 61
         Width = 29
         Height = 13
         Caption = 'Sa'#237'da'
@@ -102,7 +102,7 @@ object Form12: TForm12
       end
       object Label67: TLabel
         Left = 305
-        Top = 50
+        Top = 61
         Width = 37
         Height = 13
         Caption = 'Entrada'
@@ -914,9 +914,23 @@ object Form12: TForm12
         ParentFont = False
         Transparent = True
       end
+      object lblHomologacao: TLabel
+        Left = 164
+        Top = 29
+        Width = 249
+        Height = 20
+        Caption = 'Homologa'#231#227'o - sem valor fiscal'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clRed
+        Font.Height = -16
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Visible = False
+      end
       object Edit4: TEdit
         Left = 215
-        Top = 45
+        Top = 56
         Width = 20
         Height = 22
         Color = clWhite
@@ -932,7 +946,7 @@ object Form12: TForm12
       end
       object Edit5: TEdit
         Left = 280
-        Top = 45
+        Top = 56
         Width = 20
         Height = 22
         Color = clWhite

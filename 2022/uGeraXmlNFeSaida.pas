@@ -32,7 +32,7 @@ uses
 
 
 var
-  sCodigoANP : string;
+  sCodigoANP, sDentroOuForadoEStado : string;
   vIVA60_V_ICMST : Real;
 
   // Rateio
@@ -62,7 +62,7 @@ var
   sRetorno : String;
   sRecibo : String;
   sCupomReferenciado : String;
-  sDentroOuForadoEStado, sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
+  sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
   vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS : Real;
   vBC_PIS : Real;
 
@@ -101,8 +101,10 @@ var
   scCorDENATRAN_VeiculosNovos,
   slota_VeiculosNovos,
   stpRest_VeiculosNovos : String;
+  stPag_YA02: String; // Sandro Silva 2023-06-29
   dQtdAcumulado: Double;
   IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
+  IBQCREDENCIADORA: TIBQuery;
 
   vlBalseIPI, vlFreteRateadoItem : Double;
 
@@ -1614,8 +1616,12 @@ begin
 
 
         Form7.spdNFeDataSets.Campo('vBC_N15').Value         := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASEICM').AsFloat); // BC
-//                  Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := StrTran(Alltrim(FormatFloat('##0.00',100)),',','.'); // Alíquota do ICMS em Percentual
-        Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := FormatFloatXML(0); // Alíquota do ICMS em Percentual
+
+        if (Form7.ibDataSet15.FieldByname('BASEICM').AsCurrency > 0) and (Form7.ibDataSet15.FieldByname('ICMS').AsCurrency > 0) then
+          Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Arredonda(((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100), 1)) // Alíquota do ICMS em Percentual
+        else
+          Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(0); // Alíquota do ICMS em Percentual
+
         Form7.spdNFeDataSets.Campo('vICMS_N17').Value       := FormatFloatXML(Form7.ibDataSet15.FieldByname('ICMS').AsFloat);     // Valor do ICMS em Reais
 
         Form7.spdNFeDataSets.Campo('vbCST_N21').Value       := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASESUBSTI').AsFloat); // Valor cobrado anteriormente por ST
@@ -2679,6 +2685,7 @@ begin
     Form7.spdNFeDataSets.Campo('rntc_X21').Value     := ''; // Registro nacional de Trasportador de Cargas (ANTT)
   end;
 
+  {Sandro Silva 2023-06-29 inicio
   if Form1.sVersaoLayout = '4.00' then
   begin
     Form7.spdNFeDataSets.IncluirPart('YA');
@@ -2706,12 +2713,13 @@ begin
     end else
     begin
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-          
+
       if Copy(Uppercase(Form7.ibDataSet14.FieldByname('INTEGRACAO').AsString)+'       ',1,7) = 'RECEBER' then
       begin
 //                    Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '1';   // Pagamento a prazo
 //                  Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '05';  // Forma de pagamento
-        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // Duplicata Mercantil
+        // Sandro Silva 2023-06-20 Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // Duplicata Mercantil
+        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // 14-Duplicata Mercantil
       end else
       begin
 //                    Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '0';   // Pagamento a vista
@@ -2741,6 +2749,86 @@ begin
 
     Form7.spdNFeDataSets.SalvarPart('YA');
   end;
+  }
+  if (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
+  begin
+    Form7.spdNFeDataSets.IncluirPart('YA');
+    Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '90';  // Sem Pagamento
+    Form7.spdNFeDataSets.campo('vPag_YA03').Value       := '0.00';
+    //                  Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
+
+    Form7.spdNFeDataSets.SalvarPart('YA');
+  end
+  else
+  begin
+
+    Form7.ibDataSet7.First;
+    stPag_YA02 := '';
+    IBQCREDENCIADORA := Form7.CriaIBQuery(Form7.ibDataSet7.Transaction);
+    while not Form7.ibDataSet7.Eof do
+    begin
+
+      Form7.spdNFeDataSets.IncluirPart('YA');
+      //
+      // 01=Dinheiro
+      // 02=Cheque
+      // 03=Cartão de Crédito
+      // 04=Cartão de Débito
+      // 05=Crédito Loja
+      // 10=Vale Alimentação
+      // 11=Vale Refeição
+      // 12=Vale Presente
+      // 13=Vale Combustível
+      // * Removida * 14=Duplicata Mercantil *
+      // 15=Boleto Bancário
+      // 90= Sem pagamento
+      // 99=Outros
+      //
+
+      if Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '' then
+        stPag_YA02 := '' 
+      else
+        stPag_YA02 := IdFormasDePagamentoNFe(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)); // Sandro Silva 2023-07-13 stPag_YA02 := Copy(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString), 1, 2);
+      if stPag_YA02 = '' then
+        stPag_YA02 := '14'; // 14=Duplicata Mercantil
+
+      Form7.spdNFeDataSets.campo('tPag_YA02').Value       := stPag_YA02;  // Forma de pagamento
+      {Sandro Silva 2023-07-20 inicio}
+      if stPag_YA02 = '99' then
+        Form7.spdNFeDataSets.campo('xPag_YA02a').Value       := 'Outras Formas';
+      {Sandro Silva 2023-07-20 fim}
+      Form7.spdNFeDataSets.campo('vPag_YA03').Value       := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat);
+
+      //if (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '03') or (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '04') then
+      if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+      begin
+        IBQCREDENCIADORA.Close;
+        IBQCREDENCIADORA.SQL.Text :=
+          'select * ' +
+          'from CLIFOR ' +
+          'where NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString);
+        IBQCREDENCIADORA.Open;
+        // Se for Cartão
+        Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
+        Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
+        Form7.spdNFeDataSets.campo('tBand_YA06').Value      := CodigotBandNF(Form7.ibDataSet7BANDEIRA.AsString);  // Bandeira da operadora de cartão de crédito e/ou débito
+        Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);  // Número de autorização da operação cartão de crédito e/ou débito
+      end;
+
+      Form7.spdNFeDataSets.SalvarPart('YA');
+
+      Form7.ibDataSet7.Next;
+    end;
+    FreeAndNil(IBQCREDENCIADORA);
+    if stPag_YA02 = '' then
+    begin
+      Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '01';  // Forma de pagamento
+      Form7.spdNFeDataSets.campo('vPag_YA03').Value       :=  Form7.spdNFeDataSets.Campo('vNF_W16').Value;
+    end;
+    Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
+
+  end;
+  {Sandro Silva 2023-06-29 fim}
 
   if Form7.ibDataSet15FINNFE.AsString <> '2' then
   begin
@@ -2753,6 +2841,7 @@ begin
     Form7.spdNFeDataSets.Campo('pesoL_X31').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOLIQUI').AsFloat)),',','.'); // Peso Líquido
     Form7.spdNFeDataSets.Campo('pesoB_X32').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOBRUTO').AsFloat)),',','.'); // Peso Bruto
 
+    {
     // Dados De Cobrança
     // 1 Fatura  - 3 Duplicatas //
     Form7.spdNFeDataSets.Y.Append; // Inclui somente nessa Parte "Y" da NFe
@@ -2767,13 +2856,15 @@ begin
       end;
     end;
 
-    Form7.spdNFeDataSets.Campo('vLiq_Y06').Value  := Form7.spdNFeDataSets.Campo('vNF_W16').Value; // Valor Líquido da Fatura
-
+    //Form7.spdNFeDataSets.Campo('vLiq_Y06').Value  := Form7.spdNFeDataSets.Campo('vNF_W16').Value; // Valor Líquido da Fatura
+    }
+    // Dados De Cobrança
     J := 0;
     fTotalDupl := 0;
 
     Form7.ibDataSet7.First;
-    while not Form7.ibDataSet7.Eof do
+    {Sandro Silva 2023-06-29 inicio
+while not Form7.ibDataSet7.Eof do
     begin
       // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
       // fazer várias inserções para a Mesma NFe como demonstracao
@@ -2808,7 +2899,63 @@ begin
           
       Form7.spdNFeDataSets.SalvarCobranca;
     end;
-        
+    }
+
+    while not Form7.ibDataSet7.Eof do
+    begin
+      if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+      begin
+        // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
+        // fazer várias inserções para a Mesma NFe como demonstracao
+        // Dados da Fatura
+        //
+        // Duplicatas
+        //
+        J := J + 1;
+
+        if J = 1 then
+          Form7.spdNFeDataSets.Y.Append; // Inclui somente nessa Parte "Y" da NFe
+
+        Form7.spdNFeDataSets.IncluirCobranca;
+        Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := StrZero(J,3,0); // Número da parcela
+        //                  Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := Form7.ibDataSet7DOCUMENTO.AsString; // Número da Duplicata
+        Form7.spdNFeDataSets.Campo('dVenc_Y09').Value := StrTran(DateToStrInvertida(Form7.ibDataSet7VENCIMENTO.AsDateTime),'/','-');; // Data de Vencimento da Duplicata
+        Form7.spdNFeDataSets.Campo('vDup_Y10').Value  := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat); // Valor da Duplicata
+
+        // Soma o total das parcelas
+        fTotalDupl := fTotalDupl + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vDup_Y10').AsString,',',''),'.',','));
+      end;
+
+      Form7.ibDataSet7.Next;
+
+      {
+      if fTotalDupl > 0 then
+      begin
+        try
+          if Form7.ibDataSet7.Eof then
+          begin
+            if fTotalDupl <> StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) then
+            begin
+              // Soma a diferença na última
+              Form7.spdNFeDataSets.Campo('vDup_Y10').Value := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat +  (StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) - fTotalDupl)  );
+            end;
+          end;
+        except
+        end;
+
+        Form7.spdNFeDataSets.SalvarCobranca;
+      end;
+      }
+      if fTotalDupl > 0 then
+      begin
+        Form7.spdNFeDataSets.Campo('nFat_Y03').Value  := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9); // Número da Farura
+        Form7.spdNFeDataSets.Campo('vOrig_Y04').Value := FormatFloatXML(fTotalDupl); // Valor Original da Fatura
+        Form7.spdNFeDataSets.Campo('vDesc_Y05').Value := '0.00'; // Valor do Desconto
+        Form7.spdNFeDataSets.Campo('vLiq_Y06').Value  := FormatFloatXML(fTotalDupl); // Valor Líquido da Fatura
+        Form7.spdNFeDataSets.SalvarCobranca;
+      end;
+    end;
+    {Sandro Silva 2023-06-29 fim}
     Form7.spdNFeDataSets.Y.Post; // Grava a Duplicata em questão.
   end;
 
@@ -2835,10 +2982,6 @@ begin
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS
   // SAIDA
 end;
-
-
-
-
 
 procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
 var
@@ -3368,7 +3511,12 @@ begin
       Form7.spdNFeDataSets.Campo('modBCST_N18').Value   := '4'; // Modalidade de determinação da Base de Cálculo do ICMS ST - ver Manual
 
       Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat); // Alíquota do ICMS em Percentual
-      Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(Form7.AliqICMdoCliente16()); // Alíquota do ICMS em Percentual
+
+      if sDentroOuForadoEStado = '6' then
+        // Se for fora do estado tem que pega a ALIQUOTA do EMITENTE
+        Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(Form7.RetornarAliquotaICM(Form7.ibDataSet13ESTADO.AsString)) // Alíquota do ICMS em Percentual
+      else
+        Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(Form7.AliqICMdoCliente16()); // Alíquota do ICMS em Percentual
     end;
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '40') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '41') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '50') then
