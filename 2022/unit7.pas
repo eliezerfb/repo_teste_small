@@ -11318,6 +11318,7 @@ begin
 
 
             {Sandro Silva 2022-12-16 inicio}
+            {Sandro Silva 2023-07-25 inicio
             if sModulo = 'RECEBER' then
             begin
               if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
@@ -11325,6 +11326,7 @@ begin
                 ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
               end;
             end;
+            }
             {Sandro Silva 2022-12-16 fim}
           end;
         except

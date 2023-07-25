@@ -2911,6 +2911,7 @@ procedure TForm10.DBGrid3DblClick(Sender: TObject);
   var
     I: Integer;
   begin
+    Result := nil;
     for i := 0 to Form10.ComponentCount -1 do
     begin
       if (Form10.Components[i].ClassType = TDBEdit) or (Form10.Components[i].ClassType = TSMALL_DBEdit) then
@@ -4466,6 +4467,7 @@ var
   Hora, Min, Seg, cent : Word;
   iContadorCampoEstoque: Integer; // Sandro Silva 2022-12-20
   iTopSegundaColuna: Integer; // Sandro Silva 2022-12-20
+  iTopPrimeiraColuna: Integer;
 begin
   Form10.sNomeDoJPG := Form1.sAtual+'\tempo0000000000.jpg';
 
@@ -4534,6 +4536,7 @@ begin
 
   dBGrid3.Left := 100;
   iTop         := -5;
+  iTopPrimeiraColuna := iTop; // Sandro Silva 2023-07-25
 
   try
     VerificaSeEstaSendoUsado(True);
@@ -4614,28 +4617,32 @@ begin
             begin
               if not ((Form7.sModulo = 'ESTOQUE') and (I >= iContadorCampoEstoque)) then // Sandro Silva 2022-12-20 if not ((Form7.sModulo = 'ESTOQUE') and (I >= 23)) then
               begin
-                if form7.sModulo = 'CLIENTES' then
+
+                if Form7.sModulo = 'CLIENTES' then
                   iTop := iTop + 24
                 else
                   iTop := iTop + 25;
 
-              if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
-              begin
-                {Sandro Silva 2023-06-22 inicio
-                if I = iTopSegundaColuna then
-                  iTop := 170 - 25;
-                }
-                if I = iTopSegundaColuna then
-                begin
-                  if (Form7.sModulo = 'RECEBER') then
-                    iTop := iTop - 400
-                  else
-                    iTop := 170 - 25;
-                end;
-                {Sandro Silva 2023-06-22 fim}
+                if iTopPrimeiraColuna < 0 then
+                  iTopPrimeiraColuna := iTop;
 
-                if I = 26 then
-                  iTop := 20;
+                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
+                begin
+                  {Sandro Silva 2023-06-22 inicio
+                  if I = iTopSegundaColuna then
+                    iTop := 170 - 25;
+                  }
+                  if I = iTopSegundaColuna then
+                  begin
+                    if (Form7.sModulo = 'RECEBER') then
+                      iTop := iTopPrimeiraColuna // Sandro Silva 2023-07-25 iTop := iTop - 400
+                    else
+                      iTop := 170 - 25;
+                  end;
+                  {Sandro Silva 2023-06-22 fim}
+
+                  if I = 26 then
+                    iTop := 20;
                 end
                 else if I = 18 then
                   iTop := 15;
@@ -4777,24 +4784,24 @@ begin
                 else
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).MaxLength := 22;
 
-              if (Form7.TabelaAberta.Fields[I-1].Fieldname = 'NOME') and
-                               ((Form7.ArquivoAberto.Name = 'ibDataSet1') or
-                                (Form7.ArquivoAberto.Name = 'ibDataSet4') or
-                                (Form7.ArquivoAberto.Name = 'ibDataSet7') or
-                                (Form7.ArquivoAberto.Name = 'ibDataSet8')) then
-              begin
-                try
-                  dBGrid1.Top     := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top + TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Height -1;
-                  dBGrid1.Font    := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font;
-                  dBGrid1.Height  := (Form7.iCampos * 25 - dBGrid1.Top) + 10;
-                  if dBGrid1.Height > 145 then
-                    dBGrid1.Height := 145;
-                  dBGrid1.Width   := (Form7.TabelaAberta.Fields[I - 1].Displaywidth * 8) + 25; // teria que saber a largura do Scroll bar
-                  // caixa
-                  if Form7.sModulo = 'CAIXA' then
-                  begin
-                    dBGrid1.DataSource := Form7.DataSource12; // contas bancárias
-                  end;
+                if (Form7.TabelaAberta.Fields[I-1].Fieldname = 'NOME') and
+                                 ((Form7.ArquivoAberto.Name = 'ibDataSet1') or
+                                  (Form7.ArquivoAberto.Name = 'ibDataSet4') or
+                                  (Form7.ArquivoAberto.Name = 'ibDataSet7') or
+                                  (Form7.ArquivoAberto.Name = 'ibDataSet8')) then
+                begin
+                  try
+                    dBGrid1.Top     := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top + TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Height -1;
+                    dBGrid1.Font    := TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font;
+                    dBGrid1.Height  := (Form7.iCampos * 25 - dBGrid1.Top) + 10;
+                    if dBGrid1.Height > 145 then
+                      dBGrid1.Height := 145;
+                    dBGrid1.Width   := (Form7.TabelaAberta.Fields[I - 1].Displaywidth * 8) + 25; // teria que saber a largura do Scroll bar
+                    // caixa
+                    if Form7.sModulo = 'CAIXA' then
+                    begin
+                      dBGrid1.DataSource := Form7.DataSource12; // contas bancárias
+                    end;
 
                     // contas a receber
                     if Form7.sModulo = 'RECEBER' then

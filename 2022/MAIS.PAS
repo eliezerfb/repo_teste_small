@@ -12174,7 +12174,7 @@ begin
   begin
     if (AnsiUpperCase(sCampo) = 'MOVIMENTO') then
     begin
-      Result := DisponivelSomenteParaNos;
+      //Result := DisponivelSomenteParaNos;
     end;
   end;
 
