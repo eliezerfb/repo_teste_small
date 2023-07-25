@@ -11367,14 +11367,14 @@ object Form7: TForm7
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet1NOME: TStringField
+    object ibDataSet1NOME: TIBStringField
       DisplayLabel = 'Plano de contas'
       FieldName = 'NOME'
       Origin = 'CAIXA.NOME'
       OnChange = ibDataSet1NOMEChange
       Size = 25
     end
-    object ibDataSet1HISTORICO: TStringField
+    object ibDataSet1HISTORICO: TIBStringField
       DisplayLabel = 'Hist'#243'rico'
       FieldName = 'HISTORICO'
       Origin = 'CAIXA.HISTORICO'
@@ -11407,7 +11407,7 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Calculated = True
     end
-    object ibDataSet1CONTA: TStringField
+    object ibDataSet1CONTA: TIBStringField
       FieldName = 'CONTA'
       Origin = 'CAIXA.CONTA'
       Visible = False
@@ -11690,14 +11690,14 @@ object Form7: TForm7
     Filtered = True
     Left = 8
     Top = 377
-    object ibDataSet4CODIGO: TStringField
+    object ibDataSet4CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo   '
       FieldName = 'CODIGO'
       Origin = 'ESTOQUE.CODIGO'
       ReadOnly = True
       Size = 5
     end
-    object ibDataSet4REFERENCIA: TStringField
+    object ibDataSet4REFERENCIA: TIBStringField
       DisplayLabel = 'C'#243'digo Barras'
       DisplayWidth = 14
       FieldName = 'REFERENCIA'
@@ -11705,14 +11705,14 @@ object Form7: TForm7
       OnSetText = ibDataSet4REFERENCIASetText
       Size = 14
     end
-    object ibDataSet4DESCRICAO: TStringField
+    object ibDataSet4DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'DESCRICAO'
       Origin = 'ESTOQUE.DESCRICAO'
       OnSetText = ibDataSet4DESCRICAOSetText
       Size = 45
     end
-    object ibDataSet4NOME: TStringField
+    object ibDataSet4NOME: TIBStringField
       DisplayLabel = 'Grupo'
       DisplayWidth = 45
       FieldName = 'NOME'
@@ -11720,7 +11720,7 @@ object Form7: TForm7
       Origin = 'ESTOQUE.NOME'
       Size = 25
     end
-    object ibDataSet4MEDIDA: TStringField
+    object ibDataSet4MEDIDA: TIBStringField
       DisplayLabel = 'Und'
       FieldName = 'MEDIDA'
       Origin = 'ESTOQUE.MEDIDA'
@@ -11797,7 +11797,7 @@ object Form7: TForm7
       OnSetText = ibDataSet4ULT_VENDASetText
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet4LOCAL: TStringField
+    object ibDataSet4LOCAL: TIBStringField
       DisplayLabel = 'Localiza'#231#227'o'
       FieldName = 'LOCAL'
       Origin = 'ESTOQUE.LOCAL'
@@ -11827,28 +11827,28 @@ object Form7: TForm7
       DisplayFormat = '#0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet4LIVRE1: TStringField
+    object ibDataSet4LIVRE1: TIBStringField
       DisplayLabel = 'Livre 1'
       FieldName = 'LIVRE1'
       Origin = 'ESTOQUE.LIVRE1'
       OnSetText = ibDataSet2MAESetText
       Size = 30
     end
-    object ibDataSet4LIVRE2: TStringField
+    object ibDataSet4LIVRE2: TIBStringField
       DisplayLabel = 'Livre 2'
       FieldName = 'LIVRE2'
       Origin = 'ESTOQUE.LIVRE2'
       OnSetText = ibDataSet2MAESetText
       Size = 30
     end
-    object ibDataSet4LIVRE3: TStringField
+    object ibDataSet4LIVRE3: TIBStringField
       DisplayLabel = 'Livre 3'
       FieldName = 'LIVRE3'
       Origin = 'ESTOQUE.LIVRE3'
       OnSetText = ibDataSet2MAESetText
       Size = 30
     end
-    object ibDataSet4LIVRE4: TStringField
+    object ibDataSet4LIVRE4: TIBStringField
       DisplayLabel = 'Livre 4'
       FieldName = 'LIVRE4'
       Origin = 'ESTOQUE.LIVRE4'
@@ -11856,7 +11856,7 @@ object Form7: TForm7
       OnValidate = ibDataSet4LIVRE4Validate
       Size = 30
     end
-    object ibDataSet4OBS: TStringField
+    object ibDataSet4OBS: TIBStringField
       DisplayLabel = 'Aplica'#231#227'o'
       FieldName = 'OBS'
       Origin = 'ESTOQUE.OBS'
@@ -11894,7 +11894,7 @@ object Form7: TForm7
       Precision = 18
       Size = 4
     end
-    object ibDataSet4FORNECEDOR: TStringField
+    object ibDataSet4FORNECEDOR: TIBStringField
       DisplayLabel = 'Fornecedor'
       DisplayWidth = 35
       FieldName = 'FORNECEDOR'
@@ -11938,7 +11938,7 @@ object Form7: TForm7
       Visible = False
       Size = 3
     end
-    object ibDataSet4ST: TStringField
+    object ibDataSet4ST: TIBStringField
       DisplayLabel = 'CIT'
       DisplayWidth = 5
       FieldName = 'ST'
@@ -11946,7 +11946,7 @@ object Form7: TForm7
       Visible = False
       Size = 3
     end
-    object ibDataSet4CST: TStringField
+    object ibDataSet4CST: TIBStringField
       DisplayLabel = 'CST ICMS '
       FieldName = 'CST'
       Origin = 'ESTOQUE.CST'
@@ -12234,7 +12234,7 @@ object Form7: TForm7
       Origin = 'ESTOQUE.DESCONT2'
       Visible = False
     end
-    object ibDataSet4IDENTIFICADORPLANOCONTAS: TStringField
+    object ibDataSet4IDENTIFICADORPLANOCONTAS: TIBStringField
       DisplayLabel = 'Identificador Cont'#225'bil'
       FieldName = 'IDENTIFICADORPLANOCONTAS'
       Origin = 'ESTOQUE.IDENTIFICADORPLANOCONTAS'
@@ -12327,7 +12327,7 @@ object Form7: TForm7
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet5DOCUMENTO: TStringField
+    object ibDataSet5DOCUMENTO: TIBStringField
       DisplayLabel = 'Doc.'
       DisplayWidth = 8
       FieldName = 'DOCUMENTO'
@@ -12335,7 +12335,7 @@ object Form7: TForm7
       OnSetText = ibDataSet5DOCUMENTOSetText
       Size = 10
     end
-    object ibDataSet5HISTORICO: TStringField
+    object ibDataSet5HISTORICO: TIBStringField
       DisplayLabel = 'Hist'#243'rico'
       DisplayWidth = 50
       FieldName = 'HISTORICO'
@@ -12386,13 +12386,13 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Calculated = True
     end
-    object ibDataSet5NOMINAL: TStringField
+    object ibDataSet5NOMINAL: TIBStringField
       DisplayLabel = 'Nominal a'
       FieldName = 'NOMINAL'
       Origin = 'MOVIMENT.NOMINAL'
       Size = 30
     end
-    object ibDataSet5CONTA: TStringField
+    object ibDataSet5CONTA: TIBStringField
       DisplayLabel = 'C'
       FieldName = 'CONTA'
       Origin = 'MOVIMENT.CONTA'
@@ -12526,7 +12526,7 @@ object Form7: TForm7
       Origin = 'RECEBER.ATIVO'
       Visible = False
     end
-    object ibDataSet7DOCUMENTO: TStringField
+    object ibDataSet7DOCUMENTO: TIBStringField
       DisplayLabel = 'Documento'
       DisplayWidth = 12
       FieldName = 'DOCUMENTO'
@@ -12535,21 +12535,21 @@ object Form7: TForm7
       EditMask = 'aaaaaaaaaaa;1; '
       Size = 11
     end
-    object ibDataSet7CONTA: TStringField
+    object ibDataSet7CONTA: TIBStringField
       DisplayLabel = 'Plano de Contas'
       DisplayWidth = 33
       FieldName = 'CONTA'
       Origin = 'RECEBER.CONTA'
       Size = 25
     end
-    object ibDataSet7HISTORICO: TStringField
+    object ibDataSet7HISTORICO: TIBStringField
       DisplayLabel = 'Hist'#243'rico'
       DisplayWidth = 33
       FieldName = 'HISTORICO'
       Origin = 'RECEBER.HISTORICO'
       Size = 35
     end
-    object ibDataSet7NOME: TStringField
+    object ibDataSet7NOME: TIBStringField
       DisplayLabel = 'Cliente'
       DisplayWidth = 33
       FieldName = 'NOME'
@@ -12615,7 +12615,7 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet7PORTADOR: TStringField
+    object ibDataSet7PORTADOR: TIBStringField
       DisplayLabel = 'Portador'
       DisplayWidth = 33
       FieldName = 'PORTADOR'
@@ -12623,19 +12623,19 @@ object Form7: TForm7
       OnSetText = ibDataSet7PORTADORSetText
       Size = 35
     end
-    object ibDataSet7CODEBAR: TStringField
+    object ibDataSet7CODEBAR: TIBStringField
       DisplayLabel = 'C'#243'digo de barras'
       DisplayWidth = 33
       FieldName = 'CODEBAR'
       Origin = 'RECEBER.CODEBAR'
       Size = 50
     end
-    object ibDataSet7NOSSONUM: TStringField
+    object ibDataSet7NOSSONUM: TIBStringField
       DisplayLabel = 'Nosso N'#250'mero'
       FieldName = 'NOSSONUM'
       Origin = 'RECEBER.NOSSONUM'
     end
-    object ibDataSet7NUMERONF: TStringField
+    object ibDataSet7NUMERONF: TIBStringField
       DisplayLabel = 'NF/S'#233'rie'
       DisplayWidth = 13
       FieldName = 'NUMERONF'
@@ -12649,20 +12649,20 @@ object Form7: TForm7
       Origin = 'RECEBER.INSTITUICAOFINANCEIRA'
       Size = 60
     end
-    object ibDataSet7FORMADEPAGAMENTO: TStringField
+    object ibDataSet7FORMADEPAGAMENTO: TIBStringField
       DisplayLabel = 'Forma de Pagamento'
       DisplayWidth = 35
       FieldName = 'FORMADEPAGAMENTO'
       Origin = 'RECEBER.FORMADEPAGAMENTO'
       Size = 60
     end
-    object ibDataSet7AUTORIZACAOTRANSACAO: TStringField
+    object ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField
       DisplayLabel = 'Autoriza'#231#227'o'
       DisplayWidth = 8
       FieldName = 'AUTORIZACAOTRANSACAO'
       Origin = 'RECEBER.AUTORIZACAOTRANSACAO'
     end
-    object ibDataSet7BANDEIRA: TStringField
+    object ibDataSet7BANDEIRA: TIBStringField
       DisplayLabel = 'Bandeira'
       DisplayWidth = 15
       FieldName = 'BANDEIRA'
@@ -12738,7 +12738,7 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
     Top = 443
-    object ibDataSet9NOME: TStringField
+    object ibDataSet9NOME: TIBStringField
       DisplayLabel = 'Nome'
       DisplayWidth = 35
       FieldName = 'NOME'
@@ -12758,12 +12758,12 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet9HORASTRAB: TStringField
+    object ibDataSet9HORASTRAB: TIBStringField
       FieldName = 'HORASTRAB'
       Visible = False
       Size = 4
     end
-    object ibDataSet9FUNCAO: TStringField
+    object ibDataSet9FUNCAO: TIBStringField
       DisplayLabel = 'Fun'#231#227'o'
       FieldName = 'FUNCAO'
       Visible = False
@@ -13834,22 +13834,22 @@ object Form7: TForm7
     Filtered = True
     Left = 200
     Top = 643
-    object ibDataSet11NOME: TStringField
+    object ibDataSet11NOME: TIBStringField
       DisplayLabel = 'Nome'
       FieldName = 'NOME'
       Size = 30
     end
-    object ibDataSet11AGENCIA: TStringField
+    object ibDataSet11AGENCIA: TIBStringField
       DisplayLabel = 'Ag'#234'ncia'
       FieldName = 'AGENCIA'
       Size = 16
     end
-    object ibDataSet11CONTA: TStringField
+    object ibDataSet11CONTA: TIBStringField
       DisplayLabel = 'Conta Corrente'
       FieldName = 'CONTA'
       Size = 16
     end
-    object ibDataSet11PLANO: TStringField
+    object ibDataSet11PLANO: TIBStringField
       DisplayLabel = 'Plano de Contas'
       DisplayWidth = 16
       FieldName = 'PLANO'
@@ -13871,7 +13871,7 @@ object Form7: TForm7
       Origin = 'BANCOS.INSTITUICAOFINANCEIRA'
       Size = 60
     end
-    object ibDataSet11ARQUIVO: TStringField
+    object ibDataSet11ARQUIVO: TIBStringField
       DisplayLabel = 'Arquivo'
       FieldName = 'ARQUIVO'
       ReadOnly = True
@@ -13960,13 +13960,13 @@ object Form7: TForm7
     Filtered = True
     Left = 8
     Top = 476
-    object ibDataSet12CONTA: TStringField
+    object ibDataSet12CONTA: TIBStringField
       DisplayLabel = 'Conta'
       DisplayWidth = 6
       FieldName = 'CONTA'
       Size = 5
     end
-    object ibDataSet12NOME: TStringField
+    object ibDataSet12NOME: TIBStringField
       DisplayLabel = 'Nome da Conta'
       FieldName = 'NOME'
       Size = 25
@@ -14003,18 +14003,18 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet12DESCRICAOCONTABIL: TStringField
+    object ibDataSet12DESCRICAOCONTABIL: TIBStringField
       DisplayLabel = 'Descri'#231#227'o Cont'#225'bil'
       FieldName = 'DESCRICAOCONTABIL'
       Origin = 'CONTAS.DESCRICAOCONTABIL'
       Size = 60
     end
-    object ibDataSet12CONTACONTABILIDADE: TStringField
+    object ibDataSet12CONTACONTABILIDADE: TIBStringField
       DisplayLabel = 'C'#243'digo Cont'#225'bil'
       FieldName = 'CONTACONTABILIDADE'
       Origin = 'CONTAS.CONTACONTABILIDADE'
     end
-    object ibDataSet12IDENTIFICADOR: TStringField
+    object ibDataSet12IDENTIFICADOR: TIBStringField
       DisplayLabel = 'Identificador'
       FieldName = 'IDENTIFICADOR'
       Origin = 'CONTAS.IDENTIFICADOR'
@@ -14213,51 +14213,51 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 477
-    object ibDataSet13CGC: TStringField
+    object ibDataSet13CGC: TIBStringField
       DisplayLabel = 'CPF/CNPJ'
       FieldName = 'CGC'
       OnSetText = ibDataSet13CGCSetText
       Size = 18
     end
-    object ibDataSet13NOME: TStringField
+    object ibDataSet13NOME: TIBStringField
       DisplayLabel = 'Raz'#227'o Social:'
       DisplayWidth = 35
       FieldName = 'NOME'
       Size = 60
     end
-    object ibDataSet13CONTATO: TStringField
+    object ibDataSet13CONTATO: TIBStringField
       DisplayLabel = 'Respons'#225'vel'
       FieldName = 'CONTATO'
       Size = 35
     end
-    object ibDataSet13ENDERECO: TStringField
+    object ibDataSet13ENDERECO: TIBStringField
       DisplayLabel = 'Endere'#231'o'
       FieldName = 'ENDERECO'
       Size = 35
     end
-    object ibDataSet13COMPLE: TStringField
+    object ibDataSet13COMPLE: TIBStringField
       DisplayLabel = 'Bairro'
       FieldName = 'COMPLE'
     end
-    object ibDataSet13CEP: TStringField
+    object ibDataSet13CEP: TIBStringField
       FieldName = 'CEP'
       EditMask = '#####-###;1; '
       Size = 9
     end
-    object ibDataSet13MUNICIPIO: TStringField
+    object ibDataSet13MUNICIPIO: TIBStringField
       DisplayLabel = 'Munic'#237'pio'
       DisplayWidth = 40
       FieldName = 'MUNICIPIO'
       OnSetText = ibDataSet13MUNICIPIOSetText
       Size = 40
     end
-    object ibDataSet13ESTADO: TStringField
+    object ibDataSet13ESTADO: TIBStringField
       DisplayLabel = 'Estado'
       FieldName = 'ESTADO'
       OnSetText = ibDataSet13ESTADOSetText
       Size = 2
     end
-    object ibDataSet13IE: TStringField
+    object ibDataSet13IE: TIBStringField
       FieldName = 'IE'
       Size = 16
     end
@@ -14266,19 +14266,19 @@ object Form7: TForm7
       Origin = '"EMITENTE"."IM"'
       Size = 16
     end
-    object ibDataSet13TELEFO: TStringField
+    object ibDataSet13TELEFO: TIBStringField
       DisplayLabel = 'Telefone'
       DisplayWidth = 21
       FieldName = 'TELEFO'
       EditMask = '!\(#xx##\)#########;1; '
       Size = 16
     end
-    object ibDataSet13EMAIL: TStringField
+    object ibDataSet13EMAIL: TIBStringField
       DisplayLabel = 'e-mail'
       FieldName = 'EMAIL'
       Size = 70
     end
-    object ibDataSet13HP: TStringField
+    object ibDataSet13HP: TIBStringField
       DisplayLabel = 'P'#225'gina na internet'
       FieldName = 'HP'
       Size = 130
@@ -14513,31 +14513,31 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
     Top = 509
-    object ibDataSet14CFOP: TStringField
+    object ibDataSet14CFOP: TIBStringField
       FieldName = 'CFOP'
       EditMask = '99999;1;_'
       Size = 5
     end
-    object ibDataSet14NOME: TStringField
+    object ibDataSet14NOME: TIBStringField
       DisplayLabel = 'Natureza da opera'#231#227'o'
       DisplayWidth = 38
       FieldName = 'NOME'
       OnSetText = ibDataSet14NOMESetText
       Size = 40
     end
-    object ibDataSet14INTEGRACAO: TStringField
+    object ibDataSet14INTEGRACAO: TIBStringField
       DisplayLabel = 'Integra'#231#227'o'
       FieldName = 'INTEGRACAO'
       OnChange = ibDataSet14INTEGRACAOChange
       Size = 8
     end
-    object ibDataSet14CONTA: TStringField
+    object ibDataSet14CONTA: TIBStringField
       DisplayLabel = 'Plano de contas'
       DisplayWidth = 20
       FieldName = 'CONTA'
       Size = 25
     end
-    object ibDataSet14ST: TStringField
+    object ibDataSet14ST: TIBStringField
       DisplayLabel = 'CIT'
       FieldName = 'ST'
       Size = 3
@@ -14786,7 +14786,7 @@ object Form7: TForm7
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet14OBS: TStringField
+    object ibDataSet14OBS: TIBStringField
       DisplayLabel = 'Observa'#231#227'o na nota fiscal'
       DisplayWidth = 100
       FieldName = 'OBS'
@@ -15137,7 +15137,7 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
     Top = 211
-    object ibDataSet15NUMERONF: TStringField
+    object ibDataSet15NUMERONF: TIBStringField
       DisplayLabel = 'NF/S'#233'rie'
       DisplayWidth = 16
       FieldName = 'NUMERONF'
@@ -15159,7 +15159,7 @@ object Form7: TForm7
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet15CLIENTE: TStringField
+    object ibDataSet15CLIENTE: TIBStringField
       DisplayLabel = 'Cliente'
       DisplayWidth = 35
       FieldName = 'CLIENTE'
@@ -15197,13 +15197,13 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet15OPERACAO: TStringField
+    object ibDataSet15OPERACAO: TIBStringField
       DisplayLabel = 'Natureza da opera'#231#227'o'
       FieldName = 'OPERACAO'
       Origin = 'VENDAS.OPERACAO'
       Size = 40
     end
-    object ibDataSet15VENDEDOR: TStringField
+    object ibDataSet15VENDEDOR: TIBStringField
       DisplayLabel = 'Vendedor'
       DisplayWidth = 30
       FieldName = 'VENDEDOR'
@@ -15263,7 +15263,7 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
-    object ibDataSet15TRANSPORTA: TStringField
+    object ibDataSet15TRANSPORTA: TIBStringField
       DisplayLabel = 'Transportadora'
       DisplayWidth = 35
       FieldName = 'TRANSPORTA'
@@ -15352,7 +15352,7 @@ object Form7: TForm7
       BlobType = ftMemo
       Size = 8
     end
-    object ibDataSet15MODELO: TStringField
+    object ibDataSet15MODELO: TIBStringField
       FieldName = 'MODELO'
       Origin = 'VENDAS.MODELO'
       Visible = False
@@ -15368,7 +15368,7 @@ object Form7: TForm7
       Origin = 'VENDAS.PESOBRUTO'
       Visible = False
     end
-    object ibDataSet15SAIDAH: TStringField
+    object ibDataSet15SAIDAH: TIBStringField
       FieldName = 'SAIDAH'
       Origin = 'VENDAS.SAIDAH'
       Visible = False
@@ -15394,13 +15394,13 @@ object Form7: TForm7
       Visible = False
       OnChange = ibDataSet15VOLUMESChange
     end
-    object ibDataSet15ESPECIE: TStringField
+    object ibDataSet15ESPECIE: TIBStringField
       FieldName = 'ESPECIE'
       Origin = 'VENDAS.ESPECIE'
       Visible = False
       Size = 13
     end
-    object ibDataSet15MARCA: TStringField
+    object ibDataSet15MARCA: TIBStringField
       FieldName = 'MARCA'
       Origin = 'VENDAS.MARCA'
       Visible = False
@@ -15411,7 +15411,7 @@ object Form7: TForm7
       Origin = 'VENDAS.ALIQUOTA'
       Visible = False
     end
-    object ibDataSet15FRETE12: TStringField
+    object ibDataSet15FRETE12: TIBStringField
       DisplayLabel = 'FRETE'
       FieldName = 'FRETE12'
       Origin = 'VENDAS.FRETE12'
@@ -15438,7 +15438,7 @@ object Form7: TForm7
       Origin = 'VENDAS.NSUD'
       Visible = False
     end
-    object ibDataSet15EMITIDA: TStringField
+    object ibDataSet15EMITIDA: TIBStringField
       DisplayLabel = 'Emitida'
       DisplayWidth = 2
       FieldName = 'EMITIDA'
@@ -15699,18 +15699,18 @@ object Form7: TForm7
     DataSource = DataSource15
     Left = 200
     Top = 211
-    object ibDataSet16NUMERONF: TStringField
+    object ibDataSet16NUMERONF: TIBStringField
       DisplayWidth = 13
       FieldName = 'NUMERONF'
       Visible = False
       Size = 12
     end
-    object ibDataSet16CODIGO: TStringField
+    object ibDataSet16CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
       Size = 5
     end
-    object ibDataSet16DESCRICAO: TStringField
+    object ibDataSet16DESCRICAO: TIBStringField
       DisplayLabel = 'C'#243'digo / Descri'#231#227'o'
       DisplayWidth = 38
       FieldName = 'DESCRICAO'
@@ -15718,7 +15718,7 @@ object Form7: TForm7
       OnSetText = ibDataSet16DESCRICAOSetText
       Size = 45
     end
-    object ibDataSet16MEDIDA: TStringField
+    object ibDataSet16MEDIDA: TIBStringField
       FieldName = 'MEDIDA'
       Visible = False
       Size = 3
@@ -15782,18 +15782,18 @@ object Form7: TForm7
       FieldName = 'ALIQUOTA'
       Visible = False
     end
-    object ibDataSet16ST: TStringField
+    object ibDataSet16ST: TIBStringField
       FieldName = 'ST'
       Visible = False
       Size = 3
     end
-    object ibDataSet16CFOP: TStringField
+    object ibDataSet16CFOP: TIBStringField
       DisplayWidth = 4
       FieldName = 'CFOP'
       OnSetText = ibDataSet16CFOPSetText
       Size = 5
     end
-    object ibDataSet16NUMEROOS: TStringField
+    object ibDataSet16NUMEROOS: TIBStringField
       DisplayLabel = 'N'#250'mero da OS'
       FieldName = 'NUMEROOS'
       Visible = False
@@ -15927,7 +15927,7 @@ object Form7: TForm7
       Visible = False
       Size = 56
     end
-    object ibDataSet16CSOSN: TStringField
+    object ibDataSet16CSOSN: TIBStringField
       FieldName = 'CSOSN'
       Visible = False
       Size = 3
@@ -15940,7 +15940,7 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
-    object ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField
+    object ibDataSet16IDENTIFICADORPLANOCONTAS: TIBStringField
       FieldName = 'IDENTIFICADORPLANOCONTAS'
       Origin = 'ITENS001.IDENTIFICADORPLANOCONTAS'
       Visible = False
@@ -16086,62 +16086,62 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 8
     Top = 575
-    object ibDataSet18CGC: TStringField
+    object ibDataSet18CGC: TIBStringField
       DisplayLabel = 'CPF/CNPJ'
       DisplayWidth = 20
       FieldName = 'CGC'
       OnSetText = ibDataSet18CGCSetText
       Size = 19
     end
-    object ibDataSet18NOME: TStringField
+    object ibDataSet18NOME: TIBStringField
       DisplayLabel = 'Nome'
       DisplayWidth = 35
       FieldName = 'NOME'
       Size = 60
     end
-    object ibDataSet18ENDERECO: TStringField
+    object ibDataSet18ENDERECO: TIBStringField
       DisplayLabel = 'Endere'#231'o'
       DisplayWidth = 35
       FieldName = 'ENDERECO'
       Size = 34
     end
-    object ibDataSet18MUNICIPIO: TStringField
+    object ibDataSet18MUNICIPIO: TIBStringField
       DisplayLabel = 'Munic'#237'pio'
       DisplayWidth = 20
       FieldName = 'MUNICIPIO'
       OnSetText = ibDataSet18MUNICIPIOSetText
       Size = 40
     end
-    object ibDataSet18UF: TStringField
+    object ibDataSet18UF: TIBStringField
       FieldName = 'UF'
       OnSetText = ibDataSet18UFSetText
       Size = 2
     end
-    object ibDataSet18IE: TStringField
+    object ibDataSet18IE: TIBStringField
       DisplayWidth = 20
       FieldName = 'IE'
       Size = 15
     end
-    object ibDataSet18FONE: TStringField
+    object ibDataSet18FONE: TIBStringField
       DisplayLabel = 'Telefone'
       DisplayWidth = 20
       FieldName = 'FONE'
       EditMask = '!\(#xx##\)#########;1;'
       Size = 16
     end
-    object ibDataSet18EMAIL: TStringField
+    object ibDataSet18EMAIL: TIBStringField
       DisplayLabel = 'e-mail'
       DisplayWidth = 35
       FieldName = 'EMAIL'
       Size = 80
     end
-    object ibDataSet18PLACA: TStringField
+    object ibDataSet18PLACA: TIBStringField
       DisplayLabel = 'Placa do Ve'#237'culo'
       DisplayWidth = 20
       FieldName = 'PLACA'
       Size = 11
     end
-    object ibDataSet18ESTADO: TStringField
+    object ibDataSet18ESTADO: TIBStringField
       DisplayLabel = 'UF'
       FieldName = 'ESTADO'
       Size = 2
@@ -16226,13 +16226,13 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 311
-    object ibDataSet19DESCRICAO: TStringField
+    object ibDataSet19DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       DisplayWidth = 25
       FieldName = 'DESCRICAO'
       Size = 30
     end
-    object ibDataSet19TIPO: TStringField
+    object ibDataSet19TIPO: TIBStringField
       DisplayLabel = 'Mascara'
       DisplayWidth = 15
       FieldName = 'TIPO'
@@ -16257,14 +16257,14 @@ object Form7: TForm7
       OnSetText = ibDataSet19ELEMENTOSetText
       EditFormat = '###'
     end
-    object ibDataSet19LAYOUT: TStringField
+    object ibDataSet19LAYOUT: TIBStringField
       DisplayLabel = 'Lay-out'
       DisplayWidth = 30
       FieldName = 'LAYOUT'
       Visible = False
       Size = 100
     end
-    object ibDataSet19SERIE: TStringField
+    object ibDataSet19SERIE: TIBStringField
       DisplayLabel = 'S'#233'rie'
       FieldName = 'SERIE'
       Visible = False
@@ -16323,7 +16323,7 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 510
-    object ibDataSet21NOME: TStringField
+    object ibDataSet21NOME: TIBStringField
       DisplayLabel = 'Nome do grupo'
       FieldName = 'NOME'
       OnSetText = ibDataSet21NOMESetText
@@ -16500,7 +16500,7 @@ object Form7: TForm7
       Visible = False
       Size = 12
     end
-    object ibDataSet23DESCRICAO: TStringField
+    object ibDataSet23DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o dos produtos'
       DisplayWidth = 41
       FieldName = 'DESCRICAO'
@@ -16552,7 +16552,7 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet23CODIGO: TStringField
+    object ibDataSet23CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
       Size = 5
@@ -16608,14 +16608,14 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
-    object ibDataSet23CFOP: TStringField
+    object ibDataSet23CFOP: TIBStringField
       DisplayWidth = 4
       FieldName = 'CFOP'
       Visible = False
       OnSetText = ibDataSet23CFOPSetText
       Size = 5
     end
-    object ibDataSet23MEDIDA: TStringField
+    object ibDataSet23MEDIDA: TIBStringField
       FieldName = 'MEDIDA'
       Visible = False
       Size = 3
@@ -16628,13 +16628,13 @@ object Form7: TForm7
       FieldName = 'PESO'
       Visible = False
     end
-    object ibDataSet23FORNECEDOR: TStringField
+    object ibDataSet23FORNECEDOR: TIBStringField
       DisplayWidth = 35
       FieldName = 'FORNECEDOR'
       Visible = False
       Size = 60
     end
-    object ibDataSet23ST: TStringField
+    object ibDataSet23ST: TIBStringField
       FieldName = 'ST'
       Visible = False
       Size = 3
@@ -17014,7 +17014,7 @@ object Form7: TForm7
       BlobType = ftMemo
       Size = 8
     end
-    object ibDataSet24FORNECEDOR: TStringField
+    object ibDataSet24FORNECEDOR: TIBStringField
       DisplayLabel = 'Fornecedor'
       DisplayWidth = 35
       FieldName = 'FORNECEDOR'
@@ -17048,7 +17048,7 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet24OPERACAO: TStringField
+    object ibDataSet24OPERACAO: TIBStringField
       DisplayLabel = 'Natureza da opera'#231#227'o'
       FieldName = 'OPERACAO'
       Size = 40
@@ -17114,7 +17114,7 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
-    object ibDataSet24TRANSPORTA: TStringField
+    object ibDataSet24TRANSPORTA: TIBStringField
       DisplayLabel = 'Transportadora'
       DisplayWidth = 35
       FieldName = 'TRANSPORTA'
@@ -17139,26 +17139,26 @@ object Form7: TForm7
       FieldName = 'VOLUMES'
       Visible = False
     end
-    object ibDataSet24ESPECIE: TStringField
+    object ibDataSet24ESPECIE: TIBStringField
       DisplayLabel = 'Esp'#233'cie'
       FieldName = 'ESPECIE'
       Visible = False
       Size = 13
     end
-    object ibDataSet24MARCA: TStringField
+    object ibDataSet24MARCA: TIBStringField
       DisplayLabel = 'Marca'
       FieldName = 'MARCA'
       Visible = False
       Size = 13
     end
-    object ibDataSet24VENDEDOR: TStringField
+    object ibDataSet24VENDEDOR: TIBStringField
       DisplayLabel = 'Vendedor'
       DisplayWidth = 30
       FieldName = 'VENDEDOR'
       Visible = False
       Size = 60
     end
-    object ibDataSet24SAIDAH: TStringField
+    object ibDataSet24SAIDAH: TIBStringField
       DisplayLabel = 'Hora sa'#237'da'
       FieldName = 'SAIDAH'
       Visible = False
@@ -17183,22 +17183,22 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet24EMITIDA: TStringField
+    object ibDataSet24EMITIDA: TIBStringField
       FieldName = 'EMITIDA'
       Visible = False
       Size = 1
     end
-    object ibDataSet24DESCRICAO1: TStringField
+    object ibDataSet24DESCRICAO1: TIBStringField
       FieldName = 'DESCRICAO1'
       Visible = False
       Size = 61
     end
-    object ibDataSet24DESCRICAO2: TStringField
+    object ibDataSet24DESCRICAO2: TIBStringField
       FieldName = 'DESCRICAO2'
       Visible = False
       Size = 61
     end
-    object ibDataSet24DESCRICAO3: TStringField
+    object ibDataSet24DESCRICAO3: TIBStringField
       FieldName = 'DESCRICAO3'
       Visible = False
       Size = 61
@@ -17213,7 +17213,7 @@ object Form7: TForm7
       FieldName = 'PESOLIQUI'
       Visible = False
     end
-    object ibDataSet24FRETE12: TStringField
+    object ibDataSet24FRETE12: TIBStringField
       FieldName = 'FRETE12'
       Visible = False
       OnChange = ibDataSet24MERCADORIAChange
@@ -17269,7 +17269,7 @@ object Form7: TForm7
       Visible = False
       Size = 1
     end
-    object ibDataSet24IDENTIFICADORPLANOCONTAS: TStringField
+    object ibDataSet24IDENTIFICADORPLANOCONTAS: TIBStringField
       DisplayLabel = 'Identificador Cont'#225'bil'
       FieldName = 'IDENTIFICADORPLANOCONTAS'
       Origin = 'COMPRAS.IDENTIFICADORPLANOCONTAS'
@@ -17698,11 +17698,11 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 378
-    object ibDataSet27CODIGO: TStringField
+    object ibDataSet27CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Size = 5
     end
-    object ibDataSet27DESCRICAO: TStringField
+    object ibDataSet27DESCRICAO: TIBStringField
       FieldName = 'DESCRICAO'
       Size = 45
     end
@@ -17715,20 +17715,20 @@ object Form7: TForm7
     object ibDataSet27DATA: TDateField
       FieldName = 'DATA'
     end
-    object ibDataSet27TIPO: TStringField
+    object ibDataSet27TIPO: TIBStringField
       FieldName = 'TIPO'
       Size = 6
     end
-    object ibDataSet27PEDIDO: TStringField
+    object ibDataSet27PEDIDO: TIBStringField
       FieldName = 'PEDIDO'
       Size = 6
     end
-    object ibDataSet27CLIFOR: TStringField
+    object ibDataSet27CLIFOR: TIBStringField
       DisplayWidth = 35
       FieldName = 'CLIFOR'
       Size = 60
     end
-    object ibDataSet27VENDEDOR: TStringField
+    object ibDataSet27VENDEDOR: TIBStringField
       DisplayWidth = 30
       FieldName = 'VENDEDOR'
       Size = 60
@@ -17736,7 +17736,7 @@ object Form7: TForm7
     object ibDataSet27TOTAL: TFloatField
       FieldName = 'TOTAL'
     end
-    object ibDataSet27CAIXA: TStringField
+    object ibDataSet27CAIXA: TIBStringField
       FieldName = 'CAIXA'
       Size = 3
     end
@@ -17864,7 +17864,7 @@ object Form7: TForm7
       FixedChar = True
       Size = 3
     end
-    object ibDataSet27CSOSN: TStringField
+    object ibDataSet27CSOSN: TIBStringField
       FieldName = 'CSOSN'
       Size = 3
     end
@@ -18124,23 +18124,23 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 543
-    object ibDataSet10CODIGO: TStringField
+    object ibDataSet10CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Size = 6
     end
-    object ibDataSet10COR: TStringField
+    object ibDataSet10COR: TIBStringField
       FieldName = 'COR'
       Size = 2
     end
-    object ibDataSet10TAMANHO: TStringField
+    object ibDataSet10TAMANHO: TIBStringField
       FieldName = 'TAMANHO'
       Size = 2
     end
-    object ibDataSet10QTD: TStringField
+    object ibDataSet10QTD: TIBStringField
       FieldName = 'QTD'
       Size = 10
     end
-    object ibDataSet10ENTRADAS: TStringField
+    object ibDataSet10ENTRADAS: TIBStringField
       FieldName = 'ENTRADAS'
       Size = 14
     end
@@ -18199,11 +18199,11 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 577
-    object ibDataSet28CODIGO: TStringField
+    object ibDataSet28CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Size = 5
     end
-    object ibDataSet28DESCRICAO: TStringField
+    object ibDataSet28DESCRICAO: TIBStringField
       DisplayLabel = 'C'#243'digo / Descri'#231#227'o'
       FieldName = 'DESCRICAO'
       Size = 45
@@ -18347,26 +18347,26 @@ object Form7: TForm7
     Filtered = True
     Left = 8
     Top = 609
-    object ibDataSet29NOME: TStringField
+    object ibDataSet29NOME: TIBStringField
       DisplayLabel = 'Conv'#234'nio'
       DisplayWidth = 30
       FieldName = 'NOME'
       OnSetText = ibDataSet29NOMESetText
       Size = 30
     end
-    object ibDataSet29RAZAO: TStringField
+    object ibDataSet29RAZAO: TIBStringField
       DisplayLabel = 'Raz'#227'o Social'
       DisplayWidth = 30
       FieldName = 'RAZAO'
       Size = 60
     end
-    object ibDataSet29FONE: TStringField
+    object ibDataSet29FONE: TIBStringField
       DisplayLabel = 'Telefone'
       FieldName = 'FONE'
       EditMask = '!\(#xx##\)########;1; '
       Size = 16
     end
-    object ibDataSet29EMAIL: TStringField
+    object ibDataSet29EMAIL: TIBStringField
       DisplayLabel = 'e-mail'
       DisplayWidth = 21
       FieldName = 'EMAIL'
@@ -18499,24 +18499,24 @@ object Form7: TForm7
     OnFilterRecord = ibDataSet30FilterRecord
     Left = 200
     Top = 344
-    object ibDataSet30CODIGO: TStringField
+    object ibDataSet30CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'CODIGO'
       Size = 6
     end
-    object ibDataSet30SERIAL: TStringField
+    object ibDataSet30SERIAL: TIBStringField
       DisplayLabel = 'N'#250'mero de s'#233'rie'
       DisplayWidth = 42
       FieldName = 'SERIAL'
       OnSetText = ibDataSet30SERIALSetText
       Size = 45
     end
-    object ibDataSet30NFCOMPRA: TStringField
+    object ibDataSet30NFCOMPRA: TIBStringField
       DisplayLabel = 'NF Compra'
       FieldName = 'NFCOMPRA'
       Size = 6
     end
-    object ibDataSet30NFVENDA: TStringField
+    object ibDataSet30NFVENDA: TIBStringField
       DisplayLabel = 'NF Venda'
       DisplayWidth = 6
       FieldName = 'NFVENDA'
@@ -18870,7 +18870,7 @@ object Form7: TForm7
       Origin = '"PAGAR"."ATIVO"'
       Visible = False
     end
-    object ibDataSet8DOCUMENTO: TStringField
+    object ibDataSet8DOCUMENTO: TIBStringField
       DisplayLabel = 'Doc.'
       DisplayWidth = 11
       FieldName = 'DOCUMENTO'
@@ -18878,20 +18878,20 @@ object Form7: TForm7
       EditMask = 'aaaaaaaaaa;1; '
       Size = 10
     end
-    object ibDataSet8CONTA: TStringField
+    object ibDataSet8CONTA: TIBStringField
       DisplayLabel = 'Plano de Contas'
       DisplayWidth = 33
       FieldName = 'CONTA'
       Visible = False
       Size = 25
     end
-    object ibDataSet8HISTORICO: TStringField
+    object ibDataSet8HISTORICO: TIBStringField
       DisplayLabel = 'Hist'#243'rico'
       DisplayWidth = 33
       FieldName = 'HISTORICO'
       Size = 35
     end
-    object ibDataSet8NOME: TStringField
+    object ibDataSet8NOME: TIBStringField
       DisplayLabel = 'Fornecedor'
       DisplayWidth = 33
       FieldName = 'NOME'
@@ -18933,7 +18933,7 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet8PORTADOR: TStringField
+    object ibDataSet8PORTADOR: TIBStringField
       DisplayLabel = 'Portador'
       DisplayWidth = 20
       FieldName = 'PORTADOR'
@@ -19073,7 +19073,7 @@ object Form7: TForm7
     Filtered = True
     Left = 8
     Top = 278
-    object ibDataSet3NUMERO: TStringField
+    object ibDataSet3NUMERO: TIBStringField
       DisplayLabel = 'N'#250'mero'
       FieldName = 'NUMERO'
       Size = 10
@@ -19084,13 +19084,13 @@ object Form7: TForm7
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet3HORA: TStringField
+    object ibDataSet3HORA: TIBStringField
       DisplayLabel = 'Hora'
       FieldName = 'HORA'
       EditMask = '!90:00;1; '
       Size = 5
     end
-    object ibDataSet3TECNICO: TStringField
+    object ibDataSet3TECNICO: TIBStringField
       DisplayLabel = 'Atendente'
       DisplayWidth = 15
       FieldName = 'TECNICO'
@@ -19103,26 +19103,26 @@ object Form7: TForm7
       OnSetText = ibDataSet5COMPENSSetText
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet3HORA_PRO: TStringField
+    object ibDataSet3HORA_PRO: TIBStringField
       DisplayLabel = 'Hora agendada'
       DisplayWidth = 10
       FieldName = 'HORA_PRO'
       EditMask = '!90:00;1; '
       Size = 5
     end
-    object ibDataSet3TEMPO: TStringField
+    object ibDataSet3TEMPO: TIBStringField
       DisplayLabel = 'Tempo'
       FieldName = 'TEMPO'
       EditMask = '!90:00;1; '
       Size = 5
     end
-    object ibDataSet3CLIENTE: TStringField
+    object ibDataSet3CLIENTE: TIBStringField
       DisplayLabel = 'Cliente'
       DisplayWidth = 35
       FieldName = 'CLIENTE'
       Size = 60
     end
-    object ibDataSet3SITUACAO: TStringField
+    object ibDataSet3SITUACAO: TIBStringField
       DisplayLabel = 'Situa'#231#227'o'
       DisplayWidth = 15
       FieldName = 'SITUACAO'
@@ -19130,28 +19130,28 @@ object Form7: TForm7
       OnSetText = ibDataSet3SITUACAOSetText
       Size = 25
     end
-    object ibDataSet3DESCRICAO: TStringField
+    object ibDataSet3DESCRICAO: TIBStringField
       FieldName = 'DESCRICAO'
       Size = 40
     end
-    object ibDataSet3PROBLEMA: TStringField
+    object ibDataSet3PROBLEMA: TIBStringField
       DisplayWidth = 128
       FieldName = 'PROBLEMA'
       Size = 128
     end
-    object ibDataSet3IDENTIFI1: TStringField
+    object ibDataSet3IDENTIFI1: TIBStringField
       FieldName = 'IDENTIFI1'
       OnSetText = ibDataSet2MAESetText
     end
-    object ibDataSet3IDENTIFI2: TStringField
+    object ibDataSet3IDENTIFI2: TIBStringField
       FieldName = 'IDENTIFI2'
       OnSetText = ibDataSet2MAESetText
     end
-    object ibDataSet3IDENTIFI3: TStringField
+    object ibDataSet3IDENTIFI3: TIBStringField
       FieldName = 'IDENTIFI3'
       OnSetText = ibDataSet2MAESetText
     end
-    object ibDataSet3IDENTIFI4: TStringField
+    object ibDataSet3IDENTIFI4: TIBStringField
       FieldName = 'IDENTIFI4'
       OnSetText = ibDataSet2MAESetText
     end
@@ -19166,7 +19166,7 @@ object Form7: TForm7
       FieldName = 'DATA_ENT'
       EditMask = '!99/99/9999;1; '
     end
-    object ibDataSet3HORA_ENT: TStringField
+    object ibDataSet3HORA_ENT: TIBStringField
       DisplayLabel = 'Hora da entrega'
       FieldName = 'HORA_ENT'
       EditMask = '!90:00;1; '
@@ -19205,12 +19205,12 @@ object Form7: TForm7
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
     end
-    object ibDataSet3OBSERVACAO: TStringField
+    object ibDataSet3OBSERVACAO: TIBStringField
       DisplayLabel = 'Observa'#231#227'o'
       FieldName = 'OBSERVACAO'
       Size = 254
     end
-    object ibDataSet3NF: TStringField
+    object ibDataSet3NF: TIBStringField
       DisplayLabel = 'Nota Fiscal'
       DisplayWidth = 12
       FieldName = 'NF'
@@ -19852,31 +19852,31 @@ object Form7: TForm7
     Filtered = True
     Left = 200
     Top = 278
-    object ibDataSet35NUMERONF: TStringField
+    object ibDataSet35NUMERONF: TIBStringField
       DisplayWidth = 13
       FieldName = 'NUMERONF'
       Visible = False
       Size = 12
     end
-    object ibDataSet35CODIGO: TStringField
+    object ibDataSet35CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
       Size = 5
     end
-    object ibDataSet35DESCRICAO: TStringField
+    object ibDataSet35DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o dos servi'#231'os'
       DisplayWidth = 29
       FieldName = 'DESCRICAO'
       OnSetText = ibDataSet35DESCRICAOSetText
       Size = 45
     end
-    object ibDataSet35TECNICO: TStringField
+    object ibDataSet35TECNICO: TIBStringField
       DisplayLabel = 'T'#233'cnico'
       DisplayWidth = 12
       FieldName = 'TECNICO'
       Size = 60
     end
-    object ibDataSet35MEDIDA: TStringField
+    object ibDataSet35MEDIDA: TIBStringField
       FieldName = 'MEDIDA'
       Visible = False
       Size = 3
@@ -19901,7 +19901,7 @@ object Form7: TForm7
       OnChange = ibDataSet35TOTALChange
       DisplayFormat = '#,##0.00'
     end
-    object ibDataSet35CFOP: TStringField
+    object ibDataSet35CFOP: TIBStringField
       FieldName = 'CFOP'
       Visible = False
       Size = 5
@@ -19914,7 +19914,7 @@ object Form7: TForm7
       FieldName = 'BASEISS'
       Visible = False
     end
-    object ibDataSet35NUMEROOS: TStringField
+    object ibDataSet35NUMEROOS: TIBStringField
       FieldName = 'NUMEROOS'
       Visible = False
       Size = 10
@@ -19925,7 +19925,7 @@ object Form7: TForm7
       Visible = False
       Size = 10
     end
-    object ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField
+    object ibDataSet35IDENTIFICADORPLANOCONTAS: TIBStringField
       FieldName = 'IDENTIFICADORPLANOCONTAS'
       Origin = 'ITENS003.IDENTIFICADORPLANOCONTAS'
       Visible = False
@@ -20386,12 +20386,12 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
     Top = 611
-    object ibDataset40CODIGO: TStringField
+    object ibDataset40CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
       Size = 5
     end
-    object ibDataset40DESCRICAO: TStringField
+    object ibDataset40DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       DisplayWidth = 66
       FieldName = 'DESCRICAO'
@@ -20501,12 +20501,12 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 199
     Top = 679
-    object ibDataSet37CODIGO: TStringField
+    object ibDataSet37CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
       Size = 5
     end
-    object ibDataSet37DESCRICAO: TStringField
+    object ibDataSet37DESCRICAO: TIBStringField
       DisplayWidth = 41
       FieldName = 'DESCRICAO'
       Size = 45
@@ -20532,31 +20532,31 @@ object Form7: TForm7
       FieldName = 'DATA'
       Visible = False
     end
-    object ibDataSet37TIPO: TStringField
+    object ibDataSet37TIPO: TIBStringField
       FieldName = 'TIPO'
       Visible = False
       Size = 6
     end
-    object ibDataSet37PEDIDO: TStringField
+    object ibDataSet37PEDIDO: TIBStringField
       DisplayLabel = 'Pedido'
       FieldName = 'PEDIDO'
       Visible = False
       Size = 10
     end
-    object ibDataSet37CLIFOR: TStringField
+    object ibDataSet37CLIFOR: TIBStringField
       DisplayLabel = 'Cliente'
       DisplayWidth = 35
       FieldName = 'CLIFOR'
       Visible = False
       Size = 60
     end
-    object ibDataSet37VENDEDOR: TStringField
+    object ibDataSet37VENDEDOR: TIBStringField
       DisplayWidth = 30
       FieldName = 'VENDEDOR'
       Visible = False
       Size = 60
     end
-    object ibDataSet37CAIXA: TStringField
+    object ibDataSet37CAIXA: TIBStringField
       FieldName = 'CAIXA'
       Visible = False
       Size = 3
@@ -21262,7 +21262,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21296,7 +21296,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21611,7 +21611,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50\DPEC'
+      'vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21641,7 +21641,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50\DPEC'
+      'm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
