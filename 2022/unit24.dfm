@@ -2276,6 +2276,7 @@ object Form24: TForm24
         ReadOnly = True
         TabOrder = 51
         Text = '1-Normal'
+        OnChange = Edit7Change
         OnClick = Edit7Click
         OnEnter = Edit7Click
       end
@@ -2293,6 +2294,7 @@ object Form24: TForm24
         ReadOnly = True
         TabOrder = 52
         Text = '1-Consumidor final'
+        OnChange = Edit8Change
         OnClick = Edit8Click
         OnEnter = Edit8Click
       end
@@ -2310,6 +2312,7 @@ object Form24: TForm24
         ReadOnly = True
         TabOrder = 53
         Text = '3-Opera'#231#227'o n'#227'o presencial, Teleatendimento'
+        OnChange = Edit9Change
         OnClick = Edit9Click
         OnEnter = Edit9Click
       end

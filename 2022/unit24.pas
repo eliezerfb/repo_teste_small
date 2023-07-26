@@ -262,9 +262,16 @@ type
     procedure Button1Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure SMALL_DBEdit16Exit(Sender: TObject);
+    procedure Edit7Change(Sender: TObject);
+    procedure Edit9Change(Sender: TObject);
+    procedure Edit8Change(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
+    procedure DefineDataSetFinalidade;
+    procedure DefineDataSetConsumidor;
+    procedure DefineDataSetIndPresenca;
+    procedure DefineDataSetInfNFe;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -1195,6 +1202,7 @@ begin
     AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
     Rewrite(F);           // Abre para gravação
 
+    DefineDataSetInfNFe;
     if Form7.ibDataSet24.Modified then
     begin
       Form7.ibDataSet24.Post;
@@ -3606,6 +3614,56 @@ begin
     DbGrid1.SelectedIndex := 0;
   except
 
+  end;
+end;
+
+procedure TForm24.DefineDataSetFinalidade;
+begin
+  Form7.ibDataSet24FINNFE.AsString  := LimpaNumero(Edit7.Text);
+end;
+
+procedure TForm24.DefineDataSetConsumidor;
+begin
+  Form7.ibDataSet24INDFINAL.AsString  := LimpaNumero(Edit8.Text);
+end;
+
+procedure TForm24.DefineDataSetIndPresenca;
+begin
+  Form7.ibDataSet24INDPRES.AsString  := LimpaNumero(Edit9.Text);
+end;
+
+procedure TForm24.Edit7Change(Sender: TObject);
+begin
+  DefineDataSetInfNFe;
+end;
+
+procedure TForm24.Edit9Change(Sender: TObject);
+begin
+  DefineDataSetInfNFe;
+end;
+
+procedure TForm24.Edit8Change(Sender: TObject);
+begin
+  DefineDataSetInfNFe;
+end;
+
+procedure TForm24.DefineDataSetInfNFe;
+var
+  bNaoEdit: Boolean;
+begin
+  bNaoEdit := False;
+  if Form7.ibDataSet24.State = dsBrowse then
+  begin
+    Form7.ibDataSet24.Edit;
+    bNaoEdit := True;
+  end;
+  try
+    DefineDataSetFinalidade;
+    DefineDataSetConsumidor;
+    DefineDataSetIndPresenca;
+  finally
+    if bNaoEdit then
+      Form7.ibDataSet24.Post;
   end;
 end;
 
