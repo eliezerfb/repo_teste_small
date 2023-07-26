@@ -58,9 +58,8 @@ uses Unit7, Mais, Unit14;
 
 procedure TForm16.FormActivate(Sender: TObject);
 begin
-  //
   Form16.Image2.Picture := Form7.Image209.Picture;
-  //
+
   try
     {-----------------------------------------}
     {Filtra de acordo com o campo selecionado }
@@ -71,13 +70,13 @@ begin
     Form16.DateTimePicker1.Visible  := False;
     Form16.DateTimePicker2.Visible  := False;
     Button1.Enabled := True;
-    //
-    with Form7 do
+
+    //with Form7 do
     begin
-      with ArquivoAberto do
+      with Form7.ArquivoAberto do
       begin
         {Campos do tipo String}
-        if dBgrid1.SelectedField.FieldName = 'CODIGO' then
+        if Form7.dBgrid1.SelectedField.FieldName = 'CODIGO' then
         begin
           Form16.Label1.Caption := 'Filtrar do Código:';
           Form16.Label3.Caption := 'até:';
@@ -87,15 +86,14 @@ begin
           Form16.MaskEdit2.Visible  := True;
           Form16.MaskEdit1.EditMask  := '';
           Form16.MaskEdit2.EditMask  := '';
-          Form16.MaskEdit1.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-          Form16.MaskEdit2.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-          Form16.MaskEdit1.Text := dBGrid1.SelectedField.Value;
-          Form16.MaskEdit2.Text := dBGrid1.SelectedField.Value;
+          Form16.MaskEdit1.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+          Form16.MaskEdit2.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+          Form16.MaskEdit1.Text := Form7.dBGrid1.SelectedField.Value;
+          Form16.MaskEdit2.Text := Form7.dBGrid1.SelectedField.Value;
           Form16.MaskEdit1.SetFocus;
-          //
         end else
         begin
-          if dBgrid1.SelectedField.FieldName = 'CEP' then
+          if Form7.dBgrid1.SelectedField.FieldName = 'CEP' then
           begin
             Form16.Label1.Caption := 'Filtrar do CEP:';
             Form16.Label3.Caption := 'até:';
@@ -105,16 +103,14 @@ begin
             Form16.MaskEdit2.Visible  := True;
             Form16.MaskEdit1.EditMask := '';
             Form16.MaskEdit2.EditMask := '';
-            Form16.MaskEdit1.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-            Form16.MaskEdit2.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-            Form16.MaskEdit1.Text := dBGrid1.SelectedField.Value;
-            Form16.MaskEdit2.Text := dBGrid1.SelectedField.Value;
+            Form16.MaskEdit1.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+            Form16.MaskEdit2.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+            Form16.MaskEdit1.Text := Form7.dBGrid1.SelectedField.Value;
+            Form16.MaskEdit2.Text := Form7.dBGrid1.SelectedField.Value;
             Form16.MaskEdit1.SetFocus;
-            //
           end else
           begin
-            //
-            if dBgrid1.SelectedField.FieldName = 'Orçamento' then
+            if Form7.dBgrid1.SelectedField.FieldName = 'Orçamento' then
             begin
               Form16.Label1.Caption := 'Filtrar do Orçamento:';
               Form16.Label3.Caption := 'até:';
@@ -124,32 +120,28 @@ begin
               Form16.MaskEdit2.Visible  := True;
               Form16.MaskEdit1.EditMask := '';
               Form16.MaskEdit2.EditMask := '';
-              Form16.MaskEdit1.Width    := (dBGrid1.SelectedField.DisplayWidth * 10 )+ 10;
-              Form16.MaskEdit2.Width    := (dBGrid1.SelectedField.DisplayWidth * 10 )+ 10;
-              Form16.MaskEdit1.Text := dBGrid1.SelectedField.Value;
-              Form16.MaskEdit2.Text := dBGrid1.SelectedField.Value;
+              Form16.MaskEdit1.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 10 )+ 10;
+              Form16.MaskEdit2.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 10 )+ 10;
+              Form16.MaskEdit1.Text := Form7.dBGrid1.SelectedField.Value;
+              Form16.MaskEdit2.Text := Form7.dBGrid1.SelectedField.Value;
               Form16.MaskEdit1.SetFocus;
-              //
             end else
             begin
-              if (dBgrid1.Selectedfield.DataType = ftString) or (dBgrid1.Selectedfield.DataType = ftMemo) then
+              if (Form7.dBgrid1.Selectedfield.DataType = ftString) or (Form7.dBgrid1.Selectedfield.DataType = ftMemo) or (Form7.dBgrid1.Selectedfield.DataType = ftWideString) then
               begin
-                //
                 MaskEdit1.Visible := True;
-                Form16.Label1.Caption := 'Filtrar '+LowerCase(dBgrid1.SelectedField.DisplayLabel) + ' com:';
+                Form16.Label1.Caption := 'Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' com:';
                 Form16.MaskEdit1.EditMask := '';
-                Form16.MaskEdit1.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-                Form16.MaskEdit1.Text     := FieldByname(dBgrid1.SelectedField.FieldName).AsString;
+                Form16.MaskEdit1.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+                Form16.MaskEdit1.Text     := FieldByname(Form7.dBgrid1.SelectedField.FieldName).AsString;
                 MaskEdit1.SetFocus;
                 if (MaskEdit1.Width + MaskEdit1.Left) > (Form16.Width -20) then MaskEdit1.Width := (Form16.Width - MaskEdit1.Left - 20);
-                //
               end;
             end;
             {Campos do tipo Date}
-            if dBgrid1.Selectedfield.DataType = ftDate then
+            if Form7.dBgrid1.Selectedfield.DataType = ftDate then
             begin
-              //
-              Form16.Label1.Caption  := 'Filtrar '+LowerCase(dBgrid1.SelectedField.DisplayLabel) + ' de:';
+              Form16.Label1.Caption  := 'Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de:';
               Form16.Label3.Caption  := 'até:';
               //
               Form16.Label3.Visible  := True;
@@ -157,29 +149,27 @@ begin
               Form16.DateTimePicker2.Visible  := True;
               Form16.DateTimePicker1.SetFocus;
               //
-              if dBgrid1.Selectedfield.AsString = '' then
+              if Form7.dBgrid1.Selectedfield.AsString = '' then
               begin
                 Form16.DateTimePicker1.Date:= StrToDateTime('31/12/1899');
                 Form16.DateTimePicker2.Date:=  StrToDateTime('31/12/1899');
               end else
               begin
-                Form16.DateTimePicker1.Date:= dBgrid1.Selectedfield.AsDateTime;
-                Form16.DateTimePicker2.Date:= dBgrid1.Selectedfield.AsDateTime;
+                Form16.DateTimePicker1.Date:= Form7.dBgrid1.Selectedfield.AsDateTime;
+                Form16.DateTimePicker2.Date:= Form7.dBgrid1.Selectedfield.AsDateTime;
               end;
               //
-              if AllTrim(dBgrid1.SelectedField.DisplayLAbel) = 'Nascido em' then
+              if AllTrim(Form7.dBgrid1.SelectedField.DisplayLAbel) = 'Nascido em' then
               begin
                 Form16.Label1.Caption  := 'Filtrar aniversariantes de:';
                 Form16.DateTimePicker1.Date:= Date;
                 Form16.DateTimePicker2.Date:= Date + 30;
               end;
-              //
             end;
-            if dBgrid1.Selectedfield.DataType = ftFloat then
+            if Form7.dBgrid1.Selectedfield.DataType = ftFloat then
             begin
-              //
               try
-                Form16.Label1.Caption := StrTran(StrTran('Filtrar '+LowerCase(dBgrid1.SelectedField.DisplayLabel) + ' de:','r$','R$'),'us$','US$');
+                Form16.Label1.Caption := StrTran(StrTran('Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de:','r$','R$'),'us$','US$');
                 Form16.Label3.Caption := 'até:';
                 //
                 Form16.Label3.Visible     := True;
@@ -187,31 +177,29 @@ begin
                 Form16.MaskEdit2.Visible  := True;
                 Form16.MaskEdit1.EditMask  := '';
                 Form16.MaskEdit2.EditMask  := '';
-                Form16.MaskEdit1.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-                Form16.MaskEdit2.Width    := (dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
-                if dBGrid1.SelectedField.AsFloat = 0 then
+                Form16.MaskEdit1.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+                Form16.MaskEdit2.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
+                if Form7.dBGrid1.SelectedField.AsFloat = 0 then
                 begin
                   Form16.MaskEdit1.Text := '0,00';
                   Form16.MaskEdit2.Text := '0,00';
                 end else
                 begin
-                  Form16.MaskEdit1.Text := dBGrid1.SelectedField.Value;
-                  Form16.MaskEdit2.Text := dBGrid1.SelectedField.Value;
+                  Form16.MaskEdit1.Text := Form7.dBGrid1.SelectedField.Value;
+                  Form16.MaskEdit2.Text := Form7.dBGrid1.SelectedField.Value;
                 end;
                 Form16.MaskEdit1.SetFocus;
-              except end;
-              //
+              except
+              end;
             end;
           end;
         end;
       end;
-      //
     end;
   except end;
-  //
+
   Button4.Enabled := True;
   Button2.Enabled := True;
-  //
 end;
 
 procedure TForm16.Button1Click(Sender: TObject);
@@ -224,9 +212,7 @@ procedure TForm16.Button2Click(Sender: TObject);
 var
   sLogica : String;
   cTabela: string;
-//  Inicio : TTime;
 begin
-//  Inicio := Time;
   cTabela := EmptyStr;
   if (Form7.sModulo = 'ORCAMENTO') then
     cTabela := 'ORCAMENTS.';
@@ -292,7 +278,8 @@ begin
                 ListBox1.Items.Add(sLogica+' substring(DATANAS from 6 for 5)>='+QuotedStr(StrTran(Copy(DateToStrInvertida(Form16.DateTimePicker1.Date),6,5),'/','-'))+' and substring(DATANAS from 6 for 5)<='+QuotedStr(StrTran(Copy(DateToStrInvertida(Form16.DateTimePicker2.Date),6,5),'/','-')));
               end else
               begin
-                if dBgrid1.Selectedfield.DataType = ftString then
+                //if dBgrid1.Selectedfield.DataType = ftString then Mauricio Parizotto 2023-07-26 Migração Delphi 11
+                if (dBgrid1.Selectedfield.DataType = ftString) or (dBgrid1.Selectedfield.DataType = ftWideString) then
                 begin
                   ListBox1.Items.Add(sLogica+' upper( Coalesce('+cTabela+dBgrid1.Selectedfield.FieldName+','+QuotedStr('~')+') ) like '+QuotedStr('%'+UpperCase(ConverteAcentos3(MaskEdit1.Text))+'%'));
                 end;

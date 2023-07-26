@@ -5,8 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB,
-  DBClient, Grids, DBGrids
-  ;
+  DBClient, Grids, DBGrids, IBCustomDataSet;
 
 const COR_CAMPO_OBRIGATORIO = $0080FFFF;
 
@@ -30,11 +29,11 @@ type
     lbQuantidadeAcumulada: TLabel;
     CDSLOTES: TClientDataSet;
     DSLOTES: TDataSource;
-    CDSLOTESNUMERO: TStringField;
+    CDSLOTESNUMERO: TIBStringField;
     CDSLOTESQUANTIDADE: TFloatField;
     CDSLOTESDTFABRICACAO: TDateField;
     CDSLOTESDTVALIDADE: TDateField;
-    CDSLOTESCODIGOAGREGACAO: TStringField;
+    CDSLOTESCODIGOAGREGACAO: TIBStringField;
     DBGridRastro: TDBGrid;
     CDSLOTESQUANTIDADEACUMULADA: TAggregateField;
     DBTValorQuantidadeAcumulada: TDBText;
@@ -482,7 +481,6 @@ begin
       end;
     ftFMTBcd, ftFloat:
       begin
-
         // Elimina excesso de separador decimal (vírgula)
         sCurrectedText := '';
 

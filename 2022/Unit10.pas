@@ -5669,6 +5669,9 @@ begin
                     case Form7.TabelaAberta.Fields[I-1].DataType of
                       ftString:
                         sA := Form7.TabelaAberta.Fields[I-1].AsSTring;
+                      //Mauricio Parizotto 2023-07-26 Migração Alexandria
+                      ftWideString:
+                        sA := Form7.TabelaAberta.Fields[I-1].AsSTring;
                       ftFloat, ftBCD:
                         sA := Format('%10.2n',[Form7.TabelaAberta.Fields[I-1].AsFloat]);
                       ftDatetime, ftDate:
@@ -5710,6 +5713,9 @@ begin
           for I := 1 to 23 do
           begin
             if Form7.ibDataSet2.Fields[I-1].DataType = ftString   then
+              sA := Form7.ibDataSet2.Fields[I-1].AsSTring
+            //Mauricio Parizotto 2023-07-26 Migração Alexandria
+            else if Form7.ibDataSet2.Fields[I-1].DataType = ftWideString then
               sA := Form7.ibDataSet2.Fields[I-1].AsSTring
             else if Form7.ibDataSet2.Fields[I-1].DataType = ftFloat then
               sA := Format('%10.2n',[Form7.ibDataSet2.Fields[I-1].AsFloat])

@@ -1824,17 +1824,30 @@ end;
 
 procedure TForm1.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
 var
+  {$IFDEF VER150}
   iParam: Smallint;
+  {$ELSE}
+  iParam: integer;
+  {$ENDIF}
 begin
   if Msg.message = WM_MOUSEWHEEL then
   begin
     Msg.message := WM_KEYDOWN;
     Msg.lParam  := 0;
+    {$IFDEF VER150}
     iParam := HiWord(Msg.wParam) ;
     if iParam > 0 then
       Msg.wParam := VK_UP
     else
       Msg.wParam := VK_DOWN;
+    {$ELSE}
+    iParam := HiWord(Msg.wParam) ;
+    if iParam <= 120 then
+      Msg.wParam := VK_UP
+    else
+      Msg.wParam := VK_DOWN;
+    {$ENDIF}
+
     Handled := False;
   end;
 end;
@@ -4079,7 +4092,13 @@ begin
   //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'ICM';
   Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs]; // Tabela de ICMS
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
   Form7.Show;
 end;
 

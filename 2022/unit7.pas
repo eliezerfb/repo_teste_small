@@ -9332,6 +9332,13 @@ begin
   Image206.Transparent := False;
   Image308.Transparent := False;
   Image209.Transparent := False;
+
+  {$IFDEF VER150}
+  {$ELSE}
+  DBGrid1.DrawingStyle       := gdsGradient;
+  DBGrid1.GradientEndColor   := $00F0F0F0;
+  DBGrid1.GradientStartColor := $00F0F0F0;
+  {$ENDIF}
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -9992,7 +9999,13 @@ begin
             DBGrid1.Font.Style := [fsBold];
 
           DBGrid1.TitleFont.Name  := DBGrid1.Font.Name;
+
+          {$IFDEF VER150}
           DBGrid1.TitleFont.Size  := DBGrid1.Font.Size +2;
+          {$ELSE}
+          DBGrid1.TitleFont.Size  := DBGrid1.Font.Size;
+          {$ENDIF}
+
           DBGrid1.TitleFont.Color := DBGrid1.Font.Color;
           DBGrid1.TitleFont.sTyle := [];
         end;
@@ -10079,8 +10092,13 @@ begin
         Form7.ibDataSet23DESCRICAO.DisplayWidth := 41;
         Form7.ibDataSet23TOTAL.DisplayWidth     := 10;
         Form7.ibDataSet23QUANTIDADE.DisplayWidth:= 9;
-        //                                           //
-        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+
+        {$IFDEF VER150}
+        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];
+        {$ELSE}
+        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick	];
+        {$ENDIF}
+
         Form7.DbGrid1.ReadOnly  := True;
         Form7.DbGrid1.Update;
         Form7.Image308.Visible  := False;
@@ -10141,22 +10159,24 @@ begin
         dbGrid3.Width   := 395;
         dbGrid3.Left    := Form7.Width - 395 -15 -5;
         dbGrid3.Visible := True;
-        //
+
         Panel10.Top     := dbGrid3.Top + dbGrid3.Height- 18;
         Panel10.Left    := dbGrid3.Left;
         Panel10.Width   := dbGrid3.Width;
-        //
+
         Panel10.Visible := True;
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
-        //
-        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+
+        {$IFDEF VER150}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];
+        {$ELSE}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];
+        {$ENDIF}
+
         Form7.dbGrid1.ReadOnly := True;
         Form7.Image308.Visible := False;
         Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
-        //
-//        CommitaTudo(True);
-//        AgendaCommit(False);
-        //
+
         CalculaTotalRecebido(True);
         //
         Form1.IBDataSet200.Close;
@@ -10227,16 +10247,17 @@ begin
         //
         Panel10.Visible := True;
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
-        //
-        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+
+        {$IFDEF VER150}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];
+        {$ELSE}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];   
+        {$ENDIF}
+
         Form7.dbGrid1.ReadOnly := True;
         Form7.Image308.Visible := False;
         Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
-        //
-        //
-//        CommitaTudo(True);
-//        AgendaCommit(False);
-        //
+
         CalculaTotalRecebido(True);
         //
         Form1.IBDataSet200.Close;
@@ -10266,12 +10287,7 @@ begin
       if sModulo = 'COMPRA' then
       begin
         sAjuda := 'nf_compra.htm';
-        //
-//        Form7.ibDataSet2.Close;                                                //
-//        Form7.ibDataSet2.Selectsql.Clear;                                      // receber Relacionado
-//        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR order by upper(NOME)');  //
-//        Form7.ibDataSet2.Open;
-        //
+
         ibDataSet8.Close;
         ibDataSet8.DataSource := DataSource24;
         ibDataSet8.Selectsql.Clear;
@@ -11267,7 +11283,12 @@ begin
       TabelaAberta.DisableControls;
       
       try
+        {$IFDEF VER150}
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize]; // 2CONTAS
+        {$ELSE}
+        Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize,dgTitleClick]; // 2CONTAS
+        {$ENDIF}
+
         (*
         with ArquivoAberto do
         begin
@@ -11401,12 +11422,16 @@ begin
         end;
         if (sModulo = 'NOTA') or (sModulo = 'CONCILIACAO') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
         begin
+          {$IFDEF VER150}
           Form7.DBGrid1.Options  := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs]; // NOTA CONCILIACAO CONFOS CONFRECIBO
+          {$ELSE}
+          Form7.DBGrid1.Options  := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick]; // NOTA CONCILIACAO CONFOS CONFRECIBO
+          {$ENDIF}
+
           Form7.dbGrid1.ReadOnly := False;
         end;
       except
       end;
-  //  except end;
 
     // Abre e posiciona
     Image209.Visible := True;
@@ -13470,33 +13495,6 @@ begin
   try
     dbGrid1.Canvas.Pen.Width    := 0;
     dbGrid1.Canvas.Pen.Color    := clWhite;
-    //
-    //  gdSelected	The cell is currently selected.
-    //  gdFocused	The cell has input focus.
-    //  gdFixed	The cell is in the fixed region of the grid.
-    //
-
-{
-if Field.DataType = ftString then ShowMessage('String '+Field.DisplayName);
-if Field.DataType = ftSmallint then ShowMessage('Smallint '+Field.DisplayName);
-if Field.DataType = ftInteger then ShowMessage('Integer '+Field.DisplayName);
-if Field.DataType = ftWord then ShowMessage('Word '+Field.DisplayName);
-if Field.DataType = ftBoolean then ShowMessage('Boolean '+Field.DisplayName);
-if Field.DataType = ftFloat then ShowMessage('Float '+Field.DisplayName);
-if Field.DataType = ftCurrency then ShowMessage('Currency '+Field.DisplayName);
-if Field.DataType = ftDate then ShowMessage('Date '+Field.DisplayName);
-if Field.DataType = ftTime then ShowMessage('Time '+Field.DisplayName);
-if Field.DataType = ftDateTime then ShowMessage('DateTime '+Field.DisplayName);
-if Field.DataType = ftBytes then ShowMessage('Bytes '+Field.DisplayName);
-if Field.DataType = ftVarBytes then ShowMessage('VarBytes '+Field.DisplayName);
-if Field.DataType = ftAutoInc then ShowMessage('AutoInc '+Field.DisplayName);
-if Field.DataType = ftBlob then ShowMessage('Blob '+Field.DisplayName);
-if Field.DataType = ftMemo then ShowMessage('Memo '+Field.DisplayName);
-if Field.DataType = ftCurrency then ShowMessage('1 '+Field.DisplayName);
-if Field.DataType = ftBCD then ShowMessage('2 '+Field.DisplayName);
-if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
-}
-
 
     if not (gdFocused in State) and not (gdFixed in State) and not (gdSelected in State) then
     begin
@@ -14032,6 +14030,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       DBGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet15EMISSAO.AsDateTime), 1, 3) );
     end;
 
+    {$IFDEF VER150}
     begin
       DBGrid1.Canvas.Brush.Color := Form7.Panel7.Color;
       DBGrid1.Canvas.Pen.Color   := clRed;
@@ -14054,6 +14053,9 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       DBGrid1.Canvas.Font.Color := clblack;
       SetBkMode(Handle, OldBkMode);
     end;
+    {$ELSE}
+    {$ENDIF}
+
   except
   end;
 end;
@@ -16532,9 +16534,17 @@ begin
      (Form7.sModulo = 'COMPRA')  then
      Abort;
 
+  {$IFDEF VER150}
   if Form7.DBGrid1.Options = [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize] then // Botão Libera
+  {$ELSE}
+  if Form7.DBGrid1.Options = [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick] then // Botão Libera
+  {$ENDIF}
   begin
+    {$IFDEF VER150}
     Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];        // Botão Libera
+    {$ELSE}
+    Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];        // Botão Libera
+    {$ENDIF}
     Form7.dbGrid1.ReadOnly  := False;
     Form7.Image208.Visible  := False; Form7.Label208.Caption  := 'Bloquear';
     Form7.Image308.Visible  := True;
@@ -16551,7 +16561,11 @@ begin
     end;
   end else
   begin
-    Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Botão Libera
+    {$IFDEF VER150}
+    Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize]; // Botão Libera
+    {$ELSE}
+    Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick]; // Botão Libera
+    {$ENDIF}
     Form7.dbGrid1.ReadOnly  := True;
     Form7.Image308.Visible  := False;
     Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
@@ -24803,13 +24817,28 @@ end;
 procedure TForm7.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
-{
-  if Column.FieldName = 'DOCUMENTO' then
+  {$IFDEF VER150}
+  {$ELSE}
+  if Pos(Column.Field.FieldName,sOrderBy) <> 0 then
+    Column.Title.Font.Style := [fsBold]
+  else
+    Column.Title.Font.Style := [];
+
+  //Troca Cor Celula Selecionada
+  with (Sender as TDBGrid).Canvas do
   begin
-    DBGrid1.Canvas.FillRect(Rect);
-    if ibDataSet7ATIVO.AsString='1' then DrawFrameControl(DBGrid1.Canvas.Handle,Rect,DFC_BUTTON, DFCS_BUTTONCHECK or DFCS_CHECKED) else DrawFrameControl(DBGrid1.Canvas.Handle,Rect,DFC_BUTTON, DFCS_BUTTONCHECK or DFCS_FLAT);
+    if (gdSelected in State) then
+    begin
+      Brush.Color := $00D77800;
+      FillRect(Rect);
+      Font.Color:= clWhite;
+      TextOut(Rect.Left, Rect.Top,Column.Field.AsString);
+    end;
+
+    (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
-}
+
+  {$ENDIF}
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
