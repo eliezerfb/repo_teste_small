@@ -1184,7 +1184,7 @@ begin
       Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat    := 0;
       Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat    := 0;
       Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.sConveniado;
-      Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda caixa: '+Form1.sCaixa+' Cupom: '+FormataNumeroDoCupom(Form1.iCupom);
+      Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda Caixa: '+Form1.sCaixa+' Cupom: '+FormataNumeroDoCupom(Form1.iCupom);
       Form1.ibDataSet7.FieldByName('CONTA').AsString        := Form1.ibDataSet14.FieldByname('CONTA').AsString;
       //
       if I = 1 then Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo4));

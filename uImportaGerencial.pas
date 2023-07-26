@@ -98,8 +98,8 @@ var
   dtDataNovo: TDate;
   sDAV: String;
   sTIPODAV: String;
-  dTotalForma: Double;
   ModalidadeTransacao: TTipoModalidadeTransacao;
+  FormasPagamento: TPagamentoPDV;
 begin
   FNumeroNF := '';
   if (FModeloDocumento <> '59') and (FModeloDocumento <> '65') then
@@ -115,6 +115,7 @@ begin
     then
     Exit;
 
+  FormasPagamento := TPagamentoPDV.Create;
   IBQCONSULTA := CriaIBQuery(FIBTransaction);
   IBQTRANSACAOELETRONICA := CriaIBQuery(FIBTransaction);
   try
@@ -141,7 +142,7 @@ begin
       FIBDataset150.Open;
 
       if FModeloDocumento = '65' then
-        sNovoNumero :=  FormataNumeroDoCupom(IncGeneratorToInt(FIBTransaction.DefaultDatabase, 'G_NUMERONFCE', 1));
+        sNovoNumero := FormataNumeroDoCupom(IncGeneratorToInt(FIBTransaction.DefaultDatabase, 'G_NUMERONFCE', 1));
 
       dtDataNovo := Date;
       FIBDataset150.Append;
@@ -224,9 +225,10 @@ begin
 
       while FIBDataSet27.Eof = False do
       begin
-
-        FDadosCliente.Nome    := FIBDataSet27.FieldByName('CLIFOR').AsString;
-        FDadosCliente.CNPJCPF := FIBDataSet27.FieldByName('CNPJ').AsString;
+        if FDadosCliente.Nome = '' then
+          FDadosCliente.Nome    := FIBDataSet27.FieldByName('CLIFOR').AsString;
+        if FDadosCliente.CNPJCPF = '' then
+          FDadosCliente.CNPJCPF := FIBDataSet27.FieldByName('CNPJ').AsString;
 
         if (sDAV = '')
           and (FIBDataSet27.FieldByName('DAV').AsString <> '')
@@ -325,7 +327,9 @@ begin
             FIBDataSet7.Edit;
             FIBDataSet7.FieldByName('NUMERONF').AsString  := sNovoNumero + Copy(FCaixa, 1, 3);
             FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, FNumeroGerencial, FormataNumeroDoCupom(StrToInt(sNovoNumero)), [rfReplaceAll]);
-            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'caixa ' + sCaixaOld, 'caixa ' + FCaixa, [rfReplaceAll]);
+            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'trans.', 'tran.', [rfReplaceAll]);
+            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'caixa ', 'Caixa: ', [rfReplaceAll]);
+            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'Caixa: ' + sCaixaOld, 'Caixa: ' + FCaixa, [rfReplaceAll]);
             FIBDataSet7.FieldByName('DOCUMENTO').AsString := FCaixa + sNovoNumero + RightStr(FIBDataSet7.FieldByName('DOCUMENTO').AsString, 1);
             FIBDataSet7.FieldByName('EMISSAO').AsDateTime := dtDataNovo;
             FIBDataSet7.Post;
@@ -336,6 +340,10 @@ begin
       end;                     
 
       FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml
+
+
+      FormasPagamento.Clear;
+      FValorTotalTEFPago := 0.00;
 
       //Pagament
       FIBDataSet28.Close;
@@ -360,10 +368,13 @@ begin
 
         // faz inverso que dataset25 faz gravando em ibdataset28 na rotina de fechamento de venda (F3/F7/F9)
 
-        FConveniado := FIBDataSet28.FieldByName('CLIFOR').AsString;
-        FVendedor   := FIBDataSet28.FieldByName('VENDEDOR').AsString;
+        if FConveniado = '' then
+          FConveniado := FIBDataSet28.FieldByName('CLIFOR').AsString;
+        if FVendedor = '' then
+          FVendedor   := FIBDataSet28.FieldByName('VENDEDOR').AsString;
 
 /////////////////////////////////////////////////////////////////////////////////////
+        {
         if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
         begin
           FIBDataSet25.FieldByName('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1))
@@ -400,11 +411,9 @@ begin
           IBQTRANSACAOELETRONICA.ParamByName('GNF').AsString    := FIBDataSet28.FieldByName('GNF').AsString;          
           IBQTRANSACAOELETRONICA.Open;
 
-          dTotalForma := 0.00;
           FValorTotalTEFPago := 0.00;
           while IBQTRANSACAOELETRONICA.Eof = False do
           begin
-            dTotalForma := IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
             FValorTotalTEFPago := FValorTotalTEFPago + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
 
             ModalidadeTransacao := tModalidadeCartao;
@@ -426,7 +435,7 @@ begin
             IBQTRANSACAOELETRONICA.Next;
           end; // while IBQ.Eof = False do
 
-          FIBDataSet25.FieldByName('PAGAR').AsFloat := dTotalForma;
+          FIBDataSet25.FieldByName('PAGAR').AsFloat := FValorTotalTEFPago;
 
         end
         else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then // PRAZO
@@ -465,9 +474,128 @@ begin
         begin
           FIBDataSet25.FieldByName('VALOR08').AsFloat := FIBDataSet28.FieldByName('VALOR').AsFloat;
         end;
+        }
+
+        if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '00' then // Total a receber
+        begin
+          FormasPagamento.TotalReceber := StrToFloat(FormatFloat('0.00', FIBDataSet28.FieldByName('VALOR').AsFloat * -1))
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '01' then // Cheque
+        begin
+          FormasPagamento.Cheque := FormasPagamento.Cheque + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '02' then // Dinheiro
+        begin
+          FormasPagamento.Dinheiro := FormasPagamento.Dinheiro + FIBDataSet28.FieldByName('VALOR').AsFloat;
+        end
+        else if (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '03') or // Cartão
+          (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '17') or // Pagto Instantâneo
+          (Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '18') then // Carteira digital
+        begin
+          IBQTRANSACAOELETRONICA.Close;
+          IBQTRANSACAOELETRONICA.SQL.Text :=
+            'select ' +
+            'FORMA, ' +
+            'VALOR, ' +
+            'TRANSACAO, ' +
+            'NOMEREDE, ' +
+            'AUTORIZACAO, ' +
+            'BANDEIRA ' +
+            'from TRANSACAOELETRONICA ' +
+            'where PEDIDO = :PEDIDO '+
+            ' and CAIXA = :CAIXA ' +
+            ' and FORMA = :FORMA ' +
+            ' and GNF = :GNF ';
+          IBQTRANSACAOELETRONICA.ParamByName('PEDIDO').AsString := FNumeroGerencial;
+          IBQTRANSACAOELETRONICA.ParamByName('CAIXA').AsString  := sCaixaOld;
+          IBQTRANSACAOELETRONICA.ParamByName('FORMA').AsString  := FIBDataSet28.FieldByName('FORMA').AsString;
+          IBQTRANSACAOELETRONICA.ParamByName('GNF').AsString    := FIBDataSet28.FieldByName('GNF').AsString;
+          IBQTRANSACAOELETRONICA.Open;
+
+          while IBQTRANSACAOELETRONICA.Eof = False do
+          begin
+            FValorTotalTEFPago := FValorTotalTEFPago + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
+            FormasPagamento.Cartao := FormasPagamento.Cartao + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
+
+            ModalidadeTransacao := tModalidadeCartao;
+            if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '17' then
+              ModalidadeTransacao := tModalidadePix;
+            if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '18' then
+              ModalidadeTransacao := tModalidadeCarteiraDigital;
+
+            FTransacoesCartao.Transacoes.Adicionar(IBQTRANSACAOELETRONICA.FieldByName('NOMEREDE').AsString,
+              ifThen(AnsiContainsText(ConverteAcentosXML(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString), 'Cartao DEBITO')
+                , 'DEBITO'
+                , 'CREDITO'),
+              IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat,
+              IBQTRANSACAOELETRONICA.FieldByName('NOMEREDE').AsString,
+              IBQTRANSACAOELETRONICA.FieldByName('TRANSACAO').AsString,
+              IBQTRANSACAOELETRONICA.FieldByName('AUTORIZACAO').AsString,
+              IBQTRANSACAOELETRONICA.FieldByName('BANDEIRA').AsString,
+              ModalidadeTransacao
+            );
+
+            IBQTRANSACAOELETRONICA.Next;
+          end; // while IBQ.Eof = False do
+
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then // PRAZO
+        begin
+          FormasPagamento.Prazo := FormasPagamento.Prazo + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '05' then // Extra 1
+        begin
+          FormasPagamento.Extra1 := FormasPagamento.Extra1 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '06' then // Extra 2
+        begin
+          FormasPagamento.Extra2 := FormasPagamento.Extra2 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '07' then // Extra 3
+        begin
+          FormasPagamento.Extra3 := FormasPagamento.Extra3 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '08' then // Extra 4
+        begin
+          FormasPagamento.Extra4 := FormasPagamento.Extra4 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '09' then // Extra 5
+        begin
+          FormasPagamento.Extra5 := FormasPagamento.Extra5 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '10' then // Extra 6
+        begin
+          FormasPagamento.Extra6 := FormasPagamento.Extra6 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '11' then // Extra 7
+        begin
+          FormasPagamento.Extra7 := FormasPagamento.Extra7 + FIBDataSet28.FieldByName('VALOR').AsFloat
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '12' then // Extra 8
+        begin
+          FormasPagamento.Extra8 := FormasPagamento.Extra8 + FIBDataSet28.FieldByName('VALOR').AsFloat;
+        end
+        else if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '13' then // Troco
+        begin
+          FormasPagamento.Troco := FIBDataSet28.FieldByName('VALOR').AsFloat;
+        end;
 /////////////////////////////////////////////////////////////////////////////////////
         FIBDataSet28.Next;
       end;
+
+      FIBDataSet25.FieldByName('RECEBER').AsFloat    := FormasPagamento.TotalReceber;
+      FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FormasPagamento.Cheque;
+      FIBDataSet25.FieldByName('ACUMULADO2').AsFloat := FormasPagamento.Dinheiro;
+      FIBDataSet25.FieldByName('PAGAR').AsFloat      := FormasPagamento.Cartao;
+      FIBDataSet25.FieldByName('DIFERENCA_').AsFloat := FormasPagamento.Prazo;
+      FIBDataSet25.FieldByName('VALOR01').AsFloat    := FormasPagamento.Extra1;
+      FIBDataSet25.FieldByName('VALOR02').AsFloat    := FormasPagamento.Extra2;
+      FIBDataSet25.FieldByName('VALOR03').AsFloat    := FormasPagamento.Extra3;
+      FIBDataSet25.FieldByName('VALOR04').AsFloat    := FormasPagamento.Extra4;
+      FIBDataSet25.FieldByName('VALOR05').AsFloat    := FormasPagamento.Extra5;
+      FIBDataSet25.FieldByName('VALOR06').AsFloat    := FormasPagamento.Extra6;
+      FIBDataSet25.FieldByName('VALOR07').AsFloat    := FormasPagamento.Extra7;
+      FIBDataSet25.FieldByName('VALOR08').AsFloat    := FormasPagamento.Extra8;
 
       AtualizaDadosTransacaoEletronica(FIBDataSet28.Transaction, FNumeroGerencial, sCaixaOld, sModeloOld, dtDataNovo, sNovoNumero, FCaixa, FModeloDocumento);
 
@@ -480,6 +608,11 @@ begin
   end;
   if FNumeroNF = '' then
     Result := False;
+
+  FreeAndNil(FormasPagamento);
+  FreeAndNil(IBQCONSULTA);
+  FreeAndNil(IBQTRANSACAOELETRONICA);
+
 end;
 
 procedure TImportaGerencial.SetNumeroGerencial(const Value: String);

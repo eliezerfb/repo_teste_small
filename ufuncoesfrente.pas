@@ -158,6 +158,41 @@ type
   end;
 
 type
+  TPagamentoPDV = class
+  private
+    FExtra4: Double;
+    FExtra7: Double;
+    FExtra6: Double;
+    FDinheiro: Double;
+    FCheque: Double;
+    FExtra5: Double;
+    FExtra1: Double;
+    FExtra2: Double;
+    FExtra8: Double;
+    FPrazo: Double;
+    FExtra3: Double;
+    FTotalReceber: Double;
+    FCartao: Double;
+    FTroco: Double;
+  public
+    property TotalReceber: Double read FTotalReceber write FTotalReceber;
+    property Cheque: Double read FCheque write FCheque;
+    property Dinheiro: Double read FDinheiro write FDinheiro;
+    property Cartao: Double read FCartao write FCartao;
+    property Prazo: Double read FPrazo write FPrazo;
+    property Extra1: Double read FExtra1 write FExtra1;
+    property Extra2: Double read FExtra2 write FExtra2;
+    property Extra3: Double read FExtra3 write FExtra3;
+    property Extra4: Double read FExtra4 write FExtra4;
+    property Extra5: Double read FExtra5 write FExtra5;
+    property Extra6: Double read FExtra6 write FExtra6;
+    property Extra7: Double read FExtra7 write FExtra7;
+    property Extra8: Double read FExtra8 write FExtra8;
+    property Troco: Double read FTroco write FTroco;
+    procedure Clear;
+  end;
+
+type
   TTipoEntrega = class(TComponent)
   private
     FDomicilio: Boolean;
@@ -2194,6 +2229,26 @@ begin
 
   end;
 
+end;
+
+{ TPagamentoPDV }
+
+procedure TPagamentoPDV.Clear;
+begin
+  FTotalReceber := 0.00;
+  FCartao       := 0.00;
+  FCheque       := 0.00;
+  FDinheiro     := 0.00;
+  FExtra1       := 0.00;
+  FExtra2       := 0.00;
+  FExtra3       := 0.00;
+  FExtra4       := 0.00;
+  FExtra7       := 0.00;
+  FExtra5       := 0.00;
+  FExtra6       := 0.00;
+  FExtra8       := 0.00;
+  FPrazo        := 0.00;
+  FTroco        := 0.00;
 end;
 
 end.

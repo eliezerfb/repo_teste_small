@@ -380,7 +380,7 @@ begin
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=
     'select N.NUMERONF as "Número", N.DATA as "Data" ' +
-    ', A.CLIFOR as "Cliente" ' +
+    ', coalesce(A.CLIFOR, '''') as "Cliente" ' +
     ', N.TOTAL as "Total" ' +
     ', max(coalesce(A.VALORICM, '''')) as "Doc. Fiscal" ' +
     'from NFCE N ' +
@@ -389,7 +389,7 @@ begin
     ' and N.MODELO = ''99'' ' +
     ' and N.STATUS = ''Finalizada'' ' +
     sCondicao +
-    'group by N.NUMERONF, N.DATA, A.CLIFOR, N.TOTAL ' +
+    'group by N.NUMERONF, N.DATA, coalesce(A.CLIFOR, ''''), N.TOTAL ' +
     'order by N.DATA desc, N.NUMERONF desc';
   IBQPESQUISA.Open;
 

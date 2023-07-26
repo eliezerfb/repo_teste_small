@@ -387,6 +387,10 @@ begin
       Form1.ibDataSet27.FieldByName('TOTAL').AsCurrency    := StrToFloat(FormatFloat('0.00',(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat * Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat))); // Sandro Silva 2019-09-18 ER 02.06 UnoChapeco Form1.ibDataSet27TOTAL.AsFloat      := Form1.ibDataSet27QUANTIDADE.AsFloat * Form1.ibDataSet27UNITARIO.AsFloat;
       Form1.ibDataSet27.FieldByName('CAIXA').AsString      := Form1.sCaixa;
       Form1.ibDataSet27.FieldByName('CLIFOR').AsString     := sCliforSelecionado;  // Sandro Silva 2016-09-29
+      {Sandro Silva 2023-07-26 inicio}
+      if Form1.ibDataSet27.FieldByName('CLIFOR').AsString = '' then
+        Form1.ibDataSet27.FieldByName('CLIFOR').Clear;
+      {Sandro Silva 2023-07-26 fim}
       Form1.ibDataSet27.FieldByName('CNPJ').AsString       := sCNPJSelecionado;    // Sandro Silva 2016-09-29
       Form1.ibDataSet27.FieldByName('VENDEDOR').AsString   := sVendedorSelecionado;// Sandro Silva 2016-09-29
       Form1.ibDataSet27.Post;
