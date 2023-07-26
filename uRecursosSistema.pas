@@ -72,7 +72,7 @@ type
     property Usuarios: Integer read FUsuarios write FUsuarios;
   public
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
   end;
   
 implementation
