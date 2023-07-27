@@ -58,7 +58,7 @@ uses
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
   _small_65 in '_small_65.pas',
   uFuncoesPOS in 'uFuncoesPOS.pas',
-  uImportaGerencial in 'uImportaGerencial.pas';
+  uConverteGerencialParaDocFiscal in 'uConverteGerencialParaDocFiscal.pas';
 
 {$R *.RES}
 

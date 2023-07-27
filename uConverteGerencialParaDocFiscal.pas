@@ -1,4 +1,4 @@
-unit uImportaGerencial;
+unit uConverteGerencialParaDocFiscal;
 
 interface
 
