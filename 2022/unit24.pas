@@ -2582,7 +2582,9 @@ begin
 
           cIndPres := Form7.ibQuery1.FieldByName('INDPRES').AsString;
         except end;
-      end;
+      end
+      else
+        cIndPres := Form7.ibDataSet24INDPRES.AsString;
 
       if cIndPres = '0' then
       begin
