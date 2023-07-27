@@ -2518,115 +2518,122 @@ begin
   if Form24.Tag = 1 then
   begin
     Form24.Tag := 0;
-
+    Edit7.OnChange := nil;
+    Edit8.OnChange := nil;
+    Edit9.OnChange := nil;
     try
-      if Form7.ibDataSet24FINNFE.AsString = '1' then
-      begin
-        Edit7.Text := '1-Normal';
-      end else
-      begin
-        if Form7.ibDataSet24FINNFE.AsString = '2' then
+      try
+        if Form7.ibDataSet24FINNFE.AsString = '1' then
         begin
-          Edit7.Text := '2-Complementar';
-          //Form12.SMALL_DBEdit16.ReadOnly := False;
-          edtTotalNota.ReadOnly := False;
+          Edit7.Text := '1-Normal';
         end else
         begin
-          if Form7.ibDataSet24FINNFE.AsString = '3' then
+          if Form7.ibDataSet24FINNFE.AsString = '2' then
           begin
-            Edit7.Text := '3-de Ajuste';
+            Edit7.Text := '2-Complementar';
+            //Form12.SMALL_DBEdit16.ReadOnly := False;
+            edtTotalNota.ReadOnly := False;
           end else
           begin
-            if Form7.ibDataSet24FINNFE.AsString = '4' then
+            if Form7.ibDataSet24FINNFE.AsString = '3' then
             begin
-              Edit7.Text := '4-Devolução de mercadoria';
+              Edit7.Text := '3-de Ajuste';
             end else
             begin
-              Edit7.Text := '1-Normal';
+              if Form7.ibDataSet24FINNFE.AsString = '4' then
+              begin
+                Edit7.Text := '4-Devolução de mercadoria';
+              end else
+              begin
+                Edit7.Text := '1-Normal';
+              end;
             end;
           end;
         end;
+      except
       end;
-    except
-    end;
 
-    // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final
-    try
-      if Form7.ibDataSet24INDFINAL.AsString = '1' then
-      begin
-        Edit8.Text := '1-Consumidor Final';
-      end else
-      begin
-        Edit8.Text := '0-Normal';
-      end;
-    except
-    end;
-
-    // Indicador de presença do comprador no estabelecimento comercial no momento da operação:
-    //  0=Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste)
-    //  1=Operação presencial
-    //  2=Operação não presencial, pela Internet
-    //  3=Operação não presencial, Teleatendimento
-    //  4=NFC-e em operação com entrega em domicílio
-    //  9=Operação não presencial, outros.
-    try
-      cIndPres := '1';
-      
-      if AllTrim(Form7.ibDataSet24INDPRES.AsString) = '' then
-      begin
-        try
-          Form7.ibQuery1.Close;
-          Form7.ibQuery1.SQL.Clear;
-          Form7.ibQuery1.SQL.Add('select first 1 INDPRES from VENDAS where coalesce(INDPRES,''X'')<>''X'' order by NUMERONF desc');
-          Form7.ibQuery1.Open;
-
-          cIndPres := Form7.ibQuery1.FieldByName('INDPRES').AsString;
-        except end;
-      end
-      else
-        cIndPres := Form7.ibDataSet24INDPRES.AsString;
-
-      if cIndPres = '0' then
-      begin
-        Edit9.Text := '0=Não se aplica';
-      end else
-      begin
-        if cIndPres = '1' then
+      // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final
+      try
+        if Form7.ibDataSet24INDFINAL.AsString = '1' then
         begin
-          Edit9.Text := '1=Operação presencial';
+          Edit8.Text := '1-Consumidor Final';
         end else
         begin
-          if cIndPres = '2' then
+          Edit8.Text := '0-Normal';
+        end;
+      except
+      end;
+
+      // Indicador de presença do comprador no estabelecimento comercial no momento da operação:
+      //  0=Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste)
+      //  1=Operação presencial
+      //  2=Operação não presencial, pela Internet
+      //  3=Operação não presencial, Teleatendimento
+      //  4=NFC-e em operação com entrega em domicílio
+      //  9=Operação não presencial, outros.
+      try
+        cIndPres := '1';
+
+        if AllTrim(Form7.ibDataSet24INDPRES.AsString) = '' then
+        begin
+          try
+            Form7.ibQuery1.Close;
+            Form7.ibQuery1.SQL.Clear;
+            Form7.ibQuery1.SQL.Add('select first 1 INDPRES from VENDAS where coalesce(INDPRES,''X'')<>''X'' order by NUMERONF desc');
+            Form7.ibQuery1.Open;
+
+            cIndPres := Form7.ibQuery1.FieldByName('INDPRES').AsString;
+          except end;
+        end
+        else
+          cIndPres := Form7.ibDataSet24INDPRES.AsString;
+
+        if cIndPres = '0' then
+        begin
+          Edit9.Text := '0=Não se aplica';
+        end else
+        begin
+          if cIndPres = '1' then
           begin
-            Edit9.Text := '2=Operação não presencial, pela Internet';
+            Edit9.Text := '1=Operação presencial';
           end else
           begin
-            if cIndPres = '3' then
+            if cIndPres = '2' then
             begin
-              Edit9.Text := '3=Operação não presencial, Teleatendimento';
+              Edit9.Text := '2=Operação não presencial, pela Internet';
             end else
             begin
-              if cIndPres = '4' then
+              if cIndPres = '3' then
               begin
-                Edit9.Text := '4=NFC-e em operação com entrega em domicílio';
+                Edit9.Text := '3=Operação não presencial, Teleatendimento';
               end else
               begin
-                if cIndPres = '9' then
+                if cIndPres = '4' then
                 begin
-                  Edit9.Text := '9=Operação não presencial, outros';
+                  Edit9.Text := '4=NFC-e em operação com entrega em domicílio';
                 end else
                 begin
-                  //
-                  Edit9.Text := '1=Operação presencial';
-                  //
+                  if cIndPres = '9' then
+                  begin
+                    Edit9.Text := '9=Operação não presencial, outros';
+                  end else
+                  begin
+                    //
+                    Edit9.Text := '1=Operação presencial';
+                    //
+                  end;
                 end;
               end;
             end;
           end;
         end;
-      end;
-    except end;
-
+      except end;
+    finally
+      Edit7.OnChange := Edit7Change;
+      Edit8.OnChange := Edit8Change;
+      Edit9.OnChange := Edit9Change;
+    end;
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
     Form7.ibDataSet14.SelectSQL.Clear;
