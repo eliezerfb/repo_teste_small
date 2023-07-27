@@ -5,9 +5,8 @@ unit uAtualizaBancoDados;
 interface
 
 uses
-  Mais
-  , SysUtils
-  , StrUtils
+  Mais,
+  SysUtils
   , Classes
   , Forms
   , Controls
@@ -25,7 +24,7 @@ uses
 
 implementation
 
-uses Unit22, Unit13, uFuncoesBancoDados, uFuncoesRetaguarda;
+uses Unit22, Unit13, uFuncoesBancoDados;
 
 procedure DropViewProcedure;
 begin
@@ -772,10 +771,9 @@ begin
 
     if ExecutaComando('create generator G_NUMERONFCE ') then
       ExecutaComando('set generator G_NUMERONFCE to 0 ');
-
+      
     ExecutaComando('commit');
   end;
-
 
   {Sandro Silva 2023-07-17 inicio}
   if ExecutaComando(
@@ -795,8 +793,7 @@ begin
   end;
 
   {Sandro Silva 2023-07-17 fim}
-
-
+  
   {Sandro Silva 2023-07-03 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'CAIXA') = False then
   begin
@@ -834,45 +831,7 @@ begin
 
   end;
   {Sandro Silva 2023-07-03 fim}
-
-  {Sandro Silva 2023-07-27 inicio}
-  // Ficha 4302
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'TOTAL') = False then
-  begin
-
-    ExecutaComando('ALTER TABLE NFCE ADD TOTAL NUMERIC(18,2)');
-    ExecutaComando('commit');    
-
-    try
-      Form1.ibDataset200.Close;
-      Form1.ibDataset200.SelectSQL.Text :=
-        'select * ' +
-        'from NFCE ' +
-        'where STATUS containing ''AUTORIZA'' or STATUS containing ''Emitido com sucesso'' ';
-      Form1.ibDataset200.Open;
-
-      while Form1.ibDataset200.Eof = False do
-      begin
-
-        Form1.ibDataset200.Edit;
-        if xmlNodeValue(Form1.ibDataset200.FieldByName('NFEXML').AsString, '//mod') = '59' then
-          Form1.ibDataset200.FieldByName('TOTAL').AsFloat := xmlNodeValueToFloat(Form1.ibDataset200.FieldByName('NFEXML').AsString, '//vCFe');
-        if xmlNodeValue(Form1.ibDataset200.FieldByName('NFEXML').AsString, '//mod') = '65' then
-          Form1.ibDataset200.FieldByName('TOTAL').AsFloat := xmlNodeValueToFloat(Form1.ibDataset200.FieldByName('NFEXML').AsString, '//vNF');
-        Form1.ibDataset200.Post;
-
-        Form1.ibDataset200.Next;
-      end;
-
-      ExecutaComando('commit');
-    except
-
-    end;
-  end;
-
-  {Sandro Silva 2023-07-27 fim}
-
-
+    
   // VENDAS FINALIDADE
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'FINNFE') = False then
     ExecutaComando('alter table VENDAS add FINNFE varchar(1)');
@@ -1153,288 +1112,6 @@ begin
     ExecutaComando('alter table PAGAMENT add CDC varchar(6)'); // Número de conprovante de debito e credito
 
   ExecutaComando('commit');
-
-  {Sandro Silva 2023-07-17 inicio}
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'IDPAGAMENTO') then
-  begin
-    // Criando o campo
-    if ExecutaComando('ALTER TABLE PAGAMENT DROP IDPAGAMENTO') then
-      ExecutaComando('commit');
-  end;
-
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'IDRESPOSTAFISCAL') then
-  begin
-    // Criando o campo
-    if ExecutaComando('ALTER TABLE PAGAMENT DROP IDRESPOSTAFISCAL') then
-      ExecutaComando('commit');
-
-      // Elimina os dados de transações diferentes a cartão usadas com integrador fiscal
-    if ExecutaComando(
-      'delete from VFPE ' +
-      'where substring(FORMA from 1 for 2) <> ''03'' ') then
-      ExecutaComando('commit');
-  end;
-
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE') = False then
-  begin
-    // Tabela para usar com integrador fiscal do Ceará
-    if ExecutaComando(
-        'CREATE TABLE VFPE (' +
-        'REGISTRO VARCHAR(10) NOT NULL, ' +
-        'DATA DATE, ' +
-        'PEDIDO VARCHAR(6), ' +
-        'CAIXA VARCHAR(3), ' +
-        'FORMA VARCHAR(30), ' +
-        'VALOR NUMERIC(18,2), ' +
-        'IDPAGAMENTO INTEGER, ' +
-        'IDRESPOSTAFISCAL INTEGER, ' +
-        'TRANSMITIDO VARCHAR(1))') then
-      ExecutaComando('commit');
-
-    // Chave primária
-    if ExecutaComando('ALTER TABLE VFPE ADD CONSTRAINT PK_VFPE PRIMARY KEY (REGISTRO)') then
-      ExecutaComando('commit');
-
-    // Generator
-    if ExecutaComando('CREATE SEQUENCE G_VFPE') then
-      ExecutaComando('commit');
-
-  end;
-
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE') then
-  begin
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'TRANSACAO') = False then
-    begin
-      if ExecutaComando('ALTER TABLE VFPE ADD TRANSACAO VARCHAR(20) ') then
-        ExecutaComando('commit');
-    end;
-
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'NOMEREDE') = False then
-    begin
-      if ExecutaComando('ALTER TABLE VFPE ADD NOMEREDE VARCHAR(30)') then
-        ExecutaComando('commit');
-    end;
-
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'IDPAGAMENTO') then
-    begin
-      if TamanhoCampo(Form1.ibDataSet200.Transaction, 'VFPE', 'IDPAGAMENTO') < 11 then
-      begin
-        if ExecutaComando('ALTER TABLE VFPE ALTER IDPAGAMENTO TYPE VARCHAR(11)') then
-          ExecutaComando('commit');
-      end;
-    end;
-
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'IDRESPOSTAFISCAL') then
-    begin
-      if TamanhoCampo(Form1.ibDataSet200.Transaction, 'VFPE', 'IDRESPOSTAFISCAL') < 11 then
-      begin
-        if ExecutaComando('ALTER TABLE VFPE ALTER IDRESPOSTAFISCAL TYPE VARCHAR(11)') then
-          ExecutaComando('commit');
-      end;
-    end;
-
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'AUTORIZACAO') = False then
-    begin
-      if ExecutaComando('ALTER TABLE VFPE ADD AUTORIZACAO VARCHAR(20)') then
-        ExecutaComando('commit');
-    end;
-
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'BANDEIRA') = False then
-    begin
-      if ExecutaComando('ALTER TABLE VFPE ADD BANDEIRA VARCHAR(30)') then
-        ExecutaComando('commit');
-    end;
-
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'IDPAGAMENTO') then
-    begin // Aumentar tamanho campo
-      if TamanhoCampo(Form1.ibDataSet200.Transaction, 'VFPE', 'IDPAGAMENTO') < 15 then
-      begin
-        if ExecutaComando('ALTER TABLE VFPE ALTER IDPAGAMENTO TYPE VARCHAR(15) CHARACTER SET NONE') then
-          ExecutaComando('commit');
-      end;
-    end;
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VFPE', 'IDRESPOSTAFISCAL') then
-    begin // Aumentar tamanho campo
-      if TamanhoCampo(Form1.ibDataSet200.Transaction, 'VFPE', 'IDRESPOSTAFISCAL') < 15 then
-      begin
-        if ExecutaComando('ALTER TABLE VFPE ALTER IDRESPOSTAFISCAL TYPE VARCHAR(15) CHARACTER SET NONE') then
-          ExecutaComando('commit');
-      end;
-    end;
-  end;
-
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DEMAIS', 'CCF') = False then
-  begin
-    if ExecutaComando('ALTER TABLE DEMAIS ADD CCF VARCHAR(6)') then
-      ExecutaComando('commit');
-  end;
-
-  //Índices para otimizar banco
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DEMAIS', 'IDX_DEMAIS_DATA') = False then
-  begin
-    if ExecutaComando('CREATE INDEX IDX_DEMAIS_DATA ON DEMAIS (DATA)') then
-      ExecutaComando('commit');
-  end;
-
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DEMAIS', 'IDX_DEMAIS_ECFCOO') = False then
-  begin
-    if ExecutaComando('CREATE INDEX IDX_DEMAIS_ECFCOO ON DEMAIS (ECF,COO)') then
-      ExecutaComando('commit');
-  end;
-
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'SEQUENCIALCONTACLIENTEOS') = False then
-  begin
-    if ExecutaComando('ALTER TABLE ALTERACA ADD SEQUENCIALCONTACLIENTEOS VARCHAR(10)') then
-      ExecutaComando('commit');
-
-    // Generator
-    if ExecutaComando('CREATE SEQUENCE G_SEQUENCIALCONTACLIENTEOS') then
-      ExecutaComando('commit');
-  end
-  else
-  begin
-    try
-      Form1.ibDataSet200.Close;
-      Form1.ibDataSet200.SelectSQL.Text :=
-        'select PEDIDO, max(SEQUENCIALCONTACLIENTEOS) as SEQUENCIALCONTACLIENTEOS from ALTERACA where (TIPO = ''MESA'' or TIPO = ''DEKOL'') group by PEDIDO ';
-      Form1.ibDataSet200.Open;
-
-      while Form1.ibDataSet200.Eof = False do
-      begin
-        if Form1.ibDataSet200.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString = '' then
-        begin
-          try
-            ExecutaComando(
-              'update ALTERACA set ' +
-              'SEQUENCIALCONTACLIENTEOS = ' + QuotedStr(Right(DupeString('0', 10) + IncGenerator(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_SEQUENCIALCONTACLIENTEOS', 1), 10)) +
-              ' where (TIPO = ''MESA'' or TIPO = ''DEKOL'') ' +
-              ' and PEDIDO = ' + QuotedStr(Form1.ibDataSet200.FieldByName('PEDIDO').AsString));
-          except
-          end;
-        end;
-        Form1.ibDataSet200.Next;
-      end;
-
-    except
-    end;
-
-  end;
-
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAOS', 'IDENTIFICADOR1') then
-  begin // Aumentar o tamanho dos campos identificadores para uso na NFC-e e SAT
-    try
-      // Não usei a função TamanhoCampo() porque CONTAOS não tem campo REGISTRO
-      if TamanhoCampo(Form1.ibDataSet200.Transaction, 'CONTAOS', 'IDENTIFICADOR1') = 15 then
-      begin
-        if ExecutaComando(
-          'ALTER TABLE CONTAOS ' +
-          'ALTER IDENTIFICADOR1 TYPE VARCHAR(40) CHARACTER SET NONE, ' +
-          'ALTER IDENTIFICADOR2 TYPE VARCHAR(40) CHARACTER SET NONE, ' +
-          'ALTER IDENTIFICADOR3 TYPE VARCHAR(40) CHARACTER SET NONE, ' +
-          'ALTER IDENTIFICADOR4 TYPE VARCHAR(40) CHARACTER SET NONE, ' +
-          'ALTER IDENTIFICADOR5 TYPE VARCHAR(40) CHARACTER SET NONE ') then
-          ExecutaComando('commit');
-      end;
-    except
-
-    end;
-  end;
-
-  // Para poder controlar sangria e suprimento quando atende após meia-noite
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'HORA') = False then
-  begin
-    if ExecutaComando('ALTER TABLE PAGAMENT ADD HORA VARCHAR(8)') then
-      ExecutaComando('commit');
-  end;
-
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PENDENCIA') = False then
-  begin
-    // Tabela para controlar as alterações que o frente não consegue realizar na tabela ALTERACA por DEAD LOCK com transações do Small
-    // Identificado quando é realizado cancelamento de venda
-    if ExecutaComando(
-      'CREATE TABLE PENDENCIA ( ' +
-      'CAIXA VARCHAR(3), ' +
-      'PEDIDO VARCHAR(9), ' +
-      'ITEM VARCHAR(6), ' +
-      'TIPO VARCHAR(6))') then
-      ExecutaComando('commit');
-  end;
-
-  //indices otimizar consultas relacionada ao bloco x e abertura cupom
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'IDX_REDUCOES_SERIE') = False then
-  begin
-    if ExecutaComando('CREATE INDEX IDX_REDUCOES_SERIE ON REDUCOES (SERIE)') then
-      ExecutaComando('commit');
-  end;
-
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BLOCOX', 'IDX_BLOCOX_TIPO_RECIBO_SERIE') = False then
-  begin
-    if ExecutaComando('CREATE INDEX IDX_BLOCOX_TIPO_RECIBO_SERIE ON BLOCOX (TIPO, RECIBO, SERIE)') then
-      ExecutaComando('commit');
-  end;
-
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'NFEIDSUBSTITUTO') = False then
-  begin
-    if ExecutaComando('ALTER TABLE NFCE ADD NFEIDSUBSTITUTO VARCHAR(44)') then
-      ExecutaComando('commit');
-  end;
-
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'IDX_REDUCOES_CUPOMF') = False then
-  begin
-    if ExecutaComando('CREATE INDEX IDX_REDUCOES_CUPOMF ON REDUCOES (CUPOMF)') then
-      ExecutaComando('commit');
-  end;
-
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'IDX_REDUCOES_PDV_SMALL') = False then
-  begin
-    if ExecutaComando('CREATE INDEX IDX_REDUCOES_PDV_SMALL ON REDUCOES (PDV, SMALL)') then
-      ExecutaComando('commit');
-  end;
-
-  // Generator para vendas do MEI no frente
-  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,'G_NUMEROCUPOMMEI') = False then
-  begin
-    if ExecutaComando('CREATE SEQUENCE G_NUMEROCUPOMMEI') then
-      ExecutaComando('commit');
-  end;
-
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE') then
-  begin
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'ENCRYPTHASH') = False then
-    begin
-
-      // Controle de evidência do PAF-NFC-e J1 e J2
-      if ExecutaComando('ALTER TABLE NFCE ADD ENCRYPTHASH VARCHAR(56)') then
-        ExecutaComando('commit');
-
-      if ExecutaComando('CREATE SEQUENCE G_HASH_NFCE') then
-        ExecutaComando('commit');
-
-    end;
-
-  end;
-
-  // Generator para série da NFC-e
-  if GeneratorExisteFB(Form1.ibdataset200.Transaction.DefaultDatabase, 'G_SERIENFCE') = False then
-  begin
-    if ExecutaComando('CREATE SEQUENCE G_SERIENFCE') then
-      ExecutaComando('commit');
-
-    if ExecutaComando('ALTER SEQUENCE G_SERIENFCE RESTART WITH 1') then
-      ExecutaComando('commit');
-  end;
-
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA') then
-  begin
-    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'MARKETPLACE') = False then
-    begin
-      // Controle de evidência do PAF-NFC-e J1 e J2
-      if ExecutaComando('ALTER TABLE ALTERACA ADD MARKETPLACE VARCHAR(60)') then
-        ExecutaComando('commit');
-    end;
-  end;
-
-  {Sandro Silva 2023-07-17 fim}
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'CRT') = False then
     ExecutaComando('alter table EMITENTE add CRT varchar(1)');
@@ -1956,12 +1633,6 @@ begin
       ExecutaComando('Commit');
   end;
 
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE', 'GERENCIAL') = False then
-  begin
-    if ExecutaComando('alter table NFCE add GERENCIAL varchar(9)') then
-      ExecutaComando('Commit');
-  end;
-  
 {Sandro Silva 2023-06-22 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'AUTORIZACAOTRANSACAO') = False then
   begin
@@ -2103,34 +1774,6 @@ begin
   {Mauricio Parizotto 2023-07-18 fim}
 
 
-  {Sandro Silva 2023-07-27 inicio}
-  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'TRANSACAOELETRONICA') = False then
-  begin
-
-    ExecutaComando('CREATE SEQUENCE G_GNF');
-
-    ExecutaComando('CREATE SEQUENCE G_TRANSACAOELETRONICA');
-
-    ExecutaComando(
-      'CREATE TABLE TRANSACAOELETRONICA ( ' +
-      'REGISTRO          VARCHAR(10) NOT NULL, ' +
-      'DATA              DATE, ' +
-      'PEDIDO            VARCHAR(6), ' +
-      'CAIXA             VARCHAR(3), ' +
-      'FORMA             VARCHAR(30), ' +
-      'VALOR             NUMERIC(18,2), ' +
-      'TRANSACAO         VARCHAR(20), ' +
-      'NOMEREDE          VARCHAR(30), ' +
-      'AUTORIZACAO       VARCHAR(20), ' +
-      'BANDEIRA          VARCHAR(30), ' +
-      'MODELO            VARCHAR(2), ' +
-      'GNF               VARCHAR(9) ' +
-      ')'
-    );
-    ExecutaComando('ALTER TABLE TRANSACAOELETRONICA ADD CONSTRAINT PK_TRANSACAOELETRONICA PRIMARY KEY (REGISTRO)');
-    ExecutaComando('Commit');
-  end;
-  {Sandro Silva 2023-07-27 fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
