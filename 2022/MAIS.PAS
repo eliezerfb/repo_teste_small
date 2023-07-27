@@ -12237,13 +12237,13 @@ begin
     vBody := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
     vBody := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
 
-	//Mauricio Parizotto 2023-05-29
+	  //Mauricio Parizotto 2023-05-29
     if AnsiContainsText(vBody,'Serial') then
     begin	
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
       ExecutaComando('Commit;');
-	end;
+	  end;
   except
   end;
 end;

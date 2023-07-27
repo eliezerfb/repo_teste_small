@@ -537,7 +537,6 @@ end;
 
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
 begin
-  //
   // Apaga lançamento anterior no livro caixa
   //
   Form7.ibDataSet100.Close;
@@ -546,60 +545,39 @@ begin
   Form7.IBDataSet100.Open;
   //
   Result := True;
-  //
 end;
 
 function Retributa(pP1:Boolean):Boolean;
 var
   sReg16 : String;
 begin
-  //
   Form7.sModulo := 'RETRIBUTA';
-  //
+
   try
-    //
-{
-    Form7.ibQuery1.Close;
-    Form7.ibQuery1.SQL.Clear;
-    Form7.ibQuery1.SQL.Add('select sum(TOTAL) from ITENS001 where NUMERONF='+QuotedStr(Form7.IbDAtaSet15NUMERONF.AsString)+' ');
-    Form7.ibQuery1.Open;
-    //
-    if Form7.IBQuery1.FieldByName('SUM').AsFloat <> Form7.IbDAtaSet15MERCADORIA.AsFloat then
-    //
-    // Desempenho nota
-    //
-}
     begin
-      //
       sReg16 := Form7.ibDataSet16REGISTRO.AsString;
       Form7.ibDataSet16.DisableControls;
-      //
+
       if Form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
-      //
+
       Form7.ibDataSet16.First;
       while not Form7.ibDataSet16.EOF do // Disable
       begin
-        //
         Form1.bFlag := True;
         Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
         Form7.ibDataSet16.Next;
-        //
       end;
-      //
+
       Form7.ibDataSet16.Locate('REGISTRO',sReg16,[]);
-      //
     end;
-    //
   except end;
-  //
+
   Form7.ibDataSet16.Edit;
-  //
+
   // não voltar Form7.ibDataSet16.EnableControls;  // Retributa
-  //
+
   Form7.sModulo := 'VENDA';
-  //
   Result := True;
-  //
 end;
 
 {$R *.DFM}
@@ -1906,6 +1884,9 @@ begin
   Form1.ConfEspecie := Form7.ibDataSet15ESPECIE.AsString;
   Form1.ConfMarca   := Form7.ibDataSet15MARCA.AsString;
 
+  //Mauricio Parizotto 2023-07-26  Tem que ter duas vezes para funcionar (motivo desconhecido...)
+  Form7.ibDataSet16.EnableControls;
+  Form7.ibDataSet16.EnableControls;
 end;
 
 
@@ -2161,6 +2142,9 @@ begin
 
   Com importação do gerencial, essa validação vai ficar em outro local }
 
+  //Mauricio Parizotto 2023-07-26
+  Form7.ibDataSet16.EnableControls;
+
   Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
 
   Form7.sModulo := 'BALCAO';
@@ -2177,6 +2161,9 @@ begin
   Retributa(True);
 
   {Mauricio Parizotto 2023-07-19 Fim}
+
+  //Mauricio Parizotto 2023-07-26
+  Form7.ibDataSet16.EnableControls;
 end;
 
 procedure TForm12.Importaroramentos1Click(Sender: TObject);

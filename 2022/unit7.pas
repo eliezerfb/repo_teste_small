@@ -6799,12 +6799,11 @@ begin
     //
     I := 0;
     //
-//    Form7.ibDataSet16.DisableControls;
+
     while (not Form7.ibDataSet16.Eof) do // Disable
     begin
       if (Form7.ibDataSet16DESCRICAO.AsString <> '') and (Form7.ibDataSet16QUANTIDADE.AsFloat > 0) then
       begin
-        //
         Form7.ibDataSet4.Close;                                                //
         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
@@ -7320,11 +7319,9 @@ function TotalizaOS(sP1: Boolean):Boolean;
 var
   MyBookMark, MyBookMark1 : TBookMark;
 begin
-  //
   Form7.ibDataSet3.Edit;
-  //
+
   // Produtos
-  //
   MyBookMark := Form7.ibDataSet16.GetBookMark();
   Form7.ibDataSet16.DisableControls;
   Form7.ibDataSet16.First;
@@ -7336,7 +7333,8 @@ begin
   end;
   //
   Form7.ibDataSet16.GotoBookmark(MyBookMark);
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet16.Edit;
   //
   // Servicos

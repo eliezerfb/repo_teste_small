@@ -195,6 +195,9 @@ begin
 
   Retributa(True);
   Form41.Close;
+
+  //Mauricio Parizotto 2023-07-26
+  Form7.ibDataSet16.EnableControls;
 end;
 
 
