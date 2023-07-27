@@ -1744,7 +1744,7 @@ uses
   , upafnfce // Sandro Silva 2022-09-23
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
-  , uValidaRecursosDelphi7, uFuncoesPOS, uImportaGerencial;
+  , uValidaRecursosDelphi7, uFuncoesPOS, uConverteGerencialParaDocFiscal;
 
 {$R *.DFM}
 
@@ -33759,7 +33759,7 @@ end;
 
 function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String): Boolean;
 var
-  Importar: TConverteGerencialParaDocFiscal;
+  ConverteGerencial: TConverteGerencialParaDocFiscal;
 begin
   Result := False;
   if PDV_CupomAberto then
@@ -33773,48 +33773,48 @@ begin
 
   Form1.sStatusECF := 'Gerando ' + Form1.sTipoDocumento2;
   // Importa gerencial para nfc-e
-  Importar := TConverteGerencialParaDocFiscal.Create;
+  ConverteGerencial := TConverteGerencialParaDocFiscal.Create;
   try
-    Importar.Caixa             := Form1.sCaixa;
-    Importar.ModeloDocumento   := Form1.sModeloECF;
-    Importar.IBTransaction     := Form1.ibDataSet27.Transaction;
-    Importar.IBDataSet27       := Form1.IBDataSet27;
-    Importar.IBDataSet30       := Form1.IBDataSet30;
-    Importar.IBDataset150      := Form1.IBDataSet150;
-    Importar.IBDataSet7        := Form1.IBDataSet7;
-    Importar.IBDataSet28       := Form1.IBDataSet28;
-    Importar.IBDataSet25       := Form1.ibDataSet25;
-    Importar.TransacoesCartao  := Form1.TransacoesCartao;
-    Importar.NomeDoTEF         := Form10.sNomeDoTEF;
-    Importar.DebitoOuCredito   := Form1.sDebitoOuCredito;
-    Importar.sConveniado       := Form1.sConveniado;
-    Importar.sVendedor         := Form1.sVendedor;
-    //Importar.DescontoNoTotal   := Form1.fDescontoNoTotal;
-    //Importar.ValorTotalTEFPago := Form1.fTEFPago;
-    Importar.NumeroGerencial   := sNumeroGerencial;
+    ConverteGerencial.Caixa             := Form1.sCaixa;
+    ConverteGerencial.ModeloDocumento   := Form1.sModeloECF;
+    ConverteGerencial.IBTransaction     := Form1.ibDataSet27.Transaction;
+    ConverteGerencial.IBDataSet27       := Form1.IBDataSet27;
+    ConverteGerencial.IBDataSet30       := Form1.IBDataSet30;
+    ConverteGerencial.IBDataset150      := Form1.IBDataSet150;
+    ConverteGerencial.IBDataSet7        := Form1.IBDataSet7;
+    ConverteGerencial.IBDataSet28       := Form1.IBDataSet28;
+    ConverteGerencial.IBDataSet25       := Form1.ibDataSet25;
+    ConverteGerencial.TransacoesCartao  := Form1.TransacoesCartao;
+    ConverteGerencial.NomeDoTEF         := Form10.sNomeDoTEF;
+    ConverteGerencial.DebitoOuCredito   := Form1.sDebitoOuCredito;
+    ConverteGerencial.sConveniado       := Form1.sConveniado;
+    ConverteGerencial.sVendedor         := Form1.sVendedor;
+    //ConverteGerencial.DescontoNoTotal   := Form1.fDescontoNoTotal;
+    //ConverteGerencial.ValorTotalTEFPago := Form1.fTEFPago;
+    ConverteGerencial.NumeroGerencial   := sNumeroGerencial;
 
     Commitatudo(True);
     if TestaTudo(True) then // Form1.PDV_ImportaGerencial(
     begin
 
-      if Importar.Importar then
+      if ConverteGerencial.Importar then
       begin
         try
-          Form1.icupom := StrToInt(Importar.NumeroNF);
+          Form1.icupom := StrToInt(ConverteGerencial.NumeroNF);
 
           Form2.Edit10.Text := '';
-          if LimpaNumero(Importar.DadosCliente.CNPJCPF) = '' then
+          if LimpaNumero(ConverteGerencial.DadosCliente.CNPJCPF) = '' then
             Form2.Edit2.Text  := ''
           else
-            Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
-          Form2.Edit8.Text  := Importar.DadosCliente.Nome;
+            Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(ConverteGerencial.DadosCliente.CNPJCPF));
+          Form2.Edit8.Text  := ConverteGerencial.DadosCliente.Nome;
 
-          Form10.sNomeDoTEF      := Importar.NomeDoTEF;
-          Form1.sDebitoOuCredito := Importar.DebitoOuCredito;
-          Form1.sConveniado      := Importar.sConveniado;
-          Form1.sVendedor        := Importar.sVendedor;
-          Form1.fDescontoNoTotal := Importar.DescontoNoTotal;
-          Form1.fTEFPago         := Importar.ValorTotalTEFPago;
+          Form10.sNomeDoTEF      := ConverteGerencial.NomeDoTEF;
+          Form1.sDebitoOuCredito := ConverteGerencial.DebitoOuCredito;
+          Form1.sConveniado      := ConverteGerencial.sConveniado;
+          Form1.sVendedor        := ConverteGerencial.sVendedor;
+          Form1.fDescontoNoTotal := ConverteGerencial.DescontoNoTotal;
+          Form1.fTEFPago         := ConverteGerencial.ValorTotalTEFPago;
 
           if Form1.sModeloECF = '59' then
             _ecf59_FinalizaVendaSAT;
@@ -33864,7 +33864,7 @@ begin
       end;
     end
   finally
-    FreeAndNil(Importar);
+    FreeAndNil(ConverteGerencial);
     Form1.TransacoesCartao.Transacoes.Clear;
     Form10.sNomeDoTEF      := '';
     Form1.sDebitoOuCredito := '';

@@ -814,6 +814,7 @@ begin
     }
 
     {Sandro Silva 2018-12-05 inicio}
+    {Sandro Silva 2023-07-27 inicio 
     // Ficha 4302
     if CampoExisteFB(IBDATABASE, 'NFCE', 'TOTAL') = False then
     begin
@@ -854,6 +855,7 @@ begin
 
       end;
     end;
+    }
     {Sandro Silva 2018-12-05 fim}
 
     {Sandro Silva 2023-07-17 inicio
