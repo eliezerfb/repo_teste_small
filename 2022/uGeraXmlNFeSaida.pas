@@ -3460,7 +3460,7 @@ begin
           begin
             Form7.spdNFeDataSets.Campo('pMVAST_N19').Value      := '0'; // Percentual de margem de valor adicionado do ICMS ST
 
-            if Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '1' then
+            if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value = '1') and (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) then
             begin
               Form7.spdNFeDataSets.campo('pRedBCEfet_N34').Value      := FormatFloatXML(100-Form7.ibDataSet14BASE.AsFloat);// Percentual de redução da base de cálculo efetiva
               Form7.spdNFeDataSets.campo('vBCEfet_N35').Value         := FormatFloatXML(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100));  // Valor da base de cálculo efetiva
