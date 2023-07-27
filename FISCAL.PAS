@@ -2837,7 +2837,8 @@ begin
       begin
         // Tem caixa configurado no FRENTE.INI
 
-        if (sModeloDocumento = '65') or ((sModeloDocumento <> '65') and (sNumeroSerie <> '')) then // Sandro Silva 2017-03-03
+        // Sandro Silva 2023-07-27 if (sModeloDocumento = '65') or ((sModeloDocumento <> '65') and (sNumeroSerie <> '')) then // Sandro Silva 2017-03-03
+        if (sModeloDocumento = '65') or (sModeloDocumento = '99') or ((sModeloDocumento <> '65') and (sNumeroSerie <> '')) then // Sandro Silva 2017-03-03
         begin
           // Procura a identificação do caixa em REDUCOES
           IBQCAIXA.Close;
@@ -7914,8 +7915,10 @@ begin
      ) and (MEI) then // Sandro Silva 2021-03-19 ) and (AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe')) then
      sSerial := '';
   }
+  {Sandro Silva 2023-07-27 inicio
   if (LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Licenca', 'MEI', '') <> 'SIM') and (Gerencial) then
      sSerial := '';
+  }
   {Sandro Silva 2021-12-29 fim}
 
   {Sandro Silva 2023-06-23 inicio

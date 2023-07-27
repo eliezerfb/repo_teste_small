@@ -873,7 +873,7 @@ end;
 // -------------------------------- //
 function _ecf99_VersodoFirmware(pP1: Boolean): String;
 begin
-  Result := 'MEI';
+  Result := '000000';
 end;
 
 // -------------------------------- //
@@ -881,7 +881,8 @@ end;
 // -------------------------------- //
 function _ecf99_NmerodeSrie(pP1: Boolean): String;
 begin
-  Result := 'MEI00000000000';
+  // Sandro Silva 2023-07-27 Result := 'MEI00000000000';
+  Result := '99' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18);
 end;
 
 // -------------------------------- //
