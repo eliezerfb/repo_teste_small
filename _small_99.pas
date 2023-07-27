@@ -14,10 +14,6 @@ uses
   , Printers
   ;
 
-const VENDA_MEI_ABERTA     = 'Aberta';
-const VENDA_MEI_FINALIZADA = 'Finalizada';
-const VENDA_MEI_CANCELADA  = 'Cancelada';
-
 type
   TMobile = class(TComponent)
   private
@@ -559,7 +555,7 @@ begin
     Form1.ibDataset150.Open;
 
     Form1.ibDataset150.Edit;
-    Form1.ibDataset150.FieldByName('STATUS').AsString := VENDA_MEI_FINALIZADA; // Fecha venda
+    Form1.ibDataset150.FieldByName('STATUS').AsString := VENDA_GERENCIAL_FINALIZADA; // Fecha venda
     Form1.ibDataset150.FieldByName('DATA').AsDateTime := dtEnvio;
     Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total;
     Form1.ibDataset150.Post;
@@ -646,11 +642,11 @@ begin
     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
     begin
       //
-      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_CANCELADA then
+      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_CANCELADA then
       begin
         try
           Form1.ibDataSet150.Edit;
-          Form1.ibDataSet150.FieldByName('STATUS').AsString := VENDA_MEI_CANCELADA;
+          Form1.ibDataSet150.FieldByName('STATUS').AsString := VENDA_GERENCIAL_CANCELADA;
           Form1.ibDataSet150.FieldByName('NFEXML').Clear;
           Form1.IBDataSet150.FieldByName('TOTAL').Clear;
           Form1.ibDataSet150.Post;
@@ -734,7 +730,7 @@ begin
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
         Form1.IBDataSet150.FieldByName('CAIXA').AsString    := Form1.sCaixa;
         Form1.IBDataSet150.FieldByName('MODELO').AsString   := '99';
-        Form1.IBDataSet150.FieldByName('STATUS').AsString   := VENDA_MEI_ABERTA;
+        Form1.IBDataSet150.FieldByName('STATUS').AsString   := VENDA_GERENCIAL_ABERTA;
 
         Form1.IBDataSet150.Post;
 
@@ -1102,7 +1098,7 @@ begin
   //
   if Form1.ibQuery65.FieldByname('NUMERONF').AsString=sCupom then
   begin
-    if Form1.ibQuery65.FieldByname('STATUS').AsString = VENDA_MEI_ABERTA then
+    if Form1.ibQuery65.FieldByname('STATUS').AsString = VENDA_GERENCIAL_ABERTA then
     begin
       Form1.icupom := StrToInt(sCupom);
       Result := True;

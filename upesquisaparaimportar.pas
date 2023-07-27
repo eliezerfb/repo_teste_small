@@ -387,7 +387,7 @@ begin
     'join ALTERACA A on A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
     'where N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date - 30)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date)) + ' ' + // Últimos 30 dias da data
     ' and N.MODELO = ''99'' ' +
-    ' and N.STATUS = ''Finalizada'' ' +
+    ' and N.STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ' +
     sCondicao +
     'group by N.NUMERONF, N.DATA, coalesce(A.CLIFOR, ''''), N.TOTAL ' +
     'order by N.DATA desc, N.NUMERONF desc';

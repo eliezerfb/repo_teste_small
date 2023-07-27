@@ -51,6 +51,9 @@ const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
 const FORMA_PAGAMENTO_CARTAO          = 'CARTAO';
 const FORMA_PAGAMENTO_CHEQUE          = 'CHEQUE'; // Sandro Silva 2016-04-19
 
+const VENDA_GERENCIAL_ABERTA     = 'Aberta';
+const VENDA_GERENCIAL_FINALIZADA = 'Finalizada - Aguardando Documento Fiscal';
+const VENDA_GERENCIAL_CANCELADA  = 'Cancelada';
 const FRENTE_INI                      = 'FRENTE.INI';
 const SECAO_FRENTE_CAIXA              = 'Frente de Caixa';
 const SECAO_65                        = 'NFCE';

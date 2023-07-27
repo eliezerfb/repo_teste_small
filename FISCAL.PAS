@@ -1029,6 +1029,7 @@ type
     SadasIdentificadaspeloCPFCNPJ1: TMenuItem;
     itemMenugerencial: TMenuItem;
     IBDataSet150GERENCIAL: TStringField;
+    EmitirNFCedogerenical1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1390,6 +1391,7 @@ type
     procedure ESTOQUEATUAL1Click(Sender: TObject);
     procedure ibDataSet13AfterOpen(DataSet: TDataSet);
     procedure itemMenugerencialClick(Sender: TObject);
+    procedure EmitirNFCedogerenical1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1455,6 +1457,7 @@ type
     procedure LeConfiguracaoTipoEtiquetaBalanca;
     procedure VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
     procedure EstoqueParcial;
+    procedure LimpaVariaveisGlobais;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1659,6 +1662,7 @@ type
     procedure ConfiguraCredencialTecnospeed;
     procedure MensagemAlertaLimiteDocumentosEmitidos;
     procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
+    function PDV_ImportaGerencial(sNumeroGerencial: String): Boolean;
   end;
 
 var
@@ -15322,7 +15326,7 @@ begin
 
   {Sandro Silva 2023-07-13 inicio}
   if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then
-    itemMenugerencial.Caption := 'Importar gerencial';
+    itemMenugerencial.Caption := 'Converter gerencial em ' + Form1.sTipoDocumento2;//  'Importar gerencial';
   {Sandro Silva 2023-07-13 fim}
 
   {Sandro Silva 2023-05-30 inicio}
@@ -22172,6 +22176,7 @@ begin
   Form1.iMesaAberta := 0;
   CortaPapelNoVideo(True); // fecha a venda TForm1.Button8Click()
 
+  {Sandro Silva 2023-07-27 inicio
   if Trim(Form2.Edit8.Text) <> '' then
   begin
     Form2.Edit8.Text      := '';
@@ -22189,6 +22194,8 @@ begin
   Form2.MaskEdit1.Text := '';
 
   Form2.EdMarketplace.Text := ''; // Sandro Silva 2022-04-05
+  }
+  LimpaVariaveisGlobais;
 
   //
   Screen.Cursor := crDefault; // Cursor normal
@@ -24091,10 +24098,10 @@ begin
   begin
 
     Form1.DBGrid1.Canvas.Font.Color  := COR_AZUL; // Sandro Silva 2021-08-17 $00EAB231; // Azul
-    if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_FINALIZADA then
+    if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
       Form1.DBGrid1.Canvas.Font.Color  := clRed;
 
-    if Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_MEI_CANCELADA then
+    if Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_CANCELADA then
       Form1.DBGrid1.Canvas.Font.Color  := clSilver;     
 
   end
@@ -24133,10 +24140,10 @@ begin
     if Form1.ibDataSet150.FieldByName('MODELO').AsString = '99' then
     begin
 
-      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_FINALIZADA then
+      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
         Form1.DBGrid1.Canvas.Font.Color  := clRed;
 
-      if Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_MEI_CANCELADA then
+      if Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_CANCELADA then
         Form1.DBGrid1.Canvas.Font.Color  := clSilver;
 
     end
@@ -24508,7 +24515,7 @@ begin
     if sModeloECF = '99' then {Sandro Silva 2014-01-20 inicio}
     begin
       //
-      if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') and (Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_MEI_ABERTA)  then
+      if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') and (Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_ABERTA)  then
       begin
 
         //
@@ -24564,11 +24571,11 @@ begin
     VisualizaroDANFCE1.Visible      := True;
     EnviaraNFCe1.Visible            := True;
 
-    EnviaraNFCe1.Enabled            := (Form1.IBDataSet150.FieldByName('STATUS').AsString = VENDA_MEI_ABERTA);
+    EnviaraNFCe1.Enabled            := (Form1.IBDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_ABERTA);
 
     VisualizaroDANFCE1.Enabled      := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');
     ImprimeoDANFCE1.Enabled         := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');;
-    CancelaraNFCe1.Enabled          := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_CANCELADA) and (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');
+    CancelaraNFCe1.Enabled          := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_CANCELADA) and (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');
 
     VisualizaroDANFCE1.Caption := 'Visualizar movimentação...'; // Sandro Silva 2023-06-23 VisualizaroDANFCE1.Caption := 'Visualizar venda...';
     EnviaraNFCe1.Caption       := 'Abrir...';
@@ -26840,7 +26847,7 @@ begin
 
     if DataSet.FieldByName('MODELO').AsString = '99' then
     begin
-      if DataSet.FieldByName('STATUS').AsString <> VENDA_MEI_FINALIZADA then
+      if DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
       begin
         Application.HintColor     := clRed;
         Application.HintHidePause := Application.HintPause * 10;
@@ -28611,10 +28618,16 @@ begin
   ransmitirContingncia1.Enabled := (NFCeemContingncia1.Checked = False);
   // Em São Paulo não é permitido emitir NFC-e em contingência, servidor rejeita
   if ((AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') and (Form1.sModeloECF_Reserva = '65')) then
-    ransmitirContingncia1.Enabled := False; // Sandro Silva 2020-11-11 
+    ransmitirContingncia1.Enabled := False; // Sandro Silva 2020-11-11
   EnviaraNFCe1.Enabled := PDV_CupomAberto = False; // Sandro Silva 2019-07-16
   ConsultaChaveNFCe1.Visible := (Form1.sModeloECF = '65');
 
+  EmitirNFCedogerenical1.Visible := False;
+  if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') then
+  begin
+    EmitirNFCedogerenical1.Caption := 'Emitir ' + Form1.sTipoDocumento2 + ' do gerenical ' + DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+    EmitirNFCedogerenical1.Visible := True;
+  end;
 end;
 
 procedure TForm1.OcultaPanelMensagem;
@@ -33738,10 +33751,11 @@ begin
   DadosEmitentePDV.UF    := DataSet.FieldByName('ESTADO').AsString;
 end;
 
-procedure TForm1.itemMenugerencialClick(Sender: TObject);
+function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String): Boolean;
 var
-  Importar: TImportaGerencial;
+  Importar: TConverteGerencialParaDocFiscal;
 begin
+  Result := False;
   if PDV_CupomAberto then
   begin
     Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
@@ -33749,7 +33763,7 @@ begin
   end;
   Form1.sStatusECF := 'Gerando ' + Form1.sTipoDocumento2;
   // Importa gerencial para nfc-e
-  Importar := TImportaGerencial.Create;
+  Importar := TConverteGerencialParaDocFiscal.Create;
   try
     Importar.Caixa             := Form1.sCaixa;
     Importar.ModeloDocumento   := Form1.sModeloECF;
@@ -33767,7 +33781,7 @@ begin
     Importar.sVendedor         := Form1.sVendedor;
     //Importar.DescontoNoTotal   := Form1.fDescontoNoTotal;
     //Importar.ValorTotalTEFPago := Form1.fTEFPago;
-    Importar.NumeroGerencial   := ImportarDaPesquisa(tpPesquisaGerencial);
+    Importar.NumeroGerencial   := sNumeroGerencial;
     if Importar.Importar then
     begin
       try
@@ -33775,7 +33789,7 @@ begin
 
         Form2.Edit10.Text := '';
         if LimpaNumero(Importar.DadosCliente.CNPJCPF) = '' then
-          Form2.Edit2.Text  := '' 
+          Form2.Edit2.Text  := ''
         else
           Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
         Form2.Edit8.Text  := Importar.DadosCliente.Nome;
@@ -33793,8 +33807,30 @@ begin
         Form1.sDebitoOuCredito := '';
         Form1.sConveniado      := '';
         Form1.sVendedor        := '';
-        Form1.fDescontoNoTotal := 0.00;
-        Form1.fTEFPago         := 0.00;
+
+
+        Form1.fTotal    := 9999999.99;
+        Form1.icupom    := 0;
+
+        /////////////////////////////////////////////////////////////////////
+        // TEF - ZEREZIMA - MULTIPLOS CARTOES                              //
+        /////////////////////////////////////////////////////////////////////
+        Form1.fDescontoNoTotal  := 0;
+        Form1.fTEFPago          := 0;
+        Form1.fTotalPago        := 0;
+        Form1.sCupomTEF         := '';
+        Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
+
+        Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
+        Form1.sValorTot   := '';
+        Form1.sValorSaque := '';
+        Form1.sNomeRede   := '';
+        Form1.sTransaca   := '';
+        Form1.sAutoriza   := '';
+        Form1.sFinaliza   := '';
+        Form1.sLinha      := '';  
+
+        LimpaVariaveisGlobais;
 
         DeletaDataSet25;
       except
@@ -33931,6 +33967,40 @@ begin
   finally
     FreeAndNil(IBQuery);
   end;
+end;
+
+procedure TForm1.LimpaVariaveisGlobais;
+begin
+  if Trim(Form2.Edit8.Text) <> '' then
+  begin
+    Form2.Edit8.Text      := '';
+    Form1.sConveniado     := '';
+    Form1.sEnderecoClifor := ''; // Sandro Silva 2016-09-30
+    Form1.sCidadeClifor   := '';
+  end;
+
+  Form2.Edit10.Text := '';
+
+  Form2.Edit2.Text := '';
+  Form2.Edit1.Text := '';
+  Form2.Edit3.Text := '';
+
+  Form2.MaskEdit1.Text := '';
+
+  Form2.EdMarketplace.Text := ''; // Sandro Silva 2022-04-05
+end;
+
+procedure TForm1.itemMenugerencialClick(Sender: TObject);
+var
+  Importar: TConverteGerencialParaDocFiscal;
+begin
+  PDV_ImportaGerencial(ImportarDaPesquisa(tpPesquisaGerencial));
+end;
+
+procedure TForm1.EmitirNFCedogerenical1Click(Sender: TObject);
+begin
+  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
+  GerenciadordeNFCe1Click(Sender);
 end;
 
 end.

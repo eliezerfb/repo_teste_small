@@ -21,7 +21,7 @@ type
     property Nome: String read FNome write FNome;
   end;
 
-  TImportaGerencial = class 
+  TConverteGerencialParaDocFiscal = class 
   private
     FIBTransaction: TIBTransaction;
     FCaixa: String;
@@ -74,19 +74,20 @@ implementation
 uses
   fiscal, DB;
 
-{ TImportaGerencial }
+{ TConverteGerencialParaDocFiscal }
 
-constructor TImportaGerencial.Create;
+constructor TConverteGerencialParaDocFiscal.Create;
 begin
   FDadosCliente := TDadosCliente.Create;
 end;
 
-destructor TImportaGerencial.Destroy;
+destructor TConverteGerencialParaDocFiscal.Destroy;
 begin
   FDadosCliente.Free;
 end;
 
-function TImportaGerencial.Importar: Boolean;
+function TConverteGerencialParaDocFiscal.Importar: Boolean;
+// Converte venda gerencial em documento fiscal modelo 59 e 65
 var
   IBQCONSULTA: TIBQuery;
   IBQPENDENCIA: TIBQuery;
@@ -121,7 +122,7 @@ begin
   try
     IBQCONSULTA.Close;
     IBQCONSULTA.SQL.Text :=
-      'select NUMERONF, DATA, CAIXA, MODELO from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and STATUS = ''Finalizada'' ';
+      'select NUMERONF, DATA, CAIXA, MODELO from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ';
     IBQCONSULTA.Open;
 
     if IBQCONSULTA.FieldByName('NUMERONF').AsString <> '' then
@@ -615,7 +616,7 @@ begin
 
 end;
 
-procedure TImportaGerencial.SetNumeroGerencial(const Value: String);
+procedure TConverteGerencialParaDocFiscal.SetNumeroGerencial(const Value: String);
 begin
   FNumeroGerencial := FormataNumeroDoCupom(StrToIntDef(Value, 0));
 end;

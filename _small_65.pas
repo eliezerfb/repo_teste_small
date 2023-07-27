@@ -3049,18 +3049,18 @@ begin
       _ecf65_AdicionaCNPJCOntabilidade(Form1.spdNFCeDataSets1); // Sandro Silva 2020-09-01
 
       //
-      fTotalTributos   := 0;
-      fValorProdutos   := 0;
-      fDesconto        := 0;
-      rBaseICMS        := 0;
-      rValorICMS       := 0;
-      I                := 0;
-      dvOutro_W15      := 0; //2015-12-10
-      dvServ_W18       := 0; //2015-12-10
-      dvBC_W19         := 0; //2015-12-10
-      dvISS_W20        := 0; //2015-12-10
-      dvFCP_W04h       := 0; // Sandro Silva 2018-02-19
-      dvICMSDeson_W04a := 0.00; // Sandro Silva 2019-08-29
+      fTotalTributos        := 0;
+      fValorProdutos        := 0;
+      fDesconto             := 0;
+      rBaseICMS             := 0;
+      rValorICMS            := 0;
+      I                     := 0;
+      dvOutro_W15           := 0; //2015-12-10
+      dvServ_W18            := 0; //2015-12-10
+      dvBC_W19              := 0; //2015-12-10
+      dvISS_W20             := 0; //2015-12-10
+      dvFCP_W04h            := 0; // Sandro Silva 2018-02-19
+      dvICMSDeson_W04a      := 0.00; // Sandro Silva 2019-08-29
       vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
       //
       // TOTAL Sem o Desconto
