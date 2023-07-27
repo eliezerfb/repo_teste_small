@@ -51,6 +51,7 @@ const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
 const FORMA_PAGAMENTO_CARTAO          = 'CARTAO';
 const FORMA_PAGAMENTO_CHEQUE          = 'CHEQUE'; // Sandro Silva 2016-04-19
 
+const VENDA_MEI_ANTIGA_FINALIZADA = 'Finalizada';
 const VENDA_GERENCIAL_ABERTA     = 'Aberta';
 const VENDA_GERENCIAL_FINALIZADA = 'Finalizada - Aguardando Documento Fiscal';
 const VENDA_GERENCIAL_CANCELADA  = 'Cancelada';
@@ -2056,11 +2057,27 @@ end;
 
 function SelectSQLGerenciadorVendasF10(sModeloECF: String;
   sModeloECF_Reserva: String; Data: TDate): String;
+var
+  sCondicao: String;
 begin
- Result:=
+  {Sandro Silva 2023-07-27 inicio
+  Result:=
   'select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Data)) +
   IfThen((sModeloECF = '99') or (sModeloECF_Reserva = '99'), ' and MODELO = ''99'' ', ' ') +
   ' order by NUMERONF ';
+  }
+  sCondicao := '';
+  if (sModeloECF <> '99') then
+    sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
+  else
+    if (sModeloECF = '99') or (sModeloECF_Reserva = '99') then
+      sCondicao := ' and MODELO = ''99'' ';
+
+  Result :=
+    'select * from NFCE where DATA = ' + QuotedStr(DateToStrInvertida(Data)) +
+    sCondicao +
+    ' order by NUMERONF ';
+  {Sandro Silva 2023-07-27 fim}
 end;
 
 function RetornaTextoEmVenda(sModelo: String): String;

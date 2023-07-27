@@ -24098,7 +24098,7 @@ begin
   begin
 
     Form1.DBGrid1.Canvas.Font.Color  := COR_AZUL; // Sandro Silva 2021-08-17 $00EAB231; // Azul
-    if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
+    if (Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA) and (Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_ANTIGA_FINALIZADA) then // Sandro Silva 2023-07-27 if (Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA) then
       Form1.DBGrid1.Canvas.Font.Color  := clRed;
 
     if Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_CANCELADA then
@@ -24140,7 +24140,7 @@ begin
     if Form1.ibDataSet150.FieldByName('MODELO').AsString = '99' then
     begin
 
-      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
+      if (Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA) and (Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_ANTIGA_FINALIZADA) then // Sandro Silva 2023-07-27 if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
         Form1.DBGrid1.Canvas.Font.Color  := clRed;
 
       if Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_CANCELADA then
@@ -24676,6 +24676,9 @@ begin
   //// Comentar essas linhas e descomentas as de baixo
 
   if DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString = '' then
+    Exit; // Double Click com grade vazia gera bug
+
+  if DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99' then
     Exit; // Double Click com grade vazia gera bug
 
   bTimer2EnabledOld := Timer2.Enabled;
@@ -33761,6 +33764,10 @@ begin
     Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
     Exit;
   end;
+
+  if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')  then
+    Exit;
+
   Form1.sStatusECF := 'Gerando ' + Form1.sTipoDocumento2;
   // Importa gerencial para nfc-e
   Importar := TConverteGerencialParaDocFiscal.Create;
@@ -33782,67 +33789,77 @@ begin
     //Importar.DescontoNoTotal   := Form1.fDescontoNoTotal;
     //Importar.ValorTotalTEFPago := Form1.fTEFPago;
     Importar.NumeroGerencial   := sNumeroGerencial;
-    if Importar.Importar then
+
+    Commitatudo(True);
+    if TestaTudo(True) then // Form1.PDV_ImportaGerencial(
     begin
-      try
-        Form1.icupom := StrToInt(Importar.NumeroNF);
 
-        Form2.Edit10.Text := '';
-        if LimpaNumero(Importar.DadosCliente.CNPJCPF) = '' then
-          Form2.Edit2.Text  := ''
-        else
-          Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
-        Form2.Edit8.Text  := Importar.DadosCliente.Nome;
+      if Importar.Importar then
+      begin
+        try
+          Form1.icupom := StrToInt(Importar.NumeroNF);
 
-        Form10.sNomeDoTEF      := Importar.NomeDoTEF;
-        Form1.sDebitoOuCredito := Importar.DebitoOuCredito;
-        Form1.sConveniado      := Importar.sConveniado;
-        Form1.sVendedor        := Importar.sVendedor;
-        Form1.fDescontoNoTotal := Importar.DescontoNoTotal;
-        Form1.fTEFPago         := Importar.ValorTotalTEFPago;
-        
-        _ecf65_EnviarNFCe(True);
+          Form2.Edit10.Text := '';
+          if LimpaNumero(Importar.DadosCliente.CNPJCPF) = '' then
+            Form2.Edit2.Text  := ''
+          else
+            Form2.Edit2.Text  := FormataCpfCgc(LimpaNumero(Importar.DadosCliente.CNPJCPF));
+          Form2.Edit8.Text  := Importar.DadosCliente.Nome;
 
-        Form10.sNomeDoTEF      := '';
-        Form1.sDebitoOuCredito := '';
-        Form1.sConveniado      := '';
-        Form1.sVendedor        := '';
+          Form10.sNomeDoTEF      := Importar.NomeDoTEF;
+          Form1.sDebitoOuCredito := Importar.DebitoOuCredito;
+          Form1.sConveniado      := Importar.sConveniado;
+          Form1.sVendedor        := Importar.sVendedor;
+          Form1.fDescontoNoTotal := Importar.DescontoNoTotal;
+          Form1.fTEFPago         := Importar.ValorTotalTEFPago;
+
+          if Form1.sModeloECF = '59' then
+            _ecf59_FinalizaVendaSAT;
+
+          if Form1.sModeloECF = '65' then
+            _ecf65_EnviarNFCe(True);
+
+          Form10.sNomeDoTEF      := '';
+          Form1.sDebitoOuCredito := '';
+          Form1.sConveniado      := '';
+          Form1.sVendedor        := '';
 
 
-        Form1.fTotal    := 9999999.99;
-        Form1.icupom    := 0;
+          Form1.fTotal    := 9999999.99;
+          Form1.icupom    := 0;
 
-        /////////////////////////////////////////////////////////////////////
-        // TEF - ZEREZIMA - MULTIPLOS CARTOES                              //
-        /////////////////////////////////////////////////////////////////////
-        Form1.fDescontoNoTotal  := 0;
-        Form1.fTEFPago          := 0;
-        Form1.fTotalPago        := 0;
-        Form1.sCupomTEF         := '';
-        Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
+          /////////////////////////////////////////////////////////////////////
+          // TEF - ZEREZIMA - MULTIPLOS CARTOES                              //
+          /////////////////////////////////////////////////////////////////////
+          Form1.fDescontoNoTotal  := 0;
+          Form1.fTEFPago          := 0;
+          Form1.fTotalPago        := 0;
+          Form1.sCupomTEF         := '';
+          Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
 
-        Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
-        Form1.sValorTot   := '';
-        Form1.sValorSaque := '';
-        Form1.sNomeRede   := '';
-        Form1.sTransaca   := '';
-        Form1.sAutoriza   := '';
-        Form1.sFinaliza   := '';
-        Form1.sLinha      := '';  
+          Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
+          Form1.sValorTot   := '';
+          Form1.sValorSaque := '';
+          Form1.sNomeRede   := '';
+          Form1.sTransaca   := '';
+          Form1.sAutoriza   := '';
+          Form1.sFinaliza   := '';
+          Form1.sLinha      := '';
 
-        LimpaVariaveisGlobais;
+          LimpaVariaveisGlobais;
 
+          DeletaDataSet25;
+        except
+
+        end;
+        Commitatudo(True);
+      end
+      else
+      begin
         DeletaDataSet25;
-      except
-
+        Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
       end;
-      Commitatudo(True);
     end
-    else
-    begin
-      DeletaDataSet25;
-      Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
-    end;
   finally
     FreeAndNil(Importar);
     Form1.TransacoesCartao.Transacoes.Clear;
@@ -33854,11 +33871,14 @@ begin
     Form1.fTEFPago         := 0.00;
   end;
 
+  {
   if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
     Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
   else
     Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
-
+  }
+  TestaTudo(True); // Form1.PDV_ImportaGerencial(
+  Form1.Display(Form1.sStatusECF, Form1.sF);
   Screen.Cursor := crDefault;
 
 end;
