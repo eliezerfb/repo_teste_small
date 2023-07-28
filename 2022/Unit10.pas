@@ -655,7 +655,7 @@ var
 implementation
 
 uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
-  preco1, Unit20, Unit19, Mais3, Unit34, Unit18, StrUtils, uTestaProdutoExiste,
+  preco1, Unit20, Unit19, Mais3, Unit18, StrUtils, uTestaProdutoExiste,
   uITestaProdutoExiste
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
@@ -8113,7 +8113,7 @@ procedure TForm10.Orelha_precoShow(Sender: TObject);
 begin
   // Descrobre o percentual de Comissao
   
-  Image6.Picture := Form34.Image1.Picture;
+  Image6.Picture := Form1.imgEstoque.Picture;
   
   if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
   
