@@ -517,7 +517,7 @@ var
   iTentativa: Integer;
   sMensagem: String;
   sNumeroSat: String;
-  sPathDll: String;
+  //sPathDll: String;
   sPathXMLSat: String;
   sAssinaturaAssociada: String;
   sCodigoAtivacao: String;
@@ -727,7 +727,7 @@ begin
 
     end;
 
-    sPathDll             := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CAMINHO_DLL, sPathDll));
+    //sPathDll             := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CAMINHO_DLL, sPathDll));
 
     sCNPJSoftwareHouse   := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CNPJ_SOFTWARE_HOUSE, sCNPJSoftwareHouse));
     sPathXMLSat          := Form1.sAtual + '\XmlDestinatario\CFeSAT';
