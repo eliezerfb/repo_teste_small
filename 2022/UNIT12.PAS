@@ -1707,6 +1707,8 @@ begin
   Form12.Edit1.Visible := True;
   //
   Form12.Button3Click(Sender);
+
+  Form7.AtualizarListaItensAuxiliar;
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
 

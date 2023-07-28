@@ -202,8 +202,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label16: TLabel
-    Left = 278
-    Top = 211
+    Left = 311
+    Top = 219
     Width = 71
     Height = 13
     Caption = 'Itens de venda'
@@ -21887,5 +21887,46 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 768
     Top = 632
+  end
+  object CDSItensNotaAux: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'DESCRICAO'
+        DataType = ftString
+        Size = 200
+      end
+      item
+        Name = 'QTDE'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'INDICE'
+        DataType = ftInteger
+      end
+      item
+        Name = 'CODIGO'
+        DataType = ftString
+        Size = 10
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 272
+    Top = 211
+    object CDSItensNotaAuxDESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Size = 200
+    end
+    object CDSItensNotaAuxQTDE: TCurrencyField
+      FieldName = 'QTDE'
+    end
+    object CDSItensNotaAuxINDICE: TIntegerField
+      FieldName = 'INDICE'
+    end
+    object CDSItensNotaAuxCODIGO: TStringField
+      FieldName = 'CODIGO'
+      Size = 10
+    end
   end
 end
