@@ -194,9 +194,6 @@ begin
       Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
     end;
     }
-
-conferir validações NFCE, SAT, MF,Gerencial
-
     if (sExeName = 'nfce.exe') or (NFCe) then // if sExeName = 'nfce.exe' then
     begin
       Application.Title := 'Aplicativo emissor NFC-e';

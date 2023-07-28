@@ -9905,15 +9905,19 @@ begin
   begin
 
     // Faz a configuração automática se não existir configuração do modelo de ecf para SAT e NFCe
-    if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') then
+    if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') then // Sandro Silva 2023-07-28 if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') or (SAT) or (MFE) then
     begin
       Mais1Ini.WriteString('Frente de caixa', 'Modelo do ECF', '59');
     end;
-    if AnsiContainsText(ExtractFileName(Application.ExeName), 'nfce.exe') or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if AnsiContainsText(ExtractFileName(Application.ExeName), 'nfce.exe') then
+    if AnsiContainsText(ExtractFileName(Application.ExeName), 'nfce.exe') or AnsiContainsText(ExtractFileName(Application.ExeName), 'pafnfce.exe') then // Sandro Silva 2023-07-28 if AnsiContainsText(ExtractFileName(Application.ExeName), 'nfce.exe') or (NFCe) or (PAFNFCE) then
     begin
       Mais1Ini.WriteString('Frente de caixa', 'Modelo do ECF', '65');
     end;
-    // gerencial não precisa setar o modelo
+
+    if AnsiContainsText(ExtractFileName(Application.ExeName), 'gerencial.exe') then
+    begin
+      Mais1Ini.WriteString('Frente de caixa', 'Modelo do ECF', '99');
+    end;
 
   end
   else
