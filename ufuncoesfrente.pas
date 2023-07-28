@@ -1687,9 +1687,20 @@ begin
   if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '65') then
   begin
     if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') then
-      Result := True
-    else if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') and (DadosEmitentePDV.UF = 'SC') and (LimpaNumero(DadosEmitentePDV.CNPJ) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) then
+    begin
       Result := True;
+    end
+    else
+    begin
+      if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') then
+      begin
+        if DadosEmitentePDV <> nil then // Sandro Silva 2023-07-28
+        begin
+          if (DadosEmitentePDV.UF = 'SC') and (LimpaNumero(DadosEmitentePDV.CNPJ) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) then
+            Result := True;
+        end;
+      end;
+    end;
   end;
 
   {Sandro Silva 2023-06-27 inicio}
@@ -1744,15 +1755,39 @@ end;
 function SAT: Boolean;
 begin
   // Sandro Silva 2023-07-18 Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'SAT');
+  {Sandro Silva 2023-07-28 inicio
   Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
     and (DadosEmitentePDV.UF = 'SP') ;
+  }
+  if DadosEmitentePDV <> nil then
+  begin
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+              and (DadosEmitentePDV.UF = 'SP') ;
+  end
+  else
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'));
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
+  {Sandro Silva 2023-07-28 fim}
 end;
 
 function MFE: Boolean;
 begin
   // Sandro Silva 2023-07-18 Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MFE');
+  {Sandro Silva 2023-07-28 inicio
   Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
     and (DadosEmitentePDV.UF = 'CE') ;
+  }
+  if DadosEmitentePDV <> nil then
+  begin
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+              and (DadosEmitentePDV.UF = 'CE');
+  end
+  else
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'));
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
+  {Sandro Silva 2023-07-28 fim}
 end;
 
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;

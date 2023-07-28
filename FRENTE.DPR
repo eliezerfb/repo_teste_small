@@ -115,33 +115,56 @@ begin
 
   sExeName := AnsiLowerCase(ExtractFileName(Application.ExeName));
 
-  if (sExeName = 'nfce.exe') or (sExeName = 'cfesat.exe') then
+  if (sExeName = 'gerencial.exe') or (sExeName = 'pafnfce.exe') or (sExeName = 'nfce.exe') or (sExeName = 'cfesat.exe') then // Sandro Silva 2023-07-28 if (sExeName = 'nfce.exe') or (sExeName = 'cfesat.exe') then
   begin
+    if (sExeName = 'gerencial.exe') then
+    begin
+      Hwnd := FindWindow ('TForm1', 'Aplicativo Gerencial');
+      FecharAplicacao('nfce.exe');
+      FecharAplicacao('cfesat.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('pafnfce.exe');
+    end;
+
+    if (sExeName = 'pafnfce.exe') then
+    begin
+      Hwnd := FindWindow ('TForm1', 'Aplicativo emissor NFC-e');
+      FecharAplicacao('nfce.exe');
+      FecharAplicacao('cfesat.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('gerencial.exe');
+    end;
 
     if (sExeName = 'nfce.exe') then
     begin
       Hwnd := FindWindow ('TForm1', 'Aplicativo emissor NFC-e');
+      FecharAplicacao('pafnfce.exe');
       FecharAplicacao('cfesat.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('gerencial.exe');
     end;
 
     if (sExeName = 'cfesat.exe') then
     begin
       Hwnd := FindWindow ('TForm1', 'Aplicativo emissor CF-e'); // Sandro Silva 2018-08-01 Hwnd := FindWindow ('TForm1', 'Aplicativo emissor CF-e-SAT');
       FecharAplicacao('nfce.exe');
+      FecharAplicacao('pafnfce.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('gerencial.exe');
     end;
-    FecharAplicacao('pafnfce.exe');
+    //    FecharAplicacao('pafnfce.exe');
     FecharAplicacao('frente.exe');
-    FecharAplicacao('mei.exe');
-    FecharAplicacao('gerencial.exe'); // Sandro Silva 2023-06-23
+    //FecharAplicacao('mei.exe');
+    //FecharAplicacao('gerencial.exe'); // Sandro Silva 2023-06-23
   end;
 
+  {Sandro Silva 2023-07-28 inicio
   if (PAFNFCe) then
   begin
     Hwnd := FindWindow ('TForm1', 'Aplicativo emissor NFC-e (PAF-NFC-e)');
   end;
-  //
-  // Hwnd := 0;
-  //
+  }
+  
   if Hwnd = 0 then
   begin
     //
@@ -172,9 +195,16 @@ begin
     end;
     }
 
+conferir validações NFCE, SAT, MF,Gerencial
+
     if (sExeName = 'nfce.exe') or (NFCe) then // if sExeName = 'nfce.exe' then
     begin
       Application.Title := 'Aplicativo emissor NFC-e';
+    end;
+
+    if (sExeName = 'pafnfce.exe') or (NFCe) then // if sExeName = 'nfce.exe' then
+    begin
+      Application.Title := 'Aplicativo emissor PAF-NFC-e';
     end;
 
     if (sExeName = 'cfesat.exe') or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if sExeName = 'cfesat.exe' then

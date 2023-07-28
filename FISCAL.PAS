@@ -1458,6 +1458,7 @@ type
     procedure VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
     procedure EstoqueParcial;
     procedure LimpaVariaveisGlobais;
+    procedure DefineCaptionFormPrincipal;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -9639,7 +9640,7 @@ var
   I : Integer;
   sSecoes :  TStrings;
   Mais1Ini: TIniFile;
-  sExeName: String;
+//  sExeName: String;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
   AjustarBufferChuncks(Form1);
@@ -9755,6 +9756,7 @@ begin
   // Altera
   Form1.Caption := 'Programa Aplicativo Fiscal (PAF-ECF)';
 
+  (*
   sExeName := AnsiLowerCase(ExtractFileName(Application.ExeName));
 
   if (sExeName = 'nfce.exe') or (NFCe)then // Sandro Silva 2021-03-19 if (sExeName = 'nfce.exe') then
@@ -9765,7 +9767,7 @@ begin
   begin
     Form1.Caption := 'Aplicativo emissor CF-e';
   end;
-  {Sandro Silva 2023-06-26 inicio 
+  {Sandro Silva 2023-06-26 inicio
   if (sExeName = 'mei.exe') or (MEI) then // Sandro Silva 2021-03-19 if (sExeName = 'mei.exe') then
   begin
     Form1.Caption := 'Aplicativo MEI';
@@ -9775,6 +9777,7 @@ begin
   begin
     Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
   end;
+  *)
   //
   Getdir(0,sAtualOnLine);
   Getdir(0,sAtual);
@@ -9900,6 +9903,7 @@ begin
 
   if Mais1Ini.ReadString('Frente de caixa', 'Modelo do ECF', '') = '' then
   begin
+
     // Faz a configuração automática se não existir configuração do modelo de ecf para SAT e NFCe
     if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') then
     begin
@@ -10287,6 +10291,8 @@ begin
   //
   try
     AbreArquivos(True);
+
+    DefineCaptionFormPrincipal; // Sandro Silva 2023-07-28
 
     {Sandro Silva 2022-11-04 inicio}
     // --------------- //
@@ -34024,6 +34030,26 @@ procedure TForm1.EmitirNFCedogerenical1Click(Sender: TObject);
 begin
   PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
   GerenciadordeNFCe1Click(Sender);
+end;
+
+procedure TForm1.DefineCaptionFormPrincipal;
+var
+  sExeName: String;
+begin
+  sExeName := AnsiLowerCase(ExtractFileName(Application.ExeName));
+
+  if (sExeName = 'nfce.exe') or (NFCe)then // Sandro Silva 2021-03-19 if (sExeName = 'nfce.exe') then
+  begin
+    Form1.Caption := 'Aplicativo emissor NFC-e';
+  end;
+  if (sExeName = 'cfesat.exe') or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if (sExeName = 'cfesat.exe') then
+  begin
+    Form1.Caption := 'Aplicativo emissor CF-e';
+  end;
+  if (PAFNFCe) then
+  begin
+    Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
+  end;
 end;
 
 end.
