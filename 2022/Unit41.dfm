@@ -112,7 +112,7 @@ object Form41: TForm41
         TabOrder = 1
         Text = '001'
         OnExit = MaskEdit2Exit
-        OnKeyDown = MaskEdit1KeyDown
+        OnKeyDown = MaskEdit2KeyDown
       end
     end
     object Button3: TBitBtn
@@ -130,7 +130,7 @@ object Form41: TForm41
       TabOrder = 1
       OnClick = Button3Click
     end
-    object Button1: TBitBtn
+    object btnAvancar: TBitBtn
       Left = 215
       Top = 180
       Width = 100
@@ -143,7 +143,7 @@ object Form41: TForm41
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      OnClick = Button1Click
+      OnClick = btnAvancarClick
     end
     object Button2: TBitBtn
       Left = 330
