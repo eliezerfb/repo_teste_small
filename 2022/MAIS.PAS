@@ -12237,13 +12237,13 @@ begin
     vBody := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
     vBody := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
 
-	//Mauricio Parizotto 2023-05-29
+	  //Mauricio Parizotto 2023-05-29
     if AnsiContainsText(vBody,'Serial') then
     begin	
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
       ExecutaComando('Commit;');
-	end;
+	  end;
   except
   end;
 end;
@@ -12266,89 +12266,6 @@ begin
     except
     end;
 
-    (* // Sandro Silva 2023-06-02
-    begin
-      if ValidacaoNova = False then
-      begin
-        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
-                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                      '&nfce='      + sNFCE +
-                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                      '&conve='     + sConve  +
-                                      '&origem='    + sOrigem +
-                                      '&Check='     + Form1.sPublicCheck +
-                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
-                                      );
-
-        {
-        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal2.php'+
-                                      '?serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                      '&nfce='      + sNFCE +
-                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                      '&conve='     + sConve  +
-                                      '&origem='    + sOrigem +
-                                      '&Check='     + Form1.sPublicCheck +
-                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))
-                                      );
-        }
-      end else
-      begin
-        //Mauricio Parizotto 2023-05-15
-        //Campo termo_uso_aceito no site
-        if InfTermo then
-        begin
-          sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now);
-        end;
-
-        //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+
-        Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
-                                      'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                      '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                      '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                      '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                      '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                      '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                      '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                      '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                      '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                      '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                      '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                      '&nfce='      + sNFCE +
-                                      '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                      '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                      '&conve='     + sConve  +
-                                      '&origem='    + sOrigem +
-                                      '&Check='     + Form1.sPublicCheck +
-                                      '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))+
-                                      sTermoUso
-                                      //+ '&retorno=json'
-                                      );
-
-      end;
-    end;
-    *)
     if LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString) <> '' then
     begin
       //Mauricio Parizotto 2023-05-15
