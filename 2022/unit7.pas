@@ -1478,6 +1478,11 @@ type
     ibDataSet7FORMADEPAGAMENTO: TIBStringField;
     ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField;
     ibDataSet7BANDEIRA: TIBStringField;
+    CDSItensNotaAux: TClientDataSet;
+    CDSItensNotaAuxDESCRICAO: TStringField;
+    CDSItensNotaAuxQTDE: TCurrencyField;
+    CDSItensNotaAuxINDICE: TIntegerField;
+    CDSItensNotaAuxCODIGO: TStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
@@ -2104,7 +2109,7 @@ type
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
       const Text: String);
     procedure RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
-
+    procedure ibDataSet16AfterOpen(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2129,9 +2134,16 @@ type
     function getZiparXML: String;
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
     procedure HintTotalNotaVenda(fRetencao : Real);
+    function TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+    procedure VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
+    procedure DefineQuantidadeSaldoDisponivelNota;
     procedure CalculaTotalNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
     procedure DefineLayoutFiltro;
+    function RetornarTotalQuantidadeItem(AcITem: String): Currency;
+    function RetornarSaldoDisponivelItemNota(AcItem: String): Currency;
+    procedure LimparLinhaItemSemItem;
+    procedure LimpaCamposItensNota;
   public
     // Public declarations
 
@@ -2242,8 +2254,10 @@ type
     function TestarNFeHomologacao: Boolean;
     function TestarNFSeHomologacao: Boolean;    
     function RetornarAliquotaICM(AcUF: String): Currency;
+    procedure AtualizarListaItensAuxiliar;    
   end;
-  
+
+  function TestarNatOperacaoMovEstoque: Boolean;
   function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
 //  Function Valida_Campo(ibDataSet_P:TibDataSet; Text:String; Indice,Mensagem:String):Boolean;
   function Valida_Campo(Arquivo: String; Text: String;
@@ -3983,7 +3997,7 @@ begin
           //
           if Form7.ibDataSet16SINCRONIA.AsFloat <> Form7.ibDataSet16QUANTIDADE.AsFloat then
           begin
-            if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
+            if TestarNatOperacaoMovEstoque then
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
               begin
@@ -6792,12 +6806,11 @@ begin
     //
     I := 0;
     //
-//    Form7.ibDataSet16.DisableControls;
+
     while (not Form7.ibDataSet16.Eof) do // Disable
     begin
       if (Form7.ibDataSet16DESCRICAO.AsString <> '') and (Form7.ibDataSet16QUANTIDADE.AsFloat > 0) then
       begin
-        //
         Form7.ibDataSet4.Close;                                                //
         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
@@ -7313,11 +7326,9 @@ function TotalizaOS(sP1: Boolean):Boolean;
 var
   MyBookMark, MyBookMark1 : TBookMark;
 begin
-  //
   Form7.ibDataSet3.Edit;
-  //
+
   // Produtos
-  //
   MyBookMark := Form7.ibDataSet16.GetBookMark();
   Form7.ibDataSet16.DisableControls;
   Form7.ibDataSet16.First;
@@ -7329,7 +7340,8 @@ begin
   end;
   //
   Form7.ibDataSet16.GotoBookmark(MyBookMark);
-  if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
+  if Form7.sModulo <> 'RETRIBUTA' then
+    Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet16.Edit;
   //
   // Servicos
@@ -7937,26 +7949,20 @@ begin
     Form7.Close;
     Form7.Show;
   except end;
-  //
 end;
 
 procedure TForm7.Image101Click(Sender: TObject);
 begin
-  //
   Form7.bEstaSendoUsado := False;
-  //
+
   if sModulo = 'OS' then
   begin
-    //
     Form7.ibDataSet3.Append;
     Form7.ibDataSet3DATA_PRO.AsDateTime := Date;
     Form7.ibDataSet3HORA_PRO.AsString   := TimeToStr(Time);
     Form30.Show;
-    //
-  end
-  else
+  end else
   begin
-    //
     if sModulo = 'VENDA' then
     begin
 
@@ -7988,28 +7994,19 @@ begin
 
         if Form1.ValidaRecursos.PermiteRecursoParaProduto then
         begin
-
           if Form1.ValidaRecursos.ValidaQtdDocumentoRetaguarda(Date) then
           begin
-
             Form7.ibDataSet15.Append;
             Form48.Show;
-
           end;
-
-        end
-        else
+        end else
         begin
           Form1.MensagemRecursoIndisponivel('NFS-e não está disponível para esta licença');
         end;
-
-      end
-      else
+      end else
       begin
-
         if ValidaLimiteDeEmissaoDeVenda(Form1.ValidaRecursos.DataDoServidor) then
         begin
-
           Form7.ibDataSet15.Append;
 
           if ParamCount > 0 then
@@ -8023,16 +8020,11 @@ begin
           end
           else
             Form12.Show;
-
         end;
-
-
       end;
       {Sandro Silva 2023-05-31 fim}
-    end
-    else
+    end  else
     begin
-      //
       if sModulo = 'COMPRA' then
       begin
         Form7.ibDataSet24.Append;
@@ -8041,17 +8033,16 @@ begin
       begin
         if sModulo = 'ORCAMENTO' then
         begin
-          //
           ShellExecute( 0, 'Open', 'orca.exe', '', '', SW_SHOW);
           sleep(1000);
-          //
+
           while ConsultaProcesso('orca.exe') or ConsultaProcesso('ORCA.EXE') do
           begin
             Form7.Caption := 'Aguarde o fechamento do programa de orcamentos...';
             Application.ProcessMessages;
             sleep(100);
           end;
-          //
+          
           Form7.Caption := '';
           AgendaCommit(True);
           Form7.Close;
@@ -11332,6 +11323,7 @@ begin
 
 
             {Sandro Silva 2022-12-16 inicio}
+            {Sandro Silva 2023-07-25 inicio
             if sModulo = 'RECEBER' then
             begin
               if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
@@ -11339,6 +11331,7 @@ begin
                 ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
               end;
             end;
+            }
             {Sandro Silva 2022-12-16 fim}
           end;
         except
@@ -18257,20 +18250,27 @@ begin
       }
 
       try
-        if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
-        begin
-          //Mauricio Parizotto 2023-04-17
-          if Form12.vNotaFiscal <> nil then
-            Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+        try
+          if (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '') or (Form7.ibDataSet15MERCADORIA.AsFloat <> 0) then
+          begin
+            //Mauricio Parizotto 2023-04-17
+            if Form12.vNotaFiscal <> nil then
+              Form12.vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+          end;
+        except
         end;
-      except
+        if Form7.ibDataSet15FINNFE.AsString = '2' then
+        begin
+          Form12.edtTotalNota.ReadOnly := False;
+        end;
+        {Mauricio Parizotto 2023-06-05 Fim}
+
+      finally
+        // Tratamento para limpar o valor unitario e o total quando não tem ITEM (DESCRIÇÃO/CODIGO) - Stack overflow
+        LimparLinhaItemSemItem;
       end;
 
-      if Form7.ibDataSet15FINNFE.AsString = '2' then
-      begin
-        Form12.edtTotalNota.ReadOnly := False;
-      end;
-      {Mauricio Parizotto 2023-06-05 Fim}
+      AtualizarListaItensAuxiliar;
 
       Form7.ibDataSet15.EnableControls;
       Screen.Cursor := crDefault;
@@ -18278,7 +18278,7 @@ begin
 
     if Form7.sModulo = 'OS' then
       TotalizaOS(True);
-      
+
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
   end;
@@ -18288,6 +18288,91 @@ begin
   AgendaCommit(True);
 
   //FreeAndNil(IBQESTOQUE);
+end;
+
+procedure TForm7.LimparLinhaItemSemItem;
+var
+  nRecNo: Integer;
+begin
+  if ibDataSet16.IsEmpty then
+    Exit;
+    
+  nRecNo := Form7.ibDataSet16.RecNo;
+  Form7.ibDataSet16.DisableControls;
+  try
+    Form7.ibDataSet16.First;
+    while not Form7.ibDataSet16.Eof do
+    begin
+      if (Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = EmptyStr)
+          and (Form7.ibDataSet16QUANTIDADE.AsCurrency = 0)
+          and (Form7.ibDataSet16UNITARIO.AsCurrency > 0) then
+      begin
+        if Form7.ibDataSet16.State <> dsEdit then
+          Form7.ibDataSet16.Edit;
+
+        LimpaCamposItensNota;
+
+        if Form7.ibDataSet16.State = dsEdit then
+          Form7.ibDataSet16.Post;
+      end;
+      Form7.ibDataSet16.Next;
+    end;
+  finally
+    Form7.ibDataSet16.RecNo := nRecNo;
+    Form7.ibDataSet16.EnableControls;
+  end;
+end;
+
+procedure TForm7.LimpaCamposItensNota;
+begin
+  Form7.ibDataSet16CODIGO.AsString     := EmptyStr;
+  Form7.ibDataSet16DESCRICAO.AsString  := EmptyStr;
+  Form7.ibDataSet16TOTAL.AsString      := EmptyStr;
+  Form7.ibDataSet16UNITARIO.AsString   := EmptyStr;
+  Form7.ibDataSet16QUANTIDADE.AsString := EmptyStr;
+  Form7.ibDataSet16CODIGO.AsString     := EmptyStr;
+  Form7.ibDataSet16CFOP.AsString       := EmptyStr;
+end;
+
+procedure TForm7.AtualizarListaItensAuxiliar;
+var
+  nRecNo: Integer;
+begin
+  if (Form1.ConfNegat <> 'Não') then
+    Exit;
+
+  if CDSItensNotaAux.Active then
+    CDSItensNotaAux.Close;
+
+  CDSItensNotaAux.CreateDataSet;
+
+  if not Form12.Showing then
+    Exit;
+  if (ibDataSet16.IsEmpty) then
+    Exit;
+    
+  nRecNo := Form7.ibDataSet16.RecNo;
+  ibDataSet16.DisableControls;
+  try
+    ibDataSet16.First;
+    while not ibDataSet16.Eof do
+    begin
+      if ibDataSet16DESCRICAO.AsString <> EmptyStr then
+      begin
+        CDSItensNotaAux.Append;
+        CDSItensNotaAuxINDICE.AsInteger   := ibDataSet16.RecNo;
+        CDSItensNotaAuxCODIGO.AsString    := ibDataSet16CODIGO.AsString;
+        CDSItensNotaAuxDESCRICAO.AsString := ibDataSet16DESCRICAO.AsString;
+        CDSItensNotaAuxQTDE.AsCurrency    := ibDataSet16QUANTIDADE.AsCurrency;
+        CDSItensNotaAux.Post;
+      end;
+
+      ibDataSet16.Next;
+    end;
+  finally
+    Form7.ibDataSet16.RecNo := nRecNo;
+    ibDataSet16.EnableControls;
+  end;
 end;
 
 procedure TForm7.ibDataSet16BeforeDelete(DataSet: TDataSet);
@@ -18575,16 +18660,9 @@ begin
           //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
-            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
-            begin
-              ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 1');
-              Form7.ibDataSet16DESCRICAO.AsString   := '';
-              Form7.ibDataSet16TOTAL.AsString       := '';
-              Form7.ibDataSet16UNITARIO.AsString    := '';
-              Form7.ibDataSet16QUANTIDADE.AsString  := '';
-              Form7.ibDataSet16CODIGO.AsString      := '';
-              Form7.ibDataSet16CFOP.AsString        := '';
-            end else
+            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then
+              VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat)
+            else
             begin
               if not Form41.Visible then
               begin
@@ -18962,10 +19040,13 @@ begin
                       Form7.ibDataSet16PICMSUFDEST.Visible := False;
                     end else
                     begin
-                      if (Form7.IBDataSet2ESTADO.AsString = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
-                        Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
-                      else
-                        Form7.ibDataSet16CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
+                      if (Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr) then
+                      begin
+                        if (Form7.IBDataSet2ESTADO.AsString = UpperCase(Form7.ibDataSet13ESTADO.AsString)) or (AllTrim(Form7.ibDataSet2ESTADO.AsString)='') then
+                          Form7.ibDataSet16CFOP.AsString := '5'+copy(Form7.ibDataSet14CFOP.AsString,2,5)
+                        else
+                          Form7.ibDataSet16CFOP.AsString := '6'+copy(Form7.ibDataSet14CFOP.AsString,2,5); // Ok
+                      end;
                     end;
                   end;
                 end;
@@ -18997,12 +19078,12 @@ begin
 
               {Sandro Silva 2022-09-28 inicio}
               //Ficha 6273
-              if AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> '' then
+              if (Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr) then
               begin
-                Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3);
-              end else
-              begin
-                Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
+                if (AllTrim(Form7.ibQuery14.FieldByName('CFOP').AsString) <> EmptyStr) then
+                  Form7.ibDataSet16CFOP.AsString := Copy(Form7.ibDataSet14CFOP.AsString,1,1)+Copy(Form7.ibQuery14.FieldByName('CFOP').AsString,2,3)
+                else
+                  Form7.ibDataSet16CFOP.AsString := Form7.ibDataSet14CFOP.AsString;
               end;
               {Sandro Silva 2022-09-28 fim}
 
@@ -19134,6 +19215,71 @@ begin
   //
 end;
 
+function TestarNatOperacaoMovEstoque: Boolean;
+begin
+  Result := (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0);
+end;
+
+procedure TForm7.DefineQuantidadeSaldoDisponivelNota;
+var
+  AnQtdeDisponivel: Currency;
+begin
+  if (Form1.ConfNegat <> 'Não') then
+    Exit;
+  if (ibDataSet16TOTAL.Value > 0) then
+    Exit;
+  if TestarNatOperacaoMovEstoque then
+  begin
+    AnQtdeDisponivel := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
+
+    // Se ta inserindo um item novo e a quantidade 1 for maior q a disponivel seta a disponivel.
+    if (AnQtdeDisponivel > 0) and (Form7.ibDataSet16QUANTIDADE.AsFloat = 1) and (AnQtdeDisponivel < Form7.ibDataSet16QUANTIDADE.AsCurrency) then
+    begin
+      ShowMessage('O item atual possui ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), AnQtdeDisponivel) + ' em estoque.' + sLineBreak + 'A quantidade do item será alterada para a quantidade disponível.');
+      ibDataSet16QUANTIDADE.OnChange := nil;
+      try
+        ibDataSet16QUANTIDADE.AsCurrency := AnQtdeDisponivel;
+      finally
+        ibDataSet16QUANTIDADE.OnChange := ibDataSet16QUANTIDADEChange;
+      end;
+    end;
+  end;
+end;
+
+function TForm7.RetornarSaldoDisponivelItemNota(AcItem: String): Currency;
+begin
+  Result := (ibDataSet4QTD_ATUAL.AsCurrency - RetornarTotalQuantidadeItem(AcItem));
+end;
+
+function TForm7.RetornarTotalQuantidadeItem(AcITem: String): Currency;
+begin
+  Result := 0;
+
+  if CDSItensNotaAux.IsEmpty then
+    Exit;
+
+  try
+    CDSItensNotaAux.Filtered := False;
+    CDSItensNotaAux.Filter := '(CODIGO=' + QuotedStr(AcITem) + ')';
+    CDSItensNotaAux.Filtered := True;
+
+    if CDSItensNotaAux.IsEmpty then
+      Exit;
+
+    CDSItensNotaAux.First;
+    while not CDSItensNotaAux.Eof do
+    begin
+      if (ibDataSet16.RecNo <> CDSItensNotaAuxINDICE.AsInteger) then
+        Result := Result + CDSItensNotaAuxQTDE.AsCurrency;
+
+      CDSItensNotaAux.Next;
+    end;
+  finally
+    CDSItensNotaAux.Filtered := False;
+    CDSItensNotaAux.Filter := EmptyStr;
+  end;
+end;
+
 procedure TForm7.ibDataSet16QUANTIDADEChange(Sender: TField);
 var
   fDesconto: Real;
@@ -19142,6 +19288,8 @@ begin
   // total, mas só quando o valor total é alterado //
   if AllTrim(Form7.ibDataSet16QUANTIDADE.AsString) <> '' then
   begin
+    DefineQuantidadeSaldoDisponivelNota;
+    
     if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
     begin
       fDesconto := 0;
@@ -19166,6 +19314,8 @@ begin
       begin
         Form7.ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat * Form7.ibDataSet16UNITARIO.AsFloat,4);
       end;
+
+      VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
     end else
     begin
       //if Form7.ibDataSet16TOTAL.AsFloat <> 0 then Mauricio Parizotto 2023-06-05
@@ -19175,6 +19325,80 @@ begin
         Form7.ibDataSet16TOTAL.AsFloat    := 0;
         Form7.ibDataSet16UNITARIO.AsFloat := 0;
       end;
+    end;
+  end;
+end;
+
+function TForm7.TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+var
+  nSaldoDisp: Currency;
+begin
+  Result := True;
+
+  if (Form1.ConfNegat <> 'Não') then
+    Exit;
+
+  if TestarNatOperacaoMovEstoque then
+  begin
+    nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
+
+    if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
+    begin
+      if ibDataSet4QTD_ATUAL.AsCurrency < 0 then
+        nSaldoDisp := ibDataSet4QTD_ATUAL.AsCurrency;
+      // Necessario remover os eventos para não mostrar mensagem 2 vezes
+      Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
+      Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
+      try
+        Result := False;
+        ShowMessage('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
+                    'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.');
+      finally
+        Form7.ibDataSet16QUANTIDADE.OnSetText := ibDataSet16QUANTIDADESetText;
+        Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm7.VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
+var
+  cPesq: String;
+begin
+  if Form7.ibDataSet16DESCRICAO.AsString = EmptyStr then
+    Exit;
+
+  if ibDataSet16QUANTIDADE.AsFloat < 0 then
+    ibDataSet16QUANTIDADE.AsFloat := 0
+  else
+  begin
+
+    if (AnsiUpperCase(ibDataSet4DESCRICAO.AsString) <> AnsiUpperCase(ibDataSet16DESCRICAO.AsString)) then
+    begin
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Clear;
+      Form7.ibDataSet4.Selectsql.Add('select *');
+      Form7.ibDataSet4.Selectsql.Add('from ESTOQUE');
+      Form7.ibDataSet4.Selectsql.Add('where');
+      cPesq := ibDataSet16DESCRICAO.AsString;
+      if (LimpaNumero(ibDataSet16DESCRICAO.AsString) = ibDataSet16DESCRICAO.AsString) and (Length(ibDataSet16DESCRICAO.AsString) <= 5) then
+      begin
+        if Length(cPesq) < 5 then
+          cPesq := Replicate('0', 5 - Length(cPesq)) + cPesq;
+          
+        Form7.ibDataSet4.Selectsql.Add('(CODIGO='+QuotedStr(cPesq)+')');
+      end else
+        Form7.ibDataSet4.Selectsql.Add('(DESCRICAO='+QuotedStr(cPesq)+')');
+
+      Form7.ibDataSet4.Open;
+    end;
+
+    if not TestarSaldoEstoqueDisponivelNota(AnQtdeInformada) then
+      LimpaCamposItensNota
+    else
+    begin
+      if ibDataSet16QUANTIDADE.AsFloat <> AnQtdeInformada then
+        ibDataSet16QUANTIDADE.AsFloat := AnQtdeInformada;
     end;
   end;
 end;
@@ -19195,9 +19419,9 @@ begin
 
     if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then
     begin
-      Form7.ibDataSet16UNITARIO.AsString   := '';
-      Form7.ibDataSet16TOTAL.AsString      := '';
-      Form7.ibDataSet16QUANTIDADE.AsString := '';
+      Form7.ibDataSet16UNITARIO.AsString   := EmptyStr;
+      Form7.ibDataSet16TOTAL.AsString      := EmptyStr;
+      Form7.ibDataSet16QUANTIDADE.AsString := EmptyStr;
     end else
     begin
       /////////////////////////////////////////////////////////////////////////
@@ -19222,32 +19446,9 @@ begin
           if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then                                      //
           begin                                                                    //
             Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
-          end else                                                                 //
-          begin                                                                    //
-            /////////////////////////////////////////////////////////////////////////////
-            // Não permite quantidade negativa                                         //
-            /////////////////////////////////////////////////////////////////////////////
-            if ibDataSet16QUANTIDADE.AsFloat < 0 then ibDataSet16QUANTIDADE.AsFloat := 0 else
-            begin
-              if (Form1.ConfNegat = 'Não') and (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
-              begin
-                if (StrToFloat(Text) > ibDataSet4QTD_ATUAL.AsCurrency) then
-                begin
-                  ShowMessage('Não é possível efetuar a venda, só tem ' + ibDataSet4QTD_ATUAL.AsString + ' no estoque. Cod. 3');
-                  Form7.ibDataSet16DESCRICAO.AsString   := '';
-                  Form7.ibDataSet16TOTAL.AsString       := '';
-                  Form7.ibDataSet16UNITARIO.AsString    := '';
-                  Form7.ibDataSet16QUANTIDADE.AsString  := '';
-                  Form7.ibDataSet16CODIGO.AsString      := '';
-                  Form7.ibDataSet16CFOP.AsString        := '';
-                end
-                else
-                  ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
-              end
-              else
-                ibDataSet16QUANTIDADE.AsFloat := StrToFloat(Text);
-            end;
-          end;
+          end else
+            Form7.ibDataSet16QUANTIDADE.AsString := Text;                                                                                                                                 
+//            VerificaSaldoEstoqueDispItemNota(StrToFloat(Text));
         end else
         begin
           // Não permite quantidade negativa
@@ -19259,6 +19460,8 @@ begin
 end;
 
 procedure TForm7.ibDataSet16UNITARIOChange(Sender: TField);
+var
+  cModuloAnt: String;
 begin
   //
   // Verifica se ta cadastrado
@@ -19281,10 +19484,16 @@ begin
       //
       // Se o produto ta com prço zerado tem que preencher com 0.001 lei de MG
       //
-      if Form7.ibDataSet4PRECO.Value = 0 then
-      begin
-        Form7.ibDataSet4.Edit;
-        Form7.ibDataSet4PRECO.Value := 0.01;
+      cModuloAnt := Form7.sModulo;
+      try
+        if Form7.ibDataSet4PRECO.Value = 0 then
+        begin
+          Form7.ibDataSet4.Edit;
+          Form7.ibDataSet4PRECO.Value := 0.01;
+        end;
+      finally
+        // Estava trocando o modulo para ESTOQUE
+        Form7.sModulo := cModuloAnt;
       end;
       //
       // Não aceita zerado
@@ -19849,6 +20058,9 @@ end;
 
 procedure TForm7.ibDataSet16AfterDelete(DataSet: TDataSet);
 begin
+  if Form7.sModulo = 'VENDA' then
+    AtualizarListaItensAuxiliar;
+    
   if Form7.sModulo = 'OS' then
     TotalizaOS(True);
   AgendaCommit(True);
@@ -20838,7 +21050,7 @@ begin
                 //
                 // Quando nao baixa estoque tambem nao pode devolver
                 //
-                if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929') then
+                if (TestarNatOperacaoMovEstoque) and (Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929') then
                 begin
                   Form7.ibDataSet4.Edit;
                   Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet16SINCRONIA.AsFloat; // Só retorna o SINCRONIA que realmente saiu do estoque. No caso de nf qua ainda não foi autorizada SINCRONIA é igual a 0 (zero)
@@ -21105,7 +21317,7 @@ begin
         //
         if (Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet23CODIGO.AsString) and (Form7.ibDataSet4CODIGO.AsString <>'') then
         begin
-          if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0) then
+          if TestarNatOperacaoMovEstoque then
           begin
             Form7.ibDataSet4.Edit;
             Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet23QUANTIDADE.AsFloat;
@@ -22692,47 +22904,35 @@ end;
 
 procedure TForm7.Gerarnotafiscalsrie11Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
       Form7.Close;
       Form7.Vendas_1Click(Sender);                        // Nota fiscal série 1
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.Gerarnotafiscalsrie21Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
       Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
-      //
     end;
-    //
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
@@ -22877,42 +23077,35 @@ end;
 
 procedure TForm7.ArquivotextoNotaFiscalPaulista1Click(Sender: TObject);
 begin
-  //
   if UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'SP' then if FileExists(Form1.sAtual+'\sintegra.exe') then ShellExecute( 0, 'Open', 'sintegra.exe', 'PAULISTA', '', SW_SHOW) else ShowMessage('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.');
   if UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'AL' then if FileExists(Form1.sAtual+'\sintegra.exe') then ShellExecute( 0, 'Open', 'sintegra.exe', 'ALAGOANA', '', SW_SHOW) else ShowMessage('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.');
-  //
 end;
 
 procedure TForm7.ibDataSet4BeforeInsert(DataSet: TDataSet);
 begin
-  //
   try
 //    if Alltrim(Form7.ibDataSet4DESCRICAO.AsString)='' then Form7.ibDataSet4.Delete;
   except end;
-  //
+
   try
-    //
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
     ibDataset99.SelectSql.Add('select gen_id(G_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
     ibDataset99.Close;
-    //
+
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
-    //
   except end;
-  //
 end;
 
 procedure TForm7.ImprimirtodasasOSfiltradas1Click(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   I := Application.MessageBox(pChar(
                             chr(10) +'Quer realmente imprimir todas as OS filtradas?'
                             +chr(10)+
@@ -22920,16 +23113,13 @@ begin
                             'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
   if I = 6 then
   begin
-    //
     Form7.ibDataSet3.First;
     while not Form7.ibDataSet3.Eof do
     begin
       Form7.ImprimirOrdemdeServio1Click(Sender);
       Form7.ibDataSet3.Next;
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet3SITUACAOSetText(Sender: TField;
@@ -22942,24 +23132,20 @@ procedure TForm7.ibDataSet11AfterPost(DataSet: TDataSet);
 var
   sNomeNovo, sNomevolta : String;
 begin
-  //
   // NOME DO BANCO
-  //
   if (sNomeAnterior <> ibDataSet11NOME.AsString) and (sNomeAnterior <> '')  and (sNumeroAnterior = ibDataSet11REGISTRO.AsString) then
   begin
     sNomeNovo  := ibDataSet11NOME.AsString;
     sNomeVolta := sNomeAnterior;
-    //
+
     // MOVIMENTO
-    //
     Form7.ibDataSet5.Close;
     Form7.ibDataSet5.SelectSQL.Clear;
     Form7.ibDataSet5.SelectSQL.Add('update MOVIMENT set NOME='+QuotedStr(sNomeNovo)+' where upper(NOME)='+QuotedStr(UpperCase(sNomeVolta))+'');
     Form7.ibDataSet5.Open;
   end;
-  //
+
   AgendaCommit(True);
-  //
 end;
   
 procedure TForm7.ibDataSet11BeforeEdit(DataSet: TDataSet);
@@ -22974,38 +23160,32 @@ end;
 
 procedure TForm7.Notasfiscaiscanceladas1Click(Sender: TObject);
 begin
-  //
   sWhere := sWhere + ' and EMITIDA='+QuotedStr('X');
   Form7.Close;
   Form7.Show;
-  //
+
   Notasfiscaiscanceladas1.Checked := True;
   Notasfiscaisabertas1.Checked    := False;
-  //
 end;
 
 procedure TForm7.Notasfiscaisabertas1Click(Sender: TObject);
 begin
-  //
   sWhere := sWhere + ' and EMITIDA<>'+QuotedStr('S')+' and EMITIDA<>'+QuotedStr('X');
   Form7.Close;
   Form7.Show;
-  //
+
   Notasfiscaiscanceladas1.Checked := False;
   Notasfiscaisabertas1.Checked    := True;
-  //
 end;
 
 procedure TForm7.odas4Click(Sender: TObject);
 begin
-  //
   sWhere := '';
   Form7.Close;
   Form7.Show;
-  //
+
   Notasfiscaiscanceladas1.Checked := True;
   Notasfiscaisabertas1.Checked    := False;
-  //
 end;
 
 procedure TForm7.Exportar1Click(Sender: TObject);
@@ -23015,46 +23195,39 @@ end;
 
 procedure TForm7.ImportarOS1Click(Sender: TObject);
 begin
-  //
   AgendaCommit(True);
   Form7.Close;
   Form7.Show;
-  //
+
   Form7.Image101Click(Sender);
   Form12.ImportarOS2Click(Sender);
-  //
 end;
 
 procedure TForm7.ImportarCupomFiscal1Click(Sender: TObject);
 begin
-  //
   AgendaCommit(True);
   Form7.Close;
   Form7.Show;
-  //
+
   Form7.Image101Click(Sender);
   Form12.Emitirnotafiscaldevendasnobalco1Click(Sender);
-  //
 end;
 
 procedure TForm7.ImportarOramento1Click(Sender: TObject);
 begin
-  //
   AgendaCommit(True);
-  //
+
   Form7.Close;
   Form7.Show;
-  //
+
   Form7.ibDataSet97.Close;
   Form7.ibDataSet97.Selectsql.Clear;
   Form7.ibDataSet97.Selectsql.Add('select PEDIDO as "Orçamento", DATA as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum(TOTAL) as "Total", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO');  //
   Form7.ibDataSet97.Open;
   Form7.ibDataSet97.EnableControls;
-  //
-  //
+
   Form7.Image101Click(Sender);
   Form12.Importaroramentos1Click(Sender);
-  //
 end;
 
 procedure TForm7.ImportarNotaFiscal1Click(Sender: TObject);
@@ -25622,53 +25795,40 @@ end;
 
 procedure TForm7.GerarNotaFiscalSrie12Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
 end;
 
 procedure TForm7.GerarNotaFiscalSrie22Click(Sender: TObject);
 begin
-  //
   // Gera a nota fiscal
-  //
   if Form1.bNotaVendaLiberada then
   begin
-    //
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      //
       Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
-      //
     end;
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
   end;
-  //
-
 end;
 
 procedure TForm7.Relatriodeoramentospendentes2Click(Sender: TObject);
@@ -33042,7 +33202,6 @@ begin
   Mauricio Parizotto 2023-06-27}
 end;
 
-
 procedure TForm7.RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
 begin
   CriaJpg('logotip.jpg');
@@ -33120,6 +33279,11 @@ end;
 function TForm7.RetornarAliquotaICM(AcUF: String): Currency;
 begin
   Result := ibDataSet14.fieldbyname(AcUF+'_').AsCurrency;
+end;
+
+procedure TForm7.ibDataSet16AfterOpen(DataSet: TDataSet);
+begin
+  AtualizarListaItensAuxiliar;
 end;
 
 end.

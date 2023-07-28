@@ -1,5 +1,5 @@
 object Form7: TForm7
-  Left = 396
+  Left = 287
   Top = 74
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
@@ -202,8 +202,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label16: TLabel
-    Left = 278
-    Top = 211
+    Left = 311
+    Top = 219
     Width = 71
     Height = 13
     Caption = 'Itens de venda'
@@ -21262,7 +21262,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21296,7 +21296,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21611,7 +21611,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\DPEC'
+      'vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21641,7 +21641,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\DPEC'
+      'm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21887,5 +21887,46 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Left = 768
     Top = 632
+  end
+  object CDSItensNotaAux: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'DESCRICAO'
+        DataType = ftString
+        Size = 200
+      end
+      item
+        Name = 'QTDE'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'INDICE'
+        DataType = ftInteger
+      end
+      item
+        Name = 'CODIGO'
+        DataType = ftString
+        Size = 10
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 272
+    Top = 211
+    object CDSItensNotaAuxDESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Size = 200
+    end
+    object CDSItensNotaAuxQTDE: TCurrencyField
+      FieldName = 'QTDE'
+    end
+    object CDSItensNotaAuxINDICE: TIntegerField
+      FieldName = 'INDICE'
+    end
+    object CDSItensNotaAuxCODIGO: TStringField
+      FieldName = 'CODIGO'
+      Size = 10
+    end
   end
 end

@@ -141,14 +141,14 @@ begin
   try
     dbgPesquisa.Visible    := False;
     DSEmitente.DataSet.Post;
-    //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
-    Form1.RegistrodoPrograma(False);
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     AgendaCommit(True);
     Commitatudo(True); // SQL - Commando
     AbreArquivos(True);
     Screen.Cursor := crDefault; // Cursor de Aguardo
+
+    Form1.RegistrodoPrograma(False);
   except
   end;
 

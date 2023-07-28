@@ -301,7 +301,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais;
+  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -537,7 +537,6 @@ end;
 
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
 begin
-  //
   // Apaga lançamento anterior no livro caixa
   //
   Form7.ibDataSet100.Close;
@@ -546,60 +545,39 @@ begin
   Form7.IBDataSet100.Open;
   //
   Result := True;
-  //
 end;
 
 function Retributa(pP1:Boolean):Boolean;
 var
   sReg16 : String;
 begin
-  //
   Form7.sModulo := 'RETRIBUTA';
-  //
+
   try
-    //
-{
-    Form7.ibQuery1.Close;
-    Form7.ibQuery1.SQL.Clear;
-    Form7.ibQuery1.SQL.Add('select sum(TOTAL) from ITENS001 where NUMERONF='+QuotedStr(Form7.IbDAtaSet15NUMERONF.AsString)+' ');
-    Form7.ibQuery1.Open;
-    //
-    if Form7.IBQuery1.FieldByName('SUM').AsFloat <> Form7.IbDAtaSet15MERCADORIA.AsFloat then
-    //
-    // Desempenho nota
-    //
-}
     begin
-      //
       sReg16 := Form7.ibDataSet16REGISTRO.AsString;
       Form7.ibDataSet16.DisableControls;
-      //
+
       if Form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
-      //
+
       Form7.ibDataSet16.First;
       while not Form7.ibDataSet16.EOF do // Disable
       begin
-        //
         Form1.bFlag := True;
         Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
         Form7.ibDataSet16.Next;
-        //
       end;
-      //
+
       Form7.ibDataSet16.Locate('REGISTRO',sReg16,[]);
-      //
     end;
-    //
   except end;
-  //
+
   Form7.ibDataSet16.Edit;
-  //
+
   // não voltar Form7.ibDataSet16.EnableControls;  // Retributa
-  //
+
   Form7.sModulo := 'VENDA';
-  //
   Result := True;
-  //
 end;
 
 {$R *.DFM}
@@ -988,7 +966,7 @@ procedure TForm12.SMALL_DBEdit41Exit(Sender: TObject);
 begin
   if SMALL_DBEdit41.Text <> '' then
   begin
-    if Pos( AnsiUpperCase(SMALL_DBEdit41.Text), AnsiUpperCase(AllTrim(Form7.ibDataSet18NOME.AsString))) <> 0 then
+    if Pos( AnsiUpperCase(AllTrim(SMALL_DBEdit41.Text)), AnsiUpperCase(AllTrim(Form7.ibDataSet18NOME.AsString))) <> 0 then
     begin
       //
       Form7.ibDataSet15.Edit;
@@ -1201,8 +1179,22 @@ end;
 procedure TForm12.SMALL_DBEdit41KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else DBMemo1.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
+  case Key of
+    VK_DOWN:
+    begin
+      if (dBgrid2.Visible) then
+        dBgrid2.SetFocus
+      else
+        DBMemo1.SetFocus;
+    end;
+    VK_UP:
+    begin
+      if (dBgrid2.Visible) then
+        dBgrid2.SetFocus
+      else
+        Perform(Wm_NextDlgCtl,-1,0);
+    end;
+  end;
 end;
 
 procedure TForm12.DBGrid1Enter(Sender: TObject);
@@ -1695,6 +1687,8 @@ begin
   Form12.Edit1.Visible := True;
   //
   Form12.Button3Click(Sender);
+
+  Form7.AtualizarListaItensAuxiliar;
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
 
@@ -1908,6 +1902,9 @@ begin
   Form1.ConfEspecie := Form7.ibDataSet15ESPECIE.AsString;
   Form1.ConfMarca   := Form7.ibDataSet15MARCA.AsString;
 
+  //Mauricio Parizotto 2023-07-26  Tem que ter duas vezes para funcionar (motivo desconhecido...)
+  Form7.ibDataSet16.EnableControls;
+  Form7.ibDataSet16.EnableControls;
 end;
 
 
@@ -2130,6 +2127,7 @@ end;
 procedure TForm12.Emitirnotafiscaldevendasnobalco1Click(Sender: TObject);
 begin
   // Atualiza as ECF's que estão em uso
+  {Mauricio Parizotto 2023-07-19 Inicio
   Form7.ibDataSet14.DisableControls;
   Form7.ibDataSet14.Close;
   Form7.ibDataSet14.SelectSQL.Clear;
@@ -2151,13 +2149,39 @@ begin
     Form7.sModulo := 'VENDA';
 
     Form7.ibDataSet16.First;
-//    Form7.ibDataSet16.Edit;
-    if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
+
+    if form7.ibDataSet16.Modified then
+      Form7.ibDataSet16.Post;
     Retributa(True);
   end else
   begin
     ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929');
   end;
+
+  Com importação do gerencial, essa validação vai ficar em outro local }
+
+  //Mauricio Parizotto 2023-07-26
+  Form7.ibDataSet16.EnableControls;
+
+  Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+
+  Form7.sModulo := 'BALCAO';
+  Form41.ShowModal;
+  Form7.sModulo := 'VENDA';
+
+  Form7.ibDataSet16.First;
+
+  if form7.ibDataSet16.Modified then
+    Form7.ibDataSet16.Post
+  else
+    Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
+
+  Retributa(True);
+
+  {Mauricio Parizotto 2023-07-19 Fim}
+
+  //Mauricio Parizotto 2023-07-26
+  Form7.ibDataSet16.EnableControls;
 end;
 
 procedure TForm12.Importaroramentos1Click(Sender: TObject);
@@ -2869,6 +2893,7 @@ end;
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
+  {
   if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := True;
@@ -2876,6 +2901,8 @@ begin
   begin
     Emitirnotafiscaldevendasnobalco1.Enabled := False;
   end;
+  Mauricio Parizotto 2023-07-25 Vai validar depois}
+  Emitirnotafiscaldevendasnobalco1.Enabled := True;
 end;
 
 procedure TForm12.Button3Click(Sender: TObject);
@@ -3159,7 +3186,13 @@ end;
 
 procedure TForm12.SMALL_DBEdit41Click(Sender: TObject);
 begin
-  dBGrid2.Visible       := True;
+  dBGrid2.Visible := True;
+  if not SMALL_DBEdit41.Focused then
+  begin
+    SMALL_DBEdit41.SetFocus;
+    SMALL_DBEdit41.SelectAll;
+    SMALL_DBEdit41Change(Self);    
+  end;
 end;
 
 procedure TForm12.ExibeColunasFCP(bOculta: Boolean);
