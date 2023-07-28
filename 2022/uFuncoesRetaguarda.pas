@@ -16,6 +16,12 @@ uses
   , Unit3
   , Mais
   , Controls
+  {$IFDEF VER150}
+  , md5
+  {$ELSE}
+  , IdHashMessageDigest
+  , IdGlobal
+  {$ENDIF}
   , DBGrids 
   ;
 
@@ -39,6 +45,7 @@ uses
   function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
   function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
+  function GeraMD5(valor :string):string;
 
 implementation
 
@@ -624,6 +631,26 @@ begin
     sIdForma := IdFormasDePagamentoNFe(sForma);
   Result := (Pos('|' + sIdForma + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
 end;
+
+function GeraMD5(valor :string):string;
+{$IFDEF VER150}
+{$ELSE}
+var
+  idmd5 : TIdHashMessageDigest5;
+{$ENDIF}
+begin
+  {$IFDEF VER150}
+  Result := MD5Print(MD5String(valor));
+  {$ELSE}
+  idmd5 := TIdHashMessageDigest5.Create;
+  try
+    result := LowerCase(idmd5.HashStringAsHex(valor,IndyTextEncoding_OSDefault));
+  finally
+    idmd5.Free;
+  end;
+  {$ENDIF}
+end;
+
 
 end.
 

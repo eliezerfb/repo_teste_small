@@ -3443,6 +3443,12 @@ begin
   cbMovimentacaoEstoque.Items.Add(TEXTO_NAO_MOVIMENTA_ESTOQUE);
   cbMovimentacaoEstoque.Items.Add(TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS);
 
+  {$IFDEF VER150}
+  {$ELSE}
+  StringGrid2.DrawingStyle       := gdsGradient;
+  StringGrid2.GradientStartColor := $00F0F0F0;
+  StringGrid2.GradientEndColor   := $00F0F0F0;
+  {$ENDIF}
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -9485,6 +9491,7 @@ end;
 procedure TForm10.StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 begin
+  {$IFDEF VER150}
   if ACol <> 1 then
   begin
     StringGrid2.Canvas.Font.Color  := clGray;
@@ -9492,9 +9499,17 @@ begin
       StringGrid2.Canvas.Font.Color  := clBlack; // Sandro Silva 2023-05-15
     StringGrid2.Canvas.FillRect(Rect);
   end;
-  
+
   StringGrid2.Canvas.FillRect(Rect);
   StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
+  {$ELSE}
+  if (ACol > 1) and not (gdSelected in State) and (ARow > 0) then
+  begin
+    StringGrid2.Canvas.Font.Color  := clGray;
+    StringGrid2.Canvas.FillRect(Rect);
+    StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
+  end;
+  {$ENDIF}
 end;
 
 procedure TForm10.Image1Click(Sender: TObject);

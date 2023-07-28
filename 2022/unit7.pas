@@ -8,7 +8,7 @@ uses
   StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
-  DBClient, LbAsym, LbRSA, LbCipher, LbClass, MD5, xmldom, XMLIntf,
+  DBClient, LbAsym, LbRSA, LbCipher, LbClass, {MD5,} xmldom, XMLIntf,
   msxmldom, XMLDoc,
   {$IFDEF VER150}
   oxmldom, spdXMLUtils, spdType, CAPICOM_TLB,
@@ -3071,7 +3071,8 @@ begin
 
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
-      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+      //IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
       IBQHASH.ExecSQL;
 
       if IBQHASH.RowsAffected = 0 then
@@ -3079,7 +3080,8 @@ begin
         //2015-11-26 Não existe ainda controle de hash da tabela
         IBQHASH.Close;
         IBQHASH.SQL.Clear;
-        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))) + ')');
+        //IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))) + ')');
+        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form7.ibQuery1.FieldByName('TOTALREG').AsString))) + ')');
         IBQHASH.ExecSQL;
       end;
 
@@ -3124,7 +3126,8 @@ begin
     //    );
     //
     //sHash := Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery2.FieldByName('COUNT').AsString)));
-    if Form7.ibQuery1.FieldByName('ENCRYPTHASH').AsString = Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery2.FieldByName('COUNT').AsString))) then
+    //if Form7.ibQuery1.FieldByName('ENCRYPTHASH').AsString = Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery2.FieldByName('COUNT').AsString))) then
+    if Form7.ibQuery1.FieldByName('ENCRYPTHASH').AsString = Form7.LbBlowfish1.EncryptString(GeraMD5(Form7.ibQuery2.FieldByName('COUNT').AsString)) then
     begin
       Result := True;
     end else
@@ -3146,30 +3149,23 @@ var
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
 begin
-  //
   Result := True;
   s := '';
   //
   try
     //Sandro Silva 2017-11-09 inicio Polimig
-    //
-    //
     if pNome = 'EMITENTE' then
     begin
-      //
       sAntigo :=
       VarToStr(DataSet.FieldByname('CGC').OldValue)+
       VarToStr(DataSet.FieldByname('IE').OldValue);;
       s :=
       DataSet.FieldByname('CGC').AsString+
       DataSet.FieldByname('IE').AsString;
-      //
-      //
     end;
-    //
+    
     if pNome = 'VENDA' then
     begin
-      //
       sAntigo :=
       VarToStr(DataSet.FieldByname('NUMERONF').OldValue)+
       VarToStr(DataSet.FieldByname('MODELO').OldValue)+
@@ -3276,12 +3272,10 @@ begin
       DataSet.FieldByname('FINNF').AsString+
       DataSet.FieldByname('INDFINAL').AsString+
       DataSet.FieldByname('INDPRES').AsString;
-      //
     end;
-    //
+
     if pNome = 'ITENS001' then
     begin
-      //
       sAntigo :=
       VarToStr(DataSet.FieldByname('NUMERONF').OldValue)+
       VarToStr(DataSet.FieldByname('CODIGO').OldValue)+
@@ -3356,8 +3350,8 @@ begin
       DataSet.FieldByname('ANVISA').AsString+
       DataSet.FieldByname('PFCPUFDEST').AsString+
       DataSet.FieldByname('PICMSUFDEST').AsString;
-      //
     end;
+
     //Sandro Silva 2017-11-09 final Polimig
     if pNome = 'ESTOQUE' then
     begin
@@ -3440,7 +3434,7 @@ begin
         DataSet.FieldByName('CEST').AsString+
         DataSet.FieldByName('IPPT').AsString;
     end;
-    //
+    
     if pNome = 'ALTERACA' then
     begin
       //Sandro Silva 2018-05-25 inicio
@@ -3495,9 +3489,8 @@ begin
         DataSet.FieldByName('SUBSERIE').AsString+
         DataSet.FieldByName('CNPJ').AsString+
         DataSet.FieldByName('REFERENCIA').AsString;
-      //
     end;
-    //
+
     if pNome = 'REDUCOES' then
     begin
       s :=
@@ -3557,10 +3550,8 @@ begin
         DataSet.FieldByName('SMALL').AsString+
         DataSet.FieldByName('STATUS').AsString+
         DataSet.FieldByName('ESTOQUE').AsString;
-      //
-      //
     end;
-    //
+
     if pNome = 'ORCAMENT' then
     begin
       s :=
@@ -3581,10 +3572,8 @@ begin
         DataSet.FieldByName('ALIQUICM').AsString+
         DataSet.FieldByName('NUMERONF').AsString+
         DataSet.FieldByName('COO').AsString;
-      //
-
     end;
-    //
+
     if pNome = 'PAGAMENT' then
     begin
       s :=
@@ -3600,12 +3589,10 @@ begin
         DataSet.FieldByName('GRG').AsString+
         DataSet.FieldByName('CDC').AsString+
         DataSet.FieldByName('GNF').AsString;
-      //
     end;
-    //
+
     if pNome = 'DEMAIS' then
     begin
-      //
       s :=
         DataSet.FieldByName('DATA').AsString+
         DataSet.FieldByName('HORA').AsString+
@@ -3615,28 +3602,23 @@ begin
         DataSet.FieldByName('GNF').AsString+
         DataSet.FieldByName('CDC').AsString+
         DataSet.FieldByName('GRG').AsString;
-      //
     end;
-    //
 
     //Sandro Silva 2015-10-01 inicio
     if pNome = 'ECFS' then
     begin
-      //
       s := DataSet.FieldByName('SERIE').AsString;
-      //
     end;
     //Sandro Silva 2015-10-01 final
 
-    //
-    //
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-    //
 
     if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then 
     begin
-      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
-      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
+      //sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
+      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo));
+      //sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
+      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoSemCest));
       //ShowMessage('Teste 01 9450 ' + #13 +
       //            'hash antigo ' + sAntigoENCRYPTHASH + #13 +
       //            'hash antigo sem cest ' + sAntigoSemCestENCRYPTHASH + #13 +
@@ -3647,26 +3629,28 @@ begin
     if bAssina then
     begin
       // Assina registro
-      //
       if pNome = 'ESTOQUE' then
       begin
 //        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
       end else
       begin
         // Sandro Silva
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre 
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
       end;
-      //
     end else
     begin
       // Sandro Silva
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -3680,7 +3664,8 @@ begin
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
         // Sandro Silva 
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -3690,8 +3675,9 @@ begin
       end;
       //Sandro Silva 2017-11-13 final HOMOLOGA 2017
     end;
-  except ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome) end;
-  //
+  except
+    ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome)
+  end;
 end;
 ///////////////////////////////////
 
@@ -15345,62 +15331,53 @@ var
   sNomeNovo  : String;
   sNomeVolta : String;
 begin
-  //
   // Quando troca o nome do produto
-  //
   if (sNomeAnterior <> ibDataSet4DESCRICAO.AsString) and (AllTrim(sNomeAnterior) <> '') and (sNumeroAnterior = ibDataSet4REGISTRO.AsString) then
   begin
-    //
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
-    //
+    
     Form7.ibDataSet4.DisableControls;
-    //
+
     sNomeNovo  := ibDataSet4DESCRICAO.AsString;
     sNomeVolta := sNomeAnterior;
-    //
+
     // ALTERACA
-    //
     Form7.ibDataSet27.Close;
     Form7.ibDataSet27.SelectSQL.Clear;
-    Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+'  where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    //Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+'  where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+'  where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet27.Open;
-    //
+
     // ORCAMENTO
-    //
     Form7.ibDataSet27.Close;
     Form7.ibDataSet27.SelectSQL.Clear;
-    Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    //Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet27.Open;
-    //
+
     // COMPOSICAO
-    //
     Form7.ibDataSet28.Close;
     Form7.ibDataSet28.SelectSQL.Clear;
     Form7.ibDataSet28.SelectSQL.Add('update COMPOSTO set DESCRICAO='+QuotedStr(sNomeNovo)+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet28.Open;
-    //
+
     // ITENS001
-    //
     Form7.ibDataSet16.Close;
     Form7.ibDataSet16.SelectSQL.Clear;
-    Form7.ibDataSet16.SelectSQL.Add('update ITENS001 set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    //Form7.ibDataSet16.SelectSQL.Add('update ITENS001 set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    Form7.ibDataSet16.SelectSQL.Add('update ITENS001 set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet16.Open;
-    //
+
     // ITENS002
-    //
     Form7.ibDataSet23.Close;
     Form7.ibDataSet23.SelectSQL.Clear;
     Form7.ibDataSet23.SelectSQL.Add('update ITENS002 set DESCRICAO='+QuotedStr(sNomeNovo)+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet23.Open;
-    //
+
     Form7.ibDataSet4.EnableControls;
-    //
   end;
-  //
-  // Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   AgendaCommit(True);
-  //
 end;
 
 procedure TForm7.ibDataSet2AfterPost(DataSet: TDataSet);

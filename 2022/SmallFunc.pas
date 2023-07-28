@@ -15,7 +15,7 @@ unit SmallFunc;
 interface
 
 uses
-  SysUtils,BDE,DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
+  SysUtils,{BDE,} DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
   msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
   ShellAPI, jpeg, TLHelp32;
 
@@ -1229,7 +1229,12 @@ begin
   SeenSign := false;
   for i := 1 to length(s) do begin
 {    if not (S[i] in ['+', '-', '0'..'9', ' ', '_', ThousandSeparator]) then begin}
-    if not (S[i] in ['+', '-', '0'..'9', ' ', ThousandSeparator]) then begin
+    {$IFDEF VER150}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', ThousandSeparator]) then
+    {$ELSE}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', FormatSettings.ThousandSeparator]) then
+    {$ENDIF}
+    begin
       Result := false;
       break;
     end;
