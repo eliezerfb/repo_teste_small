@@ -451,7 +451,7 @@ begin
                   //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2); // Acumula
                   NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2); // Acumula
                   //oItem.Vicmsst         := Arredonda(oItem.Vicmsst - ((oItem.IPI * (oItem.TOTAL-fRateioDoDesconto) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2);
-                  oItem.Vicmsst         := Arredonda(oItem.Vicmsst - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2);
+                  oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2);
                 end else
                 begin
                   if pos('<BCST>',IBQIcm.FieldByName('OBS').AsString) <> 0 then
@@ -581,12 +581,14 @@ begin
                     ((oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade)
                      * oItem.BASE / 100 * IBQProduto.FieldByname('PIVA').AsFloat),2);
 
+                {Dailon 2023-07-31 inicio
                 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
                     (((
                     //((oItem.TOTAL-fRateioDoDesconto) + fIPIPorUnidade)
                     ((oItem.TOTAL-oItem.DescontoRateado) + fIPIPorUnidade)
                     ) * oItem.BASE / 100
                      *  IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* IBQProduto.FieldByname('PIVA').AsFloat ),2); // Não pode arredondar aqui
+                {Dailon 2023-07-31 fim}
 
                 oItem.Vbcst := Arredonda(oItem.Vbcst+
                 //((oItem.TOTAL-fRateioDoDesconto + fIPIPorUnidade)
@@ -603,9 +605,10 @@ begin
 
               // Desconta do ICMS substituido o ICMS normal
               //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - (((oItem.TOTAL-fRateioDoDesconto) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2); // Acumula
-              NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - (((oItem.TOTAL-oItem.DescontoRateado) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2); // Acumula
+              oItem.Vicmsst          := Arredonda(oItem.Vicmsst        - (((oItem.TOTAL-oItem.DescontoRateado) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2);
+
+              NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst,2); // Acumula
               //oItem.Vicmsst          := Arredonda(oItem.Vicmsst - (((oItem.TOTAL-fRateioDoDesconto) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2);
-              oItem.Vicmsst          := Arredonda(oItem.Vicmsst - (((oItem.TOTAL-oItem.DescontoRateado) ) * oItem.BASE / 100 *  AliqICMdoCliente(oItem) / 100 ),2);
             end else
             begin
               if pos('<BCST>',IBQIcm.FieldByName('OBS').AsString) <> 0 then
