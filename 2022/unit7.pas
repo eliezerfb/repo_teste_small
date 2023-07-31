@@ -15846,8 +15846,10 @@ procedure TForm7.ibDataSet4BeforePost(DataSet: TDataSet);
 begin
   //
   sRegistro := DataSet.FieldByname('REGISTRO').AsString;
-  if ibDataSet4PRECO.AsFloat <=0 then ibDataSet4PRECO.AsFloat := 0.01;
+  if ibDataSet4PRECO.AsFloat <=0 then
+    ibDataSet4PRECO.AsFloat := 0.01;
   AssinaRegistro('ESTOQUE',DataSet, True);
+  AuditaAlteracaoEstoqueManual;  
   //
 end;
 
@@ -18070,11 +18072,30 @@ begin
 end;
 
 procedure TForm7.AuditaAlteracaoEstoqueManual;
+var
+  QrySaldo: TIBQuery;
 begin
   if sModulo <> 'ESTOQUE' then
     Exit;
-  if (Form7.ibDataSet4QTD_ATUAL.OldValue <> Form7.ibDataSet4QTD_ATUAL.Value) then
-    Audita('ALTEROU',Form7.smodulo, Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', Form7.ibDataSet4QTD_ATUAL.OldValue, Form7.ibDataSet4QTD_ATUAL.Value);
+  QrySaldo := TIBQuery.Create(nil);
+  try
+    QrySaldo.Close;
+    QrySaldo.Database := IBDatabase1;
+    QrySaldo.SQL.Add('SELECT QTD_ATUAL');
+    QrySaldo.SQL.Add('FROM ESTOQUE');
+    QrySaldo.SQL.Add('WHERE');
+    QrySaldo.SQL.Add('(CODIGO=:XCOD)');
+    QrySaldo.ParamByName('XCOD').AsString := ibDataSet4CODIGO.AsString;
+    QrySaldo.Open;
+
+    if QrySaldo.IsEmpty then
+      Exit;
+      
+    if QrySaldo.FieldByName('QTD_ATUAL').Value <> Form7.ibDataSet4QTD_ATUAL.Value then
+      Audita('ALTEROU',Form7.smodulo, Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').Value, Form7.ibDataSet4QTD_ATUAL.Value);
+  finally
+    FreeAndNil(QrySaldo);
+  end;
 end;
 
 procedure TForm7.Resumodevendas1Click(Sender: TObject);
