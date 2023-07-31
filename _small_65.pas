@@ -2505,7 +2505,7 @@ var
   sStatusServico: String; // Sandro Silva 2019-08-09
   sMensagemAlertaUsoDenegado: String; // Sandro Silva 2020-05-21
   sDadosTransacaoEletronicaNoComplemento: String; // Sandro Silva 2023-03-28
-  sNFCeGerencial: String; // Sandro Silva 2023-07-20
+  sNumeroGerencialConvertido: String; // Sandro Silva 2023-07-20
   function EncontraItemDataSet(sItemRejeicao: String): String;
   begin
 
@@ -4625,7 +4625,7 @@ begin
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
                 Form1.ibDataset150.Open;
                 {Sandro Silva 2023-07-20 inicio}
-                sNFCeGerencial := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+                sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
                 {Sandro Silva 2023-07-20 fim}
                 Form1.ibDataset150.Delete;
 
@@ -4636,8 +4636,8 @@ begin
 
                 Form1.IBDataSet150.Append;
                 {Sandro Silva 2023-07-20 inicio}
-                if sNFCeGerencial <> '' then
-                  Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNFCeGerencial;
+                if sNumeroGerencialConvertido <> '' then
+                  Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNumeroGerencialConvertido;
                 {Sandro Silva 2023-07-20 fim}
 
                 if Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
@@ -4876,7 +4876,7 @@ begin
                     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
                     begin
                       {Sandro Silva 2023-07-20 inicio}
-                      sNFCeGerencial := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+                      sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
                       {Sandro Silva 2023-07-20 fim}
                       Form1.ibDataset150.Delete;
                     end;
@@ -4894,8 +4894,8 @@ begin
                 Form1.IBDataSet150.Append;
 
                 {Sandro Silva 2023-07-20 inicio}
-                if sNFCeGerencial <> '' then
-                  Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNFCeGerencial;
+                if sNumeroGerencialConvertido <> '' then
+                  Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNumeroGerencialConvertido;
                 {Sandro Silva 2023-07-20 fim}
 
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
@@ -5212,7 +5212,7 @@ begin
           if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
           begin
             {Sandro Silva 2023-07-20 inicio}
-            sNFCeGerencial := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+            sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
             {Sandro Silva 2023-07-20 fim}
 
             Form1.ibDataset150.Delete;
@@ -5229,8 +5229,8 @@ begin
         Form1.IBDataSet150.Append;
 
         {Sandro Silva 2023-07-20 inicio}
-        if sNFCeGerencial <> '' then
-          Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNFCeGerencial;
+        if sNumeroGerencialConvertido <> '' then
+          Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNumeroGerencialConvertido;
         {Sandro Silva 2023-07-20 fim}
 
         Form1.IBDataSet150.FieldByName('NFEID').AsString    := sID;

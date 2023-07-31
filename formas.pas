@@ -529,7 +529,7 @@ procedure TFormasP.FormShow(Sender: TObject);
     Combo.Items.Add(DESC_FORMA_13_VALE_COMBUSTIVEL);
 
     {Sandro Silva 2021-03-08 inicio}
-    if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then // Sandro Silva 2021-08-09 if (Form1.sModeloECF_Reserva = '65') then
+    if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') then // Sandro Silva 2023-07-31 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then 
     begin
       Combo.Items.Add(DESC_FORMA_16_DEPOSITO_BANCARIO);
       Combo.Items.Add(DESC_FORMA_17_PAGAMENTO_INSTANTANEO);

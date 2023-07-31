@@ -26881,7 +26881,7 @@ begin
 
     if DataSet.FieldByName('MODELO').AsString = '99' then
     begin
-      if DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
+      if (DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA) and (DataSet.FieldByName('STATUS').AsString <> VENDA_MEI_ANTIGA_FINALIZADA) then // Sandro Silva 2023-07-31 if DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_FINALIZADA then
       begin
         Application.HintColor     := clRed;
         Application.HintHidePause := Application.HintPause * 10;
@@ -33854,6 +33854,10 @@ var
   ConverteGerencial: TConverteGerencialParaDocFiscal;
 begin
   Result := False;
+
+  if sNumeroGerencial = '' then
+    Exit;
+
   if PDV_CupomAberto then
   begin
     Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
@@ -33951,7 +33955,16 @@ begin
       end
       else
       begin
+
+        if Form1.ibDataSet27.Transaction.Active then
+          Form1.ibDataSet27.Transaction.Rollback;
+
+        if Form1.ibDataSet28.Transaction.Active then
+          Form1.ibDataSet28.Transaction.Rollback;
+
         DeletaDataSet25;
+
+        Commitatudo(True);
         Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
       end;
     end
@@ -34108,8 +34121,11 @@ end;
 procedure TForm1.itemMenugerencialClick(Sender: TObject);
 var
   Importar: TConverteGerencialParaDocFiscal;
+  sNumeroGerencial: String;
 begin
-  PDV_ImportaGerencial(ImportarDaPesquisa(tpPesquisaGerencial));
+  sNumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
+  if sNumeroGerencial <> '' then
+    PDV_ImportaGerencial(sNumeroGerencial);
 end;
 
 procedure TForm1.EmitirNFCedogerenical1Click(Sender: TObject);
