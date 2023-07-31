@@ -18074,7 +18074,7 @@ begin
   if sModulo <> 'ESTOQUE' then
     Exit;
   if (Form7.ibDataSet4QTD_ATUAL.OldValue <> Form7.ibDataSet4QTD_ATUAL.Value) then
-    Audita('ALTEROU','SMALL', Senhas.UsuarioPub, Form7.smodulo + ' - ' + ibDataSet4CODIGO.AsString + ' - SALDO ESTOQUE', Form7.ibDataSet4QTD_ATUAL.OldValue, Form7.ibDataSet4QTD_ATUAL.Value);
+    Audita('ALTEROU',Form7.smodulo, Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', Form7.ibDataSet4QTD_ATUAL.OldValue, Form7.ibDataSet4QTD_ATUAL.Value);
 end;
 
 procedure TForm7.Resumodevendas1Click(Sender: TObject);
