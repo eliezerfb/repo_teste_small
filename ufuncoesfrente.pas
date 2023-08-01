@@ -1720,35 +1720,16 @@ end;
 
 function Gerencial: Boolean;
 var
-  sCaminhoDev: String;
-  sNomeProjeto: String;
+  sModelo: String;
 begin
   // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
-  Result := ((Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) or ((Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '99') )); // Sandro Silva 2023-07-18 Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
+  // Sandro Silva 2023-08-01 Result := ((Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) or ((Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '99') )); // Sandro Silva 2023-07-18 Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
   {
-  if Result = False then
-  begin
-    try
-      // Artifício para executar com F9
-      with TStringList.Create do
-      begin
-
-        sCaminhoDev  := '\desenvolvimento\executaveis\Small Commerce\';
-        sNomeProjeto := 'artificio.txt';
-        if FileExists(sCaminhoDev + sNomeProjeto) then
-        begin
-          LoadFromFile(sCaminhoDev + sNomeProjeto);
-          if (Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and AnsiContainsText(Text, 'program frente;') and AnsiContainsText(AnsiUpperCase(Text), AnsiUpperCase('ufuncoesfrente in ''ufuncoesfrente.pas''')) then
-          begin
-            Result := True;
-          end;
-        end;
-        Free;
-      end;
-    except
-
-    end;
-  end;
+  sModelo := LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '');
+  if (sModelo = '99') then
+    Result := True
+  else if ((sModelo = '59') or (sModelo = '65')) and (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) then   // Se modelo ecf for sat ou nfce e o aplicativo for gerencial.exe
+    Result := True;
   }
 end;
 
