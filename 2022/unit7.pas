@@ -18090,7 +18090,7 @@ begin
       Exit;
       
     if QrySaldo.FieldByName('QTD_ATUAL').Value <> Form7.ibDataSet4QTD_ATUAL.Value then
-      Audita('ALTEROU',Form7.smodulo, Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').Value, Form7.ibDataSet4QTD_ATUAL.Value);
+      Audita('ALTEROU', 'ESTOQUE', Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').Value, Form7.ibDataSet4QTD_ATUAL.Value);
   finally
     FreeAndNil(QrySaldo);
   end;
