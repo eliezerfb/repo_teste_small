@@ -18075,8 +18075,6 @@ procedure TForm7.AuditaAlteracaoEstoqueManual;
 var
   QrySaldo: TIBQuery;
 begin
-  if sModulo <> 'ESTOQUE' then
-    Exit;
   QrySaldo := TIBQuery.Create(nil);
   try
     QrySaldo.Close;
