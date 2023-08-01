@@ -65,7 +65,7 @@ begin
             '0151202 - Criação de bovinos para leite'+#13#10+
             '0151203 - Criação de bovinos, exceto para corte e leite'+#13#10+
             '0152101 - Criação de bufalinos'+#13#10+
-            '0152102 - Criação de eqüinos'+#13#10+
+            '0152102 - Criação de equinos'+#13#10+
             '0152103 - Criação de asininos e muares'+#13#10+
             '0153901 - Criação de caprinos'+#13#10+
             '0153902 - Criação de ovinos, inclusive para produção de lã'+#13#10+
@@ -99,14 +99,14 @@ begin
             '0210107 - Extração de madeira em florestas plantadas'+#13#10+
             '0210108 - Produção de carvão vegetal - florestas plantadas'+#13#10+
             '0210109 - Produção de casca de acácia-negra - florestas plantadas'+#13#10+
-            '0210199 - Produção de produtos não-madeireiros não especificados anteriormente em florestas plantadas'+#13#10+
+            '0210199 - Produção de produtos não madeireiros não especificados anteriormente em florestas plantadas'+#13#10+
             '0220901 - Extração de madeira em florestas nativas'+#13#10+
             '0220902 - Produção de carvão vegetal - florestas nativas'+#13#10+
             '0220903 - Coleta de castanha-do-pará em florestas nativas'+#13#10+
             '0220904 - Coleta de látex em florestas nativas'+#13#10+
             '0220905 - Coleta de palmito em florestas nativas'+#13#10+
             '0220906 - Conservação de florestas nativas'+#13#10+
-            '0220999 - Coleta de produtos não-madeireiros não especificados anteriormente em florestas nativas'+#13#10+
+            '0220999 - Coleta de produtos não madeireiros não especificados anteriormente em florestas nativas'+#13#10+
             '0230600 - Atividades de apoio à produção florestal'+#13#10+
             '0311601 - Pesca de peixes em água salgada'+#13#10+
             '0311602 - Pesca de crustáceos e moluscos em água salgada'+#13#10+
@@ -120,16 +120,16 @@ begin
             '0321302 - Criação de camarões em água salgada e salobra'+#13#10+
             '0321303 - Criação de ostras e mexilhões em água salgada e salobra'+#13#10+
             '0321304 - Criação de peixes ornamentais em água salgada e salobra'+#13#10+
-            '0321305 - Atividades de apoio à aqüicultura em água salgada e salobra'+#13#10+
-            '0321399 - Cultivos e semicultivos da aqüicultura em água salgada e salobra não especificados anteriormente'+#13#10+
+            '0321305 - Atividades de apoio à aquicultura em água salgada e salobra'+#13#10+
+            '0321399 - Cultivos e semicultivos da aquicultura em água salgada e salobra não especificados anteriormente'+#13#10+
             '0322101 - Criação de peixes em água doce'+#13#10+
             '0322102 - Criação de camarões em água doce'+#13#10+
             '0322103 - Criação de ostras e mexilhões em água doce'+#13#10+
             '0322104 - Criação de peixes ornamentais em água doce'+#13#10+
             '0322105 - Ranicultura'+#13#10+
             '0322106 - Criação de jacaré'+#13#10+
-            '0322107 - Atividades de apoio à aqüicultura em água doce'+#13#10+
-            '0322199 - Cultivos e semicultivos da aqüicultura em água doce não especificados anteriormente'+#13#10+
+            '0322107 - Atividades de apoio à aquicultura em água doce'+#13#10+
+            '0322199 - Cultivos e semicultivos da aquicultura em água doce não especificados anteriormente'+#13#10+
             '0500301 - Extração de carvão mineral'+#13#10+
             '0500302 - Beneficiamento de carvão mineral'+#13#10+
             '0600001 - Extração de petróleo e gás natural'+#13#10+
@@ -149,8 +149,8 @@ begin
             '0729401 - Extração de minérios de nióbio e titânio'+#13#10+
             '0729402 - Extração de minério de tungstênio'+#13#10+
             '0729403 - Extração de minério de níquel'+#13#10+
-            '0729404 - Extração de minérios de cobre, chumbo, zinco e outros minerais metálicos não-ferrosos não especificados anteriormente'+#13#10+
-            '0729405 - Beneficiamento de minérios de cobre, chumbo, zinco e outros minerais metálicos não-ferrosos não especificados anteriormente'+#13#10+
+            '0729404 - Extração de minérios de cobre, chumbo, zinco e outros minerais metálicos não ferrosos não especificados anteriormente'+#13#10+
+            '0729405 - Beneficiamento de minérios de cobre, chumbo, zinco e outros minerais metálicos não ferrosos não especificados anteriormente'+#13#10+
             '0810001 - Extração de ardósia e beneficiamento associado'+#13#10+
             '0810002 - Extração de granito e beneficiamento associado'+#13#10+
             '0810003 - Extração de mármore e beneficiamento associado'+#13#10+
@@ -170,13 +170,13 @@ begin
             '0899101 - Extração de grafita'+#13#10+
             '0899102 - Extração de quartzo'+#13#10+
             '0899103 - Extração de amianto'+#13#10+
-            '0899199 - Extração de outros minerais não-metálicos não especificados anteriormente'+#13#10+
+            '0899199 - Extração de outros minerais não metálicos não especificados anteriormente'+#13#10+
             '0910600 - Atividades de apoio à extração de petróleo e gás natural'+#13#10+
             '0990401 - Atividades de apoio à extração de minério de ferro'+#13#10+
-            '0990402 - Atividades de apoio à extração de minerais metálicos não-ferrosos'+#13#10+
-            '0990403 - Atividades de apoio à extração de minerais não-metálicos'+#13#10+
+            '0990402 - Atividades de apoio à extração de minerais metálicos não ferrosos'+#13#10+
+            '0990403 - Atividades de apoio à extração de minerais não metálicos'+#13#10+
             '1011201 - Frigorífico - abate de bovinos'+#13#10+
-            '1011202 - Frigorífico - abate de eqüinos'+#13#10+
+            '1011202 - Frigorífico - abate de equinos'+#13#10+
             '1011203 - Frigorífico - abate de ovinos e caprinos'+#13#10+
             '1011204 - Frigorífico - abate de bufalinos'+#13#10+
             '1011205 - Matadouro - abate de reses sob contrato, exceto abate de suínos'+#13#10+
@@ -195,7 +195,7 @@ begin
             '1033302 - Fabricação de sucos de frutas, hortaliças e legumes, exceto concentrados'+#13#10+
             '1041400 - Fabricação de óleos vegetais em bruto, exceto óleo de milho'+#13#10+
             '1042200 - Fabricação de óleos vegetais refinados, exceto óleo de milho'+#13#10+
-            '1043100 - Fabricação de margarina e outras gorduras vegetais e de óleos não-comestíveis de animais'+#13#10+
+            '1043100 - Fabricação de margarina e outras gorduras vegetais e de óleos não comestíveis de animais'+#13#10+
             '1051100 - Preparação do leite'+#13#10+
             '1052000 - Fabricação de laticínios'+#13#10+
             '1053800 - Fabricação de sorvetes e outros gelados comestíveis'+#13#10+
@@ -215,7 +215,8 @@ begin
             '1081301 - Beneficiamento de café'+#13#10+
             '1081302 - Torrefação e moagem de café'+#13#10+
             '1082100 - Fabricação de produtos à base de café'+#13#10+
-            '1091100 - Fabricação de produtos de panificação'+#13#10+
+            '1091101 - Fabricação de produtos de panificação industrial'+#13#10+
+            '1091102 - Fabricação de produtos de padaria e confeitaria com predominância de produção própria'+#13#10+
             '1092900 - Fabricação de biscoitos e bolachas'+#13#10+
             '1093701 - Fabricação de produtos derivados do cacau e de chocolates'+#13#10+
             '1093702 - Fabricação de frutas cristalizadas, balas e semelhantes'+#13#10+
@@ -223,11 +224,12 @@ begin
             '1095300 - Fabricação de especiarias, molhos, temperos e condimentos'+#13#10+
             '1096100 - Fabricação de alimentos e pratos prontos'+#13#10+
             '1099601 - Fabricação de vinagres'+#13#10+
-            '1099602 - Fabricação de pós alimentícios'+#13#10+
+            '1099602 - Fabricação de pós-alimentícios'+#13#10+
             '1099603 - Fabricação de fermentos e leveduras'+#13#10+
             '1099604 - Fabricação de gelo comum'+#13#10+
             '1099605 - Fabricação de produtos para infusão (chá, mate, etc.)'+#13#10+
             '1099606 - Fabricação de adoçantes naturais e artificiais'+#13#10+
+            '1099607 - Fabricação de alimentos dietéticos e complementos alimentares'+#13#10+
             '1099699 - Fabricação de outros produtos alimentícios não especificados anteriormente'+#13#10+
             '1111901 - Fabricação de aguardente de cana-de-açúcar'+#13#10+
             '1111902 - Fabricação de outras aguardentes e bebidas destiladas'+#13#10+
@@ -238,7 +240,8 @@ begin
             '1122401 - Fabricação de refrigerantes'+#13#10+
             '1122402 - Fabricação de chá mate e outros chás prontos para consumo'+#13#10+
             '1122403 - Fabricação de refrescos, xaropes e pós para refrescos, exceto refrescos de frutas'+#13#10+
-            '1122499 - Fabricação de outras bebidas não-alcoólicas não especificadas anteriormente'+#13#10+
+            '1122404 - Fabricação de bebidas isotônicas'+#13#10+
+            '1122499 - Fabricação de outras bebidas não alcoólicas não especificadas anteriormente'+#13#10+
             '1210700 - Processamento industrial do fumo'+#13#10+
             '1220401 - Fabricação de cigarros'+#13#10+
             '1220402 - Fabricação de cigarrilhas e charutos'+#13#10+
@@ -280,8 +283,9 @@ begin
             '1533500 - Fabricação de calçados de material sintético'+#13#10+
             '1539400 - Fabricação de calçados de materiais não especificados anteriormente'+#13#10+
             '1540800 - Fabricação de partes para calçados, de qualquer material'+#13#10+
-            '1610201 - Serrarias com desdobramento de madeira'+#13#10+
-            '1610202 - Serrarias sem desdobramento de madeira'+#13#10+
+            '1610203 - Serrarias com desdobramento de madeira em bruto'+#13#10+
+            '1610204 - Serrarias sem desdobramento de madeira em bruto - Resseragem'+#13#10+
+            '1610205 - Serviço de tratamento de madeira realizado sob contrato'+#13#10+
             '1621800 - Fabricação de madeira laminada e de chapas de madeira compensada, prensada e aglomerada'+#13#10+
             '1622601 - Fabricação de casas de madeira pré-fabricadas'+#13#10+
             '1622602 - Fabricação de esquadrias de madeira e de peças de madeira para instalações industriais e comerciais'+#13#10+
@@ -307,7 +311,8 @@ begin
             '1813001 - Impressão de material para uso publicitário'+#13#10+
             '1813099 - Impressão de material para outros usos'+#13#10+
             '1821100 - Serviços de pré-impressão'+#13#10+
-            '1822900 - Serviços de acabamentos gráficos'+#13#10+
+            '1822901 - Serviços de encadernação e plastificação'+#13#10+
+            '1822999 - Serviços de acabamentos gráficos, exceto encadernação e plastificação'+#13#10+
             '1830001 - Reprodução de som em qualquer suporte'+#13#10+
             '1830002 - Reprodução de vídeo em qualquer suporte'+#13#10+
             '1830003 - Reprodução de software em qualquer suporte'+#13#10+
@@ -320,7 +325,8 @@ begin
             '1932200 - Fabricação de biocombustíveis, exceto álcool'+#13#10+
             '2011800 - Fabricação de cloro e álcalis'+#13#10+
             '2012600 - Fabricação de intermediários para fertilizantes'+#13#10+
-            '2013400 - Fabricação de adubos e fertilizantes'+#13#10+
+            '2013401 - Fabricação de adubos e fertilizantes organo-minerais'+#13#10+
+            '2013402 - Fabricação de adubos e fertilizantes, exceto organo-minerais'+#13#10+
             '2014200 - Fabricação de gases industriais'+#13#10+
             '2019301 - Elaboração de combustíveis nucleares'+#13#10+
             '2019399 - Fabricação de outros produtos químicos inorgânicos não especificados anteriormente'+#13#10+
@@ -377,16 +383,17 @@ begin
             '2342701 - Fabricação de azulejos e pisos'+#13#10+
             '2342702 - Fabricação de artefatos de cerâmica e barro cozido para uso na construção, exceto azulejos e pisos'+#13#10+
             '2349401 - Fabricação de material sanitário de cerâmica'+#13#10+
-            '2349499 - Fabricação de produtos cerâmicos não-refratários não especificados anteriormente'+#13#10+
+            '2349499 - Fabricação de produtos cerâmicos não refratários não especificados anteriormente'+#13#10+
             '2391501 - Britamento de pedras, exceto associado à extração'+#13#10+
             '2391502 - Aparelhamento de pedras para construção, exceto associado à extração'+#13#10+
             '2391503 - Aparelhamento de placas e execução de trabalhos em mármore, granito, ardósia e outras pedras'+#13#10+
             '2392300 - Fabricação de cal e gesso'+#13#10+
             '2399101 - Decoração, lapidação, gravação, vitrificação e outros trabalhos em cerâmica, louça, vidro e cristal'+#13#10+
-            '2399199 - Fabricação de outros produtos de minerais não-metálicos não especificados anteriormente'+#13#10+
+            '2399102 - Fabricação de abrasivos'+#13#10+
+            '2399199 - Fabricação de outros produtos de minerais não metálicos não especificados anteriormente'+#13#10+
             '2411300 - Produção de ferro-gusa'+#13#10+
             '2412100 - Produção de ferroligas'+#13#10+
-            '2421100 - Produção de semi-acabados de aço'+#13#10+
+            '2421100 - Produção de semiacabados de aço'+#13#10+
             '2422901 - Produção de laminados planos de aço ao carbono, revestidos ou não'+#13#10+
             '2422902 - Produção de laminados planos de aços especiais'+#13#10+
             '2423701 - Produção de tubos de aço sem costura'+#13#10+
@@ -401,30 +408,32 @@ begin
             '2443100 - Metalurgia do cobre'+#13#10+
             '2449101 - Produção de zinco em formas primárias'+#13#10+
             '2449102 - Produção de laminados de zinco'+#13#10+
-            '2449103 - Produção de soldas e ânodos para galvanoplastia'+#13#10+
-            '2449199 - Metalurgia de outros metais não-ferrosos e suas ligas não especificados anteriormente'+#13#10+
+            '2449103 - Fabricação de ânodos para galvanoplastia'+#13#10+
+            '2449199 - Metalurgia de outros metais não ferrosos e suas ligas não especificados anteriormente'+#13#10+
             '2451200 - Fundição de ferro e aço'+#13#10+
-            '2452100 - Fundição de metais não-ferrosos e suas ligas'+#13#10+
+            '2452100 - Fundição de metais não ferrosos e suas ligas'+#13#10+
             '2511000 - Fabricação de estruturas metálicas'+#13#10+
             '2512800 - Fabricação de esquadrias de metal'+#13#10+
             '2513600 - Fabricação de obras de caldeiraria pesada'+#13#10+
             '2521700 - Fabricação de tanques, reservatórios metálicos e caldeiras para aquecimento central'+#13#10+
             '2522500 - Fabricação de caldeiras geradoras de vapor, exceto para aquecimento central e para veículos'+#13#10+
             '2531401 - Produção de forjados de aço'+#13#10+
-            '2531402 - Produção de forjados de metais não-ferrosos e suas ligas'+#13#10+
+            '2531402 - Produção de forjados de metais não ferrosos e suas ligas'+#13#10+
             '2532201 - Produção de artefatos estampados de metal'+#13#10+
             '2532202 - Metalurgia do pó'+#13#10+
-            '2539000 - Serviços de usinagem, solda, tratamento e revestimento em metais'+#13#10+
+            '2539001 - Serviços de usinagem, torneiria e solda'+#13#10+
+            '2539002 - Serviços de tratamento e revestimento em metais'+#13#10+
             '2541100 - Fabricação de artigos de cutelaria'+#13#10+
             '2542000 - Fabricação de artigos de serralheria, exceto esquadrias'+#13#10+
             '2543800 - Fabricação de ferramentas'+#13#10+
             '2550101 - Fabricação de equipamento bélico pesado, exceto veículos militares de combate'+#13#10+
-            '2550102 - Fabricação de armas de fogo e munições'+#13#10+
+            '2550102 - Fabricação de armas de fogo, outras armas e munições'+#13#10+
             '2591800 - Fabricação de embalagens metálicas'+#13#10+
             '2592601 - Fabricação de produtos de trefilados de metal padronizados'+#13#10+
             '2592602 - Fabricação de produtos de trefilados de metal, exceto padronizados'+#13#10+
             '2593400 - Fabricação de artigos de metal para uso doméstico e pessoal'+#13#10+
             '2599301 - Serviços de confecção de armações metálicas para a construção'+#13#10+
+            '2599302 - Serviço de corte e dobra de metais'+#13#10+
             '2599399 - Fabricação de outros produtos de metal não especificados anteriormente'+#13#10+
             '2610800 - Fabricação de componentes eletrônicos'+#13#10+
             '2621300 - Fabricação de equipamentos de informática'+#13#10+
@@ -459,18 +468,18 @@ begin
             '2812700 - Fabricação de equipamentos hidráulicos e pneumáticos, peças e acessórios, exceto válvulas'+#13#10+
             '2813500 - Fabricação de válvulas, registros e dispositivos semelhantes, peças e acessórios'+#13#10+
             '2814301 - Fabricação de compressores para uso industrial, peças e acessórios'+#13#10+
-            '2814302 - Fabricação de compressores para uso não-industrial, peças e acessórios'+#13#10+
+            '2814302 - Fabricação de compressores para uso não industrial, peças e acessórios'+#13#10+
             '2815101 - Fabricação de rolamentos para fins industriais'+#13#10+
             '2815102 - Fabricação de equipamentos de transmissão para fins industriais, exceto rolamentos'+#13#10+
-            '2821601 - Fabricação de fornos industriais, aparelhos e equipamentos não-elétricos para instalações térmicas, peças e acessórios'+#13#10+
+            '2821601 - Fabricação de fornos industriais, aparelhos e equipamentos não elétricos para instalações térmicas, peças e acessórios'+#13#10+
             '2821602 - Fabricação de estufas e fornos elétricos para fins industriais, peças e acessórios'+#13#10+
             '2822401 - Fabricação de máquinas, equipamentos e aparelhos para transporte e elevação de pessoas, peças e acessórios'+#13#10+
             '2822402 - Fabricação de máquinas, equipamentos e aparelhos para transporte e elevação de cargas, peças e acessórios'+#13#10+
             '2823200 - Fabricação de máquinas e aparelhos de refrigeração e ventilação para uso industrial e comercial, peças e acessórios'+#13#10+
             '2824101 - Fabricação de aparelhos e equipamentos de ar condicionado para uso industrial'+#13#10+
-            '2824102 - Fabricação de aparelhos e equipamentos de ar condicionado para uso não-industrial'+#13#10+
+            '2824102 - Fabricação de aparelhos e equipamentos de ar condicionado para uso não industrial'+#13#10+
             '2825900 - Fabricação de máquinas e equipamentos para saneamento básico e ambiental, peças e acessórios'+#13#10+
-            '2829101 - Fabricação de máquinas de escrever, calcular e outros equipamentos não-eletrônicos para escritório, peças e acessórios'+#13#10+
+            '2829101 - Fabricação de máquinas de escrever, calcular e outros equipamentos não eletrônicos para escritório, peças e acessórios'+#13#10+
             '2829199 - Fabricação de outras máquinas e equipamentos de uso geral não especificados anteriormente, peças e acessórios'+#13#10+
             '2831300 - Fabricação de tratores agrícolas, peças e acessórios'+#13#10+
             '2832100 - Fabricação de equipamentos para irrigação agrícola, peças e acessórios'+#13#10+
@@ -511,8 +520,9 @@ begin
             '3041500 - Fabricação de aeronaves'+#13#10+
             '3042300 - Fabricação de turbinas, motores e outros componentes e peças para aeronaves'+#13#10+
             '3050400 - Fabricação de veículos militares de combate'+#13#10+
-            '3091100 - Fabricação de motocicletas, peças e acessórios'+#13#10+
-            '3092000 - Fabricação de bicicletas e triciclos não-motorizados, peças e acessórios'+#13#10+
+            '3091101 - Fabricação de motocicletas'+#13#10+
+            '3091102 - Fabricação de peças e acessórios para motocicletas'+#13#10+
+            '3092000 - Fabricação de bicicletas e triciclos não motorizados, peças e acessórios'+#13#10+
             '3099700 - Fabricação de equipamentos de transporte não especificados anteriormente'+#13#10+
             '3101200 - Fabricação de móveis com predominância de madeira'+#13#10+
             '3102100 - Fabricação de móveis com predominância de metal'+#13#10+
@@ -528,14 +538,14 @@ begin
             '3240002 - Fabricação de mesas de bilhar, de sinuca e acessórios não associada à locação'+#13#10+
             '3240003 - Fabricação de mesas de bilhar, de sinuca e acessórios associada à locação'+#13#10+
             '3240099 - Fabricação de outros brinquedos e jogos recreativos não especificados anteriormente'+#13#10+
-            '3250701 - Fabricação de instrumentos não-eletrônicos e utensílios para uso médico, cirúrgico, odontológico e de laboratório'+#13#10+
+            '3250701 - Fabricação de instrumentos não eletrônicos e utensílios para uso médico, cirúrgico, odontológico e de laboratório'+#13#10+
             '3250702 - Fabricação de mobiliário para uso médico, cirúrgico, odontológico e de laboratório'+#13#10+
             '3250703 - Fabricação de aparelhos e utensílios para correção de defeitos físicos e aparelhos ortopédicos em geral sob encomenda'+#13#10+
             '3250704 - Fabricação de aparelhos e utensílios para correção de defeitos físicos e aparelhos ortopédicos em geral, exceto sob encomenda'+#13#10+
             '3250705 - Fabricação de materiais para medicina e odontologia'+#13#10+
             '3250706 - Serviços de prótese dentária'+#13#10+
             '3250707 - Fabricação de artigos ópticos'+#13#10+
-            '3250708 - Fabricação de artefatos de tecido não tecido para uso odonto-médico-hospitalar'+#13#10+
+            '3250709 - Serviço de laboratório óptico'+#13#10+
             '3291400 - Fabricação de escovas, pincéis e vassouras'+#13#10+
             '3292201 - Fabricação de roupas de proteção e segurança e resistentes a fogo'+#13#10+
             '3292202 - Fabricação de equipamentos e acessórios para segurança pessoal e profissional'+#13#10+
@@ -544,6 +554,7 @@ begin
             '3299003 - Fabricação de letras, letreiros e placas de qualquer material, exceto luminosos'+#13#10+
             '3299004 - Fabricação de painéis e letreiros luminosos'+#13#10+
             '3299005 - Fabricação de aviamentos para costura'+#13#10+
+            '3299006 - Fabricação de velas, inclusive decorativas'+#13#10+
             '3299099 - Fabricação de produtos diversos não especificados anteriormente'+#13#10+
             '3311200 - Manutenção e reparação de tanques, reservatórios metálicos e caldeiras, exceto para veículos'+#13#10+
             '3312102 - Manutenção e reparação de aparelhos e instrumentos de medida, teste e controle'+#13#10+
@@ -552,7 +563,7 @@ begin
             '3313901 - Manutenção e reparação de geradores, transformadores e motores elétricos'+#13#10+
             '3313902 - Manutenção e reparação de baterias e acumuladores elétricos, exceto para veículos'+#13#10+
             '3313999 - Manutenção e reparação de máquinas, aparelhos e materiais elétricos não especificados anteriormente'+#13#10+
-            '3314701 - Manutenção e reparação de máquinas motrizes não-elétricas'+#13#10+
+            '3314701 - Manutenção e reparação de máquinas motrizes não elétricas'+#13#10+
             '3314702 - Manutenção e reparação de equipamentos hidráulicos e pneumáticos, exceto válvulas'+#13#10+
             '3314703 - Manutenção e reparação de válvulas industriais'+#13#10+
             '3314704 - Manutenção e reparação de compressores'+#13#10+
@@ -560,7 +571,7 @@ begin
             '3314706 - Manutenção e reparação de máquinas, aparelhos e equipamentos para instalações térmicas'+#13#10+
             '3314707 - Manutenção e reparação de máquinas e aparelhos de refrigeração e ventilação para uso industrial e comercial'+#13#10+
             '3314708 - Manutenção e reparação de máquinas, equipamentos e aparelhos para transporte e elevação de cargas'+#13#10+
-            '3314709 - Manutenção e reparação de máquinas de escrever, calcular e de outros equipamentos não-eletrônicos para escritório'+#13#10+
+            '3314709 - Manutenção e reparação de máquinas de escrever, calcular e de outros equipamentos não eletrônicos para escritório'+#13#10+
             '3314710 - Manutenção e reparação de máquinas e equipamentos para uso geral não especificados anteriormente'+#13#10+
             '3314711 - Manutenção e reparação de máquinas e equipamentos para agricultura e pecuária'+#13#10+
             '3314712 - Manutenção e reparação de tratores agrícolas'+#13#10+
@@ -584,20 +595,21 @@ begin
             '3321000 - Instalação de máquinas e equipamentos industriais'+#13#10+
             '3329501 - Serviços de montagem de móveis de qualquer material'+#13#10+
             '3329599 - Instalação de outros equipamentos não especificados anteriormente'+#13#10+
-            '3511500 - Geração de energia elétrica'+#13#10+
+            '3511501 - Geração de energia elétrica'+#13#10+
+            '3511502 - Atividades de coordenação e controle da operação da geração e transmissão de energia elétrica'+#13#10+
             '3512300 - Transmissão de energia elétrica'+#13#10+
             '3513100 - Comércio atacadista de energia elétrica'+#13#10+
             '3514000 - Distribuição de energia elétrica'+#13#10+
-            '3520401 - "Produção de gás -  processamento de gás natural"'+#13#10+
+            '3520401 - Produção de gás; processamento de gás natural'+#13#10+
             '3520402 - Distribuição de combustíveis gasosos por redes urbanas'+#13#10+
             '3530100 - Produção e distribuição de vapor, água quente e ar condicionado'+#13#10+
             '3600601 - Captação, tratamento e distribuição de água'+#13#10+
             '3600602 - Distribuição de água por caminhões'+#13#10+
             '3701100 - Gestão de redes de esgoto'+#13#10+
             '3702900 - Atividades relacionadas a esgoto, exceto a gestão de redes'+#13#10+
-            '3811400 - Coleta de resíduos não-perigosos'+#13#10+
+            '3811400 - Coleta de resíduos não perigosos'+#13#10+
             '3812200 - Coleta de resíduos perigosos'+#13#10+
-            '3821100 - Tratamento e disposição de resíduos não-perigosos'+#13#10+
+            '3821100 - Tratamento e disposição de resíduos não perigosos'+#13#10+
             '3822000 - Tratamento e disposição de resíduos perigosos'+#13#10+
             '3831901 - Recuperação de sucatas de alumínio'+#13#10+
             '3831999 - Recuperação de materiais metálicos, exceto alumínio'+#13#10+
@@ -609,7 +621,7 @@ begin
             '4120400 - Construção de edifícios'+#13#10+
             '4211101 - Construção de rodovias e ferrovias'+#13#10+
             '4211102 - Pintura para sinalização em pistas rodoviárias e aeroportos'+#13#10+
-            '4212000 - Construção de obras-de-arte especiais'+#13#10+
+            '4212000 - Construção de obras de arte especiais'+#13#10+
             '4213800 - Obras de urbanização - ruas, praças e calçadas'+#13#10+
             '4221901 - Construção de barragens e represas para geração de energia elétrica'+#13#10+
             '4221902 - Construção de estações e redes de distribuição de energia elétrica'+#13#10+
@@ -635,7 +647,7 @@ begin
             '4322303 - Instalações de sistema de prevenção contra incêndio'+#13#10+
             '4329101 - Instalação de painéis publicitários'+#13#10+
             '4329102 - Instalação de equipamentos para orientação à navegação marítima, fluvial e lacustre'+#13#10+
-            '4329103 - Instalação, manutenção e reparação de elevadores, escadas e esteiras rolantes, exceto de fabricação própria'+#13#10+
+            '4329103 - Instalação, manutenção e reparação de elevadores, escadas e esteiras rolantes'+#13#10+
             '4329104 - Montagem e instalação de sistemas e equipamentos de iluminação e sinalização em vias públicas, portos e aeroportos'+#13#10+
             '4329105 - Tratamentos térmicos, acústicos ou de vibração'+#13#10+
             '4329199 - Outras obras de instalações em construções não especificadas anteriormente'+#13#10+
@@ -656,8 +668,8 @@ begin
             '4511102 - Comércio a varejo de automóveis, camionetas e utilitários usados'+#13#10+
             '4511103 - Comércio por atacado de automóveis, camionetas e utilitários novos e usados'+#13#10+
             '4511104 - Comércio por atacado de caminhões novos e usados'+#13#10+
-            '4511105 - Comércio por atacado de reboques e semi-reboques novos e usados'+#13#10+
-            '4511106 - Comércio por atacado de ônibus e microônibus novos e usados'+#13#10+
+            '4511105 - Comércio por atacado de reboques e semireboques novos e usados'+#13#10+
+            '4511106 - Comércio por atacado de ônibus e micro-ônibus novos e usados'+#13#10+
             '4512901 - Representantes comerciais e agentes do comércio de veículos automotores'+#13#10+
             '4512902 - Comércio sob consignação de veículos automotores'+#13#10+
             '4520001 - Serviços de manutenção e reparação mecânica de veículos automotores'+#13#10+
@@ -667,6 +679,7 @@ begin
             '4520005 - Serviços de lavagem, lubrificação e polimento de veículos automotores'+#13#10+
             '4520006 - Serviços de borracharia para veículos automotores'+#13#10+
             '4520007 - Serviços de instalação, manutenção e reparação de acessórios para veículos automotores'+#13#10+
+            '4520008 - Serviços de capotaria'+#13#10+
             '4530701 - Comércio por atacado de peças e acessórios novos para veículos automotores'+#13#10+
             '4530702 - Comércio por atacado de pneumáticos e câmaras-de-ar'+#13#10+
             '4530703 - Comércio a varejo de peças e acessórios novos para veículos automotores'+#13#10+
@@ -677,7 +690,8 @@ begin
             '4541202 - Comércio por atacado de peças e acessórios para motocicletas e motonetas'+#13#10+
             '4541203 - Comércio a varejo de motocicletas e motonetas novas'+#13#10+
             '4541204 - Comércio a varejo de motocicletas e motonetas usadas'+#13#10+
-            '4541205 - Comércio a varejo de peças e acessórios para motocicletas e motonetas'+#13#10+
+            '4541206 - Comércio a varejo de peças e acessórios novos para motocicletas e motonetas'+#13#10+
+            '4541207 - Comércio a varejo de peças e acessórios usados para motocicletas e motonetas'+#13#10+
             '4542101 - Representantes comerciais e agentes do comércio de motocicletas e motonetas, peças e acessórios'+#13#10+
             '4542102 - Comércio sob consignação de motocicletas e motonetas'+#13#10+
             '4543900 - Manutenção e reparação de motocicletas e motonetas'+#13#10+
@@ -696,7 +710,7 @@ begin
             '4621400 - Comércio atacadista de café em grão'+#13#10+
             '4622200 - Comércio atacadista de soja'+#13#10+
             '4623101 - Comércio atacadista de animais vivos'+#13#10+
-            '4623102 - Comércio atacadista de couros, lãs, peles e outros subprodutos não-comestíveis de origem animal'+#13#10+
+            '4623102 - Comércio atacadista de couros, lãs, peles e outros subprodutos não comestíveis de origem animal'+#13#10+
             '4623103 - Comércio atacadista de algodão'+#13#10+
             '4623104 - Comércio atacadista de fumo em folha não beneficiado'+#13#10+
             '4623105 - Comércio atacadista de cacau'+#13#10+
@@ -752,7 +766,7 @@ begin
             '4649402 - Comércio atacadista de aparelhos eletrônicos de uso pessoal e doméstico'+#13#10+
             '4649403 - Comércio atacadista de bicicletas, triciclos e outros veículos recreativos'+#13#10+
             '4649404 - Comércio atacadista de móveis e artigos de colchoaria'+#13#10+
-            '4649405 - "Comércio atacadista de artigos de tapeçaria -  persianas e cortinas"'+#13#10+
+            '4649405 - Comércio atacadista de artigos de tapeçaria; persianas e cortinas'+#13#10+
             '4649406 - Comércio atacadista de lustres, luminárias e abajures'+#13#10+
             '4649407 - Comércio atacadista de filmes, CDs, DVDs, fitas e discos'+#13#10+
             '4649408 - Comércio atacadista de produtos de higiene, limpeza e conservação domiciliar'+#13#10+
@@ -762,13 +776,13 @@ begin
             '4651601 - Comércio atacadista de equipamentos de informática'+#13#10+
             '4651602 - Comércio atacadista de suprimentos para informática'+#13#10+
             '4652400 - Comércio atacadista de componentes eletrônicos e equipamentos de telefonia e comunicação'+#13#10+
-            '4661300 - "Comércio atacadista de máquinas, aparelhos e equipamentos para uso agropecuário -  partes e peças"'+#13#10+
-            '4662100 - "Comércio atacadista de máquinas, equipamentos para terraplenagem, mineração e construção -  partes e peças"'+#13#10+
-            '4663000 - "Comércio atacadista de máquinas e equipamentos para uso industrial -  partes e peças"'+#13#10+
-            '4664800 - "Comércio atacadista de máquinas, aparelhos e equipamentos para uso odonto-médico-hospitalar -  partes e peças"'+#13#10+
-            '4665600 - "Comércio atacadista de máquinas e equipamentos para uso comercial -  partes e peças"'+#13#10+
-            '4669901 - "Comércio atacadista de bombas e compressores -  partes e peças"'+#13#10+
-            '4669999 - "Comércio atacadista de outras máquinas e equipamentos não especificados anteriormente -  partes e peças"'+#13#10+
+            '4661300 - Comércio atacadista de máquinas, aparelhos e equipamentos para uso agropecuário; partes e peças'+#13#10+
+            '4662100 - Comércio atacadista de máquinas, equipamentos para terraplenagem, mineração e construção; partes e peças'+#13#10+
+            '4663000 - Comércio atacadista de máquinas e equipamentos para uso industrial; partes e peças'+#13#10+
+            '4664800 - Comércio atacadista de máquinas, aparelhos e equipamentos para uso odonto-médico-hospitalar; partes e peças'+#13#10+
+            '4665600 - Comércio atacadista de máquinas e equipamentos para uso comercial; partes e peças'+#13#10+
+            '4669901 - Comércio atacadista de bombas e compressores; partes e peças'+#13#10+
+            '4669999 - Comércio atacadista de outras máquinas e equipamentos não especificados anteriormente; partes e peças'+#13#10+
             '4671100 - Comércio atacadista de madeira e produtos derivados'+#13#10+
             '4672900 - Comércio atacadista de ferragens e ferramentas'+#13#10+
             '4673700 - Comércio atacadista de material elétrico'+#13#10+
@@ -783,7 +797,7 @@ begin
             '4681803 - Comércio atacadista de combustíveis de origem vegetal, exceto álcool carburante'+#13#10+
             '4681804 - Comércio atacadista de combustíveis de origem mineral em bruto'+#13#10+
             '4681805 - Comércio atacadista de lubrificantes'+#13#10+
-            '4682600 - Comércio atacadista de gás liqüefeito de petróleo (GLP)'+#13#10+
+            '4682600 - Comércio atacadista de gás liquefeito de petróleo (GLP)'+#13#10+
             '4683400 - Comércio atacadista de defensivos agrícolas, adubos, fertilizantes e corretivos do solo'+#13#10+
             '4684201 - Comércio atacadista de resinas e elastômeros'+#13#10+
             '4684202 - Comércio atacadista de solventes'+#13#10+
@@ -792,7 +806,7 @@ begin
             '4686901 - Comércio atacadista de papel e papelão em bruto'+#13#10+
             '4686902 - Comércio atacadista de embalagens'+#13#10+
             '4687701 - Comércio atacadista de resíduos de papel e papelão'+#13#10+
-            '4687702 - Comércio atacadista de resíduos e sucatas não-metálicos, exceto de papel e papelão'+#13#10+
+            '4687702 - Comércio atacadista de resíduos e sucatas não metálicos, exceto de papel e papelão'+#13#10+
             '4687703 - Comércio atacadista de resíduos e sucatas metálicos'+#13#10+
             '4689301 - Comércio atacadista de produtos da extração mineral, exceto combustíveis'+#13#10+
             '4689302 - Comércio atacadista de fios e fibras beneficiados'+#13#10+
@@ -803,10 +817,9 @@ begin
             '4711301 - Comércio varejista de mercadorias em geral, com predominância de produtos alimentícios - hipermercados'+#13#10+
             '4711302 - Comércio varejista de mercadorias em geral, com predominância de produtos alimentícios - supermercados'+#13#10+
             '4712100 - Comércio varejista de mercadorias em geral, com predominância de produtos alimentícios - minimercados, mercearias e armazéns'+#13#10+
-            '4713001 - Lojas de departamentos ou magazines'+#13#10+
             '4713002 - Lojas de variedades, exceto lojas de departamentos ou magazines'+#13#10+
-            '4713003 - Lojas duty free de aeroportos internacionais'+#13#10+
-            '4721101 - Padaria e confeitaria com predominância de produção própria'+#13#10+
+            '4713004 - Lojas de departamentos ou magazines, exceto lojas francas (Duty free)'+#13#10+
+            '4713005 - Lojas francas (Duty Free) de aeroportos, portos e em fronteiras terrestres'+#13#10+
             '4721102 - Padaria e confeitaria com predominância de revenda'+#13#10+
             '4721103 - Comércio varejista de laticínios e frios'+#13#10+
             '4721104 - Comércio varejista de doces, balas, bombons e semelhantes'+#13#10+
@@ -815,6 +828,7 @@ begin
             '4723700 - Comércio varejista de bebidas'+#13#10+
             '4724500 - Comércio varejista de hortifrutigranjeiros'+#13#10+
             '4729601 - Tabacaria'+#13#10+
+            '4729602 - Comércio varejista de mercadorias em lojas de conveniência'+#13#10+
             '4729699 - Comércio varejista de produtos alimentícios em geral ou especializado em produtos alimentícios não especificados anteriormente'+#13#10+
             '4731800 - Comércio varejista de combustíveis para veículos automotores'+#13#10+
             '4732600 - Comércio varejista de lubrificantes'+#13#10+
@@ -826,8 +840,10 @@ begin
             '4744003 - Comércio varejista de materiais hidráulicos'+#13#10+
             '4744004 - Comércio varejista de cal, areia, pedra britada, tijolos e telhas'+#13#10+
             '4744005 - Comércio varejista de materiais de construção não especificados anteriormente'+#13#10+
+            '4744006 - Comércio varejista de pedras para revestimento'+#13#10+
             '4744099 - Comércio varejista de materiais de construção em geral'+#13#10+
-            '4751200 - Comércio varejista especializado de equipamentos e suprimentos de informática'+#13#10+
+            '4751201 - Comércio varejista especializado de equipamentos e suprimentos de informática'+#13#10+
+            '4751202 - Recarga de cartuchos para equipamentos de informática'+#13#10+
             '4752100 - Comércio varejista especializado de equipamentos de telefonia e comunicação'+#13#10+
             '4753900 - Comércio varejista especializado de eletrodomésticos e equipamentos de áudio e vídeo'+#13#10+
             '4754701 - Comércio varejista de móveis'+#13#10+
@@ -846,9 +862,9 @@ begin
             '4762800 - Comércio varejista de discos, CDs, DVDs e fitas'+#13#10+
             '4763601 - Comércio varejista de brinquedos e artigos recreativos'+#13#10+
             '4763602 - Comércio varejista de artigos esportivos'+#13#10+
-            '4763603 - "Comércio varejista de bicicletas e triciclos -  peças e acessórios"'+#13#10+
+            '4763603 - Comércio varejista de bicicletas e triciclos; peças e acessórios'+#13#10+
             '4763604 - Comércio varejista de artigos de caça, pesca e camping'+#13#10+
-            '4763605 - "Comércio varejista de embarcações e outros veículos recreativos -  peças e acessórios"'+#13#10+
+            '4763605 - Comércio varejista de embarcações e outros veículos recreativos; peças e acessórios'+#13#10+
             '4771701 - Comércio varejista de produtos farmacêuticos, sem manipulação de fórmulas'+#13#10+
             '4771702 - Comércio varejista de produtos farmacêuticos, com manipulação de fórmulas'+#13#10+
             '4771703 - Comércio varejista de produtos farmacêuticos homeopáticos'+#13#10+
@@ -862,7 +878,7 @@ begin
             '4783101 - Comércio varejista de artigos de joalheria'+#13#10+
             '4783102 - Comércio varejista de artigos de relojoaria'+#13#10+
             '4784900 - Comércio varejista de gás liqüefeito de petróleo (GLP)'+#13#10+
-            '4785701 - Comércio varejista de antigüidades'+#13#10+
+            '4785701 - Comércio varejista de antiguidades'+#13#10+
             '4785799 - Comércio varejista de outros artigos usados'+#13#10+
             '4789001 - Comércio varejista de suvenires, bijuterias e artesanatos'+#13#10+
             '4789002 - Comércio varejista de plantas e flores naturais'+#13#10+
@@ -898,7 +914,7 @@ begin
             '4940000 - Transporte dutoviário'+#13#10+
             '4950700 - Trens turísticos, teleféricos e similares'+#13#10+
             '5011401 - Transporte marítimo de cabotagem - Carga'+#13#10+
-            '5011402 - Transporte marítimo de cabotagem - passageiros'+#13#10+
+            '5011402 - Transporte marítimo de cabotagem - Passageiros'+#13#10+
             '5012201 - Transporte marítimo de longo curso - Carga'+#13#10+
             '5012202 - Transporte marítimo de longo curso - Passageiros'+#13#10+
             '5021101 - Transporte por navegação interior de carga, municipal, exceto travessia'+#13#10+
@@ -907,13 +923,14 @@ begin
             '5022002 - Transporte por navegação interior de passageiros em linhas regulares, intermunicipal, interestadual e internacional, exceto travessia'+#13#10+
             '5030101 - Navegação de apoio marítimo'+#13#10+
             '5030102 - Navegação de apoio portuário'+#13#10+
+            '5030103 - Serviço de rebocadores e empurradores'+#13#10+
             '5091201 - Transporte por navegação de travessia, municipal'+#13#10+
-            '5091202 - Transporte por navegação de travessia, intermunicipal'+#13#10+
+            '5091202 - Transporte por navegação de travessia, intermunicipal, interestadual e internacional'+#13#10+
             '5099801 - Transporte aquaviário para passeios turísticos'+#13#10+
             '5099899 - Outros transportes aquaviários não especificados anteriormente'+#13#10+
             '5111100 - Transporte aéreo de passageiros regular'+#13#10+
             '5112901 - Serviço de táxi aéreo e locação de aeronaves com tripulação'+#13#10+
-            '5112999 - Outros serviços de transporte aéreo de passageiros não-regular'+#13#10+
+            '5112999 - Outros serviços de transporte aéreo de passageiros não regular'+#13#10+
             '5120000 - Transporte aéreo de carga'+#13#10+
             '5130700 - Transporte espacial'+#13#10+
             '5211701 - Armazéns gerais - emissão de warrant'+#13#10+
@@ -926,10 +943,12 @@ begin
             '5229001 - Serviços de apoio ao transporte por táxi, inclusive centrais de chamada'+#13#10+
             '5229002 - Serviços de reboque de veículos'+#13#10+
             '5229099 - Outras atividades auxiliares dos transportes terrestres não especificadas anteriormente'+#13#10+
-            '5231101 - Administração da infra-estrutura portuária'+#13#10+
-            '5231102 - Operações de terminais'+#13#10+
+            '5231101 - Administração da infraestrutura portuária'+#13#10+
+            '5231102 - Atividades do Operador Portuário'+#13#10+
+            '5231103 - Gestão de terminais aquaviários'+#13#10+
             '5232000 - Atividades de agenciamento marítimo'+#13#10+
-            '5239700 - Atividades auxiliares dos transportes aquaviários não especificadas anteriormente'+#13#10+
+            '5239701 - Serviços de praticagem'+#13#10+
+            '5239799 - Atividades auxiliares dos transportes aquaviários não especificadas anteriormente'+#13#10+
             '5240101 - Operação dos aeroportos e campos de aterrissagem'+#13#10+
             '5240199 - Atividades auxiliares dos transportes aéreos, exceto operação dos aeroportos e campos de aterrissagem'+#13#10+
             '5250801 - Comissaria de despachos'+#13#10+
@@ -949,19 +968,22 @@ begin
             '5590603 - Pensões (alojamento)'+#13#10+
             '5590699 - Outros alojamentos não especificados anteriormente'+#13#10+
             '5611201 - Restaurantes e similares'+#13#10+
-            '5611202 - Bares e outros estabelecimentos especializados em servir bebidas'+#13#10+
             '5611203 - Lanchonetes, casas de chá, de sucos e similares'+#13#10+
+            '5611204 - Bares e outros estabelecimentos especializados em servir bebidas, sem entretenimento'+#13#10+
+            '5611205 - Bares e outros estabelecimentos especializados em servir bebidas, com entretenimento'+#13#10+
             '5612100 - Serviços ambulantes de alimentação'+#13#10+
             '5620101 - Fornecimento de alimentos preparados preponderantemente para empresas'+#13#10+
             '5620102 - Serviços de alimentação para eventos e recepções - bufê'+#13#10+
             '5620103 - Cantinas - serviços de alimentação privativos'+#13#10+
             '5620104 - Fornecimento de alimentos preparados preponderantemente para consumo domiciliar'+#13#10+
             '5811500 - Edição de livros'+#13#10+
-            '5812300 - Edição de jornais'+#13#10+
+            '5812301 - Edição de jornais diários'+#13#10+
+            '5812302 - Edição de jornais não diários'+#13#10+
             '5813100 - Edição de revistas'+#13#10+
             '5819100 - Edição de cadastros, listas e outros produtos gráficos'+#13#10+
             '5821200 - Edição integrada à impressão de livros'+#13#10+
-            '5822100 - Edição integrada à impressão de jornais'+#13#10+
+            '5822101 - Edição integrada à impressão de jornais diários'+#13#10+
+            '5822102 - Edição integrada à impressão de jornais não diários'+#13#10+
             '5823900 - Edição integrada à impressão de revistas'+#13#10+
             '5829800 - Edição integrada à impressão de cadastros, listas e outros produtos gráficos'+#13#10+
             '5911101 - Estúdios cinematográficos'+#13#10+
@@ -986,18 +1008,19 @@ begin
             '6120599 - Serviços de telecomunicações sem fio não especificados anteriormente'+#13#10+
             '6130200 - Telecomunicações por satélite'+#13#10+
             '6141800 - Operadoras de televisão por assinatura por cabo'+#13#10+
-            '6142600 - Operadoras de televisão por assinatura por microondas'+#13#10+
+            '6142600 - Operadoras de televisão por assinatura por micro-ondas'+#13#10+
             '6143400 - Operadoras de televisão por assinatura por satélite'+#13#10+
             '6190601 - Provedores de acesso às redes de comunicações'+#13#10+
-            '6190602 - Provedores de voz sobre protocolo internet - VOIP'+#13#10+
+            '6190602 - Provedores de voz sobre protocolo Internet - VOIP'+#13#10+
             '6190699 - Outras atividades de telecomunicações não especificadas anteriormente'+#13#10+
-            '6201500 - Desenvolvimento de programas de computador sob encomenda'+#13#10+
+            '6201501 - Desenvolvimento de programas de computador sob encomenda'+#13#10+
+            '6201502 - Web desing'+#13#10+
             '6202300 - Desenvolvimento e licenciamento de programas de computador customizáveis'+#13#10+
-            '6203100 - Desenvolvimento e licenciamento de programas de computador não-customizáveis'+#13#10+
+            '6203100 - Desenvolvimento e licenciamento de programas de computador não customizáveis'+#13#10+
             '6204000 - Consultoria em tecnologia da informação'+#13#10+
             '6209100 - Suporte técnico, manutenção e outros serviços em tecnologia da informação'+#13#10+
-            '6311900 - Tratamento de dados, provedores de serviços de aplicação e serviços de hospedagem na internet'+#13#10+
-            '6319400 - Portais, provedores de conteúdo e outros serviços de informação na internet'+#13#10+
+            '6311900 - Tratamento de dados, provedores de serviços de aplicação e serviços de hospedagem na Internet'+#13#10+
+            '6319400 - Portais, provedores de conteúdo e outros serviços de informação na Internet'+#13#10+
             '6391700 - Agências de notícias'+#13#10+
             '6399200 - Outras atividades de prestação de serviços de informação não especificadas anteriormente'+#13#10+
             '6410700 - Banco Central'+#13#10+
@@ -1018,11 +1041,11 @@ begin
             '6436100 - Sociedades de crédito, financiamento e investimento - financeiras'+#13#10+
             '6437900 - Sociedades de crédito ao microempreendedor'+#13#10+
             '6438701 - Bancos de câmbio'+#13#10+
-            '6438799 - Outras instituições de intermediação não-monetária não especificadas anteriormente'+#13#10+
+            '6438799 - Outras instituições de intermediação não monetária não especificadas anteriormente'+#13#10+
             '6440900 - Arrendamento mercantil'+#13#10+
             '6450600 - Sociedades de capitalização'+#13#10+
             '6461100 - Holdings de instituições financeiras'+#13#10+
-            '6462000 - Holdings de instituições não-financeiras'+#13#10+
+            '6462000 - Holdings de instituições não financeiras'+#13#10+
             '6463800 - Outras sociedades de participação, exceto holdings'+#13#10+
             '6470101 - Fundos de investimento, exceto previdenciários e imobiliários'+#13#10+
             '6470102 - Fundos de investimento previdenciários'+#13#10+
@@ -1036,10 +1059,10 @@ begin
             '6499904 - Caixas de financiamento de corporações'+#13#10+
             '6499905 - Concessão de crédito pelas OSCIP'+#13#10+
             '6499999 - Outras atividades de serviços financeiros não especificadas anteriormente'+#13#10+
-            '6511101 - Seguros de vida'+#13#10+
+            '6511101 - Sociedade seguradora de seguros vida'+#13#10+
             '6511102 - Planos de auxílio-funeral'+#13#10+
-            '6512000 - Seguros não-vida'+#13#10+
-            '6520100 - Seguros-saúde'+#13#10+
+            '6512000 - Sociedade seguradora de seguros não vida'+#13#10+
+            '6520100 - Sociedade seguradora de seguros-saúde'+#13#10+
             '6530800 - Resseguros'+#13#10+
             '6541300 - Previdência complementar fechada'+#13#10+
             '6542100 - Previdência complementar aberta'+#13#10+
@@ -1067,6 +1090,7 @@ begin
             '6630400 - Atividades de administração de fundos por contrato ou comissão'+#13#10+
             '6810201 - Compra e venda de imóveis próprios'+#13#10+
             '6810202 - Aluguel de imóveis próprios'+#13#10+
+            '6810203 - Loteamento de imóveis próprios'+#13#10+
             '6821801 - Corretagem na compra e venda e avaliação de imóveis'+#13#10+
             '6821802 - Corretagem no aluguel de imóveis'+#13#10+
             '6822600 - Gestão e administração da propriedade imobiliária'+#13#10+
@@ -1095,8 +1119,9 @@ begin
             '7319004 - Consultoria em publicidade'+#13#10+
             '7319099 - Outras atividades de publicidade não especificadas anteriormente'+#13#10+
             '7320300 - Pesquisas de mercado e de opinião pública'+#13#10+
-            '7410201 - Design'+#13#10+
-            '7410202 - Decoração de interiores'+#13#10+
+            '7410202 - Design de interiores'+#13#10+
+            '7410203 - Desing de produto'+#13#10+
+            '7410299 - Atividades de desing não especificadas anteriormente'+#13#10+
             '7420001 - Atividades de produção de fotografias, exceto aérea e submarina'+#13#10+
             '7420002 - Atividades de produção de fotografias aéreas e submarinas'+#13#10+
             '7420003 - Laboratórios fotográficos'+#13#10+
@@ -1117,7 +1142,7 @@ begin
             '7722500 - Aluguel de fitas de vídeo, DVDs e similares'+#13#10+
             '7723300 - Aluguel de objetos do vestuário, jóias e acessórios'+#13#10+
             '7729201 - Aluguel de aparelhos de jogos eletrônicos'+#13#10+
-            '7729202 - "Aluguel de móveis, utensílios e aparelhos de uso doméstico e pessoal -  instrumentos musicais"'+#13#10+
+            '7729202 - Aluguel de móveis, utensílios e aparelhos de uso doméstico e pessoal; instrumentos musicais'+#13#10+
             '7729203 - Aluguel de material médico'+#13#10+
             '7729299 - Aluguel de outros objetos pessoais e domésticos não especificados anteriormente'+#13#10+
             '7731400 - Aluguel de máquinas e equipamentos agrícolas sem operador'+#13#10+
@@ -1128,9 +1153,9 @@ begin
             '7739002 - Aluguel de equipamentos científicos, médicos e hospitalares, sem operador'+#13#10+
             '7739003 - Aluguel de palcos, coberturas e outras estruturas de uso temporário, exceto andaimes'+#13#10+
             '7739099 - Aluguel de outras máquinas e equipamentos comerciais e industriais não especificados anteriormente, sem operador'+#13#10+
-            '7740300 - Gestão de ativos intangíveis não-financeiros'+#13#10+
-            '7810800 - Seleção e agenciamento de mão-de-obra'+#13#10+
-            '7820500 - Locação de mão-de-obra temporária'+#13#10+
+            '7740300 - Gestão de ativos intangíveis não financeiros'+#13#10+
+            '7810800 - Seleção e agenciamento de mão de obra'+#13#10+
+            '7820500 - Locação de mão de obra temporária'+#13#10+
             '7830200 - Fornecimento e gestão de recursos humanos para terceiros'+#13#10+
             '7911200 - Agências de viagens'+#13#10+
             '7912100 - Operadores turísticos'+#13#10+
@@ -1138,7 +1163,8 @@ begin
             '8011101 - Atividades de vigilância e segurança privada'+#13#10+
             '8011102 - Serviços de adestramento de cães de guarda'+#13#10+
             '8012900 - Atividades de transporte de valores'+#13#10+
-            '8020000 - Atividades de monitoramento de sistemas de segurança'+#13#10+
+            '8020001 - Atividades de monitoramento de sistemas de segurança eletrônico'+#13#10+
+            '8020002 - Outras atividades de serviços de segurança'+#13#10+
             '8030700 - Atividades de investigação particular'+#13#10+
             '8111700 - Serviços combinados para apoio a edifícios, exceto condomínios prediais'+#13#10+
             '8112500 - Condomínios prediais'+#13#10+
@@ -1160,7 +1186,7 @@ begin
             '8299704 - Leiloeiros independentes'+#13#10+
             '8299705 - Serviços de levantamento de fundos sob contrato'+#13#10+
             '8299706 - Casas lotéricas'+#13#10+
-            '8299707 - Salas de acesso à internet'+#13#10+
+            '8299707 - Salas de acesso à Internet'+#13#10+
             '8299799 - Outras atividades de serviços prestados principalmente às empresas não especificadas anteriormente'+#13#10+
             '8411600 - Administração pública em geral'+#13#10+
             '8412400 - Regulação das atividades de saúde, educação, serviços culturais e outros serviços sociais'+#13#10+
@@ -1232,15 +1258,17 @@ begin
             '8660700 - Atividades de apoio à gestão de saúde'+#13#10+
             '8690901 - Atividades de práticas integrativas e complementares em saúde humana'+#13#10+
             '8690902 - Atividades de bancos de leite humano'+#13#10+
+            '8690903 - Atividades de acupuntura'+#13#10+
+            '8690904 - Atividades de podologia'+#13#10+
             '8690999 - Outras atividades de atenção à saúde humana não especificadas anteriormente'+#13#10+
             '8711501 - Clínicas e residências geriátricas'+#13#10+
             '8711502 - Instituições de longa permanência para idosos'+#13#10+
             '8711503 - Atividades de assistência a deficientes físicos, imunodeprimidos e convalescentes'+#13#10+
             '8711504 - Centros de apoio a pacientes com câncer e com AIDS'+#13#10+
             '8711505 - Condomínios residenciais para idosos'+#13#10+
-            '8712300 - Atividades de fornecimento de infra-estrutura de apoio e assistência a paciente no domicílio'+#13#10+
+            '8712300 - Atividades de fornecimento de infraestrutura de apoio e assistência a paciente no domicílio'+#13#10+
             '8720401 - Atividades de centros de assistência psicossocial'+#13#10+
-            '8720499 - Atividades de assistência psicossocial e à saúde a portadores de distúrbios psíquicos, deficiência mental e dependência química não especificadas anteriormente'+#13#10+
+            '8720499 - Atividades de assistência psicossocial e à saúde a portadores de distúrbios psíquicos, deficiência mental e dependência química e grupos similares não especificadas anteriormente'+#13#10+
             '8730101 - Orfanatos'+#13#10+
             '8730102 - Albergues assistenciais'+#13#10+
             '8730199 - Atividades de assistência social prestadas em residências coletivas e particulares não especificadas anteriormente'+#13#10+
@@ -1274,10 +1302,11 @@ begin
             '9329804 - Exploração de jogos eletrônicos recreativos'+#13#10+
             '9329899 - Outras atividades de recreação e lazer não especificadas anteriormente'+#13#10+
             '9411100 - Atividades de organizações associativas patronais e empresariais'+#13#10+
-            '9412000 - Atividades de organizações associativas profissionais'+#13#10+
+            '9412001 - Atividades de fiscalização profissional'+#13#10+
+            '9412099 - Outras atividades associativas profissionais'+#13#10+
             '9420100 - Atividades de organizações sindicais'+#13#10+
             '9430800 - Atividades de associações de defesa de direitos sociais'+#13#10+
-            '9491000 - Atividades de organizações religiosas'+#13#10+
+            '9491000 - Atividades de organizações religiosas ou filosóficas'+#13#10+
             '9492800 - Atividades de organizações políticas'+#13#10+
             '9493600 - Atividades de organizações associativas ligadas à cultura e à arte'+#13#10+
             '9499500 - Atividades associativas não especificadas anteriormente'+#13#10+
@@ -1287,28 +1316,29 @@ begin
             '9529101 - Reparação de calçados, bolsas e artigos de viagem'+#13#10+
             '9529102 - Chaveiros'+#13#10+
             '9529103 - Reparação de relógios'+#13#10+
-            '9529104 - Reparação de bicicletas, triciclos e outros veículos não-motorizados'+#13#10+
+            '9529104 - Reparação de bicicletas, triciclos e outros veículos não motorizados'+#13#10+
             '9529105 - Reparação de artigos do mobiliário'+#13#10+
             '9529106 - Reparação de jóias'+#13#10+
             '9529199 - Reparação e manutenção de outros objetos e equipamentos pessoais e domésticos não especificados anteriormente'+#13#10+
             '9601701 - Lavanderias'+#13#10+
             '9601702 - Tinturarias'+#13#10+
             '9601703 - Toalheiros'+#13#10+
-            '9602501 - Cabeleireiros'+#13#10+
-            '9602502 - Outras atividades de tratamento de beleza'+#13#10+
+            '9602501 - Cabeleireiros, manicure e pedicure'+#13#10+
+            '9602502 - Atividades de estética e outros serviços de cuidados com a beleza'+#13#10+
             '9603301 - Gestão e manutenção de cemitérios'+#13#10+
             '9603302 - Serviços de cremação'+#13#10+
             '9603303 - Serviços de sepultamento'+#13#10+
             '9603304 - Serviços de funerárias'+#13#10+
             '9603305 - Serviços de somatoconservação'+#13#10+
             '9603399 - Atividades funerárias e serviços relacionados não especificados anteriormente'+#13#10+
-            '9609201 - Clínicas de estética e similares'+#13#10+
             '9609202 - Agências matrimoniais'+#13#10+
-            '9609203 - Alojamento, higiene e embelezamento de animais'+#13#10+
             '9609204 - Exploração de máquinas de serviços pessoais acionadas por moeda'+#13#10+
+            '9609205 - Atividades de sauna e banhos'+#13#10+
+            '9609206 - Serviços de tatuagem e colocação de piercing'+#13#10+
+            '9609207 - Alojamento de animais domésticos'+#13#10+
+            '9609208 - Higiene e embelezamento de animais domésticos'+#13#10+
             '9609299 - Outras atividades de serviços pessoais não especificadas anteriormente'+#13#10+
-            '9700500 - Serviços domésticos'+#13#10+
-            '9900800 - Organismos internacionais e outras instituições extraterritoriais';
+            '9700500 - Serviços domésticos';
 end;
 
 end.
