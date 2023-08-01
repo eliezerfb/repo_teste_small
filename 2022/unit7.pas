@@ -14928,7 +14928,7 @@ procedure TForm7.ibDataSet2CGCSetText(Sender: TField; const Text: String);
 var
   sRetorno : String;
   I : Integer;
-  vComboCNAE : TComboBox;
+  slCNAE: TStringList;
 begin
   //
   {Sandro Silva 2022-12-15 inicio 
@@ -14982,38 +14982,29 @@ begin
           Form7.IBDataSet2CEP.AsString    := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
           Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + xmlNodeValue(sRetorno,'//CNAE') + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
 
-          // CNAE
-          {
-          for I := 0 to Form17.ComboBox7.Items.Count -1 do
-          begin
-            if Copy(Form17.ComboBox7.Items[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
-            begin
-              Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(Form17.ComboBox7.Items[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
-            end;
-          end;
-          Mauricio Parizotto 2023-06-27}
-
-          try
-            vComboCNAE := TComboBox.Create(nil);
-            vComboCNAE.Items.Text := getListaCnae;
-
-            for I := 0 to vComboCNAE.Items.Count -1 do
-            begin
-              if Copy(vComboCNAE.Items[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
-              begin
-                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(vComboCNAE.Items[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
-              end;
-            end;
-          finally
-            FreeAndNil(vComboCNAE);
-          end;
-
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
           Form7.ibDataset99.Open;
 
           Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+
+          { Dailon 2023-08-01 Inicio}
+          slCNAE := TStringList.Create;
+          try
+            slCNAE.Text := getListaCnae;
+
+            for I := 0 to slCNAE.Count -1 do
+            begin
+              if Copy(slCNAE[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+              begin
+                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(slCNAE[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+              end;
+            end;
+          finally
+            FreeAndNil(slCNAE);
+          end;
+          { Dailon 2023-08-01 Fim}
         end;
       end;
     except
