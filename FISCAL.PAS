@@ -9936,30 +9936,30 @@ begin
 
   sAvancoPapel := Mais1Ini.ReadString('Frente de caixa', 'Avanco Papel', '200');
 
-  sRGTurbo               := Mais1Ini.ReadString('Frente de caixa'  , 'RG TURBO'               ,'Sim');
-  sPorta                 := Mais1Ini.ReadString('Frente de caixa'  , 'Porta'                  ,'COM1');
-  sVendedorFixo          := Mais1Ini.ReadString('Frente de caixa'  , 'Vendedor fixo'          ,'');
-  iVias                  := Mais1Ini.ReadInteger('Frente de caixa' , 'Vias do Cupom Vinculado',1);
-  Form1.sModeloECF       := Mais1Ini.ReadString('Frente de caixa'  , 'Modelo do ECF'          ,'01');
+  sRGTurbo            := Mais1Ini.ReadString('Frente de caixa'  , 'RG TURBO'               ,'Sim');
+  sPorta              := Mais1Ini.ReadString('Frente de caixa'  , 'Porta'                  ,'COM1');
+  sVendedorFixo       := Mais1Ini.ReadString('Frente de caixa'  , 'Vendedor fixo'          ,'');
+  iVias               := Mais1Ini.ReadInteger('Frente de caixa' , 'Vias do Cupom Vinculado',1);
+  Form1.sModeloECF    := Mais1Ini.ReadString('Frente de caixa'  , 'Modelo do ECF'          ,'01');
 
   {Sandro Silva 2023-06-27 inicio}
   // Sandro Silva 2023-08-01 if (Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0) or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0 then
   if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (NFCe) or (PAFNFCE) then
   begin
-    Form1.sModeloECF   := '65';
+    Form1.sModeloECF  := '65';
     Application.Title := 'Aplicativo emissor NFC-e';
   end;
 
   // Sandro Silva 2023-08-01 if (Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0) or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0 then
   if (AnsiLowerCase(ExtractFileName(Application.ExeName)) = NOME_APLICATIVO_59) or (SAT) or (MFE) then
   begin
-    Form1.sModeloECF   := '59';
+    Form1.sModeloECF  := '59';
     Application.Title := 'Aplicativo emissor de CF-e';
   end;
 
   if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') or Gerencial then
   begin
-    Form1.sModeloECF       := '99';
+    Form1.sModeloECF  := '99';
     Application.Title := 'Aplicativo Gerencial';
   end;
   {Sandro Silva 2023-06-27 fim}
