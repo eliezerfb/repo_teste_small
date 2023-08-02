@@ -11786,10 +11786,10 @@ begin
 end;
 
 function TForm7.RetornarSQLEstoqueOrcamentos: String;
-var
-  slSQL: TStringList;
+//var
+//  slSQL: TStringList;
 begin
-  slSQL := TStringList.Create;
+  //slSQL := TStringList.Create;
   try
     {Sandro Silva 2023-08-01 inicio
 
@@ -11847,11 +11847,9 @@ begin
       '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
       '    , ORCAMENTS.PEDIDO as "Registro" ' +
       ' FROM ORCAMENTS ';
-
-
-
+                            
   finally
-    FreeAndNil(slSQL);
+    //FreeAndNil(slSQL);
   end;
 end;
 
