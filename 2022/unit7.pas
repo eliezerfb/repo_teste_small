@@ -11571,6 +11571,7 @@ begin
 
               //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes sOrderBy  := 'group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
               sOrderBy  := 'group by ORCAMENTS.PEDIDO, ORCAMENTS.CLIFOR, ORCAMENTS.VENDEDOR, ORCAMENTS.NUMERONF order by ORCAMENTS.PEDIDO';
+              sOrderBy  := '';
             end;
             //
             TabelaAberta.Close;
@@ -11823,21 +11824,30 @@ begin
     slSQL.Add('FROM ORCAMENTS');
     Result := slSQL.Text;
     }
+
     Result :=
       'WITH ORCAMENTS AS ( ' +
       ' SELECT ' +
       '    ORCAMENT.PEDIDO ' +
       '    , MIN(ORCAMENT.DATA) AS DATA ' +
       '    , max(ORCAMENT.NUMERONF) as NUMERONF ' +
-      '    , ORCAMENT.CLIFOR ' +
-      '    , ORCAMENT.VENDEDOR ' +
+      //'    , ORCAMENT.CLIFOR ' +
+      ', max(ORCAMENT.CLIFOR) as CLIFOR ' +
+      //'    , ORCAMENT.VENDEDOR ' +
+      ', max(case when coalesce((select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO), '''') = '''' then ' +
+      '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO order by registro desc) ' +
+      '  else ' +
+      '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO) ' +
+      '  end) ' +
+      'as VENDEDOR ' +
       '    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO ' +
       '    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO ' +
       ' FROM ORCAMENT ' +
-      ' GROUP BY ORCAMENT.PEDIDO, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
+      ' GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
       ' ) ' +
       ' SELECT ' +
-      '    ORCAMENTS.PEDIDO as "Orçamento" ' +
+      '    ORCAMENTS.PEDIDO ' +
+      '    , ORCAMENTS.PEDIDO as "Orçamento" ' +
       '    , ORCAMENTS.DATA as "Data" ' +
       '    , ORCAMENTS.CLIFOR as "Cliente" ' +
       '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
@@ -11847,7 +11857,7 @@ begin
       '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
       '    , ORCAMENTS.PEDIDO as "Registro" ' +
       ' FROM ORCAMENTS ';
-                            
+
   finally
     //FreeAndNil(slSQL);
   end;
