@@ -267,6 +267,9 @@ type
  	procedure Edit7Change(Sender: TObject);
     procedure Edit9Change(Sender: TObject);
     procedure Edit8Change(Sender: TObject);
+    procedure SMALL_DBEdit18Exit(Sender: TObject);
+    procedure SMALL_DBEdit2Exit(Sender: TObject);
+    procedure SMALL_DBEdit23Exit(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -274,6 +277,7 @@ type
     procedure DefineDataSetConsumidor;
     procedure DefineDataSetIndPresenca;
     procedure DefineDataSetInfNFe;
+    procedure AtualizaTotalDaNota;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -2181,6 +2185,18 @@ end;
 
 procedure TForm24.SMALL_DBEdit22Exit(Sender: TObject);
 begin
+  {Sandro Silva 2023-08-02 inicio
+  Form7.ibDataSet23.Edit;
+  Form7.ibDataSet23.Post;
+  Form7.sModulo   := 'COMPRA';
+  }
+  AtualizaTotalDaNota;
+  {Sandro Silva 2023-08-02 fim}
+end;
+
+procedure TForm24.AtualizaTotalDaNota;
+begin
+  // Atualiza o total da nota
   Form7.ibDataSet23.Edit;
   Form7.ibDataSet23.Post;
   Form7.sModulo   := 'COMPRA';
@@ -3693,6 +3709,21 @@ procedure TForm24.SMALL_DBEdit41KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then SMALL_DBEdit28.SetFocus;
+end;
+
+procedure TForm24.SMALL_DBEdit18Exit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
+end;
+
+procedure TForm24.SMALL_DBEdit2Exit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
+end;
+
+procedure TForm24.SMALL_DBEdit23Exit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
 end;
 
 end.
