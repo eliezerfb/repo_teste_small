@@ -1226,9 +1226,9 @@ object Form24: TForm24
         OnExit = SMALL_DBEdit27Exit
         OnKeyUp = FormKeyUp
       end
-      object Edit4: TEdit
+      object edFretePorConta: TEdit
         Left = 320
-        Top = 529
+        Top = 537
         Width = 95
         Height = 22
         Font.Charset = ANSI_CHARSET
@@ -1238,7 +1238,8 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
         TabOrder = 50
-        OnEnter = Edit4Enter
+        OnEnter = edFretePorContaEnter
+        OnExit = edFretePorContaExit
       end
       object SMALL_DBEdit1: TSMALL_DBEdit
         Left = 425
