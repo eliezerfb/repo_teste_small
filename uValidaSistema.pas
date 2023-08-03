@@ -21,9 +21,10 @@ uses
   , uCriptografia
   ;
 
-
+{
 type Recurso = (rcOS, rcSped, rcSpedPisCofins, rcAnvisa, rcSintegra, rcComandas, rcMDFE, rcMobile, rcEtiquetas,
                 rcOrcamento, rcMKP, rcContasPagar, rcContasReceber, rcCaixa, rcBancos, rcIndicadores, rcInventarioP7);
+usar uTypesRecursos}
 
 function ValidaSistema(IBDATABASE: TIBDatabase; bFechaSistema: Boolean = True; bValidacaoNova: Boolean = True):Boolean;
 function BuscaSerialSmall:string;

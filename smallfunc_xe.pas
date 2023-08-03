@@ -36,6 +36,11 @@ uses
   , ShellApi
   ,Vcl.DBCtrls
   , Vcl.StdCtrls
+  , msxmldom
+  , XMLDoc
+  , xmldom
+  , XMLIntf
+  , MsXml
   , Vcl.Mask
   ;
 
@@ -117,6 +122,9 @@ procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 function SysWinDir: string;
 function SmallMsgBox(const Text, Caption: PChar; Flags: Longint): Integer;
 function Day(Data:TdateTime): Integer;
+function xmlNodeValue(sXML: String; sNode: String): String;
+function xmlNodeValueToDate(sXML: String; sNode: String): TDate;
+function xmlNodeValueToFloat(sXML: String; sNode: String): Double;
 
 
 
@@ -1211,5 +1219,66 @@ begin
 end;
 
 
+
+function xmlNodeValue(sXML: String; sNode: String): String;
+{Sandro Silva 2012-02-08 inicio
+Extrai valor do elemento no xml}
+var
+  XMLDOM: IXMLDOMDocument;
+  iNode: Integer;
+  xNodes: IXMLDOMNodeList;
+  function utf8Fix(sTexto: String): String;
+  const
+    acento : array[1..46] of string = ('á', 'à', 'â', 'ã', 'ä', 'é', 'è', 'ê', 'ë', 'í', 'ì', 'î', 'ï', 'ó', 'ò', 'ô', 'õ', 'ö', 'ú', 'ù', 'û', 'ü', 'ç', 'Á', 'À', 'Â', 'Ã', 'Ä', 'É', 'È', 'Ê', 'Ë', 'Í', 'Ì', 'Î', 'Ï', 'Ó', 'Ò', 'Ô', 'Õ', 'Ö', 'Ú', 'Ù', 'Û', 'Ü', 'Ç');
+    UTF8: array[1..46] of string = ('Ã¡','Ã ','Ã¢','Ã£','Ã¤','Ã©','Ã¨','Ãª','Ã«','Ã­','Ã¬','Ã®','Ã¯','Ã³','Ã²','Ã´','Ãµ','Ã¶','Ãº','Ã¹','Ã»','Ã¼','Ã§','Ã','Ã€','Ã‚','Ãƒ','Ã„','Ã‰','Ãˆ','ÃŠ','Ã‹','Ã','ÃŒ','ÃŽ','Ã','Ã“','Ã’','Ã”','Ã•','Ã–','Ãš','Ã™','Ã›','Ãœ','Ã‡');
+  var
+    iLetra: Integer;
+  begin
+    Result := sTexto;
+    for iLetra := 1 to length(utf8) do
+    begin
+      if Pos(UTF8[iLetra], Result) > 0 then
+        Result := StringReplace(Result, utf8[iLetra], acento[iLetra], [rfReplaceAll]);
+    end;
+  end;
+begin
+  XMLDOM := CoDOMDocument.Create;
+  XMLDOM.loadXML(sXML);
+
+  Result := '';
+  xNodes := XMLDOM.selectNodes(sNode);
+  for iNode := 0 to xNodes.length -1 do
+  begin
+    Result := utf8Fix(xNodes.item[iNode].text);
+  end;
+
+  XMLDOM := nil;
+  xNodes := nil;
+end;
+
+function xmlNodeValueToDate(sXML: String; sNode: String): TDate;
+var
+  sData: String;
+begin
+  Result := 0;
+  sData := xmlNodeValue(sXML, sNode);
+  if sData <> '' then
+  begin
+    Result := StrToDate(Copy(sData, 9, 2) + '/' + Copy(sData, 6, 2) + '/' + Copy(sData, 1, 4));
+  end;
+end;
+
+function xmlNodeValueToFloat(sXML: String; sNode: String): Double;
+var
+  sValor: String;
+begin
+  Result := 0;
+  sValor := xmlNodeValue(sXML, sNode);
+  if sValor <> '' then
+  begin
+    sValor := StringReplace(sValor, '.', ',',[rfReplaceAll]);
+    Result := StrToFloat(sValor);
+  end;
+end;
 
 end.
