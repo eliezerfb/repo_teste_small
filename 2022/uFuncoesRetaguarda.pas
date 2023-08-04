@@ -24,6 +24,8 @@ uses
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectMovimentacaoItem(vProduto : string): String;
+  function xmlNodeValueToFloat(sXML, sNode: String;
+    sDecimalSeparator: String = '.'): Double;
   function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
   function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
   function FormatXMLToFloat(sValor: String): Double;
@@ -224,6 +226,25 @@ begin
 
 end;
 
+function xmlNodeValueToFloat(sXML, sNode: String;
+  sDecimalSeparator: String = '.'): Double;
+//Sandro Silva 2017-05-23 inicio
+//Converte valor no xml para Float
+//sDecimalSeparator: Deve ser ',' ou '.'
+var
+  sValor: String;
+begin
+  sValor := xmlNodeValue(sXML, sNode);
+  if sDecimalSeparator = '.' then
+  begin
+   sValor := StringReplace(sValor, ',', '', [rfReplaceAll]);
+   sValor := StringReplace(sValor, '.', ',', [rfReplaceAll]);
+  end
+  else
+   sValor := StringReplace(sValor, '.', '', [rfReplaceAll]);
+
+  Result := StrToFloatDef(sValor, 0);
+end;
 
 function XmlValueToFloat(Value: String;
   SeparadorDecimalXml: String = '.'): Double;
