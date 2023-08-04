@@ -271,7 +271,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label31: TLabel
-        Left = 127
+        Left = 125
         Top = 434
         Width = 68
         Height = 13
@@ -285,7 +285,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label32: TLabel
-        Left = 226
+        Left = 224
         Top = 434
         Width = 83
         Height = 13
@@ -299,7 +299,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label33: TLabel
-        Left = 325
+        Left = 324
         Top = 434
         Width = 87
         Height = 13
@@ -341,7 +341,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label35: TLabel
-        Left = 127
+        Left = 125
         Top = 474
         Width = 34
         Height = 13
@@ -355,7 +355,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label36: TLabel
-        Left = 226
+        Left = 224
         Top = 474
         Width = 79
         Height = 13
@@ -369,7 +369,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label37: TLabel
-        Left = 325
+        Left = 324
         Top = 474
         Width = 78
         Height = 13
@@ -481,7 +481,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label46: TLabel
-        Left = 322
+        Left = 320
         Top = 554
         Width = 47
         Height = 13
@@ -495,7 +495,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label47: TLabel
-        Left = 474
+        Left = 472
         Top = 554
         Width = 14
         Height = 13
@@ -537,7 +537,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label50: TLabel
-        Left = 112
+        Left = 111
         Top = 594
         Width = 38
         Height = 13
@@ -551,7 +551,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label51: TLabel
-        Left = 217
+        Left = 216
         Top = 594
         Width = 30
         Height = 13
@@ -565,7 +565,7 @@ object Form24: TForm24
         Transparent = True
       end
       object Label52: TLabel
-        Left = 327
+        Left = 326
         Top = 594
         Width = 87
         Height = 13
@@ -1226,9 +1226,9 @@ object Form24: TForm24
         OnExit = SMALL_DBEdit27Exit
         OnKeyUp = FormKeyUp
       end
-      object Edit4: TEdit
+      object edFretePorConta: TEdit
         Left = 320
-        Top = 529
+        Top = 537
         Width = 95
         Height = 22
         Font.Charset = ANSI_CHARSET
@@ -1238,7 +1238,8 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
         TabOrder = 50
-        OnEnter = Edit4Enter
+        OnEnter = edFretePorContaEnter
+        OnExit = edFretePorContaExit
       end
       object SMALL_DBEdit1: TSMALL_DBEdit
         Left = 425
@@ -1602,7 +1603,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit24: TSMALL_DBEdit
-        Left = 325
+        Left = 324
         Top = 449
         Width = 95
         Height = 22
@@ -1622,7 +1623,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit19: TSMALL_DBEdit
-        Left = 226
+        Left = 224
         Top = 449
         Width = 95
         Height = 22
@@ -1642,7 +1643,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit21: TSMALL_DBEdit
-        Left = 127
+        Left = 125
         Top = 449
         Width = 95
         Height = 22
@@ -1703,7 +1704,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit25: TSMALL_DBEdit
-        Left = 325
+        Left = 324
         Top = 489
         Width = 95
         Height = 22
@@ -1723,7 +1724,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit18: TSMALL_DBEdit
-        Left = 226
+        Left = 224
         Top = 489
         Width = 95
         Height = 22
@@ -1740,10 +1741,11 @@ object Form24: TForm24
         ParentFont = False
         TabOrder = 7
         OnEnter = SMALL_DBEdit20Enter
+        OnExit = SMALL_DBEdit18Exit
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit23: TSMALL_DBEdit
-        Left = 127
+        Left = 125
         Top = 489
         Width = 95
         Height = 22
@@ -1760,6 +1762,7 @@ object Form24: TForm24
         ParentFont = False
         TabOrder = 6
         OnEnter = SMALL_DBEdit20Enter
+        OnExit = SMALL_DBEdit23Exit
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit22: TSMALL_DBEdit
@@ -1889,7 +1892,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit32: TSMALL_DBEdit
-        Left = 474
+        Left = 472
         Top = 569
         Width = 23
         Height = 22
@@ -1909,7 +1912,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit33: TSMALL_DBEdit
-        Left = 322
+        Left = 320
         Top = 569
         Width = 147
         Height = 22
@@ -1989,7 +1992,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit36: TSMALL_DBEdit
-        Left = 327
+        Left = 326
         Top = 609
         Width = 100
         Height = 22
@@ -2009,7 +2012,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit35: TSMALL_DBEdit
-        Left = 217
+        Left = 216
         Top = 609
         Width = 105
         Height = 22
@@ -2029,7 +2032,7 @@ object Form24: TForm24
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit34: TSMALL_DBEdit
-        Left = 112
+        Left = 111
         Top = 609
         Width = 100
         Height = 22
@@ -2120,6 +2123,7 @@ object Form24: TForm24
         ParentFont = False
         TabOrder = 45
         OnEnter = SMALL_DBEdit20Enter
+        OnExit = SMALL_DBEdit2Exit
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit43: TSMALL_DBEdit
