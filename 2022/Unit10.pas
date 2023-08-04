@@ -735,7 +735,6 @@ begin
   //
 end;
 
-
 function GravaRegistro(sP1 : boolean):Boolean;
 begin
   if Form7.bEstaSendoUsado then

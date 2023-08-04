@@ -2249,9 +2249,10 @@ type
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
     function GetMensagemCertificado(vLocal:string=''): string;
     function TestarNFeHomologacao: Boolean;
-    function TestarNFSeHomologacao: Boolean;    
+    function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
     procedure AtualizarListaItensAuxiliar;    
+    procedure AuditaAlteracaoEstoqueManual;    
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -15845,8 +15846,10 @@ procedure TForm7.ibDataSet4BeforePost(DataSet: TDataSet);
 begin
   //
   sRegistro := DataSet.FieldByname('REGISTRO').AsString;
-  if ibDataSet4PRECO.AsFloat <=0 then ibDataSet4PRECO.AsFloat := 0.01;
+  if ibDataSet4PRECO.AsFloat <=0 then
+    ibDataSet4PRECO.AsFloat := 0.01;
   AssinaRegistro('ESTOQUE',DataSet, True);
+  AuditaAlteracaoEstoqueManual;  
   //
 end;
 
@@ -18058,7 +18061,7 @@ begin
         ShowMessage('A quantidade do estoque não pode ser alterada manualmente.'
         +chr(10)+chr(10)+'Para alterar a quantidade deste item somente emitindo um dos seguintes documentos fiscais:'
         +chr(10)+chr(10)+'NF-e de entrada (compra)'
-        +chr(10)+'NF-e de saída (venda)'
+        +chr(10)+'NF-e de saída (venda)'            
         +chr(10)+'NFC-e de saída (venda)'
         +chr(10)+'Cupom Fiscal (venda)'+chr(10));
       end;
@@ -18066,25 +18069,31 @@ begin
   except
     Form7.ibDataSet4QTD_ATUAL.AsString := Text;
   end;
-  //
-{
-  if (NaoHouveMovimento(Form7.ibDataSet4CODIGO.AsString))
-  or (Form7.sModulo <> 'ESTOQUE')
-  or ((UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'SP'))
-  or ((Pos('CONSUMO',UpperCase(Form7.ibDataSet4NOME.AsString)) <> 0)) then
-  begin
-    Form7.ibDataSet4QTD_ATUAL.AsString := Text;
-  end else
-  begin
-    ShowMessage('A quantidade do estoque não pode ser alterada manualmente.'
-    +chr(10)+chr(10)+'Para alterar a quantidade deste item somente emitindo um dos seguintes documentos fiscais:'
-    +chr(10)+chr(10)+'NF-e de entrada (compra)'
-    +chr(10)+'NF-e de saída (venda)'
-    +chr(10)+'NFC-e de saída (venda)'
-    +chr(10)+'Cupom Fiscal (venda)'+chr(10));
+end;
+
+procedure TForm7.AuditaAlteracaoEstoqueManual;
+var
+  QrySaldo: TIBQuery;
+begin
+  QrySaldo := TIBQuery.Create(nil);
+  try
+    QrySaldo.Close;
+    QrySaldo.Database := IBDatabase1;
+    QrySaldo.SQL.Add('SELECT QTD_ATUAL');
+    QrySaldo.SQL.Add('FROM ESTOQUE');
+    QrySaldo.SQL.Add('WHERE');
+    QrySaldo.SQL.Add('(CODIGO=:XCOD)');
+    QrySaldo.ParamByName('XCOD').AsString := ibDataSet4CODIGO.AsString;
+    QrySaldo.Open;
+
+    if QrySaldo.IsEmpty then
+      Exit;
+      
+    if QrySaldo.FieldByName('QTD_ATUAL').Value <> Form7.ibDataSet4QTD_ATUAL.Value then
+      Audita('ALTEROU', 'ESTOQUE', Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').Value, Form7.ibDataSet4QTD_ATUAL.Value);
+  finally
+    FreeAndNil(QrySaldo);
   end;
-  //
-}
 end;
 
 procedure TForm7.Resumodevendas1Click(Sender: TObject);
