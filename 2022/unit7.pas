@@ -11572,6 +11572,7 @@ begin
 
               //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes sOrderBy  := 'group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
               sOrderBy  := 'group by ORCAMENTS.PEDIDO, ORCAMENTS.CLIFOR, ORCAMENTS.VENDEDOR, ORCAMENTS.NUMERONF order by ORCAMENTS.PEDIDO';
+              sOrderBy  := '';
             end;
             //
             TabelaAberta.Close;
@@ -11787,11 +11788,18 @@ begin
 end;
 
 function TForm7.RetornarSQLEstoqueOrcamentos: String;
-var
-  slSQL: TStringList;
+//var
+//  slSQL: TStringList;
 begin
-  slSQL := TStringList.Create;
+  //slSQL := TStringList.Create;
   try
+    {Sandro Silva 2023-08-01 inicio
+
+    Conforme combinado, não usar .add para concatenar string de comando sql.
+    Isso dificulta o Debug.
+    Concatenar a string de forma simples, separando em linhas e usando  '' + ''
+
+
     slSQL.Add('WITH ORCAMENTS AS (');
     slSQL.Add('SELECT');
     slSQL.Add('    ORCAMENT.PEDIDO');
@@ -11815,10 +11823,43 @@ begin
     slSQL.Add('    , ORCAMENTS.NUMERONF as "Doc. Fiscal"');
     slSQL.Add('    , ORCAMENTS.PEDIDO as "Registro"');
     slSQL.Add('FROM ORCAMENTS');
-
     Result := slSQL.Text;
+    }
+
+    Result :=
+      'WITH ORCAMENTS AS ( ' +
+      ' SELECT ' +
+      '    ORCAMENT.PEDIDO ' +
+      '    , MIN(ORCAMENT.DATA) AS DATA ' +
+      '    , max(ORCAMENT.NUMERONF) as NUMERONF ' +
+      //'    , ORCAMENT.CLIFOR ' +
+      ', max(ORCAMENT.CLIFOR) as CLIFOR ' +
+      //'    , ORCAMENT.VENDEDOR ' +
+      ', max(case when coalesce((select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO), '''') = '''' then ' +
+      '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO order by registro desc) ' +
+      '  else ' +
+      '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO) ' +
+      '  end) ' +
+      'as VENDEDOR ' +
+      '    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+      '    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO ' +
+      ' FROM ORCAMENT ' +
+      ' GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
+      ' ) ' +
+      ' SELECT ' +
+      '     ORCAMENTS.PEDIDO as "Orçamento" ' +
+      '    , ORCAMENTS.DATA as "Data" ' +
+      '    , ORCAMENTS.CLIFOR as "Cliente" ' +
+      '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
+      '    , TOTALBRUTO as "Total bruto" ' +
+      '    , DESCONTO as "Desconto" ' +
+      '    , (TOTALBRUTO - DESCONTO) as "Total líquido" ' +
+      '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
+      '    , ORCAMENTS.PEDIDO as "Registro" ' +
+      ' FROM ORCAMENTS ';
+
   finally
-    FreeAndNil(slSQL);
+    //FreeAndNil(slSQL);
   end;
 end;
 
