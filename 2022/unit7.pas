@@ -11846,8 +11846,7 @@ begin
       ' GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
       ' ) ' +
       ' SELECT ' +
-      '    ORCAMENTS.PEDIDO ' +
-      '    , ORCAMENTS.PEDIDO as "Orçamento" ' +
+      '     ORCAMENTS.PEDIDO as "Orçamento" ' +
       '    , ORCAMENTS.DATA as "Data" ' +
       '    , ORCAMENTS.CLIFOR as "Cliente" ' +
       '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
