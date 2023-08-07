@@ -6643,6 +6643,9 @@ begin
   AjustaRegistro(NumeroArquivo(),'AUDIT0RIA');
   AjustaRegistro(NumeroArquivo(),'CODEBAR');
   AjustaRegistro(NumeroArquivo(),'NFCE');
+
+  //Mauricio Parizotot 2023-08-07 Tabela BACKUP e BACKUPHORARIOS não tem campo Registro
+
   //
   {Sandro Silva 2022-12-28 inicio}
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
