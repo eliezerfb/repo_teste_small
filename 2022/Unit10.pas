@@ -5320,6 +5320,9 @@ var
   vCompra   : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
   bChave    : Boolean;
   iCamposVisualizar: Integer;
+  vDescricaoProduto : string;
+
+  IBQProduto: TIBQuery; // Mauricio Parizotto 2023-08-07
 begin
   // Não exporta se o cliente estiver em branco
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
@@ -6232,11 +6235,16 @@ begin
       begin
         if Form7.sModulo <> 'KARDEX' then
         begin
+          vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-04 
+
+
           Form7.ibDataSet10.Close;
           Form7.ibDataSet10.SelectSQL.Clear;
-          Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+          Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+
+                                          ' order by CODIGO, COR, TAMANHO');
           Form7.ibDataSet10.Open;
           Form7.ibDataSet10.First;
+
           
           if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
           begin
@@ -6346,6 +6354,7 @@ begin
             Form7.ibDataSet28.First;
             while not Form7.ibDataSet28.Eof do
             begin
+              {Mauricio Parizotto 2023-08-07 Inicio
               Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
 
               if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
@@ -6359,6 +6368,31 @@ begin
                 WriteLn(F,' </tr>');
                 fTotal := fTotal + (Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
               end;
+              }
+
+              try
+                IBQProduto := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+                IBQProduto.Close;
+                IBQProduto.SQL.Text := ' Select * From ESTOQUE '+
+                                       ' Where DESCRICAO = '+QuotedStr(Form7.ibDataSet28DESCRICAO.AsString);
+                IBQProduto.Open;
+
+                if not IBQProduto.IsEmpty then
+                begin
+                  WriteLn(F,' <tr>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+IBQProduto.FieldByName('CODIGO').Asstring +'</td>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet28DESCRICAO.AsString+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProduto.FieldByName('CUSTOCOMPR').AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProduto.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
+                  WriteLn(F,' </tr>');
+                  fTotal := fTotal + (IBQProduto.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
+                end;
+              finally
+                FreeAndNil(IBQProduto);
+              end;
+
+              {Mauricio Parizotto 2023-08-07 Fim}
 
               Form7.ibDataSet28.Next;
             end;
@@ -6406,7 +6440,8 @@ begin
         try
           vQtdInicial := ExecutaComandoEscalar(Form7.IBDatabase1,
                                                ' Select Coalesce(sum(quantidade),0) '+
-                                               ' From ('+SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString)+') A');
+                                               //' From ('+SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString)+') A'); Mauricio Parizotto 2023-08-04
+                                               ' From ('+SqlSelectMovimentacaoItem(vDescricaoProduto)+') A');
 
 
           vQtdInicial := Form7.ibDataSet4QTD_ATUAL.AsFloat - vQtdInicial;
@@ -6419,7 +6454,8 @@ begin
         end;
 
         Form7.IBDataSet97.Close;
-        Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString);
+        //Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString);  Mauricio Parizotto 2023-08-04
+        Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(vDescricaoProduto);
         Form7.IBDataSet97.DisableControls;
         Form7.IBDataSet97.Open;
 
