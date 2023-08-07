@@ -20117,12 +20117,14 @@ object Form7: TForm7
       DisplayWidth = 35
       FieldName = 'ENDERE'
       Origin = 'CLIFOR.ENDERE'
+      OnSetText = IBDataSet2ENDERESetText
       Size = 40
     end
     object IBDataSet2COMPLE: TIBStringField
       DisplayLabel = 'Bairro'
       FieldName = 'COMPLE'
       Origin = 'CLIFOR.COMPLE'
+      OnSetText = IBDataSet2COMPLESetText
       Size = 35
     end
     object IBDataSet2CIDADE: TIBStringField
@@ -20172,7 +20174,7 @@ object Form7: TForm7
       Size = 16
     end
     object IBDataSet2EMAIL: TIBStringField
-      DisplayLabel = 'e-mail'
+      DisplayLabel = 'E-mail'
       DisplayWidth = 40
       FieldName = 'EMAIL'
       Origin = 'CLIFOR.EMAIL'
