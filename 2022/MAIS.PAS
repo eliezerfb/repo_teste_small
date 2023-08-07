@@ -11246,6 +11246,15 @@ begin
     Exit;
   end;
 
+  {Sandro Silva 2023-08-07 inicio}
+  if Form30.Visible then
+  begin
+    // Se estiver com tela de lançamento de OS aberta e movimentar o mouse, mantem a tela de lançamento sobre as demais
+    Form30.BringToFront;
+    Exit;
+  end;
+  {Sandro Silva 2023-08-07 fim}
+  
   if Form7.Visible then
   begin
     Form7.BringToFront;
