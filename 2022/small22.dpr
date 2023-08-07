@@ -128,21 +128,16 @@ uses
   uSectionHTMLUsuarioINF in '..\..\unit_compartilhada\uSectionHTMLUsuarioINF.pas',
   uIEstruturaTipoRelatorioPadrao in '..\..\unit_compartilhada\uIEstruturaTipoRelatorioPadrao.pas',
   uIDadosImpressaoDAO in 'units\uIDadosImpressaoDAO.pas',
-  uDadosVendasPorClienteNotaDAO in 'units\uDadosVendasPorClienteNotaDAO.pas',
   uEstruturaTipoRelatorioPadrao in '..\..\unit_compartilhada\uEstruturaTipoRelatorioPadrao.pas',
   uIEstruturaRelatorioPadrao in '..\..\unit_compartilhada\interfaces\uIEstruturaRelatorioPadrao.pas',
-  uDadosVendasPorClienteNotaItemAItemDAO in 'units\uDadosVendasPorClienteNotaItemAItemDAO.pas',
   uIAssinaturaDigital in '..\..\unit_compartilhada\interfaces\uIAssinaturaDigital.pas',
   uAssinaturaDigital in '..\..\unit_compartilhada\uAssinaturaDigital.pas',
   uIEstruturaRelVendasPorCliente in 'interfaces\uIEstruturaRelVendasPorCliente.pas',
   uEstruturaRelVendasPorCliente in 'units\uEstruturaRelVendasPorCliente.pas',
   uEstruturaRelVendasPorClienteNota in 'units\uEstruturaRelVendasPorClienteNota.pas',
   uIDadosVendasPorClienteFactory in 'interfaces\uIDadosVendasPorClienteFactory.pas',
-  uDadosVendasPorClienteFactory in 'units\uDadosVendasPorClienteFactory.pas',
   uIDadosEmitente in '..\..\unit_compartilhada\interfaces\uIDadosEmitente.pas',
   uDadosEmitente in '..\..\unit_compartilhada\uDadosEmitente.pas',
-  uDadosVendasPorClienteCupomDAO in 'units\uDadosVendasPorClienteCupomDAO.pas',
-  uDadosVendasPorClienteCupomItemAItemDAO in 'units\uDadosVendasPorClienteCupomItemAItemDAO.pas',
   uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas',
   uIRetornaOperacoesRelatorio in 'interfaces\uIRetornaOperacoesRelatorio.pas',
   uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas',
@@ -153,7 +148,12 @@ uses
   uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
   uSectionsNFeINI in '..\..\unit_compartilhada\uSectionsNFeINI.pas',
   uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
-  uSectionsNFSeINI in '..\..\unit_compartilhada\uSectionsNFSeINI.pas';
+  uSectionsNFSeINI in '..\..\unit_compartilhada\uSectionsNFSeINI.pas',
+  uDadosRelatorioPadraoDAO in '..\..\unit_compartilhada\uDadosRelatorioPadraoDAO.pas',
+  uRelatorioCatalogoProdudos in 'units\uRelatorioCatalogoProdudos.pas' {frmRelatorioCatalogoProduto},
+  uEstruturaRelCatalogoProdutos in 'units\uEstruturaRelCatalogoProdutos.pas',
+  uFiltrosRodapeRelatorioCatalogoProdutos in 'units\uFiltrosRodapeRelatorioCatalogoProdutos.pas',
+  uLayoutHTMLRelatorio in 'units\uLayoutHTMLRelatorio.pas';
 
 {$R *.RES}
 

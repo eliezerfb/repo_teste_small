@@ -3,8 +3,8 @@ unit uEstruturaRelVendasPorClienteNota;
 interface
 
 uses
-  uIEstruturaRelatorioPadrao, uIDadosImpressaoDAO, IBQuery,
-  uIFiltrosRodapeRelatorio;
+  uIEstruturaRelatorioPadrao, uIDadosImpressaoDAO,
+  uIFiltrosRodapeRelatorio, DB;
 
 type
   TEstruturaRelVendasPorClienteNota = class(TInterfacedObject, IEstruturaRelatorioPadrao)
@@ -18,7 +18,7 @@ type
     function setDAO(AoDao: IDadosImpressaoDAO): IEstruturaRelatorioPadrao;
     function getColunasNaoTotalizar(out AcColunas: String): IEstruturaRelatorioPadrao;
     function FiltrosRodape: IFiltrosRodapeRelatorio;
-    function getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
+    function getDAO: IDadosImpressaoDAO;
   end;
 
 implementation
@@ -44,13 +44,6 @@ begin
   Result := FoFiltrosRodape;
 end;
 
-function TEstruturaRelVendasPorClienteNota.getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
-begin
-  Result := Self;
-
-  AQry := FoDados.getDados;
-end;
-
 function TEstruturaRelVendasPorClienteNota.getTitulo(out AcTitulo: String): IEstruturaRelatorioPadrao;
 begin
   Result := Self;
@@ -68,6 +61,11 @@ begin
   Result := Self;
 
   FoDados := AoDao;
+end;
+
+function TEstruturaRelVendasPorClienteNota.getDAO: IDadosImpressaoDAO;
+begin
+  Result := FoDados;
 end;
 
 end.

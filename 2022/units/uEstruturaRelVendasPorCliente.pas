@@ -4,7 +4,7 @@ interface
 
 uses
   uIEstruturaRelVendasPorCliente, uIEstruturaTipoRelatorioPadrao, IBDatabase,
-  Classes, SysUtils, SmallFunc;
+  Classes, SysUtils, SmallFunc, IBQuery;
 
 type
   TEstruturaRelVendasPorCliente = class(TInterfacedObject, IEstruturaRelVendasPorCliente)
@@ -19,6 +19,8 @@ type
     function RetornarWhereNota: String;
     function RetornarWhereCupom: String;
     function RetornarDescricaoFiltroData: String;
+    function RetornarSQLNota: String;
+    function RetornarSQLCupom: String;
   public
     destructor Destroy; override;
     class function New: IEstruturaRelVendasPorCliente;
@@ -37,8 +39,8 @@ implementation
 
 uses
   uEstruturaTipoRelatorioPadrao, uEstruturaRelVendasPorClienteNota,
-  uDadosVendasPorClienteFactory, uEstruturaRelVendasPorClienteCupom,
-  uIEstruturaRelatorioPadrao;
+  uEstruturaRelVendasPorClienteCupom, uIEstruturaRelatorioPadrao,
+  uDadosRelatorioPadraoDAO;
 
 { TEstruturaRelVendasPorCliente }
 
@@ -58,48 +60,154 @@ function TEstruturaRelVendasPorCliente.ImprimeNota(AbImprime: Boolean): IEstrutu
 var
   i: Integer;
   oEstruturaClienteNota: IEstruturaRelatorioPadrao;
+  oQry: TIBQuery;
 begin
   Result := Self;
 
   if not AbImprime then
     Exit;
 
-  oEstruturaClienteNota := TEstruturaRelVendasPorClienteNota.New
-                                                              .setDAO(TDadosVendasPorClienteFactory.New
-                                                                                                   .RetornarDAONota(FbItemAItem)
-                                                                                                   .setDataBase(FoDataBase)
-                                                                                                   .setWhere(RetornarWhereNota)
-                                                                                                   .CarregarDados
+  oQry := TIBQuery.Create(nil);
+  try
+    oQry.Close;
+    oQry.Database := FoDataBase;
+    oQry.SQL.Text := RetornarSQLNota;
+    oQry.Open;
+
+    oEstruturaClienteNota := TEstruturaRelVendasPorClienteNota.New
+                                                              .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                              .setDataBase(FoDataBase)                                                              
+                                                                                              .CarregarDados(oQry)
+
                                                                      );
 
-  oEstruturaClienteNota.FiltrosRodape.setFiltroData(RetornarDescricaoFiltroData);
-  
-  for i := 0 to Pred(FlsOperacoes.Count) do
-    oEstruturaClienteNota.FiltrosRodape.AddItem(FlsOperacoes[i]);
+    oEstruturaClienteNota.FiltrosRodape.setFiltroData(RetornarDescricaoFiltroData);
 
-  FoEstrutura.GerarImpressao(oEstruturaClienteNota);
+    for i := 0 to Pred(FlsOperacoes.Count) do
+      oEstruturaClienteNota.FiltrosRodape.AddItem(FlsOperacoes[i]);
+
+    FoEstrutura.GerarImpressao(oEstruturaClienteNota);
+  finally
+    FreeAndNil(oQry);
+  end;
+end;
+
+function TEstruturaRelVendasPorCliente.RetornarSQLNota: String;
+var
+  lsSQL: TStringList;
+begin
+  lsSQL := TStringList.Create;
+  try
+    lsSQL.Add('SELECT');
+    lsSQL.Add('    VENDAS.EMISSAO AS "Data"');
+    lsSQL.Add('    , SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9) ||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS "Número da NF"');
+    lsSQL.Add('    , VENDAS.CLIENTE AS "Cliente"');
+    if FbItemAItem then
+    begin
+      lsSQL.Add('    , ITENS001.CODIGO AS "Código"');
+      lsSQL.Add('    , ITENS001.DESCRICAO AS "Descrição"');
+      lsSQL.Add('    , CAST(ITENS001.TOTAL AS NUMERIC(18,2)) AS "Valor"');
+      lsSQL.Add('FROM VENDAS');
+      lsSQL.Add('INNER JOIN ITENS001');
+      lsSQL.Add('    ON (ITENS001.NUMERONF=VENDAS.NUMERONF)');
+    end
+    else
+    begin
+      lsSQL.Add('    , CAST(VENDAS.TOTAL AS NUMERIC(18,2)) AS "Total"');
+      lsSQL.Add('FROM VENDAS');
+    end;
+    lsSQL.Add('WHERE');
+    lsSQL.Add(RetornarWhereNota);
+    lsSQL.Add('ORDER BY VENDAS.CLIENTE, VENDAS.EMISSAO, VENDAS.NUMERONF');
+
+    Result := lsSQL.Text;
+  finally
+    FreeAndNil(lsSQL);
+  end;
 end;
 
 function TEstruturaRelVendasPorCliente.ImprimeCupom(AbImprime: Boolean): IEstruturaRelVendasPorCliente;
 var
   oEstruturaClienteCupom: IEstruturaRelatorioPadrao;
+  oQry: TIBQuery;
 begin
   Result := Self;
 
   if not AbImprime then
     Exit;
 
-  oEstruturaClienteCupom := TEstruturaRelVendasPorClienteCupom.New
-                                                              .setDAO(TDadosVendasPorClienteFactory.New
-                                                                                                   .RetornarDAOCupom(FbItemAItem)
-                                                                                                   .setDataBase(FoDataBase)
-                                                                                                   .setWhere(RetornarWhereCupom)
-                                                                                                   .CarregarDados
-                                                                     );
+  oQry := TIBQuery.Create(nil);
+  try
+    oQry.Close;
+    oQry.Database := FoDataBase;
+    oQry.SQL.Text := RetornarSQLCupom;
+    oQry.Open;
 
-  oEstruturaClienteCupom.FiltrosRodape.setFiltroData(RetornarDescricaoFiltroData);
+    oEstruturaClienteCupom := TEstruturaRelVendasPorClienteCupom.New
+                                                                .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                                .setDataBase(FoDataBase)
+                                                                                                .CarregarDados(oQry)                                                                                                     
+                                                                       );
 
-  FoEstrutura.GerarImpressao(oEstruturaClienteCupom);
+    oEstruturaClienteCupom.FiltrosRodape.setFiltroData(RetornarDescricaoFiltroData);
+
+    FoEstrutura.GerarImpressao(oEstruturaClienteCupom);
+  finally
+    FreeAndNil(oQry);
+  end;
+end;
+
+function TEstruturaRelVendasPorCliente.RetornarSQLCupom: String;
+var
+  lsSQL: TStringList;
+begin
+  lsSQL := TStringList.Create;
+  try
+    if FbItemAItem then
+    begin
+      lsSQL.Add('SELECT');
+      lsSQL.Add('    ALTERACA.DATA AS "Data"');
+      lsSQL.Add('    , ALTERACA.PEDIDO AS "Número"');
+      lsSQL.Add('    , COALESCE(ALTERACA.CLIFOR,'''') AS "Cliente"');
+      lsSQL.Add('    , ALTERACA.ITEM AS "Código"');
+      lsSQL.Add('    , ALTERACA.DESCRICAO AS "Descrição"');
+      lsSQL.Add('    , CAST(ALTERACA.TOTAL AS NUMERIC(18,2)) AS "Valor"');
+      lsSQL.Add('FROM ALTERACA');
+      lsSQL.Add('WHERE');
+      lsSQL.Add(RetornarWhereCupom);
+      lsSQL.Add('ORDER BY COALESCE(ALTERACA.CLIFOR,''''), ALTERACA.DATA, ALTERACA.PEDIDO');
+    end
+    else
+    begin
+      lsSQL.Add('WITH DADOSAGRUPADOS AS(');
+      lsSQL.Add('SELECT');
+      lsSQL.Add('    ALTERACA.PEDIDO');
+      lsSQL.Add('    , COALESCE(ALTERACA.CLIFOR,'''') AS CLIFOR');
+      lsSQL.Add('    , CAST(SUM(ALTERACA.TOTAL) AS NUMERIC(18,2)) AS VALOR');
+      lsSQL.Add('FROM ALTERACA');
+      lsSQL.Add('WHERE');
+      lsSQL.Add(RetornarWhereCupom);
+      lsSQL.Add('GROUP BY ALTERACA.PEDIDO, COALESCE(ALTERACA.CLIFOR,'''')');
+      lsSQL.Add(')');
+      lsSQL.Add('SELECT');
+      lsSQL.Add('    MIN(ALTERACA.DATA) AS "Data"');
+      lsSQL.Add('    , ALTERACA.PEDIDO AS "Número"');
+      lsSQL.Add('    , ALTERACA.CLIFOR AS "Cliente"');
+      lsSQL.Add('    , DADOSAGRUPADOS.VALOR AS "Total"');
+      lsSQL.Add('FROM ALTERACA');
+      lsSQL.Add('INNER JOIN DADOSAGRUPADOS');
+      lsSQL.Add('    ON (DADOSAGRUPADOS.PEDIDO=ALTERACA.PEDIDO)');
+      lsSQL.Add('    AND (DADOSAGRUPADOS.CLIFOR=COALESCE(ALTERACA.CLIFOR,''''))');
+      lsSQL.Add('WHERE');
+      lsSQL.Add(RetornarWhereCupom);
+      lsSQL.Add('GROUP BY ALTERACA.PEDIDO, ALTERACA.CLIFOR, DADOSAGRUPADOS.VALOR');
+      lsSQL.Add('ORDER BY ALTERACA.CLIFOR, ALTERACA.PEDIDO, MIN(ALTERACA.DATA)');
+    end;
+    
+    Result := lsSQL.Text;
+  finally
+    FreeAndNil(lsSQL);
+  end;
 end;
 
 function TEstruturaRelVendasPorCliente.RetornarDescricaoFiltroData: String;

@@ -3,7 +3,7 @@ unit uEstruturaRelVendasPorClienteCupom;
 interface
 
 uses
-  uIEstruturaRelatorioPadrao, uIDadosImpressaoDAO, IBQuery,
+  uIEstruturaRelatorioPadrao, uIDadosImpressaoDAO, DB,
   uIFiltrosRodapeRelatorio;
 
 type
@@ -18,7 +18,7 @@ type
     function setDAO(AoDao: IDadosImpressaoDAO): IEstruturaRelatorioPadrao;
     function getColunasNaoTotalizar(out AcColunas: String): IEstruturaRelatorioPadrao;
     function FiltrosRodape: IFiltrosRodapeRelatorio;
-    function getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
+    function getDAO: IDadosImpressaoDAO;
   end;
   
 implementation
@@ -37,13 +37,6 @@ end;
 function TEstruturaRelVendasPorClienteCupom.FiltrosRodape: IFiltrosRodapeRelatorio;
 begin
   Result := FoFiltrosRodape;
-end;
-
-function TEstruturaRelVendasPorClienteCupom.getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
-begin
-  Result := Self;
-
-  AQry := FoDados.getDados;
 end;
 
 function TEstruturaRelVendasPorClienteCupom.getTitulo(out AcTitulo: String): IEstruturaRelatorioPadrao;
@@ -68,6 +61,11 @@ end;
 constructor TEstruturaRelVendasPorClienteCupom.Create;
 begin
   FoFiltrosRodape := TFiltroRodapeRelVendasClienteCupom.New;
+end;
+
+function TEstruturaRelVendasPorClienteCupom.getDAO: IDadosImpressaoDAO;
+begin
+  Result := FoDados;
 end;
 
 end.
