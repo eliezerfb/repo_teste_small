@@ -2735,6 +2735,7 @@ var
   sArquivo, sCaminho, sSelectSql : String;
   I : Integer;
   sLinha, sCampos, sValores : String;
+  CampoPK : string; // Mauricio Parizotto 2023-08-07
 begin
   try
     with Form1 do
@@ -2826,9 +2827,9 @@ begin
         if Pos('TO ',sCaminho) <> 0 then
         begin
           sCaminho := StrTran(sCaminho,'TO ','');
-    //        ShowMessage(sArquivo+chr(10)+sCaminho);
-          //
-          if FileExists(sCaminho+'.SQL') then DeleteFile(pChar(sCaminho+'.SQL'));
+
+          if FileExists(sCaminho+'.SQL') then
+            DeleteFile(pChar(sCaminho+'.SQL'));
           
           try
             Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -2852,8 +2853,6 @@ begin
                 if (Alltrim(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString) <> '')
                 and (Alltrim(dbGrid200.Fields[I].DisplayName) <> 'FOTO') then
                 begin
-  // ShowMessage(dbGrid200.Fields[I].DisplayName+chr(10)+FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]);
-                  //
                   if sCampos  <> '' then sCampos  := sCampos+',';
                   if sVAlores <> '' then sValores := sValores+',';
                   //
@@ -2949,8 +2948,19 @@ begin
           try
             sArquivo := Copy(ibDataSet200.SelectSQL.Text+Replicate(' ',2000),pos('from',LowerCase(ibDataSet200.SelectSQL.Text))+5,2000);
             sArquivo := strTran(Copy(sArquivo,1,Pos(' ',sArquivo)),',','');
-            
-            sDelete := 'delete from '+sArquivo+' where REGISTRO=:OLD_REGISTRO';
+            sArquivo := trim(sArquivo);
+
+            {Mauricio Parizotto 2023-08-07 inicio}
+            CampoPK := 'REGISTRO';
+
+            try
+              if ibDataSet200.FindField('REGISTRO') = nil then
+                CampoPK := GetCampoPKTabela(ibDataSet200.Database,sArquivo);
+            except
+            end;
+
+            //sDelete := 'delete from '+sArquivo+' where REGISTRO=:OLD_REGISTRO';
+            sDelete := 'delete from '+sArquivo+' where '+CampoPK+'=:OLD_'+CampoPK;
             sUpdate := 'update '+sArquivo+' set ';
 
             for I := 0 to ibDataSet200.FieldCount -1 do
@@ -2959,13 +2969,17 @@ begin
               if I = ibDataSet200.FieldCount -1 then sUpdate := sUpdate + ' ' else sUpdate := sUpdate + ', ';
             end;
 
-            sUpdate := sUpdate + ' where REGISTRO=:OLD_REGISTRO';
+            //sUpdate := sUpdate + ' where REGISTRO=:OLD_REGISTRO';
+            sUpdate := sUpdate + ' where '+CampoPK+'=:OLD_'+CampoPK;
+
+            {Mauricio Parizotto 2023-08-07 fim}
 
             ibDataSet200.Close;
             ibDataSet200.DeleteSQL.Add(sDelete);
             ibDataSet200.ModifySql.Add(sUpdate);
             ibDataSet200.Open;
-          except end;
+          except
+          end;
         end;
 
         Edit200.Text := '';
