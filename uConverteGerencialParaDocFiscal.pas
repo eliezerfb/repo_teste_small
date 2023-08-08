@@ -366,9 +366,19 @@ begin
         begin
           try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
             FIBDataSet28.Edit;
+            if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '02' then
+              FIBDataSet28.FieldByName('FORMA').AsString := '02 Dinheiro NFC-e';
+
+            if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then
+              FIBDataSet28.FieldByName('FORMA').AsString := '04 A prazo NFC-e';
+
             FIBDataSet28.FieldByName('PEDIDO').AsString := sNovoNumero;
             FIBDataSet28.FieldByName('CAIXA').AsString  := FCaixa;
             FIBDataSet28.FieldByName('DATA').AsDateTime := dtDataNovo;
+            FIBDataSet28.FieldByName('CCF').AsString    := sNovoNumero;
+            FIBDataSet28.FieldByName('CCO').AsString    := sNovoNumero;
+            if FIBDataSet28.FieldByName('GNF').AsString = FNumeroGerencial then
+              FIBDataSet28.FieldByName('GNF').AsString := sNovoNumero;
             FIBDataSet28.Post;
           except
           end;

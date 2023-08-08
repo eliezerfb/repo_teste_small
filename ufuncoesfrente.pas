@@ -1719,8 +1719,8 @@ begin
 end;
 
 function Gerencial: Boolean;
-var
-  sModelo: String;
+//var
+//  sModelo: String;
 begin
   // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
   // Sandro Silva 2023-08-01 Result := ((Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) or ((Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '99') )); // Sandro Silva 2023-07-18 Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
@@ -1731,6 +1731,8 @@ begin
   else if ((sModelo = '59') or (sModelo = '65')) and (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) then   // Se modelo ecf for sat ou nfce e o aplicativo for gerencial.exe
     Result := True;
   }
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := True;
 end;
 
 function SAT: Boolean;

@@ -175,7 +175,7 @@ begin
   {Sandro Silva 2023-07-13 inicio}
   if FTipoPesquisa = tpPesquisaGerencial then
   begin
-    Label1.Caption := 'Importar Gerencial';
+    Label1.Caption := 'Converter Gerencial em Documento Fiscal';
     Label2.Caption := 'Número do Gerencial ou Nome do cliente:';
 
     SelecionaGerencial;
@@ -397,8 +397,20 @@ end;
 
 procedure TFPesquisaParaImportar.DBGrid1CellClick(Column: TColumn);
 begin
+  {Sandro Silva 2023-08-08 inicio
   if Trim(edPesquisa.Text) = '' then
     edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+  }
+  if FTipoPesquisa = tpPesquisaGerencial then
+  begin
+    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;  
+  end
+  else
+  begin
+    if Trim(edPesquisa.Text) = '' then
+      edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+  end;
+  {Sandro Silva 2023-08-08 fim}
 end;
 
 end.

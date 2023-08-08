@@ -1029,7 +1029,7 @@ type
     SadasIdentificadaspeloCPFCNPJ1: TMenuItem;
     itemMenugerencial: TMenuItem;
     IBDataSet150GERENCIAL: TStringField;
-    EmitirNFCedogerenical1: TMenuItem;
+    EmitirNFCedogerencial1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1391,7 +1391,7 @@ type
     procedure ESTOQUEATUAL1Click(Sender: TObject);
     procedure ibDataSet13AfterOpen(DataSet: TDataSet);
     procedure itemMenugerencialClick(Sender: TObject);
-    procedure EmitirNFCedogerenical1Click(Sender: TObject);
+    procedure EmitirNFCedogerencial1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -7952,6 +7952,7 @@ begin
   end;
   {Sandro Silva 2023-06-23 fim}
 
+  {Sandro Silva 2023-08-08 inicio
   if (Form1.sModeloECF = '99') then
   begin
     if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'gerencial.exe') = False) and (Gerencial = False))  // Sandro Silva 2023-06-26 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))
@@ -7959,7 +7960,7 @@ begin
     then
       sSerial := '';
   end;
-
+  }
   {Sandro Silva 2021-04-27 fim}
 
   if sSerial = '' then
@@ -7974,12 +7975,14 @@ begin
                 'sua licença de uso.'+Chr(10)+Chr(13)+
                 'Código: 001 '+sLicenca);
       }
+      {Sandro Silva 2023-08-08 inicio
       if Gerencial then
         SmallMsg('Sistema bloqueado'+Chr(10)+
                               'Este sistema só pode ser usado por empresa'+Chr(10)+
                               'enquadrada como Microempreendedor Individual (MEI)'+Chr(10)+Chr(13)+
                               'Código: 991 '+ sLicenca)
       else
+      }
         SmallMsg('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
                   'não está liberado para uso neste computador, instale'+Chr(10)+
                   'novamente o sistema informando o número serial da'+Chr(10)+
@@ -15460,8 +15463,7 @@ begin
     Mesainicialparapesagensautonoma1.Visible := True;
 
   end
-  else
-  if (Form1.sModeloECF = '99')then
+  else if (Form1.sModeloECF = '99')then
   begin
     Vendaspor1.Caption                           := 'Resumo ' + Form1.sTipoDocumento2 + '...';
     Imprimiroramento1.Caption                    := 'Imprimir Orçamento...';
@@ -15483,6 +15485,7 @@ begin
     BalanaAutonoma1.Visible                  := True;
     Produtolanadonapesagemautonoma1.Visible  := True;
     Mesainicialparapesagensautonoma1.Visible := True;
+    ConfigurarNmerodoCaixa1.Visible          := False;   
   end
   else
   begin
@@ -23824,7 +23827,7 @@ begin
   //
   Form1.Panel6.Width   := Form1.touch_ESC2.Width; // Sandro Silva 2017-04-25
   Form1.Panel6.Height  := Form1.touch_ESC2.Height; // Sandro Silva 2017-04-25
-  Form1.Panel6.Top     := AjustaAltura(5); // Sandro Silva 2021-07-12 Form1.Panel6.Top     := 5; // Sandro Silva 2017-04-25  2;
+  Form1.Panel6.Top     := AjustaAltura(4); // Sandro Silva 2023-08-08 Form1.Panel6.Top     := AjustaAltura(5); // Sandro Silva 2021-07-12 Form1.Panel6.Top     := 5; // Sandro Silva 2017-04-25  2;
   Form1.Panel6.Left    := Panel1.Width - Form1.Panel6.Width - AjustaLargura(10); // Sandro Silva 2021-07-12 Form1.Panel6.Left    := Panel1.Width - Form1.Panel6.Width - 10;
   //
   Form1.Panel6.Visible := True;
@@ -24694,6 +24697,16 @@ begin
 
     Form1.RecuperarXMLdaNFCe1.Visible := Form1.sModeloECF = '65';
   end;
+
+  {Sandro Silva 2023-08-08 inicio}
+  if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') then
+  begin
+    EnviaraNFCe1.Enabled            := False;
+    RecuperarXMLdaNFCe1.Enabled     := False;
+    Verificaresquemaschema1.Enabled := False;
+    VisualizaroXMLdaNFCe1.Enabled   := False;
+  end;
+  {Sandro Silva 2023-08-08 fim}  
 
 end;
 
@@ -28665,11 +28678,12 @@ begin
   EnviaraNFCe1.Enabled := PDV_CupomAberto = False; // Sandro Silva 2019-07-16
   ConsultaChaveNFCe1.Visible := (Form1.sModeloECF = '65');
 
-  EmitirNFCedogerenical1.Visible := False;
+  EmitirNFCedogerencial1.Visible := False;
   if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') then
   begin
-    EmitirNFCedogerenical1.Caption := 'Emitir ' + Form1.sTipoDocumento2 + ' do gerenical ' + DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
-    EmitirNFCedogerenical1.Visible := True;
+    EmitirNFCedogerencial1.Caption := 'Emitir ' + Form1.sTipoDocumento2 + ' do gerencial ' + DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+    if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then
+      EmitirNFCedogerencial1.Visible := True;
   end;
 end;
 
@@ -34137,7 +34151,7 @@ begin
     PDV_ImportaGerencial(sNumeroGerencial);
 end;
 
-procedure TForm1.EmitirNFCedogerenical1Click(Sender: TObject);
+procedure TForm1.EmitirNFCedogerencial1Click(Sender: TObject);
 begin
   PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
   GerenciadordeNFCe1Click(Sender);

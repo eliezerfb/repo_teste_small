@@ -540,6 +540,7 @@ begin
       end;
     end;
 
+    Venda.Troco := 0.00;
     if Form1.ibDataSet25ACUMULADO3.AsFloat > 0 then // Troco
     begin
       Venda.Troco := Form1.ibDataSet25ACUMULADO3.AsFloat;
@@ -557,7 +558,7 @@ begin
     Form1.ibDataset150.Edit;
     Form1.ibDataset150.FieldByName('STATUS').AsString := VENDA_GERENCIAL_FINALIZADA; // Fecha venda
     Form1.ibDataset150.FieldByName('DATA').AsDateTime := dtEnvio;
-    Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total;
+    Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total - Venda.Troco; // Sandro Silva 2023-08-08 Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total;
     Form1.ibDataset150.Post;
 
     if (Form1.ClienteSmallMobile.sVendaImportando = '') then
