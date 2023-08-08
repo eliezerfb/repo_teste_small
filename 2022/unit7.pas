@@ -12001,16 +12001,19 @@ begin
   { Está variável também será usada no evento AfterPost }
 end;
 
-procedure TForm7.ibDataSet4DESCRICAOSetText(Sender: TField;
-  const Text: String);
+procedure TForm7.ibDataSet4DESCRICAOSetText(Sender: TField; const Text: String);
+var
+  cTexto: String;
 begin
-  if (AllTrim(ibDataSet4DESCRICAO.AsString) <> '') and (AllTrim(Text) = '') then
+  cTexto := TrimDuplicados(Text);
+
+  if (AllTrim(ibDataSet4DESCRICAO.AsString) <> '') and (AllTrim(cTexto) = '') then
   begin
     ShowMessage('Descrição inválida (não pode ficar em branco).');
   end else
   begin
-    if Valida_Campo('ESTOQUE',Text,'DESCRICAO','Este produto já foi cadastrado') then
-    ibDataSet4DESCRICAO.AsString := Text;
+    if Valida_Campo('ESTOQUE',cTexto,'DESCRICAO','Este produto já foi cadastrado') then
+    ibDataSet4DESCRICAO.AsString := cTexto;
   end;
 end;
 
@@ -12498,11 +12501,15 @@ end;
 
 procedure TForm7.ibDataSet4REFERENCIASetText(Sender: TField;
   const Text: String);
+var
+  cTexto: String;
 begin
-  if Alltrim(Text) = '' then ibDataSet4REFERENCIA.AsString := '' else
+  cTexto := TrimDuplicados(Text);
+
+  if Alltrim(cTexto) = '' then ibDataSet4REFERENCIA.AsString := '' else
   begin
-    if Valida_Campo('ESTOQUE',Text,'REFERENCIA','Esta referência já foi cadastrada') then
-        ibDataSet4REFERENCIA.AsString := Text;
+    if Valida_Campo('ESTOQUE',cTexto,'REFERENCIA','Esta referência já foi cadastrada') then
+        ibDataSet4REFERENCIA.AsString := cTexto;
   end;
 end;
 
