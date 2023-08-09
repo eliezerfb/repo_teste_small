@@ -10817,7 +10817,7 @@ object Form7: TForm7
       Font.Style = []
       ParentFont = False
     end
-    object Label24: TLabel
+    object lblRecebPagto: TLabel
       Left = 58
       Top = 107
       Width = 57

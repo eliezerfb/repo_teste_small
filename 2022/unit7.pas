@@ -1091,7 +1091,7 @@ type
     OpenDialog3: TOpenDialog;
     Panel2: TPanel;
     Label23: TLabel;
-    Label24: TLabel;
+    lblRecebPagto: TLabel;
     Label25: TLabel;
     Label26: TLabel;
     SMALL_DBEdit6: TSMALL_DBEdit;
@@ -2141,6 +2141,7 @@ type
     function RetornarSaldoDisponivelItemNota(AcItem: String): Currency;
     procedure LimparLinhaItemSemItem;
     procedure LimpaCamposItensNota;
+    procedure DefineCaptionReceberPagar;
   public
     // Public declarations
 
@@ -9512,6 +9513,17 @@ begin
   end;
 end;
 
+procedure TForm7.DefineCaptionReceberPagar;
+begin
+  if not Panel2.Visible then
+    Exit;
+
+   if sModulo = 'PAGAR' then
+    lblRecebPagto.Caption := 'Pagamento:';
+   if sModulo = 'RECEBER' then
+    lblRecebPagto.Caption := 'Recebimento:';
+end;
+
 procedure TForm7.FormShow(Sender: TObject);
 var
   Mais1Ini : TiniFile;
@@ -10091,7 +10103,7 @@ begin
         Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 17; // Sandro Silva 2023-06-22
 
         ComboBox1.Items.Clear;
-        ComboBox1.Items.Add('<Dinheiro/Cheque>');
+        ComboBox1.Items.Add(_cRecebPagto);
         ComboBox1.ItemIndex := 0;
         //
         Form7.ibDataSet12.Close;
@@ -10171,7 +10183,7 @@ begin
       if (sModulo = 'PAGAR') then
       begin
         ComboBox1.Items.Clear;
-        ComboBox1.Items.Add('<Dinheiro/Cheque>');
+        ComboBox1.Items.Add(_cRecebPagto);
         ComboBox1.ItemIndex := 0;
         //
         Form7.ibDataSet12.Close;
@@ -11741,6 +11753,7 @@ begin
   begin
     btnRetornoCNAB400.Visible := True; // Sandro Silva 2022-12-21 Button1.Visible := True;
   end;
+  DefineCaptionReceberPagar;  
 
   Form7.AlphaBlendValue := 255;
   TabelaAberta.EnableControls;
@@ -26315,7 +26328,7 @@ begin
     end else
     begin
       //
-      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := '<Dinheiro';
+      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := 'Caixa';
       //
       if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
@@ -26341,7 +26354,7 @@ begin
         //
       end;
       //
-      if (Copy(ComboBox1.Text,1,9) <> '<Dinheiro') and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+      if (Copy(ComboBox1.Text,1,9) <> 'Caixa') and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         //
         Form7.ibDataSet1.Append;
@@ -26388,7 +26401,7 @@ begin
     end else
     begin
       //
-      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := '<Dinheiro';
+      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := '<Caixa';
       //
       if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
@@ -26414,7 +26427,7 @@ begin
         //
       end;
       //
-      if (Copy(ComboBox1.Text,1,9) <> '<Dinheiro') and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+      if (Copy(ComboBox1.Text,1,9) <> '<Caixa') and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         //
         Form7.ibDataSet1.Append;
