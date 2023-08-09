@@ -24348,7 +24348,7 @@ var
 begin
   IBQPAGAMENT := CriaIBQuery(Form1.IBDataSet150.Transaction);
 
-  Form1.ExibePanelMensagem('Aguarde, imprimindo DANFCE...'); // Sandro Silva 2021-11-05 
+  Form1.ExibePanelMensagem('Aguarde, imprimindo ' + Form1.sTipoDocumento2 + '...'); // Sandro Silva 2023-08-09 Form1.ExibePanelMensagem('Aguarde, imprimindo DANFCE...'); // Sandro Silva 2021-11-05
 
   if (sModeloECF = '65') then
   begin

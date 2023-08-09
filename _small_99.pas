@@ -1719,7 +1719,12 @@ var
     CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
 
     PrinterTexto(iLinha, iMargemEsq, 'Data: ' + FormatDateTime('dd/mm/yyyy', IBQALTERACA.FieldByName('DATA').AsDateTime) + ' ' + Copy(IBQALTERACA.FieldByName('HORA').AsString, 1, 5), poLeft);
+    {Sandro Silva 2023-08-09 inicio
     PrinterTexto(iLinha, Canvas.PenPos.X + 15, ' Status: ' + sStatusVenda, poLeft);
+    }
+    CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
+    PrinterTexto(iLinha, iMargemEsq, 'Status: ' + sStatusVenda, poLeft);
+    {Sandro Silva 2023-08-09 fim}
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
     PrinterTexto(iLinha, iMargemEsq, 'Controle: ' + IBQALTERACA.FieldByName('PEDIDO').AsString, poLeft);
     PrinterTexto(iLinha, Canvas.PenPos.X + 120, ' Caixa: ' + IBQALTERACA.FieldByName('CAIXA').AsString, poLeft);
