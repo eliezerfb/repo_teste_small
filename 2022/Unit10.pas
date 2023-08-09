@@ -5322,7 +5322,7 @@ var
   iCamposVisualizar: Integer;
   vDescricaoProduto : string;
 
-  IBQProduto: TIBQuery; // Mauricio Parizotto 2023-08-07
+  IBQProdutoComp: TIBQuery; // Mauricio Parizotto 2023-08-07
 begin
   // Não exporta se o cliente estiver em branco
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
@@ -6328,87 +6328,97 @@ begin
           end;
           
           // Composição
+          {
           Form7.ibDataSet28.Filter   := 'CODIGO='+Form7.ibDataSet4CODIGO.AsString;
           Form7.ibDataSet28.First;
-          
+
           Form7.ibDataSet28.Close;
           Form7.ibDataSet28.SelectSQL.Clear;
           Form7.ibDataSet28.SelectSQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
           Form7.ibDataSet28.Open;
+          Mauricio Parizotto 2023-08-09}
+
+          try
+            IBQProdutoComp := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+            IBQProdutoComp.Close;
+            IBQProdutoComp.SQL.Text := ' Select'+
+                                       '   C.DESCRICAO,'+
+                                       '   C.QUANTIDADE,'+
+                                       '   E.CODIGO,'+
+                                       '   E.CUSTOCOMPR'+
+                                       ' From COMPOSTO C'+
+                                       '   Left Join ESTOQUE E on E.DESCRICAO = C.DESCRICAO'+
+                                       ' Where C.CODIGO = '+QuotedStr(Form7.ibDataSet4CODIGO.AsString);
+            IBQProdutoComp.Open;
           
-          if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
-          begin
-            Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>COMPOSIÇÃO DO PRODUTO</b>');
-            WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-            
-            WriteLn(F,' <tr>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Código</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo X Qtd</td>');
-            WriteLn(F,' </tr>');
-            
-            fTotal := 0;
-            
-            Form7.ibDataSet28.First;
-            while not Form7.ibDataSet28.Eof do
+            //if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+            if not IBQProdutoComp.IsEmpty then
             begin
-              {Mauricio Parizotto 2023-08-07 Inicio
-              Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
+              Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>COMPOSIÇÃO DO PRODUTO</b>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+            
+              WriteLn(F,' <tr>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Código</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo X Qtd</td>');
+              WriteLn(F,' </tr>');
 
-              if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
+              fTotal := 0;
+            
+              IBQProdutoComp.First;
+              while not IBQProdutoComp.Eof do
               begin
-                WriteLn(F,' <tr>');
-                Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'</td>');
-                Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet28DESCRICAO.AsString+'</td>');
-                Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
-                Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat])+'</td>');
-                Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
-                WriteLn(F,' </tr>');
-                fTotal := fTotal + (Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
-              end;
-              }
+                {Mauricio Parizotto 2023-08-07 Inicio
+                Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
 
-              try
-                IBQProduto := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
-                IBQProduto.Close;
-                IBQProduto.SQL.Text := ' Select * From ESTOQUE '+
-                                       ' Where DESCRICAO = '+QuotedStr(Form7.ibDataSet28DESCRICAO.AsString);
-                IBQProduto.Open;
-
-                if not IBQProduto.IsEmpty then
+                if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
                 begin
                   WriteLn(F,' <tr>');
-                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+IBQProduto.FieldByName('CODIGO').Asstring +'</td>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'</td>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet28DESCRICAO.AsString+'</td>');
                   Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
-                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProduto.FieldByName('CUSTOCOMPR').AsFloat])+'</td>');
-                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProduto.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
                   WriteLn(F,' </tr>');
-                  fTotal := fTotal + (IBQProduto.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
+                  fTotal := fTotal + (Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
                 end;
-              finally
-                FreeAndNil(IBQProduto);
+                }
+
+                if not IBQProdutoComp.IsEmpty then
+                begin
+                  WriteLn(F,' <tr>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+IBQProdutoComp.FieldByName('CODIGO').Asstring +'</td>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+IBQProdutoComp.FieldByName('DESCRICAO').AsString+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[IBQProdutoComp.FieldByName('QUANTIDADE').AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProdutoComp.FieldByName('CUSTOCOMPR').AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProdutoComp.FieldByName('CUSTOCOMPR').AsFloat * IBQProdutoComp.FieldByName('QUANTIDADE').AsFloat])+'</td>');
+                  WriteLn(F,' </tr>');
+                  fTotal := fTotal + (IBQProdutoComp.FieldByName('CUSTOCOMPR').AsFloat * IBQProdutoComp.FieldByName('QUANTIDADE').AsFloat);
+                end;
+
+                IBQProdutoComp.Next;
               end;
 
-              {Mauricio Parizotto 2023-08-07 Fim}
-
-              Form7.ibDataSet28.Next;
+              // Totalizador
+              WriteLn(F,' <tr>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
+              WriteLn(F,' </tr>');
+              WriteLn(F,'</table>');
             end;
 
-            // Totalizador
-            WriteLn(F,' <tr>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
-            WriteLn(F,' </tr>');
-            WriteLn(F,'</table>');
+          finally
+            FreeAndNil(IBQProdutoComp);
           end;
-          
-          Form7.ibDataSet4.Locate('DESCRICAO',Alltrim(Form10.Caption),[]);
+
+          //Form7.ibDataSet4.Locate('DESCRICAO',Alltrim(Form10.Caption),[]); se a tela está fechada, localiza produto errado (produto anterior)
+
+          {Mauricio Parizotto 2023-08-07 Fim}
           
           // Imprime o arquivo em ordem de data          
           Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>MOVIMENTAÇÃO DO ITEM</b>');
