@@ -2948,7 +2948,7 @@ begin
           try
             sArquivo := Copy(ibDataSet200.SelectSQL.Text+Replicate(' ',2000),pos('from',LowerCase(ibDataSet200.SelectSQL.Text))+5,2000);
             sArquivo := strTran(Copy(sArquivo,1,Pos(' ',sArquivo)),',','');
-            sArquivo := trim(sArquivo);
+            sArquivo := UpperCase(trim(sArquivo));
 
             {Mauricio Parizotto 2023-08-07 inicio}
             CampoPK := 'REGISTRO';

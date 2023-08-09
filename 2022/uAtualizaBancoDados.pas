@@ -2139,8 +2139,8 @@ begin
     ExecutaComando('Create table BACKUP('+
                    ' 	IDBACKUP INTEGER NOT NULL,'+
                    ' 	AUTOMATICO VARCHAR(1) NOT NULL,'+
-                   ' 	NOMECOMPUTADOR VARCHAR(40) NOT NULL,'+
-                   ' 	DIRETORIO VARCHAR(200) NOT NULL,'+
+                   ' 	NOMECOMPUTADOR VARCHAR(40),'+
+                   ' 	DIRETORIO VARCHAR(200),'+
                    ' 	CONSTRAINT PK_BACKUP_IDBACKUP PRIMARY KEY (IDBACKUP) '+
                    ')');
 
