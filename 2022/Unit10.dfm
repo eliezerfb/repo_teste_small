@@ -3136,7 +3136,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 8
+          TabOrder = 9
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
@@ -3153,7 +3153,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 15
+          TabOrder = 8
           OnChange = ComboBox2Change
           OnEnter = ComboBox3Enter
           OnKeyDown = ComboBox9KeyDown
@@ -3184,7 +3184,7 @@ object Form10: TForm10
           Ctl3D = False
           ParentBackground = False
           ParentCtl3D = False
-          TabOrder = 16
+          TabOrder = 17
           object Image4: TImage
             Left = 2
             Top = 2
@@ -3808,7 +3808,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 9
+          TabOrder = 10
           OnChange = ComboBox11Change
           OnEnter = ComboBox3Enter
           OnKeyDown = ComboBox9KeyDown
@@ -3854,7 +3854,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 17
+          TabOrder = 12
           OnChange = ComboBox14Change
           OnEnter = ComboBox3Enter
           OnKeyDown = ComboBox9KeyDown
@@ -3883,7 +3883,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 10
+          TabOrder = 11
           OnChange = ComboBox15Change
           OnEnter = ComboBox3Enter
           OnKeyDown = ComboBox9KeyDown
@@ -3921,7 +3921,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 11
+          TabOrder = 13
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit52: TSMALL_DBEdit
@@ -3944,7 +3944,7 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           ReadOnly = True
-          TabOrder = 12
+          TabOrder = 14
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
@@ -3968,7 +3968,7 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           ReadOnly = True
-          TabOrder = 13
+          TabOrder = 15
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
@@ -3992,7 +3992,7 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           ReadOnly = True
-          TabOrder = 14
+          TabOrder = 16
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
