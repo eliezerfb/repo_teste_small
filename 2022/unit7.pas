@@ -2252,9 +2252,10 @@ type
     function TestarLimiteDisponivel(AbMostraMsg: Boolean = True): Boolean;
     function GetMensagemCertificado(vLocal:string=''): string;
     function TestarNFeHomologacao: Boolean;
-    function TestarNFSeHomologacao: Boolean;    
+    function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
     procedure AtualizarListaItensAuxiliar;    
+    procedure AuditaAlteracaoEstoqueManual;    
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -11588,6 +11589,7 @@ begin
 
               //Sandro Silva 2019-09-25 Não está agrupando quando lança itens em data diferentes sOrderBy  := 'group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO';
               sOrderBy  := 'group by ORCAMENTS.PEDIDO, ORCAMENTS.CLIFOR, ORCAMENTS.VENDEDOR, ORCAMENTS.NUMERONF order by ORCAMENTS.PEDIDO';
+              sOrderBy  := '';
             end;
             //
             TabelaAberta.Close;
@@ -11803,11 +11805,18 @@ begin
 end;
 
 function TForm7.RetornarSQLEstoqueOrcamentos: String;
-var
-  slSQL: TStringList;
+//var
+//  slSQL: TStringList;
 begin
-  slSQL := TStringList.Create;
+  //slSQL := TStringList.Create;
   try
+    {Sandro Silva 2023-08-01 inicio
+
+    Conforme combinado, não usar .add para concatenar string de comando sql.
+    Isso dificulta o Debug.
+    Concatenar a string de forma simples, separando em linhas e usando  '' + ''
+
+
     slSQL.Add('WITH ORCAMENTS AS (');
     slSQL.Add('SELECT');
     slSQL.Add('    ORCAMENT.PEDIDO');
@@ -11831,10 +11840,43 @@ begin
     slSQL.Add('    , ORCAMENTS.NUMERONF as "Doc. Fiscal"');
     slSQL.Add('    , ORCAMENTS.PEDIDO as "Registro"');
     slSQL.Add('FROM ORCAMENTS');
-
     Result := slSQL.Text;
+    }
+
+    Result :=
+      'WITH ORCAMENTS AS ( ' +
+      ' SELECT ' +
+      '    ORCAMENT.PEDIDO ' +
+      '    , MIN(ORCAMENT.DATA) AS DATA ' +
+      '    , max(ORCAMENT.NUMERONF) as NUMERONF ' +
+      //'    , ORCAMENT.CLIFOR ' +
+      ', max(ORCAMENT.CLIFOR) as CLIFOR ' +
+      //'    , ORCAMENT.VENDEDOR ' +
+      ', max(case when coalesce((select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO), '''') = '''' then ' +
+      '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO order by registro desc) ' +
+      '  else ' +
+      '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO) ' +
+      '  end) ' +
+      'as VENDEDOR ' +
+      '    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+      '    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO ' +
+      ' FROM ORCAMENT ' +
+      ' GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
+      ' ) ' +
+      ' SELECT ' +
+      '     ORCAMENTS.PEDIDO as "Orçamento" ' +
+      '    , ORCAMENTS.DATA as "Data" ' +
+      '    , ORCAMENTS.CLIFOR as "Cliente" ' +
+      '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
+      '    , TOTALBRUTO as "Total bruto" ' +
+      '    , DESCONTO as "Desconto" ' +
+      '    , (TOTALBRUTO - DESCONTO) as "Total líquido" ' +
+      '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
+      '    , ORCAMENTS.PEDIDO as "Registro" ' +
+      ' FROM ORCAMENTS ';
+
   finally
-    FreeAndNil(slSQL);
+    //FreeAndNil(slSQL);
   end;
 end;
 
@@ -14922,7 +14964,7 @@ procedure TForm7.ibDataSet2CGCSetText(Sender: TField; const Text: String);
 var
   sRetorno : String;
   I : Integer;
-  vComboCNAE : TComboBox;
+  slCNAE: TStringList;
 begin
   //
   {Sandro Silva 2022-12-15 inicio 
@@ -14976,38 +15018,29 @@ begin
           Form7.IBDataSet2CEP.AsString    := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
           Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + xmlNodeValue(sRetorno,'//CNAE') + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
 
-          // CNAE
-          {
-          for I := 0 to Form17.ComboBox7.Items.Count -1 do
-          begin
-            if Copy(Form17.ComboBox7.Items[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
-            begin
-              Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(Form17.ComboBox7.Items[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
-            end;
-          end;
-          Mauricio Parizotto 2023-06-27}
-
-          try
-            vComboCNAE := TComboBox.Create(nil);
-            vComboCNAE.Items.Text := getListaCnae;
-
-            for I := 0 to vComboCNAE.Items.Count -1 do
-            begin
-              if Copy(vComboCNAE.Items[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
-              begin
-                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(vComboCNAE.Items[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
-              end;
-            end;
-          finally
-            FreeAndNil(vComboCNAE);
-          end;
-
           Form7.ibDataset99.Close;
           Form7.ibDataset99.SelectSql.Clear;
           Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
           Form7.ibDataset99.Open;
 
           Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+
+          { Dailon 2023-08-01 Inicio}
+          slCNAE := TStringList.Create;
+          try
+            slCNAE.Text := getListaCnae;
+
+            for I := 0 to slCNAE.Count -1 do
+            begin
+              if Copy(slCNAE[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+              begin
+                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(slCNAE[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+              end;
+            end;
+          finally
+            FreeAndNil(slCNAE);
+          end;
+          { Dailon 2023-08-01 Fim}
         end;
       end;
     except
@@ -15836,8 +15869,10 @@ procedure TForm7.ibDataSet4BeforePost(DataSet: TDataSet);
 begin
   //
   sRegistro := DataSet.FieldByname('REGISTRO').AsString;
-  if ibDataSet4PRECO.AsFloat <=0 then ibDataSet4PRECO.AsFloat := 0.01;
+  if ibDataSet4PRECO.AsFloat <=0 then
+    ibDataSet4PRECO.AsFloat := 0.01;
   AssinaRegistro('ESTOQUE',DataSet, True);
+  AuditaAlteracaoEstoqueManual;  
   //
 end;
 
@@ -18061,7 +18096,7 @@ begin
         ShowMessage('A quantidade do estoque não pode ser alterada manualmente.'
         +chr(10)+chr(10)+'Para alterar a quantidade deste item somente emitindo um dos seguintes documentos fiscais:'
         +chr(10)+chr(10)+'NF-e de entrada (compra)'
-        +chr(10)+'NF-e de saída (venda)'
+        +chr(10)+'NF-e de saída (venda)'            
         +chr(10)+'NFC-e de saída (venda)'
         +chr(10)+'Cupom Fiscal (venda)'+chr(10));
       end;
@@ -18069,25 +18104,31 @@ begin
   except
     Form7.ibDataSet4QTD_ATUAL.AsString := Text;
   end;
-  //
-{
-  if (NaoHouveMovimento(Form7.ibDataSet4CODIGO.AsString))
-  or (Form7.sModulo <> 'ESTOQUE')
-  or ((UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'SP'))
-  or ((Pos('CONSUMO',UpperCase(Form7.ibDataSet4NOME.AsString)) <> 0)) then
-  begin
-    Form7.ibDataSet4QTD_ATUAL.AsString := Text;
-  end else
-  begin
-    ShowMessage('A quantidade do estoque não pode ser alterada manualmente.'
-    +chr(10)+chr(10)+'Para alterar a quantidade deste item somente emitindo um dos seguintes documentos fiscais:'
-    +chr(10)+chr(10)+'NF-e de entrada (compra)'
-    +chr(10)+'NF-e de saída (venda)'
-    +chr(10)+'NFC-e de saída (venda)'
-    +chr(10)+'Cupom Fiscal (venda)'+chr(10));
+end;
+
+procedure TForm7.AuditaAlteracaoEstoqueManual;
+var
+  QrySaldo: TIBQuery;
+begin
+  QrySaldo := TIBQuery.Create(nil);
+  try
+    QrySaldo.Close;
+    QrySaldo.Database := IBDatabase1;
+    QrySaldo.SQL.Add('SELECT QTD_ATUAL');
+    QrySaldo.SQL.Add('FROM ESTOQUE');
+    QrySaldo.SQL.Add('WHERE');
+    QrySaldo.SQL.Add('(CODIGO=:XCOD)');
+    QrySaldo.ParamByName('XCOD').AsString := ibDataSet4CODIGO.AsString;
+    QrySaldo.Open;
+
+    if QrySaldo.IsEmpty then
+      Exit;
+      
+    if QrySaldo.FieldByName('QTD_ATUAL').Value <> Form7.ibDataSet4QTD_ATUAL.Value then
+      Audita('ALTEROU', 'ESTOQUE', Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').Value, Form7.ibDataSet4QTD_ATUAL.Value);
+  finally
+    FreeAndNil(QrySaldo);
   end;
-  //
-}
 end;
 
 procedure TForm7.Resumodevendas1Click(Sender: TObject);

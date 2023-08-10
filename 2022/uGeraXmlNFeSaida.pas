@@ -1702,16 +1702,20 @@ begin
 
         if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60') then
         begin
-          Form7.spdNFeDataSets.Campo('vbCSTRet_N26').Value    := FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat);  // Valor do BC do ICMS ST retido na UF Emitente ok
-          Form7.spdNFeDataSets.Campo('vICMSSTRet_N27').Value  := FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat);  //  Valor do ICMS ST retido na UF Emitente
-          Form7.spdNFeDataSets.Campo('vICMSSubstituto_N26b').Value  := '0.00'; // Valor do icms próprio do substituto cobrado em operação anterior
+          if (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) or
+             ((NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '0')) then
+          begin
+            Form7.spdNFeDataSets.Campo('vbCSTRet_N26').Value    := FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat);  // Valor do BC do ICMS ST retido na UF Emitente ok
+            Form7.spdNFeDataSets.Campo('vICMSSTRet_N27').Value  := FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat);  //  Valor do ICMS ST retido na UF Emitente
+            Form7.spdNFeDataSets.Campo('vICMSSubstituto_N26b').Value  := '0.00'; // Valor do icms próprio do substituto cobrado em operação anterior
 
-          if (Form7.ibDataSet16VICMSST.AsFloat > 0) and (Form7.ibDataSet16VBCST.AsFloat > 0) then
-          begin
-            Form7.spdNFeDataSets.Campo('pST_N26a').Value        := FormatFloatXML((Form7.ibDataSet16VICMSST.AsFloat / Form7.ibDataSet16VBCST.AsFloat)*100);  // Aliquota suportada pelo consumidor
-          end else
-          begin
-            Form7.spdNFeDataSets.Campo('pST_N26a').Value        := '0.00';
+            if (Form7.ibDataSet16VICMSST.AsFloat > 0) and (Form7.ibDataSet16VBCST.AsFloat > 0) then
+            begin
+              Form7.spdNFeDataSets.Campo('pST_N26a').Value        := FormatFloatXML((Form7.ibDataSet16VICMSST.AsFloat / Form7.ibDataSet16VBCST.AsFloat)*100);  // Aliquota suportada pelo consumidor
+            end else
+            begin
+              Form7.spdNFeDataSets.Campo('pST_N26a').Value        := '0.00';
+            end;
           end;
         end;
 
@@ -3460,7 +3464,7 @@ begin
           begin
             Form7.spdNFeDataSets.Campo('pMVAST_N19').Value      := '0'; // Percentual de margem de valor adicionado do ICMS ST
 
-            if Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '1' then
+            if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value = '1') {and (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString))} then
             begin
               Form7.spdNFeDataSets.campo('pRedBCEfet_N34').Value      := FormatFloatXML(100-Form7.ibDataSet14BASE.AsFloat);// Percentual de redução da base de cálculo efetiva
               Form7.spdNFeDataSets.campo('vBCEfet_N35').Value         := FormatFloatXML(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100));  // Valor da base de cálculo efetiva

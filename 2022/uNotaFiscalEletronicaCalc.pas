@@ -14,7 +14,7 @@ type
     IBQIcm, IBQIcmItem: TIBQuery;
     procedure CalculaCstPisCofins(DataSetNF, DataSetItens: TibDataSet);
     procedure CalculaFCP(NotaFiscal: TVENDAS; oItem: TITENS001);
-    procedure CalculaImpostos;
+    procedure CalculaImpostos(AbCalcPesoLiq : Boolean);
     procedure CalculaPesoLiquido;
     function AliqICMdoCliente(oItem: TITENS001): Double;
     procedure SetRateioDescAcre;
@@ -158,7 +158,7 @@ begin
   FreeAndNil(IBQProduto);
 end;
 
-procedure TNotaFiscalEletronicaCalc.CalculaImpostos;
+procedure TNotaFiscalEletronicaCalc.CalculaImpostos(AbCalcPesoLiq : Boolean);
 var
   fFCP, fPercentualFCP, fPercentualFCPST, fTotalMercadoria, {fRateioDoDesconto, }fIPIPorUnidade, fSomaNaBase, TotalBASE, TotalICMS : Real;
   sreg, sEstado : String;
@@ -187,7 +187,12 @@ begin
     NotaFiscal.Icms       := 0;
     NotaFiscal.Ipi        := 0;
     NotaFiscal.Iss        := 0;
-    //NotaFiscal.Pesoliqui  := 0; Mauricio Parizotto 2023-06-26
+
+    { Dailon (f-7194) 2023-08-01 Inicio}
+    if AbCalcPesoLiq then
+      NotaFiscal.Pesoliqui  := 0;
+    { Dailon (f-7194) 2023-08-01 Fim}
+
     NotaFiscal.Basesubsti := 0;
     NotaFiscal.Icmssubsti := 0;
     NotaFiscal.VFCPST     := 0;
@@ -228,7 +233,12 @@ begin
         NotaFiscal.Ipi        := NotaFiscal.Ipi        + Arredonda(oItem.Vipi,2);
         NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti + Arredonda(oItem.Vicmsst,2);
         NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda(oItem.Vbcst,2);
-        NotaFiscal.Pesoliqui  := NotaFiscal.Pesoliqui  + oItem.Peso * oItem.Quantidade;
+
+        { Dailon (f-7194) 2023-08-01 Inicio}
+        if AbCalcPesoLiq then
+          NotaFiscal.Pesoliqui  := NotaFiscal.Pesoliqui + (oItem.Peso * oItem.Quantidade);
+        { Dailon (f-7194) 2023-08-01 Fim}
+
         NotaFiscal.VFCPST     := NotaFiscal.VFCPST     + Arredonda(oItem.VFCPST,2);
         {Sandro Silva 2023-05-25 inicio}
         //if oItem.Icm = 0.00 then
@@ -798,7 +808,7 @@ begin
       SetRateioDescAcre;
 
       //Calcula Impostos
-      CalculaImpostos;
+      CalculaImpostos(CalcPesoLiq);
 
       //Calcula CST PIS COFINS
       CalculaCstPisCofins(DataSetNF, DataSetItens);

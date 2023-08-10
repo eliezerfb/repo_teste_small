@@ -137,7 +137,7 @@ type
     Label22: TLabel;
     SMALL_DBEdit46: TSMALL_DBEdit;
     ok: TBitBtn;
-    Edit4: TEdit;
+    edFretePorConta: TEdit;
     DataSource44: TDataSource;
     Label26: TLabel;
     Edit7: TEdit;
@@ -246,7 +246,7 @@ type
     procedure SMALL_DBEdit42KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SMALL_DBEdit27Exit(Sender: TObject);
-    procedure Edit4Enter(Sender: TObject);
+    procedure edFretePorContaEnter(Sender: TObject);
     procedure Label_fecha_0Click(Sender: TObject);
     procedure Edit7Click(Sender: TObject);
     procedure Edit8Click(Sender: TObject);
@@ -267,6 +267,10 @@ type
  	procedure Edit7Change(Sender: TObject);
     procedure Edit9Change(Sender: TObject);
     procedure Edit8Change(Sender: TObject);
+    procedure SMALL_DBEdit18Exit(Sender: TObject);
+    procedure SMALL_DBEdit2Exit(Sender: TObject);
+    procedure SMALL_DBEdit23Exit(Sender: TObject);
+    procedure edFretePorContaExit(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -274,6 +278,7 @@ type
     procedure DefineDataSetConsumidor;
     procedure DefineDataSetIndPresenca;
     procedure DefineDataSetInfNFe;
+    procedure AtualizaTotalDaNota;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -2181,6 +2186,18 @@ end;
 
 procedure TForm24.SMALL_DBEdit22Exit(Sender: TObject);
 begin
+  {Sandro Silva 2023-08-02 inicio
+  Form7.ibDataSet23.Edit;
+  Form7.ibDataSet23.Post;
+  Form7.sModulo   := 'COMPRA';
+  }
+  AtualizaTotalDaNota;
+  {Sandro Silva 2023-08-02 fim}
+end;
+
+procedure TForm24.AtualizaTotalDaNota;
+begin
+  // Atualiza o total da nota
   Form7.ibDataSet23.Edit;
   Form7.ibDataSet23.Post;
   Form7.sModulo   := 'COMPRA';
@@ -2491,24 +2508,24 @@ begin
   Form7.ibDataSet23.EnableControls;
   //
   if Form7.ibDataSet24FRETE12.AsString = '0' then
-    Edit4.Text := '0-Remetente'
+    edFretePorConta.Text := '0-Remetente'
   else
     if Form7.ibDataSet24FRETE12.AsString = '1' then
-      Edit4.Text := '1-Destinatário'
+      edFretePorConta.Text := '1-Destinatário'
     else
       if Form7.ibDataSet24FRETE12.AsString = '2' then
-        Edit4.Text := '2-Terceiros'
+        edFretePorConta.Text := '2-Terceiros'
       else
         if Form7.ibDataSet24FRETE12.AsString = '3' then
-          Edit4.Text := '3-Próprio remetente'
+          edFretePorConta.Text := '3-Próprio remetente'
         else
           if Form7.ibDataSet24FRETE12.AsString = '4' then
-            Edit4.Text := '4-Próprio destinatário'
+            edFretePorConta.Text := '4-Próprio destinatário'
           else
             if Form7.ibDataSet24FRETE12.AsString = '9' then
-              Edit4.Text := '9-Sem frete'
+              edFretePorConta.Text := '9-Sem frete'
             else
-              Edit4.Text := '';
+              edFretePorConta.Text := '';
   //
   Form12.Edit4.Visible := True;
   //
@@ -2530,6 +2547,8 @@ begin
   Form24.Left    := Form7.Left;
   Form24.Width   := Form7.Width;
   Form24.Height  := Form7.Height;
+
+  edFretePorConta.Top := SMALL_DBEdit27.Top; // Sandro Silva 2023-08-04
 
   if Form24.Tag = 1 then
   begin
@@ -3185,28 +3204,28 @@ begin
   end;
   //
   if Form7.ibDataSet24FRETE12.AsString = '0' then
-    Edit4.Text := '0-Remetente'
+    edFretePorConta.Text := '0-Remetente'
   else if Form7.ibDataSet24FRETE12.AsString = '1' then
-    Edit4.Text := '1-Destinatário'
+    edFretePorConta.Text := '1-Destinatário'
   else if Form7.ibDataSet24FRETE12.AsString = '2' then
-    Edit4.Text := '2-Terceiros'
+    edFretePorConta.Text := '2-Terceiros'
   else if Form7.ibDataSet24FRETE12.AsString = '3' then
-    Edit4.Text := '3-Próprio remetente'
+    edFretePorConta.Text := '3-Próprio remetente'
   else if Form7.ibDataSet24FRETE12.AsString = '4' then
-    Edit4.Text := '4-Próprio destinatário'
+    edFretePorConta.Text := '4-Próprio destinatário'
   else if Form7.ibDataSet24FRETE12.AsString = '9' then
-    Edit4.Text := '9-Sem frete'
+    edFretePorConta.Text := '9-Sem frete'
   else
-    Edit4.Text := '';
+    edFretePorConta.Text := '';
   //
-  Form24.Edit4.Visible := True;
-  //
+  Form24.edFretePorConta.Visible := True;
+  AtualizaTotalDaNota; // Sandro Silva 2023-08-03
 end;
 
-procedure TForm24.Edit4Enter(Sender: TObject);
+procedure TForm24.edFretePorContaEnter(Sender: TObject);
 begin
   Form24.SMALL_DBEdit27.SetFocus;
-  Form24.Edit4.Visible := False;
+  Form24.edFretePorConta.Visible := False;
 end;
 
 procedure TForm24.Label_fecha_0Click(Sender: TObject);
@@ -3696,6 +3715,26 @@ procedure TForm24.SMALL_DBEdit41KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then SMALL_DBEdit28.SetFocus;
+end;
+
+procedure TForm24.SMALL_DBEdit18Exit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
+end;
+
+procedure TForm24.SMALL_DBEdit2Exit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
+end;
+
+procedure TForm24.SMALL_DBEdit23Exit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
+end;
+
+procedure TForm24.edFretePorContaExit(Sender: TObject);
+begin
+  AtualizaTotalDaNota;
 end;
 
 end.

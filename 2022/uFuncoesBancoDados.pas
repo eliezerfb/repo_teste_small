@@ -58,7 +58,11 @@ function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
 function GeneratorExisteFB(Banco: TIBDatabase; sGenerator: String): Boolean;
 function TamanhoCampo(IBTransaction: TIBTransaction; Tabela: String;
   Campo: String): Integer;
-  
+function IndiceExiste(Banco: TIBDatabase; sTabela: String;
+  sIndice: String): Boolean;
+function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
+  iQtd: Integer = 1): String;
+
 implementation
 
 uses
@@ -221,6 +225,48 @@ begin
   FreeAndNil(IBQTABELA);
 end;
 
+function IndiceExiste(Banco: TIBDatabase; sTabela: String;
+  sIndice: String): Boolean;
+{Sandro Silva 2012-02-23 inicio
+Pesquisa na base se o índice existe na tabela, retornando True/False}
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+
+  IBQUERY.Close;
+  IBQUERY.SQL.Text :=
+    'select I.RDB$INDEX_NAME as NOMEINDICE ' +
+    'from RDB$INDICES I ' +
+    'where I.RDB$RELATION_NAME = ' + QuotedStr(sTabela) +
+    ' and I.RDB$INDEX_NAME = ' + QuotedStr(sIndice);
+  IBQUERY.Open;
+
+  Result := (Trim(IBQUERY.FieldByName('NOMEINDICE').AsString) <> '');
+end;
+
+function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
+  iQtd: Integer = 1): String;
+var
+  IBTTEMP: TIBTransaction;
+  IBQTEMP: TIBQuery;
+begin
+  IBTTEMP := CriaIBTransaction(IBDataBase);
+  IBQTEMP := CriaIBQuery(IBTTEMP);
+  Result := '0';
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := 'select gen_id(' + sGenerator + ', '+ IntToStr(iQtd) +') as NUMERO from rdb$database';
+    IBQTEMP.Open;
+    Result := IBQTEMP.FieldByName('NUMERO').AsString;
+    IBQTEMP.Transaction.Rollback;
+  except
+  end;
+  FreeAndNil(IBQTEMP);
+  FreeAndNil(IBTTEMP);
+end;
 
 function ExecutaComando(comando:string; IBTRANSACTION: TIBTransaction):Boolean;  overload;
 var
