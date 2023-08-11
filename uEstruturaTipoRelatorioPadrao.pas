@@ -4,16 +4,17 @@ interface
 
 uses
   uIEstruturaTipoRelatorioPadrao, uSmallEnumerados, uArquivosDAT,
-  Classes, Dialogs, IBQuery, DB, Windows, uIEstruturaRelatorioPadrao,
-  SysUtils, DateUtils, Forms, Controls;
+  Classes, Dialogs, DB, Windows, uIEstruturaRelatorioPadrao, IBQuery,
+  SysUtils, DateUtils, Forms, Controls, IBDatabase;
 
 type
   TEstruturaTipoRelatorioPadrao = class(TInterfacedObject, IEstruturaTipoRelatorioPadrao)
   private
+    FoDataBase: TIBDatabase;
     FoArquivoDAT: TArquivosDAT;
     FoEstruturaRel: IEstruturaRelatorioPadrao;
     FcTitulo: String;
-    FQryDados: TIBQuery;
+    FDataSetDados: TDataSet;
     FlsImpressao: TStringList;
     FcNomeArquivo: String;
     FdInicio: TDateTime;
@@ -44,7 +45,7 @@ type
 implementation
 
 uses SmallFunc, uAssinaturaDigital, ShellApi, Math, uDadosEmitente,
-  uIDadosEmitente, uSmallResourceString;
+  uIDadosEmitente, uSmallResourceString, uLayoutHTMLRelatorio;
 
 const
   _nTamanhoEntreColuna = 2;
@@ -128,35 +129,48 @@ begin
   FlsImpressao.Add('<center>');
   FlsImpressao.Add('<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
   FlsImpressao.Add(' <tr>');
+
   //Colunas
-  for i := 0 to Pred(FQryDados.Fields.Count) do
-    FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1><b>' + FQryDados.Fields[i].FieldName + '</td>');
+  for i := 0 to Pred(FDataSetDados.Fields.Count) do
+  begin
+    if FDataSetDados.Fields[i].Visible then
+      FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1><b>' + FDataSetDados.Fields[i].FieldName + '</td>');
+  end;
   FlsImpressao.Add(' </tr>');
-  while not FQryDados.Eof do
+  while not FDataSetDados.Eof do
   begin
     FlsImpressao.Add('   <tr>');
     cAux := EmptyStr;
-    for i := 0 to Pred(FQryDados.Fields.Count) do
+    for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
-      if TestarFieldValor(FQryDados.Fields[i]) then
+      if not FDataSetDados.Fields[i].Visible then
+        Continue;
+
+      if TestarFieldValor(FDataSetDados.Fields[i]) then
       begin
         cAux := 'align=Right ';
         bTemColunaValor := True;        
       end;
-      FlsImpressao.Add('    <td ' + cAux + 'bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + RetornarTextoValorQuery(FQryDados.Fields[i], True) + '</td>');
+      FlsImpressao.Add('    <td ' + cAux + 'bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + RetornarTextoValorQuery(FDataSetDados.Fields[i], True) + '</td>');
     end;
     FlsImpressao.Add('   </tr>');
-    FQryDados.Next;
+    FDataSetDados.Next;
   end;
 
-  if (bTemColunaValor) or (FQryDados.IsEmpty) then
+  if (bTemColunaValor) or (FDataSetDados.IsEmpty) then
   begin
     FlsImpressao.Add('   <tr bgcolor=#EBEBEB >');
-    for i := 0 to Pred(FQryDados.Fields.Count) do
+    for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
-      if (TestarFieldValor(FQryDados.Fields[i])) and (Pos(';' + FQryDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
+      if not FDataSetDados.Fields[i].Visible then
+        Continue;    
+      if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
-        cTotal := FormataCulunaValor(SomarValor(FQryDados.Fields[i]), (FQryDados.Fields[i] as TBCDField).Size);
+        if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
+          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size)
+        else
+          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
+          
         FlsImpressao.Add('    <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + cTotal);
       end else
         FlsImpressao.Add('    <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font>');
@@ -206,15 +220,17 @@ begin
 
   FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
 
-  for i := 0 to Pred(FQryDados.Fields.Count) do
+  for i := 0 to Pred(FDataSetDados.Fields.Count) do
   begin
-    cLinha := cLinha + Replicate('-', RetornarTamanhoField(FQryDados.Fields[i]));
-    if TestarFieldValor(FQryDados.Fields[i]) then
-      cLinhaTotal := cLinhaTotal + Replicate('-', RetornarTamanhoField(FQryDados.Fields[i]))
+    if not FDataSetDados.Fields[i].Visible then
+      Continue;
+    cLinha := cLinha + Replicate('-', RetornarTamanhoField(FDataSetDados.Fields[i]));
+    if TestarFieldValor(FDataSetDados.Fields[i]) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
+      cLinhaTotal := cLinhaTotal + Replicate('-', RetornarTamanhoField(FDataSetDados.Fields[i]))
     else
-      cLinhaTotal := cLinhaTotal + Replicate(' ', RetornarTamanhoField(FQryDados.Fields[i]));
+      cLinhaTotal := cLinhaTotal + Replicate(' ', RetornarTamanhoField(FDataSetDados.Fields[i]));
 
-    if i < Pred(FQryDados.Fields.Count) then
+    if i < Pred(FDataSetDados.Fields.Count) then
     begin
       cLinha := cLinha + Replicate(' ', _nTamanhoEntreColuna);
       cLinhaTotal := cLinhaTotal + Replicate(' ', _nTamanhoEntreColuna);
@@ -230,21 +246,24 @@ begin
   FlsImpressao.Add(RetornarCabecalho);
   FlsImpressao.Add(cLinha);
 
-  while not FQryDados.Eof do
+  while not FDataSetDados.Eof do
   begin
     cLinhaTemp := EmptyStr;
-    for i := 0 to Pred(FQryDados.Fields.Count) do
+    for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
-      cTexto := RetornarTextoValorQuery(FQryDados.Fields[i]);
+      if not FDataSetDados.Fields[i].Visible then
+        Continue;
+
+      cTexto := RetornarTextoValorQuery(FDataSetDados.Fields[i]);
       cLinhaTemp := cLinhaTemp + cTexto
-                    + Replicate(' ', (RetornarTamanhoField(FQryDados.Fields[i]) - Length(cTexto)));
-      if i < Pred(FQryDados.Fields.Count) then
+                    + Replicate(' ', (RetornarTamanhoField(FDataSetDados.Fields[i]) - Length(cTexto)));
+      if i < Pred(FDataSetDados.Fields.Count) then
         cLinhaTemp := cLinhaTemp + Replicate(' ', _nTamanhoEntreColuna);
     end;
 
     FlsImpressao.Add(cLinhaTemp);
 
-    FQryDados.Next;
+    FDataSetDados.Next;
   end;
 
   // Linha para totalizar colunas de valor
@@ -252,19 +271,25 @@ begin
   begin
     FlsImpressao.Add(cLinhaTotal);
     cLinhaTotal := EmptyStr;
-    for i := 0 to Pred(FQryDados.Fields.Count) do
+    for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
-      if (TestarFieldValor(FQryDados.Fields[i])) and (Pos(';' + FQryDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
-      begin
-        cTotal := FormataCulunaValor(SomarValor(FQryDados.Fields[i]), (FQryDados.Fields[i] as TBCDField).Size);
+      if not FDataSetDados.Fields[i].Visible then
+        Continue;
 
-        cTotal := Replicate(' ', (RetornarTamanhoField(FQryDados.Fields[i]) - Length(cTotal))) + cTotal;
+      if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
+      begin
+        if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
+          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size)
+        else
+          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
+
+        cTotal := Replicate(' ', (RetornarTamanhoField(FDataSetDados.Fields[i]) - Length(cTotal))) + cTotal;
         cLinhaTotal := cLinhaTotal + cTotal;
 
       end else
-        cLinhaTotal := cLinhaTotal + Replicate(' ', RetornarTamanhoField(FQryDados.Fields[i]));
+        cLinhaTotal := cLinhaTotal + Replicate(' ', RetornarTamanhoField(FDataSetDados.Fields[i]));
 
-      if i < Pred(FQryDados.Fields.Count) then
+      if i < Pred(FDataSetDados.Fields.Count) then
         cLinhaTotal := cLinhaTotal + Replicate(' ', _nTamanhoEntreColuna);
     end;
     FlsImpressao.Add(cLinhaTotal);
@@ -290,12 +315,12 @@ function TEstruturaTipoRelatorioPadrao.SomarValor(AoField: TField) : Currency;
 begin
   Result := 0;
 
-  FQryDados.First;
-  while not FQryDados.Eof do
+  FDataSetDados.First;
+  while not FDataSetDados.Eof do
   begin
     Result := Result + AoField.AsCurrency;
 
-    FQryDados.Next;
+    FDataSetDados.Next;
   end;
 end;
 
@@ -311,12 +336,15 @@ end;
 
 function TEstruturaTipoRelatorioPadrao.RetornarTextoValorQuery(AoField: TField; AbSemBrancos: Boolean = False): String;
 begin
-  Result := FQryDados.FieldByname(AoField.FieldName).AsString;
+  Result := FDataSetDados.FieldByname(AoField.FieldName).AsString;
 
   if TestarFieldValor(AoField) then
   begin
-    Result := FormataCulunaValor(FQryDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TBCDField).Size);
-
+    if AoField.DataType in [ftBCD, ftFMTBcd] then
+      Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TBCDField).Size)
+    else
+      Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, 2);
+      
     if not AbSemBrancos then
       Result := Replicate(' ', RetornarTamanhoField(AoField) - Length(Result)) + Result;
   end;
@@ -330,7 +358,6 @@ end;
 destructor TEstruturaTipoRelatorioPadrao.Destroy;
 begin
   FreeAndNil(FlsImpressao);
-  FreeAndNil(FQryDados);
   FreeAndNil(FoArquivoDAT);
   inherited;
 end;
@@ -339,21 +366,31 @@ function TEstruturaTipoRelatorioPadrao.RetornarCabecalho: String;
 var
   i: Integer;
   nTamanho: Integer;
+  cNome: String;
 begin
-  for i := 0 to Pred(FQryDados.Fields.Count) do
+  for i := 0 to Pred(FDataSetDados.Fields.Count) do
   begin
-    nTamanho := RetornarTamanhoField(FQryDados.Fields[i]);
+    if not FDataSetDados.Fields[i].Visible then
+      Continue;
+      
+    nTamanho := RetornarTamanhoField(FDataSetDados.Fields[i]);
 
-    if i < Pred(FQryDados.Fields.Count) then
+    if i < Pred(FDataSetDados.Fields.Count) then
       nTamanho := nTamanho + _nTamanhoEntreColuna;
 
-    nTamanho := (nTamanho - Length(FQryDados.Fields[i].FieldName));
+    cNome := FDataSetDados.Fields[i].FieldName;
+    if FDataSetDados.Fields[i].DisplayLabel <> EmptyStr then
+      cNome := FDataSetDados.Fields[i].DisplayLabel;
 
-    Result := Result + FQryDados.Fields[i].FieldName + Replicate(' ', nTamanho)
+    nTamanho := (nTamanho - Length(cNome));
+
+    Result := Result + cNome + Replicate(' ', nTamanho)
   end;
 end;
 
 function TEstruturaTipoRelatorioPadrao.RetornarTamanhoField(AoField: TField): Integer;
+var
+  cNome: String;
 begin
   Result := AoField.Size;
 
@@ -362,13 +399,17 @@ begin
   if TestarFieldValor(AoField) then
     Result := 18;
 
-  if Result < Length(AoField.FieldName) then
-    Result := Length(AoField.FieldName);
+  cNome := AoField.FieldName;
+  if AoField.DisplayLabel <> EmptyStr then
+    cNome := AoField.DisplayLabel;
+
+  if Result < Length(cNome) then
+    Result := Length(cNome);
 end;
 
 function TEstruturaTipoRelatorioPadrao.TestarFieldValor(AoField: TField): Boolean;
 begin
-  Result := ((AoField is TFloatField) or (AoField is TBCDField) or (AoField is TCurrencyField));
+  Result := (AoField.DataType in [ftBCD, ftFloat, ftCurrency, ftFMTBcd]);
 end;
 
 constructor TEstruturaTipoRelatorioPadrao.Create;
@@ -385,7 +426,8 @@ begin
   FoEstruturaRel := AoEstruturaRel;
 
   AoEstruturaRel.getTitulo(FcTitulo);
-  AoEstruturaRel.getQuery(FQryDados);
+  FDataSetDados := AoEstruturaRel.getDAO.getDados;
+  FoDataBase := AoEstruturaRel.getDAO.getDataBase;
 
   MontarDados;
 end;
@@ -397,8 +439,8 @@ var
   cTempo: String;
 begin
   QryEmitente := TDadosEmitente.New
-                                .setDataBase(FQryDados.Database)
-                                .getQuery;
+                               .setDataBase(FoDataBase)
+                               .getQuery;
 
   cDataExtenso := Copy(DateTimeToStr(Date),1,2) + ' de '
                     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
@@ -407,22 +449,11 @@ begin
   cTempo := TimeToStr(Time - FdInicio);
 
   if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
-  begin
-    FlsImpressao.Add('<center><br><font face="Microsoft Sans Serif" size=1>Gerado em ' + Trim(QryEmitente.FieldByName('MUNICIPIO').AsString) + ', ' + cDataExtenso+'</font><br>');
-
-    if (Alltrim(QryEmitente.FieldByName('HP').AsString) = '') then
-    begin
-      FlsImpressao.Add('<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
-    end else
-    begin
-      FlsImpressao.Add('<font face="verdana" size=1><center><a href="http://' + QryEmitente.FieldByName('HP').AsString + '">' + QryEmitente.FieldByName('HP').AsString + '</a><font>');
-    end;
-
-    FlsImpressao.Add('<font face="Microsoft Sans Serif" size=1><center>Tempo para gerar este relatório: ' + cTempo + '</center>');
-    if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
-      FlsImpressao.Add('<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
-    FlsImpressao.Add('</html>');
-  end else
+    FlsImpressao.Add(TLayoutHTMLRelatorio.RetornarRodape(QryEmitente.FieldByName('MUNICIPIO').AsString,
+                                                         QryEmitente.FieldByName('HP').AsString,
+                                                         cTempo,
+                                                         FoArquivoDAT.Usuario.Html.TipoRelatorio))
+  else
   begin
     FlsImpressao.Add(EmptyStr);
     FlsImpressao.Add('Gerado em '+Trim(QryEmitente.FieldByName('MUNICIPIO').AsString)+', ' + cDataExtenso);
@@ -454,13 +485,10 @@ begin
   if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
   begin
     QryEmitente := TDadosEmitente.New
-                                  .setDataBase(FQryDados.Database)
+                                  .setDataBase(FoDataBase)
                                   .getQuery;
 
-    FlsImpressao.Add('<html><head><title>'+AllTrim(QryEmitente.FieldByName('NOME').AsString) + '</title></head>');
-    FlsImpressao.Add('<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
-    FlsImpressao.Add('<img src="logotip.jpg" alt="'+AllTrim(QryEmitente.FieldByName('NOME').AsString)+'">');
-    FlsImpressao.Add('<br><font size=3 color=#000000><b>'+AllTrim(QryEmitente.FieldByName('NOME').AsString)+'</b></font>');
+    FlsImpressao.Add(TLayoutHTMLRelatorio.RetornarCabecalho(QryEmitente.FieldByName('NOME').AsString));
   end;
 end;
 

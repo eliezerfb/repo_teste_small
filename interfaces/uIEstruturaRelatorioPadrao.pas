@@ -3,7 +3,7 @@ unit uIEstruturaRelatorioPadrao;
 interface
 
 uses
-  uIDadosImpressaoDAO, IBQuery, uIFiltrosRodapeRelatorio;
+  uIDadosImpressaoDAO, uIFiltrosRodapeRelatorio, DB;
 
 type
   IEstruturaRelatorioPadrao = interface
@@ -15,7 +15,7 @@ type
   // CAMPOS QUE NÃO SÃO VALOR NÃO PRECISA ESPECIFICAR NO MÉTODO.
   function getColunasNaoTotalizar(out AcColunas: String): IEstruturaRelatorioPadrao;
   function FiltrosRodape: IFiltrosRodapeRelatorio;
-  function getQuery(out AQry: TIBQuery): IEstruturaRelatorioPadrao;
+  function getDAO: IDadosImpressaoDAO;
   end;
 
 implementation
