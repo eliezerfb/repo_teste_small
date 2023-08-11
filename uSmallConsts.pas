@@ -5,6 +5,7 @@ interface
 const
   _cSenhaSair = '#####';
   _cUsuarioAdmin = 'Administrador';
+  _cRecebPagto = 'Caixa';
 
   _cSim = 'Sim';
   _cNao = 'Não';
