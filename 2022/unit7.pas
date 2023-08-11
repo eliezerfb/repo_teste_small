@@ -26328,7 +26328,7 @@ begin
     end else
     begin
       //
-      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := 'Caixa';
+      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := _cRecebPagto;
       //
       if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
@@ -26354,7 +26354,7 @@ begin
         //
       end;
       //
-      if (Copy(ComboBox1.Text,1,9) <> 'Caixa') and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         //
         Form7.ibDataSet1.Append;
@@ -26401,7 +26401,7 @@ begin
     end else
     begin
       //
-      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := 'Caixa';
+      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := _cRecebPagto;
       //
       if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
@@ -26427,7 +26427,7 @@ begin
         //
       end;
       //
-      if (Copy(ComboBox1.Text,1,9) <> 'Caixa') and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         //
         Form7.ibDataSet1.Append;
