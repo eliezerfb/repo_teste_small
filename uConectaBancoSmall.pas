@@ -8,14 +8,16 @@ uses
   IBX.IBQuery;
 
   //IBX
-  function Conectar_SMALL(DataBase1 : TIBDatabase): Boolean;
+  function Conectar_SMALL(DataBase1 : TIBDatabase; Aviso : Boolean = True): Boolean;
   function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
   function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
   function CampoExisteFB(Banco: TIBDatabase; sTabela: String; sCampo: String): Boolean;
+  function ExecutaComando(IBTRANSACTION: TIBTransaction; vSql : string) : Boolean;
+  function ExecutaComandoScalar(IBTRANSACTION: TIBTransaction; vSql : string) : Variant;
 
 implementation
 
-function Conectar_SMALL(DataBase1 : TIBDatabase): Boolean;
+function Conectar_SMALL(DataBase1 : TIBDatabase; Aviso : Boolean = True): Boolean;
 var
   sbanco, sAlias,sIP,sURL : String;
   arq_ini: TIniFile;
@@ -67,10 +69,11 @@ begin
     except
     on e:exception do
       begin
-        Showmessage('Erro ao abrir banco Small:'
-                    +chr(13)+'String do Banco: '+sbanco
-                    +chr(13)+chr(13)+'Erro:'
-                    +chr(13)+e.Message);
+        if Aviso then // Mauricio Parizotto 2023-08-08
+          Showmessage('Erro ao abrir banco Small:'
+                      +chr(13)+'String do Banco: '+sbanco
+                      +chr(13)+chr(13)+'Erro:'
+                      +chr(13)+e.Message);
       end;
     end;
 
@@ -141,5 +144,46 @@ begin
   end;
 end;
 
+function ExecutaComando(IBTRANSACTION: TIBTransaction; vSql : string) : Boolean;
+var
+  qryAux: TIBQuery;
+begin
+  Result := False;
+
+  qryAux := CriaIBQuery(IBTransaction);
+
+  try
+    try
+      qryAux.SQL.Text := vSql;
+      qryAux.ExecSQL;
+
+      Result := True;
+    finally
+      FreeAndNil(qryAux);
+    end;
+  except
+  end;
+end;
+
+
+function ExecutaComandoScalar(IBTRANSACTION: TIBTransaction; vSql : string) : Variant;
+var
+  qryAux: TIBQuery;
+begin
+  qryAux := CriaIBQuery(IBTransaction);
+
+  try
+    try
+      qryAux.SQL.Text := vSql;
+      qryAux.Open;
+
+      Result := qryAux.Fields[0].Value;
+    finally
+      FreeAndNil(qryAux);
+    end;
+  except
+  end;
+
+end;
 
 end.

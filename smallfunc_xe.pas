@@ -41,7 +41,7 @@ uses
   , xmldom
   , XMLIntf
   , MsXml
-  , Vcl.Mask
+  , Vcl.Mask, Winapi.TlHelp32
   ;
 
 
@@ -125,6 +125,8 @@ function Day(Data:TdateTime): Integer;
 function xmlNodeValue(sXML: String; sNode: String): String;
 function xmlNodeValueToDate(sXML: String; sNode: String): TDate;
 function xmlNodeValueToFloat(sXML: String; sNode: String): Double;
+function SysComputerName: String;
+function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
 
 
 
@@ -1279,6 +1281,44 @@ begin
     sValor := StringReplace(sValor, '.', ',',[rfReplaceAll]);
     Result := StrToFloat(sValor);
   end;
+end;
+
+
+//Mauricio Parizotto 2023-08-08
+function SysComputerName: String;
+var
+  I: DWord;
+begin
+  I := MAX_COMPUTERNAME_LENGTH + 1;
+  SetLength(Result, I);
+  Windows.GetComputerName(PChar(Result), I);
+  Result := String(PChar(Result));
+end;
+
+
+function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
+var
+  Snapshot: THandle;
+  ProcessEntry32: TProcessEntry32;
+begin
+  Result   := False;
+  Snapshot := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+  if (Snapshot = Cardinal(-1)) then
+    exit;
+
+  ProcessEntry32.dwSize := SizeOf(TProcessEntry32);
+
+  // pesquisa pela lista de processos
+  if (Process32First(Snapshot, ProcessEntry32)) then
+  repeat
+    // enquanto houver processos
+    // SubItems.Add(IntToStr(ProcessEntry32.th32ParentPro cessID));
+    if ProcessEntry32.szExeFile = sDescricao then
+      Result := True;
+  until not Process32Next(Snapshot, ProcessEntry32);
+
+  CloseHandle (Snapshot);
 end;
 
 end.
