@@ -2160,7 +2160,7 @@ begin
     ExecutaComando('CREATE SEQUENCE G_BACKUPHORARIOS_IDHORARIO');
   end;
   {Mauricio Parizotto 2023-08-07 Fim}
-
+  
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
