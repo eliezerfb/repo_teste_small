@@ -8237,6 +8237,7 @@ procedure TForm10.Button20Click(Sender: TObject);
 var
   rReceitas : Real;
   rDespesas : Real;
+  dCOPE: Double; // Sandro Silva 2023-08-07
 begin
   try
     rReceitas := 0;
@@ -8248,13 +8249,24 @@ begin
       if Copy(Form7.ibDataSet12CONTA.AsString,1,2) = '32' then rDespesas := rDespesas + (Form7.ibDataSet12ANO.AsFloat * -1);
       Form7.ibDataSet12.Next;
     end;
-    //
+    {Sandro Silva 2023-08-07 inicio
     try
       Form7.ibDataSet13COPE.AsFloat := rDespesas * 100 / rReceitas;
     except
       Form7.ibDataSet13COPE.AsFloat := 0;
     end;
-    //
+    }
+    dCOPE := 0;
+    if rReceitas > 0 then
+    begin
+      try
+        dCOPE := rDespesas * 100 / rReceitas;
+      except
+        dCOPE := 0;
+      end;
+    end;
+    Form7.ibDataSet13COPE.AsFloat := dCOPE;
+    {Sandro Silva 2023-08-07 fim}
     ShowMessage('O sistema calculou o "custo operacional" da'+Chr(10)+
                 'seguinte forma:'+Chr(10)+Chr(10)+
 
@@ -8264,7 +8276,7 @@ begin
 
                 'Custo Operacional = Despesas Operacionais * 100 / Receitas'+Chr(10)+Chr(10)+
                 'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas]))+' * 100 / '+AllTrim(Format('%12.2n',[rReceitas]))+Chr(10)+Chr(10)+
-                'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas * 100 / rReceitas]))+'%'+Chr(10)+Chr(10));
+                'Custo Operacional = '+AllTrim(Format('%12.2n',[dCOPE]))+'%'+Chr(10)+Chr(10)); // Sandro Silva 2023-08-07 'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas * 100 / rReceitas]))+'%'+Chr(10)+Chr(10));
   except
     ShowMessage('O sistema calcula o "custo operacional" da'+Chr(10)+
                 'seguinte forma:'+Chr(10)+Chr(10)+
