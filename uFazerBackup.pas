@@ -49,6 +49,7 @@ begin
   if FileExists(Trim(sArquivo)) then
   begin
     //ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
+    //ShellExecute( 0, 'Open', pChar(vDirSistema+'szip.exe'), pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
     ShellExecute( 0, 'Open', pChar(vDirSistema+'szip.exe'), pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
 
     while ConsultaProcesso('szip.exe') do
