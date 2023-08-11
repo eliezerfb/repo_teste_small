@@ -201,7 +201,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     AfterOpen = CDSLOTESAfterOpen
     Left = 24
     Top = 120
-    object CDSLOTESNUMERO: TStringField
+    object CDSLOTESNUMERO: TIBStringField
       FieldName = 'NUMERO'
     end
     object CDSLOTESQUANTIDADE: TFloatField
@@ -213,7 +213,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     object CDSLOTESDTVALIDADE: TDateField
       FieldName = 'DTVALIDADE'
     end
-    object CDSLOTESCODIGOAGREGACAO: TStringField
+    object CDSLOTESCODIGOAGREGACAO: TIBStringField
       FieldName = 'CODIGOAGREGACAO'
     end
     object CDSLOTESQUANTIDADEACUMULADA: TAggregateField

@@ -6,11 +6,15 @@ uses
 
 
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
-  DBTables, Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
+  Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
   mais3, unit2,unit3, IniFiles, Unit4, Unit10, SmallFunc, Registry, HtmlHelp,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
-  oxmldom, XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
+  {$IFDEF VER150}
+  oxmldom,
+  {$ELSE}
+  {$ENDIF}
+  XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
   , DBCtrls
@@ -27,7 +31,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023024'; // Sandro Silva 2023-08-07 BUILD_DO_BANCO = '2023022';    
+const BUILD_DO_BANCO = '2023026'; // Sandro Silva 2023-08-11 const BUILD_DO_BANCO = '2023024'; //
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -1823,17 +1827,30 @@ end;
 
 procedure TForm1.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
 var
+  {$IFDEF VER150}
   iParam: Smallint;
+  {$ELSE}
+  iParam: integer;
+  {$ENDIF}
 begin
   if Msg.message = WM_MOUSEWHEEL then
   begin
     Msg.message := WM_KEYDOWN;
     Msg.lParam  := 0;
+    {$IFDEF VER150}
     iParam := HiWord(Msg.wParam) ;
     if iParam > 0 then
       Msg.wParam := VK_UP
     else
       Msg.wParam := VK_DOWN;
+    {$ELSE}
+    iParam := HiWord(Msg.wParam) ;
+    if iParam <= 120 then
+      Msg.wParam := VK_UP
+    else
+      Msg.wParam := VK_DOWN;
+    {$ENDIF}
+
     Handled := False;
   end;
 end;
@@ -2738,6 +2755,7 @@ var
   sArquivo, sCaminho, sSelectSql : String;
   I : Integer;
   sLinha, sCampos, sValores : String;
+  CampoPK : string; // Mauricio Parizotto 2023-08-07
 begin
   try
     with Form1 do
@@ -2829,9 +2847,9 @@ begin
         if Pos('TO ',sCaminho) <> 0 then
         begin
           sCaminho := StrTran(sCaminho,'TO ','');
-    //        ShowMessage(sArquivo+chr(10)+sCaminho);
-          //
-          if FileExists(sCaminho+'.SQL') then DeleteFile(pChar(sCaminho+'.SQL'));
+
+          if FileExists(sCaminho+'.SQL') then
+            DeleteFile(pChar(sCaminho+'.SQL'));
           
           try
             Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -2855,8 +2873,6 @@ begin
                 if (Alltrim(IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).AsString) <> '')
                 and (Alltrim(dbGrid200.Fields[I].DisplayName) <> 'FOTO') then
                 begin
-  // ShowMessage(dbGrid200.Fields[I].DisplayName+chr(10)+FieldTypeNames[IBDataSet200.FieldByName(dbGrid200.Fields[I].DisplayName).DataType]);
-                  //
                   if sCampos  <> '' then sCampos  := sCampos+',';
                   if sVAlores <> '' then sValores := sValores+',';
                   //
@@ -2952,8 +2968,19 @@ begin
           try
             sArquivo := Copy(ibDataSet200.SelectSQL.Text+Replicate(' ',2000),pos('from',LowerCase(ibDataSet200.SelectSQL.Text))+5,2000);
             sArquivo := strTran(Copy(sArquivo,1,Pos(' ',sArquivo)),',','');
-            
-            sDelete := 'delete from '+sArquivo+' where REGISTRO=:OLD_REGISTRO';
+            sArquivo := UpperCase(trim(sArquivo));
+
+            {Mauricio Parizotto 2023-08-07 inicio}
+            CampoPK := 'REGISTRO';
+
+            try
+              if ibDataSet200.FindField('REGISTRO') = nil then
+                CampoPK := GetCampoPKTabela(ibDataSet200.Database,sArquivo);
+            except
+            end;
+
+            //sDelete := 'delete from '+sArquivo+' where REGISTRO=:OLD_REGISTRO';
+            sDelete := 'delete from '+sArquivo+' where '+CampoPK+'=:OLD_'+CampoPK;
             sUpdate := 'update '+sArquivo+' set ';
 
             for I := 0 to ibDataSet200.FieldCount -1 do
@@ -2962,13 +2989,17 @@ begin
               if I = ibDataSet200.FieldCount -1 then sUpdate := sUpdate + ' ' else sUpdate := sUpdate + ', ';
             end;
 
-            sUpdate := sUpdate + ' where REGISTRO=:OLD_REGISTRO';
+            //sUpdate := sUpdate + ' where REGISTRO=:OLD_REGISTRO';
+            sUpdate := sUpdate + ' where '+CampoPK+'=:OLD_'+CampoPK;
+
+            {Mauricio Parizotto 2023-08-07 fim}
 
             ibDataSet200.Close;
             ibDataSet200.DeleteSQL.Add(sDelete);
             ibDataSet200.ModifySql.Add(sUpdate);
             ibDataSet200.Open;
-          except end;
+          except
+          end;
         end;
 
         Edit200.Text := '';
@@ -3791,8 +3822,12 @@ begin
   //  ShowMessage('Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10));
   //
   CHDir(Form1.sAtual);
-  //
+
+  {$IFDEF VER150}
   if (DecimalSeparator <> ',') or (DateSeparator <> '/') then
+  {$ELSE}
+  if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
+  {$ENDIF}
   begin
     Application.MessageBox(Pchar('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                                  'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
@@ -3809,7 +3844,7 @@ begin
                                  'o separador de data que deve ser "/".')
 
                                  ,'Atenção',mb_Ok + MB_ICONWARNING);
-//    // Form1.DestroyWindowHandle;
+
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
   //
@@ -4074,7 +4109,13 @@ begin
   //Form7.Close; Mauricio Parizotto 2023-06-27
   Form7.sModulo := 'ICM';
   Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs]; // Tabela de ICMS
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
   Form7.Show;
 end;
 
@@ -6668,6 +6709,9 @@ begin
   AjustaRegistro(NumeroArquivo(),'AUDIT0RIA');
   AjustaRegistro(NumeroArquivo(),'CODEBAR');
   AjustaRegistro(NumeroArquivo(),'NFCE');
+
+  //Mauricio Parizotot 2023-08-07 Tabela BACKUP e BACKUPHORARIOS não tem campo Registro
+
   //
   {Sandro Silva 2022-12-28 inicio}
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
@@ -8061,7 +8105,11 @@ begin
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
 
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
@@ -8805,16 +8853,20 @@ begin
               sRetorno := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
               ShowMessage('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+sRetorno);
             end;
-            //
-            //
+
+            {$IFDEF VER150}
             DecimalSeparator := ',';
             DateSeparator    := '/';
+            {$ELSE}
+            FormatSettings.DecimalSeparator := ',';
+            FormatSettings.DateSeparator    := '/';
+            {$ENDIF}
           end;
         end;
       end;
     end;
   end;
-  //
+
   Screen.Cursor            := crDefault;
 end;
 
@@ -11271,6 +11323,15 @@ begin
     Exit;
   end;
 
+  {Sandro Silva 2023-08-07 inicio}
+  if Form30.Visible then
+  begin
+    // Se estiver com tela de lançamento de OS aberta e movimentar o mouse, mantem a tela de lançamento sobre as demais
+    Form30.BringToFront;
+    Exit;
+  end;
+  {Sandro Silva 2023-08-07 fim}
+  
   if Form7.Visible then
   begin
     Form7.BringToFront;

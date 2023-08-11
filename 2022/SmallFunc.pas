@@ -15,7 +15,7 @@ unit SmallFunc;
 interface
 
 uses
-  SysUtils,BDE,DB,DBTables,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
+  SysUtils,{BDE,} DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
   msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
   ShellAPI, jpeg, TLHelp32;
 
@@ -44,8 +44,6 @@ uses
   function ConverteAcentosIBPT(pP1:String):String;
   function ConverteAcentosPHP(pP1:String):String;
   function ConverteCaracterEspecialXML(Value: String): String;  
-  function Pack(pP1:TTable):Boolean;
-  function Commit(pP1:TTable):Boolean;
   function Bisexto(AAno: Integer): Boolean;
   function DiasPorMes(AAno, AMes: Integer): Integer;
   function DiasDesteMes: Integer;
@@ -271,7 +269,11 @@ begin
   //Mais eficiente para encerrar as aplicações
   //Substitui os comandos "Application.Terminate" e "Halt(1)"
   //FecharAplicacao(ExtractFileName(Application.ExeName));
+  {$IFDEF VER150}
   WinExec(PChar('TASKKILL /F /IM "'+sNomeExecutavel+'"'),SW_HIDE);
+  {$ELSE}
+  WinExec(PAnsiChar(AnsiString('TASKKILL /F /IM "'+sNomeExecutavel+'"')),SW_HIDE);
+  {$ENDIF}
 end;
 
 
@@ -971,67 +973,6 @@ begin
 end;
 
 
-{Função PACK}
-{parâmetros: pP1= nome do DataBase ou diretório, pP2=nome do arquivo,}
-Function Pack(pP1:TTable):boolean;
-var
-  ArquivoDbf:file;
-  NomeDbf:String;
-  RegistrosLidos:Integer;
-  Buffer:array[1..1] of char;
-  rslt:DBIResult;
-begin
-   // abre o arquivo
-   Result:=False;
-   NomeDbf:=pP1.DataBaseName+'\'+pP1.TableName;
-   if UpperCase(Copy(pP1.TableName,length(pP1.TableName)-3,4)) <> '.DBF' then
-      NomeDbf:=NomeDbf+'.DBF';
-   AssignFile(ArquivoDbf,NomeDbf);
-   try
-      Reset(ArquivoDbf,1); // o segundo argumento indica o tamanho do registro
-      Seek(ArquivoDbf,28);
-      BlockRead(ArquivoDbf,Buffer,SizeOf(Buffer),RegistrosLidos);
-      if RegistrosLidos >0 then
-      begin
-         // se possui indice desativa a sua abertura
-         if Buffer[1]=Chr(1) then
-         begin
-            Buffer[1]:=Chr(0);
-            Seek(ArquivoDbf,Filepos(ArquivoDbf)-1);
-            BlockWrite(ArquivoDbf,Buffer,SizeOf(Buffer));
-        end;
-      end;
-      // Altera a página de código //
-      Seek(ArquivoDbf,29);
-      BlockRead(ArquivoDbf,Buffer,SizeOf(Buffer),RegistrosLidos);
-      Buffer[1]:='X';
-      Seek(ArquivoDbf,Filepos(ArquivoDbf)-1);
-      BlockWrite(ArquivoDbf,Buffer,SizeOf(Buffer));
-   finally
-      CloseFile(ArquivoDbf);
-   end;
-   //
-   try
-     pP1.Active:=False;
-     pP1.Exclusive:=True;
-     pP1.Active:=True;
-     rslt:=DBIPackTable(pP1.dbhandle,pP1.Handle,nil,nil,True);
-     if rslt = DBIERR_NONE then Result:=True else Result:=False;
-   except end;
-   //
-   pP1.Active:=False;
-   pP1.Exclusive:=False;
-   //
-end;
-
-Function Commit(pP1:TTable):boolean;
-begin
-  if DbiSaveChanges(pP1.Handle)=DBIERR_NONE	then
-     result:=True
-  else
-     result:=False;
-end;
-
 function Year(Data:TdateTime): Integer;
 var
    DataD:TdateTime;
@@ -1133,7 +1074,13 @@ begin
         Sign := S[i];
         break;
       end;
-      if (S[i] = DecimalSeparator) and (not SeenPoint) then begin
+
+      {$IFDEF VER150}
+      if (S[i] = DecimalSeparator) and (not SeenPoint) then
+      {$ELSE}
+      if (S[i] = FormatSettings.DecimalSeparator) and (not SeenPoint) then
+      {$ENDIF}
+      begin
         SeenPoint := true;
         break;
       end;
@@ -1149,7 +1096,13 @@ begin
       break;
     end;
   end; (* for *)
+
+  {$IFDEF VER150}
   RetString := Sign+IntPart+DecimalSeparator+DecPart;
+  {$ELSE}
+  RetString := Sign+IntPart+FormatSettings.DecimalSeparator+DecPart;
+  {$ENDIF}
+
   try
     Result := StrToFloat(RetString);
   except
@@ -1184,8 +1137,8 @@ begin
   SeenPoint := false;
   NumString := '';
   Sign := '+';
-  for i := 1 to length(s) do begin
-
+  for i := 1 to length(s) do
+  begin
     {Break-out loop}
     while true do begin
       if (s[i] in ['+', '-']) and (not SeenSign) then begin
@@ -1193,7 +1146,13 @@ begin
         Sign := s[i];
         break;
       end;
-      if s[i] = DecimalSeparator then begin
+
+      {$IFDEF VER150}
+      if s[i] = DecimalSeparator then
+      {$ELSE}
+      if s[i] = FormatSettings.DecimalSeparator then
+      {$ENDIF}
+      begin
         SeenPoint := true;
         break;
       end;
@@ -1225,9 +1184,14 @@ begin
   Result := true;
   SeenSign := false;
   SeenPoint := false;
-  for i := 1 to length(s) do begin
-{    if not (S[i] in ['+', '-', '0'..'9', ' ', '_', ThousandSeparator,DecimalSeparator]) then begin}
-    if not (S[i] in ['+', '-', '0'..'9', ' ', ThousandSeparator,DecimalSeparator]) then begin
+  for i := 1 to length(s) do
+  begin
+    {$IFDEF VER150}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', ThousandSeparator,DecimalSeparator]) then
+    {$ELSE}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', FormatSettings.ThousandSeparator,FormatSettings.DecimalSeparator]) then
+    {$ENDIF}
+    begin
       Result := false;
       break;
     end;
@@ -1239,11 +1203,19 @@ begin
         SeenSign := true;
       end;
     end;
-    if s[i] = DecimalSeparator then begin
-      if SeenPoint then begin
+
+    {$IFDEF VER150}
+    if s[i] = DecimalSeparator then
+    {$ELSE}
+    if s[i] = FormatSettings.DecimalSeparator then
+    {$ENDIF}
+    begin
+      if SeenPoint then
+      begin
         Result := false;
         break;
-      end else begin
+      end else
+      begin
         SeenPoint := true;
       end;
     end;
@@ -1258,7 +1230,12 @@ begin
   SeenSign := false;
   for i := 1 to length(s) do begin
 {    if not (S[i] in ['+', '-', '0'..'9', ' ', '_', ThousandSeparator]) then begin}
-    if not (S[i] in ['+', '-', '0'..'9', ' ', ThousandSeparator]) then begin
+    {$IFDEF VER150}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', ThousandSeparator]) then
+    {$ELSE}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', FormatSettings.ThousandSeparator]) then
+    {$ENDIF}
+    begin
       Result := false;
       break;
     end;
@@ -1369,7 +1346,6 @@ end;
 Function StrTranUpper(sP1,sP2,sP3 : string):String;
 //pP1 String, pP2 trecho a ser substituido, pP3 trecho novo
 begin
-  //
   if alltrim(sP2) <> allTrim(sP3) then
   begin
      while(Pos(UpperCase(sP2),UpperCase(sP1))<>0) do
@@ -1380,7 +1356,6 @@ begin
    end;
    //
    Result := sP1;
-   //
 end;
 
 

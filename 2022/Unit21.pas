@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, Mask, SmallFunc,  WinTypes, WinProcs, Grids, DBGrids, DB, DBTables, DBCtrls;
+  ComCtrls, ExtCtrls, StdCtrls, Mask, SmallFunc,  WinTypes, WinProcs, Grids, DBGrids, DB, DBCtrls;
 
 
 type
@@ -74,9 +74,8 @@ procedure TForm21.FormActivate(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   Form21.Image1.Picture := Form7.Image202.Picture;
-  //
+
   Label11.Visible := False;
   Label12.Visible := False;
   Label13.Visible := False;
@@ -84,8 +83,7 @@ begin
   Label15.Visible := False;
   Label16.Visible := False;
   Label17.Visible := False;
-  //
-  //
+
   Label11.Visible := False;
   Label12.Visible := False;
   Label13.Visible := False;
@@ -93,7 +91,7 @@ begin
   Label15.Visible := False;
   Label16.Visible := False;
   Label17.Visible := False;
-  //
+
   Edit1.Visible := False;
   Edit2.Visible := False;
   Edit3.Visible := False;
@@ -101,7 +99,7 @@ begin
   Edit5.Visible := False;
   Edit6.Visible := False;
   Edit7.Visible := False;
-  //
+
   Label11.Caption := '';
   Label12.Caption := '';
   Label13.Caption := '';
@@ -109,27 +107,33 @@ begin
   Label15.Caption := '';
   Label16.Caption := '';
   Label17.Caption := '';
-  //
+  
   Button4.SetFocus;
   for I := 1 to Form7.iCampos do
   begin
     if I <= 7 then
     begin
-      //
       TLAbel(Form21.Components[I-1+LAbel11.ComponentIndex]).Caption := Form7.ArquivoAberto.fields[I-1].DisplayLabel;
-      //
+
       TLAbel(Form21.Components[I-1+LAbel11.ComponentIndex]).Visible := True;
       TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Visible    := True;
-      //
-      if Form7.ArquivoAberto.Fields[I-1].DataType = fTString then TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text := Copy(Form7.ArquivoAberto.fields[I-1].AsString + replicate(' ',50),1,50);
-      if Form7.ArquivoAberto.Fields[I-1].DataType = fTDate then  TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Form7.ArquivoAberto.fields[I-1].AsString + replicate(' ',30),1,30);
-      if Form7.ArquivoAberto.Fields[I-1].DataType = fTFloat then TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Format('%12.2n',[Form7.ArquivoAberto.fields[I-1].AsFloat])  + replicate(' ',30),1,30);
+
+      //if Form7.ArquivoAberto.Fields[I-1].DataType = fTString then  Mauricio Parizotto 2023-07-26 Migração Alexandria
+      if (Form7.ArquivoAberto.Fields[I-1].DataType = fTString) or (Form7.ArquivoAberto.Fields[I-1].DataType = ftWideString) then
+        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text := Copy(Form7.ArquivoAberto.fields[I-1].AsString + replicate(' ',50),1,50);
+
+      if Form7.ArquivoAberto.Fields[I-1].DataType = fTDate then
+        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Form7.ArquivoAberto.fields[I-1].AsString + replicate(' ',30),1,30);
+
+      if Form7.ArquivoAberto.Fields[I-1].DataType = fTFloat then
+        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Format('%12.2n',[Form7.ArquivoAberto.fields[I-1].AsFloat])  + replicate(' ',30),1,30);
+
       TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I-1].Displaywidth * 8)+10;
-      if TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width > 250 then TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := 250;
-      //
+
+      if TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width > 250 then
+        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := 250;
     end;
   end;
-  //
 end;
 
 procedure TForm21.Button4Click(Sender: TObject);

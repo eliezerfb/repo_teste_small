@@ -25,9 +25,9 @@ uses
   , ShellApi
   , SpdNFeDataSets
   , spdXMLUtils
-  , spdNFeType
+//  , spdNFeType
   , spdNFe
-  , spdType
+//  , spdType
   , SmallFunc
   , unit7
   , unit11

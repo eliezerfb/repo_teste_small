@@ -5,14 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
-  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons;
-
-//  WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-//  Forms, Dialogs, Grids, DBGrids, DB, DBibDataSets, ExtCtrls, Menus, Unit9, IniFiles,
-//  StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
-//  SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp;
-
-
+  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
+  IBCustomDataSet;
 
 type
   TForm30 = class(TForm)
@@ -146,8 +140,6 @@ type
       Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure DBMemo1KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBMemo1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBMemo2Enter(Sender: TObject);
@@ -166,7 +158,7 @@ type
   public
     { Public declarations }
     sSistema, sDatafield : String;
-    fPrecoDoServico : array[0..99999] of real;
+    fPrecoDoServico: array of Real; // Sandro Silva 2023-08-08 fPrecoDoServico : array[0..99999] of real;
   end;
 
 var
@@ -536,15 +528,16 @@ begin
   Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where TIPO_ITEM='+QuotedStr('09')+' order by DESCRICAO');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.ibDataSet99.Close;
   Form7.ibDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select DESCRICAO, PRECO from ESTOQUE where TIPO_ITEM='+QuotedStr('09')+' order by DESCRICAO'); // Ok
   Form7.ibDataSet99.Open;
-  //
+
+  {Sandro Silva 2023-08-08 inicio
   for I := 1 to 9999 do fPrecoDoServico[I] := 0;
   I := 0;
-  //
+
   if Form7.ibDataSet99.FieldByname('DESCRICAO').AsString <> '' then
   begin
     //
@@ -562,6 +555,24 @@ begin
     end;
     //
   end;
+  }
+
+  SetLength(fPrecoDoServico, 0);
+
+  if Form7.ibDataSet99.FieldByname('DESCRICAO').AsString <> '' then
+  begin
+    while not Form7.ibDataSet99.Eof do
+    begin
+      try
+        SetLength(fPrecoDoServico, Length(fPrecoDoServico) + 1);
+        ListBox2.Items.Add(AllTrim(Form7.ibDataSet99.FieldByname('DESCRICAO').AsString));
+        fPrecoDoServico[High(fPrecoDoServico)] := Form7.ibDataSet99.FieldByname('PRECO').AsFloat;
+      except
+      end;
+      Form7.ibDataSet99.Next;
+    end;
+  end;
+  {Sandro Silva 2023-08-08 fim}
   //
   ListBox2.Left     := 15;
   ListBox2.Top      := dbGrid2.Top + dbGrid2.Height -1;
@@ -572,7 +583,8 @@ begin
   //
   // Técnicos
   //
-  if not Form30.dBGrid3.Visible then DbGrid2.SelectedIndex := 0;
+  if not Form30.dBGrid3.Visible then
+    DbGrid2.SelectedIndex := 0;
   //
   dBGrid3.DataSource                 := Form7.DataSource9;
   dBgrid3.Columns.Items[0].FieldName := 'NOME';
@@ -767,7 +779,7 @@ procedure TForm30.SMALL_DBEdit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if dBgrid3.Visible = True then dBgrid3.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then  if dBgrid3.Visible = True then dBgrid3.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then  if dBgrid3.Visible = True then dBgrid3.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
 end;
 
@@ -775,7 +787,7 @@ procedure TForm30.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
 end;
 
@@ -841,7 +853,11 @@ begin
 }
     end;
     //
-  end else ListBox2.Visible  := False;
+  end
+  else
+  begin
+    ListBox2.Visible  := False;
+  end;
   //
   // Técnicos
   //
@@ -1108,7 +1124,8 @@ begin
         Form7.ibDataSet35UNITARIO.AsFloat   := fPrecoDoServico[ListBox2.ItemIndex];
         Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
       end;
-    except end;
+    except
+    end;
     //
     ListBox2.Visible      := False;
     dbGrid2.SetFocus;
@@ -1154,9 +1171,11 @@ begin
         //
         while ListBox2.ItemIndex < ListBox2.Items.Count -1 do
         begin
-          if AnsiUpperCase(AllTrim(ListBox2.Items[ListBox2.ItemIndex])) = AnsiUpperCase(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString)) then bJaTem := True;
+          if AnsiUpperCase(AllTrim(ListBox2.Items[ListBox2.ItemIndex])) = AnsiUpperCase(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString)) then
+            bJaTem := True;
           ListBox2.ItemIndex := ListBox2.ItemIndex + 1;
-          if AnsiUpperCase(AllTrim(ListBox2.Items[ListBox2.ItemIndex])) = AnsiUpperCase(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString)) then bJaTem := True;
+          if AnsiUpperCase(AllTrim(ListBox2.Items[ListBox2.ItemIndex])) = AnsiUpperCase(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString)) then
+            bJaTem := True;
         end;
         //
         if not bJatem then ListBox2.Items.Add(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString));
@@ -1220,7 +1239,7 @@ procedure TForm30.SMALL_DBEdit14KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_RETURN then
   begin
     ListBox2.TabOrder := 0;
@@ -1470,13 +1489,6 @@ begin
   Form7.ibDataSet16UNITARIO.Visible := True;
   Form7.ibDataSet35UNITARIO.Visible := True;
   //
-end;
-
-procedure TForm30.DBMemo1KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-//  if Key = VK_DOWN   then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-//  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;

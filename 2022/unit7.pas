@@ -4,18 +4,22 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Grids, DBGrids, DB, DBTables, ExtCtrls, Menus, Unit9, IniFiles,
+  Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
   StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
-  DBClient, LbAsym, LbRSA, LbCipher, LbClass, MD5, xmldom, XMLIntf,
-  msxmldom, XMLDoc, oxmldom,
+  DBClient, LbAsym, LbRSA, LbCipher, LbClass, {MD5,} xmldom, XMLIntf,
+  msxmldom, XMLDoc,
+  {$IFDEF VER150}
+  oxmldom, spdXMLUtils, spdType, CAPICOM_TLB,
+  {$ELSE}
+  {$ENDIF}
   //xercesxmldom,
   Windows, OleCtrls,
   SHDocVw, FileCtrl,
-  SpdNFeDataSets, spdXMLUtils,
+  SpdNFeDataSets, MSXML5_TLB,
   spdNFeType,
-  spdNFe, spdType, CAPICOM_TLB, MSXML5_TLB,
+  spdNFe,
   DdeMan,
   Gauges,
   LzExpand,
@@ -81,12 +85,12 @@ type
     DataSource2: TDataSource;
     ibDataSet4: TibDataSet;
     DataSource4: TDataSource;
-    ibDataSet4CODIGO: TStringField;
-    ibDataSet4REFERENCIA: TStringField;
-    ibDataSet4DESCRICAO: TStringField;
-    ibDataSet4NOME: TStringField;
-    ibDataSet4FORNECEDOR: TStringField;
-    ibDataSet4MEDIDA: TStringField;
+    ibDataSet4CODIGO: TIBStringField;
+    ibDataSet4REFERENCIA: TIBStringField;
+    ibDataSet4DESCRICAO: TIBStringField;
+    ibDataSet4NOME: TIBStringField;
+    ibDataSet4FORNECEDOR: TIBStringField;
+    ibDataSet4MEDIDA: TIBStringField;
 //    ibDataSet4PRECO: TFloatField;
     ibDataSet4CUSTOCOMPR: TFloatField;
     ibDataSet4CUSTOMEDIO: TFloatField;
@@ -100,7 +104,7 @@ type
     ibDataSet4IPI: TFloatField;
     ibDataSet5: TibDataSet;
     DataSource5: TDataSource;
-    ibDataSet5DOCUMENTO: TStringField;
+    ibDataSet5DOCUMENTO: TIBStringField;
     ibDataSet5SAIDA_: TFloatField;
     ibDataSet5ENTRADA_: TFloatField;
     ibDataSet5EMISSAO: TDateField;
@@ -108,9 +112,9 @@ type
     ibDataSet5COMPENS: TDateField;
     ibDataSet7: TibDataSet;
     DataSource7: TDataSource;
-    ibDataSet7HISTORICO: TStringField;
-    ibDataSet7DOCUMENTO: TStringField;
-    ibDataSet7NOME: TStringField;
+    ibDataSet7HISTORICO: TIBStringField;
+    ibDataSet7DOCUMENTO: TIBStringField;
+    ibDataSet7NOME: TIBStringField;
     ibDataSet7EMISSAO: TDateField;
     ibDataSet7VENCIMENTO: TDateField;
     ibDataSet7VALOR_DUPL: TFloatField;
@@ -222,22 +226,22 @@ type
     Label11: TLabel;
     N16: TMenuItem;
     Contasbancrias1: TMenuItem;
-    ibDataSet11NOME: TStringField;
-    ibDataSet11AGENCIA: TStringField;
-    ibDataSet11CONTA: TStringField;
-    ibDataSet11PLANO: TStringField;
-    ibDataSet11ARQUIVO: TStringField;
+    ibDataSet11NOME: TIBStringField;
+    ibDataSet11AGENCIA: TIBStringField;
+    ibDataSet11CONTA: TIBStringField;
+    ibDataSet11PLANO: TIBStringField;
+    ibDataSet11ARQUIVO: TIBStringField;
     ibDataSet12: TibDataSet;
     DataSource12: TDataSource;
-    ibDataSet12CONTA: TStringField;
-    ibDataSet12NOME: TStringField;
+    ibDataSet12CONTA: TIBStringField;
+    ibDataSet12NOME: TIBStringField;
     ibDataSet12DIA: TFloatField;
     ibDataSet12MES: TFloatField;
     ibDataSet12ANO: TFloatField;
     ibDataSet12SALDO: TFloatField;
-    ibDataSet12DESCRICAOCONTABIL: TStringField;
-    ibDataSet12CONTACONTABILIDADE: TStringField;
-    ibDataSet12IDENTIFICADOR: TStringField;
+    ibDataSet12DESCRICAOCONTABIL: TIBStringField;
+    ibDataSet12CONTACONTABILIDADE: TIBStringField;
+    ibDataSet12IDENTIFICADOR: TIBStringField;
     Label12: TLabel;
     MainMenu12: TMainMenu;
     MenuItem45: TMenuItem;
@@ -253,14 +257,14 @@ type
     MenuItem55: TMenuItem;
     ibDataSet13: TibDataSet;
     DataSource13: TDataSource;
-    ibDataSet13NOME: TStringField;
-    ibDataSet13CONTATO: TStringField;
-    ibDataSet13ENDERECO: TStringField;
-    ibDataSet13MUNICIPIO: TStringField;
-    ibDataSet13CEP: TStringField;
-    ibDataSet13ESTADO: TStringField;
-    ibDataSet13CGC: TStringField;
-    ibDataSet13TELEFO: TStringField;
+    ibDataSet13NOME: TIBStringField;
+    ibDataSet13CONTATO: TIBStringField;
+    ibDataSet13ENDERECO: TIBStringField;
+    ibDataSet13MUNICIPIO: TIBStringField;
+    ibDataSet13CEP: TIBStringField;
+    ibDataSet13ESTADO: TIBStringField;
+    ibDataSet13CGC: TIBStringField;
+    ibDataSet13TELEFO: TIBStringField;
     Label13: TLabel;
     Ajuda1: TMenuItem;
     N18: TMenuItem;
@@ -305,17 +309,17 @@ type
     ibDataSet15: TibDataSet;
     DataSource15: TDataSource;
     Label15: TLabel;
-    ibDataSet15NUMERONF: TStringField;
-    ibDataSet15VENDEDOR: TStringField;
-    ibDataSet15CLIENTE: TStringField;
+    ibDataSet15NUMERONF: TIBStringField;
+    ibDataSet15VENDEDOR: TIBStringField;
+    ibDataSet15CLIENTE: TIBStringField;
     ibDataSet15EMISSAO: TDateField;
     ibDataSet15FRETE: TFloatField;
     ibDataSet15SEGURO: TFloatField;
     ibDataSet15DESPESAS: TFloatField;
     ibDataSet15VOLUMES: TFloatField;
-    ibDataSet15ESPECIE: TStringField;
-    ibDataSet15MARCA: TStringField;
-    ibDataSet15SAIDAH: TStringField;
+    ibDataSet15ESPECIE: TIBStringField;
+    ibDataSet15MARCA: TIBStringField;
+    ibDataSet15SAIDAH: TIBStringField;
     ibDataSet15SAIDAD: TDateField;
     ibDataSet15DUPLICATAS: TFloatField;
     ibDataSet15BASEICM: TFloatField;
@@ -324,7 +328,7 @@ type
     ibDataSet15IPI: TFloatField;
     ibDataSet15TOTAL: TFloatField;
     ibDataSet15MERCADORIA: TFloatField;
-    ibDataSet15EMITIDA: TStringField;
+    ibDataSet15EMITIDA: TIBStringField;
     ibDataSet15SERVICOS: TFloatField;
     ibDataSet16: TibDataSet;
     DataSource16: TDataSource;
@@ -332,18 +336,18 @@ type
     ibDataSet18: TibDataSet;
     DataSource18: TDataSource;
     Label18: TLabel;
-    ibDataSet18NOME: TStringField;
-    ibDataSet18PLACA: TStringField;
-    ibDataSet18ENDERECO: TStringField;
-    ibDataSet18MUNICIPIO: TStringField;
-    ibDataSet18ESTADO: TStringField;
-    ibDataSet18CGC: TStringField;
-    ibDataSet16NUMERONF: TStringField;
-    ibDataSet16CODIGO: TStringField;
-    ibDataSet16DESCRICAO: TStringField;
+    ibDataSet18NOME: TIBStringField;
+    ibDataSet18PLACA: TIBStringField;
+    ibDataSet18ENDERECO: TIBStringField;
+    ibDataSet18MUNICIPIO: TIBStringField;
+    ibDataSet18ESTADO: TIBStringField;
+    ibDataSet18CGC: TIBStringField;
+    ibDataSet16NUMERONF: TIBStringField;
+    ibDataSet16CODIGO: TIBStringField;
+    ibDataSet16DESCRICAO: TIBStringField;
     ibDataSet16IPI: TFloatField;
     ibDataSet16ICM: TFloatField;
-    ibDataSet16MEDIDA: TStringField;
+    ibDataSet16MEDIDA: TIBStringField;
     ibDataSet16QUANTIDADE: TFloatField;
     ibDataSet16UNITARIO: TFloatField;
     ibDataSet16LISTA: TFloatField;
@@ -352,39 +356,39 @@ type
     ibDataSet15PESOLIQUI: TFloatField;
     ibDataSet16TOTAL: TFloatField;
     ibDataSet16PESO: TFloatField;
-    ibDataSet15TRANSPORTA: TStringField;
+    ibDataSet15TRANSPORTA: TIBStringField;
     DataSource19: TDataSource;
     ibDataSet19: TibDataSet;
     Label19: TLabel;
-    ibDataSet19DESCRICAO: TStringField;
-    ibDataSet19TIPO: TStringField;
+    ibDataSet19DESCRICAO: TIBStringField;
+    ibDataSet19TIPO: TIBStringField;
     ibDataSet19LINHA: TFloatField;
     ibDataSet19COLUNA: TFloatField;
     ibDataSet19ELEMENTO: TFloatField;
     MainMenu99: TMainMenu;
-    ibDataSet14INTEGRACAO: TStringField;
+    ibDataSet14INTEGRACAO: TIBStringField;
     ibDataSet11SALDO3: TFloatField;
-    ibDataSet14OBS: TStringField;
+    ibDataSet14OBS: TIBStringField;
     ibDataSet21: TibDataSet;
     DataSource21: TDataSource;
     Label21: TLabel;
-    ibDataSet21NOME: TStringField;
-    ibDataSet5CONTA: TStringField;
+    ibDataSet21NOME: TIBStringField;
+    ibDataSet5CONTA: TIBStringField;
     ibDataSet23: TibDataSet;
     DataSource23: TDataSource;
     Label31: TLabel;
     ibDataSet24: TibDataSet;
     DataSource24: TDataSource;
     Label32: TLabel;
-    ibDataSet24VENDEDOR: TStringField;
+    ibDataSet24VENDEDOR: TIBStringField;
     ibDataSet24FRETE: TFloatField;
     ibDataSet24SEGURO: TFloatField;
     ibDataSet24DESPESAS: TFloatField;
     ibDataSet24VOLUMES: TFloatField;
-    ibDataSet24ESPECIE: TStringField;
-    ibDataSet24MARCA: TStringField;
-    ibDataSet24TRANSPORTA: TStringField;
-    ibDataSet24SAIDAH: TStringField;
+    ibDataSet24ESPECIE: TIBStringField;
+    ibDataSet24MARCA: TIBStringField;
+    ibDataSet24TRANSPORTA: TIBStringField;
+    ibDataSet24SAIDAH: TIBStringField;
     ibDataSet24SAIDAD: TDateField;
     ibDataSet24DUPLICATAS: TFloatField;
     ibDataSet24BASEICM: TFloatField;
@@ -393,28 +397,28 @@ type
     ibDataSet24IPI: TFloatField;
     ibDataSet24TOTAL: TFloatField;
     ibDataSet24MERCADORIA: TFloatField;
-    ibDataSet24EMITIDA: TStringField;
+    ibDataSet24EMITIDA: TIBStringField;
     ibDataSet24SERVICOS: TFloatField;
-    ibDataSet24DESCRICAO1: TStringField;
-    ibDataSet24DESCRICAO2: TStringField;
-    ibDataSet24DESCRICAO3: TStringField;
+    ibDataSet24DESCRICAO1: TIBStringField;
+    ibDataSet24DESCRICAO2: TIBStringField;
+    ibDataSet24DESCRICAO3: TIBStringField;
     ibDataSet24PESOBRUTO: TFloatField;
     ibDataSet24PESOLIQUI: TFloatField;
-    ibDataSet23CODIGO: TStringField;
-    ibDataSet23DESCRICAO: TStringField;
+    ibDataSet23CODIGO: TIBStringField;
+    ibDataSet23DESCRICAO: TIBStringField;
     ibDataSet23IPI: TFloatField;
     ibDataSet23ICM: TFloatField;
-    ibDataSet23MEDIDA: TStringField;
+    ibDataSet23MEDIDA: TIBStringField;
     ibDataSet23QUANTIDADE: TFloatField;
     ibDataSet23UNITARIO: TFloatField;
     ibDataSet23TOTAL: TFloatField;
     ibDataSet23LISTA: TFloatField;
     ibDataSet23CUSTO: TFloatField;
     ibDataSet23PESO: TFloatField;
-    ibDataSet24FORNECEDOR: TStringField;
-    ibDataSet24OPERACAO: TStringField;
-    ibDataSet15OPERACAO: TStringField;
-    ibDataSet14NOME: TStringField;
+    ibDataSet24FORNECEDOR: TIBStringField;
+    ibDataSet24OPERACAO: TIBStringField;
+    ibDataSet15OPERACAO: TIBStringField;
+    ibDataSet14NOME: TIBStringField;
     ibDataSet25: TibDataSet;
     DataSource25: TDataSource;
     Label33: TLabel;
@@ -426,23 +430,23 @@ type
     ibDataSet25ACUMULADO3: TFloatField;
     ibDataSet14ISS: TFloatField;
     ibDataSet16ISS: TFloatField;
-    ibDataSet24FRETE12: TStringField;
-    ibDataSet15FRETE12: TStringField;
+    ibDataSet24FRETE12: TIBStringField;
+    ibDataSet15FRETE12: TIBStringField;
     ibDataSet26: TibDataSet;
     DataSource26: TDataSource;
     Label34: TLabel;
     ibDataSet27: TibDataSet;
     DataSource27: TDataSource;
     Label35: TLabel;
-    ibDataSet27CODIGO: TStringField;
-    ibDataSet27DESCRICAO: TStringField;
+    ibDataSet27CODIGO: TIBStringField;
+    ibDataSet27DESCRICAO: TIBStringField;
     ibDataSet27QUANTIDADE: TFloatField;
     ibDataSet27UNITARIO: TFloatField;
     ibDataSet27DATA: TDateField;
-    ibDataSet27TIPO: TStringField;
-    ibDataSet27PEDIDO: TStringField;
-    ibDataSet27CLIFOR: TStringField;
-    ibDataSet27VENDEDOR: TStringField;
+    ibDataSet27TIPO: TIBStringField;
+    ibDataSet27PEDIDO: TIBStringField;
+    ibDataSet27CLIFOR: TIBStringField;
+    ibDataSet27VENDEDOR: TIBStringField;
     ibDataSet16BASE: TFloatField;
     ibDataSet16BASEISS: TFloatField;
     ibDataSet14BASEISS: TFloatField;
@@ -451,8 +455,8 @@ type
     PrintDialog1: TPrintDialog;
     RegistroFiscal1: TMenuItem;
     N37: TMenuItem;
-    ibDataSet13COMPLE: TStringField;
-    ibDataSet7PORTADOR: TStringField;
+    ibDataSet13COMPLE: TIBStringField;
+    ibDataSet7PORTADOR: TIBStringField;
     ibDataSet16ALIQUOTA: TFloatField;
     ibDataSet15ALIQUOTA: TFloatField;
     N38: TMenuItem;
@@ -460,7 +464,7 @@ type
     N39: TMenuItem;
     ibDataSet4QTD_COMPRA: TFloatField;
     ibDataSet4COMISSAO: TFloatField;
-    ibDataSet4OBS: TStringField;
+    ibDataSet4OBS: TIBStringField;
     Relatriodecomisses1: TMenuItem;
     ibDataSet15ICMSSUBSTI: TFloatField;
     ibDataSet15BASESUBSTI: TFloatField;
@@ -471,9 +475,9 @@ type
     ibDataSet4LUC_VEND: TFloatField;
     Histrico1: TMenuItem;
     ibDataSet27TOTAL: TFloatField;
-    ibDataSet27CAIXA: TStringField;
-    ibDataSet13IE: TStringField;
-    ibDataSet18IE: TStringField;
+    ibDataSet27CAIXA: TIBStringField;
+    ibDataSet13IE: TIBStringField;
+    ibDataSet18IE: TIBStringField;
     Caixa1: TMenuItem;
     ibDataSet4SERIE: TSmallintField;
     ibDataSet4ALTERADO: TSmallintField;
@@ -483,7 +487,7 @@ type
     Editar1: TMenuItem;
     N2: TMenuItem;
     ibDataSet4ATIVO: TSmallintField;
-    ibDataSet23FORNECEDOR: TStringField;
+    ibDataSet23FORNECEDOR: TIBStringField;
     Emailpara1: TMenuItem;
     N40: TMenuItem;
     Ativo2: TMenuItem;
@@ -492,48 +496,48 @@ type
     Relatriodeservios1: TMenuItem;
     Relatriodeoramentospendentes1: TMenuItem;
     ibDataSet4MARGEMLB: TFloatField;
-    ibDataSet18FONE: TStringField;
-    ibDataSet18UF: TStringField;
-    ibDataSet5HISTORICO: TStringField;
-    ibDataSet5NOMINAL: TStringField;
+    ibDataSet18FONE: TIBStringField;
+    ibDataSet18UF: TIBStringField;
+    ibDataSet5HISTORICO: TIBStringField;
+    ibDataSet5NOMINAL: TIBStringField;
     Balancetegerencial1: TMenuItem;
     Balancetegerencialanual1: TMenuItem;
     Ranquingdeclientes1: TMenuItem;
     N44: TMenuItem;
-    ibDataSet19LAYOUT: TStringField;
+    ibDataSet19LAYOUT: TIBStringField;
     ibDataSet24ICMSSUBSTI: TFloatField;
     ibDataSet24BASESUBSTI: TFloatField;
     ibDataSet24ALIQUOTA: TFloatField;
-    ibDataSet14CFOP: TStringField;
-    ibDataSet14ST: TStringField;
-    ibDataSet4ST: TStringField;
-    ibDataSet16ST: TStringField;
-    ibDataSet23ST: TStringField;
+    ibDataSet14CFOP: TIBStringField;
+    ibDataSet14ST: TIBStringField;
+    ibDataSet4ST: TIBStringField;
+    ibDataSet16ST: TIBStringField;
+    ibDataSet23ST: TIBStringField;
     ibDataSet10: TibDataSet;
     DataSource10: TDataSource;
     Label10: TLabel;
-    ibDataSet10CODIGO: TStringField;
-    ibDataSet10COR: TStringField;
-    ibDataSet10TAMANHO: TStringField;
-    ibDataSet10QTD: TStringField;
+    ibDataSet10CODIGO: TIBStringField;
+    ibDataSet10COR: TIBStringField;
+    ibDataSet10TAMANHO: TIBStringField;
+    ibDataSet10QTD: TIBStringField;
     N46: TMenuItem;
     Ativo5: TMenuItem;
-    ibDataSet10ENTRADAS: TStringField;
+    ibDataSet10ENTRADAS: TIBStringField;
     Balancetegerancialmensal1: TMenuItem;
     Balancetegerencialanual2: TMenuItem;
     N47: TMenuItem;
     ibDataSet25DIFERENCA_: TFloatField;
     N48: TMenuItem;
     Inadimlencia1: TMenuItem;
-    ibDataSet4CST: TStringField;
+    ibDataSet4CST: TIBStringField;
     CurvaABC1: TMenuItem;
     CurvaABCdoestoque1: TMenuItem;
     ibDataSet4INDEXADOR: TFloatField;
     Carn1: TMenuItem;
     Duplicata1: TMenuItem;
-    ibDataSet19SERIE: TStringField;
-    ibDataSet9NOME: TStringField;
-    ibDataSet7CONTA: TStringField;
+    ibDataSet19SERIE: TIBStringField;
+    ibDataSet9NOME: TIBStringField;
+    ibDataSet7CONTA: TIBStringField;
     N60: TMenuItem;
     Analisegrafica1: TMenuItem;
     N61: TMenuItem;
@@ -541,8 +545,8 @@ type
     ibDataSet28: TibDataSet;
     DataSource28: TDataSource;
     Label36: TLabel;
-    ibDataSet28CODIGO: TStringField;
-    ibDataSet28DESCRICAO: TStringField;
+    ibDataSet28CODIGO: TIBStringField;
+    ibDataSet28DESCRICAO: TIBStringField;
     ibDataSet28QUANTIDADE: TFloatField;
     MainMenu6: TMainMenu;
     MenuItem15: TMenuItem;
@@ -561,13 +565,13 @@ type
     MenuItem125: TMenuItem;
     MenuItem126: TMenuItem;
     Image24: TImage;
-    ibDataSet18EMAIL: TStringField;
-    ibDataSet13EMAIL: TStringField;
-    ibDataSet7NOSSONUM: TStringField;
+    ibDataSet18EMAIL: TIBStringField;
+    ibDataSet13EMAIL: TIBStringField;
+    ibDataSet7NOSSONUM: TIBStringField;
     Pagarestaconta1: TMenuItem;
     Receberestaconta1: TMenuItem;
     ibDataSet27VALORICM: TFloatField;
-    ibDataSet23CFOP: TStringField;
+    ibDataSet23CFOP: TIBStringField;
     DataSource29: TDataSource;
     Label37: TLabel;
     ibDataSet29: TibDataSet;
@@ -591,22 +595,22 @@ type
     ibDataSet13LUCR: TFloatField;
     ibDataSet13ICME: TFloatField;
     ibDataSet13ICMS: TFloatField;
-    ibDataSet29NOME: TStringField;
+    ibDataSet29NOME: TIBStringField;
     ibDataSet30: TibDataSet;
     DataSource30: TDataSource;
-    ibDataSet30CODIGO: TStringField;
-    ibDataSet30SERIAL: TStringField;
-    ibDataSet30NFCOMPRA: TStringField;
-    ibDataSet30NFVENDA: TStringField;
-    ibDataSet16CFOP: TStringField;
+    ibDataSet30CODIGO: TIBStringField;
+    ibDataSet30SERIAL: TIBStringField;
+    ibDataSet30NFCOMPRA: TIBStringField;
+    ibDataSet30NFVENDA: TIBStringField;
+    ibDataSet16CFOP: TIBStringField;
     N17: TMenuItem;
-    ibDataSet29RAZAO: TStringField;
-    ibDataSet29FONE: TStringField;
-    ibDataSet29EMAIL: TStringField;
+    ibDataSet29RAZAO: TIBStringField;
+    ibDataSet29FONE: TIBStringField;
+    ibDataSet29EMAIL: TIBStringField;
     Receberconvnio1: TMenuItem;
     Acertodecontasde1: TMenuItem;
     RECIBO: TButton;
-    ibDataSet15MODELO: TStringField;
+    ibDataSet15MODELO: TIBStringField;
     Colunas1: TMenuItem;
     LimparRetornosda1: TMenuItem;
     MainMenu8: TMainMenu;
@@ -627,19 +631,19 @@ type
     N26: TMenuItem;
     Sobreoprograma7: TMenuItem;
     ibDataSet8: TibDataSet;
-    ibDataSet8HISTORICO: TStringField;
-    ibDataSet8DOCUMENTO: TStringField;
-    ibDataSet8NOME: TStringField;
+    ibDataSet8HISTORICO: TIBStringField;
+    ibDataSet8DOCUMENTO: TIBStringField;
+    ibDataSet8NOME: TIBStringField;
     ibDataSet8EMISSAO: TDateField;
     ibDataSet8VENCIMENTO: TDateField;
     ibDataSet8VALOR_DUPL: TFloatField;
     ibDataSet8PAGAMENTO: TDateField;
     ibDataSet8VALOR_PAGO: TFloatField;
-    ibDataSet8PORTADOR: TStringField;
-    ibDataSet8CONTA: TStringField;
+    ibDataSet8PORTADOR: TIBStringField;
+    ibDataSet8CONTA: TIBStringField;
     DataSource8: TDataSource;
     N21: TMenuItem;
-    ibDataSet4LOCAL: TStringField;
+    ibDataSet4LOCAL: TIBStringField;
     N22: TMenuItem;
     N24: TMenuItem;
     Exibir1: TMenuItem;
@@ -668,7 +672,7 @@ type
     ibDataSet30DATCOMPRA: TDateField;
     ibDataSet30DATVENDA: TDateField;
     Balanas1: TMenuItem;
-    ibDataSet7CODEBAR: TStringField;
+    ibDataSet7CODEBAR: TIBStringField;
     ibDataSet3: TibDataSet;
     DataSource3: TDataSource;
     Label22: TLabel;
@@ -690,28 +694,28 @@ type
     MenuItem158: TMenuItem;
     Abertas1: TMenuItem;
     Fechadas1: TMenuItem;
-    ibDataSet3NUMERO: TStringField;
+    ibDataSet3NUMERO: TIBStringField;
     ibDataSet3DATA: TDateField;
-    ibDataSet3HORA: TStringField;
-    ibDataSet3CLIENTE: TStringField;
+    ibDataSet3HORA: TIBStringField;
+    ibDataSet3CLIENTE: TIBStringField;
     ibDataSet3DATA_PRO: TDateField;
-    ibDataSet3HORA_PRO: TStringField;
-    ibDataSet3TEMPO: TStringField;
-    ibDataSet3SITUACAO: TStringField;
+    ibDataSet3HORA_PRO: TIBStringField;
+    ibDataSet3TEMPO: TIBStringField;
+    ibDataSet3SITUACAO: TIBStringField;
     ibDataSet3DATA_ENT: TDateField;
-    ibDataSet3HORA_ENT: TStringField;
-    ibDataSet3OBSERVACAO: TStringField;
+    ibDataSet3HORA_ENT: TIBStringField;
+    ibDataSet3OBSERVACAO: TIBStringField;
     ibDataSet3TOTAL_SERV: TFloatField;
     ibDataSet3TOTAL_PECA: TFloatField;
     ibDataSet3TOTAL_FRET: TFloatField;
     ibDataSet3TOTAL_OS: TFloatField;
-    ibDataSet4LIVRE1: TStringField;
-    ibDataSet4LIVRE2: TStringField;
-    ibDataSet4LIVRE3: TStringField;
-    ibDataSet4LIVRE4: TStringField;
-    ibDataSet3TECNICO: TStringField;
-    ibDataSet9HORASTRAB: TStringField;
-    ibDataSet9FUNCAO: TStringField;
+    ibDataSet4LIVRE1: TIBStringField;
+    ibDataSet4LIVRE2: TIBStringField;
+    ibDataSet4LIVRE3: TIBStringField;
+    ibDataSet4LIVRE4: TIBStringField;
+    ibDataSet3TECNICO: TIBStringField;
+    ibDataSet9HORASTRAB: TIBStringField;
+    ibDataSet9FUNCAO: TIBStringField;
     ibDataSet9ATIVO: TSmallintField;
     Agendada1: TMenuItem;
     N12: TMenuItem;
@@ -720,13 +724,13 @@ type
     Imprimirrecibo1: TMenuItem;
     N27: TMenuItem;
     ImprimirOrdemdeServio1: TMenuItem;
-    ibDataSet3DESCRICAO: TStringField;
-    ibDataSet3PROBLEMA: TStringField;
-    ibDataSet3IDENTIFI1: TStringField;
-    ibDataSet3IDENTIFI2: TStringField;
-    ibDataSet3IDENTIFI3: TStringField;
-    ibDataSet3IDENTIFI4: TStringField;
-    ibDataSet3NF: TStringField;
+    ibDataSet3DESCRICAO: TIBStringField;
+    ibDataSet3PROBLEMA: TIBStringField;
+    ibDataSet3IDENTIFI1: TIBStringField;
+    ibDataSet3IDENTIFI2: TIBStringField;
+    ibDataSet3IDENTIFI3: TIBStringField;
+    ibDataSet3IDENTIFI4: TIBStringField;
+    ibDataSet3NF: TIBStringField;
     ibDataSet3GARANTIA: TDateField;
     Grade1: TMenuItem;
     N29: TMenuItem;
@@ -783,26 +787,26 @@ type
     Compras2: TMenuItem;
     Panel9: TPanel;
     Panel10: TPanel;
-    ibDataSet14CONTA: TStringField;
+    ibDataSet14CONTA: TIBStringField;
     Enviartorpedo1: TMenuItem;
-    ibDataSet16NUMEROOS: TStringField;
+    ibDataSet16NUMEROOS: TIBStringField;
     DBGrid4: TDBGrid;
-    ibDataSet7NUMERONF: TStringField;
+    ibDataSet7NUMERONF: TIBStringField;
     ibDataSet35: TibDataSet;
     DataSource35: TDataSource;
     Label17: TLabel;
-    ibDataSet35NUMERONF: TStringField;
-    ibDataSet35CODIGO: TStringField;
-    ibDataSet35DESCRICAO: TStringField;
-    ibDataSet35MEDIDA: TStringField;
+    ibDataSet35NUMERONF: TIBStringField;
+    ibDataSet35CODIGO: TIBStringField;
+    ibDataSet35DESCRICAO: TIBStringField;
+    ibDataSet35MEDIDA: TIBStringField;
     ibDataSet35QUANTIDADE: TFloatField;
     ibDataSet35UNITARIO: TFloatField;
     ibDataSet35TOTAL: TFloatField;
-    ibDataSet35CFOP: TStringField;
-    ibDataSet35TECNICO: TStringField;
+    ibDataSet35CFOP: TIBStringField;
+    ibDataSet35TECNICO: TIBStringField;
     ibDataSet35ISS: TFloatField;
     ibDataSet35BASEISS: TFloatField;
-    ibDataSet35NUMEROOS: TStringField;
+    ibDataSet35NUMEROOS: TIBStringField;
     ibDataSet16SINCRONIA: TFloatField;
     ibDataSet23SINCRONIA: TFloatField;
     ibDataSet15DESCONTO: TFloatField;
@@ -820,17 +824,17 @@ type
     este1: TMenuItem;
     NotasfiscaisdesadavendasSrie11: TMenuItem;
     Notasfiscaisdesadavendassrie21: TMenuItem;
-    ibDataSet13HP: TStringField;
+    ibDataSet13HP: TIBStringField;
     Rankingdedevedores1: TMenuItem;
     Rankingdedevedores2: TMenuItem;
     IBDatabase1: TIBDatabase;
     ibDataSet7ATIVO: TSmallintField;
     ibDataSet1DATA: TDateField;
-    ibDataSet1NOME: TStringField;
-    ibDataSet1HISTORICO: TStringField;
+    ibDataSet1NOME: TIBStringField;
+    ibDataSet1HISTORICO: TIBStringField;
     ibDataSet1ENTRADA: TFloatField;
     ibDataSet1SAIDA: TFloatField;
-    ibDataSet1CONTA: TStringField;
+    ibDataSet1CONTA: TIBStringField;
     ibDataSet1REGISTRO: TIBStringField;
     IBDataSet2: TIBDataSet;
     IBDataSet2NOME: TIBStringField;
@@ -910,8 +914,8 @@ type
     ibDataSet5NOME: TIBStringField;
     ibDataSet11REGISTRO: TIBStringField;
     ibDataset40: TIBDataSet;
-    ibDataset40CODIGO: TStringField;
-    ibDataset40DESCRICAO: TStringField;
+    ibDataset40CODIGO: TIBStringField;
+    ibDataset40DESCRICAO: TIBStringField;
     ibDataset40QTD: TFloatField;
     DataSource40: TDataSource;
     Label3: TLabel;
@@ -956,17 +960,17 @@ type
     ibDataSet21FOTO: TMemoField;
     IBDatabaseInfo1: TIBDatabaseInfo;
     ibDataSet37: TIBDataSet;
-    ibDataSet37CODIGO: TStringField;
-    ibDataSet37DESCRICAO: TStringField;
+    ibDataSet37CODIGO: TIBStringField;
+    ibDataSet37DESCRICAO: TIBStringField;
     ibDataSet37QUANTIDADE: TFloatField;
     ibDataSet37UNITARIO: TFloatField;
     ibDataSet37TOTAL: TFloatField;
     ibDataSet37DATA: TDateField;
-    ibDataSet37TIPO: TStringField;
-    ibDataSet37PEDIDO: TStringField;
-    ibDataSet37CLIFOR: TStringField;
-    ibDataSet37VENDEDOR: TStringField;
-    ibDataSet37CAIXA: TStringField;
+    ibDataSet37TIPO: TIBStringField;
+    ibDataSet37PEDIDO: TIBStringField;
+    ibDataSet37CLIFOR: TIBStringField;
+    ibDataSet37VENDEDOR: TIBStringField;
+    ibDataSet37CAIXA: TIBStringField;
     ibDataSet37MEDIDA: TIBStringField;
     ibDataSet37ITEM: TIBStringField;
     ibDataSet37VALORICM: TFloatField;
@@ -1437,13 +1441,13 @@ type
     PrvisualizarDANFE1: TMenuItem;
     Label28: TLabel;
     IBQALIQUOTAISS: TIBQuery;
-    ibDataSet27CSOSN: TStringField;
+    ibDataSet27CSOSN: TIBStringField;
     RelatriodePISCOFINSCupomFiscal1: TMenuItem;
-    ibDataSet16CSOSN: TStringField;
-    ibDataSet24IDENTIFICADORPLANOCONTAS: TStringField;
-    ibDataSet4IDENTIFICADORPLANOCONTAS: TStringField;
-    ibDataSet16IDENTIFICADORPLANOCONTAS: TStringField;
-    ibDataSet35IDENTIFICADORPLANOCONTAS: TStringField;
+    ibDataSet16CSOSN: TIBStringField;
+    ibDataSet24IDENTIFICADORPLANOCONTAS: TIBStringField;
+    ibDataSet4IDENTIFICADORPLANOCONTAS: TIBStringField;
+    ibDataSet16IDENTIFICADORPLANOCONTAS: TIBStringField;
+    ibDataSet35IDENTIFICADORPLANOCONTAS: TIBStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
     //ibDataSet14FRETESOBREIPI: TIBStringField;
     ibDataSet23VBCFCP: TIBBCDField;
@@ -1471,15 +1475,14 @@ type
     DSConsulta: TDataSource;
     ibqConsulta: TIBDataSet;
     ibDataSet11INSTITUICAOFINANCEIRA: TIBStringField;
-    ibDataSet7FORMADEPAGAMENTO: TStringField;
-    ibDataSet7AUTORIZACAOTRANSACAO: TStringField;
-    ibDataSet7BANDEIRA: TStringField;
+    ibDataSet7FORMADEPAGAMENTO: TIBStringField;
+    ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField;
+    ibDataSet7BANDEIRA: TIBStringField;
     CDSItensNotaAux: TClientDataSet;
     CDSItensNotaAuxDESCRICAO: TStringField;
     CDSItensNotaAuxQTDE: TCurrencyField;
     CDSItensNotaAuxINDICE: TIntegerField;
     CDSItensNotaAuxCODIGO: TStringField;
-
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
@@ -2124,7 +2127,7 @@ type
     function RetornarWhereAtivoEstoqueCompra: String;
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
-    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TStringField; Valida : Boolean = True);
+    procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TIBStringField; Valida : Boolean = True);
     function RetornarSQLEstoqueOrcamentos: String;   
     procedure EnviarEmailCCe(AcXML: String);
     function getEnviarDanfePorEmail: String;
@@ -3083,7 +3086,8 @@ begin
 
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
-      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+      //IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
       IBQHASH.ExecSQL;
 
       if IBQHASH.RowsAffected = 0 then
@@ -3091,7 +3095,8 @@ begin
         //2015-11-26 Não existe ainda controle de hash da tabela
         IBQHASH.Close;
         IBQHASH.SQL.Clear;
-        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))) + ')');
+        //IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))) + ')');
+        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form7.ibQuery1.FieldByName('TOTALREG').AsString))) + ')');
         IBQHASH.ExecSQL;
       end;
 
@@ -3136,7 +3141,8 @@ begin
     //    );
     //
     //sHash := Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery2.FieldByName('COUNT').AsString)));
-    if Form7.ibQuery1.FieldByName('ENCRYPTHASH').AsString = Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery2.FieldByName('COUNT').AsString))) then
+    //if Form7.ibQuery1.FieldByName('ENCRYPTHASH').AsString = Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery2.FieldByName('COUNT').AsString))) then
+    if Form7.ibQuery1.FieldByName('ENCRYPTHASH').AsString = Form7.LbBlowfish1.EncryptString(GeraMD5(Form7.ibQuery2.FieldByName('COUNT').AsString)) then
     begin
       Result := True;
     end else
@@ -3158,30 +3164,23 @@ var
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
 begin
-  //
   Result := True;
   s := '';
   //
   try
     //Sandro Silva 2017-11-09 inicio Polimig
-    //
-    //
     if pNome = 'EMITENTE' then
     begin
-      //
       sAntigo :=
       VarToStr(DataSet.FieldByname('CGC').OldValue)+
       VarToStr(DataSet.FieldByname('IE').OldValue);;
       s :=
       DataSet.FieldByname('CGC').AsString+
       DataSet.FieldByname('IE').AsString;
-      //
-      //
     end;
-    //
+    
     if pNome = 'VENDA' then
     begin
-      //
       sAntigo :=
       VarToStr(DataSet.FieldByname('NUMERONF').OldValue)+
       VarToStr(DataSet.FieldByname('MODELO').OldValue)+
@@ -3288,12 +3287,10 @@ begin
       DataSet.FieldByname('FINNF').AsString+
       DataSet.FieldByname('INDFINAL').AsString+
       DataSet.FieldByname('INDPRES').AsString;
-      //
     end;
-    //
+
     if pNome = 'ITENS001' then
     begin
-      //
       sAntigo :=
       VarToStr(DataSet.FieldByname('NUMERONF').OldValue)+
       VarToStr(DataSet.FieldByname('CODIGO').OldValue)+
@@ -3368,8 +3365,8 @@ begin
       DataSet.FieldByname('ANVISA').AsString+
       DataSet.FieldByname('PFCPUFDEST').AsString+
       DataSet.FieldByname('PICMSUFDEST').AsString;
-      //
     end;
+
     //Sandro Silva 2017-11-09 final Polimig
     if pNome = 'ESTOQUE' then
     begin
@@ -3452,7 +3449,7 @@ begin
         DataSet.FieldByName('CEST').AsString+
         DataSet.FieldByName('IPPT').AsString;
     end;
-    //
+    
     if pNome = 'ALTERACA' then
     begin
       //Sandro Silva 2018-05-25 inicio
@@ -3507,9 +3504,8 @@ begin
         DataSet.FieldByName('SUBSERIE').AsString+
         DataSet.FieldByName('CNPJ').AsString+
         DataSet.FieldByName('REFERENCIA').AsString;
-      //
     end;
-    //
+
     if pNome = 'REDUCOES' then
     begin
       s :=
@@ -3569,10 +3565,8 @@ begin
         DataSet.FieldByName('SMALL').AsString+
         DataSet.FieldByName('STATUS').AsString+
         DataSet.FieldByName('ESTOQUE').AsString;
-      //
-      //
     end;
-    //
+
     if pNome = 'ORCAMENT' then
     begin
       s :=
@@ -3593,10 +3587,8 @@ begin
         DataSet.FieldByName('ALIQUICM').AsString+
         DataSet.FieldByName('NUMERONF').AsString+
         DataSet.FieldByName('COO').AsString;
-      //
-
     end;
-    //
+
     if pNome = 'PAGAMENT' then
     begin
       s :=
@@ -3612,12 +3604,10 @@ begin
         DataSet.FieldByName('GRG').AsString+
         DataSet.FieldByName('CDC').AsString+
         DataSet.FieldByName('GNF').AsString;
-      //
     end;
-    //
+
     if pNome = 'DEMAIS' then
     begin
-      //
       s :=
         DataSet.FieldByName('DATA').AsString+
         DataSet.FieldByName('HORA').AsString+
@@ -3627,28 +3617,23 @@ begin
         DataSet.FieldByName('GNF').AsString+
         DataSet.FieldByName('CDC').AsString+
         DataSet.FieldByName('GRG').AsString;
-      //
     end;
-    //
 
     //Sandro Silva 2015-10-01 inicio
     if pNome = 'ECFS' then
     begin
-      //
       s := DataSet.FieldByName('SERIE').AsString;
-      //
     end;
     //Sandro Silva 2015-10-01 final
 
-    //
-    //
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-    //
 
     if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then 
     begin
-      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
-      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
+      //sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
+      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo));
+      //sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
+      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoSemCest));
       //ShowMessage('Teste 01 9450 ' + #13 +
       //            'hash antigo ' + sAntigoENCRYPTHASH + #13 +
       //            'hash antigo sem cest ' + sAntigoSemCestENCRYPTHASH + #13 +
@@ -3659,26 +3644,28 @@ begin
     if bAssina then
     begin
       // Assina registro
-      //
       if pNome = 'ESTOQUE' then
       begin
 //        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
       end else
       begin
         // Sandro Silva
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre 
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
       end;
-      //
     end else
     begin
       // Sandro Silva
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -3692,7 +3679,8 @@ begin
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
         // Sandro Silva 
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -3702,8 +3690,9 @@ begin
       end;
       //Sandro Silva 2017-11-13 final HOMOLOGA 2017
     end;
-  except ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome) end;
-  //
+  except
+    ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome)
+  end;
 end;
 ///////////////////////////////////
 
@@ -5251,7 +5240,6 @@ end;
 
 function ImprimeOuNaoANota(pP1:Boolean):Boolean;
 var
-  //
   vLinha: array [0..200]  of String;  // Cria uma matriz com 100 elementos
                                       // isso eu aprendi num sonho
   vCampo: array [0..3000] of Variant; // Cria uma matriz com 1000 elementos
@@ -5259,16 +5247,19 @@ var
   F: TextFile;
   Mais1ini, Mais2Ini: TIniFile;
   bMaisItens  : Boolean;
-  //
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   //
   if (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) or (Mais1Ini.ReadString('NFE','Formulario','Não') <> 'Não') then
   begin
     Mais1ini.Free;
-    //
-    ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+
+    {$IFDEF VER150}
+    ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    {$ENDIF}
+
     iPagina         := 72;
     Mais1ini        := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     ConfItens       := StrToInt(Mais1Ini.ReadString('Nota Fiscal','Itens','16'));
@@ -5976,13 +5967,11 @@ begin
   end;
   //
   Result := True;
-  //
 end;
 
 
 function ImprimeOuNaoANotaZZ(pP1:Boolean):Boolean;
 var
-  //
   vLinha: array [0..200]  of String;  // Cria uma matriz com 100 elementos
                                       // isso eu aprendi num sonho
   vCampo: array [0..3000] of Variant; // Cria uma matriz com 1000 elementos
@@ -5990,16 +5979,18 @@ var
   F: TextFile;
   Mais1ini, Mais2Ini: TIniFile;
   bMaisItens  : Boolean;
-  //
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  //
+
   begin
-    //
     Mais1ini.Free;
-    //
-    ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+
+    {$IFDEF VER150}
+    ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    {$ENDIF}
+
     iPagina         := 72;
     Mais1ini        := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     ConfItens       := StrToInt(Mais1Ini.ReadString('Nota Fiscal','Itens','16'));
@@ -6706,18 +6697,19 @@ end;
 
 function ExportaNF(pP1:Boolean):Boolean;
 var
-  //
   vCampo: array [0..30000] of Variant; // Cria uma matriz com 1000 elementos
   I, J : Integer; // e conteúdo variável
   F: TextFile;
-  //
 begin
-  //
   Result := True;
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
-  //
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   // Relaciona a natureza da operação com o arquivo de vendas
-  //
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -9144,7 +9136,7 @@ begin
             // Pis
             if AllTrim(RetornaValorDaTagNoCampo('AliquotaPIS',form7.ibDataSet4.FieldByname('TAGS_').AsString))    <> '' then
             begin
-              Form1.fRetencoes := Form1.fRetencoes + Arredonda(( StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('AliquotaPIS',form7.ibDataSet4.FieldByname('TAGS_').AsString)))    / 100 * ( ibDataSet15.FieldByname('SERVICOS').AsFloat-ibDataSet15.FieldByname('DESCONTO').AsFloat ) ),2,);
+              Form1.fRetencoes := Form1.fRetencoes + Arredonda(( StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('AliquotaPIS',form7.ibDataSet4.FieldByname('TAGS_').AsString)))    / 100 * ( ibDataSet15.FieldByname('SERVICOS').AsFloat-ibDataSet15.FieldByname('DESCONTO').AsFloat ) ),2);
               Form48.SMALL_DBEdit16.Hint := Form48.SMALL_DBEdit16.Hint + ' ' + 'Retenção de R$ '+ AllTrim(Format('%14.2n',[ ( StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('AliquotaPIS',form7.ibDataSet4.FieldByname('TAGS_').AsString)))    / 100 * ( ibDataSet15.FieldByname('SERVICOS').AsFloat-ibDataSet15.FieldByname('DESCONTO').AsFloat ) ) ]))  +' de PIS'+chr(10);
             end;
           except
@@ -9320,6 +9312,13 @@ begin
   Image206.Transparent := False;
   Image308.Transparent := False;
   Image209.Transparent := False;
+
+  {$IFDEF VER150}
+  {$ELSE}
+  DBGrid1.DrawingStyle       := gdsGradient;
+  DBGrid1.GradientEndColor   := $00F0F0F0;
+  DBGrid1.GradientStartColor := $00F0F0F0;
+  {$ENDIF}
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -9980,7 +9979,13 @@ begin
             DBGrid1.Font.Style := [fsBold];
 
           DBGrid1.TitleFont.Name  := DBGrid1.Font.Name;
+
+          {$IFDEF VER150}
           DBGrid1.TitleFont.Size  := DBGrid1.Font.Size +2;
+          {$ELSE}
+          DBGrid1.TitleFont.Size  := DBGrid1.Font.Size;
+          {$ENDIF}
+
           DBGrid1.TitleFont.Color := DBGrid1.Font.Color;
           DBGrid1.TitleFont.sTyle := [];
         end;
@@ -10067,8 +10072,13 @@ begin
         Form7.ibDataSet23DESCRICAO.DisplayWidth := 41;
         Form7.ibDataSet23TOTAL.DisplayWidth     := 10;
         Form7.ibDataSet23QUANTIDADE.DisplayWidth:= 9;
-        //                                           //
-        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+
+        {$IFDEF VER150}
+        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];
+        {$ELSE}
+        Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick	];
+        {$ENDIF}
+
         Form7.DbGrid1.ReadOnly  := True;
         Form7.DbGrid1.Update;
         Form7.Image308.Visible  := False;
@@ -10129,22 +10139,24 @@ begin
         dbGrid3.Width   := 395;
         dbGrid3.Left    := Form7.Width - 395 -15 -5;
         dbGrid3.Visible := True;
-        //
+
         Panel10.Top     := dbGrid3.Top + dbGrid3.Height- 18;
         Panel10.Left    := dbGrid3.Left;
         Panel10.Width   := dbGrid3.Width;
-        //
+
         Panel10.Visible := True;
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
-        //
-        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+
+        {$IFDEF VER150}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];
+        {$ELSE}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];
+        {$ENDIF}
+
         Form7.dbGrid1.ReadOnly := True;
         Form7.Image308.Visible := False;
         Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
-        //
-//        CommitaTudo(True);
-//        AgendaCommit(False);
-        //
+
         CalculaTotalRecebido(True);
         //
         Form1.IBDataSet200.Close;
@@ -10215,16 +10227,17 @@ begin
         //
         Panel10.Visible := True;
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
-        //
-        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Form 7 Show
+
+        {$IFDEF VER150}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];
+        {$ELSE}
+        Form7.DBGrid1.Options  := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];   
+        {$ENDIF}
+
         Form7.dbGrid1.ReadOnly := True;
         Form7.Image308.Visible := False;
         Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
-        //
-        //
-//        CommitaTudo(True);
-//        AgendaCommit(False);
-        //
+
         CalculaTotalRecebido(True);
         //
         Form1.IBDataSet200.Close;
@@ -10254,12 +10267,7 @@ begin
       if sModulo = 'COMPRA' then
       begin
         sAjuda := 'nf_compra.htm';
-        //
-//        Form7.ibDataSet2.Close;                                                //
-//        Form7.ibDataSet2.Selectsql.Clear;                                      // receber Relacionado
-//        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR order by upper(NOME)');  //
-//        Form7.ibDataSet2.Open;
-        //
+
         ibDataSet8.Close;
         ibDataSet8.DataSource := DataSource24;
         ibDataSet8.Selectsql.Clear;
@@ -11255,7 +11263,12 @@ begin
       TabelaAberta.DisableControls;
       
       try
+        {$IFDEF VER150}
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize]; // 2CONTAS
+        {$ELSE}
+        Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize,dgTitleClick]; // 2CONTAS
+        {$ENDIF}
+
         (*
         with ArquivoAberto do
         begin
@@ -11391,12 +11404,16 @@ begin
         end;
         if (sModulo = 'NOTA') or (sModulo = 'CONCILIACAO') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
         begin
+          {$IFDEF VER150}
           Form7.DBGrid1.Options  := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs]; // NOTA CONCILIACAO CONFOS CONFRECIBO
+          {$ELSE}
+          Form7.DBGrid1.Options  := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick]; // NOTA CONCILIACAO CONFOS CONFRECIBO
+          {$ENDIF}
+
           Form7.dbGrid1.ReadOnly := False;
         end;
       except
       end;
-  //  except end;
 
     // Abre e posiciona
     Image209.Visible := True;
@@ -13501,33 +13518,6 @@ begin
   try
     dbGrid1.Canvas.Pen.Width    := 0;
     dbGrid1.Canvas.Pen.Color    := clWhite;
-    //
-    //  gdSelected	The cell is currently selected.
-    //  gdFocused	The cell has input focus.
-    //  gdFixed	The cell is in the fixed region of the grid.
-    //
-
-{
-if Field.DataType = ftString then ShowMessage('String '+Field.DisplayName);
-if Field.DataType = ftSmallint then ShowMessage('Smallint '+Field.DisplayName);
-if Field.DataType = ftInteger then ShowMessage('Integer '+Field.DisplayName);
-if Field.DataType = ftWord then ShowMessage('Word '+Field.DisplayName);
-if Field.DataType = ftBoolean then ShowMessage('Boolean '+Field.DisplayName);
-if Field.DataType = ftFloat then ShowMessage('Float '+Field.DisplayName);
-if Field.DataType = ftCurrency then ShowMessage('Currency '+Field.DisplayName);
-if Field.DataType = ftDate then ShowMessage('Date '+Field.DisplayName);
-if Field.DataType = ftTime then ShowMessage('Time '+Field.DisplayName);
-if Field.DataType = ftDateTime then ShowMessage('DateTime '+Field.DisplayName);
-if Field.DataType = ftBytes then ShowMessage('Bytes '+Field.DisplayName);
-if Field.DataType = ftVarBytes then ShowMessage('VarBytes '+Field.DisplayName);
-if Field.DataType = ftAutoInc then ShowMessage('AutoInc '+Field.DisplayName);
-if Field.DataType = ftBlob then ShowMessage('Blob '+Field.DisplayName);
-if Field.DataType = ftMemo then ShowMessage('Memo '+Field.DisplayName);
-if Field.DataType = ftCurrency then ShowMessage('1 '+Field.DisplayName);
-if Field.DataType = ftBCD then ShowMessage('2 '+Field.DisplayName);
-if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
-}
-
 
     if not (gdFocused in State) and not (gdFixed in State) and not (gdSelected in State) then
     begin
@@ -14063,6 +14053,7 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       DBGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet15EMISSAO.AsDateTime), 1, 3) );
     end;
 
+    {$IFDEF VER150}
     begin
       DBGrid1.Canvas.Brush.Color := Form7.Panel7.Color;
       DBGrid1.Canvas.Pen.Color   := clRed;
@@ -14085,6 +14076,9 @@ if Field.DataType = ftFMTBcd then ShowMessage('3 '+Field.DisplayName);
       DBGrid1.Canvas.Font.Color := clblack;
       SetBkMode(Handle, OldBkMode);
     end;
+    {$ELSE}
+    {$ENDIF}
+
   except
   end;
 end;
@@ -15365,62 +15359,53 @@ var
   sNomeNovo  : String;
   sNomeVolta : String;
 begin
-  //
   // Quando troca o nome do produto
-  //
   if (sNomeAnterior <> ibDataSet4DESCRICAO.AsString) and (AllTrim(sNomeAnterior) <> '') and (sNumeroAnterior = ibDataSet4REGISTRO.AsString) then
   begin
-    //
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
-    //
+    
     Form7.ibDataSet4.DisableControls;
-    //
+
     sNomeNovo  := ibDataSet4DESCRICAO.AsString;
     sNomeVolta := sNomeAnterior;
-    //
+
     // ALTERACA
-    //
     Form7.ibDataSet27.Close;
     Form7.ibDataSet27.SelectSQL.Clear;
-    Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+'  where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    //Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+'  where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    Form7.ibDataSet27.SelectSQL.Add('update ALTERACA set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+'  where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet27.Open;
-    //
+
     // ORCAMENTO
-    //
     Form7.ibDataSet27.Close;
     Form7.ibDataSet27.SelectSQL.Clear;
-    Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    //Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    Form7.ibDataSet27.SelectSQL.Add('update ORCAMENT set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet27.Open;
-    //
+
     // COMPOSICAO
-    //
     Form7.ibDataSet28.Close;
     Form7.ibDataSet28.SelectSQL.Clear;
     Form7.ibDataSet28.SelectSQL.Add('update COMPOSTO set DESCRICAO='+QuotedStr(sNomeNovo)+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet28.Open;
-    //
+
     // ITENS001
-    //
     Form7.ibDataSet16.Close;
     Form7.ibDataSet16.SelectSQL.Clear;
-    Form7.ibDataSet16.SelectSQL.Add('update ITENS001 set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    //Form7.ibDataSet16.SelectSQL.Add('update ITENS001 set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
+    Form7.ibDataSet16.SelectSQL.Add('update ITENS001 set DESCRICAO='+QuotedStr(sNomeNovo)+', ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet16.Open;
-    //
+
     // ITENS002
-    //
     Form7.ibDataSet23.Close;
     Form7.ibDataSet23.SelectSQL.Clear;
     Form7.ibDataSet23.SelectSQL.Add('update ITENS002 set DESCRICAO='+QuotedStr(sNomeNovo)+' where DESCRICAO='+QuotedStr(sNomeVolta)+'');
     Form7.ibDataSet23.Open;
-    //
+
     Form7.ibDataSet4.EnableControls;
-    //
   end;
-  //
-  // Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   AgendaCommit(True);
-  //
 end;
 
 procedure TForm7.ibDataSet2AfterPost(DataSet: TDataSet);
@@ -15504,11 +15489,14 @@ var
   iOp1 : Real;
   iAno, I : Integer;
 begin
-  //
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
-  //
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
   Rewrite(F);                           // Abre para gravação
   Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - INADIMPLÊNCIA')+'</title></head>');
@@ -15722,16 +15710,19 @@ var
   sNome : String;
   bChave : boolean;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     for I := 1 to 4 do v1[I] := 0;
-    //
+
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -16550,9 +16541,17 @@ begin
      (Form7.sModulo = 'COMPRA')  then
      Abort;
 
+  {$IFDEF VER150}
   if Form7.DBGrid1.Options = [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize] then // Botão Libera
+  {$ELSE}
+  if Form7.DBGrid1.Options = [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick] then // Botão Libera
+  {$ENDIF}
   begin
+    {$IFDEF VER150}
     Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];        // Botão Libera
+    {$ELSE}
+    Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];        // Botão Libera
+    {$ENDIF}
     Form7.dbGrid1.ReadOnly  := False;
     Form7.Image208.Visible  := False; Form7.Label208.Caption  := 'Bloquear';
     Form7.Image308.Visible  := True;
@@ -16569,7 +16568,11 @@ begin
     end;
   end else
   begin
-    Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize];                                 // Botão Libera
+    {$IFDEF VER150}
+    Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize]; // Botão Libera
+    {$ELSE}
+    Form7.DBGrid1.Options   := [dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick]; // Botão Libera
+    {$ENDIF}
     Form7.dbGrid1.ReadOnly  := True;
     Form7.Image308.Visible  := False;
     Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
@@ -23285,7 +23288,7 @@ var
   vEstado : string;
 begin
   vEstado := Form7.IBDataSet2ESTADO.AsString;
-  SelecionaMunicipio(vEstado,Text,(Sender as TStringField));
+  SelecionaMunicipio(vEstado,Text,(Sender as TIBStringField));
 end;
 
 procedure TForm7.Movimentaodositemskardex1Click(Sender: TObject);
@@ -23782,10 +23785,15 @@ begin
       end;
       //
     except end;
-    //
+
+    {$IFDEF VER150}
     DecimalSeparator := ',';
     DateSeparator    := '/';
-    //
+    {$ELSE}
+    FormatSettings.DecimalSeparator := ',';
+    FormatSettings.DateSeparator    := '/';
+    {$ENDIF}
+
     Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     //
@@ -23925,8 +23933,13 @@ begin
             end;
           except end;
 
+          {$IFDEF VER150}
           DecimalSeparator := ',';
           DateSeparator    := '/';
+          {$ELSE}
+          FormatSettings.DecimalSeparator := ',';
+          FormatSettings.DateSeparator    := '/';
+          {$ENDIF}
 
           Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
           Form7.Panel7.Repaint;
@@ -24014,17 +24027,19 @@ begin
       end;
       //
     except end;
-    //
+
+    {$IFDEF VER150}
     DecimalSeparator := ',';
     DateSeparator    := '/';
-    //
+    {$ELSE}
+    FormatSettings.DecimalSeparator := ',';
+    FormatSettings.DateSeparator    := '/';
+    {$ENDIF}
+
     Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     Screen.Cursor            := crDefault;
-    //
-
   end;
-  //
 end;
 
 procedure TForm7.N3ConsultarNFe1Click(Sender: TObject);
@@ -24455,12 +24470,17 @@ begin
         end;
         //
       except end;
-      //
+
+      {$IFDEF VER150}
       DecimalSeparator := ',';
       DateSeparator    := '/';
+      {$ELSE}
+      FormatSettings.DecimalSeparator := ',';
+      FormatSettings.DateSeparator    := '/';
+      {$ENDIF}
+
       Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
       Form7.Panel7.Repaint;
-      //
     end;
     //
   except end;
@@ -24658,14 +24678,17 @@ begin
         //
       end;
     end;
-    //
   end;
-  //
+
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
-  //
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.ransmitirNFe1Click(Sender: TObject);
@@ -24879,14 +24902,20 @@ begin
       except
         Screen.Cursor            := crDefault;
       end;
+
+      {$IFDEF VER150}
       DecimalSeparator := ',';
       DateSeparator    := '/';
+      {$ELSE}
+      FormatSettings.DecimalSeparator := ',';
+      FormatSettings.DateSeparator    := '/';
+      {$ENDIF}
+
       Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
       Form7.Panel7.Repaint;
       Screen.Cursor            := crDefault;
     end;
-  end; // else ShowMessage('Cliente não cadastrado');
-  //
+  end;
 end;
 
 procedure TForm7.N6VisualizarDANFE1Click(Sender: TObject);
@@ -24894,51 +24923,6 @@ var
   sFormato, sLote : String;
   bTentarVisualizar: Boolean; // Sandro Silva 2023-02-14
 begin
-  //
-  {Sandro Silva 2023-02-14 inicio
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') then
-  begin
-    Screen.Cursor            := crHourGlass;
-    Form7.Panel7.Caption := 'Visualizando o DANFE'+replicate(' ',100);
-    Form7.Panel7.Repaint;
-    //
-    ConfiguraNFE(True);
-    //
-    // Recupera na tabela VENDAS o XML
-    //
-    fNFE :=  Form7.ibDataSet15NFEXML.AsString;
-
-    //
-    // Recupera na tabela VENDAS o XML
-    //
-    if Form7.ibDataSet15EMITIDA.AsString = 'X' then
-    begin
-      sFormato := Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento;
-    end else
-    begin
-      sFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
-    end;
-    //
-    try
-      spdNFe.VisualizarDanfe(sLote, fNFe, sFormato);
-    except
-      Screen.Cursor            := crDefault;
-    end;
-    //
-    DecimalSeparator := ',';
-    DateSeparator    := '/';
-    //
-    Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
-    Form7.Panel7.Repaint;
-    Screen.Cursor            := crDefault;
-  end;
-  //
-  }
   bTentarVisualizar := False;
   if sModulo = 'VENDA' then
   begin
@@ -24968,12 +24952,9 @@ begin
     sFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
     if sModulo = 'VENDA' then
     begin
-
       fNFE :=  Form7.ibDataSet15NFEXML.AsString;
 
-      //
       // Recupera na tabela VENDAS o XML
-      //
       if Form7.ibDataSet15EMITIDA.AsString = 'X' then
       begin
         sFormato := Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento;
@@ -24985,22 +24966,25 @@ begin
       fNFE :=  Form7.ibDataSet24NFEXML.AsString;
       Form7.spdNFe.DanfeSettings.LogotipoEmitente := '';
     end;
-    //
+
     try
       spdNFe.VisualizarDanfe(sLote, fNFe, sFormato);
     except
       Screen.Cursor            := crDefault;
     end;
-    //
+
+    {$IFDEF VER150}
     DecimalSeparator := ',';
     DateSeparator    := '/';
-    //
+    {$ELSE}
+    FormatSettings.DecimalSeparator := ',';
+    FormatSettings.DateSeparator    := '/';
+    {$ENDIF}
+
     Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     Screen.Cursor            := crDefault;
   end;
-  //
-
 end;
 
 procedure TForm7.ibDataset40NewRecord(DataSet: TDataSet);
@@ -25026,13 +25010,28 @@ end;
 procedure TForm7.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
-{
-  if Column.FieldName = 'DOCUMENTO' then
+  {$IFDEF VER150}
+  {$ELSE}
+  if Pos(Column.Field.FieldName,sOrderBy) <> 0 then
+    Column.Title.Font.Style := [fsBold]
+  else
+    Column.Title.Font.Style := [];
+
+  //Troca Cor Celula Selecionada
+  with (Sender as TDBGrid).Canvas do
   begin
-    DBGrid1.Canvas.FillRect(Rect);
-    if ibDataSet7ATIVO.AsString='1' then DrawFrameControl(DBGrid1.Canvas.Handle,Rect,DFC_BUTTON, DFCS_BUTTONCHECK or DFCS_CHECKED) else DrawFrameControl(DBGrid1.Canvas.Handle,Rect,DFC_BUTTON, DFCS_BUTTONCHECK or DFCS_FLAT);
+    if (gdSelected in State) then
+    begin
+      Brush.Color := $00D77800;
+      FillRect(Rect);
+      Font.Color:= clWhite;
+      TextOut(Rect.Left, Rect.Top,Column.Field.AsString);
+    end;
+
+    (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
-}
+
+  {$ENDIF}
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
@@ -25134,11 +25133,15 @@ begin
 
   end;
 
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
-  //
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.Agrupar1Click(Sender: TObject);
@@ -25777,7 +25780,6 @@ begin
     // Form7.spdNFe.Ambiente := akProducao;
     //
     try
-      //
       sRetorno := spdNFe.ConsultarNF(Alltrim(sNota));
       //
       ShowMessage(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9));
@@ -25788,13 +25790,19 @@ begin
   begin
     ShowMessage('Chave de acesso da NF-e inválido');
   end;
-  //
+
   Screen.Cursor            := crDefault;
+
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Form7.Panel7.Caption  := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
-  //
 end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
@@ -26789,8 +26797,15 @@ begin
     end;
   except
   end;
+
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
+
   Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
   Screen.Cursor            := crDefault;
@@ -26928,8 +26943,12 @@ var
   F: TextFile;
   Mais1Ini : tInifile;
 begin
-  //
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
   Rewrite(F);                           // Abre para gravação
@@ -26937,9 +26956,8 @@ begin
   WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
   WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#c0c0c0><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font>');
-  //
+
   // Tabela de inadimplência
-  //
   WriteLn(F,'<br><br>');              // Linha em branco
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>Resumo da inadimplência</b></font>');
   WriteLn(F,'<center><br><br>');
@@ -27572,9 +27590,7 @@ var
   MesInicial, I : Integer;
   fContatos, fTotal1, fTotal2 : Real;
   dContador, dInicio, dFinal : TdateTime;
-  //
 begin
-  //
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := True;
@@ -27585,12 +27601,15 @@ begin
   Form7.sModulo := 'CLIENTES';
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   if Form38.Caption <> 'Cancelar' then
   begin
-    //
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     //
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
@@ -27773,27 +27792,28 @@ var
   MesInicial, I : Integer;
   fTotal1, fTotal2 : Real;
   dContador, dInicio, dFinal : TdateTime;
-  //
 begin
-  //
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
   Form38.Button2.Visible := True;
-  //
+
   Form7.sModulo := 'CLIENTES';
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   if Form38.Caption <> 'Cancelar' then
   begin
-    //
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - CLIENTES CONTACTADOS POR DIA')+'</title></head>');
@@ -27945,28 +27965,29 @@ var
   JP2    : TJPEGImage;
   //
   tInicio : tTime;
-  //
 begin
-  //
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
   Form38.Button2.Visible := True;
-  //
+
   Form7.sModulo := 'CLIENTES';
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   tInicio := Time;
-  //
+
   if Form38.Caption <> 'Cancelar' then
   begin
-    //
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
-    //
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+    
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - CLIENTES CONTACTADOS POR DIA')+'</title></head>');
@@ -29045,14 +29066,17 @@ var
   I : Integer;
   F: TextFile;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    {$ENDIF}
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -29062,12 +29086,10 @@ begin
     WriteLn(F,'<br><font face="verdana" size=3 color=#000000><b>ANÁLISE ANUAL</b></font>');
     WriteLn(F,'<br><center>');   // Linha em branco
     WriteLn(F,'<br>');           // Linha em branco
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
-    //
     // Faturamento
-    //
     DeleteFile(pChar(Form1.sAtual+'\faturamento.gra'));
     DeleteFile(pChar(Form1.sAtual+'\faturamento.png'));
     //                               //
@@ -29247,7 +29269,6 @@ end;
 procedure TForm7.Clientescontactadospormsporvendedor1Click(
   Sender: TObject);
 var
-  //
   F: TextFile;
   III : Integer;
   ftotalContatos, fTotal, fTotal1, fTotal2, fTotal3 : Real;
@@ -29258,30 +29279,29 @@ var
   //
   tInicio : tTime;
   mais2ini, Mais1ini : tIniFile;
-  //
 begin
-  //
   Form7.IBDataSet2.DisableControls;
-  //
   try
-    //
     Form7.sModulo := 'CONTATOS';
     Form38.Panel5.Visible := True;
     Form38.Button2.Visible := True;
     Form38.ShowModal; // Ok
     Form38.Panel5.Visible := False;
     Form38.Button2.Visible := True;
-    //
+
     Form7.sModulo := 'CLIENTES';
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     tInicio := Time;
-    //
+
     if Form38.Caption <> 'Cancelar' then
     begin
-      //
+      {$IFDEF VER150}
       ShortDateFormat := 'dd/mm/yyyy';
-      //
+      {$ELSE}
+      FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+      {$ENDIF}
+
       AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
       Rewrite(F);                           // Abre para gravação
       Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - CLIENTES CONTACTADOS POR MÊS')+'</title></head>');
@@ -29911,14 +29931,18 @@ var
   I : Integer;
   F: TextFile;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -30210,14 +30234,17 @@ var
   I : Integer;
   F: TextFile;
 begin
-  //
   Form7.ibDataSet1.DisableControls;
-  //
+
   try
-    //
     CriaJpg('logotip.jpg');
-    //
+
+    {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
+    {$ELSE}
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+    {$ENDIF}
+
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -32154,7 +32181,6 @@ begin
     if Form1.DisponivelSomenteParaNos then
       Clipboard.AsText := fNFe; // salva na área de tranferência
 
-    //
     try
       spdNFe.PreverDanfe(fNFE, '');
     except
@@ -32162,8 +32188,13 @@ begin
     end;
   end;
 
+  {$IFDEF VER150}
   DecimalSeparator := ',';
   DateSeparator    := '/';
+  {$ELSE}
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
+  {$ENDIF}
 
   Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
   Form7.Panel7.Repaint;
@@ -32786,7 +32817,7 @@ begin
 end;
 
 //Mauricio Parizotto 2023-05-03
-procedure TForm7.SelecionaMunicipio(vEstado, vText : string; vCampoCidade : TStringField; Valida : Boolean = True);
+procedure TForm7.SelecionaMunicipio(vEstado, vText : string; vCampoCidade : TIBStringField; Valida : Boolean = True);
 var
   FiltroUF : string;
 begin
@@ -32832,7 +32863,7 @@ var
   vEstado : string;
 begin
   vEstado := Form7.ibDataSet18UF.AsString;
-  SelecionaMunicipio(vEstado,Text,(Sender as TStringField),False);
+  SelecionaMunicipio(vEstado,Text,(Sender as TIBStringField),False);
 end;
 
 procedure TForm7.EEnviarcartadecorreoporemail1Click(Sender: TObject);

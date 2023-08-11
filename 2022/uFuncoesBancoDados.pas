@@ -62,6 +62,7 @@ function IndiceExiste(Banco: TIBDatabase; sTabela: String;
   sIndice: String): Boolean;
 function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
   iQtd: Integer = 1): String;
+function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
 
 implementation
 
@@ -310,5 +311,24 @@ begin
 end;
 
 
+function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
+var
+  SQL : string;
+begin
+  Result := '';
+
+  try
+    SQL := ' SELECT First 1 RDB$FIELD_NAME'+
+           ' FROM'+
+           '   RDB$RELATION_CONSTRAINTS C,'+
+           '   RDB$INDEX_SEGMENTS S'+
+           ' WHERE C.RDB$RELATION_NAME = '+QuotedStr(vTabela)+
+           '   AND C.RDB$CONSTRAINT_TYPE = ''PRIMARY KEY'' '+
+           '   AND S.RDB$INDEX_NAME = C.RDB$INDEX_NAME';
+
+    Result := Trim(ExecutaComandoEscalar(Banco, SQL));
+  except
+  end;
+end;
 
 end.

@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages,
   Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB,
-  DBTables, ExtCtrls, Menus,
+  ExtCtrls, Menus,
   IniFiles,
   SmallFunc, Mask, DBCtrls,
   shellapi,

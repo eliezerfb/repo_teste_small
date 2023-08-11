@@ -1624,7 +1624,7 @@ begin
           end else
           begin
             if Key = VK_UP then
-              Perform(Wm_NextDlgCtl,-1,0);
+              Perform(Wm_NextDlgCtl,1,0);
             if Key = VK_DOWN then
               Perform(Wm_NextDlgCtl,0,0);
           end;
@@ -3046,7 +3046,7 @@ begin
       else
       begin
         if Key = VK_UP then
-          Perform(Wm_NextDlgCtl,-1,0);
+          Perform(Wm_NextDlgCtl,1,0);
         if Key = VK_DOWN then
           Perform(Wm_NextDlgCtl,0,0);
       end;
@@ -3443,6 +3443,12 @@ begin
   cbMovimentacaoEstoque.Items.Add(TEXTO_NAO_MOVIMENTA_ESTOQUE);
   cbMovimentacaoEstoque.Items.Add(TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS);
 
+  {$IFDEF VER150}
+  {$ELSE}
+  StringGrid2.DrawingStyle       := gdsGradient;
+  StringGrid2.GradientStartColor := $00F0F0F0;
+  StringGrid2.GradientEndColor   := $00F0F0F0;
+  {$ENDIF}
 end;
 
 procedure TForm10.Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -5320,6 +5326,9 @@ var
   vCompra   : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
   bChave    : Boolean;
   iCamposVisualizar: Integer;
+  vDescricaoProduto : string;
+
+  IBQProdutoComp: TIBQuery; // Mauricio Parizotto 2023-08-07
 begin
   // Não exporta se o cliente estiver em branco
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
@@ -5675,6 +5684,9 @@ begin
                     case Form7.TabelaAberta.Fields[I-1].DataType of
                       ftString:
                         sA := Form7.TabelaAberta.Fields[I-1].AsSTring;
+                      //Mauricio Parizotto 2023-07-26 Migração Alexandria
+                      ftWideString:
+                        sA := Form7.TabelaAberta.Fields[I-1].AsSTring;
                       ftFloat, ftBCD:
                         sA := Format('%10.2n',[Form7.TabelaAberta.Fields[I-1].AsFloat]);
                       ftDatetime, ftDate:
@@ -5716,6 +5728,9 @@ begin
           for I := 1 to 23 do
           begin
             if Form7.ibDataSet2.Fields[I-1].DataType = ftString   then
+              sA := Form7.ibDataSet2.Fields[I-1].AsSTring
+            //Mauricio Parizotto 2023-07-26 Migração Alexandria
+            else if Form7.ibDataSet2.Fields[I-1].DataType = ftWideString then
               sA := Form7.ibDataSet2.Fields[I-1].AsSTring
             else if Form7.ibDataSet2.Fields[I-1].DataType = ftFloat then
               sA := Format('%10.2n',[Form7.ibDataSet2.Fields[I-1].AsFloat])
@@ -6232,11 +6247,16 @@ begin
       begin
         if Form7.sModulo <> 'KARDEX' then
         begin
+          vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-04 
+
+
           Form7.ibDataSet10.Close;
           Form7.ibDataSet10.SelectSQL.Clear;
-          Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+          Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+
+                                          ' order by CODIGO, COR, TAMANHO');
           Form7.ibDataSet10.Open;
           Form7.ibDataSet10.First;
+
           
           if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
           begin
@@ -6320,61 +6340,97 @@ begin
           end;
           
           // Composição
+          {
           Form7.ibDataSet28.Filter   := 'CODIGO='+Form7.ibDataSet4CODIGO.AsString;
           Form7.ibDataSet28.First;
-          
+
           Form7.ibDataSet28.Close;
           Form7.ibDataSet28.SelectSQL.Clear;
           Form7.ibDataSet28.SelectSQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
           Form7.ibDataSet28.Open;
-          
-          if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
-          begin
-            Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>COMPOSIÇÃO DO PRODUTO</b>');
-            WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-            
-            WriteLn(F,' <tr>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Código</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo</td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo X Qtd</td>');
-            WriteLn(F,' </tr>');
-            
-            fTotal := 0;
-            
-            Form7.ibDataSet28.First;
-            while not Form7.ibDataSet28.Eof do
-            begin
-              Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
+          Mauricio Parizotto 2023-08-09}
 
-              if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
+          try
+            IBQProdutoComp := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+            IBQProdutoComp.Close;
+            IBQProdutoComp.SQL.Text := ' Select'+
+                                       '   C.DESCRICAO,'+
+                                       '   C.QUANTIDADE,'+
+                                       '   E.CODIGO,'+
+                                       '   E.CUSTOCOMPR'+
+                                       ' From COMPOSTO C'+
+                                       '   Left Join ESTOQUE E on E.DESCRICAO = C.DESCRICAO'+
+                                       ' Where C.CODIGO = '+QuotedStr(Form7.ibDataSet4CODIGO.AsString);
+            IBQProdutoComp.Open;
+          
+            //if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+            if not IBQProdutoComp.IsEmpty then
+            begin
+              Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>COMPOSIÇÃO DO PRODUTO</b>');
+              WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+            
+              WriteLn(F,' <tr>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Código</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo</td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Custo X Qtd</td>');
+              WriteLn(F,' </tr>');
+
+              fTotal := 0;
+            
+              IBQProdutoComp.First;
+              while not IBQProdutoComp.Eof do
               begin
-                WriteLn(F,' <tr>');
-                Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'</td>');
-                Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet28DESCRICAO.AsString+'</td>');
-                Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
-                Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat])+'</td>');
-                Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
-                WriteLn(F,' </tr>');
-                fTotal := fTotal + (Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
+                {Mauricio Parizotto 2023-08-07 Inicio
+                Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
+
+                if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
+                begin
+                  WriteLn(F,' <tr>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'</td>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet28DESCRICAO.AsString+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat])+'</td>');
+                  WriteLn(F,' </tr>');
+                  fTotal := fTotal + (Form7.ibDataSet4CUSTOCOMPR.AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
+                end;
+                }
+
+                if not IBQProdutoComp.IsEmpty then
+                begin
+                  WriteLn(F,' <tr>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+IBQProdutoComp.FieldByName('CODIGO').Asstring +'</td>');
+                  Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+IBQProdutoComp.FieldByName('DESCRICAO').AsString+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[IBQProdutoComp.FieldByName('QUANTIDADE').AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProdutoComp.FieldByName('CUSTOCOMPR').AsFloat])+'</td>');
+                  Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[IBQProdutoComp.FieldByName('CUSTOCOMPR').AsFloat * IBQProdutoComp.FieldByName('QUANTIDADE').AsFloat])+'</td>');
+                  WriteLn(F,' </tr>');
+                  fTotal := fTotal + (IBQProdutoComp.FieldByName('CUSTOCOMPR').AsFloat * IBQProdutoComp.FieldByName('QUANTIDADE').AsFloat);
+                end;
+
+                IBQProdutoComp.Next;
               end;
 
-              Form7.ibDataSet28.Next;
+              // Totalizador
+              WriteLn(F,' <tr>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
+              WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
+              WriteLn(F,' </tr>');
+              WriteLn(F,'</table>');
             end;
 
-            // Totalizador
-            WriteLn(F,' <tr>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
-            WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[fTotal])+'</td>');
-            WriteLn(F,' </tr>');
-            WriteLn(F,'</table>');
+          finally
+            FreeAndNil(IBQProdutoComp);
           end;
-          
-          Form7.ibDataSet4.Locate('DESCRICAO',Alltrim(Form10.Caption),[]);
+
+          //Form7.ibDataSet4.Locate('DESCRICAO',Alltrim(Form10.Caption),[]); se a tela está fechada, localiza produto errado (produto anterior)
+
+          {Mauricio Parizotto 2023-08-07 Fim}
           
           // Imprime o arquivo em ordem de data          
           Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>MOVIMENTAÇÃO DO ITEM</b>');
@@ -6406,7 +6462,8 @@ begin
         try
           vQtdInicial := ExecutaComandoEscalar(Form7.IBDatabase1,
                                                ' Select Coalesce(sum(quantidade),0) '+
-                                               ' From ('+SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString)+') A');
+                                               //' From ('+SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString)+') A'); Mauricio Parizotto 2023-08-04
+                                               ' From ('+SqlSelectMovimentacaoItem(vDescricaoProduto)+') A');
 
 
           vQtdInicial := Form7.ibDataSet4QTD_ATUAL.AsFloat - vQtdInicial;
@@ -6419,7 +6476,8 @@ begin
         end;
 
         Form7.IBDataSet97.Close;
-        Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString);
+        //Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString);  Mauricio Parizotto 2023-08-04
+        Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(vDescricaoProduto);
         Form7.IBDataSet97.DisableControls;
         Form7.IBDataSet97.Open;
 
@@ -8042,7 +8100,7 @@ end;
 
 procedure TForm10.SMALL_DBEdit38Exit(Sender: TObject);
 begin
-  Form10.orelha_ICMSShow(Sender);
+//  Form10.orelha_ICMSShow(Sender); Mauricio Parizotto 2023-08-10
 end;
 
 procedure TForm10.ComboBox9KeyDown(Sender: TObject; var Key: Word;
@@ -8191,6 +8249,7 @@ procedure TForm10.Button20Click(Sender: TObject);
 var
   rReceitas : Real;
   rDespesas : Real;
+  dCOPE: Double; // Sandro Silva 2023-08-07
 begin
   try
     rReceitas := 0;
@@ -8202,13 +8261,24 @@ begin
       if Copy(Form7.ibDataSet12CONTA.AsString,1,2) = '32' then rDespesas := rDespesas + (Form7.ibDataSet12ANO.AsFloat * -1);
       Form7.ibDataSet12.Next;
     end;
-    //
+    {Sandro Silva 2023-08-07 inicio
     try
       Form7.ibDataSet13COPE.AsFloat := rDespesas * 100 / rReceitas;
     except
       Form7.ibDataSet13COPE.AsFloat := 0;
     end;
-    //
+    }
+    dCOPE := 0;
+    if rReceitas > 0 then
+    begin
+      try
+        dCOPE := rDespesas * 100 / rReceitas;
+      except
+        dCOPE := 0;
+      end;
+    end;
+    Form7.ibDataSet13COPE.AsFloat := dCOPE;
+    {Sandro Silva 2023-08-07 fim}
     ShowMessage('O sistema calculou o "custo operacional" da'+Chr(10)+
                 'seguinte forma:'+Chr(10)+Chr(10)+
 
@@ -8218,7 +8288,7 @@ begin
 
                 'Custo Operacional = Despesas Operacionais * 100 / Receitas'+Chr(10)+Chr(10)+
                 'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas]))+' * 100 / '+AllTrim(Format('%12.2n',[rReceitas]))+Chr(10)+Chr(10)+
-                'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas * 100 / rReceitas]))+'%'+Chr(10)+Chr(10));
+                'Custo Operacional = '+AllTrim(Format('%12.2n',[dCOPE]))+'%'+Chr(10)+Chr(10)); // Sandro Silva 2023-08-07 'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas * 100 / rReceitas]))+'%'+Chr(10)+Chr(10));
   except
     ShowMessage('O sistema calcula o "custo operacional" da'+Chr(10)+
                 'seguinte forma:'+Chr(10)+Chr(10)+
@@ -8243,7 +8313,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -9485,6 +9555,7 @@ end;
 procedure TForm10.StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 begin
+  {$IFDEF VER150}
   if ACol <> 1 then
   begin
     StringGrid2.Canvas.Font.Color  := clGray;
@@ -9492,9 +9563,17 @@ begin
       StringGrid2.Canvas.Font.Color  := clBlack; // Sandro Silva 2023-05-15
     StringGrid2.Canvas.FillRect(Rect);
   end;
-  
+
   StringGrid2.Canvas.FillRect(Rect);
   StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
+  {$ELSE}
+  if (ACol > 1) and not (gdSelected in State) and (ARow > 0) then
+  begin
+    StringGrid2.Canvas.Font.Color  := clGray;
+    StringGrid2.Canvas.FillRect(Rect);
+    StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
+  end;
+  {$ENDIF}
 end;
 
 procedure TForm10.Image1Click(Sender: TObject);
@@ -9684,7 +9763,7 @@ begin
 
       if vQtdParcelas > 1 then
       begin
-        if Application.MessageBox(PansiChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
+        if Application.MessageBox(PChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
                                   'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
         begin
           ExecutaComando(' Update RECEBER'+

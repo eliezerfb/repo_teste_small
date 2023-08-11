@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=2023
 MinorVer=0
 Release=0
-Build=76
+Build=78
 Debug=0
 PreRelease=0
 Special=0
@@ -125,15 +125,15 @@ Locale=1046
 CodePage=1252
 [Version Info Keys]
 CompanyName=Zucchetti Software e Sistemas Ltda
-FileDescription=Small Commerce
-FileVersion=2023.0.0.76
-InternalName=small22
+FileDescription=Small
+FileVersion=2023.0.0.78
+InternalName=Small
 LegalCopyright=Zucchetti Software e Sistemas Ltda
 LegalTrademarks=Zucchetti Software e Sistemas Ltda
 OriginalFilename=
-ProductName=Small Commerce
+ProductName=Small
 ProductVersion=2023
-Comments=tecnoaccount
+Comments=
 [Excluded Packages]
 C:\Program Files (x86)\Borland\Delphi7\Projects\Bpl\spdNFCe_D7.bpl=Tecnospeed - Pacote para o componente TspdNFCe
 [HistoryLists\hlUnitAliases]

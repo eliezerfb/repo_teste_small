@@ -69,8 +69,6 @@ type
     procedure SMALL_DBEdit43Enter(Sender: TObject);
     procedure SMALL_DBEdit43Exit(Sender: TObject);
     procedure SMALL_DBEdit48Enter(Sender: TObject);
-    procedure SMALL_DBEdit52KeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBGrid2KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGrid2Exit(Sender: TObject);
@@ -402,14 +400,6 @@ procedure TForm48.SMALL_DBEdit48Enter(Sender: TObject);
 begin
   dbGrid3.Visible := False;
   DbGrid2.Visible := False;
-end;
-
-procedure TForm48.SMALL_DBEdit52KeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then Perform(Wm_NextDlgCtl,1,0);
-  if Key = VK_TAB    then Perform(Wm_NextDlgCtl,1,0);
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
 end;
 
 procedure TForm48.DBGrid2KeyDown(Sender: TObject; var Key: Word;
@@ -1050,7 +1040,7 @@ procedure TForm48.DBMemo1KeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then Button3.SetFocus;
   if Key = VK_TAB    then Button3.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm48.SMALL_DBEdit39KeyDown(Sender: TObject; var Key: Word;
@@ -1069,7 +1059,7 @@ begin
     if dBgrid2.Visible = True then
       dBgrid2.SetFocus
     else
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
   end;
 
   if Key = VK_RETURN then
@@ -1209,7 +1199,7 @@ begin
     if dBgrid2.Visible = True then
       dBgrid2.SetFocus
     else
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
   end;
   Key := VK_SHIFT;
 end;

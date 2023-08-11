@@ -2132,6 +2132,36 @@ begin
   end;
   {Sandro Silva 2023-07-27 fim}
 
+
+  {Mauricio Parizotto 2023-08-07 Inicio}
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BACKUP') = False then
+  begin
+    ExecutaComando('Create table BACKUP('+
+                   ' 	IDBACKUP INTEGER NOT NULL,'+
+                   ' 	AUTOMATICO VARCHAR(1) NOT NULL,'+
+                   ' 	NOMECOMPUTADOR VARCHAR(40),'+
+                   ' 	DIRETORIO VARCHAR(200),'+
+                   ' 	CONSTRAINT PK_BACKUP_IDBACKUP PRIMARY KEY (IDBACKUP) '+
+                   ')');
+
+
+    ExecutaComando('CREATE SEQUENCE G_BACKUP_IDBACKUP');
+  end;
+
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BACKUPHORARIOS') = False then
+  begin
+    ExecutaComando('Create table BACKUPHORARIOS('+
+                   ' 	IDHORARIO INTEGER NOT NULL,'+
+                   ' 	IDBACKUP INTEGER NOT NULL,'+
+                   ' 	HORARIO TIME NOT NULL,	'+
+                   ' 	CONSTRAINT PK_BACKUPHORARIOS_IDHORARIO PRIMARY KEY (IDHORARIO) '+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_BACKUPHORARIOS_IDHORARIO');
+  end;
+  {Mauricio Parizotto 2023-08-07 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

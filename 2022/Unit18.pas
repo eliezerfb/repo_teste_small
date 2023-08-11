@@ -86,7 +86,11 @@ Var
   I : Integer;
   dDiferenca : Double;
 begin
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
 
   try
     {
@@ -504,7 +508,7 @@ begin
     if Key = VK_RETURN then
       Perform(Wm_NextDlgCtl,0,0);
     if Key = VK_UP then
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
     if Key = VK_DOWN then
       Perform(Wm_NextDlgCtl,0,0);
   except
@@ -595,7 +599,7 @@ begin
     if Key = VK_RETURN then 
       Perform(Wm_NextDlgCtl,0,0);
     if Key = VK_UP then 
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
     if Key = VK_DOWN then 
       Perform(Wm_NextDlgCtl,0,0);
   except 
@@ -1440,7 +1444,11 @@ Var
   dDiferenca : Double;
   QtdParc : integer;
 begin
+  {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
 
   QtdParc := StrToIntDef(edtQtdParc.Text,1);
 
