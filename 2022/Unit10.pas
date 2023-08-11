@@ -8100,7 +8100,7 @@ end;
 
 procedure TForm10.SMALL_DBEdit38Exit(Sender: TObject);
 begin
-  Form10.orelha_ICMSShow(Sender);
+//  Form10.orelha_ICMSShow(Sender); Mauricio Parizotto 2023-08-10
 end;
 
 procedure TForm10.ComboBox9KeyDown(Sender: TObject; var Key: Word;
