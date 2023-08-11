@@ -2716,6 +2716,7 @@ begin
   end;
 end;
 
+
 function TForm7.CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 //Sandro Silva 2011-04-12 inicio
 //Cria um objeto TIBQuery
@@ -2733,6 +2734,7 @@ begin
     end
   end;
 end;
+
 
 function DownloadNFeEmitida(sP1: String): Boolean;
 var
@@ -15867,13 +15869,11 @@ end;
 
 procedure TForm7.ibDataSet4BeforePost(DataSet: TDataSet);
 begin
-  //
   sRegistro := DataSet.FieldByname('REGISTRO').AsString;
   if ibDataSet4PRECO.AsFloat <=0 then
     ibDataSet4PRECO.AsFloat := 0.01;
   AssinaRegistro('ESTOQUE',DataSet, True);
-  AuditaAlteracaoEstoqueManual;  
-  //
+  AuditaAlteracaoEstoqueManual;
 end;
 
 procedure TForm7.ibDataSet28NewRecord(DataSet: TDataSet);
@@ -18123,9 +18123,15 @@ begin
 
     if QrySaldo.IsEmpty then
       Exit;
-      
+
+    {Mauricio Parizotto 2023-08-11 Inicio}
+    {gerando erro quando campo for nulo
     if QrySaldo.FieldByName('QTD_ATUAL').Value <> Form7.ibDataSet4QTD_ATUAL.Value then
       Audita('ALTEROU', 'ESTOQUE', Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').Value, Form7.ibDataSet4QTD_ATUAL.Value);
+    }
+    if QrySaldo.FieldByName('QTD_ATUAL').AsFloat <> Form7.ibDataSet4QTD_ATUAL.AsFloat then
+      Audita('ALTEROU', 'ESTOQUE', Senhas.UsuarioPub, ibDataSet4CODIGO.AsString + ' - ' + ibDataSet4DESCRICAO.AsString + ' - QUANTIDADE', QrySaldo.FieldByName('QTD_ATUAL').AsFloat, Form7.ibDataSet4QTD_ATUAL.AsFloat);
+    {Mauricio Parizotto 2023-08-11 Fim}
   finally
     FreeAndNil(QrySaldo);
   end;

@@ -2146,6 +2146,8 @@ begin
 
 
     ExecutaComando('CREATE SEQUENCE G_BACKUP_IDBACKUP');
+
+    ExecutaComando('Commit');
   end;
 
   if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BACKUPHORARIOS') = False then
@@ -2158,9 +2160,16 @@ begin
                    ')');
 
     ExecutaComando('CREATE SEQUENCE G_BACKUPHORARIOS_IDHORARIO');
+
+    ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2023-08-07 Fim}
 
+
+  {Mauricio Parizotto 2023-08-11 Inicio}
+  if ExecutaComando('ALTER TABLE ESTOQUE ALTER COLUMN QTD_ATUAL SET DEFAULT 0;') then
+    ExecutaComando('Commit');
+  {Mauricio Parizotto 2023-08-11 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
