@@ -3,7 +3,12 @@ unit uCodBarrasPesavel;
 interface
 
 uses
-  uICodBarrasPesavel, SmallFunc, IBQuery, IBDatabase, uArquivosDAT;
+  {$IFDEF VER150}
+  SmallFunc,
+  {$ELSE}
+  smallfunc_xe,
+  {$ENDIF }
+  uICodBarrasPesavel, IBQuery, IBDatabase, uArquivosDAT;
 
 type
   TCodBarrasPesavel = class(TInterfacedObject, ICodBarrasPesavel)

@@ -127,6 +127,7 @@ function xmlNodeValueToDate(sXML: String; sNode: String): TDate;
 function xmlNodeValueToFloat(sXML: String; sNode: String): Double;
 function SysComputerName: String;
 function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
+function WinVersion: string;
 
 
 
@@ -1320,5 +1321,16 @@ begin
 
   CloseHandle (Snapshot);
 end;
+
+{ Dailon Parisotto (f-7189) 2023-08-11 inicio}
+function WinVersion: string;
+var
+  VersionInfo: TOSVersionInfo;
+begin
+  VersionInfo.dwOSVersionInfoSize:=SizeOf(VersionInfo);
+  GetVersionEx(VersionInfo);
+  Result := StrZero(VersionInfo.dwMajorVersion,3,0)+StrZero(VersionInfo.dwMinorVersion,3,0)
+end;
+{ Dailon Parisotto (f-7189) 2023-08-11 fim}
 
 end.
