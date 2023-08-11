@@ -41,12 +41,15 @@ implementation
 procedure TBackup.Backup(sArquivo: String);
 var
   vContador : integer;
+  vDirSistema : string; // Mauricio Parizotto 2023-08-09
 begin
   vContador := 0; //Mauricio Parizotto 2023-08-10
+  vDirSistema := ExtractFilePath(Application.ExeName);
 
   if FileExists(Trim(sArquivo)) then
   begin
-    ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
+    //ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
+    ShellExecute( 0, 'Open', pChar(vDirSistema+'szip.exe'), pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
 
     while ConsultaProcesso('szip.exe') do
     begin
