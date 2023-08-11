@@ -271,9 +271,14 @@ begin
         end;
       end else
       begin
-        Screen.Cursor  := crAppStart;    
+        Screen.Cursor  := crAppStart;
 
+        {$IFDEF VER150}
         ShortDateFormat := 'dd/mm/yyyy';
+        {$ELSE}
+        FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+        {$ENDIF}
+
         dInicio :=  DateTimePicker1.Date;
         dFinal  :=  DateTimePicker2.Date;
 

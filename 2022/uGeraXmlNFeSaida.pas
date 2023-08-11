@@ -19,7 +19,7 @@ uses
   , spdXMLUtils
   , spdNFeType
   , spdNFe
-  , spdType
+//  , spdType
   , SmallFunc
   , unit7
   , unit11

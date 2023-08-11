@@ -189,7 +189,7 @@ object Form18: TForm18
       TabOrder = 5
       Visible = False
       OnClick = CheckBox1Click
-    end    
+    end
     object edtQtdParc: TEdit
       Left = 128
       Top = 24

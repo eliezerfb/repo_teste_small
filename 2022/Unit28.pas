@@ -39,16 +39,19 @@ procedure TForm28.FormActivate(Sender: TObject);
 var
   Mais1Ini : tIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   DateTimePicker1.Date  := StrToDate(Mais1Ini.ReadString('XML','Periodo Inicial',DateToStr(DATE-30)));
   DateTimePicker2.Date  := StrToDate(Mais1Ini.ReadString('XML','Periodo Final',DateToStr(DATE)));
   Edit1.Text            := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
   Mais1ini.Free;
-  //
+
   Image1.Picture := Form1.imgVendas.Picture;
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2000 free}
-  //
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
 end;
 
 procedure TForm28.Button1Click(Sender: TObject);

@@ -1151,7 +1151,6 @@ object Form30: TForm30
         OnChange = DBMemo1Change
         OnEnter = DBMemo1Enter
         OnExit = DBMemo1Exit
-        OnKeyDown = DBMemo1KeyDown
         OnKeyUp = DBMemo1KeyUp
       end
       object DBMemo2: TDBMemo
@@ -1171,7 +1170,6 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 17
         OnEnter = DBMemo2Enter
-        OnKeyDown = DBMemo1KeyDown
         OnKeyUp = DBMemo1KeyUp
       end
       object ListBox1: TListBox

@@ -866,51 +866,51 @@ object Form17: TForm17
       '  REGISTRO = :OLD_REGISTRO')
     Left = 634
     Top = 197
-    object ibdEmitenteCGC: TStringField
+    object ibdEmitenteCGC: TIBStringField
       DisplayLabel = 'CPF/CNPJ'
       FieldName = 'CGC'
       OnSetText = ibdEmitenteCGCSetText
       Size = 18
     end
-    object ibdEmitenteNOME: TStringField
+    object ibdEmitenteNOME: TIBStringField
       DisplayLabel = 'Raz'#227'o Social:'
       DisplayWidth = 35
       FieldName = 'NOME'
       Size = 60
     end
-    object ibdEmitenteCONTATO: TStringField
+    object ibdEmitenteCONTATO: TIBStringField
       DisplayLabel = 'Respons'#225'vel'
       FieldName = 'CONTATO'
       Size = 35
     end
-    object ibdEmitenteENDERECO: TStringField
+    object ibdEmitenteENDERECO: TIBStringField
       DisplayLabel = 'Endere'#231'o'
       FieldName = 'ENDERECO'
       Size = 35
     end
-    object ibdEmitenteCOMPLE: TStringField
+    object ibdEmitenteCOMPLE: TIBStringField
       DisplayLabel = 'Bairro'
       FieldName = 'COMPLE'
     end
-    object ibdEmitenteCEP: TStringField
+    object ibdEmitenteCEP: TIBStringField
       FieldName = 'CEP'
       EditMask = '#####-###;1; '
       Size = 9
     end
-    object ibdEmitenteMUNICIPIO: TStringField
+    object ibdEmitenteMUNICIPIO: TIBStringField
       DisplayLabel = 'Munic'#237'pio'
       DisplayWidth = 40
       FieldName = 'MUNICIPIO'
       OnSetText = ibdEmitenteMUNICIPIOSetText
       Size = 40
     end
-    object ibdEmitenteESTADO: TStringField
+    object ibdEmitenteESTADO: TIBStringField
       DisplayLabel = 'Estado'
       FieldName = 'ESTADO'
       OnSetText = ibdEmitenteESTADOSetText
       Size = 2
     end
-    object ibdEmitenteIE: TStringField
+    object ibdEmitenteIE: TIBStringField
       FieldName = 'IE'
       Size = 16
     end
@@ -919,19 +919,19 @@ object Form17: TForm17
       Origin = '"EMITENTE"."IM"'
       Size = 16
     end
-    object ibdEmitenteTELEFO: TStringField
+    object ibdEmitenteTELEFO: TIBStringField
       DisplayLabel = 'Telefone'
       DisplayWidth = 21
       FieldName = 'TELEFO'
       EditMask = '!\(#xx##\)#########;1; '
       Size = 16
     end
-    object ibdEmitenteEMAIL: TStringField
+    object ibdEmitenteEMAIL: TIBStringField
       DisplayLabel = 'e-mail'
       FieldName = 'EMAIL'
       Size = 70
     end
-    object ibdEmitenteHP: TStringField
+    object ibdEmitenteHP: TIBStringField
       DisplayLabel = 'P'#225'gina na internet'
       FieldName = 'HP'
       Size = 130

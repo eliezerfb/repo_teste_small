@@ -1188,7 +1188,7 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_DOWN then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   Key := VK_SHIFT;
 end;
 
@@ -2181,7 +2181,7 @@ begin
   end else Form7.sModulo := 'COMPRA';
   //
   if Key = VK_DOWN   then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm24.SMALL_DBEdit22Exit(Sender: TObject);
@@ -2224,7 +2224,7 @@ begin
       if dBgrid2.Visible then
         dBgrid2.SetFocus
       else
-        Perform(Wm_NextDlgCtl,-1,0);
+        Perform(Wm_NextDlgCtl,1,0);
     end;
   end;
 end;
@@ -2244,7 +2244,7 @@ procedure TForm24.SMALL_DBEdit51KeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then OK.SetFocus;
   if Key = VK_DOWN   then OK.SetFocus;
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm24.DBGrid1CellClick(Column: TColumn);
@@ -2307,7 +2307,7 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
   if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_DOWN then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   Key := VK_SHIFT;
 end;
 
@@ -2406,13 +2406,16 @@ begin
     SMALL_DBEdit13.Enabled := True;
     //
   end;
-  //
+
   // Arquivo de forneced por ordem de nome
-  //
-  ShortDateFormat := 'dd/mm/yyyy';   // Bug 2000 free
-  //
+
+  {$IFDEF VER150}
+  ShortDateFormat := 'dd/mm/yyyy';
+  {$ELSE}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+  {$ENDIF}
+
   // Relaciona a natureza da operação com o arquivo de vendas
-  //
   if AllTrim(Form7.ibDataSet24OPERACAO.AsString) = ''
     then Form7.ibDataSet14.Append
        else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
@@ -2913,7 +2916,7 @@ begin
     if dBgrid2.Visible = True then
       dBgrid2.SetFocus
     else
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
   Key := VK_SHIFT;
 end;
 

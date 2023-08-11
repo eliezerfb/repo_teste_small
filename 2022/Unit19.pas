@@ -649,7 +649,7 @@ procedure TForm19.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP then Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
@@ -684,7 +684,7 @@ procedure TForm19.MaskEdit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP then Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
@@ -1335,7 +1335,7 @@ procedure TForm19.Edit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP then Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;

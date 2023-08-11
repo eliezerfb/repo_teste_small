@@ -59,19 +59,19 @@ type
     DSMunicipios: TDataSource;
     DSEmitente: TDataSource;
     ibdEmitente: TIBDataSet;
-    ibdEmitenteCGC: TStringField;
-    ibdEmitenteNOME: TStringField;
-    ibdEmitenteCONTATO: TStringField;
-    ibdEmitenteENDERECO: TStringField;
-    ibdEmitenteCOMPLE: TStringField;
-    ibdEmitenteCEP: TStringField;
-    ibdEmitenteMUNICIPIO: TStringField;
-    ibdEmitenteESTADO: TStringField;
-    ibdEmitenteIE: TStringField;
+    ibdEmitenteCGC: TIBStringField;
+    ibdEmitenteNOME: TIBStringField;
+    ibdEmitenteCONTATO: TIBStringField;
+    ibdEmitenteENDERECO: TIBStringField;
+    ibdEmitenteCOMPLE: TIBStringField;
+    ibdEmitenteCEP: TIBStringField;
+    ibdEmitenteMUNICIPIO: TIBStringField;
+    ibdEmitenteESTADO: TIBStringField;
+    ibdEmitenteIE: TIBStringField;
     ibdEmitenteIM: TIBStringField;
-    ibdEmitenteTELEFO: TStringField;
-    ibdEmitenteEMAIL: TStringField;
-    ibdEmitenteHP: TStringField;
+    ibdEmitenteTELEFO: TIBStringField;
+    ibdEmitenteEMAIL: TIBStringField;
+    ibdEmitenteHP: TIBStringField;
     ibdEmitenteCOPE: TFloatField;
     ibdEmitenteRESE: TFloatField;
     ibdEmitenteCVEN: TFloatField;
@@ -219,7 +219,7 @@ begin
   begin
     if Key = VK_UP then
     begin
-      Perform(Wm_NextDlgCtl,-1,0);
+      Perform(Wm_NextDlgCtl,1,0);
     end;
     if Key = VK_DOWN then
     begin

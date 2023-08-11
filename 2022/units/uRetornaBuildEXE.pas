@@ -29,13 +29,31 @@ function TRetornarBuildEXE.Retornar(AbSomenteNumeros: Boolean = False): String;
 var
   Size, Size2: DWord;
   Pt, Pt2: Pointer;
+
+  {$IFDEF VER150}
+  {$ELSE}
+  FI: PVSFixedFileInfo;
+  VerSize: DWORD;
+  {$ENDIF}
 begin
   Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
   GetMem (Pt, Size);
   try
+    {$IFDEF VER150}
     GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
     VerQueryValue(Pt,'\StringFileInfo\041604E4\FileVersion',Pt2, Size2);
     Result := PChar (pt2);
+    {$ELSE}
+    GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
+
+    VerQueryValue(Pt, '\', Pointer(FI), VerSize);
+
+    Result:= Concat(IntToStr(FI.dwFileVersionMS shr 16), '.',
+                    IntToStr(FI.dwFileVersionMS and $FFFF), '.',
+                    IntToStr(FI.dwFileVersionLS shr 16), '.',
+                    IntToStr(FI.dwFileVersionLS and $FFFF));
+    {$ENDIF}
+
     if AbSomenteNumeros then
       Result := SmallFunc.LimpaNumero(Result);
   finally

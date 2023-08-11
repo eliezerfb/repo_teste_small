@@ -5,8 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB,
-  DBClient, Grids, DBGrids
-  ;
+  DBClient, Grids, DBGrids, IBCustomDataSet;
 
 const COR_CAMPO_OBRIGATORIO = $0080FFFF;
 
@@ -30,11 +29,11 @@ type
     lbQuantidadeAcumulada: TLabel;
     CDSLOTES: TClientDataSet;
     DSLOTES: TDataSource;
-    CDSLOTESNUMERO: TStringField;
+    CDSLOTESNUMERO: TIBStringField;
     CDSLOTESQUANTIDADE: TFloatField;
     CDSLOTESDTFABRICACAO: TDateField;
     CDSLOTESDTVALIDADE: TDateField;
-    CDSLOTESCODIGOAGREGACAO: TStringField;
+    CDSLOTESCODIGOAGREGACAO: TIBStringField;
     DBGridRastro: TDBGrid;
     CDSLOTESQUANTIDADEACUMULADA: TAggregateField;
     DBTValorQuantidadeAcumulada: TDBText;
@@ -76,7 +75,7 @@ end;
 
 procedure MsgBoxAlerta(sMensagem: String);
 begin
-  Application.MessageBox(PansiChar(sMensagem), 'Atenção', MB_OK + MB_ICONWARNING)
+  Application.MessageBox(PChar(sMensagem), 'Atenção', MB_OK + MB_ICONWARNING)
 end;
 
 function TiraMascara(sTexto: String): String;
@@ -131,7 +130,7 @@ begin
 
   if CDSLOTES.RecordCount > 0 then
   begin
-    if Application.MessageBox(PansiChar('As informações digitadas não constarão na nota' + #10 + #10 + 'Realmente deseja não informar?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_No then
+    if Application.MessageBox(PChar('As informações digitadas não constarão na nota' + #10 + #10 + 'Realmente deseja não informar?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_No then
       Exit;
   end;
 
@@ -482,17 +481,25 @@ begin
       end;
     ftFMTBcd, ftFloat:
       begin
-
         // Elimina excesso de separador decimal (vírgula)
         sCurrectedText := '';
 
         for iPos := 1 to Length(Text) do
         begin
+          {$IFDEF VER150}
           if (OccurrencesOfChar(sCurrectedText, DecimalSeparator) = 0) or (Copy(Text, iPos, 1) <> DecimalSeparator) then
             sCurrectedText := sCurrectedText + Copy(Text, iPos, 1);
+          {$ELSE}
+          if (OccurrencesOfChar(sCurrectedText, FormatSettings.DecimalSeparator) = 0) or (Copy(Text, iPos, 1) <> FormatSettings.DecimalSeparator) then
+            sCurrectedText := sCurrectedText + Copy(Text, iPos, 1);
+          {$ENDIF}
         end;
 
-        sCurrectedText := StringReplace(sCurrectedText, ThousandSeparator, '', [rfReplaceAll]);  // Usar FormatSettings.ThousandSeparator XE
+        {$IFDEF VER150}
+        sCurrectedText := StringReplace(sCurrectedText, ThousandSeparator, '', [rfReplaceAll]);
+        {$ELSE}
+        sCurrectedText := StringReplace(sCurrectedText, FormatSettings.ThousandSeparator, '', [rfReplaceAll]);  
+        {$ENDIF}
         sCurrectedText := StringReplace(AnsiLowerCase(sCurrectedText), 'e', '', [rfReplaceAll]);
 
         Sender.AsString := sCurrectedText;

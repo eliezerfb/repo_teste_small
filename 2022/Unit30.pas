@@ -140,8 +140,6 @@ type
       Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure DBMemo1KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBMemo1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBMemo2Enter(Sender: TObject);
@@ -781,7 +779,7 @@ procedure TForm30.SMALL_DBEdit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if dBgrid3.Visible = True then dBgrid3.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then  if dBgrid3.Visible = True then dBgrid3.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then  if dBgrid3.Visible = True then dBgrid3.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
 end;
 
@@ -789,7 +787,7 @@ procedure TForm30.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
 end;
 
@@ -1241,7 +1239,7 @@ procedure TForm30.SMALL_DBEdit14KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_RETURN then
   begin
     ListBox2.TabOrder := 0;
@@ -1491,13 +1489,6 @@ begin
   Form7.ibDataSet16UNITARIO.Visible := True;
   Form7.ibDataSet35UNITARIO.Visible := True;
   //
-end;
-
-procedure TForm30.DBMemo1KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-//  if Key = VK_DOWN   then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-//  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,-1,0);
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;
