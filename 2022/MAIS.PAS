@@ -12422,7 +12422,7 @@ end;
 
 procedure TForm1.BackupAutomtico1Click(Sender: TObject);
 begin
-  ShellExecute( 0, 'Open', 'Backup.exe','A', '', SW_SHOW);
+  ShellExecute( 0, 'Open', 'backup.exe','A', '', SW_SHOW);
 end;
 
 end.
