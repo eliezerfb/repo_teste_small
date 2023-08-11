@@ -146,7 +146,7 @@ object Form30: TForm30
         OnMouseLeave = Label14MouseLeave
       end
       object Label15: TLabel
-        Left = 460
+        Left = 440
         Top = 164
         Width = 30
         Height = 13
@@ -359,7 +359,7 @@ object Form30: TForm30
         OnMouseLeave = Label14MouseLeave
       end
       object Label27: TLabel
-        Left = 347
+        Left = 350
         Top = 304
         Width = 20
         Height = 13
@@ -395,7 +395,7 @@ object Form30: TForm30
         OnMouseLeave = Label14MouseLeave
       end
       object Label32: TLabel
-        Left = 500
+        Left = 503
         Top = 304
         Width = 24
         Height = 13
@@ -449,7 +449,7 @@ object Form30: TForm30
         OnMouseLeave = Label14MouseLeave
       end
       object Label35: TLabel
-        Left = 385
+        Left = 387
         Top = 444
         Width = 20
         Height = 13
@@ -467,7 +467,7 @@ object Form30: TForm30
         OnMouseLeave = Label14MouseLeave
       end
       object Label36: TLabel
-        Left = 436
+        Left = 439
         Top = 444
         Width = 36
         Height = 13
