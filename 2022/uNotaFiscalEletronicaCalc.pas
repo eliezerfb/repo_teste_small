@@ -243,9 +243,17 @@ begin
         {Sandro Silva 2023-05-25 inicio}
         //if oItem.Icm = 0.00 then
         //begin
-          if (oItem.Vicms > 0.00) and (oItem.Vbc > 0.00) then
-            //oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 2);  // Descobre o percentual de ICMS
-            oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 1);  // Descobre o percentual de ICMS
+        if (oItem.Vicms > 0.00) and (oItem.Vbc > 0.00) then
+        begin
+          // Descobre o percentual de ICMS
+          //oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 2);
+          //oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 1);  // Mauricio Parizotto 2023-08-14
+          //se arredondando para 1 casa, gerar um valor de ,5 aceita esse valor, caso contrário arredonda sem casa decimal
+          if AnsiContainsText(  FloatToStr(Arredonda((oItem.Vicms / oItem.Vbc) * 100, 1))  ,',5') then
+            oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 1)
+          else
+            oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 0);
+        end;
         //end;
         {Sandro Silva 2023-05-25 fim}
 
