@@ -4103,7 +4103,7 @@ end;
 
 procedure TForm1.TabeladeICMparatodososestados1Click(Sender: TObject);
 begin
-  //Form7.Close; Mauricio Parizotto 2023-06-27
+  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
   Form7.sModulo := 'ICM';
   Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
 
@@ -4121,7 +4121,7 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-  //Form7.Close; Mauricio Parizotto 2023-06-27
+  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
   Form7.sModulo := 'TRANSPORT';
   Form7.sTitulo := 'Cadastro de transportadoras';
   Form7.sRPS := 'N';
@@ -4351,8 +4351,8 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  Mais1ini : tIniFile;
+//var
+//  Mais1ini : tIniFile;
 begin
   //
   Form1.bMKP    := False;
@@ -5517,7 +5517,7 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-  //Form7.Close; Mauricio Parizotto 2023-06-27
+  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
   Form7.sModulo := 'VENDEDOR';
   Form7.sTitulo := 'Cadastro dos vendedores';
   Form7.sRPS := 'N';
@@ -5536,7 +5536,7 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-  //Form7.Close; Mauricio Parizotto 2023-06-27
+  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
   Form7.sModulo := 'GRUPOS';
   Form7.sTitulo := 'Grupos de mercadorias no estoque';
   Form7.sRPS := 'N';
@@ -7878,7 +7878,7 @@ var
   sSenhaX : String;
   I : Integer;
 begin
-  Form7.Close;
+  //Form7.Close; Mauricio Parizotto 2023-08-14 causa erro invalid transaction handle f-7258
   Form22.Show;
   Mensagem22('');
   Senhas2.ShowModal;
@@ -10612,7 +10612,9 @@ begin
   begin
     Form1.Close;
     sleep(1000);
-    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+    Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
 end;
 
@@ -11593,31 +11595,34 @@ var
 begin
   if not Modoinventrio1.Checked then
   begin
-    Form7.Close;
-    Form22.Show;
-    Mensagem22('');
-    Senhas2.ShowModal;
-    Form22.Close;
-    
-    Senha2:=Senhas2.SenhaPub2;
-    Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-    sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-    sSenha := '';
-    // ----------------------------- //
-    // Fórmula para ler a nova senha //
-    // ----------------------------- //
-    for I := 1 to (Length(sSenhaX) div 5) do
-      sSenha := Chr((StrToInt(
-                    Copy(sSenhaX,(I*5)-4,5)
-                    )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
-    // ----------------------------- //
-    if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
-    begin
-      Modoinventrio1.Checked := True;
-      ShowMessage('Liberado a alteração na quantidade dos itens do estoque.');
-    end else
-    begin
-      ShowMessage('Senha inválida.');
+    try
+      //Form7.Close; //Mauricio Parizotto 2023-08-14 causa erro invalid transaction handle f-7258
+      Form22.Show;
+      Mensagem22('');
+      Senhas2.ShowModal;
+      Form22.Close;
+
+      Senha2:=Senhas2.SenhaPub2;
+      Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+      sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
+      sSenha := '';
+
+      // Fórmula para ler a nova senha //
+      for I := 1 to (Length(sSenhaX) div 5) do
+        sSenha := Chr((StrToInt(
+                      Copy(sSenhaX,(I*5)-4,5)
+                      )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
+
+      if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
+      begin
+        Modoinventrio1.Checked := True;
+        ShowMessage('Liberado a alteração na quantidade dos itens do estoque.');
+      end else
+      begin
+        ShowMessage('Senha inválida.');
+      end;
+    finally
+      FreeAndNil(Mais1Ini);
     end;
   end else
   begin
