@@ -1539,9 +1539,9 @@ var
   sAutorizacao: String;
   sBandeira: String;
 begin
-  if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
+  //if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then Mauricio Parizotto 2023-08-14
+  if (Form7.ibDataSet7FORMADEPAGAMENTO.Visible) and (Form7.sModulo = 'VENDA') then
   begin
-
     if DBGrid1.Columns[DBGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
     begin
 
