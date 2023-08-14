@@ -2095,6 +2095,35 @@ begin
         DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
 
+      {Dailon (f-7224) 2023-08-14 inicio}
+      if Form7.sModulo = 'CLIENTES' then
+      begin
+        if Form7.ibDataSet2NOME.AsString <> TrimDuplicados(Form7.ibDataSet2NOME.AsString) then
+        begin
+          if Form7.ibDataSet2.State = dsBrowse then
+            Form7.ibDataSet2.Edit;
+          Form7.ibDataSet2NOME.AsString := TrimDuplicados(Form7.ibDataSet2NOME.AsString);
+        end;
+        if Form7.IBDataSet2ENDERE.AsString <> TrimDuplicados(Form7.IBDataSet2ENDERE.AsString) then
+        begin
+          if Form7.ibDataSet2.State = dsBrowse then
+            Form7.ibDataSet2.Edit;
+          Form7.IBDataSet2ENDERE.AsString := TrimDuplicados(Form7.IBDataSet2ENDERE.AsString);
+        end;
+        if Form7.IBDataSet2COMPLE.AsString <> TrimDuplicados(Form7.IBDataSet2COMPLE.AsString) then
+        begin
+          if Form7.ibDataSet2.State = dsBrowse then
+            Form7.ibDataSet2.Edit;
+          Form7.IBDataSet2COMPLE.AsString := TrimDuplicados(Form7.IBDataSet2COMPLE.AsString);
+        end;
+        if Form7.IBDataSet2EMAIL.AsString <> AllTrim(Form7.IBDataSet2EMAIL.AsString) then
+        begin
+          if Form7.ibDataSet2.State = dsBrowse then
+            Form7.ibDataSet2.Edit;
+          Form7.IBDataSet2EMAIL.AsString := AllTrim(Form7.IBDataSet2EMAIL.AsString);
+        end;
+      end;
+      {Dailon (f-7224) 2023-08-14 fim}
     end;
   except
   end;
