@@ -7770,9 +7770,6 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
-  //
-  //
-  //
   if sModulo = 'OS' then
   begin
     Form30.Show;
@@ -7780,13 +7777,11 @@ begin
   begin
     if sModulo = 'VENDA' then
     begin
-      //
       if Form7.sRPS = 'S' then
       begin
          if (Form7.ibDataSet15EMITIDA.AsString <> 'X') and (Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString)=0) then
            Form48.Show;
-      end
-      else
+      end else
       begin
         if not DenegadoOuCancelado(True) then
         begin
@@ -7794,52 +7789,44 @@ begin
             Form12.Show;
         end;
       end;
-      //
-    end
-    else
+    end else
     begin
       if sModulo = 'COMPRA' then
       begin
         VerificaItensInativos;
         Form24.Show;
-      end
-      else
+      end else
       begin
         if sModulo = 'ORCAMENTO' then
         begin
-          //
           ShellExecute( 0, 'Open', 'orca.exe', '', '', SW_SHOW);
           sleep(1000);
-          //
+
           while ConsultaProcesso('orca.exe') or ConsultaProcesso('ORCA.EXE') do
           begin
             Form7.Caption := 'Aguarde o fechamento do programa de orcamentos...';
             Application.ProcessMessages;
             sleep(100);
           end;
-          //
+
           Form7.Caption := '';
-          //
+
           AgendaCommit(True);
           Form7.Close;
           Form7.Show;
-          //
+
           Form7.ibDataSet97.EnableControls;
-          //
+
           Abort;
-          //
         end else
         begin
-          //
           Form7.IBTransaction1.CommitRetaining;
           VerificaSeEstaSendoUsado(False);
           Form10.Show;
-          //
         end;
       end;
     end;
   end;
-  //
 end;
 
 procedure TForm7.VerificaItensInativos;
@@ -10757,7 +10744,8 @@ begin
         sAjuda := 'orcamento.htm';
 
         // Campos
-        sMostra                := 'TTTTTTTF';
+        //sMostra                := 'TTTTTTTF'; //Mauricio Parizotto 2023-08-14
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTF');
         iCampos                := 8;
 
         // Menu
