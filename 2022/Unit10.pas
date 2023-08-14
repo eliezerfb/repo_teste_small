@@ -2095,6 +2095,23 @@ begin
         DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
 
+      {Dailon (f-7225) 2023-08-14 inicio}
+      if (Form7.sModulo = 'ESTOQUE') then
+      begin
+        if Form7.IBDataSet4REFERENCIA.AsString <> StringReplace(Form7.IBDataSet4REFERENCIA.AsString, ' ', EmptyStr, [rfReplaceAll]) then
+        begin
+          if Form7.ibDataSet4.State = dsBrowse then
+            Form7.ibDataSet4.Edit;
+          Form7.IBDataSet4REFERENCIA.AsString := StringReplace(Form7.IBDataSet4REFERENCIA.AsString, ' ', EmptyStr, [rfReplaceAll]);
+        end;
+        if Form7.ibDataSet4DESCRICAO.AsString <> TrimDuplicados(Form7.ibDataSet4DESCRICAO.AsString) then
+        begin
+          if Form7.ibDataSet4.State = dsBrowse then
+            Form7.ibDataSet4.Edit;
+          Form7.ibDataSet4DESCRICAO.AsString := TrimDuplicados(Form7.ibDataSet4DESCRICAO.AsString);
+        end;
+      end;
+      {Dailon (f-7225) 2023-08-14 fim}
     end;
   except
   end;

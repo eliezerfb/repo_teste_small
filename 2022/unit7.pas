@@ -12504,7 +12504,7 @@ procedure TForm7.ibDataSet4REFERENCIASetText(Sender: TField;
 var
   cTexto: String;
 begin
-  cTexto := TrimDuplicados(Text);
+  cTexto := StringReplace(Text, ' ', EmptyStr, [rfReplaceAll]);
 
   if Alltrim(cTexto) = '' then ibDataSet4REFERENCIA.AsString := '' else
   begin
