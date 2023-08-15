@@ -19931,7 +19931,18 @@ begin
           else
             SmallMsg('Não é possível cancelar o último cupom.');
           }
+          {Sandro Silva 2023-08-15 inicio
           SmallMsg('Não é possível cancelar o último cupom.');
+          }
+          if (Form1.sModeloECF = '59')  then
+            SmallMsg('Não é possível cancelar o último ' + Form1.sTipoDocumento2 + '.')
+          else if (Form1.sModeloECF = '65') then
+            SmallMsg('Não é possível cancelar a última ' + Form1.sTipoDocumento2 + '.')
+          else if (Form1.sModeloECF = '99') then
+            SmallMsg('Não é possível cancelar o último ' + Form1.sTipoDocumento2 + '.')
+          else
+            SmallMsg('Não é possível cancelar o último cupom.');
+          {Sandro Silva 2023-08-15 fim}
           {Sandro Silva 2022-01-11 fim}
         end;
       end;
@@ -24612,9 +24623,13 @@ begin
     VisualizaroXMLdaNFCe1.Visible   := False;
 
     VisualizaroDANFCE1.Visible      := True;
+    {Sandro Silva 2023-08-15 inicio
     EnviaraNFCe1.Visible            := True;
 
     EnviaraNFCe1.Enabled            := (Form1.IBDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_ABERTA);
+    }
+    EnviaraNFCe1.Visible            := False;
+    {Sandro Silva 2023-08-15 fim}
 
     VisualizaroDANFCE1.Enabled      := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');
     ImprimeoDANFCE1.Enabled         := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');;
