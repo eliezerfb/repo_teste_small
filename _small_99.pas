@@ -1296,7 +1296,7 @@ begin
   //
   try
 
-    Form1.ExibePanelMensagem('Aguarde... Gerando ' + Form1.sTipoDocumento + ' em PDF'); // Sandro Silva 2018-08-01
+    Form1.ExibePanelMensagem('Aguarde... Gerando movimentação em PDF'); // Sandro Silva 2018-08-01
 
     sFilePDF := 'Venda_' + sPedido + '_' + sCaixa;
 
@@ -1883,6 +1883,7 @@ begin
       IBQCLIFOR.SQL.Text := 'select * from CLIFOR where NOME='+QuotedStr(IBQALTERACA.FieldByName('CLIFOR').AsString)+' and trim(coalesce(NOME,'''')) <> '''' ';
       IBQCLIFOR.Open;
       //
+      {Sandro Silva 2023-08-16 inicio
       if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Alltrim(IBQALTERACA.FieldByName('CLIFOR').AsString)<>'') then
       begin
         if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
@@ -1895,6 +1896,24 @@ begin
           sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('CIDADE').AsString + '-' + IBQCLIFOR.FieldByname('ESTADO').AsString  + ' ' + IBQCLIFOR.FieldByname('CEP').AsString;
         end;
       end;
+      }
+      if LimpaNumero(IBQALTERACA.FieldByName('CNPJ').AsString) <> '' then
+        sCNPJCliente     := FormataCpfCgc(LimpaNumero(IBQALTERACA.FieldByName('CNPJ').AsString)); // CNPJ do Destinatário
+      sNomeCliente     := Trim(ConverteAcentos2(IBQALTERACA.FieldByName('CLIFOR').AsString));
+
+      if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Trim(IBQALTERACA.FieldByName('CLIFOR').AsString) <> '') then
+      begin
+        if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
+        begin
+          sCNPJCliente     := IBQCLIFOR.FieldByName('CGC').AsString; // CNPJ do Destinatário
+          sNomeCliente     := Trim(ConverteAcentos2(IBQCLIFOR.FieldByName('NOME').AsString));
+          sEmailCliente    := IBQCLIFOR.FieldByname('EMAIL').AsString;
+          sEnderecoCliente := IBQCLIFOR.FieldByname('ENDERE').AsString;
+          sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('COMPLE').AsString;
+          sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('CIDADE').AsString + '-' + IBQCLIFOR.FieldByname('ESTADO').AsString  + ' ' + IBQCLIFOR.FieldByname('CEP').AsString;
+        end;
+      end;
+      {Sandro Silva 2023-08-16 fim}
 
       Canvas := TCanvas.Create;
 
@@ -1991,11 +2010,18 @@ begin
 
       if (sCNPJCPFDestinatario <> '') or (sNomeCliente <> '') then
       begin
+        {Sandro Silva 2023-08-16 inicio
         PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
         CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
+        }
 
         if (sCNPJCPFDestinatario <> '') then // Ficha 4251 Sandro Silva 2018-10-01
         begin
+          {Sandro Silva 2023-08-16 inicio}
+          PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
+          CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
+          {Sandro Silva 2023-08-16 fim}
+
           sCNPJCPFDestinatario := FormataCpfCgc(sCNPJCPFDestinatario);
           PrinterTextoMemo(iLinha, iMargemEsq, (iLarguraPapel - iMargemEsq) - 5, 'Cliente: ' + sCNPJCPFDestinatario);
         end;
@@ -2017,7 +2043,7 @@ begin
         CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
       end;
 
-      if (sCNPJCPFDestinatario = '') then
+      if (sCNPJCPFDestinatario = '') and (sNomeCliente = '') then // Sandro Silva 2023-08- if (sCNPJCPFDestinatario = '') then
       begin
         PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
         CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);

@@ -326,6 +326,9 @@ function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
 function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
   sPedido: String; sCaixa: String; sModelo: String): Boolean;
+function TemGerencialLancadoOuConvertido(
+  IBTransaction: TIBTransaction): Boolean;
+    
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -2195,6 +2198,26 @@ begin
 
 end;
 
+function TemGerencialLancadoOuConvertido(IBTransaction: TIBTransaction): Boolean;
+var
+  IBQTEMP: TIBQuery;
+begin
+  IBQTEMP := CriaIBQuery(IBTransaction);
+  Result := False;
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text :=
+      'select count(NUMERONF) as QTDGERENCIAL ' +
+      'from NFCE ' +
+      'where (MODELO = ''99'' and STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ') ' +
+      'or ( (MODELO <> ''99'') and (coalesce(GERENCIAL, '''') <> ''''))';
+    IBQTEMP.Open;
+    Result := (IBQTEMP.FieldByName('QTDGERENCIAL').AsInteger > 0);
+  except
+
+  end;
+  FreeAndNil(IBQTEMP);
+end;
 
 {
 function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;

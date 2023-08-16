@@ -15368,8 +15368,12 @@ begin
   DocumentoAuxiliardeVendaDAVOramento1.Caption := 'Orçamento - Documento Auxiliar de Venda (DAV) ...';
 
   {Sandro Silva 2023-07-13 inicio}
+  itemMenugerencial.Visible := False;
   if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then
+  begin
     itemMenugerencial.Caption := 'Converter gerencial em ' + Form1.sTipoDocumento2;//  'Importar gerencial';
+    itemMenugerencial.Visible := TemGerencialLancadoOuConvertido(Form1.ibDataSet27.Transaction);
+  end;
   {Sandro Silva 2023-07-13 fim}
 
   {Sandro Silva 2023-05-30 inicio}
@@ -24335,6 +24339,8 @@ begin
   begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') then
       _ecf65_Visualiza_DANFECE(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString)
+    else if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') then
+      _ecf99_Visualiza_Venda(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString)
     else
       SmallMsg('Este XML não pertence a uma NFC-e');
   end;
@@ -24720,8 +24726,9 @@ begin
     RecuperarXMLdaNFCe1.Enabled     := False;
     Verificaresquemaschema1.Enabled := False;
     VisualizaroXMLdaNFCe1.Enabled   := False;
+    VisualizaroDANFCE1.Enabled      := True;// Sandro Silva 2018-08-03
   end;
-  {Sandro Silva 2023-08-08 fim}  
+  {Sandro Silva 2023-08-08 fim}
 
 end;
 
@@ -26873,6 +26880,23 @@ begin
     Form1.IBDataSet150.FieldByName('ENCRYPTHASH').Visible := False;
   end;
 
+  {Sandro Silva 2023-08-16 inicio}
+  if Form1.IBDataSet150.FindField('GERENCIAL') <> nil then
+  begin
+    Form1.IBDataSet150.FieldByName('GERENCIAL').Visible :=  TemGerencialLancadoOuConvertido(Form1.ibDataSet27.Transaction);
+    if Form1.sModeloECF = '99' then
+      Form1.IBDataSet150.FieldByName('GERENCIAL').Visible := False;
+  end;
+
+  if Form1.sModeloECF = '99' then
+  begin
+    if Form1.IBDataSet150.FindField('NFEID') <> nil then
+      Form1.IBDataSet150.FieldByName('NFEID').Visible := False;
+    if Form1.IBDataSet150.FindField('NFEXML') <> nil then
+      Form1.IBDataSet150.FieldByName('NFEXML').Visible := False;
+  end;
+  {Sandro Silva 2023-08-16 fim}
+
   if DBGrid1.Visible then
     AjustaLarguraDBGrid(DBGrid1); // Sandro Silva 2016-08-12
 
@@ -28700,6 +28724,14 @@ begin
     if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') then
       EmitirNFCedogerencial1.Visible := True;
   end;
+
+  {Sandro Silva 2023-08-16 inicio}
+  VisualizaroDANFCE1.Caption := 'Visualizar o DANFCE...';
+  if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') then
+    VisualizaroDANFCE1.Caption := 'Visualizar o Extrato do ' + NomeModeloDocumento('59') + '...'
+  else if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') then
+    VisualizaroDANFCE1.Caption := 'Visualizar movimentação...';
+  {Sandro Silva 2023-08-16 fim}
 end;
 
 procedure TForm1.OcultaPanelMensagem;

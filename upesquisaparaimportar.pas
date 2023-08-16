@@ -333,8 +333,11 @@ begin
         (Sender As TDBGrid).Canvas.Font.Color := clWhite
       else
       begin
-        if Column.Field.DataSet.FieldByName('Doc. Fiscal').AsString <> '' then
-          (Sender As TDBGrid).Canvas.Font.Color := COR_AZUL // Sandro Silva 2021-08-17
+        if Column.Field.DataSet.FindField('Doc. Fiscal') <> nil then // Não existe este campo na pesquisa de gerencial 
+        begin
+          if Column.Field.DataSet.FieldByName('Doc. Fiscal').AsString <> '' then
+            (Sender As TDBGrid).Canvas.Font.Color := COR_AZUL // Sandro Silva 2021-08-17
+        end;
       end;
 
       if (Column.Field.DataType in [ftFloat, ftBCD, ftFMTBcd]) then
@@ -380,16 +383,19 @@ begin
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=
     'select N.NUMERONF as "Número", N.DATA as "Data" ' +
-    ', coalesce(A.CLIFOR, '''') as "Cliente" ' +
+    // Sandro Silva 2023-08-16 ', coalesce(A.CLIFOR, '''') as "Cliente" ' +
+    ', max((select first 1 distinct coalesce(A2.CLIFOR, '''') as CLIFOR from ALTERACA A2 where A2.PEDIDO = A.PEDIDO and A2.CAIXA = A.CAIXA order by DATA, HORA)) as "Cliente" ' +
     ', N.TOTAL as "Total" ' +
-    ', max(coalesce(A.VALORICM, '''')) as "Doc. Fiscal" ' +
+    // Sandro Silva 2023-08-16 ', max(coalesce(A.VALORICM, '''')) as "Doc. Fiscal" ' +
+    ', max((select first 1 distinct coalesce(A2.VENDEDOR, '''') as VENDEDOR from ALTERACA A2 where A2.PEDIDO = A.PEDIDO and A2.CAIXA = A.CAIXA order by DATA, HORA)) as "Vendedor" ' +
     'from NFCE N ' +
     'join ALTERACA A on A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
     'where N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date - 30)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date)) + ' ' + // Últimos 30 dias da data
     ' and N.MODELO = ''99'' ' +
     ' and N.STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ' +
     sCondicao +
-    'group by N.NUMERONF, N.DATA, coalesce(A.CLIFOR, ''''), N.TOTAL ' +
+    // Sandro Silva 2023-08-16 'group by N.NUMERONF, N.DATA, coalesce(A.CLIFOR, ''''), N.TOTAL ' +
+    'group by N.NUMERONF, N.DATA, N.TOTAL ' +
     'order by N.DATA desc, N.NUMERONF desc';
   IBQPESQUISA.Open;
 

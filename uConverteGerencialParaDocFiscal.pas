@@ -376,8 +376,8 @@ begin
             FIBDataSet28.FieldByName('CAIXA').AsString  := FCaixa;
             FIBDataSet28.FieldByName('DATA').AsDateTime := dtDataNovo;
             FIBDataSet28.FieldByName('CCF').AsString    := sNovoNumero;
-            FIBDataSet28.FieldByName('CCO').AsString    := sNovoNumero;
-            if FIBDataSet28.FieldByName('GNF').AsString = FNumeroGerencial then
+            FIBDataSet28.FieldByName('COO').AsString    := sNovoNumero;
+            if FIBDataSet28.FieldByName('GNF').AsString = FNumeroGerencial then  // Quando for cartão não serão iguais o GNF e o Numero do gerencial
               FIBDataSet28.FieldByName('GNF').AsString := sNovoNumero;
             FIBDataSet28.Post;
           except
