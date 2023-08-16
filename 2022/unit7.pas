@@ -19409,6 +19409,11 @@ begin
   if Form7.ibDataSet16DESCRICAO.AsString = EmptyStr then
     Exit;
 
+  //Mauricio Parizotto 2023-08-16
+  //Se for importação de cupom não valida Estoque - Já foi baixado estoque (se mudar mudar deve mudar rotina de incremento estoque quando entra na nota)
+  if Copy(ibDataSet14CFOP.AsString,2,3) = '929' then
+    Exit;
+
   if ibDataSet16QUANTIDADE.AsFloat < 0 then
     ibDataSet16QUANTIDADE.AsFloat := 0
   else
