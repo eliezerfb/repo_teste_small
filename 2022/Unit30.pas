@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
   DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
-  IBCustomDataSet;
+  IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico;
 
 type
   TForm30 = class(TForm)
@@ -77,6 +77,7 @@ type
     Incluirnovocliente1: TMenuItem;
     Button1: TBitBtn;
     Label13: TLabel;
+    framePesquisaServOS: TframePesquisaServico;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
@@ -151,9 +152,17 @@ type
     procedure ListBox1DblClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Label_fecha_0Click(Sender: TObject);
+    procedure DBGrid2ColEnter(Sender: TObject);
+    procedure framePesquisaServOSdbgItensPesqCellClick(Column: TColumn);
+    procedure framePesquisaServOSdbgItensPesqKeyDown(Sender: TObject;
+      var Key: Word; Shift: TShiftState);
+    procedure framePesquisaServOSdbgItensPesqKeyPress(Sender: TObject;
+      var Key: Char);
 
   private
     procedure DefinirCorClienteDevedor;
+    procedure DescricaoServicoChange(Sender: TField);
+    procedure AtribuirItemPesquisaServico;
     { Private declarations }
   public
     { Public declarations }
@@ -816,47 +825,15 @@ begin
   //
   if DbGrid2.SelectedIndex = 0 then
   begin
-    //
-    Form1.bFlag := False;
-    Form7.ibDataSet35.Edit;
-    Form7.ibDataSet35.UpdateRecord;
-    //
-    for I := 0 to ListBox2.Items.Count -1 do
-    begin
-      if AnsiUpperCase(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key) = AnSiUpperCase(Copy(ListBox2.Items[i],1,LenGth( AllTrim(Form7.ibDataSet35DESCRICAO.AsString)+Key ))) then
-        ListBox2.ItemIndex := I;
-    end;
-    //
-    ListBox2.Update;
-    //
     if Key <> Chr(13) then
     begin
-      if not ListBox2.Visible then
-        ListBox2.Visible := True; // Key press produtos
-    end else
-    begin
-{
-      if StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString+Key))),5,0) <> '00000' then
-      begin
-        //
-        // Procura apenas pelo CODIGO
-        //
-        Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString+Key))),5,0),[loCaseInsensitive,loPartialKey]);
-        //
-        if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString+Key))),5,0) then
-        begin
-          Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-          Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
-          Form7.ibDataSet35UNITARIO.AsFloat   := Form7.ibDataSet4PRECO.AsFloat;
-        end;
-      end
-}
+      framePesquisaServOS.Visible := (AllTrim(Form7.ibDataSet35DESCRICAO.AsString) <> EmptyStr) and (Form7.ibDataSet35.State in [dsEdit, dsInsert]);
+      framePesquisaServOS.CarregarServico(Form7.ibDataSet35DESCRICAO.AsString);
     end;
-    //
   end
   else
   begin
-    ListBox2.Visible  := False;
+    framePesquisaServOS.Visible := False;
   end;
   //
   // Técnicos
@@ -892,11 +869,26 @@ procedure TForm30.DBGrid2KeyUp(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
-  //
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+  if (Key = VK_TAB) or (Key = VK_ESCAPE) then
+    Key := VK_RETURN;
   try
     begin
+      if DBGrid2.SelectedIndex = 0 then
+      begin
+        if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
+        begin
+          if not framePesquisaServOS.Visible then
+            framePesquisaServOS.Visible := True
+          else
+            Form7.bFlag := False;
+
+          Form7.ibDataSet35.Edit;
+          Form7.ibDataSet35.UpdateRecord;
+          Form7.ibDataSet35.Edit;
+          Form7.bFlag := True;
+        end;
+      end;
+
       if Key = VK_RETURN then
       begin
         //
@@ -933,12 +925,36 @@ begin
   //
 end;
 
+procedure TForm30.AtribuirItemPesquisaServico;
+begin
+  if allTrim(framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('CODIGO').AsString) <> EmptyStr then
+  begin
+    Form7.ibDataSet35.Edit;
+    Form7.ibDataSet35DESCRICAO.AsString := framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('CODIGO').AsString;
+    DBGrid2.SetFocus;
+  end;
+end;
+
+procedure TForm30.DescricaoServicoChange(Sender: TField);
+begin
+  if Sender = Form7.ibDataSet35DESCRICAO then
+  begin
+    if (Trim(DBGrid2.DataSource.DataSet.fieldbyname('DESCRICAO').AsString) = EmptyStr) then
+    begin
+      framePesquisaServOS.Visible := False;
+      Exit;
+    end;
+
+    framePesquisaServOS.CarregarServico(DBGrid2.DataSource.DataSet.fieldbyname('DESCRICAO').AsString);
+  end;
+end;
+
 procedure TForm30.DBGrid2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   Form1.bFlag := True;
-  //
-  if Key = VK_DOWN   then
+
+  if (Key = VK_DOWN) or (Key = VK_UP) then
   begin
     if dBgrid3.Visible then
     begin
@@ -950,22 +966,13 @@ begin
       ListBox2.SetFocus;
       Abort;
     end;
-  end;
-  //
-  if Key = VK_UP then
-  begin
-    if dBgrid3.Visible then
+    if framePesquisaServOS.Visible then
     begin
-      dBgrid3.SetFocus;
-      Abort;
-    end;
-    if ListBox2.Visible then
-    begin
-      ListBox2.SetFocus;
+      framePesquisaServOS.dbgItensPesq.SetFocus;
       Abort;
     end;
   end;
-  //
+
   if Key = VK_RETURN then
   begin
     //
@@ -974,9 +981,11 @@ begin
     if DbGrid2.SelectedIndex = 0 then
     begin
       //
-      if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then Form7.ibDataset35.Edit;
+      if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset35.Edit;
       Form7.ibDataSet35.UpdateRecord;
-      if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then Form7.ibDataset35.Edit;
+      if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset35.Edit;
       //
       // Procura produto pelo código
       //
@@ -1049,10 +1058,11 @@ end;
 
 procedure TForm30.DBGrid2ColExit(Sender: TObject);
 begin
-  ListBox2.Visible := False;
+  framePesquisaServOS.Visible := False;
   Form7.ibDataSet35.Edit;
   Form7.ibDataSet35.UpdateRecord;
-  if AllTrim(Form7.ibDataSet35DESCRICAO.AsString) = '' then Perform(Wm_NextDlgCtl,0,0);
+  if AllTrim(Form7.ibDataSet35DESCRICAO.AsString) = EmptyStr then
+    Perform(Wm_NextDlgCtl,0,0);
 end;
 
 procedure TForm30.DBGrid1KeyUp(Sender: TObject; var Key: Word;
@@ -1353,6 +1363,10 @@ end;
 
 procedure TForm30.FormShow(Sender: TObject);
 begin
+  framePesquisaServOS.setDataBase(Form7.IBDatabase1);
+  Form7.ibDataSet35DESCRICAO.OnChange := DescricaoServicoChange;
+  framePesquisaServOS.Height := 136;
+  
   DefinirCorClienteDevedor;
   //
   Form7.ibDataSet2.Close;
@@ -1619,6 +1633,29 @@ end;
 procedure TForm30.Label_fecha_0Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TForm30.DBGrid2ColEnter(Sender: TObject);
+begin
+  framePesquisaServOS.Visible := False;
+end;
+
+procedure TForm30.framePesquisaServOSdbgItensPesqCellClick(
+  Column: TColumn);
+begin
+  AtribuirItemPesquisaServico;
+end;
+
+procedure TForm30.framePesquisaServOSdbgItensPesqKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  framePesquisaServOS.dbgItensPesqKeyDown(Sender, Key, Shift);
+end;
+
+procedure TForm30.framePesquisaServOSdbgItensPesqKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = chr(13) then
+    AtribuirItemPesquisaServico;
 end;
 
 end.

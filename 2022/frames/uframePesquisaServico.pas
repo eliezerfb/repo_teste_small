@@ -1,4 +1,4 @@
-unit uframePesquisaProduto;
+unit uframePesquisaServico;
 
 interface
 
@@ -7,23 +7,23 @@ uses
   Dialogs, uframePesquisaPadrao, Grids, DBGrids, ExtCtrls, DB, SmallFunc;
 
 type
-  TframePesquisaProduto = class(TframePesquisaPadrao)
+  TframePesquisaServico = class(TframePesquisaPadrao)
   private
   public
     constructor Create(AOwner: TComponent); override;  
-    procedure CarregarProdutos(AcPesquisar: String);
+    procedure CarregarServico(AcPesquisar: String);
   end;
 
 var
-  framePesquisaProduto: TframePesquisaProduto;
+  framePesquisaServico: TframePesquisaServico;
 
 implementation
 
 {$R *.dfm}
 
-{ TframePesquisaProduto }
+{ TframePesquisaPadrao1 }
 
-procedure TframePesquisaProduto.CarregarProdutos(AcPesquisar: String);
+procedure TframePesquisaServico.CarregarServico(AcPesquisar: String);
 begin
   if not Self.Visible then
     Exit;
@@ -35,7 +35,7 @@ begin
   FqryRegistros.SQL.Add(' , ESTOQUE.DESCRICAO AS DESCRICAO');
   FqryRegistros.SQL.Add('FROM ESTOQUE');
   FqryRegistros.SQL.Add('WHERE');
-  FqryRegistros.SQL.Add('((COALESCE(ESTOQUE.ATIVO,0)=0) OR ((COALESCE(ESTOQUE.ATIVO,0)=1) AND (ESTOQUE.TIPO_ITEM='+QuotedStr('01')+')))');
+  FqryRegistros.SQL.Add('(((COALESCE(ESTOQUE.ATIVO,0)=0) OR (COALESCE(ESTOQUE.ATIVO,0)=1)) AND (ESTOQUE.TIPO_ITEM='+QuotedStr('09')+'))');
   if (LimpaNumero(AcPesquisar) = AcPesquisar) and (Length(LimpaNumero(AcPesquisar)) <= 5) then
     FqryRegistros.SQL.Add('AND (ESTOQUE.CODIGO='+ QuotedStr(LimpaNumero(AcPesquisar))+')');
   if (LimpaNumero(AcPesquisar) = AcPesquisar) and (Length(LimpaNumero(AcPesquisar)) > 5) then
@@ -49,7 +49,7 @@ begin
   dbgItensPesq.Columns[Pred(dbgItensPesq.Columns.Count)].Width := dbgItensPesq.Width - 22;  
 end;
 
-constructor TframePesquisaProduto.Create(AOwner: TComponent);
+constructor TframePesquisaServico.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 end;

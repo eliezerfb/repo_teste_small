@@ -153,7 +153,8 @@ uses
   uIEstruturaRelatorioPadrao in 'interfaces\uIEstruturaRelatorioPadrao.pas',
   uIDadosImpressaoDAO in 'interfaces\uIDadosImpressaoDAO.pas',
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
-  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas';
+  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
+  uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame};
 
 {$R *.RES}
 

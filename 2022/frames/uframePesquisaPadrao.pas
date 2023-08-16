@@ -10,6 +10,8 @@ type
   TframePesquisaPadrao = class(TFrame)
     pnlPrincipal: TPanel;
     dbgItensPesq: TDBGrid;
+    procedure dbgItensPesqKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -51,6 +53,13 @@ begin
   Self.FqryRegistros.SQL.Clear;
 
   Self.FqryRegistros.Database := AoDataBase;
+end;
+
+procedure TframePesquisaPadrao.dbgItensPesqKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then
+    Key := 0;
 end;
 
 end.

@@ -1031,6 +1031,7 @@ object Form30: TForm30
         TitleFont.Height = -11
         TitleFont.Name = 'Microsoft Sans Serif'
         TitleFont.Style = []
+        OnColEnter = DBGrid2ColEnter
         OnColExit = DBGrid2ColExit
         OnEnter = DBGrid2Enter
         OnKeyDown = DBGrid2KeyDown
@@ -1258,6 +1259,25 @@ object Form30: TForm30
             Expanded = False
             Visible = True
           end>
+      end
+      inline framePesquisaServOS: TframePesquisaServico
+        Left = 15
+        Top = 578
+        Width = 600
+        Height = 7
+        TabOrder = 27
+        Visible = False
+        inherited pnlPrincipal: TPanel
+          Width = 600
+          Height = 7
+          inherited dbgItensPesq: TDBGrid
+            Width = 600
+            Height = 7
+            OnCellClick = framePesquisaServOSdbgItensPesqCellClick
+            OnKeyDown = framePesquisaServOSdbgItensPesqKeyDown
+            OnKeyPress = framePesquisaServOSdbgItensPesqKeyPress
+          end
+        end
       end
     end
     object Panel2: TPanel
