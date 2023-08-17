@@ -618,6 +618,7 @@ type
     procedure ComboBoxEnter(Sender: TObject);
     procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
   private
+    cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
@@ -2094,24 +2095,6 @@ begin
       if (DataField = 'CFOP') and (Form7.sModulo = 'ICM')then
         DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
-
-      {Dailon (f-7225) 2023-08-14 inicio}
-      if (Form7.sModulo = 'ESTOQUE') then
-      begin
-        if Form7.IBDataSet4REFERENCIA.AsString <> StringReplace(Form7.IBDataSet4REFERENCIA.AsString, ' ', EmptyStr, [rfReplaceAll]) then
-        begin
-          if Form7.ibDataSet4.State = dsBrowse then
-            Form7.ibDataSet4.Edit;
-          Form7.IBDataSet4REFERENCIA.AsString := StringReplace(Form7.IBDataSet4REFERENCIA.AsString, ' ', EmptyStr, [rfReplaceAll]);
-        end;
-        if Form7.ibDataSet4DESCRICAO.AsString <> TrimDuplicados(Form7.ibDataSet4DESCRICAO.AsString) then
-        begin
-          if Form7.ibDataSet4.State = dsBrowse then
-            Form7.ibDataSet4.Edit;
-          Form7.ibDataSet4DESCRICAO.AsString := TrimDuplicados(Form7.ibDataSet4DESCRICAO.AsString);
-        end;
-      end;
-      {Dailon (f-7225) 2023-08-14 fim}
     end;
   except
   end;
@@ -4445,6 +4428,21 @@ begin
         TSMALL_DBEdit(Sender).Text := TSMALL_DBEdit(Sender).Field.AsString;
       end;
     end;
+    {Dailon (f-7225) 2023-08-17 inicio}
+    if Form7.sModulo = 'ESTOQUE' then
+    begin
+      if ((TSMALL_DBEdit(Sender).DataField = 'REFERENCIA')
+          or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO')) then
+      begin
+        if ((Form7.ibDataSet4DESCRICAO.AsString = EmptyStr) or ((cCadJaValidado <> Form7.ibDataSet4DESCRICAO.AsString) and (Form7.TestarProdutoExiste(Form7.ibDataSet4DESCRICAO.AsString)))) then
+        begin
+          if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+        end else
+          cCadJaValidado := Form7.ibDataSet4DESCRICAO.AsString;
+      end;
+    end;
+    {Dailon (f-7225) 2023-08-17 fim}
   end;
   {Sandro Silva 2022-10-18 fim}
 end;

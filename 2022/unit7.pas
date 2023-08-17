@@ -2256,7 +2256,8 @@ type
     function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
     procedure AtualizarListaItensAuxiliar;    
-    procedure AuditaAlteracaoEstoqueManual;    
+    procedure AuditaAlteracaoEstoqueManual;
+    function TestarProdutoExiste(AcTexto: String): Boolean;   
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -12005,7 +12006,7 @@ procedure TForm7.ibDataSet4DESCRICAOSetText(Sender: TField; const Text: String);
 var
   cTexto: String;
 begin
-  cTexto := TrimDuplicados(Text);
+  cTexto := AllTrim(Text);
 
   if (AllTrim(ibDataSet4DESCRICAO.AsString) <> '') and (AllTrim(cTexto) = '') then
   begin
@@ -12504,7 +12505,7 @@ procedure TForm7.ibDataSet4REFERENCIASetText(Sender: TField;
 var
   cTexto: String;
 begin
-  cTexto := StringReplace(Text, ' ', EmptyStr, [rfReplaceAll]);
+  cTexto := AllTrim(Text);
 
   if Alltrim(cTexto) = '' then ibDataSet4REFERENCIA.AsString := '' else
   begin
@@ -33342,6 +33343,11 @@ end;
 procedure TForm7.ibDataSet16AfterOpen(DataSet: TDataSet);
 begin
   AtualizarListaItensAuxiliar;
+end;
+
+function TForm7.TestarProdutoExiste(AcTexto: String): Boolean;
+begin
+  Result := Valida_Campo('ESTOQUE', AllTrim(AcTexto), 'DESCRICAO', EmptyStr);
 end;
 
 end.
