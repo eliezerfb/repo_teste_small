@@ -62,11 +62,14 @@ begin
   // Grade
   Form7.ibDataSet10.Close;
   Form7.ibDataSet10.SelectSQL.Clear;
-  Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+  // Sandro Silva 2023-08-17 Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
+  Form7.ibDataSet10.Selectsql.Add('select * from GRADE where coalesce(CODIGO, '''') <> '''' and  CODIGO = ' + QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ' order by CODIGO, COR, TAMANHO');
   Form7.ibDataSet10.Open;
   Form7.ibDataSet10.First;
 
-  if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
+  // Sandro Silva 2023-08-17  if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
+  // Valida se o código encontrado é o mesmo que foi pesquisado e o encontrado não pode ser vazio. Identificado em banco de cliente, a tabela GRADE contendo registros e todos com campo CODIGO vazio
+  if (Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString) and (Trim(Form7.ibDataSet10CODIGO.AsString) <> '') then
   begin
     // Cadastro do item na VENDA quantidade geralemtne = 1
     Form1.rReserva := sp1;

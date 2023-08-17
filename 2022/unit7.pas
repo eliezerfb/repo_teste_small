@@ -18639,7 +18639,9 @@ begin
                 // Procura pela descricão
                 Form7.ibDataSet99.Close;
                 Form7.ibDataSet99.SelectSQL.Clear;
-                Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
+                // Sandro Silva 2023-08-17 Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(DESCRICAO)='+QuotedStr(UpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
+                // where no campo descricao tirando espaços do início e final do texto gravado no campo porque no dataset16descricao são eliminados do texto os espaços do início e final
+                Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and upper(trim(DESCRICAO))='+QuotedStr(UpperCase(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)))+' order by upper(DESCRICAO)'); // Maça Verde
   //              Form7.ibDataSet99.SelectSQL.Add('select * from ESTOQUE where upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(AllTrim(ibDataSet16DESCRICAO.AsString))+'%')+' order by upper(DESCRICAO)');
                 Form7.ibDataSet99.Open;
                 Form7.ibDataSet99.First;
@@ -19516,7 +19518,10 @@ begin
     begin
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' ');
+      // Sandro Silva 2023-08-17 Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' ');
+      // IBDataSet16DESCRICAO elimina os espaços no início e final, mas no banco está gravado com espaço
+      // Pesquisa eliminando espaços do início e final do campo e do texto usado na condição
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where trim(DESCRICAO)='+QuotedStr(Trim(Form7.ibDataSet16DESCRICAO.AsString))+' ');
       Form7.ibDataSet4.Open;
     end;
     //
