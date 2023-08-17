@@ -618,6 +618,7 @@ type
     procedure ComboBoxEnter(Sender: TObject);
     procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
   private
+    cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
@@ -2094,36 +2095,6 @@ begin
       if (DataField = 'CFOP') and (Form7.sModulo = 'ICM')then
         DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
-
-      {Dailon (f-7224) 2023-08-14 inicio}
-      if Form7.sModulo = 'CLIENTES' then
-      begin
-        if Form7.ibDataSet2NOME.AsString <> TrimDuplicados(Form7.ibDataSet2NOME.AsString) then
-        begin
-          if Form7.ibDataSet2.State = dsBrowse then
-            Form7.ibDataSet2.Edit;
-          Form7.ibDataSet2NOME.AsString := TrimDuplicados(Form7.ibDataSet2NOME.AsString);
-        end;
-        if Form7.IBDataSet2ENDERE.AsString <> TrimDuplicados(Form7.IBDataSet2ENDERE.AsString) then
-        begin
-          if Form7.ibDataSet2.State = dsBrowse then
-            Form7.ibDataSet2.Edit;
-          Form7.IBDataSet2ENDERE.AsString := TrimDuplicados(Form7.IBDataSet2ENDERE.AsString);
-        end;
-        if Form7.IBDataSet2COMPLE.AsString <> TrimDuplicados(Form7.IBDataSet2COMPLE.AsString) then
-        begin
-          if Form7.ibDataSet2.State = dsBrowse then
-            Form7.ibDataSet2.Edit;
-          Form7.IBDataSet2COMPLE.AsString := TrimDuplicados(Form7.IBDataSet2COMPLE.AsString);
-        end;
-        if Form7.IBDataSet2EMAIL.AsString <> AllTrim(Form7.IBDataSet2EMAIL.AsString) then
-        begin
-          if Form7.ibDataSet2.State = dsBrowse then
-            Form7.ibDataSet2.Edit;
-          Form7.IBDataSet2EMAIL.AsString := AllTrim(Form7.IBDataSet2EMAIL.AsString);
-        end;
-      end;
-      {Dailon (f-7224) 2023-08-14 fim}
     end;
   except
   end;
@@ -4437,18 +4408,15 @@ begin
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
 
-  {Sandro Silva 2022-10-18 inicio}
-  //Key := Form1.BloqueiaCtrlXTField(Sender, Key, Shift);
-
   if Sender.ClassType = TSMALL_DBEdit then
   begin
-     if (((TSMALL_DBEdit(Sender).DataField = 'NOME') or (TSMALL_DBEdit(Sender).DataField = 'CGC') or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO')) and
-      (
-        (Form7.sModulo = 'RECEBER') or
-        (Form7.sModulo = 'PAGAR') or
-        (Form7.sModulo = 'CLIENTES') or
-        (Form7.sModulo = 'ESTOQUE')
-      )) then
+     if (((TSMALL_DBEdit(Sender).DataField = 'NOME')
+          or (TSMALL_DBEdit(Sender).DataField = 'CGC')
+          or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO'))
+        and ((Form7.sModulo = 'RECEBER') or
+             (Form7.sModulo = 'PAGAR') or
+             (Form7.sModulo = 'CLIENTES') or
+             (Form7.sModulo = 'ESTOQUE'))) then
     begin
       if (Trim(TSMALL_DBEdit(Sender).Text) = '') and (TSMALL_DBEdit(Sender).Field.OldValue <> '') then
       begin
@@ -4457,8 +4425,23 @@ begin
         TSMALL_DBEdit(Sender).Text := TSMALL_DBEdit(Sender).Field.AsString;
       end;
     end;
+    {Dailon (f-7224) 2023-08-17 inicio}
+    if Form7.sModulo = 'CLIENTES' then
+    begin
+      if ((TSMALL_DBEdit(Sender).DataField = 'ENDERE')
+          or (TSMALL_DBEdit(Sender).DataField = 'COMPLE')
+          or (TSMALL_DBEdit(Sender).DataField = 'EMAIL')) then
+      begin
+        if ((Form7.IBDataSet2NOME.AsString = EmptyStr) or ((cCadJaValidado <> Form7.IBDataSet2NOME.AsString) and (Form7.TestarClienteExiste(Form7.IBDataSet2NOME.AsString)))) then
+        begin
+          if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+        end else
+          cCadJaValidado := Form7.IBDataSet2NOME.AsString;
+      end;
+    end;
+    {Dailon (f-7224) 2023-08-17 fim}
   end;
-  {Sandro Silva 2022-10-18 fim}
 end;
 
 procedure TForm10.Image5Click(Sender: TObject);

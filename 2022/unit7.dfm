@@ -20178,6 +20178,7 @@ object Form7: TForm7
       DisplayWidth = 40
       FieldName = 'EMAIL'
       Origin = 'CLIFOR.EMAIL'
+      OnSetText = IBDataSet2EMAILSetText
       Size = 80
     end
     object IBDataSet2CREDITO: TFloatField

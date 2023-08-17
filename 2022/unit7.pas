@@ -2112,6 +2112,7 @@ type
     procedure ibDataSet16AfterOpen(DataSet: TDataSet);
     procedure IBDataSet2ENDERESetText(Sender: TField; const Text: String);
     procedure IBDataSet2COMPLESetText(Sender: TField; const Text: String);
+    procedure IBDataSet2EMAILSetText(Sender: TField; const Text: String);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2258,7 +2259,8 @@ type
     function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
     procedure AtualizarListaItensAuxiliar;    
-    procedure AuditaAlteracaoEstoqueManual;    
+    procedure AuditaAlteracaoEstoqueManual;
+    function TestarClienteExiste(AcTexto: String): Boolean;
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -11983,7 +11985,7 @@ procedure TForm7.ibDataSet2NOMESetText(Sender: TField; const Text: String);
 var
   cTexto: String;
 begin
-  cTexto := TrimDuplicados(Text);
+  cTexto := Text;
 
   if (AllTrim(ibDataSet2NOME.AsString) <> '') and (AllTrim(cTexto) = '') then
   begin
@@ -33345,22 +33347,29 @@ end;
 
 procedure TForm7.IBDataSet2ENDERESetText(Sender: TField;
   const Text: String);
-var
-  cTexto: String;
 begin
-  cTexto := TrimDuplicados(Text);
-
-  IBDataSet2ENDERE.AsString := cTexto;
+  IBDataSet2ENDERE.AsString := AllTrim(Text);
 end;
 
 procedure TForm7.IBDataSet2COMPLESetText(Sender: TField;
   const Text: String);
-var
-  cTexto: String;
 begin
-  cTexto := TrimDuplicados(Text);
+  IBDataSet2COMPLE.AsString := AllTrim(Text);
+end;
 
-  IBDataSet2COMPLE.AsString := cTexto;
+function TForm7.TestarClienteExiste(AcTexto: String): Boolean;
+begin
+  Result := Valida_Campo('CLIFOR',AllTrim(AcTexto),'NOME', EmptyStr);
+end;
+
+procedure TForm7.IBDataSet2EMAILSetText(Sender: TField; const Text: String);
+begin
+  IBDataSet2EMAIL.OnSetText := nil;
+  try
+    IBDataSet2EMAIL.Text := AllTrim(Text);
+  finally
+    IBDataSet2EMAIL.OnSetText := IBDataSet2EMAILSetText;
+  end;
 end;
 
 end.
