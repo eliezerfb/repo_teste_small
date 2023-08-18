@@ -13626,7 +13626,7 @@ object Form1: TForm1
     OnChange = PopupMenu1Change
     OnPopup = PopupMenu1Popup
     Left = 832
-    Top = 220
+    Top = 217
     object CAdastros1: TMenuItem
       Caption = 'Outros cadastros'
       object Cadastrodoemitente1: TMenuItem
@@ -14226,11 +14226,16 @@ object Form1: TForm1
     Left = 864
     Top = 340
   end
-  object PopupMenu2: TPopupMenu
+  object ppmBackup: TPopupMenu
     Left = 864
     Top = 216
-    object N13: TMenuItem
-      Caption = '-'
+    object FazerBackupAgora1: TMenuItem
+      Caption = 'Fazer Backup'
+      OnClick = FazerBackupAgora1Click
+    end
+    object BackupAutomtico1: TMenuItem
+      Caption = 'Configurar Backup autom'#225'tico'
+      OnClick = BackupAutomtico1Click
     end
   end
   object LbBlowfish1: TLbBlowfish

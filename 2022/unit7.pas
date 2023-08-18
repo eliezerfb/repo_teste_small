@@ -2272,7 +2272,7 @@ type
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
   function TraduzSql(P1: String;P2 :Boolean): String;
   function ConfiguraNFE : Boolean;
-  function ConsultaProcesso(sP1:String): boolean;
+//  function ConsultaProcesso(sP1:String): boolean;
   function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
   function LoadXmlDestinatarioSaida(aChaveNFe: String): WideString;
   function LoadXmlDestinatarioEntrada(aChaveNFe: String): WideString;
@@ -4102,6 +4102,7 @@ begin
   
 end;
 
+{
 function ConsultaProcesso(sP1:String): boolean;
 var
   Snapshot: THandle;
@@ -4129,6 +4130,7 @@ begin
   CloseHandle (Snapshot);
   //
 end;
+Movido para SmallFunc}
 
 function CalculaTotalRecebido(pP1: Boolean): Boolean;
 begin

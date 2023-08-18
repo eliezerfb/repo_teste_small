@@ -181,8 +181,7 @@ type
     imgIndicadores: TImage;
     Image200_R: TImage;
     Image200_X: TImage;
-    PopupMenu2: TPopupMenu;
-    N13: TMenuItem;
+    ppmBackup: TPopupMenu;
     Image_raio_2: TImage;
     Image_raio_1: TImage;
     CNPJdacontabilidade1: TMenuItem;
@@ -268,6 +267,8 @@ type
     Image3: TImage;
     Image_bola_vendas: TImage;
     Label_Bola_vendas: TLabel;
+    FazerBackupAgora1: TMenuItem;
+    BackupAutomtico1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -430,6 +431,8 @@ type
       const pDisp: IDispatch; var URL: OleVariant);
     procedure Configuraes1Click(Sender: TObject);
     procedure Label_Bola_vendasClick(Sender: TObject);
+    procedure FazerBackupAgora1Click(Sender: TObject);
+    procedure BackupAutomtico1Click(Sender: TObject);
 
 
   private
@@ -5910,9 +5913,12 @@ end;
 
 
 procedure TForm1.imgBackupClick(Sender: TObject);
+{
 var
   Backup: TBackup;
+}
 begin
+(*
   if not FechaTudo(bFechaTudo) then
     Exit;
 
@@ -5920,13 +5926,35 @@ begin
   Form1.Label201MouseLeave(Sender);
 
   Backup := TBackup.Create;
-  if Backup.FazerBackup(Sender) = IDYES then
+  {Mauricio parizotto 2023-08-09 Inicio}
+
+  Backup.FMostraDialogs := True;
+  SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', Backup.FDiretorioBKP);
+  Backup.FNomeArquivoBKP := Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date));
+
+  try
+    Commitatudo(True);
+  except
+  end;
+
+  try
+    FechaTudo(Form1.bFechaTudo);
+    Form7.ibDataSet13.Close;
+  except
+  end;
+
+  {Mauricio parizotto 2023-08-09 Fim}
+
+  if Backup.FazerBackup = IDYES then
     Form19.Button1Click(Sender);
 
   FreeAndNil(Backup);
 
   if Form7.sModulo <> 'INDICADORES' then
     Form7.sModulo := '';
+Mauricio Parizotto 2023-08-10*)
+
+  ppmBackup.Popup(Form1.imgBackup.Left,Form1.imgBackup.Top + Form1.imgBackup.Height + 35);
 end;
 
 procedure TForm1.imgConfiguracoesClick(Sender: TObject);
@@ -5935,27 +5963,24 @@ var
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  //
+
   Form7.sAjuda := 'config.htm';
   Form7.sModulo := 'CONFIG';
   Form1.Label201MouseLeave(Sender);
-  //
-  //
+
   try
-    //
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     if Form24.Visible then Form24.Close;
     if Form12.Visible then Form12.Close;
     if Form7.Visible then Form7.Close;
     if Form30.Visible then Form30.Close;
     if Form48.Visible then Form48.Close;
-    //
+
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-    //
+
     if AllTrim(Mais1Ini.ReadString(Usuario,'B7','0')) <> '1' then
     begin
-      //
       Comissodevendedores1.Enabled := False;
       Cadastrodeconvnios1.Enabled  := False;
       TabeladeICMparatodososestados1.Enabled := False;
@@ -12420,6 +12445,50 @@ begin
   end;
 
   Aviso(sMSG);
+end;
+
+procedure TForm1.FazerBackupAgora1Click(Sender: TObject);
+var
+  Backup: TBackup;
+begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
+
+  Form7.sModulo := 'BACKUP';
+  Form1.Label201MouseLeave(Sender);
+
+  Backup := TBackup.Create;
+  {Mauricio parizotto 2023-08-09 Inicio}
+
+  Backup.FMostraDialogs := True;
+  SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', Backup.FDiretorioBKP);
+  Backup.FNomeArquivoBKP := Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date));
+
+  try
+    Commitatudo(True);
+  except
+  end;
+
+  try
+    FechaTudo(Form1.bFechaTudo);
+    Form7.ibDataSet13.Close;
+  except
+  end;
+
+  {Mauricio parizotto 2023-08-09 Fim}
+
+  if Backup.FazerBackup = IDYES then
+    Form19.Button1Click(Sender);
+
+  FreeAndNil(Backup);
+
+  if Form7.sModulo <> 'INDICADORES' then
+    Form7.sModulo := '';
+end;
+
+procedure TForm1.BackupAutomtico1Click(Sender: TObject);
+begin
+  ShellExecute( 0, 'Open', 'backup.exe','A', '', SW_SHOW);
 end;
 
 end.

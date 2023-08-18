@@ -71,7 +71,7 @@ uses
   uFuncoesFiscais in 'uFuncoesFiscais.pas',
   uTransmiteNFSe in 'uTransmiteNFSe.pas',
   uClientesFornecedores in 'uClientesFornecedores.pas',
-  uFazerBackup in 'uFazerBackup.pas',
+  uFazerBackup in '..\..\unit_compartilhada\uFazerBackup.pas',
   uNotaFiscalEletronica in 'uNotaFiscalEletronica.pas',
   uNotaFiscalEletronicaCalc in 'uNotaFiscalEletronicaCalc.pas',
   uImportaNFe in 'uImportaNFe.pas',
