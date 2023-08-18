@@ -1642,7 +1642,6 @@ begin
       // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
       if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       begin
-
         // Imposto da NF de DEVOLUCAO devolução
         // neste ponto é possível informar os impostos com os valores da nota de entrada
         // não importa que já foram informados o que vai valer são estes valores
@@ -1809,6 +1808,7 @@ begin
           end;
         end;
 
+        {
         if sChave <> Form7.ibDataset97.FieldByName('NFEID').AsString then
         begin
           // Devolução Quando não tem NF relacionada calcula a aliquota
@@ -1821,6 +1821,7 @@ begin
           except
           end;
         end;
+        Mauricio Parizotto 2023-08-14 Comentado pois já faz na unit uNotaFiscalEletronicaCalc}
       end;
 
       // TOTALIZADOR DA NOTA
