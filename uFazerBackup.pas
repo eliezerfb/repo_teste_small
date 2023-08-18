@@ -10,6 +10,7 @@ uses
   , FileCtrl
   , Windows
   , ShellAPI
+  , StrUtils
   {$IFDEF VER150}
   , SmallFunc
   {$ELSE}
@@ -46,11 +47,12 @@ begin
   vContador := 0; //Mauricio Parizotto 2023-08-10
   vDirSistema := ExtractFilePath(Application.ExeName);
 
-  if FileExists(Trim(sArquivo)) then
+  //if FileExists(Trim(sArquivo)) then Mauricio Parizotto 2023-08-09
+  if (FileExists(Trim(sArquivo))) or (AnsiContainsText(sArquivo,'*.')) then
   begin
     //ShellExecute( 0, 'Open', 'szip.exe', pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
     //ShellExecute( 0, 'Open', pChar(vDirSistema+'szip.exe'), pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
-    ShellExecute( 0, 'Open', pChar(vDirSistema+'szip.exe'), pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_SHOWMAXIMIZED);
+    ShellExecute( 0, 'Open', pChar(vDirSistema+'szip.exe'), pChar('backup "' + Trim(sArquivo) + '" "' + FDiretorioBKP + '"'), '', SW_HIDE);
 
     while ConsultaProcesso('szip.exe') do
     begin
