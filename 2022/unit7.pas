@@ -12187,21 +12187,21 @@ var
   Mais1ini : tIniFile;
 begin
   try
-    if Form7.sTitulo = 'Cadastro dos vendedores' then
+    if sTitulo = 'Cadastro dos vendedores' then
       sModulo := 'VENDEDOR'; // Não grava o Filtro registro coluna etc
 
     if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (TabelaAberta.Active) then
     begin
       Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
 
-      if Form7.sRPS = 'S' then //ver onde está setando para 'S'
+      if sRPS = 'S' then //ver onde está setando para 'S'
       begin
         sModulo := 'RPS';
       end;
 
-      if AllTrim(Form7.sWhere) = 'where' then
-        Form7.sWhere := '';
-      Mais1Ini.WriteString(sModulo,'FILTRO',AllTrim(Form7.sWhere));
+      if AllTrim(sWhere) = 'where' then
+        sWhere := '';
+      Mais1Ini.WriteString(sModulo,'FILTRO',AllTrim(sWhere));
       Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
       Mais1Ini.WriteString(sModulo,'COLUNA',StrZero(DbGrid1.SelectedIndex,2,0));
       Mais1Ini.WriteString(sModulo,'LINHA',StrZero(TStringGrid(DBGrid1).Row,4,0));
@@ -12235,42 +12235,42 @@ begin
     Form38.Caption := 'Cancelar';
     Form6.Tag := 36;
 
-    if Form7.sModulo = 'COMPRA' then
+    if sModulo = 'COMPRA' then
     begin
       Form1.AvisoNFECompra(True);
     end;
 
-    if Form7.sModulo = 'CAIXA' then
+    if sModulo = 'CAIXA' then
     begin
       Form1.AvisoCaixa(True);
     end;
 
-    if Form7.sModulo = 'BANCOS' then
+    if sModulo = 'BANCOS' then
     begin
       Form1.AvisoBanco(True);
     end;
 
-    if Form7.sModulo = 'ESTOQUE' then
+    if sModulo = 'ESTOQUE' then
     begin
       Form1.AvisoEstoque(True);
     end;
 
-    if Form7.sModulo = 'PAGAR' then
+    if sModulo = 'PAGAR' then
     begin
       Form1.AvisoPagar(True);
     end;
 
-    if Form7.sModulo = 'OS' then
+    if sModulo = 'OS' then
     begin
       Form1.AvisoOS(True);
     end;
 
-    if Form7.sModulo = 'RECEBER' then
+    if sModulo = 'RECEBER' then
     begin
       Form1.AvisoReceber(True);
     end;
 
-    if Form7.sModulo = 'CLIENTES' then
+    if sModulo = 'CLIENTES' then
     begin
       Form1.AvisoCliFor(True);
     end;
@@ -12280,7 +12280,8 @@ begin
   end;
 
   try
-    dbGrid1.DataSource := Form7.DataSource13;
+    //dbGrid1.DataSource := DataSource13; Mauricio Parizotto 2023-08-14  causa erro invalid transaction handle f-7258 
+    dbGrid1.DataSource := nil;
   except
     on E: Exception do
     begin
