@@ -4434,7 +4434,7 @@ begin
       if ((TSMALL_DBEdit(Sender).DataField = 'REFERENCIA')
           or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO')) then
       begin
-        if ((Form7.ibDataSet4DESCRICAO.AsString = EmptyStr) or ((cCadJaValidado <> Form7.ibDataSet4DESCRICAO.AsString) and (Form7.TestarProdutoExiste(Form7.ibDataSet4DESCRICAO.AsString)))) then
+        if ((Form7.ibDataSet4DESCRICAO.AsString = EmptyStr) or ((cCadJaValidado <> Form7.ibDataSet4DESCRICAO.AsString) and (not Form7.TestarProdutoExiste(Form7.ibDataSet4DESCRICAO.AsString)))) then
         begin
           if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
             TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
