@@ -59,7 +59,8 @@ uses
   _small_65 in '_small_65.pas',
   uFuncoesPOS in 'uFuncoesPOS.pas',
   uConverteGerencialParaDocFiscal in 'uConverteGerencialParaDocFiscal.pas',
-  _Small_59 in '_Small_59.pas';
+  _Small_59 in '_Small_59.pas',
+  _Small_99 in '_small_99.pas';
 
 {$R *.RES}
 
