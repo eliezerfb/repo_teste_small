@@ -973,6 +973,7 @@ begin
               jp2.LoadFromStream(BlobStream);
               Form10.Image5.Picture.Assign(jp2);
               Form10.Image5.Repaint;
+
             except
               Result := False;
             end;
@@ -990,8 +991,8 @@ begin
 
     if Form7.sModulo = 'GRUPOS' then
     begin
-      Form10.Image5.Picture:=nil;
-      Form10.Image3.Picture:=nil;
+      Form10.Image5.Picture := nil;
+      Form10.Image3.Picture := nil;
 
       if AllTrim(Form7.ibDataSet21NOME.AsString) <> '' then
       begin
@@ -1048,6 +1049,7 @@ begin
         end;
 
         Form10.Image5.Picture := Form10.Image5.Picture;
+        Form10.Image5.Repaint; // Sandro Silva 2023-08-21
       end;
     except
     end;
@@ -3819,8 +3821,13 @@ begin
       Form10.orelha_COMISSAO.TabVisible       := True;
     end;
   end;
-  
+
+  {Sandro Silva 2023-08-21 inicio
   Image5.Picture  := Image3.Picture;
+  }
+  if Image3.Picture.Graphic <> nil then
+    Image5.Picture  := Image3.Picture; /// aqui está limpando form10.image5.picture
+  {Sandro Silva 2023-08-21 fim}
   
   bNovo := False;
   
@@ -7045,7 +7052,7 @@ begin
   Button13.Caption       := '&Webcam';
   VideoCap1.visible      := False;
   Image5.Visible         := True;
-  
+
   if not Form7.bSoLeitura then
   begin
     Orelhas.ActivePage := orelha_cadastro;
