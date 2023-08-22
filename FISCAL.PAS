@@ -18572,7 +18572,8 @@ begin
             //
             try // Sandro Silva 2017-06-30
 
-              if (Form1.sModeloECF = '59') or ((Form1.sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then // Sandro Silva 2020-12-11 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then 
+              // Conversado com P.O. Gian que acha não ter problema usar tela de pesquisa no PAF-NFC-e
+              if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')  or (Form1.sModeloECF = '99') then // Sandro Silva 2023-08-22 if (Form1.sModeloECF = '59') or ((Form1.sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then
                 sOrcame := ImportarDaPesquisa(tpPesquisaOrca) // Sandro Silva 2019-07-12
               else
                 sOrcame := StrZero(StrToInt('0'+Limpanumero(Small_InputBox('Importar orçamento...','Número do orçamento:',''))),10,0);
@@ -19029,10 +19030,11 @@ begin
             //
             // Importa os Itens da OS
             //
-            if (Form1.sModeloECF = '59') or ((sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then // Sandro Silva 2020-12-11 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-              sOs :=  ImportarDaPesquisa(tpPesquisaOS) // Sandro Silva 2019-07-12
+            // Conversado com P.O. Gian que acha não ter problema usar tela de pesquisa no PAF-NFC-e
+              if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')  or (Form1.sModeloECF = '99') then // Sandro Silva 2023-08-22 if (Form1.sModeloECF = '59') or ((sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then
+              sOs := ImportarDaPesquisa(tpPesquisaOS) // Sandro Silva 2019-07-12
             else
-              sOs :=  StrZero(StrToIntDef(Limpanumero(Small_InputBox('Importar OS','Número da OS:','')), 0),10,0);
+              sOs := StrZero(StrToIntDef(Limpanumero(Small_InputBox('Importar OS','Número da OS:','')), 0),10,0);
             //
             // OS
             //

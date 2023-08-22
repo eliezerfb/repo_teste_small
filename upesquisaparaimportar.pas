@@ -407,15 +407,19 @@ begin
   if Trim(edPesquisa.Text) = '' then
     edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
   }
+  {Sandro Silva 2023-08-22 inicio
   if FTipoPesquisa = tpPesquisaGerencial then
   begin
-    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;  
+    edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
   end
   else
   begin
     if Trim(edPesquisa.Text) = '' then
       edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
   end;
+  }
+  edPesquisa.Text := DBGrid1.DataSource.DataSet.FieldByName('Número').AsString;
+  {Sandro Silva 2023-08-22 fim}  
   {Sandro Silva 2023-08-08 fim}
 end;
 

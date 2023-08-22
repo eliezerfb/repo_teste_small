@@ -328,6 +328,7 @@ function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String; sModelo: String): Boolean;
 function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
+
     
 var
   cWinDir: array[0..200] of Char;
@@ -2089,7 +2090,7 @@ begin
   }
   sCondicao := '';
   if (sModeloECF <> '99') then
-    sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
+    sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') ' // Sandro Silva 2023-08-22 sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
   else
     if (sModeloECF = '99') or (sModeloECF_Reserva = '99') then
       sCondicao := ' and MODELO = ''99'' ';
