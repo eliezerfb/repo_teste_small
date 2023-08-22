@@ -4449,7 +4449,7 @@ begin
           or (TSMALL_DBEdit(Sender).DataField = 'COMPLE')
           or (TSMALL_DBEdit(Sender).DataField = 'EMAIL')) then
       begin
-        if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then\
+        if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
         begin
           if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
             TSMALL_DBEdit(Sender).Field.DataSet.Edit;
