@@ -927,10 +927,10 @@ end;
 
 procedure TForm30.AtribuirItemPesquisaServico;
 begin
-  if allTrim(framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('CODIGO').AsString) <> EmptyStr then
+  if allTrim(framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString) <> EmptyStr then
   begin
     Form7.ibDataSet35.Edit;
-    Form7.ibDataSet35DESCRICAO.AsString := framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('CODIGO').AsString;
+    Form7.ibDataSet35DESCRICAO.AsString := framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString;
     DBGrid2.SetFocus;
   end;
 end;

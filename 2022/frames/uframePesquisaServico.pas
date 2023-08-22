@@ -32,8 +32,7 @@ begin
     FqryRegistros.Close;
     FqryRegistros.SQL.Clear;
     FqryRegistros.SQL.Add('SELECT');
-    FqryRegistros.SQL.Add(' ESTOQUE.CODIGO');
-    FqryRegistros.SQL.Add(' , ESTOQUE.DESCRICAO AS DESCRICAO');
+    FqryRegistros.SQL.Add('ESTOQUE.DESCRICAO AS DESCRICAO');
     FqryRegistros.SQL.Add('FROM ESTOQUE');
     FqryRegistros.SQL.Add('WHERE');
     FqryRegistros.SQL.Add('(((COALESCE(ESTOQUE.ATIVO,0)=0) OR (COALESCE(ESTOQUE.ATIVO,0)=1)) AND (ESTOQUE.TIPO_ITEM='+QuotedStr('09')+'))');
