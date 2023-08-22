@@ -127,6 +127,7 @@ begin
       Application.MessageBox(pChar(E.Message),'Erro 3 importa NF',mb_Ok + MB_ICONWARNING);
     end;
   end;
+  Form7.bDescontaICMSDeso := False;
 
   Screen.Cursor            := crHourGlass;
   tInicio := time;
@@ -711,7 +712,7 @@ begin
           try Form7.ibDataSet24FRETE.AsString           := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFrete').Text,'.',','); except end;
           try Form7.ibDataSet24DESPESAS.AsString        := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vOutro').Text,'.',','); except end;
           try Form7.ibDataSet24SEGURO.AsString          := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vSeg').Text,'.',','); except end;
-          try Form7.ibDataSet24ICMS_DESONERADO.AsString := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vICMSDeson').Text,'.',','); except end;
+          try Form7.ibDataSet24ICMS_DESONERADO.AsString := StrTran('0','.',','); except end;
 
           try
             if Assigned(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vFCPST')) then

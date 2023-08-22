@@ -168,6 +168,7 @@ type
     lblBcFCP: TLabel;
     Label7: TLabel;
     SMALL_DBEdit16: TSMALL_DBEdit;
+    cbDescontaICMSDesonerado: TCheckBox;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -271,6 +272,7 @@ type
     procedure SMALL_DBEdit2Exit(Sender: TObject);
     procedure SMALL_DBEdit23Exit(Sender: TObject);
     procedure edFretePorContaExit(Sender: TObject);
+    procedure cbDescontaICMSDesoneradoClick(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -279,6 +281,7 @@ type
     procedure DefineDataSetIndPresenca;
     procedure DefineDataSetInfNFe;
     procedure AtualizaTotalDaNota;
+    function TestaNotaDescontaICMSDesonerado: Boolean;
     { Private declarations }
   public
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
@@ -1203,7 +1206,6 @@ begin
 
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
-
   try
     DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));   // Apaga o arquivo anterior
     AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
@@ -1626,7 +1628,7 @@ begin
     Form7.Show;
     Screen.Cursor            := crDefault;
   end;
-
+  
   try
     CloseFile(F);  // Fecha o arquivo
   except
@@ -2334,6 +2336,12 @@ begin
   if Key = VK_RETURN then SMALL_DBEdit41.SetFocus;
 end;
 
+function TForm24.TestaNotaDescontaICMSDesonerado: Boolean;
+begin
+  Result := Form7.ibDataSet24ICMS_DESONERADO.AsCurrency > 0;
+  cbDescontaICMSDesonerado.Checked := Result;  
+end;
+
 procedure TForm24.FormShow(Sender: TObject);
 var
   Mais1Ini: TIniFile;
@@ -2536,6 +2544,8 @@ begin
   // Atenção a rotina acima altera a quantidade no estoque
   //
   sDataAntiga := DateToStrInvertida(Form7.ibDataSet24EMISSAO.AsDateTime);
+
+  Form7.bDescontaICMSDeso := TestaNotaDescontaICMSDesonerado;  
 end;
 
 procedure TForm24.FormActivate(Sender: TObject);
@@ -3735,6 +3745,13 @@ end;
 procedure TForm24.edFretePorContaExit(Sender: TObject);
 begin
   AtualizaTotalDaNota;
+end;
+
+procedure TForm24.cbDescontaICMSDesoneradoClick(Sender: TObject);
+begin
+  Form7.bDescontaICMSDeso := cbDescontaICMSDesonerado.Checked;
+  
+  Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
 end;
 
 end.

@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = 188
-  Top = 8
+  Left = 486
+  Top = 283
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -3290,6 +3290,22 @@ object Form24: TForm24
         TabOrder = 15
         OnExit = SMALL_DBEdit16Exit
         OnKeyUp = ComboBox12KeyUp
+      end
+      object cbDescontaICMSDesonerado: TCheckBox
+        Left = 115
+        Top = 343
+        Width = 209
+        Height = 17
+        TabStop = False
+        Caption = 'Descontar ICMS Desonerado'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'System'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 16
+        OnClick = cbDescontaICMSDesoneradoClick
       end
     end
     object ok: TBitBtn
