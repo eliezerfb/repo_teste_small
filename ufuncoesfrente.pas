@@ -328,7 +328,8 @@ function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String; sModelo: String): Boolean;
 function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
-
+procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
+function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
     
 var
   cWinDir: array[0..200] of Char;
@@ -2090,7 +2091,7 @@ begin
   }
   sCondicao := '';
   if (sModeloECF <> '99') then
-    sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') ' // Sandro Silva 2023-08-22 sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
+    sCondicao := ' and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') ' // Sandro Silva 2023-08-22 sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
   else
     if (sModeloECF = '99') or (sModeloECF_Reserva = '99') then
       sCondicao := ' and MODELO = ''99'' ';
@@ -2218,6 +2219,28 @@ begin
 
   end;
   FreeAndNil(IBQTEMP);
+end;
+
+procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
+begin
+  GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', sNumero);
+  GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM' + sModelo, sNumero);
+end;
+
+function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
+var
+  INI: TIniFile;
+begin
+  ini := TIniFile.Create(FRENTE_INI);
+  if Ini.ValueExists('NFCE', 'CUPOM' + sModelo) then
+  begin
+    Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM' + sModelo, '');
+    if Result = '' then
+      Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', Default);
+  end
+  else
+    Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', Default);
+  INI.Free;
 end;
 
 {

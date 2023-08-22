@@ -4920,10 +4920,14 @@ begin
                 Form1.IBDataSet150.FieldByName('MODELO').AsString   := '65';
                 Form1.IBDataSet150.Post;
 
-                //
+                {Sandro Silva 2023-08-22 inicio
                 Mais1ini  := TIniFile.Create('FRENTE.INI');
                 Mais1Ini.WriteString('NFCE', 'CUPOM', sNovoNumero);
                 Mais1Ini.Free;
+                }
+                GravaNumeroCupomFrenteINI(sNovoNumero, '65');
+                {Sandro Silva 2023-08-22 fim}
+
 
                 Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sNovoNumero, 'Fechada');
 
@@ -5363,9 +5367,14 @@ begin
 
         Form1.SetIconSysTrayIcone('small2.ico');
 
+        {Sandro Silva 2023-08-22 inicio
         Mais1ini := TIniFile.Create('FRENTE.INI');
-        Mais1Ini.WriteString('NFCE','CUPOM', FormataNumeroDoCupom(0)); // Sandro Silva 2021-12-02 Mais1Ini.WriteString('NFCE','CUPOM', '000000');
+        Mais1Ini.WriteString('NFCE','CUPOM', FormataNumeroDoCupom(0));
         Mais1ini.Free;
+        }
+        GravaNumeroCupomFrenteINI(FormataNumeroDoCupom(0), '65'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}
+
 
         Form1.IBDataSet150.Close;
 
@@ -6751,24 +6760,33 @@ begin
 
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
-        Form1.IBDataSet150.FieldByName('CAIXA').AsString  := Form1.sCaixa;
-        Form1.IBDataSet150.FieldByName('MODELO').AsString := '65';
+        Form1.IBDataSet150.FieldByName('CAIXA').AsString    := Form1.sCaixa;
+        Form1.IBDataSet150.FieldByName('MODELO').AsString   := '65';
 
         Form1.IBDataSet150.Post;
 
-        //
+        {Sandro Silva 2023-08-22 inicio
         Mais1Ini.WriteString('NFCE','CUPOM',Result);
-        //
+        }
+        GravaNumeroCupomFrenteINI(Result, '65'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}
+
       except end;
     end else
     begin
-      //
+      {Sandro Silva 2023-08-22 inicio
       try
-        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1)))); // Sandro Silva 2021-12-02 Result := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1))));
       except
         Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
       end;
-      //
+      }
+      try
+        Result := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('65', FormataNumeroDoCupom(1))));
+      except
+        Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
+      end;
+      {Sandro Silva 2023-08-22 fim}
     end;
     //
     Mais1Ini.Free;
@@ -7197,16 +7215,23 @@ var
   sCupom   : String;
 begin
   Result := False;// Sempre começa como falso. Verdadeiro somente se encontrar pendente
-  //
+  {Sandro Silva 2023-08-22 inicio
   Mais1ini  := TIniFile.Create('FRENTE.INI');
   //
   try
-    sCupom := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001'))); // Sandro Silva 2021-12-02 sCupom := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+    sCupom := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')));
   except
     sCupom := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sCupom := '000000';
   end;
   //
   Mais1Ini.Free;
+  }
+  try
+    sCupom := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('65', '000001')));
+  except
+    sCupom := FormataNumeroDoCupom(0);
+  end;
+  {Sandro Silva 2023-08-22 fim}
 
   sCupom := FormataNumeroDoCupom(StrToInt(sCupom)); // Sandro Silva 2021-12-01
   //
@@ -9854,10 +9879,13 @@ begin
       end;
       {Sandro Silva 2021-11-03 fim}
       
-      //
+      {Sandro Silva 2023-08-22 inicio
       Mais1ini  := TIniFile.Create('FRENTE.INI');
       Mais1Ini.WriteString('NFCE', 'CUPOM', sNovoNumero);
       Mais1Ini.Free;
+      }
+      GravaNumeroCupomFrenteINI(sNovoNumero, '65'); // Sandro Silva 2023-08-22
+      {Sandro Silva 2023-08-22 fim}     
 
       if sNumeroOrcamento <> '' then
       begin
