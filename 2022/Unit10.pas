@@ -2095,6 +2095,23 @@ begin
       if (DataField = 'CFOP') and (Form7.sModulo = 'ICM')then
         DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
+
+      {Dailon (f-7224) 2023-08-22 inicio}
+      if Form7.sModulo = 'CLIENTES' then
+      begin
+        if ((DataField = 'ENDERE')
+            or (DataField = 'COMPLE')
+            or (DataField = 'EMAIL')) then
+        begin
+          if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
+          begin
+            if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+              TSMALL_DBEdit(Sender).Field.DataSet.Edit;
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+          end;
+        end;
+      end;
+      {Dailon (f-7224) 2023-08-22 fim}
     end;
   except
   end;
@@ -4432,12 +4449,12 @@ begin
           or (TSMALL_DBEdit(Sender).DataField = 'COMPLE')
           or (TSMALL_DBEdit(Sender).DataField = 'EMAIL')) then
       begin
-        if ((Form7.IBDataSet2NOME.AsString = EmptyStr) or ((cCadJaValidado <> Form7.IBDataSet2NOME.AsString) and (Form7.TestarClienteExiste(Form7.IBDataSet2NOME.AsString)))) then
+        if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then\
         begin
-          if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
-            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
-        end else
-          cCadJaValidado := Form7.IBDataSet2NOME.AsString;
+          if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+            TSMALL_DBEdit(Sender).Field.DataSet.Edit;
+          TSMALL_DBEdit(Sender).Text := Copy(TSMALL_DBEdit(Sender).Text, 2, Length(TSMALL_DBEdit(Sender).Text));
+        end;
       end;
     end;
     {Dailon (f-7224) 2023-08-17 fim}
