@@ -24627,7 +24627,7 @@ begin
         //
         CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
         Form1.FormShow(Sender); // EnviaraNFCe1Click()
-        touch_ESCClick(Sender);
+        // Sandro Silva 2023-08-22 touch_ESCClick(Sender);
         bAbrirGerenicadorNoFinal := False; // Sandro Silva 2023-08-22
         //
       end;
