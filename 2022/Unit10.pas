@@ -625,6 +625,7 @@ type
     procedure AlteracaoInstituicaoFinanceira;
     procedure AtualizaObjComValorDoBanco;
     { Private declarations }
+    function MostraImagemEstoque: Boolean;
   public
     { Public declarations }
 
@@ -667,7 +668,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   
 {$R *.DFM}
 
-function tForm10.JpgResize(sP1: String; iP2: Integer): boolean;
+function TForm10.JpgResize(sP1: String; iP2: Integer): boolean;
 var
   _bmp:    TBitmap;
   Picture: TPicture;
@@ -1031,6 +1032,7 @@ begin
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
 
+
     // Mantem a proporção da imagem
     try
       if Form10.Image5.Picture.Width <> 0 then
@@ -1053,9 +1055,10 @@ begin
       end;
     except
     end;
+
   except
   end;
-  Form10.DefinirLimiteDisponivel;  
+  Form10.DefinirLimiteDisponivel;
   //
   // Sandro Silva 2022-09-27 Result := True;
 end;
@@ -1592,6 +1595,9 @@ begin
 
   except
   end;
+
+  MostraImagemEstoque
+  
 end;
 
 procedure TForm10.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -3404,6 +3410,9 @@ begin
 
   except 
   end;
+
+  if (Form7.sModulo = 'ESTOQUE') then
+    MostraImagemEstoque; // Sandro Silva 2023-08-22
 end;
 
 procedure TForm10.Panel_1Enter(Sender: TObject);
@@ -3822,11 +3831,43 @@ begin
     end;
   end;
 
-  {Sandro Silva 2023-08-21 inicio
+  //{Sandro Silva 2023-08-21 inicio
   Image5.Picture  := Image3.Picture;
-  }
+  {
   if Image3.Picture.Graphic <> nil then
-    Image5.Picture  := Image3.Picture; /// aqui está limpando form10.image5.picture
+  begin
+    if Image5.Picture.Graphic <> nil then
+    begin
+      //Form10.Image3.Picture.Width  := Form10.Image5.Picture.Width; // Sandro Silva 2023-08-22
+      //Form10.Image3.Picture.Height := Form10.Image5.Picture.Height; // Sandro Silva 2023-08-22
+
+      // Mantem a proporção da imagem
+      try
+        if Form10.Image3.Picture.Width <> 0 then
+        begin
+          Form10.Image3.Width   := 256;
+          Form10.Image3.Height  := 256;
+
+          if Form10.Image3.Picture.Width > Form10.Image3.Picture.Height then
+          begin
+            Form10.Image3.Width  := StrToInt(StrZero((Form10.Image3.Picture.Width * (Form10.Image3.Width / Form10.Image3.Picture.Width)),10,0));
+            Form10.Image3.Height := StrToInt(StrZero((Form10.Image3.Picture.Height* (Form10.Image3.Width / Form10.Image3.Picture.Width)),10,0));
+          end else
+          begin
+            Form10.Image3.Width  := StrToInt(StrZero((Form10.Image3.Picture.Width * (Form10.Image3.Height / Form10.Image3.Picture.Height)),10,0));
+            Form10.Image3.Height := StrToInt(StrZero((Form10.Image3.Picture.Height* (Form10.Image3.Height / Form10.Image3.Picture.Height)),10,0));
+          end;
+
+          Form10.Image3.Picture := Form10.Image3.Picture;
+          Form10.Image3.Repaint; // Sandro Silva 2023-08-21
+        end;
+      except
+      end;
+
+      Form10.Image5.Picture.Graphic.Assign(Form10.Image3.Picture.Graphic); /// aqui está limpando form10.image5.picture
+    end;
+
+  end;
   {Sandro Silva 2023-08-21 fim}
   
   bNovo := False;
@@ -9905,6 +9946,84 @@ begin
       Key := #0;
   end;
   {Sandro Silva 2023-06-29 fim}
+end;
+
+function TForm10.MostraImagemEstoque: Boolean;
+var
+  FileStream : TFileStream;
+  BlobStream : TStream;
+  JP2         : TJPEGImage;
+
+begin
+  Form10.Image5.Picture := nil;
+  Form10.Image3.Picture := nil;
+
+  if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
+  begin
+    // FOTOS ANTIGAS
+    if FileExists(Form10.sNomeDoJPG) then
+    begin
+      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Edit;
+      FileStream := TFileStream.Create(pChar(Form10.sNomeDoJPG),fmOpenRead or fmShareDenyWrite);
+      BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO, bmWrite);
+      try
+        BlobStream.CopyFrom(FileStream, FileStream.Size);
+      finally
+        FileStream.Free;
+        BlobStream.Free;
+      end;
+      // Form7.ibDataset4.Post;
+      Deletefile(pChar(Form10.sNomeDoJPG));
+    end;
+
+    if Form7.ibDataset4FOTO.BlobSize <> 0 then
+    begin
+      BlobStream := Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO, bmRead);
+      jp2 := TJPEGImage.Create;
+      try
+        try
+          jp2.LoadFromStream(BlobStream);
+          Form10.Image5.Picture.Assign(jp2);
+          Form10.Image5.Repaint;
+
+        except
+          Result := False;
+        end;
+      finally
+        BlobStream.Free;
+        jp2.Free;
+      end;
+    end
+    else
+      Form10.Image5.Picture := Form10.Image3.Picture;
+  end
+  else
+    Form10.Image5.Picture := Form10.Image3.Picture;
+
+  // Mantem a proporção da imagem
+  try
+    if Form10.Image5.Picture.Width <> 0 then
+    begin
+      Form10.Image5.Width   := 256;
+      Form10.Image5.Height  := 256;
+
+      if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
+      begin
+        Form10.Image5.Width  := StrToInt(StrZero((Form10.Image5.Picture.Width * (Form10.Image5.Width / Form10.Image5.Picture.Width)),10,0));
+        Form10.Image5.Height := StrToInt(StrZero((Form10.Image5.Picture.Height* (Form10.Image5.Width / Form10.Image5.Picture.Width)),10,0));
+      end else
+      begin
+        Form10.Image5.Width  := StrToInt(StrZero((Form10.Image5.Picture.Width * (Form10.Image5.Height / Form10.Image5.Picture.Height)),10,0));
+        Form10.Image5.Height := StrToInt(StrZero((Form10.Image5.Picture.Height* (Form10.Image5.Height / Form10.Image5.Picture.Height)),10,0));
+      end;
+
+      Form10.Image5.Picture := Form10.Image5.Picture;
+      Form10.Image5.Repaint; // Sandro Silva 2023-08-21
+    end;
+  except
+  end;
+        
 end;
 
 end.
