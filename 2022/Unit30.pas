@@ -877,15 +877,15 @@ begin
       begin
         if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
         begin
-          if not framePesquisaServOS.Visible then
-            framePesquisaServOS.Visible := True
-          else
-            Form7.bFlag := False;
-
+          Form7.bFlag := False;
           Form7.ibDataSet35.Edit;
           Form7.ibDataSet35.UpdateRecord;
           Form7.ibDataSet35.Edit;
           Form7.bFlag := True;
+
+          framePesquisaServOS.Visible := (AllTrim(Form7.ibDataSet35DESCRICAO.AsString) <> EmptyStr) and (Form7.ibDataSet35.State in [dsEdit, dsInsert]);
+
+          framePesquisaServOS.CarregarServico(Form7.ibDataSet35DESCRICAO.AsString);          
         end;
       end;
 
@@ -931,6 +931,11 @@ begin
   begin
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35DESCRICAO.AsString := framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString;
+    Form7.ibDataSet35TOTAL.AsFloat      := framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('PRECO').AsFloat;
+    Form7.ibDataSet35UNITARIO.AsFloat   := framePesquisaServOS.dbgItensPesq.DataSource.DataSet.FieldByName('PRECO').AsFloat;
+    Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
+    
+    framePesquisaServOS.Visible := False;
     DBGrid2.SetFocus;
   end;
 end;

@@ -24,6 +24,8 @@ implementation
 { TframePesquisaPadrao1 }
 
 procedure TframePesquisaServico.CarregarServico(AcPesquisar: String);
+var
+  i: Integer;
 begin
   if not Self.Visible then
     Exit;
@@ -33,6 +35,7 @@ begin
     FqryRegistros.SQL.Clear;
     FqryRegistros.SQL.Add('SELECT');
     FqryRegistros.SQL.Add('ESTOQUE.DESCRICAO AS DESCRICAO');
+    FqryRegistros.SQL.Add(', ESTOQUE.PRECO');
     FqryRegistros.SQL.Add('FROM ESTOQUE');
     FqryRegistros.SQL.Add('WHERE');
     FqryRegistros.SQL.Add('(((COALESCE(ESTOQUE.ATIVO,0)=0) OR (COALESCE(ESTOQUE.ATIVO,0)=1)) AND (ESTOQUE.TIPO_ITEM='+QuotedStr('09')+'))');
@@ -48,6 +51,11 @@ begin
 
     FqryRegistros.SQL.Add('ORDER BY ESTOQUE.DESCRICAO');
     FqryRegistros.Open;
+
+    for i := 0 to Pred(FqryRegistros.FieldCount) do
+    begin
+      FqryRegistros.Fields[i].Visible := (FqryRegistros.Fields[i].FieldName = 'DESCRICAO');
+    end;
   finally
     FqryRegistros.EnableControls;
   end;
