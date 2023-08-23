@@ -41,6 +41,7 @@ type
     procedure ImportaOS;
     { Private declarations }
   public
+    vOrcamentImportar : string;
     { Public declarations }
   end;
 
@@ -136,12 +137,32 @@ begin
 
     if Form7.sModulo = 'ORCAMENTO' then
     begin
+      {Mauricio Parizotto 2023-08-23 Inicio}
+      {
       Form7.ibDataSet37.Close;
       Form7.ibDataSet37.SelectSQL.Clear;
       Form7.ibDataSet37.SelectSQL.Add('select first 1 * from ORCAMENT order by PEDIDO desc');
       Form7.ibDataSet37.Open;
 
       MaskEdit1.Text := Form7.ibDataSet37PEDIDO.AsString;
+      }
+
+      if vOrcamentImportar <> '' then
+      begin
+        //Importação pela tela de Orçamentos
+        MaskEdit1.Text := vOrcamentImportar;
+        vOrcamentImportar := '';
+      end else
+      begin
+        Form7.ibDataSet37.Close;
+        Form7.ibDataSet37.SelectSQL.Clear;
+        Form7.ibDataSet37.SelectSQL.Add('select first 1 * from ORCAMENT order by PEDIDO desc');
+        Form7.ibDataSet37.Open;
+
+        MaskEdit1.Text := Form7.ibDataSet37PEDIDO.AsString;
+      end;
+      {Mauricio Parizotto 2023-08-23 Fim}
+
       MaskEdit2.Visible := False;
       Label8.Visible    := False;
       Panel3.Visible := True;

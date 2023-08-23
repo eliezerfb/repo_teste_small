@@ -25851,7 +25851,8 @@ begin
   begin
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
+      //Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString; Mauricio Parizotto 2023-08-23
+      Form41.vOrcamentImportar := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
       Form7.Image101Click(Sender);                        // Nova Nota
@@ -25870,7 +25871,8 @@ begin
   begin
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
+      //Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString; Mauricio Parizotto 2023-08-23
+      Form41.vOrcamentImportar := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
       Form7.Image101Click(Sender);                        // Nova Nota
@@ -31664,20 +31666,15 @@ var
   Mais1Ini : tIniFile; // 2022-07-14
   sPadraoSistema: String; //2022-07-14
 begin
-  //
-  // <ChaveDeCancelamento>33|0180830053723381___</ChaveDeCancelamento>
-  //
   try
     //2022-07-14 Identificar o padrão da prefeitura
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfseConfig.ini');
     sPadraoSistema := UpperCase(Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Padrao','?'));
     Mais1Ini.Free;
-    //
+
     if RetornaValorDaTagNoCampo('ChaveDeCancelamento',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
     begin
-      //
       Screen.Cursor            := crHourGlass;
-      //
       {Sandro Silva 2023-01-11 inicio
       if not FileExists(pChar(Form1.sAtual+'\NFSE.EXE')) then
       begin
@@ -31686,66 +31683,51 @@ begin
       }
       if Form1.ExisteNfseExe(Form1.sAtual) then
       begin
-        //
-        //
         while FileExists(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
         begin
           DeleteFile(Pchar(Form1.sAtual+'\NFSE\smallnfse.tx2'));
           Sleep(100);
         end;
-        //
+
         AssignFile(F,pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
         Rewrite(F);
-        //
-//        Writeln(F,'ChaveDeCancelamento='+RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString)+'|'+RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString)+'___');
         Writeln(F,'ChaveDeCancelamento='+RetornaValorDaTagNoCampo('ChaveDeCancelamento',Form7.ibDAtaSet15RECIBOXML.AsString));
         Writeln(F,'');
-        //
+
         CloseFile(F);
-        //
+
         // Aguarda até criar o arquivo
-        //
         while not FileExists(pChar(Form1.sAtual+'\NFSE\smallnfse.tx2')) do
         begin
           Sleep(100);
         end;
-        //
+
         ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
-        //
+
         // Aguarda fechar o NFSE.EXE
-        //
         while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
         begin
           Application.ProcessMessages;
           sleep(100);
         end;
-        //
+
         // Verifica o retorno
-        //
         if FileExists(pChar(Form1.sAtual+'\NFSE\ret.txt')) then
         begin
-          //
           _file := TStringList.Create;
           _file.LoadFromFile(pChar(Form1.sAtual+'\NFSE\ret.txt'));
-          //
-//          _File.Text := StrTran(_File.Text,'Elt;brEgt;','|');
-//          _File.Text := StrTran(_File.Text,#9,'');
 
           sRetornoNFse := _File.Text;
-          //
+
           if Pos('CANCELADA',_File.Text)<>0 then
           begin
-            //
             CancelarNFSe(_File.Text);
-            //
           end else
           begin
-            //
             if RetornaValorDaTagNoCampo('Motivo',_File.Text) <> '' then
             begin
               sRetornoNFse := RetornaValorDaTagNoCampo('Motivo',_File.Text);
             end;
-            //
 
             if (sPadraoSistema = 'MEMORY') then //2022-07-14 eliminado sRetornoNFSe, deixa muito grande a mensagem e esconde os botões Sim e Não
               bButton := Application.MessageBox(pChar(
@@ -31765,56 +31747,48 @@ begin
                         chr(10)+
                         'Considerar esta NFS-e como cancelada?'),
                         'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONQUESTION);
-            //
+
             if bButton = IDYES  then
             begin
               CancelarNFSe('<RETORNO>'+_File.Text+'<SITUACAO>CANCELADA</SITUACAO><STATUS>CANCELADA</STATUS>'+'</RETORNO>');
             end;
-            //
           end;
-          //
         end;
-        //
+
         while FileExists(Pchar(Form1.sAtual+'\NFSE\ret.txt')) do
         begin
           DeleteFile(Pchar(Form1.sAtual+'\NFSE\ret.txt'));
           Sleep(100);
         end;
-        //
       end;
     end else
     begin
-      //
       bButton := Application.MessageBox(pChar(
                 chr(10) +'Não foi possível cancelar a NFS-e não temos a chave de cancelamento.'+Chr(10)+
                 chr(10) +'Esta NFS-e poderá ser cancelada manualmente no site da prefeitura.'+Chr(10)+
                 chr(10)+
                 'Considerar esta NFS-e como cancelada?'),
                 'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONQUESTION);
-      //
+
       if bButton = IDYES  then
       begin
         CancelarNFSe('<RETORNO><SITUACAO>CANCELADA</SITUACAO><STATUS>CANCELADA</STATUS></RETORNO>');
       end;
     end;
-    //
-  except end;
-  //
+  except
+  end;
+  
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.ibDataSet35DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
-  //
   ibDataSet35DESCRICAO.AsString := Text;
-  //
+
   if Form48.Visible then
   begin
-    //
     // Procura por descrição
-    //
     Form7.ibDataSet99.DisableControls;
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
@@ -31822,12 +31796,10 @@ begin
     Form7.ibDataSet99.Open;
     Form7.ibDataSet99.First;
     Form7.IBDataSet99.EnableControls;
-    //
+
     Form7.ibDataSet4.Locate('DESCRICAO',AllTrim( Form7.ibDataSet99.FieldByname('DESCRICAO').AsString  ),[loCaseInsensitive, loPartialKey]);
     Form7.ibDataSet4.EnableControls;
-    //
   end;
-  //
 end;
 
 procedure TForm7.GerarNotaFiscaldeServio1Click(Sender: TObject);
@@ -31837,7 +31809,8 @@ begin
   begin
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
-      Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
+      //Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString; Mauricio Parizotto 2023-08-23
+      Form41.vOrcamentImportar := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form1.imgServicosClick(Sender);                       // Nota Fiscal de Servico
       Form7.Image101Click(Sender);                        // Nova Nota
@@ -31883,7 +31856,6 @@ end;
 
 procedure TForm7.NFeTransmitirasprximas1Click(Sender: TObject);
 begin
-  //
   bProximas := True;
   while not Form7.ibDataSet15.Eof do
   begin
@@ -31891,27 +31863,27 @@ begin
     EnviarNFSeporemail1Click(Sender);
     Form7.ibDataSet15.Next;
   end;
-  //
+
   bProximas := False;
-  //
+
   try
     try
       Form7.ibDAtaSet15.Post;
-    except end;
-    //
+    except
+    end;
+
     Screen.Cursor            := crHourGlass;
     AgendaCommit(True);
-    //
+
     Form7.Close;
     Form7.Show;
-    //
+
     Screen.Cursor            := crDefault;
     Form7.ibDAtaSet15.Edit;
-    //
-  except end;
-  //
+  except
+  end;
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.DevolverNF1Click(Sender: TObject);
@@ -32073,38 +32045,34 @@ end;
 procedure TForm7.DuplicatestaNFe1Click(Sender: TObject);
 var
   sDesVetor : array[0..999] of String;
-//  sCodVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
   fQtdVetor : array[0..999] of real;
-  //
+
   vCli, vOpe : String;
   I, J : Integer;
 begin
   vCli := Form7.ibDataSet15CLIENTE.AsString;
   vOpe := Form7.ibDataSet15OPERACAO.AsString;
-  //
+
   I := 0;
-  //
+
   Form7.ibDataSet16.First;
   while not Form7.ibDataSet16.Eof do // disable
   begin
-    //
     sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
-//    sCodVetor[I] := Form7.ibDataSet16CODIGO.AsString;
     fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
     fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
     I := I + 1;
     Form7.ibDataSet16.Next;
   end;
-  //
+
   Form7.ibDataSet15.Append;
   if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
   Form7.ibDataSet15CLIENTE.AsString  :=  vCli;
   Form7.ibDataSet15OPERACAO.AsString :=  vOpe;
   Form7.ibDataSet15.Post;
-  //
+
   J := I-1;
-  //
   for I := 0 to J do
   begin
     Form7.ibDataSet16.Append;
@@ -32114,7 +32082,7 @@ begin
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;
-  //
+  
   Form7.sModulo := 'VENDA';
   Image106Click(Sender);
 end;
@@ -32253,25 +32221,16 @@ var
   DOMDocumentNFe: IXMLDOMDocument;
   xNodeNFe: IXMLDOMNodeList;
 begin
-  //
   Screen.Cursor := crHourGlass;
-  //
-  // Protocolo
-  //
-
-  //
   // Validar Shema
-  //
   try
-    //
     DOMDocument := CoDOMDocument50.Create;
-    //
+
     DOMdocument.Async := False;
     DOMdocument.ResolveExternals := False;
     DOMdocument.ValidateOnParse  := True;
-    //
+
     // Carrega só uma parte do XML
-    //
     XMLDocument1.Active := false;
     XMLDocument1.XML.Text := Form7.IbDAtaSet15NFEXML.AsString;
     XMLDocument1.Active := True;
@@ -32286,16 +32245,15 @@ begin
 
       DOMdocument.LoadXML(rcpNFExml.Text); //XML COM ERRO
       rcpNFExml.Free;
-      //
+
       Schema := CoXMLSchemaCache50.Create;
-      //
+
       // Versão 2.0 da NFE 4.0 do manual
-      //
       spdNFe.VersaoManual := vm60;
       sVersaoManual := 'vm60\nfe_v4.00.xsd';
-      //
+
       Schema.add('http://www.portalfiscal.inf.br/nfe', Form1.sAtual+'\Nfe\Esquemas\'+sVersaoManual);
-      //
+
       DOMdocument.Schemas := Schema;
       ParseError          := DOMdocument.validate;
       sErro := '';
@@ -32307,12 +32265,9 @@ begin
     Schema              := Nil;
     DOMDocumentNFe      := nil;
     xNodeNFe            := nil;
-    //
-    // Fim valida schema
-    //
   except
   end;
-  //
+
   Screen.Cursor := crDefault;
   try
     if sErro <> '' then
@@ -32322,20 +32277,18 @@ begin
         ValidarSchemaSefaz(Form7.ibDataSet15NFEXML.AsString);
   except
   end;
-  //
 end;
 
 procedure TForm7.RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de PIS/COFINS (Cupom Fiscal)';
-  Form38.ShowModal; // Ok
+  Form38.ShowModal;
 end;
 
 procedure TForm7.EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
