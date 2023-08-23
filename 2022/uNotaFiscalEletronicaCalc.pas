@@ -165,9 +165,9 @@ var
   tInicio : tTime;
   Hora, Min, Seg, cent: Word;
 
-  vlBalseIPI{, vlFreteRateadoItem} : Double;
-  vlBalseICMSItem, vlICMSItem : Double;
-  vFreteSobreIPI, vIPISobreICMS : Boolean;
+  vlBaseIPI{, vlFreteRateadoItem} : Double;
+  vlBaseICMSItem, vlICMSItem: Double;
+  vIPISobreFrete, vIPISobreICMS: Boolean;
   vSobreOutras : Boolean;
 
   fFCPRetido : Real;
@@ -270,7 +270,7 @@ begin
     //Não usa CIT
     IBQIcm.Locate('NOME',NotaFiscal.Operacao,[]);
 
-    vFreteSobreIPI := IBQIcm.FieldByName('FRETESOBREIPI').AsString = 'S';
+    vIPISobreFrete := IBQIcm.FieldByName('FRETESOBREIPI').AsString = 'S';
     vIPISobreICMS  := IBQIcm.FieldByName('SOBREIPI').AsString = 'S';
     vSobreOutras   := IBQIcm.FieldByName('SOBREOUTRAS').AsString = 'S';
 
@@ -388,13 +388,20 @@ begin
           begin
             {vlFreteRateadoItem := 0;
 
-            if vFreteSobreIPI then
+            if vIPISobreFrete then
               vlFreteRateadoItem := Arredonda((NotaFiscal.Frete / fTotalMercadoria) * oItem.TOTAL, 2);}
 
-            vlBalseIPI := oItem.TOTAL + oItem.FreteRateado;
+            {Sandro Silva 2023-08-23 inicio
+            vlBaseIPI := oItem.TOTAL + oItem.FreteRateado;
+            }
+            vlBaseIPI := oItem.TOTAL;
+            if vIPISobreFrete then
+              vlBaseIPI := vlBaseIPI + oItem.FreteRateado;
+            {Sandro Silva 2023-08-23 fim}
 
-            // Sandro Silva 2023-05-23 NotaFiscal.IPI := NotaFiscal.Ipi + Arredonda2((vlBalseIPI * ( oItem.IPI / 100 )), 2);
-            oItem.Vipi := Arredonda2((vlBalseIPI * ( oItem.IPI / 100 )), 2);
+
+            // Sandro Silva 2023-05-23 NotaFiscal.IPI := NotaFiscal.Ipi + Arredonda2((vlBaseIPI * ( oItem.IPI / 100 )), 2);
+            oItem.Vipi := Arredonda2((vlBaseIPI * ( oItem.IPI / 100 )), 2);
             NotaFiscal.IPI := NotaFiscal.Ipi + + oItem.Vipi;
 
             {NotaFiscal.IPI.Value         := NotaFiscal.IPI.Value +
@@ -423,13 +430,13 @@ begin
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')))
                 then
                 begin
-                  vlBalseICMSItem := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 ),2);
+                  vlBaseICMSItem := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 ),2);
                   vlICMSItem      := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 * oItem.ICM / 100 ),2);
 
-                  NotaFiscal.Baseicm  := NotaFiscal.Baseicm + vlBalseICMSItem;
+                  NotaFiscal.Baseicm  := NotaFiscal.Baseicm + vlBaseICMSItem;
                   NotaFiscal.Icms     := NotaFiscal.Icms    + vlICMSItem;
 
-                  oItem.Vbc           := oItem.Vbc + vlBalseICMSItem;
+                  oItem.Vbc           := oItem.Vbc + vlBaseICMSItem;
                   oItem.Vicms         := oItem.Vicms + vlICMSItem;
                 end;
 
@@ -518,13 +525,13 @@ begin
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')))
                 then
                 begin
-                  vlBalseICMSItem := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 ),2);
+                  vlBaseICMSItem := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 ),2);
                   vlICMSItem      := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 * oItem.ICM / 100 ),2);
 
-                  NotaFiscal.Baseicm  := NotaFiscal.Baseicm    + vlBalseICMSItem;
+                  NotaFiscal.Baseicm  := NotaFiscal.Baseicm    + vlBaseICMSItem;
                   NotaFiscal.Icms     := NotaFiscal.Icms       + vlICMSItem;
 
-                  oItem.Vbc           := oItem.Vbc + vlBalseICMSItem;
+                  oItem.Vbc           := oItem.Vbc + vlBaseICMSItem;
                   oItem.Vicms         := oItem.Vicms + vlICMSItem;
                 end;
               end;
@@ -745,13 +752,14 @@ begin
                     fSomaNaBase  := fSomanaBase + (NotaFiscal.Frete / NotaFiscal.Mercadoria * oItem.TOTAL); // REGRA DE TRÊS ratiando o valor Total do Frete
 
                   //Frete Sobre IPI e IPI sobre ICMS
-                  if (vFreteSobreIPI) and (vIPISobreICMS) then
+                  if (vIPISobreFrete) and (vIPISobreICMS) then
                   begin
                     //vlFreteRateadoItem := Arredonda((NotaFiscal.Frete / fTotalMercadoria) * oItem.TOTAL,2);
 
                     //fSomaNaBase := fSomaNaBase + Arredonda2((vlFreteRateadoItem * ( oItem.IPI / 100 )),2);
                     fSomaNaBase := fSomaNaBase + Arredonda2((oItem.FreteRateado * ( oItem.IPI / 100 )),2);
                   end;
+
                 end;
 
                 //Seguro
@@ -759,7 +767,7 @@ begin
                   if (NotaFiscal.Seguro / NotaFiscal.Mercadoria * oItem.TOTAL) > 0.01 then
                     fSomaNaBase  := fSomanaBase + (NotaFiscal.Seguro / NotaFiscal.Mercadoria * oItem.TOTAL); // REGRA DE TRÊS ratiando valor do Seguro}
 
-               fSomaNaBase  := fSomanaBase + oItem.SeguroRateado;
+                fSomaNaBase  := fSomanaBase + oItem.SeguroRateado;
 
                 // Soma na base de calculo
                 if vSobreOutras then
@@ -768,7 +776,7 @@ begin
                     if (NotaFiscal.Despesas / NotaFiscal.Mercadoria * oItem.TOTAL) > 0.01 then
                       fSomaNaBase  := fSomanaBase + (NotaFiscal.Despesas / NotaFiscal.MERCADORIA * oItem.TOTAL); // REGRA DE TRÊS ratiando o valor de outras}
 
-                  fSomaNaBase  := fSomanaBase + oItem.DespesaRateado; 
+                  fSomaNaBase  := fSomanaBase + oItem.DespesaRateado;
                 end;
 
                 if NotaFiscal.Desconto <> 0 then
