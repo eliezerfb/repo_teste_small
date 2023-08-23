@@ -800,7 +800,7 @@ begin
     end else
     begin
       //Cupom Gerencial
-      if IBQCupom.FieldByName('StatusNFCE').AsString <> 'FINALIZADA' then
+      if Pos('FINALIZADA', AnsiUpperCase(IBQCupom.FieldByName('StatusNFCE').AsString)) <> 1 then //Validando início do status permite importar cupons antigos MEI e novos gerenciais Sandro Silva 2023-08-23 if IBQCupom.FieldByName('StatusNFCE').AsString <> 'FINALIZADA' then
       begin
         ShowMEssage('Cupom gerencial não finalizado.');
         Exit;
