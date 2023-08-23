@@ -631,7 +631,6 @@ type
 
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
-    sPublicText : String;
     sLinha : String;
     sColuna : String;
     sRegistroVolta : String;
@@ -1648,9 +1647,6 @@ begin
   
   dBGrid3.Tag := 0;
 
-  with Sender as TSMALL_DBEdit do
-    sPublicText := Text;
-
   dBGrid3.Visible := False;
 
   dBGrid3.Parent := TSMALL_DBEdit(Sender).Parent; // Sandro Silva 2023-06-28
@@ -1935,12 +1931,13 @@ end;
 
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);
 begin
+
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') then
     sNomeDoArquivoParaSalvar := 'contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt'; // Lendo o arquivo para mostrar na tela
-  
+
   try
     sText := '';
-  
+
     with Sender as TSMALL_DBEdit do
     begin
       if (Form7.sModulo = 'ESTOQUE') and (Datafield = 'DESCRICAO') and (Form7.ibDataSet4DESCRICAO.AsString = '') then
@@ -2106,8 +2103,12 @@ begin
           if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
           begin
             if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+            begin
               TSMALL_DBEdit(Sender).Field.DataSet.Edit;
-            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+              TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+              TSMALL_DBEdit(Sender).Field.DataSet.Post;
+            end else
+              TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);            
           end;
         end;
       end;
@@ -4452,8 +4453,12 @@ begin
         if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
         begin
           if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+          begin
             TSMALL_DBEdit(Sender).Field.DataSet.Edit;
-          TSMALL_DBEdit(Sender).Text := Copy(TSMALL_DBEdit(Sender).Text, 2, Length(TSMALL_DBEdit(Sender).Text));
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+            TSMALL_DBEdit(Sender).Field.DataSet.Post;
+          end else
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
         end;
       end;
     end;
