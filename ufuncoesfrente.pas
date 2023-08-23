@@ -2082,6 +2082,7 @@ function SelectSQLGerenciadorVendasF10(sModeloECF: String;
   sModeloECF_Reserva: String; Data: TDate): String;
 var
   sCondicao: String;
+  sCondicaoGerencialSemDocFiscalOuNFCeSat: String;
 begin
   {Sandro Silva 2023-07-27 inicio
   Result:=
@@ -2090,11 +2091,25 @@ begin
   ' order by NUMERONF ';
   }
   sCondicao := '';
+
+  sCondicaoGerencialSemDocFiscalOuNFCeSat :=
+      ' and ' +
+      ' ( ' +
+      '   ( ' +
+      '     (N.MODELO = ''99'' and not exists (select 1 from ALTERACA A where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA and coalesce(A.VALORICM, 0) = 0)) ' +
+      '   ) ' +
+      '   or ' +
+      '   (N.MODELO <> ''99'') ' +
+      ' ) ';
+
+
   if (sModeloECF <> '99') then
-    sCondicao := ' and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') ' // Sandro Silva 2023-08-22 sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
+    // Sandro Silva 2023-08-23 sCondicao := ' and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') ' // Sandro Silva 2023-08-22 sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
+    sCondicao := sCondicaoGerencialSemDocFiscalOuNFCeSat +
+      ' and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') '
   else
     if (sModeloECF = '99') or (sModeloECF_Reserva = '99') then
-      sCondicao := ' and MODELO = ''99'' ';
+      sCondicao := sCondicaoGerencialSemDocFiscalOuNFCeSat + ' and MODELO = ''99'' '; // Sandro Silva 2023-08-23 sCondicao := ' and MODELO = ''99'' ';
 
   Result :=
     'select * from NFCE where DATA = ' + QuotedStr(DateToStrInvertida(Data)) +
