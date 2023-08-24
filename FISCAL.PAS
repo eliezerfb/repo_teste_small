@@ -24362,7 +24362,10 @@ begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') then
       _ecf65_Visualiza_DANFECE(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString)
     else if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') then
+    begin
+      Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
       _ecf99_Visualiza_Venda(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString)
+    end
     else
       SmallMsg('Este XML não pertence a uma NFC-e');
   end;
@@ -24371,14 +24374,20 @@ begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '59') then
       _ecf59_Visualiza_DANFECE(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString)
     else if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') then
+    begin
+      Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
       _ecf99_Visualiza_Venda(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString)
+    end
     else
       SmallMsg('Este XML não pertence a um ' + sTipoDocumento);// Sandro Silva 2018-08-01  SmallMsg('Este XML não pertence a um CF-e-SAT');
   end;
   if (sModeloECF = '99') then
   begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') then
+    begin
+      Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
       _ecf99_Visualiza_Venda(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString);
+    end;
   end;
 
 end;
@@ -24418,6 +24427,8 @@ begin
 
   if (Form1.sModeloECF = '99') then
   begin
+    Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
+
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, '', '', '', '');
   end;
 
@@ -34121,7 +34132,7 @@ begin
 
           Form1.fTotal := IBQTOTAL.FieldByName('TOTALBRUTO').AsFloat;
 
-          Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem'               , MensagemPromocionalDefault);
+          Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
           //Procura os números de série e acumula na mensagem promocional
           Form1.ibDataSet27.Close;
           Form1.ibDataSet27.SelectSQL.Clear;
