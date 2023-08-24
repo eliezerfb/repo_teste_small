@@ -107,7 +107,8 @@ begin
       if (rpPIS_ITEM * bcPISCOFINS_op_ITEM <> 0) then
       begin
         //vBC_PISCOFINS := oItem.TOTAL - vRaterioDesconto - oItem.VICMS;
-        vBC_PISCOFINS := oItem.TOTAL - oItem.DescontoRateado - oItem.VICMS + oItem.FreteRateado + oItem.DespesaRateado + oItem.SeguroRateado + oItem.Vipi;
+        //vBC_PISCOFINS := oItem.TOTAL - oItem.DescontoRateado - oItem.VICMS + oItem.FreteRateado + oItem.DespesaRateado + oItem.SeguroRateado + oItem.Vipi; Mauricio Parizotto 2023-08-23 f-7292
+        vBC_PISCOFINS := oItem.TOTAL - oItem.DescontoRateado - oItem.VICMS + oItem.FreteRateado + oItem.DespesaRateado + oItem.SeguroRateado;
 
         //Base Reduzida
         vBC_PISCOFINS := vBC_PISCOFINS * (bcPISCOFINS_op_ITEM / 100);
@@ -131,7 +132,8 @@ begin
           end else
           begin
             //oItem.VBC_PIS_COFINS := oItem.TOTAL - vRaterioDesconto - oItem.VICMS;
-            oItem.VBC_PIS_COFINS := oItem.TOTAL - oItem.DescontoRateado - oItem.VICMS + oItem.FreteRateado + oItem.DespesaRateado + oItem.SeguroRateado + oItem.Vipi;
+            //oItem.VBC_PIS_COFINS := oItem.TOTAL - oItem.DescontoRateado - oItem.VICMS + oItem.FreteRateado + oItem.DespesaRateado + oItem.SeguroRateado + oItem.Vipi; Mauricio Parizotto 2023-08-23  f-7292
+            oItem.VBC_PIS_COFINS := oItem.TOTAL - oItem.DescontoRateado - oItem.VICMS + oItem.FreteRateado + oItem.DespesaRateado + oItem.SeguroRateado;
           end;
         end;
       end else
