@@ -196,7 +196,7 @@ begin
   sCondicao := '';
   if (LimpaNumero(edPesquisa.Text) <> edPesquisa.Text) then
   begin
-    sCondicao := ' and CLIFOR containing ' + QuotedStr(edPesquisa.Text);
+    sCondicao := ' and coalesce(CLIFOR, '''') containing ' + QuotedStr(edPesquisa.Text);
   end;
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=
@@ -378,7 +378,7 @@ begin
     if Length(LimpaNumero(edPesquisa.Text)) in [11, 14] then
       sCondicao := ' and A.CNPJ = ' + QuotedStr(FormataCpfCgc(LimpaNumero(edPesquisa.Text)))
     else
-      sCondicao := ' and A.CLIFOR containing ' + QuotedStr(edPesquisa.Text);
+      sCondicao := ' and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(edPesquisa.Text);
   end;
   IBQPESQUISA.Close;
   IBQPESQUISA.SQL.Text :=

@@ -31725,6 +31725,8 @@ begin
           '               from ALTERACA A ' +
           '               where A.PEDIDO = N.NUMERONF ' +
           '               and A.CAIXA = N.CAIXA ' +
+          '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+          '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
           '               and A.CNPJ = ' + QuotedStr(FormataCpfCgc(sPesquisa)) +
           '              )' +
           '  ) ' +
@@ -31741,6 +31743,8 @@ begin
                                              ' Where N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
                                              '   and EXISTS (Select 1 From ALTERACA A'+
                                              '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
+                                             '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+                                             '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
                                              '               '+sPesquisa+')'+
                                              ' Order by DATA, NUMERONF ';
         Form1.ibDataset150.Open;
@@ -31766,9 +31770,9 @@ begin
     Form1.ibDataset150.Open;
     }
 
+    Form1.ibDataset150.Close;
     if Form1.sModeloECF <> '99' then
     begin
-      Form1.ibDataset150.Close;
       {Sandro Silva 2023-08-22 inicio
       Form1.ibDataset150.SelectSQL.Text := ' Select * '+
                                            ' From NFCE '+
@@ -31797,24 +31801,37 @@ begin
         '   and exists (select 1 ' +
         '               from ALTERACA A ' +
         '               where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
-        '               and A.CLIFOR containing ' + QuotedStr(sPesquisa) +
+        '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+        '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
+        '               and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) +
         '              )' +
         ' ) ' +
         ' order by N.DATA, N.NUMERONF ';
       {Sandro Silva 2023-08-22 fim}
-      Form1.ibDataset150.Open;
     end else
     begin
-      Form1.ibDataset150.Close;
-      Form1.ibDataset150.SelectSQL.Text := ' Select N.* '+
-                                           ' From NFCE N '+
+      {Sandro Silva 2023-08-24 inicio
+      Form1.ibDataset150.SelectSQL.Text := ' Select N.* ' +
+                                           ' From NFCE N ' +
                                            ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                                           '   and EXISTS (Select 1 From ALTERACA A'+
-                                           '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
-                                           '                 and A.CLIFOR containing'+QuotedStr(sPesquisa)+')'+
+                                           '   and EXISTS (Select 1 From ALTERACA A' +
+                                           '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA' +
+                                           '                 and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) + ')' +
                                            ' Order by N.DATA, N.NUMERONF ';
-      Form1.ibDataset150.Open;
+      }
+      Form1.ibDataset150.SelectSQL.Text := ' select N.* ' +
+                                           ' from NFCE N ' +
+                                           ' where MODELO = ' + QuotedStr(Form1.sModeloECF) +
+                                           '   and exists (select 1 From ALTERACA A' +
+                                           '               where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA' +
+                                           '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+                                           '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
+                                           '               and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) + ')' +
+                                           ' order by N.DATA, N.NUMERONF ';
+
+      {Sandro Silva 2023-08-24 fim}
     end;
+    Form1.ibDataset150.Open;
     { Mauricio Parizotto 2023-07-04 Fim}
   except
 

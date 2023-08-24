@@ -2096,7 +2096,7 @@ begin
       ' and ' +
       ' ( ' +
       '   ( ' +
-      '     (N.MODELO = ''99'' and exists (select 1 from ALTERACA A where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA and coalesce(A.VALORICM, 0) = 0)) ' +
+      '     (N.MODELO = ''99'' and exists (select 1 from ALTERACA A where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA and coalesce(A.VALORICM, 0) = 0 and coalesce(A.CODIGO, '''') <> '''')) ' +
       '   ) ' +
       '   or ' +
       '   (N.MODELO <> ''99'') ' +
