@@ -24370,6 +24370,8 @@ begin
   begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '59') then
       _ecf59_Visualiza_DANFECE(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString)
+    else if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') then
+      _ecf99_Visualiza_Venda(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString)
     else
       SmallMsg('Este XML não pertence a um ' + sTipoDocumento);// Sandro Silva 2018-08-01  SmallMsg('Este XML não pertence a um CF-e-SAT');
   end;
