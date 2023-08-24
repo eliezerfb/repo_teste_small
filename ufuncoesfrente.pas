@@ -330,7 +330,11 @@ function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
 procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
 function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
-    
+function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
+  sPedido: String; sCaixa: String;
+  dDescontoNoTotal: Double; dTotalDaVenda: Double;
+  out fTributos_federais: Real; out fTributos_estaduais: Real;
+  out fTributos_municipais: Real): String;
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -2258,6 +2262,54 @@ begin
   INI.Free;
 end;
 
+function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
+  sPedido: String; sCaixa: String;
+  dDescontoNoTotal: Double; dTotalDaVenda: Double;
+  out fTributos_federais: Real; out fTributos_estaduais: Real;
+  out fTributos_municipais: Real): String;
+var
+  IBQ: TIBQuery;
+begin
+  Result := '';
+  IBQ := CriaIBQuery(IBTransaction);
+  try
+    IBQ.Close;
+    IBQ.SQL.Clear;
+    IBQ.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
+                                + 'sum(cast((ESTOQUE.IIA_UF*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS2, '
+                                + 'sum(cast((ESTOQUE.IIA_MUNI*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS3 '
+                         + 'from ALTERACA,ESTOQUE where PEDIDO=' + QuotedStr(sPedido)
+                         + ' and CAIXA='+QuotedStr(sCaixa)
+                         + ' and TIPO<>''CANCEL'''
+                         + ' and ESTOQUE.CODIGO=ALTERACA.CODIGO and (ALTERACA.DESCRICAO<>''Desconto'' and ALTERACA.DESCRICAO<>''Acréscimo'')');
+    IBQ.Open;
+
+    if (IBQ.FieldByName('TRIBUTOS1').AsFloat + IBQ.FieldByName('TRIBUTOS2').AsFloat + IBQ.FieldByName('TRIBUTOS3').AsFloat)  > 0 then
+    begin
+      Result := 'Trib aprox R$: ';
+      if IBQ.FieldByName('TRIBUTOS1').AsFloat > 0 then
+        Result := Result + AllTrim(Format('%12.2n',[IBQ.FieldByName('TRIBUTOS1').AsFloat*(1-(dDescontoNoTotal / dTotalDaVenda))])) +' Federal ';
+      if IBQ.FieldByName('TRIBUTOS2').AsFloat > 0 then
+        Result := Result + AllTrim(Format('%12.2n',[IBQ.FieldByName('TRIBUTOS2').AsFloat*(1-(dDescontoNoTotal / dTotalDaVenda))])) +' Estadual ';
+      if IBQ.FieldByName('TRIBUTOS3').AsFloat > 0 then
+        Result := Result + AllTrim(Format('%12.2n',[IBQ.FieldByName('TRIBUTOS3').AsFloat*(1-(dDescontoNoTotal / dTotalDaVenda))])) +' Municipal ';
+
+      fTributos_federais   := IBQ.FieldByName('TRIBUTOS1').AsFloat;
+      fTributos_estaduais  := IBQ.FieldByName('TRIBUTOS2').AsFloat;
+      fTributos_municipais := IBQ.FieldByName('TRIBUTOS3').AsFloat;
+      //
+      IBQ.Close;
+      IBQ.SQL.Clear;
+      IBQ.SQL.Add('select first 1 distinct CHAVE, FONTE from IBPT_ '); // Sandro Silva 2016-08-16 Seleciona apenas 1 linha da tabela
+      IBQ.Open;
+      //
+      Result := Result + chr(10) + 'Fonte: ' + IBQ.FieldByName('FONTE').AsString + ' ' + IBQ.FieldByName('CHAVE').AsString;
+    end;
+  finally
+    FreeAndNil(IBQ);
+  end;
+
+end;
 {
 function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 begin

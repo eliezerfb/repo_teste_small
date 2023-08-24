@@ -11083,6 +11083,7 @@ begin
           begin
 
             try
+              {Sandro Silva 2023-08-24 inicio
               Form1.IBQuery1.Close;
               Form1.IBQuery1.SQL.Clear;
               Form1.IBQuery1.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
@@ -11115,9 +11116,22 @@ begin
                 //
                 sM := sM + chr(10) + 'Fonte: ' + Form1.IBQuery1.FieldByName('FONTE').AsString + ' ' + Form1.IBQuery1.FieldByName('CHAVE').AsString;
               end;
+              }
+              sM := MensagemComTributosAproximados(
+                Form1.ibDataSet27.Transaction,
+                Form1.ibDataSet27.FieldByname('PEDIDO').AsString,
+                Form1.ibDataSet27.FieldByname('CAIXA').AsString,
+                Form1.fDescontoNoTotal,
+                Form1.fTotal,
+                Form1.fTributos_federais,
+                Form1.fTributos_estaduais,
+                Form1.fTributos_municipais
+                );
+
             except
               on E: Exception do SmallMsg('Erro 567: '+chr(10)+chr(10)+ E.Message +chr(10)+chr(10)+ Form1.IBQuery1.SQL.Text);
             end;
+
             //
           end;
 
@@ -34036,6 +34050,7 @@ end;
 function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String): Boolean;
 var
   ConverteGerencial: TConverteGerencialParaDocFiscal;
+  IBQTOTAL: TIBQuery;
 begin
   Result := False;
 
@@ -34095,6 +34110,100 @@ begin
           Form1.sVendedor        := ConverteGerencial.sVendedor;
           Form1.fDescontoNoTotal := ConverteGerencial.DescontoNoTotal;
           Form1.fTEFPago         := ConverteGerencial.ValorTotalTEFPago;
+
+          IBQTOTAL := CriaIBQuery(Form1.ibDataSet27.Transaction);
+          IBQTOTAL.Close;
+          IBQTOTAL.Sql.Clear;
+          IBQTOTAL.SQL.Text := 'select sum(cast(TOTAL as numeric(18,2))) as TOTALBRUTO from ALTERACA where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)+' and DESCRICAO <> ''<CANCELADO>'' and TIPO <> ''KOLNAC'' and not (DESCRICAO = ''Desconto'' and Coalesce(ITEM,''XXX'') = ''XXX'') and not (DESCRICAO = ''Acréscimo'' and Coalesce(ITEM,''XXX'') = ''XXX'')';
+          IBQTOTAL.Open;
+
+          Form1.fTotal := IBQTOTAL.FieldByName('TOTALBRUTO').AsFloat;
+
+          Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem'               , MensagemPromocionalDefault);
+          //Procura os números de série e acumula na mensagem promocional
+          Form1.ibDataSet27.Close;
+          Form1.ibDataSet27.SelectSQL.Clear;
+          Form1.ibDataSet27.SelectSQL.Text :=
+            'select A.* ' +
+            'from ALTERACA A ' +
+            'where A.PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) + // Sandro Silva 2021-11-29 'where A.PEDIDO = ' + QuotedStr(strZero(Form1.icupom,6,0)) +
+            ' and A.CAIXA = ' + QuotedStr(Form1.sCaixa) +
+            ' order by REGISTRO';
+          Form1.ibDataSet27.Open;
+
+          // Identifica vendedor e número de série de produtos com controle de serial
+          sVendedor := '';
+          while Form1.ibDataSet27.Eof = False do
+          begin
+            if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'BALCAO') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
+            begin
+              if Pos('Serie:', Form1.ibDataSet27.FieldByName('OBS').AsString) > 0 then
+                Form1.sMensagemPromocional := Form1.ibDataSet27.FieldByName('OBS').AsString + chr(10) + Form1.sMensagemPromocional;
+              if Trim(Form1.ibDataSet27.FieldByName('VENDEDOR').AsString) <> '' then
+                sVendedor := Trim(Form1.ibDataSet27.FieldByName('VENDEDOR').AsString);
+            end;
+            Form1.ibDataSet27.Next;
+          end;
+
+          if AllTrim(sVendedor) <> '' then
+            Form1.sMensagemPromocional := ' Vendedor.: ' + AllTrim(sVendedor) + chr(10) + Form1.sMensagemPromocional;
+
+          Form1.ibDataSet2.Close;
+          Form1.ibDataSet2.SelectSQL.Text :=
+            'select * ' +
+            'from CLIFOR ' +
+            'where NOME = ' + QuotedStr(Form2.Edit8.Text);
+          Form1.ibDataSet2.Open;
+          if Trim(Form2.Edit8.Text) <> '' then
+          begin
+
+            if Trim(Form2.Edit8.Text) = Trim(Form1.ibDataSet2.FieldByName('NOME').AsString) then
+              if Trim(Form1.ibDataSet2.FieldByName('CONVENIO').AsString) <> '' then
+                Form1.sMensagemPromocional := 'Conv.: '+Form1.ibDataSet2.FieldByName('CONVENIO').AsString + chr(10) +  Form1.sMensagemPromocional;
+          end;
+
+
+          // Identifica se produtos são de origem de orçamento ou OS importados para a venda
+          Form1.ibDataSet27.First;
+          while Form1.ibDataSet27.Eof = False do
+          begin
+            if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'BALCAO') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
+            begin
+              if Form1.ibDataSet27.FieldByName('TIPODAV').AsString = 'ORÇAMENTO' then
+              begin
+                if Form1.ibDataSet27.FieldByName('DAV').AsString <> '' then
+                begin
+                  if AnsiContainsText(Form1.sMensagemPromocional, 'DAV ' + Form1.ibDataSet27.FieldByName('DAV').AsString) = False then
+                    Form1.sMensagemPromocional := 'DAV ' + Form1.ibDataSet27.FieldByName('DAV').AsString + chr(10) + Form1.sMensagemPromocional; // Form1.sMensagemPromocional := 'DAV ' + Form1.ibDataSet27.FieldByName('DAV').AsString + '|' + chr(10) + Form1.sMensagemPromocional;
+                end;
+              end;
+            end;
+            Form1.ibDataSet27.Next;
+          end;
+
+          Form1.ibDataSet27.First;
+
+          // Monta texto para ir nas observações da venda
+          Form1.sMensagemPromocional :=
+            MensagemComTributosAproximados(Form1.ibDataSet27.Transaction,
+              FormataNumeroDoCupom(Form1.icupom),
+              Form1.sCaixa,
+              Form1.fDescontoNoTotal,
+              Form1.fTotal,
+              Form1.fTributos_federais,
+              Form1.fTributos_estaduais,
+              Form1.fTributos_municipais) + chr(10) +
+            Form1.sMensagemPromocional;
+
+          if (Form1.sModeloECF = '59') then
+            Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + ' Build: ' + Build;
+
+          if (Form1.sModeloECF = '65') then
+            Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'Caixa: ' + Form1.sCaixa;
+
+          Form1.sMensagemPromocional := StringReplace(Form1.sMensagemPromocional, #10#10, #10, [rfReplaceAll]);
+
+          AcertaPendenciaCancelAlteraca; // Fechamento do cupom Sandro Silva 2019-03-21
 
           if Form1.sModeloECF = '59' then
             _ecf59_FinalizaVendaSAT;
