@@ -2110,6 +2110,9 @@ type
       const Text: String);
     procedure RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
     procedure ibDataSet16AfterOpen(DataSet: TDataSet);
+    procedure IBDataSet2ENDERESetText(Sender: TField; const Text: String);
+    procedure IBDataSet2COMPLESetText(Sender: TField; const Text: String);
+    procedure IBDataSet2EMAILSetText(Sender: TField; const Text: String);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2257,6 +2260,7 @@ type
     function RetornarAliquotaICM(AcUF: String): Currency;
     procedure AtualizarListaItensAuxiliar;    
     procedure AuditaAlteracaoEstoqueManual;
+    function TestarClienteExiste(AcTexto: String): Boolean;    
     function TestarProdutoExiste(AcTexto: String): Boolean;   
   end;
 
@@ -11979,14 +11983,18 @@ begin
 end;
 
 procedure TForm7.ibDataSet2NOMESetText(Sender: TField; const Text: String);
+var
+  cTexto: String;
 begin
-  if (AllTrim(ibDataSet2NOME.AsString) <> '') and (AllTrim(Text) = '') then
+  cTexto := Text;
+
+  if (AllTrim(ibDataSet2NOME.AsString) <> '') and (AllTrim(cTexto) = '') then
   begin
     ShowMessage('Nome inválido (não pode ficar em branco).');
   end else
   begin
-    if Valida_Campo('CLIFOR',AllTrim(Text),'NOME','Este cliente já foi cadastrado') then
-      ibDataSet2NOME.AsString := AllTrim(Text);
+    if Valida_Campo('CLIFOR',AllTrim(cTexto),'NOME','Este cliente já foi cadastrado') then
+      ibDataSet2NOME.AsString := AllTrim(cTexto);
   end;
 end;
 
@@ -33343,6 +33351,33 @@ end;
 procedure TForm7.ibDataSet16AfterOpen(DataSet: TDataSet);
 begin
   AtualizarListaItensAuxiliar;
+end;
+
+procedure TForm7.IBDataSet2ENDERESetText(Sender: TField;
+  const Text: String);
+begin
+  IBDataSet2ENDERE.AsString := AllTrim(Text);
+end;
+
+procedure TForm7.IBDataSet2COMPLESetText(Sender: TField;
+  const Text: String);
+begin
+  IBDataSet2COMPLE.AsString := AllTrim(Text);
+end;
+
+function TForm7.TestarClienteExiste(AcTexto: String): Boolean;
+begin
+  Result := Valida_Campo('CLIFOR',AllTrim(AcTexto),'NOME', EmptyStr);
+end;
+
+procedure TForm7.IBDataSet2EMAILSetText(Sender: TField; const Text: String);
+begin
+  IBDataSet2EMAIL.OnSetText := nil;
+  try
+    IBDataSet2EMAIL.Text := AllTrim(Text);
+  finally
+    IBDataSet2EMAIL.OnSetText := IBDataSet2EMAILSetText;
+  end;
 end;
 
 function TForm7.TestarProdutoExiste(AcTexto: String): Boolean;

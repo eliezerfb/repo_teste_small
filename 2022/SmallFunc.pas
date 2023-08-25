@@ -26,6 +26,7 @@ uses
   function Potencia(pP1,pP2:Integer):Integer;
   function IntToBin(pP1:Integer ):String;
   function BinToInt(pP1:String ):Integer;
+  function TrimDuplicados(AcTexto: String):String;
   function AllTrim(pP1:String):String;
   function AllTrimCHR(pP1:String; pP2:String):String;
   function RTrim(pP1:String):String;
@@ -676,6 +677,15 @@ begin
           Result := Result+ (StrToInt(Copy(sTemp,I,1)) * Potencia(2,I-1));
    end;
 end;
+
+{ Dailon (f-7224) 2023-08-07 Inicio}
+function TrimDuplicados(AcTexto: String):String;
+begin
+  Result := Trim(AcTexto);
+  while Pos('  ', Result) > 0 do
+    Result := StringReplace(Result, '  ', ' ', [rfReplaceAll]);
+end;
+{ Dailon (f-7224) 2023-08-07 Fim}
 
 Function AllTrim(pP1:String):String;
 begin

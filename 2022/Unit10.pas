@@ -631,7 +631,6 @@ type
 
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
-    sPublicText : String;
     sLinha : String;
     sColuna : String;
     sRegistroVolta : String;
@@ -1648,9 +1647,6 @@ begin
   
   dBGrid3.Tag := 0;
 
-  with Sender as TSMALL_DBEdit do
-    sPublicText := Text;
-
   dBGrid3.Visible := False;
 
   dBGrid3.Parent := TSMALL_DBEdit(Sender).Parent; // Sandro Silva 2023-06-28
@@ -1935,12 +1931,13 @@ end;
 
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);
 begin
+
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') then
     sNomeDoArquivoParaSalvar := 'contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt'; // Lendo o arquivo para mostrar na tela
-  
+
   try
     sText := '';
-  
+
     with Sender as TSMALL_DBEdit do
     begin
       if (Form7.sModulo = 'ESTOQUE') and (Datafield = 'DESCRICAO') and (Form7.ibDataSet4DESCRICAO.AsString = '') then
@@ -2095,6 +2092,27 @@ begin
       if (DataField = 'CFOP') and (Form7.sModulo = 'ICM')then
         DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
       {Sandro Silva 2023-06-28 fim}
+
+      {Dailon (f-7224) 2023-08-22 inicio}
+      if Form7.sModulo = 'CLIENTES' then
+      begin
+        if ((DataField = 'ENDERE')
+            or (DataField = 'COMPLE')
+            or (DataField = 'EMAIL')) then
+        begin
+          if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
+          begin
+            if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+            begin
+              TSMALL_DBEdit(Sender).Field.DataSet.Edit;
+              TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+              TSMALL_DBEdit(Sender).Field.DataSet.Post;
+            end else
+              TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);            
+          end;
+        end;
+      end;
+      {Dailon (f-7224) 2023-08-22 fim}
     end;
   except
   end;
@@ -4408,18 +4426,15 @@ begin
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
 
-  {Sandro Silva 2022-10-18 inicio}
-  //Key := Form1.BloqueiaCtrlXTField(Sender, Key, Shift);
-
   if Sender.ClassType = TSMALL_DBEdit then
   begin
-     if (((TSMALL_DBEdit(Sender).DataField = 'NOME') or (TSMALL_DBEdit(Sender).DataField = 'CGC') or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO')) and
-      (
-        (Form7.sModulo = 'RECEBER') or
-        (Form7.sModulo = 'PAGAR') or
-        (Form7.sModulo = 'CLIENTES') or
-        (Form7.sModulo = 'ESTOQUE')
-      )) then
+     if (((TSMALL_DBEdit(Sender).DataField = 'NOME')
+          or (TSMALL_DBEdit(Sender).DataField = 'CGC')
+          or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO'))
+        and ((Form7.sModulo = 'RECEBER') or
+             (Form7.sModulo = 'PAGAR') or
+             (Form7.sModulo = 'CLIENTES') or
+             (Form7.sModulo = 'ESTOQUE'))) then
     begin
       if (Trim(TSMALL_DBEdit(Sender).Text) = '') and (TSMALL_DBEdit(Sender).Field.OldValue <> '') then
       begin
@@ -4443,8 +4458,27 @@ begin
       end;
     end;
     {Dailon (f-7225) 2023-08-17 fim}
+    {Dailon (f-7224) 2023-08-17 inicio}
+    if Form7.sModulo = 'CLIENTES' then
+    begin
+      if ((TSMALL_DBEdit(Sender).DataField = 'ENDERE')
+          or (TSMALL_DBEdit(Sender).DataField = 'COMPLE')
+          or (TSMALL_DBEdit(Sender).DataField = 'EMAIL')) then
+      begin
+        if (Copy(TSMALL_DBEdit(Sender).Text,1,1) = ' ') then
+        begin
+          if not (TSMALL_DBEdit(Sender).Field.DataSet.State in [dsEdit, dsInsert]) then
+          begin
+            TSMALL_DBEdit(Sender).Field.DataSet.Edit;
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+            TSMALL_DBEdit(Sender).Field.DataSet.Post;
+          end else
+            TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
+        end;
+      end;
+    end;
+    {Dailon (f-7224) 2023-08-17 fim}
   end;
-  {Sandro Silva 2022-10-18 fim}
 end;
 
 procedure TForm10.Image5Click(Sender: TObject);
