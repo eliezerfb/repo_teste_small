@@ -11072,7 +11072,7 @@ begin
         begin
           //
           Mais1ini             := TIniFile.Create('FRENTE.INI');
-          sMensagemPromocional := Mais1Ini.ReadString('Frente de caixa'  , 'Mensagem' , MensagemPromocionalDefault);
+          Form1.sMensagemPromocional := Mais1Ini.ReadString('Frente de caixa'  , 'Mensagem' , MensagemPromocionalDefault);
           Mais1Ini.Free;
           //
           //
