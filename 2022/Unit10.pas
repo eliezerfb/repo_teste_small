@@ -6342,10 +6342,11 @@ begin
 
       if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) and (Form7.ibDataSet4DESCRICAO.AsString <> '') then
       begin
+        vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-22
+
         if Form7.sModulo <> 'KARDEX' then
         begin
-          vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-04 
-
+          //vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-04
 
           Form7.ibDataSet10.Close;
           Form7.ibDataSet10.SelectSQL.Clear;
