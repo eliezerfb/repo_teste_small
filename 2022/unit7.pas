@@ -1489,6 +1489,10 @@ type
     pnlFiltro: TPanel;
     lblHomologacao: TLabel;
     Panel7: TPanel;
+    Exibir8: TMenuItem;
+    Oramentospendentes1: TMenuItem;
+    Oramentosfinalizados1: TMenuItem;
+    odos2: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2113,6 +2117,9 @@ type
     procedure IBDataSet2ENDERESetText(Sender: TField; const Text: String);
     procedure IBDataSet2COMPLESetText(Sender: TField; const Text: String);
     procedure IBDataSet2EMAILSetText(Sender: TField; const Text: String);
+    procedure Oramentospendentes1Click(Sender: TObject);
+    procedure Oramentosfinalizados1Click(Sender: TObject);
+    procedure odos2Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -5186,6 +5193,13 @@ begin
   P1 := StrTran(P1,'COALESCE(ATIVO,0)=0', 'só ativos');
   P1 := StrTran(P1,'COALESCE(ATIVO,0)=1', 'só inativos');
 
+  //Mauricio Parizotto 2023-08-22
+  //Orçamento
+  P1 := StrTran(P1,'where COALESCE(ORCAMENTS.NUMERONF,'''') = '''' ', 'só pendentes');
+  P1 := StrTran(P1,'where COALESCE(ORCAMENTS.NUMERONF,'''') <> '''' ', 'só finalizados');
+  P1 := StrTran(P1,'ORCAMENTS.', '');
+
+
   P1 := StrTran(P1,'Coalesce', '');
   P1 := StrTran(P1, QuotedStr('~'),'');
   P1 := StrTran(P1,'PEDIDO', 'orçamento');
@@ -5232,16 +5246,21 @@ begin
   P1 := StrTran(P1, 'só quando só' ,'só');
 
   for I := 1 to Form7.TabelaAberta.FieldCount do
+  begin
     if Form7.TabelaAberta.Fields[I-1].FieldName <> Form7.TabelaAberta.Fields[I-1].DisplayLabel then
     begin
       if (Form7.TabelaAberta.Fields[I-1].FieldName <> 'IPI')
-      and (copy(Form7.TabelaAberta.Fields[I-1].FieldName,1,3) <> 'CST')
-    then
+        and (copy(Form7.TabelaAberta.Fields[I-1].FieldName,1,3) <> 'CST') then
       begin
         P1 := StrTran(P1,' '+Form7.TabelaAberta.Fields[I-1].FieldName,' '+Form7.TabelaAberta.Fields[I-1].DisplayLabel);
       end;
     end;
-  
+  end;
+
+  //Mauricio Parizotto 2023-08-22 Orçamento não usa campos do dataset
+  P1 := StrTran(P1, 'CLIFOR' ,'Cliente' );
+  P1 := StrTran(P1, 'NUMERONF' ,'Doc. Fiscal');
+
   Result := P1;
 end;
 
@@ -10756,7 +10775,7 @@ begin
         Form7.ibDataSet97.Close;
         Form7.ibDataSet97.Selectsql.Clear;
         Form7.ibDataSet97.Selectsql.Add(RetornarSQLEstoqueOrcamentos);
-        Form7.ibDataSet97.Selectsql.Add('ORDER BY ORCAMENTS.PEDIDO');
+        Form7.ibDataSet97.Selectsql.Add('order by ORCAMENTS.PEDIDO');
         Form7.ibDataSet97.Open;
         Form7.ibDataSet97.EnableControls;
 
@@ -10784,7 +10803,7 @@ begin
           Mais1Ini.WriteString(sModulo, 'FILTRO', EmptyStr);
           
         sWhere    := StrTran(StrTran(StrTran(Mais1Ini.ReadString(sModulo,'FILTRO',''),'Cliente','CLIFOR'),'Doc. Fiscal','NUMERONF'),'Orçamento','PEDIDO');
-        sOrderBy  := 'ORDER BY ORCAMENTS.PEDIDO';
+        sOrderBy  := 'order by ORCAMENTS.PEDIDO';
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
@@ -32817,7 +32836,7 @@ end;
 procedure TForm7.Sativos1Click(Sender: TObject);
 begin
   sWhere := ' where COALESCE(ATIVO,0)=0 ';
-  
+
   Form7.Close;
   Form7.Show;
 end;
@@ -33351,6 +33370,30 @@ end;
 procedure TForm7.ibDataSet16AfterOpen(DataSet: TDataSet);
 begin
   AtualizarListaItensAuxiliar;
+end;
+
+procedure TForm7.Oramentospendentes1Click(Sender: TObject);
+begin
+  sWhere := ' where COALESCE(ORCAMENTS.NUMERONF,'''') = '''' ';
+
+  Form7.Close;
+  Form7.Show;
+end;
+
+procedure TForm7.Oramentosfinalizados1Click(Sender: TObject);
+begin
+  sWhere := ' where COALESCE(ORCAMENTS.NUMERONF,'''') <> '''' ';
+
+  Form7.Close;
+  Form7.Show;
+end;
+
+procedure TForm7.odos2Click(Sender: TObject);
+begin
+  sWhere := '';
+
+  Form7.Close;
+  Form7.Show;
 end;
 
 procedure TForm7.IBDataSet2ENDERESetText(Sender: TField;
