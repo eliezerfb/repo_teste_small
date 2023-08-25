@@ -21,7 +21,7 @@ type
     property Nome: String read FNome write FNome;
   end;
 
-  TConverteGerencialParaDocFiscal = class 
+  TConverteVendaParaNovoDocFiscal = class 
   private
     FIBTransaction: TIBTransaction;
     FCaixa: String;
@@ -42,11 +42,13 @@ type
     FDadosCliente: TDadosCliente;
     FDescontoNoTotal: Double;
     FValorTotalTEFPago: Double;
+    FCaixaOld: String;
+    FModeloOld: String;
     procedure SetNumeroGerencial(const Value: String);
   public
     constructor Create;
     destructor Destroy;
-    function Importar: Boolean;
+    function Converte: Boolean;
     property IBTransaction: TIBTransaction read FIBTransaction write FIBTransaction;
     property IBDataset150: TIBDataSet read FIBDataset150 write FIBDataset150;
     property IBDataSet27: TIBDataSet read FIBDataSet27 write FIBDataSet27;
@@ -66,6 +68,8 @@ type
     property DescontoNoTotal: Double read FDescontoNoTotal write FDescontoNoTotal;
     property DadosCliente: TDadosCliente read FDadosCliente write FDadosCliente;
     property ValorTotalTEFPago: Double read FValorTotalTEFPago write FValorTotalTEFPago;
+    property CaixaOld: String read FCaixaOld write FCaixaOld;
+    property ModeloOld: String read FModeloOld write FModeloOld;
 
   end;
 
@@ -74,19 +78,19 @@ implementation
 uses
   fiscal, DB;
 
-{ TConverteGerencialParaDocFiscal }
+{ TConverteVendaParaNovoDocFiscal }
 
-constructor TConverteGerencialParaDocFiscal.Create;
+constructor TConverteVendaParaNovoDocFiscal.Create;
 begin
   FDadosCliente := TDadosCliente.Create;
 end;
 
-destructor TConverteGerencialParaDocFiscal.Destroy;
+destructor TConverteVendaParaNovoDocFiscal.Destroy;
 begin
   FDadosCliente.Free;
 end;
 
-function TConverteGerencialParaDocFiscal.Importar: Boolean;
+function TConverteVendaParaNovoDocFiscal.Converte: Boolean;
 // Converte venda gerencial em documento fiscal modelo 59 e 65
 var
   IBQCONSULTA: TIBQuery;
@@ -101,10 +105,19 @@ var
   sTIPODAV: String;
   ModalidadeTransacao: TTipoModalidadeTransacao;
   FormasPagamento: TPagamentoPDV;
+  sXmlOld: String;  // Sandro Silva 2023-08-25
+  sCondicaoVenda: String;
 begin
   FNumeroNF := '';
-  if (FModeloDocumento <> '59') and (FModeloDocumento <> '65') then
-    Exit;
+
+  if FModeloOld = '' then
+  begin
+    if (FModeloDocumento <> '59') and (FModeloDocumento <> '65') then
+      Exit;
+  end;
+
+  if FModeloOld = '' then
+    sModeloOld := '99';
 
   if (FIBTransaction = nil) or
     (FIBDataSet27 = nil) or
@@ -120,9 +133,18 @@ begin
   IBQCONSULTA := CriaIBQuery(FIBTransaction);
   IBQTRANSACAOELETRONICA := CriaIBQuery(FIBTransaction);
   try
+    if FModeloOld = '99' then
+      sCondicaoVenda := ' and coalesce(STATUS, '''') = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ';
+    if FModeloOld = '65' then
+      sCondicaoVenda := ' and (coalesce(STATUS, '''') not containing ''Autorizad'' and coalesce(STATUS, '''') not containing ''Cancel'' )';
+    if FModeloOld = '59' then
+      sCondicaoVenda := ' and (coalesce(STATUS, '''') not containing ''Emitido com sucesso'' and coalesce(STATUS, '''') not containing ''Cancel'' )';
+
     IBQCONSULTA.Close;
     IBQCONSULTA.SQL.Text :=
-      'select NUMERONF, DATA, CAIXA, MODELO from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ';
+      // Sandro Silva 2023-08-25 'select NUMERONF, DATA, CAIXA, MODELO from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and MODELO = ''99'' and STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ';
+      'select NUMERONF, DATA, CAIXA, MODELO, NFEXML from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) +
+      ' and MODELO = ' + QuotedStr(FModeloOld) + sCondicaoVenda;
     IBQCONSULTA.Open;
 
     if IBQCONSULTA.FieldByName('NUMERONF').AsString <> '' then
@@ -131,11 +153,21 @@ begin
       sDataOld   := IBQCONSULTA.FieldByName('DATA').AsString;
       sCaixaOld  := IBQCONSULTA.FieldByName('CAIXA').AsString;
       sModeloOld := IBQCONSULTA.FieldByName('MODELO').AsString;
+      sXmlOld    := IBQCONSULTA.FieldByName('NFEXML').AsString;
 
+      {Sandro Silva 2023-08-23 inicio
       IBQCONSULTA.Close;
       IBQCONSULTA.SQL.Clear;
       IBQCONSULTA.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr('99'));
       IBQCONSULTA.ExecSQL;
+      }
+
+      FIBDataset150.Close;
+      FIBDataset150.SelectSql.Clear;
+      FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(sModeloOld));
+      FIBDataset150.Open;
+      FIBDataset150.Delete;
+      {Sandro Silva 2023-08-25 fim}
 
       FIBDataset150.Close;
       FIBDataset150.SelectSql.Clear;
@@ -160,6 +192,7 @@ begin
       FIBDataset150.FieldByName('CAIXA').AsString     := FCaixa;
       FIBDataset150.FieldByName('MODELO').AsString    := FModeloDocumento;
       FIBDataset150.FieldByName('GERENCIAL').AsString := FNumeroGerencial;
+      FIBDataset150.FieldByName('NFEXML').AsString    := sXmlOld;
       FIBDataset150.Post;
 
       // Seleciona o desconto no total
@@ -216,6 +249,7 @@ begin
       end;
       }
 
+      {Sandro Silva 2023-08-25 inicio
       IBQPENDENCIA := CriaIBQuery(FIBTransaction);
       try
         IBQPENDENCIA.Close;
@@ -230,6 +264,9 @@ begin
 
       end;
       FreeAndNil(IBQPENDENCIA);
+      }
+      AtualizaNumeroPedidoTabelaPendencia(FIBTransaction, sCaixaOld, FNumeroGerencial, sNovoNumero, FCaixa);
+      {Sandro Silva 2023-08-25 fim}
 
       while FIBDataSet27.Eof = False do
       begin
@@ -347,12 +384,12 @@ begin
         FIBDataSet7.Next;
       end;                     
 
-      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml
-
+      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml  
 
       FormasPagamento.Clear;
       FValorTotalTEFPago := 0.00;
 
+      {Sandro Silva 2023-08-25 inicio
       //Pagament
       FIBDataSet28.Close;
       FIBDataSet28.SelectSQL.Text :=
@@ -367,10 +404,12 @@ begin
           try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
             FIBDataSet28.Edit;
             if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '02' then
-              FIBDataSet28.FieldByName('FORMA').AsString := '02 Dinheiro NFC-e';
+              if FModeloDocumento = '65' then
+                FIBDataSet28.FieldByName('FORMA').AsString := '02 Dinheiro NFC-e';
 
             if Copy(FIBDataSet28.FieldByName('FORMA').AsString, 1, 2) = '04' then
-              FIBDataSet28.FieldByName('FORMA').AsString := '04 A prazo NFC-e';
+              if FModeloDocumento = '65' then
+                FIBDataSet28.FieldByName('FORMA').AsString := '04 A prazo NFC-e';
 
             FIBDataSet28.FieldByName('PEDIDO').AsString := sNovoNumero;
             FIBDataSet28.FieldByName('CAIXA').AsString  := FCaixa;
@@ -499,6 +538,10 @@ begin
 /////////////////////////////////////////////////////////////////////////////////////
         FIBDataSet28.Next;
       end;
+      }
+      AtualizaDadosPagament(FIBDataSet28, FIBTransaction, FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
+        FConveniado, FVendedor, FormasPagamento, FValorTotalTEFPago, FTransacoesCartao, ModalidadeTransacao);
+      {Sandro Silva 2023-08-25 fim}
 
       FIBDataSet25.FieldByName('RECEBER').AsFloat    := FormasPagamento.TotalReceber;
       FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FormasPagamento.Cheque;
@@ -514,7 +557,7 @@ begin
       FIBDataSet25.FieldByName('VALOR07').AsFloat    := FormasPagamento.Extra7;
       FIBDataSet25.FieldByName('VALOR08').AsFloat    := FormasPagamento.Extra8;
 
-      AtualizaDadosTransacaoEletronica(FIBDataSet28.Transaction, FNumeroGerencial, sCaixaOld, sModeloOld, dtDataNovo, sNovoNumero, FCaixa, FModeloDocumento);
+      //AtualizaDadosTransacaoEletronica(FIBDataSet28.Transaction, FNumeroGerencial, sCaixaOld, sModeloOld, dtDataNovo, sNovoNumero, FCaixa, FModeloDocumento);
 
       Result := True;
 
@@ -540,7 +583,7 @@ begin
 
 end;
 
-procedure TConverteGerencialParaDocFiscal.SetNumeroGerencial(const Value: String);
+procedure TConverteVendaParaNovoDocFiscal.SetNumeroGerencial(const Value: String);
 begin
   FNumeroGerencial := FormataNumeroDoCupom(StrToIntDef(Value, 0));
 end;

@@ -214,7 +214,7 @@ uses
   , uclassetransacaocartao
   , umontaxmlvendasat
   , Unit12
-  ;
+  , uConverteGerencialParaDocFiscal;
 
 function FormataFloatXML(dValor: Double; iDecimais: Integer): String;
 begin
@@ -1915,6 +1915,7 @@ var
   sLog: String; // Sandro Silva 2021-03-10
   FIBQuery65: TIBQuery;
   sNumeroGerencialConvertido: String;
+  ConverteVenda: TConverteVendaParaNovoDocFiscal;
 begin
   Result := False;
   tInicio := Now;
@@ -2138,6 +2139,7 @@ begin
             sTIPODAV := 'OS';
           end;
 
+          {Sandro Silva 2023-08-25 inicio
           IBQPENDENCIA := CriaIBQuery(Form1.ibDataSet27.Transaction);
           try
             IBQPENDENCIA.Close;
@@ -2151,6 +2153,9 @@ begin
 
           end;
           FreeAndNil(IBQPENDENCIA);
+          }
+          AtualizaNumeroPedidoTabelaPendencia(Form1.ibDataSet27.Transaction, Form1.sCaixa, sAlteracaPedidoOld, Right(sCFe, 6), Form1.sCaixa);
+          {Sandro Silva 2023-08-25 fim}  
 
           while Form1.ibDataSet27.Eof = False do
           begin
@@ -2375,9 +2380,9 @@ begin
                 
             end;
           end; // não é contingência if Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0 then
-        end;
+        end;// Importando SmallMobile
 
-        IncrementaGenerator(_59_PREFIXO_GENERATOR_CAIXA_SAT + Form1.sCaixa, 1); // Sandro Silva 2021-03-05 IncrementaGenerator('G_NUMEROCFESAT_' + Form1.sCaixa, 1); // 2015-07-21
+        IncrementaGenerator(_59_PREFIXO_GENERATOR_CAIXA_SAT + Form1.sCaixa, 1);// Para garantir que o generator nunca fique com o mesmo número sequencial do SAT // Sandro Silva 2021-03-05 IncrementaGenerator('G_NUMEROCFESAT_' + Form1.sCaixa, 1); // 2015-07-21
 
       end
       else
@@ -2405,6 +2410,30 @@ begin
           Form1.IBDataSet150.Post;
           //
           Form1.ibDataset150.Close;
+
+
+          {Sandro Silva 2023-08-25 inicio}
+          ConverteVenda := TConverteVendaParaNovoDocFiscal.Create;
+          ConverteVenda.ModeloOld         := '59';
+          ConverteVenda.Caixa             := Form1.sCaixa;
+          ConverteVenda.ModeloDocumento   := Form1.sModeloECF;
+          ConverteVenda.IBTransaction     := Form1.ibDataSet27.Transaction;
+          ConverteVenda.IBDataSet27       := Form1.IBDataSet27;
+          ConverteVenda.IBDataSet30       := Form1.IBDataSet30;
+          ConverteVenda.IBDataset150      := Form1.IBDataSet150;
+          ConverteVenda.IBDataSet7        := Form1.IBDataSet7;
+          ConverteVenda.IBDataSet28       := Form1.IBDataSet28;
+          ConverteVenda.IBDataSet25       := Form1.ibDataSet25;
+          ConverteVenda.TransacoesCartao  := Form1.TransacoesCartao;
+          ConverteVenda.NomeDoTEF         := Form10.sNomeDoTEF;
+          ConverteVenda.DebitoOuCredito   := Form1.sDebitoOuCredito;
+          ConverteVenda.sConveniado       := Form1.sConveniado;
+          ConverteVenda.sVendedor         := Form1.sVendedor;
+          ConverteVenda.NumeroGerencial   := FormataNumeroDoCupom(Form1.iCupom);
+          ConverteVenda.Converte;
+          FreeAndNil(ConverteVenda);
+          {Sandro Silva 2023-08-25 fim}
+
         except
 
         end;
