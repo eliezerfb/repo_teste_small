@@ -407,8 +407,8 @@ begin
       I := I + 1;
       if I > 10 then I := 1;
       //
-      Form1.Label_10.Caption := 'Feche a gaveta'+Replicate('.',I);
-      Form1.Label_10.Repaint;
+      Form1.lbDisplayPDV.Caption := 'Feche a gaveta'+Replicate('.',I);
+      Form1.lbDisplayPDV.Repaint;
       //
       Form1.sGaveta := Form1.PDV_StatusGaveta(True);
     end;

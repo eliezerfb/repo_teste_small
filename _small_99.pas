@@ -14,9 +14,20 @@ uses
   , Printers
   ;
 
-const VENDA_MEI_ABERTA     = 'Aberta';
-const VENDA_MEI_FINALIZADA = 'Finalizada';
-const VENDA_MEI_CANCELADA  = 'Cancelada';
+const GERENCIAL_FORMA_01_DINHEIRO                                     = '01';
+const GERENCIAL_FORMA_02_CHEQUE                                       = '02';
+const GERENCIAL_FORMA_03_CARTAO_CREDITO                               = '03';
+const GERENCIAL_FORMA_04_CARTAO_DEBITO                                = '04';
+const GERENCIAL_FORMA_05_CREDITO_LOJA                                 = '05';
+const GERENCIAL_FORMA_10_VALE_ALIMENTACAO                             = '10';
+const GERENCIAL_FORMA_11_VALE_REFEICAO                                = '11';
+const GERENCIAL_FORMA_12_VALE_PRESENTE                                = '12';
+const GERENCIAL_FORMA_13_VALE_COMBUSTIVEL                             = '13';
+const GERENCIAL_FORMA_16_DEPOSITO_BANCARIO                            = '16';
+const GERENCIAL_FORMA_17_PAGAMENTO_INSTANTANEO                        = '17';
+const GERENCIAL_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18'; //Transferência bancária, Carteira Digital
+const GERENCIAL_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19'; //Programa de fidelidade, Cashback, Crédito Virtual
+const GERENCIAL_FORMA_99_OUTROS                                       = '99';
 
 type
   TMobile = class(TComponent)
@@ -146,9 +157,17 @@ type
     sFileExport: String = ''): Boolean;
 
   procedure _ecf99_AcumulaFormaExtraNFCe(sOrdemExtra: String; dValor: Double;
+      {Sandro Silva 2023-08-21 inicio
       var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
       var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
       var dvPag_YA03_99: Double);
+      }
+      var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
+      var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
+      var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
+      var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
+      var dvPag_YA03_99: Double
+      );
 
 var
   iCaracteres : Integer;
@@ -181,7 +200,7 @@ var
   iItem: Integer;
   Mais1ini: TIniFile;
 begin
-  //             
+  //
   //Result := False;
   Application.Title := 'Aplicativo Gerencial'; // Sandro Silva 2023-06-23 Application.Title    := 'Aplicativo MEI';
 
@@ -223,8 +242,14 @@ begin
   Form1.NmerodoCredencimentodaImpressoraECF1.Visible := False; // Sandro Silva 2017-08-04
 
   Mais1ini := TIniFile.Create('FRENTE.INI');
-  if Mais1ini.ReadString('NFCE', 'Imprimir DANFCE', 'Sim')   = 'Sim' then Form1.ImprimirDANFCE1.Checked             := True else Form1.ImprimirDANFCE1.Checked             := False;
-  if Mais1ini.ReadString('NFCE', 'Visualizar DANFCE', 'Não') = 'Sim' then Form1.VisualizarDANFCE1.Checked           := True else Form1.VisualizarDANFCE1.Checked           := False;
+  if Mais1ini.ReadString('NFCE', 'Imprimir DANFCE', 'Sim')   = 'Sim' then
+    Form1.ImprimirDANFCE1.Checked             := True
+  else
+    Form1.ImprimirDANFCE1.Checked             := False;
+  if Mais1ini.ReadString('NFCE', 'Visualizar DANFCE', 'Não') = 'Sim' then
+    Form1.VisualizarDANFCE1.Checked           := True
+  else
+    Form1.VisualizarDANFCE1.Checked           := False;
   Mais1ini.Free;
   {Sandro Silva 2020-10-14 fim}
 
@@ -259,8 +284,10 @@ var
   Venda: TVenda99;
   iTransacaoCartao: Integer;
   Mais1ini: TIniFile;
-  dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99: Double;
-  sPdfMobile: String; // Sandro Silva 2020-10-08 
+  dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13,
+  dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19,
+  dvPag_YA03_99: Double;
+  sPdfMobile: String; // Sandro Silva 2020-10-08
 begin
   Result := True;
 
@@ -467,43 +494,51 @@ begin
     begin
       if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
-      end;  
+        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+      end;
 
       if dvPag_YA03_10 > 0 then
         Venda.AddForma('VALE ALIMENTACAO', dvPag_YA03_10); // 10=Vale Alimentação
@@ -516,6 +551,18 @@ begin
 
       if dvPag_YA03_13 > 0 then
         Venda.AddForma('VALE COMBUSTIVEL', dvPag_YA03_13); // 13=Vale Combustível
+
+      if dvPag_YA03_16 > 0 then
+        Venda.AddForma('DEPOSITO BANCARIO', dvPag_YA03_16); // 16=Deposito Bancario
+
+      if dvPag_YA03_17 > 0 then
+        Venda.AddForma('PAGAMENTO INSTANTANEO', dvPag_YA03_17); // 17=Pagamento Instantaneo
+
+      if dvPag_YA03_18 > 0 then
+        Venda.AddForma('TRANSF.BANCARIA CARTEIRA DIGITAL', dvPag_YA03_18); // 18=Transf.Bancaria Carteira Digital
+
+      if dvPag_YA03_19 > 0 then
+        Venda.AddForma('PROGR.FIDELIDADE CASHBACK CREDITO VIRTUAL', dvPag_YA03_19); // 19=Progr.Fidelidade Cashback Credito Virtual
 
       if dvPag_YA03_99 > 0 then
         Venda.AddForma('OUTROS', dvPag_YA03_99); // 99=Outros
@@ -544,6 +591,7 @@ begin
       end;
     end;
 
+    Venda.Troco := 0.00;
     if Form1.ibDataSet25ACUMULADO3.AsFloat > 0 then // Troco
     begin
       Venda.Troco := Form1.ibDataSet25ACUMULADO3.AsFloat;
@@ -559,9 +607,9 @@ begin
     Form1.ibDataset150.Open;
 
     Form1.ibDataset150.Edit;
-    Form1.ibDataset150.FieldByName('STATUS').AsString := VENDA_MEI_FINALIZADA; // Fecha venda
+    Form1.ibDataset150.FieldByName('STATUS').AsString := VENDA_GERENCIAL_FINALIZADA; // Fecha venda
     Form1.ibDataset150.FieldByName('DATA').AsDateTime := dtEnvio;
-    Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total;
+    Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total - Venda.Troco; // Sandro Silva 2023-08-08 Form1.ibDataset150.FieldByName('TOTAL').AsFloat   := Venda.Total;
     Form1.ibDataset150.Post;
 
     if (Form1.ClienteSmallMobile.sVendaImportando = '') then
@@ -646,11 +694,11 @@ begin
     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
     begin
       //
-      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_CANCELADA then
+      if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_CANCELADA then
       begin
         try
           Form1.ibDataSet150.Edit;
-          Form1.ibDataSet150.FieldByName('STATUS').AsString := VENDA_MEI_CANCELADA;
+          Form1.ibDataSet150.FieldByName('STATUS').AsString := VENDA_GERENCIAL_CANCELADA;
           Form1.ibDataSet150.FieldByName('NFEXML').Clear;
           Form1.IBDataSet150.FieldByName('TOTAL').Clear;
           Form1.ibDataSet150.Post;
@@ -734,22 +782,33 @@ begin
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
         Form1.IBDataSet150.FieldByName('CAIXA').AsString    := Form1.sCaixa;
         Form1.IBDataSet150.FieldByName('MODELO').AsString   := '99';
-        Form1.IBDataSet150.FieldByName('STATUS').AsString   := VENDA_MEI_ABERTA;
+        Form1.IBDataSet150.FieldByName('STATUS').AsString   := VENDA_GERENCIAL_ABERTA;
 
         Form1.IBDataSet150.Post;
 
-        //
+        {Sandro Silva 2023-08-22 inicio
         Mais1Ini.WriteString('NFCE','CUPOM',Result);
+        }
+        GravaNumeroCupomFrenteINI(Result, '99'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}
+
         //
       except end;
     end else
     begin
-      //
+      {Sandro Silva 2023-08-22 inicio
       try
-        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1)))); // Sandro Silva 2021-12-02 Result := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1))));
       except
         Result := '000000';
       end;
+      }
+      try
+        Result := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('99', FormataNumeroDoCupom(1))));
+      except
+        Result := '000000';
+      end;
+      {Sandro Silva 2023-08-22 fim}
       //
     end;
     //
@@ -877,7 +936,7 @@ end;
 // -------------------------------- //
 function _ecf99_VersodoFirmware(pP1: Boolean): String;
 begin
-  Result := 'MEI';
+  Result := '000000';
 end;
 
 // -------------------------------- //
@@ -885,7 +944,8 @@ end;
 // -------------------------------- //
 function _ecf99_NmerodeSrie(pP1: Boolean): String;
 begin
-  Result := 'MEI00000000000';
+  // Sandro Silva 2023-07-27 Result := 'MEI00000000000';
+  Result := '99' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18);
 end;
 
 // -------------------------------- //
@@ -1080,16 +1140,23 @@ var
   sCupom   : String;
 begin
   //Result := False;// Sempre começa como falso. Verdadeiro somente se encontrar pendente
-  //
+  {Sandro Silva 2023-08-22 inicio
   Mais1ini  := TIniFile.Create('FRENTE.INI');
   //
   try
-    sCupom := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1)))); // Sandro Silva 2021-12-02 sCupom := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+    sCupom := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1))));
   except
     sCupom := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sCupom := '000000';
   end;
   //
   Mais1Ini.Free;
+  }
+  try
+    sCupom := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('99', FormataNumeroDoCupom(1))));
+  except
+    sCupom := FormataNumeroDoCupom(0);
+  end;
+  {Sandro Silva 2023-08-22 fim}
 
   sCupom := FormataNumeroDoCupom(StrToInt(sCupom)); // Sandro Silva 2021-12-01
   //
@@ -1102,7 +1169,7 @@ begin
   //
   if Form1.ibQuery65.FieldByname('NUMERONF').AsString=sCupom then
   begin
-    if Form1.ibQuery65.FieldByname('STATUS').AsString = VENDA_MEI_ABERTA then
+    if Form1.ibQuery65.FieldByname('STATUS').AsString = VENDA_GERENCIAL_ABERTA then
     begin
       Form1.icupom := StrToInt(sCupom);
       Result := True;
@@ -1298,7 +1365,7 @@ begin
   //
   try
 
-    Form1.ExibePanelMensagem('Aguarde... Gerando ' + Form1.sTipoDocumento + ' em PDF'); // Sandro Silva 2018-08-01
+    Form1.ExibePanelMensagem('Aguarde... Gerando movimentação em PDF'); // Sandro Silva 2018-08-01
 
     sFilePDF := 'Venda_' + sPedido + '_' + sCaixa;
 
@@ -1721,7 +1788,12 @@ var
     CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
 
     PrinterTexto(iLinha, iMargemEsq, 'Data: ' + FormatDateTime('dd/mm/yyyy', IBQALTERACA.FieldByName('DATA').AsDateTime) + ' ' + Copy(IBQALTERACA.FieldByName('HORA').AsString, 1, 5), poLeft);
+    {Sandro Silva 2023-08-09 inicio
     PrinterTexto(iLinha, Canvas.PenPos.X + 15, ' Status: ' + sStatusVenda, poLeft);
+    }
+    CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
+    PrinterTexto(iLinha, iMargemEsq, 'Status: ' + sStatusVenda, poLeft);
+    {Sandro Silva 2023-08-09 fim}
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
     PrinterTexto(iLinha, iMargemEsq, 'Controle: ' + IBQALTERACA.FieldByName('PEDIDO').AsString, poLeft);
     PrinterTexto(iLinha, Canvas.PenPos.X + 120, ' Caixa: ' + IBQALTERACA.FieldByName('CAIXA').AsString, poLeft);
@@ -1880,6 +1952,7 @@ begin
       IBQCLIFOR.SQL.Text := 'select * from CLIFOR where NOME='+QuotedStr(IBQALTERACA.FieldByName('CLIFOR').AsString)+' and trim(coalesce(NOME,'''')) <> '''' ';
       IBQCLIFOR.Open;
       //
+      {Sandro Silva 2023-08-16 inicio
       if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Alltrim(IBQALTERACA.FieldByName('CLIFOR').AsString)<>'') then
       begin
         if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
@@ -1892,6 +1965,24 @@ begin
           sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('CIDADE').AsString + '-' + IBQCLIFOR.FieldByname('ESTADO').AsString  + ' ' + IBQCLIFOR.FieldByname('CEP').AsString;
         end;
       end;
+      }
+      if LimpaNumero(IBQALTERACA.FieldByName('CNPJ').AsString) <> '' then
+        sCNPJCliente     := FormataCpfCgc(LimpaNumero(IBQALTERACA.FieldByName('CNPJ').AsString)); // CNPJ do Destinatário
+      sNomeCliente     := Trim(ConverteAcentos2(IBQALTERACA.FieldByName('CLIFOR').AsString));
+
+      if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Trim(IBQALTERACA.FieldByName('CLIFOR').AsString) <> '') then
+      begin
+        if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
+        begin
+          sCNPJCliente     := IBQCLIFOR.FieldByName('CGC').AsString; // CNPJ do Destinatário
+          sNomeCliente     := Trim(ConverteAcentos2(IBQCLIFOR.FieldByName('NOME').AsString));
+          sEmailCliente    := IBQCLIFOR.FieldByname('EMAIL').AsString;
+          sEnderecoCliente := IBQCLIFOR.FieldByname('ENDERE').AsString;
+          sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('COMPLE').AsString;
+          sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('CIDADE').AsString + '-' + IBQCLIFOR.FieldByname('ESTADO').AsString  + ' ' + IBQCLIFOR.FieldByname('CEP').AsString;
+        end;
+      end;
+      {Sandro Silva 2023-08-16 fim}
 
       Canvas := TCanvas.Create;
 
@@ -1988,11 +2079,18 @@ begin
 
       if (sCNPJCPFDestinatario <> '') or (sNomeCliente <> '') then
       begin
+        {Sandro Silva 2023-08-16 inicio
         PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
         CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
+        }
 
         if (sCNPJCPFDestinatario <> '') then // Ficha 4251 Sandro Silva 2018-10-01
         begin
+          {Sandro Silva 2023-08-16 inicio}
+          PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
+          CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
+          {Sandro Silva 2023-08-16 fim}
+
           sCNPJCPFDestinatario := FormataCpfCgc(sCNPJCPFDestinatario);
           PrinterTextoMemo(iLinha, iMargemEsq, (iLarguraPapel - iMargemEsq) - 5, 'Cliente: ' + sCNPJCPFDestinatario);
         end;
@@ -2014,7 +2112,7 @@ begin
         CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
       end;
 
-      if (sCNPJCPFDestinatario = '') then
+      if (sCNPJCPFDestinatario = '') and (sNomeCliente = '') then // Sandro Silva 2023-08- if (sCNPJCPFDestinatario = '') then
       begin
         PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
         CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
@@ -2458,6 +2556,7 @@ begin
 end;
 
 procedure _ecf99_AcumulaFormaExtraNFCe(sOrdemExtra: String; dValor: Double;
+{Sandro Silva 2023-08-21 inicio
     var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
     var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
     var dvPag_YA03_99: Double);
@@ -2476,6 +2575,40 @@ begin
 
   if sOrdemExtra = '99' then
     dvPag_YA03_99 := dvPag_YA03_99 + dValor;
+}
+  var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
+  var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
+  var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
+  var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
+  var dvPag_YA03_99: Double);
+begin
+  if sOrdemExtra = GERENCIAL_FORMA_10_VALE_ALIMENTACAO then
+    dvPag_YA03_10 := dvPag_YA03_10 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_11_VALE_REFEICAO then
+    dvPag_YA03_11 := dvPag_YA03_11 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_12_VALE_PRESENTE then
+    dvPag_YA03_12 := dvPag_YA03_12 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_13_VALE_COMBUSTIVEL then
+    dvPag_YA03_13 := dvPag_YA03_13 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_16_DEPOSITO_BANCARIO then
+    dvPag_YA03_16 := dvPag_YA03_16 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_17_PAGAMENTO_INSTANTANEO then
+    dvPag_YA03_17 := dvPag_YA03_17 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL then
+    dvPag_YA03_18 := dvPag_YA03_18 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL then
+    dvPag_YA03_19 := dvPag_YA03_19 + dValor;
+
+  if sOrdemExtra = GERENCIAL_FORMA_99_OUTROS then
+    dvPag_YA03_99 := dvPag_YA03_99 + dValor;
+{Sandro Silva 2023-08-21 fim}
 end;
 
 { TMobile }
