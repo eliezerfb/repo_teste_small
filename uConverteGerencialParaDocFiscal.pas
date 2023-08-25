@@ -347,8 +347,7 @@ begin
         FIBDataSet7.Next;
       end;                     
 
-      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml
-
+      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml  
 
       FormasPagamento.Clear;
       FValorTotalTEFPago := 0.00;
