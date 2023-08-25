@@ -8,8 +8,6 @@ uses
 
 type
   TframePesquisaProduto = class(TframePesquisaPadrao)
-    procedure dbgItensPesqKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
   private
   public
     constructor Create(AOwner: TComponent); override;  
@@ -54,13 +52,6 @@ end;
 constructor TframePesquisaProduto.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-end;
-
-procedure TframePesquisaProduto.dbgItensPesqKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if (Key = VK_CONTROL) or (Key = VK_DELETE)  then
-    Key := 0;
 end;
 
 end.

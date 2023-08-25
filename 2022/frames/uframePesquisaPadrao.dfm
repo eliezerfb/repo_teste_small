@@ -33,6 +33,7 @@ object framePesquisaPadrao: TframePesquisaPadrao
       TitleFont.Height = -12
       TitleFont.Name = 'Fixedsys'
       TitleFont.Style = []
+      OnKeyDown = dbgItensPesqKeyDown
     end
   end
 end
