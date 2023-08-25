@@ -392,6 +392,12 @@ begin
               Writeln(F,'SerieRps=3');    // Série   Brasília fixo 3
             end else
             {Sandro Silva 2023-01-09 fim}
+            {Sandro Silva 2023-08-22 inicio}
+            if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'ITAUNAMG') then
+            begin
+              Writeln(F,'SerieRps=1');    // Série Itaúna MG, padrão ISSNETONLINE20, não deve ter zeros a esquerda
+            end else
+            {Sandro Silva 2023-08-22 fim}
             begin
               Writeln(F,'SerieRps=001');    // Série
             end;
