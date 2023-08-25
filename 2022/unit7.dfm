@@ -10817,7 +10817,7 @@ object Form7: TForm7
       Font.Style = []
       ParentFont = False
     end
-    object Label24: TLabel
+    object lblRecebPagto: TLabel
       Left = 58
       Top = 107
       Width = 57
@@ -20117,12 +20117,14 @@ object Form7: TForm7
       DisplayWidth = 35
       FieldName = 'ENDERE'
       Origin = 'CLIFOR.ENDERE'
+      OnSetText = IBDataSet2ENDERESetText
       Size = 40
     end
     object IBDataSet2COMPLE: TIBStringField
       DisplayLabel = 'Bairro'
       FieldName = 'COMPLE'
       Origin = 'CLIFOR.COMPLE'
+      OnSetText = IBDataSet2COMPLESetText
       Size = 35
     end
     object IBDataSet2CIDADE: TIBStringField
@@ -20176,6 +20178,7 @@ object Form7: TForm7
       DisplayWidth = 40
       FieldName = 'EMAIL'
       Origin = 'CLIFOR.EMAIL'
+      OnSetText = IBDataSet2EMAILSetText
       Size = 80
     end
     object IBDataSet2CREDITO: TFloatField
@@ -20999,6 +21002,21 @@ object Form7: TForm7
     object MenuItem104: TMenuItem
       Caption = '&Procura'
       OnClick = Image103Click
+    end
+    object Exibir8: TMenuItem
+      Caption = 'E&xibir'
+      object odos2: TMenuItem
+        Caption = 'Todos'
+        OnClick = odos2Click
+      end
+      object Oramentospendentes1: TMenuItem
+        Caption = 'Or'#231'amentos pendentes'
+        OnClick = Oramentospendentes1Click
+      end
+      object Oramentosfinalizados1: TMenuItem
+        Caption = 'Or'#231'amentos finalizados'
+        OnClick = Oramentosfinalizados1Click
+      end
     end
     object MenuItem105: TMenuItem
       Caption = '&Caractere'
