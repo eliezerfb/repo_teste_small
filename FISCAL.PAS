@@ -2169,10 +2169,10 @@ begin
 
   if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
   begin
+    //if (PAFNFCe = False) or (Form1.sModeloECF_Reserva = '99') then // Sandro Silva 2023-06-27 if PAFNFCe = False then
     if PAFNFCe = False then
       sp2 := StringReplace(sp2, 'Menu Fiscal Indisponível nesta tela. ', '',[rfReplaceAll]);
   end;
-
 
   if PAFNFCe then
   begin
@@ -2196,10 +2196,10 @@ begin
   begin
     sP2 := 'F10 Menu Configurações';
   end;  
-  //
-  Form1.Label_10.Caption := sP1;
+
+  Form1.Label_10.Caption := sP1; // Define se em venda, CAIXA LIVRE
   Form1.Label_10.Repaint; // 2015-09-08
-  //
+
   if Form1.sGertec <> 'Não' then
   begin
     Form1.DisplayGertec(sP1);
@@ -2463,17 +2463,7 @@ begin
   //
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
-    {Sandro Silva 2022-04-11 inicio
-    if Copy(StrTran(Form22.sSerie, 'Número de série: ', ''), 4, 1) = 'S' then
-      Form22.sTitulo := StringReplace(Form22.sTitulo, 'Small Commerce', 'Small Start', [rfReplaceAll]); //2015-09-25
-    if (Form1.sModeloECF = '99') then
-    begin
-      Form22.sTitulo := StringReplace(Form22.sTitulo, 'Small Commerce', 'Small MEI', [rfReplaceAll]); //2015-09-25
-      Form22.sTitulo := StringReplace(Form22.sTitulo, 'Small Start', 'Small MEI', [rfReplaceAll]); //2015-09-25
-    end;
-    }
     Form22.sTitulo := StringReplace(Form22.sTitulo, 'Small Commerce', 'Small', [rfReplaceAll]); //2015-09-25
-    {Sandro Silva 2022-04-11 fim}
   end;
   Result := True;
   //
@@ -4361,7 +4351,6 @@ begin
       //
       if Form1.bBalancaAutonoma = False then // Sandro Silva 2019-01-23
       begin
-        //Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços....';
         if Form1.sModeloECF_Reserva = '65' then
           Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
         if Form1.sModeloECF_Reserva = '59' then
@@ -4369,8 +4358,9 @@ begin
         if Form1.sModeloECF_Reserva = '99' then
           Form22.Label6.Caption := '';
 
+        //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
         if PAFNFCe then
-          Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+          Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
       end;
       Form22.Label6.Repaint;
@@ -4389,7 +4379,7 @@ begin
 
         if Form1.sModeloECF_Reserva = '99' then
         begin
-          Form1.NFCe1.Caption := 'MEI';
+          Form1.NFCe1.Caption := 'GERENCIAL'; // Sandro Silva 2023-06-23 Form1.NFCe1.Caption := 'MEI';
           Result := _ecf99_Inicializa('');
         end;
 
@@ -5074,37 +5064,11 @@ begin
     end;
 
 
-    if SerialMEI(Form1.sSerialSmall) and (MEI) then // Sandro Silva 2021-12-29 if SerialMEI(Form1.sSerialSmall) then
+    {Sandro Silva 2023-06-23 inicio
+    if SerialMEI(Form1.sSerialSmall) and (MEI) then
     begin
       // Sandro Silva 2022-02-14 bMEIValido := True;// Parte do princípio que o MEI é válido. Torna-se False durante as validações
       try
-        {Sandro Silva 2021-12-03 inicio
-        //if LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Licenca', 'MEI', '') = '' then
-        if Length(Form1.sChaveMeiCifrada) > 3 then // Executar se o valor da chave mei cifrada é maior que 3 caracteres
-        begin
-          sDataChaveMei := RightStr(Form1.LbBlowfish1.DecryptString(Form1.sChaveMeiCifrada), 8);
-          sDataChaveMei := Copy(sDataChaveMei, 1, 2) + '/' + Copy(sDataChaveMei, 3, 2) + '/' + Copy(sDataChaveMei, 5, 4);
-          sCNPJChaveMei := Copy(Form1.LbBlowfish1.DecryptString(Form1.sChaveMeiCifrada), 1, 14);
-
-          if sCNPJChaveMei <> LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) then
-          begin
-
-            bMEIValido := False; // Sandro Silva 2021-04-30 Result := False;
-
-          end;
-          if DaysBetween(Date, StrToDateDef(sDataChaveMei, StrToDate('30/12/1899'))) > 30 then // Sandro Silva 2021-08-11 if DaysBetween(Date, StrToDateDef(sDataChaveMei, StrToDate('30/12/1899'))) >= 30 then
-          begin
-
-            bMEIValido := False; // Sandro Silva 2021-04-30 Result := False;
-
-          end;
-        end
-        else
-        begin
-          // A partir de 29/12/2021 o controle de MEI mudou, não fica mais no wind0ws.l0g com uma data cifrada, passa para smallcom.inf com valor SIM ou NAO
-          bMEIValido := (LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Licenca', 'MEI', '') = 'SIM');
-        end;
-        }
         // smallcom.inf controla se é MEI
         bMEIValido := (LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Licenca', 'MEI', '') = 'SIM');
 
@@ -5123,47 +5087,11 @@ begin
 
         // ShowMessage('teste 01 6238 data chave mei ' + sdatachavemei + #13 + 'cnpj chave mei ' + sCNPJChaveMei + #13 + ' banco ' + Form1.IBDatabase1.DatabaseName); // Sandro Silva 2021-04-27
 
-        {Sandro Silva 2021-12-29 inicio
-        if Trim(Form1.sChaveMeiCifrada) <> '' then
-        begin
-          if DaysBetween(Date, StrToDateDef(sDataChaveMei, StrToDate('30/12/1899'))) > 30 then
-          begin
-            SmallMsgBox(PAnsiChar('Sistema bloqueado'+Chr(10)+
-                                  'É necessário validar seu cadastro MEI'+Chr(10)+
-                                  '- Abra o Small'+Chr(10)+
-                                  '- Acesse o menu Config/Outros cadastros/Cadastro do Emitente'+Chr(10)+
-                                  '- Confirme os dados clicando em OK'+Chr(10)+
-                                  '- Feche este aplicativo e abra-o novamente '+Chr(10)+Chr(13)+
-                              'Código: 991 '+ Form1.sSerialSmall),
-                              'Atenção', MB_ICONWARNING + MB_OK);
-          end
-          else
-          begin
-            SmallMsgBox(PAnsiChar('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
-                              'não está liberado para uso neste computador, instale'+Chr(10)+
-                              'novamente o sistema informando o número serial da'+Chr(10)+
-                              'sua licença de uso.'+Chr(10)+Chr(13)+
-                              'Código: 0011 '+ Form1.sSerialSmall),
-                              'Atenção', MB_ICONWARNING + MB_OK);
-          end;
-        end
-        else
-        begin
-          SmallMsgBox(PAnsiChar('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
-                            'não está liberado para uso neste computador, instale'+Chr(10)+
-                            'novamente o sistema informando o número serial da'+Chr(10)+
-                            'sua licença de uso.'+Chr(10)+Chr(13)+
-                            'Código: 001 '+ Form1.sSerialSmall),
-                            'Atenção', MB_ICONWARNING + MB_OK);
-        end;
-        }
-
         SmallMsgBox(PAnsiChar('Sistema bloqueado'+Chr(10)+
                               'Este sistema só pode ser usado por empresa'+Chr(10)+
                               'enquadrada como Microempreendedor Individual (MEI)'+Chr(10)+Chr(13)+
                               'Código: 991 '+ Form1.sSerialSmall),
                               'Atenção', MB_ICONWARNING + MB_OK);
-        {Sandro Silva 2021-12-29 fim}
 
         FecharAplicacao(ExtractFileName(Application.ExeName));
         FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -5172,6 +5100,9 @@ begin
       end;
 
     end;
+    }
+    bMEIValido := MEI;
+    {Sandro Silva 2023-06-23 fim}
 
     {Sandro Silva 2023-06-14 inicio
     if ValidaRecursos.ValidaQtdDocumentoFrente(ValidaRecursos.DataDoServidor, tmdLancando) = False then
@@ -5754,7 +5685,7 @@ begin
       Form1.sTipoDocumento := 'do CF-e'; // Sandro Silva 2018-08-01
   end;
   if (Form1.sModeloECF_Reserva = '99') then
-    Form1.sTipoDocumento := 'da Venda';
+    Form1.sTipoDocumento := 'Gerencial'; // Sandro Silva 2023-06-27 'da Movimentação'; // Sandro Silva 2023-06-23 Form1.sTipoDocumento := 'da Venda';
 
   //
   Form1.sTipoDocumento2 := 'Cupom';// Sandro Silva 2017-10-25  'cupom';
@@ -5768,7 +5699,7 @@ begin
       Form1.sTipoDocumento2 := 'CF-e';//Sandro Silva 2018-08-01
   end;
   if (Form1.sModeloECF_Reserva = '99') then
-    Form1.sTipoDocumento2 := 'Venda';
+    Form1.sTipoDocumento2 := 'Gerencial'; // Sandro Silva 2023-06-27 'Lançamento'; // Sandro Silva 2023-06-23 Form1.sTipoDocumento2 := 'Venda';
   //
   //
   Result := True;
@@ -5882,7 +5813,7 @@ begin
       Result := 'www.smallsoft.com.br software para emissão de CF-e';
   end;
   if (Form1.sModeloECF = '99') then
-    Result := 'www.smallsoft.com.br software para MEI';
+    Result := 'www.smallsoft.com.br software para micros e pequenas empresas'; // Sandro Silva 2023-06-23 Result := 'www.smallsoft.com.br software para MEI';
 end;
 
 {Sandro Silva 2022-09-08 inicio
@@ -6480,7 +6411,7 @@ begin
     end;
     //
     //if pNome = 'VENDAS' then // Sandro Silva 2022-12-08 Unochapeco if pNome = 'VENDA' then
-    if pNome = 'VENDA' then // Precisa ser assim resolver 
+    if pNome = 'VENDA' then // Precisa ser assim resolver
     begin
       //
       sAntigo :=
@@ -8423,7 +8354,7 @@ begin
      sSerial := '';
   {Sandro Silva 2021-12-29 fim}
 
-  {Sandro Silva 2021-04-28 inicio}
+  {Sandro Silva 2023-06-23 inicio
   // Validação para definiar quedo MEI precisa ser feita aqui
   // Sandro Silva 2022-11-29 UnoChapeco  if (MEI) and (Form1.sModeloECF = '99') then // Sandro Silva 2021-12-29 if (Form1.sChaveMeiCifrada <> '') and (Form1.sModeloECF = '99') then
   if (Form1.sModeloECF = '99') then
@@ -8441,11 +8372,21 @@ begin
 
     end;
   end;
-  {Sandro Silva 2021-04-28 fim}
+  }
+  if (Form1.sModeloECF = '99') then
+  begin
+    if (MEI) then
+    begin
+
+      Application.Title := 'Aplicativo Gerencial'; // Sandro Silva 2023-06-23 Application.Title := 'Aplicativo MEI';
+
+    end;
+  end;
+  {Sandro Silva 2023-06-23 fim}
 
   if (Form1.sModeloECF = '99') then
   begin
-    if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))  // Sandro Silva 2021-03-19 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe')) = False) and (Form1.sModeloECF = '99')
+    if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'gerencial.exe') = False) and (MEI = False))  // Sandro Silva 2023-06-26 if ((AnsiContainsText(ExtractFileName(Application.ExeName), 'mei.exe') = False) and (MEI = False))
       and (AnsiContainsText(ExtractFileDir(Application.ExeName), Copy(Build, 1, 4) + '\Projeto-Frente-de-Caixa') = False) // Para poder executar pelo delphi com F9
     then
       sSerial := '';
@@ -10255,11 +10196,12 @@ begin
   begin
     Form1.Caption := 'Aplicativo emissor CF-e';
   end;
+  {Sandro Silva 2023-06-26 inicio 
   if (sExeName = 'mei.exe') or (MEI) then // Sandro Silva 2021-03-19 if (sExeName = 'mei.exe') then
   begin
     Form1.Caption := 'Aplicativo MEI';
   end;
-
+  }
   if (PAFNFCe) then
   begin
     Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
@@ -10340,9 +10282,10 @@ begin
   Mais1ini   := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   sLiberacao := Mais1Ini.ReadString('Frente de caixa','B17','1');
   //
-  if sLiberacao = '1'
-    then BloqueioPorSenha1.Checked := False
-      else BloqueioPorSenha1.Checked := True;
+  if sLiberacao = '1' then
+    BloqueioPorSenha1.Checked := False
+  else
+    BloqueioPorSenha1.Checked := True;
   //
   Mais1Ini.Free; // Sandro Silva 2018-11-21 Memória
   //
@@ -10397,6 +10340,8 @@ begin
     begin
       Mais1Ini.WriteString('Frente de caixa', 'Modelo do ECF', '65');
     end;
+    // gerencial não precisa setar o modelo
+
   end
   else
   begin
@@ -10419,6 +10364,19 @@ begin
   sVendedorFixo          := Mais1Ini.ReadString('Frente de caixa'  , 'Vendedor fixo'          ,'');
   iVias                  := Mais1Ini.ReadInteger('Frente de caixa' , 'Vias do Cupom Vinculado',1);
   Form1.sModeloECF       := Mais1Ini.ReadString('Frente de caixa'  , 'Modelo do ECF'          ,'01');
+
+  {Sandro Silva 2023-06-27 inicio}
+  if (Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0) or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0 then
+    Form1.sModeloECF   := '65';
+
+  if (Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0) or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0 then
+  begin
+    Form1.sModeloECF   := '59';
+  end;
+
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') or MEI then
+    Form1.sModeloECF       := '99';
+  {Sandro Silva 2023-06-27 fim}
 
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
@@ -10443,6 +10401,7 @@ begin
     Form1.Pesquisaremqualquerpartedotexto1.Checked := True;
   end;
 
+  {Sandro Silva 2023-06-27 inicio
   //
   if (Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0) or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0 then
     Form1.sModeloECF   := '65';
@@ -10454,6 +10413,7 @@ begin
 
   if MEI then // Sandro Silva 2021-03-17 if Pos('mei.exe',AnsiLowerCase(Application.ExeName))<>0 then
     Form1.sModeloECF   := '99';
+  {Sandro Silva 2023-06-27 fim}
 
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
@@ -10851,6 +10811,7 @@ begin
         Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora + '...';
 
       {Sandro Silva 2020-12-07 inicio}
+      //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
       if PAFNFCe then
         Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
       {Sandro Silva 2020-12-07 fim}
@@ -12095,10 +12056,19 @@ begin
             //
             if Form1.bNFazMaisNada then
             begin
+              {Sandro Silva 2023-06-23 inicio
               if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
                 Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
               else
                 Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+              }
+              if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+                Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
+              else if (Form1.sModeloECF_Reserva = '99') then
+                Display('EM MOVIMENTO','Entre com EAN 13, Código ou Descrição')
+              else
+                Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+
 
             end
             else
@@ -13499,10 +13469,19 @@ begin
       //
       if Form1.bNFazMaisNada then
       begin
+        {Sandro Silva 2023-06-23 inicio
         if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
           Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
         else
           Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+        }
+        if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+          Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
+        else if (Form1.sModeloECF_Reserva = '99') then
+          Display('EM MOVIMENTO','Entre com EAN 13, Código ou Descrição')
+        else
+          Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+
 
       end
       else
@@ -14131,8 +14110,18 @@ begin
     Commitatudo(True); // Cancela cupom. Antes da mensagem commitar
     Form1.ibDataset25.Edit;
 
+    {Sandro Silva 2023-06-23 inicio
     if bUltimo then // Depois de commitar exibe a mensagem. Usuário não clica no OK da mensagem, os dados não ficam visíveis para outros usuários.
       SmallMsg('A venda número: '+sPedido+' foi cancelada.');
+    }
+    if bUltimo then // Depois de commitar exibe a mensagem. Usuário não clica no OK da mensagem, os dados não ficam visíveis para outros usuários.
+    begin
+      if (Form1.sModeloECF_Reserva = '99') then
+        SmallMsg('Movimento número: '+sPedido+' foi cancelado')
+      else
+        SmallMsg('A venda número: '+sPedido+' foi cancelada.');
+    end;
+    {Sandro Silva 2023-06-23 fim}
   end;
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
@@ -14350,7 +14339,7 @@ begin
             Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom))+' order by ITEM'); // Sandro Silva 2020-10-15 Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0))+' order by ITEM');
             Form1.IBQuery1.Open;
 
-            Form1.Memo3.Lines.Add(StrZero(Form1.icupom,3,0)); 
+            Form1.Memo3.Lines.Add(StrZero(Form1.icupom,3,0));
             Form1.Memo3.Lines.Add(sMesaOuConta+' '+Form1.IBQuery1.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString);
           end
           else
@@ -14656,11 +14645,21 @@ begin
 
         end else
         begin
+          {Sandro Silva 2023-06-23 inicio
           if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
             Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
           else
             Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
           end;
+          }
+          if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+            Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+          //else if (Form1.sModeloECF_Reserva = '99') then
+          //  Display('EM MOVIMENTO','Entre com EAN 13, Código ou Descrição')
+          else
+            Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+          end;
+          {Sandro Silva 2023-06-23 fim}
         //
         Mais1ini               := TIniFile.Create('FRENTE.INI');
         //
@@ -15640,7 +15639,14 @@ begin
             begin
               AlertaSonoro;
 
+              {Sandro Silva 2023-06-23 inicio
               SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
+              }
+              if (Form1.sModeloECF_Reserva = '99') then
+                SmallMsg('Não é possível efetuar a movimentação, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427')
+              else
+                SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
+              {Sandro Silva 2023-06-23 fim}
 
               Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
               if (Form1.ClienteSmallMobile.sVendaImportando = '') then
@@ -15735,7 +15741,7 @@ procedure TForm1.PopupMenu1Popup(Sender: TObject);
 var
   Mais1ini : TIniFile;
   iItem: Integer;
-begin
+begin    
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //
   x1024x768.Visible := False;
@@ -15743,6 +15749,10 @@ begin
   Form1.IdentificarCredenciadoraPoS1.Visible     := False; // Sandro Silva 2018-11-20
   EnviaremailcomXMLePDFacadavenda1.Visible       := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')); // Ficha 4736 Sandro Silva 2019-08-02
   ValorLimiteTotalNFCeEstabelecidoSefaz1.Visible := (Form1.sModeloECF = '65'); // Sandro Silva 2021-07-12
+
+  Vendaspor1.Caption                           := 'Resumo de Vendas...';
+  Imprimiroramento1.Caption                    := 'Imprimir Orçamento - Documento Auxiliar de Venda (DAV) ...';
+  DocumentoAuxiliardeVendaDAVOramento1.Caption := 'Orçamento - Documento Auxiliar de Venda (DAV) ...';
 
   {Sandro Silva 2023-05-30 inicio}
   if ValidaRecursos.PermiteRecursoParaProduto = False then
@@ -15825,12 +15835,12 @@ begin
     Mesasabertas2.Caption           := sMesasOuContas + ' abertas...';
 
     Ligardesligarhorriodevero1.Visible := False;
-    Gaveta1.Visible := False;
+    Gaveta1.Visible                    := False;
 
     ransmitirContingncia2.Enabled := (NFCeemContingncia1.Checked = False) and (Form1.UsaIntegradorFiscal() = False); // Sandro Silva 2019-10-16 (NFCeemContingncia1.Checked = False);
     NmerodoCredencimentodoPAFECF1.Visible := False; // Sandro Silva 2016-09-02
 
-    BalanaAutonoma1.Visible := True;
+    BalanaAutonoma1.Visible                := True;
     Produtolanadonapesagemautonoma1.Visible  := True;
     Mesainicialparapesagensautonoma1.Visible := True;
 
@@ -15838,6 +15848,10 @@ begin
   else
   if (Form1.sModeloECF = '99')then
   begin
+    Vendaspor1.Caption                           := 'Resumo ' + Form1.sTipoDocumento2 + '...';
+    Imprimiroramento1.Caption                    := 'Imprimir Orçamento...';
+    DocumentoAuxiliardeVendaDAVOramento1.Caption := 'Orçamento...';
+
     Confernciademesa1.Caption      := 'Conferência de '+sMesaOuConta + '...';
     ransfernciademesa1.Caption     := 'Transferência de '+sMesaOuConta + '...';
     ransfernciaentremesas1.Caption := 'Transferências entre '+sMesasOuContas + '...';
@@ -17030,6 +17044,7 @@ begin
       if (Form1.sModeloECF_Reserva = '99') then
         Form22.Label6.Caption := '';
 
+      //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
       if PAFNFCe then
         Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
@@ -17323,6 +17338,7 @@ begin
 
               Form22.Label6.Caption := 'Aguarde! Analisando NFC-e...';
 
+              //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
               if PAFNFCe then
                 Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
@@ -17353,6 +17369,7 @@ begin
 
                     Form22.Label6.Caption := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
 
+                    //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
                     if PAFNFCe then
                       Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
@@ -18565,11 +18582,28 @@ begin
               if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> Form1.IBQuery3.FieldByName('CODIGO').AsString)
                 and (Form1.ibDataSet4.FieldByName('TIPO_ITEM').AsString <> '09') then
               begin
+                {Sandro Silva 2023-06-23 inicio
                 if (Form1.ClienteSmallMobile.ImportandoMobile = False) then // Sandro Silva 2022-08-08 if (ImportandoMobile = False) then
                   Small_InputBox('Alerta','Estoque insuficiente:' + #13 + #13 + 'Não é possível efetuar a venda de "' +
                     Form1.ibDataSet4.FieldByName('DESCRICAO').AsString + '", tem ' +
                     FloatToStr(StrToFloat(FormatFloat('0.000000', Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString)))) // Sandro Silva 2019-09-23 UnoChapeco FloatToStr(Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString))
                    + ' ' + Form1.ibDataSet4.FieldByName('MEDIDA').AsString + ' no estoque. Erro 7450' + #13 + #13 + 'Tecle ESC ou pressione OK para vender outro item','');
+                }
+                if (Form1.ClienteSmallMobile.ImportandoMobile = False) then // Sandro Silva 2022-08-08 if (ImportandoMobile = False) then
+                begin
+                  Small_InputBox('Alerta','Estoque insuficiente:' + #13 + #13 + 'Não é possível efetuar a venda de "' +
+                    Form1.ibDataSet4.FieldByName('DESCRICAO').AsString + '", tem ' +
+                    FloatToStr(StrToFloat(FormatFloat('0.000000', Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString)))) // Sandro Silva 2019-09-23 UnoChapeco FloatToStr(Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString))
+                   + ' ' + Form1.ibDataSet4.FieldByName('MEDIDA').AsString + ' no estoque. Erro 7450' + #13 + #13 + 'Tecle ESC ou pressione OK para vender outro item','');
+                end
+                else
+                begin
+                  Small_InputBox('Alerta','Estoque insuficiente:' + #13 + #13 + 'Não é possível efetuar a movimentação de "' +
+                    Form1.ibDataSet4.FieldByName('DESCRICAO').AsString + '", tem ' +
+                    FloatToStr(StrToFloat(FormatFloat('0.000000', Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString)))) // Sandro Silva 2019-09-23 UnoChapeco FloatToStr(Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString))
+                   + ' ' + Form1.ibDataSet4.FieldByName('MEDIDA').AsString + ' no estoque. Erro 7450' + #13 + #13 + 'Tecle ESC ou pressione OK para vender outro item','');
+                end;
+                {Sandro Silva 2023-06-23 fim}
 
                 Commitatudo(False); // Não é possível efetuar a venda, só tem
 
@@ -20023,7 +20057,7 @@ begin
         Form1.sModeloECF := Form1.sModeloECF_Reserva;
         Form1.Button2Click(Sender); // Abre um novo cumpom
         //
-        if Form1.Label_10.Caption = 'EM VENDA' then
+        if Form1.Label_10.Caption = RetornaTextoEmVenda(Form1.sModeloECF_Reserva) then // Sandro Silva 2023-06-26 if Form1.Label_10.Caption = 'EM VENDA' then
         begin
           //
 
@@ -20362,8 +20396,14 @@ begin
         and ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')) then
       begin
         if Trim(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString) <> 'Desconto' then // Sandro Silva 2016-02-19
-          SmallMsg('Venda não permitida para valor unitário abaixo do preço de venda ' + #13 + #13 +
-                   'Solicite ao operador do PDV para desmarcar a opção Senha de Administrador, nas configurações ' + Form1.sTipoDocumento)
+        begin
+          if Form1.sModeloECF_Reserva = '99' then
+            SmallMsg('Movimentação não permitida para valor unitário abaixo do preço de venda ' + #13 + #13 +
+                     'Solicite ao operador do PDV para desmarcar a opção Senha de Administrador, nas configurações ' + Form1.sTipoDocumento)
+          else
+            SmallMsg('Venda não permitida para valor unitário abaixo do preço de venda ' + #13 + #13 +
+                     'Solicite ao operador do PDV para desmarcar a opção Senha de Administrador, nas configurações ' + Form1.sTipoDocumento)
+        end
         else
           SmallMsg('Desconto não permitido');
       end
@@ -20633,8 +20673,17 @@ begin
             while AllTrim(sLicenca) <> '' do
             begin
               //
+              {Sandro Silva 2023-06-23 inicio
               sLicenca := AllTrim(Small_InputBox('Venda de item','Números de Série:'+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Form1.sSeriais+
                                                  chr(10)+chr(10)+'Digite o Número de Série ou <Enter> em branco para finalizar:',''));
+              }
+              if Form1.sModeloECF_Reserva = '99' then
+                sLicenca := AllTrim(Small_InputBox('Movimento de item','Números de Série:'+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Form1.sSeriais+
+                                                   chr(10)+chr(10)+'Digite o Número de Série ou <Enter> em branco para finalizar:',''))
+              else
+                sLicenca := AllTrim(Small_InputBox('Venda de item','Números de Série:'+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Chr(10)+Form1.sSeriais+
+                                                   chr(10)+chr(10)+'Digite o Número de Série ou <Enter> em branco para finalizar:',''));
+
               //
               if sLicenca <> '' then
               begin
@@ -22178,10 +22227,20 @@ begin
           //
           if Memo2.Lines.Text <> 'Total R$ 0,00' then
           begin
+            {Sandro Silva 2023-06-23 inicio
             if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
               Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
             else
               Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+            }
+            if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+              Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+            //else if (Form1.sModeloECF_Reserva = '99') then
+            //  Display('EM MOVIMENTAÇÃO','Entre com EAN 13, Código ou Descrição')
+            else
+              Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+
+            {Sandro Silva 2023-06-23 fim}
           end
           else Display(Form1.sStatusECF,Form1.sF);
           //
@@ -22327,10 +22386,20 @@ begin
       //
       if Memo2.Lines.Text <> 'Total R$ 0,00' then
       begin
+        {Sandro Silva 2023-06-23 inicio
         if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
           Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
         else
           Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+        }
+        if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+          Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+        //else if (Form1.sModeloECF_Reserva = '99') then
+        //  Display('EM MOVIMENTAÇÃO','Entre com EAN 13, Código ou Descrição')
+        else
+          Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+
+        {Sandro Silva 2023-06-23 fim}
       end
       else
         Display(Form1.sStatusECF,Form1.sF);
@@ -24091,7 +24160,7 @@ end;
 
 procedure TForm1.GerenciadordeNFCe1Click(Sender: TObject);
 begin
-  if PAFNFCe then
+  if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
   begin
     pnlMenuFiscalPAFNFCeInacessivel.Alignment := taCenter;
     pnlMenuFiscalPAFNFCeInacessivel.Parent    := Form1.DateTimePicker1.Parent;
@@ -24127,7 +24196,8 @@ begin
 
   Form1.ibDataset150.Close;
   Form1.ibDataset150.SelectSql.Clear;
-  Form1.ibDataset150.SelectSQL.Add('select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Form1.DateTimePicker1.Date))+' order by NUMERONF ');
+  // Sandro Silva 2023-06-23 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Form1.DateTimePicker1.Date))+' order by NUMERONF ');
+  Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
   Form1.ibDataset150.Open;
 
   //
@@ -24902,7 +24972,7 @@ begin
     ImprimeoDANFCE1.Enabled         := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');;
     CancelaraNFCe1.Enabled          := (Form1.IBDataSet150.FieldByName('STATUS').AsString <> VENDA_MEI_CANCELADA) and (Form1.IBDataSet150.FieldByName('STATUS').AsString <> '');
 
-    VisualizaroDANFCE1.Caption := 'Visualizar venda...';
+    VisualizaroDANFCE1.Caption := 'Visualizar movimentação...'; // Sandro Silva 2023-06-23 VisualizaroDANFCE1.Caption := 'Visualizar venda...';
     EnviaraNFCe1.Caption       := 'Abrir...';
     ImprimeoDANFCE1.Caption    := 'Imprimir...';
     CancelaraNFCe1.Caption     := 'Cancelar...';
@@ -25474,7 +25544,8 @@ procedure TForm1.DateTimePicker1Change(Sender: TObject);
 begin
   Form1.ibDataset150.Close;
   Form1.ibDataset150.SelectSql.Clear;
-  Form1.ibDataset150.SelectSQL.Add('select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Form1.DateTimePicker1.Date))+'order by NUMERONF ');
+  // Sandro Silva 2023-06-23 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Form1.DateTimePicker1.Date))+'order by NUMERONF ');
+  Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
   Form1.ibDataset150.Open;
 end;
 
@@ -26979,7 +27050,7 @@ begin
   if sModeloECF = '65' then
     NotifyIconData.szTip          := 'Emissor de NFC-e';
   if sModeloECF = '99' then
-    NotifyIconData.szTip          := 'MEI';
+    NotifyIconData.szTip          := 'Gerencial'; // Sandro Silva 2023-06-23 'MEI';
 
   Shell_NotifyIcon(NIM_ADD, @NotifyIconData);
   Application.ShowMainForm := False;
