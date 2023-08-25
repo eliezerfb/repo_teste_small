@@ -2191,8 +2191,10 @@ begin
   Form7.sModulo := 'VENDA';
 
   Form7.ibDataSet16.First;
+  {Sandro Silva 2023-08-17 inicio
   Form7.ibDataSet16.Edit;
   Form7.ibDataSet16.Post;
+  }
   Retributa(True);
 end;
 
