@@ -20322,9 +20322,27 @@ begin
       Form7.ibDataSet101.DisableControls;
       Form7.ibDataSet101.Close;
       Form7.ibDataSet101.SelectSQL.Clear;
+      {Sandro Silva 2023-08-23 inicio
       Form7.ibDataSet101.SelectSQL.Add(' Select * from ITENS002'+
                                        ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
                                        '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
+      }
+      // Acumula os totais para evitar passar item por item da nota, nota com muitos itens fica lento
+      Form7.ibDataSet101.SelectSQL.Add(
+        'select ' +
+        'sum(cast(coalesce(TOTAL, 0) as numeric(18, 2))) as TOTAL, ' +
+        'sum(cast(coalesce(VIPI, 0) as numeric(18, 2))) as VIPI, ' +
+        'sum(cast(coalesce(VBC, 0) as numeric(18, 2))) as VBC, ' +
+        'sum(cast(coalesce(VICMS, 0) as numeric(18, 2))) as VICMS, ' +
+        'sum(cast(coalesce(VBCST, 0) as numeric(18, 2))) as VBCST, ' +
+        'sum(cast(coalesce(VICMSST, 0) as numeric(18, 2))) as VICMSST, ' +
+        'sum(cast(coalesce(VFCPST, 0) as numeric(18, 2))) as VFCPST, ' +
+        'sum(cast(coalesce(ICMS_DESONERADO, 0) as numeric(18, 2))) as ICMS_DESONERADO ' +
+        'from ITENS002 '+
+        ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
+        '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
+
+      {Sandro Silva 2023-08-23 fim}
       Form7.ibDataSet101.Open;
 
       Form7.ibDataSet101.First;
@@ -21398,6 +21416,7 @@ begin
       Form7.ibDataSet4.DisableControls;
       //
       Form7.ibDataSet23.First;
+      //{Sandro Silva 2023-08-23 inicio
       while not Form7.ibDataSet23.Eof do
       begin
         //

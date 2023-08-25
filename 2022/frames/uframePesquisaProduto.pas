@@ -44,7 +44,8 @@ begin
     FqryRegistros.SQL.Add('AND (UPPER(ESTOQUE.DESCRICAO) LIKE ' + QuotedStr('%' + UpperCase(AcPesquisar) + '%') + ')');
   FqryRegistros.SQL.Add('ORDER BY ESTOQUE.DESCRICAO');
   FqryRegistros.Open;
-  FqryRegistros.FetchAll;
+  // Sandro Silva 2023-08-23 FetchAll causa lentidão. Usar em situações que realmente for necessário. Usar algum parâmetro para definir se deve aplicar
+  // FqryRegistros.FetchAll;
 
   dbgItensPesq.Columns[Pred(dbgItensPesq.Columns.Count)].Width := dbgItensPesq.Width - 22;  
 end;

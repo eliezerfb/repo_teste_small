@@ -82,7 +82,8 @@ begin
     FibqProds.SQL.Add('AND (UPPER(ESTOQUE.DESCRICAO)=' + QuotedStr(UpperCase(FcTexto)) + ')');
 
   FibqProds.Open;
-  FibqProds.FetchAll;
+  // Sandro Silva 2023-08-23 FetchAll causa lentidão. Usar em situações que realmente for necessário. Usar algum parâmetro para definir se deve aplicar
+  // FibqProds.FetchAll;
 end;
 
 function TTestaProdutoExiste.getQuery: TIBQuery;

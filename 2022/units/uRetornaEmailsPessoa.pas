@@ -56,7 +56,8 @@ begin
   FoDataSet.SQL.Add('WHERE NOME=:XCOD');
   FoDataSet.ParamByName('XCOD').AsString := FcCodigoCad;
   FoDataSet.Open;
-  FoDataSet.FetchAll;
+  // Sandro Silva 2023-08-23 FetchAll causa lentidão. Usar em situações que realmente for necessário. Usar algum parâmetro para definir se deve aplicar
+  // FoDataSet.FetchAll;
 
   if (not FoDataSet.IsEmpty) then
     Result := FoDataSet.FieldByName('EMAIL').AsString;

@@ -50,7 +50,8 @@ begin
   FibqItens.SQL.Add('AND (CODIGO IN (' + AcItens + '))');
   FibqItens.SQL.Add('ORDER BY CODIGO');
   FibqItens.Open;
-  FibqItens.FetchAll;
+  // Sandro Silva 2023-08-23 FetchAll causa lentidão. Usar em situações que realmente for necessário. Usar algum parâmetro para definir se deve aplicar
+  // FibqItens.FetchAll;
 end;
 
 function TItensInativosImpXMLEnt.Executar(AcItens: String): IItensInativosImpXMLEntrada;
