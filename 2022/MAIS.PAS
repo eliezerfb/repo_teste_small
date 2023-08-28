@@ -3943,7 +3943,14 @@ begin
     while FileExists(Form1.sAtual+'\smallcon.exe') do DeleteFile(pChar(Form1.sAtual+'\smallcon.exe'));
     RenameFile(pChar(Form1.sAtual+'\smallcon_.exe'),pChar(Form1.sAtual+'\smallcon.exe'));
   end;
-  //
+
+  {Dailon (f-7308) 2023-08-28 inicio}
+  if FileExists(Form1.sAtual+'\mei_.exe') then
+    DeleteFile(pChar(Form1.sAtual+'\mei_.exe'));
+
+  if FileExists(Form1.sAtual+'\mei.exe') then
+    DeleteFile(pChar(Form1.sAtual+'\mei.exe'));
+  {Dailon (f-7308) 2023-08-28 fim}
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
