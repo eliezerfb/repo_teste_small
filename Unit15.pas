@@ -257,6 +257,7 @@ begin
   begin
     LabelF10Indisponivel.Visible := False;
     {Sandro Silva 2020-12-07 inicio}
+    //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
     if PAFNFCe then
     begin
       LabelF10Indisponivel.Caption := MSG_ALERTA_MENU_FISCAL_INACESSIVEL;

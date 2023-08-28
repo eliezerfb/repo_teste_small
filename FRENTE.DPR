@@ -57,7 +57,10 @@ uses
   uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
   _small_65 in '_small_65.pas',
-  uFuncoesPOS in 'uFuncoesPOS.pas';
+  uFuncoesPOS in 'uFuncoesPOS.pas',
+  uConverteGerencialParaDocFiscal in 'uConverteGerencialParaDocFiscal.pas',
+  _Small_59 in '_Small_59.pas',
+  _Small_99 in '_small_99.pas';
 
 {$R *.RES}
 
@@ -113,33 +116,56 @@ begin
 
   sExeName := AnsiLowerCase(ExtractFileName(Application.ExeName));
 
-  if (sExeName = 'nfce.exe') or (sExeName = 'cfesat.exe') then
+  if (sExeName = 'gerencial.exe') or (sExeName = 'pafnfce.exe') or (sExeName = 'nfce.exe') or (sExeName = 'cfesat.exe') then // Sandro Silva 2023-07-28 if (sExeName = 'nfce.exe') or (sExeName = 'cfesat.exe') then
   begin
+    if (sExeName = 'gerencial.exe') then
+    begin
+      Hwnd := FindWindow ('TForm1', 'Aplicativo Gerencial');
+      FecharAplicacao('nfce.exe');
+      FecharAplicacao('cfesat.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('pafnfce.exe');
+    end;
+
+    if (sExeName = 'pafnfce.exe') then
+    begin
+      Hwnd := FindWindow ('TForm1', 'Aplicativo emissor NFC-e');
+      FecharAplicacao('nfce.exe');
+      FecharAplicacao('cfesat.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('gerencial.exe');
+    end;
 
     if (sExeName = 'nfce.exe') then
     begin
       Hwnd := FindWindow ('TForm1', 'Aplicativo emissor NFC-e');
+      FecharAplicacao('pafnfce.exe');
       FecharAplicacao('cfesat.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('gerencial.exe');
     end;
 
     if (sExeName = 'cfesat.exe') then
     begin
       Hwnd := FindWindow ('TForm1', 'Aplicativo emissor CF-e'); // Sandro Silva 2018-08-01 Hwnd := FindWindow ('TForm1', 'Aplicativo emissor CF-e-SAT');
       FecharAplicacao('nfce.exe');
+      FecharAplicacao('pafnfce.exe');
+      FecharAplicacao('mei.exe');
+      FecharAplicacao('gerencial.exe');
     end;
-    FecharAplicacao('pafnfce.exe');
+    //    FecharAplicacao('pafnfce.exe');
     FecharAplicacao('frente.exe');
-    FecharAplicacao('mei.exe');
-
+    //FecharAplicacao('mei.exe');
+    //FecharAplicacao('gerencial.exe'); // Sandro Silva 2023-06-23
   end;
 
+  {Sandro Silva 2023-07-28 inicio
   if (PAFNFCe) then
   begin
     Hwnd := FindWindow ('TForm1', 'Aplicativo emissor NFC-e (PAF-NFC-e)');
   end;
-  //
-  // Hwnd := 0;
-  //
+  }
+  
   if Hwnd = 0 then
   begin
     //
@@ -154,7 +180,7 @@ begin
     begin
       //Se fechou app estando em contingência, ao abrir acerta dados para sempre iniciar em modo normal (não contingência)
       GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Caixa', LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', ''));
-      GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', LerParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', ''));
+      // Sandro Silva 2023-07-18 GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', LerParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', ''));
       
       GravarParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', '');
       GravarParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '');
@@ -163,14 +189,20 @@ begin
 
     Application.Initialize;
     Application.Title    := 'Programa Aplicativo Fiscal (PAF-ECF)';
+    {Sandro Silva 2023-07-18 inicio
     if (PAFNFCe) then
     begin
       Application.Title := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
     end;
-
+    }
     if (sExeName = 'nfce.exe') or (NFCe) then // if sExeName = 'nfce.exe' then
     begin
       Application.Title := 'Aplicativo emissor NFC-e';
+    end;
+
+    if (sExeName = 'pafnfce.exe') or (NFCe) then // if sExeName = 'nfce.exe' then
+    begin
+      Application.Title := 'Aplicativo emissor PAF-NFC-e';
     end;
 
     if (sExeName = 'cfesat.exe') or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if sExeName = 'cfesat.exe' then
@@ -178,10 +210,17 @@ begin
       Application.Title := 'Aplicativo emissor de CF-e';
     end;
 
+    {Sandro Silva 2023-06-23 inicio
     if (sExeName = 'mei.exe') or (MEI) then // Sandro Silva 2021-03- if sExeName = 'mei.exe' then
     begin
       Application.Title := 'Aplicativo MEI';
     end;
+    }   
+    if (sExeName = 'gerencial.exe') or (Gerencial) then
+    begin
+      Application.Title := 'Aplicativo Gerencial';
+    end;
+    {Sandro Silva 2023-06-23 fim}
 
     Application.HelpFile := '';
     Application.CreateForm(TForm1, Form1);

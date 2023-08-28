@@ -139,7 +139,14 @@ begin
 
         if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, sVendaImportando) > 0 then
         begin
-          Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda') // Sandro Silva 2022-08-08 LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+          {Sandro Silva 2023-06-23 inicio
+          Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+          }
+          if Form1.sModeloECF_Reserva = '99' then
+            Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar a movimentação')
+          else
+            Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+          {Sandro Silva 2023-06-23 fim}
         end
         else
         begin
@@ -442,7 +449,14 @@ begin
 
               if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then // Pos(TIPOMOBILE, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
               begin
-                Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda') // Sandro Silva 2022-08-08 LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+                {Sandro Silva 2023-06-23 inicio
+                Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+                }
+                if Form1.sModeloECF_Reserva = '99' then
+                  Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar a movimentação')                
+                else
+                  Form1.ClienteSmallMobile.LogRetornoMobile('Altere a configuração do ' + ExtractFileName(Application.ExeName) + ' para trabalhar com PoS' + #13 + 'Não é possível efetuar venda')
+                {Sandro Silva 2023-06-23 fim}
               end
               else
               begin
@@ -898,7 +912,7 @@ begin
 
                         Form1.ibDataSet7.Append;
                         Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.sNomeRede;
-                        Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa ' + Form1.sCaixa + ' trans.' + Form1.sTransaca;
+                        Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' tran.' + Form1.sTransaca;
                         Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas);
                         Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := dValorDuplReceber;
                         Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := Date;

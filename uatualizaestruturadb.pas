@@ -73,6 +73,7 @@ begin
     end;
     {Sandro Silva 2018-10-09 fim}
 
+    {Sandro Silva 2023-07-17 inicio
     try
       IBQBASE.Close;
       IBQBASE.SQL.Text :=
@@ -158,7 +159,6 @@ begin
       end;
     end;
 
-    {Sandro Silva 2015-10-01 inicio}
     if TabelaExisteFB(IBDATABASE, 'ECFS') = False then
     begin
       try
@@ -174,9 +174,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2015-10-01 final}
 
-    {Sandro Silva 2016-02-17 inicio}
     if TabelaExisteFB(IBDATABASE, 'BLOCOX') = False then
     begin
       try
@@ -215,9 +213,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2016-02-17 final}
 
-    {Sandro Silva 2016-02-22 inicio}
     if CampoExisteFB(IBDATABASE, 'BLOCOX', 'SERIE') = False then
     begin
       try
@@ -232,9 +228,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2016-02-22 final}
 
-    {Sandro Silva 2016-02-23 inicio}
     if (CampoExisteFB(IBDATABASE, 'BLOCOX', 'DATAESTOQUE') = False) and
       (CampoExisteFB(IBDATABASE, 'BLOCOX', 'DATAREFERENCIA') = False) then
     begin
@@ -250,10 +244,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2016-02-23 final}
 
-
-    {Sandro Silva 2017-03-17 inicio}
     if CampoExisteFB(IBDATABASE, 'BLOCOX', 'DATAESTOQUE') then
     begin
       try
@@ -288,22 +279,19 @@ begin
           IBQBASE.Transaction.Commit;
           //SmallMsg('Atualizado' + #13 + IBDATABASE.DatabaseName);
 
-          {Sandro Silva 2018-01-26 inicio}
           // Orientação Auditores Bruno Nogueira, Sérgio Pinetti: Deve-se gerar somente arquivos no layout final, qualquer outro layout não será aceito pelo Bloco X.
           IBQBASE.Close;
           IBQBASE.SQL.Text :=
             'delete from BLOCOX';
           IBQBASE.ExecSQL;
           IBQBASE.Transaction.Commit;
-          {Sandro Silva 2018-01-26 fim}
-          
+
         except
           IBQBASE.Transaction.Rollback;
         end;
       end;
     end;
 
-    {Sandro Silva 2017-07-03 inicio}
     if (CampoExisteFB(IBDATABASE, 'BLOCOX', 'DATAREFERENCIA'))
       and (CampoExisteFB(IBDATABASE, 'BLOCOX', 'DATAESTOQUE')) then
     begin
@@ -322,7 +310,6 @@ begin
       end;
 
     end;
-    {Sandro Silva 2017-07-03 final}
 
     if CampoExisteFB(IBDATABASE, 'BLOCOX', 'XMLRESPOSTA') = False then
     begin
@@ -338,9 +325,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2017-03-17 final}
 
-    {Sandro Silva 2018-01-26 inicio}
     try
       //Criando campo
       IBQBASE.Close;
@@ -352,9 +337,7 @@ begin
     except
       IBQBASE.Transaction.Rollback;
     end;
-    {Sandro Silva 2018-01-26 fim
 
-    {Sandro Silva 2018-04-09 inicio}
     try
       //Criando campo
       IBQBASE.Close;
@@ -370,8 +353,6 @@ begin
       IBQBASE.Transaction.Rollback;
     end;
 
-    {Sandro Silva 2018-04-09 fim}
-
     try
       //Criando campo
       IBQBASE.Close;
@@ -383,9 +364,7 @@ begin
     except
       IBQBASE.Transaction.Rollback;
     end;
-    {Sandro Silva 2018-04-06 inicio}
 
-    {Sandro Silva 2018-10-04 inicio}
     if IndiceExiste(IBDATABASE, 'BLOCOX', 'IDX_BLOCOX_DTREFER_TIPO_SERIE') = False then
     begin
       try
@@ -414,6 +393,8 @@ begin
 
     end;
 
+
+    {
     if IndiceExiste(IBDATABASE, 'BLOCOX', 'IDX_BLOCOX_DATAHORA') = False then
     begin
       try
@@ -427,11 +408,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2018-10-40 fim}
 
-    {Sandro Silva 2018-04-06 fim}
-
-    {Sandro Silva 2016-04-08 inicio}
     if CampoExisteFB(IBDATABASE, 'ALTERACA', 'CSOSN') = False then
     begin
       try
@@ -446,9 +423,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2016-04-08 final}
 
-    {Sandro Silva 2017-09-04 inicio}
     if CampoExisteFB(IBDATABASE, 'PAGAMENT', 'IDPAGAMENTO') then
     begin
       try
@@ -489,9 +464,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2017-09-04 final}
 
-    {Sandro Silva 2017-05-23 inicio}
     if TabelaExisteFB(IBDATABASE, 'VFPE') = False then
     begin
       // Tabela para usar com integrador fiscal do Ceará
@@ -537,9 +510,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2017-05-23 final}
 
-    {Sandro Silva 2017-08-28 inicio}
     if TabelaExisteFB(IBDATABASE, 'VFPE') then
     begin
       if CampoExisteFB(IBDATABASE, 'VFPE', 'TRANSACAO') = False then
@@ -570,10 +541,9 @@ begin
         except
           IBQBASE.Transaction.Rollback;
         end;
-        
+
       end;
 
-      {Sandro Silva 2017-09-04 inicio}
       if CampoExisteFB(IBDATABASE, 'VFPE', 'IDPAGAMENTO') then
       begin
 
@@ -628,9 +598,7 @@ begin
         end;
 
       end;
-      {Sandro Silva 2017-09-04 final}
 
-      {Sandro Silva 2018-07-03 inicio}
       if CampoExisteFB(IBDATABASE, 'VFPE', 'AUTORIZACAO') = False then
       begin
 
@@ -695,11 +663,9 @@ begin
             IBQBASE.Transaction.Rollback;
         end;
       end;
-      {Sandro Silva 2018-07-03 fim}
-    end;
-    {Sandro Silva 2017-08-28 final}
 
-    {Sandro Silva 2017-11-08 inicio Polimig}
+    end;
+
     if CampoExisteFB(IBDATABASE, 'DEMAIS', 'CCF') = False then
     begin
       try
@@ -714,9 +680,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2017-11-08 final Polimig}
 
-    {Sandro Silva 2017-11-13 inicio HOMOLOGA 2017}
     //Índices para otimizar banco
     if IndiceExiste(IBDATABASE, 'DEMAIS', 'IDX_DEMAIS_DATA') = False then
     begin
@@ -744,7 +708,6 @@ begin
       end;
     end;
 
-    {Sandro Silva 2017-11-13 final HOMOLOGA 2017}
     if CampoExisteFB(IBDATABASE, 'ALTERACA', 'SEQUENCIALCONTACLIENTEOS') = False then
     begin
 
@@ -801,11 +764,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2017-12-15 inicio}
 
-    {Sandro Silva 2017-12-15 fim}
-
-    {Sandro Silva 2018-09-13 inicio}
     if (FModeloECF_Reserva = '59') or (FModeloECF_Reserva = '65') then
     begin
       if CampoExisteFB(IBDATABASE, 'CONTAOS', 'IDENTIFICADOR1') then
@@ -837,9 +796,7 @@ begin
         end;
       end;
     end;
-    {Sandro Silva 2018-09-13 fim}
 
-    {Sandro Silva 2018-11-30 inicio Ficha 4324}
     // Para poder controlar sangria e suprimento quando atende após meia-noite
     if CampoExisteFB(IBDATABASE, 'PAGAMENT', 'HORA') = False then
     begin
@@ -854,9 +811,10 @@ begin
 
       end;
     end;
-    {Sandro Silva 2018-11-30 fim}
+    }
 
     {Sandro Silva 2018-12-05 inicio}
+    {Sandro Silva 2023-07-27 inicio 
     // Ficha 4302
     if CampoExisteFB(IBDATABASE, 'NFCE', 'TOTAL') = False then
     begin
@@ -897,9 +855,10 @@ begin
 
       end;
     end;
+    }
     {Sandro Silva 2018-12-05 fim}
 
-    {Sandro Silva 2019-03-21 inicio}
+    {Sandro Silva 2023-07-17 inicio
     if TabelaExisteFB(IBDATABASE, 'PENDENCIA') = False then
     begin
       // Tabela para controlar as alterações que o frente não consegue realizar na tabela ALTERACA por DEAD LOCK com transações do Small
@@ -918,9 +877,7 @@ begin
 
       end;
     end;
-    {Sandro Silva 2019-03-21 fim}
 
-    {Sandro Silva 2019-07-01 inicio}
     //indices otimizar consultas relacionada ao bloco x e abertura cupom
     if IndiceExiste(IBDATABASE, 'REDUCOES', 'IDX_REDUCOES_SERIE') = False then
     begin
@@ -947,9 +904,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2019-07-01 fim}
 
-    {Sandro Silva 2019-07-24 inicio}
     if CampoExisteFB(IBDATABASE, 'NFCE', 'NFEIDSUBSTITUTO') = False then
     begin
       try
@@ -963,9 +918,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2019-07-24 fim}
 
-    {Sandro Silva 2019-09-19 ER 02.06 UnoChapeco inicio}
     if IndiceExiste(IBDATABASE, 'REDUCOES', 'IDX_REDUCOES_CUPOMF') = False then
     begin
       try
@@ -991,10 +944,7 @@ begin
         IBQBASE.Transaction.Rollback;
       end;
     end;
-    {Sandro Silva 2019-09-19 ER 02.06 UnoChapeco fim}
 
-
-    {Sandro Silva 2020-09-24 inicio}
     // Generator para vendas do MEI no frente
     try
       // Generator
@@ -1015,10 +965,7 @@ begin
     except
       IBQBASE.Transaction.Rollback;
     end;
-    {Sandro Silva 2020-09-24 fim}
 
-
-    {Sandro Silva 2020-12-14 inicio}
     if TabelaExisteFB(IBDATABASE, 'NFCE') then
     begin
       if CampoExisteFB(IBDATABASE, 'NFCE', 'ENCRYPTHASH') = False then
@@ -1048,10 +995,7 @@ begin
       end;
 
     end;
-    {Sandro Silva 2020-12-14 fim}
 
-
-    {Sandro Silva 2021-11-12 inicio}
     // Generator para série da NFC-e
     try
       // Generator
@@ -1078,9 +1022,7 @@ begin
     except
       IBQBASE.Transaction.Rollback;
     end;
-    {Sandro Silva 2020-09-24 fim}
 
-    {Sandro Silva 2022-04-05 inicio}
     if TabelaExisteFB(IBDATABASE, 'ALTERACA') then
     begin
       if CampoExisteFB(IBDATABASE, 'ALTERACA', 'MARKETPLACE') = False then
@@ -1096,11 +1038,9 @@ begin
         except
           IBQBASE.Transaction.Rollback;
         end;
-
       end;
-
     end;
-    {Sandro Silva 2022-04-05 fim}
+    }
 
     {Sandro Silva 2019-08-20 inicio
     if CampoExisteFB(IBDATABASE, 'EMITENTE', 'CNAE') = False then
@@ -1162,7 +1102,7 @@ begin
 
   finally
     FreeAndNil(IBQBASE);
-    FreeAndNil(IBQuery1);    
+    FreeAndNil(IBQuery1);
   end;
 
 
