@@ -840,6 +840,17 @@ begin
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
     end else
+    {Mauricio Parizotto 2023-08-28 Inicio}
+    if Form7.sModulo = 'CONVERSAOCFOP' then
+    begin
+      Form7.IBDataSet99.Close;
+      Form7.IBDataSet99.SelectSQL.Clear;
+      Form7.IBDataSet99.SelectSQL.Add('select count(REGISTRO) from CFOPCONVERSAO '+Form7.sWhere);
+      Form7.IBDataSet99.Open;
+      sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
+      Form7.IBDataSet99.Close;
+    end else
+    {Mauricio Parizotto 2023-08-28 Fim}
     begin
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
@@ -1580,6 +1591,7 @@ begin
       if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.Tag = ID_CONSULTANDO_CFOP) then
       begin
         Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString := Trim(Form7.ibqConsulta.FieldByName('CFOP').AsString);
+        Form7.ibdConversaoCFOPNOME.AsString := Trim(Form7.ibqConsulta.FieldByName('NOME_OP').AsString);
       end;
 
       Form10.dBGrid3.Visible := False;
@@ -1952,7 +1964,8 @@ begin
         // Procura
         Form7.ibqConsulta.Close;
         Form7.ibqConsulta.SelectSQL.Text := ' Select CFOP||'' - ''||NOME NOME,'+
-                                            '   CFOP'+
+                                            '   CFOP,'+
+                                            '   NOME NOME_OP'+
                                             ' From ICM'+
                                             ' Where substring(CFOP from 1 for 1) in (''1'',''2'',''3'') '+
                                             ' Order by NOME';
@@ -2178,6 +2191,7 @@ begin
         begin
           DataSource.DataSet.Edit;
           DataSource.DataSet.FieldByName(DataField).AsString := '';
+          DataSource.DataSet.FieldByName('NOME').AsString := '';
           Form10.dBGrid3.Visible := False;
           Exit;
         end;
@@ -4947,6 +4961,8 @@ begin
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).ReadOnly   := False;
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font.Color := clWindowText;
                 end;
+
+
 
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I - 1].Displaywidth * 9) + 10;
 

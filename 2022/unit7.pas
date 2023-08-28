@@ -1515,6 +1515,8 @@ type
     ibdConversaoCFOPCFOP_ORIGEM: TIBStringField;
     ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField;
     ibdConversaoCFOPREGISTRO: TIBStringField;
+    ibdConversaoCFOPNOME: TIBStringField;
+    ConfiguraodeICMSeISS1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2149,6 +2151,7 @@ type
     procedure ibdConversaoCFOPNewRecord(DataSet: TDataSet);
     procedure ibdConversaoCFOPCFOP_ORIGEMSetText(Sender: TField;
       const Text: String);
+    procedure ConfiguraodeICMSeISS1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -5104,7 +5107,11 @@ begin
         Form7.ibDataSet3.Selectsql.Add('select * from OS where DATA=CURRENT_DATE ');
         Form7.ibDataSet5.Selectsql.Add('select * from MOVIMENT where NOME='+quotedStr('XXXXXXXXXX')+'');
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
-        Form7.ibdConversaoCFOP.Selectsql.Add('select * from CFOPCONVERSAO'); //Mauricio Parizotto 2023-08-25
+        Form7.ibdConversaoCFOP.Selectsql.Add(' Select'+
+                                             '   C.*,'+
+                                             '   I.NOME'+
+                                             ' From CFOPCONVERSAO C'+
+                                             '   Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO'); //Mauricio Parizotto 2023-08-25
 
         //  CAIXA
         //  ICM
@@ -10877,8 +10884,8 @@ begin
         sAjuda := 'livro.htm';
 
         // Campos
-        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
-        iCampos                := 2;
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTT');
+        iCampos                := 3;
 
         // Menu
         Form7.Menu             := mmConvercaoCFOP;
@@ -10889,7 +10896,12 @@ begin
         DataSourceAtual        := DSConversaoCFOP;
 
         // Sql
-        sSelect  := 'select * from CFOPCONVERSAO';
+        sSelect := ' Select'+
+                   '   C.*,'+
+                   '   I.NOME'+
+                   ' From CFOPCONVERSAO C'+
+                   '   Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO';
+
         sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
         sOrderBy := 'order by REGISTRO';
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
@@ -10899,7 +10911,7 @@ begin
       end;
       {Mauricio Parizotto 2023-08-25 Fim}
 
-      
+
       if sModulo = 'BANCOS' then
       begin
         sAjuda := 'bancos.htm';
@@ -33526,6 +33538,21 @@ begin
     if Valida_Campo('CFOPCONVERSAO',AllTrim(cTexto),'CFOP_ORIGEM','O CFOP de origem ('+cTexto+') já foi vinculado.') then
       ibdConversaoCFOPCFOP_ORIGEM.AsString := AllTrim(cTexto);
   end;
+end;
+
+procedure TForm7.ConfiguraodeICMSeISS1Click(Sender: TObject);
+begin
+  Form7.Close;
+  Form7.sModulo := 'ICM';
+  Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
 end;
 
 end.

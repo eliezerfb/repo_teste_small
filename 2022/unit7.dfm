@@ -21298,7 +21298,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21332,7 +21332,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21647,7 +21647,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21677,7 +21677,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21976,6 +21976,10 @@ object Form7: TForm7
         Caption = '&Imprimir...'
         OnClick = Image205Click
       end
+      object ConfiguraodeICMSeISS1: TMenuItem
+        Caption = 'Configura'#231#227'o de ICMS e ISS...'
+        OnClick = ConfiguraodeICMSeISS1Click
+      end
       object MenuItem144: TMenuItem
         Caption = '-'
       end
@@ -22050,14 +22054,20 @@ object Form7: TForm7
       '  (:CFOP_ORIGEM, :CFOP_CONVERSAO,:REGISTRO)')
     RefreshSQL.Strings = (
       'Select '
-      '  CFOP_ORIGEM, '
-      '  CFOP_CONVERSAO,'
-      '  REGISTRO'
-      'from CFOPCONVERSAO'
+      '  C.CFOP_ORIGEM, '
+      '  C.CFOP_CONVERSAO,'
+      '  C.REGISTRO,'
+      '  I.NOME'
+      'from CFOPCONVERSAO C'
+      '  Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO '
       'where'
-      '  REGISTRO = :REGISTRO')
+      '  C.REGISTRO = :REGISTRO')
     SelectSQL.Strings = (
-      'select * from CFOPCONVERSAO')
+      'Select '
+      #9'C.*,'
+      #9'I.NOME'
+      'From CFOPCONVERSAO C'
+      #9'Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO')
     ModifySQL.Strings = (
       'update CFOPCONVERSAO'
       'set'
@@ -22081,6 +22091,15 @@ object Form7: TForm7
       FieldName = 'CFOP_CONVERSAO'
       Origin = 'CFOPCONVERSAO.CFOP_CONVERSAO'
       Size = 5
+    end
+    object ibdConversaoCFOPNOME: TIBStringField
+      DisplayLabel = 'Descri'#231#227'o CFOP'
+      FieldName = 'NOME'
+      Origin = 'ICM.NOME'
+      ProviderFlags = [pfInWhere]
+      ReadOnly = True
+      Visible = False
+      Size = 40
     end
     object ibdConversaoCFOPREGISTRO: TIBStringField
       FieldName = 'REGISTRO'
