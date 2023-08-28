@@ -17,6 +17,7 @@ const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = '0 Usar o custo de compra nas notas
 
 const ID_CONSULTANDO_INSTITUICAO_FINANCEIRA = 1;
 const ID_CONSULTANDO_FORMA_DE_PAGAMENTO     = 2;
+const ID_CONSULTANDO_CFOP                   = 3; //Mauricio Parizotto 2023-08-25
 
 type
 
@@ -1566,9 +1567,25 @@ begin
         Form7.ibDataSet14CONTA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
         Form10.dBGrid3.Visible := False;
       end;
-
     end;
     {Sandro Silva 2023-06-28 fim}
+
+
+    {Mauricio Parizotto 2023-08-25 Inicio}
+    // Contas a Pagar
+    if Form7.sModulo = 'CONVERSAOCFOP' then
+    begin
+      Form7.ibdConversaoCFOP.Edit;
+
+      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.Tag = ID_CONSULTANDO_CFOP) then
+      begin
+        Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString := Trim(Form7.ibqConsulta.FieldByName('CFOP').AsString);
+      end;
+
+      Form10.dBGrid3.Visible := False;
+    end;
+    {Mauricio Parizotto 2023-08-25 Fim}
+
   except
   end;
 end;
@@ -1927,6 +1944,34 @@ begin
         dBGrid3.DataSource := Form7.DSConsulta;
         //dBGrid3.Columns[0].Width := 310;
       end;
+
+
+      //Mauricio Parizotto 2023-08-25
+      if (vDataField = 'CFOP_CONVERSAO') and (Form7.sModulo = 'CONVERSAOCFOP') then
+      begin
+        // Procura
+        Form7.ibqConsulta.Close;
+        Form7.ibqConsulta.SelectSQL.Text := ' Select CFOP||'' - ''||NOME NOME,'+
+                                            '   CFOP'+
+                                            ' From ICM'+
+                                            ' Where substring(CFOP from 1 for 1) in (''1'',''2'',''3'') '+
+                                            ' Order by NOME';
+        Form7.ibqConsulta.Open;
+
+        Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+
+        dBGrid3.Tag        := ID_CONSULTANDO_CFOP;
+        dBGrid3.Visible    := True;
+        dBGrid3.Top        := Top + 19;
+        dBGrid3.Left       := Left;
+        dBGrid3.Height     := 100;
+        dBGrid3.Width      := 350;
+        dBGrid3.Font       := Font;
+        dBGrid3.DataSource := Form7.DSConsulta;
+        dBGrid3.Columns[0].Width := 310;
+      end;
+
+
       if (vDataField = 'CFOP') and (Form7.sModulo = 'ICM') then
         TSMALL_DBEdit(Sender).SelStart := 1;
       {Sandro Silva 2023-06-28 fim}
@@ -2121,6 +2166,24 @@ begin
         end;
       end;
       {Dailon (f-7224) 2023-08-22 fim}
+
+
+      {Mauricio Parizotto 2023-08-25 Inicio}
+      if (DataField = 'CFOP_CONVERSAO') and (Form7.sModulo = 'CONVERSAOCFOP') and (bGravaEscolha) then
+      begin
+        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('CFOP').AsString))) <> 0 then
+        begin
+          GravaEscolha;
+        end else
+        begin
+          DataSource.DataSet.Edit;
+          DataSource.DataSet.FieldByName(DataField).AsString := '';
+          Form10.dBGrid3.Visible := False;
+          Exit;
+        end;
+      end;
+      {Mauricio Parizotto 2023-05-29 Inicio}
+
     end;
   except
   end;
@@ -2310,6 +2373,14 @@ begin
           and (Form7.ibDataSet49.Active) then
         begin
           Form7.IBDataSet49.Locate('SIGLA',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
+        end;
+
+        //Mauricio Parizotto 2023-05-29
+        if (vDataField = 'CFOP_CONVERSAO')
+          and (Form7.sModulo = 'CONVERSAOCFOP')
+          and (Form7.ibqConsulta.Active) then
+        begin
+          Form7.ibqConsulta.Locate('CFOP',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
       end;
     end;
@@ -8227,6 +8298,23 @@ begin
   //Mauricio Parizotto 2023-05-31
   if Form7.sModulo = 'RECEBER' then
     AlteracaoInstituicaoFinanceira;
+
+
+  //Valida Campos
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+  begin
+    if Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) = '' then
+    begin
+      Form7.ibdConversaoCFOPCFOP_ORIGEM.FocusControl;
+      Exit;
+    end;
+
+    if Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) = '' then
+    begin
+      Form7.ibdConversaoCFOPCFOP_CONVERSAO.FocusControl;
+      Exit;
+    end;
+  end;
 
   
   Orelha_cadastro.Visible := True;

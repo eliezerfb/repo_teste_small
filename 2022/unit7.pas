@@ -70,7 +70,7 @@ type
 
     TForm7 = class(TForm)
     DBGrid1: TDBGrid;
-    MainMenu1: TMainMenu;
+    mmCaixa: TMainMenu;
     Arquivos1: TMenuItem;
     FluxodeCaixa1: TMenuItem;
     N1: TMenuItem;
@@ -130,7 +130,7 @@ type
     Novo1: TMenuItem;
     Alterar1: TMenuItem;
     Apagar1: TMenuItem;
-    MainMenu2: TMainMenu;
+    mmCLifor: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -142,7 +142,7 @@ type
     MenuItem9: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
-    MainMenu4: TMainMenu;
+    mmEstoque: TMainMenu;
     MenuItem23: TMenuItem;
     MenuItem24: TMenuItem;
     MenuItem25: TMenuItem;
@@ -154,7 +154,7 @@ type
     MenuItem31: TMenuItem;
     MenuItem32: TMenuItem;
     MenuItem33: TMenuItem;
-    MainMenu5: TMainMenu;
+    mmMovBancos: TMainMenu;
     MenuItem34: TMenuItem;
     MenuItem35: TMenuItem;
     MenuItem36: TMenuItem;
@@ -166,7 +166,7 @@ type
     MenuItem42: TMenuItem;
     MenuItem43: TMenuItem;
     MenuItem44: TMenuItem;
-    MainMenu7: TMainMenu;
+    mmReceber: TMainMenu;
     MenuItem56: TMenuItem;
     MenuItem57: TMenuItem;
     MenuItem59: TMenuItem;
@@ -177,7 +177,7 @@ type
     MenuItem64: TMenuItem;
     MenuItem65: TMenuItem;
     MenuItem66: TMenuItem;
-    MainMenu9: TMainMenu;
+    mmVendedor: TMainMenu;
     MenuItem78: TMenuItem;
     MenuItem79: TMenuItem;
     MenuItem80: TMenuItem;
@@ -243,7 +243,7 @@ type
     ibDataSet12CONTACONTABILIDADE: TIBStringField;
     ibDataSet12IDENTIFICADOR: TIBStringField;
     Label12: TLabel;
-    MainMenu12: TMainMenu;
+    mmPlanoContas: TMainMenu;
     MenuItem45: TMenuItem;
     MenuItem46: TMenuItem;
     MenuItem47: TMenuItem;
@@ -291,7 +291,7 @@ type
     DataSource14: TDataSource;
     Label14: TLabel;
     ibDataSet14BASE: TFloatField;
-    MainMenu14: TMainMenu;
+    mmICM: TMainMenu;
     MenuItem106: TMenuItem;
     MenuItem107: TMenuItem;
     MenuItem108: TMenuItem;
@@ -548,7 +548,7 @@ type
     ibDataSet28CODIGO: TIBStringField;
     ibDataSet28DESCRICAO: TIBStringField;
     ibDataSet28QUANTIDADE: TFloatField;
-    MainMenu6: TMainMenu;
+    mmTransport: TMainMenu;
     MenuItem15: TMenuItem;
     MenuItem58: TMenuItem;
     MenuItem69: TMenuItem;
@@ -576,7 +576,7 @@ type
     Label37: TLabel;
     ibDataSet29: TibDataSet;
     ibDataSet29DESCONTO: TFloatField;
-    MainMenu29: TMainMenu;
+    mmConvenio: TMainMenu;
     MenuItem118: TMenuItem;
     MenuItem119: TMenuItem;
     MenuItem123: TMenuItem;
@@ -613,7 +613,7 @@ type
     ibDataSet15MODELO: TIBStringField;
     Colunas1: TMenuItem;
     LimparRetornosda1: TMenuItem;
-    MainMenu8: TMainMenu;
+    mmPagar: TMainMenu;
     MenuItem67: TMenuItem;
     MenuItem68: TMenuItem;
     N13: TMenuItem;
@@ -676,7 +676,7 @@ type
     ibDataSet3: TibDataSet;
     DataSource3: TDataSource;
     Label22: TLabel;
-    MainMenu3: TMainMenu;
+    mmOS: TMainMenu;
     MenuItem12: TMenuItem;
     MenuItem20: TMenuItem;
     MenuItem21: TMenuItem;
@@ -742,7 +742,7 @@ type
     DBGrid2: TDBGrid;
     DBGrid3: TDBGrid;
     Label44: TLabel;
-    MainMenu10: TMainMenu;
+    mmVendas: TMainMenu;
     MenuItem13: TMenuItem;
     MenuItem141: TMenuItem;
     RelVendasServico: TMenuItem;
@@ -761,7 +761,7 @@ type
     MenuItem180: TMenuItem;
     MenuItem181: TMenuItem;
     MenuItem182: TMenuItem;
-    MainMenu11: TMainMenu;
+    mmCompras: TMainMenu;
     MenuItem183: TMenuItem;
     MenuItem196: TMenuItem;
     PrevCompra: TMenuItem;
@@ -1415,7 +1415,7 @@ type
     GerarNotaFiscaldeServio2: TMenuItem;
     ibDataSet4MARKETPLACE: TIBStringField;
     ConsultarNFSe1: TMenuItem;
-    MainMenu15: TMainMenu;
+    mmServicos: TMainMenu;
     MenuItem19: TMenuItem;
     MenuItem95: TMenuItem;
     MenuItem96: TMenuItem;
@@ -1493,6 +1493,28 @@ type
     Oramentospendentes1: TMenuItem;
     Oramentosfinalizados1: TMenuItem;
     odos2: TMenuItem;
+    ConversodeCFOP1: TMenuItem;
+    Label24: TLabel;
+    mmConvercaoCFOP: TMainMenu;
+    MenuItem129: TMenuItem;
+    MenuItem142: TMenuItem;
+    MenuItem144: TMenuItem;
+    MenuItem145: TMenuItem;
+    MenuItem151: TMenuItem;
+    MenuItem159: TMenuItem;
+    MenuItem160: TMenuItem;
+    MenuItem161: TMenuItem;
+    MenuItem162: TMenuItem;
+    MenuItem163: TMenuItem;
+    MenuItem171: TMenuItem;
+    MenuItem172: TMenuItem;
+    MenuItem173: TMenuItem;
+    MenuItem174: TMenuItem;
+    DSConversaoCFOP: TDataSource;
+    ibdConversaoCFOP: TIBDataSet;
+    ibdConversaoCFOPCFOP_ORIGEM: TIBStringField;
+    ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField;
+    ibdConversaoCFOPREGISTRO: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2120,6 +2142,13 @@ type
     procedure Oramentospendentes1Click(Sender: TObject);
     procedure Oramentosfinalizados1Click(Sender: TObject);
     procedure odos2Click(Sender: TObject);
+    procedure ConversodeCFOP1Click(Sender: TObject);
+    procedure ibdConversaoCFOPAfterDelete(DataSet: TDataSet);
+    procedure ibdConversaoCFOPBeforeEdit(DataSet: TDataSet);
+    procedure ibdConversaoCFOPBeforeInsert(DataSet: TDataSet);
+    procedure ibdConversaoCFOPNewRecord(DataSet: TDataSet);
+    procedure ibdConversaoCFOPCFOP_ORIGEMSetText(Sender: TField;
+      const Text: String);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -4936,6 +4965,7 @@ begin
     Form7.ibDataSet4.BufferChunks  := 500;
     Form7.ibDataSet5.BufferChunks  := 500;
     Form7.ibDataSet6.BufferChunks  := 500;
+    Form7.ibdConversaoCFOP.BufferChunks  := 500; //Mauricio Parizotto 2023-08-25
   end else
   begin
     Form7.ibDataSet1.BufferChunks  := 1000;
@@ -4966,6 +4996,7 @@ begin
     Form7.ibDataSet4.BufferChunks  := 1000;
     Form7.ibDataSet5.BufferChunks  := 1000;
     Form7.ibDataSet6.BufferChunks  := 1000;
+    Form7.ibdConversaoCFOP.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-25
   end;
 
   if Form1.bFechaTudo then
@@ -5045,6 +5076,7 @@ begin
         Form7.ibDataSet4.Selectsql.Clear;
         Form7.ibDataSet5.Selectsql.Clear;
         Form7.ibDataSet6.Selectsql.Clear;
+        Form7.ibdConversaoCFOP.Selectsql.Clear; //Mauricio Parizotto 2023-08-25
 
         Form7.ibDataSet1.Selectsql.Add('select * from CAIXA where DATA=CURRENT_DATE order by DATA, REGISTRO');
         Form7.ibDataSet27.Selectsql.Add('select * from ALTERACA where CODIGO='+QuotedStr('99999')+' ');
@@ -5072,6 +5104,7 @@ begin
         Form7.ibDataSet3.Selectsql.Add('select * from OS where DATA=CURRENT_DATE ');
         Form7.ibDataSet5.Selectsql.Add('select * from MOVIMENT where NOME='+quotedStr('XXXXXXXXXX')+'');
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
+        Form7.ibdConversaoCFOP.Selectsql.Add('select * from CFOPCONVERSAO'); //Mauricio Parizotto 2023-08-25
 
         //  CAIXA
         //  ICM
@@ -5140,6 +5173,7 @@ begin
     if not Form7.ibDataSet4.active  then Form7.ibDataSet4.active  := True;
     if not Form7.ibDataSet5.active  then Form7.ibDataSet5.active  := True;
     if not Form7.ibDataSet6.active  then Form7.ibDataSet6.active  := True;
+    if not Form7.ibdConversaoCFOP.active  then Form7.ibdConversaoCFOP.active  := True; //Mauricio Parizotto 2023-08-25
   except
     on E: Exception do
     begin
@@ -5181,6 +5215,7 @@ begin
     if Form7.ibDataSet3.Active then Form7.ibDataSet3.EnableControls;
     if Form7.ibDataSet4.Active then Form7.ibDataSet4.EnableControls;
     if Form7.ibDataSet5.Active then  Form7.ibDataSet5.EnableControls;
+    if Form7.ibdConversaoCFOP.Active then  Form7.ibdConversaoCFOP.EnableControls; // Mauricio Parizotto 2023-08-25
   end;
   
   Result := True;
@@ -7399,20 +7434,21 @@ end;
 function Valida_Campo(Arquivo: String; Text: String;
   Indice, Mensagem: String): Boolean;
 begin
-  //
   try
-    //
     Form7.ibDataSet100.Close;
     Form7.ibDataSet100.SelectSQL.Clear;
     Form7.ibDataSet100.SelectSQL.Add('select * from '+Arquivo+' where '+Indice+'= '+QuotedStr(TExt)+'');
-    //
+
     Form7.ibDataSet100.Open;
-    //
+
     if Form7.ibDataSet100.FieldByname(Indice).AsString = Text then
     begin
       if Indice <> 'CEP' then
       begin
-        if Mensagem <> '' then ShowMessage(Mensagem);
+        if Mensagem <> '' then
+          //ShowMessage(Mensagem); Mauricio Parizotto 2023-08-28
+          Application.MessageBox(Pchar(Mensagem)
+                                 ,'Atenção',mb_Ok + MB_ICONWARNING);
       end else
       begin
         try
@@ -7437,8 +7473,6 @@ begin
   except
     Result := False;
   end;
-  //
-  //
 end;
 
 {                                   }
@@ -10394,7 +10428,7 @@ begin
         //
         // Menu
         //
-        Form7.Menu             := MainMenu11;
+        Form7.Menu             := mmCompras;
         //
         // Arquivo
         //
@@ -10502,13 +10536,13 @@ begin
         if Form7.sRPS = 'S' then
         begin
           // Menu
-          Form7.Menu             := MainMenu15;
+          Form7.Menu             := mmServicos;
           //
           sWhere    := Mais1Ini.ReadString('RPS','FILTRO','');
         end else
         begin
           // Menu
-          Form7.Menu             := MainMenu10;
+          Form7.Menu             := mmVendas;
 
           sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
         end;
@@ -10685,7 +10719,7 @@ begin
         iCampos                := 25;
 
         // Menu
-        Form7.Menu           := MainMenu3;
+        Form7.Menu             := mmOS;
 
         // Arquivo
         ArquivoAberto          := DataSource3.Dataset;
@@ -10819,7 +10853,7 @@ begin
         iCampos                := 6;
 
         // Menu
-        Form7.Menu         := MainMenu1;
+        Form7.Menu             := mmCaixa;
 
         // Arquivo
         ArquivoAberto          := DataSource1.Dataset;
@@ -10835,6 +10869,36 @@ begin
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
+
+
+      {Mauricio Parizotto 2023-08-25 Inicio}
+      if sModulo = 'CONVERSAOCFOP' then
+      begin
+        sAjuda := 'livro.htm';
+
+        // Campos
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
+        iCampos                := 2;
+
+        // Menu
+        Form7.Menu             := mmConvercaoCFOP;
+
+        // Arquivo
+        ArquivoAberto          := DSConversaoCFOP.Dataset;
+        TabelaAberta           := ibdConversaoCFOP;
+        DataSourceAtual        := DSConversaoCFOP;
+
+        // Sql
+        sSelect  := 'select * from CFOPCONVERSAO';
+        sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
+        sOrderBy := 'order by REGISTRO';
+        sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
+        sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
+        sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
+        sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
+      end;
+      {Mauricio Parizotto 2023-08-25 Fim}
+
       
       if sModulo = 'BANCOS' then
       begin
@@ -10846,7 +10910,8 @@ begin
         iCampos                := 9;
 
         // Menu
-        Form7.Menu                   := MainMenu5;
+        Form7.Menu                       := mmMovBancos;
+        
         Odas3.Checked                    := True;
         Lanamentoscompensados1.Checked   := False;
         Lanamentosnocompensados1.Checked := False;
@@ -10892,7 +10957,7 @@ begin
           sAjuda := 'config_vendedores.htm'; // Falta vendedores
 
           // Menu
-          Form7.Menu              := MainMenu9;
+          Form7.Menu              := mmVendedor;
           Relatriodecomisses1.Visible := True;
 
           // Sql
@@ -10905,7 +10970,7 @@ begin
           sAjuda := 'clifor.htm';
 
           // Menu
-          Form7.Menu         := MainMenu2;
+          Form7.Menu            := mmCLifor;
           Mostrartodososclientesefornecedores1.Checked := True;
 
           // Sql
@@ -11001,7 +11066,7 @@ begin
         end;
 
         // Menu
-        Form7.Menu         := MainMenu4;
+        Form7.Menu             := mmEstoque;
 
         // Arquivo
         Form7.ibDataSet4.EnableControls;
@@ -11054,7 +11119,7 @@ begin
         iCampos                := 20;// Sandro Silva 2023-06-22 iCampos                := 17; // Mauricio Parizotto 2023-05-29
 
         // Menu
-        Form7.Menu         := MainMenu7;
+        Form7.Menu             := mmReceber;
 
         // Arquivo
         ArquivoAberto          := DataSource7.Dataset;
@@ -11094,7 +11159,7 @@ begin
         iCampos                := 12; // 2022-07-18 iCampos                := 11;
 
         // Menu
-        Form7.Menu         := MainMenu8;
+        Form7.Menu             := mmPagar;
 
         // Arquivo
         ArquivoAberto          := DataSource8.Dataset;
@@ -11123,7 +11188,7 @@ begin
         sAjuda := 'config_tecnicos.htm'; // Falta tecnicos
 
         // Menu
-        Form7.Menu         := MainMenu9;
+        Form7.Menu         := mmVendedor;
 
         // Arquivo
         ArquivoAberto          := DataSource9.Dataset;
@@ -11152,7 +11217,7 @@ begin
         sAjuda := 'config_convenio.htm'; // Falta convênio
 
         // Menu
-        Form7.Menu         := MainMenu29;
+        Form7.Menu             := mmConvenio;
 
         // Arquivo
         ArquivoAberto          := DataSource29.Dataset;
@@ -11176,7 +11241,7 @@ begin
         sAjuda := 'config_plano_contas.htm'; // Falta contas
         // Menu
 
-        Form7.Menu         := MainMenu12;
+        Form7.Menu             := mmPlanoContas;
 
         // Arquivo
         ArquivoAberto          := DataSource12.Dataset;
@@ -11200,7 +11265,7 @@ begin
         sAjuda := 'config_icms_iss.htm'; // Falta icm
 
         // Menu
-        Form7.Menu         := MainMenu14;
+        Form7.Menu             := mmICM;
 
         // Arquivo
         ArquivoAberto          := DataSource14.Dataset;
@@ -11224,7 +11289,7 @@ begin
         sAjuda := 'config_transportadoras.htm'; // Falta tranport
 
         // Menu
-        Form7.Menu := MainMenu6;
+        Form7.Menu      := mmTransport;
 
         // Arquivo
         ArquivoAberto   := DataSource18.Dataset;
@@ -33403,6 +33468,64 @@ end;
 function TForm7.TestarProdutoExiste(AcTexto: String): Boolean;
 begin
   Result := Valida_Campo('ESTOQUE', AllTrim(AcTexto), 'DESCRICAO', EmptyStr);
+end;
+
+procedure TForm7.ConversodeCFOP1Click(Sender: TObject);
+begin
+  Form7.Close;
+  Form7.sModulo := 'CONVERSAOCFOP';
+  Form7.sTitulo := 'Conversão de CFOP';
+  Form7.sRPS := 'N';
+  Form7.Show;
+end;
+
+procedure TForm7.ibdConversaoCFOPAfterDelete(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
+
+procedure TForm7.ibdConversaoCFOPBeforeEdit(DataSet: TDataSet);
+begin
+  sNumeroAnterior := ibdConversaoCFOPREGISTRO.AsString;
+  { Está variável também será usada no evento AfterPost }
+end;
+
+procedure TForm7.ibdConversaoCFOPBeforeInsert(DataSet: TDataSet);
+begin
+  try
+    ibDataSet99.Close;
+    ibDataSet99.SelectSql.Clear;
+    ibDataset99.SelectSql.Add('select gen_id(G_CFOPCONVERSAO,1) from rdb$database');
+    ibDataset99.Open;
+    sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+    ibDataset99.Close;
+  except
+    Abort
+  end;
+end;
+
+procedure TForm7.ibdConversaoCFOPNewRecord(DataSet: TDataSet);
+begin
+  ibdConversaoCFOP.Edit;
+  ibdConversaoCFOPREGISTRO.AsString := sProximo;
+end;
+
+procedure TForm7.ibdConversaoCFOPCFOP_ORIGEMSetText(Sender: TField;
+  const Text: String);
+var
+  cTexto: String;
+begin
+  cTexto := Text;
+
+  if (AllTrim(ibdConversaoCFOPCFOP_ORIGEM.AsString) <> '') and (AllTrim(cTexto) = '') then
+  begin
+    Application.MessageBox(Pchar('CFOP Origem inválido (não pode ficar em branco).')
+                                 ,'Atenção',mb_Ok + MB_ICONWARNING);
+  end else
+  begin
+    if Valida_Campo('CFOPCONVERSAO',AllTrim(cTexto),'CFOP_ORIGEM','O CFOP de origem ('+cTexto+') já foi vinculado.') then
+      ibdConversaoCFOPCFOP_ORIGEM.AsString := AllTrim(cTexto);
+  end;
 end;
 
 end.

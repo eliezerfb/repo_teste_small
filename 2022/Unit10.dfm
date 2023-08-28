@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_foto
+      ActivePage = orelha_cadastro
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
