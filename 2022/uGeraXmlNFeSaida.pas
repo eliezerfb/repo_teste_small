@@ -27,6 +27,7 @@ uses
   , unit12
   , Mais
   , ugeraxmlnfe
+  , StrUtils
 ;
 
 
@@ -1618,7 +1619,15 @@ begin
         Form7.spdNFeDataSets.Campo('vBC_N15').Value         := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASEICM').AsFloat); // BC
 
         if (Form7.ibDataSet15.FieldByname('BASEICM').AsCurrency > 0) and (Form7.ibDataSet15.FieldByname('ICMS').AsCurrency > 0) then
-          Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Arredonda(((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100), 1)) // Alíquota do ICMS em Percentual
+        begin
+          // Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Arredonda(((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100), 1)) // Alíquota do ICMS em Percentual
+          {Dailon (f-7249) 2023-08-28 inicio}
+          if AnsiContainsText(FloatToStr(Arredonda((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100, 1))  ,',5') then
+            Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Arredonda((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100, 1))
+          else
+            Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Arredonda((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100, 0));
+          {Dailon (f-7249) 2023-08-28 fim}
+        end
         else
           Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(0); // Alíquota do ICMS em Percentual
 
