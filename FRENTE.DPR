@@ -60,7 +60,9 @@ uses
   uFuncoesPOS in 'uFuncoesPOS.pas',
   uConverteDocumentoParaDocFiscal in 'uConverteDocumentoParaDocFiscal.pas',
   _Small_59 in '_Small_59.pas',
-  _Small_99 in '_small_99.pas';
+  _Small_99 in '_small_99.pas',
+  uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
+  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas';
 
 {$R *.RES}
 

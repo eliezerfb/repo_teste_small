@@ -467,6 +467,9 @@ end;
 
 procedure TFCadAdquirentes.DeletarRecord(Sender: TObject);
 begin
+  if (Sender as TDbGrid).DataSource.DataSet.IsEmpty then
+    Exit;
+    
   if Application.MessageBox('Confirma a exclusão?', 'Atenção', MB_ICONWARNING + MB_YESNO + MB_DEFBUTTON2) = idYes then
     (Sender as TDbGrid).DataSource.DataSet.Delete;
   (Sender as TDbGrid).SelectedIndex := 0;

@@ -1460,6 +1460,9 @@ type
     procedure LimpaVariaveisGlobais;
     procedure DefineCaptionFormPrincipal;
     procedure EnviarANFCe;
+    procedure ConfigurarINITEFsPadrao(AoIniFile: TIniFile);
+    procedure DefineTemTEF;
+    procedure ChamarTelaConfiguracaoTEF;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1749,7 +1752,12 @@ uses
   , upafnfce // Sandro Silva 2022-09-23
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
-  , uValidaRecursosDelphi7, uFuncoesPOS, uConverteDocumentoParaDocFiscal;
+  , uValidaRecursosDelphi7
+  , uFuncoesPOS
+  , uConverteDocumentoParaDocFiscal
+  , uConfiguracaoTEF
+  , uSmallConsts
+  ;
 
 {$R *.DFM}
 
@@ -2108,7 +2116,7 @@ begin
   Form1.lbDisplayPDV.Caption := sP1; // Define se em venda, CAIXA LIVRE
   Form1.lbDisplayPDV.Repaint; // 2015-09-08
 
-  if Form1.sGertec <> 'Não' then
+  if Form1.sGertec <> _cNao then
   begin
     Form1.DisplayGertec(sP1);
   end else
@@ -4712,7 +4720,7 @@ begin
         and (PAFNFCe = False)) // Sandro Silva 2020-07-01 and (AnsiUpperCase(ExtractFileName(Application.ExeName)) <> 'PAFNFCE.EXE')) // Sandro Silva 2016-02-29
       then
       begin
-        if LerParametroIni('FRENTE.INI','NFCE','MOBILE','Não') = 'Sim' then
+        if LerParametroIni('FRENTE.INI','NFCE','MOBILE',_cNao) = _cSim then
         begin
           AbrirMonitorMobile;
           Form1.ImportarvendasdoSmallMobile1.Checked := True;
@@ -9450,12 +9458,12 @@ begin
 
       end;
       //
-      if Mais1Ini.ReadString('NFCE','Imprimir DANFCE','Sim')   = 'Sim' then Form1.ImprimirDANFCE1.Checked             := True else Form1.ImprimirDANFCE1.Checked             := False;
-      if Mais1Ini.ReadString('NFCE','Visualizar DANFCE','Não') = 'Sim' then Form1.VisualizarDANFCE1.Checked           := True else Form1.VisualizarDANFCE1.Checked           := False;
-      if Mais1Ini.ReadString('NFCE','DANFCE detalhado','Sim')  = 'Sim' then Form1.DANFCEdetalhado1.Checked            := True else Form1.DANFCEdetalhado1.Checked            := False;
-      if Mais1Ini.ReadString('NFCE','ENVIAR COMPACTADO','Não') = 'Sim' then Form1.EnviarDANFCEeXMLcompactado1.Checked := True else Form1.EnviarDANFCEeXMLcompactado1.Checked := False; // 2015-11-30
+      if Mais1Ini.ReadString('NFCE','Imprimir DANFCE',_cSim)   = _cSim then Form1.ImprimirDANFCE1.Checked             := True else Form1.ImprimirDANFCE1.Checked             := False;
+      if Mais1Ini.ReadString('NFCE','Visualizar DANFCE',_cSim) = _cSim then Form1.VisualizarDANFCE1.Checked           := True else Form1.VisualizarDANFCE1.Checked           := False;
+      if Mais1Ini.ReadString('NFCE','DANFCE detalhado',_cSim)  = _cSim then Form1.DANFCEdetalhado1.Checked            := True else Form1.DANFCEdetalhado1.Checked            := False;
+      if Mais1Ini.ReadString('NFCE','ENVIAR COMPACTADO',_cNao) = _cSim then Form1.EnviarDANFCEeXMLcompactado1.Checked := True else Form1.EnviarDANFCEeXMLcompactado1.Checked := False; // 2015-11-30
 
-      Form1.sinfRespTec := 'Sim';
+      Form1.sinfRespTec := _cSim;
       //
       //
       // Altera a Versão do Manual no Componente NFe
@@ -9506,7 +9514,7 @@ begin
             begin
               Form1.spdNFCe1.NomeCertificado.Text := StringReplace(Mais1Ini.ReadString('NFCE','Certificado',''), 'XXX', '', [rfReplaceAll]); // Sandro Silva 2019-03-19 Form1.spdNFCe1.NomeCertificado.Text          := Mais1Ini.ReadString('NFCE','Certificado','');
 
-              if AllTrim(Form1.spdNFCe1.NomeCertificado.Text) = '' then
+              if AllTrim(Form1.spdNFCe1.NomeCertificado.Text) = EmptyStr then
               begin
                 //
                 Form1.Selecionarcertificadodigital1Click(Form1.Selecionarcertificadodigital1);
@@ -9640,6 +9648,130 @@ begin
   except
     Result := False;
   end;
+end;
+
+procedure TForm1.ConfigurarINITEFsPadrao(AoIniFile: TIniFile);
+begin
+  if AoIniFile.ReadString('Sitef','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('Sitef','Pasta','CLIENT');
+    AoIniFile.WriteString('Sitef','Req','Req');
+    AoIniFile.WriteString('Sitef','Resp','Resp');
+    AoIniFile.WriteString('Sitef','Exec','C:\CLIENT\ClientSitef.EXE');
+    AoIniFile.WriteString('Sitef','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('TEF Dial','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('TEF Dial','Pasta','TEF_DIAL');
+    AoIniFile.WriteString('TEF Dial','Req','Req');
+    AoIniFile.WriteString('TEF Dial','Resp','Resp');
+    AoIniFile.WriteString('TEF Dial','Exec','C:\TEF_DIAL\TEF_DIAL.EXE');
+    AoIniFile.WriteString('TEF Dial','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('TEF Disc','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('TEF Disc','Pasta','TEF_DISC');
+    AoIniFile.WriteString('TEF Disc','Req','Req');
+    AoIniFile.WriteString('TEF Disc','Resp','Resp');
+    AoIniFile.WriteString('TEF Disc','Exec','C:\TEF_DISC\TEF_DISC.EXE');
+    AoIniFile.WriteString('TEF Disc','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('Disk TEF','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('Disk TEF','Pasta','DISKTEF');
+    AoIniFile.WriteString('Disk TEF','Req','DIR_SOLI');
+    AoIniFile.WriteString('Disk TEF','Resp','DIR_RESP');
+    AoIniFile.WriteString('Disk TEF','Exec','C:\DISKTEF\DISKTEF.EXE');
+    AoIniFile.WriteString('Disk TEF','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('HiperCard','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('HiperCard','Pasta','HIPERCARD');
+    AoIniFile.WriteString('HiperCard','Req','Req');
+    AoIniFile.WriteString('HiperCard','Resp','Resp');
+    AoIniFile.WriteString('HiperCard','Exec','C:\HIPERCARD\HIPERCARD.EXE');
+    AoIniFile.WriteString('HiperCard','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('TEF CSHP','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('TEF CSHP','Pasta','TEF_CSHP');
+    AoIniFile.WriteString('TEF CSHP','Req','Req');
+    AoIniFile.WriteString('TEF CSHP','Resp','Resp');
+    AoIniFile.WriteString('TEF CSHP','Exec','C:\TEF_CSHP\TEF_CSHP.EXE');
+    AoIniFile.WriteString('TEF CSHP','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('SuperTEF','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('SuperTEF','Pasta','SUPERTEF');
+    AoIniFile.WriteString('SuperTEF','Req','Req');
+    AoIniFile.WriteString('SuperTEF','Resp','Resp');
+    AoIniFile.WriteString('SuperTEF','Exec','C:\SUPERTEF\SUPERTEF.EXE');
+    AoIniFile.WriteString('SuperTEF','bAtivo','Não');
+    //
+  end;
+  //
+  if AoIniFile.ReadString('Direcao','Pasta','XXX') = 'XXX' then
+  begin
+    //
+    AoIniFile.WriteString('Direcao','Pasta','TEF_DIAL');
+    AoIniFile.WriteString('Direcao','Req','Req');
+    AoIniFile.WriteString('Direcao','Resp','Resp');
+    AoIniFile.WriteString('Direcao','Exec','C:\DPOS8\Bin\GPDirecao.exe');
+    AoIniFile.WriteString('Direcao','bAtivo','Não');
+    //
+  end;
+
+  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
+  begin
+    if AoIniFile.ReadString('Auttar','Pasta','XXX') = 'XXX' then
+    begin
+      // Ficha 4339
+      AoIniFile.WriteString('Auttar','Pasta','Auttar_TefIP');
+      AoIniFile.WriteString('Auttar','Req','Req');
+      AoIniFile.WriteString('Auttar','Resp','Resp');
+      AoIniFile.WriteString('Auttar','Exec','C:\Program Files (x86)\Auttar\IntegradorTEF-IP\IntegradorTEF-IP.EXE');
+      AoIniFile.WriteString('Auttar','bAtivo','Não');
+    end;
+  end;
+
+  {Sandro Silva 2023-07-20 inicio}
+  // Ficha 7153 
+  if AoIniFile.ReadString('ZPOS','Pasta','XXX') = 'XXX' then
+  begin
+    AoIniFile.WriteString('ZPOS', 'Pasta', 'ZPOS');
+    AoIniFile.WriteString('ZPOS', 'Req', 'Req');
+    AoIniFile.WriteString('ZPOS', 'Resp', 'Resp');
+    AoIniFile.WriteString('ZPOS', 'Exec', 'C:\ZPOS\ZPOS.exe');
+    AoIniFile.WriteString('ZPOS', 'bAtivo', 'Não');
+  end;
+  if AoIniFile.ReadString('Elgin', 'Pasta', 'XXX') = 'XXX' then
+  begin
+    AoIniFile.WriteString('Elgin', 'Pasta', 'CLIENTE');
+    AoIniFile.WriteString('Elgin', 'Req', 'Req');
+    AoIniFile.WriteString('Elgin', 'Resp', 'Resp');
+    AoIniFile.WriteString('Elgin', 'Exec', 'C:\ELGIN\TEFPassivo\E1_TEFPay_Passivo.exe');
+    AoIniFile.WriteString('Elgin', 'bAtivo', 'Não');
+  end;
+  {Sandro Silva 2023-07-20 fim}
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -10029,13 +10161,14 @@ begin
 
   _ecf65_ValidaNFCe_Setup;
 
+  ConfigurarINITEFsPadrao(Mais1Ini);
   if LerParametroIni('Frente.ini', 'Frente de Caixa', 'Balanca Autonoma', 'Não') = 'Não' then // Sandro Silva 2019-02-20
   begin
 
     if Mais1Ini.ReadString('Frente de caixa', 'TEM TEF','XXX') = 'XXX' then
     begin
       if Application.MessageBox(PAnsiChar('Usa TEF para pagamentos com cartão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
-        Mais1Ini.WriteString('Frente de caixa', 'TEM TEF','Sim')
+        ChamarTelaConfiguracaoTEF
       else
         Mais1Ini.WriteString('Frente de caixa', 'TEM TEF','Não');
     end;
@@ -10045,7 +10178,7 @@ begin
   //
   Form1.sSAngria         := Mais1Ini.ReadString('Frente de caixa', 'Sangria'                 ,'999.999,99');
   iPeso                  := Mais1Ini.ReadInteger('Frente de caixa', 'Peso'       ,1);
-  Form1.sTef             := Mais1Ini.ReadString('Frente de caixa', 'TEM TEF','Sim');
+  DefineTemTEF;
   sGertec                := Mais1Ini.ReadString('Frente de caixa', 'Teclado gertec','Não');
   sPromissoria           := Mais1Ini.ReadString('Frente de caixa', 'Promissória','Não');
   sCreditosDF            := Mais1Ini.ReadString('Frente de caixa', 'Créditos DF','Não');
@@ -10194,131 +10327,8 @@ begin
   // 2015-10-29 Aparentemente causa erro nas versões mais nova do windows com MP-4200 FI if sTef = 'Sim' then
   //            Precisa passar por esse if
   if True then
-  begin
-
-    // Configurações de TEF
-    //
-    if Mais1Ini.ReadString('Sitef','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('Sitef','Pasta','CLIENT');
-      Mais1Ini.WriteString('Sitef','Req','Req');
-      Mais1Ini.WriteString('Sitef','Resp','Resp');
-      Mais1Ini.WriteString('Sitef','Exec','C:\CLIENT\ClientSitef.EXE');
-      Mais1Ini.WriteString('Sitef','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('TEF Dial','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('TEF Dial','Pasta','TEF_DIAL');
-      Mais1Ini.WriteString('TEF Dial','Req','Req');
-      Mais1Ini.WriteString('TEF Dial','Resp','Resp');
-      Mais1Ini.WriteString('TEF Dial','Exec','C:\TEF_DIAL\TEF_DIAL.EXE');
-      Mais1Ini.WriteString('TEF Dial','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('TEF Disc','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('TEF Disc','Pasta','TEF_DISC');
-      Mais1Ini.WriteString('TEF Disc','Req','Req');
-      Mais1Ini.WriteString('TEF Disc','Resp','Resp');
-      Mais1Ini.WriteString('TEF Disc','Exec','C:\TEF_DISC\TEF_DISC.EXE');
-      Mais1Ini.WriteString('TEF Disc','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('Disk TEF','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('Disk TEF','Pasta','DISKTEF');
-      Mais1Ini.WriteString('Disk TEF','Req','DIR_SOLI');
-      Mais1Ini.WriteString('Disk TEF','Resp','DIR_RESP');
-      Mais1Ini.WriteString('Disk TEF','Exec','C:\DISKTEF\DISKTEF.EXE');
-      Mais1Ini.WriteString('Disk TEF','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('HiperCard','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('HiperCard','Pasta','HIPERCARD');
-      Mais1Ini.WriteString('HiperCard','Req','Req');
-      Mais1Ini.WriteString('HiperCard','Resp','Resp');
-      Mais1Ini.WriteString('HiperCard','Exec','C:\HIPERCARD\HIPERCARD.EXE');
-      Mais1Ini.WriteString('HiperCard','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('TEF CSHP','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('TEF CSHP','Pasta','TEF_CSHP');
-      Mais1Ini.WriteString('TEF CSHP','Req','Req');
-      Mais1Ini.WriteString('TEF CSHP','Resp','Resp');
-      Mais1Ini.WriteString('TEF CSHP','Exec','C:\TEF_CSHP\TEF_CSHP.EXE');
-      Mais1Ini.WriteString('TEF CSHP','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('SuperTEF','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('SuperTEF','Pasta','SUPERTEF');
-      Mais1Ini.WriteString('SuperTEF','Req','Req');
-      Mais1Ini.WriteString('SuperTEF','Resp','Resp');
-      Mais1Ini.WriteString('SuperTEF','Exec','C:\SUPERTEF\SUPERTEF.EXE');
-      Mais1Ini.WriteString('SuperTEF','bAtivo','Sim');
-      //
-    end;
-    //
-    if Mais1Ini.ReadString('Direcao','Pasta','XXX') = 'XXX' then
-    begin
-      //
-      Mais1Ini.WriteString('Direcao','Pasta','TEF_DIAL');
-      Mais1Ini.WriteString('Direcao','Req','Req');
-      Mais1Ini.WriteString('Direcao','Resp','Resp');
-      Mais1Ini.WriteString('Direcao','Exec','C:\DPOS8\Bin\GPDirecao.exe');
-      Mais1Ini.WriteString('Direcao','bAtivo','Sim');
-      //
-    end;
-
-    if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-    begin
-      if Mais1Ini.ReadString('Auttar','Pasta','XXX') = 'XXX' then
-      begin
-        // Ficha 4339
-        Mais1Ini.WriteString('Auttar','Pasta','Auttar_TefIP');
-        Mais1Ini.WriteString('Auttar','Req','Req');
-        Mais1Ini.WriteString('Auttar','Resp','Resp');
-        Mais1Ini.WriteString('Auttar','Exec','C:\Program Files (x86)\Auttar\IntegradorTEF-IP\IntegradorTEF-IP.EXE');
-        Mais1Ini.WriteString('Auttar','bAtivo','Sim');
-      end;
-    end;
-
-    {Sandro Silva 2023-07-20 inicio}
-    // Ficha 7153 
-    if Mais1Ini.ReadString('ZPOS','Pasta','XXX') = 'XXX' then
-    begin
-      Mais1Ini.WriteString('ZPOS', 'Pasta', 'ZPOS');
-      Mais1Ini.WriteString('ZPOS', 'Req', 'Req');
-      Mais1Ini.WriteString('ZPOS', 'Resp', 'Resp');
-      Mais1Ini.WriteString('ZPOS', 'Exec', 'C:\ZPOS\ZPOS.exe');
-      Mais1Ini.WriteString('ZPOS', 'bAtivo', 'Sim');
-    end;
-    if Mais1Ini.ReadString('Elgin', 'Pasta', 'XXX') = 'XXX' then
-    begin
-      Mais1Ini.WriteString('Elgin', 'Pasta', 'CLIENTE');
-      Mais1Ini.WriteString('Elgin', 'Req', 'Req');
-      Mais1Ini.WriteString('Elgin', 'Resp', 'Resp');
-      Mais1Ini.WriteString('Elgin', 'Exec', 'C:\ELGIN\TEFPassivo\E1_TEFPay_Passivo.exe');
-      Mais1Ini.WriteString('Elgin', 'bAtivo', 'Sim');
-    end;
-    {Sandro Silva 2023-07-20 fim}
-  end else
+    ConfigurarINITEFsPadrao(Mais1Ini)
+  else
   begin
     //
     if Form1.sModeloECF = '02' then
@@ -15637,7 +15647,7 @@ begin
   if Mais1Ini.ReadString('Frente de caixa','Gaveta','0')                  = '0'   then Gaveta1.Checked                  := False else Gaveta1.Checked := True;
   if Mais1Ini.ReadString('Frente de caixa','Status Gaveta','0')           = '0'   then Inverterstatusdagaveta1.Checked  := False else Inverterstatusdagaveta1.Checked := True;
   if Mais1Ini.ReadString('Frente de caixa','Balança','Não')               = 'Não' then Balana1.Checked                  := False else Balana1.Checked := True;
-  if Mais1Ini.ReadString('Frente de caixa','TEM TEF','Sim')               = 'Sim' then EF1.Checked                      := True else EF1.Checked := False;
+  DefineTemTEF;
   if Mais1Ini.ReadString('Frente de caixa','Corta papel','Sim')           = 'Sim' then CortaPapel1.Checked              := True else CortaPapel1.Checked := False;
   if Mais1Ini.ReadString('Frente de caixa','CRLF','Sim')                  = 'Sim' then CRLF2.Checked                    := True else CRLF2.Checked := False;
   if Mais1Ini.ReadString('Frente de caixa','Teclado gertec','Não')        = 'Sim' then TecladoGERTEC1.Checked           := True else TecladoGERTEC1.Checked     := False;
@@ -17357,33 +17367,46 @@ procedure TForm1.GrandetotalGT1Click(Sender: TObject);
 var
   sTotalDia : String;
 begin
-  //
   sTotalDia := Form1.PDV_GrandeTotal(True);
-  //
   SmallMsg(sTotalDia);
-  //
 end;
 
-procedure TForm1.EF1Click(Sender: TObject);
+procedure TForm1.DefineTemTEF;
 var
-  Mais1Ini : TiniFile;
+  oArq : TiniFile;
 begin
-  //
-  Mais1ini := TIniFile.Create('FRENTE.INI');
-  //
-  if Mais1Ini.ReadString('Frente de caixa','TEM TEF','Sim') = 'Sim' then
-  begin
-    Mais1Ini.WriteString('Frente de caixa','TEM TEF','Não');
-  end else
-  begin
-    Mais1Ini.WriteString('Frente de caixa','TEM TEF','Sim');
+  oArq := TIniFile.Create('FRENTE.INI');
+  try
+    Form1.sTef        := oArq.ReadString('Frente de caixa', 'TEM TEF', _cNao);
+    Form1.EF1.Checked := (AnsiUpperCase(Form1.sTef) = AnsiUpperCase(_cSim));
+  finally
+    oArq.Free;
   end;
-  //
-  Form1.sTef := Mais1Ini.ReadString('Frente de caixa','TEM TEF','Sim');
-  Mais1Ini.Free;
+end;
+
+{Dailon (f-7256) 2023-08-29 inicio}
+procedure TForm1.ChamarTelaConfiguracaoTEF;
+var
+  oArq : TiniFile;
+begin
+  FConfiguracaoTEF := TFConfiguracaoTEF.Create(nil);
+  try
+    FConfiguracaoTEF.ShowModal;
+
+    DefineTemTEF;
+  finally
+    FreeAndNil(FConfiguracaoTEF);
+  end;
+end;
+{Dailon (f-7256) 2023-08-29 fim}
+
+procedure TForm1.EF1Click(Sender: TObject);
+begin
+  ChamarTelaConfiguracaoTEF;
   //                
   {Sandro Silva 2022-02-14 inicio}
-  if Form1.sTef = 'Sim' then
+  
+  if Form1.sTef = _cSim then
   begin
     Form1.SmartPOSElginPay1.Checked := False;
     Form1.PosElginPay.Desativa;
@@ -17392,9 +17415,11 @@ begin
   Form1.SmartPOSElginPay1.Enabled := PosElginPay.PermiteUsarPOS; // Sandro Silva 2022-05-09
   Form1.FunesAdministrativasPosElginPay1.Enabled := SmartPOSElginPay1.Enabled; // Sandro Silva 2022-05-09
 
-  if Form1.PosElginPay.Configuracao.Ativo = 'Sim' then
+  if Form1.PosElginPay.Configuracao.Ativo = _cSim then
     Form1.PosElginPay.Ativa(Form1.ibDataSet13.FieldByName('CGC').AsString, AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString), Form1.sModeloECF_Reserva{, Form1.sTef = 'Sim'}); // Sandro Silva 2022-02-11
   {Sandro Silva 2022-02-14 fim}
+
+  DefineTemTEF;
 end;
 
 procedure TForm1.Controledecheque1Click(Sender: TObject);
