@@ -1693,6 +1693,7 @@ function PAFNFCe: Boolean;
 begin
   // Sandro Silva 2021-03-19 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim');
   // Sandro Silva 2023-07-18 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE');
+  Result := False; // Sandro Silva 2023-08-29
   if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '65') then
   begin
     if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') then
@@ -1740,6 +1741,7 @@ begin
   else if ((sModelo = '59') or (sModelo = '65')) and (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) then   // Se modelo ecf for sat ou nfce e o aplicativo for gerencial.exe
     Result := True;
   }
+  Result := False; // Sandro Silva 2023-08-29
   if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
     Result := True;
 end;
