@@ -24595,7 +24595,11 @@ begin
       {Sandro Silva 2023-08-22 fim}
       //
 
+      {Sandro Silva 2023-08-29 inicio}
       // Transmite venda para o sat
+      if Form1.ibDataSet150.FieldByName('GERENCIAL').AsString <> '' then
+        Form1.PDV_Pagamento(True);
+      {Sandro Silva 2023-08-29 fim}
 
       Form1.ibDataset150.Close;
 
@@ -24817,9 +24821,11 @@ begin
 
   if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') and (DBGrid1.DataSource.DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_ABERTA) then // Sandro Silva 2023-08-22 if DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99' then
     Exit; // Double Click com grade vazia gera bug
+    
+testar... observar transação
 
   bTimer2EnabledOld := Timer2.Enabled;
-  sGerencial := DBGrid1.DataSource.DataSet.FieldByName('GERENICAL').AsString;
+  sGerencial := DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString;
   try
     Screen.Cursor := crHourGlass;
 
@@ -24896,32 +24902,34 @@ begin
 
               IBQDADOS.Close;
 
-
               {Sandro Silva 2023-08-25 inicio}
-              ConverteVenda := TConverteVendaParaNovoDocFiscal.Create;
-              try
-                ConverteVenda.ModeloOld         := DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString;
-                ConverteVenda.Caixa             := Form1.sCaixa;
-                ConverteVenda.ModeloDocumento   := Form1.sModeloECF;
-                ConverteVenda.IBTransaction     := Form1.ibDataSet27.Transaction;
-                ConverteVenda.IBDataSet27       := Form1.IBDataSet27;
-                ConverteVenda.IBDataSet30       := Form1.IBDataSet30;
-                ConverteVenda.IBDataset150      := Form1.IBDataSet150;
-                ConverteVenda.IBDataSet7        := Form1.IBDataSet7;
-                ConverteVenda.IBDataSet28       := Form1.IBDataSet28;
-                ConverteVenda.IBDataSet25       := Form1.ibDataSet25;
-                ConverteVenda.TransacoesCartao  := Form1.TransacoesCartao;
-                ConverteVenda.NomeDoTEF         := Form10.sNomeDoTEF;
-                ConverteVenda.DebitoOuCredito   := Form1.sDebitoOuCredito;
-                ConverteVenda.sConveniado       := Form1.sConveniado;
-                ConverteVenda.sVendedor         := Form1.sVendedor;
-                ConverteVenda.NumeroGerencial   := sNumeroNFOld;
-                ConverteVenda.Converte;
-                sNumeroNFNew := ConverteVenda.NumeroNF;
-              finally
-                FreeAndNil(ConverteVenda);
+              if sGerencial <> '' then
+              begin
+                ConverteVenda := TConverteVendaParaNovoDocFiscal.Create;
+                try
+                  ConverteVenda.ModeloOld         := DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString;
+                  ConverteVenda.Caixa             := Form1.sCaixa;
+                  ConverteVenda.ModeloDocumento   := Form1.sModeloECF;
+                  ConverteVenda.IBTransaction     := Form1.ibDataSet27.Transaction;
+                  ConverteVenda.IBDataSet27       := Form1.IBDataSet27;
+                  ConverteVenda.IBDataSet30       := Form1.IBDataSet30;
+                  ConverteVenda.IBDataset150      := Form1.IBDataSet150;
+                  ConverteVenda.IBDataSet7        := Form1.IBDataSet7;
+                  ConverteVenda.IBDataSet28       := Form1.IBDataSet28;
+                  ConverteVenda.IBDataSet25       := Form1.ibDataSet25;
+                  ConverteVenda.TransacoesCartao  := Form1.TransacoesCartao;
+                  ConverteVenda.NomeDoTEF         := Form10.sNomeDoTEF;
+                  ConverteVenda.DebitoOuCredito   := Form1.sDebitoOuCredito;
+                  ConverteVenda.sConveniado       := Form1.sConveniado;
+                  ConverteVenda.sVendedor         := Form1.sVendedor;
+                  ConverteVenda.NumeroGerencial   := sNumeroNFOld;
+                  ConverteVenda.Converte;
+                  sNumeroNFNew := ConverteVenda.NumeroNF;
+                finally
+                  FreeAndNil(ConverteVenda);
+                end;
               end;
-              {Sandro Silva 2023-08-25 fim} 
+              {Sandro Silva 2023-08-25 fim}
             end;
 
             iRowsAffected := 0;

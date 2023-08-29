@@ -108,8 +108,10 @@ var
   sXmlOld: String;  // Sandro Silva 2023-08-25
   sCondicaoVenda: String;
   sGerencialOld: String;
+  bPrecisarGerarNovoNumero: Boolean; // Sandro Silva 2023-08-29
 begin
   FNumeroNF := '';
+  bPrecisarGerarNovoNumero := True;
 
   if FModeloOld = '' then
   begin
@@ -129,6 +131,11 @@ begin
     (FIBDataSet25 = nil)
     then
     Exit;
+
+  {Sandro Silva 2023-08-29 inicio}
+  if (sModeloOld = '59') and (FModeloDocumento = '59') then
+    bPrecisarGerarNovoNumero := False;
+  {Sandro Silva 2023-08-29 fim}
 
   FormasPagamento := TPagamentoPDV.Create;
   IBQCONSULTA := CriaIBQuery(FIBTransaction);
@@ -168,8 +175,9 @@ begin
       FIBDataset150.SelectSql.Clear;
       FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(sModeloOld));
       FIBDataset150.Open;
+
+      {Sandro Silva 2023-08-29 inicio
       FIBDataset150.Delete;
-      {Sandro Silva 2023-08-25 fim}
 
       FIBDataset150.Close;
       FIBDataset150.SelectSql.Clear;
@@ -201,6 +209,52 @@ begin
       end;
       FIBDataset150.FieldByName('NFEXML').AsString    := sXmlOld;
       FIBDataset150.Post;
+      }
+
+      if bPrecisarGerarNovoNumero = False then
+      begin
+        sNovoNumero := FIBDataset150.FieldByName('NUMERONF').AsString;
+        dtDataNovo  := FIBDataset150.FieldByName('DATA').AsDateTime
+      end
+      else
+      begin
+        FIBDataset150.Delete;
+
+        FIBDataset150.Close;
+        FIBDataset150.SelectSql.Clear;
+        FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(FCaixa) + ' and MODELO = ' + QuotedStr(FModeloDocumento));
+        FIBDataset150.Open;
+
+        if FModeloDocumento = '65' then
+          sNovoNumero := FormataNumeroDoCupom(IncGeneratorToInt(FIBTransaction.DefaultDatabase, 'G_NUMERONFCE', 1));
+
+        if FModeloDocumento = '59' then
+          sNovoNumero := FormataNumeroDoCupom(IncGeneratorToInt(FIBTransaction.DefaultDatabase, 'G_NUMEROCFESAT_' + FCaixa, 1));
+      end;
+
+      if sNovoNumero = '' then
+      begin
+        Exit;
+      end;
+
+      if bPrecisarGerarNovoNumero then
+      begin
+        dtDataNovo := Date;
+        FIBDataset150.Append;
+        FIBDataset150.FieldByName('NUMERONF').AsString  := sNovoNumero;
+        FIBDataset150.FieldByName('DATA').AsDateTime    := dtDataNovo;
+        FIBDataset150.FieldByName('CAIXA').AsString     := FCaixa;
+        FIBDataset150.FieldByName('MODELO').AsString    := FModeloDocumento;
+        FIBDataset150.FieldByName('GERENCIAL').AsString := FNumeroGerencial;
+        if (FModeloOld <> '59') and (FModeloOld <> '65') then // Sandro Silva 2023-08-28
+        begin
+          if sGerencialOld <> '' then
+            FIBDataset150.FieldByName('GERENCIAL').AsString := sGerencialOld; // Sandro Silva 2023-08-25
+        end;
+        FIBDataset150.FieldByName('NFEXML').AsString    := sXmlOld;
+        FIBDataset150.Post;
+      end;
+      {Sandro Silva 2023-08-29 fim}
 
       // Seleciona o desconto no total
       // Seleciona os desconto lançados para a venda (tanto nos itens qto no total do cupom)
@@ -229,169 +283,158 @@ begin
         FIBDataSet27.Next;
       end;
 
-///////////////////////    
-
-      //Seleciona novamente o itens para alterar o número do pedido para o número do CFe
-      FIBDataSet27.Close;
-      FIBDataSet27.SelectSQL.Text :=
-        'select * from ALTERACA where CAIXA = ' + QuotedStr(sCaixaOld) + ' and PEDIDO = ' + QuotedStr(FNumeroGerencial) +
-        ' and COO is null'; // Apenas os itens da venda atual. Para separar de vendas anteriores com mesmo número do caixa
-      FIBDataSet27.Open;
-
-      sDAV     := '';
-      sTIPODAV := '';
-      //sAlteracaPedidoOld := FIBDataSet27.FieldByName('PEDIDO').AsString;
-
-      {
-      if Form1.sOrcame <> '' then
+///////////////////////
+      if bPrecisarGerarNovoNumero then
       begin
-        sDAV     := Form1.sOrcame;
-        sTIPODAV := 'ORÇAMENTO';
-      end;
 
-      if Form1.sOs <> '' then
-      begin
-        sDAV     := Form1.sOs;
-        sTIPODAV := 'OS';
-      end;
-      }
+        //Seleciona novamente o itens para alterar o número do pedido para o número do CFe
+        FIBDataSet27.Close;
+        FIBDataSet27.SelectSQL.Text :=
+          'select * from ALTERACA where CAIXA = ' + QuotedStr(sCaixaOld) + ' and PEDIDO = ' + QuotedStr(FNumeroGerencial) +
+          ' and COO is null'; // Apenas os itens da venda atual. Para separar de vendas anteriores com mesmo número do caixa
+        FIBDataSet27.Open;
 
-      {Sandro Silva 2023-08-25 inicio
-      IBQPENDENCIA := CriaIBQuery(FIBTransaction);
-      try
-        IBQPENDENCIA.Close;
-        IBQPENDENCIA.SQL.Text :=
-          'update PENDENCIA set ' +
-          'PEDIDO = ' + QuotedStr(sNovoNumero) +
-          ', CAIXA = ' + QuotedStr(FCaixa) +
-          ' where PEDIDO = ' + QuotedStr(FNumeroGerencial) +
-          ' and CAIXA = ' + QuotedStr(sCaixaOld);
-        IBQPENDENCIA.ExecSQL;
-      except
+        sDAV     := '';
+        sTIPODAV := '';
+        //sAlteracaPedidoOld := FIBDataSet27.FieldByName('PEDIDO').AsString;
 
-      end;
-      FreeAndNil(IBQPENDENCIA);
-      }
-      AtualizaNumeroPedidoTabelaPendencia(FIBTransaction, sCaixaOld, FNumeroGerencial, sNovoNumero, FCaixa);
-      {Sandro Silva 2023-08-25 fim}
+        {Sandro Silva 2023-08-25 inicio
+        IBQPENDENCIA := CriaIBQuery(FIBTransaction);
+        try
+          IBQPENDENCIA.Close;
+          IBQPENDENCIA.SQL.Text :=
+            'update PENDENCIA set ' +
+            'PEDIDO = ' + QuotedStr(sNovoNumero) +
+            ', CAIXA = ' + QuotedStr(FCaixa) +
+            ' where PEDIDO = ' + QuotedStr(FNumeroGerencial) +
+            ' and CAIXA = ' + QuotedStr(sCaixaOld);
+          IBQPENDENCIA.ExecSQL;
+        except
 
-      while FIBDataSet27.Eof = False do
-      begin
-        if FDadosCliente.Nome = '' then
-          FDadosCliente.Nome    := FIBDataSet27.FieldByName('CLIFOR').AsString;
-        if FDadosCliente.CNPJCPF = '' then
-          FDadosCliente.CNPJCPF := FIBDataSet27.FieldByName('CNPJ').AsString;
-
-        if (sDAV = '')
-          and (FIBDataSet27.FieldByName('DAV').AsString <> '')
-          and (FIBDataSet27.FieldByName('TIPODAV').AsString <> '') then
-        begin
-          // Identifica o primeiro DAV que encontrar nos itens da venda
-          sDAV     := FIBDataSet27.FieldByName('DAV').AsString;
-          sTIPODAV := FIBDataSet27.FieldByName('TIPODAV').AsString;
         end;
-
-        if (FIBDataSet27.FieldByName('CAIXA').AsString = sCaixaOld)
-          and (FIBDataSet27.FieldByName('PEDIDO').AsString = FNumeroGerencial) then
+        FreeAndNil(IBQPENDENCIA);
+        }
+        AtualizaNumeroPedidoTabelaPendencia(FIBTransaction, sCaixaOld, FNumeroGerencial, sNovoNumero, FCaixa);
+        {Sandro Silva 2023-08-25 fim}
+        FIBDataSet27.First; // Sandro Silva 2023-08-29
+        while FIBDataSet27.Eof = False do
         begin
-          //
-          // NFC-e não grava COO e CCF para os descontos e acréscimos
-          //
-          if (FIBDataSet27.FieldByName('COO').AsString = '') and (FIBDataSet27.FieldByName('CCF').AsString = '') then // Não atualizar número do CF-e em vendas antigas de ECF
+          if FDadosCliente.Nome = '' then
+            FDadosCliente.Nome    := FIBDataSet27.FieldByName('CLIFOR').AsString;
+          if FDadosCliente.CNPJCPF = '' then
+            FDadosCliente.CNPJCPF := FIBDataSet27.FieldByName('CNPJ').AsString;
+
+          if (sDAV = '')
+            and (FIBDataSet27.FieldByName('DAV').AsString <> '')
+            and (FIBDataSet27.FieldByName('TIPODAV').AsString <> '') then
           begin
-
-            try
-              // Produtos com controle de número de série
-                if (FIBDataSet27.FieldByName('CODIGO').AsString <> '') and
-                  ((FIBDataSet27.FieldByName('TIPO').AsString = 'BALCAO') or (FIBDataSet27.FieldByName('TIPO').AsString = 'LOKED')) then
-                begin
-                  // Seleciona o produto na tabela SERIE, com a data e o número temporário da venda, para atualizar com a data e o número do CF-e gerados pelo SAT
-                  FIBDataSet30.Close;
-                  FIBDataSet30.SelectSQL.Clear;
-                  FIBDataSet30.Selectsql.Text :=
-                    'select * from SERIE ' +
-                    ' where CODIGO = ' + QuotedStr(FIBDataSet27.FieldByName('CODIGO').AsString) +
-                    ' and NFVENDA = ' + QuotedStr(FNumeroGerencial) +
-                    ' and DATVENDA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', FIBDataSet27.FieldByName('DATA').AsDateTime));
-                  FIBDataSet30.Open;
-
-                  while FIBDataSet30.Eof = False do
-                  begin
-                    if (FIBDataSet30.FieldByName('CODIGO').AsString <> '') and (FIBDataSet30.FieldByName('CODIGO').AsString = FIBDataSet27.FieldByName('CODIGO').AsString) then
-                    begin
-                      FIBDataSet30.Edit;
-                      FIBDataSet30.FieldByName('NFVENDA').AsString  := sNovoNumero;
-                      try
-                        FIBDataSet30.FieldByName('VALVENDA').AsFloat  := FIBDataSet27.FieldByName('UNITARIO').AsFloat;
-                        FIBDataSet30.FieldByName('DATVENDA').AsFloat  := dtDataNovo;
-                        FIBDataSet30.Post; // Sandro Silva 2018-12-07
-                      except
-                      end;
-                    end;
-                    FIBDataSet30.Next;
-                  end;
-                end;
-            except
-
-            end;
-
-            try
-              FIBDataSet27.Edit;
-              FIBDataSet27.FieldByName('PEDIDO').AsString := sNovoNumero;
-              FIBDataSet27.FieldByName('CAIXA').AsString  := FCaixa;
-              FIBDataSet27.FieldByName('DATA').AsDateTime := dtDataNovo;
-              FIBDataSet27.Post;
-            except
-            
-            end;
-
-          end; // if (FIBDataSet27.FieldByName('DATA').AsDateTime >= StrToDate(sDataOld))
-
-        end; // if (FIBDataSet27.FieldByName('CAIXA').AsString = Form1.sCaixa)
-
-        FIBDataSet27.Next;
-      end; // while
-
-      Form1.AtualizaDetalhe(FIBDataSet27.Transaction, sTIPODAV, sDAV, sCaixaOld, FCaixa, sNovoNumero, 'Fechada');
-
-      // Seleciona novamente os dados para usar na sequência da venda
-      FIBDataSet27.Close;
-      FIBDataSet27.SelectSQL.Text :=
-        'select * from ALTERACA where CAIXA = ' + QuotedStr(FCaixa) + ' and PEDIDO = ' + QuotedStr(sNovoNumero);
-      FIBDataSet27.Open;
-      FIBDataSet27.Last;
-
-      // Receber
-      FIBDataSet7.Close;
-      FIBDataSet7.SelectSQL.Text :=
-        'select * ' +
-        'from RECEBER ' +
-        'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(StrToInt(FNumeroGerencial)) + RightStr(sCaixaOld, 3)) +
-        ' order by REGISTRO';
-      FIBDataSet7.Open;
-
-      FIBDataSet7.First;
-      while FIBDataSet7.Eof = False do
-      begin
-        if (FIBDataSet7.FieldByName('NUMERONF').AsString = FNumeroGerencial + Copy(sCaixaOld, 1, 3)) then
-        begin
-          try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
-            FIBDataSet7.Edit;
-            FIBDataSet7.FieldByName('NUMERONF').AsString  := sNovoNumero + Copy(FCaixa, 1, 3);
-            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, FNumeroGerencial, FormataNumeroDoCupom(StrToInt(sNovoNumero)), [rfReplaceAll]);
-            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'trans.', 'tran.', [rfReplaceAll]);
-            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'caixa ', 'Caixa: ', [rfReplaceAll]);
-            FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'Caixa: ' + sCaixaOld, 'Caixa: ' + FCaixa, [rfReplaceAll]);
-            FIBDataSet7.FieldByName('DOCUMENTO').AsString := FCaixa + sNovoNumero + RightStr(FIBDataSet7.FieldByName('DOCUMENTO').AsString, 1);
-            FIBDataSet7.FieldByName('EMISSAO').AsDateTime := dtDataNovo;
-            FIBDataSet7.Post;
-          except
+            // Identifica o primeiro DAV que encontrar nos itens da venda
+            sDAV     := FIBDataSet27.FieldByName('DAV').AsString;
+            sTIPODAV := FIBDataSet27.FieldByName('TIPODAV').AsString;
           end;
-        end;
-        FIBDataSet7.Next;
-      end;                     
 
-      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml  
+          if (FIBDataSet27.FieldByName('CAIXA').AsString = sCaixaOld)
+            and (FIBDataSet27.FieldByName('PEDIDO').AsString = FNumeroGerencial) then
+          begin
+            //
+            // NFC-e não grava COO e CCF para os descontos e acréscimos
+            //
+            if (FIBDataSet27.FieldByName('COO').AsString = '') and (FIBDataSet27.FieldByName('CCF').AsString = '') then // Não atualizar número do CF-e em vendas antigas de ECF
+            begin
+
+              try
+                // Produtos com controle de número de série
+                  if (FIBDataSet27.FieldByName('CODIGO').AsString <> '') and
+                    ((FIBDataSet27.FieldByName('TIPO').AsString = 'BALCAO') or (FIBDataSet27.FieldByName('TIPO').AsString = 'LOKED')) then
+                  begin
+                    // Seleciona o produto na tabela SERIE, com a data e o número temporário da venda, para atualizar com a data e o número do CF-e gerados pelo SAT
+                    FIBDataSet30.Close;
+                    FIBDataSet30.SelectSQL.Clear;
+                    FIBDataSet30.Selectsql.Text :=
+                      'select * from SERIE ' +
+                      ' where CODIGO = ' + QuotedStr(FIBDataSet27.FieldByName('CODIGO').AsString) +
+                      ' and NFVENDA = ' + QuotedStr(FNumeroGerencial) +
+                      ' and DATVENDA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', FIBDataSet27.FieldByName('DATA').AsDateTime));
+                    FIBDataSet30.Open;
+
+                    while FIBDataSet30.Eof = False do
+                    begin
+                      if (FIBDataSet30.FieldByName('CODIGO').AsString <> '') and (FIBDataSet30.FieldByName('CODIGO').AsString = FIBDataSet27.FieldByName('CODIGO').AsString) then
+                      begin
+                        FIBDataSet30.Edit;
+                        FIBDataSet30.FieldByName('NFVENDA').AsString  := sNovoNumero;
+                        try
+                          FIBDataSet30.FieldByName('VALVENDA').AsFloat  := FIBDataSet27.FieldByName('UNITARIO').AsFloat;
+                          FIBDataSet30.FieldByName('DATVENDA').AsFloat  := dtDataNovo;
+                          FIBDataSet30.Post; // Sandro Silva 2018-12-07
+                        except
+                        end;
+                      end;
+                      FIBDataSet30.Next;
+                    end;
+                  end;
+              except
+
+              end;
+
+              try
+                FIBDataSet27.Edit;
+                FIBDataSet27.FieldByName('PEDIDO').AsString := sNovoNumero;
+                FIBDataSet27.FieldByName('CAIXA').AsString  := FCaixa;
+                FIBDataSet27.FieldByName('DATA').AsDateTime := dtDataNovo;
+                FIBDataSet27.Post;
+              except
+
+              end;
+
+            end; // if (FIBDataSet27.FieldByName('DATA').AsDateTime >= StrToDate(sDataOld))
+
+          end; // if (FIBDataSet27.FieldByName('CAIXA').AsString = Form1.sCaixa)
+
+          FIBDataSet27.Next;
+        end; // while
+
+        Form1.AtualizaDetalhe(FIBDataSet27.Transaction, sTIPODAV, sDAV, sCaixaOld, FCaixa, sNovoNumero, 'Fechada');
+
+        // Seleciona novamente os dados para usar na sequência da venda
+        FIBDataSet27.Close;
+        FIBDataSet27.SelectSQL.Text :=
+          'select * from ALTERACA where CAIXA = ' + QuotedStr(FCaixa) + ' and PEDIDO = ' + QuotedStr(sNovoNumero);
+        FIBDataSet27.Open;
+        FIBDataSet27.Last;
+
+        // Receber
+        FIBDataSet7.Close;
+        FIBDataSet7.SelectSQL.Text :=
+          'select * ' +
+          'from RECEBER ' +
+          'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(StrToInt(FNumeroGerencial)) + RightStr(sCaixaOld, 3)) +
+          ' order by REGISTRO';
+        FIBDataSet7.Open;
+
+        FIBDataSet7.First;
+        while FIBDataSet7.Eof = False do
+        begin
+          if (FIBDataSet7.FieldByName('NUMERONF').AsString = FNumeroGerencial + Copy(sCaixaOld, 1, 3)) then
+          begin
+            try // Sandro Silva 2018-12-07 Evitar erro quando atualiza dados
+              FIBDataSet7.Edit;
+              FIBDataSet7.FieldByName('NUMERONF').AsString  := sNovoNumero + Copy(FCaixa, 1, 3);
+              FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, FNumeroGerencial, FormataNumeroDoCupom(StrToInt(sNovoNumero)), [rfReplaceAll]);
+              FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'trans.', 'tran.', [rfReplaceAll]);
+              FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'caixa ', 'Caixa: ', [rfReplaceAll]);
+              FIBDataSet7.FieldByName('HISTORICO').AsString := StringReplace(FIBDataSet7.FieldByName('HISTORICO').AsString, 'Caixa: ' + sCaixaOld, 'Caixa: ' + FCaixa, [rfReplaceAll]);
+              FIBDataSet7.FieldByName('DOCUMENTO').AsString := FCaixa + sNovoNumero + RightStr(FIBDataSet7.FieldByName('DOCUMENTO').AsString, 1);
+              FIBDataSet7.FieldByName('EMISSAO').AsDateTime := dtDataNovo;
+              FIBDataSet7.Post;
+            except
+            end;
+          end;
+          FIBDataSet7.Next;
+        end;
+      end; // Sandro Silva 2023-08-29 if bPrecisarGerarNovoNumero then
+
+      FIBDataSet25.Append; // para distribuir os valores pago e gerar o xml
 
       FormasPagamento.Clear;
       FValorTotalTEFPago := 0.00;
@@ -546,7 +589,8 @@ begin
         FIBDataSet28.Next;
       end;
       }
-      AtualizaDadosPagament(FIBDataSet28, {FIBDataSet28.Transaction,} FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
+      // Atualiza dados da tabela PAGAMENT e trás FORMASPAGAMENTO carregada com os dados
+      AtualizaDadosPagament(FIBDataSet28, FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
         FConveniado, FVendedor, FormasPagamento, FValorTotalTEFPago, FTransacoesCartao, ModalidadeTransacao);
       {Sandro Silva 2023-08-25 fim}
 
