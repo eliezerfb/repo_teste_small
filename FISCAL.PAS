@@ -24591,9 +24591,12 @@ begin
       Mais1ini.Free;
       }
       if Form1.ibDataSet150.FieldByName('NUMERONF').AsString <> '' then // Sandro Silva 2023-08-25
-      GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '59'); // Sandro Silva 2023-08-22
-      {Sandro Silva 2023-08-22 fim}  
+        GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '59'); // Sandro Silva 2023-08-22
+      {Sandro Silva 2023-08-22 fim}
       //
+
+      // Transmite venda para o sat
+
       Form1.ibDataset150.Close;
 
       Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
@@ -24801,20 +24804,22 @@ var
   bTimer2EnabledOld: Boolean;
   iRowsAffected: Integer; // Sandro Silva 2017-09-14
   ConverteVenda: TConverteVendaParaNovoDocFiscal;
+  sGerencial: String; // Sandro Silva 2023-08-29
 begin
   //// Comentar essas linhas e descomentas as de baixo
 
   if DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString = '' then
     Exit; // Double Click com grade vazia gera bug
 
-Se for venda convertida deverá recuparar os valores das formas de pagamento e fazer a transmissão sem abrir na tela, porque a venda pode ter sido finalizada em cartão, ]
-abrindo na tela terá que fechar em dinheiro, deixando os registros da operação em cartão na tabela transacaoeletronica
+//Se for venda convertida deverá recuparar os valores das formas de pagamento e fazer a transmissão sem abrir na tela, porque a venda pode ter sido finalizada em cartão,
+//abrindo na tela terá que fechar em dinheiro, deixando os registros da operação em cartão na tabela transacaoeletronica
 
 
   if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') and (DBGrid1.DataSource.DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_ABERTA) then // Sandro Silva 2023-08-22 if DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99' then
     Exit; // Double Click com grade vazia gera bug
 
   bTimer2EnabledOld := Timer2.Enabled;
+  sGerencial := DBGrid1.DataSource.DataSet.FieldByName('GERENICAL').AsString;
   try
     Screen.Cursor := crHourGlass;
 
@@ -24894,28 +24899,29 @@ abrindo na tela terá que fechar em dinheiro, deixando os registros da operação e
 
               {Sandro Silva 2023-08-25 inicio}
               ConverteVenda := TConverteVendaParaNovoDocFiscal.Create;
-              ConverteVenda.ModeloOld         := DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString;
-              ConverteVenda.Caixa             := Form1.sCaixa;
-              ConverteVenda.ModeloDocumento   := Form1.sModeloECF;
-              ConverteVenda.IBTransaction     := Form1.ibDataSet27.Transaction;
-              ConverteVenda.IBDataSet27       := Form1.IBDataSet27;
-              ConverteVenda.IBDataSet30       := Form1.IBDataSet30;
-              ConverteVenda.IBDataset150      := Form1.IBDataSet150;
-              ConverteVenda.IBDataSet7        := Form1.IBDataSet7;
-              ConverteVenda.IBDataSet28       := Form1.IBDataSet28;
-              ConverteVenda.IBDataSet25       := Form1.ibDataSet25;
-              ConverteVenda.TransacoesCartao  := Form1.TransacoesCartao;
-              ConverteVenda.NomeDoTEF         := Form10.sNomeDoTEF;
-              ConverteVenda.DebitoOuCredito   := Form1.sDebitoOuCredito;
-              ConverteVenda.sConveniado       := Form1.sConveniado;
-              ConverteVenda.sVendedor         := Form1.sVendedor;
-              ConverteVenda.NumeroGerencial   := sNumeroNFOld;
-              ConverteVenda.Converte;
-              sNumeroNFNew := ConverteVenda.NumeroNF;
-              FreeAndNil(ConverteVenda);
-              {Sandro Silva 2023-08-25 fim}  
-
-
+              try
+                ConverteVenda.ModeloOld         := DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString;
+                ConverteVenda.Caixa             := Form1.sCaixa;
+                ConverteVenda.ModeloDocumento   := Form1.sModeloECF;
+                ConverteVenda.IBTransaction     := Form1.ibDataSet27.Transaction;
+                ConverteVenda.IBDataSet27       := Form1.IBDataSet27;
+                ConverteVenda.IBDataSet30       := Form1.IBDataSet30;
+                ConverteVenda.IBDataset150      := Form1.IBDataSet150;
+                ConverteVenda.IBDataSet7        := Form1.IBDataSet7;
+                ConverteVenda.IBDataSet28       := Form1.IBDataSet28;
+                ConverteVenda.IBDataSet25       := Form1.ibDataSet25;
+                ConverteVenda.TransacoesCartao  := Form1.TransacoesCartao;
+                ConverteVenda.NomeDoTEF         := Form10.sNomeDoTEF;
+                ConverteVenda.DebitoOuCredito   := Form1.sDebitoOuCredito;
+                ConverteVenda.sConveniado       := Form1.sConveniado;
+                ConverteVenda.sVendedor         := Form1.sVendedor;
+                ConverteVenda.NumeroGerencial   := sNumeroNFOld;
+                ConverteVenda.Converte;
+                sNumeroNFNew := ConverteVenda.NumeroNF;
+              finally
+                FreeAndNil(ConverteVenda);
+              end;
+              {Sandro Silva 2023-08-25 fim} 
             end;
 
             iRowsAffected := 0;
