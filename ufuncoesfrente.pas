@@ -271,16 +271,17 @@ procedure GravaPendenciaAlteraca(IBDatabase: TIBDatabase; bOffLine: Boolean;
 procedure AtualizaNumeroPedidoTabelaPendencia(IBTransaction: TIBTransaction;
   sCaixaOld: String; sPedidoOld: String; sPedidoNew: String; sCaixaNew: String);
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
-  FIBTransaction: TIBTransaction;
+//  FIBTransaction: TIBTransaction;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
   sCaixaNovo: String; sNovoNumero: String;
   dtDataNovo: TDate;
   var FConveniado: String; var FVendedor: String;
   var FormasPagamento: TPagamentoPDV;
-  var FValorTotalTEFPago: Double;
+  var FValorTotalTEFPago: Real;
   var FTransacoesCartao: TTransacaoFinanceira;
-  var ModalidadeTransacao: TTipoModalidadeTransacao);
+  var ModalidadeTransacao: TTipoModalidadeTransacao
+  );
 function indRegraSAT(sCFOP: String): String;
 function TruncaValor(dValor: Double; iDecimais: Integer = 2): Double;
 //function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
@@ -338,8 +339,9 @@ function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   sGNF: String; sForma: String; dValor: Double; sTransacao: String;
   sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
 function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
-  sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
-  sPedido: String; sCaixa: String; sModelo: String): Boolean;
+  sPedidoOld: String; sCaixaOld: String; sModeloOld: String;
+  sGnfOld: String;
+  dtData: TDate; sPedido: String; sCaixa: String; sModelo: String): Boolean;
 function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
 procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
@@ -863,22 +865,24 @@ begin
 end;
 {Sandro Silva 2023-08-25 inicio}
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
-  FIBTransaction: TIBTransaction;
+//  FIBTransaction: TIBTransaction;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
   sCaixaNovo: String; sNovoNumero: String;
   dtDataNovo: TDate;
   var FConveniado: String; var FVendedor: String;
   var FormasPagamento: TPagamentoPDV;
-  var FValorTotalTEFPago: Double;
+  var FValorTotalTEFPago: Real;
   var FTransacoesCartao: TTransacaoFinanceira;
   var ModalidadeTransacao: TTipoModalidadeTransacao
   );
 var
   IBQTRANSACAOELETRONICA: TIBQuery;
+  sGnfOld: String;
+  sFormaOld: String;
 begin
   //Pagament
-  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBTransaction);
+  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBDataSet28.Transaction{ FIBTransaction});
 
   FIBDataSet28.Close;
   FIBDataSet28.SelectSQL.Text :=
@@ -887,6 +891,9 @@ begin
   FIBDataSet28.First;
   while FIBDataSet28.Eof = False do
   begin
+    sGnfOld := FIBDataSet28.FieldByName('GNF').AsString; // Sandro Silva 2023-08-28
+    sFormaOld := FIBDataSet28.FieldByName('FORMA').AsString; // Sandro Silva 2023-08-28
+
     if (FIBDataSet28.FieldByName('CAIXA').AsString = sCaixaOld)
       and (FIBDataSet28.FieldByName('PEDIDO').AsString = sPedidoOld) then
     begin
@@ -945,7 +952,10 @@ begin
         'TRANSACAO, ' +
         'NOMEREDE, ' +
         'AUTORIZACAO, ' +
-        'BANDEIRA ' +
+        'BANDEIRA, ' +
+        'MODELO, ' +
+        'DATA, ' +
+        'GNF ' +
         'from TRANSACAOELETRONICA ' +
         'where PEDIDO = :PEDIDO '+
         ' and CAIXA = :CAIXA ' +
@@ -953,8 +963,8 @@ begin
         ' and GNF = :GNF ';
       IBQTRANSACAOELETRONICA.ParamByName('PEDIDO').AsString := sPedidoOld;
       IBQTRANSACAOELETRONICA.ParamByName('CAIXA').AsString  := sCaixaOld;
-      IBQTRANSACAOELETRONICA.ParamByName('FORMA').AsString  := FIBDataSet28.FieldByName('FORMA').AsString;
-      IBQTRANSACAOELETRONICA.ParamByName('GNF').AsString    := FIBDataSet28.FieldByName('GNF').AsString;
+      IBQTRANSACAOELETRONICA.ParamByName('FORMA').AsString  := sFormaOld; // Sandro Silva 2023-08-28 FIBDataSet28.FieldByName('FORMA').AsString;
+      IBQTRANSACAOELETRONICA.ParamByName('GNF').AsString    := sGnfOld;
       IBQTRANSACAOELETRONICA.Open;
 
       while IBQTRANSACAOELETRONICA.Eof = False do
@@ -979,6 +989,18 @@ begin
           IBQTRANSACAOELETRONICA.FieldByName('BANDEIRA').AsString,
           ModalidadeTransacao
         );
+
+        AtualizaDadosTransacaoEletronica(
+          IBQTRANSACAOELETRONICA.Transaction,
+          sPedidoOld,
+          sCaixaOld,
+          IBQTRANSACAOELETRONICA.FieldByName('MODELO').AsString,
+          IBQTRANSACAOELETRONICA.FieldByName('GNF').AsString,
+          IBQTRANSACAOELETRONICA.FieldByName('DATA').AsDateTime,
+          sNovoNumero,
+          sCaixaNovo,
+          FModeloDocumento
+          );
 
         IBQTRANSACAOELETRONICA.Next;
       end; // while IBQ.Eof = False do
@@ -2388,7 +2410,8 @@ begin
 end;
 
 function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
-  sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
+  sPedidoOld: String; sCaixaOld: String; sModeloOld: String;
+  sGnfOld: String; dtData: TDate;
   sPedido: String; sCaixa: String; sModelo: String): Boolean;
 var
   IBQTRANSACAO: TIBQuery;
@@ -2408,7 +2431,8 @@ begin
       'MODELO = :MODELO ' +
       'where PEDIDO = :PEDIDOOLD ' +
       ' and CAIXA = :CAIXAOLD ' +
-      ' and MODELO = :MODELOOLD ';
+      ' and MODELO = :MODELOOLD ' +
+      ' and coalesce(GNF, '''') = :GNFOLD';
     IBQTRANSACAO.ParamByName('DATA').AsDate        := dtData;
     IBQTRANSACAO.ParamByName('PEDIDO').AsString    := sPedido;
     IBQTRANSACAO.ParamByName('CAIXA').AsString     := sCaixa;
@@ -2416,6 +2440,7 @@ begin
     IBQTRANSACAO.ParamByName('PEDIDOOLD').AsString := sPedidoOld;
     IBQTRANSACAO.ParamByName('CAIXAOLD').AsString  := sCaixaOld;
     IBQTRANSACAO.ParamByName('MODELOOLD').AsString := sModeloOld;
+    IBQTRANSACAO.ParamByName('GNFOLD').AsString    := sGnfOld;
     IBQTRANSACAO.ExecSQL;
   except
     Result := False;

@@ -1916,6 +1916,9 @@ var
   FIBQuery65: TIBQuery;
   sNumeroGerencialConvertido: String;
   ConverteVenda: TConverteVendaParaNovoDocFiscal;
+  FormasPagamento59: TPagamentoPDV;
+  TransacoesCartao59: TTransacaoFinanceira;
+  ModalidadeTransacao59: TTipoModalidadeTransacao;
 begin
   Result := False;
   tInicio := Now;
@@ -2255,6 +2258,7 @@ begin
           Form1.ibDataSet27.Open;
           Form1.ibDataSet27.Last;
 
+          {Sandro Silva 2023-08-28 inicio
           //Pagament
           Form1.ibDataSet28.First;
           while Form1.ibDataSet28.Eof = False do
@@ -2271,8 +2275,10 @@ begin
               except
               end;
             end;
+
             Form1.ibDataSet28.Next;
           end;
+          }
 
           // Receber
           Form1.ibDataSet7.First;
@@ -2292,6 +2298,18 @@ begin
             end;
             Form1.ibDataSet7.Next;
           end;
+
+          FormasPagamento59 := TPagamentoPDV.Create;
+          TransacoesCartao59 := TTransacaoFinanceira.Create(nil);
+
+
+          AtualizaDadosPagament(Form1.ibDataSet28, {Form1.ibDataSet28.Transaction,} Form1.sModeloECF, Form1.sCaixa,
+            FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, FormataNumeroDoCupom(StrToInt(sCFe)), _59.CFedEmi,
+            Form1.sConveniado, Form1.sVendedor, FormasPagamento59, Form1.fTEFPago, TransacoesCartao59, ModalidadeTransacao59);
+          FreeAndNil(FormasPagamento59);
+          FreeAndNil(TransacoesCartao59);
+          {Sandro Silva 2023-08-25 fim}
+
 
           // Por último atualiza a variável com o número do cupom SAT
           Form1.icupom := StrToInt(sCFe);

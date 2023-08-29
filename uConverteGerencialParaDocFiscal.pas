@@ -41,7 +41,7 @@ type
     FVendedor: String;
     FDadosCliente: TDadosCliente;
     FDescontoNoTotal: Double;
-    FValorTotalTEFPago: Double;
+    FValorTotalTEFPago: Real;
     FCaixaOld: String;
     FModeloOld: String;
     procedure SetNumeroGerencial(const Value: String);
@@ -67,7 +67,7 @@ type
     property sVendedor: String read FVendedor write FVendedor;
     property DescontoNoTotal: Double read FDescontoNoTotal write FDescontoNoTotal;
     property DadosCliente: TDadosCliente read FDadosCliente write FDadosCliente;
-    property ValorTotalTEFPago: Double read FValorTotalTEFPago write FValorTotalTEFPago;
+    property ValorTotalTEFPago: Real read FValorTotalTEFPago write FValorTotalTEFPago;
     property CaixaOld: String read FCaixaOld write FCaixaOld;
     property ModeloOld: String read FModeloOld write FModeloOld;
 
@@ -95,7 +95,7 @@ function TConverteVendaParaNovoDocFiscal.Converte: Boolean;
 var
   IBQCONSULTA: TIBQuery;
   IBQPENDENCIA: TIBQuery;
-  IBQTRANSACAOELETRONICA: TIBQuery;
+//  IBQTRANSACAOELETRONICA: TIBQuery;
   sDataOld: String;
   sCaixaOld: String;
   sModeloOld: String;
@@ -132,7 +132,7 @@ begin
 
   FormasPagamento := TPagamentoPDV.Create;
   IBQCONSULTA := CriaIBQuery(FIBTransaction);
-  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBTransaction);
+  //IBQTRANSACAOELETRONICA := CriaIBQuery(FIBTransaction);
   try
     if FModeloOld = '99' then
       sCondicaoVenda := ' and coalesce(STATUS, '''') = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ';
@@ -194,8 +194,11 @@ begin
       FIBDataset150.FieldByName('CAIXA').AsString     := FCaixa;
       FIBDataset150.FieldByName('MODELO').AsString    := FModeloDocumento;
       FIBDataset150.FieldByName('GERENCIAL').AsString := FNumeroGerencial;
-      if sGerencialOld <> '' then
-        FIBDataset150.FieldByName('GERENCIAL').AsString := sGerencialOld; // Sandro Silva 2023-08-25
+      if (FModeloOld <> '59') and (FModeloOld <> '65') then // Sandro Silva 2023-08-28
+      begin
+        if sGerencialOld <> '' then
+          FIBDataset150.FieldByName('GERENCIAL').AsString := sGerencialOld; // Sandro Silva 2023-08-25
+      end;
       FIBDataset150.FieldByName('NFEXML').AsString    := sXmlOld;
       FIBDataset150.Post;
 
@@ -543,7 +546,7 @@ begin
         FIBDataSet28.Next;
       end;
       }
-      AtualizaDadosPagament(FIBDataSet28, FIBTransaction, FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
+      AtualizaDadosPagament(FIBDataSet28, {FIBDataSet28.Transaction,} FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
         FConveniado, FVendedor, FormasPagamento, FValorTotalTEFPago, FTransacoesCartao, ModalidadeTransacao);
       {Sandro Silva 2023-08-25 fim}
 
@@ -583,7 +586,7 @@ begin
   end;
   FreeAndNil(FormasPagamento);
   FreeAndNil(IBQCONSULTA);
-  FreeAndNil(IBQTRANSACAOELETRONICA);
+//  FreeAndNil(IBQTRANSACAOELETRONICA);
 
 end;
 

@@ -18191,7 +18191,7 @@ begin
           begin
             if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
             begin
-              if bFind and (Pos('Mesa', Form1.sMesaOuConta) > 0) then
+              if bFind and (Pos('Mesa', Form1.sMesaOuConta) > 0) then // Pode lançar em conta cliente/conta cliente OS
               begin
                 if AnsiUpperCase(Form1.ibDataSet4.FieldByName('MEDIDA').AsString) = 'KG' then
                 begin
@@ -24806,6 +24806,10 @@ begin
 
   if DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString = '' then
     Exit; // Double Click com grade vazia gera bug
+
+Se for venda convertida deverá recuparar os valores das formas de pagamento e fazer a transmissão sem abrir na tela, porque a venda pode ter sido finalizada em cartão, ]
+abrindo na tela terá que fechar em dinheiro, deixando os registros da operação em cartão na tabela transacaoeletronica
+
 
   if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') and (DBGrid1.DataSource.DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_ABERTA) then // Sandro Silva 2023-08-22 if DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99' then
     Exit; // Double Click com grade vazia gera bug
