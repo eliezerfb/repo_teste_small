@@ -618,6 +618,7 @@ type
     procedure DBMemo4Enter(Sender: TObject);
     procedure ComboBoxEnter(Sender: TObject);
     procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
+    procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -840,17 +841,6 @@ begin
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
     end else
-    {Mauricio Parizotto 2023-08-28 Inicio}
-    if Form7.sModulo = 'CONVERSAOCFOP' then
-    begin
-      Form7.IBDataSet99.Close;
-      Form7.IBDataSet99.SelectSQL.Clear;
-      Form7.IBDataSet99.SelectSQL.Add('select count(REGISTRO) from CFOPCONVERSAO '+Form7.sWhere);
-      Form7.IBDataSet99.Open;
-      sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
-      Form7.IBDataSet99.Close;
-    end else
-    {Mauricio Parizotto 2023-08-28 Fim}
     begin
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
@@ -1580,24 +1570,6 @@ begin
       end;
     end;
     {Sandro Silva 2023-06-28 fim}
-
-
-    {Mauricio Parizotto 2023-08-25 Inicio}
-    // Contas a Pagar
-    if Form7.sModulo = 'CONVERSAOCFOP' then
-    begin
-      Form7.ibdConversaoCFOP.Edit;
-
-      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.Tag = ID_CONSULTANDO_CFOP) then
-      begin
-        Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString := Trim(Form7.ibqConsulta.FieldByName('CFOP').AsString);
-        Form7.ibdConversaoCFOPNOME.AsString := Trim(Form7.ibqConsulta.FieldByName('NOME_OP').AsString);
-      end;
-
-      Form10.dBGrid3.Visible := False;
-    end;
-    {Mauricio Parizotto 2023-08-25 Fim}
-
   except
   end;
 end;
@@ -1957,34 +1929,6 @@ begin
         //dBGrid3.Columns[0].Width := 310;
       end;
 
-
-      //Mauricio Parizotto 2023-08-25
-      if (vDataField = 'CFOP_CONVERSAO') and (Form7.sModulo = 'CONVERSAOCFOP') then
-      begin
-        // Procura
-        Form7.ibqConsulta.Close;
-        Form7.ibqConsulta.SelectSQL.Text := ' Select CFOP||'' - ''||NOME NOME,'+
-                                            '   CFOP,'+
-                                            '   NOME NOME_OP'+
-                                            ' From ICM'+
-                                            ' Where substring(CFOP from 1 for 1) in (''1'',''2'',''3'') '+
-                                            ' Order by NOME';
-        Form7.ibqConsulta.Open;
-
-        Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-
-        dBGrid3.Tag        := ID_CONSULTANDO_CFOP;
-        dBGrid3.Visible    := True;
-        dBGrid3.Top        := Top + 19;
-        dBGrid3.Left       := Left;
-        dBGrid3.Height     := 100;
-        dBGrid3.Width      := 350;
-        dBGrid3.Font       := Font;
-        dBGrid3.DataSource := Form7.DSConsulta;
-        dBGrid3.Columns[0].Width := 310;
-      end;
-
-
       if (vDataField = 'CFOP') and (Form7.sModulo = 'ICM') then
         TSMALL_DBEdit(Sender).SelStart := 1;
       {Sandro Silva 2023-06-28 fim}
@@ -2179,25 +2123,6 @@ begin
         end;
       end;
       {Dailon (f-7224) 2023-08-22 fim}
-
-
-      {Mauricio Parizotto 2023-08-25 Inicio}
-      if (DataField = 'CFOP_CONVERSAO') and (Form7.sModulo = 'CONVERSAOCFOP') and (bGravaEscolha) then
-      begin
-        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('CFOP').AsString))) <> 0 then
-        begin
-          GravaEscolha;
-        end else
-        begin
-          DataSource.DataSet.Edit;
-          DataSource.DataSet.FieldByName(DataField).AsString := '';
-          DataSource.DataSet.FieldByName('NOME').AsString := '';
-          Form10.dBGrid3.Visible := False;
-          Exit;
-        end;
-      end;
-      {Mauricio Parizotto 2023-05-29 Inicio}
-
     end;
   except
   end;
@@ -2387,14 +2312,6 @@ begin
           and (Form7.ibDataSet49.Active) then
         begin
           Form7.IBDataSet49.Locate('SIGLA',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-        end;
-
-        //Mauricio Parizotto 2023-05-29
-        if (vDataField = 'CFOP_CONVERSAO')
-          and (Form7.sModulo = 'CONVERSAOCFOP')
-          and (Form7.ibqConsulta.Active) then
-        begin
-          Form7.ibqConsulta.Locate('CFOP',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
       end;
     end;
@@ -8315,24 +8232,25 @@ begin
   if Form7.sModulo = 'RECEBER' then
     AlteracaoInstituicaoFinanceira;
 
-
   //Valida Campos - se um tiver preenchido valida o outro
   if Form7.sModulo = 'CONVERSAOCFOP' then
   begin
-    if (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) = '') and (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> '') then
+    if (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> '') or (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> '') then
     begin
-      Form7.ibdConversaoCFOPCFOP_ORIGEM.FocusControl;
-      Exit;
-    end;
+      if Length(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> 4 then
+      begin
+        Form7.ibdConversaoCFOPCFOP_ORIGEM.FocusControl;
+        Exit;
+      end;
 
-    if (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) = '') and (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> '') then
-    begin
-      Form7.ibdConversaoCFOPCFOP_CONVERSAO.FocusControl;
-      Exit;
+      if Length(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> 4 then
+      begin
+        Form7.ibdConversaoCFOPCFOP_CONVERSAO.FocusControl;
+        Exit;
+      end;
     end;
   end;
 
-  
   Orelha_cadastro.Visible := True;
   Orelhas.ActivePage := Orelha_cadastro;
   Close;
@@ -10178,6 +10096,12 @@ begin
   except
   end;
         
+end;
+
+procedure TForm10.SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+    ValidaValor(Sender,Key,'I');
 end;
 
 end.

@@ -1515,7 +1515,6 @@ type
     ibdConversaoCFOPCFOP_ORIGEM: TIBStringField;
     ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField;
     ibdConversaoCFOPREGISTRO: TIBStringField;
-    ibdConversaoCFOPNOME: TIBStringField;
     ConfiguraodeICMSeISS1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
@@ -10884,8 +10883,8 @@ begin
         sAjuda := 'config_icms_iss.htm'; // Falta Fazer 
 
         // Campos
-        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTT');
-        iCampos                := 3;
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
+        iCampos                := 2;
 
         // Menu
         Form7.Menu             := mmConvercaoCFOP;
@@ -10897,10 +10896,8 @@ begin
 
         // Sql
         sSelect := ' Select'+
-                   '   C.*,'+
-                   '   I.NOME'+
-                   ' From CFOPCONVERSAO C'+
-                   '   Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO';
+                   '   *'+
+                   ' From CFOPCONVERSAO ';
 
         sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
         sOrderBy := 'order by REGISTRO';

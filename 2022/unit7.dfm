@@ -21298,8 +21298,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm5' +
-      '0a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21333,8 +21333,8 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50' +
-      'a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      '\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21649,7 +21649,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21679,7 +21679,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22058,18 +22058,14 @@ object Form7: TForm7
       'Select '
       '  C.CFOP_ORIGEM, '
       '  C.CFOP_CONVERSAO,'
-      '  C.REGISTRO,'
-      '  I.NOME'
+      '  C.REGISTRO'
       'from CFOPCONVERSAO C'
-      '  Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO '
       'where'
       '  C.REGISTRO = :REGISTRO')
     SelectSQL.Strings = (
       'Select '
-      #9'C.*,'
-      #9'I.NOME'
-      'From CFOPCONVERSAO C'
-      #9'Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO')
+      #9'*'
+      'From CFOPCONVERSAO')
     ModifySQL.Strings = (
       'update CFOPCONVERSAO'
       'set'
@@ -22092,16 +22088,7 @@ object Form7: TForm7
       DisplayWidth = 6
       FieldName = 'CFOP_CONVERSAO'
       Origin = 'CFOPCONVERSAO.CFOP_CONVERSAO'
-      Size = 5
-    end
-    object ibdConversaoCFOPNOME: TIBStringField
-      DisplayLabel = 'Descri'#231#227'o CFOP'
-      FieldName = 'NOME'
-      Origin = 'ICM.NOME'
-      ProviderFlags = [pfInWhere]
-      ReadOnly = True
-      Visible = False
-      Size = 40
+      Size = 4
     end
     object ibdConversaoCFOPREGISTRO: TIBStringField
       FieldName = 'REGISTRO'

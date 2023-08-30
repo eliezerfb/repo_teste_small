@@ -1796,6 +1796,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1822,6 +1823,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1848,6 +1850,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1878,6 +1881,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1904,6 +1908,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1930,6 +1935,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1956,6 +1962,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -1982,6 +1989,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2008,6 +2016,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2034,6 +2043,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2060,6 +2070,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2085,6 +2096,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2111,6 +2123,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2137,6 +2150,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2163,6 +2177,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2189,6 +2204,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2215,6 +2231,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
@@ -2241,6 +2258,7 @@ object Form10: TForm10
           OnEnter = SMALL_DBEdit1Enter
           OnExit = SMALL_DBEdit1Exi
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = SMALL_DBEdit1KeyPress
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
