@@ -1,4 +1,13 @@
-unit uConverteGerencialParaDocFiscal;
+(*************************************************************************)
+(* Converte uma venda para nova venda, conforme o novo modelo informado  *)
+(* Inicialmente converte gerencial para NFC-e ou SAT                     *)
+(* Também usado para casos de final SAT e ocorrer erro de schema do xml  *)
+(* permite executar clique duplo no gerenciador e finalizar a venda sem  *)
+(* abrir na tela a venda com erro                                        *)
+(* Recupar dados da venda (Itens, cliente, vendedor, formas de pagaento) *)
+(*************************************************************************)
+
+unit uConverteDocumentoParaDocFiscal;
 
 interface
 
@@ -98,7 +107,7 @@ var
 //  IBQTRANSACAOELETRONICA: TIBQuery;
   sDataOld: String;
   sCaixaOld: String;
-  sModeloOld: String;
+  // Sandro Silva 2023-08-30 sModeloOld: String;
   sNovoNumero: String;
   dtDataNovo: TDate;
   sDAV: String;
@@ -120,7 +129,7 @@ begin
   end;
 
   if FModeloOld = '' then
-    sModeloOld := '99';
+    FModeloOld := '99';
 
   if (FIBTransaction = nil) or
     (FIBDataSet27 = nil) or
@@ -133,7 +142,7 @@ begin
     Exit;
 
   {Sandro Silva 2023-08-29 inicio}
-  if (sModeloOld = '59') and (FModeloDocumento = '59') then
+  if (FModeloOld = '59') and (FModeloDocumento = '59') then
     bPrecisarGerarNovoNumero := False;
   {Sandro Silva 2023-08-29 fim}
 
@@ -160,7 +169,7 @@ begin
 
       sDataOld   := IBQCONSULTA.FieldByName('DATA').AsString;
       sCaixaOld  := IBQCONSULTA.FieldByName('CAIXA').AsString;
-      sModeloOld := IBQCONSULTA.FieldByName('MODELO').AsString;
+      FModeloOld := IBQCONSULTA.FieldByName('MODELO').AsString; // Sandro Silva 2023-08-30 sModeloOld := IBQCONSULTA.FieldByName('MODELO').AsString;
       sXmlOld    := IBQCONSULTA.FieldByName('NFEXML').AsString;
       sGerencialOld := IBQCONSULTA.FieldByName('GERENCIAL').AsString;// Sandro Silva 2023-08-25
 
@@ -173,7 +182,8 @@ begin
 
       FIBDataset150.Close;
       FIBDataset150.SelectSql.Clear;
-      FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(sModeloOld));
+      // Sandro Silva 2023-08-30 FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(sModeloOld));
+      FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(FModeloOld));
       FIBDataset150.Open;
 
       {Sandro Silva 2023-08-29 inicio

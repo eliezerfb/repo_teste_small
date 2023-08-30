@@ -351,6 +351,8 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
   out fTributos_federais: Real; out fTributos_estaduais: Real;
   out fTributos_municipais: Real): String;
+
+  
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -2541,6 +2543,7 @@ begin
   end;
 
 end;
+
 {
 function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 begin

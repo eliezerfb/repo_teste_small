@@ -214,7 +214,7 @@ uses
   , uclassetransacaocartao
   , umontaxmlvendasat
   , Unit12
-  , uConverteGerencialParaDocFiscal;
+  , uConverteDocumentoParaDocFiscal;
 
 function FormataFloatXML(dValor: Double; iDecimais: Integer): String;
 begin
@@ -2281,6 +2281,12 @@ begin
           }
 
           // Receber
+          {Sandro Silva 2023-08-30 inicio}
+          Form1.ibDataSet7.Close;
+          Form1.ibDataSet7.SelectSQL.Text := 'select * from RECEBER where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)+Copy(Form1.sCaixa, 1, 3));
+          Form1.ibDataSet7.Open;
+          {Sandro Silva 2023-08-30 fim}
+
           Form1.ibDataSet7.First;
           while Form1.ibDataSet7.Eof = False do
           begin
@@ -2300,8 +2306,7 @@ begin
           end;
 
           FormasPagamento59 := TPagamentoPDV.Create;
-          TransacoesCartao59 := TTransacaoFinanceira.Create(nil);
-
+          TransacoesCartao59 := TTransacaoFinanceira.Create(nil); 
 
           AtualizaDadosPagament(Form1.ibDataSet28, {Form1.ibDataSet28.Transaction,} Form1.sModeloECF, Form1.sCaixa,
             FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, FormataNumeroDoCupom(StrToInt(sCFe)), _59.CFedEmi,
