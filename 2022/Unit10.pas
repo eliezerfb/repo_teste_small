@@ -8316,16 +8316,16 @@ begin
     AlteracaoInstituicaoFinanceira;
 
 
-  //Valida Campos
+  //Valida Campos - se um tiver preenchido valida o outro
   if Form7.sModulo = 'CONVERSAOCFOP' then
   begin
-    if Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) = '' then
+    if (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) = '') and (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> '') then
     begin
       Form7.ibdConversaoCFOPCFOP_ORIGEM.FocusControl;
       Exit;
     end;
 
-    if Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) = '' then
+    if (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) = '') and (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> '') then
     begin
       Form7.ibdConversaoCFOPCFOP_CONVERSAO.FocusControl;
       Exit;

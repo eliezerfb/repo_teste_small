@@ -14900,13 +14900,13 @@ object Form7: TForm7
     Top = 509
     object MenuItem106: TMenuItem
       Caption = '&Arquivo'
-      object MenuItem107: TMenuItem
-        Caption = '&Imprimir...'
-        OnClick = Image205Click
-      end
       object ConversodeCFOP1: TMenuItem
         Caption = 'Convers'#227'o de CFOP'
         OnClick = ConversodeCFOP1Click
+      end
+      object MenuItem107: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = Image205Click
       end
       object MenuItem108: TMenuItem
         Caption = '-'
@@ -21298,7 +21298,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm5' +
+      '0a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21332,7 +21333,8 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50' +
+      'a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21647,7 +21649,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21677,7 +21679,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21972,13 +21974,13 @@ object Form7: TForm7
     Top = 683
     object MenuItem129: TMenuItem
       Caption = '&Arquivo'
-      object MenuItem142: TMenuItem
-        Caption = '&Imprimir...'
-        OnClick = Image205Click
-      end
       object ConfiguraodeICMSeISS1: TMenuItem
         Caption = 'Configura'#231#227'o de ICMS e ISS...'
         OnClick = ConfiguraodeICMSeISS1Click
+      end
+      object MenuItem142: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = Image205Click
       end
       object MenuItem144: TMenuItem
         Caption = '-'
