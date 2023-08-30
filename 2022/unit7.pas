@@ -26375,6 +26375,7 @@ end;
 procedure TForm7.Button7Click(Sender: TObject);
 var
   ftotal : Real;
+  iRecno: Integer; // Sandro Silva 2023-08-30
 begin
   //
   Form7.Edit2.SetFocus;
@@ -26458,6 +26459,9 @@ begin
     end;
   end else
   begin
+
+    iRecno := Form7.DBGrid1.DataSource.DataSet.RecNo;// Sandro Silva 2023-08-30
+
     if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
     begin
       Form7.SMALL_DBEdit6.Visible := True;
@@ -26520,6 +26524,22 @@ begin
       //
       Form7.Close;
       Form7.Show;
+
+      {Sandro Silva 2023-08-30 inicio}
+      // f-7283 Pode ser que isso deixe lento nos casos onde há muitas contas pendentes e o usuário quite uma das últimas contas da lista
+      // Form7.Show posiciona no primeiro registro. Vai percorrer todos até chegar na conta seguinta daquela quitada
+      try
+        Form7.DBGrid1.DataSource.DataSet.DisableControls;
+        if Form7.DBGrid1.DataSource.DataSet.RecordCount >= iRecno then
+        begin
+          Form7.DBGrid1.DataSource.DataSet.RecNo := iRecno;
+        end;
+
+      except
+      end;
+      Form7.DBGrid1.DataSource.DataSet.EnableControls;
+      {Sandro Silva 2023-08-30 fim}
+
       Form7.DBGrid1.SetFocus;
       //
     end;
