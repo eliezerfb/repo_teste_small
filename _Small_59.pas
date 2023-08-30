@@ -2611,6 +2611,11 @@ begin
     if (xmlNodeValue(pFNFe, '//ide/cUF') = '35') or (AnsiUpperCase(_59.Emitente.UF) = 'SP') then  // São Paulo
       _59.OrientacaoConsultarQRCode := 'Consulte o QR Code pelo aplicativo "De olho na nota", disponível na AppStore (Apple) e PlayStore (Android)';
 
+    {Sandro Silva 2023-08-30 inicio}
+    if (xmlNodeValue(pFNFe, '//ide/cUF') = '23') or (AnsiUpperCase(_59.Emitente.UF) = 'CE') then  // Ceará
+      _59.OrientacaoConsultarQRCode := 'Consulte o QR Code pelo aplicativo "Sua Nota Tem Valor", disponível na AppStore (Apple) e PlayStore (Android)';
+    {Sandro Silva 2023-08-30 fim}
+
     Form1.ExibePanelMensagem('Aguarde... Gerando Extrato ' + Form1.sTipoDocumento + ' em PDF'); // Sandro Silva 2018-08-01
 
     _59.ImprimirCupomDinamico(pFNFe, toImage, _59.Ambiente);
@@ -2645,6 +2650,11 @@ begin
   _59.OrientacaoConsultarQRCode := '';
   if (xmlNodeValue(pFNFe, '//ide/cUF') = '35') or (AnsiUpperCase(_59.Emitente.UF) = 'SP') then  // São Paulo
     _59.OrientacaoConsultarQRCode := 'Consulte o QR Code pelo aplicativo "De olho na nota", disponível na AppStore (Apple) e PlayStore (Android)';
+    
+  {Sandro Silva 2023-08-30 inicio}
+  if (xmlNodeValue(pFNFe, '//ide/cUF') = '23') or (AnsiUpperCase(_59.Emitente.UF) = 'CE') then  // Ceará
+    _59.OrientacaoConsultarQRCode := 'Consulte o QR Code pelo aplicativo "Sua Nota Tem Valor", disponível na AppStore (Apple) e PlayStore (Android)';
+  {Sandro Silva 2023-08-30 fim}
 
   _59.AvancoPapel := StrToIntDef(LerParametroIni('Frente.ini', SECAO_59, CHAVE_INI_AVANCO_PAPEL, '0'), 0); // Sandro Silva 2016-08-25
 
