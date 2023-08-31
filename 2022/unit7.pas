@@ -5106,11 +5106,7 @@ begin
         Form7.ibDataSet3.Selectsql.Add('select * from OS where DATA=CURRENT_DATE ');
         Form7.ibDataSet5.Selectsql.Add('select * from MOVIMENT where NOME='+quotedStr('XXXXXXXXXX')+'');
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
-        Form7.ibdConversaoCFOP.Selectsql.Add(' Select'+
-                                             '   C.*,'+
-                                             '   I.NOME'+
-                                             ' From CFOPCONVERSAO C'+
-                                             '   Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO'); //Mauricio Parizotto 2023-08-25
+        Form7.ibdConversaoCFOP.Selectsql.Add(' Select * From CFOPCONVERSAO'); //Mauricio Parizotto 2023-08-25
 
         //  CAIXA
         //  ICM
