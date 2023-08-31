@@ -34546,7 +34546,7 @@ begin
     Form1.sConveniado      := '';;
     Form1.sVendedor        := '';
     Form1.fDescontoNoTotal := 0.00;
-    Form1.fTEFPago         := 0.00;
+    Form1.fTEFPago         := 0.00;    
     //No final deixa zerado o número do cupom no frente.ini 
     GravaNumeroCupomFrenteINI('000000', Form1.sModeloECF); // Sandro Silva 2023-08-31    
   end;
