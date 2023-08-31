@@ -2186,7 +2186,7 @@ begin
                    ' 	ALIQ_PIS_SAIDA NUMERIC(18,4),'+
                    ' 	ALIQ_COFINS_SAIDA NUMERIC(18,4),'+
                    ' 	CST_PIS_COFINS_ENTRADA VARCHAR(2),'+
-                   ' 	ALIQ_PIS_ENTRADA VARCHAR(2),'+
+                   ' 	ALIQ_PIS_ENTRADA NUMERIC(18,4),'+
                    ' 	ALIQ_COFINS_ENTRADA NUMERIC(18,4),'+
                    ' 	REGISTRO VARCHAR(10) NOT NULL,'+
                    ' 	CONSTRAINT PK_PERFILTRIBUTACAO PRIMARY KEY (REGISTRO)'+
