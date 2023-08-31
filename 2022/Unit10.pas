@@ -400,9 +400,60 @@ type
     cbMovimentacaoEstoque: TComboBox;
     Label111: TLabel;
     IBQPLANOCONTAS: TIBQuery;
-    dbeIcmBCPISCOFINS: TSMALL_DBEdit;
-    lbBCPISCOFINS: TLabel;
     cbIntegracaoFinanceira: TComboBox;
+    orelha_PerfilTrib: TTabSheet;
+    Label113: TLabel;
+    Label114: TLabel;
+    Label115: TLabel;
+    Label116: TLabel;
+    Label117: TLabel;
+    Label118: TLabel;
+    Label119: TLabel;
+    Label120: TLabel;
+    Label121: TLabel;
+    Label123: TLabel;
+    Label124: TLabel;
+    Label125: TLabel;
+    SMALL_DBEdit49: TSMALL_DBEdit;
+    SMALL_DBEdit53: TSMALL_DBEdit;
+    ComboBox16: TComboBox;
+    ComboBox17: TComboBox;
+    ComboBox18: TComboBox;
+    ComboBox19: TComboBox;
+    ComboBox20: TComboBox;
+    ComboBox21: TComboBox;
+    ComboBox22: TComboBox;
+    ComboBox23: TComboBox;
+    ComboBox24: TComboBox;
+    Label127: TLabel;
+    SMALL_DBEdit75: TSMALL_DBEdit;
+    Label128: TLabel;
+    edtDescricaoPerfilTrib: TSMALL_DBEdit;
+    Label129: TLabel;
+    orelha_PerfilTrib_IPI: TTabSheet;
+    orelha_PerfilTrib_PISCOFINS: TTabSheet;
+    GroupBox1: TGroupBox;
+    Label112: TLabel;
+    lblCST_PIS_S_PerTrib: TLabel;
+    lblCST_COFINS_S_PerTrib: TLabel;
+    cboCST_PISCOFINS_S_PerTrib: TComboBox;
+    SMALL_DBEdit48: TSMALL_DBEdit;
+    SMALL_DBEdit74: TSMALL_DBEdit;
+    GroupBox2: TGroupBox;
+    Label131: TLabel;
+    lblCST_PIS_E_PerTrib: TLabel;
+    lblCST_COFINS_E_PerTrib: TLabel;
+    cboCST_PISCOFINS_E_PerTrib: TComboBox;
+    SMALL_DBEdit77: TSMALL_DBEdit;
+    SMALL_DBEdit78: TSMALL_DBEdit;
+    Label134: TLabel;
+    Label135: TLabel;
+    Label136: TLabel;
+    cboCST_IPI_PerTrib: TComboBox;
+    SMALL_DBEdit79: TSMALL_DBEdit;
+    SMALL_DBEdit80: TSMALL_DBEdit;
+    lbBCPISCOFINS: TLabel;
+    dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -619,6 +670,11 @@ type
     procedure ComboBoxEnter(Sender: TObject);
     procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
+    procedure cboCST_IPI_PerTribChange(Sender: TObject);
+    procedure orelha_PerfilTrib_IPIShow(Sender: TObject);
+    procedure orelha_PerfilTrib_IPIEnter(Sender: TObject);
+    procedure cboCST_PISCOFINS_S_PerTribChange(Sender: TObject);
+    procedure cboCST_PISCOFINS_E_PerTribChange(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -870,7 +926,6 @@ begin
 
     if Form7.sModulo = 'CLIENTES' then
     begin
-//      Form10.ComboBox8.Text := Form7.ArquivoAberto.FieldByName('CLIFOR').AsString;
       if AllTrim(Form7.ArquivoAberto.FieldByName('CLIFOR').AsString)<>'' then
       begin
         for I := 0 to Form10.ComboBox8.Items.Count -1 do
@@ -892,6 +947,11 @@ begin
       end;
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
+    end;
+
+    if Form7.sModulo = 'PERFILTRIBUTACAO' then
+    begin
+      Form10.Caption := form7.ibdPerfilTributaDESCRICAO.AsString;
     end;
 
     if Form7.sModulo = 'RECEBER' then
@@ -3769,22 +3829,25 @@ begin
   Image5.Width    := 640 div 2;
   Image5.Height   := 480 div 2;
   
-  Form10.orelha_cadastro.TabVisible   := True;
-  Form10.orelha_serial.TabVisible     := False;
-  Form10.orelha_composicao.TabVisible := False;
-  Form10.orelha_foto.TabVisible       := False;
-  Form10.orelha_grade.TabVisible      := False;
-  Form10.orelha_ICMS.TabVisible       := False;
-  Form10.orelha_IPI.TabVisible        := False;
-  Form10.orelha_PISCOFINS.TabVisible  := False;
-  Form10.orelha_preco.TabVisible      := False;
-  Form10.orelha_PROMO.TabVisible      := False;
-  Form10.orelha_CONVERSAO.TabVisible  := False;
-  Form10.orelha_CFOP.TabVisible       := False;
-  Form10.orelha_COMISSAO.TabVisible   := False;
-  Form10.orelha_CODEBAR.TabVisible    := False;
-  Form10.orelha_TAGS.TabVisible       := False;
-  Form10.orelha_MKT.TabVisible        := False;
+  orelha_cadastro.TabVisible   := True;
+  orelha_serial.TabVisible     := False;
+  orelha_composicao.TabVisible := False;
+  orelha_foto.TabVisible       := False;
+  orelha_grade.TabVisible      := False;
+  orelha_ICMS.TabVisible       := False;
+  orelha_IPI.TabVisible        := False;
+  orelha_PISCOFINS.TabVisible  := False;
+  orelha_preco.TabVisible      := False;
+  orelha_PROMO.TabVisible      := False;
+  orelha_CONVERSAO.TabVisible  := False;
+  orelha_CFOP.TabVisible       := False;
+  orelha_COMISSAO.TabVisible   := False;
+  orelha_CODEBAR.TabVisible    := False;
+  orelha_TAGS.TabVisible       := False;
+  orelha_MKT.TabVisible        := False;
+  orelha_PerfilTrib.TabVisible            := False; //Mauricio Parizotto 2023-08-31
+  orelha_PerfilTrib_IPI.TabVisible        := False; //Mauricio Parizotto 2023-08-31
+  orelha_PerfilTrib_PISCOFINS.TabVisible  := False; //Mauricio Parizotto 2023-08-31
 
   {Sandro Silva 2023-06-28 inicio}
   dbepPisSaida.DataField  := '';
@@ -3824,22 +3887,33 @@ begin
  
   if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
   begin
-    Form10.orelha_cadastro.TabVisible   := True;
-    Form10.orelha_serial.TabVisible     := True;
-    Form10.orelha_composicao.TabVisible := True;
-    Form10.orelha_foto.TabVisible       := True;
-    Form10.orelha_grade.TabVisible      := True;
-    Form10.orelha_ICMS.TabVisible       := True;
-    Form10.orelha_IPI.TabVisible        := True;
-    Form10.orelha_preco.TabVisible      := True;
-    Form10.Orelha_PISCOFINS.TabVisible  := True;
-    Form10.orelha_PROMO.TabVisible      := True;
-    Form10.orelha_CONVERSAO.TabVisible  := True;
-    Form10.orelha_CODEBAR.TabVisible    := True;
-    Form10.orelha_TAGS.TabVisible       := True;
-    Form10.orelha_MKT.TabVisible        := True;
+    orelha_cadastro.TabVisible   := True;
+    orelha_serial.TabVisible     := True;
+    orelha_composicao.TabVisible := True;
+    orelha_foto.TabVisible       := True;
+    orelha_grade.TabVisible      := True;
+    orelha_ICMS.TabVisible       := True;
+    orelha_IPI.TabVisible        := True;
+    orelha_preco.TabVisible      := True;
+    orelha_PISCOFINS.TabVisible  := True;
+    orelha_PROMO.TabVisible      := True;
+    orelha_CONVERSAO.TabVisible  := True;
+    orelha_CODEBAR.TabVisible    := True;
+    orelha_TAGS.TabVisible       := True;
+    orelha_MKT.TabVisible        := True;
   end;
-  
+
+
+  //Mauricio Parizotto 2023-08-31
+  if (Form7.sModulo = 'PERFILTRIBUTACAO') then
+  begin
+    orelha_cadastro.TabVisible              := False;
+    orelha_PerfilTrib.TabVisible            := True;
+    orelha_PerfilTrib_IPI.TabVisible        := True;
+    orelha_PerfilTrib_PISCOFINS.TabVisible  := True;
+  end;
+
+
   if Form7.sModulo = 'CLIENTES' then
   begin
     Form10.orelha_cadastro.TabVisible   := True;
@@ -7541,10 +7615,6 @@ begin
 
 
 
-
-
-
-
     // 101 - Tributada pelo Simples Nacional com permissão de crédito
     // 102 - Tributada pelo Simples Nacional sem permissão de crédito
     // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
@@ -7588,25 +7658,6 @@ begin
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // 101 - Tributada pelo Simples Nacional com permissão de crédito
     // 102 - Tributada pelo Simples Nacional sem permissão de crédito
     // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
@@ -7631,19 +7682,6 @@ begin
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
         if Trim(Form7.ibDataSet4CSOSN_NFCE.AsString) <> '' then
         begin
@@ -7657,14 +7695,6 @@ begin
         {Sandro Silva 2023-05-09 fim}
       end;
     end;
-
-
-
-
-
-
-
-
 
 
 
@@ -7688,19 +7718,6 @@ begin
         end;
       end;
     end;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
@@ -7727,24 +7744,8 @@ begin
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
     begin
-
-
-
-
-
       for I := 0 to Form10.ComboBox14.Items.Count -1 do
       begin
         // 00 - Tributada integralmente
@@ -10102,6 +10103,121 @@ procedure TForm10.SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
 begin
   if Form7.sModulo = 'CONVERSAOCFOP' then
     ValidaValor(Sender,Key,'I');
+end;
+
+procedure TForm10.cboCST_IPI_PerTribChange(Sender: TObject);
+begin
+  if Form10.caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCST_IPI.AsString := Copy(cboCST_IPI_PerTrib.Items[cboCST_IPI_PerTrib.ItemIndex]+'  ',1,2);
+  end;
+end;
+
+procedure TForm10.orelha_PerfilTrib_IPIShow(Sender: TObject);
+var
+  I : integer;
+begin
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    // Antes de tudo Zera os combos
+    cboCST_IPI_PerTrib.ItemIndex := -1;
+    cboCST_PISCOFINS_S_PerTrib.ItemIndex := -1;
+    cboCST_PISCOFINS_E_PerTrib.ItemIndex := -1;
+
+    if Form7.bSoLeitura or Form7.bEstaSendoUsado then
+    begin
+      cboCST_IPI_PerTrib.Enabled := False;
+      cboCST_PISCOFINS_S_PerTrib.Enabled := False;
+      cboCST_PISCOFINS_E_PerTrib.Enabled := False;
+    end else
+    begin
+      cboCST_IPI_PerTrib.Enabled := True;
+      cboCST_PISCOFINS_S_PerTrib.Enabled := True;
+      cboCST_PISCOFINS_E_PerTrib.Enabled := True;
+    end;
+
+    if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
+      Form7.ibdPerfilTributa.Edit;
+
+
+    //CST IPI  
+    if AllTrim(Form7.ibdPerfilTributaCST_IPI.AsString)<>'' then
+    begin
+      for I := 0 to cboCST_IPI_PerTrib.Items.Count -1 do
+      begin
+        if Copy(cboCST_IPI_PerTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaCST_IPI.AsString)) then
+        begin
+          cboCST_IPI_PerTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //Pis-Cofins Saída
+    if AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString)<>'' then
+    begin
+      for I := 0 to cboCST_PISCOFINS_S_PerTrib.Items.Count -1 do
+      begin
+        if Copy(cboCST_PISCOFINS_S_PerTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString)) then
+        begin
+          cboCST_PISCOFINS_S_PerTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //Pis-Cofins Entrada
+    if AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString)<>'' then
+    begin
+      for I := 0 to cboCST_PISCOFINS_E_PerTrib.Items.Count -1 do
+      begin
+        if Copy(cboCST_PISCOFINS_E_PerTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString)) then
+        begin
+          cboCST_PISCOFINS_E_PerTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+  end;
+end;
+
+procedure TForm10.orelha_PerfilTrib_IPIEnter(Sender: TObject);
+begin
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
+      Form7.ibdPerfilTributa.Edit;
+  end;
+end;
+
+procedure TForm10.cboCST_PISCOFINS_S_PerTribChange(Sender: TObject);
+begin
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    if Form10.Caption = Form7.ibdPerfilTributaDESCRICAO.AsString then
+    begin
+      Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString := Copy(cboCST_PISCOFINS_S_PerTrib.Items[cboCST_PISCOFINS_S_PerTrib.ItemIndex]+'  ',1,2);
+    end;
+
+    if Copy(cboCST_PISCOFINS_S_PerTrib.Items[cboCST_PISCOFINS_S_PerTrib.ItemIndex]+'  ',1,2) = '03' then
+    begin
+      lblCST_PIS_S_PerTrib.Caption    := 'R$ PIS:';
+      lblCST_COFINS_S_PerTrib.Caption := 'R$ COFINS:';
+    end else
+    begin
+      lblCST_PIS_S_PerTrib.Caption    := '% PIS:';
+      lblCST_COFINS_S_PerTrib.Caption := '% COFINS:';
+    end;
+  end;
+end;
+
+procedure TForm10.cboCST_PISCOFINS_E_PerTribChange(Sender: TObject);
+begin
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+    begin
+    if AllTrim(Form10.Caption) = AllTrim(Form7.ibdPerfilTributaDESCRICAO.AsString) then
+    begin
+      Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString := Copy(cboCST_PISCOFINS_E_PerTrib.Items[cboCST_PISCOFINS_E_PerTrib.ItemIndex]+'  ',1,2);
+    end;
+  end;
 end;
 
 end.

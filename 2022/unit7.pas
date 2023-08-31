@@ -1516,6 +1516,47 @@ type
     ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField;
     ibdConversaoCFOPREGISTRO: TIBStringField;
     ConfiguraodeICMSeISS1: TMenuItem;
+    Label29: TLabel;
+    mmPerfilTributa: TMainMenu;
+    MenuItem130: TMenuItem;
+    MenuItem132: TMenuItem;
+    MenuItem175: TMenuItem;
+    MenuItem176: TMenuItem;
+    MenuItem184: TMenuItem;
+    MenuItem185: TMenuItem;
+    MenuItem186: TMenuItem;
+    MenuItem187: TMenuItem;
+    MenuItem188: TMenuItem;
+    MenuItem189: TMenuItem;
+    MenuItem190: TMenuItem;
+    MenuItem191: TMenuItem;
+    MenuItem192: TMenuItem;
+    MenuItem193: TMenuItem;
+    DSPerfilTributa: TDataSource;
+    ibdPerfilTributa: TIBDataSet;
+    ibdPerfilTributaIDPERFILTRIBUTACAO: TIntegerField;
+    ibdPerfilTributaDESCRICAO: TIBStringField;
+    ibdPerfilTributaTIPO_ITEM: TIBStringField;
+    ibdPerfilTributaIPPT: TIBStringField;
+    ibdPerfilTributaIAT: TIBStringField;
+    ibdPerfilTributaPIVA: TFloatField;
+    ibdPerfilTributaCST: TIBStringField;
+    ibdPerfilTributaCSOSN: TIBStringField;
+    ibdPerfilTributaST: TIBStringField;
+    ibdPerfilTributaCFOP: TIBStringField;
+    ibdPerfilTributaCST_NFCE: TIBStringField;
+    ibdPerfilTributaCSOSN_NFCE: TIBStringField;
+    ibdPerfilTributaALIQUOTA_NFCE: TIBBCDField;
+    ibdPerfilTributaCST_IPI: TIBStringField;
+    ibdPerfilTributaIPI: TFloatField;
+    ibdPerfilTributaENQ_IPI: TIBStringField;
+    ibdPerfilTributaCST_PIS_COFINS_SAIDA: TIBStringField;
+    ibdPerfilTributaALIQ_PIS_SAIDA: TIBBCDField;
+    ibdPerfilTributaALIQ_COFINS_SAIDA: TIBBCDField;
+    ibdPerfilTributaCST_PIS_COFINS_ENTRADA: TIBStringField;
+    ibdPerfilTributaALIQ_PIS_ENTRADA: TIBStringField;
+    ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField;
+    ibdPerfilTributaREGISTRO: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2151,6 +2192,10 @@ type
     procedure ibdConversaoCFOPCFOP_ORIGEMSetText(Sender: TField;
       const Text: String);
     procedure ConfiguraodeICMSeISS1Click(Sender: TObject);
+    procedure ibdPerfilTributaAfterDelete(DataSet: TDataSet);
+    procedure ibdPerfilTributaBeforeEdit(DataSet: TDataSet);
+    procedure ibdPerfilTributaBeforeInsert(DataSet: TDataSet);
+    procedure ibdPerfilTributaNewRecord(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2212,6 +2257,7 @@ type
     sPAgas    : String;
     TecAte    : String;
     sProximo  : String;
+    sProximoID  : Integer; //Mauricio Parizotto 2023-08-30
     sNSU      : String;
     sRegistro : String;
     sMaxReg   : String;
@@ -4968,6 +5014,7 @@ begin
     Form7.ibDataSet5.BufferChunks  := 500;
     Form7.ibDataSet6.BufferChunks  := 500;
     Form7.ibdConversaoCFOP.BufferChunks  := 500; //Mauricio Parizotto 2023-08-25
+    Form7.ibdPerfilTributa.BufferChunks  := 500; //Mauricio Parizotto 2023-08-30
   end else
   begin
     Form7.ibDataSet1.BufferChunks  := 1000;
@@ -4999,6 +5046,7 @@ begin
     Form7.ibDataSet5.BufferChunks  := 1000;
     Form7.ibDataSet6.BufferChunks  := 1000;
     Form7.ibdConversaoCFOP.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-25
+    Form7.ibdPerfilTributa.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-30
   end;
 
   if Form1.bFechaTudo then
@@ -5079,6 +5127,7 @@ begin
         Form7.ibDataSet5.Selectsql.Clear;
         Form7.ibDataSet6.Selectsql.Clear;
         Form7.ibdConversaoCFOP.Selectsql.Clear; //Mauricio Parizotto 2023-08-25
+        Form7.ibdPerfilTributa.Selectsql.Clear; //Mauricio Parizotto 2023-08-30
 
         Form7.ibDataSet1.Selectsql.Add('select * from CAIXA where DATA=CURRENT_DATE order by DATA, REGISTRO');
         Form7.ibDataSet27.Selectsql.Add('select * from ALTERACA where CODIGO='+QuotedStr('99999')+' ');
@@ -5106,11 +5155,8 @@ begin
         Form7.ibDataSet3.Selectsql.Add('select * from OS where DATA=CURRENT_DATE ');
         Form7.ibDataSet5.Selectsql.Add('select * from MOVIMENT where NOME='+quotedStr('XXXXXXXXXX')+'');
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
-        Form7.ibdConversaoCFOP.Selectsql.Add(' Select'+
-                                             '   C.*,'+
-                                             '   I.NOME'+
-                                             ' From CFOPCONVERSAO C'+
-                                             '   Left Join ICM I on I.CFOP = C.CFOP_CONVERSAO'); //Mauricio Parizotto 2023-08-25
+        Form7.ibdConversaoCFOP.Selectsql.Add('Select * From CFOPCONVERSAO'); //Mauricio Parizotto 2023-08-25
+        Form7.ibdPerfilTributa.Selectsql.Add('Select * From PERFILTRIBUTACAO'); //Mauricio Parizotto 2023-08-30
 
         //  CAIXA
         //  ICM
@@ -5180,6 +5226,7 @@ begin
     if not Form7.ibDataSet5.active  then Form7.ibDataSet5.active  := True;
     if not Form7.ibDataSet6.active  then Form7.ibDataSet6.active  := True;
     if not Form7.ibdConversaoCFOP.active  then Form7.ibdConversaoCFOP.active  := True; //Mauricio Parizotto 2023-08-25
+    if not Form7.ibdPerfilTributa.active  then Form7.ibdPerfilTributa.active  := True; //Mauricio Parizotto 2023-08-30
   except
     on E: Exception do
     begin
@@ -5222,6 +5269,7 @@ begin
     if Form7.ibDataSet4.Active then Form7.ibDataSet4.EnableControls;
     if Form7.ibDataSet5.Active then  Form7.ibDataSet5.EnableControls;
     if Form7.ibdConversaoCFOP.Active then  Form7.ibdConversaoCFOP.EnableControls; // Mauricio Parizotto 2023-08-25
+    if Form7.ibdPerfilTributa.Active then  Form7.ibdPerfilTributa.EnableControls; // Mauricio Parizotto 2023-08-30
   end;
   
   Result := True;
@@ -8795,7 +8843,6 @@ procedure TForm7.Listadepreos1Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   if Form7.sModulo = 'ESTOQUE' then
   begin
     Form7.Caption := 'Lista de preços';
@@ -8809,7 +8856,7 @@ begin
     Form39.Label1.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
     Form39.Label2.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
     Form39.Label3.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
-    //
+    
     Form39.CheckBox1.Visible := False;
     Form39.CheckBox2.Visible := False;
     Form39.CheckBox3.Visible := False;
@@ -8819,7 +8866,6 @@ begin
     Form39.CheckBox7.Visible := False;
     Form39.CheckBox8.Visible := False;
 
-    //
     Form39.Height := 80;
   end;
 
@@ -8827,7 +8873,6 @@ begin
   Form14.Caption := 'Assistente para lista de preços';
   Form14.Show;
   Form39.Show;
-  //
 end;
 
 procedure TForm7.Etiquetas1Click(Sender: TObject);
@@ -9392,19 +9437,17 @@ procedure TForm7.DBGrid1TitleClick(Column: TColumn);
 var
   Mais1ini : tIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  //
+
   if (form7.sModulo = 'RECEBER') and (Column.FieldName='NOME') then
     Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName+', EMISSAO')
   else
     Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName);
-  //
+  
   Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
   Mais1Ini.Free;
   Form7.Close;
   Form7.Show;
-  //
 end;
 
 procedure TForm7.ibDataSet7VALOR_RECEValidate(Sender: TField);
@@ -9414,10 +9457,8 @@ var
   sp : String;
   sR : String;
 begin
-  //
   if Form7.sModulo <> 'VENDA' then
   begin
-    //
     if ibDataSet1.Locate('HISTORICO',Alltrim(copy('Receb. doc. '+ibDataSet7DOCUMENTO.AsString+'-'+ibDataSet7NOME.AsString+Replicate(' ',45),1,45)),[loPartialKey]) then
     begin
       if AllTrim(ibDataSet1HISTORICO.AsString) = Alltrim(copy('Receb. doc. '+ibDataSet7DOCUMENTO.AsString+'-'+ibDataSet7NOME.AsString+Replicate(' ',45),1,45)) then
@@ -9425,40 +9466,37 @@ begin
         ibDataSet1.Delete;
       end;
     end;
-    //
+
     if ibDataSet7VALOR_RECE.Value > 0 then
     begin
-      //
       if ibDataSet7VALOR_RECE.Value < ibDataSet7VALOR_DUPL.Value then
       begin
-        //
         bButton := Application.MessageBox('Criar uma nova conta a receber no restante do valor?','Atenção',
                                               MB_ICONQUESTION +
                                               mb_YesNo + mb_DefButton1);
-        //
+
         if bButton = IDYES then
         begin
-          //
           try
-            //
             ibDataSet100.Close;
             ibDataSet100.SelectSql.Clear;
             ibDataset100.SelectSql.Add('select gen_id(G_RECEBER,1) from rdb$database');
             ibDataset100.Open;
             sP := StrZero(StrToInt(ibDataSet100.FieldByname('GEN_ID').AsString),10,0);
-            //
+
             ibDataset100.Close;
-            //
-            if copy(ibDataSet7DOCUMENTO.AsString,1,1) = '0' then sR := 'A' else sR := Chr(Ord(ibDataSet7DOCUMENTO.AsString[1])+1);
-            //
+
+            if copy(ibDataSet7DOCUMENTO.AsString,1,1) = '0' then
+              sR := 'A'
+            else
+              sR := Chr(Ord(ibDataSet7DOCUMENTO.AsString[1])+1);
 
             if ibDataSet7VALOR_JURO.AsFloat > ibDataSet7VALOR_DUPL.AsFloat then
             begin
-              //
               bButton := Application.MessageBox('Incluir os juros na nova conta a receber?','Atenção',
                                                     MB_ICONQUESTION +
                                                     mb_YesNo + mb_DefButton2);
-              //
+
               if bButton = IDYES then
               begin
                 fTotal := ibDataSet7VALOR_JURO.AsFloat - ibDataSet7VALOR_RECE.AsFloat;
@@ -9470,7 +9508,7 @@ begin
             begin
               fTotal := ibDataSet7VALOR_DUPL.AsFloat - ibDataSet7VALOR_RECE.AsFloat;
             end;
-            //
+
             Form7.ibDataSet100.Close;
             Form7.ibDataSet100.SelectSql.Clear;
             Form7.ibDataSet100.SelectSql.Add('insert into RECEBER (DOCUMENTO, VALOR_DUPL, VALOR_RECE, EMISSAO, VENCIMENTO, NOME, HISTORICO, CONTA, NUMERONF, REGISTRO) values('
@@ -9489,9 +9527,10 @@ begin
           end;
         end;
       end;
-      //
-      if ibDataSet7RECEBIMENT.AsString = '' then ibDataSet7RECEBIMENT.AsDateTime := Date;
-      //
+
+      if ibDataSet7RECEBIMENT.AsString = '' then
+        ibDataSet7RECEBIMENT.AsDateTime := Date;
+
       try
         if UpperCase(Copy(Form7.ibDataSet7PORTADOR.AsString,1,7)) = 'BANCO (' then
         begin
@@ -9502,12 +9541,10 @@ begin
         end;
       except
       end;
-      //
     end;
-    //
+
     if ibDataSet7VALOR_RECE.Value <> 0 then // Se valor Zero apaga o antigo mas não grava o novo
     begin
-      //
       Form7.ibDataSet1.Append;
       Form7.ibDataSet1DATA.AsDateTime    := ibDataSet7RECEBIMENT.AsDateTime;
       Form7.ibDataSet1ENTRADA.AsFloat    := ibDataSet7VALOR_RECE.AsFloat;
@@ -9515,9 +9552,7 @@ begin
       Form7.ibDataSet1NOME.AsString      := ibDataSet7CONTA.AsString;     // contas bancárias
       Form7.ibDataSet1.Post;
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet5COMPENSSetText(Sender: TField; const Text: String);
@@ -10880,7 +10915,7 @@ begin
       {Mauricio Parizotto 2023-08-25 Inicio}
       if sModulo = 'CONVERSAOCFOP' then
       begin
-        sAjuda := 'config_icms_iss.htm'; // Falta Fazer 
+        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
@@ -10907,6 +10942,38 @@ begin
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
       {Mauricio Parizotto 2023-08-25 Fim}
+
+
+      {Mauricio Parizotto 2023-08-30 Inicio}
+      if sModulo = 'PERFILTRIBUTACAO' then
+      begin
+        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
+
+        // Campos
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTTTTT');
+        iCampos                := 21;
+
+        // Menu
+        Form7.Menu             := mmPerfilTributa;
+
+        // Arquivo
+        ArquivoAberto          := DSPerfilTributa.Dataset;
+        TabelaAberta           := ibdPerfilTributa;
+        DataSourceAtual        := DSPerfilTributa;
+
+        // Sql
+        sSelect := ' Select'+
+                   '   *'+
+                   ' From PERFILTRIBUTACAO ';
+
+        sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
+        sOrderBy  := 'order by '+Mais1Ini.ReadString(sModulo,'ORDEM','REGISTRO');
+        sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
+        sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
+        sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
+        sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
+      end;
+      {Mauricio Parizotto 2023-08-30 Fim}
 
 
       if sModulo = 'BANCOS' then
@@ -12211,39 +12278,31 @@ end;
 
 procedure TForm7.ibDataSet4QTD_ATUALChange(Sender: TField);
 begin
-  //
   try
     if Form7.sModulo = 'ESTOQUE' then
     begin
-      //
-      //
       // Grade
-      //
       Form7.ibDataSet10.Close;
       Form7.ibDataSet10.SelectSQL.Clear;
       Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
       Form7.ibDataSet10.Open;
       Form7.ibDataSet10.First;
-      //
+
       if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
       begin
-        //
         // Grade - Alteração na ficha da mercadoria
-        //
         Form1.rReserva := 0;
         Form13.Label1.Caption := 'Alteração na ficha da mercadoria';
         Form13.ShowModal; // Alteração na ficha da mercadoria
-        //
+
         // alterado para não poder mais cancelar a alteração na quantidade clicando no cancelar
-        //
       end;
-      //
+
       if Form7.bFabrica then
       begin
-        //
         if not ibDataSet27.Active then
           ibDataSet27.Open;
-        //
+
         ibDataSet27.Append;
         ibDataSet27DATA.AsDateTime     := Date;
         ibDataSet27CODIGO.AsString     := ibDataSet4CODIGO.AsString;
@@ -12253,19 +12312,15 @@ begin
         ibDataSet27MEDIDA.AsString     := ibDataset4MEDIDA.AsString;
         ibDataSet27VENDEDOR.AsString   := Senhas.Usuario.Text;
         ibDataSet27.Post;
-        //
+
         fQuantidadeAnterior := ibDataSet4QTD_ATUAL.AsFloat;
-        //
       end;
-      //
     end;
   except end;
-  //
 end;
 
 procedure TForm7.ibDataSet1BeforeDelete(DataSet: TDataSet);
 begin
-  //
   if sModulo = 'CAIXA' then
   begin
     Audita('APAGOU', sModulo, Senhas.UsuarioPub,
@@ -12273,7 +12328,6 @@ begin
     ((ibDataSet1SAIDA.AsFloat*-1)+ibDataSet1ENTRADA.AsFloat)
     ,0);   // Ato, Modulo, Usuário, Histórico
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet5BeforeDelete(DataSet: TDataSet);
@@ -33550,6 +33604,39 @@ begin
   {$ENDIF}
 
   Form7.Show;
+end;
+
+procedure TForm7.ibdPerfilTributaAfterDelete(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
+
+procedure TForm7.ibdPerfilTributaBeforeEdit(DataSet: TDataSet);
+begin
+  sNumeroAnterior := ibdPerfilTributaREGISTRO.AsString;
+  { Está variável também será usada no evento AfterPost }
+end;
+
+procedure TForm7.ibdPerfilTributaBeforeInsert(DataSet: TDataSet);
+begin
+  try
+    ibDataSet99.Close;
+    ibDataSet99.SelectSql.Clear;
+    ibDataset99.SelectSql.Add('select gen_id(G_PERFILTRIBUTACAO,1) from rdb$database');
+    ibDataset99.Open;
+    sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+    sProximoID := StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString);
+    ibDataset99.Close;
+  except
+    Abort
+  end;
+end;
+
+procedure TForm7.ibdPerfilTributaNewRecord(DataSet: TDataSet);
+begin
+  ibdPerfilTributa.Edit;
+  ibdPerfilTributaREGISTRO.AsString := sProximo;
+  ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger := sProximoID;
 end;
 
 end.
