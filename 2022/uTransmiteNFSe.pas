@@ -129,8 +129,9 @@ begin
   }
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'') = '' then
     Mais1Ini.WriteString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
-  
+
   sPadraoSistema       := UpperCase(Mais1Ini.ReadString('Informacoes obtidas na prefeitura','Padrao','?'));
+
   sTipoPagamentoAPrazo := Mais1Ini.ReadString('Informacoes obtidas na prefeitura','TipoPagamentoPrazo'       ,'3');
 
   sResponsavelRetencao := Mais1Ini.ReadString('NFSE', 'ResponsavelRetencao', ''); // Sandro Silva 2023-01-24
@@ -732,6 +733,8 @@ begin
                   Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString)));
                   if sPadraoSistema = 'SIL' then // Sandro Silva 2022-10-24
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.' + DupeString('0', StrToIntDef(Form1.ConfCasasServ, 0)) , Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')) //
+                  else if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
+                    Writeln(F,'QuantidadeServicos='+Trim(FormatFloat('##0', Trunc(Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)))) // Abaco 2.0 Rio Branco - AC
                   else
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
                   Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('UNITARIO').AsFloat)),',','.')); //
@@ -787,6 +790,8 @@ begin
                   Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString)));
                   if sPadraoSistema = 'SIL' then // Sandro Silva 2022-10-24
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.' + DupeString('0', StrToIntDef(Form1.ConfCasasServ, 0)) , Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')) //
+                  else if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
+                    Writeln(F,'QuantidadeServicos='+Trim(FormatFloat('##0', Trunc(Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)))) // Abaco 2.0 Rio Branco - AC
                   else
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
                   Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('UNITARIO').AsFloat)),',','.')); //
@@ -996,6 +1001,17 @@ begin
 
                   if RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
                     Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
+
+                  {Sandro Silva 2023-09-01 inicio}
+                  if Form7.ibDAtaSet15NFEPROTOCOLO.AsString = '' then
+                  begin
+                    if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
+                    begin
+                      if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                        Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := Trim(RetornaValorDaTagNoCampo('NumeroDaNFSe', Form7.ibDAtaSet15RECIBOXML.AsString)) + '/001';
+                    end;
+                  end;
+                  {Sandro Silva 2023-09-01 fim}
 
                   //BuscaNumeroNFSe(True);
 
