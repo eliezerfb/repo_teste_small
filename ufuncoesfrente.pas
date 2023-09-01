@@ -998,7 +998,7 @@ begin
           sCaixaOld,
           IBQTRANSACAOELETRONICA.FieldByName('MODELO').AsString,
           IBQTRANSACAOELETRONICA.FieldByName('GNF').AsString,
-          IBQTRANSACAOELETRONICA.FieldByName('DATA').AsDateTime,
+          dtDataNovo, // Sandro Silva 2023-08-31 IBQTRANSACAOELETRONICA.FieldByName('DATA').AsDateTime,
           sNovoNumero,
           sCaixaNovo,
           FModeloDocumento
