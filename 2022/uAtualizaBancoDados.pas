@@ -2146,6 +2146,7 @@ begin
 
 
     ExecutaComando('CREATE SEQUENCE G_BACKUP_IDBACKUP');
+    ExecutaComando('Commit');
   end;
 
   if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BACKUPHORARIOS') = False then
@@ -2158,8 +2159,25 @@ begin
                    ')');
 
     ExecutaComando('CREATE SEQUENCE G_BACKUPHORARIOS_IDHORARIO');
+    ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2023-08-07 Fim}
+
+
+  {Mauricio Parizotto 2023-08-25 Inicio}
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO') = False then
+  begin
+    ExecutaComando('Create table CFOPCONVERSAO ('+
+                   '   CFOP_ORIGEM VARCHAR(4),'+
+                   '   CFOP_CONVERSAO VARCHAR(5),'+
+                   '   REGISTRO VARCHAR(10) NOT NULL,'+
+                   '   CONSTRAINT PK_CFOPCONVERSAO PRIMARY KEY (REGISTRO)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_CFOPCONVERSAO');
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-08-25 Fim}
   
   Form22.Repaint;
   Mensagem22('Aguarde...');

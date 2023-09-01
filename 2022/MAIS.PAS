@@ -31,7 +31,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023028'; // Sandro Silva 2023-08-18 const BUILD_DO_BANCO = '2023026'; // Sandro Silva 2023-08-11 const BUILD_DO_BANCO = '2023024'; //
+const BUILD_DO_BANCO = '2023030'; // Sandro Silva 2023-09-01 const BUILD_DO_BANCO = '2023028'; // Sandro Silva 2023-08-18 const BUILD_DO_BANCO = '2023026'; // Sandro Silva 2023-08-11 const BUILD_DO_BANCO = '2023024'; //
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -3945,7 +3945,14 @@ begin
     while FileExists(Form1.sAtual+'\smallcon.exe') do DeleteFile(pChar(Form1.sAtual+'\smallcon.exe'));
     RenameFile(pChar(Form1.sAtual+'\smallcon_.exe'),pChar(Form1.sAtual+'\smallcon.exe'));
   end;
-  //
+
+  {Dailon (f-7308) 2023-08-28 inicio}
+  if FileExists(Form1.sAtual+'\mei_.exe') then
+    DeleteFile(pChar(Form1.sAtual+'\mei_.exe'));
+
+  if FileExists(Form1.sAtual+'\mei.exe') then
+    DeleteFile(pChar(Form1.sAtual+'\mei.exe'));
+  {Dailon (f-7308) 2023-08-28 fim}
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
