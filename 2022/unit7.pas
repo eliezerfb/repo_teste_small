@@ -2468,7 +2468,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uChamaRelatorioCommerceFactory
   , uImpressaoOrcamento
   , uSectionFrentedeCaixaINI
-  , uFrmParametroTributacao;
+  , uFrmParametroTributacao
+  , uRelatorioResumoVendas;
 
 {$R *.DFM}
 
@@ -12819,16 +12820,22 @@ end;
 
 procedure TForm7.Resumodasvendas1Click(Sender: TObject);
 begin
-  //
-  sModuloAnterior := sModulo;
-  //
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Resumo das vendas';
-  Form38.ShowModal; // Ok
-  //
+  Form7.ibDataSet99.Close;
+  Form7.ibDataSet99.SelectSql.Clear;
+  Form7.ibDataSet100.Close;
+  Form7.ibDataSet100.SelectSql.Clear;
+  CriaJpg('logotip.jpg');
+  frmRelResumoVendas := TfrmRelResumoVendas.Create(nil);
+  try
+    frmRelResumoVendas.DataBase := IBDatabase1;
+    frmRelResumoVendas.Imagem   := Image205.Picture;
+    frmRelResumoVendas.Usuario  := Usuario;
+    frmRelResumoVendas.DataSetEstoque := ibDataSet4;
+    frmRelResumoVendas.ShowModal;
+  finally
+    AgendaCommit(True);
+    FreeAndNil(frmRelResumoVendas);
+  end;
 end;
 
 procedure TForm7.Histrico1Click(Sender: TObject);
