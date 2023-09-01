@@ -19,6 +19,7 @@ uses
   , Mais
   , unit7
   , Unit24
+  , IBQuery
   , uItensInativosImpXMLEntrada
   ;
 
@@ -66,6 +67,8 @@ var
   sIdDest : integer;
   sIniCFOP : string;
   sItens: String;
+
+  IBQConversaoCFOP: TIBQuery;
 begin
   Result := True;
 
@@ -78,6 +81,7 @@ begin
 
       if not Form7.OpenDialog1.Execute then
         Exit;
+        
       if LowerCase(Right(Form7.OpenDialog1.FileName,4))='.xml' then
       begin
         try
@@ -166,8 +170,18 @@ begin
 
         Form7.ibDataSet2.Close;
         Form7.ibDataSet2.Selectsql.Clear;
-        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR');  //
+        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR'); 
         Form7.ibDataSet2.Open;
+
+
+        {Mauricio Parizotto 2023-08-29 Inicio}
+        IBQConversaoCFOP := Form7.CriaIBQuery(Form7.ibDataSet24.Transaction);
+
+        IBQConversaoCFOP.Close;
+        IBQConversaoCFOP.DisableControls;
+        IBQConversaoCFOP.SQL.Text := 'Select * From CFOPCONVERSAO';
+        IBQConversaoCFOP.Open;
+        {Mauricio Parizotto 2023-08-29 Fim}
 
         sNomeDaEmpresa := PrimeiraMaiuscula(AllTrim(Copy(CaracteresHTML((AllTrim(XmlNodeValue(NodeSec.ChildNodes['xNome'].XML,'//xNome'))))+replicate(' ',60),1,60)));
         {Sandro Silva 2023-02-22 inicio}
@@ -637,7 +651,19 @@ begin
                       
                       try
                         //Mauricio Parizotto 2023-05-02
+                        {
                         Form7.ibDataSet23CFOP.AsString   := sIniCFOP+Copy(NodeTmp.ChildNodes['CFOP'].Text,2,3);
+                        }
+
+                        //Mauricio Parizotto 2023-08-29
+                        //Faz a conversão de CFOP
+                        if IBQConversaoCFOP.Locate('CFOP_ORIGEM',NodeTmp.ChildNodes['CFOP'].Text,[]) then
+                        begin
+                          Form7.ibDataSet23CFOP.AsString   := IBQConversaoCFOP.FieldByName('CFOP_CONVERSAO').AsString;
+                        end else
+                        begin
+                          Form7.ibDataSet23CFOP.AsString   := sIniCFOP+Copy(NodeTmp.ChildNodes['CFOP'].Text,2,3);
+                        end;
                       except
                       end;
 
@@ -704,7 +730,7 @@ begin
             Form7.ibDataSet24.Edit;
           except
           end;
-          
+
           try Form7.ibDataSet24NFEID.VAlue              := Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('protNFe').ChildNodes.FindNode('infProt').ChildNodes.FindNode('chNFe').Text;  except end;
           try Form7.ibDataSet24ICMSSUBSTI.AsString      := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vST').Text,'.',','); except end;
           try Form7.ibDataSet24BASESUBSTI.AsString      := StrTran(Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe').ChildNodes.FindNode('infNFe').ChildNodes.FindNode('total').ChildNodes.FindNode('ICMSTot').ChildNodes.FindNode('vBCST').Text,'.',','); except end;
@@ -727,7 +753,7 @@ begin
             if xmlNodeValue(SXML, '//vol/pesoL') <> '' then
               Form7.ibDataSet24PESOLIQUI.AsFloat := XmlValueToFloat(xmlNodeValue(SXML, '//vol/pesoL'));
           except
-          
+
           end;
           {Sandro Silva 2023-07-03 fim}
 
@@ -751,7 +777,11 @@ begin
             end;
           end;
         end;
+
+        //Mauricio Parizotto 2023-08-29
+        FreeAndNil(IBQConversaoCFOP);
       end;
+
 
       // Conhecimento de Transporte Eletrônico
       if AllTrim(xmlNodeValue(Form7.XMLDocument1.XML.Text,'//cteProc/CTe/infCte/ide/mod')) = '57' then
@@ -759,9 +789,9 @@ begin
         // CT-e
         Form7.ibDataSet2.Close;
         Form7.ibDataSet2.Selectsql.Clear;
-        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR');  //
+        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR');
         Form7.ibDataSet2.Open;
-        
+
         if not Form7.IBDataSet2.Locate('CGC',ConverteCpfCgc(AllTrim(xmlNodeValue(Form7.XMLDocument1.XML.Text,'//emit/CNPJ'))),[]) then
         begin
           Form7.IBDataSet2.Append;
@@ -792,7 +822,7 @@ begin
           Form7.ibDataSet24.Edit;
           Form7.ibDataSet24FORNECEDOR.AsString := Form7.IBDataSet2NOME.AsString;
           Form7.ibDataSet24MODELO.AsString     := '57';
-          
+
           Form24.Label64.Caption := 'Mod: '+Form7.ibDataSet24MODELO.AsString;
 
           if Form7.IBDataSet2ESTADO.AsString <> Form7.IBDataSet13ESTADO.AsString then
@@ -834,7 +864,7 @@ begin
             Form7.ibDataSet4DESCRICAO.AsString := 'Frete';
             Form7.ibDataSet4.Post;
           end;
-          
+
           try
             Form7.ibDAtaSet23.Append;
             Form7.ibDataSet23CODIGO.AsString     := Form7.ibDataSet4CODIGO.AsString; // Importar NF
