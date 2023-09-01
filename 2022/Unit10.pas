@@ -17,6 +17,7 @@ const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = '0 Usar o custo de compra nas notas
 
 const ID_CONSULTANDO_INSTITUICAO_FINANCEIRA = 1;
 const ID_CONSULTANDO_FORMA_DE_PAGAMENTO     = 2;
+const ID_CONSULTANDO_CFOP                   = 3; //Mauricio Parizotto 2023-08-25
 
 type
 
@@ -617,6 +618,7 @@ type
     procedure DBMemo4Enter(Sender: TObject);
     procedure ComboBoxEnter(Sender: TObject);
     procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
+    procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -1566,7 +1568,6 @@ begin
         Form7.ibDataSet14CONTA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
         Form10.dBGrid3.Visible := False;
       end;
-
     end;
     {Sandro Silva 2023-06-28 fim}
   except
@@ -1927,6 +1928,7 @@ begin
         dBGrid3.DataSource := Form7.DSConsulta;
         //dBGrid3.Columns[0].Width := 310;
       end;
+
       if (vDataField = 'CFOP') and (Form7.sModulo = 'ICM') then
         TSMALL_DBEdit(Sender).SelStart := 1;
       {Sandro Silva 2023-06-28 fim}
@@ -4876,6 +4878,8 @@ begin
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).ReadOnly   := False;
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font.Color := clWindowText;
                 end;
+
+
 
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I - 1].Displaywidth * 9) + 10;
 
@@ -8228,7 +8232,25 @@ begin
   if Form7.sModulo = 'RECEBER' then
     AlteracaoInstituicaoFinanceira;
 
-  
+  //Valida Campos - se um tiver preenchido valida o outro
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+  begin
+    if (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> '') or (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> '') then
+    begin
+      if Length(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> 4 then
+      begin
+        Form7.ibdConversaoCFOPCFOP_ORIGEM.FocusControl;
+        Exit;
+      end;
+
+      if Length(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> 4 then
+      begin
+        Form7.ibdConversaoCFOPCFOP_CONVERSAO.FocusControl;
+        Exit;
+      end;
+    end;
+  end;
+
   Orelha_cadastro.Visible := True;
   Orelhas.ActivePage := Orelha_cadastro;
   Close;
@@ -10074,6 +10096,12 @@ begin
   except
   end;
         
+end;
+
+procedure TForm10.SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+    ValidaValor(Sender,Key,'I');
 end;
 
 end.

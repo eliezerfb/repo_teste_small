@@ -5,7 +5,7 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 744
+  ClientHeight = 797
   ClientWidth = 1369
   Color = clWhite
   Ctl3D = False
@@ -14,7 +14,7 @@ object Form7: TForm7
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  Menu = MainMenu1
+  Menu = mmCaixa
   OldCreateOrder = True
   ParentBiDiMode = False
   OnActivate = FormActivate
@@ -2425,7 +2425,7 @@ object Form7: TForm7
   end
   object Label27: TLabel
     Left = 111
-    Top = 683
+    Top = 731
     Width = 41
     Height = 13
     Alignment = taCenter
@@ -2455,6 +2455,20 @@ object Form7: TForm7
     ParentFont = False
     Visible = False
     WordWrap = True
+  end
+  object Label24: TLabel
+    Left = 111
+    Top = 690
+    Width = 82
+    Height = 13
+    Caption = 'Convers'#227'o CFOP'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
   end
   object WebBrowser2: TWebBrowser
     Left = 952
@@ -7904,7 +7918,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 704
+    Top = 757
     Width = 1369
     Height = 40
     Align = alBottom
@@ -11192,7 +11206,7 @@ object Form7: TForm7
       OnMouseMove = Panel7MouseMove
     end
   end
-  object MainMenu1: TMainMenu
+  object mmCaixa: TMainMenu
     AutoHotkeys = maManual
     AutoLineReduction = maManual
     BiDiMode = bdLeftToRight
@@ -12785,7 +12799,7 @@ object Form7: TForm7
     Left = 40
     Top = 443
   end
-  object MainMenu2: TMainMenu
+  object mmCLifor: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -13039,7 +13053,7 @@ object Form7: TForm7
       end
     end
   end
-  object MainMenu4: TMainMenu
+  object mmEstoque: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -13282,7 +13296,7 @@ object Form7: TForm7
       end
     end
   end
-  object MainMenu5: TMainMenu
+  object mmMovBancos: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -13376,7 +13390,7 @@ object Form7: TForm7
       end
     end
   end
-  object MainMenu7: TMainMenu
+  object mmReceber: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -13701,7 +13715,7 @@ object Form7: TForm7
       end
     end
   end
-  object MainMenu9: TMainMenu
+  object mmVendedor: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -14032,7 +14046,7 @@ object Form7: TForm7
     Left = 40
     Top = 476
   end
-  object MainMenu12: TMainMenu
+  object mmPlanoContas: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -14879,13 +14893,17 @@ object Form7: TForm7
     Left = 40
     Top = 509
   end
-  object MainMenu14: TMainMenu
+  object mmICM: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
     Top = 509
     object MenuItem106: TMenuItem
       Caption = '&Arquivo'
+      object ConversodeCFOP1: TMenuItem
+        Caption = 'Convers'#227'o de CFOP'
+        OnClick = ConversodeCFOP1Click
+      end
       object MenuItem107: TMenuItem
         Caption = '&Imprimir...'
         OnClick = Image205Click
@@ -18226,7 +18244,7 @@ object Form7: TForm7
     Left = 238
     Top = 577
   end
-  object MainMenu6: TMainMenu
+  object mmTransport: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -18386,7 +18404,7 @@ object Form7: TForm7
       Size = 10
     end
   end
-  object MainMenu29: TMainMenu
+  object mmConvenio: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -18553,7 +18571,7 @@ object Form7: TForm7
     Left = 238
     Top = 346
   end
-  object MainMenu8: TMainMenu
+  object mmPagar: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -19228,7 +19246,7 @@ object Form7: TForm7
     Left = 40
     Top = 278
   end
-  object MainMenu3: TMainMenu
+  object mmOS: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -19446,7 +19464,7 @@ object Form7: TForm7
       end
     end
   end
-  object MainMenu10: TMainMenu
+  object mmVendas: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 80
@@ -19634,7 +19652,7 @@ object Form7: TForm7
       end
     end
   end
-  object MainMenu11: TMainMenu
+  object mmCompras: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
@@ -21280,7 +21298,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21314,7 +21333,8 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
+      '\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21629,7 +21649,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21659,7 +21679,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21696,11 +21716,11 @@ object Form7: TForm7
     Left = 848
     Top = 547
   end
-  object MainMenu15: TMainMenu
+  object mmServicos: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
-    Top = 677
+    Top = 725
     object MenuItem19: TMenuItem
       Caption = '&Arquivo'
       object ImportarOrdemdeServio1: TMenuItem
@@ -21944,6 +21964,137 @@ object Form7: TForm7
     end
     object CDSItensNotaAuxCODIGO: TStringField
       FieldName = 'CODIGO'
+      Size = 10
+    end
+  end
+  object mmConvercaoCFOP: TMainMenu
+    AutoHotkeys = maManual
+    OwnerDraw = True
+    Left = 78
+    Top = 683
+    object MenuItem129: TMenuItem
+      Caption = '&Arquivo'
+      object ConfiguraodeICMSeISS1: TMenuItem
+        Caption = 'Configura'#231#227'o de ICMS e ISS...'
+        OnClick = ConfiguraodeICMSeISS1Click
+      end
+      object MenuItem142: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = Image205Click
+      end
+      object MenuItem144: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem145: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object MenuItem151: TMenuItem
+      Caption = '&Edita'
+      object MenuItem159: TMenuItem
+        Caption = '&Novo...'
+        OnClick = Image101Click
+      end
+      object MenuItem160: TMenuItem
+        Caption = '&Alterar...'
+        OnClick = Image106Click
+      end
+      object MenuItem161: TMenuItem
+        Caption = 'E&xcluir...'
+        OnClick = Image102Click
+      end
+    end
+    object MenuItem162: TMenuItem
+      Caption = '&Procura'
+      OnClick = Image103Click
+    end
+    object MenuItem163: TMenuItem
+      Caption = '&Caractere'
+      OnClick = Image6Click
+    end
+    object MenuItem171: TMenuItem
+      Caption = '?'
+      object MenuItem172: TMenuItem
+        Caption = 'Ajuda'
+        OnClick = Ajuda7Click
+      end
+      object MenuItem173: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem174: TMenuItem
+        Caption = 'Sobre o programa...'
+        OnClick = Sobreoprograma8Click
+      end
+    end
+  end
+  object DSConversaoCFOP: TDataSource
+    DataSet = ibdConversaoCFOP
+    Left = 40
+    Top = 683
+  end
+  object ibdConversaoCFOP: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = ibdConversaoCFOPAfterDelete
+    BeforeEdit = ibdConversaoCFOPBeforeEdit
+    BeforeInsert = ibdConversaoCFOPBeforeInsert
+    OnDeleteError = IBDataSet2DeleteError
+    OnEditError = IBDataSet2EditError
+    OnNewRecord = ibdConversaoCFOPNewRecord
+    OnPostError = IBDataSet2PostError
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from CFOPCONVERSAO'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into CFOPCONVERSAO'
+      '  (CFOP_ORIGEM, CFOP_CONVERSAO, REGISTRO)'
+      'values'
+      '  (:CFOP_ORIGEM, :CFOP_CONVERSAO,:REGISTRO)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  C.CFOP_ORIGEM, '
+      '  C.CFOP_CONVERSAO,'
+      '  C.REGISTRO'
+      'from CFOPCONVERSAO C'
+      'where'
+      '  C.REGISTRO = :REGISTRO')
+    SelectSQL.Strings = (
+      'Select '
+      #9'*'
+      'From CFOPCONVERSAO')
+    ModifySQL.Strings = (
+      'update CFOPCONVERSAO'
+      'set'
+      '  CFOP_ORIGEM= :CFOP_ORIGEM,'
+      '  CFOP_CONVERSAO= :CFOP_CONVERSAO'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 8
+    Top = 683
+    object ibdConversaoCFOPCFOP_ORIGEM: TIBStringField
+      DisplayLabel = 'CFOP Origem'
+      DisplayWidth = 6
+      FieldName = 'CFOP_ORIGEM'
+      Origin = 'CFOPCONVERSAO.CFOP_ORIGEM'
+      OnSetText = ibdConversaoCFOPCFOP_ORIGEMSetText
+      Size = 4
+    end
+    object ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField
+      DisplayLabel = 'CFOP Convers'#227'o'
+      DisplayWidth = 6
+      FieldName = 'CFOP_CONVERSAO'
+      Origin = 'CFOPCONVERSAO.CFOP_CONVERSAO'
+      Size = 4
+    end
+    object ibdConversaoCFOPREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = 'CFOPCONVERSAO.REGISTRO'
+      Required = True
+      Visible = False
       Size = 10
     end
   end
