@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_PerfilTrib_PISCOFINS
+      ActivePage = orelha_PerfilTrib
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3158,7 +3158,7 @@ object Form10: TForm10
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
-        object ComboBox2: TComboBox
+        object cboCST_Prod: TComboBox
           Left = 110
           Top = 200
           Width = 390
@@ -3172,8 +3172,8 @@ object Form10: TForm10
           ItemHeight = 16
           ParentFont = False
           TabOrder = 8
-          OnChange = ComboBox2Change
-          OnEnter = ComboBox3Enter
+          OnChange = cboCST_ProdChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -3664,7 +3664,7 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 0
           OnChange = ComboBox9Change
-          OnEnter = ComboBox3Enter
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -3696,7 +3696,7 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 3
           OnChange = ComboBox5Change
-          OnEnter = ComboBox3Enter
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             'P - Produ'#231#227'o pr'#243'pria'
@@ -3717,13 +3717,13 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 4
           OnChange = ComboBox6Change
-          OnEnter = ComboBox3Enter
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             'A - Arredondamento'
             'T - Truncamento')
         end
-        object ComboBox3: TComboBox
+        object cboOrigemProd: TComboBox
           Left = 110
           Top = 175
           Width = 390
@@ -3737,8 +3737,8 @@ object Form10: TForm10
           ItemHeight = 16
           ParentFont = False
           TabOrder = 6
-          OnChange = ComboBox3Change
-          OnEnter = ComboBox3Enter
+          OnChange = cboOrigemProdChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -3770,7 +3770,7 @@ object Form10: TForm10
               '8 - Nacional, mercadoria ou bem com Conte'#250'do de Importa'#231#227'o sup. ' +
               'a 70%')
         end
-        object ComboBox4: TComboBox
+        object cboCSOSN_Prod: TComboBox
           Left = 110
           Top = 200
           Width = 390
@@ -3784,8 +3784,8 @@ object Form10: TForm10
           ItemHeight = 16
           ParentFont = False
           TabOrder = 7
-          OnChange = ComboBox4Change
-          OnEnter = ComboBox3Enter
+          OnChange = cboCSOSN_ProdChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -3828,7 +3828,7 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 10
           OnChange = ComboBox11Change
-          OnEnter = ComboBox3Enter
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -3874,7 +3874,7 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 12
           OnChange = ComboBox14Change
-          OnEnter = ComboBox3Enter
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -3903,7 +3903,7 @@ object Form10: TForm10
           ParentFont = False
           TabOrder = 11
           OnChange = ComboBox15Change
-          OnEnter = ComboBox3Enter
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -4265,7 +4265,7 @@ object Form10: TForm10
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox7Change
-            OnEnter = ComboBox3Enter
+            OnEnter = cboOrigemProdEnter
             OnKeyDown = ComboBox9KeyDown
             Items.Strings = (
               ''
@@ -4423,7 +4423,7 @@ object Form10: TForm10
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox10Change
-            OnEnter = ComboBox3Enter
+            OnEnter = cboOrigemProdEnter
             OnKeyDown = ComboBox9KeyDown
             Items.Strings = (
               ''
@@ -4627,7 +4627,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4646,7 +4646,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4665,7 +4665,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4684,7 +4684,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4703,7 +4703,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4722,7 +4722,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4741,7 +4741,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -14651,6 +14651,7 @@ object Form10: TForm10
       object orelha_PerfilTrib: TTabSheet
         Caption = 'Perfil Tributa'#231#227'o'
         ImageIndex = 16
+        OnShow = orelha_PerfilTrib_IPIShow
         object Label113: TLabel
           Left = 10
           Top = 75
@@ -14723,7 +14724,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label117: TLabel
+        object lblCSOSNPerfilTrib: TLabel
           Left = 10
           Top = 180
           Width = 95
@@ -14741,7 +14742,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label118: TLabel
+        object lblCSTPerfilTrib: TLabel
           Left = 10
           Top = 180
           Width = 95
@@ -14805,7 +14806,7 @@ object Form10: TForm10
           Font.Style = []
           ParentFont = False
         end
-        object Label123: TLabel
+        object lblCFOPNfce: TLabel
           Left = 10
           Top = 229
           Width = 95
@@ -14823,7 +14824,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label124: TLabel
+        object lblCSOSN_NFCePerfilTrib: TLabel
           Left = 10
           Top = 255
           Width = 95
@@ -14841,11 +14842,11 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label125: TLabel
+        object lblCST_NFCePerfilTrib: TLabel
           Left = 10
           Top = 255
           Width = 95
-          Height = 13
+          Height = 18
           Alignment = taRightJustify
           AutoSize = False
           Caption = 'CST NFC-e'
@@ -14927,7 +14928,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 4
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit53: TSMALL_DBEdit
@@ -14948,11 +14949,11 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 2
+          TabOrder = 8
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
-        object ComboBox16: TComboBox
+        object cboCSTPerfilTrib: TComboBox
           Left = 111
           Top = 178
           Width = 390
@@ -14965,9 +14966,9 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 3
-          OnChange = ComboBox2Change
-          OnEnter = ComboBox3Enter
+          TabOrder = 7
+          OnChange = cboCSTPerfilTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -14986,7 +14987,7 @@ object Form10: TForm10
             '70 - Com red. de base de c'#225'lculo e cob. do ICMS por ST'
             '90 - Outras')
         end
-        object ComboBox17: TComboBox
+        object cboTipoItemPerfTrib: TComboBox
           Left = 110
           Top = 49
           Width = 390
@@ -14999,9 +15000,9 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 4
-          OnChange = ComboBox9Change
-          OnEnter = ComboBox3Enter
+          TabOrder = 1
+          OnChange = cboTipoItemPerfTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -15018,7 +15019,7 @@ object Form10: TForm10
             '10 - Outros insumos'
             '99 - Outras')
         end
-        object ComboBox18: TComboBox
+        object cboIPPTPerfTrib: TComboBox
           Left = 110
           Top = 75
           Width = 390
@@ -15031,15 +15032,15 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 5
-          OnChange = ComboBox5Change
-          OnEnter = ComboBox3Enter
+          TabOrder = 2
+          OnChange = cboIPPTPerfTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             'P - Produ'#231#227'o pr'#243'pria'
             'T - Produ'#231#227'o por terceiros')
         end
-        object ComboBox19: TComboBox
+        object cboIATPerfTrib: TComboBox
           Left = 110
           Top = 101
           Width = 390
@@ -15052,15 +15053,15 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 6
-          OnChange = ComboBox6Change
-          OnEnter = ComboBox3Enter
+          TabOrder = 3
+          OnChange = cboIATPerfTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             'A - Arredondamento'
             'T - Truncamento')
         end
-        object ComboBox20: TComboBox
+        object cboOrigemPerfTrib: TComboBox
           Left = 110
           Top = 152
           Width = 390
@@ -15073,9 +15074,9 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 7
-          OnChange = ComboBox3Change
-          OnEnter = ComboBox3Enter
+          TabOrder = 5
+          OnChange = cboOrigemPerfTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -15107,7 +15108,7 @@ object Form10: TForm10
               '8 - Nacional, mercadoria ou bem com Conte'#250'do de Importa'#231#227'o sup. ' +
               'a 70%')
         end
-        object ComboBox21: TComboBox
+        object cboCSOSNPerfilTrib: TComboBox
           Left = 110
           Top = 178
           Width = 390
@@ -15120,9 +15121,9 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 8
-          OnChange = ComboBox4Change
-          OnEnter = ComboBox3Enter
+          TabOrder = 6
+          OnChange = cboCSOSNPerfilTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -15150,7 +15151,7 @@ object Form10: TForm10
               '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
               'nte')
         end
-        object ComboBox22: TComboBox
+        object cboCFOP_NFCePerfTrib: TComboBox
           Left = 110
           Top = 229
           Width = 390
@@ -15164,8 +15165,8 @@ object Form10: TForm10
           ItemHeight = 16
           ParentFont = False
           TabOrder = 9
-          OnChange = ComboBox11Change
-          OnEnter = ComboBox3Enter
+          OnChange = cboCFOP_NFCePerfTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -15196,36 +15197,7 @@ object Form10: TForm10
               '5949 - Outra sa'#237'da de mercadoria ou presta'#231#227'o de servi'#231'o n'#227'o esp' +
               'ecificado;')
         end
-        object ComboBox23: TComboBox
-          Left = 110
-          Top = 255
-          Width = 390
-          Height = 22
-          Style = csOwnerDrawVariable
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ItemHeight = 16
-          ParentFont = False
-          TabOrder = 10
-          OnChange = ComboBox14Change
-          OnEnter = ComboBox3Enter
-          OnKeyDown = ComboBox9KeyDown
-          Items.Strings = (
-            ''
-            '00 - Tributada integralmente'
-            '20 - Com redu'#231#227'o de base de c'#225'lculo'
-            '40 - Isenta'
-            '41 - N'#227'o tributada'
-            '60 - ICMS Cobrado anteriormente por ST'
-            
-              '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
-              'nte'
-            '90 - Outras')
-        end
-        object ComboBox24: TComboBox
+        object cboCST_NFCePerfilTrib: TComboBox
           Left = 110
           Top = 255
           Width = 390
@@ -15239,8 +15211,37 @@ object Form10: TForm10
           ItemHeight = 16
           ParentFont = False
           TabOrder = 11
-          OnChange = ComboBox15Change
-          OnEnter = ComboBox3Enter
+          OnChange = cboCST_NFCePerfilTribChange
+          OnEnter = cboOrigemProdEnter
+          OnKeyDown = ComboBox9KeyDown
+          Items.Strings = (
+            ''
+            '00 - Tributada integralmente'
+            '20 - Com redu'#231#227'o de base de c'#225'lculo'
+            '40 - Isenta'
+            '41 - N'#227'o tributada'
+            '60 - ICMS Cobrado anteriormente por ST'
+            
+              '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
+              'nte'
+            '90 - Outras')
+        end
+        object cboCSOSN_NFCePerfilTrib: TComboBox
+          Left = 110
+          Top = 255
+          Width = 390
+          Height = 22
+          Style = csOwnerDrawVariable
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ItemHeight = 16
+          ParentFont = False
+          TabOrder = 10
+          OnChange = cboCSOSN_NFCePerfilTribChange
+          OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
             ''
@@ -15298,6 +15299,8 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
+          OnKeyDown = ComboBox9KeyDown
+          OnMouseMove = edtDescricaoPerfilTribMouseMove
         end
       end
       object orelha_PerfilTrib_IPI: TTabSheet
@@ -15509,7 +15512,7 @@ object Form10: TForm10
             ParentFont = False
             TabOrder = 0
             OnChange = cboCST_PISCOFINS_S_PerTribChange
-            OnEnter = ComboBox3Enter
+            OnEnter = cboOrigemProdEnter
             OnKeyDown = ComboBox9KeyDown
             Items.Strings = (
               ''
@@ -15646,7 +15649,7 @@ object Form10: TForm10
             ParentFont = False
             TabOrder = 0
             OnChange = cboCST_PISCOFINS_E_PerTribChange
-            OnEnter = ComboBox3Enter
+            OnEnter = cboOrigemProdEnter
             OnKeyDown = ComboBox9KeyDown
             Items.Strings = (
               ''

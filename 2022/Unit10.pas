@@ -110,9 +110,9 @@ type
     SMALL_DBEdit37: TSMALL_DBEdit;
     SMALL_DBEdit38: TSMALL_DBEdit;
     ComboBox9: TComboBox;
-    ComboBox2: TComboBox;
-    ComboBox3: TComboBox;
-    ComboBox4: TComboBox;
+    cboCST_Prod: TComboBox;
+    cboOrigemProd: TComboBox;
+    cboCSOSN_Prod: TComboBox;
     ComboBox5: TComboBox;
     ComboBox6: TComboBox;
     Panel6: TPanel;
@@ -406,25 +406,25 @@ type
     Label114: TLabel;
     Label115: TLabel;
     Label116: TLabel;
-    Label117: TLabel;
-    Label118: TLabel;
+    lblCSOSNPerfilTrib: TLabel;
+    lblCSTPerfilTrib: TLabel;
     Label119: TLabel;
     Label120: TLabel;
     Label121: TLabel;
-    Label123: TLabel;
-    Label124: TLabel;
-    Label125: TLabel;
+    lblCFOPNfce: TLabel;
+    lblCSOSN_NFCePerfilTrib: TLabel;
+    lblCST_NFCePerfilTrib: TLabel;
     SMALL_DBEdit49: TSMALL_DBEdit;
     SMALL_DBEdit53: TSMALL_DBEdit;
-    ComboBox16: TComboBox;
-    ComboBox17: TComboBox;
-    ComboBox18: TComboBox;
-    ComboBox19: TComboBox;
-    ComboBox20: TComboBox;
-    ComboBox21: TComboBox;
-    ComboBox22: TComboBox;
-    ComboBox23: TComboBox;
-    ComboBox24: TComboBox;
+    cboCSTPerfilTrib: TComboBox;
+    cboTipoItemPerfTrib: TComboBox;
+    cboIPPTPerfTrib: TComboBox;
+    cboIATPerfTrib: TComboBox;
+    cboOrigemPerfTrib: TComboBox;
+    cboCSOSNPerfilTrib: TComboBox;
+    cboCFOP_NFCePerfTrib: TComboBox;
+    cboCST_NFCePerfilTrib: TComboBox;
+    cboCSOSN_NFCePerfilTrib: TComboBox;
     Label127: TLabel;
     SMALL_DBEdit75: TSMALL_DBEdit;
     Label128: TLabel;
@@ -583,10 +583,10 @@ type
     procedure orelha_ICMSShow(Sender: TObject);
     procedure ComboBox5Change(Sender: TObject);
     procedure ComboBox6Change(Sender: TObject);
-    procedure ComboBox3Change(Sender: TObject);
-    procedure ComboBox2Change(Sender: TObject);
+    procedure cboOrigemProdChange(Sender: TObject);
+    procedure cboCST_ProdChange(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
-    procedure ComboBox4Change(Sender: TObject);
+    procedure cboCSOSN_ProdChange(Sender: TObject);
     procedure ComboBox7Change(Sender: TObject);
     procedure ComboBox9Change(Sender: TObject);
     procedure SMALL_DBEdit38Exit(Sender: TObject);
@@ -636,7 +636,7 @@ type
     procedure ComboBox12Change(Sender: TObject);
     procedure ComboBox13Change(Sender: TObject);
     procedure SMALL_DBEdit64Exit(Sender: TObject);
-    procedure ComboBox3Enter(Sender: TObject);
+    procedure cboOrigemProdEnter(Sender: TObject);
     procedure Orelha_codebarEnter(Sender: TObject);
     procedure DBGrid5KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -675,6 +675,17 @@ type
     procedure orelha_PerfilTrib_IPIEnter(Sender: TObject);
     procedure cboCST_PISCOFINS_S_PerTribChange(Sender: TObject);
     procedure cboCST_PISCOFINS_E_PerTribChange(Sender: TObject);
+    procedure edtDescricaoPerfilTribMouseMove(Sender: TObject;
+      Shift: TShiftState; X, Y: Integer);
+    procedure cboTipoItemPerfTribChange(Sender: TObject);
+    procedure cboIPPTPerfTribChange(Sender: TObject);
+    procedure cboIATPerfTribChange(Sender: TObject);
+    procedure cboOrigemPerfTribChange(Sender: TObject);
+    procedure cboCFOP_NFCePerfTribChange(Sender: TObject);
+    procedure cboCSTPerfilTribChange(Sender: TObject);
+    procedure cboCST_NFCePerfilTribChange(Sender: TObject);
+    procedure cboCSOSN_NFCePerfilTribChange(Sender: TObject);
+    procedure cboCSOSNPerfilTribChange(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -3463,7 +3474,7 @@ begin
       except end;  
     end;
   end;
-  
+
   Form7.IBTransaction1.CommitRetaining;
   VerificaSeEstaSendoUsado(False);
   Form10.Show;
@@ -4492,7 +4503,8 @@ begin
       if AllTrim(form7.ibDataSet4DESCRICAO.AsString) = '' then
         Form7.ibDataSet4.Delete;
     end;
-  except end;
+  except
+  end;
 end;
 
 procedure TForm10.Label25Click(Sender: TObject);
@@ -4659,7 +4671,8 @@ begin
 
   try
     Form7.ibDataSet13.Edit;
-  except end;
+  except
+  end;
 
   Orelhas.ActivePage := Orelha_cadastro;
 
@@ -5215,6 +5228,13 @@ begin
   Form10.Left := (Form7.Width - Form10.Width) div 2;
   Form10.Repaint;
   {Sandro Silva 2023-06-22 inicio}
+
+  //Mauricio Parizotto 2023-08-31
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    if edtDescricaoPerfilTrib.CanFocus then
+      edtDescricaoPerfilTrib.SetFocus;
+  end;
 end;
 
 procedure TForm10.Button9Click(Sender: TObject);
@@ -7330,9 +7350,9 @@ var
 begin
   // Antes de tudo Zera os combos
   ComboBox1.ItemIndex := -1;
-  ComboBox2.ItemIndex := -1;
-  ComboBox3.ItemIndex := -1;
-  ComboBox4.ItemIndex := -1;
+  cboCST_Prod.ItemIndex := -1;
+  cboOrigemProd.ItemIndex := -1;
+  cboCSOSN_Prod.ItemIndex := -1;
   ComboBox5.ItemIndex := -1;
   ComboBox6.ItemIndex := -1;
   ComboBox7.ItemIndex := -1;
@@ -7348,9 +7368,9 @@ begin
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
     ComboBox1.Enabled := False;
-    ComboBox2.Enabled := False;
-    ComboBox3.Enabled := False;
-    ComboBox4.Enabled := False;
+    cboCST_Prod.Enabled := False;
+    cboOrigemProd.Enabled := False;
+    cboCSOSN_Prod.Enabled := False;
     ComboBox5.Enabled := False;
     ComboBox6.Enabled := False;
     ComboBox7.Enabled := False;
@@ -7390,9 +7410,9 @@ begin
   end else
   begin
     ComboBox1.Enabled := True;
-    ComboBox2.Enabled := True;
-    ComboBox3.Enabled := True;
-    ComboBox4.Enabled := True;
+    cboCST_Prod.Enabled := True;
+    cboOrigemProd.Enabled := True;
+    cboCSOSN_Prod.Enabled := True;
     ComboBox5.Enabled := True;
     ComboBox6.Enabled := True;
     ComboBox7.Enabled := True;
@@ -7551,9 +7571,9 @@ begin
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
     Form10.Label36.Visible          := True;
-    Form10.ComboBox4.Visible        := True;
+    cboCSOSN_Prod.Visible        := True;
     Form10.Label37.Visible          := False;
-    Form10.ComboBox2.Visible        := False;
+    cboCST_Prod.Visible        := False;
  
     Form10.Label72.Visible          := True;
     Form10.ComboBox15.Visible       := True;
@@ -7562,9 +7582,9 @@ begin
   end else
   begin
     Form10.Label36.Visible          := False;
-    Form10.ComboBox4.Visible        := False;
+    cboCSOSN_Prod.Visible        := False;
     Form10.Label37.Visible          := True;
-    Form10.ComboBox2.Visible        := True;
+    cboCST_Prod.Visible        := True;
   
     Form10.Label72.Visible          := False;
     Form10.ComboBox15.Visible       := False;
@@ -7628,7 +7648,7 @@ begin
     //
     if AllTrim(Form7.ibDataSet4CSOSN.AsString)<>'' then
     begin
-      for I := 0 to Form10.ComboBox4.Items.Count -1 do
+      for I := 0 to cboCSOSN_Prod.Items.Count -1 do
       begin
 
         {Sandro Silva 2023-05-09 inicio
@@ -7644,9 +7664,9 @@ begin
         // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
         if Trim(Form7.ibDataSet4CSOSN.AsString) <> '' then
         begin
-          if Copy(Form10.ComboBox4.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
+          if Copy(cboCSOSN_Prod.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
           begin
-            Form10.ComboBox4.ItemIndex := I;
+            cboCSOSN_Prod.ItemIndex := I;
           end;
         end;
 
@@ -7700,7 +7720,7 @@ begin
 
     if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
     begin
-      for I := 0 to Form10.ComboBox3.Items.Count -1 do
+      for I := 0 to cboOrigemProd.Items.Count -1 do
       begin
         // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
         // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
@@ -7712,9 +7732,10 @@ begin
         // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
         // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
         //
-        if Copy(Form10.ComboBox3.Items[I],1,1) = Copy(AllTrim(Form7.ibDataSet4CST.AsString)+'000',1,1) then
+        //if Copy(cboOrigemProd.Items[I],1,1) = Copy(AllTrim(Form7.ibDataSet4CST.AsString)+'000',1,1) then  Mauricio Parizotto 2023-09-01
+        if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
         begin
-          Form10.ComboBox3.ItemIndex := I;
+          cboOrigemProd.ItemIndex := I;
         end;
       end;
     end;
@@ -7722,7 +7743,7 @@ begin
 
     if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
     begin
-      for I := 0 to Form10.ComboBox2.Items.Count -1 do
+      for I := 0 to cboCST_Prod.Items.Count -1 do
       begin
         // 00 - Tributada integralmente
         // 10 - Tributada e com cobrança de ICMS por substituição tributária
@@ -7735,9 +7756,10 @@ begin
         // 60 - ICMS Cobrado anteriormente por substituição tributária
         // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
         // 90 - Outras
-        if Copy(Form10.ComboBox2.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST.AsString)+'000',2,2) then
+        //if Copy(cboCST_Prod.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST.AsString)+'000',2,2) then Mauricio Parizotto 2023-09-01
+        if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
         begin
-          Form10.ComboBox2.ItemIndex := I;
+          cboCST_Prod.ItemIndex := I;
         end;
       end;
     end;
@@ -8017,14 +8039,14 @@ procedure TForm10.ComboBox6Change(Sender: TObject);
 begin
   // A - Arredondamento
   // T - Truncamento
-  
+
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4IAT.AsString := Copy(Form10.ComboBox6.Items[Form10.ComboBox6.ItemIndex]+' ',1,1);
   end;
 end;
 
-procedure TForm10.ComboBox3Change(Sender: TObject);
+procedure TForm10.cboOrigemProdChange(Sender: TObject);
 begin
   // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
   // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
@@ -8035,14 +8057,14 @@ begin
   // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
   // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
   // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
-  
+
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
-    Form7.ibDataSet4CST.AsString := Copy(Form10.ComboBox3.Items[Form10.ComboBox3.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST.AsString+'  ',2,2);
+    Form7.ibDataSet4CST.AsString := Copy(cboOrigemProd.Items[cboOrigemProd.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST.AsString+'  ',2,2);
   end;
 end;
 
-procedure TForm10.ComboBox2Change(Sender: TObject);
+procedure TForm10.cboCST_ProdChange(Sender: TObject);
 begin
   // 00 - Tributada integralmente
   // 10 - Tributada e com cobrança de ICMS por substituição tributária
@@ -8058,7 +8080,7 @@ begin
   //
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
-    Form7.ibDataSet4CST.AsString := Copy(Form7.ibDataSet4CST.AsString+' ',1,1)+Copy(Form10.ComboBox2.Items[Form10.ComboBox2.ItemIndex]+'   ',1,2);
+    Form7.ibDataSet4CST.AsString := Copy(Form7.ibDataSet4CST.AsString+' ',1,1)+Copy(cboCST_Prod.Items[cboCST_Prod.ItemIndex]+'   ',1,2);
   end;
 end;
 
@@ -8078,7 +8100,7 @@ begin
   end;
 end;
 
-procedure TForm10.ComboBox4Change(Sender: TObject);
+procedure TForm10.cboCSOSN_ProdChange(Sender: TObject);
 begin
   // 101 - Tributada pelo Simples Nacional com permissão de crédito
   // 102 - Tributada pelo Simples Nacional sem permissão de crédito
@@ -8090,11 +8112,11 @@ begin
   // 400 - Não tributada pelo Simples Nacional
   // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
   // 900 - Outros
-  
+
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     // Sandro Silva 2023-05-09 Form7.ibDataSet4CSOSN.AsString := Copy(Form10.ComboBox4.Items[Form10.ComboBox4.ItemIndex]+'   ',1,3);
-    Form7.ibDataSet4CSOSN.AsString := Trim(Copy(Form10.ComboBox4.Items[Form10.ComboBox4.ItemIndex]+'   ',1,3));
+    Form7.ibDataSet4CSOSN.AsString := Trim(Copy(cboCSOSN_Prod.Items[cboCSOSN_Prod.ItemIndex]+'   ',1,3));
   end;
 end;
 
@@ -9281,7 +9303,7 @@ begin
   Exemplo(True);
 end;
 
-procedure TForm10.ComboBox3Enter(Sender: TObject);
+procedure TForm10.cboOrigemProdEnter(Sender: TObject);
 begin
   with Sender as tComboBox do
     SendMessage(Handle, CB_SETDROPPEDWIDTH, Form10.Width - Left - 30, 0);
@@ -10119,28 +10141,69 @@ var
 begin
   if Form7.sModulo = 'PERFILTRIBUTACAO' then
   begin
+    Form10.Caption := form7.ibdPerfilTributaDESCRICAO.AsString;
+
     // Antes de tudo Zera os combos
     cboCST_IPI_PerTrib.ItemIndex := -1;
     cboCST_PISCOFINS_S_PerTrib.ItemIndex := -1;
     cboCST_PISCOFINS_E_PerTrib.ItemIndex := -1;
+    cboTipoItemPerfTrib.ItemIndex := -1;
+    cboIPPTPerfTrib.ItemIndex := -1;
+    cboIATPerfTrib.ItemIndex := -1;
+    cboOrigemPerfTrib.ItemIndex := -1;
+    cboCFOP_NFCePerfTrib.ItemIndex := -1;
+    cboCSTPerfilTrib.ItemIndex := -1;
+    cboCSOSNPerfilTrib.ItemIndex := -1;
+    cboCST_NFCePerfilTrib.ItemIndex := -1;
+    cboCSOSN_NFCePerfilTrib.ItemIndex := -1;
 
     if Form7.bSoLeitura or Form7.bEstaSendoUsado then
     begin
       cboCST_IPI_PerTrib.Enabled := False;
-      cboCST_PISCOFINS_S_PerTrib.Enabled := False;
-      cboCST_PISCOFINS_E_PerTrib.Enabled := False;
+      cboCST_PISCOFINS_S_PerTrib.Enabled  := False;
+      cboCST_PISCOFINS_E_PerTrib.Enabled  := False;
+      cboTipoItemPerfTrib.Enabled         := False;
+      cboIPPTPerfTrib.Enabled             := False;
+      cboIATPerfTrib.Enabled              := False;
+      cboOrigemPerfTrib.Enabled           := False;
+      cboCFOP_NFCePerfTrib.Enabled        := False;
+      cboCSTPerfilTrib.Enabled            := False;
+      cboCSOSNPerfilTrib.Enabled          := False;
+      cboCST_NFCePerfilTrib.Enabled       := False;
+      cboCSOSN_NFCePerfilTrib.Enabled     := False;
     end else
     begin
-      cboCST_IPI_PerTrib.Enabled := True;
-      cboCST_PISCOFINS_S_PerTrib.Enabled := True;
-      cboCST_PISCOFINS_E_PerTrib.Enabled := True;
+      cboCST_IPI_PerTrib.Enabled          := True;
+      cboCST_PISCOFINS_S_PerTrib.Enabled  := True;
+      cboCST_PISCOFINS_E_PerTrib.Enabled  := True;
+      cboTipoItemPerfTrib.Enabled         := True;
+      cboIPPTPerfTrib.Enabled             := True;
+      cboIATPerfTrib.Enabled              := True;
+      cboOrigemPerfTrib.Enabled           := True;
+      cboCFOP_NFCePerfTrib.Enabled        := True;
+      cboCSTPerfilTrib.Enabled            := True;
+      cboCSOSNPerfilTrib.Enabled          := True;
+      cboCST_NFCePerfilTrib.Enabled       := True;
+      cboCSOSN_NFCePerfilTrib.Enabled     := True;
     end;
 
     if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
       Form7.ibdPerfilTributa.Edit;
 
 
-    //CST IPI  
+    //Tipo Item
+    if AllTrim(Form7.ibdPerfilTributaTIPO_ITEM.AsString)<>'' then
+    begin
+      for I := 0 to cboTipoItemPerfTrib.Items.Count -1 do
+      begin
+        if Copy(cboTipoItemPerfTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaTIPO_ITEM.AsString)) then
+        begin
+          cboTipoItemPerfTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //CST IPI
     if AllTrim(Form7.ibdPerfilTributaCST_IPI.AsString)<>'' then
     begin
       for I := 0 to cboCST_IPI_PerTrib.Items.Count -1 do
@@ -10151,6 +10214,97 @@ begin
         end;
       end;
     end;
+
+    //IPPT
+    for I := 0 to cboIPPTPerfTrib.Items.Count -1 do
+    begin
+      if Copy(cboIPPTPerfTrib.Items[I],1,1) = UpperCase(AllTrim(Form7.ibdPerfilTributaIPPT.AsString)) then
+      begin
+        cboIPPTPerfTrib.ItemIndex := I;
+      end;
+    end;
+
+    //IAT
+    for I := 0 to cboIATPerfTrib.Items.Count -1 do
+    begin
+      if Copy(cboIATPerfTrib.Items[I],1,1) = UpperCase(AllTrim(Form7.ibdPerfilTributaIAT.AsString)) then
+      begin
+        cboIATPerfTrib.ItemIndex := I;
+      end;
+    end;
+
+    //Origem
+    if AllTrim(Form7.ibdPerfilTributaCST.AsString)<>'' then
+    begin
+      for I := 0 to cboOrigemPerfTrib.Items.Count -1 do
+      begin
+        if Copy(cboOrigemPerfTrib.Items[I],1,1) = Copy(Form7.ibdPerfilTributaCST.AsString+'000',1,1) then
+        begin
+          cboOrigemPerfTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //CFOP NFCe
+    if AllTrim(Form7.ibdPerfilTributaCFOP.AsString)<>'' then
+    begin
+      for I := 0 to cboCFOP_NFCePerfTrib.Items.Count -1 do
+      begin
+        if Copy(cboCFOP_NFCePerfTrib.Items[I],1,4) = UpperCase(AllTrim(Form7.ibdPerfilTributaCFOP.AsString)) then
+        begin
+          cboCFOP_NFCePerfTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //CST
+    if AllTrim(Form7.ibdPerfilTributaCST.AsString)<>'' then
+    begin
+      for I := 0 to cboCSTPerfilTrib.Items.Count -1 do
+      begin
+        if Copy(cboCSTPerfilTrib.Items[I],1,2) = Copy(Form7.ibdPerfilTributaCST.AsString+'000',2,2) then
+        begin
+          cboCSTPerfilTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //CSOSN
+    if AllTrim(Form7.ibdPerfilTributaCSOSN.AsString)<>'' then
+    begin
+      for I := 0 to cboCSOSNPerfilTrib.Items.Count -1 do
+      begin
+        if Copy(cboCSOSNPerfilTrib.Items[I],1, Length(Trim(Form7.ibdPerfilTributaCSOSN.AsString))) = UpperCase(AllTrim(Form7.ibdPerfilTributaCSOSN.AsString)) then
+        begin
+          cboCSOSNPerfilTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //CST NFCE
+    if AllTrim(Form7.ibdPerfilTributaCST_NFCE.AsString)<>'' then
+    begin
+      for I := 0 to cboCST_NFCePerfilTrib.Items.Count -1 do
+      begin
+        if Copy(cboCST_NFCePerfilTrib.Items[I],1,2) = Copy(Form7.ibdPerfilTributaCST_NFCE.AsString+'000',2,2) then
+        begin
+          cboCST_NFCePerfilTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
+    //CSOSN NFCE
+    if AllTrim(Form7.ibdPerfilTributaCSOSN_NFCE.AsString)<>'' then
+    begin
+      for I := 0 to cboCSOSN_NFCePerfilTrib.Items.Count -1 do
+      begin
+        if Copy(cboCSOSN_NFCePerfilTrib.Items[I],1,Length(Trim(Form7.ibdPerfilTributaCSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibdPerfilTributaCSOSN_NFCE.AsString)) then
+        begin
+          cboCSOSN_NFCePerfilTrib.ItemIndex := I;
+        end;
+      end;
+    end;
+
 
     //Pis-Cofins Saída
     if AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString)<>'' then
@@ -10174,6 +10328,32 @@ begin
           cboCST_PISCOFINS_E_PerTrib.ItemIndex := I;
         end;
       end;
+    end;
+
+
+    //CST-CSOCN
+    if Form7.ibDataSet13CRT.AsString = '1' then
+    begin
+      lblCSOSNPerfilTrib.Visible       := True;
+      cboCSOSNPerfilTrib.Visible    := True;
+      lblCSTPerfilTrib.Visible         := False;
+      cboCSTPerfilTrib.Visible         := False;
+
+      lblCSOSN_NFCePerfilTrib.Visible  := True;
+      cboCSOSN_NFCePerfilTrib.Visible  := True;
+      lblCST_NFCePerfilTrib.Visible    := False;
+      cboCST_NFCePerfilTrib.Visible       := False;
+    end else
+    begin
+      lblCSOSNPerfilTrib.Visible       := False;
+      cboCSOSNPerfilTrib.Visible    := False;
+      lblCSTPerfilTrib.Visible         := True;
+      cboCSTPerfilTrib.Visible         := True;
+
+      lblCSOSN_NFCePerfilTrib.Visible  := False;
+      cboCSOSN_NFCePerfilTrib.Visible  := False;
+      lblCST_NFCePerfilTrib.Visible    := True;
+      cboCST_NFCePerfilTrib.Visible       := True;
     end;
 
   end;
@@ -10212,11 +10392,93 @@ end;
 procedure TForm10.cboCST_PISCOFINS_E_PerTribChange(Sender: TObject);
 begin
   if Form7.sModulo = 'PERFILTRIBUTACAO' then
-    begin
+  begin
     if AllTrim(Form10.Caption) = AllTrim(Form7.ibdPerfilTributaDESCRICAO.AsString) then
     begin
       Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString := Copy(cboCST_PISCOFINS_E_PerTrib.Items[cboCST_PISCOFINS_E_PerTrib.ItemIndex]+'  ',1,2);
     end;
+  end;
+end;
+
+procedure TForm10.edtDescricaoPerfilTribMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  with Sender as TSMALL_DBEdit do
+  begin
+    Hint := Field.DisplayLabel;
+    ShowHint := True;
+  end;
+end;
+
+procedure TForm10.cboTipoItemPerfTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaTIPO_ITEM.AsString := Copy(cboTipoItemPerfTrib.Items[cboTipoItemPerfTrib.ItemIndex]+'  ',1,2);
+  end;
+end;
+
+procedure TForm10.cboIPPTPerfTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaIPPT.AsString := Copy(cboIPPTPerfTrib.Items[cboIPPTPerfTrib.ItemIndex]+' ',1,1);
+  end;
+end;
+
+procedure TForm10.cboIATPerfTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaIAT.AsString := Copy(cboIATPerfTrib.Items[cboIATPerfTrib.ItemIndex]+' ',1,1);
+  end;
+end;
+
+procedure TForm10.cboOrigemPerfTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCST.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST.AsString+'  ',2,2);
+  end;
+end;
+
+procedure TForm10.cboCFOP_NFCePerfTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCFOP.AsString := Copy(cboCFOP_NFCePerfTrib.Items[cboCFOP_NFCePerfTrib.ItemIndex]+'    ',1,4);
+  end;
+end;
+
+procedure TForm10.cboCSTPerfilTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCST.AsString := Copy(Form7.ibdPerfilTributaCST.AsString+' ',1,1)+Copy(cboCSTPerfilTrib.Items[cboCSTPerfilTrib.ItemIndex]+'   ',1,2);
+  end;
+end;
+
+procedure TForm10.cboCST_NFCePerfilTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCST_NFCE.AsString := Copy(Form7.ibdPerfilTributaCST.AsString+' ',1,1)+Copy(cboCST_NFCePerfilTrib.Items[cboCST_NFCePerfilTrib.ItemIndex]+'   ',1,2);
+  end;
+end;
+
+procedure TForm10.cboCSOSN_NFCePerfilTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCSOSN_NFCE.AsString := Trim(Copy(cboCSOSN_NFCePerfilTrib.Items[cboCSOSN_NFCePerfilTrib.ItemIndex]+'   ',1,3));
+  end;
+end;
+
+procedure TForm10.cboCSOSNPerfilTribChange(Sender: TObject);
+begin
+  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
+  begin
+    Form7.ibdPerfilTributaCSOSN.AsString := Trim(Copy(cboCSOSNPerfilTrib.Items[cboCSOSNPerfilTrib.ItemIndex]+'   ',1,3));
   end;
 end;
 

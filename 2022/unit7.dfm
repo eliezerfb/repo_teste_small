@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 287
-  Top = 74
+  Left = 308
+  Top = 48
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -12237,6 +12237,7 @@ object Form7: TForm7
       Visible = False
     end
     object ibDataSet4ENQ_IPI: TIBStringField
+      DisplayLabel = 'IPI'
       FieldName = 'ENQ_IPI'
       Origin = 'ESTOQUE.ENQ_IPI'
       Visible = False
@@ -19970,7 +19971,6 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
-    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -20684,7 +20684,7 @@ object Form7: TForm7
     Top = 219
   end
   object IBTransaction1: TIBTransaction
-    Active = True
+    Active = False
     DefaultDatabase = IBDatabase1
     Params.Strings = (
       'isc_tpb_concurrency'
@@ -21314,7 +21314,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50a\vm50a\'
+      'avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21349,7 +21349,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50a\vm50a\'
+      'vm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21664,7 +21664,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21694,7 +21694,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22179,6 +22179,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibdPerfilTributaAfterDelete
+    AfterPost = ibdPerfilTributaAfterPost
     BeforeEdit = ibdPerfilTributaBeforeEdit
     BeforeInsert = ibdPerfilTributaBeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -22274,6 +22275,7 @@ object Form7: TForm7
       DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'DESCRICAO'
       Origin = 'PERFILTRIBUTACAO.DESCRICAO'
+      OnSetText = ibdPerfilTributaDESCRICAOSetText
       Size = 45
     end
     object ibdPerfilTributaTIPO_ITEM: TIBStringField
@@ -22293,6 +22295,7 @@ object Form7: TForm7
       Size = 1
     end
     object ibdPerfilTributaPIVA: TFloatField
+      DisplayLabel = 'IVA'
       FieldName = 'PIVA'
       Origin = 'PERFILTRIBUTACAO.PIVA'
       DisplayFormat = '#,##0.00000'
@@ -22355,6 +22358,7 @@ object Form7: TForm7
       EditFormat = '#0.00'
     end
     object ibdPerfilTributaENQ_IPI: TIBStringField
+      DisplayLabel = 'Enq. IPI'
       FieldName = 'ENQ_IPI'
       Origin = 'PERFILTRIBUTACAO.ENQ_IPI'
       Size = 3
@@ -22389,13 +22393,14 @@ object Form7: TForm7
       Origin = 'PERFILTRIBUTACAO.CST_PIS_COFINS_ENTRADA'
       Size = 2
     end
-    object ibdPerfilTributaALIQ_PIS_ENTRADA: TIBStringField
-      DefaultExpression = '#0.0000'
+    object ibdPerfilTributaALIQ_PIS_ENTRADA: TIBBCDField
       DisplayLabel = '% PIS Entrada'
       FieldName = 'ALIQ_PIS_ENTRADA'
       Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_ENTRADA'
-      EditMask = '#0.0000'
-      Size = 2
+      DisplayFormat = '#0.0000'
+      EditFormat = '#0.0000'
+      Precision = 18
+      Size = 4
     end
     object ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField
       DisplayLabel = '% COFINS Entrada'

@@ -1554,9 +1554,9 @@ type
     ibdPerfilTributaALIQ_PIS_SAIDA: TIBBCDField;
     ibdPerfilTributaALIQ_COFINS_SAIDA: TIBBCDField;
     ibdPerfilTributaCST_PIS_COFINS_ENTRADA: TIBStringField;
-    ibdPerfilTributaALIQ_PIS_ENTRADA: TIBStringField;
     ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField;
     ibdPerfilTributaREGISTRO: TIBStringField;
+    ibdPerfilTributaALIQ_PIS_ENTRADA: TIBBCDField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2196,6 +2196,9 @@ type
     procedure ibdPerfilTributaBeforeEdit(DataSet: TDataSet);
     procedure ibdPerfilTributaBeforeInsert(DataSet: TDataSet);
     procedure ibdPerfilTributaNewRecord(DataSet: TDataSet);
+    procedure ibdPerfilTributaAfterPost(DataSet: TDataSet);
+    procedure ibdPerfilTributaDESCRICAOSetText(Sender: TField;
+      const Text: String);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -3896,35 +3899,27 @@ end;
 
 function VerificaSeEstaSendoUsado(bP1:Boolean): boolean;
 begin
-  //
   Form7.bEstaSendoUsado := False;
-  //
+
   if not (Form7.ArquivoAberto.State in ([dsInsert])) then
   begin
     try
-//      if Form7.ArquivoAberto.Recno > 0 then
-//      begin
         Form7.ArquivoAberto.Edit;
         Form7.ArquivoAberto.Post;
         Form7.bEstaSendoUsado := False;
-//      end else
-//      begin
-//        Form7.bEstaSendoUsado := False;
-//      end;
     except
       Form7.bEstaSendoUsado := True;
     end;
   end;
-  //
+  
   if not bP1 then
   begin
     if Form7.bEstaSendoUsado then
     begin
-      //
       AgendaCommit(True);
       Form7.Close;
       Form7.Show;
-      //
+      
       try
         Form7.ArquivoAberto.Edit;
         Form7.ArquivoAberto.Post;
@@ -3934,9 +3929,8 @@ begin
       end;
     end;
   end;
-  //
+  
   Result := Form7.bEstaSendoUsado;
-  //
 end;
 
 
@@ -33637,6 +33631,32 @@ begin
   ibdPerfilTributa.Edit;
   ibdPerfilTributaREGISTRO.AsString := sProximo;
   ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger := sProximoID;
+end;
+
+procedure TForm7.ibdPerfilTributaAfterPost(DataSet: TDataSet);
+begin
+  if AllTrim(ibdPerfilTributaDESCRICAO.AsString) = '' then
+    ibdPerfilTributa.Delete;
+end;
+
+procedure TForm7.ibdPerfilTributaDESCRICAOSetText(Sender: TField;
+  const Text: String);
+var
+  cTexto: String;
+begin
+  cTexto := Text;
+
+  if (AllTrim(ibdPerfilTributaDESCRICAO.AsString) <> '') and (AllTrim(cTexto) = '') then
+  begin
+    Application.MessageBox(Pchar('Descrição inválida (não pode ficar em branco).')
+                                 ,'Atenção',mb_Ok + MB_ICONWARNING);
+  end else
+  begin
+    if Valida_Campo('PERFILTRIBUTACAO',AllTrim(cTexto),'DESCRICAO','Este perfil já foi cadastrado.') then
+      ibdPerfilTributaDESCRICAO.AsString := AllTrim(cTexto);
+  end;
+
+  Form10.Caption := ibdPerfilTributaDESCRICAO.AsString;
 end;
 
 end.
