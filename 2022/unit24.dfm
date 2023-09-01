@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = 188
-  Top = 8
+  Left = 486
+  Top = 283
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -2997,6 +2997,44 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
+      object cbDescontaICMSDesonerado: TCheckBox
+        Left = 115
+        Top = 343
+        Width = 209
+        Height = 17
+        TabStop = False
+        Caption = 'Descontar ICMS Desonerado'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'System'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 16
+        OnClick = cbDescontaICMSDesoneradoClick
+      end
+      object SMALL_DBEdit16: TSMALL_DBEdit
+        Left = 15
+        Top = 340
+        Width = 89
+        Height = 22
+        AutoSize = False
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Ctl3D = True
+        DataField = 'ICMS_DESONERADO'
+        DataSource = Form7.DataSource23
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 15
+        OnExit = SMALL_DBEdit16Exit
+        OnKeyUp = ComboBox12KeyUp
+      end
       object SMALL_DBEdit42: TSMALL_DBEdit
         Left = 183
         Top = 73
@@ -3268,28 +3306,6 @@ object Form24: TForm24
             Width = 241
             Visible = True
           end>
-      end
-      object SMALL_DBEdit16: TSMALL_DBEdit
-        Left = 15
-        Top = 340
-        Width = 89
-        Height = 22
-        AutoSize = False
-        BevelInner = bvLowered
-        BevelOuter = bvNone
-        Ctl3D = True
-        DataField = 'ICMS_DESONERADO'
-        DataSource = Form7.DataSource23
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 15
-        OnExit = SMALL_DBEdit16Exit
-        OnKeyUp = ComboBox12KeyUp
       end
     end
     object ok: TBitBtn
