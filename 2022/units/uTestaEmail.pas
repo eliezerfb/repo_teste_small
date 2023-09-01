@@ -17,7 +17,13 @@ type
 
 implementation
 
-uses SysUtils,SmallFunc;
+uses SysUtils
+  {$IFDEF VER150}
+  , SmallFunc
+  {$ELSE}
+  , smallfunc_xe
+  {$ENDIF}
+;
 
 { TTestaEmail }
 
