@@ -975,7 +975,7 @@ begin
   Result := '';
   for I := 1 to Length(sTexto) do
   begin
-    if Pos(AnsiUpperCase(Copy(sTexto, I, 1)), '1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW!@#$%*()_+-=;:/|\?,.ºª') > 0 then
+    if Pos(AnsiUpperCase(Copy(sTexto, I, 1)), '1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW!@#$%*()_+-=;:/|\?,.ºª[]') > 0 then
       Result := Result + Copy(sTexto, I, 1)
     else
       Result := Result + ' ';
