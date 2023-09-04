@@ -103,7 +103,7 @@ type
     Label37: TLabel;
     Label53: TLabel;
     Label51: TLabel;
-    Label55: TLabel;
+    lblCIT: TLabel;
     LabelDescricaoNCM: TLabel;
     Label83: TLabel;
     SMALL_DBEdit31: TSMALL_DBEdit;
@@ -115,7 +115,7 @@ type
     cboCSOSN_Prod: TComboBox;
     ComboBox5: TComboBox;
     ComboBox6: TComboBox;
-    Panel6: TPanel;
+    pnlMapaICMS: TPanel;
     Image4: TImage;
     Label52: TLabel;
     _AP: TLabel;
@@ -410,7 +410,7 @@ type
     lblCSTPerfilTrib: TLabel;
     Label119: TLabel;
     Label120: TLabel;
-    Label121: TLabel;
+    lblCitPerfilTrib: TLabel;
     lblCFOPNfce: TLabel;
     lblCSOSN_NFCePerfilTrib: TLabel;
     lblCST_NFCePerfilTrib: TLabel;
@@ -686,6 +686,7 @@ type
     procedure cboCST_NFCePerfilTribChange(Sender: TObject);
     procedure cboCSOSN_NFCePerfilTribChange(Sender: TObject);
     procedure cboCSOSNPerfilTribChange(Sender: TObject);
+    procedure SMALL_DBEdit53Exit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -696,6 +697,8 @@ type
     procedure AtualizaObjComValorDoBanco;
     { Private declarations }
     function MostraImagemEstoque: Boolean;
+    procedure CarregaCit;
+    procedure CarregaCitPerfilTrib;
   public
     { Public declarations }
 
@@ -7453,10 +7456,9 @@ begin
   
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
   begin
-
+    {Mauricio Parizotto 2023-09-04 Inicio
     if Form7.sModulo = 'ESTOQUE' then
     begin
-
       if AllTrim(Form7.IbDataSet4ST.AsString) <> '' then
       begin
         Form7.ibDataSet14.Close;
@@ -7473,16 +7475,15 @@ begin
 
       if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
       begin
-        Form10.Label55.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
+        lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
       end else
       begin
-        Form10.Label55.Caption := Form7.ibDataSet14NOME.AsString;
+        lblCIT.Caption := Form7.ibDataSet14NOME.AsString;
       end;
-
     end;
  
     Form7.ibDataSet14.Edit;
- 
+
     _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
     _AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
     _AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
@@ -7566,6 +7567,11 @@ begin
     if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clSilver;
     if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clSilver;
     if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clSilver;
+    }
+
+    CarregaCit;
+
+    {Mauricio Parizotto 2023-09-04 Fim}
   end;
  
   if Form7.ibDataSet13CRT.AsString = '1' then
@@ -8183,10 +8189,7 @@ begin
 
   if Form7.sModulo = 'ICM' then
   begin
-    //if Form10.Caption = Form7.ibDataSet14NOME.AsString then
-    //begin
       Form7.ibDataSet14CSTPISCOFINS.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
-    //end;
   end;
 
 
@@ -8226,6 +8229,7 @@ end;
 procedure TForm10.SMALL_DBEdit38Exit(Sender: TObject);
 begin
 //  Form10.orelha_ICMSShow(Sender); Mauricio Parizotto 2023-08-10
+  CarregaCit; //Mauricio Parizotto 2023-09-04
 end;
 
 procedure TForm10.ComboBox9KeyDown(Sender: TObject; var Key: Word;
@@ -8981,9 +8985,8 @@ end;
 
 procedure TForm10.SMALL_DBEditXExit(Sender: TObject);
 begin
-  //
   SMALL_DBEditX.Visible   := False;
-  //
+
   __RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
   __AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
   __AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
@@ -9011,7 +9014,6 @@ begin
   __PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
   __SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
   __RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
-  //
 end;
 
 procedure TForm10._RRClick(Sender: TObject);
@@ -9062,12 +9064,11 @@ end;
 
 procedure TForm10.SMALL_DBEditYExit(Sender: TObject);
 begin
-  //
   try Form7.ibDataSet14.Post; except end;
   try Form7.ibDataSet14.Edit; except end;
-  //
+
   SMALL_DBEDITY.Visible   := False;
-  //
+
   _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
   _AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
   _AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
@@ -9095,7 +9096,6 @@ begin
   _PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
   _SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
   _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
-  //
 end;
 
 procedure TForm10.ORELHA_COMISSAOEnter(Sender: TObject);
@@ -10356,6 +10356,9 @@ begin
       cboCST_NFCePerfilTrib.Visible       := True;
     end;
 
+    //CIT
+    CarregaCitPerfilTrib;
+
   end;
 end;
 
@@ -10480,6 +10483,154 @@ begin
   begin
     Form7.ibdPerfilTributaCSOSN.AsString := Trim(Copy(cboCSOSNPerfilTrib.Items[cboCSOSNPerfilTrib.ItemIndex]+'   ',1,3));
   end;
+end;
+
+procedure TForm10.CarregaCit;
+var
+  Localizado : boolean;
+begin
+  try
+    Localizado := False;
+
+    if AllTrim(Form7.IbDataSet4ST.AsString) <> '' then
+    begin
+      Form7.ibDataSet14.Close;
+      Form7.ibDataSet14.SelectSQL.Text := ' Select * FROM ICM '+
+                                          ' Where ST='+QuotedStr(Form7.IbDataSet4ST.AsString);
+      Form7.ibDataSet14.Open;
+
+      if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
+      begin
+        Localizado := True;
+      end;
+    end;
+
+    if Localizado then
+    begin
+      lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
+      pnlMapaICMS.Visible := True;
+
+      Form7.ibDataSet14.Edit;
+
+      _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
+      _AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
+      _AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
+      _PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
+      _MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
+      _AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
+      _RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
+      _MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
+      _TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
+      _CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
+      _RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
+      _PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
+      _PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
+      _PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
+      _AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
+      _SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
+      _BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
+      _GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
+      _DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
+      _MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
+      _ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
+      _MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
+      _SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
+      _RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
+      _PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
+      _SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
+      _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
+ 
+      _RR.font.size := 8;
+      _AP.font.size := 8;
+      _AM.font.size := 8;
+      _PA.font.size := 8;
+      _MA.font.size := 8;
+      _AC.font.size := 8;
+      _RO.font.size := 8;
+      _MT.font.size := 8;
+      _TO.font.size := 8;
+      _CE.font.size := 8;
+      _RN.font.size := 8;
+      _PI.font.size := 8;
+      _PB.font.size := 8;
+      _PE.font.size := 8;
+      _AL.font.size := 8;
+      _SE.font.size := 8;
+      _BA.font.size := 8;
+      _GO.font.size := 8;
+      _DF.font.size := 8;
+      _MG.font.size := 8;
+      _ES.font.size := 8;
+      _MS.font.size := 8;
+      _SP.font.size := 8;
+      _RJ.font.size := 8;
+      _PR.font.size := 8;
+      _SC.font.size := 8;
+      _RS.font.size := 8;
+ 
+      if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Color := clRed else _RR.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Color := clRed else _AP.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Color := clRed else _AM.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PA' then _PA.Font.Color := clRed else _PA.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MA' then _MA.Font.Color := clRed else _MA.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AC' then _AC.Font.Color := clRed else _AC.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RO' then _RO.Font.Color := clRed else _RO.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MT' then _MT.Font.Color := clRed else _MT.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'TO' then _TO.Font.Color := clRed else _TO.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'CE' then _CE.Font.Color := clRed else _CE.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RN' then _RN.Font.Color := clRed else _RN.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PI' then _PI.Font.Color := clRed else _PI.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PB' then _PB.Font.Color := clRed else _PB.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PE' then _PE.Font.Color := clRed else _PE.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AL' then _AL.Font.Color := clRed else _AL.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'SE' then _SE.Font.Color := clRed else _SE.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'BA' then _BA.Font.Color := clRed else _BA.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'GO' then _GO.Font.Color := clRed else _GO.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'DF' then _DF.Font.Color := clRed else _DF.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MG' then _MG.Font.Color := clRed else _MG.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'ES' then _ES.Font.Color := clRed else _ES.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MS' then _MS.Font.Color := clRed else _MS.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'SP' then _SP.Font.Color := clRed else _SP.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RJ' then _RJ.Font.Color := clRed else _RJ.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clSilver;
+    end else
+    begin
+      lblCIT.Caption      := '';
+      pnlMapaICMS.Visible := False;
+    end;
+  except
+  end;
+end;
+
+
+
+procedure TForm10.CarregaCitPerfilTrib;
+begin
+  if AllTrim(Form7.ibdPerfilTributaST.AsString) <> '' then
+  begin
+    Form7.ibDataSet14.Close;
+    Form7.ibDataSet14.SelectSQL.Text := ' Select * FROM ICM '+
+                                        ' Where ST='+QuotedStr(Form7.ibdPerfilTributaST.AsString);
+    Form7.ibDataSet14.Open;
+
+    if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
+    begin
+      lblCitPerfilTrib.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
+    end else
+    begin
+      lblCitPerfilTrib.Caption := '';
+    end;
+  end else
+  begin
+    lblCitPerfilTrib.Caption := '';
+  end;
+end;
+
+procedure TForm10.SMALL_DBEdit53Exit(Sender: TObject);
+begin
+  CarregaCitPerfilTrib;
 end;
 
 end.

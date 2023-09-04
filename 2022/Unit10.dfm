@@ -2868,7 +2868,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label55: TLabel
+        object lblCIT: TLabel
           Left = 165
           Top = 225
           Width = 98
@@ -3192,7 +3192,7 @@ object Form10: TForm10
             '70 - Com red. de base de c'#225'lculo e cob. do ICMS por ST'
             '90 - Outras')
         end
-        object Panel6: TPanel
+        object pnlMapaICMS: TPanel
           Left = 510
           Top = 24
           Width = 300
@@ -14793,7 +14793,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label121: TLabel
+        object lblCitPerfilTrib: TLabel
           Left = 165
           Top = 204
           Width = 98
@@ -14950,7 +14950,7 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 8
-          OnExit = SMALL_DBEdit38Exit
+          OnExit = SMALL_DBEdit53Exit
           OnKeyDown = ComboBox9KeyDown
         end
         object cboCSTPerfilTrib: TComboBox
