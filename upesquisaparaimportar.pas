@@ -302,8 +302,10 @@ begin
   {Sandro Silva 2023-07-13 inicio}
   if FTipoPesquisa = tpPesquisaGerencial then
   begin
-    DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(40);
-    DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(18);
+    //DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(40);//Mauricio Parizotto 2023-09-04
+    DataSet.FieldByName('Cliente').DisplayWidth := AjustaLargura(30);
+    DataSet.FieldByName('Vendedor').DisplayWidth := AjustaLargura(18);
+    DataSet.FieldByName('Forma de Pagamento').DisplayWidth := AjustaLargura(18); //Mauricio Parizotto 2023-09-04
   end;
   {Sandro Silva 2023-07-13 fim}
 end;
@@ -388,6 +390,7 @@ begin
     ', N.TOTAL as "Total" ' +
     // Sandro Silva 2023-08-16 ', max(coalesce(A.VALORICM, '''')) as "Doc. Fiscal" ' +
     ', max((select first 1 distinct coalesce(A2.VENDEDOR, '''') as VENDEDOR from ALTERACA A2 where A2.PEDIDO = A.PEDIDO and A2.CAIXA = A.CAIXA order by DATA, HORA)) as "Vendedor" ' +
+    ', max((select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') from PAGAMENT P where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA and substring(P.FORMA from 1 for 2) not in (''00'', ''13''))) "Forma de Pagamento" '+ // Mauricio Parizotto 2023-09-04
     'from NFCE N ' +
     'join ALTERACA A on A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
     'where N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date - 30)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePicker1.Date)) + ' ' + // Últimos 30 dias da data
