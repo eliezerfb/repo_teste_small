@@ -873,7 +873,8 @@ var
   dvICMSDeson_N28a: Real; // Sandro Silva 2019-08-29
   dvICMSDeson_W04a: Real; // Sandro Silva 2019-08-29
   vICMSMonoRet_N45: Real; // Sandro Silva 2023-05-19
-  vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
+  dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
+  dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   //
   bOk: Boolean; // Sandro Silva 2015-06-02
   sLogErro: String; // Sandro Silva 2015-06-02
@@ -1296,7 +1297,8 @@ begin
         dvISS_W20        := 0; //2015-12-10
         dvFCP_W04h       := 0; // Sandro Silva 2018-02-19
         dvICMSDeson_W04a := 0.00; // Sandro Silva 2019-08-29
-        vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
+        dvICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
+        dqBCMonoRet_N43aTotal  := 0.00; // Sandro Silva 2023-09-04
         //
         // TOTAL Sem o Desconto
         //
@@ -1953,9 +1955,10 @@ begin
                   Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
 
                   Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').Value  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
+                  dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + StrtoFloatDef(Form1.spdNFCeDataSets1.Campo('qCom_I10').AsString, 0.00); // Sandro Silva 2023-09-04
                   Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
                   vICMSMonoRet_N45      := XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString);
-                  vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
+                  dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + vICMSMonoRet_N45;
 
                   Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
                 end;
@@ -2171,6 +2174,12 @@ begin
         //
         Form1.spdNFCeDataSets1.Campo('vBCST_W05').Value         := '0.00'; // Base de Cálculo do ICMS Subst. Tributária
         Form1.spdNFCeDataSets1.Campo('vST_W06').Value           := '0.00'; // Valor Total do ICMS Sibst. Tributária
+        
+        {Sandro Silva 2023-09-04 inicio}
+        Form1.spdNFCeDataSets1.Campo('qBCMonoRet_W06d1').Value  := FormatFloatXML(dqBCMonoRet_N43aTotal); //Valor total da quantidade tributada do ICMS monofásico retido anteriormente
+        Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_W06e').Value := FormatFloatXML(dvICMSMonoRet_N45Total); //Valor total do ICMS monofásico retido anteriormente
+        {Sandro Silva 2023-09-04 fim}
+
         Form1.spdNFCeDataSets1.campo('vFCPUFDest_W04c').Value   := '0.00'; // Novo Sandro Silva 2018-03-28
         Form1.spdNFCeDataSets1.campo('vICMSUFDest_W04e').Value  := '0.00'; // Novo Sandro Silva 2018-03-28
         Form1.spdNFCeDataSets1.campo('vICMSUFRemet_W04g').Value := '0.00'; // Novo Sandro Silva 2018-03-28
@@ -2301,7 +2310,7 @@ begin
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := xmlNodeValue(Form1.ibDataset150.FieldByName('NFEXML').AsString, '//infAdic/infCpl');
 
         {Sandro Silva 2023-06-01 inicio}
-        if (vICMSMonoRet_N45Total > 0.00) and (AnsiContainsText(Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value, 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;') = False) then
+        if (dvICMSMonoRet_N45Total > 0.00) and (AnsiContainsText(Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value, 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;') = False) then
             Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
         {Sandro Silva 2023-06-01 fim}
         //
@@ -2461,7 +2470,8 @@ var
   dvICMSDeson_N28a: Real; // Sandro Silva 2019-08-29
   dvICMSDeson_W04a: Real; // Sandro Silva 2019-08-29
   vICMSMonoRet_N45: Real; // Sandro Silva 2023-05-19
-  vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
+  dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
+  dqBCMonoRet_N43aTotal: Real; // Sandro Silva 2023-09-04
   //
   bOk: Boolean; // Sandro Silva 2015-06-02
   sLogErro: String; // Sandro Silva 2015-06-02
@@ -3061,7 +3071,8 @@ begin
       dvISS_W20             := 0; //2015-12-10
       dvFCP_W04h            := 0; // Sandro Silva 2018-02-19
       dvICMSDeson_W04a      := 0.00; // Sandro Silva 2019-08-29
-      vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
+      dvICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
+      dqBCMonoRet_N43aTotal  := 0.00; // Sandro Silva 2023-09-04
       //
       // TOTAL Sem o Desconto
       //
@@ -3719,9 +3730,10 @@ begin
                 Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
 
                 Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').Value  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
+                dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + StrToFloatDef(Form1.spdNFCeDataSets1.Campo('qCom_I10').AsString, 0.00);
                 Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
                 vICMSMonoRet_N45      := XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString);
-                vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
+                dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + vICMSMonoRet_N45;
 
                 Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
               end;
@@ -3959,6 +3971,11 @@ begin
       //
       Form1.spdNFCeDataSets1.Campo('vBCST_W05').Value       := '0.00'; // Base de Cálculo do ICMS Subst. Tributária
       Form1.spdNFCeDataSets1.Campo('vST_W06').Value         := '0.00'; // Valor Total do ICMS Sibst. Tributária
+
+      {Sandro Silva 2023-09-04 inicio}
+      Form1.spdNFCeDataSets1.Campo('qBCMonoRet_W06d1').Value  := FormatFloatXML(dqBCMonoRet_N43aTotal); //Valor total da quantidade tributada do ICMS monofásico retido anteriormente
+      Form1.spdNFCeDataSets1.Campo('vICMSMonoRet_W06e').Value := FormatFloatXML(dvICMSMonoRet_N45Total); //Valor total do ICMS monofásico retido anteriormente
+      {Sandro Silva 2023-09-04 fim}
 
       Form1.spdNFCeDataSets1.campo('vFCPUFDest_W04c').Value   := '0.00'; // Novo Sandro Silva 2018-03-28
       Form1.spdNFCeDataSets1.campo('vICMSUFDest_W04e').Value  := '0.00'; // Novo Sandro Silva 2018-03-28
@@ -4372,7 +4389,7 @@ begin
       if Trim(sDadosTransacaoEletronicaNoComplemento) <> '' then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sDadosTransacaoEletronicaNoComplemento; // Sandro Silva 2023-03-28
 
-      if vICMSMonoRet_N45Total > 0.00 then
+      if dvICMSMonoRet_N45Total > 0.00 then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
       {Sandro Silva 2023-05-19 fim}
 
