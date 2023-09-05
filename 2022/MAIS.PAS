@@ -269,6 +269,7 @@ type
     Label_Bola_vendas: TLabel;
     FazerBackupAgora1: TMenuItem;
     BackupAutomtico1: TMenuItem;
+    Perfisdetribitao1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -433,6 +434,7 @@ type
     procedure Label_Bola_vendasClick(Sender: TObject);
     procedure FazerBackupAgora1Click(Sender: TObject);
     procedure BackupAutomtico1Click(Sender: TObject);
+    procedure Perfisdetribitao1Click(Sender: TObject);
 
 
   private
@@ -12496,6 +12498,20 @@ end;
 procedure TForm1.BackupAutomtico1Click(Sender: TObject);
 begin
   ShellExecute( 0, 'Open', 'backup.exe','A', '', SW_SHOW);
+end;
+
+procedure TForm1.Perfisdetribitao1Click(Sender: TObject);
+begin
+  Form7.sModulo := 'PERFILTRIBUTACAO';
+  Form7.sTitulo := 'Perfis de tribitação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
 end;
 
 end.

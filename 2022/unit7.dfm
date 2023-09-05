@@ -1,11 +1,11 @@
 object Form7: TForm7
-  Left = 287
-  Top = 74
+  Left = 308
+  Top = 48
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 797
+  ClientHeight = 833
   ClientWidth = 1369
   Color = clWhite
   Ctl3D = False
@@ -2425,7 +2425,7 @@ object Form7: TForm7
   end
   object Label27: TLabel
     Left = 111
-    Top = 731
+    Top = 763
     Width = 41
     Height = 13
     Alignment = taCenter
@@ -2462,6 +2462,20 @@ object Form7: TForm7
     Width = 82
     Height = 13
     Caption = 'Convers'#227'o CFOP'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
+  object Label29: TLabel
+    Left = 111
+    Top = 730
+    Width = 77
+    Height = 13
+    Caption = 'Perfil Tributa'#231#227'o'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -7918,7 +7932,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 757
+    Top = 793
     Width = 1369
     Height = 40
     Align = alBottom
@@ -12227,6 +12241,7 @@ object Form7: TForm7
       Visible = False
     end
     object ibDataSet4ENQ_IPI: TIBStringField
+      DisplayLabel = 'IPI'
       FieldName = 'ENQ_IPI'
       Origin = 'ESTOQUE.ENQ_IPI'
       Visible = False
@@ -21308,7 +21323,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50a\'
+      'avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21343,7 +21358,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50a\'
+      'vm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21658,7 +21673,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21688,7 +21703,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21729,7 +21744,7 @@ object Form7: TForm7
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
-    Top = 725
+    Top = 757
     object MenuItem19: TMenuItem
       Caption = '&Arquivo'
       object ImportarOrdemdeServio1: TMenuItem
@@ -22102,6 +22117,318 @@ object Form7: TForm7
     object ibdConversaoCFOPREGISTRO: TIBStringField
       FieldName = 'REGISTRO'
       Origin = 'CFOPCONVERSAO.REGISTRO'
+      Required = True
+      Visible = False
+      Size = 10
+    end
+  end
+  object mmPerfilTributa: TMainMenu
+    AutoHotkeys = maManual
+    OwnerDraw = True
+    Left = 78
+    Top = 723
+    object MenuItem130: TMenuItem
+      Caption = '&Arquivo'
+      object MenuItem132: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = Image205Click
+      end
+      object MenuItem175: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem176: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object MenuItem184: TMenuItem
+      Caption = '&Edita'
+      object MenuItem185: TMenuItem
+        Caption = '&Novo...'
+        OnClick = Image101Click
+      end
+      object MenuItem186: TMenuItem
+        Caption = '&Alterar...'
+        OnClick = Image106Click
+      end
+      object MenuItem187: TMenuItem
+        Caption = 'E&xcluir...'
+        OnClick = Image102Click
+      end
+    end
+    object MenuItem188: TMenuItem
+      Caption = '&Procura'
+      OnClick = Image103Click
+    end
+    object MenuItem189: TMenuItem
+      Caption = '&Caractere'
+      OnClick = Image6Click
+    end
+    object MenuItem190: TMenuItem
+      Caption = '?'
+      object MenuItem191: TMenuItem
+        Caption = 'Ajuda'
+        OnClick = Ajuda7Click
+      end
+      object MenuItem192: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem193: TMenuItem
+        Caption = 'Sobre o programa...'
+        OnClick = Sobreoprograma8Click
+      end
+    end
+  end
+  object DSPerfilTributa: TDataSource
+    DataSet = ibdPerfilTributa
+    Left = 40
+    Top = 723
+  end
+  object ibdPerfilTributa: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = ibdPerfilTributaAfterDelete
+    AfterPost = ibdPerfilTributaAfterPost
+    BeforeEdit = ibdPerfilTributaBeforeEdit
+    BeforeInsert = ibdPerfilTributaBeforeInsert
+    OnDeleteError = IBDataSet2DeleteError
+    OnEditError = IBDataSet2EditError
+    OnNewRecord = ibdPerfilTributaNewRecord
+    OnPostError = IBDataSet2PostError
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from PERFILTRIBUTACAO'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into PERFILTRIBUTACAO'
+      
+        '  (IDPERFILTRIBUTACAO, DESCRICAO, TIPO_ITEM, IPPT, IAT, PIVA, CS' +
+        'T, CSOSN, ST, CFOP, CST_NFCE, CSOSN_NFCE, ALIQUOTA_NFCE, CST_IPI' +
+        ','
+      
+        '  IPI, ENQ_IPI, CST_PIS_COFINS_SAIDA, ALIQ_PIS_SAIDA, ALIQ_COFIN' +
+        'S_SAIDA, CST_PIS_COFINS_ENTRADA, ALIQ_PIS_ENTRADA, ALIQ_COFINS_E' +
+        'NTRADA, REGISTRO)'
+      'values'
+      
+        '  (:IDPERFILTRIBUTACAO, :DESCRICAO, :TIPO_ITEM, :IPPT, :IAT, :PI' +
+        'VA, :CST, :CSOSN, :ST, :CFOP, :CST_NFCE, :CSOSN_NFCE, :ALIQUOTA_' +
+        'NFCE, :CST_IPI,'
+      
+        '  :IPI, :ENQ_IPI, :CST_PIS_COFINS_SAIDA, :ALIQ_PIS_SAIDA, :ALIQ_' +
+        'COFINS_SAIDA, :CST_PIS_COFINS_ENTRADA, :ALIQ_PIS_ENTRADA, :ALIQ_' +
+        'COFINS_ENTRADA, :REGISTRO)')
+    RefreshSQL.Strings = (
+      'Select '
+      #9'IDPERFILTRIBUTACAO,'
+      #9'DESCRICAO,'
+      #9'TIPO_ITEM,'
+      #9'IPPT,'
+      #9'IAT,'
+      #9'PIVA,'
+      #9'CST,'
+      #9'CSOSN,'
+      #9'ST,'
+      #9'CFOP,'
+      #9'CST_NFCE,'
+      #9'CSOSN_NFCE,'
+      #9'ALIQUOTA_NFCE,'
+      #9'CST_IPI,'
+      #9'IPI,'
+      #9'ENQ_IPI,'
+      #9'CST_PIS_COFINS_SAIDA,'
+      #9'ALIQ_PIS_SAIDA,'
+      #9'ALIQ_COFINS_SAIDA,'
+      #9'CST_PIS_COFINS_ENTRADA,'
+      #9'ALIQ_PIS_ENTRADA,'
+      #9'ALIQ_COFINS_ENTRADA,'
+      #9'REGISTRO'
+      'from PERFILTRIBUTACAO'
+      'where'
+      '  REGISTRO = :REGISTRO ')
+    SelectSQL.Strings = (
+      'Select'
+      '*'
+      'From PERFILTRIBUTACAO')
+    ModifySQL.Strings = (
+      'update PERFILTRIBUTACAO'
+      'set'
+      #9'DESCRICAO=:DESCRICAO,'
+      #9'TIPO_ITEM=:TIPO_ITEM,'
+      #9'IPPT=:IPPT,'
+      #9'IAT=:IAT,'
+      #9'PIVA=:PIVA,'
+      #9'CST=:CST,'
+      #9'CSOSN=:CSOSN,'
+      #9'ST=:ST,'
+      #9'CFOP=:CFOP,'
+      #9'CST_NFCE=:CST_NFCE,'
+      #9'CSOSN_NFCE=:CSOSN_NFCE,'
+      #9'ALIQUOTA_NFCE=:ALIQUOTA_NFCE,'
+      #9'CST_IPI=:CST_IPI,'
+      #9'IPI=:IPI,'
+      #9'ENQ_IPI=:ENQ_IPI,'
+      #9'CST_PIS_COFINS_SAIDA=:CST_PIS_COFINS_SAIDA,'
+      #9'ALIQ_PIS_SAIDA=:ALIQ_PIS_SAIDA,'
+      #9'ALIQ_COFINS_SAIDA=:ALIQ_COFINS_SAIDA,'
+      #9'CST_PIS_COFINS_ENTRADA=:CST_PIS_COFINS_ENTRADA,'
+      #9'ALIQ_PIS_ENTRADA=:ALIQ_PIS_ENTRADA,'
+      #9'ALIQ_COFINS_ENTRADA=:ALIQ_COFINS_ENTRADA'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 8
+    Top = 723
+    object ibdPerfilTributaDESCRICAO: TIBStringField
+      DisplayLabel = 'Descri'#231#227'o'
+      FieldName = 'DESCRICAO'
+      Origin = 'PERFILTRIBUTACAO.DESCRICAO'
+      OnSetText = ibdPerfilTributaDESCRICAOSetText
+      Size = 45
+    end
+    object ibdPerfilTributaTIPO_ITEM: TIBStringField
+      DisplayLabel = 'Tipo item'
+      FieldName = 'TIPO_ITEM'
+      Origin = 'PERFILTRIBUTACAO.TIPO_ITEM'
+      Size = 2
+    end
+    object ibdPerfilTributaIPPT: TIBStringField
+      FieldName = 'IPPT'
+      Origin = 'PERFILTRIBUTACAO.IPPT'
+      Size = 1
+    end
+    object ibdPerfilTributaIAT: TIBStringField
+      FieldName = 'IAT'
+      Origin = 'PERFILTRIBUTACAO.IAT'
+      Size = 1
+    end
+    object ibdPerfilTributaPIVA: TFloatField
+      DisplayLabel = 'IVA'
+      FieldName = 'PIVA'
+      Origin = 'PERFILTRIBUTACAO.PIVA'
+      DisplayFormat = '#,##0.00000'
+      EditFormat = '##0.00000'
+    end
+    object ibdPerfilTributaCST: TIBStringField
+      FieldName = 'CST'
+      Origin = 'PERFILTRIBUTACAO.CST'
+      Size = 3
+    end
+    object ibdPerfilTributaCSOSN: TIBStringField
+      FieldName = 'CSOSN'
+      Origin = 'PERFILTRIBUTACAO.CSOSN'
+      Size = 3
+    end
+    object ibdPerfilTributaST: TIBStringField
+      DisplayLabel = 'CIT'
+      FieldName = 'ST'
+      Origin = 'PERFILTRIBUTACAO.ST'
+      Size = 3
+    end
+    object ibdPerfilTributaCFOP: TIBStringField
+      DisplayLabel = 'CFOP NFC-e'
+      FieldName = 'CFOP'
+      Origin = 'PERFILTRIBUTACAO.CFOP'
+      Size = 4
+    end
+    object ibdPerfilTributaCST_NFCE: TIBStringField
+      DisplayLabel = 'CST para NFC-e'
+      FieldName = 'CST_NFCE'
+      Origin = 'PERFILTRIBUTACAO.CST_NFCE'
+      Size = 3
+    end
+    object ibdPerfilTributaCSOSN_NFCE: TIBStringField
+      DisplayLabel = 'CSOSN para NFC-e'
+      FieldName = 'CSOSN_NFCE'
+      Origin = 'PERFILTRIBUTACAO.CSOSN_NFCE'
+      Size = 3
+    end
+    object ibdPerfilTributaALIQUOTA_NFCE: TIBBCDField
+      DisplayLabel = 'Aliquota para NFC-e'
+      FieldName = 'ALIQUOTA_NFCE'
+      Origin = 'PERFILTRIBUTACAO.ALIQUOTA_NFCE'
+      DisplayFormat = '##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
+    object ibdPerfilTributaCST_IPI: TIBStringField
+      DisplayLabel = 'CST IPI'
+      FieldName = 'CST_IPI'
+      Origin = 'PERFILTRIBUTACAO.CST_IPI'
+      Size = 2
+    end
+    object ibdPerfilTributaIPI: TFloatField
+      DisplayLabel = '% IPI'
+      FieldName = 'IPI'
+      Origin = 'PERFILTRIBUTACAO.IPI'
+      DisplayFormat = '#0.00'
+      EditFormat = '#0.00'
+    end
+    object ibdPerfilTributaENQ_IPI: TIBStringField
+      DisplayLabel = 'Enq. IPI'
+      FieldName = 'ENQ_IPI'
+      Origin = 'PERFILTRIBUTACAO.ENQ_IPI'
+      Size = 3
+    end
+    object ibdPerfilTributaCST_PIS_COFINS_SAIDA: TIBStringField
+      DisplayLabel = 'CST PIS/COFINS Sa'#237'da'
+      FieldName = 'CST_PIS_COFINS_SAIDA'
+      Origin = 'PERFILTRIBUTACAO.CST_PIS_COFINS_SAIDA'
+      Size = 2
+    end
+    object ibdPerfilTributaALIQ_PIS_SAIDA: TIBBCDField
+      DisplayLabel = '% PIS Sa'#237'da'
+      FieldName = 'ALIQ_PIS_SAIDA'
+      Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_SAIDA'
+      DisplayFormat = '#0.0000'
+      EditFormat = '#0.0000'
+      Precision = 18
+      Size = 4
+    end
+    object ibdPerfilTributaALIQ_COFINS_SAIDA: TIBBCDField
+      DisplayLabel = '% COFINS Sa'#237'da'
+      FieldName = 'ALIQ_COFINS_SAIDA'
+      Origin = 'PERFILTRIBUTACAO.ALIQ_COFINS_SAIDA'
+      DisplayFormat = '#0.0000'
+      EditFormat = '#0.0000'
+      Precision = 18
+      Size = 4
+    end
+    object ibdPerfilTributaCST_PIS_COFINS_ENTRADA: TIBStringField
+      DisplayLabel = 'CST PIS/COFINS Entrada'
+      FieldName = 'CST_PIS_COFINS_ENTRADA'
+      Origin = 'PERFILTRIBUTACAO.CST_PIS_COFINS_ENTRADA'
+      Size = 2
+    end
+    object ibdPerfilTributaALIQ_PIS_ENTRADA: TIBBCDField
+      DisplayLabel = '% PIS Entrada'
+      FieldName = 'ALIQ_PIS_ENTRADA'
+      Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_ENTRADA'
+      DisplayFormat = '#0.0000'
+      EditFormat = '#0.0000'
+      Precision = 18
+      Size = 4
+    end
+    object ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField
+      DisplayLabel = '% COFINS Entrada'
+      FieldName = 'ALIQ_COFINS_ENTRADA'
+      Origin = 'PERFILTRIBUTACAO.ALIQ_COFINS_ENTRADA'
+      DisplayFormat = '#0.0000'
+      EditFormat = '#0.0000'
+      Precision = 18
+      Size = 4
+    end
+    object ibdPerfilTributaIDPERFILTRIBUTACAO: TIntegerField
+      FieldName = 'IDPERFILTRIBUTACAO'
+      Origin = 'PERFILTRIBUTACAO.IDPERFILTRIBUTACAO'
+      Required = True
+      Visible = False
+    end
+    object ibdPerfilTributaREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = 'PERFILTRIBUTACAO.REGISTRO'
       Required = True
       Visible = False
       Size = 10
