@@ -24552,6 +24552,12 @@ begin
 
             if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then
             begin
+
+              {Sandro Silva 2023-08-30 inicio}
+              sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
+              sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+              {Sandro Silva 2023-08-30 fim}
+
               //
               {Sandro Silva 2023-08-22 inicio
               Mais1ini := TIniFile.Create('FRENTE.INI');
@@ -34407,9 +34413,9 @@ begin
     Form1.sConveniado      := '';;
     Form1.sVendedor        := '';
     Form1.fDescontoNoTotal := 0.00;
-    Form1.fTEFPago         := 0.00;    
+    Form1.fTEFPago         := 0.00;
     //No final deixa zerado o número do cupom no frente.ini 
-    GravaNumeroCupomFrenteINI('000000', Form1.sModeloECF); // Sandro Silva 2023-08-31    
+    GravaNumeroCupomFrenteINI('000000', Form1.sModeloECF); // Sandro Silva 2023-08-31
   end;
 
   {
