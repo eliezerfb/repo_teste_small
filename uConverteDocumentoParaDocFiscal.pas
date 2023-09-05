@@ -141,7 +141,7 @@ begin
     Exit;
 
   {Sandro Silva 2023-08-29 inicio}
-  if (FModeloOld = '59') and (FModeloDocumento = '59') then
+  if ((FModeloOld = '59') and (FModeloDocumento = '59')) or ((FModeloOld = '65') and (FModeloDocumento = '65')) then // Sandro Silva 2023-09-05 if (FModeloOld = '59') and (FModeloDocumento = '59') then
     bPrecisarGerarNovoNumero := False;
   {Sandro Silva 2023-08-29 fim}
 
