@@ -2186,6 +2186,8 @@ type
     procedure LimparLinhaItemSemItem;
     procedure LimpaCamposItensNota;
     procedure DefineCaptionReceberPagar;
+    function TestarPodeExcluirOrcamento: Boolean;
+    procedure ExcluirOrcamento;
   public
     // Public declarations
 
@@ -2353,7 +2355,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
   , uArquivosDAT
-  , uSmallEnumerados, uNFSeINI;
+  , uSmallEnumerados, uNFSeINI
+  , uSmallResourceString;
 
 {$R *.DFM}
 
@@ -7828,7 +7831,60 @@ end;
 
 procedure TForm7.Image102Click(Sender: TObject);
 begin
-  if (sModulo <> 'OS') then Form21.Show;
+  if (sModulo = 'OS') then
+    Exit;
+
+  if (sModulo = 'ORCAMENTO') then
+  begin
+    ExcluirOrcamento;
+    Exit;
+  end;
+
+  Form21.Show;
+end;
+
+function TForm7.TestarPodeExcluirOrcamento: Boolean;
+begin
+  Result := False;
+
+  if IBDataSet97.FieldByName('Doc. Fiscal').AsString <> EmptyStr then
+  begin
+    Application.MessageBox(PChar(_cOrcamentoComDocFiscal), PChar(_cTituloMsg), MB_ICONINFORMATION + MB_OK);  
+    Exit;
+  end;
+    
+  Result := True;
+end;
+
+procedure TForm7.ExcluirOrcamento;
+var
+  nRecNo: Integer;
+begin
+  if TestarPodeExcluirOrcamento then
+  begin
+    if Application.MessageBox(PChar(_cMensagemExcluir), PChar(_cTituloMsg), MB_ICONQUESTION + MB_OKCANCEL + MB_DEFBUTTON1) = mrOk then
+    begin
+      IBDataSet97.DisableControls;
+      nRecNo := IBDataSet97.RecNo;
+      try
+        ibDataSet37.First;
+        while not ibDataSet37.Eof do
+        begin
+          if ibDataSet37PEDIDO.AsString = IBDataSet97.FieldByName('Orçamento').AsString then
+            ibDataSet37.Delete;
+
+          ibDataSet37.Next;
+        end;
+        Form7.Close;
+        Form7.Show;
+      finally
+//        IBDataSet97.Last;
+//        if IBDataSet97.RecordCount >= nRecNo then
+//          IBDataSet97.RecNo := nRecNo;
+        IBDataSet97.EnableControls;
+      end;
+    end;
+  end;
 end;
 
 procedure TForm7.Image103Click(Sender: TObject);
@@ -10818,6 +10874,9 @@ begin
         Form7.ibDataSet97.Open;
         Form7.ibDataSet97.EnableControls;
 
+        Form7.ibDataSet37.Close;
+        Form7.ibDataset37.Open;
+
         Form7.IBDataSet97.FieldByName('Registro').Visible := False;
 
         sAjuda := 'orcamento.htm';
@@ -11542,8 +11601,8 @@ begin
 
     if sModulo = 'ORCAMENTO' then
     begin
-      Image202.Visible := False;
-      Label202.Visible := False;
+      Image202.Visible := True;
+      Label202.Visible := True;
       Image206.Visible := False;
       Label206.Visible := False;
     end;
@@ -13076,7 +13135,7 @@ begin
     if sModulo = 'ORCAMENTO'  then
     begin
       Editar1.Visible := False;
-      Apagar2.Visible := False;
+      Apagar2.Visible := True;
     end;
     //
     if sModulo = 'OS'  then
