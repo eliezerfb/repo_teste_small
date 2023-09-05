@@ -3013,7 +3013,7 @@ var
   fAliquota : Real;
   fTotalMercadoria : Real;
   fPercentualFCP, fPercentualFCPST: Real; // Sandro Silva 2023-05-15
-  vICMSMonoRet_N45: Real; // Sandro Silva 2023-06-07
+  dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-07
 begin
   //Mauricio Parizotto 2023-04-03
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
@@ -4860,10 +4860,10 @@ begin
     Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
     dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value); // Sandro Silva 2023-09-04
     Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
-    vICMSMonoRet_N45       := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
-    // Sandro Silva 2023-09-04 dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + vICMSMonoRet_N45;
+    dvICMSMonoRet_N45       := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
+    // Sandro Silva 2023-09-04 dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + dvICMSMonoRet_N45;
 
-    Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
+    Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(dvICMSMonoRet_N45);
 
     dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value); // Sandro Silva 2023-09-04
   end;
