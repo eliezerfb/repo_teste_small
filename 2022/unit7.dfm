@@ -11500,7 +11500,7 @@ object Form7: TForm7
       
         '   CODIGO_FCI, IIA_UF, IIA_MUNI, ENQ_IPI, CEST, CSOSN_NFCE, CST_' +
         'NFCE, ALIQUOTA_NFCE, '
-      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS)'
+      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
       'values'
       
         '  (:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECEDOR, :MEDIDA' +
@@ -11535,7 +11535,9 @@ object Form7: TForm7
       
         '   :CODIGO_FCI, :IIA_UF, :IIA_MUNI, :ENQ_IPI, :CEST, :CSOSN_NFCE' +
         ', :CST_NFCE, '
-      '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS)')
+      
+        '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS, :IDP' +
+        'ERFILTRIBUTACAO)')
     RefreshSQL.Strings = (
       'Select '
       '  CODIGO,'
@@ -11613,7 +11615,8 @@ object Form7: TForm7
       '  CST_NFCE,'
       '  ALIQUOTA_NFCE,'
       '  MARKETPLACE,'
-      '  IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS,'
+      '  IDPERFILTRIBUTACAO'
       'from ESTOQUE '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -11698,7 +11701,8 @@ object Form7: TForm7
       '  CST_NFCE = :CST_NFCE,'
       '  ALIQUOTA_NFCE = :ALIQUOTA_NFCE,'
       '  MARKETPLACE = :MARKETPLACE,'
-      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
+      '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
+      '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -12254,6 +12258,11 @@ object Form7: TForm7
       Origin = 'ESTOQUE.IDENTIFICADORPLANOCONTAS'
       Visible = False
       Size = 10
+    end
+    object ibDataSet4IDPERFILTRIBUTACAO: TIntegerField
+      FieldName = 'IDPERFILTRIBUTACAO'
+      Origin = 'ESTOQUE.IDPERFILTRIBUTACAO'
+      Visible = False
     end
   end
   object DataSource4: TDataSource
@@ -21299,7 +21308,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'a\vm50a\'
+      'avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21334,7 +21343,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      '\vm50a\'
+      'vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21649,7 +21658,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21679,7 +21688,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

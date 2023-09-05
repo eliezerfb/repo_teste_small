@@ -1446,6 +1446,7 @@ type
     ibDataSet16CSOSN: TIBStringField;
     ibDataSet24IDENTIFICADORPLANOCONTAS: TIBStringField;
     ibDataSet4IDENTIFICADORPLANOCONTAS: TIBStringField;
+    ibDataSet4IDPERFILTRIBUTACAO: TIntegerField;
     ibDataSet16IDENTIFICADORPLANOCONTAS: TIBStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TIBStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
