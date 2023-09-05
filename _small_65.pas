@@ -875,6 +875,7 @@ var
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-05-19
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
+  sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-09-05
   //
   bOk: Boolean; // Sandro Silva 2015-06-02
   sLogErro: String; // Sandro Silva 2015-06-02
@@ -1299,6 +1300,7 @@ begin
         dvICMSDeson_W04a := 0.00; // Sandro Silva 2019-08-29
         dvICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
         dqBCMonoRet_N43aTotal  := 0.00; // Sandro Silva 2023-09-04
+        sMensagemIcmMonofasicoSobreCombustiveis := '';
         //
         // TOTAL Sem o Desconto
         //
@@ -1951,6 +1953,8 @@ begin
                 if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61') then
                 begin
 
+                  sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;'; // Sandro Silva 2023-09-05
+
                   Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
                   Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
 
@@ -2311,10 +2315,14 @@ begin
         //
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := xmlNodeValue(Form1.ibDataset150.FieldByName('NFEXML').AsString, '//infAdic/infCpl');
 
-        {Sandro Silva 2023-06-01 inicio}
+        {Sandro Silva 2023-09-05 inicio
         if (dvICMSMonoRet_N45Total > 0.00) and (AnsiContainsText(Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value, 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;') = False) then
             Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
-        {Sandro Silva 2023-06-01 fim}
+        }
+        if (sMensagemIcmMonofasicoSobreCombustiveis <> '') and (AnsiContainsText(Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value, sMensagemIcmMonofasicoSobreCombustiveis) = False) then
+          Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
+        {Sandro Silva 2023-09-05 fim}
+
         //
         // SAIDA
         //
@@ -2474,6 +2482,7 @@ var
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-05-19
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
   dqBCMonoRet_N43aTotal: Real; // Sandro Silva 2023-09-04
+  sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-09-05  
   //
   bOk: Boolean; // Sandro Silva 2015-06-02
   sLogErro: String; // Sandro Silva 2015-06-02
@@ -3075,6 +3084,7 @@ begin
       dvICMSDeson_W04a      := 0.00; // Sandro Silva 2019-08-29
       dvICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
       dqBCMonoRet_N43aTotal  := 0.00; // Sandro Silva 2023-09-04
+      sMensagemIcmMonofasicoSobreCombustiveis := ''; // Sandro Silva 2023-09-05      
       //
       // TOTAL Sem o Desconto
       //
@@ -3727,6 +3737,8 @@ begin
               // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
               if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '61') then
               begin
+
+                sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;'; // Sandro Silva 2023-09-05
 
                 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
                 Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
@@ -4394,8 +4406,14 @@ begin
       if Trim(sDadosTransacaoEletronicaNoComplemento) <> '' then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sDadosTransacaoEletronicaNoComplemento; // Sandro Silva 2023-03-28
 
+      {Sandro Silva 2023-09-05 inicio
       if dvICMSMonoRet_N45Total > 0.00 then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
+      }
+      if (sMensagemIcmMonofasicoSobreCombustiveis <> '') and (AnsiContainsText(Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value, sMensagemIcmMonofasicoSobreCombustiveis) = False) then
+        Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
+      {Sandro Silva 2023-09-05 fim}
+
       {Sandro Silva 2023-05-19 fim}
 
       //
