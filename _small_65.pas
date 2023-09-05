@@ -3732,7 +3732,7 @@ begin
                 Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := FormatFloatXML(dvICMS_N17);  // Valor do ICMS em Reais
 
                 Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').Value  := Form1.spdNFCeDataSets1.Campo('qCom_I10').Value;
-                dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + StrToFloatDef(Form1.spdNFCeDataSets1.Campo('qCom_I10').AsString, 0.00);
+                dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qCom_I10').AsString);
                 Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form1.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
                 dvICMSMonoRet_N45      := XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form1.spdNFCeDataSets1.Campo('adRemICMSRet_N44').AsString);
                 // Sandro Silva 2023-09-05 dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + dvICMSMonoRet_N45;
