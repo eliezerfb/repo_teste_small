@@ -38,11 +38,41 @@ var
   dTotalTransacionado: Currency; // Double;
   iTotalParcelas: Integer; // Sandro Silva 2017-08-28 Soma de todas as parcelas dos cartões usados
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
+  FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
+  procedure RecuperaValoresFormasExtras;
+  begin
+    // Quando transaciona mais que um cartão na mesma venda e informa valores nas formas extras,
+    // esses valores da se perdem porque a rotina qua controla o que falta pagar joga a diferença do cartão para a forma dinheiro
+    // Recupera os valores lançados nas formas extras
+    Form1.ibDataSet25.FieldByName('VALOR01').AsFloat := FormasExtras.Extra1;
+    Form1.ibDataSet25.FieldByName('VALOR02').AsFloat := FormasExtras.Extra2;
+    Form1.ibDataSet25.FieldByName('VALOR03').AsFloat := FormasExtras.Extra3;
+    Form1.ibDataSet25.FieldByName('VALOR04').AsFloat := FormasExtras.Extra4;
+    Form1.ibDataSet25.FieldByName('VALOR05').AsFloat := FormasExtras.Extra5;
+    Form1.ibDataSet25.FieldByName('VALOR06').AsFloat := FormasExtras.Extra6;
+    Form1.ibDataSet25.FieldByName('VALOR07').AsFloat := FormasExtras.Extra7;
+    Form1.ibDataSet25.FieldByName('VALOR08').AsFloat := FormasExtras.Extra8;
+  end;
 begin
   //
   // Usando PoS para transação com cartão
   //
   Result := False; // Sandro Silva 2017-05-20
+
+
+  {Sandro Silva 2023-08-21 inicio}
+  FormasExtras := TPagamentoPDV.Create; // Sandro Silva 2023-09-05 FormasExtras := TFormasExtras.Create;// Sandro Silva 2023-08-21
+
+  FormasExtras.Extra1 := Form1.ibDataSet25.FieldByName('VALOR01').AsFloat;
+  FormasExtras.Extra2 := Form1.ibDataSet25.FieldByName('VALOR02').AsFloat;
+  FormasExtras.Extra3 := Form1.ibDataSet25.FieldByName('VALOR03').AsFloat;
+  FormasExtras.Extra4 := Form1.ibDataSet25.FieldByName('VALOR04').AsFloat;
+  FormasExtras.Extra5 := Form1.ibDataSet25.FieldByName('VALOR05').AsFloat;
+  FormasExtras.Extra6 := Form1.ibDataSet25.FieldByName('VALOR06').AsFloat;
+  FormasExtras.Extra7 := Form1.ibDataSet25.FieldByName('VALOR07').AsFloat;
+  FormasExtras.Extra8 := Form1.ibDataSet25.FieldByName('VALOR08').AsFloat;
+  {Sandro Silva 2023-08-21 fim}
+
 
   dTotalEmCartao      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat;
   dTotalTransacionado := 0.00;
@@ -292,7 +322,7 @@ begin
                   Form1.ibDataSet7.Append;
                   Form1.ibDataSet7.FieldByName('NOME').AsString         := StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO','');
                   if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then
-                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, caixa ' + Form1.sCaixa + ' Autor.' + Form1.sTransaca
+                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransaca
                   else
                     Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
                   Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas); // documento
@@ -351,6 +381,7 @@ begin
           if Form1.ibDataSet25.State in [dsEdit, dsInsert] = False then
             Form1.ibDataSet25.Edit;
           Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := dTotalTransacionado; // Sandro Silva 2017-06-16
+          RecuperaValoresFormasExtras; // Sandro Silva 2023-09-05
         end;
         //
       end;// if dValorPagarCartao = 0 then

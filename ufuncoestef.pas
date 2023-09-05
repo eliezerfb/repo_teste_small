@@ -46,7 +46,7 @@ uses
   , uajustaresolucao
 
   ;
-
+{Sandro Silva 2023-09-05 inicio
 type
   TFormasExtras = class
   private
@@ -68,6 +68,7 @@ type
     property Extra7: Double read FExtra7 write FExtra7;
     property Extra8: Double read FExtra8 write FExtra8;
   end;
+}
 
 procedure ValidaDiretorioTEF(sDirTef: String; sDirReq: String; sDirResp: String); // Sandro Silva 2020-08-20
 begin
@@ -277,7 +278,7 @@ var
   dValorDuplReceber: Currency; // Sandro Silva 2018-04-25
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
   sRespostaTef: String; // Para capturar linhas da resposta do tef
-  FormasExtras: TFormasExtras;
+  FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
   procedure RecuperaValoresFormasExtras;
   begin
     // Quando transaciona mais que um cartão na mesma venda e informa valores nas formas extras,
@@ -300,7 +301,7 @@ begin
   bIniciarTEF := True;
 
   {Sandro Silva 2023-08-21 inicio}
-  FormasExtras := TFormasExtras.Create;// Sandro Silva 2023-08-21
+  FormasExtras := TPagamentoPDV.Create; // Sandro Silva 2023-09-05 FormasExtras := TFormasExtras.Create;// Sandro Silva 2023-08-21
 
   FormasExtras.Extra1 := Form1.ibDataSet25.FieldByName('VALOR01').AsFloat;
   FormasExtras.Extra2 := Form1.ibDataSet25.FieldByName('VALOR02').AsFloat;
