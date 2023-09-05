@@ -7,6 +7,7 @@ uses
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, SmallFunc, DB, DBCtrls,
   SMALL_DBEdit, IniFiles, ShellApi, FileCtrl, jpeg, frame_teclado_1,
   Buttons, htmlhelp
+  , StrUtils
   , uajustaresolucao
   ;
 
@@ -237,8 +238,10 @@ begin
       end;
     end;
     //
-    if Form1.sGaveta = '255' then Form1.Label_7.Caption := 'Gaveta aberta' else
-           Form1.Label_7.Caption := '';
+    if Form1.sGaveta = '255' then
+      Form1.Label_7.Caption := 'Gaveta aberta'
+    else
+      Form1.Label_7.Caption := '';
     //
   end;
   /////////////////
@@ -319,7 +322,8 @@ end;
 
 procedure TForm2.DBGrid2KeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = chr(13) then Form2.DBGrid2DblClick(Sender);
+  if Key = chr(13) then
+    Form2.DBGrid2DblClick(Sender);
 end;
 
 procedure TForm2.SMALL_DBEdit2KeyDown(Sender: TObject; var Key: Word;
@@ -601,7 +605,8 @@ begin
                       +Chr(10)
                       +'Limite de crédito: '+Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[Form1.ibDataSet2.FieldByName('CREDITO').AsFloat]) + '                ' + Chr(10)
                       +'Contas a receber: '+Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[(-Form1.ibDataSet2.FieldByName('CREDITO').AsFloat + Form1.ibDataSet25.FieldByName('RECEBER').AsFloat + fCredito)*-1]) + Chr(10)
-                      +'Total da venda: '+Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]) + Chr(10)
+                      + ifThen(Form1.sModeloECF_Reserva = '99', 'Total do movimento: ', 'Total da venda: ')+ // Sandro Silva 2023-06-23 +'Total da venda: '+
+                      Chr(9)+Chr(9)+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]) + Chr(10)
                       +Chr(10)
                       +'Limite de crédito excedido em: '+Chr(9)+'R$'+Chr(9)+Format('%10.2n',[(fCredito)*-1])
                       + Chr(10));
@@ -796,42 +801,50 @@ end;
 
 procedure TForm2.SMALL_DBEdit9Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR01').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR01').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR01').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR01').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit10Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR02').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR02').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR02').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR02').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit11Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR03').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR03').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR03').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR03').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit12Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR04').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR04').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR04').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR04').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit13Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR05').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR05').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR05').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR05').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit14Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR06').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR06').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR06').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR06').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit15Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR07').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR07').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR07').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR07').AsFloat := 0;
 end;
 
 procedure TForm2.SMALL_DBEdit16Exit(Sender: TObject);
 begin
-  if Form1.ibDataSet25.FieldByname('VALOR08').AsFloat <= 0 then Form1.ibDataSet25.FieldByname('VALOR08').AsFloat := 0;
+  if Form1.ibDataSet25.FieldByname('VALOR08').AsFloat <= 0 then
+    Form1.ibDataSet25.FieldByname('VALOR08').AsFloat := 0;
 end;
 
 procedure TForm2.Button5Click(Sender: TObject);
@@ -1171,7 +1184,7 @@ begin
       Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat    := 0;
       Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat    := 0;
       Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.sConveniado;
-      Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda caixa: '+Form1.sCaixa+' Cupom: '+FormataNumeroDoCupom(Form1.iCupom);
+      Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda Caixa: '+Form1.sCaixa+' Cupom: '+FormataNumeroDoCupom(Form1.iCupom);
       Form1.ibDataSet7.FieldByName('CONTA').AsString        := Form1.ibDataSet14.FieldByname('CONTA').AsString;
       //
       if I = 1 then Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo4));
@@ -2100,7 +2113,7 @@ end;
 
 procedure TForm2.SMALL_DBEdit2Enter(Sender: TObject);
 begin
-  with Sender as TDBEdit do SelectAll;
+  TDBEdit(Sender).SelectAll;
 end;
 
 procedure TForm2.touch_F8Click(Sender: TObject);
@@ -2190,7 +2203,7 @@ begin
   Form1.bVolta := False;
   Form2.Close;
   Panel3.Visible := False;
-  Form1.Label_10.Caption := Form1.sStatusECF;
+  Form1.lbDisplayPDV.Caption := Form1.sStatusECF;
   //
 end;
 

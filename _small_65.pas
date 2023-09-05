@@ -2505,6 +2505,7 @@ var
   sStatusServico: String; // Sandro Silva 2019-08-09
   sMensagemAlertaUsoDenegado: String; // Sandro Silva 2020-05-21
   sDadosTransacaoEletronicaNoComplemento: String; // Sandro Silva 2023-03-28
+  sNumeroGerencialConvertido: String; // Sandro Silva 2023-07-20
   function EncontraItemDataSet(sItemRejeicao: String): String;
   begin
 
@@ -3048,18 +3049,18 @@ begin
       _ecf65_AdicionaCNPJCOntabilidade(Form1.spdNFCeDataSets1); // Sandro Silva 2020-09-01
 
       //
-      fTotalTributos   := 0;
-      fValorProdutos   := 0;
-      fDesconto        := 0;
-      rBaseICMS        := 0;
-      rValorICMS       := 0;
-      I                := 0;
-      dvOutro_W15      := 0; //2015-12-10
-      dvServ_W18       := 0; //2015-12-10
-      dvBC_W19         := 0; //2015-12-10
-      dvISS_W20        := 0; //2015-12-10
-      dvFCP_W04h       := 0; // Sandro Silva 2018-02-19
-      dvICMSDeson_W04a := 0.00; // Sandro Silva 2019-08-29
+      fTotalTributos        := 0;
+      fValorProdutos        := 0;
+      fDesconto             := 0;
+      rBaseICMS             := 0;
+      rValorICMS            := 0;
+      I                     := 0;
+      dvOutro_W15           := 0; //2015-12-10
+      dvServ_W18            := 0; //2015-12-10
+      dvBC_W19              := 0; //2015-12-10
+      dvISS_W20             := 0; //2015-12-10
+      dvFCP_W04h            := 0; // Sandro Silva 2018-02-19
+      dvICMSDeson_W04a      := 0.00; // Sandro Silva 2019-08-29
       vICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-05-19
       //
       // TOTAL Sem o Desconto
@@ -4002,14 +4003,14 @@ begin
       end;
 
       //
-      Form1.spdNFCeDataSets1.Campo('vII_W11').Value      := '0.00'; // Valor Total do II
-      Form1.spdNFCeDataSets1.Campo('vIPI_W12').Value     := '0.00'; // Valor Total do IPI
+      Form1.spdNFCeDataSets1.Campo('vII_W11').Value        := '0.00'; // Valor Total do II
+      Form1.spdNFCeDataSets1.Campo('vIPI_W12').Value       := '0.00'; // Valor Total do IPI
 
-      Form1.spdNFCeDataSets1.campo('vIPIDevol_W12a').Value  := '0.00';//Novo
-      Form1.spdNFCeDataSets1.Campo('vPIS_W13').Value     := FormatFloatXML(dvPIS_W13); // Sandro Silva 2016-09-30  '0.00'; // Valor Toal do PIS
-      Form1.spdNFCeDataSets1.Campo('vCOFINS_W14').Value  := FormatFloatXML(dvCofins_W14); // Sandro Silva 2016-09-30  '0.00'; // Valor Total do COFINS
-      Form1.spdNFCeDataSets1.Campo('vNF_W16').Value      := StrTran(Alltrim(FormatFloat('##0.00',fValorProdutos + dvServ_W18 - fDesconto + dvOutro_W15)),',','.'); // Valor Total da NFe - Versão Trial só aceita NF até R$ 1.00
-      Form1.spdNFCeDataSets1.Campo('modFrete_X02').Value := '9'; //Modalidade do frete: 0- Por conta do emitente; 1- Por conta do destinatário/remetente; 2- Por conta de terceiros; 9- Sem frete.
+      Form1.spdNFCeDataSets1.campo('vIPIDevol_W12a').Value := '0.00';//Novo
+      Form1.spdNFCeDataSets1.Campo('vPIS_W13').Value       := FormatFloatXML(dvPIS_W13); // Sandro Silva 2016-09-30  '0.00'; // Valor Toal do PIS
+      Form1.spdNFCeDataSets1.Campo('vCOFINS_W14').Value    := FormatFloatXML(dvCofins_W14); // Sandro Silva 2016-09-30  '0.00'; // Valor Total do COFINS
+      Form1.spdNFCeDataSets1.Campo('vNF_W16').Value        := StrTran(Alltrim(FormatFloat('##0.00',fValorProdutos + dvServ_W18 - fDesconto + dvOutro_W15)),',','.'); // Valor Total da NFe - Versão Trial só aceita NF até R$ 1.00
+      Form1.spdNFCeDataSets1.Campo('modFrete_X02').Value   := '9'; //Modalidade do frete: 0- Por conta do emitente; 1- Por conta do destinatário/remetente; 2- Por conta de terceiros; 9- Sem frete.
       //
       // Valor Aproximado dos Tributos IIA Indicie de Imposto Aproximado
       //
@@ -4623,15 +4624,22 @@ begin
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
                 Form1.ibDataset150.Open;
+                {Sandro Silva 2023-07-20 inicio}
+                sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+                {Sandro Silva 2023-07-20 fim}
                 Form1.ibDataset150.Delete;
 
-                //
                 Form1.ibDataset150.Close;
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-12-02 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(Form1.sCaixa));
                 Form1.ibDataset150.Open;
-                //
+
                 Form1.IBDataSet150.Append;
+                {Sandro Silva 2023-07-20 inicio}
+                if sNumeroGerencialConvertido <> '' then
+                  Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNumeroGerencialConvertido;
+                {Sandro Silva 2023-07-20 fim}
+
                 if Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) > 0 then
                   Form1.IBDataSet150.FieldByName('NFEXML').AsString := fNFE //  Tentando transmitir contingência com falha de schema
                 else
@@ -4844,7 +4852,7 @@ begin
 
                 Form1.ibDataset150.Close;
                 Form1.ibDataset150.SelectSql.Clear;
-                Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+                Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
                 Form1.ibDataset150.Open;
 
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
@@ -4866,7 +4874,12 @@ begin
 
                   try
                     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
+                    begin
+                      {Sandro Silva 2023-07-20 inicio}
+                      sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+                      {Sandro Silva 2023-07-20 fim}
                       Form1.ibDataset150.Delete;
+                    end;
                   except
                   end;
 
@@ -4879,6 +4892,11 @@ begin
                 Form1.ibDataset150.Open;
                 //
                 Form1.IBDataSet150.Append;
+
+                {Sandro Silva 2023-07-20 inicio}
+                if sNumeroGerencialConvertido <> '' then
+                  Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNumeroGerencialConvertido;
+                {Sandro Silva 2023-07-20 fim}
 
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
                 begin
@@ -4902,12 +4920,16 @@ begin
                 Form1.IBDataSet150.FieldByName('MODELO').AsString   := '65';
                 Form1.IBDataSet150.Post;
 
-                //
+                {Sandro Silva 2023-08-22 inicio
                 Mais1ini  := TIniFile.Create('FRENTE.INI');
                 Mais1Ini.WriteString('NFCE', 'CUPOM', sNovoNumero);
                 Mais1Ini.Free;
+                }
+                GravaNumeroCupomFrenteINI(sNovoNumero, '65');
+                {Sandro Silva 2023-08-22 fim}
 
-                AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sNovoNumero, 'Fechada');
+
+                Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sNovoNumero, 'Fechada');
 
                 //
                 if FormataNumeroDoCupom(Form1.iCupom) <> sNovoNumero then // Sandro Silva 2021-11-29 if StrZero(Form1.iCupom,6,0) <> sNovoNumero then
@@ -5193,6 +5215,10 @@ begin
           Form1.ibDataset150.Open;
           if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
           begin
+            {Sandro Silva 2023-07-20 inicio}
+            sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+            {Sandro Silva 2023-07-20 fim}
+
             Form1.ibDataset150.Delete;
           end;
         except
@@ -5205,6 +5231,12 @@ begin
         Form1.ibDataset150.Open;
         //
         Form1.IBDataSet150.Append;
+
+        {Sandro Silva 2023-07-20 inicio}
+        if sNumeroGerencialConvertido <> '' then
+          Form1.IBDataSet150.FieldByName('GERENCIAL').AsString := sNumeroGerencialConvertido;
+        {Sandro Silva 2023-07-20 fim}
+
         Form1.IBDataSet150.FieldByName('NFEID').AsString    := sID;
         if Pos('<nNF>'+IntToStr(Form1.iCupom)+'</nNF>',fNFe) <> 0 then
           Form1.IBDataSet150.FieldByName('NFEXML').AsString := fNFe;
@@ -5335,9 +5367,14 @@ begin
 
         Form1.SetIconSysTrayIcone('small2.ico');
 
+        {Sandro Silva 2023-08-22 inicio
         Mais1ini := TIniFile.Create('FRENTE.INI');
-        Mais1Ini.WriteString('NFCE','CUPOM', FormataNumeroDoCupom(0)); // Sandro Silva 2021-12-02 Mais1Ini.WriteString('NFCE','CUPOM', '000000');
+        Mais1Ini.WriteString('NFCE','CUPOM', FormataNumeroDoCupom(0));
         Mais1ini.Free;
+        }
+        GravaNumeroCupomFrenteINI(FormataNumeroDoCupom(0), '65'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}
+
 
         Form1.IBDataSet150.Close;
 
@@ -6723,24 +6760,33 @@ begin
 
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
-        Form1.IBDataSet150.FieldByName('CAIXA').AsString  := Form1.sCaixa;
-        Form1.IBDataSet150.FieldByName('MODELO').AsString := '65';
+        Form1.IBDataSet150.FieldByName('CAIXA').AsString    := Form1.sCaixa;
+        Form1.IBDataSet150.FieldByName('MODELO').AsString   := '65';
 
         Form1.IBDataSet150.Post;
 
-        //
+        {Sandro Silva 2023-08-22 inicio
         Mais1Ini.WriteString('NFCE','CUPOM',Result);
-        //
+        }
+        GravaNumeroCupomFrenteINI(Result, '65'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}
+
       except end;
     end else
     begin
-      //
+      {Sandro Silva 2023-08-22 inicio
       try
-        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1)))); // Sandro Silva 2021-12-02 Result := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1))));
       except
         Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
       end;
-      //
+      }
+      try
+        Result := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('65', FormataNumeroDoCupom(1))));
+      except
+        Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
+      end;
+      {Sandro Silva 2023-08-22 fim}
     end;
     //
     Mais1Ini.Free;
@@ -7169,16 +7215,23 @@ var
   sCupom   : String;
 begin
   Result := False;// Sempre começa como falso. Verdadeiro somente se encontrar pendente
-  //
+  {Sandro Silva 2023-08-22 inicio
   Mais1ini  := TIniFile.Create('FRENTE.INI');
   //
   try
-    sCupom := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001'))); // Sandro Silva 2021-12-02 sCupom := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+    sCupom := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')));
   except
     sCupom := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sCupom := '000000';
   end;
   //
   Mais1Ini.Free;
+  }
+  try
+    sCupom := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('65', '000001')));
+  except
+    sCupom := FormataNumeroDoCupom(0);
+  end;
+  {Sandro Silva 2023-08-22 fim}
 
   sCupom := FormataNumeroDoCupom(StrToInt(sCupom)); // Sandro Silva 2021-12-01
   //
@@ -9826,10 +9879,13 @@ begin
       end;
       {Sandro Silva 2021-11-03 fim}
       
-      //
+      {Sandro Silva 2023-08-22 inicio
       Mais1ini  := TIniFile.Create('FRENTE.INI');
       Mais1Ini.WriteString('NFCE', 'CUPOM', sNovoNumero);
       Mais1Ini.Free;
+      }
+      GravaNumeroCupomFrenteINI(sNovoNumero, '65'); // Sandro Silva 2023-08-22
+      {Sandro Silva 2023-08-22 fim}     
 
       if sNumeroOrcamento <> '' then
       begin
@@ -9843,7 +9899,7 @@ begin
         sTIPODAV := 'OS';
       end;
 
-      AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixa, sCaixa, sNovoNumero, 'Fechada');
+      Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixa, sCaixa, sNovoNumero, 'Fechada');
 
       //
       if FormataNumeroDoCupom(Form1.iCupom) <> sNovoNumero then // Sandro Silva 2021-11-29 if StrZero(Form1.iCupom,6,0) <> sNovoNumero then

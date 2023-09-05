@@ -49,7 +49,7 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Edit1: TEdit
+  object edPesquisa: TEdit
     Left = 20
     Top = 110
     Width = 981
@@ -64,7 +64,7 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
     ParentCtl3D = False
     ParentFont = False
     TabOrder = 0
-    OnKeyDown = Edit1KeyDown
+    OnKeyDown = edPesquisaKeyDown
   end
   object Button1: TBitBtn
     Left = 358
@@ -172,6 +172,7 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
     TitleFont.Height = -13
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
+    OnCellClick = DBGrid1CellClick
     OnDrawColumnCell = DBGrid1DrawColumnCell
     OnDblClick = DBGrid1DblClick
   end

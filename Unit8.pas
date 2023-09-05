@@ -844,6 +844,7 @@ procedure TForm8.FormActivate(Sender: TObject);
 begin
   Form8.Caption  := 'Transferência de ' + Form1.sMesasOuContas; // 2015-09-12
   {Sandro Silva 2020-12-07 inicio}
+  //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
   if PAFNFCe then
     Form8.Caption := Form8.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
   {Sandro Silva 2020-12-07 fim}

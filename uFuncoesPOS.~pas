@@ -9,7 +9,6 @@ uses
   , Controls
   , Windows
   , DB
-  , Math
   , uclassetransacaocartao
   ;
 

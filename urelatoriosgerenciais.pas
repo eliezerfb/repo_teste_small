@@ -392,7 +392,7 @@ begin
           ' and coalesce(P.CLIFOR,''X'')<>''Suprimento'' ' +
           ' and P.FORMA not containing ''Entrada'' ' + // Sandro Silva 2016-03-14 POLIMIG homologa gerando nf-e entrada listando no REGISTROS DO PAF A2
           ' and P.FORMA not containing ''NF-e'' ' + // Sandro Silva 2016-07-13 Não listar as NF-e emitidas pelo Small Commerce
-          ' and (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ') ' + // Sandro Silva 2021-09-09 Ficha 5499 ' and (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'') ' + // Sandro Silva 2018-08-15
+          ' and (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ') ' + // Sandro Silva 2021-09-09 Ficha 5499 ' and (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'') ' + // Sandro Silva 2018-08-15
           ' order by P.DATA, P.CAIXA, P.REGISTRO';
       if (Form1.sModeloECF = '99') then
         Form1.ibDataSet99.SelectSQL.Text :=
@@ -647,7 +647,7 @@ begin
   //  auxiliar criptografado, inacessível.    //
   //----------------------------------------- //
   if (Form1.sModeloECF = '59') or ((Form1.sModeloECF = '65') and (PAFNFCe = False)) or (Form1.sModeloECF = '99') then // Sandro Silva 2020-12-15 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-    sOrcame := Form1.ImportarDaPesquisa('ORCA') // Sandro Silva 2019-07-12
+    sOrcame := Form1.ImportarDaPesquisa(tpPesquisaOrca) // Sandro Silva 2019-07-12
   else
     sOrcame := StrZero(StrToInt('0'+Limpanumero(Form1.Small_InputBox('Imprimir orçamento...','Número do orçamento:',''))),10,0);
   //
@@ -900,7 +900,7 @@ begin
           'join NFCE on NFCE.NUMERONF = A.PEDIDO and NFCE.CAIXA = A.CAIXA ' +
           'left join ESTOQUE E on E.CODIGO = A.CODIGO ' +
           'where (A.TIPO = ''CANCEL'' or A.TIPO = ''CANLOK'' or A.TIPO = ''KOLNAC'') ' +
-          ' and (NFCE.STATUS containing ''autoriza'' or NFCE.STATUS containing ''Emitido com sucesso'' or coalesce(NFCE.STATUS, '''') = '''' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ' ) ' + // Sandro Silva 2021-09-09 Ficha 5499 ' and (NFCE.STATUS containing ''autoriza'' or NFCE.STATUS containing ''Emitido com sucesso'' or coalesce(NFCE.STATUS, '''') = '''' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ' ) ' +
+          ' and (NFCE.STATUS containing ''autoriza'' or NFCE.STATUS containing ''Emitido com sucesso'' or coalesce(NFCE.STATUS, '''') = '''' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' + // Sandro Silva 2021-09-09 Ficha 5499 ' and (NFCE.STATUS containing ''autoriza'' or NFCE.STATUS containing ''Emitido com sucesso'' or coalesce(NFCE.STATUS, '''') = '''' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ) ' +
           ' and A.DESCRICAO <> ''Desconto'' ' +
           ' and A.DESCRICAO <> ''Acréscimo'' ';
 
@@ -941,20 +941,20 @@ begin
             'select distinct NFCE.DATA, NFCE.CAIXA, NFCE.NUMERONF, NFCE.MODELO ' +
             'from NFCE ' +
             'join ALTERACA A on A.PEDIDO = NFCE.NUMERONF and A.CAIXA = NFCE.CAIXA ' +
-            'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ') ' + // Sandro Silva 2021-09-09 'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ') ' +
+            'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ') ' + // Sandro Silva 2021-09-09 'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ') ' +
             ' and cast(NFCE.DATA || '' '' || A.HORA as timestamp) between cast(' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpMovimentoDia.Date)) + ' || '' '' || ' + QuotedStr(FormatDateTime('HH:nn:00', Form7.dtpMovimentoHoraI.Time)) + ' as timestamp) and cast(' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpMovimentoDiaF.Date)) + ' || '' '' || ' + QuotedStr(FormatDateTime('HH:nn:59', Form7.dtpMovimentoHoraF.Time)) + ' as timestamp) '
         else
           IBQNFCE.SQL.Text :=
             'select NFCE.DATA, NFCE.CAIXA, NFCE.NUMERONF ' +
             'from NFCE ' +
-            'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ') ' + // Sandro Silva 2021-09-09 'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ') ' +
+            'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ') ' + // Sandro Silva 2021-09-09 'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ') ' +
             ' and NFCE.DATA >= ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpMovimentoDia.Date)) + ' and NFCE.DATA <= ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpMovimentoDiaF.Date));
         }
         IBQNFCE.SQL.Text :=
           'select distinct NFCE.DATA, NFCE.CAIXA, NFCE.NUMERONF, NFCE.MODELO ' +
           'from NFCE ' +
           'join ALTERACA A on A.PEDIDO = NFCE.NUMERONF and A.CAIXA = NFCE.CAIXA ' +
-          'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ') ';
+          'where (NFCE.STATUS containing ''Autorizad'' or NFCE.STATUS containing ''Emitido com sucesso'' or NFCE.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or NFCE.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ') ';
 
         if bNaHora then
           IBQNFCE.SQL.Add(' and cast(NFCE.DATA || '' '' || A.HORA as timestamp) between cast(' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpMovimentoDia.Date)) + ' || '' '' || ' + QuotedStr(FormatDateTime('HH:nn:00', Form7.dtpMovimentoHoraI.Time)) + ' as timestamp) and cast(' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpMovimentoDiaF.Date)) + ' || '' '' || ' + QuotedStr(FormatDateTime('HH:nn:59', Form7.dtpMovimentoHoraF.Time)) + ' as timestamp) ')
@@ -1574,7 +1574,14 @@ begin
         slMovimento.Sorted := True;
         slMovimento.Sort;
 
-       sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais
+        {Sandro Silva 2023-06-23 inicio}
+        if Form1.sModeloECF_Reserva = '99' then
+        begin
+          slMovimento.Text := StringReplace(slMovimento.Text, 'Venda ', 'Movim.', [rfReplaceAll]);  
+        end;
+        {Sandro Silva 2023-06-23 fim}
+
+        sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais
           // Sandro Silva 2018-03-21  + '-----------------------------------------------' + Chr(10)
           + ImprimeTracos() + Chr(10)
           + 'Movimento do dia: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpMovimentoDia.Date) + ' a ' + FormatDateTime('dd/mm/yyyy', Form7.dtpMovimentoDiaF.Date) + chr(10);
@@ -2071,7 +2078,7 @@ begin
                               ' and coalesce(P.CCF, '''') <> '''' ' + // Sangria e Suprimento tem CCF vazio
       'where N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtInicio)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtFinal)) +
       // Sandro Silva 2020-09-28  ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' ) ' + // Ficha 4819 Sandro Silva 2020-02-18 ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' ) ' +
-      ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ' ) ' + // Ficha 4819 Sandro Silva 2020-02-18 ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' ) ' +
+      ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' + // Ficha 4819 Sandro Silva 2020-02-18 ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' ) ' +
       ' and (N.STATUS not containing ''Rejei'') ' +
       ' and coalesce(P.VALOR, 0) > 0 ';
     if sCaixa <> '' then
@@ -2311,7 +2318,7 @@ begin
       ' and (A.TIPO = ''BALCAO'' or TIPO = ''LOKED'') ' +
       ' and A.PEDIDO in (select N.NUMERONF ' +
                         'from NFCE N ' +
-                        'where (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ' ) ' + // Sandro Silva 2021-09-09 Ficha 5499 'where (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(VENDA_MEI_FINALIZADA) + ' ) ' +
+                        'where (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' + // Sandro Silva 2021-09-09 Ficha 5499 'where (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' ) ' +
                         ' and N.MODELO = ' + QuotedStr(sModelo) +
                         ' and (N.STATUS not containing ''Rejei'')) ';
     if sCaixa <> '' then

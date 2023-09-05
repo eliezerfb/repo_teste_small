@@ -31,6 +31,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   {$ENDIF}
   , ExtCtrls
   , DBClient
+//  , StdCtrls
   , uconstantes_chaves_privadas
   //, uClasseValidaRecursos
   , uValidaRecursosDelphi7
@@ -40,6 +41,8 @@ const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'
 const CHAVE_PUBLICA = 'DF9F4DC6AF517A889BCE1181DEF8394455DBCD19768E8C785D9121E8DB9B9B104E5231EE8F8299D24451465178D3FC41D40DAFAF9C855824393FC964C747'+
                       '5C3993104443E8E73333D93C24E5D46B27D9A4DF5E6F0B05490B6C6829CEFA1030294DABC29E498A0F6096E8CE26B407B2E1B4939FDE6174EC1621BB3E988D29742D';
 
+const TEXTO_CAIXA_LIVRE            = 'CAIXA LIVRE';
+const TEXTO_CAIXA_EM_VENDA         = 'EM VENDA';
 
 const COR_AZUL = $00EAB231; // Sandro Silva 2021-08-17
 
@@ -48,6 +51,10 @@ const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
 const FORMA_PAGAMENTO_CARTAO          = 'CARTAO';
 const FORMA_PAGAMENTO_CHEQUE          = 'CHEQUE'; // Sandro Silva 2016-04-19
 
+const VENDA_MEI_ANTIGA_FINALIZADA = 'Finalizada';
+const VENDA_GERENCIAL_ABERTA     = 'Aberta';
+const VENDA_GERENCIAL_FINALIZADA = 'Finalizada - Aguardando Documento Fiscal';
+const VENDA_GERENCIAL_CANCELADA  = 'Cancelada';
 const FRENTE_INI                      = 'FRENTE.INI';
 const SECAO_FRENTE_CAIXA              = 'Frente de Caixa';
 const SECAO_65                        = 'NFCE';
@@ -80,6 +87,16 @@ const NFCE_CSTAT_CANCELADA_135                = '135';
 const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
 
 const NUMERO_FORMAS_EXTRAS = 8;
+
+type
+  TDadosEmitente = class
+    Razao: String;
+    CNPJ: String;
+    UF: String;    
+  end;
+
+type
+  TTipoPesquisa = (tpPesquisaOS, tpPesquisaOrca, tpPesquisaGerencial);
 
 type
   TTipoInfoCombo = (tiInfoComboModeloSAT, tiInfoComboImpressoras, tiInfoComboFusoHorario, tiInfoComboContaClienteOS);
@@ -145,6 +162,41 @@ type
   end;
 
 type
+  TPagamentoPDV = class
+  private
+    FExtra4: Double;
+    FExtra7: Double;
+    FExtra6: Double;
+    FDinheiro: Double;
+    FCheque: Double;
+    FExtra5: Double;
+    FExtra1: Double;
+    FExtra2: Double;
+    FExtra8: Double;
+    FPrazo: Double;
+    FExtra3: Double;
+    FTotalReceber: Double;
+    FCartao: Double;
+    FTroco: Double;
+  public
+    property TotalReceber: Double read FTotalReceber write FTotalReceber;
+    property Cheque: Double read FCheque write FCheque;
+    property Dinheiro: Double read FDinheiro write FDinheiro;
+    property Cartao: Double read FCartao write FCartao;
+    property Prazo: Double read FPrazo write FPrazo;
+    property Extra1: Double read FExtra1 write FExtra1;
+    property Extra2: Double read FExtra2 write FExtra2;
+    property Extra3: Double read FExtra3 write FExtra3;
+    property Extra4: Double read FExtra4 write FExtra4;
+    property Extra5: Double read FExtra5 write FExtra5;
+    property Extra6: Double read FExtra6 write FExtra6;
+    property Extra7: Double read FExtra7 write FExtra7;
+    property Extra8: Double read FExtra8 write FExtra8;
+    property Troco: Double read FTroco write FTroco;
+    procedure Clear;
+  end;
+
+type
   TTipoEntrega = class(TComponent)
   private
     FDomicilio: Boolean;
@@ -203,7 +255,9 @@ function FloatToStrAlignR(Value: Double; CasasDecimais: Integer; CasasDireita: I
 function SemMarcaTag(Value: String): String;
 function AliquotaISSConfigura(IBTransaction: TIBTransaction): String;
 function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
-  iQtd: Integer = 1): String;
+  iQtd: Integer = 1): String; 
+function IncGeneratorToInt(IBDataBase: TIBDatabase; sGenerator: String;
+  iQtd: Integer = 1): Int64;
 function ValidaCPFCNPJ(sNumero: String): Boolean;
 function RetornaValorDaTagNoCampo(sTag: String; sObs: String): String;
 function ShellExecuteAndWait(Operation, FileName, Parameter, Directory: String;
@@ -243,10 +297,10 @@ function ConsultaProcesso(sP1: String): Boolean;
 function NomeModeloDocumento(sModeloDocumento: String): String;
 procedure OpcoesMenuVisivel(Menu: TMenuItem; Visible: Boolean);
 function TempoDecorridoPorExtenso(dtDataF, dtDataI: Tdate; ttHoraF, ttHoraI: TTime): String;
-function SerialMEI(sSerial: String): Boolean;
+// Sandro Silva 2023-06-23 function SerialMEI(sSerial: String): Boolean;
 function PAFNFCe: Boolean;
 function NFCe: Boolean;
-function MEI: Boolean;
+function Gerencial: Boolean;
 function SAT: Boolean;
 function MFE: Boolean;
 function Build: String;
@@ -260,8 +314,27 @@ function UsaKitDesenvolvimentoSAT: Boolean;
 function SelectMarketplace(sNome: String): String;
 function FormaDePagamentoPadrao(sForma: String): Boolean;
 function FormaExtraDePagamento(sForma: String): Boolean;
+function SelectSQLGerenciadorVendasF10(sModeloECF: String;
+  sModeloECF_Reserva: String; Data: TDate): String;
+function RetornaTextoEmVenda(sModelo: String): String;  
 //function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
-
+procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
+function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  dtData: TDate; sPedido: String; sCaixa: String; sModelo: String;
+  sGNF: String; sForma: String; dValor: Double; sTransacao: String;
+  sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
+function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
+  sPedido: String; sCaixa: String; sModelo: String): Boolean;
+function TemGerencialLancadoOuConvertido(
+  IBTransaction: TIBTransaction): Boolean;
+procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
+function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
+function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
+  sPedido: String; sCaixa: String;
+  dDescontoNoTotal: Double; dTotalDaVenda: Double;
+  out fTributos_federais: Real; out fTributos_estaduais: Real;
+  out fTributos_municipais: Real): String;
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -269,6 +342,7 @@ var
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
   //RecursosLicenca: TRecurcosDisponiveisParaLicenca;
   ValidaRecursos: TValidaRecurso;
+  DadosEmitentePDV: TDadosEmitente;
 
 implementation
 
@@ -624,6 +698,27 @@ begin
     IBQTEMP.SQL.Text := 'select gen_id(' + sGenerator + ', '+ IntToStr(iQtd) +') as NUMERO from rdb$database';
     IBQTEMP.Open;
     Result := IBQTEMP.FieldByName('NUMERO').AsString;
+    IBQTEMP.Transaction.Rollback;
+  except
+  end;
+  FreeAndNil(IBQTEMP);
+  FreeAndNil(IBTTEMP);
+end;
+
+function IncGeneratorToInt(IBDataBase: TIBDatabase; sGenerator: String;
+  iQtd: Integer = 1): Int64;
+var
+  IBTTEMP: TIBTransaction;
+  IBQTEMP: TIBQuery;
+begin
+  IBTTEMP := CriaIBTransaction(IBDataBase);
+  IBQTEMP := CriaIBQuery(IBTTEMP);
+  Result := 0;
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := 'select gen_id(' + sGenerator + ', '+ IntToStr(iQtd) +') as NUMERO from rdb$database';
+    IBQTEMP.Open;
+    Result := IBQTEMP.FieldByName('NUMERO').AsInteger;
     IBQTEMP.Transaction.Rollback;
   except
   end;
@@ -1534,6 +1629,7 @@ begin
   end;
 end;
 
+(*{Sandro Silva 2023-06-23 inicio}
 function SerialMEI(sSerial: String): Boolean;
 // Retorna True se o serial é de empresa enquadrada como MEI
 begin
@@ -1575,6 +1671,7 @@ begin
   end;
   {Sandro Silva 2021-12-29 fim}
 end;
+*)
 
 function Build: String;
 var
@@ -1595,28 +1692,96 @@ function PAFNFCe: Boolean;
 //Retorna True se o executável é PAF emissor de NFC-e
 begin
   // Sandro Silva 2021-03-19 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim');
-  Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE');
+  // Sandro Silva 2023-07-18 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'PAFNFCE', '') = 'Sim') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'PAFNFCE');
+  Result := False; // Sandro Silva 2023-08-29
+  if (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '65') then
+  begin
+    if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'PAFNFCE.EXE') then
+    begin
+      Result := True;
+    end
+    else
+    begin
+      if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') then
+      begin
+        if DadosEmitentePDV <> nil then // Sandro Silva 2023-07-28
+        begin
+          if (DadosEmitentePDV.UF = 'SC') and (LimpaNumero(DadosEmitentePDV.CNPJ) <> LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)) then
+            Result := True;
+        end;
+      end;
+    end;
+  end;
+
+  {Sandro Silva 2023-06-27 inicio}
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
+  {Sandro Silva 2023-06-27 fim}
 end;
 
 function NFCe: Boolean;
 //Retorna True se o executável é NFC-e
 begin
-  Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE');
+  // Sandro Silva 2023-07-18 Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'NFCE');
+  Result := (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'NFCE.EXE') or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '65');
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
 end;
 
-function MEI: Boolean;
+function Gerencial: Boolean;
+//var
+//  sModelo: String;
 begin
-  Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
+  // Sandro Silva 2023-06-23 Result := (Pos('mei.exe',AnsiLowerCase(Application.ExeName)) <> 0) or (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MEI')
+  // Sandro Silva 2023-08-01 Result := ((Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) or ((Pos('frente.exe', AnsiLowerCase(Application.ExeName)) > 0) and (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '99') )); // Sandro Silva 2023-07-18 Result := (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0);
+  {
+  sModelo := LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '');
+  if (sModelo = '99') then
+    Result := True
+  else if ((sModelo = '59') or (sModelo = '65')) and (Pos('gerencial.exe', AnsiLowerCase(Application.ExeName)) > 0) then   // Se modelo ecf for sat ou nfce e o aplicativo for gerencial.exe
+    Result := True;
+  }
+  Result := False; // Sandro Silva 2023-08-29
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := True;
 end;
 
 function SAT: Boolean;
 begin
-  Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'SAT');
+  // Sandro Silva 2023-07-18 Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'SAT');
+  {Sandro Silva 2023-07-28 inicio
+  Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+    and (DadosEmitentePDV.UF = 'SP') ;
+  }
+  if DadosEmitentePDV <> nil then
+  begin
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+              and (DadosEmitentePDV.UF = 'SP') ;
+  end
+  else
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'));
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
+  {Sandro Silva 2023-07-28 fim}
 end;
 
 function MFE: Boolean;
 begin
-  Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MFE');
+  // Sandro Silva 2023-07-18 Result := (LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') = 'MFE');
+  {Sandro Silva 2023-07-28 inicio
+  Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+    and (DadosEmitentePDV.UF = 'CE') ;
+  }
+  if DadosEmitentePDV <> nil then
+  begin
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'))
+              and (DadosEmitentePDV.UF = 'CE');
+  end
+  else
+    Result := ((LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Modelo do ECF', '') = '59') or (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'CFESAT.EXE'));
+  if (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'GERENCIAL.EXE') then
+    Result := False;
+  {Sandro Silva 2023-07-28 fim}
 end;
 
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
@@ -1919,6 +2084,234 @@ begin
     Result := False;
 end;
 
+function SelectSQLGerenciadorVendasF10(sModeloECF: String;
+  sModeloECF_Reserva: String; Data: TDate): String;
+var
+  sCondicao: String;
+  sCondicaoGerencialSemDocFiscalOuNFCeSat: String;
+begin
+  {Sandro Silva 2023-07-27 inicio
+  Result:=
+  'select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Data)) +
+  IfThen((sModeloECF = '99') or (sModeloECF_Reserva = '99'), ' and MODELO = ''99'' ', ' ') +
+  ' order by NUMERONF ';
+  }
+  sCondicao := '';
+
+  sCondicaoGerencialSemDocFiscalOuNFCeSat :=
+      ' and ' +
+      ' ( ' +
+      '   ( ' +
+      '     (N.MODELO = ''99'' and exists (select 1 from ALTERACA A where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA and coalesce(A.VALORICM, 0) = 0 and coalesce(A.CODIGO, '''') <> '''')) ' +
+      '   ) ' +
+      '   or ' +
+      '   (N.MODELO <> ''99'') ' +
+      ' ) ';
+
+
+  if (sModeloECF <> '99') then
+    // Sandro Silva 2023-08-23 sCondicao := ' and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (coalesce(STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') ' // Sandro Silva 2023-08-22 sCondicao := ' and (STATUS <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') '
+    sCondicao := sCondicaoGerencialSemDocFiscalOuNFCeSat +
+      ' and (coalesce(N.STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_CANCELADA) + ') and (coalesce(N.STATUS, '''') <> ' + QuotedStr(VENDA_GERENCIAL_ABERTA) + ') '
+  else
+    if (sModeloECF = '99') or (sModeloECF_Reserva = '99') then
+      sCondicao := sCondicaoGerencialSemDocFiscalOuNFCeSat + ' and N.MODELO = ''99'' '; // Sandro Silva 2023-08-23 sCondicao := ' and MODELO = ''99'' ';
+
+  Result :=
+    'select N.* from NFCE N where N.DATA = ' + QuotedStr(DateToStrInvertida(Data)) +
+    sCondicao +
+    ' order by N.NUMERONF ';
+  {Sandro Silva 2023-07-27 fim}
+end;
+
+function RetornaTextoEmVenda(sModelo: String): String;
+begin
+  Result := TEXTO_CAIXA_EM_VENDA;
+  if sModelo = '99' then
+    Result := 'EM LANÇAMENTO';
+end;
+
+procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
+begin
+  if ibDataSet25.FieldByName('PAGAR').AsFloat <= 0 then
+    ibDataSet25.FieldByName('PAGAR').AsFloat := 0;
+
+  if (TEFValorTotalAutorizado > 0)
+    and (ibDataSet25.FieldByName('PAGAR').AsFloat < TEFValorTotalAutorizado) then
+  begin
+    ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+  end;
+end;
+
+function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  dtData: TDate; sPedido: String; sCaixa: String; sModelo: String;
+  sGNF: String; sForma: String; dValor: Double; sTransacao: String;
+  sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
+var
+  IBQTRANSACAO: TIBQuery;
+  sRegistro: String;
+  iForma: Integer;
+begin
+  Result := True;
+
+  IBQTRANSACAO := CriaIBQuery(IBTransaction);
+
+  try
+    IBQTRANSACAO.Close;
+    IBQTRANSACAO.SQL.Text :=
+      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, GNF, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
+      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :GNF, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
+    sRegistro := FormatFloat('0000000000', IncGeneratorToInt(IBTransaction.DefaultDatabase, 'G_VFPE', 1));
+    IBQTRANSACAO.ParamByName('REGISTRO').AsString         := sRegistro;
+    IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
+    IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
+    IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
+    IBQTRANSACAO.ParamByName('MODELO').AsString           := sModelo;
+    IBQTRANSACAO.ParamByName('GNF').AsString              := sGNF;    
+    IBQTRANSACAO.ParamByName('FORMA').AsString            := sForma;
+    IBQTRANSACAO.ParamByName('VALOR').AsFloat             := dValor;
+    IBQTRANSACAO.ParamByName('TRANSACAO').AsString        := Copy(sTransacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'TRANSACAO'));
+    IBQTRANSACAO.ParamByName('NOMEREDE').AsString         := Copy(sNomeRede, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'NOMEREDE'));
+    IBQTRANSACAO.ParamByName('AUTORIZACAO').AsString      := Copy(sAutorizacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'AUTORIZACAO'));
+    IBQTRANSACAO.ParamByName('BANDEIRA').AsString         := Copy(sBandeira, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'BANDEIRA'));
+    IBQTRANSACAO.ExecSQL;
+  except
+    Result := False;
+  end;
+
+  FreeAndNil(IBQTRANSACAO);
+
+end;
+
+function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
+  sPedidoOld: String; sCaixaOld: String; sModeloOld: String; dtData: TDate;
+  sPedido: String; sCaixa: String; sModelo: String): Boolean;
+var
+  IBQTRANSACAO: TIBQuery;
+  iForma: Integer;
+begin
+  Result := True;
+
+  IBQTRANSACAO := CriaIBQuery(IBTransaction);
+
+  try
+    IBQTRANSACAO.Close;
+    IBQTRANSACAO.SQL.Text :=
+      'update TRANSACAOELETRONICA set ' +
+      'DATA = :DATA, ' +
+      'PEDIDO = :PEDIDO, ' +
+      'CAIXA = :CAIXA, ' +
+      'MODELO = :MODELO ' +
+      'where PEDIDO = :PEDIDOOLD ' +
+      ' and CAIXA = :CAIXAOLD ' +
+      ' and MODELO = :MODELOOLD ';
+    IBQTRANSACAO.ParamByName('DATA').AsDate        := dtData;
+    IBQTRANSACAO.ParamByName('PEDIDO').AsString    := sPedido;
+    IBQTRANSACAO.ParamByName('CAIXA').AsString     := sCaixa;
+    IBQTRANSACAO.ParamByName('MODELO').AsString    := sModelo;
+    IBQTRANSACAO.ParamByName('PEDIDOOLD').AsString := sPedidoOld;
+    IBQTRANSACAO.ParamByName('CAIXAOLD').AsString  := sCaixaOld;
+    IBQTRANSACAO.ParamByName('MODELOOLD').AsString := sModeloOld;
+    IBQTRANSACAO.ExecSQL;
+  except
+    Result := False;
+  end;
+
+  FreeAndNil(IBQTRANSACAO);
+
+end;
+
+function TemGerencialLancadoOuConvertido(IBTransaction: TIBTransaction): Boolean;
+var
+  IBQTEMP: TIBQuery;
+begin
+  IBQTEMP := CriaIBQuery(IBTransaction);
+  Result := False;
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text :=
+      'select count(NUMERONF) as QTDGERENCIAL ' +
+      'from NFCE ' +
+      'where (MODELO = ''99'' and STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ') ' +
+      'or ( (MODELO <> ''99'') and (coalesce(GERENCIAL, '''') <> ''''))';
+    IBQTEMP.Open;
+    Result := (IBQTEMP.FieldByName('QTDGERENCIAL').AsInteger > 0);
+  except
+
+  end;
+  FreeAndNil(IBQTEMP);
+end;
+
+procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
+begin
+  GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', sNumero);
+  GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM' + sModelo, sNumero);
+end;
+
+function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
+var
+  INI: TIniFile;
+begin
+  ini := TIniFile.Create(FRENTE_INI);
+  if Ini.ValueExists('NFCE', 'CUPOM' + sModelo) then
+  begin
+    Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM' + sModelo, '');
+    if Result = '' then
+      Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', Default);
+  end
+  else
+    Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', Default);
+  INI.Free;
+end;
+
+function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
+  sPedido: String; sCaixa: String;
+  dDescontoNoTotal: Double; dTotalDaVenda: Double;
+  out fTributos_federais: Real; out fTributos_estaduais: Real;
+  out fTributos_municipais: Real): String;
+var
+  IBQ: TIBQuery;
+begin
+  Result := '';
+  IBQ := CriaIBQuery(IBTransaction);
+  try
+    IBQ.Close;
+    IBQ.SQL.Clear;
+    IBQ.SQL.Add('select sum(cast((ESTOQUE.IIA*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100)  as numeric(18,2))) as TRIBUTOS1, '
+                                + 'sum(cast((ESTOQUE.IIA_UF*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS2, '
+                                + 'sum(cast((ESTOQUE.IIA_MUNI*(ALTERACA.TOTAL+coalesce(ALTERACA.DESCONTO,0))/100) as numeric(18,2))) as TRIBUTOS3 '
+                         + 'from ALTERACA,ESTOQUE where PEDIDO=' + QuotedStr(sPedido)
+                         + ' and CAIXA='+QuotedStr(sCaixa)
+                         + ' and TIPO<>''CANCEL'''
+                         + ' and ESTOQUE.CODIGO=ALTERACA.CODIGO and (ALTERACA.DESCRICAO<>''Desconto'' and ALTERACA.DESCRICAO<>''Acréscimo'')');
+    IBQ.Open;
+
+    if (IBQ.FieldByName('TRIBUTOS1').AsFloat + IBQ.FieldByName('TRIBUTOS2').AsFloat + IBQ.FieldByName('TRIBUTOS3').AsFloat)  > 0 then
+    begin
+      Result := 'Trib aprox R$: ';
+      if IBQ.FieldByName('TRIBUTOS1').AsFloat > 0 then
+        Result := Result + AllTrim(Format('%12.2n',[IBQ.FieldByName('TRIBUTOS1').AsFloat*(1-(dDescontoNoTotal / dTotalDaVenda))])) +' Federal ';
+      if IBQ.FieldByName('TRIBUTOS2').AsFloat > 0 then
+        Result := Result + AllTrim(Format('%12.2n',[IBQ.FieldByName('TRIBUTOS2').AsFloat*(1-(dDescontoNoTotal / dTotalDaVenda))])) +' Estadual ';
+      if IBQ.FieldByName('TRIBUTOS3').AsFloat > 0 then
+        Result := Result + AllTrim(Format('%12.2n',[IBQ.FieldByName('TRIBUTOS3').AsFloat*(1-(dDescontoNoTotal / dTotalDaVenda))])) +' Municipal ';
+
+      fTributos_federais   := IBQ.FieldByName('TRIBUTOS1').AsFloat;
+      fTributos_estaduais  := IBQ.FieldByName('TRIBUTOS2').AsFloat;
+      fTributos_municipais := IBQ.FieldByName('TRIBUTOS3').AsFloat;
+      //
+      IBQ.Close;
+      IBQ.SQL.Clear;
+      IBQ.SQL.Add('select first 1 distinct CHAVE, FONTE from IBPT_ '); // Sandro Silva 2016-08-16 Seleciona apenas 1 linha da tabela
+      IBQ.Open;
+      //
+      Result := Result + chr(10) + 'Fonte: ' + IBQ.FieldByName('FONTE').AsString + ' ' + IBQ.FieldByName('CHAVE').AsString;
+    end;
+  finally
+    FreeAndNil(IBQ);
+  end;
+
+end;
 {
 function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 begin
@@ -1990,6 +2383,26 @@ begin
 
   end;
 
+end;
+
+{ TPagamentoPDV }
+
+procedure TPagamentoPDV.Clear;
+begin
+  FTotalReceber := 0.00;
+  FCartao       := 0.00;
+  FCheque       := 0.00;
+  FDinheiro     := 0.00;
+  FExtra1       := 0.00;
+  FExtra2       := 0.00;
+  FExtra3       := 0.00;
+  FExtra4       := 0.00;
+  FExtra7       := 0.00;
+  FExtra5       := 0.00;
+  FExtra6       := 0.00;
+  FExtra8       := 0.00;
+  FPrazo        := 0.00;
+  FTroco        := 0.00;
 end;
 
 end.

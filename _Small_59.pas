@@ -517,7 +517,7 @@ var
   iTentativa: Integer;
   sMensagem: String;
   sNumeroSat: String;
-  sPathDll: String;
+  //sPathDll: String;
   sPathXMLSat: String;
   sAssinaturaAssociada: String;
   sCodigoAtivacao: String;
@@ -727,7 +727,7 @@ begin
 
     end;
 
-    sPathDll             := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CAMINHO_DLL, sPathDll));
+    //sPathDll             := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CAMINHO_DLL, sPathDll));
 
     sCNPJSoftwareHouse   := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CNPJ_SOFTWARE_HOUSE, sCNPJSoftwareHouse));
     sPathXMLSat          := Form1.sAtual + '\XmlDestinatario\CFeSAT';
@@ -1378,13 +1378,17 @@ begin
         Form1.ibDataset150.Open;
         //
         Form1.IBDataSet150.Append;
-        Form1.IBDataSet150NUMERONF.AsString  := Result;
-        Form1.IBDataSet150DATA.AsDateTime    := Date;
-        Form1.IBDataSet150.FieldByName('CAIXA').AsString  := Form1.sCaixa;
-        Form1.IBDataSet150.FieldByName('MODELO').AsString := '59';
+        Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
+        Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
+        Form1.IBDataSet150.FieldByName('CAIXA').AsString    := Form1.sCaixa;
+        Form1.IBDataSet150.FieldByName('MODELO').AsString   := '59';
         Form1.IBDataSet150.Post;
         //
+        {Sandro Silva 2023-08-22 inicio
         Mais1Ini.WriteString('NFCE','CUPOM',Result);
+        }
+        GravaNumeroCupomFrenteINI(Result, '59'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}                     
 
         //SmallMsg('Próximo Número: ' + Result); // 2015-06-22
         //
@@ -1393,7 +1397,11 @@ begin
     begin
       //
       try
-        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001'))); // Sandro Silva 2021-12-01 Result := StrZero(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')),6,0);
+        {Sandro Silva 2023-08-22 inicio
+        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM','000001')));
+        }
+        Result := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('59', '000001')));
+        {Sandro Silva 2023-08-22 fim}
       except
         Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
       end;
@@ -1824,7 +1832,8 @@ var
   sCupom  : String;
 begin
   Result := False;// Sempre começa como falso. Verdadeiro somente se encontrar pendente
-  //
+
+  {Sandro Silva 2023-08-22 inicio
   Mais1ini  := TIniFile.Create(FRENTE_INI);
 
   //
@@ -1835,6 +1844,13 @@ begin
   end;
   //
   Mais1Ini.Free;
+  }
+  try
+    sCupom := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('59', '000001')));
+  except
+    sCupom := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sCupom := '000000';
+  end;
+  {Sandro Silva 2023-08-22 fim}
 
   sCupom := FormataNumeroDoCupom(StrToInt(sCupom)); // Sandro Silva 2021-12-01
 
@@ -1897,6 +1913,8 @@ var
   IBQPENDENCIA: TIBQuery; // Sandro Silva 2019-03-25
   iSleep: Integer;
   sLog: String; // Sandro Silva 2021-03-10
+  FIBQuery65: TIBQuery;
+  sNumeroGerencialConvertido: String;
 begin
   Result := False;
   tInicio := Now;
@@ -1905,9 +1923,11 @@ begin
 
   Commitatudo2(False);
 
+  FIBQuery65 := CriaIBQuery(Form1.ibDataSet27.Transaction);
+
   try
-    Form1.ibQuery65.Close;
-    Form1.ibQuery65.SQL.Text :=
+    FIBQuery65.Close;
+    FIBQuery65.SQL.Text :=
       'select A.PEDIDO, A.DATA ' +
       'from ALTERACA A ' +
       'where A.PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) + // Sandro Silva 2021-11-29 'where A.PEDIDO = ' + QuotedStr(StrZero(Form1.icupom,6,0)) +
@@ -1915,12 +1935,12 @@ begin
       ' and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'') ' +
       ' group by A.PEDIDO, A.DATA ' +
       ' order by DATA desc';
-    Form1.ibQuery65.Open;
+    FIBQuery65.Open;
 
-    dtDataCupom := Form1.ibQuery65.FieldByName('DATA').AsDateTime;
+    dtDataCupom := FIBQuery65.FieldByName('DATA').AsDateTime;
 
-    Form1.ibQuery65.Close;
-    Form1.ibQuery65.SQL.Text :=
+    FIBQuery65.Close;
+    FIBQuery65.SQL.Text :=
       'select count(A.ITEM) as NUM_ITENS ' +
       'from ALTERACA A ' +
       'where A.PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) + // Sandro Silva 2021-11-29 'where A.PEDIDO = ' + QuotedStr(StrZero(Form1.icupom,6,0)) +
@@ -1929,9 +1949,9 @@ begin
       ' and A.DESCRICAO <> ''Desconto'' ' +
       ' and A.DESCRICAO <> ''Acréscimo'' ' +
       ' and A.DESCRICAO <> ''<CANCELADO>'' ';
-    Form1.ibQuery65.Open;
+    FIBQuery65.Open;
 
-    if Form1.ibQuery65.FieldByName('NUM_ITENS').AsInteger = 0 then
+    if FIBQuery65.FieldByName('NUM_ITENS').AsInteger = 0 then
     begin
       if (Form1.ClienteSmallMobile.sVendaImportando = '') then
         SmallMsg('Nenhum item encontrado' + #13 + 'Cupom não pode ser fechado');
@@ -2053,17 +2073,21 @@ begin
         //
         try
           //
-          Form1.ibQuery65.Close;
-          Form1.ibQuery65.SQL.Text :=
-            'select DATA from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'); // Sandro Silva 2021-11-29 'select DATA from NFCE where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59');
-          Form1.ibQuery65.Open;
+          FIBQuery65.Close;
+          FIBQuery65.SQL.Text :=
+            'select GERENCIAL, DATA from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'); // Sandro Silva 2023-07-31 'select DATA from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'); // Sandro Silva 2021-11-29 'select DATA from NFCE where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'); 
+          FIBQuery65.Open;
 
-          sNFCEDataOld := Form1.ibQuery65.FieldByName('DATA').AsString;
+          sNFCEDataOld := FIBQuery65.FieldByName('DATA').AsString;
 
-          Form1.ibQuery65.Close;
-          Form1.ibQuery65.SQL.Clear;
-          Form1.ibQuery65.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59')); // Sandro Silva 2021-11-29 Form1.ibQuery65.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'));
-          Form1.ibQuery65.ExecSQL;
+          {Sandro Silva 2023-07-31 inicio}
+          sNumeroGerencialConvertido := FIBQuery65.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
+          {Sandro Silva 2023-07-31 fim}
+
+          FIBQuery65.Close;
+          FIBQuery65.SQL.Clear;
+          FIBQuery65.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59')); // Sandro Silva 2021-11-29 FIBQuery65.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'));
+          FIBQuery65.ExecSQL;
 
           //
           Form1.ibDataset150.Close;
@@ -2081,6 +2105,11 @@ begin
           Form1.IBDataSet150.FieldByName('MODELO').AsString   := '59';
           if xmlNodeValue(_59.CFeXML, '//vCFe') <> '' then
             Form1.IBDataSet150.FieldByName('TOTAL').AsFloat    := xmlNodeValueToFloat(_59.CFeXML, '//vCFe'); // Ficha 4302 Sandro Silva 2018-12-05
+          {Sandro Silva 2023-07-31 inicio}
+          Form1.IBDataSet150.FieldByName('GERENCIAL').Clear;
+          if Trim(sNumeroGerencialConvertido) <> '' then
+            Form1.IBDataSet150.FieldByName('GERENCIAL').AsString   := sNumeroGerencialConvertido;
+          {Sandro Silva 2023-07-31 fim}
           Form1.IBDataSet150.Post;
 
           //
@@ -2212,7 +2241,7 @@ begin
             Form1.ibDataSet27.Next;
           end; // while
 
-          AtualizaDetalhe(Form1.ibDataSet27.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sCFe, 'Fechada');
+          Form1.AtualizaDetalhe(Form1.ibDataSet27.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sCFe, 'Fechada');
 
           // Seleciona novamente os dados para usar na sequência da venda
           Form1.ibDataSet27.Close;
@@ -2286,7 +2315,6 @@ begin
           if Form1.PosElginPay.Transacao.ImprimirComprovanteVenda then
             Form1.PosElginPay.ImpressaoComprovanteVenda(_59.CFeXML);
           {Sandro Silva 2022-02-10 fim}
-
 
         end
         else
@@ -2406,7 +2434,12 @@ begin
 
           Form1.SetIconSysTrayIcone('small2.ico');
 
-          GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', FormataNumeroDoCupom(0)); // Sandro Silva 2021-12-02 GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', '000000');
+          {Sandro Silva 2023-08-22 inicio
+          GravarParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', FormataNumeroDoCupom(0));
+          }
+          GravaNumeroCupomFrenteINI(FormataNumeroDoCupom(0), '59'); // Sandro Silva 2023-08-22
+          {Sandro Silva 2023-08-22 fim}
+
 
           if DirectoryExists(Form1.sAtual + '\mobile') = False then
             ForceDirectories(Form1.sAtual + '\mobile');
@@ -2426,6 +2459,7 @@ begin
 
   finally
     //FreeAndNil(RetornoVenda); // 2015-07-09
+    FreeAndNil(FIBQuery65);
   end;
 
   ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
