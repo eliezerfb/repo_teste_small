@@ -22,6 +22,10 @@ resourcestring
   _cSemDocumentoMarcadoImpressao = 'Selecione ao menos um documento para impressão.';
   _cSemDadosParaImprimir = 'Nenhum dado encontrado para a impressão, verifique os filtros informados.';
 
+  _cOrcamentoComDocFiscal = 'Este orçamento já foi importado para um documento fiscal e não poderá ser excluído.';
+
+  _cMensagemExcluir = 'Excluir este registro?';
+
 implementation
 
 end.
