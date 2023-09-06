@@ -12095,7 +12095,7 @@ object Form7: TForm7
       Size = 3
     end
     object ibDataSet4ALIQUOTA_NFCE: TIBBCDField
-      DisplayLabel = 'Aliquota para NFC-e'
+      DisplayLabel = 'Al'#237'quota para NFC-e'
       FieldName = 'ALIQUOTA_NFCE'
       Origin = 'ESTOQUE.ALIQUOTA_NFCE'
       DisplayFormat = '##0.00'
@@ -21314,7 +21314,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50a\'
+      'avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21349,7 +21349,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50a\'
+      'vm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21664,7 +21664,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21694,7 +21694,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22272,7 +22272,7 @@ object Form7: TForm7
     Left = 8
     Top = 723
     object ibdPerfilTributaDESCRICAO: TIBStringField
-      DisplayLabel = 'Descri'#231#227'o'
+      DisplayLabel = 'Nome do Perfil'
       FieldName = 'DESCRICAO'
       Origin = 'PERFILTRIBUTACAO.DESCRICAO'
       OnSetText = ibdPerfilTributaDESCRICAOSetText
@@ -22336,7 +22336,7 @@ object Form7: TForm7
       Size = 3
     end
     object ibdPerfilTributaALIQUOTA_NFCE: TIBBCDField
-      DisplayLabel = 'Aliquota para NFC-e'
+      DisplayLabel = 'Al'#237'quota para NFC-e'
       FieldName = 'ALIQUOTA_NFCE'
       Origin = 'PERFILTRIBUTACAO.ALIQUOTA_NFCE'
       DisplayFormat = '##0.00'

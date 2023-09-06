@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_PerfilTrib
+      ActivePage = orelha_ICMS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3889,7 +3889,7 @@ object Form10: TForm10
             '90 - Outras')
         end
         object ComboBox15: TComboBox
-          Left = 110
+          Left = 118
           Top = 275
           Width = 390
           Height = 22
@@ -14860,7 +14860,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label127: TLabel
+        object lblAliqNFCEPerfilTrib: TLabel
           Left = 10
           Top = 282
           Width = 95
@@ -14902,7 +14902,7 @@ object Form10: TForm10
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Descri'#231#227'o'
+          Caption = 'Nome do Perfil'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11

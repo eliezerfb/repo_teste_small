@@ -425,7 +425,7 @@ type
     cboCFOP_NFCePerfTrib: TComboBox;
     cboCST_NFCePerfilTrib: TComboBox;
     cboCSOSN_NFCePerfilTrib: TComboBox;
-    Label127: TLabel;
+    lblAliqNFCEPerfilTrib: TLabel;
     SMALL_DBEdit75: TSMALL_DBEdit;
     Label128: TLabel;
     edtDescricaoPerfilTrib: TSMALL_DBEdit;
@@ -7770,8 +7770,6 @@ begin
       end;
     end;
 
-
-
     if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
     begin
       for I := 0 to Form10.ComboBox14.Items.Count -1 do
@@ -7787,14 +7785,13 @@ begin
         // 60 - ICMS Cobrado anteriormente por substituição tributária
         // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
         // 90 - Outras
-        if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST_NFCE.AsString)+'000',2,2) then
+        //if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST_NFCE.AsString)+'000',2,2) then Mauricio Parizotto 2023-09-01
+        if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
         begin
           Form10.ComboBox14.ItemIndex := I;
         end;
       end;
     end;
-
-
 
 
     // 50 - Saída Tributada
@@ -8067,6 +8064,7 @@ begin
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CST.AsString := Copy(cboOrigemProd.Items[cboOrigemProd.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST.AsString+'  ',2,2);
+    Form7.ibDataSet4CST_NFCE.AsString := Copy(cboOrigemProd.Items[cboOrigemProd.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST_NFCE.AsString+'  ',2,2); // Mauricio Parizotto 2023-09-06
   end;
 end;
 
@@ -10335,25 +10333,40 @@ begin
     if Form7.ibDataSet13CRT.AsString = '1' then
     begin
       lblCSOSNPerfilTrib.Visible       := True;
-      cboCSOSNPerfilTrib.Visible    := True;
+      cboCSOSNPerfilTrib.Visible       := True;
       lblCSTPerfilTrib.Visible         := False;
       cboCSTPerfilTrib.Visible         := False;
 
       lblCSOSN_NFCePerfilTrib.Visible  := True;
       cboCSOSN_NFCePerfilTrib.Visible  := True;
       lblCST_NFCePerfilTrib.Visible    := False;
-      cboCST_NFCePerfilTrib.Visible       := False;
+      cboCST_NFCePerfilTrib.Visible    := False;
     end else
     begin
       lblCSOSNPerfilTrib.Visible       := False;
-      cboCSOSNPerfilTrib.Visible    := False;
+      cboCSOSNPerfilTrib.Visible       := False;
       lblCSTPerfilTrib.Visible         := True;
       cboCSTPerfilTrib.Visible         := True;
 
       lblCSOSN_NFCePerfilTrib.Visible  := False;
       cboCSOSN_NFCePerfilTrib.Visible  := False;
       lblCST_NFCePerfilTrib.Visible    := True;
-      cboCST_NFCePerfilTrib.Visible       := True;
+      cboCST_NFCePerfilTrib.Visible    := True;
+    end;
+
+    //NFC-e ou SAT
+    if Form7.ibDataSet13ESTADO.AsString = 'SP' then
+    begin
+      lblCFOPNfce.Caption             := StrTran(Label83.Caption,'NFC-e','SAT');
+      lblCST_NFCePerfilTrib.Caption   := StrTran(Label84.Caption,'NFC-e','SAT');
+      lblCSOSN_NFCePerfilTrib.Caption := StrTran(Label92.Caption,'NFC-e','SAT');
+      lblAliqNFCEPerfilTrib.Caption   := StrTran(Label72.Caption,'NFC-e','SAT');
+    end else
+    begin
+      lblCFOPNfce.Caption             := StrTran(Label83.Caption,'SAT','NFC-e');
+      lblCST_NFCePerfilTrib.Caption   := StrTran(Label84.Caption,'SAT','NFC-e');
+      lblCSOSN_NFCePerfilTrib.Caption := StrTran(Label92.Caption,'SAT','NFC-e');
+      lblAliqNFCEPerfilTrib.Caption   := StrTran(Label72.Caption,'SAT','NFC-e');
     end;
 
     //CIT
@@ -10442,6 +10455,7 @@ begin
   if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
   begin
     Form7.ibdPerfilTributaCST.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST.AsString+'  ',2,2);
+    Form7.ibdPerfilTributaCST_NFCE.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST_NFCE.AsString+'  ',2,2); // Mauricio Parizotto 2023-09-06
   end;
 end;
 

@@ -22,7 +22,9 @@ uses
   , IdHashMessageDigest
   , IdGlobal
   {$ENDIF}
-  , DBGrids 
+  , DBGrids
+  , IBQuery
+  , IBDatabase
   ;
 
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -48,8 +50,11 @@ uses
   function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   function GeraMD5(valor :string):string;
+  function EstadoEmitente(Banco: TIBDatabase):string;
 
 implementation
+
+uses uFuncoesBancoDados;
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
@@ -670,6 +675,32 @@ begin
     idmd5.Free;
   end;
   {$ENDIF}
+end;
+
+function EstadoEmitente(Banco: TIBDatabase):string;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  Result := '';
+
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+
+  try
+    try
+      IBQUERY.Close;
+      IBQUERY.SQL.Text := 'Select ESTADO From EMITENTE';
+      IBQUERY.Open;
+
+      Result := AllTrim(IBQUERY.FieldByName('ESTADO').AsString);
+    finally
+      IBTRANSACTION.Rollback;
+      FreeAndNil(IBQUERY);
+      FreeAndNil(IBTRANSACTION);
+    end;
+  except
+  end;
 end;
 
 

@@ -10946,6 +10946,22 @@ begin
       begin
         sAjuda := 'config_icms_iss.htm'; // Falta Fazer
 
+
+        if EstadoEmitente(IBDatabase1) = 'SP' then
+        begin
+          ibdPerfilTributaCFOP.DisplayLabel          := StrTran(ibdPerfilTributaCFOP.DisplayLabel,'NFC-e','SAT');
+          ibdPerfilTributaCSOSN_NFCE.DisplayLabel    := StrTran(ibdPerfilTributaCSOSN_NFCE.DisplayLabel,'NFC-e','SAT');
+          ibdPerfilTributaCST_NFCE.DisplayLabel      := StrTran(ibdPerfilTributaCST_NFCE.DisplayLabel,'NFC-e','SAT');
+          ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel := StrTran(ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel,'NFC-e','SAT');
+        end else
+        begin
+          ibdPerfilTributaCFOP.DisplayLabel          := StrTran(ibdPerfilTributaCFOP.DisplayLabel,'SAT','NFC-e');
+          ibdPerfilTributaCSOSN_NFCE.DisplayLabel    := StrTran(ibdPerfilTributaCSOSN_NFCE.DisplayLabel,'SAT','NFC-e');
+          ibdPerfilTributaCST_NFCE.DisplayLabel      := StrTran(ibdPerfilTributaCST_NFCE.DisplayLabel,'SAT','NFC-e');
+          ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel := StrTran(ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel,'SAT','NFC-e');
+        end;
+
+
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTTTTT');
         iCampos                := 21;
@@ -11114,6 +11130,7 @@ begin
       
       if sModulo = 'ESTOQUE' then
       begin
+        {
         try
           Form7.ibDataSet13.Close;
           Form7.ibDataSet13.Selectsql.Clear;
@@ -11121,10 +11138,12 @@ begin
           Form7.ibDataSet13.Open;
         except
         end;
+        Mauricio Parizotto 2023-09-06}
 
         sAjuda := 'estoque.htm';
         
-        if AllTrim(Form7.ibDataSet13ESTADO.AsString) = 'SP' then
+        //if AllTrim(Form7.ibDataSet13ESTADO.AsString) = 'SP' then  Mauricio Parizotto 2023-09-06
+        if EstadoEmitente(IBDatabase1) = 'SP' then
         begin
           ibDataSet4CFOP.DisplayLabel          := StrTran(ibDataSet4CFOP.DisplayLabel,'NFC-e','SAT');
           ibDataSet4CSOSN_NFCE.DisplayLabel    := StrTran(ibDataSet4CSOSN_NFCE.DisplayLabel,'NFC-e','SAT');
@@ -33642,6 +33661,9 @@ begin
   ibdPerfilTributa.Edit;
   ibdPerfilTributaREGISTRO.AsString := sProximo;
   ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger := sProximoID;
+
+  ibdPerfilTributaIPPT.AsString         := 'T';
+  ibdPerfilTributaIAT.AsString          := 'T';
 end;
 
 procedure TForm7.ibdPerfilTributaAfterPost(DataSet: TDataSet);
