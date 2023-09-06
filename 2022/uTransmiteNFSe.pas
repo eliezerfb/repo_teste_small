@@ -213,50 +213,10 @@ begin
                   begin
                     if (sPadraoSistema = 'IPM') then
                     begin
-                      {Sandro Silva 2022-10-10 inicio
-                      if Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> 0 then
-                      begin
-                        Writeln(F,'<NumeroDaNFSe>'+LimpaNumero(Copy(Form7.ibDAtaSet15RECIBOXML.AsString,Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString)+32,16))+'</NumeroDaNFSe>');
-                      end else
-                      begin
-                        if RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
-                          Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('cod_verificador_autenticidade',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
-                        else
-                          Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
-                      end;
-                      }
                       InformaCodVerificadorAutenticidadeParaIPM;
-                      {Sandro Silva 2022-10-10 fim}
                     end else
                     begin
-                      {Sandro Silva 2022-10-18 inicio
-                      if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
-                        Writeln(F,'<NumeroDaNFSe>'  + RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDaNFSe>')
-                      else
-                        Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
-                      if RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
-                        Writeln(F,'<NumeroDoRPS>'   + RetornaValorDaTagNoCampo('NumeroDoRPS' ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</NumeroDoRPS>')
-                      else
-                        Writeln(F,'<NumeroDoRPS>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'</NumeroDoRPS>');
-                      if RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
-                        Writeln(F,'<Tipo>'          + RetornaValorDaTagNoCampo('Tipo'        ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Tipo>')
-                      else
-                        Writeln(F,'<Tipo>1</Tipo>');
-                      if RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
-                        Writeln(F,'<Protocolo>'     + RetornaValorDaTagNoCampo('Protocolo'   ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</Protocolo>')
-                      else
-                        Writeln(F,'<Protocolo></Protocolo>');
-                      //
-                      if (sPadraoSistema = 'IPM20') then
-                      begin
-                        InformaCodVerificadorAutenticidadeParaIPM; // Sandro Silva 2022-10-10
-                        Writeln(F,'<SerieDoRPS>01</SerieDoRPS>');
-                      end else
-                      begin
-                        if RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then Writeln(F,'<SerieDoRPS>'    + RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</SerieDoRPS>')   else Writeln(F,'<SerieDoRPS>001</SerieDoRPS>');
-                      end;
-                      }
-                      //
+                                            //
                       if (sPadraoSistema = 'IPM20') then
                       begin
                         InformaCodVerificadorAutenticidadeParaIPM; // Sandro Silva 2022-10-10
@@ -314,7 +274,6 @@ begin
                           Writeln(F,'<SerieDoRPS>'    + RetornaValorDaTagNoCampo('SerieDoRPS'  ,Form7.ibDAtaSet15RECIBOXML.AsString) + '</SerieDoRPS>')
                         else
                           Writeln(F,'<SerieDoRPS>001</SerieDoRPS>');
-                        Writeln(F,'<RazaoSocial>' + Form7.IBDataSet13.FieldByName('NOME').AsString + '</RazaoSocial>');
                       end
                       {Sandro Silva 2023-09-05 fim}
                       else
@@ -382,9 +341,7 @@ begin
             Writeln(F,'');
             Writeln(F,'INCLUIR');
             Writeln(F,'');
-
-            ShowMessage(GetCidadeUF); // Sandro Silva 2023-09-05
-
+            
             if (sPadraoSistema = 'ABASE') or (sPadraoSistema = 'JOINVILLESC') then
             begin
               Writeln(F,'NumeroLote='+ IntToStr(StrToInt(Copy(Form7.ibDataSet15NUMERONF.AsString,3,7))) );
@@ -1055,7 +1012,7 @@ begin
                   if Form7.ibDAtaSet15NFEPROTOCOLO.AsString = '' then
                   begin
                     // Sandro Silva 2023-09-05 if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
-                    if (sPadraoSistema = 'ABACO20') and (GetCidadeUF = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
+                    if ((sPadraoSistema = 'ABACO20') and (GetCidadeUF = 'RIOBRANCOAC')) or ((sPadraoSistema = 'TECNOSISTEMAS') and (GetCidadeUF = 'SAOSEBASTIAODOCAIRS')) then // Sandro Silva 2023-09-06 if (sPadraoSistema = 'ABACO20') and (GetCidadeUF = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
                     begin
                       if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
                         Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := Trim(RetornaValorDaTagNoCampo('NumeroDaNFSe', Form7.ibDAtaSet15RECIBOXML.AsString)) + '/001';
@@ -1123,6 +1080,8 @@ begin
               Sleep(100);
             end;
           end;
+
+          Form7.ibDataSet15.EnableControls; // Form7.ibDataSet15.DisableControls; acima, na linha 900
         end else
         begin
           Screen.Cursor            := crDefault;
