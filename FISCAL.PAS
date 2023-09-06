@@ -24671,8 +24671,9 @@ begin
   end;
   *)
   if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') and (Form1.ibDataSet150.FieldByName('GERENCIAL').AsString <> '')  then
-    Exit;
-  EnviarANFCe;
+    Form1.DBGrid1DblClick(Form1.DBGrid1)
+  else
+    EnviarANFCe;
 end;
 
 procedure TForm1.PopupMenu2Change(Sender: TObject; Source: TMenuItem;
