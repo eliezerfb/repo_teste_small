@@ -2179,6 +2179,45 @@ begin
   end;
   {Mauricio Parizotto 2023-08-25 Fim}
   
+
+  {Mauricio Parizotto 2023-08-30 Inicio}
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PERFILTRIBUTACAO') = False then
+  begin
+    ExecutaComando('Create table PERFILTRIBUTACAO('+
+                   ' 	IDPERFILTRIBUTACAO INTEGER NOT NULL,'+
+                   ' 	DESCRICAO VARCHAR(45),'+
+                   ' 	TIPO_ITEM VARCHAR(2),'+
+                   ' 	IPPT VARCHAR(1),'+
+                   ' 	IAT VARCHAR(1),'+
+                   ' 	PIVA DOUBLE PRECISION,'+
+                   ' 	CST VARCHAR(3),'+
+                   ' 	CSOSN VARCHAR(3),'+
+                   ' 	ST VARCHAR(3),'+
+                   ' 	CFOP VARCHAR(4),'+
+                   ' 	CST_NFCE VARCHAR(3),'+
+                   ' 	CSOSN_NFCE VARCHAR(3),'+
+                   ' 	ALIQUOTA_NFCE NUMERIC(18,2),'+
+                   ' 	CST_IPI VARCHAR(2),'+
+                   ' 	IPI DOUBLE PRECISION,'+
+                   ' 	ENQ_IPI VARCHAR(3),'+
+                   ' 	CST_PIS_COFINS_SAIDA VARCHAR(2),'+
+                   ' 	ALIQ_PIS_SAIDA NUMERIC(18,4),'+
+                   ' 	ALIQ_COFINS_SAIDA NUMERIC(18,4),'+
+                   ' 	CST_PIS_COFINS_ENTRADA VARCHAR(2),'+
+                   ' 	ALIQ_PIS_ENTRADA NUMERIC(18,4),'+
+                   ' 	ALIQ_COFINS_ENTRADA NUMERIC(18,4),'+
+                   ' 	REGISTRO VARCHAR(10) NOT NULL,'+
+                   ' 	CONSTRAINT PK_PERFILTRIBUTACAO PRIMARY KEY (REGISTRO)'+
+                   ')');
+
+    ExecutaComando('Alter Table ESTOQUE add IDPERFILTRIBUTACAO integer');
+
+    ExecutaComando('CREATE SEQUENCE G_PERFILTRIBUTACAO');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-08-30 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
