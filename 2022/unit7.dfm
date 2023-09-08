@@ -18000,6 +18000,11 @@ object Form7: TForm7
       Caption = 'Cancelar NFS-e'
       OnClick = CancelarNFSe1Click
     end
+    object EnviarOrcamentoPorEmail1: TMenuItem
+      Caption = 'Enviar or'#231'amento por e-mail'
+      Visible = False
+      OnClick = EnviarOrcamentoPorEmail1Click
+    end
     object N0TestarservidorNFe1: TMenuItem
       Caption = '0 - Testar servidor NF-e'
       OnClick = N0TestarservidorNFe1Click
