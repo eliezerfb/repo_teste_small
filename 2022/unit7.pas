@@ -24345,43 +24345,40 @@ begin
 
       try
         sJustificativa := ConverteAcentos2(Form1.Small_InputForm('Atenção',
-        chr(10)+
-        'Você está prestes a cancelar uma NF-e. O DANFE'+chr(10)+
-        'referente a esta NF-e se tornará inválido e não'+chr(10)+
-        'poderá ser utilizado para acompanhar a mercadoria.'+chr(10)+
-        chr(10)+
-        'Para cancelar a NF-e: '+Form7.ibDataSet15NUMERONF.AsString+' insira uma justificativa (min. 15 caracteres)'+chr(10)+
-        chr(10), ''));
-        //
+                          chr(10)+
+                          'Você está prestes a cancelar uma NF-e. O DANFE'+chr(10)+
+                          'referente a esta NF-e se tornará inválido e não'+chr(10)+
+                          'poderá ser utilizado para acompanhar a mercadoria.'+chr(10)+
+                          chr(10)+
+                          'Para cancelar a NF-e: '+Form7.ibDataSet15NUMERONF.AsString+' insira uma justificativa (min. 15 caracteres)'+chr(10)+
+                          chr(10), ''));
+
         if Length(sJustificativa) >= 15 then
         begin
-          //
           // Cancelamento da NF-e por evento.
-          //
           try
             sRetorno := spdNFe.CancelarNFeEvento(Form7.ibDataSet15NFEID.AsString,Form7.ibDataSet15NFEPROTOCOLO.AsString,sJustificativa, FormatDateTime('yyyy-mm-dd"T"hh:nn:"00"',Now), 1, Form7.sFuso);
-          except end;
-          //
-          if (Pos('<cStat>135</cStat>',sRetorno) <> 0) or (Pos('<cStat>136</cStat>',sRetorno) <> 0) or FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) then
+          except
+          end;
+          
+          if (Pos('<cStat>135</cStat>',sRetorno) <> 0)
+            or (Pos('<cStat>136</cStat>',sRetorno) <> 0)
+            or FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) then
           begin
-            //
             if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet15OPERACAO.AsString then
               Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
 
+            {Mauricio Parizotto 2023-08-29 Inicio
             if Form7.ibDataSet14NOME.AsString = Form7.ibDataSet15OPERACAO.AsString then
             begin
-              //
               if (Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929') then
               begin
                 try
-                  //
                   // Recupera o cupom
-                  //
                   Form7.ibQuery1.Close;
                   Form7.ibQuery1.SQL.Clear;
                   Form7.ibQuery1.SQL.Add('update ALTERACA set VALORICM=Null where VALORICM='+   IntToStr(StrToInt(Form7.ibDataSet15NUMERONF.AsString)) +' ');
                   Form7.ibQuery1.Open;
-                  //
                 except
                   on E: Exception do
                   begin
@@ -24390,102 +24387,112 @@ begin
                 end;
               end;
             end;
-            //
+            }
+
+            // Recupera o cupom
+            try
+              Form7.ibQuery1.Close;
+              Form7.ibQuery1.SQL.Text :=' Update ALTERACA set VALORICM=Null '+
+                                        ' Where VALORICM='+IntToStr(StrToInt(Form7.ibDataSet15NUMERONF.AsString));
+              Form7.ibQuery1.ExecSQL;
+            except
+              on E: Exception do
+              begin
+                Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+Form7.ibQuery1.SQL.Text),'Atenção',mb_Ok + MB_ICONWARNING);
+              end;
+            end;
+
+            // Recupera o Orçamento
+            try
+              Form7.ibQuery1.Close;
+              Form7.ibQuery1.SQL.Text :=' Update ORCAMENT set NUMERONF=Null '+
+                                        ' Where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString);
+              Form7.ibQuery1.ExecSQL;
+            except
+              on E: Exception do
+              begin
+                Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+Form7.ibQuery1.SQL.Text),'Atenção',mb_Ok + MB_ICONWARNING);
+              end;
+            end;
+
+            {Mauricio Parizotto 2023-08-29 Fim}
+
             Form7.ibDataSet15.Edit;
             Form7.ibDataSet15STATUS.AsString       := 'NF-e cancelada';
-            //
+
             // Exemplo da função xmlnodevalue xml node value feita pelo Sandro
             //
             //            Form7.ibDataSet15NFEPROTOCOLO.AsString := xmlNodeValue(sRetorno, '//retEnvEvento/retEvento/infEvento/nProt');
             //
             // Não estou gravando para manter o PROTOCOLO original da NFE
-            //
+
             Form7.ibDataSet15EMITIDA.AsString := 'X';
             Form7.ibDataSet15.Post;
-            //
+            
             while not FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) do
             begin
-              //
               Sleep(100);
-              //
             end;
-            //
+
             if FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) then
             begin
-              //
               Form7.ibDataSet15.Edit;
               Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
               Form7.ibDataSet15.Post;
-              //
+
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
-              Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+              Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  
               Form7.ibDataSet2.Open;
-              //
+
               sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
-              //
+
               if sZiparXML = 'S' then
               begin
-                //
                 ShellExecute( 0, 'Open','szip.exe', pChar('backup "'+Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml')+'" "'+ Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.zip')+'"'),'', SW_SHOWMAXIMIZED);
-                //
+
                 while ConsultaProcesso('szip.exe') do
                 begin
                   Application.ProcessMessages;
                   sleep(100);
                 end;
-                //
+
                 while not FileExists(pChar(Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.zip'))) do
                 begin
                   sleep(100);
                 end;
-                //
-                // CopyFile(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.zip')),pChar(Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.zip')),false);
-                //
+
                 Unit7.EnviarEMail('',sEmail,'','Cancelamento de NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
                 chr(10)+
                 chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve'+'.zip') ,False);
-                //
               end else
               begin
-                //
                 Unit7.EnviarEMail('',sEmail,'','Cancelamento de NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
                 chr(10)),pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml')),False);
-                //
               end;
-              //
             end;
-            //
+
             // Este código é so pra homologacao do paf
-            //
             try
-              //
               if (Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) <> 0) or (Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929') then
               begin
-                //
                 // No caso de importação de cupom fiscal '929' ou = na integração nao deve voltar a quantidade no estoque
                 // Porque não baixou estoque quando fez a nota.
-                //
               end else
               begin
-                //
                 // Volta a quantidade no estoque
-                //
                 Form7.ibDataSet16.First;
                 while not Form7.ibDataset16.Eof do
                 begin
-                  //
                   if Form7.ibDataSet16SINCRONIA.AsFloat <> 0 then
                   begin
-                    //
                     if AllTrim(Form7.ibDataSet16CODIGO.AsString)<>'' then
                     begin
-                      //
                       Form7.ibDataSet4.Close;
                       Form7.ibDataSet4.SelectSQL.Clear;
                       Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
                       Form7.ibDataSet4.Open;
-                      //
+
                       if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet16CODIGO.AsString then
                       begin
                         ibDataSet4.Edit;
@@ -24497,46 +24504,34 @@ begin
                         ibDataSet16.Post;
                         Form7.sModulo := 'VENDA';
                       end;
-                      //
                     end;
                   end;
-                  //
+
                   Form7.ibDataset16.Next;
-                  //
                 end;
               end;
-              //
             except
-              //
               on E: Exception do
               begin
                 Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
               end;
-              //
             end;
-            //
+
             // Este código altera a quantidade no estoque
-            //
-            //
             // Este código é so pra homologacao do paf
-            //
             Form7.ibDataSet15.Edit;
             Form7.ibDataSet15EMITIDA.AsString := 'X';
             Form7.ibDataSet15.Post;
-            //
+            
             // Receber
-            //
             if sModulo = 'VENDA' then
             begin
-              //
               Form7.ibDataSet7.First;
-              //
+
               if Copy(Form7.ibDataSet15STATUS.AsString,1,31) = 'NF-e cancelada' then
               begin
-                //
                 while not Form7.ibDataSet7.Eof do
                 begin
-                  //
                   if Form7.ibDataSet7NUMERONF.AsString = Form7.ibDataSet15NUMERONF.AsString then
                   begin
                     if UpperCase(Copy(Form7.ibDataSet7PORTADOR.AsString,1,7)) = 'BANCO (' then
@@ -24548,48 +24543,41 @@ begin
                       Form7.ibDataSet7.Edit;
                       Form7.ibDataSet7PORTADOR.AsString     := 'EM CARTEIRA';
                     end;
-                    //
+
                     Form7.ibDataSet7ATIVO.AsString := '1';
                     Form7.ibDataSet7.Post;
                     Form7.ibDataSet7.Next;
-                    //
                   end else
                   begin
                     Form7.ibDataSet7.Next;
                   end;
-                  //
                 end;
-                //
               end;
             end;
-            //
+            
             // CAIXA
-            //
             ApagaIntegracaoComOCaixa(True);
-            //
+            
             // Relaciona os clientes com o arquivo de vendas
-            //
             Form7.ibDataSet2.Close;
             Form7.ibDataSet2.Selectsql.Clear;
-            Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+            Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  
             Form7.ibDataSet2.Open;
-            //
+            
             // Data da última venda para o cliente
-            //
             try
               Form7.ibDataSet2.Edit;
               Form7.ibDataSet2ULTIMACO.AsString := '';
               Form7.ibDataSet2.Post;
-            except end;
-            //
+            except
+            end;
+
             commitatudo(True);
-            //
+
             Form7.Close;
             Form7.Show;
-            //
           end else
           begin
-            //
             sStatus := '';
             while sRetorno <> '' do
             begin
@@ -24602,12 +24590,11 @@ begin
                 sRetorno := Copy(sRetorno,2,Length(sRetorno)-1);
               end;
             end;
-            //
+            
             if Alltrim(sStatus) <> '' then
             begin
               ShowMessage(sStatus);
             end;
-            //
           end;
         end else
         begin
@@ -24616,8 +24603,8 @@ begin
             ShowMessage('A justificativa tem que ter no minimo 15 caracteres.');
           end;
         end;
-        //
-      except end;
+      except
+      end;
 
       {$IFDEF VER150}
       DecimalSeparator := ',';
@@ -24630,21 +24617,20 @@ begin
       Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
       Form7.Panel7.Repaint;
     end;
-    //
-  except end;
-  //
+  except
+  end;
+
   Form7.sModulo := 'VENDA';
-  //
+
   if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
   begin
     Form7.N3ConsultarNFe1Click(Sender);
   end;
-  //
+  
   Form7.Close;
   Form7.Show;
   Form7.DBGrid1.SetFocus;
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender: TObject);
