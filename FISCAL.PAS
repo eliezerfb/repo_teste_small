@@ -1459,6 +1459,7 @@ type
     procedure EstoqueParcial;
     procedure LimpaVariaveisGlobais;
     procedure DefineCaptionFormPrincipal;
+    procedure EnviarANFCe;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1663,7 +1664,10 @@ type
     procedure ConfiguraCredencialTecnospeed;
     procedure MensagemAlertaLimiteDocumentosEmitidos;
     procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
-    function PDV_ImportaGerencial(sNumeroGerencial: String): Boolean;
+    function PDV_ImportaGerencial(sNumeroGerencial: String;
+      FModeloECF: String; // Sandro Silva 2023-08-30
+      FModeloDocOld: String // Sandro Silva 2023-08-30      
+    ): Boolean;
   end;
 
 var
@@ -1745,7 +1749,7 @@ uses
   , upafnfce // Sandro Silva 2022-09-23
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
-  , uValidaRecursosDelphi7, uFuncoesPOS, uConverteGerencialParaDocFiscal;
+  , uValidaRecursosDelphi7, uFuncoesPOS, uConverteDocumentoParaDocFiscal;
 
 {$R *.DFM}
 
@@ -11707,8 +11711,10 @@ begin
               iCCF := 0;
               //
               try
-                if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
+                if ((Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')) then // Sandro Silva 2023-08-25 if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
                   iCOO := StrToInt('0'+Form1.PDV_NumeroDoCupom(False))
+                else if (Form1.sModeloECF = '59') then
+                  iCOO := StrToIntDef(Form1.ibDataSet27.FieldByName('PEDIDO').AsString, 0) // Quem define o número do documento é o SAT ibdataset27 já tem o número certo
                 else
                   iCOO := StrToInt('0'+Form1.PDV_NumeroDoCupom(True));
                 //
@@ -18189,7 +18195,7 @@ begin
           begin
             if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
             begin
-              if bFind and (Pos('Mesa', Form1.sMesaOuConta) > 0) then
+              if bFind and (Pos('Mesa', Form1.sMesaOuConta) > 0) then // Pode lançar em conta cliente/conta cliente OS
               begin
                 if AnsiUpperCase(Form1.ibDataSet4.FieldByName('MEDIDA').AsString) = 'KG' then
                 begin
@@ -24196,7 +24202,7 @@ begin
      or (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad')) // Sandro Silva 2021-11-03
      or (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Emitido com sucesso')) // Sandro Silva 2021-11-03
      )
-     and (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Rejeicao') = False) // Sandro Silva 2021-11-03
+     and (AnsiContainsText(ConverteAcentos2(Form1.ibDataSet150.FieldByName('STATUS').AsString), 'Rejeicao') = False) // Sandro Silva 2021-11-03
      then
       Form1.DBGrid1.Canvas.Font.Color  := COR_AZUL // Sandro Silva 2021-08-17 $00EAB231 // Azul
     else
@@ -24238,7 +24244,7 @@ begin
        or (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad')) // Sandro Silva 2021-11-03
        or (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Emitido com sucesso')) // Sandro Silva 2021-11-03
        )
-       and (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Rejeicao') = False) // Sandro Silva 2021-11-03
+       and (AnsiContainsText(ConverteAcentos2(Form1.ibDataSet150.FieldByName('STATUS').AsString), 'Rejeicao') = False) // Sandro Silva 2021-11-03
        then
          Form1.DBGrid1.Canvas.Font.Color  := COR_AZUL // Sandro Silva 2021-08-17 $00EAB231 // Azul
       else
@@ -24473,7 +24479,13 @@ var
   sNumeroNFEnvio: String;
   sCaixaEnvio: String;
   bAbrirGerenicadorNoFinal: Boolean; // Sandro Silva 2023-08-22
+  ConverteVenda: TConverteVendaParaNovoDocFiscal; // Sandro Silva 2023-08-30
+  sGerencial: String; // Sandro Silva 2023-08-30
+  sNumeroNFOld: String; // Sandro Silva 2023-08-30
+  sNumeroNFNew: String; // Sandro Silva 2023-08-30
+  IBQTOTAL: TIBQuery; // Sandro Silva 2023-08-30
 begin
+  (* // Sandro Silva 2023-09-06
   bAbrirGerenicadorNoFinal := True; // Sandro Silva 2023-08-22
   bTimer2EnabledOld := Timer2.Enabled;
   //
@@ -24542,6 +24554,12 @@ begin
 
             if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then
             begin
+
+              {Sandro Silva 2023-08-30 inicio}
+              sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
+              sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+              {Sandro Silva 2023-08-30 fim}
+
               //
               {Sandro Silva 2023-08-22 inicio
               Mais1ini := TIniFile.Create('FRENTE.INI');
@@ -24574,6 +24592,12 @@ begin
 
     if sModeloECF = '59' then {Sandro Silva 2014-01-20 inicio}
     begin
+
+      {Sandro Silva 2023-08-30 inicio}
+      sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
+      sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+      {Sandro Silva 2023-08-30 fim}
+
       //
       if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
       begin
@@ -24588,27 +24612,18 @@ begin
       Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
       Mais1ini.Free;
       }
-      GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '59'); // Sandro Silva 2023-08-22
-      {Sandro Silva 2023-08-22 fim}  
+      if Form1.ibDataSet150.FieldByName('NUMERONF').AsString <> '' then // Sandro Silva 2023-08-25
+        GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '59'); // Sandro Silva 2023-08-22
+      {Sandro Silva 2023-08-22 fim}
       //
+
       Form1.ibDataset150.Close;
 
       Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
 
-      {Sandro Silva 2021-07-13 inicio
-      Form1.dbGrid1.Visible         := False;
-      Form1.DateTimePicker1.Visible := False;
-      Form1.pnlMenuFiscalPAFNFCeInacessivel.Visible := False; // Sandro Silva 2020-12-16
-      Form1.Edit1.Text := '';
-      Form1.Edit1.SetFocus;
-      Form1.Panel6.Visible := False;
-      Form1.Panel7.Visible := False; // Sandro Silva 2017-12-13
-      Form1.Panel8.Visible := False; // Sandro Silva 2017-12-13
-      }
       OcultaGerenciadorVendas;
       Form1.Edit1.Text := '';
       Form1.Edit1.SetFocus;
-      {Sandro Silva 2021-07-13 fim}
 
       //
       CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
@@ -24636,20 +24651,9 @@ begin
 
         Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
 
-        {Sandro Silva 2021-07-13 inicio
-        Form1.dbGrid1.Visible         := False;
-        Form1.DateTimePicker1.Visible := False;
-        Form1.pnlMenuFiscalPAFNFCeInacessivel.Visible := False; // Sandro Silva 2020-12-16
-        Form1.Edit1.Text := '';
-        Form1.Edit1.SetFocus;
-        Form1.Panel6.Visible := False;
-        Form1.Panel7.Visible := False; // Sandro Silva 2017-12-13
-        Form1.Panel8.Visible := False; // Sandro Silva 2017-12-13
-        }
         OcultaGerenciadorVendas;
         Form1.Edit1.Text := '';
         Form1.Edit1.SetFocus;
-        {Sandro Silva 2021-07-13 fim}
 
         //
         CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
@@ -24665,6 +24669,11 @@ begin
     if bAbrirGerenicadorNoFinal then // Sandro Silva 2023-08-22
       GerenciadordeNFCe1Click(Sender);
   end;
+  *)
+  if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') and (Form1.ibDataSet150.FieldByName('GERENCIAL').AsString <> '')  then
+    Form1.DBGrid1DblClick(Form1.DBGrid1)
+  else
+    EnviarANFCe;
 end;
 
 procedure TForm1.PopupMenu2Change(Sender: TObject; Source: TMenuItem;
@@ -24797,16 +24806,23 @@ var
   sDAV: String;
   bTimer2EnabledOld: Boolean;
   iRowsAffected: Integer; // Sandro Silva 2017-09-14
+// Sandro Silva 2023-08-30  ConverteVenda: TConverteVendaParaNovoDocFiscal;
+  sGerencial: String; // Sandro Silva 2023-08-29
 begin
   //// Comentar essas linhas e descomentas as de baixo
 
   if DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString = '' then
     Exit; // Double Click com grade vazia gera bug
 
+//Se for venda convertida deverá recuparar os valores das formas de pagamento e fazer a transmissão sem abrir na tela, porque a venda pode ter sido finalizada em cartão,
+//abrindo na tela terá que fechar em dinheiro, deixando os registros da operação em cartão na tabela transacaoeletronica
+
+
   if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99') and (DBGrid1.DataSource.DataSet.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_ABERTA) then // Sandro Silva 2023-08-22 if DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '99' then
     Exit; // Double Click com grade vazia gera bug
-
+    
   bTimer2EnabledOld := Timer2.Enabled;
+  sGerencial := DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString;
   try
     Screen.Cursor := crHourGlass;
 
@@ -24822,184 +24838,291 @@ begin
     begin
       if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString <> '99') then
       begin
-        if (DBGrid1.DataSource.DataSet.FieldByName('CAIXA').AsString <> Form1.sCaixa)
-          or (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') then
+        {Sandro Silva 2023-09-04 inicio}
+        if (DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString <> '') then
         begin
 
-          IBQDADOS := CriaIBQuery(Form1.ibQuery65.Transaction);
-          try
-            sCaixaOld    := DBGrid1.DataSource.DataSet.FieldByName('CAIXA').AsString;
-            sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
-            dtDataOld    := DBGrid1.DataSource.DataSet.FieldByName('DATA').AsDateTime;
-            sRegistroOld := DBGrid1.DataSource.DataSet.FieldByName('REGISTRO').AsString;
-            sCOO         := sNumeroNFOld;
-            sCCF         := sNumeroNFOld;
+          if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') or (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '65') then
+          begin
 
-            sNumeroNFNew := sNumeroNFOld;
-            sCaixaNew    := sCaixaOld; // Sandro Silva 2018-03-06
-
-            if Form1.sModeloECF = '65' then
+            if (DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString <> '') then
             begin
 
-              if sCCF <> '' then
+              if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') then
+              begin
+                PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, '59', DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString);
+              end;
+
+              if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '65') then
+              begin
+                PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, '65', DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString);
+              end;
+
+              Form1.ibDataset150.Close;
+              Form1.ibDataset150.SelectSql.Clear;
+              Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
+              Form1.ibDataset150.Open;
+
+              Exit;
+
+            end;
+
+          end;
+          
+        end
+        else
+        begin
+
+          if (DBGrid1.DataSource.DataSet.FieldByName('CAIXA').AsString <> Form1.sCaixa)
+            or (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') then
+          begin
+
+            {Sandro Silva 2023-09-04 inicio
+            //Sandro Silva 2023-08-30 inicio
+            if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') and (DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString <> '') then
+            begin
+              PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, '59', DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString);
+
+              Form1.ibDataset150.Close;
+              Form1.ibDataset150.SelectSql.Clear;
+              Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
+              Form1.ibDataset150.Open;
+
+              Exit;
+            end;
+            //Sandro Silva 2023-08-30 fim
+            }
+            {Sandro Silva 2023-09-04 fim}
+
+            IBQDADOS := CriaIBQuery(Form1.ibQuery65.Transaction);
+            try
+              sCaixaOld    := DBGrid1.DataSource.DataSet.FieldByName('CAIXA').AsString;
+              sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+              dtDataOld    := DBGrid1.DataSource.DataSet.FieldByName('DATA').AsDateTime;
+              sRegistroOld := DBGrid1.DataSource.DataSet.FieldByName('REGISTRO').AsString;
+              sCOO         := sNumeroNFOld;
+              sCCF         := sNumeroNFOld;
+
+              sNumeroNFNew := sNumeroNFOld;
+              sCaixaNew    := sCaixaOld; // Sandro Silva 2018-03-06
+
+              if Form1.sModeloECF = '65' then
               begin
 
-                try
+                if sCCF <> '' then
+                begin
+
+                  try
+                    Form1.ibDataSet27.Close;
+                    Form1.ibDataSet27.SelectSQL.Text :=
+                      'select * '+
+                      'from ALTERACA ' +
+                      'where CAIXA = ' + QuotedStr(sCaixaOld) +
+                      ' and PEDIDO = ' + QuotedStr(sNumeroNFOld) + // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
+                      ' and (DATA between  ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld - 1)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld + 1)) + ')'; // Itens da mesma data da NFC-e ou 1 dia a menos
+                    Form1.ibDataSet27.Open;
+                    while Form1.ibDataSet27.Eof = False do
+                    begin
+                      Form1.ibDataSet27.Edit;
+                      Form1.ibDataSet27.FieldByName('CCF').Clear; // CCF preenchido indica que foi transmitido e autorizado
+                      Form1.ibDataSet27.Post;
+                      Form1.ibDataSet27.Next;
+                    end;
+
+                  except
+                  end;
+
+                end;
+
+                sCOO         := ''; //sNumeroNFNew;
+                sCCF         := ''; //sNumeroNFNew;
+
+                IBQDADOS.Close;
+
+              end;
+
+              if Form1.sModeloECF = '59' then
+              begin
+                sCaixaNew    := Form1.sCaixa;
+                // Sandro Silva 2021-12-01 sNumeroNFNew := StrZero(IncrementaGenerator(_59_PREFIXO_GENERATOR_CAIXA_SAT + Form1.sCaixa, 1),6,0); // Sandro Silva 2021-03-05 sNumeroNFNew := StrZero(IncrementaGenerator('G_NUMEROCFESAT_' + Form1.sCaixa, 1),6,0);
+                // Sandro Silva 2023-08-25 sNumeroNFNew := FormataNumeroDoCupom(IncrementaGenerator(_59_PREFIXO_GENERATOR_CAIXA_SAT + Form1.sCaixa, 1));
+                sCOO         := '';
+                sCCF         := '';
+
+                IBQDADOS.Close;
+
+              end;
+
+              iRowsAffected := 0;
+              try
+
+                {Sandro Silva 2023-08-25 inicio
+                Form1.ibDataSet27.Close;
+                Form1.ibDataSet27.SelectSQL.Text :=
+                  'select * ' +
+                  'from ALTERACA ' +
+                  ' where CAIXA = ' + QuotedStr(sCaixaOld) +
+                  ' and PEDIDO = ' + QuotedStr(sNumeroNFOld) +
+                  ' and CCF is null'; // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
+                Form1.ibDataSet27.Open;
+                while Form1.ibDataSet27.Eof = False do
+                begin
+                  Form1.ibDataSet27.Edit;
+                  Form1.ibDataSet27.FieldByName('CAIXA').AsString  := sCaixaNew; // Sandro Silva 2018-03-06  ' CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                  Form1.ibDataSet27.FieldByName('PEDIDO').AsString := sNumeroNFNew;
+                  Form1.ibDataSet27.Post;
+                  Form1.ibDataSet27.Next;
+                end;
+                }
+                if Form1.sModeloECF = '59' then
+                begin
                   Form1.ibDataSet27.Close;
                   Form1.ibDataSet27.SelectSQL.Text :=
-                    'select * '+
+                    'select * ' +
                     'from ALTERACA ' +
-                    'where CAIXA = ' + QuotedStr(sCaixaOld) +
-                    ' and PEDIDO = ' + QuotedStr(sNumeroNFOld) + // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
-                    ' and (DATA between  ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld - 1)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld + 1)) + ')'; // Itens da mesma data da NFC-e ou 1 dia a menos
+                    ' where CAIXA = ' + QuotedStr(sCaixaOld) +
+                    ' and PEDIDO = ' + QuotedStr(sNumeroNFNew) +
+                    ' and CCF is null'; // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
+                  Form1.ibDataSet27.Open;
+                end
+                else
+                begin
+
+                  Form1.ibDataSet27.Close;
+                  Form1.ibDataSet27.SelectSQL.Text :=
+                    'select * ' +
+                    'from ALTERACA ' +
+                    ' where CAIXA = ' + QuotedStr(sCaixaOld) +
+                    ' and PEDIDO = ' + QuotedStr(sNumeroNFOld) +
+                    ' and CCF is null'; // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
                   Form1.ibDataSet27.Open;
                   while Form1.ibDataSet27.Eof = False do
                   begin
                     Form1.ibDataSet27.Edit;
-                    Form1.ibDataSet27.FieldByName('CCF').Clear; // CCF preenchido indica que foi transmitido e autorizado
+                    Form1.ibDataSet27.FieldByName('CAIXA').AsString  := sCaixaNew; // Sandro Silva 2018-03-06  ' CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                    Form1.ibDataSet27.FieldByName('PEDIDO').AsString := sNumeroNFNew;
                     Form1.ibDataSet27.Post;
                     Form1.ibDataSet27.Next;
                   end;
+                end;
+                {Sandro Silva 2023-08-25 fim}
 
+                iRowsAffected := Form1.ibDataSet27.RecordCount;
+
+              except
+
+              end;
+
+              if Form1.sModeloECF = '65' then // Só faz para NFCE. Para o SAT é atualizado abaixo usando .Post
+              begin
+                try
+                  IBQDADOS.Close;
+                  IBQDADOS.SQL.Text :=
+                    'update NFCE set ' +
+                    'CAIXA = ' + QuotedStr(sCaixaNew) + // Sandro Silva 2018-03-06  'CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                    ', NUMERONF = ' + QuotedStr(sNumeroNFNew) +
+                    ', MODELO = ' + QuotedStr(Form1.sModeloECF) +
+                    ' where REGISTRO = ' + QuotedStr(sRegistroOld);
+                  IBQDADOS.ExecSQL;
                 except
                 end;
-
               end;
 
-              sCOO         := ''; //sNumeroNFNew;
-              sCCF         := ''; //sNumeroNFNew;
-
-              IBQDADOS.Close;
-
-            end;
-
-            if Form1.sModeloECF = '59' then
-            begin
-              sCaixaNew    := Form1.sCaixa;
-              // Sandro Silva 2021-12-01 sNumeroNFNew := StrZero(IncrementaGenerator(_59_PREFIXO_GENERATOR_CAIXA_SAT + Form1.sCaixa, 1),6,0); // Sandro Silva 2021-03-05 sNumeroNFNew := StrZero(IncrementaGenerator('G_NUMEROCFESAT_' + Form1.sCaixa, 1),6,0);
-              sNumeroNFNew := FormataNumeroDoCupom(IncrementaGenerator(_59_PREFIXO_GENERATOR_CAIXA_SAT + Form1.sCaixa, 1));
-              sCOO         := '';
-              sCCF         := '';
-
-              IBQDADOS.Close;
-            end;
-
-            iRowsAffected := 0;
-            try
-
-              Form1.ibDataSet27.Close;
-              Form1.ibDataSet27.SelectSQL.Text :=
-                'select * ' +
-                'from ALTERACA ' +
-                ' where CAIXA = ' + QuotedStr(sCaixaOld) +
-                ' and PEDIDO = ' + QuotedStr(sNumeroNFOld) +
-                ' and CCF is null'; // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
-              Form1.ibDataSet27.Open;
-              while Form1.ibDataSet27.Eof = False do
+              if iRowsAffected > 0 then
               begin
-                Form1.ibDataSet27.Edit;
-                Form1.ibDataSet27.FieldByName('CAIXA').AsString  := sCaixaNew; // Sandro Silva 2018-03-06  ' CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                Form1.ibDataSet27.FieldByName('PEDIDO').AsString := sNumeroNFNew;
-                Form1.ibDataSet27.Post;
-                Form1.ibDataSet27.Next;
+                //Atualiza ORCAMENT e OS
+                IBQDADOS.Close;
+                IBQDADOS.SQL.Text :=
+                  'select first 1 DAV, TIPODAV, PEDIDO, CAIXA ' +
+                  'from ALTERACA ' +
+                  ' where CAIXA = ' + QuotedStr(sCaixaNew) +// Sandro Silva 2018-03-06   ' where CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                  ' and PEDIDO = ' + QuotedStr(sNumeroNFNew) +
+                  //' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld));
+                  ' and CCF is null'; // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
+                IBQDADOS.Open;
+
+                sTIPODAV := IBQDADOS.FieldByName('TIPODAV').AsString;
+                sDAV     := IBQDADOS.FieldByName('DAV').AsString;
+
+                Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, sCaixaNew, sNumeroNFNew, '');// Sandro Silva 2018-03-06  AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, Form1.sCaixa, sNumeroNFNew, '');
+
+                Commitatudo(True);// Salva para que as 2 transaction vejam dados
+
+                IBQDADOS.Close;
+                IBQDADOS.SQL.Text :=
+                  'select first 1 VENDEDOR ' +
+                  'from ALTERACA ' +
+                  'where PEDIDO = ' + QuotedStr(sNumeroNFNew) +
+                  ' and CAIXA = ' + QuotedStr(sCaixaNew) +// Sandro Silva 2018-03-06  ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                  //' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld)) +
+                  ' and CCF is null' + // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
+                  ' and TIPO <> ''CANCEL'' ' +
+                  ' and TIPO <> ''KOLNAC'' ' + // Sandro Silva 2019-03-26 Quando em Dead Lock, regsitro fica com TIPO=KOLNAC. Altera para "CANCEL" quando estiver destravado
+                  ' and DESCRICAO <> ''Acréscimo'' ' +
+                  ' and DESCRICAO <> ''Desconto'' ' +
+                  ' and DESCRICAO <> ''<CANCELADO>'' ' +
+                  ' and VENDEDOR <> ''<cancelado>'' ';
+                IBQDADOS.Open;
+
+                if IBQDADOS.FieldByName('VENDEDOR').AsString <> '' then
+                begin
+                  Form2.Edit9.Text := IBQDADOS.FieldByName('VENDEDOR').AsString;
+                  Form2.Edit9Change(Sender);
+                  if (Form1.ibDataSet99.FieldByName('NOME').AsString <> IBQDADOS.FieldByName('VENDEDOR').AsString) then
+                  begin
+                    Form2.Edit9.Text := Form1.sVendedor;
+                  end
+                  else
+                  begin
+                    Form1.sVendedor  := Form1.ibDataSet99.FieldByName('NOME').AsString;
+                  end;
+                end;
+
+              end; // if iRowsAffected >= 0 then
+
+              Form1.ibDataSet150.Open;
+              Form1.ibDataSet150.Locate('REGISTRO', sRegistroOld, []);
+
+              if Form1.sModeloECF = '59' then
+              begin
+
+                if (sNumeroNFOld <> sNumeroNFNew) or (sCaixaOld <> sCaixaNew) then // Sandro Silva 2023-08-30
+                begin
+
+                  if (Form1.ibDataSet150.FieldByName('CAIXA').AsString = sCaixaOld)
+                    and (Form1.ibDataSet150.FieldByName('NUMERONF').AsString = sNumeroNFOld)
+                    and (Form1.ibDataSet150.FieldByName('MODELO').AsString = Form1.sModeloECF) then
+                  begin
+                    // Atualiza o número do pedido para o próximo número do caixa que foram salvos os dados do pedido nas outras tabelas (NFCE, ALTERACA, OS)
+                    Form1.ibDataSet150.Edit;
+                    Form1.ibDataSet150.FieldByName('CAIXA').AsString    := sCaixaNew;
+                    Form1.ibDataSet150.FieldByName('NUMERONF').AsString := sNumeroNFNew;
+                    Form1.ibDataSet150.FieldByName('GERENCIAL').AsString := sGerencial; // Sandro Silva 2023-08-30
+                    if Form1.ibDataSet150.FieldByName('GERENCIAL').AsString = '' then
+                      Form1.ibDataSet150.FieldByName('GERENCIAL').Clear;
+                    Form1.ibDataSet150.Post; /// Aqui está limpando o campo GERENCIAL, não encontrei o porque
+                  end;
+
+                end;
               end;
 
-              iRowsAffected := Form1.ibDataSet27.RecordCount;
+              {Sandro Silva 2023-08-30 inicio
+              if (Form1.ibDataSet150.FieldByName('GERENCIAL').AsString = '') and (sGerencial <> '' ) then
+              begin
+                Form1.ibDataSet150.Edit;
+                Form1.ibDataSet150.FieldByName('GERENCIAL').AsString := sGerencial;
+                Form1.ibDataSet150.Post;
+              end;
+              {Sandro Silva 2023-08-30 fim}
 
             except
 
             end;
-
-            if Form1.sModeloECF = '65' then // Só faz para NFCE. Para o SAT é atualizado abaixo usando .Post
-            begin
-              try
-                IBQDADOS.Close;
-                IBQDADOS.SQL.Text :=
-                  'update NFCE set ' +
-                  'CAIXA = ' + QuotedStr(sCaixaNew) + // Sandro Silva 2018-03-06  'CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                  ', NUMERONF = ' + QuotedStr(sNumeroNFNew) +
-                  ', MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                  ' where REGISTRO = ' + QuotedStr(sRegistroOld);
-                IBQDADOS.ExecSQL;
-              except
-              end;
-            end;
-
-            if iRowsAffected > 0 then
-            begin
-              //Atualiza ORCAMENT e OS
-              IBQDADOS.Close;
-              IBQDADOS.SQL.Text :=
-                'select first 1 DAV, TIPODAV, PEDIDO, CAIXA ' +
-                'from ALTERACA ' +
-                ' where CAIXA = ' + QuotedStr(sCaixaNew) +// Sandro Silva 2018-03-06   ' where CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                ' and PEDIDO = ' + QuotedStr(sNumeroNFNew) +
-                //' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld));
-                ' and CCF is null'; // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
-              IBQDADOS.Open;
-
-              sTIPODAV := IBQDADOS.FieldByName('TIPODAV').AsString;
-              sDAV     := IBQDADOS.FieldByName('DAV').AsString;
-
-              Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, sCaixaNew, sNumeroNFNew, '');// Sandro Silva 2018-03-06  AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, Form1.sCaixa, sNumeroNFNew, '');
-
-              Commitatudo(True);// Salva para que as 2 transaction vejam dados
-
-              IBQDADOS.Close;
-              IBQDADOS.SQL.Text :=
-                'select first 1 VENDEDOR ' +
-                'from ALTERACA ' +
-                'where PEDIDO = ' + QuotedStr(sNumeroNFNew) +
-                ' and CAIXA = ' + QuotedStr(sCaixaNew) +// Sandro Silva 2018-03-06  ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                //' and DATA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtDataOld)) +
-                ' and CCF is null' + // vendas do SAT/NFC-e terão campos ALTERACA.COO e ALTERACA.CCF preenchidos somente após a autorização
-                ' and TIPO <> ''CANCEL'' ' +
-                ' and TIPO <> ''KOLNAC'' ' + // Sandro Silva 2019-03-26 Quando em Dead Lock, regsitro fica com TIPO=KOLNAC. Altera para "CANCEL" quando estiver destravado
-                ' and DESCRICAO <> ''Acréscimo'' ' +
-                ' and DESCRICAO <> ''Desconto'' ' +
-                ' and DESCRICAO <> ''<CANCELADO>'' ' +
-                ' and VENDEDOR <> ''<cancelado>'' ';
-              IBQDADOS.Open;
-
-              if IBQDADOS.FieldByName('VENDEDOR').AsString <> '' then
-              begin
-                Form2.Edit9.Text := IBQDADOS.FieldByName('VENDEDOR').AsString;
-                Form2.Edit9Change(Sender);
-                if (Form1.ibDataSet99.FieldByName('NOME').AsString <> IBQDADOS.FieldByName('VENDEDOR').AsString) then
-                begin
-                  Form2.Edit9.Text := Form1.sVendedor;
-                end
-                else
-                begin
-                  Form1.sVendedor  := Form1.ibDataSet99.FieldByName('NOME').AsString;
-                end;
-              end;
-
-            end; // if iRowsAffected >= 0 then
-
-            Form1.ibDataSet150.Open;
-            Form1.ibDataSet150.Locate('REGISTRO', sRegistroOld, []);
-
-            if Form1.sModeloECF = '59' then
-            begin
-              if (Form1.ibDataSet150.FieldByName('CAIXA').AsString = sCaixaOld)
-                and (Form1.ibDataSet150.FieldByName('NUMERONF').AsString = sNumeroNFOld)
-                and (Form1.ibDataSet150.FieldByName('MODELO').AsString = Form1.sModeloECF) then
-              begin
-                // Atualiza o número do pedido para o próximo número do caixa que foram salvos os dados do pedido nas outras tabelas (NFCE, ALTERACA, OS)
-                Form1.ibDataSet150.Edit;
-                Form1.ibDataSet150.FieldByName('CAIXA').AsString    := sCaixaNew;
-                Form1.ibDataSet150.FieldByName('NUMERONF').AsString := sNumeroNFNew;
-                Form1.ibDataSet150.Post;
-              end;
-            end;
-
-          except
-
+            FreeAndNil(IBQDADOS);
           end;
-          FreeAndNil(IBQDADOS);
-        end;
-        {Sandro Silva 2017-09-14 final}
+          {Sandro Silva 2017-09-14 final}
+        end; // if (DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString <> '') then
+
 
         {Sandro Silva 2022-11-04 inicio}
         try
@@ -25008,9 +25131,14 @@ begin
 
         end;
         {Sandro Silva 2022-11-04 fim}
+
+        {Sandro Silva 2023-08-25 inicio}
+        if sNumeroNFNew <> '' then
+          GravaNumeroCupomFrenteINI(sNumeroNFNew, Form1.sModeloECF); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-25 fim}
       end;
 
-      Form1.EnviaraNFCe1Click(Sender);// Transmitindo NFC-e com duplo click no gerenciador
+      EnviarANFCe;// Sandro Silva 2023-09-06 Form1.EnviaraNFCe1Click(Sender);// Transmitindo NFC-e com duplo click no gerenciador
       //
     end else
     begin
@@ -34060,9 +34188,13 @@ begin
   DadosEmitentePDV.UF    := DataSet.FieldByName('ESTADO').AsString;
 end;
 
-function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String): Boolean;
+function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String;
+  FModeloECF: String; // Sandro Silva 2023-08-30
+  FModeloDocOld: String // Sandro Silva 2023-08-30
+
+): Boolean;
 var
-  ConverteGerencial: TConverteGerencialParaDocFiscal;
+  ConverteGerencial: TConverteVendaParaNovoDocFiscal;
   IBQTOTAL: TIBQuery;
 begin
   Result := False;
@@ -34070,21 +34202,24 @@ begin
   if sNumeroGerencial = '' then
     Exit;
 
+  {Sandro Silva 2023-08-30 inicio
   if PDV_CupomAberto then
   begin
     Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
     Exit;
   end;
+  }
 
-  if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')  then
+  if (FModeloECF <> '59') and (FModeloECF <> '65')  then // Sandro Silva 2023-08-30 if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')  then
     Exit;
 
   Form1.sStatusECF := 'Gerando ' + Form1.sTipoDocumento2;
   // Importa gerencial para nfc-e
-  ConverteGerencial := TConverteGerencialParaDocFiscal.Create;
+  ConverteGerencial := TConverteVendaParaNovoDocFiscal.Create;
   try
     ConverteGerencial.Caixa             := Form1.sCaixa;
-    ConverteGerencial.ModeloDocumento   := Form1.sModeloECF;
+    ConverteGerencial.ModeloOld         := FModeloDocOld; // Sandro Silva 2023-08-30 '99';
+    ConverteGerencial.ModeloDocumento   := FModeloECF;
     ConverteGerencial.IBTransaction     := Form1.ibDataSet27.Transaction;
     ConverteGerencial.IBDataSet27       := Form1.IBDataSet27;
     ConverteGerencial.IBDataSet30       := Form1.IBDataSet30;
@@ -34105,10 +34240,13 @@ begin
     if TestaTudo(True) then // Form1.PDV_ImportaGerencial(
     begin
 
-      if ConverteGerencial.Importar then
+      if ConverteGerencial.Converte then
       begin
         try
           Form1.icupom := StrToInt(ConverteGerencial.NumeroNF);
+
+          if Form1.iCupom > 0 then
+            GravaNumeroCupomFrenteINI(ConverteGerencial.NumeroNF, FModeloECF); // Sandro Silva 2023-08-30 GravaNumeroCupomFrenteINI(ConverteGerencial.NumeroNF, Form1.sModeloECF);
 
           Form2.Edit10.Text := '';
           if LimpaNumero(ConverteGerencial.DadosCliente.CNPJCPF) = '' then
@@ -34208,27 +34346,26 @@ begin
               Form1.fTributos_municipais) + chr(10) +
             Form1.sMensagemPromocional;
 
-          if (Form1.sModeloECF = '59') then
+          if (FModeloECF = '59') then // Sandro Silva 2023-08-30 if (Form1.sModeloECF = '59') then
             Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + ' Build: ' + Build;
 
-          if (Form1.sModeloECF = '65') then
+          if (FModeloECF = '65') then // Sandro Silva 2023-08-30 if (Form1.sModeloECF = '65') then
             Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'Caixa: ' + Form1.sCaixa;
 
           Form1.sMensagemPromocional := StringReplace(Form1.sMensagemPromocional, #10#10, #10, [rfReplaceAll]);
 
           AcertaPendenciaCancelAlteraca; // Fechamento do cupom Sandro Silva 2019-03-21
 
-          if Form1.sModeloECF = '59' then
+          if FModeloECF = '59' then // Sandro Silva 2023-08-30 if Form1.sModeloECF = '59' then
             _ecf59_FinalizaVendaSAT;
 
-          if Form1.sModeloECF = '65' then
+          if FModeloECF = '65' then // Sandro Silva 2023-08-30 if Form1.sModeloECF = '65' then
             _ecf65_EnviarNFCe(True);
 
           Form10.sNomeDoTEF      := '';
           Form1.sDebitoOuCredito := '';
           Form1.sConveniado      := '';
           Form1.sVendedor        := '';
-
 
           Form1.fTotal    := 9999999.99;
           Form1.icupom    := 0;
@@ -34271,6 +34408,7 @@ begin
         DeletaDataSet25;
 
         Commitatudo(True);
+
         Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
       end;
     end
@@ -34283,6 +34421,8 @@ begin
     Form1.sVendedor        := '';
     Form1.fDescontoNoTotal := 0.00;
     Form1.fTEFPago         := 0.00;
+    //No final deixa zerado o número do cupom no frente.ini 
+    GravaNumeroCupomFrenteINI('000000', Form1.sModeloECF); // Sandro Silva 2023-08-31
   end;
 
   {
@@ -34426,17 +34566,35 @@ end;
 
 procedure TForm1.itemMenugerencialClick(Sender: TObject);
 var
-  Importar: TConverteGerencialParaDocFiscal;
+  Importar: TConverteVendaParaNovoDocFiscal;
   sNumeroGerencial: String;
 begin
+
+  {Sandro Silva 2023-08-30 inicio}
+  if PDV_CupomAberto then
+  begin
+    Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
+    Exit;
+  end;
+  {Sandro Silva 2023-08-30 fim}
+
   sNumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
   if sNumeroGerencial <> '' then
-    PDV_ImportaGerencial(sNumeroGerencial);
+    PDV_ImportaGerencial(sNumeroGerencial, Form1.sModeloECF, '99'); // Sandro Silva 2023-08-30 PDV_ImportaGerencial(sNumeroGerencial);
 end;
 
 procedure TForm1.EmitirNFCedogerencial1Click(Sender: TObject);
 begin
-  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
+
+  {Sandro Silva 2023-08-30 inicio}
+  if PDV_CupomAberto then
+  begin
+    Application.MessageBox(PChar('Caixa em venda' + #13 + 'Gerencial não importado'), 'Atenção', MB_ICONWARNING + MB_OK);
+    Exit;
+  end;
+  {Sandro Silva 2023-08-30 fim}
+  
+  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, Form1.sModeloECF, '99'); // Sandro Silva 2023-08-30 PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
   GerenciadordeNFCe1Click(Sender);
 end;
 
@@ -34458,6 +34616,208 @@ begin
   begin
     Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
   end;
+end;
+
+procedure TForm1.EnviarANFCe;
+var
+  Mais1ini: tIniFile;
+  bTimer2EnabledOld: Boolean;
+  sNumeroNFEnvio: String;
+  sCaixaEnvio: String;
+  bAbrirGerenicadorNoFinal: Boolean; // Sandro Silva 2023-08-22
+  ConverteVenda: TConverteVendaParaNovoDocFiscal; // Sandro Silva 2023-08-30
+  sGerencial: String; // Sandro Silva 2023-08-30
+  sNumeroNFOld: String; // Sandro Silva 2023-08-30
+  sNumeroNFNew: String; // Sandro Silva 2023-08-30
+  IBQTOTAL: TIBQuery; // Sandro Silva 2023-08-30
+begin
+  bAbrirGerenicadorNoFinal := True; // Sandro Silva 2023-08-22
+  bTimer2EnabledOld := Timer2.Enabled;
+  //
+  try
+    Timer2.Enabled    := False;
+    if sModeloECF = '65' then
+    begin
+
+      if Form1.bStatusECF then
+      begin
+        //
+        if (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad')) or (Pos('|' + xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//infProt/cStat') + '|', '|100|150|') > 0) then
+        begin
+          Application.MessageBox('NFC-e transmitida e autorizada', 'Aviso', MB_OK + MB_ICONINFORMATION);
+          Exit;
+        end;
+
+        if (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Denegado')) or (_ecf65_UsoDenegado(Form1.ibDataSet150.FieldByName('NFEXML').AsString)) then
+        begin
+          Application.MessageBox('NFC-e com Uso Denegado', 'Aviso', MB_OK + MB_ICONINFORMATION);
+          Exit;
+        end;
+
+        if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) or (xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//tpEmis') = '9') then // Sandro Silva 2018-03-06  if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
+        begin
+
+          if Form1.bStatusECF then // Sandro Silva 2020-06-25
+          begin
+
+            if Application.MessageBox(PansiChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PAnsiChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
+            begin
+
+              _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, '', ''); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
+
+              Form1.GerenciadordeNFCe1Click(Form1.GerenciadordeNFCe1);
+
+            end
+            else
+              Exit;
+          end
+          else
+            Exit;
+        end
+        else
+        begin
+          if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
+          begin
+            Application.MessageBox(PAnsiChar('NFC-e ' + Form1.ibDataSet150.FieldByName('NUMERONF').AsString + ' pertence ao caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString +
+                                             #13 + #13 + 'Faça o envio pelo caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
+          end
+          else
+          begin
+            sNumeroNFEnvio := Form1.ibDataSet150.FieldByName('NUMERONF').AsString;
+            sCaixaEnvio    := Form1.ibDataSet150.FieldByName('CAIXA').AsString;
+
+            _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, sNumeroNFEnvio, sCaixaEnvio); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
+
+            Form1.IBDataSet150.Close;
+            Form1.IBDataSet150.SelectSQL.Text :=
+              'select * ' +
+              'from NFCE ' +
+              'where NUMERONF = ' + QuotedStr(sNumeroNFEnvio) +
+              ' and CAIXA = ' + QuotedStr(sCaixaEnvio) +
+              ' and MODELO = ''65'' ';
+            Form1.IBDataSet150.Open;
+
+            if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then
+            begin
+
+              {Sandro Silva 2023-08-30 inicio}
+              sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
+              sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+              {Sandro Silva 2023-08-30 fim}
+
+              //
+              {Sandro Silva 2023-08-22 inicio
+              Mais1ini := TIniFile.Create('FRENTE.INI');
+              Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
+              Mais1ini.Free;
+              }
+              GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '65'); // Sandro Silva 2023-08-22
+              {Sandro Silva 2023-08-22 fim}
+              //
+              Form1.ibDataset150.Close;
+
+              Commitatudo(True); // EnviaraNFCe1Click() As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
+
+              OcultaGerenciadorVendas;
+              Form1.Edit1.Text := '';
+              Form1.Edit1.SetFocus;
+
+              //
+              CortaPapelNoVideo(True); // TForm1.EnviaraNFCe1Click()
+              // Sandro Silva 2023-09-06 Form1.FormShow(Sender); // EnviaraNFCe1Click()
+              Form1.FormShow(Form1); // EnviaraNFCe1Click()
+            end; // if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then
+
+          end; // if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
+        end; // if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) or (xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//tpEmis') = '9') then // Sandro Silva 2018-03-06  if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
+
+      end; // if Form1.bStatusECF then // Sandro Silva 2020-06-25
+      //
+      //
+    end; // if sModeloECF = '65' then {Sandro Silva 2014-01-20 inicio}
+
+    if sModeloECF = '59' then {Sandro Silva 2014-01-20 inicio}
+    begin
+
+      {Sandro Silva 2023-08-30 inicio}
+      sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
+      sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
+      {Sandro Silva 2023-08-30 fim}
+
+      //
+      if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
+      begin
+        Form1.ibDataSet150.Edit;
+        Form1.ibDataSet150.FieldByName('STATUS').AsString := '';
+        Form1.ibDataSet150.FieldByName('NFEXML').AsString := '';
+        Form1.ibDataSet150.Post;
+      end;
+      //
+      {Sandro Silva 2023-08-22 inicio
+      Mais1ini := TIniFile.Create('FRENTE.INI');
+      Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
+      Mais1ini.Free;
+      }
+      if Form1.ibDataSet150.FieldByName('NUMERONF').AsString <> '' then // Sandro Silva 2023-08-25
+        GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '59'); // Sandro Silva 2023-08-22
+      {Sandro Silva 2023-08-22 fim}
+      //
+
+      Form1.ibDataset150.Close;
+
+      Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
+
+      OcultaGerenciadorVendas;
+      Form1.Edit1.Text := '';
+      Form1.Edit1.SetFocus;
+
+      //
+      CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
+      // Sandro Silva 2023-09-06 Form1.FormShow(Sender); // EnviaraNFCe1Click()
+      Form1.FormShow(Form1); // EnviaraNFCe1Click()
+      //
+      //
+    end;
+
+    if sModeloECF = '99' then {Sandro Silva 2014-01-20 inicio}
+    begin
+      //
+      if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') and (Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_ABERTA)  then
+      begin
+
+        {Sandro Silva 2023-08-22 inicio
+        Mais1ini := TIniFile.Create('FRENTE.INI');
+        Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
+        Mais1ini.Free;
+        }
+        GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '99'); // Sandro Silva 2023-08-22
+        {Sandro Silva 2023-08-22 fim}
+
+        //
+        Form1.ibDataset150.Close;
+
+        Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
+
+        OcultaGerenciadorVendas;
+        Form1.Edit1.Text := '';
+        Form1.Edit1.SetFocus;
+
+        //
+        CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
+        // Sandro Silva 2023-09-06 Form1.FormShow(Sender); // EnviaraNFCe1Click()
+        Form1.FormShow(Form1); // EnviaraNFCe1Click()
+        // Sandro Silva 2023-08-22 touch_ESCClick(Sender);
+        bAbrirGerenicadorNoFinal := False; // Sandro Silva 2023-08-22
+        //
+      end;
+    end;
+
+  finally
+    Timer2.Enabled := bTimer2EnabledOld;
+    if bAbrirGerenicadorNoFinal then // Sandro Silva 2023-08-22
+      GerenciadordeNFCe1Click(GerenciadordeNFCe1); // Sandro Silva 2023-09-06 GerenciadordeNFCe1Click(Sender);
+  end;
+
 end;
 
 end.

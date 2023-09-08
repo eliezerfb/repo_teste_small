@@ -177,8 +177,6 @@ var
   iLarguraPapel: Integer;
   iMargemEsq: Integer;
 
-  
-
 implementation
 
 uses Menus;

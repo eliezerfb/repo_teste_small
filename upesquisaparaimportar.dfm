@@ -22,7 +22,7 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
   TextHeight = 13
   object Label2: TLabel
     Left = 20
-    Top = 90
+    Top = 82
     Width = 1024
     Height = 14
     AutoSize = False
@@ -51,7 +51,7 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
   end
   object edPesquisa: TEdit
     Left = 20
-    Top = 110
+    Top = 102
     Width = 981
     Height = 22
     Color = clWhite
@@ -154,9 +154,9 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
   end
   object DBGrid1: TDBGrid
     Left = 20
-    Top = 144
+    Top = 136
     Width = 981
-    Height = 209
+    Height = 217
     DataSource = DataSource1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
