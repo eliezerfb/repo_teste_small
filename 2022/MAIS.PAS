@@ -1079,7 +1079,8 @@ function tForm1.AvisoReceber(bP1 : Boolean):Boolean;
 begin
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
-  Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
+  // Sandro Silva 2023-09-11 Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
+  Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from RECEBER where coalesce(VALOR_RECE, 0)=0 and VENCIMENTO=CURRENT_DATE'); // Define zero para VALOR_RECE nulo
   Form1.ibQuery2.Open;
   Form1.iAvisosReceber := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
 
