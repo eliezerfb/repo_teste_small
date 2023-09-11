@@ -63,10 +63,24 @@ begin
       FrmTermosUso := TFrmTermosUso.Create(Application);
       try
         FrmTermosUso.ShowModal;
-      finally
-        Result := vTermoAceito;
 
+        {Sandro Silva 2023-09-11 inicio}
+        if FrmTermosUso.ModalResult = mrOk then
+          Result := True;
+        {Sandro Silva 2023-09-11 fim}
+
+      finally
+        // Sandro Silva 2023-09-11 Result := vTermoAceito;
         FreeAndNil(FrmTermosUso);
+        {Sandro Silva 2023-09-11 inicio}
+        if Result = False then
+        begin
+          FecharAplicacao(ExtractFileName(Application.ExeName));
+          Sleep(2000);
+          Application.Terminate;
+          Halt(1); // Sandro Silva 2023-09-11
+        end;
+        {Sandro Silva 2023-09-11 fim}
       end;
     end;
   end;
@@ -99,22 +113,28 @@ begin
     FreeAndNil(ArqINI);
   end;
 
-  Close;
+  // Sandro Silva 2023-09-11 Close;
+  ModalResult := mrOk;
 end;
 
 procedure TFrmTermosUso.btnNaoAceitaClick(Sender: TObject);
 begin
   vTermoAceito := False;
-  
-  Close;
+
+  {Sandro Silva 2023-09-11 inicio
+  // Sandro Silva 2023-09-11 Close;
   FecharAplicacao(ExtractFileName(Application.ExeName));
 
-  Sleep(2000);  
+  Sleep(2000);
   Application.Terminate;
+  }
+  ModalResult := mrCancel; // Sandro Silva 2023-09-11
 end;
 
 procedure TFrmTermosUso.FormCreate(Sender: TObject);
 begin
+  vTermoAceito := False; // Sandro Silva 2023-09-11
+  
   rcTermo.Lines.LoadFromFile(Form1.sAtual+'\termo.zct' );
 end;
 

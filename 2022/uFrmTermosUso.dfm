@@ -2,7 +2,7 @@ object FrmTermosUso: TFrmTermosUso
   Left = 511
   Top = 195
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
+  BorderStyle = bsNone
   Caption = 'Termos de uso do sistema'
   ClientHeight = 476
   ClientWidth = 640
