@@ -18,7 +18,7 @@ const
   _cAmbienteProducao = 'Producao';  
 
   //Incrementar a cada alteração do termo
-  _cVersaoTermoUso = 1;
+  _cVersaoTermoUso = 2; // Sandro Silva 2023-09-11 _cVersaoTermoUso = 1;
 
   // SECTION Geral (EST0QUE.DAT)
   _cSectionGeral          = 'Geral';
