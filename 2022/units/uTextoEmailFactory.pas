@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-  uTextoEmailNFe, uTextoEmailCCe;
+  uTextoEmailNFe, uTextoEmailCCe, uTextoEmailOrcamento;
 
 { TTextoEmailFactory }
 
@@ -39,7 +39,7 @@ end;
 
 function TTextoEmailFactory.Orcamento: ITextoEmail;
 begin
-  Result := nil;
+  Result := TTextoEmailOrcamento.New;
 end;
 
 end.

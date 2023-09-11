@@ -2407,14 +2407,15 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uIRetornaLimiteDisponivel
   , Unit18
   , uListaCnaes
-  , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
   , uArquivosDAT
   , uSmallEnumerados
   , uNFSeINI
   , uAtualizaBancoDados
   , uAtualizaTributacaoPerfilTrib
-  , uSmallResourceString;
+  , uSmallResourceString
+  , uChamaRelatorioCommerceFactory
+  , uImpressaoOrcamento, uSectionFrentedeCaixaINI;
 
 {$R *.DFM}
 
@@ -33833,15 +33834,57 @@ end;
 procedure TForm7.EnviarOrcamentoPorEmail1Click(Sender: TObject);
 var
   cMensagem: String;
+  cEmail: String;
+  cCaminhoArq: String;
+  cPortaAnt: tTipoImpressaoOrcamento;
+  oArqDAT: TArquivosDAT;
 begin
-  cMensagem := TTextoEmailFactory.New
-                                 .Orcamento
-                                 .setDescrAnexo(cMsgAnexo)
-                                 .setDataEmissao(Form7.ibDataSet15EMISSAO.AsDateTime)
-                                 .setNumeroDocumento(Form7.ibDataSet15NUMERONF.AsString)
-                                 .setChaveAcesso(Form7.ibDataSet15NFEID.AsString)
-                                 .setPropaganda(Form1.sPropaganda)
-                                 .RetornarTexto;
+  oArqDAT := TArquivosDAT.Create(Usuario);
+  try
+    cPortaAnt := oArqDAT.Frente.Orcamento.Porta;
+    try
+      oArqDAT.Frente.Orcamento.Porta := ttioPDF;
+
+      TImpressaoOrcamento.New
+                         .SetTransaction(IBDataSet97.Transaction)
+                         .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                         .GetCaminhoImpressao(cCaminhoArq)
+                         .Salvar;
+
+    finally
+      oArqDAT.Frente.Orcamento.Porta := cPortaAnt;
+    end;
+
+    Sleep(500);
+
+    if not FileExists(cCaminhoArq) then
+    begin
+      ShowMessage('Não foi possível enviar o orçamento.');
+      Exit;
+    end;
+    cEmail := Trim(EnviarOrcamentoPorEmail1.Caption);
+    cEmail := Trim(Copy(cEmail, Pos('<', cEmail) + 1,  length(cEmail)));
+    cEmail := Copy(cEmail,1, length(cEmail)-1);                                                                          
+
+
+    cMensagem := TTextoEmailFactory.New
+                                   .Orcamento
+                                   .setDataEmissao(IBDataSet97.FieldByName('Data').AsDateTime)
+                                   .setNumeroDocumento(IBDataSet97.FieldByName('Orçamento').AsString)
+                                   .RetornarTexto;
+
+    EnviarEMail('',cEmail,'','Seu Orçamento', pchar(cMensagem), pChar(cCaminhoArq),False);
+  finally
+    if (cCaminhoArq <> EmptyStr) and (FileExists(cCaminhoArq)) then
+      DeleteFile(PChar(cCaminhoArq));
+
+    cCaminhoArq := StringReplace(cCaminhoArq, '.pdf', '.htm', []);
+
+    if (cCaminhoArq <> EmptyStr) and (FileExists(cCaminhoArq)) then
+      DeleteFile(PChar(cCaminhoArq));
+      
+    FreeAndNil(oArqDAT);
+  end;                                   
 end;
 
 end.
