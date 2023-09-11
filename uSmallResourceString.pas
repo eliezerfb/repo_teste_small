@@ -16,6 +16,12 @@ resourcestring
                     SLineBreak +
                     'www.smallsoft.com.br';
 
+  _cMsgTextoEmailOrcamento = 'Você está recebendo neste e-mail o Orçamento <NUMERODOC>, emitido em <DATAEMISSAO>.' + SLineBreak +
+                             SLineBreak +
+                             'Este e-mail foi enviado pelo sistema Small' + SLineBreak +
+                             SLineBreak +
+                             'www.smallsoft.com.br';
+
   _cOrcamentoNaoEncontrado = 'Orçamento %s não encontrado.' + SLineBreak + SLineBreak +
                              'O número do orçamento será restaurado para a sequência automática do sistema.';
   _cPeriodoDataInvalida = 'As datas informadas não são válidas.';

@@ -3,7 +3,7 @@ unit uSectionFrentedeCaixaINI;
 interface
 
 uses
-  uSectionDATPadrao;
+  uSectionDATPadrao, uSmallEnumerados;
 
 type
   TSectionFrentedeCaixa = class(TSectionDATPadrao)
@@ -12,6 +12,17 @@ type
     procedure setTipoEtiqueta(const Value: String);
   public
     property TipoEtiqueta: String read getTipoEtiqueta write setTipoEtiqueta;
+  protected
+    function Section: String; override;
+  end;
+
+type
+  TSectionOrcamento = class(TSectionDATPadrao)
+  private
+    function getPorta: tTipoImpressaoOrcamento;
+    procedure setPorta(const Value: tTipoImpressaoOrcamento);
+  public
+    property Porta: tTipoImpressaoOrcamento read getPorta write setPorta;
   protected
     function Section: String; override;
   end;
@@ -36,6 +47,43 @@ end;
 procedure TSectionFrentedeCaixa.setTipoEtiqueta(const Value: String);
 begin
   FoIni.WriteString(Section, _cIdentFrenteCaixaTipoEtiqueta, Value);
+end;
+
+{ TSectionOrcamento }
+
+function TSectionOrcamento.getPorta: tTipoImpressaoOrcamento;
+var
+  cPorta: string;
+begin
+  Result := ttioPadraoWindows;
+
+  cPorta := FoIni.ReadString(Section, _cIdentPorta, _cImpressoraPadrao);
+
+  if cPorta = 'HTML' then
+    Result := ttioHTML;
+  if cPorta = 'PDF' then
+    Result := ttioPDF;
+  if cPorta = 'TXT' then
+    Result := ttioTXT;
+end;
+
+function TSectionOrcamento.Section: String;
+begin
+  Result := _cSectionOrcamento;
+end;
+
+procedure TSectionOrcamento.setPorta(const Value: tTipoImpressaoOrcamento);
+var
+  cPorta: string;
+begin
+  case Value of
+    ttioPDF: cPorta := 'PDF';
+    ttioHTML: cPorta := 'HTML';
+    ttioTXT: cPorta := 'TXT';
+    else cPorta := '_cImpressoraPadrao';
+  end;
+
+  FoIni.WriteString(Section, _cIdentPorta, cPorta);
 end;
 
 end.

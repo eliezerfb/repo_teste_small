@@ -4,8 +4,12 @@ unit uConectaBancoSmall;
 interface
 
 uses
+  {$IFDEF VER150}
+  IBDatabase, IniFiles, SysUtils, Dialogs, Forms, IBQuery;
+  {$ELSE}
   IBX.IBDatabase, System.IniFiles, System.SysUtils, Vcl.Dialogs, Vcl.Forms,
   IBX.IBQuery;
+  {$ENDIF }
 
   //IBX
   function Conectar_SMALL(DataBase1 : TIBDatabase; Aviso : Boolean = True): Boolean;

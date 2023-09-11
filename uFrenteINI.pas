@@ -9,10 +9,13 @@ type
   TFreteINI = class(TArquivoDATINFPadrao)
   private
     FoFrenteCaixa: TSectionFrentedeCaixa;
+    FoOrcamento: TSectionOrcamento;
     function getFrentedeCaixa: TSectionFrentedeCaixa;
+    function getOrcamento: TSectionOrcamento;
   public
     destructor Destroy; override;
-    property FrentedeCaixa: TSectionFrentedeCaixa read getFrentedeCaixa;    
+    property FrentedeCaixa: TSectionFrentedeCaixa read getFrentedeCaixa;
+    property Orcamento: TSectionOrcamento read getOrcamento;
   protected
     function NomeArquivo: String; override;
     procedure CarregarArquivo; override;    
@@ -32,6 +35,7 @@ end;
 destructor TFreteINI.Destroy;
 begin
   FreeAndNil(FoFrenteCaixa);
+  FreeAndNil(FoOrcamento);
   inherited;
 end;
 
@@ -41,6 +45,14 @@ begin
     FoFrenteCaixa := TSectionFrentedeCaixa.Create(FoIni);
 
   Result := FoFrenteCaixa;
+end;
+
+function TFreteINI.getOrcamento: TSectionOrcamento;
+begin
+  if not Assigned(FoOrcamento) then
+    FoOrcamento := TSectionOrcamento.Create(FoIni);
+
+  Result := FoOrcamento;
 end;
 
 function TFreteINI.NomeArquivo: String;

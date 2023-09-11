@@ -6,6 +6,7 @@ const
   _cSenhaSair = '#####';
   _cUsuarioAdmin = 'Administrador';
   _cRecebPagto = 'Caixa';
+  _cImpressoraPadrao = 'Impressora padrão do windows';
 
   _cSim = 'Sim';
   _cNao = 'Não';
@@ -28,8 +29,12 @@ const
   _cIdentGeralBuild2023   = _cIdentGeralBuild + ' 2023';
 
   // SECTION USO (smallcom.inf)
-  _cSectionUso = 'Uso';
-  _cIdentUso   = 'Uso';
+  _cSectionUso              = 'Uso';
+  _cSectionSmallComOutros   = 'Outros';
+  _cIdentUso                = 'Uso';
+  _cIdentCasasDecimaisQtde  = 'Casas decimais na quantidade';
+  _cIdentCasasDecimaisPreco = 'Casas decimais no preço';
+  
 
   // SECTION USUARIO ({USUARIO}.INF)
   _cSectionGeralUsuario           = 'GERAL';
@@ -45,6 +50,8 @@ const
   //SECTION Frente de Caixa (FRENTE.INI)
   _cSectionFrenteCaixa = 'Frente de Caixa';
   _cIdentFrenteCaixaTipoEtiqueta = 'Tipo etiqueta';
+  _cSectionOrcamento = 'Orçamento';
+  _cIdentPorta = 'Porta';  
 
   //SECTION NFE (NFe.ini)
   _cSectionNFE = 'NFE';

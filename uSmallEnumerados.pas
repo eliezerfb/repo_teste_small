@@ -7,6 +7,7 @@ type
   tOperacaoDocumento = (todVenda, todCompra);
   tAmbienteNFe = (tanfHomologacao, tanfProducao);
   tAmbienteNFSe = (tanfsProducao = 1, tanfsHomologacao = 2);
+  tTipoImpressaoOrcamento = (ttioPDF, ttioHTML, ttioPadraoWindows, ttioTXT);
 
 implementation
 
