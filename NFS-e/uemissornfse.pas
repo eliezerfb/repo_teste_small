@@ -117,6 +117,8 @@ type
     procedure FormActivate(Sender: TObject);
   private
     FModoOperacao: TModoOpercao; // Sandro Silva 2023-01-25
+    sPadrao: String; // Sandro Silva 2023-09-06
+    sCidade: String; // Sandro Silva 2023-09-06
     fLogEnvio: string;
     {Valida a presença do arquivo .ini}
     procedure CheckConfig;
@@ -128,6 +130,9 @@ type
     procedure getRetornoV2Json;
 //    procedure getRetornoTomadasV2Tipado;
 //    procedure getRetornoTomadasV2Json;
+//    function ExtraiParametroExtra(Ini: TIniFile;
+//      sParametro: String): String;
+    function ExtrairRazaoSocialPrestador(sl: TStringList): String;
   public
     { Public declarations }
     sTX2, sNumeroDaNFSe, sRetornoDaPrefeitura, sAtual, smmXML : String;
@@ -169,6 +174,27 @@ begin
   end;
 end;
 
+{
+function TFEmissorNFSe.ExtraiParametroExtra(Ini: TIniFile;
+  sParametro: String): String;
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  sl := TStringList.Create;
+  sl.Delimiter := ';';
+  sl.DelimitedText := Ini.ReadString('NFSE', 'ParametrosExtras', '');
+  for i := 0 to sl.Count - 1 do
+  begin
+    if Copy(sl.Strings[i], 1, Pos('=', sl.Strings[i]) - 1) = sParametro then
+    begin
+      Result := Copy(sl.Strings[i], Pos('=', sl.Strings[i]) + 1, Length(sl.Strings[i]));
+      Break;
+    end;
+  end;
+  FreeAndNil(sl);
+end;
+}
 procedure TFEmissorNFSe.CheckConfig;
 var
   _Cidade, _CNPJ: string;
@@ -360,6 +386,21 @@ var
   Mais1Ini : tIniFile;
   _file : TStringList;
   sLoguinSenha : String;
+  procedure AddRazaoSocialParametroExtra;
+  var
+    sRazaoSocial: String;
+  begin
+    if (sCidade = 'SAOSEBASTIAODOCAIRS') and (sPadrao = 'TECNOSISTEMAS') then
+    begin
+      sRazaoSocial := ExtrairRazaoSocialPrestador(_File);
+      if Trim(sRazaoSocial) <> '' then
+      begin
+        if NFSe.ParametrosExtras <> '' then
+          NFSe.ParametrosExtras := NFSe.ParametrosExtras + ';';
+        NFSe.ParametrosExtras := NFSe.ParametrosExtras + 'RazaoSocial=' + sRazaoSocial;
+      end;
+    end;
+  end;
 begin
   //
   FModoOperacao := tmoNenhum; // Sandro Silva 2023-01-25
@@ -383,8 +424,17 @@ begin
   //
   sLoguinSenha := Mais1Ini.ReadString('NFSE','ParametrosExtras','');
   //
+  //{Sandro Silva 2023-09-06 inicio
   LabeledEdit1.Text := Copy(sLoguinSenha+Replicate(' ',30),Pos('Login=',sLoguinSenha)+6,Pos(';',sLoguinSenha)-Pos('Login=',sLoguinSenha)+1-7);
   LabeledEdit2.Text := AllTrim(Copy(sLoguinSenha+Replicate(' ',200),Pos('Senha=',sLoguinSenha+Replicate(' ',200))+6,150));
+  //}
+  //LabeledEdit1.Text := ExtraiParametroExtra(Mais1Ini, 'Login');
+  //LabeledEdit2.Text := ExtraiParametroExtra(Mais1Ini, 'Senha');
+  {Sandro Silva 2023-09-06 inicio}
+  sPadrao := AnsiUpperCase(Mais1Ini.ReadString('Informacoes obtidas na prefeitura', 'Padrao', '')); // Sandro Silva 2023-09-06
+  sCidade := AnsiUpperCase(Mais1Ini.ReadString('NFSE', 'CIDADE', '')); // Sandro Silva 2023-09-06
+  {Sandro Silva 2023-09-06 fim}
+
   //
   if Mais1Ini.ReadString('NFSE','Ambiente','2') = '1' then
   begin
@@ -492,6 +542,11 @@ begin
             mmXMLEnvio.Text := RetornaValorDaTagNoCampo('XMLdeEvio',_File.Text);
             //
             //
+
+            {Sandro Silva 2023-09-06 inicio}
+            AddRazaoSocialParametroExtra;
+            {Sandro Silva 2023-09-06 fim}
+
             btnConsultarNotaClick(Sender);
             //
             if (NFSe.Ambiente = akHomologacao) then
@@ -531,6 +586,11 @@ begin
                 edtTipoRPS.Text      := RetornaValorDaTagNoCampo('Tipo'        ,smmXML);
                 edtNumProtocolo.Text := '';
                 //
+
+                {Sandro Silva 2023-09-06 inicio}
+                AddRazaoSocialParametroExtra;
+                {Sandro Silva 2023-09-06 fim}
+
                 btnConsultarNotaClick(Sender);
                 //
                 Sleep(1000);
@@ -967,6 +1027,24 @@ begin
   if FModoOperacao <> tmoConfiguracao then
     FecharAplicacao(ExtractFileName(Application.ExeName));
   {Sandro Silva 2023-01-25 fim}
+end;
+
+function TFEmissorNFSe.ExtrairRazaoSocialPrestador(
+  sl: TStringList): String;
+var
+  i: Integer;
+begin
+
+  Result := '';
+  for i := 0 to sl.Count do
+  begin
+    if Pos('RazaoSocialPrestador=', sl.Strings[i]) = 1 then
+    begin
+      Result := sl.Strings[i];
+      Result := Copy(Result, Pos('=', Result) + 1, Length(Result));
+      Break;
+    end;
+  end;
 end;
 
 end.
