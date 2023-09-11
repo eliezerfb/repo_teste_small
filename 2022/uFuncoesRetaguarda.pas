@@ -25,6 +25,8 @@ uses
   , DBGrids
   , IBQuery
   , IBDatabase
+  , DB
+  , Variants
   ;
 
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -50,7 +52,8 @@ uses
   function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   function GeraMD5(valor :string):string;
-  function EstadoEmitente(Banco: TIBDatabase):string;
+  function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
+  function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
 
 implementation
 
@@ -677,7 +680,7 @@ begin
   {$ENDIF}
 end;
 
-function EstadoEmitente(Banco: TIBDatabase):string;
+function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
 var
   IBQUERY: TIBQuery;
   IBTRANSACTION: TIBTransaction;
@@ -703,6 +706,27 @@ begin
   end;
 end;
 
+function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
+var
+  ValorAntes, ValorDepois : string;
+begin
+  Result := False;
+
+  try
+    if Field.OldValue = null then
+      ValorAntes := ''
+    else
+      ValorAntes := Field.OldValue;
+
+    if Field.Value = null then
+      ValorDepois := ''
+    else
+      ValorDepois := Field.Value;
+
+    Result := ValorAntes <> ValorDepois;
+  except
+  end;
+end;
 
 end.
 

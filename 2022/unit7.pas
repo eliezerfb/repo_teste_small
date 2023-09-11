@@ -2171,7 +2171,7 @@ type
     procedure ibDataSet7FilterRecord(DataSet: TDataSet;
       var Accept: Boolean);
     procedure ibDataSet7AfterScroll(DataSet: TDataSet);
-    procedure FormDestroy(Sender: TObject);    
+    procedure FormDestroy(Sender: TObject);
     procedure ibDataSet15SAIDADChange(Sender: TField);
     procedure IBDatabase1AfterConnect(Sender: TObject);
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
@@ -2199,6 +2199,7 @@ type
     procedure ibdPerfilTributaAfterPost(DataSet: TDataSet);
     procedure ibdPerfilTributaDESCRICAOSetText(Sender: TField;
       const Text: String);
+    procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2217,7 +2218,7 @@ type
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TIBStringField; Valida : Boolean = True);
-    function RetornarSQLEstoqueOrcamentos: String;   
+    function RetornarSQLEstoqueOrcamentos: String;
     procedure EnviarEmailCCe(AcXML: String);
     function getEnviarDanfePorEmail: String;
     function getZiparXML: String;
@@ -2328,6 +2329,7 @@ type
     {Dailon 2023-08-22 inicio}
     bDescontaICMSDeso: Boolean;
     {Dailon 2023-08-22 fim}
+
     procedure RefreshDados;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
@@ -2402,7 +2404,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
   , uArquivosDAT
-  , uSmallEnumerados, uNFSeINI;
+  , uSmallEnumerados, uNFSeINI, uAtualizaBancoDados,
+  uAtualizaTributacaoPerfilTrib;
 
 {$R *.DFM}
 
@@ -7488,11 +7491,12 @@ begin
   try
     Form7.ibDataSet100.Close;
     Form7.ibDataSet100.SelectSQL.Clear;
-    Form7.ibDataSet100.SelectSQL.Add('select * from '+Arquivo+' where '+Indice+'= '+QuotedStr(TExt)+'');
-
+    //Form7.ibDataSet100.SelectSQL.Add('select * from '+Arquivo+' where '+Indice+'= '+QuotedStr(TExt)+''); Mauricio Parizotto 2023-09-11
+    Form7.ibDataSet100.SelectSQL.Text := 'select * from '+Arquivo+' where Upper('+Indice+') = Upper( '+QuotedStr(TExt)+')';
     Form7.ibDataSet100.Open;
 
-    if Form7.ibDataSet100.FieldByname(Indice).AsString = Text then
+    //if Form7.ibDataSet100.FieldByname(Indice).AsString = Text thenMauricio Parizotto 2023-09-11
+    if not Form7.ibDataSet100.IsEmpty then
     begin
       if Indice <> 'CEP' then
       begin
@@ -18292,7 +18296,7 @@ end;
 procedure TForm7.AuditaAlteracaoEstoqueManual;
 var
   QrySaldo: TIBQuery;
-begin
+begin  
   QrySaldo := TIBQuery.Create(nil);
   try
     QrySaldo.Close;
@@ -26856,21 +26860,15 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
-  //
-//  I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras do mês '+MesExtenso(Month(Date))+'/'+IntToStr(Year(Date))+' '
-//                          + chr(10)+'deste produto?'+ Chr(10)
-//                    + Chr(10))
-//                    ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
+  Exit;
+
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
                     + Chr(10))
                     ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
-  //
+
   if I = IDYES then
   begin
-    //
-//    if (Form7.ibDataSet4ALIQ_PIS_ENTRADA.AsFloat <> 0) and (Form7.ibDataSet4ALIQ_COFINS_ENTRADA.AsFloat <> 0) then
     begin
-      //
       try
         Screen.Cursor            := crHourGlass;
         Form7.IBQuery99.Close;
@@ -26880,14 +26878,9 @@ begin
       except
 
       end;
-      //
+
       Screen.Cursor            := crDefault;
-      //
-      //    ShowMessage(Form7.IBQuery99.SQL.Text);
-      //
     end;
-    //
-    //
   end;
 end;
 
@@ -33691,5 +33684,58 @@ begin
 
   Form10.Caption := ibdPerfilTributaDESCRICAO.AsString;
 end;
+
+procedure TForm7.ibdPerfilTributaBeforePost(DataSet: TDataSet);
+var
+  QtdProdPerfil : integer;
+  ProdutosErro : string;
+begin
+  //Verifica se precisa alterar dados dos produtos com o perfil selecionado
+  QtdProdPerfil := 0;
+
+  if (CampoAlterado(ibdPerfilTributaTIPO_ITEM))
+    or (CampoAlterado(ibdPerfilTributaIPPT))
+    or (CampoAlterado(ibdPerfilTributaIAT))
+    or (CampoAlterado(ibdPerfilTributaPIVA))
+    or (CampoAlterado(ibdPerfilTributaCST))
+    or (CampoAlterado(ibdPerfilTributaCSOSN))
+    or (CampoAlterado(ibdPerfilTributaST))
+    or (CampoAlterado(ibdPerfilTributaCFOP))
+    or (CampoAlterado(ibdPerfilTributaCST_NFCE))
+    or (CampoAlterado(ibdPerfilTributaCSOSN_NFCE))
+    or (CampoAlterado(ibdPerfilTributaALIQUOTA_NFCE))
+    or (CampoAlterado(ibdPerfilTributaCST_IPI))
+    or (CampoAlterado(ibdPerfilTributaIPI))
+    or (CampoAlterado(ibdPerfilTributaENQ_IPI))
+    or (CampoAlterado(ibdPerfilTributaCST_PIS_COFINS_SAIDA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_PIS_SAIDA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_COFINS_SAIDA))
+    or (CampoAlterado(ibdPerfilTributaCST_PIS_COFINS_ENTRADA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_COFINS_ENTRADA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_PIS_ENTRADA)) then
+  begin
+    QtdProdPerfil := ExecutaComandoEscalar(IBDatabase1,
+                                           ' Select Count(*) QTD'+
+                                           ' From ESTOQUE '+
+                                           ' Where IDPERFILTRIBUTACAO = '+ibdPerfilTributaIDPERFILTRIBUTACAO.AsString);
+  end;
+
+
+  if (QtdProdPerfil > 0) then
+  begin
+    ShowMessage('Será alterado');
+    
+    if AtualizaTibutacaoProduto(ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger,ProdutosErro) then
+    begin
+      ShowMessage('Produos atualizados');
+    end else
+    begin
+      ShowMessage('Produos com erro');
+    end;
+  end;
+
+end;
+
+
 
 end.
