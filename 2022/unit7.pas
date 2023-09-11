@@ -33839,12 +33839,21 @@ var
   cPortaAnt: tTipoImpressaoOrcamento;
   oArqDAT: TArquivosDAT;
 begin
+  // Pega e-mail
+  cEmail := Trim(EnviarOrcamentoPorEmail1.Caption);
+  cEmail := Trim(Copy(cEmail, Pos('<', cEmail) + 1,  length(cEmail)));
+  cEmail := Copy(cEmail,1, length(cEmail)-1);
+
+  if not ValidaEmail(cEmail) then
+    Exit;
+
   oArqDAT := TArquivosDAT.Create(Usuario);
   try
+    // Define sempre como PDF para envio por e-mail
     cPortaAnt := oArqDAT.Frente.Orcamento.Porta;
     try
       oArqDAT.Frente.Orcamento.Porta := ttioPDF;
-
+      // Gera o arquivo PDF
       TImpressaoOrcamento.New
                          .SetTransaction(IBDataSet97.Transaction)
                          .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
@@ -33862,19 +33871,16 @@ begin
       ShowMessage('Não foi possível enviar o orçamento.');
       Exit;
     end;
-    cEmail := Trim(EnviarOrcamentoPorEmail1.Caption);
-    cEmail := Trim(Copy(cEmail, Pos('<', cEmail) + 1,  length(cEmail)));
-    cEmail := Copy(cEmail,1, length(cEmail)-1);                                                                          
-
-
+    // Monta mensagem para enviar
     cMensagem := TTextoEmailFactory.New
                                    .Orcamento
                                    .setDataEmissao(IBDataSet97.FieldByName('Data').AsDateTime)
                                    .setNumeroDocumento(IBDataSet97.FieldByName('Orçamento').AsString)
                                    .RetornarTexto;
-
+    // Envia o e-mail
     EnviarEMail('',cEmail,'','Seu Orçamento', pchar(cMensagem), pChar(cCaminhoArq),False);
   finally
+    // Apaga os arquivos gerados
     if (cCaminhoArq <> EmptyStr) and (FileExists(cCaminhoArq)) then
       DeleteFile(PChar(cCaminhoArq));
 
