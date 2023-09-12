@@ -7857,30 +7857,24 @@ begin
 end;
 
 procedure TForm7.ExcluirOrcamento;
-var
-  nRecNo: Integer;
 begin
   if TestarPodeExcluirOrcamento then
   begin
     if Application.MessageBox(PChar(_cMensagemExcluir), PChar(_cTituloMsg), MB_ICONQUESTION + MB_OKCANCEL + MB_DEFBUTTON1) = mrOk then
     begin
       IBDataSet97.DisableControls;
-      nRecNo := IBDataSet97.RecNo;
       try
         ibDataSet37.First;
         while not ibDataSet37.Eof do
         begin
           if ibDataSet37PEDIDO.AsString = IBDataSet97.FieldByName('Orçamento').AsString then
-            ibDataSet37.Delete;
-
-          ibDataSet37.Next;
+            ibDataSet37.Delete
+          else
+            ibDataSet37.Next;
         end;
         Form7.Close;
         Form7.Show;
       finally
-//        IBDataSet97.Last;
-//        if IBDataSet97.RecordCount >= nRecNo then
-//          IBDataSet97.RecNo := nRecNo;
         IBDataSet97.EnableControls;
       end;
     end;
