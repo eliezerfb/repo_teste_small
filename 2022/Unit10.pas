@@ -454,6 +454,7 @@ type
     SMALL_DBEdit80: TSMALL_DBEdit;
     lbBCPISCOFINS: TLabel;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
+    lblAtencaoPerfilTrib: TLabel;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);

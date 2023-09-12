@@ -2200,6 +2200,7 @@ type
     procedure ibdPerfilTributaDESCRICAOSetText(Sender: TField;
       const Text: String);
     procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
+    procedure DSPerfilTributaStateChange(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2350,7 +2351,7 @@ type
     function TestarNFeHomologacao: Boolean;
     function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
-    procedure AtualizarListaItensAuxiliar;    
+    procedure AtualizarListaItensAuxiliar;
     procedure AuditaAlteracaoEstoqueManual;
     function TestarClienteExiste(AcTexto: String): Boolean;    
     function TestarProdutoExiste(AcTexto: String): Boolean;   
@@ -2630,17 +2631,13 @@ begin
           Form7.ibDataSet24MDESTINXML.AsString := sRetorno;
           Form7.ibDataSet24.Post;
         end;
-        //
       end else
       begin
-        // ShowMessage(sRetorno);
       end;
     except end;
   end;
   //
   Result := True;
-  //
-
 end;
 
 function xmlNodeXml(sXML: String; sNode: String): String;
@@ -2905,16 +2902,13 @@ begin
     lXMLDocZip := nil;
     //
   except
-    //
     on E: Exception do
     begin
       ShowMessage('Erro 2503: '+E.Message);
     end
-    //
   end;
   //
   Result := True;
-  //
 end;
 
 
@@ -3015,14 +3009,8 @@ begin
               Form1.ibQuery2.SQL.Add('set generator G_NSU_DOWNLOAD_XML to '+IntToStr(StrToInt(LimpaNumero(xmlNodeValue(sP1, '//retDistDFeInt/ultNSU')))));
               Form1.ibQuery2.ExecSQL;
             end;
-            //
           end;
-          //
-          // ShowMessage('Gravando última nsu: '+IntToStr(StrToInt(LimpaNumero(xmlNodeValue(sP1, '//retDistDFeInt/ultNSU')))));
-          //
         end;
-        //
-        //
       end;
       //
       // Seleciona os elementos contendo xml zipados
@@ -3095,22 +3083,14 @@ begin
             end;
           end else
           begin
-            //
-            // Salvando o xml 
-            //
-            // ShowMessage('Teste NF-e ENTRADA NFEID: '+pChar(xmlNodeValue(slXMLDescom.Text, '//infProt/chNFe')));
-            //
+            // Salvando o xml
             Form7.ibDataSet24.Close;
             Form7.ibDataSet24.SelectSQL.Clear;
             Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NFEID = '+QuotedStr(pChar(xmlNodeValue(slXMLDescom.Text, '//infProt/chNFe')))+'');
             Form7.ibDataSet24.Open;
-            //   
 
             if Pos(Form7.ibDataset24NFEID.AsString,slXMLDescom.Text) <> 0 then
             begin
-              //
-              // ShowMessage('Teste NF-e ENTRADA NF-e encontrada');
-              //
               if (Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet24NFEXML.AsString) = 0) then
               begin
 
@@ -3133,10 +3113,7 @@ begin
                 // ShowMessage(Form7.ibDataSet24NFEXML.AsString);
                 //
               end;
-
             end;
-
-            //
           end;
         except
           on E: Exception do
@@ -3148,20 +3125,14 @@ begin
       //
       slXMLDescom.Free;
       lXMLDocZip := nil;
-      //
     end;
-    //
   except
-    //
     on E: Exception do
     begin
       ShowMessage('Erro 2503 ao baixar lista de NF-e´s emitidas: '+E.Message);
-    end
-    //
+    end;
   end;
-  //
   Result := True;
-  //
 end;
 
 function HasHs(sP1: String; bP2: Boolean): boolean;
@@ -4094,14 +4065,10 @@ begin
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
               begin
-                //
                 Form7.ibDataSet4.Edit;
                 Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                 Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                 Form7.ibDataSet4.Post;
-                //
-                //              ShowMessage('Teste saiu do estoque '+Form7.ibDataSet16QUANTIDADE.AsString+ ' '+Form7.ibDataSet16DESCRICAO.AsString);
-                //
               end;
             end;
             //
@@ -4375,7 +4342,6 @@ begin
             Result := _file.Text;
           end else
           begin
-//            ShowMessage('Não foi possível encontrar o arquivo '+pChar(Form1.sAtual + '\XmlDestinatario\' + aChaveNFe + '*.xml')+'. Verifique se a NF-e está Autorizada.');
             Result := Form7.ibDataSet15NFEXML.AsString;
           end;
         end;
@@ -4423,7 +4389,6 @@ begin
             Result := _file.Text;
           end else
           begin
-//            ShowMessage('Não foi possível encontrar o arquivo '+pChar(Form1.sAtual + '\XmlDestinatario\' + aChaveNFe + '*.xml')+'. Verifique se a NF-e está Autorizada.');
             Result := Form7.ibDataSet24NFEXML.AsString;
           end;
         end;
@@ -4737,12 +4702,8 @@ function DistribuicaoNFe(sP1: String) : Boolean;
 var
   F : TExtfile;
 begin
-  //
   if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet15NFEXML.AsString) = 0) then
   begin
-    //
-    //    ShowMessage('Recuperando XML da pasta \log');
-    //
     Form7.ibDataSet15.Edit;
     Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
     Form7.ibDataSet15.Post;
@@ -4813,9 +4774,6 @@ begin
   //
   if (Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet24NFEXML.AsString) = 0) then
   begin
-    //
-    //    ShowMessage('Recuperando XML da pasta \log');
-    //
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24NFEXML.AsString := LoadXmlDestinatarioEntrada(Form7.ibDataSet24NFEID.AsString); // COVID19
     Form7.ibDataSet24.Post;
@@ -4891,17 +4849,13 @@ begin
             +QuotedStr(DateToStrInvertida(Date))+', '
             +QuotedStr(TimeToStr(Time))+', '
             +QuotedStr(sRegistro)+')');
-    //
-    // ShowMessage(Form7.ibDataSet100.SelectSql.Text);
-    //
+
     Form7.ibDataSet100.Open;
-    //
   except
     ShowMessage('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form7.ibDataSet100.SelectSql.Text);
   end;
-  //
+
   Result := True;
-  //
 end;
 
 
@@ -33729,19 +33683,21 @@ begin
 
   if (QtdProdPerfil > 0) then
   begin
-    ShowMessage('Será alterado');
-    
+    MessageDlg('Houve alteração do perfil. Serão alterados '+IntToStr(QtdProdPerfil)+' produtos.', MtInformation, [mbok], 0);
+
     if AtualizaTibutacaoProduto(ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger,ProdutosErro) then
     begin
-      ShowMessage('Produos atualizados');
+      MessageDlg('Produtos atualizados com sucesso!', MtInformation, [mbok], 0);
     end else
     begin
-      ShowMessage('Produos com erro');
+      Application.MessageBox(pChar('Erro ao atualizar produto(s). Verifique se os mesmos estão em uso e tente novamente.'+ProdutosErro), 'Atenção', mb_Ok + MB_ICONWARNING);
     end;
   end;
-
 end;
 
-
+procedure TForm7.DSPerfilTributaStateChange(Sender: TObject);
+begin
+  Form10.lblAtencaoPerfilTrib.Visible := DSPerfilTributa.State = dsEdit;
+end;
 
 end.

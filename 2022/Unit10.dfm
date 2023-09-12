@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_ICMS
+      ActivePage = orelha_PerfilTrib
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -14909,6 +14909,25 @@ object Form10: TForm10
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentFont = False
+        end
+        object lblAtencaoPerfilTrib: TLabel
+          Left = 18
+          Top = 417
+          Width = 631
+          Height = 13
+          AutoSize = False
+          Caption = 
+            'Aten'#231#227'o: as informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'os produtos que estiverem com este perfil configurado.'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 33023
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
         end
         object SMALL_DBEdit49: TSMALL_DBEdit
           Left = 110
