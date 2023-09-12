@@ -666,7 +666,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   , uRetornaLimiteDisponivel
   , uFuncoesBancoDados
   , uFuncoesRetaguarda
-  ;
+  , Variants;
   
 {$R *.DFM}
 
@@ -9866,10 +9866,12 @@ begin
   //Mauricio Parizotto 2023-05-29
   try
     //Verifica se mudou
-    vDescricaoAntes := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
+    // Sandro Silva 2023-09-12 Necessário converter retorno do tipo Variant para String, estava causando exception quando cadastrava nova conta
+    vDescricaoAntes := VarToStr(ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
                                              ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
                                              ' From RECEBER'+
-                                             ' Where REGISTRO ='+QuotedStr(Form7.ibDataSet7REGISTRO.AsString));
+                                             ' Where REGISTRO ='+QuotedStr(Form7.ibDataSet7REGISTRO.AsString))
+                                             );
 
     if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
     begin
