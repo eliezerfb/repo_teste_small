@@ -5,6 +5,7 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
   ClientWidth = 769
   OldCreateOrder = True
   OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   inherited btnVoltar: TBitBtn
@@ -148,7 +149,7 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
         Name = 'VALOR'
         DataType = ftBCD
         Precision = 18
-        Size = 2
+        Size = 4
       end>
     IndexDefs = <>
     Params = <
@@ -168,7 +169,6 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       DisplayLabel = 'Total'
       FieldName = 'VALOR'
       Precision = 18
-      Size = 2
     end
   end
 end

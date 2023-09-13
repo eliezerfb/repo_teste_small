@@ -31,8 +31,11 @@ type
     procedure btnMarcarTodosOperClick(Sender: TObject);
     procedure btnDesmarcarTodosOperClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
     FoDataSetEstoque: TIBDataSet;
+    FnCasasDecimais: Integer;
+    FnCasasDecimaisQtde: Integer;
     procedure AjustaLayout;
     function FazValidacoes: Boolean;
     function RetornarDataSetGrupos: TIBQuery;
@@ -48,7 +51,9 @@ type
     function RetornarTotalNaoRelacionados: Currency;
     function RetornaFormatoValorSQL(AnValor: Currency): String;
   public
-    property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;  
+    property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
+    property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
+    property CasasDecimaisQtde: Integer read FnCasasDecimaisQtde write FnCasasDecimaisQtde;
   protected
     function Estrutura: IEstruturaTipoRelatorioPadrao; override;
   end;
@@ -72,7 +77,8 @@ const
 procedure TfrmRelResumoVendas.FormShow(Sender: TObject);
 begin
   inherited;
-  AjustaLayout;  
+  AjustaLayout;
+
   dtInicial.Date := FoArquivoDAT.Usuario.Outros.PeriodoInicial;
   dtFinal.Date   := FoArquivoDAT.Usuario.Outros.PeriodoFinal;
 end;
@@ -83,6 +89,9 @@ begin
   pnlSelOperacoes.Left := 184;
   pnlSelOperacoes.Top  := pnlPrincipal.Top;
   pnlSelOperacoes.Left := pnlPrincipal.Left;
+
+  cdsExcluidos.FieldDefs.Items[cdsExcluidos.FieldDefs.IndexOf('VALOR')].Size := FnCasasDecimais;
+  cdsExcluidosVALOR.Size := FnCasasDecimais;  
 end;
 
 function TfrmRelResumoVendas.Estrutura: IEstruturaTipoRelatorioPadrao;
@@ -227,6 +236,7 @@ begin
     if chkOperacoes.Checked[I] then
       AoEstruturaCat.FiltrosRodape.AddItem(chkOperacoes.Items[i]);
   end;
+  AoEstruturaCat.FiltrosRodape.AddItem('Vendas por ECF, NFC-e ou SAT');  
 end;
 
 function TfrmRelResumoVendas.RetornarDescrFiltroData: string;
@@ -266,12 +276,12 @@ begin
   Result.SQL.Add('    0 as "Ord"');
   Result.SQL.Add('    , ESTOQUE.CODIGO AS "Cód"');
   Result.SQL.Add('    , ESTOQUE.DESCRICAO AS "Descrição"');
-  Result.SQL.Add('    , CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,2)) AS "Quantidade"');
-  Result.SQL.Add('    , CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,2)) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,2)) AS "Lucro bruto"');
+  Result.SQL.Add('    , CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+  Result.SQL.Add('    , CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+  Result.SQL.Add('    , CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+  Result.SQL.Add('    , CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
   Result.SQL.Add('    , CASE WHEN COALESCE(ESTOQUE.CUS_VEND,0) > 0 THEN');
-  Result.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,2))');
+  Result.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))');
   Result.SQL.Add('      ELSE 0 END AS "%"');
   Result.SQL.Add('FROM ESTOQUE');
   Result.SQL.Add('WHERE');
@@ -286,11 +296,11 @@ begin
     Result.SQL.Add('    1 as "Ord"');
     Result.SQL.Add('    , '''' AS "Cód"');
     Result.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Quantidade"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Custo compra"');
-    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,2)) AS "Vendido por"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Lucro bruto"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "%"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
     Result.SQL.Add('FROM EMITENTE');
 
     Result.SQL.Add('UNION ALL');
@@ -298,11 +308,11 @@ begin
     Result.SQL.Add('    2 as "Ord"');
     Result.SQL.Add('    , '''' AS "Cód"');
     Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Quantidade"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Custo compra"');
-    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,2)) AS "Vendido por"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Lucro bruto"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "%"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
     Result.SQL.Add('FROM EMITENTE');
 
     Result.SQL.Add('ORDER BY 1,7 DESC');
@@ -341,9 +351,9 @@ begin
   Result.SQL.Add('SELECT');
   Result.SQL.Add('    0 as "Ord"');
   Result.SQL.Add('    ,COALESCE(GRUPO.NOME, '+QuotedStr(_cSemGrupo)+') AS "Grupo"');
-  Result.SQL.Add('    , CAST(SUM(ESTOQUE.CUS_VEND) AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(ESTOQUE.VAL_VEND) AS NUMERIC(18,2)) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(SUM(ESTOQUE.LUC_VEND) AS NUMERIC(18,2)) AS "Lucro bruto"');
+  Result.SQL.Add('    , CAST(SUM(ESTOQUE.CUS_VEND) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+  Result.SQL.Add('    , CAST(SUM(ESTOQUE.VAL_VEND) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+  Result.SQL.Add('    , CAST(SUM(ESTOQUE.LUC_VEND) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
   Result.SQL.Add('FROM ESTOQUE');
   Result.SQL.Add('LEFT JOIN GRUPO ON');
   Result.SQL.Add(' (GRUPO.NOME=ESTOQUE.NOME)');
@@ -355,9 +365,9 @@ begin
   Result.SQL.Add('SELECT FIRST 1');
   Result.SQL.Add('    1 as "Ord"');
   Result.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
-  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,2)) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
+  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
   Result.SQL.Add('FROM EMITENTE');
 
   Result.SQL.Add('UNION ALL');
@@ -365,7 +375,7 @@ begin
   Result.SQL.Add('    2 as "Ord"');
   Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,2)) AS "Vendido por"');
+  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
   Result.SQL.Add('FROM EMITENTE');
   Result.SQL.Add('ORDER BY 1');
@@ -626,6 +636,13 @@ begin
   FoArquivoDAT.Usuario.Outros.PeriodoInicial := dtInicial.Date;
   FoArquivoDAT.Usuario.Outros.PeriodoFinal   := dtFinal.Date;
   inherited;
+end;
+
+procedure TfrmRelResumoVendas.FormCreate(Sender: TObject);
+begin
+  inherited;
+  FnCasasDecimais := 2;
+  FnCasasDecimaisQtde := 2;
 end;
 
 end.

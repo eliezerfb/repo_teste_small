@@ -12831,6 +12831,8 @@ begin
     frmRelResumoVendas.Imagem   := Image205.Picture;
     frmRelResumoVendas.Usuario  := Usuario;
     frmRelResumoVendas.DataSetEstoque := ibDataSet4;
+    frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
+    frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);        
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);
