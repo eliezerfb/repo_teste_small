@@ -2201,6 +2201,7 @@ type
       const Text: String);
     procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
     procedure DSPerfilTributaStateChange(Sender: TObject);
+    procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -33683,14 +33684,14 @@ begin
 
   if (QtdProdPerfil > 0) then
   begin
-    MessageDlg('Houve alteração do perfil. Serão alterados '+IntToStr(QtdProdPerfil)+' produtos.', MtInformation, [mbok], 0);
+    MensagemSistema('Houve alteração do perfil. Serão alterados '+IntToStr(QtdProdPerfil)+' produtos.');
 
     if AtualizaTibutacaoProduto(ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger,ProdutosErro) then
     begin
-      MessageDlg('Produtos atualizados com sucesso!', MtInformation, [mbok], 0);
+      MensagemSistema('Produtos atualizados com sucesso!');
     end else
     begin
-      Application.MessageBox(pChar('Erro ao atualizar produto(s). Verifique se os mesmos estão em uso e tente novamente.'+ProdutosErro), 'Atenção', mb_Ok + MB_ICONWARNING);
+      MensagemSistema('Erro ao atualizar produto(s). Verifique se os mesmos estão em uso e tente novamente.'+ProdutosErro,msgErro);
     end;
   end;
 end;
@@ -33698,6 +33699,30 @@ end;
 procedure TForm7.DSPerfilTributaStateChange(Sender: TObject);
 begin
   Form10.lblAtencaoPerfilTrib.Visible := DSPerfilTributa.State = dsEdit;
+end;
+
+procedure TForm7.ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
+var
+  sApagar : string;
+begin
+  if AllTrim(ibdPerfilTributaDESCRICAO.AsString) <> '' then
+  begin
+    if ExecutaComandoEscalar(IBDatabase1,
+                             ' Select count(*) '+
+                             ' From ESTOQUE '+
+                             ' Where IDPERFILTRIBUTACAO = '+ibdPerfilTributaIDPERFILTRIBUTACAO.Asstring) > 0 then
+    begin
+      sApagar := 'O sistema encontrou lançamentos referentes ao perfil: '+Chr(10)+
+                 Chr(10)+
+                 Chr(10)+ibdPerfilTributaDESCRICAO.AsString+Chr(10)+
+                 Chr(10)+
+                 'no módulo de estoque.'+chr(10)+ Chr(10)+
+                 'Portanto não pode ser apagado.';
+
+      MensagemSistema(sApagar,msgAtencao);
+      Abort;
+    end;
+  end;
 end;
 
 end.

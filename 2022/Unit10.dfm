@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_PerfilTrib
+      ActivePage = orelha_ICMS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3889,7 +3889,7 @@ object Form10: TForm10
             '90 - Outras')
         end
         object ComboBox15: TComboBox
-          Left = 118
+          Left = 110
           Top = 275
           Width = 390
           Height = 22

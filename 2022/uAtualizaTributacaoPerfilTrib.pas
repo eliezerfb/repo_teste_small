@@ -23,7 +23,7 @@ begin
   Result := False;
   Screen.Cursor            := crHourGlass;
 
-  ibdEstoque := CriaIDataSet(Form7.ibdPerfilTributa.Transaction);
+  ibdEstoque := CriaIDataSet(Form7.ibDataSet4.Transaction);
 
   ibdEstoque.ModifySQL  := Form7.ibDataSet4.ModifySQL;
   ibdEstoque.RefreshSQL := Form7.ibDataSet4.RefreshSQL;
@@ -77,6 +77,8 @@ begin
   end;
 
   Result := ProdutosErro = '';
+
+  AgendaCommit(true);
 end;
 
 end.
