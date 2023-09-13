@@ -35,42 +35,42 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     ParentFont = False
   end
   object Label5: TLabel
-    Left = 485
+    Left = 514
     Top = 40
     Width = 97
     Height = 13
     Caption = 'Diret'#243'rio de resposta'
   end
   object Label4: TLabel
-    Left = 324
+    Left = 353
     Top = 40
     Width = 105
     Height = 13
     Caption = 'Diret'#243'rio de requisi'#231#227'o'
   end
   object Label3: TLabel
-    Left = 144
+    Left = 173
     Top = 40
     Width = 27
     Height = 13
     Caption = 'Pasta'
   end
   object Label2: TLabel
-    Left = 24
+    Left = 53
     Top = 40
     Width = 28
     Height = 13
     Caption = 'Nome'
   end
   object Label6: TLabel
-    Left = 926
+    Left = 18
     Top = 40
     Width = 24
     Height = 13
     Caption = 'Ativo'
   end
   object Label8: TLabel
-    Left = 645
+    Left = 674
     Top = 40
     Width = 111
     Height = 13
@@ -115,6 +115,13 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     Columns = <
       item
         Expanded = False
+        FieldName = 'ATIVO'
+        Title.Caption = 'Ativo'
+        Width = 30
+        Visible = True
+      end
+      item
+        Expanded = False
         FieldName = 'NOME'
         Title.Caption = 'Adquirente'
         Width = 120
@@ -145,13 +152,6 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
         FieldName = 'CAMINHOEXE'
         Title.Caption = 'Gerenciador TEF'
         Width = 312
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'ATIVO'
-        Title.Caption = 'Ativo'
-        Width = 30
         Visible = True
       end>
   end
@@ -226,6 +226,11 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
         Name = 'ATIVO'
         DataType = ftString
         Size = 3
+      end
+      item
+        Name = 'IDNOME'
+        DataType = ftString
+        Size = 100
       end>
     IndexDefs = <>
     Params = <>
@@ -235,6 +240,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     Left = 160
     object cdsTEFsNOME: TStringField
       FieldName = 'NOME'
+      OnChange = cdsTEFsNOMEChange
       OnSetText = cdsTEFsNOMESetText
       Size = 100
     end
@@ -261,6 +267,11 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
       FieldName = 'ATIVO'
       OnSetText = cdsTEFsATIVOSetText
       Size = 3
+    end
+    object cdsTEFsIDNOME: TStringField
+      FieldName = 'IDNOME'
+      OnSetText = cdsTEFsIDNOMESetText
+      Size = 100
     end
   end
   object dsTEFs: TDataSource

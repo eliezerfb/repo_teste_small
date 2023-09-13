@@ -12,6 +12,7 @@ uses
 
 const
   _cColunaAtivo    = 'ATIVO';
+  _cColunaIDNOME   = 'IDNOME';  
   _cCampoINIPasta  = 'Pasta';
   _cCampoINIReq    = 'Req';
   _cCampoINIResp   = 'Resp';
@@ -40,6 +41,7 @@ type
     cdsTEFsATIVO: TStringField;
     Panel2: TPanel;
     Frame_teclado1: TFrame_teclado;
+    cdsTEFsIDNOME: TStringField;
     procedure btnOKClick(Sender: TObject);
     procedure Image6Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,14 +64,18 @@ type
     procedure cdsTEFsDIRETORIORESPSetText(Sender: TField; const Text: String);
     procedure cdsTEFsCAMINHOEXESetText(Sender: TField; const Text: String);
     procedure FormDestroy(Sender: TObject);
+    procedure cdsTEFsNOMEChange(Sender: TField);
+    procedure cdsTEFsIDNOMESetText(Sender: TField; const Text: String);
   private
     FoIni: TIniFile;
+    FoMessageEvent: TMessageEvent;
     function SalvarINI: Boolean;
     procedure DeletarRecord(Sender: TObject);
     procedure CarregarINI;
     procedure AjustaLayout;
     function TestarConfiguracoes: Boolean;
     procedure DefineTemTEFINI;
+    procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
   public
   end;
 
@@ -100,11 +106,21 @@ begin
   try
     while not cdsTEFs.Eof do
     begin
+      if (cdsTEFsNOME.AsString = EmptyStr)
+         and (cdsTEFsPASTA.AsString = EmptyStr)
+         and (cdsTEFsDIRETORIOREQ.AsString = EmptyStr)
+         and (cdsTEFsDIRETORIORESP.AsString = EmptyStr)
+         and (cdsTEFsCAMINHOEXE.AsString = EmptyStr) then
+      begin
+        cdsTEFs.Delete;
+        Continue;
+      end;
+
       if cdsTEFsNOME.AsString = EmptyStr then
       begin
         Application.MessageBox('Nenhum nome foi definido para a configuração do TEF.', 'Atenção', MB_ICONINFORMATION + MB_OK);
         dbgTEFs.SetFocus;
-        dbgTEFs.SelectedIndex := 0;
+        dbgTEFs.SelectedIndex := 1;
         Exit;
       end;
       
@@ -147,43 +163,42 @@ begin
   begin
     if iColuna = 0 then
     begin
+      Label6.Left  := dbgTEFs.Left + iLargura + AjustaLargura(6);
+      Label6.Width := dbgTEFs.Columns[iColuna].Width;
+      iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
+    end;
+    if iColuna = 1 then
+    begin
       Label2.Left  := dbgTEFs.Left + iLargura + AjustaLargura(3);
       Label2.Width := dbgTEFs.Columns[iColuna].Width;
       iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
     end;
 
-    if iColuna = 1 then
+    if iColuna = 2 then
     begin
       Label3.Left  := dbgTEFs.Left + iLargura + AjustaLargura(4);
       Label3.Width := dbgTEFs.Columns[iColuna].Width;
       iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
     end;
 
-    if iColuna = 2 then
+    if iColuna = 3 then
     begin
       Label4.Left  := dbgTEFs.Left + iLargura + AjustaLargura(5);
       Label4.Width := dbgTEFs.Columns[iColuna].Width;
       iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
     end;
 
-    if iColuna = 3 then
+    if iColuna = 4 then
     begin
       Label5.Left  := dbgTEFs.Left + iLargura + AjustaLargura(6);
       Label5.Width := dbgTEFs.Columns[iColuna].Width;
       iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
     end;
 
-    if iColuna = 4 then
+    if iColuna = 5 then
     begin
       Label8.Left  := dbgTEFs.Left + iLargura + AjustaLargura(6);
       Label8.Width := dbgTEFs.Columns[iColuna].Width;
-      iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
-    end;
-
-    if iColuna = 5 then
-    begin
-      Label6.Left  := dbgTEFs.Left + iLargura + AjustaLargura(6); 
-      Label6.Width := dbgTEFs.Columns[iColuna].Width;
       iLargura := iLargura + dbgTEFs.Columns[iColuna].Width;
     end;
   end;
@@ -191,14 +206,17 @@ end;
 
 procedure TFConfiguracaoTEF.FormCreate(Sender: TObject);
 const
-  _cChaveID = 'idxNOME';
+  _cChaveID = 'idxIDNOME';
 begin
   FoIni     := TIniFile.Create(FRENTE_INI);
+  FoMessageEvent := Application.OnMessage;
+
+  Application.OnMessage := ScrollMouse;
 
   AjustaLayout;
 
   cdsTEFs.CreateDataSet;
-  cdsTEFs.IndexDefs.Add(_cChaveID, 'NOME', [ixUnique]);
+  cdsTEFs.IndexDefs.Add(_cChaveID, _cColunaIDNOME, [ixUnique]);
   cdsTEFs.IndexName := _cChaveID;
 end;
 
@@ -214,7 +232,14 @@ begin
 end;
 
 procedure TFConfiguracaoTEF.cdsTEFsAfterInsert(DataSet: TDataSet);
+var
+  i: Integer;
 begin
+  for i := 0 to Pred(DataSet.Fields.Count) do
+  begin
+    if DataSet.Fields[i].FieldName <> _cColunaAtivo then
+      DataSet.FieldByName(DataSet.Fields[i].FieldName).AsString := EmptyStr;
+  end;
   DataSet.FieldByName(_cColunaAtivo).AsString   := _cNao;
 end;
 
@@ -236,6 +261,7 @@ begin
       begin
         cNomeSecao := slSessions.Strings[iSecao];
         cdsTEFs.Append;
+        cdsTEFsIDNOME.AsString        := AnsiUpperCase(cNomeSecao);
         cdsTEFsNOME.AsString          := cNomeSecao;
         cdsTEFsPASTA.AsString         := FoIni.ReadString(cNomeSecao, _cCampoINIPasta, EmptyStr);
         cdsTEFsDIRETORIOREQ.AsString  := FoIni.ReadString(cNomeSecao, _cCampoINIReq, EmptyStr);
@@ -253,6 +279,7 @@ end;
 
 procedure TFConfiguracaoTEF.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  Application.OnMessage := FoMessageEvent;
   DefineTemTEFINI;
 end;
 
@@ -328,7 +355,7 @@ begin
   if AnsiContainsText(E.Message, 'Key Violation') then
   begin
     sAlerta := 'TEF já cadastrado';
-    dbgTEFs.SelectedIndex := 0;
+    dbgTEFs.SelectedIndex := 1;
   end;
   if AnsiContainsText(E.Message, 'must have a value') then
     sAlerta := 'Preencha todas as colunas';
@@ -454,6 +481,7 @@ begin
     else
       cdsTEFsATIVO.AsString := _cSim;
     cdsTEFs.Post;
+    cdsTEFs.Edit;    
   end;
 end;
 
@@ -490,6 +518,37 @@ end;
 procedure TFConfiguracaoTEF.FormDestroy(Sender: TObject);
 begin
   FoIni.Free;
+end;
+
+procedure TFConfiguracaoTEF.cdsTEFsNOMEChange(Sender: TField);
+begin
+  if Sender.AsString <> EmptyStr then
+    cdsTEFsIDNOME.AsString := AnsiUpperCase(Sender.AsString);
+end;
+
+procedure TFConfiguracaoTEF.cdsTEFsIDNOMESetText(Sender: TField;
+  const Text: String);
+begin
+  Sender.AsString := AnsiUpperCase(Trim(Text));
+end;
+
+procedure TFConfiguracaoTEF.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
+var
+  i: smallint;
+begin
+  if Msg.message = WM_MOUSEWHEEL then
+  begin
+    if cdsTEFs.RecNo = cdsTEFs.RecordCount then
+      Exit;
+    Msg.message := WM_KEYDOWN;
+    Msg.lParam := 0;
+    i := HiWord(Msg.wParam) ;
+    if i > 0 then
+      Msg.wParam := VK_UP
+    else
+      Msg.wParam := VK_DOWN;
+    Handled := False;
+  end;
 end;
 
 end.
