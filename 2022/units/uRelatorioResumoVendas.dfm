@@ -4,6 +4,7 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
   Caption = 'Resumo das vendas'
   ClientWidth = 769
   OldCreateOrder = True
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   inherited btnVoltar: TBitBtn

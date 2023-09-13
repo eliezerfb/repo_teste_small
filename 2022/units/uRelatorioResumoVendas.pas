@@ -30,6 +30,7 @@ type
     procedure btnVoltarClick(Sender: TObject);
     procedure btnMarcarTodosOperClick(Sender: TObject);
     procedure btnDesmarcarTodosOperClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FoDataSetEstoque: TIBDataSet;
     procedure AjustaLayout;
@@ -45,6 +46,7 @@ type
     function RetornarTotalDescontoAcresc: Currency;
     procedure DesativarColunas(AqryReg: TIBQuery);
     function RetornarTotalNaoRelacionados: Currency;
+    function RetornaFormatoValorSQL(AnValor: Currency): String;
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;  
   protected
@@ -286,7 +288,7 @@ begin
     Result.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Quantidade"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Custo compra"');
-    Result.SQL.Add('    , CAST(' + CurrToStr(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,2)) AS "Vendido por"');
+    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,2)) AS "Vendido por"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Lucro bruto"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "%"');
     Result.SQL.Add('FROM EMITENTE');
@@ -298,7 +300,7 @@ begin
     Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Quantidade"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Custo compra"');
-    Result.SQL.Add('    , CAST(' + CurrToStr(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,2)) AS "Vendido por"');
+    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,2)) AS "Vendido por"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "Lucro bruto"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,2)) AS "%"');
     Result.SQL.Add('FROM EMITENTE');
@@ -312,6 +314,13 @@ begin
   Result.First;
 
   DesativarColunas(Result);
+end;
+
+function TfrmRelResumoVendas.RetornaFormatoValorSQL(AnValor: Currency): String;
+begin
+  Result := CurrToStr(AnValor);
+  Result := StringReplace(Result, '.', '', [rfReplaceAll]);
+  Result := StringReplace(Result, ',', '.', [rfReplaceAll]);
 end;
 
 procedure TfrmRelResumoVendas.DesativarColunas(AqryReg: TIBQuery);
@@ -347,7 +356,7 @@ begin
   Result.SQL.Add('    1 as "Ord"');
   Result.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(' + CurrToStr(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,2)) AS "Vendido por"');
+  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,2)) AS "Vendido por"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
   Result.SQL.Add('FROM EMITENTE');
 
@@ -356,7 +365,7 @@ begin
   Result.SQL.Add('    2 as "Ord"');
   Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(' + CurrToStr(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,2)) AS "Vendido por"');
+  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,2)) AS "Vendido por"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
   Result.SQL.Add('FROM EMITENTE');
   Result.SQL.Add('ORDER BY 1');
@@ -479,7 +488,7 @@ begin
 
     while not qryCons99.Eof do
     begin
-      if (AllTrim(qryCons99.FieldByname('DESCRICAO').AsString) <> 'Desconto') and (AllTrim(qryCons99.FieldByname('DESCRICAO').AsString) <> 'Acrécimo') then
+      if (AllTrim(qryCons99.FieldByname('DESCRICAO').AsString) <> 'Desconto') and (AllTrim(qryCons99.FieldByname('DESCRICAO').AsString) <> 'Acréscimo') then
       begin
         if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons99.FieldByname('DESCRICAO').AsString),[]) then
         begin
@@ -523,20 +532,20 @@ begin
     
     while not qryCons100.Eof do
     begin
-      if (AllTrim(qryCons100.FieldByname('DESCRICAO').AsString) <> 'Desconto') and (AllTrim(qryCons100.FieldByname('DESCRICAO').AsString) <> 'Acrécimo') then
+      if (AllTrim(qryCons100.FieldByname('DESCRICAO').AsString) <> 'Desconto') and (AllTrim(qryCons100.FieldByname('DESCRICAO').AsString) <> 'Acréscimo') then
       begin
         if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons100.FieldByname('DESCRICAO').AsString),[]) then
         begin
-          if not cdsExcluidos.Locate('NOME', qryCons99.FieldByname('DESCRICAO').AsString, []) then
+          if not cdsExcluidos.Locate('NOME', qryCons100.FieldByname('DESCRICAO').AsString, []) then
           begin
             cdsExcluidos.Append;
-            cdsExcluidosNOME.AsString    := qryCons99.FieldByname('DESCRICAO').AsString;
+            cdsExcluidosNOME.AsString    := qryCons100.FieldByname('DESCRICAO').AsString;
             cdsExcluidosVALOR.AsCurrency := 0;
           end
           else
             cdsExcluidos.Edit;
 
-          cdsExcluidosVALOR.AsCurrency := cdsExcluidosVALOR.AsCurrency + qryCons99.FieldByname('VTOT2').AsFloat;
+          cdsExcluidosVALOR.AsCurrency := cdsExcluidosVALOR.AsCurrency + qryCons100.FieldByname('VTOT2').AsFloat;
 
           cdsExcluidos.Post;
         end else
@@ -609,6 +618,14 @@ var
 begin
   for i := 0 to chkOperacoes.Items.Count -1 do
     chkOperacoes.Checked[i] := False;
+end;
+
+procedure TfrmRelResumoVendas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  FoArquivoDAT.Usuario.Outros.PeriodoInicial := dtInicial.Date;
+  FoArquivoDAT.Usuario.Outros.PeriodoFinal   := dtFinal.Date;
+  inherited;
 end;
 
 end.
