@@ -738,7 +738,7 @@ begin
                 begin
                   if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then
                   begin
-                    ComplementoOBS := ' - '+ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString);
+                    ComplementoOBS := ' - '+Trim(ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString));
                   end
                 end;
                 {Mauricio Parizotto 2023-09-12 fim}
