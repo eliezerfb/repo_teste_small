@@ -34,9 +34,9 @@ var
   // Rateio
   fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO : Real;
   fDesconto, fFrete, fOutras, fSeguro : array[0..999] of double;
-  // Sandro Silva 2023-06-16 vICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-13
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
-
+  dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
+  dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-09-04
 
   procedure GeraXmlNFeEntrada;
   procedure GeraXmlNFeEntradaTags;
@@ -821,6 +821,10 @@ begin
   vPIS           := 0;
   vCOFINS        := 0;
 
+  dqBCMonoRet_N43aTotal  := 0.00; // Sandro Silva 2023-09-04
+  dvICMSMonoRet_N45Total := 0.00; // Sandro Silva 2023-09-04
+
+
   Form7.ibDAtaset23.First;
   while not Form7.ibDAtaset23.Eof do
   begin
@@ -903,7 +907,6 @@ begin
 
   I := 0;
   vTotalImpostoImportacao := 0;
-  // Sandro Silva 2023-06-16 vICMSMonoRet_N45Total   := 0.00; // Sandro Silva 2023-06-13
   sMensagemIcmMonofasicoSobreCombustiveis := ''; // Sandro Silva 2023-06-16
 
   Form7.ibDAtaset23.First;
@@ -1503,6 +1506,12 @@ begin
   end;
 
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('ICMSSUBSTI').AsFloat)),',','.');; // Valor Total do ICMS Sibst. Tributária
+
+  {Sandro Silva 2023-09-04 inicio}
+  Form7.spdNFeDataSets.Campo('qBCMonoRet_W06d1').Value  := FormatFloatXML(dqBCMonoRet_N43aTotal); //Valor total da quantidade tributada do ICMS monofásico retido anteriormente
+  Form7.spdNFeDataSets.Campo('vICMSMonoRet_W06e').Value := FormatFloatXML(dvICMSMonoRet_N45Total); //Valor total do ICMS monofásico retido anteriormente
+  {Sandro Silva 2023-09-04 fim}
+
   Form7.spdNFeDataSets.Campo('vProd_W07').Value   := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('MERCADORIA').AsFloat)),',','.'); // Valor Total de Produtos
   Form7.spdNFeDataSets.Campo('vFrete_W08').Value  := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('FRETE').AsFloat)),',','.'); // Valor Total do Frete
   Form7.spdNFeDataSets.Campo('vSeg_W09').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('SEGURO').AsFloat)),',','.'); // Valor Total do Seguro
@@ -1694,10 +1703,8 @@ begin
   Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := AllTrim(ConverteAcentos2(AllTrim(Form7.ibDAtaset24COMPLEMENTO.AsString))); // Informacoes Complementares
 
   {Sandro Silva 2023-06-13 inicio}
-  // Sandro Silva 2023-06-16 if vICMSMonoRet_N45Total > 0.00 then
   if sMensagemIcmMonofasicoSobreCombustiveis <> '' then // Sandro Silva 2023-06-16
   begin
-    // Sandro Silva 2023-06-16 Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
   end;
   {Sandro Silva 2023-06-13 fim}
@@ -1715,7 +1722,7 @@ end;
 procedure GeraXmlNFeEntradaTags;
 var
   fAliquota: Real;
-  vICMSMonoRet_N45: Real; // Sandro Silva 2023-06-13
+  dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-13
 begin
   //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
@@ -2468,11 +2475,15 @@ begin
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
 
     Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
-    Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
-    vICMSMonoRet_N45      := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
-    // Sandro Silva 2023-06-16 vICMSMonoRet_N45Total := vICMSMonoRet_N45Total + vICMSMonoRet_N45;
+    dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value); // Sandro Silva 2023-09-04
 
-    Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(vICMSMonoRet_N45);
+    Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
+    dvICMSMonoRet_N45     := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
+
+    Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(dvICMSMonoRet_N45);
+
+    dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value); // Sandro Silva 2023-09-04
+
   end;
   {Sandro Silva 2023-06-13 fim}
 

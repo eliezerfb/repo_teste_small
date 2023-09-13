@@ -14100,6 +14100,8 @@ object FEmissorNFSe: TFEmissorNFSe
     EmailSettings.TimeOut = 30000
     EmailSettings.IsContentHTML = False
     EmailSettings.UseSecureBlackBox = False
+    EmailSettings.QtdeTentativasEmail = 0
+    EmailSettings.UseTLS = 0
     TipoCertificado = ckFile
     Arquivos = 'NFSE'
     RemoverAcentos = True
