@@ -9584,8 +9584,11 @@ var
   tInicio : tTime;
   Hora, Min, Seg, cent : Word;
   bA : Boolean;
-  sSerieNFSelecionada: String;  
+  sSerieNFSelecionada: String;
+  IBQCONTAS: TIBQuery; // Sandro Silva 2023-09-13
 begin
+  //LogRetaguarda('9590'); // Sandro Silva 2023-09-13
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo //
   try
     if Form10.Visible then
@@ -9638,9 +9641,11 @@ begin
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo //
 
+    //LogRetaguarda('9644'); // Sandro Silva 2023-09-13
     Commitatudo(True);
     AgendaCommit(False);
-    
+    //LogRetaguarda('9647'); // Sandro Silva 2023-09-13
+
     // RECEBER CONTAS
     Form7.Panel2.Visible  := False;
     Form7.Panel3.Visible  := False;
@@ -9978,7 +9983,7 @@ begin
     Panel10.Visible        := False;
     dbGrid2.Visible        := False;
     dbGrid3.Visible        := False;
-    dbGrid4.Visible        := False;                
+    dbGrid4.Visible        := False;
 
     Form7.Panel9.Caption :=   '0,00';
 
@@ -10034,7 +10039,7 @@ begin
           DBGrid1.Font.Name  := Mais1Ini.ReadString(sModulo,'FonteName_','Microsoft Sans Serif');
           DBGrid1.Font.Size  := StrToInt(Mais1Ini.ReadString(sModulo,'FonteSize_','10'));
           DBGrid1.Font.Color := StrToInt(Mais1Ini.ReadString(sModulo,'FonteColor_','0'));
-          
+
           if Mais1Ini.ReadString(sModulo,'FonteY_','') = ''         then
             DBGrid1.Font.Style := [];                  //
           if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsItalic' then
@@ -10148,7 +10153,7 @@ begin
         Form7.Image308.Visible  := False;
         Form7.Image208.Visible  := True;
         Form7.Label208.Caption  := 'Liberar';
-        
+
         if Form7.sRPS = 'S' then
         begin
             Form7.dBGrid2.Visible     := False;
@@ -10164,12 +10169,15 @@ begin
       if (sModulo = 'RECEBER') then
       begin
 
+    //LogRetaguarda('10175'); // Sandro Silva 2023-09-13
+
         Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 17; // Sandro Silva 2023-06-22
 
         ComboBox1.Items.Clear;
         ComboBox1.Items.Add(_cRecebPagto);
         ComboBox1.ItemIndex := 0;
         //
+        {Sandro Silva 2023-09-13 inicio
         Form7.ibDataSet12.Close;
         Form7.ibDataSet12.SelectSQL.Clear;
         Form7.ibDataSet12.SelectSQL.Add('select * from CONTAS order by upper(NOME)');
@@ -10187,6 +10195,37 @@ begin
           Form7.ibDataSet12.Next;
           //
         end;
+        }
+        IBQCONTAS := CriaIBQuery(Form7.ibDataSet12.Transaction);
+        try
+          IBQCONTAS.Close;
+          IBQCONTAS.UniDirectional := True;
+          IBQCONTAS.SQL.Text :=
+            'select * ' +
+            'from CONTAS ' +
+            'where CONTA like ''5%'' ' +
+            'order by upper(NOME)';
+          IBQCONTAS.Open;
+          //
+          IBQCONTAS.First;
+          //
+          while not IBQCONTAS.Eof do
+          begin
+            if Copy(IBQCONTAS.FieldByName('CONTA').AsString,1,1) = '5' then
+            begin
+              ComboBox1.Items.Add(IBQCONTAS.FieldByName('NOME').AsString);
+            end;
+            //
+            IBQCONTAS.Next;
+            //
+          end;
+        except
+        end;
+        FreeAndNil(IBQCONTAS);
+        {Sandro Silva 2023-09-13 fim}
+
+    //LogRetaguarda('10227'); // Sandro Silva 2023-09-13
+
         //
         Panel9.Top      := 86;
         Panel9.Width    := Panel2.Width;
@@ -10221,8 +10260,12 @@ begin
         Form7.Image308.Visible := False;
         Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
 
+    //LogRetaguarda('10263'); // Sandro Silva 2023-09-13
+
         CalculaTotalRecebido(True);
         //
+    //LogRetaguarda('10267'); // Sandro Silva 2023-09-13
+
         Form1.IBDataSet200.Close;
         Form1.IBDataSet200.SelectSQL.Clear;
         Form1.IBDataSet200.SelectSQL.Add('select DOCUMENTO as "Documento", VALOR_DUPL as "Valor original   ", VALOR_RECE as "Valor recebido   ", VENCIMENTO as "Vencimento", RECEBIMENT as "Data recebimento   ", REGISTRO from RECEBER where ATIVO>=5');
@@ -10244,6 +10287,9 @@ begin
         //
         Form7.ibDataSet25.Active := True;
         Form7.ibDataSet25.Append;
+
+    //LogRetaguarda('10291'); // Sandro Silva 2023-09-13
+
       end;
 
       if (sModulo = 'PAGAR') then
@@ -11112,6 +11158,9 @@ begin
       // Receber
       if sModulo = 'RECEBER' then
       begin
+
+    //LogRetaguarda('11162'); // Sandro Silva 2023-09-13
+
         sAjuda := 'cr.htm';
 
         Odas1.Checked          := True;
@@ -11358,9 +11407,13 @@ begin
         Label209.Visible := True;
       end;
 
+
+    //LogRetaguarda('11411'); // Sandro Silva 2023-09-13
+
+
       // dBGrid
       TabelaAberta.DisableControls;
-      
+
       try
         {$IFDEF VER150}
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize]; // 2CONTAS
@@ -11368,43 +11421,6 @@ begin
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize,dgTitleClick]; // 2CONTAS
         {$ENDIF}
 
-        (*
-        with ArquivoAberto do
-        begin
-          try
-            for I := 1 to iCampos do
-            begin
-              if copy(sMostra+'FFFFFFFFFFFFFFFFFFFF',I,1) = 'F' then
-                Fields[I-1].Visible := False
-              else
-                Fields[I-1].Visible := True;
-
-              {Sandro Silva 2022-12-16 inicio // Sandro Silva 2023-01-09
-              if sModulo = 'ESTOQUE' then
-              begin
-                if ArquivoAberto.Fields[I-1].FieldName = 'IDENTIFICADORPLANOCONTAS' then
-                begin
-                  ArquivoAberto.Fields[I-1].Visible := Form1.CampoDisponivelParaUsuario(sModulo, ArquivoAberto.Fields[I-1].FieldName);
-                end;
-              end;
-              {Sandro Silva 2022-12-16 fim}
-
-
-              {Sandro Silva 2022-12-16 inicio}
-              if sModulo = 'RECEBER' then
-              begin
-                if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
-                begin
-                  ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
-                end;
-              end;
-              {Sandro Silva 2022-12-16 fim}
-
-            end;
-          except
-          end;
-        end;
-        *)
 
         try
           for I := 1 to iCampos do
@@ -11412,35 +11428,14 @@ begin
             ArquivoAberto.Fields[I-1].Visible := True;
             if copy(sMostra+'FFFFFFFFFFFFFFFFFFFF',I,1) = 'F' then
               ArquivoAberto.Fields[I-1].Visible := False;
-
-            {Sandro Silva 2022-12-16 inicio // Sandro Silva 2023-01-09
-            if sModulo = 'ESTOQUE' then
-            begin
-              if ArquivoAberto.Fields[I-1].FieldName = 'IDENTIFICADORPLANOCONTAS' then
-              begin
-                ArquivoAberto.Fields[I-1].Visible := Form1.CampoDisponivelParaUsuario(sModulo, ArquivoAberto.Fields[I-1].FieldName);
-              end;
-            end;
-            {Sandro Silva 2022-12-16 fim}
-
-
-            {Sandro Silva 2022-12-16 inicio}
-            {Sandro Silva 2023-07-25 inicio
-            if sModulo = 'RECEBER' then
-            begin
-              if ArquivoAberto.Fields[I-1].FieldName = 'MOVIMENTO' then
-              begin
-                ArquivoAberto.Fields[I-1].Visible := Form1.DisponivelSomenteParaNos;
-              end;
-            end;
-            }
-            {Sandro Silva 2022-12-16 fim}
           end;
         except
         end;
 
       except
       end;
+
+    //LogRetaguarda('11438'); // Sandro Silva 2023-09-13
 
       // Visual
       iIconeCom := 70;
@@ -11462,7 +11457,7 @@ begin
               Form7.MenuItem63.Enabled := False;
               Form7.Ativo5.Enabled     := False;
             end;
-            
+
             Image201.Visible := False;
             Image202.Visible := False;
             Image208.Visible := False; Form7.Label208.Caption  := 'Bloquear';
@@ -11645,6 +11640,10 @@ begin
 //        );
         //
         try
+
+
+    //LogRetaguarda('11645'); // Sandro Silva 2023-09-13
+
           TabelaAberta.Close;
           TabelaAberta.SelectSQL.Clear;
           //
@@ -11653,7 +11652,7 @@ begin
             // Filtro auxiliar
             //
             // Sandro Silva 2023-04-24 TabelaAberta.SelectSQL.Add(AllTrim(sSelect)+' '+AllTrim(sWhere)+' and EMISSAO >'+QuotedStr( DateToStrInvertida(DATE - 30) )+' '+AllTrim(sOrderBy));
-            // Sandro Silva 2023-04-24 Ficha 6777   
+            // Sandro Silva 2023-04-24 Ficha 6777
             // Sandro Silva 2023-05-05 TabelaAberta.SelectSQL.Add(Trim(sSelect) + ' ' + Trim(sWhere) + ' and EMISSAO > (select coalesce(max(EMISSAO), current_date) - 90 from VENDAS where NUMERONF like ''%' + sSerieNFSelecionada + ''') ' + ' ' + Trim(sOrderBy));
             TabelaAberta.SelectSQL.Add(Trim(sSelect) + ' ' + Trim(sWhere) + ' and EMISSAO > (select coalesce(max(EMISSAO), current_date) - 90 from VENDAS where NUMERONF like ''%' + sSerieNFSelecionada + ''') ' + ' ' + Trim(sOrderBy));
             //
@@ -11676,6 +11675,9 @@ begin
           //
           TabelaAberta.Open;
           //
+
+    //LogRetaguarda('11679'); // Sandro Silva 2023-09-13
+
         except
           on E: Exception do
           begin
@@ -11702,6 +11704,8 @@ begin
       end;
     end;
 
+    //LogRetaguarda('11707'); // Sandro Silva 2023-09-13
+
     if (sModulo = 'ORCAMENTO') then
       TabelaAberta.FieldByName('Registro').Visible := False;
 
@@ -11724,6 +11728,9 @@ begin
       TabelaAberta.Last;
     //
     dbGrid1.DataSource := DataSourceAtual;
+
+    //LogRetaguarda('11730'); // Sandro Silva 2023-09-13
+
     //
     try
       if StrToInt('0'+LimpaNumero(sLinha)) <> 0 then
@@ -11733,12 +11740,17 @@ begin
       end;
     except
     end;
+
+    //LogRetaguarda('11742'); // Sandro Silva 2023-09-13
+
     //
     try
       dbGrid1.SelectedIndex := StrToInt('0'+LimpaNumero(sColuna));
     except
       dbGrid1.SelectedIndex := 0;
     end;
+
+    //LogRetaguarda('11751'); // Sandro Silva 2023-09-13
 
     // Este bloco tem toda a demora
     DefineLayoutFiltro;
@@ -11821,6 +11833,8 @@ begin
       end;
     end;
 
+    //LogRetaguarda('11834'); // Sandro Silva 2023-09-13
+
     try
       if TabelaAberta.Active then
       begin
@@ -11832,6 +11846,9 @@ begin
     except
       TabelaAberta.First;
     end;
+
+    //LogRetaguarda('11848'); // Sandro Silva 2023-09-13
+
     //
     try
       //
@@ -11851,6 +11868,10 @@ begin
     //    ),'Atenção',mb_Ok + MB_ICONWARNING);
     //  end;
     end;
+
+    //LogRetaguarda('11870'); // Sandro Silva 2023-09-13
+
+
   except
   end;
 
@@ -11859,7 +11880,7 @@ begin
   begin
     btnRetornoCNAB400.Visible := True; // Sandro Silva 2022-12-21 Button1.Visible := True;
   end;
-  DefineCaptionReceberPagar;  
+  DefineCaptionReceberPagar;
 
   Form7.AlphaBlendValue := 255;
   TabelaAberta.EnableControls;
@@ -25792,6 +25813,7 @@ procedure TForm7.SMALL_DBEdit6Exit(Sender: TObject);
 var
   ftotal : Real;
 begin
+  //LogRetaguarda('25841'); // Sandro Silva 2023-09-13
   //
   CalculaTotalRecebido(True);
   fTotal := StrToFloat(LimpaNumeroDeixandoAVirgula(Form7.Label49.CAption));
@@ -25852,6 +25874,7 @@ begin
   //
   if Form7.ComboBox1.CanFocus then Form7.ComboBox1.SetFocus;
   //
+  //LogRetaguarda('25902'); // Sandro Silva 2023-09-13
 end;
 
 procedure TForm7.SMALL_DBEdit1Exit(Sender: TObject);
@@ -26444,6 +26467,7 @@ var
   ftotal : Real;
   iRecno: Integer; // Sandro Silva 2023-08-30
 begin
+  //LogRetaguarda('26495'); // Sandro Silva 2023-09-13
   //
   Form7.Edit2.SetFocus;
   //
@@ -26590,7 +26614,9 @@ begin
       Form7.ibDataSet25.Edit;
       //
       Form7.Close;
+      //LogRetaguarda('26640'); // Sandro Silva 2023-09-13
       Form7.Show;
+      //LogRetaguarda('26642'); // Sandro Silva 2023-09-13
 
       {Sandro Silva 2023-08-30 inicio}
       // f-7283 Pode ser que isso deixe lento nos casos onde há muitas contas pendentes e o usuário quite uma das últimas contas da lista
@@ -26606,8 +26632,11 @@ begin
       end;
       Form7.DBGrid1.DataSource.DataSet.EnableControls;
       {Sandro Silva 2023-08-30 fim}
+      //LogRetaguarda('26658'); // Sandro Silva 2023-09-13
 
       Form7.DBGrid1.SetFocus;
+
+      //LogRetaguarda('26662'); // Sandro Silva 2023-09-13      
       //
     end;
   end;
