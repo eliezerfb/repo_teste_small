@@ -52,6 +52,7 @@ type
     procedure DesativarColunas(AqryReg: TIBQuery);
     function RetornarTotalNaoRelacionados: Currency;
     function RetornaFormatoValorSQL(AnValor: Currency): String;
+    procedure GerarImpressaoNaoRelacionados;
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
@@ -69,13 +70,15 @@ implementation
 
 uses
   uRetornaOperacoesRelatorio, uSmallResourceString, uEstruturaTipoRelatorioPadrao, uEstruturaRelResumoVendas,
-  uDadosRelatorioPadraoDAO, uFuncoesBancoDados;
+  uDadosRelatorioPadraoDAO, uFuncoesBancoDados, uSmallEnumerados, uEstruturaRelResumoVendasNaoList;
 
 {$R *.dfm}
 
 const
   _cSemGrupo = 'Sem grupo associado';
+  _cNomeArqNaoListado = 'naolistados.htm';
   _cItensNaoRelacionados = 'Itens não relacionados';
+  _cItensNaoRelacionadosHTML = '<a href="' + _cNomeArqNaoListado + '">' + _cItensNaoRelacionados + '</a>';
   _cDescontoAcrescimo = 'Descontos/Acréscimos';
 
 procedure TfrmRelResumoVendas.FormShow(Sender: TObject);
@@ -146,10 +149,10 @@ begin
                                                                                     .CarregarDados(qryTotGrupo)
                                                            );
 
+          MontarFiltrosRodape(oEstruturaCat);
+
           // Totalizador
           Estrutura.GerarImpressaoAgrupado(oEstruturaCat, 'TOTALIZADOR POR GRUPO');
-
-
         end;
       end;
     finally
@@ -166,23 +169,45 @@ begin
                                                                                 .CarregarDados(qryProduto)
                                                        );
 
+      MontarFiltrosRodape(oEstruturaCat);
+
       Estrutura.GerarImpressao(oEstruturaCat);
     finally
       FreeAndNil(qryProduto);
     end;
   end;
-  if not cdsExcluidos.IsEmpty then
-  begin
-    oEstruturaCat := TEstruturaRelResumoVendas.New
-                                              .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                              .setDataBase(DataBase)
-                                                                              .CarregarDados(cdsExcluidos)
-                                                     );
+    
+  GerarImpressaoNaoRelacionados;
+end;
 
-    MontarFiltrosRodape(oEstruturaCat);
+procedure TfrmRelResumoVendas.GerarImpressaoNaoRelacionados;
+var
+  oEstrutura: IEstruturaTipoRelatorioPadrao;
+  oEstruturaCat: IEstruturaRelatorioPadrao;
+begin
+  if FoArquivoDAT.Usuario.Html.TipoRelatorio <> ttiHTML then
+    Exit;
+  if cdsExcluidos.IsEmpty then
+    Exit;
 
-    Estrutura.GerarImpressaoAgrupado(oEstruturaCat, _cItensNaoRelacionados+' (1 - Não faz parte do filtro | 2 - Foi APAGADO | 3 - Foi RENOMEADO)');
-  end;  
+  oEstrutura := TEstruturaTipoRelatorioPadrao.New
+                                             .setUsuario(Usuario);
+
+  oEstruturaCat := TEstruturaRelResumoVendasNaoList.New
+                                                   .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                   .setDataBase(DataBase)
+                                                                                   .CarregarDados(cdsExcluidos)
+                                                          );
+
+  oEstrutura.GerarImpressao(oEstruturaCat)
+            .Salvar;
+  Sleep(200);
+  if FileExists(_cNomeArqNaoListado) then
+    DeleteFile(_cNomeArqNaoListado);
+  Sleep(100);
+  if FileExists(Usuario + '.htm') then
+    RenameFile(Usuario + '.htm', _cNomeArqNaoListado);
+  Sleep(300);
 end;
 
 function TfrmRelResumoVendas.RetornarTotalDescontoAcresc: Currency;
@@ -234,6 +259,9 @@ begin
     AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
   end;
 
+  AoEstruturaCat.FiltrosRodape.AddItem(SqlTraduzido);
+  AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);  
+    
   AoEstruturaCat.FiltrosRodape.AddItem('Operações listadas:');
   for i := 0 to Pred(chkOperacoes.Items.Count) do
   begin
@@ -241,7 +269,6 @@ begin
       AoEstruturaCat.FiltrosRodape.AddItem(chkOperacoes.Items[i]);
   end;
   AoEstruturaCat.FiltrosRodape.AddItem('Vendas por ECF, NFC-e ou SAT');
-  AoEstruturaCat.FiltrosRodape.AddItem(SqlTraduzido);  
 end;
 
 function TfrmRelResumoVendas.RetornarDescrFiltroData: string;
@@ -315,7 +342,10 @@ begin
     Result.SQL.Add('SELECT FIRST 1');
     Result.SQL.Add('    2 as "Ord"');
     Result.SQL.Add('    , '''' AS "Cód"');
-    Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
+    if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
+      Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
+    else
+      Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
     Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
     Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
@@ -384,7 +414,10 @@ begin
   Result.SQL.Add('UNION ALL');
   Result.SQL.Add('SELECT FIRST 1');
   Result.SQL.Add('    2 as "Ord"');
-  Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
+  if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
+    Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
+  else
+    Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
   Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');

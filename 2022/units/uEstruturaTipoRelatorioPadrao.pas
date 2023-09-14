@@ -21,9 +21,9 @@ type
     FcNomeArquivo: String;
     FdInicio: TDateTime;
     constructor Create;
-    procedure ImprimirHTML;
-    procedure ImprimirTXT;
-    procedure ImprimirPDF;
+    procedure ImprimirHTML(AbImprimir: Boolean = True);
+    procedure ImprimirTXT(AbImprimir: Boolean = True);
+    procedure ImprimirPDF(AbImprimir: Boolean = True);
     function RetornarLinhaTextoColunasTXT: String;
     function RetornarTamanhoField(AoField: TField): Integer;
     function TestarFieldValor(AoField: TField): Boolean;
@@ -47,6 +47,7 @@ type
     function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
     function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
     function Imprimir: IEstruturaTipoRelatorioPadrao;
+    function Salvar: IEstruturaTipoRelatorioPadrao;
   end;
 
 implementation
@@ -76,6 +77,23 @@ begin
   end;
 end;
 
+function TEstruturaTipoRelatorioPadrao.Salvar: IEstruturaTipoRelatorioPadrao;
+begin
+  if Trim(FlsImpressao.Text) = EmptyStr then
+  begin
+    ShowMessage(_cSemDadosParaImprimir);
+    Exit;
+  end;
+
+  DefineFinalArquivo;
+
+  case FoArquivoDAT.Usuario.Html.TipoRelatorio of
+    ttiHTML: ImprimirHTML(False);
+    ttiTXT: ImprimirTXT(False);
+    ttiPDF: ImprimirPDF(False);
+  end;
+end;
+
 procedure TEstruturaTipoRelatorioPadrao.SalvarArquivoHTML;
 begin
   if FileExists(FcNomeArquivo+'.HTM') then
@@ -84,14 +102,15 @@ begin
   FlsImpressao.SaveToFile(FcNomeArquivo + '.HTM');
 end;
 
-procedure TEstruturaTipoRelatorioPadrao.ImprimirHTML;
+procedure TEstruturaTipoRelatorioPadrao.ImprimirHTML(AbImprimir: Boolean = True);
 begin
   SalvarArquivoHTML;
 
-  ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  if AbImprimir then
+    ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.HTM'),'', '', SW_SHOWMAXIMIZED);
 end;
 
-procedure TEstruturaTipoRelatorioPadrao.ImprimirTXT;
+procedure TEstruturaTipoRelatorioPadrao.ImprimirTXT(AbImprimir: Boolean = True);
 begin
   FlsImpressao.Add(EmptyStr);
   Sleep(100);
@@ -100,10 +119,11 @@ begin
   Sleep(100);
   FlsImpressao.SaveToFile(FcNomeArquivo + '.txt');
 
-  ShellExecute(0, 'Open',pChar(FcNomeArquivo+'.txt'),'', '', SW_SHOW);
+  if AbImprimir then
+    ShellExecute(0, 'Open',pChar(FcNomeArquivo+'.txt'),'', '', SW_SHOW);
 end;
 
-procedure TEstruturaTipoRelatorioPadrao.ImprimirPDF;
+procedure TEstruturaTipoRelatorioPadrao.ImprimirPDF(AbImprimir: Boolean = True);
 begin
   if FileExists(FcNomeArquivo+'.pdf') then
     DeleteFile(FcNomeArquivo+'.pdf');
@@ -112,7 +132,8 @@ begin
 
   Screen.Cursor            := crHourGlass;
   HtmlToPDF(FcNomeArquivo);
-  ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+  if AbImprimir then
+    ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.pdf'),'', '', SW_SHOWMAXIMIZED);
   Screen.Cursor            := crDefault;
 end;
 

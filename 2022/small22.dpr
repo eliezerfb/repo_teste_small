@@ -173,7 +173,8 @@ uses
   uChamaRelResumoVendas in 'units\uChamaRelResumoVendas.pas',
   uRelatorioResumoVendas in 'units\uRelatorioResumoVendas.pas' {frmRelResumoVendas},
   uEstruturaRelResumoVendas in 'units\uEstruturaRelResumoVendas.pas',
-  uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas';
+  uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas',
+  uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas';
 
 {$R *.RES}
 

@@ -9,6 +9,7 @@ type
   TFiltroRodapeRelPadrao = class(TInterfacedObject, IFiltrosRodapeRelatorio)
   private
     FlsItens: TStringList;
+    FcTitulo: String;
     FcFiltroData: String;
     constructor Create;
   public
@@ -17,6 +18,7 @@ type
     function AddItem(AcDescricao: String): IFiltrosRodapeRelatorio;
     function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
     function getFiltroData: String;
+    function setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
     function getTitulo: String;
     function getItens: TStringList;
   end;
@@ -37,6 +39,8 @@ end;
 constructor TFiltroRodapeRelPadrao.Create;
 begin
   FlsItens := TStringList.Create;
+
+  FcTitulo := 'Filtros utilizados';
 end;
 
 destructor TFiltroRodapeRelPadrao.Destroy;
@@ -57,7 +61,7 @@ end;
 
 function TFiltroRodapeRelPadrao.getTitulo: String;
 begin
-  Result := 'Filtros utilizados';
+  Result := FcTitulo;
 end;
 
 class function TFiltroRodapeRelPadrao.New: IFiltrosRodapeRelatorio;
@@ -70,6 +74,13 @@ begin
   Result := Self;
 
   FcFiltroData := AcFiltro;
+end;
+
+function TFiltroRodapeRelPadrao.setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
+begin
+  Result := Self;
+
+  FcTitulo := AcTitulo;
 end;
 
 end.
