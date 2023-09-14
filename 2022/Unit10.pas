@@ -455,6 +455,8 @@ type
     lbBCPISCOFINS: TLabel;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     lblAtencaoPerfilTrib: TLabel;
+    Label55: TLabel;
+    Label117: TLabel;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -2436,7 +2438,7 @@ begin
     end;
   except
   end;
-  
+
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := Orelha_cadastro;

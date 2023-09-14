@@ -4627,7 +4627,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4646,7 +4646,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4665,7 +4665,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4684,7 +4684,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4703,7 +4703,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4722,7 +4722,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4741,7 +4741,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -14913,18 +14913,18 @@ object Form10: TForm10
         object lblAtencaoPerfilTrib: TLabel
           Left = 18
           Top = 417
-          Width = 631
+          Width = 703
           Height = 13
           AutoSize = False
           Caption = 
-            'Aten'#231#227'o: as informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'Aten'#231#227'o: As informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
             'os produtos que estiverem com este perfil configurado.'
           Color = clBtnHighlight
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clRed
+          Font.Color = clBlack
           Font.Height = -11
           Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
+          Font.Style = [fsBold]
           ParentColor = False
           ParentFont = False
           Transparent = True
@@ -15381,6 +15381,25 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
+        object Label55: TLabel
+          Left = 18
+          Top = 417
+          Width = 703
+          Height = 13
+          AutoSize = False
+          Caption = 
+            'Aten'#231#227'o: As informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'os produtos que estiverem com este perfil configurado.'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
         object cboCST_IPI_PerTrib: TComboBox
           Left = 170
           Top = 25
@@ -15455,6 +15474,25 @@ object Form10: TForm10
         ImageIndex = 18
         OnEnter = orelha_PerfilTrib_IPIEnter
         OnShow = orelha_PerfilTrib_IPIShow
+        object Label117: TLabel
+          Left = 18
+          Top = 417
+          Width = 703
+          Height = 13
+          AutoSize = False
+          Caption = 
+            'Aten'#231#227'o: As informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'os produtos que estiverem com este perfil configurado.'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
         object GroupBox1: TGroupBox
           Left = 10
           Top = 10

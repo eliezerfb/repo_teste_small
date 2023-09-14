@@ -33691,7 +33691,8 @@ begin
       MensagemSistema('Produtos atualizados com sucesso!');
     end else
     begin
-      MensagemSistema('Não foi possível aplicar as alterações no produto. Verifique se o mesmo está em uso e tente novamente.'+#13#10+#13#10+
+      MensagemSistema('As informações do perfil e dos produtos não puderam ser alteradas.'+#13#10+
+                      'Verifique se o produto abaixo está em uso e tente novamente.'+#13#10+#13#10+
                       ProdutosErro,msgAtencao);
 
       DataSet.Cancel;
