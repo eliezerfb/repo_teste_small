@@ -36,6 +36,8 @@ type
     FoDataSetEstoque: TIBDataSet;
     FnCasasDecimais: Integer;
     FnCasasDecimaisQtde: Integer;
+    FcWhereEstoque: String;
+    FcSqlTraduzido: String;
     procedure AjustaLayout;
     function FazValidacoes: Boolean;
     function RetornarDataSetGrupos: TIBQuery;
@@ -54,6 +56,8 @@ type
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
     property CasasDecimaisQtde: Integer read FnCasasDecimaisQtde write FnCasasDecimaisQtde;
+    property WhereEstoque: String read FcWhereEstoque write FcWhereEstoque;
+    property SqlTraduzido: String read FcSqlTraduzido write FcSqlTraduzido; 
   protected
     function Estrutura: IEstruturaTipoRelatorioPadrao; override;
   end;
@@ -236,7 +240,8 @@ begin
     if chkOperacoes.Checked[I] then
       AoEstruturaCat.FiltrosRodape.AddItem(chkOperacoes.Items[i]);
   end;
-  AoEstruturaCat.FiltrosRodape.AddItem('Vendas por ECF, NFC-e ou SAT');  
+  AoEstruturaCat.FiltrosRodape.AddItem('Vendas por ECF, NFC-e ou SAT');
+  AoEstruturaCat.FiltrosRodape.AddItem(SqlTraduzido);  
 end;
 
 function TfrmRelResumoVendas.RetornarDescrFiltroData: string;
@@ -284,7 +289,10 @@ begin
   Result.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))');
   Result.SQL.Add('      ELSE 0 END AS "%"');
   Result.SQL.Add('FROM ESTOQUE');
-  Result.SQL.Add('WHERE');
+  if Trim(FcWhereEstoque) <> EmptyStr then
+    Result.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+  else
+    Result.SQL.Add('WHERE');
   Result.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
   Result.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
   if AcGrupo <> EmptyStr then
@@ -357,7 +365,10 @@ begin
   Result.SQL.Add('FROM ESTOQUE');
   Result.SQL.Add('LEFT JOIN GRUPO ON');
   Result.SQL.Add(' (GRUPO.NOME=ESTOQUE.NOME)');
-  Result.SQL.Add('WHERE');
+  if Trim(FcWhereEstoque) <> EmptyStr then
+    Result.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+  else
+    Result.SQL.Add('WHERE');
   Result.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
   Result.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
   Result.SQL.Add('GROUP BY GRUPO.NOME');
@@ -502,18 +513,21 @@ begin
       begin
         if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons99.FieldByname('DESCRICAO').AsString),[]) then
         begin
-          if not cdsExcluidos.Locate('NOME', qryCons99.FieldByname('DESCRICAO').AsString, []) then
+          if qryCons99.FieldByname('VTOT1').AsFloat > 0 then
           begin
-            cdsExcluidos.Append;
-            cdsExcluidosNOME.AsString    := qryCons99.FieldByname('DESCRICAO').AsString;
-            cdsExcluidosVALOR.AsCurrency := 0;
-          end
-          else
-            cdsExcluidos.Edit;
-            
-          cdsExcluidosVALOR.AsCurrency := cdsExcluidosVALOR.AsCurrency + qryCons99.FieldByname('VTOT1').AsFloat;
+            if not cdsExcluidos.Locate('NOME', qryCons99.FieldByname('DESCRICAO').AsString, []) then
+            begin
+              cdsExcluidos.Append;
+              cdsExcluidosNOME.AsString    := qryCons99.FieldByname('DESCRICAO').AsString;
+              cdsExcluidosVALOR.AsCurrency := 0;
+            end
+            else
+              cdsExcluidos.Edit;
 
-          cdsExcluidos.Post;          
+            cdsExcluidosVALOR.AsCurrency := cdsExcluidosVALOR.AsCurrency + qryCons99.FieldByname('VTOT1').AsFloat;
+
+            cdsExcluidos.Post;
+          end;
         end else
         begin
           if DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime < dtInicial.Date then
@@ -546,18 +560,21 @@ begin
       begin
         if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons100.FieldByname('DESCRICAO').AsString),[]) then
         begin
-          if not cdsExcluidos.Locate('NOME', qryCons100.FieldByname('DESCRICAO').AsString, []) then
+          if qryCons100.FieldByname('VTOT2').AsFloat > 0 then
           begin
-            cdsExcluidos.Append;
-            cdsExcluidosNOME.AsString    := qryCons100.FieldByname('DESCRICAO').AsString;
-            cdsExcluidosVALOR.AsCurrency := 0;
-          end
-          else
-            cdsExcluidos.Edit;
+            if not cdsExcluidos.Locate('NOME', qryCons100.FieldByname('DESCRICAO').AsString, []) then
+            begin
+              cdsExcluidos.Append;
+              cdsExcluidosNOME.AsString    := qryCons100.FieldByname('DESCRICAO').AsString;
+              cdsExcluidosVALOR.AsCurrency := 0;
+            end
+            else
+              cdsExcluidos.Edit;
 
-          cdsExcluidosVALOR.AsCurrency := cdsExcluidosVALOR.AsCurrency + qryCons100.FieldByname('VTOT2').AsFloat;
+            cdsExcluidosVALOR.AsCurrency := cdsExcluidosVALOR.AsCurrency + qryCons100.FieldByname('VTOT2').AsFloat;
 
-          cdsExcluidos.Post;
+            cdsExcluidos.Post;
+          end;
         end else
         begin
           if DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime < dtInicial.Date then
@@ -641,6 +658,7 @@ end;
 procedure TfrmRelResumoVendas.FormCreate(Sender: TObject);
 begin
   inherited;
+  FcWhereEstoque := EmptyStr;
   FnCasasDecimais := 2;
   FnCasasDecimaisQtde := 2;
 end;

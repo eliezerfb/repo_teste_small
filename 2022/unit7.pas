@@ -12827,12 +12827,14 @@ begin
   CriaJpg('logotip.jpg');
   frmRelResumoVendas := TfrmRelResumoVendas.Create(nil);
   try
-    frmRelResumoVendas.DataBase := IBDatabase1;
-    frmRelResumoVendas.Imagem   := Image205.Picture;
-    frmRelResumoVendas.Usuario  := Usuario;
-    frmRelResumoVendas.DataSetEstoque := ibDataSet4;
+    frmRelResumoVendas.DataBase           := IBDatabase1;
+    frmRelResumoVendas.Imagem             := Image205.Picture;
+    frmRelResumoVendas.Usuario            := Usuario;
+    frmRelResumoVendas.DataSetEstoque     := ibDataSet4;
     frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
-    frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);        
+    frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);
+    frmRelResumoVendas.WhereEstoque       := sWhere;
+    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True);
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);
