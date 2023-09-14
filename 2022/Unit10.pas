@@ -414,8 +414,8 @@ type
     lblCFOPNfce: TLabel;
     lblCSOSN_NFCePerfilTrib: TLabel;
     lblCST_NFCePerfilTrib: TLabel;
-    SMALL_DBEdit49: TSMALL_DBEdit;
-    SMALL_DBEdit53: TSMALL_DBEdit;
+    edtIVAPerfilTrb: TSMALL_DBEdit;
+    edtCITPerfilTrib: TSMALL_DBEdit;
     cboCSTPerfilTrib: TComboBox;
     cboTipoItemPerfTrib: TComboBox;
     cboIPPTPerfTrib: TComboBox;
@@ -426,7 +426,7 @@ type
     cboCST_NFCePerfilTrib: TComboBox;
     cboCSOSN_NFCePerfilTrib: TComboBox;
     lblAliqNFCEPerfilTrib: TLabel;
-    SMALL_DBEdit75: TSMALL_DBEdit;
+    edtAliqNFCEPerfilTrib: TSMALL_DBEdit;
     Label128: TLabel;
     edtDescricaoPerfilTrib: TSMALL_DBEdit;
     Label129: TLabel;
@@ -437,21 +437,21 @@ type
     lblCST_PIS_S_PerTrib: TLabel;
     lblCST_COFINS_S_PerTrib: TLabel;
     cboCST_PISCOFINS_S_PerTrib: TComboBox;
-    SMALL_DBEdit48: TSMALL_DBEdit;
-    SMALL_DBEdit74: TSMALL_DBEdit;
+    edtPercPISPerfiLTrib: TSMALL_DBEdit;
+    edtPercCofinsPefilTrib: TSMALL_DBEdit;
     GroupBox2: TGroupBox;
     Label131: TLabel;
     lblCST_PIS_E_PerTrib: TLabel;
     lblCST_COFINS_E_PerTrib: TLabel;
     cboCST_PISCOFINS_E_PerTrib: TComboBox;
-    SMALL_DBEdit77: TSMALL_DBEdit;
-    SMALL_DBEdit78: TSMALL_DBEdit;
+    edtPecPISEntPerfilTrib: TSMALL_DBEdit;
+    edtPercCofnsEntPerfilTrib: TSMALL_DBEdit;
     Label134: TLabel;
     Label135: TLabel;
     Label136: TLabel;
     cboCST_IPI_PerTrib: TComboBox;
-    SMALL_DBEdit79: TSMALL_DBEdit;
-    SMALL_DBEdit80: TSMALL_DBEdit;
+    edtPercIPIPerfilTrib: TSMALL_DBEdit;
+    edtCodEnquadPerfilTrib: TSMALL_DBEdit;
     lbBCPISCOFINS: TLabel;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     lblAtencaoPerfilTrib: TLabel;
@@ -687,7 +687,7 @@ type
     procedure cboCST_NFCePerfilTribChange(Sender: TObject);
     procedure cboCSOSN_NFCePerfilTribChange(Sender: TObject);
     procedure cboCSOSNPerfilTribChange(Sender: TObject);
-    procedure SMALL_DBEdit53Exit(Sender: TObject);
+    procedure edtCITPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -10158,7 +10158,7 @@ begin
 
     if Form7.bSoLeitura or Form7.bEstaSendoUsado then
     begin
-      cboCST_IPI_PerTrib.Enabled := False;
+      cboCST_IPI_PerTrib.Enabled          := False;
       cboCST_PISCOFINS_S_PerTrib.Enabled  := False;
       cboCST_PISCOFINS_E_PerTrib.Enabled  := False;
       cboTipoItemPerfTrib.Enabled         := False;
@@ -10170,6 +10170,16 @@ begin
       cboCSOSNPerfilTrib.Enabled          := False;
       cboCST_NFCePerfilTrib.Enabled       := False;
       cboCSOSN_NFCePerfilTrib.Enabled     := False;
+      edtPercIPIPerfilTrib.Enabled        := False;
+      edtCodEnquadPerfilTrib.Enabled      := False;
+      edtPercPISPerfiLTrib.Enabled        := False;
+      edtPercCofinsPefilTrib.Enabled      := False;
+      edtPecPISEntPerfilTrib.Enabled      := False;
+      edtPercCofnsEntPerfilTrib.Enabled   := False;
+      edtDescricaoPerfilTrib.Enabled      := False;
+      edtIVAPerfilTrb.Enabled             := False;
+      edtAliqNFCEPerfilTrib.Enabled       := False;
+      edtCITPerfilTrib.Enabled            := False;
     end else
     begin
       cboCST_IPI_PerTrib.Enabled          := True;
@@ -10184,6 +10194,16 @@ begin
       cboCSOSNPerfilTrib.Enabled          := True;
       cboCST_NFCePerfilTrib.Enabled       := True;
       cboCSOSN_NFCePerfilTrib.Enabled     := True;
+      edtPercIPIPerfilTrib.Enabled        := True;
+      edtCodEnquadPerfilTrib.Enabled      := True;
+      edtPercPISPerfiLTrib.Enabled        := True;
+      edtPercCofinsPefilTrib.Enabled      := True;
+      edtPecPISEntPerfilTrib.Enabled      := True;
+      edtPercCofnsEntPerfilTrib.Enabled   := True;
+      edtDescricaoPerfilTrib.Enabled      := True;
+      edtIVAPerfilTrb.Enabled             := True;
+      edtAliqNFCEPerfilTrib.Enabled       := True;
+      edtCITPerfilTrib.Enabled            := True;
     end;
 
     if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
@@ -10358,16 +10378,16 @@ begin
     //NFC-e ou SAT
     if Form7.ibDataSet13ESTADO.AsString = 'SP' then
     begin
-      lblCFOPNfce.Caption             := StrTran(Label83.Caption,'NFC-e','SAT');
-      lblCST_NFCePerfilTrib.Caption   := StrTran(Label84.Caption,'NFC-e','SAT');
-      lblCSOSN_NFCePerfilTrib.Caption := StrTran(Label92.Caption,'NFC-e','SAT');
-      lblAliqNFCEPerfilTrib.Caption   := StrTran(Label72.Caption,'NFC-e','SAT');
+      lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'NFC-e','SAT');
+      lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'NFC-e','SAT');
+      lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'NFC-e','SAT');
+      lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'NFC-e','SAT');
     end else
     begin
-      lblCFOPNfce.Caption             := StrTran(Label83.Caption,'SAT','NFC-e');
-      lblCST_NFCePerfilTrib.Caption   := StrTran(Label84.Caption,'SAT','NFC-e');
-      lblCSOSN_NFCePerfilTrib.Caption := StrTran(Label92.Caption,'SAT','NFC-e');
-      lblAliqNFCEPerfilTrib.Caption   := StrTran(Label72.Caption,'SAT','NFC-e');
+      lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'SAT','NFC-e');
+      lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'SAT','NFC-e');
+      lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'SAT','NFC-e');
+      lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'SAT','NFC-e');
     end;
 
     //CIT
@@ -10643,7 +10663,7 @@ begin
   end;
 end;
 
-procedure TForm10.SMALL_DBEdit53Exit(Sender: TObject);
+procedure TForm10.edtCITPerfilTribExit(Sender: TObject);
 begin
   CarregaCitPerfilTrib;
 end;

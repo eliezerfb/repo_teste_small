@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_ICMS
+      ActivePage = orelha_PerfilTrib
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2870,7 +2870,7 @@ object Form10: TForm10
         end
         object lblCIT: TLabel
           Left = 165
-          Top = 225
+          Top = 227
           Width = 98
           Height = 13
           Caption = '5102 - Venda a vista'
@@ -14795,7 +14795,7 @@ object Form10: TForm10
         end
         object lblCitPerfilTrib: TLabel
           Left = 165
-          Top = 204
+          Top = 206
           Width = 98
           Height = 13
           Caption = '5102 - Venda a vista'
@@ -14921,7 +14921,7 @@ object Form10: TForm10
             'os produtos que estiverem com este perfil configurado.'
           Color = clBtnHighlight
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = 33023
+          Font.Color = clRed
           Font.Height = -11
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
@@ -14929,7 +14929,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object SMALL_DBEdit49: TSMALL_DBEdit
+        object edtIVAPerfilTrb: TSMALL_DBEdit
           Left = 110
           Top = 127
           Width = 50
@@ -14950,7 +14950,7 @@ object Form10: TForm10
           TabOrder = 4
           OnKeyDown = ComboBox9KeyDown
         end
-        object SMALL_DBEdit53: TSMALL_DBEdit
+        object edtCITPerfilTrib: TSMALL_DBEdit
           Left = 110
           Top = 204
           Width = 50
@@ -14969,7 +14969,7 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 8
-          OnExit = SMALL_DBEdit53Exit
+          OnExit = edtCITPerfilTribExit
           OnKeyDown = ComboBox9KeyDown
         end
         object cboCSTPerfilTrib: TComboBox
@@ -15278,7 +15278,7 @@ object Form10: TForm10
               '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
               'nte')
         end
-        object SMALL_DBEdit75: TSMALL_DBEdit
+        object edtAliqNFCEPerfilTrib: TSMALL_DBEdit
           Left = 110
           Top = 281
           Width = 50
@@ -15407,7 +15407,7 @@ object Form10: TForm10
             '55 - Sa'#237'da com Suspens'#227'o'
             '99 - Outras Sa'#237'das')
         end
-        object SMALL_DBEdit79: TSMALL_DBEdit
+        object edtPercIPIPerfilTrib: TSMALL_DBEdit
           Left = 170
           Top = 50
           Width = 50
@@ -15428,7 +15428,7 @@ object Form10: TForm10
           TabOrder = 1
           OnKeyDown = ComboBox9KeyDown
         end
-        object SMALL_DBEdit80: TSMALL_DBEdit
+        object edtCodEnquadPerfilTrib: TSMALL_DBEdit
           Left = 170
           Top = 75
           Width = 50
@@ -15549,7 +15549,7 @@ object Form10: TForm10
               '49-Outras Opera'#231#245'es de Sa'#237'da'
               '99-Outras Opera'#231#245'es')
           end
-          object SMALL_DBEdit48: TSMALL_DBEdit
+          object edtPercPISPerfiLTrib: TSMALL_DBEdit
             Left = 100
             Top = 50
             Width = 60
@@ -15570,7 +15570,7 @@ object Form10: TForm10
             TabOrder = 1
             OnKeyDown = ComboBox9KeyDown
           end
-          object SMALL_DBEdit74: TSMALL_DBEdit
+          object edtPercCofinsPefilTrib: TSMALL_DBEdit
             Left = 100
             Top = 75
             Width = 60
@@ -15724,7 +15724,7 @@ object Form10: TForm10
               '98-Outras Opera'#231#245'es de Entrada'
               '99-Outras Opera'#231#245'es')
           end
-          object SMALL_DBEdit77: TSMALL_DBEdit
+          object edtPecPISEntPerfilTrib: TSMALL_DBEdit
             Left = 100
             Top = 50
             Width = 60
@@ -15745,7 +15745,7 @@ object Form10: TForm10
             TabOrder = 1
             OnKeyDown = ComboBox9KeyDown
           end
-          object SMALL_DBEdit78: TSMALL_DBEdit
+          object edtPercCofnsEntPerfilTrib: TSMALL_DBEdit
             Left = 100
             Top = 75
             Width = 60

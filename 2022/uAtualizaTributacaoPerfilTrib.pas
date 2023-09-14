@@ -65,7 +65,8 @@ begin
         AssinaRegistro('ESTOQUE',ibdEstoque, True);
         ibdEstoque.post;
       except
-        ProdutosErro := ProdutosErro+ibdEstoque.FieldByName('DESCRICAO').AsString+#13#10;
+        ProdutosErro := ProdutosErro+ ibdEstoque.FieldByName('CODIGO').AsString +' - '+ibdEstoque.FieldByName('DESCRICAO').AsString+#13#10;
+        Exit;
       end;
 
       ibdEstoque.Next;

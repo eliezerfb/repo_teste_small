@@ -33691,7 +33691,11 @@ begin
       MensagemSistema('Produtos atualizados com sucesso!');
     end else
     begin
-      MensagemSistema('Erro ao atualizar produto(s). Verifique se os mesmos estão em uso e tente novamente.'+ProdutosErro,msgErro);
+      MensagemSistema('Não foi possível aplicar as alterações no produto. Verifique se o mesmo está em uso e tente novamente.'+#13#10+#13#10+
+                      ProdutosErro,msgAtencao);
+
+      DataSet.Cancel;
+      Abort;
     end;
   end;
 end;
