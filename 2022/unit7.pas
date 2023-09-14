@@ -18319,31 +18319,34 @@ var
   OldBkMode : Integer;
   xRect : tREct;
 begin
-  //
-  dbGrid3.Canvas.Pen.Color := clBlack;
-  dbGrid3.Canvas.Brush.Color := Form7.Panel7.Color;
-  //
-  xRect.Left   := Rect.Left;
-  xRect.Top    := -2;
-  xRect.Right  := Rect.Right;
-  xRect.Bottom := Rect.Bottom - Rect.Top + 2;
-  dbGrid3.Canvas.FillRect(XrEct);
-  //
-  {Sandro Silva 2022-09-23 inicio
-  with dbGrid3.Canvas do
+  if Field <> nil then // Sandro Silva 2023-09-14
   begin
+    //
+    dbGrid3.Canvas.Pen.Color := clBlack;
+    dbGrid3.Canvas.Brush.Color := Form7.Panel7.Color;
+    //
+    xRect.Left   := Rect.Left;
+    xRect.Top    := -2;
+    xRect.Right  := Rect.Right;
+    xRect.Bottom := Rect.Bottom - Rect.Top + 2;
+    dbGrid3.Canvas.FillRect(XrEct);
+    //
+    {Sandro Silva 2022-09-23 inicio
+    with dbGrid3.Canvas do
+    begin
+      OldBkMode := SetBkMode(Handle, TRANSPARENT);
+      TextOut(Rect.Left + 3, 3, AllTrim(Field.DisplayLabel));
+      dbGrid3.Canvas.Font.Color := clblack;
+      SetBkMode(Handle, OldBkMode);
+    end;
+    }
     OldBkMode := SetBkMode(Handle, TRANSPARENT);
-    TextOut(Rect.Left + 3, 3, AllTrim(Field.DisplayLabel));
+    dbGrid3.Canvas.TextOut(Rect.Left + 3, 3, Trim(Field.DisplayLabel));
     dbGrid3.Canvas.Font.Color := clblack;
     SetBkMode(Handle, OldBkMode);
+    {Sandro Silva 2022-09-23 fim}
+    //
   end;
-  }
-  OldBkMode := SetBkMode(Handle, TRANSPARENT);
-  dbGrid3.Canvas.TextOut(Rect.Left + 3, 3, Trim(Field.DisplayLabel));
-  dbGrid3.Canvas.Font.Color := clblack;
-  SetBkMode(Handle, OldBkMode);
-  {Sandro Silva 2022-09-23 fim}
-  //
 end;
 
 procedure TForm7.Vendas_1Click(Sender: TObject);
