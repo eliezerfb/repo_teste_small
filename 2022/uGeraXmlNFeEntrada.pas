@@ -18,13 +18,13 @@ uses
   , spdXMLUtils
   , spdNFeType
   , spdNFe
-//  , spdType
   , SmallFunc
   , unit7
   , unit11
   , unit29
   , unit12
   , Mais
+  , uFuncoesFiscais
   , uFuncoesRetaguarda
 ;
 
@@ -1471,6 +1471,27 @@ begin
       end;
     end;
 
+    {Sandro Silva 2023-09-14 inicio}
+    if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
+    begin
+      if XmlValueToFloat(Form7.spdNFeDataSets.Campo('vICMSST_N23').Value) > 0 then
+      begin
+        // Criar estes dois campos e armazenar no Form7.ibDataSet23 e recuperar na nota de devolução
+        spMVAST  := '0,00';
+        spICMSST := '0,00';
+
+        // Só pede se tem Valor de ICMSST
+        spMVAST  := Form1.Small_InputForm('NFe', 'Informe o pMVAST (% de margem de valor adicionado do ICMS ST) para o produto: ' + Form7.ibDataSet23.FieldByName('DESCRICAO').AsString, '0,00');
+        spICMSST := Form1.Small_InputForm('NFe', 'Informe o pICMSST (% Aliquota do Imposto do ICMS ST) para o produto: ' + Form7.ibDataSet23.FieldByName('DESCRICAO').AsString, '0,00');
+
+        Form7.spdNFeDataSets.Campo('pMVAST_N19').Value    := FormatFloatXML(StrToFloat(LimpaNumeroDeixandoAVirgula(spMVAST)));  // Percentual de margem de valor adicionado do ICMS ST
+        Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(StrToFloat(LimpaNumeroDeixandoAVirgula(spICMSST))); // Alíquota do ICMS em Percentual
+
+      end;
+    end;
+    {Sandro Silva 2023-09-14 fim}
+
+
     Form7.ibDAtaset23.Next;
   end;
                 
@@ -1989,7 +2010,7 @@ begin
         end;
       end;
     end;
-        
+
     // Entrada empresa no Regime normal por CST
     //
     {
@@ -2115,7 +2136,7 @@ begin
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '400') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '500') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') and
-        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '61') 
+        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '61')
         then
     begin
       Form7.ibDataSet15.Edit;
@@ -2470,7 +2491,7 @@ begin
   begin
 
     sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
-    
+
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
 
@@ -2486,8 +2507,6 @@ begin
 
   end;
   {Sandro Silva 2023-06-13 fim}
-
-
 end;
 
 end.
