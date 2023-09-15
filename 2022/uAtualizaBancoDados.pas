@@ -2222,9 +2222,9 @@ begin
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENTOBS')) then
   begin
     ExecutaComando('CREATE TABLE ORCAMENTOBS ('+
-                   ' 	REGISTRO VARCHAR(10) NOT NULL,'+
                    ' 	PEDIDO VARCHAR(10) NOT NULL,'+
                    ' 	OBS BLOB SUB_TYPE 1 SEGMENT SIZE 80,'+
+                   ' 	REGISTRO VARCHAR(10) NOT NULL,'+
                    ' 	CONSTRAINT PK_ORCAMENTOBS_REGISTRO PRIMARY KEY (REGISTRO)'+
                    ')');
 
