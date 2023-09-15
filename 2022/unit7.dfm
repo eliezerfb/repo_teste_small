@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 287
-  Top = 74
+  Left = 399
+  Top = 90
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
