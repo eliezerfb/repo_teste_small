@@ -46,6 +46,29 @@ uses
   , uajustaresolucao
 
   ;
+{Sandro Silva 2023-09-05 inicio
+type
+  TFormasExtras = class
+  private
+    FExtra1: Double;
+    FExtra7: Double;
+    FExtra4: Double;
+    FExtra5: Double;
+    FExtra6: Double;
+    FExtra8: Double;
+    FExtra2: Double;
+    FExtra3: Double;
+  public
+    property Extra1: Double read FExtra1 write FExtra1;
+    property Extra2: Double read FExtra2 write FExtra2;
+    property Extra3: Double read FExtra3 write FExtra3;
+    property Extra4: Double read FExtra4 write FExtra4;
+    property Extra5: Double read FExtra5 write FExtra5;
+    property Extra6: Double read FExtra6 write FExtra6;
+    property Extra7: Double read FExtra7 write FExtra7;
+    property Extra8: Double read FExtra8 write FExtra8;
+  end;
+}
 
 procedure ValidaDiretorioTEF(sDirTef: String; sDirReq: String; sDirResp: String); // Sandro Silva 2020-08-20
 begin
@@ -255,12 +278,40 @@ var
   dValorDuplReceber: Currency; // Sandro Silva 2018-04-25
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
   sRespostaTef: String; // Para capturar linhas da resposta do tef
+  FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
+  procedure RecuperaValoresFormasExtras;
+  begin
+    // Quando transaciona mais que um cartão na mesma venda e informa valores nas formas extras,
+    // esses valores da se perdem porque a rotina qua controla o que falta pagar joga a diferença do cartão para a forma dinheiro
+    // Recupera os valores lançados nas formas extras
+    Form1.ibDataSet25.FieldByName('VALOR01').AsFloat := FormasExtras.Extra1;
+    Form1.ibDataSet25.FieldByName('VALOR02').AsFloat := FormasExtras.Extra2;
+    Form1.ibDataSet25.FieldByName('VALOR03').AsFloat := FormasExtras.Extra3;
+    Form1.ibDataSet25.FieldByName('VALOR04').AsFloat := FormasExtras.Extra4;
+    Form1.ibDataSet25.FieldByName('VALOR05').AsFloat := FormasExtras.Extra5;
+    Form1.ibDataSet25.FieldByName('VALOR06').AsFloat := FormasExtras.Extra6;
+    Form1.ibDataSet25.FieldByName('VALOR07').AsFloat := FormasExtras.Extra7;
+    Form1.ibDataSet25.FieldByName('VALOR08').AsFloat := FormasExtras.Extra8;
+  end;
 begin
   //
   // Escolhe o TEF
   //
   Result := False; // Sandro Silva 2017-05-20
   bIniciarTEF := True;
+
+  {Sandro Silva 2023-08-21 inicio}
+  FormasExtras := TPagamentoPDV.Create; // Sandro Silva 2023-09-05 FormasExtras := TFormasExtras.Create;// Sandro Silva 2023-08-21
+
+  FormasExtras.Extra1 := Form1.ibDataSet25.FieldByName('VALOR01').AsFloat;
+  FormasExtras.Extra2 := Form1.ibDataSet25.FieldByName('VALOR02').AsFloat;
+  FormasExtras.Extra3 := Form1.ibDataSet25.FieldByName('VALOR03').AsFloat;
+  FormasExtras.Extra4 := Form1.ibDataSet25.FieldByName('VALOR04').AsFloat;
+  FormasExtras.Extra5 := Form1.ibDataSet25.FieldByName('VALOR05').AsFloat;
+  FormasExtras.Extra6 := Form1.ibDataSet25.FieldByName('VALOR06').AsFloat;
+  FormasExtras.Extra7 := Form1.ibDataSet25.FieldByName('VALOR07').AsFloat;
+  FormasExtras.Extra8 := Form1.ibDataSet25.FieldByName('VALOR08').AsFloat;
+  {Sandro Silva 2023-08-21 fim}
 
   dTotalEmCartao      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat;
   iContaCartao := 0;
@@ -367,7 +418,7 @@ begin
           if bConfirmarTransacao then // Sandro Silva 2017-06-21
           begin // Confirma a transação do cartão anterior
 
-            Form1.ExibePanelMensagem('Confirmando a transação do ' + IntToStr(iContaCartao) + 'º cartão'); // Sandro Silva 2017-06-22
+            Form1.ExibePanelMensagem('Confirmando a transação do ' + IntToStr(iContaCartao) + 'º cartão', True); // Sandro Silva 2023-08-21 Form1.ExibePanelMensagem('Confirmando a transação do ' + IntToStr(iContaCartao) + 'º cartão'); // Sandro Silva 2017-06-22
 
             // Faz backup dos dados de autorização anterior
             CopyFile(pChar('c:\' + Form1.sDiretorio + '.RES'), pChar(DIRETORIO_BKP_TEF + '\' + Form1.sDiretorio + FormatFloat('00', TEFContaArquivos(DIRETORIO_BKP_TEF + '\' + Form1.sDiretorio +'*.BKP') + 1) + '.BKP'), False);
@@ -671,6 +722,7 @@ begin
                       fDescontoNoPremio := StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))) / 100;
                       Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - fDescontoNoPremio;
                       Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dValorPagarCartao - Form1.fDescontoNoTotal - fDescontoNoPremio;// Sandro Silva 2017-06-12  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat - Form1.fDescontoNoTotal - fDescontoNoPremio;
+                      RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
                       //
                       Form1.ibDataSet27.Append; // Desconto
                       Form1.ibDataSet27.FieldByName('TIPO').AsString      := 'BALCAO';
@@ -701,6 +753,7 @@ begin
                       fDescontoNoPremio := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
                       Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.fTotal - fDescontoNoPremio;
                       Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dTotalTransacionado; // Sandro Silva 2017-06-12  StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))); // acertar aqui quando puder lançar cartões diferentes
+                      RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
                       //
                       Form1.ibDataSet27.Append; // Desconto
                       Form1.ibDataSet27.FieldByName('TIPO').AsString      := 'BALCAO';
@@ -807,6 +860,7 @@ begin
                     Form1.ibDataSet25.FieldByName('ACUMULADO3').ReadOnly := False;
                     Form1.ibDataSet25.FieldByName('PAGAR').AsFloat       := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat + (StrToInt(Limpanumero(Form1.sValorSaque)) / 100); // Acertar aqui quando aceitar mais de um cartão
                     Form1.ibDataSet25.FieldByName('ACUMULADO3').AsFloat  := (StrToInt(Limpanumero(Form1.sValorSaque)) / 100);
+                    RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
                     Form1.ibDataSet25.Post;
                     Form1.ibDataSet25.FieldByName('ACUMULADO3').ReadOnly := True;
                     Form1.bFlag2 := False; // TEFMultiplosCartoes(
@@ -950,6 +1004,7 @@ begin
                 if Form1.ibDataSet25.State in [dsEdit, dsInsert] = False then // Sandro Silva 2017-10-04
                   Form1.ibDataSet25.Edit; // Sandro Silva 2017-10-04
                 Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := dTotalTransacionado; // Sandro Silva 2017-06-14
+                RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
                 Result := True;
                 //
               end else
@@ -1001,6 +1056,9 @@ begin
 
     end; // while dTotalTransacionado < dTotalEmCartao do
   end; // if dTotalEmCartao = dTotalTransacionado then
+
+
+  FreeAndNil(FormasExtras); // Sandro Silva 2023-08-21
 
   if Result = True then
   begin
