@@ -22,7 +22,7 @@ uses
   , IdHashMessageDigest
   , IdGlobal
   {$ENDIF}
-  , DBGrids 
+  , DBGrids
   ;
 
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -49,6 +49,7 @@ uses
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   function GeraMD5(valor :string):string;
 
+
 implementation
 
 type
@@ -57,7 +58,7 @@ type
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
 begin
   // Como ratear VENDA.DESCONTO, VENDAS.OUTRAS, VENDA.SEGURO, VENDAS.FRETE (ST, FCP?) nos ITENS001
-  // Como ratear DESCONTO e ACRÉSCIMO nos itens do cupom (desconto do item + desconto no subtotal)  
+  // Como ratear DESCONTO e ACRÉSCIMO nos itens do cupom (desconto do item + desconto no subtotal)
   Result :=
     'select CODIGO, SUM(vTOTAL) as TOTAL ' +
     ' from ' +
@@ -324,6 +325,9 @@ var
   sNomeLog: String;
   sDirAtual: String;
 begin
+  /////////
+  // essa rotina de log quando ativa pode afetar o desempenho do sistema
+  // usar apenas para testes no desenvolvimento
   /////////
   Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
 
@@ -671,7 +675,6 @@ begin
   end;
   {$ENDIF}
 end;
-
 
 end.
 

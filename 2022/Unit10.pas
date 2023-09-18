@@ -666,7 +666,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   , uRetornaLimiteDisponivel
   , uFuncoesBancoDados
   , uFuncoesRetaguarda
-  ;
+  , Variants;
   
 {$R *.DFM}
 
@@ -2348,6 +2348,8 @@ procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   I : Integer;
   vRegistro : string;
+  t: TTime;
+  iRecno: Integer; // Sandro Silva 2023-09-12
 begin
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
@@ -2388,15 +2390,19 @@ begin
   begin
     //Fas refresh do grid e volta para o registro atual
     try
+      t := Time;
+      iRecno := Form7.ibDataSet7.RecNo;
       vRegistro := Form7.ibDataSet7REGISTRO.AsString;
       Form7.ibDataSet7.DisableControls;
       Form7.ibDataSet7.Close;
       Form7.ibDataSet7.Open;
-      Form7.ibDataSet7.Locate('REGISTRO',vRegistro,[]);
+      // Sandro Silva 2023-09-12 Form7.ibDataSet7.Locate('REGISTRO',vRegistro,[]);
+      Form7.ibDataSet7.RecNo := iRecno;
     except
     end;
 
     Form7.ibDataSet7.EnableControls;
+    //ShowMessage(FormatDateTime('HH:nn:ss.zzz', Time - t));
   end;
 end;
 
@@ -9866,10 +9872,12 @@ begin
   //Mauricio Parizotto 2023-05-29
   try
     //Verifica se mudou
-    vDescricaoAntes := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
+    // Sandro Silva 2023-09-12 Necessário converter retorno do tipo Variant para String, estava causando exception quando cadastrava nova conta
+    vDescricaoAntes := VarToStr(ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
                                              ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
                                              ' From RECEBER'+
-                                             ' Where REGISTRO ='+QuotedStr(Form7.ibDataSet7REGISTRO.AsString));
+                                             ' Where REGISTRO ='+QuotedStr(Form7.ibDataSet7REGISTRO.AsString))
+                                             );
 
     if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
     begin

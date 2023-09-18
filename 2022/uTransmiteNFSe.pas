@@ -43,6 +43,7 @@ var
   fValorISSRetido, fValorImpostosFederaisRetidos : Real;
   sPadraoSistema, sTipoPagamentoAPrazo: String;
   sResponsavelRetencao: String; // Sandro Silva 2023-01-19
+  ComplementoOBS : string;//Mauricio Parizotto 2023-09-12
 
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
@@ -656,7 +657,7 @@ begin
 
                 Form7.ibDataset35.Next;
               end;
-              
+
               if (sPadraoSistema = 'GINFES') or (sPadraoSistema = 'FINTEL') then
               begin
                 sDescricaoDosServicos := sDescricaoDosServicos + '|' + ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString);
@@ -688,7 +689,7 @@ begin
                   Writeln(F,'Tributavel=SIM');
                 end;
               end;
-              
+
               // Dados do 1 Serviço Vendido
               if AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
               begin
@@ -698,7 +699,7 @@ begin
                 ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)');
                 Abort;
               end;
-              
+
               Writeln(F,'TipoDeducao=');
               Writeln(F,'CodigoCnae='+sCodigoCnae);                 // CodigoCnae	Código do CNAE	T	 Obtido na prefeitura
 
@@ -719,7 +720,6 @@ begin
               // Múltiplos serviços
               while not Form7.ibDataSet35.Eof do
               begin
-                //
                 Form7.ibDataSet4.Close;
                 Form7.ibDataSet4.Selectsql.Clear;
                 Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet35DESCRICAO.AsString)+' ');  //
@@ -732,11 +732,23 @@ begin
                   sCodigoCnae := Trim(RetornaValorDaTagNoCampo('CNAEISSQN', Form7.ibDataSet4.FieldByname('TAGS_').AsString));
                 {Sandro Silva 2023-02-28 fim}
 
+                {Mauricio Parizotto 2023-09-12 inicio}
+                //Verifica se é o último registro
+                if Form7.ibDataSet35.RecNo = Form7.ibDataSet35.RecordCount then
+                begin
+                  if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then
+                  begin
+                    ComplementoOBS := ' - '+Trim(ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString));
+                  end
+                end;
+                {Mauricio Parizotto 2023-09-12 fim}
+
                 if I = 1 then
                 begin
                   // Dados do 1 Serviço Vendido
                   Writeln(F,'');
-                  Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString)));
+                  //Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString))); Mauricio Parizotto 2023-09-12
+                  Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString))+ComplementoOBS);
                   if sPadraoSistema = 'SIL' then // Sandro Silva 2022-10-24
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.' + DupeString('0', StrToIntDef(Form1.ConfCasasServ, 0)) , Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')) //
                   else if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01
@@ -793,7 +805,8 @@ begin
                   Writeln(F,'INCLUIRSERVICO');
                   Writeln(F,'');
 
-                  Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString)));
+                  //Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString))); Mauricio Parizotto 2023-09-12
+                  Writeln(F,'DiscriminacaoServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet35.FieldByname('DESCRICAO').AsString))+ComplementoOBS);
                   if sPadraoSistema = 'SIL' then // Sandro Silva 2022-10-24
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.' + DupeString('0', StrToIntDef(Form1.ConfCasasServ, 0)) , Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')) //
                   else if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then // Sandro Silva 2023-09-01

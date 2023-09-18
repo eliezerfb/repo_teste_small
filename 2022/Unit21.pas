@@ -35,9 +35,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure Button4Click(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
@@ -45,12 +43,9 @@ var
 
 implementation
 
-uses Unit7, Unit20, Mais;
+uses Unit7, Unit20, Mais, uSmallResourceString;
 
 {$R *.DFM}
-
-
-
 
 procedure TForm21.Button1Click(Sender: TObject);
 begin
@@ -143,7 +138,7 @@ begin
   {----------------------------------------------}
   {Mensagem esperta, que retorna o valor do botão}
   {----------------------------------------------}
-  if Form7.sModulo <> 'VENDA' then bButton := Application.MessageBox('Excluir este registro?', 'Atenção', mb_OKCancel + mb_DefButton1) else bButton := IDOK;
+  if ((Form7.sModulo <> 'VENDA') and (Form7.sModulo = 'ORCAMENTO')) then bButton := Application.MessageBox(PChar(_cMensagemExcluir), PChar(_cTituloMsg), MB_ICONQUESTION + MB_OKCANCEL + MB_DEFBUTTON1) else bButton := IDOK;
   if bButton = IDOK then
   begin
     try
@@ -153,9 +148,6 @@ begin
     except end;
   end;  
 end;
-
-
-
 
 end.
 
