@@ -11947,6 +11947,7 @@ object Form7: TForm7
       FieldName = 'IPPT'
       Origin = '"ESTOQUE"."IPPT"'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 1
     end
     object ibDataSet4IAT: TIBStringField
@@ -11954,6 +11955,7 @@ object Form7: TForm7
       FieldName = 'IAT'
       Origin = '"ESTOQUE"."IAT"'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 1
     end
     object ibDataSet4PIVA: TFloatField
@@ -11961,6 +11963,7 @@ object Form7: TForm7
       FieldName = 'PIVA'
       Origin = 'ESTOQUE.PIVA'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       DisplayFormat = '#,##0.00000'
       EditFormat = '##0.00000'
     end
@@ -11968,6 +11971,7 @@ object Form7: TForm7
       FieldName = 'CSOSN'
       Origin = 'ESTOQUE.CSOSN'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 3
     end
     object ibDataSet4ST: TIBStringField
@@ -11976,6 +11980,7 @@ object Form7: TForm7
       FieldName = 'ST'
       Origin = 'ESTOQUE.ST'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 3
     end
     object ibDataSet4CST: TIBStringField
@@ -11991,6 +11996,7 @@ object Form7: TForm7
       FieldName = 'IPI'
       Origin = 'ESTOQUE.IPI'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       DisplayFormat = '#0.00'
       EditFormat = '#0.00'
     end
@@ -11999,6 +12005,7 @@ object Form7: TForm7
       FieldName = 'CST_IPI'
       Origin = 'ESTOQUE.CST_IPI'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 2
     end
     object ibDataSet4TIPO_ITEM: TIBStringField
@@ -12006,6 +12013,7 @@ object Form7: TForm7
       FieldName = 'TIPO_ITEM'
       Origin = 'ESTOQUE.TIPO_ITEM'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 2
     end
     object ibDataSet4CST_PIS_COFINS_ENTRADA: TIBStringField
@@ -12043,6 +12051,7 @@ object Form7: TForm7
       FieldName = 'CST_PIS_COFINS_SAIDA'
       Origin = 'ESTOQUE.CST_PIS_COFINS_SAIDA'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 2
     end
     object ibDataSet4ALIQ_PIS_SAIDA: TIBBCDField
@@ -12050,6 +12059,7 @@ object Form7: TForm7
       FieldName = 'ALIQ_PIS_SAIDA'
       Origin = 'ESTOQUE.ALIQ_PIS_SAIDA'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       DisplayFormat = '#0.0000'
       EditFormat = '#0.0000'
       Precision = 18
@@ -12060,6 +12070,7 @@ object Form7: TForm7
       FieldName = 'ALIQ_COFINS_SAIDA'
       Origin = 'ESTOQUE.ALIQ_COFINS_SAIDA'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       DisplayFormat = '#0.0000'
       EditFormat = '#0.0000'
       Precision = 18
@@ -12084,24 +12095,28 @@ object Form7: TForm7
       FieldName = 'CFOP'
       Origin = 'ESTOQUE.CFOP'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 4
     end
     object ibDataSet4CSOSN_NFCE: TIBStringField
       DisplayLabel = 'CSOSN para NFC-e'
       FieldName = 'CSOSN_NFCE'
       Origin = 'ESTOQUE.CSOSN_NFCE'
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 3
     end
     object ibDataSet4CST_NFCE: TIBStringField
       DisplayLabel = 'CST para NFC-e'
       FieldName = 'CST_NFCE'
       Origin = 'ESTOQUE.CST_NFCE'
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 3
     end
     object ibDataSet4ALIQUOTA_NFCE: TIBBCDField
       DisplayLabel = 'Al'#237'quota para NFC-e'
       FieldName = 'ALIQUOTA_NFCE'
       Origin = 'ESTOQUE.ALIQUOTA_NFCE'
+      OnChange = ibDataSet4TIPO_ITEMChange
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
       Precision = 18
@@ -12245,6 +12260,7 @@ object Form7: TForm7
       FieldName = 'ENQ_IPI'
       Origin = 'ESTOQUE.ENQ_IPI'
       Visible = False
+      OnChange = ibDataSet4TIPO_ITEMChange
       Size = 3
     end
     object ibDataSet4QTD_PRO1: TFloatField
@@ -12278,6 +12294,7 @@ object Form7: TForm7
       FieldName = 'IDPERFILTRIBUTACAO'
       Origin = 'ESTOQUE.IDPERFILTRIBUTACAO'
       Visible = False
+      OnChange = ibDataSet4IDPERFILTRIBUTACAOChange
     end
   end
   object DataSource4: TDataSource
@@ -21323,7 +21340,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21357,7 +21374,7 @@ object Form7: TForm7
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21672,7 +21689,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21702,7 +21719,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -19,40 +19,30 @@ type
     procedure gdRegistrosKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure txtCampoChange(Sender: TObject);
+    procedure txtCampoClick(Sender: TObject);
+    procedure FrameExit(Sender: TObject);
   private
     procedure Pesquisar;
   public
-    sCampoCodigo,
     sCampoDescricao,
     sTabela,
     sFiltro: String;
     sSQL: String;
-    function GetCodigo: TField;
-    function DescricaoPorCodigo(iCodigo: Integer): String;
-    function CodigoString: String;
-    procedure Limpar;
+    CampoCodigo : TField;
+
+    procedure CarregaDescricao;
   end;
 
 implementation
 
 {$R *.dfm}
 
-function TfFrameCampo.GetCodigo: TField;
-begin
-  Result := Query.Fields[0]
-end;
-
 procedure TfFrameCampo.Pesquisar;
 begin
-  Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+
-                    ' From '+sTabela+
-                    ' Where (UPPER('+sCampoDescricao+') like '+QuotedStr('%'+UpperCase(txtCampo.Text)+'%')+
-                    '   or '+sCampoCodigo+' = '+IntToStr(StrToIntDef(txtCampo.Text,0))+')';
-
-  if sFiltro <> '' then
-    Query.SQL.Add(' and '+sFiltro);
-  Query.SQL.Add(' Order by '+sCampoDescricao);
-  Query.Open;
+  Self.BringToFront;
+  gdRegistros.Visible := True;
+  Self.Height := txtCampo.Height + gdRegistros.Height+5;
+  Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]);
 end;
 
 procedure TfFrameCampo.txtCampoKeyDown(Sender: TObject; var Key: Word;
@@ -60,12 +50,17 @@ procedure TfFrameCampo.txtCampoKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
   begin
-    Self.BringToFront;
-    Pesquisar;
+    gdRegistros.Visible := False;
+    Self.Height := txtCampo.Height;
 
-    gdRegistros.Visible := True;
-    Self.Height := txtCampo.Height + gdRegistros.Height+5;
-    gdRegistros.SetFocus;
+    PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
+    Key := 0;
+  end;
+
+  if (Key = VK_UP) or (Key = VK_DOWN) then
+  begin
+    PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
+    Key := 0;
   end;
 
   if Key = VK_ESCAPE then
@@ -77,7 +72,9 @@ end;
 
 procedure TfFrameCampo.gdRegistrosDblClick(Sender: TObject);
 begin
-  txtCampo.Text       := Query.Fields[1].AsString;
+  txtCampo.Text           := Query.Fields[1].AsString;
+  CampoCodigo.AsInteger   := Query.Fields[0].AsInteger;
+
   gdRegistros.Visible := False;
   txtcampo.SetFocus;
   Self.Height := txtCampo.Height;
@@ -99,51 +96,59 @@ begin
   end;
 end;
 
-function TfFrameCampo.DescricaoPorCodigo(iCodigo: Integer): String;
+procedure TfFrameCampo.CarregaDescricao;
 var
   teste: TNotifyEvent;
+  sCampoCodigo : string;
 begin
-  Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+
-                    ' From '+sTabela+
-                    ' Where '+sCampoCodigo+' = '+IntToStr(iCodigo);
-  Query.Open;
-  Result := Query.FieldByName(sCampoDescricao).AsString;
+  sCampoCodigo := CampoCodigo.FieldName;
 
-  teste := txtCampo.OnChange;
-  txtCampo.OnChange := nil;
-  txtCampo.Text := Query.FieldByName(sCampoDescricao).AsString;
-  txtCampo.OnChange := teste;
+  Query.Close;
+  Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+' as NOME'+
+                    ' From '+sTabela+
+                    ' Where 1=1 '+
+                    sFiltro+
+                    ' Order by '+sCampoDescricao;
+  Query.Open;
+
+  if Query.Locate(sCampoCodigo, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
+  begin
+    teste := txtCampo.OnChange;
+    txtCampo.OnChange := nil;
+    txtCampo.Text := Query.FieldByName('NOME').AsString;
+    txtCampo.OnChange := teste;
+  end else
+  begin
+    txtCampo.Text := '';
+  end;
 end;
 
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);
 begin
-  if txtCampo.Text <> '' then
+  if (txtCampo.Text <> '') and (txtCampo.Focused) then
   begin
-    Self.BringToFront;
     Pesquisar;
+  end;
+end;
 
-    gdRegistros.Visible := True;
-    Self.Height := txtCampo.Height + gdRegistros.Height+5;
+procedure TfFrameCampo.txtCampoClick(Sender: TObject);
+begin
+  Pesquisar;
+end;
+
+procedure TfFrameCampo.FrameExit(Sender: TObject);
+begin
+  if Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
+  begin
+    txtCampo.Text           := Query.Fields[1].AsString;
+
+    if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
+      CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
   end else
   begin
-    gdRegistros.Visible := False;
-    Self.Height := txtCampo.Height;
-    Query.Close;
+    txtCampo.Clear;
+    CampoCodigo.Value := null;
   end;
-end;
-
-function TfFrameCampo.CodigoString: String;
-begin
-  try
-    Result := GetCodigo.AsString;
-  except
-    Result := '';
-  end;
-end;
-
-procedure TfFrameCampo.Limpar;
-begin
-  txtCampo.Clear;
 end;
 
 end.

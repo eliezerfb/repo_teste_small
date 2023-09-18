@@ -9,13 +9,14 @@ object fFrameCampo: TfFrameCampo
   ParentColor = False
   ParentCtl3D = False
   TabOrder = 0
+  OnExit = FrameExit
   DesignSize = (
     323
     23)
   object txtCampo: TEdit
     Left = 0
     Top = 0
-    Width = 314
+    Width = 323
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
@@ -26,15 +27,23 @@ object fFrameCampo: TfFrameCampo
     ParentFont = False
     TabOrder = 0
     OnChange = txtCampoChange
+    OnClick = txtCampoClick
     OnKeyDown = txtCampoKeyDown
   end
   object gdRegistros: TDBGrid
     Left = 0
     Top = 22
-    Width = 314
-    Height = 101
+    Width = 323
+    Height = 102
     Anchors = [akLeft, akTop, akRight]
     DataSource = DataSource
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    ParentFont = False
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -44,6 +53,12 @@ object fFrameCampo: TfFrameCampo
     Visible = False
     OnDblClick = gdRegistrosDblClick
     OnKeyDown = gdRegistrosKeyDown
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'NOME'
+        Visible = True
+      end>
   end
   object DataSource: TDataSource
     DataSet = Query
