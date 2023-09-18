@@ -19,7 +19,7 @@ uses
 
 implementation
 
-uses Unit7, Mais;
+uses Unit7, Mais, uSmallConsts, unit29, StdCtrls;
 
 function GetCidadeUF: String;
 begin
@@ -32,6 +32,8 @@ var
   _file1, _file, _XML : TStringList;
 
   vRegistro : string;
+
+  nLengthEdit1, nLengthEdit2: Integer;
 
   bMultiplosServicos : Boolean;
   sDescricaoDosServicos, sPadraoCidade, sCodigoCnae, sCodigoLocalPrestacao, sRetornoNFse, sArquivoXML : String;
@@ -475,6 +477,53 @@ begin
 
             sCodigoCnae := Mais1Ini.ReadString('Informacoes obtidas na prefeitura','CodigoCnae'               ,''); // // CodigoCnae	Código do CNAE	T	 Obtido na prefeitura
             sCodigoCnaePrestador := sCodigoCnae; // CNAE do prestador Sandro Silva 2023-02-28
+
+            {Dailon Parisotto (f-7379) 2023-09-15 Inicio}
+            if (sPadraoSistema = 'GOVBR20') and (GetCidadeUF = 'DOMPEDRITORS') then
+            begin
+              nLengthEdit1 := Form29.Edit_01.MaxLength;
+              nLengthEdit2 := Form29.Edit_02.MaxLength;
+              try
+                Form29.Label_01.Visible := True;
+                Form29.Label_02.Visible := True;
+                Form29.Label_03.Visible := False;
+                Form29.Label_04.Visible := False;
+                Form29.Label_05.Visible := False;
+                Form29.Label_06.Visible := False;
+
+
+                Form29.Edit_01.MaxLength := 15;
+                Form29.Edit_02.MaxLength := 15;
+
+                Form29.Edit_01.Visible := True;
+                Form29.Edit_02.Visible := True;
+                Form29.Edit_03.Visible := False;
+                Form29.Edit_04.Visible := False;
+                Form29.Edit_05.Visible := False;
+                Form29.Edit_06.Visible := False;
+
+                Form29.Label_01.Caption := 'Matrícula CEI/CNO da Obra:';
+                Form29.Label_02.Caption := 'Anotação de responsabilidade técnica - ART:';
+
+                Form29.Edit_01.Text := EmptyStr;
+                Form29.Edit_02.Text := EmptyStr;
+
+                Form1.Small_InputForm_Dados('Construção civil');
+
+                if Trim(Form29.Edit_01.Text) <> EmptyStr then
+                  Writeln(F,'CodigoObra=' + Copy(Form29.Edit_01.Text, 1, 15))
+                else
+                  Writeln(F,'CodigoObra=' + _cNaoSeAplica);
+                if Trim(Form29.Edit_02.Text) <> EmptyStr then
+                  Writeln(F,'Art=' + Copy(Form29.Edit_02.Text, 1, 15))
+                else
+                  Writeln(F,'Art=' + _cNaoSeAplica);
+              finally
+                Form29.Edit_01.MaxLength := nLengthEdit1;
+                Form29.Edit_02.MaxLength := nLengthEdit2;
+              end;
+            end;
+            {Dailon Parisotto (f-7379) 2023-09-15 Fim}
 
             Writeln(F,'');
             Mais1ini.Free;
