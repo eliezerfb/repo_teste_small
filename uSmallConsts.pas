@@ -7,6 +7,7 @@ const
   _cUsuarioAdmin = 'Administrador';
   _cRecebPagto = 'Caixa';
   _cImpressoraPadrao = 'Impressora padrão do windows';
+  _cNaoSeAplica = 'Não se aplica';
 
   _cSim = 'Sim';
   _cNao = 'Não';
