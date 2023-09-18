@@ -40,7 +40,6 @@ type
     FcSqlTraduzido: String;
     procedure AjustaLayout;
     function FazValidacoes: Boolean;
-    function RetornarDataSetGrupos: TIBQuery;
     function RetornarWhere: string;
     function RetornarWhereOperacoes: String;
     function RetornarDataSetProdutos(AcGrupo: String = ''): TIBQuery;
@@ -113,34 +112,38 @@ begin
   FazUpdateValores;
   if cbAgruparGrupo.Checked then
   begin
-    // Pega todo os grupos
-    qryGrupo := RetornarDataSetGrupos;
+    qryTotGrupo := RetornarDataSetTotalGrupos;
     try
       // Gera o cabeçalho do relatório
       Estrutura.GerarImpressaoCabecalho(TEstruturaRelResumoVendas.New
                                                                  .setDAO(TDadosRelatorioPadraoDAO.New
                                                                                                  .setDataBase(DataBase)
                                                              ));
-      while not qryGrupo.Eof do
+      while not qryTotGrupo.Eof do
       begin
-        // Gera a impressão agrupada por grupo
-        qryProduto := RetornarDataSetProdutos(qryGrupo.FieldByName('GRUPO').AsString);
-        try
-          oEstruturaCat := TEstruturaRelResumoVendas.New
-                                                    .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                    .setDataBase(DataBase)
-                                                                                    .CarregarDados(qryProduto)
-                                                           );
+        if qryTotGrupo.FieldByName('Ord').AsInteger = 0 then
+        begin
+          // Gera a impressão agrupada por grupo
+          qryProduto := RetornarDataSetProdutos(qryTotGrupo.FieldByName('Grupo').AsString);
+          try
+            oEstruturaCat := TEstruturaRelResumoVendas.New
+                                                      .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                      .setDataBase(DataBase)
+                                                                                      .CarregarDados(qryProduto)
+                                                             );
 
-          Estrutura.GerarImpressaoAgrupado(oEstruturaCat, qryGrupo.FieldByName('GRUPO').AsString);
-        finally
-          FreeAndNil(qryProduto);
+            Estrutura.GerarImpressaoAgrupado(oEstruturaCat, qryTotGrupo.FieldByName('Grupo').AsString);
+          finally
+            FreeAndNil(qryProduto);
+          end;
         end;
 
-        qryGrupo.Next;
+        qryTotGrupo.Next;
         // Totalizador
-        if qryGrupo.Eof then
+        if qryTotGrupo.Eof then
         begin
+          qryTotGrupo.First;
+
           qryTotGrupo := RetornarDataSetTotalGrupos;
 
           oEstruturaCat := TEstruturaRelResumoVendas.New
@@ -262,7 +265,12 @@ begin
   AoEstruturaCat.FiltrosRodape.AddItem(SqlTraduzido);
   AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);  
     
-  AoEstruturaCat.FiltrosRodape.AddItem('Operações listadas:');
+  if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
+    AoEstruturaCat.FiltrosRodape.AddItem('<b>Operações listadas:</b>')
+  else
+    AoEstruturaCat.FiltrosRodape.AddItem('Operações listadas:');
+  AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
+  
   for i := 0 to Pred(chkOperacoes.Items.Count) do
   begin
     if chkOperacoes.Checked[I] then
@@ -276,29 +284,9 @@ begin
   Result := 'Período analisado, de '+DateToStr(dtInicial.Date)+' até ' + DateToStr(dtFinal.Date);
 end;
 
-function TfrmRelResumoVendas.RetornarDataSetGrupos: TIBQuery;
-begin
-  Result := CriaIBQuery(DataSetEstoque.Transaction);
-
-  Result.Close;
-  Result.Database := DataBase;
-  Result.SQL.Clear;
-  Result.SQL.Add('SELECT');
-  Result.SQL.Add('    1 as ORD');
-  Result.SQL.Add('    , COALESCE(GRUPO.NOME, '+QuotedStr(_cSemGrupo)+') AS GRUPO');
-  Result.SQL.Add('FROM GRUPO');
-  Result.SQL.Add('UNION ALL');
-  Result.SQL.Add('SELECT FIRST 1');
-  Result.SQL.Add('    2 as ORD');
-  Result.SQL.Add('    , '+QuotedStr(_cSemGrupo)+' AS GRUPO');
-  Result.SQL.Add('FROM GRUPO');
-  Result.SQL.Add('ORDER BY 1, 2');
-  Result.Open;
-  Result.First;
-end;
-
 function TfrmRelResumoVendas.RetornarDataSetProdutos(AcGrupo: String = ''): TIBQuery;
 begin
+  AcGrupo := Copy(AcGrupo,1,25);
   Result := CriaIBQuery(DataSetEstoque.Transaction);
 
   Result.Close;
@@ -422,7 +410,7 @@ begin
   Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
   Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
   Result.SQL.Add('FROM EMITENTE');
-  Result.SQL.Add('ORDER BY 1');
+  Result.SQL.Add('ORDER BY 1, 5 DESC');
   Result.ParamByName('XDATAINI').AsDate := dtInicial.Date;
   Result.Open;
   Result.First;
