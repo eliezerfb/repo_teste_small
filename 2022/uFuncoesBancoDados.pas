@@ -7,6 +7,8 @@ uses
   , Dialogs
   , IBDatabase
   , IBQuery
+  , DB
+  , IBCustomDataSet
 ;
 
 const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
@@ -52,6 +54,7 @@ function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
+function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet; // Mauricio Parizotto 2023-09-12
 function ExecutaComando(comando:string):Boolean;  overload;
 function ExecutaComando(comando:string; IBTRANSACTION: TIBTransaction):Boolean; overload;
 function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
@@ -67,8 +70,7 @@ function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
 implementation
 
 uses
-  mais
-  , DB;
+  mais;
 
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 {Sandro Silva 2015-10-01 inicio
@@ -161,6 +163,22 @@ begin
   end;
 end;
 
+function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet;
+//Mauricio Parizotto 2023-09-12
+begin
+  try
+    Result := TIBDataSet.Create(nil);
+    Result.Database    := IBTRANSACTION.DefaultDataBase;
+    Result.Transaction := IBTRANSACTION;
+    Result.BufferChunks := 100; // Evitar Erro de out of memory
+  except
+    on E: Exception do
+    begin
+      ShowMessage(E.Message);
+      Result := nil;
+    end
+  end;
+end;
 
 function ExecutaComando(comando:string):Boolean;  overload;
 begin

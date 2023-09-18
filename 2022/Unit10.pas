@@ -414,8 +414,8 @@ type
     lblCFOPNfce: TLabel;
     lblCSOSN_NFCePerfilTrib: TLabel;
     lblCST_NFCePerfilTrib: TLabel;
-    SMALL_DBEdit49: TSMALL_DBEdit;
-    SMALL_DBEdit53: TSMALL_DBEdit;
+    edtIVAPerfilTrb: TSMALL_DBEdit;
+    edtCITPerfilTrib: TSMALL_DBEdit;
     cboCSTPerfilTrib: TComboBox;
     cboTipoItemPerfTrib: TComboBox;
     cboIPPTPerfTrib: TComboBox;
@@ -425,8 +425,8 @@ type
     cboCFOP_NFCePerfTrib: TComboBox;
     cboCST_NFCePerfilTrib: TComboBox;
     cboCSOSN_NFCePerfilTrib: TComboBox;
-    Label127: TLabel;
-    SMALL_DBEdit75: TSMALL_DBEdit;
+    lblAliqNFCEPerfilTrib: TLabel;
+    edtAliqNFCEPerfilTrib: TSMALL_DBEdit;
     Label128: TLabel;
     edtDescricaoPerfilTrib: TSMALL_DBEdit;
     Label129: TLabel;
@@ -437,23 +437,26 @@ type
     lblCST_PIS_S_PerTrib: TLabel;
     lblCST_COFINS_S_PerTrib: TLabel;
     cboCST_PISCOFINS_S_PerTrib: TComboBox;
-    SMALL_DBEdit48: TSMALL_DBEdit;
-    SMALL_DBEdit74: TSMALL_DBEdit;
+    edtPercPISPerfiLTrib: TSMALL_DBEdit;
+    edtPercCofinsPefilTrib: TSMALL_DBEdit;
     GroupBox2: TGroupBox;
     Label131: TLabel;
     lblCST_PIS_E_PerTrib: TLabel;
     lblCST_COFINS_E_PerTrib: TLabel;
     cboCST_PISCOFINS_E_PerTrib: TComboBox;
-    SMALL_DBEdit77: TSMALL_DBEdit;
-    SMALL_DBEdit78: TSMALL_DBEdit;
+    edtPecPISEntPerfilTrib: TSMALL_DBEdit;
+    edtPercCofnsEntPerfilTrib: TSMALL_DBEdit;
     Label134: TLabel;
     Label135: TLabel;
     Label136: TLabel;
     cboCST_IPI_PerTrib: TComboBox;
-    SMALL_DBEdit79: TSMALL_DBEdit;
-    SMALL_DBEdit80: TSMALL_DBEdit;
+    edtPercIPIPerfilTrib: TSMALL_DBEdit;
+    edtCodEnquadPerfilTrib: TSMALL_DBEdit;
     lbBCPISCOFINS: TLabel;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
+    lblAtencaoPerfilTrib: TLabel;
+    Label55: TLabel;
+    Label117: TLabel;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -686,7 +689,7 @@ type
     procedure cboCST_NFCePerfilTribChange(Sender: TObject);
     procedure cboCSOSN_NFCePerfilTribChange(Sender: TObject);
     procedure cboCSOSNPerfilTribChange(Sender: TObject);
-    procedure SMALL_DBEdit53Exit(Sender: TObject);
+    procedure edtCITPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -2435,7 +2438,7 @@ begin
     end;
   except
   end;
-  
+
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := Orelha_cadastro;
@@ -7770,8 +7773,6 @@ begin
       end;
     end;
 
-
-
     if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
     begin
       for I := 0 to Form10.ComboBox14.Items.Count -1 do
@@ -7787,14 +7788,13 @@ begin
         // 60 - ICMS Cobrado anteriormente por substituição tributária
         // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
         // 90 - Outras
-        if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST_NFCE.AsString)+'000',2,2) then
+        //if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(AllTrim(Form7.ibDataSet4CST_NFCE.AsString)+'000',2,2) then Mauricio Parizotto 2023-09-01
+        if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
         begin
           Form10.ComboBox14.ItemIndex := I;
         end;
       end;
     end;
-
-
 
 
     // 50 - Saída Tributada
@@ -8067,6 +8067,7 @@ begin
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CST.AsString := Copy(cboOrigemProd.Items[cboOrigemProd.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST.AsString+'  ',2,2);
+    Form7.ibDataSet4CST_NFCE.AsString := Copy(cboOrigemProd.Items[cboOrigemProd.ItemIndex]+' ',1,1)+Copy(Form7.ibDataSet4CST_NFCE.AsString+'  ',2,2); // Mauricio Parizotto 2023-09-06
   end;
 end;
 
@@ -10159,7 +10160,7 @@ begin
 
     if Form7.bSoLeitura or Form7.bEstaSendoUsado then
     begin
-      cboCST_IPI_PerTrib.Enabled := False;
+      cboCST_IPI_PerTrib.Enabled          := False;
       cboCST_PISCOFINS_S_PerTrib.Enabled  := False;
       cboCST_PISCOFINS_E_PerTrib.Enabled  := False;
       cboTipoItemPerfTrib.Enabled         := False;
@@ -10171,6 +10172,16 @@ begin
       cboCSOSNPerfilTrib.Enabled          := False;
       cboCST_NFCePerfilTrib.Enabled       := False;
       cboCSOSN_NFCePerfilTrib.Enabled     := False;
+      edtPercIPIPerfilTrib.Enabled        := False;
+      edtCodEnquadPerfilTrib.Enabled      := False;
+      edtPercPISPerfiLTrib.Enabled        := False;
+      edtPercCofinsPefilTrib.Enabled      := False;
+      edtPecPISEntPerfilTrib.Enabled      := False;
+      edtPercCofnsEntPerfilTrib.Enabled   := False;
+      edtDescricaoPerfilTrib.Enabled      := False;
+      edtIVAPerfilTrb.Enabled             := False;
+      edtAliqNFCEPerfilTrib.Enabled       := False;
+      edtCITPerfilTrib.Enabled            := False;
     end else
     begin
       cboCST_IPI_PerTrib.Enabled          := True;
@@ -10185,6 +10196,16 @@ begin
       cboCSOSNPerfilTrib.Enabled          := True;
       cboCST_NFCePerfilTrib.Enabled       := True;
       cboCSOSN_NFCePerfilTrib.Enabled     := True;
+      edtPercIPIPerfilTrib.Enabled        := True;
+      edtCodEnquadPerfilTrib.Enabled      := True;
+      edtPercPISPerfiLTrib.Enabled        := True;
+      edtPercCofinsPefilTrib.Enabled      := True;
+      edtPecPISEntPerfilTrib.Enabled      := True;
+      edtPercCofnsEntPerfilTrib.Enabled   := True;
+      edtDescricaoPerfilTrib.Enabled      := True;
+      edtIVAPerfilTrb.Enabled             := True;
+      edtAliqNFCEPerfilTrib.Enabled       := True;
+      edtCITPerfilTrib.Enabled            := True;
     end;
 
     if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
@@ -10335,25 +10356,40 @@ begin
     if Form7.ibDataSet13CRT.AsString = '1' then
     begin
       lblCSOSNPerfilTrib.Visible       := True;
-      cboCSOSNPerfilTrib.Visible    := True;
+      cboCSOSNPerfilTrib.Visible       := True;
       lblCSTPerfilTrib.Visible         := False;
       cboCSTPerfilTrib.Visible         := False;
 
       lblCSOSN_NFCePerfilTrib.Visible  := True;
       cboCSOSN_NFCePerfilTrib.Visible  := True;
       lblCST_NFCePerfilTrib.Visible    := False;
-      cboCST_NFCePerfilTrib.Visible       := False;
+      cboCST_NFCePerfilTrib.Visible    := False;
     end else
     begin
       lblCSOSNPerfilTrib.Visible       := False;
-      cboCSOSNPerfilTrib.Visible    := False;
+      cboCSOSNPerfilTrib.Visible       := False;
       lblCSTPerfilTrib.Visible         := True;
       cboCSTPerfilTrib.Visible         := True;
 
       lblCSOSN_NFCePerfilTrib.Visible  := False;
       cboCSOSN_NFCePerfilTrib.Visible  := False;
       lblCST_NFCePerfilTrib.Visible    := True;
-      cboCST_NFCePerfilTrib.Visible       := True;
+      cboCST_NFCePerfilTrib.Visible    := True;
+    end;
+
+    //NFC-e ou SAT
+    if Form7.ibDataSet13ESTADO.AsString = 'SP' then
+    begin
+      lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'NFC-e','SAT');
+      lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'NFC-e','SAT');
+      lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'NFC-e','SAT');
+      lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'NFC-e','SAT');
+    end else
+    begin
+      lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'SAT','NFC-e');
+      lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'SAT','NFC-e');
+      lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'SAT','NFC-e');
+      lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'SAT','NFC-e');
     end;
 
     //CIT
@@ -10442,6 +10478,7 @@ begin
   if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
   begin
     Form7.ibdPerfilTributaCST.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST.AsString+'  ',2,2);
+    Form7.ibdPerfilTributaCST_NFCE.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST_NFCE.AsString+'  ',2,2); // Mauricio Parizotto 2023-09-06
   end;
 end;
 
@@ -10628,7 +10665,7 @@ begin
   end;
 end;
 
-procedure TForm10.SMALL_DBEdit53Exit(Sender: TObject);
+procedure TForm10.edtCITPerfilTribExit(Sender: TObject);
 begin
   CarregaCitPerfilTrib;
 end;

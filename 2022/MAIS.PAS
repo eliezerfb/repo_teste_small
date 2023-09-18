@@ -12503,7 +12503,7 @@ end;
 procedure TForm1.Perfisdetribitao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PERFILTRIBUTACAO';
-  Form7.sTitulo := 'Perfis de tribitação';
+  Form7.sTitulo := 'Perfis de tributação';
 
   {$IFDEF VER150}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];

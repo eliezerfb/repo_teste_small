@@ -155,7 +155,8 @@ uses
   uIDadosImpressaoDAO in 'interfaces\uIDadosImpressaoDAO.pas',
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
   uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
-  uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame};
+  uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
+  uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas';
 
 {$R *.RES}
 

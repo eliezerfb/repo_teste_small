@@ -13666,7 +13666,7 @@ object Form1: TForm1
         OnClick = TabeladeICMparatodososestados1Click
       end
       object Perfisdetribitao1: TMenuItem
-        Caption = 'Perfis de tribita'#231#227'o'
+        Caption = 'Perfis de tributa'#231#227'o'
         OnClick = Perfisdetribitao1Click
       end
       object Opes1: TMenuItem

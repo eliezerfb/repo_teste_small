@@ -2172,7 +2172,7 @@ type
     procedure ibDataSet7FilterRecord(DataSet: TDataSet;
       var Accept: Boolean);
     procedure ibDataSet7AfterScroll(DataSet: TDataSet);
-    procedure FormDestroy(Sender: TObject);    
+    procedure FormDestroy(Sender: TObject);
     procedure ibDataSet15SAIDADChange(Sender: TField);
     procedure IBDatabase1AfterConnect(Sender: TObject);
     procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
@@ -2200,6 +2200,9 @@ type
     procedure ibdPerfilTributaAfterPost(DataSet: TDataSet);
     procedure ibdPerfilTributaDESCRICAOSetText(Sender: TField;
       const Text: String);
+    procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
+    procedure DSPerfilTributaStateChange(Sender: TObject);
+    procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2218,7 +2221,7 @@ type
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TIBStringField; Valida : Boolean = True);
-    function RetornarSQLEstoqueOrcamentos: String;   
+    function RetornarSQLEstoqueOrcamentos: String;
     procedure EnviarEmailCCe(AcXML: String);
     function getEnviarDanfePorEmail: String;
     function getZiparXML: String;
@@ -2329,6 +2332,7 @@ type
     {Dailon 2023-08-22 inicio}
     bDescontaICMSDeso: Boolean;
     {Dailon 2023-08-22 fim}
+
     procedure RefreshDados;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
@@ -2349,7 +2353,7 @@ type
     function TestarNFeHomologacao: Boolean;
     function TestarNFSeHomologacao: Boolean;
     function RetornarAliquotaICM(AcUF: String): Currency;
-    procedure AtualizarListaItensAuxiliar;    
+    procedure AtualizarListaItensAuxiliar;
     procedure AuditaAlteracaoEstoqueManual;
     function TestarClienteExiste(AcTexto: String): Boolean;    
     function TestarProdutoExiste(AcTexto: String): Boolean;   
@@ -2403,7 +2407,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
   , uArquivosDAT
-  , uSmallEnumerados, uNFSeINI;
+  , uSmallEnumerados, uNFSeINI, uAtualizaBancoDados,
+  uAtualizaTributacaoPerfilTrib;
 
 {$R *.DFM}
 
@@ -2628,17 +2633,13 @@ begin
           Form7.ibDataSet24MDESTINXML.AsString := sRetorno;
           Form7.ibDataSet24.Post;
         end;
-        //
       end else
       begin
-        // ShowMessage(sRetorno);
       end;
     except end;
   end;
   //
   Result := True;
-  //
-
 end;
 
 function xmlNodeXml(sXML: String; sNode: String): String;
@@ -2903,16 +2904,13 @@ begin
     lXMLDocZip := nil;
     //
   except
-    //
     on E: Exception do
     begin
       ShowMessage('Erro 2503: '+E.Message);
     end
-    //
   end;
   //
   Result := True;
-  //
 end;
 
 
@@ -3013,14 +3011,8 @@ begin
               Form1.ibQuery2.SQL.Add('set generator G_NSU_DOWNLOAD_XML to '+IntToStr(StrToInt(LimpaNumero(xmlNodeValue(sP1, '//retDistDFeInt/ultNSU')))));
               Form1.ibQuery2.ExecSQL;
             end;
-            //
           end;
-          //
-          // ShowMessage('Gravando última nsu: '+IntToStr(StrToInt(LimpaNumero(xmlNodeValue(sP1, '//retDistDFeInt/ultNSU')))));
-          //
         end;
-        //
-        //
       end;
       //
       // Seleciona os elementos contendo xml zipados
@@ -3093,22 +3085,14 @@ begin
             end;
           end else
           begin
-            //
-            // Salvando o xml 
-            //
-            // ShowMessage('Teste NF-e ENTRADA NFEID: '+pChar(xmlNodeValue(slXMLDescom.Text, '//infProt/chNFe')));
-            //
+            // Salvando o xml
             Form7.ibDataSet24.Close;
             Form7.ibDataSet24.SelectSQL.Clear;
             Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NFEID = '+QuotedStr(pChar(xmlNodeValue(slXMLDescom.Text, '//infProt/chNFe')))+'');
             Form7.ibDataSet24.Open;
-            //   
 
             if Pos(Form7.ibDataset24NFEID.AsString,slXMLDescom.Text) <> 0 then
             begin
-              //
-              // ShowMessage('Teste NF-e ENTRADA NF-e encontrada');
-              //
               if (Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet24NFEXML.AsString) = 0) then
               begin
 
@@ -3131,10 +3115,7 @@ begin
                 // ShowMessage(Form7.ibDataSet24NFEXML.AsString);
                 //
               end;
-
             end;
-
-            //
           end;
         except
           on E: Exception do
@@ -3146,20 +3127,14 @@ begin
       //
       slXMLDescom.Free;
       lXMLDocZip := nil;
-      //
     end;
-    //
   except
-    //
     on E: Exception do
     begin
       ShowMessage('Erro 2503 ao baixar lista de NF-e´s emitidas: '+E.Message);
-    end
-    //
+    end;
   end;
-  //
   Result := True;
-  //
 end;
 
 function HasHs(sP1: String; bP2: Boolean): boolean;
@@ -4092,14 +4067,10 @@ begin
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
               begin
-                //
                 Form7.ibDataSet4.Edit;
                 Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                 Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                 Form7.ibDataSet4.Post;
-                //
-                //              ShowMessage('Teste saiu do estoque '+Form7.ibDataSet16QUANTIDADE.AsString+ ' '+Form7.ibDataSet16DESCRICAO.AsString);
-                //
               end;
             end;
             //
@@ -4373,7 +4344,6 @@ begin
             Result := _file.Text;
           end else
           begin
-//            ShowMessage('Não foi possível encontrar o arquivo '+pChar(Form1.sAtual + '\XmlDestinatario\' + aChaveNFe + '*.xml')+'. Verifique se a NF-e está Autorizada.');
             Result := Form7.ibDataSet15NFEXML.AsString;
           end;
         end;
@@ -4421,7 +4391,6 @@ begin
             Result := _file.Text;
           end else
           begin
-//            ShowMessage('Não foi possível encontrar o arquivo '+pChar(Form1.sAtual + '\XmlDestinatario\' + aChaveNFe + '*.xml')+'. Verifique se a NF-e está Autorizada.');
             Result := Form7.ibDataSet24NFEXML.AsString;
           end;
         end;
@@ -4735,12 +4704,8 @@ function DistribuicaoNFe(sP1: String) : Boolean;
 var
   F : TExtfile;
 begin
-  //
   if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet15NFEXML.AsString) = 0) then
   begin
-    //
-    //    ShowMessage('Recuperando XML da pasta \log');
-    //
     Form7.ibDataSet15.Edit;
     Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
     Form7.ibDataSet15.Post;
@@ -4811,9 +4776,6 @@ begin
   //
   if (Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) = 0) and (Pos('<procEventoNFe',Form7.ibDataSet24NFEXML.AsString) = 0) then
   begin
-    //
-    //    ShowMessage('Recuperando XML da pasta \log');
-    //
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24NFEXML.AsString := LoadXmlDestinatarioEntrada(Form7.ibDataSet24NFEID.AsString); // COVID19
     Form7.ibDataSet24.Post;
@@ -4889,17 +4851,13 @@ begin
             +QuotedStr(DateToStrInvertida(Date))+', '
             +QuotedStr(TimeToStr(Time))+', '
             +QuotedStr(sRegistro)+')');
-    //
-    // ShowMessage(Form7.ibDataSet100.SelectSql.Text);
-    //
+
     Form7.ibDataSet100.Open;
-    //
   except
     ShowMessage('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form7.ibDataSet100.SelectSql.Text);
   end;
-  //
+
   Result := True;
-  //
 end;
 
 
@@ -7489,11 +7447,12 @@ begin
   try
     Form7.ibDataSet100.Close;
     Form7.ibDataSet100.SelectSQL.Clear;
-    Form7.ibDataSet100.SelectSQL.Add('select * from '+Arquivo+' where '+Indice+'= '+QuotedStr(TExt)+'');
-
+    //Form7.ibDataSet100.SelectSQL.Add('select * from '+Arquivo+' where '+Indice+'= '+QuotedStr(TExt)+''); Mauricio Parizotto 2023-09-11
+    Form7.ibDataSet100.SelectSQL.Text := 'select * from '+Arquivo+' where Upper('+Indice+') = Upper( '+QuotedStr(TExt)+')';
     Form7.ibDataSet100.Open;
 
-    if Form7.ibDataSet100.FieldByname(Indice).AsString = Text then
+    //if Form7.ibDataSet100.FieldByname(Indice).AsString = Text thenMauricio Parizotto 2023-09-11
+    if not Form7.ibDataSet100.IsEmpty then
     begin
       if Indice <> 'CEP' then
       begin
@@ -10947,6 +10906,22 @@ begin
       begin
         sAjuda := 'config_icms_iss.htm'; // Falta Fazer
 
+
+        if EstadoEmitente(IBDatabase1) = 'SP' then
+        begin
+          ibdPerfilTributaCFOP.DisplayLabel          := StrTran(ibdPerfilTributaCFOP.DisplayLabel,'NFC-e','SAT');
+          ibdPerfilTributaCSOSN_NFCE.DisplayLabel    := StrTran(ibdPerfilTributaCSOSN_NFCE.DisplayLabel,'NFC-e','SAT');
+          ibdPerfilTributaCST_NFCE.DisplayLabel      := StrTran(ibdPerfilTributaCST_NFCE.DisplayLabel,'NFC-e','SAT');
+          ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel := StrTran(ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel,'NFC-e','SAT');
+        end else
+        begin
+          ibdPerfilTributaCFOP.DisplayLabel          := StrTran(ibdPerfilTributaCFOP.DisplayLabel,'SAT','NFC-e');
+          ibdPerfilTributaCSOSN_NFCE.DisplayLabel    := StrTran(ibdPerfilTributaCSOSN_NFCE.DisplayLabel,'SAT','NFC-e');
+          ibdPerfilTributaCST_NFCE.DisplayLabel      := StrTran(ibdPerfilTributaCST_NFCE.DisplayLabel,'SAT','NFC-e');
+          ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel := StrTran(ibdPerfilTributaALIQUOTA_NFCE.DisplayLabel,'SAT','NFC-e');
+        end;
+
+
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTTTTTTTTTTTTTT');
         iCampos                := 21;
@@ -11115,6 +11090,7 @@ begin
       
       if sModulo = 'ESTOQUE' then
       begin
+        {
         try
           Form7.ibDataSet13.Close;
           Form7.ibDataSet13.Selectsql.Clear;
@@ -11122,10 +11098,12 @@ begin
           Form7.ibDataSet13.Open;
         except
         end;
+        Mauricio Parizotto 2023-09-06}
 
         sAjuda := 'estoque.htm';
         
-        if AllTrim(Form7.ibDataSet13ESTADO.AsString) = 'SP' then
+        //if AllTrim(Form7.ibDataSet13ESTADO.AsString) = 'SP' then  Mauricio Parizotto 2023-09-06
+        if EstadoEmitente(IBDatabase1) = 'SP' then
         begin
           ibDataSet4CFOP.DisplayLabel          := StrTran(ibDataSet4CFOP.DisplayLabel,'NFC-e','SAT');
           ibDataSet4CSOSN_NFCE.DisplayLabel    := StrTran(ibDataSet4CSOSN_NFCE.DisplayLabel,'NFC-e','SAT');
@@ -18274,7 +18252,7 @@ end;
 procedure TForm7.AuditaAlteracaoEstoqueManual;
 var
   QrySaldo: TIBQuery;
-begin
+begin  
   QrySaldo := TIBQuery.Create(nil);
   try
     QrySaldo.Close;
@@ -26844,21 +26822,15 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
-  //
-//  I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras do mês '+MesExtenso(Month(Date))+'/'+IntToStr(Year(Date))+' '
-//                          + chr(10)+'deste produto?'+ Chr(10)
-//                    + Chr(10))
-//                    ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
+  Exit;
+
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
                     + Chr(10))
                     ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
-  //
+
   if I = IDYES then
   begin
-    //
-//    if (Form7.ibDataSet4ALIQ_PIS_ENTRADA.AsFloat <> 0) and (Form7.ibDataSet4ALIQ_COFINS_ENTRADA.AsFloat <> 0) then
     begin
-      //
       try
         Screen.Cursor            := crHourGlass;
         Form7.IBQuery99.Close;
@@ -26868,14 +26840,9 @@ begin
       except
 
       end;
-      //
+
       Screen.Cursor            := crDefault;
-      //
-      //    ShowMessage(Form7.IBQuery99.SQL.Text);
-      //
     end;
-    //
-    //
   end;
 end;
 
@@ -33649,6 +33616,9 @@ begin
   ibdPerfilTributa.Edit;
   ibdPerfilTributaREGISTRO.AsString := sProximo;
   ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger := sProximoID;
+
+  ibdPerfilTributaIPPT.AsString         := 'T';
+  ibdPerfilTributaIAT.AsString          := 'T';
 end;
 
 procedure TForm7.ibdPerfilTributaAfterPost(DataSet: TDataSet);
@@ -33675,6 +33645,90 @@ begin
   end;
 
   Form10.Caption := ibdPerfilTributaDESCRICAO.AsString;
+end;
+
+procedure TForm7.ibdPerfilTributaBeforePost(DataSet: TDataSet);
+var
+  QtdProdPerfil : integer;
+  ProdutosErro : string;
+begin
+  //Verifica se precisa alterar dados dos produtos com o perfil selecionado
+  QtdProdPerfil := 0;
+
+  if (CampoAlterado(ibdPerfilTributaTIPO_ITEM))
+    or (CampoAlterado(ibdPerfilTributaIPPT))
+    or (CampoAlterado(ibdPerfilTributaIAT))
+    or (CampoAlterado(ibdPerfilTributaPIVA))
+    or (CampoAlterado(ibdPerfilTributaCST))
+    or (CampoAlterado(ibdPerfilTributaCSOSN))
+    or (CampoAlterado(ibdPerfilTributaST))
+    or (CampoAlterado(ibdPerfilTributaCFOP))
+    or (CampoAlterado(ibdPerfilTributaCST_NFCE))
+    or (CampoAlterado(ibdPerfilTributaCSOSN_NFCE))
+    or (CampoAlterado(ibdPerfilTributaALIQUOTA_NFCE))
+    or (CampoAlterado(ibdPerfilTributaCST_IPI))
+    or (CampoAlterado(ibdPerfilTributaIPI))
+    or (CampoAlterado(ibdPerfilTributaENQ_IPI))
+    or (CampoAlterado(ibdPerfilTributaCST_PIS_COFINS_SAIDA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_PIS_SAIDA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_COFINS_SAIDA))
+    or (CampoAlterado(ibdPerfilTributaCST_PIS_COFINS_ENTRADA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_COFINS_ENTRADA))
+    or (CampoAlterado(ibdPerfilTributaALIQ_PIS_ENTRADA)) then
+  begin
+    QtdProdPerfil := ExecutaComandoEscalar(IBDatabase1,
+                                           ' Select Count(*) QTD'+
+                                           ' From ESTOQUE '+
+                                           ' Where IDPERFILTRIBUTACAO = '+ibdPerfilTributaIDPERFILTRIBUTACAO.AsString);
+  end;
+
+
+  if (QtdProdPerfil > 0) then
+  begin
+    MensagemSistema('Houve alteração do perfil. Serão alterados '+IntToStr(QtdProdPerfil)+' produtos.');
+
+    if AtualizaTibutacaoProduto(ibdPerfilTributaIDPERFILTRIBUTACAO.AsInteger,ProdutosErro) then
+    begin
+      MensagemSistema('Produtos atualizados com sucesso!');
+    end else
+    begin
+      MensagemSistema('As informações do perfil e dos produtos não puderam ser alteradas.'+#13#10+
+                      'Verifique se o produto abaixo está em uso e tente novamente.'+#13#10+#13#10+
+                      ProdutosErro,msgAtencao);
+
+      DataSet.Cancel;
+      Abort;
+    end;
+  end;
+end;
+
+procedure TForm7.DSPerfilTributaStateChange(Sender: TObject);
+begin
+  Form10.lblAtencaoPerfilTrib.Visible := DSPerfilTributa.State = dsEdit;
+end;
+
+procedure TForm7.ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
+var
+  sApagar : string;
+begin
+  if AllTrim(ibdPerfilTributaDESCRICAO.AsString) <> '' then
+  begin
+    if ExecutaComandoEscalar(IBDatabase1,
+                             ' Select count(*) '+
+                             ' From ESTOQUE '+
+                             ' Where IDPERFILTRIBUTACAO = '+ibdPerfilTributaIDPERFILTRIBUTACAO.Asstring) > 0 then
+    begin
+      sApagar := 'O sistema encontrou lançamentos referentes ao perfil: '+Chr(10)+
+                 Chr(10)+
+                 Chr(10)+ibdPerfilTributaDESCRICAO.AsString+Chr(10)+
+                 Chr(10)+
+                 'no módulo de estoque.'+chr(10)+ Chr(10)+
+                 'Portanto não pode ser apagado.';
+
+      MensagemSistema(sApagar,msgAtencao);
+      Abort;
+    end;
+  end;
 end;
 
 end.

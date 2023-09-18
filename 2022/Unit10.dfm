@@ -2870,7 +2870,7 @@ object Form10: TForm10
         end
         object lblCIT: TLabel
           Left = 165
-          Top = 225
+          Top = 227
           Width = 98
           Height = 13
           Caption = '5102 - Venda a vista'
@@ -4627,7 +4627,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4646,7 +4646,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4665,7 +4665,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4684,7 +4684,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4703,7 +4703,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4722,7 +4722,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4741,7 +4741,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -14795,7 +14795,7 @@ object Form10: TForm10
         end
         object lblCitPerfilTrib: TLabel
           Left = 165
-          Top = 204
+          Top = 206
           Width = 98
           Height = 13
           Caption = '5102 - Venda a vista'
@@ -14860,7 +14860,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label127: TLabel
+        object lblAliqNFCEPerfilTrib: TLabel
           Left = 10
           Top = 282
           Width = 95
@@ -14902,7 +14902,7 @@ object Form10: TForm10
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Descri'#231#227'o'
+          Caption = 'Nome do Perfil'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -14910,7 +14910,26 @@ object Form10: TForm10
           Font.Style = []
           ParentFont = False
         end
-        object SMALL_DBEdit49: TSMALL_DBEdit
+        object lblAtencaoPerfilTrib: TLabel
+          Left = 18
+          Top = 417
+          Width = 703
+          Height = 13
+          AutoSize = False
+          Caption = 
+            'Aten'#231#227'o: As informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'os produtos que estiverem com este perfil configurado.'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object edtIVAPerfilTrb: TSMALL_DBEdit
           Left = 110
           Top = 127
           Width = 50
@@ -14931,7 +14950,7 @@ object Form10: TForm10
           TabOrder = 4
           OnKeyDown = ComboBox9KeyDown
         end
-        object SMALL_DBEdit53: TSMALL_DBEdit
+        object edtCITPerfilTrib: TSMALL_DBEdit
           Left = 110
           Top = 204
           Width = 50
@@ -14950,7 +14969,7 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 8
-          OnExit = SMALL_DBEdit53Exit
+          OnExit = edtCITPerfilTribExit
           OnKeyDown = ComboBox9KeyDown
         end
         object cboCSTPerfilTrib: TComboBox
@@ -15259,7 +15278,7 @@ object Form10: TForm10
               '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
               'nte')
         end
-        object SMALL_DBEdit75: TSMALL_DBEdit
+        object edtAliqNFCEPerfilTrib: TSMALL_DBEdit
           Left = 110
           Top = 281
           Width = 50
@@ -15362,6 +15381,25 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
+        object Label55: TLabel
+          Left = 18
+          Top = 417
+          Width = 703
+          Height = 13
+          AutoSize = False
+          Caption = 
+            'Aten'#231#227'o: As informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'os produtos que estiverem com este perfil configurado.'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
         object cboCST_IPI_PerTrib: TComboBox
           Left = 170
           Top = 25
@@ -15388,7 +15426,7 @@ object Form10: TForm10
             '55 - Sa'#237'da com Suspens'#227'o'
             '99 - Outras Sa'#237'das')
         end
-        object SMALL_DBEdit79: TSMALL_DBEdit
+        object edtPercIPIPerfilTrib: TSMALL_DBEdit
           Left = 170
           Top = 50
           Width = 50
@@ -15409,7 +15447,7 @@ object Form10: TForm10
           TabOrder = 1
           OnKeyDown = ComboBox9KeyDown
         end
-        object SMALL_DBEdit80: TSMALL_DBEdit
+        object edtCodEnquadPerfilTrib: TSMALL_DBEdit
           Left = 170
           Top = 75
           Width = 50
@@ -15436,6 +15474,25 @@ object Form10: TForm10
         ImageIndex = 18
         OnEnter = orelha_PerfilTrib_IPIEnter
         OnShow = orelha_PerfilTrib_IPIShow
+        object Label117: TLabel
+          Left = 18
+          Top = 417
+          Width = 703
+          Height = 13
+          AutoSize = False
+          Caption = 
+            'Aten'#231#227'o: As informa'#231#245'es alteradas aqui ser'#227'o aplicadas em todos ' +
+            'os produtos que estiverem com este perfil configurado.'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
         object GroupBox1: TGroupBox
           Left = 10
           Top = 10
@@ -15530,7 +15587,7 @@ object Form10: TForm10
               '49-Outras Opera'#231#245'es de Sa'#237'da'
               '99-Outras Opera'#231#245'es')
           end
-          object SMALL_DBEdit48: TSMALL_DBEdit
+          object edtPercPISPerfiLTrib: TSMALL_DBEdit
             Left = 100
             Top = 50
             Width = 60
@@ -15551,7 +15608,7 @@ object Form10: TForm10
             TabOrder = 1
             OnKeyDown = ComboBox9KeyDown
           end
-          object SMALL_DBEdit74: TSMALL_DBEdit
+          object edtPercCofinsPefilTrib: TSMALL_DBEdit
             Left = 100
             Top = 75
             Width = 60
@@ -15705,7 +15762,7 @@ object Form10: TForm10
               '98-Outras Opera'#231#245'es de Entrada'
               '99-Outras Opera'#231#245'es')
           end
-          object SMALL_DBEdit77: TSMALL_DBEdit
+          object edtPecPISEntPerfilTrib: TSMALL_DBEdit
             Left = 100
             Top = 50
             Width = 60
@@ -15726,7 +15783,7 @@ object Form10: TForm10
             TabOrder = 1
             OnKeyDown = ComboBox9KeyDown
           end
-          object SMALL_DBEdit78: TSMALL_DBEdit
+          object edtPercCofnsEntPerfilTrib: TSMALL_DBEdit
             Left = 100
             Top = 75
             Width = 60
