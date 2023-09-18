@@ -121,7 +121,6 @@ uses
   uSectionFrentedeCaixaINI in '..\..\unit_compartilhada\uSectionFrentedeCaixaINI.pas',
   uSectionGeralDAT in '..\..\unit_compartilhada\uSectionGeralDAT.pas',
   uSectionGeralUsuarioINF in '..\..\unit_compartilhada\uSectionGeralUsuarioINF.pas',
-  uSectionUsoINF in '..\..\unit_compartilhada\uSectionUsoINF.pas',
   uSmallComINF in '..\..\unit_compartilhada\uSmallComINF.pas',
   uUsuarioINF in '..\..\unit_compartilhada\uUsuarioINF.pas',
   uSectionHTMLUsuarioINF in '..\..\unit_compartilhada\uSectionHTMLUsuarioINF.pas',
@@ -154,8 +153,9 @@ uses
   uIEstruturaRelatorioPadrao in 'interfaces\uIEstruturaRelatorioPadrao.pas',
   uIDadosImpressaoDAO in 'interfaces\uIDadosImpressaoDAO.pas',
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
-  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
+  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',  
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
+  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas';
 
 {$R *.RES}

@@ -2085,7 +2085,23 @@ begin
 
   {Sandro Silva 2023-06-26 fim}
 
-
+  {Sandro Silva 2023-09-14 inicio}
+  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'IDX_RECEBER_ATIVO') = False then
+  begin
+    if ExecutaComando('CREATE INDEX IDX_RECEBER_ATIVO ON RECEBER (ATIVO)') then
+      ExecutaComando('Commit');
+  end;
+  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'IDX_RECEBER_HISTORICO') = False then
+  begin
+    if ExecutaComando('CREATE INDEX IDX_RECEBER_HISTORICO ON RECEBER (HISTORICO)') then
+      ExecutaComando('Commit');
+  end;
+  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'IDX_CONTAS_UPPER_NOME') = False then
+  begin
+    if ExecutaComando('CREATE INDEX IDX_CONTAS_UPPER_NOME ON CONTAS COMPUTED BY (upper(NOME))') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2023-09-14 fim}                                               
 
   {Mauricio Parizotto 2023-07-18 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ICMS_DESONERADO') = False then
