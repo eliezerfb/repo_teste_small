@@ -144,8 +144,6 @@ begin
         begin
           qryTotGrupo.First;
 
-          qryTotGrupo := RetornarDataSetTotalGrupos;
-
           oEstruturaCat := TEstruturaRelResumoVendas.New
                                                     .setDAO(TDadosRelatorioPadraoDAO.New
                                                                                     .setDataBase(DataBase)
@@ -311,7 +309,7 @@ begin
   Result.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
   Result.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
   if AcGrupo <> EmptyStr then
-    Result.SQL.Add('AND (COALESCE(ESTOQUE.NOME, '+QuotedStr(_cSemGrupo)+') = :XGRUPO)');
+    Result.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
   if AcGrupo = EmptyStr then
   begin
     Result.SQL.Add('UNION ALL');
@@ -376,10 +374,10 @@ begin
   Result.SQL.Clear;
   Result.SQL.Add('SELECT');
   Result.SQL.Add('    0 as "Ord"');
-  Result.SQL.Add('    ,COALESCE(GRUPO.NOME, '+QuotedStr(_cSemGrupo)+') AS "Grupo"');
-  Result.SQL.Add('    , CAST(SUM(ESTOQUE.CUS_VEND) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(ESTOQUE.VAL_VEND) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(SUM(ESTOQUE.LUC_VEND) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+  Result.SQL.Add('    , CASE WHEN COALESCE(GRUPO.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE GRUPO.NOME END AS "Grupo"');
+  Result.SQL.Add('    , SUM(CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Custo compra"');
+  Result.SQL.Add('    , SUM(CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Vendido por"');
+  Result.SQL.Add('    , SUM(CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Lucro bruto"');
   Result.SQL.Add('FROM ESTOQUE');
   Result.SQL.Add('LEFT JOIN GRUPO ON');
   Result.SQL.Add(' (GRUPO.NOME=ESTOQUE.NOME)');
