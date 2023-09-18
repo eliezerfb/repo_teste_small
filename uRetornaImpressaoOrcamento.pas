@@ -397,7 +397,7 @@ begin
   FQryItens.SQL.Add('    , ORCAMENT.UNITARIO');
   FQryItens.SQL.Add('    , ORCAMENT.TOTAL');
   FQryItens.SQL.Add('FROM ORCAMENT');
-  FQryItens.SQL.Add('INNER JOIN ESTOQUE ON');
+  FQryItens.SQL.Add('LEFT JOIN ESTOQUE ON');
   FQryItens.SQL.Add('    (ESTOQUE.CODIGO=ORCAMENT.CODIGO)');
   FQryItens.SQL.Add('WHERE (ORCAMENT.PEDIDO=:XORCAMENT)');
   FQryItens.ParamByName('XORCAMENT').AsString := FcNumeroOrcamento;
