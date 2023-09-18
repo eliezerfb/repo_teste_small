@@ -33880,15 +33880,6 @@ begin
     // Envia o e-mail
     EnviarEMail('',cEmail,'','Seu Orçamento', pchar(cMensagem), pChar(cCaminhoArq),False);
   finally
-    // Apaga os arquivos gerados
-    if (cCaminhoArq <> EmptyStr) and (FileExists(cCaminhoArq)) then
-      DeleteFile(PChar(cCaminhoArq));
-
-    cCaminhoArq := StringReplace(cCaminhoArq, '.pdf', '.htm', []);
-
-    if (cCaminhoArq <> EmptyStr) and (FileExists(cCaminhoArq)) then
-      DeleteFile(PChar(cCaminhoArq));
-      
     FreeAndNil(oArqDAT);
   end;                                   
 end;
