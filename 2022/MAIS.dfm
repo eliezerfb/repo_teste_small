@@ -13665,6 +13665,10 @@ object Form1: TForm1
         Caption = 'Configura'#231#227'o de ICMS e ISS...'
         OnClick = TabeladeICMparatodososestados1Click
       end
+      object Perfisdetribitao1: TMenuItem
+        Caption = 'Perfis de tributa'#231#227'o'
+        OnClick = Perfisdetribitao1Click
+      end
       object Opes1: TMenuItem
         Caption = 'Configura'#231#227'o do sistema...'
         OnClick = Opes1Click

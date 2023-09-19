@@ -25,6 +25,9 @@ uses
   , DBGrids
   ;
 
+  type
+    TmensagemSis = (msgInformacao,msgAtencao,msgErro);
+
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -48,9 +51,14 @@ uses
   function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   function GeraMD5(valor :string):string;
+  function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
+  function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
+  procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao); //Mauricio Parizotto 2023-09-13
 
 
 implementation
+
+uses uFuncoesBancoDados;
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
@@ -674,6 +682,63 @@ begin
     idmd5.Free;
   end;
   {$ENDIF}
+end;
+
+function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  Result := '';
+
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+
+  try
+    try
+      IBQUERY.Close;
+      IBQUERY.SQL.Text := 'Select ESTADO From EMITENTE';
+      IBQUERY.Open;
+
+      Result := AllTrim(IBQUERY.FieldByName('ESTADO').AsString);
+    finally
+      IBTRANSACTION.Rollback;
+      FreeAndNil(IBQUERY);
+      FreeAndNil(IBTRANSACTION);
+    end;
+  except
+  end;
+end;
+
+function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
+var
+  ValorAntes, ValorDepois : string;
+begin
+  Result := False;
+
+  try
+    if Field.OldValue = null then
+      ValorAntes := ''
+    else
+      ValorAntes := Field.OldValue;
+
+    if Field.Value = null then
+      ValorDepois := ''
+    else
+      ValorDepois := Field.Value;
+
+    Result := ValorAntes <> ValorDepois;
+  except
+  end;
+end;
+
+procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao);
+begin
+  case Tipo of
+    msgInformacao:  Application.MessageBox(pChar(Mensagem), 'Informação', mb_Ok + MB_ICONINFORMATION);
+    msgAtencao:     Application.MessageBox(pChar(Mensagem), 'Atenção', mb_Ok + MB_ICONWARNING);
+    msgErro:        Application.MessageBox(pChar(Mensagem), 'Erro', mb_Ok + MB_ICONERROR);
+  end;
 end;
 
 end.

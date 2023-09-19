@@ -21,7 +21,6 @@ uses
 
   procedure DropViewProcedure;  
   procedure AtualizaBancoDeDados(sBuild : string);
-  function ExecutaComando(comando:string):Boolean;
 
 implementation
 
