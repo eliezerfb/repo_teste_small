@@ -2234,6 +2234,28 @@ begin
   end;
   {Mauricio Parizotto 2023-08-30 Fim}
 
+
+  {Mauricio Parizotto 2023-09-19 Inicio}
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PARAMETROTRIBUTACAO') = False then
+  begin
+    ExecutaComando('Create table PARAMETROTRIBUTACAO('+
+                   '  IDPARAMETROTRIBUTACAO INTEGER NOT NULL,'+
+                   '  CFOP_ENTRADA VARCHAR(4),'+
+                   '  ORIGEM_ENTRADA VARCHAR(1),'+
+                   '  CST_ENTRADA VARCHAR(2),'+
+                   '  CSOSN_ENTRADA VARCHAR(3),'+
+                   '  ALIQ_ENTRADA NUMERIC(18,4),'+
+                   '  NCM_ENTRADA VARCHAR(8),'+
+                   '  IDPERFILTRIBUTACAO INTEGER NOT NULL,'+
+                   '  REGISTRO VARCHAR(10) NOT NULL,'+
+                   '  CONSTRAINT PK_PARAMETROTRIBUTACAO PRIMARY KEY (REGISTRO)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_PARAMETROTRIBUTACAO');
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-09-19 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
