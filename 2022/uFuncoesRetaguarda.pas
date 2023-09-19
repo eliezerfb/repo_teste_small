@@ -23,6 +23,9 @@ uses
   , IdGlobal
   {$ENDIF}
   , DBGrids
+  , IBDatabase
+  , IBQuery
+  , DB
   ;
 
   type
