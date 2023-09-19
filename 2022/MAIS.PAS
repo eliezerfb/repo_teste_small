@@ -271,6 +271,8 @@ type
     FazerBackupAgora1: TMenuItem;
     BackupAutomtico1: TMenuItem;
     Perfisdetribitao1: TMenuItem;
+    NaturezaseCFOPs1: TMenuItem;
+    ConversodeCFOP1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -283,7 +285,6 @@ type
     procedure EscolheCNAB400(Sender:TObject);
     procedure EscolheCNAB240(Sender:TObject);
     procedure ExecutaOPlugin(Sender:TObject);
-    procedure TabeladeICMparatodososestados1Click(Sender: TObject);
     procedure Cadastrodetransportadoras1Click(Sender: TObject);
     procedure Opes1Click(Sender: TObject);
     procedure Planodecontas1Click(Sender: TObject);
@@ -436,6 +437,8 @@ type
     procedure FazerBackupAgora1Click(Sender: TObject);
     procedure BackupAutomtico1Click(Sender: TObject);
     procedure Perfisdetribitao1Click(Sender: TObject);
+    procedure NaturezaseCFOPs1Click(Sender: TObject);
+    procedure ConversodeCFOP1Click(Sender: TObject);
 
 
   private
@@ -4113,21 +4116,6 @@ end;
 procedure TForm1.ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
 begin
   Form4.ShowModal;
-end;
-
-procedure TForm1.TabeladeICMparatodososestados1Click(Sender: TObject);
-begin
-  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
-  Form7.sModulo := 'ICM';
-  Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
-
-  {$IFDEF VER150}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
-  {$ELSE}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
-  {$ENDIF}
-
-  Form7.Show;
 end;
 
 procedure TForm1.Cadastrodetransportadoras1Click(Sender: TObject);
@@ -12513,6 +12501,35 @@ begin
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
   {$ENDIF}
 
+  Form7.Show;
+end;
+
+procedure TForm1.NaturezaseCFOPs1Click(Sender: TObject);
+begin
+  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
+  Form7.sModulo := 'ICM';
+  Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
+end;
+
+procedure TForm1.ConversodeCFOP1Click(Sender: TObject);
+begin
+  Form7.sModulo := 'CONVERSAOCFOP';
+  Form7.sTitulo := 'Conversão de CFOP';
+  
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+  
   Form7.Show;
 end;
 
