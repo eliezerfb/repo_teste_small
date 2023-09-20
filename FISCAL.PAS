@@ -15857,6 +15857,9 @@ procedure TForm1.ibDataSet25PAGARChange(Sender: TField);
 // Calcula troco
 // Valida quais formas permitem troco
 // Atualiza a diferença para dinheiro
+var
+  dValorTotalDasFormas: Currency;
+  dTotalDasFormasMenosDinheiroCartao: Currency;
 begin
   ///////////////////////////////////////
   // SEFAZ - MANAUS                    //
@@ -15985,143 +15988,164 @@ begin
     // Formas extras NÃO devem ser ajustadas como feito com Dinheiro e cheque.
     // Pode ser vale refeição, sai dinheiro do caixa e fica uma conta para receber da operadora. Mesma situação do cartão de débito/crédito
     // Emitente tira "dinheiro vivo" do caixa para ficar com uma dívida a receber
-    if (Form1.ibDataSet25.FieldByName('VALOR01').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 1
-    then
+    if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
     begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      //Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    if (Form1.ibDataSet25.FieldByName('VALOR02').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 2
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    if (Form1.ibDataSet25.FieldByName('VALOR03').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 3
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    if (Form1.ibDataSet25.FieldByName('VALOR04').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 4
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    if (Form1.ibDataSet25.FieldByName('VALOR05').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 5
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    if (Form1.ibDataSet25.FieldByName('VALOR06').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 6
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    // Sandro Silva 2021-12-23 if (Form1.ibDataSet25.FieldByName('VALOR07').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 7
-    if (StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR07').AsFloat)) > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 7
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
-    end;
-    if (Form1.ibDataSet25.FieldByName('VALOR08').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 8
-    then
-    begin
-      //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
-      //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
-      //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
-      //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
-      Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
-      Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
-    end;
+
+      if (Form1.ibDataSet25.FieldByName('VALOR01').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 1
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        //Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      if (Form1.ibDataSet25.FieldByName('VALOR02').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 2
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      if (Form1.ibDataSet25.FieldByName('VALOR03').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 3
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      if (Form1.ibDataSet25.FieldByName('VALOR04').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 4
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      if (Form1.ibDataSet25.FieldByName('VALOR05').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 5
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      if (Form1.ibDataSet25.FieldByName('VALOR06').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 6
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      // Sandro Silva 2021-12-23 if (Form1.ibDataSet25.FieldByName('VALOR07').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 7
+      if (StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR07').AsFloat)) > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 7
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := 0;
+      end;
+      if (Form1.ibDataSet25.FieldByName('VALOR08').AsFloat > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) // Extra 8
+      then
+      begin
+        //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
+        //Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat := 0; // Prazo
+        //Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0; // Cheque
+        //Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0; // Dinheiro
+        Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    := 0;
+        Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat;
+      end;
+
+    end; // if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
 
     if Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat = StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)) then // Sandro Silva 2021-09-17 if Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat = Form1.ibDataSet25.FieldByName('RECEBER').AsFloat then
     begin
       Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat := 0;
 
-      Form1.ibDataSet25.FieldByName('ACUMULADO3').Asfloat := 0;///aqui
+      Form1.ibDataSet25.FieldByName('ACUMULADO3').Asfloat := 0;
     end;
 
+    dValorTotalDasFormas :=
+      StrToFloat(FormatFloat('0.00',
+                             Form1.ibDataSet25.FieldByName('PAGAR').AsFloat
+                             + Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat
+                             + Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR01').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR02').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR03').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR04').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR05').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR06').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR07').AsFloat
+                             + Form1.ibDataSet25.FieldByName('VALOR08').AsFloat
+                            )
+                            );
+    {Sandro Silva 2023-09-14 inicio
     if ((
     StrToFloat(FormatFloat('0.00',
         Form1.ibDataSet25.FieldByName('PAGAR').AsFloat
@@ -16137,6 +16161,8 @@ begin
          + Form1.ibDataSet25.FieldByName('VALOR08').AsFloat)
          ))
       > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)))
+      }
+    if (dValorTotalDasFormas > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)))
     then
     begin
       //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
@@ -16159,7 +16185,29 @@ begin
     //
     if (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat <> 0) and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat))) then
     begin
+      {Sandro Silva 2023-09-14 inicio
       Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat  := StrToFloat(FormatFloat('0.00', StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)) - Form1.ibDataSet25.FieldByName('PAGAR').AsFloat)); // dinheiro // Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - Form1.ibDataSet25.FieldByName('PAGAR').AsFloat; // dinheiro
+      }
+      // Repassa para valor em dinheiro a diferença o total informado para as outras formas, menos cartão
+      dTotalDasFormasMenosDinheiroCartao :=
+            StrToFloat(FormatFloat('0.00',
+                                   Form1.ibDataSet25.FieldByName('PAGAR').AsFloat        // Cartão
+                                  + Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat  // Prazo
+                                  + Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat  // Cheque
+                                  + Form1.ibDataSet25.FieldByName('VALOR01').AsFloat     // Extra 1
+                                  + Form1.ibDataSet25.FieldByName('VALOR02').AsFloat     // Extra 2
+                                  + Form1.ibDataSet25.FieldByName('VALOR03').AsFloat     // Extra 3
+                                  + Form1.ibDataSet25.FieldByName('VALOR04').AsFloat     // Extra 4
+                                  + Form1.ibDataSet25.FieldByName('VALOR05').AsFloat     // Extra 5
+                                  + Form1.ibDataSet25.FieldByName('VALOR06').AsFloat     // Extra 6
+                                  + Form1.ibDataSet25.FieldByName('VALOR07').AsFloat     // Extra 7
+                                  + Form1.ibDataSet25.FieldByName('VALOR08').AsFloat     // Extra 8
+                                  )
+                            );
+
+      Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat  := StrToFloat(FormatFloat('0.00', StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)) - dTotalDasFormasMenosDinheiroCartao)); // dinheiro // Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - Form1.ibDataSet25.FieldByName('PAGAR').AsFloat; // dinheiro
+      {Sandro Silva 2023-09-14 inicio}
+       
       Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat  := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat)); // 2015-07-30 Eliminar problema de dízima
       Form1.ibDataSet25.FieldByName('ACUMULADO3').ReadOnly := False;
       Form1.ibDataSet25.FieldByName('ACUMULADO3').AsFloat  := 0;
