@@ -10,7 +10,8 @@ uses
   Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
   DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
-  uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery;
+  uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
+  uframeCampo;
 
 const TEXTO_NAO_MOVIMENTA_ESTOQUE          = '= Não movimenta o Estoque';
 const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = '0 Usar o custo de compra nas notas';
@@ -457,6 +458,8 @@ type
     lblAtencaoPerfilTrib: TLabel;
     Label55: TLabel;
     Label117: TLabel;
+    Label118: TLabel;
+    fraPerfilTrib: TfFrameCampo;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -3835,6 +3838,13 @@ begin
       CheckBox2.Checked := True
     else
       CheckBox2.Checked := False;
+
+    {Mauricio Parizotto 2023-09-18 Inicio}
+    fraPerfilTrib.CampoCodigo     := Form7.ibDataSet4IDPERFILTRIBUTACAO;
+    fraPerfilTrib.sCampoDescricao := 'DESCRICAO';
+    fraPerfilTrib.sTabela         := 'PERFILTRIBUTACAO';
+    fraPerfilTrib.CarregaDescricao;
+    {Mauricio Parizotto 2023-09-18 Fim}
   end;
   
   if Form7.sModulo = 'CLIENTES' then
@@ -7935,8 +7945,12 @@ begin
       end;
     end;
 
-    if ComboBox9.CanFocus then
-      ComboBox9.SetFocus;
+    //Mauricio Parizotto 2023-09-18
+    //if ComboBox9.CanFocus then
+    //  ComboBox9.SetFocus;    
+    if fraPerfilTrib.txtCampo.CanFocus then
+      fraPerfilTrib.txtCampo.SetFocus;
+
     if Form10.SMALL_DBEDITY.CanFocus then
       Form10.SMALL_DBEDITY.SetFocus;
 

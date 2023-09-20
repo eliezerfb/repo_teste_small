@@ -1,6 +1,6 @@
 object Form10: TForm10
-  Left = 178
-  Top = 151
+  Left = 462
+  Top = 233
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
@@ -2711,7 +2711,7 @@ object Form10: TForm10
         OnShow = orelha_ICMSShow
         object Label31: TLabel
           Left = 10
-          Top = 50
+          Top = 77
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2729,7 +2729,7 @@ object Form10: TForm10
         end
         object Label32: TLabel
           Left = 10
-          Top = 100
+          Top = 127
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2747,7 +2747,7 @@ object Form10: TForm10
         end
         object Label33: TLabel
           Left = 10
-          Top = 125
+          Top = 152
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2765,7 +2765,7 @@ object Form10: TForm10
         end
         object Label34: TLabel
           Left = 10
-          Top = 150
+          Top = 177
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2783,7 +2783,7 @@ object Form10: TForm10
         end
         object Label35: TLabel
           Left = 10
-          Top = 225
+          Top = 252
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2801,7 +2801,7 @@ object Form10: TForm10
         end
         object Label36: TLabel
           Left = 10
-          Top = 200
+          Top = 227
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2819,7 +2819,7 @@ object Form10: TForm10
         end
         object Label37: TLabel
           Left = 10
-          Top = 200
+          Top = 227
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2837,7 +2837,7 @@ object Form10: TForm10
         end
         object Label53: TLabel
           Left = 10
-          Top = 25
+          Top = 52
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2852,7 +2852,7 @@ object Form10: TForm10
         end
         object Label51: TLabel
           Left = 10
-          Top = 175
+          Top = 202
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2870,7 +2870,7 @@ object Form10: TForm10
         end
         object lblCIT: TLabel
           Left = 165
-          Top = 227
+          Top = 254
           Width = 98
           Height = 13
           Caption = '5102 - Venda a vista'
@@ -2883,7 +2883,7 @@ object Form10: TForm10
         end
         object LabelDescricaoNCM: TLabel
           Left = 215
-          Top = 50
+          Top = 77
           Width = 48
           Height = 13
           Caption = 'Descri'#231#227'o'
@@ -2896,7 +2896,7 @@ object Form10: TForm10
         end
         object Label83: TLabel
           Left = 10
-          Top = 250
+          Top = 277
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2914,7 +2914,7 @@ object Form10: TForm10
         end
         object Label72: TLabel
           Left = 10
-          Top = 275
+          Top = 302
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2932,7 +2932,7 @@ object Form10: TForm10
         end
         object Label84: TLabel
           Left = 10
-          Top = 275
+          Top = 302
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2950,7 +2950,7 @@ object Form10: TForm10
         end
         object Label92: TLabel
           Left = 10
-          Top = 300
+          Top = 327
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2968,7 +2968,7 @@ object Form10: TForm10
         end
         object Label71: TLabel
           Left = 165
-          Top = 325
+          Top = 352
           Width = 187
           Height = 13
           Caption = '% do Imposto Aproximado (Fonte: IBPT)'
@@ -2981,7 +2981,7 @@ object Form10: TForm10
         end
         object Label90: TLabel
           Left = 10
-          Top = 325
+          Top = 352
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -2999,7 +2999,7 @@ object Form10: TForm10
         end
         object Label91: TLabel
           Left = 64
-          Top = 350
+          Top = 377
           Width = 41
           Height = 13
           Alignment = taRightJustify
@@ -3016,7 +3016,7 @@ object Form10: TForm10
         end
         object Label93: TLabel
           Left = 60
-          Top = 375
+          Top = 402
           Width = 45
           Height = 13
           Alignment = taRightJustify
@@ -3033,7 +3033,7 @@ object Form10: TForm10
         end
         object Label94: TLabel
           Left = 163
-          Top = 300
+          Top = 327
           Width = 8
           Height = 13
           Alignment = taCenter
@@ -3050,7 +3050,7 @@ object Form10: TForm10
         end
         object Label95: TLabel
           Left = 10
-          Top = 74
+          Top = 101
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -3068,7 +3068,7 @@ object Form10: TForm10
         end
         object Label96: TLabel
           Left = 165
-          Top = 350
+          Top = 377
           Width = 187
           Height = 13
           Caption = '% do Imposto Aproximado (Fonte: IBPT)'
@@ -3081,7 +3081,7 @@ object Form10: TForm10
         end
         object Label97: TLabel
           Left = 165
-          Top = 375
+          Top = 402
           Width = 187
           Height = 13
           Caption = '% do Imposto Aproximado (Fonte: IBPT)'
@@ -3092,9 +3092,24 @@ object Form10: TForm10
           Font.Style = []
           ParentFont = False
         end
+        object Label118: TLabel
+          Left = 10
+          Top = 26
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Perfil de Tributa'#231#227'o'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
         object SMALL_DBEdit31: TSMALL_DBEdit
           Left = 110
-          Top = 50
+          Top = 77
           Width = 100
           Height = 20
           AutoSize = False
@@ -3110,14 +3125,14 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 2
           OnChange = SMALL_DBEdit31Change
           OnExit = SMALL_DBEdit31Change
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit37: TSMALL_DBEdit
           Left = 110
-          Top = 150
+          Top = 177
           Width = 50
           Height = 20
           AutoSize = False
@@ -3133,12 +3148,12 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 5
+          TabOrder = 6
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit38: TSMALL_DBEdit
           Left = 110
-          Top = 225
+          Top = 252
           Width = 50
           Height = 20
           AutoSize = False
@@ -3154,13 +3169,13 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 9
+          TabOrder = 10
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
         object cboCST_Prod: TComboBox
           Left = 110
-          Top = 200
+          Top = 227
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3171,7 +3186,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 8
+          TabOrder = 9
           OnChange = cboCST_ProdChange
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3202,7 +3217,7 @@ object Form10: TForm10
           Ctl3D = False
           ParentBackground = False
           ParentCtl3D = False
-          TabOrder = 17
+          TabOrder = 18
           object Image4: TImage
             Left = 2
             Top = 2
@@ -3651,7 +3666,7 @@ object Form10: TForm10
         end
         object ComboBox9: TComboBox
           Left = 110
-          Top = 25
+          Top = 52
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3662,7 +3677,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 0
+          TabOrder = 1
           OnChange = ComboBox9Change
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3683,28 +3698,7 @@ object Form10: TForm10
         end
         object ComboBox5: TComboBox
           Left = 110
-          Top = 100
-          Width = 390
-          Height = 22
-          Style = csOwnerDrawVariable
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ItemHeight = 16
-          ParentFont = False
-          TabOrder = 3
-          OnChange = ComboBox5Change
-          OnEnter = cboOrigemProdEnter
-          OnKeyDown = ComboBox9KeyDown
-          Items.Strings = (
-            'P - Produ'#231#227'o pr'#243'pria'
-            'T - Produ'#231#227'o por terceiros')
-        end
-        object ComboBox6: TComboBox
-          Left = 110
-          Top = 125
+          Top = 127
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3716,16 +3710,16 @@ object Form10: TForm10
           ItemHeight = 16
           ParentFont = False
           TabOrder = 4
-          OnChange = ComboBox6Change
+          OnChange = ComboBox5Change
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
           Items.Strings = (
-            'A - Arredondamento'
-            'T - Truncamento')
+            'P - Produ'#231#227'o pr'#243'pria'
+            'T - Produ'#231#227'o por terceiros')
         end
-        object cboOrigemProd: TComboBox
+        object ComboBox6: TComboBox
           Left = 110
-          Top = 175
+          Top = 152
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3736,7 +3730,28 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 6
+          TabOrder = 5
+          OnChange = ComboBox6Change
+          OnEnter = cboOrigemProdEnter
+          OnKeyDown = ComboBox9KeyDown
+          Items.Strings = (
+            'A - Arredondamento'
+            'T - Truncamento')
+        end
+        object cboOrigemProd: TComboBox
+          Left = 110
+          Top = 202
+          Width = 390
+          Height = 22
+          Style = csOwnerDrawVariable
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ItemHeight = 16
+          ParentFont = False
+          TabOrder = 7
           OnChange = cboOrigemProdChange
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3772,7 +3787,7 @@ object Form10: TForm10
         end
         object cboCSOSN_Prod: TComboBox
           Left = 110
-          Top = 200
+          Top = 227
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3783,7 +3798,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 7
+          TabOrder = 8
           OnChange = cboCSOSN_ProdChange
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3815,7 +3830,7 @@ object Form10: TForm10
         end
         object ComboBox11: TComboBox
           Left = 110
-          Top = 250
+          Top = 277
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3826,7 +3841,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 10
+          TabOrder = 11
           OnChange = ComboBox11Change
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3861,7 +3876,7 @@ object Form10: TForm10
         end
         object ComboBox14: TComboBox
           Left = 110
-          Top = 275
+          Top = 302
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3872,7 +3887,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 12
+          TabOrder = 13
           OnChange = ComboBox14Change
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3890,7 +3905,7 @@ object Form10: TForm10
         end
         object ComboBox15: TComboBox
           Left = 110
-          Top = 275
+          Top = 302
           Width = 390
           Height = 22
           Style = csOwnerDrawVariable
@@ -3901,7 +3916,7 @@ object Form10: TForm10
           Font.Style = []
           ItemHeight = 16
           ParentFont = False
-          TabOrder = 11
+          TabOrder = 12
           OnChange = ComboBox15Change
           OnEnter = cboOrigemProdEnter
           OnKeyDown = ComboBox9KeyDown
@@ -3923,7 +3938,7 @@ object Form10: TForm10
         end
         object SMALL_DBEdit66: TSMALL_DBEdit
           Left = 110
-          Top = 300
+          Top = 327
           Width = 50
           Height = 20
           AutoSize = False
@@ -3939,12 +3954,12 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 13
+          TabOrder = 14
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit52: TSMALL_DBEdit
           Left = 110
-          Top = 325
+          Top = 352
           Width = 50
           Height = 20
           AutoSize = False
@@ -3962,13 +3977,13 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           ReadOnly = True
-          TabOrder = 14
+          TabOrder = 15
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit63: TSMALL_DBEdit
           Left = 110
-          Top = 350
+          Top = 377
           Width = 50
           Height = 20
           AutoSize = False
@@ -3986,13 +4001,13 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           ReadOnly = True
-          TabOrder = 15
+          TabOrder = 16
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit65: TSMALL_DBEdit
           Left = 110
-          Top = 375
+          Top = 402
           Width = 50
           Height = 20
           AutoSize = False
@@ -4010,13 +4025,13 @@ object Form10: TForm10
           ParentCtl3D = False
           ParentFont = False
           ReadOnly = True
-          TabOrder = 16
+          TabOrder = 17
           OnExit = SMALL_DBEdit38Exit
           OnKeyDown = ComboBox9KeyDown
         end
         object SMALL_DBEdit67: TSMALL_DBEdit
           Left = 110
-          Top = 74
+          Top = 101
           Width = 100
           Height = 20
           AutoSize = False
@@ -4032,10 +4047,36 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 2
+          TabOrder = 3
           OnChange = SMALL_DBEdit31Change
           OnExit = SMALL_DBEdit31Change
           OnKeyDown = ComboBox9KeyDown
+        end
+        inline fraPerfilTrib: TfFrameCampo
+          Left = 110
+          Top = 25
+          Width = 390
+          Height = 22
+          Color = clWhite
+          Ctl3D = False
+          ParentBackground = False
+          ParentColor = False
+          ParentCtl3D = False
+          TabOrder = 0
+          DesignSize = (
+            390
+            22)
+          inherited txtCampo: TEdit
+            Width = 390
+            Font.Name = 'Microsoft Sans Serif'
+          end
+          inherited gdRegistros: TDBGrid
+            Width = 390
+            Font.Charset = ANSI_CHARSET
+            Font.Name = 'System'
+            TitleFont.Charset = ANSI_CHARSET
+            TitleFont.Name = 'Microsoft Sans Serif'
+          end
         end
       end
       object Orelha_IPI: TTabSheet

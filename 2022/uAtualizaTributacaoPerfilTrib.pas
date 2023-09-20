@@ -8,9 +8,11 @@ uses
   , Controls
   , IBCustomDataSet
   , DB
+  , IBQuery
   ;
 
   function AtualizaTibutacaoProduto(IDPerfil:integer; out ProdutosErro : string):Boolean;
+  function SetTibutacaoProduto(IDPerfil :integer):Boolean;
 
 implementation
 
@@ -81,5 +83,53 @@ begin
 
   AgendaCommit(true);
 end;
+
+
+function SetTibutacaoProduto(IDPerfil :integer):Boolean;
+var
+  ibqPerfilTrib : TIBQuery;
+begin
+  Result := False;
+
+  ibqPerfilTrib := CriaIBQuery(Form7.ibDataSet4.Transaction);
+
+  try
+    ibqPerfilTrib.DisableControls;
+    ibqPerfilTrib.Close;
+    ibqPerfilTrib.SQL.Text := ' Select * '+
+                              ' From PERFILTRIBUTACAO '+
+                              ' Where IDPERFILTRIBUTACAO = '+IntToStr(IDPerfil);
+    ibqPerfilTrib.Open;
+
+    try
+      Form7.ibDataSet4.FieldByName('TIPO_ITEM').AsString               := ibqPerfilTrib.FieldByName('TIPO_ITEM').AsString;
+      Form7.ibDataSet4.FieldByName('IPPT').AsString                    := ibqPerfilTrib.FieldByName('IPPT').AsString;
+      Form7.ibDataSet4.FieldByName('IAT').AsString                     := ibqPerfilTrib.FieldByName('IAT').AsString;
+      Form7.ibDataSet4.FieldByName('PIVA').AsString                    := ibqPerfilTrib.FieldByName('PIVA').AsString;
+      Form7.ibDataSet4.FieldByName('CST').AsString                     := ibqPerfilTrib.FieldByName('CST').AsString;
+      Form7.ibDataSet4.FieldByName('CSOSN').AsString                   := ibqPerfilTrib.FieldByName('CSOSN').AsString;
+      Form7.ibDataSet4.FieldByName('ST').AsString                      := ibqPerfilTrib.FieldByName('ST').AsString;
+      Form7.ibDataSet4.FieldByName('CFOP').AsString                    := ibqPerfilTrib.FieldByName('CFOP').AsString;
+      Form7.ibDataSet4.FieldByName('CST_NFCE').AsString                := ibqPerfilTrib.FieldByName('CST_NFCE').AsString;
+      Form7.ibDataSet4.FieldByName('CSOSN_NFCE').AsString              := ibqPerfilTrib.FieldByName('CSOSN_NFCE').AsString;
+      Form7.ibDataSet4.FieldByName('ALIQUOTA_NFCE').AsString           := ibqPerfilTrib.FieldByName('ALIQUOTA_NFCE').AsString;
+      Form7.ibDataSet4.FieldByName('CST_IPI').AsString                 := ibqPerfilTrib.FieldByName('CST_IPI').AsString;
+      Form7.ibDataSet4.FieldByName('IPI').AsString                     := ibqPerfilTrib.FieldByName('IPI').AsString;
+      Form7.ibDataSet4.FieldByName('ENQ_IPI').AsString                 := ibqPerfilTrib.FieldByName('ENQ_IPI').AsString;
+      Form7.ibDataSet4.FieldByName('CST_PIS_COFINS_SAIDA').AsString    := ibqPerfilTrib.FieldByName('CST_PIS_COFINS_SAIDA').AsString;
+      Form7.ibDataSet4.FieldByName('ALIQ_PIS_SAIDA').AsString          := ibqPerfilTrib.FieldByName('ALIQ_PIS_SAIDA').AsString;
+      Form7.ibDataSet4.FieldByName('ALIQ_COFINS_SAIDA').AsString       := ibqPerfilTrib.FieldByName('ALIQ_COFINS_SAIDA').AsString;
+      Form7.ibDataSet4.FieldByName('CST_PIS_COFINS_ENTRADA').AsString  := ibqPerfilTrib.FieldByName('CST_PIS_COFINS_ENTRADA').AsString;
+      Form7.ibDataSet4.FieldByName('ALIQ_COFINS_ENTRADA').AsString     := ibqPerfilTrib.FieldByName('ALIQ_COFINS_ENTRADA').AsString;
+      Form7.ibDataSet4.FieldByName('ALIQ_PIS_ENTRADA').AsString        := ibqPerfilTrib.FieldByName('ALIQ_PIS_ENTRADA').AsString;
+
+      Result := True;
+    except
+    end;
+  finally
+    FreeAndNil(ibqPerfilTrib);
+  end;
+end;
+
 
 end.

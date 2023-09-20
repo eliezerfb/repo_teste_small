@@ -1446,6 +1446,7 @@ type
     ibDataSet16CSOSN: TIBStringField;
     ibDataSet24IDENTIFICADORPLANOCONTAS: TIBStringField;
     ibDataSet4IDENTIFICADORPLANOCONTAS: TIBStringField;
+    ibDataSet4IDPERFILTRIBUTACAO: TIntegerField;
     ibDataSet16IDENTIFICADORPLANOCONTAS: TIBStringField;
     ibDataSet35IDENTIFICADORPLANOCONTAS: TIBStringField;
     Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem;
@@ -2204,11 +2205,14 @@ type
     procedure DSPerfilTributaStateChange(Sender: TObject);
     procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
     procedure Button1Click(Sender: TObject);
+    procedure ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
+    procedure ibDataSet4TIPO_ITEMChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
     FbImportandoXML: Boolean;
+    StatusTrocaPerfil : string;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2241,6 +2245,7 @@ type
     procedure DefineCaptionReceberPagar;
     function TestarPodeExcluirOrcamento: Boolean;
     procedure ExcluirOrcamento;
+    procedure VerificaAlteracaoPerfil;
   public
     // Public declarations
 
@@ -26910,7 +26915,9 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
-  Exit;
+  //Mauricio Parizotto 2023-09-18
+  if StatusTrocaPerfil = 'PR' then
+    Exit;
 
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
                     + Chr(10))
@@ -26932,6 +26939,8 @@ begin
       Screen.Cursor            := crDefault;
     end;
   end;
+
+  VerificaAlteracaoPerfil;//Mauricio Parizotto 2023-09-18
 end;
 
 procedure TForm7.SPEDPISCOFINS1Click(Sender: TObject);
@@ -27623,7 +27632,11 @@ begin
     Form7.ibQuery3.Close;
     //
   end;
-  //
+
+  //Mauricio Parizotto 2023-09-20
+  if TField(Sender).FieldName = 'CST' then
+    VerificaAlteracaoPerfil;
+
 end;
 
 procedure TForm7.IImprimirCartadeCorreoEletronicaCCe1Click(
@@ -33817,6 +33830,35 @@ begin
       Abort;
     end;
   end;
+end;
+
+procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
+begin
+  if ibDataSet4IDPERFILTRIBUTACAO.AsInteger > 0 then
+  begin
+    StatusTrocaPerfil := 'PR';
+    SetTibutacaoProduto(ibDataSet4IDPERFILTRIBUTACAO.AsInteger);
+    Form10.orelha_ICMSShow(sender);
+    StatusTrocaPerfil := 'OK';
+  end;
+
+  Form10.fraPerfilTrib.CarregaDescricao;
+end;
+
+procedure TForm7.VerificaAlteracaoPerfil;
+begin
+  if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
+    Exit;
+
+  if StatusTrocaPerfil = 'PR' then
+    Exit;
+
+  ibDataSet4IDPERFILTRIBUTACAO.AsString := '';
+end;
+
+procedure TForm7.ibDataSet4TIPO_ITEMChange(Sender: TField);
+begin
+  VerificaAlteracaoPerfil;
 end;
 
 procedure TForm7.Button1Click(Sender: TObject);
