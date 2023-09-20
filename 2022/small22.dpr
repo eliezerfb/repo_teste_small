@@ -155,7 +155,8 @@ uses
   uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
-  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas';
+  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
+  uParametroTributacao in 'uParametroTributacao.pas';
 
 {$R *.RES}
 
