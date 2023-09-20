@@ -542,7 +542,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uSmallConsts
   , uConectaBancoCommerce
   , uTypesRecursos
-  , uArquivosDAT;
+  , uArquivosDAT, uIconesSistema;
 
 {$R *.DFM}
 
@@ -4494,6 +4494,9 @@ begin
 
   Image4.Transparent := False;
   {Mauricio Parizotto 2023-05-31 Fim}
+
+  //Mauricio Parizotto 2023-09-22
+  CarregaIconesSistema;
 end;
 
 procedure TForm1.DadosdoEmitente1Click(Sender: TObject);

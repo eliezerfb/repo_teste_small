@@ -1,11 +1,11 @@
 object Form10: TForm10
-  Left = 530
-  Top = 206
+  Left = 178
+  Top = 151
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
-  ClientHeight = 688
-  ClientWidth = 1008
+  ClientHeight = 689
+  ClientWidth = 1462
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3632,7 +3632,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 24
+            Height = 21
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -4627,7 +4627,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4646,7 +4646,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4665,7 +4665,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4684,7 +4684,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4703,7 +4703,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4722,7 +4722,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -4741,7 +4741,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET

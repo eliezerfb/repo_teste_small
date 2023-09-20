@@ -1557,6 +1557,7 @@ type
     ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField;
     ibdPerfilTributaREGISTRO: TIBStringField;
     ibdPerfilTributaALIQ_PIS_ENTRADA: TIBBCDField;
+    Button1: TButton;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
