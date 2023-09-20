@@ -174,15 +174,21 @@ begin
       nDesconto := nDesconto + FQryItens.FieldByName('TOTAL').AsFloat;
     FQryItens.Next;
   end;
-
   nTotal := nTotal - nDesconto;
+  FlsImpressao.Add('</table>');
+  FlsImpressao.Add('<br>');
 
-  FlsImpressao.Add('<table border=0 cellspacing=1 cellpadding=5 Width=100%>');
+  FlsImpressao.Add('<table border=0 cellspacing=1 cellpadding=1 Width=640>');
   FlsImpressao.Add(' <tr>');
-
-  FlsImpressao.Add('  <td bordercolor=#FFFFFF align=Right><font face="Arial" size=1><b>Desconto R$: ' + Format('%12.' + IntToStr(FnDecimaisPreco) + 'n', [nDesconto]) + '<br><br>Total R$: ' + Format('%12.' + IntToStr(FnDecimaisPreco) + 'n', [nTotal]) + '</td></b>'); // Valor
+  if AllTrim(FQryOrcamento.FieldByName('OBS').AsString) <> EmptyStr then
+  begin
+    FlsImpressao.Add('  <td bgcolor=#FFFFFF vAlign=Top align=Left width=500><font face="Arial" size=1><b>Observação</b><br>');
+    FlsImpressao.Add('  <bgcolor=#FFFFFF  vAlign=Top align=Left width=500><font face="Arial" size=1>' + FQryOrcamento.FieldByName('OBS').AsString + '</td>');
+  end;
+  FlsImpressao.Add('  <td bordercolor=#FFFFFF vAlign=Top align=Right><font face="Arial" size=1><b>Desconto R$: ' + Format('%12.' + IntToStr(FnDecimaisPreco) + 'n', [nDesconto]) + '<br><br>Total R$: ' + Format('%12.' + IntToStr(FnDecimaisPreco) + 'n', [nTotal]) + '</td></b>'); // Valor  
   FlsImpressao.Add(' </tr>');
-
+  FlsImpressao.Add('</table>');
+  
   FlsImpressao.Add('<table border=0 cellspacing=1 cellpadding=2 Width=100%');
   FlsImpressao.Add(' <tr>');
   FlsImpressao.Add('  <br><font face="Arial" size=1><center>É vedada a autenticação deste documento</center>');
@@ -209,6 +215,7 @@ function TRetornaImpressaoOrcamento.MontarTXT: IRetornaImpressaoOrcamento;
 var
   nTotal, nDesconto: Double;
   cCodigo: String;
+  cObs: String;
 begin
   Result := Self;
 
@@ -283,6 +290,20 @@ begin
   FlsImpressao.Add('SUB TOTAL                           '+Format('%10.2n',[nTotal]));
   FlsImpressao.Add('DESCONTO                            '+Format('%10.2n',[nDesconto]));
   FlsImpressao.Add('TOTAL                               '+Format('%10.2n',[nTotal-nDesconto]));
+
+  if AllTrim(FQryOrcamento.FieldByname('OBS').AsString) <> EmptyStr then
+  begin
+    cObs := FQryOrcamento.FieldByname('OBS').AsString;
+    FlsImpressao.Add(EmptyStr);
+    FlsImpressao.Add('OBSERVAÇÃO');
+    while Length(cObs) > 0 do
+    begin
+      FlsImpressao.Add(Copy(cObs,1,45));
+      cObs := Copy(cObs, 46, Length(cObs));
+    end;
+    FlsImpressao.Add(EmptyStr);
+  end;
+
   FlsImpressao.Add('É vedada a autenticação deste documento');
   FlsImpressao.Add(EmptyStr);
   FlsImpressao.Add(EmptyStr);
@@ -368,11 +389,14 @@ begin
   FQryOrcamento.SQL.Add('    , CLIFOR.FONE');
   FQryOrcamento.SQL.Add('    , CLIFOR.CGC');
   FQryOrcamento.SQL.Add('    , VENDEDOR.NOME AS VENDEDOR');
+  FQryOrcamento.SQL.Add('    , ORCAMENTOBS.OBS AS OBS');
   FQryOrcamento.SQL.Add('FROM ORCAMENT');
   FQryOrcamento.SQL.Add('INNER JOIN CLIFOR ON');
   FQryOrcamento.SQL.Add('    (CLIFOR.NOME=ORCAMENT.CLIFOR)');
   FQryOrcamento.SQL.Add('LEFT JOIN VENDEDOR ON');
   FQryOrcamento.SQL.Add('    (VENDEDOR.NOME=ORCAMENT.VENDEDOR)');
+  FQryOrcamento.SQL.Add('LEFT JOIN ORCAMENTOBS ON');
+  FQryOrcamento.SQL.Add('    (ORCAMENTOBS.PEDIDO=ORCAMENT.PEDIDO)');
   FQryOrcamento.SQL.Add('WHERE (ORCAMENT.PEDIDO=:XORCAMENT)');
   FQryOrcamento.SQL.Add(' AND (ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ')');
   FQryOrcamento.ParamByName('XORCAMENT').AsString := FcNumeroOrcamento;
