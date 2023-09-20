@@ -20461,6 +20461,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibDataSet37AfterDelete
+    AfterOpen = ibDataSet37AfterOpen
     AfterPost = ibDataSet37AfterPost
     BeforePost = ibDataSet37BeforePost
     BufferChunks = 1000
@@ -21417,7 +21418,7 @@ object Form7: TForm7
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
-    Top = 715
+    Top = 758
     object IBDataSet6CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'CODIGO'
@@ -21448,7 +21449,7 @@ object Form7: TForm7
   object DataSource6: TDataSource
     DataSet = IBDataSet6
     Left = 233
-    Top = 719
+    Top = 762
   end
   object IBDataSet99999: TIBDataSet
     Database = IBDatabase1
@@ -22428,5 +22429,65 @@ object Form7: TForm7
       Visible = False
       Size = 10
     end
+  end
+  object IbdOrcamentObs: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = IbdOrcamentObsAfterDelete
+    AfterPost = IbdOrcamentObsAfterPost
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from ORCAMENTOBS'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into ORCAMENTOBS'
+      '  (PEDIDO, OBS, REGISTRO)'
+      'values'
+      '  (:PEDIDO, :OBS, :REGISTRO)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  PEDIDO,'
+      '  OBS,'
+      '  REGISTRO'
+      'from ORCAMENTOBS'
+      'where'
+      '  REGISTRO = :REGISTRO')
+    SelectSQL.Strings = (
+      'select * from ORCAMENTOBS')
+    ModifySQL.Strings = (
+      'update ORCAMENTOBS'
+      'set'
+      '  PEDIDO = :PEDIDO,'
+      '  REGISTRO = :REGISTRO,'
+      '  OBS = :OBS'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 199
+    Top = 711
+    object IbdOrcamentObsREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = 'ORCAMENTOBS.REGISTRO'
+      Required = True
+      Size = 10
+    end
+    object IbdOrcamentObsPEDIDO: TIBStringField
+      FieldName = 'PEDIDO'
+      Origin = 'ORCAMENTOBS.PEDIDO'
+      Required = True
+      Size = 10
+    end
+    object IbdOrcamentObsOBS: TMemoField
+      FieldName = 'OBS'
+      Origin = 'ORCAMENTOBS.OBS'
+      BlobType = ftMemo
+      Size = 8
+    end
+  end
+  object dsOrcamentObs: TDataSource
+    DataSet = IbdOrcamentObs
+    Left = 233
+    Top = 711
   end
 end
