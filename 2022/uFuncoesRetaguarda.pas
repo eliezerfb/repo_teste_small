@@ -59,6 +59,7 @@ uses
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
   procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao); //Mauricio Parizotto 2023-09-13
 
+
 implementation
 
 uses uFuncoesBancoDados;
@@ -743,7 +744,6 @@ begin
     msgErro:        Application.MessageBox(pChar(Mensagem), 'Erro', mb_Ok + MB_ICONERROR);
   end;
 end;
-
 
 end.
 

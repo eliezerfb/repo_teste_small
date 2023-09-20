@@ -155,8 +155,8 @@ uses
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
   uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',  
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
-  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
-  uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas';
+  uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
+  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas';
 
 {$R *.RES}
 
