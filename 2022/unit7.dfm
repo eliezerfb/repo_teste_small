@@ -21999,7 +21999,7 @@ object Form7: TForm7
     object MenuItem129: TMenuItem
       Caption = '&Arquivo'
       object ConfiguraodeICMSeISS1: TMenuItem
-        Caption = 'Configura'#231#227'o de ICMS e ISS...'
+        Caption = 'Naturezas e CFOPs'
         OnClick = ConfiguraodeICMSeISS1Click
       end
       object MenuItem142: TMenuItem

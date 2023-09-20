@@ -13662,12 +13662,19 @@ object Form1: TForm1
       Caption = 'Configura'#231#245'es'
       OnClick = Configuraes1Click
       object TabeladeICMparatodososestados1: TMenuItem
-        Caption = 'Configura'#231#227'o de ICMS e ISS...'
-        OnClick = TabeladeICMparatodososestados1Click
-      end
-      object Perfisdetribitao1: TMenuItem
-        Caption = 'Perfis de tributa'#231#227'o'
-        OnClick = Perfisdetribitao1Click
+        Caption = 'Configura'#231#227'o de ICMS e ISS'
+        object NaturezaseCFOPs1: TMenuItem
+          Caption = 'Naturezas e CFOPs'
+          OnClick = NaturezaseCFOPs1Click
+        end
+        object ConversodeCFOP1: TMenuItem
+          Caption = 'Convers'#227'o de CFOP'
+          OnClick = ConversodeCFOP1Click
+        end
+        object Perfisdetribitao1: TMenuItem
+          Caption = 'Perfil de tributa'#231#227'o'
+          OnClick = Perfisdetribitao1Click
+        end
       end
       object Opes1: TMenuItem
         Caption = 'Configura'#231#227'o do sistema...'
