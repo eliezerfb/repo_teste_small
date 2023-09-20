@@ -108,7 +108,7 @@ begin
                     ' From '+sTabela+
                     ' Where 1=1 '+
                     sFiltro+
-                    ' Order by '+sCampoDescricao;
+                    ' Order by upper('+sCampoDescricao+')';
   Query.Open;
 
   if Query.Locate(sCampoCodigo, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
@@ -149,6 +149,10 @@ begin
     txtCampo.Clear;
     CampoCodigo.Value := null;
   end;
+
+  gdRegistros.Visible := False;
+  Self.Height := txtCampo.Height;
+  Self.SendToBack;
 end;
 
 end.
