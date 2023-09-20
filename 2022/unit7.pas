@@ -33848,7 +33848,7 @@ begin
   if StatusTrocaPerfil = 'PR' then
     Exit;
 
-  ibDataSet4IDPERFILTRIBUTACAO.AsInteger := 0;
+  ibDataSet4IDPERFILTRIBUTACAO.AsString := '';
 end;
 
 procedure TForm7.ibDataSet4TIPO_ITEMChange(Sender: TField);
