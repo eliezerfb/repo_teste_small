@@ -27631,7 +27631,10 @@ begin
     //
   end;
 
-  VerificaAlteracaoPerfil;//Mauricio Parizotto 2023-09-18
+  //Mauricio Parizotto 2023-09-20
+  if TField(Sender).FieldName = 'CST' then
+    VerificaAlteracaoPerfil;
+
 end;
 
 procedure TForm7.IImprimirCartadeCorreoEletronicaCCe1Click(
