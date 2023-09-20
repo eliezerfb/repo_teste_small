@@ -273,6 +273,7 @@ type
     Perfisdetribitao1: TMenuItem;
     NaturezaseCFOPs1: TMenuItem;
     ConversodeCFOP1: TMenuItem;
+    Parmetrosdetributao1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);

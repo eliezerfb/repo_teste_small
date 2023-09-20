@@ -28,6 +28,7 @@ type
     Panel8: TPanel;
     Button19: TBitBtn;
     pgcFicha: TPageControl;
+    DSCadastro: TDataSource;
     procedure lblNovoMouseLeave(Sender: TObject);
     procedure lblProcurarMouseLeave(Sender: TObject);
     procedure lblVisualizarMouseLeave(Sender: TObject);
@@ -56,7 +57,8 @@ var
 
 implementation
 
-uses uIconesSistema;
+uses uIconesSistema
+    ;
 
 {$R *.dfm}
 

@@ -1,6 +1,6 @@
 inherited FrmFichaPadrao: TFrmFichaPadrao
-  Left = 639
-  Top = 158
+  Left = 343
+  Top = 241
   BorderIcons = []
   Caption = 'Ficha'
   ClientHeight = 618
@@ -903,5 +903,9 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentFont = False
       TabOrder = 0
     end
+  end
+  object DSCadastro: TDataSource
+    Left = 673
+    Top = 7
   end
 end

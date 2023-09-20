@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_PerfilTrib
+      ActivePage = orelha_ICMS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3632,7 +3632,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 21
+            Height = 24
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14

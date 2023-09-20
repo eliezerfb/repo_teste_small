@@ -158,7 +158,8 @@ uses
   uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
   uFrmPadrao in 'uFrmPadrao.pas' {FrmPadrao},
   uFrmFichaPadrao in 'uFrmFichaPadrao.pas' {FrmFichaPadrao},
-  uIconesSistema in 'uIconesSistema.pas';
+  uIconesSistema in 'uIconesSistema.pas',
+  uFrmParametroTributacao in 'uFrmParametroTributacao.pas' {FrmParametroTributacao};
 
 {$R *.RES}
 
@@ -235,6 +236,7 @@ begin
   Application.CreateForm(TForm45, Form45);
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmFichaPadrao, FrmFichaPadrao);
+  Application.CreateForm(TFrmParametroTributacao, FrmParametroTributacao);
   Application.Run;
     end else
     begin

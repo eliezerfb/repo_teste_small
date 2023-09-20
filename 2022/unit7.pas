@@ -2203,6 +2203,7 @@ type
     procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
     procedure DSPerfilTributaStateChange(Sender: TObject);
     procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
+    procedure Button1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2413,7 +2414,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uNFSeINI
   , uAtualizaBancoDados
   , uAtualizaTributacaoPerfilTrib
-  , uSmallResourceString;
+  , uSmallResourceString, uFrmParametroTributacao;
 
 {$R *.DFM}
 
@@ -33816,6 +33817,11 @@ begin
       Abort;
     end;
   end;
+end;
+
+procedure TForm7.Button1Click(Sender: TObject);
+begin
+  FrmParametroTributacao.Show;
 end;
 
 end.
