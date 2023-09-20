@@ -2055,23 +2055,26 @@ begin
           EnviarRespostaFiscalValidadorFiscal(_59.CFeID); // Sandro Silva 2018-07-03 _ecf59_EnviarRespostaFiscalValidadorFiscal(_59.CFeID);
         end;
 
+        {Sandro Silva 2023-09-20 inicio
+        // Neste ponto já o sat autorizou a venda, não tem porque mudar os valores nas formas de pagamento gravadas em PAGAMENT
         try
-          if Form1.ibDataSet25ACUMULADO3.AsFloat {Troco} > 0 then
+          if Form1.ibDataSet25ACUMULADO3.AsFloat > 0 then // ACUMULADO3 = TROCO
           begin
-            if Form1.ibDataSet25ACUMULADO2.AsFloat {Dinheiro} > Form1.ibDataSet25ACUMULADO3.AsFloat {Troco} then
+            if Form1.ibDataSet25ACUMULADO2.AsFloat > Form1.ibDataSet25ACUMULADO3.AsFloat then //ACUMULADO2 = DINHEIRO
             begin
-              Form1.ibDataSet25ACUMULADO2.AsFloat {Dinheiro} := Form1.ibDataSet25ACUMULADO2.AsFloat {Dinheiro} - Form1.ibDataSet25ACUMULADO3.AsFloat {Troco};
+              Form1.ibDataSet25ACUMULADO2.AsFloat := Form1.ibDataSet25ACUMULADO2.AsFloat - Form1.ibDataSet25ACUMULADO3.AsFloat;
             end else
             begin
-              if Form1.ibDataSet25ACUMULADO1.AsFloat {Cheque} > Form1.ibDataSet25ACUMULADO3.AsFloat {Troco} then
+              if Form1.ibDataSet25ACUMULADO1.AsFloat > Form1.ibDataSet25ACUMULADO3.AsFloat then // ACUMULADO1 = CHEQUE
               begin
-                Form1.ibDataSet25ACUMULADO1.AsFloat {Cheque} := Form1.ibDataSet25ACUMULADO1.AsFloat {Cheque} - Form1.ibDataSet25ACUMULADO3.AsFloat {Troco};
+                Form1.ibDataSet25ACUMULADO1.AsFloat := Form1.ibDataSet25ACUMULADO1.AsFloat - Form1.ibDataSet25ACUMULADO3.AsFloat;
               end;
             end;
           end;
         except
 
         end;
+        }
 
         Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible  := False;
         //
