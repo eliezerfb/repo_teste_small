@@ -25304,14 +25304,18 @@ begin
       //
       if AllTrim(Form7.ibDataSet24FRETE12.AsString) <> '' then
       begin
-        Form7.ibDataSet15.Edit; Form7.ibDataSet15FRETE12.AsString  := Form7.ibDataSet24FRETE12.AsString;
+        Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15FRETE12.AsString  := Form7.ibDataSet24FRETE12.AsString;
       end else
       begin
-        Form7.ibDataSet15.Edit; Form7.ibDataSet15FRETE12.AsString  := '0';
+        Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15FRETE12.AsString  := '0';
       end;
       //
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15COMPLEMENTO.AsString := 'ENTRADA';
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15EMITIDA.AsString     := 'E';
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15COMPLEMENTO.AsString := 'ENTRADA';
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15EMITIDA.AsString     := 'E';
       //
       Form7.ibDataSet15.Post;
       //
@@ -32395,7 +32399,7 @@ begin
 
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');
   Form7.ibDataSet2.Open;
 
   ConfiguraNFE;
