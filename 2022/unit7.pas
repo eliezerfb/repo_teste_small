@@ -10920,7 +10920,11 @@ begin
         Form7.ibDataSet97.Open;
         Form7.ibDataSet97.EnableControls;
 
+        Form7.ibDataSet37.Filtered := False;
+        Form7.ibDataSet37.Filter := EmptyStr;
         Form7.ibDataSet37.Close;
+        Form7.ibDataSet37.Selectsql.Clear;
+        Form7.ibDataSet37.Selectsql.Add('SELECT * FROM ORCAMENT');
         Form7.ibDataset37.Open;
 
         Form7.IBDataSet97.FieldByName('Registro').Visible := False;
