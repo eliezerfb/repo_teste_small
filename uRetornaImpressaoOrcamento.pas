@@ -391,7 +391,7 @@ begin
   FQryOrcamento.SQL.Add('    , VENDEDOR.NOME AS VENDEDOR');
   FQryOrcamento.SQL.Add('    , ORCAMENTOBS.OBS AS OBS');
   FQryOrcamento.SQL.Add('FROM ORCAMENT');
-  FQryOrcamento.SQL.Add('INNER JOIN CLIFOR ON');
+  FQryOrcamento.SQL.Add('LEFT JOIN CLIFOR ON');
   FQryOrcamento.SQL.Add('    (CLIFOR.NOME=ORCAMENT.CLIFOR)');
   FQryOrcamento.SQL.Add('LEFT JOIN VENDEDOR ON');
   FQryOrcamento.SQL.Add('    (VENDEDOR.NOME=ORCAMENT.VENDEDOR)');
