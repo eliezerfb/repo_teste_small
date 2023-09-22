@@ -19,8 +19,9 @@ uses
   , unit7
   ;
 
-  procedure DropViewProcedure;  
+  procedure DropViewProcedure;
   procedure AtualizaBancoDeDados(sBuild : string);
+// Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation
 
@@ -2233,6 +2234,43 @@ begin
   end;
   {Mauricio Parizotto 2023-08-30 Fim}
 
+  {Mauricio Parizotto 2023-09-19 Inicio}
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PARAMETROTRIBUTACAO') = False then
+  begin
+    ExecutaComando('Create table PARAMETROTRIBUTACAO('+
+                   '  IDPARAMETROTRIBUTACAO INTEGER NOT NULL,'+
+                   '  CFOP_ENTRADA VARCHAR(4),'+
+                   '  ORIGEM_ENTRADA VARCHAR(1),'+
+                   '  CST_ENTRADA VARCHAR(2),'+
+                   '  CSOSN_ENTRADA VARCHAR(3),'+
+                   '  ALIQ_ENTRADA NUMERIC(18,4),'+
+                   '  NCM_ENTRADA VARCHAR(8),'+
+                   '  IDPERFILTRIBUTACAO INTEGER NOT NULL,'+
+                   '  REGISTRO VARCHAR(10) NOT NULL,'+
+                   '  CONSTRAINT PK_PARAMETROTRIBUTACAO PRIMARY KEY (REGISTRO)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_PARAMETROTRIBUTACAO');
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-09-19 Fim}
+  
+  {Dailon Parisotto 2023-09-12 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENTOBS')) then
+  begin
+    ExecutaComando('CREATE TABLE ORCAMENTOBS ('+
+                   ' 	PEDIDO VARCHAR(10) NOT NULL,'+
+                   ' 	OBS BLOB SUB_TYPE 1 SEGMENT SIZE 80,'+
+                   ' 	REGISTRO VARCHAR(10) NOT NULL,'+
+                   ' 	CONSTRAINT PK_ORCAMENTOBS_REGISTRO PRIMARY KEY (REGISTRO)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_ORCAMENTOBS_REGISTRO');
+
+    ExecutaComando('Commit');
+  end;
+  {Dailon Parisotto 2023-09-12 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
@@ -2299,7 +2337,7 @@ begin
   Mensagem22('Alteração na estrutura Ok');
 end;
 
-
+{Sandro Silva 2023-09-22 inicio
 function ExecutaComando(comando:string):Boolean;
 begin
   Result := False;
@@ -2315,5 +2353,6 @@ begin
   except
   end;
 end;
+}
 
 end.

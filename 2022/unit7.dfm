@@ -695,7 +695,7 @@ object Form7: TForm7
   end
   object Label20: TLabel
     Left = 462
-    Top = 590
+    Top = 582
     Width = 40
     Height = 13
     Caption = 'Conf OS'
@@ -2485,6 +2485,20 @@ object Form7: TForm7
     Visible = False
   end
   object Label38: TLabel
+    Left = 296
+    Top = 715
+    Width = 144
+    Height = 16
+    Caption = 'Orcamento Observa'#231#227'o'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
+  object Label39: TLabel
     Left = 111
     Top = 766
     Width = 107
@@ -18040,6 +18054,11 @@ object Form7: TForm7
       Caption = 'Cancelar NFS-e'
       OnClick = CancelarNFSe1Click
     end
+    object EnviarOrcamentoPorEmail1: TMenuItem
+      Caption = 'Enviar or'#231'amento por e-mail'
+      Visible = False
+      OnClick = EnviarOrcamentoPorEmail1Click
+    end
     object N0TestarservidorNFe1: TMenuItem
       Caption = '0 - Testar servidor NF-e'
       OnClick = N0TestarservidorNFe1Click
@@ -20501,6 +20520,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibDataSet37AfterDelete
+    AfterOpen = ibDataSet37AfterOpen
     AfterPost = ibDataSet37AfterPost
     BeforePost = ibDataSet37BeforePost
     BufferChunks = 1000
@@ -20792,7 +20812,7 @@ object Form7: TForm7
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 384
-    Top = 583
+    Top = 575
     object IBDataSet119DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       DisplayWidth = 25
@@ -20853,7 +20873,7 @@ object Form7: TForm7
   object DataSource119: TDataSource
     DataSet = IBDataSet119
     Left = 422
-    Top = 583
+    Top = 575
   end
   object IBQuery1: TIBQuery
     Database = IBDatabase1
@@ -20921,7 +20941,7 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
     Left = 384
-    Top = 619
+    Top = 611
     object IBDataSet39CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Origin = '"MUNICIPIOS"."CODIGO"'
@@ -20947,7 +20967,7 @@ object Form7: TForm7
   object DataSource39: TDataSource
     DataSet = IBDataSet39
     Left = 424
-    Top = 619
+    Top = 611
   end
   object IBDataSet101: TIBDataSet
     Database = IBDatabase1
@@ -21025,12 +21045,12 @@ object Form7: TForm7
     BufferChunks = 1000
     CachedUpdates = False
     Left = 384
-    Top = 651
+    Top = 643
   end
   object DataSource97: TDataSource
     DataSet = IBDataSet97
     Left = 425
-    Top = 655
+    Top = 647
   end
   object MainMenu13: TMainMenu
     AutoHotkeys = maManual
@@ -21457,7 +21477,7 @@ object Form7: TForm7
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 200
-    Top = 715
+    Top = 758
     object IBDataSet6CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'CODIGO'
@@ -21488,7 +21508,7 @@ object Form7: TForm7
   object DataSource6: TDataSource
     DataSet = IBDataSet6
     Left = 233
-    Top = 719
+    Top = 758
   end
   object IBDataSet99999: TIBDataSet
     Database = IBDatabase1
@@ -22469,6 +22489,66 @@ object Form7: TForm7
       Size = 10
     end
   end
+  object IbdOrcamentObs: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = IbdOrcamentObsAfterDelete
+    AfterPost = IbdOrcamentObsAfterPost
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from ORCAMENTOBS'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into ORCAMENTOBS'
+      '  (PEDIDO, OBS, REGISTRO)'
+      'values'
+      '  (:PEDIDO, :OBS, :REGISTRO)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  PEDIDO,'
+      '  OBS,'
+      '  REGISTRO'
+      'from ORCAMENTOBS'
+      'where'
+      '  REGISTRO = :REGISTRO')
+    SelectSQL.Strings = (
+      'select * from ORCAMENTOBS')
+    ModifySQL.Strings = (
+      'update ORCAMENTOBS'
+      'set'
+      '  PEDIDO = :PEDIDO,'
+      '  REGISTRO = :REGISTRO,'
+      '  OBS = :OBS'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 199
+    Top = 711
+    object IbdOrcamentObsREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = 'ORCAMENTOBS.REGISTRO'
+      Required = True
+      Size = 10
+    end
+    object IbdOrcamentObsPEDIDO: TIBStringField
+      FieldName = 'PEDIDO'
+      Origin = 'ORCAMENTOBS.PEDIDO'
+      Required = True
+      Size = 10
+    end
+    object IbdOrcamentObsOBS: TMemoField
+      FieldName = 'OBS'
+      Origin = 'ORCAMENTOBS.OBS'
+      BlobType = ftMemo
+      Size = 8
+    end
+  end
+  object dsOrcamentObs: TDataSource
+    DataSet = IbdOrcamentObs
+    Left = 233
+    Top = 711
+  end
   object DSParametroTributa: TDataSource
     DataSet = ibdParametroTributa
     OnStateChange = DSPerfilTributaStateChange
@@ -22663,4 +22743,5 @@ object Form7: TForm7
       Size = 10
     end
   end
+  
 end

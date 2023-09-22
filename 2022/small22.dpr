@@ -161,7 +161,14 @@ uses
   uFrmFichaPadrao in 'uFrmFichaPadrao.pas' {FrmFichaPadrao},
   uIconesSistema in 'uIconesSistema.pas',
   uFrmParametroTributacao in 'uFrmParametroTributacao.pas' {FrmParametroTributacao},
-  uVisualizaCadastro in 'units\uVisualizaCadastro.pas';
+  uVisualizaCadastro in 'units\uVisualizaCadastro.pas',
+  uIImpressaoOrcamento in '..\..\unit_compartilhada\interfaces\uIImpressaoOrcamento.pas',
+  uIRetornaImpressaoOrcamento in '..\..\unit_compartilhada\interfaces\uIRetornaImpressaoOrcamento.pas',
+  uImpressaoOrcamento in '..\..\unit_compartilhada\uImpressaoOrcamento.pas',
+  uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
+  uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
+  uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
+  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas';
 
 {$R *.RES}
 

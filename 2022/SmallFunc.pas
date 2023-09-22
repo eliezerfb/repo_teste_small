@@ -113,7 +113,7 @@ uses
   function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
   procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
   procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
-  function HtmlToPDF(AcArquivo: String): Boolean;
+  // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
   function processExists(exeFileName: string): Boolean;
   function ConsultaProcesso(sDescricao:String): boolean;
 
@@ -2618,6 +2618,7 @@ begin
       key := #0;
 end;
 
+{Sandro Silva 2023-09-22 inicio  Movido para uConverteHtmlToPDF
 function HtmlToPDF(AcArquivo: String): Boolean;
 var
   cCaminhoEXE: String;
@@ -2674,6 +2675,8 @@ begin
   //
   Result := True;
 end;
+Sandro Silva 2023-09-22 fim}
+
 
 function processExists(exeFileName: string): Boolean;
 var
