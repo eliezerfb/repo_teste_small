@@ -456,8 +456,8 @@ type
     lbBCPISCOFINS: TLabel;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     lblAtencaoPerfilTrib: TLabel;
-    Label55: TLabel;
-    Label117: TLabel;
+    lbAtencaoIPI: TLabel;
+    lbAtencaoPisCofins: TLabel;
     Label118: TLabel;
     fraPerfilTrib: TfFrameCampo;
     procedure Image204Click(Sender: TObject);
