@@ -271,6 +271,8 @@ type
     FazerBackupAgora1: TMenuItem;
     BackupAutomtico1: TMenuItem;
     Perfisdetribitao1: TMenuItem;
+    NaturezaseCFOPs1: TMenuItem;
+    ConversodeCFOP1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -283,7 +285,6 @@ type
     procedure EscolheCNAB400(Sender:TObject);
     procedure EscolheCNAB240(Sender:TObject);
     procedure ExecutaOPlugin(Sender:TObject);
-    procedure TabeladeICMparatodososestados1Click(Sender: TObject);
     procedure Cadastrodetransportadoras1Click(Sender: TObject);
     procedure Opes1Click(Sender: TObject);
     procedure Planodecontas1Click(Sender: TObject);
@@ -436,6 +437,8 @@ type
     procedure FazerBackupAgora1Click(Sender: TObject);
     procedure BackupAutomtico1Click(Sender: TObject);
     procedure Perfisdetribitao1Click(Sender: TObject);
+    procedure NaturezaseCFOPs1Click(Sender: TObject);
+    procedure ConversodeCFOP1Click(Sender: TObject);
 
 
   private
@@ -4115,21 +4118,6 @@ begin
   Form4.ShowModal;
 end;
 
-procedure TForm1.TabeladeICMparatodososestados1Click(Sender: TObject);
-begin
-  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
-  Form7.sModulo := 'ICM';
-  Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
-
-  {$IFDEF VER150}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
-  {$ELSE}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
-  {$ENDIF}
-
-  Form7.Show;
-end;
-
 procedure TForm1.Cadastrodetransportadoras1Click(Sender: TObject);
 begin
   if not FechaTudo(bFechaTudo) then
@@ -4292,90 +4280,76 @@ procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
 begin
-  //
   // LEGAL
-  //
   if FileExists(Form1.sAtual+'\leia-me.txt') then
   begin
-    //
     DeleteFile(pChar(Form1.sAtual+'\leia-me.txt'));
-    //
   end;
-  //
+
   Regularize(True);
   if not FechaTudo(bFechaTudo) then
     Exit;
-  //
+
   if form1.DBGrid200.Visible then
   begin
-    //
     ibDataSet200.Close;
     dbGrid200.Visible := False;
     Edit200.Visible   := False;
-    //
+
     Commitatudo(True); // SQL - Commando
     AbreArquivos(False);
     MontaTela(True);
-    //
+
     Abort;
-    //
   end;
-  //
-  // Form7.IBTransaction1.Commit;
-  //
+
   begin
-    //
     CommitaTudo(True); // Quando fecha o programa
-    //
+
     try
       Mais1ini  := TIniFile.Create('ENERGIA.INI');
       Mais1Ini.WriteString('Outros','Houve queda de energia','Não'); // On close
       Mais1Ini.Free;
-    except end;
-    //
+    except
+    end;
+
     try
       Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
       Mais1Ini.WriteString(AllTrim(Usuario),'Ativo','Não');
       Mais1Ini.WriteString(AllTrim(Usuario),'End',DateToStr(Date)+' '+TimeToStr(Time));
       Mais1Ini.UpdateFile;
       Mais1Ini.Free;
-    except end;
-    //
+    except
+    end;
   end;
-  //
+
   Mais1ini := TIniFile.Create(sAtual+'\smallcom.inf');
-  //
+
   Mais1Ini.WriteString('Nota Fiscal','Especie',ConfEspecie);
   Mais1Ini.WriteString('Nota Fiscal','Marca',ConfMarca);
   Mais1Ini.Free;
-  //
+
   Form7.IBTransaction1.Active := False;
   Form7.IbDatabase1.Close;
-  //
-  //
+
   Form1.Hide;
-  //
+
   Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // // Form1Close
   Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
-  //
-//  Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-  //
 
   ValidaRecursos.Free; // Sandro Silva 2023-05-31
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-//var
-//  Mais1ini : tIniFile;
 begin
-  //
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
-  //
+  {
   try
     DownloadDoArquivo(PChar('http://www.smallsoft.com.br/imagens/small_aviso_promocao_1.bmp?fakevariable=%rand%, out.dat'),PChar('small_aviso_promocao_1.bmp'));
   except end;
-  //
+  Mauricio Parizotto 2023-09-19 sem uso aparente}
+
   Application.OnMessage := ScrollMouse;
 
   ValidaRecursos := TValidaRecurso.Create; // Sandro Silva 2023-05-31
@@ -4417,18 +4391,19 @@ begin
   Form1.BorderIcons := [biSystemMenu,biMinimize,biMaximize];
   tCrono               := Time;
   bFechaTudo           := True;
-  //
+
   bChaveSelecionaCliente := False;
   bModoScan              := False;
   bModoSVC               := False;
   Form1.bChave16         := True;
   Form1.bFlag16Change    := True;
-  //
+
   try
     if FileExists(Form1.sAtual+'\leia-me.txt') then ShellExecute( 0, 'Open', pChar(Form1.sAtual+'\leia-me.txt'),'', '', SW_SHOW);
     if FileExists(Form1.sAtual+'\danferb.dll') then DeleteFile(pChar(Form1.sAtual+'\danferb.dll'));
-  except end;
-  //
+  except
+  end;
+  
 {
   try
     if FileExists(Form1.sAtual+'\nfe\nfeServidoresHom.ini')      then CopyFile(pChar(Form1.sAtual+'\nfe\nfeServidoresHom.ini'),     pChar(Form1.sAtual+'\nfeServidoresHom.ini'),false);
@@ -4437,12 +4412,9 @@ begin
     if FileExists(Form1.sAtual+'\nfe\nfeServidoresProdScan.ini') then CopyFile(pChar(Form1.sAtual+'\nfe\nfeServidoresProdScan.ini'),pChar(Form1.sAtual+'\nfeServidoresProdScan.ini'),false);
   except end;
 }
-  //
-  //
   GetDir(0,sAtual);
-  //
+
   // Atualização de arquivos
-  //
   InstalaAtualizacao('nfe_setup','1');
   InstalaAtualizacao('nfse_setup','2');
   InstalaAtualizacao('nfce_setup','3');
@@ -4455,13 +4427,13 @@ begin
   // Sandro Silva 2022-12-28 InstalaAtualizacao('cdf_to','9');
   InstalaAtualizacao('paf2022_','10');
   InstalaAtualizacao('paf2023_','10');// Sandro Silva 2022-12-28
-  //
+  
   if FileExists(Form1.sAtual+'\small.saas') then
   begin
-    //
     ShellExecute( 0, 'Open',pChar('http://www.smallsaas.com.br'),'', '', SW_SHOWMAXIMIZED);
-    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-    //
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+    Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
 
   {Mauricio Parizotto 2023-05-31 Inicio}
@@ -4534,9 +4506,7 @@ var
   dtLimite: TDate;
   bEmpresaMei: Boolean;
 begin
-  //
   // controle de licenças de uso
-  //
   Form22.Inicio := Time;
   bLegal := True;
   Form1.bMediaPonderadaFixa := False;
@@ -4559,15 +4529,10 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
 
   try
-    //
     // verifica se o susário tem direito de leitura e gravação
-    //
     Mais1Ini.WriteString('Geral','Rede','OK');
-    //
   except
-    //
     // Não tem
-    //
     ShowMessage('Verifique se o usuário do windows tem direito '+chr(10)+
                 'de leitura e gravação em '+Form1.sAtual+'. Erro 1170');
 //    // Form1.DestroyWindowHandle;
@@ -4853,11 +4818,10 @@ begin
          'empresas de'+chr(10)+
          'comércio');
   end;
-  //
+
   // Sandro Silva 2023-06-02 if (Form1.iReduzida = 2) then
   if bEmpresaMei then
   begin
-    //
     Form1.Caption := 'Small Commerce (MEI)';
     Titulo(
          'SMALL Mei, '+chr(10)+
@@ -5250,16 +5214,13 @@ begin
     ExibeRazaoSocialNoCaptionDoForm;
     {Sandro Silva 2022-12-15 fim}
 
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
     if not (Form1.iReduzida = 1) then
     begin
-      //
       try
         if StrtoDate(Mais1Ini.ReadString('Outros','Data','26/09/1967')) <> Date then
         begin
-          //
           try
             Mais1Ini.WriteString('Outros','Data',DateToStr(Date));
             Mais1Ini.Free;
@@ -5288,9 +5249,6 @@ begin
               //
               while not Form7.ibDataSet7.Eof do
               begin
-                //
-                // ShowMessage(Form7.ibDataSet7DOCUMENTO.AsString+chr(10)+Form7.ibDataSet7VALOR_JURO.AsString+Chr(10));
-                //
                 fJuro := Form7.ibDataSet7VALOR_DUPL.AsFloat;
                 for I := 1 to  Trunc(Date - Form7.ibDataSet7VENCIMENTO.AsDateTime) do fJuro  := fJuro * ((Form1.fTaxa / 100)+1);
                 if fJuro <> Form7.ibDataSet7VALOR_DUPL.AsFloat then
@@ -5300,18 +5258,15 @@ begin
                 end;
                 //
                 Form7.ibDataSet7.Next;
-                //
               end;
-              //
-            except end;
+            except
+            end;
           end;
-          //
+
           // Dias de atrazo = 'CURRENT_DATE - VENCIMENTO'
           // fJuro  := fJuro * ((Form1.fTaxa / 100)+1);
           //         if fJuro <> ibDataSet7VALOR_DUPL.AsFloat then ibDataSet7VALOR_JURO.AsFloat  := fJuro;
-          //
           try
-            //
             Form22.Repaint;
             Mensagem22('Verificando clientes atrasados...');
             //
@@ -5327,43 +5282,33 @@ begin
             //
             while not Form7.ibQuery1.eof do
             begin
-              //
               Form7.ibQuery2.Close;
               Form7.ibQuery2.Sql.Clear;
               Form7.ibQuery2.Sql.Add('update CLIFOR set MOSTRAR='+QuotedStr('1')+' where NOME='+QuotedStr(Form7.ibQuery1.FieldByName('NOME').AsString )+' ');
               Form7.ibQuery2.Open;
               //
               Form7.ibQuery1.Next;
-              //
             end;
             //
             Form22.Repaint;
             Mensagem22('Pronto...');
-            //
-            //
-          except end;
-          //
+          except
+          end;
         end;
-        //
+
         Form7.ibDataSet7.EnableControls;
-        //
+
         AgendaCommit(True);
         Commitatudo(True); // SQL - Commando
         AbreArquivos(False);
-        //
       except
-        //
         ShowMessage('Provável falha no Banco de Dados. Erro 4412');
-        // Form1.DestroyWindowHandle;
         Application.Terminate;
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        //
       end;
     end;
-    //
   except
-    //
     ShowMessage('Para solucionar o problema siga os seguintes passos:'+chr(10)
     +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista, 7, 8)'
     +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
@@ -5371,14 +5316,11 @@ begin
     +chr(10)+'4 - Reinstale o programa');
     // Form1.DestroyWindowHandle;
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-    //
   end;
-  //
+
   // Legal
-  //
   if not bLegal then
   begin
-    //
     if Legal_ok(True) then
     begin
       Form1.ibDataset200.Close;
@@ -5386,16 +5328,11 @@ begin
       Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2) );
       Form1.ibDataset200.Open;
     end;
-    //
   end;
-  //
-  //
+
   // Licença
-  //
   try
-    //
     try
-      //
       Form1.ibQuery2.Close;
       Form1.ibQuery2.SQL.Clear;
       Form1.ibQuery2.SQL.Add('select LICENCA from EMITENTE');
@@ -5450,11 +5387,9 @@ begin
       {Sandro Silva 2022-11-11 fim}
       //
     except
-      //
       fDias := -1;
-      //
     end;
-    //
+
     if fdias <= 0 then
     begin
       Form1.ibDataset200.Close;
@@ -5463,12 +5398,10 @@ begin
       Form1.ibDataset200.Open;
     end else
     begin
-      //
       if fDias <= 20 then
       begin
         ShowMessage('Número de série: ' + Form1.sSerial + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
       end;
-      //
 
       {Sandro Silva 2023-03-15 inicio
       if fDias <= 40 then
@@ -5497,28 +5430,23 @@ begin
 
       if fDias <= 8 then
       begin
-        //
         if fDias <> 0 then
         begin
           // Exibe mensagem de alerta dos dias restantes por 5 segundos
           for I := 1 to 5 do
           begin
-            //
             Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
-            //
+            
             Sleep(1000);
-            //
           end;
         end;
-        //
       end;
       {Sandro Silva 2023-03-15 fim}
     end;
   except
   end;
-  //
+
   Screen.Cursor := crDefault;
-  //
 end;
 
 procedure TForm1.Image17Click(Sender: TObject);
@@ -5793,26 +5721,22 @@ procedure TForm1.imgVendasClick(Sender: TObject);
 var
   Mais1ini : tIniFile;
 begin
-  //
   try
-    //
     if not Legal(True) then Abort;
 
     if not FechaTudo(bFechaTudo) then
       Exit;
-    //
+
     // NFe com CPF
-    //
     if Length(LimpaNumero(Form7.ibDataSet13CGC.AsString)) = 11 then
     begin
-      //
       if Form1.bNotaVendaLiberada  then Form7.Notasfiscaisdesadavendassrie9201.Enabled := True       else Form7.Notasfiscaisdesadavendassrie9201.Enabled := False;
       if Form1.bNotaVendaLiberada  then Form7.NotasfiscaisdesadavendascomCPFsrie9201.Enabled := True else Form7.NotasfiscaisdesadavendascomCPFsrie9201.Enabled := False;
-      //
+
       Form7.Vendas_1.Enabled                         := False;
       Form7.NotasfiscaisdesadavendasSrie11.Enabled   := False;
       Form7.NotasfiscaisdesadavendasSrie21.Enabled   := False;
-      //
+
       try
         if (StrToIntDef(LimpaNumero(Form1.sSerieEspecial), -1) > 920) and (StrToIntDef(LimpaNumero(Form1.sSerieEspecial), -1) <= 969) then // Sandro Silva 2023-05-31 if (StrToInt(LimpaNumero(Form1.sSerieEspecial)) > 920) and (StrToInt(LimpaNumero(Form1.sSerieEspecial)) <= 969) then
         begin
@@ -5827,9 +5751,8 @@ begin
         Form7.Vendas_XXX.Enabled                       := False;
         Form7.NotasfiscaisdesadavendassrieXXX1.Enabled := False;
       end;
-      //
+
       Form7.Vendas2.Enabled := False;
-      //
     end else
     begin
       {Sandro Silva 2023-05-08 inicio
@@ -5865,12 +5788,10 @@ begin
     begin
       if AllTrim(Form1.sSerieEspecial) <> '' then
       begin
-        //
         Form7.Vendas_XXX.Visible                           := True;
         Form7.Vendas_XXX.Caption                           := 'Notas fiscais de saída (vendas) série '+StrZero(StrToInt(LimpaNumero(Form1.sSerieEspecial)),3,0);
         Form7.NotasfiscaisdesadavendassrieXXX1.Caption     := 'Notas fiscais de saída (vendas) série '+StrZero(StrToInt(LimpaNumero(Form1.sSerieEspecial)),3,0);
         Form7.NotasfiscaisdesadavendassrieXXX1.Visible     := True;
-        //
       end;
     end;
     //
@@ -12505,7 +12426,7 @@ end;
 procedure TForm1.Perfisdetribitao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PERFILTRIBUTACAO';
-  Form7.sTitulo := 'Perfis de tributação';
+  Form7.sTitulo := 'Perfil de tributação';
 
   {$IFDEF VER150}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
@@ -12513,6 +12434,35 @@ begin
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
   {$ENDIF}
 
+  Form7.Show;
+end;
+
+procedure TForm1.NaturezaseCFOPs1Click(Sender: TObject);
+begin
+  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
+  Form7.sModulo := 'ICM';
+  Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
+end;
+
+procedure TForm1.ConversodeCFOP1Click(Sender: TObject);
+begin
+  Form7.sModulo := 'CONVERSAOCFOP';
+  Form7.sTitulo := 'Conversão de CFOP';
+  
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+  
   Form7.Show;
 end;
 
