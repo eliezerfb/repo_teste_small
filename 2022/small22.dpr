@@ -46,7 +46,7 @@ uses
   Unit15 in 'Unit15.pas' {Form15},
   Unit35 in 'Unit35.pas' {Form35},
   Unit8 in 'Unit8.pas' {Form8},
-  Unit28 in 'Unit28.pas' {Form28},
+  uExportaXML in 'uExportaXML.pas' {frmExportaXML},
   SelecionaCertificado in 'SelecionaCertificado.pas' {frmSelectCertificate},
   Unit23 in 'Unit23.pas' {Form23},
   Unit6 in 'Unit6.pas' {Form6},
@@ -163,7 +163,12 @@ uses
   uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
-  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas';
+  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
+  uIGeraXMLDocsEletronicosFactory in 'interfaces\uIGeraXMLDocsEletronicosFactory.pas',
+  uIXMLDocsEletronicos in 'interfaces\uIXMLDocsEletronicos.pas',
+  uGeraXMLDocsEletronicosFactory in 'units\uGeraXMLDocsEletronicosFactory.pas',
+  uXMLDocsEletronicosNFeSaida in 'units\uXMLDocsEletronicosNFeSaida.pas',
+  uXMLDocsEletronicosNFeEntrada in 'units\uXMLDocsEletronicosNFeEntrada.pas';
 
 {$R *.RES}
 
@@ -197,7 +202,6 @@ begin
       Application.Title := 'Small Commerce';
 
       Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm28, Form28);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TSenhas, Senhas);
   Application.CreateForm(TSenhas2, Senhas2);

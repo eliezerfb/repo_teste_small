@@ -2255,6 +2255,7 @@ type
     function TestarPodeExcluirOrcamento: Boolean;
     procedure ExcluirOrcamento;
     procedure VerificaAlteracaoPerfil;
+    procedure ChamarTelaXMLContab;
   public
     // Public declarations
 
@@ -2405,7 +2406,7 @@ implementation
 uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
-  unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
+  unit24, uExportaXML, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
   Unit29, Unit48
   , ugeraxmlnfe
   , uFuncoesFiscais
@@ -25445,141 +25446,8 @@ begin
 end;
 
 procedure TForm7.ExportarNFesemarquivoXML1Click(Sender: TObject);
-var
-  bTem   : Boolean;
-  sEmail  : string;
-  Mais1Ini : tIniFile;
-  SearchRec : tSearchREC;
-  Encontrou  : Integer;
 begin
-  //
-  // Form só para pedir o período e o e-mail do contador.
-  //
-  Form28.ShowModal;
-  //
-  if Form28.DateTimePicker1.Date <> StrToDate('01/01/1998') then
-  begin
-    //
-    if ValidaEmail(Form28.Edit1.Text) then
-    begin
-      //
-      Form7.Close;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      Mais1Ini.WriteString('XML','e-mail contabilidade',AllTrim(Form28.Edit1.Text));
-      Mais1Ini.WriteString('XML','Periodo Inicial',DateToStr(Form28.DateTimePicker1.Date));
-      Mais1Ini.WriteString('XML','Periodo Final',DateToStr(Form28.DateTimePicker2.Date));
-      Mais1ini.Free;
-      //
-      Form7.ibDataSet15.Close;
-      Form7.ibDataSet15.SelectSql.Clear;
-//
-//      Form7.ibDataSet15.Selectsql.Add('select * from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-//      ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' and coalesce(NFERECIBO,'''')<>'''' order by EMISSAO, NUMERONF');
-//      Form7.ibDataset15.Open;
-//
-      //
-      Form7.ibDataSet15.Selectsql.Add('select * from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-      ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by EMISSAO, NUMERONF');
-      //
-      Form7.ibDataset15.Open;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      sEmail := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
-      Mais1ini.Free;
-      //
-      // Apaga todos os arquivos .XML da pasta CONTABIL
-      //
-      FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-      Encontrou :=0;
-      while Encontrou = 0 do
-      begin
-        DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-        Encontrou := FindNext(SearchRec);
-      end;
-      //
-      bTem := False;
-      //
-      // NFE e CANCELADAS
-      //
-      Form7.ibDataSet15.First;
-      while not Form7.ibDataSet15.Eof do
-      begin
-        DistribuicaoNFe('CONTABIL');
-        Form7.ibDataSet15.Next;
-        bTem := True;
-      end;
-      //
-      // INUTILIZADAS
-      //
-      Form7.IBQuery99.Close;
-      Form7.IBQuery99.SQL.Clear;
-      Form7.IBQuery99.SQL.Add('select XML, DATA, REGISTRO from INUTILIZACAO where DATA<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-      ' and DATA>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by DATA');
-      Form7.IBQuery99.Open;
-      //
-      Form7.IBQuery99.First;
-      while not Form7.IBQuery99.Eof do
-      begin
-        DistribuicaoNFeINUTILIZADA('CONTABIL');
-        Form7.IBQuery99.Next;
-        bTem := True;
-      end;
-      //
-      //
-      if bTem then
-      begin
-        //
-        // Apaga o ZIP anterior
-        //
-        while FileExists(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip')) do
-        begin
-          DeleteFile(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip'));
-          Sleep(1000);
-        end;
-        //
-        ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip')+'"'), '', SW_SHOWMAXIMIZED);
-        //
-        while ConsultaProcesso('szip.exe') do
-        begin
-          Application.ProcessMessages;
-          sleep(100);
-        end;
-        //
-        while not FileExists(pChar(Form1.sAtual+'\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip')) do
-        begin
-          sleep(100);
-        end;
-        //
-        // Apaga todos os arquivos .XML da pasta CONTABIL
-        //
-        FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-        Encontrou :=0;
-        while Encontrou = 0 do
-        begin
-          DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-          Encontrou := FindNext(SearchRec);
-        end;
-        //
-        Unit7.EnviarEMail('',Form28.Edit1.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-          pchar('Segue em anexo arquivo zipado com as NF-e´s de saída da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-          +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
-          +chr(10)
-          +Form1.sPropaganda)
-          ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip'),False);
-        //
-      end else
-      begin
-        ShowMessage('Não encontrado XML para contabilidade neste período.');
-      end;
-    end;
-  end;
-  //
-  try
-    Form7.Close;
-    Form7.ShowModal;
-  except end;  
-  //
+  ChamarTelaXMLContab;
 end;
 
 procedure TForm7.ibDataSet4ULT_VENDASetText(Sender: TField;
@@ -31602,6 +31470,16 @@ begin
   //
 end;
 
+procedure TForm7.ChamarTelaXMLContab;
+begin
+  frmExportaXML := TfrmExportaXML.Create(nil);
+  try
+    frmExportaXML.AbrirTelaTodosDocs;
+  finally
+    FreeAndNil(frmExportaXML);
+  end;
+end;
+
 procedure TForm7.ExportarNfesdeentrdaparacontabilidade1Click(
   Sender: TObject);
 var
@@ -31611,107 +31489,56 @@ var
   SearchRec: tSearchREC;
   Encontrou : Integer;
 begin
-  //
-  // Form só para pedir o período e o e-mail do contador.
-  //
-  Form28.ShowModal;
-  //
-  if Form28.DateTimePicker1.Date <> StrToDate('01/01/1998') then
+  ChamarTelaXMLContab;
+  Form7.ibDataSet24.First;
+  while not Form7.ibDataSet24.Eof do
   begin
-    //
-    if ValidaEmail(Form28.Edit1.Text) then
-    begin
-      //
-      Form7.Close;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      Mais1Ini.WriteString('XML','e-mail contabilidade',AllTrim(Form28.Edit1.Text));
-      Mais1Ini.WriteString('XML','Periodo Inicial',DateToStr(Form28.DateTimePicker1.Date));
-      Mais1Ini.WriteString('XML','Periodo Final',DateToStr(Form28.DateTimePicker2.Date));
-      Mais1ini.Free;
-      //
-      Form7.ibDataSet24.Close;
-      Form7.ibDataSet24.SelectSql.Clear;
-      //
-      Form7.ibDataSet24.Selectsql.Add('select * from COMPRAS where EMISSAO<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-      ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by EMISSAO, NUMERONF');
-      //
-      Form7.ibDataSet24.Open;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      sEmail := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
-      Mais1ini.Free;
-      //
-      // Apaga todos os arquivos .XML da pasta CONTABIL
-      //
-      FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-      Encontrou :=0;
-      while Encontrou = 0 do
-      begin
-        DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-        Encontrou := FindNext(SearchRec);
-      end;
-      //
-      bTem   := False;
-      //
-      Form7.ibDataSet24.First;
-      while not Form7.ibDataSet24.Eof do
-      begin
-        if DistribuicaoNFeCompra('CONTABIL') then bTem   := True;
-        Form7.ibDataSet24.Next;
-      end;
-      //
-      if bTem then
-      begin
-        //
-        while FileExists(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
-        begin
-          DeleteFile(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'));
-          Sleep(1000);
-        end;
-        //
-        ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')+'"'), '', SW_SHOWMAXIMIZED);
-        //
-        while ConsultaProcesso('szip.exe') do
-        begin
-          Application.ProcessMessages;
-          sleep(100);
-        end;
-        //
-        while not FileExists(pChar(Form1.sAtual+'\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
-        begin
-          sleep(100);
-        end;
-        //
-        // Apaga todos os arquivos .XML da pasta CONTABIL
-        //
-        FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-        Encontrou :=0;
-        while Encontrou = 0 do
-        begin
-          DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-          Encontrou := FindNext(SearchRec);
-        end;
-        //
-        Unit7.EnviarEMail('',Form28.Edit1.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-          pchar('Segue em anexo arquivo zipado com as NF-e´s de entrada da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-          +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
-          +chr(10)
-          +Form1.sPropaganda)
-          ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'),False);
-      end else
-      begin
-        ShowMessage('Não encontrado XML para contabilidade neste período.');
-      end;
-      //
-    end;
+    if DistribuicaoNFeCompra('CONTABIL') then bTem   := True;
+    Form7.ibDataSet24.Next;
   end;
   //
-  try
-    Form7.Close;
-    Form7.ShowModal;
-  except end;  
-  //
+  if bTem then
+  begin
+    //
+    while FileExists(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
+    begin
+      DeleteFile(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'));
+      Sleep(1000);
+    end;
+    //
+    ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')+'"'), '', SW_SHOWMAXIMIZED);
+    //
+    while ConsultaProcesso('szip.exe') do
+    begin
+      Application.ProcessMessages;
+      sleep(100);
+    end;
+    //
+    while not FileExists(pChar(Form1.sAtual+'\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
+    begin
+      sleep(100);
+    end;
+    //
+    // Apaga todos os arquivos .XML da pasta CONTABIL
+    //
+    FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
+    Encontrou :=0;
+    while Encontrou = 0 do
+    begin
+      DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
+      Encontrou := FindNext(SearchRec);
+    end;
+    //
+    Unit7.EnviarEMail('',frmExportaXML.edtEmailContab.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
+      pchar('Segue em anexo arquivo zipado com as NF-e´s de entrada da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
+      +' Período de '+DateToStr(frmExportaXML.dtInicial.Date)+' até '+DateToStr(frmExportaXML.dtFinal.Date)+'.'
+      +chr(10)
+      +Form1.sPropaganda)
+      ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'),False);
+  end else
+  begin
+    ShowMessage('Não encontrado XML para contabilidade neste período.');
+  end;
 end;
 
 procedure TForm7.ManifestaododestinatrioDesc1Click(Sender: TObject);
