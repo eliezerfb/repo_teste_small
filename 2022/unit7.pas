@@ -1558,6 +1558,11 @@ type
     ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField;
     ibdPerfilTributaREGISTRO: TIBStringField;
     ibdPerfilTributaALIQ_PIS_ENTRADA: TIBBCDField;
+    IbdOrcamentObs: TIBDataSet;
+    IbdOrcamentObsREGISTRO: TIBStringField;
+    IbdOrcamentObsPEDIDO: TIBStringField;
+    IbdOrcamentObsOBS: TMemoField;
+    dsOrcamentObs: TDataSource;
     EnviarOrcamentoPorEmail1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
@@ -7883,7 +7888,11 @@ begin
         while not ibDataSet37.Eof do
         begin
           if ibDataSet37PEDIDO.AsString = IBDataSet97.FieldByName('Orçamento').AsString then
-            ibDataSet37.Delete
+          begin
+            if IbdOrcamentObs.Locate('PEDIDO', ibDataSet37PEDIDO.AsString, []) then
+              IbdOrcamentObs.Delete;
+            ibDataSet37.Delete;
+          end
           else
             ibDataSet37.Next;
         end;
@@ -10916,7 +10925,11 @@ begin
         Form7.ibDataSet97.Open;
         Form7.ibDataSet97.EnableControls;
 
+        Form7.ibDataSet37.Filtered := False;
+        Form7.ibDataSet37.Filter := EmptyStr;
         Form7.ibDataSet37.Close;
+        Form7.ibDataSet37.Selectsql.Clear;
+        Form7.ibDataSet37.Selectsql.Add('SELECT * FROM ORCAMENT');
         Form7.ibDataset37.Open;
 
         Form7.IBDataSet97.FieldByName('Registro').Visible := False;
@@ -33843,7 +33856,23 @@ begin
     end;
   end; 
 end;
+
+procedure TForm7.ibDataSet37AfterOpen(DataSet: TDataSet);
+begin
+  IbdOrcamentObs.Close;
+  IbdOrcamentObs.Open;
+end;
+
+procedure TForm7.IbdOrcamentObsAfterDelete(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
  
+procedure TForm7.IbdOrcamentObsAfterPost(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
+   
 procedure TForm7.EnviarOrcamentoPorEmail1Click(Sender: TObject);
 var
   cMensagem: String;
