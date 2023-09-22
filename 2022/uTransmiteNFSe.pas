@@ -1082,6 +1082,15 @@ begin
                   end;
                   {Sandro Silva 2023-09-01 fim}
 
+                  {Sandro Silva 2023-09-01 inicio}                  
+                  if Form7.ibDAtaSet15NFEPROTOCOLO.AsString = '' then
+                  begin
+                    // Caso não tenha encontrado o número da NFS-e procura a tag <NumeroDaNFSe> e extrai o número da NFS-e
+                    if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                      Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := Trim(RetornaValorDaTagNoCampo('NumeroDaNFSe', Form7.ibDAtaSet15RECIBOXML.AsString)) + '/001';
+                  end;
+                  {Sandro Silva 2023-09-01 fim}
+
                   //BuscaNumeroNFSe(True);
 
                   if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) <> 0 then
