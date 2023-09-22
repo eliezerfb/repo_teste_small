@@ -18,13 +18,13 @@ uses
   , spdXMLUtils
   , spdNFeType
   , spdNFe
-//  , spdType
   , SmallFunc
   , unit7
   , unit11
   , unit29
   , unit12
   , Mais
+  , uFuncoesFiscais
   , uFuncoesRetaguarda
 ;
 
@@ -1471,6 +1471,27 @@ begin
       end;
     end;
 
+    {Sandro Silva 2023-09-14 inicio}
+    if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
+    begin
+      if XmlValueToFloat(Form7.spdNFeDataSets.Campo('vICMSST_N23').Value) > 0 then   
+      begin
+        // Criar estes dois campos e armazenar no Form7.ibDataSet23 e recuperar na nota de devolução
+        spMVAST  := '0,00';
+        spICMSST := '0,00';
+
+        // Só pede se tem Valor de ICMSST
+        spMVAST  := Form1.Small_InputForm('NFe', 'Informe o pMVAST (% de margem de valor adicionado do ICMS ST) para o produto: ' + Form7.ibDataSet23.FieldByName('DESCRICAO').AsString, '0,00');
+        spICMSST := Form1.Small_InputForm('NFe', 'Informe o pICMSST (% Aliquota do Imposto do ICMS ST) para o produto: ' + Form7.ibDataSet23.FieldByName('DESCRICAO').AsString, '0,00');
+
+        Form7.spdNFeDataSets.Campo('pMVAST_N19').Value    := FormatFloatXML(StrToFloat(LimpaNumeroDeixandoAVirgula(spMVAST)));  // Percentual de margem de valor adicionado do ICMS ST
+        Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := FormatFloatXML(StrToFloat(LimpaNumeroDeixandoAVirgula(spICMSST))); // Alíquota do ICMS em Percentual
+
+      end;
+    end;
+    {Sandro Silva 2023-09-14 fim}
+
+
     Form7.ibDAtaset23.Next;
   end;
                 
@@ -1797,16 +1818,16 @@ begin
       Form7.spdNFeDataSets.Campo('pICMS_N16').Value  := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('ICM').AsFloat)),',','.'); // Alíquota do ICMS em Percentual
     end;
 
-    if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10')
-    or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30')
-    or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60')
-    or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70')
-    or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
+    if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10')
+    or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30')
+    or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60')
+    or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '70')
+    or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '90') then
     begin
       // St 60 só tem N21 e N23
       if Form7.ibDAtaset24BASESUBSTI.AsFloat <> 0 then
       begin
-        if Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '60' then
+        if Form7.spdNFeDataSets.Campo('CST_N12').AsString <> '60' then
         begin
           Form7.spdNFeDataSets.Campo('pMVAST_N19').Value      := '100'; // Percentual de margem de valor adicionado do ICMS ST
         end;
@@ -1814,7 +1835,7 @@ begin
         Form7.spdNFeDataSets.Campo('vbCST_N21').Value     := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('VBCST').AsFloat)),',','.');    // Valor da BC do ICMS ST
         Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('VICMSST').AsFloat)),',','.');  // VAlor do ICMS ST
 
-        if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
+        if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60' then
         begin
           // FICHA 2786
           //
@@ -1829,7 +1850,7 @@ begin
         end;
       end else
       begin
-        if Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '60' then
+        if Form7.spdNFeDataSets.Campo('CST_N12').AsString <> '60' then
         begin
           Form7.spdNFeDataSets.Campo('pMVAST_N19').Value      := '0'; // Percentual de margem de valor adicionado do ICMS ST
         end else
@@ -1846,7 +1867,7 @@ begin
       end;
     end;
 
-    if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
+    if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10' then
     begin
       // St 10
       Form7.spdNFeDataSets.Campo('modBC_N13').Value     := '3'; // Modalidade de determinação da Base de Cálculo - ver Manual
@@ -1858,7 +1879,7 @@ begin
         Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDAtaset23.FieldByname('VICMSST').AsFloat / Form7.ibDAtaset23.FieldByname('VBCST').AsFloat) * 100))),',','.');  // Aliquota do Imposto do ICMS ST
     end;
 
-    if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '40') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '41') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '50') then
+    if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '40') or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '41') or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '50') then
     begin
 //                      Form7.spdNFeDataSets.Campo('vICMS_N17').Value       := ''; // Valor do ICMS em Reais
 //                      Form7.spdNFeDataSets.Campo('motDesICMS_N28').Value  := '9'; // Motivo da desoneração do ICMS
@@ -1867,7 +1888,7 @@ begin
       Form7.spdNFeDataSets.Campo('vBCSTDest_N31').Value   := '';  // Valor da BC do ICMS ST da UF Destino
     end;
 
-    if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '20') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51') then
+    if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '20') or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '51') then
     begin
       // St 20
       Form7.spdNFeDataSets.Campo('modBC_N13').Value     := '3'; // Modalidade de determinação da Base de Cálculo - ver Manual
@@ -1882,7 +1903,7 @@ begin
 
       Form7.spdNFeDataSets.Campo('pICMS_N16').Value  := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('ICM').AsFloat)),',','.'); // Alíquota do ICMS em Percentual
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '51' then
       begin
         try
           Form7.spdNFeDataSets.Campo('vICMSOp_N16a').Value   := StrTran(Alltrim(FormatFloat('##0.00',Arredonda2(Form7.ibDAtaset23.FieldByname('ICM').AsFloat*(Form7.ibDAtaset23.FieldByname('TOTAL').AsFloat)/100*Form7.ibDAtaset23.FieldByname('BASE').AsFloat/100,2))),',','.');
@@ -1901,7 +1922,7 @@ begin
       end;
     end;
 
-    if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
+    if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30' then
     begin
       // St 30
       Form7.spdNFeDataSets.Campo('modBCST_N18').Value     := '4'; // Modalidade de determinação da Base de Cálculo do ICMS ST - ver Manual
@@ -1910,7 +1931,7 @@ begin
         Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDAtaset23.FieldByname('VICMSST').AsFloat / Form7.ibDAtaset23.FieldByname('VBCST').AsFloat) * 100))),',','.');  // Aliquota do Imposto do ICMS ST
     end;
 
-    if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
+    if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60' then
     begin
       // St 60
       Form7.spdNFeDataSets.Campo('modBCST_N18').Value     := '4'; // Modalidade de determinação da Base de Cálculo do ICMS ST - ver Manual
@@ -1918,8 +1939,8 @@ begin
       if Form7.ibDAtaset23.FieldByname('VBCST').AsFloat > 0 then Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDAtaset23.FieldByname('VICMSST').AsFloat / Form7.ibDAtaset23.FieldByname('VBCST').AsFloat) * 100))),',','.');  // Aliquota do Imposto do ICMS ST
     end;
 
-    if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70')
-      or  (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
+    if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '70')
+      or  (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '90') then
     begin
       // St 70
       Form7.spdNFeDataSets.Campo('modBC_N13').Value     := '3'; // Modalidade de determinação da Base de Cálculo - ver Manual
@@ -1947,27 +1968,27 @@ begin
       Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
 
-    if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '40') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '41') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '50') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60') then
+    if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '40') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '41') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '50') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60') then
     begin
 //                      Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
 //                      Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
 
-    if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or
-       (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
+    if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '70') or
+       (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '90') then
     begin
       Form7.spdNFeDataSets.Campo('pMVAST_N19').Value := '100'; // Percentual de margem de valor adicionado do ICMS ST
     end;
     //
     if Form1.sVersaoLayout = '4.00' then
     begin
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60' then
       begin
         Form7.spdNFeDataSets.campo('pST_N26a').Value                := '0.00'; // Alíquota suportada pelo Consumidor Final
         Form7.spdNFeDataSets.Campo('vICMSSubstituto_N26b').Value    := '0.00'; // Valor do icms próprio do substituto cobrado em operação anterior
@@ -1989,14 +2010,14 @@ begin
         end;
       end;
     end;
-        
+
     // Entrada empresa no Regime normal por CST
     //
     {
     if Form1.sVersaoLayout = '4.00' then
     begin
       //
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '00' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '00' then
       begin
         //
         Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := '0.00'; // Percentual do Fundo de Combate à Pobreza (FCP)
@@ -2004,7 +2025,7 @@ begin
         //
       end;
       //
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10' then
       begin
         //
         Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := '0.00'; // Valor da Base de Cálculo do FCP
@@ -2017,7 +2038,7 @@ begin
         //
       end;
       //
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '20' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '20' then
       begin
         //
         Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := '0.00'; // Valor da Base de Cálculo do FCP
@@ -2026,7 +2047,7 @@ begin
         //
       end;
       //
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30' then
       begin
         //
         Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := '0.00'; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
@@ -2035,7 +2056,7 @@ begin
         //
       end;
       //
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '51' then
       begin
         //
         Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := '0.00'; // Valor da Base de Cálculo do FCP
@@ -2044,7 +2065,7 @@ begin
         //
       end;
       //
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60' then
       begin
         //
         Form7.spdNFeDataSets.campo('pST_N26a').Value       := '0.00'; // Alíquota suportada pelo Consumidor Final
@@ -2055,7 +2076,7 @@ begin
         //
       end;
       //
-      if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
+      if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '90') then
       begin
         //
         Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := '0.00'; // Valor da Base de Cálculo do FCP
@@ -2115,7 +2136,7 @@ begin
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '400') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '500') and
         (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '900') and
-        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '61') 
+        (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value <> '61')
         then
     begin
       Form7.ibDataSet15.Edit;
@@ -2287,7 +2308,7 @@ begin
       end;
       }
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '00' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '00' then
       begin
 
         if (Form7.ibDataSet23.FieldByname('PFCP').AsFloat) <> 0 then
@@ -2298,7 +2319,7 @@ begin
 
       end;
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10' then
       begin
 
         if (Form7.ibDataSet23.FieldByname('PFCP').AsFloat) <> 0 then
@@ -2324,7 +2345,7 @@ begin
 
       end;
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '20' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '20' then
       begin
 
         if Form7.ibDataSet23.FieldByname('PFCP').AsFloat <> 0 then
@@ -2336,7 +2357,7 @@ begin
 
       end;
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30' then
       begin
 
         if Form7.ibDataSet23.FieldByname('PFCPST').AsFloat <> 0 then
@@ -2348,7 +2369,7 @@ begin
 
       end;
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '51' then
       begin
 
         if Form7.ibDataSet23PFCP.AsFloat <> 0 then
@@ -2360,14 +2381,14 @@ begin
 
       end;
 
-      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
+      if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '60' then
       begin
         //                          Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := '0.00'; // Valor da Base de Cálculo do FCP retido anteriormente por ST
         //                          Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
         //                          Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
       end;
 
-      if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
+      if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '90') then
       begin
 
         if Form7.ibDataSet23.FieldByname('PFCP').AsFloat <> 0 then
@@ -2452,7 +2473,7 @@ begin
     end;
 
     {Sandro Silva 2023-06-13 inicio}
-    if (Form7.spdNFeDataSets.Campo('CSOSN_N12a').AssTring = '61') then
+    if (Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61') then
     begin
       Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
       Form7.spdNFeDataSets.Campo('CST_N12').AsString := '61';
@@ -2470,7 +2491,7 @@ begin
   begin
 
     sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
-    
+
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
 
@@ -2486,8 +2507,6 @@ begin
 
   end;
   {Sandro Silva 2023-06-13 fim}
-
-
 end;
 
 end.
