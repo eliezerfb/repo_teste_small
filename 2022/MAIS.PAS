@@ -440,6 +440,7 @@ type
     procedure Perfisdetribitao1Click(Sender: TObject);
     procedure NaturezaseCFOPs1Click(Sender: TObject);
     procedure ConversodeCFOP1Click(Sender: TObject);
+    procedure Parmetrosdetributao1Click(Sender: TObject);
 
 
   private
@@ -12467,6 +12468,20 @@ begin
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
   {$ENDIF}
   
+  Form7.Show;
+end;
+
+procedure TForm1.Parmetrosdetributao1Click(Sender: TObject);
+begin
+  Form7.sModulo := 'PARAMETROTRIBUTACAO';
+  Form7.sTitulo := 'Parametros de tributação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
   Form7.Show;
 end;
 

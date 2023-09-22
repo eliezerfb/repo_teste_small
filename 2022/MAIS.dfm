@@ -13677,6 +13677,7 @@ object Form1: TForm1
         end
         object Parmetrosdetributao1: TMenuItem
           Caption = 'Par'#226'metros de tributa'#231#227'o'
+          OnClick = Parmetrosdetributao1Click
         end
       end
       object Opes1: TMenuItem

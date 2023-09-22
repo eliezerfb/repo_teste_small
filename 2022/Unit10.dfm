@@ -1,6 +1,6 @@
 object Form10: TForm10
-  Left = 462
-  Top = 233
+  Left = 351
+  Top = 195
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_ICMS
+      ActivePage = orelha_PerfilTrib_PISCOFINS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -4068,7 +4068,6 @@ object Form10: TForm10
             22)
           inherited txtCampo: TEdit
             Width = 390
-            Font.Name = 'Microsoft Sans Serif'
           end
           inherited gdRegistros: TDBGrid
             Width = 390

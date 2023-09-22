@@ -8,6 +8,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
   object Panel_branco: TPanel
@@ -724,6 +725,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         Transparent = True
         Layout = tlBottom
+        OnClick = lblNovoClick
         OnMouseMove = lblNovoMouseMove
         OnMouseLeave = lblNovoMouseLeave
       end
@@ -745,6 +747,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         Transparent = True
         Layout = tlBottom
+        OnClick = lblProcurarClick
         OnMouseMove = lblProcurarMouseMove
         OnMouseLeave = lblProcurarMouseLeave
       end
@@ -766,6 +769,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         Transparent = True
         Layout = tlBottom
+        OnClick = lblVisualizarClick
         OnMouseMove = lblVisualizarMouseMove
         OnMouseLeave = lblVisualizarMouseLeave
       end
@@ -787,6 +791,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         Transparent = True
         Layout = tlBottom
+        OnClick = lblAnteriorClick
         OnMouseMove = lblAnteriorMouseMove
         OnMouseLeave = lblAnteriorMouseLeave
       end
@@ -809,6 +814,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         Transparent = True
         Layout = tlBottom
+        OnClick = lblProximoClick
         OnMouseMove = lblProximoMouseMove
         OnMouseLeave = lblProximoMouseLeave
       end

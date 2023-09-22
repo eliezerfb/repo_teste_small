@@ -3,7 +3,7 @@ unit uframeCampo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Grids, DBGrids, IBDatabase, DB,
   IBCustomDataSet, IBQuery;
 
@@ -21,6 +21,7 @@ type
     procedure txtCampoChange(Sender: TObject);
     procedure txtCampoClick(Sender: TObject);
     procedure FrameExit(Sender: TObject);
+    procedure txtCampoEnter(Sender: TObject);
   private
     procedure Pesquisar;
   public
@@ -153,6 +154,12 @@ begin
   gdRegistros.Visible := False;
   Self.Height := txtCampo.Height;
   Self.SendToBack;
+end;
+
+procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
+begin
+  if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
+    CampoCodigo.DataSet.edit;
 end;
 
 end.

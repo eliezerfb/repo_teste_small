@@ -46,9 +46,21 @@ type
       Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure lblAnteriorClick(Sender: TObject);
+    procedure lblProximoClick(Sender: TObject);
+    procedure lblProcurarClick(Sender: TObject);
+    procedure lblVisualizarClick(Sender: TObject);
+    procedure lblNovoClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
+    VerificandoUso : Boolean;
+    function GravaRegistro: Boolean;
     { Private declarations }
   public
+    bEstaSendoUsado : Boolean;
+    procedure VerificaSeEstaSendoUsado;
+    function GetDescritivoNavegacao:string;
+    procedure SetaStatusUso; virtual; abstract;
     { Public declarations }
   end;
 
@@ -58,6 +70,9 @@ var
 implementation
 
 uses uIconesSistema
+    , Unit20
+    , uVisualizaCadastro
+    , uFuncoesBancoDados
     ;
 
 {$R *.dfm}
@@ -170,7 +185,117 @@ end;
 
 procedure TFrmFichaPadrao.btnOKClick(Sender: TObject);
 begin
+  GravaRegistro;
   Close;
+end;
+
+procedure TFrmFichaPadrao.lblAnteriorClick(Sender: TObject);
+begin
+  inherited;
+  DSCadastro.DataSet.Prior;
+  VerificaSeEstaSendoUsado;
+end;
+
+procedure TFrmFichaPadrao.lblProximoClick(Sender: TObject);
+begin
+  inherited;
+  DSCadastro.DataSet.Next;
+  VerificaSeEstaSendoUsado;
+end;
+
+procedure TFrmFichaPadrao.lblProcurarClick(Sender: TObject);
+begin
+  inherited;
+  Form20.ShowModal;
+end;
+
+procedure TFrmFichaPadrao.lblVisualizarClick(Sender: TObject);
+begin
+  inherited;
+  GeraVisualizacaoFichaCadastro;
+end;
+
+procedure TFrmFichaPadrao.lblNovoClick(Sender: TObject);
+begin
+  inherited;
+
+  bEstaSendoUsado := False;
+  SetaStatusUso;
+  
+  DSCadastro.DataSet.Append;
+  TibDataSet(DSCadastro.DataSet).Transaction.CommitRetaining;
+end;
+
+function TFrmFichaPadrao.GravaRegistro:Boolean;
+begin
+  if bEstaSendoUsado then
+  begin
+    DSCadastro.DataSet.Cancel;
+  end else
+  begin
+    if DSCadastro.DataSet.Modified then
+    begin
+      DSCadastro.DataSet.Post;
+    end else
+    begin
+      DSCadastro.DataSet.Cancel;
+    end;
+  end;
+
+  TibDataSet(DSCadastro.DataSet).Transaction.CommitRetaining;
+  Result := True;
+end;
+
+procedure TFrmFichaPadrao.VerificaSeEstaSendoUsado;
+begin
+  if VerificandoUso then
+    Exit;
+
+  VerificandoUso  := True;
+  bEstaSendoUsado := False;
+
+  if not (DSCadastro.DataSet.State in ([dsInsert])) then
+  begin
+    try
+      DSCadastro.DataSet.DisableControls;
+      DSCadastro.DataSet.Edit;
+      DSCadastro.DataSet.Post;
+      bEstaSendoUsado := False;
+    except
+      bEstaSendoUsado := True;
+    end;
+
+    DSCadastro.DataSet.EnableControls;
+  end;
+  
+  VerificandoUso := False;
+
+  SetaStatusUso;
+end;
+
+
+procedure TFrmFichaPadrao.FormShow(Sender: TObject);
+begin
+  inherited;
+  VerificaSeEstaSendoUsado;
+end;
+
+function TFrmFichaPadrao.GetDescritivoNavegacao: string;
+var
+  sTotal : integer;
+begin
+  Result := '';
+
+  try
+    sTotal := ExecutaComandoEscalar(TibDataSet(DSCadastro.DataSet).Database,
+                                    ' Select count(1) '+
+                                    ' From ('+
+                                    TibDataSet(DSCadastro.DataSet).SelectSQL.Text+
+                                    ' ) A');
+
+    Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal);
+  except
+  end;
 end;
 
 end.

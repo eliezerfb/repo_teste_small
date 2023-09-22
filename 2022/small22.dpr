@@ -153,14 +153,15 @@ uses
   uIEstruturaRelatorioPadrao in 'interfaces\uIEstruturaRelatorioPadrao.pas',
   uIDadosImpressaoDAO in 'interfaces\uIDadosImpressaoDAO.pas',
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
-  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',  
+  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
   uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
   uFrmPadrao in 'uFrmPadrao.pas' {FrmPadrao},
   uFrmFichaPadrao in 'uFrmFichaPadrao.pas' {FrmFichaPadrao},
   uIconesSistema in 'uIconesSistema.pas',
-  uFrmParametroTributacao in 'uFrmParametroTributacao.pas' {FrmParametroTributacao};
+  uFrmParametroTributacao in 'uFrmParametroTributacao.pas' {FrmParametroTributacao},
+  uVisualizaCadastro in 'units\uVisualizaCadastro.pas';
 
 {$R *.RES}
 
@@ -236,8 +237,6 @@ begin
   Application.CreateForm(TForm29, Form29);
   Application.CreateForm(TForm45, Form45);
   Application.CreateForm(TForm37, Form37);
-  Application.CreateForm(TFrmFichaPadrao, FrmFichaPadrao);
-  Application.CreateForm(TFrmParametroTributacao, FrmParametroTributacao);
   Application.Run;
     end else
     begin
