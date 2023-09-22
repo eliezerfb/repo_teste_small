@@ -19,9 +19,9 @@ uses
   , unit7
   ;
 
-  procedure DropViewProcedure;  
+  procedure DropViewProcedure;
   procedure AtualizaBancoDeDados(sBuild : string);
-  function ExecutaComando(comando:string):Boolean;
+// Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation
 
@@ -2337,7 +2337,7 @@ begin
   Mensagem22('Alteração na estrutura Ok');
 end;
 
-
+{Sandro Silva 2023-09-22 inicio
 function ExecutaComando(comando:string):Boolean;
 begin
   Result := False;
@@ -2353,5 +2353,6 @@ begin
   except
   end;
 end;
+}
 
 end.

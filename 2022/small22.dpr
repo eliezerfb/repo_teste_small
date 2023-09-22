@@ -153,7 +153,7 @@ uses
   uIEstruturaRelatorioPadrao in 'interfaces\uIEstruturaRelatorioPadrao.pas',
   uIDadosImpressaoDAO in 'interfaces\uIDadosImpressaoDAO.pas',
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
-  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',  
+  uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
   uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
@@ -162,7 +162,8 @@ uses
   uImpressaoOrcamento in '..\..\unit_compartilhada\uImpressaoOrcamento.pas',
   uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
-  uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas';
+  uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
+  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas';
 
 {$R *.RES}
 

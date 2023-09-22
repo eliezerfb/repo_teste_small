@@ -695,7 +695,7 @@ object Form7: TForm7
   end
   object Label20: TLabel
     Left = 462
-    Top = 590
+    Top = 582
     Width = 40
     Height = 13
     Caption = 'Conf OS'
@@ -2479,6 +2479,20 @@ object Form7: TForm7
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
+  object Label38: TLabel
+    Left = 296
+    Top = 715
+    Width = 144
+    Height = 16
+    Caption = 'Orcamento Observa'#231#227'o'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
@@ -20784,7 +20798,7 @@ object Form7: TForm7
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Left = 384
-    Top = 583
+    Top = 575
     object IBDataSet119DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       DisplayWidth = 25
@@ -20845,7 +20859,7 @@ object Form7: TForm7
   object DataSource119: TDataSource
     DataSet = IBDataSet119
     Left = 422
-    Top = 583
+    Top = 575
   end
   object IBQuery1: TIBQuery
     Database = IBDatabase1
@@ -20913,7 +20927,7 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
     Left = 384
-    Top = 619
+    Top = 611
     object IBDataSet39CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Origin = '"MUNICIPIOS"."CODIGO"'
@@ -20939,7 +20953,7 @@ object Form7: TForm7
   object DataSource39: TDataSource
     DataSet = IBDataSet39
     Left = 424
-    Top = 619
+    Top = 611
   end
   object IBDataSet101: TIBDataSet
     Database = IBDatabase1
@@ -21017,12 +21031,12 @@ object Form7: TForm7
     BufferChunks = 1000
     CachedUpdates = False
     Left = 384
-    Top = 651
+    Top = 643
   end
   object DataSource97: TDataSource
     DataSet = IBDataSet97
     Left = 425
-    Top = 655
+    Top = 647
   end
   object MainMenu13: TMainMenu
     AutoHotkeys = maManual
@@ -21347,7 +21361,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'a\vm50a\'
+      'avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21382,7 +21396,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      '\vm50a\'
+      'vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21480,7 +21494,7 @@ object Form7: TForm7
   object DataSource6: TDataSource
     DataSet = IBDataSet6
     Left = 233
-    Top = 762
+    Top = 758
   end
   object IBDataSet99999: TIBDataSet
     Database = IBDatabase1
@@ -21697,7 +21711,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21727,7 +21741,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

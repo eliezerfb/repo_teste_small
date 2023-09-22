@@ -1564,6 +1564,7 @@ type
     IbdOrcamentObsOBS: TMemoField;
     dsOrcamentObs: TDataSource;
     EnviarOrcamentoPorEmail1: TMenuItem;
+    Label38: TLabel;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2212,6 +2213,9 @@ type
     procedure ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
     procedure ibDataSet4TIPO_ITEMChange(Sender: TField);
     procedure EnviarOrcamentoPorEmail1Click(Sender: TObject);
+    procedure ibDataSet37AfterOpen(DataSet: TDataSet);
+    procedure IbdOrcamentObsAfterDelete(DataSet: TDataSet);
+    procedure IbdOrcamentObsAfterPost(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -33867,7 +33871,7 @@ procedure TForm7.IbdOrcamentObsAfterDelete(DataSet: TDataSet);
 begin
   AgendaCommit(True);
 end;
- 
+
 procedure TForm7.IbdOrcamentObsAfterPost(DataSet: TDataSet);
 begin
   AgendaCommit(True);
