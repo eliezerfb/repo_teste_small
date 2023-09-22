@@ -128,8 +128,7 @@ function xmlNodeValueToFloat(sXML: String; sNode: String): Double;
 function SysComputerName: String;
 function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
 function WinVersion: string;
-
-
+// Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 
 var
   IMG: TImage;

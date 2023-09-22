@@ -4,7 +4,14 @@ interface
 
 uses
   uIImpressaoOrcamento, uIRetornaImpressaoOrcamento, uArquivosDAT,
-  Classes, IBDataBase, SmallFunc, Forms, Controls, ShellAPI,
+  Classes, IBDataBase,
+  {$IFDEF VER150}
+  SmallFunc,
+  {$ELSE}
+  smallfunc_xe,
+  {$ENDIF}
+  uConverteHtmlToPDF,
+  Forms, Controls, ShellAPI,
   Windows, uSmallEnumerados, Printers, Graphics, Dialogs;
 
 type

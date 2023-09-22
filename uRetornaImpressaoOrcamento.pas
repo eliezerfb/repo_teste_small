@@ -4,7 +4,12 @@ interface
 
 uses
   uIRetornaImpressaoOrcamento, IBQuery, IBDataBase, uConectaBancoSmall, Classes,
-  SmallFunc;
+  {$IFDEF VER150}
+  SmallFunc
+  {$ELSE}
+  smallfunc_xe
+  {$ENDIF}
+  ;
 
 type
   TRetornaImpressaoOrcamento = class(TInterfacedObject, IRetornaImpressaoOrcamento)
