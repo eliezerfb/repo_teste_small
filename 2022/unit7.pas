@@ -1557,6 +1557,7 @@ type
     ibdPerfilTributaALIQ_COFINS_ENTRADA: TIBBCDField;
     ibdPerfilTributaREGISTRO: TIBStringField;
     ibdPerfilTributaALIQ_PIS_ENTRADA: TIBBCDField;
+    EnviarOrcamentoPorEmail1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2202,6 +2203,7 @@ type
     procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
     procedure DSPerfilTributaStateChange(Sender: TObject);
     procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
+    procedure EnviarOrcamentoPorEmail1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2405,14 +2407,15 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uIRetornaLimiteDisponivel
   , Unit18
   , uListaCnaes
-  , uChamaRelatorioCommerceFactory
   , uAssinaturaDigital
   , uArquivosDAT
   , uSmallEnumerados
   , uNFSeINI
   , uAtualizaBancoDados
   , uAtualizaTributacaoPerfilTrib
-  , uSmallResourceString;
+  , uSmallResourceString
+  , uChamaRelatorioCommerceFactory
+  , uImpressaoOrcamento, uSectionFrentedeCaixaINI;
 
 {$R *.DFM}
 
@@ -13068,6 +13071,7 @@ begin
   PrvisualizarDANFE1.Visible                       := False;
   CancelarNFSe1.Visible                            := False;
   EnviarNFSeporemail1.Visible                      := False;
+  EnviarOrcamentoPorEmail1.Visible                 := False;
   Visu1.Visible                                    := False;
   ransmitirNotaFiscaldeServioNFSe1.Visible         := False;
   LimparRetornosda1.Visible                        := False;
@@ -13183,6 +13187,16 @@ begin
     begin
       Editar1.Visible := False;
       Apagar2.Visible := True;
+
+      EnviarOrcamentoPorEmail1.Visible := True;
+
+      cEmails := TRetornaCaptionEmailPopUpDocs.New
+                                              .SetDataBase(IBDatabase1)
+                                              .setCodigoClifor(Form7.ibDataSet97.FieldByname('Cliente').AsString)
+                                              .Retornar;
+
+      EnviarOrcamentoPorEmail1.Enabled := (cEmails <> EmptyStr);
+      EnviarOrcamentoPorEmail1.Caption := 'Enviar orçamento por e-mail ' + cEmails;
     end;
     //
     if sModulo = 'OS'  then
@@ -13337,7 +13351,7 @@ begin
       EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail';
       if EEnviarcartadecorreoporemail1.Enabled then
         EEnviarcartadecorreoporemail1.Caption := EEnviarcartadecorreoporemail1.Caption + ' ' + cEmails;
-      
+
       //
       if Form7.ibDataSet15EMITIDA.AsString = 'X' then
       begin
@@ -33814,7 +33828,60 @@ begin
       MensagemSistema(sApagar,msgAtencao);
       Abort;
     end;
-  end;
+  end; 
+end;
+ 
+procedure TForm7.EnviarOrcamentoPorEmail1Click(Sender: TObject);
+var
+  cMensagem: String;
+  cEmail: String;
+  cCaminhoArq: String;
+  cPortaAnt: tTipoImpressaoOrcamento;
+  oArqDAT: TArquivosDAT;
+begin
+  // Pega e-mail
+  cEmail := Trim(EnviarOrcamentoPorEmail1.Caption);
+  cEmail := Trim(Copy(cEmail, Pos('<', cEmail) + 1,  length(cEmail)));
+  cEmail := Copy(cEmail,1, length(cEmail)-1);
+
+  if not ValidaEmail(cEmail) then
+    Exit;
+
+  oArqDAT := TArquivosDAT.Create(Usuario);
+  try
+    // Define sempre como PDF para envio por e-mail
+    cPortaAnt := oArqDAT.Frente.Orcamento.Porta;
+    try
+      oArqDAT.Frente.Orcamento.Porta := ttioPDF;
+      // Gera o arquivo PDF
+      TImpressaoOrcamento.New
+                         .SetTransaction(IBDataSet97.Transaction)
+                         .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                         .GetCaminhoImpressao(cCaminhoArq)
+                         .Salvar;
+
+    finally
+      oArqDAT.Frente.Orcamento.Porta := cPortaAnt;
+    end;
+
+    Sleep(500);
+
+    if not FileExists(cCaminhoArq) then
+    begin
+      ShowMessage('Não foi possível enviar o orçamento.');
+      Exit;
+    end;
+    // Monta mensagem para enviar
+    cMensagem := TTextoEmailFactory.New
+                                   .Orcamento
+                                   .setDataEmissao(IBDataSet97.FieldByName('Data').AsDateTime)
+                                   .setNumeroDocumento(IBDataSet97.FieldByName('Orçamento').AsString)
+                                   .RetornarTexto;
+    // Envia o e-mail
+    EnviarEMail('',cEmail,'','Seu Orçamento', pchar(cMensagem), pChar(cCaminhoArq),False);
+  finally
+    FreeAndNil(oArqDAT);
+  end;                                   
 end;
 
 end.

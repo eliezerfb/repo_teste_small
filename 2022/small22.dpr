@@ -155,7 +155,13 @@ uses
   uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
-  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas';
+  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
+  uIImpressaoOrcamento in '..\..\unit_compartilhada\interfaces\uIImpressaoOrcamento.pas',
+  uIRetornaImpressaoOrcamento in '..\..\unit_compartilhada\interfaces\uIRetornaImpressaoOrcamento.pas',
+  uImpressaoOrcamento in '..\..\unit_compartilhada\uImpressaoOrcamento.pas',
+  uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
+  uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
+  uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas';
 
 {$R *.RES}
 
