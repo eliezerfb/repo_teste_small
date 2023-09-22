@@ -33835,6 +33835,8 @@ end;
 procedure TForm7.DSPerfilTributaStateChange(Sender: TObject);
 begin
   Form10.lblAtencaoPerfilTrib.Visible := DSPerfilTributa.State = dsEdit;
+  Form10.lbAtencaoPisCofins.Visible   := DSPerfilTributa.State = dsEdit;
+  Form10.lbAtencaoIPI.Visible         := DSPerfilTributa.State = dsEdit;    
 end;
 
 procedure TForm7.ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
