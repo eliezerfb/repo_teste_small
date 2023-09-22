@@ -2233,6 +2233,22 @@ begin
   end;
   {Mauricio Parizotto 2023-08-30 Fim}
 
+  {Dailon Parisotto 2023-09-12 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENTOBS')) then
+  begin
+    ExecutaComando('CREATE TABLE ORCAMENTOBS ('+
+                   ' 	PEDIDO VARCHAR(10) NOT NULL,'+
+                   ' 	OBS BLOB SUB_TYPE 1 SEGMENT SIZE 80,'+
+                   ' 	REGISTRO VARCHAR(10) NOT NULL,'+
+                   ' 	CONSTRAINT PK_ORCAMENTOBS_REGISTRO PRIMARY KEY (REGISTRO)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_ORCAMENTOBS_REGISTRO');
+
+    ExecutaComando('Commit');
+  end;
+  {Dailon Parisotto 2023-09-12 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
