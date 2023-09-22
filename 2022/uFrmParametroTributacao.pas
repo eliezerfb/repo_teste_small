@@ -44,14 +44,14 @@ type
     DBText3: TDBText;
     DBText4: TDBText;
     DBText5: TDBText;
-    DBText6: TDBText;
-    DBText7: TDBText;
+    descCSTPerfilTrib: TDBText;
+    descCSOSNPerfilTrib: TDBText;
     DBText8: TDBText;
     DBText9: TDBText;
-    DBText10: TDBText;
+    descCST_NFCePerfilTrib: TDBText;
     DBText11: TDBText;
     DSPerfilTrib: TDataSource;
-    DBText12: TDBText;
+    descCSOSN_NFCePerfilTrib: TDBText;
     ibdPerfilTrib: TIBDataSet;
     ibdPerfilTribTIPO_ITEM: TIBStringField;
     ibdPerfilTribIPPT: TIBStringField;
@@ -107,6 +107,8 @@ type
     procedure fraPerfilTribgdRegistrosKeyDown(Sender: TObject;
       var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -121,19 +123,15 @@ implementation
 
 uses
   Unit7
-  , HtmlHelp
   , SmallFunc
-  ;
+  , uFuncoesRetaguarda;
 
 {$R *.dfm}
 
 procedure TFrmParametroTributacao.edtCFOPKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  if Key = VK_RETURN then
-    Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_F1 then
-    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(Form7.sAjuda)));
+  KeyPressPadrao(Sender, Key, Shift);
 end;
 
 procedure TFrmParametroTributacao.FormShow(Sender: TObject);
@@ -144,6 +142,30 @@ begin
 
   if edtCFOP.CanFocus then
     edtCFOP.SetFocus;
+
+  if Form7.ibDataSet13CRT.AsString = '1' then
+  begin
+    lblCSOSNPerfilTrib.Visible       := True;
+    descCSOSNPerfilTrib.Visible      := True;
+    lblCSTPerfilTrib.Visible         := False;
+    descCSTPerfilTrib.Visible        := False;
+
+    lblCSOSN_NFCePerfilTrib.Visible  := True;
+    descCSOSN_NFCePerfilTrib.Visible := True;
+    lblCST_NFCePerfilTrib.Visible    := False;
+    descCST_NFCePerfilTrib.Visible   := False;
+  end else
+  begin
+    lblCSOSNPerfilTrib.Visible       := False;
+    descCSOSNPerfilTrib.Visible      := False;
+    lblCSTPerfilTrib.Visible         := True;
+    descCSTPerfilTrib.Visible        := True;
+
+    lblCSOSN_NFCePerfilTrib.Visible  := False;
+    descCSOSN_NFCePerfilTrib.Visible := False;
+    lblCST_NFCePerfilTrib.Visible    := True;
+    descCST_NFCePerfilTrib.Visible   := True;
+  end;
 end;
 
 procedure TFrmParametroTributacao.SetaStatusUso;
@@ -284,9 +306,45 @@ procedure TFrmParametroTributacao.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   inherited;
-
   ibdPerfilTrib.Close;
-  FreeAndNil(FrmParametroTributacao);
+
+  //Limpa da Memória
+  Action := caFree;
+  FrmParametroTributacao := nil;
+end;
+
+procedure TFrmParametroTributacao.FormCreate(Sender: TObject);
+begin
+  inherited;
+  
+  sAjuda := 'config_icms_iss.htm';
+end;
+
+procedure TFrmParametroTributacao.btnOKClick(Sender: TObject);
+begin
+  //Validações
+  if (DSCadastro.DataSet.FieldByName('CFOP_ENTRADA').AsString = '')
+    and (DSCadastro.DataSet.FieldByName('ORIGEM_ENTRADA').AsString = '')
+    and (DSCadastro.DataSet.FieldByName('CST_ENTRADA').AsString = '')
+    and (DSCadastro.DataSet.FieldByName('CSOSN_ENTRADA').AsString = '')
+    and (DSCadastro.DataSet.FieldByName('ALIQ_ENTRADA').AsString = '')
+    and (DSCadastro.DataSet.FieldByName('NCM_ENTRADA').AsString = '')
+    and (DSCadastro.DataSet.FieldByName('IDPERFILTRIBUTACAO').AsString = '') then
+  begin
+    //Se estiver tudo em branco cancela
+    DSCadastro.DataSet.Cancel;
+  end else
+  begin
+    if (DSCadastro.DataSet.FieldByName('IDPERFILTRIBUTACAO').AsString = '') then
+    begin
+      MensagemSistema('Campo Perfil de tributação deve ser preenchido!',msgAtencao);
+      if fraPerfilTrib.txtCampo.CanFocus then
+        fraPerfilTrib.txtCampo.SetFocus;
+      Abort;
+    end;
+  end;
+
+  inherited;
 end;
 
 end.

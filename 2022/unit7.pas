@@ -8129,6 +8129,9 @@ begin
   //Mauricio Parizotto 2023-09-21
   if sModulo = 'PARAMETROTRIBUTACAO' then
   begin
+    if FrmParametroTributacao = nil then
+      FrmParametroTributacao := TFrmParametroTributacao.Create(Self);
+      
     FrmParametroTributacao.lblNovoClick(Sender);
     FrmParametroTributacao.Show;
     Exit;

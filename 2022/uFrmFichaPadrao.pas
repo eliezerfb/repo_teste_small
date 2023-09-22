@@ -58,8 +58,10 @@ type
     { Private declarations }
   public
     bEstaSendoUsado : Boolean;
+    sAjuda : string;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
+    procedure KeyPressPadrao(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SetaStatusUso; virtual; abstract;
     { Public declarations }
   end;
@@ -73,6 +75,7 @@ uses uIconesSistema
     , Unit20
     , uVisualizaCadastro
     , uFuncoesBancoDados
+    , HtmlHelp
     ;
 
 {$R *.dfm}
@@ -296,6 +299,15 @@ begin
     Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal);
   except
   end;
+end;
+
+procedure TFrmFichaPadrao.KeyPressPadrao(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
 
 end.

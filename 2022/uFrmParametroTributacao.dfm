@@ -2,7 +2,6 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
   Left = 528
   Top = 233
   OnClose = FormClose
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
@@ -597,7 +596,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             DataField = 'ORIGEM'
             DataSource = DSPerfilTrib
           end
-          object DBText6: TDBText
+          object descCSTPerfilTrib: TDBText
             Left = 113
             Top = 130
             Width = 225
@@ -605,8 +604,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             DataField = 'CST'
             DataSource = DSPerfilTrib
           end
-          object DBText7: TDBText
-            Left = 208
+          object descCSOSNPerfilTrib: TDBText
+            Left = 112
             Top = 130
             Width = 225
             Height = 17
@@ -629,7 +628,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             DataField = 'CFOP'
             DataSource = DSPerfilTrib
           end
-          object DBText10: TDBText
+          object descCST_NFCePerfilTrib: TDBText
             Left = 113
             Top = 181
             Width = 273
@@ -645,8 +644,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             DataField = 'ALIQUOTA_NFCE'
             DataSource = DSPerfilTrib
           end
-          object DBText12: TDBText
-            Left = 169
+          object descCSOSN_NFCePerfilTrib: TDBText
+            Left = 113
             Top = 181
             Width = 225
             Height = 17
@@ -926,7 +925,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
   object DSPerfilTrib: TDataSource
     DataSet = ibdPerfilTrib
     Left = 672
-    Top = 51
+    Top = 52
   end
   object ibdPerfilTrib: TIBDataSet
     Database = Form7.IBDatabase1
@@ -1284,6 +1283,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
     object ibdPerfilTribPIVA: TFloatField
       FieldName = 'PIVA'
       Origin = 'PERFILTRIBUTACAO.PIVA'
+      DisplayFormat = '#,##0.00000'
     end
     object ibdPerfilTribCST: TIBStringField
       FieldName = 'CST'
@@ -1318,6 +1318,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
     object ibdPerfilTribALIQUOTA_NFCE: TIBBCDField
       FieldName = 'ALIQUOTA_NFCE'
       Origin = 'PERFILTRIBUTACAO.ALIQUOTA_NFCE'
+      DisplayFormat = '##0.00'
       Precision = 18
       Size = 2
     end
@@ -1329,6 +1330,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
     object ibdPerfilTribIPI: TFloatField
       FieldName = 'IPI'
       Origin = 'PERFILTRIBUTACAO.IPI'
+      DisplayFormat = '#0.00'
     end
     object ibdPerfilTribENQ_IPI: TIBStringField
       FieldName = 'ENQ_IPI'
@@ -1343,12 +1345,14 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
     object ibdPerfilTribALIQ_PIS_SAIDA: TIBBCDField
       FieldName = 'ALIQ_PIS_SAIDA'
       Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_SAIDA'
+      DisplayFormat = '#0.0000'
       Precision = 18
       Size = 4
     end
     object ibdPerfilTribALIQ_COFINS_SAIDA: TIBBCDField
       FieldName = 'ALIQ_COFINS_SAIDA'
       Origin = 'PERFILTRIBUTACAO.ALIQ_COFINS_SAIDA'
+      DisplayFormat = '#0.0000'
       Precision = 18
       Size = 4
     end
@@ -1360,12 +1364,14 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
     object ibdPerfilTribALIQ_PIS_ENTRADA: TIBBCDField
       FieldName = 'ALIQ_PIS_ENTRADA'
       Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_ENTRADA'
+      DisplayFormat = '#0.0000'
       Precision = 18
       Size = 4
     end
     object ibdPerfilTribALIQ_COFINS_ENTRADA: TIBBCDField
       FieldName = 'ALIQ_COFINS_ENTRADA'
       Origin = 'PERFILTRIBUTACAO.ALIQ_COFINS_ENTRADA'
+      DisplayFormat = '#0.0000'
       Precision = 18
       Size = 4
     end
