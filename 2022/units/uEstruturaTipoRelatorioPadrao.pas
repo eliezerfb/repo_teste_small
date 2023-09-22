@@ -5,7 +5,9 @@ interface
 uses
   uIEstruturaTipoRelatorioPadrao, uSmallEnumerados, uArquivosDAT,
   Classes, Dialogs, DB, Windows, uIEstruturaRelatorioPadrao, IBQuery,
-  SysUtils, DateUtils, Forms, Controls, IBDatabase;
+  SysUtils, DateUtils, Forms, Controls, IBDatabase
+  , uConverteHtmlToPDF
+  ;
 
 type
   TEstruturaTipoRelatorioPadrao = class(TInterfacedObject, IEstruturaTipoRelatorioPadrao)

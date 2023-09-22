@@ -87,6 +87,7 @@ uses
   uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
   uframePesquisaProduto in 'frames\uframePesquisaProduto.pas' {framePesquisaProduto: TFrame},
+  uframeCampo in 'frames\uframeCampo.pas' {fFrameCampo: TFrame},
   uITestaProdutoExiste in 'interfaces\uITestaProdutoExiste.pas',
   uFrmTermosUso in 'uFrmTermosUso.pas' {FrmTermosUso},
   uTestaProdutoExiste in 'units\uTestaProdutoExiste.pas',
@@ -153,10 +154,17 @@ uses
   uIDadosImpressaoDAO in 'interfaces\uIDadosImpressaoDAO.pas',
   uIFiltrosRodapeRelatorio in 'interfaces\uIFiltrosRodapeRelatorio.pas',
   uIDadosEmitente in 'interfaces\uIDadosEmitente.pas',
+  uParametroTributacao in 'uParametroTributacao.pas',
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
-  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
-  uParametroTributacao in 'uParametroTributacao.pas';
+  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',  
+  uIImpressaoOrcamento in '..\..\unit_compartilhada\interfaces\uIImpressaoOrcamento.pas',
+  uIRetornaImpressaoOrcamento in '..\..\unit_compartilhada\interfaces\uIRetornaImpressaoOrcamento.pas',
+  uImpressaoOrcamento in '..\..\unit_compartilhada\uImpressaoOrcamento.pas',
+  uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
+  uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
+  uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
+  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas';
 
 {$R *.RES}
 

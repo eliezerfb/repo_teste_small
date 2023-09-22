@@ -11,13 +11,14 @@ type
   public
     class function New: ITextoEmailFactory;
     function NFe: ITextoEmail;
-    function CCe: ITextoEmail;    
+    function CCe: ITextoEmail;
+    function Orcamento: ITextoEmail;           
   end;
 
 implementation
 
 uses
-  uTextoEmailNFe, uTextoEmailCCe;
+  uTextoEmailNFe, uTextoEmailCCe, uTextoEmailOrcamento;
 
 { TTextoEmailFactory }
 
@@ -34,6 +35,11 @@ end;
 function TTextoEmailFactory.NFe: ITextoEmail;
 begin
   Result := TTextoEmailNFe.New;
+end;
+
+function TTextoEmailFactory.Orcamento: ITextoEmail;
+begin
+  Result := TTextoEmailOrcamento.New;
 end;
 
 end.

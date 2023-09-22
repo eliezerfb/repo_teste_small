@@ -55,8 +55,8 @@ function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet; // Mauricio Parizotto 2023-09-12
-function ExecutaComando(comando:string):Boolean;  overload;
-function ExecutaComando(comando:string; IBTRANSACTION: TIBTransaction):Boolean; overload;
+function ExecutaComando(comando: String): Boolean;  overload;
+function ExecutaComando(comando: String; IBTRANSACTION: TIBTransaction): Boolean; overload;
 function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
 function GeneratorExisteFB(Banco: TIBDatabase; sGenerator: String): Boolean;
 function TamanhoCampo(IBTransaction: TIBTransaction; Tabela: String;
