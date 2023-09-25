@@ -12,7 +12,7 @@ object frmExportaXML: TfrmExportaXML
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy

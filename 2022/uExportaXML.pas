@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, SmallFunc, uArquivosDAT,
-  uGeraXMLDocsEletronicosFactory;
+  uSalvaXMLContabilFactory, IBQuery, uConectaBancoSmall;
 
 type
   TfrmExportaXML = class(TForm)
@@ -33,6 +33,7 @@ type
     procedure GravaArquivoINI;
     function FazValidacoes: Boolean;
     function EnviarXml: Boolean;
+    function TestarTemTabelaNFCe: Boolean;
   public
     procedure SetImagem(AoImagem: TPicture);
     procedure AbrirTelaTodosDocs;
@@ -52,63 +53,78 @@ uses
 
 function TfrmExportaXML.EnviarXml: Boolean;
 var
-  cAnexo: String;
+  cAnexo, cTitulo, cCorpo: String;
   cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT: String;
 begin
   Result := False;
   try
-    if FazValidacoes then
+    if not FazValidacoes then
       Exit;
 
     try
       if cbNFeSaida.Checked then
-        cZipNFeSaida   := TGeraXMLDocsEletronicosFactory.New
-                                                        .NFeSaida
-                                                        .setTransaction(Form7.IBTransaction1)
-                                                        .setDatas(dtInicial.Date, dtFinal.Date)
-                                                        .setCNPJ(Form7.ibDataSet13CGC.AsString)
-                                                        .Salvar
-                                                        .Compactar
-                                                        .getCaminhoArquivos;
+        cZipNFeSaida   := TSalvaXMLContabilFactory.New
+                                                  .NFeSaida
+                                                  .setTransaction(Form7.IBTransaction1)
+                                                  .setDatas(dtInicial.Date, dtFinal.Date)
+                                                  .setCNPJ(Form7.ibDataSet13CGC.AsString)
+                                                  .Salvar
+                                                  .Compactar
+                                                  .getCaminhoArquivos;
 
       if cbNFeEntrada.Checked then
-        cZipNFeEntrada := TGeraXMLDocsEletronicosFactory.New
-                                                        .NFeEntrada
-                                                        .setTransaction(Form7.IBTransaction1)
-                                                        .setDatas(dtInicial.Date, dtFinal.Date)
-                                                        .setCNPJ(Form7.ibDataSet13CGC.AsString)
-                                                        .Salvar
-                                                        .Compactar
-                                                        .getCaminhoArquivos;
+        cZipNFeEntrada := TSalvaXMLContabilFactory.New
+                                                  .NFeEntrada
+                                                  .setTransaction(Form7.IBTransaction1)
+                                                  .setDatas(dtInicial.Date, dtFinal.Date)
+                                                  .setCNPJ(Form7.ibDataSet13CGC.AsString)
+                                                  .Salvar
+                                                  .Compactar
+                                                  .getCaminhoArquivos;
 
       if cbNFCeSAT.Checked then
-        cZipNFCeSAT    := TGeraXMLDocsEletronicosFactory.New
-                                                        .NFCeSAT
-                                                        .setTransaction(Form7.IBTransaction1)
-                                                        .setDatas(dtInicial.Date, dtFinal.Date)
-                                                        .setCNPJ(Form7.ibDataSet13CGC.AsString)
-                                                        .Salvar
-                                                        .Compactar
-                                                        .getCaminhoArquivos;
+        cZipNFCeSAT    := TSalvaXMLContabilFactory.New
+                                                  .NFCeSAT
+                                                  .setTransaction(Form7.IBTransaction1)
+                                                  .setDatas(dtInicial.Date, dtFinal.Date)
+                                                  .setCNPJ(Form7.ibDataSet13CGC.AsString)
+                                                  .Salvar
+                                                  .Compactar
+                                                  .getCaminhoArquivos;
 
-      if cZipNFeSaida <> EmptyStr then
+      if FileExists(cZipNFeSaida) then
         cAnexo := cZipNFeSaida;
-      if cZipNFeEntrada <> EmptyStr then
+      if FileExists(cZipNFeEntrada) then
       begin
         if cAnexo <> EmptyStr then
           cAnexo := cAnexo + ';';
-        cAnexo := cZipNFeEntrada;
+        cAnexo := cAnexo + cZipNFeEntrada;
       end;
-      if cZipNFCeSAT <> EmptyStr then
+      if FileExists(cZipNFCeSAT) then
       begin
         if cAnexo <> EmptyStr then
           cAnexo := cAnexo + ';';
-        cAnexo := cZipNFCeSAT;
+        cAnexo := cAnexo + cZipNFCeSAT;
       end;
 
-      Unit7.EnviarEMail(AllTrim(edtEmailContab.Text), EmptyStr, EmptyStr, 'Assunto', 'Texto', cAnexo, False);
+      if cAnexo <> EmptyStr then
+      begin
+        cTitulo := _cTituloEmailXMLContab;
+        cTitulo := StringReplace(cTitulo, '<RAZAOEMPRESA>', Form7.ibDataSet13NOME.AsString, []);
+        cTitulo := StringReplace(cTitulo, '<CNPJEMPRESA>', Form7.ibDataSet13CGC.AsString, []);
 
-      Result := True;
+        cCorpo := _cCorpoEmailXMLContab;
+        cCorpo := StringReplace(cCorpo, '<RAZAOEMPRESA>', Form7.ibDataSet13NOME.AsString, []);
+        cCorpo := StringReplace(cCorpo, '<CNPJEMPRESA>', Form7.ibDataSet13CGC.AsString, []);
+        cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
+
+        Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+        Result := True;
+      end
+      else
+        Application.MessageBox(PChar('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
+                                     'Não foi encontrado nenhum XML para os documentos marcados, verifique o período de datas informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+
     finally
       if FileExists(cZipNFeSaida) then
         DeleteFile(cZipNFeSaida);
@@ -125,10 +141,15 @@ end;
 
 procedure TfrmExportaXML.btnAvancarClick(Sender: TObject);
 begin
-  if not EnviarXml then
-    Exit;
-    
-  btnCancelarClick(Self);
+  btnAvancar.Enabled := False;
+  try
+    if not EnviarXml then
+      Exit;
+
+    btnCancelarClick(Self);
+  finally
+    btnAvancar.Enabled := True;
+  end;
 end;
 
 procedure TfrmExportaXML.btnCancelarClick(Sender: TObject);
@@ -168,6 +189,8 @@ begin
   cbNFCeSAT.Checked    := False;
   cbNFeSaida.Checked   := False;
   cbNFeEntrada.Checked := False;
+
+  TestarTemTabelaNFCe;
 
   if cbNFeSaida.Enabled then
     cbNFeSaida.Checked   := True;
@@ -237,6 +260,30 @@ begin
   end;  
 
   Result := True;
+end;
+
+function TfrmExportaXML.TestarTemTabelaNFCe: Boolean;
+var
+  qryNFCe: TIBQuery;
+begin
+  qryNFCe := CriaIBQuery(Form7.IBTransaction1);
+  try
+    qryNFCe.Close;
+    qryNFCe.Database := Form7.IBDatabase1;
+    qryNFCe.SQL.Clear;
+    qryNFCe.SQL.Add('SELECT COUNT(*) TEM');
+    qryNFCe.SQL.Add('FROM RDB$RELATIONS');
+    qryNFCe.SQL.Add('WHERE RDB$FLAGS=1 and RDB$RELATION_NAME=''NFCE''');
+    qryNFCe.Open;
+
+    cbNFCeSAT.Enabled := (qryNFCe.FieldByName('TEM').AsInteger > 0);
+    if not cbNFCeSAT.Enabled then
+      cbNFCeSAT.Checked := False;
+
+    Result := cbNFCeSAT.Enabled;
+  finally
+    FreeAndNil(qryNFCe);
+  end;
 end;
 
 end.

@@ -31474,6 +31474,7 @@ procedure TForm7.ChamarTelaXMLContab;
 begin
   frmExportaXML := TfrmExportaXML.Create(nil);
   try
+    frmExportaXML.SetImagem(Form1.imgVendas.Picture);
     frmExportaXML.AbrirTelaTodosDocs;
   finally
     FreeAndNil(frmExportaXML);

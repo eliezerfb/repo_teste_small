@@ -164,11 +164,13 @@ uses
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
   uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
-  uIGeraXMLDocsEletronicosFactory in 'interfaces\uIGeraXMLDocsEletronicosFactory.pas',
-  uIXMLDocsEletronicos in 'interfaces\uIXMLDocsEletronicos.pas',
-  uGeraXMLDocsEletronicosFactory in 'units\uGeraXMLDocsEletronicosFactory.pas',
-  uXMLDocsEletronicosNFeSaida in 'units\uXMLDocsEletronicosNFeSaida.pas',
-  uXMLDocsEletronicosNFeEntrada in 'units\uXMLDocsEletronicosNFeEntrada.pas';
+  uSalvaXMLContabilFactory in 'units\uSalvaXMLContabilFactory.pas',
+  uSalvaXMLContabilNFeSaida in 'units\uSalvaXMLContabilNFeSaida.pas',
+  uSalvaXMLContabilNFeEntrada in 'units\uSalvaXMLContabilNFeEntrada.pas',
+  uSalvaXMLContabilNFCeSAT in '..\..\unit_compartilhada\uSalvaXMLContabilNFCeSAT.pas',
+  uISalvaXMLDocsEletronicosContabil in '..\..\unit_compartilhada\interfaces\uISalvaXMLDocsEletronicosContabil.pas',
+  uISalvaXMLContabilFactory in 'interfaces\uISalvaXMLContabilFactory.pas',
+  uSalvaXMLContabilPadrao in '..\..\unit_compartilhada\uSalvaXMLContabilPadrao.pas';
 
 {$R *.RES}
 
