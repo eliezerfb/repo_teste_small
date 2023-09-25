@@ -12097,6 +12097,7 @@ begin
       '    , max(ORCAMENT.NUMERONF) as NUMERONF ' +
       //'    , ORCAMENT.CLIFOR ' +
       ', max(ORCAMENT.CLIFOR) as CLIFOR ' +
+(*
       //'    , ORCAMENT.VENDEDOR ' +
       ', max(case when coalesce((select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO), '''') = '''' then ' +
       '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO order by registro desc) ' +
@@ -12104,6 +12105,8 @@ begin
       '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO) ' +
       '  end) ' +
       'as VENDEDOR ' +
+*)
+      ', max(ORCAMENT.VENDEDOR) as VENDEDOR ' +
       '    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO ' +
       '    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO ' +
       ' FROM ORCAMENT ' +
