@@ -1,13 +1,13 @@
-unit uXMLDocsEletronicosNFeSaida;
+unit uSalvaXMLContabilNFeSaida;
 
 interface
 
 uses
-  uIXMLDocsEletronicos, IBDataBase, IBQuery, SmallFunc, ShellAPI, Windows,
+  uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery, SmallFunc, ShellAPI, Windows,
   Forms, uConectaBancoSmall, Classes;
 
 type
-  TXMLDocsEletronicosNFeSaida = class(TInterfacedObject, IXMLDocsEletronicos)
+  TSalvaXMLContabilNFeSaida = class(TInterfacedObject, ISalvaXMLDocsEletronicosContabil)
   private
     FcCNPJ: String;
     FdDataIni: TDateTime;
@@ -23,14 +23,15 @@ type
     procedure CarregarDados;
     function LoadXmlDestinatarioSaida(AcChaveNFe: String): WideString;
     constructor Create;
+    function TestarTemArquivosXML: Boolean;
   public
     destructor Destroy; override;
-    class function New: IXMLDocsEletronicos;
-    function setTransaction(AoTransaction: TIBTransaction): IXMLDocsEletronicos;
-    function setDatas(AdDataIni, AdDataFim: TDateTime): IXMLDocsEletronicos;
-    function setCNPJ(AcCNPJ: String): IXMLDocsEletronicos;
-    function Salvar: IXMLDocsEletronicos;
-    function Compactar: IXMLDocsEletronicos;
+    class function New: ISalvaXMLDocsEletronicosContabil;
+    function setTransaction(AoTransaction: TIBTransaction): ISalvaXMLDocsEletronicosContabil;
+    function setDatas(AdDataIni, AdDataFim: TDateTime): ISalvaXMLDocsEletronicosContabil;
+    function setCNPJ(AcCNPJ: String): ISalvaXMLDocsEletronicosContabil;
+    function Salvar: ISalvaXMLDocsEletronicosContabil;
+    function Compactar: ISalvaXMLDocsEletronicosContabil;
     function getCaminhoArquivos: String;
   end;
 
@@ -41,22 +42,28 @@ uses SysUtils;
 const
   _cInutilizacao = 'INUTILIZACAO';
 
-{ TXMLDocsEletronicosNFeSaida }
+{ TSalvaXMLContabilNFeSaida }
 
-constructor TXMLDocsEletronicosNFeSaida.Create;
+constructor TSalvaXMLContabilNFeSaida.Create;
 begin
-  FbGerouZIP := False
+  FbGerouZIP := False;
+
+  if not DirectoryExists(RetornarCaminho) then
+    ForceDirectories(RetornarCaminho);
 end;
 
-class function TXMLDocsEletronicosNFeSaida.New: IXMLDocsEletronicos;
+class function TSalvaXMLContabilNFeSaida.New: ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self.Create;
 end;
 
-function TXMLDocsEletronicosNFeSaida.Compactar: IXMLDocsEletronicos;
+function TSalvaXMLContabilNFeSaida.Compactar: ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
-  
+
+  if not TestarTemArquivosXML then
+    Exit;
+
   try
     ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(RetornarCaminho + '*.xml')+'" "'+Alltrim(RetornarCaminho + RetornarNomeZip)+'"'), '', SW_SHOWMAXIMIZED);
 
@@ -77,7 +84,7 @@ begin
   end;
 end;
 
-function TXMLDocsEletronicosNFeSaida.getCaminhoArquivos: String;
+function TSalvaXMLContabilNFeSaida.getCaminhoArquivos: String;
 begin
   Result := EmptyStr;
 
@@ -85,7 +92,7 @@ begin
     Result := RetornarCaminho + RetornarNomeZip;
 end;
 
-function TXMLDocsEletronicosNFeSaida.Salvar: IXMLDocsEletronicos;
+function TSalvaXMLContabilNFeSaida.Salvar: ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
 
@@ -94,7 +101,7 @@ begin
   GerarXMLs;
 end;
 
-procedure TXMLDocsEletronicosNFeSaida.CarregarDados;
+procedure TSalvaXMLContabilNFeSaida.CarregarDados;
 begin
   FQryNFe.Close;
   FQryNFe.SQL.Clear;
@@ -104,23 +111,25 @@ begin
   FQryNFe.SQL.Add('   , VENDAS.NFEID');
   FQryNFe.SQL.Add('   , VENDAS.REGISTRO');
   FQryNFe.SQL.Add('FROM VENDAS');
-  FQryNFe.SQL.Add('WHERE (VENDAS.EMISSAO >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ' AND (VENDAS.EMISSAO <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + ')');
+  FQryNFe.SQL.Add('WHERE');
+  FQryNFe.SQL.Add('((VENDAS.EMISSAO >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ') AND (VENDAS.EMISSAO <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + '))');
+  FQryNFe.SQL.Add('AND (COALESCE(VENDAS.NFEID,'''') <> '''')');
   FQryNFe.SQL.Add('UNION ALL');
   FQryNFe.SQL.Add('SELECT');
   FQryNFe.SQL.Add('   1 AS ORD');
-  FQryNFe.SQL.Add('   INUTILIZACAO.XML AS XML');
+  FQryNFe.SQL.Add('   , INUTILIZACAO.XML AS XML');
   FQryNFe.SQL.Add('   , ' + QuotedStr(_cInutilizacao) + ' AS NFEID');
   FQryNFe.SQL.Add('   , INUTILIZACAO.REGISTRO');
   FQryNFe.SQL.Add('FROM INUTILIZACAO');
-  FQryNFe.SQL.Add('WHERE (INUTILIZACAO.DATA >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ' AND (INUTILIZACAO.DATA <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + ')');
-  FQryNFe.SQL.Add('ORDER BY ORD, REGISTRO');
+  FQryNFe.SQL.Add('WHERE ((INUTILIZACAO.DATA >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ') AND (INUTILIZACAO.DATA <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + '))');
+  FQryNFe.SQL.Add('ORDER BY 1, 4');
   FQryNFe.Open;
 end;
 
-procedure TXMLDocsEletronicosNFeSaida.GerarXMLs;
+procedure TSalvaXMLContabilNFeSaida.GerarXMLs;
 begin
   FQryNFe.First;
-
+  
   while not FQryNFe.Eof do
   begin
     if FQryNFe.FieldByName('ORD').AsInteger = 0 then
@@ -132,7 +141,7 @@ begin
   end;
 end;
 
-procedure TXMLDocsEletronicosNFeSaida.GeraXMLFaturadoCancelado;
+procedure TSalvaXMLContabilNFeSaida.GeraXMLFaturadoCancelado;
 var
   slArq: TStringList;
   cArquivo: String;
@@ -159,7 +168,7 @@ begin
   end;
 end;
 
-function TXMLDocsEletronicosNFeSaida.LoadXmlDestinatarioSaida(AcChaveNFe: String): WideString;
+function TSalvaXMLContabilNFeSaida.LoadXmlDestinatarioSaida(AcChaveNFe: String): WideString;
 var
   lsfile : TStringList;
 begin
@@ -203,7 +212,7 @@ begin
   end;
 end;
 
-procedure TXMLDocsEletronicosNFeSaida.GeraXMLInutilizado;
+procedure TSalvaXMLContabilNFeSaida.GeraXMLInutilizado;
 var
   slArq: TStringList;
 begin
@@ -217,7 +226,16 @@ begin
   end;
 end;
 
-procedure TXMLDocsEletronicosNFeSaida.ApagarArquivosXML;
+function TSalvaXMLContabilNFeSaida.TestarTemArquivosXML: Boolean;
+var
+  oSearchRec : tSearchREC;
+begin
+  FindFirst(RetornarCaminho + '*.xml', faAnyFile, oSearchRec);
+
+  Result := oSearchRec.Name <> EmptyStr;
+end;
+
+procedure TSalvaXMLContabilNFeSaida.ApagarArquivosXML;
 var
   AnEncontrou: Integer;
   oSearchRec : tSearchREC;
@@ -231,26 +249,26 @@ begin
   end;
 end;
 
-function TXMLDocsEletronicosNFeSaida.RetornarCaminho: String;
+function TSalvaXMLContabilNFeSaida.RetornarCaminho: String;
 begin
-  Result := ExtractFileDir(GetCurrentDir)+'\CONTABIL\';
+  Result := GetCurrentDir + '\CONTABIL\';
 end;
 
-function TXMLDocsEletronicosNFeSaida.setCNPJ(
-  AcCNPJ: String): IXMLDocsEletronicos;
+function TSalvaXMLContabilNFeSaida.setCNPJ(
+  AcCNPJ: String): ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
 
   FcCNPJ := AcCNPJ;
 end;
 
-function TXMLDocsEletronicosNFeSaida.RetornarNomeZip: String;
+function TSalvaXMLContabilNFeSaida.RetornarNomeZip: String;
 begin
-  Result := FcCNPJ + LimpaNumero(FcCNPJ) + '_' + StrTRan(DateToStr(date),'/','_')+'_NFeSaida.zip';
+  Result := LimpaNumero(FcCNPJ) + '_' + StrTRan(DateToStr(date),'/','_')+'_NFeSaida.zip';
 end;
 
-function TXMLDocsEletronicosNFeSaida.setDatas(AdDataIni,
-  AdDataFim: TDateTime): IXMLDocsEletronicos;
+function TSalvaXMLContabilNFeSaida.setDatas(AdDataIni,
+  AdDataFim: TDateTime): ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
 
@@ -258,15 +276,15 @@ begin
   FdDataFim := AdDataFim;
 end;
 
-function TXMLDocsEletronicosNFeSaida.setTransaction(
-  AoTransaction: TIBTransaction): IXMLDocsEletronicos;
+function TSalvaXMLContabilNFeSaida.setTransaction(
+  AoTransaction: TIBTransaction): ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
 
   FQryNFe := CriaIBQuery(AoTransaction);
 end;
 
-destructor TXMLDocsEletronicosNFeSaida.Destroy;
+destructor TSalvaXMLContabilNFeSaida.Destroy;
 begin
   FreeAndNil(FQryNFe);
   inherited;
