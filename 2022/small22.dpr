@@ -176,7 +176,7 @@ uses
   uSalvaXMLContabilNFCeSAT in '..\..\unit_compartilhada\uSalvaXMLContabilNFCeSAT.pas',
   uISalvaXMLDocsEletronicosContabil in '..\..\unit_compartilhada\interfaces\uISalvaXMLDocsEletronicosContabil.pas',
   uISalvaXMLContabilFactory in 'interfaces\uISalvaXMLContabilFactory.pas',
-  uSalvaXMLContabilPadrao in '..\..\unit_compartilhada\uSalvaXMLContabilPadrao.pas';
+  smallfunc_xe in '..\..\unit_compartilhada\smallfunc_xe.pas';
 
 {$R *.RES}
 

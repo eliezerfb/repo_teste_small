@@ -31630,63 +31630,8 @@ end;
 
 procedure TForm7.ExportarNfesdeentrdaparacontabilidade1Click(
   Sender: TObject);
-var
-  bTem   : Boolean;
-  sEmail : string;
-  Mais1Ini : tIniFile;
-  SearchRec: tSearchREC;
-  Encontrou : Integer;
 begin
   ChamarTelaXMLContab;
-  Form7.ibDataSet24.First;
-  while not Form7.ibDataSet24.Eof do
-  begin
-    if DistribuicaoNFeCompra('CONTABIL') then bTem   := True;
-    Form7.ibDataSet24.Next;
-  end;
-  //
-  if bTem then
-  begin
-    //
-    while FileExists(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
-    begin
-      DeleteFile(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'));
-      Sleep(1000);
-    end;
-    //
-    ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')+'"'), '', SW_SHOWMAXIMIZED);
-    //
-    while ConsultaProcesso('szip.exe') do
-    begin
-      Application.ProcessMessages;
-      sleep(100);
-    end;
-    //
-    while not FileExists(pChar(Form1.sAtual+'\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
-    begin
-      sleep(100);
-    end;
-    //
-    // Apaga todos os arquivos .XML da pasta CONTABIL
-    //
-    FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-    Encontrou :=0;
-    while Encontrou = 0 do
-    begin
-      DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-      Encontrou := FindNext(SearchRec);
-    end;
-    //
-    Unit7.EnviarEMail('',frmExportaXML.edtEmailContab.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-      pchar('Segue em anexo arquivo zipado com as NF-e´s de entrada da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-      +' Período de '+DateToStr(frmExportaXML.dtInicial.Date)+' até '+DateToStr(frmExportaXML.dtFinal.Date)+'.'
-      +chr(10)
-      +Form1.sPropaganda)
-      ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'),False);
-  end else
-  begin
-    ShowMessage('Não encontrado XML para contabilidade neste período.');
-  end;
 end;
 
 procedure TForm7.ManifestaododestinatrioDesc1Click(Sender: TObject);

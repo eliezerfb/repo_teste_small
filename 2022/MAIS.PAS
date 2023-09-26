@@ -5621,7 +5621,13 @@ end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
 begin
-  frmExportaXML.ShowModal;
+  frmExportaXML := TfrmExportaXML.Create(nil);
+  try
+    frmExportaXML.SetImagem(imgVendas.Picture);
+    frmExportaXML.ShowModal;
+  finally
+    FreeAndNil(frmExportaXML);
+  end;
 end;
 
 procedure TForm1.Cadastrodeconvnios1Click(Sender: TObject);
