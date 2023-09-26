@@ -34,6 +34,9 @@ type
     function FazValidacoes: Boolean;
     function EnviarXml: Boolean;
     function TestarTemTabelaNFCe: Boolean;
+    function TestarArquivoMaior10Mega(AcArquivo: String): Boolean;
+    function TamanhoArquivo(AcArquivo: string): Integer;
+    procedure LimparPastaContabil;
   public
     procedure SetImagem(AoImagem: TPicture);
     procedure AbrirTelaTodosDocs;
@@ -51,16 +54,47 @@ uses
 
 {$R *.dfm}
 
+function TfrmExportaXML.TamanhoArquivo(AcArquivo: string): Integer;
+begin
+  with TFileStream.Create(AcArquivo, fmOpenRead or fmShareExclusive) do
+  try
+    Result := Size;
+  finally
+   Free;
+  end;
+end;
+
+procedure TfrmExportaXML.LimparPastaContabil;
+var
+  i: integer;
+  oSearch: TSearchRec;
+begin
+  if not (DirectoryExists(GetCurrentDir + '\CONTABIL\')) then
+    Exit;
+
+  I := FindFirst(GetCurrentDir + '\CONTABIL\*.*', faAnyFile, oSearch);
+
+  while I = 0 do
+  begin
+    DeleteFile(GetCurrentDir + '\CONTABIL\' + oSearch.Name);
+    I := FindNext(oSearch);
+  end;
+end;
+
 function TfrmExportaXML.EnviarXml: Boolean;
 var
   cAnexo, cTitulo, cCorpo: String;
   cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT: String;
+  bTamanhoZip: Boolean;
 begin
   Result := False;
+  bTamanhoZip := True;
   try
     if not FazValidacoes then
       Exit;
 
+    LimparPastaContabil;
+    
     try
       if cbNFeSaida.Checked then
         cZipNFeSaida   := TSalvaXMLContabilFactory.New
@@ -109,6 +143,15 @@ begin
 
       if cAnexo <> EmptyStr then
       begin
+        if (TestarArquivoMaior10Mega(cZipNFeSaida)) or (TestarArquivoMaior10Mega(cZipNFeEntrada)) or (TestarArquivoMaior10Mega(cZipNFCeSAT)) then
+        begin
+          if Application.MessageBox(PChar('O tamanho de um ou mais arquivos ultrapassou 10MB.' + SLineBreak + SLineBreak +
+                                        'Seu servidor de e-mail poderá bloquear o envio.' + SLineBreak +
+                                        'Selecione períodos menores para evitar bloqueio do envio.' + SLineBreak + SLineBreak +
+                                        'Deseja enviar o(s) arquivo(s) mesmo assim?'), PChar(_cTituloMsg), MB_ICONQUESTION + MB_YESNO) = mrNo then
+          Exit;
+        end;
+          
         cTitulo := _cTituloEmailXMLContab;
         cTitulo := StringReplace(cTitulo, '<RAZAOEMPRESA>', Form7.ibDataSet13NOME.AsString, []);
         cTitulo := StringReplace(cTitulo, '<CNPJEMPRESA>', Form7.ibDataSet13CGC.AsString, []);
@@ -123,20 +166,26 @@ begin
       end
       else
         Application.MessageBox(PChar('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
-                                     'Não foi encontrado nenhum XML para os documentos marcados, verifique o período de datas informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+                                     'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
 
     finally
-      if FileExists(cZipNFeSaida) then
-        DeleteFile(cZipNFeSaida);
-      if FileExists(cZipNFeEntrada) then
-        DeleteFile(cZipNFeEntrada);
-      if FileExists(cZipNFCeSAT) then
-        DeleteFile(cZipNFCeSAT);
+      LimparPastaContabil;
     end;
   except
     on e:Exception do
       Application.MessageBox(PChar('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
   end;
+end;
+
+function TfrmExportaXML.TestarArquivoMaior10Mega(AcArquivo: String): Boolean;
+begin
+  Result := False;
+
+  if AcArquivo = EmptyStr then
+    Exit;
+
+  if TamanhoArquivo(AcArquivo) > _cArquivo10MB then
+    Result := True;
 end;
 
 procedure TfrmExportaXML.btnAvancarClick(Sender: TObject);
@@ -246,19 +295,24 @@ function TfrmExportaXML.FazValidacoes: Boolean;
 begin
   Result := False;
 
+  if not FileExists('szip.exe') then
+  begin
+    Application.MessageBox(PChar('Utilitário de compatação não encontrado SZIP.EXE' + SLineBreak + SLineBreak +
+                                 'O envio dos XMLs foi cancelado.'), Pchar(_cTituloMsg), MB_ICONWARNING + MB_OK);
+    Exit;
+  end;
   if (not cbNFeSaida.Checked) and (not cbNFeEntrada.Checked) and (not cbNFCeSAT.Checked) then
   begin
     Application.MessageBox('Marque ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
     Exit;
   end;
-
   if not ValidaEmail(edtEmailContab.Text) then
   begin
     Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
     edtEmailContab.SetFocus;
     Exit;
-  end;  
-
+  end;
+  
   Result := True;
 end;
 
