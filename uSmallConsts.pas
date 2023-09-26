@@ -8,6 +8,8 @@ const
   _cRecebPagto = 'Caixa';
   _cImpressoraPadrao = 'Impressora padrão do windows';
   _cNaoSeAplica = 'Não se aplica';
+  _cFormatDate = 'dd/mm/yyyy';
+  _cArquivo10MB = 10485760;
 
   _cSim = 'Sim';
   _cNao = 'Não';
@@ -58,7 +60,11 @@ const
 
   //SECTION NFE (NFe.ini)
   _cSectionNFE = 'NFE';
+  _cSectionXML = 'XML';
   _cIdentNFEAmbiente = 'Ambiente';
+  _cIdentXMLPeriodoInicial = 'Periodo Inicial';
+  _cIdentXMLPeriodoFinal = 'Periodo Final';
+  _cIdentXMLEmailContabilidade = 'e-mail contabilidade';
 
   //SECTION NFE (NFSe.ini)
   _cSectionNFSE = 'NFSE';

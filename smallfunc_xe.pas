@@ -15,33 +15,28 @@ unit smallfunc_xe;
 interface
 
 uses
+  {$IFDEF VER150}
+  Classes, SysUtils, StrUtils, Dialogs, IniFiles, Forms, Printers
+  , ExtCtrls, IBDatabase, IBQuery, Controls, DBCtrls, StdCtrls
+  , Mask, TLHelp32
+  {$ELSE}
   System.Classes, System.SysUtils, System.StrUtils, Vcl.Dialogs
+  , System.IniFiles, Winapi.WinSock, Vcl.Forms, Soap.EncdDecd
+  , Vcl.Printers, Vcl.ExtCtrls, IBX.IBDatabase, IBX.IBQuery
+  , Vcl.Controls, Vcl.DBCtrls , Vcl.StdCtrls, Vcl.Mask
+  , Winapi.TlHelp32
+  {$ENDIF}
   , Windows
-  , System.IniFiles
-  , Winapi.WinSock
-  //, Forms
-  , Vcl.Forms
   , IdBaseComponent, IdCoder, IdCoder3to4, IdCoderMIME
-  , Soap.EncdDecd
-  //, Printers
-  , Vcl.Printers
-  //, ExtCtrls //2020-07-20
-  , Vcl.ExtCtrls
-  , IBX.IBDatabase, IBX.IBQuery // 2020-07-21
   , LbCipher, LbClass // 2020-07-21
   , JPeg, Menus
-  //, Controls
-  , Vcl.Controls
   , DateUtils
   , ShellApi
-  ,Vcl.DBCtrls
-  , Vcl.StdCtrls
   , msxmldom
   , XMLDoc
   , xmldom
   , XMLIntf
   , MsXml
-  , Vcl.Mask, Winapi.TlHelp32
   ;
 
 
@@ -54,7 +49,9 @@ type
   TConsisteInscricaoEstadual  = function (const Insc, UF: AnsiString): Integer; stdcall; // Usar dinamicamente a dll para validar IE obtida em http://www.sintegra.gov.br/
 
 function ImagemIconesSmall: String;
+{$IFNDEF VER150}
 function GetIP: String;
+{$ENDIF}
 function FusoHorarioPadrao(UF: String): String;
 function CpfCgc(pP1: String): Boolean;
 function FormataCpfCgc(pP1:String):String;
@@ -63,7 +60,9 @@ function LimpaNumero(pP1:String):String;
 function ConsisteInscricaoEstadual(sIE: String; sUF: String): Boolean;
 function DecodeBase64(Value: String): String;
 function EncodeBase64(Value: String): String;
+{$IFNDEF VER150}
 function EncodeStreamBase64(Stream: TFileStream): String;
+{$ENDIF}
 function LerParametroIni(sArquivo: String; sSecao: String;
   sParametro: String; sValorDefault: String): String;
 function GravarParametroIni(sArquivo: String; sSecao: String;
@@ -87,7 +86,9 @@ function StrZero(Num : Double ; Zeros,Deci: integer): string;
 function Replicate(pP1:String; pP2:Integer):String;
 function LimpaNumeroDeixandoAVirgula(pP1:String):String;
 function Year(Data:TdateTime): Integer;
+{$IFNDEF VER150}
 function GetLocalIP: string;
+{$ENDIF}
 function LimpaNumeroVirg(pP1:String):String;
 procedure FecharAplicacao(sNomeExecutavel: String);
 function VersaoExe(sNomeExe: String = ''): String; //2020-07-31 Sandro Silva function VersaoExe: String;
@@ -117,7 +118,9 @@ function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String;
   ChaveIni: String; sUF: String; bHabilita: Boolean): String;
 procedure AdicionaRegraEntradaNoFirewall(NomeEntrada : String;
   NomePrograma : String; Protocolo: String; Allow : Boolean = True);
+{$IFNDEF VER150}
 procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
+{$ENDIF}
 procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 function SysWinDir: string;
 function SmallMsgBox(const Text, Caption: PChar; Flags: Longint): Integer;
@@ -146,6 +149,7 @@ begin
   Result := 'inicial\Small_22_.bmp';
 end;
 
+{$IFNDEF VER150}
 function GetIP: String;
 type
   TaPInAddr = array [0..10] of PInAddr;
@@ -172,6 +176,7 @@ begin
   end;
   WSACleanup;
 end;
+{$ENDIF}
 
 function FusoHorarioPadrao(UF: String): String;
 // Retorna o fuso horário padrão para a UF
@@ -439,7 +444,7 @@ begin
   end;
   FreeAndNil(IdEncoderMIME1);
 end;
-
+{$IFNDEF VER150}
 function EncodeStreamBase64(Stream: TFileStream): String;
 var
   IdEncoderMIME1: TIdEncoderMIME;
@@ -453,7 +458,7 @@ begin
   end;
   FreeAndNil(IdEncoderMIME1);
 end;
-
+{$ENDIF}
 function AllTrim(Texto: String): String;
 begin
   Result := Trim(Texto);
@@ -695,7 +700,7 @@ begin
    result:=StrToInt(Copy(DateToStr(DataD),7,2));
    if length(DateToStr(DataD))= 10 then result:=StrToInt(Copy(DateToStr(DataD),7,4));
 end;
-
+{$IFNDEF VER150}
 function GetLocalIP: string;
 type
   TaPInAddr = array [0..10] of PInAddr;
@@ -722,6 +727,7 @@ begin
   end;
   WSACleanup;
 end;
+{$ENDIF}
 
 function LimpaNumeroVirg(pP1:String):String;
 var
@@ -1140,7 +1146,7 @@ begin
   WinExec(PAnsiChar(AnsiString('netsh advfirewall firewall add rule name=' + NomeEntrada + ' dir=in program="' + NomePrograma + '"  action=allow protocol=' + Protocolo)), SWP_HIDEWINDOW);
 end;
 
-
+{$IFNDEF VER150}
 procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
 begin
   {If (key = #13) then
@@ -1184,7 +1190,7 @@ begin
        key:=#0 ;
   end;
 end;
-
+{$ENDIF}
 
 procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
 var
@@ -1296,7 +1302,6 @@ begin
   Windows.GetComputerName(PChar(Result), I);
   Result := String(PChar(Result));
 end;
-
 
 function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
 var
