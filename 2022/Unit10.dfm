@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_ICMS
+      ActivePage = orelha_PerfilTrib
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -15422,7 +15422,7 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
         end
-        object Label55: TLabel
+        object lbAtencaoIPI: TLabel
           Left = 18
           Top = 417
           Width = 703
@@ -15515,7 +15515,7 @@ object Form10: TForm10
         ImageIndex = 18
         OnEnter = orelha_PerfilTrib_IPIEnter
         OnShow = orelha_PerfilTrib_IPIShow
-        object Label117: TLabel
+        object lbAtencaoPisCofins: TLabel
           Left = 18
           Top = 417
           Width = 703
