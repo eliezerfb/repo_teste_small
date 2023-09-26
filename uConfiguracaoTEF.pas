@@ -66,6 +66,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure cdsTEFsNOMEChange(Sender: TField);
     procedure cdsTEFsIDNOMESetText(Sender: TField; const Text: String);
+    procedure cdsTEFsAfterPost(DataSet: TDataSet);
+    procedure dbgTEFsEnter(Sender: TObject);
   private
     FoIni: TIniFile;
     FoMessageEvent: TMessageEvent;
@@ -92,7 +94,7 @@ procedure TFConfiguracaoTEF.btnOKClick(Sender: TObject);
 begin
   if not TestarConfiguracoes then
     Exit;
-    
+
   if SalvarINI then
     Close;
 end;
@@ -385,7 +387,7 @@ begin
   if Key = VK_RETURN then
   begin
     i := (Sender as TDbGrid).SelectedIndex;
-    if ((Sender as TDbGrid).SelectedIndex + 1) < (Sender as TDbGrid).Columns.Count - 1 then
+    if ((Sender as TDbGrid).SelectedIndex) <= (Sender as TDbGrid).Columns.Count - 1 then
     begin
       (Sender as TDbGrid).SelectedIndex := (Sender as TDbGrid).SelectedIndex + 1;
       if i = (Sender as TDbGrid).SelectedIndex  then
@@ -393,7 +395,11 @@ begin
         (Sender as TDbGrid).SelectedIndex := 0;
         (Sender as TDbGrid).DataSource.DataSet.Next;
         if (Sender as TDbGrid).DataSource.DataSet.EOF then
+        begin
+          if (Sender as TDbGrid).DataSource.DataSet.FieldByName('NOME').AsString = EmptyStr then
+            (Sender as TDbGrid).DataSource.DataSet.Delete;
           (Sender as TDbGrid).DataSource.DataSet.Append;
+        end;
       end;
     end
     else
@@ -401,7 +407,11 @@ begin
       (Sender as TDbGrid).SelectedIndex := 0;
       (Sender as TDbGrid).DataSource.DataSet.Next;
       if (Sender as TDbGrid).DataSource.DataSet.EOF then
+      begin
+        if (Sender as TDbGrid).DataSource.DataSet.FieldByName('NOME').AsString = EmptyStr then
+          (Sender as TDbGrid).DataSource.DataSet.Delete;
         (Sender as TDbGrid).DataSource.DataSet.Append;
+      end;
     end;
   end;
 end;
@@ -414,6 +424,11 @@ begin
     Key := 0;
     DeletarRecord(Sender);
   end;
+  if Key = VK_DOWN then
+  begin
+    if (cdsTEFsNOME.AsString = EmptyStr) and (cdsTEFs.Eof) then
+      Key := 0;
+  end;
 end;
 
 procedure TFConfiguracaoTEF.dbgTEFsColEnter(Sender: TObject);
@@ -421,7 +436,7 @@ begin
   if UpperCase(TDBGrid(Sender).SelectedField.FieldName) = _cColunaAtivo then
     TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing]
   else
-    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];
+    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];   
 end;
 
 procedure TFConfiguracaoTEF.DeletarRecord(Sender: TObject);
@@ -479,7 +494,18 @@ begin
     if cdsTEFsATIVO.AsString = _cSim then
       cdsTEFsATIVO.AsString := _cNao
     else
-      cdsTEFsATIVO.AsString := _cSim;
+    begin
+
+      if (cdsTEFsNOME.AsString = EmptyStr)
+         or (cdsTEFsPASTA.AsString = EmptyStr)
+         or (cdsTEFsDIRETORIOREQ.AsString = EmptyStr)
+         or (cdsTEFsDIRETORIORESP.AsString = EmptyStr)
+         or (cdsTEFsCAMINHOEXE.AsString = EmptyStr) then
+        Application.MessageBox('Para ativar este TEF todos os campos devem ser preenchidos.', 'Atenção', MB_ICONINFORMATION + MB_OK)
+      else
+        cdsTEFsATIVO.AsString := _cSim;      
+
+    end;
     cdsTEFs.Post;
     cdsTEFs.Edit;    
   end;
@@ -538,17 +564,51 @@ var
 begin
   if Msg.message = WM_MOUSEWHEEL then
   begin
-    if cdsTEFs.RecNo = cdsTEFs.RecordCount then
-      Exit;
     Msg.message := WM_KEYDOWN;
     Msg.lParam := 0;
     i := HiWord(Msg.wParam) ;
     if i > 0 then
+    begin
+      if cdsTEFs.RecNo = 1 then
+        Exit;
       Msg.wParam := VK_UP
+    end
     else
+    begin
+      if cdsTEFs.RecNo = cdsTEFs.RecordCount then
+        Exit;
       Msg.wParam := VK_DOWN;
+    end;
     Handled := False;
   end;
+end;
+
+procedure TFConfiguracaoTEF.cdsTEFsAfterPost(DataSet: TDataSet);
+var
+  nRecNo: Integer;
+begin
+  nRecNo := cdsTEFs.RecNo;
+  cdsTEFs.DisableControls;
+  try
+    while not cdsTEFs.Eof do
+    begin
+      if cdsTEFsNOME.AsString = EmptyStr then
+        cdsTEFs.Delete;
+      cdsTEFs.Next;
+    end;
+  finally
+    if not cdsTEFs.IsEmpty then
+      cdsTEFs.RecNo := nRecNo;
+    cdsTEFs.EnableControls;
+  end;
+end;
+
+procedure TFConfiguracaoTEF.dbgTEFsEnter(Sender: TObject);
+begin
+  if UpperCase(TDBGrid(Sender).SelectedField.FieldName) = _cColunaAtivo then
+    TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing]
+  else
+    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing]; 
 end;
 
 end.

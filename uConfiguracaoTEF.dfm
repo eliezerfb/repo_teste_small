@@ -109,6 +109,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     OnCellClick = dbgTEFsCellClick
     OnColEnter = dbgTEFsColEnter
     OnDrawColumnCell = dbgTEFsDrawColumnCell
+    OnEnter = dbgTEFsEnter
     OnExit = dbgTEFsExit
     OnKeyDown = dbgTEFsKeyDown
     OnKeyUp = dbgTEFsKeyUp
@@ -236,6 +237,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     Params = <>
     StoreDefs = True
     AfterInsert = cdsTEFsAfterInsert
+    AfterPost = cdsTEFsAfterPost
     OnPostError = cdsTEFsPostError
     Left = 160
     object cdsTEFsNOME: TStringField
