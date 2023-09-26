@@ -46,6 +46,7 @@ begin
 
       if not Query.IsEmpty then
       begin
+        vDataSet.FieldByName('IDPERFILTRIBUTACAO').AsString      := Query.FieldByName('IDPERFILTRIBUTACAO').AsString;
         vDataSet.FieldByName('TIPO_ITEM').AsString               := Query.FieldByName('TIPO_ITEM').AsString;
         vDataSet.FieldByName('IPPT').AsString                    := Query.FieldByName('IPPT').AsString;
         vDataSet.FieldByName('IAT').AsString                     := Query.FieldByName('IAT').AsString;

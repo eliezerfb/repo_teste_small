@@ -448,6 +448,8 @@ begin
                       if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag)) then
                       begin
                         try
+                          Form7.StatusTrocaPerfil := 'PR';
+
                           SetValoresParTributacao(NodeTmp.ChildNodes['CFOP'].Text,
                                                   NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['orig'].Text,
                                                   NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['CST'].Text,
@@ -455,8 +457,10 @@ begin
                                                   NodeTmp.ChildNodes['NCM'].Text,
                                                   StrToFloatDef(StringReplace(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['pICMS'].Text,'.',',',[rfReplaceAll]),0),
                                                   Form7.ibDataSet4);
-                         except
-                         end;
+
+                          Form7.StatusTrocaPerfil := 'OK';
+                        except
+                        end;
                       end;
 
 
