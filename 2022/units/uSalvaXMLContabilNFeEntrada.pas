@@ -109,7 +109,7 @@ end;
 
 function TSalvaXMLContabilNFeEntrada.RetornarNomeZip: String;
 begin
-  Result := LimpaNumero(FcCNPJ) + '_' + StrTRan(DateToStr(date),'/','_')+'_NFeEntrada.zip';
+  Result := LimpaNumero(FcCNPJ) + '_XMLNFe_Entrada_' + StrTRan(DateToStr(date),'/','_')+'.zip';
 end;
 
 function TSalvaXMLContabilNFeEntrada.Salvar: ISalvaXMLDocsEletronicosContabil;
