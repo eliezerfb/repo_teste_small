@@ -3647,7 +3647,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 24
+            Height = 21
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
