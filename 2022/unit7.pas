@@ -12089,26 +12089,22 @@ begin
     Result := slSQL.Text;
     }
 
+    {Sandro Silva 2023-09-25 inicio
     Result :=
       'WITH ORCAMENTS AS ( ' +
       ' SELECT ' +
       '    ORCAMENT.PEDIDO ' +
       '    , MIN(ORCAMENT.DATA) AS DATA ' +
       '    , max(ORCAMENT.NUMERONF) as NUMERONF ' +
-      //'    , ORCAMENT.CLIFOR ' +
       ', max(ORCAMENT.CLIFOR) as CLIFOR ' +
-(*
-      //'    , ORCAMENT.VENDEDOR ' +
       ', max(case when coalesce((select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO), '''') = '''' then ' +
       '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO order by registro desc) ' +
       '  else ' +
       '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO) ' +
       '  end) ' +
       'as VENDEDOR ' +
-*)
-      ', max(ORCAMENT.VENDEDOR) as VENDEDOR ' +
-      '    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO ' +
-      '    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO ' +
+      '    , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+      '    , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
       ' FROM ORCAMENT ' +
       ' GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
       ' ) ' +
@@ -12123,6 +12119,44 @@ begin
       '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
       '    , ORCAMENTS.PEDIDO as "Registro" ' +
       ' FROM ORCAMENTS ';
+  }
+    Result :=
+      'WITH ORCAMENTS AS ( ' +
+      '  select Q.PEDIDO ' +
+      '  , Q.DATA ' +
+      '  , Q.NUMERONF ' +
+      '  , Q.CLIFOR ' +
+      '  , O2.VENDEDOR ' +
+      '  , Q.TOTALBRUTO ' +
+      '  , Q.DESCONTO ' +
+      '  from ' +
+      '  ( ' +
+      '   SELECT ' +
+      '      ORCAMENT.PEDIDO ' +
+      '      , MIN(ORCAMENT.DATA) AS DATA ' +
+      '      , max(ORCAMENT.NUMERONF) as NUMERONF ' +
+      '      , max(ORCAMENT.CLIFOR) as CLIFOR ' +
+      '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +
+      '      , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+      '      , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
+      '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +      
+      '   FROM ORCAMENT ' +
+      '   GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
+      '  ) Q ' +
+      '  left join ORCAMENT O2 on O2.REGISTRO = Q.REGISTRO ' +
+      ' ) ' +
+      ' SELECT ' +
+      '     ORCAMENTS.PEDIDO as "Orçamento" ' +
+      '    , ORCAMENTS.DATA as "Data" ' +
+      '    , ORCAMENTS.CLIFOR as "Cliente" ' +
+      '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
+      '    , TOTALBRUTO as "Total bruto" ' +
+      '    , DESCONTO as "Desconto" ' +
+      '    , (TOTALBRUTO - DESCONTO) as "Total líquido" ' +
+      '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
+      '    , ORCAMENTS.PEDIDO as "Registro" ' +
+      ' FROM ORCAMENTS ';
+  {Sandro Silva 2023-09-25 fim}
 
   finally
     //FreeAndNil(slSQL);
