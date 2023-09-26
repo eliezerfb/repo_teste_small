@@ -108,7 +108,7 @@ end;
 
 function TSalvaXMLContabilNFCeSAT.RetornarNomeZip: String;
 begin
-  Result := LimpaNumero(FcCNPJ) + '_' + StrTRan(DateToStr(date),'/','_')+'_NFCeSAT.zip';
+  Result := LimpaNumero(FcCNPJ) + '_XMLNFCeSAT_' + StrTRan(DateToStr(date),'/','_')+'.zip';  
 end;
 
 function TSalvaXMLContabilNFCeSAT.Salvar: ISalvaXMLDocsEletronicosContabil;
