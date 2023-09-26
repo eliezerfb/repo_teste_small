@@ -12833,7 +12833,8 @@ begin
     frmRelResumoVendas.DataSetEstoque     := ibDataSet4;
     frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
     frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);
-    frmRelResumoVendas.WhereEstoque       := sWhere;
+    if sModulo = 'ESTOQUE' then
+      frmRelResumoVendas.WhereEstoque       := sWhere;
     frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True);
     frmRelResumoVendas.ShowModal;
   finally
