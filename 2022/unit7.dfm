@@ -19778,7 +19778,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object ExportarNfesdeentrdaparacontabilidade1: TMenuItem
-        Caption = 'Exportar NFe'#39's de entrada para contabilidade...'
+        Caption = 'Exportar NF-e'#39's para a contabilidade'
         OnClick = ExportarNfesdeentrdaparacontabilidade1Click
       end
       object N41: TMenuItem

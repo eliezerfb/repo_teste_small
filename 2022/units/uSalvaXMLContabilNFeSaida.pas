@@ -63,7 +63,7 @@ begin
 
   if not TestarTemArquivosXML then
     Exit;
-
+    
   try
     ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(RetornarCaminho + '*.xml')+'" "'+Alltrim(RetornarCaminho + RetornarNomeZip)+'"'), '', SW_SHOWMAXIMIZED);
 
@@ -264,7 +264,7 @@ end;
 
 function TSalvaXMLContabilNFeSaida.RetornarNomeZip: String;
 begin
-  Result := LimpaNumero(FcCNPJ) + '_' + StrTRan(DateToStr(date),'/','_')+'_NFeSaida.zip';
+  Result := LimpaNumero(FcCNPJ) + '_XMLNFe_Saida_' + StrTRan(DateToStr(date),'/','_')+'.zip';
 end;
 
 function TSalvaXMLContabilNFeSaida.setDatas(AdDataIni,
