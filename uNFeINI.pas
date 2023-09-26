@@ -9,11 +9,14 @@ type
   TNFeINI = class(TArquivoDATINFPadrao)
   private
     FoNFe: TSectionNFEINI;
+    FoXML: TSectionXML;
     function getNFe: TSectionNFEINI;
+    function getXML: TSectionXML;
   public
     destructor Destroy; override;
 
     property NFE: TSectionNFEINI read getNFe;
+    property XML: TSectionXML read getXML;
   protected
     function NomeArquivo: String; override;
   end;
@@ -27,6 +30,7 @@ uses TypInfo, SysUtils, IniFiles;
 destructor TNFeINI.Destroy;
 begin
   FreeAndNil(FoNFe);
+  FreeAndNil(FoXML);  
   inherited;
 end;
 
@@ -36,6 +40,14 @@ begin
     FoNFe := TSectionNFEINI.Create(FoIni);
 
   Result := FoNFe;
+end;
+
+function TNFeINI.getXML: TSectionXML;
+begin
+  if not Assigned(FoXML) then
+    FoXML := TSectionXML.Create(FoIni);
+
+  Result := FoXML;
 end;
 
 function TNFeINI.NomeArquivo: String;

@@ -32,6 +32,13 @@ resourcestring
 
   _cMensagemExcluir = 'Excluir este registro?';
 
+  _cEmailInvalido = 'E-mail informado é inválido.';
+
+  _cTituloEmailXMLContab = 'Arquivos XML <RAZAOEMPRESA>, <CNPJEMPRESA>';
+  _cCorpoEmailXMLContab  = 'Segue em anexo arquivos XML da empresa <RAZAOEMPRESA>, CNPJ <CNPJEMPRESA> do período de <PERIODO>. ' + SLineBreak + SLineBreak +
+                          'Este e-mail foi enviado automaticamente pelo sistema Small.' + SLineBreak + SLineBreak +
+                          'http://www.smallsoft.com.br';
+
 implementation
 
 end.
