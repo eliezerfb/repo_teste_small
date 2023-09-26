@@ -16,6 +16,8 @@ const
   _cMedidaKU = 'KU';
   _cMedidaKG = 'KG';
 
+  _DirImagemIcones = '\inicial\small_22_.bmp'; //Mauricio Parizotto 2023-09-26
+
   _cAmbienteHomologacao = 'Homologacao';
   _cAmbienteProducao = 'Producao';  
 
