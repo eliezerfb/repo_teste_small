@@ -1279,6 +1279,24 @@ object Form30: TForm30
           end
         end
       end
+      inline fFrameMarca: TfFrameCampo
+        Left = 474
+        Top = 160
+        Width = 141
+        Height = 22
+        Color = clWhite
+        Ctl3D = False
+        ParentBackground = False
+        ParentColor = False
+        ParentCtl3D = False
+        TabOrder = 28
+        inherited txtCampo: TEdit
+          Width = 141
+        end
+        inherited gdRegistros: TDBGrid
+          Width = 141
+        end
+      end
     end
     object Panel2: TPanel
       Left = 2

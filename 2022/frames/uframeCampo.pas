@@ -3,7 +3,7 @@ unit uframeCampo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Grids, DBGrids, IBDatabase, DB,
   IBCustomDataSet, IBQuery;
 
@@ -21,6 +21,7 @@ type
     procedure txtCampoChange(Sender: TObject);
     procedure txtCampoClick(Sender: TObject);
     procedure FrameExit(Sender: TObject);
+    procedure txtCampoEnter(Sender: TObject);
   private
     procedure Pesquisar;
   public
@@ -72,8 +73,8 @@ end;
 
 procedure TfFrameCampo.gdRegistrosDblClick(Sender: TObject);
 begin
-  txtCampo.Text           := Query.Fields[1].AsString;
-  CampoCodigo.AsInteger   := Query.Fields[0].AsInteger;
+  txtCampo.Text     := Query.Fields[1].AsString;
+  CampoCodigo.Value := Query.Fields[0].Value; // Sandro Silva 2023-09-26   CampoCodigo.AsInteger   := Query.Fields[0].AsInteger;
 
   gdRegistros.Visible := False;
   txtcampo.SetFocus;
@@ -104,11 +105,14 @@ begin
   sCampoCodigo := CampoCodigo.FieldName;
 
   Query.Close;
-  Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+' as NOME'+
-                    ' From '+sTabela+
-                    ' Where 1=1 '+
-                    sFiltro+
-                    ' Order by upper('+sCampoDescricao+')';
+  if sSQL <> '' then
+    Query.SQL.Text := sSQL
+  else
+    Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+' as NOME'+
+                      ' From '+sTabela+
+                      ' Where 1=1 '+
+                      sFiltro+
+                      ' Order by upper('+sCampoDescricao+')';
   Query.Open;
 
   if Query.Locate(sCampoCodigo, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
@@ -153,6 +157,12 @@ begin
   gdRegistros.Visible := False;
   Self.Height := txtCampo.Height;
   Self.SendToBack;
+end;
+
+procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
+begin
+  if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
+    CampoCodigo.DataSet.edit;
 end;
 
 end.

@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
   DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
-  IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico;
+  IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico, uframeCampo;
 
 type
   TForm30 = class(TForm)
@@ -78,6 +78,7 @@ type
     Button1: TBitBtn;
     Label13: TLabel;
     framePesquisaServOS: TframePesquisaServico;
+    fFrameMarca: TfFrameCampo;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
@@ -1507,7 +1508,15 @@ begin
   //
   Form7.ibDataSet16UNITARIO.Visible := True;
   Form7.ibDataSet35UNITARIO.Visible := True;
-  //
+
+
+//permitir aceitar texto digitado e não encontrado
+
+    fFrameMarca.CampoCodigo     := Form7.ibDataSet3IDENTIFI1;
+    fFrameMarca.sCampoDescricao := 'IDENTIFI1';
+    fFrameMarca.sTabela         := 'OS';
+    fFrameMarca.CarregaDescricao;
+
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;
