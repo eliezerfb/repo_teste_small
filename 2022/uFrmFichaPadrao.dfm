@@ -1,10 +1,11 @@
 inherited FrmFichaPadrao: TFrmFichaPadrao
-  Left = 343
-  Top = 241
+  Left = 512
+  Top = 132
   BorderIcons = []
   Caption = 'Ficha'
   ClientHeight = 618
   ClientWidth = 842
+  Ctl3D = True
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate

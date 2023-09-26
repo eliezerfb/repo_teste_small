@@ -94,8 +94,6 @@ type
     DBText19: TDBText;
     DBText20: TDBText;
     DBText21: TDBText;
-    procedure edtCFOPKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
@@ -107,11 +105,12 @@ type
     procedure fraPerfilTribgdRegistrosKeyDown(Sender: TObject;
       var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
+    function GetPaginaAjuda:string; override;
+    function CadastroDuplicado: Boolean;
   public
     { Public declarations }
   end;
@@ -124,15 +123,9 @@ implementation
 uses
   Unit7
   , SmallFunc
-  , uFuncoesRetaguarda;
+  , uFuncoesRetaguarda, uFuncoesBancoDados;
 
 {$R *.dfm}
-
-procedure TFrmParametroTributacao.edtCFOPKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  KeyPressPadrao(Sender, Key, Shift);
-end;
 
 procedure TFrmParametroTributacao.FormShow(Sender: TObject);
 begin
@@ -165,6 +158,20 @@ begin
     descCSOSN_NFCePerfilTrib.Visible := False;
     lblCST_NFCePerfilTrib.Visible    := True;
     descCST_NFCePerfilTrib.Visible   := True;
+  end;
+
+  if Form7.ibDataSet13ESTADO.AsString = 'SP' then
+  begin
+    lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'NFC-e','SAT');
+    lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'NFC-e','SAT');
+    lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'NFC-e','SAT');
+    lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'NFC-e','SAT');
+  end else
+  begin
+    lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'SAT','NFC-e');
+    lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'SAT','NFC-e');
+    lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'SAT','NFC-e');
+    lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'SAT','NFC-e');
   end;
 end;
 
@@ -313,13 +320,6 @@ begin
   FrmParametroTributacao := nil;
 end;
 
-procedure TFrmParametroTributacao.FormCreate(Sender: TObject);
-begin
-  inherited;
-  
-  sAjuda := 'config_icms_iss.htm';
-end;
-
 procedure TFrmParametroTributacao.btnOKClick(Sender: TObject);
 begin
   //Validações
@@ -340,11 +340,45 @@ begin
       MensagemSistema('Campo Perfil de tributação deve ser preenchido!',msgAtencao);
       if fraPerfilTrib.txtCampo.CanFocus then
         fraPerfilTrib.txtCampo.SetFocus;
-      Abort;
+
+      Exit;
+    end;
+
+    if CadastroDuplicado then
+    begin
+      MensagemSistema('Parâmetros informados já utilizados em outro cadastro!',msgAtencao);
+      
+      Exit;
     end;
   end;
 
   inherited;
+end;
+
+function TFrmParametroTributacao.GetPaginaAjuda: string;
+begin
+  Result := 'config_icms_iss.htm';
+end;
+
+function TFrmParametroTributacao.CadastroDuplicado:Boolean;
+begin
+  //Verifica se tem um outro registro com as mesmas informaçoes já cadastrado
+  Result := True;
+
+  try
+    Result := ExecutaComandoEscalar(Form7.IBDatabase1,
+                                    ' Select count(*) '+
+                                    ' From PARAMETROTRIBUTACAO'+
+                                    ' Where IDPARAMETROTRIBUTACAO <> '+QuotedStr(DSCadastro.DataSet.FieldbyName('IDPARAMETROTRIBUTACAO').AsString)+
+                                    '   and Coalesce(CFOP_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('CFOP_ENTRADA').AsString)+
+                                    '   and Coalesce(ORIGEM_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('ORIGEM_ENTRADA').AsString)+
+                                    '   and Coalesce(CST_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('CST_ENTRADA').AsString)+
+                                    '   and Coalesce(CSOSN_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('CSOSN_ENTRADA').AsString)+
+                                    '   and Coalesce(ALIQ_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('ALIQ_ENTRADA').AsString)+
+                                    '   and Coalesce(NCM_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('NCM_ENTRADA').AsString)
+                                    ) > 0;
+  except
+  end;
 end;
 
 end.

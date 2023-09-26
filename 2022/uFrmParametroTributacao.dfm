@@ -1,6 +1,6 @@
 inherited FrmParametroTributacao: TFrmParametroTributacao
-  Left = 528
-  Top = 233
+  Left = 467
+  Top = 213
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 16
@@ -152,7 +152,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentCtl3D = False
             ParentFont = False
             TabOrder = 0
-            OnKeyDown = edtCFOPKeyDown
+            OnKeyDown = PadraoKeyDown
           end
           object cboOrigem: TComboBox
             Left = 104
@@ -169,7 +169,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentFont = False
             TabOrder = 1
             OnChange = cboOrigemChange
-            OnKeyDown = edtCFOPKeyDown
+            OnKeyDown = PadraoKeyDown
             Items.Strings = (
               ''
               '0 - Nacional, exceto as indicadas nos c'#243'digos 3 a 5'
@@ -215,7 +215,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentFont = False
             TabOrder = 2
             OnChange = cboCSTChange
-            OnKeyDown = edtCFOPKeyDown
+            OnKeyDown = PadraoKeyDown
             Items.Strings = (
               ''
               '00 - Tributada integralmente'
@@ -248,7 +248,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentFont = False
             TabOrder = 3
             OnChange = cboCSOSNChange
-            OnKeyDown = edtCFOPKeyDown
+            OnKeyDown = PadraoKeyDown
             Items.Strings = (
               ''
               '101 - Tributada pelo Simples Nacional com permiss'#227'o de cr'#233'dito'
@@ -294,7 +294,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentCtl3D = False
             ParentFont = False
             TabOrder = 4
-            OnKeyDown = edtCFOPKeyDown
+            OnKeyDown = PadraoKeyDown
           end
           object edtNCM: TSMALL_DBEdit
             Left = 103
@@ -315,7 +315,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentCtl3D = False
             ParentFont = False
             TabOrder = 5
-            OnKeyDown = edtCFOPKeyDown
+            OnKeyDown = PadraoKeyDown
           end
         end
         object GroupBox1: TGroupBox
@@ -323,7 +323,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           Top = 204
           Width = 795
           Height = 231
-          Caption = 'Campos de sa'#237'da'
+          Caption = 'Cadastro no estoque'
           TabOrder = 1
           object Label3: TLabel
             Left = 4
@@ -563,6 +563,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'TIPO_ITEM'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText2: TDBText
             Left = 113
@@ -571,6 +577,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'IPPT'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText3: TDBText
             Left = 113
@@ -579,6 +591,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'IAT'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText4: TDBText
             Left = 113
@@ -587,6 +605,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'PIVA'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText5: TDBText
             Left = 113
@@ -595,6 +619,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'ORIGEM'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object descCSTPerfilTrib: TDBText
             Left = 113
@@ -603,6 +633,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'CST'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object descCSOSNPerfilTrib: TDBText
             Left = 112
@@ -611,6 +647,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'CSOSN'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText8: TDBText
             Left = 113
@@ -619,6 +661,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'ST'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText9: TDBText
             Left = 113
@@ -627,6 +675,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'CFOP'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object descCST_NFCePerfilTrib: TDBText
             Left = 113
@@ -635,6 +689,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'CST_NFCE'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText11: TDBText
             Left = 113
@@ -643,6 +703,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'ALIQUOTA_NFCE'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object descCSOSN_NFCePerfilTrib: TDBText
             Left = 113
@@ -651,6 +717,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'CSOSN_NFCE'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object Label10: TLabel
             Left = 412
@@ -710,6 +782,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'CST_IPI'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText14: TDBText
             Left = 516
@@ -718,6 +796,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'IPI'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           object DBText15: TDBText
             Left = 516
@@ -726,6 +810,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 17
             DataField = 'ENQ_IPI'
             DataSource = DSPerfilTrib
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clGray
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
           end
           inline fraPerfilTrib: TfFrameCampo
             Left = 104
@@ -813,6 +903,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Height = 16
               DataField = 'ALIQ_COFINS_SAIDA'
               DataSource = DSPerfilTrib
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
             end
             object DBText17: TDBText
               Left = 122
@@ -821,6 +917,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Height = 16
               DataField = 'CST_PIS_COFINS_SAIDA'
               DataSource = DSPerfilTrib
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
             end
             object DBText18: TDBText
               Left = 122
@@ -829,6 +931,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Height = 16
               DataField = 'ALIQ_PIS_SAIDA'
               DataSource = DSPerfilTrib
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
             end
           end
           object GroupBox3: TGroupBox
@@ -896,6 +1004,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Height = 16
               DataField = 'CST_PIS_COFINS_ENTRADA'
               DataSource = DSPerfilTrib
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
             end
             object DBText20: TDBText
               Left = 122
@@ -904,6 +1018,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Height = 16
               DataField = 'ALIQ_PIS_ENTRADA'
               DataSource = DSPerfilTrib
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
             end
             object DBText21: TDBText
               Left = 122
@@ -912,6 +1032,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Height = 16
               DataField = 'ALIQ_COFINS_ENTRADA'
               DataSource = DSPerfilTrib
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
             end
           end
         end

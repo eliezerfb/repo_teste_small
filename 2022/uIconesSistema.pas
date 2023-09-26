@@ -51,7 +51,7 @@ var
 
 implementation
 
-uses SysUtils;
+uses SysUtils, uSmallConsts;
 
 procedure MostraImagemCoordenada(ImgOri: TImage; ImgDest: TImage; Linha:integer; Coluna: Integer; Tamanho : integer = 70);
 var
@@ -92,7 +92,7 @@ begin
   try
     imgTemplate := TImage.Create(nil);
 
-    DirImg := ExtractFilePath(Application.ExeName)+'\inicial\small_22_.bmp';
+    DirImg := ExtractFilePath(Application.ExeName)+_DirImagemIcones;
 
     if FileExists(DirImg) then
     begin

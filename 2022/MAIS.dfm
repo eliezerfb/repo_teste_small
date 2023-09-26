@@ -1,7 +1,7 @@
 object Form1: TForm1
   Tag = 99
-  Left = 245
-  Top = 88
+  Left = 250
+  Top = 116
   Hint = 'Small Commerce'
   HelpContext = 1
   HorzScrollBar.Visible = False

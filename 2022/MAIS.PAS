@@ -11232,6 +11232,10 @@ begin
   if Form48.Visible then Form48.BringToFront;
   Mauricio Parizotto  }
 
+  //Mauricio Parizotto 2023-09-26
+  if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
+    Exit;
+
   if Form5.Visible then
   begin
     Form5.BringToFront;
@@ -12474,7 +12478,7 @@ end;
 procedure TForm1.Parmetrosdetributao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PARAMETROTRIBUTACAO';
-  Form7.sTitulo := 'Parametros de tributação';
+  Form7.sTitulo := 'Parâmetros de tributação';
 
   {$IFDEF VER150}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];

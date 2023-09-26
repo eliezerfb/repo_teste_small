@@ -52,18 +52,21 @@ type
     procedure lblVisualizarClick(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure PadraoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     VerificandoUso : Boolean;
     function GravaRegistro: Boolean;
     { Private declarations }
   public
     bEstaSendoUsado : Boolean;
-    sAjuda : string;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
     procedure KeyPressPadrao(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure SetaStatusUso; virtual; abstract;
     { Public declarations }
+  protected
+    procedure SetaStatusUso; virtual; abstract;
+    function GetPaginaAjuda:string; virtual; abstract;
   end;
 
 var
@@ -196,6 +199,7 @@ procedure TFrmFichaPadrao.lblAnteriorClick(Sender: TObject);
 begin
   inherited;
   DSCadastro.DataSet.Prior;
+  TibDataSet(DSCadastro.DataSet).Transaction.CommitRetaining;
   VerificaSeEstaSendoUsado;
 end;
 
@@ -203,6 +207,7 @@ procedure TFrmFichaPadrao.lblProximoClick(Sender: TObject);
 begin
   inherited;
   DSCadastro.DataSet.Next;
+  TibDataSet(DSCadastro.DataSet).Transaction.CommitRetaining;
   VerificaSeEstaSendoUsado;
 end;
 
@@ -307,7 +312,13 @@ begin
   if Key = VK_RETURN then
     Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_F1 then
-    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(GetPaginaAjuda)));
+end;
+
+procedure TFrmFichaPadrao.PadraoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  KeyPressPadrao(Sender, Key, Shift);
 end;
 
 end.

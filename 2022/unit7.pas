@@ -1593,6 +1593,8 @@ type
     ibdParametroTributaIDPERFILTRIBUTACAO: TIntegerField;
     ibdParametroTributaREGISTRO: TIBStringField;
     ibdParametroTributaDESCRICAO: TIBStringField;
+    Perfildetributao1: TMenuItem;
+    Parmetrosdetributao1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2248,6 +2250,8 @@ type
     procedure ibdParametroTributaBeforeEdit(DataSet: TDataSet);
     procedure ibdParametroTributaBeforeInsert(DataSet: TDataSet);
     procedure ibdParametroTributaNewRecord(DataSet: TDataSet);
+    procedure Perfildetributao1Click(Sender: TObject);
+    procedure Parmetrosdetributao1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -34103,6 +34107,36 @@ begin
   ibdParametroTributa.Edit;
   ibdParametroTributaREGISTRO.AsString := sProximo;
   ibdParametroTributaIDPARAMETROTRIBUTACAO.AsInteger := sProximoID;
+end;
+
+procedure TForm7.Perfildetributao1Click(Sender: TObject);
+begin
+  Form7.Close;
+  Form7.sModulo := 'PERFILTRIBUTACAO';
+  Form7.sTitulo := 'Perfil de tributação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
+end;
+
+procedure TForm7.Parmetrosdetributao1Click(Sender: TObject);
+begin
+  Form7.Close;
+  Form7.sModulo := 'PARAMETROTRIBUTACAO';
+  Form7.sTitulo := 'Parâmetros de tributação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
 end;
 
 end.

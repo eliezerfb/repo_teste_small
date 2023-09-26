@@ -1,6 +1,6 @@
 object Form10: TForm10
-  Left = 351
-  Top = 195
+  Left = 283
+  Top = 145
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
@@ -966,7 +966,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_PerfilTrib
+      ActivePage = Orelha_TAGS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText

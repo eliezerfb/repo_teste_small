@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 342
-  Top = 33
+  Left = 277
+  Top = 64
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -20030,7 +20030,6 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
-    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -21375,7 +21374,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50a\'
+      'avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21410,7 +21409,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50a\'
+      'vm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21725,7 +21724,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21755,7 +21754,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22181,6 +22180,10 @@ object Form7: TForm7
     Top = 723
     object MenuItem130: TMenuItem
       Caption = '&Arquivo'
+      object Parmetrosdetributao1: TMenuItem
+        Caption = 'Par'#226'metros de tributa'#231#227'o'
+        OnClick = Parmetrosdetributao1Click
+      end
       object MenuItem132: TMenuItem
         Caption = '&Imprimir...'
         OnClick = Image205Click
@@ -22562,6 +22565,10 @@ object Form7: TForm7
     Top = 757
     object MenuItem131: TMenuItem
       Caption = '&Arquivo'
+      object Perfildetributao1: TMenuItem
+        Caption = 'Perfil de tributa'#231#227'o'
+        OnClick = Perfildetributao1Click
+      end
       object MenuItem194: TMenuItem
         Caption = '&Imprimir...'
         OnClick = Image205Click
@@ -22743,5 +22750,4 @@ object Form7: TForm7
       Size = 10
     end
   end
-  
 end
