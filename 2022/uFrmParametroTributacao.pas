@@ -258,7 +258,7 @@ begin
  if not (DSCadastro.DataSet.State in ([dsEdit, dsInsert])) then
     DSCadastro.DataSet.Edit;
 
-  DSCadastro.DataSet.FieldByName('ORIGEM_ENTRADA').AsString := Copy(cboOrigem.Items[cboOrigem.ItemIndex]+' ',1,1);
+  DSCadastro.DataSet.FieldByName('ORIGEM_ENTRADA').AsString := Copy(cboOrigem.Items[cboOrigem.ItemIndex],1,1);
 end;
 
 procedure TFrmParametroTributacao.cboCSTChange(Sender: TObject);
@@ -266,7 +266,7 @@ begin
   if not (DSCadastro.DataSet.State in ([dsEdit, dsInsert])) then
     DSCadastro.DataSet.Edit;
 
-  DSCadastro.DataSet.FieldByName('CST_ENTRADA').AsString := Copy(cboCST.Items[cboCST.ItemIndex]+'   ',1,2);
+  DSCadastro.DataSet.FieldByName('CST_ENTRADA').AsString := Copy(cboCST.Items[cboCST.ItemIndex],1,2);
 end;
 
 procedure TFrmParametroTributacao.cboCSOSNChange(Sender: TObject);
@@ -274,7 +274,7 @@ begin
   if not (DSCadastro.DataSet.State in ([dsEdit, dsInsert])) then
     DSCadastro.DataSet.Edit;
 
-  DSCadastro.DataSet.FieldByName('CSOSN_ENTRADA').AsString := Trim(Copy(cboCSOSN.Items[cboCSOSN.ItemIndex]+'   ',1,3));
+  DSCadastro.DataSet.FieldByName('CSOSN_ENTRADA').AsString := Trim(Copy(cboCSOSN.Items[cboCSOSN.ItemIndex],1,3));
 end;
 
 procedure TFrmParametroTributacao.fraPerfilTribgdRegistrosDblClick(
