@@ -374,7 +374,7 @@ begin
                                     '   and Coalesce(ORIGEM_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('ORIGEM_ENTRADA').AsString)+
                                     '   and Coalesce(CST_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('CST_ENTRADA').AsString)+
                                     '   and Coalesce(CSOSN_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('CSOSN_ENTRADA').AsString)+
-                                    '   and Coalesce(ALIQ_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('ALIQ_ENTRADA').AsString)+
+                                    '   and Coalesce(ALIQ_ENTRADA,0) = '+ FloatToBD(DSCadastro.DataSet.FieldbyName('ALIQ_ENTRADA').AsFloat)+
                                     '   and Coalesce(NCM_ENTRADA,'''') = '+QuotedStr(DSCadastro.DataSet.FieldbyName('NCM_ENTRADA').AsString)
                                     ) > 0;
   except

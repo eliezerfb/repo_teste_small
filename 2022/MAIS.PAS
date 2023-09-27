@@ -10613,19 +10613,18 @@ end;
 procedure TForm1.imgCaixaMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-{
-  Form1.Label2.Caption := 'LIVRO CAIXA';
-  Form1.Label3.Caption := 'Controle de Livro Caixa com Plano de Contas, Fluxo de Caixa, Balancete Gerencial Mensal e Anual.';
-}
-  //
-  if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
-  //
+  if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
+    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
 end;
 
 
 procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
+  //Mauricio Parizotto 2023-09-26
+  if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
+    Exit;
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
