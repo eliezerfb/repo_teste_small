@@ -37,6 +37,13 @@ begin
                         ' 	and COALESCE(ALIQ_ENTRADA,'+ALIQ_E+') = '+ ALIQ_E + // Não obrigatório
                         ' 	and COALESCE(NCM_ENTRADA,'+QuotedStr(NCM)+') = '+QuotedStr(NCM)+ // Não obrigatório
                         ' Order By '+
+                        '   (iif(PR.CFOP_ENTRADA is null,0,1) + '+
+                        '     iif(PR.ORIGEM_ENTRADA is null,0,1) + '+
+                        '     iif(PR.CST_ENTRADA is null,0,1) + '+
+                        '     iif(PR.CSOSN_ENTRADA is null,0,1) + '+
+                        '     iif(PR.ALIQ_ENTRADA is null,0,1) + '+
+                        '     iif(PR.NCM_ENTRADA is null,0,1) '+
+                        '    ) Desc, '+
                         '   PR.CFOP_ENTRADA desc,'+
                         '   PR.CST_ENTRADA desc,'+
                         '   PR.CSOSN_ENTRADA desc,'+
