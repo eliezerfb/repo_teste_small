@@ -1511,11 +1511,16 @@ begin
 
 
 //permitir aceitar texto digitado e não encontrado
-
-    fFrameMarca.CampoCodigo     := Form7.ibDataSet3IDENTIFI1;
-    fFrameMarca.sCampoDescricao := 'IDENTIFI1';
-    fFrameMarca.sTabela         := 'OS';
-    fFrameMarca.CarregaDescricao;
+  fFrameMarca.SelectSQL :=
+    'select distinct IDENTIFI1, IDENTIFI1 as NOME ' +
+    'from OS ' +
+    'where coalesce(IDENTIFI1, '''') <> '''' ' +
+    'order by upper(IDENTIFI1)';
+  fFrameMarca.GravarSomenteTextoEncontrato := False;
+  fFrameMarca.CampoCodigo     := Form7.ibDataSet3IDENTIFI1;
+  fFrameMarca.sCampoDescricao := 'IDENTIFI1';
+  fFrameMarca.sTabela         := 'OS';
+  fFrameMarca.CarregaDescricao;
 
 end;
 

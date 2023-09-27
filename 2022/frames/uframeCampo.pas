@@ -23,14 +23,17 @@ type
     procedure FrameExit(Sender: TObject);
     procedure txtCampoEnter(Sender: TObject);
   private
+    FSQL: String;
+    FGravarSomenteTextoEncontrato: Boolean;
     procedure Pesquisar;
   public
     sCampoDescricao,
     sTabela,
     sFiltro: String;
-    sSQL: String;
-    CampoCodigo : TField;
-
+    CampoCodigo: TField;
+    property SelectSQL: String read FSQL write FSQL;
+    property GravarSomenteTextoEncontrato: Boolean read FGravarSomenteTextoEncontrato write FGravarSomenteTextoEncontrato default True;
+    constructor Create(AOwner: TComponent); override; 
     procedure CarregaDescricao;
   end;
 
@@ -105,8 +108,8 @@ begin
   sCampoCodigo := CampoCodigo.FieldName;
 
   Query.Close;
-  if sSQL <> '' then
-    Query.SQL.Text := sSQL
+  if FSQL <> '' then
+    Query.SQL.Text := FSQL
   else
     Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+' as NOME'+
                       ' From '+sTabela+
@@ -125,6 +128,7 @@ begin
   begin
     txtCampo.Text := '';
   end;
+
 end;
 
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);
@@ -142,6 +146,7 @@ end;
 
 procedure TfFrameCampo.FrameExit(Sender: TObject);
 begin
+  {Sandro Silva 2023-09-27 inicio
   if Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
   begin
     txtCampo.Text           := Query.Fields[1].AsString;
@@ -153,6 +158,27 @@ begin
     txtCampo.Clear;
     CampoCodigo.Value := null;
   end;
+  }
+  if FGravarSomenteTextoEncontrato then // Por exemplo, na OS, o campo IDENTIFI1 recebe texto livre ou que exista em outra OS.IDENTIFI1
+  begin
+
+    if Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
+    begin
+      txtCampo.Text           := Query.Fields[1].AsString;
+
+      if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
+        CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
+    end else
+    begin
+      txtCampo.Clear;
+      CampoCodigo.Value := null;
+    end;
+  end
+  else
+  begin
+    CampoCodigo.Value := Trim(txtCampo.Text);
+  end;
+  {Sandro Silva 2023-09-27 fim}
 
   gdRegistros.Visible := False;
   Self.Height := txtCampo.Height;
@@ -163,6 +189,12 @@ procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
 begin
   if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
     CampoCodigo.DataSet.edit;
+end;
+
+constructor TfFrameCampo.Create(AOwner: TComponent);
+begin
+  inherited;
+  FGravarSomenteTextoEncontrato := True;
 end;
 
 end.

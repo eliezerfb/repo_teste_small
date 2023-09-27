@@ -815,7 +815,7 @@ object Form30: TForm30
       end
       object SMALL_DBEdit14: TSMALL_DBEdit
         Left = 440
-        Top = 179
+        Top = 3
         Width = 175
         Height = 20
         AutoSize = False
@@ -830,7 +830,8 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 9
+        TabOrder = 10
+        Visible = False
         OnChange = SMALL_DBEdit14Change
         OnEnter = SMALL_DBEdit14Enter
         OnExit = SMALL_DBEdit14Exit
@@ -854,7 +855,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 10
+        TabOrder = 11
         OnChange = SMALL_DBEdit14Change
         OnEnter = SMALL_DBEdit14Enter
         OnExit = SMALL_DBEdit14Exit
@@ -878,7 +879,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 11
+        TabOrder = 12
         OnChange = SMALL_DBEdit14Change
         OnEnter = SMALL_DBEdit14Enter
         OnExit = SMALL_DBEdit14Exit
@@ -902,7 +903,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 12
+        TabOrder = 13
         OnChange = SMALL_DBEdit14Change
         OnEnter = SMALL_DBEdit14Enter
         OnExit = SMALL_DBEdit14Exit
@@ -926,7 +927,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 18
+        TabOrder = 19
         OnChange = SMALL_DBEdit3Change
         OnEnter = SMALL_DBEdit4Enter
         OnKeyDown = SMALL_DBEdit2KeyDown
@@ -950,7 +951,7 @@ object Form30: TForm30
         ParentCtl3D = False
         ParentFont = False
         ReadOnly = True
-        TabOrder = 20
+        TabOrder = 21
         OnChange = SMALL_DBEdit3Change
         OnEnter = SMALL_DBEdit4Enter
         OnKeyDown = SMALL_DBEdit11KeyDown
@@ -973,7 +974,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 13
+        TabOrder = 14
         OnChange = SMALL_DBEdit14Change
         OnEnter = SMALL_DBEdit4Enter
         OnKeyDown = SMALL_DBEdit14KeyDown
@@ -996,7 +997,7 @@ object Form30: TForm30
         Options = [dgEditing, dgColumnResize, dgColLines, dgTabs, dgCancelOnExit]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 15
+        TabOrder = 16
         TitleFont.Charset = ANSI_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -11
@@ -1025,7 +1026,7 @@ object Form30: TForm30
         Options = [dgEditing, dgColumnResize, dgColLines, dgTabs, dgCancelOnExit]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 16
+        TabOrder = 17
         TitleFont.Charset = ANSI_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -11
@@ -1055,7 +1056,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 19
+        TabOrder = 20
         OnChange = SMALL_DBEdit3Change
         OnEnter = SMALL_DBEdit4Enter
         OnKeyDown = SMALL_DBEdit2KeyDown
@@ -1079,7 +1080,7 @@ object Form30: TForm30
         ParentCtl3D = False
         ParentFont = False
         ReadOnly = True
-        TabOrder = 24
+        TabOrder = 25
         OnChange = SMALL_DBEdit3Change
         OnEnter = SMALL_DBEdit3Enter
         OnExit = SMALL_DBEdit3Exit
@@ -1104,7 +1105,7 @@ object Form30: TForm30
         ParentCtl3D = False
         ParentFont = False
         ReadOnly = True
-        TabOrder = 25
+        TabOrder = 26
         OnEnter = SMALL_DBEdit4Enter
         OnKeyDown = SMALL_DBEdit2KeyDown
         OnKeyUp = SMALL_DBEdit2KeyUp
@@ -1128,7 +1129,7 @@ object Form30: TForm30
         ParentCtl3D = False
         ParentFont = False
         ReadOnly = True
-        TabOrder = 26
+        TabOrder = 27
         OnEnter = SMALL_DBEdit4Enter
         OnKeyDown = SMALL_DBEdit2KeyDown
         OnKeyUp = SMALL_DBEdit2KeyUp
@@ -1148,7 +1149,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         MaxLength = 254
         ParentFont = False
-        TabOrder = 14
+        TabOrder = 15
         OnChange = DBMemo1Change
         OnEnter = DBMemo1Enter
         OnExit = DBMemo1Exit
@@ -1169,7 +1170,7 @@ object Form30: TForm30
         Font.Style = [fsBold]
         MaxLength = 254
         ParentFont = False
-        TabOrder = 17
+        TabOrder = 18
         OnEnter = DBMemo2Enter
         OnKeyUp = DBMemo1KeyUp
       end
@@ -1191,15 +1192,15 @@ object Form30: TForm30
           'Aberta'
           'Fechada')
         ParentFont = False
-        TabOrder = 22
+        TabOrder = 23
         Visible = False
         OnClick = ListBox1Click
         OnDblClick = ListBox1DblClick
         OnKeyDown = ListBox1KeyDown
       end
       object ListBox2: TListBox
-        Left = 440
-        Top = 198
+        Left = 400
+        Top = 201
         Width = 175
         Height = 5
         BevelInner = bvNone
@@ -1211,7 +1212,7 @@ object Form30: TForm30
         Font.Style = []
         ItemHeight = 13
         ParentFont = False
-        TabOrder = 23
+        TabOrder = 24
         Visible = False
         OnClick = ListBox2Click
         OnKeyDown = ListBox2KeyDown
@@ -1230,7 +1231,7 @@ object Form30: TForm30
         Font.Style = []
         Options = [dgColLines, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
         ParentFont = False
-        TabOrder = 21
+        TabOrder = 22
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -1265,7 +1266,7 @@ object Form30: TForm30
         Top = 578
         Width = 600
         Height = 7
-        TabOrder = 27
+        TabOrder = 28
         Visible = False
         inherited pnlPrincipal: TPanel
           Width = 600
@@ -1280,21 +1281,26 @@ object Form30: TForm30
         end
       end
       inline fFrameMarca: TfFrameCampo
-        Left = 474
-        Top = 160
-        Width = 141
+        Left = 440
+        Top = 179
+        Width = 175
         Height = 22
         Color = clWhite
         Ctl3D = False
         ParentBackground = False
         ParentColor = False
         ParentCtl3D = False
-        TabOrder = 28
+        TabOrder = 9
         inherited txtCampo: TEdit
-          Width = 141
+          Width = 175
+          Height = 20
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Name = 'System'
+          Font.Style = [fsBold]
         end
         inherited gdRegistros: TDBGrid
-          Width = 141
+          Width = 175
         end
       end
     end
