@@ -18,8 +18,20 @@ procedure SetValoresParTributacao(CFOP, ORIGEM, CST, CSOSN, NCM : string; ALIQ :
 var
   Query: TIBQuery;
   ALIQ_E : string;
+  vCST_CSOSN, cCST_CSOSN : string;
 begin
   try
+    //Identifca se vai usar campo CST ou CSOSN
+    if CST <> '' then
+    begin
+      vCST_CSOSN := CST;
+      cCST_CSOSN := 'CST_ENTRADA';
+    end else
+    begin
+      vCST_CSOSN := CSOSN;
+      cCST_CSOSN := 'CSOSN_ENTRADA';
+    end;
+
     ALIQ_E := StringReplace(FloatToStr(ALIQ),',','.',[rfReplaceAll]);
 
     Query := CriaIBQuery(vDataSet.Transaction);
@@ -32,23 +44,22 @@ begin
                         ' 	Left Join PERFILTRIBUTACAO PF on PF.IDPERFILTRIBUTACAO = PR.IDPERFILTRIBUTACAO'+
                         ' Where COALESCE(PR.CFOP_ENTRADA,'+QuotedStr(CFOP)+') = '+QuotedStr(CFOP)+
                         ' 	and COALESCE(PR.ORIGEM_ENTRADA,'+QuotedStr(ORIGEM)+') = '+QuotedStr(ORIGEM)+
-                        ' 	and COALESCE(CST_ENTRADA,'+QuotedStr(CST)+') = '+QuotedStr(CST)+
-                        '   and COALESCE(CSOSN_ENTRADA,'+QuotedStr(CSOSN)+') = '+QuotedStr(CSOSN)+
-                        ' 	and COALESCE(ALIQ_ENTRADA,'+ALIQ_E+') = '+ ALIQ_E + // Não obrigatório
-                        ' 	and COALESCE(NCM_ENTRADA,'+QuotedStr(NCM)+') = '+QuotedStr(NCM)+ // Não obrigatório
+                        ' 	and COALESCE('+cCST_CSOSN+','+QuotedStr(vCST_CSOSN)+') = '+QuotedStr(vCST_CSOSN)+
+                        ' 	and COALESCE(ALIQ_ENTRADA,'+ALIQ_E+') = '+ ALIQ_E +
+                        ' 	and COALESCE(NCM_ENTRADA,'+QuotedStr(NCM)+') = '+QuotedStr(NCM)+
                         ' Order By '+
+                        '   PR.NCM_ENTRADA desc, '+
                         '   (iif(PR.CFOP_ENTRADA is null,0,1) + '+
                         '     iif(PR.ORIGEM_ENTRADA is null,0,1) + '+
-                        '     iif(PR.CST_ENTRADA is null,0,1) + '+
-                        '     iif(PR.CSOSN_ENTRADA is null,0,1) + '+
+                        '     iif(PR.'+cCST_CSOSN+' is null,0,1) + '+
                         '     iif(PR.ALIQ_ENTRADA is null,0,1) + '+
                         '     iif(PR.NCM_ENTRADA is null,0,1) '+
-                        '    ) Desc, '+
-                        '   PR.CFOP_ENTRADA desc,'+
-                        '   PR.CST_ENTRADA desc,'+
-                        '   PR.CSOSN_ENTRADA desc,'+
+                        '   ) Desc, '+
                         '   PR.ALIQ_ENTRADA desc,'+
-                        '   PR.NCM_ENTRADA desc ';
+                        '   PR.'+cCST_CSOSN+' desc,'+
+                        '   PR.CFOP_ENTRADA desc,'+
+                        '   PR.ORIGEM_ENTRADA desc'
+                        ;
       Query.Open;
 
       if not Query.IsEmpty then
