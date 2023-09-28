@@ -357,7 +357,7 @@ end;
 
 function TFrmParametroTributacao.GetPaginaAjuda: string;
 begin
-  Result := 'config_icms_iss.htm';
+  Result := 'parametros_tributacao.htm';
 end;
 
 function TFrmParametroTributacao.CadastroDuplicado:Boolean;

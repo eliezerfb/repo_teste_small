@@ -11068,7 +11068,7 @@ begin
       {Mauricio Parizotto 2023-08-25 Inicio}
       if sModulo = 'CONVERSAOCFOP' then
       begin
-        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
+        sAjuda := 'config_icms_iss.htm';
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
@@ -11100,7 +11100,7 @@ begin
       {Mauricio Parizotto 2023-08-30 Inicio}
       if sModulo = 'PERFILTRIBUTACAO' then
       begin
-        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
+        sAjuda := 'perfil_tributacao.htm';
 
 
         if EstadoEmitente(IBDatabase1) = 'SP' then
@@ -11148,7 +11148,7 @@ begin
       {Mauricio Parizotto 2023-09-21 Inicio}
       if sModulo = 'PARAMETROTRIBUTACAO' then
       begin
-        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
+        sAjuda := 'parametros_tributacao.htm';
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTT');
