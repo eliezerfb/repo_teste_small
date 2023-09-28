@@ -149,6 +149,7 @@ begin
       Backup(vDirSistema + 'logo*.bmp');
       Backup(vDirSistema + 'etiquetas.inf');
       Backup(vDirSistema + 'etiquetase.ini');
+      Backup(vDirSistema + 'labels.ini');      
 
       //while not FileExists(FDiretorioBKP) do Mauricio Parizotto 2023-08-10 - se der algum erro vai ficar travado
       begin
