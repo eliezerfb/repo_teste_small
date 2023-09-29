@@ -186,7 +186,6 @@ begin
   while not FDataSetDados.Eof do
   begin
     FlsImpressao.Add('   <tr>');
-    cAux := EmptyStr;
     for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
       if not FDataSetDados.Fields[i].Visible then
@@ -200,7 +199,9 @@ begin
       else
       begin
         if FDataSetDados.Fields[i].DataType = ftInteger then
-          cAux := 'align=Center ';
+          cAux := 'align=Center '
+        else
+          cAux := 'align=Left ';        
       end;
 
       FlsImpressao.Add('    <td ' + cAux + 'bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + RetornarTextoValorQuery(FDataSetDados.Fields[i], True) + '</td>');

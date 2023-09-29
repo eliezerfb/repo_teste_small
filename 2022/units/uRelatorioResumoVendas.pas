@@ -286,7 +286,7 @@ begin
   AoEstruturaCat.FiltrosRodape.setFiltroData(RetornarDescrFiltroData);
   if cbAgruparGrupo.Checked then
   begin
-    AoEstruturaCat.FiltrosRodape.AddItem('Agrupado por grupo');
+    AoEstruturaCat.FiltrosRodape.AddItem(cbAgruparGrupo.Caption);
     AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
   end;
 
@@ -399,7 +399,8 @@ begin
   while not AqryOrigem.eof do
   begin
     AcdsDestino.Append;
-    AcdsDestino.FieldByName('ORDEM').AsInteger := AqryOrigem.RecNo;
+    if AqryOrigem.FieldByName('Ord').AsInteger = 0 then
+      AcdsDestino.FieldByName('ORDEM').AsInteger := AqryOrigem.RecNo;
     
     for i := 0 to Pred(AqryOrigem.FieldCount) do
     begin
