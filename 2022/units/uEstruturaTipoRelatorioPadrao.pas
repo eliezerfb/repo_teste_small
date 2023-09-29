@@ -195,8 +195,14 @@ begin
       if TestarFieldValor(FDataSetDados.Fields[i]) then
       begin
         cAux := 'align=Right ';
-        bTemColunaValor := True;        
+        bTemColunaValor := True;
+      end
+      else
+      begin
+        if FDataSetDados.Fields[i].DataType = ftInteger then
+          cAux := 'align=Center ';
       end;
+
       FlsImpressao.Add('    <td ' + cAux + 'bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + RetornarTextoValorQuery(FDataSetDados.Fields[i], True) + '</td>');
     end;
     FlsImpressao.Add('   </tr>');
@@ -213,13 +219,20 @@ begin
       if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
-          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size)
+        begin
+          if FDataSetDados.Fields[i].DataType = ftBCD then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size);
+          if FDataSetDados.Fields[i].DataType = ftFMTBcd then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TFMTBCDField).Size);
+        end
         else
           cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
           
         FlsImpressao.Add('    <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + cTotal);
-      end else
+      end
+      else
         FlsImpressao.Add('    <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font>');
+
       FlsImpressao.Add('    </td>');
     end;
     FlsImpressao.Add('   </tr>');    
@@ -336,7 +349,12 @@ begin
       if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
-          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size)
+        begin
+          if FDataSetDados.Fields[i].DataType = ftBCD then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size);
+          if FDataSetDados.Fields[i].DataType = ftFMTBcd then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TFMTBCDField).Size);
+        end
         else
           cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
 
@@ -398,7 +416,12 @@ begin
   if TestarFieldValor(AoField) then
   begin
     if AoField.DataType in [ftBCD, ftFMTBcd] then
-      Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TBCDField).Size)
+    begin
+      if AoField.DataType = ftBCD then
+        Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TBCDField).Size);
+      if AoField.DataType = ftFMTBcd then
+        Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TFMTBCDField).Size);
+    end
     else
       Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, 2);
       

@@ -25,6 +25,21 @@ type
     cdsExcluidos: TClientDataSet;
     cdsExcluidosNOME: TStringField;
     cdsExcluidosVALOR: TBCDField;
+    cdsProdutos: TClientDataSet;
+    cdsProdutosOrdem: TIntegerField;
+    cdsProdutosCdigo: TStringField;
+    cdsProdutosDescrio: TStringField;
+    cdsProdutosQuantidade: TFMTBCDField;
+    cdsProdutosCustocompra: TFMTBCDField;
+    cdsProdutosVendidopor: TFMTBCDField;
+    cdsProdutosLucrobruto: TFMTBCDField;
+    cdsProdutosCDSDesigner: TFMTBCDField;
+    cdsTotalGrupo: TClientDataSet;
+    cdsTotalGrupoOrdem: TIntegerField;
+    cdsTotalGrupoGrupo: TStringField;
+    cdsTotalGrupoCustocompra: TFMTBCDField;
+    cdsTotalGrupoVendidopor: TFMTBCDField;
+    cdsTotalGrupoLucrobruto: TFMTBCDField;
     procedure FormShow(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
@@ -42,8 +57,8 @@ type
     function FazValidacoes: Boolean;
     function RetornarWhere: string;
     function RetornarWhereOperacoes: String;
-    function RetornarDataSetProdutos(AcGrupo: String = ''): TIBQuery;
-    function RetornarDataSetTotalGrupos: TIBQuery;
+    procedure CarregaDadosProdutos(AcGrupo: String = '');
+    procedure CarrregarDadosTotalGrupos;
     function RetornarDescrFiltroData: string;
     procedure MontarFiltrosRodape(AoEstruturaCat: IEstruturaRelatorioPadrao);
     procedure FazUpdateValores;
@@ -52,12 +67,15 @@ type
     function RetornarTotalNaoRelacionados: Currency;
     function RetornaFormatoValorSQL(AnValor: Currency): String;
     procedure GerarImpressaoNaoRelacionados;
+    procedure MapearQueryParaClientDataSet(AqryOrigem: TIBQuery;
+      AcdsDestino: TClientDataSet);
+    procedure AjustaCasasDecimais;
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
     property CasasDecimaisQtde: Integer read FnCasasDecimaisQtde write FnCasasDecimaisQtde;
     property WhereEstoque: String read FcWhereEstoque write FcWhereEstoque;
-    property SqlTraduzido: String read FcSqlTraduzido write FcSqlTraduzido; 
+    property SqlTraduzido: String read FcSqlTraduzido write FcSqlTraduzido;
   protected
     function Estrutura: IEstruturaTipoRelatorioPadrao; override;
   end;
@@ -96,86 +114,98 @@ begin
   pnlSelOperacoes.Top  := pnlPrincipal.Top;
   pnlSelOperacoes.Left := pnlPrincipal.Left;
 
-  cdsExcluidos.FieldDefs.Items[cdsExcluidos.FieldDefs.IndexOf('VALOR')].Size := FnCasasDecimais;
-  cdsExcluidosVALOR.Size := FnCasasDecimais;  
+  AjustaCasasDecimais;
+end;
+
+procedure TfrmRelResumoVendas.AjustaCasasDecimais;
+begin
+  // cdsProdutos
+  cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosQuantidade.FieldName)].Size := FnCasasDecimaisQtde;
+  cdsProdutosQuantidade.Size := FnCasasDecimaisQtde;
+  cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosCustocompra.FieldName)].Size := FnCasasDecimais;
+  cdsProdutosCustocompra.Size := FnCasasDecimais;
+  cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosVendidopor.FieldName)].Size := FnCasasDecimais;
+  cdsProdutosVendidopor.Size := FnCasasDecimais;
+  cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosLucrobruto.FieldName)].Size := FnCasasDecimais;
+  cdsProdutosLucrobruto.Size := FnCasasDecimais;
+  cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosCDSDesigner.FieldName)].Size := FnCasasDecimais;
+  cdsProdutosCDSDesigner.Size := FnCasasDecimais;
+
+  // cdsTotalGrupo
+  cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoCustocompra.FieldName)].Size := FnCasasDecimais;
+  cdsTotalGrupoCustocompra.Size := FnCasasDecimais;
+  cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoVendidopor.FieldName)].Size := FnCasasDecimais;
+  cdsTotalGrupoVendidopor.Size := FnCasasDecimais;
+  cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoLucrobruto.FieldName)].Size := FnCasasDecimais;
+  cdsTotalGrupoLucrobruto.Size := FnCasasDecimais;
+
+  // cdsExcluidos
+  cdsExcluidos.FieldDefs.Items[cdsExcluidos.FieldDefs.IndexOf(cdsExcluidosVALOR.FieldName)].Size := FnCasasDecimais;
+  cdsExcluidosVALOR.Size := FnCasasDecimais;
 end;
 
 function TfrmRelResumoVendas.Estrutura: IEstruturaTipoRelatorioPadrao;
 var
   oEstruturaCat: IEstruturaRelatorioPadrao;
-  qryGrupo: TIBQuery;
-  qryTotGrupo: TIBQuery;
-  qryProduto: TIBQuery;
 begin
   Result := TEstruturaTipoRelatorioPadrao.New
                                          .setUsuario(Usuario);
   FazUpdateValores;
   if cbAgruparGrupo.Checked then
   begin
-    qryTotGrupo := RetornarDataSetTotalGrupos;
-    try
-      // Gera o cabeçalho do relatório
-      Estrutura.GerarImpressaoCabecalho(TEstruturaRelResumoVendas.New
-                                                                 .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                                 .setDataBase(DataBase)
-                                                             ));
-      while not qryTotGrupo.Eof do
+    CarrregarDadosTotalGrupos;
+    // Gera o cabeçalho do relatório
+    Estrutura.GerarImpressaoCabecalho(TEstruturaRelResumoVendas.New
+                                                               .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                               .setDataBase(DataBase)
+                                                           ));
+    while not cdsTotalGrupo.Eof do
+    begin
+      if cdsTotalGrupoLucrobruto.AsCurrency > 0 then
       begin
-        if qryTotGrupo.FieldByName('Ord').AsInteger = 0 then
-        begin
-          // Gera a impressão agrupada por grupo
-          qryProduto := RetornarDataSetProdutos(qryTotGrupo.FieldByName('Grupo').AsString);
-          try
-            oEstruturaCat := TEstruturaRelResumoVendas.New
-                                                      .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                      .setDataBase(DataBase)
-                                                                                      .CarregarDados(qryProduto)
-                                                             );
+        // Gera a impressão agrupada por grupo
+        CarregaDadosProdutos(cdsTotalGrupo.FieldByName('Grupo').AsString);
 
-            Estrutura.GerarImpressaoAgrupado(oEstruturaCat, qryTotGrupo.FieldByName('Grupo').AsString);
-          finally
-            FreeAndNil(qryProduto);
-          end;
-        end;
+        oEstruturaCat := TEstruturaRelResumoVendas.New
+                                                  .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                  .setDataBase(DataBase)
+                                                                                  .CarregarDados(cdsProdutos)
+                                                         );
 
-        qryTotGrupo.Next;
-        // Totalizador
-        if qryTotGrupo.Eof then
-        begin
-          qryTotGrupo.First;
-
-          oEstruturaCat := TEstruturaRelResumoVendas.New
-                                                    .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                    .setDataBase(DataBase)
-                                                                                    .CarregarDados(qryTotGrupo)
-                                                           );
-
-          MontarFiltrosRodape(oEstruturaCat);
-
-          // Totalizador
-          Estrutura.GerarImpressaoAgrupado(oEstruturaCat, 'TOTALIZADOR POR GRUPO');
-        end;
+        Estrutura.GerarImpressaoAgrupado(oEstruturaCat, cdsTotalGrupo.FieldByName('Grupo').AsString);
       end;
-    finally
-      FreeAndNil(qryGrupo);
+
+      cdsTotalGrupo.Next;
+      // Totalizador
+      if cdsTotalGrupo.Eof then
+      begin
+        cdsTotalGrupo.First;
+
+        oEstruturaCat := TEstruturaRelResumoVendas.New
+                                                  .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                  .setDataBase(DataBase)
+                                                                                  .CarregarDados(cdsTotalGrupo)
+                                                         );
+
+        MontarFiltrosRodape(oEstruturaCat);
+
+        // Totalizador
+        Estrutura.GerarImpressaoAgrupado(oEstruturaCat, 'TOTALIZADOR POR GRUPO');
+      end;
     end;
   end
   else
   begin
-    qryProduto := RetornarDataSetProdutos;
-    try
-      oEstruturaCat := TEstruturaRelResumoVendas.New
-                                                .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                .setDataBase(DataBase)
-                                                                                .CarregarDados(qryProduto)
-                                                       );
+    CarregaDadosProdutos;
+    oEstruturaCat := TEstruturaRelResumoVendas.New
+                                              .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                              .setDataBase(DataBase)
+                                                                              .CarregarDados(cdsProdutos)
+                                                     );
 
-      MontarFiltrosRodape(oEstruturaCat);
+    MontarFiltrosRodape(oEstruturaCat);
 
-      Estrutura.GerarImpressao(oEstruturaCat);
-    finally
-      FreeAndNil(qryProduto);
-    end;
+    Estrutura.GerarImpressao(oEstruturaCat);
   end;
     
   GerarImpressaoNaoRelacionados;
@@ -282,72 +312,114 @@ begin
   Result := 'Período analisado, de '+DateToStr(dtInicial.Date)+' até ' + DateToStr(dtFinal.Date);
 end;
 
-function TfrmRelResumoVendas.RetornarDataSetProdutos(AcGrupo: String = ''): TIBQuery;
+procedure TfrmRelResumoVendas.CarregaDadosProdutos(AcGrupo: String = '');
+var
+  QryDados: TIBQuery;
 begin
   AcGrupo := Copy(AcGrupo,1,25);
-  Result := CriaIBQuery(DataSetEstoque.Transaction);
-
-  Result.Close;
-  Result.Database := DataBase;
-  Result.SQL.Clear;
-  Result.SQL.Add('SELECT');
-  Result.SQL.Add('    0 as "Ord"');
-  Result.SQL.Add('    , ESTOQUE.CODIGO AS "Cód"');
-  Result.SQL.Add('    , ESTOQUE.DESCRICAO AS "Descrição"');
-  Result.SQL.Add('    , CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-  Result.SQL.Add('    , CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-  Result.SQL.Add('    , CASE WHEN COALESCE(ESTOQUE.CUS_VEND,0) > 0 THEN');
-  Result.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))');
-  Result.SQL.Add('      ELSE 0 END AS "%"');
-  Result.SQL.Add('FROM ESTOQUE');
-  if Trim(FcWhereEstoque) <> EmptyStr then
-    Result.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
-  else
-    Result.SQL.Add('WHERE');
-  Result.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
-  Result.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
-  if AcGrupo <> EmptyStr then
-    Result.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
-  if AcGrupo = EmptyStr then
-  begin
-    Result.SQL.Add('UNION ALL');
-    Result.SQL.Add('SELECT FIRST 1');
-    Result.SQL.Add('    1 as "Ord"');
-    Result.SQL.Add('    , '''' AS "Cód"');
-    Result.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
-    Result.SQL.Add('FROM EMITENTE');
-
-    Result.SQL.Add('UNION ALL');
-    Result.SQL.Add('SELECT FIRST 1');
-    Result.SQL.Add('    2 as "Ord"');
-    Result.SQL.Add('    , '''' AS "Cód"');
-    if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
-      Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
+  QryDados := CriaIBQuery(DataSetEstoque.Transaction);
+  try
+    QryDados.Close;
+    QryDados.Database := DataBase;
+    QryDados.SQL.Clear;
+    QryDados.SQL.Add('SELECT');
+    QryDados.SQL.Add('    0 as "Ord"');
+    QryDados.SQL.Add('    , ESTOQUE.CODIGO AS "Código"');
+    QryDados.SQL.Add('    , ESTOQUE.DESCRICAO AS "Descrição"');
+    QryDados.SQL.Add('    , CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+    QryDados.SQL.Add('    , CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+    QryDados.SQL.Add('    , CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+    QryDados.SQL.Add('    , CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+    QryDados.SQL.Add('    , CASE WHEN COALESCE(ESTOQUE.CUS_VEND,0) > 0 THEN');
+    QryDados.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))');
+    QryDados.SQL.Add('      ELSE 0 END AS "%"');
+    QryDados.SQL.Add('FROM ESTOQUE');
+    if Trim(FcWhereEstoque) <> EmptyStr then
+      QryDados.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
     else
-      Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-    Result.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-    Result.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
-    Result.SQL.Add('FROM EMITENTE');
+      QryDados.SQL.Add('WHERE');
+    QryDados.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
+    QryDados.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
+    if AcGrupo <> EmptyStr then
+      QryDados.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
+    if AcGrupo = EmptyStr then
+    begin
+      QryDados.SQL.Add('UNION ALL');
+      QryDados.SQL.Add('SELECT FIRST 1');
+      QryDados.SQL.Add('    1 as "Ord"');
+      QryDados.SQL.Add('    , '''' AS "Código"');
+      QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+      QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
+      QryDados.SQL.Add('FROM EMITENTE');
 
-    Result.SQL.Add('ORDER BY 1,7 DESC');
+      QryDados.SQL.Add('UNION ALL');
+      QryDados.SQL.Add('SELECT FIRST 1');
+      QryDados.SQL.Add('    2 as "Ord"');
+      QryDados.SQL.Add('    , '''' AS "Código"');
+      if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
+        QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
+      else
+        QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+      QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
+      QryDados.SQL.Add('FROM EMITENTE');
+    end;
+    QryDados.SQL.Add('ORDER BY 1,7 DESC');
+    QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
+    if AcGrupo <> EmptyStr then
+      QryDados.ParamByName('XGRUPO').AsString := AcGrupo;
+    QryDados.Open;
+    QryDados.First;
+
+    DesativarColunas(QryDados);
+
+    MapearQueryParaClientDataSet(QryDados, cdsProdutos);
+  finally
+    FreeAndNil(QryDados);
   end;
-  Result.ParamByName('XDATAINI').AsDate := dtInicial.Date;
-  if AcGrupo <> EmptyStr then
-    Result.ParamByName('XGRUPO').AsString := AcGrupo;
-  Result.Open;
-  Result.First;
+end;
 
-  DesativarColunas(Result);
+procedure TfrmRelResumoVendas.MapearQueryParaClientDataSet(AqryOrigem: TIBQuery; AcdsDestino: TClientDataSet);
+var
+  i: Integer;
+begin
+  AqryOrigem.First;
+  if AcdsDestino.Active then
+    AcdsDestino.Close;
+
+  AcdsDestino.CreateDataSet;
+
+  while not AqryOrigem.eof do
+  begin
+    AcdsDestino.Append;
+    AcdsDestino.FieldByName('ORDEM').AsInteger := AqryOrigem.RecNo;
+    
+    for i := 0 to Pred(AqryOrigem.FieldCount) do
+    begin
+      if not AqryOrigem.Fields[i].Visible then
+        Continue;
+
+      if Assigned(AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName)) then
+      begin
+        case AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).DataType of
+          ftString, ftWideString: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsString := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsString;
+          ftInteger, ftSmallint, ftLargeint: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsInteger := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsInteger;
+          ftFMTBcd, ftFloat, ftCurrency, ftBCD:AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat;
+        end;
+      end;
+    end;
+
+    AcdsDestino.Post;    
+    AqryOrigem.Next;
+  end;
+  AcdsDestino.First;
 end;
 
 function TfrmRelResumoVendas.RetornaFormatoValorSQL(AnValor: Currency): String;
@@ -365,55 +437,65 @@ begin
     AqryReg.Fields[i].Visible := (AqryReg.Fields[i].FieldName <> 'Ord');
 end;
 
-function TfrmRelResumoVendas.RetornarDataSetTotalGrupos: TIBQuery;
+procedure TfrmRelResumoVendas.CarrregarDadosTotalGrupos;
+var
+  QryDados: TIBQuery;
 begin
-  Result := CriaIBQuery(DataSetEstoque.Transaction);
+  QryDados := CriaIBQuery(DataSetEstoque.Transaction);
+  try
+    QryDados.Close;
+    QryDados.Database := DataBase;
+    QryDados.SQL.Clear;
+    QryDados.SQL.Add('SELECT');
+    QryDados.SQL.Add('    0 as "Ord"');
+    QryDados.SQL.Add('    , CASE WHEN COALESCE(GRUPO.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE GRUPO.NOME END AS "Grupo"');
+    QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Custo compra"');
+    QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Vendido por"');
+    QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Lucro bruto"');
+    QryDados.SQL.Add('FROM ESTOQUE');
+    QryDados.SQL.Add('LEFT JOIN GRUPO ON');
+    QryDados.SQL.Add(' (GRUPO.NOME=ESTOQUE.NOME)');
+    if Trim(FcWhereEstoque) <> EmptyStr then
+      QryDados.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+    else
+      QryDados.SQL.Add('WHERE');
+    QryDados.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
+    QryDados.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
+    QryDados.SQL.Add('GROUP BY GRUPO.NOME');
 
-  Result.Close;
-  Result.Database := DataBase;
-  Result.SQL.Clear;
-  Result.SQL.Add('SELECT');
-  Result.SQL.Add('    0 as "Ord"');
-  Result.SQL.Add('    , CASE WHEN COALESCE(GRUPO.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE GRUPO.NOME END AS "Grupo"');
-  Result.SQL.Add('    , SUM(CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Custo compra"');
-  Result.SQL.Add('    , SUM(CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Vendido por"');
-  Result.SQL.Add('    , SUM(CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Lucro bruto"');
-  Result.SQL.Add('FROM ESTOQUE');
-  Result.SQL.Add('LEFT JOIN GRUPO ON');
-  Result.SQL.Add(' (GRUPO.NOME=ESTOQUE.NOME)');
-  if Trim(FcWhereEstoque) <> EmptyStr then
-    Result.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
-  else
-    Result.SQL.Add('WHERE');
-  Result.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
-  Result.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
-  Result.SQL.Add('GROUP BY GRUPO.NOME');
-  Result.SQL.Add('UNION ALL');
-  Result.SQL.Add('SELECT FIRST 1');
-  Result.SQL.Add('    1 as "Ord"');
-  Result.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
-  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-  Result.SQL.Add('FROM EMITENTE');
+    QryDados.SQL.Add('UNION ALL');
 
-  Result.SQL.Add('UNION ALL');
-  Result.SQL.Add('SELECT FIRST 1');
-  Result.SQL.Add('    2 as "Ord"');
-  if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
-    Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
-  else
-    Result.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
-  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
-  Result.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-  Result.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
-  Result.SQL.Add('FROM EMITENTE');
-  Result.SQL.Add('ORDER BY 1, 5 DESC');
-  Result.ParamByName('XDATAINI').AsDate := dtInicial.Date;
-  Result.Open;
-  Result.First;
+    QryDados.SQL.Add('SELECT FIRST 1');
+    QryDados.SQL.Add('    1 as "Ord"');
+    QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
+    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+    QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+    QryDados.SQL.Add('FROM EMITENTE');
+    QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
 
-  DesativarColunas(Result);  
+    QryDados.SQL.Add('UNION ALL');
+
+    QryDados.SQL.Add('SELECT FIRST 1');
+    QryDados.SQL.Add('    2 as "Ord"');
+    if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
+      QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
+    else
+      QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
+    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
+    QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
+    QryDados.SQL.Add('FROM EMITENTE');
+    QryDados.SQL.Add('ORDER BY 1, 5 DESC');
+    QryDados.Open;
+    QryDados.First;
+
+    DesativarColunas(QryDados);
+
+    MapearQueryParaClientDataSet(QryDados, cdsTotalGrupo);
+  finally
+    FreeAndNil(QryDados);
+  end;
 end;
 
 function TfrmRelResumoVendas.RetornarWhere: string;

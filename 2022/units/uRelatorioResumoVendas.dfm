@@ -1,6 +1,6 @@
 inherited frmRelResumoVendas: TfrmRelResumoVendas
-  Left = 709
-  Top = 385
+  Left = 1420
+  Top = 574
   Caption = 'Resumo das vendas'
   ClientWidth = 769
   OldCreateOrder = True
@@ -158,8 +158,8 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
         ParamType = ptUnknown
       end>
     StoreDefs = True
-    Left = 64
-    Top = 136
+    Left = 56
+    Top = 192
     object cdsExcluidosNOME: TStringField
       DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'NOME'
@@ -169,6 +169,153 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       DisplayLabel = 'Total'
       FieldName = 'VALOR'
       Precision = 18
+    end
+  end
+  object cdsProdutos: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'Ordem'
+        DataType = ftInteger
+      end
+      item
+        Name = 'C'#243'digo'
+        DataType = ftString
+        Size = 6
+      end
+      item
+        Name = 'Descri'#231#227'o'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'Quantidade'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'Custo compra'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'Vendido por'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'Lucro bruto'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = '%'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 32
+    Top = 128
+    object cdsProdutosOrdem: TIntegerField
+      FieldName = 'Ordem'
+    end
+    object cdsProdutosCdigo: TStringField
+      FieldName = 'C'#243'digo'
+      Size = 6
+    end
+    object cdsProdutosDescrio: TStringField
+      FieldName = 'Descri'#231#227'o'
+      Size = 80
+    end
+    object cdsProdutosQuantidade: TFMTBCDField
+      FieldName = 'Quantidade'
+      Precision = 18
+      Size = 6
+    end
+    object cdsProdutosCustocompra: TFMTBCDField
+      FieldName = 'Custo compra'
+      Precision = 18
+      Size = 6
+    end
+    object cdsProdutosVendidopor: TFMTBCDField
+      FieldName = 'Vendido por'
+      Precision = 18
+      Size = 6
+    end
+    object cdsProdutosLucrobruto: TFMTBCDField
+      FieldName = 'Lucro bruto'
+      Precision = 18
+      Size = 6
+    end
+    object cdsProdutosCDSDesigner: TFMTBCDField
+      FieldName = '%'
+      Precision = 18
+      Size = 6
+    end
+  end
+  object cdsTotalGrupo: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'Ordem'
+        DataType = ftInteger
+      end
+      item
+        Name = 'Grupo'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'Custo compra'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'Vendido por'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'Lucro bruto'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 80
+    Top = 128
+    object cdsTotalGrupoOrdem: TIntegerField
+      FieldName = 'Ordem'
+    end
+    object cdsTotalGrupoGrupo: TStringField
+      FieldName = 'Grupo'
+      Size = 80
+    end
+    object cdsTotalGrupoCustocompra: TFMTBCDField
+      FieldName = 'Custo compra'
+      Precision = 18
+      Size = 6
+    end
+    object cdsTotalGrupoVendidopor: TFMTBCDField
+      FieldName = 'Vendido por'
+      Precision = 18
+      Size = 6
+    end
+    object cdsTotalGrupoLucrobruto: TFMTBCDField
+      FieldName = 'Lucro bruto'
+      Precision = 18
+      Size = 6
     end
   end
 end
