@@ -31,7 +31,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023034'; // Sandro Silva 2023-09-01 const BUILD_DO_BANCO = '2023032';  
+const BUILD_DO_BANCO = '2023036'; // Sandro Silva 2023-09-29 BUILD_DO_BANCO = '2023034'; // Sandro Silva 2023-09-01 const BUILD_DO_BANCO = '2023032';  
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -273,6 +273,7 @@ type
     Perfisdetribitao1: TMenuItem;
     NaturezaseCFOPs1: TMenuItem;
     ConversodeCFOP1: TMenuItem;
+    Parmetrosdetributao1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -439,6 +440,7 @@ type
     procedure Perfisdetribitao1Click(Sender: TObject);
     procedure NaturezaseCFOPs1Click(Sender: TObject);
     procedure ConversodeCFOP1Click(Sender: TObject);
+    procedure Parmetrosdetributao1Click(Sender: TObject);
 
 
   private
@@ -545,7 +547,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uSmallConsts
   , uConectaBancoCommerce
   , uTypesRecursos
-  , uArquivosDAT;
+  , uArquivosDAT, uIconesSistema;
 
 {$R *.DFM}
 
@@ -4466,6 +4468,9 @@ begin
 
   Image4.Transparent := False;
   {Mauricio Parizotto 2023-05-31 Fim}
+
+  //Mauricio Parizotto 2023-09-22
+  CarregaIconesSistema;
 end;
 
 procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
@@ -10608,19 +10613,18 @@ end;
 procedure TForm1.imgCaixaMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-{
-  Form1.Label2.Caption := 'LIVRO CAIXA';
-  Form1.Label3.Caption := 'Controle de Livro Caixa com Plano de Contas, Fluxo de Caixa, Balancete Gerencial Mensal e Anual.';
-}
-  //
-  if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
-  //
+  if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
+    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
 end;
 
 
 procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
+  //Mauricio Parizotto 2023-09-26
+  if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
+    Exit;
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
@@ -11226,6 +11230,10 @@ begin
   if Form24.Visible then Form24.BringToFront;
   if Form48.Visible then Form48.BringToFront;
   Mauricio Parizotto  }
+
+  //Mauricio Parizotto 2023-09-26
+  if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
+    Exit;
 
   if Form5.Visible then
   begin
@@ -12463,6 +12471,20 @@ begin
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
   {$ENDIF}
   
+  Form7.Show;
+end;
+
+procedure TForm1.Parmetrosdetributao1Click(Sender: TObject);
+begin
+  Form7.sModulo := 'PARAMETROTRIBUTACAO';
+  Form7.sTitulo := 'Parâmetros de tributação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
   Form7.Show;
 end;
 

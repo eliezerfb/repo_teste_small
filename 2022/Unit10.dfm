@@ -1,11 +1,11 @@
 object Form10: TForm10
-  Left = 462
-  Top = 233
+  Left = 283
+  Top = 145
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
-  ClientHeight = 688
-  ClientWidth = 1008
+  ClientHeight = 689
+  ClientWidth = 1462
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3647,7 +3647,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 24
+            Height = 21
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -4068,7 +4068,6 @@ object Form10: TForm10
             22)
           inherited txtCampo: TEdit
             Width = 390
-            Font.Name = 'Microsoft Sans Serif'
           end
           inherited gdRegistros: TDBGrid
             Width = 390

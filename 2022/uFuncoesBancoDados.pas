@@ -66,6 +66,7 @@ function IndiceExiste(Banco: TIBDatabase; sTabela: String;
 function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
   iQtd: Integer = 1): String;
 function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
+function FloatToBD(valor:Double):string;
 
 implementation
 
@@ -347,6 +348,11 @@ begin
     Result := Trim(ExecutaComandoEscalar(Banco, SQL));
   except
   end;
+end;
+
+function FloatToBD(valor:Double):string;
+begin
+  Result := StringReplace(FloatToStr(valor),',','.',[rfReplaceAll]);
 end;
 
 end.

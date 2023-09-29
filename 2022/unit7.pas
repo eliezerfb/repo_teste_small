@@ -1565,6 +1565,36 @@ type
     dsOrcamentObs: TDataSource;
     EnviarOrcamentoPorEmail1: TMenuItem;
     Label38: TLabel;
+    Label39: TLabel;
+    DSParametroTributa: TDataSource;
+    mmParametroTributa: TMainMenu;
+    MenuItem131: TMenuItem;
+    MenuItem194: TMenuItem;
+    MenuItem195: TMenuItem;
+    MenuItem197: TMenuItem;
+    MenuItem198: TMenuItem;
+    MenuItem199: TMenuItem;
+    MenuItem200: TMenuItem;
+    MenuItem201: TMenuItem;
+    MenuItem202: TMenuItem;
+    MenuItem203: TMenuItem;
+    MenuItem204: TMenuItem;
+    MenuItem213: TMenuItem;
+    MenuItem214: TMenuItem;
+    MenuItem215: TMenuItem;
+    ibdParametroTributa: TIBDataSet;
+    ibdParametroTributaIDPARAMETROTRIBUTACAO: TIntegerField;
+    ibdParametroTributaCFOP_ENTRADA: TIBStringField;
+    ibdParametroTributaORIGEM_ENTRADA: TIBStringField;
+    ibdParametroTributaCST_ENTRADA: TIBStringField;
+    ibdParametroTributaCSOSN_ENTRADA: TIBStringField;
+    ibdParametroTributaALIQ_ENTRADA: TIBBCDField;
+    ibdParametroTributaNCM_ENTRADA: TIBStringField;
+    ibdParametroTributaIDPERFILTRIBUTACAO: TIntegerField;
+    ibdParametroTributaREGISTRO: TIBStringField;
+    ibdParametroTributaDESCRICAO: TIBStringField;
+    Perfildetributao1: TMenuItem;
+    Parmetrosdetributao1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2216,12 +2246,17 @@ type
     procedure ibDataSet37AfterOpen(DataSet: TDataSet);
     procedure IbdOrcamentObsAfterDelete(DataSet: TDataSet);
     procedure IbdOrcamentObsAfterPost(DataSet: TDataSet);
+    procedure ibdParametroTributaAfterDelete(DataSet: TDataSet);
+    procedure ibdParametroTributaBeforeEdit(DataSet: TDataSet);
+    procedure ibdParametroTributaBeforeInsert(DataSet: TDataSet);
+    procedure ibdParametroTributaNewRecord(DataSet: TDataSet);
+    procedure Perfildetributao1Click(Sender: TObject);
+    procedure Parmetrosdetributao1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
     FbImportandoXML: Boolean;
-    StatusTrocaPerfil : String;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2260,6 +2295,8 @@ type
 
     fSaldoVetorCaixa : array[0..9999999] of real;
     fSaldoVetorBanco : array[0..9999999] of real;
+
+    StatusTrocaPerfil : String; // Mauricio Parizotto 2023-09-26
 
     //
     // NFe
@@ -2429,7 +2466,9 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uAtualizaTributacaoPerfilTrib
   , uSmallResourceString
   , uChamaRelatorioCommerceFactory
-  , uImpressaoOrcamento, uSectionFrentedeCaixaINI;
+  , uImpressaoOrcamento
+  , uSectionFrentedeCaixaINI
+  , uFrmParametroTributacao;
 
 {$R *.DFM}
 
@@ -4992,6 +5031,7 @@ begin
     Form7.ibDataSet6.BufferChunks  := 500;
     Form7.ibdConversaoCFOP.BufferChunks  := 500; //Mauricio Parizotto 2023-08-25
     Form7.ibdPerfilTributa.BufferChunks  := 500; //Mauricio Parizotto 2023-08-30
+    Form7.ibdParametroTributa.BufferChunks  := 500; //Mauricio Parizotto 2023-09-21
   end else
   begin
     Form7.ibDataSet1.BufferChunks  := 1000;
@@ -5024,6 +5064,7 @@ begin
     Form7.ibDataSet6.BufferChunks  := 1000;
     Form7.ibdConversaoCFOP.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-25
     Form7.ibdPerfilTributa.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-30
+    Form7.ibdParametroTributa.BufferChunks  := 1000; //Mauricio Parizotto 2023-09-21
   end;
 
   if Form1.bFechaTudo then
@@ -5105,6 +5146,7 @@ begin
         Form7.ibDataSet6.Selectsql.Clear;
         Form7.ibdConversaoCFOP.Selectsql.Clear; //Mauricio Parizotto 2023-08-25
         Form7.ibdPerfilTributa.Selectsql.Clear; //Mauricio Parizotto 2023-08-30
+        Form7.ibdParametroTributa.Selectsql.Clear; //Mauricio Parizotto 2023-09-21
 
         Form7.ibDataSet1.Selectsql.Add('select * from CAIXA where DATA=CURRENT_DATE order by DATA, REGISTRO');
         Form7.ibDataSet27.Selectsql.Add('select * from ALTERACA where CODIGO='+QuotedStr('99999')+' ');
@@ -5134,6 +5176,11 @@ begin
         Form7.ibDataSet6.Selectsql.Add('select * from CODEBAR where CODIGO=''99999'' ');
         Form7.ibdConversaoCFOP.Selectsql.Add('Select * From CFOPCONVERSAO'); //Mauricio Parizotto 2023-08-25
         Form7.ibdPerfilTributa.Selectsql.Add('Select * From PERFILTRIBUTACAO'); //Mauricio Parizotto 2023-08-30
+        Form7.ibdParametroTributa.Selectsql.Add(' Select'+
+                                                '  PR.*,'+
+                                                '  PF.DESCRICAO'+
+                                                ' From PARAMETROTRIBUTACAO PR'+
+                                                '  Left Join PERFILTRIBUTACAO PF on PF.IDPERFILTRIBUTACAO = PR.IDPERFILTRIBUTACAO'); //Mauricio Parizotto 2023-09-21
 
         //  CAIXA
         //  ICM
@@ -5204,6 +5251,7 @@ begin
     if not Form7.ibDataSet6.active  then Form7.ibDataSet6.active  := True;
     if not Form7.ibdConversaoCFOP.active  then Form7.ibdConversaoCFOP.active  := True; //Mauricio Parizotto 2023-08-25
     if not Form7.ibdPerfilTributa.active  then Form7.ibdPerfilTributa.active  := True; //Mauricio Parizotto 2023-08-30
+    if not Form7.ibdParametroTributa.active  then Form7.ibdParametroTributa.active  := True; //Mauricio Parizotto 2023-09-21
   except
     on E: Exception do
     begin
@@ -5247,6 +5295,7 @@ begin
     if Form7.ibDataSet5.Active then  Form7.ibDataSet5.EnableControls;
     if Form7.ibdConversaoCFOP.Active then  Form7.ibdConversaoCFOP.EnableControls; // Mauricio Parizotto 2023-08-25
     if Form7.ibdPerfilTributa.Active then  Form7.ibdPerfilTributa.EnableControls; // Mauricio Parizotto 2023-08-30
+    if Form7.ibdParametroTributa.Active then  Form7.ibdParametroTributa.EnableControls; // Mauricio Parizotto 2023-09-21
   end;
   
   Result := True;
@@ -7916,6 +7965,17 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
+  //Mauricio Parizotto 2023-09-21
+  if sModulo = 'PARAMETROTRIBUTACAO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmParametroTributacao = nil then
+      FrmParametroTributacao := TFrmParametroTributacao.Create(Self);
+      
+    FrmParametroTributacao.Show;
+    Exit;
+  end;
+
   if sModulo = 'OS' then
   begin
     Form30.Show;
@@ -8088,6 +8148,17 @@ end;
 procedure TForm7.Image101Click(Sender: TObject);
 begin
   Form7.bEstaSendoUsado := False;
+
+  //Mauricio Parizotto 2023-09-21
+  if sModulo = 'PARAMETROTRIBUTACAO' then
+  begin
+    if FrmParametroTributacao = nil then
+      FrmParametroTributacao := TFrmParametroTributacao.Create(Self);
+      
+    FrmParametroTributacao.lblNovoClick(Sender);
+    FrmParametroTributacao.Show;
+    Exit;
+  end;
 
   if sModulo = 'OS' then
   begin
@@ -9430,6 +9501,7 @@ begin
   ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibdParametroTributaDESCRICAO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-09-21
   //Mauricio Parizotto 2023-06-01
   Image201.Transparent := False;
   Image202.Transparent := False;
@@ -10997,7 +11069,7 @@ begin
       {Mauricio Parizotto 2023-08-25 Inicio}
       if sModulo = 'CONVERSAOCFOP' then
       begin
-        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
+        sAjuda := 'config_icms_iss.htm';
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
@@ -11029,7 +11101,7 @@ begin
       {Mauricio Parizotto 2023-08-30 Inicio}
       if sModulo = 'PERFILTRIBUTACAO' then
       begin
-        sAjuda := 'config_icms_iss.htm'; // Falta Fazer
+        sAjuda := 'perfil_tributacao.htm';
 
 
         if EstadoEmitente(IBDatabase1) = 'SP' then
@@ -11072,6 +11144,40 @@ begin
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
       {Mauricio Parizotto 2023-08-30 Fim}
+
+
+      {Mauricio Parizotto 2023-09-21 Inicio}
+      if sModulo = 'PARAMETROTRIBUTACAO' then
+      begin
+        sAjuda := 'parametros_tributacao.htm';
+
+        // Campos
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTT');
+        iCampos                := 7;
+
+        // Menu
+        Form7.Menu             := mmParametroTributa;
+
+        // Arquivo
+        ArquivoAberto          := DSParametroTributa.Dataset;
+        TabelaAberta           := ibdParametroTributa;
+        DataSourceAtual        := DSParametroTributa;
+
+        // Sql
+        sSelect := ' Select'+
+                   '   PR.*,'+
+                   '   PF.DESCRICAO'+
+                   ' From PARAMETROTRIBUTACAO PR'+
+                   '   Left Join PERFILTRIBUTACAO PF on PF.IDPERFILTRIBUTACAO = PR.IDPERFILTRIBUTACAO';
+
+        sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
+        sOrderBy  := 'order by '+Mais1Ini.ReadString(sModulo,'ORDEM','REGISTRO');
+        sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
+        sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
+        sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
+        sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
+      end;
+      {Mauricio Parizotto 2023-09-21 Fim}
 
 
       if sModulo = 'BANCOS' then
@@ -12089,23 +12195,22 @@ begin
     Result := slSQL.Text;
     }
 
+    {Sandro Silva 2023-09-25 inicio
     Result :=
       'WITH ORCAMENTS AS ( ' +
       ' SELECT ' +
       '    ORCAMENT.PEDIDO ' +
       '    , MIN(ORCAMENT.DATA) AS DATA ' +
       '    , max(ORCAMENT.NUMERONF) as NUMERONF ' +
-      //'    , ORCAMENT.CLIFOR ' +
       ', max(ORCAMENT.CLIFOR) as CLIFOR ' +
-      //'    , ORCAMENT.VENDEDOR ' +
       ', max(case when coalesce((select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO), '''') = '''' then ' +
       '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO order by registro desc) ' +
       '  else ' +
       '    (select first 1 O2.VENDEDOR from ORCAMENT O2 where O2.PEDIDO = ORCAMENT.PEDIDO) ' +
       '  end) ' +
       'as VENDEDOR ' +
-      '    , SUM(CASE WHEN DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS TOTALBRUTO ' +
-      '    , SUM(CASE WHEN DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN TOTAL ELSE 0 END) AS DESCONTO ' +
+      '    , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+      '    , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
       ' FROM ORCAMENT ' +
       ' GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
       ' ) ' +
@@ -12120,6 +12225,44 @@ begin
       '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
       '    , ORCAMENTS.PEDIDO as "Registro" ' +
       ' FROM ORCAMENTS ';
+  }
+    Result :=
+      'WITH ORCAMENTS AS ( ' +
+      '  select Q.PEDIDO ' +
+      '  , Q.DATA ' +
+      '  , Q.NUMERONF ' +
+      '  , Q.CLIFOR ' +
+      '  , O2.VENDEDOR ' +
+      '  , Q.TOTALBRUTO ' +
+      '  , Q.DESCONTO ' +
+      '  from ' +
+      '  ( ' +
+      '   SELECT ' +
+      '      ORCAMENT.PEDIDO ' +
+      '      , MIN(ORCAMENT.DATA) AS DATA ' +
+      '      , max(ORCAMENT.NUMERONF) as NUMERONF ' +
+      '      , max(ORCAMENT.CLIFOR) as CLIFOR ' +
+      '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +
+      '      , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+      '      , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
+      '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +      
+      '   FROM ORCAMENT ' +
+      '   GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
+      '  ) Q ' +
+      '  left join ORCAMENT O2 on O2.REGISTRO = Q.REGISTRO ' +
+      ' ) ' +
+      ' SELECT ' +
+      '     ORCAMENTS.PEDIDO as "Orçamento" ' +
+      '    , ORCAMENTS.DATA as "Data" ' +
+      '    , ORCAMENTS.CLIFOR as "Cliente" ' +
+      '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
+      '    , TOTALBRUTO as "Total bruto" ' +
+      '    , DESCONTO as "Desconto" ' +
+      '    , (TOTALBRUTO - DESCONTO) as "Total líquido" ' +
+      '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
+      '    , ORCAMENTS.PEDIDO as "Registro" ' +
+      ' FROM ORCAMENTS ';
+  {Sandro Silva 2023-09-25 fim}
 
   finally
     //FreeAndNil(slSQL);
@@ -25340,14 +25483,18 @@ begin
       //
       if AllTrim(Form7.ibDataSet24FRETE12.AsString) <> '' then
       begin
-        Form7.ibDataSet15.Edit; Form7.ibDataSet15FRETE12.AsString  := Form7.ibDataSet24FRETE12.AsString;
+        Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15FRETE12.AsString  := Form7.ibDataSet24FRETE12.AsString;
       end else
       begin
-        Form7.ibDataSet15.Edit; Form7.ibDataSet15FRETE12.AsString  := '0';
+        Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15FRETE12.AsString  := '0';
       end;
       //
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15COMPLEMENTO.AsString := 'ENTRADA';
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15EMITIDA.AsString     := 'E';
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15COMPLEMENTO.AsString := 'ENTRADA';
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15EMITIDA.AsString     := 'E';
       //
       Form7.ibDataSet15.Post;
       //
@@ -32439,7 +32586,7 @@ begin
 
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');
   Form7.ibDataSet2.Open;
 
   ConfiguraNFE;
@@ -33842,6 +33989,7 @@ end;
 procedure TForm7.ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
 var
   sApagar : string;
+  sModulos : string;
 begin
   if AllTrim(ibdPerfilTributaDESCRICAO.AsString) <> '' then
   begin
@@ -33850,17 +33998,28 @@ begin
                              ' From ESTOQUE '+
                              ' Where IDPERFILTRIBUTACAO = '+ibdPerfilTributaIDPERFILTRIBUTACAO.Asstring) > 0 then
     begin
-      sApagar := 'O sistema encontrou lançamentos referentes ao perfil: '+Chr(10)+
+      sModulos := sModulos + 'Módulo de Estoque.'+chr(10);
+    end;
+
+    if ExecutaComandoEscalar(IBDatabase1,
+                             ' Select count(*) '+
+                             ' From PARAMETROTRIBUTACAO '+
+                             ' Where IDPERFILTRIBUTACAO = '+ibdPerfilTributaIDPERFILTRIBUTACAO.Asstring) > 0 then
+    begin
+      sModulos := sModulos + 'Módulo de Parâmetros de Tributação.'+chr(10);
+    end;
+
+    if sModulos <> '' then
+    begin
+      sApagar := 'O sistema encontrou lançamentos referentes ao perfil: '+Chr(10)+ibdPerfilTributaDESCRICAO.AsString+Chr(10)+
                  Chr(10)+
-                 Chr(10)+ibdPerfilTributaDESCRICAO.AsString+Chr(10)+
-                 Chr(10)+
-                 'no módulo de estoque.'+chr(10)+ Chr(10)+
+                 sModulos+Chr(10)+
                  'Portanto não pode ser apagado.';
 
       MensagemSistema(sApagar,msgAtencao);
       Abort;
     end;
-  end; 
+  end;
 end;
 
 procedure TForm7.ibDataSet37AfterOpen(DataSet: TDataSet);
@@ -33934,6 +34093,10 @@ end;
 
 procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
 begin
+  //Mauricio Parizotto 2023-09-26
+  if StatusTrocaPerfil = 'PR' then
+    Exit;
+
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger > 0 then
   begin
     StatusTrocaPerfil := 'PR';
@@ -33959,6 +34122,69 @@ end;
 procedure TForm7.ibDataSet4TIPO_ITEMChange(Sender: TField);
 begin
   VerificaAlteracaoPerfil;
+end;
+
+procedure TForm7.ibdParametroTributaAfterDelete(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
+
+procedure TForm7.ibdParametroTributaBeforeEdit(DataSet: TDataSet);
+begin
+  sNumeroAnterior := ibdParametroTributaREGISTRO.AsString;
+  { Está variável também será usada no evento AfterPost }
+end;
+
+procedure TForm7.ibdParametroTributaBeforeInsert(DataSet: TDataSet);
+begin
+  try
+    ibDataSet99.Close;
+    ibDataSet99.SelectSql.Clear;
+    ibDataset99.SelectSql.Add('select gen_id(G_PARAMETROTRIBUTACAO,1) from rdb$database');
+    ibDataset99.Open;
+    sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+    sProximoID := StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString);
+    ibDataset99.Close;
+  except
+    Abort
+  end;
+end;
+
+procedure TForm7.ibdParametroTributaNewRecord(DataSet: TDataSet);
+begin
+  ibdParametroTributa.Edit;
+  ibdParametroTributaREGISTRO.AsString := sProximo;
+  ibdParametroTributaIDPARAMETROTRIBUTACAO.AsInteger := sProximoID;
+end;
+
+procedure TForm7.Perfildetributao1Click(Sender: TObject);
+begin
+  Form7.Close;
+  Form7.sModulo := 'PERFILTRIBUTACAO';
+  Form7.sTitulo := 'Perfil de tributação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
+end;
+
+procedure TForm7.Parmetrosdetributao1Click(Sender: TObject);
+begin
+  Form7.Close;
+  Form7.sModulo := 'PARAMETROTRIBUTACAO';
+  Form7.sTitulo := 'Parâmetros de tributação';
+
+  {$IFDEF VER150}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
+  {$ELSE}
+  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
+  {$ENDIF}
+
+  Form7.Show;
 end;
 
 end.

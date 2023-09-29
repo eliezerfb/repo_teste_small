@@ -742,7 +742,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   , uRetornaLimiteDisponivel
   , uFuncoesBancoDados
   , uFuncoesRetaguarda
-  , Variants;
+  , Variants, uVisualizaCadastro;
   
 {$R *.DFM}
 
@@ -3742,7 +3742,11 @@ begin
   
   Form7.iFoco := 0;
   Form10.Paint;
-  
+
+  //Mauricio Parizotto 2023-09-21
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+    Exit;
+
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
@@ -5533,6 +5537,7 @@ begin
 end;
 
 procedure TForm10.Image203Click(Sender: TObject);
+(*
 var
   F: TextFile;
   I, J: Integer;
@@ -5546,7 +5551,12 @@ var
   vDescricaoProduto : string;
 
   IBQProdutoComp: TIBQuery; // Mauricio Parizotto 2023-08-07
+  *)
 begin
+  GeraVisualizacaoFichaCadastro;
+
+  (*
+
   // Não exporta se o cliente estiver em branco
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
   if (Form7.sModulo = 'CLIENTES') and (AllTrim(Form7.ibDataSet2NOME.AsString) = '') then Abort;
@@ -6078,13 +6088,21 @@ begin
                 Form7.ibDataSet35.SelectSQL.Add('select * from ITENS003 where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+'');
                 Form7.ibDataSet35.Open;
                 Form7.ibDataSet35.First;
-                
+
+                {Sandro Silva 2023-09-26 inicio}
+                sNumeroNF := '';
+                if Form7.ibDataSet15.FieldByName('MODELO').AsString = 'SV' then
+                    sNumeroNF := Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString;
+                if Trim(sNumeroNF) = '' then
+                  sNumeroNF := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
+                {Sandro Silva 2023-09-26 fim}
                 while not (Form7.ibDataSet35.EOF) do
                 begin
                   WriteLn(F,' <tr>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet15EMISSAO.AsDateTime)      +'</td>'+  // Data
-                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
-                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
+                          // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ ifThen(Form7.ibDataSet15.FieldByName('MODELO').AsString = 'SV', ifThen(Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString <> '', Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString, Form7.ibDataSet15.FieldByName('NUMERONF').AsString), Form7.ibDataSet15.FieldByName('NUMERONF').AsString)+'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
+                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ sNumeroNF +'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
+                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10) + Replicate(' ', 10),1,10)    +'</td>'+  // Doc  // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'</td>'); // Valor
                   WriteLn(F,' </tr>');
@@ -7017,6 +7035,8 @@ begin
   AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
   
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
+
+  Mauricio Parizotto 2023-09-21 movido para unit uFrmFichaPadrao *)
 end;
 
 procedure TForm10.Button11Click(Sender: TObject);
@@ -7596,9 +7616,9 @@ begin
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
     Form10.Label36.Visible          := True;
-    cboCSOSN_Prod.Visible        := True;
+    cboCSOSN_Prod.Visible           := True;
     Form10.Label37.Visible          := False;
-    cboCST_Prod.Visible        := False;
+    cboCST_Prod.Visible             := False;
  
     Form10.Label72.Visible          := True;
     Form10.ComboBox15.Visible       := True;
@@ -7607,9 +7627,9 @@ begin
   end else
   begin
     Form10.Label36.Visible          := False;
-    cboCSOSN_Prod.Visible        := False;
+    cboCSOSN_Prod.Visible           := False;
     Form10.Label37.Visible          := True;
-    cboCST_Prod.Visible        := True;
+    cboCST_Prod.Visible             := True;
   
     Form10.Label72.Visible          := False;
     Form10.ComboBox15.Visible       := False;
