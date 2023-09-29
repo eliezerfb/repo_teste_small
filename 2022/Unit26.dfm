@@ -1,11 +1,11 @@
 object Form26: TForm26
-  Left = 656
-  Top = 329
+  Left = 758
+  Top = 200
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Configura'#231#227'o do bloqueto banc'#225'rio'
-  ClientHeight = 422
-  ClientWidth = 584
+  ClientHeight = 467
+  ClientWidth = 544
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,6 +15,7 @@ object Form26: TForm26
   OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -1278,9 +1279,9 @@ object Form26: TForm26
     end
   end
   object Button2: TButton
-    Left = 320
-    Top = 380
-    Width = 250
+    Left = 409
+    Top = 428
+    Width = 120
     Height = 25
     Caption = 'Ok'
     Font.Charset = DEFAULT_CHARSET
@@ -1296,141 +1297,110 @@ object Form26: TForm26
   object GroupBox2: TGroupBox
     Left = 15
     Top = 15
-    Width = 555
-    Height = 350
+    Width = 514
+    Height = 401
     Caption = 'Configura'#231#227'o do campo livre'
     ParentBackground = False
     TabOrder = 1
     object Label17: TLabel
-      Left = 71
-      Top = 25
+      Left = 75
+      Top = 70
       Width = 96
       Height = 13
       Alignment = taRightJustify
       Caption = 'c'#243'digo do banco (B)'
     end
     object Label18: TLabel
-      Left = 70
-      Top = 50
+      Left = 74
+      Top = 95
       Width = 97
       Height = 13
       Alignment = taRightJustify
       Caption = 'carteira/varia'#231#227'o (K)'
     end
     object Label19: TLabel
-      Left = 113
-      Top = 100
+      Left = 117
+      Top = 145
       Width = 54
       Height = 13
       Alignment = taRightJustify
       Caption = 'ag'#234'ncia (A)'
     end
     object Label20: TLabel
-      Left = 16
-      Top = 246
+      Left = 20
+      Top = 291
       Width = 203
       Height = 13
       Caption = 'M'#225'scara do campo livre (posi'#231#245'es 20 a 44)'
     end
     object Label32: TLabel
-      Left = 62
-      Top = 125
+      Left = 66
+      Top = 170
       Width = 105
       Height = 13
       Alignment = taRightJustify
       Caption = 'c'#243'digo do cedente (C)'
     end
     object Label33: TLabel
-      Left = 81
-      Top = 150
+      Left = 85
+      Top = 195
       Width = 86
       Height = 13
       Alignment = taRightJustify
       Caption = 'nosso n'#250'mero  (N)'
     end
     object Label34: TLabel
-      Left = 16
-      Top = 294
+      Left = 20
+      Top = 339
       Width = 123
       Height = 13
       Alignment = taRightJustify
       Caption = 'Resultado do campo livre '
     end
     object Label39: TLabel
-      Left = 23
-      Top = 175
+      Left = 27
+      Top = 220
       Width = 144
       Height = 13
       Alignment = taRightJustify
       Caption = 'vencimento formato juniano (J)'
     end
     object Label40: TLabel
-      Left = 57
-      Top = 75
+      Left = 61
+      Top = 120
       Width = 110
       Height = 13
       Alignment = taRightJustify
       Caption = 'c'#243'digo do conv'#234'nio (X)'
     end
     object Label41: TLabel
-      Left = 16
-      Top = 199
+      Left = 20
+      Top = 244
       Width = 151
       Height = 13
       Alignment = taRightJustify
       Caption = 'd'#237'gito verificador, m'#243'dulo 11 (D)'
     end
     object Label42: TLabel
-      Left = 15
-      Top = 219
+      Left = 19
+      Top = 264
       Width = 152
       Height = 13
       Alignment = taRightJustify
       Caption = 'd'#237'gito verificador, m'#243'dulo 10 (M)'
     end
-    object Label001: TLabel
-      Left = 324
-      Top = 30
-      Width = 3
+    object Label35: TLabel
+      Left = 140
+      Top = 26
+      Width = 31
       Height = 13
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      OnClick = Panel1Click
-    end
-    object Label002: TLabel
-      Left = 324
-      Top = 102
-      Width = 3
-      Height = 13
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      OnClick = Panel1Click
-    end
-    object Label003: TLabel
-      Left = 324
-      Top = 126
-      Width = 3
-      Height = 13
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      OnClick = Panel1Click
+      Alignment = taRightJustify
+      Caption = 'Banco'
     end
     object MaskEdit42: TMaskEdit
-      Left = 170
-      Top = 25
-      Width = 150
+      Left = 174
+      Top = 70
+      Width = 207
       Height = 19
       Hint = 'C'#243'digo do banco'
       AutoSize = False
@@ -1447,16 +1417,16 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 0
+      TabOrder = 3
       Text = '     '
       OnChange = MaskEdit45Change
       OnExit = MaskEdit42Exit
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit43: TMaskEdit
-      Left = 170
-      Top = 50
-      Width = 150
+      Left = 174
+      Top = 95
+      Width = 207
       Height = 19
       Hint = 'carteira/n'#250'mero'
       AutoSize = False
@@ -1473,15 +1443,15 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 4
       Text = '         '
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit44: TMaskEdit
-      Left = 170
-      Top = 100
-      Width = 150
+      Left = 174
+      Top = 145
+      Width = 207
       Height = 19
       Hint = 'ag'#234'ncia/conta'
       AutoSize = False
@@ -1498,14 +1468,14 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 6
       Text = '         '
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit45: TMaskEdit
-      Left = 16
-      Top = 266
+      Left = 20
+      Top = 311
       Width = 260
       Height = 24
       Hint = 'ag'#234'ncia/conta'
@@ -1523,15 +1493,15 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 10
       Text = '                         '
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit46: TMaskEdit
-      Left = 170
-      Top = 125
-      Width = 150
+      Left = 174
+      Top = 170
+      Width = 207
       Height = 19
       Hint = 'ag'#234'ncia/conta'
       AutoSize = False
@@ -1547,15 +1517,15 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 7
       OnChange = MaskEdit45Change
       OnExit = MaskEdit46Exit
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit47: TMaskEdit
-      Left = 170
-      Top = 150
-      Width = 150
+      Left = 174
+      Top = 195
+      Width = 207
       Height = 19
       AutoSize = False
       Color = clWhite
@@ -1569,13 +1539,13 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 6
+      TabOrder = 8
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit48: TMaskEdit
-      Left = 16
-      Top = 312
+      Left = 20
+      Top = 357
       Width = 260
       Height = 24
       Hint = 'ag'#234'ncia/conta'
@@ -1594,68 +1564,14 @@ object Form26: TForm26
       ParentShowHint = False
       ReadOnly = True
       ShowHint = True
-      TabOrder = 7
+      TabOrder = 11
       Text = '                         '
       OnKeyDown = MaskEdit1KeyDown
     end
-    object Panel1: TPanel
-      Left = 330
-      Top = 208
-      Width = 200
-      Height = 54
-      BevelOuter = bvNone
-      Color = clWhite
-      Ctl3D = False
-      ParentCtl3D = False
-      TabOrder = 8
-      OnClick = Panel1Click
-      object Label37: TLabel
-        Left = 84
-        Top = 9
-        Width = 76
-        Height = 13
-        Caption = 'Clique aqui para'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = 15381041
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = Panel1Click
-      end
-      object Label38: TLabel
-        Left = 94
-        Top = 29
-        Width = 56
-        Height = 13
-        Caption = 'obter ajuda.'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = 15381041
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = Panel1Click
-      end
-      object Label35: TLabel
-        Left = 44
-        Top = 0
-        Width = 28
-        Height = 55
-        Caption = '?'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = 15381041
-        Font.Height = -48
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        OnClick = Panel1Click
-      end
-    end
     object MaskEdit49: TMaskEdit
-      Left = 170
-      Top = 175
-      Width = 150
+      Left = 174
+      Top = 220
+      Width = 207
       Height = 19
       AutoSize = False
       Color = clWhite
@@ -1675,9 +1591,9 @@ object Form26: TForm26
       OnKeyDown = MaskEdit1KeyDown
     end
     object MaskEdit50: TMaskEdit
-      Left = 170
-      Top = 75
-      Width = 150
+      Left = 174
+      Top = 120
+      Width = 207
       Height = 19
       Hint = 'carteira/n'#250'mero'
       AutoSize = False
@@ -1693,23 +1609,24 @@ object Form26: TForm26
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 5
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
-    object ComboBox1: TComboBox
-      Left = 288
-      Top = 266
-      Width = 253
+    object cboBancos: TComboBox
+      Left = 174
+      Top = 25
+      Width = 207
       Height = 21
       BevelInner = bvNone
       BevelOuter = bvNone
       Ctl3D = False
       ItemHeight = 13
       ParentCtl3D = False
-      TabOrder = 10
+      TabOrder = 0
       Text = '<Personalizado>'
-      OnChange = ComboBox1Change
+      OnChange = cboBancosChange
+      OnKeyDown = MaskEdit1KeyDown
       Items.Strings = (
         '<Personalizado>'
         'AILOS - Sistema de Cooperativas de Cr'#233'dito'
@@ -1717,7 +1634,7 @@ object Form26: TForm26
         'SICOOB - Com registro'
         'Banco do Brasil - Com registro 7 posi'#231#245'es'
         'Banco do Brasil - Com registro 6 posi'#231#245'es'
-        'Banco do Brasil - Sem registro          '
+        'Banco do Brasil - Sem registro'
         'Caixa Econ'#244'mica - Com registro'
         'Caixa Econ'#244'mica - Sem registro'
         'Bradesco - Com registro'
@@ -1728,20 +1645,24 @@ object Form26: TForm26
         'Unibanco')
     end
     object chkCNAB400: TCheckBox
-      Left = 288
-      Top = 312
+      Left = 174
+      Top = 49
       Width = 97
       Height = 17
       Caption = 'CNAB 400'
-      TabOrder = 11
+      Enabled = False
+      TabOrder = 1
+      OnKeyDown = chkCNAB400KeyDown
     end
     object chkCNAB240: TCheckBox
-      Left = 416
-      Top = 312
-      Width = 97
+      Left = 281
+      Top = 49
+      Width = 79
       Height = 17
       Caption = 'CNAB 240'
-      TabOrder = 12
+      Enabled = False
+      TabOrder = 2
+      OnKeyDown = chkCNAB240KeyDown
     end
   end
 end

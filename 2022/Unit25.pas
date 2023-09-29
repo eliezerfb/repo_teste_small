@@ -980,19 +980,19 @@ begin
       Form26.MaskEdit46.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Conta','');
       Form26.MaskEdit45.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Livre','0000000000000000000000000');
 
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.ComboBox1.Text := 'SICREDI - Com registro';
-      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then Form26.ComboBox1.Text := 'SICOOB - Sem registro';
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.ComboBox1.Text := 'SICOOB - Com registro';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.ComboBox1.Text := 'Caixa Econômica - Com registro';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00020004NNNNNNNNND' then Form26.ComboBox1.Text := 'Caixa Econômica - Sem registro';
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.ComboBox1.Text := 'Banco do Brasil - Com registro 7 posições';
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.ComboBox1.Text := 'Banco do Brasil - Com registro 6 posições';
-      if Form26.MaskEdit45.Text = 'xxxxxxnnnnnnnnnnnnnnnnnkk' then Form26.ComboBox1.Text := 'Banco do Brasil - Sem registro';
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.ComboBox1.Text := 'Bradesco - Com registro';
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.ComboBox1.Text := 'Santander - Com registro';
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40YY' then Form26.ComboBox1.Text := 'Banrisul - Com registro';
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.ComboBox1.Text := 'Itaú - Com registro';
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.ComboBox1.Text := 'Unibanco';
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.Text := 'SICREDI - Com registro';
+      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB - Sem registro';
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB - Com registro';
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.Text := 'Caixa Econômica - Com registro';
+      if Form26.MaskEdit45.Text = 'CCCCCCC00020004NNNNNNNNND' then Form26.cboBancos.Text := 'Caixa Econômica - Sem registro';
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.Text := 'Banco do Brasil - Com registro 7 posições';
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.Text := 'Banco do Brasil - Com registro 6 posições';
+      if Form26.MaskEdit45.Text = 'xxxxxxnnnnnnnnnnnnnnnnnkk' then Form26.cboBancos.Text := 'Banco do Brasil - Sem registro';
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.Text := 'Bradesco - Com registro';
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.Text := 'Santander - Com registro';
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40YY' then Form26.cboBancos.Text := 'Banrisul - Com registro';
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.Text := 'Itaú - Com registro';
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.Text := 'Unibanco';
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
         Form26.chkCNAB400.State := cbChecked
