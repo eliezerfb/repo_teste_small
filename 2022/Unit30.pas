@@ -1405,57 +1405,39 @@ begin
   Form7.ibDataSet16UNITARIO.Visible := True;
   Form7.ibDataSet35UNITARIO.Visible := True;
 
-  {Sandro Silva 2023-09-28 inicio}
-  fFrameDescricao.TipoDePesquisa := tpSelect;
-  fFrameDescricao.SelectSQL :=
-  'select distinct DESCRICAO, DESCRICAO as NOME ' +
-  'from OS ' +
-  'where coalesce(DESCRICAO, '''') <> '''' ' +
-  ' and upper(DESCRICAO) like upper(''%''||:TEXTO||''%'') ' +  não funcionou passando parâmeto
-  'order by upper(DESCRICAO)';
+  fFrameDescricao.TipoDePesquisa  := tpSelect;
   fFrameDescricao.GravarSomenteTextoEncontrato := False;
   fFrameDescricao.CampoCodigo     := Form7.ibDataSet3DESCRICAO;
   fFrameDescricao.sCampoDescricao := 'DESCRICAO';
+  fFrameDescricao.sTabela         := 'OS';
   fFrameDescricao.CarregaDescricao;
 
-  fFrameIdentifi1.SelectSQL :=
-    'select distinct IDENTIFI1, IDENTIFI1 as NOME ' +
-    'from OS ' +
-    'where coalesce(IDENTIFI1, '''') <> '''' ' +
-    'order by upper(IDENTIFI1)';
+  fFrameIdentifi1.TipoDePesquisa  := tpSelect;
   fFrameIdentifi1.GravarSomenteTextoEncontrato := False;
   fFrameIdentifi1.CampoCodigo     := Form7.ibDataSet3IDENTIFI1;
   fFrameIdentifi1.sCampoDescricao := 'IDENTIFI1';
+  fFrameIdentifi1.sTabela         := 'OS';
   fFrameIdentifi1.CarregaDescricao;
 
-  fFrameIdentifi2.SelectSQL :=
-    'select distinct IDENTIFI2, IDENTIFI2 as NOME ' +
-    'from OS ' +
-    'where coalesce(IDENTIFI2, '''') <> '''' ' +
-    'order by upper(IDENTIFI2)';
+  fFrameIdentifi2.TipoDePesquisa  := tpSelect;
   fFrameIdentifi2.GravarSomenteTextoEncontrato := False;
   fFrameIdentifi2.CampoCodigo     := Form7.ibDataSet3IDENTIFI2;
   fFrameIdentifi2.sCampoDescricao := 'IDENTIFI2';
+  fFrameIdentifi2.sTabela         := 'OS';
   fFrameIdentifi2.CarregaDescricao;
 
-  fFrameIdentifi3.SelectSQL :=
-    'select distinct IDENTIFI3, IDENTIFI3 as NOME ' +
-    'from OS ' +
-    'where coalesce(IDENTIFI3, '''') <> '''' ' +
-    'order by upper(IDENTIFI3)';
+  fFrameIdentifi3.TipoDePesquisa  := tpSelect;
   fFrameIdentifi3.GravarSomenteTextoEncontrato := False;
   fFrameIdentifi3.CampoCodigo     := Form7.ibDataSet3IDENTIFI3;
   fFrameIdentifi3.sCampoDescricao := 'IDENTIFI3';
+  fFrameIdentifi3.sTabela         := 'OS';
   fFrameIdentifi3.CarregaDescricao;
 
-  fFrameIdentifi4.SelectSQL :=
-    'select distinct IDENTIFI4, IDENTIFI4 as NOME ' +
-    'from OS ' +
-    'where coalesce(IDENTIFI4, '''') <> '''' ' +
-    'order by upper(IDENTIFI4)';
+  fFrameIdentifi4.TipoDePesquisa  := tpSelect;
   fFrameIdentifi4.GravarSomenteTextoEncontrato := False;
   fFrameIdentifi4.CampoCodigo     := Form7.ibDataSet3IDENTIFI4;
   fFrameIdentifi4.sCampoDescricao := 'IDENTIFI4';
+  fFrameIdentifi4.sTabela         := 'OS';
   fFrameIdentifi4.CarregaDescricao;
   {Sandro Silva 2023-09-28 fim}
 end;

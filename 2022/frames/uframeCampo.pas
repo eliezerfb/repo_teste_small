@@ -28,20 +28,21 @@ type
     procedure FrameExit(Sender: TObject);
     procedure txtCampoEnter(Sender: TObject);
   private
-    FSQL: String;
     FGravarSomenteTextoEncontrato: Boolean;
     FOnShow: TNotifyEvent;
     FTipoPesquisa: TTipoPesquisa;
     FFiltro: String;
+    FTabela: String;
     procedure Pesquisar;
+    function SelectPesquisa: String;
   public
-    sCampoDescricao,
-    sTabela: String;
+    sCampoDescricao: String;
+    //sTabela: String;
     CampoCodigo: TField;
-    property SelectSQL: String read FSQL write FSQL;
     property GravarSomenteTextoEncontrato: Boolean read FGravarSomenteTextoEncontrato write FGravarSomenteTextoEncontrato default True;
     property TipoDePesquisa: TTipoPesquisa read FTipoPesquisa write FTipoPesquisa;
     property sFiltro: String read FFiltro write FFiltro;
+    property sTabela: String read FTabela write FTabela;
     constructor Create(AOwner: TComponent); override;
     procedure CarregaDescricao;
 
@@ -57,7 +58,8 @@ constructor TfFrameCampo.Create(AOwner: TComponent);
 begin
   inherited;
   FGravarSomenteTextoEncontrato := True;
-  FTipoPesquisa := tpLocate;
+//  FTipoPesquisa := tpLocate;
+  FTipoPesquisa := tpSelect;
 end;
 
 procedure TfFrameCampo.Pesquisar;
@@ -69,8 +71,7 @@ begin
     tpSelect:
     begin
       Query.Close;
-      Query.SQL.Text := FSQL;
-      Query.ParamByName('TEXTO').AsString := txtCampo.Text;
+      Query.SQL.Text := SelectPesquisa;   
       Query.Open;
     end;
   else
@@ -135,7 +136,7 @@ var
   CampoChange: TNotifyEvent;
   sNomeCampoChave: String;
 begin
-  if (Trim(sTabela) = '') and (Trim(FSQL) = '') then
+  if (Trim(FTabela) = '') then // and (Trim(FSQL) = '') then
   begin
     MensagemSistema('Informe o nome da tabela ou a instrução SQL para selecionar os dados', msgErro); // Precisa ser informado a tabela ou o SQL, senão causa erro
     Exit;
@@ -144,14 +145,18 @@ begin
   sNomeCampoChave := CampoCodigo.FieldName;
 
   Query.Close;
-  if FSQL <> '' then
-    Query.SQL.Text := FSQL
+  case FTipoPesquisa of
+    tpSelect:
+    begin
+      Query.SQL.Text := SelectPesquisa;
+    end
   else
     Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
-                      ' From ' + sTabela +
+                      ' From ' + FTabela +
                       ' Where 1=1 ' +
                       FFiltro +
                       ' Order by upper(' + sCampoDescricao + ')';
+  end;
   Query.Open;
 
   if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
@@ -169,7 +174,8 @@ end;
 
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);
 begin
-  if (txtCampo.Text <> '') and (txtCampo.Focused) then
+  // Sandro Silva 2023-09-29 if (txtCampo.Text <> '') and (txtCampo.Focused) then
+  if (txtCampo.Focused) then
   begin
     Pesquisar;
   end;
@@ -199,10 +205,9 @@ begin
   begin
     txtCampo.Text           := Query.Fields[1].AsString;
 
-    {Sandro Silva 2023-09-28 inicio
-    if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
-      CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
-    }
+    if not (CampoCodigo.DataSet.State in [dsEdit]) then
+      CampoCodigo.DataSet.Edit;
+      
     if CampoCodigo.DataType in [ftSmallint, ftInteger, ftWord, ftLargeint] then
     begin
       if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
@@ -237,6 +242,15 @@ procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
 begin
   if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
     CampoCodigo.DataSet.Edit;
+end;
+
+function TfFrameCampo.SelectPesquisa: String;
+begin
+  Result :=
+    ' Select distinct  ' + CampoCodigo.FieldName + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+    ' From ' + FTabela +
+    ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
+    ' Order by upper(' + sCampoDescricao + ')';
 end;
 
 end.
