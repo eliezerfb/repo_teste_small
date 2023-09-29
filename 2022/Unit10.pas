@@ -5552,7 +5552,6 @@ var
 
   IBQProdutoComp: TIBQuery; // Mauricio Parizotto 2023-08-07
   *)
-  sNumeroNF: String; // Sandro Silva 2023-09-26
 begin
   GeraVisualizacaoFichaCadastro;
 
