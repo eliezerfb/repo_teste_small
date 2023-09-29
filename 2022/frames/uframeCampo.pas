@@ -7,6 +7,11 @@ uses
   Dialogs, StdCtrls, Grids, DBGrids, IBDatabase, DB,
   IBCustomDataSet, IBQuery;
 
+const ALIAS_CAMPO_PESQUISADO = 'NOME';
+
+type
+  TTipoPesquisa = (tpLocate, tpSelect);
+
 type
   TfFrameCampo = class(TFrame)
     txtCampo: TEdit;
@@ -25,28 +30,53 @@ type
   private
     FSQL: String;
     FGravarSomenteTextoEncontrato: Boolean;
+    FOnShow: TNotifyEvent;
+    FTipoPesquisa: TTipoPesquisa;
+    FFiltro: String;
     procedure Pesquisar;
   public
     sCampoDescricao,
-    sTabela,
-    sFiltro: String;
+    sTabela: String;
     CampoCodigo: TField;
     property SelectSQL: String read FSQL write FSQL;
     property GravarSomenteTextoEncontrato: Boolean read FGravarSomenteTextoEncontrato write FGravarSomenteTextoEncontrato default True;
-    constructor Create(AOwner: TComponent); override; 
+    property TipoDePesquisa: TTipoPesquisa read FTipoPesquisa write FTipoPesquisa;
+    property sFiltro: String read FFiltro write FFiltro;
+    constructor Create(AOwner: TComponent); override;
     procedure CarregaDescricao;
+
   end;
 
 implementation
 
+uses uFuncoesRetaguarda;
+
 {$R *.dfm}
+
+constructor TfFrameCampo.Create(AOwner: TComponent);
+begin
+  inherited;
+  FGravarSomenteTextoEncontrato := True;
+  FTipoPesquisa := tpLocate;
+end;
 
 procedure TfFrameCampo.Pesquisar;
 begin
   Self.BringToFront;
   gdRegistros.Visible := True;
-  Self.Height := txtCampo.Height + gdRegistros.Height+5;
-  Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]);
+  Self.Height := txtCampo.Height + gdRegistros.Height + 5;
+  case FTipoPesquisa of
+    tpSelect:
+    begin
+      Query.Close;
+      Query.SQL.Text := FSQL;
+      Query.ParamByName('TEXTO').AsString := txtCampo.Text;
+      Query.Open;
+    end;
+  else
+    Query.Locate(ALIAS_CAMPO_PESQUISADO, Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]);
+  end;
+
 end;
 
 procedure TfFrameCampo.txtCampoKeyDown(Sender: TObject; var Key: Word;
@@ -102,28 +132,34 @@ end;
 
 procedure TfFrameCampo.CarregaDescricao;
 var
-  teste: TNotifyEvent;
-  sCampoCodigo : string;
+  CampoChange: TNotifyEvent;
+  sNomeCampoChave: String;
 begin
-  sCampoCodigo := CampoCodigo.FieldName;
+  if (Trim(sTabela) = '') and (Trim(FSQL) = '') then
+  begin
+    MensagemSistema('Informe o nome da tabela ou a instrução SQL para selecionar os dados', msgErro); // Precisa ser informado a tabela ou o SQL, senão causa erro
+    Exit;
+  end;
+
+  sNomeCampoChave := CampoCodigo.FieldName;
 
   Query.Close;
   if FSQL <> '' then
     Query.SQL.Text := FSQL
   else
-    Query.SQL.Text := ' Select '+sCampoCodigo+','+sCampoDescricao+' as NOME'+
-                      ' From '+sTabela+
-                      ' Where 1=1 '+
-                      sFiltro+
-                      ' Order by upper('+sCampoDescricao+')';
+    Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+                      ' From ' + sTabela +
+                      ' Where 1=1 ' +
+                      FFiltro +
+                      ' Order by upper(' + sCampoDescricao + ')';
   Query.Open;
 
-  if Query.Locate(sCampoCodigo, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
+  if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
   begin
-    teste := txtCampo.OnChange;
-    txtCampo.OnChange := nil;
-    txtCampo.Text := Query.FieldByName('NOME').AsString;
-    txtCampo.OnChange := teste;
+    CampoChange := txtCampo.onChange;
+    txtCampo.onChange := nil;
+    txtCampo.Text := Query.FieldByName(ALIAS_CAMPO_PESQUISADO).AsString;
+    txtCampo.onChange := CampoChange;
   end else
   begin
     txtCampo.Text := '';
@@ -159,24 +195,36 @@ begin
     CampoCodigo.Value := null;
   end;
   }
-  if FGravarSomenteTextoEncontrato then // Por exemplo, na OS, o campo IDENTIFI1 recebe texto livre ou que exista em outra OS.IDENTIFI1
+  if Query.Locate(ALIAS_CAMPO_PESQUISADO, Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
   begin
+    txtCampo.Text           := Query.Fields[1].AsString;
 
-    if Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
+    {Sandro Silva 2023-09-28 inicio
+    if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
+      CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
+    }
+    if CampoCodigo.DataType in [ftSmallint, ftInteger, ftWord, ftLargeint] then
     begin
-      txtCampo.Text           := Query.Fields[1].AsString;
-
       if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
         CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
-    end else
+    end
+    else
+    begin
+      if CampoCodigo.Value <> Query.Fields[0].Value then
+        CampoCodigo.Value := Query.Fields[0].Value;
+    end;
+    {Sandro Silva 2023-09-28 fim}
+  end else
+  begin
+    if FGravarSomenteTextoEncontrato then // Por exemplo, na OS, o campo IDENTIFI1 recebe texto livre ou que exista em outra OS.IDENTIFI1
     begin
       txtCampo.Clear;
       CampoCodigo.Value := null;
+    end
+    else
+    begin
+      CampoCodigo.Value := Trim(txtCampo.Text);
     end;
-  end
-  else
-  begin
-    CampoCodigo.Value := Trim(txtCampo.Text);
   end;
   {Sandro Silva 2023-09-27 fim}
 
@@ -188,13 +236,7 @@ end;
 procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
 begin
   if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
-    CampoCodigo.DataSet.edit;
-end;
-
-constructor TfFrameCampo.Create(AOwner: TComponent);
-begin
-  inherited;
-  FGravarSomenteTextoEncontrato := True;
+    CampoCodigo.DataSet.Edit;
 end;
 
 end.
