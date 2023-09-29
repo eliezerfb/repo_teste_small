@@ -2,7 +2,7 @@ object fFrameCampo: TfFrameCampo
   Left = 0
   Top = 0
   Width = 323
-  Height = 23
+  Height = 22
   Color = clWhite
   Ctl3D = False
   ParentBackground = False
@@ -12,7 +12,7 @@ object fFrameCampo: TfFrameCampo
   OnExit = FrameExit
   DesignSize = (
     323
-    23)
+    22)
   object txtCampo: TEdit
     Left = 0
     Top = 0
@@ -22,12 +22,13 @@ object fFrameCampo: TfFrameCampo
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
     TabOrder = 0
     OnChange = txtCampoChange
     OnClick = txtCampoClick
+    OnEnter = txtCampoEnter
     OnKeyDown = txtCampoKeyDown
   end
   object gdRegistros: TDBGrid
@@ -40,7 +41,7 @@ object fFrameCampo: TfFrameCampo
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     ParentFont = False

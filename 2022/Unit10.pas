@@ -742,7 +742,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   , uRetornaLimiteDisponivel
   , uFuncoesBancoDados
   , uFuncoesRetaguarda
-  , Variants;
+  , Variants, uVisualizaCadastro;
   
 {$R *.DFM}
 
@@ -3742,7 +3742,11 @@ begin
   
   Form7.iFoco := 0;
   Form10.Paint;
-  
+
+  //Mauricio Parizotto 2023-09-21
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+    Exit;
+
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := orelha_cadastro;
@@ -5533,6 +5537,7 @@ begin
 end;
 
 procedure TForm10.Image203Click(Sender: TObject);
+(*
 var
   F: TextFile;
   I, J: Integer;
@@ -5546,8 +5551,13 @@ var
   vDescricaoProduto : string;
 
   IBQProdutoComp: TIBQuery; // Mauricio Parizotto 2023-08-07
+  *)
   sNumeroNF: String; // Sandro Silva 2023-09-26
 begin
+  GeraVisualizacaoFichaCadastro;
+
+  (*
+
   // Não exporta se o cliente estiver em branco
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
   if (Form7.sModulo = 'CLIENTES') and (AllTrim(Form7.ibDataSet2NOME.AsString) = '') then Abort;
@@ -7026,6 +7036,8 @@ begin
   AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
   
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
+
+  Mauricio Parizotto 2023-09-21 movido para unit uFrmFichaPadrao *)
 end;
 
 procedure TForm10.Button11Click(Sender: TObject);
@@ -7605,9 +7617,9 @@ begin
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
     Form10.Label36.Visible          := True;
-    cboCSOSN_Prod.Visible        := True;
+    cboCSOSN_Prod.Visible           := True;
     Form10.Label37.Visible          := False;
-    cboCST_Prod.Visible        := False;
+    cboCST_Prod.Visible             := False;
  
     Form10.Label72.Visible          := True;
     Form10.ComboBox15.Visible       := True;
@@ -7616,9 +7628,9 @@ begin
   end else
   begin
     Form10.Label36.Visible          := False;
-    cboCSOSN_Prod.Visible        := False;
+    cboCSOSN_Prod.Visible           := False;
     Form10.Label37.Visible          := True;
-    cboCST_Prod.Visible        := True;
+    cboCST_Prod.Visible             := True;
   
     Form10.Label72.Visible          := False;
     Form10.ComboBox15.Visible       := False;

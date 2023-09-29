@@ -1,11 +1,11 @@
 object Form7: TForm7
-  Left = 308
-  Top = 48
+  Left = 277
+  Top = 64
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 833
+  ClientHeight = 880
   ClientWidth = 1369
   Color = clWhite
   Ctl3D = False
@@ -2425,7 +2425,7 @@ object Form7: TForm7
   end
   object Label27: TLabel
     Left = 111
-    Top = 763
+    Top = 803
     Width = 41
     Height = 13
     Alignment = taCenter
@@ -2493,6 +2493,20 @@ object Form7: TForm7
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
+  object Label39: TLabel
+    Left = 111
+    Top = 766
+    Width = 107
+    Height = 13
+    Caption = 'Par'#226'metros Tributa'#231#227'o'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
@@ -7946,7 +7960,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 793
+    Top = 840
     Width = 1369
     Height = 40
     Align = alBottom
@@ -21360,7 +21374,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50a\vm50a\'
+      'avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21395,7 +21409,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50a\vm50a\'
+      'vm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21710,7 +21724,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21740,7 +21754,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21781,7 +21795,7 @@ object Form7: TForm7
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 78
-    Top = 757
+    Top = 797
     object MenuItem19: TMenuItem
       Caption = '&Arquivo'
       object ImportarOrdemdeServio1: TMenuItem
@@ -22166,6 +22180,10 @@ object Form7: TForm7
     Top = 723
     object MenuItem130: TMenuItem
       Caption = '&Arquivo'
+      object Parmetrosdetributao1: TMenuItem
+        Caption = 'Par'#226'metros de tributa'#231#227'o'
+        OnClick = Parmetrosdetributao1Click
+      end
       object MenuItem132: TMenuItem
         Caption = '&Imprimir...'
         OnClick = Image205Click
@@ -22533,5 +22551,205 @@ object Form7: TForm7
     DataSet = IbdOrcamentObs
     Left = 233
     Top = 711
+  end
+  object DSParametroTributa: TDataSource
+    DataSet = ibdParametroTributa
+    OnStateChange = DSPerfilTributaStateChange
+    Left = 40
+    Top = 757
+  end
+  object mmParametroTributa: TMainMenu
+    AutoHotkeys = maManual
+    OwnerDraw = True
+    Left = 78
+    Top = 757
+    object MenuItem131: TMenuItem
+      Caption = '&Arquivo'
+      object Perfildetributao1: TMenuItem
+        Caption = 'Perfil de tributa'#231#227'o'
+        OnClick = Perfildetributao1Click
+      end
+      object MenuItem194: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = Image205Click
+      end
+      object MenuItem195: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem197: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object MenuItem198: TMenuItem
+      Caption = '&Edita'
+      object MenuItem199: TMenuItem
+        Caption = '&Novo...'
+        OnClick = Image101Click
+      end
+      object MenuItem200: TMenuItem
+        Caption = '&Alterar...'
+        OnClick = Image106Click
+      end
+      object MenuItem201: TMenuItem
+        Caption = 'E&xcluir...'
+        OnClick = Image102Click
+      end
+    end
+    object MenuItem202: TMenuItem
+      Caption = '&Procura'
+      OnClick = Image103Click
+    end
+    object MenuItem203: TMenuItem
+      Caption = '&Caractere'
+      OnClick = Image6Click
+    end
+    object MenuItem204: TMenuItem
+      Caption = '?'
+      object MenuItem213: TMenuItem
+        Caption = 'Ajuda'
+        OnClick = Ajuda7Click
+      end
+      object MenuItem214: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem215: TMenuItem
+        Caption = 'Sobre o programa...'
+        OnClick = Sobreoprograma8Click
+      end
+    end
+  end
+  object ibdParametroTributa: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = ibdParametroTributaAfterDelete
+    BeforeEdit = ibdParametroTributaBeforeEdit
+    BeforeInsert = ibdParametroTributaBeforeInsert
+    OnDeleteError = IBDataSet2DeleteError
+    OnEditError = IBDataSet2EditError
+    OnNewRecord = ibdParametroTributaNewRecord
+    OnPostError = IBDataSet2PostError
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from PARAMETROTRIBUTACAO'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    InsertSQL.Strings = (
+      'insert into PARAMETROTRIBUTACAO'
+      
+        '  (IDPARAMETROTRIBUTACAO, CFOP_ENTRADA, ORIGEM_ENTRADA, CST_ENTR' +
+        'ADA, CSOSN_ENTRADA, '
+      '  ALIQ_ENTRADA, NCM_ENTRADA, IDPERFILTRIBUTACAO, REGISTRO)'
+      'values'
+      
+        '  (:IDPARAMETROTRIBUTACAO, :CFOP_ENTRADA, :ORIGEM_ENTRADA, :CST_' +
+        'ENTRADA, :CSOSN_ENTRADA, '
+      '  :ALIQ_ENTRADA, :NCM_ENTRADA, :IDPERFILTRIBUTACAO, :REGISTRO)')
+    RefreshSQL.Strings = (
+      'Select '
+      #9'PR.IDPARAMETROTRIBUTACAO,'
+      #9'PR.CFOP_ENTRADA,'
+      #9'PR.ORIGEM_ENTRADA,'
+      #9'PR.CST_ENTRADA,'
+      #9'PR.CSOSN_ENTRADA,'
+      #9'PR.ALIQ_ENTRADA,'
+      #9'PR.NCM_ENTRADA,'
+      #9'PR.IDPERFILTRIBUTACAO,'
+      #9'PR.REGISTRO,'
+      #9'PF.DESCRICAO'
+      'From PARAMETROTRIBUTACAO PR'
+      
+        #9'Left Join PERFILTRIBUTACAO PF on PF.IDPERFILTRIBUTACAO = PR.IDP' +
+        'ERFILTRIBUTACAO'
+      'Where PR.REGISTRO = :REGISTRO')
+    SelectSQL.Strings = (
+      'Select '
+      #9'PR.*,'
+      #9'PF.DESCRICAO'
+      'From PARAMETROTRIBUTACAO PR'
+      
+        #9'Left Join PERFILTRIBUTACAO PF on PF.IDPERFILTRIBUTACAO = PR.IDP' +
+        'ERFILTRIBUTACAO')
+    ModifySQL.Strings = (
+      'update PARAMETROTRIBUTACAO'
+      'set'
+      '  IDPARAMETROTRIBUTACAO = :IDPARAMETROTRIBUTACAO ,'
+      '  CFOP_ENTRADA = :CFOP_ENTRADA,'
+      '  ORIGEM_ENTRADA = :ORIGEM_ENTRADA, '
+      '  CST_ENTRADA = :CST_ENTRADA,'
+      '  CSOSN_ENTRADA = :CSOSN_ENTRADA,'
+      '  ALIQ_ENTRADA = :ALIQ_ENTRADA,'
+      '  NCM_ENTRADA = :NCM_ENTRADA,'
+      '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
+      'where'
+      '  REGISTRO = :OLD_REGISTRO')
+    Left = 8
+    Top = 757
+    object ibdParametroTributaCFOP_ENTRADA: TIBStringField
+      DisplayLabel = 'CFOP'
+      FieldName = 'CFOP_ENTRADA'
+      Origin = 'PARAMETROTRIBUTACAO.CFOP_ENTRADA'
+      Size = 4
+    end
+    object ibdParametroTributaORIGEM_ENTRADA: TIBStringField
+      DisplayLabel = 'Origem'
+      FieldName = 'ORIGEM_ENTRADA'
+      Origin = 'PARAMETROTRIBUTACAO.ORIGEM_ENTRADA'
+      Size = 1
+    end
+    object ibdParametroTributaCST_ENTRADA: TIBStringField
+      DisplayLabel = 'CST'
+      FieldName = 'CST_ENTRADA'
+      Origin = 'PARAMETROTRIBUTACAO.CST_ENTRADA'
+      Size = 2
+    end
+    object ibdParametroTributaCSOSN_ENTRADA: TIBStringField
+      DisplayLabel = 'CSOSN'
+      FieldName = 'CSOSN_ENTRADA'
+      Origin = 'PARAMETROTRIBUTACAO.CSOSN_ENTRADA'
+      Size = 3
+    end
+    object ibdParametroTributaALIQ_ENTRADA: TIBBCDField
+      DisplayLabel = '% ICMS'
+      FieldName = 'ALIQ_ENTRADA'
+      Origin = 'PARAMETROTRIBUTACAO.ALIQ_ENTRADA'
+      DisplayFormat = '##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 4
+    end
+    object ibdParametroTributaNCM_ENTRADA: TIBStringField
+      DisplayLabel = 'NCM'
+      FieldName = 'NCM_ENTRADA'
+      Origin = 'PARAMETROTRIBUTACAO.NCM_ENTRADA'
+      Size = 8
+    end
+    object ibdParametroTributaDESCRICAO: TIBStringField
+      DisplayLabel = 'Perfil de Tributa'#231#227'o'
+      FieldName = 'DESCRICAO'
+      Origin = 'PERFILTRIBUTACAO.DESCRICAO'
+      ProviderFlags = [pfInWhere]
+      Size = 45
+    end
+    object ibdParametroTributaIDPERFILTRIBUTACAO: TIntegerField
+      FieldName = 'IDPERFILTRIBUTACAO'
+      Origin = 'PARAMETROTRIBUTACAO.IDPERFILTRIBUTACAO'
+      Required = True
+      Visible = False
+    end
+    object ibdParametroTributaIDPARAMETROTRIBUTACAO: TIntegerField
+      FieldName = 'IDPARAMETROTRIBUTACAO'
+      Origin = 'PARAMETROTRIBUTACAO.IDPARAMETROTRIBUTACAO'
+      Required = True
+      Visible = False
+    end
+    object ibdParametroTributaREGISTRO: TIBStringField
+      FieldName = 'REGISTRO'
+      Origin = 'PARAMETROTRIBUTACAO.REGISTRO'
+      Required = True
+      Visible = False
+      Size = 10
+    end
   end
 end
