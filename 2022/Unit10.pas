@@ -5546,6 +5546,7 @@ var
   vDescricaoProduto : string;
 
   IBQProdutoComp: TIBQuery; // Mauricio Parizotto 2023-08-07
+  sNumeroNF: String; // Sandro Silva 2023-09-26
 begin
   // Não exporta se o cliente estiver em branco
   if (Form7.sModulo = 'ESTOQUE') and (AllTrim(Form7.ibDataSet4DESCRICAO.AsString) = '') then Abort;
@@ -6078,13 +6079,21 @@ begin
                 Form7.ibDataSet35.SelectSQL.Add('select * from ITENS003 where NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+'');
                 Form7.ibDataSet35.Open;
                 Form7.ibDataSet35.First;
-                
+
+                {Sandro Silva 2023-09-26 inicio}
+                sNumeroNF := '';
+                if Form7.ibDataSet15.FieldByName('MODELO').AsString = 'SV' then
+                    sNumeroNF := Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString;
+                if Trim(sNumeroNF) = '' then
+                  sNumeroNF := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
+                {Sandro Silva 2023-09-26 fim}
                 while not (Form7.ibDataSet35.EOF) do
                 begin
                   WriteLn(F,' <tr>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet15EMISSAO.AsDateTime)      +'</td>'+  // Data
-                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
-                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
+                          // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ ifThen(Form7.ibDataSet15.FieldByName('MODELO').AsString = 'SV', ifThen(Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString <> '', Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString, Form7.ibDataSet15.FieldByName('NUMERONF').AsString), Form7.ibDataSet15.FieldByName('NUMERONF').AsString)+'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
+                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ sNumeroNF +'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
+                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10) + Replicate(' ', 10),1,10)    +'</td>'+  // Doc  // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'</td>'); // Valor
                   WriteLn(F,' </tr>');
