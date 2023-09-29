@@ -21080,6 +21080,13 @@ object Form7: TForm7
       object N54: TMenuItem
         Caption = '-'
       end
+      object Configurarobservaofixa1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o fixa'
+        OnClick = Configurarobservaofixa1Click
+      end
+      object N69: TMenuItem
+        Caption = '-'
+      end
       object MenuItem16: TMenuItem
         Caption = '&Imprimir...'
         OnClick = Image205Click

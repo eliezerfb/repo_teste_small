@@ -1595,6 +1595,8 @@ type
     ibdParametroTributaDESCRICAO: TIBStringField;
     Perfildetributao1: TMenuItem;
     Parmetrosdetributao1: TMenuItem;
+    Configurarobservaofixa1: TMenuItem;
+    N69: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2252,6 +2254,7 @@ type
     procedure ibdParametroTributaNewRecord(DataSet: TDataSet);
     procedure Perfildetributao1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
+    procedure Configurarobservaofixa1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -34185,6 +34188,28 @@ begin
   {$ENDIF}
 
   Form7.Show;
+end;
+
+procedure TForm7.Configurarobservaofixa1Click(Sender: TObject);
+var
+  oArqIni: TArquivosDAT;
+  cMsg: String;
+begin
+  // ORCAMENTO
+  if sModulo <> 'ORCAMENTO' then
+    Exit;
+
+  oArqIni := TArquivosDAT.Create(EmptyStr);
+  try
+    cMsg := Form1.Small_InputForm('Observação fixa do orçamento',
+                                  EmptyStr,
+                                  oArqIni.SmallCom.Orcamento.Observacao
+                                 );
+
+    oArqIni.SmallCom.Orcamento.Observacao := cMsg;
+  finally
+    FreeAndNil(oArqIni);
+  end;
 end;
 
 end.
