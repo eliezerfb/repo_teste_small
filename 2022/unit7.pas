@@ -2221,7 +2221,6 @@ type
 
   private
     FbImportandoXML: Boolean;
-    StatusTrocaPerfil : String;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2260,6 +2259,8 @@ type
 
     fSaldoVetorCaixa : array[0..9999999] of real;
     fSaldoVetorBanco : array[0..9999999] of real;
+
+    StatusTrocaPerfil : String; // Mauricio Parizotto 2023-09-26
 
     //
     // NFe
@@ -33975,6 +33976,10 @@ end;
 
 procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
 begin
+  //Mauricio Parizotto 2023-09-26
+  if StatusTrocaPerfil = 'PR' then
+    Exit;
+
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger > 0 then
   begin
     StatusTrocaPerfil := 'PR';
