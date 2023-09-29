@@ -4241,8 +4241,8 @@ begin
     'from VENDAS ' +
     'join ITENS001 ON ITENS001.NUMERONF = VENDAS.NUMERONF ' +
     'where VENDAS.EMISSAO between ' + QuotedStr(DateToStrInvertida(dInicio)) + ' and ' + QuotedStr(DateToStrInvertida(dFinal)) +
-    'and VENDAS.TRANSPORTA = ' + QuotedStr(Form7.ibDataSet18NOME.AsString) +
-    'and VENDAS.STATUS not containing ' + QuotedStr('cancelada') +
+    ' and VENDAS.TRANSPORTA = ' + QuotedStr(Form7.ibDataSet18NOME.AsString) +
+    ' and coalesce(VENDAS.STATUS, '''') not containing ' + QuotedStr('cancelada') +
     ' group by ITENS001.CODIGO';
   Form7.IBDataSet99.Open;
   Form7.ibDataSet99.First;
