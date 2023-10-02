@@ -83,7 +83,7 @@ end;
 function TBackup.FazerBackup: Integer;
 var
   Mais1Ini: TIniFile;
-  bButton: Integer;
+// Sandro Silva 2023-10-02  bButton: Integer;
   vDirSistema : string; // Mauricio Parizotto 2023-08-09
 begin
   Result := IDCANCEL;

@@ -68,6 +68,8 @@ const
 
   //SECTION NFE (NFSe.ini)
   _cSectionNFSE = 'NFSE';
+  _cSectionNFSE_InformacoesObtidasPrefeitura = 'Informacoes obtidas na prefeitura'; // Sandro Silva 2023-10-02
+  _cIdentiPadraoCidade = 'Padrao'; // Sandro Silva 2023-10-02
   _cIdentNFSEAmbiente = 'Ambiente';
 
   _cPrivateKeyExponent = '75C2624A448186B59016FE623' +
