@@ -29,6 +29,16 @@ type
     function Section: String; override;
   end;
 
+  TSectionOrcamento = class(TSectionDATPadrao)
+  private
+    function getObservacao: String;
+    procedure setObservacao(const Value: String);
+  public
+    property Observacao: String read getObservacao write setObservacao;
+  protected
+    function Section: String; override;
+  end;
+
 implementation
 
 uses SysUtils, uSmallConsts, IniFiles;
@@ -75,6 +85,23 @@ end;
 procedure TSectionOutros.setCasasDecimaisQuantidade(const Value: Integer);
 begin
   FoIni.WriteString(Section, _cIdentCasasDecimaisQtde, IntToStr(Value));
+end;
+
+{ TSectionOrcamento }
+
+function TSectionOrcamento.getObservacao: String;
+begin
+  Result := FoIni.ReadString(Section, _cIdentObservacao, EmptyStr);
+end;
+
+function TSectionOrcamento.Section: String;
+begin
+  Result := _cSectionOrcamentoSemAcento;
+end;
+
+procedure TSectionOrcamento.setObservacao(const Value: String);
+begin
+  FoIni.WriteString(Section, _cIdentObservacao, Value);
 end;
 
 end.

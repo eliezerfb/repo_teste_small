@@ -39,7 +39,7 @@ const
   _cIdentUso                = 'Uso';
   _cIdentCasasDecimaisQtde  = 'Casas decimais na quantidade';
   _cIdentCasasDecimaisPreco = 'Casas decimais no preço';
-  
+  _cIdentObservacao         = 'Observacao';
 
   // SECTION USUARIO ({USUARIO}.INF)
   _cSectionGeralUsuario           = 'GERAL';
@@ -56,7 +56,8 @@ const
   _cSectionFrenteCaixa = 'Frente de Caixa';
   _cIdentFrenteCaixaTipoEtiqueta = 'Tipo etiqueta';
   _cSectionOrcamento = 'Orçamento';
-  _cIdentPorta = 'Porta';  
+  _cSectionOrcamentoSemAcento = 'Orcamento';
+  _cIdentPorta = 'Porta';
 
   //SECTION NFE (NFe.ini)
   _cSectionNFE = 'NFE';
