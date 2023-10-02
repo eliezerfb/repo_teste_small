@@ -10,13 +10,16 @@ type
   private
     FoUso: TSectionUso;
     FoOutros: TSectionOutros;
+    FoOrcamento: TSectionOrcamento;
     function getUso: TSectionUso;
     function getOutros: TSectionOutros;
+    function getOrcamento: TSectionOrcamento;
   public
     destructor Destroy; override;
 
     property Uso: TSectionUso read getUso;
     property Outros: TSectionOutros read getOutros;
+    property Orcamento: TSectionOrcamento read getOrcamento;
   protected
     function NomeArquivo: String; override;
   end;
@@ -33,8 +36,18 @@ begin
     FreeAndNil(FoUso);
   if Assigned(FoOutros) then
     FreeAndNil(FoOutros);
+  if Assigned(FoOrcamento) then
+    FreeAndNil(FoOrcamento);
 
   inherited;
+end;
+
+function TSmallComINF.getOrcamento: TSectionOrcamento;
+begin
+  if not Assigned(FoOrcamento) then
+    FoOrcamento := TSectionOrcamento.Create(FoIni);
+
+  Result := FoOrcamento;
 end;
 
 function TSmallComINF.getOutros: TSectionOutros;
