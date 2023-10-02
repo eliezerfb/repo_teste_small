@@ -219,6 +219,9 @@ begin
   if FoArquivoDAT.Usuario.Html.TipoRelatorio <> ttiHTML then
     Exit;
 
+  if Trim(FcWhereEstoque) <> EmptyStr then
+    Exit;
+
   oEstrutura := TEstruturaTipoRelatorioPadrao.New
                                              .setUsuario(Usuario);
 
@@ -359,34 +362,37 @@ begin
     QryDados.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
     if AcGrupo <> EmptyStr then
       QryDados.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
-    if AcGrupo = EmptyStr then
+    if (AcGrupo = EmptyStr) then
     begin
-      QryDados.SQL.Add('UNION ALL');
-      QryDados.SQL.Add('SELECT FIRST 1');
-      QryDados.SQL.Add('    1 as "Ord"');
-      QryDados.SQL.Add('    , '''' AS "Código"');
-      QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-      QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
-      QryDados.SQL.Add('FROM EMITENTE');
+      if (Trim(FcWhereEstoque) = EmptyStr) then
+      begin
+        QryDados.SQL.Add('UNION ALL');
+        QryDados.SQL.Add('SELECT FIRST 1');
+        QryDados.SQL.Add('    1 as "Ord"');
+        QryDados.SQL.Add('    , '''' AS "Código"');
+        QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+        QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
+        QryDados.SQL.Add('FROM EMITENTE');
 
-      QryDados.SQL.Add('UNION ALL');
-      QryDados.SQL.Add('SELECT FIRST 1');
-      QryDados.SQL.Add('    2 as "Ord"');
-      QryDados.SQL.Add('    , '''' AS "Código"');
-      if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
-        QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
-      else
-        QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-      QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-      QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
-      QryDados.SQL.Add('FROM EMITENTE');
+        QryDados.SQL.Add('UNION ALL');
+        QryDados.SQL.Add('SELECT FIRST 1');
+        QryDados.SQL.Add('    2 as "Ord"');
+        QryDados.SQL.Add('    , '''' AS "Código"');
+        if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
+          QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
+        else
+          QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+        QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
+        QryDados.SQL.Add('FROM EMITENTE');
+      end;
     end;
     QryDados.SQL.Add('ORDER BY 1,7 DESC');
     QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
@@ -481,30 +487,32 @@ begin
     QryDados.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
     QryDados.SQL.Add('GROUP BY GRUPO.NOME');
 
-    QryDados.SQL.Add('UNION ALL');
+    if Trim(FcWhereEstoque) = EmptyStr then
+    begin
+      QryDados.SQL.Add('UNION ALL');
+      QryDados.SQL.Add('SELECT FIRST 1');
+      QryDados.SQL.Add('    1 as "Ord"');
+      QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+      QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+      QryDados.SQL.Add('FROM EMITENTE');
 
-    QryDados.SQL.Add('SELECT FIRST 1');
-    QryDados.SQL.Add('    1 as "Ord"');
-    QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
-    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-    QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-    QryDados.SQL.Add('FROM EMITENTE');
-    QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
+      QryDados.SQL.Add('UNION ALL');
 
-    QryDados.SQL.Add('UNION ALL');
-
-    QryDados.SQL.Add('SELECT FIRST 1');
-    QryDados.SQL.Add('    2 as "Ord"');
-    if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
-      QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
-    else
-      QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
-    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
-    QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-    QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
-    QryDados.SQL.Add('FROM EMITENTE');
+      QryDados.SQL.Add('SELECT FIRST 1');
+      QryDados.SQL.Add('    2 as "Ord"');
+      if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
+        QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
+      else
+        QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
+      QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
+      QryDados.SQL.Add('FROM EMITENTE');
+    end;
     QryDados.SQL.Add('ORDER BY 1, 5 DESC');
+    QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
     QryDados.Open;
     QryDados.First;
 
