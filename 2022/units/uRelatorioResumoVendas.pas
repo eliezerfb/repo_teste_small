@@ -161,7 +161,7 @@ begin
                                                            ));
     while not cdsTotalGrupo.Eof do
     begin
-      if cdsTotalGrupoLucrobruto.AsCurrency > 0 then
+      if cdsTotalGrupoOrdem.AsInteger > 0 then
       begin
         // Gera a impressão agrupada por grupo
         CarregaDadosProdutos(cdsTotalGrupo.FieldByName('Grupo').AsString);
@@ -617,6 +617,13 @@ begin
   DataSetEstoque.DisableControls;
   nRecNo := DataSetEstoque.RecNo;
   try
+    if Trim(FcWhereEstoque) = EmptyStr then
+    begin
+      DataSetEstoque.Close;
+      DataSetEstoque.SelectSQL.Text := 'SELECT * FROM ESTOQUE order by DESCRICAO';
+      DataSetEstoque.Open;
+    end;
+
     cdsExcluidos.Close;
     cdsExcluidos.CreateDataSet;
 
