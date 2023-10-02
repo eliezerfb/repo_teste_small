@@ -22934,7 +22934,7 @@ begin
 
   while not ibDataSet11.eof do
   begin
-    // Bloquetos
+    // Boletos
     bI := True;
     for I := 0 to Bloquetos1.Count -1 do
     begin

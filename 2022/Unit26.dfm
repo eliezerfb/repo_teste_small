@@ -3,7 +3,7 @@ object Form26: TForm26
   Top = 200
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = 'Configura'#231#227'o do bloqueto banc'#225'rio'
+  Caption = 'Configura'#231#227'o do boleto banc'#225'rio'
   ClientHeight = 467
   ClientWidth = 544
   Color = clWhite
@@ -1630,18 +1630,15 @@ object Form26: TForm26
       Items.Strings = (
         '<Personalizado>'
         'AILOS - Sistema de Cooperativas de Cr'#233'dito'
-        'SICOOB - Sem registro'
-        'SICOOB - Com registro'
-        'Banco do Brasil - Com registro 7 posi'#231#245'es'
-        'Banco do Brasil - Com registro 6 posi'#231#245'es'
-        'Banco do Brasil - Sem registro'
-        'Caixa Econ'#244'mica - Com registro'
-        'Caixa Econ'#244'mica - Sem registro'
-        'Bradesco - Com registro'
-        'Santander - Com registro'
-        'Banrisul - Com registro'
-        'Ita'#250' - Com registro'
-        'SICREDI - Com registro'
+        'SICOOB'
+        'Banco do Brasil 7 posi'#231#245'es'
+        'Banco do Brasil 6 posi'#231#245'es'
+        'Caixa Econ'#244'mica'
+        'Bradesco'
+        'Santander'
+        'Banrisul'
+        'Ita'#250
+        'SICREDI'
         'Unibanco')
     end
     object chkCNAB400: TCheckBox

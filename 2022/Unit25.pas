@@ -257,7 +257,7 @@ begin
     sPortador        := Copy(Form1.sEscolhido+replicate(' ',35),23,35);
     Form25.sNossoNum := '';
     // --------------------------------------------------- //
-    // inicio da impressão do Bloqueto em Código de Barras //
+    // inicio da impressão do Boleto em Código de Barras //
     // --------------------------------------------------- //
     if bP1 then
     begin
@@ -271,15 +271,9 @@ begin
           // papel A4
           pDMode^.dmFields := pDMode^.dmFields or dm_PaperSize;
           pDMode^.dmPaperSize := DMPAPER_A4;
-          //
-          // pDMode^.dmPaperSize := DMPAPER_LEGAL;
-          // pDMode^.dmPaperSize := DMPAPER_A4_PLUS;
-          // pDMode^.dmPaperSize := DMPAPER_A4;
-          // pDMode^.dmPaperSize := DMPAPER_LETTER_PLUS;
-          // pDMode^.dmPaperSize := DMPAPER_EXECUTIVE
-          //
-          //
-          Printer.Title              := 'Bloqueto de cobrança bancária';  // Este título é visto no spoool da impressora
+
+          //Printer.Title              := 'Bloqueto de cobrança bancária';  // Este título é visto no spoool da impressora
+          Printer.Title              := 'Boleto de cobrança bancária';  // Este título é visto no spoool da impressora
           Printer.BeginDoc;                                // Inicia o documento de impressão
         end;
       end;
@@ -411,7 +405,8 @@ begin
         Impressao.TextOut(largura(-8+009),altura(39+iVia),'Nome do Beneficiário/CPF/CNPJ/Endereço');
       end else
       begin
-        Impressao.TextOut(largura(-8+009),altura(39+iVia),'Instruções: (Todas as informações deste bloqueto são de exclusiva responsabilidade do Beneficiário)');
+        //Impressao.TextOut(largura(-8+009),altura(39+iVia),'Instruções: (Todas as informações deste bloqueto são de exclusiva responsabilidade do Beneficiário)'); // Mauricio Parizotto 2023-10-02
+        Impressao.TextOut(largura(-8+009),altura(39+iVia),'Instruções: (Todas as informações deste boleto são de exclusiva responsabilidade do Beneficiário)');
       end;
 
       Impressao.TextOut(largura(-8+151-8),altura(39+iVia),'(-)Desconto');
@@ -906,8 +901,9 @@ begin
   end;
 
   try
-    Form25.Caption := StrTran(Form1.sEscolhido,'Boleto','Bloqueto');
-    
+    //Form25.Caption := StrTran(Form1.sEscolhido,'Boleto','Bloqueto'); Mauricio Parizotto 2023-10-02
+    Form25.Caption := Form1.sEscolhido;
+
     for I:= 1 to 65 do vLinha[I]  := ' ';
     for I:= 1 to 20 do vLinha[I]  := ' ';
     for I:= 1 to 20 do vCampo[I]  := ' ';
@@ -980,6 +976,7 @@ begin
       Form26.MaskEdit46.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Conta','');
       Form26.MaskEdit45.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Livre','0000000000000000000000000');
 
+      {
       if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.Text := 'SICREDI - Com registro';
       if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB - Sem registro';
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB - Com registro';
@@ -992,6 +989,18 @@ begin
       if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.Text := 'Santander - Com registro';
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40YY' then Form26.cboBancos.Text := 'Banrisul - Com registro';
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.Text := 'Itaú - Com registro';
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.Text := 'Unibanco';
+      Mauricio Parizotto 2023-10-02}
+
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.Text := 'SICREDI';
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB';
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.Text := 'Caixa Econômica';
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.Text := 'Banco do Brasil 7 posições';
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.Text := 'Banco do Brasil 6 posições';
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.Text := 'Bradesco';
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.Text := 'Santander';
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40YY' then Form26.cboBancos.Text := 'Banrisul';
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.Text := 'Itaú';
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.Text := 'Unibanco';
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
@@ -1185,7 +1194,8 @@ begin
       end;
     end else
     begin
-      ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+      //ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString Mauricio Parizotto 2023-10-02
+      ShowMessage('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
       +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
       +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
     end;
@@ -2821,7 +2831,8 @@ begin
     end;
   end else
   begin
-    ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+    //ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString Mauricio Parizotto 2023-10-02
+    ShowMessage('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
     +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
     +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
   end;

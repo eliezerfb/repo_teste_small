@@ -3,7 +3,7 @@ object Form25: TForm25
   Top = 215
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Bloqueto de cobran'#231'a banc'#225'ria'
+  Caption = 'Boleto de cobran'#231'a banc'#225'ria'
   ClientHeight = 536
   ClientWidth = 709
   Color = clWhite

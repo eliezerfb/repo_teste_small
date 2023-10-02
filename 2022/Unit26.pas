@@ -361,78 +361,58 @@ begin
     chkCNAB240.Checked := True;
   end;
 
-  if cboBancos.Text = 'SICOOB - Sem registro' then
-  begin
-    MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
-    chkCNAB400.Enabled := True;
-    chkCNAB240.Enabled := True;
-  end;
-
-  if cboBancos.Text = 'SICOOB - Com registro' then
+  if cboBancos.Text = 'SICOOB' then
   begin
     MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
     chkCNAB400.Enabled := True;
     chkCNAB240.Enabled := True;
   end;
 
-  if cboBancos.Text = 'SICREDI - Com registro' then
+  if cboBancos.Text = 'SICREDI' then
   begin
     MaskEdit45.Text := '11YY2NNNNNVAAAAAACCCCC10D';
     chkCNAB240.Checked := True;
   end;
 
-  if cboBancos.Text = 'Caixa Econômica - Com registro' then
+  if cboBancos.Text = 'Caixa Econômica' then
   begin
     MaskEdit45.Text := 'CCCCCCC00010004NNNNNNNNND';
     chkCNAB400.Checked := True;
   end;
 
-  if cboBancos.Text = 'Caixa Econômica - Sem registro' then
-  begin
-    MaskEdit45.Text := 'CCCCCCC00020004NNNNNNNNND';
-    chkCNAB400.Checked := True;
-  end;
-
-  if cboBancos.Text = 'Banco do Brasil - Com registro 7 posições' then
+  if cboBancos.Text = 'Banco do Brasil 7 posições' then
   begin
     MaskEdit45.Text := '000000xxxxxxxnnnnnnnnnnkk';
     chkCNAB400.Enabled := True;
     chkCNAB240.Enabled := True;
   end;
 
-  if cboBancos.Text = 'Banco do Brasil - Com registro 6 posições' then
+  if cboBancos.Text = 'Banco do Brasil 6 posições' then
   begin
     MaskEdit45.Text := 'XXXXXXnnnnnaaaa000ccccckk';
     chkCNAB400.Enabled := True;
     chkCNAB240.Enabled := True;
   end;
 
-  if cboBancos.Text = 'Banco do Brasil - Sem registro' then
-  begin
-    MaskEdit45.Text := 'xxxxxxnnnnnnnnnnnnnnnnnkk';
-    chkCNAB400.Enabled := True;
-    chkCNAB240.Enabled := True;    
-  end;
-
-  if cboBancos.Text = 'Bradesco - Com registro' then
+  if cboBancos.Text = 'Bradesco' then
   begin
     MaskEdit45.Text := 'AAAAKKNNNNNNNNNNNCCCCCCC0';
     chkCNAB400.Checked := True;
   end;
 
-  if cboBancos.Text = 'Santander - Com registro' then
+  if cboBancos.Text = 'Santander' then
   begin
     MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
     chkCNAB400.Checked := True;
   end;
 
-  if cboBancos.Text = 'Banrisul - Com registro' then
+  if cboBancos.Text = 'Banrisul' then
   begin
     MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
     chkCNAB400.Checked := True;
   end;
 
-  if cboBancos.Text = 'Itaú - Com registro' then
+  if cboBancos.Text = 'Itaú' then
   begin
     MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
     chkCNAB400.Checked := True;
@@ -492,7 +472,8 @@ begin
 
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
       if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
-      
+
+      {
       if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS - Sistema de Cooperativas de Crédito';
       if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI - Com registro';
       if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Sem registro';
@@ -506,6 +487,19 @@ begin
       if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.Text := 'Santander - Com registro';
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.Text := 'Banrisul - Com registro';
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.Text := 'Itaú - Com registro';
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
+      Mauricio Parizotto 2023-10-02}
+
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS - Sistema de Cooperativas de Crédito';
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI';
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB';
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica';
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil 7 posições';
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then cboBancos.Text := 'Banco do Brasil 6 posições';
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then cboBancos.Text := 'Bradesco';
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.Text := 'Santander';
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.Text := 'Banrisul';
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.Text := 'Itaú';
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
     end;
   end;
