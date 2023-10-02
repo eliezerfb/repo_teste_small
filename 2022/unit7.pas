@@ -4343,6 +4343,8 @@ function AbreArquivoNoFormatoCerto(sP1:String): boolean;
 begin
   if Copy(sP1,1,3) <> 'OS_' then sP1 := Senhas.UsuarioPub;
 
+aqui
+  
   if Form1.bPDF then
   begin
     Screen.Cursor            := crHourGlass;
