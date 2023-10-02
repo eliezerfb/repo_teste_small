@@ -1,6 +1,6 @@
 object Form19: TForm19
-  Left = 369
-  Top = 96
+  Left = 590
+  Top = 201
   AlphaBlendValue = 200
   BorderIcons = []
   BorderStyle = bsDialog
@@ -333,7 +333,6 @@ object Form19: TForm19
         DataField = 'DIFERENCA_'
         DataSource = Form7.DataSource25
         TabOrder = 3
-        OnExit = SMALL_DBEdit1Exit
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
@@ -344,50 +343,49 @@ object Form19: TForm19
         DataField = 'PAGAR'
         DataSource = Form7.DataSource25
         TabOrder = 4
-        OnExit = SMALL_DBEdit1Exit
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
     end
     object Orelha_juros: TTabSheet
-      Caption = 'Juros'
+      Caption = 'Juros e Multa'
       ImageIndex = 2
       object GroupBox1: TGroupBox
         Left = 15
-        Top = 150
+        Top = 135
         Width = 300
-        Height = 100
+        Height = 71
         Caption = 'Calcular juros'
-        TabOrder = 0
-        object RadioButton1: TRadioButton
+        TabOrder = 1
+        object rbJurosSimples: TRadioButton
           Left = 40
-          Top = 35
+          Top = 19
           Width = 113
           Height = 17
           Caption = 'Juros simples'
           Checked = True
           TabOrder = 0
           TabStop = True
-          OnClick = RadioButton1Click
-          OnKeyDown = RadioButton1KeyDown
+          OnClick = rbJurosSimplesClick
+          OnKeyDown = rbJurosSimplesKeyDown
         end
-        object RadioButton2: TRadioButton
+        object rbJurosComposto: TRadioButton
           Left = 40
-          Top = 60
+          Top = 44
           Width = 113
           Height = 17
           Caption = 'Juros compostos'
           TabOrder = 1
-          OnClick = RadioButton2Click
-          OnKeyDown = RadioButton1KeyDown
+          OnClick = rbJurosCompostoClick
+          OnKeyDown = rbJurosSimplesKeyDown
         end
       end
       object GroupBox2: TGroupBox
         Left = 15
         Top = 15
         Width = 300
-        Height = 120
+        Height = 112
         Caption = 'Taxa de juros para duplicatas em atraso'
-        TabOrder = 1
+        TabOrder = 0
         object Label18: TLabel
           Left = 52
           Top = 25
@@ -397,50 +395,101 @@ object Form19: TForm19
         end
         object Label17: TLabel
           Left = 44
-          Top = 55
+          Top = 51
           Width = 37
           Height = 13
           Caption = 'Mensal:'
         end
         object Label19: TLabel
           Left = 51
-          Top = 85
+          Top = 77
           Width = 30
           Height = 13
           Caption = 'Anual:'
         end
-        object SMALL_DBEdit1: TSMALL_DBEdit
+        object edtJurosDia: TEdit
           Left = 87
           Top = 25
-          Width = 66
-          Height = 19
-          DataField = 'ACUMULADO1'
-          DataSource = Form7.DataSource25
+          Width = 70
+          Height = 20
           TabOrder = 0
-          OnExit = SMALL_DBEdit1Exit
+          Text = '0,00'
+          OnExit = edtJurosDiaExit
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = edtJurosDiaKeyPress
         end
-        object SMALL_DBEdit2: TSMALL_DBEdit
+        object edtJurosMes: TEdit
           Left = 87
-          Top = 55
-          Width = 66
-          Height = 19
-          DataField = 'ACUMULADO2'
-          DataSource = Form7.DataSource25
+          Top = 51
+          Width = 70
+          Height = 20
           TabOrder = 1
-          OnExit = SMALL_DBEdit2Exit
+          Text = '0,00'
+          OnExit = edtJurosMesExit
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = edtJurosDiaKeyPress
         end
-        object SMALL_DBEdit3: TSMALL_DBEdit
+        object edtJurosAno: TEdit
           Left = 87
-          Top = 85
-          Width = 66
-          Height = 19
-          DataField = 'ACUMULADO3'
-          DataSource = Form7.DataSource25
+          Top = 77
+          Width = 70
+          Height = 20
           TabOrder = 2
-          OnExit = SMALL_DBEdit3Exit
+          Text = '0,00'
+          OnExit = edtJurosAnoExit
           OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = edtJurosDiaKeyPress
+        end
+      end
+      object GroupBox4: TGroupBox
+        Left = 15
+        Top = 216
+        Width = 300
+        Height = 105
+        Caption = 'Calcular multa'
+        TabOrder = 2
+        object lblMulta: TLabel
+          Left = 28
+          Top = 73
+          Width = 8
+          Height = 13
+          Alignment = taRightJustify
+          BiDiMode = bdLeftToRight
+          Caption = '%'
+          ParentBiDiMode = False
+        end
+        object rbMultaPercentual: TRadioButton
+          Left = 40
+          Top = 19
+          Width = 113
+          Height = 17
+          Caption = 'Percentual'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+          OnClick = rbMultaPercentualClick
+          OnKeyDown = rbJurosSimplesKeyDown
+        end
+        object rbMultaValor: TRadioButton
+          Left = 40
+          Top = 44
+          Width = 113
+          Height = 17
+          Caption = 'Valor fixo'
+          TabOrder = 1
+          OnClick = rbMultaPercentualClick
+          OnKeyDown = rbJurosSimplesKeyDown
+        end
+        object edtVlMulta: TEdit
+          Left = 40
+          Top = 70
+          Width = 70
+          Height = 19
+          TabOrder = 2
+          Text = '0,00'
+          OnExit = edtVlMultaExit
+          OnKeyDown = SMALL_DBEdit1KeyDown
+          OnKeyPress = edtJurosDiaKeyPress
         end
       end
     end
@@ -1115,7 +1164,7 @@ object Form19: TForm19
         Top = 60
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
       end
       object ComboBoxNF2: TComboBox
@@ -1123,7 +1172,7 @@ object Form19: TForm19
         Top = 90
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
       end
       object ComboBoxImpressora: TComboBox
@@ -1131,7 +1180,7 @@ object Form19: TForm19
         Top = 280
         Width = 300
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 2
         Text = 'ComboBoxImpressora'
         Visible = False
@@ -1141,7 +1190,7 @@ object Form19: TForm19
         Top = 30
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
       end
       object ComboBoxORCA: TComboBox
@@ -1149,7 +1198,7 @@ object Form19: TForm19
         Top = 120
         Width = 200
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 4
       end
     end

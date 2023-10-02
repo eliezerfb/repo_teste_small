@@ -42,15 +42,12 @@ type
     CheckBox2: TCheckBox;
     CheckBox1: TCheckBox;
     GroupBox1: TGroupBox;
-    RadioButton1: TRadioButton;
-    RadioButton2: TRadioButton;
+    rbJurosSimples: TRadioButton;
+    rbJurosComposto: TRadioButton;
     GroupBox2: TGroupBox;
     Label18: TLabel;
     Label17: TLabel;
     Label19: TLabel;
-    SMALL_DBEdit1: TSMALL_DBEdit;
-    SMALL_DBEdit2: TSMALL_DBEdit;
-    SMALL_DBEdit3: TSMALL_DBEdit;
     Label4: TLabel;
     MaskEdit4: TMaskEdit;
     Label7: TLabel;
@@ -133,13 +130,18 @@ type
     Label36: TLabel;
     Label37: TLabel;
     ComboBoxORCA: TComboBox;
+    GroupBox4: TGroupBox;
+    rbMultaPercentual: TRadioButton;
+    rbMultaValor: TRadioButton;
+    edtVlMulta: TEdit;
+    edtJurosDia: TEdit;
+    edtJurosMes: TEdit;
+    edtJurosAno: TEdit;
+    lblMulta: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure SMALL_DBEdit1Exit(Sender: TObject);
-    procedure SMALL_DBEdit2Exit(Sender: TObject);
-    procedure SMALL_DBEdit3Exit(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure MaskEdit2Exit(Sender: TObject);
@@ -157,12 +159,12 @@ type
     procedure ComboBox5Exit(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure RadioButton1KeyDown(Sender: TObject; var Key: Word;
+    procedure rbJurosSimplesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Button4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure RadioButton2Click(Sender: TObject);
-    procedure RadioButton1Click(Sender: TObject);
+    procedure rbJurosCompostoClick(Sender: TObject);
+    procedure rbJurosSimplesClick(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure Edit7Enter(Sender: TObject);
     procedure Edit8Enter(Sender: TObject);
@@ -177,7 +179,14 @@ type
     procedure Edit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure ComboBox11Exit(Sender: TObject);
+    procedure edtJurosDiaKeyPress(Sender: TObject; var Key: Char);
+    procedure edtJurosDiaExit(Sender: TObject);
+    procedure edtJurosMesExit(Sender: TObject);
+    procedure edtJurosAnoExit(Sender: TObject);
+    procedure edtVlMultaExit(Sender: TObject);
+    procedure rbMultaPercentualClick(Sender: TObject);
   private
+    procedure SetTipoMulta;
     { Private declarations }
   public
     { Public declarations }
@@ -202,7 +211,6 @@ var
   sDriver : string;
   sPort : string;
 begin
-  //
   GetMem(p, 32767);
   p2 := p;
   // pega uma lista de nomes de impressoras do arquivo win.ini file
@@ -251,7 +259,6 @@ procedure TForm19.FormActivate(Sender: TObject);
 var
   Mais1Ini, Mais2Ini, Mais3Ini, Mais4ini: TIniFile;
 begin
-  //
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
   begin
     Form19.Orelha_matricial.TabVisible          := True;
@@ -259,9 +266,9 @@ begin
   begin
     Form19.Orelha_matricial.TabVisible          := False;
   end;
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-  //
+
   if AllTrim(Mais1Ini.ReadString(Usuario,'B7','0')) <> '1' then
   begin
     Form19.Orelha_prazo.TabVisible       := False;
@@ -322,60 +329,75 @@ begin
   MaskEdit4.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
   MaskEdit5.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
   MaskEdit6.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
-  //
+
   MaskEdit2.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
   MaskEdit3.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
   MaskEdit7.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
-  //
+
   MaskEdit1.Text  := Mais1Ini.ReadString('Atendimento','Inicial','08:00:00');
   MaskEdit8.Text  := Mais1Ini.ReadString('Atendimento','Final','18:00:00');
-  //
+
   ComboBoxNF.Text        := Mais3Ini.ReadString('Nota Fiscal','Porta','LPT1');
   ComboBoxNF2.Text        := Mais3Ini.ReadString('Nota Fiscal 2','Porta','LPT1');
   ComboBoxBloqueto.Text    := Mais3Ini.ReadString('Bloqueto','Porta','LPT1');
-  //
+
   if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then CheckBox1.Checked  := False else CheckBox1.Checked := True;
   if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim')       = 'Não' then CheckBox2.Checked  := False else CheckBox2.Checked := True;
   if Mais1Ini.ReadString('Permitir','Duplos','Não')                 = 'Não' then CheckBox9.Checked  := False else CheckBox9.Checked := True;
-  //
+
   ComboBox1.Text        := Mais1Ini.ReadString('Outros','Casas decimais na quantidade','2');
   ComboBox7.Text        := Mais1Ini.ReadString('Outros','Casas decimais na quantidade de serviços','0');
   ComboBox4.Text        := Mais1Ini.ReadString('Outros','Casas decimais no preço','2');
   ComboBox6.Text        := Mais3Ini.ReadString('Recibo','Vias','1');
   ComboBox2.Text        := Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 100.000,00');
   ComboBox3.Text        := Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %');
-  //
+
   Form7.ibDataSet25.Open;
+
+  {Mauricio Parizotto 2023-10-02 Inicio}
   if Form7.ibDataSet25.Active then
   begin
     Form7.ibDataSet25.Append;
-    Form7.ibDataSet25ACUMULADO1.AsFloat := StrToFloat(LimpanumeroDeixandoaVirgula(Mais1Ini.ReadString('Outros','Taxa de juros','0,0000')));
+    //Form7.ibDataSet25ACUMULADO1.AsFloat := StrToFloat(LimpanumeroDeixandoaVirgula(Mais1Ini.ReadString('Outros','Taxa de juros','0,0000')));
     Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(LimpanumeroDeixandoaVirgula(Mais1Ini.ReadString('Outros','Desconto','0,00')));
     Form7.ibDataSet25PAGAR.AsFloat      := StrToFloat(LimpanumeroDeixandoaVirgula(Mais1Ini.ReadString('Outros','Desconto total','0,00')));
-    SMALL_DBEdit1Exit(Sender);
+    //edtJurosDiaExit(Sender);
   end;
-  //
-  if AllTrim(Mais1Ini.ReadString('Outros','Calculo de juros','1')) = '1' then RadioButton1.Checked := True else RadioButton2.Checked := True;
-  //
+
+  edtJurosDia.Text := FormatFloat('#,##0.00',StrToFloat(LimpanumeroDeixandoaVirgula(Mais1Ini.ReadString('Outros','Taxa de juros','0,0000'))));
+  edtJurosDiaExit(Sender);
+
+  edtVlMulta.Text := FormatFloat('#,##0.00',StrToFloat(LimpanumeroDeixandoaVirgula(Mais1Ini.ReadString('Outros','Multa','0,0000'))));
+  rbMultaPercentual.Checked := Mais1Ini.ReadString('Outros','Tipo multa','Percentual') = 'Percentual';
+  rbMultaValor.Checked      := Mais1Ini.ReadString('Outros','Tipo multa','Percentual') = 'Valor';
+
+  SetTipoMulta;
+
+  {Mauricio Parizotto 2023-10-02 Fim}
+
+  if AllTrim(Mais1Ini.ReadString('Outros','Calculo de juros','1')) = '1' then
+    rbJurosSimples.Checked := True
+  else
+    rbJurosComposto.Checked := True;
+
   RadioButton3.Checked := False;
   RadioButton4.Checked := False;
   RadioButton5.Checked := False;
-  //
+
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '1' then RadioButton3.Checked := True;
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '2' then RadioButton4.Checked := True;
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '3' then RadioButton5.Checked := True;
-  //
+
   if ComboBox1.Text = '0' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0';
   if ComboBox1.Text = '1' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0';
   if ComboBox1.Text = '2' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00';
   if ComboBox1.Text = '3' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000';
   if ComboBox1.Text = '4' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0000';
-  //
+
   Form7.ibDataSet4QTD_ATUAL.EditFormat    := copy(Form7.ibDataSet4QTD_ATUAL.DisplayFormat,3,10);
-  //
-  //
+
   Mais4ini := TIniFile.Create('frente.ini');
-  //
+
   Edit1.Text         := Mais4Ini.ReadString('mail','Host','');
   Edit2.Text         := Mais4Ini.ReadString('mail','UserID','');
   Edit3.Text         := Mais4Ini.ReadString('mail','Port','');
@@ -383,7 +405,7 @@ begin
   Edit5.Text         := Mais4Ini.ReadString('mail','Name','');
   Edit6.Text         := Mais4Ini.ReadString('mail','Password','');
   ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
-  //
+
   if Mais4Ini.ReadString('mail','UseSSL','0') = '1' then
   begin
     CheckBox3.Checked := True;
@@ -391,27 +413,24 @@ begin
   begin
     CheckBox3.Checked := False;
   end;
-  //
+
   Mais4Ini.Free;
-  //
+
   Mais1Ini.Free;
   Mais2Ini.Free;
-  //
+
   bChave := False;
-  //
 end;
 
 procedure TForm19.Button4Click(Sender: TObject);
 var
   Mais4Ini, Mais2Ini, Mais1Ini, Mais3Ini: TIniFile;
 begin
-  //
   // { Grava as configurações no .INF }
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
   Mais2ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   Mais3ini := TIniFile.Create('retaguarda.ini');
-  //
+
   Mais1Ini.WriteString('Nota Fiscal','Serie',AllTrim(ComboBox11.Text));
   Mais1Ini.WriteString('Nota Fiscal','Itens',AllTrim(ComboBox5.Text));
   Mais1Ini.WriteString('OS','Itens',AllTrim(ComboBox10.Text));
@@ -420,47 +439,57 @@ begin
   Mais1Ini.WriteString('Nota Fiscal','Intervalo1',AllTrim(MaskEdit4.Text));
   Mais1Ini.WriteString('Nota Fiscal','Intervalo2',AllTrim(MaskEdit5.Text));
   Mais1Ini.WriteString('Nota Fiscal','Intervalo3',AllTrim(MaskEdit6.Text));
-  //
+
   Mais1Ini.WriteString('Atendimento','Inicial',AllTrim(MaskEdit1.Text));
   Mais1Ini.WriteString('Atendimento','Final',AllTrim(MaskEdit8.Text));
-  //
+
   Mais1Ini.WriteString('Lista de preços','Intervalo1',AllTrim(MaskEdit2.Text));
   Mais1Ini.WriteString('Lista de preços','Intervalo2',AllTrim(MaskEdit3.Text));
   Mais1Ini.WriteString('Lista de preços','Intervalo3',AllTrim(MaskEdit7.Text));
-  //
+
   Mais3Ini.WriteString('Nota Fiscal','Porta',AllTrim(ComboBoxNF.Text));
   Mais3Ini.WriteString('Nota Fiscal 2','Porta',AllTrim(ComboBoxNF2.Text));
   Mais3Ini.WriteString('Bloqueto','Porta',AllTrim(ComboBoxBloqueto.Text));
-  //
+
   if CheckBox1.Checked = True then Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Sim') else Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Não');
   if CheckBox2.Checked = True then Mais1Ini.WriteString('Permitir','Estoque negativo','Sim') else Mais1Ini.WriteString('Permitir','Estoque negativo','Não');
   if CheckBox9.Checked = True then Mais1Ini.WriteString('Permitir','Duplos','Sim') else Mais1Ini.WriteString('Permitir','Duplos','Não');
-  //
+
   if LimpaNumero(ComboBox1.Text) = '' then ComboBox1.TExt := '1';
   if LimpaNumero(ComboBox7.Text) = '' then ComboBox1.TExt := '0';
   if LimpaNumero(ComboBox4.TExt) = '' then ComboBox4.TExt := '2';
   if LimpaNumero(ComboBox6.TExt) = '' then ComboBox6.TExt := '1';
   if LimpaNumero(ComboBox2.TExt) = '' then ComboBox2.TExt := '10000';
   if LimpaNumero(ComboBox3.TExt) = '' then ComboBox3.TExt := '5';
-  //
+
   Mais1Ini.WriteString('Outros','Casas decimais na quantidade',ComboBox1.Text);
   Mais1Ini.WriteString('Outros','Casas decimais na quantidade de serviços',ComboBox7.Text);
-  //
+
   Mais1Ini.WriteString('Outros','Casas decimais no preço',ComboBox4.Text);
   Mais3Ini.WriteString('Recibo','Vias',ComboBox6.Text);
-  //
+
   Mais1Ini.WriteString('Outros','Teto limite para tributação de IR sobre serviços',ComboBox2.Text);
   Mais1Ini.WriteString('Outros','Aliquota de IR',ComboBox3.Text);
-  Mais1Ini.WriteString('Outros','Taxa de juros',Format('%10.4n',[Form7.ibDataSet25ACUMULADO1.AsFloat]));
+  //Mais1Ini.WriteString('Outros','Taxa de juros',Format('%10.4n',[Form7.ibDataSet25ACUMULADO1.AsFloat])); Mauricio Parizotto 2023-10-02
+  Mais1Ini.WriteString('Outros','Taxa de juros',Format('%10.4n',[StrToFloatDef(edtJurosDia.Text,0)]));
   Mais1Ini.WriteString('Outros','Desconto',Format('%10.4n',[Form7.ibDataSet25DIFERENCA_.AsFloat]));
   Mais1Ini.WriteString('Outros','Desconto total',Format('%10.4n',[Form7.ibDataSet25PAGAR.AsFloat]));
-  //
-  if Form19.RadioButton1.Checked then Mais1Ini.WriteString('Outros','Calculo de juros','1') else Mais1Ini.WriteString('Outros','Calculo de juros','2');
-  //
+
+  Mais1Ini.WriteString('Outros','Multa',Format('%10.4n',[StrToFloatDef(edtVlMulta.Text,0)]));
+
+  if rbMultaPercentual.Checked then
+    Mais1Ini.WriteString('Outros','Tipo multa','Percentual')
+  else
+    Mais1Ini.WriteString('Outros','Tipo multa','Valor');
+
+
+  if Form19.rbJurosSimples.Checked then
+    Mais1Ini.WriteString('Outros','Calculo de juros','1') else Mais1Ini.WriteString('Outros','Calculo de juros','2');
+
   if Form19.RadioButton3.Checked then Mais2Ini.WriteString('Html','Html1','1');
   if Form19.RadioButton4.Checked then Mais2Ini.WriteString('Html','Html1','2');
   if Form19.RadioButton5.Checked then Mais2Ini.WriteString('Html','Html1','3');
-  //
+  
   { ------------------------------------------------- }
   { Configura as casas decimais na quantidade do esto }
   { ------------------------------------------------- }
@@ -479,7 +508,7 @@ begin
   if Form1.ConfPreco = '7' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.0000000';
   if Form1.ConfPreco = '8' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.00000000';
   if Form1.ConfPreco = '9' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.000000000';
-  //
+
   Form1.ConfCasas   := Mais1Ini.ReadString('Outros','Casas decimais na quantidade','2');
   if Form1.ConfCasas = '0' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0';
   if Form1.ConfCasas = '1' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0';
@@ -491,34 +520,34 @@ begin
   if Form1.ConfCasas = '7' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0000000';
   if Form1.ConfCasas = '8' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00000000';
   if Form1.ConfCasas = '9' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000000000';
-  //
+
   Mais2Ini.WriteString('Html','Cor',Right('000000'+AllTrim(Format('%6.0x',[ColorDialog1.Color])),6));
   Form1.sHtmlCor := Copy(Right('000000'+AllTrim(Format('%6.0x',[ColorDialog1.Color])),6),5,2)+
                     Copy(Right('000000'+AllTrim(Format('%6.0x',[ColorDialog1.Color])),6),3,2)+
                     Copy(Right('000000'+AllTrim(Format('%6.0x',[ColorDialog1.Color])),6),1,2);
-  //
+
   Form7.ibDataSet4QTD_ATUAL.EditFormat      := copy(Form7.ibDataSet4QTD_ATUAL.DisplayFormat,3,10);
   Form7.ibDataSet4PRECO.EditFormat          := copy(Form7.ibDataSet4PRECO.DisplayFormat,3,10);
-  //
+
   Form7.ibDataSet16QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
   Form7.ibDataSet16QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
   Form7.ibDataSet16UNITARIO.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
   Form7.ibDataSet16UNITARIO.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
   Form7.ibDataSet16TOTAL.EditFormat         := Form7.ibDataSet4PRECO.EditFormat;
   Form7.ibDataSet16TOTAL.DisplayFormat      := Form7.ibDataSet4PRECO.DisplayFormat;
-  //
+
   Form7.ibDataSet23QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
   Form7.ibDataSet23QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
   Form7.ibDataSet23UNITARIO.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
   Form7.ibDataSet23UNITARIO.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
   Form7.ibDataSet23TOTAL.EditFormat         := Form7.ibDataSet4PRECO.EditFormat;
   Form7.ibDataSet23TOTAL.DisplayFormat      := Form7.ibDataSet4PRECO.DisplayFormat;
-  //
+  
   Form7.ibDataSet4CUSTOCOMPR.DisplayFormat  := Form7.ibDataSet4PRECO.DisplayFormat;
   Form7.ibDataSet4CUSTOCOMPR.EditFormat     := Form7.ibDataSet4PRECO.EditFormat;
-  //
+
   Mais4ini := TIniFile.Create('frente.ini');
-  //
+
   Mais4Ini.WriteString('mail','Host',Edit1.Text);
   Mais4Ini.WriteString('mail','UserID',Edit2.Text);
   Mais4Ini.WriteString('mail','Port',Edit3.Text);
@@ -526,7 +555,7 @@ begin
   Mais4Ini.WriteString('mail','Name',Edit5.Text);
   Mais4Ini.WriteString('mail','Password',Edit6.Text);
   Mais4Ini.WriteString('Orçamento','Porta',AllTrim(ComboBoxORCA.Text));
-  //
+
   if CheckBox3.Checked then
   begin
     Mais4Ini.WriteString('mail','UseSSL','1');
@@ -534,17 +563,16 @@ begin
   begin
     Mais4Ini.WriteString('mail','UseSSL','0');
   end;
-  //
+
   Mais4Ini.Free;
-  //
+
   Form1.ConfNegat   := Mais1Ini.ReadString('Permitir','Estoque negativo','Sim');
-  //
+
   Mais1Ini.Free;
   Mais2Ini.Free;
   Mais3Ini.Free;
-  //
+
   Close;
-  //
 end;
 
 procedure TForm19.Button3Click(Sender: TObject);
@@ -556,9 +584,7 @@ procedure TForm19.FormCreate(Sender: TObject);
 var
   Mais1Ini, Mais2Ini: TIniFile;
 begin
-  //
   // Lê as configurações no .INF
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
   Mais2ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   // -- Mais1Ini.WriteString(Mais.sEscolhido,'L'+alltrim(IntToStr(I)), --
@@ -567,82 +593,63 @@ begin
   ComboBox10.Text  := Mais1Ini.ReadString('OS','Itens','16');
   ComboBox8.Text   := Mais1Ini.ReadString('Nota Fiscal','Svc','5');
   ComboBox9.Text   := Mais1Ini.ReadString('OS','Svc','5');
-  //
+
   MaskEdit4.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
   MaskEdit5.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
   MaskEdit6.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
-  //
+
   MaskEdit2.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
   MaskEdit3.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
   MaskEdit7.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
-  //
+
   MaskEdit1.Text  := Mais1Ini.ReadString('Atendimento','Inicial','08:00:00');
   MaskEdit8.Text  := Mais1Ini.ReadString('Atendimento','Final','18:00:00');
-  //
+
   if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then CheckBox1.Checked := False else CheckBox1.Checked := True;
   if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim') = 'Não' then CheckBox2.Checked := False else CheckBox2.Checked := True;
   if Mais1Ini.ReadString('Permitir','Duplos','Sim') = 'Não' then CheckBox9.Checked := False else CheckBox9.Checked := True;
-  //
+  
   Form19.Top  := 70;
   Form19.Left := Screen.Width - Form19.Width;
-  //
+
   ComboBox2.Text        := Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 100.000,00');
   ComboBox3.Text        := Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %');
-  //
+
   ComboBox1.Text        := Mais1Ini.ReadString('Outros','Casas decimais na quantidade','2');
   ComboBox7.Text        := Mais1Ini.ReadString('Outros','Casas decimais na quantidade de serviços','0');
-  //
+
   if ComboBox1.Text = '0' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0';
   if ComboBox1.Text = '1' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0';
   if ComboBox1.Text = '2' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00';
   if ComboBox1.Text = '3' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000';
   if ComboBox1.Text = '4' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0000';
-  //
+
   Form7.ibDataSet4QTD_ATUAL.EditFormat    := copy(Form7.ibDataSet4QTD_ATUAL.DisplayFormat,3,10);
-  //
-  if AllTrim(Mais1Ini.ReadString('Outros','Calculo de juros','1')) = '1' then RadioButton1.Checked := True else RadioButton2.Checked := True;
-  //
+
+  if AllTrim(Mais1Ini.ReadString('Outros','Calculo de juros','1')) = '1' then
+    rbJurosSimples.Checked := True
+  else
+    rbJurosComposto.Checked := True;
+
   RadioButton3.Checked := False;
   RadioButton4.Checked := False;
   RadioButton5.Checked := False;
-  //
+
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '1' then RadioButton3.Checked := True;
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '2' then RadioButton4.Checked := True;
   if AllTrim(Mais2Ini.ReadString('Html','Html1','1')) = '3' then RadioButton5.Checked := True;
-  //
+
   try
     Edit7.Color := StrToInt('$'+AllTrim(Mais2Ini.ReadString('Html','Cor','EBEBEB')));
     Edit8.Color := StrToInt('$'+AllTrim(Mais2Ini.ReadString('Html','Cor','EBEBEB')));
-  except end;
-  //
+  except
+  end;
+
   Mais1Ini.Free;
-  //
+
   // Opções
-  //
   Form19.Width  := 650;
   Form19.Height := 450;
-  //
-end;
-
-procedure TForm19.SMALL_DBEdit1Exit(Sender: TObject);
-begin
-  Form1.fTaxa := Form7.ibDataSet25ACUMULADO1.AsFloat;
-  Form7.ibDataSet25ACUMULADO2.AsFloat := Form7.ibDataSet25ACUMULADO1.Asfloat * 30;
-  Form7.ibDataSet25ACUMULADO3.AsFloat := Form7.ibDataSet25ACUMULADO1.Asfloat * 360;
-end;
-
-procedure TForm19.SMALL_DBEdit2Exit(Sender: TObject);
-begin
-  Form1.fTaxa := Form7.ibDataSet25ACUMULADO1.AsFloat;
-  Form7.ibDataSet25ACUMULADO1.AsFloat := Form7.ibDataSet25ACUMULADO2.Asfloat / 30;
-  Form7.ibDataSet25ACUMULADO3.AsFloat := Form7.ibDataSet25ACUMULADO1.Asfloat * 360;
-end;
-
-procedure TForm19.SMALL_DBEdit3Exit(Sender: TObject);
-begin
-  Form1.fTaxa := Form7.ibDataSet25ACUMULADO1.AsFloat;
-  Form7.ibDataSet25ACUMULADO1.AsFloat := Form7.ibDataSet25ACUMULADO3.Asfloat / 360;
-  Form7.ibDataSet25ACUMULADO2.AsFloat := Form7.ibDataSet25ACUMULADO1.Asfloat * 30;
 end;
 
 procedure TForm19.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -690,8 +697,6 @@ begin
 end;
 
 
-
-
 procedure TForm19.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais2ini : TIniFile;
@@ -707,10 +712,9 @@ begin
   begin
     Form1.bPDF   := False;
   end;
-  //
+  
   Form2.bFlag := True;
   Form1.FormShow(Sender);
-  //
 end;
 
 procedure TForm19.MaskEdit4Exit(Sender: TObject);
@@ -720,8 +724,8 @@ end;
 
 procedure TForm19.MaskEdit5Exit(Sender: TObject);
 begin
-  if AllTrim(LimpaNumero(MaskEdit5.Text)) = '' then MaskEdit5.Text := '14';
-
+  if AllTrim(LimpaNumero(MaskEdit5.Text)) = '' then
+    MaskEdit5.Text := '14';
 end;
 
 procedure TForm19.MaskEdit6Exit(Sender: TObject);
@@ -738,25 +742,23 @@ end;
 
 procedure TForm19.Image1Click(Sender: TObject);
 begin
-  //
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
     Form14.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
   if not FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
     Form14.Image1.Picture.SaveToFile('LOGOTIP.BMP');
-  //
+
   ShellExecute( 0, 'Open','pbrush.exe','LOGOTIP.BMP', '', SW_SHOW);
   ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
-  //
+
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
   begin
     Form19.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
     Form14.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
   end;
-  //
+
   Form14.Image1.Picture.Bitmap.Height :=  90;
   Form14.Image1.Picture.Bitmap.Width  := 360;
   Form14.Image1.Picture.SaveToFile('LOGOTIP.BMP');
-  //
 end;
 
 procedure TForm19.ComboBox5Exit(Sender: TObject);
@@ -772,7 +774,7 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
 
-procedure TForm19.RadioButton1KeyDown(Sender: TObject; var Key: Word;
+procedure TForm19.rbJurosSimplesKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
@@ -784,12 +786,12 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
 
-procedure TForm19.RadioButton2Click(Sender: TObject);
+procedure TForm19.rbJurosCompostoClick(Sender: TObject);
 begin
   bChave := True;
 end;
 
-procedure TForm19.RadioButton1Click(Sender: TObject);
+procedure TForm19.rbJurosSimplesClick(Sender: TObject);
 begin
   bChave := True;
 end;
@@ -1263,32 +1265,29 @@ end;
 
 procedure TForm19.FormShow(Sender: TObject);
 begin
-  //
   Form19.Width  := 640;
   Form19.Height := 480;
-  //
+
   Button4.Left  := Panel3.Width - Button4.Width - 10;
   Button3.Left  := Button4.Left - 140;
-  //
+
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;
   comboBoxORCA.Items.clear;
   comboBoxBloqueto.Items.clear;
-  //
+
   Form19.ComboBoxORCA.Items.Add('Impressora padrão do windows');
   Form19.ComboBoxORCA.Items.Add('PDF');
   Form19.ComboBoxORCA.Items.Add('HTML');
   Form19.ComboBoxORCA.Items.Add('TXT');
-  //
+  
   GetTheListOfPrinters;
-  //
 end;
 
 procedure TForm19.CheckBox8Click(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   if CheckBox8.Checked then
   begin
@@ -1297,11 +1296,11 @@ begin
   begin
     Mais1Ini.WriteString('Perfil','Labels','Não');
   end;
-  //
+
   Form19.Button1Click(Sender);
-  //
-  if (Form19.Visible) and (Form19.CanFocus) then Form19.SetFocus;
-  //
+
+  if (Form19.Visible) and (Form19.CanFocus) then
+    Form19.SetFocus;
 end;
 
 procedure TForm19.JurosEnter(Sender: TObject);
@@ -1344,41 +1343,36 @@ procedure TForm19.ComboBox11Exit(Sender: TObject);
 var
   sS, sMax : String;
 begin
-  //
   if ComboBox11.Text = '000' then
   begin
     ComboBox11.Text := '000';
     Form1.sSerieEspecial := ComboBox11.Text;
   end else
   begin
-    //
     if LimpaNumero(ComboBox11.Text) <> '' then
     begin
       Form1.sSerieEspecial := ComboBox11.Text;
     end;
   end;
-  //
+
   if Form1.sSerieEspecial <> 'XXX' then
   begin
-    //
     try
-      //
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.ibDataset99.SelectSql.Add('select gen_id(G_SERIE'+Form1.sSerieEspecial+',1) from rdb$database');
       Form7.IBDataSet99.Open;
-      //
+
       sS := StrZero(StrtoFloat(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),9,0)+Right(Form7.sTitulo,3);
-      //
     except
-      //
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.SQL.Clear;
         Form1.ibQuery1.SQL.Add('create generator G_SERIE'+Form1.sSerieEspecial);
         Form1.ibQuery1.ExecSQL;
-      except end;
-      //
+      except
+      end;
+
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.SQL.Clear;
@@ -1389,11 +1383,63 @@ begin
         Form1.ibQuery1.SQL.Clear;
         Form1.ibQuery1.SQL.Add('set generator G_SERIE'+Form1.sSerieEspecial+' to 0'+copy(sMax,1,9)+' ');
         Form1.ibQuery1.ExecSQL;
-      except end;
-      //
+      except
+      end;
     end
   end;
-  //
+end;
+
+procedure TForm19.edtJurosDiaKeyPress(Sender: TObject; var Key: Char);
+begin
+  ValidaValor(Sender, Key,'F');
+end;
+
+procedure TForm19.edtJurosDiaExit(Sender: TObject);
+begin
+  edtJurosDia.Text := FormatFloat('#,##0.00', StrToFloatDef(edtJurosDia.Text,0));
+
+  Form1.fTaxa := StrToFloatDef(edtJurosDia.Text,0);
+  edtJurosMes.Text := FormatFloat('#,##0.00',StrToFloatDef(edtJurosDia.Text,0) * 30);
+  edtJurosAno.Text := FormatFloat('#,##0.00',StrToFloatDef(edtJurosDia.Text,0) * 360);
+end;
+
+procedure TForm19.edtJurosMesExit(Sender: TObject);
+begin
+  edtJurosMes.Text := FormatFloat('#,##0.00', StrToFloatDef(edtJurosMes.Text,0));
+
+  Form1.fTaxa := StrToFloatDef(edtJurosDia.Text,0);
+  edtJurosDia.Text := FormatFloat('#,##0.00',StrToFloatDef(edtJurosMes.Text,0) / 30);
+  edtJurosAno.Text := FormatFloat('#,##0.00',StrToFloatDef(edtJurosDia.Text,0) * 360);
+
+  Form1.fTaxa := StrToFloatDef(edtJurosDia.Text,0);
+end;
+
+procedure TForm19.edtJurosAnoExit(Sender: TObject);
+begin
+  edtJurosAno.Text := FormatFloat('#,##0.00', StrToFloatDef(edtJurosAno.Text,0));
+
+  edtJurosDia.Text := FormatFloat('#,##0.00',StrToFloatDef(edtJurosAno.Text,0) / 360);
+  edtJurosMes.Text := FormatFloat('#,##0.00',StrToFloatDef(edtJurosDia.Text,0) * 30);
+
+  Form1.fTaxa := StrToFloatDef(edtJurosDia.Text,0);
+end;
+
+procedure TForm19.edtVlMultaExit(Sender: TObject);
+begin
+  edtVlMulta.Text := FormatFloat('#,##0.00', StrToFloatDef(edtVlMulta.Text,0));
+end;
+
+procedure TForm19.rbMultaPercentualClick(Sender: TObject);
+begin
+  SetTipoMulta;
+end;
+
+procedure TForm19.SetTipoMulta;
+begin
+  if rbMultaPercentual.Checked then
+    lblMulta.Caption := '%'
+  else
+    lblMulta.Caption := 'R$';
 end;
 
 end.

@@ -5234,7 +5234,7 @@ begin
           Form22.Repaint;
           Mensagem22('Atualizando valores no contas a receber...');
 
-          if Form19.RadioButton1.Checked then
+          if Form19.rbJurosSimples.Checked then
           begin
             try
               Form7.ibDataSet99.Close;
