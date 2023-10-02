@@ -218,8 +218,6 @@ var
 begin
   if FoArquivoDAT.Usuario.Html.TipoRelatorio <> ttiHTML then
     Exit;
-  if cdsExcluidos.IsEmpty then
-    Exit;
 
   oEstrutura := TEstruturaTipoRelatorioPadrao.New
                                              .setUsuario(Usuario);
@@ -251,26 +249,45 @@ begin
   try
     qryDados.Close;
     qryDados.SQL.Clear;
-    qryDados.SQL.Add('select');
-    qryDados.SQL.Add('sum(DESCONTO)');
-    qryDados.SQL.Add('from VENDAS');
-    qryDados.SQL.Add('where');
-    qryDados.SQL.Add('EMITIDA=''S''');
-    qryDados.SQL.Add('and EMISSAO between '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+' ');
+    qryDados.SQL.Add('SELECT');
+    qryDados.SQL.Add('    SUM(DESCONTO)');
+    qryDados.SQL.Add('FROM VENDAS');
+    qryDados.SQL.Add('INNER JOIN ITENS001');
+    qryDados.SQL.Add('    ON (ITENS001.NUMERONF=VENDAS.NUMERONF)');
+    if Trim(FcWhereEstoque) <> EmptyStr then
+      QryDados.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+    else
+      QryDados.SQL.Add('WHERE');
+    qryDados.SQL.Add('(EMITIDA=''S'')');
+    qryDados.SQL.Add('and (EMISSAO BETWEEN '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' AND ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+')');
     qryDados.Open;
     Result := Result + (qryDados.FieldByname('SUM').AsFloat*-1);
 
     // Desconto nas Vendas ECF
     qryDados.Close;
     qryDados.SQL.Clear;
-    qryDados.SQL.Add('select sum(TOTAL) from ALTERACA where DATA between '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+' and DESCRICAO='+QuotedStr('Desconto')+' and TIPO<>''CANCEL'' ');
+    qryDados.SQL.Add('SELECT');
+    qryDados.SQL.Add('SUM(TOTAL)');
+    qryDados.SQL.Add('FROM ALTERACA');
+    if Trim(FcWhereEstoque) <> EmptyStr then
+      QryDados.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+    else
+      QryDados.SQL.Add('WHERE');
+    qryDados.SQL.Add('(DATA BETWEEN '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' AND ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+') AND (DESCRICAO='+QuotedStr('Desconto')+') AND (TIPO<>''CANCEL'')');
     qryDados.Open;
     Result := Result + (qryDados.FieldByname('SUM').AsFloat);
     qryDados.Close;
 
     // Desconto nas Vendas ECF
     qryDados.SQL.Clear;
-    qryDados.SQL.Add('select sum(TOTAL) from ALTERACA where DATA between '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+' and DESCRICAO='+QuotedStr('Acréscimo')+' and TIPO<>''CANCEL'' ');
+    qryDados.SQL.Add('SELECT');
+    qryDados.SQL.Add('SUM(TOTAL)');
+    qryDados.SQL.Add('FROM ALTERACA');
+    if Trim(FcWhereEstoque) <> EmptyStr then
+      QryDados.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+    else
+      QryDados.SQL.Add('WHERE');
+    qryDados.SQL.Add('(DATA BETWEEN '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' AND ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+') AND (DESCRICAO='+QuotedStr('Acréscimo')+') AND (TIPO<>''CANCEL'')');
     qryDados.Open;
     Result := Result + (qryDados.FieldByname('SUM').AsFloat);
     qryDados.Close;

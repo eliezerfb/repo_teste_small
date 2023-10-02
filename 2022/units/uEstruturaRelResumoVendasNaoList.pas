@@ -31,8 +31,10 @@ constructor TEstruturaRelResumoVendasNaoList.Create;
 begin
   FoFiltrosRodape := TFiltroRodapeRelPadrao.New
                                            .setTitulo('Estes itens não foram relacionados, por um dos seguintes motivos:')
+                                           .AddItem('Não faz parte do filtro')
                                            .AddItem('Foi apagado')
-                                           .AddItem('Foi renomeado');                                           ;
+                                           .AddItem('Foi renomeado');
+
 end;
 
 function TEstruturaRelResumoVendasNaoList.getColunasNaoTotalizar(out AcColunas: String): IEstruturaRelatorioPadrao;
