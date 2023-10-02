@@ -1343,12 +1343,16 @@ begin
               {Sandro Silva 2023-06-20 fim}
             end else
             begin
+
+              Form7.ibDataSet7.Tag := ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA;
+
               Form7.Close;
               Form7.Show;
               ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'2'), '', SW_SHOW);
             end;
           end else
           begin
+            Form7.ibDataSet7.Tag := ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA;
             Form7.Close;
             Form7.Show;
             ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'1'), '', SW_SHOW);

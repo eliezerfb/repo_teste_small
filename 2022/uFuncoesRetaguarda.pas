@@ -52,6 +52,7 @@ uses
   function CodigotBandNF(sBandeira: String): String;
   function ValidaFormadePagamentoDigitada(sForma: String; slFormas: TStringList): String;
   function IndexColumnFromName(DBGrid: TDBGrid; sNomeColuna: String): Integer;
+  function FormaDePagamentoGeraCarneDuplicata(sForma: String): Boolean;
   function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   function GeraMD5(valor :string):string;
@@ -649,6 +650,11 @@ begin
       Break;
     end;
   end;
+end;
+
+function FormaDePagamentoGeraCarneDuplicata(sForma: String): Boolean;
+begin
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||05|') > 0); // sem informar ou créditode Loja
 end;
 
 function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
