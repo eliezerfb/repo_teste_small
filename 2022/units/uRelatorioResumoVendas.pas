@@ -53,6 +53,7 @@ type
     FnCasasDecimaisQtde: Integer;
     FcWhereEstoque: String;
     FcSqlTraduzido: String;
+    FcOrderBy: String;
     procedure AjustaLayout;
     function FazValidacoes: Boolean;
     function RetornarWhere: string;
@@ -76,6 +77,7 @@ type
     property CasasDecimaisQtde: Integer read FnCasasDecimaisQtde write FnCasasDecimaisQtde;
     property WhereEstoque: String read FcWhereEstoque write FcWhereEstoque;
     property SqlTraduzido: String read FcSqlTraduzido write FcSqlTraduzido;
+    property OrderBy: String read FcOrderBy write FcOrderBy;
   protected
     function Estrutura: IEstruturaTipoRelatorioPadrao; override;
   end;
@@ -609,6 +611,7 @@ procedure TfrmRelResumoVendas.FazUpdateValores;
 var
   nRecNo: Integer;
   qryCons99, qryCons100: TIBQuery;
+  cIndex: String;
 begin
   qryCons99 := CriaIBQuery(DataSetEstoque.Transaction);
   qryCons100 := CriaIBQuery(DataSetEstoque.Transaction);
@@ -620,7 +623,7 @@ begin
     if Trim(FcWhereEstoque) = EmptyStr then
     begin
       DataSetEstoque.Close;
-      DataSetEstoque.SelectSQL.Text := 'SELECT * FROM ESTOQUE order by DESCRICAO';
+      DataSetEstoque.SelectSQL.Text := 'SELECT * FROM ESTOQUE ' + OrderBy;
       DataSetEstoque.Open;
     end;
 
