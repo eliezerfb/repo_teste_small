@@ -10,11 +10,9 @@ type
   private
     function getAmbiente: tAmbienteNFSe;
     procedure setAmbiente(const Value: tAmbienteNFSe);
-    function getPadraoProvedor: String;
   public
     function AmbienteToStr(AenAmbiente: tAmbienteNFSe): String;
     property Ambiente: tAmbienteNFSe read getAmbiente write setAmbiente;
-    property PadraoProvedor: String read getPadraoProvedor;
   protected
     function Section: String; override;
   end;
@@ -45,11 +43,6 @@ begin
   Result := _cAmbienteHomologacao;
   if AenAmbiente = tanfsProducao then
     Result := _cAmbienteProducao;
-end;
-
-function TSectionNFSEINI.getPadraoProvedor: String;
-begin
-  Result := FoIni.ReadString(_cSectionNFSE_InformacoesObtidasPrefeitura, _cIdentiPadraoCidade, '');
 end;
 
 end.
