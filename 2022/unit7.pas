@@ -1595,6 +1595,8 @@ type
     ibdParametroTributaDESCRICAO: TIBStringField;
     Perfildetributao1: TMenuItem;
     Parmetrosdetributao1: TMenuItem;
+    ibDataSet7VALOR_MULTA: TIBBCDField;
+    ibDataSet7PERCENTUAL_MULTA: TIBBCDField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);

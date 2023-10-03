@@ -169,7 +169,9 @@ uses
   uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
-  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas';
+  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
+  uGeraCNAB240 in 'units\uGeraCNAB240.pas',
+  uGeraCNAB400 in 'units\uGeraCNAB400.pas';
 
 {$R *.RES}
 

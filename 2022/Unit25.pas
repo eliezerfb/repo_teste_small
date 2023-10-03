@@ -28,8 +28,6 @@ type
     btnImprimirTodos: TBitBtn;
     btnEnviaEmail: TBitBtn;
     btnEnviaEmailTodos: TBitBtn;
-    btnCNAB240: TBitBtn;
-    btnCNAB400: TBitBtn;
     btnCriaImagemBoleto: TBitBtn;
     chkDataAtualizadaJurosMora: TCheckBox;
     procedure btnAnteriorClick(Sender: TObject);
@@ -46,12 +44,14 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure chkDataAtualizadaJurosMoraClick(Sender: TObject);
     procedure btnEnviaEmailTodosClick(Sender: TObject);
-    procedure btnCNAB400Click(Sender: TObject);
-    procedure btnCNAB240Click(Sender: TObject);
+//    procedure btnCNAB400Click(Sender: TObject); Mauricio Parizotto 2023-10-03 uGeraCNAB400
+//    procedure btnCNAB240Click(Sender: TObject); Mauricio Parizotto 2023-10-03 uGeraCNAB240
   private
     { Private declarations }
     bOk : Boolean; // Sandro Silva 2023-06-20
     sInstituicaoFinanceira : string;
+    sTipoMulta : string;
+    vMulta : Double;
     procedure ImprimirBoleto;
     procedure ValidaEmailPagador;
   public
@@ -1013,6 +1013,11 @@ begin
         Form25.chkDataAtualizadaJurosMora.Checked := False; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := False;
       end;
 
+
+      //Mauricio Parizotto 2023-10-02
+      sTipoMulta := Mais1Ini.ReadString('Outros','Tipo multa','Percentual');
+      vMulta := Mais1Ini.ReadFloat('Outros','Multa',0);
+
       Mais1Ini.Free;
     end;
   except
@@ -1345,6 +1350,7 @@ begin
   Screen.Cursor            := crDefault;
 end;
 
+(*
 procedure TForm25.btnCNAB400Click(Sender: TObject);
 var
   vTotal : Real;
@@ -2273,6 +2279,9 @@ begin
   Form7.ibDataSet7.EnableControls;
 end;
 
+Mauricio Parizotto 2023-10-03 uGeraCNAB400)*
+
+(*
 procedure TForm25.btnCNAB240Click(Sender: TObject);
 var
   vTotal : Real;
@@ -2768,6 +2777,9 @@ begin
   Form7.ibDataSet7.EnableControls;
 end;
 
+Mauricio Parizotto 2023-10-03 uGeraCNAB240
+*)
+
 procedure TForm25.GravaPortadorNossoNumCodeBar;
 begin
   // Precisa estar posicionado no registro certo
@@ -2804,6 +2816,18 @@ begin
     Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
 
   Form7.ibDataSet7FORMADEPAGAMENTO.AsString := 'Boleto Bancário'; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
+
+  {Mauricio Parizotto 2023-10-02 Inicio}
+  if sTipoMulta = 'Percentual' then
+  begin
+    Form7.ibDataSet7PERCENTUAL_MULTA.AsFloat  := vMulta;
+    Form7.ibDataSet7VALOR_MULTA.AsString      := '';
+  end else
+  begin
+    Form7.ibDataSet7VALOR_MULTA.AsFloat       := vMulta;
+    Form7.ibDataSet7PERCENTUAL_MULTA.AsString := '';
+  end;
+  {Mauricio Parizotto 2023-10-02 Fim}
     
   Form7.ibDataSet7.Post;
 end;

@@ -12531,7 +12531,7 @@ object Form7: TForm7
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
       '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO,'
-      '   AUTORIZACAOTRANSACAO, BANDEIRA)'
+      '   AUTORIZACAOTRANSACAO, BANDEIRA,VALOR_MULTA,PERCENTUAL_MULTA)'
       'values'
       
         '  (:HISTORICO, :PORTADOR, :DOCUMENTO, :NOME, :EMISSAO, :VENCIMEN' +
@@ -12540,7 +12540,9 @@ object Form7: TForm7
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
       '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO,'
-      '   :AUTORIZACAOTRANSACAO, :BANDEIRA)')
+      
+        '   :AUTORIZACAOTRANSACAO, :BANDEIRA,:VALOR_MULTA,:PERCENTUAL_MUL' +
+        'TA)')
     RefreshSQL.Strings = (
       'Select '
       '  HISTORICO,'
@@ -12564,7 +12566,9 @@ object Form7: TForm7
       '  MOVIMENTO,'
       '  FORMADEPAGAMENTO,'
       '  AUTORIZACAOTRANSACAO,'
-      '  BANDEIRA'
+      '  BANDEIRA,'
+      '  VALOR_MULTA,'
+      '  PERCENTUAL_MULTA'
       'from RECEBER '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -12594,7 +12598,9 @@ object Form7: TForm7
       '  MOVIMENTO = :MOVIMENTO,'
       '  FORMADEPAGAMENTO = :FORMADEPAGAMENTO,'
       '  AUTORIZACAOTRANSACAO = :AUTORIZACAOTRANSACAO,'
-      '  BANDEIRA = :BANDEIRA'
+      '  BANDEIRA = :BANDEIRA,'
+      '  VALOR_MULTA = :VALOR_MULTA,'
+      '  PERCENTUAL_MULTA = :PERCENTUAL_MULTA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -12762,6 +12768,20 @@ object Form7: TForm7
       Origin = 'RECEBER.NN'
       Visible = False
       Size = 10
+    end
+    object ibDataSet7VALOR_MULTA: TIBBCDField
+      FieldName = 'VALOR_MULTA'
+      Origin = 'RECEBER.VALOR_MULTA'
+      Visible = False
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet7PERCENTUAL_MULTA: TIBBCDField
+      FieldName = 'PERCENTUAL_MULTA'
+      Origin = 'RECEBER.PERCENTUAL_MULTA'
+      Visible = False
+      Precision = 18
+      Size = 2
     end
   end
   object DataSource7: TDataSource
@@ -20030,6 +20050,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -21374,7 +21395,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50a\'
+      'avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21409,7 +21430,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50a\'
+      'vm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21724,7 +21745,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21754,7 +21775,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
