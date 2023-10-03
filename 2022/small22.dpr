@@ -183,6 +183,8 @@ uses
   uEstruturaRelResumoVendas in 'units\uEstruturaRelResumoVendas.pas',
   uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas',
   uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas';
+  uIDuplicaOrcamento in 'interfaces\uIDuplicaOrcamento.pas',
+  uDuplicaOrcamento in 'units\uDuplicaOrcamento.pas';
 
 {$R *.RES}
 

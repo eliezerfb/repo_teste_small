@@ -1598,6 +1598,7 @@ type
     Parmetrosdetributao1: TMenuItem;
     Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
+    DuplicaOrcamento: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2256,6 +2257,7 @@ type
     procedure Perfildetributao1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
     procedure Configurarobservaofixa1Click(Sender: TObject);
+    procedure DuplicaOrcamentoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2478,7 +2480,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImpressaoOrcamento
   , uSectionFrentedeCaixaINI
   , uFrmParametroTributacao
-  , uRelatorioResumoVendas;
+  , uRelatorioResumoVendas
+  , uDuplicaOrcamento;
 
 {$R *.DFM}
 
@@ -13305,6 +13308,7 @@ begin
   VisualizarXMLdamanifestaododestinatrio1.Visible  := False;
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
+  DuplicaOrcamento.Visible                         := False;
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13397,7 +13401,7 @@ begin
       Apagar2.Visible := True;
 
       EnviarOrcamentoPorEmail1.Visible := True;
-
+      DuplicaOrcamento.Visible         := True;
       cEmails := TRetornaCaptionEmailPopUpDocs.New
                                               .SetDataBase(IBDatabase1)
                                               .setCodigoClifor(Form7.ibDataSet97.FieldByname('Cliente').AsString)
@@ -32354,7 +32358,7 @@ function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 // Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
 begin
   //Result := ValidaEAN13(LimpaNumero(sEan)); Mauricio Parizotto 2023-07-05
-  Result := ValidaEAN(LimpaNumero(sEan)); 
+  Result := ValidaEAN(LimpaNumero(sEan));
   if Result then
   begin
     if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then
@@ -34028,6 +34032,49 @@ begin
     oArqIni.SmallCom.Orcamento.Observacao := cMsg;
   finally
     FreeAndNil(oArqIni);
+  end;
+end;
+
+procedure TForm7.DuplicaOrcamentoClick(Sender: TObject);
+var
+  cNroPedido: string;
+begin
+  try
+    if TDuplicaOrcamento.New
+                     .SetTransaction(IBTransaction1)
+                     .SetNroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                     .SetDataSetOrcamento(ibDataSet37)
+                     .SetDataSetOrcamentoOBS(IbdOrcamentObs)
+                     .Duplicar then
+    begin
+      Sleep(200);
+      ibDataSet37.DisableControls;
+      try
+        ibDataSet37.Last;
+
+        cNroPedido := ibDataSet37PEDIDO.AsString;
+
+        ibDataSet37.First;
+        while not ibDataSet37.Eof do
+        begin
+          if ibDataSet37PEDIDO.AsString = cNroPedido then
+          begin
+            AssinaRegistro('ORCAMENT', ibDataSet37, True);
+            HasHs('ORCAMENT',True);
+          end;
+
+          ibDataSet37.Next;
+        end;
+      finally
+        ibDataSet97.Last;
+        ibDataSet37.EnableControls;
+      end;
+
+      AgendaCommit(True);
+    end;
+  finally
+    Self.Close;
+    Self.Show;
   end;
 end;
 

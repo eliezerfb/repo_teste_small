@@ -18167,6 +18167,11 @@ object Form7: TForm7
       Caption = 'Duplicar esta NF-e'
       OnClick = DuplicatestaNFe1Click
     end
+    object DuplicaOrcamento: TMenuItem
+      Caption = 'Duplicar este or'#231'amento'
+      Visible = False
+      OnClick = DuplicaOrcamentoClick
+    end
   end
   object ibDataSet10: TIBDataSet
     Database = IBDatabase1
