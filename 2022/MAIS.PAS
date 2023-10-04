@@ -4507,7 +4507,7 @@ var
   SmallIni, Mais1Ini, Mais2Ini : TIniFile;
   I, iUsuariosConectados, iLimiteUsuariosSimultaneos, II : Integer;
   bLegal : Boolean;
-  fJuro : Real;
+  fJuro, fMulta : Real;
   dtLimite: TDate;
   bEmpresaMei: Boolean;
 begin
@@ -5239,29 +5239,54 @@ begin
             try
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
-              Form7.ibDataSet99.SelectSQL.Add('update RECEBER set VALOR_JURO=Cast((VALOR_DUPL * (((  Cast((CURRENT_DATE - VENCIMENTO)as decimal(12,2)) ) * '+ StrTran(FloatToStr(Form1.ftaxa),',','.') +'/100)+1.00)) as decimal(12,2)) where VALOR_RECE = 0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1');
+              {Mauricio Parizotto 2023-10-04 Inicio}
+              //Form7.ibDataSet99.SelectSQL.Add('update RECEBER set VALOR_JURO=Cast((VALOR_DUPL * (((  Cast((CURRENT_DATE - VENCIMENTO)as decimal(12,2)) ) * '+ StrTran(FloatToStr(Form1.ftaxa),',','.') +'/100)+1.00)) as decimal(12,2)) where VALOR_RECE = 0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1');
+              Form7.ibDataSet99.SelectSQL.Add(' Update RECEBER '+
+                                              '   set VALOR_JURO = Cast((VALOR_DUPL * (((  Cast((CURRENT_DATE - VENCIMENTO)as decimal(12,2)) ) * '+ StrTran(FloatToStr(Form1.ftaxa),',','.') +'/100)+1.00)) as decimal(12,2)) '+
+                                              // Soma o valor da multa se tiver
+                                              ' + COALESCE(VALOR_MULTA,0) '+
+                                              ' + Cast( (VALOR_DUPL / 100) * COALESCE( PERCENTUAL_MULTA,0) as decimal(18,2)) '+
+                                              ' Where COALESCE(VALOR_RECE,0) = 0 '+
+                                              '   and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9) <> 1 ');
+              {Mauricio Parizotto 2023-10-04 Fim}
               Form7.ibDataSet99.Open;
             except end;
           end else
           begin
             try
-              //
               Form7.ibDataSet7.Close;
               Form7.ibDataSet7.SelectSQL.Clear;
               Form7.ibDataSet7.SelectSQL.Add('select * from RECEBER where VALOR_RECE = 0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1');
               Form7.ibDataSet7.Open;
               Form7.ibDataSet7.First;
-              //
+
               while not Form7.ibDataSet7.Eof do
               begin
                 fJuro := Form7.ibDataSet7VALOR_DUPL.AsFloat;
-                for I := 1 to  Trunc(Date - Form7.ibDataSet7VENCIMENTO.AsDateTime) do fJuro  := fJuro * ((Form1.fTaxa / 100)+1);
+                for I := 1 to  Trunc(Date - Form7.ibDataSet7VENCIMENTO.AsDateTime) do
+                  fJuro  := fJuro * ((Form1.fTaxa / 100)+1);
+
+                {Mauricio Parizotto 2023-10-04 Inicio}
+                fMulta := 0;
+
+                if Form7.ibDataSet7.FieldByName('PERCENTUAL_MULTA').AsFloat > 0 then
+                begin
+                  fMulta := (Form7.ibDataSet7VALOR_DUPL.AsFloat / 100) *  Form7.ibDataSet7.FieldByName('PERCENTUAL_MULTA').AsFloat;
+                end;
+
+                if Form7.ibDataSet7.FieldByName('VALOR_MULTA').AsFloat > 0 then
+                begin
+                  fMulta := Form7.ibDataSet7.FieldByName('VALOR_MULTA').AsFloat;
+                end;
+
                 if fJuro <> Form7.ibDataSet7VALOR_DUPL.AsFloat then
                 begin
                   Form7.ibDataSet7.Edit;
-                  Form7.ibDataSet7VALOR_JURO.AsFloat  := fJuro;
+                  //Form7.ibDataSet7VALOR_JURO.AsFloat  := fJuro;
+                  Form7.ibDataSet7VALOR_JURO.AsFloat  := fJuro + fMulta;
                 end;
-                //
+                {Mauricio Parizotto 2023-10-04 Fim}
+
                 Form7.ibDataSet7.Next;
               end;
             except
