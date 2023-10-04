@@ -593,13 +593,12 @@ begin
                       +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque');
                     end else
                     begin
+                      Form7.ibDataSet15COMPLEMENTO.AsString := RetornarOBSOrcamento(Form7.ibDataSet37PEDIDO.AsString);
+                      
                       if (AllTrim(Form7.ibDataSet15CLIENTE.AsString) = '') and (AllTrim(Form7.ibDataSet37CLIFOR.AsString) <> '') then
                       begin
                         if AllTrim(Form7.ibDataSet37VENDEDOR.AsString) <> '<Nome do Vendedor>' then Form7.ibDataSet15VENDEDOR.AsString  := Form7.IbDataSet37VENDEDOR.AsString;
                         Form7.ibDataSet15CLIENTE.AsString     := Form7.IbDataSet37CLIFOR.AsString;
-
-
-                        Form7.ibDataSet15COMPLEMENTO.AsString := RetornarOBSOrcamento(Form7.ibDataSet37PEDIDO.AsString);
                           
                         Form7.ibDataSet2.Close;
                         Form7.ibDataSet2.Selectsql.Clear;
