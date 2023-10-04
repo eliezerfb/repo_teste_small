@@ -472,27 +472,14 @@ end;
 
 function TForm41.RetornarOBSOrcamento(AcPedido: String): String;
 var
-  nRecNoICM: Integer;
   cOBSOrcament: string;
 begin
-  nRecNoICM := Form7.ibDataSet14.RecNo;
-  Form7.ibDataSet14.DisableControls;
-  try
-    if Form7.ibDataSet14.Locate('NOME', Form7.ibDataSet15OPERACAO.AsString, []) then
-      Result := Form7.ibDataSet14OBS.AsString;
+  // Não informar observação do ICM, pois ira dar problema na tela de Nota ao trocar a Natureza da Operação 
+  Result := 'NF REFERENTE AO ORÇAMENTO: ' + AcPedido + '.';
+  cOBSOrcament := BuscarOBSOrcamento(AcPedido);
 
-    if Result <> EmptyStr then
-      Result := Result + sLineBreak;
-
-    Result := Result + 'NF REFERENTE AO ORÇAMENTO: '+AcPedido + '.';
-    cOBSOrcament := BuscarOBSOrcamento(AcPedido);
-
-    if cOBSOrcament <> EmptyStr then
-      Result := Result + sLineBreak + cOBSOrcament;
-  finally
-    Form7.ibDataSet14.RecNo := nRecNoICM;
-    Form7.ibDataSet14.EnableControls;
-  end;
+  if cOBSOrcament <> EmptyStr then
+    Result := Result + sLineBreak + cOBSOrcament;
 end;
 
 procedure TForm41.ImportaOrcamento;
