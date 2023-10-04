@@ -131,6 +131,7 @@ function xmlNodeValueToFloat(sXML: String; sNode: String): Double;
 function SysComputerName: String;
 function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
 function WinVersion: string;
+Function LimpaLetras(pP1:String):String;
 // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 
 var
@@ -1338,5 +1339,19 @@ begin
   Result := StrZero(VersionInfo.dwMajorVersion,3,0)+StrZero(VersionInfo.dwMinorVersion,3,0)
 end;
 { Dailon Parisotto (f-7189) 2023-08-11 fim}
+
+{ Dailon Parisotto (f-7433) 2023-10-02 inicio}
+Function LimpaLetras(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result := EmptyStr;
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZÇÀÈÌÒÙÁÉÍÓÚÂÊÎÔÛÄÏÖÜÃÕ') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+{ Dailon Parisotto (f-7433) 2023-10-02 fim}
 
 end.

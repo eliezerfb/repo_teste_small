@@ -11,6 +11,8 @@ const
   _cFormatDate = 'dd/mm/yyyy';
   _cArquivo10MB = 10485760;
 
+  _cZerosNFeID = '0000000000000000000000000000000000000000000';  
+
   _cSim = 'Sim';
   _cNao = 'Não';
   _cOKUpper  = 'OK';
