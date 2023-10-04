@@ -103,8 +103,6 @@ end;
 
 procedure TSalvaXMLContabilNFeSaida.CarregarDados;
 begin
-  // S - FATURADA | X - CANCELADA
-
   FQryNFe.Close;
   FQryNFe.SQL.Clear;
   FQryNFe.SQL.Add('SELECT');
@@ -118,7 +116,6 @@ begin
   FQryNFe.SQL.Add('AND (VENDAS.MODELO = ''55'')');
   FQryNFe.SQL.Add('AND (COALESCE(VENDAS.NFEID,'''') <> '''')');
   FQryNFe.SQL.Add('AND (COALESCE(VENDAS.NFEID,' + QuotedStr(_cZerosNFeID) + ') <> ' + QuotedStr(_cZerosNFeID) + ')');
-  FQryNFe.SQL.Add('AND (COALESCE(VENDAS.EMITIDA,'''') in (''X'', ''S''))');
   FQryNFe.SQL.Add('UNION ALL');
   FQryNFe.SQL.Add('SELECT');
   FQryNFe.SQL.Add('   1 AS ORD');
@@ -151,28 +148,31 @@ procedure TSalvaXMLContabilNFeSaida.GeraXMLFaturadoCancelado;
 var
   slArq: TStringList;
   cArquivo: String;
+  cXML: String;
 begin
   slArq := TStringList.Create;
   try
-    if (Pos('<nfeProc',FQryNFe.FieldByName('XML').AsString) = 0) and (Pos('<procEventoNFe',FQryNFe.FieldByName('XML').AsString) = 0) then
-      slArq.Text := LoadXmlDestinatarioSaida(FQryNFe.FieldByName('NFEID').AsString)
-    else
+    cXML := FQryNFe.FieldByName('XML').AsString;
+
+    if (Pos('<nfeProc',cXML) = 0) and (Pos('<procEventoNFe',cXML) = 0) then
+      cXML := LoadXmlDestinatarioSaida(FQryNFe.FieldByName('NFEID').AsString);
+
+    if (Pos('<nfeProc',cXML) <> 0) or (Pos('<procEventoNFe',cXML) <> 0) then
     begin
-      if (Pos('<nfeProc',FQryNFe.FieldByName('XML').AsString) <> 0) or (Pos('<procEventoNFe',FQryNFe.FieldByName('XML').AsString) <> 0) then
-        slArq.Text := FQryNFe.FieldByName('XML').AsString;
+      slArq.Text := cXML;
+
+      cArquivo := RetornarCaminho+FQryNFe.FieldByName('NFEID').AsString;
+      if (Pos('>Cancelamento</descEvento>', slArq.Text) <> 0) then
+        cArquivo := cArquivo + '-caneve.xml'
+      else
+        cArquivo := cArquivo + '-nfe.xml';
+
+      if Pos(_cZerosNFeID, cArquivo) > 0 then
+        Exit;
+
+      if Trim(slArq.Text) <> EmptyStr then
+        slArq.SaveToFile(cArquivo);
     end;
-
-    cArquivo := RetornarCaminho+FQryNFe.FieldByName('NFEID').AsString;
-    if (Pos('>Cancelamento</descEvento>', slArq.Text) <> 0) then
-      cArquivo := cArquivo + '-caneve.xml'
-    else
-      cArquivo := cArquivo + '-nfe.xml';
-
-    if Pos(_cZerosNFeID, cArquivo) > 0 then
-      Exit;
-
-    if Trim(slArq.Text) <> EmptyStr then
-      slArq.SaveToFile(cArquivo);
   finally
     FreeAndNil(slArq);
   end;
