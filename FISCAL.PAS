@@ -9459,7 +9459,7 @@ begin
       end;
       //
       if Mais1Ini.ReadString('NFCE','Imprimir DANFCE',_cSim)   = _cSim then Form1.ImprimirDANFCE1.Checked             := True else Form1.ImprimirDANFCE1.Checked             := False;
-      if Mais1Ini.ReadString('NFCE','Visualizar DANFCE',_cSim) = _cSim then Form1.VisualizarDANFCE1.Checked           := True else Form1.VisualizarDANFCE1.Checked           := False;
+      if Mais1Ini.ReadString('NFCE','Visualizar DANFCE',_cNao) = _cSim then Form1.VisualizarDANFCE1.Checked           := True else Form1.VisualizarDANFCE1.Checked           := False; // Sandro Silva 2023-10-04 if Mais1Ini.ReadString('NFCE','Visualizar DANFCE',_cSim) = _cSim then Form1.VisualizarDANFCE1.Checked           := True else Form1.VisualizarDANFCE1.Checked           := False;
       if Mais1Ini.ReadString('NFCE','DANFCE detalhado',_cSim)  = _cSim then Form1.DANFCEdetalhado1.Checked            := True else Form1.DANFCEdetalhado1.Checked            := False;
       if Mais1Ini.ReadString('NFCE','ENVIAR COMPACTADO',_cNao) = _cSim then Form1.EnviarDANFCEeXMLcompactado1.Checked := True else Form1.EnviarDANFCEeXMLcompactado1.Checked := False; // 2015-11-30
 
