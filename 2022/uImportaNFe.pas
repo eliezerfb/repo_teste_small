@@ -337,6 +337,9 @@ begin
                       end;
                     end;
 
+                    //Mauricio Parizotto 2023-10-04
+                    sICMSTag := GetICMSTag(NodeSec);
+
                     if not bProdutoCadastrado then
                     begin
                       // Procura pelo CODIGO de Barras do fornecedor relacionado no arquivo CODEBAR
@@ -441,7 +444,7 @@ begin
                       end;
 
                       //Mauricio Parizotto 2023-09-19
-                      sICMSTag := GetICMSTag(NodeSec);
+                      //sICMSTag := GetICMSTag(NodeSec);
 
                       //Mauricio Parizotto 2023-09-19
                       //Parametros de tributação
