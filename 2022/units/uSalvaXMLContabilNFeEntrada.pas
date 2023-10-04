@@ -35,7 +35,7 @@ type
 
 implementation
 
-uses SysUtils;
+uses SysUtils, uSmallConsts;
 
 { TSalvaXMLContabilNFeEntrada }
 
@@ -146,7 +146,11 @@ begin
       else
         cArquivo := cArquivo + '-nfe.xml';
 
-      slArq.SaveToFile(cArquivo);
+      if Pos(_cZerosNFeID, cArquivo) > 0 then
+        Exit;
+
+      if Trim(slArq.Text) <> EmptyStr then
+        slArq.SaveToFile(cArquivo);
     finally
       FreeAndNil(slArq);
     end;
@@ -249,6 +253,7 @@ begin
   FQryNFe.SQL.Add('FROM COMPRAS');
   FQryNFe.SQL.Add('WHERE ((COMPRAS.EMISSAO >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ') AND (COMPRAS.EMISSAO <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + '))');
   FQryNFe.SQL.Add('AND (COALESCE(COMPRAS.NFEID,'''') <> '''')');
+  FQryNFe.SQL.Add('AND (COALESCE(COMPRAS.NFEID,' + QuotedStr(_cZerosNFeID) + ') <> ' + QuotedStr(_cZerosNFeID) + ')');  
   FQryNFe.SQL.Add('ORDER BY COMPRAS.EMISSAO, COMPRAS.NUMERONF');
   FQryNFe.Open;
 end;

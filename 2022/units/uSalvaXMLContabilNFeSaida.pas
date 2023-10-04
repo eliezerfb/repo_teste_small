@@ -37,7 +37,7 @@ type
 
 implementation
 
-uses SysUtils;
+uses SysUtils, uSmallConsts;
 
 const
   _cInutilizacao = 'INUTILIZACAO';
@@ -103,6 +103,8 @@ end;
 
 procedure TSalvaXMLContabilNFeSaida.CarregarDados;
 begin
+  // S - FATURADA | X - CANCELADA
+
   FQryNFe.Close;
   FQryNFe.SQL.Clear;
   FQryNFe.SQL.Add('SELECT');
@@ -113,7 +115,10 @@ begin
   FQryNFe.SQL.Add('FROM VENDAS');
   FQryNFe.SQL.Add('WHERE');
   FQryNFe.SQL.Add('((VENDAS.EMISSAO >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ') AND (VENDAS.EMISSAO <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + '))');
+  FQryNFe.SQL.Add('AND (VENDAS.MODELO = ''55'')');
   FQryNFe.SQL.Add('AND (COALESCE(VENDAS.NFEID,'''') <> '''')');
+  FQryNFe.SQL.Add('AND (COALESCE(VENDAS.NFEID,' + QuotedStr(_cZerosNFeID) + ') <> ' + QuotedStr(_cZerosNFeID) + ')');
+  FQryNFe.SQL.Add('AND (COALESCE(VENDAS.EMITIDA,'''') in (''X'', ''S''))');
   FQryNFe.SQL.Add('UNION ALL');
   FQryNFe.SQL.Add('SELECT');
   FQryNFe.SQL.Add('   1 AS ORD');
@@ -122,6 +127,7 @@ begin
   FQryNFe.SQL.Add('   , INUTILIZACAO.REGISTRO');
   FQryNFe.SQL.Add('FROM INUTILIZACAO');
   FQryNFe.SQL.Add('WHERE ((INUTILIZACAO.DATA >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ') AND (INUTILIZACAO.DATA <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + '))');
+  FQryNFe.SQL.Add('AND (INUTILIZACAO.MODELO = ''55'')');
   FQryNFe.SQL.Add('ORDER BY 1, 4');
   FQryNFe.Open;
 end;
@@ -162,7 +168,11 @@ begin
     else
       cArquivo := cArquivo + '-nfe.xml';
 
-    slArq.SaveToFile(cArquivo);
+    if Pos(_cZerosNFeID, cArquivo) > 0 then
+      Exit;
+
+    if Trim(slArq.Text) <> EmptyStr then
+      slArq.SaveToFile(cArquivo);
   finally
     FreeAndNil(slArq);
   end;
