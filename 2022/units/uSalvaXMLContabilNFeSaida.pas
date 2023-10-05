@@ -61,6 +61,8 @@ function TSalvaXMLContabilNFeSaida.Compactar: ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
 
+  Sleep(100);
+  
   if not TestarTemArquivosXML then
     Exit;
     
@@ -74,9 +76,7 @@ begin
     end;
 
     while not FileExists(pChar(RetornarCaminho + RetornarNomeZip)) do
-    begin
       sleep(100);
-    end;
 
     FbGerouZIP := FileExists(pChar(RetornarCaminho + RetornarNomeZip));
   finally
@@ -132,7 +132,7 @@ end;
 procedure TSalvaXMLContabilNFeSaida.GerarXMLs;
 begin
   FQryNFe.First;
-  
+
   while not FQryNFe.Eof do
   begin
     if FQryNFe.FieldByName('ORD').AsInteger = 0 then
@@ -257,6 +257,7 @@ begin
     DeleteFile(pChar(RetornarCaminho+oSearchRec.Name));
     AnEncontrou := FindNext(oSearchRec);
   end;
+  Sleep(100);  
 end;
 
 function TSalvaXMLContabilNFeSaida.RetornarCaminho: String;

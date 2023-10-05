@@ -79,6 +79,8 @@ begin
     DeleteFile(GetCurrentDir + '\CONTABIL\' + oSearch.Name);
     I := FindNext(oSearch);
   end;
+
+  Sleep(200);
 end;
 
 function TfrmExportaXML.EnviarXml: Boolean;

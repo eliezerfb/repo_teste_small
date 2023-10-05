@@ -52,6 +52,8 @@ function TSalvaXMLContabilNFeEntrada.Compactar: ISalvaXMLDocsEletronicosContabil
 begin
   Result := Self;
 
+  Sleep(100);
+
   if not TestarTemArquivosXML then
     Exit;
     
@@ -244,6 +246,7 @@ begin
     DeleteFile(pChar(RetornarCaminho+oSearchRec.Name));
     AnEncontrou := FindNext(oSearchRec);
   end;
+  Sleep(100);   
 end;
 
 procedure TSalvaXMLContabilNFeEntrada.CarregarDados;
