@@ -18,6 +18,7 @@ type
     procedure DuplicaTabelaOrcamento;
     procedure DuplicaTabelaOrcamentoObs;
     procedure GeraNovoNroPedido;
+    function TestarCampoNaoDuplicar(AcCampo: String): Boolean;
   public
     class function New: IDuplicaOrcamento;
     function SetTransaction(AoTransaction: TIBTransaction): IDuplicaOrcamento;
@@ -72,10 +73,7 @@ begin
         begin
           if Assigned(FDataSetOrcamento.FindField(qryDados.Fields[i].FieldName)) then
           begin
-            if (qryDados.Fields[i].FieldName = 'REGISTRO') or (qryDados.Fields[i].FieldName = 'NUMERONF')
-               or (qryDados.Fields[i].FieldName = 'COO') or (qryDados.Fields[i].FieldName = 'CAIXA')
-               or (qryDados.Fields[i].FieldName = 'PEDIDO') or (qryDados.Fields[i].FieldName = 'DATA')
-               or (qryDados.Fields[i].FieldName = 'ENCRYPTHASH') then
+            if TestarCampoNaoDuplicar(qryDados.Fields[i].FieldName) then
               Continue;
 
             FDataSetOrcamento.FindField(qryDados.Fields[i].FieldName).Value := qryDados.Fields[i].Value;
@@ -199,6 +197,13 @@ end;
 procedure TDuplicaOrcamento.GeraNovoNroPedido;
 begin
   FcNewOrcamento := RetornaNroRegistro('G_ORCAMENTO');
+end;
+
+function TDuplicaOrcamento.TestarCampoNaoDuplicar(AcCampo: String): Boolean;
+const
+  _cCampos = ';REGISTRO;NUMERONF;COO;PEDIDO;DATA;ENCRYPTHASH;VALORICM;ALIQUICM;';
+begin
+  Result := Pos(';'+AcCampo+';', _cCampos) > 0;
 end;
 
 end.
