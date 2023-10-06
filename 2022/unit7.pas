@@ -3717,7 +3717,6 @@ begin
     if pNome = 'ORCAMENT' then
     begin
       s :=
-        DataSet.FieldByName('CODIGO').AsString+
         DataSet.FieldByName('DESCRICAO').AsString+
         DataSet.FieldByName('QUANTIDADE').AsString+
         DataSet.FieldByName('UNITARIO').AsString+
