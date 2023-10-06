@@ -48,6 +48,7 @@ function Audita(pP1, pP2, pP3, pP4 : String; pP5, pP6: Double) : Boolean;
 function AssinaturaDigital(sP1:String): String;
 function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
 function DistribuicaoNFe(sP1:String) : Boolean;
+function DistribuicaoNFeCompra(sP1: String) : Boolean; // Sandro Silva 2023-10-06
 function DistribuicaoNFEInutilizada(sP1:String) : Boolean;
 function DistribuicaoNFe2(sP1: String) : Boolean;
 function AbreArquivoNoFormatoCerto(sP1:String): boolean;

@@ -1,6 +1,6 @@
 object Form28: TForm28
-  Left = 1464
-  Top = 780
+  Left = 628
+  Top = 372
   BorderStyle = bsDialog
   Caption = 'Exportar NF-e'#180's '
   ClientHeight = 222
@@ -12,7 +12,7 @@ object Form28: TForm28
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 13
@@ -90,5 +90,14 @@ object Form28: TForm28
     Caption = '&Cancelar'
     TabOrder = 4
     OnClick = Button2Click
+  end
+  object CheckBox1: TCheckBox
+    Left = 24
+    Top = 152
+    Width = 97
+    Height = 17
+    Caption = 'NF-e Sa'#237'da'
+    TabOrder = 5
+    Visible = False
   end
 end

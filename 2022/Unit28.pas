@@ -17,6 +17,7 @@ type
     Label4: TLabel;
     Button1: TButton;
     Button2: TButton;
+    CheckBox1: TCheckBox;
     procedure FormActivate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);

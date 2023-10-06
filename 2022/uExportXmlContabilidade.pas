@@ -127,6 +127,7 @@ begin
       ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by EMISSAO, NUMERONF');
       //
       Form7.ibDataSet24.Open;
+      {// Sandro Silva 2023-10-06
       //
       Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
       sEmail := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
@@ -140,6 +141,15 @@ begin
       begin
         DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
         Encontrou := FindNext(SearchRec);
+      end;
+      }
+
+      Form7.ibDataSet24.First;
+      while not Form7.ibDataSet24.Eof do
+      begin
+        if DistribuicaoNFeCompra('CONTABIL') then
+          bTem   := True;
+        Form7.ibDataSet24.Next;
       end;
 
       if bTem then
@@ -224,7 +234,7 @@ begin
   try
 
     ForceDirectories(Diretorio);
-
+    {// Sandro Silva 2023-10-06
     //
     // Apaga todos os arquivos .XML da pasta CONTABIL
     //
@@ -235,7 +245,7 @@ begin
       DeleteFile(pChar(Diretorio + '\'+Searchrec.Name));
       Encontrou := FindNext(SearchRec);
     end;
-
+    }
     // Seleciona NFC-e e SAT
     IBQDFE.DisableControls;
     IBQDFE.Close;
