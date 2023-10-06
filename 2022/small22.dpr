@@ -46,7 +46,7 @@ uses
   Unit15 in 'Unit15.pas' {Form15},
   Unit35 in 'Unit35.pas' {Form35},
   Unit8 in 'Unit8.pas' {Form8},
-  Unit28 in 'Unit28.pas' {Form28},
+  uExportaXML in 'uExportaXML.pas' {frmExportaXML},
   SelecionaCertificado in 'SelecionaCertificado.pas' {frmSelectCertificate},
   Unit23 in 'Unit23.pas' {Form23},
   Unit6 in 'Unit6.pas' {Form6},
@@ -170,6 +170,13 @@ uses
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
   uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
+  uSalvaXMLContabilFactory in 'units\uSalvaXMLContabilFactory.pas',
+  uSalvaXMLContabilNFeSaida in 'units\uSalvaXMLContabilNFeSaida.pas',
+  uSalvaXMLContabilNFeEntrada in 'units\uSalvaXMLContabilNFeEntrada.pas',
+  uSalvaXMLContabilNFCeSAT in '..\..\unit_compartilhada\uSalvaXMLContabilNFCeSAT.pas',
+  uISalvaXMLDocsEletronicosContabil in '..\..\unit_compartilhada\interfaces\uISalvaXMLDocsEletronicosContabil.pas',
+  uISalvaXMLContabilFactory in 'interfaces\uISalvaXMLContabilFactory.pas',
+  smallfunc_xe in '..\..\unit_compartilhada\smallfunc_xe.pas',
   uSectionsInformacoesObtidasNaPrefeitura in '..\..\unit_compartilhada\uSectionsInformacoesObtidasNaPrefeitura.pas',
   uChamaRelResumoVendas in 'units\uChamaRelResumoVendas.pas',
   uRelatorioResumoVendas in 'units\uRelatorioResumoVendas.pas' {frmRelResumoVendas},
@@ -209,7 +216,6 @@ begin
       Application.Title := 'Small Commerce';
 
       Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm28, Form28);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TSenhas, Senhas);
   Application.CreateForm(TSenhas2, Senhas2);

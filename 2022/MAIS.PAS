@@ -537,7 +537,7 @@ var
 implementation
 
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
-  Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
+  Unit16, Unit8, Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
   uFazerBackup,
@@ -5621,7 +5621,13 @@ end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
 begin
-  Form28.ShowModal;
+  frmExportaXML := TfrmExportaXML.Create(nil);
+  try
+    frmExportaXML.SetImagem(imgVendas.Picture);
+    frmExportaXML.ShowModal;
+  finally
+    FreeAndNil(frmExportaXML);
+  end;
 end;
 
 procedure TForm1.Cadastrodeconvnios1Click(Sender: TObject);
