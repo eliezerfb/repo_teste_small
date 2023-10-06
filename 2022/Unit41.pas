@@ -39,6 +39,8 @@ type
     procedure ImportaCupom;
     procedure ImportaOrcamento;
     procedure ImportaOS;
+    function BuscarOBSOrcamento(AcPedido: String): String;
+    function RetornarOBSOrcamento(AcPedido: String): String;
     { Private declarations }
   public
     vOrcamentImportar : string;
@@ -451,6 +453,40 @@ begin
 
 end;
 
+function TForm41.BuscarOBSOrcamento(AcPedido: String): String;
+var
+  qryOBS: TIBQuery;
+begin
+  Result := EmptyStr;
+
+  qryOBS := CriaIBQuery(Form7.ibDataSet15.Transaction);
+  try
+    qryOBS.Close;
+    qryOBS.SQL.Clear;
+    qryOBS.SQL.Add('SELECT');
+    qryOBS.SQL.Add('OBS');
+    qryOBS.SQL.Add('FROM ORCAMENTOBS');
+    qryOBS.SQL.Add('WHERE (PEDIDO=' + QuotedStr(AcPedido) + ')');
+    qryOBS.Open;
+
+    if (not qryOBS.IsEmpty) then
+      Result := qryOBS.FieldByName('OBS').AsString;
+  finally
+    FreeAndNil(qryOBS);
+  end;
+end;
+
+function TForm41.RetornarOBSOrcamento(AcPedido: String): String;
+var
+  cOBSOrcament: string;
+begin
+  // Não informar observação do ICM, pois ira dar problema na tela de Nota ao trocar a Natureza da Operação 
+  Result := 'NF REFERENTE AO ORÇAMENTO: ' + AcPedido + '.';
+  cOBSOrcament := BuscarOBSOrcamento(AcPedido);
+
+  if cOBSOrcament <> EmptyStr then
+    Result := Result + sLineBreak + cOBSOrcament;
+end;
 
 procedure TForm41.ImportaOrcamento;
 var
@@ -550,12 +586,13 @@ begin
                       +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque');
                     end else
                     begin
+                      Form7.ibDataSet15COMPLEMENTO.AsString := RetornarOBSOrcamento(Form7.ibDataSet37PEDIDO.AsString);
+                      
                       if (AllTrim(Form7.ibDataSet15CLIENTE.AsString) = '') and (AllTrim(Form7.ibDataSet37CLIFOR.AsString) <> '') then
                       begin
                         if AllTrim(Form7.ibDataSet37VENDEDOR.AsString) <> '<Nome do Vendedor>' then Form7.ibDataSet15VENDEDOR.AsString  := Form7.IbDataSet37VENDEDOR.AsString;
                         Form7.ibDataSet15CLIENTE.AsString     := Form7.IbDataSet37CLIFOR.AsString;
-                        Form7.ibDataSet15COMPLEMENTO.AsString := 'NF REFERENTE AO ORÇAMENTO: '+MaskEdit1.Text;
-
+                          
                         Form7.ibDataSet2.Close;
                         Form7.ibDataSet2.Selectsql.Clear;
                         Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
