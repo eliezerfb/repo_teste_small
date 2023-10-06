@@ -51,7 +51,8 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit12, Unit34, Unit13, Unit33, uFuncoesBancoDados;
+uses Unit7, Mais, Unit12, Unit34, Unit13, Unit33, uFuncoesBancoDados,
+  uTransmiteNFSe;
 
 {$R *.DFM}
 
@@ -346,8 +347,13 @@ begin
             //Ficha 6253
             // Quando está importando para NF-e deve selecionar a primeria alíquota de ISS configurada
             Form7.SelecionaAliquotaIss(Form7.IBQALIQUOTAISS, IfThen(Form7.sRPS = 'S', Form7.ibDataSet15OPERACAO.AsString, '')); // Seleciona a Alíquota de ISS configurada
+            {Sandro Silva 2023-10-02 inicio
             Form7.ibDataSet35ISS.AsFloat        := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('ISS').AsFloat / 100 * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
             Form7.ibDataSet35BASEISS.AsFloat    := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
+            }
+            Form7.ibDataSet35ISS.AsFloat        := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.IBQALIQUOTAISS.FieldByname('ISS').AsFloat, Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat));
+            Form7.ibDataSet35BASEISS.AsFloat    := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBQALIQUOTAISS.FieldByname('BASEISS').AsFloat / 100);
+            {Sandro Silva 2023-10-02 fim}
             {Sandro Silva 2022-09-21 fim}
 
             {Sandro Silva 2023-01-06 inicio}

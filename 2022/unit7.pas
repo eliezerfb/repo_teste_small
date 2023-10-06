@@ -30,6 +30,7 @@ uses
   IdHTTP
   , uFuncoesRetaguarda
   , uSmallConsts
+  , uArquivosDAT // Sandro Silva 2023-10-02
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -2293,6 +2294,9 @@ type
   public
     // Public declarations
 
+    oArqConfiguracao: TArquivosDAT; // Sandro Silva 2023-10-02
+
+
     fSaldoVetorCaixa : array[0..9999999] of real;
     fSaldoVetorBanco : array[0..9999999] of real;
 
@@ -2437,6 +2441,7 @@ type
   
 var
   Form7: TForm7;
+  
 implementation
 
 uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
@@ -2459,7 +2464,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , Unit18
   , uListaCnaes
   , uAssinaturaDigital
-  , uArquivosDAT
+// Sandro Silva 2023-10-02  , uArquivosDAT
   , uSmallEnumerados
   , uNFSeINI
   , uAtualizaBancoDados
@@ -7467,10 +7472,11 @@ begin
         //
         Form7.ibDataSet35ISS.AsFloat      := Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100;
         }
-        Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
+        Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet15DESCONTO.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat); // Sandro Silva 2023-10-02 Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
         Form7.ibDataSet35.Edit;
         //
-        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+        // Sandro Silva 2023-10-02 Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
         {Sandro Silva 2022-09-21 fim}
         //
@@ -9741,6 +9747,9 @@ var
   IBQCONTAS: TIBQuery; // Sandro Silva 2023-09-13
 begin
   //LogRetaguarda('9590'); // Sandro Silva 2023-09-13
+
+  if oArqConfiguracao = nil then
+    oArqConfiguracao := TArquivosDAT.Create(Usuario);
 
   Screen.Cursor := crHourGlass; // Cursor de Aguardo //
   try
@@ -33589,6 +33598,9 @@ begin
   slPickListBanco.Free;
   slPickListInstituicao.Free;
   {Sandro Silva 2023-07-05 fim}
+  {Sandro Silva 2023-10-02 inicio}
+  FreeAndNil(oArqConfiguracao);
+  {Sandro Silva 2023-10-02 fim}
 end;
 
 procedure TForm7.ibDataSet15SAIDADChange(Sender: TField);
