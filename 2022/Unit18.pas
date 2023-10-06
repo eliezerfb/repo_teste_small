@@ -1348,14 +1348,37 @@ begin
 
               Form7.Close;
               Form7.Show;
+
+              {Sandro Silva 2023-10-06 inicio
               ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'2'), '', SW_SHOW);
+              }
+              if Trim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then
+                MensagemSistema('Para emissão de Carnês ou Duplicatas o desdobramento das contas deverá conter ao menos uma das seguintes formas: ' + #13 +
+                                '- Sem informar forma ' + #13 +
+                                '- Crédito loja ' + #13 +
+                                '- Duplicata Mercantil ' + #13 +
+                                '- Outros')
+              else
+                ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'2'), '', SW_SHOW);
+              {Sandro Silva 2023-10-06 fim}
             end;
           end else
           begin
             Form7.ibDataSet7.Tag := ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA;
             Form7.Close;
             Form7.Show;
+            {Sandro Silva 2023-10-06 inicio
             ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'1'), '', SW_SHOW);
+            }
+            if Trim(Form7.ibDataSet7DOCUMENTO.AsString) = '' then
+              MensagemSistema('Para emissão de Carnês ou Duplicatas o desdobramento das contas deverá conter ao menos uma das seguintes formas: ' + #13 +
+                              '- Sem informar forma ' + #13 +
+                              '- Crédito loja ' + #13 +
+                              '- Duplicata Mercantil ' + #13 +
+                              '- Outros')
+            else
+              ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'1'), '', SW_SHOW);
+            {Sandro Silva 2023-10-06 fim}
           end;
         end;
       end;

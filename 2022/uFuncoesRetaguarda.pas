@@ -654,7 +654,7 @@ end;
 
 function FormaDePagamentoGeraCarneDuplicata(sForma: String): Boolean;
 begin
-  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||05|') > 0); // sem informar ou créditode Loja
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '||05|14|99|') > 0); // sem informar ou créditode Loja ou duplicata mercantil
 end;
 
 function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
@@ -672,7 +672,8 @@ begin
     sIdForma := ''
   else
     sIdForma := IdFormasDePagamentoNFe(sForma);
-  Result := (Pos('|' + sIdForma + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+  // Sandro Silva 2023-10-06 Result := (Pos('|' + sIdForma + '|', '||14|15|') > 0); // sem informar, duplicata mercantil ou boleto
+  Result := (Pos('|' + sIdForma + '|', '||14|15|99|') > 0); // sem informar, duplicata mercantil ou boleto
 end;
 
 function GeraMD5(valor :string):string;
