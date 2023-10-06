@@ -1,4 +1,4 @@
-unit uFiltrosRodapeRelatorioCatalogoProdutos;
+unit uFiltrosRodapeRelatorioPadrao;
 
 interface
 
@@ -6,9 +6,10 @@ uses
   Classes, uIFiltrosRodapeRelatorio;
 
 type
-  TFiltroRodapeRelCatalogoProdutos = class(TInterfacedObject, IFiltrosRodapeRelatorio)
+  TFiltroRodapeRelPadrao = class(TInterfacedObject, IFiltrosRodapeRelatorio)
   private
     FlsItens: TStringList;
+    FcTitulo: String;
     FcFiltroData: String;
     constructor Create;
   public
@@ -16,8 +17,8 @@ type
     class function New: IFiltrosRodapeRelatorio;
     function AddItem(AcDescricao: String): IFiltrosRodapeRelatorio;
     function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
-    function setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
     function getFiltroData: String;
+    function setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
     function getTitulo: String;
     function getItens: TStringList;
   end;
@@ -28,54 +29,58 @@ uses SysUtils;
 
 { TFiltroRodapeRelCatalogoProdutos }
 
-function TFiltroRodapeRelCatalogoProdutos.AddItem(AcDescricao: String): IFiltrosRodapeRelatorio;
+function TFiltroRodapeRelPadrao.AddItem(AcDescricao: String): IFiltrosRodapeRelatorio;
 begin
   Result := Self;
   
   FlsItens.Add(AcDescricao);
 end;
 
-constructor TFiltroRodapeRelCatalogoProdutos.Create;
+constructor TFiltroRodapeRelPadrao.Create;
 begin
   FlsItens := TStringList.Create;
+
+  FcTitulo := 'Filtros utilizados';
 end;
 
-destructor TFiltroRodapeRelCatalogoProdutos.Destroy;
+destructor TFiltroRodapeRelPadrao.Destroy;
 begin
   FreeAndNil(FlsItens);
   inherited;
 end;
 
-function TFiltroRodapeRelCatalogoProdutos.getFiltroData: String;
+function TFiltroRodapeRelPadrao.getFiltroData: String;
 begin
   Result := FcFiltroData;
 end;
 
-function TFiltroRodapeRelCatalogoProdutos.getItens: TStringList;
+function TFiltroRodapeRelPadrao.getItens: TStringList;
 begin
   Result := FlsItens;
 end;
 
-function TFiltroRodapeRelCatalogoProdutos.getTitulo: String;
+function TFiltroRodapeRelPadrao.getTitulo: String;
 begin
-  Result := EmptyStr;
+  Result := FcTitulo;
 end;
 
-class function TFiltroRodapeRelCatalogoProdutos.New: IFiltrosRodapeRelatorio;
+class function TFiltroRodapeRelPadrao.New: IFiltrosRodapeRelatorio;
 begin
   Result := Self.Create;
 end;
 
-function TFiltroRodapeRelCatalogoProdutos.setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
+function TFiltroRodapeRelPadrao.setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
 begin
   Result := Self;
 
   FcFiltroData := AcFiltro;
 end;
 
-function TFiltroRodapeRelCatalogoProdutos.setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
+function TFiltroRodapeRelPadrao.setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
 begin
   Result := Self;
+
+  FcTitulo := AcTitulo;
 end;
 
 end.

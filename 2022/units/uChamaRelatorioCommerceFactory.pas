@@ -10,19 +10,25 @@ type
   private
   public
     class function New: IChamaRelatorioFactory;
-    function VendasPorCliente: IChamaRelatorioPadrao;    
+    function VendasPorCliente: IChamaRelatorioPadrao;
+    function ResumoDeVendas: IChamaRelatorioPadrao;
   end;
 
 implementation
 
 uses
-  uChamaRelVendasCliente;
+  uChamaRelVendasCliente, uChamaRelResumoVendas;
 
 { TChamaRelatorioFactory }
 
 class function TChamaRelatorioFactory.New: IChamaRelatorioFactory;
 begin
   Result := Self.Create;
+end;
+
+function TChamaRelatorioFactory.ResumoDeVendas: IChamaRelatorioPadrao;
+begin
+  Result := TChamaRelResumoVendas.New;
 end;
 
 function TChamaRelatorioFactory.VendasPorCliente: IChamaRelatorioPadrao;
