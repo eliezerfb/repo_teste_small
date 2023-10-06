@@ -170,7 +170,12 @@ uses
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
   uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
-  uSectionsInformacoesObtidasNaPrefeitura in '..\..\unit_compartilhada\uSectionsInformacoesObtidasNaPrefeitura.pas';
+  uSectionsInformacoesObtidasNaPrefeitura in '..\..\unit_compartilhada\uSectionsInformacoesObtidasNaPrefeitura.pas',
+  uChamaRelResumoVendas in 'units\uChamaRelResumoVendas.pas',
+  uRelatorioResumoVendas in 'units\uRelatorioResumoVendas.pas' {frmRelResumoVendas},
+  uEstruturaRelResumoVendas in 'units\uEstruturaRelResumoVendas.pas',
+  uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas',
+  uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas';
 
 {$R *.RES}
 
