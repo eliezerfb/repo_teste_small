@@ -4341,8 +4341,10 @@ end;
 
 function AbreArquivoNoFormatoCerto(sP1:String): boolean;
 begin
-  if Copy(sP1,1,3) <> 'OS_' then sP1 := Senhas.UsuarioPub;
+  if Copy(sP1,1,3) <> 'OS_' then
+    sP1 := Senhas.UsuarioPub;
 
+{Sandro Silva 2023-10-02 inicio
   if Form1.bPDF then
   begin
     Screen.Cursor            := crHourGlass;
@@ -4356,6 +4358,19 @@ begin
   begin
     ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
   end;
+}
+  if Form1.bPDF then
+  begin
+    Screen.Cursor            := crHourGlass;
+    HtmlParaPdf(sP1);
+    ShellExecute( 0, 'Open',pChar(sP1+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+    Screen.Cursor            := crDefault;
+  end
+  else if Form1.bHtml1 then
+  begin
+    ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
 
   Result := True;
 end;
