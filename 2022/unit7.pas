@@ -2468,7 +2468,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uChamaRelatorioCommerceFactory
   , uImpressaoOrcamento
   , uSectionFrentedeCaixaINI
-  , uFrmParametroTributacao;
+  , uFrmParametroTributacao, uExportXmlContabilidade;
 
 {$R *.DFM}
 
@@ -25599,6 +25599,12 @@ var
   SearchRec : tSearchREC;
   Encontrou  : Integer;
 begin
+
+
+  ExportaXmlParaAContabilidade;
+
+  Exit;
+
   //
   // Form só para pedir o período e o e-mail do contador.
   //

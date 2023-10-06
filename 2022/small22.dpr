@@ -170,7 +170,8 @@ uses
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
   uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
-  uSectionsInformacoesObtidasNaPrefeitura in '..\..\unit_compartilhada\uSectionsInformacoesObtidasNaPrefeitura.pas';
+  uSectionsInformacoesObtidasNaPrefeitura in '..\..\unit_compartilhada\uSectionsInformacoesObtidasNaPrefeitura.pas',
+  uExportXmlContabilidade in 'uExportXmlContabilidade.pas';
 
 {$R *.RES}
 
