@@ -97,24 +97,52 @@ begin
     
     try
       if cbNFeSaida.Checked then
-        cZipNFeSaida   := TSalvaXMLContabilFactory.New
-                                                  .NFeSaida
-                                                  .setTransaction(Form7.IBTransaction1)
-                                                  .setDatas(dtInicial.Date, dtFinal.Date)
-                                                  .setCNPJ(Form7.ibDataSet13CGC.AsString)
-                                                  .Salvar
-                                                  .Compactar
-                                                  .getCaminhoArquivos;
+      begin
+        Form7.ibDataSet15.DisableControls;
+        try
+          Form7.ibDataSet15.Close;
+          Form7.ibDataSet15.SelectSql.Clear;
+          Form7.ibDataSet15.Selectsql.Add('select * from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+
+                                          ' and EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+' order by EMISSAO, NUMERONF');
+          Form7.ibDataset15.Open;
+
+          cZipNFeSaida   := TSalvaXMLContabilFactory.New
+                                                    .NFeSaida
+                                                    .setTransaction(Form7.IBTransaction1)
+                                                    .setDatas(dtInicial.Date, dtFinal.Date)
+                                                    .setDataSet(Form7.ibDataSet15)
+                                                    .setCNPJ(Form7.ibDataSet13CGC.AsString)
+                                                    .Salvar
+                                                    .Compactar
+                                                    .getCaminhoArquivos;
+        finally
+          Form7.ibDataSet15.EnableControls;
+        end;
+      end;
 
       if cbNFeEntrada.Checked then
-        cZipNFeEntrada := TSalvaXMLContabilFactory.New
-                                                  .NFeEntrada
-                                                  .setTransaction(Form7.IBTransaction1)
-                                                  .setDatas(dtInicial.Date, dtFinal.Date)
-                                                  .setCNPJ(Form7.ibDataSet13CGC.AsString)
-                                                  .Salvar
-                                                  .Compactar
-                                                  .getCaminhoArquivos;
+      begin
+        Form7.ibDataSet24.DisableControls;
+        try
+          Form7.ibDataSet24.Close;
+          Form7.ibDataSet24.SelectSql.Clear;
+          Form7.ibDataSet24.Selectsql.Add('select * from COMPRAS where EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+
+                                          ' and EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+' order by EMISSAO, NUMERONF');
+          Form7.ibDataSet24.Open;
+
+          cZipNFeEntrada := TSalvaXMLContabilFactory.New
+                                                    .NFeEntrada
+                                                    .setTransaction(Form7.IBTransaction1)
+                                                    .setDatas(dtInicial.Date, dtFinal.Date)
+                                                    .setDataSet(Form7.ibDataSet24)
+                                                    .setCNPJ(Form7.ibDataSet13CGC.AsString)
+                                                    .Salvar
+                                                    .Compactar
+                                                    .getCaminhoArquivos;
+        finally
+          Form7.ibDataSet24.EnableControls;
+        end;
+      end;
 
       if cbNFCeSAT.Checked then
         cZipNFCeSAT    := TSalvaXMLContabilFactory.New

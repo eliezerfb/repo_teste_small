@@ -31665,8 +31665,12 @@ begin
   try
     frmExportaXML.SetImagem(Form1.imgVendas.Picture);
     frmExportaXML.AbrirTelaTodosDocs;
+
+    AgendaCommit(False);
   finally
     FreeAndNil(frmExportaXML);
+    Form7.Close;
+    Form7.ShowModal;
   end;
 end;
 
