@@ -19752,23 +19752,10 @@ begin
       begin
         if Form7.sModulo <> 'ORCAMENTO' then
         begin
-          //{Sandro Silva 2023-10-03 inicio
           if Application.MessageBox(Pchar('Confirma um desconto de: ' + AllTrim(Format('%12.2n',[fDesconto])) + ' % no produto: ' + Form7.ibDataSet4PRECO.AsString),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION) = IDYES then
           begin
             Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat - ( Form7.ibDataSet4PRECO.AsFloat * fDesconto / 100);
           end;
-
-          {
-          // Pedirá confirmação quando informar quantidade acima daquela configurada na promoção ou alterar a quantidade informada
-          // Em uNotaFiscalEletronica ocorrem os cálculos, o ponteiro do dataset é movimentado e acionado o eventi QuantidadeChange
-          //if Form7.ibDataSet16QUANTIDADE.NewValue <> Form7.ibDataSet16QUANTIDADE.OldValue then
-          begin
-            if Application.MessageBox(Pchar('Confirma um desconto de: ' + AllTrim(Format('%12.2n',[fDesconto])) + ' % no produto: ' + Form7.ibDataSet4PRECO.AsString),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION) = IDYES then
-            begin
-              Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat - ( Form7.ibDataSet4PRECO.AsFloat * fDesconto / 100);
-            end;
-          end;
-          {Sandro Silva 2023-10-03 fim}
         end;
       end;
 
