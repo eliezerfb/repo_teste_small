@@ -31670,7 +31670,7 @@ begin
   finally
     FreeAndNil(frmExportaXML);
     Form7.Close;
-    Form7.ShowModal;
+    Form7.Show;
   end;
 end;
 
