@@ -182,7 +182,9 @@ uses
   uRelatorioResumoVendas in 'units\uRelatorioResumoVendas.pas' {frmRelResumoVendas},
   uEstruturaRelResumoVendas in 'units\uEstruturaRelResumoVendas.pas',
   uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas',
-  uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas';
+  uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas',
+  uIDuplicaProduto in 'interfaces\uIDuplicaProduto.pas',
+  uDuplicaProduto in 'units\uDuplicaProduto.pas';
 
 {$R *.RES}
 

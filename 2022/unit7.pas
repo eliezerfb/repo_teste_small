@@ -1598,6 +1598,7 @@ type
     Parmetrosdetributao1: TMenuItem;
     Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
+    DuplicarProduto: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2256,10 +2257,12 @@ type
     procedure Perfildetributao1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
     procedure Configurarobservaofixa1Click(Sender: TObject);
+    procedure DuplicarProdutoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
+    FbDuplicandoProd: Boolean; 
     FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
@@ -2478,7 +2481,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImpressaoOrcamento
   , uSectionFrentedeCaixaINI
   , uFrmParametroTributacao
-  , uRelatorioResumoVendas;
+  , uRelatorioResumoVendas
+  , uDuplicaProduto;
 
 {$R *.DFM}
 
@@ -9545,6 +9549,8 @@ begin
   DBGrid1.GradientEndColor   := $00F0F0F0;
   DBGrid1.GradientStartColor := $00F0F0F0;
   {$ENDIF}
+
+  FbDuplicandoProd := False;  
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -13305,6 +13311,7 @@ begin
   VisualizarXMLdamanifestaododestinatrio1.Visible  := False;
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
+  DuplicarProduto.Visible                          := False;  
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13384,6 +13391,7 @@ begin
     end;
     if sModulo = 'ESTOQUE'  then
     begin
+      DuplicarProduto.Visible := True;
       if ibDataSet4ATIVO.AsString='1' then
         Ativo1.Checked := False
       else
@@ -27001,6 +27009,11 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+  
   //Mauricio Parizotto 2023-09-18
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -33915,6 +33928,11 @@ end;
 
 procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   //Mauricio Parizotto 2023-09-26
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -33932,6 +33950,11 @@ end;
 
 procedure TForm7.VerificaAlteracaoPerfil;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
     Exit;
 
@@ -34028,6 +34051,30 @@ begin
     oArqIni.SmallCom.Orcamento.Observacao := cMsg;
   finally
     FreeAndNil(oArqIni);
+  end;
+end;
+
+procedure TForm7.DuplicarProdutoClick(Sender: TObject);
+begin
+  try
+    FbDuplicandoProd := True;
+
+    if TDuplicaProduto.New
+                   .SetTransaction(IBTransaction1)
+                   .SetDataSetEstoque(ibDataSet4)
+                   .SetDataSetComposicao(ibDataSet28)
+                   .SetCodigoProduto(ibDataSet4CODIGO.AsString)
+                   .Duplicar then
+    begin
+      AgendaCommit(False);
+
+
+    end;
+  finally
+    FbDuplicandoProd := False;
+
+    Self.Close;
+    Self.Show;
   end;
 end;
 
