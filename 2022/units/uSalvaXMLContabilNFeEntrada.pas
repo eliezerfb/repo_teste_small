@@ -108,7 +108,7 @@ end;
 
 function TSalvaXMLContabilNFeEntrada.RetornarCaminho: String;
 begin
-  Result := GetCurrentDir + '\CONTABIL\';
+  Result := ExtractFilePath(Application.ExeName) + 'CONTABIL\';
 end;
 
 function TSalvaXMLContabilNFeEntrada.RetornarNomeZip: String;
@@ -182,27 +182,27 @@ begin
   slArq := TStringList.Create;
   try
     try
-      if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-caneve.xml')) then
+      if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-caneve.xml')) then
       begin
-        slArq.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-caneve.xml'));
+        slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-caneve.xml'));
         Result := slArq.Text;
       end else
       begin
-        if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-den.xml')) then
+        if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-den.xml')) then
         begin
-          slArq.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-den.xml'));
+          slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-den.xml'));
           Result := slArq.Text;
         end else
         begin
-          if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-nfe.xml')) then
+          if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-nfe.xml')) then
           begin
-            slArq.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-nfe.xml'));
+            slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-nfe.xml'));
             Result := slArq.Text;
           end else
           begin
-            if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '.xml')) then
+            if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '.xml')) then
             begin
-              slArq.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '.xml'));
+              slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '.xml'));
               Result := slArq.Text;
             end else
             begin

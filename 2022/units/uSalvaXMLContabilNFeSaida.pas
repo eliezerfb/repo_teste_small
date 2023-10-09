@@ -193,27 +193,27 @@ begin
   lsfile := TStringList.Create;
   try
     try
-      if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-caneve.xml')) then
+      if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-caneve.xml')) then
       begin
-        lsfile.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-caneve.xml'));
+        lsfile.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-caneve.xml'));
         Result := lsfile.Text;
       end else
       begin
-        if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-den.xml')) then
+        if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-den.xml')) then
         begin
-          lsfile.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-den.xml'));
+          lsfile.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-den.xml'));
           Result := lsfile.Text;
         end else
         begin
-          if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-nfe.xml')) then
+          if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-nfe.xml')) then
           begin
-            lsfile.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '-nfe.xml'));
+            lsfile.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-nfe.xml'));
             Result := lsfile.Text;
           end else
           begin
-            if FileExists(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '.xml')) then
+            if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '.xml')) then
             begin
-              lsfile.LoadFromFile(pChar(GetCurrentDir + '\XmlDestinatario\' + AcChaveNFe + '.xml'));
+              lsfile.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '.xml'));
               Result := lsfile.Text;
             end else
             begin
@@ -270,7 +270,7 @@ end;
 
 function TSalvaXMLContabilNFeSaida.RetornarCaminho: String;
 begin
-  Result := GetCurrentDir + '\CONTABIL\';
+  Result := ExtractFilePath(Application.ExeName) + 'CONTABIL\';
 end;
 
 function TSalvaXMLContabilNFeSaida.setCNPJ(

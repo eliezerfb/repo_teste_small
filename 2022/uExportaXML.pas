@@ -69,14 +69,14 @@ var
   i: integer;
   oSearch: TSearchRec;
 begin
-  if not (DirectoryExists(GetCurrentDir + '\CONTABIL\')) then
+  if not (DirectoryExists(ExtractFilePath(Application.ExeName) + 'CONTABIL\')) then
     Exit;
 
-  I := FindFirst(GetCurrentDir + '\CONTABIL\*.*', faAnyFile, oSearch);
+  I := FindFirst(ExtractFilePath(Application.ExeName) + 'CONTABIL\*.*', faAnyFile, oSearch);
 
   while I = 0 do
   begin
-    DeleteFile(GetCurrentDir + '\CONTABIL\' + oSearch.Name);
+    DeleteFile(ExtractFilePath(Application.ExeName) + 'CONTABIL\' + oSearch.Name);
     I := FindNext(oSearch);
   end;
 end;
