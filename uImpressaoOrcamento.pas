@@ -226,7 +226,7 @@ end;
 
 function TImpressaoOrcamento.RetornarCaminhoArquivo: String;
 begin
-  Result := GetCurrentDir + '\' + RetornarNomeArquivo;
+  Result := ExtractFilePath(Application.ExeName) + RetornarNomeArquivo; // Sandro Silva 2023-10-09 Result := GetCurrentDir + '\' + RetornarNomeArquivo;
 end;
 
 function TImpressaoOrcamento.RetornarNomeArquivo: String;
