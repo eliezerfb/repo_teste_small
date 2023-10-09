@@ -34066,9 +34066,9 @@ begin
                    .SetCodigoProduto(ibDataSet4CODIGO.AsString)
                    .Duplicar then
     begin
+      Sleep(200);
+
       AgendaCommit(False);
-
-
     end;
   finally
     FbDuplicandoProd := False;
