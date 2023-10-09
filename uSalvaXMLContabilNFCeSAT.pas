@@ -106,7 +106,7 @@ end;
 
 function TSalvaXMLContabilNFCeSAT.RetornarCaminho: String;
 begin
-  Result := GetCurrentDir + '\CONTABIL\';
+  Result := ExtractFilePath(Application.ExeName) + 'CONTABIL\';
 end;
 
 function TSalvaXMLContabilNFCeSAT.RetornarNomeZip: String;
