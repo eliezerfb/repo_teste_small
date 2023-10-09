@@ -395,7 +395,12 @@ begin
         DataSetItens.FieldByName('ICM').AsFloat             := oItem.Icm;
         DataSetItens.FieldByName('ISS').AsFloat             := oItem.Iss;
         DataSetItens.FieldByName('MEDIDA').AsString         := oItem.Medida;
+        {Sandro Silva 2023-10-09 inicio
         DataSetItens.FieldByName('QUANTIDADE').AsFloat      := oItem.Quantidade;
+        }
+        if DataSetItens.FieldByName('QUANTIDADE').AsFloat <> oItem.Quantidade then
+          DataSetItens.FieldByName('QUANTIDADE').AsFloat      := oItem.Quantidade;
+        {Sandro Silva 2023-10-09 fim}
         DataSetItens.FieldByName('SINCRONIA').AsFloat       := oItem.Sincronia;
         DataSetItens.FieldByName('UNITARIO').AsFloat        := oItem.Unitario;
         DataSetItens.FieldByName('TOTAL').AsFloat           := oItem.Total;
