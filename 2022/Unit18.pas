@@ -1398,8 +1398,7 @@ begin
     {Sandro Silva 2023-07-12 fim}
   except
   end;
-  //
-
+  //    
 end;
 
 procedure TForm18.ExibeOpcoesPreencherColunas;
