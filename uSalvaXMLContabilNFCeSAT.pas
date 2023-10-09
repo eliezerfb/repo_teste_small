@@ -4,7 +4,7 @@ interface
 
 uses
   uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery, SmallFunc, smallfunc_xe, ShellAPI, Windows,
-  Forms, uConectaBancoSmall, Classes;
+  Forms, uConectaBancoSmall, Classes, DB;
 
 type
   TSalvaXMLContabilNFCeSAT = class(TInterfacedObject, ISalvaXMLDocsEletronicosContabil)
@@ -26,6 +26,7 @@ type
     class function New: ISalvaXMLDocsEletronicosContabil;
     function setTransaction(AoTransaction: TIBTransaction): ISalvaXMLDocsEletronicosContabil;
     function setDatas(AdDataIni, AdDataFim: TDateTime): ISalvaXMLDocsEletronicosContabil;
+    function setDataSet(AoDataSet: TDataSet): ISalvaXMLDocsEletronicosContabil;
     function setCNPJ(AcCNPJ: String): ISalvaXMLDocsEletronicosContabil;
     function Salvar: ISalvaXMLDocsEletronicosContabil;
     function Compactar: ISalvaXMLDocsEletronicosContabil;
@@ -267,6 +268,12 @@ begin
   FQryNFe.SQL.Add('    AND MODELO = ''65''');
   FQryNFe.SQL.Add('ORDER BY 1,2,3');
   FQryNFe.Open;
+end;
+
+function TSalvaXMLContabilNFCeSAT.setDataSet(
+  AoDataSet: TDataSet): ISalvaXMLDocsEletronicosContabil;
+begin
+  Result := Self;
 end;
 
 end.
