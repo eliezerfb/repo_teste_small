@@ -4,7 +4,7 @@ interface
 
 uses
   uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery, SmallFunc, ShellAPI, Windows,
-  Forms, uConectaBancoSmall, Classes;
+  Forms, uConectaBancoSmall, Classes, DB;
 
 type
   TSalvaXMLContabilNFeEntrada = class(TInterfacedObject, ISalvaXMLDocsEletronicosContabil)
@@ -13,6 +13,7 @@ type
     FdDataIni: TDateTime;
     FdDataFim: TDateTime;
     FQryNFe: TIBQuery;
+    FoDataSet: TDataSet;
     FbGerouZIP: Boolean;
     constructor Create;
     function RetornarCaminho: String;
@@ -28,6 +29,7 @@ type
     function setTransaction(AoTransaction: TIBTransaction): ISalvaXMLDocsEletronicosContabil;
     function setDatas(AdDataIni, AdDataFim: TDateTime): ISalvaXMLDocsEletronicosContabil;
     function setCNPJ(AcCNPJ: String): ISalvaXMLDocsEletronicosContabil;
+    function setDataSet(AoDataSet: TDataSet): ISalvaXMLDocsEletronicosContabil;    
     function Salvar: ISalvaXMLDocsEletronicosContabil;
     function Compactar: ISalvaXMLDocsEletronicosContabil;
     function getCaminhoArquivos: String;
@@ -35,7 +37,7 @@ type
 
 implementation
 
-uses SysUtils;
+uses SysUtils, uSmallConsts;
 
 { TSalvaXMLContabilNFeEntrada }
 
@@ -51,6 +53,8 @@ end;
 function TSalvaXMLContabilNFeEntrada.Compactar: ISalvaXMLDocsEletronicosContabil;
 begin
   Result := Self;
+
+  Sleep(100);
 
   if not TestarTemArquivosXML then
     Exit;
@@ -104,7 +108,7 @@ end;
 
 function TSalvaXMLContabilNFeEntrada.RetornarCaminho: String;
 begin
-  Result := GetCurrentDir + '\CONTABIL\';
+  Result := ExtractFilePath(Application.ExeName) + 'CONTABIL\';
 end;
 
 function TSalvaXMLContabilNFeEntrada.RetornarNomeZip: String;
@@ -125,6 +129,7 @@ procedure TSalvaXMLContabilNFeEntrada.GerarXMLs;
 var
   slArq: TStringList;
   cArquivo: String;
+  cXML: String;
 begin
   FQryNFe.First;
 
@@ -132,21 +137,36 @@ begin
   begin
     slArq := TStringList.Create;
     try
-      if (Pos('<nfeProc', FQryNFe.FieldByName('NFEXML').AsString) = 0) and (Pos('<procEventoNFe', FQryNFe.FieldByName('NFEXML').AsString) = 0) then
-        slArq.Text := LoadXmlDestinatarioEntrada(FQryNFe.FieldByName('NFEID').AsString)
-      else
+      cXML := FQryNFe.FieldByName('NFEXML').AsString;
+
+      if (Pos('<nfeProc', cXML) = 0) and (Pos('<procEventoNFe', cXML) = 0) then
       begin
-        if (Pos('<nfeProc', FQryNFe.FieldByName('NFEXML').AsString) <> 0) or (Pos('<procEventoNFe', FQryNFe.FieldByName('NFEXML').AsString) <> 0) then
-          slArq.Text := FQryNFe.FieldByName('NFEXML').AsString;
+        cXML := LoadXmlDestinatarioEntrada(FQryNFe.FieldByName('NFEID').AsString);
+
+        if FoDataSet.Locate('REGISTRO', FQryNFe.FieldByName('REGISTRO').AsString, []) then
+        begin
+          FoDataSet.Edit;
+          FoDataSet.FieldByName('NFEXML').AsString := cXML;
+          FoDataSet.Post;
+        end;
       end;
 
-      cArquivo := RetornarCaminho + FQryNFe.FieldByName('NFEID').AsString;
-      if (Pos('>Cancelamento</descEvento>', slArq.Text) <> 0) then
-        cArquivo := cArquivo + '-caneve.xml'
-      else
-        cArquivo := cArquivo + '-nfe.xml';
+      if (Pos('<nfeProc', cXML) <> 0) or (Pos('<procEventoNFe', cXML) <> 0) then
+      begin
+        slArq.Text := cXML;
 
-      slArq.SaveToFile(cArquivo);
+        cArquivo := RetornarCaminho + FQryNFe.FieldByName('NFEID').AsString;
+        if (Pos('>Cancelamento</descEvento>', slArq.Text) <> 0) then
+          cArquivo := cArquivo + '-caneve.xml'
+        else
+          cArquivo := cArquivo + '-nfe.xml';
+
+        if Pos(_cZerosNFeID, cArquivo) > 0 then
+          Exit;
+
+        if Trim(slArq.Text) <> EmptyStr then
+          slArq.SaveToFile(cArquivo);
+      end;
     finally
       FreeAndNil(slArq);
     end;
@@ -162,27 +182,27 @@ begin
   slArq := TStringList.Create;
   try
     try
-      if FileExists(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '-caneve.xml')) then
+      if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-caneve.xml')) then
       begin
-        slArq.LoadFromFile(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '-caneve.xml'));
+        slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-caneve.xml'));
         Result := slArq.Text;
       end else
       begin
-        if FileExists(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '-den.xml')) then
+        if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-den.xml')) then
         begin
-          slArq.LoadFromFile(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '-den.xml'));
+          slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-den.xml'));
           Result := slArq.Text;
         end else
         begin
-          if FileExists(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '-nfe.xml')) then
+          if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-nfe.xml')) then
           begin
-            slArq.LoadFromFile(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '-nfe.xml'));
+            slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '-nfe.xml'));
             Result := slArq.Text;
           end else
           begin
-            if FileExists(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '.xml')) then
+            if FileExists(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '.xml')) then
             begin
-              slArq.LoadFromFile(pChar(ExtractFileDir(GetCurrentDir) + '\XmlDestinatario\' + AcChaveNFe + '.xml'));
+              slArq.LoadFromFile(pChar(ExtractFilePath(Application.ExeName) + 'XmlDestinatario\' + AcChaveNFe + '.xml'));
               Result := slArq.Text;
             end else
             begin
@@ -237,6 +257,7 @@ begin
     DeleteFile(pChar(RetornarCaminho+oSearchRec.Name));
     AnEncontrou := FindNext(oSearchRec);
   end;
+  Sleep(100);   
 end;
 
 procedure TSalvaXMLContabilNFeEntrada.CarregarDados;
@@ -246,11 +267,21 @@ begin
   FQryNFe.SQL.Add('SELECT');
   FQryNFe.SQL.Add('   COMPRAS.NFEXML');
   FQryNFe.SQL.Add('   , COMPRAS.NFEID');
+  FQryNFe.SQL.Add('   , COMPRAS.REGISTRO');
   FQryNFe.SQL.Add('FROM COMPRAS');
   FQryNFe.SQL.Add('WHERE ((COMPRAS.EMISSAO >= ' + QuotedStr(DateToStrInvertida(FdDataIni)) + ') AND (COMPRAS.EMISSAO <= ' + QuotedStr(DateToStrInvertida(FdDataFim)) + '))');
   FQryNFe.SQL.Add('AND (COALESCE(COMPRAS.NFEID,'''') <> '''')');
+  FQryNFe.SQL.Add('AND (COALESCE(COMPRAS.NFEID,' + QuotedStr(_cZerosNFeID) + ') <> ' + QuotedStr(_cZerosNFeID) + ')');  
   FQryNFe.SQL.Add('ORDER BY COMPRAS.EMISSAO, COMPRAS.NUMERONF');
   FQryNFe.Open;
+end;
+
+function TSalvaXMLContabilNFeEntrada.setDataSet(
+  AoDataSet: TDataSet): ISalvaXMLDocsEletronicosContabil;
+begin
+  Result := Self;
+
+  FoDataSet := AoDataSet;
 end;
 
 end.

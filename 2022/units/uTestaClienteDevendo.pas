@@ -41,7 +41,8 @@ begin
   FQryDados.SQL.Add('WHERE (NOME=:XNOME)');
   FQryDados.ParamByName('XNOME').AsString := FcCliente;
   FQryDados.Open;
-  FQryDados.FetchAll;
+  // Sandro Silva 2023-10-09 FetchAll causa lentidão. Usar em situações que realmente for necessário. Usar algum parâmetro para definir se deve aplicar
+  //FQryDados.FetchAll; Nesta situação não há motivos para usar fetchall porque está selecionando o primeiro registro (First 1)
 end;
 
 constructor TTestaClienteDevendo.Create;
