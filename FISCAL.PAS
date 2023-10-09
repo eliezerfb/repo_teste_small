@@ -5967,6 +5967,8 @@ var
   s, sAntigo : String;
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
+  sAntigoOrcamentSemCodigo: String; // Sandro Silva 2023-10-09 Identificado que na rotina de movimentação de orçamento estava calculando o hash sem consigerar o campo código (F)
+  sAntigoOrcamentENCRYPTHASH, sAntigoOrcamentSemCodigoENCRYPTHASH: String; // Sandro Silva 2023-10-09
 begin
   //
   Result := True;
@@ -6381,6 +6383,26 @@ begin
     //
     if pNome = 'ORCAMENT' then
     begin
+      {Sandro Silva 2023-10-09 inicio}
+      sAntigoOrcamentSemCodigo :=
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+      {Sandro Silva 2023-10-09 fim}
+
       sAntigo :=
         VarToStr(DataSet.FieldByName('CODIGO').OldValue)+
         VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
@@ -6502,6 +6524,13 @@ begin
       //            'hash banco ' + DataSet.FieldByName('ENCRYPTHASH').AsString);
     end;
 
+    {Sandro Silva 2023-10-09 inicio}
+    if (pNome = 'ORCAMENT') then
+    begin
+      sAntigoOrcamentENCRYPTHASH          := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
+      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo)));
+    end;
+    {Sandro Silva 2023-10-09 fim}
 
     if bAssina then
     begin
@@ -6516,6 +6545,19 @@ begin
           DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
         end;
       end else
+      {Sandro Silva 2023-10-09 inicio}
+      if pNome = 'ORCAMENT' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo))))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo))))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+        end;
+      end else
+      {Sandro Silva 2023-10-09 fim}
       begin
         if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
         begin
@@ -6545,6 +6587,21 @@ begin
           Result := False;
         end;
       end;
+      {Sandro Silva 2023-10-09 inicio}
+      // Identificado diferença na geração dos HASHs entre o COMMERCE e o ORCA, o ORCA gerava sem o campo CODIGO
+      // Essa mesma validação deve estar na rotina de "assinaregistro" do COMMERCE e do FRENTE
+      if (pNome = 'ORCAMENT') and (Result = False) then
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo))))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        begin
+          Result := True;
+        end else
+        begin
+          Result := False;
+        end;
+      end;
+      {Sandro Silva 2023-10-09 fim}
     end;
   except SmallMsg('Erro ao criptografar head do registro do arquivo '+pNome) end;
   //
