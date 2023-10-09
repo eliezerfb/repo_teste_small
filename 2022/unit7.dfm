@@ -19586,7 +19586,7 @@ object Form7: TForm7
         OnClick = Exportar1Click
       end
       object ExportarNFesemarquivoXML1: TMenuItem
-        Caption = 'Exportar NFe'#39's para contabilidade...'
+        Caption = 'Exportar XML'#39's para contabilidade'#8230
         OnClick = ExportarNFesemarquivoXML1Click
       end
       object ExportarNFesfiltradasemarquivoXML1: TMenuItem
@@ -19778,7 +19778,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object ExportarNfesdeentrdaparacontabilidade1: TMenuItem
-        Caption = 'Exportar NF-e'#39's para a contabilidade'
+        Caption = 'Exportar XML'#39's para contabilidade'#8230
         OnClick = ExportarNfesdeentrdaparacontabilidade1Click
       end
       object N41: TMenuItem
