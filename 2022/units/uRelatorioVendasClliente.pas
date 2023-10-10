@@ -49,7 +49,7 @@ implementation
 
 uses
   SmallFunc, uEstruturaRelVendasPorCliente, uSmallResourceString,
-  uRetornaOperacoesRelatorio, uSectionOutrosUsuarioINF;
+  uRetornaOperacoesRelatorio, uUsuarioSections;
 
 {$R *.dfm}
 
