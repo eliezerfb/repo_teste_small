@@ -3,7 +3,7 @@ unit uFrenteINI;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionFrentedeCaixaINI;
+  uArquivoDATINFPadrao, uFrenteSections;
 
 type
   TFreteINI = class(TArquivoDATINFPadrao)

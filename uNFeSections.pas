@@ -1,4 +1,4 @@
-unit uSectionsNFeINI;
+unit uNFeSections;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   uSectionDATPadrao, uSmallEnumerados;
 
 type
-  TSectionNFEINI = class(TSectionDATPadrao)
+  TSectionNFE = class(TSectionDATPadrao)
   private
     function getAmbiente: tAmbienteNFe;
     procedure setAmbiente(const Value: tAmbienteNFe);
@@ -40,21 +40,21 @@ uses SysUtils, uSmallConsts;
 
 { TSectionNFE }
 
-function TSectionNFEINI.AmbienteStrToEnum(AcAmbiente: String): tAmbienteNFe;
+function TSectionNFE.AmbienteStrToEnum(AcAmbiente: String): tAmbienteNFe;
 begin
   Result := tanfHomologacao;
   if AcAmbiente = _cAmbienteProducao then
     Result := tanfProducao;
 end;
 
-function TSectionNFEINI.AmbienteToStr(AenAmbiente: tAmbienteNFe): String;
+function TSectionNFE.AmbienteToStr(AenAmbiente: tAmbienteNFe): String;
 begin
   Result := _cAmbienteHomologacao;
   if AenAmbiente = tanfProducao then
     Result := _cAmbienteProducao;
 end;
 
-function TSectionNFEINI.getAmbiente: tAmbienteNFe;
+function TSectionNFE.getAmbiente: tAmbienteNFe;
 begin
   Result := tanfHomologacao;
 
@@ -62,12 +62,12 @@ begin
     Result := tanfProducao;
 end;
 
-function TSectionNFEINI.Section: String;
+function TSectionNFE.Section: String;
 begin
   Result := _cSectionNFE;
 end;
 
-procedure TSectionNFEINI.setAmbiente(const Value: tAmbienteNFe);
+procedure TSectionNFE.setAmbiente(const Value: tAmbienteNFe);
 var
   cAmbiente: String;
 begin

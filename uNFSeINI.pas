@@ -3,22 +3,22 @@ unit uNFSeINI;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionsNFSeINI
-  , uSectionsInformacoesObtidasNaPrefeitura
+  uArquivoDATINFPadrao
+  , uNFSeSections
   ;
 
 type
   TNFSeINI = class(TArquivoDATINFPadrao)
   private
-    FoNFSe: TSectionNFSEINI;
-    FoInformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeituraINI;
-    function getNFSe: TSectionNFSEINI;
-    function getInformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeituraINI;
+    FoNFSe: TSectionNFSE;
+    FoInformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeitura;
+    function getNFSe: TSectionNFSE;
+    function getInformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeitura;
   public
     destructor Destroy; override;
 
-    property NFSE: TSectionNFSEINI read getNFSe;
-    property InformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeituraINI read getInformacoesObtidasNaPrefeitura;
+    property NFSE: TSectionNFSE read getNFSe;
+    property InformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeitura read getInformacoesObtidasNaPrefeitura;
   protected
     function NomeArquivo: String; override;
   end;
@@ -36,18 +36,18 @@ begin
   inherited;
 end;
 
-function TNFSeINI.getNFSe: TSectionNFSEINI;
+function TNFSeINI.getNFSe: TSectionNFSE;
 begin
   if not Assigned(FoNFSe) then
-    FoNFSe := TSectionNFSEINI.Create(FoIni);
+    FoNFSe := TSectionNFSE.Create(FoIni);
 
   Result := FoNFSe;
 end;
 
-function TNFSeINI.getInformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeituraINI;
+function TNFSeINI.getInformacoesObtidasNaPrefeitura: TSectionInformacoesObtidasNaPrefeitura;
 begin
   if not Assigned(FoInformacoesObtidasNaPrefeitura) then
-    FoInformacoesObtidasNaPrefeitura := TSectionInformacoesObtidasNaPrefeituraINI.Create(FoIni);
+    FoInformacoesObtidasNaPrefeitura := TSectionInformacoesObtidasNaPrefeitura.Create(FoIni);
   Result := FoInformacoesObtidasNaPrefeitura;
 end;
 

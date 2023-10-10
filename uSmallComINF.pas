@@ -3,7 +3,7 @@ unit uSmallComINF;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionsSmallComINF;
+  uArquivoDATINFPadrao, uSmallComSections;
 
 type
   TSmallComINF = class(TArquivoDATINFPadrao)

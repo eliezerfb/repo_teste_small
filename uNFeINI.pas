@@ -3,19 +3,19 @@ unit uNFeINI;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionsNFeINI;
+  uArquivoDATINFPadrao, uNFeSections;
 
 type
   TNFeINI = class(TArquivoDATINFPadrao)
   private
-    FoNFe: TSectionNFEINI;
+    FoNFe: TSectionNFE;
     FoXML: TSectionXML;
-    function getNFe: TSectionNFEINI;
+    function getNFe: TSectionNFE;
     function getXML: TSectionXML;
   public
     destructor Destroy; override;
 
-    property NFE: TSectionNFEINI read getNFe;
+    property NFE: TSectionNFE read getNFe;
     property XML: TSectionXML read getXML;
   protected
     function NomeArquivo: String; override;
@@ -30,14 +30,14 @@ uses TypInfo, SysUtils, IniFiles;
 destructor TNFeINI.Destroy;
 begin
   FreeAndNil(FoNFe);
-  FreeAndNil(FoXML);  
+  FreeAndNil(FoXML);
   inherited;
 end;
 
-function TNFeINI.getNFe: TSectionNFEINI;
+function TNFeINI.getNFe: TSectionNFE;
 begin
   if not Assigned(FoNFe) then
-    FoNFe := TSectionNFEINI.Create(FoIni);
+    FoNFe := TSectionNFE.Create(FoIni);
 
   Result := FoNFe;
 end;

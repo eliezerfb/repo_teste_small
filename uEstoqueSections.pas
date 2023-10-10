@@ -1,4 +1,4 @@
-unit uSectionGeralDAT;
+unit uEstoqueSections;
 
 interface
 

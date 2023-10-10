@@ -3,7 +3,7 @@ unit uEstoqueDAT;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionGeralDAT;
+  uArquivoDATINFPadrao, uEstoqueSections;
 
 type
   TEstoqueDAT = class(TArquivoDATINFPadrao)

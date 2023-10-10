@@ -1,4 +1,4 @@
-unit uSectionFrentedeCaixaINI;
+unit uFrenteSections;
 
 interface
 

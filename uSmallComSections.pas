@@ -1,4 +1,4 @@
-unit uSectionsSmallComINF;
+unit uSmallComSections;
 
 interface
 

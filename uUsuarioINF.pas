@@ -3,28 +3,27 @@ unit uUsuarioINF;
 interface
 
 uses
-  uArquivoDATINFPadrao, uSectionGeralUsuarioINF, uSectionHTMLUsuarioINF,
-  uSectionOutrosUsuarioINF;
+  uArquivoDATINFPadrao, uUsuarioSections;
 
 type
   TUsuarioINF = class(TArquivoDATINFPadrao)
   private
     FcUsuario: string;
-    FoGeral: TSectionGeralUsuario;
-    FoHtml: TSectionHTMLUsuario;
-    FoOutros: TSectionOutrosUsuario;
-    function getGeral: TSectionGeralUsuario;
-    function getHtml: TSectionHTMLUsuario;
-    function getOutros: TSectionOutrosUsuario;
+    FoGeral: TSectionGeral;
+    FoHtml: TSectionHTML;
+    FoOutros: TSectionOutros;
+    function getGeral: TSectionGeral;
+    function getHtml: TSectionHTML;
+    function getOutros: TSectionOutros;
   public
     constructor Create(AcUsuario: String); overload;
     destructor Destroy; override;
 
-    property Geral: TSectionGeralUsuario read getGeral;
-    property Html: TSectionHTMLUsuario read getHtml;
-    property Outros: TSectionOutrosUsuario read getOutros;
+    property Geral: TSectionGeral read getGeral;
+    property Html: TSectionHTML read getHtml;
+    property Outros: TSectionOutros read getOutros;
   protected
-    function NomeArquivo: String; override;  
+    function NomeArquivo: String; override;
   end;
 
 implementation
@@ -49,30 +48,30 @@ begin
     FreeAndNil(FoHtml);
   if Assigned(FoOutros) then
     FreeAndNil(FoOutros);
-    
+
   inherited;
 end;
 
-function TUsuarioINF.getGeral: TSectionGeralUsuario;
+function TUsuarioINF.getGeral: TSectionGeral;
 begin
   if not Assigned(FoGeral) then
-    FoGeral := TSectionGeralUsuario.Create(FoIni);
+    FoGeral := TSectionGeral.Create(FoIni);
 
   Result := FoGeral;
 end;
 
-function TUsuarioINF.getHtml: TSectionHTMLUsuario;
+function TUsuarioINF.getHtml: TSectionHTML;
 begin
   if not Assigned(FoHtml) then
-    FoHtml := TSectionHTMLUsuario.Create(FoIni);
+    FoHtml := TSectionHTML.Create(FoIni);
 
   Result := FoHtml;
 end;
 
-function TUsuarioINF.getOutros: TSectionOutrosUsuario;
+function TUsuarioINF.getOutros: TSectionOutros;
 begin
   if not Assigned(FoOutros) then
-    FoOutros := TSectionOutrosUsuario.Create(FoIni);
+    FoOutros := TSectionOutros.Create(FoIni);
 
   Result := FoOutros;
 end;
