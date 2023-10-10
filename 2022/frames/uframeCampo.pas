@@ -88,7 +88,12 @@ begin
     gdRegistros.Visible := False;
     Self.Height := txtCampo.Height;
 
+    {Sandro Silva 2023-10-10 inicio
     PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
+    }
+    if FGravarSomenteTextoEncontrato then
+      PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
+    {Sandro Silva 2023-10-10 fim}
     Key := 0;
   end;
 
