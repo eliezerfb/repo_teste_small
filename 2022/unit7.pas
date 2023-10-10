@@ -9549,8 +9549,6 @@ begin
   DBGrid1.GradientEndColor   := $00F0F0F0;
   DBGrid1.GradientStartColor := $00F0F0F0;
   {$ENDIF}
-
-  FbDuplicandoProd := False;  
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -9784,9 +9782,14 @@ begin
 
   tInicio := Time;
 
+
   Form1.Panel4.Visible      := True;
   Form7.WebBrowser2.Visible := False;
 
+  {Dailon Parisotto 2023-10-10 Inicio}
+  FbDuplicandoProd := False;
+  {Dailon Parisotto 2023-10-10 Fim}
+   
   try
     // Pega os dados do Emitente
     Form7.ibDataSet13.Active := True;
