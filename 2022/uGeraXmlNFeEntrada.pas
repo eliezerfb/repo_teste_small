@@ -121,7 +121,10 @@ begin
   Form7.ibDataSet24.EnableControls;
   Form7.ibDataSet23.EnableControls;
 
-  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then Form7.ibDataSet14.Append else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
+    Form7.ibDataSet14.Append
+  else
+    Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
 
   // Pis cofins da Operação
   sCST_PIS_COFINS := Form7.ibDataSet14.FieldByname('CSTPISCOFINS').AsString;
@@ -1598,9 +1601,10 @@ begin
     Form7.spdNFeDataSets.Campo('xMun_X09').Value     := ConverteAcentos2(Form7.ibDataSet18.FieldByname('MUNICIPIO').AsString); // Nome do Município do Transportador
     Form7.spdNFeDataSets.Campo('UF_X10').Value       := Form7.ibDataSet18.FieldByname('UF').AsString; // Sigla do Estado do Transportador
 
-    if Length(StrTran(StrTran(Form7.ibDataSet15.FieldByname('PLACA').AsString,' ',''),'-','')) = 7 then
+    if Length(StrTran(StrTran(Form7.ibDataSet18.FieldByname('PLACA').AsString,' ',''),'-','')) = 7 then // Sandro Silva 2023-09-21 if Length(StrTran(StrTran(Form7.ibDataSet15.FieldByname('PLACA').AsString,' ',''),'-','')) = 7 then
     begin
-      Form7.spdNFeDataSets.Campo('placa_X19').Value    := StrTran(StrTran(Form7.ibDataSet15.FieldByname('PLACA').AsString,' ',''),'-',''); // Placa do Veículo
+      // Sandro Silva 2023-09-21 Form7.spdNFeDataSets.Campo('placa_X19').Value    := StrTran(StrTran(Form7.ibDataSet15.FieldByname('PLACA').AsString,' ',''),'-',''); // Placa do Veículo
+      Form7.spdNFeDataSets.Campo('placa_X19').Value    := StrTran(StrTran(Form7.ibDataSet18.FieldByname('PLACA').AsString,' ',''),'-',''); // Placa do Veículo
       Form7.spdNFeDataSets.Campo('uf_X20').Value       := Form7.ibDataSet18.FieldByname('ESTADO').AsString; // Sigla do Estado da Placa do Veículo
       Form7.spdNFeDataSets.Campo('rntc_X21').Value     := Form7.ibDataSet18.FieldByname('ANTT').AsString; // Registro nacional de Trasportador de Cargas (ANTT)
     end;

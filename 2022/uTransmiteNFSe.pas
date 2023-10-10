@@ -13,7 +13,9 @@ uses
   IBTable, IBQuery, IBDatabaseInfo,
   Math, pngimage, strUtils, Buttons;
 
-
+  function GetCidadeUF: String; // Sandro Silva 2023-10-02
+  function CalculaValorISS(sPadrao: String; dTotal: Double; dAliquota: Double;
+    dBase: Double): Real;
   function TransmiteNFSE : boolean;
   procedure LimpaNFSE;
 
@@ -25,6 +27,17 @@ function GetCidadeUF: String;
 begin
   Result := AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString),' ','', [rfReplaceAll]) + Form7.ibDAtaset13ESTADO.AsString);
 end;
+
+{Sandro Silva 2023-10-02 inicio}
+function CalculaValorISS(sPadrao: String; dTotal: Double; dAliquota: Double; dBase: Double): Real;
+begin
+  Result := (dTotal * dAliquota) / 100 * dBase / 100;
+  if (sPadrao = 'ISSNETONLINE20') and (GetCidadeUF = 'ITAUNAMG') then
+    Result := (Int(Result * 100)) / 100 // Trunca duas casas decimais
+  else
+    Result := StrToFloat(FormatFloat('0.00', Result)); // Arredonda duas casas decimais
+end;
+{Sandro Silva 2023-10-02 fim}
 
 function TransmiteNFSE : boolean;
 var
@@ -46,6 +59,27 @@ var
   sPadraoSistema, sTipoPagamentoAPrazo: String;
   sResponsavelRetencao: String; // Sandro Silva 2023-01-19
   ComplementoOBS : string;//Mauricio Parizotto 2023-09-12
+
+
+  sCpfCnpjTomador: String;
+  sRazaoSocialTomador: String;
+  sInscricaoEstadualTomador: String;
+  sInscricaoMunicipalTomador: String;
+  sTipoLogradouroTomador: String;
+  sEnderecoTomador: String;
+  sNumeroTomador: String;
+  sComplementoTomador: String;
+  sBairroTomador: String;
+
+  sCodigoCidadeTomador: String;
+  sDescricaoCidadeTomador: String;
+  sUfTomador: String;
+  sCepTomador: String;
+  sPaisTomador: String;
+
+  sDDDTomador: String;
+  sTelefoneTomador: String;
+  sEmailTomador: String;
 
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
@@ -554,6 +588,7 @@ begin
             Writeln(F,'DescricaoCidadePrestacao='+ConverteAcentos2(Form7.ibDAtaSet13MUNICIPIO.AsString)); // Município onde o serviço foi prestado
             Writeln(F,'');
 
+            {Sandro Silva 2023-09-26 inicio 
             Writeln(F,'CpfCnpjTomador='+LimpaNumero(Form7.ibDAtaSet2CGC.AsString));           // CPF / CNPJ do tomador do serviço
             Writeln(F,'RazaoSocialTomador='+ConverteAcentos2(Form7.ibDAtaSet2NOME.AsString)); // Razão Social do tomador do serviço
             Writeln(F,'InscricaoEstadualTomador='+LimpaNumero(Form7.ibDAtaSet2IE.AsString)); //
@@ -574,19 +609,100 @@ begin
             Writeln(F,'UfTomador='+UpperCase(Form7.ibDataSet2ESTADO.AsString));                               // UF do tomador do serviço
             Writeln(F,'CepTomador='+LimpaNumero(Form7.ibDAtaSet2CEP.AsString));                     // CEP do tomador do serviço
             Writeln(F,'PaisTomador=1058');
-            {Sandro Silva 2023-01-09 inicio}
+
             // Sandro Silva 2023-09-05 if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
             if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'BRASILIADF') then
             begin
               Writeln(F,'DDDTomador=' + IntToStr(StrToIntDef(Copy(LimpaNumero(Form7.ibDataSet2FONE.AsString) + '000', 1, 3), 0)));
             end else
-            {Sandro Silva 2023-01-09 fim}
             begin
               Writeln(F,'DDDTomador='+ Copy(LimpaNumero(Form7.ibDAtaSet2FONE.AsString)+'000',1,3) );
             end;
             Writeln(F,'TelefoneTomador='+AllTrim(Copy(LimpaNumero(Form7.ibDataSet2FONE.AsString)+'             ',4,9)));
             Writeln(F,'EmailTomador='+  Copy(Form7.ibDAtaSet2EMAIL.AsString,1,Pos(';',Form7.ibDAtaSet2EMAIL.AsString+';')-1)); // somente o primeiro e-mail cadastrado
             Writeln(F,'');
+
+            }
+
+            sCpfCnpjTomador            := LimpaNumero(Form7.ibDAtaSet2CGC.AsString);           // CPF / CNPJ do tomador do serviço
+            sRazaoSocialTomador        := ConverteAcentos2(Form7.ibDAtaSet2NOME.AsString); // Razão Social do tomador do serviço
+            sInscricaoEstadualTomador  := LimpaNumero(Form7.ibDAtaSet2IE.AsString); //
+            sInscricaoMunicipalTomador := '';
+            sTipoLogradouroTomador     := '';
+            sEnderecoTomador           := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+            sNumeroTomador             := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
+            sComplementoTomador        := '';
+            sBairroTomador             := ConverteAcentos2(Form7.ibDAtaSet2COMPLE.AsString);
+
+            Form7.ibDataset99.Close;
+            Form7.ibDataset99.SelectSql.Clear;
+            Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet2CIDADE.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet2ESTADO.AsString))+' ');
+            Form7.ibDataset99.Open;
+
+            sCodigoCidadeTomador    := Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7); // Código da Cidade do Emitente (Tabela do IBGE)
+            sDescricaoCidadeTomador := ConverteAcentos2(Form7.ibDAtaSet2CIDADE.AsString); // Município do tomador do serviço
+            sUfTomador              := UpperCase(Form7.ibDataSet2ESTADO.AsString);                               // UF do tomador do serviço
+            sCepTomador             := LimpaNumero(Form7.ibDAtaSet2CEP.AsString);                     // CEP do tomador do serviço
+            sPaisTomador            := '1058';
+
+            if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'BRASILIADF') then
+            begin
+              sDDDTomador := IntToStr(StrToIntDef(Copy(LimpaNumero(Form7.ibDataSet2FONE.AsString) + '000', 1, 3), 0));
+            end else
+            begin
+              sDDDTomador := Copy(LimpaNumero(Form7.ibDAtaSet2FONE.AsString)+'000',1,3) ;
+            end;
+
+            sTelefoneTomador        := AllTrim(Copy(LimpaNumero(Form7.ibDataSet2FONE.AsString)+'             ',4,9));
+            sEmailTomador           := Copy(Form7.ibDAtaSet2EMAIL.AsString,1,Pos(';',Form7.ibDAtaSet2EMAIL.AsString+';')-1); // somente o primeiro e-mail cadastrado
+
+            if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'BRASILIADF') then
+            begin
+              if (Trim(LimpaNumero(Form7.ibDAtaSet2CGC.AsString)) = '') and (Trim(Form7.ibDAtaset2.FieldByname('ENDERE').AsString) = '') then
+              begin
+                // Em Brasília é permitido NFS-e sem informar dados do cliente
+                sCpfCnpjTomador            := '';           // CPF / CNPJ do tomador do serviço
+                sRazaoSocialTomador        := ''; // Razão Social do tomador do serviço
+                sInscricaoEstadualTomador  := ''; //
+                sInscricaoMunicipalTomador := '';
+                sTipoLogradouroTomador     := '';
+                sEnderecoTomador           := ''; // Logradouro do Emitente
+                sNumeroTomador             := ''; // Numero do Logradouro do Emitente
+                sComplementoTomador        := '';
+                sBairroTomador             := '';
+
+                sCodigoCidadeTomador    := ''; // Código da Cidade do Emitente (Tabela do IBGE)
+                sDescricaoCidadeTomador := ''; // Município do tomador do serviço
+                sUfTomador              := '';                               // UF do tomador do serviço
+                sCepTomador             := '';                     // CEP do tomador do serviço
+                sPaisTomador            := '1058';
+                sDDDTomador             := '';
+                sTelefoneTomador        := '';
+                sEmailTomador           := ''; // somente o primeiro e-mail cadastrado
+              end;
+            end;
+
+            Writeln(F,'CpfCnpjTomador=' + sCpfCnpjTomador);           // CPF / CNPJ do tomador do serviço
+            Writeln(F,'RazaoSocialTomador=' + sRazaoSocialTomador); // Razão Social do tomador do serviço
+            Writeln(F,'InscricaoEstadualTomador=' + sInscricaoEstadualTomador); //
+            Writeln(F,'InscricaoMunicipalTomador=' + sInscricaoMunicipalTomador);
+            Writeln(F,'TipoLogradouroTomador=' + sTipoLogradouroTomador);
+            Writeln(F,'EnderecoTomador=' + sEnderecoTomador); // Logradouro do Emitente
+            Writeln(F,'NumeroTomador=' + sNumeroTomador); // Numero do Logradouro do Emitente
+            Writeln(F,'ComplementoTomador=' + sComplementoTomador);
+            Writeln(F,'BairroTomador=' + sBairroTomador);
+
+            Writeln(F,'CodigoCidadeTomador=' + sCodigoCidadeTomador); // Código da Cidade do Emitente (Tabela do IBGE)
+            Writeln(F,'DescricaoCidadeTomador=' + sDescricaoCidadeTomador); // Município do tomador do serviço
+            Writeln(F,'UfTomador=' + sUfTomador);                               // UF do tomador do serviço
+            Writeln(F,'CepTomador=' + sCepTomador);                     // CEP do tomador do serviço
+            Writeln(F,'PaisTomador=' + sPaisTomador);
+
+            Writeln(F,'DDDTomador=' + sDDDTomador);
+            Writeln(F,'TelefoneTomador=' + sTelefoneTomador);
+            Writeln(F,'EmailTomador=' + sEmailTomador); // somente o primeiro e-mail cadastrado
+            Writeln(F,'');
+            {Sandro Silva 2023-09-26 fim}
             //
             // Pis
             // Cofins
@@ -630,6 +746,11 @@ begin
             begin
               Writeln(F,'IssRetido=1');
               fValorISSRetido := (Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)*Form7.ibDataSet14ISS.AsFloat/100;
+              {Sandro Silva 2023-10-02 inicio}
+              //ajusta para o valor do ISS Retido ficar formatado com duas casas decimais. Arredonda
+              if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'ITAUNAMG') then
+                fValorISSRetido := StrToFloat(FormatFloat('0.00', fValorISSRetido));
+              {Sandro Silva 2023-10-02 fim}
 
               {Sandro Silva 2023-01-19 inicio}
               // Sandro Silva 2023-09-05 if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
@@ -757,7 +878,11 @@ begin
                 Writeln(F,'ValorIss=0.00');
               end else
               begin
+                {Sandro Silva 2023-10-02 inicio
                 Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00',(Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)*Form7.ibDataSet14ISS.AsFloat/100)),',','.'));
+                }
+                Writeln(F,'ValorIss=' + StrTran(Alltrim(FormatFloat('##0.00', CalculaValorISS(sPadraoSistema, (Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat), Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat))), ',', '.'));
+                {Sandro Silva 2023-10-02 inicio}
               end;
 
               Writeln(F,'ValorISSRetido='+StrTran(Alltrim(FormatFloat('##0.00',fValorISSRetido)),',','.')); // ISS Retido
@@ -841,7 +966,11 @@ begin
                     Writeln(F,'ValorIss=0.00');
                   end else
                   begin
+                    {Sandro Silva 2023-10-02 inicio
                     Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat*Form7.ibDataSet14ISS.AsFloat/100)),',','.'));
+                    }
+                    Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00', CalculaValorISS(sPadraoSistema, Form7.ibDataSet35.FieldByname('TOTAL').AsFloat, Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat))),',','.'));
+                    {Sandro Silva 2023-10-02 fim}
                   end;
                   
                   Writeln(F,'ValorISSRetido='+StrTran(Alltrim(FormatFloat('##0.00',fValorISSRetido)),',','.')); // ISS Retido
@@ -893,7 +1022,7 @@ begin
 
                   Writeln(F,'TipoDeducao=');
                   Writeln(F,'CodigoCnae='+sCodigoCnae);                 // CodigoCnae	Código do CNAE	T	 Obtido na prefeitura
-                  Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat*Form7.ibDataSet14ISS.AsFloat/100)),',','.'));
+                  Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00', CalculaValorISS(sPadraoSistema, Form7.ibDataSet35.FieldByname('TOTAL').AsFloat, Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat))),',','.'));// Sandro Silva 2023-10-02 Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat*Form7.ibDataSet14ISS.AsFloat/100)),',','.'));
                   Writeln(F,'ValorISSRetido='+StrTran(Alltrim(FormatFloat('##0.00',fValorISSRetido)),',','.')); // ISS Retido
                   Writeln(F,'BaseCalculo='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)),',','.'));   //
                   Writeln(F,'CodigoCidadePrestacao='+sCodigoLocalPrestacao); // Código IBGE do município onde o serviço foi prestado

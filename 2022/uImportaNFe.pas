@@ -24,10 +24,11 @@ uses
   ;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
+function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
 
-uses uFuncoesRetaguarda;
+uses uFuncoesRetaguarda, uParametroTributacao;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
 
@@ -336,6 +337,9 @@ begin
                       end;
                     end;
 
+                    //Mauricio Parizotto 2023-10-04
+                    sICMSTag := GetICMSTag(NodeSec);
+
                     if not bProdutoCadastrado then
                     begin
                       // Procura pelo CODIGO de Barras do fornecedor relacionado no arquivo CODEBAR
@@ -428,14 +432,41 @@ begin
                       Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text);
                       Form7.ibDataSet4PRECO.AsFloat       := 0.01;
                       Form7.ibDataSet4ALTERADO.AsString   := '3';
+
                       try
                         Form7.ibDataSet4CF.AsString     := AllTrim(Copy(NodeTmp.ChildNodes['NCM'].Text+Replicate(' ',45),1,45));
                       except
                       end;
+
                       try
                         Form7.ibDataSet4CEST.AsString   := AllTrim(Copy(NodeTmp.ChildNodes['CEST'].Text+Replicate(' ',7),1,7));
                       except
                       end;
+
+                      //Mauricio Parizotto 2023-09-19
+                      //sICMSTag := GetICMSTag(NodeSec);
+
+                      //Mauricio Parizotto 2023-09-19
+                      //Parametros de tributação
+                      if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag)) then
+                      begin
+                        try
+                          Form7.StatusTrocaPerfil := 'PR';
+
+                          SetValoresParTributacao(NodeTmp.ChildNodes['CFOP'].Text,
+                                                  NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['orig'].Text,
+                                                  NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['CST'].Text,
+                                                  NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['CSOSN'].Text,
+                                                  NodeTmp.ChildNodes['NCM'].Text,
+                                                  StrToFloatDef(StringReplace(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['pICMS'].Text,'.',',',[rfReplaceAll]),0),
+                                                  Form7.ibDataSet4);
+
+                          Form7.StatusTrocaPerfil := 'OK';
+                        except
+                        end;
+                      end;
+
+
                       Form7.ibDataSet4.Post;
                     end;
 
@@ -500,6 +531,7 @@ begin
                       svICMSDESON := '0.00';
 
                       // Ver como resolver ester try Quando nao existem os campos
+                      {
                       if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS00/CST')) <> '' then
                         sICMSTag := 'ICMS00';
                       if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS10/CST')) <> '' then
@@ -531,6 +563,7 @@ begin
                         sICMSTag := 'ICMSSN500';
                       if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN900/CSOSN')) <> '' then
                         sICMSTag := 'ICMSSN900';
+                      Mauricio Parizotto 2023-09-19 Trocado pela funcao GetICMSTag}
 
                       if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag)) then
                       begin
@@ -648,7 +681,7 @@ begin
                         Form7.ibDataSet23CST_ICMS.AsString  := sCSTICMS;
                       except
                       end;
-                      
+
                       try
                         //Mauricio Parizotto 2023-05-02
                         {
@@ -937,6 +970,51 @@ begin
   end;
 
   Screen.Cursor            := crDefault;
+end;
+
+function GetICMSTag(NodeSec:IXMLNode):string;
+begin
+  Result := '';
+
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS00/CST')) <> '' then
+    Result := 'ICMS00';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS02/CST')) <> '' then //Mauricio Parizotto 2023-09-19
+    Result := 'ICMS02';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS10/CST')) <> '' then
+    Result := 'ICMS10';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS15/CST')) <> '' then //Mauricio Parizotto 2023-09-19
+    Result := 'ICMS15';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS20/CST')) <> '' then
+    Result := 'ICMS20';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS30/CST')) <> '' then
+    Result := 'ICMS30';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS40/CST')) <> '' then
+    Result := 'ICMS40';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS51/CST')) <> '' then
+    Result := 'ICMS51';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS53/CST')) <> '' then //Mauricio Parizotto 2023-09-19
+    Result := 'ICMS53';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS60/CST')) <> '' then
+    Result := 'ICMS60';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS61/CST')) <> '' then //Mauricio Parizotto 2023-09-19
+    Result := 'ICMS61';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS70/CST')) <> '' then
+    Result := 'ICMS70';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS90/CST')) <> '' then
+    Result := 'ICMS90';
+
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN101/CSOSN')) <> '' then
+    Result := 'ICMSSN101';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN102/CSOSN')) <> '' then
+    Result := 'ICMSSN102';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN201/CSOSN')) <> '' then
+    Result := 'ICMSSN201';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN202/CSOSN')) <> '' then
+    Result := 'ICMSSN202';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN500/CSOSN')) <> '' then
+    Result := 'ICMSSN500';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN900/CSOSN')) <> '' then
+    Result := 'ICMSSN900';
 end;
 
 end.

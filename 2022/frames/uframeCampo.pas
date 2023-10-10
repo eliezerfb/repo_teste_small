@@ -247,7 +247,7 @@ procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
 begin
   if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
     CampoCodigo.DataSet.Edit;
-end;
+end; 
 
 function TfFrameCampo.SelectPesquisa: String;
 begin

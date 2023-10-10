@@ -1,10 +1,10 @@
-object Form28: TForm28
+object frmExportaXML: TfrmExportaXML
   Left = 1464
   Top = 780
   BorderStyle = bsDialog
-  Caption = 'Exportar NF-e'#180's '
-  ClientHeight = 222
-  ClientWidth = 442
+  Caption = 'Exportar XML'
+  ClientHeight = 293
+  ClientWidth = 445
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,8 +12,11 @@ object Form28: TForm28
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
-  OnActivate = FormActivate
+  Position = poOwnerFormCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
@@ -41,12 +44,12 @@ object Form28: TForm28
   end
   object Label4: TLabel
     Left = 200
-    Top = 105
+    Top = 177
     Width = 111
     Height = 13
     Caption = 'e-mail da contabilidade:'
   end
-  object DateTimePicker1: TDateTimePicker
+  object dtInicial: TDateTimePicker
     Left = 200
     Top = 30
     Width = 225
@@ -56,7 +59,7 @@ object Form28: TForm28
     DateFormat = dfLong
     TabOrder = 0
   end
-  object DateTimePicker2: TDateTimePicker
+  object dtFinal: TDateTimePicker
     Left = 200
     Top = 75
     Width = 225
@@ -66,29 +69,53 @@ object Form28: TForm28
     DateFormat = dfLong
     TabOrder = 1
   end
-  object Edit1: TEdit
+  object edtEmailContab: TEdit
     Left = 200
-    Top = 120
+    Top = 192
     Width = 225
     Height = 21
-    TabOrder = 2
+    TabOrder = 5
   end
-  object Button1: TButton
+  object btnAvancar: TButton
     Left = 210
-    Top = 170
+    Top = 242
     Width = 100
     Height = 25
     Caption = '&Avan'#231'ar >'
-    TabOrder = 3
-    OnClick = Button1Click
+    TabOrder = 6
+    OnClick = btnAvancarClick
   end
-  object Button2: TButton
+  object btnCancelar: TButton
     Left = 320
-    Top = 170
+    Top = 242
     Width = 100
     Height = 25
     Caption = '&Cancelar'
+    TabOrder = 7
+    OnClick = btnCancelarClick
+  end
+  object cbNFeSaida: TCheckBox
+    Left = 200
+    Top = 108
+    Width = 112
+    Height = 17
+    Caption = 'NF-e'#39's de Sa'#237'da'
+    TabOrder = 2
+  end
+  object cbNFeEntrada: TCheckBox
+    Left = 200
+    Top = 128
+    Width = 112
+    Height = 17
+    Caption = 'NF-e'#39's de Entrada'
+    TabOrder = 3
+  end
+  object cbNFCeSAT: TCheckBox
+    Left = 200
+    Top = 148
+    Width = 112
+    Height = 17
+    Caption = 'NFC-e/SAT'
     TabOrder = 4
-    OnClick = Button2Click
   end
 end

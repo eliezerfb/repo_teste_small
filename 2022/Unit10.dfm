@@ -1,11 +1,11 @@
 object Form10: TForm10
-  Left = 462
-  Top = 233
+  Left = 283
+  Top = 145
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
-  ClientHeight = 688
-  ClientWidth = 1008
+  ClientHeight = 689
+  ClientWidth = 1462
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

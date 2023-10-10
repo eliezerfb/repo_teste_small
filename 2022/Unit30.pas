@@ -525,8 +525,8 @@ begin
 end;
 
 procedure TForm30.DBGrid2Enter(Sender: TObject);
-var
-  I          : Integer;
+//var
+//  I          : Integer;
 begin
   //
   // Autocompletar serviços
@@ -834,8 +834,8 @@ begin
 end;
 
 procedure TForm30.DBGrid2KeyPress(Sender: TObject; var Key: Char);
-var
-  I: Integer;
+//var
+//  I: Integer;
 begin
   //
   // Descriçao dos serviços
