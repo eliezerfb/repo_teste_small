@@ -16,7 +16,6 @@ type
     function RetornarDadosProduto: TIBQuery;
     procedure DuplicaTabelaEstoque;
     function RetornaNroRegistro(AcGenerator: String; AnQtdeCarac: Integer): String;
-    procedure GeraNovoCodProduto;
     procedure DuplicaTabelaComposto;
     function RetornarDadosComposto: TIBQuery;
     function TestarCampoIgnorarTabEstoque(AcCampo: String): Boolean;
@@ -36,16 +35,16 @@ uses SysUtils, SmallFunc, uSmallResourceString;
 { TDuplicaProduto }
 
 function TDuplicaProduto.Duplicar: Boolean;
-
 begin
   Result := False;
   try
-//    GeraNovoCodProduto;
     DuplicaTabelaEstoque;
     DuplicaTabelaComposto;
 
     Result := True;
   except
+    on e: exception do
+      Application.MessageBox(Pchar('Não foi possível duplicar o produto.' + SLineBreak + e.Message), PChar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
   end;
 end;
 
@@ -191,11 +190,6 @@ begin
   finally
     FreeAndNil(QryGen);
   end;
-end;
-
-procedure TDuplicaProduto.GeraNovoCodProduto;
-begin
-  FcCodigoProdNew := RetornaNroRegistro('G_CODIGO', 5);
 end;
 
 function TDuplicaProduto.SetDataSetComposicao(

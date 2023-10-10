@@ -12444,7 +12444,13 @@ procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
 begin
-  if Form7.iKey = VK_Down then
+  {Dailon Parisotto 2023-10-10 Inicio
+
+  if (Form7.iKey = VK_Down) then
+
+  }
+  if (Form7.iKey = VK_Down) and (not FbDuplicandoProd) then
+  {Dailon Parisotto 2023-10-10 Fim}
   begin
     iKey := 0;
     Abort;
@@ -15603,6 +15609,10 @@ end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
   //
   if ibDataSet4PRECO.AsFloat <= 0 then
   begin
