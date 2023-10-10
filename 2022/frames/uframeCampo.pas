@@ -88,12 +88,7 @@ begin
     gdRegistros.Visible := False;
     Self.Height := txtCampo.Height;
 
-    {Sandro Silva 2023-10-10 inicio
     PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
-    }
-    if FGravarSomenteTextoEncontrato then
-      PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
-    {Sandro Silva 2023-10-10 fim}
     Key := 0;
   end;
 
@@ -208,20 +203,29 @@ begin
   }
   if Query.Locate(ALIAS_CAMPO_PESQUISADO, Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
   begin
-    txtCampo.Text           := Query.Fields[1].AsString;
-
-    if not (CampoCodigo.DataSet.State in [dsEdit]) then
-      CampoCodigo.DataSet.Edit;
-      
-    if CampoCodigo.DataType in [ftSmallint, ftInteger, ftWord, ftLargeint] then
+    if FGravarSomenteTextoEncontrato then
     begin
-      if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
-        CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
+      txtCampo.Text := Query.Fields[1].AsString;
+
+      if not (CampoCodigo.DataSet.State in [dsEdit]) then
+        CampoCodigo.DataSet.Edit;
+
+      if CampoCodigo.DataType in [ftSmallint, ftInteger, ftWord, ftLargeint] then
+      begin
+        if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
+          CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
+      end
+      else
+      begin
+        if CampoCodigo.Value <> Query.Fields[0].Value then
+          CampoCodigo.Value := Query.Fields[0].Value;
+      end;
     end
     else
     begin
-      if CampoCodigo.Value <> Query.Fields[0].Value then
-        CampoCodigo.Value := Query.Fields[0].Value;
+      if not (CampoCodigo.DataSet.State in [dsEdit]) then
+        CampoCodigo.DataSet.Edit;
+      CampoCodigo.Value := txtCampo.Text;
     end;
     {Sandro Silva 2023-09-28 fim}
   end else
