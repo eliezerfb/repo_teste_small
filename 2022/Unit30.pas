@@ -8,6 +8,8 @@ uses
   DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
   IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico, uframeCampo;
 
+const COLOR_GRID_CINZA = $00F0F0F0;
+
 type
   TForm30 = class(TForm)
     ScrollBox1: TScrollBox;
@@ -240,6 +242,13 @@ begin
 //  Form30.BorderIcons := [biSystemMenu];
 //  Form30.BorderStyle := bsDialog;
   //
+  {Sandro Silva 2023-10-10 inicio}
+  fFrameDescricao.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi1.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi2.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi3.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi4.gdRegistros.Color := COLOR_GRID_CINZA;
+  {Sandro Silva 2023-10-10 fim}
 end;
 
 procedure TForm30.SMALL_DBEdit2Enter(Sender: TObject);
