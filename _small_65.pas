@@ -5678,6 +5678,8 @@ var
   Driver  : array[0..255] of char;
   Port    : array[0..255] of char;
   hDMode  : THandle;
+  sTamanhoPapelOld: String; // Sandro Silva 2023-10-10
+  sCaminhoZPOS: String; // Sandro Silva 2023-10-11
 begin
   //
   Result := True;
@@ -5700,7 +5702,32 @@ begin
       else
         Form1.spdNFCe1.DanfceSettings.ExibirDetalhamento := False;
       //
+      {Sandro Silva 2023-10-10 inicio
       Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
+      }
+      if Pos('ZPOS', pfNFe) > 0 then
+      begin
+        try
+
+          sCaminhoZPOS := 'c:\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'PASTA', '') + '\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'REQ', '');
+
+          DeleteFile(sCaminhoZPOS + '\danfce.pdf');
+
+          sTamanhoPapelOld := Form1.sTamanhoPapel;
+          Form1.sTamanhoPapel := '58';
+          Form1.spdNFCe1.ExportarDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, 1, sCaminhoZPOS + '\danfce.tmp');
+
+          Sleep(200);
+
+          RenameFile(sCaminhoZPOS + '\danfce.tmp', sCaminhoZPOS + '\danfce.pdf');
+
+        finally
+          Form1.sTamanhoPapel := sTamanhoPapelOld;
+        end;
+      end
+      else
+        Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
+      {Sandro Silva 2023-10-10 fim}
       //        sLeep(5000);
       //        sleep(I*400);
     except

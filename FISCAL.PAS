@@ -11542,6 +11542,17 @@ begin
             Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'Caixa: ' + Form1.sCaixa;
           {Sandro Silva 2022-10-04 fim}
 
+          {Sandro Silva 2023-10-10 inicio}
+          if sCupomTEF <> '' then
+          begin
+            if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') then
+            begin
+              if (Form1.sModeloECF = '65') then
+                Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'ZPOS';
+            end;
+          end;
+          {Sandro Silva 2023-10-10 fim}
+
           Form1.sMensagemPromocional := StringReplace(Form1.sMensagemPromocional, #10#10, #10, [rfReplaceAll]);
 
           AcertaPendenciaCancelAlteraca; // Fechamento do cupom Sandro Silva 2019-03-21

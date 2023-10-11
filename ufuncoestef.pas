@@ -835,7 +835,8 @@ begin
                     Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
                   end else
                   begin
-                    if AllTrim(sCupom712) <> '' then sCupom := sCupom713; // else sCupom := sCupom + chr(10) + chr(10) + chr(10) + chr(10) + chr(10) +  sCupom029;
+                    if AllTrim(sCupom712) <> '' then
+                      sCupom := sCupom713; // else sCupom := sCupom + chr(10) + chr(10) + chr(10) + chr(10) + chr(10) +  sCupom029;
                   end;
                   //
                   if AllTrim(sCupom714) <> '' then
@@ -846,7 +847,8 @@ begin
                     sCupom := sCupom + chr(10) + chr(10) + chr(10) + sCupom029;
                   end;
                   //
-                  if AllTrim(StrTran(sCupom,chr(10),'')) = '' then sCupom := '';
+                  if AllTrim(StrTran(sCupom,chr(10),'')) = '' then
+                    sCupom := '';
                   //
                   //  SmallMsg(sCupom);
                   //
