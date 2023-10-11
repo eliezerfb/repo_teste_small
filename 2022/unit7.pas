@@ -2295,6 +2295,7 @@ type
     procedure ExcluirOrcamento;
     procedure VerificaAlteracaoPerfil;
     procedure ChamarTelaXMLContab;
+    function MensagemPortalConsultaCNPJCPF: Integer;
   public
     // Public declarations
 
@@ -8658,15 +8659,33 @@ begin
       Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
       if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
       begin
-        bButton := Application.MessageBox('Federal?', 'Atenção',
+        {Dailon Parisotto 2023-10-11 Inicio
+
+        bButton := Application.MessageBox(PChar('Em qual portal deseja fazer a consulta?' + slineBreak + slineBreak +
+                                                'Sim - Federal' + slineBreak +
+                                                'Não - Estadual' + slineBreak +
+                                                'Cancelar - Nenhuma das opções acima.'), PChar(_cTituloMsg),
                    MB_YESNOCANCEL + mb_DefButton1 + MB_ICONQUESTION);
+
+        }
+        bButton := MensagemPortalConsultaCNPJCPF;
+        {Dailon Parisotto 2023-10-11 Fim}
 
         if bButton = IDYES  then
         begin
+          {Dailon Parisotto 2023-10-11 Inicio
+
           if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
             ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
           else
             ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cnpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+
+          }
+          if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
+            ShellExecute( 0, 'Open',pChar('https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
+          else
+            ShellExecute( 0, 'Open',pChar('https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+          {Dailon Parisotto 2023-10-11 Fim}
         end else
         begin
           if bButton = IDNO  then
@@ -8680,10 +8699,21 @@ begin
       end else
       begin
         Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
+
+        {Dailon Parisotto 2023-10-11 Inicio
+        
         if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
         else
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+
+        }
+        if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
+          ShellExecute( 0, 'Open',pChar('https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
+        else
+          ShellExecute( 0, 'Open',pChar('https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+        {Dailon Parisotto 2023-10-11 Fim}
+
         Screen.Cursor            := crDefault;
         Abort;
       end;
@@ -8785,6 +8815,41 @@ begin
     Screen.Cursor            := crDefault;
   end;
 end;
+
+{Dailon Parisotto 2023-10-11 Inicio}
+function TForm7.MensagemPortalConsultaCNPJCPF: Integer;
+var
+  ofrmMsg: TForm;
+  oBotaoSim, oBotaoNao, oBotaoCancela: TButton;
+begin
+  ofrmMsg := CreateMessageDialog('Em qual portal deseja fazer a consulta?', mtConfirmation, mbYesNoCancel);
+  try
+    ofrmMsg.Caption := _cTituloMsg;
+    ofrmMsg.Position := Self.Position;
+
+    oBotaoSim := TButton(ofrmMsg.FindChildControl('Yes'));
+    oBotaoSim.Caption := 'Federal';
+    oBotaoSim.Width := Canvas.TextWidth(oBotaoSim.Caption) + 32;
+
+    oBotaoNao := TButton(ofrmMsg.FindChildControl('No'));
+    oBotaoNao.Caption := 'Estadual';
+    oBotaoNao.Left := oBotaoSim.Left + oBotaoSim.Width + 16;
+    oBotaoNao.Width := Canvas.TextWidth(oBotaoNao.Caption) + 32;
+
+    oBotaoCancela := TButton(ofrmMsg.FindChildControl('Cancel'));
+    oBotaoCancela.Caption := 'Cancelar';
+    oBotaoCancela.Left := oBotaoNao.Left + oBotaoNao.Width + 16;
+    oBotaoCancela.Width := Canvas.TextWidth(oBotaoCancela.Caption) + 32;
+
+    if ofrmMsg.Width < (oBotaoCancela.Left + oBotaoCancela.Width + oBotaoSim.Left) then
+      ofrmMsg.Width := oBotaoCancela.Left + oBotaoCancela.Width + oBotaoSim.Left;
+
+    Result := ofrmMsg.ShowModal;
+  finally
+    FreeAndNil(ofrmMsg);
+  end;
+end;
+{Dailon Parisotto 2023-10-11 Fim}
 
 procedure TForm7.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
