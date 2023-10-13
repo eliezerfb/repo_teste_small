@@ -174,6 +174,8 @@ uses
   uEstruturaRelResumoVendas in 'units\uEstruturaRelResumoVendas.pas',
   uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas',
   uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas',
+  uIDuplicaProduto in 'interfaces\uIDuplicaProduto.pas',
+  uDuplicaProduto in 'units\uDuplicaProduto.pas',
   uFrenteSections in '..\..\unit_compartilhada\uFrenteSections.pas',
   uNFeSections in '..\..\unit_compartilhada\uNFeSections.pas',
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',

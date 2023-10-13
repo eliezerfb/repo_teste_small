@@ -1599,6 +1599,7 @@ type
     Parmetrosdetributao1: TMenuItem;
     Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
+    DuplicarProduto: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2257,10 +2258,12 @@ type
     procedure Perfildetributao1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
     procedure Configurarobservaofixa1Click(Sender: TObject);
+    procedure DuplicarProdutoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
+    FbDuplicandoProd: Boolean; 
     FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
@@ -2480,7 +2483,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImpressaoOrcamento
   , uFrenteSections
   , uFrmParametroTributacao
-  , uRelatorioResumoVendas;
+  , uRelatorioResumoVendas
+  , uDuplicaProduto;
 
 {$R *.DFM}
 
@@ -9844,9 +9848,14 @@ begin
 
   tInicio := Time;
 
+
   Form1.Panel4.Visible      := True;
   Form7.WebBrowser2.Visible := False;
 
+  {Dailon Parisotto 2023-10-10 Inicio}
+  FbDuplicandoProd := False;
+  {Dailon Parisotto 2023-10-10 Fim}
+   
   try
     // Pega os dados do Emitente
     Form7.ibDataSet13.Active := True;
@@ -12504,7 +12513,13 @@ procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
 begin
-  if Form7.iKey = VK_Down then
+  {Dailon Parisotto 2023-10-10 Inicio
+
+  if (Form7.iKey = VK_Down) then
+
+  }
+  if (Form7.iKey = VK_Down) and (not FbDuplicandoProd) then
+  {Dailon Parisotto 2023-10-10 Fim}
   begin
     iKey := 0;
     Abort;
@@ -13371,6 +13386,7 @@ begin
   VisualizarXMLdamanifestaododestinatrio1.Visible  := False;
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
+  DuplicarProduto.Visible                          := False;  
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13450,6 +13466,7 @@ begin
     end;
     if sModulo = 'ESTOQUE'  then
     begin
+      DuplicarProduto.Visible := True;
       if ibDataSet4ATIVO.AsString='1' then
         Ativo1.Checked := False
       else
@@ -15661,6 +15678,10 @@ end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
   //
   if ibDataSet4PRECO.AsFloat <= 0 then
   begin
@@ -27067,6 +27088,11 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+  
   //Mauricio Parizotto 2023-09-18
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -33994,6 +34020,11 @@ end;
 
 procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   //Mauricio Parizotto 2023-09-26
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -34011,6 +34042,11 @@ end;
 
 procedure TForm7.VerificaAlteracaoPerfil;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
     Exit;
 
@@ -34107,6 +34143,30 @@ begin
     oArqIni.SmallCom.Orcamento.Observacao := cMsg;
   finally
     FreeAndNil(oArqIni);
+  end;
+end;
+
+procedure TForm7.DuplicarProdutoClick(Sender: TObject);
+begin
+  try
+    FbDuplicandoProd := True;
+
+    if TDuplicaProduto.New
+                   .SetTransaction(IBTransaction1)
+                   .SetDataSetEstoque(ibDataSet4)
+                   .SetDataSetComposicao(ibDataSet28)
+                   .SetCodigoProduto(ibDataSet4CODIGO.AsString)
+                   .Duplicar then
+    begin
+      Sleep(200);
+
+      AgendaCommit(False);
+    end;
+  finally
+    FbDuplicandoProd := False;
+
+    Self.Close;
+    Self.Show;
   end;
 end;
 
