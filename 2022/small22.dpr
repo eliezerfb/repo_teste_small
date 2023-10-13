@@ -176,6 +176,8 @@ uses
   uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas',
   uIDuplicaProduto in 'interfaces\uIDuplicaProduto.pas',
   uDuplicaProduto in 'units\uDuplicaProduto.pas',
+  uIDuplicaOrcamento in 'interfaces\uIDuplicaOrcamento.pas',
+  uDuplicaOrcamento in 'units\uDuplicaOrcamento.pas',
   uFrenteSections in '..\..\unit_compartilhada\uFrenteSections.pas',
   uNFeSections in '..\..\unit_compartilhada\uNFeSections.pas',
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',

@@ -1600,6 +1600,7 @@ type
     Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
     DuplicarProduto: TMenuItem;
+    DuplicaOrcamento: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2259,6 +2260,7 @@ type
     procedure Parmetrosdetributao1Click(Sender: TObject);
     procedure Configurarobservaofixa1Click(Sender: TObject);
     procedure DuplicarProdutoClick(Sender: TObject);
+    procedure DuplicaOrcamentoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2484,7 +2486,10 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFrenteSections
   , uFrmParametroTributacao
   , uRelatorioResumoVendas
-  , uDuplicaProduto;
+  , uDuplicaOrcamento
+  , uDuplicaProduto
+  , uRelatorioResumoVendas
+  ;
 
 {$R *.DFM}
 
@@ -3310,9 +3315,11 @@ end;
 /////////////////////////////////
 function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean;
 var
-  s, sAntigo : String;
+  s, sAntigo, sAntigoOrcamentSemCodigo : String;
+
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
+  sAntigoOrcamentENCRYPTHASH, sAntigoOrcamentSemCodigoENCRYPTHASH: String;  
 begin
   Result := True;
   s := '';
@@ -3719,6 +3726,43 @@ begin
 
     if pNome = 'ORCAMENT' then
     begin
+      sAntigoOrcamentSemCodigo :=
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+
+      sAntigo :=
+        VarToStr(DataSet.FieldByName('CODIGO').OldValue)+
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+
       s :=
         DataSet.FieldByName('CODIGO').AsString+
         DataSet.FieldByName('DESCRICAO').AsString+
@@ -3790,11 +3834,48 @@ begin
       //            'hash banco ' + DataSet.FieldByName('ENCRYPTHASH').AsString);
     end;
 
+    if (pNome = 'ORCAMENT') then
+    begin
+      sAntigoOrcamentENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(s));
+      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo));
+    end;
+
 
     if bAssina then
     begin
       // Assina registro
       if pNome = 'ESTOQUE' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoSemCest)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end else
+      if pNome = 'ORCAMENT' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end else
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end;
+
+{      if pNome = 'ESTOQUE' then
       begin
 //        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
@@ -3805,17 +3886,20 @@ begin
       begin
         // Sandro Silva
         //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre 
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+            or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))
+            or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
           //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
           DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
-      end;
+      end; }
     end else
     begin
       // Sandro Silva
       //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s)))
+        or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -3828,9 +3912,10 @@ begin
       if (pNome = 'ESTOQUE') and (Result = False) then
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
-        // Sandro Silva 
+        // Sandro Silva
         //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -3839,6 +3924,22 @@ begin
         end;
       end;
       //Sandro Silva 2017-11-13 final HOMOLOGA 2017
+
+      {Dailon Parisotto 2023-10-06 (f-7420) Inicio}
+      // Identificado diferença na geração dos HASHs entre o COMMERCE e o ORCA, o ORCA gerava sem o campo CODIGO
+      // Essa mesma validação deve estar na rotina de "assinaregistro" do COMMERCE e do FRENTE
+      if (pNome = 'ORCAMENT') and (Result = False) then
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
+        begin
+          Result := True;
+        end else
+        begin
+          Result := False;
+        end;
+      end;
+      {Dailon Parisotto 2023-10-06 (f-7420) Fim}
     end;
   except
     ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome)
@@ -13387,6 +13488,7 @@ begin
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
   DuplicarProduto.Visible                          := False;  
+  DuplicaOrcamento.Visible                         := False;
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13480,7 +13582,7 @@ begin
       Apagar2.Visible := True;
 
       EnviarOrcamentoPorEmail1.Visible := True;
-
+      DuplicaOrcamento.Visible         := True;
       cEmails := TRetornaCaptionEmailPopUpDocs.New
                                               .SetDataBase(IBDatabase1)
                                               .setCodigoClifor(Form7.ibDataSet97.FieldByname('Cliente').AsString)
@@ -32446,7 +32548,7 @@ function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 // Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
 begin
   //Result := ValidaEAN13(LimpaNumero(sEan)); Mauricio Parizotto 2023-07-05
-  Result := ValidaEAN(LimpaNumero(sEan)); 
+  Result := ValidaEAN(LimpaNumero(sEan));
   if Result then
   begin
     if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then
@@ -34165,6 +34267,51 @@ begin
   finally
     FbDuplicandoProd := False;
 
+    Self.Close;
+    Self.Show;
+  end;
+end;
+
+procedure TForm7.DuplicaOrcamentoClick(Sender: TObject);
+var
+  cNroPedido: string;
+begin
+  try
+    if TDuplicaOrcamento.New
+                        .SetTransaction(IBTransaction1)
+                        .SetNroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                        .SetDataSetOrcamento(ibDataSet37)
+                        .SetDataSetOrcamentoOBS(IbdOrcamentObs)
+                        .Duplicar then
+    begin
+      Sleep(200);
+      ibDataSet37.DisableControls;
+      try
+        ibDataSet37.Last;
+
+        cNroPedido := ibDataSet37PEDIDO.AsString;
+
+        ibDataSet37.First;
+        while not ibDataSet37.Eof do
+        begin
+          if ibDataSet37PEDIDO.AsString = cNroPedido then
+          begin
+            ibDataSet37.Edit;
+            AssinaRegistro('ORCAMENT', ibDataSet37, True);
+            HasHs('ORCAMENT',True);
+            ibDataSet37.Post;
+          end;
+
+          ibDataSet37.Next;
+        end;
+      finally
+        ibDataSet97.Last;
+        ibDataSet37.EnableControls;
+      end;
+
+      AgendaCommit(True);
+    end;
+  finally
     Self.Close;
     Self.Show;
   end;

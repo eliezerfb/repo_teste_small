@@ -18172,6 +18172,11 @@ object Form7: TForm7
       Visible = False
       OnClick = DuplicarProdutoClick
     end
+    object DuplicaOrcamento: TMenuItem
+      Caption = 'Duplicar este or'#231'amento'
+      Visible = False
+      OnClick = DuplicaOrcamentoClick
+    end
   end
   object ibDataSet10: TIBDataSet
     Database = IBDatabase1
