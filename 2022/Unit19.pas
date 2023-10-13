@@ -178,6 +178,7 @@ type
       Shift: TShiftState);
     procedure ComboBox11Exit(Sender: TObject);
   private
+    procedure DefineLayoutAbaImpressao;
     { Private declarations }
   public
     { Public declarations }
@@ -246,12 +247,32 @@ begin
   FreeMem(p, 32767);
 end;
 
+{Dailon Parisotto 2023-10-13 Inicio}
+procedure TForm19.DefineLayoutAbaImpressao;
+var
+  cEstado: String;
+  bMostra: Boolean;
+begin
+  cEstado := Form7.ibDataSet13ESTADO.AsString;
+
+  bMostra := ((cEstado <> 'SC') and (cEstado <> 'MG'));
+  //Campos
+  ComboBoxBloqueto.Visible := bMostra;
+  ComboBoxNF.Visible       := bMostra;
+  ComboBoxNF2.Visible      := bMostra;
+  //Labels
+  Label27.Visible := bMostra;
+  Label26.Visible := bMostra;
+  Label29.Visible := bMostra;
+end;
+{Dailon Parisotto 2023-10-13 Fim}
+
 
 procedure TForm19.FormActivate(Sender: TObject);
 var
   Mais1Ini, Mais2Ini, Mais3Ini, Mais4ini: TIniFile;
 begin
-  //
+  {Dailon Parisotto 2023-10-13 Inicio
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
   begin
     Form19.Orelha_matricial.TabVisible          := True;
@@ -259,6 +280,9 @@ begin
   begin
     Form19.Orelha_matricial.TabVisible          := False;
   end;
+  }
+  DefineLayoutAbaImpressao;
+  {Dailon Parisotto 2023-10-13 Fim}
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   //

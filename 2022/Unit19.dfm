@@ -1080,7 +1080,7 @@ object Form19: TForm19
       ImageIndex = 5
       object Label26: TLabel
         Left = 44
-        Top = 60
+        Top = 90
         Width = 206
         Height = 13
         Alignment = taRightJustify
@@ -1088,7 +1088,7 @@ object Form19: TForm19
       end
       object Label29: TLabel
         Left = 44
-        Top = 90
+        Top = 120
         Width = 206
         Height = 13
         Alignment = taRightJustify
@@ -1096,15 +1096,15 @@ object Form19: TForm19
       end
       object Label27: TLabel
         Left = 80
-        Top = 30
+        Top = 60
         Width = 168
         Height = 13
         Alignment = taRightJustify
         Caption = 'Impressora matricial para bloquetos:'
       end
       object Label37: TLabel
-        Left = 131
-        Top = 120
+        Left = 129
+        Top = 30
         Width = 119
         Height = 13
         Alignment = taRightJustify
@@ -1112,45 +1112,45 @@ object Form19: TForm19
       end
       object ComboBoxNF: TComboBox
         Left = 250
-        Top = 60
-        Width = 200
-        Height = 21
-        ItemHeight = 0
-        TabOrder = 0
-      end
-      object ComboBoxNF2: TComboBox
-        Left = 250
         Top = 90
         Width = 200
         Height = 21
-        ItemHeight = 0
-        TabOrder = 1
+        ItemHeight = 13
+        TabOrder = 2
+      end
+      object ComboBoxNF2: TComboBox
+        Left = 250
+        Top = 120
+        Width = 200
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 3
       end
       object ComboBoxImpressora: TComboBox
         Left = 15
         Top = 280
         Width = 300
         Height = 21
-        ItemHeight = 0
-        TabOrder = 2
+        ItemHeight = 13
+        TabOrder = 4
         Text = 'ComboBoxImpressora'
         Visible = False
       end
       object ComboBoxBloqueto: TComboBox
         Left = 250
-        Top = 30
+        Top = 60
         Width = 200
         Height = 21
-        ItemHeight = 0
-        TabOrder = 3
+        ItemHeight = 13
+        TabOrder = 1
       end
       object ComboBoxORCA: TComboBox
         Left = 250
-        Top = 120
+        Top = 30
         Width = 200
         Height = 21
-        ItemHeight = 0
-        TabOrder = 4
+        ItemHeight = 13
+        TabOrder = 0
       end
     end
     object Orelha_atendimento: TTabSheet
