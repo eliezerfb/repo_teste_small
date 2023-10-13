@@ -2478,7 +2478,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uSmallResourceString
   , uChamaRelatorioCommerceFactory
   , uImpressaoOrcamento
-  , uSectionFrentedeCaixaINI
+  , uFrenteSections
   , uFrmParametroTributacao
   , uRelatorioResumoVendas;
 
