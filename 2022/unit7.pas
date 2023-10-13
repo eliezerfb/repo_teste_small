@@ -38,6 +38,7 @@ const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
 const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
+const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
@@ -33420,11 +33421,24 @@ end;
 procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 begin
+  {Sandro Silva 2023-10-02 inicio
   //Aplica filtro na contas a receber para listar apenas aquelas que podem gerar boleto quando estiver gerando a partir da tela de desdobramento de parcelas da nota
   if Form7.ibDataSet7.Tag = ID_FILTRAR_FORMAS_GERAM_BOLETO then
   begin
     Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
   end;
+  }
+  case Form7.ibDataSet7.Tag of
+    ID_FILTRAR_FORMAS_GERAM_BOLETO:
+    begin
+      Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    end;
+    ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA:
+    begin
+      Accept := FormaDePagamentoGeraCarneDuplicata(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    end;
+  end;
+  {Sandro Silva 2023-10-02 fim}
 end;
 
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
