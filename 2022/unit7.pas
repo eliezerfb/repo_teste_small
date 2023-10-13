@@ -17924,6 +17924,9 @@ end;
 {Dailon Parisotto 2023-10-13 Inicio}
 procedure TForm7.ImprimeOrcamento;
 begin
+  if IBDataSet97.IsEmpty then
+    Exit;
+
   TImpressaoOrcamento.New
                      .SetTransaction(IBTransaction1)
                      .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
