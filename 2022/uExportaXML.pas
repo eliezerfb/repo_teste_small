@@ -109,7 +109,7 @@ end;      }
 
 function TfrmExportaXML.EnviarXml: Boolean;
 var
-  cAnexo, cTitulo, cCorpo: String;
+  cTipoGeracao, cDocs, cAnexo, cTitulo, cCorpo: String;
   cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT: String;
   bTamanhoZip: Boolean;
 begin
@@ -221,7 +221,37 @@ begin
         cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
 
         Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+
         Result := True;
+
+        if Result then
+        begin
+          if cbNFeSaida.Checked then
+            cDocs := 'NF-e Saída';
+          if cbNFeEntrada.Checked then
+          begin
+            if cDocs <> EmptyStr then
+              cDocs := cDocs + ', ';
+            cDocs := cDocs + 'NF-e Entrada';
+          end;
+          if cbNFCeSAT.Checked then
+          begin
+            if cDocs <> EmptyStr then
+              cDocs := cDocs + ', ';
+            cDocs := cDocs + 'NFC-e/SAT';
+          end;
+
+          cTipoGeracao := 'MANUAL';
+          if FbBackGround then
+            cTipoGeracao := 'AUTOMATICO';
+
+          Unit7.Audita(cTipoGeracao, 'SMALL', Form7.UsuarioLogado,
+                       'Enviado ' + cDocs,
+                       0,0);
+
+          Unit7.AgendaCommit(False);
+        end;
+
       end
       else
         Application.MessageBox(PChar('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
@@ -407,8 +437,6 @@ begin
 end;
 
 function TfrmExportaXML.EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
-var
-  cDocs: String;
 begin
   Result := False;
 
@@ -422,29 +450,6 @@ begin
     edtEmailContab.Text  := AcEmailContab;
 
     Result := EnviarXml;
-
-    if Result then
-    begin
-      if cbNFeSaida.Checked then
-        cDocs := 'NF-e Saída';
-      if cbNFeEntrada.Checked then
-      begin
-        if cDocs <> EmptyStr then
-          cDocs := cDocs + ', ';
-        cDocs := cDocs + 'NF-e Entrada';
-      end;
-      if cbNFCeSAT.Checked then
-      begin
-        if cDocs <> EmptyStr then
-          cDocs := cDocs + ', ';
-        cDocs := cDocs + 'NFC-e/SAT';
-      end;
-
-      Unit7.Audita('AUTOMATICO', 'SMALL', Form7.UsuarioLogado,
-                   'Enviado ' + cDocs,
-                   0,0);
-      unit7.AgendaCommit(False);
-    end;
   finally
     FbBackGround := False;
   end;

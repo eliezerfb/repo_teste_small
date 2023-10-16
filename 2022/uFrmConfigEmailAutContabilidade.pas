@@ -84,8 +84,14 @@ begin
   begin
     if (not cbNFeSaida.Checked) and (not cbNFeEntrada.Checked) and (not cbNFCeSAT.Checked) then
     begin
-      Application.MessageBox('Selecione ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+      Application.MessageBox(PChar(_cSelecioneTipoDocEmailXMLConf), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
       cbNFeSaida.SetFocus;
+      Exit;
+    end;
+    if Trim(edtEmailContab.Text) = EmptyStr then
+    begin
+      Application.MessageBox(PChar(_cInformeEmailContab), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+      edtEmailContab.SetFocus;
       Exit;
     end;
   end;
