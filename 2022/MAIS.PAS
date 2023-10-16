@@ -31,7 +31,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023036'; // Sandro Silva 2023-09-29 BUILD_DO_BANCO = '2023034'; // Sandro Silva 2023-09-01 const BUILD_DO_BANCO = '2023032';  
+const BUILD_DO_BANCO = '2023038'; // Sandro Silva 2023-10-06 const BUILD_DO_BANCO = '2023036'; // Sandro Silva 2023-09-29 BUILD_DO_BANCO = '2023034';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -537,7 +537,7 @@ var
 implementation
 
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
-  Unit16, Unit8, Unit38, Unit28, Unit43, Unit30, SelecionaCertificado,
+  Unit16, Unit8, Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
   uFazerBackup,
@@ -5623,7 +5623,13 @@ end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
 begin
-  Form28.ShowModal;
+  frmExportaXML := TfrmExportaXML.Create(nil);
+  try
+    frmExportaXML.SetImagem(imgVendas.Picture);
+    frmExportaXML.ShowModal;
+  finally
+    FreeAndNil(frmExportaXML);
+  end;
 end;
 
 procedure TForm1.Cadastrodeconvnios1Click(Sender: TObject);

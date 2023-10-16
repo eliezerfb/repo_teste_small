@@ -11,6 +11,7 @@ type
   function AddItem(AcDescricao: String): IFiltrosRodapeRelatorio;
   function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
   function getFiltroData: String;
+  function setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
   function getTitulo: String;
   function getItens: TStringList;
   end;

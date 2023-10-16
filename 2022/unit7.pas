@@ -30,6 +30,7 @@ uses
   IdHTTP
   , uFuncoesRetaguarda
   , uSmallConsts
+  , uArquivosDAT // Sandro Silva 2023-10-02
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -37,6 +38,7 @@ const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
 const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
+const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
@@ -1597,6 +1599,10 @@ type
     Parmetrosdetributao1: TMenuItem;
     ibDataSet7VALOR_MULTA: TIBBCDField;
     ibDataSet7PERCENTUAL_MULTA: TIBBCDField;
+	Configurarobservaofixa1: TMenuItem;
+    N69: TMenuItem;
+    DuplicarProduto: TMenuItem;
+    DuplicaOrcamento: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2254,10 +2260,14 @@ type
     procedure ibdParametroTributaNewRecord(DataSet: TDataSet);
     procedure Perfildetributao1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
+    procedure Configurarobservaofixa1Click(Sender: TObject);
+    procedure DuplicarProdutoClick(Sender: TObject);
+    procedure DuplicaOrcamentoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
+    FbDuplicandoProd: Boolean; 
     FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
@@ -2292,8 +2302,13 @@ type
     function TestarPodeExcluirOrcamento: Boolean;
     procedure ExcluirOrcamento;
     procedure VerificaAlteracaoPerfil;
+    procedure ChamarTelaXMLContab;
+    function MensagemPortalConsultaCNPJCPF: Integer;
   public
     // Public declarations
+
+    oArqConfiguracao: TArquivosDAT; // Sandro Silva 2023-10-02
+
 
     fSaldoVetorCaixa : array[0..9999999] of real;
     fSaldoVetorBanco : array[0..9999999] of real;
@@ -2439,12 +2454,13 @@ type
   
 var
   Form7: TForm7;
+  
 implementation
 
 uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
-  unit24, Unit28, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
+  unit24, uExportaXML, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
   Unit29, Unit48
   , ugeraxmlnfe
   , uFuncoesFiscais
@@ -2461,7 +2477,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , Unit18
   , uListaCnaes
   , uAssinaturaDigital
-  , uArquivosDAT
+// Sandro Silva 2023-10-02  , uArquivosDAT
   , uSmallEnumerados
   , uNFSeINI
   , uAtualizaBancoDados
@@ -2469,8 +2485,12 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uSmallResourceString
   , uChamaRelatorioCommerceFactory
   , uImpressaoOrcamento
-  , uSectionFrentedeCaixaINI
-  , uFrmParametroTributacao;
+  , uFrenteSections
+  , uFrmParametroTributacao
+  , uRelatorioResumoVendas
+  , uDuplicaOrcamento
+  , uDuplicaProduto
+  ;
 
 {$R *.DFM}
 
@@ -3296,9 +3316,11 @@ end;
 /////////////////////////////////
 function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean;
 var
-  s, sAntigo : String;
+  s, sAntigo, sAntigoOrcamentSemCodigo : String;
+
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
+  sAntigoOrcamentENCRYPTHASH, sAntigoOrcamentSemCodigoENCRYPTHASH: String;  
 begin
   Result := True;
   s := '';
@@ -3705,6 +3727,43 @@ begin
 
     if pNome = 'ORCAMENT' then
     begin
+      sAntigoOrcamentSemCodigo :=
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+
+      sAntigo :=
+        VarToStr(DataSet.FieldByName('CODIGO').OldValue)+
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+
       s :=
         DataSet.FieldByName('CODIGO').AsString+
         DataSet.FieldByName('DESCRICAO').AsString+
@@ -3776,11 +3835,48 @@ begin
       //            'hash banco ' + DataSet.FieldByName('ENCRYPTHASH').AsString);
     end;
 
+    if (pNome = 'ORCAMENT') then
+    begin
+      sAntigoOrcamentENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(s));
+      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo));
+    end;
+
 
     if bAssina then
     begin
       // Assina registro
       if pNome = 'ESTOQUE' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoSemCest)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end else
+      if pNome = 'ORCAMENT' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end else
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end;
+
+{      if pNome = 'ESTOQUE' then
       begin
 //        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
@@ -3791,17 +3887,20 @@ begin
       begin
         // Sandro Silva
         //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre 
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+            or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))
+            or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
           //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
           DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
-      end;
+      end; }
     end else
     begin
       // Sandro Silva
       //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s)))
+        or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -3814,9 +3913,10 @@ begin
       if (pNome = 'ESTOQUE') and (Result = False) then
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
-        // Sandro Silva 
+        // Sandro Silva
         //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -3825,6 +3925,22 @@ begin
         end;
       end;
       //Sandro Silva 2017-11-13 final HOMOLOGA 2017
+
+      {Dailon Parisotto 2023-10-06 (f-7420) Inicio}
+      // Identificado diferença na geração dos HASHs entre o COMMERCE e o ORCA, o ORCA gerava sem o campo CODIGO
+      // Essa mesma validação deve estar na rotina de "assinaregistro" do COMMERCE e do FRENTE
+      if (pNome = 'ORCAMENT') and (Result = False) then
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
+        begin
+          Result := True;
+        end else
+        begin
+          Result := False;
+        end;
+      end;
+      {Dailon Parisotto 2023-10-06 (f-7420) Fim}
     end;
   except
     ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome)
@@ -4343,8 +4459,10 @@ end;
 
 function AbreArquivoNoFormatoCerto(sP1:String): boolean;
 begin
-  if Copy(sP1,1,3) <> 'OS_' then sP1 := Senhas.UsuarioPub;
+  if Copy(sP1,1,3) <> 'OS_' then
+    sP1 := Senhas.UsuarioPub;
 
+{Sandro Silva 2023-10-02 inicio
   if Form1.bPDF then
   begin
     Screen.Cursor            := crHourGlass;
@@ -4358,6 +4476,19 @@ begin
   begin
     ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
   end;
+}
+  if Form1.bPDF then
+  begin
+    Screen.Cursor            := crHourGlass;
+    HtmlParaPdf(sP1);
+    ShellExecute( 0, 'Open',pChar(sP1+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+    Screen.Cursor            := crDefault;
+  end
+  else if Form1.bHtml1 then
+  begin
+    ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
 
   Result := True;
 end;
@@ -7453,10 +7584,11 @@ begin
         //
         Form7.ibDataSet35ISS.AsFloat      := Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100;
         }
-        Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
+        Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet15DESCONTO.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat); // Sandro Silva 2023-10-02 Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
         Form7.ibDataSet35.Edit;
         //
-        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+        // Sandro Silva 2023-10-02 Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
         {Sandro Silva 2022-09-21 fim}
         //
@@ -8634,15 +8766,33 @@ begin
       Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
       if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
       begin
-        bButton := Application.MessageBox('Federal?', 'Atenção',
+        {Dailon Parisotto 2023-10-11 Inicio
+
+        bButton := Application.MessageBox(PChar('Em qual portal deseja fazer a consulta?' + slineBreak + slineBreak +
+                                                'Sim - Federal' + slineBreak +
+                                                'Não - Estadual' + slineBreak +
+                                                'Cancelar - Nenhuma das opções acima.'), PChar(_cTituloMsg),
                    MB_YESNOCANCEL + mb_DefButton1 + MB_ICONQUESTION);
+
+        }
+        bButton := MensagemPortalConsultaCNPJCPF;
+        {Dailon Parisotto 2023-10-11 Fim}
 
         if bButton = IDYES  then
         begin
+          {Dailon Parisotto 2023-10-11 Inicio
+
           if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
             ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
           else
             ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cnpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+
+          }
+          if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
+            ShellExecute( 0, 'Open',pChar('https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
+          else
+            ShellExecute( 0, 'Open',pChar('https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+          {Dailon Parisotto 2023-10-11 Fim}
         end else
         begin
           if bButton = IDNO  then
@@ -8656,10 +8806,21 @@ begin
       end else
       begin
         Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
+
+        {Dailon Parisotto 2023-10-11 Inicio
+        
         if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
         else
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+
+        }
+        if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
+          ShellExecute( 0, 'Open',pChar('https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
+        else
+          ShellExecute( 0, 'Open',pChar('https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+        {Dailon Parisotto 2023-10-11 Fim}
+
         Screen.Cursor            := crDefault;
         Abort;
       end;
@@ -8761,6 +8922,41 @@ begin
     Screen.Cursor            := crDefault;
   end;
 end;
+
+{Dailon Parisotto 2023-10-11 Inicio}
+function TForm7.MensagemPortalConsultaCNPJCPF: Integer;
+var
+  ofrmMsg: TForm;
+  oBotaoSim, oBotaoNao, oBotaoCancela: TButton;
+begin
+  ofrmMsg := CreateMessageDialog('Em qual portal deseja fazer a consulta?', mtConfirmation, mbYesNoCancel);
+  try
+    ofrmMsg.Caption := _cTituloMsg;
+    ofrmMsg.Position := Self.Position;
+
+    oBotaoSim := TButton(ofrmMsg.FindChildControl('Yes'));
+    oBotaoSim.Caption := 'Federal';
+    oBotaoSim.Width := Canvas.TextWidth(oBotaoSim.Caption) + 32;
+
+    oBotaoNao := TButton(ofrmMsg.FindChildControl('No'));
+    oBotaoNao.Caption := 'Estadual';
+    oBotaoNao.Left := oBotaoSim.Left + oBotaoSim.Width + 16;
+    oBotaoNao.Width := Canvas.TextWidth(oBotaoNao.Caption) + 32;
+
+    oBotaoCancela := TButton(ofrmMsg.FindChildControl('Cancel'));
+    oBotaoCancela.Caption := 'Cancelar';
+    oBotaoCancela.Left := oBotaoNao.Left + oBotaoNao.Width + 16;
+    oBotaoCancela.Width := Canvas.TextWidth(oBotaoCancela.Caption) + 32;
+
+    if ofrmMsg.Width < (oBotaoCancela.Left + oBotaoCancela.Width + oBotaoSim.Left) then
+      ofrmMsg.Width := oBotaoCancela.Left + oBotaoCancela.Width + oBotaoSim.Left;
+
+    Result := ofrmMsg.ShowModal;
+  finally
+    FreeAndNil(ofrmMsg);
+  end;
+end;
+{Dailon Parisotto 2023-10-11 Fim}
 
 procedure TForm7.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
@@ -9728,6 +9924,9 @@ var
 begin
   //LogRetaguarda('9590'); // Sandro Silva 2023-09-13
 
+  if oArqConfiguracao = nil then
+    oArqConfiguracao := TArquivosDAT.Create(Usuario);
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo //
   try
     if Form10.Visible then
@@ -9751,9 +9950,14 @@ begin
 
   tInicio := Time;
 
+
   Form1.Panel4.Visible      := True;
   Form7.WebBrowser2.Visible := False;
 
+  {Dailon Parisotto 2023-10-10 Inicio}
+  FbDuplicandoProd := False;
+  {Dailon Parisotto 2023-10-10 Fim}
+   
   try
     // Pega os dados do Emitente
     Form7.ibDataSet13.Active := True;
@@ -12411,7 +12615,13 @@ procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
 begin
-  if Form7.iKey = VK_Down then
+  {Dailon Parisotto 2023-10-10 Inicio
+
+  if (Form7.iKey = VK_Down) then
+
+  }
+  if (Form7.iKey = VK_Down) and (not FbDuplicandoProd) then
+  {Dailon Parisotto 2023-10-10 Fim}
   begin
     iKey := 0;
     Abort;
@@ -12821,16 +13031,30 @@ end;
 
 procedure TForm7.Resumodasvendas1Click(Sender: TObject);
 begin
-  //
-  sModuloAnterior := sModulo;
-  //
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Resumo das vendas';
-  Form38.ShowModal; // Ok
-  //
+  Form7.ibDataSet99.Close;
+  Form7.ibDataSet99.SelectSql.Clear;
+  Form7.ibDataSet100.Close;
+  Form7.ibDataSet100.SelectSql.Clear;
+  CriaJpg('logotip.jpg');
+  frmRelResumoVendas := TfrmRelResumoVendas.Create(nil);
+  try
+    frmRelResumoVendas.DataBase           := IBDatabase1;
+    frmRelResumoVendas.Imagem             := Image205.Picture;
+    frmRelResumoVendas.Usuario            := Usuario;
+    frmRelResumoVendas.DataSetEstoque     := ibDataSet4;
+    frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
+    frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);
+    if sModulo = 'ESTOQUE' then
+    begin
+      frmRelResumoVendas.WhereEstoque     := sWhere;
+      frmRelResumoVendas.OrderBy          := sOrderBy;
+    end;
+    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True);
+    frmRelResumoVendas.ShowModal;
+  finally
+    AgendaCommit(True);
+    FreeAndNil(frmRelResumoVendas);
+  end;
 end;
 
 procedure TForm7.Histrico1Click(Sender: TObject);
@@ -13264,6 +13488,8 @@ begin
   VisualizarXMLdamanifestaododestinatrio1.Visible  := False;
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
+  DuplicarProduto.Visible                          := False;  
+  DuplicaOrcamento.Visible                         := False;
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13343,6 +13569,7 @@ begin
     end;
     if sModulo = 'ESTOQUE'  then
     begin
+      DuplicarProduto.Visible := True;
       if ibDataSet4ATIVO.AsString='1' then
         Ativo1.Checked := False
       else
@@ -13356,7 +13583,7 @@ begin
       Apagar2.Visible := True;
 
       EnviarOrcamentoPorEmail1.Visible := True;
-
+      DuplicaOrcamento.Visible         := True;
       cEmails := TRetornaCaptionEmailPopUpDocs.New
                                               .SetDataBase(IBDatabase1)
                                               .setCodigoClifor(Form7.ibDataSet97.FieldByname('Cliente').AsString)
@@ -15554,6 +15781,10 @@ end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
   //
   if ibDataSet4PRECO.AsFloat <= 0 then
   begin
@@ -25594,141 +25825,8 @@ begin
 end;
 
 procedure TForm7.ExportarNFesemarquivoXML1Click(Sender: TObject);
-var
-  bTem   : Boolean;
-  sEmail  : string;
-  Mais1Ini : tIniFile;
-  SearchRec : tSearchREC;
-  Encontrou  : Integer;
 begin
-  //
-  // Form só para pedir o período e o e-mail do contador.
-  //
-  Form28.ShowModal;
-  //
-  if Form28.DateTimePicker1.Date <> StrToDate('01/01/1998') then
-  begin
-    //
-    if ValidaEmail(Form28.Edit1.Text) then
-    begin
-      //
-      Form7.Close;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      Mais1Ini.WriteString('XML','e-mail contabilidade',AllTrim(Form28.Edit1.Text));
-      Mais1Ini.WriteString('XML','Periodo Inicial',DateToStr(Form28.DateTimePicker1.Date));
-      Mais1Ini.WriteString('XML','Periodo Final',DateToStr(Form28.DateTimePicker2.Date));
-      Mais1ini.Free;
-      //
-      Form7.ibDataSet15.Close;
-      Form7.ibDataSet15.SelectSql.Clear;
-//
-//      Form7.ibDataSet15.Selectsql.Add('select * from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-//      ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' and coalesce(NFERECIBO,'''')<>'''' order by EMISSAO, NUMERONF');
-//      Form7.ibDataset15.Open;
-//
-      //
-      Form7.ibDataSet15.Selectsql.Add('select * from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-      ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by EMISSAO, NUMERONF');
-      //
-      Form7.ibDataset15.Open;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      sEmail := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
-      Mais1ini.Free;
-      //
-      // Apaga todos os arquivos .XML da pasta CONTABIL
-      //
-      FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-      Encontrou :=0;
-      while Encontrou = 0 do
-      begin
-        DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-        Encontrou := FindNext(SearchRec);
-      end;
-      //
-      bTem := False;
-      //
-      // NFE e CANCELADAS
-      //
-      Form7.ibDataSet15.First;
-      while not Form7.ibDataSet15.Eof do
-      begin
-        DistribuicaoNFe('CONTABIL');
-        Form7.ibDataSet15.Next;
-        bTem := True;
-      end;
-      //
-      // INUTILIZADAS
-      //
-      Form7.IBQuery99.Close;
-      Form7.IBQuery99.SQL.Clear;
-      Form7.IBQuery99.SQL.Add('select XML, DATA, REGISTRO from INUTILIZACAO where DATA<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-      ' and DATA>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by DATA');
-      Form7.IBQuery99.Open;
-      //
-      Form7.IBQuery99.First;
-      while not Form7.IBQuery99.Eof do
-      begin
-        DistribuicaoNFeINUTILIZADA('CONTABIL');
-        Form7.IBQuery99.Next;
-        bTem := True;
-      end;
-      //
-      //
-      if bTem then
-      begin
-        //
-        // Apaga o ZIP anterior
-        //
-        while FileExists(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip')) do
-        begin
-          DeleteFile(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip'));
-          Sleep(1000);
-        end;
-        //
-        ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip')+'"'), '', SW_SHOWMAXIMIZED);
-        //
-        while ConsultaProcesso('szip.exe') do
-        begin
-          Application.ProcessMessages;
-          sleep(100);
-        end;
-        //
-        while not FileExists(pChar(Form1.sAtual+'\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip')) do
-        begin
-          sleep(100);
-        end;
-        //
-        // Apaga todos os arquivos .XML da pasta CONTABIL
-        //
-        FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-        Encontrou :=0;
-        while Encontrou = 0 do
-        begin
-          DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-          Encontrou := FindNext(SearchRec);
-        end;
-        //
-        Unit7.EnviarEMail('',Form28.Edit1.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-          pchar('Segue em anexo arquivo zipado com as NF-e´s de saída da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-          +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
-          +chr(10)
-          +Form1.sPropaganda)
-          ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'.zip'),False);
-        //
-      end else
-      begin
-        ShowMessage('Não encontrado XML para contabilidade neste período.');
-      end;
-    end;
-  end;
-  //
-  try
-    Form7.Close;
-    Form7.ShowModal;
-  except end;  
-  //
+  ChamarTelaXMLContab;
 end;
 
 procedure TForm7.ibDataSet4ULT_VENDASetText(Sender: TField;
@@ -27093,6 +27191,11 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+  
   //Mauricio Parizotto 2023-09-18
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -31751,116 +31854,25 @@ begin
   //
 end;
 
+procedure TForm7.ChamarTelaXMLContab;
+begin
+  frmExportaXML := TfrmExportaXML.Create(nil);
+  try
+    frmExportaXML.SetImagem(Form1.imgVendas.Picture);
+    frmExportaXML.AbrirTelaTodosDocs;
+
+    AgendaCommit(False);
+  finally
+    FreeAndNil(frmExportaXML);
+    Form7.Close;
+    Form7.Show;
+  end;
+end;
+
 procedure TForm7.ExportarNfesdeentrdaparacontabilidade1Click(
   Sender: TObject);
-var
-  bTem   : Boolean;
-  sEmail : string;
-  Mais1Ini : tIniFile;
-  SearchRec: tSearchREC;
-  Encontrou : Integer;
 begin
-  //
-  // Form só para pedir o período e o e-mail do contador.
-  //
-  Form28.ShowModal;
-  //
-  if Form28.DateTimePicker1.Date <> StrToDate('01/01/1998') then
-  begin
-    //
-    if ValidaEmail(Form28.Edit1.Text) then
-    begin
-      //
-      Form7.Close;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      Mais1Ini.WriteString('XML','e-mail contabilidade',AllTrim(Form28.Edit1.Text));
-      Mais1Ini.WriteString('XML','Periodo Inicial',DateToStr(Form28.DateTimePicker1.Date));
-      Mais1Ini.WriteString('XML','Periodo Final',DateToStr(Form28.DateTimePicker2.Date));
-      Mais1ini.Free;
-      //
-      Form7.ibDataSet24.Close;
-      Form7.ibDataSet24.SelectSql.Clear;
-      //
-      Form7.ibDataSet24.Selectsql.Add('select * from COMPRAS where EMISSAO<='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker2.Date))+
-      ' and EMISSAO>='+QuotedStr(DateToStrInvertida(Form28.DateTimePicker1.Date))+' order by EMISSAO, NUMERONF');
-      //
-      Form7.ibDataSet24.Open;
-      //
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-      sEmail := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
-      Mais1ini.Free;
-      //
-      // Apaga todos os arquivos .XML da pasta CONTABIL
-      //
-      FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-      Encontrou :=0;
-      while Encontrou = 0 do
-      begin
-        DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-        Encontrou := FindNext(SearchRec);
-      end;
-      //
-      bTem   := False;
-      //
-      Form7.ibDataSet24.First;
-      while not Form7.ibDataSet24.Eof do
-      begin
-        if DistribuicaoNFeCompra('CONTABIL') then bTem   := True;
-        Form7.ibDataSet24.Next;
-      end;
-      //
-      if bTem then
-      begin
-        //
-        while FileExists(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
-        begin
-          DeleteFile(pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'));
-          Sleep(1000);
-        end;
-        //
-        ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')+'"'), '', SW_SHOWMAXIMIZED);
-        //
-        while ConsultaProcesso('szip.exe') do
-        begin
-          Application.ProcessMessages;
-          sleep(100);
-        end;
-        //
-        while not FileExists(pChar(Form1.sAtual+'\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip')) do
-        begin
-          sleep(100);
-        end;
-        //
-        // Apaga todos os arquivos .XML da pasta CONTABIL
-        //
-        FindFirst(Form1.sAtual+'\CONTABIL\*.xml', faAnyFile, SearchRec);
-        Encontrou :=0;
-        while Encontrou = 0 do
-        begin
-          DeleteFile(pChar(Form1.sAtual+'\CONTABIL\'+Searchrec.Name));
-          Encontrou := FindNext(SearchRec);
-        end;
-        //
-        Unit7.EnviarEMail('',Form28.Edit1.Text,'','NF-e´s (Notas Fiscais Eletrônicas)',
-          pchar('Segue em anexo arquivo zipado com as NF-e´s de entrada da empresa '+AllTrim(Form7.ibDataSet13NOME.AsString)+'.'
-          +' Período de '+DateToStr(Form28.DateTimePicker1.Date)+' até '+DateToStr(Form28.DateTimePicker2.Date)+'.'
-          +chr(10)
-          +Form1.sPropaganda)
-          ,pChar(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form7.ibDataSet13CGC.AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_entrada.zip'),False);
-      end else
-      begin
-        ShowMessage('Não encontrado XML para contabilidade neste período.');
-      end;
-      //
-    end;
-  end;
-  //
-  try
-    Form7.Close;
-    Form7.ShowModal;
-  except end;  
-  //
+  ChamarTelaXMLContab;
 end;
 
 procedure TForm7.ManifestaododestinatrioDesc1Click(Sender: TObject);
@@ -32537,7 +32549,7 @@ function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 // Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
 begin
   //Result := ValidaEAN13(LimpaNumero(sEan)); Mauricio Parizotto 2023-07-05
-  Result := ValidaEAN(LimpaNumero(sEan)); 
+  Result := ValidaEAN(LimpaNumero(sEan));
   if Result then
   begin
     if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then
@@ -33538,11 +33550,24 @@ end;
 procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 begin
+  {Sandro Silva 2023-10-02 inicio
   //Aplica filtro na contas a receber para listar apenas aquelas que podem gerar boleto quando estiver gerando a partir da tela de desdobramento de parcelas da nota
   if Form7.ibDataSet7.Tag = ID_FILTRAR_FORMAS_GERAM_BOLETO then
   begin
     Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
   end;
+  }
+  case Form7.ibDataSet7.Tag of
+    ID_FILTRAR_FORMAS_GERAM_BOLETO:
+    begin
+      Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    end;
+    ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA:
+    begin
+      Accept := FormaDePagamentoGeraCarneDuplicata(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    end;
+  end;
+  {Sandro Silva 2023-10-02 fim}
 end;
 
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
@@ -33561,6 +33586,9 @@ begin
   slPickListBanco.Free;
   slPickListInstituicao.Free;
   {Sandro Silva 2023-07-05 fim}
+  {Sandro Silva 2023-10-02 inicio}
+  FreeAndNil(oArqConfiguracao);
+  {Sandro Silva 2023-10-02 fim}
 end;
 
 procedure TForm7.ibDataSet15SAIDADChange(Sender: TField);
@@ -34095,6 +34123,11 @@ end;
 
 procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   //Mauricio Parizotto 2023-09-26
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -34112,6 +34145,11 @@ end;
 
 procedure TForm7.VerificaAlteracaoPerfil;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
     Exit;
 
@@ -34187,6 +34225,97 @@ begin
   {$ENDIF}
 
   Form7.Show;
+end;
+
+procedure TForm7.Configurarobservaofixa1Click(Sender: TObject);
+var
+  oArqIni: TArquivosDAT;
+  cMsg: String;
+begin
+  // ORCAMENTO
+  if sModulo <> 'ORCAMENTO' then
+    Exit;
+
+  oArqIni := TArquivosDAT.Create(EmptyStr);
+  try
+    cMsg := Form1.Small_InputForm('Observação fixa do orçamento',
+                                  EmptyStr,
+                                  oArqIni.SmallCom.Orcamento.Observacao
+                                 );
+
+    oArqIni.SmallCom.Orcamento.Observacao := cMsg;
+  finally
+    FreeAndNil(oArqIni);
+  end;
+end;
+
+procedure TForm7.DuplicarProdutoClick(Sender: TObject);
+begin
+  try
+    FbDuplicandoProd := True;
+
+    if TDuplicaProduto.New
+                   .SetTransaction(IBTransaction1)
+                   .SetDataSetEstoque(ibDataSet4)
+                   .SetDataSetComposicao(ibDataSet28)
+                   .SetCodigoProduto(ibDataSet4CODIGO.AsString)
+                   .Duplicar then
+    begin
+      Sleep(200);
+
+      AgendaCommit(False);
+    end;
+  finally
+    FbDuplicandoProd := False;
+
+    Self.Close;
+    Self.Show;
+  end;
+end;
+
+procedure TForm7.DuplicaOrcamentoClick(Sender: TObject);
+var
+  cNroPedido: string;
+begin
+  try
+    if TDuplicaOrcamento.New
+                        .SetTransaction(IBTransaction1)
+                        .SetNroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                        .SetDataSetOrcamento(ibDataSet37)
+                        .SetDataSetOrcamentoOBS(IbdOrcamentObs)
+                        .Duplicar then
+    begin
+      Sleep(200);
+      ibDataSet37.DisableControls;
+      try
+        ibDataSet37.Last;
+
+        cNroPedido := ibDataSet37PEDIDO.AsString;
+
+        ibDataSet37.First;
+        while not ibDataSet37.Eof do
+        begin
+          if ibDataSet37PEDIDO.AsString = cNroPedido then
+          begin
+            ibDataSet37.Edit;
+            AssinaRegistro('ORCAMENT', ibDataSet37, True);
+            HasHs('ORCAMENT',True);
+            ibDataSet37.Post;
+          end;
+
+          ibDataSet37.Next;
+        end;
+      finally
+        ibDataSet97.Last;
+        ibDataSet37.EnableControls;
+      end;
+
+      AgendaCommit(True);
+    end;
+  finally
+    Self.Close;
+    Self.Show;
+  end;
 end;
 
 end.
