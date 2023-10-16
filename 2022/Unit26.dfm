@@ -1624,20 +1624,18 @@ object Form26: TForm26
       ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 0
-      Text = '<Personalizado>'
       OnChange = cboBancosChange
       OnKeyDown = MaskEdit1KeyDown
       Items.Strings = (
-        '<Personalizado>'
-        'AILOS - Sistema de Cooperativas de Cr'#233'dito'
-        'SICOOB'
+        'AILOS'
         'Banco do Brasil 7 posi'#231#245'es'
         'Banco do Brasil 6 posi'#231#245'es'
-        'Caixa Econ'#244'mica'
-        'Bradesco'
-        'Santander'
         'Banrisul'
+        'Bradesco'
+        'Caixa Econ'#244'mica'
         'Ita'#250
+        'Santander'
+        'SICOOB'
         'SICREDI'
         'Unibanco')
     end

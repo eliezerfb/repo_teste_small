@@ -178,8 +178,8 @@ procedure TForm26.MaskEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_DOWN   then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
+  //if Key = VK_DOWN   then Perform(Wm_NextDlgCtl,0,0);
+  //if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
   //Mauricio Parizotto 2023-09-29
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('cr_bloqueto_preenchendo.htm')));
@@ -355,7 +355,7 @@ begin
   chkCNAB400.Checked := False;
   chkCNAB240.Checked := False;
 
-  if cboBancos.Text = 'AILOS - Sistema de Cooperativas de Crédito' then
+  if cboBancos.Text = 'AILOS' then
   begin
     MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
     chkCNAB240.Checked := True;
@@ -490,7 +490,7 @@ begin
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
       Mauricio Parizotto 2023-10-02}
 
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS - Sistema de Cooperativas de Crédito';
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS';
       if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI';
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB';
       if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica';

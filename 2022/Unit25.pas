@@ -992,6 +992,7 @@ begin
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.Text := 'Unibanco';
       Mauricio Parizotto 2023-10-02}
 
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then Form26.cboBancos.Text := 'AILOS';
       if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.Text := 'SICREDI';
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB';
       if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.Text := 'Caixa Econômica';
