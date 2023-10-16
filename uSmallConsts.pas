@@ -68,6 +68,11 @@ const
   _cIdentXMLPeriodoInicial = 'Periodo Inicial';
   _cIdentXMLPeriodoFinal = 'Periodo Final';
   _cIdentXMLEmailContabilidade = 'e-mail contabilidade';
+  _cIdentEnvioAutomatico = 'Envio automatico';
+  _cIdentNFeSaida = 'NFE SAIDA';
+  _cIdentNFeEntrada = 'NFE ENTRADA';
+  _cIdentNFCe = 'NFCE';
+  _cIdentDataUltimoEnvio = 'Data ultimo envio';
 
   //SECTION NFE (NFSe.ini)
   _cSectionNFSE = 'NFSE';

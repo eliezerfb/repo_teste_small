@@ -39,6 +39,9 @@ resourcestring
                           'Este e-mail foi enviado automaticamente pelo sistema Small.' + SLineBreak + SLineBreak +
                           'http://www.smallsoft.com.br';
 
+  _cEnviarXMLMesAnterior = 'Deseja realizar o envio dos XMLs do mês anterior agora?';
+  _cXMLsMesEnviadosSucesso = 'XMLs do mês anterior enviados com sucesso.';
+
 implementation
 
 end.
