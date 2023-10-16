@@ -48,6 +48,7 @@ type
     procedure AbrirTelaTodosDocs;
     procedure AbrirTelaNFe(AbSaida: Boolean = True; AbEntrada: Boolean = True);
     procedure AbrirSATNFCe;
+    function EnviarMesAnterior(AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
     function EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
   end;
 
@@ -57,7 +58,7 @@ var
 implementation
 
 uses
-  uSmallConsts, uSmallResourceString, unit7;
+  uSmallConsts, uSmallResourceString, unit7, DateUtils;
 
 {$R *.dfm}
 
@@ -406,9 +407,11 @@ begin
 end;
 
 function TfrmExportaXML.EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+var
+  cDocs: String;
 begin
   Result := False;
-  
+
   FbBackGround := True;
   try
     dtInicial.Date       := AdDataIni;
@@ -419,9 +422,45 @@ begin
     edtEmailContab.Text  := AcEmailContab;
 
     Result := EnviarXml;
+
+    if Result then
+    begin
+      if cbNFeSaida.Checked then
+        cDocs := 'NF-e Saída';
+      if cbNFeEntrada.Checked then
+      begin
+        if cDocs <> EmptyStr then
+          cDocs := cDocs + ', ';
+        cDocs := cDocs + 'NF-e Entrada';
+      end;
+      if cbNFCeSAT.Checked then
+      begin
+        if cDocs <> EmptyStr then
+          cDocs := cDocs + ', ';
+        cDocs := cDocs + 'NFC-e/SAT';
+      end;
+
+      Unit7.Audita('AUTOMATICO', 'SMALL', Form7.UsuarioLogado,
+                   'Enviado ' + cDocs,
+                   0,0);
+      unit7.AgendaCommit(False);
+    end;
   finally
     FbBackGround := False;
   end;
+end;
+
+function TfrmExportaXML.EnviarMesAnterior(AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+var
+  bDataMesAnt: TDate;
+  bDataIni: TDate;
+  bDataFim: TDate;
+begin
+  bDataMesAnt := IncMonth(Date, -1);
+  bDataIni := StartOfTheMonth(bDataMesAnt);
+  bDataFim := EndOfTheMonth(bDataMesAnt);
+
+  Result := EnviarEmBackGroud(bDataIni, bDataFim, AbNFSaida, AbNFEntrada, AbNFCeSAT, AcEmailContab);
 end;
 
 end.

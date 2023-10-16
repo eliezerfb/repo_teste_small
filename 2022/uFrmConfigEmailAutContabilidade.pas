@@ -104,10 +104,6 @@ begin
 end;
 
 procedure TfrmConfigEmailAutContab.EnviarXMLs;
-var
-  bDataMesAnt: TDate;
-  bDataIni: TDate;
-  bDataFim: TDate;
 begin
   // Já estava ativado, portanto não pede pra enviar
   if FoArqDat.NFe.XML.EnvioAutomatico then
@@ -126,12 +122,7 @@ begin
     btnOk.Enabled := False;
     btnCancelar.Enabled := False;
     try
-      bDataMesAnt := IncMonth(Date, -1);
-      bDataIni := StartOfTheMonth(bDataMesAnt);
-      bDataFim := EndOfTheMonth(bDataMesAnt);
-
-      if frmExportaXML.EnviarEmBackGroud(bDataIni, bDataFim,
-                                        cbNFeSaida.Checked, cbNFeEntrada.Checked, cbNFCeSAT.Checked,
+      if frmExportaXML.EnviarMesAnterior(cbNFeSaida.Checked, cbNFeEntrada.Checked, cbNFCeSAT.Checked,
                                         edtEmailContab.Text) then
         Application.MessageBox(PChar(_cXMLsMesEnviadosSucesso), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
     finally
