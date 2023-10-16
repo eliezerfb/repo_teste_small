@@ -12732,19 +12732,16 @@ begin
                 if Form1.sModeloECF = '15' then bChave := _ecf15_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
                 if Form1.sModeloECF = '17' then bChave := _ecf17_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
                 if Form1.sModeloECF = '59' then bChave := _ecf59_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
+                {Sandro Silva 2023-10-16 inicio
                 if Form1.sModeloECF = '65' then bChave := _ecf65_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '99' then bChave := _ecf99_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-
-                {Sandro Silva 2021-07-22 inicio
-                if Form1.sModeloECF = '04' then bChave := _ecf04_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '05' then bChave := _ecf05_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '06' then bChave := _ecf06_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '07' then bChave := _ecf07_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '08' then bChave := _ecf08_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '09' then bChave := _ecf09_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '10' then bChave := _ecf10_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '11' then bChave := _ecf11_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
                 }
+                if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') = False then
+                begin
+                  if Form1.sModeloECF = '65' then
+                    bChave := _ecf65_CupomNaoFiscalVinculado(sCupomTef, Form1.iCupom);
+                end;
+                {Sandro Silva 2023-10-16 fim}
+                if Form1.sModeloECF = '99' then bChave := _ecf99_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
 
                 //
                 if bChave then
