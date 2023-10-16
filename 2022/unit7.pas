@@ -38,6 +38,7 @@ const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
 const REGIME_NORMAL    = '3';
 const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
 const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
+const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
@@ -1598,6 +1599,8 @@ type
     Parmetrosdetributao1: TMenuItem;
     Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
+    DuplicarProduto: TMenuItem;
+    DuplicaOrcamento: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2256,10 +2259,13 @@ type
     procedure Perfildetributao1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
     procedure Configurarobservaofixa1Click(Sender: TObject);
+    procedure DuplicarProdutoClick(Sender: TObject);
+    procedure DuplicaOrcamentoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
+    FbDuplicandoProd: Boolean; 
     FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
@@ -2295,6 +2301,7 @@ type
     procedure ExcluirOrcamento;
     procedure VerificaAlteracaoPerfil;
     procedure ChamarTelaXMLContab;
+    function MensagemPortalConsultaCNPJCPF: Integer;
   public
     // Public declarations
 
@@ -2476,9 +2483,12 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uSmallResourceString
   , uChamaRelatorioCommerceFactory
   , uImpressaoOrcamento
-  , uSectionFrentedeCaixaINI
+  , uFrenteSections
   , uFrmParametroTributacao
-  , uRelatorioResumoVendas;
+  , uRelatorioResumoVendas
+  , uDuplicaOrcamento
+  , uDuplicaProduto
+  ;
 
 {$R *.DFM}
 
@@ -3304,9 +3314,11 @@ end;
 /////////////////////////////////
 function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean;
 var
-  s, sAntigo : String;
+  s, sAntigo, sAntigoOrcamentSemCodigo : String;
+
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
+  sAntigoOrcamentENCRYPTHASH, sAntigoOrcamentSemCodigoENCRYPTHASH: String;  
 begin
   Result := True;
   s := '';
@@ -3713,6 +3725,43 @@ begin
 
     if pNome = 'ORCAMENT' then
     begin
+      sAntigoOrcamentSemCodigo :=
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+
+      sAntigo :=
+        VarToStr(DataSet.FieldByName('CODIGO').OldValue)+
+        VarToStr(DataSet.FieldByName('DESCRICAO').OldValue)+
+        VarToStr(DataSet.FieldByName('QUANTIDADE').OldValue)+
+        VarToStr(DataSet.FieldByName('UNITARIO').OldValue)+
+        VarToStr(DataSet.FieldByName('TOTAL').OldValue)+
+        VarToStr(DataSet.FieldByName('DATA').OldValue)+
+        VarToStr(DataSet.FieldByName('TIPO').OldValue)+
+        VarToStr(DataSet.FieldByName('PEDIDO').OldValue)+
+        VarToStr(DataSet.FieldByName('CLIFOR').OldValue)+
+        VarToStr(DataSet.FieldByName('VENDEDOR').OldValue)+
+        VarToStr(DataSet.FieldByName('CAIXA').OldValue)+
+        VarToStr(DataSet.FieldByName('MEDIDA').OldValue)+
+        VarToStr(DataSet.FieldByName('ITEM').OldValue)+
+        VarToStr(DataSet.FieldByName('VALORICM').OldValue)+
+        VarToStr(DataSet.FieldByName('ALIQUICM').OldValue)+
+        VarToStr(DataSet.FieldByName('NUMERONF').OldValue)+
+        VarToStr(DataSet.FieldByName('COO').OldValue);
+
       s :=
         DataSet.FieldByName('CODIGO').AsString+
         DataSet.FieldByName('DESCRICAO').AsString+
@@ -3784,11 +3833,48 @@ begin
       //            'hash banco ' + DataSet.FieldByName('ENCRYPTHASH').AsString);
     end;
 
+    if (pNome = 'ORCAMENT') then
+    begin
+      sAntigoOrcamentENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(s));
+      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo));
+    end;
+
 
     if bAssina then
     begin
       // Assina registro
       if pNome = 'ESTOQUE' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoSemCest)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end else
+      if pNome = 'ORCAMENT' then
+      begin
+        // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull)
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end else
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))
+          or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        begin
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
+        end;
+      end;
+
+{      if pNome = 'ESTOQUE' then
       begin
 //        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
@@ -3799,17 +3885,20 @@ begin
       begin
         // Sandro Silva
         //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre 
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigo)))
+            or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))
+            or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
           //DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
           DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(GeraMD5(s)); // Encrypta e grava o hash do registro
         end;
-      end;
+      end; }
     end else
     begin
       // Sandro Silva
       //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(s)))
+        or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -3822,9 +3911,10 @@ begin
       if (pNome = 'ESTOQUE') and (Result = False) then
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
-        // Sandro Silva 
+        // Sandro Silva
         //if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sSemCest)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -3833,6 +3923,22 @@ begin
         end;
       end;
       //Sandro Silva 2017-11-13 final HOMOLOGA 2017
+
+      {Dailon Parisotto 2023-10-06 (f-7420) Inicio}
+      // Identificado diferença na geração dos HASHs entre o COMMERCE e o ORCA, o ORCA gerava sem o campo CODIGO
+      // Essa mesma validação deve estar na rotina de "assinaregistro" do COMMERCE e do FRENTE
+      if (pNome = 'ORCAMENT') and (Result = False) then
+      begin
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta))) then
+        begin
+          Result := True;
+        end else
+        begin
+          Result := False;
+        end;
+      end;
+      {Dailon Parisotto 2023-10-06 (f-7420) Fim}
     end;
   except
     ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome)
@@ -8658,15 +8764,33 @@ begin
       Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
       if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
       begin
-        bButton := Application.MessageBox('Federal?', 'Atenção',
+        {Dailon Parisotto 2023-10-11 Inicio
+
+        bButton := Application.MessageBox(PChar('Em qual portal deseja fazer a consulta?' + slineBreak + slineBreak +
+                                                'Sim - Federal' + slineBreak +
+                                                'Não - Estadual' + slineBreak +
+                                                'Cancelar - Nenhuma das opções acima.'), PChar(_cTituloMsg),
                    MB_YESNOCANCEL + mb_DefButton1 + MB_ICONQUESTION);
+
+        }
+        bButton := MensagemPortalConsultaCNPJCPF;
+        {Dailon Parisotto 2023-10-11 Fim}
 
         if bButton = IDYES  then
         begin
+          {Dailon Parisotto 2023-10-11 Inicio
+
           if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
             ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
           else
             ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cnpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+
+          }
+          if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
+            ShellExecute( 0, 'Open',pChar('https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
+          else
+            ShellExecute( 0, 'Open',pChar('https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+          {Dailon Parisotto 2023-10-11 Fim}
         end else
         begin
           if bButton = IDNO  then
@@ -8680,10 +8804,21 @@ begin
       end else
       begin
         Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
+
+        {Dailon Parisotto 2023-10-11 Inicio
+        
         if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
         else
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/Aplicacoes/ATCTA/CPF/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+
+        }
+        if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
+          ShellExecute( 0, 'Open',pChar('https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
+        else
+          ShellExecute( 0, 'Open',pChar('https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp?cpf='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED);
+        {Dailon Parisotto 2023-10-11 Fim}
+
         Screen.Cursor            := crDefault;
         Abort;
       end;
@@ -8785,6 +8920,41 @@ begin
     Screen.Cursor            := crDefault;
   end;
 end;
+
+{Dailon Parisotto 2023-10-11 Inicio}
+function TForm7.MensagemPortalConsultaCNPJCPF: Integer;
+var
+  ofrmMsg: TForm;
+  oBotaoSim, oBotaoNao, oBotaoCancela: TButton;
+begin
+  ofrmMsg := CreateMessageDialog('Em qual portal deseja fazer a consulta?', mtConfirmation, mbYesNoCancel);
+  try
+    ofrmMsg.Caption := _cTituloMsg;
+    ofrmMsg.Position := Self.Position;
+
+    oBotaoSim := TButton(ofrmMsg.FindChildControl('Yes'));
+    oBotaoSim.Caption := 'Federal';
+    oBotaoSim.Width := Canvas.TextWidth(oBotaoSim.Caption) + 32;
+
+    oBotaoNao := TButton(ofrmMsg.FindChildControl('No'));
+    oBotaoNao.Caption := 'Estadual';
+    oBotaoNao.Left := oBotaoSim.Left + oBotaoSim.Width + 16;
+    oBotaoNao.Width := Canvas.TextWidth(oBotaoNao.Caption) + 32;
+
+    oBotaoCancela := TButton(ofrmMsg.FindChildControl('Cancel'));
+    oBotaoCancela.Caption := 'Cancelar';
+    oBotaoCancela.Left := oBotaoNao.Left + oBotaoNao.Width + 16;
+    oBotaoCancela.Width := Canvas.TextWidth(oBotaoCancela.Caption) + 32;
+
+    if ofrmMsg.Width < (oBotaoCancela.Left + oBotaoCancela.Width + oBotaoSim.Left) then
+      ofrmMsg.Width := oBotaoCancela.Left + oBotaoCancela.Width + oBotaoSim.Left;
+
+    Result := ofrmMsg.ShowModal;
+  finally
+    FreeAndNil(ofrmMsg);
+  end;
+end;
+{Dailon Parisotto 2023-10-11 Fim}
 
 procedure TForm7.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
@@ -9778,9 +9948,14 @@ begin
 
   tInicio := Time;
 
+
   Form1.Panel4.Visible      := True;
   Form7.WebBrowser2.Visible := False;
 
+  {Dailon Parisotto 2023-10-10 Inicio}
+  FbDuplicandoProd := False;
+  {Dailon Parisotto 2023-10-10 Fim}
+   
   try
     // Pega os dados do Emitente
     Form7.ibDataSet13.Active := True;
@@ -12438,7 +12613,13 @@ procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
 begin
-  if Form7.iKey = VK_Down then
+  {Dailon Parisotto 2023-10-10 Inicio
+
+  if (Form7.iKey = VK_Down) then
+
+  }
+  if (Form7.iKey = VK_Down) and (not FbDuplicandoProd) then
+  {Dailon Parisotto 2023-10-10 Fim}
   begin
     iKey := 0;
     Abort;
@@ -13305,6 +13486,8 @@ begin
   VisualizarXMLdamanifestaododestinatrio1.Visible  := False;
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
+  DuplicarProduto.Visible                          := False;  
+  DuplicaOrcamento.Visible                         := False;
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13384,6 +13567,7 @@ begin
     end;
     if sModulo = 'ESTOQUE'  then
     begin
+      DuplicarProduto.Visible := True;
       if ibDataSet4ATIVO.AsString='1' then
         Ativo1.Checked := False
       else
@@ -13397,7 +13581,7 @@ begin
       Apagar2.Visible := True;
 
       EnviarOrcamentoPorEmail1.Visible := True;
-
+      DuplicaOrcamento.Visible         := True;
       cEmails := TRetornaCaptionEmailPopUpDocs.New
                                               .SetDataBase(IBDatabase1)
                                               .setCodigoClifor(Form7.ibDataSet97.FieldByname('Cliente').AsString)
@@ -15595,6 +15779,10 @@ end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
   //
   if ibDataSet4PRECO.AsFloat <= 0 then
   begin
@@ -27001,6 +27189,11 @@ procedure TForm7.ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
 var
   I : Integer;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+  
   //Mauricio Parizotto 2023-09-18
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -31670,7 +31863,7 @@ begin
   finally
     FreeAndNil(frmExportaXML);
     Form7.Close;
-    Form7.ShowModal;
+    Form7.Show;
   end;
 end;
 
@@ -32354,7 +32547,7 @@ function TForm7._ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 // Prefixo 781 e 792 indicam EAN de uso interno não registrado no GS1
 begin
   //Result := ValidaEAN13(LimpaNumero(sEan)); Mauricio Parizotto 2023-07-05
-  Result := ValidaEAN(LimpaNumero(sEan)); 
+  Result := ValidaEAN(LimpaNumero(sEan));
   if Result then
   begin
     if (Copy(LimpaNumero(sEan), 1, 3) = '781') or (Copy(LimpaNumero(sEan), 1, 3) = '792') then
@@ -33355,11 +33548,24 @@ end;
 procedure TForm7.ibDataSet7FilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 begin
+  {Sandro Silva 2023-10-02 inicio
   //Aplica filtro na contas a receber para listar apenas aquelas que podem gerar boleto quando estiver gerando a partir da tela de desdobramento de parcelas da nota
   if Form7.ibDataSet7.Tag = ID_FILTRAR_FORMAS_GERAM_BOLETO then
   begin
     Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
   end;
+  }
+  case Form7.ibDataSet7.Tag of
+    ID_FILTRAR_FORMAS_GERAM_BOLETO:
+    begin
+      Accept := FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    end;
+    ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA:
+    begin
+      Accept := FormaDePagamentoGeraCarneDuplicata(Form7.ibDataSet7FORMADEPAGAMENTO.AsString);
+    end;
+  end;
+  {Sandro Silva 2023-10-02 fim}
 end;
 
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
@@ -33915,6 +34121,11 @@ end;
 
 procedure TForm7.ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   //Mauricio Parizotto 2023-09-26
   if StatusTrocaPerfil = 'PR' then
     Exit;
@@ -33932,6 +34143,11 @@ end;
 
 procedure TForm7.VerificaAlteracaoPerfil;
 begin
+  {Dailon Parisotto 2023-10-09 Inicio}
+  if FbDuplicandoProd then
+    Exit;
+  {Dailon Parisotto 2023-10-09 fim}
+
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
     Exit;
 
@@ -34028,6 +34244,75 @@ begin
     oArqIni.SmallCom.Orcamento.Observacao := cMsg;
   finally
     FreeAndNil(oArqIni);
+  end;
+end;
+
+procedure TForm7.DuplicarProdutoClick(Sender: TObject);
+begin
+  try
+    FbDuplicandoProd := True;
+
+    if TDuplicaProduto.New
+                   .SetTransaction(IBTransaction1)
+                   .SetDataSetEstoque(ibDataSet4)
+                   .SetDataSetComposicao(ibDataSet28)
+                   .SetCodigoProduto(ibDataSet4CODIGO.AsString)
+                   .Duplicar then
+    begin
+      Sleep(200);
+
+      AgendaCommit(False);
+    end;
+  finally
+    FbDuplicandoProd := False;
+
+    Self.Close;
+    Self.Show;
+  end;
+end;
+
+procedure TForm7.DuplicaOrcamentoClick(Sender: TObject);
+var
+  cNroPedido: string;
+begin
+  try
+    if TDuplicaOrcamento.New
+                        .SetTransaction(IBTransaction1)
+                        .SetNroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                        .SetDataSetOrcamento(ibDataSet37)
+                        .SetDataSetOrcamentoOBS(IbdOrcamentObs)
+                        .Duplicar then
+    begin
+      Sleep(200);
+      ibDataSet37.DisableControls;
+      try
+        ibDataSet37.Last;
+
+        cNroPedido := ibDataSet37PEDIDO.AsString;
+
+        ibDataSet37.First;
+        while not ibDataSet37.Eof do
+        begin
+          if ibDataSet37PEDIDO.AsString = cNroPedido then
+          begin
+            ibDataSet37.Edit;
+            AssinaRegistro('ORCAMENT', ibDataSet37, True);
+            HasHs('ORCAMENT',True);
+            ibDataSet37.Post;
+          end;
+
+          ibDataSet37.Next;
+        end;
+      finally
+        ibDataSet97.Last;
+        ibDataSet37.EnableControls;
+      end;
+
+      AgendaCommit(True);
+    end;
+  finally
+    Self.Close;
+    Self.Show;
   end;
 end;
 
