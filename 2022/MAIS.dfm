@@ -13805,6 +13805,10 @@ object Form1: TForm1
           Caption = 'CNPJ do Escrit'#243'rio de Contabilidade...'
           OnClick = CNPJdacontabilidade1Click
         end
+        object EnvioautomticodeXML1: TMenuItem
+          Caption = 'Envio autom'#225'tico de XML'
+          OnClick = EnvioautomticodeXML1Click
+        end
         object ConfigurarNFEINI1: TMenuItem
           Caption = 'Configurar NFE.INI ...'
           OnClick = ConfigurarNFEINI1Click

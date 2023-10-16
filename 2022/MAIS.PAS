@@ -274,6 +274,7 @@ type
     NaturezaseCFOPs1: TMenuItem;
     ConversodeCFOP1: TMenuItem;
     Parmetrosdetributao1: TMenuItem;
+    EnvioautomticodeXML1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -441,6 +442,7 @@ type
     procedure NaturezaseCFOPs1Click(Sender: TObject);
     procedure ConversodeCFOP1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
+    procedure EnvioautomticodeXML1Click(Sender: TObject);
 
 
   private
@@ -547,7 +549,10 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uSmallConsts
   , uConectaBancoCommerce
   , uTypesRecursos
-  , uArquivosDAT, uIconesSistema, uGeraCNAB240, uGeraCNAB400;
+  , uGeraCNAB240, uGeraCNAB400
+  , uArquivosDAT
+  , uIconesSistema
+  , uFrmConfigEmailAutContabilidade;
 
 {$R *.DFM}
 
@@ -12519,6 +12524,16 @@ begin
   {$ENDIF}
 
   Form7.Show;
+end;
+
+procedure TForm1.EnvioautomticodeXML1Click(Sender: TObject);
+begin
+  frmConfigEmailAutContab := TfrmConfigEmailAutContab.Create(nil);
+  try
+    frmConfigEmailAutContab.ShowModal;
+  finally
+    FreeAndNil(frmConfigEmailAutContab);
+  end;
 end;
 
 end.
