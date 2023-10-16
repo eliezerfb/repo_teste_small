@@ -1281,8 +1281,8 @@ begin
 end;
 
 procedure TForm12.DBGrid1ColExit(Sender: TObject);
-var
-  Sreg1: String;
+//var
+//  Sreg1: String;
 begin
   Form7.ibDataSet15TOTAL.OnChange := nil;
   try
@@ -1421,7 +1421,7 @@ var
   Mais1Ini: TIniFile;
 //  tInicio : tTime;
 //  Hora, Min, Seg, cent : Word;
-  sModuloOld: String;
+//  sModuloOld: String;
 begin
   //
   Form12.Tag := 1;

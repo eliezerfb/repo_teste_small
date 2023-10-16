@@ -46,7 +46,7 @@ uses
   Unit15 in 'Unit15.pas' {Form15},
   Unit35 in 'Unit35.pas' {Form35},
   Unit8 in 'Unit8.pas' {Form8},
-  Unit28 in 'Unit28.pas' {Form28},
+  uExportaXML in 'uExportaXML.pas' {frmExportaXML},
   SelecionaCertificado in 'SelecionaCertificado.pas' {frmSelectCertificate},
   Unit23 in 'Unit23.pas' {Form23},
   Unit6 in 'Unit6.pas' {Form6},
@@ -118,12 +118,8 @@ uses
   uEstoqueDAT in '..\..\unit_compartilhada\uEstoqueDAT.pas',
   uFrenteINI in '..\..\unit_compartilhada\uFrenteINI.pas',
   uSectionDATPadrao in '..\..\unit_compartilhada\uSectionDATPadrao.pas',
-  uSectionFrentedeCaixaINI in '..\..\unit_compartilhada\uSectionFrentedeCaixaINI.pas',
-  uSectionGeralDAT in '..\..\unit_compartilhada\uSectionGeralDAT.pas',
-  uSectionGeralUsuarioINF in '..\..\unit_compartilhada\uSectionGeralUsuarioINF.pas',
   uSmallComINF in '..\..\unit_compartilhada\uSmallComINF.pas',
   uUsuarioINF in '..\..\unit_compartilhada\uUsuarioINF.pas',
-  uSectionHTMLUsuarioINF in '..\..\unit_compartilhada\uSectionHTMLUsuarioINF.pas',
   uIAssinaturaDigital in '..\..\unit_compartilhada\interfaces\uIAssinaturaDigital.pas',
   uAssinaturaDigital in '..\..\unit_compartilhada\uAssinaturaDigital.pas',
   uIEstruturaRelVendasPorCliente in 'interfaces\uIEstruturaRelVendasPorCliente.pas',
@@ -135,11 +131,8 @@ uses
   uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas',
   uFiltrosRodapeRelatorioVendasClienteNota in 'units\uFiltrosRodapeRelatorioVendasClienteNota.pas',
   uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas',
-  uSectionOutrosUsuarioINF in '..\..\unit_compartilhada\uSectionOutrosUsuarioINF.pas',
   uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
-  uSectionsNFeINI in '..\..\unit_compartilhada\uSectionsNFeINI.pas',
   uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
-  uSectionsNFSeINI in '..\..\unit_compartilhada\uSectionsNFSeINI.pas',
   uRelatorioCatalogoProdudos in 'units\uRelatorioCatalogoProdudos.pas' {frmRelatorioCatalogoProduto},
   uEstruturaRelCatalogoProdutos in 'units\uEstruturaRelCatalogoProdutos.pas',
   uFiltrosRodapeRelatorioCatalogoProdutos in 'units\uFiltrosRodapeRelatorioCatalogoProdutos.pas',
@@ -157,7 +150,6 @@ uses
   uParametroTributacao in 'uParametroTributacao.pas',
   uframePesquisaServico in 'frames\uframePesquisaServico.pas' {framePesquisaServico: TFrame},
   uAtualizaTributacaoPerfilTrib in 'uAtualizaTributacaoPerfilTrib.pas',
-  uSectionsSmallComINF in '..\..\unit_compartilhada\uSectionsSmallComINF.pas',
   uFrmPadrao in 'uFrmPadrao.pas' {FrmPadrao},
   uFrmFichaPadrao in 'uFrmFichaPadrao.pas' {FrmFichaPadrao},
   uIconesSistema in 'uIconesSistema.pas',
@@ -169,7 +161,29 @@ uses
   uRetornaImpressaoOrcamento in '..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas',
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
-  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas';
+  uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
+  uSalvaXMLContabilFactory in 'units\uSalvaXMLContabilFactory.pas',
+  uSalvaXMLContabilNFeSaida in 'units\uSalvaXMLContabilNFeSaida.pas',
+  uSalvaXMLContabilNFeEntrada in 'units\uSalvaXMLContabilNFeEntrada.pas',
+  uSalvaXMLContabilNFCeSAT in '..\..\unit_compartilhada\uSalvaXMLContabilNFCeSAT.pas',
+  uISalvaXMLDocsEletronicosContabil in '..\..\unit_compartilhada\interfaces\uISalvaXMLDocsEletronicosContabil.pas',
+  uISalvaXMLContabilFactory in 'interfaces\uISalvaXMLContabilFactory.pas',
+  smallfunc_xe in '..\..\unit_compartilhada\smallfunc_xe.pas',
+  uChamaRelResumoVendas in 'units\uChamaRelResumoVendas.pas',
+  uRelatorioResumoVendas in 'units\uRelatorioResumoVendas.pas' {frmRelResumoVendas},
+  uEstruturaRelResumoVendas in 'units\uEstruturaRelResumoVendas.pas',
+  uFiltrosRodapeRelatorioPadrao in 'units\uFiltrosRodapeRelatorioPadrao.pas',
+  uEstruturaRelResumoVendasNaoList in 'units\uEstruturaRelResumoVendasNaoList.pas',
+  uIDuplicaProduto in 'interfaces\uIDuplicaProduto.pas',
+  uDuplicaProduto in 'units\uDuplicaProduto.pas',
+  uIDuplicaOrcamento in 'interfaces\uIDuplicaOrcamento.pas',
+  uDuplicaOrcamento in 'units\uDuplicaOrcamento.pas',
+  uFrenteSections in '..\..\unit_compartilhada\uFrenteSections.pas',
+  uNFeSections in '..\..\unit_compartilhada\uNFeSections.pas',
+  uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
+  uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
+  uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
+  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas';
 
 {$R *.RES}
 
@@ -203,7 +217,6 @@ begin
       Application.Title := 'Small Commerce';
 
       Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm28, Form28);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TSenhas, Senhas);
   Application.CreateForm(TSenhas2, Senhas2);

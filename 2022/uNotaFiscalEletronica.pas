@@ -610,8 +610,8 @@ begin
 end;
 
 procedure TNotaFiscalEletronica.LimpaItens;
-var
-  i : integer;
+//var
+//  i : integer;
 begin
   FreeAndNil(FNotaFiscal.FItens);
   FNotaFiscal.FItens := TITENS001List.Create;

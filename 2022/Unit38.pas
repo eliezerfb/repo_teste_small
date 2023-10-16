@@ -4235,7 +4235,15 @@ begin
   // Itens
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
-  Form7.IBDataSet99.SelectSQL.Add('select ITENS001.CODIGO, sum(QUANTIDADE) from ITENS001 ,VENDAS where VENDAS.NUMERONF=ITENS001.NUMERONF and VENDAS.TRANSPORTA='+QuotedStr(Form7.ibDataSet18NOME.AsString)+' and VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' group by ITENS001.CODIGO');
+  // Sandro Silva 2023-09-26 Form7.IBDataSet99.SelectSQL.Add('select ITENS001.CODIGO, sum(QUANTIDADE) from ITENS001 ,VENDAS where VENDAS.NUMERONF=ITENS001.NUMERONF and VENDAS.TRANSPORTA='+QuotedStr(Form7.ibDataSet18NOME.AsString)+' and VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' group by ITENS001.CODIGO');
+  Form7.IBDataSet99.SelectSQL.Text :=
+    'select ITENS001.CODIGO, sum(ITENS001.QUANTIDADE) ' +
+    'from VENDAS ' +
+    'join ITENS001 ON ITENS001.NUMERONF = VENDAS.NUMERONF ' +
+    'where VENDAS.EMISSAO between ' + QuotedStr(DateToStrInvertida(dInicio)) + ' and ' + QuotedStr(DateToStrInvertida(dFinal)) +
+    ' and VENDAS.TRANSPORTA = ' + QuotedStr(Form7.ibDataSet18NOME.AsString) +
+    ' and coalesce(VENDAS.STATUS, '''') not containing ' + QuotedStr('cancelada') +
+    ' group by ITENS001.CODIGO';
   Form7.IBDataSet99.Open;
   Form7.ibDataSet99.First;
 
