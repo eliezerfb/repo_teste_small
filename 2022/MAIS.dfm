@@ -14173,7 +14173,7 @@ object Form1: TForm1
     Top = 340
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'C:\Projeto 2022\2022\small.fdb'
+    DatabaseName = 'D:\Desenvolvimento\Executaveis\Small Commerce\SMALL.FDB'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')

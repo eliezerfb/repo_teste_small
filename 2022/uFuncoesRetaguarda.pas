@@ -37,6 +37,7 @@ uses
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectMovimentacaoItem(vProduto : string): String;
+  function SqlEstoqueOrcamentos(AliasPadrao:Boolean=True): String; //Mauricio Parizotto 2023-10-16 
   function xmlNodeValueToFloat(sXML, sNode: String;
     sDecimalSeparator: String = '.'): Double;
   function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
@@ -750,6 +751,67 @@ begin
     msgAtencao:     Application.MessageBox(pChar(Mensagem), 'Atenção', mb_Ok + MB_ICONWARNING);
     msgErro:        Application.MessageBox(pChar(Mensagem), 'Erro', mb_Ok + MB_ICONERROR);
   end;
+end;
+
+
+function SqlEstoqueOrcamentos(AliasPadrao:Boolean=True): String; //Mauricio Parizotto 2023-10-16
+var
+  sqlCampos : string;
+begin
+  if AliasPadrao then
+  begin
+    sqlCampos    := '     ORCAMENTS.PEDIDO as "Orçamento" ' +
+                    '    , ORCAMENTS.DATA as "Data" ' +
+                    '    , ORCAMENTS.CLIFOR as "Cliente" ' +
+                    '    , ORCAMENTS.VENDEDOR as "Vendedor" ' +
+                    '    , TOTALBRUTO as "Total bruto" ' +
+                    '    , DESCONTO as "Desconto" ' +
+                    '    , (TOTALBRUTO - DESCONTO) as "Total líquido" ' +
+                    '    , ORCAMENTS.NUMERONF as "Doc. Fiscal" ' +
+                    '    , ORCAMENTS.PEDIDO as "Registro" ';
+
+  end else
+  begin
+    sqlCampos    := '     ORCAMENTS.PEDIDO ' +
+                    '    , ORCAMENTS.DATA' +
+                    '    , ORCAMENTS.CLIFOR' +
+                    '    , ORCAMENTS.VENDEDOR' +
+                    '    , TOTALBRUTO' +
+                    '    , DESCONTO' +
+                    '    , (TOTALBRUTO - DESCONTO) TOTALLIQUIDO ' +
+                    '    , ORCAMENTS.NUMERONF' +
+                    '    , ORCAMENTS.PEDIDO REGISTRO';
+  end;
+
+  Result :=
+            ' WITH ORCAMENTS AS ( ' +
+            '  Select Q.PEDIDO ' +
+            '    , Q.DATA ' +
+            '    , Q.NUMERONF ' +
+            '    , Q.CLIFOR ' +
+            '    , O2.VENDEDOR ' +
+            '    , Q.TOTALBRUTO ' +
+            '    , Q.DESCONTO ' +
+            '  From ' +
+            '  ( ' +
+            '   SELECT ' +
+            '      ORCAMENT.PEDIDO ' +
+            '      , MIN(ORCAMENT.DATA) AS DATA ' +
+            '      , max(ORCAMENT.NUMERONF) as NUMERONF ' +
+            '      , max(ORCAMENT.CLIFOR) as CLIFOR ' +
+            '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +
+            '      , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
+            '      , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
+            '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +      
+            '   FROM ORCAMENT ' +
+            '   GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
+            '  ) Q ' +
+            '    left join ORCAMENT O2 on O2.REGISTRO = Q.REGISTRO ' +
+            ' ) ' +
+            ' SELECT ' +
+            sqlCampos+
+            ' FROM ORCAMENTS '
+            ;
 end;
 
 end.
