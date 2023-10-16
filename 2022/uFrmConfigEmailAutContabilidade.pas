@@ -55,10 +55,10 @@ end;
 procedure TfrmConfigEmailAutContab.CarregaINI;
 begin
   cbAtivarEnvio.Checked := FoArqDat.NFe.XML.EnvioAutomatico;
-  cbNFeSaida.Checked    := FoArqDat.NFe.XML.NFeSaidaAut;
-  cbNFeEntrada.Checked  := FoArqDat.NFe.XML.NFeEntradaAut;
-  cbNFCeSAT.Checked     := FoArqDat.NFe.XML.NFCeAut;
-  edtEmailContab.Text   := FoArqDat.NFe.XML.EmailContabilidadeAut;
+  cbNFeSaida.Checked    := FoArqDat.NFe.XML.NFeSaida;
+  cbNFeEntrada.Checked  := FoArqDat.NFe.XML.NFeEntrada;
+  cbNFCeSAT.Checked     := FoArqDat.NFe.XML.NFCe;
+  edtEmailContab.Text   := FoArqDat.NFe.XML.EmailContabilidade;
 end;
 
 procedure TfrmConfigEmailAutContab.FormActivate(Sender: TObject);
@@ -69,11 +69,11 @@ end;
 
 procedure TfrmConfigEmailAutContab.SalvarINI;
 begin
-  FoArqDat.NFe.XML.EnvioAutomatico       := cbAtivarEnvio.Checked;
-  FoArqDat.NFe.XML.NFeSaidaAut           := cbNFeSaida.Checked;
-  FoArqDat.NFe.XML.NFeEntradaAut         := cbNFeEntrada.Checked;
-  FoArqDat.NFe.XML.NFCeAut               := cbNFCeSAT.Checked;
-  FoArqDat.NFe.XML.EmailContabilidadeAut := edtEmailContab.Text;
+  FoArqDat.NFe.XML.EnvioAutomatico    := cbAtivarEnvio.Checked;
+  FoArqDat.NFe.XML.NFeSaida           := cbNFeSaida.Checked;
+  FoArqDat.NFe.XML.NFeEntrada         := cbNFeEntrada.Checked;
+  FoArqDat.NFe.XML.NFCe               := cbNFCeSAT.Checked;
+  FoArqDat.NFe.XML.EmailContabilidade := edtEmailContab.Text;
 end;
 
 function TfrmConfigEmailAutContab.FazVerificacoes: Boolean;

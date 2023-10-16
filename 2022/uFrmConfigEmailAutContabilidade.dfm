@@ -45,7 +45,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
     Top = 12
     Width = 290
     Height = 17
-    Caption = 'Envio autom'#225'tico dos XML na primeira abertura do m'#234's'
+    Caption = 'Envio autom'#225'tico dos XML'#39's na primeira abertura do m'#234's'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
