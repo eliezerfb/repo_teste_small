@@ -33,7 +33,7 @@ type
     FTipoPesquisa: TTipoPesquisa;
     FFiltro: String;
     FTabela: String;
-    FAbrirListaPesquisa: Boolean;
+    FCampoVazioAbrirGridPesquisa: Boolean;
     procedure Pesquisar;
     function SelectPesquisa: String;
   public
@@ -44,7 +44,7 @@ type
     property TipoDePesquisa: TTipoPesquisa read FTipoPesquisa write FTipoPesquisa;
     property sFiltro: String read FFiltro write FFiltro;
     property sTabela: String read FTabela write FTabela;
-    property AbrirListaPesquisa: Boolean read FAbrirListaPesquisa write FAbrirListaPesquisa;
+    property CampoVazioAbrirGridPesquisa: Boolean read FCampoVazioAbrirGridPesquisa write FCampoVazioAbrirGridPesquisa;
     constructor Create(AOwner: TComponent); override;
     procedure CarregaDescricao;
 
@@ -62,7 +62,7 @@ begin
   FGravarSomenteTextoEncontrato := True;
 //  FTipoPesquisa := tpLocate;
   FTipoPesquisa := tpSelect;
-  FAbrirListaPesquisa := False;
+  FCampoVazioAbrirGridPesquisa := False;
 end;
 
 procedure TfFrameCampo.Pesquisar;
@@ -252,8 +252,11 @@ end;
 
 procedure TfFrameCampo.txtCampoEnter(Sender: TObject);
 begin
-  if FAbrirListaPesquisa then
-    Pesquisar;
+  if txtCampo.Text = '' then
+  begin
+    if FCampoVazioAbrirGridPesquisa then
+      Pesquisar;
+  end;
 
   if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
     CampoCodigo.DataSet.Edit;

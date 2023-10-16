@@ -244,10 +244,15 @@ begin
   //
   {Sandro Silva 2023-10-10 inicio}
   fFrameDescricao.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameDescricao.CampoVazioAbrirGridPesquisa := True;
   fFrameIdentifi1.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi1.CampoVazioAbrirGridPesquisa := True;
   fFrameIdentifi2.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi2.CampoVazioAbrirGridPesquisa := True;
   fFrameIdentifi3.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi3.CampoVazioAbrirGridPesquisa := True;
   fFrameIdentifi4.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi4.CampoVazioAbrirGridPesquisa := True;
   {Sandro Silva 2023-10-10 fim}
 end;
 
@@ -470,9 +475,8 @@ begin
   {Sandro Silva 2023-09-28 inicio 
   //
   dbGrid3.Visible   := False;
-  ListBox1.Visible  := True;
   }
-  OcultaListaDePesquisa;
+  ListBox1.Visible  := True;
   ListBox1.Height   := 41;
   //
 end;
@@ -487,10 +491,19 @@ procedure TForm30.SMALL_DBEdit7Change(Sender: TObject);
 var
   I : Integer;
 begin
+  {Sandro Silva 2023-10-16 inicio
   for I := 0 to 2 do
   begin
-    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i],1,LenGth(AllTrim(SMALL_DBEdit7.Text)))) then ListBox1.ItemIndex := I;
+    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+      ListBox1.ItemIndex := I;
   end;
+  }
+  for I := 0 to ListBox1.Items.Count -1 do
+  begin
+    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+      ListBox1.ItemIndex := I;
+  end;
+
 end;
 
 procedure TForm30.DBGrid1Enter(Sender: TObject);
@@ -814,7 +827,9 @@ procedure TForm30.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_DOWN   then
     if ListBox1.Visible = True then
-      ListBox1.SetFocus else Perform(Wm_NextDlgCtl,0,0);
+      ListBox1.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_UP     then
   begin
     if ListBox1.Visible = True then
