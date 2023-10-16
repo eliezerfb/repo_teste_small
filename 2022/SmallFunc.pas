@@ -290,18 +290,34 @@ var
   XMLDOM: IXMLDOMDocument;
   iNode: Integer;
   xNodes: IXMLDOMNodeList;
+  function utf8Fix(sTexto: String): String;
+  const
+    acento : array[1..46] of string = ('á', 'à', 'â', 'ã', 'ä', 'é', 'è', 'ê', 'ë', 'í', 'ì', 'î', 'ï', 'ó', 'ò', 'ô', 'õ', 'ö', 'ú', 'ù', 'û', 'ü', 'ç', 'Á', 'À', 'Â', 'Ã', 'Ä', 'É', 'È', 'Ê', 'Ë', 'Í', 'Ì', 'Î', 'Ï', 'Ó', 'Ò', 'Ô', 'Õ', 'Ö', 'Ú', 'Ù', 'Û', 'Ü', 'Ç');
+    UTF8: array[1..46] of string = ('Ã¡','Ã ','Ã¢','Ã£','Ã¤','Ã©','Ã¨','Ãª','Ã«','Ã­','Ã¬','Ã®','Ã¯','Ã³','Ã²','Ã´','Ãµ','Ã¶','Ãº','Ã¹','Ã»','Ã¼','Ã§','Ã','Ã€','Ã‚','Ãƒ','Ã„','Ã‰','Ãˆ','ÃŠ','Ã‹','Ã','ÃŒ','ÃŽ','Ã','Ã“','Ã’','Ã”','Ã•','Ã–','Ãš','Ã™','Ã›','Ãœ','Ã‡');
+  var
+    iLetra: Integer;
+  begin
+    Result := sTexto;
+    for iLetra := 1 to length(utf8) do
+    begin
+      if Pos(UTF8[iLetra], Result) > 0 then
+        Result := StringReplace(Result, utf8[iLetra], acento[iLetra], [rfReplaceAll]);
+    end;
+  end;
 begin
+  Result := EmptyStr;
+  
   XMLDOM := CoDOMDocument.Create;
   XMLDOM.loadXML(sXML);
-  Result := '';
+
   xNodes := XMLDOM.selectNodes(sNode);
   for iNode := 0 to xNodes.length -1 do
   begin
-    Result := xNodes.item[iNode].text;
+    Result := utf8Fix(xNodes.item[iNode].text);
   end;
+
   XMLDOM := nil;
 end;
-
 
 function LimpaNumeroVirg(pP1:String):String;
 var

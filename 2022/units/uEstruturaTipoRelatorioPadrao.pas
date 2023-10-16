@@ -21,10 +21,10 @@ type
     FcNomeArquivo: String;
     FdInicio: TDateTime;
     constructor Create;
-    procedure ImprimirHTML;
-    procedure ImprimirTXT;
-    procedure ImprimirPDF;
-    function RetornarCabecalho: String;
+    procedure ImprimirHTML(AbImprimir: Boolean = True);
+    procedure ImprimirTXT(AbImprimir: Boolean = True);
+    procedure ImprimirPDF(AbImprimir: Boolean = True);
+    function RetornarLinhaTextoColunasTXT: String;
     function RetornarTamanhoField(AoField: TField): Integer;
     function TestarFieldValor(AoField: TField): Boolean;
     function RetornarTextoValorQuery(AoField: TField; AbSemBrancos: Boolean = False): String;
@@ -36,12 +36,18 @@ type
     procedure SalvarArquivoHTML;
     procedure DefineFinalArquivo;
     procedure DefineInicialHTML;
+    procedure MontarCabecalhoHTML;
+    procedure MontarCabecalho;
+    procedure MontarCabecalhoTXT;
   public
     destructor Destroy; override;
     class function New: IEstruturaTipoRelatorioPadrao;
     function setUsuario(AcUsuario: String): IEstruturaTipoRelatorioPadrao;
     function GerarImpressao(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
+    function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
+    function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
     function Imprimir: IEstruturaTipoRelatorioPadrao;
+    function Salvar: IEstruturaTipoRelatorioPadrao;
   end;
 
 implementation
@@ -71,6 +77,23 @@ begin
   end;
 end;
 
+function TEstruturaTipoRelatorioPadrao.Salvar: IEstruturaTipoRelatorioPadrao;
+begin
+  if Trim(FlsImpressao.Text) = EmptyStr then
+  begin
+    ShowMessage(_cSemDadosParaImprimir);
+    Exit;
+  end;
+
+  DefineFinalArquivo;
+
+  case FoArquivoDAT.Usuario.Html.TipoRelatorio of
+    ttiHTML: ImprimirHTML(False);
+    ttiTXT: ImprimirTXT(False);
+    ttiPDF: ImprimirPDF(False);
+  end;
+end;
+
 procedure TEstruturaTipoRelatorioPadrao.SalvarArquivoHTML;
 begin
   if FileExists(FcNomeArquivo+'.HTM') then
@@ -79,14 +102,15 @@ begin
   FlsImpressao.SaveToFile(FcNomeArquivo + '.HTM');
 end;
 
-procedure TEstruturaTipoRelatorioPadrao.ImprimirHTML;
+procedure TEstruturaTipoRelatorioPadrao.ImprimirHTML(AbImprimir: Boolean = True);
 begin
   SalvarArquivoHTML;
 
-  ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  if AbImprimir then
+    ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.HTM'),'', '', SW_SHOWMAXIMIZED);
 end;
 
-procedure TEstruturaTipoRelatorioPadrao.ImprimirTXT;
+procedure TEstruturaTipoRelatorioPadrao.ImprimirTXT(AbImprimir: Boolean = True);
 begin
   FlsImpressao.Add(EmptyStr);
   Sleep(100);
@@ -95,10 +119,11 @@ begin
   Sleep(100);
   FlsImpressao.SaveToFile(FcNomeArquivo + '.txt');
 
-  ShellExecute(0, 'Open',pChar(FcNomeArquivo+'.txt'),'', '', SW_SHOW);
+  if AbImprimir then
+    ShellExecute(0, 'Open',pChar(FcNomeArquivo+'.txt'),'', '', SW_SHOW);
 end;
 
-procedure TEstruturaTipoRelatorioPadrao.ImprimirPDF;
+procedure TEstruturaTipoRelatorioPadrao.ImprimirPDF(AbImprimir: Boolean = True);
 begin
   if FileExists(FcNomeArquivo+'.pdf') then
     DeleteFile(FcNomeArquivo+'.pdf');
@@ -107,8 +132,30 @@ begin
 
   Screen.Cursor            := crHourGlass;
   HtmlToPDF(FcNomeArquivo);
-  ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+  if AbImprimir then
+    ShellExecute( 0, 'Open',pChar(FcNomeArquivo+'.pdf'),'', '', SW_SHOWMAXIMIZED);
   Screen.Cursor            := crDefault;
+end;
+
+procedure TEstruturaTipoRelatorioPadrao.MontarCabecalho;
+begin
+  case FoArquivoDAT.Usuario.Html.TipoRelatorio of
+    ttiHTML, ttiPDF: MontarCabecalhoHTML;
+    ttiTXT: MontarCabecalhoTXT;
+  end;
+end;
+
+procedure TEstruturaTipoRelatorioPadrao.MontarCabecalhoHTML;
+begin
+  if Trim(FlsImpressao.Text) = EmptyStr then
+    DefineInicialHTML
+  else
+    FlsImpressao.Add('<br>');
+
+  FlsImpressao.Add('<br><font size=4 color=#000000><b>' + FcTitulo + '</b></font><br></center><br>');
+  FlsImpressao.Add('<center>');
+  FlsImpressao.Add('<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+  FlsImpressao.Add(' <tr>');
 end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontaDadosHTML;
@@ -122,27 +169,23 @@ begin
   bTemColunaValor := False;
 
   FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
-  if Trim(FlsImpressao.Text) = EmptyStr then
-    DefineInicialHTML
-  else
-    FlsImpressao.Add('<br>');
-
-  FlsImpressao.Add('<br><font size=4 color=#000000><b>' + FcTitulo + '</b></font><br></center><br>');
-  FlsImpressao.Add('<center>');
-  FlsImpressao.Add('<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-  FlsImpressao.Add(' <tr>');
+  MontarCabecalhoHTML;
 
   //Colunas
   for i := 0 to Pred(FDataSetDados.Fields.Count) do
   begin
     if FDataSetDados.Fields[i].Visible then
-      FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1><b>' + FDataSetDados.Fields[i].FieldName + '</td>');
+    begin
+      if FDataSetDados.Fields[i].DisplayLabel <> EmptyStr then
+        FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1><b>' + FDataSetDados.Fields[i].DisplayLabel + '</td>')
+      else
+        FlsImpressao.Add('  <td bgcolor=#EBEBEB><font face="Microsoft Sans Serif" size=1><b>' + FDataSetDados.Fields[i].FieldName + '</td>');
+    end;
   end;
   FlsImpressao.Add(' </tr>');
   while not FDataSetDados.Eof do
   begin
     FlsImpressao.Add('   <tr>');
-    cAux := EmptyStr;
     for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
       if not FDataSetDados.Fields[i].Visible then
@@ -151,8 +194,16 @@ begin
       if TestarFieldValor(FDataSetDados.Fields[i]) then
       begin
         cAux := 'align=Right ';
-        bTemColunaValor := True;        
+        bTemColunaValor := True;
+      end
+      else
+      begin
+        if FDataSetDados.Fields[i].DataType = ftInteger then
+          cAux := 'align=Center '
+        else
+          cAux := 'align=Left ';        
       end;
+
       FlsImpressao.Add('    <td ' + cAux + 'bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + RetornarTextoValorQuery(FDataSetDados.Fields[i], True) + '</td>');
     end;
     FlsImpressao.Add('   </tr>');
@@ -169,13 +220,20 @@ begin
       if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
-          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size)
+        begin
+          if FDataSetDados.Fields[i].DataType = ftBCD then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size);
+          if FDataSetDados.Fields[i].DataType = ftFMTBcd then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TFMTBCDField).Size);
+        end
         else
           cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
           
         FlsImpressao.Add('    <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + cTotal);
-      end else
+      end
+      else
         FlsImpressao.Add('    <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font>');
+
       FlsImpressao.Add('    </td>');
     end;
     FlsImpressao.Add('   </tr>');    
@@ -203,6 +261,21 @@ begin
     if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
       FlsImpressao.Add('<br><font face="Microsoft Sans Serif" size=1>'+FoEstruturaRel.FiltrosRodape.getFiltroData+'</font>');
   end;
+end;
+
+procedure TEstruturaTipoRelatorioPadrao.MontarCabecalhoTXT;
+begin
+  if FlsImpressao.Text = EmptyStr then
+    FlsImpressao.Add(TDadosEmitente.New
+                                   .setDataBase(FoDataBase)
+                                   .getQuery.FieldByName('NOME').AsString
+                    );
+
+  if FlsImpressao.Text <> EmptyStr then
+    FlsImpressao.Add(EmptyStr);
+
+  FlsImpressao.Add(FcTitulo);
+  FlsImpressao.Add(EmptyStr);
 end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontaDadosTXT;
@@ -239,13 +312,9 @@ begin
     end;
   end;
 
-  if FlsImpressao.Text <> EmptyStr then
-    FlsImpressao.Add(EmptyStr);
-    
-  FlsImpressao.Add(FcTitulo);
-  FlsImpressao.Add(EmptyStr);
+  MontarCabecalhoTXT;
 
-  FlsImpressao.Add(RetornarCabecalho);
+  FlsImpressao.Add(RetornarLinhaTextoColunasTXT);
   FlsImpressao.Add(cLinha);
 
   while not FDataSetDados.Eof do
@@ -281,7 +350,12 @@ begin
       if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
-          cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size)
+        begin
+          if FDataSetDados.Fields[i].DataType = ftBCD then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TBCDField).Size);
+          if FDataSetDados.Fields[i].DataType = ftFMTBcd then
+            cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), (FDataSetDados.Fields[i] as TFMTBCDField).Size);
+        end
         else
           cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
 
@@ -343,7 +417,12 @@ begin
   if TestarFieldValor(AoField) then
   begin
     if AoField.DataType in [ftBCD, ftFMTBcd] then
-      Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TBCDField).Size)
+    begin
+      if AoField.DataType = ftBCD then
+        Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TBCDField).Size);
+      if AoField.DataType = ftFMTBcd then
+        Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, (AoField as TFMTBCDField).Size);
+    end
     else
       Result := FormataCulunaValor(FDataSetDados.FieldByname(AoField.FieldName).AsCurrency, 2);
       
@@ -364,7 +443,7 @@ begin
   inherited;
 end;
 
-function TEstruturaTipoRelatorioPadrao.RetornarCabecalho: String;
+function TEstruturaTipoRelatorioPadrao.RetornarLinhaTextoColunasTXT: String;
 var
   i: Integer;
   nTamanho: Integer;
@@ -492,6 +571,33 @@ begin
 
     FlsImpressao.Add(TLayoutHTMLRelatorio.RetornarCabecalho(QryEmitente.FieldByName('NOME').AsString));
   end;
+end;
+
+function TEstruturaTipoRelatorioPadrao.GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
+begin
+  Result := Self;
+
+  FoEstruturaRel := AoEstruturaRel;
+
+  FcTitulo := AcTitulo;
+
+  FDataSetDados := AoEstruturaRel.getDAO.getDados;
+  FoDataBase := AoEstruturaRel.getDAO.getDataBase;
+
+  MontarDados;
+end;
+
+function TEstruturaTipoRelatorioPadrao.GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
+begin
+  Result := Self;
+
+  FoEstruturaRel := AoEstruturaRel;
+
+  AoEstruturaRel.getTitulo(FcTitulo);
+
+  FoDataBase := AoEstruturaRel.getDAO.getDataBase;
+
+  MontarCabecalho;
 end;
 
 end.

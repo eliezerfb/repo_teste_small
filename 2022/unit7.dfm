@@ -18167,6 +18167,16 @@ object Form7: TForm7
       Caption = 'Duplicar esta NF-e'
       OnClick = DuplicatestaNFe1Click
     end
+    object DuplicarProduto: TMenuItem
+      Caption = 'Duplicar produto'
+      Visible = False
+      OnClick = DuplicarProdutoClick
+    end
+    object DuplicaOrcamento: TMenuItem
+      Caption = 'Duplicar este or'#231'amento'
+      Visible = False
+      OnClick = DuplicaOrcamentoClick
+    end
   end
   object ibDataSet10: TIBDataSet
     Database = IBDatabase1
@@ -19586,7 +19596,7 @@ object Form7: TForm7
         OnClick = Exportar1Click
       end
       object ExportarNFesemarquivoXML1: TMenuItem
-        Caption = 'Exportar NFe'#39's para contabilidade...'
+        Caption = 'Exportar XML'#39's para contabilidade'#8230
         OnClick = ExportarNFesemarquivoXML1Click
       end
       object ExportarNFesfiltradasemarquivoXML1: TMenuItem
@@ -19778,7 +19788,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object ExportarNfesdeentrdaparacontabilidade1: TMenuItem
-        Caption = 'Exportar NFe'#39's de entrada para contabilidade...'
+        Caption = 'Exportar XML'#39's para contabilidade'#8230
         OnClick = ExportarNfesdeentrdaparacontabilidade1Click
       end
       object N41: TMenuItem
@@ -21080,6 +21090,13 @@ object Form7: TForm7
       object N54: TMenuItem
         Caption = '-'
       end
+      object Configurarobservaofixa1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o fixa'
+        OnClick = Configurarobservaofixa1Click
+      end
+      object N69: TMenuItem
+        Caption = '-'
+      end
       object MenuItem16: TMenuItem
         Caption = '&Imprimir...'
         OnClick = Image205Click
@@ -21374,7 +21391,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50a\'
+      'avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21409,7 +21426,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50a\'
+      'vm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21724,7 +21741,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21754,7 +21771,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

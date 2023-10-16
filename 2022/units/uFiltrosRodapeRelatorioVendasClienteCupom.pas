@@ -16,6 +16,7 @@ type
     class function New: IFiltrosRodapeRelatorio;
     function AddItem(AcDescricao: String): IFiltrosRodapeRelatorio;
     function setFiltroData(AcFiltro: String): IFiltrosRodapeRelatorio;
+    function setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
     function getFiltroData: String;
     function getTitulo: String;
     function getItens: TStringList;
@@ -72,4 +73,10 @@ begin
 
   FcFiltroData := AcFiltro;
 end;
+
+function TFiltroRodapeRelVendasClienteCupom.setTitulo(AcTitulo: String): IFiltrosRodapeRelatorio;
+begin
+  Result := Self;
+end;
+
 end.

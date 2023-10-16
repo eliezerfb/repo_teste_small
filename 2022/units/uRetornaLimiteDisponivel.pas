@@ -90,7 +90,8 @@ begin
     Fqry.SQL.Add('GROUP BY CLIFOR.CREDITO');
   Fqry.ParamByName('XNOME').AsString := FcCliente;
   Fqry.Open;
-  Fqry.FetchAll;
+  // Sandro Silva 2023-10-09 FetchAll causa lentidão. Usar em situações que realmente for necessário. Usar algum parâmetro para definir se deve aplicar
+  // Fqry.FetchAll;
 end;
 
 function TRetornaLimiteDisponivel.RetornarValor: Currency;

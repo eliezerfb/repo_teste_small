@@ -196,8 +196,8 @@ begin
 end;
 
 procedure TRateioBalcao.SetIBTransaction(const Value: TIBTransaction);
-var
-  iItem: Integer;
+//var
+//  iItem: Integer;
 begin
   FIBTransaction := Value;
 

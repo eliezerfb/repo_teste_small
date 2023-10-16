@@ -135,7 +135,7 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24;
+  Unit24, uTransmiteNFSe;
 
 
 function ApagaAsDuplicatasAnteriores(pP1:Boolean):Boolean;
@@ -1254,10 +1254,14 @@ begin
     Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
     Form7.ibDataSet35UNITARIO.AsFloat   := Form7.IBDataSet4.FieldByname('PRECO').AsFloat;
 
-    {Sandro Silva 2022-09-22 inicio}
+    {Sandro Silva 2023-10-02 inicio
     Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
     Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
-    {Sandro Silva 2022-09-22 fim}
+    }
+    Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.IBDataSet14.FieldByname('ISS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat));
+    Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+    {Sandro Silva 2023-10-02 fim}
+
     Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Value := Form7.ibDataSet4IDENTIFICADORPLANOCONTAS.Value;
     if Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.AsString = '' then
       Form7.ibDataSet35IDENTIFICADORPLANOCONTAS.Clear;
@@ -1350,9 +1354,15 @@ begin
       begin
         // Aplica a alíquota nos itens lançados
         Form7.ibDataSet35.Edit;
-        
+
+        {Sandro Silva 2023-10-02 inicio
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        }
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.IBDataSet14.FieldByname('ISS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat));
+        Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        {Sandro Silva 2023-10-02 fim}
+
         cTotal := cTotal + Form7.ibDataSet35ISS.AsFloat; // Acumula para atualizar o total de ISS na tabela VENDAS
 
         Form7.ibDataSet35.Next;
