@@ -2271,6 +2271,21 @@ begin
   end;
   {Dailon Parisotto 2023-09-12 Fim}
 
+  {Mauricio Parizotto 2023-09-19 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'VALOR_MULTA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add VALOR_MULTA numeric (18,2)') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'PERCENTUAL_MULTA') = False then
+  begin
+    if ExecutaComando('alter table RECEBER add PERCENTUAL_MULTA numeric (18,2)') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-09-29 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

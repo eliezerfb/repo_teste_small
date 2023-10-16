@@ -1137,6 +1137,7 @@ begin
         // Descrição dos itens
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr>');
+        WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Código</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Descrição dos itens</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Unitário</td>');
@@ -1150,6 +1151,7 @@ begin
           if Form7.ibDataSet23QUANTIDADE.AsFloat <> 0 then
           begin
             WriteLn(F,' <tr>'+
+                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet23CODIGO.AsString + '</td>'+
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet23QUANTIDADE.AsFloat]) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet23UNITARIO.AsFloat]  ) +'</td>'+
@@ -1171,6 +1173,7 @@ begin
 
         // totalizador        
         WriteLn(F,' <tr>');
+        WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'></td>');
