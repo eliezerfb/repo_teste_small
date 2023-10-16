@@ -84,7 +84,7 @@ begin
   begin
     if (not cbNFeSaida.Checked) and (not cbNFeEntrada.Checked) and (not cbNFCeSAT.Checked) then
     begin
-      Application.MessageBox(PChar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+      Application.MessageBox('Selecione ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
       cbNFeSaida.SetFocus;
       Exit;
     end;
