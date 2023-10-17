@@ -212,7 +212,6 @@ begin
   if GetProfileString('devices', nil, '',p, 32767) <> 0 then
   begin
     //
-    Form19.ComboBoxImpressora.Items.Clear;
     while p2^ <> #0 do begin
      Form19.ComboBoxImpressora.Items.Add(StrPas(p2));
      // incrementa o poteiro para pegar a proxima string
@@ -221,10 +220,7 @@ begin
   end;
   //
   GetMem(p2, 32767);
-
-  Form19.ComboBoxNF.Items.Clear;
-  Form19.ComboBoxNF2.Items.Clear;
-  Form19.ComboBoxBloqueto.Items.Clear;
+  
   //pega o driver e a porta da impressora encontrada
   for i := 0 to (Form19.ComboBoxImpressora.Items.Count - 1) do
   begin
@@ -1299,6 +1295,7 @@ begin
   Button4.Left  := Panel3.Width - Button4.Width - 10;
   Button3.Left  := Button4.Left - 140;
   //
+  ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;
   comboBoxORCA.Items.clear;
