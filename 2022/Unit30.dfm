@@ -710,6 +710,7 @@ object Form30: TForm30
         TabOrder = 4
         OnChange = SMALL_DBEdit7Change
         OnEnter = SMALL_DBEdit7Enter
+        OnExit = SMALL_DBEdit7Exit
         OnKeyDown = SMALL_DBEdit7KeyDown
       end
       object SMALL_DBEdit3: TSMALL_DBEdit
@@ -1026,7 +1027,7 @@ object Form30: TForm30
       end
       object ListBox1: TListBox
         Left = 475
-        Top = 79
+        Top = 80
         Width = 140
         Height = 5
         BevelInner = bvNone
@@ -1103,6 +1104,7 @@ object Form30: TForm30
           OnEnter = fFrameIdentifi1txtCampoEnter
         end
         inherited gdRegistros: TDBGrid
+          Top = 21
           Width = 175
         end
       end
@@ -1122,6 +1124,7 @@ object Form30: TForm30
           OnEnter = fFrameDescricaotxtCampoEnter
         end
         inherited gdRegistros: TDBGrid
+          Top = 21
           Width = 420
           OnDblClick = fFrameDescricaogdRegistrosDblClick
         end
@@ -1142,6 +1145,7 @@ object Form30: TForm30
           OnEnter = fFrameIdentifi2txtCampoEnter
         end
         inherited gdRegistros: TDBGrid
+          Top = 21
           Width = 170
         end
       end
@@ -1161,6 +1165,7 @@ object Form30: TForm30
           OnEnter = fFrameIdentifi3txtCampoEnter
         end
         inherited gdRegistros: TDBGrid
+          Top = 21
           Width = 170
         end
       end
@@ -1180,6 +1185,7 @@ object Form30: TForm30
           OnEnter = fFrameIdentifi4txtCampoEnter
         end
         inherited gdRegistros: TDBGrid
+          Top = 21
           Width = 165
         end
       end

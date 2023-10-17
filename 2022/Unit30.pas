@@ -161,6 +161,7 @@ type
     procedure SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
+    procedure SMALL_DBEdit7Exit(Sender: TObject);
 
   private
     { Private declarations }
@@ -472,7 +473,7 @@ end;
 
 procedure TForm30.SMALL_DBEdit7Enter(Sender: TObject);
 begin
-  {Sandro Silva 2023-09-28 inicio 
+  {Sandro Silva 2023-09-28 inicio
   //
   dbGrid3.Visible   := False;
   }
@@ -498,6 +499,7 @@ begin
       ListBox1.ItemIndex := I;
   end;
   }
+  ListBox1.Visible := True;
   for I := 0 to ListBox1.Items.Count -1 do
   begin
     if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
@@ -838,7 +840,10 @@ begin
       Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_RETURN then
+  begin
+    ListBox1.Visible  := False; // Sandro Silva 2023-10-17
     Perform(Wm_NextDlgCtl,0,0);
+  end;
 end;
 
 procedure TForm30.ListBox1KeyDown(Sender: TObject; var Key: Word;
@@ -1682,6 +1687,11 @@ begin
   Form7.ibDataSet35UNITARIO.AsFloat   := TDBGrid(Sender).DataSource.DataSet.FieldByName('UNITARIO').AsFloat;//fPrecoDoServico[ListBox22.ItemIndex];
   Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
 
+end;
+
+procedure TForm30.SMALL_DBEdit7Exit(Sender: TObject);
+begin
+  SMALL_DBEdit7.Field.AsString := ListBox1.Items[ListBox1.ItemIndex]; // Sandro Silva 2023-10-17
 end;
 
 end.
