@@ -992,17 +992,17 @@ begin
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.Text := 'Unibanco';
       Mauricio Parizotto 2023-10-02}
 
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then Form26.cboBancos.Text := 'AILOS';
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.Text := 'SICREDI';
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.Text := 'SICOOB';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.Text := 'Caixa Econômica';
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.Text := 'Banco do Brasil 7 posições';
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.Text := 'Banco do Brasil 6 posições';
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.Text := 'Bradesco';
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.Text := 'Santander';
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40YY' then Form26.cboBancos.Text := 'Banrisul';
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.Text := 'Itaú';
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.Text := 'Unibanco';
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('AILOS');
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICREDI');
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICOOB');
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Caixa Econômica');
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 7 posições');
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 6 posições');
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Bradesco');
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Santander');
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banrisul');
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
         Form26.chkCNAB400.State := cbChecked

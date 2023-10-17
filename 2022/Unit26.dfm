@@ -1620,11 +1620,13 @@ object Form26: TForm26
       Height = 21
       BevelInner = bvNone
       BevelOuter = bvNone
+      Style = csDropDownList
       Ctl3D = False
       ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 0
       OnChange = cboBancosChange
+      OnExit = cboBancosExit
       OnKeyDown = MaskEdit1KeyDown
       Items.Strings = (
         'AILOS'

@@ -138,7 +138,9 @@ type
     procedure chkCNAB240KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure cboBancosExit(Sender: TObject);
   private
+    procedure SelectBanco;
     { Private declarations }
   public
     { Public declarations }
@@ -349,6 +351,111 @@ begin
   if cboBancos.Text = 'Unibanco'                                     then Form26.MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
   }
 
+  SelectBanco;
+  {Mauricio Parizotto 2023-09-29 Fim}
+end;
+
+procedure TForm26.Button2Click(Sender: TObject);
+begin
+  if (not chkCNAB400.Checked) and (not chkCNAB240.Checked) then
+  begin
+    Application.MessageBox(pChar('Informe se é CNAB400 ou CNAB240.'),'Atenção',mb_Ok + MB_ICONWARNING);
+    Exit;
+  end;
+
+  Close;
+end;
+
+procedure TForm26.MaskEdit46Exit(Sender: TObject);
+begin
+  if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then
+  begin
+    if LimpaNumero(MaskEdit46.Text) <> '' then
+    begin
+      if Length(LimpaNumero(MaskEdit46.Text)) <= 8 then
+      begin
+        MaskEdit46.Text := Right('00000000'+LimpaNumero(MaskEdit46.Text),8);
+      end;
+    end;
+  end;
+end;
+
+procedure TForm26.MaskEdit42Exit(Sender: TObject);
+begin
+  if (Alltrim(Form26.MaskEdit45.Text) = '') or (Alltrim(Form26.MaskEdit45.Text) = '0000000000000000000000000') then
+  begin
+    if Length(LimpaNumero(MaskEdit42.Text)) >= 3 then
+    begin
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '085' then MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '756' then MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS001';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '748' then MaskEdit45.Text := '11YY2NNNNNVAAAAAACCCCC10D';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '104' then MaskEdit45.Text := 'CCCCCCC00010004NNNNNNNNND';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '001' then MaskEdit45.Text := '000000xxxxxxxnnnnnnnnnnkk';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '237' then MaskEdit45.Text := 'AAAAKKNNNNNNNNNNNCCCCCCC0';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '033' then MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '353' then MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '041' then MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '341' then MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '409' then MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
+
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
+      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
+
+      {
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS - Sistema de Cooperativas de Crédito';
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI - Com registro';
+      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Sem registro';
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Com registro';
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica - Com registro';
+      if Form26.MaskEdit45.Text = 'CCCCCCC00020004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica - Sem registro';
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil - Com registro 7 posições';
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then cboBancos.Text := 'Banco do Brasil - Com registro 6 posições';
+      if Form26.MaskEdit45.Text = 'xxxxxxnnnnnnnnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil - Sem registro';
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then cboBancos.Text := 'Bradesco - Com registro';
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.Text := 'Santander - Com registro';
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.Text := 'Banrisul - Com registro';
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.Text := 'Itaú - Com registro';
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
+      Mauricio Parizotto 2023-10-02}
+
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('AILOS');
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('SICREDI');
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('SICOOB');
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Caixa Econômica');
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banco do Brasil 7 posições');
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banco do Brasil 6 posições');
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Bradesco');
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Santander');
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banrisul');
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Itaú');
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unibanco');
+    end;
+  end;
+end;
+
+procedure TForm26.chkCNAB400KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
+end;
+
+procedure TForm26.chkCNAB240KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    Perform(Wm_NextDlgCtl,0,0);
+end;
+
+procedure TForm26.FormShow(Sender: TObject);
+begin
+  if cboBancos.CanFocus then
+    cboBancos.SetFocus;
+end;
+
+
+procedure TForm26.SelectBanco;
+begin
   chkCNAB400.Enabled := False;
   chkCNAB240.Enabled := False;
 
@@ -423,106 +530,11 @@ begin
     MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
     chkCNAB400.Checked := True;
   end;
-
-  {Mauricio Parizotto 2023-09-29 Fim}
 end;
 
-procedure TForm26.Button2Click(Sender: TObject);
+procedure TForm26.cboBancosExit(Sender: TObject);
 begin
-  if (not chkCNAB400.Checked) and (not chkCNAB240.Checked) then
-  begin
-    Application.MessageBox(pChar('Informe se é CNAB400 ou CNAB240.'),'Atenção',mb_Ok + MB_ICONWARNING);
-    Exit;
-  end;
-
-  Close;
-end;
-
-procedure TForm26.MaskEdit46Exit(Sender: TObject);
-begin
-  if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then
-  begin
-    if LimpaNumero(MaskEdit46.Text) <> '' then
-    begin
-      if Length(LimpaNumero(MaskEdit46.Text)) <= 8 then
-      begin
-        MaskEdit46.Text := Right('00000000'+LimpaNumero(MaskEdit46.Text),8);
-      end;
-    end;
-  end;
-end;
-
-procedure TForm26.MaskEdit42Exit(Sender: TObject);
-begin
-  if (Alltrim(Form26.MaskEdit45.Text) = '') or (Alltrim(Form26.MaskEdit45.Text) = '0000000000000000000000000') then
-  begin
-    if Length(LimpaNumero(MaskEdit42.Text)) >= 3 then
-    begin
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '085' then MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '756' then MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS001';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '748' then MaskEdit45.Text := '11YY2NNNNNVAAAAAACCCCC10D';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '104' then MaskEdit45.Text := 'CCCCCCC00010004NNNNNNNNND';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '001' then MaskEdit45.Text := '000000xxxxxxxnnnnnnnnnnkk';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '237' then MaskEdit45.Text := 'AAAAKKNNNNNNNNNNNCCCCCCC0';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '033' then MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '353' then MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '041' then MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '341' then MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '409' then MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
-
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
-      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
-
-      {
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS - Sistema de Cooperativas de Crédito';
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI - Com registro';
-      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Sem registro';
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Com registro';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica - Com registro';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00020004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica - Sem registro';
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil - Com registro 7 posições';
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then cboBancos.Text := 'Banco do Brasil - Com registro 6 posições';
-      if Form26.MaskEdit45.Text = 'xxxxxxnnnnnnnnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil - Sem registro';
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then cboBancos.Text := 'Bradesco - Com registro';
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.Text := 'Santander - Com registro';
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.Text := 'Banrisul - Com registro';
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.Text := 'Itaú - Com registro';
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
-      Mauricio Parizotto 2023-10-02}
-
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS';
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI';
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica';
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil 7 posições';
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then cboBancos.Text := 'Banco do Brasil 6 posições';
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then cboBancos.Text := 'Bradesco';
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.Text := 'Santander';
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.Text := 'Banrisul';
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.Text := 'Itaú';
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
-    end;
-  end;
-end;
-
-procedure TForm26.chkCNAB400KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    Perform(Wm_NextDlgCtl,0,0);
-end;
-
-procedure TForm26.chkCNAB240KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    Perform(Wm_NextDlgCtl,0,0);
-end;
-
-procedure TForm26.FormShow(Sender: TObject);
-begin
-  if cboBancos.CanFocus then
-    cboBancos.SetFocus;
+  SelectBanco;
 end;
 
 end.
