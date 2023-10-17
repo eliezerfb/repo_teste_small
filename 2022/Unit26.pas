@@ -451,6 +451,8 @@ procedure TForm26.FormShow(Sender: TObject);
 begin
   if cboBancos.CanFocus then
     cboBancos.SetFocus;
+
+  SelectBanco;
 end;
 
 
@@ -459,13 +461,11 @@ begin
   chkCNAB400.Enabled := False;
   chkCNAB240.Enabled := False;
 
-  chkCNAB400.Checked := False;
-  chkCNAB240.Checked := False;
-
   if cboBancos.Text = 'AILOS' then
   begin
     MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
     chkCNAB240.Checked := True;
+    chkCNAB400.Checked := False;
   end;
 
   if cboBancos.Text = 'SICOOB' then
@@ -479,12 +479,14 @@ begin
   begin
     MaskEdit45.Text := '11YY2NNNNNVAAAAAACCCCC10D';
     chkCNAB240.Checked := True;
+    chkCNAB400.Checked := False;
   end;
 
   if cboBancos.Text = 'Caixa Econômica' then
   begin
     MaskEdit45.Text := 'CCCCCCC00010004NNNNNNNNND';
     chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Banco do Brasil 7 posições' then
@@ -505,30 +507,35 @@ begin
   begin
     MaskEdit45.Text := 'AAAAKKNNNNNNNNNNNCCCCCCC0';
     chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Santander' then
   begin
     MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
     chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Banrisul' then
   begin
     MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
     chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Itaú' then
   begin
     MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
     chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Unibanco' then
   begin
     MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
     chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 end;
 
