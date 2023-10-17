@@ -1601,6 +1601,7 @@ type
     N69: TMenuItem;
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
+    Button1: TButton;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2261,6 +2262,7 @@ type
     procedure Configurarobservaofixa1Click(Sender: TObject);
     procedure DuplicarProdutoClick(Sender: TObject);
     procedure DuplicaOrcamentoClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2488,7 +2490,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioResumoVendas
   , uDuplicaOrcamento
   , uDuplicaProduto
-  ;
+  , uFrmProdutosDevolucao;
 
 {$R *.DFM}
 
@@ -34313,6 +34315,16 @@ begin
   finally
     Self.Close;
     Self.Show;
+  end;
+end;
+
+procedure TForm7.Button1Click(Sender: TObject);
+begin
+  FrmProdutosDevolucao := TFrmProdutosDevolucao.Create(self);
+  try
+    FrmProdutosDevolucao.ShowModal;
+  finally
+    FreeAndNil(FrmProdutosDevolucao);
   end;
 end;
 

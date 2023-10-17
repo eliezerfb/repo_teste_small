@@ -183,7 +183,8 @@ uses
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas';
+  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uFrmProdutosDevolucao in 'uFrmProdutosDevolucao.pas' {FrmProdutosDevolucao};
 
 {$R *.RES}
 
