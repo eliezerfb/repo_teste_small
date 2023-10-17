@@ -354,6 +354,7 @@ begin
     ibdMunicipios.Locate('NOME',AllTrim(DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString),[loCaseInsensitive, loPartialKey]);
 
     dbgPesquisa.Height     := 200;
+    dbgPesquisa.Columns[0].Width := dbgPesquisa.Width - 20; 
     dbgPesquisa.DataSource := DSMunicipios; // Municipios
     dbgPesquisa.Visible    := True;
   except
@@ -388,8 +389,10 @@ procedure TForm17.dbgPesquisaDblClick(Sender: TObject);
 begin
   try
     DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString := ibdMunicipiosNOME.AsString;
-    if SMALL_DBEdit4.CanFocus then
-      SMALL_DBEdit4.SetFocus;
+    DSEmitente.DataSet.FieldByName('ESTADO').AsString    := ibdMunicipiosUF.AsString;
+
+    if SMALL_DBEdit6.CanFocus then
+      SMALL_DBEdit6.SetFocus;
   except
   end;
 end;
@@ -410,7 +413,7 @@ begin
     begin
       ibdMunicipios.Close;
       ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS '+
-                                      ' Where Upper(NOME) like '+QuotedStr(AnsiUppercase(SMALL_DBEdit4.Text)+'%')+' '+
+                                      ' Where Upper(NOME) like '+QuotedStr(Uppercase(SMALL_DBEdit4.Text)+'%')+' '+
                                       '   and UF='+QuotedStr(UpperCase(DSEmitente.DataSet.FieldByName('ESTADO').AsString))+
                                       ' Order by NOME';
       ibdMunicipios.Open;
@@ -631,14 +634,17 @@ begin
     end;
 
     ibdMunicipios.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-    
+
     if AllTrim(Text) = '' then
       ibdEmitenteMUNICIPIO.AsString := Text
     else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibdMunicipiosNOME.AsString)) <> 0 then
     begin
       ibdEmitenteMUNICIPIO.AsString := ibdMunicipiosNOME.AsString;
-      if ibdEmitenteESTADO.AsString = '' then
-        ibdEmitenteESTADO.AsString := ibdMunicipiosUF.AsString;
+      if (not Self.Showing) or (not dbgPesquisa.Visible) then
+      begin
+        if ibdEmitenteESTADO.AsString = '' then
+          ibdEmitenteESTADO.AsString := ibdMunicipiosUF.AsString;
+      end;
     end;
   end else
   begin
