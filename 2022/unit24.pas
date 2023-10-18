@@ -2071,26 +2071,34 @@ begin
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet23DESCRICAO.AsString) = '') then DbGrid1.SelectedIndex := 0;
-  //
+
   if Key = VK_RETURN then
   begin
     Form7.ibDataSet23.Edit;
-    //
+
     if AllTrim(Form7.ibDataSet23DESCRICAO.AsString) <> '' then
     begin
-      //
       if DbGrid1.SelectedIndex = 0 then
       begin
         Form1.bFlag := True;
         Form7.ibDataSet23.Edit;
-        if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
-          Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
 
+        //Localiza por descrição
+        if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
+        begin
+          Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+        end else
+        //Localiza por código
+        //Mauricio Parizotto 2023-10-18
+        begin
+          // chama novamente TForm7.ibDataSet23DESCRICAOChange com bFlag := True
+          Form7.ibDataSet23DESCRICAO.AsString := AllTrim(Form7.ibDataSet23DESCRICAO.AsString);
+        end;
       end;
-      //
+
       I := DbGrid1.SelectedIndex;
       DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
-      //
+
       if I = DbGrid1.SelectedIndex  then
       begin
         DbGrid1.SelectedIndex := 0;
@@ -2101,11 +2109,11 @@ begin
     begin
       Form7.ibDataSet23.Edit;
       Form7.ibDataSet23.Post;
-      //
+
       Perform(Wm_NextDlgCtl,0,0);
     end;
   end;
-  //
+  
   Form7.ibDataSet4.EnableControls;
 end;
 

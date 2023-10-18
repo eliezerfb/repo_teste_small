@@ -19850,13 +19850,9 @@ end;
 procedure TForm7.ibDataSet16DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
-  //
   // Localiza pela descricao
-  //
   if Limpanumero(Text) <> Text then
   begin
-    //
-//    Form7.ibDataSet4.DisableControls;
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.SelectSQL.Clear;
     Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and  upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+' order by upper(DESCRICAO)');
@@ -19892,7 +19888,6 @@ begin
   end;
   //
   ibDataSet16DESCRICAO.AsString := Text;
-  //
 end;
 
 function TestarNatOperacaoMovEstoque: Boolean;
