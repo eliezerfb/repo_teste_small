@@ -122,7 +122,7 @@ type
     procedure ibdEmitenteMUNICIPIOSetText(Sender: TField;
       const Text: String);
   private
-    { Private declarations }
+    function RetornarWhereMunicipio(AcMunicipio: String): String;
   public
     { Public declarations }
   end;
@@ -339,15 +339,24 @@ begin
     if Length(AllTrim(DSEmitente.DataSet.FieldByName('ESTADO').AsString)) <> 2 then
     begin
       ibdMunicipios.Close;
-      ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS '+
-                                      ' Order by NOME'; // Procura em todo o Pais o estado está em branco
+      ibdMunicipios.SelectSQL.Clear;
+      ibdMunicipios.SelectSQL.Add('Select');
+      ibdMunicipios.SelectSQL.Add('*');
+      ibdMunicipios.SelectSQL.Add('from MUNICIPIOS');
+      if DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString <> EmptyStr then
+        ibdMunicipios.SelectSQL.Add('where (UPPER(NOME) LIKE ' + QuotedStr(RetornarWhereMunicipio(DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString)) + ')');
+      ibdMunicipios.SelectSQL.Add('Order by NOME');; // Procura em todo o Pais o estado está em branco
       ibdMunicipios.Open;
     end else
     begin
       ibdMunicipios.Close;
-      ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS'+
-                                      ' Where UF='+QuotedStr(DSEmitente.DataSet.FieldByName('ESTADO').AsString)+
-                                      ' Order by NOME'; // Procura dentro do estado
+      ibdMunicipios.SelectSQL.Clear;
+      ibdMunicipios.SelectSQL.Add('Select *');
+      ibdMunicipios.SelectSQL.Add('From MUNICIPIOS');
+      ibdMunicipios.SelectSQL.Add('Where (UF='+QuotedStr(DSEmitente.DataSet.FieldByName('ESTADO').AsString) + ')');
+      if DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString <> EmptyStr then
+        ibdMunicipios.SelectSQL.Add('AND (UPPER(NOME) LIKE ' + QuotedStr(RetornarWhereMunicipio(DSEmitente.DataSet.FieldByName('MUNICIPIO').AsString)) + ')');
+      ibdMunicipios.SelectSQL.Add('Order by NOME'); // Procura dentro do estado
       ibdMunicipios.Open;
     end;
 
@@ -413,7 +422,7 @@ begin
     begin
       ibdMunicipios.Close;
       ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS '+
-                                      ' Where Upper(NOME) like '+QuotedStr(Uppercase(SMALL_DBEdit4.Text)+'%')+' '+
+                                      ' Where Upper(NOME) like '+QuotedStr(RetornarWhereMunicipio(SMALL_DBEdit4.Text))+' '+
                                       '   and UF='+QuotedStr(UpperCase(DSEmitente.DataSet.FieldByName('ESTADO').AsString))+
                                       ' Order by NOME';
       ibdMunicipios.Open;
@@ -421,7 +430,7 @@ begin
     begin
       ibdMunicipios.Close;
       ibdMunicipios.SelectSQL.Text := ' Select * From MUNICIPIOS'+
-                                      ' Where Upper(NOME) like '+QuotedStr(Uppercase(SMALL_DBEdit4.Text)+'%')+' '+
+                                      ' Where Upper(NOME) like '+QuotedStr(RetornarWhereMunicipio(SMALL_DBEdit4.Text))+' '+
                                       ' Order by NOME';
       ibdMunicipios.Open;
     end;
@@ -469,7 +478,6 @@ begin
   //Mauricio Parizotto 2023-03-23
   ComboBox7.Items.Clear;
   ComboBox7.Items.Text := getListaCnae;
-
   DSEmitente.DataSet := ibdEmitente;
 end;
 
@@ -619,37 +627,59 @@ procedure TForm17.ibdEmitenteMUNICIPIOSetText(Sender: TField;
 begin
   if (ibdMunicipiosNOME.AsString <> '') or (Trim(Text) <> '') then
   begin
+    ibdEmitenteMUNICIPIO.AsString := Text;
+
     if Length(AllTrim(ibdEmitenteESTADO.AsString)) <> 2 then
     begin
       ibdMunicipios.Close;
       ibdMunicipios.SelectSQL.Clear;
-      ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
+      ibdMunicipios.SelectSQL.Add('select');
+      ibdMunicipios.SelectSQL.Add('*');
+      ibdMunicipios.SelectSQL.Add('from MUNICIPIOS');
+      if ibdEmitenteMUNICIPIO.AsString <> EmptyStr then
+        ibdMunicipios.SelectSQL.Add('where (UPPER(NOME) LIKE ' + QuotedStr(RetornarWhereMunicipio(ibdEmitenteMUNICIPIO.AsString)) + ')');
+      ibdMunicipios.SelectSQL.Add('order by NOME'); // Procura em todo o Pais o estado está em branco
       ibdMunicipios.Open;
     end else
     begin
       ibdMunicipios.Close;
       ibdMunicipios.SelectSQL.Clear;
-      ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(ibdEmitenteESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
+      ibdMunicipios.SelectSQL.Add('select');
+      ibdMunicipios.SelectSQL.Add('*');
+      ibdMunicipios.SelectSQL.Add('from MUNICIPIOS');
+      ibdMunicipios.SelectSQL.Add('where (UF='+QuotedStr(ibdEmitenteESTADO.AsString)+ ')');
+      if ibdEmitenteMUNICIPIO.AsString <> EmptyStr then
+        ibdMunicipios.SelectSQL.Add('AND (UPPER(NOME) LIKE ' + QuotedStr(RetornarWhereMunicipio(ibdEmitenteMUNICIPIO.AsString)) + ')');
+      ibdMunicipios.SelectSQL.Add('order by NOME'); // Procura dentro do estado
       ibdMunicipios.Open;
     end;
 
     ibdMunicipios.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
 
-    if AllTrim(Text) = '' then
-      ibdEmitenteMUNICIPIO.AsString := Text
-    else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibdMunicipiosNOME.AsString)) <> 0 then
+    if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(ibdMunicipiosNOME.AsString)) <> 0 then
     begin
-      ibdEmitenteMUNICIPIO.AsString := ibdMunicipiosNOME.AsString;
-      if (not Self.Showing) or (not dbgPesquisa.Visible) then
+      if not dbgPesquisa.Focused then
       begin
-        if ibdEmitenteESTADO.AsString = '' then
-          ibdEmitenteESTADO.AsString := ibdMunicipiosUF.AsString;
+        ibdEmitenteMUNICIPIO.AsString := ibdMunicipiosNOME.AsString;
+        if (not Self.Showing) or (not dbgPesquisa.Visible) then
+        begin
+          if ibdEmitenteESTADO.AsString = '' then
+            ibdEmitenteESTADO.AsString := ibdMunicipiosUF.AsString;
+        end;
       end;
     end;
   end else
   begin
     ibdEmitenteMUNICIPIO.AsString := Text;
   end;
+end;
+
+function TForm17.RetornarWhereMunicipio(AcMunicipio: String): String;
+begin
+  Result := UpperCase(AcMunicipio);
+
+  if Length(Result) < 40 then
+    Result := Result + '%';
 end;
 
 end.
