@@ -132,6 +132,10 @@ function SysComputerName: String;
 function ConsultaProcesso(sDescricao:String): boolean;//Mauricio Parizotto 2023-08-09
 function WinVersion: string;
 Function LimpaLetras(pP1:String):String;
+{$IFNDEF VER150}
+function IsNumericString(S:String):Boolean;
+{$ENDIF}
+function Extenso(pP1:double):String;
 // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 
 var
@@ -1353,5 +1357,138 @@ begin
    end;
 end;
 { Dailon Parisotto (f-7433) 2023-10-02 fim}
+
+{ Dailon Parisotto (f-7267) 2023-10-18 inicio}
+{$IFNDEF VER150}
+function IsNumericString(S:String):Boolean;
+  var i : integer;
+      SeenSign : Boolean;
+      SeenPoint: Boolean;
+begin
+  Result := true;
+  SeenSign := false;
+  SeenPoint := false;
+  for i := 1 to length(s) do begin
+{    if not (S[i] in ['+', '-', '0'..'9', ' ', '_', ThousandSeparator,DecimalSeparator]) then begin}
+    if not (S[i] in ['+', '-', '0'..'9', ' ', FormatSettings.ThousandSeparator,FormatSettings.DecimalSeparator]) then begin
+      Result := false;
+      break;
+    end;
+    if s[i] in ['+', '-'] then begin
+      if SeenSign then begin
+        Result := false;
+        break;
+      end else begin
+        SeenSign := true;
+      end;
+    end;
+    if s[i] = FormatSettings.DecimalSeparator then begin
+      if SeenPoint then begin
+        Result := false;
+        break;
+      end else begin
+        SeenPoint := true;
+      end;
+    end;
+  end;
+end;
+{$ENDIF}
+
+function Extenso(pP1:double):String;
+var
+  N:double;
+  I:integer;
+begin
+  Result := '';
+  for I:= 3 downto 0 do
+  begin
+    if I <> 0 then
+    begin
+      N:=StrToFloat(Copy(Right(Copy(StrZero(pP1,15,2),1,12),3*I),1,3));
+    end else
+    begin
+      Result:= Result+' reais';
+      N:=StrToFloat(right(StrZero(pP1,12,2),2));
+    end;
+    if N <> 0 then
+    begin
+      Result := Result+' '+trim(Copy('            '+
+                           'cem         '+
+                           'duzentos    '+
+                           'trezentos   '+
+                           'quatrocentos'+
+                           'quinhentos  '+
+                           'seiscentos  '+
+                           'setecentos  '+
+                           'oitocentos  '+
+                           'novecentos  ',(Trunc(int(N/100)*12)+1),12));
+      N := N - int(N/100)*100;
+      if N <> 0 then
+      begin
+        if length(trim(Result)) <> 0 then Result:= Result+' e ';
+        Result := Result + trim(Copy('         '+
+                           'dez      '+
+                           'vinte    '+
+                           'trinta   '+
+                           'quarenta '+
+                           'cinqüenta'+
+                           'sessenta '+
+                           'setenta  '+
+                           'oitenta  '+
+                           'noventa  ',Trunc((int(N/10)*9)+1),9));
+
+      end;
+      N:= N - int(N/10)*10;
+      if N <> 0 then
+      begin
+        if length(trim(Result))<> 0 then Result := Result +' e ';
+        Result := Result + trim(Copy('      '+
+                         'um    '+
+                         'dois  '+
+                         'três  '+
+                         'quatro'+
+                         'cinco '+
+                         'seis  '+
+                         'sete  '+
+                         'oito  '+
+                         'nove  ',Trunc((N*6)+1),6));
+      end;
+      if I <> 0 then Result := Result +' '+trim(Copy('        '+
+                           'mil,    '+
+                           'milhões,'+
+                           'bilhões,'+
+                           'trilhões',(I-1)*8+1,8));
+      if I = 0 then Result := Result +' centavos';
+    end;
+  end;
+  Result:=StrTran(Result,'  ',' ');
+  Result:=StrTran(Result,'dez e um',    'onze');
+  Result:=StrTran(Result,'dez e dois',  'doze');
+  Result:=StrTran(Result,'dez e três',  'treze');
+  Result:=StrTran(Result,'dez e quatro','catorze');
+  Result:=StrTran(Result,'dez e cinco', 'quinze');
+  Result:=StrTran(Result,'dez e seis',  'dezesseis');
+  Result:=StrTran(Result,'dez e sete',  'dezessete');
+  Result:=StrTran(Result,'dez e oito',  'dezoito');
+  Result:=StrTran(Result,'dez e nove',  'dezenove');
+  Result:=StrTran(Result,'cem e',       'cento e');
+  Result:=StrTran(Result,'e e',        'e');
+  Result:=StrTran(Result,'e e',        'e');
+  Result:=StrTran(Result,'ões e',      'ões');
+  Result:=StrTran(Result,'um milhões',  'um milhão');
+  Result:=StrTran(Result,'um bilhões',  'um bilhão');
+  Result:=StrTran(Result,'um trilhões', 'um trilhão');
+  Result:=StrTran(Result,', reais',     ' reais');
+  Result:=StrTran(Result,', e',         ' e');
+  if Copy(AllTrim(Result),1,8)='reais e ' then Delete(Result,1,8);
+  if Pos('um reais',AllTrim(Result)) = 1 then Result:=StrTran(Result,'um reais','um real');
+  if Pos('um centavos',AllTrim(Result)) = 1 then Result:=StrTran(Result,'um centavos', 'um centavo');
+end;
+
+
+
+{ Dailon Parisotto (f-7267) 2023-10-18 fim}
+
+
 
 end.
