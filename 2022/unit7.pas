@@ -1601,7 +1601,6 @@ type
     N69: TMenuItem;
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
-    Button1: TButton;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2262,7 +2261,6 @@ type
     procedure Configurarobservaofixa1Click(Sender: TObject);
     procedure DuplicarProdutoClick(Sender: TObject);
     procedure DuplicaOrcamentoClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -32345,6 +32343,7 @@ end;
 
 procedure TForm7.DevolverNF1Click(Sender: TObject);
 begin
+  (* Mauricio Parizotto 2023-10-19 Inicio
   try
     Form1.imgVendasClick(Form1.imgVendas);
     Form7.Image101Click(Form7.Image201);
@@ -32484,7 +32483,19 @@ begin
 
   end;
 
-  Form12.dbGrid1.SetFocus;  
+  Form12.dbGrid1.SetFocus;
+  *)
+
+  FrmProdutosDevolucao := TFrmProdutosDevolucao.Create(self);
+  try
+    FrmProdutosDevolucao.ibdProdutosNota.ParamByName('NUMERONF').AsString := ibDataSet24NUMERONF.AsString;
+    FrmProdutosDevolucao.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := ibDataSet24FORNECEDOR.AsString;
+    FrmProdutosDevolucao.ShowModal;
+  finally
+    FreeAndNil(FrmProdutosDevolucao);
+  end;
+
+  {Mauricio Parizotto 2023-10-19 Fim} 
 end;
 
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
@@ -34315,16 +34326,6 @@ begin
   finally
     Self.Close;
     Self.Show;
-  end;
-end;
-
-procedure TForm7.Button1Click(Sender: TObject);
-begin
-  FrmProdutosDevolucao := TFrmProdutosDevolucao.Create(self);
-  try
-    FrmProdutosDevolucao.ShowModal;
-  finally
-    FreeAndNil(FrmProdutosDevolucao);
   end;
 end;
 

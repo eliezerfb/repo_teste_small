@@ -1,15 +1,17 @@
 inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
-  Left = 563
-  Top = 337
+  Left = 551
+  Top = 279
   BorderIcons = []
   Caption = 'Produtos para devolu'#231#227'o'
   ClientHeight = 483
   ClientWidth = 994
-  OnCreate = FormCreate
+  OldCreateOrder = True
+  Position = poScreenCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
-  object Label10: TLabel
-    Left = 12
+  object lblTitulo: TLabel
+    Left = 16
     Top = 11
     Width = 549
     Height = 19
@@ -24,7 +26,115 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Font.Style = []
     ParentFont = False
   end
-  object DBGrid1: TDBGrid
+  object imgCheck: TImage
+    Left = 699
+    Top = 8
+    Width = 20
+    Height = 18
+    AutoSize = True
+    Picture.Data = {
+      07544269746D61706E040000424D6E0400000000000036000000280000001400
+      0000120000000100180000000000380400000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D81521D81
+      521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFFFFFFFFFF
+      81521DEFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFD
+      FDFEFEFEFFFFFFFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DED
+      F0F0EFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD
+      FEFEFEFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DEBEEEEEDF0
+      F0EFF2F2F1F3F3F3F5F522A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFDFE
+      FEFEFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE8ECECEBEEEEEDF0F0
+      EFF2F222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFDFEFE
+      FE81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE6EAEAE8ECECEBEEEE22A12222
+      A12222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD81521D
+      FFFFFFFFFFFFFFFFFFFFFFFF81521DE4E8E8E6EAEA22A12222A12222A12222A1
+      2222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFD81521DFFFFFFFF
+      FFFFFFFFFFFFFFFF81521DE2E6E6E4E8E822A12222A12222A122EDF0F022A122
+      22A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFB81521DFFFFFFFFFFFFFFFF
+      FFFFFFFF81521DE0E4E4E2E6E622A12222A122E8ECECEBEEEEEDF0F022A12222
+      A12222A12222A122F6F8F8F8F9F9F9FAFA81521DFFFFFFFFFFFFFFFFFFFFFFFF
+      81521DDEE3E3E0E4E422A122E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A1
+      2222A12222A122F6F8F8F8F9F981521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDD
+      E2E2DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A122
+      22A122F5F6F6F6F8F881521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2
+      E2DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A122F3
+      F5F5F5F6F681521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2
+      DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A122F1F3F3F3F5
+      F581521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DE
+      E3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F2F1F3F381521D
+      FFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DDE2E2DEE3
+      E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F281521DFFFFFFFF
+      FFFFFFFFFFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D
+      81521D81521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    Visible = False
+  end
+  object imgUnCheck: TImage
+    Left = 728
+    Top = 8
+    Width = 20
+    Height = 18
+    AutoSize = True
+    Picture.Data = {
+      07544269746D61706E040000424D6E0400000000000036000000280000001400
+      0000120000000100180000000000380400000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D81521D81
+      521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFFFFFFFFFF
+      81521DEFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFD
+      FDFEFEFEFFFFFFFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DED
+      F0F0EFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD
+      FEFEFEFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DEBEEEEEFF1
+      F1F1F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFFFFFFFFFFFFFE
+      FEFEFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE8ECECECEFEFEFF1F1
+      F1F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFFFFFFFDFDFDFEFE
+      FE81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE6EAEAE9ECECECEFEFEFF1F1F1
+      F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFCFDFDFDFDFD81521D
+      FFFFFFFFFFFFFFFFFFFFFFFF81521DE4E8E8E5E8E8E9ECECECEFEFEFF1F1F1F3
+      F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFBFBFBFCFDFD81521DFFFFFFFF
+      FFFFFFFFFFFFFFFF81521DE2E6E6E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3
+      F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDF9FAFAFBFBFB81521DFFFFFFFFFFFFFFFF
+      FFFFFFFF81521DE0E4E4DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4
+      F5F5F6F7F7F8F9F9FAFBFBF8F9F9F9FAFA81521DFFFFFFFFFFFFFFFFFFFFFFFF
+      81521DDEE3E3DBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5
+      F5F6F7F7F8F9F9F6F8F8F8F9F981521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDD
+      E2E2D9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5F5
+      F6F7F7F5F6F6F6F8F881521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DC
+      DCD9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5F5F3
+      F5F5F5F6F681521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DCDCD7DCDC
+      D9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F1F3F3F3F5
+      F581521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DCDCD7DCDCD7DCDCD9
+      DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1EFF2F2F1F3F381521D
+      FFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DDE2E2DEE3
+      E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F281521DFFFFFFFF
+      FFFFFFFFFFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D
+      81521D81521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    Visible = False
+  end
+  object imgEdit: TImage
+    Left = 760
+    Top = 8
+    Width = 16
+    Height = 16
+    AutoSize = True
+    Picture.Data = {
+      0A54504E474F626A65637489504E470D0A1A0A0000000D494844520000001000
+      00001008060000001FF3FF61000000097048597300000B1300000B1301009A9C
+      18000000B9494441547801A590B10DC2301444CF8B44162D0BD066095A1A7600
+      2116A0A666004A28105DB6A0048B45E02512B61542B0E5AF7BD625F69D121B15
+      8E29CC2BA7C04ABAC019D6D029A7E048620EAD762C5D494A8195B4850D9C6006
+      3798C2DF5FB0921AB092AEB0803DACC08919FB02AB10C6763AB02EC1EB5741C5
+      890626F0D11353C31DBC8C77C154D8A430E7BEEE202BDC2FC80EF70B1EBCB00A
+      E324D5E0343226DA7B457EF0C2A27D6F870A92C36D4B5CD03E67535CF0065AAE
+      2211D61FC68D0000000049454E44AE426082}
+    Visible = False
+  end
+  object dbgPrincipal: TDBGrid
     Left = 16
     Top = 39
     Width = 961
@@ -35,15 +145,14 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     DataSource = DSProdutos
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -11
+    Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete]
+    Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs]
     ParentBiDiMode = False
     ParentCtl3D = False
     ParentFont = False
     ParentShowHint = False
-    ReadOnly = True
     ShowHint = False
     TabOrder = 0
     TitleFont.Charset = ANSI_CHARSET
@@ -52,73 +161,150 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Pitch = fpFixed
     TitleFont.Style = []
-    OnCellClick = DBGrid1CellClick
+    OnCellClick = dbgPrincipalCellClick
+    OnDrawColumnCell = dbgPrincipalDrawColumnCell
+    OnDblClick = dbgPrincipalDblClick
     Columns = <
       item
         Expanded = False
         FieldName = 'MARCADO'
-        Width = 30
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 21
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'DESCRICAO'
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 302
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'QUANTIDADE'
-        Width = 61
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 74
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'UNITARIO'
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TOTAL'
-        Width = 85
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 76
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'VBC'
-        Width = 80
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 73
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'VICMS'
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
         Width = 85
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'VBCST'
-        Width = 80
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 68
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'VICMSST'
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
         Width = 85
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'VIPI'
-        Width = 85
+        ReadOnly = True
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Height = -12
+        Title.Font.Name = 'Microsoft Sans Serif'
+        Title.Font.Pitch = fpFixed
+        Title.Font.Style = []
+        Width = 72
         Visible = True
       end>
   end
   object btnOK: TBitBtn
-    Left = 846
+    Left = 852
     Top = 448
-    Width = 132
+    Width = 126
     Height = 25
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akRight]
     Caption = '&Ok'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -127,13 +313,14 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 715
+    Left = 718
     Top = 448
-    Width = 132
+    Width = 126
     Height = 25
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akRight]
     Caption = '&Cancelar'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -142,6 +329,22 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Font.Style = []
     ParentFont = False
     TabOrder = 2
+    OnClick = btnCancelarClick
+  end
+  object BitBtn1: TBitBtn
+    Left = 16
+    Top = 448
+    Width = 126
+    Height = 25
+    Caption = 'Desmarcar todos'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    OnClick = BitBtn1Click
   end
   object DSProdutos: TDataSource
     DataSet = cdsProdutosNota
@@ -152,9 +355,12 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Aggregates = <>
     Params = <>
     ProviderName = 'dspProdutosNota'
+    AfterInsert = cdsProdutosNotaAfterInsert
+    BeforeDelete = cdsProdutosNotaBeforeDelete
     Left = 216
     Top = 144
     object cdsProdutosNotaMARCADO: TStringField
+      DisplayLabel = ' '
       FieldName = 'MARCADO'
       Required = True
       FixedChar = True
@@ -202,11 +408,16 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       DisplayLabel = 'Qtd.'
       FieldName = 'QUANTIDADE'
       Origin = 'ITENS002.QUANTIDADE'
+      OnChange = cdsProdutosNotaQUANTIDADEChange
+      DisplayFormat = '##0.00'
+      EditFormat = '##0.00'
     end
     object cdsProdutosNotaUNITARIO: TFloatField
       DisplayLabel = 'Unit'#225'rio'
       FieldName = 'UNITARIO'
       Origin = 'ITENS002.UNITARIO'
+      DisplayFormat = '##0.00'
+      EditFormat = '##0.00'
     end
     object cdsProdutosNotaTOTAL: TFloatField
       DisplayLabel = 'Total'
@@ -233,6 +444,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       DisplayLabel = 'Valor do ICMS'
       FieldName = 'VICMS'
       Origin = 'ITENS002.VICMS'
+      DisplayFormat = '##0.00'
       Precision = 18
       Size = 2
     end
@@ -240,6 +452,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       DisplayLabel = 'BC ICMS'
       FieldName = 'VBC'
       Origin = 'ITENS002.VBC'
+      DisplayFormat = '##0.00'
       Precision = 18
       Size = 2
     end
@@ -247,6 +460,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       DisplayLabel = 'Valor ICMS ST'
       FieldName = 'VICMSST'
       Origin = 'ITENS002.VICMSST'
+      DisplayFormat = '##0.00'
       Precision = 18
       Size = 2
     end
@@ -254,6 +468,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       DisplayLabel = 'Valor IPI'
       FieldName = 'VIPI'
       Origin = 'ITENS002.VIPI'
+      DisplayFormat = '##0.00'
       Precision = 18
       Size = 2
     end
@@ -311,6 +526,55 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       DisplayLabel = 'BC ST'
       FieldName = 'VBCST'
       Origin = 'ITENS002.VBCST'
+      DisplayFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaQUANTIDADE_ANT: TFloatField
+      FieldName = 'QUANTIDADE_ANT'
+    end
+    object cdsProdutosNotaIPI_ANT: TFloatField
+      FieldName = 'IPI_ANT'
+    end
+    object cdsProdutosNotaVIPI_ANT: TBCDField
+      FieldName = 'VIPI_ANT'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaICM_ANT: TFloatField
+      FieldName = 'ICM_ANT'
+    end
+    object cdsProdutosNotaVICMS_ANT: TBCDField
+      FieldName = 'VICMS_ANT'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaVBC_ANT: TBCDField
+      FieldName = 'VBC_ANT'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaVBCST_ANT: TBCDField
+      FieldName = 'VBCST_ANT'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaVICMSST_ANT: TBCDField
+      FieldName = 'VICMSST_ANT'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaVBCFCPST_ANT: TBCDField
+      FieldName = 'VBCFCPST_ANT'
+      Precision = 18
+      Size = 2
+    end
+    object cdsProdutosNotaPFCPST_ANT: TBCDField
+      FieldName = 'PFCPST_ANT'
+      Precision = 18
+    end
+    object cdsProdutosNotaVFCPST_ANT: TBCDField
+      FieldName = 'VFCPST_ANT'
       Precision = 18
       Size = 2
     end
@@ -350,10 +614,21 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       #9'I.VBCFCPST,'
       #9'I.PFCPST,'
       #9'I.VFCPST,'
-      #9'I.ICMS_DESONERADO'
+      #9'I.ICMS_DESONERADO,'#9
+      #9'I.QUANTIDADE QUANTIDADE_ANT,'
+      #9'I.IPI IPI_ANT,'
+      #9'I.VIPI VIPI_ANT, '
+      #9'I.ICM ICM_ANT,'
+      #9'I.VICMS VICMS_ANT,'
+      #9'I.VBC VBC_ANT,'
+      #9'I.VBCST VBCST_ANT,'
+      #9'I.VICMSST VICMSST_ANT,'
+      #9'I.VBCFCPST VBCFCPST_ANT,'
+      #9'I.PFCPST PFCPST_ANT,'
+      #9'I.VFCPST VFCPST_ANT'
       'From ITENS002 I'
-      'Where I.NUMERONF = '#39'000000000001'#39
-      #9'and I.FORNECEDOR = '#39'Adega Catarinense Ind e Com Ltda'#39)
+      'Where I.NUMERONF =  :NUMERONF  '
+      #9'and I.FORNECEDOR  =  :FORNECEDOR ')
     Left = 280
     Top = 144
     object ibdProdutosNotaMARCADO: TIBStringField
@@ -505,6 +780,66 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     object ibdProdutosNotaVBCST: TIBBCDField
       FieldName = 'VBCST'
       Origin = 'ITENS002.VBCST'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaQUANTIDADE_ANT: TFloatField
+      FieldName = 'QUANTIDADE_ANT'
+      Origin = 'ITENS002.QUANTIDADE'
+    end
+    object ibdProdutosNotaIPI_ANT: TFloatField
+      FieldName = 'IPI_ANT'
+      Origin = 'ITENS002.IPI'
+    end
+    object ibdProdutosNotaVIPI_ANT: TIBBCDField
+      FieldName = 'VIPI_ANT'
+      Origin = 'ITENS002.VIPI'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaICM_ANT: TFloatField
+      FieldName = 'ICM_ANT'
+      Origin = 'ITENS002.ICM'
+    end
+    object ibdProdutosNotaVICMS_ANT: TIBBCDField
+      FieldName = 'VICMS_ANT'
+      Origin = 'ITENS002.VICMS'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaVBC_ANT: TIBBCDField
+      FieldName = 'VBC_ANT'
+      Origin = 'ITENS002.VBC'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaVBCST_ANT: TIBBCDField
+      FieldName = 'VBCST_ANT'
+      Origin = 'ITENS002.VBCST'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaVICMSST_ANT: TIBBCDField
+      FieldName = 'VICMSST_ANT'
+      Origin = 'ITENS002.VICMSST'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaVBCFCPST_ANT: TIBBCDField
+      FieldName = 'VBCFCPST_ANT'
+      Origin = 'ITENS002.VBCFCPST'
+      Precision = 18
+      Size = 2
+    end
+    object ibdProdutosNotaPFCPST_ANT: TIBBCDField
+      FieldName = 'PFCPST_ANT'
+      Origin = 'ITENS002.PFCPST'
+      Precision = 18
+      Size = 4
+    end
+    object ibdProdutosNotaVFCPST_ANT: TIBBCDField
+      FieldName = 'VFCPST_ANT'
+      Origin = 'ITENS002.VFCPST'
       Precision = 18
       Size = 2
     end
