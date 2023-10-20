@@ -212,6 +212,7 @@ begin
   if CampoSel = 'QUANTIDADE' then
   begin
     retorno := ImputBoxSmall('Informe a quantidade',
+                             cdsProdutosNotaDESCRICAO.Text,
                              FormatFloat('#,##0.00', cdsProdutosNotaQUANTIDADE.AsFloat),
                              tpFloat
                              );

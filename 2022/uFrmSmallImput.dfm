@@ -4,15 +4,34 @@ inherited FrmSmallImput: TFrmSmallImput
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Imput'
-  ClientHeight = 91
-  ClientWidth = 267
+  ClientHeight = 98
+  ClientWidth = 362
+  OldCreateOrder = True
   Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
+  object lblDescricao: TLabel
+    Left = 16
+    Top = 9
+    Width = 331
+    Height = 13
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
+    Caption = 'Descricao'
+    Color = clBtnHighlight
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    Transparent = True
+  end
   object btnOK: TBitBtn
-    Left = 146
-    Top = 49
+    Left = 241
+    Top = 60
     Width = 106
     Height = 25
     Anchors = [akTop, akRight]
@@ -28,8 +47,8 @@ inherited FrmSmallImput: TFrmSmallImput
   end
   object edtValor: TEdit
     Left = 16
-    Top = 16
-    Width = 236
+    Top = 27
+    Width = 331
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 1

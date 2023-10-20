@@ -13,6 +13,7 @@ type
   TFrmSmallImput = class(TFrmPadrao)
     btnOK: TBitBtn;
     edtValor: TEdit;
+    lblDescricao: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure edtValorKeyDown(Sender: TObject; var Key: Word;
@@ -28,7 +29,7 @@ type
 var  
   vRetorno : string;
 
-  function ImputBoxSmall(Titulo:string;Valor:string;TipoCampo:TTipoCampo):string;
+  function ImputBoxSmall(Titulo, Descricao:string;Valor:string;TipoCampo:TTipoCampo):string;
 
 var
   FrmSmallImput: TFrmSmallImput;
@@ -37,7 +38,7 @@ implementation
 
 {$R *.dfm}
 
-function ImputBoxSmall(Titulo:string;Valor:string;TipoCampo:TTipoCampo):string;
+function ImputBoxSmall(Titulo, Descricao:string;Valor:string;TipoCampo:TTipoCampo):string;
 begin
   Result := '';
   vRetorno := '';
@@ -45,6 +46,7 @@ begin
   try
     FrmSmallImput := TFrmSmallImput.Create(nil);
     FrmSmallImput.Caption := Titulo;
+    FrmSmallImput.lblDescricao.Caption := Descricao;
     FrmSmallImput.edtValor.Text := Valor;
     FrmSmallImput.TipoCamp := TipoCampo;
     FrmSmallImput.ShowModal;
