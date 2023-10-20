@@ -17,6 +17,9 @@ type
     IBQPESQUISANUMERONF: TIBStringField;
     procedure btnOKClick(Sender: TObject);
     procedure dbGridPrincipalDblClick(Sender: TObject);
+    procedure dbGridPrincipalDrawColumnCell(Sender: TObject;
+      const Rect: TRect; DataCol: Integer; Column: TColumn;
+      State: TGridDrawState);
   private
     { Private declarations }
     procedure SelecionaPesquisa; override;
@@ -31,7 +34,8 @@ var
 
 implementation
 
-uses uFuncoesBancoDados, SmallFunc, Unit7, uFuncoesRetaguarda;
+uses uFuncoesBancoDados, SmallFunc, Unit7, uFuncoesRetaguarda,
+  uSmallConsts;
 
 {$R *.dfm}
 
@@ -59,9 +63,9 @@ var
 begin
   inherited;
 
-  vFiltro := ' Where DATA < '+ QuotedStr(DateToBD(dtpFiltro.Date));
+  vFiltro := ' Where DATA <= '+ QuotedStr(DateToBD(dtpFiltro.Date));
 
-  if Trim(edPesquisa.Text) <> '' then
+  if trim(edPesquisa.Text) <> '' then
   begin
     if edPesquisa.Text = LimpaNumero(edPesquisa.Text) then
     begin
@@ -88,7 +92,7 @@ begin
                           ' From'+
                           ' ('+SqlEstoqueOrcamentos(False)+' ) O'+
                           vFiltro+
-                          ' Order By DATA desc';
+                          ' Order By DATA desc, PEDIDO desc ';
   IBQPESQUISA.Open;
 end;
 
@@ -103,6 +107,20 @@ procedure TFrmPesquisaOrcamento.dbGridPrincipalDblClick(Sender: TObject);
 begin
   FrmPesquisaOrcamento.FIdSelecionado := IBQPESQUISA.FieldByName('PEDIDO').AsString;
   inherited;
+end;
+
+procedure TFrmPesquisaOrcamento.dbGridPrincipalDrawColumnCell(
+  Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+begin
+  inherited;
+
+  if IBQPESQUISANUMERONF.AsString <> '' then
+  begin
+    (Sender As TDBGrid).Canvas.Font.Color := _COR_AZUL;
+  end;
+
+  (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
 end;
 
 end.

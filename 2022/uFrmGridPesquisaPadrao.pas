@@ -43,6 +43,8 @@ var
 
 implementation
 
+uses Unit7;
+
 {$R *.dfm}
 
 procedure TFrmGripPesquisaPadrao.dtpFiltroClick(Sender: TObject);
@@ -58,12 +60,7 @@ procedure TFrmGripPesquisaPadrao.edPesquisaKeyDown(Sender: TObject;
 begin
   if Key = VK_RETURN then
   begin
-    if Trim(edPesquisa.Text) <> '' then
-    begin
-      SelecionaPesquisa;
-    end
-    else
-      Perform(Wm_NextDlgCtl,0,0);
+    SelecionaPesquisa;
   end;
   if Key = VK_UP then
   begin

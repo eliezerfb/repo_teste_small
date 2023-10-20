@@ -14331,7 +14331,7 @@ begin
               if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
                 DBGrid1.Canvas.Font.Color := clBlack
               else
-                DBGrid1.Canvas.Font.Color  := $00EAB231;
+                DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
             except
             end;
           end;
@@ -14350,12 +14350,12 @@ begin
               DBGrid1.Canvas.Font.Color := clBlue;
 
             if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0 then
-              DBGrid1.Canvas.Font.Color  := $00EAB231;
+              DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
 
             if Form7.sRPS = 'S' then
             begin
               if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) <> 0 then
-                DBGrid1.Canvas.Font.Color  := $00EAB231;
+                DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
             end;
 
             if Form7.ibDataSet15EMITIDA.AsString = 'X' then
@@ -14446,7 +14446,7 @@ begin
 
       if Pos('<tpEvento>210200',Form7.ibDataSet24MDESTINXML.AsString)<>0 then
       begin
-        DBGrid1.Canvas.Font.Color   := $00EAB231;
+        DBGrid1.Canvas.Font.Color   := _COR_AZUL;//$00EAB231;
         dbGrid1.Canvas.StretchDraw(yRect,Form7.Positivo.Picture.Graphic);  // Positivo
         dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Operação confirmada');
       end else

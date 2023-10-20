@@ -142,8 +142,8 @@ inherited FrmGripPesquisaPadrao: TFrmGripPesquisaPadrao
     OnClick = btnCancelarClick
   end
   object IBQPESQUISA: TIBQuery
-    Database = Form1.IBDatabase1
-    Transaction = Form1.IBTransaction1
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
     Left = 144

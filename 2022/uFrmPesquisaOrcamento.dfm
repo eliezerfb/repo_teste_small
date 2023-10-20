@@ -9,6 +9,7 @@ inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
     Caption = 'N'#250'mero do or'#231'amento, nome do cliente ou vendedor:'
   end
   inherited dbGridPrincipal: TDBGrid
+    OnDrawColumnCell = dbGridPrincipalDrawColumnCell
     Columns = <
       item
         Expanded = False
