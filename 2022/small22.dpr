@@ -183,10 +183,12 @@ uses
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGripPesquisaPadrao},
+  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
   uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
   uImportaOrcamento in 'units\uImportaOrcamento.pas',
-  uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento};
+  uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento},
+  uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
+  ufrmPesquisaOrdemServico in 'ufrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico};
 
 {$R *.RES}
 
@@ -261,6 +263,7 @@ begin
   Application.CreateForm(TForm29, Form29);
   Application.CreateForm(TForm45, Form45);
   Application.CreateForm(TForm37, Form37);
+  Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.Run;
     end else
     begin

@@ -1,6 +1,6 @@
 inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
-  Left = 557
-  Top = 306
+  Left = 242
+  Top = 133
   Caption = 'Or'#231'amento'
   Position = poScreenCenter
   PixelsPerInch = 96

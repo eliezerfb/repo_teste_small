@@ -302,7 +302,8 @@ implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
-  uFrmPesquisaOrcamento, uImportaOrcamento;
+  uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
+  ufrmPesquisaOrdemServico;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -1397,19 +1398,34 @@ begin
 end;
 
 procedure TForm12.ImportarOS2Click(Sender: TObject);
+var
+  NumeroOS : string;
 begin
-  //
-  // Atualiza as ECF's que estão em uso
-  //
+  {Mauricio Parizotto 2023-10-20 Inicio
   Form7.sModulo := 'OS';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
-  //
+
   Form7.ibDataSet16.First;
   Form7.ibDataSet16.Edit;
   Form7.ibDataSet16.Post;
   Retributa(True);
-  //
+  }
+
+  NumeroOS := PesquisaNumeroOrdemServico('Importar Ordem de Serviço...');
+  if NumeroOS <> '' then
+  begin
+    Form7.sModulo := 'OS';
+    ImportaOS(NumeroOS,Form7.sModulo);
+    Form7.sModulo := 'VENDA';
+
+    Form7.ibDataSet16.First;
+    Form7.ibDataSet16.Edit;
+    Form7.ibDataSet16.Post;
+    Retributa(True);
+  end;
+
+  {Mauricio Parizotto 2023-10-20 Fim}
 end;
 
 procedure TForm12.DefineVisibleHomologacao;

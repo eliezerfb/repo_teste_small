@@ -22,7 +22,11 @@ uses
 
 implementation
 
-uses Unit7, Unit12, Mais, Unit13;
+uses Unit7
+    , Unit12
+    , Mais
+    , Unit13
+    ;
 
 procedure ImportaOrcamento(NumeroOrcamento:string; sTipo : String);
 var
