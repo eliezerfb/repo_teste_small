@@ -162,6 +162,7 @@ type
       Shift: TShiftState);
     procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
+    procedure SMALL_DBEdit7Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -477,8 +478,10 @@ begin
   //
   dbGrid3.Visible   := False;
   }
+  OcultaListaDePesquisa;  
   ListBox1.Visible  := True;
-  ListBox1.Height   := 41;
+  ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
+  SMALL_DBEdit7.SelectAll;
   //
 end;
 
@@ -503,7 +506,9 @@ begin
   for I := 0 to ListBox1.Items.Count -1 do
   begin
     if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+    begin
       ListBox1.ItemIndex := I;
+    end;
   end;
 
 end;
@@ -852,9 +857,12 @@ begin
   //
   if Key = VK_RETURN then
   begin
-    if ListBox1.ItemIndex = 0 then Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-    if ListBox1.ItemIndex = 1 then Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-    if ListBox1.ItemIndex = 2 then Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+    if ListBox1.ItemIndex = 0 then
+      Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
+    if ListBox1.ItemIndex = 1 then
+      Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
+    if ListBox1.ItemIndex = 2 then
+      Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
     SMALL_DBEdit7.SetFocus;
     Key := VK_SHIFT;
     ListBox1.Visible := False;
@@ -863,8 +871,6 @@ begin
 end;
 
 procedure TForm30.DBGrid2KeyPress(Sender: TObject; var Key: Char);
-//var
-//  I: Integer;
 begin
   //
   // Descriçao dos serviços
@@ -908,7 +914,8 @@ begin
   end else Form30.dBGrid3.Visible := False;
   //
   if dbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+    if Key = chr(46) then
+      key := chr(44);
   //
 end;
 
@@ -1583,9 +1590,12 @@ end;
 procedure TForm30.ListBox1DblClick(Sender: TObject);
 begin
   //
-  if ListBox1.ItemIndex = 0 then Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-  if ListBox1.ItemIndex = 1 then Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-  if ListBox1.ItemIndex = 2 then Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+  if ListBox1.ItemIndex = 0 then
+    Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
+  if ListBox1.ItemIndex = 1 then
+    Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
+  if ListBox1.ItemIndex = 2 then
+    Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
   //
   SMALL_DBEdit3.SetFocus;
   ListBox1.Visible := False;
@@ -1692,6 +1702,15 @@ end;
 procedure TForm30.SMALL_DBEdit7Exit(Sender: TObject);
 begin
   SMALL_DBEdit7.Field.AsString := ListBox1.Items[ListBox1.ItemIndex]; // Sandro Silva 2023-10-17
+end;
+
+procedure TForm30.SMALL_DBEdit7Click(Sender: TObject);
+begin
+  {Sandro Silva 2023-10-23 inicio}
+  //ListBox1.Visible  := True;
+  //ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
+  SMALL_DBEdit7.SelectAll;
+  {Sandro Silva 2023-10-23 fim}
 end;
 
 end.

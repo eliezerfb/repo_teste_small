@@ -709,6 +709,7 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 4
         OnChange = SMALL_DBEdit7Change
+        OnClick = SMALL_DBEdit7Click
         OnEnter = SMALL_DBEdit7Enter
         OnExit = SMALL_DBEdit7Exit
         OnKeyDown = SMALL_DBEdit7KeyDown
@@ -1106,6 +1107,7 @@ object Form30: TForm30
         inherited gdRegistros: TDBGrid
           Top = 21
           Width = 175
+          Font.Height = -11
         end
       end
       inline fFrameDescricao: TfFrameCampo
@@ -1147,6 +1149,7 @@ object Form30: TForm30
         inherited gdRegistros: TDBGrid
           Top = 21
           Width = 170
+          Font.Height = -11
         end
       end
       inline fFrameIdentifi3: TfFrameCampo
@@ -1167,6 +1170,7 @@ object Form30: TForm30
         inherited gdRegistros: TDBGrid
           Top = 21
           Width = 170
+          Font.Height = -11
         end
       end
       inline fFrameIdentifi4: TfFrameCampo
@@ -1187,6 +1191,7 @@ object Form30: TForm30
         inherited gdRegistros: TDBGrid
           Top = 21
           Width = 165
+          Font.Height = -11
         end
       end
       object DBGrid3: TDBGrid
