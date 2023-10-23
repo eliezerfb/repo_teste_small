@@ -1928,7 +1928,7 @@ begin
     Key := VK_SHIFT;
     dBgrid3.SetFocus;
   end;
-  //
+  
   if Key = VK_TAB    then
     Key := VK_RETURN;
   if Key = VK_ESCAPE then
