@@ -184,7 +184,10 @@ uses
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
+  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGripPesquisaPadrao},
   uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uImportaOrcamento in 'units\uImportaOrcamento.pas',
+  uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento},
   uGeraCNAB240 in 'units\uGeraCNAB240.pas',
   uGeraCNAB400 in 'units\uGeraCNAB400.pas';
 

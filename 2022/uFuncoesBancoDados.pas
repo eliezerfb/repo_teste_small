@@ -68,6 +68,7 @@ function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
   iQtd: Integer = 1): String;
 function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
 function FloatToBD(valor:Double):string;
+function DateToBD(data:TDateTime):string;
 
 implementation
 
@@ -370,6 +371,11 @@ end;
 function FloatToBD(valor:Double):string;
 begin
   Result := StringReplace(FloatToStr(valor),',','.',[rfReplaceAll]);
+end;
+
+function DateToBD(data:TDateTime):string;
+begin
+  Result := FormatDateTime('YYYY-MM-DD',data);
 end;
 
 end.

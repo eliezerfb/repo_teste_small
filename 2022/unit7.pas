@@ -2284,7 +2284,7 @@ type
     procedure LimparColunasItemCompra;
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TIBStringField; Valida : Boolean = True);
-    function RetornarSQLEstoqueOrcamentos: String;
+    //function RetornarSQLEstoqueOrcamentos: String; Mauricio Parizotto 2023-10-16 movido para funcoes retaguarda
     procedure EnviarEmailCCe(AcXML: String);
     function getEnviarDanfePorEmail: String;
     function getZiparXML: String;
@@ -2493,7 +2493,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioResumoVendas
   , uDuplicaOrcamento
   , uDuplicaProduto
-  ;
+  , uImportaOrcamento;
 
 {$R *.DFM}
 
@@ -11205,7 +11205,8 @@ begin
 
         Form7.ibDataSet97.Close;
         Form7.ibDataSet97.Selectsql.Clear;
-        Form7.ibDataSet97.Selectsql.Add(RetornarSQLEstoqueOrcamentos);
+        //Form7.ibDataSet97.Selectsql.Add(RetornarSQLEstoqueOrcamentos); Mauricio Parizotto 2023-10-16
+        Form7.ibDataSet97.Selectsql.Add(SqlEstoqueOrcamentos);
         Form7.ibDataSet97.Selectsql.Add('order by ORCAMENTS.PEDIDO');
         Form7.ibDataSet97.Open;
         Form7.ibDataSet97.EnableControls;
@@ -11235,7 +11236,8 @@ begin
         DataSourceAtual        := DataSource97;
 
         // Sql
-        sSelect   := RetornarSQLEstoqueOrcamentos;
+        //sSelect   := RetornarSQLEstoqueOrcamentos; Mauricio Parizotto 2023-10-16
+        sSelect   := SqlEstoqueOrcamentos;
         // Devido a mudança na forma de montar os filtros do orçamento é necessario limpar caso esteja no padrão antigo 
         if (Mais1Ini.ReadString(sModulo,'FILTRO','') <> EmptyStr) and (Pos('ORCAMENTS', Mais1Ini.ReadString(sModulo,'FILTRO','')) <= 0) then
           Mais1Ini.WriteString(sModulo, 'FILTRO', EmptyStr);
@@ -12365,6 +12367,7 @@ begin
   pnlFiltro.Top := dbGrid1.Top + dbGrid1.Height -1;
 end;
 
+(*
 function TForm7.RetornarSQLEstoqueOrcamentos: String;
 //var
 //  slSQL: TStringList;
@@ -12477,6 +12480,8 @@ begin
     //FreeAndNil(slSQL);
   end;
 end;
+
+Mauricio Parizotto 2023-10-16 movido para ufuncoesRetaguarda*)
 
 procedure TForm7.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -14334,7 +14339,7 @@ begin
               if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
                 DBGrid1.Canvas.Font.Color := clBlack
               else
-                DBGrid1.Canvas.Font.Color  := $00EAB231;
+                DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
             except
             end;
           end;
@@ -14353,12 +14358,12 @@ begin
               DBGrid1.Canvas.Font.Color := clBlue;
 
             if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0 then
-              DBGrid1.Canvas.Font.Color  := $00EAB231;
+              DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
 
             if Form7.sRPS = 'S' then
             begin
               if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) <> 0 then
-                DBGrid1.Canvas.Font.Color  := $00EAB231;
+                DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
             end;
 
             if Form7.ibDataSet15EMITIDA.AsString = 'X' then
@@ -14449,7 +14454,7 @@ begin
 
       if Pos('<tpEvento>210200',Form7.ibDataSet24MDESTINXML.AsString)<>0 then
       begin
-        DBGrid1.Canvas.Font.Color   := $00EAB231;
+        DBGrid1.Canvas.Font.Color   := _COR_AZUL;//$00EAB231;
         dbGrid1.Canvas.StretchDraw(yRect,Form7.Positivo.Picture.Graphic);  // Positivo
         dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'Operação confirmada');
       end else
@@ -23953,7 +23958,8 @@ begin
 
   Form7.ibDataSet97.Close;
   Form7.ibDataSet97.Selectsql.Clear;
-  Form7.ibDataSet97.Selectsql.Add('select PEDIDO as "Orçamento", DATA as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum(TOTAL) as "Total", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO');  //
+  //Form7.ibDataSet97.Selectsql.Add('select PEDIDO as "Orçamento", DATA as "Data", CLIFOR as "Cliente", VENDEDOR as "Vendedor", sum(TOTAL) as "Total", NUMERONF as "Doc. Fiscal", PEDIDO as "Registro" from ORCAMENT group by PEDIDO, DATA, CLIFOR, VENDEDOR, NUMERONF order by PEDIDO');  // Mauricio Parizotto 2023-10-16
+  Form7.ibDataSet97.Selectsql.Add(SqlEstoqueOrcamentos);
   Form7.ibDataSet97.Open;
   Form7.ibDataSet97.EnableControls;
 
@@ -26390,16 +26396,40 @@ begin
   begin
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
+      {Mauricio Parizotto 2023-10-16 Inicio
       //Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString; Mauricio Parizotto 2023-08-23
       Form41.vOrcamentImportar := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
       Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
+
     end;
+    }
+      if Application.MessageBox(Pchar('Confirma a importação do orçamento '+ibDataSet97.FieldByname('Orçamento').AsString+' para a Nota Fiscal?'
+                                                  + chr(10)
+                                                  + Chr(10))
+                                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
+      begin
+        Form7.Close;
+        Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
+        Form7.Image101Click(Sender);                        // Nova Nota
+        Form7.sModulo := 'ORCAMENTO';
+        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        Form7.sModulo := 'VENDA';
+
+        Form7.ibDataSet16.First;
+        Retributa(True);
+      end;
+    end else
+    begin
+      MensagemSistema('Este orçamento já possui documento fiscal vinculado.',msgAtencao);
+    end;
+
+    {Mauricio Parizotto 2023-10-16 Fim}
   end else
   begin
-    ShowMessage('Emissão de NF não liberada para este usuário.');
+    MensagemSistema('Emissão de NF não liberada para este usuário.',msgAtencao);
   end;
 end;
 
@@ -26410,6 +26440,7 @@ begin
   begin
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
+       {Mauricio Parizotto 2023-10-16 Inicio
       //Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString; Mauricio Parizotto 2023-08-23
       Form41.vOrcamentImportar := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
@@ -26417,9 +26448,32 @@ begin
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
     end;
+    }
+
+      if Application.MessageBox(Pchar('Confirma a importação do orçamento '+ibDataSet97.FieldByname('Orçamento').AsString+' para a Nota Fiscal?'
+                                                  + chr(10)
+                                                  + Chr(10))
+                                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
+      begin
+        Form7.Close;
+        Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
+        Form7.Image101Click(Sender);                        // Nova Nota
+        Form7.sModulo := 'ORCAMENTO';
+        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        Form7.sModulo := 'VENDA';
+
+        Form7.ibDataSet16.First;
+        Retributa(True);
+      end;
+    end else
+    begin
+      MensagemSistema('Este orçamento já possui documento fiscal vinculado.',msgAtencao);
+    end;
+
+    {Mauricio Parizotto 2023-10-16 Fim}
   end else
   begin
-    ShowMessage('Emissão de NF não liberada para este usuário.');
+    MensagemSistema('Emissão de NF não liberada para este usuário.',msgAtencao);
   end;
 end;
 
@@ -32285,6 +32339,7 @@ begin
   begin
     if Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString = '' then
     begin
+      {Mauricio Parizotto 2023-10-16 Inicio
       //Form41.MaskEdit1.Text := Form7.ibDataSet97.FieldByname('Orçamento').AsString; Mauricio Parizotto 2023-08-23
       Form41.vOrcamentImportar := Form7.ibDataSet97.FieldByname('Orçamento').AsString;
       Form7.Close;
@@ -32292,6 +32347,30 @@ begin
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.Importaroramentos1Click(Sender);             // Importa OS
     end;
+    }
+
+      if Application.MessageBox(Pchar('Confirma a importação do orçamento '+ibDataSet97.FieldByname('Orçamento').AsString+' para a Nota Fiscal?'
+                                                  + chr(10)
+                                                  + Chr(10))
+                                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
+      begin
+        Form7.Close;
+        Form1.imgServicosClick(Sender);                     // Nota Fiscal de Servico
+        Form7.Image101Click(Sender);                        // Nova Nota
+        Form7.sModulo := 'ORCAMENTO';
+        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        Form7.sModulo := 'VENDA';
+
+        Form7.ibDataSet16.First;
+        Retributa(True);
+      end;
+    end else
+    begin
+      MensagemSistema('Este orçamento já possui documento fiscal vinculado.',msgAtencao);
+    end;
+
+    {Mauricio Parizotto 2023-10-16 Fim}
+
   end else
   begin
     ShowMessage('Emissão de NFS-e não liberada para este usuário.');
