@@ -13409,7 +13409,7 @@ begin
     begin
       if ( Date - ibDataSet7VENCIMENTO.AsDateTime ) > 0 then
       begin
-        if Form19.RadioButton1.Checked then
+        if Form19.rbJurosSimples.Checked then
         begin
           if ibDataSet7VALOR_JURO.AsFloat <> ibDataSet7VALOR_DUPL.AsFloat * (((( Date - ibDataSet7VENCIMENTO.AsDateTime )) * Form1.ftaxa / 100) + 1) then
           begin
