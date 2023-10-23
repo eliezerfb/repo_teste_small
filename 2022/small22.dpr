@@ -162,6 +162,7 @@ uses
   uConectaBancoSmall in '..\..\unit_compartilhada\uConectaBancoSmall.pas',
   uTextoEmailOrcamento in 'units\uTextoEmailOrcamento.pas',
   uConverteHtmlToPDF in '..\..\unit_compartilhada\uConverteHtmlToPDF.pas',
+  uSectionsInformacoesObtidasNaPrefeitura in '..\..\unit_compartilhada\uSectionsInformacoesObtidasNaPrefeitura.pas',
   uSalvaXMLContabilFactory in 'units\uSalvaXMLContabilFactory.pas',
   uSalvaXMLContabilNFeSaida in 'units\uSalvaXMLContabilNFeSaida.pas',
   uSalvaXMLContabilNFeEntrada in 'units\uSalvaXMLContabilNFeEntrada.pas',

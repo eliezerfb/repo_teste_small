@@ -19971,7 +19971,7 @@ begin
   if AllTrim(Form7.ibDataSet16QUANTIDADE.AsString) <> '' then
   begin
     DefineQuantidadeSaldoDisponivelNota;
-    
+
     if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
     begin
       fDesconto := 0;
