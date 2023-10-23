@@ -12531,7 +12531,7 @@ object Form7: TForm7
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
       '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO,'
-      '   AUTORIZACAOTRANSACAO, BANDEIRA)'
+      '   AUTORIZACAOTRANSACAO, BANDEIRA,VALOR_MULTA,PERCENTUAL_MULTA)'
       'values'
       
         '  (:HISTORICO, :PORTADOR, :DOCUMENTO, :NOME, :EMISSAO, :VENCIMEN' +
@@ -12540,7 +12540,9 @@ object Form7: TForm7
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
       '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO,'
-      '   :AUTORIZACAOTRANSACAO, :BANDEIRA)')
+      
+        '   :AUTORIZACAOTRANSACAO, :BANDEIRA,:VALOR_MULTA,:PERCENTUAL_MUL' +
+        'TA)')
     RefreshSQL.Strings = (
       'Select '
       '  HISTORICO,'
@@ -12564,7 +12566,9 @@ object Form7: TForm7
       '  MOVIMENTO,'
       '  FORMADEPAGAMENTO,'
       '  AUTORIZACAOTRANSACAO,'
-      '  BANDEIRA'
+      '  BANDEIRA,'
+      '  VALOR_MULTA,'
+      '  PERCENTUAL_MULTA'
       'from RECEBER '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -12594,7 +12598,9 @@ object Form7: TForm7
       '  MOVIMENTO = :MOVIMENTO,'
       '  FORMADEPAGAMENTO = :FORMADEPAGAMENTO,'
       '  AUTORIZACAOTRANSACAO = :AUTORIZACAOTRANSACAO,'
-      '  BANDEIRA = :BANDEIRA'
+      '  BANDEIRA = :BANDEIRA,'
+      '  VALOR_MULTA = :VALOR_MULTA,'
+      '  PERCENTUAL_MULTA = :PERCENTUAL_MULTA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -12762,6 +12768,20 @@ object Form7: TForm7
       Origin = 'RECEBER.NN'
       Visible = False
       Size = 10
+    end
+    object ibDataSet7VALOR_MULTA: TIBBCDField
+      FieldName = 'VALOR_MULTA'
+      Origin = 'RECEBER.VALOR_MULTA'
+      Visible = False
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet7PERCENTUAL_MULTA: TIBBCDField
+      FieldName = 'PERCENTUAL_MULTA'
+      Origin = 'RECEBER.PERCENTUAL_MULTA'
+      Visible = False
+      Precision = 18
+      Size = 2
     end
   end
   object DataSource7: TDataSource
@@ -20040,6 +20060,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'

@@ -183,7 +183,9 @@ uses
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas';
+  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uGeraCNAB240 in 'units\uGeraCNAB240.pas',
+  uGeraCNAB400 in 'units\uGeraCNAB400.pas';
 
 {$R *.RES}
 

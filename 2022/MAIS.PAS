@@ -547,7 +547,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uSmallConsts
   , uConectaBancoCommerce
   , uTypesRecursos
-  , uArquivosDAT, uIconesSistema;
+  , uArquivosDAT, uIconesSistema, uGeraCNAB240, uGeraCNAB400;
 
 {$R *.DFM}
 
@@ -3755,7 +3755,8 @@ begin
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
 
-  Form25.btnCNAB400.Click; // Sandro Silva 2022-12-23 Form25.Button9.Click;
+  //Form25.btnCNAB400.Click; Mauricio Parizotto 2023-10-03 uGeraCNAB400 // Sandro Silva 2022-12-23 Form25.Button9.Click;
+  GeraCNAB400;
   Form25.Close;
 
   if Form1.sArquivoRemessa <> '' then
@@ -3778,7 +3779,8 @@ begin
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
   
-  Form25.btnCNAB240.Click; // Sandro Silva 2022-12-23 Form25.Button10.Click;
+  //Form25.btnCNAB240.Click; Mauricio Parizotto 2023-10-03 // Sandro Silva 2022-12-23 Form25.Button10.Click;
+  GeraCNAB240;
   Form25.Close;
 
   if Form1.sArquivoRemessa <> '' then
