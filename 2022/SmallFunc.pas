@@ -106,6 +106,10 @@ uses
   function CaracteresHTML(pP1:String):String;
   function Endereco_Sem_Numero(sP1:String): String;
   function Numero_Sem_Endereco(sP1:String): String;
+  {Sandro Silva 2023-10-16 inicio}
+  function ExtraiEnderecoSemONumero(Texto: String): String;
+  function ExtraiNumeroSemOEndereco(Texto: String): String;  
+  {Sandro Silva 2023-10-16 fim}
   function FusoHorarioPadrao(UF: String): String;
   function DefineFusoHorario(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; sFuso: String; bHorarioVerao: Boolean): String;
   function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; bHabilita: Boolean): String;
@@ -2556,6 +2560,49 @@ begin
   else
     Result :=  sP1;
 end;
+
+{Sandro Silva 2023-10-16 inicio}
+function ExtraiEnderecoSemONumero(Texto: String): String;
+var
+ iPosicaoNumero: Integer;
+ i: Integer;
+begin
+  // Método criado para geração do XML da NF-e
+  // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
+  iPosicaoNumero := 0;
+  for i := Length(Texto) DownTo 0 do
+  begin
+    if Copy(Texto, i, 1) = ',' then
+    begin
+      iPosicaoNumero := i;
+      Break
+    end;
+  end;
+
+  if iPosicaoNumero = 0 then
+  begin
+    for i := Length(Texto) DownTo 0 do
+    begin
+      if Copy(Texto, i, 1) = ' ' then
+      begin
+        iPosicaoNumero := i;
+        Break
+      end;
+    end;
+  end;
+
+  Result := Copy(Texto, 1, iPosicaoNumero - 1);
+  //if Trim(StringReplace(Texto, Result, ''), [rfReplaceAll]) = '' then
+end;
+
+function ExtraiNumeroSemOEndereco(Texto: String): String;
+begin
+  // Método criado para geração do XML da NF-e
+  // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
+  Result := StringReplace(Texto, ExtraiEnderecoSemONumero(Texto), '', [rfReplaceAll]);
+  Result := Trim(StringReplace(Result, ', ' , '', [rfReplaceAll]));
+end;
+{Sandro Silva 2023-10-16 fim}
 
 function ValidaEmail(AcEmail: String): Boolean;
 begin

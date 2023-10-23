@@ -468,8 +468,8 @@ begin
   Form7.spdNFeDataSets.Campo('xNome_C03').Value   := ConverteAcentosNome(Form7.ibDataSet13.FieldByname('NOME').AsString); // Razao Social ou Nome do Emitente
   Form7.spdNFeDataSets.Campo('xFant_C04').Value   := ConverteAcentosNome(Form7.ibDataSet13.FieldByname('NOME').AsString); ; // Nome Fantasia do Emitente
 
-  Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
-  Form7.spdNFeDataSets.Campo('nro_C07').Value     := Numero_Sem_Endereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente
+  Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
+  Form7.spdNFeDataSets.Campo('nro_C07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_C07').Value     := Numero_Sem_Endereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente
 
   Form7.spdNFeDataSets.Campo('xBairro_C09').Value := ConverteAcentos2(Form7.ibDataSet13.FieldByname('COMPLE').AsString); // Bairro do Emitente
 
@@ -557,8 +557,8 @@ begin
       Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentosNome(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
     end;
 
-    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
-    Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDataset2.FieldByname('ENDERE').AsString)); // Logradouro do destinatario // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('nro_E07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
 
     Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
     Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
@@ -662,8 +662,8 @@ begin
   begin
     // Consumidor estrangeiro
     try
-      Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
-      Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
+      Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+      Form7.spdNFeDataSets.Campo('nro_E07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
 
       Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
       Form7.spdNFeDataSets.Campo('cMun_E10').Value    := '9999999';   // Código do Município do Destinatário (Tabela IBGE)
