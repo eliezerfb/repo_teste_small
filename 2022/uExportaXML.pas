@@ -36,7 +36,11 @@ type
     function TestarTemTabelaNFCe: Boolean;
     function TestarArquivoMaior10Mega(AcArquivo: String): Boolean;
     function TamanhoArquivo(AcArquivo: string): Integer;
-    procedure LimparPastaContabil;
+    procedure LimpaArquivosXML;
+    {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+    // Solicitado para manter os arquivos ZIP para envio manual posterior.
+    //procedure LimparPastaContabil;
+    {Dailon Parisotto 2023-10-17 (f-7487) Fim}
   public
     procedure SetImagem(AoImagem: TPicture);
     procedure AbrirTelaTodosDocs;
@@ -64,7 +68,24 @@ begin
   end;
 end;
 
-procedure TfrmExportaXML.LimparPastaContabil;
+procedure TfrmExportaXML.LimpaArquivosXML;
+var
+  AnEncontrou: Integer;
+  oSearchRec : tSearchREC;
+begin
+  FindFirst(ExtractFilePath(Application.ExeName) + 'CONTABIL\*.xml', faAnyFile, oSearchRec);
+  AnEncontrou := 0;
+  while AnEncontrou = 0 do
+  begin
+    DeleteFile(pChar(ExtractFilePath(Application.ExeName) + 'CONTABIL\' + oSearchRec.Name));
+    AnEncontrou := FindNext(oSearchRec);
+  end;
+  Sleep(100);   
+end;
+
+{Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+// Solicitado para manter os arquivos ZIP para envio manual posterior.
+{procedure TfrmExportaXML.LimparPastaContabil;
 var
   i: integer;
   oSearch: TSearchRec;
@@ -79,7 +100,8 @@ begin
     DeleteFile(ExtractFilePath(Application.ExeName) + 'CONTABIL\' + oSearch.Name);
     I := FindNext(oSearch);
   end;
-end;
+end;      }
+{Dailon Parisotto 2023-10-17 (f-7487) Fim}
 
 function TfrmExportaXML.EnviarXml: Boolean;
 var
@@ -93,7 +115,12 @@ begin
     if not FazValidacoes then
       Exit;
 
-    LimparPastaContabil;
+    {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+    // Solicitado para manter os arquivos ZIP para envio manual posterior.
+    //LimparPastaContabil;
+    // Limpa os arquivos XML para garantir não ficar sujeira.
+    LimpaArquivosXML;
+    {Dailon Parisotto 2023-10-17 (f-7487) Fim}
     
     try
       if cbNFeSaida.Checked then
@@ -197,7 +224,10 @@ begin
                                      'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
 
     finally
-      LimparPastaContabil;
+      {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+      // Solicitado para manter os arquivos ZIP para envio manual posterior.
+      //  LimparPastaContabil;
+      {Dailon Parisotto 2023-10-17 (f-7487) Fim}
     end;
   except
     on e:Exception do
