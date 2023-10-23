@@ -1416,7 +1416,7 @@ begin
   if NumeroOS <> '' then
   begin
     Form7.sModulo := 'OS';
-    ImportaOS(NumeroOS,Form7.sModulo);
+    ImportaOS(NumeroOS);
     Form7.sModulo := 'VENDA';
 
     Form7.ibDataSet16.First;

@@ -2321,11 +2321,11 @@ object Form12: TForm12
       OnClick = ImportarOS2Click
     end
     object Emitirnotafiscaldevendasnobalco1: TMenuItem
-      Caption = 'Importar cupom....'
+      Caption = 'Importar Cupom....'
       OnClick = Emitirnotafiscaldevendasnobalco1Click
     end
     object Importaroramentos1: TMenuItem
-      Caption = 'Importar or'#231'amento...'
+      Caption = 'Importar Or'#231'amento...'
       OnClick = Importaroramentos1Click
     end
     object N1: TMenuItem

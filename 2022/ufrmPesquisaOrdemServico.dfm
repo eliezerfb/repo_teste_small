@@ -4,6 +4,9 @@ inherited FrmPesquisaOrdemServico: TFrmPesquisaOrdemServico
   Caption = 'Ordem Servi'#231'o'
   PixelsPerInch = 96
   TextHeight = 16
+  inherited lblTitulo2: TLabel
+    Caption = 'N'#250'mero da OS, nome do cliente ou t'#233'cnico:'
+  end
   inherited dbGridPrincipal: TDBGrid
     OnDrawColumnCell = dbGridPrincipalDrawColumnCell
     Columns = <

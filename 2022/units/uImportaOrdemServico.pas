@@ -15,7 +15,7 @@ uses
   , IBQuery
   ;
 
-  procedure ImportaOS(NumeroOS:string; sTipo : String);
+  procedure ImportaOS(NumeroOS:string);
 
 implementation
 
@@ -25,7 +25,7 @@ uses Unit7
     , Mais
     ;
 
-procedure ImportaOS(NumeroOS:string; sTipo : String);
+procedure ImportaOS(NumeroOS:string);
 var
   iB : Integer;
 begin

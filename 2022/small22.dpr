@@ -188,7 +188,7 @@ uses
   uImportaOrcamento in 'units\uImportaOrcamento.pas',
   uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento},
   uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
-  ufrmPesquisaOrdemServico in 'ufrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico};
+  uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico};
 
 {$R *.RES}
 
