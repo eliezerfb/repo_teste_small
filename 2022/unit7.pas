@@ -1603,6 +1603,7 @@ type
     N69: TMenuItem;
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
+    ImprimirOrcamento: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2263,6 +2264,7 @@ type
     procedure Configurarobservaofixa1Click(Sender: TObject);
     procedure DuplicarProdutoClick(Sender: TObject);
     procedure DuplicaOrcamentoClick(Sender: TObject);
+    procedure ImprimirOrcamentoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2304,6 +2306,7 @@ type
     procedure VerificaAlteracaoPerfil;
     procedure ChamarTelaXMLContab;
     function MensagemPortalConsultaCNPJCPF: Integer;
+    procedure ImprimeOrcamento;
   public
     // Public declarations
 
@@ -13490,6 +13493,7 @@ begin
   DuplicatestaNFe1.Visible                         := False;
   DuplicarProduto.Visible                          := False;  
   DuplicaOrcamento.Visible                         := False;
+  ImprimirOrcamento.Visible                        := False;
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13584,6 +13588,8 @@ begin
 
       EnviarOrcamentoPorEmail1.Visible := True;
       DuplicaOrcamento.Visible         := True;
+      ImprimirOrcamento.Visible        := True;
+
       cEmails := TRetornaCaptionEmailPopUpDocs.New
                                               .SetDataBase(IBDatabase1)
                                               .setCodigoClifor(Form7.ibDataSet97.FieldByname('Cliente').AsString)
@@ -17894,16 +17900,21 @@ begin
   //
   if (Form7.sModulo = 'ORCAMENTO') then
   begin
-    if FileExists(Form1.sAtual+'\ORCAMENTOS\'+'Orçamento '+Form7.ibDataSet97.FieldByname('Orçamento').AsString+'.htm') then
+    {Dailon Parisotto 2023-10-13 Inicio
+    if FileExists(Form1.sAtual+'\ORCAMENTOS\'+'Or?amento '+Form7.ibDataSet97.FieldByname('Or?amento').AsString+'.htm') then
     begin
-      ShellExecute( 0,'Open',pChar(Form1.sAtual+'\ORCAMENTOS\'+'Orçamento '+  Form7.ibDataSet97.FieldByname('Orçamento').AsString  +'.htm'),'','', SW_SHOW);
+      ShellExecute( 0,'Open',pChar(Form1.sAtual+'\ORCAMENTOS\'+'Or?amento '+  Form7.ibDataSet97.FieldByname('Or?amento').AsString  +'.htm'),'','', SW_SHOW);
     end else
     begin
-      if FileExists(Form1.sAtual+'\Orçamento '+Form7.ibDataSet97.FieldByname('Orçamento').AsString+'.htm') then
+      if FileExists(Form1.sAtual+'\Or?amento '+Form7.ibDataSet97.FieldByname('Or?amento').AsString+'.htm') then
       begin
-        ShellExecute( 0,'Open',pChar('Orçamento '+  Form7.ibDataSet97.FieldByname('Orçamento').AsString  +'.htm'),'','', SW_SHOW);
+        ShellExecute( 0,'Open',pChar('Or?amento '+  Form7.ibDataSet97.FieldByname('Or?amento').AsString  +'.htm'),'','', SW_SHOW);
       end;
     end;
+    }
+
+    ImprimeOrcamento;
+    {Dailon Parisotto 2023-10-13 Fim}
     Abort;
   end;
   //
@@ -17911,6 +17922,19 @@ begin
   Form10.Image203Click(Sender);
   //
 end;
+
+{Dailon Parisotto 2023-10-13 Inicio}
+procedure TForm7.ImprimeOrcamento;
+begin
+  if IBDataSet97.IsEmpty then
+    Exit;
+
+  TImpressaoOrcamento.New
+                     .SetTransaction(IBTransaction1)
+                     .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
+                     .Imprimir;
+end;
+{Dailon Parisotto 2023-10-13 Fim}
 
 procedure TForm7.ibDataSet9NewRecord(DataSet: TDataSet);
 begin
@@ -34317,5 +34341,12 @@ begin
     Self.Show;
   end;
 end;
+
+{Dailon Parisotto 2023-10-13 Inicio}
+procedure TForm7.ImprimirOrcamentoClick(Sender: TObject);
+begin
+  ImprimeOrcamento;
+end;
+{Dailon Parisotto 2023-10-13 Fim}
 
 end.
