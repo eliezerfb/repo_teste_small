@@ -67,6 +67,12 @@ begin
   
   if not TestarTemArquivosXML then
     Exit;
+
+  if FileExists(RetornarCaminho + RetornarNomeZip) then
+  begin
+    DeleteFile(RetornarCaminho + RetornarNomeZip);
+    Sleep(200);
+  end;
     
   try
     ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(RetornarCaminho + '*.xml')+'" "'+Alltrim(RetornarCaminho + RetornarNomeZip)+'"'), '', SW_SHOWMAXIMIZED);

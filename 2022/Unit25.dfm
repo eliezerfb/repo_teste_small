@@ -3,7 +3,7 @@ object Form25: TForm25
   Top = 215
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Bloqueto de cobran'#231'a banc'#225'ria'
+  Caption = 'Boleto de cobran'#231'a banc'#225'ria'
   ClientHeight = 536
   ClientWidth = 709
   Color = clWhite
@@ -917,32 +917,6 @@ object Form25: TForm25
       OnClick = btnEnviaEmailTodosClick
     end
   end
-  object btnCNAB240: TBitBtn
-    Left = 30
-    Top = 25
-    Width = 80
-    Height = 25
-    Caption = 'CNAB 240'
-    TabOrder = 8
-    Visible = False
-    OnClick = btnCNAB240Click
-  end
-  object btnCNAB400: TBitBtn
-    Left = 118
-    Top = 25
-    Width = 80
-    Height = 23
-    Caption = 'CNAB 400'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 9
-    Visible = False
-    OnClick = btnCNAB400Click
-  end
   object btnCriaImagemBoleto: TBitBtn
     Left = 363
     Top = 25
@@ -955,7 +929,7 @@ object Form25: TForm25
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 8
     Visible = False
     OnClick = btnCriaImagemBoletoClick
   end
@@ -965,7 +939,7 @@ object Form25: TForm25
     Width = 217
     Height = 17
     Caption = 'Data atualizada com juros de mora'
-    TabOrder = 11
+    TabOrder = 9
     OnClick = chkDataAtualizadaJurosMoraClick
   end
   object PrinterSetupDialog1: TPrinterSetupDialog

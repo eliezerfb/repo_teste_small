@@ -37,13 +37,13 @@ type
       Shift: TShiftState);
   private
     procedure ImportaCupom;
-    procedure ImportaOrcamento;
+    //procedure ImportaOrcamento;
     procedure ImportaOS;
-    function BuscarOBSOrcamento(AcPedido: String): String;
-    function RetornarOBSOrcamento(AcPedido: String): String;
+    //function BuscarOBSOrcamento(AcPedido: String): String;
+    //function RetornarOBSOrcamento(AcPedido: String): String;
     { Private declarations }
   public
-    vOrcamentImportar : string;
+    //vOrcamentImportar : string;
     { Public declarations }
   end;
 
@@ -54,7 +54,7 @@ var
 implementation
 
 uses Unit7, Mais, Unit12, Unit34, Unit13, Unit33, uFuncoesBancoDados,
-  uTransmiteNFSe;
+  uTransmiteNFSe, uImportaOrcamento;
 
 {$R *.DFM}
 
@@ -97,6 +97,7 @@ begin
 
   Result := True;
 end;
+
 
 procedure TForm41.FormActivate(Sender: TObject);
 begin
@@ -141,6 +142,7 @@ begin
       MaskEdit1.SelectAll;
     end;
 
+    (*
     if Form7.sModulo = 'ORCAMENTO' then
     begin
       {Mauricio Parizotto 2023-08-23 Inicio}
@@ -175,6 +177,7 @@ begin
       MaskEdit1.SetFocus;
       MaskEdit1.SelectAll;
     end;
+    Mauricio Parizotto 2023-10-16 migrado para nova tela*)
   end;
 end;
 
@@ -211,7 +214,9 @@ begin
   // Importar orçamento específico
   if Form7.sModulo = 'ORCAMENTO' then
   begin
-    ImportaOrcamento;
+    //Maurcio Parizotto 2023-10-16 movido para uImportaOrcamento}
+    //ImportaOrcamento;
+    ImportaOrcamento(MaskEdit1.Text,sTipo);
   end;
 
   // Cupom Fiscal
@@ -453,6 +458,7 @@ begin
 
 end;
 
+(*
 function TForm41.BuscarOBSOrcamento(AcPedido: String): String;
 var
   qryOBS: TIBQuery;
@@ -475,19 +481,24 @@ begin
     FreeAndNil(qryOBS);
   end;
 end;
+Maurcio Parizotto 2023-10-16 movido para uImportaOrcamento*)
 
+(*
 function TForm41.RetornarOBSOrcamento(AcPedido: String): String;
 var
   cOBSOrcament: string;
 begin
-  // Não informar observação do ICM, pois ira dar problema na tela de Nota ao trocar a Natureza da Operação 
+  // Não informar observação do ICM, pois ira dar problema na tela de Nota ao trocar a Natureza da Operação
   Result := 'NF REFERENTE AO ORÇAMENTO: ' + AcPedido + '.';
   cOBSOrcament := BuscarOBSOrcamento(AcPedido);
 
   if cOBSOrcament <> EmptyStr then
     Result := Result + sLineBreak + cOBSOrcament;
 end;
+Maurcio Parizotto 2023-10-16 movido para uImportaOrcamento*)
 
+
+(*
 procedure TForm41.ImportaOrcamento;
 var
   iDupl, I, iB : Integer;
@@ -799,6 +810,8 @@ begin
     ShowMessage('Orçamento já importado ou inexistente.');
   end;
 end;
+
+Maurcio Parizotto 2023-10-16 movido para uImportaOrcamento*)
 
 
 procedure TForm41.ImportaCupom;

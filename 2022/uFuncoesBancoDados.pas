@@ -57,7 +57,8 @@ function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet; // Mauricio Parizotto 2023-09-12
 function ExecutaComando(comando: String): Boolean;  overload;
 function ExecutaComando(comando: String; IBTRANSACTION: TIBTransaction): Boolean; overload;
-function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
+function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant; overload;
+function ExecutaComandoEscalar(Transaction: TIBTransaction; vSQL : string): Variant; overload;// Mauricio Parizotto 2023-09-12
 function GeneratorExisteFB(Banco: TIBDatabase; sGenerator: String): Boolean;
 function TamanhoCampo(IBTransaction: TIBTransaction; Tabela: String;
   Campo: String): Integer;
@@ -67,6 +68,7 @@ function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
   iQtd: Integer = 1): String;
 function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
 function FloatToBD(valor:Double):string;
+function DateToBD(data:TDateTime):string;
 
 implementation
 
@@ -310,7 +312,7 @@ begin
 end;
 
 
-function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant;
+function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string): Variant; overload;
 var
   IBQUERY: TIBQuery;
   IBTRANSACTION: TIBTransaction;
@@ -326,6 +328,22 @@ begin
   finally
     FreeAndNil(IBQUERY);
     FreeAndNil(IBTRANSACTION);
+  end;
+end;
+
+function ExecutaComandoEscalar(Transaction: TIBTransaction; vSQL : string): Variant; overload;
+var
+  IBQUERY: TIBQuery;
+begin
+  IBQUERY := CriaIBQuery(Transaction);
+
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text := vSQL;
+    IBQUERY.Open;
+    Result := IBQUERY.Fields[0].AsVariant;
+  finally
+    FreeAndNil(IBQUERY);
   end;
 end;
 
@@ -353,6 +371,11 @@ end;
 function FloatToBD(valor:Double):string;
 begin
   Result := StringReplace(FloatToStr(valor),',','.',[rfReplaceAll]);
+end;
+
+function DateToBD(data:TDateTime):string;
+begin
+  Result := FormatDateTime('YYYY-MM-DD',data);
 end;
 
 end.

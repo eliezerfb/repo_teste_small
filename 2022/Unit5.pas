@@ -141,7 +141,7 @@ var
 implementation
 
 uses Mais, Unit7, Mais3, Unit12, Unit24
-  , uFuncoesRetaguarda;
+  , uFuncoesRetaguarda, uSmallConsts;
 
 {$R *.dfm}
 
@@ -375,7 +375,7 @@ begin
       if bChave then Form5.Image1.Canvas.TextOut(((iLarg*2)* DayOfWeek(dContador))-iLarg, (iAlt * 2),Copy(DiaDaSemana(dContador),1,3));  // Cabeçalho
       if (Date = dContador) then
       begin
-        Form5.Image1.Canvas.Brush.Color := $00EAB231;
+        Form5.Image1.Canvas.Brush.Color := _COR_AZUL;//$00EAB231;
         Form5.Image1.Canvas.Font.Color := ClWhite;
         Form5.Image1.Canvas.Font.Style := [fsBold];
       end else
@@ -430,7 +430,7 @@ begin
     Mais1Ini.WriteString('DADOS','Titulo','Registros no cadastro');
     Mais1Ini.WriteString('DADOS','SubTitulo','');
     Mais1Ini.WriteString('DADOS','NomeBmp','tempo.png');
-    Mais1Ini.WriteString('DADOS','CorS1','$00EAB231');
+    Mais1Ini.WriteString('DADOS','CorS1', '$00EAB231');
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont));
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
     //

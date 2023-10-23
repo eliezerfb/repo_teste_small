@@ -301,7 +301,8 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows;
+  Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
+  uFrmPesquisaOrcamento, uImportaOrcamento;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -1928,7 +1929,7 @@ begin
     Key := VK_SHIFT;
     dBgrid3.SetFocus;
   end;
-  //
+  
   if Key = VK_TAB    then
     Key := VK_RETURN;
   if Key = VK_ESCAPE then
@@ -2185,7 +2186,10 @@ begin
 end;
 
 procedure TForm12.Importaroramentos1Click(Sender: TObject);
+var
+  NumeroOrcamento : String;
 begin
+  (*
   Form7.sModulo := 'ORCAMENTO';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
@@ -2196,6 +2200,15 @@ begin
   Form7.ibDataSet16.Post;
   }
   Retributa(True);
+  Mauricio Parizotto 2023-10-16*)
+
+  NumeroOrcamento := PesquisaNumeroOrcamento('Importar orçamento...');
+  if NumeroOrcamento <> '' then
+  begin
+    Form7.sModulo := 'ORCAMENTO';
+    ImportaOrcamento(NumeroOrcamento,Form7.sModulo);
+    Form7.sModulo := 'VENDA';
+  end;
 end;
 
 procedure TForm12.Label28Click(Sender: TObject);
