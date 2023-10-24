@@ -37,6 +37,8 @@ uses
   , xmldom
   , XMLIntf
   , MsXml
+  , uConectaBancoSmall
+  , uconstantes_chaves_privadas
   ;
 
 
@@ -136,6 +138,8 @@ Function LimpaLetras(pP1:String):String;
 function IsNumericString(S:String):Boolean;
 {$ENDIF}
 function Extenso(pP1:double):String;
+function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
+function BuscaSerialSmall: String;
 // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 
 var
@@ -1484,11 +1488,111 @@ begin
   if Pos('um reais',AllTrim(Result)) = 1 then Result:=StrTran(Result,'um reais','um real');
   if Pos('um centavos',AllTrim(Result)) = 1 then Result:=StrTran(Result,'um centavos', 'um centavo');
 end;
-
-
-
 { Dailon Parisotto (f-7267) 2023-10-18 fim}
 
+{ Dailon Parisotto (f-7492) 2023-10-24 Inicio}
+function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
+var
+  qyAux: TIBQuery;
+  trAux: TIBTransaction;
+  Blowfish: TLbBlowfish;
+  sDataLimite: String; // Sandro Silva 2022-11-14
+begin
 
+  try
+    trAux := CriaIBTransaction(IBDATABASE);
+    qyAux := CriaIBQuery(trAux);
+
+    Blowfish := TLbBlowfish.Create(Application);
+
+    qyAux.Close;
+    qyAux.SQL.Clear;
+    qyAux.SQL.Add('select LICENCA from EMITENTE');
+    qyAux.Open;
+
+    Blowfish.GenerateKey(CHAVE_CIFRAR); // Minha chave secreta // Sandro Silva 2022-11-24 Blowfish.GenerateKey(CHAVE_SMALL); // Minha chave secreta
+
+    {Sandro Silva 2022-11-14 inicio
+    Result := Trunc(365 - (Date - StrToDate(Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4))));
+    }
+    sDataLimite := Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4);
+    if bValidacaoNova = False then
+    begin
+      // Calcula o número de dias restantes para usar o sistema
+      // 365 - (Data do PC - Data do registro)
+      Result := Trunc(365 - (Date - StrToDate(sDataLimite)));
+
+    end
+    else
+    begin
+      // Calcula o número de dias restantes para usar o sistema
+      // Data limite - data atual do PC
+      Result := Trunc((StrToDate(sDataLimite) - Date));
+
+    end;
+    {Sandro Silva 2022-11-14 fim}
+
+  except
+    on E: Exception do
+    begin
+      if AnsiContainsText(E.Message, 'Column unknown') and AnsiContainsText(E.Message, 'LICENCA') then
+      begin
+        Application.MessageBox(PChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
+          'Entre antes no programa "Small" para ajustar os arquivos.'), 'Atenção', MB_OK + MB_ICONWARNING);
+        FecharAplicacao(ExtractFileName(Application.ExeName));
+        //Abort;
+      end;
+      Result := 0;
+    end;
+  end;
+
+  FreeAndNil(trAux);
+  FreeAndNil(qyAux);
+  FreeAndNil(Blowfish);
+end;
+
+function BuscaSerialSmall: String;
+// Retorna o serial instalado
+var
+  INI : TInifile;
+  sP1 : String;
+  slSeriais: TStringList;
+  iVersao: Integer;
+  slSecaoSerial: TStrings;
+begin
+  sP1 := '';
+  try
+    try
+      //
+      if FileExists(SysWinDir+'\wind0ws.l0g') then
+      begin
+        Ini := TIniFile.create(SysWinDir+'\wind0ws.l0g');
+        slSeriais := TStringList.Create;
+
+        slSecaoSerial := TStringList.Create;
+
+        Ini.ReadSections(slSecaoSerial);
+
+        slSeriais.Clear;
+
+        for iVersao := 0 to slSecaoSerial.Count - 1 do
+        begin
+          slSeriais.Add(INI.ReadString(slSecaoSerial.Strings[iVersao], 'Ser', ''));
+        end;
+
+        slSeriais.Sorted := True;
+        if slSeriais.Count > 0 then
+          Result := slSeriais.Strings[slSeriais.Count - 1];//slSeriais.Strings[slSeriais.Count - 1];
+        FreeAndNil(slSeriais);
+
+        FreeAndNil(slSecaoSerial);
+        Ini.Free;
+      end;
+    except
+    end;
+  finally
+  end;
+end;
+{ Dailon Parisotto (f-7492) 2023-10-24 Fim}
 
 end.
