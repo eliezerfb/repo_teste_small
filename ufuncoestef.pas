@@ -293,34 +293,7 @@ var
     Form1.ibDataSet25.FieldByName('VALOR07').AsFloat := FormasExtras.Extra7;
     Form1.ibDataSet25.FieldByName('VALOR08').AsFloat := FormasExtras.Extra8;
   end;
-  (*
-  function TiraLinhasEmBranco(Texto: String): String;
-  var
-    iChar: Integer;
-    sCupomTefSemLinhasEmBranco: String;
-  begin
-    {
-    sCupomTefSemLinhasEmBranco := '';
-
-    Texto := StringReplace(Texto, Chr(10) + Chr(10), Chr(10), [rfReplaceAll]);
-    Texto := StringReplace(Texto, Chr(10) + '    ' + Chr(10), Chr(10), [rfReplaceAll]);
-
-    for iChar := 1 to Length(Texto) do
-    begin
-      if Copy(Texto, iChar, 1) = Chr(10) then
-      begin
-        if Copy(sCupomTefSemLinhasEmBranco, Length(sCupomTefSemLinhasEmBranco) - 1, 1) <> Chr(10) then
-          sCupomTefSemLinhasEmBranco := sCupomTefSemLinhasEmBranco + Copy(Texto, iChar, 1);
-      end
-      else
-        sCupomTefSemLinhasEmBranco := sCupomTefSemLinhasEmBranco + Copy(Texto, iChar, 1);
-    end;
-
-    Result := sCupomTefSemLinhasEmBranco;
-    }
-    Result := Texto;
-  end;
-  *)
+  {Sandro Silva 2023-10-24 inicio}
   function DesconsideraLinhasEmBranco(Texto: String): String;
   begin
     Result := Texto;
@@ -334,6 +307,7 @@ var
     else
       Result := StrTran(Result, '"', '') + Chr(10);
   end;
+  {Sandro Silva 2023-10-24 fim}
 begin
   //
   // Escolhe o TEF
@@ -833,35 +807,18 @@ begin
                     if Copy(Form1.sLinha,1,4) = '714-' then sCupom714 := sCupom714 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Estabelecimento
                     if Copy(Form1.sLinha,1,4) = '715-' then sCupom715 := sCupom715 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Estabelecimento
                     }
-                    //if SuprimirLinhasEmBrancoDoComprovanteTEF then
-                    //begin
-                      //if Trim(Copy(Form1.sLinha, 11, Length(Form1.sLinha) - 10)) <> '' then // tem informação na linha do comprovante
-                      //begin
-                        if Copy(Form1.sLinha,1,4) = '710-' then
-                          sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas cupom reduzido
-                        if Copy(Form1.sLinha,1,4) = '711-' then
-                          sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas cupom reduzido
-                        if Copy(Form1.sLinha,1,4) = '712-' then
-                          sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Cliente
-                        if Copy(Form1.sLinha,1,4) = '713-' then
-                          sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Cliente,
-                        if Copy(Form1.sLinha,1,4) = '714-' then
-                          sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
-                        if Copy(Form1.sLinha,1,4) = '715-' then
-                          sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Estabelecimento
-                      //end;
-                    {
-                    end
-                    else
-                    begin
-                      if Copy(Form1.sLinha,1,4) = '710-' then sCupom710 := sCupom710 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas cupom reduzido
-                      if Copy(Form1.sLinha,1,4) = '711-' then sCupom711 := sCupom711 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas cupom reduzido
-                      if Copy(Form1.sLinha,1,4) = '712-' then sCupom712 := sCupom712 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Cliente
-                      if Copy(Form1.sLinha,1,4) = '713-' then sCupom713 := sCupom713 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Cliente,
-                      if Copy(Form1.sLinha,1,4) = '714-' then sCupom714 := sCupom714 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Estabelecimento
-                      if Copy(Form1.sLinha,1,4) = '715-' then sCupom715 := sCupom715 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Estabelecimento
-                    end;
-                    }
+                    if Copy(Form1.sLinha,1,4) = '710-' then
+                      sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas cupom reduzido
+                    if Copy(Form1.sLinha,1,4) = '711-' then
+                      sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas cupom reduzido
+                    if Copy(Form1.sLinha,1,4) = '712-' then
+                      sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Cliente
+                    if Copy(Form1.sLinha,1,4) = '713-' then
+                      sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Cliente,
+                    if Copy(Form1.sLinha,1,4) = '714-' then
+                      sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
+                    if Copy(Form1.sLinha,1,4) = '715-' then
+                      sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Estabelecimento
                     {Sandro Silva 2023-10-24 fim}
                     //                               //
                     // Venda com pagamento no CARTAO //
@@ -870,11 +827,6 @@ begin
                   //
                   CloseFile(F);
                   //
-
-                  {Sandro Silva 2021-09-03 inicio}
-                  //Form1.sDebitoOuCredito := 'CREDITO';
-                  //ModalidadeTransacao := tModalidadeCartao;
-
                   if Pos('PIX', AnsiUpperCase(sRespostaTef)) > 0 then
                   begin
                     Form1.sDebitoOuCredito := 'CREDITO';
@@ -1147,13 +1099,6 @@ begin
   if Result = True then
   begin
     Form1.sCupomTEF := sCupomReduzidoAutorizado + Form1.sCupomTEFReduzido + sCupomAutorizado + Form1.sCupomTEF;
-
-    {Sandro Silva 2023-10-24 inicio
-    if SuprimirLinhasEmBrancoDoComprovanteTEF then
-    begin
-      Form1.sCupomTEF := TiraLinhasEmBranco(Form1.sCupomTEF);
-    end;
-    {Sandro Silva 2023-10-24 fim}
   end;
   // ---------------------------------------------- //
   // Transferência Eletrônica de Fundos (TEF)       //
