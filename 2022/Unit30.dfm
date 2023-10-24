@@ -1128,7 +1128,15 @@ object Form30: TForm30
         inherited gdRegistros: TDBGrid
           Top = 21
           Width = 420
+          Font.Height = -11
           OnDblClick = fFrameDescricaogdRegistrosDblClick
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'NOME'
+              Width = 400
+              Visible = True
+            end>
         end
       end
       inline fFrameIdentifi2: TfFrameCampo
@@ -1192,6 +1200,13 @@ object Form30: TForm30
           Top = 21
           Width = 165
           Font.Height = -11
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'NOME'
+              Width = 150
+              Visible = True
+            end>
         end
       end
       object DBGrid3: TDBGrid

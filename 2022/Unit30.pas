@@ -247,14 +247,19 @@ begin
   {Sandro Silva 2023-10-10 inicio}
   fFrameDescricao.gdRegistros.Color := COLOR_GRID_CINZA;
   fFrameDescricao.CampoVazioAbrirGridPesquisa := True;
+  fFrameDescricao.AutoSizeColunaNoGridDePesquisa := True;
   fFrameIdentifi1.gdRegistros.Color := COLOR_GRID_CINZA;
   fFrameIdentifi1.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi1.AutoSizeColunaNoGridDePesquisa := True;
   fFrameIdentifi2.gdRegistros.Color := COLOR_GRID_CINZA;
   fFrameIdentifi2.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi2.AutoSizeColunaNoGridDePesquisa := True;
   fFrameIdentifi3.gdRegistros.Color := COLOR_GRID_CINZA;
   fFrameIdentifi3.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi3.AutoSizeColunaNoGridDePesquisa := True;
   fFrameIdentifi4.gdRegistros.Color := COLOR_GRID_CINZA;
   fFrameIdentifi4.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi4.AutoSizeColunaNoGridDePesquisa := True;
   {Sandro Silva 2023-10-10 fim}
 end;
 

@@ -34,6 +34,7 @@ type
     FFiltro: String;
     FTabela: String;
     FCampoVazioAbrirGridPesquisa: Boolean;
+    FAutoSizeColunaNoGridDePesquisa: Boolean;
     procedure Pesquisar;
     function SelectPesquisa: String;
   public
@@ -45,6 +46,7 @@ type
     property sFiltro: String read FFiltro write FFiltro;
     property sTabela: String read FTabela write FTabela;
     property CampoVazioAbrirGridPesquisa: Boolean read FCampoVazioAbrirGridPesquisa write FCampoVazioAbrirGridPesquisa;
+    property AutoSizeColunaNoGridDePesquisa: Boolean read FAutoSizeColunaNoGridDePesquisa write FAutoSizeColunaNoGridDePesquisa;
     constructor Create(AOwner: TComponent); override;
     procedure CarregaDescricao;
 
@@ -62,7 +64,8 @@ begin
   FGravarSomenteTextoEncontrato := True;
 //  FTipoPesquisa := tpLocate;
   FTipoPesquisa := tpSelect;
-  FCampoVazioAbrirGridPesquisa := False;
+  FCampoVazioAbrirGridPesquisa    := False;
+  FAutoSizeColunaNoGridDePesquisa := False;
 end;
 
 procedure TfFrameCampo.Pesquisar;
@@ -260,6 +263,13 @@ begin
 
   if not (CampoCodigo.DataSet.State in ([dsEdit, dsInsert])) then
     CampoCodigo.DataSet.Edit;
+
+  {Sandro Silva 2023-10-23 inicio}
+  if FAutoSizeColunaNoGridDePesquisa then
+  begin
+    gdRegistros.Columns[0].Width := gdRegistros.Width - 20;
+  end;
+  {Sandro Silva 2023-10-23 fim}
 end; 
 
 function TfFrameCampo.SelectPesquisa: String;
