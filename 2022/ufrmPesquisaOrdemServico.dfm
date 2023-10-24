@@ -1,7 +1,7 @@
 inherited FrmPesquisaOrdemServico: TFrmPesquisaOrdemServico
   Left = 557
   Top = 358
-  Caption = 'Ordem Servi'#231'o'
+  Caption = 'Ordem de Servi'#231'o'
   PixelsPerInch = 96
   TextHeight = 16
   inherited lblTitulo2: TLabel
@@ -30,7 +30,7 @@ inherited FrmPesquisaOrdemServico: TFrmPesquisaOrdemServico
       item
         Expanded = False
         FieldName = 'TECNICO'
-        Width = 197
+        Width = 190
         Visible = True
       end
       item
@@ -42,7 +42,7 @@ inherited FrmPesquisaOrdemServico: TFrmPesquisaOrdemServico
       item
         Expanded = False
         FieldName = 'NF'
-        Width = 103
+        Width = 110
         Visible = True
       end>
   end

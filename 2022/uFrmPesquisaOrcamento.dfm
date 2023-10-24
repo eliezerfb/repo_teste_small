@@ -31,7 +31,7 @@ inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
       item
         Expanded = False
         FieldName = 'VENDEDOR'
-        Width = 197
+        Width = 190
         Visible = True
       end
       item
@@ -43,7 +43,7 @@ inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
       item
         Expanded = False
         FieldName = 'NUMERONF'
-        Width = 103
+        Width = 110
         Visible = True
       end>
   end
