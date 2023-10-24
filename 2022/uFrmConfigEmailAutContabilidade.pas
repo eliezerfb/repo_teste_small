@@ -4,19 +4,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, SmallFunc, Buttons;
+  Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, SmallFunc, Buttons, ExtCtrls;
 
 type
   TfrmConfigEmailAutContab = class(TFrmPadrao)
     edtEmailContab: TEdit;
     Label4: TLabel;
     cbAtivarEnvio: TCheckBox;
-    gbDocumentosEnviar: TGroupBox;
-    cbNFCeSAT: TCheckBox;
-    cbNFeEntrada: TCheckBox;
-    cbNFeSaida: TCheckBox;
     btnOk: TBitBtn;
     btnCancelar: TBitBtn;
+    Image1: TImage;
+    gbDocumentos: TGroupBox;
+    cbNFeSaida: TCheckBox;
+    cbNFeEntrada: TCheckBox;
+    cbNFCeSAT: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -29,6 +30,7 @@ type
     procedure EnviarXMLs;
     function FazVerificacoes: Boolean;
   public
+    procedure SetImagem(AoImagem: TPicture);
   end;
 
 var
@@ -156,6 +158,11 @@ end;
 procedure TfrmConfigEmailAutContab.btnCancelarClick(Sender: TObject);
 begin
   Self.Close;
+end;
+
+procedure TfrmConfigEmailAutContab.SetImagem(AoImagem: TPicture);
+begin
+  Image1.Picture := AoImagem;
 end;
 
 end.

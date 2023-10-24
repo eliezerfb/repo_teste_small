@@ -12530,6 +12530,7 @@ procedure TForm1.EnvioautomticodeXML1Click(Sender: TObject);
 begin
   frmConfigEmailAutContab := TfrmConfigEmailAutContab.Create(nil);
   try
+    frmConfigEmailAutContab.SetImagem(imgVendas.Picture);
     frmConfigEmailAutContab.ShowModal;
   finally
     FreeAndNil(frmConfigEmailAutContab);
