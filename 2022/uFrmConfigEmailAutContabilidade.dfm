@@ -63,6 +63,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    OnClick = cbAtivarEnvioClick
   end
   object btnOk: TBitBtn
     Left = 370

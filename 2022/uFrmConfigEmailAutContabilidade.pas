@@ -23,6 +23,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
+    procedure cbAtivarEnvioClick(Sender: TObject);
   private
     FoArqDat: TArquivosDAT;
     procedure CarregaINI;
@@ -67,6 +68,7 @@ procedure TfrmConfigEmailAutContab.FormActivate(Sender: TObject);
 begin
   inherited;
   CarregaINI;
+  cbAtivarEnvioClick(Self);  
 end;
 
 procedure TfrmConfigEmailAutContab.SalvarINI;
@@ -163,6 +165,21 @@ end;
 procedure TfrmConfigEmailAutContab.SetImagem(AoImagem: TPicture);
 begin
   Image1.Picture := AoImagem;
+end;
+
+procedure TfrmConfigEmailAutContab.cbAtivarEnvioClick(Sender: TObject);
+begin
+  cbNFeSaida.Enabled     := cbAtivarEnvio.Checked;
+  cbNFeEntrada.Enabled   := cbAtivarEnvio.Checked;
+  cbNFCeSAT.Enabled      := cbAtivarEnvio.Checked;
+  edtEmailContab.Enabled := cbAtivarEnvio.Checked;
+
+  if (not cbAtivarEnvio.Checked) then
+  begin
+    cbNFeSaida.Checked   := False;
+    cbNFeEntrada.Checked := False;
+    cbNFCeSAT.Checked    := False;
+  end;
 end;
 
 end.
