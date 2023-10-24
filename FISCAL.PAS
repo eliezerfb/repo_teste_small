@@ -32227,7 +32227,7 @@ begin
   if Right(sP1, 1) <> Chr(10) then
     sP1 := sP1 + Chr(10);
   if (Form1.sModeloECF <> '99') and (Form1.sModeloECF_Reserva <> '99') then
-    sP1 := sP1 + Chr(10) + 'Small - ' + Form1.sTipoDocumento2 + ' ';
+    sP1 := sP1 + 'Small - ' + Form1.sTipoDocumento2 + ' '; // Sandro Silva 2023-10-24 sP1 := sP1 + Chr(10) + 'Small - ' + Form1.sTipoDocumento2 + ' ';
   sP1 := sP1 + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + Chr(10) + Form22.sBuild + Chr(10); // Versão e build o módulo Sandro Silva 2018-03-22
   if (Form1.ClienteSmallMobile.sVendaImportando = '') then // Não imprimir carnê quando for venda mobile
   begin

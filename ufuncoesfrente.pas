@@ -34,6 +34,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
 //  , StdCtrls
   , uconstantes_chaves_privadas
   //, uClasseValidaRecursos
+  , uSmallConsts // Sandro Silva 2023-10-24
   , uValidaRecursosDelphi7
   , uclassetransacaocartao // Sandro Silva 2023-08-25
   ;
@@ -61,6 +62,7 @@ const SECAO_FRENTE_CAIXA              = 'Frente de Caixa';
 const SECAO_65                        = 'NFCE';
 const SECAO_59                        = 'SAT-CFe';
 const SECAO_MFE                       = 'MFE'; // Sandro Silva 2017-05-10
+const CHAVE_MODELO_DO_ECF             = 'Modelo do ECF'; // Sandro Silva 2023-10-24
 const CHAVE_INICIAR_MINIMIZADO        = 'Iniciar minimizado';
 const CHAVE_INICIAR_COM_WINDOWS       = 'Iniciar com Windows';
 const CHAVE_FORMAS_CONFIGURADAS       = 'Formas Configuradas';
@@ -69,6 +71,7 @@ const CHAVE_IDENTIFICAR_POS           = 'Identificar POS';
 const CHAVE_IMPRESSORA_PADRAO         = 'Impressora Padrao';
 const CHAVE_CARNE_RESUMIDO            = 'Carne resumido';// Sandro Silva 2018-04-29
 const CHAVE_TEF_CARTEIRA_DIGITAL      = 'TEF Carteira Digital'; // Configura no frente.ini se usa carteira digital com TEF Sandro Silva 2021-08-27
+const CHAVE_INI_SUPRIMIR_LINHAS_EM_BRANCO_DO_COMPROVANTE_TEF = 'Suprimir linhas em branco do TEF'; // Sandro Silva 2023-10-24
 const CHAVE_CERTIFICADO_DIGITAL       = 'Certificado'; // Sandro Silva 2022-11-17
 const INTERVAL_FRENTE_MINIMIZADO      = 5000; // 2015-12-01 15000;// 15 segundos
 const INTERVAL_FRENTE_MAXIMIZADO      = 5000; // 2015-12-01 60000;// 60 segundos
@@ -351,7 +354,7 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
   out fTributos_federais: Real; out fTributos_estaduais: Real;
   out fTributos_municipais: Real): String;
-
+function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
   
 var
   cWinDir: array[0..200] of Char;
@@ -2546,6 +2549,18 @@ begin
 
 end;
 
+{Sandro Silva 2023-10-24 inicio}
+function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean;
+begin
+  Result := LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_INI_SUPRIMIR_LINHAS_EM_BRANCO_DO_COMPROVANTE_TEF, _cNao) = _cSim;
+  if (LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_MODELO_DO_ECF, '') <> '59')
+    and (LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_MODELO_DO_ECF, '') <> '65')
+    and (LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_MODELO_DO_ECF, '') <> '99')
+  then
+    Result := False;
+end;
+{Sandro Silva 2023-10-24 fim}
+
 {
 function ValidaQtdDocumentoFiscal(Recursos: TValidaRecurso): Boolean;
 begin
@@ -2594,7 +2609,7 @@ begin
         if FTexto <> '' then
         begin
           if bBreakLine then
-          FTexto := FTexto + #10 + #13;
+            FTexto := FTexto + #10 + #13;
         end;
         FTexto := FTexto + sLinha; //adiciona a um campo Memo
       end;

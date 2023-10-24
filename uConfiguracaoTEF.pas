@@ -42,6 +42,7 @@ type
     Panel2: TPanel;
     Frame_teclado1: TFrame_teclado;
     cdsTEFsIDNOME: TStringField;
+    chkSuprimirLinhasEmBrancoDoComprovante: TCheckBox;
     procedure btnOKClick(Sender: TObject);
     procedure Image6Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -273,6 +274,11 @@ begin
         cdsTEFs.Post;
       end;
     end;
+
+    {Sandro Silva 2023-10-24 inicio}
+    chkSuprimirLinhasEmBrancoDoComprovante.Checked := (FoIni.ReadString(SECAO_FRENTE_CAIXA, CHAVE_INI_SUPRIMIR_LINHAS_EM_BRANCO_DO_COMPROVANTE_TEF, _cNao) = _cSim);
+    {Sandro Silva 2023-10-24 fim}
+
   finally
     FreeAndNil(slSessions);
   end;
@@ -333,6 +339,11 @@ begin
       end;
       cdsTEFs.Next;
     end;
+
+    {Sandro Silva 2023-10-24 inicio}
+    FoIni.WriteString(SECAO_FRENTE_CAIXA, CHAVE_INI_SUPRIMIR_LINHAS_EM_BRANCO_DO_COMPROVANTE_TEF, IfThen(chkSuprimirLinhasEmBrancoDoComprovante.Checked, _cSim, _cNao));
+    {Sandro Silva 2023-10-24 fim}
+
     Result := True;
   except
     on e:exception do
@@ -455,6 +466,15 @@ end;
 
 procedure TFConfiguracaoTEF.FormActivate(Sender: TObject);
 begin
+  {Sandro Silva 2023-10-24 inicio}
+  chkSuprimirLinhasEmBrancoDoComprovante.Visible := True;
+  if (FoIni.ReadString(SECAO_FRENTE_CAIXA, CHAVE_MODELO_DO_ECF, '') <> '59')
+    and (FoIni.ReadString(SECAO_FRENTE_CAIXA, CHAVE_MODELO_DO_ECF, '') <> '65')
+    and (FoIni.ReadString(SECAO_FRENTE_CAIXA, CHAVE_MODELO_DO_ECF, '') <> '99')
+  then
+    chkSuprimirLinhasEmBrancoDoComprovante.Visible := False;
+  {Sandro Silva 2023-10-24 fim}
+
   Frame_teclado1.Led_FISCAL.Picture := Form1.Frame_teclado1.Led_FISCAL.Picture;
   Frame_teclado1.Led_FISCAL.Hint    := Form1.Frame_teclado1.Led_FISCAL.Hint;
 

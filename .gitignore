@@ -763,3 +763,6 @@ uConverteGerencialParaDocFiscal.dcu
 /uConverteDocumentoParaDocFiscal.dcu
 uFuncoesPOS.~pas
 uConfiguracaoTEF.dcu
+*.~pas
+*.~ddp
+*.~dfm
