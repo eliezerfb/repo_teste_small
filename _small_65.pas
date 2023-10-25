@@ -4752,46 +4752,46 @@ begin
             end
             else
             begin
-              if (Pos('<cStat>206</cStat>',sRetorno) <> 0) or (Pos('<cStat>256</cStat>',sRetorno) <> 0) then // Sandro Silva 2018-03-28
-                bButton := Application.MessageBox(PAnsiChar('Esta numeração foi inutilizada .'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2020-09-03 bButton := Application.MessageBox(pChar('Esta numeração foi inutilizada .'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2018-03-28
+              if (Pos('<cStat>206</cStat>', sRetorno) <> 0) or (Pos('<cStat>256</cStat>', sRetorno) <> 0) then // Sandro Silva 2018-03-28
+              begin
+                bButton := Application.MessageBox(PAnsiChar('Esta numeração foi inutilizada .' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
+              end
               else
+              begin
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
                 begin
 
-                  sMensagemAlertaUsoDenegado := 'Esta numeração teve uso denegado.'+chr(10)+chr(10)+xmlNodeValue(sRetorno, '//xMotivo');
+                  sMensagemAlertaUsoDenegado := 'Esta numeração teve uso denegado.' + chr(10) + chr(10) + xmlNodeValue(sRetorno, '//xMotivo');
 
                   if xmlNodeValue(sRetorno, '// infProt/cStat') = '301' then // 301 Uso Denegado: Irregularidade fiscal do emitente
-                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10)+chr(10)+'Considere resolver a irregularidade junto ao Fisco';
+                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Considere resolver a irregularidade junto ao Fisco';
 
-                  if (xmlNodeValue(sRetorno, '// infProt/cStat') = '302')  // 302 Uso Denegado: Irregularidade fiscal do destinatário
-                  or (xmlNodeValue(sRetorno, '// infProt/cStat') = '303')  // 303 Uso Denegado: Destinatário não habilitado a operar na UF
+                  if (xmlNodeValue(sRetorno, '// infProt/cStat') = '302')   // 302 Uso Denegado: Irregularidade fiscal do destinatário
+                   or (xmlNodeValue(sRetorno, '// infProt/cStat') = '303')  // 303 Uso Denegado: Destinatário não habilitado a operar na UF
                   then
-                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10)+chr(10)+'Considere escolher outro destinatário';
+                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Considere escolher outro destinatário';
 
-                  sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10)+chr(10)+'Clique Não: Para cancelar a venda e voltar os produtos para o estoque' +
-                                                                             chr(10)+chr(10)+'Clique Sim: Para definir um novo número para esta NFC-e?';
+                  sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Clique Não: Para cancelar a venda e voltar os produtos para o estoque' +
+                                                                             chr(10) + chr(10) + 'Clique Sim: Para definir um novo número para esta NFC-e?';
 
-                  bButton := Application.MessageBox(PAnsiChar(sMensagemAlertaUsoDenegado),'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2020-09-03 bButton := Application.MessageBox(pChar(sMensagemAlertaUsoDenegado),'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2020-05-13
+                  bButton := Application.MessageBox(PAnsiChar(sMensagemAlertaUsoDenegado), 'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
 
                 end
                 else
-                  bButton := Application.MessageBox(PAnsiChar('Esta numeração já foi utilizada.'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING); // Sandro Silva 2020-09-03 bButton := Application.MessageBox(pChar('Esta numeração já foi utilizada.'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+                  bButton := Application.MessageBox(PAnsiChar('Esta numeração já foi utilizada.' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+              end;
+
             end;// if (Form1.ClienteSmallMobile.sVendaImportando <> '') then
 
             //
             if bButton = IDYES then
             begin
-              //
               try
-                //
                 sNovoNumero := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sNovoNumero := '000000';
-                //
                 while Form1.iCupom >= StrToInt(sNovoNumero) do
                 begin
-                  //
                   sNovoNumero := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1)); // Sandro Silva 2021-12-02 sNovoNumero := StrZero(IncrementaGenerator('G_NUMERONFCE', 1), 6, 0);
                   Sleep(10); // Sandro Silva 2020-05-20
-                  //
                 end;
 
                 sDAV     := '';
@@ -4823,7 +4823,7 @@ begin
                     // Identifica o primeiro DAV que encontrar nos itens da venda
                     sDAV     := Form1.ibDataSet27.FieldByName('DAV').AsString;
                     sTIPODAV := Form1.ibDataSet27.FieldByName('TIPODAV').AsString;
-                    Break; // Sandro Silva 2016-04-18
+                    Break;
                   end;
 
                   Form1.ibDataSet27.Next;

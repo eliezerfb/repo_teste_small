@@ -1692,7 +1692,6 @@ var
 
   function AssinaturaDigital(sP1:String): String;
   function ConfiguraNFCE(sP1:Boolean) : Boolean;
-  //procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
   function IncrementaGenerator(sGenerator: String; iNumero: Integer): Int64; // Sandro Silva 2017-12-15  Integer;
   function QtdVendaSemCommit(sCodigo: String): Real; // Sandro Silva 2019-03-18 function QtdVendaSemCommit(sCodigo: String): Integer;
   function QtdCanceladaSemCommit(sCodigo: String): Real; // Sandro Silva 2019-03-18 function QtdCanceladaSemCommit(sCodigo: String): Integer;
@@ -12741,7 +12740,8 @@ begin
                     bChave := _ecf65_CupomNaoFiscalVinculado(sCupomTef, Form1.iCupom);
                 end;
                 {Sandro Silva 2023-10-16 fim}
-                if Form1.sModeloECF = '99' then bChave := _ecf99_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
+                if Form1.sModeloECF = '99' then
+                  bChave := _ecf99_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
 
                 //
                 if bChave then
@@ -24949,7 +24949,7 @@ begin
             end;
 
           end;
-          
+
         end
         else
         begin
@@ -25125,7 +25125,7 @@ begin
                 sTIPODAV := IBQDADOS.FieldByName('TIPODAV').AsString;
                 sDAV     := IBQDADOS.FieldByName('DAV').AsString;
 
-                Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, sCaixaNew, sNumeroNFNew, '');// Sandro Silva 2018-03-06  AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, Form1.sCaixa, sNumeroNFNew, '');
+                Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, sCaixaOld, sCaixaNew, sNumeroNFNew, '');
 
                 Commitatudo(True);// Salva para que as 2 transaction vejam dados
 
@@ -34606,6 +34606,7 @@ begin
         end;
         {Sandro Silva 2021-08-17 fim}
 
+        {Sandro Silva 2023-10-25 inicio
         // Tabela OS
         IBQuery.Close;
         IBQuery.SQL.Text :=
@@ -34616,6 +34617,38 @@ begin
         IBQuery.SQL.Add('NF = ' + QuotedStr(sNumeroDocumento + 'I') +
                         ' where NUMERO = ' + QuotedStr(sNumero));
         IBQuery.ExecSQL;
+        }
+        // Tabela OS
+        if sSituacao <> '' then
+        begin
+          IBQuery.Close;
+          IBQuery.SQL.Text :=
+            'update OS set ' +
+            'SITUACAO = ' + QuotedStr('Fechada') +
+            ', NF = ' + QuotedStr(sNumeroDocumento + 'I') +
+            ' where NUMERO = ' + QuotedStr(sNumero);
+          IBQuery.ExecSQL;
+
+          IBQuery.Close;
+          IBQuery.SQL.Text :=
+            'select NF ' +
+            'from OS ' +
+            'where NUMERO = ' + QuotedStr(sNumero);
+          IBQuery.Open;
+          if IBQuery.FieldByName('NF').AsString <> '' then
+          begin
+            
+            IBQuery.Close;
+            IBQuery.SQL.Text :=
+              'update OS set ' +
+              'NF = ' + QuotedStr(sNumeroDocumento + 'I') +
+              ' where NUMERO = ' + QuotedStr(sNumero);
+            IBQuery.ExecSQL;
+
+          end;
+
+        end;
+        {Sandro Silva 2023-10-25 fim}
       except
       end;
     end;
