@@ -37,6 +37,8 @@ type
 
 implementation
 
+uses uDialogs;
+
 //uses Unit7;
 
 procedure TBackup.Backup(sArquivo: String);
@@ -166,10 +168,16 @@ begin
         begin
           if FMostraDialogs then
           begin
+            {
             Application.MessageBox(Pchar(
                                         'O Sistema fez uma cópia compactada do banco de dados em: ' + chr(10) + chr(10) + FDiretorioBKP + chr(10) + chr(10)+
                                         'Está cópia não está segura em caso de defeito de equipamento, roubo, formatação indevida ou em outra eventualidade. Faça uma cópia em um dispositivo externo.'+Chr(10)+Chr(10)+Chr(10))
                                         , 'Atenção', mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema('O Sistema fez uma cópia compactada do banco de dados em: ' + chr(10) + chr(10) + FDiretorioBKP + chr(10) + chr(10)+
+                            'Está cópia não está segura em caso de defeito de equipamento, roubo, formatação indevida ou em outra eventualidade. Faça uma cópia em um dispositivo externo.'+Chr(10)+Chr(10)+Chr(10)
+                            ,msgAtencao);
+
             Result := IDIGNORE;
           end else
           begin
@@ -201,9 +209,13 @@ begin
 
         if FMostraDialogs then
         begin
+          {
           Application.MessageBox(Pchar(
                                       'Erro não foi possível fazer o backup. Aquivo: ' + chr(10) + chr(10) + Alltrim(vDirSistema + 'small.fdb') + chr(10) + chr(10) + 'não encontrado')
                                       , 'Atenção', mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema('Erro não foi possível fazer o backup. Aquivo: ' + chr(10) + chr(10) + Alltrim(vDirSistema + 'small.fdb') + chr(10) + chr(10) + 'não encontrado'
+                          ,msgAtencao);
         end;
       end;
     end;
