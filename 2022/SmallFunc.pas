@@ -2569,6 +2569,7 @@ var
 begin
   // Método criado para geração do XML da NF-e
   // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
+  Texto := Trim(Texto); // Sandro Silva 2023-10-25 Espaçamentos no início e final do texto impedem de extrair corretamente a informação (Ficha 7498)
   iPosicaoNumero := 0;
   for i := Length(Texto) DownTo 0 do
   begin
@@ -2599,6 +2600,7 @@ function ExtraiNumeroSemOEndereco(Texto: String): String;
 begin
   // Método criado para geração do XML da NF-e
   // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
+  Texto := Trim(Texto); // Sandro Silva 2023-10-25 Espaçamentos no início e final do texto impedem de extrair corretamente a informação (Ficha 7498)
   Result := StringReplace(Texto, ExtraiEnderecoSemONumero(Texto), '', [rfReplaceAll]);
   Result := Trim(StringReplace(Result, ', ' , '', [rfReplaceAll]));
 end;
