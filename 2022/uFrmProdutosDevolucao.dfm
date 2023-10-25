@@ -169,12 +169,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'MARCADO'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 21
         Visible = True
       end
@@ -182,12 +176,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'DESCRICAO'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 302
         Visible = True
       end
@@ -199,12 +187,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 74
         Visible = True
       end
@@ -212,24 +194,12 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'UNITARIO'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TOTAL'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 76
         Visible = True
       end
@@ -237,12 +207,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'VBC'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 73
         Visible = True
       end
@@ -250,12 +214,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'VICMS'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 85
         Visible = True
       end
@@ -263,12 +221,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'VBCST'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 68
         Visible = True
       end
@@ -276,12 +228,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'VICMSST'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 85
         Visible = True
       end
@@ -289,12 +235,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'VIPI'
         ReadOnly = True
-        Title.Font.Charset = ANSI_CHARSET
-        Title.Font.Color = clBlack
-        Title.Font.Height = -12
-        Title.Font.Name = 'Microsoft Sans Serif'
-        Title.Font.Pitch = fpFixed
-        Title.Font.Style = []
         Width = 72
         Visible = True
       end>
@@ -580,7 +520,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     end
   end
   object ibdProdutosNota: TIBDataSet
-    Database = Form1.IBDatabase1
+    Database = Form7.IBDatabase1
     Transaction = Form1.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = True

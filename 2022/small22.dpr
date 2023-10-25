@@ -185,7 +185,8 @@ uses
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
   uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
   uFrmProdutosDevolucao in 'uFrmProdutosDevolucao.pas' {FrmProdutosDevolucao},
-  uFrmSmallImput in 'uFrmSmallImput.pas' {FrmSmallImput};
+  uFrmSmallImput in 'uFrmSmallImput.pas' {FrmSmallImput},
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas';
 
 {$R *.RES}
 
