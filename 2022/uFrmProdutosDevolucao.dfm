@@ -521,7 +521,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   end
   object ibdProdutosNota: TIBDataSet
     Database = Form7.IBDatabase1
-    Transaction = Form1.IBTransaction1
+    Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = True
     SelectSQL.Strings = (
