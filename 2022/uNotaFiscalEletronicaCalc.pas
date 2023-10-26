@@ -27,7 +27,7 @@ type
 
 implementation
 
-uses Unit7, Mais, uFuncoesFiscais, StrUtils;
+uses Unit7, Mais, uFuncoesFiscais, StrUtils, uDialogs;
 
 procedure TNotaFiscalEletronicaCalc.CalculaCstPisCofins(DataSetNF, DataSetItens: TibDataSet);
 var
@@ -597,8 +597,11 @@ begin
                 except
                   on E: Exception do
                   begin
+                    {
                     Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'no calculo do ICMS substituição. Verifique o valor da tag <BCST> Erro: 16687'
                     ),'Atenção',mb_Ok + MB_ICONWARNING);
+                    Mauricio Parizotto 2023-10-25}
+                    MensagemSistema(E.Message+chr(10)+chr(10)+'no calculo do ICMS substituição. Verifique o valor da tag <BCST> Erro: 16687',msgErro);
                   end;
                 end;
               end else
@@ -1242,14 +1245,16 @@ begin
             except
               on E: Exception do
               begin
-                Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900' + chr(10) + oItem.Descricao),'Atenção',mb_Ok + MB_ICONWARNING);
+                //Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900' + chr(10) + oItem.Descricao),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                MensagemSistema(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900' + chr(10) + oItem.Descricao,msgErro);
               end;
             end;
           end;
         except
           on E: Exception do
           begin
-            Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.' + chr(10) + oItem.Descricao),'Atenção',mb_Ok + MB_ICONWARNING);
+            //Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.' + chr(10) + oItem.Descricao),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+            MensagemSistema(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.' + chr(10) + oItem.Descricao,msgErro);
           end;
         end;
       end;

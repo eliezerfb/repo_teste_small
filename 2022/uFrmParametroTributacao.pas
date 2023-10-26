@@ -123,7 +123,7 @@ implementation
 uses
   Unit7
   , SmallFunc
-  , uFuncoesRetaguarda, uFuncoesBancoDados;
+  , uFuncoesRetaguarda, uFuncoesBancoDados, uDialogs;
 
 {$R *.dfm}
 

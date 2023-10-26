@@ -76,7 +76,7 @@ var
 implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
-  uFuncoesRetaguarda, StrUtils;
+  uFuncoesRetaguarda, StrUtils, uDialogs;
 
 {$R *.DFM}
 
@@ -558,7 +558,8 @@ begin
 
       if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
       begin
-        ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
+        //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.',msgAtencao);
         
         while not Form7.ibDataSet7.Eof do
         begin
@@ -581,9 +582,11 @@ begin
 
       if (Abs(Total - Form7.ibDataSet24TOTAL.AsFloat) > 0.01) and (Total<>0) then
       begin
-        ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
+        //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
         Form7.ibDataSet8.First;
-        while not Form7.ibDataSet8.Eof do Form7.ibDataSet8.Delete;
+        while not Form7.ibDataSet8.Eof do
+          Form7.ibDataSet8.Delete;
         SMALL_DBEdit1Exit(Sender);
       end;
     end;
@@ -1107,7 +1110,8 @@ begin
 
     if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
     begin
-      ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
+      //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.');
       
       SMALL_DBEdit1.SetFocus;
       Abort;
@@ -1444,10 +1448,10 @@ begin
         Form7.ibDataSet7.Next;
       end;
 
-      //if (Abs(Total - Form7.ibDataSet15TOTAL.AsFloat) > 0.01) and (Total<>0) then
       if (Abs(Total - vlrRenegociacao) > 0.01) and (Total<>0) then
       begin
-        ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da renegociação. As parcelas serão recalculadas.');
+        //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da renegociação. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da renegociação. As parcelas serão recalculadas.');
 
         while not Form7.ibDataSet7.Eof do
         begin
@@ -1881,7 +1885,9 @@ begin
           DBGrid1.DataSource.DataSet.Recno := iRecnoFormaErrada;
           DBGrid1.SelectedIndex := IndexColumnFromName(DBGrid1, sColunaPosicionar);
         end;
-        ShowMessage(sMensagem);
+
+        //ShowMessage(sMensagem); Mauricio Parizotto 2023-10-25
+        MensagemSistema(sMensagem);
       end;
 
     end;

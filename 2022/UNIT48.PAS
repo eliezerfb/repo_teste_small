@@ -237,7 +237,6 @@ begin
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
 
-          // ShowMessage(Form7.ibDataSet2NOME.AsString);
           Form7.ibDataSet15CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
         end;
       end;
@@ -597,8 +596,6 @@ begin
 
     Form7.sModulo := 'VENDA';
 
-    // DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-    // ShowMessage('Form Show em: '+TimeToStr(Time - tInicio)+','+StrZero(cent,3,0));
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.Selectsql.Clear;
     Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //

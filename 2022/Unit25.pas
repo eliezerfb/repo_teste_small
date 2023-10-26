@@ -70,7 +70,7 @@ var
 implementation
 
 uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
-  uFuncoesRetaguarda;
+  uFuncoesRetaguarda, uDialogs;
 
 {$R *.DFM}
 
@@ -1066,25 +1066,7 @@ end;
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
 begin
-  {Sandro Silva 2023-06-20 inicio
-  if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
-  begin
-    if GeraImagemDoBoletoComOCodigoDeBarras(True) then
-    begin
-      if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
-      begin
-        GravaPortadorNossoNumCodeBar;
-      end;
-    end;
-  end else
-  begin
-    ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
-    +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
-    +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
-  end;
-  }
   ImprimirBoleto;
-  {Sandro Silva 2023-06-20 fim}
 end;
 
 procedure TForm25.btnImprimirTodosClick(Sender: TObject);
@@ -1098,7 +1080,8 @@ begin
       if (LimpaNumero(Form26.MaskEdit42.Text) = '') then
       begin
         bOk := False;
-        ShowMessage('Configure o código do banco.');
+        //ShowMessage('Configure o código do banco.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Configure o código do banco.');
       end;
     end;
 
@@ -1119,12 +1102,10 @@ begin
         end;
         Form7.ibDataSet7.Next;
         {Sandro Silva 2023-06-20 fim}
-
-//        if Form7.ibDataSet7.Eof then Form25.Close;
-        //
       end;
     except
-      ShowMessage('Erro na impressão do boleto.');
+      //ShowMessage('Erro na impressão do boleto.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro na impressão do boleto.',msgErro);
     end;
   except
   end;
@@ -1200,10 +1181,15 @@ begin
       end;
     end else
     begin
-      //ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString Mauricio Parizotto 2023-10-02
+      {
       ShowMessage('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
       +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
       +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
+      Mauricio Parizotto 2023-10-25}
+      MensagemSistema('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+                      +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
+                      +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
+                      ,msgAtencao);
     end;
   end;
 end;
@@ -2856,10 +2842,15 @@ begin
     end;
   end else
   begin
-    //ShowMessage('Não é possível imprimir este bloqueto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString Mauricio Parizotto 2023-10-02
+    {
     ShowMessage('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
     +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
     +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
+    Mauricio Parizotto 2023-10-25}
+    MensagemSistema('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+                    +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
+                    +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
+                    ,msgAtencao);
   end;
 end;
 

@@ -151,7 +151,7 @@ var
 
 implementation
 
-uses Unit25, Unit7, Mais;
+uses Unit25, Unit7, Mais, uDialogs;
 
 {$R *.DFM}
 
@@ -327,7 +327,9 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar('Mascara do campo livre, inválida. '+E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar('Mascara do campo livre, inválida. '+E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-24
+      MensagemSistema('Mascara do campo livre, inválida. '+E.Message
+                      ,msgErro);
     end;
   end;
 end;
@@ -359,7 +361,8 @@ procedure TForm26.Button2Click(Sender: TObject);
 begin
   if (not chkCNAB400.Checked) and (not chkCNAB240.Checked) then
   begin
-    Application.MessageBox(pChar('Informe se é CNAB400 ou CNAB240.'),'Atenção',mb_Ok + MB_ICONWARNING);
+    //Application.MessageBox(pChar('Informe se é CNAB400 ou CNAB240.'),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Informe se é CNAB400 ou CNAB240.',msgAtencao);
     Exit;
   end;
 

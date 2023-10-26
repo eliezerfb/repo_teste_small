@@ -200,7 +200,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8;
+  Unit24, Unit8, uDialogs;
 
 {$R *.DFM}
 
@@ -774,7 +774,8 @@ begin
     Form14.Image1.Picture.SaveToFile('LOGOTIP.BMP');
 
   ShellExecute( 0, 'Open','pbrush.exe','LOGOTIP.BMP', '', SW_SHOW);
-  ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
+  //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
+  MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
 
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
   begin

@@ -21,7 +21,7 @@ uses
 
 implementation
 
-uses Unit7, Mais, uSmallConsts, unit29, StdCtrls;
+uses Unit7, Mais, uSmallConsts, unit29, StdCtrls, uDialogs;
 
 function GetCidadeUF: String;
 begin
@@ -1265,7 +1265,8 @@ begin
               except
                 on E: Exception do
                 begin
-                  Application.MessageBox(pChar(E.Message),'Erro no retorno da NFS-e: ',mb_Ok + MB_ICONWARNING);
+                  //Application.MessageBox(pChar(E.Message),'Erro no retorno da NFS-e: ',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                  MensagemSistema(E.Message+' Erro no retorno da NFS-e: ',msgErro);
                   Result := False;
                 end;
               end;

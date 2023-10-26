@@ -56,7 +56,7 @@ type
 
 implementation
 
-uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida;
+uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs;
 
 
 function GeraXmlNFe: String;
@@ -191,9 +191,14 @@ begin
     except
       on E: Exception do
       begin
+        {
         Application.MessageBox(pChar(E.Message+chr(10)+
         chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
         ),'Atenção',mb_Ok + MB_ICONWARNING);
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+
+                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                        ,msgAtencao);
         
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15STATUS.AsString    := 'Erro: Ao salvar XML.';

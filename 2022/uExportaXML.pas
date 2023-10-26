@@ -54,7 +54,7 @@ var
 implementation
 
 uses
-  uSmallConsts, uSmallResourceString, unit7;
+  uSmallConsts, uSmallResourceString, unit7, uDialogs;
 
 {$R *.dfm}
 
@@ -220,8 +220,14 @@ begin
         Result := True;
       end
       else
+        {
         Application.MessageBox(PChar('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
                                      'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+        Mauricio Parizotto 2023-10-25}
+
+        MensagemSistema('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
+                        'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'
+                        ,msgAtencao);
 
     finally
       {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
@@ -231,7 +237,8 @@ begin
     end;
   except
     on e:Exception do
-      Application.MessageBox(PChar('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+      //Application.MessageBox(PChar('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message,msgErro);
   end;
 end;
 
@@ -355,18 +362,28 @@ begin
 
   if not FileExists('szip.exe') then
   begin
+    {
     Application.MessageBox(PChar('Utilitário de compatação não encontrado SZIP.EXE' + SLineBreak + SLineBreak +
                                  'O envio dos XMLs foi cancelado.'), Pchar(_cTituloMsg), MB_ICONWARNING + MB_OK);
+    Mauricio Parizotto 2023-10-25}
+
+    MensagemSistema('Utilitário de compatação não encontrado SZIP.EXE' + SLineBreak + SLineBreak +
+                    'O envio dos XMLs foi cancelado.'
+                    ,msgAtencao);
+
     Exit;
   end;
   if (not cbNFeSaida.Checked) and (not cbNFeEntrada.Checked) and (not cbNFCeSAT.Checked) then
   begin
-    Application.MessageBox('Marque ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+    //Application.MessageBox('Marque ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Marque ao menos um tipo de documento.',msgAtencao);
     Exit;
   end;
+
   if not ValidaEmail(edtEmailContab.Text) then
   begin
-    Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+    //Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+    MensagemSistema(_cEmailInvalido,msgAtencao);
     edtEmailContab.SetFocus;
     Exit;
   end;

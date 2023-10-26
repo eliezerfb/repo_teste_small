@@ -13,7 +13,7 @@ implementation
 uses Unit7
   , Mais
   , Unit26
-  , DB;
+  , DB, uDialogs;
 
 procedure GeraCNAB240;
 var
@@ -257,7 +257,8 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        MensagemSistema(E.Message,msgErro);
       end;
     end;
 
@@ -302,7 +303,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message,msgErro);
             end;
           end;
 
@@ -443,13 +445,15 @@ begin
             except
               on E: Exception do
               begin
-                Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+                //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                MensagemSistema(E.Message,msgErro);
               end;
             end;
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message,msgErro);
             end;
           end;
 
@@ -458,7 +462,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message,msgErro);
             end;
           end;
         end;
@@ -495,7 +500,8 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message,msgErro);
       end;
     end;
 
@@ -504,12 +510,14 @@ begin
       DeleteFile(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
       Form1.sArquivoRemessa := '';
 
-      ShowMessage('Não existe movimento, o arquivo não foi gerado.');
+      //ShowMessage('Não existe movimento, o arquivo não foi gerado.');
+      MensagemSistema('Não existe movimento, o arquivo não foi gerado.');
     end;
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);  Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message,msgErro);
     end;
   end;
 

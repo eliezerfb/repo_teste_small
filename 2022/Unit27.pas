@@ -217,24 +217,21 @@ begin
     WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Diferença</font></th>');
     WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Saldo</font></th>');
     WriteLn(F,'    </tr>');
-    //
+    
     try
       Form7.ibDataSet25.Close;
       Form7.ibDataSet25.SelectSql.Clear;
       Form7.ibDataSet25.SelectSQL.Add('delete from FLUXO');
       Form7.ibDataSet25.Open;
     except
-//      ShowMessage('O fluxo de caixa não pode ser gerado no momento.');
-//      Abort;
     end;
-    //
+
     Form7.ibDataSet25.Close;
     Form7.ibDataSet25.SelectSql.Clear;
     Form7.ibDataSet25.SelectSQL.Add('select * from FLUXO order by DATA');
     Form7.ibDataSet25.Open;
-    //
+
     // cria o gráfico de fluxo de caixa fluxo.png
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\FLUXO.GRA');
     Mais1Ini.WriteString('DADOS','3D','1');
     Mais1Ini.WriteString('DADOS','NomeBmp','fluxo.png');

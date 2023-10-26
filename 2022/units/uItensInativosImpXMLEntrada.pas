@@ -21,7 +21,7 @@ type
 
 implementation
 
-uses SysUtils, Dialogs, Classes;
+uses SysUtils, Dialogs, Classes, uDialogs;
 
 { TItensInativosImpXMLEnt }
 
@@ -77,7 +77,8 @@ begin
   cMsg := cMsg + sLineBreak + sLineBreak +
           'Para o correto lançamento da Nota de Compra, os itens serão reativados automaticamente.';
 
-  Application.MessageBox(pChar(cMsg),'Atenção',mb_Ok + MB_ICONINFORMATION);
+  //Application.MessageBox(pChar(cMsg),'Atenção',mb_Ok + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+  MensagemSistema(cMsg,msgAtencao);
   ReativarItens;
 end;
 

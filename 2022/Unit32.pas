@@ -49,7 +49,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit20, Unit34, StrUtils;
+uses Unit7, Mais, Unit20, Unit34, StrUtils, uDialogs;
 
 {$R *.DFM}
 
@@ -66,14 +66,14 @@ var
   fCustoMedio: Real; // Sandro Silva 2023-03-01
   fCustoCompra: Real; // Sandro Silva 2023-03-02
 begin
-  //
   if not VerificaSeTemImpressora() then
   begin
-    ShowMessage('Não há impressora instalada no windows!');
+    //ShowMessage('Não há impressora instalada no windows!'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Não há impressora instalada no windows!',msgAtencao);
     Screen.Cursor             := crDefault;    // Cursor de Aguardo
     Abort;
   end;
-  //
+  
   Printer.Canvas.Pen.Width  := 1;             // Largura da linha  //
   Printer.Canvas.Font.Name  := 'Courier New'; // Tipo da fonte     //
   Printer.Canvas.Font.Size  := 8;             // Cor da fonte      //
@@ -174,20 +174,7 @@ begin
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
       if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
       if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
-      //
-{
-if ibQuery4.FieldByName('DESCRICAO').AsString='Óleo de Motor Castrol GTX 20W50 1L' then
-begin
-  ShowMessage(
-    'Atual: '+Format('%16.2n',[ibQuery4.FieldByName('QTD_ATUAL').AsFloat])+chr(10)+
-    'Compra:- '+Format('%16.2n',[fCompra ])+chr(10)+
-    'Venda:+ '+Format('%16.2n',[fVenda   ])+chr(10)+
-    'Balcao:+'+Format('%16.2n',[fBalcao  ])+chr(10)+
-    'Reserva:+'+Format('%16.2n',[fRese   ])+chr(10)+
-    'Altera:- '+Format('%16.2n',[fAltera ])+chr(10));
-end;
-}
-      //
+      
       if  ((
                   ibQuery4.FieldByName('QTD_ATUAL').AsFloat
                      - fCompra
@@ -429,23 +416,8 @@ begin
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
       if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
       if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
-      //
-      //
+      
       // Formula para calcular a quantidade do dia é a mesma do sintegra
-      //
-{
-if ibQuery4.FieldByName('CODIGO').AsString='00109' then
-begin
-ShowMessage(
-  'Atual: '+Format('%16.2n',[ibQuery4.FieldByName('QTD_ATUAL').AsFloat])+chr(10)+
-  'Compra:- '+Format('%16.2n',[fCompra ])+chr(10)+
-  'Venda:+ '+Format('%16.2n',[fVenda   ])+chr(10)+
-  'Balcao:+'+Format('%16.2n',[fBalcao  ])+chr(10)+
-  'Reserva:+'+Format('%16.2n',[fRese   ])+chr(10)+
-  'Altera:- '+Format('%16.2n',[fAltera ])+chr(10));
-end;
-}
-     //
       if  ((
                   ibQuery4.FieldByName('QTD_ATUAL').AsFloat
                      - fCompra
@@ -456,7 +428,6 @@ end;
             )
             > 0 ) or (CheckBox1.Checked) then
       begin
-        //
         if RadioButton1.Checked then
         begin
           {Sandro Silva 2023-03-02 inicio}

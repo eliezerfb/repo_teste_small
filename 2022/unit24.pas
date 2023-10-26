@@ -303,7 +303,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
-  uFuncoesBancoDados;
+  uFuncoesBancoDados, uDialogs;
 
 {$R *.DFM}
 
@@ -3152,7 +3152,6 @@ procedure TForm24.SMALL_DBEdit42KeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
-//  if Key = VK_RETURN then Form7.ibDataSet23.Next;
   if Form7.ibDataSet23.Eof then
     Form24.SMALL_DBEdit22.SetFocus;
 end;
@@ -3166,7 +3165,7 @@ begin
   and (Form7.ibDataSet24FRETE12.AsString <> '4')
   and (Form7.ibDataSet24FRETE12.AsString <> '9') then
   begin
-    //
+    {
     Application.MessageBox('Valores válidos:' + Chr(10) +
                           Chr(10) +
                           '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
@@ -3176,10 +3175,22 @@ begin
                           '4 - Transporte próprio por conta do destinatário;' + Chr(10) +
                           '9 - Sem Ocorrência de transporte.'
               ,'Valor inválido',mb_IconError+mb_Ok);
+    Mauricio Parizotto 2023-10-25}
+
+    MensagemSistema('Valores válidos:' + Chr(10) +
+                    Chr(10) +
+                    '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
+                    '1 - Contratação do Frete por conta do destinatário/remetente (FOB);' + Chr(10) +
+                    '2 - Contratação do Frete por conta de terceiros;' + Chr(10) +
+                    '3 - Transporte próprio por conta do remetente;' + Chr(10) +
+                    '4 - Transporte próprio por conta do destinatário;' + Chr(10) +
+                    '9 - Sem Ocorrência de transporte.'
+                    ,msgErro);
+
+
     Form7.ibDataSet24FRETE12.AsString := '0';
-    //
   end;
-  //
+
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
   else if Form7.ibDataSet24FRETE12.AsString = '1' then
@@ -3194,7 +3205,7 @@ begin
     edFretePorConta.Text := '9-Sem frete'
   else
     edFretePorConta.Text := '';
-  //
+
   Form24.edFretePorConta.Visible := True;
   AtualizaTotalDaNota; // Sandro Silva 2023-08-03
 end;

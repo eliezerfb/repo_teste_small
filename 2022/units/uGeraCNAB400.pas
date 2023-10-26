@@ -13,7 +13,7 @@ uses Unit26
   , Mais
   , Unit7
   , Unit25
-  ;
+  , uDialogs;
 
 procedure GeraCNAB400;
 var
@@ -306,7 +306,8 @@ try
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message,msgErro);
       end;
     end;
 
@@ -853,13 +854,15 @@ try
               except
                 on E: Exception do
                 begin
-                  Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+                  //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                  MensagemSistema(E.Message,msgErro);
                 end;
               end;
             except
               on E: Exception do
               begin
-                Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+                //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                MensagemSistema(E.Message,msgErro);
               end;
             end;
 
@@ -936,7 +939,8 @@ try
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message,msgErro);
     end;
   end;
 

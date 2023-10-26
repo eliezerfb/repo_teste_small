@@ -742,7 +742,7 @@ uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
   , uRetornaLimiteDisponivel
   , uFuncoesBancoDados
   , uFuncoesRetaguarda
-  , Variants, uVisualizaCadastro;
+  , Variants, uVisualizaCadastro, uDialogs;
   
 {$R *.DFM}
 
@@ -1488,7 +1488,6 @@ begin
           end;
         except
         end;
-        //
       end;
       //
       UploadMobile(pChar('clifor.sql'));
@@ -1497,20 +1496,15 @@ begin
       UploadMobile(pChar('logo.jpg'));
       //
       DeleteFile(pChar(Form1.sAtual+'\usuarios.sql'));
-      //
     end else
     begin
-      ShowMessage('CNPJ do emitente inválido.');
+      //ShowMessage('CNPJ do emitente inválido.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('CNPJ do emitente inválido.',msgAtencao);
     end;
-    //
   except
   end;
-  //
-  //    DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-  //    ShowMessage('Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10));
-  //
+
   Result := True;
-  //
 end;
 
 procedure GravaEscolha;
@@ -1723,7 +1717,8 @@ begin
     else
       Form7.bFlag := True;
   except
-    ShowMessage('Erro 10/6 comunique o suporte técnico.')
+    //ShowMessage('Erro 10/6 comunique o suporte técnico.') Mauricio Parizotto 2023-10-25
+    MensagemSistema('Erro 10/6 comunique o suporte técnico.',msgErro);
   end;
 end;
 
@@ -2015,7 +2010,8 @@ begin
 
     end;
   except
-    ShowMessage('Erro 10/77 comunique o suporte técnico.')
+    //ShowMessage('Erro 10/77 comunique o suporte técnico.')Mauricio Parizotto 2023-10-25
+    MensagemSistema('Erro 10/77 comunique o suporte técnico.',msgErro);
   end;
 end;
 
@@ -2034,7 +2030,8 @@ begin
       begin
         if SMALL_DBEdit5.Focused then
         begin
-          ShowMessage('Descrição inválida.');
+          //ShowMessage('Descrição inválida.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Descrição inválida.',msgAtencao);
           SMALL_DBEdit3.SetFocus;
           Abort;
         end;
@@ -2482,7 +2479,6 @@ begin
     end;
 
     Form7.ibDataSet7.EnableControls;
-    //ShowMessage(FormatDateTime('HH:nn:ss.zzz', Time - t));
   end;
 end;
 
@@ -2634,12 +2630,15 @@ begin
             begin
               Form7.ibDataSet28.FieldByName('DESCRICAO').AsString  := EmptyStr;
               Form7.ibDataSet28.FieldByName('QUANTIDADE').AsString := EmptyStr;
-              ShowMessage('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+oTestaProd.getQuery.FieldByname('CODIGO').AsString +chr(10)+ sCodigo);
+              //ShowMessage('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+oTestaProd.getQuery.FieldByname('CODIGO').AsString +chr(10)+ sCodigo); Mauricio Parizotto 2023-10-25
+              MensagemSistema('Você esta tentando criar uma referência circular. Esta composição não'+Chr(10)+'pode ser feita'+ chr(10)+ chr(10)+oTestaProd.getQuery.FieldByname('CODIGO').AsString +chr(10)+ sCodigo
+                              ,msgAtencao);
             end;
           end else
           begin
             Form7.ibDataSet28.FieldByName('DESCRICAO').AsString := EmptyStr;
-            ShowMessage('Produto não cadastrado.');
+            //ShowMessage('Produto não cadastrado.'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Produto não cadastrado.',msgAtencao);
           end;
 
           dbgComposicao.Update;
@@ -2809,7 +2808,8 @@ begin
       Form7.bFabrica := False;
       
     end else 
-    	ShowMEssage('Não é possível fabricar essa quantidade.');    
+    	//ShowMEssage('Não é possível fabricar essa quantidade.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não é possível fabricar essa quantidade.',msgAtencao);
   end;
 end;
 
@@ -2963,7 +2963,9 @@ begin
       Form7.ibDataSet4.EnableControls;
       
       Form7.bFabrica := False;      
-    end else ShowMEssage('Não é possível desmontar essa quantidade.');
+    end else
+      //ShowMEssage('Não é possível desmontar essa quantidade.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não é possível desmontar essa quantidade.',msgAtencao);
   end;
 end;
 
@@ -3168,7 +3170,8 @@ begin
     else
       Form7.bFlag := True;
   except
-    ShowMessage('Erro 10/66 comunique o suporte técnico.')
+    //ShowMessage('Erro 10/66 comunique o suporte técnico.') Mauricio Parizotto 2023-10-25
+    MensagemSistema('Erro 10/66 comunique o suporte técnico.',msgErro);
   end;
 end;
 
@@ -3239,7 +3242,9 @@ begin
     begin
       Form7.ibDataSet30.Next;
     end;
-    if (AllTrim(Form7.ibDataSet30SERIAL.AsString) <> AllTrim(sSerial)) then ShowMessage('Não encontrado.');
+    if (AllTrim(Form7.ibDataSet30SERIAL.AsString) <> AllTrim(sSerial)) then
+      //ShowMessage('Não encontrado.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não encontrado.');
   end;
   if dBgrid4.CanFocus then dbGrid4.SetFocus;
 end;
@@ -3460,10 +3465,15 @@ end;
 
 procedure TForm10.Label45Click(Sender: TObject);
 begin
+  {
   ShowMessage('Este campo não pode ser alterado'+Chr(10)+
                                     'o nome do fornecedor é preenchido'+Chr(10)+
                                     'no evento da compra.');
-
+  Mauricio Parizotto 2023-10-25}
+  MensagemSistema('Este campo não pode ser alterado'+Chr(10)+
+                  'o nome do fornecedor é preenchido'+Chr(10)+
+                  'no evento da compra.'
+                  ,msgAtencao);
 end;
 
 procedure TForm10.Image201Click(Sender: TObject);
@@ -3701,9 +3711,11 @@ begin
       end else
       begin
         try
-          ShowMessage('Diferença: '+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd])+chr(10)+chr(10)+'Acerte a quantidade.');
+          //ShowMessage('Diferença: '+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd])+chr(10)+chr(10)+'Acerte a quantidade.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Diferença: '+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd])+chr(10)+chr(10)+'Acerte a quantidade.',msgAtencao);
           Abort;
-        except end;
+        except
+        end;
       end;
       
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
@@ -4373,7 +4385,8 @@ begin
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
         
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
-        ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
+        //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25}
+        MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
         Form10.Panel_1Enter(Sender);
       end;
     end;
@@ -4381,11 +4394,12 @@ begin
     if Form7.sModulo = 'GRUPOS' then
     begin
       if not Form7.bSoLeitura then
-      begin        
+      begin
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
         
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
-        ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
+        //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
         Form10.Panel_1Enter(Sender);
       end;
     end;
@@ -4461,7 +4475,8 @@ begin
       if Form7.IBDataSet2.Modified then Form7.IBDataSet2.Post;
       Form7.IBDataSet2.Edit;
     except
-      ShowMessage('Este registro esá sendo usado por outro usuário.');
+      //ShowMessage('Este registro esá sendo usado por outro usuário.'); Mauricio Parizotto 2023-10-25}
+      MensagemSistema('Este registro esá sendo usado por outro usuário.',msgAtencao);
       DBMemo2.Visible := False;
     end;
   end else
@@ -4495,7 +4510,8 @@ begin
     try
       if Form7.IBDataSet2.Modified then Form7.IBDataSet2.Post;
     except
-      ShowMessage('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.');
+      //ShowMessage('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.',msgAtencao);
       Form7.IBDataSet2.Cancel;
     end;
   end else
@@ -4512,7 +4528,8 @@ begin
         else
           Audita('CONTATOS','SMALL', Senhas.UsuarioPub, Copy('Salvar contatos L3731 ' + E.Message, 1, 80),0,0); // Ato, Modulo, Usuário, Histórico, Valor
         /////////////////////////////////////////////// 2022-07-18
-        ShowMessage('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.');
+        //ShowMessage('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.'); Mauricio Parizotto 2023-10-25}
+        MensagemSistema('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.',msgAtencao);
         Form7.ArquivoAberto.Cancel;
       end;
     end;
@@ -4657,7 +4674,8 @@ begin
     
     ShellExecute( 0, 'Open',pChar(Form10.sNomeDoJPG),'','', SW_SHOWMAXIMIZED);
     
-    ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
+    //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
     AtualizaTela(True);    
   except
   end;
@@ -5041,7 +5059,10 @@ begin
                     begin
                       dBGrid1.DataSource := Form7.DataSource21; // Grupos
                     end;
-                  except ShowMessage('Erro 2 comunique o suporte técnico.') end;
+                  except
+                    //ShowMessage('Erro 2 comunique o suporte técnico.')Mauricio Parizotto 2023-10-25
+                    MensagemSistema('Erro 2 comunique o suporte técnico.',msgErro);
+                  end;
                 end;
 
                 //Mauricio Parizotto 2023-05-29
@@ -5063,7 +5084,8 @@ begin
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Font.Color := clWindowText;
                   end;
                 except
-                  ShowMessage('Erro 3 comunique o suporte técnico.')
+                  //ShowMessage('Erro 3 comunique o suporte técnico.') Mauricio Parizotto 2023-10-25
+                  MensagemSistema('Erro 3 comunique o suporte técnico.',msgErro);
                 end;
 
                 if Form7.ArquivoAberto.Fields[I-1].Name = 'ibDataSet4FORNECEDOR' then
@@ -5144,7 +5166,8 @@ begin
     end; // if Form7.sModulo <> 'ICM' then
 
   except
-    ShowMessage('Erro número  13 comunique o suporte técnico.');
+    //ShowMessage('Erro número  13 comunique o suporte técnico.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Erro número  13 comunique o suporte técnico.',msgErro);
   end;
 
   // if (Form7.sModulo = 'CLIENTES') then iTop := iTop + 15 else iTop := iTop + 30;
@@ -8467,6 +8490,7 @@ begin
     end;
     Form7.ibDataSet13COPE.AsFloat := dCOPE;
     {Sandro Silva 2023-08-07 fim}
+    {
     ShowMessage('O sistema calculou o "custo operacional" da'+Chr(10)+
                 'seguinte forma:'+Chr(10)+Chr(10)+
 
@@ -8477,7 +8501,21 @@ begin
                 'Custo Operacional = Despesas Operacionais * 100 / Receitas'+Chr(10)+Chr(10)+
                 'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas]))+' * 100 / '+AllTrim(Format('%12.2n',[rReceitas]))+Chr(10)+Chr(10)+
                 'Custo Operacional = '+AllTrim(Format('%12.2n',[dCOPE]))+'%'+Chr(10)+Chr(10)); // Sandro Silva 2023-08-07 'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas * 100 / rReceitas]))+'%'+Chr(10)+Chr(10));
+    Mauricio Parizotto 2023-10-25}
+    MensagemSistema('O sistema calculou o "custo operacional" da'+Chr(10)+
+                  'seguinte forma:'+Chr(10)+Chr(10)+
+
+                  'Analisando no plano de contas'+Chr(10)+Chr(10)+
+                  '11??? - Receitas'+Chr(10)+
+                  '32??? - Despesas Operacionais'+Chr(10)+Chr(10)+
+
+                  'Custo Operacional = Despesas Operacionais * 100 / Receitas'+Chr(10)+Chr(10)+
+                  'Custo Operacional = '+AllTrim(Format('%12.2n',[rDespesas]))+' * 100 / '+AllTrim(Format('%12.2n',[rReceitas]))+Chr(10)+Chr(10)+
+                  'Custo Operacional = '+AllTrim(Format('%12.2n',[dCOPE]))+'%'+Chr(10)+Chr(10)
+                  ,msgAtencao);
+
   except
+    {
     ShowMessage('O sistema calcula o "custo operacional" da'+Chr(10)+
                 'seguinte forma:'+Chr(10)+Chr(10)+
 
@@ -8488,7 +8526,18 @@ begin
                 'Custo Operacional = Despesas Operacionais * 100 / Receitas'+Chr(10)+Chr(10)+
                 'Não foi possível calcular o Custo Operacional,'+Chr(10)+
                 'Verifique os valores no plano de contas.'+Chr(10));
+    Mauricio Parizotto 2023-10-25}
+    MensagemSistema('O sistema calcula o "custo operacional" da'+Chr(10)+
+                'seguinte forma:'+Chr(10)+Chr(10)+
 
+                'Analisando no plano de contas'+Chr(10)+Chr(10)+
+                '11??? - Receitas'+Chr(10)+
+                '32??? - Despesas Operacionais'+Chr(10)+Chr(10)+
+
+                'Custo Operacional = Despesas Operacionais * 100 / Receitas'+Chr(10)+Chr(10)+
+                'Não foi possível calcular o Custo Operacional,'+Chr(10)+
+                'Verifique os valores no plano de contas.'+Chr(10)
+                ,msgAtencao);
   end;
 end;
 
@@ -8551,7 +8600,8 @@ begin
         if Form7.ibDataSet4CUSTOCOMPR.AsFloat <> 0 then Form7.ibDataSet13RESE.AsFloat :=  ((PrecoDeVenda / Form7.ibDataSet4CUSTOCOMPR.AsFloat) * 100) - 100 else Form7.ibDataSet13RESE.AsFloat := 0;
       end else
       begin
-        ShowMessage('Não foi possível efetuar o calculo. Verifique os percentuais usados.'+Chr(10)+'Ou calcule manualmente o preço deste produto.');
+        //ShowMessage('Não foi possível efetuar o calculo. Verifique os percentuais usados.'+Chr(10)+'Ou calcule manualmente o preço deste produto.'); Mauricio Parizotto 2023-10-25}
+        MensagemSistema('Não foi possível efetuar o calculo. Verifique os percentuais usados.'+Chr(10)+'Ou calcule manualmente o preço deste produto.',msgAtencao);
       end;
     except end;
   end;
@@ -8763,64 +8813,7 @@ begin
           
           Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
           J := 0;
-          {Sandro Silva 2022-09-26 inicio
-          //
-          while Pos('http://',Lowercase(s)) <> 0 do
-          begin
-            if (Pos('http://',Lowercase(s)) < Pos('.jpg',Lowercase(s))) then
-            begin
-              sLinkDaFoto := Copy(s, Pos('http://',Lowercase(s)),Pos('.jpg',Lowercase(s))+3);
-              if (Pos('>',sLinkDaFoto)=0) and (Pos('=',sLinkDaFoto)=0) and (Pos('%',sLinkDaFoto)=0)  then
-              begin
-                try
-                  // Faz o download dA Imagem sLinkDaFoto e salva no 'c:\tempo.jpg'
-                  try
-                    DownloadDoArquivo(PChar(sLinkDaFoto),PChar(Form10.sNomeDoJPG));
-                  finally
-                    //
-                    if FileExists(Form10.sNomeDoJPG) then
-                    begin
-                      //
-                      try
-                        AtualizaTela(True);
-                      finally
-                        //
-                        if Form7.ibDataset4FOTO.BlobSize <> 0 then
-                        begin
-                          J := J + 1;
-                          if J >= 7 then
-                          begin
-                            CopyFile(pChar('res'+Form7.IBDataSet4REGISTRO.AsString+'.jpg'),pChar(Form10.sNomeDoJPG),false);
-                            AtualizaTela(True);
-                            s := '';
-                          end else
-                          begin
-                            I := Application.MessageBox(Pchar('Quer usar esta foto para este produto'),'?',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
-                            if I = IDYES then
-                            begin
-                              DeleteFile(pChar('res'+Form7.IBDataSet4REGISTRO.AsString+'.jpg'));
-                              s := '';
-                            end;
-                          end;
-                        end;
-                      end;
-                    end;
-                    //
-                  end;
-                  //
-                except
-                  ShowMessage('Download falhou!!!');
-                end;
-                //
-                // Foto do produto OK
-                //
-              end;
-            end;
-            //
-            s := Copy(Copy(s,7,Length(s)-7), Pos('http://',Copy(Lowercase(s),7,Length(s)-7)), Length(Copy(s,7,Length(s)-7))-Pos('http://',Copy(Lowercase(s),7,Length(s)-7))+7);
-            //
-          end;
-          }
+          
           for iSrc := 0 to WebBrowser1.OleObject.Document.Images.Length - 1 do
           begin
             sLinkDaFoto := WebBrowser1.OleObject.Document.Images.Item(iSrc).Src;
@@ -8872,19 +8865,11 @@ begin
                     end;
                   end;
               except
-                ShowMessage('Download falhou!!!');
+                //ShowMessage('Download falhou!!!'); Mauricio Parizotto 2023-10-25}
+                MensagemSistema('Download falhou!!!',msgErro);
               end;
-
             end;
           end;
-          {
-          if FileExists(pChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg')) then
-          begin
-            CopyFile(PChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg'), PChar(Form10.sNomeDoJPG), False);
-            AtualizaTela(True);
-          end;
-          }
-          {Sandro Silva 2022-09-26 fim}
 
           Screen.Cursor             := crDefault;              // Cursor de Aguardo
         except end;
@@ -9783,10 +9768,11 @@ begin
     end else
     begin
       CheckBox2.Checked := False;
-      ShowMessage('Para vender este produto através de Marketplace'+chr(10)+'preencha pelo menos os seguintes campos: '+chr(10)+chr(10)+ProdutoValidoParaMarketplace(True));
+      //ShowMessage('Para vender este produto através de Marketplace'+chr(10)+'preencha pelo menos os seguintes campos: '+chr(10)+chr(10)+ProdutoValidoParaMarketplace(True)); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Para vender este produto através de Marketplace'+chr(10)+'preencha pelo menos os seguintes campos: '+chr(10)+chr(10)+ProdutoValidoParaMarketplace(True));
     end;
   end;
-  //
+
   try
     if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
     //
@@ -9797,11 +9783,11 @@ begin
     begin
       Form7.ibDataSet4MARKETPLACE.AsString  := '';
     end;
-    //
+
     Form7.ibDataset4.Post;
     Form7.ibDataset4.Edit;
-    //
-  except end;
+  except
+  end;
 end;
 
 procedure TForm10.ButtoOpenPictureDialog1n22Click(Sender: TObject);

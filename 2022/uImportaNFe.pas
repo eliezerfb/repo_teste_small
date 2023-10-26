@@ -28,7 +28,7 @@ function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
 
-uses uFuncoesRetaguarda, uParametroTributacao;
+uses uFuncoesRetaguarda, uParametroTributacao, uDialogs;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
 
@@ -112,7 +112,8 @@ begin
       except
         on E: Exception do
         begin
-          Application.MessageBox(pChar(E.Message),'Erro 1 importa NF',mb_Ok + MB_ICONWARNING);
+          //Application.MessageBox(pChar(E.Message),'Erro 1 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+          MensagemSistema(E.Message+' Erro 1 importa NF',msgErro);
         end;
       end;
 
@@ -122,14 +123,16 @@ begin
       except
         on E: Exception do
         begin
-          Application.MessageBox(pChar(E.Message),'Erro 2 importa NF',mb_Ok + MB_ICONWARNING);
+          //Application.MessageBox(pChar(E.Message),'Erro 2 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+          MensagemSistema(E.Message+' Erro 2 importa NF',msgErro);
         end;
       end;
     end;
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Erro 3 importa NF',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Erro 3 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message+' Erro 3 importa NF',msgErro);
     end;
   end;
   Form7.bDescontaICMSDeso := False;
@@ -142,7 +145,8 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Erro ao caregar XML da NF-e',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Erro ao caregar XML da NF-e',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message+' Erro ao caregar XML da NF-e',msgErro);
     end;
   end;
 
@@ -311,7 +315,8 @@ begin
             except
               on E: Exception do
               begin
-                Application.MessageBox(pChar(E.Message),'Erro X importa NF',mb_Ok + MB_ICONWARNING);
+                //Application.MessageBox(pChar(E.Message),'Erro X importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                MensagemSistema(E.Message+' Erro X importa NF',msgErro);
               end;
             end;
 
@@ -806,7 +811,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Erro 10 importa NF',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Erro 10 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message+' Erro 10 importa NF',msgErro);
             end;
           end;
         end;
@@ -920,7 +926,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Erro 11 importa NF',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Erro 11 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message+' Erro 11 importa NF',msgErro);
             end;
           end;
         end;
@@ -928,7 +935,8 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Estrutura do arquivo XML da NF-e inválida.',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Estrutura do arquivo XML da NF-e inválida.',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message+' Estrutura do arquivo XML da NF-e inválida.',msgErro);
       end;
     end;
     TItensInativosImpXMLEnt.New
@@ -937,7 +945,8 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Erro ao importar XML da NF-e',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Erro ao importar XML da NF-e',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message+' Erro ao importar XML da NF-e',msgErro);
     end;
   end;
 
