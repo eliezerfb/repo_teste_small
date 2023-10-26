@@ -3396,7 +3396,6 @@ begin
               on E: Exception do
               begin
                 sLogErro := sLogErroCredenciadoraCartao + 'Erro: 44' + Chr(10) + E.Message+chr(10)+chr(10)+'Ao calcular tributos';
-                // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                 Exit;
               end;
             end;
@@ -3547,7 +3546,6 @@ begin
                 begin
                   sStatus := 'Configure no Estoque, o CSOSN para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;// Sandro Silva 2018-04-11  sStatus := 'CSOSN não configurado para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;
                   sLogErro := sLogErroCredenciadoraCartao + 'Erro:22' + Chr(10) + sStatus +chr(10);   // Sandro Silva 2017-08-16  +chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema.'+chr(10)+'Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
-                  // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                   ConcatenaLog(sLogErroItens, sLogErro); // Sandro Silva 2018-07-20 sLogErroItens := sLogErroItens + Chr(10) + sLogErro;
                 end;
 
@@ -4156,8 +4154,16 @@ begin
 
             sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
+            {Sandro Silva 2023-10-26 inicio
             if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
               sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            }
+            if Trim(sCNPJ_YA05) = '' then
+            begin
+              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
+                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            end;
+            {Sandro Silva 2023-10-26 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             if Pos('CREDITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0 then
@@ -4220,8 +4226,16 @@ begin
 
             sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
+            {Sandro Silva 2023-10-26 inicio
             if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
               sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            }
+            if Trim(sCNPJ_YA05) = '' then
+            begin
+              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
+                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + Chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            end;
+            {Sandro Silva 2023-10-26 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             Form1.sDebitoOuCredito := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito;
@@ -4440,7 +4454,6 @@ begin
           //
           sLogErro := sLogErroCredenciadoraCartao + 'Erro: 21' + Chr(10) + E.Message+chr(10)+
             chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
-          // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
 
           sStatus := E.Message;
           Exit;
@@ -4462,7 +4475,6 @@ begin
       except
         //
         sLogErro := sLogErroCredenciadoraCartao + 'Erro ao gravar NFC-e';
-        // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
         sStatus := sLogErro;
         Exit;
         //
@@ -4584,7 +4596,6 @@ begin
           on E: Exception do
           begin
             sLogErro := E.Message+chr(10)+chr(10)+'Ao enviar sincrono';
-            // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
           end;
         end;
         //
