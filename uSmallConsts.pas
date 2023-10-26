@@ -42,6 +42,8 @@ const
   _cIdentCasasDecimaisQtde  = 'Casas decimais na quantidade';
   _cIdentCasasDecimaisPreco = 'Casas decimais no preço';
   _cIdentObservacao         = 'Observacao';
+  _cCaminhoArqBalanca       = 'Caminho Arquivo balança';
+  _cCaminhoArqBalanca2      = 'Caminho Arquivo balança 2';
 
   // SECTION USUARIO ({USUARIO}.INF)
   _cSectionGeralUsuario           = 'GERAL';

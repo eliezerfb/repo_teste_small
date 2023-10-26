@@ -44,6 +44,8 @@ resourcestring
   _cInformeEmailContab     = 'Informe o e-mail da contabilidade.';
   _cSelecioneTipoDocEmailXMLConf = 'Selecione ao menos um tipo de documento.';
 
+  _cArquivoInvalidoBalanca = 'O nome do arquivo informado é inválido, repita o processo e informe um nome diferente para o arquivo da balança.';
+
 implementation
 
 end.

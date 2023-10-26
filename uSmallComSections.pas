@@ -3,7 +3,7 @@ unit uSmallComSections;
 interface
 
 uses
-  uSectionDATPadrao;
+  uSectionDATPadrao, Forms;
 
 type
   TSectionUso = class(TSectionDATPadrao)
@@ -22,9 +22,15 @@ type
     function getCasasDecimaisQuantidade: Integer;
     procedure setCasasDecimaisPreco(const Value: Integer);
     procedure setCasasDecimaisQuantidade(const Value: Integer);
+    function getCaminhoArqBalanca: String;
+    procedure setCaminhoArqBalanca(const Value: String);
+    function getCaminhoArqBalanca2: String;
+    procedure setCaminhoArqBalanca2(const Value: String);
   public
     property CasasDecimaisQuantidade: Integer read getCasasDecimaisQuantidade write setCasasDecimaisQuantidade;
     property CasasDecimaisPreco: Integer read getCasasDecimaisPreco write setCasasDecimaisPreco;
+    property CaminhoArqBalanca: String read getCaminhoArqBalanca write setCaminhoArqBalanca; 
+    property CaminhoArqBalanca2: String read getCaminhoArqBalanca2 write setCaminhoArqBalanca2;
   protected
     function Section: String; override;
   end;
@@ -62,6 +68,16 @@ end;
 
 { TSectionOutros }
 
+function TSectionOutros.getCaminhoArqBalanca: String;
+begin
+  Result := FoIni.ReadString(Section, _cCaminhoArqBalanca, ExtractFilePath(Application.ExeName));
+end;
+
+function TSectionOutros.getCaminhoArqBalanca2: String;
+begin
+  Result := FoIni.ReadString(Section, _cCaminhoArqBalanca2, ExtractFilePath(Application.ExeName));
+end;
+
 function TSectionOutros.getCasasDecimaisPreco: Integer;
 begin
   Result := FoIni.ReadInteger(Section, _cIdentCasasDecimaisPreco, 2);
@@ -75,6 +91,16 @@ end;
 function TSectionOutros.Section: String;
 begin
   Result := _cSectionSmallComOutros;
+end;
+
+procedure TSectionOutros.setCaminhoArqBalanca(const Value: String);
+begin
+  FoIni.WriteString(Section, _cCaminhoArqBalanca, Value);
+end;
+
+procedure TSectionOutros.setCaminhoArqBalanca2(const Value: String);
+begin
+  FoIni.WriteString(Section, _cCaminhoArqBalanca2, Value);
 end;
 
 procedure TSectionOutros.setCasasDecimaisPreco(const Value: Integer);
