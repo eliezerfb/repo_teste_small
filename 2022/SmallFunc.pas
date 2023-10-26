@@ -2566,6 +2566,7 @@ function ExtraiEnderecoSemONumero(Texto: String): String;
 var
  iPosicaoNumero: Integer;
  i: Integer;
+ sNumero: String;
 begin
   // Método criado para geração do XML da NF-e
   // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
@@ -2593,7 +2594,14 @@ begin
   end;
 
   Result := Copy(Texto, 1, iPosicaoNumero - 1);
-  //if Trim(StringReplace(Texto, Result, ''), [rfReplaceAll]) = '' then
+  // Validando quando o endereço não tiver um número e vírgula separando o texto que representaria o número
+  // Quando o endereço tiver somente o nome da rua (Rua Getulio Vargas) não retornar a última parte do nome da rua (Vargas) como sendo o número
+  if AnsiContainsText(Texto, ',') = False then
+  begin
+    sNumero := Copy(Texto, iPosicaoNumero, Length(Texto));
+    if (LimpaNumero(sNumero) = '') and (AnsiContainsText(sNumero, 'S/N') = False) then
+      Result := Texto;
+  end;
 end;
 
 function ExtraiNumeroSemOEndereco(Texto: String): String;
@@ -2603,6 +2611,10 @@ begin
   Texto := Trim(Texto); // Sandro Silva 2023-10-25 Espaçamentos no início e final do texto impedem de extrair corretamente a informação (Ficha 7498)
   Result := StringReplace(Texto, ExtraiEnderecoSemONumero(Texto), '', [rfReplaceAll]);
   Result := Trim(StringReplace(Result, ', ' , '', [rfReplaceAll]));
+  if Copy(Result, 1, 1) = ',' then
+    Result := Copy(Result, 2, Length(Result));
+  if Trim(Result) = '' then
+    Result := 'S/N';
 end;
 {Sandro Silva 2023-10-16 fim}
 
