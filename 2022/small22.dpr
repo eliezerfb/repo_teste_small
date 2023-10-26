@@ -188,7 +188,8 @@ uses
   uImportaOrcamento in 'units\uImportaOrcamento.pas',
   uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento},
   uGeraCNAB240 in 'units\uGeraCNAB240.pas',
-  uGeraCNAB400 in 'units\uGeraCNAB400.pas';
+  uGeraCNAB400 in 'units\uGeraCNAB400.pas',
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas';
 
 {$R *.RES}
 
