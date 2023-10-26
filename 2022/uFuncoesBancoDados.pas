@@ -73,7 +73,7 @@ function DateToBD(data:TDateTime):string;
 implementation
 
 uses
-  mais;
+  mais, uDialogs;
 
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 {Sandro Silva 2015-10-01 inicio
@@ -144,7 +144,8 @@ begin
   except
     on E: Exception do
     begin
-      ShowMessage(E.Message);
+      //ShowMessage(E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message,msgErro);
       Result := nil;
     end
   end;
@@ -177,7 +178,8 @@ begin
   except
     on E: Exception do
     begin
-      ShowMessage(E.Message);
+      //ShowMessage(E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message,msgErro);
       Result := nil;
     end
   end;

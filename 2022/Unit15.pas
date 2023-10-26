@@ -90,7 +90,7 @@ var
 
 implementation
 
-uses Unit35, Unit7, Unit14, Mais, etiquet, Unit19;
+uses Unit35, Unit7, Unit14, Mais, etiquet, Unit19, uDialogs;
 
 Function VerificaAlteracoes(): Boolean;
 begin
@@ -239,7 +239,8 @@ begin
   TotalDeColunas := True;
   if StrToFloat(sTotal) > 8 Then // Número máximo de colunas é 5 // alterei pedido da sara de 5 para 8
   begin
-    MessageDlg('Número de colunas por linha fora dos padrões permitidos: 1 à 8 !', MtInformation, [mbok], 0);
+    //MessageDlg('Número de colunas por linha fora dos padrões permitidos: 1 à 8 !', MtInformation, [mbok], 0);  Mauricio Parizotto 2023-10-25
+    MensagemSistema('Número de colunas por linha fora dos padrões permitidos: 1 à 8 !',msgAtencao);
     TotalDeColunas := False;
   end;
 end;
@@ -314,7 +315,8 @@ begin
     if Form35.ComboBox1.Text <> 'Tamanho personalizado pelo usuário...' then fContinua := True;
     if fContinua = False then
     begin
-      MessageDlg('Escolha um modelo de etiquetas válido !', MtWarning, [mbok], 0);
+      //MessageDlg('Escolha um modelo de etiquetas válido !', MtWarning, [mbok], 0); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Escolha um modelo de etiquetas válido !',msgAtencao);
       Exit;
     end;
     if TotalDeColunas(Form35.Edit7.text) = False then Exit;
@@ -649,20 +651,16 @@ begin
                 exit;
               end;
             end;
-            //
+            
             // Calcula a Coluna
-            //
             fTempColuna := Largura(                                      // Converte mm em largura
                         (iColuna * ( StrToFloat(Form35.Edit8.Text) + 3)) // Coluna vezes a largura
                         -StrToFloat(Form35.Edit8.Text)                   // Desconta a primeira
                         +StrToFloat(Form35.Edit6.Text)+2                 // Margem Esquerda
                         );
-            //
-            // ShowMessage(InttoStr(iColuna)+Chr(10)+Form35.Edit6.Text+chr(10)+FloatToStr(fTempColuna));
-            //
+
             if StrToInt(LimpaNumero(Label13.Caption)) = 1 then
             begin
-              //
               if (Form7.sModulo = 'ESTOQUE') and (iQtde = 0) then iQtde := VerQuantidade;
               //
               {Impressão de código de barras}
@@ -671,7 +669,6 @@ begin
                 if Form35.CheckBox1.Checked then Printer.canvas.TextOut(Printer.PageWidth - (Printer.Canvas.TextWidth(IntToStr(printer.PageNumber))), 10, IntToStr(printer.PageNumber));
                 if (Length(ibDataset1.FieldByName('REFERENCIA').AsString) > 5) and (ibDataset1.FieldByName('ATIVO').AsString<>'1') and (iQtde > 0) then
                 begin
-                  //                 Inc(iPageCont);
                   printer.canvas.font.size := StrToInt(Arquivo_De_Etiquetas.ReadString(ComboBox1.Text, 'FonteB', '14'));
                   printer.Canvas.Font.Name := '3 of 9 Barcode';
                   printer.Canvas.TextOut(Round(fTempColuna), Round(fLinha), '*' + ibDataset1.FieldByName('REFERENCIA').AsString + '*');
@@ -802,16 +799,15 @@ begin
                    begin
                     Printer.Canvas.Font.Style := [fsbold];
                     printer.canvas.font.size := StrToInt(Arquivo_De_Etiquetas.ReadString(ComboBox1.Text, 'FontePreco', '8'));
-            //                 showmessage(Inttostr(printer.canvas.font.size));
                      iMoeda := 3; // Apresentar o R$ na impressão do preço
                    end;
-                   //
+
                    if ibDataset1.FieldByName(sInformacao[3]).DataType = ftFloat then
                       printer.canvas.TextOut(Round(fTempColuna),Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo3 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[3]).AsFloat])))
                    else
                       printer.canvas.TextOut(Round(fTempColuna),Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo3 + ibDataset1.FieldByName(sInformacao[3]).asString);
                    fLiNaEtiqueta := fLiNaEtiqueta + printer.Canvas.TextHeight(ibDataset1.FieldByName(sInformacao[3]).asString) + (printer.Canvas.TextHeight(ibDataset1.FieldByName(sInformacao[3]).asString) * 0.10); //
-                   //
+                   
                    Printer.Canvas.Font.Style := [];
                    printer.canvas.font.size := StrToInt(Arquivo_De_Etiquetas.ReadString(ComboBox1.Text, 'Fonte', '8'));
                    iMoeda := 0;
@@ -822,11 +818,10 @@ begin
                    if UpperCase(sInformacao[4]) = 'PRECO' then
                    begin
                      Printer.Canvas.Font.Style := [fsbold];
-            //                 showmessage(Inttostr(printer.canvas.font.size));
                      printer.canvas.font.size := StrToInt(Arquivo_De_Etiquetas.ReadString(ComboBox1.Text, 'FontePreco', '8'));
                      iMoeda := 3; // Apresentar o R$ na impressão do preço
                    end;
-                   //
+                   
                    if ibDataset1.FieldByName(sInformacao[4]).DataType = ftFloat then
                       printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo4 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[4]).AsFloat])))
                    else
@@ -909,22 +904,20 @@ begin
         end;
         Printer.Enddoc;
         // Caso a impressão seja interrompida
-        if Button7.Tag = 1 then  MessageDlg('Impressão interrompida pelo usuário !', mtWarning, [mbOk], 0);
-  //////////////////////////////////////////////////////
+        if Button7.Tag = 1 then
+          //MessageDlg('Impressão interrompida pelo usuário !', mtWarning, [mbOk], 0); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Impressão interrompida pelo usuário !',msgAtencao);
       end;
-      //
+
       ibDataset1.Filter := sFiltro;
       ibDataset1.EnableControls;
       Form15.Close;
       ibDataset1.GotoBookmark(MeuBookMark);
       Form35.ComboBox2.Tag  := 0;
-      //
     end;
-    //
-  except end;
-  //
+  except
+  end;
   Screen.Cursor  := crDefault;
-  //
 end;
 
 procedure TForm15.FormActivate(Sender: TObject);

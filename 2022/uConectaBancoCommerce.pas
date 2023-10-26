@@ -53,10 +53,16 @@ begin
         Result := False;
 
         Screen.Cursor := crDefault;
+        {
         ShowMessage('Não foi possível renomear o arquivo SMALL.GDB para SMALL.FDB'+Chr(10)+Chr(10)+
           ' 1 - Feche todos os programas que usam o SMALL.GDB em todos os terminais'+Chr(10)+
           ' 2 - Execute o Small Commerce novamente');
-        // Form1.DestroyWindowHandle;
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema('Não foi possível renomear o arquivo SMALL.GDB para SMALL.FDB'+Chr(10)+Chr(10)+
+                        ' 1 - Feche todos os programas que usam o SMALL.GDB em todos os terminais'+Chr(10)+
+                        ' 2 - Execute o Small Commerce novamente'
+                        ,msgAtencao);
+
         Application.Terminate;
         // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
         FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -109,7 +115,9 @@ begin
 
           Result := False;
 
-          ShowMessage('Reinstale o sistema.');
+          //ShowMessage('Reinstale o sistema.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Reinstale o sistema.',msgAtencao);
+
           // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
           FecharAplicacao(ExtractFileName(Application.ExeName));
         end;
@@ -177,13 +185,22 @@ begin
           Result := False;
 
           Screen.Cursor := crDefault;
+          {
           ShowMessage('Verifique:'+Chr(10)+Chr(10)+
             ' 1 - Se o servidor firebird está instalado (reinicie o windows).'+Chr(10)+
             ' 2 - Se o IP e a URL do servidor estão configurados corretamente.'+Chr(10)+
             ' 3 - Se a sua conexão de rede está disponível.'+Chr(10)+
             ' 4 - Se a porta 3050 está liberada no firewal do windows.'+Chr(10)+
             ' 5 - Se for necessário, reinstale o sistema...');
-          // Form1.DestroyWindowHandle;
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema('Verifique:'+Chr(10)+Chr(10)+
+                          ' 1 - Se o servidor firebird está instalado (reinicie o windows).'+Chr(10)+
+                          ' 2 - Se o IP e a URL do servidor estão configurados corretamente.'+Chr(10)+
+                          ' 3 - Se a sua conexão de rede está disponível.'+Chr(10)+
+                          ' 4 - Se a porta 3050 está liberada no firewal do windows.'+Chr(10)+
+                          ' 5 - Se for necessário, reinstale o sistema...'
+                          ,msgAtencao);
+
           Application.Terminate;
           // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
           FecharAplicacao(ExtractFileName(Application.ExeName));

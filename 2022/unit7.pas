@@ -7130,33 +7130,17 @@ begin
     end;
     //
     Result := 1;
-    //
   end else
   begin
-    //
-    {
-    RetVal := ShellExecute(0, 'open', PChar(
-  'mailto:'+sPara+
-  '?subject='+sAssunto+
-  '&body='+sTexto+
-  '&Attach='+sAnexo
-    ), nil, nil, SW_SHOWNORMAL);
-    //
-    if RetVal <= 32 then MessageDlg('Não foi possível mandar o e-mail.', mtWarning, [mbOK], 0);
-    }
-    //
-    //
     // cria propriedades da mensagem
-    //
     FillChar(Msg, SizeOf(Msg), 0);
     //
     with Msg do
     begin
       if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
       if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
-      //
+
       // remetente
-      //
       if (sDe <> '') then
       begin
         lpSender.ulRecipClass := MAPI_ORIG;
@@ -7167,9 +7151,8 @@ begin
         lpSender.lpEntryID := nil;
         lpOriginator := @lpSender;
       end;
-      //
+      
       // destinatário
-      //
       if (sPara <> '') then
       begin
         //
@@ -7187,10 +7170,8 @@ begin
         lpRecepient.lpEntryID := nil;
         nRecipCount := 1;
         lpRecips := @lpRecepient;
-        //
       end else
       begin
-        //
         if (sCC <> '') then
         begin
           lpComCopia.ulRecipClass := MAPI_CC;
@@ -7236,22 +7217,15 @@ begin
           FreeAndNil(slAnexos);
         end;
       end;
-      //
+
       // carrega dll e o método sPara envio do email
-      //
       MAPIModule := LoadLibrary(PChar(MAPIDLL));
-  //    MAPIModule.
       if MAPIModule = 0 then
       begin
         Result := -1
       end else
       begin
         try
-          //
-  //        Flags := MAPI_AB_NOMODIFY;
-  //        Flags := MAPI_USE_DEFAULT;
-  //        Flags := MAPI_ENVELOPE_ONLY;
-
           if bConfirma then
           begin
             Flags := MAPI_DIALOG or MAPI_LOGON_UI;
@@ -7271,23 +7245,19 @@ begin
         finally
           FreeLibrary(MAPIModule);
         end;
-        //
       end;
     end;
-    //
   end;
-  //
+
   Mais1Ini.Free;
-  //
+  
   CHDir(sAtual);
-  //
 end;
 
 function CriaJpg(sP1: String) :Boolean;
 var
   jp: TJPEGImage;  //Requires the "jpeg" unit added to "uses" clause.
 begin
-  //
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
     Form14.Image1.Picture.LoadFromFile('LOGOTIP.BMP')
   else
@@ -7301,12 +7271,10 @@ begin
   except end;
   //
   Result := True;
-  //
 end;
 
 function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
 begin
-  //
   if Form19.CheckBox8.Checked then
   begin
     with Form1 do
@@ -7337,7 +7305,6 @@ begin
   end;
   //
   Result := True;
-  //
 end;
 
 

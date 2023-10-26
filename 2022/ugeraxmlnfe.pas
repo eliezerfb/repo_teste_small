@@ -124,7 +124,8 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          ShowMessage('A justificativa tem que ter no minimo 15 caracteres.');
+          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
       end;
@@ -142,7 +143,8 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          ShowMessage('A justificativa tem que ter no minimo 15 caracteres.');
+          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
       end;
@@ -164,7 +166,8 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          ShowMessage('A justificativa tem que ter no minimo 15 caracteres.');
+          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
       end;
@@ -229,7 +232,8 @@ begin
       CloseFile(F);
 
       ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\dbug.txt'),'','', SW_SHOWMAXIMIZED);
-      ShowMessage('Tecle Ok para continuar');
+      //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Tecle Ok para continuar');
 
       if FileExists(pChar(Form1.sAtual+'\dbug.txt')) then
       begin

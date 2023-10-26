@@ -51,7 +51,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit24, Unit12, Unit10, Unit14, Unit30;
+uses Unit7, Mais, Unit24, Unit12, Unit10, Unit14, Unit30, uDialogs;
 
 {$R *.DFM}
 
@@ -144,17 +144,16 @@ var
   J, I : Integer;
   rCompraOuVenda : Real;
 begin
-  //
   if Label2.Caption = 'Saída de: 0,00' then
   begin
-    ShowMessage('Informe a quantidade na grade.');
+    //ShowMessage('Informe a quantidade na grade.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Informe a quantidade na grade.',msgAtencao);
     Abort;
   end;
-  //
+
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-  //
+  
   try
-    //
     rCompraOuVenda := 0;
     //
     BaixaQtd := rQtd - Form7.ibDataSet4QTD_ATUAL.AsFloat - Form1.rReserva;
@@ -190,7 +189,6 @@ begin
     //
     if Form7.sModulo = 'COMPRA' then
     begin
-      //
       Form7.bChave := True;
       Form7.ibDataSet23.Edit;
       Form7.ibDataSet23TOTAL.AsFloat        := 0;
@@ -206,7 +204,6 @@ begin
     //
     if BaixaQtd = 0 then
     begin
-      //
       Form7.ibDataSet10.Close;
       Form7.ibDataSet10.SelectSQL.Clear;
       Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
@@ -241,14 +238,12 @@ begin
             except end;
             //
             // Quando I=0 e J=0 São as legendas não é a qtd
-            //
             try
               if (I = 0) or (J = 0) then
               begin
                  Form7.ibDataSet10QTD.AsString  := Form13.StringGrid1.Cells[I,J]
               end else
               begin
-                //
                 if Form13.StringGrid1.Cells[I,J] = '' then Form13.StringGrid1.Cells[I,J] := '0,00';
                 if Form7.ibDataSet10ENTRADAS.AsString = '' then Form7.ibDataSet10ENTRADAS.AsString := '0,00';
                 if Form13.StringGrid2.Cells[I,J] = '' then Form13.StringGrid2.Cells[I,J]  := '0,00';
@@ -266,25 +261,27 @@ begin
                 end;
               end;
             except end;
-            //
-            try Form7.ibDataSet10.Post; except end;
-            //
+            
+            try
+              Form7.ibDataSet10.Post;
+            except
+            end;
           end;
         end;
       end;
     end else
     begin
-      ShowMessage('Acerte a diferença de: '+FloatToStr(BaixaQtd));
+      //ShowMessage('Acerte a diferença de: '+FloatToStr(BaixaQtd)); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Acerte a diferença de: '+FloatToStr(BaixaQtd),msgAtencao);
       Abort;
     end;
-    //
-  except Abort end;
-  //
+  except
+    Abort
+  end;
+
   // Fiz está rotina no dia do meu aniversário 26/09/2001
-  //
   Close;
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
-  //
 end;
 
 procedure TForm13.StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -294,13 +291,9 @@ var
   BaixaQtd : Real;
   rCompraOuVenda : Real;
 begin
-  //
   BaixaQtd := rQtd - Form7.ibDataSet4QTD_ATUAL.AsFloat - Form1.rReserva;
   rCompraOuVenda  := 0;
 
-// ShowMessage('Teste '+FloatToStr(rQtd) );
-
-  //
   if BaixaQtd < 0 then iMultiplicador := 1 else iMultiplicador := -1;
   //
   for I := 0 to 99 do
@@ -366,7 +359,6 @@ begin
     StringGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Form13.StringGrid1.Cells[aCol,aRow])
   end else
   begin
-    //
     StringGrid1.Canvas.Font.Size  := 10;
     StringGrid1.Canvas.Font.Color := clBlack;
     if aCol = 0 then StringGrid1.Canvas.Font.Color := clRed;
@@ -379,9 +371,7 @@ begin
       StringGrid1.Canvas.Font.Size  := 8;
       StringGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+16,AllTrim(Form13.StringGrid2.Cells[aCol,aRow]));
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm13.StringGrid1KeyUp(Sender: TObject; var Key: Word;
@@ -562,8 +552,14 @@ begin
               begin
                 if StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid1.Cells[I,J]))) > StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid2.Cells[I,J]))) then
                 begin
+                  {
                   ShowMessage('Não tem '+AllTrim(StrTran(Form13.StringGrid1.Cells[I,J],'-',''))+' '+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+' '+Form13.StringGrid1.Cells[I,0]+' '+Form13.StringGrid1.Cells[0,J]+' no estoque.'+Chr(10)+
                   'Só tem '+AllTrim(Form13.StringGrid2.Cells[I,J])+'.');
+                  Mauricio Parizotto 2023-10-25}
+                  MensagemSistema('Não tem '+AllTrim(StrTran(Form13.StringGrid1.Cells[I,J],'-',''))+' '+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+' '+Form13.StringGrid1.Cells[I,0]+' '+Form13.StringGrid1.Cells[0,J]+' no estoque.'+Chr(10)+
+                                  'Só tem '+AllTrim(Form13.StringGrid2.Cells[I,J])+'.'
+                                  ,msgAtencao);
+
                   Form13.StringGrid1.Cells[I,J] := '0,0';
                 end;
               end;

@@ -54,7 +54,7 @@ var
 implementation
 
 uses Unit7, Mais, Unit12, Unit34, Unit13, Unit33, uFuncoesBancoDados,
-  uTransmiteNFSe, uImportaOrcamento;
+  uTransmiteNFSe, uImportaOrcamento, uDialogs;
 
 {$R *.DFM}
 
@@ -412,7 +412,6 @@ begin
             begin
               if Form7.ibDataSet16SINCRONIA.AsFloat = Form7.ibDataSet16QUANTIDADE.AsFloat then    // Resolvi este problema as 4 da madrugada no NoteBook em casa
               begin
-                // ShowMessage('Teste volta ao estoque '+Form7.ibDataSet16QUANTIDADE.AsString +' '+Form7.ibDataSet16DESCRICAO.AsString);
                 try
                   Form7.ibDataSet4.Edit;
                   Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat
@@ -420,7 +419,7 @@ begin
                   Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
                   Form7.ibDataSet4.Post;
 
-                  Form7.ibDataSet16.Edit;                                                     //
+                  Form7.ibDataSet16.Edit;                                                     
                   Form7.ibDataSet16SINCRONIA.AsFloat := 0;                                    // Resolvi este problema as 4 da madrugada no NoteBook em casa
                 except end;
               end;
@@ -440,7 +439,8 @@ begin
     end;
   end else
   begin
-    ShowMessage('Ordem de serviço já importada ou inexistente.');
+    //ShowMessage('Ordem de serviço já importada ou inexistente.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Ordem de serviço já importada ou inexistente.',msgAtencao);
   end;
 
   Form7.sModulo := 'VENDA';
@@ -846,7 +846,8 @@ begin
     //Se não encontrar
     if IBQCupom.IsEmpty then
     begin
-      ShowMessage('Cupom fiscal não encontrado ou já importado.');
+      //ShowMessage('Cupom fiscal não encontrado ou já importado.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Cupom fiscal não encontrado ou já importado.',msgAtencao);
       Exit;
     end;
 
@@ -874,7 +875,8 @@ begin
         Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
       end else
       begin
-        ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929');
+        //ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929',msgAtencao);
         Exit;
       end;
     end else
@@ -882,7 +884,8 @@ begin
       //Cupom Gerencial
       if Pos('FINALIZADA', AnsiUpperCase(IBQCupom.FieldByName('StatusNFCE').AsString)) <> 1 then //Validando início do status permite importar cupons antigos MEI e novos gerenciais Sandro Silva 2023-08-23 if IBQCupom.FieldByName('StatusNFCE').AsString <> 'FINALIZADA' then
       begin
-        ShowMEssage('Cupom gerencial não finalizado.');
+        //ShowMEssage('Cupom gerencial não finalizado.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Cupom gerencial não finalizado.',msgAtencao);
         Exit;
       end;
     end;
@@ -900,8 +903,12 @@ begin
       begin
         if (Form1.ConfNegat = 'Não') and (Form7.ibDataSet4QTD_ATUAL.AsFloat < IBQCupom.FieldByName('QUANTIDADE').AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) then
         begin
+          {
           ShowMessage('Não é possível efetuar a venda de '+IBQCupom.FieldByName('DESCRICAO').AsString+chr(10)
                       +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque');
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema('Não é possível efetuar a venda de '+IBQCupom.FieldByName('DESCRICAO').AsString+chr(10)
+                          +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque',msgAtencao);
         end else
         begin
           if (AllTrim(Form7.ibDataSet15CLIENTE.AsString) = '')

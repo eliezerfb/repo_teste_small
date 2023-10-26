@@ -934,7 +934,8 @@ try
       DeleteFile(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
       Form1.sArquivoRemessa := '';
       
-      ShowMessage('Não existe movimento, o arquivo não foi gerado.');
+      //ShowMessage('Não existe movimento, o arquivo não foi gerado.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não existe movimento, o arquivo não foi gerado.',msgAtencao);
     end;
   except
     on E: Exception do

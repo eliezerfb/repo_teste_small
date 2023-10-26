@@ -222,7 +222,8 @@ begin
       Form7.spdNFeDataSets.Campo('finNFe_B25').Value  := '3'; // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
       Form7.spdNFeDataSets.Campo('natOp_B04').Value   := '999 - Estorno de NF-e não cancelada no prazo legal';
     except
-      ShowMessage('Erro ao gravar natOp_B04');
+      //ShowMessage('Erro ao gravar natOp_B04'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro ao gravar natOp_B04',msgErro);
     end;
   end else
   begin
@@ -271,10 +272,17 @@ begin
               Form7.spdNFeDataSets.SalvarPart('NREF');
             end else
             begin
+              {
               ShowMessage('Informação inválida informe a'+chr(10)+
                           'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                           '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
                           'cupom fiscal referenciado');
+              Mauricio Parizotto 2023-10-25}
+              MensagemSistema('Informação inválida informe a'+chr(10)+
+                              'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
+                              '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
+                              'cupom fiscal referenciado'
+                              ,msgAtencao);
               Abort;
             end;
           end;
@@ -1102,7 +1110,8 @@ begin
             begin
               if (RetornaValorDaTagNoCampo('descANP', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
               begin
-                ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP');
+                //ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP'); Mauricio Parizotto 2023-10-25}
+                MensagemSistema('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP',msgAtencao);
               end else
               begin
                 Form7.spdNFeDataSets.campo('descANP_LA03').Value := RetornaValorDaTagNoCampo('descANP',Form7.ibDataSet4TAGS_.AsString);                                                  // Descrição do produto conforme ANP
@@ -1114,6 +1123,7 @@ begin
                    (RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') or
                    (RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
                 begin
+                  {
                   ShowMessage('Incluir no controle de estoque na aba Tags:'+
                               Chr(10)+
                               Chr(10)+'pGLP: 0,0000'+
@@ -1121,6 +1131,15 @@ begin
                               Chr(10)+'pGNi: 0,0000'+
                               Chr(10)+'vPart: 0,00'
                               );
+                  Mauricio Parizotto 2023-10-25}
+                  MensagemSistema('Incluir no controle de estoque na aba Tags:'+
+                                  Chr(10)+
+                                  Chr(10)+'pGLP: 0,0000'+
+                                  Chr(10)+'pGNn: 0,0000'+
+                                  Chr(10)+'pGNi: 0,0000'+
+                                  Chr(10)+'vPart: 0,00'
+                                  ,msgAtencao);
+
                   Abort;
                 end else
                 begin
@@ -1128,12 +1147,22 @@ begin
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) <> 100 then
                   begin
+                    {
                     ShowMessage('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
                     + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
                     + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
                                               + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value);
+                    Mauricio Parizotto 2023-10-25}
+                    MensagemSistema('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
+                                    + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
+                                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
+                                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
+                                    + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
+                                    + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value
+                                    ,msgAtencao);
+
                     Abort;
                   end else
                   begin

@@ -859,19 +859,19 @@ begin
         AssignFile(F,Mais2Ini.ReadString('Nota Fiscal 2','Porta','LPT1'));
         Mais2ini.Free;
       end;
-      //
+
       try
         Rewrite(F);
-      except ShowMessage('Verifique a impressora.') end;
-      //                                                                    //
-      // Arquivo de nota fiscal NOTA                                        //
-      //                                                                    //
-      Form7.ibDataSet19.First;                                                  //
-      while not Form7.ibDataSet19.Eof do                                        //
-      begin                                                                 //
-        //                                                                  //
-        // Não imprime quando a linha e a coluna estiverem zeradas          //
-        //                                                                  //
+      except
+        //ShowMessage('Verifique a impressora.') Mauricio Parizotto 2023-10-25
+        MensagemSistema('Verifique a impressora.',msgAtencao);
+      end;
+
+      // Arquivo de nota fiscal NOTA
+      Form7.ibDataSet19.First;
+      while not Form7.ibDataSet19.Eof do
+      begin
+        // Não imprime quando a linha e a coluna estiverem zeradas
         if Form7.ibDataSet19LINHA.AsFloat > 200 then
         begin
           Form7.ibDataSet19.Edit;
@@ -882,10 +882,9 @@ begin
           Form7.ibDataSet19.Edit;
           Form7.ibDataSet19COLUNA.AsFloat := 300;
         end;
-        //
+        
         if (Form7.ibDataSet19LINHA.Value + Form7.ibDataSet19COLUNA.Value) > 0 then
         begin
-          //
           try
             if Trunc(Form7.ibDataSet19ELEMENTO.Value) > 0 then
             begin
@@ -894,9 +893,8 @@ begin
               Form7.ibDataSet19.Post;
             end;
           except
-            // ShowMessage('Erro criando o Lay Out da nota fiscal no campo, '+ibDataSet19DESCRICAO.AsString+'.');
           end;
-          //
+          
           if (Form7.ibDataSet19ELEMENTO.Value >= 150) and (Form7.ibDataSet19ELEMENTO.Value < 999) then
           begin
 try
@@ -941,10 +939,9 @@ try
                     Replicate(' ',100)+FormatFloat(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(Form7.ibDataSet19TIPO.Value,'9','#'),'.','*'),',','.'),'*',','),'#.####','0.0000'),'#.###','0.000'),'#.##','0.00'),'#.#','0.0'),vCampo[ Trunc( Form7.ibDataSet19ELEMENTO.Value )+I])
                     ,length(Alltrim(Form7.ibDataSet19Tipo.Value)));
                   except
-                    ShowMessage('Erro 2');
-
+                    //ShowMessage('Erro 2'); Mauricio Parizotto 2023-10-25
+                    MensagemSistema('Erro 2',msgErro);
                   end;
-                  //
                 end;
               end else
               begin
@@ -1100,16 +1097,14 @@ except end;
                 if UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,Length(Form7.ibDataSet19TIPO.AsString)-2))) = 'CHR(27)+[1]' then
                 vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] + chr(27)+'1';
                 if UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,Length(Form7.ibDataSet19TIPO.AsString)-2))) = 'CHR(27)+[2]' then vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] + chr(27)+'2';
-                //
-                // ShowMessage('Teste: '+Chr(10)+UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,17)))+chr(10)+'CHR(27)+[C]+CHR(');
-                //
+
                 if UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,17))) = 'CHR(27)+[C]+CHR(' then
                 begin
                   vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] + chr(27)+'C'+chr(StrToInt(Copy(Form7.ibDataSet19Tipo.AsString,Length(Form7.ibDataSet19TIPO.AsString)-2,2)));
                   iPagina := StrToInt('0'+Limpanumero((Copy(Form7.ibDataSet19Tipo.AsString,Length(Form7.ibDataSet19TIPO.AsString)-3,3))));
                 end;
               end;
-              //
+              
               if Copy(Form7.ibDataSet19TIPO.AsString,1,2) = '@R' then // Texto fixo
               begin
                   vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := Copy(vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ]+Replicate(' ',200),1,Trunc(Form7.ibDataSet19COLUNA.Value))+
@@ -1129,7 +1124,6 @@ except end;
         end;
         //
         Form7.ibDataSet19.Next;
-       //
       end;
       {                    }
       { Elimina os acentos }
@@ -1141,9 +1135,7 @@ except end;
       {                         }
       { Imprime todas as Linhas }
       {                         }
-      //
       // MOTOR DA NOTA FISCAL
-      //
       try
         Writeln(F,chr(27)+'@');
         for I := 0 to iPagina -1 do
@@ -1151,22 +1143,23 @@ except end;
           try
             Writeln(F,vLinha[I]);
           except
-            ShowMessage('Verifique a impressora.');
+            //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Verifique a impressora.',msgAtencao);
             Abort;
           end;
         end;
         CloseFile(F);
       except
-        ShowMessage('Verifique a impressora.');
+        //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Verifique a impressora.',msgAtencao);
         Abort;
       end;
     end;
-    //
+
     Form7.sModulo := 'COMPRA';
     Form7.ibDataSet24.Edit;
-    //
   end;
-  //
+
   Result := True;
 end;
 
@@ -1222,7 +1215,8 @@ begin
         Form7.ibDataSet24MODELO.AsString  := Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2));
     except
       on E: Exception do
-        ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
+        //ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Erro ao gravar NF-e: '+chr(10)+E.Message,msgErro);
     end;
 
     if AllTrim(Form7.ibDataSet24FORNECEDOR.AsString) <> '' then
@@ -1432,7 +1426,8 @@ begin
                     end;
                   except
                     on E: Exception do
-                      ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message);
+                      //ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+                      MensagemSistema('Erro ao calcular custo médio: '+chr(10)+E.Message,msgErro);
                   end;
 
                   try
@@ -1443,7 +1438,6 @@ begin
                         // Atenção a rotina acima altera a quantidade no estoque
                         Form7.ibDataSet4.Edit;
                         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet23QUANTIDADE.AsFloat;
-                        // ShowMessage('Teste Entra no estoque '+Form7.ibDataSet23QUANTIDADE.AsString +' '+Form7.ibDataSet23DESCRICAO.AsString);
                         
                         // Atenção a rotina acima altera a quantidade no estoque
 
@@ -1458,8 +1452,6 @@ begin
                 except
                 end;
 
-                // ShowMessage('Teste entrou no estoque '+Form7.ibDataSet23QUANTIDADE.AsString+ ' '+Form7.ibDataSet23DESCRICAO.AsString);
-
                 Form7.sModulo := 'NAO';
               except
               end;
@@ -1469,9 +1461,6 @@ begin
                 // Fórmula do custo médio                                                                       //
                 // Custo Médio = (CUSTO DE CADA COMPRA * QUANTIDADE DE CADA COMPRA) / QUANTIDADE TOTAL COMPRADA //
                 //                                                                                              //
-                //////////////////////////////////////////////////////////////////////////////////////////////////
-                //
-                // ShowMessage(Form7.IBQuery99.FieldByName('vC').AsString+chr(10)+Form7.IBQuery99.FieldByName('vQ').AsString);
 
                 if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset4.Edit;
@@ -1492,8 +1481,6 @@ begin
                   if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
                     Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
                   {Sandro Silva 2023-03-01 fim}
-
-                  //
                 end;
 
                 // Grava a nova quantidade o novo fornecedor e a ultima compra no estoque //
@@ -1840,31 +1827,25 @@ begin
     begin
       if CpfCgc(LimpaNumero(SMALL_DBEdit39.Text)) then
       begin
-        //
         // CAAD9
-        //
         Form7.ibDataSet2.DisableControls;
         Form7.ibDataSet2.Close;
         Form7.ibDataSet2.SelectSQL.Clear;
         Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where CGC='+QuotedStr(ConverteCpfCgc(AllTrim(LimpaNumero(SMALL_DBEdit39.Text))))+'');
         Form7.ibDataSet2.Open;
         Form7.ibDataSet2.EnableControls;
-        //
-        // ShowMessage(Form7.ibDataSet2NOME.AsString);
-        //
+
         Form7.ibDataSet24FORNECEDOR.AsString := Form7.ibDataSet2NOME.AsString;
-        //
       end;
     end;
   end;
-  //
+
   // CPF/CGC
-  //
   if AllTrim(SMALL_DBEdit39.Text)<>AllTrim(Form7.ibDAtaSet2NOME.AsString) then
   begin
     Form7.ibDataSet24FORNECEDOR.AsString := Form7.ibDataSet2NOME.AsString;
   end;
-  //
+  
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select NUMERONF, FORNECEDOR, REGISTRO from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' and REGISTRO<>'+QuotedStr(Form7.ibDataSet24REGISTRO.AsString)+' ');
@@ -1872,21 +1853,19 @@ begin
   //
   if (Form7.IBDataSet99.FieldByName('NUMERONF').AsString = Form7.ibDataSet24NUMERONF.AsString) and (Form7.IBDataSet99.FieldByName('FORNECEDOR').AsString = Form7.ibDataSet24FORNECEDOR.AsString) and (Form7.IBDataSet99.FieldByName('REGISTRO').AsString <> Form7.ibDataSet24REGISTRO.AsString) then
   begin
-    //
     sRegistro := Form7.IBDataSet99.FieldByName('REGISTRO').AsString;
-    //
-    ShowMessage('Nota fiscal já cadastrada.');
-    //
+
+    //ShowMessage('Nota fiscal já cadastrada.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Nota fiscal já cadastrada.',msgAtencao);
+
     Form7.sModulo := 'DUPLA';
     Form7.ibDataSet24.Delete;
     Form7.sModulo := 'COMPRA';
     //
     Form7.ibDataSet24.Locate('REGISTRO',sREgistro,[]);
     Form7.ibDataSet24.Edit;
-    //
   end else
   begin
-    //
     Form7.ibDataSet24.Post;
     Form7.ibDataSet24.Edit;
     //
@@ -1907,7 +1886,6 @@ begin
   end;
   //
   if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then  MostraFoto2(True);
-  //
 end;
 
 procedure TForm24.SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
@@ -3074,7 +3052,6 @@ begin
     //
     if bButton = IDYES then
     begin
-      //
       try
         Form7.IBDataSet6.Append;
         Form7.IBDataSet6CODIGO.AsString       := Form24.ibDataSet44CODIGO.AsString;
@@ -3083,11 +3060,12 @@ begin
         Form7.IBDataSet6.Post;
       except
         on E: Exception do
-          ShowMessage('Erro 2133: '+chr(10)+E.Message);
+          //ShowMessage('Erro 2133: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Erro 2133: '+chr(10)+E.Message,msgErro);
       end;
-      //
+
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
-      //
+      
       if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
       if (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Post;
       //
@@ -3099,16 +3077,15 @@ begin
                              ' where NUMERONF='+quotedStr(Form7.ibDataSet23NUMERONF.AsString)+
                              ' and FORNECEDOR='+quotedStr(Form7.ibDataSet23FORNECEDOR.AsString)+
                              ' and DESCRICAO='+quotedStr(Form7.ibDataSet4DESCRICAO.AsString)+' ');
-      // ShowMessage(Form1.ibQuery1.Text);
       Form1.ibQuery1.Open;
-      //
+
       Form1.bFlag := False;
-      //
+
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(sCodigo)+' ');
       Form7.ibDataSet4.Open;
-      //
+
       if sCodigo = Form7.ibDataSet4CODIGO.AsString then
       begin
         if Form7.ibDataSet4ALTERADO.AsString = '3' then
@@ -3116,20 +3093,20 @@ begin
           Form7.ibDataSet4.Delete;
         end;
       end;
-      //
+
       Form7.ibDataSet23.Close;
       Form7.ibDataSet23.DataSource  := Form7.DataSource24;
       Form7.ibDataSet23.Selectsql.Clear;
       Form7.ibDataSet23.Selectsql.Add('select * from ITENS002 where NUMERONF=:NUMERONF and FORNECEDOR=:FORNECEDOR');
       Form7.ibDataSet23.Open;
-      //
+
       Form7.ibDataSet4.Close;                                                //
       Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form24.ibDataSet44CODIGO.AsString)+' ');  //
       Form7.ibDataSet4.Open;
-      //
+      
       Form24.edtAlteraEntrada.Text :=  '';
-      //
+      
       Form7.ibDataSet23.Locate('DESCRICAO',Form24.ibDataSet44DESCRICAO.AsString,[]);
       Form7.bMudei := True;
     end else
@@ -3409,7 +3386,8 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Erro 8 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 8 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 8 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3427,7 +3405,9 @@ begin
       Form24.Label89.Caption := '';
     end;
   except
-    on E: Exception do  ShowMessage('Erro 6 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      //ShowMessage('Erro 6 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 6 FC: '+chr(10)+E.Message,msgErro);
   end;
 
 end;
@@ -3446,7 +3426,9 @@ begin
       Form24.Label89.Caption := '';
     end;
   except
-    on E: Exception do  ShowMessage('Erro 3 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      //ShowMessage('Erro 3 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 3 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3465,7 +3447,8 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Erro 1 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 1 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 1 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3501,7 +3484,8 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Erro 2 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 2 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 2 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3527,7 +3511,8 @@ begin
     DbGrid1.SelectedIndex := 1;
   except
     on E: Exception do
-      ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 4 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 4 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 

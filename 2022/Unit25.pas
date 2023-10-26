@@ -1190,6 +1190,7 @@ begin
                       +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
                       +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
                       ,msgAtencao);
+
     end;
   end;
 end;
