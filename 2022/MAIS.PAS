@@ -448,6 +448,7 @@ type
     function getPropaganda: String;
     function RetornarWhereNotasManifestar: String;
     procedure DefinirBuildEXEDAT;
+    procedure EnviarXMLContabilidadeAut;
 
   public
     fDias : Real;
@@ -5350,6 +5351,8 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   end;
 
+  EnviarXMLContabilidadeAut;
+
   // Legal
   if not bLegal then
   begin
@@ -5479,6 +5482,42 @@ begin
   end;
 
   Screen.Cursor := crDefault;
+end;
+
+procedure TForm1.EnviarXMLContabilidadeAut;
+var
+  oArqDat: TArquivosDAT;
+  bDataAnt: TDate;
+begin
+  oArqDat := TArquivosDAT.Create(EmptyStr);
+  try
+    if not oArqDat.NFe.XML.EnvioAutomatico then
+      Exit;
+
+    bDataAnt := oArqDat.NFe.XML.DataUltimoEnvio;
+    if (MonthOf(bDataAnt) = MonthOf(Date))
+       and (YearOf(bDataAnt) = YearOf(Date)) then
+      Exit;
+      
+    frmExportaXML := TfrmExportaXML.Create(nil);
+    try
+      Mensagem22('Enviando arquivos XML para a contabilidade...');
+      // Seta data atual para não ocorrer dois envios simultaneos.
+      oArqDat.NFe.XML.DataUltimoEnvio := Date;
+
+      if not frmExportaXML.EnviarMesAnterior(oArqDat.NFe.XML.NFeSaida, oArqDat.NFe.XML.NFeEntrada, oArqDat.NFe.XML.NFCe,
+                                             oArqDat.NFe.XML.EmailContabilidade) then
+      begin
+        // Caso não seja enviado setar a data anterior para que na proxima abertura ocorra nova tentativa.
+        oArqDat.NFe.XML.DataUltimoEnvio := bDataAnt;
+      end;
+    finally
+      Mensagem22('Pronto...');
+      FreeAndNil(frmExportaXML);
+    end;
+  finally
+    FreeAndNil(oArqDat);
+  end;
 end;
 
 procedure TForm1.Image17Click(Sender: TObject);
