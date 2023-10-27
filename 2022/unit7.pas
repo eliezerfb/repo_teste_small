@@ -2307,6 +2307,7 @@ type
     procedure ChamarTelaXMLContab;
     function MensagemPortalConsultaCNPJCPF: Integer;
     procedure ImprimeOrcamento;
+    function getUsuarioLogado: String;
   public
     // Public declarations
 
@@ -2430,7 +2431,8 @@ type
     procedure AtualizarListaItensAuxiliar;
     procedure AuditaAlteracaoEstoqueManual;
     function TestarClienteExiste(AcTexto: String): Boolean;    
-    function TestarProdutoExiste(AcTexto: String): Boolean;   
+    function TestarProdutoExiste(AcTexto: String): Boolean;
+    property UsuarioLogado: String read getUsuarioLogado;   
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -34494,5 +34496,10 @@ begin
   ImprimeOrcamento;
 end;
 {Dailon Parisotto 2023-10-13 Fim}
+
+function TForm7.getUsuarioLogado: String;
+begin
+  Result := Senhas.UsuarioPub;
+end;
 
 end.

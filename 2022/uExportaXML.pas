@@ -28,6 +28,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    // FoBackGroud = Signigica que vai efetuar o envio automatico dos XMLS
+    FbBackGround: Boolean;
     FoArquivoDAT: TArquivosDAT;
     procedure CarregaArquivoINI;
     procedure GravaArquivoINI;
@@ -46,6 +48,8 @@ type
     procedure AbrirTelaTodosDocs;
     procedure AbrirTelaNFe(AbSaida: Boolean = True; AbEntrada: Boolean = True);
     procedure AbrirSATNFCe;
+    function EnviarMesAnterior(AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+    function EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
   end;
 
 var
@@ -54,7 +58,7 @@ var
 implementation
 
 uses
-  uSmallConsts, uSmallResourceString, unit7;
+  uSmallConsts, uSmallResourceString, unit7, DateUtils;
 
 {$R *.dfm}
 
@@ -105,7 +109,7 @@ end;      }
 
 function TfrmExportaXML.EnviarXml: Boolean;
 var
-  cAnexo, cTitulo, cCorpo: String;
+  cTipoGeracao, cDocs, cAnexo, cTitulo, cCorpo: String;
   cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT: String;
   bTamanhoZip: Boolean;
 begin
@@ -217,11 +221,41 @@ begin
         cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
 
         Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+
         Result := True;
+
+        if Result then
+        begin
+          if cbNFeSaida.Checked then
+            cDocs := 'NF-e Saída';
+          if cbNFeEntrada.Checked then
+          begin
+            if cDocs <> EmptyStr then
+              cDocs := cDocs + ', ';
+            cDocs := cDocs + 'NF-e Entrada';
+          end;
+          if cbNFCeSAT.Checked then
+          begin
+            if cDocs <> EmptyStr then
+              cDocs := cDocs + ', ';
+            cDocs := cDocs + 'NFC-e/SAT';
+          end;
+
+          cTipoGeracao := 'MANUAL';
+          if FbBackGround then
+            cTipoGeracao := 'AUTOMATICO';
+
+          Unit7.Audita(cTipoGeracao, 'SMALL', Form7.UsuarioLogado,
+                       'Enviado ' + cDocs,
+                       0,0);
+
+          Unit7.AgendaCommit(False);
+        end;
+
       end
       else
         Application.MessageBox(PChar('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
-                                     'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+                                     'Não foi encontrado nenhum XML para os documentos marcados no período de ' + DateToStr(dtInicial.Date) + ' a ' + DateToStr(dtFinal.Date) + '.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION)
 
     finally
       {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
@@ -319,7 +353,7 @@ begin
   {$ELSE}
   FormatSettings.ShortDateFormat := _cFormatDate;
   {$ENDIF}
-  
+  FbBackGround := False;  
   FoArquivoDAT := TArquivosDAT.Create(EmptyStr);
 
   CarregaArquivoINI;
@@ -339,6 +373,9 @@ end;
 
 procedure TfrmExportaXML.GravaArquivoINI;
 begin
+  if FbBackGround then
+    Exit;
+    
   FoArquivoDAT.NFe.XML.PeriodoInicial     := dtInicial.Date;
   FoArquivoDAT.NFe.XML.PeriodoFinal       := dtFinal.Date;
   FoArquivoDAT.NFe.XML.EmailContabilidade := AllTrim(edtEmailContab.Text);
@@ -367,7 +404,8 @@ begin
   if not ValidaEmail(edtEmailContab.Text) then
   begin
     Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
-    edtEmailContab.SetFocus;
+    if not FbBackGround then
+      edtEmailContab.SetFocus;
     Exit;
   end;
   
@@ -396,6 +434,38 @@ begin
   finally
     FreeAndNil(qryNFCe);
   end;
+end;
+
+function TfrmExportaXML.EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+begin
+  Result := False;
+
+  FbBackGround := True;
+  try
+    dtInicial.Date       := AdDataIni;
+    dtFinal.Date         := AdDataFim;
+    cbNFeSaida.Checked   := AbNFSaida;
+    cbNFeEntrada.Checked := AbNFEntrada;
+    cbNFCeSAT.Checked    := AbNFCeSAT;
+    edtEmailContab.Text  := AcEmailContab;
+
+    Result := EnviarXml;
+  finally
+    FbBackGround := False;
+  end;
+end;
+
+function TfrmExportaXML.EnviarMesAnterior(AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+var
+  bDataMesAnt: TDate;
+  bDataIni: TDate;
+  bDataFim: TDate;
+begin
+  bDataMesAnt := IncMonth(Date, -1);
+  bDataIni := StartOfTheMonth(bDataMesAnt);
+  bDataFim := EndOfTheMonth(bDataMesAnt);
+
+  Result := EnviarEmBackGroud(bDataIni, bDataFim, AbNFSaida, AbNFEntrada, AbNFCeSAT, AcEmailContab);
 end;
 
 end.

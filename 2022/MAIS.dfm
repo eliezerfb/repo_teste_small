@@ -13778,6 +13778,10 @@ object Form1: TForm1
           Caption = 'Enviar DANFE por e-mail'
           OnClick = Enviardanfeporemail1Click
         end
+        object EnvioautomticodeXML1: TMenuItem
+          Caption = 'Envio autom'#225'tico de XML'
+          OnClick = EnvioautomticodeXML1Click
+        end
         object N9: TMenuItem
           Caption = '-'
         end

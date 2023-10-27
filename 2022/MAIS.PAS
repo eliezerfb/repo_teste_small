@@ -274,6 +274,7 @@ type
     NaturezaseCFOPs1: TMenuItem;
     ConversodeCFOP1: TMenuItem;
     Parmetrosdetributao1: TMenuItem;
+    EnvioautomticodeXML1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -441,6 +442,7 @@ type
     procedure NaturezaseCFOPs1Click(Sender: TObject);
     procedure ConversodeCFOP1Click(Sender: TObject);
     procedure Parmetrosdetributao1Click(Sender: TObject);
+    procedure EnvioautomticodeXML1Click(Sender: TObject);
 
 
   private
@@ -548,7 +550,10 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uSmallConsts
   , uConectaBancoCommerce
   , uTypesRecursos
-  , uArquivosDAT, uIconesSistema, uGeraCNAB240, uGeraCNAB400;
+  , uGeraCNAB240, uGeraCNAB400
+  , uArquivosDAT
+  , uIconesSistema
+  , uFrmConfigEmailAutContabilidade;
 
 {$R *.DFM}
 
@@ -9452,73 +9457,78 @@ end;
 
 procedure TForm1.ConfiguraodaNFe2Click(Sender: TObject);
 var
+  oArq: TArquivosDAT;
   Mais1Ini : tIniFile;
 begin
-  //
-  Formatododanfe1.Checked := True;
-  Ambiente1.Checked       := True;
-  //
-  if bModoScan then SCANSistemadeContingnciadoAmbienteNacional1.Checked := True else SCANSistemadeContingnciadoAmbienteNacional1.Checked := False;
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  //
-  Formatododanfe1.Caption := 'Formato do DANFE: '+Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato'));
-  Ambiente1.Caption       := 'Ambiente: '+Alltrim(Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao));
-  //
-  if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = '' then Mais1Ini.WriteString('DANFE','Configurar','Não');
-  if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = 'Sim' then ConfiguraodoDANFEparaNFe1.Visible := True else ConfiguraodoDANFEparaNFe1.Visible := False;
-  if Mais1Ini.ReadString('ENVIO','Zipar XML','N')               = 'S'   then Form1.ZiparXMLnoenvioporemail1.Checked := True else Form1.ZiparXMLnoenvioporemail1.Checked := False;
-  if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S') = 'S'   then Form1.Enviardanfeporemail1.Checked := True else Form1.Enviardanfeporemail1.Checked := False;
-  if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then Form1.ConsultarNFesemitidas1.Checked := True else Form1.ConsultarNFesemitidas1.Checked := False;
+  oArq := TArquivosDAT.Create(Usuario);
+  try
+    Formatododanfe1.Checked := True;
+    Ambiente1.Checked       := True;
+    //
+    if bModoScan then SCANSistemadeContingnciadoAmbienteNacional1.Checked := True else SCANSistemadeContingnciadoAmbienteNacional1.Checked := False;
+    //
+    Formatododanfe1.Caption := 'Formato do DANFE: '+Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato'));
+    Ambiente1.Caption       := 'Ambiente: '+Alltrim(Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao));
+    //
+    if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = '' then Mais1Ini.WriteString('DANFE','Configurar','Não');
+    if Alltrim(Mais1Ini.ReadString('DANFE','Configurar',''))      = 'Sim' then ConfiguraodoDANFEparaNFe1.Visible := True else ConfiguraodoDANFEparaNFe1.Visible := False;
+    if Mais1Ini.ReadString('ENVIO','Zipar XML','N')               = 'S'   then Form1.ZiparXMLnoenvioporemail1.Checked := True else Form1.ZiparXMLnoenvioporemail1.Checked := False;
+    if Mais1Ini.ReadString('ENVIO','Enviar danfe por e-mail','S') = 'S'   then Form1.Enviardanfeporemail1.Checked := True else Form1.Enviardanfeporemail1.Checked := False;
+    if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then Form1.ConsultarNFesemitidas1.Checked := True else Form1.ConsultarNFesemitidas1.Checked := False;
 
-  {Sandro Silva 2023-06-01 inicio}
-  if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
-  begin
-    Form1.ConsultarNFesemitidas1.Checked := False;
-    Form1.ConsultarNFesemitidas1.Enabled := False;
-  end;
-  {Sandro Silva 2023-06-01 fim}
+    EnvioautomticodeXML1.Checked := oArq.NFe.XML.EnvioAutomatico;
 
-  {Sandro Silva 2023-03-14 inicio
-  //
-  if Mais1Ini.ReadString('NFE','Layout','4.00')               = '4.00' then
-  begin
+    {Sandro Silva 2023-06-01 inicio}
+    if Form1.ValidaRecursos.PermiteRecursoParaProduto = False then
+    begin
+      Form1.ConsultarNFesemitidas1.Checked := False;
+      Form1.ConsultarNFesemitidas1.Enabled := False;
+    end;
+    {Sandro Silva 2023-06-01 fim}
+
+    {Sandro Silva 2023-03-14 inicio
+    //
+    if Mais1Ini.ReadString('NFE','Layout','4.00')               = '4.00' then
+    begin
+      Form1.N301.Checked   := False;
+      Form1.N3101.Checked  := False;
+      Form1.N4001.Checked  := True;
+    end else
+    begin
+      Form1.N301.Checked   := False;
+      Form1.N3101.Checked  := True;
+      Form1.N4001.Checked  := False;
+    end;
+    }
+    if Mais1Ini.ReadString('NFE','Layout','4.00') <> '4.00' then
+    begin
+      Mais1Ini.WriteString('NFE','Layout','4.00');
+    end;
     Form1.N301.Checked   := False;
     Form1.N3101.Checked  := False;
-    Form1.N4001.Checked  := True;
-  end else
-  begin
-    Form1.N301.Checked   := False;
-    Form1.N3101.Checked  := True;
-    Form1.N4001.Checked  := False;
+    //
+    if Mais1Ini.ReadString('NFE','Layout','4.00') = '4.00' then
+    begin
+      Form1.N301.Checked   := False;
+      Form1.N3101.Checked  := False;
+      Form1.N4001.Checked  := True;
+    end;
+    {Sandro Silva 2023-03-14 fim}
+    //
+    if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
+    begin
+      Form1.Simples1.Checked := True;
+      Form1.Complexo1.Checked := False;
+    end else
+    begin
+      Form1.Simples1.Checked := False;
+      Form1.Complexo1.Checked := True;
+    end;
+  finally
+    Mais1ini.Free;
+    FreeAndNil(oArq);
   end;
-  }
-  if Mais1Ini.ReadString('NFE','Layout','4.00') <> '4.00' then
-  begin
-    Mais1Ini.WriteString('NFE','Layout','4.00');
-  end;
-  Form1.N301.Checked   := False;
-  Form1.N3101.Checked  := False;
-  //
-  if Mais1Ini.ReadString('NFE','Layout','4.00') = '4.00' then
-  begin
-    Form1.N301.Checked   := False;
-    Form1.N3101.Checked  := False;
-    Form1.N4001.Checked  := True;
-  end;
-  {Sandro Silva 2023-03-14 fim}    
-  //
-  if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
-  begin
-    Form1.Simples1.Checked := True;
-    Form1.Complexo1.Checked := False;
-  end else
-  begin
-    Form1.Simples1.Checked := False;
-    Form1.Complexo1.Checked := True;
-  end;
-  //
-  Mais1ini.Free;
 end;
 
 procedure TForm1.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -12574,6 +12584,17 @@ begin
   {$ENDIF}
 
   Form7.Show;
+end;
+
+procedure TForm1.EnvioautomticodeXML1Click(Sender: TObject);
+begin
+  frmConfigEmailAutContab := TfrmConfigEmailAutContab.Create(nil);
+  try
+    frmConfigEmailAutContab.SetImagem(imgVendas.Picture);
+    frmConfigEmailAutContab.ShowModal;
+  finally
+    FreeAndNil(frmConfigEmailAutContab);
+  end;
 end;
 
 end.

@@ -190,7 +190,8 @@ uses
   uGeraCNAB240 in 'units\uGeraCNAB240.pas',
   uGeraCNAB400 in 'units\uGeraCNAB400.pas',
   uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
-  uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico};
+  uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
+  uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab};
 
 {$R *.RES}
 
