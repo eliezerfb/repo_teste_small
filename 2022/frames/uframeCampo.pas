@@ -54,7 +54,8 @@ type
 
 implementation
 
-uses uFuncoesRetaguarda;
+uses uFuncoesRetaguarda
+    , uDialogs;
 
 {$R *.dfm}
 
