@@ -1293,6 +1293,7 @@ begin
                         //
                         if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
                         begin
+                          {Sandro Silva 2023-10-16 inicio
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1301,22 +1302,43 @@ begin
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                   )); //
+                          }
+                          Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
+                                                                + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                  )); //
+                          {Sandro Silva 2023-10-16 fim}
 
                           {Sandro Silva 2023-03-02 inicio}
                           if AnsiContainsText(Form7.ibDataSet4CUSTOCOMPR.AsString, 'INF') then
                             Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0.00;
                           {Sandro Silva 2023-03-02 fim}
 
+                          {Sandro Silva 2023-10-16 inicio
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
-                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' +
-                                          Form7.ibDataSet23VIPI.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString+ '))'+
+                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' + Form7.ibDataSet23VIPI.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString+ '))'+
                                           '+ (( ' + Form7.ibDataSet23UNITARIO.AsString +
                                           ' / ' +  Form7.ibDataSet24MERCADORIA.AsString + ' ) * ' +
                                           ' ( ' + Form7.ibDataSet24FRETE.AsString + ' + ' +
                                           Form7.ibDataSet24SEGURO.AsString + ' + ' +
                                           Form7.ibDataSet24DESPESAS.AsString + ' - ' +
                                           Form7.ibDataSet24DESCONTO.AsString + ' ))';
+                          }
+                          sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
+                                          ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
+                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' + Form7.ibDataSet23VIPI.AsString + ' + ' + Form7.ibDataSet23VFCPST.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString + '))' +
+                                          '+ (( ' + Form7.ibDataSet23UNITARIO.AsString +
+                                          ' / ' +  Form7.ibDataSet24MERCADORIA.AsString + ' ) * ' +
+                                          ' ( ' + Form7.ibDataSet24FRETE.AsString + ' + ' +
+                                          Form7.ibDataSet24SEGURO.AsString + ' + ' +
+                                          Form7.ibDataSet24DESPESAS.AsString + ' - ' +
+                                          Form7.ibDataSet24DESCONTO.AsString + ' ))';
+                          {Sandro Silva 2023-10-16 fim}
 
 
                           // Fórmula do custo médio                                                //
@@ -1407,16 +1429,7 @@ begin
                         // Obs: O Custo de medio é a media ponderada dasoma do valor pago ao fornecedor mais as           //
                         // despesas proporcionais de frete seguro e outras menos o crédito de ICMS.                       //
                         //
-                        {Sandro Silva 2023-03-01 inicio
-                        Form7.ibDataSet23CUSTO.Value          := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
-                                                                  + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
-                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
-                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
-                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
-                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
-                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                     )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat); // menos o crédito de ICMS
-                        }
+                        {Sandro Silva 2023-10-17 inicio
                         Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
                                                                   + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1425,7 +1438,26 @@ begin
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                      )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.AsFloat); // menos o crédito de ICMS
-                        {Sandro Silva 2023-03-01 fim}                                                                                                                     
+                        }
+                        try
+                          // itens002.custo armazena o custo médio
+                          Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCPST
+                                                                    + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                     / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                    ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                       Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                       Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                       Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                       )) - (Form7.ibDataSet23VICMS.AsFloat/Form7.ibDataSet23QUANTIDADE.AsFloat); // menos o crédito de ICMS
+
+                          if AnsiContainsText(Form7.ibDataSet23CUSTO.AsString, 'INF') then
+                            Form7.ibDataSet23CUSTO.AsFloat := 0.00;
+
+                        except
+                          Form7.ibDataSet23CUSTO.AsFloat := 0.00;
+                        end;
+                        {Sandro Silva 2023-10-17 fim}
+
                         //
                         Form7.ibDataSet4.Post;
                       end;
