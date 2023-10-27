@@ -38,7 +38,7 @@ type
   private
     procedure ImportaCupom;
     //procedure ImportaOrcamento;
-    procedure ImportaOS;
+    //procedure ImportaOS;
     //function BuscarOBSOrcamento(AcPedido: String): String;
     //function RetornarOBSOrcamento(AcPedido: String): String;
     { Private declarations }
@@ -113,11 +113,13 @@ begin
   MaskEdit2.Text    := '001';
 
   sTipo := Form7.sModulo;
+  {
   if (Form7.sModulo = 'OS') then
   begin
     MaskEdit1.SetFocus;
     MaskEdit1.SelectAll;
   end else
+  Mauricio Parizotto 2023-10-23}
   begin
     if Form7.sModulo = 'BALCAO' then
     begin
@@ -205,11 +207,13 @@ begin
     Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
   end;
 
+  {
   // Ordem de serviços
   if Form7.sModulo = 'OS' then
   begin
     ImportaOS;
   end;
+  Mauricio Parizotto 2023-10-20}
 
   // Importar orçamento específico
   if Form7.sModulo = 'ORCAMENTO' then
@@ -261,9 +265,11 @@ procedure TForm41.MaskEdit1Exit(Sender: TObject);
 begin
   if Limpanumero(MaskEdit1.TExt) <> '' then
   begin
+    {
     if (Form7.sModulo = 'OS') or (Form7.sModulo = 'ORCAMENTO') then
       MaskEdit1.Text := StrZero(StrToInt(Limpanumero(MaskEdit1.TExt)),10,0)
     else
+    Mauricio Parizotto 2023-10-20}
       MaskEdit1.Text := StrZero(StrToInt(Limpanumero(MaskEdit1.TExt)),6,0);
   end
   else
@@ -285,6 +291,7 @@ begin
     MaskEdit2.Text := StrZero(StrToInt(Limpanumero(MaskEdit2.TExt)),3,0) else MaskEdit2.Text := '001';
 end;
 
+(*
 procedure TForm41.ImportaOS;
 var
   iB : Integer;
@@ -457,6 +464,8 @@ begin
   Form41.Close;
 
 end;
+
+Mauricio Parizotto 2023-10-20*)
 
 (*
 function TForm41.BuscarOBSOrcamento(AcPedido: String): String;

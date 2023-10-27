@@ -8,7 +8,7 @@ uses
   ComCtrls, StdCtrls, Buttons;
 
 type
-  TFrmGripPesquisaPadrao = class(TFrmPadrao)
+  TFrmGridPesquisaPadrao = class(TFrmPadrao)
     lblTitulo2: TLabel;
     lblTitulo1: TLabel;
     edPesquisa: TEdit;
@@ -39,7 +39,7 @@ type
   end;
 
 var
-  FrmGripPesquisaPadrao: TFrmGripPesquisaPadrao;
+  FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao;
 
 implementation
 
@@ -47,7 +47,7 @@ uses Unit7;
 
 {$R *.dfm}
 
-procedure TFrmGripPesquisaPadrao.dtpFiltroClick(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.dtpFiltroClick(Sender: TObject);
 begin
   Keybd_Event(VK_MENU,0,0,0);
   Keybd_Event(VK_DOWN,0,0,0);
@@ -55,7 +55,7 @@ begin
   Keybd_Event(VK_MENU,0,KEYEVENTF_KEYUP,0);
 end;
 
-procedure TFrmGripPesquisaPadrao.edPesquisaKeyDown(Sender: TObject;
+procedure TFrmGridPesquisaPadrao.edPesquisaKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -72,13 +72,13 @@ begin
   end;
 end;
 
-procedure TFrmGripPesquisaPadrao.dbGridPrincipalDblClick(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.dbGridPrincipalDblClick(Sender: TObject);
 begin
   inherited;
   btnOK.Click;
 end;
 
-procedure TFrmGripPesquisaPadrao.btnCancelarClick(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.btnCancelarClick(Sender: TObject);
 begin
   inherited;
   ModalResult := mrCancel;
@@ -86,7 +86,7 @@ begin
   Close;
 end;
 
-procedure TFrmGripPesquisaPadrao.btnOKClick(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.btnOKClick(Sender: TObject);
 begin
   inherited;
   if FIdSelecionado = '' then
@@ -95,13 +95,13 @@ begin
     ModalResult := mrOk;
 end;
 
-procedure TFrmGripPesquisaPadrao.FormCreate(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.FormCreate(Sender: TObject);
 begin
   inherited;
   dtpFiltro.Date := Date;
 end;
 
-procedure TFrmGripPesquisaPadrao.FormShow(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.FormShow(Sender: TObject);
 begin
   inherited;
   
@@ -113,7 +113,7 @@ begin
   SelecionaPesquisa;
 end;
 
-procedure TFrmGripPesquisaPadrao.dtpFiltroKeyDown(Sender: TObject;
+procedure TFrmGridPesquisaPadrao.dtpFiltroKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-procedure TFrmGripPesquisaPadrao.dtpFiltroCloseUp(Sender: TObject);
+procedure TFrmGridPesquisaPadrao.dtpFiltroCloseUp(Sender: TObject);
 begin
   inherited;
   

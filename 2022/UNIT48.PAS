@@ -135,7 +135,8 @@ var
 implementation
 
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
-  Unit24, uTransmiteNFSe;
+  Unit24, uTransmiteNFSe, uFrmPesquisaOrcamento, uFrmPesquisaOrdemServico,
+  uImportaOrcamento, uImportaOrdemServico;
 
 
 function ApagaAsDuplicatasAnteriores(pP1:Boolean):Boolean;
@@ -456,11 +457,23 @@ begin
 end;
 
 procedure TForm48.ImportarOS2Click(Sender: TObject);
+var
+  NumeroOS : string;
 begin
+  {
   // Atualiza as ECF's que estão em uso
   Form7.sModulo := 'OS';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
+  Mauricio Parizotto 2023-10-23}
+
+  NumeroOS := PesquisaNumeroOrdemServico('Importar Ordem de Serviço');
+  if NumeroOS <> '' then
+  begin
+    Form7.sModulo := 'OS';
+    ImportaOS(NumeroOS);
+    Form7.sModulo := 'VENDA';
+  end;
 end;
 
 procedure TForm48.DefineVisibleHomologacao;
@@ -810,10 +823,22 @@ begin
 end;
 
 procedure TForm48.Importaroramentos1Click(Sender: TObject);
+var
+  NumeroOrcamento : String;
 begin
+  {
   Form7.sModulo := 'ORCAMENTO';
   Form41.ShowModal;
   Form7.sModulo := 'VENDA';
+  Mauricio Parizotto 2023-10-23}
+
+  NumeroOrcamento := PesquisaNumeroOrcamento('Importar Orçamento');
+  if NumeroOrcamento <> '' then
+  begin
+    Form7.sModulo := 'ORCAMENTO';
+    ImportaOrcamento(NumeroOrcamento,Form7.sModulo);
+    Form7.sModulo := 'VENDA';
+  end;
 end;
 
 procedure TForm48.Label28Click(Sender: TObject);

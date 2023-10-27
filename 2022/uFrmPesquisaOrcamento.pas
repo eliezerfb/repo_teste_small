@@ -8,7 +8,7 @@ uses
   Buttons, Grids, DBGrids, ComCtrls;
 
 type
-  TFrmPesquisaOrcamento = class(TFrmGripPesquisaPadrao)
+  TFrmPesquisaOrcamento = class(TFrmGridPesquisaPadrao)
     IBQPESQUISAPEDIDO: TIBStringField;
     IBQPESQUISADATA: TDateField;
     IBQPESQUISACLIFOR: TIBStringField;
@@ -34,8 +34,12 @@ var
 
 implementation
 
-uses uFuncoesBancoDados, SmallFunc, Unit7, uFuncoesRetaguarda,
-  uSmallConsts;
+uses uFuncoesBancoDados
+  , SmallFunc
+  , Unit7
+  , uFuncoesRetaguarda
+  , uSmallConsts
+  ;
 
 {$R *.dfm}
 
@@ -99,7 +103,6 @@ end;
 procedure TFrmPesquisaOrcamento.btnOKClick(Sender: TObject);
 begin
   FrmPesquisaOrcamento.FIdSelecionado := IBQPESQUISA.FieldByName('PEDIDO').AsString;
-
   inherited;
 end;
 

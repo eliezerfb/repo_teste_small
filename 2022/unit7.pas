@@ -2493,7 +2493,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioResumoVendas
   , uDuplicaOrcamento
   , uDuplicaProduto
-  , uImportaOrcamento;
+  , uImportaOrcamento, uImportaOrdemServico;
 
 {$R *.DFM}
 
@@ -23613,29 +23613,25 @@ end;
 
 procedure TForm7.ibDataSet11BeforePost(DataSet: TDataSet);
 begin
-  //
   if (AllTrim(ibDataSet11NOME.AsString) <> '') and (AllTrim(ibDataSet11PLANO.AsString) = '') then
   begin
-    //
     ibDataSet12.Close;
     ibDataSet12.SelectSql.Clear;
     ibDataSet12.SelectSQL.Add('select * from CONTAS where SUBSTRING(CONTA FROM 1 FOR 1)='+QuotedStr('5')+'order by CONTA');
     ibDataSet12.Open;
     ibDataSet12.Last;
-    //
+
     if LimpaNumero(Right(ibDataSet12CONTA.AsString,2)) <> '' then
     begin
       ibDataSet11.Edit;
       ibDataSet11PLANO.AsString := '510'+StrZero(StrToInt(LimpaNumero(Right(ibDataSet12CONTA.AsString,2)))+1,2,0);
     end;
-    //
+    
     ibDataSet12.Append;
     ibDataSet12CONTA.AsString := ibDataSet11PLANO.AsString;
     ibDataSet12NOME.AsString := ibDataSet11NOME.AsString;
     ibDataSet12.Post;
-    //
   end;
-  //
 end;
 
 procedure TForm7.Gerarnotafiscalsrie11Click(Sender: TObject);
@@ -23643,6 +23639,7 @@ begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
   begin
+    {Mauricio Parizotto 2023-10-23 Inicio
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
@@ -23651,6 +23648,28 @@ begin
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
     end;
+    }
+
+    if Form7.ibDataSet3NF.AsString = '' then
+    begin
+      if Application.MessageBox(Pchar('Confirma a importação da OS '+ibDataSet3NUMERO.AsString+' para a Nota Fiscal?'
+                                                  + chr(10)
+                                                  + Chr(10))
+                                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
+      begin
+        Form7.Close;
+        Form7.Vendas_1Click(Sender);                        // Nota fiscal série 1
+        Form7.Image101Click(Sender);                        // Nova Nota
+        Form7.sModulo := 'OS';
+        ImportaOS(Form7.ibDataSet3NUMERO.AsString);
+        Form7.sModulo := 'VENDA';
+      end;
+    end else
+    begin
+      MensagemSistema('Esta OS já possui documento fiscal vinculado.',msgAtencao);
+    end;
+
+    {Mauricio Parizotto 2023-10-23 Fim}
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
@@ -23662,6 +23681,7 @@ begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
   begin
+    {Mauricio Parizotto 2023-10-23 Inicio
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
@@ -23669,6 +23689,28 @@ begin
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
     end;
+    }
+
+    if Form7.ibDataSet3NF.AsString = '' then
+    begin
+      if Application.MessageBox(Pchar('Confirma a importação da OS '+ibDataSet3NUMERO.AsString+' para a Nota Fiscal?'
+                                                  + chr(10)
+                                                  + Chr(10))
+                                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
+      begin
+        Form7.Close;
+        Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
+        Form7.Image101Click(Sender);                        // Nova Nota
+        Form7.sModulo := 'OS';
+        ImportaOS(Form7.ibDataSet3NUMERO.AsString);
+        Form7.sModulo := 'VENDA';
+      end;
+    end else
+    begin
+      MensagemSistema('Esta OS já possui documento fiscal vinculado.',msgAtencao);
+    end;
+
+    {Mauricio Parizotto 2023-10-23 Fim}
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
@@ -32388,6 +32430,7 @@ begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
   begin
+    {Mauricio Parizotto 2023-10-23 Inicio
     if Form7.ibDataSet3SITUACAO.AsString <> 'Fechada' then
     begin
       Form41.MaskEdit1.Text := Form7.ibDataSet3NUMERO.AsString;
@@ -32397,6 +32440,29 @@ begin
       Form7.Image101Click(Sender);                        // Nova Nota
       Form12.ImportarOS2Click(Sender);                    // Importa OS
     end;
+    }
+
+    if Form7.ibDataSet3NF.AsString = '' then
+    begin
+      if Application.MessageBox(Pchar('Confirma a importação da OS '+ibDataSet3NUMERO.AsString+' para a Nota Fiscal?'
+                                                  + chr(10)
+                                                  + Chr(10))
+                                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
+      begin
+        Form7.Close;
+        Form1.imgServicosClick(Sender);                     // Nota fiscal Nota Fiscal de Servico
+        Form7.Image101Click(Sender);                        // Nova Nota
+        Form7.sModulo := 'OS';
+        ImportaOS(Form7.ibDataSet3NUMERO.AsString);
+        Form7.sModulo := 'VENDA';
+      end;
+
+    end else
+    begin
+      MensagemSistema('Esta OS já possui documento fiscal vinculado.',msgAtencao);
+    end;
+
+    {Mauricio Parizotto 2023-10-23 Fim}
   end else
   begin
     ShowMessage('Emissão de NF não liberada para este usuário.');
