@@ -746,7 +746,7 @@ begin
 
     oDialog := TSaveDialog.Create(nil);
     try
-      oDialog.FileName := cCaminho + '\' + cNomeArqPadrao;
+      oDialog.FileName := cCaminho + cNomeArqPadrao;
       oDialog.InitialDir := cCaminho;
       oDialog.Filter := 'Arquivo de Texto (.txt)|*.txt';
       if not oDialog.Execute then
@@ -757,7 +757,7 @@ begin
       if Copy(cCaminho, Length(cCaminho)-3, 4) <> '.txt' then
         cCaminho := cCaminho + '.txt';
 
-      oArqDat.SmallCom.Outros.CaminhoArqBalanca := ExtractFileDir(cCaminho);
+      oArqDat.SmallCom.Outros.CaminhoArqBalanca := ExtractFilePath(cCaminho);
 
       if not TestarNomeArquivoValido(cCaminho) then
         Exit;
@@ -766,7 +766,7 @@ begin
       begin
         cCaminhoExtra := oArqDat.SmallCom.Outros.CaminhoArqBalanca2;
 
-        oDialog.FileName := cCaminhoExtra + '\setortxt.txt';
+        oDialog.FileName := cCaminhoExtra + 'setortxt.txt';
         oDialog.InitialDir := cCaminhoExtra;
 
         if not oDialog.Execute then
@@ -777,7 +777,7 @@ begin
         if Copy(cCaminho, Length(cCaminho)-3, 4) <> '.txt' then
           cCaminho := cCaminho + '.txt';
 
-        oArqDat.SmallCom.Outros.CaminhoArqBalanca2 := ExtractFileDir(cCaminhoExtra);
+        oArqDat.SmallCom.Outros.CaminhoArqBalanca2 := ExtractFilePath(cCaminhoExtra);
 
         if not TestarNomeArquivoValido(cCaminho) then
           Exit;
