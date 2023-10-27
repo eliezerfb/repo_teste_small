@@ -1604,6 +1604,9 @@ type
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
     ImprimirOrcamento: TMenuItem;
+    CartadeCorreoEletrnicaCCe1: TMenuItem;
+    ExportarXML1: TMenuItem;
+    N70: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2264,6 +2267,7 @@ type
     procedure DuplicarProdutoClick(Sender: TObject);
     procedure DuplicaOrcamentoClick(Sender: TObject);
     procedure ImprimirOrcamentoClick(Sender: TObject);
+    procedure ExportarXML1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2307,6 +2311,8 @@ type
     function MensagemPortalConsultaCNPJCPF: Integer;
     procedure ImprimeOrcamento;
     function getUsuarioLogado: String;
+    procedure SalvaXMLNFSaida(AcCaminho: String = '');
+    function TestaNFSaidaFaturada: Boolean;
   public
     // Public declarations
 
@@ -13302,9 +13308,12 @@ begin
   N2ConsultarrecibodaNFe1.Visible                  := False;
   N3ConsultarNFe1.Visible                          := False;
   N4ImprimirDANFE1.Visible                         := False;
+  N70.Visible                                      := False; 
+  ExportarXML1.Visible                             := False;
   N5EnviarDANFEporemail1.Visible                   := False;
   N6VisualizarDANFE1.Visible                       := False;
   CancelarNFe1.Visible                             := False;
+  CartadeCorreoEletrnicaCCe1.Visible               := False;
   CCartadeCorreoEletronicaCCe1.Visible             := False;
   IImprimirCartadeCorreoEletronicaCCe1.Visible     := False;
   EEnviarcartadecorreoporemail1.Visible            := False; // Sandro Silva 2023-06-05 Faltou no card 6107
@@ -13457,6 +13466,7 @@ begin
         N5EnviarDANFEporemail1.Visible                   := True;
         N6VisualizarDANFE1.Visible                       := True;
         CancelarNFe1.Visible                             := True;
+        CartadeCorreoEletrnicaCCe1.Visible               := True;
         CCartadeCorreoEletronicaCCe1.Visible             := True;
         IImprimirCartadeCorreoEletronicaCCe1.Visible     := True;
         EEnviarcartadecorreoporemail1.Visible            := True; // Sandro Silva 2023-06-05 Faltou no card 6107
@@ -13466,6 +13476,8 @@ begin
         RRecuperaroXMLdestaNFe1.Visible                  := True;
         N66.Visible                                      := True;
         DuplicatestaNFe1.Visible                         := True;
+        ExportarXML1.Visible                             := True;
+        N70.Visible                                      := True;
         //
       end else
       begin
@@ -13520,6 +13532,8 @@ begin
           N6VisualizarDANFE1.Enabled  := False;
         end;
 
+        ExportarXML1.Enabled := N4ImprimirDANFE1.Enabled;
+         
         N5EnviarDANFEporemail1.Enabled       := True;
         CancelarNFe1.Enabled                 := True;
         CCartadeCorreoEletronicaCCe1.Enabled := True;
@@ -13531,6 +13545,7 @@ begin
       begin
         N1enviarNFe1.Enabled             := True;
         N4ImprimirDANFE1.Enabled         := False;
+        ExportarXML1.Enabled             := False;
         N5EnviarDANFEporemail1.Enabled   := False;
 //        if Alltrim(Form7.ibDataSet15NFERECIBO.AsString) = '' then N2ConsultarrecibodaNFe1.Enabled := False else N2ConsultarrecibodaNFe1.Enabled := True;
 //        if Alltrim(Form7.ibDataSet15NFERECIBO.AsString) = '' then N3ConsultarNFe1.Enabled := False else N3ConsultarNFe1.Enabled := True;
@@ -13575,7 +13590,7 @@ begin
         EnviarNFSeporemail1.Caption := 'Enviar NFS-e por e-mail ' + cEmails;
       end;
 
-      EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail';
+      EEnviarcartadecorreoporemail1.Caption := 'Enviar Carta por e-mail';
       if EEnviarcartadecorreoporemail1.Enabled then
         EEnviarcartadecorreoporemail1.Caption := EEnviarcartadecorreoporemail1.Caption + ' ' + cEmails;
 
@@ -24275,6 +24290,11 @@ begin
   //
 end;
 
+function TForm7.TestaNFSaidaFaturada: Boolean;
+begin
+  Result := (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> EmptyStr) or (bContingencia);
+end;
+
 procedure TForm7.N4ImprimirDANFE1Click(Sender: TObject);
 var
   Device : array[0..255] of char;
@@ -24283,7 +24303,7 @@ var
   hDMode : THandle;
   sFormato, sLote : String;
 begin
-  if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') or (bContingencia) then
+  if TestaNFSaidaFaturada then
   begin
     Screen.Cursor            := crHourGlass;
     Form7.Panel7.Caption := 'Imprimindo o DANFE'+replicate(' ',100);
@@ -34110,6 +34130,54 @@ end;
 function TForm7.getUsuarioLogado: String;
 begin
   Result := Senhas.UsuarioPub;
+end;
+
+procedure TForm7.ExportarXML1Click(Sender: TObject);
+var
+  oDialog: TSaveDialog;
+  cCaminho: String;
+begin
+  if not TestaNFSaidaFaturada then
+    Exit;
+    
+  oDialog := TSaveDialog.Create(nil);
+  try
+    oDialog.Title    := 'Exportar XML'; 
+    oDialog.FileName := Form7.ibDataSet15NFEID.AsString;
+    oDialog.Filter := 'Arquivo XML (.xml)|*.xml';    
+
+    if not oDialog.Execute then
+      Exit;
+
+    cCaminho := oDialog.FileName;
+    if Copy(cCaminho, Length(cCaminho)-3, 4) <> '.xml' then
+      cCaminho := cCaminho + '.xml';
+
+    SalvaXMLNFSaida(cCaminho);
+  finally
+    FreeAndNil(oDialog);
+  end;
+end;
+
+procedure TForm7.SalvaXMLNFSaida(AcCaminho: String = '');
+var
+  lsXML: TStringList;
+  cCaminho: String;
+begin
+  cCaminho := AcCaminho;
+
+  if cCaminho = EmptyStr then
+    cCaminho := ExtractFilePath(ExtractFilePath(Application.ExeName));
+    
+  lsXML := TStringList.Create;
+  try
+    lsXML.Clear;
+    lsXML.Text := Form7.ibDataSet15NFEXML.AsString;
+
+    lsXML.SaveToFile(cCaminho);
+  finally
+    FreeAndNil(lsXML);
+  end;
 end;
 
 end.

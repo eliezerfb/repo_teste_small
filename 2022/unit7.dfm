@@ -18144,17 +18144,20 @@ object Form7: TForm7
     object N67: TMenuItem
       Caption = '-'
     end
-    object CCartadeCorreoEletronicaCCe1: TMenuItem
-      Caption = 'C - Carta de Corre'#231#227'o Eletronica (CC-e)'
-      OnClick = CCartadeCorreoEletronicaCCe1Click
-    end
-    object IImprimirCartadeCorreoEletronicaCCe1: TMenuItem
-      Caption = 'I - Imprimir Carta de Corre'#231#227'o Eletronica (CC-e)'
-      OnClick = IImprimirCartadeCorreoEletronicaCCe1Click
-    end
-    object EEnviarcartadecorreoporemail1: TMenuItem
-      Caption = 'E - Enviar Carta de Corre'#231#227'o Eletronica (CC-e) por e-mail'
-      OnClick = EEnviarcartadecorreoporemail1Click
+    object CartadeCorreoEletrnicaCCe1: TMenuItem
+      Caption = 'Carta de Corre'#231#227'o Eletr'#244'nica (CC-e)'
+      object CCartadeCorreoEletronicaCCe1: TMenuItem
+        Caption = 'Gerar Carta de Corre'#231#227'o'
+        OnClick = CCartadeCorreoEletronicaCCe1Click
+      end
+      object IImprimirCartadeCorreoEletronicaCCe1: TMenuItem
+        Caption = 'Imprimir Carta'
+        OnClick = IImprimirCartadeCorreoEletronicaCCe1Click
+      end
+      object EEnviarcartadecorreoporemail1: TMenuItem
+        Caption = 'Enviar Carta por e-mail'
+        OnClick = EEnviarcartadecorreoporemail1Click
+      end
     end
     object N68: TMenuItem
       Caption = '-'
@@ -18180,6 +18183,13 @@ object Form7: TForm7
       Caption = 'Manifesto'
       Visible = False
       OnClick = Manifesto1Click
+    end
+    object ExportarXML1: TMenuItem
+      Caption = 'Exportar XML'
+      OnClick = ExportarXML1Click
+    end
+    object N70: TMenuItem
+      Caption = '-'
     end
     object PrvisualizarDANFE1: TMenuItem
       Caption = 'Pr'#233'-visualizar DANFE'
