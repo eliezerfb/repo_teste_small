@@ -24,10 +24,12 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , IBDatabase, IBQuery, IBCustomDataSet
   , MD5
   , SmallFunc
+  , uValidaRecursosDelphi7
   {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
   , MD5_unicode
   , smallfunc_xe
+  , uValidaRecursos
   {$ENDIF}
   , ExtCtrls
   , DBClient
@@ -35,7 +37,6 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , uconstantes_chaves_privadas
   //, uClasseValidaRecursos
   , uSmallConsts // Sandro Silva 2023-10-24
-  , uValidaRecursosDelphi7
   , uclassetransacaocartao // Sandro Silva 2023-08-25
   ;
 
@@ -357,12 +358,17 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
   
 var
-  cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
   Aplicacao: TMyApplication;
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
   //RecursosLicenca: TRecurcosDisponiveisParaLicenca;
+  {$IFDEF VER150}
   ValidaRecursos: TValidaRecurso;
+  cWinDir: array[0..200] of Char;
+  {$ELSE}
+//  ValidaRecursos: TValidaRecurso;
+  cWinDir: array[0..200] of WideChar;
+  {$ENDIF}
   DadosEmitentePDV: TDadosEmitente;
 
 implementation

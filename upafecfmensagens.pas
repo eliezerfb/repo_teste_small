@@ -16,9 +16,18 @@ unit upafecfmensagens;
 interface
 
 uses Classes, CAPICOM_TLB, MSXML2_TLB, ActiveX, ComObj, SysUtils, Dialogs,
-  SmallFunc, Windows, Forms
-  , base64code, SynZip, usmallwebservice //FileCtrl
-  , MD5
+  Windows, Forms,
+  {$IFDEF VER150}
+  SmallFunc,
+  base64code,
+  MD5,
+  {$ELSE}
+  SmallFunc_xe,
+  md5_unicode,
+  {$ENDIF}
+
+  SynZip, usmallwebservice //FileCtrl
+
   ,ufuncoesfrente // Sandro Silva 2018-07-03 
   ;
 

@@ -6,8 +6,13 @@ unit ufuncoesfrentepaf;
 
 interface
 
-uses IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs, Windows
-  , IBDatabase, IBQuery, SmallFunc, Classes, LbCipher, LbClass,
+uses IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs, Windows,
+  {$IFDEF VER150}
+  SmallFunc, IBDatabase, IBQuery, MD5,
+  {$ELSE}
+  SmallFunc_xe, IBX.IBDatabase, IBX.IBQuery, md5_unicode,
+  {$ENDIF}
+  Classes, LbCipher, LbClass,
   ShellApi // Sandro Silva 2019-02-20
   , DateUtils
   , DB // Sandro Silva 2019-03-14
@@ -18,7 +23,7 @@ uses IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs, Windows
   , WinSpool
   , WinSock // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
   , IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP
-  , MD5
+
   //, DBGrids
   ;
 
