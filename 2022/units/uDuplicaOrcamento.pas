@@ -32,7 +32,7 @@ type
 implementation
 
 uses
-  SysUtils, SmallFunc, uSmallResourceString;
+  SysUtils, SmallFunc, uSmallResourceString, uDialogs;
 
 { TDuplicaOrcamento }
 
@@ -47,7 +47,8 @@ begin
 
     Result := True;
   except
-    Application.MessageBox(PChar('Não foi possível duplicar o orçamento.' + SlineBreak + 'Tente novamente.'), Pchar(_cTituloMsg), mb_Ok + MB_ICONINFORMATION);
+    //Application.MessageBox(PChar('Não foi possível duplicar o orçamento.' + SlineBreak + 'Tente novamente.'), Pchar(_cTituloMsg), mb_Ok + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Não foi possível duplicar o orçamento.' + SlineBreak + 'Tente novamente.',msgAtencao);
   end;
 end;
 

@@ -28,7 +28,7 @@ function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
 
-uses uFuncoesRetaguarda, uParametroTributacao;
+uses uFuncoesRetaguarda, uParametroTributacao, uDialogs;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
 
@@ -112,7 +112,8 @@ begin
       except
         on E: Exception do
         begin
-          Application.MessageBox(pChar(E.Message),'Erro 1 importa NF',mb_Ok + MB_ICONWARNING);
+          //Application.MessageBox(pChar(E.Message),'Erro 1 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+          MensagemSistema(E.Message+' Erro 1 importa NF',msgErro);
         end;
       end;
 
@@ -122,14 +123,16 @@ begin
       except
         on E: Exception do
         begin
-          Application.MessageBox(pChar(E.Message),'Erro 2 importa NF',mb_Ok + MB_ICONWARNING);
+          //Application.MessageBox(pChar(E.Message),'Erro 2 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+          MensagemSistema(E.Message+' Erro 2 importa NF',msgErro);
         end;
       end;
     end;
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Erro 3 importa NF',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Erro 3 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message+' Erro 3 importa NF',msgErro);
     end;
   end;
   Form7.bDescontaICMSDeso := False;
@@ -142,7 +145,8 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Erro ao caregar XML da NF-e',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Erro ao caregar XML da NF-e',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message+' Erro ao caregar XML da NF-e',msgErro);
     end;
   end;
 
@@ -245,7 +249,8 @@ begin
 
         if (AllTrim(Form7.ibDAtaSet99.FieldByname('NUMERONF').AsString) <> '') and (sP1='') then
         begin
-          ShowMessage('Nota Fiscal Já Cadastrada.');
+          //ShowMessage('Nota Fiscal Já Cadastrada.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Nota Fiscal Já Cadastrada.');
           Form24.Close;
 
           Form7.sModulo := 'DUPLA';
@@ -292,7 +297,8 @@ begin
             Form7.ibDataSet24SAIDAD.AsString := Copy(NodePai.ChildNodes['dhRecbto'].Text,9,2)+'/'+Copy(NodePai.ChildNodes['dhRecbto'].Text,6,2)+'/'+Copy(NodePai.ChildNodes['dhRecbto'].Text,1,4); // Data da saida
             Form7.ibDataSet24SAIDAH.AsString := Copy(NodePai.ChildNodes['dhRecbto'].Text,12,8);// Hora da saída
           except
-            ShowMessage('Verigique se esta NF-e foi autorizada');
+            //ShowMessage('Verigique se esta NF-e foi autorizada'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Verigique se esta NF-e foi autorizada',msgAtencao);
           end;
 
           NodePrim := Form7.XMLDocument1.DocumentElement.ChildNodes.FindNode('NFe');
@@ -311,7 +317,8 @@ begin
             except
               on E: Exception do
               begin
-                Application.MessageBox(pChar(E.Message),'Erro X importa NF',mb_Ok + MB_ICONWARNING);
+                //Application.MessageBox(pChar(E.Message),'Erro X importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                MensagemSistema(E.Message+' Erro X importa NF',msgErro);
               end;
             end;
 
@@ -746,8 +753,13 @@ begin
                   end;
                 end;
               except
+                {
                 ShowMessage('Erro ao ler o produto código: '+sCodigoDeBarrasDoFornecedor+chr(10)+chr(10)+
                             'Este item não foi importado. Deve ser digitado manualmente.'+chr(10));
+                Mauricio Parizotto 2023-10-25}
+                MensagemSistema('Erro ao ler o produto código: '+sCodigoDeBarrasDoFornecedor+chr(10)+chr(10)+
+                                'Este item não foi importado. Deve ser digitado manualmente.'+chr(10)
+                                ,msgAtencao);
 
               end;
             end;
@@ -793,7 +805,8 @@ begin
           try
             Form7.ibDataSet24NFEXML.AsString := sXML;
           except
-            ShowMessage('Não foi possível gravar o XML');
+            //ShowMessage('Não foi possível gravar o XML'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Não foi possível gravar o XML',msgErro);
           end;
 
           try
@@ -806,7 +819,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Erro 10 importa NF',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Erro 10 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message+' Erro 10 importa NF',msgErro);
             end;
           end;
         end;
@@ -847,7 +861,8 @@ begin
 
         if Form7.ibDAtaSet99.FieldByname('NUMERONF').AsString =Right(StrZero(StrToFloat(xmlNodeValue(Form7.XMLDocument1.XML.Text,'//cteProc/CTe/infCte/ide/nCT')),9,0),9)+StrZero(StrToInt(LimpaNumero('0'+xmlNodeValue(Form7.XMLDocument1.XML.Text,'//cteProc/CTe/infCte/ide/serie'))),3,0) then
         begin
-          ShowMessage('Nota Fiscal Já Cadastrada.');
+          //ShowMessage('Nota Fiscal Já Cadastrada.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Nota Fiscal Já Cadastrada.',msgAtencao);
           Form24.Close;
           Form7.ibDataSet24.Delete;
         end else
@@ -920,7 +935,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Erro 11 importa NF',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Erro 11 importa NF',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message+' Erro 11 importa NF',msgErro);
             end;
           end;
         end;
@@ -928,7 +944,8 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Estrutura do arquivo XML da NF-e inválida.',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Estrutura do arquivo XML da NF-e inválida.',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message+' Estrutura do arquivo XML da NF-e inválida.',msgErro);
       end;
     end;
     TItensInativosImpXMLEnt.New
@@ -937,7 +954,8 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Erro ao importar XML da NF-e',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Erro ao importar XML da NF-e',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message+' Erro ao importar XML da NF-e',msgErro);
     end;
   end;
 

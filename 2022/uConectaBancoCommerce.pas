@@ -24,7 +24,7 @@ uses
   , Unit22
   , SmallFunc
   , uValidaRecursosDelphi7
-  ;
+  , uDialogs;
 
 function ConectaBancoCommerce: Boolean;
 var
@@ -33,17 +33,13 @@ var
   sCertificado: String;
 begin
   Result := True;
-  //with Form7 do
   begin
     Form7.bFlag := True;
-    //                                     //
     // Cria os arquivos no diretório atual //
-    //                                     //
     Form7.sProcura := '';
     Screen.Cursor := crHourGlass;                  // Cursor de Aguardo
 
     try
-
       Screen.Cursor := crHourGlass;    // Cursor de Aguardo
 
       if (not FileExists(Form1.sAtual+'\'+'small.fdb'))   and (FileExists(Form1.sAtual+'\'+'small.gdb'))   then RenameFile(pchar(Form1.sAtual+'\'+'small.gdb'),pchar(Form1.sAtual+'\'+'small.fdb'));
@@ -57,10 +53,16 @@ begin
         Result := False;
 
         Screen.Cursor := crDefault;
+        {
         ShowMessage('Não foi possível renomear o arquivo SMALL.GDB para SMALL.FDB'+Chr(10)+Chr(10)+
           ' 1 - Feche todos os programas que usam o SMALL.GDB em todos os terminais'+Chr(10)+
           ' 2 - Execute o Small Commerce novamente');
-        // Form1.DestroyWindowHandle;
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema('Não foi possível renomear o arquivo SMALL.GDB para SMALL.FDB'+Chr(10)+Chr(10)+
+                        ' 1 - Feche todos os programas que usam o SMALL.GDB em todos os terminais'+Chr(10)+
+                        ' 2 - Execute o Small Commerce novamente'
+                        ,msgAtencao);
+
         Application.Terminate;
         // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
         FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -89,9 +91,8 @@ begin
       Mensagem22(Form1.sAtual);
       Form22.sIniciandoEm   := 'Iniciando em: '+Form1.sAtual;
       Form22.sUrlDoGdb      := 'Url do FDB:   '+Trim(Url);
-      //
+
       // Se não existe cria o arquivo GDB
-      //
       try
         Form7.IBDatabase1.Close;
         Form7.IBDatabase1.Params.Clear;
@@ -100,11 +101,7 @@ begin
         Form7.IBDatabase1.Params.Add('PASSWORD=masterkey');
         Form7.IbDatabase1.Open;
         Form7.IBTransaction1.Active := True;
-        //
-        // AtivaTodosOsIndices(True);
-        //
       except
-
         Mensagem22('Aguarde instalando arquivos de atualização (10)...');
 
         while FileExists(Form1.sAtual+'\firebird.exe') do
@@ -118,7 +115,9 @@ begin
 
           Result := False;
 
-          ShowMessage('Reinstale o sistema.');
+          //ShowMessage('Reinstale o sistema.'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Reinstale o sistema.',msgAtencao);
+
           // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
           FecharAplicacao(ExtractFileName(Application.ExeName));
         end;
@@ -170,7 +169,6 @@ begin
         Form22.Repaint;
 
         try
-
           Mais1Ini := TIniFile.Create(Form1.sAtual+'\small.ini');
           Url := Mais1Ini.ReadString('Firebird','Server url','');
           if Trim(Mais1Ini.ReadString('Firebird','Server IP','')) <> '' then
@@ -183,54 +181,49 @@ begin
           Form7.IBDatabase1.Params.Add('PASSWORD=masterkey');
           Form7.IbDatabase1.Open;
           Form7.IBTransaction1.Active := True;
-          //
-          // AtivaTodosOsIndices(True);
-          //
-//          Form1.este1Click(Sender); // TESTE rONEI vOLTO
-          //
         except
-
           Result := False;
 
           Screen.Cursor := crDefault;
+          {
           ShowMessage('Verifique:'+Chr(10)+Chr(10)+
             ' 1 - Se o servidor firebird está instalado (reinicie o windows).'+Chr(10)+
             ' 2 - Se o IP e a URL do servidor estão configurados corretamente.'+Chr(10)+
             ' 3 - Se a sua conexão de rede está disponível.'+Chr(10)+
             ' 4 - Se a porta 3050 está liberada no firewal do windows.'+Chr(10)+
             ' 5 - Se for necessário, reinstale o sistema...');
-          // Form1.DestroyWindowHandle;
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema('Verifique:'+Chr(10)+Chr(10)+
+                          ' 1 - Se o servidor firebird está instalado (reinicie o windows).'+Chr(10)+
+                          ' 2 - Se o IP e a URL do servidor estão configurados corretamente.'+Chr(10)+
+                          ' 3 - Se a sua conexão de rede está disponível.'+Chr(10)+
+                          ' 4 - Se a porta 3050 está liberada no firewal do windows.'+Chr(10)+
+                          ' 5 - Se for necessário, reinstale o sistema...'
+                          ,msgAtencao);
+
           Application.Terminate;
           // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
           FecharAplicacao(ExtractFileName(Application.ExeName));
         end;
-
       end;
 
       Form7.IBQuery1.Close;
       Form7.IBQuery1.SQL.Clear;
       Form7.IBQuery1.SQL.Add('select current_time,current_date from rdb$database');
       Form7.IBQuery1.Open;
-      //
+
       Form1.tSgdb := StrToTime(Form7.IBQuery1.FieldByname('CURRENT_TIME').AsString) - Time;
-      //
-      // Abrindo os arquivos
-      //
-//    AbreArquivos(True);
-
     except
-
       Result := False;
 
       Screen.Cursor := crDefault;
-      Application.MessageBox(Pchar('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.'),'Atenção',mb_IconError+mb_Ok);
-      // Form1.DestroyWindowHandle;
+      //Application.MessageBox(Pchar('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.'),'Atenção',mb_IconError+mb_Ok);Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.',msgAtencao);
+
       Application.Terminate;
       // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
       FecharAplicacao(ExtractFileName(Application.ExeName));
-
     end;
-
   end;
 
   Form1.ValidaRecursos.IBDATABASE := Form7.IBDatabase1;

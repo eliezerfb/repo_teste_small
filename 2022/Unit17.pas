@@ -132,7 +132,7 @@ var
 
 implementation
 
-uses Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3;
+uses Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3, uDialogs;
 
 {$R *.DFM}
 
@@ -486,7 +486,8 @@ begin
   if (Pos('1'+UpperCase(Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
      = 0) and (AllTrim(Text)<>'') then
   begin
-    ShowMessage('Estado inválido');
+    //ShowMessage('Estado inválido'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Estado inválido',msgAtencao);
     ibdEmitenteESTADO.AsString := UpperCase(ibdEmitenteESTADO.AsString);
   end else
   begin
@@ -504,7 +505,8 @@ begin
     if CpfCgc(LimpaNumero(Text)) then
       ibdEmitenteCGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)))
     else
-      ShowMessage('CPF ou CNPJ inválido!');
+      //ShowMessage('CPF ou CNPJ inválido!'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('CPF ou CNPJ inválido!',msgAtencao);
   end
   else
     ibdEmitenteCGC.AsString := '';

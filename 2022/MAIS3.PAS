@@ -56,7 +56,7 @@ var
 
 implementation
 
-uses Mais, Unit22, Unit19, Unit7, uSmallConsts;
+uses Mais, Unit22, Unit19, Unit7, uSmallConsts, uDialogs;
 
 {$R *.DFM}
 
@@ -141,7 +141,8 @@ var
 begin
   if UpperCase(AllTrim(USUARIO.Text)) = UpperCase(_cUsuarioAdmin) then
   begin
-    ShowMessage('Usuário inválido.');
+    //ShowMessage('Usuário inválido.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Usuário inválido.');
     USUARIO.Text := '';
     USUARIO.SetFocus;
   end else

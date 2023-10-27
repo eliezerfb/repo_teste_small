@@ -89,7 +89,8 @@ implementation
 
 uses
   uRetornaOperacoesRelatorio, uSmallResourceString, uEstruturaTipoRelatorioPadrao, uEstruturaRelResumoVendas,
-  uDadosRelatorioPadraoDAO, uFuncoesBancoDados, uSmallEnumerados, uEstruturaRelResumoVendasNaoList;
+  uDadosRelatorioPadraoDAO, uFuncoesBancoDados, uSmallEnumerados, uEstruturaRelResumoVendasNaoList,
+  uDialogs;
 
 {$R *.dfm}
 
@@ -582,7 +583,8 @@ begin
 
   if ((dtInicial.Date = 0) or (dtFinal.Date = 0)) or (dtInicial.Date > dtFinal.Date) then
   begin
-    ShowMessage(_cPeriodoDataInvalida);
+    //ShowMessage(_cPeriodoDataInvalida); Mauricio Parizotto 2023-10-25
+    MensagemSistema(_cPeriodoDataInvalida,msgAtencao);
     dtInicial.SetFocus;
     Exit;
   end;

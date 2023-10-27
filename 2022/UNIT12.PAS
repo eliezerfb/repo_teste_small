@@ -303,7 +303,7 @@ implementation
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
-  ufrmPesquisaOrdemServico;
+  ufrmPesquisaOrdemServico, uDialogs;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -604,20 +604,21 @@ end;
 
 procedure TForm12.Image2Click(Sender: TObject);
 begin
-  //
   if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
     Image2.Picture.LoadFromFile('LOGONFE.BMP');
   if not FileExists(Form1.sAtual+'\LOGONFE.BMP') then
      Image2.Picture.SaveToFile('LOGONFE.BMP');
   ShellExecute( 0, 'Open','pbrush.exe','LOGONFE.BMP', '', SW_SHOW);
-  ShowMessage('Tecle <enter> para que a nova imagem seja exibida.');
+
+  //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
+  MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
+
   if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
     Image2.Picture.LoadFromFile('LOGONFE.BMP');
-  //
+
   Image2.Picture.SaveToFile('LOGONFE.BMP');
-  //
+
   ResizeLogoDanfe(True);
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit11Exit(Sender: TObject);
@@ -630,60 +631,45 @@ end;
 
 procedure TForm12.SMALL_DBEdit39Exit(Sender: TObject);
 begin
-  //
   Form1.bChaveSelecionaCliente := False;
-  //
   // CPF/CGC
-  //
   if Form7.ibDataSet15CLIENTE.AsString <> Form7.ibDataSet2NOME.AsString then
   begin 
-    //
     if AllTrim(LimpaNumero(SMALL_DBEdit39.Text))<>'' then
     begin
-      //
       if Length(LimpaNumero(Copy(SMALL_DBEdit39.Text,1,3)))=3 then
       begin
-        //
         if CpfCgc(LimpaNumero(SMALL_DBEdit39.Text)) then
         begin
-          //
           // CAAD9
-          //
           Form7.ibDataSet2.DisableControls;
           Form7.ibDataSet2.Close;
           Form7.ibDataSet2.SelectSQL.Clear;
           Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where CGC='+QuotedStr(ConverteCpfCgc(AllTrim(LimpaNumero(SMALL_DBEdit39.Text))))+'');
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
-          //
-          // ShowMessage(Form7.ibDataSet2NOME.AsString);
-          //
+
           Form7.ibDataSet15CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
-          //
         end;
       end;
     end;
-    //
     // CPF/CGC
-    //
     if AllTrim(SMALL_DBEdit39.Text)<>AllTrim(Form7.ibDAtaSet2NOME.AsString) then
     begin
       Form7.ibDataSet15CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
     end;
-    //
+
     try
       Form7.ibDataSet15TOTALChange(Form7.ibDataSet15TOTAL);
     except end;
-    //
+
     Retributa(True);
-    if form7.ibDataSet16.Modified then Form7.ibDataset16.Post;
-    //
+    if form7.ibDataSet16.Modified then
+      Form7.ibDataset16.Post;
   end;
-  //
   // Cliente atrasado em vermelho
-  //
   if Form7.ibDataSet2MOSTRAR.AsString = '1' then SMALL_DBEdit39.Font.Color := clRed else SMALL_DBEdit39.Font.Color := clBlack;
-  //
+
   Form7.ibDataSet7.First;
   while not Form7.ibDataSet7.Eof do
   begin
@@ -695,13 +681,12 @@ begin
     end;
     Form7.ibDataSet7.Next;
   end;
-  //
-  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then  MostraFoto2(True);
-  //
+
+  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then
+    MostraFoto2(True);
+
   // Cliente atrasado em vermelho
-  //
   Form7.ibDataSet16.EnableControls;
-  //
 end;
 
 procedure TForm12.SMALL_DBEdit39Change(Sender: TObject);
@@ -1492,17 +1477,12 @@ begin
   Panel1.Left     := 10; // (ScrollBox1.Width - Panel1.Width) div 2;
   Panel6.Left     := 5;
   Panel6.Top      := Panel1.Top + Panel1.Height + 5;
-  //
   try
-    //
     try
-      //
       // Libera ou não Clientes e Estoque //
-      //
       Mais1Ini   := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
       if AllTrim(Mais1Ini.ReadString(Usuario,'B3','0')) <> '1' then
       begin
-        //
         SMALL_DBEdit4.Enabled := False;
         SMALL_DBEdit6.Enabled := False;
         SMALL_DBEdit7.Enabled := False;
@@ -1511,10 +1491,8 @@ begin
         SMALL_DBEdit11.Enabled := False;
         SMALL_DBEdit12.Enabled := False;
         SMALL_DBEdit13.Enabled := False;
-        //
       end else
       begin
-        //
         SMALL_DBEdit4.Enabled := True;
         SMALL_DBEdit6.Enabled := True;
         SMALL_DBEdit7.Enabled := True;
@@ -1523,13 +1501,13 @@ begin
         SMALL_DBEdit11.Enabled := True;
         SMALL_DBEdit12.Enabled := True;
         SMALL_DBEdit13.Enabled := True;
-        //
       end;
-      //
-    except ShowMessage('Erro 1947') end;
-    //
+    except
+      //ShowMessage('Erro 1947') Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 1947',msgErro);
+    end;
+    
     // se n tem vendedores cadastrados se não tiver n pede
-    //
     Form7.ibDataSet9.DisableControls;
     Form7.ibDataSet9.First;
     while not Form7.ibDataSet9.EOF do
@@ -1542,40 +1520,45 @@ begin
       Form7.ibDataSet9.Next;
     end;
     Form7.ibDataSet9.EnableControls;
-    //
+    
     dBGrid3.Visible := False;
     dBGrid2.Visible := False;
-    //
   except
+    {
     Application.MessageBox('O módulo de emissão de Nota Fiscal está sendo' + Chr(10) +
               'utilizado por outro usuário neste momento.'    + chr(10) +
               Chr(10) +
               'Aguarde a liberação do próximo número da Nota Fiscal. Erro 2120'
               ,'Atenção',mb_IconError+mb_Ok);
-     Form12.Close;
+    Mauricio Parizotto 2023-10-24}
+
+    MensagemSistema('O módulo de emissão de Nota Fiscal está sendo' + Chr(10) +
+                    'utilizado por outro usuário neste momento.'    + chr(10) +
+                    Chr(10) +
+                    'Aguarde a liberação do próximo número da Nota Fiscal. Erro 2120'
+                    ,msgErro);
+
+    Form12.Close;
   end;
-  //
+
   Form7.sModulo := 'VENDA';
-  //                                                                           //
-  // Relaciona a natureza da operação com o arquivo de vendas                 //
-  //                                                                         //
-  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''                          //
-    then Form7.ibDataSet14.Append                                             //
-       else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);     //
-  //                                                                    //
-  // Relaciona os clientes com o arquivo de vendas                     //
-  //                                                                  //
+
+  // Relaciona a natureza da operação com o arquivo de vendas
+  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = ''
+    then Form7.ibDataSet14.Append
+       else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
+
+  // Relaciona os clientes com o arquivo de vendas
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');
   Form7.ibDataSet2.Open;
-  //
-  Form7.ibDataSet9.Locate('NOME',Form7.ibDataSet15VENDEDOR.AsString,[]);       //
-  Form7.ibDataSet18.Locate('NOME',Form7.ibDataSet15TRANSPORTA.AsString,[]);  //
-  //                                                         //
-  // Abre o arquivo de clientes para edição                 //
-  //                                                       //
-  try Form7.ibDataSet2.Edit except end;                       //
+
+  Form7.ibDataSet9.Locate('NOME',Form7.ibDataSet15VENDEDOR.AsString,[]);       
+  Form7.ibDataSet18.Locate('NOME',Form7.ibDataSet15TRANSPORTA.AsString,[]);
+
+  // Abre o arquivo de clientes para edição
+  try Form7.ibDataSet2.Edit except end;
   //
   try
     if not (AllTrim(Form7.ibDataSet15TRANSPORTA.AsString) = AllTrim(Form7.ibDataSet18NOME.AsString)) then
@@ -1587,7 +1570,6 @@ begin
   except end;
   //
   try
-    //
     if AllTrim(Form7.ibDataSet15MODELO.AsString) = '' then
     begin
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
@@ -1595,7 +1577,6 @@ begin
     end;
     //
     Label64.Caption := 'Mod: '+StrZero(StrToInt(Form7.ibDataSet15MODELO.AsString),2,0);
-    //
   except end;
   //
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
@@ -1609,9 +1590,7 @@ begin
     Form7.ibDataSet16.First;
     while not Form7.ibDataSet16.Eof do // disable
     begin
-      //
       // Procura o produto no estoque
-      //
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
       //
       Form7.ibDataSet4.Close;                                                //
@@ -1623,7 +1602,6 @@ begin
       begin
         if Form7.ibDataSet16SINCRONIA.AsFloat = Form7.ibDataSet16QUANTIDADE.AsFloat then    // Resolvi este problema as 4 da madrugada no NoteBook em casa
         begin
-          // ShowMessage('Teste volta ao estoque '+Form7.ibDataSet16QUANTIDADE.AsString +' '+Form7.ibDataSet16DESCRICAO.AsString);
           try
             //
             if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
@@ -1643,39 +1621,31 @@ begin
             Form7.sModulo := 'NAO';
             Form7.ibDataSet16.Edit;                                                     //
             Form7.ibDataSet16SINCRONIA.AsFloat := 0;                                    // Resolvi este problema as 4 da madrugada no NoteBook em casa
-            //
           except end;
-          //
         end;
       end;
       Form7.ibDataSet16.Next;
     end;
     //
     Form7.sModulo := 'VENDA';
-    //
-    // DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-    // ShowMessage('Form Show em: '+TimeToStr(Time - tInicio)+','+StrZero(cent,3,0));
-    //
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.Selectsql.Clear;
     Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
     Form7.ibDataSet4.Open;
-    //
+
     if Form7.sModulo <> 'RETRIBUTA' then Form7.ibDataSet16.EnableControls;
-    //
+
     // Atenção a rotina acima altera a quantidade no estoque
-    //
   end;
-  //
+
   Form7.sModulo := 'VENDA';
-  //
+
   Form7.ibDataSet14.EnableControls;
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet35.EnableControls;
   Form7.ibDataSet2.EnableControls;
-  //
+
   // Foco no vendedor ou no cliente
-  //
   if Form12.SMALL_DBEdit40.CanFocus then Form12.SMALL_DBEdit40.SetFocus;
   ScrollBox1.VertScrollBar.Position := 1;
   //
@@ -1742,12 +1712,10 @@ begin
     if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
       Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
   except
-    {Sandro Silva 2023-05-11 inicio
-    on E: Exception do  ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
-    }
     on E: Exception do
     begin
-      ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
+      //ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro ao gravar NF-e: '+chr(10)+E.Message,msgErro);
     end;
   end;
 
@@ -2088,6 +2056,7 @@ begin
     and (Form7.ibDataSet15FRETE12.AsString <> '4')
     and (Form7.ibDataSet15FRETE12.AsString <> '9') then
     begin
+      {
       Application.MessageBox('Valores válidos:' + Chr(10) +
                             Chr(10) +
                             '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
@@ -2097,6 +2066,18 @@ begin
                             '4 - Transporte próprio por conta do destinatário;' + Chr(10) +
                             '9 - Sem Ocorrência de transporte.'
                 ,'Valor inválido',mb_IconError+mb_Ok);
+      Mauricio Parizotto 2023-10-24}
+
+      MensagemSistema('Valores válidos:' + Chr(10) +
+                      Chr(10) +
+                      '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
+                      '1 - Contratação do Frete por conta do destinatário/remetente (FOB);' + Chr(10) +
+                      '2 - Contratação do Frete por conta de terceiros;' + Chr(10) +
+                      '3 - Transporte próprio por conta do remetente;' + Chr(10) +
+                      '4 - Transporte próprio por conta do destinatário;' + Chr(10) +
+                      '9 - Sem Ocorrência de transporte.'
+                      ,msgErro);
+
       Form7.ibDataSet15FRETE12.AsString := '0';
     end;
 
@@ -2106,7 +2087,6 @@ begin
           if Form7.ibDataSet15FRETE12.AsString = '3' then Edit1.Text := '3-Próprio remetente' else
             if Form7.ibDataSet15FRETE12.AsString = '4' then Edit1.Text := '4-Próprio destinatário' else
              if Form7.ibDataSet15FRETE12.AsString = '9' then Edit1.Text := '9-Sem frete' else Edit1.Text := '';
-    //
   end else
   begin
     if (Form7.ibDataSet15FRETE12.AsString <> '0')
@@ -2114,6 +2094,7 @@ begin
     and (Form7.ibDataSet15FRETE12.AsString <> '2')
     and (Form7.ibDataSet15FRETE12.AsString <> '9') then
     begin
+      {
       Application.MessageBox('Valores válidos:' + Chr(10) +
                 Chr(10) +
                 '0 - Por conta do emitente'+ Chr(10) +
@@ -2121,6 +2102,16 @@ begin
                 '2 - Por conta de terceiros'+ Chr(10) +
                 '9 - Sem frete'
                 ,'Valor inválido',mb_IconError+mb_Ok);
+      Mauricio Parizotto 2023-10-24}
+
+      MensagemSistema('Valores válidos:' + Chr(10) +
+                      Chr(10) +
+                      '0 - Por conta do emitente'+ Chr(10) +
+                      '1 - Por conta do destinatário/remetente'+ Chr(10) +
+                      '2 - Por conta de terceiros'+ Chr(10) +
+                      '9 - Sem frete'
+                      ,msgErro);
+
       Form7.ibDataSet15FRETE12.AsString := '0';
     end;
 
@@ -2128,7 +2119,6 @@ begin
       if Form7.ibDataSet15FRETE12.AsString = '1' then Edit1.Text := '1-Destinatário' else
         if Form7.ibDataSet15FRETE12.AsString = '2' then Edit1.Text := '2-Terceiros' else
           if Form7.ibDataSet15FRETE12.AsString = '9' then Edit1.Text := '9-Sem frete' else Edit1.Text := '';
-    //
   end;
 
   Form12.Edit1.Visible := True;

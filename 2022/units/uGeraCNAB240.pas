@@ -13,7 +13,7 @@ implementation
 uses Unit7
   , Mais
   , Unit26
-  , DB;
+  , DB, uDialogs;
 
 procedure GeraCNAB240;
 var
@@ -98,9 +98,17 @@ begin
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '001' then
     begin
       // BANCO DO BRASIL
-      if Pos('-',Form26.MaskEdit44.Text) = 0 then ShowMessage('Configure o código da agência 0000-0');
-      if Pos('-',Form26.MaskEdit46.Text) = 0 then ShowMessage('Configure o Número da Código do Cedente 00000-0');
-      if Pos('/',Form26.MaskEdit43.Text) = 0 then ShowMessage('Configure a carteira/variação 00/000');
+      if Pos('-',Form26.MaskEdit44.Text) = 0 then
+        //ShowMessage('Configure o código da agência 0000-0'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Configure o código da agência 0000-0',msgAtencao);
+
+      if Pos('-',Form26.MaskEdit46.Text) = 0 then
+        //ShowMessage('Configure o Número da Código do Cedente 00000-0'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Configure o Número da Código do Cedente 00000-0',msgAtencao);
+
+      if Pos('/',Form26.MaskEdit43.Text) = 0 then
+        //ShowMessage('Configure a carteira/variação 00/000'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Configure a carteira/variação 00/000',msgAtencao);
 
       sCodigoDoConvenio      := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),9,0),1,9)+'0014'+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',1,2)+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',4,3)+'  ';
       sNomeDoBanco           := 'BANCO DO BRASIL S.A.';
@@ -257,7 +265,8 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        MensagemSistema(E.Message,msgErro);
       end;
     end;
 
@@ -302,7 +311,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message,msgErro);
             end;
           end;
 
@@ -443,13 +453,15 @@ begin
             except
               on E: Exception do
               begin
-                Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+                //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                MensagemSistema(E.Message,msgErro);
               end;
             end;
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message,msgErro);
             end;
           end;
 
@@ -458,7 +470,8 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message,msgErro);
             end;
           end;
         end;
@@ -495,7 +508,8 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message,msgErro);
       end;
     end;
 
@@ -504,12 +518,14 @@ begin
       DeleteFile(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
       Form1.sArquivoRemessa := '';
 
-      ShowMessage('Não existe movimento, o arquivo não foi gerado.');
+      //ShowMessage('Não existe movimento, o arquivo não foi gerado.');
+      MensagemSistema('Não existe movimento, o arquivo não foi gerado.',msgAtencao);
     end;
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);  Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message,msgErro);
     end;
   end;
 

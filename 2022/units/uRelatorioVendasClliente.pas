@@ -49,7 +49,7 @@ implementation
 
 uses
   SmallFunc, uEstruturaRelVendasPorCliente, uSmallResourceString,
-  uRetornaOperacoesRelatorio, uUsuarioSections;
+  uRetornaOperacoesRelatorio, uUsuarioSections, uDialogs;
 
 {$R *.dfm}
 
@@ -83,13 +83,15 @@ begin
 
   if ((dtInicial.Date = 0) or (dtFinal.Date = 0)) or (dtInicial.Date > dtFinal.Date) then
   begin
-    ShowMessage(_cPeriodoDataInvalida);
+    //ShowMessage(_cPeriodoDataInvalida); Mauricio Parizotto 2023-10-25
+    MensagemSistema(_cPeriodoDataInvalida,msgAtencao);
     dtInicial.SetFocus;
     Exit;
   end;
   if (not cbNota.Checked) and (not cbCupom.Checked) then
   begin
-    ShowMessage(_cSemDocumentoMarcadoImpressao);
+    //ShowMessage(_cSemDocumentoMarcadoImpressao); Mauricio Parizotto 2023-10-25
+    MensagemSistema(_cSemDocumentoMarcadoImpressao,msgAtencao);
     cbNota.SetFocus;
     Exit;
   end;

@@ -192,7 +192,7 @@ uses
   uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
   uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
   uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
-  uDialogs in '..\..\unit_compartilhada\uDialogs.pas';
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas'; 
 
 {$R *.RES}
 

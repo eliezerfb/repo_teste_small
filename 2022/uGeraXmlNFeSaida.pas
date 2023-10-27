@@ -51,7 +51,8 @@ var
 
 implementation
 
-uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda;
+uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
+  uDialogs;
 
 procedure GeraXmlNFeSaida;
 var
@@ -371,8 +372,11 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar MKP'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar MKP',msgAtencao);
         end;
       end;
     end;
@@ -393,8 +397,11 @@ begin
     except
       on E: Exception do
       begin
+        {
         Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 2'
         ),'Atenção',mb_Ok + MB_ICONWARNING);
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 2',msgAtencao);
       end;
     end;
   end else
@@ -434,18 +441,30 @@ begin
             Form7.spdNFeDataSets.SalvarPart('NREF');
           end else
           begin
+            {
             ShowMessage('Informação inválida informe a'+chr(10)+
                         'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                         '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
                         'cupom fiscal referenciado');
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema('Informação inválida informe a'+chr(10)+
+                            'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
+                            '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
+                            'cupom fiscal referenciado'
+                            ,msgAtencao);
+
             Abort;
           end;
         end;
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 3'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 3',msgAtencao);
+
           Abort;
         end;
       end;
@@ -761,15 +780,19 @@ begin
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'Ao preencher Identificação do destinatário no caso de comprador estrangeiro'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+ 'Ao preencher Identificação do destinatário no caso de comprador estrangeiro',msgErro);
           end;
         end;
       end;
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação'),'Atenção',mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação'),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação',msgErro);
       end;
     end;
   end;
@@ -837,9 +860,6 @@ begin
     begin
       if fDesconto[I] = Math.MaxValue( fDesconto ) then
       begin
-//                    ShowMessage('Diferença: '+FloatToStr(vDESCONTO)+chr(10)+
-//                    'Desconto do item: '+FloatToStr(vDESCONTO)+chr(10)+
-//                    'Desconto do item + Diferença: '+FloatToStr(fDesconto[I] + vDESCONTO)+chr(10));
         fDesconto[I] := fDesconto[I] + vDESCONTO;
         vDESCONTO := 0;
       end;
@@ -921,9 +941,14 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
           chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
+                          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                          ,msgAtencao);
         end;
       end;
 
@@ -1334,7 +1359,8 @@ begin
             begin
               if (RetornaValorDaTagNoCampo('descANP', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
               begin
-                ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP');
+                //ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP'); Mauricio Parizotto 2023-10-25
+                MensagemSistema('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP',msgAtencao);
               end else
               begin
                 Form7.spdNFeDataSets.campo('descANP_LA03').Value := RetornaValorDaTagNoCampo('descANP',Form7.ibDataSet4TAGS_.AsString);                                                  // Descrição do produto conforme ANP
@@ -1346,6 +1372,7 @@ begin
                    (RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') or
                    (RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
                 begin
+                  {
                   ShowMessage('Incluir no controle de estoque na aba Tags:'+
                               Chr(10)+
                               Chr(10)+'pGLP: 0,0000'+
@@ -1353,6 +1380,15 @@ begin
                               Chr(10)+'pGNi: 0,0000'+
                               Chr(10)+'vPart: 0,00'
                               );
+                  Mauricio Parizotto 2023-10-25}
+                  MensagemSistema('Incluir no controle de estoque na aba Tags:'+
+                                  Chr(10)+
+                                  Chr(10)+'pGLP: 0,0000'+
+                                  Chr(10)+'pGNn: 0,0000'+
+                                  Chr(10)+'pGNi: 0,0000'+
+                                  Chr(10)+'vPart: 0,00'
+                                  ,msgAtencao);
+
                   Abort;
                 end else
                 begin
@@ -1360,13 +1396,22 @@ begin
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) <> 100 then
                   begin
-                    //
+                    {
                     ShowMessage('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
                     + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
                     + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
                                               + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value);
+                    Mauricio Parizotto 2023-10-25}
+                    MensagemSistema('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
+                                    + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
+                                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
+                                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
+                                    + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
+                                    + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value
+                                    ,msgAtencao);
+
                     Abort;
                   end else
                   begin
@@ -1447,8 +1492,12 @@ begin
               except
                 on E: Exception do
                 begin
+                  {
                   Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString + chr(10)+ 'ao gerar Grupo Rastro'
                     ), 'Atenção', mb_Ok + MB_ICONWARNING);
+                   Mauricio Parizotto 2023-10-25}
+                   MensagemSistema(E.Message + chr(10) + chr(10) + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString + chr(10)+ 'ao gerar Grupo Rastro'
+                                   ,msgAtencao);
                 end;
               end;
               FrmInformacoesRastreamento.CDSLOTES.Next;
@@ -1813,7 +1862,8 @@ begin
               Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := '100.00';    // Percentual da mercadoria devolvida
               Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML(Form7.ibDataSet16VIPI.AsFloat); // Valor do IPI devolvido
               fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
-              ShowMessage('Nota fiscal referenciada não encontrada');
+              //ShowMessage('Nota fiscal referenciada não encontrada'); Mauricio Parizotto 2023-10-25
+              MensagemSistema('Nota fiscal referenciada não encontrada',msgAtencao);
             end;
           end;
         end;
@@ -1854,33 +1904,25 @@ begin
         begin
           vBCST          := vBCST + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,',',''),'.',','));
         end;
-        //
+
         fFCP     := fFCP + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCP_N17c').AsString,',',''),'.',','));
         fFCPST   := fFCPST + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCPST_N23d').AsString,',',''),'.',','));
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao calcular o totalizadores da NF-e Erro: 25275'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao calcular o totalizadores da NF-e Erro: 25275',msgErro);
         end;
       end;
-{
-      if Form1.sVersaoLayout = '4.00' then
-      begin
-        fFCP     := fFCP + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCP_N17c').AsString,',',''),'.',','));
-        fFCPST   := fFCPST + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCPST_N23d').AsString,',',''),'.',','));
-      end;
-}
     end else
     begin
       // INICIO OBS no produto na informações complementares
-      //
       Form7.spdNFeDataSets.Campo('InfAdProd_V01').Value := AllTrim(AllTrim(Form7.spdNFeDataSets.Campo('InfAdProd_V01').Value) + ' ' + ConverteAcentos2(AllTrim(Form7.ibDataSet16.FieldByname('DESCRICAO').AsString)));
-      //
       // sComplemento := sComplemento + ' ' + Form7.ibDataSet16.FieldByname('DESCRICAO').AsString;
-      //
       // FINAL OBS no produto na informações complementares
-      //
     end;
 
     // Veículos
@@ -1945,8 +1987,11 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao informar Número do ato concessório de Drawback'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao informar Número do ato concessório de Drawback',msgErro);
         end;
       end;
 
@@ -2114,8 +2159,11 @@ begin
             fICMSUFREmet := fICMSUFREmet + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSUFREmet_NA17').AsString,',',''),'.',','));
           end else
           begin
-            ShowMessage('Atenção'+chr(10)+chr(10)+'Preencher nos itens da NF o valor da Alíquota Interna da UF de destino e do (FCP) Fundo de Combate a Pobreza se necessário.'+Chr(10)+Chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.');
-            Abort;
+            //ShowMessage('Atenção'+chr(10)+chr(10)+'Preencher nos itens da NF o valor da Alíquota Interna da UF de destino e do (FCP) Fundo de Combate a Pobreza se necessário.'+Chr(10)+Chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'); Mauricio Parizotto 2023-10-25}
+            MensagemSistema('Atenção'+chr(10)+chr(10)+
+                            'Preencher nos itens da NF o valor da Alíquota Interna da UF de destino e do (FCP) Fundo de Combate a Pobreza se necessário.'+Chr(10)+Chr(10)+
+                            'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                            ,msgAtencao);
             Abort;
           end;
         end else
@@ -2201,9 +2249,14 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao calcular o Grupo de Tributação do ICMS para UF Destino item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
           chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'Ao calcular o Grupo de Tributação do ICMS para UF Destino item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
+                          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                          ,msgErro);
         end;
       end;
     end;
@@ -2252,8 +2305,11 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 0'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 0',msgErro);
         end;
       end;
     end;
@@ -2276,9 +2332,14 @@ begin
   except
     on E: Exception do
     begin
+      {
       Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
       chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
       ),'Atenção',mb_Ok + MB_ICONWARNING);
+      Mauricio Parizotto 2023-10-25}
+      MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
+                      chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                      ,msgErro);
     end;
   end;
 
@@ -2376,7 +2437,8 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
+      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);Mauricio Parizotto 2023-10-25
+      MensagemSistema(E.Message,msgErro);
     end;
   end;
 
@@ -2590,11 +2652,17 @@ begin
     except
       on E: Exception do
       begin
+        {
         Application.MessageBox(pChar(E.Message+chr(10)+
         chr(10)+'Ao informar serviços.'+
         chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
         ),'Atenção',mb_Ok + MB_ICONWARNING);
-        //
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+
+                        chr(10)+'Ao informar serviços.'+
+                        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                        ,msgErro);
+
         Form7.ibDataSet15.Edit;
         Form7.ibDataSet15STATUS.AsString    := 'Erro: Ao salvar XML.';
         Abort;
@@ -4702,10 +4770,11 @@ begin
       except
         on E: Exception do
         begin
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao calcular FCP.'),'Atenção',mb_Ok + MB_ICONWARNING);
+          //Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao calcular FCP.'),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+          MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao calcular FCP.',msgErro);
         end;
       end;
-    end; // if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
+    end;
 
     if Form1.sVersaoLayout = '4.00' then
     begin
@@ -4808,14 +4877,16 @@ begin
           except
             on E: Exception do
             begin
-              Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900'), 'Atenção', mb_Ok + MB_ICONWARNING);
+              //Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900'), 'Atenção', mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+              MensagemSistema(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900',msgErro);
             end;
           end;
         end;
       except
         on E: Exception do
         begin
-          Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.'), 'Atenção', mb_Ok + MB_ICONWARNING);
+          //Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.'), 'Atenção', mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+          MensagemSistema(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.',msgErro);
         end;
       end;
     end;
@@ -4837,8 +4908,7 @@ begin
     {Sandro Silva 2023-06-01 fim}
 
     // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
-  end; //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
-
+  end;
 
   {Sandro Silva 2023-06-07 inicio}
   //qBCMonoRet = será igual à quantidade do produto informado na nota
@@ -4850,7 +4920,6 @@ begin
     or (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '61') // Sandro Silva 2023-06-12
   then
   begin
-
     sMensagemIcmMonofasicoSobreCombustiveis := 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
 
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC

@@ -113,7 +113,8 @@ const
 implementation
 
 uses Mais, Unit34, Unit30, Unit16, Mais3, Unit2, uFuncoesRetaguarda,
-  uRateioVendasBalcao, IBCustomDataSet, uAtualizaNovoCampoItens001CSOSN;
+  uRateioVendasBalcao, IBCustomDataSet, uAtualizaNovoCampoItens001CSOSN,
+  uDialogs;
 
 {$R *.DFM}
 
@@ -293,7 +294,8 @@ begin
             Rewrite(F);                           // Abre para gravação
           except
             ShowMessage('Não foi possível gravar no arquivo .HTM   '+Chr(10)+Chr(10)+'Este programa será fechado.');
-            Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+            Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+            Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
           end;
 
           CriaJpg('logotip.jpg');
@@ -308,7 +310,8 @@ begin
           try
             Rewrite(F);                           // Abre para gravação
           except
-            ShowMessage('Não foi possível gravar no arquivo .txt   '+Chr(10)+Chr(10)+'Este programa será fechado.');
+            //ShowMessage('Não foi possível gravar no arquivo .txt   '+Chr(10)+Chr(10)+'Este programa será fechado.'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Não foi possível gravar no arquivo .txt   '+Chr(10)+Chr(10)+'Este programa será fechado.',msgAtencao);
             Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
             Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
           end;
