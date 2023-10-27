@@ -23862,6 +23862,12 @@ procedure TForm7.ibDataSet3SITUACAOSetText(Sender: TField;
   const Text: String);
 begin
 //  if UpperCase(AllTrim(ibDataSet3SITUACAO.AsString)) = 'FECHADA' then ibDataSet3SITUACAO.AsString := 'Fechada' else ibDataSet3SITUACAO.AsString := Text;
+  {Sandro Silva 2023-10-16 inicio}
+  if UpperCase(AllTrim(ibDataSet3SITUACAO.AsString)) = 'FECHADA' then
+    Sender.AsString := 'Fechada'
+  else
+    Sender.AsString := Text;
+  {Sandro Silva 2023-10-16 fim}
 end;
 
 procedure TForm7.ibDataSet11AfterPost(DataSet: TDataSet);
