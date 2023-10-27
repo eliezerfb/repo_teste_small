@@ -70,12 +70,12 @@ end;
 
 function TSectionOutros.getCaminhoArqBalanca: String;
 begin
-  Result := FoIni.ReadString(Section, _cCaminhoArqBalanca, ExtractFilePath(Application.ExeName));
+  Result := FoIni.ReadString(Section, _cCaminhoArqBalanca, ExtractFileDir(Application.ExeName));
 end;
 
 function TSectionOutros.getCaminhoArqBalanca2: String;
 begin
-  Result := FoIni.ReadString(Section, _cCaminhoArqBalanca2, ExtractFilePath(Application.ExeName));
+  Result := FoIni.ReadString(Section, _cCaminhoArqBalanca2, ExtractFileDir(Application.ExeName));
 end;
 
 function TSectionOutros.getCasasDecimaisPreco: Integer;
