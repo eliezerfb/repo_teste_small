@@ -1392,6 +1392,7 @@ type
     procedure ibDataSet13AfterOpen(DataSet: TDataSet);
     procedure itemMenugerencialClick(Sender: TObject);
     procedure EmitirNFCedogerencial1Click(Sender: TObject);
+    procedure Memo1DblClick(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1399,6 +1400,7 @@ type
     NotifyIconData: TNotifyIconData;
     bFechandoCupom: Boolean; // Sandro Silva 2016-02-10 Controlar que pressione F7 durante o fechamento do cupom e cancela a venda na impressora
     bGerarXmlReducaoRecuperada: Boolean; // Sandro Silva 2019-09-09 ER 02.06 UnoChapeco
+    procedure AberturaDoCupom;
     procedure AtualizaBase(IBDATABASE: TIBDatabase);
     procedure HabilitaBotaoF11(bHabilitar: Boolean);
     procedure HabilitaBotaoF12(bHabilitar: Boolean);
@@ -13784,7 +13786,9 @@ begin
   //
 end;
 
-procedure TForm1.Button2Click(Sender: TObject); const MAX_PATH = 144;
+procedure TForm1.Button2Click(Sender: TObject);
+(*
+const MAX_PATH = 144;
 var
   bAbre: Boolean;
   sCodigo: String;
@@ -14442,6 +14446,9 @@ begin
 
   if Form1.sModeloECF = '59' then
     Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
+*)
+begin
+  AberturaDoCupom;
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);
@@ -34898,6 +34905,674 @@ begin
     if bAbrirGerenicadorNoFinal then // Sandro Silva 2023-08-22
       GerenciadordeNFCe1Click(GerenciadordeNFCe1); // Sandro Silva 2023-09-06 GerenciadordeNFCe1Click(Sender);
   end;
+
+end;
+
+procedure TForm1.Memo1DblClick(Sender: TObject);
+begin
+  Memo1.Clear;
+  AberturaDoCupom;
+end;
+
+procedure TForm1.AberturaDoCupom;
+const MAX_PATH = 144;
+var
+  bAbre: Boolean;
+  sCodigo: String;
+  Mais1Ini: TIniFile;
+  IBQTEMP: TIBQuery;
+begin
+  Form1.Label13.Visible := True; // Sandro Silva 2021-07-29
+
+  Form1.Minimizarnabandeja1.Enabled := False;
+
+  {Sandro Silva 2023-06-14 inicio
+  if Form1.sModeloECF = '59' then
+  begin
+    if Form1.UsaIntegradorFiscal('') then
+    begin
+      if _ecf59_Tipodaimpressora = 'MFE' then
+        Form1.ExibePanelMensagem('Consultando Integrador Fiscal');
+    end;
+  end;
+  }
+
+  //
+  if TestaTudo(True) then // Abre cupom
+  begin
+    //
+    if (Form1.iMesaAberta = 0) and (Form1.sModeloECF <> '01') then
+      EstoqueDoDia(True);
+    //
+    if Form1.sTef = 'Sim' then
+    begin
+      DeleteFile('c:\TEF_CSHP\RESP\IntPos.001');
+      DeleteFile('c:\TEF_CSHP\RESP\IntPos.sts');
+      DeleteFile('c:\TEF_CSHP\REQ\IntPos.tmp');
+      DeleteFile('c:\TEF_CSHP\REQ\IntPos.001');
+    end;
+    //
+    fDesconto := 0;
+    //
+    Form1.sSeriais := '';
+    sPrazo         := '';
+    sOrcame        := '';
+    sOS            := '';
+    iItem          := 0;
+    Form1.bf12     := False;
+    
+    Form1.bFechaRapidoCartao := False; // Sandro Silva 2021-09-08
+    //
+    try
+      // --------------------------------- //
+      // Abertura de Cupom Fiscal          //
+      // --------------------------------- //
+      bAbre := False;
+      sCPF_CNPJ_Validado := '';
+      //
+      if ((Form1.sModeloECF = '02') or (Form1.sModeloECF = '03') or (Form1.sModeloECF = '12') or (Form1.sModeloECF = '14') or (Form1.sModeloECF = '17') or (Form1.sModeloECF = '15') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') ) // Sandro Silva 2018-10-23 if ((Form1.sModeloECF = '02') or (Form1.sModeloECF = '15') or (Form1.sModeloECF = '12') or (Form1.sModeloECF = '14') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') )
+        and (sIdentificaConsumidor = 'Sim')
+         then
+      begin
+        if (Form1.ClienteSmallMobile.sVendaImportando = '') and (bCupomAberto = False) and (bImportandoDAVorOS = False) then
+        begin
+          //
+          bCPF_CNPJ := False;
+          //
+          while not bCPF_CNPJ do
+          begin
+            //
+            sCPF_CNPJ_Validado := Small_InputBox('CPF ou CNPJ',INFORME_CPF_OU_CNPJ,''); // 2015-09-16
+            if LimpaNumero(sCPF_CNPJ_Validado) <> '' then
+            begin
+              if CpfCgc(LimpaNumero(sCPF_CNPJ_Validado)) then
+              begin
+                sCPF_CNPJ_Validado := ConverteCpfCgc(AllTrim(LimpaNumero(sCPF_CNPJ_Validado)));
+                Form2.Edit2.Text   := sCPF_CNPJ_Validado;
+                Form2.Edit2Exit(Form2.Edit2);
+                bCPF_CNPJ := True;
+              end else
+              begin
+                SmallMsg('CPF ou CNPJ inválido!');
+              end;
+            end else bCPF_CNPJ := True;
+          end;
+        end;
+      end;
+      //
+      AcertaPendenciaCancelAlteraca; // Abre Novo cupom Sandro Silva 2019-03-21
+      //
+      if Form1.sModeloECF = '01' then bAbre := _ecf01_AbreNovoCupom(True);
+      if Form1.sModeloECF = '02' then bAbre := _ecf02_AbreNovoCupom(True);
+      if Form1.sModeloECF = '03' then bAbre := _ecf03_AbreNovoCupom(True);
+      if Form1.sModeloECF = '12' then bAbre := _ecf12_AbreNovoCupom(True);
+      if Form1.sModeloECF = '14' then bAbre := _ecf14_AbreNovoCupom(True);
+      if Form1.sModeloECF = '15' then bAbre := _ecf15_AbreNovoCupom(True);
+      if Form1.sModeloECF = '17' then bAbre := _ecf17_AbreNovoCupom(True); // ok 2015-08-24
+      if Form1.sModeloECF = '59' then bAbre := _ecf59_AbreNovoCupom(True);
+      if Form1.sModeloECF = '65' then bAbre := _ecf65_AbreNovoCupom(True);
+      if Form1.sModeloECF = '99' then bAbre := _ecf99_AbreNovoCupom(True);
+
+      {Sandro Silva 2021-07-22 inicio
+      if Form1.sModeloECF = '04' then bAbre := _ecf04_AbreNovoCupom(True);
+      if Form1.sModeloECF = '05' then bAbre := _ecf05_AbreNovoCupom(True);
+      if Form1.sModeloECF = '06' then bAbre := _ecf06_AbreNovoCupom(True);
+      if Form1.sModeloECF = '07' then bAbre := _ecf07_AbreNovoCupom(True);
+      if Form1.sModeloECF = '08' then bAbre := _ecf08_AbreNovoCupom(True);
+      if Form1.sModeloECF = '09' then bAbre := _ecf09_AbreNovoCupom(True);
+      if Form1.sModeloECF = '10' then bAbre := _ecf10_AbreNovoCupom(True);
+      if Form1.sModeloECF = '11' then bAbre := _ecf11_AbreNovoCupom(True);
+      }
+      //
+      if bAbre then
+      begin
+
+        if (Form1.sModeloECF <> '01') and (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')  and (Form1.sModeloECF <> '99')then
+          GeraEstoqueDia(DateToStr(Date));// Abre cupom Form1.Button2Click()
+
+        //
+        Form1.dBgrid2.Visible := False;
+        //
+        sConveniado     := '';
+        sEnderecoClifor := ''; // Sandro Silva 2016-09-30
+        sCidadeClifor   := ''; // Sandro Silva 2016-09-30
+        Form1.fTotal    := 9999999.99;
+        Form1.icupom    := 0;
+
+        /////////////////////////////////////////////////////////////////////
+        // TEF - ZEREZIMA - MULTIPLOS CARTOES                              //
+        /////////////////////////////////////////////////////////////////////
+        Form1.fDescontoNoTotal  := 0;
+        Form1.fTEFPago          := 0;
+        fTotalPago              := 0;
+        Form1.sCupomTEF         := '';
+        Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
+
+        Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
+        Form1.sValorTot   := '';
+        Form1.sValorSaque := '';
+        Form1.sNomeRede   := '';
+        Form1.sTransaca   := '';
+        Form1.sAutoriza   := '';
+        Form1.sFinaliza   := '';
+        Form1.sLinha      := '';
+
+        // -------------------------------- //
+        // Retorna o número do Cupom        //
+        // -------------------------------- //
+        Form1.icupom := StrToInt('0'+Form1.PDV_NumeroDoCupom(True));
+        //
+        iCCF := Form1.iCupom;
+        iGNF := Form1.iCupom;
+        //
+        if Form1.sModeloECF = '02' then iCCF := StrToInt('0'+_ecf02_CCF(True));
+        if Form1.sModeloECF = '03' then iCCF := StrToInt('0'+_ecf03_CCF(True));
+        if Form1.sModeloECF = '14' then iCCF := StrToInt('0'+_ecf14_CCF(True));
+        if Form1.sModeloECF = '15' then iCCF := StrToInt('0'+_ecf15_CCF(True));
+        if Form1.sModeloECF = '17' then iCCF := StrToInt('0'+_ecf17_CCF(True)); // ok 2015-08-2
+        //
+        if Form1.sModeloECF = '02' then iGNF := StrToInt('0'+_ecf02_GNF(True));
+        if Form1.sModeloECF = '03' then iGNF := StrToInt('0'+_ecf03_GNF(True));
+        if Form1.sModeloECF = '14' then iGNF := StrToInt('0'+_ecf14_GNF(True));
+        if Form1.sModeloECF = '15' then iGNF := StrToInt('0'+_ecf15_GNF(True));
+        if Form1.sModeloECF = '17' then iGNF := StrToInt('0'+_ecf17_GNF(True)); // ok 2015-08-2
+
+        // --------------------- //
+        //  Retorno do Subtotal  //
+        // --------------------- //
+        fTotal := PDV_SubTotal(True);
+        //
+        // := 'SUBTOTAL R$ '+AllTrim(Format('%10.2n',[fTotal]));
+        //
+        Cadastraraliquota1.Enabled := False;
+        if (Form1.ClienteSmallMobile.sVendaImportando = '') then
+        begin
+          if Edit1.CanFocus then
+          begin
+            try
+              Edit1.SetFocus;
+            except
+            end;
+          end;
+        end;
+        // ------------------------------------------------------- //
+        // Botão finaliza fica desabilitado até não fechar o Cupom //
+        // ------------------------------------------------------- //
+        Button7.Enabled   := False;
+        Button2.Enabled   := False;
+        Button4.Enabled   := False;
+        Button9.Enabled   := False;
+        Button18.Enabled  := True;
+        //
+        // Esconde todas as mesas
+        //
+        DestroiMesas(True);
+        //
+        // Mesa ou cupom
+        //
+        if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
+        begin
+          //
+          // Cabeçalho MESA
+          //
+          Form1.Memo3.Height    := AjustaAltura(100); // Sandro Silva 2016-08-02
+          Form1.Memo3.Font.Size := AjustaAltura(13); // Sandro Silva 2016-08-02
+          Form1.Memo3.Lines.Clear;
+          Form1.Memo3.Lines.Add('');
+
+          if Copy(Form1.sConcomitante,1,2) = 'OS' then
+          begin
+            Form1.IBQuery1.Close;
+            Form1.IBQuery1.SQL.Clear;
+            Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom))+' order by ITEM'); // Sandro Silva 2020-10-15 Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0))+' order by ITEM');
+            Form1.IBQuery1.Open;
+
+            Form1.Memo3.Lines.Add(StrZero(Form1.icupom,3,0));
+            Form1.Memo3.Lines.Add(sMesaOuConta+' '+Form1.IBQuery1.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString);
+          end
+          else
+            Form1.Memo3.Lines.Add(sMesaOuConta+' '+StrZero(Form1.icupom,3,0));
+
+          ImprimeNoVideo('');
+
+          if (Consumo = False) then
+          begin
+            //
+            ImprimeNoVideo(TRACO_CUPOM_TELA);
+            ImprimeNoVideo('IT  DESCRICAO       QTD   R$ UNIT   R$ TOTAL');// 2015-09-12
+            ImprimeNoVideo(TRACO_CUPOM_TELA);// 2015-09-12
+          end
+          else
+          begin
+            //
+            ImprimeNoVideo(TRACO_CUPOM_TELA);
+            ImprimeNoVideo('IT  DESCRICAO       QTD                     ');// 2015-09-12
+            ImprimeNoVideo(TRACO_CUPOM_TELA);// 2015-09-12
+          end;
+
+          //
+          if Form1.sModeloECF = '01' then
+            bCupomAberto := PDV_CupomAberto; // Sandro Silva 2021-12-01 bCupomAberto := _ecf01_CupomAberto(True);
+          //
+          if Form1.sConcomitante = 'OS'+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) then
+          begin
+            if bPedeDadosOs then
+            begin
+              Form11.ShowModal;
+              Form1.Memo3.Lines.Add(Copy(Form11.Edit1.Text, 1, 15)); // Sandro Silva 2018-09-13 Form1.Memo3.Lines.Add(Form11.Edit1.Text);
+            end;
+          end;
+          //
+        end else
+        begin
+          //
+          // Cabeçalho
+          //
+          //
+          if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99') then
+          begin
+            Form1.Memo3.Height    := AjustaAltura(100);
+            Form1.Memo3.Font.Size := AjustaAltura(8);
+            Form1.Memo3.Lines.Clear;
+            Form1.Memo3.Lines.Add('');
+            Form1.Memo3.Lines.Add(' ' + Copy(Form1.ibDataSet13.FieldByName('NOME').AsString, 1, 30));
+            Form1.Memo3.Lines.Add('CNPJ: '+Form1.ibDataSet13.FieldByName('CGC').AsString);
+            Form1.Memo3.Lines.Add(Copy(AllTrim(Form1.ibDataSet13.FieldByName('MUNICIPIO').AsString), 1, 30)+', '+AllTrim(Form1.ibDataSet13.FieldByName('ESTADO').AsString) );
+          end else
+          begin
+            Form1.Memo3.Height    := AjustaAltura(100);// Sandro Silva 2016-08-02  AjustaAltura(90);
+            Form1.Memo3.Font.Size := AjustaAltura(13); // Sandro Silva 2016-08-02
+            Form1.Memo3.Lines.Clear;
+            Form1.Memo3.Lines.Add('');
+            Form1.Memo3.Lines.Add('CUPOM FISCAL');
+          end;
+          //
+          // ImprimeNoVideo('');
+          if ((sModeloECF <> '59') and (sModeloECF <> '65') and (sModeloECF <> '99')) or
+            (Pos(UpperCase(Copy(Form1.sTipoDocumento2,1,1))+Copy(Form1.sTipoDocumento2+' ',2,Length(Form1.sTipoDocumento2))+FormataNumeroDoCupom(Form1.icupom)+ ' Caixa '+sCaixa, Form1.Memo1.Text) = 0) then
+          begin
+            ImprimeNoVideo(TRACO_CUPOM_TELA);
+            ImprimeNoVideo(UpperCase(Copy(Form1.sTipoDocumento2,1,1))+Copy(Form1.sTipoDocumento2+' ',2,Length(Form1.sTipoDocumento2))+FormataNumeroDoCupom(Form1.icupom)+ ' Caixa '+sCaixa);
+            ImprimeNoVideo(TRACO_CUPOM_TELA);
+            ImprimeNoVideo('IT  DESCRICAO       QTD   R$ UNIT   R$ TOTAL');
+            ImprimeNoVideo(TRACO_CUPOM_TELA);
+          end;
+          //
+        end;
+        //
+        if bCupomAberto then
+        begin
+          //
+          // Mesa ou cupom
+          //
+          if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
+          begin
+            //
+            // Mesa
+            //
+            Form1.fTotal := GetTotalMesa(Form1.icupom);
+
+            //
+            sBonecoEscolhido := GetBonecoEscolhido(Form1.icupom);
+            //
+            Form1.ibQuery1.Close;
+            //
+            Form1.ibDataSet27.Close;
+            Form1.ibDataSet27.SelectSQL.Clear;
+            Form1.ibDataSet27.Selectsql.Add('select * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom))+' order by ITEM'); // Sandro Silva 2021-11-29 Form1.ibDataSet27.Selectsql.Add('select * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0))+' order by ITEM');
+            Form1.ibDataSet27.Open;
+            //
+          end else
+          begin
+            //
+            Form1.ibDataSet27.Close;
+            Form1.ibDataSet27.SelectSQL.Clear;
+            Form1.ibDataSet27.Selectsql.Add('select * from ALTERACA where CAIXA='+QuotedStr(Form1.sCaixa)+' and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom))+' order by ITEM'); // Listar os itens conforme foram lançados. Testar fechando/abrindo frente com cupom aberto // Sandro Silva 2021-11-29 Form1.ibDataSet27.Selectsql.Add('select * from ALTERACA where CAIXA='+QuotedStr(Form1.sCaixa)+' and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0))+' order by ITEM'); // Listar os itens conforme foram lançados. Testar fechando/abrindo frente com cupom aberto
+            Form1.ibDataSet27.Open;
+            //
+          end;
+          //
+          Form1.ibDataSet27.First;
+          //
+          //
+          iItem := 0;
+          //
+          Form1.fTotal := PDV_SubTotal(True);
+          //
+          // := 'SUBTOTAL R$ '+AllTrim(Format('%10.2n',[fTotal]));
+          //
+          while (not Form1.ibDataSet27.EOF) do
+          begin
+            //
+            if AllTrim(Form1.ibDataSet27.FieldByname('DESCRICAO').AsString) = 'Acréscimo' then // Sandro Silva 2018-07-20
+            begin
+              // Não exibir acréscimo na tela do cupom. Situação de abrir o frente com uma venda ainda não finalizada
+            end else
+            if AllTrim(Form1.ibDataSet27.FieldByname('DESCRICAO').AsString) = 'Desconto' then
+            begin
+
+              if AllTrim(Form1.ibDataSet27.FieldByname('ITEM').AsString) = '' then
+              begin
+                Form1.fDescontoNoTotal := Form1.ibDataSet27.FieldByname('TOTAL').AsFloat*-1;
+                //
+                // SmallMsg('Desconto no total: '+FloatToStr(Form1.fDescontoNoTotal));
+                //
+              end else
+              begin
+                if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99') then // 2016-01-08
+                  ImprimeNoVideo(Copy(StrZero(iItem,3,0)+' '+'Desconto'+Replicate(' ',53),1,52)+'         '+Format('%9.2n',[Form1.ibDataSet27.FieldByname('TOTAL').AsFloat])) // 2016-01-08
+                else
+                  ImprimeNoVideo(Copy(StrZero(iItem,3,0)+' '+'Desconto'+Replicate(' ',53),1,52)+'         '+Format('%9.2n',[Form1.ibDataSet27.FieldByname('TOTAL').AsFloat*-1]));
+              end;
+
+            end else
+            if ((Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99'))
+              and (Trim(Form1.ibDataSet27.FieldByName('CODIGO').AsString) = '')
+              and ((Trim(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString) = '<CANCELADO>') or (Trim(Form1.ibDataSet27.FieldByName('TIPO').AsString) = 'KOLNAC')) then // Sandro Silva 2019-03-26 and (Trim(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString) = '<CANCELADO>') then
+            begin
+               //Não exibir descontos cancelados, igual quando clica F3 ImprimeNoVideo(Copy(StrZero(iItem,3,0)+' '+'Desconto <CANCELADO>'+Replicate(' ',53),1,52)+'         '+Format('%9.2n',[ibDataSet27TOTAL.AsFloat])) // 2016-01-08
+            end else
+            begin
+              //
+              if AllTrim(Form1.ibDataSet27.FieldByname('DESCRICAO').AsString) <> '' then
+              begin
+                //
+                // Inicio Cria um componente dinamicamente
+                //
+                Form1.iItem := Form1.iItem + 1;
+                //
+                if not bServico then
+                begin
+                  //
+                  ibDAtaSet4.Close;
+                  ibDataSet4.SelectSQL.Clear;
+                  ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Alltrim(Form1.ibDataSet27.FieldByName('CODIGO').AsString))+' ');
+                  ibDAtaSet4.Open;
+                  //
+                  if AllTrim(IbDataSet4.FieldByname('CODIGO').AsString) <> '' then
+                  begin
+                    //
+                    if (Length(AllTrim(ibDataSet4.FieldByName('REFERENCIA').AsString)) = 13)
+                      or (Length(AllTrim(ibDataSet4.FieldByName('REFERENCIA').AsString)) = 14)
+                      or (Length(AllTrim(ibDataSet4.FieldByName('REFERENCIA').AsString)) = 12)
+                      or (Length(AllTrim(ibDataSet4.FieldByName('REFERENCIA').AsString)) = 8)
+                      then
+                      sCodigo := ibDataSet4.FieldByName('REFERENCIA').AsString
+                    else
+                      sCodigo := StrZero(StrToInt(ibDataSet4.FieldByName('CODIGO').AsString),14,0);
+                  end;
+                  //
+                end else sCodigo := StrZero(0,14,0);
+                //
+                if Length(sCodigo) =13 then
+                  scodigo := sCodigo+' ';
+                //
+                //  Mesa ou cupom
+                //
+
+                if (Form1.ibDataSet27.FieldByName('VENDEDOR').AsString = '<cancelado>') and ((Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01')) then
+                begin
+                  if (Consumo = False) then
+                  begin
+                    ImprimeNoVideo(StrZero(iItem,3,0)+' '+sCodigo+' '+Copy(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString+Replicate(' ',25),1,25) +
+                                                     Right('        '+AllTrim(Format('%'+IntToStr(7-StrToInt(ConfCasas))+'.'+ConfCasas+'n'
+                                                     ,[Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat])),11)+' '+Copy(Form1.ibDataSet27.FieldByName('MEDIDA').AsString+Replicate(' ',3),1,3)+' '+
+                                                     ' <cancelado>');
+                  end;
+
+                  if (Consumo) then
+                  begin
+                    ImprimeNoVideo(StrZero(iItem,3,0)+' '+sCodigo+' '+Copy(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString+Replicate(' ',25),1,25) +
+                                                     Right('        '+AllTrim(Format('%'+IntToStr(7-StrToInt(ConfCasas))+'.'+ConfCasas+'n'
+                                                     ,[Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat])),11)+' '+Copy(Form1.ibDataSet27.FieldByName('MEDIDA').AsString+Replicate(' ',3),1,3)+' '+
+                                                     ' <cancelado>');
+                  end;
+
+                end else
+                begin
+
+                  if (Consumo = False) or ((Form1.iMesaAberta = 0) and (Form1.sModeloECF <> '01')) then
+                  begin
+                    ImprimeNoVideo(StrZero(iItem,3,0)+' '+sCodigo+' '+Copy(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString+Replicate(' ',25),1,25) +
+                                                      ' ' + // 2015-09-09
+                                                      Right('        '+AllTrim(Format('%'+IntToStr(7-StrToInt(ConfCasas))+'.'+ConfCasas+'n'
+                                                      ,[Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat])),11)+' '+Copy(Form1.ibDataSet27.FieldByName('MEDIDA').AsString+Replicate(' ',3),1,3)+' '+ Replicate(' ', 9) +
+                                                      Format('%9.'+Form1.ConfPreco+'n',[Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat])
+                                                      +' '+Format('%9.2n',[Form1.ibDataSet27.FieldByName('TOTAL').AsFloat]));
+                  end
+                  else
+                  if (Consumo) or ((Form1.iMesaAberta = 0) and (Form1.sModeloECF <> '01')) then
+                  begin
+                    // Não exibe no vídeo o que está sendo lançado na mesa
+                    // ER02.03, Requisito XLVII, item 19, letra a
+                    ImprimeNoVideo(StrZero(iItem,3,0)+' '+sCodigo+' '+Copy(Form1.ibDataSet27.FieldByName('DESCRICAO').AsString+Replicate(' ',25),1,25) +
+                                                      Right('        '+AllTrim(Format('%'+IntToStr(7-StrToInt(ConfCasas))+'.'+ConfCasas+'n'
+                                                      ,[Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat])),11));
+                  end;
+                end;
+                //
+                //  Mesa ou cupom
+                //
+                if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
+                begin
+                  if (Alltrim(Form1.ibDataSet27.FieldByName('DAV').AsString)<>'')
+                  then
+                  begin
+                    //
+                    ImprimeNoVideo('Item '+Right(Form1.ibDataSet27.FieldByName('ITEM').AsString,3)+' transferido da '+sMesaOuConta+' '+Right(Form1.ibDataSet27.FieldByName('DAV').AsString,3));
+                    //
+                  end;
+                end;
+                //
+              end;
+              //
+            end;
+            //
+            Form1.ibDataSet27.Next;
+            //
+          end;
+          //
+          bCupomAberto := False;
+          //
+        end;
+        //
+        Form1.Memo1.Visible := True;
+        Form1.Memo2.Visible := True;
+        Form1.Memo3.Visible := True;
+
+        ExibeScrollCupom(Form1.Memo1.Visible); // Sandro Silva 2016-08-03
+
+        //
+        Button4.Enabled        := False;
+        //
+        if (Consumo = False) or ((Form1.iMesaAberta = 0) and (Form1.sModeloECF <> '01')) then
+        begin
+          Form1.Memo2.Lines.Text := 'Total R$ '+AllTrim(Format('%12.2n',[Form1.fTotal]));
+          Label_13.Caption := Format('%10.2n',[Form1.fTotal]);
+
+          if ((Form1.iMesaAberta > 0) and (Form1.sModeloECF = '01')) then // 2015-09-16
+            Label10.Caption := 'Total da ' + Form1.sMesaOuConta + ' R$'; // 2015-09-10
+        end
+        else
+        begin
+          Form1.Memo2.Lines.Text := '';
+          Label_13.Caption := Right(Replicate(' ',8)+'0,00',8);
+          Label10.Caption := 'Total da ' + Form1.sMesaOuConta + ' R$'; // 2015-09-10
+        end;
+
+        //
+        // SmallMsg('Teste SubTotal '+FloatToStr(Form1.fTotal)+chr(10)+'Total R$ '+AllTrim(Format('%12.2n',[Trunca(Form1.fTotal,2)])));
+        //
+        // Mesa ou cupom
+        //
+        if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
+        begin
+          Form1.sF4Conferencia := ''; // Sandro Silva 2016-08-04 Precisa? Botões já tem texto  '; F4 - Conferência de '+Form1.sMesaOuConta;
+          if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+            Display(sMesaOuConta+' '+StrZero(Form1.iMesaAberta,3,0),'Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia)
+          else
+            if Copy(Form1.sconcomitante, 1, 2) = 'OS' then
+            begin
+
+              Form1.IBQuery1.Close;
+              Form1.IBQuery1.SQL.Clear;
+              Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom))+' order by ITEM'); // Sandro Silva 2021-11-29 Form1.IBQuery1.SQL.Add('select first 1 * from ALTERACA where (TIPO=''MESA'' or TIPO=''DEKOL'') and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0))+' order by ITEM');
+              Form1.IBQuery1.Open;
+
+              Display(sMesaOuConta+' '+Form1.IBQuery1.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString,'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);// Sandro Silva 2017-12-27 Polimig  Display(sMesaOuConta+' '+StrZero(Form1.iMesaAberta,3,0) + Form1.IBQuery1.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString,'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
+            end
+            else
+              Display(sMesaOuConta+' '+StrZero(Form1.iMesaAberta,3,0),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'+Form1.sF4Conferencia);
+
+          if bImprimeConferencia then // 2015-08-31 ER 02.03 Requisito XLVII, item 19, alínea "b"
+          begin
+            if Form1.Confernciademesa1.Enabled then
+              Form1.Confernciademesa1Click(Form1.Confernciademesa1);
+            bImprimeConferencia := False;
+          end;
+
+        end else
+        begin
+          {Sandro Silva 2023-06-23 inicio
+          if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+            Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
+          else
+            Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+          end;
+          }
+          if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+            Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Entre com EAN 13, Código ou Descrição')
+          //else if (Form1.sModeloECF_Reserva = '99') then
+          //  Display('EM MOVIMENTO','Entre com EAN 13, Código ou Descrição')
+          else
+            Display(RetornaTextoEmVenda(Form1.sModeloECF_Reserva),'Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
+          end;
+          {Sandro Silva 2023-06-23 fim}
+        //
+        Mais1ini               := TIniFile.Create('FRENTE.INI');
+        //
+        if (Mais1Ini.ReadString('Frente de caixa','Queda','Sim') = 'Sim') then
+        begin
+          Mais1Ini.WriteString('Frente de caixa','Queda','Não');
+          Mais1ini.Free;
+        end;
+        //
+      end
+      else
+      begin
+        if StrToInt(sMesas) > 0 then
+          bChaveGerencialOk := False; // Para Fechamento de mesas após a RZ sair o Mesas abertas antes de fechar
+
+        Edit1.Text := ''; // Ficha 4594 Sandro Silva 2019-04-29 Ficava em loop quando tentava abrir o cupom por código de barras usando leitor e abertura não permitida
+        
+      end;
+
+      if (Form1.ClienteSmallMobile.sVendaImportando = '') and (bAbre) then
+      begin
+
+        //
+        // Idenfica o vendedor lançado no cupom. Para casos que fecha o frente com o cupom aberto
+        //
+
+        IBQTEMP := CriaIBQuery(Form1.IBQuery1.Transaction);
+
+        try
+
+          IBQTEMP.Close;
+          IBQTEMP.SQL.Text :=
+            'select first 1 VENDEDOR ' +
+            'from ALTERACA ' +
+            //'where coalesce(VENDEDOR, '''') <> '''' ' +
+            //' and coalesce(VENDEDOR, '''') <> ''<cancelado>'' ' +
+            ' where TIPO <> ''CANCEL'' ' +
+            ' and DESCRICAO <> ''Acréscimo'' ' +
+            ' and DESCRICAO <> ''Desconto'' ' +
+            ' and DESCRICAO <> ''<CANCELADO>'' ' +
+            ' and TIPO <> ''KOLNAC'' ' + // Sandro Silva 2019-03-26 Quando em Dead Lock, regsitro fica com TIPO=KOLNAC. Altera para "CANCEL" quando estiver destravado            
+            ' and VENDEDOR <> ''<cancelado>'' ' +
+            ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+            ' and PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2021-11-29 ' and PEDIDO = ' + QuotedStr(StrZero(Form1.icupom,6,0));
+          IBQTEMP.Open;
+
+          // Verifica se tem cliente informado na venda selecionada
+          if (IBQTEMP.FieldByName('VENDEDOR').AsString <> '') and (Trim(Form2.Edit9.Text) = '') then
+          begin
+            Form2.Edit9.Text := IBQTEMP.FieldByName('VENDEDOR').AsString;
+            Form2.Edit9Change(Form2.Edit9); // 2015-07-13
+            if (Form1.ibDataSet99.FieldByName('NOME').AsString <> IBQTEMP.FieldByName('VENDEDOR').AsString) then
+              Form2.Edit9.Text := '';
+          end;
+
+          IBQTEMP.Close;
+          IBQTEMP.SQL.Text :=
+            'select first 1 CLIFOR, CNPJ ' +
+            'from ALTERACA ' +
+            'where coalesce(CLIFOR, '''') <> '''' ' +
+            ' and CAIXA='+QuotedStr(Form1.sCaixa)+' and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2021-11-29 ' and CAIXA='+QuotedStr(Form1.sCaixa)+' and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0));
+          IBQTEMP.Open;
+
+          if IBQTEMP.FieldByName('CLIFOR').AsString <> '' then
+          begin
+            Form2.Edit2.Text := IBQTEMP.FieldByName('CNPJ').AsString;
+            Form2.Edit8.Text := IBQTEMP.FieldByName('CLIFOR').AsString;
+            Form2.Edit8Enter(Form2.Edit8);
+            Form2.Edit8Exit(Form2.Edit8);
+          end;
+
+          {Sandro Silva 2022-04-05 inicio}
+          if Form1.sModeloECF = '65' then
+          begin
+
+            Form2.edMarketplace.Visible := True;
+            // Valida se tem informou marketplace
+            IBQTEMP.Close;
+            IBQTEMP.SQL.Text :=
+              'select first 1 MARKETPLACE ' +
+              'from ALTERACA ' +
+              'where coalesce(MARKETPLACE, '''') <> '''' ' +
+              ' and CAIXA='+QuotedStr(Form1.sCaixa)+' and PEDIDO='+QuotedStr(FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2021-11-29 ' and CAIXA='+QuotedStr(Form1.sCaixa)+' and PEDIDO='+QuotedStr(StrZero(Form1.icupom,6,0));
+            IBQTEMP.Open;
+
+            if IBQTEMP.FieldByName('MARKETPLACE').AsString <> '' then
+            begin
+              Form2.edMarketplace.Text := IBQTEMP.FieldByName('MARKETPLACE').AsString;
+              Form2.edMarketplaceEnter(Form2.edMarketplace);
+            end;
+            
+          end
+          else
+          begin
+            Form2.edMarketplace.Visible := False;
+          end;
+          Form2.lbMarketplace.Visible := Form2.edMarketplace.Visible;
+          {Sandro Silva 2022-04-05 fim}
+
+          IBQTEMP.Close;
+        finally
+          FreeAndNil(IBQTEMP);
+        end;
+      end; // if (Form1.ClienteSmallMobile.sVendaImportando = '') and (bAbre) then
+
+      //
+      //
+    except
+      AbreArquivos(True);
+    end;
+  end else
+  begin
+    //
+    //
+    Form1.Button8Click(Form1.Button8); // Corta o papel, commita, etc e tal, fecha a tela da mesa do cupom status das mesas, zeresima
+
+    Edit1.Text := ''; // Ficha 4594 Sandro Silva 2019-04-29 Ficava em loop quando tentava abrir o cupom por código de barras usando leitor e abertura não permitida
+    //
+  end; // if TestaTudo(True) then // Abre cupom
+  //
+  MostraALogo(True, True); // Sandro Silva 2018-04-26  MostraALogo(True);
+  //
+
+  if Form1.sModeloECF = '59' then
+    Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
 
 end;
 
