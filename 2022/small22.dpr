@@ -191,7 +191,8 @@ uses
   uGeraCNAB400 in 'units\uGeraCNAB400.pas',
   uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
   uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
-  uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab};
+  uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas';
 
 {$R *.RES}
 
