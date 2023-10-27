@@ -193,27 +193,51 @@ uses
 {$R *.RES}
 
 var
-  Hwnd: THandle;
+  oHwnd: THandle;
+  // Procura no Caption se contem o Texto.
+  function FindWindowCaptionParcial(AcTextoProcurar: string): THandle;
+  var
+    oHwnd: THandle;
+    nLength: Integer;
+    cTitletemp: array [0..254] of Char;
+    cTituloTemporario: string;
+  begin
+    Result := 0;
+
+    oHwnd := FindWindow('TForm1', nil);
+    while oHwnd <> 0 do begin
+      nLength := GetWindowText(oHwnd, cTitletemp, 255);
+      cTituloTemporario := cTitletemp;
+      cTituloTemporario := AnsiUpperCase(Copy(cTituloTemporario, 1, nLength));
+      AcTextoProcurar := AnsiUpperCase(AcTextoProcurar);
+      if Pos(AcTextoProcurar, cTituloTemporario) <> 0 then
+      begin
+        Result := oHwnd;
+        Break;
+      end;
+      oHwnd := GetWindow(oHwnd, GW_HWNDNEXT);
+    end;
+  end;
 begin
-  Hwnd := FindWindow('TForm1', 'Small Commerce');
+  oHwnd := FindWindowCaptionParcial('Small Commerce - [ ');
 
-  if Hwnd = 0 then
+  if oHwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'Small Start');
+    oHwnd := FindWindowCaptionParcial('Small Start - [ ');
   end;
 
-  if Hwnd = 0 then
+  if oHwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'Small Mei');
+    oHwnd := FindWindowCaptionParcial('Small Mei - [ ');
   end;
 
-  if Hwnd = 0 then
+  if oHwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'Small Go');
+    oHwnd := FindWindowCaptionParcial('Small Go - [ ');
   end;
 
   try
-    if Hwnd = 0 then
+    if oHwnd = 0 then
     begin
       Form22 := TForm22.Create(Application);
       Form22.Show;
@@ -266,8 +290,8 @@ begin
   Application.Run;
     end else
     begin
-      if not IsWindowVisible(Hwnd) then PostMessage(Hwnd, wm_User,0,0);
-      SetForegroundWindow(Hwnd);
+      if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);
+      SetForegroundWindow(oHwnd);
     end;
   except
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );

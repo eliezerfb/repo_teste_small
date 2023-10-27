@@ -12200,8 +12200,8 @@ var
 begin
   if Form7.ibDataSet13.Active then
   begin
-    // Isso influência e permitir abrir mais de uma instância do Small na mesma máquina
-    // Não pode estar disponível para os clientes
+    {Dailon Parisotto 2023-10-18 (f-7267) Inicio
+
     if (Form7.ibDataSet13.FieldByName('CGC').AsString = '07.426.598/0001-24') or (Form7.ibDataSet13.FieldByName('CGC').AsString = '03.916.076/0006-64') then
     begin
       sEmpresa := ' - [ ' + Form7.ibDataSet13.FieldByName('NOME').AsString + ' ' + Form7.ibDataSet13.FieldByName('CGC').AsString + ' ]';
@@ -12210,6 +12210,22 @@ begin
         sCaption := Copy(sCaption, 1, Pos(' - [', sCaption) - 1);
       Form1.Caption := sCaption + sEmpresa;
     end;
+
+    }
+
+    //**************************************************//
+    //______________________ATENÇÃO______________________//
+    //SE ALTERAR o CAPTION abaixo verifique o método//
+    //FindWindowCaptionParcial no SOURCE do projeto, para//
+    //não permitir abrir duas instancias.//
+
+    sCaption := Form1.Caption;
+    sEmpresa := ' - [ ' + Form7.ibDataSet13.FieldByName('NOME').AsString + ' ' + Form7.ibDataSet13.FieldByName('CGC').AsString + ' ]';
+    sCaption := Form1.Caption;
+    if Pos(' - [', sCaption) > 0 then
+      sCaption := Copy(sCaption, 1, Pos(' - [', sCaption) - 1);
+    Form1.Caption := sCaption + sEmpresa + ' Usuário: ' + Senhas.UsuarioPub;
+    {Dailon Parisotto 2023-10-18 (f-7267) Fim}
   end;
 end;
 
