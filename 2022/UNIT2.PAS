@@ -1139,7 +1139,6 @@ var
   Mais1Ini: TIniFile;
   bButton : Integer;
 begin
-  //
   bButton := Application.MessageBox(Pchar('Este usuário vai ser eliminado e não vai mais ter acesso ao'+Chr(10)+
                                           'sistema.'+
              Chr(10) +
@@ -1153,7 +1152,6 @@ begin
     Mais1ini.EraseSection(Senhas.UsuarioPub);
     close;
   end;
-  //
 end;
 
 procedure TForm2.ResetGeral1Click(Sender: TObject);

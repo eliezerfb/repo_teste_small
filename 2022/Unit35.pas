@@ -127,7 +127,7 @@ var
   cColor : TColor;
 implementation
 
-uses Unit15, Mais, Unit7, Mais3;
+uses Unit15, Mais, Unit7, Mais3, uDialogs;
 
 Function Tecla(cTl : Char): char;
 begin
@@ -141,7 +141,8 @@ Begin
   TotalDeColunas := True;
   if StrToFloat(sTotal) > 8 Then // Número máximo de colunas é 5
   begin
-     MessageDlg('Número de colunas por linha fora dos padrões permitidos: 1 à 8 !', MtInformation, [mbok], 0);
+     //MessageDlg('Número de colunas por linha fora dos padrões permitidos: 1 à 8 !', MtInformation, [mbok], 0); Mauricio Parizotto 2023-10-25
+     MensagemSistema('Número de colunas por linha fora dos padrões permitidos: 1 à 8 !',msgAtencao);
      TotalDeColunas := False;
   end;
 end;
@@ -367,9 +368,15 @@ procedure TForm35.ComboBox2Exit(Sender: TObject);
 begin
   if ComboBox2.Text = 'Matricial' then
   begin
+    {
     MessageDlg('Ao selecionar um modelo de impressora matricial lembre-se que a unidade de medida das etiquetas ' +
               'passa a ser cc (caracter) e para facilitar a configuração utilize a régua impressa pelo programa ' +
               'no modo caracter comprimido de sua impressora matricial.', MtInformation,[mbok], 0);
+    Mauricio Parizotto 2023-10-25}
+    MensagemSistema('Ao selecionar um modelo de impressora matricial lembre-se que a unidade de medida das etiquetas ' +
+                    'passa a ser cc (caracter) e para facilitar a configuração utilize a régua impressa pelo programa ' +
+                    'no modo caracter comprimido de sua impressora matricial.');
+
     Form35.ComboBox2Change(Sender);
     Label10.Caption := 'cc';
     Label11.Caption := 'cc';
@@ -423,18 +430,13 @@ begin
     Form35.CheckBox4.Checked := False;
     Form35.CheckBox5.Checked := False;
     Form35.CheckBox6.Checked := False;
-    //
   end else
   begin
     Form35.CheckBox4.Enabled := True;     {Habilita a opção de código de barras}
-    //
+
     Form35.RadioButton2.Enabled := False;
     Form35.RadioButton3.Checked := True;  {Marca a opção para imprimir apenas os dados}
-    //
   end;
-  //
-//  ShowMessage(Form15.ibTable1.ibTableName);
-  //
 
   if (Form15.CheckBox1.Checked = True) and (Form7.sModulo = 'ESTOQUE') then
   begin
@@ -612,7 +614,8 @@ procedure TForm35.Edit2Exit(Sender: TObject);
 begin
   if (Form35.CheckBox3.Checked = True) and (Form35.Edit2.Text = '') then
   begin
-     MessageDlg('É necessário informar um comentário para a impressão!', mtInformation, [mbok], 0);
+     //MessageDlg('É necessário informar um comentário para a impressão!', mtInformation, [mbok], 0); Mauricio Parizotto 2023-10-25
+     MensagemSistema('É necessário informar um comentário para a impressão!',msgAtencao);
      Form35.Edit2.SetFocus;
   end;
 end;
@@ -631,11 +634,11 @@ var
   sNome  : string;
   ArqIni : TIniFile;
 begin
-  //
   ArqINI := TiniFile.create(Form1.sAtual + '\etiquetas.inf');
   ArqIni.UpdateFile;
-  if TotalDeColunas(Edit7.text) = False then Exit;
-  //
+  if TotalDeColunas(Edit7.text) = False then
+    Exit;
+
   sNome := 'Etiqueta personalizada - ' + Edit9.Text + ' linhas e ' + Edit7.Text + ' colunas -'+Senhas.UsuarioPub;
   InputQuery('Novo modelo de etiqueta', 'Digite o nome do seu modelo de etiquetas:', sNome);
   Form35.ComboBox1.Text := sNome;
@@ -646,12 +649,10 @@ procedure TForm35.Button6Click(Sender: TObject);
   ArqIni  : TiniFile;
   sOpcoes : string;
 begin
-  //
-  //
-  if AllTrim(Form35.ComboBox1.Text) = '' then Form35.ComboBox1.Text := 'Etiqueta personalizada pelo usuário';
-  //
+  if AllTrim(Form35.ComboBox1.Text) = '' then
+    Form35.ComboBox1.Text := 'Etiqueta personalizada pelo usuário';
+    
   // Grava as configurações da etiqueta selecionada
-  //
   try
     ArqINI := TiniFile.create(Form1.sAtual + '\etiquetas.inf');
     ArqIni.WriteString(Form35.ComboBox1.Text, 'Margem superior',     Form35.Edit3.Text);
@@ -695,18 +696,13 @@ begin
   except end;
   //
   try
-    //
     // Se o CheckBox do código de barras estiver marcado, marca também no form15
-    //
     if (Form35.CheckBox4.Checked = True) and (Form15.CheckBox1.Enabled = True) then Form15.CheckBox1.Checked := True Else Form15.CheckBox1.Checked := False;
     {Se o RadioButton de mala direta estiver marcado, marca também no Check do form15}
     if Form35.RadioButton2.Checked = True then Form15.CheckBox2.Checked := True Else Form15.CheckBox2.Checked := False;
-    // Verifica qual das opções do ComboBox3 foi selecionada e marca o RadioButton correpondente no form15
-    //
   except end;
   //
   Close;
-  //
 end;
 
 procedure TForm35.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -721,8 +717,6 @@ begin
                   'Configurações não salvas', 0);
     Form15.ComboBox1.SetFocus;
   end;
-  //
-  //
 end;
 
 

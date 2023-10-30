@@ -66,6 +66,8 @@ var
 
 implementation
 
+uses uDialogs;
+
 {$R *.dfm}
 
 procedure ValidaDadosCampo(DataSet: TDataSet; DataFiled: String);
@@ -75,7 +77,8 @@ end;
 
 procedure MsgBoxAlerta(sMensagem: String);
 begin
-  Application.MessageBox(PChar(sMensagem), 'Atenção', MB_OK + MB_ICONWARNING)
+  //Application.MessageBox(PChar(sMensagem), 'Atenção', MB_OK + MB_ICONWARNING) Mauricio Parizotto 2023-10-25
+  MensagemSistema(sMensagem,msgAtencao);
 end;
 
 function TiraMascara(sTexto: String): String;

@@ -43,6 +43,8 @@ var
 
 implementation
 
+uses uDialogs;
+
 procedure GeraXmlNFeEntrada;
 var
   fNFe: String; // Sandro Silva 2022-09-12
@@ -208,8 +210,11 @@ begin
     except
       on E: Exception do
       begin
+        {
         Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 1'
         ),'Atenção', mb_Ok + MB_ICONWARNING);
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 1',msgAtencao);
       end;
     end;
 
@@ -217,7 +222,8 @@ begin
       Form7.spdNFeDataSets.Campo('finNFe_B25').Value  := '3'; // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
       Form7.spdNFeDataSets.Campo('natOp_B04').Value   := '999 - Estorno de NF-e não cancelada no prazo legal';
     except
-      ShowMessage('Erro ao gravar natOp_B04');
+      //ShowMessage('Erro ao gravar natOp_B04'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro ao gravar natOp_B04',msgErro);
     end;
   end else
   begin
@@ -235,8 +241,11 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 2'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 2',msgAtencao);
         end;
       end;
     end else
@@ -263,18 +272,29 @@ begin
               Form7.spdNFeDataSets.SalvarPart('NREF');
             end else
             begin
+              {
               ShowMessage('Informação inválida informe a'+chr(10)+
                           'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                           '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
                           'cupom fiscal referenciado');
+              Mauricio Parizotto 2023-10-25}
+              MensagemSistema('Informação inválida informe a'+chr(10)+
+                              'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
+                              '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
+                              'cupom fiscal referenciado'
+                              ,msgAtencao);
               Abort;
             end;
           end;
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 3'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 3',msgAtencao);
+
             Abort;
           end;
         end;
@@ -403,8 +423,11 @@ begin
     except
       on E: Exception do
       begin
+        {
         Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ ' ao criar xml para nota de produtor rural.'
         ),'Atenção',mb_Ok + MB_ICONWARNING);
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+chr(10)+ ' ao criar xml para nota de produtor rural.',msgAtencao);
       end;
     end;
   end;
@@ -467,8 +490,8 @@ begin
   Form7.spdNFeDataSets.Campo('xNome_C03').Value   := ConverteAcentosNome(Form7.ibDataSet13.FieldByname('NOME').AsString); // Razao Social ou Nome do Emitente
   Form7.spdNFeDataSets.Campo('xFant_C04').Value   := ConverteAcentosNome(Form7.ibDataSet13.FieldByname('NOME').AsString); ; // Nome Fantasia do Emitente
 
-  Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
-  Form7.spdNFeDataSets.Campo('nro_C07').Value     := Numero_Sem_Endereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente
+  Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_C06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDataSet13.FieldByname('ENDERECO').AsString)); // Logradouro do Emitente
+  Form7.spdNFeDataSets.Campo('nro_C07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_C07').Value     := Numero_Sem_Endereco(Form7.ibDataSet13.FieldByname('ENDERECO').AsString); // Numero do Logradouro do Emitente
 
   Form7.spdNFeDataSets.Campo('xBairro_C09').Value := ConverteAcentos2(Form7.ibDataSet13.FieldByname('COMPLE').AsString); // Bairro do Emitente
 
@@ -551,8 +574,8 @@ begin
       Form7.spdNFeDataSets.Campo('xNome_E04').Value   := ConverteAcentosNome(Form7.ibDAtaset2.FieldByname('NOME').AsString); // Razao social ou Nome do Destinatário
     end;
 
-    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
-    Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Destinatario // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('nro_E07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Destinatario // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
 
     Form7.spdNFeDataSets.Campo('xBairro_E09').Value := Alltrim(ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString)); // Bairro do Destinatario
     Form7.spdNFeDataSets.Campo('cMun_E10').Value    := Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7); // Código do Município do Destinatário (Tabela IBGE)
@@ -646,8 +669,8 @@ begin
   end else
   begin
     // Vendedor estrangeiro
-    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
-    Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do  // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+    Form7.spdNFeDataSets.Campo('nro_E07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
 
     Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
     Form7.spdNFeDataSets.Campo('cMun_E10').Value    := '9999999';   // Código do Município do Destinatário (Tabela IBGE)
@@ -773,8 +796,8 @@ begin
       //
       Mais1ini.Free;
       //
-      Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
-      Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
+      Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do  // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
+      Form7.spdNFeDataSets.Campo('nro_E07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
       //
       Form7.spdNFeDataSets.Campo('xBairro_E09').Value := ConverteAcentos2(Form7.ibDAtaset2.FieldByname('COMPLE').AsString); // Bairro do Destinatario
       Form7.spdNFeDataSets.Campo('cMun_E10').Value    := '9999999'; // Código do Município do Destinatário (Tabela IBGE)
@@ -798,8 +821,11 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'Identificação do destinatário no caso de comprador estrangeiro'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+ 'Identificação do destinatário no caso de comprador estrangeiro',msgAtencao);
         end;
       end;
     end;
@@ -932,9 +958,14 @@ begin
       except
         on E: Exception do
         begin
+          {
           Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
           chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
           ),'Atenção',mb_Ok + MB_ICONWARNING);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
+                          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                          ,msgAtencao);
         end;
       end;
 
@@ -1079,7 +1110,8 @@ begin
             begin
               if (RetornaValorDaTagNoCampo('descANP', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
               begin
-                ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP');
+                //ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP'); Mauricio Parizotto 2023-10-25}
+                MensagemSistema('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP',msgAtencao);
               end else
               begin
                 Form7.spdNFeDataSets.campo('descANP_LA03').Value := RetornaValorDaTagNoCampo('descANP',Form7.ibDataSet4TAGS_.AsString);                                                  // Descrição do produto conforme ANP
@@ -1091,6 +1123,7 @@ begin
                    (RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') or
                    (RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
                 begin
+                  {
                   ShowMessage('Incluir no controle de estoque na aba Tags:'+
                               Chr(10)+
                               Chr(10)+'pGLP: 0,0000'+
@@ -1098,6 +1131,15 @@ begin
                               Chr(10)+'pGNi: 0,0000'+
                               Chr(10)+'vPart: 0,00'
                               );
+                  Mauricio Parizotto 2023-10-25}
+                  MensagemSistema('Incluir no controle de estoque na aba Tags:'+
+                                  Chr(10)+
+                                  Chr(10)+'pGLP: 0,0000'+
+                                  Chr(10)+'pGNn: 0,0000'+
+                                  Chr(10)+'pGNi: 0,0000'+
+                                  Chr(10)+'vPart: 0,00'
+                                  ,msgAtencao);
+
                   Abort;
                 end else
                 begin
@@ -1105,12 +1147,22 @@ begin
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) <> 100 then
                   begin
+                    {
                     ShowMessage('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
                     + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
                     + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
                                               + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value);
+                    Mauricio Parizotto 2023-10-25}
+                    MensagemSistema('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
+                                    + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
+                                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
+                                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
+                                    + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
+                                    + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value
+                                    ,msgAtencao);
+
                     Abort;
                   end else
                   begin
@@ -1357,8 +1409,11 @@ begin
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao salvar DI'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao salvar DI',msgAtencao);
           end;
         end;
 
@@ -1373,8 +1428,11 @@ begin
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao salvar adi'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao salvar adi',msgAtencao);
           end;
         end;
 
@@ -1395,8 +1453,11 @@ begin
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao salvar DI'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao salvar DI',msgAtencao);
           end;
         end;
 
@@ -1425,9 +1486,14 @@ begin
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
             chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
+                            chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                            ,msgAtencao);
           end;
         end;
 
@@ -1505,9 +1571,14 @@ begin
   except
     on E: Exception do
     begin
+      {
       Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
       chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
       ),'Atenção',mb_Ok + MB_ICONWARNING);
+      Mauricio Parizotto 2023-10-25}
+      MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
+                      chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
+                      ,msgAtencao);
     end;
   end;
 
@@ -1919,8 +1990,11 @@ begin
         except
           on E: Exception do
           begin
+            {
             Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+' Erro: 2756'
             ),'Atenção',mb_Ok + MB_ICONWARNING);
+            Mauricio Parizotto 2023-10-25}
+            MensagemSistema(E.Message+chr(10)+chr(10)+' Erro: 2756',msgErro);
           end;
         end;
       end;
@@ -2465,14 +2539,16 @@ begin
         except
           on E: Exception do
           begin
-            Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900'), 'Atenção', mb_Ok + MB_ICONWARNING);
+            //Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900'), 'Atenção', mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+            MensagemSistema(E.Message + chr(10) + chr(10) + 'ao calcular Percentual do FCP retido por Substituição Tributária CSOSN 900',msgAtencao);
           end;
         end;
       end;
     except
       on E: Exception do
       begin
-        Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.'), 'Atenção', mb_Ok + MB_ICONWARNING);
+        //Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.'), 'Atenção', mb_Ok + MB_ICONWARNING);  Mauricio Parizotto 2023-10-25
+        MensagemSistema(E.Message + chr(10) + chr(10) + 'ao calcular FCP 2.',msgAtencao);
       end;
     end;
 

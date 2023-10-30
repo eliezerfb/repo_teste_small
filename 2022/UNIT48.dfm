@@ -976,7 +976,7 @@ object Form48: TForm48
       OnClick = ImportarOS2Click
     end
     object Importaroramentos1: TMenuItem
-      Caption = 'Importar or'#231'amento...'
+      Caption = 'Importar Or'#231'amento...'
       OnClick = Importaroramentos1Click
     end
   end

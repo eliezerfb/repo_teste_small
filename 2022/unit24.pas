@@ -302,31 +302,29 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45;
+uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
+  uFuncoesBancoDados, uDialogs;
 
 {$R *.DFM}
 
 
 function Exemplo(sP1 : boolean):Boolean;
 begin
-  //
-  //
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDAE.AsString)+' ');
   Form1.ibQuery1.Open;
-  //
+
   Form24.Label89.Caption := 'Compra 1 '+Form1.IBQuery1.FieldByname('DESCRICAO').AsString+' e'+chr(10)+'vende ';
-  //
+
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDA.AsString)+' ');
   Form1.ibQuery1.Open;
-  //
+
   Form24.Label89.Caption := AllTrim(Form24.Label89.Caption) +' '+ FloatToStr(Form7.ibDataSet4FATORC.AsFloat) + ' ' + Form1.IBQuery1.FieldByname('DESCRICAO').AsString;
-  //
+  
   Result := True;
-  //
 end;
 
 
@@ -369,7 +367,6 @@ begin
   Form7.ibDataSet23UNITARIO_O.DisplayWidth    := 12;
   //
   Result := True;
-  //
 end;
 
 
@@ -467,20 +464,16 @@ end;
 
 function ApagaIntegracaoComOCaixa2(pP1:Boolean):Boolean;
 begin
-  //
   // Apaga lançamento anterior no livro caixa
-  //
   try
     Form7.ibDataSet100.Close;
     Form7.ibDataSet100.SelectSQL.Clear;
     Form7.ibDataSet100.SelectSQL.Add('delete from CAIXA where substring(HISTORICO from 1 for 22)='+QuotedStr('Nota Fiscal: '+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9))+' and DATA = '+QuotedStr(Form24.sDataAntiga)+' ');
     Form7.IBDataSet100.Open;
-  except end;
-  //
-  // ShowMessage(Form7.ibDataSet100.SelectSQL.Text);
-  //
+  except
+  end;
+
   Result := True;
-  //
 end;
 
 function IntegracaoComOCaixa2(pP1:Boolean):Boolean;
@@ -505,9 +498,7 @@ begin
   begin
     if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
     begin
-      //                                                            //
       // Integração com o Livro caixa CAIXA.DBF                     //
-      //                                                            //
       Form7.ibDataSet12.First;
       Form7.ibDataSet1.Append;
       Form7.ibDataSet1DATA.Value      := Form7.ibDataSet24EMISSAO.Value;
@@ -534,29 +525,23 @@ begin
                 Form7.ibDataSet24.Post;
               end;
             end;
-
           end;
-
         end;
-
-
       end else
       begin
         Form7.ibDataSet1.Edit;
         Form7.ibDataSet1NOME.AsString := Form7.ibDataSet14CONTA.AsString;
         Form7.ibDataSet1.Post;
       end;
-      //
+      
       try
         Form7.ibDataSet1.Edit;
         Form7.ibDataSet1.Post;
       except end;
-      //
     end;
   end;
   //
   Result := True;
-  //
 end;
 
 
@@ -874,19 +859,19 @@ begin
         AssignFile(F,Mais2Ini.ReadString('Nota Fiscal 2','Porta','LPT1'));
         Mais2ini.Free;
       end;
-      //
+
       try
         Rewrite(F);
-      except ShowMessage('Verifique a impressora.') end;
-      //                                                                    //
-      // Arquivo de nota fiscal NOTA                                        //
-      //                                                                    //
-      Form7.ibDataSet19.First;                                                  //
-      while not Form7.ibDataSet19.Eof do                                        //
-      begin                                                                 //
-        //                                                                  //
-        // Não imprime quando a linha e a coluna estiverem zeradas          //
-        //                                                                  //
+      except
+        //ShowMessage('Verifique a impressora.') Mauricio Parizotto 2023-10-25
+        MensagemSistema('Verifique a impressora.',msgAtencao);
+      end;
+
+      // Arquivo de nota fiscal NOTA
+      Form7.ibDataSet19.First;
+      while not Form7.ibDataSet19.Eof do
+      begin
+        // Não imprime quando a linha e a coluna estiverem zeradas
         if Form7.ibDataSet19LINHA.AsFloat > 200 then
         begin
           Form7.ibDataSet19.Edit;
@@ -897,10 +882,9 @@ begin
           Form7.ibDataSet19.Edit;
           Form7.ibDataSet19COLUNA.AsFloat := 300;
         end;
-        //
+        
         if (Form7.ibDataSet19LINHA.Value + Form7.ibDataSet19COLUNA.Value) > 0 then
         begin
-          //
           try
             if Trunc(Form7.ibDataSet19ELEMENTO.Value) > 0 then
             begin
@@ -909,9 +893,8 @@ begin
               Form7.ibDataSet19.Post;
             end;
           except
-            // ShowMessage('Erro criando o Lay Out da nota fiscal no campo, '+ibDataSet19DESCRICAO.AsString+'.');
           end;
-          //
+          
           if (Form7.ibDataSet19ELEMENTO.Value >= 150) and (Form7.ibDataSet19ELEMENTO.Value < 999) then
           begin
 try
@@ -956,10 +939,9 @@ try
                     Replicate(' ',100)+FormatFloat(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(Form7.ibDataSet19TIPO.Value,'9','#'),'.','*'),',','.'),'*',','),'#.####','0.0000'),'#.###','0.000'),'#.##','0.00'),'#.#','0.0'),vCampo[ Trunc( Form7.ibDataSet19ELEMENTO.Value )+I])
                     ,length(Alltrim(Form7.ibDataSet19Tipo.Value)));
                   except
-                    ShowMessage('Erro 2');
-
+                    //ShowMessage('Erro 2'); Mauricio Parizotto 2023-10-25
+                    MensagemSistema('Erro 2',msgErro);
                   end;
-                  //
                 end;
               end else
               begin
@@ -1115,16 +1097,14 @@ except end;
                 if UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,Length(Form7.ibDataSet19TIPO.AsString)-2))) = 'CHR(27)+[1]' then
                 vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] + chr(27)+'1';
                 if UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,Length(Form7.ibDataSet19TIPO.AsString)-2))) = 'CHR(27)+[2]' then vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] + chr(27)+'2';
-                //
-                // ShowMessage('Teste: '+Chr(10)+UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,17)))+chr(10)+'CHR(27)+[C]+CHR(');
-                //
+
                 if UpperCase(AllTrim(Copy(Form7.ibDataSet19TIPO.AsString,3,17))) = 'CHR(27)+[C]+CHR(' then
                 begin
                   vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] + chr(27)+'C'+chr(StrToInt(Copy(Form7.ibDataSet19Tipo.AsString,Length(Form7.ibDataSet19TIPO.AsString)-2,2)));
                   iPagina := StrToInt('0'+Limpanumero((Copy(Form7.ibDataSet19Tipo.AsString,Length(Form7.ibDataSet19TIPO.AsString)-3,3))));
                 end;
               end;
-              //
+              
               if Copy(Form7.ibDataSet19TIPO.AsString,1,2) = '@R' then // Texto fixo
               begin
                   vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := Copy(vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ]+Replicate(' ',200),1,Trunc(Form7.ibDataSet19COLUNA.Value))+
@@ -1144,7 +1124,6 @@ except end;
         end;
         //
         Form7.ibDataSet19.Next;
-       //
       end;
       {                    }
       { Elimina os acentos }
@@ -1156,9 +1135,7 @@ except end;
       {                         }
       { Imprime todas as Linhas }
       {                         }
-      //
       // MOTOR DA NOTA FISCAL
-      //
       try
         Writeln(F,chr(27)+'@');
         for I := 0 to iPagina -1 do
@@ -1166,22 +1143,23 @@ except end;
           try
             Writeln(F,vLinha[I]);
           except
-            ShowMessage('Verifique a impressora.');
+            //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Verifique a impressora.',msgAtencao);
             Abort;
           end;
         end;
         CloseFile(F);
       except
-        ShowMessage('Verifique a impressora.');
+        //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Verifique a impressora.',msgAtencao);
         Abort;
       end;
     end;
-    //
+
     Form7.sModulo := 'COMPRA';
     Form7.ibDataSet24.Edit;
-    //
   end;
-  //
+
   Result := True;
 end;
 
@@ -1237,7 +1215,8 @@ begin
         Form7.ibDataSet24MODELO.AsString  := Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2));
     except
       on E: Exception do
-        ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message);
+        //ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Erro ao gravar NF-e: '+chr(10)+E.Message,msgErro);
     end;
 
     if AllTrim(Form7.ibDataSet24FORNECEDOR.AsString) <> '' then
@@ -1308,6 +1287,7 @@ begin
                         //
                         if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
                         begin
+                          {Sandro Silva 2023-10-16 inicio
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1316,22 +1296,43 @@ begin
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                   )); //
+                          }
+                          Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
+                                                                + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                  )); //
+                          {Sandro Silva 2023-10-16 fim}
 
                           {Sandro Silva 2023-03-02 inicio}
                           if AnsiContainsText(Form7.ibDataSet4CUSTOCOMPR.AsString, 'INF') then
                             Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0.00;
                           {Sandro Silva 2023-03-02 fim}
 
+                          {Sandro Silva 2023-10-16 inicio
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
-                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' +
-                                          Form7.ibDataSet23VIPI.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString+ '))'+
+                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' + Form7.ibDataSet23VIPI.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString+ '))'+
                                           '+ (( ' + Form7.ibDataSet23UNITARIO.AsString +
                                           ' / ' +  Form7.ibDataSet24MERCADORIA.AsString + ' ) * ' +
                                           ' ( ' + Form7.ibDataSet24FRETE.AsString + ' + ' +
                                           Form7.ibDataSet24SEGURO.AsString + ' + ' +
                                           Form7.ibDataSet24DESPESAS.AsString + ' - ' +
                                           Form7.ibDataSet24DESCONTO.AsString + ' ))';
+                          }
+                          sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
+                                          ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
+                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' + Form7.ibDataSet23VIPI.AsString + ' + ' + Form7.ibDataSet23VFCPST.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString + '))' +
+                                          '+ (( ' + Form7.ibDataSet23UNITARIO.AsString +
+                                          ' / ' +  Form7.ibDataSet24MERCADORIA.AsString + ' ) * ' +
+                                          ' ( ' + Form7.ibDataSet24FRETE.AsString + ' + ' +
+                                          Form7.ibDataSet24SEGURO.AsString + ' + ' +
+                                          Form7.ibDataSet24DESPESAS.AsString + ' - ' +
+                                          Form7.ibDataSet24DESCONTO.AsString + ' ))';
+                          {Sandro Silva 2023-10-16 fim}
 
 
                           // Fórmula do custo médio                                                //
@@ -1422,16 +1423,7 @@ begin
                         // Obs: O Custo de medio é a media ponderada dasoma do valor pago ao fornecedor mais as           //
                         // despesas proporcionais de frete seguro e outras menos o crédito de ICMS.                       //
                         //
-                        {Sandro Silva 2023-03-01 inicio
-                        Form7.ibDataSet23CUSTO.Value          := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
-                                                                  + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
-                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
-                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
-                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
-                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
-                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                     )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat); // menos o crédito de ICMS
-                        }
+                        {Sandro Silva 2023-10-17 inicio
                         Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
                                                                   + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1440,14 +1432,34 @@ begin
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                      )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.AsFloat); // menos o crédito de ICMS
-                        {Sandro Silva 2023-03-01 fim}                                                                                                                     
+                        }
+                        try
+                          // itens002.custo armazena o custo médio
+                          Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCPST
+                                                                    + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
+                                                                     / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
+                                                                    ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
+                                                                       Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
+                                                                       Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
+                                                                       Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
+                                                                       )) - (Form7.ibDataSet23VICMS.AsFloat/Form7.ibDataSet23QUANTIDADE.AsFloat); // menos o crédito de ICMS
+
+                          if AnsiContainsText(Form7.ibDataSet23CUSTO.AsString, 'INF') then
+                            Form7.ibDataSet23CUSTO.AsFloat := 0.00;
+
+                        except
+                          Form7.ibDataSet23CUSTO.AsFloat := 0.00;
+                        end;
+                        {Sandro Silva 2023-10-17 fim}
+
                         //
                         Form7.ibDataSet4.Post;
                       end;
                     end;
                   except
                     on E: Exception do
-                      ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message);
+                      //ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+                      MensagemSistema('Erro ao calcular custo médio: '+chr(10)+E.Message,msgErro);
                   end;
 
                   try
@@ -1458,7 +1470,6 @@ begin
                         // Atenção a rotina acima altera a quantidade no estoque
                         Form7.ibDataSet4.Edit;
                         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet23QUANTIDADE.AsFloat;
-                        // ShowMessage('Teste Entra no estoque '+Form7.ibDataSet23QUANTIDADE.AsString +' '+Form7.ibDataSet23DESCRICAO.AsString);
                         
                         // Atenção a rotina acima altera a quantidade no estoque
 
@@ -1473,8 +1484,6 @@ begin
                 except
                 end;
 
-                // ShowMessage('Teste entrou no estoque '+Form7.ibDataSet23QUANTIDADE.AsString+ ' '+Form7.ibDataSet23DESCRICAO.AsString);
-
                 Form7.sModulo := 'NAO';
               except
               end;
@@ -1484,9 +1493,6 @@ begin
                 // Fórmula do custo médio                                                                       //
                 // Custo Médio = (CUSTO DE CADA COMPRA * QUANTIDADE DE CADA COMPRA) / QUANTIDADE TOTAL COMPRADA //
                 //                                                                                              //
-                //////////////////////////////////////////////////////////////////////////////////////////////////
-                //
-                // ShowMessage(Form7.IBQuery99.FieldByName('vC').AsString+chr(10)+Form7.IBQuery99.FieldByName('vQ').AsString);
 
                 if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset4.Edit;
@@ -1507,8 +1513,6 @@ begin
                   if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
                     Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
                   {Sandro Silva 2023-03-01 fim}
-
-                  //
                 end;
 
                 // Grava a nova quantidade o novo fornecedor e a ultima compra no estoque //
@@ -1855,31 +1859,25 @@ begin
     begin
       if CpfCgc(LimpaNumero(SMALL_DBEdit39.Text)) then
       begin
-        //
         // CAAD9
-        //
         Form7.ibDataSet2.DisableControls;
         Form7.ibDataSet2.Close;
         Form7.ibDataSet2.SelectSQL.Clear;
         Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where CGC='+QuotedStr(ConverteCpfCgc(AllTrim(LimpaNumero(SMALL_DBEdit39.Text))))+'');
         Form7.ibDataSet2.Open;
         Form7.ibDataSet2.EnableControls;
-        //
-        // ShowMessage(Form7.ibDataSet2NOME.AsString);
-        //
+
         Form7.ibDataSet24FORNECEDOR.AsString := Form7.ibDataSet2NOME.AsString;
-        //
       end;
     end;
   end;
-  //
+
   // CPF/CGC
-  //
   if AllTrim(SMALL_DBEdit39.Text)<>AllTrim(Form7.ibDAtaSet2NOME.AsString) then
   begin
     Form7.ibDataSet24FORNECEDOR.AsString := Form7.ibDataSet2NOME.AsString;
   end;
-  //
+  
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select NUMERONF, FORNECEDOR, REGISTRO from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' and REGISTRO<>'+QuotedStr(Form7.ibDataSet24REGISTRO.AsString)+' ');
@@ -1887,21 +1885,19 @@ begin
   //
   if (Form7.IBDataSet99.FieldByName('NUMERONF').AsString = Form7.ibDataSet24NUMERONF.AsString) and (Form7.IBDataSet99.FieldByName('FORNECEDOR').AsString = Form7.ibDataSet24FORNECEDOR.AsString) and (Form7.IBDataSet99.FieldByName('REGISTRO').AsString <> Form7.ibDataSet24REGISTRO.AsString) then
   begin
-    //
     sRegistro := Form7.IBDataSet99.FieldByName('REGISTRO').AsString;
-    //
-    ShowMessage('Nota fiscal já cadastrada.');
-    //
+
+    //ShowMessage('Nota fiscal já cadastrada.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Nota fiscal já cadastrada.',msgAtencao);
+
     Form7.sModulo := 'DUPLA';
     Form7.ibDataSet24.Delete;
     Form7.sModulo := 'COMPRA';
     //
     Form7.ibDataSet24.Locate('REGISTRO',sREgistro,[]);
     Form7.ibDataSet24.Edit;
-    //
   end else
   begin
-    //
     Form7.ibDataSet24.Post;
     Form7.ibDataSet24.Edit;
     //
@@ -1922,7 +1918,6 @@ begin
   end;
   //
   if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then  MostraFoto2(True);
-  //
 end;
 
 procedure TForm24.SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
@@ -2086,26 +2081,34 @@ begin
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet23DESCRICAO.AsString) = '') then DbGrid1.SelectedIndex := 0;
-  //
+
   if Key = VK_RETURN then
   begin
     Form7.ibDataSet23.Edit;
-    //
+
     if AllTrim(Form7.ibDataSet23DESCRICAO.AsString) <> '' then
     begin
-      //
       if DbGrid1.SelectedIndex = 0 then
       begin
         Form1.bFlag := True;
         Form7.ibDataSet23.Edit;
-        if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
-          Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
 
+        //Localiza por descrição
+        if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
+        begin
+          Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+        end else
+        //Localiza por código
+        //Mauricio Parizotto 2023-10-18
+        begin
+          // chama novamente TForm7.ibDataSet23DESCRICAOChange com bFlag := True
+          Form7.ibDataSet23DESCRICAO.AsString := AllTrim(Form7.ibDataSet23DESCRICAO.AsString);
+        end;
       end;
-      //
+
       I := DbGrid1.SelectedIndex;
       DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
-      //
+
       if I = DbGrid1.SelectedIndex  then
       begin
         DbGrid1.SelectedIndex := 0;
@@ -2116,11 +2119,11 @@ begin
     begin
       Form7.ibDataSet23.Edit;
       Form7.ibDataSet23.Post;
-      //
+
       Perform(Wm_NextDlgCtl,0,0);
     end;
   end;
-  //
+  
   Form7.ibDataSet4.EnableControls;
 end;
 
@@ -2270,6 +2273,7 @@ end;
 
 procedure TForm24.DBGrid1ColExit(Sender: TObject);
 begin
+  exit;
 //  Form1.bFlag := True;
   Form7.ibDataSet23DESCRICAOChange(Form7.ibDataSet23DESCRICAO);
   Form7.ibDataSet23QTD_ORIGINALChange(Form7.ibDataSet23QTD_ORIGINAL);
@@ -2429,7 +2433,6 @@ begin
        else Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
   //
   // Relaciona os clientes com o arquivo de vendas
-  //
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');  //
@@ -2438,7 +2441,6 @@ begin
   Form7.ibDataSet18.Locate('NOME',Form7.ibDataSet24TRANSPORTA.AsString,[]);
   //
   // Abre o arquivo de clientes para edição
-  //
   try Form7.ibDataSet2.Edit except end;
   //
   if not (AllTrim(Form7.ibDataSet24TRANSPORTA.AsString) = AllTrim(Form7.ibDataSet18NOME.AsString)) then
@@ -2447,7 +2449,7 @@ begin
     Form7.ibDataSet24TRANSPORTA.AsString := '';
     Form7.ibDataSet18.Append;
   end;
-  //
+
   try
     if AllTrim(Form7.ibDataSet24MODELO.AsString) = '' then
     begin
@@ -2456,21 +2458,17 @@ begin
     end;
     Label64.Caption := 'Mod: '+StrZero(StrToInt(Form7.ibDataSet24MODELO.AsString),2,0);
   except end;
-  //
+
   if Form7.ibDataSet24NUMERONF.AsString <> '000000000' then
   begin
-    //
     // Atenção a rotina abaixo altera a quantidade no estoque
-    //
     Form7.ibDataSet23.DisableControls;
     Form7.ibDataSet23.First;
     while not Form7.ibDataSet23.Eof do
     begin
-      //
       // Procura o produto no estoque
-      //
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      //
+
       Form7.ibDataSet4.Close;                                                //
       Form7.ibDataSet4.Selectsql.Clear;                                      //
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');  //
@@ -2484,37 +2482,30 @@ begin
           try
             if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
             begin
-              //
-              // ShowMessage('Teste volta ao estoque '+Form7.ibDataSet23QUANTIDADE.AsString +' '+Form7.ibDataSet23DESCRICAO.AsString);
-              //
               Form7.ibDataset4.Edit;
               Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet23QUANTIDADE.AsFloat; // Desconta a quantidade na compra
               Form7.ibDataSet4.Post;
-              //
             end;
-            //
+
             Form7.sModulo := 'NAO';
             Form7.ibDataSet23.Edit;
             Form7.ibDataSet23SINCRONIA.AsFloat := 0;                                      // Resolvi este problema as 4 da madrugada no NoteBook em casa
-            //
           except end;
-          //
         end;
       end;
       Form7.ibDataSet23.Next;
     end;
-    //
   end;
-  //
+
   Form7.sModulo := 'COMPRA';
-  //
+
   Form7.ibDataSet4.Close;                                                //
   Form7.ibDataSet4.Selectsql.Clear;                                      // relacionado
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.ibDataSet23.EnableControls;
-  //
+
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
   else
@@ -2534,15 +2525,14 @@ begin
               edFretePorConta.Text := '9-Sem frete'
             else
               edFretePorConta.Text := '';
-  //
+
   Form12.Edit4.Visible := True;
-  //
+
   Form24.Button1Click(Sender);
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   // Atenção a rotina acima altera a quantidade no estoque
-  //
   sDataAntiga := DateToStrInvertida(Form7.ibDataSet24EMISSAO.AsDateTime);
 
   Form7.bDescontaICMSDeso := TestaNotaDescontaICMSDesonerado;  
@@ -2682,7 +2672,6 @@ begin
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
     Form7.ibDataSet14.SelectSQL.Clear;
-  //  Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''3''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or SubString(CFOP from 1 for 1) = ''3''  order by upper(NOME)');
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
@@ -2771,42 +2760,39 @@ begin
       Form7.sTitulo := 'Notas fiscais de entrada (compras)';
       Form7.sRPS := 'N';
       Form7.Show;
-      //
+      
       if Form24.DBGrid1.CanFocus then
         Form24.DBGrid1.SetFocus;
       Form7.ibDataSet23.Last;
     except
     end;
-    //
+    
     Form1.bFechaTudo           := True;
-    //
+
     Form7.sModulo := 'COMPRA';
     Form7.sTitulo := 'Notas fiscais de entrada (compras)';
     Form7.sRPS := 'N';
-    //
+
     Form7.ibDataSet23.Close;
     Form7.ibDataSet23.DataSource  := Form7.DataSource24;
     Form7.ibDataSet23.Selectsql.Clear;
     Form7.ibDataSet23.Selectsql.Add('select * from ITENS002 where NUMERONF=:NUMERONF and FORNECEDOR=:FORNECEDOR');
     Form7.ibDataSet23.Open;
-    //
+
     Grid_Compra(True);
-    //
+
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
   end;
-  //
+
   // Altera o Grid de mercadorias para mostrar na NF
-  //
   Grid_Compra(True);
-  //
 end;
 
 procedure TForm24.Incluirnovocliente1Click(Sender: TObject);
 var
   sTitulo : String;
 begin
-  //
   if Form1.imgEstoque.Visible then
   begin
     sTitulo := Form7.sTitulo;
@@ -2818,33 +2804,28 @@ begin
       Form7.ibDataSet2.Append;
       Form7.Close;
       Form10.ShowModal;
-      //
+
       Form7.ibDataSet24FORNECEDOR.AsString := Form7.IBDataSet2NOME.AsString;
-      //
+
       Form7.sModulo := 'COMPRA';
       Form7.sTitulo := sTitulo;
       Form7.sRPS := 'N';
-      //
+
       Form7.Show;
-      //
+
       if Form24.DBGrid1.CanFocus then
         Form24.DBGrid1.SetFocus;
       Form7.ibDataSet23.Last;
-      //
     except
     end;
-    //
+
     Form1.bFechaTudo           := True;
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
-    //
   end;
-  //
-  //
+
   // Altera o Grid de mercadorias para mostrar na NF
-  //
   Grid_Compra(True);
-  //
 end;
 
 procedure TForm24.Label64Click(Sender: TObject);
@@ -2856,12 +2837,9 @@ end;
 
 procedure TForm24.Edit2Exit(Sender: TObject);
 begin
-  //
   try
-    //
     if Edit2.Text <> '000000000/000' then
     begin
-      //
       if Pos('/',Edit2.Text) = 0 then
       begin
         Edit2.Text := StrZero(StrToFloat(LimpaNumero('0'+Edit2.Text)),9,0) + '/001';
@@ -2869,45 +2847,35 @@ begin
       begin
         Edit2.Text := StrZero(StrToFloat(LimpaNumero('0'+Copy(Edit2.Text,1,Pos('/',Edit2.Text)))),9,0) +Copy(Edit2.Text+'   ',Pos('/',Edit2.Text),4);
       end;
-      //
     end;
-    //
+
     if not (Form7.ibDataset24.State in ([dsEdit, dsInsert])) then Form7.ibDataset24.Edit;
     Form7.ibDataSet24NUMERONF.AsString := StrTran(Edit2.Text,'/','');
-    //
+
     Form7.IBDataSet99.Close;
     Form7.IBDataSet99.SelectSQL.Clear;
     Form7.IBDataSet99.SelectSQL.Add('select * from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet24NUMERONF.AsString));
-    //
+
     sDataAntiga := DateToStrInvertida(Form7.ibDataSet24EMISSAO.AsDateTime);
-    //
+
     if Form7.ibDataSet24NUMERONF.AsString = '000000000000' then
     begin
-      //
-      // ShowMEssage('Teste A: '+Form7.ibDataSet24NUMERONF.AsString);
-      //
       Edit2.Text := '000000000/000';
       Edit2.ReadOnly := False;
       Edit2.SetFocus;
       Edit2.SelectAll;
-      //
     end else
     begin
       Edit2.Text := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet24NUMERONF.AsString,10,3);
       Edit2.ReadOnly := True;
       SMALL_DBEdit40.SetFocus;
     end;
-    //
   except
-    //
-    // ShowMEssage('Teste E: '+Form7.ibDataSet24NUMERONF.AsString);
-    //
     Edit2.Text := '000000000/000';
     Edit2.ReadOnly := False;
     Edit2.SetFocus;
     Edit2.SelectAll;
   end;
-  //
 end;
 
 procedure TForm24.Edit2KeyDown(Sender: TObject; var Key: Word;
@@ -2932,7 +2900,10 @@ end;
 
 procedure TForm24.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
+var
+  Qtd : integer;
 begin
+  {Mauricio Parizotto 2023-10-18 Inicio
   //
   if Field.Name = 'ibDataSet23DESCRICAO' then
   begin
@@ -2960,6 +2931,25 @@ begin
   end;
   //
   //
+  }
+
+  //Verifica se o produto é novo
+  if Field.Name = 'ibDataSet23DESCRICAO' then
+  begin
+    Qtd := ExecutaComandoEscalar(Form7.ibDataSet4.Transaction,
+                            ' Select count(1) '+
+                            ' From ESTOQUE'+
+                            ' Where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+
+                            '   and ALTERADO = 3 ');
+
+    if Qtd > 0 then
+    begin
+      dbGrid1.Canvas.StretchDraw(Rect,Form24.ImageNovo.Picture.Graphic);
+      dbGrid1.Canvas.TextOut(Rect.Left+22,Rect.Top+2,Field.AsString);
+    end;
+  end;
+
+  {Mauricio Parizotto 2023-10-18 Fim}
 end;
 
 procedure TForm24.edtAlteraEntradaChange(Sender: TObject);
@@ -3068,19 +3058,8 @@ end;
 procedure TForm24.DBGrid3KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
-  // alterei para não ficar o preço do anterior
-  //
-//  if Form7.ibDataSet23DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString then
-//  begin
-//    Form7.ibDataSet23.Edit;
-//    Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-//    //
-//  end;
-  //
   MostraFoto(True);
   Form7.ibDataSet4.EnableControls;
-  //
 end;
 
 procedure TForm24.DBGrid33DblClick(Sender: TObject);
@@ -3088,7 +3067,6 @@ var
   bButton: Integer;
   scodigo: String;
 begin
-  //
   if Form7.ibDataSet4DESCRICAO.AsString <> Form7.ibDataSet23DESCRICAO.AsString then
   begin
     Form7.ibDataSet4.Close;                                                //
@@ -3096,10 +3074,9 @@ begin
     Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet23DESCRICAO.AsString)+' ');  //
     Form7.ibDataSet4.Open;
   end;
-  //
+
   if Form7.ibDataSet4DESCRICAO.AsString <> '' then
   begin
-    //
     bButton := Application.MessageBox(Pchar(
     'Alterar do item: '+chr(10)+chr(10)+Form7.ibDataSet4DESCRICAO.AsString+chr(10)+chr(10)+
     'Para o item: '+chr(10)+chr(10)+Form24.ibDataSet44DESCRICAO.AsString+Chr(10))
@@ -3107,7 +3084,6 @@ begin
     //
     if bButton = IDYES then
     begin
-      //
       try
         Form7.IBDataSet6.Append;
         Form7.IBDataSet6CODIGO.AsString       := Form24.ibDataSet44CODIGO.AsString;
@@ -3116,11 +3092,12 @@ begin
         Form7.IBDataSet6.Post;
       except
         on E: Exception do
-          ShowMessage('Erro 2133: '+chr(10)+E.Message);
+          //ShowMessage('Erro 2133: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+          MensagemSistema('Erro 2133: '+chr(10)+E.Message,msgErro);
       end;
-      //
+
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
-      //
+      
       if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Post;
       if (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Post;
       //
@@ -3132,16 +3109,15 @@ begin
                              ' where NUMERONF='+quotedStr(Form7.ibDataSet23NUMERONF.AsString)+
                              ' and FORNECEDOR='+quotedStr(Form7.ibDataSet23FORNECEDOR.AsString)+
                              ' and DESCRICAO='+quotedStr(Form7.ibDataSet4DESCRICAO.AsString)+' ');
-      // ShowMessage(Form1.ibQuery1.Text);
       Form1.ibQuery1.Open;
-      //
+
       Form1.bFlag := False;
-      //
+
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(sCodigo)+' ');
       Form7.ibDataSet4.Open;
-      //
+
       if sCodigo = Form7.ibDataSet4CODIGO.AsString then
       begin
         if Form7.ibDataSet4ALTERADO.AsString = '3' then
@@ -3149,20 +3125,20 @@ begin
           Form7.ibDataSet4.Delete;
         end;
       end;
-      //
+
       Form7.ibDataSet23.Close;
       Form7.ibDataSet23.DataSource  := Form7.DataSource24;
       Form7.ibDataSet23.Selectsql.Clear;
       Form7.ibDataSet23.Selectsql.Add('select * from ITENS002 where NUMERONF=:NUMERONF and FORNECEDOR=:FORNECEDOR');
       Form7.ibDataSet23.Open;
-      //
+
       Form7.ibDataSet4.Close;                                                //
       Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form24.ibDataSet44CODIGO.AsString)+' ');  //
       Form7.ibDataSet4.Open;
-      //
+      
       Form24.edtAlteraEntrada.Text :=  '';
-      //
+      
       Form7.ibDataSet23.Locate('DESCRICAO',Form24.ibDataSet44DESCRICAO.AsString,[]);
       Form7.bMudei := True;
     end else
@@ -3185,7 +3161,6 @@ procedure TForm24.SMALL_DBEdit42KeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
-//  if Key = VK_RETURN then Form7.ibDataSet23.Next;
   if Form7.ibDataSet23.Eof then
     Form24.SMALL_DBEdit22.SetFocus;
 end;
@@ -3199,7 +3174,7 @@ begin
   and (Form7.ibDataSet24FRETE12.AsString <> '4')
   and (Form7.ibDataSet24FRETE12.AsString <> '9') then
   begin
-    //
+    {
     Application.MessageBox('Valores válidos:' + Chr(10) +
                           Chr(10) +
                           '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
@@ -3209,10 +3184,22 @@ begin
                           '4 - Transporte próprio por conta do destinatário;' + Chr(10) +
                           '9 - Sem Ocorrência de transporte.'
               ,'Valor inválido',mb_IconError+mb_Ok);
+    Mauricio Parizotto 2023-10-25}
+
+    MensagemSistema('Valores válidos:' + Chr(10) +
+                    Chr(10) +
+                    '0 - Contratação do Frete por conta do Remetente (CIF);' + Chr(10) +
+                    '1 - Contratação do Frete por conta do destinatário/remetente (FOB);' + Chr(10) +
+                    '2 - Contratação do Frete por conta de terceiros;' + Chr(10) +
+                    '3 - Transporte próprio por conta do remetente;' + Chr(10) +
+                    '4 - Transporte próprio por conta do destinatário;' + Chr(10) +
+                    '9 - Sem Ocorrência de transporte.'
+                    ,msgErro);
+
+
     Form7.ibDataSet24FRETE12.AsString := '0';
-    //
   end;
-  //
+
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
   else if Form7.ibDataSet24FRETE12.AsString = '1' then
@@ -3227,7 +3214,7 @@ begin
     edFretePorConta.Text := '9-Sem frete'
   else
     edFretePorConta.Text := '';
-  //
+
   Form24.edFretePorConta.Visible := True;
   AtualizaTotalDaNota; // Sandro Silva 2023-08-03
 end;
@@ -3431,7 +3418,8 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Erro 8 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 8 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 8 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3449,7 +3437,9 @@ begin
       Form24.Label89.Caption := '';
     end;
   except
-    on E: Exception do  ShowMessage('Erro 6 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      //ShowMessage('Erro 6 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 6 FC: '+chr(10)+E.Message,msgErro);
   end;
 
 end;
@@ -3468,7 +3458,9 @@ begin
       Form24.Label89.Caption := '';
     end;
   except
-    on E: Exception do  ShowMessage('Erro 3 FC: '+chr(10)+E.Message);
+    on E: Exception do
+      //ShowMessage('Erro 3 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 3 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3487,7 +3479,8 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Erro 1 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 1 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 1 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
@@ -3523,13 +3516,13 @@ begin
     end;
   except
     on E: Exception do
-      ShowMessage('Erro 2 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 2 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 2 FC: '+chr(10)+E.Message,msgErro);
   end;
 end;
 
 procedure TForm24.ComboBox13Exit(Sender: TObject);
 begin
-  //
   try
     if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
     begin
@@ -3541,18 +3534,18 @@ begin
     begin
       Form24.Label89.Caption := '';
     end;
-    //
+
     Form1.bFlag := False;
-    //
+
     Form24.DBGrid1.SetFocus;
-    //
+
     DbGrid1.SelectedIndex := 0;
     DbGrid1.SelectedIndex := 1;
   except
     on E: Exception do
-      ShowMessage('Erro 4 FC: '+chr(10)+E.Message);
+      //ShowMessage('Erro 4 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 4 FC: '+chr(10)+E.Message,msgErro);
   end;
-  //
 end;
 
 procedure TForm24.ComboBox12KeyUp(Sender: TObject; var Key: Word;

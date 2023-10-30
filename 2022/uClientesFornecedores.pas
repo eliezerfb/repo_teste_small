@@ -16,7 +16,7 @@ uses
 
 implementation
 
-uses Unit7, Mais, uFuncoesRetaguarda;
+uses Unit7, Mais, uFuncoesRetaguarda, uDialogs;
 
 function AtualizaDescricaoCliFor(sNomeNovo, sNomeAtual :string; Banco: TIBDatabase):Boolean;
 var
@@ -158,8 +158,13 @@ begin
       if Result = False then
       begin
         //Se não conseguir alterar em algum lugar cancela tudo
+        {
         ShowMessage('Não foi possível alterar o nome para '+sNomeNovo+'.'#13#10+
                     'Registro em uso no seguinte local:'+#13#10+vMensagem);
+        Mauricio Parizotto 2023-10-25}
+        MensagemSistema('Não foi possível alterar o nome para '+sNomeNovo+'.'#13#10+
+                        'Registro em uso no seguinte local:'+#13#10+vMensagem
+                        ,msgAtencao);
 
         IBTRANSACTION.Rollback;
       end else

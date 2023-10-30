@@ -41,7 +41,7 @@ var
 
 implementation
 
-uses Unit7;
+uses Unit7, uDialogs;
 
 {$R *.dfm}
 
@@ -67,7 +67,8 @@ begin
   if Pos('1'+UpperCase(Edit1.Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
      = 0 then
   begin
-    ShowMessage('Estado inválido');
+    //ShowMessage('Estado inválido'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Estado inválido',msgAtencao);
     Edit1.Text := UpperCase(Form7.ibDataSet13ESTADO.AsString);
   end;
 end;
@@ -75,17 +76,13 @@ end;
 procedure TForm11.Edit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_Produtor_Rural.htm')));
-  //
 end;
 
 procedure TForm11.Edit5Exit(Sender: TObject);
 begin
-  //
   Edit5.Text := LimpaNumero(Copy(Edit5.Text+'   ',1,3));
-  //
 end;
 
 procedure TForm11.Edit6Change(Sender: TObject);

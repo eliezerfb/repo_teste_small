@@ -85,12 +85,10 @@ var
   Mais1Ini: TIniFile;
   I       : Integer;
 begin
-  //
   if bChave then
   begin
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-    //
+
     Form7.sMostra := '';
     for I := 1 to Form7.iCampos do
     begin
@@ -99,7 +97,7 @@ begin
       else
         Form7.sMostra := Form7.sMostra + 'F';
     end;
-    //
+
     if Copy(Form7.sMostra,1,Form7.iCampos) = Replicate('F',Form7.iCampos) then
     begin
       Form7.sMostra := Replicate('T',Form7.iCampos);
@@ -111,9 +109,7 @@ begin
           TcheckBox(Form9.Components[I-1+CheckBox1.ComponentIndex]).Checked := False;
       end;
     end;
-    //
-    // showmessage('Teste mostrar '+Form7.sModulo);
-    //
+
     if Form7.sRPS = 'S' then
     begin
       Mais1Ini.WriteString('RPS','Mostrar',Form7.sMostra);
@@ -121,16 +117,14 @@ begin
     begin
       Mais1Ini.WriteString(Form7.sModulo,'Mostrar',Form7.sMostra);
     end;
-    //
+    
     Mais1Ini.Free;
-    //
+
     for I := 1 to Form7.iCampos do
     begin
       Form7.ArquivoAberto.Fields[I-1].Visible := (Copy(Form7.sMostra,I,1) = 'T');
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm9.FormClose(Sender: TObject; var Action: TCloseAction);

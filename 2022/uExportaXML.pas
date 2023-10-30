@@ -28,6 +28,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    // FoBackGroud = Signigica que vai efetuar o envio automatico dos XMLS
+    FbBackGround: Boolean;
     FoArquivoDAT: TArquivosDAT;
     procedure CarregaArquivoINI;
     procedure GravaArquivoINI;
@@ -36,12 +38,18 @@ type
     function TestarTemTabelaNFCe: Boolean;
     function TestarArquivoMaior10Mega(AcArquivo: String): Boolean;
     function TamanhoArquivo(AcArquivo: string): Integer;
-    procedure LimparPastaContabil;
+    procedure LimpaArquivosXML;
+    {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+    // Solicitado para manter os arquivos ZIP para envio manual posterior.
+    //procedure LimparPastaContabil;
+    {Dailon Parisotto 2023-10-17 (f-7487) Fim}
   public
     procedure SetImagem(AoImagem: TPicture);
     procedure AbrirTelaTodosDocs;
     procedure AbrirTelaNFe(AbSaida: Boolean = True; AbEntrada: Boolean = True);
     procedure AbrirSATNFCe;
+    function EnviarMesAnterior(AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+    function EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
   end;
 
 var
@@ -50,7 +58,11 @@ var
 implementation
 
 uses
-  uSmallConsts, uSmallResourceString, unit7;
+  uSmallConsts
+  , uSmallResourceString
+  , unit7
+  , DateUtils
+  , uDialogs;
 
 {$R *.dfm}
 
@@ -64,7 +76,24 @@ begin
   end;
 end;
 
-procedure TfrmExportaXML.LimparPastaContabil;
+procedure TfrmExportaXML.LimpaArquivosXML;
+var
+  AnEncontrou: Integer;
+  oSearchRec : tSearchREC;
+begin
+  FindFirst(ExtractFilePath(Application.ExeName) + 'CONTABIL\*.xml', faAnyFile, oSearchRec);
+  AnEncontrou := 0;
+  while AnEncontrou = 0 do
+  begin
+    DeleteFile(pChar(ExtractFilePath(Application.ExeName) + 'CONTABIL\' + oSearchRec.Name));
+    AnEncontrou := FindNext(oSearchRec);
+  end;
+  Sleep(100);   
+end;
+
+{Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+// Solicitado para manter os arquivos ZIP para envio manual posterior.
+{procedure TfrmExportaXML.LimparPastaContabil;
 var
   i: integer;
   oSearch: TSearchRec;
@@ -79,11 +108,12 @@ begin
     DeleteFile(ExtractFilePath(Application.ExeName) + 'CONTABIL\' + oSearch.Name);
     I := FindNext(oSearch);
   end;
-end;
+end;      }
+{Dailon Parisotto 2023-10-17 (f-7487) Fim}
 
 function TfrmExportaXML.EnviarXml: Boolean;
 var
-  cAnexo, cTitulo, cCorpo: String;
+  cTipoGeracao, cDocs, cAnexo, cTitulo, cCorpo: String;
   cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT: String;
   bTamanhoZip: Boolean;
 begin
@@ -93,7 +123,12 @@ begin
     if not FazValidacoes then
       Exit;
 
-    LimparPastaContabil;
+    {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+    // Solicitado para manter os arquivos ZIP para envio manual posterior.
+    //LimparPastaContabil;
+    // Limpa os arquivos XML para garantir não ficar sujeira.
+    LimpaArquivosXML;
+    {Dailon Parisotto 2023-10-17 (f-7487) Fim}
     
     try
       if cbNFeSaida.Checked then
@@ -190,18 +225,57 @@ begin
         cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
 
         Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+
         Result := True;
+
+        if Result then
+        begin
+          if cbNFeSaida.Checked then
+            cDocs := 'NF-e Saída';
+          if cbNFeEntrada.Checked then
+          begin
+            if cDocs <> EmptyStr then
+              cDocs := cDocs + ', ';
+            cDocs := cDocs + 'NF-e Entrada';
+          end;
+          if cbNFCeSAT.Checked then
+          begin
+            if cDocs <> EmptyStr then
+              cDocs := cDocs + ', ';
+            cDocs := cDocs + 'NFC-e/SAT';
+          end;
+
+          cTipoGeracao := 'MANUAL';
+          if FbBackGround then
+            cTipoGeracao := 'AUTOMATICO';
+
+          Unit7.Audita(cTipoGeracao, 'SMALL', Form7.UsuarioLogado,
+                       'Enviado ' + cDocs,
+                       0,0);
+
+          Unit7.AgendaCommit(False);
+        end;
+
       end
       else
+        {
         Application.MessageBox(PChar('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
                                      'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+        Mauricio Parizotto 2023-10-25}
 
+        MensagemSistema('O e-mail não foi enviado a contabilidade.' + sLineBreak + sLineBreak +
+                        'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'
+                        ,msgAtencao);
     finally
-      LimparPastaContabil;
+      {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
+      // Solicitado para manter os arquivos ZIP para envio manual posterior.
+      //  LimparPastaContabil;
+      {Dailon Parisotto 2023-10-17 (f-7487) Fim}
     end;
   except
     on e:Exception do
-      Application.MessageBox(PChar('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+      //Application.MessageBox(PChar('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message), pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não foi possível enviar o(s) XML(s) para a contabilidade.' + sLineBreak + e.message,msgErro);
   end;
 end;
 
@@ -289,7 +363,7 @@ begin
   {$ELSE}
   FormatSettings.ShortDateFormat := _cFormatDate;
   {$ENDIF}
-  
+  FbBackGround := False;  
   FoArquivoDAT := TArquivosDAT.Create(EmptyStr);
 
   CarregaArquivoINI;
@@ -309,6 +383,9 @@ end;
 
 procedure TfrmExportaXML.GravaArquivoINI;
 begin
+  if FbBackGround then
+    Exit;
+    
   FoArquivoDAT.NFe.XML.PeriodoInicial     := dtInicial.Date;
   FoArquivoDAT.NFe.XML.PeriodoFinal       := dtFinal.Date;
   FoArquivoDAT.NFe.XML.EmailContabilidade := AllTrim(edtEmailContab.Text);
@@ -325,19 +402,30 @@ begin
 
   if not FileExists('szip.exe') then
   begin
+    {
     Application.MessageBox(PChar('Utilitário de compatação não encontrado SZIP.EXE' + SLineBreak + SLineBreak +
                                  'O envio dos XMLs foi cancelado.'), Pchar(_cTituloMsg), MB_ICONWARNING + MB_OK);
+    Mauricio Parizotto 2023-10-25}
+
+    MensagemSistema('Utilitário de compatação não encontrado SZIP.EXE' + SLineBreak + SLineBreak +
+                    'O envio dos XMLs foi cancelado.'
+                    ,msgAtencao);
+
     Exit;
   end;
   if (not cbNFeSaida.Checked) and (not cbNFeEntrada.Checked) and (not cbNFCeSAT.Checked) then
   begin
-    Application.MessageBox('Marque ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+    //Application.MessageBox('Marque ao menos um tipo de documento.', Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Marque ao menos um tipo de documento.',msgAtencao);
     Exit;
   end;
+
   if not ValidaEmail(edtEmailContab.Text) then
   begin
-    Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
-    edtEmailContab.SetFocus;
+    //Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+    MensagemSistema(_cEmailInvalido,msgAtencao);
+    if not FbBackGround then
+      edtEmailContab.SetFocus;
     Exit;
   end;
   
@@ -366,6 +454,38 @@ begin
   finally
     FreeAndNil(qryNFCe);
   end;
+end;
+
+function TfrmExportaXML.EnviarEmBackGroud(AdDataIni, AdDataFim: TDate; AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+begin
+  Result := False;
+
+  FbBackGround := True;
+  try
+    dtInicial.Date       := AdDataIni;
+    dtFinal.Date         := AdDataFim;
+    cbNFeSaida.Checked   := AbNFSaida;
+    cbNFeEntrada.Checked := AbNFEntrada;
+    cbNFCeSAT.Checked    := AbNFCeSAT;
+    edtEmailContab.Text  := AcEmailContab;
+
+    Result := EnviarXml;
+  finally
+    FbBackGround := False;
+  end;
+end;
+
+function TfrmExportaXML.EnviarMesAnterior(AbNFSaida, AbNFEntrada, AbNFCeSAT: Boolean; AcEmailContab: String): Boolean;
+var
+  bDataMesAnt: TDate;
+  bDataIni: TDate;
+  bDataFim: TDate;
+begin
+  bDataMesAnt := IncMonth(Date, -1);
+  bDataIni := StartOfTheMonth(bDataMesAnt);
+  bDataFim := EndOfTheMonth(bDataMesAnt);
+
+  Result := EnviarEmBackGroud(bDataIni, bDataFim, AbNFSaida, AbNFEntrada, AbNFCeSAT, AcEmailContab);
 end;
 
 end.

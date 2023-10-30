@@ -19,6 +19,7 @@ type
     procedure DuplicaTabelaOrcamentoObs;
     procedure GeraNovoNroPedido;
     function TestarCampoNaoDuplicar(AcCampo: String): Boolean;
+    function TestarJaExiteNumeroOrcamento: Boolean;
   public
     class function New: IDuplicaOrcamento;
     function SetTransaction(AoTransaction: TIBTransaction): IDuplicaOrcamento;
@@ -31,7 +32,7 @@ type
 implementation
 
 uses
-  SysUtils, SmallFunc, uSmallResourceString;
+  SysUtils, SmallFunc, uSmallResourceString, uDialogs;
 
 { TDuplicaOrcamento }
 
@@ -46,7 +47,8 @@ begin
 
     Result := True;
   except
-    Application.MessageBox(PChar('Não foi possível duplicar o orçamento.' + SlineBreak + 'Tente novamente.'), Pchar(_cTituloMsg), mb_Ok + MB_ICONINFORMATION);
+    //Application.MessageBox(PChar('Não foi possível duplicar o orçamento.' + SlineBreak + 'Tente novamente.'), Pchar(_cTituloMsg), mb_Ok + MB_ICONINFORMATION); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Não foi possível duplicar o orçamento.' + SlineBreak + 'Tente novamente.',msgAtencao);
   end;
 end;
 
@@ -196,7 +198,34 @@ end;
 
 procedure TDuplicaOrcamento.GeraNovoNroPedido;
 begin
-  FcNewOrcamento := RetornaNroRegistro('G_ORCAMENTO');
+  while (FcNewOrcamento = EmptyStr) or (TestarJaExiteNumeroOrcamento) do
+    FcNewOrcamento := RetornaNroRegistro('G_ORCAMENTO');
+end;
+
+function TDuplicaOrcamento.TestarJaExiteNumeroOrcamento: Boolean;
+var
+  QryDados: TIBQuery;
+begin
+  Result := False;
+
+  if FcNewOrcamento = EmptyStr then
+    Exit;
+    
+  QryDados := CriaIBQuery(FoTransaction);
+  try
+    QryDados.Close;
+    QryDados.SQL.Clear;
+    QryDados.SQL.Add('SELECT');
+    QryDados.SQL.Add('COUNT(PEDIDO) AS QTDE');
+    QryDados.SQL.Add('FROM ORCAMENT');
+    QryDados.SQL.Add('WHERE (PEDIDO=:XPEDIDO)');
+    QryDados.ParamByName('XPEDIDO').AsString := FcNewOrcamento;
+    QryDados.Open;
+
+    Result := (QryDados.FieldByName('QTDE').AsInteger > 0);
+  finally
+    FreeAndNil(QryDados);
+  end;
 end;
 
 function TDuplicaOrcamento.TestarCampoNaoDuplicar(AcCampo: String): Boolean;

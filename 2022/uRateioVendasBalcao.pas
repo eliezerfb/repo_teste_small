@@ -59,7 +59,7 @@ type
 
 implementation
 
-uses SysUtils;
+uses SysUtils, uDialogs;
 
 { TRateioBalcao }
 
@@ -158,10 +158,10 @@ begin
   except
     on E: Exception do
     begin
-      ShowMessage('Não foi possível calcular o rateio' + #13 + E.Message);
+      //ShowMessage('Não foi possível calcular o rateio' + #13 + E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não foi possível calcular o rateio' + #13 + E.Message,msgErro);
     end;
   end;
-
 end;
 
 constructor TRateioBalcao.Create;
