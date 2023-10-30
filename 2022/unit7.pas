@@ -4286,7 +4286,7 @@ begin
 end;
 Movido para SmallFunc}
 
-function CalculaTotalRecebido(pP1: Boolean): Boolean;
+function CalculaTotalRecebido(pP1: Boolean): Currency; // Sandro Silva 2023-10-30 Boolean;
 begin
   //
   if Form7.sModulo = 'RECEBER' then
@@ -4298,7 +4298,7 @@ begin
     Form7.iBQuery1.Open;
     //
     Form7.Panel10.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
-    Form7.Label49.CAption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
+    Form7.Label49.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
     Form7.Panel10.Repaint;
     //
   end else
@@ -4315,7 +4315,7 @@ begin
     //
   end;
   //
-  Result := True;
+  Result := Form7.iBQuery1.FieldByName('SUM').AsFloat; // Sandro Silva 2023-10-30 Result := True;
   //
 end;
 
@@ -7274,6 +7274,7 @@ begin
     jp.CompressionQuality := 100;
     jp.SaveToFile('logotip.jpg');
   except end;
+
   //
   Result := True;
 end;
@@ -26116,7 +26117,7 @@ begin
     if Form7.sModulo = 'RECEBER' then
     begin
       //
-      if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
+      if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
       begin
         if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '1' then
           ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
@@ -26131,7 +26132,7 @@ begin
     end;
     if Form7.sModulo = 'PAGAR' then
     begin
-      if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
+      if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
       begin
         if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '3' then
           ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
@@ -26147,7 +26148,7 @@ begin
     Form7.ibDataSet12.Next;
   end;
   //
-  if Form7.ibDataSet25DIFERENCA_.AsFloat <> fTotal then
+  if FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) <> FormatFloat('0.00', fTotal) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat <> fTotal then
   begin
     ComboBox2.Enabled := True;
   end else
@@ -26701,12 +26702,17 @@ var
 begin
   Form7.Edit2.SetFocus;
   //
+  {Sandro Silva 2023-10-30 inicio
   CalculaTotalRecebido(True);
-  fTotal := StrToFloat(LimpaNumeroDeixandoAVirgula(Form7.Label49.CAption));
+  fTotal := StrToFloat(LimpaNumeroDeixandoAVirgula(Form7.Label49.Caption));
+  }
+
+  fTotal := StrToFloat(FormatFloat('0.00', CalculaTotalRecebido(True)));
+  {Sandro Silva 2023-10-30 fim}
   //
   if Form7.sModulo = 'PAGAR' then
   begin
-    if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
+    if FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) = '0,00' then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
     begin
       Form7.SMALL_DBEdit6.Visible := True;
       //ShowMessage('Informe o total pago.'); Mauricio Parizotto 2023-10-25
@@ -26715,9 +26721,10 @@ begin
       Abort;
     end else
     begin
-      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := _cRecebPagto;
-      
-      if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
+      if AllTrim(ComboBox1.Text) = '' then
+        ComboBox1.Text := _cRecebPagto;
+
+      if (FormatFloat('0.00', fTotal) <> FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) and ( FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) <> '0,00' ) then // Sandro Silva 2023-10-30 if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
         if ComboBox2.Text = '<Plano de contas para a diferença>' then
         begin
@@ -26734,20 +26741,27 @@ begin
         Form7.ibDataSet1NOME.AsString          := ComboBox2.Text;
 
         Form7.ibDataSet1DATA.AsDateTime        := Date;
+        {Sandro Silva 2023-10-30 inicio
         if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal
          then Form7.ibDataSet1SAIDA.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat - fTotal
            else Form7.ibDataSet1ENTRADA.AsFloat := fTotal - Form7.ibDataSet25DIFERENCA_.AsFloat;
-        
+        }
+        if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
+          Form7.ibDataSet1SAIDA.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) - StrToFloat(FormatFloat('0.00', fTotal))
+        else
+          Form7.ibDataSet1ENTRADA.AsFloat := StrToFloat(FormatFloat('0.00', fTotal)) - StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));
+        {Sandro Silva 2023-10-30 fim}
+
         Form7.ibDataSet1.Post;
       end;
-      
-      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+
+      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) <> '0,00') then // Sandro Silva 2023-10-30 if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1HISTORICO.AsString     := Edit1.Text;
         Form7.ibDataSet1NOME.AsString          := ComboBox1.Text;
         Form7.ibDataSet1DATA.AsDateTime        := Date; // A pedido da center
-        Form7.ibDataSet1ENTRADA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
+        Form7.ibDataSet1ENTRADA.AsFloat        := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));// Sandro Silva 2023-10-30 Form7.ibDataSet1ENTRADA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
         //
         // Este procedimento é para mudar a ordem do registro
         // para o caixa não ficar negativo
@@ -26784,8 +26798,8 @@ begin
     end else
     begin
       if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := _cRecebPagto;
-    
-      if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
+
+      if (StrToFloat(FormatFloat('0.00', fTotal)) <> StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat))) and ( StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) <> 0 ) then // Sandro Silva 2023-10-30 if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
         if ComboBox2.Text = '<Plano de contas para a diferença>' then
         begin
@@ -26799,22 +26813,29 @@ begin
 
         Form7.ibDataSet1HISTORICO.AsString     := 'Diferença';
         Form7.ibDataSet1NOME.AsString          := ComboBox2.Text;
-        
+
         Form7.ibDataSet1DATA.AsDateTime        := Date;
+        {Sandro Silva 2023-10-30 inicio
         if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal
          then Form7.ibDataSet1ENTRADA.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat - fTotal
            else Form7.ibDataSet1SAIDA.AsFloat := fTotal - Form7.ibDataSet25DIFERENCA_.AsFloat;
+        }
+        if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then
+          Form7.ibDataSet1ENTRADA.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) - StrToFloat(FormatFloat('0.00', fTotal))
+        else
+          Form7.ibDataSet1SAIDA.AsFloat := StrToFloat(FormatFloat('0.00', fTotal)) - StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));
+        {Sandro Silva 2023-10-30 fim}
         //
         Form7.ibDataSet1.Post;
       end;
 
-      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) <> 0) then // Sandro Silva 2023-10-30 if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1HISTORICO.AsString     := Edit1.Text;
         Form7.ibDataSet1NOME.AsString          := ComboBox1.Text;
         Form7.ibDataSet1DATA.AsDateTime      := Date; // A pedido da center
-        Form7.ibDataSet1SAIDA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
+        Form7.ibDataSet1SAIDA.AsFloat        := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30 Form7.ibDataSet1SAIDA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
         Form7.ibDataSet1.Post;
       end;
       // Cancela todas as contas marcadas para receber
@@ -28762,6 +28783,7 @@ begin
                   Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
   //                Form7.ibDataSet7VALOR_RECE.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat;
                   Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,254,013))/100;
+                  Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_RECE.AsFloat)); // Sandro Silva 2023-10-30
                   //
                   Form7.ibDataSet7.Post;
                   //
@@ -28777,6 +28799,7 @@ begin
                   Form7.Panel10.Repaint;
                   //
                   Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  StrToFloat(Copy(sLinha,254,013))/100;
+                  Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30
                   //
                   SMALL_DBEdit1.SetFocus;
                   I := I + 1;
@@ -29987,7 +30010,9 @@ begin
   //
   if not Form7.OpenDialog4.Execute then
     Exit;
-  //
+
+  CHDir(Form1.sAtual); // Apontar devolta para a pasta do sistema Sandro Silva 2023-10-30
+
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
     //
@@ -30151,6 +30176,7 @@ begin
                     Form7.Panel10.Repaint;
                     //
                     Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  StrToFloat(Copy(sLinha,254,013))/100;
+                    Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30 
                     //
                     SMALL_DBEdit1.SetFocus;
                     I := I + 1;
@@ -30822,6 +30848,8 @@ begin
   if not Form7.OpenDialog4.Execute then
     Exit;
 
+  CHDir(Form1.sAtual); // Apontar devolta para a pasta do sistema Sandro Silva 2023-10-30
+
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
     Form7.ibDataSet7.DisableControls;
@@ -30870,7 +30898,7 @@ begin
                     Form7.ibDataSet7.Edit;
                     Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
 
-                    Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,78,015))/100;
+                    Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', StrToFloat(Copy(sLinha,78,015)) / 100)); // Sandro Silva 2023-10-30 StrToFloat(Copy(sLinha,78,015))/100;
                     Form7.ibDataSet7PORTADOR.AsString  := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
                     {Sandro Silva 2022-12-21 inicio}
                     sDataDoCredito := Copy(sLinha, 146, 8);
@@ -30895,6 +30923,7 @@ begin
                     Form7.Panel10.Repaint;
 
                     Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  Form7.ibDataSet7VALOR_RECE.AsFloat;
+                    Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));// Sandro Silva 2023-10-30
 
                     SMALL_DBEdit1.SetFocus;
                     I := I + 1;
