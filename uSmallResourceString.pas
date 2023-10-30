@@ -46,6 +46,8 @@ resourcestring
 
   _cArquivoInvalidoBalanca = 'O nome do arquivo informado é inválido, repita o processo e informe um nome diferente para o arquivo da balança.';
 
+  _cNaoTemXMLNFSaidaExportar = 'Não foi encontrado o XML para está venda.';
+
 implementation
 
 end.
