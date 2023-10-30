@@ -34139,6 +34139,12 @@ var
 begin
   if not TestaNFSaidaFaturada then
     Exit;
+
+  if Trim(Form7.ibDataSet15NFEXML.AsString) = EmptyStr then
+  begin
+    MensagemSistema(_cNaoTemXMLNFSaidaExportar, msgInformacao);
+    Exit;
+  end;    
     
   oDialog := TSaveDialog.Create(nil);
   try
