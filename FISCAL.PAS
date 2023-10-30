@@ -24554,203 +24554,7 @@ begin
 end;
 
 procedure TForm1.EnviaraNFCe1Click(Sender: TObject);
-var
-  Mais1ini: tIniFile;
-  bTimer2EnabledOld: Boolean;
-  sNumeroNFEnvio: String;
-  sCaixaEnvio: String;
-  bAbrirGerenicadorNoFinal: Boolean; // Sandro Silva 2023-08-22
-  ConverteVenda: TConverteVendaParaNovoDocFiscal; // Sandro Silva 2023-08-30
-  sGerencial: String; // Sandro Silva 2023-08-30
-  sNumeroNFOld: String; // Sandro Silva 2023-08-30
-  sNumeroNFNew: String; // Sandro Silva 2023-08-30
-  IBQTOTAL: TIBQuery; // Sandro Silva 2023-08-30
 begin
-  (* // Sandro Silva 2023-09-06
-  bAbrirGerenicadorNoFinal := True; // Sandro Silva 2023-08-22
-  bTimer2EnabledOld := Timer2.Enabled;
-  //
-  try
-    Timer2.Enabled    := False;
-    if sModeloECF = '65' then
-    begin
-
-      if Form1.bStatusECF then
-      begin
-        //
-        if (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad')) or (Pos('|' + xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//infProt/cStat') + '|', '|100|150|') > 0) then
-        begin
-          Application.MessageBox('NFC-e transmitida e autorizada', 'Aviso', MB_OK + MB_ICONINFORMATION);
-          Exit;
-        end;
-
-        if (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Denegado')) or (_ecf65_UsoDenegado(Form1.ibDataSet150.FieldByName('NFEXML').AsString)) then
-        begin
-          Application.MessageBox('NFC-e com Uso Denegado', 'Aviso', MB_OK + MB_ICONINFORMATION);
-          Exit;
-        end;
-
-        if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) or (xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//tpEmis') = '9') then // Sandro Silva 2018-03-06  if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
-        begin
-
-          if Form1.bStatusECF then // Sandro Silva 2020-06-25
-          begin
-
-            if Application.MessageBox(PansiChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PAnsiChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
-            begin
-
-              _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, '', ''); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
-
-              Form1.GerenciadordeNFCe1Click(Form1.GerenciadordeNFCe1);
-
-            end
-            else
-              Exit;
-          end
-          else
-            Exit;
-        end
-        else
-        begin
-          if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
-          begin
-            Application.MessageBox(PAnsiChar('NFC-e ' + Form1.ibDataSet150.FieldByName('NUMERONF').AsString + ' pertence ao caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString +
-                                             #13 + #13 + 'Faça o envio pelo caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
-          end
-          else
-          begin
-            sNumeroNFEnvio := Form1.ibDataSet150.FieldByName('NUMERONF').AsString;
-            sCaixaEnvio    := Form1.ibDataSet150.FieldByName('CAIXA').AsString;
-
-            _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, sNumeroNFEnvio, sCaixaEnvio); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
-
-            Form1.IBDataSet150.Close;
-            Form1.IBDataSet150.SelectSQL.Text :=
-              'select * ' +
-              'from NFCE ' +
-              'where NUMERONF = ' + QuotedStr(sNumeroNFEnvio) +
-              ' and CAIXA = ' + QuotedStr(sCaixaEnvio) +
-              ' and MODELO = ''65'' ';
-            Form1.IBDataSet150.Open;
-
-            if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then
-            begin
-
-              {Sandro Silva 2023-08-30 inicio}
-              sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
-              sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
-              {Sandro Silva 2023-08-30 fim}
-
-              //
-              {Sandro Silva 2023-08-22 inicio
-              Mais1ini := TIniFile.Create('FRENTE.INI');
-              Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
-              Mais1ini.Free;
-              }
-              GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '65'); // Sandro Silva 2023-08-22
-              {Sandro Silva 2023-08-22 fim}
-              //
-              Form1.ibDataset150.Close;
-
-              Commitatudo(True); // EnviaraNFCe1Click() As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
-
-              OcultaGerenciadorVendas;
-              Form1.Edit1.Text := '';
-              Form1.Edit1.SetFocus;
-
-              //
-              CortaPapelNoVideo(True); // TForm1.EnviaraNFCe1Click()
-              Form1.FormShow(Sender); // EnviaraNFCe1Click()
-            end; // if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then
-
-          end; // if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
-        end; // if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) or (xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//tpEmis') = '9') then // Sandro Silva 2018-03-06  if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
-
-      end; // if Form1.bStatusECF then // Sandro Silva 2020-06-25
-      //
-      //
-    end; // if sModeloECF = '65' then {Sandro Silva 2014-01-20 inicio}
-
-    if sModeloECF = '59' then {Sandro Silva 2014-01-20 inicio}
-    begin
-
-      {Sandro Silva 2023-08-30 inicio}
-      sGerencial := Form1.ibDataSet150.FieldByName('GERENCIAL').AsString;
-      sNumeroNFOld := DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString;
-      {Sandro Silva 2023-08-30 fim}
-
-      //
-      if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
-      begin
-        Form1.ibDataSet150.Edit;
-        Form1.ibDataSet150.FieldByName('STATUS').AsString := '';
-        Form1.ibDataSet150.FieldByName('NFEXML').AsString := '';
-        Form1.ibDataSet150.Post;
-      end;
-      //
-      {Sandro Silva 2023-08-22 inicio
-      Mais1ini := TIniFile.Create('FRENTE.INI');
-      Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
-      Mais1ini.Free;
-      }
-      if Form1.ibDataSet150.FieldByName('NUMERONF').AsString <> '' then // Sandro Silva 2023-08-25
-        GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '59'); // Sandro Silva 2023-08-22
-      {Sandro Silva 2023-08-22 fim}
-      //
-
-      Form1.ibDataset150.Close;
-
-      Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
-
-      OcultaGerenciadorVendas;
-      Form1.Edit1.Text := '';
-      Form1.Edit1.SetFocus;
-
-      //
-      CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
-      Form1.FormShow(Sender); // EnviaraNFCe1Click()
-      //
-      //
-    end;
-
-    if sModeloECF = '99' then {Sandro Silva 2014-01-20 inicio}
-    begin
-      //
-      if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') and (Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_ABERTA)  then
-      begin
-
-        {Sandro Silva 2023-08-22 inicio
-        Mais1ini := TIniFile.Create('FRENTE.INI');
-        Mais1Ini.WriteString('NFCE','CUPOM',Form1.ibDataSet150.FieldByName('NUMERONF').AsString);
-        Mais1ini.Free;
-        }
-        GravaNumeroCupomFrenteINI(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, '99'); // Sandro Silva 2023-08-22
-        {Sandro Silva 2023-08-22 fim}
-
-        //
-        Form1.ibDataset150.Close;
-
-        Commitatudo(True); // As 2 transações devem estar sincronizadas caso tentar transmitir novamente logo em seguida a mesma nfce 2015-07-27
-
-        OcultaGerenciadorVendas;
-        Form1.Edit1.Text := '';
-        Form1.Edit1.SetFocus;
-
-        //
-        CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
-        Form1.FormShow(Sender); // EnviaraNFCe1Click()
-        // Sandro Silva 2023-08-22 touch_ESCClick(Sender);
-        bAbrirGerenicadorNoFinal := False; // Sandro Silva 2023-08-22
-        //
-      end;
-    end;
-
-  finally
-    Timer2.Enabled := bTimer2EnabledOld;
-    if bAbrirGerenicadorNoFinal then // Sandro Silva 2023-08-22
-      GerenciadordeNFCe1Click(Sender);
-  end;
-  *)
   if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') and (Form1.ibDataSet150.FieldByName('GERENCIAL').AsString <> '')  then
     Form1.DBGrid1DblClick(Form1.DBGrid1)
   else
@@ -34593,6 +34397,7 @@ begin
           ' where NUMEROOS = ' + QuotedStr(sNumero);
         IBQuery.ExecSQL;
 
+        {Sandro Silva 2023-10-30 inicio
         // Ficha 5414
         if bImportarServicoDeOsOrcamento then
         begin
@@ -34604,9 +34409,10 @@ begin
             ' where NUMEROOS = ' + QuotedStr(sNumero);
           IBQuery.ExecSQL;
         end;
+        }
         {Sandro Silva 2021-08-17 fim}
 
-        {Sandro Silva 2023-10-25 inicio
+        {Sandro Silva 2023-10-25 inicio  Ficha 7485
         // Tabela OS
         IBQuery.Close;
         IBQuery.SQL.Text :=
@@ -34637,12 +34443,21 @@ begin
           IBQuery.Open;
           if IBQuery.FieldByName('NF').AsString <> '' then
           begin
-            
+
+            // Tabela OS
             IBQuery.Close;
             IBQuery.SQL.Text :=
               'update OS set ' +
               'NF = ' + QuotedStr(sNumeroDocumento + 'I') +
               ' where NUMERO = ' + QuotedStr(sNumero);
+            IBQuery.ExecSQL;
+
+            //Tabela ITENS003
+            IBQuery.Close;
+            IBQuery.SQL.Text :=
+              'update ITENS003 set ' +
+              'NUMERONF = ' + QuotedStr(sNumeroDocumento + 'I') +
+              ' where NUMEROOS = ' + QuotedStr(sNumero);
             IBQuery.ExecSQL;
 
           end;
