@@ -5,7 +5,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
   BorderStyle = bsNone
   Caption = 'Configura'#231#227'o TEF'
   ClientHeight = 741
-  ClientWidth = 1011
+  ClientWidth = 994
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
   PixelsPerInch = 96
   TextHeight = 13
   object lblTitulo: TLabel
-    Left = 20
+    Left = 10
     Top = 12
     Width = 1024
     Height = 19
@@ -49,21 +49,21 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     Caption = 'Diret'#243'rio de requisi'#231#227'o'
   end
   object Label3: TLabel
-    Left = 173
+    Left = 163
     Top = 40
     Width = 27
     Height = 13
     Caption = 'Pasta'
   end
   object Label2: TLabel
-    Left = 53
+    Left = 43
     Top = 40
     Width = 28
     Height = 13
     Caption = 'Nome'
   end
   object Label6: TLabel
-    Left = 18
+    Left = 9
     Top = 40
     Width = 24
     Height = 13
@@ -77,7 +77,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     Caption = 'Caminho do execut'#225'vel'
   end
   object btnOK: TBitBtn
-    Left = 350
+    Left = 349
     Top = 289
     Width = 100
     Height = 40
@@ -92,7 +92,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     OnClick = btnOKClick
   end
   object dbgTEFs: TDBGrid
-    Left = 18
+    Left = 8
     Top = 58
     Width = 975
     Height = 213
@@ -157,7 +157,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
       end>
   end
   object btnCancelar: TBitBtn
-    Left = 462
+    Left = 461
     Top = 289
     Width = 100
     Height = 40
@@ -172,7 +172,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     OnClick = btnCancelarClick
   end
   object Panel2: TPanel
-    Left = 2
+    Left = -10
     Top = 431
     Width = 1008
     Height = 312
@@ -194,6 +194,14 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
         end
       end
     end
+  end
+  object chkSuprimirLinhasEmBrancoDoComprovante: TCheckBox
+    Left = 8
+    Top = 288
+    Width = 265
+    Height = 17
+    Caption = 'Suprimir as linhas em branco do comprovante TEF'
+    TabOrder = 4
   end
   object cdsTEFs: TClientDataSet
     Aggregates = <>
@@ -239,7 +247,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     AfterInsert = cdsTEFsAfterInsert
     AfterPost = cdsTEFsAfterPost
     OnPostError = cdsTEFsPostError
-    Left = 160
+    Left = 198
     object cdsTEFsNOME: TStringField
       FieldName = 'NOME'
       OnChange = cdsTEFsNOMEChange
@@ -278,6 +286,6 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
   end
   object dsTEFs: TDataSource
     DataSet = cdsTEFs
-    Left = 200
+    Left = 238
   end
 end

@@ -293,6 +293,21 @@ var
     Form1.ibDataSet25.FieldByName('VALOR07').AsFloat := FormasExtras.Extra7;
     Form1.ibDataSet25.FieldByName('VALOR08').AsFloat := FormasExtras.Extra8;
   end;
+  {Sandro Silva 2023-10-24 inicio}
+  function DesconsideraLinhasEmBranco(Texto: String): String;
+  begin
+    Result := Texto;
+    if SuprimirLinhasEmBrancoDoComprovanteTEF then
+    begin
+      if StringReplace(Result, ' ', '', [rfReplaceAll]) <> '""' then
+        Result := StrTran(Result, '"', '') + Chr(10)
+      else
+        Result := '';
+    end
+    else
+      Result := StrTran(Result, '"', '') + Chr(10);
+  end;
+  {Sandro Silva 2023-10-24 fim}
 begin
   //
   // Escolhe o TEF
@@ -330,7 +345,7 @@ begin
     sCupom710 := TEFTextoImpressaoCupomAutorizado('710-'); // Texto cupom reduzido
     if AllTrim(sCupom710) <> '' then
     begin
-      sCupomReduzidoAutorizado := sCupomReduzidoAutorizado + Chr(10) + TEFTextoImpressaoCupomAutorizado('711-') + '     ' + DupeString('-', 40);
+      sCupomReduzidoAutorizado := sCupomReduzidoAutorizado + Chr(10) + TEFTextoImpressaoCupomAutorizado('711-') + DupeString('-', 40); // Sandro Silva 2023-10-24 sCupomReduzidoAutorizado := sCupomReduzidoAutorizado + Chr(10) + TEFTextoImpressaoCupomAutorizado('711-') + '     ' + DupeString('-', 40);
 
     end
     else
@@ -343,14 +358,22 @@ begin
     sCupom714 := TEFTextoImpressaoCupomAutorizado('714-'); // Quantidade linhas via estabelecimento
     if AllTrim(sCupom714) <> '' then
     begin
-      sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
+      sCupomAutorizado := sCupomAutorizado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento // Sandro Silva 2023-10-24 sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
     end else
     begin
-      sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
+      sCupomAutorizado := sCupomAutorizado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação // Sandro Silva 2023-10-24 sCupomAutorizado := sCupomAutorizado + chr(10) + chr(10) + chr(10) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
     end;
     //
     if AllTrim(StrTran(sCupomAutorizado,chr(10),'')) = '' then
       sCupomAutorizado := '';
+    {Sandro Silva 2023-10-24 inicio}
+    if SuprimirLinhasEmBrancoDoComprovanteTEF then
+    begin
+      while AnsiContainsText(sCupomAutorizado, chr(10) + chr(10)) do
+        sCupomAutorizado := StringReplace(sCupomAutorizado, chr(10) + chr(10), chr(10), [rfReplaceAll]);
+    end;
+    {Sandro Silva 2023-10-24 fim}
+
     Form1.fTEFPago := dTotalTransacionado; // Sandro Silva 2017-06-26
   end;// if dTotalTransacionado > 0 then
 
@@ -713,7 +736,7 @@ begin
                     if Copy(Form1.sLinha,1,7) = '017-000' then Form1.sTipoParc   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)); // 0: parcelado pelo Estabelecimento; 1: parcelado pela ADM.
                     if Copy(Form1.sLinha,1,7) = '018-000' then Form1.sParcelas   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
                     if Copy(Form1.sLinha,1,7) = '028-000' then sBotaoOk          := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
+                    if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
                     if Copy(Form1.sLinha,1,4) = '030-'    then sMensagem         := sMensagem + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','');
                     //
                     if Copy(Form1.sLinha,1,7) = '709-000' then
@@ -776,12 +799,27 @@ begin
                     end;
                     //
                     //
+                    {Sandro Silva 2023-10-24 inicio
                     if Copy(Form1.sLinha,1,4) = '710-' then sCupom710 := sCupom710 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas cupom reduzido
                     if Copy(Form1.sLinha,1,4) = '711-' then sCupom711 := sCupom711 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas cupom reduzido
                     if Copy(Form1.sLinha,1,4) = '712-' then sCupom712 := sCupom712 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Cliente
                     if Copy(Form1.sLinha,1,4) = '713-' then sCupom713 := sCupom713 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Cliente,
                     if Copy(Form1.sLinha,1,4) = '714-' then sCupom714 := sCupom714 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Estabelecimento
                     if Copy(Form1.sLinha,1,4) = '715-' then sCupom715 := sCupom715 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Estabelecimento
+                    }
+                    if Copy(Form1.sLinha,1,4) = '710-' then
+                      sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas cupom reduzido
+                    if Copy(Form1.sLinha,1,4) = '711-' then
+                      sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas cupom reduzido
+                    if Copy(Form1.sLinha,1,4) = '712-' then
+                      sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Cliente
+                    if Copy(Form1.sLinha,1,4) = '713-' then
+                      sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Cliente,
+                    if Copy(Form1.sLinha,1,4) = '714-' then
+                      sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
+                    if Copy(Form1.sLinha,1,4) = '715-' then
+                      sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Estabelecimento
+                    {Sandro Silva 2023-10-24 fim}
                     //                               //
                     // Venda com pagamento no CARTAO //
                     //                               //
@@ -789,11 +827,6 @@ begin
                   //
                   CloseFile(F);
                   //
-
-                  {Sandro Silva 2021-09-03 inicio}
-                  //Form1.sDebitoOuCredito := 'CREDITO';
-                  //ModalidadeTransacao := tModalidadeCartao;
-
                   if Pos('PIX', AnsiUpperCase(sRespostaTef)) > 0 then
                   begin
                     Form1.sDebitoOuCredito := 'CREDITO';
@@ -832,7 +865,7 @@ begin
                   //
                   if AllTrim(sCupom710) <> '' then
                   begin
-                    Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
+                    Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + DupeString('-', 40); // Sandro Silva 2023-10-24 Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
                   end else
                   begin
                     if AllTrim(sCupom712) <> '' then
@@ -841,10 +874,10 @@ begin
                   //
                   if AllTrim(sCupom714) <> '' then
                   begin
-                    sCupom := sCupom + chr(10) + chr(10) + chr(10) + sCupom715;
+                    sCupom := sCupom + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom715; // Sandro Silva 2023-10-24 sCupom := sCupom + chr(10) + chr(10) + chr(10) + sCupom715;
                   end else
                   begin
-                    sCupom := sCupom + chr(10) + chr(10) + chr(10) + sCupom029;
+                    sCupom := sCupom + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom029; // Sandro Silva 2023-10-24 sCupom := sCupom + chr(10) + chr(10) + chr(10) + sCupom029;
                   end;
                   //
                   if AllTrim(StrTran(sCupom,chr(10),'')) = '' then
@@ -922,7 +955,8 @@ begin
                 //
                 Inc(iContaCartao); // Sandro Silva 2017-07-24
 
-                Form1.sCupomTEF := Form1.sCupomTEF + sCupom + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
+                Form1.sCupomTEF := Form1.sCupomTEF + sCupom + DupeString('-', 40); // Sandro Silva 2023-10-24 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
+
                 //
                 if (dValorPagarCartao <> 0)  then // Cartão sim - cheque não
                 begin
@@ -950,7 +984,7 @@ begin
                     end;
                     //
 
-                    Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.sNomeRede, Form1.sTransaca, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao); 
+                    Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.sNomeRede, Form1.sTransaca, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao);
 
                     Form1.iParcelas := 1;
                     //if (StrToInt('0'+AllTrim(Form1.sTipoParc)) = 0) and (StrToInt('0'+AllTrim(Form1.sParcelas)) > 1) then
@@ -1065,7 +1099,6 @@ begin
   if Result = True then
   begin
     Form1.sCupomTEF := sCupomReduzidoAutorizado + Form1.sCupomTEFReduzido + sCupomAutorizado + Form1.sCupomTEF;
-    
   end;
   // ---------------------------------------------- //
   // Transferência Eletrônica de Fundos (TEF)       //
@@ -2443,8 +2476,21 @@ begin
       begin // Apenas arquivos dos primeiros cartões, não do último
         if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
         begin
+          {Sandro Silva 2023-10-24 inicio
           if CampoTEF(sArquivoTEF, '009-000') = '0' then
             Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
+          }
+          if CampoTEF(sArquivoTEF, '009-000') = '0' then
+          begin
+            if SuprimirLinhasEmBrancoDoComprovanteTEF then
+            begin
+              if Trim(CampoTEF(sArquivoTEF, sCampo)) <> '' then
+                Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
+            end
+            else
+              Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
+          end;
+          {Sandro Silva 2023-10-24 fim}
         end;
       end;
     end; // for I := 0 to slDownload.Count -1 do
