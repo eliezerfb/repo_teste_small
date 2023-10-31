@@ -30898,7 +30898,9 @@ begin
                     Form7.ibDataSet7.Edit;
                     Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
 
-                    Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', StrToFloat(Copy(sLinha,78,015)) / 100)); // Sandro Silva 2023-10-30 StrToFloat(Copy(sLinha,78,015))/100;
+                    Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,78,015))/100;
+                    //Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', StrToFloat(Copy(sLinha,78,015)) / 100)); // Sandro Silva 2023-10-30 StrToFloat(Copy(sLinha,78,015))/100;
+                    Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_RECE.AsFloat)); // Sandro Silva 2023-10-31
                     Form7.ibDataSet7PORTADOR.AsString  := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
                     {Sandro Silva 2022-12-21 inicio}
                     sDataDoCredito := Copy(sLinha, 146, 8);
