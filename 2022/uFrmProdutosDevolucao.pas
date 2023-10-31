@@ -80,7 +80,6 @@ type
     BitBtn1: TBitBtn;
     imgEdit: TImage;
     ibdProdutosNotaQUANTIDADE_ANT: TFloatField;
-    ibdProdutosNotaIPI_ANT: TFloatField;
     ibdProdutosNotaVIPI_ANT: TIBBCDField;
     ibdProdutosNotaICM_ANT: TFloatField;
     ibdProdutosNotaVICMS_ANT: TIBBCDField;
@@ -88,10 +87,8 @@ type
     ibdProdutosNotaVBCST_ANT: TIBBCDField;
     ibdProdutosNotaVICMSST_ANT: TIBBCDField;
     ibdProdutosNotaVBCFCPST_ANT: TIBBCDField;
-    ibdProdutosNotaPFCPST_ANT: TIBBCDField;
     ibdProdutosNotaVFCPST_ANT: TIBBCDField;
     cdsProdutosNotaQUANTIDADE_ANT: TFloatField;
-    cdsProdutosNotaIPI_ANT: TFloatField;
     cdsProdutosNotaVIPI_ANT: TBCDField;
     cdsProdutosNotaICM_ANT: TFloatField;
     cdsProdutosNotaVICMS_ANT: TBCDField;
@@ -99,7 +96,6 @@ type
     cdsProdutosNotaVBCST_ANT: TBCDField;
     cdsProdutosNotaVICMSST_ANT: TBCDField;
     cdsProdutosNotaVBCFCPST_ANT: TBCDField;
-    cdsProdutosNotaPFCPST_ANT: TBCDField;
     cdsProdutosNotaVFCPST_ANT: TBCDField;
     procedure dbgPrincipalCellClick(Column: TColumn);
     procedure dbgPrincipalDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -126,8 +122,15 @@ var
 
 implementation
 
-uses uFrmParametroTributacao, Mais, uFrmSmallImput, Unit7, Unit12,
-  uFuncoesRetaguarda;
+uses uFrmParametroTributacao
+  , Mais
+  , uFrmSmallImput
+  , Unit7
+  , Unit12
+  , uFuncoesRetaguarda
+  , uDialogs
+  , uArquivosDAT
+  , uSmallComINF, uSmallComSections;
 
 {$R *.dfm}
 
@@ -213,12 +216,18 @@ begin
   begin
     retorno := ImputBoxSmall('Informe a quantidade',
                              cdsProdutosNotaDESCRICAO.Text,
-                             FormatFloat('#,##0.00', cdsProdutosNotaQUANTIDADE.AsFloat),
+                             FormatFloat(cdsProdutosNotaQUANTIDADE.DisplayFormat, cdsProdutosNotaQUANTIDADE.AsFloat),
                              tpFloat
                              );
 
     if retorno <> '' then
     begin
+      if StrToFloatDef(retorno,0) <= 0 then
+      begin
+        MensagemSistema('Não pode ser informado quantidade zerada do produto.',msgAtencao);
+        Exit;
+      end;
+
       if StrToFloatDef(retorno,0) <= cdsProdutosNotaQUANTIDADE_ANT.AsFloat then
       begin
         cdsProdutosNota.Edit;
@@ -227,7 +236,8 @@ begin
       end else
       begin
         MensagemSistema('Não pode ser informado uma quantidade maior que a da Nota Fiscal de origem.'+#13#10+
-                        'Nota Fiscal: '+FormatFloat('#,##0.00', cdsProdutosNotaQUANTIDADE_ANT.AsFloat));
+                        'Nota Fiscal: '+FormatFloat('#,##0.00', cdsProdutosNotaQUANTIDADE_ANT.AsFloat)
+                        ,msgAtencao);
       end;
     end;
   end;
@@ -428,7 +438,6 @@ begin
     vQtdAntes := cdsProdutosNotaQUANTIDADE_ANT.AsFloat;
 
     cdsProdutosNotaTOTAL.AsFloat      := vQtdNova * cdsProdutosNotaUNITARIO.AsFloat;
-    cdsProdutosNotaIPI.AsFloat        := vQtdNova * (cdsProdutosNotaIPI_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVIPI.AsFloat       := vQtdNova * (cdsProdutosNotaVIPI_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaICM.Asfloat        := vQtdNova * (cdsProdutosNotaICM_ANT.Asfloat / vQtdAntes);
     cdsProdutosNotaVICMS.AsFloat      := vQtdNova * (cdsProdutosNotaVICMS_ANT.AsFloat / vQtdAntes);
@@ -436,7 +445,6 @@ begin
     cdsProdutosNotaVBCST.AsFloat      := vQtdNova * (cdsProdutosNotaVBCST_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVICMSST.AsFloat    := vQtdNova * (cdsProdutosNotaVICMSST_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVBCFCPST.AsFloat   := vQtdNova * (cdsProdutosNotaVBCFCPST_ANT.AsFloat / vQtdAntes);
-    cdsProdutosNotaPFCPST.AsFloat     := vQtdNova * (cdsProdutosNotaPFCPST_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVFCPST.AsFloat     := vQtdNova * (cdsProdutosNotaVFCPST_ANT.AsFloat / vQtdAntes);
   except
     MensagemSistema('Problema ao calcular valores. Verifique',msgErro);
@@ -444,7 +452,58 @@ begin
 end;
 
 procedure TFrmProdutosDevolucao.FormShow(Sender: TObject);
+var
+  CasasQtd, CasasPreco: integer;
+var
+  oArqDat: TArquivosDAT;
 begin
+  oArqDat := TArquivosDAT.Create(Usuario);
+  try
+    CasasQtd    := oArqDat.SmallCom.Outros.CasasDecimaisQuantidade;
+    CasasPreco  := oArqDat.SmallCom.Outros.CasasDecimaisPreco;
+  finally
+    FreeAndNil(oArqDat);
+  end;
+
+  case CasasQtd of
+    0: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0';
+    1: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.0';
+    2: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.00';
+    3: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.000';
+    4: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.0000';
+    5: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.00000';
+    6: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.000000';
+    7: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.0000000';
+    8: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.00000000';
+    9: cdsProdutosNotaQUANTIDADE.DisplayFormat := '#,##0.000000000';
+  end;
+
+  case CasasPreco of
+    0: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0';
+    1: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.0';
+    2: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.00';
+    3: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.000';
+    4: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.0000';
+    5: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.00000';
+    6: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.000000';
+    7: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.0000000';
+    8: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.00000000';
+    9: cdsProdutosNotaUNITARIO.DisplayFormat := '#,##0.000000000';
+  end;
+
+  case CasasPreco of
+    0: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0';
+    1: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.0';
+    2: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.00';
+    3: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.000';
+    4: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.0000';
+    5: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.00000';
+    6: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.000000';
+    7: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.0000000';
+    8: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.00000000';
+    9: cdsProdutosNotaTOTAL.DisplayFormat := '#,##0.000000000';
+  end;
+
   cdsProdutosNota.Open;
 end;
 

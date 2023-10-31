@@ -473,9 +473,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     object cdsProdutosNotaQUANTIDADE_ANT: TFloatField
       FieldName = 'QUANTIDADE_ANT'
     end
-    object cdsProdutosNotaIPI_ANT: TFloatField
-      FieldName = 'IPI_ANT'
-    end
     object cdsProdutosNotaVIPI_ANT: TBCDField
       FieldName = 'VIPI_ANT'
       Precision = 18
@@ -508,10 +505,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       FieldName = 'VBCFCPST_ANT'
       Precision = 18
       Size = 2
-    end
-    object cdsProdutosNotaPFCPST_ANT: TBCDField
-      FieldName = 'PFCPST_ANT'
-      Precision = 18
     end
     object cdsProdutosNotaVFCPST_ANT: TBCDField
       FieldName = 'VFCPST_ANT'
@@ -556,7 +549,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       #9'I.VFCPST,'
       #9'I.ICMS_DESONERADO,'#9
       #9'I.QUANTIDADE QUANTIDADE_ANT,'
-      #9'I.IPI IPI_ANT,'
       #9'I.VIPI VIPI_ANT, '
       #9'I.ICM ICM_ANT,'
       #9'I.VICMS VICMS_ANT,'
@@ -564,7 +556,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       #9'I.VBCST VBCST_ANT,'
       #9'I.VICMSST VICMSST_ANT,'
       #9'I.VBCFCPST VBCFCPST_ANT,'
-      #9'I.PFCPST PFCPST_ANT,'
       #9'I.VFCPST VFCPST_ANT'
       'From ITENS002 I'
       'Where I.NUMERONF =  :NUMERONF  '
@@ -727,10 +718,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       FieldName = 'QUANTIDADE_ANT'
       Origin = 'ITENS002.QUANTIDADE'
     end
-    object ibdProdutosNotaIPI_ANT: TFloatField
-      FieldName = 'IPI_ANT'
-      Origin = 'ITENS002.IPI'
-    end
     object ibdProdutosNotaVIPI_ANT: TIBBCDField
       FieldName = 'VIPI_ANT'
       Origin = 'ITENS002.VIPI'
@@ -770,12 +757,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       Origin = 'ITENS002.VBCFCPST'
       Precision = 18
       Size = 2
-    end
-    object ibdProdutosNotaPFCPST_ANT: TIBBCDField
-      FieldName = 'PFCPST_ANT'
-      Origin = 'ITENS002.PFCPST'
-      Precision = 18
-      Size = 4
     end
     object ibdProdutosNotaVFCPST_ANT: TIBBCDField
       FieldName = 'VFCPST_ANT'
