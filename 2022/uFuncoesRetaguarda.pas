@@ -27,6 +27,8 @@ uses
   , IBDatabase
   , DB
   , Variants
+  , Grids
+  , Graphics
   ;
 
   //type
@@ -37,7 +39,12 @@ uses
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectMovimentacaoItem(vProduto : string): String;
-  function SqlEstoqueOrcamentos(AliasPadrao:Boolean=True): String; //Mauricio Parizotto 2023-10-16 
+  function SqlEstoqueOrcamentos(AliasPadrao:Boolean=True): String; //Mauricio Parizotto 2023-10-16
+  function UFDescricao(sCodigo: String): String;
+  function UFSigla(sCodigo: String): String;
+  function UFCodigo(sUF: String): String;
+  procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
+    DataCol: Integer; Column: TColumn; State: TGridDrawState);
   function xmlNodeValueToFloat(sXML, sNode: String;
     sDecimalSeparator: String = '.'): Double;
   function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
@@ -814,6 +821,163 @@ begin
             sqlCampos+
             ' FROM ORCAMENTS '
             ;
+end;
+
+function UFDescricao(sCodigo: String): String;
+begin
+  Result := '';
+  //Norte
+  if sCodigo = '11' then Result := 'Rondônia';
+  if sCodigo = '12' then Result := 'Acre';
+  if sCodigo = '13' then Result := 'Amazonas';
+  if sCodigo = '14' then Result := 'Roraima';
+  if sCodigo = '15' then Result := 'Pará';
+  if sCodigo = '16' then Result := 'Amapá';
+  if sCodigo = '17' then Result := 'Tocantins';
+
+  //Nordeste
+  if sCodigo = '21' then Result := 'Maranhão';
+  if sCodigo = '22' then Result := 'Piauí';
+  if sCodigo = '23' then Result := 'Ceará';
+  if sCodigo = '24' then Result := 'Rio Grande do Norte';
+  if sCodigo = '25' then Result := 'Paraíba';
+  if sCodigo = '26' then Result := 'Pernambuco';
+  if sCodigo = '27' then Result := 'Alagoas';
+  if sCodigo = '28' then Result := 'Sergipe';
+  if sCodigo = '29' then Result := 'Bahia';
+
+  //Sudeste
+  if sCodigo = '31' then Result := 'Minas Gerais';
+  if sCodigo = '32' then Result := 'Espírito Santo';
+  if sCodigo = '33' then Result := 'Rio de Janeiro';
+  if sCodigo = '35' then Result := 'São Paulo';
+
+  //Sul
+  if sCodigo = '41' then Result := 'Paraná';
+  if sCodigo = '42' then Result := 'Santa Catarina';
+  if sCodigo = '43' then Result := 'Rio Grande do Sul';
+
+  //Centro' then Result := 'oeste
+  if sCodigo = '50' then Result := 'Mato Grosso do Sul';
+  if sCodigo = '51' then Result := 'Mato Grosso';
+  if sCodigo = '52' then Result := 'Goiás';
+  if sCodigo = '53' then Result := 'Distrito Federal';
+end;
+
+function UFSigla(sCodigo: String): String;
+begin
+  Result := '';
+  //Norte
+  if sCodigo = '11' then Result := 'RO';
+  if sCodigo = '12' then Result := 'AC';
+  if sCodigo = '13' then Result := 'AM';
+  if sCodigo = '14' then Result := 'RR';
+  if sCodigo = '15' then Result := 'PA';
+  if sCodigo = '16' then Result := 'AM';
+  if sCodigo = '17' then Result := 'TO';
+
+  //Nordeste
+  if sCodigo = '21' then Result := 'MA';
+  if sCodigo = '22' then Result := 'PI';
+  if sCodigo = '23' then Result := 'CE';
+  if sCodigo = '24' then Result := 'RN';
+  if sCodigo = '25' then Result := 'PB';
+  if sCodigo = '26' then Result := 'PE';
+  if sCodigo = '27' then Result := 'AL';
+  if sCodigo = '28' then Result := 'SE';
+  if sCodigo = '29' then Result := 'BA';
+
+  //Sudeste
+  if sCodigo = '31' then Result := 'MG';
+  if sCodigo = '32' then Result := 'ES';
+  if sCodigo = '33' then Result := 'RJ';
+  if sCodigo = '35' then Result := 'SP';
+
+  //Sul
+  if sCodigo = '41' then Result := 'PR';
+  if sCodigo = '42' then Result := 'SC';
+  if sCodigo = '43' then Result := 'RS';
+
+  //Centro' then Result := 'oeste
+  if sCodigo = '50' then Result := 'MS';
+  if sCodigo = '51' then Result := 'MT';
+  if sCodigo = '52' then Result := 'GO';
+  if sCodigo = '53' then Result := 'DF';
+end;
+
+function UFCodigo(sUF: String): String;
+begin
+  Result := '';
+  //Norte
+  if sUF = 'RO' then Result := '11';
+  if sUF = 'AC' then Result := '12';
+  if sUF = 'AM' then Result := '13';
+  if sUF = 'RR' then Result := '14';
+  if sUF = 'PA' then Result := '15';
+  if sUF = 'AM' then Result := '16';
+  if sUF = 'TO' then Result := '17';
+
+  //Nordeste
+  if sUF = 'MA' then Result := '21';
+  if sUF = 'PI' then Result := '22';
+  if sUF = 'CE' then Result := '23';
+  if sUF = 'RN' then Result := '24';
+  if sUF = 'PB' then Result := '25';
+  if sUF = 'PE' then Result := '26';
+  if sUF = 'AL' then Result := '27';
+  if sUF = 'SE' then Result := '28';
+  if sUF = 'BA' then Result := '29';
+
+  //Sudeste
+  if sUF = 'MG' then Result := '31';
+  if sUF = 'ES' then Result := '32';
+  if sUF = 'RJ' then Result := '33';
+  if sUF = 'SP' then Result := '35';
+
+  //Sul
+  if sUF = 'PR' then Result := '41';
+  if sUF = 'SC' then Result := '42';
+  if sUF = 'RS' then Result := '43';
+
+  //Centro' then Result := 'oeste
+  if sUF = 'MS' then Result := '50';
+  if sUF = 'MT' then Result := '51';
+  if sUF = 'GO' then Result := '52';
+  if sUF = 'DF' then Result := '53';
+end;
+
+procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  OldBkMode: Integer;
+  xRect: TRect;
+begin
+  (Sender as TDBGrid).Canvas.Pen.Color   := clBlack;
+  (Sender as TDBGrid).Canvas.Brush.Color := clBtnFace;// clBlack;
+  //
+  xRect.Left   := Rect.Left;
+  xRect.Top    := -1;
+  xRect.Right  := Rect.Right;
+  xRect.Bottom := Rect.Bottom - Rect.Top;// + 1;
+  (Sender as TDBGrid).Canvas.FillRect(xRect);
+  xRect.Bottom := Rect.Bottom - Rect.Top;// + 2;
+
+  OldBkMode := SetBkMode((Sender as TDBGrid).Handle, TRANSPARENT);
+  (Sender as TDBGrid).Canvas.Font.Style := [];
+  //(Sender as TDBGrid).Canvas.Font.Size := (Sender as TDBGrid).Columns[Column.Index].Title.Font.Size;
+  if (fsBold in (Sender as TDBGrid).Columns[Column.Index].Title.Font.Style) then
+    (Sender as TDBGrid).Canvas.Font.Style := [fsBold];
+  (Sender as TDBGrid).Canvas.Font.Color  := clblack;
+  (Sender as TDBGrid).Canvas.Brush.Color := clBtnFace;
+  (Sender as  TDBGrid).Canvas.TextOut(Rect.Left + 2, 2, Trim(Column.Title.Caption));
+  (Sender as TDBGrid).Canvas.Font.Color  := clblack;
+  SetBkMode((Sender as TDBGrid).Canvas.Handle, OldBkMode);
+
+  ///////////
+  (Sender as TDBGrid).Canvas.Font.Style := [];
+
+  if gdSelected in State then // Se a coluna estiver selecionada deixa a fonte branca para ter contraste
+    (Sender as TDBGrid).Canvas.Font.Color := clWhite;
 end;
 
 end.

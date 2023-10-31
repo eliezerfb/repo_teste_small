@@ -52,7 +52,7 @@ var
 implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
-  uDialogs;
+  uDialogs, ufrmOrigemCombustivel;
 
 procedure GeraXmlNFeSaida;
 var
@@ -1352,8 +1352,8 @@ begin
             end;
 
             Form7.spdNFeDataSets.incluirPart('L1');
-            Form7.spdNFeDataSets.Campo('cProdANP_LA02').value := sCodigoANP; // Código de produto da ANP
-            Form7.spdNFeDataSets.Campo('UFCons_LA06').value   := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
+            Form7.spdNFeDataSets.Campo('cProdANP_LA02').Value := sCodigoANP; // Código de produto da ANP
+            Form7.spdNFeDataSets.Campo('UFCons_LA06').Value   := IBQUERY99.FieldByname('UF').AsString; // Sigla do Estado do Destinatário
 
             if Form1.sVersaoLayout = '4.00' then
             begin
@@ -1729,6 +1729,7 @@ begin
           Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := '0.00';
           Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
           Form7.spdNFeDataSets.Campo('CST_N12').AsString    := '61';
+
         end;
         {Sandro Silva 2023-06-13 fim}
 
@@ -1927,32 +1928,32 @@ begin
 
     // Veículos
 
-{
-<veicProd>
-<tpOp>1</tpOp>
-<chassi>9321JD5109M027807</chassi>
-<cCor>044</cCor>
-<xCor>AZUL</xCor>
-<pot>7</pot>
-<CM3>15</CM3>
-<pesoL>313.0000</pesoL>
-<pesoB>350.0000</pesoB>
-<nSerie>123456789</nSerie>
-<tpComb>GASOLINA</tpComb>
-<nMotor>JD59027807</nMotor>
-<CMKG>1</CMKG>
-<dist>16</dist>
-<RENAVAM>000011231</RENAVAM>
-<anoMod>2009</anoMod>
-<anoFab>2009</anoFab>
-<tpPint>S</tpPint>
-<tpVeic>04</tpVeic>
-<espVeic>1</espVeic>
-<VIN>N</VIN>    // Veicle Identificação Number
-<condVeic>1</condVeic> // 1-Acabado 2-Inacabado 3-Semi-Acabado
-<cMod>000001</cMod>
-</veicProd>
-}
+    {
+    <veicProd>
+    <tpOp>1</tpOp>
+    <chassi>9321JD5109M027807</chassi>
+    <cCor>044</cCor>
+    <xCor>AZUL</xCor>
+    <pot>7</pot>
+    <CM3>15</CM3>
+    <pesoL>313.0000</pesoL>
+    <pesoB>350.0000</pesoB>
+    <nSerie>123456789</nSerie>
+    <tpComb>GASOLINA</tpComb>
+    <nMotor>JD59027807</nMotor>
+    <CMKG>1</CMKG>
+    <dist>16</dist>
+    <RENAVAM>000011231</RENAVAM>
+    <anoMod>2009</anoMod>
+    <anoFab>2009</anoFab>
+    <tpPint>S</tpPint>
+    <tpVeic>04</tpVeic>
+    <espVeic>1</espVeic>
+    <VIN>N</VIN>    // Veicle Identificação Number
+    <condVeic>1</condVeic> // 1-Acabado 2-Inacabado 3-Semi-Acabado
+    <cMod>000001</cMod>
+    </veicProd>
+    }
 
     if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7' then // Exportação
     begin
@@ -2313,8 +2314,42 @@ begin
         end;
       end;
     end;
-
     // Fim Cupom fiscal referenciado
+
+
+    {Sandro Silva 2023-10-31 inicio}
+    if (Trim(Form7.spdNFeDataSets.Campo('cProdANP_LA02').AsString) <> '')
+    and ((Pos('|' + Form7.spdNFeDataSets.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
+       (Pos('|' + Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0)) then
+    begin
+
+      try
+        Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+        FrmOrigemCombustivel.CodigoProduto    := Form7.ibDataSet4.FieldByname('CODIGO').AsString;
+        FrmOrigemCombustivel.DescricaoProduto := Form7.ibDataSet4.FieldByname('DESCRICAO').AsString;
+        FrmOrigemCombustivel.UnidadeProduto   := Form7.ibDataSet4.FieldByname('MEDIDA').AsString;
+
+        if FrmOrigemCombustivel.CDSORIGEM.IsEmpty then
+          FrmOrigemCombustivel.ShowModal;
+        FrmOrigemCombustivel.CDSORIGEM.First;
+        while FrmOrigemCombustivel.CDSORIGEM.Eof = False do
+        begin
+
+          Form7.spdNFeDataSets.IncluirPart('LA18');
+          Form7.spdNFeDataSets.Campo('indImport_LA19').Value := Trim(FrmOrigemCombustivel.CDSORIGEM.FieldByName('INDIMPORT').AsString);
+          Form7.spdNFeDataSets.Campo('cUFOrig_LA20').Value   := IntToStr(Form7.spdNFe.ObterCodigoUF(AnsiUpperCase(Trim(FrmOrigemCombustivel.CDSORIGEM.FieldByName('UFORIGEM').AsString))));
+          Form7.spdNFeDataSets.Campo('pOrig_LA21').Value     := FormatFloatXML(FrmOrigemCombustivel.CDSORIGEM.FieldByName('PORIGEM').AsFloat, 4);
+          Form7.spdNFeDataSets.SalvarPart('LA18');
+
+          FrmOrigemCombustivel.CDSORIGEM.Next;
+        end;
+        FreeAndNil(FrmOrigemCombustivel);
+      except
+      end;
+    end;
+    {Sandro Silva 2023-10-31 fim}
+
+
     Form7.ibDataSet16.Next;
   end;
 

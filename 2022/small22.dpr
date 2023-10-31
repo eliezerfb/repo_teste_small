@@ -192,7 +192,8 @@ uses
   uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
   uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
   uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
-  uDialogs in '..\..\unit_compartilhada\uDialogs.pas'; 
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas',
+  ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel};
 
 {$R *.RES}
 
@@ -292,6 +293,7 @@ begin
   Application.CreateForm(TForm45, Form45);
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
+  Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
   Application.Run;
     end else
     begin
