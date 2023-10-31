@@ -218,6 +218,14 @@ var
   XMLDOM: IXMLDOMDocument;
   iNode: Integer;
   xNodes: IXMLDOMNodeList;
+  sNumeroNF: String;
+  sFornecedor: String;
+  iItem: Integer;
+  {
+  XMLDOMItem: IXMLDOMDocument;
+  iNodeItem: Integer;
+  xNodesItem: IXMLDOMNodeList;
+  }
 begin
   if FCodigoProduto = '' then
   begin
@@ -230,16 +238,46 @@ begin
 
   IBQORIGEM.Close;
   IBQORIGEM.SQL.Text :=
-    'select first 1 C.NFEXML ' +
+    'select first 1 C.NFEXML, C.NUMERONF, C.FORNECEDOR ' +
     'from ITENS002 I ' +
     'join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDOR = I.FORNECEDOR ' +
     'where I.CODIGO = :CODIGO ' +
+    'and C.NFEXML containing ''<origComb>'' ' +
     'order by C.EMISSAO desc';
   IBQORIGEM.ParamByName('CODIGO').AsString := FCodigoProduto;
   IBQORIGEM.Open;
 
+  sFornecedor := IBQORIGEM.FieldByName('FORNECEDOR').AsString;
+  sNumeroNF   := IBQORIGEM.FieldByName('NUMERONF').AsString;
+
+
+
+
   XMLDOM := CoDOMDocument.Create; // Tem que criar como CoDOMDocument, CoDOMDocument50 não funcionou 100%
   XMLDOM.loadXML(IBQORIGEM.FieldByName('NFEXML').AsString);
+
+  IBQORIGEM.Close;
+  IBQORIGEM.SQL.Text :=
+    'select REGISTRO, CODIGO ' +
+    'from ITENS002 ' +
+    'where NUMERONF = :NUMERONF and FORNECEDOR = :FORNECEDOR';
+  IBQORIGEM.ParamByName('NUMERONF').AsString   := sNumeroNF;
+  IBQORIGEM.ParamByName('FORNECEDOR').AsString := sFornecedor;
+  IBQORIGEM.Open;
+
+  iItem := 0;
+  while IBQORIGEM.Eof = False do
+  begin
+    if IBQORIGEM.FieldByName('CODIGO').AsString = FCodigoProduto then
+    begin
+      iItem := IBQORIGEM.Recno;
+      Break;
+    end;
+    IBQORIGEM.Next;
+  end;
+
+
+  {
   xNodes := XMLDOM.selectNodes('//comb/origComb');
   for iNode := 0 to xNodes.length -1 do
   begin
@@ -252,6 +290,24 @@ begin
       CDSORIGEM.Post;
     end;
   end;
+  }
+
+  if iItem > 0 then
+  begin
+    xNodes := XMLDOM.selectNodes('//det[' + IntToStr(iItem - 1) + ']/prod/comb/origComb');
+    for iNode := 0 to xNodes.length -1 do
+    begin
+      if xmlNodeValue(xNodes.item[iNode].xml, '//indImport') <> '' then
+      begin
+        CDSORIGEM.Append;
+        CDSORIGEM.FieldByName('INDIMPORT').AsString := xmlNodeValue(xNodes.item[iNode].xml, '//indImport');
+        CDSORIGEM.FieldByName('UFORIGEM').AsString  := UFSigla(xmlNodeValue(xNodes.item[iNode].xml, '//cUFOrig'));
+        CDSORIGEM.FieldByName('PORIGEM').AsFloat    := xmlNodeValueToFloat(xNodes.item[iNode].xml, '//pOrig');
+        CDSORIGEM.Post;
+      end;
+    end;
+  end;
+
   XMLDOM := nil;
   xNodes := nil; // Sandro Silva 2019-06-19
 
