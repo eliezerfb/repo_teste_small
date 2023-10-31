@@ -27694,7 +27694,6 @@ begin
   //
   if Form7.ibDataSet4CF.AsString <> '' then
   begin
-    //
     Form7.ibDataSet4.Edit;
     //
     // INDICE DE IMPOSTO APROXIMADO - IIA - ESTADUAL
@@ -27717,7 +27716,6 @@ begin
        (Copy(Form7.ibDataSet4CST.AsString,1,1) = '8') then
 
     begin
-      //
       // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
       // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
       // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
@@ -27727,10 +27725,8 @@ begin
       Form7.ibDataSet4IIA.ReadOnly := False;
       Form7.ibDataSet4IIA.AsFloat  := Form7.ibQuery3.FieldByname('IMPORTADOFEDERAL').AsFloat;
       Form7.ibDataSet4IIA.ReadOnly := True;
-      //
     end else
     begin
-      //
       // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
       // 3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% (quarenta por cento)
       // 4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam o Decreto-Lei nº 288/1967, e as Leis nºs 8.248/1991, 8.387/1991, 10.176/2001 e 11.484/2007;
@@ -27739,7 +27735,6 @@ begin
       Form7.ibDataSet4IIA.ReadOnly := False;
       Form7.ibDataSet4IIA.AsFloat  := Form7.ibQuery3.FieldByname('NACIONALFEDERAL').AsFloat;
       Form7.ibDataSet4IIA.ReadOnly := True;
-      //
     end;
     //
     Form7.ibDataSet4.Post;

@@ -63,8 +63,9 @@ constructor TfFrameCampo.Create(AOwner: TComponent);
 begin
   inherited;
   FGravarSomenteTextoEncontrato := True;
-//  FTipoPesquisa := tpLocate;
-  FTipoPesquisa := tpSelect;
+  //Mauricio Parizotto 2023-10-31
+  FTipoPesquisa := tpLocate;
+//  FTipoPesquisa := tpSelect;
   FCampoVazioAbrirGridPesquisa    := False;
   FAutoSizeColunaNoGridDePesquisa := False;
 end;
