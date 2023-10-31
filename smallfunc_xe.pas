@@ -974,42 +974,6 @@ begin
   end
 end;
 
-{function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction;
-begin
-  Result := nil;
-  try
-    Result := TIBTransaction.Create(nil);
-    Result.Params.Add('read_committed');
-    Result.Params.Add('rec_version');
-    Result.Params.Add('nowait');
-    Result.DefaultDatabase := IBDatabase;
-    Result.Active := True;  // 2013-10-15 Evitar invalid transaction handle (expecting explicit transaction start)
-  except
-    on E: Exception do
-    begin
-      //2013-09-27 ShowMessage(E.Message);
-    end
-  end;
-end; }
-
-{function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
-begin
-  Result := nil;
-  try
-    Result := TIBQuery.Create(nil);
-    Result.Database    := IBTRANSACTION.DefaultDatabase;
-    Result.Transaction := IBTRANSACTION;
-    if Result.Transaction.Active = False then // 2013-10-15 Evitar invalid transaction handle (expecting explicit transaction start)
-      Result.Transaction.Active := True;
-  except
-    on E: Exception do
-    begin
-      //2013-09-27 ShowMessage(E.Message);
-    end
-  end;
-end;}
-
-
 function IntToBin(pP1:Integer ):String;
 begin
    Result := '';

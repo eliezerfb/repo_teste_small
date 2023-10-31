@@ -501,7 +501,6 @@ begin
   except
     on E: Exception do
     begin
-      //2013-09-27 ShowMessage(E.Message);
     end
   end;
 end;
@@ -520,7 +519,6 @@ begin
   except
     on E: Exception do
     begin
-      //2013-09-27 ShowMessage(E.Message);
     end
   end;
 end;

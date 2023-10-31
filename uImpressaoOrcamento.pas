@@ -39,7 +39,7 @@ type
 
 implementation
 
-uses SysUtils, uRetornaImpressaoOrcamento, uSmallConsts;
+uses SysUtils, uRetornaImpressaoOrcamento, uSmallConsts, uDialogs;
 
 { TImpressaoOrcamento }
 
@@ -95,12 +95,9 @@ var
   sLinha: String;
   iMargemLeft: Integer;// Sandro Silva Controla a margem a esquerda onde inicia a impressão
 begin
-  //
   try
-    //
     if VerificaSeTemImpressora() then
     begin
-      //
       iMargemLeft := 5; // Sandro Silva 2015-05-06
       if Printer.PageWidth <= 464 then // Sandro Silva 2018-03-26
         iMargemLeft := 15;
@@ -122,7 +119,6 @@ begin
       //
       for I := 1 to Length(FslImpressao.Text) do
       begin
-        //
         if Copy(FslImpressao.Text,I,1) <> chr(10) then
         begin
           sLinha := sLinha+Copy(FslImpressao.Text,I,1);
@@ -143,20 +139,20 @@ begin
         end;
       end;
       //
-      Printer.Canvas.TextOut(iMargemLeft, (iLinha+1) * iTamanho,' ');  //
-      Printer.Canvas.TextOut(iMargemLeft, (iLinha+2) * iTamanho,' ');  //
+      Printer.Canvas.TextOut(iMargemLeft, (iLinha+1) * iTamanho,' ');
+      Printer.Canvas.TextOut(iMargemLeft, (iLinha+2) * iTamanho,' ');  
       //
       Printer.EndDoc;
-      //
     end else
     begin
-      ShowMessage('Não há impressora instalada no windows!');
+      //ShowMessage('Não há impressora instalada no windows!'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não há impressora instalada no windows!',msgAtencao);
     end;
-    //
   except
     on E: Exception do
     begin
-      ShowMessage('Erro ao imprimir! '+E.Message);
+      //ShowMessage('Erro ao imprimir! '+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro ao imprimir! '+E.Message,msgErro);
     end;
   end;
 end;

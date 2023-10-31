@@ -21,6 +21,8 @@ uses
 
 implementation
 
+uses uDialogs;
+
 function Conectar_SMALL(DataBase1 : TIBDatabase; Aviso : Boolean = True): Boolean;
 var
   sbanco, sAlias,sIP,sURL : String;
@@ -35,7 +37,8 @@ begin
   //
   if not FileExists(LocalINI) then
   begin
-    Showmessage('Não existe o arquivo de configuração do banco de dados para Small');
+    //Showmessage('Não existe o arquivo de configuração do banco de dados para Small'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Não existe o arquivo de configuração do banco de dados para Small',msgAtencao);
     Exit;
   end else
   begin
@@ -74,10 +77,17 @@ begin
     on e:exception do
       begin
         if Aviso then // Mauricio Parizotto 2023-08-08
+          {
           Showmessage('Erro ao abrir banco Small:'
                       +chr(13)+'String do Banco: '+sbanco
                       +chr(13)+chr(13)+'Erro:'
                       +chr(13)+e.Message);
+          Mauricio Parizotto 2023-10-25}
+          MensagemSistema('Erro ao abrir banco Small:'
+                          +chr(13)+'String do Banco: '+sbanco
+                          +chr(13)+chr(13)+'Erro:'
+                          +chr(13)+e.Message
+                          ,msgErro);
       end;
     end;
 
@@ -99,7 +109,6 @@ begin
   except
     on E: Exception do
     begin
-      //2013-09-27 ShowMessage(E.Message);
     end
   end;
 end;
@@ -116,7 +125,6 @@ begin
   except
     on E: Exception do
     begin
-      //2013-09-27 ShowMessage(E.Message);
     end
   end;
 end;
