@@ -446,15 +446,14 @@ function ResizeLogoDanfe(P1:Boolean): Boolean;
 var
   Rect  : tRect;
 begin
-  //
   if (Form12.Image2.Picture.Width <> 140) or  (Form12.Image2.Picture.Height <> 88) then
   begin
-    //
-    Form1.Image1.Picture.LoadFromFile('LOGONFE.BMP');
-    //
+    //Form1.Image1.Picture.LoadFromFile('LOGONFE.BMP'); Mauricio Parizotto 2023-10-31
+    Form1.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+
     Rect.Top := 0;
     Rect.Left := 0;
-    //
+
     if (Form1.Image1.Picture.Width div 140) >= (Form1.Image1.Picture.Height div 88) then
     begin
       Rect.Right  := Form1.Image1.Picture.Width div ((Form1.Image1.Picture.Width div 140)+1);
@@ -464,23 +463,23 @@ begin
       Rect.Right  := Form1.Image1.Picture.Width div ((Form1.Image1.Picture.Height div 88)+1);
       Rect.Bottom := Form1.Image1.Picture.Height div ((Form1.Image1.Picture.Height div 88)+1);
     end;
-    //
+
     Form1.Image1.Canvas.stretchdraw(Rect,Form1.Image1.Picture.Graphic);
-    //
+
     Form1.Image1.Picture.Bitmap.Width  := Rect.Right;
     Form1.Image1.Picture.Bitmap.Height := Rect.Bottom;
-    //
+
     Form1.Image1.Picture.Bitmap.Width  := 140;
     Form1.Image1.Picture.Bitmap.Height := 88;
-    //
-    Form1.Image1.Picture.SaveToFile('LOGONFE.BMP');
-    //
+
+    //Form1.Image1.Picture.SaveToFile('LOGONFE.BMP'); Mauricio Parizotto 2023-10-31
+    Form1.Image1.Picture.SaveToFile(Form1.sAtual+'\LOGONFE.BMP');
   end;
-  //
-  form12.Image2.Picture.LoadFromFile('LOGONFE.BMP');
-  //
+
+  //form12.Image2.Picture.LoadFromFile('LOGONFE.BMP'); Mauricio Parizotto 2023-10-31
+  form12.Image2.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+
   Result := True;
-  //
 end;
 
 
@@ -1421,49 +1420,48 @@ end;
 procedure TForm12.FormShow(Sender: TObject);
 var
   Mais1Ini: TIniFile;
-//  tInicio : tTime;
-//  Hora, Min, Seg, cent : Word;
-//  sModuloOld: String;
 begin
-  //
   Form12.Tag := 1;
-  //
+
   Form12.ActiveControl := Nil;
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   DefineVisibleHomologacao;
-  if not Form7.ibDAtaSet18.Active then Form7.ibDAtaSet18.Active := True;
-  //
+  if not Form7.ibDAtaSet18.Active then
+    Form7.ibDAtaSet18.Active := True;
+
   Form7.ibDataSet16.DisableControls;
   Form7.ibDataSet14.DisableControls;
   Form7.ibDataSet15.DisableControls;
   Form7.ibDataSet35.DisableControls;
   Form7.ibDataSet2.DisableControls;
-  //
+
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  //
+
   Form7.ibDataSet2.EnableControls;
-  //
+
   bOk := False;
   // Se nota de compra ta liberada
-  //
   if Form1.bNotaCompraLiberada then Edit5.Enabled := True else Edit5.Enabled := False;
-  //
-//  Image2.Picture := Form24.ImageFixa.Picture;
-  //
+
   if not FileExists(Form1.sAtual+'\LOGONFE.BMP') then
   begin
-    Form24.ImageFixa.Picture.SaveToFile('LOGONFE.BMP');
+    //Form24.ImageFixa.Picture.SaveToFile('LOGONFE.BMP');
+    Form24.ImageFixa.Picture.SaveToFile(Form1.sAtual+'\LOGONFE.BMP');
   end;
-  //
-  if FileExists(Form1.sAtual+'\LOGONFE.BMP') then Image2.Picture.LoadFromFile('LOGONFE.BMP') else Image2.Picture := Form24.ImageFixa.Picture;
-  //
+
+  if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
+    //Image2.Picture.LoadFromFile('LOGONFE.BMP') Mauriico Pariotto 2032-10-31
+    Image2.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP')
+  else
+    Image2.Picture := Form24.ImageFixa.Picture;
+
   ResizeLogoDanfe(True);
-  //
+
   // Logotipo
 
   {$IFDEF VER150}
@@ -1581,11 +1579,9 @@ begin
   //
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
   begin
-    //
     // Atenção a rotina abaixo altera a quantidade no estoque
-    //
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet16.First;
     while not Form7.ibDataSet16.Eof do // disable
@@ -1603,7 +1599,6 @@ begin
         if Form7.ibDataSet16SINCRONIA.AsFloat = Form7.ibDataSet16QUANTIDADE.AsFloat then    // Resolvi este problema as 4 da madrugada no NoteBook em casa
         begin
           try
-            //
             if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
@@ -1648,16 +1643,8 @@ begin
   // Foco no vendedor ou no cliente
   if Form12.SMALL_DBEdit40.CanFocus then Form12.SMALL_DBEdit40.SetFocus;
   ScrollBox1.VertScrollBar.Position := 1;
-  //
+
   // Altera o Grid de mercadorias para mostrar na NF
-  //
-
-
-  //                                                           //
-  // Lay-Out no form7                                         //
-  //                                                         //
-
-
   Form7.ibDataSet16UNITARIO.Visible       := True;
   Form7.ibDataSet16CFOP.Visible           := True;
   Form7.ibDataSet16XPED.Visible           := True;
@@ -1665,25 +1652,21 @@ begin
   Form7.ibDataSet16DESCRICAO.DisplayWidth := 45;
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 33;
   Form7.ibDataSet35TECNICO.Visible        := False;
-  //
+
   if Form7.ibDataSet15FRETE12.AsString = '0' then Edit1.Text := '0-Emitente' else
     if Form7.ibDataSet15FRETE12.AsString = '1' then Edit1.Text := '1-Destinatário' else
       if Form7.ibDataSet15FRETE12.AsString = '2' then Edit1.Text := '2-Terceiros' else
         if Form7.ibDataSet15FRETE12.AsString = '9' then Edit1.Text := '9-Sem frete' else Edit1.Text := '';
 
   Form12.Edit1.Visible := True;
-  //
+
   Form12.Button3Click(Sender);
 
   Form7.AtualizarListaItensAuxiliar;
-  //
+  
   Screen.Cursor := crDefault; // Cursor de Aguardo
 
   vNotaFiscal := TNotaFiscalEletronicaCalc.create;
-//  sModuloOld := Form7.sModulo;
-//  Form7.sModulo := 'DESCONTO1';
-//  Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA); // Sandro Silva 2023-05-08
-//  Form7.sModulo := sModuloOld;
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
