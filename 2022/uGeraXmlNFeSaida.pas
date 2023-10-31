@@ -2318,7 +2318,9 @@ begin
 
 
     {Sandro Silva 2023-10-31 inicio}
-    if (Trim(Form7.spdNFeDataSets.Campo('cProdANP_LA02').AsString) <> '')
+    if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value <> '1') // não é consumidor final 
+    and (Trim(Form7.spdNFeDataSets.Campo('cProdANP_LA02').AsString) <> '')
+    and ((StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) > 0)) // regra LA18-20
     and ((Pos('|' + Form7.spdNFeDataSets.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
        (Pos('|' + Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0)) then
     begin

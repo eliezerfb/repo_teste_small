@@ -45,6 +45,7 @@ uses
   function UFCodigo(sUF: String): String;
   procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
     DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  procedure FiltraDataSet(DataSet: TDataSet; sFiltro: String = '');
   function xmlNodeValueToFloat(sXML, sNode: String;
     sDecimalSeparator: String = '.'): Double;
   function XmlValueToFloat(Value: String; SeparadorDecimalXml: String = '.'): Double;
@@ -253,6 +254,12 @@ begin
             ' Order by 1,2,3'
             ;
 
+end;
+
+procedure FiltraDataSet(DataSet: TDataSet; sFiltro: String = '');
+begin
+  DataSet.Filter := sFiltro;
+  DataSet.Filtered := (Trim(sFiltro) <> '');
 end;
 
 function xmlNodeValueToFloat(sXML, sNode: String;

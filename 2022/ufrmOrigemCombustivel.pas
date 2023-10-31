@@ -261,6 +261,7 @@ procedure TFrmOrigemCombustivel.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 var
   bIncompleto: Boolean;
+  dPercentual: Double;
 begin
   CDSORIGEM.First;
   bIncompleto := False;
@@ -292,8 +293,47 @@ begin
 
     CDSORIGEM.Next;
   end;
+
   if bIncompleto then
+  begin
     Abort;
+    Exit;
+  end;
+
+  FiltraDataSet(CDSORIGEM, 'INDIMPORT = ''0'' ');
+  dPercentual := 0;
+  while CDSORIGEM.Eof = False do
+  begin
+    dPercentual := dPercentual + CDSORIGEM.FieldByName('PORIGEM').AsFloat;
+
+    CDSORIGEM.Next;
+  end;
+
+  FiltraDataSet(CDSORIGEM);
+  if (dPercentual < 0) or (dPercentual > 100) then
+  begin
+    MensagemSistema('O total percentual para a origem 0 difere de 100');
+    Abort;
+    Exit;
+  end;
+
+  FiltraDataSet(CDSORIGEM, 'INDIMPORT = ''1'' ');
+  dPercentual := 0;
+  while CDSORIGEM.Eof = False do
+  begin
+    dPercentual := dPercentual + CDSORIGEM.FieldByName('PORIGEM').AsFloat;
+
+    CDSORIGEM.Next;
+  end;
+
+  FiltraDataSet(CDSORIGEM);
+  if (dPercentual < 0) or (dPercentual > 100) then
+  begin
+    MensagemSistema('O total percentual para a origem 1 difere de 100');
+    Abort;
+    Exit;
+  end;
+
 end;
 
 procedure TFrmOrigemCombustivel.FormActivate(Sender: TObject);
