@@ -64,7 +64,7 @@ end;
 
 procedure TForm32.CarregaDadosGerencial;
 begin
-  if not cbMovGerencial.Checked then
+  if cbMovGerencial.Checked then
     Exit;
     
   qryGerencial.Close;
@@ -195,7 +195,7 @@ begin
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera        := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
       if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao        := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
       if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese          := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
-      if cbMovGerencial.Checked then
+      if not cbMovGerencial.Checked then
       begin
         if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then
           nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
@@ -480,7 +480,7 @@ begin
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
       if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
       if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
-      if cbMovGerencial.Checked then
+      if not cbMovGerencial.Checked then
       begin
         if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then
           nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
