@@ -1164,7 +1164,7 @@ object Form19: TForm19
         Top = 90
         Width = 200
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 2
       end
       object ComboBoxNF2: TComboBox
@@ -1172,7 +1172,7 @@ object Form19: TForm19
         Top = 120
         Width = 200
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 3
       end
       object ComboBoxImpressora: TComboBox
@@ -1180,7 +1180,7 @@ object Form19: TForm19
         Top = 280
         Width = 300
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 4
         Text = 'ComboBoxImpressora'
         Visible = False
@@ -1190,7 +1190,7 @@ object Form19: TForm19
         Top = 60
         Width = 200
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
       end
       object ComboBoxORCA: TComboBox
@@ -1198,7 +1198,7 @@ object Form19: TForm19
         Top = 30
         Width = 200
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 0
       end
     end

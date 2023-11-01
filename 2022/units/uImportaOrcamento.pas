@@ -22,7 +22,12 @@ uses
 
 implementation
 
-uses Unit7, Unit12, Mais, Unit13;
+uses Unit7
+    , Unit12
+    , Mais
+    , Unit13
+    , uDialogs
+    ;
 
 procedure ImportaOrcamento(NumeroOrcamento:string; sTipo : String);
 var
@@ -137,8 +142,13 @@ begin
                   begin
                     if (Form1.ConfNegat = 'Não') and (Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.IbDataSet37QUANTIDADE.AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) then
                     begin
+                      {
                       ShowMessage('Não é possível efetuar a venda de '+Form7.IbDataSet37DESCRICAO.AsString+chr(10)
                       +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque');
+                      Mauricio Parizotto 2023-10-25}
+                      MensagemSistema('Não é possível efetuar a venda de '+Form7.IbDataSet37DESCRICAO.AsString+chr(10)
+                                      +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque'
+                                      ,msgAtencao);
                     end else
                     begin
                       Form7.ibDataSet15COMPLEMENTO.AsString := RetornarOBSOrcamento(Form7.ibDataSet37PEDIDO.AsString);
@@ -351,7 +361,8 @@ begin
     end;
   end else
   begin
-    ShowMessage('Orçamento já importado ou inexistente.');
+    //ShowMessage('Orçamento já importado ou inexistente.'); Mauricio Parizotto 2023-10-25
+    MensagemSistema('Orçamento já importado ou inexistente.',msgAtencao);
   end;
 
 end;

@@ -51,7 +51,7 @@ var
 
 implementation
 
-uses Unit7, Mais;
+uses Unit7, Mais, uDialogs;
 
 {$R *.DFM}
 
@@ -178,23 +178,20 @@ begin
       //
       if Pos('CGC',Form7.dBgrid1.SelectedField.FieldName) <> 0 then
       begin
-        //
         // CNPJ ou CPF
-        //
         if LimpaNumero(Edit1.Text) <> '' then
         begin
           if CpfCgc(LimpaNumero(Edit1.Text)) then
           begin
-            //
             Edit1.Text := ConverteCpfCgc(AllTrim(LimpaNumero(Edit1.Text)));
             Form7.sProcura:=Edit1.Text;
             //
             Form7.TabelaAberta.Locate(Form7.dBgrid1.SelectedField.FieldName,form7.sProcura,[loCaseInsensitive, loPartialKey]);
             sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Foi criado para eliminar metodo MyBookmark
-            //
           end else
           begin
-            ShowMessage('CPF ou CNPJ inválido!');
+            //ShowMessage('CPF ou CNPJ inválido!'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('CPF ou CNPJ inválido!');
             MemoPesquisa.Text := '';
             Edit1.SelectAll;
             if Edit1.CanFocus then Edit1.SetFocus;
@@ -202,9 +199,6 @@ begin
         end;
       end else
       begin
-        //
-        // MyBookmark := Form7.ArquivoAberto.GetBookmark; // Dava Acsses Violation
-        //
         sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Foi criado para eliminar metodo MyBookmark
         //
         if (not Form20.Button4.Enabled) then
@@ -217,9 +211,6 @@ begin
         if (pos(AnsiUpperCase(Form7.sProcura),AnsiUpperCase(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString)) = 0)
         or (Form20.Button4.Enabled) then
         begin
-          //
-          // Form7.ArquivoAberto.GotoBookmark(MyBookmark); // Dava Acsses Violation
-          //
           try
             Form7.TabelaAberta.Locate('REGISTRO',sRegistro,[loCaseInsensitive, loPartialKey]); // Foi criado para eliminar metodo MyBookmark
           except end;
@@ -364,9 +355,8 @@ begin
             if Form20.Button2.Tag = 1 then Form7.ArquivoAberto.Last;
             if (pos(Edit2.Text,Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString) <> 0) or ((AllTrim(Edit2.Text) = '') and (Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString='')) then
             begin
-              //
               Form7.ArquivoAberto.Edit;
-              //
+
               if (AllTrim(Edit2.Text) = '') and (Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString='') then
               begin
                 Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString := Edit3.Text;
@@ -374,9 +364,8 @@ begin
               begin
                 Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString := StrTran(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString,Edit2.Text,Edit3.Text);
               end;
-              //
+              
               Form7.ArquivoAberto.Post;
-              //
             end;
             Form7.ArquivoAberto.Next;
           end;
@@ -385,17 +374,17 @@ begin
         end;
       end else
       begin
-        ShowMessage('Não é possível substituir "'+Edit2.TExt+'" por "'+Edit3.TExt +'". Referencia circular.');
+        //ShowMessage('Não é possível substituir "'+Edit2.TExt+'" por "'+Edit3.TExt +'". Referencia circular.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Não é possível substituir "'+Edit2.TExt+'" por "'+Edit3.TExt +'". Referencia circular.',msgAtencao);
       end;
     end;
   except
-    //
-    on E: Exception do  ShowMessage('Erro 3 na procura: '+E.Message);
-    //
+    on E: Exception do
+      //ShowMessage('Erro 3 na procura: '+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 3 na procura: '+E.Message,msgErro);
   end;
-  //
+  
   Form20.close;
-  //
 end;
 
 

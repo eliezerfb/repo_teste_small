@@ -21,7 +21,7 @@ uses
 
 implementation
 
-uses Unit7, Mais, uSmallConsts, unit29, StdCtrls;
+uses Unit7, Mais, uSmallConsts, unit29, StdCtrls, uDialogs;
 
 function GetCidadeUF: String;
 begin
@@ -191,13 +191,6 @@ begin
   end;
 
   try
-    // NFSE.EXE não instalado
-    {Sandro Silva 2023-01-11 inicio
-    if not FileExists(pChar(Form1.sAtual+'\NFSE.EXE')) then
-    begin
-      ShowMessage('Módulo de transmissão de NFS-e não instalado');
-    end else
-    }
     if Form1.ExisteNfseExe(Form1.sAtual) then
     begin
       // Já foi autorizada
@@ -578,10 +571,6 @@ begin
             if AllTrim(RetornaValorDaTagNoCampo('CodigoTributacaoMunicipio',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
             begin
               Writeln(F,'CodigoTributacaoMunicipio='+AllTrim(RetornaValorDaTagNoCampo('CodigoTributacaoMunicipio',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
-            end else
-            begin
-//              ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (CodigoTributacaoMunicipio)(Obtido na prefeitura)');
-//              Writeln(F,'CodigoTributacaoMunicipio='+ StrZero(Form7.ibDataSet14ISS.AsFloat,1,0) +'%');  // Perigo pode não ser assim em outras prefeituras     // CodigoTributacaoMunicipio	Código tributação do município	T	 Obtido na prefeitura
             end;
             
             Writeln(F,'MunicipioIncidencia='+Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7)); // Código IBGE do município onde ocorrerá a aplicação do imposto.	T	Usado quando o serviço for retido.
@@ -866,7 +855,8 @@ begin
                 Writeln(F,'CodigoItemListaServico='+AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
               end else
               begin
-                ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)');
+                //ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)'); Mauricio Parizotto 2023-10-25
+                MensagemSistema('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)',msgAtencao);
                 Abort;
               end;
 
@@ -954,7 +944,8 @@ begin
                     Writeln(F,'CodigoItemListaServico='+AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
                   end else
                   begin
-                    ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)');
+                    //ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)'); Mauricio Parizotto 2023-10-25
+                    MensagemSistema('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)',msgAtencao);
                     Abort;
                   end;
 
@@ -1099,7 +1090,8 @@ begin
           if Form1.Debug1.Checked then
           begin
             ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'),'','', SW_SHOWMAXIMIZED);
-            ShowMessage('Tecle Ok para continuar');
+            //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Tecle Ok para continuar');
           end;
 
           ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
@@ -1119,7 +1111,8 @@ begin
           if Form1.Debug1.Checked then
           begin
             ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\NFSE\ret.txt'),'','', SW_SHOWMAXIMIZED);
-            ShowMessage('Tecle Ok para continuar');
+            //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Tecle Ok para continuar');
           end;
 
           if Form1.sConsultaNfse = 'SIM' then
@@ -1138,7 +1131,8 @@ begin
               if RetornaValorDaTagNoCampo('Status',sRetornoNFse) <> '' then
               begin
                 ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\NFSE\ret.txt'),'','', SW_SHOWMAXIMIZED);
-                ShowMessage('Tecle Ok para continuar');
+                //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
+                MensagemSistema('Tecle Ok para continuar');
               end;
 
               if Application.MessageBox(Pchar('Gravar estas informações no recibo da NFS-e?'),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION) = IDYES then
@@ -1265,7 +1259,8 @@ begin
               except
                 on E: Exception do
                 begin
-                  Application.MessageBox(pChar(E.Message),'Erro no retorno da NFS-e: ',mb_Ok + MB_ICONWARNING);
+                  //Application.MessageBox(pChar(E.Message),'Erro no retorno da NFS-e: ',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
+                  MensagemSistema(E.Message+' Erro no retorno da NFS-e: ',msgErro);
                   Result := False;
                 end;
               end;
@@ -1285,16 +1280,18 @@ begin
         end else
         begin
           Screen.Cursor            := crDefault;
-          ShowMessage('Não é possível emitir a nota de serviço com valor 0 (Zero).'); // Serviços Zerado
+          //ShowMessage('Não é possível emitir a nota de serviço com valor 0 (Zero).'); // Serviços Zerado //Mauricio Parizotto 2023-10-25
+          MensagemSistema('Não é possível emitir a nota de serviço com valor 0 (Zero).',msgAtencao);
           Result := False;
         end;
       end else
       begin
         Screen.Cursor            := crDefault;
-        ShowMessage('NFS-e já emitida e autorizada.'); // Já foi autorizada
+        //ShowMessage('NFS-e já emitida e autorizada.'); // Já foi autorizada  //Mauricio Parizotto 2023-10-25
+        MensagemSistema('NFS-e já emitida e autorizada.',msgAtencao);
         Result := False;
       end;
-    end; // NFSE.EXE nao instalado
+    end;
   except
   end;
 

@@ -25,7 +25,7 @@ uses
 
 implementation
 
-uses Unit22, Unit13, uFuncoesBancoDados, uFuncoesRetaguarda;
+uses Unit22, Unit13, uFuncoesBancoDados, uFuncoesRetaguarda, uDialogs;
 
 procedure DropViewProcedure;
 begin
@@ -40,7 +40,8 @@ begin
     if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
     begin
       Application.ProcessMessages;
-      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
+      //ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)',msgAtencao);
     end;
     while Form1.ibQuery1.Eof = False do
     begin
@@ -61,7 +62,8 @@ begin
     if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
     begin
       Application.ProcessMessages;
-      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
+      //ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)'); Mauricio Parizotto 2023-10-25}
+      MensagemSistema('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)',msgAtencao);
     end;
     while Form1.ibQuery1.Eof = False do
     begin
@@ -82,7 +84,8 @@ begin
     if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
     begin
       Application.ProcessMessages;
-      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
+      //ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)',msgAtencao);
     end;
     while Form1.ibQuery1.Eof = False do
     begin
@@ -111,12 +114,21 @@ begin
 
   if not (form1.ibDataSet200.RecordCount = 1) then
   begin
+    {
     ShowMessage('Não foi possível atualizar o banco de dados.'+Chr(10)+Chr(10)+
                 'Ativos: '+ IntToStr( form1.ibDataSet200.RecordCount)+Chr(10)+Chr(10)+
                 ' 1 - Feche todos os programas que usam o SMALL.FDB em todos os terminais'+Chr(10)+
                 ' 2 - Execute o Small Commerce novamente');
+    Mauricio Parizotto 2023-10-25}
+    MensagemSistema('Não foi possível atualizar o banco de dados.'+Chr(10)+Chr(10)+
+                    'Ativos: '+ IntToStr( form1.ibDataSet200.RecordCount)+Chr(10)+Chr(10)+
+                    ' 1 - Feche todos os programas que usam o SMALL.FDB em todos os terminais'+Chr(10)+
+                    ' 2 - Execute o Small Commerce novamente'
+                    ,msgAtencao);
 
-    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+    Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     Exit;
   end;
 

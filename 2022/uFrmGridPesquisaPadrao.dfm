@@ -1,4 +1,4 @@
-inherited FrmGripPesquisaPadrao: TFrmGripPesquisaPadrao
+inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   Left = 484
   Top = 312
   BorderIcons = []

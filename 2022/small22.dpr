@@ -183,37 +183,66 @@ uses
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGripPesquisaPadrao},
+  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
   uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
   uImportaOrcamento in 'units\uImportaOrcamento.pas',
   uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento},
   uGeraCNAB240 in 'units\uGeraCNAB240.pas',
-  uGeraCNAB400 in 'units\uGeraCNAB400.pas';
+  uGeraCNAB400 in 'units\uGeraCNAB400.pas',
+  uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
+  uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
+  uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas',
+  ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel};
 
 {$R *.RES}
 
 var
-  Hwnd: THandle;
+  oHwnd: THandle;
+  // Procura no Caption se contem o Texto.
+  function FindWindowCaptionParcial(AcTextoProcurar: string): THandle;
+  var
+    oHwnd: THandle;
+    nLength: Integer;
+    cTitletemp: array [0..254] of Char;
+    cTituloTemporario: string;
+  begin
+    Result := 0;
+
+    oHwnd := FindWindow('TForm1', nil);
+    while oHwnd <> 0 do begin
+      nLength := GetWindowText(oHwnd, cTitletemp, 255);
+      cTituloTemporario := cTitletemp;
+      cTituloTemporario := AnsiUpperCase(Copy(cTituloTemporario, 1, nLength));
+      AcTextoProcurar := AnsiUpperCase(AcTextoProcurar);
+      if Pos(AcTextoProcurar, cTituloTemporario) <> 0 then
+      begin
+        Result := oHwnd;
+        Break;
+      end;
+      oHwnd := GetWindow(oHwnd, GW_HWNDNEXT);
+    end;
+  end;
 begin
-  Hwnd := FindWindow('TForm1', 'Small Commerce');
+  oHwnd := FindWindowCaptionParcial('Small Commerce - [ ');
 
-  if Hwnd = 0 then
+  if oHwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'Small Start');
+    oHwnd := FindWindowCaptionParcial('Small Start - [ ');
   end;
 
-  if Hwnd = 0 then
+  if oHwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'Small Mei');
+    oHwnd := FindWindowCaptionParcial('Small Mei - [ ');
   end;
 
-  if Hwnd = 0 then
+  if oHwnd = 0 then
   begin
-    Hwnd := FindWindow('TForm1', 'Small Go');
+    oHwnd := FindWindowCaptionParcial('Small Go - [ ');
   end;
 
   try
-    if Hwnd = 0 then
+    if oHwnd = 0 then
     begin
       Form22 := TForm22.Create(Application);
       Form22.Show;
@@ -263,11 +292,13 @@ begin
   Application.CreateForm(TForm29, Form29);
   Application.CreateForm(TForm45, Form45);
   Application.CreateForm(TForm37, Form37);
+  Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
+  Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
   Application.Run;
     end else
     begin
-      if not IsWindowVisible(Hwnd) then PostMessage(Hwnd, wm_User,0,0);
-      SetForegroundWindow(Hwnd);
+      if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);
+      SetForegroundWindow(oHwnd);
     end;
   except
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );

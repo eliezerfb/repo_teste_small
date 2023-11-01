@@ -141,7 +141,7 @@ var
 implementation
 
 uses Mais, Unit7, Mais3, Unit12, Unit24
-  , uFuncoesRetaguarda, uSmallConsts;
+  , uFuncoesRetaguarda, uSmallConsts, uDialogs;
 
 {$R *.dfm}
 
@@ -1187,23 +1187,19 @@ begin
       end;
       //
       Form1.ibQueryGrafico.Next;
-      //
     end;
-    //
-    // ShowMessage(IntToStr(iA)+chr(10)+IntToStr(iB)+chr(10)+IntToStr(iC));
-    //
+
     Mais1Ini.WriteString('DADOS','XY01','S1<'+IntToStr(iA)+'>S2<0,00>VX<01>LX<'+IntToStr(iA)+' Produtos A>');
     Mais1Ini.WriteString('DADOS','XY02','S1<'+IntToStr(iB)+'>S2<0,00>VX<02>LX<'+IntToStr(iB)+' Produtos B>');
     Mais1Ini.WriteString('DADOS','XY03','S1<'+IntToStr(iC)+'>S2<0,00>VX<03>LX<'+IntToStr(iC)+' Produtos C>');
-    //
+    
     Mais1Ini.Free;
-    //
+
     GeraGrafico(sNome);
-    //
-  except end;
-  //
+  except
+  end;
+
   Result := True;
-  //
 end;
 
 
@@ -1530,15 +1526,12 @@ var
   Mais1Ini: TIniFile;
   I : Integer;
 begin
-  //
   // Faturamento
-  //
   try
     DeleteFile(pChar(Form1.sAtual+'\'+sNome+'.gra'));
     DeleteFile(pChar(Form1.sAtual+'\'+sNome+'.png'));
-    //                               //
-    // cria o gráfico de receber.png //
-    //                               //
+                                   
+    // cria o gráfico de receber.png 
     Mais1ini := TIniFile.Create(Form1.sAtual+'\'+sNome+'.gra');
     Mais1Ini.WriteString('DADOS','3D','1');
     Mais1Ini.WriteString('DADOS','NomeBmp',sNome+'.png');
@@ -1556,27 +1549,26 @@ begin
     Mais1Ini.WriteString('DADOS','LarguraBmp',intToStr(iX));
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont)); //'$00EAB231' // '$00EAB231'
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
-    //
+
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as FATURAMENTO, extract(year from CAIXA.DATA) as ANO from CAIXA, CONTAS'
     +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=1 and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
     Form1.ibQuery1.Open;
-    //
+
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as despesas, extract(year from CAIXA.DATA) as ANO from CAIXA, CONTAS'
     +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
     Form1.ibQuery2.Open;
-    //
+
     Form1.ibQuery1.First;
     Form1.ibQuery2.First;
-    //
+
     I := 0;
-    //
+
     while not Form1.ibQuery1.Eof do
     begin
-      //
       I := I + 1;
       //
       if Form1.ibQuery2.FieldByName('ANO').AsString = Form1.ibQuery1.FieldByName('ANO').AsString then
@@ -1586,21 +1578,21 @@ begin
                                      'S2<'+StrTran(Format('%15.2n',[ Form1.ibQuery1.FieldByName('faturamento').AsFloat + Form1.ibQuery2.FieldByName('despesas').AsFloat]),'.','')+'>'+
                                      'VX<'+StrZero(I,2,0)+'>LX<'+Form1.ibQuery1.FieldByName('ANO').AsString+'>');
       end;
-      //
+      
       Form1.ibQuery1.Next;
       Form1.ibQuery2.Next;
     end;
-    //
+
     Mais1Ini.Free;
-    //
+
     GeraGrafico(sNome);
-    //
   except
-    on E: Exception do  ShowMessage('Erro 4 ao gerar indicadores: '+chr(10)+chr(10)+E.Message);
+    on E: Exception do
+      //ShowMessage('Erro 4 ao gerar indicadores: '+chr(10)+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 4 ao gerar indicadores: '+chr(10)+chr(10)+E.Message,msgErro);
   end;
-  //
+
   Result := True;
-  //
 end;
 
 function GraficoLucroMes(sNome: String; iY: integer; iX: Integer; iFont: Integer; iFontYX: Integer): boolean;
@@ -1608,15 +1600,11 @@ var
   Mais1Ini: TIniFile;
   I : Integer;
 begin
-  //
   // Faturamento
-  //
   try
     DeleteFile(pChar(Form1.sAtual+'\'+sNome+'.gra'));
     DeleteFile(pChar(Form1.sAtual+'\'+sNome+'.png'));
-    //                               //
     // cria o gráfico de receber.png //
-    //                               //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\'+sNome+'.gra');
     Mais1Ini.WriteString('DADOS','3D','1');
     Mais1Ini.WriteString('DADOS','NomeBmp',sNome+'.png');

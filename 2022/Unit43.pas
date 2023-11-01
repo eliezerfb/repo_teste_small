@@ -44,7 +44,7 @@ var
 
 implementation
 
-uses Unit7, Unit10, Unit34, Mais;
+uses Unit7, Unit10, Unit34, Mais, uDialogs;
 
 {$R *.DFM}
 
@@ -136,25 +136,6 @@ end;
 
 procedure TForm43.Button4Click(Sender: TObject);
 begin
-  {Sandro Silva 2022-12-20 inicio
-  //
-  if AllTrim(Edit1.Text) = AllTrim(Form7.ibDataSet12NOME.AsString) then
-  begin
-    Edit1.Text := Form7.ibDataSet12NOME.AsString;
-    Close;
-  end else
-  begin
-    ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
-    Edit1.SetFocus;
-  end;
-  //
-  if CheckBox1.Checked then
-  begin
-    Form7.ibDataSet14.Edit;
-    form7.ibDataSet14CONTA.AsString := Edit1.Text;
-    Form7.ibDataSet14.Post;
-  end;
-  }
   if UsandoDescricaoContabail then
   begin
     if AllTrim(EdPesquisaConta.Text) = AllTrim(Form7.ibDataSet12DESCRICAOCONTABIL.AsString) then
@@ -171,7 +152,8 @@ begin
       Close;
     end else
     begin
-      ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
+      //ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
       EdPesquisaConta.SetFocus;
     end;
   end
@@ -191,12 +173,11 @@ begin
       Close;
     end else
     begin
-      ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
+      //ShowMessage('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.'); Mauricio Parizotto 2023-10-25
+      MensagemSistema('     Selecione a conta a que este     '+Chr(10)+'     valor deve ser atribuído.');
       EdPesquisaConta.SetFocus;
     end;
   end;
-  {Sandro Silva 2022-12-20 fim}
-  //
 end;
 
 procedure TForm43.FormClose(Sender: TObject; var Action: TCloseAction);

@@ -56,7 +56,6 @@ type
     FcOrderBy: String;
     procedure AjustaLayout;
     function FazValidacoes: Boolean;
-    function RetornarWhere: string;
     function RetornarWhereOperacoes: String;
     procedure CarregaDadosProdutos(AcGrupo: String = '');
     procedure CarrregarDadosTotalGrupos;
@@ -71,6 +70,7 @@ type
     procedure MapearQueryParaClientDataSet(AqryOrigem: TIBQuery;
       AcdsDestino: TClientDataSet);
     procedure AjustaCasasDecimais;
+    function RetornarApenasData(AdDataHora: TDateTime): TDate;
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
@@ -89,7 +89,8 @@ implementation
 
 uses
   uRetornaOperacoesRelatorio, uSmallResourceString, uEstruturaTipoRelatorioPadrao, uEstruturaRelResumoVendas,
-  uDadosRelatorioPadraoDAO, uFuncoesBancoDados, uSmallEnumerados, uEstruturaRelResumoVendasNaoList;
+  uDadosRelatorioPadraoDAO, uFuncoesBancoDados, uSmallEnumerados, uEstruturaRelResumoVendasNaoList,
+  uDialogs;
 
 {$R *.dfm}
 
@@ -526,11 +527,6 @@ begin
   end;
 end;
 
-function TfrmRelResumoVendas.RetornarWhere: string;
-begin
-  Result := Result + RetornarWhereOperacoes + ' ';
-end;
-
 function TfrmRelResumoVendas.RetornarTotalNaoRelacionados: Currency;
 begin
   Result := 0;
@@ -587,7 +583,8 @@ begin
 
   if ((dtInicial.Date = 0) or (dtFinal.Date = 0)) or (dtInicial.Date > dtFinal.Date) then
   begin
-    ShowMessage(_cPeriodoDataInvalida);
+    //ShowMessage(_cPeriodoDataInvalida); Mauricio Parizotto 2023-10-25
+    MensagemSistema(_cPeriodoDataInvalida,msgAtencao);
     dtInicial.SetFocus;
     Exit;
   end;
@@ -611,7 +608,6 @@ procedure TfrmRelResumoVendas.FazUpdateValores;
 var
   nRecNo: Integer;
   qryCons99, qryCons100: TIBQuery;
-  cIndex: String;
 begin
   qryCons99 := CriaIBQuery(DataSetEstoque.Transaction);
   qryCons100 := CriaIBQuery(DataSetEstoque.Transaction);
@@ -667,7 +663,7 @@ begin
           end;
         end else
         begin
-          if DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime < dtInicial.Date then
+          if RetornarApenasData(DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime) < RetornarApenasData(dtInicial.Date) then
           begin
             DataSetEstoque.Edit;
             DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime := dtInicial.Date;
@@ -714,7 +710,7 @@ begin
           end;
         end else
         begin
-          if DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime < dtInicial.Date then
+          if RetornarApenasData(DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime) < RetornarApenasData(dtInicial.Date) then
           begin
             DataSetEstoque.Edit;
             DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime := dtInicial.Date;
@@ -730,7 +726,7 @@ begin
 
     while (not DataSetEstoque.EOF) do
     begin
-      if (DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime >= dtInicial.Date) then
+      if (RetornarApenasData(DataSetEstoque.FieldByName('ULT_VENDA').AsDateTime) >= RetornarApenasData(dtInicial.Date)) then
       begin
         DataSetEstoque.Edit;
         DataSetEstoque.FieldByName('QTD_VEND').AsFloat := 0;
@@ -767,6 +763,14 @@ begin
     FreeAndNil(qryCons100);
   end;
 end;
+
+{Dailon Parisotto (f-7499) 2023-10-25 Inicio}
+function TfrmRelResumoVendas.RetornarApenasData(AdDataHora: TDateTime): TDate;
+begin
+  // Necessário para garantir validação de datas q tem hora junto
+  Result := StrToDate(DateToStr(AdDataHora));
+end;
+{Dailon Parisotto (f-7499) 2023-10-25 Fim}
 
 procedure TfrmRelResumoVendas.btnMarcarTodosOperClick(Sender: TObject);
 var

@@ -6,7 +6,9 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
   DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
-  IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico;
+  IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico, uframeCampo;
+
+const COLOR_GRID_CINZA = $00F0F0F0;
 
 type
   TForm30 = class(TForm)
@@ -36,11 +38,6 @@ type
     SMALL_DBEdit3: TSMALL_DBEdit;
     SMALL_DBEdit8: TSMALL_DBEdit;
     SMALL_DBEdit10: TSMALL_DBEdit;
-    SMALL_DBEdit1: TSMALL_DBEdit;
-    SMALL_DBEdit14: TSMALL_DBEdit;
-    SMALL_DBEdit15: TSMALL_DBEdit;
-    SMALL_DBEdit16: TSMALL_DBEdit;
-    SMALL_DBEdit17: TSMALL_DBEdit;
     SMALL_DBEdit9: TSMALL_DBEdit;
     SMALL_DBEdit11: TSMALL_DBEdit;
     DBGrid3: TDBGrid;
@@ -78,12 +75,15 @@ type
     Button1: TBitBtn;
     Label13: TLabel;
     framePesquisaServOS: TframePesquisaServico;
+    fFrameIdentifi1: TfFrameCampo;
+    fFrameDescricao: TfFrameCampo;
+    fFrameIdentifi2: TfFrameCampo;
+    fFrameIdentifi3: TfFrameCampo;
+    fFrameIdentifi4: TfFrameCampo;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
     procedure SMALL_DBEdit3Change(Sender: TObject);
-    procedure SMALL_DBEdit2KeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit2Change(Sender: TObject);
     procedure SMALL_DBEdit3Enter(Sender: TObject);
@@ -127,13 +127,6 @@ type
     procedure DBGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure ListBox2Click(Sender: TObject);
-    procedure SMALL_DBEdit14Enter(Sender: TObject);
-    procedure SMALL_DBEdit14Change(Sender: TObject);
-    procedure SMALL_DBEdit14Exit(Sender: TObject);
-    procedure SMALL_DBEdit14KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure ListBox2KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBGrid1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGrid3DblClick(Sender: TObject);
@@ -158,12 +151,25 @@ type
       var Key: Word; Shift: TShiftState);
     procedure framePesquisaServOSdbgItensPesqKeyPress(Sender: TObject;
       var Key: Char);
+    procedure fFrameIdentifi1txtCampoEnter(Sender: TObject);
+    procedure fFrameDescricaotxtCampoEnter(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fFrameIdentifi2txtCampoEnter(Sender: TObject);
+    procedure fFrameIdentifi3txtCampoEnter(Sender: TObject);
+    procedure fFrameIdentifi4txtCampoEnter(Sender: TObject);
+    procedure SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
+    procedure SMALL_DBEdit7Exit(Sender: TObject);
+    procedure SMALL_DBEdit7Click(Sender: TObject);
 
   private
+    { Private declarations }
     procedure DefinirCorClienteDevedor;
     procedure DescricaoServicoChange(Sender: TField);
     procedure AtribuirItemPesquisaServico;
-    { Private declarations }
+    procedure OcultaListaDePesquisa;
   public
     { Public declarations }
     sSistema, sDatafield : String;
@@ -238,6 +244,23 @@ begin
 //  Form30.BorderIcons := [biSystemMenu];
 //  Form30.BorderStyle := bsDialog;
   //
+  {Sandro Silva 2023-10-10 inicio}
+  fFrameDescricao.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameDescricao.CampoVazioAbrirGridPesquisa := True;
+  fFrameDescricao.AutoSizeColunaNoGridDePesquisa := True;
+  fFrameIdentifi1.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi1.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi1.AutoSizeColunaNoGridDePesquisa := True;
+  fFrameIdentifi2.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi2.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi2.AutoSizeColunaNoGridDePesquisa := True;
+  fFrameIdentifi3.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi3.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi3.AutoSizeColunaNoGridDePesquisa := True;
+  fFrameIdentifi4.gdRegistros.Color := COLOR_GRID_CINZA;
+  fFrameIdentifi4.CampoVazioAbrirGridPesquisa := True;
+  fFrameIdentifi4.AutoSizeColunaNoGridDePesquisa := True;
+  {Sandro Silva 2023-10-10 fim}
 end;
 
 procedure TForm30.SMALL_DBEdit2Enter(Sender: TObject);
@@ -254,7 +277,7 @@ begin
   dbGrid3.Width                      := SMALL_DBEdit2.Width;
   dBGrid3.Height                     := 201;
   ListBox1.Visible                   := False;
-  ListBox2.Visible                   := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   //
   dBgrid3.Columns.Items[1].FieldName := '';
   dBgrid3.Columns.Items[1].Visible   := False;
@@ -297,13 +320,6 @@ begin
   //
   ListBox1.Visible := False;
   //
-end;
-
-procedure TForm30.SMALL_DBEdit2KeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_INSERT then PopUpMenu3.Popup(SMALL_DBEdit3.Left,SMALL_DBEdit3.Top + 20);
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('os_cadastro.htm')));
 end;
 
 procedure TForm30.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -353,7 +369,7 @@ begin
   dbGrid3.Width                      := SMALL_DBEdit3.Width;
   dBGrid3.Height                     := 182;
   ListBox1.Visible                   := False;
-  ListBox2.Visible                   := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   //
   dBgrid3.Columns.Items[1].FieldName := '';
   dBgrid3.Columns.Items[1].Visible   := False;
@@ -374,11 +390,14 @@ end;
 
 procedure TForm30.SMALL_DBEdit4Enter(Sender: TObject);
 begin
+  {Sandro Silva 2023-09-28 inicio
   //
   ListBox1.Visible                   := False;
-  ListBox2.Visible                   := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   dbGrid3.Visible := False;
   //
+  }
+  OcultaListaDePesquisa;
 end;
 
 procedure TForm30.Label15Click(Sender: TObject);
@@ -460,10 +479,14 @@ end;
 
 procedure TForm30.SMALL_DBEdit7Enter(Sender: TObject);
 begin
+  {Sandro Silva 2023-09-28 inicio
   //
   dbGrid3.Visible   := False;
+  }
+  OcultaListaDePesquisa;  
   ListBox1.Visible  := True;
-  ListBox1.Height   := 41;
+  ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
+  SMALL_DBEdit7.SelectAll;
   //
 end;
 
@@ -477,10 +500,22 @@ procedure TForm30.SMALL_DBEdit7Change(Sender: TObject);
 var
   I : Integer;
 begin
+  {Sandro Silva 2023-10-16 inicio
   for I := 0 to 2 do
   begin
-    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i],1,LenGth(AllTrim(SMALL_DBEdit7.Text)))) then ListBox1.ItemIndex := I;
+    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+      ListBox1.ItemIndex := I;
   end;
+  }
+  ListBox1.Visible := True;
+  for I := 0 to ListBox1.Items.Count -1 do
+  begin
+    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+    begin
+      ListBox1.ItemIndex := I;
+    end;
+  end;
+
 end;
 
 procedure TForm30.DBGrid1Enter(Sender: TObject);
@@ -519,7 +554,7 @@ begin
   //
   //
   ListBox1.Visible                   := False;
-  ListBox2.Visible                   := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   //
 end;
 
@@ -530,8 +565,8 @@ begin
   //
   // Autocompletar serviços
   //
-  ListBox2.Visible      := False;
-  ListBox2.Items.Clear;
+  // Sandro Silva 2023-09-28 ListBox22.Visible      := False;
+  // Sandro Silva 2023-09-28 ListBox22.Items.Clear;
   //
   Form7.ibDataSet4.Close;
   Form7.ibDataSet4.Selectsql.Clear;
@@ -566,6 +601,7 @@ begin
   end;
   }
 
+  {Sandro Silva 2023-09-28 inicio
   SetLength(fPrecoDoServico, 0);
 
   if Form7.ibDataSet99.FieldByname('DESCRICAO').AsString <> '' then
@@ -574,19 +610,23 @@ begin
     begin
       try
         SetLength(fPrecoDoServico, Length(fPrecoDoServico) + 1);
-        ListBox2.Items.Add(AllTrim(Form7.ibDataSet99.FieldByname('DESCRICAO').AsString));
+        //ListBox22.Items.Add(AllTrim(Form7.ibDataSet99.FieldByname('DESCRICAO').AsString));
         fPrecoDoServico[High(fPrecoDoServico)] := Form7.ibDataSet99.FieldByname('PRECO').AsFloat;
       except
       end;
       Form7.ibDataSet99.Next;
     end;
   end;
+  }
+
   {Sandro Silva 2023-08-08 fim}
   //
-  ListBox2.Left     := 15;
-  ListBox2.Top      := dbGrid2.Top + dbGrid2.Height -1;
-  ListBox2.Height   := Panel1.Height - ListBox2.Top -17;
-  ListBox2.Width    := 305;
+  {Sandro Silva 2023-09-28 inicio
+  ListBox22.Left     := 15;
+  ListBox22.Top      := dbGrid2.Top + dbGrid2.Height -1;
+  ListBox22.Height   := Panel1.Height - ListBox22.Top -17;
+  ListBox22.Width    := 305;
+  }
   //
   // THE END AUTOCOMPLETAR
   //
@@ -604,11 +644,13 @@ begin
   dbGrid3.Width      := 105;
   //
   dBGrid3.Height     := Panel1.Height - dbGrid3.Top -5;
-  //
+
+  {Sandro Silva 2023-09-28 inicio
   ListBox1.Visible       := False;
-  ListBox2.Visible       := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible       := False;
   Form30.dBGrid3.Visible := False;
-  //
+  }
+  OcultaListaDePesquisa;
 end;
 
 procedure TForm30.SMALL_DBEdit2Exit(Sender: TObject);
@@ -795,9 +837,23 @@ end;
 procedure TForm30.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_DOWN   then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if ListBox1.Visible = True then ListBox1.SetFocus else Perform(Wm_NextDlgCtl,1,0);
-  if Key = VK_RETURN then  Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_DOWN   then
+    if ListBox1.Visible = True then
+      ListBox1.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_UP     then
+  begin
+    if ListBox1.Visible = True then
+      ListBox1.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,1,0);
+  end;
+  if Key = VK_RETURN then
+  begin
+    ListBox1.Visible  := False; // Sandro Silva 2023-10-17
+    Perform(Wm_NextDlgCtl,0,0);
+  end;
 end;
 
 procedure TForm30.ListBox1KeyDown(Sender: TObject; var Key: Word;
@@ -806,9 +862,12 @@ begin
   //
   if Key = VK_RETURN then
   begin
-    if ListBox1.ItemIndex = 0 then Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-    if ListBox1.ItemIndex = 1 then Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-    if ListBox1.ItemIndex = 2 then Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+    if ListBox1.ItemIndex = 0 then
+      Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
+    if ListBox1.ItemIndex = 1 then
+      Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
+    if ListBox1.ItemIndex = 2 then
+      Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
     SMALL_DBEdit7.SetFocus;
     Key := VK_SHIFT;
     ListBox1.Visible := False;
@@ -817,8 +876,6 @@ begin
 end;
 
 procedure TForm30.DBGrid2KeyPress(Sender: TObject; var Key: Char);
-//var
-//  I: Integer;
 begin
   //
   // Descriçao dos serviços
@@ -841,8 +898,10 @@ begin
   if DbGrid2.SelectedIndex = 1 then
   begin
     //
-    ListBox2.Visible  := False;
-    if Key <> Chr(13) then if not Form30.dBGrid3.Visible then Form30.dBGrid3.Visible := True; // Key press serviços
+    // Sandro Silva 2023-09-28 ListBox22.Visible  := False;
+    if Key <> Chr(13) then
+      if not Form30.dBGrid3.Visible then
+        Form30.dBGrid3.Visible := True; // Key press serviços
     //
     Form1.bFlag := False;
     Form7.ibDataSet35.Edit;
@@ -860,7 +919,8 @@ begin
   end else Form30.dBGrid3.Visible := False;
   //
   if dbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+    if Key = chr(46) then
+      key := chr(44);
   //
 end;
 
@@ -966,11 +1026,14 @@ begin
       dBgrid3.SetFocus;
       Abort;
     end;
-    if ListBox2.Visible then
+
+    {Sandro Silva 2023-09-28 inicio 
+    if ListBox22.Visible then
     begin
-      ListBox2.SetFocus;
+      ListBox22.SetFocus;
       Abort;
     end;
+    }
     if framePesquisaServOS.Visible then
     begin
       framePesquisaServOS.dbgItensPesq.SetFocus;
@@ -1074,7 +1137,7 @@ procedure TForm30.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   //
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('os.htm')));
+//  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('os_cadastro.htm')));
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   //
@@ -1116,171 +1179,46 @@ end;
 procedure TForm30.ListBox2Click(Sender: TObject);
 begin
   //
-  if ListBox2.Top < DBGrid1.Top then
+  (*// Sandro Silva 2023-09-28
+  if ListBox22.Top < DBGrid1.Top then
   begin
+    {Sandro Silva 2023-09-28 inicio
     try
-      if ListBox2.Items.Count >= 1 then
+      if ListBox22.Items.Count >= 1 then
       begin
         Form7.ibDataSet3.Edit;
-        Form7.ibDataSet3.FieldByName(sDataField).AsString := ListBox2.Items[ListBox2.ItemIndex];
+        Form7.ibDataSet3.FieldByName(sDataField).AsString := ListBox22.Items[ListBox22.ItemIndex];
      end;
     except end;
     //
     Perform(Wm_NextDlgCtl,0,0);
     //
+    }
   end else
   begin
+    {Sandro Silva 2023-09-28 inicio
     try
-      if ListBox2.Items.Count >= 1 then
+      if ListBox22.Items.Count >= 1 then
       begin
         Form7.ibDataSet35.Edit;
-        Form7.ibDataSet35DESCRICAO.AsString := ListBox2.Items[ListBox2.ItemIndex];
-        Form7.ibDataSet35TOTAL.AsFloat      := fPrecoDoServico[ListBox2.ItemIndex];
-        Form7.ibDataSet35UNITARIO.AsFloat   := fPrecoDoServico[ListBox2.ItemIndex];
+        Form7.ibDataSet35DESCRICAO.AsString := ListBox22.Items[ListBox22.ItemIndex];
+        Form7.ibDataSet35TOTAL.AsFloat      := fPrecoDoServico[ListBox22.ItemIndex];
+        Form7.ibDataSet35UNITARIO.AsFloat   := fPrecoDoServico[ListBox22.ItemIndex];
         Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
       end;
     except
     end;
+    }
+    {Sandro Silva 2023-09-28 inicio
     //
-    ListBox2.Visible      := False;
+    ListBox22.Visible      := False;
     dbGrid2.SetFocus;
 //    DbGrid1.SelectedIndex := DbGrid1.SelectedIndex + 1;
     //
+    }
   end;
   //
-end;
-
-procedure TForm30.SMALL_DBEdit14Enter(Sender: TObject);
-var
-  I          : Integer;
-  bJatem     : Boolean;
-  sRegistro  : String;
-begin
-  //
-  // Autocompletar
-  //
-  ListBox1.Visible := False;
-  dBGrid3.Visible  := False;
-  //
-  with Sender as TSMALL_DBEdit do
-  begin
-    //
-    sDataField := Datafield;
-    ListBox2.Items.Clear;
-    ListBox2.TabOrder := TabOrder;
-    ListBox2.Visible := False;
-    //
-    sRegistro := Form7.ibDataSet3REGISTRO.AsString;
-    Form7.ibDataSet3.DisableControls;
-    Form7.ibDataSet3.Last;
-    //
-    for I := 1 to 50 do
-    begin
-      if AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString) <> '' then
-      begin
-        //
-        // Percore os itens para ver se já existe
-        //
-        bJaTem             := False;
-        ListBox2.ItemIndex := 0;
-        //
-        while ListBox2.ItemIndex < ListBox2.Items.Count -1 do
-        begin
-          if AnsiUpperCase(AllTrim(ListBox2.Items[ListBox2.ItemIndex])) = AnsiUpperCase(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString)) then
-            bJaTem := True;
-          ListBox2.ItemIndex := ListBox2.ItemIndex + 1;
-          if AnsiUpperCase(AllTrim(ListBox2.Items[ListBox2.ItemIndex])) = AnsiUpperCase(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString)) then
-            bJaTem := True;
-        end;
-        //
-        if not bJatem then ListBox2.Items.Add(AllTrim(Form7.ibDataSet3.FieldByname(DATAFIELD).AsString));
-        //
-      end;
-      Form7.ibDataSet3.MoveBy(-1);
-    end;
-    //
-    Form7.ibDataSet3.Locate('REGISTRO',sRegistro,[]);
-    Form7.ibDataSet3.EnableControls;
-    //
-    ListBox2.Visible  := True;
-    ListBox2.Left     := Left;
-    ListBox2.Top      := Top + 19;
-    ListBox2.Width    := Width;
-    ListBox2.Height   := (dbGrid1.Top + dbGrid1.Height) - ListBox2.Top;
-    //
-  end;
-  //
-  ListBox1.Visible                   := False;
-  dbGrid3.Visible := False;
-  //
-end;
-
-procedure TForm30.SMALL_DBEdit14Change(Sender: TObject);
-var
-  I : Integer;
-begin
-  with Sender as TSMALL_DBEdit do
-  begin
-    for I := 0 to ListBox2.Items.Count -1 do
-    begin
-      if AnsiUpperCase(AllTrim(Text)) = AnSiUpperCase(Copy(ListBox2.Items[i],1,LenGth(AllTrim(Text)))) then ListBox2.ItemIndex := I;
-    end;
-  end;
-end;
-
-procedure TForm30.SMALL_DBEdit14Exit(Sender: TObject);
-begin
-{
-  with Sender as TSMALL_DBEdit do
-  begin
-    if AllTrim(Text) <> '' then
-    begin
-      try
-        if ListBox2.Items.Count >= 1 then
-        begin
-          if AnsiUpperCase(AllTrim(Text)) = AnsiUpperCase(Copy(ListBox2.Items[ListBox2.ItemIndex],1,LenGth(AllTrim(Text)))) then
-          begin
-            Form7.ibDataSet3.Edit;
-            Form7.ibDataSet3.FieldByName(DATAFIELD).AsString := ListBox2.Items[ListBox2.ItemIndex];
-          end;
-        end;
-      except end;
-    end;
-  end;
-}  
-end;
-
-procedure TForm30.SMALL_DBEdit14KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_DOWN   then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then if ListBox2.Visible = True then ListBox2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
-  if Key = VK_RETURN then
-  begin
-    ListBox2.TabOrder := 0;
-    Perform(Wm_NextDlgCtl,0,0);
-  end;
-end;
-
-procedure TForm30.ListBox2KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  //
-  if Key = VK_DOWN   then
-  begin
-    ListBox2.ItemIndex := ListBox2.ItemIndex + 1;
-    Abort;
-  end;
-  if Key = VK_UP     then
-  begin
-    ListBox2.ItemIndex := ListBox2.ItemIndex - 1;
-    Abort;
-  end;
-  if Key = vK_return then
-  begin
-    Form30.ListBox2Click(Sender);
-  end;
-  //
+  *)
 end;
 
 procedure TForm30.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -1342,7 +1280,7 @@ begin
           Form7.ibDataSet16.Post;
           Perform(Wm_NextDlgCtl,0,0);
 //         SMALL_DBEdit17.SetFocus;
-          SMALL_DBEdit17.SelectAll;
+//          SMALL_DBEdit17.SelectAll;
           //
         end;
       end;
@@ -1507,47 +1445,83 @@ begin
   //
   Form7.ibDataSet16UNITARIO.Visible := True;
   Form7.ibDataSet35UNITARIO.Visible := True;
-  //
+
+  fFrameDescricao.TipoDePesquisa  := tpSelect;
+  fFrameDescricao.GravarSomenteTextoEncontrato := False;
+  fFrameDescricao.CampoCodigo     := Form7.ibDataSet3DESCRICAO;
+  fFrameDescricao.sCampoDescricao := 'DESCRICAO';
+  fFrameDescricao.sTabela         := 'OS';
+  fFrameDescricao.CarregaDescricao;
+
+  fFrameIdentifi1.TipoDePesquisa  := tpSelect;
+  fFrameIdentifi1.GravarSomenteTextoEncontrato := False;
+  fFrameIdentifi1.CampoCodigo     := Form7.ibDataSet3IDENTIFI1;
+  fFrameIdentifi1.sCampoDescricao := 'IDENTIFI1';
+  fFrameIdentifi1.sTabela         := 'OS';
+  fFrameIdentifi1.CarregaDescricao;
+
+  fFrameIdentifi2.TipoDePesquisa  := tpSelect;
+  fFrameIdentifi2.GravarSomenteTextoEncontrato := False;
+  fFrameIdentifi2.CampoCodigo     := Form7.ibDataSet3IDENTIFI2;
+  fFrameIdentifi2.sCampoDescricao := 'IDENTIFI2';
+  fFrameIdentifi2.sTabela         := 'OS';
+  fFrameIdentifi2.CarregaDescricao;
+
+  fFrameIdentifi3.TipoDePesquisa  := tpSelect;
+  fFrameIdentifi3.GravarSomenteTextoEncontrato := False;
+  fFrameIdentifi3.CampoCodigo     := Form7.ibDataSet3IDENTIFI3;
+  fFrameIdentifi3.sCampoDescricao := 'IDENTIFI3';
+  fFrameIdentifi3.sTabela         := 'OS';
+  fFrameIdentifi3.CarregaDescricao;
+
+  fFrameIdentifi4.TipoDePesquisa  := tpSelect;
+  fFrameIdentifi4.GravarSomenteTextoEncontrato := False;
+  fFrameIdentifi4.CampoCodigo     := Form7.ibDataSet3IDENTIFI4;
+  fFrameIdentifi4.sCampoDescricao := 'IDENTIFI4';
+  fFrameIdentifi4.sTabela         := 'OS';
+  fFrameIdentifi4.CarregaDescricao;
+  {Sandro Silva 2023-09-28 fim}
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('os_cadastro.htm')));
   if Key = VK_RETURN then
   begin
     if bProximo then
     begin
       Perform(Wm_NextDlgCtl,0,0);
       bProximo := False;
-    end else bProximo := True;
-  end else bProximo := False;
-  //
-  //
+    end
+    else
+      bProximo := True;
+  end
+  else
+    bProximo := False;
 end;
 
 procedure TForm30.DBMemo2Enter(Sender: TObject);
 begin
-  //
+  {Sandro Silva 2023-09-28 inicio
   ListBox1.Visible                   := False;
-  ListBox2.Visible                   := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   dbGrid3.Visible := False;
-  //
+  }
+  OcultaListaDePesquisa;
 end;
 
 procedure TForm30.DBMemo1Enter(Sender: TObject);
 begin
-  //
+  {Sandro Silva 2023-09-28 inicio
   ListBox1.Visible                   := False;
-  ListBox2.Visible                   := False;
+  // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   dbGrid3.Visible := False;
-  //
+  }
+  OcultaListaDePesquisa;  
 end;
 
 procedure TForm30.DBMemo1Exit(Sender: TObject);
 begin
-  //
   Form7.ibDataSet3.Edit;
   Form7.ibDataSet3PROBLEMA.AsString := AllTrimCHR(AllTrimCHR(Alltrim(Form7.ibDataSet3PROBLEMA.AsString),chr(10)),chr(13));
   Form30.DBMemo1.Repaint;
@@ -1614,15 +1588,19 @@ begin
       dbMemo1.Text := Copy(dbMemo1.Text,1,128);
       Perform(Wm_NextDlgCtl,0,0);
     end;
-  except end;
+  except
+  end;
 end;
 
 procedure TForm30.ListBox1DblClick(Sender: TObject);
 begin
   //
-  if ListBox1.ItemIndex = 0 then Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-  if ListBox1.ItemIndex = 1 then Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-  if ListBox1.ItemIndex = 2 then Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+  if ListBox1.ItemIndex = 0 then
+    Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
+  if ListBox1.ItemIndex = 1 then
+    Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
+  if ListBox1.ItemIndex = 2 then
+    Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
   //
   SMALL_DBEdit3.SetFocus;
   ListBox1.Visible := False;
@@ -1661,6 +1639,83 @@ procedure TForm30.framePesquisaServOSdbgItensPesqKeyPress(Sender: TObject; var K
 begin
   if Key = chr(13) then
     AtribuirItemPesquisaServico;
+end;
+
+procedure TForm30.OcultaListaDePesquisa;
+begin
+  ListBox1.Visible := False;
+  dbGrid3.Visible  := False;
+end;
+
+procedure TForm30.fFrameIdentifi1txtCampoEnter(Sender: TObject);
+begin
+  fFrameIdentifi1.txtCampoEnter(Sender);
+  OcultaListaDePesquisa;
+end;
+
+procedure TForm30.fFrameDescricaotxtCampoEnter(Sender: TObject);
+begin
+  fFrameDescricao.txtCampoEnter(Sender);
+  OcultaListaDePesquisa;
+end;
+
+procedure TForm30.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then
+    PopUpMenu3.Popup(SMALL_DBEdit3.Left,SMALL_DBEdit3.Top + 20);
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('os_cadastro.htm')));
+end;
+
+procedure TForm30.fFrameIdentifi2txtCampoEnter(Sender: TObject);
+begin
+  fFrameIdentifi2.txtCampoEnter(Sender);
+  OcultaListaDePesquisa;
+end;
+
+procedure TForm30.fFrameIdentifi3txtCampoEnter(Sender: TObject);
+begin
+  fFrameIdentifi3.txtCampoEnter(Sender);
+  OcultaListaDePesquisa;
+end;
+
+procedure TForm30.fFrameIdentifi4txtCampoEnter(Sender: TObject);
+begin
+  fFrameIdentifi4.txtCampoEnter(Sender);
+  OcultaListaDePesquisa;
+end;
+
+procedure TForm30.SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
+  Key := 0;
+end;
+
+procedure TForm30.fFrameDescricaogdRegistrosDblClick(Sender: TObject);
+begin
+  fFrameDescricao.gdRegistrosDblClick(Sender);
+  Form7.ibDataSet35.Edit;
+  //Form7.ibDataSet35DESCRICAO.AsString := ListBox22.Items[ListBox22.ItemIndex];
+  Form7.ibDataSet35TOTAL.AsFloat      := TDBGrid(Sender).DataSource.DataSet.FieldByName('TOTAL').AsFloat;//( fPrecoDoServico[ListBox22.ItemIndex];
+  Form7.ibDataSet35UNITARIO.AsFloat   := TDBGrid(Sender).DataSource.DataSet.FieldByName('UNITARIO').AsFloat;//fPrecoDoServico[ListBox22.ItemIndex];
+  Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
+
+end;
+
+procedure TForm30.SMALL_DBEdit7Exit(Sender: TObject);
+begin
+  SMALL_DBEdit7.Field.AsString := ListBox1.Items[ListBox1.ItemIndex]; // Sandro Silva 2023-10-17
+end;
+
+procedure TForm30.SMALL_DBEdit7Click(Sender: TObject);
+begin
+  {Sandro Silva 2023-10-23 inicio}
+  //ListBox1.Visible  := True;
+  //ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
+  SMALL_DBEdit7.SelectAll;
+  {Sandro Silva 2023-10-23 fim}
 end;
 
 end.

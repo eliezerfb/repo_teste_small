@@ -1,6 +1,6 @@
 inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
-  Left = 557
-  Top = 306
+  Left = 242
+  Top = 133
   Caption = 'Or'#231'amento'
   Position = poScreenCenter
   PixelsPerInch = 96
@@ -31,7 +31,7 @@ inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
       item
         Expanded = False
         FieldName = 'VENDEDOR'
-        Width = 197
+        Width = 190
         Visible = True
       end
       item
@@ -43,7 +43,7 @@ inherited FrmPesquisaOrcamento: TFrmPesquisaOrcamento
       item
         Expanded = False
         FieldName = 'NUMERONF'
-        Width = 103
+        Width = 110
         Visible = True
       end>
   end

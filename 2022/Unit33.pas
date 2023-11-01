@@ -39,7 +39,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit34, Unit14;
+uses Unit7, Mais, Unit34, Unit14, uDialogs;
 
 {$R *.DFM}
 
@@ -133,29 +133,29 @@ begin
           while FileExists(Form1.sAtual+'\COBRA'+StrZero(iDoc,3,0)+'.doc') do DeleteFile(Form1.sAtual+'\COBRA'+StrZero(iDoc,3,0)+'.doc');
           Doc.SAveAs(Form1.sAtual+'\COBRA'+StrZero(iDoc,3,0)+'.doc'); // Grava com outro nome
           while not FileExists(Form1.sAtual+'\COBRA'+StrZero(iDoc,3,0)+'.doc') do Sleep(1000);
-          //
+
           if not bVisualizar then
           begin
-            ShowMessage('Tecle <Enter> para imprimir.');
-            Doc.PrintOut(False);                         // Imprime
+            //ShowMessage('Tecle <Enter> para imprimir.'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Tecle <Enter> para imprimir.');
+            Doc.PrintOut(False);
             Doc.Close(True);
           end else
           begin
-            WinWord.Visible := True;                       // Mostra o word                                           //
+            WinWord.Visible := True;
           end;
-          //
         end;
         Form7.ibDataSet7.Next;
       end;
-      //
-      if bVisualizar then ShowMessage('Tecle <Enter> para fechar o Word.');
-      //
-      WinWord.Quit;    // Fecha o Word
-      //
+      
+      if bVisualizar then
+        //ShowMessage('Tecle <Enter> para fechar o Word.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Tecle <Enter> para fechar o Word.');
+
+      WinWord.Quit;
     end;
   end else
   begin
-    //
     if FileExists(Form1.sAtual+'\carta.doc') then
     begin
       //
@@ -214,36 +214,36 @@ begin
             Doc.Content.Find.Execute(FindText:='<CEP_EMITENTE>',ReplaceWith         := Form7.ibDataSet13CEP.AsString);
             Doc.Content.Find.Execute(FindText:='<CIDADE_EMITENTE>',ReplaceWith      := Form7.ibDataSet13MUNICIPIO.AsString);
             Doc.Content.Find.Execute(FindText:='<UF_EMITENTE>',ReplaceWith          := UpperCase(Form7.ibDataSet13ESTADO.AsString));
-            //
           end;
-          //
+          
           while FileExists(Form1.sAtual+'\CARTA'+StrZero(iDoc,3,0)+'.doc') do DeleteFile(Form1.sAtual+'\CARTA'+StrZero(iDoc,3,0)+'.doc');
           Doc.SAveAs(Form1.sAtual+'\CARTA'+StrZero(iDoc,3,0)+'.doc'); // Grava com outro nome
           while not FileExists(Form1.sAtual+'\CARTA'+StrZero(iDoc,3,0)+'.doc') do Sleep(1000);
-          //
+
           if not bVisualizar then
           begin
-            ShowMessage('Tecle <Enter> para imprimir.');
+            //ShowMessage('Tecle <Enter> para imprimir.'); Mauricio Parizotto 2023-10-25
+            MensagemSistema('Tecle <Enter> para imprimir.');
             Doc.PrintOut(False);                           // Imprime
             Doc.Close(True);
           end else
           begin
             WinWord.Visible := True;                       // Mostra o word
           end;
-          //
         end;
         Form7.ibDataSet2.Next;
       end;
-      //
-      if bVisualizar then ShowMessage('Tecle <Enter> para fechar o Word.');
-      WinWord.Quit;    // Fecha o Word
-      //
+      
+      if bVisualizar then
+        //ShowMessage('Tecle <Enter> para fechar o Word.'); Mauricio Parizotto 2023-10-25
+        MensagemSistema('Tecle <Enter> para fechar o Word.');
+
+      WinWord.Quit;
     end;
   end;
-  //
+
   Screen.Cursor  := crDefault;    // Cursor normal
   Close;
-  //
 end;
 
 
@@ -257,8 +257,6 @@ procedure TForm33.Button2Click(Sender: TObject);
 begin
   Close;
 end;
-
-
 
 
 procedure TForm33.Label7Click(Sender: TObject);

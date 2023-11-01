@@ -173,7 +173,6 @@ begin
   //
   Form40.CheckBox1.Visible      := False;
   Form40.Tag := 0;
-  //
 end;
 
 procedure TForm40.Label3Click(Sender: TObject);
@@ -182,9 +181,7 @@ begin
   OpenDialog1.Title    := 'Selecionar o arquivo para enviar por e-mail.';
   OpenDialog1.Filter   := '*.jpg|*.jpg|*.bmp';
   OpenDialog1.Execute;
-  //
-  // ShowMessage(OpenDialog1.FileName);
-  //
+
   Label3.Caption := 'Arquivo Anexado: '+OpenDialog1.FileName;
   CHDir(Form1.sAtual);
 end;

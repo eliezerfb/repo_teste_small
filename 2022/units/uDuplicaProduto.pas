@@ -30,7 +30,7 @@ type
 
 implementation
 
-uses SysUtils, SmallFunc, uSmallResourceString;
+uses SysUtils, SmallFunc, uSmallResourceString, uDialogs;
 
 { TDuplicaProduto }
 
@@ -44,7 +44,8 @@ begin
     Result := True;
   except
     on e: exception do
-      Application.MessageBox(Pchar('Não foi possível duplicar o produto.' + SLineBreak + e.Message), PChar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
+      //Application.MessageBox(Pchar('Não foi possível duplicar o produto.' + SLineBreak + e.Message), PChar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);  Mauricio Parizotto 2023-10-25
+      MensagemSistema('Não foi possível duplicar o produto.' + SLineBreak + e.Message,msgAtencao);
   end;
 end;
 

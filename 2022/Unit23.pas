@@ -65,7 +65,7 @@ var
 
 implementation
 
-uses Unit7, Unit31, Mais, Unit26;
+uses Unit7, Unit31, Mais, Unit26, uDialogs;
 
 {$R *.DFM}
 
@@ -555,10 +555,12 @@ begin
     Mais1Ini.WriteString(Form7.Caption,'C6','0'+LimpaNumero(Form31.MaskEdit26.Text));//        dia - 52
     Mais1Ini.WriteString(Form7.Caption,'C7','0'+LimpaNumero(Form31.MaskEdit27.Text));//        mês - 58
     Mais1Ini.WriteString(Form7.Caption,'C8','0'+LimpaNumero(Form31.MaskEdit28.Text));//        ano - 75
-    //
+    
     Mais1Ini.Free;
-  except ShowMessage('Erro de gravação no arquivo smallcom.inf') end;
-  //
+  except
+    //ShowMessage('Erro de gravação no arquivo smallcom.inf') Mauricio Parizotto 2023-10-25
+    MensagemSistema('Erro de gravação no arquivo smallcom.inf',msgErro);
+  end;
 end;
 
 procedure TForm23.Button6Click(Sender: TObject);

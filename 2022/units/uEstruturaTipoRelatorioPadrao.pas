@@ -53,7 +53,7 @@ type
 implementation
 
 uses SmallFunc, uAssinaturaDigital, ShellApi, Math, uDadosEmitente,
-  uIDadosEmitente, uSmallResourceString, uLayoutHTMLRelatorio;
+  uIDadosEmitente, uSmallResourceString, uLayoutHTMLRelatorio, uDialogs;
 
 const
   _nTamanhoEntreColuna = 2;
@@ -64,7 +64,8 @@ function TEstruturaTipoRelatorioPadrao.Imprimir: IEstruturaTipoRelatorioPadrao;
 begin
   if Trim(FlsImpressao.Text) = EmptyStr then
   begin
-    ShowMessage(_cSemDadosParaImprimir);
+    //ShowMessage(_cSemDadosParaImprimir); Mauricio Parizotto 2023-10-25
+    MensagemSistema(_cSemDadosParaImprimir,msgAtencao);
     Exit;
   end;
 
@@ -81,7 +82,8 @@ function TEstruturaTipoRelatorioPadrao.Salvar: IEstruturaTipoRelatorioPadrao;
 begin
   if Trim(FlsImpressao.Text) = EmptyStr then
   begin
-    ShowMessage(_cSemDadosParaImprimir);
+    //ShowMessage(_cSemDadosParaImprimir); Mauricio Parizotto 2023-10-25
+    MensagemSistema(_cSemDadosParaImprimir,msgAtencao);
     Exit;
   end;
 
