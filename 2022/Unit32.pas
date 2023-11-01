@@ -53,7 +53,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit20, Unit34, StrUtils, uDialogs;
+uses Unit7, Mais, Unit20, Unit34, StrUtils, uDialogs, uRetornaSQLGerencialInventario;
 
 {$R *.DFM}
 
@@ -69,18 +69,10 @@ begin
     
   qryGerencial.Close;
   qryGerencial.SQL.Clear;
-  qryGerencial.SQL.Add('Select');
-  qryGerencial.SQL.Add('Sum(A.QUANTIDADE) vQTD_GERENCIAL,');
-  qryGerencial.SQL.Add('A.DESCRICAO');
-  qryGerencial.SQL.Add('From NFCE N');
-  qryGerencial.SQL.Add('Join ALTERACA A on (A.PEDIDO = N.NUMERONF) and (A.CAIXA = N.CAIXA)');
-  qryGerencial.SQL.Add('Where N.DATA <= ' + QuotedStr(DateToStrInvertida(DateTimePicker1.Date)));
-  qryGerencial.SQL.Add('and Coalesce(N.MODELO,'''') = ''99''');
-  qryGerencial.SQL.Add('and coalesce(A.VALORICM,''0'')= ''0''');
-  qryGerencial.SQL.Add('and (A.TIPO = ''BALCAO'' or TIPO = ''VENDA'')');
-  qryGerencial.SQL.Add('and Coalesce(A.CODIGO,'''') <> ''''');
-  qryGerencial.SQL.Add('and Coalesce(N.STATUS,'''') containing ''Finalizada''');
-  qryGerencial.SQL.Add('Group by A.DESCRICAO');
+  qryGerencial.SQL.Add(TRetornaSQLGerencialInventario.New
+                                                     .setData(DateTimePicker1.Date)
+                                                     .getSQL);
+
   qryGerencial.Open;
 end;
 
