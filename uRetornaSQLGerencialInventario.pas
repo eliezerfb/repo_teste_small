@@ -29,8 +29,9 @@ begin
   slSql := TStringList.Create;
   try
     slSql.Add('Select');
-    slSql.Add('Sum(A.QUANTIDADE) vQTD_GERENCIAL,');
-    slSql.Add('A.DESCRICAO');
+    slSql.Add('Sum(A.QUANTIDADE) vQTD_GERENCIAL');
+    slSql.Add(',A.CODIGO');
+    slSql.Add(',A.DESCRICAO');
     slSql.Add('From NFCE N');
     slSql.Add('Join ALTERACA A on (A.PEDIDO = N.NUMERONF) and (A.CAIXA = N.CAIXA)');
     slSql.Add('Where N.DATA <= ' + QuotedStr(DateToStrInvertida(FbData)));
@@ -39,7 +40,7 @@ begin
     slSql.Add('and (A.TIPO = ''BALCAO'' or TIPO = ''VENDA'')');
     slSql.Add('and Coalesce(A.CODIGO,'''') <> ''''');
     slSql.Add('and Coalesce(N.STATUS,'''') containing ''Finalizada''');
-    slSql.Add('Group by A.DESCRICAO');
+    slSql.Add('Group by A.CODIGO,A.DESCRICAO');
 
     Result := slSql.Text; 
   finally
