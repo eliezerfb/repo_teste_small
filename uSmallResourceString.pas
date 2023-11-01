@@ -48,6 +48,8 @@ resourcestring
 
   _cNaoTemXMLNFSaidaExportar = 'Não foi encontrado o XML para está venda.';
 
+  _cDesejaDarEntradaNFManifesto = 'Deseja dar entrada dessa nota fiscal?';
+
 implementation
 
 end.
