@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls, Mask, SmallFunc, ShellApi, HtmlHelp,
   frame_teclado_1, Buttons, DB, IBCustomDataSet, IBQuery
-  , uajustaresolucao;
+  , uajustaresolucao, CheckLst;
 
 const DOCUMENTO_NFCE   = '65 - NFC-e';
 const DOCUMENTO_CFeSAT = '59 - CF-e-SAT';
@@ -89,6 +89,20 @@ type
     chkMovimentoDiaHoraF: TCheckBox;
     chkNFCe: TCheckBox;
     chkCFe: TCheckBox;
+    TabSheet8: TTabSheet;
+    Label27: TLabel;
+    Label28: TLabel;
+    lbCaixaFechamentoDeCaixa: TLabel;
+    Label30: TLabel;
+    dtpFechamentoDeCaixaIni: TDateTimePicker;
+    edFechamentoDeCaixa1: TEdit;
+    dtpFechamentoDeCaixaFim: TDateTimePicker;
+    checkFechamentoDeCaixaPDF: TCheckBox;
+    dtpFechamentoDeCaixaHoraI: TDateTimePicker;
+    dtpFechamentoDeCaixaHoraF: TDateTimePicker;
+    chkFechamentoDeCaixaHoraI: TCheckBox;
+    chkFechamentoDeCaixaHoraF: TCheckBox;
+    chklbCaixas: TCheckListBox;
     procedure FormActivate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -127,6 +141,7 @@ type
     bMovimentoDia: Boolean;
     bTotalDiario: Boolean;
     bDocumentoEmitidoPeriodo: Boolean;
+    bFechamentoDeCaixa: Boolean;
   end;
 
 var
@@ -195,6 +210,20 @@ begin
     checkTotalDiario.Top  := edCaixaDiario.Top;
     PageControl1.ActivePage := TabSheet6;
   end;
+
+  {Sandro Silva 2023-11-01 inicio}
+  if bFechamentoDeCaixa then
+  begin
+    {
+    checkFechamentoDeCaixaPDF.Font := Label18.Font;
+    checkFechamentoDeCaixaPDF.Left := edFechamentoDeCaixa.Left + edFechamentoDeCaixa.Width + AjustaLargura(15);
+    checkFechamentoDeCaixaPDF.Top  := edFechamentoDeCaixa.Top;
+    }
+    chklbCaixas.Top  := lbCaixaFechamentoDeCaixa.BoundsRect.Bottom + 2;
+    chklbCaixas.Left := lbCaixaFechamentoDeCaixa.Left;
+    PageControl1.ActivePage := TabSheet8;
+  end;
+  {Sandro Silva 2023-11-01 fim}
 
   if bDocumentoEmitidoPeriodo then
   begin
@@ -280,6 +309,19 @@ begin
     dtpMovimentoHoraF.Time := Time;
 
   end;
+
+  {Sandro Silva 2023-11-01 inicio}
+  if bFechamentoDeCaixa then
+  begin
+    //Form7.Caption                  := 'Fechamento de Caixa';
+    dtpFechamentoDeCaixaIni.Date   := Date;
+    dtpFechamentoDeCaixaFim.Date     := Date;
+    //edFechamentoDeCaixa.Text       := Form1.sCaixa;
+    dtpFechamentoDeCaixaHoraI.Time := Time;
+    dtpFechamentoDeCaixaHoraF.Time := Time;
+
+  end;
+  {Sandro Silva 2023-11-01 fim}
 
   if bTotalDiario then
   begin
@@ -457,6 +499,28 @@ end;
 procedure TForm7.FormShow(Sender: TObject);
 begin
   Label1.AutoSize := True; // Sandro Silva 2016-09-29
+  {Sandro Silva 2023-11-01 inicio}
+  if bFechamentoDeCaixa then
+  begin
+    chklbCaixas.Clear;
+    Form1.IBQuery65.Close;
+    Form1.IBQuery65.SQL.Text :=
+      'select distinct CAIXA ' +
+      'from NFCE ' +
+      'where coalesce(CAIXA, '''') <> '''' ' +
+      'order by CAIXA';
+    Form1.IBQuery65.Open;
+    while Form1.IBQuery65.Eof = False do
+    begin
+      chklbCaixas.Items.Add(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+      if chklbCaixas.Items.Strings[chklbCaixas.Items.Count -1] = Form1.sCaixa then
+        chklbCaixas.Checked[chklbCaixas.Items.Count -1] := True;
+      Form1.IBQuery65.Next;
+    end;
+    if chklbCaixas.Items.Count = 0 then
+      chklbCaixas.Items.Add(Form1.sCaixa); // Se ainda não tem movimento na tabela NFCE adiciona o caixa atual na lista de caixas
+  end;
+  {Sandro Silva 2023-11-01 fim}
 end;
 
 procedure TForm7.edCaixaExit(Sender: TObject);

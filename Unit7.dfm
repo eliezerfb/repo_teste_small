@@ -86,7 +86,7 @@ object Form7: TForm7
     Top = -8
     Width = 302
     Height = 253
-    ActivePage = TabSheet5
+    ActivePage = TabSheet8
     Anchors = [akLeft, akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -269,7 +269,7 @@ object Form7: TForm7
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 0
+        ItemHeight = 13
         ParentFont = False
         TabOrder = 5
         Text = 'ComboBox1'
@@ -491,7 +491,7 @@ object Form7: TForm7
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 0
+        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         OnChange = ComboBox1Change
@@ -1092,6 +1092,229 @@ object Form7: TForm7
         TabOrder = 4
         Visible = False
         OnKeyPress = FocusNextControl
+      end
+    end
+    object TabSheet8: TTabSheet
+      Caption = 'TabSheet8'
+      ImageIndex = 7
+      DesignSize = (
+        294
+        222)
+      object Label27: TLabel
+        Left = 11
+        Top = 0
+        Width = 278
+        Height = 16
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'Fechamento de Caixa'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        WordWrap = True
+      end
+      object Label28: TLabel
+        Left = 11
+        Top = 20
+        Width = 69
+        Height = 13
+        Caption = 'Data Inicial:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Layout = tlBottom
+      end
+      object lbCaixaFechamentoDeCaixa: TLabel
+        Left = 11
+        Top = 143
+        Width = 35
+        Height = 13
+        Caption = 'Caixa:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Layout = tlBottom
+      end
+      object Label30: TLabel
+        Left = 11
+        Top = 60
+        Width = 62
+        Height = 13
+        Caption = 'Data Final:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Layout = tlBottom
+      end
+      object dtpFechamentoDeCaixaIni: TDateTimePicker
+        Left = 11
+        Top = 33
+        Width = 270
+        Height = 21
+        Date = 35796.376154398150000000
+        Time = 35796.376154398150000000
+        DateFormat = dfLong
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnKeyPress = FocusNextControl
+        OnKeyUp = DateTimePicker1KeyUp
+      end
+      object edFechamentoDeCaixa1: TEdit
+        Left = 235
+        Top = 152
+        Width = 40
+        Height = 21
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        MaxLength = 3
+        ParentFont = False
+        TabOrder = 1
+        Text = '   '
+        OnExit = edMovimentoDiaExit
+        OnKeyPress = FocusNextControl
+      end
+      object dtpFechamentoDeCaixaFim: TDateTimePicker
+        Left = 11
+        Top = 73
+        Width = 270
+        Height = 21
+        Date = 35796.376154398150000000
+        Time = 35796.376154398150000000
+        DateFormat = dfLong
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnKeyPress = FocusNextControl
+        OnKeyUp = DateTimePicker1KeyUp
+      end
+      object checkFechamentoDeCaixaPDF: TCheckBox
+        Left = 97
+        Top = 201
+        Width = 241
+        Height = 17
+        Caption = 'Exportar para PDF'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 3
+        OnKeyPress = FocusNextControl
+      end
+      object dtpFechamentoDeCaixaHoraI: TDateTimePicker
+        Left = 11
+        Top = 116
+        Width = 77
+        Height = 21
+        Date = 43434.486128298610000000
+        Format = 'HH:mm'
+        Time = 43434.486128298610000000
+        Enabled = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        Kind = dtkTime
+        ParentFont = False
+        TabOrder = 4
+        OnKeyPress = FocusNextControl
+      end
+      object dtpFechamentoDeCaixaHoraF: TDateTimePicker
+        Left = 179
+        Top = 116
+        Width = 77
+        Height = 21
+        Date = 43434.486128298610000000
+        Format = 'HH:mm'
+        Time = 43434.486128298610000000
+        Enabled = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        Kind = dtkTime
+        ParentFont = False
+        TabOrder = 5
+        OnKeyPress = FocusNextControl
+      end
+      object chkFechamentoDeCaixaHoraI: TCheckBox
+        Left = 11
+        Top = 99
+        Width = 97
+        Height = 17
+        Caption = 'Hora inicial'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 6
+        OnClick = chkMovimentoDiaHoraIClick
+        OnKeyPress = FocusNextControl
+      end
+      object chkFechamentoDeCaixaHoraF: TCheckBox
+        Left = 179
+        Top = 99
+        Width = 97
+        Height = 17
+        Caption = 'Hora final'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 7
+        OnClick = chkMovimentoDiaHoraFClick
+        OnKeyPress = FocusNextControl
+      end
+      object chklbCaixas: TCheckListBox
+        Left = 11
+        Top = 160
+        Width = 78
+        Height = 59
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ItemHeight = 13
+        Items.Strings = (
+          '001'
+          '002'
+          '003'
+          '004'
+          '005')
+        ParentFont = False
+        TabOrder = 8
       end
     end
   end

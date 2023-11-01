@@ -1030,6 +1030,7 @@ type
     itemMenugerencial: TMenuItem;
     IBDataSet150GERENCIAL: TStringField;
     EmitirNFCedogerencial1: TMenuItem;
+    FechamentodeCaixa1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1392,6 +1393,7 @@ type
     procedure ibDataSet13AfterOpen(DataSet: TDataSet);
     procedure itemMenugerencialClick(Sender: TObject);
     procedure EmitirNFCedogerencial1Click(Sender: TObject);
+    procedure FechamentodeCaixa1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -34899,6 +34901,11 @@ begin
       GerenciadordeNFCe1Click(GerenciadordeNFCe1); // Sandro Silva 2023-09-06 GerenciadordeNFCe1Click(Sender);
   end;
 
+end;
+
+procedure TForm1.FechamentodeCaixa1Click(Sender: TObject);
+begin
+  RelatorioFechamentoDeCaixa; // Sandro Silva 2023-11-01
 end;
 
 end.

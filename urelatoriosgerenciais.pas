@@ -29,6 +29,8 @@ procedure VendasPorNFCe(dtInicio: TDate; dtFinal: TDate;
 procedure RelatorioTotalDiario;
 procedure TotalDiario(dtInicio, dtFinal: TDate; sCaixa: String;
   sModelo: String);
+procedure RelatorioFechamentoDeCaixa;
+procedure FechamentoDeCaixa;
 
 implementation
 
@@ -2248,6 +2250,7 @@ begin
 
     if Form1.sModeloECF = '59' then
       _ecf59_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkVendaPorDocumento.Checked); // Sandro Silva 2018-03-22 _ecf59_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado));
+
     if Form1.sModeloECF = '65' then
       _ecf65_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkVendaPorDocumento.Checked);
 
@@ -2406,6 +2409,173 @@ begin
     for iDiario := 0 to High(aDiario) do
       FreeAndNil(aDiario[iDiario]);
     Screen.Cursor  := crDefault;
+  end;
+end;
+
+procedure RelatorioFechamentoDeCaixa;
+begin
+
+  try
+    // Já faz em TotalDiario() CommitaTudo(True); // Vendaspor1Click
+    Form1.Timer2.Enabled := False;
+    Form7.bFechamentoDeCaixa := True;
+    Form7.Caption := '';
+    Form7.ShowModal;
+    if Form7.ModalResult = mrOk then
+    begin
+      //TotalDiario(Form7.dtpInicialDiario.Date, Form7.dtpFinalDiario.Date, Form7.edCaixaDiario.Text, Copy(Form7.cbModeloDiario.Text, 1, 2));
+      FechamentoDeCaixa;
+    end;
+  finally
+    Form7.bFechamentoDeCaixa := False;
+    if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
+      Form1.Timer2.Enabled := True;
+  end;
+
+end;
+
+procedure FechamentoDeCaixa;
+var
+  iCaixa: Integer;
+  sListaCaixas: String;
+  IBQNFCE: TIBQuery;
+  sRegraNFCe: String;
+  sJoinPagament: String;
+  dTotalSuprimento: Double;
+  dTotalDinheiro: Double;
+  dTotalTroco: Double;
+  dTotalSangria: Double;
+  sCupomFiscalVinculado: String;
+begin
+  // Solicitado por migração de concorrente
+  Commitatudo(True); // TotalDiario()
+  IBQNFCE      := CriaIBQuery(Form1.ibDataSet27.Transaction);
+  Screen.Cursor := crHourGlass;
+
+  try
+
+    for iCaixa := 0 to Form7.chklbCaixas.Items.Count - 1 do
+    begin
+
+      if Form7.chklbCaixas.Checked[iCaixa] then
+      begin
+        if sListaCaixas <> '' then
+          sListaCaixas := sListaCaixas + ', ';
+
+        sListaCaixas := sListaCaixas + QuotedStr(Form7.chklbCaixas.Items.Strings[iCaixa]);
+      end;
+    end;
+
+    if sListaCaixas <> '' then
+      sListaCaixas := ' and P.CAIXA in (' + sListaCaixas + ') ';
+
+
+    sJoinPagament := ' join PAGAMENT P on P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA and P.DATA = N.DATA ';
+    sRegraNFCe := ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' +
+      ' and (N.STATUS not containing ''Rejei'') ';
+
+
+    //'-- suprimento ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select /* ''SUPRIMENTO'' as FORMA, */ ' +
+      ' sum(P.VALOR) as VALOR ' +
+      'from PAGAMENT P ' +
+      'where P.FORMA not like ''00%'' ' +
+      'and P.CLIFOR = ''Suprimento'' ' +
+      sListaCaixas +
+      ' and P.DATA between :DINI and :DFIM ' +
+      '/* group by ''SUPRIMENTO'' */ ';
+    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
+    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+    IBQNFCE.Open;
+    dTotalSuprimento := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+      //'-- Dinheiro ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ''DINHEIRO'' as FORMA ' +
+      ', sum(P.VALOR) as VALOR ' +
+      'from NFCE N ' +
+      sJoinPagament +
+      ' where P.FORMA not like ''00%'' ' +
+      'and (P.CLIFOR <> ''Suprimento'') ' +
+      sListaCaixas + sRegraNFCe +
+      ' and P.DATA between :DINI and :DFIM ' +
+      'and P.FORMA like ''02%'' ' +
+      'group by ''DINHEIRO'' ';
+    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
+    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+    IBQNFCE.Open;
+    dTotalDinheiro := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+    //'-- Troco ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ''TROCO'' as FORMA ' +
+      ', sum(coalesce(P.VALOR, 0.00)) as VALOR ' +
+      'from NFCE N ' +
+      sJoinPagament +
+      ' where P.FORMA like ''13%'' ' +
+      sListaCaixas + sRegraNFCe +
+      ' and P.DATA between :DINI and :DFIM ' +
+      'group by ''TROCO'' ';
+    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
+    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+    IBQNFCE.Open;
+    dTotalTroco := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+    //'-- Sangria ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ''SANGRIA'' as FORMA ' +
+      ', sum(P.VALOR) as VALOR ' +
+      'from PAGAMENT P ' +
+      'where P.FORMA not like ''00%'' ' +
+      'and P.CLIFOR = ''Sangria'' ' +
+      sListaCaixas +
+      ' and P.DATA between :DINI and :DFIM ' +
+      'group by ''SANGRIA'' ';
+    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
+    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+    IBQNFCE.Open;
+    dTotalSangria := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+
+    sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais;
+
+    sCupomFiscalVinculado := sCupomFiscalVinculado
+      + '--------------------------' + Chr(10)
+      + 'MOVIMENTAÇÃO EM DINHEIRO  ' + Chr(10)
+      + '--------------------------' + Chr(10)
+      + 'Suprimento ' + Format('%9.2n',[dTotalSuprimento]) + chr(10)
+      + 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10)
+      + 'Troco      ' + Format('%9.2n',[dTotalTroco]) + chr(10)
+      + 'Sangria    ' + Format('%9.2n',[dTotalSangria]) + chr(10)
+      + '--------------------------' + Chr(10)
+      + '           ' + Format('%9.2n',[dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + chr(10)
+      + chr(10)
+      + '--------------------------' + Chr(10)
+      + 'TOTALIZADORES             ' + Chr(10)
+      + '--------------------------' + Chr(10)
+
+      ;
+
+
+    if Form1.sModeloECF = '59' then
+      _ecf59_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkFechamentoDeCaixaPDF.Checked);
+
+    if Form1.sModeloECF = '65' then
+      _ecf65_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkFechamentoDeCaixaPDF.Checked);
+
+    if Form1.sModeloECF = '99' then
+      _ecf99_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkFechamentoDeCaixaPDF.Checked);
+
+
+  finally
+    Screen.Cursor := crDefault;
+    FreeAndNil(IBQNFCE);
+
   end;
 end;
 
