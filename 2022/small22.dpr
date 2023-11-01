@@ -193,7 +193,8 @@ uses
   uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
   uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
   uDialogs in '..\..\unit_compartilhada\uDialogs.pas',
-  ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel};
+  ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel},
+  MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas';
 
 {$R *.RES}
 
