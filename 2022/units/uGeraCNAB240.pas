@@ -18,6 +18,9 @@ type TBanco =
   procedure GeraCNAB240;
   procedure GeraCNAB240SegmentoR(var F: TextFile; iReg : integer; sComandoMovimento : string; Banco : TBanco);
 
+var
+    sAvisoDebitoAuto : string;  
+
 implementation
 
 uses Unit7
@@ -26,7 +29,7 @@ uses Unit7
   , StrUtils
   , DB
   , uDialogs
-  ;
+  , DateUtils;
 
 
 procedure GeraCNAB240;
@@ -241,7 +244,6 @@ begin
       if Pos('-',Form26.MaskEdit46.Text) = 0 then ShowMessage('Configure o Número da Código do Cedente 00000-0');
       if Pos('/',Form26.MaskEdit43.Text) = 0 then ShowMessage('Configure a carteira/variação 00/000');
 
-      sCodigoDoConvenio      := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),9,0),1,9)+'0014'+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',1,2)+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',4,3)+'  ';
       sNomeDoBanco           := 'BANCO DO BRASIL S.A.';
       sCodigoDoConvenio      := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),9,0),1,9)+'0014'+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',1,2)+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',4,3)+'  ';
       sLayoutArquivo         := '000';
@@ -257,6 +259,7 @@ begin
       sCodigoParaBaixa       := '0';
       sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0';
+      sAvisoDebitoAuto       := '3';
     end;
 
     if CodBanco = '756' then
@@ -277,6 +280,7 @@ begin
       sCodigoParaBaixa       := '0';
       sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0';
+      sAvisoDebitoAuto       := '3';
     end;
 
     if CodBanco = '748' then
@@ -297,6 +301,7 @@ begin
       sCodigoParaBaixa       := '1';
       sDVDaAgencia           := ' ';
       sDigitoAgencia         := '0';
+      sAvisoDebitoAuto       := '3';
     end;
 
     if CodBanco = '085' then
@@ -317,6 +322,7 @@ begin
       sCodigoParaBaixa       := '2';
       sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := ' ';
+      sAvisoDebitoAuto       := '3';
     end;
 
     if CodBanco = '341' then
@@ -337,6 +343,28 @@ begin
       sCodigoParaBaixa       := '2';
       sDVDaAgencia           := ' ';
       sDigitoAgencia         := Copy(Right('0'+LimpaNumero(Form26.MaskEdit46.Text),1),1,1); // DAC
+      sAvisoDebitoAuto       := '0';
+    end;
+
+    if CodBanco = '041' then
+    begin
+      // Banrisul
+      sNomeDoBanco           := 'BANRISUL';
+      sCodigoDoConvenio      := Copy(AllTrim(Form26.MaskEdit50.Text)+REplicate(' ',20),1,20);
+      sLayoutArquivo         := '103';
+      sDensidade             := '00000';
+      sLayoutdoLote          := '060';
+      sNumeroContaCorrente   := '0000000'+Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),5,0),1,5);
+      sDigitocontacorrente   := ' ';
+      sCodigoDaCarteira      := '1';
+      sFormaDeCadastrar      := '1';
+      sTipoDocumento         := '1';
+      sEspecieDoTitulo       := '02';
+      sNumeroDeDiasParaBaixa := '   ';
+      sCodigoParaBaixa       := '2';
+      sDVDaAgencia           := ' ';
+      sDigitoAgencia         := ' ';
+      sAvisoDebitoAuto       := '2';
     end;
 
     if sNomeDoBanco = '' then
@@ -356,9 +384,10 @@ begin
       sCodigoParaBaixa       := '0';
       sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0';
-    end;     
+      sAvisoDebitoAuto       := '3';
+    end;
 
-    
+
     try
       // Registro Header de Arquivo (Tipo = 0)
       // Banco do Brasil  HEADER
@@ -620,22 +649,22 @@ begin
                 //Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,040)                    + // 034 a 073 (040) Nome da Empresa Maurici Parizotto 2023-10-24
 
                 IfThen(Banco = bOutro,
-                      Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,040)               // 034 a 073 (040) Nome da Empresa
+                      Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,40)                // 034 a 073 (040) Nome da Empresa
                       ,''
                       )+
 
                 //Itau
                 IfThen(Banco = bItau,
-                      Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',30),1,030)             + // 034 a 063 (030) Nome da Empresa
+                      Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',30),1,30)              + // 034 a 063 (030) Nome da Empresa
                       Replicate(' ',10), ''                                                                                 // 064 a 073 (010) COMPLEMENTO DE REGISTRO
                       )+
 
-                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2ENDERE.AsString))+Replicate(' ',40),1,040)                  + // 074 a 113 (040) Endereço
-                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2COMPLE.AsString))+Replicate(' ',15),1,015)                  + // 114 a 128 (015) Bairro
-                Copy(UpperCase(Form7.IbDataSet2CEP.AsString)+Replicate(' ',5),1,005)                                       + // 129 a 133 (005) CEP
-                Copy(UpperCase(Form7.IbDataSet2CEP.AsString)+Replicate(' ',3),7,003)                                       + // 134 a 136 (003) Sufixo do CEP
-                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2CIDADE.AsString))+Replicate(' ',15),1,015)                  + // 137 a 151 (015)Cidade
-                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2ESTADO.AsString))+Replicate(' ',2),1,002)                   + // 152 a 153 (002) Unidade da Federação
+                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2ENDERE.AsString))+Replicate(' ',40),1,40)                  + // 074 a 113 (040) Endereço
+                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2COMPLE.AsString))+Replicate(' ',15),1,15)                  + // 114 a 128 (015) Bairro
+                Copy(UpperCase(Form7.IbDataSet2CEP.AsString)+Replicate(' ',5),1,005)                                      + // 129 a 133 (005) CEP
+                Copy(UpperCase(Form7.IbDataSet2CEP.AsString)+Replicate(' ',3),7,003)                                      + // 134 a 136 (003) Sufixo do CEP
+                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2CIDADE.AsString))+Replicate(' ',15),1,15)                  + // 137 a 151 (015)Cidade
+                Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2ESTADO.AsString))+Replicate(' ',2),1,2)                    + // 152 a 153 (002) Unidade da Federação
 
                 // Avalista
                 Copy('0',1,1)                                                                             + // 154 a 154 (001) Tipo de Inscrição da Empresa Avalista
@@ -740,6 +769,7 @@ end;
 procedure GeraCNAB240SegmentoR(var F: TextFile; iReg : integer; sComandoMovimento : string; Banco : TBanco);
 var
   vMulta : Double;
+  vDataMulta : TDateTime;
   TipoMulta : string;
 begin
   //Tipo de Multa
@@ -754,6 +784,8 @@ begin
     vMulta    := Form7.ibDataSet7PERCENTUAL_MULTA.AsFloat;
     TipoMulta := '2';
   end;
+
+  vDataMulta := IncDay(Form7.ibDataSet7VENCIMENTO.AsDateTime, 1);
 
   WriteLn(F,
                 Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
@@ -776,9 +808,9 @@ begin
 
                 //Multa
                 Copy(TipoMulta,1,1)                                                                       + // 066 a 066 (001) Código da Multa
-                Copy(Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,2)                           +
-                Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),4,2)                                +
-                Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),7,4),1,008)                         + // 067 a 074 (008) Data da Multa
+                Copy(Copy(DateToStr(vDataMulta),1,2)                                                      +
+                Copy(DateToStr(vDataMulta),4,2)                                                           +
+                Copy(DateToStr(vDataMulta),7,4),1,008)                                                    + // 067 a 074 (008) Data da Multa
                 Copy(StrZero((vMulta * 100),15,0),1,015)                                                  + // 075 a 089 (013)+(2) Valor/Percentual da Multa
 
                 //Outros
@@ -796,20 +828,8 @@ begin
                 Copy(Replicate(' ',12),1,12)                                                              + // 217 a 228 (012) Conta Corrente na Conta Débito
                 Copy(Replicate(' ',1),1,1)                                                                + // 229 a 229 (001) Dígito Verificador da Conta
                 Copy(Replicate(' ',1),1,1)                                                                + // 230 a 230 (001) Dígito Verificador da Agencia/Conta
-                //Copy(Replicate('3',1),1,1)                                                                + // 231 a 231 (001) Aviso para Débito Automático Mauricio Parizotto 2023-10-24
-
-                IfThen(Banco = bOutro,
-                      Copy(Replicate('3',1),1,1)                                                            // 231 a 231 (001) Aviso para Débito Automático
-                      ,''
-                      )+
-
-                //Itau
-                IfThen(Banco = bItau,
-                      '0'                                                                                   // 231 a 231 (001)  COMPLEMENTO DE REGISTRO
-                      , ''
-                      )+
-
-                Copy(Replicate(' ',1),1,1)                                                                  // 232 a 240 (009) Uso Exclusivo FEBRABAN / CNAB
+                Copy(Replicate(sAvisoDebitoAuto,1),1,1)                                                   + // 231 a 231 (001) Aviso para Débito Automático
+                Copy(Replicate(' ',9),1,9)                                                                  // 232 a 240 (009) Uso Exclusivo FEBRABAN / CNAB
                 );
   
 end;
