@@ -678,7 +678,10 @@ begin
 end;
 
 function _ecf99_CancelaUltimoCupom(Pp1: Boolean):Boolean;
+var
+  IBQALTERACA: TIBQuery; // Sandro Silva 2023-11-01
 begin
+  IBQALTERACA := CriaIBQuery(Form1.ibDataSet27.Transaction);
 
   Result := False;
   //
@@ -691,6 +694,7 @@ begin
     //
     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
     begin
+      {Sandro Silva 2023-11-01 inicio
       //
       if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_CANCELADA then
       begin
@@ -703,8 +707,39 @@ begin
           Result := True;
         except end;
       end;
+      }
+      IBQALTERACA.Close;
+      IBQALTERACA.SQL.Text :=
+        'select PEDIDO ' +
+        'from ALTERACA ' +
+        'where PEDIDO = :PEDIDO ' +
+        ' and CAIXA = :CAIXA';
+      IBQALTERACA.ParamByName('PEDIDO').AsString := FormataNumeroDoCupom(Form1.iCupom);
+      IBQALTERACA.ParamByName('CAIXA').AsString  := Form1.sCaixa;
+      IBQALTERACA.Open;
+      if IBQALTERACA.FieldByName('PEDIDO').AsString = FormataNumeroDoCupom(Form1.iCupom) then
+      begin
+        if Form1.ibDataSet150.FieldByName('STATUS').AsString <> VENDA_GERENCIAL_CANCELADA then
+        begin
+          try
+            Form1.ibDataSet150.Edit;
+            Form1.ibDataSet150.FieldByName('STATUS').AsString := VENDA_GERENCIAL_CANCELADA;
+            Form1.ibDataSet150.FieldByName('NFEXML').Clear;
+            Form1.IBDataSet150.FieldByName('TOTAL').Clear;
+            Form1.ibDataSet150.Post;
+            Result := True;
+          except end;
+        end;
+      end
+      else
+      begin
+        // Não tem nenhum item lançado, considera cancelado para retorno, pode aproveitar o número na próxima abertura
+        Result := True;
+      end;
+      {Sandro Silva 2023-11-01 fim}
     end;
   except end;
+  FreeAndNil(IBQALTERACA); // Sandro Silva 2023-11-01
   Screen.Cursor            := crDefault;
 end;
 
@@ -1158,7 +1193,7 @@ begin
 
   sCupom := FormataNumeroDoCupom(StrToInt(sCupom)); // Sandro Silva 2021-12-01
   //
-  Form1.ibQuery65.Close;  
+  Form1.ibQuery65.Close;
   Form1.ibQuery65.SQL.Clear;
   Form1.ibQuery65.SQL.Text := 'select * from NFCE where NUMERONF='+QuotedStr(sCupom)+' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ''99'' ';
   Form1.ibQuery65.Open;
