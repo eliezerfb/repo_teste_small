@@ -12,8 +12,10 @@ uses
   , IniFiles
   ;
 
-type TBanco =
-            (bOutro, bItau);
+type TBanco = (bOutro
+              , bItau
+              , bSicoob
+              , bAilos);
 
   procedure GeraCNAB240;
   procedure GeraCNAB240SegmentoR(var F: TextFile; iReg : integer; sComandoMovimento : string; Banco : TBanco);
@@ -62,10 +64,17 @@ begin
     end;
 
     CodBanco := Copy(AllTrim(Form26.MaskEdit42.Text),1,3);//Mauricio Parizotto 2023-10-11
+
+    Banco := bOutro;
+
     if CodBanco = '341' then
-      Banco := bItau
-    else
-      Banco := bOutro;
+      Banco := bItau;
+
+    if CodBanco = '756' then
+      Banco := bSicoob;
+
+    if CodBanco = '085' then
+      Banco := bAilos;
 
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then
     begin
@@ -262,7 +271,7 @@ begin
       sAvisoDebitoAuto       := '3';
     end;
 
-    if CodBanco = '756' then
+    if Banco = bSicoob then
     begin
       // SICOOB
       sNomeDoBanco           := 'SICOOB';
@@ -279,8 +288,8 @@ begin
       sNumeroDeDiasParaBaixa := '   ';
       sCodigoParaBaixa       := '0';
       sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
-      sDigitoAgencia         := '0';
-      sAvisoDebitoAuto       := '3';
+      sDigitoAgencia         := '0'; // tem que ser 0 no Header de Arquivo e nos outros lugar tem que ser ' ' 
+      sAvisoDebitoAuto       := '0';
     end;
 
     if CodBanco = '748' then
@@ -304,7 +313,7 @@ begin
       sAvisoDebitoAuto       := '3';
     end;
 
-    if CodBanco = '085' then
+    if Banco = bAilos then
     begin
       // AILOS
       sNomeDoBanco           := 'AILOS';
@@ -325,7 +334,7 @@ begin
       sAvisoDebitoAuto       := '3';
     end;
 
-    if CodBanco = '341' then
+    if Banco = bItau then
     begin
       // ITAÚ
       sNomeDoBanco           := 'BANCO ITAU SA';
@@ -433,8 +442,7 @@ begin
         Copy(sDVdaAgencia,1,1)                                                                    + // 059 a 059 (001) Dígito Verificador da Agência
         Copy(sNumeroContaCorrente,1,12)                                                           + // 060 a 071 (012) Número da Conta Corrente
         Copy(sDigitocontacorrente,1,1)                                                            + // 072 a 072 (001) Dígito Verificador da Conta
-        //Copy(' ',1,1)                                                                             + // 073 a 073 (001) Dígito Verificador da Ag/Conta Mauricio Parizotto 2023-10-11
-        sDigitoAgencia                                                                            + // 073 a 073 (001) Dígito Verificador da Ag/Conta
+        Copy(' ',1,1)                                                                             + // 073 a 073 (001) Dígito Verificador da Ag/Conta
         Copy(UpperCase(Form7.IbDataSet13NOME.AsString)+Replicate(' ',30),1,030)                   + // 074 a 103 (030) Nome da Empresa
         Copy(Replicate(' ',40),1,40)                                                              + // 104 a 143 (040) Mensagem 1
         Copy(Replicate(' ',40),1,40)                                                              + // 144 a 183 (040) Mensagem 2
@@ -556,18 +564,10 @@ begin
                 Copy(sDVdaAgencia,1,1)                                                                    + // 023 a 023 (001) Dígito Verificador da Agência
                 Copy(sNumeroContaCorrente,1,12)                                                           + // 024 a 035 (012) Número da Conta Corrente
                 Copy(sDigitocontacorrente,1,1)                                                            + // 036 a 036 (001) Dígito Verificador da Conta
-                //Copy(' ',1,1)                                                                             + // 037 a 037 (001) Dígito Verificador da Ag/Conta Mauricio Parizotto 2023-10-11
-                Copy(sDigitoAgencia,1,1)                                                                  + // 037 a 037 (001) Dígito Verificador da Ag/Conta
+                Copy(' ',1,1)                                                                             + // 037 a 037 (001) Dígito Verificador da Ag/Conta
                 Copy(sNumerodoDocumento,1,20)                                                             + // 038 a 057 (020) Número do Documento de Cobrança
-                {Mauricio Parizotto 2023-10-11 Inicio}
-                //Copy(sCodigoDaCarteira,1,1)                                                               + // 058 a 058 (001) Código da Carteira
-                //Copy(sFormaDeCadastrar,1,1)                                                               + // 059 a 059 (001) Forma de Cadastr. do Título no Banco
-                //Copy(sTipoDocumento,1,1)                                                                  + // 060 a 060 (001) Tipo de Documento
-                //Copy('2',1,1)                                                                             + // 061 a 061 (001) Identificação da Emissão do Boleto de Pagamento
-                //Copy('2',1,1)                                                                             + // 062 a 062 (001) Identificação da Distribuição
-                //Copy(AllTrim(Form7.ibDataset7DOCUMENTO.AsString)+Replicate(' ',15),1,15)                  + // 067 a 077 (015) Número do Documento de Cobrança
 
-                IfThen(Banco = bOutro,
+                IfThen((Banco = bOutro) or (Banco = bSicoob) or (Banco = bAilos),
                        Copy(sCodigoDaCarteira,1,1)                                                        + // 058 a 058 (001) Código da Carteira
                        Copy(sFormaDeCadastrar,1,1)                                                        + // 059 a 059 (001) Forma de Cadastr. do Título no Banco
                        Copy(sTipoDocumento,1,1)                                                           + // 060 a 060 (001) Tipo de Documento
@@ -614,7 +614,7 @@ begin
                 //Copy(sNumeroDeDiasParaBaixa,1,3)                                                          + // 225 a 227 (003) Número de Dias para Baixa/Devolu??o
                 //Copy('09',1,2)                                                                            + // 228 a 229 (002) Código da Moeda
 
-                IfThen(Banco = bOutro,
+                IfThen((Banco = bOutro) or (Banco = bSicoob) or (Banco = bAilos),
                       Copy(sNumeroDeDiasParaBaixa,1,3)                                                    + // 225 a 227 (003) Número de Dias para Baixa/Devolução
                       Copy('09',1,2),''                                                                     // 228 a 229 (002) Código da Moeda
                       )+
@@ -648,7 +648,7 @@ begin
                 Copy(Right(Replicate('0',15)+LimpaNumero(Form7.IBDataSet2CGC.AsString),15),1,015)         + // 019 a 033 (015) Número de Inscrição da Empresa
                 //Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,040)                    + // 034 a 073 (040) Nome da Empresa Maurici Parizotto 2023-10-24
 
-                IfThen(Banco = bOutro,
+                IfThen((Banco = bOutro) or (Banco = bSicoob) or (Banco = bAilos),
                       Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,40)                // 034 a 073 (040) Nome da Empresa
                       ,''
                       )+
@@ -785,7 +785,13 @@ begin
     TipoMulta := '2';
   end;
 
-  vDataMulta := IncDay(Form7.ibDataSet7VENCIMENTO.AsDateTime, 1);
+  if Banco = bAilos then
+  begin
+    vDataMulta := Form7.ibDataSet7VENCIMENTO.AsDateTime;
+  end else
+  begin
+    vDataMulta := IncDay(Form7.ibDataSet7VENCIMENTO.AsDateTime, 1);
+  end;
 
   WriteLn(F,
                 Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
@@ -821,11 +827,28 @@ begin
                 Copy(Replicate('0',8),1,8)                                                                + // 200 a 207 (008) Data Limite de Pagamento(SICOOB) | Cód. Ocor. do Sacado (AILOS)
 
                 //Dados Para Débito
-                Copy(Replicate(' ',3),1,3)                                                                + // 208 a 210 (003) Código do Banco na Conta Débito
-                Copy(Replicate(' ',5),1,5)                                                                + // 211 a 215 (005) Código da Agência na Conta Débito
+                IfThen((Banco = bOutro) or (Banco = bItau) or (Banco = bAilos),
+                      Replicate(' ',3)                                                                    + // 208 a 210 (003) Código do Banco na Conta Débito
+                      Replicate(' ',5)                                                                      // 211 a 215 (005) Código da Agência na Conta Débito
+                      ,''
+                      )+
+                IfThen(Banco = bSicoob,
+                      Replicate('0',3)                                                                    + // 208 a 210 (003) Código do Banco na Conta Débito
+                      Replicate('0',5)                                                                      // 211 a 215 (005) Código da Agência na Conta Débito
+                      ,''
+                      )+
+
                 Copy(Replicate(' ',1),1,1)                                                                + // 216 a 216 (001) Dígito Verificador da Agência
 
-                Copy(Replicate(' ',12),1,12)                                                              + // 217 a 228 (012) Conta Corrente na Conta Débito
+                IfThen((Banco = bOutro) or (Banco = bItau) or (Banco = bAilos),
+                      Replicate(' ',12)                                                                     // 217 a 228 (012) Conta Corrente na Conta Débito
+                      ,''
+                      )+
+                IfThen(Banco = bSicoob,
+                      Replicate('0',12)
+                      ,''                                                                                   // 217 a 228 (012) Conta Corrente na Conta Débito
+                      )+
+
                 Copy(Replicate(' ',1),1,1)                                                                + // 229 a 229 (001) Dígito Verificador da Conta
                 Copy(Replicate(' ',1),1,1)                                                                + // 230 a 230 (001) Dígito Verificador da Agencia/Conta
                 Copy(Replicate(sAvisoDebitoAuto,1),1,1)                                                   + // 231 a 231 (001) Aviso para Débito Automático
