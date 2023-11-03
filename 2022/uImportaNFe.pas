@@ -1021,6 +1021,11 @@ begin
   if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMS90/CST')) <> '' then
     Result := 'ICMS90';
 
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSST/CST')) <> '' then //Mauricio Parizotto 2023-10-31
+    Result := 'ICMSST';
+  if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSPart/CST')) <> '' then //Mauricio Parizotto 2023-10-31
+    Result := 'ICMSPart';
+
   if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN101/CSOSN')) <> '' then
     Result := 'ICMSSN101';
   if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN102/CSOSN')) <> '' then
