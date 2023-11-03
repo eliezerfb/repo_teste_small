@@ -27658,17 +27658,27 @@ begin
 
     if Form7.ibDataSet24MERCADORIA.AsFloat = 0 then
     begin
-      if Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString)<>0 then
+      if Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) <> 0 then
       begin
-        ImportaNF(True, Form7.ibDataset24NFEXML.AsString); // Sandro Silva 2023-04-10 Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
-        Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+        if Application.MessageBox(PChar(_cDesejaDarEntradaNFManifesto), PChar(_cTituloMsg), MB_YESNO + MB_ICONQUESTION) = mrYes then
+        begin
+          ImportaNF(True, Form7.ibDataset24NFEXML.AsString); // Sandro Silva 2023-04-10 Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
+          Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+        end;
       end;
     end;
+    {Dailon Parisotto (f-7502) 2023-10-30 Inicio
 
     if Form7.ibDataSet24MERCADORIA.AsFloat <> 0 then
     begin
       Manifesto(1); // 1: Confirmação da operação.
     end;
+
+    }
+    // Se já foi confirmado antes não deve fazer novamente.
+    if (Pos('<tpEvento>210200',Form7.ibDataSet24MDESTINXML.AsString) = 0) then
+      Manifesto(1); // 1: Confirmação da operação.
+    {Dailon Parisotto (f-7502) 2023-10-30 Fim}
   except
     on E: Exception do
     begin
