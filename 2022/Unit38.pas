@@ -723,6 +723,7 @@ begin
 end;
 
 procedure TForm38.RelatorioBalanca(var F: TextFile);
+(*
 var
   sValidade : string;
   I : integer;
@@ -803,6 +804,140 @@ begin
 
   Form38.Tag := 1;
   FechaForm38(True);
+*)
+var
+  sValidade : string;
+  I : integer;
+  cNomeArqPadrao: String;
+  cCaminho: String;
+  cCaminhoExtra: String;
+  oDialog: TSaveDialog;
+  oArqDat: TArquivosDAT;
+begin
+  oArqDat := TArquivosDAT.Create(EmptyStr);
+  try
+    cCaminho := oArqDat.SmallCom.Outros.CaminhoArqBalanca;
+
+    if Radiobutton3.Checked then
+      cNomeArqPadrao := 'produtos.txt';  // Urano
+
+    if Radiobutton4.Checked then
+      cNomeArqPadrao := 'txitens.txt'; // Toledo
+
+    if Radiobutton5.Checked then
+      cNomeArqPadrao := 'cadtxt.txt'; // Filizola
+
+
+    oDialog := TSaveDialog.Create(nil);
+    try
+      oDialog.FileName := cCaminho + cNomeArqPadrao;
+      oDialog.InitialDir := cCaminho;
+      oDialog.Filter := 'Arquivo de Texto (.txt)|*.txt';
+      if not oDialog.Execute then
+        Exit;
+
+      cCaminho := oDialog.FileName;
+
+      if Copy(cCaminho, Length(cCaminho)-3, 4) <> '.txt' then
+        cCaminho := cCaminho + '.txt';
+
+      oArqDat.SmallCom.Outros.CaminhoArqBalanca := ExtractFilePath(cCaminho);
+
+      if not TestarNomeArquivoValido(cCaminho) then
+        Exit;
+        
+      if Radiobutton5.Checked then
+      begin
+        cCaminhoExtra := oArqDat.SmallCom.Outros.CaminhoArqBalanca2;
+
+        oDialog.FileName := cCaminhoExtra + 'setortxt.txt';
+        oDialog.InitialDir := cCaminhoExtra;
+
+        if not oDialog.Execute then
+          Exit;
+
+        cCaminhoExtra := oDialog.FileName;
+
+        if Copy(cCaminho, Length(cCaminho)-3, 4) <> '.txt' then
+          cCaminho := cCaminho + '.txt';
+
+        oArqDat.SmallCom.Outros.CaminhoArqBalanca2 := ExtractFilePath(cCaminhoExtra);
+
+        if not TestarNomeArquivoValido(cCaminho) then
+          Exit;
+      end;
+    finally
+      FreeAndNil(oDialog);
+    end;
+  finally
+    FreeAndNil(oArqDat);
+  end;
+
+  AssignFile(F,pchar(cCaminho));
+
+  Rewrite(F);
+
+  Form7.ibDataSet4.First;
+  while not Form7.ibDataSet4.EOF do
+  begin
+    if (Copy(Form7.ibDataSet4REFERENCIA.AsString,1,1) = '2') and ((UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG') or (UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KU')) then
+    begin
+      if AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+        sValidade := AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString))
+      else
+        sValidade := '000';
+
+      if UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG' then                                                                                   // Quando é KG pro programa da
+      begin                                                                                                                                   // FILISOLA vai um 'P', ai o a balança
+        if Radiobutton3.Checked then
+          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 1'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
+        if Radiobutton4.Checked then
+          Writeln(F,'010100'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
+        if Radiobutton5.Checked then
+          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'P'+                                                           // gera uma etiqueta com o peso
+        Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',22),1,22)+'0'+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',',''));  //
+      end else
+      begin                                                                                                                                   // Quando é KU pro programa
+        if Radiobutton3.Checked then
+          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 6'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
+        if Radiobutton4.Checked then
+          Writeln(F,'010110'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
+        if Radiobutton5.Checked then
+          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'U'+                                                           // FILISOLA vai um 'U', ai o balança
+        Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',22),1,22)+'0'+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',',''));  // gera uma etiqueta com a unidade
+      end;
+    end;
+    Form7.ibDataSet4.Next;
+  end;
+
+  CloseFile(F);
+
+  if Radiobutton5.Checked then
+  begin
+    AssignFile(F,pchar(cCaminhoExtra));   // Filizola
+    Rewrite(F);                     
+
+    I := 0;
+    Form7.ibDataSet4.First;
+    while not Form7.ibDataSet4.EOF do
+    begin
+      if (Copy(Form7.ibDataSet4REFERENCIA.AsString,1,1) = '2') and ((UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG') or (UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KU')) then
+      begin
+        I := I + 1;
+        Writeln(F,Copy(UpperCase(Form7.ibDataSet4NOME.AsString)+Replicate(' ',12),1,12)+'0'+Form7.ibDataSet4CODIGO.AsString+Strzero(I,5,0)+'000');
+      end;
+      Form7.ibDataSet4.Next;
+    end;
+
+    CloseFile(F);
+    ShellExecute( 0, 'Open', PChar(cCaminhoExtra),'', '', SW_SHOW);
+  end;
+
+  ShellExecute( 0, 'Open',PChar(cCaminho),'', '', SW_SHOW);
+
+  Form38.Tag := 1;
+  FechaForm38(True);
+
 end;
 
 procedure TForm38.RelatorioProdutosMonofasicos(var F: TextFile; dInicio, dFinal : TdateTime);
