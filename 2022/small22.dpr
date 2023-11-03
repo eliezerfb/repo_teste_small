@@ -197,7 +197,9 @@ uses
   uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},,
   uDialogs in '..\..\unit_compartilhada\uDialogs.pas',
   ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel},
-  MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas';
+  MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
+  uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
+  uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas';
 
 {$R *.RES}
 

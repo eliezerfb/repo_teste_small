@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Mask, SmallFunc, Printers, ComCtrls, ShellApi, DB,
-  IBCustomDataSet, IBQuery;
+  IBCustomDataSet, IBQuery, uConectaBancoSmall;
 
 type
   TForm32 = class(TForm)
@@ -32,6 +32,8 @@ type
     IBQuery5: TIBQuery;
     IBQuery6: TIBQuery;
     CheckBox1: TCheckBox;
+    cbMovGerencial: TCheckBox;
+    qryGerencial: TIBQuery;
     procedure Button2Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure MaskEdit1Exit(Sender: TObject);
@@ -39,6 +41,8 @@ type
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    procedure DefinirVisibleGerencial;
+    procedure CarregaDadosGerencial;
     { Private declarations }
   public
     { Public declarations }
@@ -49,7 +53,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit20, Unit34, StrUtils, uDialogs;
+uses Unit7, Mais, Unit20, Unit34, StrUtils, uDialogs, uRetornaSQLGerencialInventario;
 
 {$R *.DFM}
 
@@ -58,11 +62,25 @@ begin
   Close;
 end;
 
+procedure TForm32.CarregaDadosGerencial;
+begin
+  if cbMovGerencial.Checked then
+    Exit;
+    
+  qryGerencial.Close;
+  qryGerencial.SQL.Clear;
+  qryGerencial.SQL.Add(TRetornaSQLGerencialInventario.New
+                                                     .setData(DateTimePicker1.Date)
+                                                     .getSQL);
+
+  qryGerencial.Open;
+end;
+
 procedure TForm32.Button5Click(Sender: TObject);
 var
   iLinha, iPagina, iTamanho : Integer;
   fTotal : Double;
-  fVenda, fCompra, fAltera, fBalcao, fRese : Real;
+  fVenda, fCompra, fAltera, fBalcao, fRese, nGerencial : Real;
   fCustoMedio: Real; // Sandro Silva 2023-03-01
   fCustoCompra: Real; // Sandro Silva 2023-03-02
 begin
@@ -110,6 +128,8 @@ begin
   ibQuery6.Sql.Clear;
   ibQuery6.SQL.Add('select ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_RESE from ITENS001, OS where OS.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and  coalesce(ITENS001.NUMERONF,'+QuotedStr('')+')='+QuotedStr('')+'and OS.NUMERO=ITENS001.NUMEROOS group by DESCRICAO');
   ibQuery6.Open;
+  //
+  CarregaDadosGerencial;
   //
   ibQuery4.Close;
   ibQuery4.Sql.Clear;
@@ -168,12 +188,18 @@ begin
       fAltera := 0;
       fBalcao := 0;
       fRese   := 0;
+      nGerencial := 0;
       //
-      if ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fVenda  := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
-      if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fCompra := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
-      if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
-      if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
-      if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
+      if ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fVenda         := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
+      if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fCompra        := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
+      if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera        := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
+      if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao        := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
+      if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese          := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
+      if not cbMovGerencial.Checked then
+      begin
+        if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then
+          nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
+      end;
       
       if  ((
                   ibQuery4.FieldByName('QTD_ATUAL').AsFloat
@@ -182,6 +208,7 @@ begin
                      + fBalcao
                      + fRese
                      - fAltera
+                     + nGerencial
             )
             > 0 ) or (CheckBox1.Checked) then
       begin                   
@@ -209,6 +236,7 @@ begin
                      + fBalcao
                      + fRese
                      - fAltera
+                     + nGerencial
 
 
                      ])                      +  // Quantidade
@@ -231,6 +259,7 @@ begin
                                + fBalcao
                                + fRese
                                - fAltera
+                               + nGerencial
                               ) * Arredonda(fCustoCompra, StrToInt(Form1.ConfPreco));
         end;
         // ---------------- //
@@ -253,6 +282,7 @@ begin
                                                        + fBalcao
                                                        + fRese
                                                        - fAltera
+                                                       + nGerencial
                                                        ])                      +  // Quantidade
                      Replicate(' ',5) + Copy(ibQuery4.FieldByName('MEDIDA').AsString+'   ',1,3)             +  // Medida
                      Replicate(' ',4)+ Format('%14.2n',[fCustoMedio]) +  // Custocompr
@@ -265,7 +295,7 @@ begin
                                          + fBalcao
                                          + fRese
                                          - fAltera
-
+                                         + nGerencial
 
                                      )]));
           fTotal  :=  fTotal + (ibQuery4.FieldByName('QTD_ATUAL').AsFloat
@@ -273,7 +303,8 @@ begin
                                          + fVenda
                                          + fBalcao
                                          + fRese
-                                         - fAltera) * Arredonda(fCustoMedio, StrToInt(Form1.ConfPreco));
+                                         - fAltera
+                                         + nGerencial) * Arredonda(fCustoMedio, StrToInt(Form1.ConfPreco));
         end;
         iLinha := iLinha + 1;
       end;
@@ -304,6 +335,36 @@ end;
 procedure TForm32.FormShow(Sender: TObject);
 begin
   Image1.Picture := Form7.Image205.Picture;
+
+  DefinirVisibleGerencial;  
+end;
+
+procedure TForm32.DefinirVisibleGerencial;
+var
+  qryDados: TIBQuery;
+begin
+  qryDados := CriaIBQuery(Form7.IBTransaction1);
+  try
+    qryDados.Close;
+    qryDados.SQL.Clear;
+    qryDados.SQL.Add('SELECT');
+    qryDados.SQL.Add('COUNT(NFCE.REGISTRO) AS QTDE');
+    qryDados.SQL.Add('FROM NFCE');
+    qryDados.SQL.Add('WHERE');
+    qryDados.SQL.Add('(NFCE.MODELO=''99'')');
+    qryDados.Open;
+
+    cbMovGerencial.Visible := qryDados.FieldByName('QTDE').AsInteger > 0;
+    cbMovGerencial.Checked := False;
+
+    CheckBox1.Top := 216;
+    cbMovGerencial.Top := 240;
+
+    if not cbMovGerencial.Visible then
+      CheckBox1.Top := CheckBox1.Top + 17;
+  finally
+    FreeAndNil(qryDados);
+  end;
 end;
 
 procedure TForm32.Button1Click(Sender: TObject);
@@ -311,7 +372,7 @@ var
   iLinha, iPagina : Integer;
   fTotal : Double;
   F : TextFile;
-  fVenda, fCompra, fAltera, fBalcao, fRese : Real;
+  fVenda, fCompra, fAltera, fBalcao, fRese, nGerencial : Real;
   fCustoMedio: Real; // Sandro Silva 2023-03-01
   fCustoCompra: Real; // Sandro Silva 2023-03-02
 begin
@@ -349,6 +410,8 @@ begin
   ibQuery6.Sql.Clear;
   ibQuery6.SQL.Add('select ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_RESE from ITENS001, OS where OS.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and  coalesce(ITENS001.NUMERONF,'+QuotedStr('')+')='+QuotedStr('')+'and OS.NUMERO=ITENS001.NUMEROOS group by DESCRICAO');
   ibQuery6.Open;
+  //
+  CarregaDadosGerencial;
   //
   ibQuery4.Close;
   ibQuery4.Sql.Clear;
@@ -410,13 +473,18 @@ begin
       fAltera := 0;
       fBalcao := 0;
       fRese   := 0;
+      nGerencial := 0;
       //
       if ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fVenda  := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
       if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fCompra := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
       if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
       if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
-      
+      if not cbMovGerencial.Checked then
+      begin
+        if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then
+          nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
+      end;
       // Formula para calcular a quantidade do dia é a mesma do sintegra
       if  ((
                   ibQuery4.FieldByName('QTD_ATUAL').AsFloat
@@ -425,6 +493,7 @@ begin
                      + fBalcao
                      + fRese
                      - fAltera
+                     + nGerencial
             )
             > 0 ) or (CheckBox1.Checked) then
       begin
@@ -446,6 +515,7 @@ begin
                                                          + fBalcao
                                                          + fRese
                                                          - fAltera
+                                                         + nGerencial
                                                        ])                      +  // Quantidade
 
                      Replicate(' ',5) + Copy(ibQuery4.FieldByName('MEDIDA').AsString+'   ',1,3)             +  // Medida
@@ -458,6 +528,7 @@ begin
                                                            + fBalcao
                                                            + fRese
                                                            - fAltera
+                                                           + nGerencial
                                                            )
                                                         ]));
           fTotal  :=  fTotal + (
@@ -467,6 +538,7 @@ begin
                                  + fBalcao
                                  + fRese
                                  - fAltera
+                                 + nGerencial
                                ) * Arredonda(fCustoCompra,StrToInt(Form1.ConfPreco));
         end;
         // ---------------- //
@@ -491,6 +563,7 @@ begin
                                                          + fBalcao
                                                          + fRese
                                                          - fAltera
+                                                         + nGerencial
                                                        ])                                                   +  // Quantidade
                      Replicate(' ',5) + Copy(ibQuery4.FieldByName('MEDIDA').AsString+'   ',1,3)             +  // Medida
                      Replicate(' ',4)+ Format('%14.2n',[fCustoMedio]) +  // Custocompr
@@ -503,6 +576,7 @@ begin
                                                             + fBalcao
                                                             + fRese
                                                             - fAltera
+                                                            + nGerencial
                                                             )
                                                         ]
                                                         ));
@@ -513,6 +587,7 @@ begin
                                + fBalcao
                                + fRese
                                - fAltera
+                               + nGerencial
                               ) * Arredonda(fCustoMedio, StrToInt(Form1.ConfPreco));
         end;
         iLinha := iLinha + 1;
