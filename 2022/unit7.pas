@@ -2497,6 +2497,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImportaOrcamento
   , uImportaOrdemServico
   , uDialogs
+  , uFrmProdutosDevolucao
   ;
 
 {$R *.DFM}
@@ -32185,6 +32186,7 @@ end;
 
 procedure TForm7.DevolverNF1Click(Sender: TObject);
 begin
+  (* Mauricio Parizotto 2023-10-19 Inicio
   try
     Form1.imgVendasClick(Form1.imgVendas);
     Form7.Image101Click(Form7.Image201);
@@ -32324,7 +32326,19 @@ begin
 
   end;
 
-  Form12.dbGrid1.SetFocus;  
+  Form12.dbGrid1.SetFocus;
+  *)
+
+  FrmProdutosDevolucao := TFrmProdutosDevolucao.Create(self);
+  try
+    FrmProdutosDevolucao.ibdProdutosNota.ParamByName('NUMERONF').AsString := ibDataSet24NUMERONF.AsString;
+    FrmProdutosDevolucao.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := ibDataSet24FORNECEDOR.AsString;
+    FrmProdutosDevolucao.ShowModal;
+  finally
+    FreeAndNil(FrmProdutosDevolucao);
+  end;
+
+  {Mauricio Parizotto 2023-10-19 Fim} 
 end;
 
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
