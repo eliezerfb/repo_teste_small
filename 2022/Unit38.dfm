@@ -305,7 +305,7 @@ object Form38: TForm38
         Align = alClient
         CalColors.BackColor = clWhite
         CalColors.TitleBackColor = 14456320
-        Date = 37168.347902187500000000
+        Date = 37168.402162824070000000
         ShowToday = False
         ShowTodayCircle = False
         TabOrder = 0
@@ -380,7 +380,7 @@ object Form38: TForm38
       end
       object RadioButton4: TRadioButton
         Left = 24
-        Top = 120
+        Top = 114
         Width = 113
         Height = 17
         Caption = 'Toledo'
@@ -394,7 +394,7 @@ object Form38: TForm38
       end
       object RadioButton5: TRadioButton
         Left = 24
-        Top = 150
+        Top = 133
         Width = 113
         Height = 17
         Caption = 'Filizola'
