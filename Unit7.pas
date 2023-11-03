@@ -124,7 +124,10 @@ type
     procedure TabSheet5Show(Sender: TObject);
     procedure chkMovimentoDiaHoraIClick(Sender: TObject);
     procedure chkMovimentoDiaHoraFClick(Sender: TObject);
-    procedure FocusNextControl(Sender: TObject; var Key: Char);    
+    procedure FocusNextControl(Sender: TObject; var Key: Char);
+    procedure chkFechamentoDeCaixaHoraIClick(Sender: TObject);
+    procedure TabSheet8Show(Sender: TObject);
+    procedure chklbCaixasClickCheck(Sender: TObject);
   private
     { Private declarations }
     Form7Label1Height: Integer;
@@ -169,7 +172,7 @@ uses fiscal
   , _small_65
   , _small_14
   , _small_15
-  , _small_59;
+  , _small_59, urelatoriosgerenciais;
 
 {$R *.DFM}
 
@@ -317,8 +320,11 @@ begin
     dtpFechamentoDeCaixaIni.Date   := Date;
     dtpFechamentoDeCaixaFim.Date     := Date;
     //edFechamentoDeCaixa.Text       := Form1.sCaixa;
+    dtpFechamentoDeCaixaHoraI.Date := Date;
+    dtpFechamentoDeCaixaHoraF.Date := Date;
     dtpFechamentoDeCaixaHoraI.Time := Time;
     dtpFechamentoDeCaixaHoraF.Time := Time;
+
 
   end;
   {Sandro Silva 2023-11-01 fim}
@@ -508,7 +514,7 @@ begin
       'select distinct CAIXA ' +
       'from NFCE ' +
       'where coalesce(CAIXA, '''') <> '''' ' +
-      'order by CAIXA';
+      'order by DATA DESC, CAIXA';
     Form1.IBQuery65.Open;
     while Form1.IBQuery65.Eof = False do
     begin
@@ -582,6 +588,37 @@ procedure TForm7.FocusNextControl(Sender: TObject; var Key: Char);
 begin
   if Key = #13 then
     SelectNext(Sender as TWinControl, True, True);
+end;
+
+procedure TForm7.chkFechamentoDeCaixaHoraIClick(Sender: TObject);
+begin
+  Form7.chkFechamentoDeCaixaHoraF.Checked := Form7.chkFechamentoDeCaixaHoraI.Checked;
+  dtpFechamentoDeCaixaHoraI.Enabled := Form7.chkFechamentoDeCaixaHoraI.Checked;
+  dtpFechamentoDeCaixaHoraF.Enabled := Form7.chkFechamentoDeCaixaHoraI.Checked;
+end;
+
+procedure TForm7.TabSheet8Show(Sender: TObject);
+begin
+  chkFechamentoDeCaixaHoraF.Top := dtpFechamentoDeCaixaHoraI.Top - chkFechamentoDeCaixaHoraI.Height;
+  chkFechamentoDeCaixaHoraF.Top := dtpFechamentoDeCaixaHoraF.Top - chkFechamentoDeCaixaHoraF.Height;
+  chkFechamentoDeCaixaHoraI.Left := dtpFechamentoDeCaixaHoraI.Left;
+  chkFechamentoDeCaixaHoraF.Left := dtpFechamentoDeCaixaHoraF.Left;
+
+  lbCaixaFechamentoDeCaixa.Caption := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
+  if lbCaixaFechamentoDeCaixa.Caption = '' then
+    lbCaixaFechamentoDeCaixa.Caption := 'Todos';
+  lbCaixaFechamentoDeCaixa.Caption := 'Caixas (' + lbCaixaFechamentoDeCaixa.Caption + '):'
+
+end;
+
+procedure TForm7.chklbCaixasClickCheck(Sender: TObject);
+var
+  sListaCaixas: String;
+begin
+  sListaCaixas := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
+  if sListaCaixas = '' then
+    sListaCaixas := 'Todos';
+  lbCaixaFechamentoDeCaixa.Caption := 'Caixas (' + sListaCaixas + '):'
 end;
 
 end.

@@ -1097,6 +1097,7 @@ object Form7: TForm7
     object TabSheet8: TTabSheet
       Caption = 'TabSheet8'
       ImageIndex = 7
+      OnShow = TabSheet8Show
       DesignSize = (
         294
         222)
@@ -1133,9 +1134,9 @@ object Form7: TForm7
       object lbCaixaFechamentoDeCaixa: TLabel
         Left = 11
         Top = 143
-        Width = 35
+        Width = 41
         Height = 13
-        Caption = 'Caixa:'
+        Caption = 'Caixas:'
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -1190,6 +1191,7 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 1
         Text = '   '
+        Visible = False
         OnExit = edMovimentoDiaExit
         OnKeyPress = FocusNextControl
       end
@@ -1277,7 +1279,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 6
-        OnClick = chkMovimentoDiaHoraIClick
+        OnClick = chkFechamentoDeCaixaHoraIClick
         OnKeyPress = FocusNextControl
       end
       object chkFechamentoDeCaixaHoraF: TCheckBox
@@ -1293,7 +1295,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 7
-        OnClick = chkMovimentoDiaHoraFClick
+        OnClick = chkFechamentoDeCaixaHoraIClick
         OnKeyPress = FocusNextControl
       end
       object chklbCaixas: TCheckListBox
@@ -1301,6 +1303,7 @@ object Form7: TForm7
         Top = 160
         Width = 78
         Height = 59
+        OnClickCheck = chklbCaixasClickCheck
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -1315,6 +1318,7 @@ object Form7: TForm7
           '005')
         ParentFont = False
         TabOrder = 8
+        OnKeyPress = FocusNextControl
       end
     end
   end
