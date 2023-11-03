@@ -997,7 +997,7 @@ begin
 }
         fICMSDesonerado := 0;
 
-        if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') then
+        //if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') then Mauricio Parizotto 2023-11-03 ficha 7553
         begin
           if (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'') and (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'0000000000') then
           begin
