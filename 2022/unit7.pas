@@ -1604,6 +1604,9 @@ type
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
     ImprimirOrcamento: TMenuItem;
+    CartadeCorreoEletrnicaCCe1: TMenuItem;
+    ExportarXML1: TMenuItem;
+    N70: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2264,6 +2267,7 @@ type
     procedure DuplicarProdutoClick(Sender: TObject);
     procedure DuplicaOrcamentoClick(Sender: TObject);
     procedure ImprimirOrcamentoClick(Sender: TObject);
+    procedure ExportarXML1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2307,6 +2311,8 @@ type
     function MensagemPortalConsultaCNPJCPF: Integer;
     procedure ImprimeOrcamento;
     function getUsuarioLogado: String;
+    procedure SalvaXMLNFSaida(AcCaminho: String = '');
+    function TestaNFSaidaFaturada: Boolean;
   public
     // Public declarations
 
@@ -2497,6 +2503,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImportaOrcamento
   , uImportaOrdemServico
   , uDialogs
+  , uFrmProdutosDevolucao
   ;
 
 {$R *.DFM}
@@ -4286,7 +4293,7 @@ begin
 end;
 Movido para SmallFunc}
 
-function CalculaTotalRecebido(pP1: Boolean): Boolean;
+function CalculaTotalRecebido(pP1: Boolean): Currency; // Sandro Silva 2023-10-30 Boolean;
 begin
   //
   if Form7.sModulo = 'RECEBER' then
@@ -4298,7 +4305,7 @@ begin
     Form7.iBQuery1.Open;
     //
     Form7.Panel10.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
-    Form7.Label49.CAption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
+    Form7.Label49.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
     Form7.Panel10.Repaint;
     //
   end else
@@ -4315,7 +4322,7 @@ begin
     //
   end;
   //
-  Result := True;
+  Result := Form7.iBQuery1.FieldByName('SUM').AsFloat; // Sandro Silva 2023-10-30 Result := True;
   //
 end;
 
@@ -7274,6 +7281,7 @@ begin
     jp.CompressionQuality := 100;
     jp.SaveToFile('logotip.jpg');
   except end;
+
   //
   Result := True;
 end;
@@ -13302,9 +13310,12 @@ begin
   N2ConsultarrecibodaNFe1.Visible                  := False;
   N3ConsultarNFe1.Visible                          := False;
   N4ImprimirDANFE1.Visible                         := False;
+  N70.Visible                                      := False; 
+  ExportarXML1.Visible                             := False;
   N5EnviarDANFEporemail1.Visible                   := False;
   N6VisualizarDANFE1.Visible                       := False;
   CancelarNFe1.Visible                             := False;
+  CartadeCorreoEletrnicaCCe1.Visible               := False;
   CCartadeCorreoEletronicaCCe1.Visible             := False;
   IImprimirCartadeCorreoEletronicaCCe1.Visible     := False;
   EEnviarcartadecorreoporemail1.Visible            := False; // Sandro Silva 2023-06-05 Faltou no card 6107
@@ -13457,6 +13468,7 @@ begin
         N5EnviarDANFEporemail1.Visible                   := True;
         N6VisualizarDANFE1.Visible                       := True;
         CancelarNFe1.Visible                             := True;
+        CartadeCorreoEletrnicaCCe1.Visible               := True;
         CCartadeCorreoEletronicaCCe1.Visible             := True;
         IImprimirCartadeCorreoEletronicaCCe1.Visible     := True;
         EEnviarcartadecorreoporemail1.Visible            := True; // Sandro Silva 2023-06-05 Faltou no card 6107
@@ -13466,6 +13478,8 @@ begin
         RRecuperaroXMLdestaNFe1.Visible                  := True;
         N66.Visible                                      := True;
         DuplicatestaNFe1.Visible                         := True;
+        ExportarXML1.Visible                             := True;
+        N70.Visible                                      := True;
         //
       end else
       begin
@@ -13520,6 +13534,8 @@ begin
           N6VisualizarDANFE1.Enabled  := False;
         end;
 
+        ExportarXML1.Enabled := N4ImprimirDANFE1.Enabled;
+         
         N5EnviarDANFEporemail1.Enabled       := True;
         CancelarNFe1.Enabled                 := True;
         CCartadeCorreoEletronicaCCe1.Enabled := True;
@@ -13531,6 +13547,7 @@ begin
       begin
         N1enviarNFe1.Enabled             := True;
         N4ImprimirDANFE1.Enabled         := False;
+        ExportarXML1.Enabled             := False;
         N5EnviarDANFEporemail1.Enabled   := False;
 //        if Alltrim(Form7.ibDataSet15NFERECIBO.AsString) = '' then N2ConsultarrecibodaNFe1.Enabled := False else N2ConsultarrecibodaNFe1.Enabled := True;
 //        if Alltrim(Form7.ibDataSet15NFERECIBO.AsString) = '' then N3ConsultarNFe1.Enabled := False else N3ConsultarNFe1.Enabled := True;
@@ -13575,7 +13592,7 @@ begin
         EnviarNFSeporemail1.Caption := 'Enviar NFS-e por e-mail ' + cEmails;
       end;
 
-      EEnviarcartadecorreoporemail1.Caption := 'E - Enviar Carta de Correção Eletronica (CC-e) por e-mail';
+      EEnviarcartadecorreoporemail1.Caption := 'Enviar Carta por e-mail';
       if EEnviarcartadecorreoporemail1.Enabled then
         EEnviarcartadecorreoporemail1.Caption := EEnviarcartadecorreoporemail1.Caption + ' ' + cEmails;
 
@@ -24275,6 +24292,11 @@ begin
   //
 end;
 
+function TForm7.TestaNFSaidaFaturada: Boolean;
+begin
+  Result := (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> EmptyStr) or (bContingencia);
+end;
+
 procedure TForm7.N4ImprimirDANFE1Click(Sender: TObject);
 var
   Device : array[0..255] of char;
@@ -24283,7 +24305,7 @@ var
   hDMode : THandle;
   sFormato, sLote : String;
 begin
-  if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') or (bContingencia) then
+  if TestaNFSaidaFaturada then
   begin
     Screen.Cursor            := crHourGlass;
     Form7.Panel7.Caption := 'Imprimindo o DANFE'+replicate(' ',100);
@@ -26116,7 +26138,7 @@ begin
     if Form7.sModulo = 'RECEBER' then
     begin
       //
-      if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
+      if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
       begin
         if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '1' then
           ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
@@ -26131,7 +26153,7 @@ begin
     end;
     if Form7.sModulo = 'PAGAR' then
     begin
-      if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
+      if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
       begin
         if Copy(Form7.ibDataSet12CONTA.AsString,1,1) = '3' then
           ComboBox2.Items.Add(Form7.ibDataSet12NOME.AsString);
@@ -26147,7 +26169,7 @@ begin
     Form7.ibDataSet12.Next;
   end;
   //
-  if Form7.ibDataSet25DIFERENCA_.AsFloat <> fTotal then
+  if FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) <> FormatFloat('0.00', fTotal) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat <> fTotal then
   begin
     ComboBox2.Enabled := True;
   end else
@@ -26701,12 +26723,17 @@ var
 begin
   Form7.Edit2.SetFocus;
   //
+  {Sandro Silva 2023-10-30 inicio
   CalculaTotalRecebido(True);
-  fTotal := StrToFloat(LimpaNumeroDeixandoAVirgula(Form7.Label49.CAption));
+  fTotal := StrToFloat(LimpaNumeroDeixandoAVirgula(Form7.Label49.Caption));
+  }
+
+  fTotal := StrToFloat(FormatFloat('0.00', CalculaTotalRecebido(True)));
+  {Sandro Silva 2023-10-30 fim}
   //
   if Form7.sModulo = 'PAGAR' then
   begin
-    if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
+    if FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) = '0,00' then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
     begin
       Form7.SMALL_DBEdit6.Visible := True;
       //ShowMessage('Informe o total pago.'); Mauricio Parizotto 2023-10-25
@@ -26715,9 +26742,10 @@ begin
       Abort;
     end else
     begin
-      if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := _cRecebPagto;
-      
-      if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
+      if AllTrim(ComboBox1.Text) = '' then
+        ComboBox1.Text := _cRecebPagto;
+
+      if (FormatFloat('0.00', fTotal) <> FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) and ( FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) <> '0,00' ) then // Sandro Silva 2023-10-30 if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
         if ComboBox2.Text = '<Plano de contas para a diferença>' then
         begin
@@ -26734,20 +26762,27 @@ begin
         Form7.ibDataSet1NOME.AsString          := ComboBox2.Text;
 
         Form7.ibDataSet1DATA.AsDateTime        := Date;
+        {Sandro Silva 2023-10-30 inicio
         if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal
          then Form7.ibDataSet1SAIDA.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat - fTotal
            else Form7.ibDataSet1ENTRADA.AsFloat := fTotal - Form7.ibDataSet25DIFERENCA_.AsFloat;
-        
+        }
+        if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal then
+          Form7.ibDataSet1SAIDA.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) - StrToFloat(FormatFloat('0.00', fTotal))
+        else
+          Form7.ibDataSet1ENTRADA.AsFloat := StrToFloat(FormatFloat('0.00', fTotal)) - StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));
+        {Sandro Silva 2023-10-30 fim}
+
         Form7.ibDataSet1.Post;
       end;
-      
-      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+
+      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) <> '0,00') then // Sandro Silva 2023-10-30 if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1HISTORICO.AsString     := Edit1.Text;
         Form7.ibDataSet1NOME.AsString          := ComboBox1.Text;
         Form7.ibDataSet1DATA.AsDateTime        := Date; // A pedido da center
-        Form7.ibDataSet1ENTRADA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
+        Form7.ibDataSet1ENTRADA.AsFloat        := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));// Sandro Silva 2023-10-30 Form7.ibDataSet1ENTRADA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
         //
         // Este procedimento é para mudar a ordem do registro
         // para o caixa não ficar negativo
@@ -26784,8 +26819,8 @@ begin
     end else
     begin
       if AllTrim(ComboBox1.Text) = '' then ComboBox1.Text := _cRecebPagto;
-    
-      if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
+
+      if (StrToFloat(FormatFloat('0.00', fTotal)) <> StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat))) and ( StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) <> 0 ) then // Sandro Silva 2023-10-30 if (fTotal <> Form7.ibDataSet25DIFERENCA_.AsFloat) and ( Form7.ibDataSet25DIFERENCA_.AsFloat <> 0 ) then
       begin
         if ComboBox2.Text = '<Plano de contas para a diferença>' then
         begin
@@ -26799,22 +26834,29 @@ begin
 
         Form7.ibDataSet1HISTORICO.AsString     := 'Diferença';
         Form7.ibDataSet1NOME.AsString          := ComboBox2.Text;
-        
+
         Form7.ibDataSet1DATA.AsDateTime        := Date;
+        {Sandro Silva 2023-10-30 inicio
         if Form7.ibDataSet25DIFERENCA_.AsFloat > fTotal
          then Form7.ibDataSet1ENTRADA.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat - fTotal
            else Form7.ibDataSet1SAIDA.AsFloat := fTotal - Form7.ibDataSet25DIFERENCA_.AsFloat;
+        }
+        if StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) > StrToFloat(FormatFloat('0.00', fTotal)) then
+          Form7.ibDataSet1ENTRADA.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) - StrToFloat(FormatFloat('0.00', fTotal))
+        else
+          Form7.ibDataSet1SAIDA.AsFloat := StrToFloat(FormatFloat('0.00', fTotal)) - StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));
+        {Sandro Silva 2023-10-30 fim}
         //
         Form7.ibDataSet1.Post;
       end;
 
-      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
+      if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)) <> 0) then // Sandro Silva 2023-10-30 if (Copy(ComboBox1.Text,1,9) <> _cRecebPagto) and (Form7.ibDataSet25DIFERENCA_.AsFloat <> 0) then
       begin
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1HISTORICO.AsString     := Edit1.Text;
         Form7.ibDataSet1NOME.AsString          := ComboBox1.Text;
         Form7.ibDataSet1DATA.AsDateTime      := Date; // A pedido da center
-        Form7.ibDataSet1SAIDA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
+        Form7.ibDataSet1SAIDA.AsFloat        := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30 Form7.ibDataSet1SAIDA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
         Form7.ibDataSet1.Post;
       end;
       // Cancela todas as contas marcadas para receber
@@ -27658,17 +27700,27 @@ begin
 
     if Form7.ibDataSet24MERCADORIA.AsFloat = 0 then
     begin
-      if Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString)<>0 then
+      if Pos('<nfeProc',Form7.ibDataSet24NFEXML.AsString) <> 0 then
       begin
-        ImportaNF(True, Form7.ibDataset24NFEXML.AsString); // Sandro Silva 2023-04-10 Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
-        Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+        if Application.MessageBox(PChar(_cDesejaDarEntradaNFManifesto), PChar(_cTituloMsg), MB_YESNO + MB_ICONQUESTION) = mrYes then
+        begin
+          ImportaNF(True, Form7.ibDataset24NFEXML.AsString); // Sandro Silva 2023-04-10 Form7.ImportaNF(True,Form7.ibDataset24NFEXML.AsString);
+          Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+        end;
       end;
     end;
+    {Dailon Parisotto (f-7502) 2023-10-30 Inicio
 
     if Form7.ibDataSet24MERCADORIA.AsFloat <> 0 then
     begin
       Manifesto(1); // 1: Confirmação da operação.
     end;
+
+    }
+    // Se já foi confirmado antes não deve fazer novamente.
+    if (Pos('<tpEvento>210200',Form7.ibDataSet24MDESTINXML.AsString) = 0) then
+      Manifesto(1); // 1: Confirmação da operação.
+    {Dailon Parisotto (f-7502) 2023-10-30 Fim}
   except
     on E: Exception do
     begin
@@ -27694,7 +27746,6 @@ begin
   //
   if Form7.ibDataSet4CF.AsString <> '' then
   begin
-    //
     Form7.ibDataSet4.Edit;
     //
     // INDICE DE IMPOSTO APROXIMADO - IIA - ESTADUAL
@@ -27717,7 +27768,6 @@ begin
        (Copy(Form7.ibDataSet4CST.AsString,1,1) = '8') then
 
     begin
-      //
       // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
       // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
       // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
@@ -27727,10 +27777,8 @@ begin
       Form7.ibDataSet4IIA.ReadOnly := False;
       Form7.ibDataSet4IIA.AsFloat  := Form7.ibQuery3.FieldByname('IMPORTADOFEDERAL').AsFloat;
       Form7.ibDataSet4IIA.ReadOnly := True;
-      //
     end else
     begin
-      //
       // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
       // 3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% (quarenta por cento)
       // 4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam o Decreto-Lei nº 288/1967, e as Leis nºs 8.248/1991, 8.387/1991, 10.176/2001 e 11.484/2007;
@@ -27739,7 +27787,6 @@ begin
       Form7.ibDataSet4IIA.ReadOnly := False;
       Form7.ibDataSet4IIA.AsFloat  := Form7.ibQuery3.FieldByname('NACIONALFEDERAL').AsFloat;
       Form7.ibDataSet4IIA.ReadOnly := True;
-      //
     end;
     //
     Form7.ibDataSet4.Post;
@@ -28762,6 +28809,7 @@ begin
                   Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
   //                Form7.ibDataSet7VALOR_RECE.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat;
                   Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,254,013))/100;
+                  Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_RECE.AsFloat)); // Sandro Silva 2023-10-30
                   //
                   Form7.ibDataSet7.Post;
                   //
@@ -28777,6 +28825,7 @@ begin
                   Form7.Panel10.Repaint;
                   //
                   Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  StrToFloat(Copy(sLinha,254,013))/100;
+                  Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30
                   //
                   SMALL_DBEdit1.SetFocus;
                   I := I + 1;
@@ -29987,7 +30036,9 @@ begin
   //
   if not Form7.OpenDialog4.Execute then
     Exit;
-  //
+
+  CHDir(Form1.sAtual); // Apontar devolta para a pasta do sistema Sandro Silva 2023-10-30
+
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
     //
@@ -30151,6 +30202,7 @@ begin
                     Form7.Panel10.Repaint;
                     //
                     Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  StrToFloat(Copy(sLinha,254,013))/100;
+                    Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30 
                     //
                     SMALL_DBEdit1.SetFocus;
                     I := I + 1;
@@ -30822,6 +30874,8 @@ begin
   if not Form7.OpenDialog4.Execute then
     Exit;
 
+  CHDir(Form1.sAtual); // Apontar devolta para a pasta do sistema Sandro Silva 2023-10-30
+
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
     Form7.ibDataSet7.DisableControls;
@@ -30871,6 +30925,8 @@ begin
                     Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat +5;
 
                     Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,78,015))/100;
+                    //Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', StrToFloat(Copy(sLinha,78,015)) / 100)); // Sandro Silva 2023-10-30 StrToFloat(Copy(sLinha,78,015))/100;
+                    Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_RECE.AsFloat)); // Sandro Silva 2023-10-31
                     Form7.ibDataSet7PORTADOR.AsString  := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
                     {Sandro Silva 2022-12-21 inicio}
                     sDataDoCredito := Copy(sLinha, 146, 8);
@@ -30895,6 +30951,7 @@ begin
                     Form7.Panel10.Repaint;
 
                     Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  Form7.ibDataSet7VALOR_RECE.AsFloat;
+                    Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));// Sandro Silva 2023-10-30
 
                     SMALL_DBEdit1.SetFocus;
                     I := I + 1;
@@ -32149,6 +32206,7 @@ end;
 
 procedure TForm7.DevolverNF1Click(Sender: TObject);
 begin
+  (* Mauricio Parizotto 2023-10-19 Inicio
   try
     Form1.imgVendasClick(Form1.imgVendas);
     Form7.Image101Click(Form7.Image201);
@@ -32288,7 +32346,19 @@ begin
 
   end;
 
-  Form12.dbGrid1.SetFocus;  
+  Form12.dbGrid1.SetFocus;
+  *)
+
+  FrmProdutosDevolucao := TFrmProdutosDevolucao.Create(self);
+  try
+    FrmProdutosDevolucao.ibdProdutosNota.ParamByName('NUMERONF').AsString := ibDataSet24NUMERONF.AsString;
+    FrmProdutosDevolucao.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := ibDataSet24FORNECEDOR.AsString;
+    FrmProdutosDevolucao.ShowModal;
+  finally
+    FreeAndNil(FrmProdutosDevolucao);
+  end;
+
+  {Mauricio Parizotto 2023-10-19 Fim} 
 end;
 
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
@@ -34110,6 +34180,60 @@ end;
 function TForm7.getUsuarioLogado: String;
 begin
   Result := Senhas.UsuarioPub;
+end;
+
+procedure TForm7.ExportarXML1Click(Sender: TObject);
+var
+  oDialog: TSaveDialog;
+  cCaminho: String;
+begin
+  if not TestaNFSaidaFaturada then
+    Exit;
+
+  if Trim(Form7.ibDataSet15NFEXML.AsString) = EmptyStr then
+  begin
+    MensagemSistema(_cNaoTemXMLNFSaidaExportar, msgInformacao);
+    Exit;
+  end;    
+    
+  oDialog := TSaveDialog.Create(nil);
+  try
+    oDialog.Title    := 'Exportar XML'; 
+    oDialog.FileName := Form7.ibDataSet15NFEID.AsString;
+    oDialog.Filter := 'Arquivo XML (.xml)|*.xml';    
+
+    if not oDialog.Execute then
+      Exit;
+
+    cCaminho := oDialog.FileName;
+    if Copy(cCaminho, Length(cCaminho)-3, 4) <> '.xml' then
+      cCaminho := cCaminho + '.xml';
+
+    SalvaXMLNFSaida(cCaminho);
+  finally
+    FreeAndNil(oDialog);
+  end;
+end;
+
+procedure TForm7.SalvaXMLNFSaida(AcCaminho: String = '');
+var
+  lsXML: TStringList;
+  cCaminho: String;
+begin
+  cCaminho := AcCaminho;
+
+  if cCaminho = EmptyStr then
+    cCaminho := ExtractFilePath(ExtractFilePath(Application.ExeName));
+    
+  lsXML := TStringList.Create;
+  try
+    lsXML.Clear;
+    lsXML.Text := Form7.ibDataSet15NFEXML.AsString;
+
+    lsXML.SaveToFile(cCaminho);
+  finally
+    FreeAndNil(lsXML);
+  end;
 end;
 
 end.

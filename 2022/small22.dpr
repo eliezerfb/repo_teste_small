@@ -183,18 +183,22 @@ uses
   uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
   uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
   uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uFrmProdutosDevolucao in 'uFrmProdutosDevolucao.pas' {FrmProdutosDevolucao},
+  uFrmSmallImput in 'uFrmSmallImput.pas' {FrmSmallImput},
+  uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
   uImportaOrcamento in 'units\uImportaOrcamento.pas',
   uFrmPesquisaOrcamento in 'uFrmPesquisaOrcamento.pas' {FrmPesquisaOrcamento},
   uGeraCNAB240 in 'units\uGeraCNAB240.pas',
   uGeraCNAB400 in 'units\uGeraCNAB400.pas',
+  uDialogs in '..\..\unit_compartilhada\uDialogs.pas',
   uImportaOrdemServico in 'units\uImportaOrdemServico.pas',
   uFrmPesquisaOrdemServico in 'uFrmPesquisaOrdemServico.pas' {FrmPesquisaOrdemServico},
   uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
-  uDialogs in '..\..\unit_compartilhada\uDialogs.pas',
   ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel},
-  MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas';
+  MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
+  uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
+  uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas';
 
 {$R *.RES}
 

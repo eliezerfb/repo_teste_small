@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, IniFiles, SmallFunc, ShellApi, checklst,
-  Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils;
+  Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils, FileCtrl;
 
 type
   TForm38 = class(TForm)
@@ -101,6 +101,7 @@ type
     procedure RelatorioComprasItem(var F: TextFile; dInicio, dFinal: TdateTime; var fTotal, fTotal1, fTotal2, fTotal3, fTotal4, fTotal5, fTotal6  : Real);
     procedure RelatorioVendaItem(var F: TextFile; dInicio, dFinal: TdateTime; var fTotal, fTotal1, fTotal2, fTotal3, fTotal4, fTotal5, fTotal6  : Real);
     procedure RelatorioComprasVenda(var F: TextFile; dInicio, dFinal: TdateTime);
+    function TestarNomeArquivoValido(AcCaminho: String): Boolean;
   public
   end;
 
@@ -114,7 +115,7 @@ implementation
 
 uses Mais, Unit34, Unit30, Unit16, Mais3, Unit2, uFuncoesRetaguarda,
   uRateioVendasBalcao, IBCustomDataSet, uAtualizaNovoCampoItens001CSOSN,
-  uDialogs;
+  uArquivosDAT, uDialogs, uSmallResourceString;
 
 {$R *.DFM}
 
@@ -690,10 +691,46 @@ begin
   DefinirEnabledListarCodigo;
 end;
 
+function TForm38.TestarNomeArquivoValido(AcCaminho: String) : Boolean;
+var
+  slArq: TStringList;
+begin
+  Result := False;
+  slArq := TStringList.Create;
+  try
+    try
+      slArq.SaveToFile(AcCaminho);
+
+      Sleep(200);
+
+      if not FileExists(AcCaminho) then
+      begin
+        MensagemSistema(_cArquivoInvalidoBalanca, msgAtencao);
+        Exit;
+      end
+      else
+      begin
+        DeleteFile(AcCaminho);
+        Sleep(200);
+      end;
+      Result := True;
+    except
+      MensagemSistema(_cArquivoInvalidoBalanca, msgAtencao);
+    end;
+  finally
+    FreeAndNil(slArq);
+  end;
+end;
+
 procedure TForm38.RelatorioBalanca(var F: TextFile);
 var
   sValidade : string;
   I : integer;
+  cNomeArqPadrao: String;
+  cCaminho: String;
+  cCaminhoExtra: String;
+  oDialog: TSaveDialog;
+  oArqDat: TArquivosDAT;
 begin
   if Radiobutton3.Checked then
     AssignFile(F,pchar(Form1.sAtual+'\produtos.txt'));  // Urano
@@ -743,8 +780,8 @@ begin
 
   if Radiobutton5.Checked then
   begin
-    AssignFile(F,pchar(Form1.sAtual+'\setortxt.txt'));   // Felizola
-    Rewrite(F);                     // Abre para gravação
+    AssignFile(F,pchar(cCaminhoExtra));   // Filizola
+    Rewrite(F);                     
 
     I := 0;
     Form7.ibDataSet4.First;
@@ -759,17 +796,10 @@ begin
     end;
 
     CloseFile(F);
-    ShellExecute( 0, 'Open','setortxt.txt','', '', SW_SHOW);  // Urano
+    ShellExecute( 0, 'Open', PChar(cCaminhoExtra),'', '', SW_SHOW);
   end;
 
-  if Radiobutton3.Checked then
-    ShellExecute( 0, 'Open','produtos.txt','', '', SW_SHOW);  // Urano
-
-  if Radiobutton4.Checked then
-    ShellExecute( 0, 'Open','txitens.txt','', '', SW_SHOW);   // Toledo
-
-  if Radiobutton5.Checked then
-    ShellExecute( 0, 'Open','cadtxt.txt' ,'', '', SW_SHOW);   // Felizola
+  ShellExecute( 0, 'Open',PChar(cCaminho),'', '', SW_SHOW);
 
   Form38.Tag := 1;
   FechaForm38(True);

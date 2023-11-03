@@ -192,11 +192,19 @@ object Form32: TForm32
     end
     object CheckBox1: TCheckBox
       Left = 230
-      Top = 230
+      Top = 216
       Width = 450
       Height = 17
       Caption = 'Listar quantidade negativa ou zerada'
       TabOrder = 7
+    end
+    object cbMovGerencial: TCheckBox
+      Left = 230
+      Top = 240
+      Width = 227
+      Height = 17
+      Caption = 'Considerar movimento gerencial'
+      TabOrder = 8
     end
   end
   object IBQuery1: TIBQuery
@@ -245,6 +253,14 @@ object Form32: TForm32
     BufferChunks = 1000
     CachedUpdates = False
     Left = 96
+    Top = 272
+  end
+  object qryGerencial: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 136
     Top = 272
   end
 end

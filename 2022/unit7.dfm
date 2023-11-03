@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 277
-  Top = 64
+  Left = 369
+  Top = 77
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -18144,17 +18144,20 @@ object Form7: TForm7
     object N67: TMenuItem
       Caption = '-'
     end
-    object CCartadeCorreoEletronicaCCe1: TMenuItem
-      Caption = 'C - Carta de Corre'#231#227'o Eletronica (CC-e)'
-      OnClick = CCartadeCorreoEletronicaCCe1Click
-    end
-    object IImprimirCartadeCorreoEletronicaCCe1: TMenuItem
-      Caption = 'I - Imprimir Carta de Corre'#231#227'o Eletronica (CC-e)'
-      OnClick = IImprimirCartadeCorreoEletronicaCCe1Click
-    end
-    object EEnviarcartadecorreoporemail1: TMenuItem
-      Caption = 'E - Enviar Carta de Corre'#231#227'o Eletronica (CC-e) por e-mail'
-      OnClick = EEnviarcartadecorreoporemail1Click
+    object CartadeCorreoEletrnicaCCe1: TMenuItem
+      Caption = 'Carta de Corre'#231#227'o Eletr'#244'nica (CC-e)'
+      object CCartadeCorreoEletronicaCCe1: TMenuItem
+        Caption = 'Gerar Carta de Corre'#231#227'o'
+        OnClick = CCartadeCorreoEletronicaCCe1Click
+      end
+      object IImprimirCartadeCorreoEletronicaCCe1: TMenuItem
+        Caption = 'Imprimir Carta'
+        OnClick = IImprimirCartadeCorreoEletronicaCCe1Click
+      end
+      object EEnviarcartadecorreoporemail1: TMenuItem
+        Caption = 'Enviar Carta por e-mail'
+        OnClick = EEnviarcartadecorreoporemail1Click
+      end
     end
     object N68: TMenuItem
       Caption = '-'
@@ -18180,6 +18183,13 @@ object Form7: TForm7
       Caption = 'Manifesto'
       Visible = False
       OnClick = Manifesto1Click
+    end
+    object ExportarXML1: TMenuItem
+      Caption = 'Exportar XML'
+      OnClick = ExportarXML1Click
+    end
+    object N70: TMenuItem
+      Caption = '-'
     end
     object PrvisualizarDANFE1: TMenuItem
       Caption = 'Pr'#233'-visualizar DANFE'
@@ -21415,7 +21425,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21450,7 +21460,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21765,7 +21775,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21795,7 +21805,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
