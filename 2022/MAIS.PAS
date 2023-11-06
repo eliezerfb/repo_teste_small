@@ -451,6 +451,7 @@ type
     function RetornarWhereNotasManifestar: String;
     procedure DefinirBuildEXEDAT;
     procedure EnviarXMLContabilidadeAut;
+    procedure ClickOKInformacoesInutilizacao(Sender: TObject);
 
   public
     fDias : Real;
@@ -974,8 +975,11 @@ begin
   Form29.Panel_Dados.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
-  
-  Result                := True;
+
+  if Form29.btnCancelar.Visible then
+    Result := Form29.ClicouOK
+  else
+    Result := True;  
 end;
 
 function tForm1.Small_InputForm(sP1, sP2, sP3: String) : String;
@@ -8914,6 +8918,8 @@ begin
     MensagemSistema('Senha do administrador inválida.');
 end;
 
+{Dailon Parisotto (f-7540) 2023-11-06 inicio
+
 procedure TForm1.InutilizarNFe1Click(Sender: TObject);
 var
   sID, sRetorno, aAno, aModelo, aSerie, aIni, aFim, txtJustificativa: string;
@@ -8969,22 +8975,202 @@ begin
               //ShowMessage('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+sRetorno); Mauricio Parizotto 2023-10-25
               MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+sRetorno,msgAtencao);
             end;
-
-            {$IFDEF VER150}
-            DecimalSeparator := ',';
-            DateSeparator    := '/';
-            {$ELSE}
-            FormatSettings.DecimalSeparator := ',';
-            FormatSettings.DateSeparator    := '/';
-            {$ENDIF}
-          end;
+                                        }
+//            {$IFDEF VER150}
+//            DecimalSeparator := ',';
+//            DateSeparator    := '/';
+//            {$ELSE}
+//            FormatSettings.DecimalSeparator := ',';
+//            FormatSettings.DateSeparator    := '/';
+//            {$ENDIF}
+{          end;
         end;
       end;
     end;
   end;
-
   Screen.Cursor            := crDefault;
+end;                                       }
+
+procedure TForm1.InutilizarNFe1Click(Sender: TObject);
+var
+  nLengthEdit1, nLengthEdit2, nLengthEdit3,
+  nLengthEdit4, nLengthEdit5 : Integer;
+  cRetorno: String;
+begin
+  nLengthEdit1 := Form29.Edit_01.MaxLength;
+  nLengthEdit2 := Form29.Edit_02.MaxLength;
+  nLengthEdit3 := Form29.Edit_03.MaxLength;
+  nLengthEdit4 := Form29.Edit_04.MaxLength;
+  nLengthEdit5 := Form29.Edit_05.MaxLength;
+  try
+    Form29.Label_01.Visible := True;
+    Form29.Label_02.Visible := True;
+    Form29.Label_03.Visible := True;
+    Form29.Label_04.Visible := True;
+    Form29.Label_05.Visible := True;
+    Form29.btnCancelar.Visible := True;
+
+    Form29.Edit_01.MaxLength := 4;
+    Form29.Edit_02.MaxLength := 3;
+    Form29.Edit_03.MaxLength := 9;
+    Form29.Edit_04.MaxLength := 9;
+    Form29.Edit_05.MaxLength := 0;
+
+    Form29.Edit_01.Visible := True;
+    Form29.Edit_01.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_01.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_02.Visible := True;
+    Form29.Edit_02.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_02.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_03.Visible := True;
+    Form29.Edit_03.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_03.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_04.Visible := True;
+    Form29.Edit_04.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_04.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_05.Visible := True;
+
+    Form29.Label_01.Caption := 'Insira o ano da nota a ser inutilizada:';
+    Form29.Label_02.Caption := 'Insira a série da nota a ser inutilizada:';
+    Form29.Label_03.Caption := 'Insira o número da nota inicial a ser inutilizada:';
+    Form29.Label_04.Caption := 'Insira o número da nota final a ser inutilizada:';
+    Form29.Label_05.Caption := 'Insira a justificativa com no mínimo 15 caracteres:';
+
+    Form29.Edit_01.Text := EmptyStr;
+    Form29.Edit_02.Text := EmptyStr;
+    Form29.Edit_03.Text := EmptyStr;
+    Form29.Edit_04.Text := EmptyStr;
+    Form29.Edit_05.Text := 'Exemplo de inutilizacao da NF-e';
+
+    Form29.Button1.OnClick := ClickOKInformacoesInutilizacao;
+
+    if not Form1.Small_InputForm_Dados('Inutilização de NF-e') then
+      Exit;
+
+    Screen.Cursor := crHourGlass;
+    try
+      Form29.Edit_01.Text := Copy(Form29.Edit_01.Text, Length(Form29.Edit_01.Text)-1, 2);
+
+      if StrToIntDef(Form29.Edit_02.Text,0) > 0 then
+        Form29.Edit_02.Text := IntToStr(StrToIntDef(Form29.Edit_02.Text,0));
+
+      if StrToIntDef(Form29.Edit_03.Text,0) > 0 then
+        Form29.Edit_03.Text := IntToStr(StrToIntDef(Form29.Edit_03.Text,0));
+      if StrToIntDef(Form29.Edit_04.Text,0) > 0 then
+        Form29.Edit_04.Text := IntToStr(StrToIntDef(Form29.Edit_04.Text,0));
+
+      Form29.Edit_05.Text := ConverteAcentos(Form29.Edit_05.Text);
+
+      MensagemSistema('Será inutilizada da numeração ' + Form29.Edit_03.Text + ' à ' + Form29.Edit_04.Text + ' da série ' + Form29.Edit_02.Text + '.', msgInformacao);
+
+      ConfiguraNFE;
+      
+      try
+        Form7.ibDataset15.Locate('NFEID','55',[loPartialKey]);
+
+        cRetorno := Form7.spdNFe.InutilizarNF(EmptyStr, Form29.Edit_01.Text,
+                                              LimpaNumero(Form7.ibDataSet13CGC.AsString), '55',
+                                              Form29.Edit_02.Text, Form29.Edit_03.Text,
+                                              Form29.Edit_04.Text, Form29.Edit_05.Text
+                                             );
+
+        if GravarInutilizacao(cRetorno, Form1.ibQuery2) then
+        begin
+          cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
+          MensagemSistema(cRetorno);
+        end else
+        begin
+          cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
+          MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+cRetorno,msgAtencao);
+        end;
+      except
+        cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
+        MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+cRetorno,msgAtencao);
+      end;
+                                  
+      {$IFDEF VER150}
+      DecimalSeparator := ',';
+      DateSeparator    := '/';
+      {$ELSE}
+      FormatSettings.DecimalSeparator := ',';
+      FormatSettings.DateSeparator    := '/';
+      {$ENDIF}
+    finally
+      Screen.Cursor := crDefault;
+    end;
+  finally
+    Form29.Edit_01.OnKeyPress := nil;
+    Form29.Edit_01.OnChange   := nil;
+    Form29.Edit_02.OnKeyPress := nil;
+    Form29.Edit_02.OnChange   := nil;
+    Form29.Edit_03.OnKeyPress := nil;
+    Form29.Edit_03.OnChange   := nil;
+    Form29.Edit_04.OnKeyPress := nil;
+    Form29.Edit_04.OnChange   := nil;
+
+    Form29.Edit_01.Text := EmptyStr;
+    Form29.Edit_02.Text := EmptyStr;
+    Form29.Edit_03.Text := EmptyStr;
+    Form29.Edit_04.Text := EmptyStr;
+    Form29.Edit_05.Text := EmptyStr;
+
+    Form29.Edit_01.MaxLength := nLengthEdit1;
+    Form29.Edit_02.MaxLength := nLengthEdit2;
+    Form29.Edit_03.MaxLength := nLengthEdit3;
+    Form29.Edit_04.MaxLength := nLengthEdit4;
+    Form29.btnCancelar.Visible := False;
+    Form29.Button1.OnClick := Form29.Button1Click;
+  end;
 end;
+
+procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
+begin
+  if StrToIntDef(Form29.Edit_01.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe o ano da nota.', msgAtencao);
+    Form29.Edit_01.SetFocus;
+    Exit;
+  end;
+  if (Length(Form29.Edit_01.Text) <= 1) then
+  begin
+    MensagemSistema('O ano informado é inválido.', msgAtencao);
+    Form29.Edit_01.SetFocus;
+    Exit;
+  end;
+  if StrToIntDef(Form29.Edit_02.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe a série da nota.', msgAtencao);
+    Form29.Edit_02.SetFocus;
+    Exit;
+  end;
+  if StrToIntDef(Form29.Edit_03.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe o número da nota inicial.', msgAtencao);
+    Form29.Edit_03.SetFocus;
+    Exit;
+  end;
+  if StrToIntDef(Form29.Edit_04.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe o número da nota final.', msgAtencao);
+    Form29.Edit_04.SetFocus;
+    Exit;
+  end;
+  if Trim(Form29.Edit_05.Text) = EmptyStr then
+  begin
+    MensagemSistema('Informe a justificativa.', msgAtencao);
+    Form29.Edit_05.SetFocus;
+    Exit;
+  end;
+  if Length(Trim(Form29.Edit_05.Text)) < 15 then
+  begin
+    MensagemSistema('Informe pelo menos 15 caracteres na justificativa.', msgAtencao);
+    Form29.Edit_05.SetFocus;
+    Exit;
+  end;
+
+  Form29.Button1Click(Form29);
+end;
+{Dailon Parisotto (f-7540) 2023-11-06 fim}
 
 procedure TForm1.estarDisponibilidadedeServiosdasSecretariasdeFazenda1Click(
   Sender: TObject);

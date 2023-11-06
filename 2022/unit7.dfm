@@ -19660,6 +19660,10 @@ object Form7: TForm7
         Caption = 'NF-e - Transmitir as pr'#243'ximas '
         OnClick = ransmitirNFe1Click
       end
+      object InutilizaodeNFes1: TMenuItem
+        Caption = 'Inutiliza'#231#227'o de NF-e'#39's'
+        OnClick = InutilizaodeNFes1Click
+      end
       object N35: TMenuItem
         Caption = '-'
       end
