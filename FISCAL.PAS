@@ -15401,6 +15401,8 @@ var
   Mais1ini : TIniFile;
   iItem: Integer;
 begin    
+exibir relatorio fechamento caixa
+
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //
   x1024x768.Visible := False;

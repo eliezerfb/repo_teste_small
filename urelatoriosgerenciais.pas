@@ -2576,7 +2576,10 @@ begin
 
     sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais;
 
-    sCupomFiscalVinculado := sCupomFiscalVinculado + Form7.lbCaixaFechamentoDeCaixa.Caption + Chr(10);
+    sCupomFiscalVinculado := sCupomFiscalVinculado + Form7.lbCaixaFechamentoDeCaixa.Caption + Chr(10) +
+      'Período: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaIni.Date) + ' à ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaFim.Date) + Chr(10);
+    if bNaHora then
+      sCupomFiscalVinculado := sCupomFiscalVinculado + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraI.Date) + ' à ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraF.Date) + Chr(10);
 
     sCupomFiscalVinculado := sCupomFiscalVinculado
       + ImprimeTracos() + Chr(10)
