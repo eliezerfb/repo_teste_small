@@ -15401,8 +15401,6 @@ var
   Mais1ini : TIniFile;
   iItem: Integer;
 begin    
-exibir relatorio fechamento caixa
-
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
   //
   x1024x768.Visible := False;
@@ -15410,6 +15408,7 @@ exibir relatorio fechamento caixa
   Form1.IdentificarCredenciadoraPoS1.Visible     := False; // Sandro Silva 2018-11-20
   EnviaremailcomXMLePDFacadavenda1.Visible       := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')); // Ficha 4736 Sandro Silva 2019-08-02
   ValorLimiteTotalNFCeEstabelecidoSefaz1.Visible := (Form1.sModeloECF = '65'); // Sandro Silva 2021-07-12
+  FechamentodeCaixa1.Visible                     := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')); // Ficha 7504 Sandro Silva 2023-11-06
 
   Vendaspor1.Caption                           := 'Resumo de Vendas...';
   Imprimiroramento1.Caption                    := 'Imprimir Orçamento - Documento Auxiliar de Venda (DAV) ...';

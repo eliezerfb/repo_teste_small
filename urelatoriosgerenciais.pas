@@ -2477,19 +2477,6 @@ begin
 
   try
 
-    {
-    for iCaixa := 0 to Form7.chklbCaixas.Items.Count - 1 do
-    begin
-
-      if Form7.chklbCaixas.Checked[iCaixa] then
-      begin
-        if sListaCaixas <> '' then
-          sListaCaixas := sListaCaixas + ', ';
-
-        sListaCaixas := sListaCaixas + QuotedStr(Form7.chklbCaixas.Items.Strings[iCaixa]);
-      end;
-    end;
-    }
     sListaCaixas := ListaCaixasSelecionados(Form7.chklbCaixas);
 
     if sListaCaixas <> '' then
@@ -2576,10 +2563,10 @@ begin
 
     sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais;
 
-    sCupomFiscalVinculado := sCupomFiscalVinculado + Form7.lbCaixaFechamentoDeCaixa.Caption + Chr(10) +
+    sCupomFiscalVinculado := sCupomFiscalVinculado + (*Form7.lbCaixaFechamentoDeCaixa.Caption*) 'Caixa(s): ' + StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]) + Chr(10) +
       'Período: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaIni.Date) + ' à ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaFim.Date) + Chr(10);
     if bNaHora then
-      sCupomFiscalVinculado := sCupomFiscalVinculado + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraI.Date) + ' à ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraF.Date) + Chr(10);
+      sCupomFiscalVinculado := sCupomFiscalVinculado + 'Horário: ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraI.Date) + ' à ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraF.Date) + Chr(10);
 
     sCupomFiscalVinculado := sCupomFiscalVinculado
       + ImprimeTracos() + Chr(10)
