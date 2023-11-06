@@ -5759,6 +5759,11 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  {Sandro Silva 2023-11-06 inicio}
+  //Alguns lugares da acesso negado no TASKKILL Ficha 7556
+  Application.Terminate;
+  Halt(1);
+  {Sandro Silva 2023-11-06 fim}
 end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
