@@ -43,7 +43,7 @@ var
 
 implementation
 
-uses uDialogs;
+uses uDialogs, ufrmOrigemCombustivel;
 
 procedure GeraXmlNFeEntrada;
 var
@@ -1560,6 +1560,40 @@ begin
     end;
     {Sandro Silva 2023-09-14 fim}
 
+
+    {Sandro Silva 2023-11-07 inicio}
+    if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value <> '1') // não é consumidor final 
+    and (Trim(Form7.spdNFeDataSets.Campo('cProdANP_LA02').AsString) <> '')
+    and ((StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) > 0)) // regra LA18-20
+    and ((Pos('|' + Form7.spdNFeDataSets.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
+       (Pos('|' + Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0)) then
+    begin
+
+      try
+        Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+        FrmOrigemCombustivel.CodigoProduto    := Form7.ibDataSet4.FieldByname('CODIGO').AsString;
+        FrmOrigemCombustivel.DescricaoProduto := Form7.ibDataSet4.FieldByname('DESCRICAO').AsString;
+        FrmOrigemCombustivel.UnidadeProduto   := Form7.ibDataSet4.FieldByname('MEDIDA').AsString;
+
+        if FrmOrigemCombustivel.CDSORIGEM.IsEmpty then
+          FrmOrigemCombustivel.ShowModal;
+        FrmOrigemCombustivel.CDSORIGEM.First;
+        while FrmOrigemCombustivel.CDSORIGEM.Eof = False do
+        begin
+
+          Form7.spdNFeDataSets.IncluirPart('LA18');
+          Form7.spdNFeDataSets.Campo('indImport_LA19').Value := Trim(FrmOrigemCombustivel.CDSORIGEM.FieldByName('INDIMPORT').AsString);
+          Form7.spdNFeDataSets.Campo('cUFOrig_LA20').Value   := IntToStr(Form7.spdNFe.ObterCodigoUF(AnsiUpperCase(Trim(FrmOrigemCombustivel.CDSORIGEM.FieldByName('UFORIGEM').AsString))));
+          Form7.spdNFeDataSets.Campo('pOrig_LA21').Value     := FormatFloatXML(FrmOrigemCombustivel.CDSORIGEM.FieldByName('PORIGEM').AsFloat, 4);
+          Form7.spdNFeDataSets.SalvarPart('LA18');
+
+          FrmOrigemCombustivel.CDSORIGEM.Next;
+        end;
+        FreeAndNil(FrmOrigemCombustivel);
+      except
+      end;
+    end;
+    {Sandro Silva 2023-11-07 fim}
 
     Form7.ibDAtaset23.Next;
   end;
