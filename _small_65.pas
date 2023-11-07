@@ -3396,7 +3396,6 @@ begin
               on E: Exception do
               begin
                 sLogErro := sLogErroCredenciadoraCartao + 'Erro: 44' + Chr(10) + E.Message+chr(10)+chr(10)+'Ao calcular tributos';
-                // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                 Exit;
               end;
             end;
@@ -3547,7 +3546,6 @@ begin
                 begin
                   sStatus := 'Configure no Estoque, o CSOSN para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;// Sandro Silva 2018-04-11  sStatus := 'CSOSN não configurado para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;
                   sLogErro := sLogErroCredenciadoraCartao + 'Erro:22' + Chr(10) + sStatus +chr(10);   // Sandro Silva 2017-08-16  +chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema.'+chr(10)+'Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
-                  // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                   ConcatenaLog(sLogErroItens, sLogErro); // Sandro Silva 2018-07-20 sLogErroItens := sLogErroItens + Chr(10) + sLogErro;
                 end;
 
@@ -4156,8 +4154,16 @@ begin
 
             sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
+            {Sandro Silva 2023-10-26 inicio
             if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
               sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            }
+            if Trim(sCNPJ_YA05) = '' then
+            begin
+              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
+                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            end;
+            {Sandro Silva 2023-10-26 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             if Pos('CREDITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0 then
@@ -4220,8 +4226,16 @@ begin
 
             sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
+            {Sandro Silva 2023-10-26 inicio
             if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
               sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            }
+            if Trim(sCNPJ_YA05) = '' then
+            begin
+              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
+                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + Chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+            end;
+            {Sandro Silva 2023-10-26 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             Form1.sDebitoOuCredito := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito;
@@ -4440,7 +4454,6 @@ begin
           //
           sLogErro := sLogErroCredenciadoraCartao + 'Erro: 21' + Chr(10) + E.Message+chr(10)+
             chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
-          // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
 
           sStatus := E.Message;
           Exit;
@@ -4462,7 +4475,6 @@ begin
       except
         //
         sLogErro := sLogErroCredenciadoraCartao + 'Erro ao gravar NFC-e';
-        // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
         sStatus := sLogErro;
         Exit;
         //
@@ -4584,7 +4596,6 @@ begin
           on E: Exception do
           begin
             sLogErro := E.Message+chr(10)+chr(10)+'Ao enviar sincrono';
-            // Sandro Silva 2020-10-21  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
           end;
         end;
         //
@@ -4752,46 +4763,46 @@ begin
             end
             else
             begin
-              if (Pos('<cStat>206</cStat>',sRetorno) <> 0) or (Pos('<cStat>256</cStat>',sRetorno) <> 0) then // Sandro Silva 2018-03-28
-                bButton := Application.MessageBox(PAnsiChar('Esta numeração foi inutilizada .'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2020-09-03 bButton := Application.MessageBox(pChar('Esta numeração foi inutilizada .'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2018-03-28
+              if (Pos('<cStat>206</cStat>', sRetorno) <> 0) or (Pos('<cStat>256</cStat>', sRetorno) <> 0) then // Sandro Silva 2018-03-28
+              begin
+                bButton := Application.MessageBox(PAnsiChar('Esta numeração foi inutilizada .' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
+              end
               else
+              begin
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
                 begin
 
-                  sMensagemAlertaUsoDenegado := 'Esta numeração teve uso denegado.'+chr(10)+chr(10)+xmlNodeValue(sRetorno, '//xMotivo');
+                  sMensagemAlertaUsoDenegado := 'Esta numeração teve uso denegado.' + chr(10) + chr(10) + xmlNodeValue(sRetorno, '//xMotivo');
 
                   if xmlNodeValue(sRetorno, '// infProt/cStat') = '301' then // 301 Uso Denegado: Irregularidade fiscal do emitente
-                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10)+chr(10)+'Considere resolver a irregularidade junto ao Fisco';
+                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Considere resolver a irregularidade junto ao Fisco';
 
-                  if (xmlNodeValue(sRetorno, '// infProt/cStat') = '302')  // 302 Uso Denegado: Irregularidade fiscal do destinatário
-                  or (xmlNodeValue(sRetorno, '// infProt/cStat') = '303')  // 303 Uso Denegado: Destinatário não habilitado a operar na UF
+                  if (xmlNodeValue(sRetorno, '// infProt/cStat') = '302')   // 302 Uso Denegado: Irregularidade fiscal do destinatário
+                   or (xmlNodeValue(sRetorno, '// infProt/cStat') = '303')  // 303 Uso Denegado: Destinatário não habilitado a operar na UF
                   then
-                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10)+chr(10)+'Considere escolher outro destinatário';
+                    sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Considere escolher outro destinatário';
 
-                  sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10)+chr(10)+'Clique Não: Para cancelar a venda e voltar os produtos para o estoque' +
-                                                                             chr(10)+chr(10)+'Clique Sim: Para definir um novo número para esta NFC-e?';
+                  sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Clique Não: Para cancelar a venda e voltar os produtos para o estoque' +
+                                                                             chr(10) + chr(10) + 'Clique Sim: Para definir um novo número para esta NFC-e?';
 
-                  bButton := Application.MessageBox(PAnsiChar(sMensagemAlertaUsoDenegado),'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2020-09-03 bButton := Application.MessageBox(pChar(sMensagemAlertaUsoDenegado),'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING) // Sandro Silva 2020-05-13
+                  bButton := Application.MessageBox(PAnsiChar(sMensagemAlertaUsoDenegado), 'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
 
                 end
                 else
-                  bButton := Application.MessageBox(PAnsiChar('Esta numeração já foi utilizada.'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING); // Sandro Silva 2020-09-03 bButton := Application.MessageBox(pChar('Esta numeração já foi utilizada.'+chr(10)+chr(10)+'Definir um novo número para esta NFC-e?'),'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+                  bButton := Application.MessageBox(PAnsiChar('Esta numeração já foi utilizada.' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+              end;
+
             end;// if (Form1.ClienteSmallMobile.sVendaImportando <> '') then
 
             //
             if bButton = IDYES then
             begin
-              //
               try
-                //
                 sNovoNumero := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sNovoNumero := '000000';
-                //
                 while Form1.iCupom >= StrToInt(sNovoNumero) do
                 begin
-                  //
                   sNovoNumero := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1)); // Sandro Silva 2021-12-02 sNovoNumero := StrZero(IncrementaGenerator('G_NUMERONFCE', 1), 6, 0);
                   Sleep(10); // Sandro Silva 2020-05-20
-                  //
                 end;
 
                 sDAV     := '';
@@ -4823,7 +4834,7 @@ begin
                     // Identifica o primeiro DAV que encontrar nos itens da venda
                     sDAV     := Form1.ibDataSet27.FieldByName('DAV').AsString;
                     sTIPODAV := Form1.ibDataSet27.FieldByName('TIPODAV').AsString;
-                    Break; // Sandro Silva 2016-04-18
+                    Break;
                   end;
 
                   Form1.ibDataSet27.Next;
