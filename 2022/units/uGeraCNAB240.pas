@@ -387,8 +387,16 @@ begin
         sDVDaAgencia           := ' ';
       end;
 
-      sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
-      sDigitocontacorrente   := Copy(Copy(Form7.ibDataSet11CONTA.AsString,Pos('-',Form7.ibDataSet11CONTA.AsString)+1,1)+' ',1,1);
+      if Pos('-',Form7.ibDataSet11CONTA.AsString) > 0 then
+      begin
+        sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
+        sDigitocontacorrente   := Copy(Copy(Form7.ibDataSet11CONTA.AsString,Pos('-',Form7.ibDataSet11CONTA.AsString)+1,1)+' ',1,1);
+      end else
+      begin
+        sNumeroContaCorrente   := Right('000000000000'+Form7.ibDataSet11CONTA.AsString,12);
+        sDigitocontacorrente   := ' ';
+      end;
+
       sCodigoDaCarteira      := '1';
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
