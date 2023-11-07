@@ -4066,6 +4066,8 @@ begin
 end;
 
 function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
+//var
+//  sCodigo: String; // Sandro Silva 2023-11-07
 begin
   //
   // Atenção a rotina abaixo altera a quantidade no estoque
@@ -4170,6 +4172,17 @@ begin
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
               begin
+
+                {Sandro Silva 2023-11-07 inicio}
+                try
+                  Form7.bFabrica := True;
+                  FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Form7.ibDataSet16QUANTIDADE.AsFloat, Form7.bFabrica);
+                finally
+
+                  Form7.bFabrica := False;
+                end;
+                {Sandro Silva 2023-11-07 fim}
+
                 Form7.ibDataSet4.Edit;
                 Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                 Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
@@ -11839,7 +11852,8 @@ begin
     if (sModulo = 'COMPRA') or (sModulo = 'VENDA') or (sModulo = 'OS') then
     begin
       Image308.Visible := False;
-      Image208.Visible := False; Form7.Label208.Caption  := 'Bloquear';
+      Image208.Visible := False;
+      Form7.Label208.Caption  := 'Bloquear';
       Label208.Visible := False;
     end;
     
@@ -11900,7 +11914,8 @@ begin
 //      iLeft := iLeft + iIconeCom;
     end;
 
-    if (AllTrim(sWhere)     = 'where')     then swhere   := '';
+    if (AllTrim(sWhere)     = 'where')     then
+      swhere   := '';
     if (UpperCase(sOrderBy) = 'ORDER BY NOME')      then
     begin
       if sModulo = 'ESTOQUE' then
@@ -19978,8 +19993,6 @@ end;
 
 procedure TForm7.ibDataSet16QUANTIDADESetText(Sender: TField;
   const Text: String);
-var
-  sCodigo: String;
 begin
   // Quando o produto não ta cadastrado fica como comentário em cinza
   if ibDataSet16QUANTIDADE.AsFloat <> StrToFloat(Text) then
@@ -20030,21 +20043,6 @@ begin
           Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
         end;
       end;
-
-      {Sandro Silva 2023-11-06 inicio}
-      if TemComposicao(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) then
-      begin
-        try
-          Form7.bFabrica := True;
-          sCodigo := Form7.ibDataSet4CODIGO.AsString;
-          FabricaComposto(Form7.ibDataSet4, Form7.ibDataSet28, Form7.ibDataSet16QUANTIDADE.AsInteger);
-        finally
-          Form7.ibDataSet4.Locate('CODIGO', sCodigo,[]);
-
-          Form7.bFabrica := False;
-        end;
-      end;
-      {Sandro Silva 2023-11-06 fim}
 
     end;
   end;
