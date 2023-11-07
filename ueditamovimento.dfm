@@ -1,0 +1,159 @@
+object FEditaMovimento: TFEditaMovimento
+  Left = 179
+  Top = 0
+  BorderIcons = []
+  BorderStyle = bsNone
+  Caption = 'FEditaMovimento'
+  ClientHeight = 741
+  ClientWidth = 1008
+  Color = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Microsoft Sans Serif'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object lbTotal: TLabel
+    Left = 832
+    Top = 328
+    Width = 42
+    Height = 16
+    Alignment = taRightJustify
+    Caption = 'lbTotal'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Button1: TBitBtn
+    Left = 358
+    Top = 360
+    Width = 100
+    Height = 40
+    Caption = 'OK'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object Panel2: TPanel
+    Left = 2
+    Top = 431
+    Width = 1008
+    Height = 312
+    BevelOuter = bvNone
+    Color = clWhite
+    Ctl3D = False
+    ParentBackground = False
+    ParentCtl3D = False
+    TabOrder = 1
+    inline Frame_teclado1: TFrame_teclado
+      Left = -5
+      Top = 0
+      Width = 1018
+      Height = 301
+      TabOrder = 0
+      inherited PAnel1: TPanel
+        inherited Image4: TImage
+          Picture.Data = {00}
+        end
+      end
+    end
+  end
+  object BitBtn1: TBitBtn
+    Left = 24
+    Top = 384
+    Width = 75
+    Height = 25
+    Caption = 'BitBtn1'
+    TabOrder = 2
+  end
+  object BitBtn2: TBitBtn
+    Left = 470
+    Top = 360
+    Width = 100
+    Height = 40
+    Caption = 'Cancelar'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 3
+    OnClick = BitBtn2Click
+  end
+  object DBGridItens: TDBGrid
+    Left = 20
+    Top = 32
+    Width = 981
+    Height = 289
+    DataSource = DataSource1
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = [fsBold]
+    Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+    ParentFont = False
+    TabOrder = 4
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clBlack
+    TitleFont.Height = -13
+    TitleFont.Name = 'Microsoft Sans Serif'
+    TitleFont.Style = []
+    OnDrawColumnCell = DBGridItensDrawColumnCell
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'ITEM'
+        Title.Caption = 'Item'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DESCRICAO'
+        Title.Caption = 'Descri'#231#227'o'
+        Width = 420
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'QUANTIDADE'
+        Title.Caption = 'Quantidade'
+        Width = 154
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'UNITARIO'
+        Title.Caption = 'Valor Unit.'
+        Width = 144
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'TOTAL'
+        Title.Caption = 'Total'
+        Width = 171
+        Visible = True
+      end>
+  end
+  object DataSource1: TDataSource
+    DataSet = Form1.ibDataSet27
+    Left = 184
+    Top = 160
+  end
+end

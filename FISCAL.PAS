@@ -1758,7 +1758,7 @@ uses
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
-  ;
+  , ueditamovimento;
 
 {$R *.DFM}
 
@@ -34758,6 +34758,12 @@ end;
 
 procedure TForm1.Memo1DblClick(Sender: TObject);
 begin
+  Application.CreateForm(TFEditaMovimento, FEditaMovimento);
+  FEditaMovimento.Pedido := FormataNumeroDoCupom(Form1.icupom);
+  FEditaMovimento.Caixa  := Form1.sCaixa;
+  FEditaMovimento.ShowModal;
+  FreeAndNil(FEditaMovimento); 
+
   Memo1.Clear;
   AberturaDoCupom;
 end;

@@ -62,7 +62,8 @@ uses
   _Small_59 in '_Small_59.pas',
   _Small_99 in '_small_99.pas',
   uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
-  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas';
+  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
+  ueditamovimento in 'ueditamovimento.pas' {FEditaMovimento};
 
 {$R *.RES}
 
@@ -244,6 +245,7 @@ begin
   Application.CreateForm(TFDadosPOS, FDadosPOS);
   Application.CreateForm(TFCadAdquirentes, FCadAdquirentes);
   Application.CreateForm(TForm27, Form27);
+  Application.CreateForm(TFEditaMovimento, FEditaMovimento);
   Application.Run;
     //
   end else
