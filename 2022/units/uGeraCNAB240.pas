@@ -44,12 +44,15 @@ var
   sDVDaAgencia,
   sCodigoParaBaixa,
   sNumeroDeDiasParaBaixa,
+  sNumeroContratoOP,
   sEspecieDoTitulo,
   sTipoDocumento,
   sNumerodoDocumento,
   sFormaDeCadastrar,
   sCodigoDaCarteira,
-  sDigitocontacorrente, sNumerocontaCorrente,
+  sDigitocontacorrente,
+  sNumerocontaCorrente,
+  sAgencia,
   sLayoutdoLote, sDensidade, sLayoutArquivo,
   sCodigoDoConvenio, sNomeDoBanco, sComandoMovimento, sParcela, sCPFOuCNPJ: String;
   I, iReg, iRemessa, iLote : Integer;
@@ -258,6 +261,8 @@ begin
       sLayoutArquivo         := '000';
       sDensidade             := '06250';
       sLayoutdoLote          := '000';
+      sAgencia               := Form26.MaskEdit44.Text;
+      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sNumeroContaCorrente   := Right('000000000000'+Copy(Form26.MaskEdit46.Text,1,Pos('-',Form26.MaskEdit46.Text)-1),12);
       sDigitocontacorrente   := Copy(Right(Replicate(' ',13)+Form26.MaskEdit46.Text,1),1,1);
       sCodigoDaCarteira      := '7';
@@ -266,9 +271,9 @@ begin
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '   ';
       sCodigoParaBaixa       := '0';
-      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0';
-      sAvisoDebitoAuto       := '3';
+      sAvisoDebitoAuto       := '2';
+      sNumeroContratoOP      := '0000000000';
     end;
 
     if Banco = bSicoob then
@@ -279,6 +284,8 @@ begin
       sLayoutArquivo         := '081';
       sDensidade             := '00000';
       sLayoutdoLote          := '040';
+      sAgencia               := Copy(Form26.MaskEdit44.Text+'0000-0',1,4); 
+      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
       sDigitocontacorrente   := Copy(Right(Replicate(' ',13)+Form7.ibDataSet11CONTA.AsString,1),1,1);
       sCodigoDaCarteira      := '1';
@@ -287,9 +294,9 @@ begin
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '   ';
       sCodigoParaBaixa       := '0';
-      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0'; // tem que ser 0 no Header de Arquivo e nos outros lugar tem que ser ' ' 
       sAvisoDebitoAuto       := '0';
+      sNumeroContratoOP      := '0000000000';
     end;
 
     if CodBanco = '748' then
@@ -300,6 +307,8 @@ begin
       sLayoutArquivo         := '081';
       sDensidade             := '01600';
       sLayoutdoLote          := '040';
+      sAgencia               := Copy(Form26.MaskEdit44.Text+'0000-0',1,4);
+      sDVDaAgencia           := ' ';
       sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
       sDigitocontacorrente   := Copy(Right(Replicate(' ',13)+Form7.ibDataSet11CONTA.AsString,1),1,1);
       sCodigoDaCarteira      := '1';
@@ -308,9 +317,9 @@ begin
       sEspecieDoTitulo       := '03';
       sNumeroDeDiasParaBaixa := '060';
       sCodigoParaBaixa       := '1';
-      sDVDaAgencia           := ' ';
       sDigitoAgencia         := '0';
-      sAvisoDebitoAuto       := '3';
+      sAvisoDebitoAuto       := '2';
+      sNumeroContratoOP      := '0000000000';
     end;
 
     if Banco = bAilos then
@@ -321,6 +330,8 @@ begin
       sLayoutArquivo         := '087';
       sDensidade             := '00000';
       sLayoutdoLote          := '045';
+      sAgencia               := Copy(Form26.MaskEdit44.Text+'0000-0',1,4);
+      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sNumeroContaCorrente   := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),13,0),1,12);
       sDigitocontacorrente   := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),13,0),13,1);
       sCodigoDaCarteira      := '1';
@@ -329,9 +340,9 @@ begin
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '   ';
       sCodigoParaBaixa       := '2';
-      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := ' ';
-      sAvisoDebitoAuto       := '3';
+      sAvisoDebitoAuto       := '2';
+      sNumeroContratoOP      := '0000000000';
     end;
 
     if Banco = bItau then
@@ -342,6 +353,8 @@ begin
       sLayoutArquivo         := '040';
       sDensidade             := '00000';
       sLayoutdoLote          := '030';
+      sAgencia               := Copy(Form26.MaskEdit44.Text+'0000-0',1,4);
+      sDVDaAgencia           := ' ';
       sNumeroContaCorrente   := '0000000'+Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),5,0),1,5);
       sDigitocontacorrente   := ' ';
       sCodigoDaCarteira      := '1';
@@ -350,9 +363,9 @@ begin
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '00';
       sCodigoParaBaixa       := '2';
-      sDVDaAgencia           := ' ';
       sDigitoAgencia         := Copy(Right('0'+LimpaNumero(Form26.MaskEdit46.Text),1),1,1); // DAC
       sAvisoDebitoAuto       := '0';
+      sNumeroContratoOP      := '0000000000';
     end;
 
     if CodBanco = '041' then
@@ -363,17 +376,28 @@ begin
       sLayoutArquivo         := '103';
       sDensidade             := '00000';
       sLayoutdoLote          := '060';
-      sNumeroContaCorrente   := '0000000'+Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),5,0),1,5);
-      sDigitocontacorrente   := ' ';
+
+      if Pos('-',Form7.ibDataSet11AGENCIA.AsString) > 0 then
+      begin
+        sAgencia               := Right('0000'+Copy(Form7.ibDataSet11AGENCIA.AsString,1,Pos('-',Form7.ibDataSet11AGENCIA.AsString)-1),4);
+        sDVDaAgencia           := Copy(Copy(Form7.ibDataSet11AGENCIA.AsString,Pos('-',Form7.ibDataSet11AGENCIA.AsString)+1,1)+' ',1,1);
+      end else
+      begin
+        sAgencia               := Right('0000'+Form7.ibDataSet11AGENCIA.AsString,4);
+        sDVDaAgencia           := ' ';
+      end;
+
+      sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
+      sDigitocontacorrente   := Copy(Copy(Form7.ibDataSet11CONTA.AsString,Pos('-',Form7.ibDataSet11CONTA.AsString)+1,1)+' ',1,1);
       sCodigoDaCarteira      := '1';
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '   ';
       sCodigoParaBaixa       := '2';
-      sDVDaAgencia           := ' ';
       sDigitoAgencia         := ' ';
       sAvisoDebitoAuto       := '2';
+      sNumeroContratoOP      := '0000805076';
     end;
 
     if sNomeDoBanco = '' then
@@ -383,6 +407,8 @@ begin
       sLayoutArquivo         := '000';
       sDensidade             := '00000';
       sLayoutdoLote          := '000';
+      sAgencia               := Copy(Form26.MaskEdit44.Text+'0000-0',1,4);
+      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sNumeroContaCorrente   := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),13,0),1,12);
       sDigitocontacorrente   := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),13,0),13,1);
       sCodigoDaCarteira      := '1';
@@ -391,9 +417,9 @@ begin
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '   ';
       sCodigoParaBaixa       := '0';
-      sDVDaAgencia           := Copy(Copy(Form26.MaskEdit44.Text+'0000-0',6,1),1,1);
       sDigitoAgencia         := '0';
-      sAvisoDebitoAuto       := '3';
+      sAvisoDebitoAuto       := '2';
+      sNumeroContratoOP      := '0000000000';
     end;
 
 
@@ -407,7 +433,7 @@ begin
         Copy('2',1,1)                                                                             + // 018 a 018 (001) Tipo de Inscrição da Empresa
         Copy(Right(Replicate('0',14)+LimpaNumero(Form7.IBDataSet13CGC.AsString),14),1,014)        + // 019 a 032 (014) Número de Inscrição da Empresa
         copy(sCodigoDoconvenio,1,20)                                                              + // 033 a 052 (020) Código do Convênio no Banco
-        Copy('0'+Copy(Form26.MaskEdit44.Text+'0000-0',1,4),1,5)                                   + // 053 a 057 (005) Agência Mantenedora da Conta
+        Copy('0'+Copy(sAgencia+'0000-0',1,4),1,5)                                                 + // 053 a 057 (005) Agência Mantenedora da Conta
         Copy(sDVdaAgencia,1,1)                                                                    + // 058 a 058 (001) Dígito Verificador da Agência
         Copy(sNumeroContaCorrente,1,12)                                                           + // 059 a 070 (012) Número da Conta Corrente
         Copy(sDigitocontacorrente,1,1)                                                            + // 071 a 071 (001) Dígito Verificador da Conta
@@ -438,7 +464,7 @@ begin
         Copy('2',1,1)                                                                             + // 018 a 018 (001) Tipo de Inscrição da Empresa
         Copy(Right(Replicate('0',15)+LimpaNumero(Form7.IBDataSet13CGC.AsString),15),1,015)        + // 019 a 033 (015) Número de Inscrição da Empresa
         copy(sCodigoDoconvenio,1,20)                                                              + // 034 a 053 (020) Código do Convênio no Banco
-        Copy(('0'+Copy(Form26.MaskEdit44.Text+'0000-0',1,4)),1,5)                                 + // 054 a 058 (005) Agência Mantenedora da Conta
+        Copy('0'+sAgencia,1,5)                                                                    + // 054 a 058 (005) Agência Mantenedora da Conta
         Copy(sDVdaAgencia,1,1)                                                                    + // 059 a 059 (001) Dígito Verificador da Agência
         Copy(sNumeroContaCorrente,1,12)                                                           + // 060 a 071 (012) Número da Conta Corrente
         Copy(sDigitocontacorrente,1,1)                                                            + // 072 a 072 (001) Dígito Verificador da Conta
@@ -560,7 +586,7 @@ begin
                 Copy('P',1,1)                                                                             + // 014 a 014 (001) Cód. Segmento do Registro Detalhe
                 Copy(' ',1,1)                                                                             + // 015 a 015 (001) Uso Exclusivo FEBRABAN/CNAB
                 Copy(sComandoMovimento,1,2)                                                               + // 016 a 017 (002) Código de Movimento Remessa
-                Copy('0'+Copy(Form26.MaskEdit44.Text+'0000-0',1,4),1,5)                                   + // 018 a 022 (005) Agência Mantenedora da Conta
+                Copy('0'+Copy(sAgencia+'0000-0',1,4),1,5)                                                 + // 018 a 022 (005) Agência Mantenedora da Conta
                 Copy(sDVdaAgencia,1,1)                                                                    + // 023 a 023 (001) Dígito Verificador da Agência
                 Copy(sNumeroContaCorrente,1,12)                                                           + // 024 a 035 (012) Número da Conta Corrente
                 Copy(sDigitocontacorrente,1,1)                                                            + // 036 a 036 (001) Dígito Verificador da Conta
@@ -627,7 +653,8 @@ begin
 
                 {Mauricio Parizotto 2023-10-11 Fim}
 
-                Copy(Right('0000000000',10),1,10)                                                         + // 230 a 239 (10) Nº do Contrato da Operação de Créd.
+                //Copy(Right('0000000000',10),1,10)                                                         + // 230 a 239 (10) Nº do Contrato da Operação de Créd. Mauricio Parizotto 2023-11-07
+                Copy(Right(sNumeroContratoOP,10),1,10)                                                      + // 230 a 239 (10) Nº do Contrato da Operação de Créd.
                 Copy(' ',1,1)                                                                               // 240 a 240 (001) Uso Exclusivo FEBRABAN / CNAB
                 );
 
