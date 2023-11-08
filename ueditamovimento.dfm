@@ -15,22 +15,23 @@ object FEditaMovimento: TFEditaMovimento
   KeyPreview = True
   OldCreateOrder = False
   OnActivate = FormActivate
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lbTotal: TLabel
-    Left = 832
+    Left = 945
     Top = 328
-    Width = 42
-    Height = 16
+    Width = 53
+    Height = 29
     Alignment = taRightJustify
-    Caption = 'lbTotal'
+    Caption = '0,00'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -25
     Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
+    Font.Style = [fsBold]
     ParentFont = False
   end
   object Button1: TBitBtn
@@ -108,13 +109,17 @@ object FEditaMovimento: TFEditaMovimento
     Font.Style = [fsBold]
     Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
     ParentFont = False
+    ReadOnly = True
     TabOrder = 4
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clBlack
     TitleFont.Height = -13
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
+    OnColEnter = DBGridItensColEnter
     OnDrawColumnCell = DBGridItensDrawColumnCell
+    OnKeyDown = DBGridItensKeyDown
+    OnKeyPress = DBGridItensKeyPress
     Columns = <
       item
         Expanded = False
@@ -132,6 +137,7 @@ object FEditaMovimento: TFEditaMovimento
       item
         Expanded = False
         FieldName = 'QUANTIDADE'
+        ReadOnly = False
         Title.Caption = 'Quantidade'
         Width = 154
         Visible = True
@@ -139,14 +145,15 @@ object FEditaMovimento: TFEditaMovimento
       item
         Expanded = False
         FieldName = 'UNITARIO'
-        Title.Caption = 'Valor Unit.'
+        ReadOnly = False
+        Title.Caption = 'R$ Valor Unit'#225'rio'
         Width = 144
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TOTAL'
-        Title.Caption = 'Total'
+        Title.Caption = 'R$ Total'
         Width = 171
         Visible = True
       end>

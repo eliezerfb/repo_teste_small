@@ -1581,6 +1581,7 @@ type
     sSerialSmall: String; // Sandro Silva 2020-09-29
     sChaveMeiCifrada: String; // Sandro Silva 2020-09-29
     ClienteSmallMobile: TSmallMobileCliente;
+    bEditandoMovimento: Boolean; // Sandro Silva 2023-11-08
     //
     function CortarImagem(Imagem: TGraphic; Valores: TRect): TBitmap;
     //
@@ -9783,6 +9784,7 @@ var
 //  sExeName: String;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
+  bEditandoMovimento := False; // Sandro Silva 2023-11-08
   AjustarBufferChuncks(Form1);
   ClienteSmallMobile := TSmallMobileCliente.Create;
 
@@ -15265,10 +15267,15 @@ end;
 
 procedure TForm1.ibDataSet27QUANTIDADESetText(Sender: TField;
   const Text: String);
+var
+  bArtificioParaAfetarApenasEdicaoMovimento: Boolean;
 begin
-  {                                  }
-  { Não permite quantidade negativa  }
-  {                                  }
+  {                                         }
+  { Não permite quantidade negativa         }
+  { Usado pela tela de edição de momevimento}
+  {                                         }
+
+  {Sandro Silva 2023-11-08 inicio
   if ibDataSet4.FieldByName('DESCRICAO').AsString <> Edit1.Text then
   begin
     ibDAtaSet4.Close;
@@ -15276,58 +15283,107 @@ begin
     ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Alltrim(Edit1.Text))+' and coalesce(ATIVO,0)=0 ');
     ibDAtaSet4.Open;
   end;
-  //
-  if (Alltrim(ibDataSet4.FieldByName('DESCRICAO').AsString) = AllTrim(Edit1.Text)) and (AllTrim(ibDataSet4.FieldByName('DESCRICAO').AsString)<>'') then
-  begin
-    if Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat < 0 then
+  }
+  try
+    bArtificioParaAfetarApenasEdicaoMovimento := True;
+    if Form1.bEditandoMovimento = False then
     begin
-      Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := 0
+      if Form1.ibDataSet4.FieldByName('DESCRICAO').AsString <> Edit1.Text then
+      begin
+        Form1.ibDataSet4.Close;
+        Form1.ibDataSet4.SelectSQL.Clear;
+        Form1.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Alltrim(Edit1.Text))+' and coalesce(ATIVO,0)=0 ');
+        Form1.ibDataSet4.Open;
+      end;
     end
     else
     begin
-      if Form1.ConfNegat = 'Não' then
+      Form1.ibDataSet4.Close;
+      Form1.ibDataSet4.SelectSQL.Clear;
+      Form1.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Trim(Form1.ibDataSet27.FieldByname('CODIGO').AsString))+' and coalesce(ATIVO,0)=0 ');
+      Form1.ibDataSet4.Open;
+      {
+      if TemGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString)
+        or TemSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString)
+        or TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) then
+      bArtificioParaAfetarApenasEdicaoMovimento := False;
+      }
+    end;
+
+    {
+    if (IBQGRADE.FieldByName('CODIGO').AsString <> '') or (IBQCOMPOSTO.FieldByName('CODIGO').AsString <> '') or (IBQSERIE.FieldByName('CODIGO').AsString <> '') then
+    begin
+      if StrToFloat(Text) <> Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat then
       begin
-        if (ibDataSet4.FieldByName('TIPO_ITEM').AsString <> '09') then // serviços não atera a quantidade
+        SmallMessageBox('Quantidade do Item não pode ser alterada' + #10 + #10 +
+          Form1.ibDataSet27.FieldByname('CODIGO').AsString + ' ' + Form1.ibDataSet27.FieldByname('DESCRICAO').AsString + ' - ' + Form1.ibDataSet27.FieldByname('MEDIDA').AsString + #10 +
+          IfThen(IBQGRADE.FieldByName('CODIGO').AsString <> '', #10 + 'Produto com grade', '') +
+          IfThen(IBQSERIE.FieldByName('CODIGO').AsString <> '', #10 + 'Produto com controle de número de série', '') +
+          IfThen(IBQCOMPOSTO.FieldByName('CODIGO').AsString <> '', #10 + 'Produto com composição', ''),
+          'Atenção', MB_ICONWARNING);
+      end;
+    end;
+    }
+
+    {Sandro Silva 2023-11-08 fim}
+
+    // Sandro Silva 2023-11-08 if (Alltrim(ibDataSet4.FieldByName('DESCRICAO').AsString) = AllTrim(Edit1.Text)) and (AllTrim(ibDataSet4.FieldByName('DESCRICAO').AsString)<>'') then
+    if (Trim(ibDataSet4.FieldByName('DESCRICAO').AsString) = Trim(Form1.ibDataSet27.FieldByname('DESCRICAO').AsString)) and (Trim(ibDataSet4.FieldByName('DESCRICAO').AsString) <> '')
+    then
+    begin
+      if bArtificioParaAfetarApenasEdicaoMovimento then
+      begin
+        if Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat < 0 then
         begin
-          if (StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
+          Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := 0
+        end
+        else
+        begin
+          if Form1.ConfNegat = 'Não' then
           begin
-            //
-            // Verifica se é produto composto
-            //
-            Form1.IBQuery3.Close;
-            Form1.IBQuery3.SQL.Clear;
-            Form1.IBQuery3.SQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(ibDataSet4.FieldByName('CODIGO').AsString)+' ');
-            Form1.IBQuery3.Open;
-            //
-            if Form1.ibDataSet4.FieldByName('CODIGO').AsString <> Form1.IBQuery3.FieldByName('CODIGO').AsString then
+            if (ibDataSet4.FieldByName('TIPO_ITEM').AsString <> '09') then // serviços não atera a quantidade
             begin
-              AlertaSonoro;
+              if (StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
+              begin
+                //
+                // Verifica se é produto composto
+                //
+                Form1.IBQuery3.Close;
+                Form1.IBQuery3.SQL.Clear;
+                Form1.IBQuery3.SQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(ibDataSet4.FieldByName('CODIGO').AsString)+' ');
+                Form1.IBQuery3.Open;
+                //
+                if Form1.ibDataSet4.FieldByName('CODIGO').AsString <> Form1.IBQuery3.FieldByName('CODIGO').AsString then
+                begin
+                  AlertaSonoro;
 
-              {Sandro Silva 2023-06-23 inicio
-              SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
-              }
-              if (Form1.sModeloECF_Reserva = '99') then
-                SmallMsg('Não é possível efetuar a movimentação, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427')
+                  {Sandro Silva 2023-06-23 inicio
+                  SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
+                  }
+                  if (Form1.sModeloECF_Reserva = '99') then
+                    SmallMsg('Não é possível efetuar a movimentação, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427')
+                  else
+                    SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
+                  {Sandro Silva 2023-06-23 fim}
+
+                  Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
+                  if (Form1.ClienteSmallMobile.sVendaImportando = '') then
+                    Edit1.SetFocus;
+                end
+                else
+                  Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+              end
               else
-                SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
-              {Sandro Silva 2023-06-23 fim}
-
-              Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
-              if (Form1.ClienteSmallMobile.sVendaImportando = '') then
-                Edit1.SetFocus;
-            end
-            else
-              Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+                Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+            end;
           end
           else
             Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
         end;
-      end
-      else
-        Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+      end;
     end;
+  finally
   end;
-  //
 end;
 
 procedure TForm1.DBGrid2KeyPress(Sender: TObject; var Key: Char);
@@ -18318,13 +18374,6 @@ begin
               if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> Form1.IBQuery3.FieldByName('CODIGO').AsString)
                 and (Form1.ibDataSet4.FieldByName('TIPO_ITEM').AsString <> '09') then
               begin
-                {Sandro Silva 2023-06-23 inicio
-                if (Form1.ClienteSmallMobile.ImportandoMobile = False) then // Sandro Silva 2022-08-08 if (ImportandoMobile = False) then
-                  Small_InputBox('Alerta','Estoque insuficiente:' + #13 + #13 + 'Não é possível efetuar a venda de "' +
-                    Form1.ibDataSet4.FieldByName('DESCRICAO').AsString + '", tem ' +
-                    FloatToStr(StrToFloat(FormatFloat('0.000000', Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString)))) // Sandro Silva 2019-09-23 UnoChapeco FloatToStr(Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString))
-                   + ' ' + Form1.ibDataSet4.FieldByName('MEDIDA').AsString + ' no estoque. Erro 7450' + #13 + #13 + 'Tecle ESC ou pressione OK para vender outro item','');
-                }
                 if (Form1.ClienteSmallMobile.ImportandoMobile = False) then // Sandro Silva 2022-08-08 if (ImportandoMobile = False) then
                 begin
                   Small_InputBox('Alerta','Estoque insuficiente:' + #13 + #13 + 'Não é possível efetuar a venda de "' +
@@ -18339,7 +18388,6 @@ begin
                     FloatToStr(StrToFloat(FormatFloat('0.000000', Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString)))) // Sandro Silva 2019-09-23 UnoChapeco FloatToStr(Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(Form1.ibDataSet4.FieldByName('CODIGO').AsString))
                    + ' ' + Form1.ibDataSet4.FieldByName('MEDIDA').AsString + ' no estoque. Erro 7450' + #13 + #13 + 'Tecle ESC ou pressione OK para vender outro item','');
                 end;
-                {Sandro Silva 2023-06-23 fim}
 
                 Commitatudo(False); // Não é possível efetuar a venda, só tem
 

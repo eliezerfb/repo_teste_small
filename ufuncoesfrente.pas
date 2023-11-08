@@ -349,6 +349,9 @@ function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
 procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
 function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
+function TemGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function TemSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function TemComposicao(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
@@ -2498,6 +2501,65 @@ begin
   else
     Result := LerParametroIni(FRENTE_INI, 'NFCE', 'CUPOM', Default);
   INI.Free;
+end;
+
+function TemGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQGRADE: TIBQuery;
+begin
+  Result := False;
+  IBQGRADE    := CriaIBQuery(IBTransaction);
+  try
+    IBQGRADE.Close;
+    IBQGRADE.SQL.Text :=
+      'select distinct CODIGO ' +
+      'from GRADE ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQGRADE.Open;
+    Result := (IBQGRADE.FieldByName('CODIGO').AsString <> '');
+  except
+  end;
+  FreeAndNil(IBQGRADE);
+end;
+
+function TemSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQSERIE: TIBQuery;
+begin
+  Result := False;
+  IBQSERIE    := CriaIBQuery(IBTransaction);
+  try
+    IBQSERIE.Close;
+    IBQSERIE.SQL.Text :=
+      'select distinct CODIGO ' +
+      'from SERIE ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQSERIE.Open;
+
+    Result := (IBQSERIE.FieldByName('CODIGO').AsString <> '');
+  except
+  end;
+  FreeAndNil(IBQSERIE);
+end;
+
+function TemComposicao(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQCOMPOSTO: TIBQuery;
+begin
+  Result := False;
+  IBQCOMPOSTO := CriaIBQuery(IBTransaction);
+  try
+    IBQCOMPOSTO.Close;
+    IBQCOMPOSTO.SQL.Text :=
+      'select distinct CODIGO ' +
+      'from COMPOSTO ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQCOMPOSTO.Open;
+
+    Result := (IBQCOMPOSTO.FieldByName('CODIGO').AsString <> '');
+   except
+   end;
+   FreeAndNil(IBQCOMPOSTO);
 end;
 
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;

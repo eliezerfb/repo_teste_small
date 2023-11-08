@@ -27,11 +27,16 @@ type
     procedure DBGridItensDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure FormShow(Sender: TObject);
+    procedure DBGridItensColEnter(Sender: TObject);
+    procedure DBGridItensKeyPress(Sender: TObject; var Key: Char);
+    procedure DBGridItensKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FCaixa: String;
     FPedido: String;
-    function TotalizaMovimento(DataSet: TIBDataSet): Double;
+    function TotalizaMovimento(DataSet: TDataSet): Double;
   public
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
@@ -76,6 +81,7 @@ procedure TFEditaMovimento.FormCreate(Sender: TObject);
 begin
   // Artifício para o botão OK nunca ficar com foco quando o form for aberto. Evitar confirmação OK quando ler código de barras Sandro Silva 2018-10-24
   BitBtn1.Top := -10000;
+  Form1.bEditandoMovimento := True;
 
   FEditaMovimento.Top    := Form1.Panel1.Top;
   FEditaMovimento.Left   := Form1.Panel1.Left;
@@ -126,6 +132,8 @@ begin
 
     end;
 
+    
+
     // Cor de fundo para célula depende se está selecionada
     if gdSelected in State then
       (Sender As TDBGrid).Canvas.Brush.Color := clHighlight
@@ -174,23 +182,98 @@ begin
 
   AjustaLarguraDBGrid(DBGridItens);
 
-  TotalizaMovimento(Form1.ibDataSet27);   
+  TotalizaMovimento(Form1.ibDataSet27);
 
 end;
 
-function TFEditaMovimento.TotalizaMovimento(DataSet: TIBDataSet): Double;
+function TFEditaMovimento.TotalizaMovimento(DataSet: TDataSet): Double;
 var
   sItem: String;
 begin
-  Result := 0.00;
-  sItem := DataSet.FieldByName('ITEM').AsString;
-  while DataSet.Eof = False do
-  begin
-    Result := DataSet.FieldByName('TOTAL').AsFloat;
-    DataSet.Next;
+  DataSet.DisableControls;
+  try
+    //Result := 0.00;
+    sItem := DataSet.FieldByName('ITEM').AsString;
+    while DataSet.Eof = False do
+    begin
+      //Result := DataSet.FieldByName('TOTAL').AsFloat;
+      if (DataSet.FieldByName('UNITARIO').AsFloat * DataSet.FieldByName('QUANTIDADE').AsFloat) <> DataSet.FieldByName('TOTAL').AsFloat then
+      begin
+        DataSet.Edit;
+        DataSet.FieldByName('TOTAL').AsFloat := StrToFloat(FormatFloat('0.00', DataSet.FieldByName('UNITARIO').AsFloat * DataSet.FieldByName('QUANTIDADE').AsFloat));
+        DataSet.Post;
+      end;
+      DataSet.Next;
+    end;
+    DataSet.Locate('ITEM', sItem, []);
+  finally
+    DataSet.EnableControls;
   end;
 
-  lbTotal.Caption := 'Total: ' + FormatFloat('0.00', Result);
+  Form1.fTotal    := 9999999.99; // Jeito de forçar a totalização :(
+  Result := Form1.PDV_SubTotal(True);
+  lbTotal.Caption := 'Total:R$' + FormatFloat('0.00', Result);
+end;
+
+procedure TFEditaMovimento.DBGridItensColEnter(Sender: TObject);
+begin
+  DBGridItens.ReadOnly := True;
+  if ((DBGridItens.SelectedField.FieldName = 'QUANTIDADE')
+    and((TemGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
+      and (TemSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
+      and (TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
+      )
+    ) or (DBGridItens.SelectedField.FieldName = 'UNITARIO')
+  then
+    DBGridItens.ReadOnly := False;       testar
+  TotalizaMovimento(DBGridItens.DataSource.DataSet);
+end;
+
+procedure TFEditaMovimento.DBGridItensKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  if TDBGrid(Sender).SelectedField.DataType = ftFloat then
+  begin
+    if Key = Chr(46) then
+      Key := Chr(44);
+  end;
+end;
+
+procedure TFEditaMovimento.DBGridItensKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Shift = [SsCtrl]) and (Key = 46) then
+    Key := 0;
+
+  if Key in [VK_TAB, VK_ESCAPE] then
+    Key := VK_RETURN;
+    
+  try
+
+    if Key = VK_RETURN then
+    begin
+
+      if (TDBGrid(Sender).SelectedIndex + 1) >= TDBGrid(Sender).Columns.Count then
+      begin
+
+        TDBGrid(Sender).SelectedIndex := 0;
+        TDBGrid(Sender).DataSource.DataSet.Next;
+
+      end
+      else
+        TDBGrid(Sender).SelectedIndex := TDBGrid(Sender).SelectedIndex + 1;
+      
+    end;
+
+  except
+  end;
+  
+end;
+
+procedure TFEditaMovimento.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  Form1.bEditandoMovimento := False;
 end;
 
 end.
