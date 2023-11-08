@@ -30,6 +30,7 @@ type
     btnEnviaEmailTodos: TBitBtn;
     btnCriaImagemBoleto: TBitBtn;
     chkDataAtualizadaJurosMora: TCheckBox;
+    PrintDialog1: TPrintDialog;
     procedure btnAnteriorClick(Sender: TObject);
     procedure btnProximoClick(Sender: TObject);
     procedure Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -258,7 +259,8 @@ begin
     Form25.sNossoNum := '';
     // --------------------------------------------------- //
     // inicio da impressão do Boleto em Código de Barras //
-    // --------------------------------------------------- //
+    // --------------------------------------------------- /
+
     if bP1 then
     begin
       Printer.PrinterIndex := Printer.PrinterIndex;
@@ -1066,6 +1068,8 @@ end;
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
 begin
+  if not Form25.PrintDialog1.Execute then
+    Exit;
   ImprimirBoleto;
 end;
 
@@ -1086,6 +1090,8 @@ begin
     end;
 
     try
+      if not Form25.PrintDialog1.Execute then
+        Exit;
       while (not Form7.ibDataSet7.EOF) and (bOk) do
       begin
         //
