@@ -383,7 +383,7 @@ begin
       sEspecieDoTitulo       := '01';
       sNumeroDeDiasParaBaixa := '00';
       sCodigoParaBaixa       := '2';
-      sDigitoAgencia         := Copy(Right('0'+LimpaNumero(Form26.MaskEdit46.Text),1),1,1); // DAC
+      sDigitoAgencia         := ' '; 
       sAvisoDebitoAuto       := '0';
       sNumeroContratoOP      := '0000000000';
     end;
