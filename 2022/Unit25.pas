@@ -497,8 +497,14 @@ begin
             begin
               if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
               begin
+                {
                 Form25.sNossoNum := (StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)) +'-'+
                   Modulo_Duplo_Digito_Banrisul((StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)));
+                Mauricio Parizotto 2023-11-09}
+
+                Form25.sNossoNum := (StrZero(0,3,0) + StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)) +'-'+
+                  Modulo_Duplo_Digito_Banrisul((StrZero(0,3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)));
+
                 Impressao.TextOut(largura(-8+151-8),altura(28+iVia),Right(Replicate(' ',30)+Form25.sNossoNum,16));
               end else
               begin
