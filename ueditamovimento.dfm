@@ -35,7 +35,7 @@ object FEditaMovimento: TFEditaMovimento
     ParentFont = False
   end
   object Button1: TBitBtn
-    Left = 358
+    Left = 462
     Top = 360
     Width = 100
     Height = 40
@@ -81,21 +81,6 @@ object FEditaMovimento: TFEditaMovimento
     Caption = 'BitBtn1'
     TabOrder = 2
   end
-  object BitBtn2: TBitBtn
-    Left = 470
-    Top = 360
-    Width = 100
-    Height = 40
-    Caption = 'Cancelar'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 3
-    OnClick = BitBtn2Click
-  end
   object DBGridItens: TDBGrid
     Left = 20
     Top = 32
@@ -110,7 +95,7 @@ object FEditaMovimento: TFEditaMovimento
     Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
     ParentFont = False
     ReadOnly = True
-    TabOrder = 4
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clBlack
     TitleFont.Height = -13
@@ -160,6 +145,7 @@ object FEditaMovimento: TFEditaMovimento
   end
   object DataSource1: TDataSource
     DataSet = Form1.ibDataSet27
+    OnDataChange = DataSource1DataChange
     Left = 184
     Top = 160
   end

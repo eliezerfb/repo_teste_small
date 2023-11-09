@@ -245,7 +245,6 @@ begin
   Application.CreateForm(TFDadosPOS, FDadosPOS);
   Application.CreateForm(TFCadAdquirentes, FCadAdquirentes);
   Application.CreateForm(TForm27, Form27);
-  Application.CreateForm(TFEditaMovimento, FEditaMovimento);
   Application.Run;
     //
   end else

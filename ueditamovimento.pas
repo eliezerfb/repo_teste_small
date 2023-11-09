@@ -16,14 +16,12 @@ type
     Panel2: TPanel;
     Frame_teclado1: TFrame_teclado;
     BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
     DBGridItens: TDBGrid;
     DataSource1: TDataSource;
     lbTotal: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure BitBtn2Click(Sender: TObject);
     procedure DBGridItensDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure FormShow(Sender: TObject);
@@ -32,6 +30,7 @@ type
     procedure DBGridItensKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DataSource1DataChange(Sender: TObject; Field: TField);
   private
     { Private declarations }
     FCaixa: String;
@@ -94,11 +93,6 @@ begin
 
 end;
 
-procedure TFEditaMovimento.BitBtn2Click(Sender: TObject);
-begin
-  Close;
-end;
-
 procedure TFEditaMovimento.DBGridItensDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
@@ -130,15 +124,30 @@ begin
         xCalc := Rect.Right - (Sender As TDBGrid).Canvas.TextWidth(sTexto) - 2; // Alinha a direita
       end;
 
+      if (Column.Field.FieldName = 'ITEM') then
+        sTexto := RightStr(Column.Field.AsString, 3);
     end;
 
     
 
     // Cor de fundo para célula depende se está selecionada
     if gdSelected in State then
+    begin
+
       (Sender As TDBGrid).Canvas.Brush.Color := clHighlight
+
+    end
     else
+    begin
+    
       (Sender As TDBGrid).Canvas.Brush.Color := (Sender As TDBGrid).Color;
+
+      if (Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE') then
+      begin
+        (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
+      end;
+
+    end;        
 
     // Preenche com a cor de fundo
     (Sender As TDBGrid).Canvas.FillRect(Rect);
@@ -161,8 +170,7 @@ begin
   for iCol := 0 to DBGridItens.Columns.Count - 1 do
   begin
     DBGridItens.Columns[iCol].Title.Font.Size := DBGridItens.Font.Size;
-  end;
-
+  end;     
 
   Form1.ibDataSet27.Close;
   Form1.ibDataSet27.SelectSQL.Text :=
@@ -192,11 +200,9 @@ var
 begin
   DataSet.DisableControls;
   try
-    //Result := 0.00;
     sItem := DataSet.FieldByName('ITEM').AsString;
     while DataSet.Eof = False do
     begin
-      //Result := DataSet.FieldByName('TOTAL').AsFloat;
       if (DataSet.FieldByName('UNITARIO').AsFloat * DataSet.FieldByName('QUANTIDADE').AsFloat) <> DataSet.FieldByName('TOTAL').AsFloat then
       begin
         DataSet.Edit;
@@ -212,21 +218,14 @@ begin
 
   Form1.fTotal    := 9999999.99; // Jeito de forçar a totalização :(
   Result := Form1.PDV_SubTotal(True);
-  lbTotal.Caption := 'Total:R$' + FormatFloat('0.00', Result);
+  lbTotal.Caption := 'Total:R$ ' + FormatFloat('0.00', Result);
 end;
 
 procedure TFEditaMovimento.DBGridItensColEnter(Sender: TObject);
 begin
-  DBGridItens.ReadOnly := True;
-  if ((DBGridItens.SelectedField.FieldName = 'QUANTIDADE')
-    and((TemGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
-      and (TemSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
-      and (TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
-      )
-    ) or (DBGridItens.SelectedField.FieldName = 'UNITARIO')
-  then
-    DBGridItens.ReadOnly := False;       testar
-  TotalizaMovimento(DBGridItens.DataSource.DataSet);
+  DBGridItens.ReadOnly := False;
+  if (DBGridItens.SelectedField.FieldName <> 'QUANTIDADE') and (DBGridItens.SelectedField.FieldName <> 'UNITARIO') then
+    DBGridItens.ReadOnly := True;
 end;
 
 procedure TFEditaMovimento.DBGridItensKeyPress(Sender: TObject;
@@ -274,6 +273,44 @@ procedure TFEditaMovimento.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   Form1.bEditandoMovimento := False;
+end;
+
+procedure TFEditaMovimento.DataSource1DataChange(Sender: TObject;
+  Field: TField);
+var
+  dTotalItem: Double;
+begin
+  // Atualizando o total do item se alterado quantidade ou valor unitário 
+  if Field = nil then
+    Exit;
+
+  if Field.DataSet.Active = False then
+    Exit;
+
+  if (Field.FieldName = 'QUANTIDADE')
+    or (Field.FieldName = 'UNITARIO')
+  then
+  begin
+    if ((TemGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
+      and (TemSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
+      and (TemComposicao(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
+      and (Field.FieldName = 'QUANTIDADE'))
+      or (Field.FieldName = 'UNITARIO')
+    then
+    begin
+
+      dTotalItem := StrToFloat(FormatFloat('0.00', Field.DataSet.FieldByName('UNITARIO').AsFloat * Field.DataSet.FieldByName('QUANTIDADE').AsFloat));
+
+      if Field.DataSet.FieldByName('TOTAL').AsFloat <> dTotalItem then
+      begin
+        if Field.DataSet.State <> dsEdit then
+          Field.DataSet.Edit;
+
+        Field.DataSet.FieldByName('TOTAL').AsFloat := dTotalItem;
+        TotalizaMovimento(Field.DataSet);
+      end;
+    end;
+  end;
 end;
 
 end.
