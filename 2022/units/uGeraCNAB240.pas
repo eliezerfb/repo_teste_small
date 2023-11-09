@@ -59,6 +59,7 @@ var
 
   CodBanco : string;
   Banco : TBanco;
+  ValorJuros : Real;
 begin
   try
     try
@@ -353,14 +354,33 @@ begin
       sLayoutArquivo         := '040';
       sDensidade             := '00000';
       sLayoutdoLote          := '030';
-      sAgencia               := Copy(Form26.MaskEdit44.Text+'0000-0',1,4);
-      sDVDaAgencia           := ' ';
-      sNumeroContaCorrente   := '0000000'+Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),5,0),1,5);
-      sDigitocontacorrente   := ' ';
+
+      //Agencia
+      if Pos('-',Form7.ibDataSet11AGENCIA.AsString) > 0 then
+      begin
+        sAgencia               := Right('0000'+Copy(Form7.ibDataSet11AGENCIA.AsString,1,Pos('-',Form7.ibDataSet11AGENCIA.AsString)-1),4);
+        sDVDaAgencia           := Copy(Copy(Form7.ibDataSet11AGENCIA.AsString,Pos('-',Form7.ibDataSet11AGENCIA.AsString)+1,1)+' ',1,1);
+      end else
+      begin
+        sAgencia               := Right('0000'+Form7.ibDataSet11AGENCIA.AsString,4);
+        sDVDaAgencia           := ' ';
+      end;
+
+      //Conta
+      if Pos('-',Form7.ibDataSet11CONTA.AsString) > 0 then
+      begin
+        sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
+        sDigitocontacorrente   := Copy(Copy(Form7.ibDataSet11CONTA.AsString,Pos('-',Form7.ibDataSet11CONTA.AsString)+1,1)+' ',1,1);
+      end else
+      begin
+        sNumeroContaCorrente   := Right('000000000000'+Form7.ibDataSet11CONTA.AsString,12);
+        sDigitocontacorrente   := ' ';
+      end;
+
       sCodigoDaCarteira      := '1';
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
-      sEspecieDoTitulo       := '02';
+      sEspecieDoTitulo       := '01';
       sNumeroDeDiasParaBaixa := '00';
       sCodigoParaBaixa       := '2';
       sDigitoAgencia         := Copy(Right('0'+LimpaNumero(Form26.MaskEdit46.Text),1),1,1); // DAC
@@ -377,6 +397,7 @@ begin
       sDensidade             := '00000';
       sLayoutdoLote          := '060';
 
+      //Agencia
       if Pos('-',Form7.ibDataSet11AGENCIA.AsString) > 0 then
       begin
         sAgencia               := Right('0000'+Copy(Form7.ibDataSet11AGENCIA.AsString,1,Pos('-',Form7.ibDataSet11AGENCIA.AsString)-1),4);
@@ -387,6 +408,7 @@ begin
         sDVDaAgencia           := ' ';
       end;
 
+      //Conta
       if Pos('-',Form7.ibDataSet11CONTA.AsString) > 0 then
       begin
         sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
@@ -584,7 +606,10 @@ begin
               end;
 
               if Banco = bItau then
+              begin
                 sCodigodoJurosdeMora := '0';
+                ValorJuros := (Form1.fTaxa / 100) * Form7.ibDataSet7VALOR_DUPL.AsFloat;
+              end;
 
               WriteLn(F,
                 Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
@@ -601,7 +626,7 @@ begin
                 Copy(' ',1,1)                                                                             + // 037 a 037 (001) Dígito Verificador da Ag/Conta
                 Copy(sNumerodoDocumento,1,20)                                                             + // 038 a 057 (020) Número do Documento de Cobrança
 
-                IfThen((Banco = bOutro) or (Banco = bSicoob) or (Banco = bAilos),
+                IfThen(Banco <> bItau,
                        Copy(sCodigoDaCarteira,1,1)                                                        + // 058 a 058 (001) Código da Carteira
                        Copy(sFormaDeCadastrar,1,1)                                                        + // 059 a 059 (001) Forma de Cadastr. do Título no Banco
                        Copy(sTipoDocumento,1,1)                                                           + // 060 a 060 (001) Tipo de Documento
@@ -633,7 +658,16 @@ begin
                 Copy(DateToStr(Form7.ibDataSet7EMISSAO.AsDateTime),7,4),1,008)                            + // 110 a 117 (008) Data da Emissão do Título
                 Copy(sCodigodoJurosdeMora,1,1)                                                            + // 118 a 118 (001) Código do Juros de Mora
                 sDatadoJurosdeMora                                                                        + // 119 a 126 (008) Data do Juros de Mora
-                Copy(StrZero((Form1.fTaxa * 30 * 100),15,0),1,015)                                        + // 127 a 141 (013)+(2) Juros de Mora por Dia/Taxa
+
+                IfThen(Banco <> bItau,
+                       Copy(StrZero((Form1.fTaxa * 30 * 100),15,0),1,015)                                   // 127 a 141 (013)+(2) Juros de Mora por Dia/Taxa
+                       ,'')+
+
+                //Itau - valor do juros
+                IfThen(Banco = bItau,
+                       Copy(StrZero((ValorJuros * 100),15,0),1,015)                                         // 127 a 141 (013)+(2) Juros de Mora por Dia/Taxa
+                       ,'')+
+
                 Copy('0',1,1)                                                                             + // 142 a 142 (001) Código do Desconto
                 Copy('00000000',1,8)                                                                      + // 143 a 150 (008) Data do Desconto
                 Copy(StrZero(0,15,0),1,015)                                                               + // 151 a 165 (013)+(2) Valor / Percentual a ser Concedido
@@ -648,7 +682,7 @@ begin
                 //Copy(sNumeroDeDiasParaBaixa,1,3)                                                          + // 225 a 227 (003) Número de Dias para Baixa/Devolu??o
                 //Copy('09',1,2)                                                                            + // 228 a 229 (002) Código da Moeda
 
-                IfThen((Banco = bOutro) or (Banco = bSicoob) or (Banco = bAilos),
+                IfThen(Banco <> bItau,
                       Copy(sNumeroDeDiasParaBaixa,1,3)                                                    + // 225 a 227 (003) Número de Dias para Baixa/Devolução
                       Copy('09',1,2),''                                                                     // 228 a 229 (002) Código da Moeda
                       )+
@@ -683,7 +717,7 @@ begin
                 Copy(Right(Replicate('0',15)+LimpaNumero(Form7.IBDataSet2CGC.AsString),15),1,015)         + // 019 a 033 (015) Número de Inscrição da Empresa
                 //Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,040)                    + // 034 a 073 (040) Nome da Empresa Maurici Parizotto 2023-10-24
 
-                IfThen((Banco = bOutro) or (Banco = bSicoob) or (Banco = bAilos),
+                IfThen(Banco <> bItau,
                       Copy(UpperCase(ConverteAcentos(Form7.IbDataSet2NOME.AsString))+Replicate(' ',40),1,40)                // 034 a 073 (040) Nome da Empresa
                       ,''
                       )+
@@ -862,7 +896,7 @@ begin
                 Copy(Replicate('0',8),1,8)                                                                + // 200 a 207 (008) Data Limite de Pagamento(SICOOB) | Cód. Ocor. do Sacado (AILOS)
 
                 //Dados Para Débito
-                IfThen((Banco = bOutro) or (Banco = bItau) or (Banco = bAilos),
+                IfThen(Banco <> bSicoob,
                       Replicate(' ',3)                                                                    + // 208 a 210 (003) Código do Banco na Conta Débito
                       Replicate(' ',5)                                                                      // 211 a 215 (005) Código da Agência na Conta Débito
                       ,''
@@ -875,7 +909,7 @@ begin
 
                 Copy(Replicate(' ',1),1,1)                                                                + // 216 a 216 (001) Dígito Verificador da Agência
 
-                IfThen((Banco = bOutro) or (Banco = bItau) or (Banco = bAilos),
+                IfThen(Banco <> bSicoob,
                       Replicate(' ',12)                                                                     // 217 a 228 (012) Conta Corrente na Conta Débito
                       ,''
                       )+
