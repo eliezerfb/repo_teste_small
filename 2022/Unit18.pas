@@ -60,6 +60,8 @@ type
     procedure GetInstituicaoFinanceira(slInstituicao: TStringList);
     function FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
     function ValidarDesdobramentoParcela: Boolean;
+    procedure ReparcelaValor(DataSet: TDataSet; iParcelas: Integer;
+      dTotalParcelar: Double);
   public
     { Public declarations }
     sConta : String;
@@ -260,7 +262,14 @@ begin
         Form7.ibDataSet7.Edit;
         if dDiferenca <> 0 then
           Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+      end
+      {Sandro Silva 2023-11-09 inicio}
+      else
+      begin
+        //ReparcelaValor
       end;
+      {Sandro Silva 2023-11-09 fim}
+
       Form7.ibDataSet7.First;
     end;
   except
@@ -560,12 +569,20 @@ begin
       begin
         //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.',msgAtencao);
-        
+
+        {Sandro Silva 2023-11-09 inicio
         while not Form7.ibDataSet7.Eof do
         begin
           Form7.ibDataSet7.Delete;
           Form7.ibDataSet7.First;
         end;
+        }
+        if Form7.ibDataSet7.RecordCount > 0 then
+        begin
+          ReparcelaValor(Form7.ibDataSet7, StrToInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
+        end;
+        {Sandro Silva 2023-11-09 fim}
+
         SMALL_DBEdit1Exit(Sender);
       end;
     end;
@@ -1008,7 +1025,7 @@ begin
   {Sandro Silva 2023-06-21 inicio} 
     if TDBGrid(Sender).SelectedField.FieldName = 'FORMADEPAGAMENTO' then
     begin
-      if (Key = VK_DOWN) OR (Key = VK_UP) then
+      if (Key = VK_DOWN) or (Key = VK_UP) then
       begin
         slFormas := TStringList.Create;
         GetFormasDePagamentoNFe(slFormas);
@@ -1918,6 +1935,48 @@ end;
 procedure TForm18.edtQtdParcKeyPress(Sender: TObject; var Key: Char);
 begin
   ValidaValor(Sender,Key,'I');
+end;
+
+procedure TForm18.ReparcelaValor(DataSet: TDataSet; iParcelas: Integer; dTotalParcelar: Double);
+var
+  dTotal: Double;
+  aParcelas: array of Double;
+begin
+  //TotalizaParcelas
+  dTotal := 0.00;
+  DataSet.First;
+  while DataSet.Eof = False do
+  begin
+    dTotal := dTotal + StrToFloat(FormatFloat('0.00', DataSet.FieldByName('VALOR_DUPL').AsFloat));
+    DataSet.Next;
+  end;
+
+  //Identifica a proporção de cada parcela no total
+  SetLength(aParcelas, 0);
+  DataSet.First;
+  while DataSet.Eof = False do
+  begin
+    SetLength(aParcelas, Length(aParcelas) + 1);
+    aParcelas[High(aParcelas)] := StrToFloat(FormatFloat('0.00', DataSet.FieldByName('VALOR_DUPL').AsFloat)) / dTotal;
+    DataSet.Next;
+  end;
+
+  //Reparcela o total da nota
+  dTotal := 0.00;
+  DataSet.First;
+  while DataSet.Eof = False do
+  begin
+
+    DataSet.Edit;
+    DataSet.FieldByName('VALOR_DUPL').AsFloat := StrToFloat(FormatFloat('0.00', dTotalParcelar * aParcelas[DataSet.Recno - 1]));
+    dTotal := dTotal + DataSet.FieldByName('VALOR_DUPL').AsFloat;
+    DataSet.Next;
+  end;
+  DataSet.First;
+  DataSet.Edit;
+  DataSet.FieldByName('VALOR_DUPL').AsFloat := StrToFloat(FormatFloat('0.00', DataSet.FieldByName('VALOR_DUPL').AsFloat + (dTotalParcelar - dTotal)));
+  DataSet.Post;
+
 end;
 
 end.
