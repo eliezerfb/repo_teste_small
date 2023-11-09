@@ -1400,11 +1400,16 @@ begin
               if Alltrim(LimpaNumero(Form1.ibDataSet4.FieldByname('CEST').AsString)) <> '' then
                 Form1.spdNFCeDataSets1.Campo('CEST_I05c').Value := Alltrim(LimpaNumero(Form1.ibDataSet4.FieldByname('CEST').AsString)); // Código Especificador da Substituição Tributária – CEST, que estabelece a sistemática de uniformização e identificação das mercadorias e bens passíveis de sujeição aos regimes de substituição tributária e de antecipação de recolhimento do ICMS
 
+              {Sandro Silva 2023-11-09 inicio
               if LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1' then // Ficha 4154
               begin
                 if (RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
                   Form1.spdNFCeDataSets1.Campo('cBenef_I05f').Value := Trim(RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString));
               end;
+              }
+              if (RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
+                Form1.spdNFCeDataSets1.Campo('cBenef_I05f').Value := Trim(RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString));
+              {Sandro Silva 2023-11-09 fim}
               //
               if Alltrim(LimpaNumero(Form1.ibDataSet4.FieldByname('CFOP').AsString)) = '' then
               begin
@@ -3185,12 +3190,17 @@ begin
               Form1.spdNFCeDataSets1.Campo('CEST_I05c').Value := Alltrim(LimpaNumero(Form1.ibDataSet4.FieldByname('CEST').AsString)); // Código Especificador da Substituição Tributária – CEST, que estabelece a sistemática de uniformização e identificação das mercadorias e bens passíveis de sujeição aos regimes de substituição tributária e de antecipação de recolhimento do ICMS
             //
 
+            {Sandro Silva 2023-11-09 inicio
             if LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1' then // Ficha 4154
             begin
               if (RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
                 Form1.spdNFCeDataSets1.Campo('cBenef_I05f').Value := Trim(RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString));
 
             end;
+            }
+            if (RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then
+              Form1.spdNFCeDataSets1.Campo('cBenef_I05f').Value := Trim(RetornaValorDaTagNoCampo('cBenef', Form1.ibDataSet4.FieldByname('TAGS_').AsString));
+            {Sandro Silva 2023-11-09 fim}
 
             if Alltrim(LimpaNumero(Form1.ibDataSet4.FieldByname('CFOP').AsString)) = '' then
             begin
