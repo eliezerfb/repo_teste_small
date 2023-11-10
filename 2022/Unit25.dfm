@@ -946,4 +946,8 @@ object Form25: TForm25
     Left = 32
     Top = 373
   end
+  object PrintDialog1: TPrintDialog
+    Left = 152
+    Top = 336
+  end
 end
