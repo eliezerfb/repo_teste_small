@@ -8662,6 +8662,13 @@ begin
       Form7.ibDataset4.Edit;
   end;
   {Sandro Silva 2023-06-28 fim}
+  {Sandro Silva 2023-11-06 inicio}
+  if Form7.sModulo = 'ICM' then
+  begin
+    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataSet14.Edit;
+  end;
+  {Sandro Silva 2023-11-06 fim}
 end;
 
 procedure TForm10.Orelha_IPIEnter(Sender: TObject);
