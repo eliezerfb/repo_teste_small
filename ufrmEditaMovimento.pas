@@ -1,4 +1,4 @@
-unit uEditaMovimento;
+unit ufrmEditaMovimento;
 
 interface
 
@@ -12,14 +12,14 @@ uses
 
 type
   TFEditaMovimento = class(TForm)
-    Button1: TBitBtn;
+    btnOk: TBitBtn;
     Panel2: TPanel;
     Frame_teclado1: TFrame_teclado;
     BitBtn1: TBitBtn;
     DBGridItens: TDBGrid;
     DataSource1: TDataSource;
     lbTotal: TLabel;
-    procedure Button1Click(Sender: TObject);
+    procedure btnOkClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DBGridItensDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -55,7 +55,7 @@ uses
 
 {$R *.dfm}
 
-procedure TFEditaMovimento.Button1Click(Sender: TObject);
+procedure TFEditaMovimento.btnOkClick(Sender: TObject);
 begin
   ModalResult := mrOk;
 end;
@@ -192,6 +192,9 @@ begin
 
   TotalizaMovimento(Form1.ibDataSet27);
 
+  Form1.ibDataSet27.Last;
+  DBGridItens.SelectedIndex := ColumnIndex(DBGridItens.Columns, 'UNITARIO');
+
 end;
 
 function TFEditaMovimento.TotalizaMovimento(DataSet: TDataSet): Double;
@@ -241,7 +244,7 @@ end;
 procedure TFEditaMovimento.DBGridItensKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  if (Shift = [SsCtrl]) and (Key = 46) then
+  if (Shift = [ssCtrl]) and (Key = 46) then
     Key := 0;
 
   if Key in [VK_TAB, VK_ESCAPE] then
@@ -252,11 +255,15 @@ begin
     if Key = VK_RETURN then
     begin
 
-      if (TDBGrid(Sender).SelectedIndex + 1) >= TDBGrid(Sender).Columns.Count then
+      if (TDBGrid(Sender).SelectedIndex + 1) > ColumnIndex(TDBGrid(Sender).Columns, 'UNITARIO') then
       begin
 
-        TDBGrid(Sender).SelectedIndex := 0;
         TDBGrid(Sender).DataSource.DataSet.Next;
+
+        if TDBGrid(Sender).DataSource.DataSet.Eof then
+          btnOk.SetFocus
+        else
+          TDBGrid(Sender).SelectedIndex := ColumnIndex(TDBGrid(Sender).Columns, 'QUANTIDADE'); // TDBGrid(Sender).SelectedIndex := 0;        
 
       end
       else
@@ -265,6 +272,7 @@ begin
     end;
 
   except
+  
   end;
   
 end;

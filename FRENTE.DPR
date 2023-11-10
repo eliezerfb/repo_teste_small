@@ -63,7 +63,7 @@ uses
   _Small_99 in '_small_99.pas',
   uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
-  ueditamovimento in 'ueditamovimento.pas' {FEditaMovimento};
+  ufrmEditaMovimento in 'ufrmEditaMovimento.pas' {FEditaMovimento};
 
 {$R *.RES}
 

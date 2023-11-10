@@ -1760,7 +1760,7 @@ uses
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
-  , ueditamovimento;
+  , ufrmEditaMovimento;
 
 {$R *.DFM}
 
@@ -18893,7 +18893,7 @@ begin
                           if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
                           begin // Não para NFC-e/SAT. outras validações aos campos
                             Form1.ibDataSet27.FieldByName('COO').AsString        := FormataNumeroDoCupom(Form1.icupom);
-                            Form1.ibDataSet27.FieldByName('CCF').AsString        := FormataNumeroDoCupom(Form1.iCCF); 
+                            Form1.ibDataSet27.FieldByName('CCF').AsString        := FormataNumeroDoCupom(Form1.iCCF);
                           end;
 
                           Form1.ibDataSet27.Post;
@@ -20134,8 +20134,15 @@ begin
         end;
       end;
     end;
+    {Sandro Silva 2023-11-10 inicio}
+    if Form1.Memo1.Visible then // Quando tem cupom aberto não
+    begin
+      if (Shift = [ssCtrl]) and ((Key = 69) or (Key = 101)) then // Ctrl + E/e
+        AbreEdicaoMovimento;
+    end;
+    {Sandro Silva 2023-11-10 fim}
     //
-  end;
+  end; // if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
   //
   Form1.ibQuery1.Close;
   //
@@ -35474,6 +35481,8 @@ begin
   FEditaMovimento.Caixa  := Form1.sCaixa;
   FEditaMovimento.ShowModal;
   FreeAndNil(FEditaMovimento);
+
+  Commitatudo2(True);
 
   Memo1.Clear;
   AberturaDoCupom;

@@ -21,7 +21,7 @@ object FEditaMovimento: TFEditaMovimento
   PixelsPerInch = 96
   TextHeight = 13
   object lbTotal: TLabel
-    Left = 945
+    Left = 948
     Top = 328
     Width = 53
     Height = 29
@@ -34,7 +34,7 @@ object FEditaMovimento: TFEditaMovimento
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Button1: TBitBtn
+  object btnOk: TBitBtn
     Left = 462
     Top = 360
     Width = 100
@@ -47,7 +47,7 @@ object FEditaMovimento: TFEditaMovimento
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 0
-    OnClick = Button1Click
+    OnClick = btnOkClick
   end
   object Panel2: TPanel
     Left = 2
