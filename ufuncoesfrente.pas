@@ -1483,7 +1483,8 @@ begin
     end;
     for iColuna := 0 to DBGrid.Columns.Count -1 do
     begin
-      DBGrid.Columns[iColuna].Width := Trunc((DBGrid.Columns[iColuna].Width / iWidthTotalColunas) * (DBGrid.Width - GetSystemMetrics(SM_CYHSCROLL) - IndicatorWidth));
+      if DBGrid.Columns[iColuna].Visible then // Dailon Parisotto 2023-11-13
+        DBGrid.Columns[iColuna].Width := Trunc((DBGrid.Columns[iColuna].Width / iWidthTotalColunas) * (DBGrid.Width - GetSystemMetrics(SM_CYHSCROLL) - IndicatorWidth));
     end;
   end;
 end;
