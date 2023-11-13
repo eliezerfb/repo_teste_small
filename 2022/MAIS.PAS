@@ -557,7 +557,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uIconesSistema
   , uFrmConfigEmailAutContabilidade
   , uDialogs
-  ;
+  , uSmallResourceString;
 
 {$R *.DFM}
 
@@ -9061,7 +9061,8 @@ begin
 
       Form29.Edit_05.Text := ConverteAcentos(Form29.Edit_05.Text);
 
-      MensagemSistema('Será inutilizada da numeração ' + Form29.Edit_03.Text + ' à ' + Form29.Edit_04.Text + ' da série ' + Form29.Edit_02.Text + '.', msgInformacao);
+      if Application.MessageBox(Pchar('Será inutilizada da numeração ' + Form29.Edit_03.Text + ' à ' + Form29.Edit_04.Text + ' da série ' + Form29.Edit_02.Text + '.'), Pchar(_cTituloMsg), MB_OKCANCEL + MB_ICONWARNING) = mrCancel then
+        Exit;
 
       ConfiguraNFE;
       
