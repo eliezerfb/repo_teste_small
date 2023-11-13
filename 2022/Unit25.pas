@@ -30,6 +30,7 @@ type
     btnEnviaEmailTodos: TBitBtn;
     btnCriaImagemBoleto: TBitBtn;
     chkDataAtualizadaJurosMora: TCheckBox;
+    PrintDialog1: TPrintDialog;
     procedure btnAnteriorClick(Sender: TObject);
     procedure btnProximoClick(Sender: TObject);
     procedure Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -258,7 +259,8 @@ begin
     Form25.sNossoNum := '';
     // --------------------------------------------------- //
     // inicio da impressão do Boleto em Código de Barras //
-    // --------------------------------------------------- //
+    // --------------------------------------------------- /
+
     if bP1 then
     begin
       Printer.PrinterIndex := Printer.PrinterIndex;
@@ -497,8 +499,14 @@ begin
             begin
               if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
               begin
+                {
                 Form25.sNossoNum := (StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)) +'-'+
                   Modulo_Duplo_Digito_Banrisul((StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)));
+                Mauricio Parizotto 2023-11-09}
+
+                Form25.sNossoNum := (StrZero(0,3,0) + StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)) +'-'+
+                  Modulo_Duplo_Digito_Banrisul((StrZero(0,3,0)+StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),5,0)));
+
                 Impressao.TextOut(largura(-8+151-8),altura(28+iVia),Right(Replicate(' ',30)+Form25.sNossoNum,16));
               end else
               begin
@@ -1066,6 +1074,8 @@ end;
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
 begin
+  if not Form25.PrintDialog1.Execute then
+    Exit;
   ImprimirBoleto;
 end;
 
@@ -1086,6 +1096,8 @@ begin
     end;
 
     try
+      if not Form25.PrintDialog1.Execute then
+        Exit;
       while (not Form7.ibDataSet7.EOF) and (bOk) do
       begin
         //

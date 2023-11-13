@@ -3781,7 +3781,8 @@ begin
     Mauricio Parizotto 2023-10-25}
     MensagemSistema('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 400 para o BANCO '+
                     Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-                    Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
+                    //Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+ Mauricio Parizotto 2023-11-07
+                    Chr(10)+'Este arquivo deverá ser transmitido conforme orientação específica do banco.'+
                     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10)
                     ,msgAtencao);
   end;
@@ -3812,7 +3813,8 @@ begin
     Mauricio Parizotto 2023-10-25}
     MensagemSistema('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 240 para o BANCO '+
                     Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-                    Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
+                    //Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+ Mauricio Parizotto 2023-11-07
+                    Chr(10)+'Este arquivo deverá ser transmitido conforme orientação específica do banco.'+
                     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10)
                     ,msgAtencao);
   end;
@@ -5759,6 +5761,11 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  {Sandro Silva 2023-11-06 inicio}
+  //Alguns lugares da acesso negado no TASKKILL Ficha 7556
+  Application.Terminate;
+  Halt(1);
+  {Sandro Silva 2023-11-06 fim}
 end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
