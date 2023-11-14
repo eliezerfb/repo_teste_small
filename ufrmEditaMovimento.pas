@@ -35,6 +35,7 @@ type
     { Private declarations }
     FCaixa: String;
     FPedido: String;
+    FSelectOld: String;
     function TotalizaMovimento(DataSet: TDataSet): Double;
   public
     { Public declarations }
@@ -120,6 +121,10 @@ begin
       if (Column.Field.DataType in [ftFloat, ftBCD, ftFMTBcd]) then
       begin
         sTexto := FormatFloat('0.00', Column.Field.AsFloat);
+        if Column.FieldName = 'QUANTIDADE' then
+          sTexto := FormatFloat('#,##0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)), Column.Field.AsFloat);
+        if Column.FieldName = 'UNITARIO' then
+          sTexto := FormatFloat('#,##0.' + DupeString('0', StrToIntDef(Form1.ConfPreco, 2)), Column.Field.AsFloat);
 
         xCalc := Rect.Right - (Sender As TDBGrid).Canvas.TextWidth(sTexto) - 2; // Alinha a direita
       end;
@@ -170,20 +175,22 @@ begin
   for iCol := 0 to DBGridItens.Columns.Count - 1 do
   begin
     DBGridItens.Columns[iCol].Title.Font.Size := DBGridItens.Font.Size;
-  end;     
+  end;
+
+  FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
 
   Form1.ibDataSet27.Close;
   Form1.ibDataSet27.SelectSQL.Text :=
     'select * ' +
     'from ALTERACA ' +
     'where PEDIDO = :PEDIDO ' +
-    ' and CAIXA = :CAIXA ' +
-    ' and TIPO <> ''CANCEL'' ' +
-    ' and TIPO <> ''KOLNAC'' ' + // Sandro Silva 2019-03-26 Quando em Dead Lock, regsitro fica com TIPO=KOLNAC. Altera para "CANCEL" quando estiver destravado
-    ' and DESCRICAO <> ''Acréscimo'' ' +
-    ' and DESCRICAO <> ''Desconto'' ' +
-    ' and DESCRICAO <> ''<CANCELADO>'' ' +
-    ' and coalesce(VENDEDOR, '''') <> ''<cancelado>'' ';
+    ' and CAIXA = :CAIXA ';// +
+//    ' and TIPO <> ''CANCEL'' ' +
+//    ' and TIPO <> ''KOLNAC'' ' + // Sandro Silva 2019-03-26 Quando em Dead Lock, regsitro fica com TIPO=KOLNAC. Altera para "CANCEL" quando estiver destravado
+//    ' and DESCRICAO <> ''Acréscimo'' ' +
+//    ' and DESCRICAO <> ''Desconto'' ' +
+//    ' and DESCRICAO <> ''<CANCELADO>'' ' +
+//    ' and coalesce(VENDEDOR, '''') <> ''<cancelado>'' ';
   Form1.ibDataSet27.ParamByName('PEDIDO').AsString := FPedido;
   Form1.ibDataSet27.ParamByName('CAIXA').AsString  := FCaixa;
   Form1.ibDataSet27.Open;
@@ -228,6 +235,14 @@ procedure TFEditaMovimento.DBGridItensColEnter(Sender: TObject);
 begin
   DBGridItens.ReadOnly := False;
   if (DBGridItens.SelectedField.FieldName <> 'QUANTIDADE') and (DBGridItens.SelectedField.FieldName <> 'UNITARIO') then
+    DBGridItens.ReadOnly := True;
+  if (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
+    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
+    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
+    or (DBGridItens.DataSource.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
+    then
+    DBGridItens.ReadOnly := True;
+  if (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL') or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC') then
     DBGridItens.ReadOnly := True;
 end;
 
@@ -281,6 +296,7 @@ procedure TFEditaMovimento.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   Form1.bEditandoMovimento := False;
+  Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
 end;
 
 procedure TFEditaMovimento.DataSource1DataChange(Sender: TObject;

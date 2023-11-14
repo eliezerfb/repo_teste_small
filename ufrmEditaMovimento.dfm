@@ -1,6 +1,6 @@
 object FEditaMovimento: TFEditaMovimento
-  Left = 179
-  Top = 0
+  Left = 446
+  Top = 23
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'FEditaMovimento'
@@ -110,13 +110,14 @@ object FEditaMovimento: TFEditaMovimento
         Expanded = False
         FieldName = 'ITEM'
         Title.Caption = 'Item'
+        Width = 35
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'DESCRICAO'
         Title.Caption = 'Descri'#231#227'o'
-        Width = 420
+        Width = 427
         Visible = True
       end
       item
@@ -131,14 +132,14 @@ object FEditaMovimento: TFEditaMovimento
         Expanded = False
         FieldName = 'UNITARIO'
         ReadOnly = False
-        Title.Caption = 'R$ Valor Unit'#225'rio'
+        Title.Caption = 'Valor Unit'#225'rio R$'
         Width = 144
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TOTAL'
-        Title.Caption = 'R$ Total'
+        Title.Caption = 'Total R$'
         Width = 171
         Visible = True
       end>

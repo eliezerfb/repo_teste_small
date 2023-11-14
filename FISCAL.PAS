@@ -35467,6 +35467,8 @@ begin
 end;
 
 procedure TForm1.AbreEdicaoMovimento;
+var
+  IBQTEMP: TIBQuery;
 begin
   if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
     Exit;
@@ -35474,15 +35476,32 @@ begin
   if SenhaAdministradorOk = False then
     Exit;
 
-  Timer2.Enabled := False;
+  IBQTEMP := CriaIBQuery(Form1.ibDataSet27.Transaction);
 
-  Application.CreateForm(TFEditaMovimento, FEditaMovimento);
-  FEditaMovimento.Pedido := FormataNumeroDoCupom(Form1.icupom);
-  FEditaMovimento.Caixa  := Form1.sCaixa;
-  FEditaMovimento.ShowModal;
-  FreeAndNil(FEditaMovimento);
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text :=
+      'select first 1 distinct PEDIDO ' +
+      'from ALTERACA ' +
+      'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+      ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
+    IBQTEMP.Open;
 
-  Commitatudo2(True);
+    if IBQTEMP.FieldByName('PEDIDO').AsString = '' then
+      Exit;  
+
+    Timer2.Enabled := False;
+
+    Application.CreateForm(TFEditaMovimento, FEditaMovimento);
+    FEditaMovimento.Pedido := FormataNumeroDoCupom(Form1.icupom);
+    FEditaMovimento.Caixa  := Form1.sCaixa;
+    FEditaMovimento.ShowModal;
+  finally
+    if FEditaMovimento <> nil then
+      FreeAndNil(FEditaMovimento);
+  end;
+
+  Commitatudo(True);
 
   Memo1.Clear;
   AberturaDoCupom;
