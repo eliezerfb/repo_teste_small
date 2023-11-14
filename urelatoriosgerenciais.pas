@@ -2480,7 +2480,7 @@ begin
     sListaCaixas := ListaCaixasSelecionados(Form7.chklbCaixas);
 
     if sListaCaixas <> '' then
-      sListaCaixas := ' and P.CAIXA in (' + sListaCaixas + ') ';
+      sListaCaixas := ' and coalesce(P.CAIXA, '''') in (' + sListaCaixas + ') ';
 
     sJoinPagament := ' join PAGAMENT P on P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA and P.DATA = N.DATA ';
     sRegraNFCe := ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' +
@@ -2494,67 +2494,58 @@ begin
     //'-- suprimento ' +
     IBQNFCE.Close;
     IBQNFCE.SQL.Text :=
-      'select /* ''SUPRIMENTO'' as FORMA, */ ' +
+      'select ' +
       ' sum(P.VALOR) as VALOR ' +
       'from PAGAMENT P ' +
       'where P.FORMA not like ''00%'' ' +
-      'and P.CLIFOR = ''Suprimento'' ' +
+      'and coalesce(P.CLIFOR, '''') = ''Suprimento'' ' +
       sListaCaixas +
-      //' and P.DATA between :DINI and :DFIM ' +
-      sPeriodo; 
-//    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
-//    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+      sPeriodo;
     IBQNFCE.Open;
     dTotalSuprimento := IBQNFCE.FieldByName('VALOR').AsFloat;
 
       //'-- Dinheiro ' +
     IBQNFCE.Close;
     IBQNFCE.SQL.Text :=
-      'select ''DINHEIRO'' as FORMA ' +
-      ', sum(P.VALOR) as VALOR ' +
+      'select ' +
+      ' sum(P.VALOR) as VALOR ' +
       'from NFCE N ' +
       sJoinPagament +
       ' where P.FORMA not like ''00%'' ' +
-      'and (P.CLIFOR <> ''Suprimento'') ' +
+      'and (coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
+      'and P.FORMA like ''02%'' ' + /// dinheiro
       sListaCaixas + sRegraNFCe +
-      //' and P.DATA between :DINI and :DFIM ' +
-      sPeriodo +
-      'and P.FORMA like ''02%'' ' +
-      'group by ''DINHEIRO'' ';
-//    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
-//    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+      sPeriodo;// +
+      //'group by ''DINHEIRO'' ';
     IBQNFCE.Open;
     dTotalDinheiro := IBQNFCE.FieldByName('VALOR').AsFloat;
 
     //'-- Troco ' +
     IBQNFCE.Close;
     IBQNFCE.SQL.Text :=
-      'select ''TROCO'' as FORMA ' +
-      ', sum(coalesce(P.VALOR, 0.00)) as VALOR ' +
+      'select ' +
+      ' sum(coalesce(P.VALOR, 0.00)) as VALOR ' +
       'from NFCE N ' +
       sJoinPagament +
-      ' where P.FORMA like ''13%'' ' +
+      ' where P.FORMA like ''13%'' ' + // Troco
       sListaCaixas + sRegraNFCe +
-      //' and P.DATA between :DINI and :DFIM ' +
-      sPeriodo +
-      'group by ''TROCO'' ';
-//    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
-//    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
+      sPeriodo;// +
+      //'group by ''TROCO'' ';
     IBQNFCE.Open;
     dTotalTroco := IBQNFCE.FieldByName('VALOR').AsFloat;
 
     //'-- Sangria ' +
     IBQNFCE.Close;
     IBQNFCE.SQL.Text :=
-      'select ''SANGRIA'' as FORMA ' +
-      ', sum(P.VALOR) as VALOR ' +
+      'select ' +
+      ' sum(P.VALOR) as VALOR ' +
       'from PAGAMENT P ' +
       'where P.FORMA not like ''00%'' ' +
-      'and P.CLIFOR = ''Sangria'' ' +
+      'and coalesce(P.CLIFOR, '''') = ''Sangria'' ' +
       sListaCaixas +
       //' and P.DATA between :DINI and :DFIM ' +
-      sPeriodo +
-      'group by ''SANGRIA'' ';
+      sPeriodo;// +
+      //'group by ''SANGRIA'' ';
 //    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
 //    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
     IBQNFCE.Open;
@@ -2588,7 +2579,7 @@ begin
       'from PAGAMENT P ' +
       'where P.FORMA not like ''00%'' ' +
       'and P.FORMA not like ''13%'' ' +
-      'and (P.CLIFOR <> ''Sangria'' and P.CLIFOR <> ''Suprimento'') ' +
+      'and (coalesce(P.CLIFOR, '''') <> ''Sangria'' and coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
       sListaCaixas +
       sPeriodo +
       ' group by replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''') ' +

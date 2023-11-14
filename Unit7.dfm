@@ -1131,20 +1131,6 @@ object Form7: TForm7
         ParentFont = False
         Layout = tlBottom
       end
-      object lbCaixaFechamentoDeCaixa: TLabel
-        Left = 11
-        Top = 143
-        Width = 41
-        Height = 13
-        Caption = 'Caixas:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Layout = tlBottom
-      end
       object Label30: TLabel
         Left = 11
         Top = 60
@@ -1158,6 +1144,21 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         Layout = tlBottom
+      end
+      object chkCaixaFechamentoDeCaixa: TCheckBox
+        Left = 11
+        Top = 143
+        Width = 278
+        Height = 13
+        Caption = 'Caixas:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 9
+        OnClick = chkCaixaFechamentoDeCaixaClick
       end
       object dtpFechamentoDeCaixaIni: TDateTimePicker
         Left = 11

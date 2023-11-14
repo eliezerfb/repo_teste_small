@@ -92,7 +92,7 @@ type
     TabSheet8: TTabSheet;
     Label27: TLabel;
     Label28: TLabel;
-    lbCaixaFechamentoDeCaixa: TLabel;
+    chkCaixaFechamentoDeCaixa: TCheckBox;
     Label30: TLabel;
     dtpFechamentoDeCaixaIni: TDateTimePicker;
     edFechamentoDeCaixa1: TEdit;
@@ -128,6 +128,7 @@ type
     procedure chkFechamentoDeCaixaHoraIClick(Sender: TObject);
     procedure TabSheet8Show(Sender: TObject);
     procedure chklbCaixasClickCheck(Sender: TObject);
+    procedure chkCaixaFechamentoDeCaixaClick(Sender: TObject);
   private
     { Private declarations }
     Form7Label1Height: Integer;
@@ -222,8 +223,8 @@ begin
     checkFechamentoDeCaixaPDF.Left := edFechamentoDeCaixa.Left + edFechamentoDeCaixa.Width + AjustaLargura(15);
     checkFechamentoDeCaixaPDF.Top  := edFechamentoDeCaixa.Top;
     }
-    chklbCaixas.Top  := lbCaixaFechamentoDeCaixa.BoundsRect.Bottom + 2;
-    chklbCaixas.Left := lbCaixaFechamentoDeCaixa.Left;
+    chklbCaixas.Top  := chkCaixaFechamentoDeCaixa.BoundsRect.Bottom + 2;
+    chklbCaixas.Left := chkCaixaFechamentoDeCaixa.Left;
     PageControl1.ActivePage := TabSheet8;
   end;
   {Sandro Silva 2023-11-01 fim}
@@ -604,10 +605,10 @@ begin
   chkFechamentoDeCaixaHoraI.Left := dtpFechamentoDeCaixaHoraI.Left;
   chkFechamentoDeCaixaHoraF.Left := dtpFechamentoDeCaixaHoraF.Left;
 
-  lbCaixaFechamentoDeCaixa.Caption := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
-  if lbCaixaFechamentoDeCaixa.Caption = '' then
-    lbCaixaFechamentoDeCaixa.Caption := 'Todos';
-  lbCaixaFechamentoDeCaixa.Caption := 'Caixas (' + lbCaixaFechamentoDeCaixa.Caption + '):'
+  chkCaixaFechamentoDeCaixa.Caption := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
+  if chkCaixaFechamentoDeCaixa.Caption = '' then
+    chkCaixaFechamentoDeCaixa.Caption := 'Todos';
+  chkCaixaFechamentoDeCaixa.Caption := 'Caixas (' + chkCaixaFechamentoDeCaixa.Caption + '):'
 
 end;
 
@@ -618,7 +619,18 @@ begin
   sListaCaixas := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
   if sListaCaixas = '' then
     sListaCaixas := 'Todos';
-  lbCaixaFechamentoDeCaixa.Caption := 'Caixas (' + sListaCaixas + '):'
+  chkCaixaFechamentoDeCaixa.Caption := 'Caixas (' + sListaCaixas + '):'
+end;
+
+procedure TForm7.chkCaixaFechamentoDeCaixaClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to chklbCaixas.Items.Count - 1 do
+  begin
+    chklbCaixas.Checked[i] := chkCaixaFechamentoDeCaixa.Checked;
+  end;
+  chkCaixaFechamentoDeCaixa.Caption := 'Caixas (Todos):'
 end;
 
 end.
