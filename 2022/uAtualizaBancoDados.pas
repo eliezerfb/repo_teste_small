@@ -2297,6 +2297,13 @@ begin
   end;
   {Mauricio Parizotto 2023-09-29 Fim}
 
+  {Mauricio Parizotto 2023-11-15 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'PROBLEMA') < 1000 then
+  begin
+    if ExecutaComando(' ALTER TABLE OS ALTER COLUMN PROBLEMA TYPE VARCHAR(1000) ') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-11-15 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
@@ -2363,23 +2370,5 @@ begin
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');
 end;
-
-{Sandro Silva 2023-09-22 inicio
-function ExecutaComando(comando:string):Boolean;
-begin
-  Result := False;
-
-  try
-    Form1.ibDataset200.Close;
-    Form1.ibDataset200.SelectSql.Clear;
-    Form1.ibDataset200.SelectSql.Add(comando);
-    Form1.ibDataset200.Open;
-    Form1.ibDataset200.Close;
-
-    Result := True;
-  except
-  end;
-end;
-}
 
 end.
