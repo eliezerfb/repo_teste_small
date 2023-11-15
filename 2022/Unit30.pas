@@ -158,8 +158,6 @@ type
     procedure fFrameIdentifi2txtCampoEnter(Sender: TObject);
     procedure fFrameIdentifi3txtCampoEnter(Sender: TObject);
     procedure fFrameIdentifi4txtCampoEnter(Sender: TObject);
-    procedure SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure SMALL_DBEdit7Click(Sender: TObject);
@@ -1684,13 +1682,6 @@ procedure TForm30.fFrameIdentifi4txtCampoEnter(Sender: TObject);
 begin
   fFrameIdentifi4.txtCampoEnter(Sender);
   OcultaListaDePesquisa;
-end;
-
-procedure TForm30.SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
-  Key := 0;
 end;
 
 procedure TForm30.fFrameDescricaogdRegistrosDblClick(Sender: TObject);
