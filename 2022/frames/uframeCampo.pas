@@ -150,11 +150,10 @@ begin
     Exit;
   end;
 
-  //Mauricio Parizotto 2023-11-15
-  //Limpa campo antes
-  txtCampo.Text := '';
-
   sNomeCampoChave := CampoCodigo.FieldName;
+
+  //Mauricio Parizotto 2023-11-15
+  txtCampo.Text := CampoCodigo.AsString;
 
   Query.Close;
   case FTipoPesquisa of
