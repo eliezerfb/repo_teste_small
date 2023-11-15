@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
-  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
+  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons, jpeg,
   IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico, uframeCampo;
 
 const COLOR_GRID_CINZA = $00F0F0F0;
@@ -80,6 +80,8 @@ type
     fFrameIdentifi2: TfFrameCampo;
     fFrameIdentifi3: TfFrameCampo;
     fFrameIdentifi4: TfFrameCampo;
+    Panel9: TPanel;
+    Image5: TImage;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
@@ -163,6 +165,8 @@ type
     procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure SMALL_DBEdit7Click(Sender: TObject);
+    procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
 
   private
     { Private declarations }
@@ -170,6 +174,7 @@ type
     procedure DescricaoServicoChange(Sender: TField);
     procedure AtribuirItemPesquisaServico;
     procedure OcultaListaDePesquisa;
+    procedure MostraFoto;
   public
     { Public declarations }
     sSistema, sDatafield : String;
@@ -1174,6 +1179,22 @@ begin
     if (Key = VK_UP) and (Form7.ibDataSet16.BOF) then dbGrid2.SetFocus;
   except end;
   //
+
+  {Mauricio Parizotto 2023-11-15 Inicio}
+  if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
+  begin
+    if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
+    begin
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Text := ' Select * '+
+                                         ' From ESTOQUE '+
+                                         ' Where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString);
+      Form7.ibDataSet4.Open;
+    end;
+  end;
+
+  MostraFoto;
+  {Mauricio Parizotto 2023-11-15 Fim}
 end;
 
 procedure TForm30.ListBox2Click(Sender: TObject);
@@ -1481,6 +1502,11 @@ begin
   fFrameIdentifi4.sTabela         := 'OS';
   fFrameIdentifi4.CarregaDescricao;
   {Sandro Silva 2023-09-28 fim}
+
+  //Mauricio Parizotto 2023-11-15
+  Image5.Picture := nil;
+  Image5.Visible := False;
+  Panel9.Visible := False;
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;
@@ -1716,6 +1742,58 @@ begin
   //ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
   SMALL_DBEdit7.SelectAll;
   {Sandro Silva 2023-10-23 fim}
+end;
+
+
+procedure TForm30.MostraFoto;
+var
+  BlobStream : TStream;
+  jP2  : TJPEGImage;
+  bMostrarImage: Boolean;
+begin
+  bMostrarImage := False;
+  Image5.Picture := nil;
+  Image5.Visible := False;
+  Panel9.Visible := False;
+
+  if Form7.ibDataset4FOTO.BlobSize <> 0 then
+  begin
+    BlobStream:= Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO,bmRead);
+    jp2 := TJPEGImage.Create;
+    try
+      try
+        jp2.LoadFromStream(BlobStream);
+        Image5.Picture.Assign(jp2);
+
+        if Image5.Picture.Width > Image5.Picture.Height then
+        begin
+          Image5.Width  := (StrToInt(StrZero((Image5.Picture.Width * (Panel9.Width / 2 / Image5.Picture.Width)),10,0)))*2;
+          Image5.Height := (StrToInt(StrZero((Image5.Picture.Height* (Panel9.Width / 2 / Image5.Picture.Width)),10,0)))*2;
+        end else
+        begin
+          Image5.Width  := (StrToInt(StrZero((Image5.Picture.Width * (Panel9.Height / 2 / Image5.Picture.Height)),10,0)))*2;
+          Image5.Height := (StrToInt(StrZero((Image5.Picture.Height* (Panel9.Height / 2 / Image5.Picture.Height)),10,0)))*2;
+        end;
+        Image5.Left := (Panel9.Width  - Image5.Width) div 2;
+        Image5.Top  := (Panel9.Height - Image5.Height) div 2;
+        Image5.Repaint;
+        Panel9.Visible := True;
+        Image5.Visible := True;
+
+      except
+      end;
+    finally
+      BlobStream.Free;
+      jp2.Free;
+    end;
+  end;
+end;
+
+procedure TForm30.DBGrid3KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  //Mauricio Parizotto 2023-11-15
+  MostraFoto;
 end;
 
 end.
