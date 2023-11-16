@@ -1279,7 +1279,7 @@ object Form30: TForm30
         OnClick = Button1Click
       end
     end
-    object Panel9: TPanel
+    object pnlFotoProd: TPanel
       Left = 656
       Top = 10
       Width = 200
@@ -1289,7 +1289,7 @@ object Form30: TForm30
       Ctl3D = False
       ParentCtl3D = False
       TabOrder = 2
-      object Image5: TImage
+      object imgFotoProd: TImage
         Left = 0
         Top = 0
         Width = 198

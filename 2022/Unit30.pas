@@ -80,8 +80,8 @@ type
     fFrameIdentifi2: TfFrameCampo;
     fFrameIdentifi3: TfFrameCampo;
     fFrameIdentifi4: TfFrameCampo;
-    Panel9: TPanel;
-    Image5: TImage;
+    pnlFotoProd: TPanel;
+    imgFotoProd: TImage;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
@@ -1503,10 +1503,19 @@ begin
   fFrameIdentifi4.CarregaDescricao;
   {Sandro Silva 2023-09-28 fim}
 
-  //Mauricio Parizotto 2023-11-15
-  Image5.Picture := nil;
-  Image5.Visible := False;
-  Panel9.Visible := False;
+  {Mauricio Parizotto 2023-11-16 Inicio}
+  imgFotoProd.Picture := nil;
+  imgFotoProd.Visible := False;
+  pnlFotoProd.Visible := False;
+  // FOTO
+  pnlFotoProd.Top    := Panel1.Top;
+  pnlFotoProd.Left   := Panel1.Left + Panel1.Width + 5;
+  pnlFotoProd.Width  := Screen.Width - pnlFotoProd.Left - 10;
+  pnlFotoProd.Height := 300;
+
+  if pnlFotoProd.Width  > 300 then pnlFotoProd.Width := 300;
+  if pnlFotoProd.Height > 300 then pnlFotoProd.Height := 300;
+  {Mauricio Parizotto 2023-11-16 Fim}
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;
@@ -1752,9 +1761,9 @@ var
   bMostrarImage: Boolean;
 begin
   bMostrarImage := False;
-  Image5.Picture := nil;
-  Image5.Visible := False;
-  Panel9.Visible := False;
+  imgFotoProd.Picture := nil;
+  imgFotoProd.Visible := False;
+  pnlFotoProd.Visible := False;
 
   if Form7.ibDataset4FOTO.BlobSize <> 0 then
   begin
@@ -1763,22 +1772,22 @@ begin
     try
       try
         jp2.LoadFromStream(BlobStream);
-        Image5.Picture.Assign(jp2);
+        imgFotoProd.Picture.Assign(jp2);
 
-        if Image5.Picture.Width > Image5.Picture.Height then
+        if imgFotoProd.Picture.Width > imgFotoProd.Picture.Height then
         begin
-          Image5.Width  := (StrToInt(StrZero((Image5.Picture.Width * (Panel9.Width / 2 / Image5.Picture.Width)),10,0)))*2;
-          Image5.Height := (StrToInt(StrZero((Image5.Picture.Height* (Panel9.Width / 2 / Image5.Picture.Width)),10,0)))*2;
+          imgFotoProd.Width  := (StrToInt(StrZero((imgFotoProd.Picture.Width * (pnlFotoProd.Width / 2 / imgFotoProd.Picture.Width)),10,0)))*2;
+          imgFotoProd.Height := (StrToInt(StrZero((imgFotoProd.Picture.Height* (pnlFotoProd.Width / 2 / imgFotoProd.Picture.Width)),10,0)))*2;
         end else
         begin
-          Image5.Width  := (StrToInt(StrZero((Image5.Picture.Width * (Panel9.Height / 2 / Image5.Picture.Height)),10,0)))*2;
-          Image5.Height := (StrToInt(StrZero((Image5.Picture.Height* (Panel9.Height / 2 / Image5.Picture.Height)),10,0)))*2;
+          imgFotoProd.Width  := (StrToInt(StrZero((imgFotoProd.Picture.Width * (pnlFotoProd.Height / 2 / imgFotoProd.Picture.Height)),10,0)))*2;
+          imgFotoProd.Height := (StrToInt(StrZero((imgFotoProd.Picture.Height* (pnlFotoProd.Height / 2 / imgFotoProd.Picture.Height)),10,0)))*2;
         end;
-        Image5.Left := (Panel9.Width  - Image5.Width) div 2;
-        Image5.Top  := (Panel9.Height - Image5.Height) div 2;
-        Image5.Repaint;
-        Panel9.Visible := True;
-        Image5.Visible := True;
+        imgFotoProd.Left := (pnlFotoProd.Width  - imgFotoProd.Width) div 2;
+        imgFotoProd.Top  := (pnlFotoProd.Height - imgFotoProd.Height) div 2;
+        imgFotoProd.Repaint;
+        pnlFotoProd.Visible := True;
+        imgFotoProd.Visible := True;
 
       except
       end;
