@@ -2441,6 +2441,7 @@ begin
   except
   end;
 
+  { Mauricio Parizotto 2023-11-16 Inicio
   if Form7.sModulo <> 'ICM' then
   begin
     Orelhas.ActivePage := Orelha_cadastro;
@@ -2448,6 +2449,21 @@ begin
   begin
     Orelhas.ActivePage := Orelha_CFOP;
   end;
+  }
+
+  Orelhas.ActivePage := Orelha_cadastro;
+
+  if Form7.sModulo = 'ICM' then
+  begin
+    Orelhas.ActivePage := Orelha_CFOP;
+  end;
+
+  if (Form7.sModulo = 'PERFILTRIBUTACAO') then
+  begin
+    Orelhas.ActivePage := orelha_PerfilTrib;
+  end;
+
+  {Mauricio Parizotto 2023-11-16 Fim}
 
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
@@ -3700,7 +3716,8 @@ begin
             end;
           end;
         end;
-        
+
+        {Mauricio Parizotto 2023-11-16 Inicio
         if Form7.sModulo <> 'ICM' then
         begin
           Orelhas.ActivePage := Orelha_cadastro;
@@ -3708,6 +3725,21 @@ begin
         begin
           Orelhas.ActivePage := Orelha_CFOP;
         end;
+        }
+
+        Orelhas.ActivePage := Orelha_cadastro;
+
+        if Form7.sModulo = 'ICM' then
+        begin
+          Orelhas.ActivePage := Orelha_CFOP;
+        end;
+
+        if (Form7.sModulo = 'PERFILTRIBUTACAO') then
+        begin
+          Orelhas.ActivePage := orelha_PerfilTrib;
+        end;
+
+        {Mauricio Parizotto 2023-11-16 Fim}
       end else
       begin
         try
@@ -3724,6 +3756,7 @@ begin
       Mais1ini.Free;
     end else
     begin
+      { Mauricio Parizotto 2023-11-16 inicio
       if Form7.sModulo <> 'ICM' then
       begin
         Orelhas.ActivePage := Orelha_cadastro;
@@ -3731,6 +3764,21 @@ begin
       begin
         Orelhas.ActivePage := Orelha_CFOP;
       end;
+      }
+
+      Orelhas.ActivePage := Orelha_cadastro;
+
+      if Form7.sModulo = 'ICM' then
+      begin
+        Orelhas.ActivePage := Orelha_CFOP;
+      end;
+
+      if (Form7.sModulo = 'PERFILTRIBUTACAO') then
+      begin
+        Orelhas.ActivePage := orelha_PerfilTrib;
+      end;
+
+      {Mauricio Parizotto 2023-11-16 Fim}
     end;
 
     if (AllTrim(Form10.StringGrid1.Cells[0,1]) = '') and (AllTrim(Form10.StringGrid1.Cells[1,0]) = '') then
@@ -3784,6 +3832,7 @@ procedure TForm10.Image9Click(Sender: TObject);
 begin
   if not Form7.bSoLeitura then
   begin
+    {Mauricio Parizotto 2023-11-16 Inicio
     if Form7.sModulo <> 'ICM' then
     begin
       Orelhas.ActivePage := orelha_cadastro;
@@ -3792,6 +3841,21 @@ begin
     begin
       Orelhas.ActivePage := Orelha_CFOP;
     end;
+    }
+
+    Orelhas.ActivePage := Orelha_cadastro;
+
+    if Form7.sModulo = 'ICM' then
+    begin
+      Orelhas.ActivePage := Orelha_CFOP;
+    end;
+
+    if (Form7.sModulo = 'PERFILTRIBUTACAO') then
+    begin
+      Orelhas.ActivePage := orelha_PerfilTrib;
+    end;
+
+    {Mauricio Parizotto 2023-11-16 Fim}
   end;
 end;
 
@@ -5163,9 +5227,8 @@ begin
             end;
           end;
         end;
-      end; // for I := 1 to Form7.iCampos do
-    end; // if Form7.sModulo <> 'ICM' then
-
+      end;
+    end;
   except
     //ShowMessage('Erro número  13 comunique o suporte técnico.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro número  13 comunique o suporte técnico.',msgErro);
@@ -5234,6 +5297,13 @@ begin
     {Sandro Silva 2023-06-27 fim}
 
     Orelhas.ActivePage := Orelha_CFOP;
+  end;
+
+  //Mauricio Parizotto 2023-11-16
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    orelha_PerfilTrib.PageIndex := 0;
+    Orelhas.ActivePage := orelha_PerfilTrib;
   end;
 
   {Sandro Silva 2022-11-14 inicio}
