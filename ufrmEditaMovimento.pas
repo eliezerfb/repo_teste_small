@@ -37,6 +37,8 @@ type
     FPedido: String;
     FSelectOld: String;
     function TotalizaMovimento(DataSet: TDataSet): Double;
+    function ItemCancelado: Boolean;
+    function NaoEditavel(Field: TField): Boolean;
   public
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
@@ -133,18 +135,15 @@ begin
         sTexto := RightStr(Column.Field.AsString, 3);
     end;
 
-    
 
     // Cor de fundo para célula depende se está selecionada
     if gdSelected in State then
     begin
-
-      (Sender As TDBGrid).Canvas.Brush.Color := clHighlight
-
+      (Sender As TDBGrid).Canvas.Brush.Color := clHighlight;
     end
     else
     begin
-    
+
       (Sender As TDBGrid).Canvas.Brush.Color := (Sender As TDBGrid).Color;
 
       if (Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE') then
@@ -152,7 +151,14 @@ begin
         (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
       end;
 
-    end;        
+    end;
+
+    if ItemCancelado then
+    begin
+      (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
+      (Sender As TDBGrid).Canvas.Font.Style := [fsStrikeOut];
+    end;
+
 
     // Preenche com a cor de fundo
     (Sender As TDBGrid).Canvas.FillRect(Rect);
@@ -236,13 +242,21 @@ begin
   DBGridItens.ReadOnly := False;
   if (DBGridItens.SelectedField.FieldName <> 'QUANTIDADE') and (DBGridItens.SelectedField.FieldName <> 'UNITARIO') then
     DBGridItens.ReadOnly := True;
+  {
   if (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
     or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
     or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
     or (DBGridItens.DataSource.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
-    then
+    //then
+    //DBGridItens.ReadOnly := True;
+  //if
+    or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL') or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC') then
+  }
+  if ItemCancelado then
     DBGridItens.ReadOnly := True;
-  if (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL') or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC') then
+
+
+  if NaoEditavel(DBGridItens.SelectedField) then          testar
     DBGridItens.ReadOnly := True;
 end;
 
@@ -335,6 +349,29 @@ begin
       end;
     end;
   end;
+end;
+
+function TFEditaMovimento.ItemCancelado: Boolean;
+begin
+  Result := False;
+  if (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
+    or (DBGridItens.DataSource.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
+    or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL')
+    or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC')
+  then
+    Result := True;
+end;
+
+function TFEditaMovimento.NaoEditavel(Field: TField): Boolean;
+begin
+  Result := False;
+  if (Field.FieldName <> 'QUANTIDADE')
+    or (Field.FieldName <> 'UNITARIO')
+    or ItemCancelado
+    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
+    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo')
+    then
+    Result := True;
 end;
 
 end.
