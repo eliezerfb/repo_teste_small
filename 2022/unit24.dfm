@@ -2337,9 +2337,7 @@ object Form24: TForm24
         Top = 0
         Width = 200
         Height = 200
-        Align = alClient
         Center = True
-        Proportional = True
         Stretch = True
       end
     end
