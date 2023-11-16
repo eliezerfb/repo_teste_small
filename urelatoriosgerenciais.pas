@@ -2458,7 +2458,7 @@ end;
 procedure FechamentoDeCaixa(bNaHora: Boolean);
 var
   iCaixa: Integer;
-  sListaCaixas: String;
+  sCaixasMarcados: String;
   IBQNFCE: TIBQuery;
   sRegraNFCe: String;
   sJoinPagament: String;
@@ -2469,18 +2469,20 @@ var
   dTotal: Double;
   sCupomFiscalVinculado: String;
   sPeriodo: String;
+  slListaCaixas: TStringList;
+  sListaCaixas: String;
 begin
   // Solicitado por migração de concorrente
   Commitatudo(True); // TotalDiario()
-  IBQNFCE      := CriaIBQuery(Form1.ibDataSet27.Transaction);
+  IBQNFCE       := CriaIBQuery(Form1.ibDataSet27.Transaction);
   Screen.Cursor := crHourGlass;
 
   try
 
-    sListaCaixas := ListaCaixasSelecionados(Form7.chklbCaixas);
+    sCaixasMarcados := ListaCaixasSelecionados(Form7.chklbCaixas);
 
-    if sListaCaixas <> '' then
-      sListaCaixas := ' and coalesce(P.CAIXA, '''') in (' + sListaCaixas + ') ';
+    if sCaixasMarcados <> '' then
+      sCaixasMarcados := ' and coalesce(P.CAIXA, '''') in (' + sCaixasMarcados + ') ';
 
     sJoinPagament := ' join PAGAMENT P on P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA and P.DATA = N.DATA ';
     sRegraNFCe := ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' +
@@ -2499,7 +2501,7 @@ begin
       'from PAGAMENT P ' +
       'where P.FORMA not like ''00%'' ' +
       'and coalesce(P.CLIFOR, '''') = ''Suprimento'' ' +
-      sListaCaixas +
+      sCaixasMarcados +
       sPeriodo;
     IBQNFCE.Open;
     dTotalSuprimento := IBQNFCE.FieldByName('VALOR').AsFloat;
@@ -2514,9 +2516,8 @@ begin
       ' where P.FORMA not like ''00%'' ' +
       'and (coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
       'and P.FORMA like ''02%'' ' + /// dinheiro
-      sListaCaixas + sRegraNFCe +
+      sCaixasMarcados + sRegraNFCe +
       sPeriodo;// +
-      //'group by ''DINHEIRO'' ';
     IBQNFCE.Open;
     dTotalDinheiro := IBQNFCE.FieldByName('VALOR').AsFloat;
 
@@ -2528,9 +2529,8 @@ begin
       'from NFCE N ' +
       sJoinPagament +
       ' where P.FORMA like ''13%'' ' + // Troco
-      sListaCaixas + sRegraNFCe +
+      sCaixasMarcados + sRegraNFCe +
       sPeriodo;// +
-      //'group by ''TROCO'' ';
     IBQNFCE.Open;
     dTotalTroco := IBQNFCE.FieldByName('VALOR').AsFloat;
 
@@ -2542,20 +2542,40 @@ begin
       'from PAGAMENT P ' +
       'where P.FORMA not like ''00%'' ' +
       'and coalesce(P.CLIFOR, '''') = ''Sangria'' ' +
-      sListaCaixas +
-      //' and P.DATA between :DINI and :DFIM ' +
+      sCaixasMarcados +
       sPeriodo;// +
-      //'group by ''SANGRIA'' ';
-//    IBQNFCE.ParamByName('DINI').AsDate := Form7.dtpFechamentoDeCaixaIni.Date;
-//    IBQNFCE.ParamByName('DFIM').AsDate := Form7.dtpFechamentoDeCaixaFim.Date;
     IBQNFCE.Open;
-    dTotalSangria := IBQNFCE.FieldByName('VALOR').AsFloat;
-
+    dTotalSangria := IBQNFCE.FieldByName('VALOR').AsFloat;    
 
     sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais;
 
-    sCupomFiscalVinculado := sCupomFiscalVinculado + (*Form7.lbCaixaFechamentoDeCaixa.Caption*) 'Caixa(s): ' + StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]) + Chr(10) +
+    // Atribui quebra de linha na lista de caixas marcadas
+    slListaCaixas := TStringList.Create;
+    slListaCaixas.Delimiter := ',';
+    slListaCaixas.DelimitedText := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
+
+    sListaCaixas := 'Caixa(s): ';
+    for iCaixa := 0 to slListaCaixas.Count - 1 do
+    begin
+      if Length(sListaCaixas + slListaCaixas.Strings[iCaixa]) >= 45 then
+      begin
+        sCupomFiscalVinculado := sCupomFiscalVinculado + sListaCaixas + chr(10);
+        sListaCaixas := '';
+      end;
+
+      sListaCaixas := sListaCaixas + slListaCaixas.Strings[iCaixa];
+      if iCaixa < slListaCaixas.Count - 1 then
+        sListaCaixas := sListaCaixas + ', ';
+
+    end;
+    if sListaCaixas <> '' then
+      sCupomFiscalVinculado := sCupomFiscalVinculado + sListaCaixas;
+
+    FreeAndNil(slListaCaixas);
+
+    sCupomFiscalVinculado := sCupomFiscalVinculado + Chr(10) +
       'Período: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaIni.Date) + ' à ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaFim.Date) + Chr(10);
+
     if bNaHora then
       sCupomFiscalVinculado := sCupomFiscalVinculado + 'Horário: ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraI.Date) + ' à ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraF.Date) + Chr(10);
 
@@ -2565,8 +2585,8 @@ begin
       + ImprimeTracos() + Chr(10)
       + 'Suprimento ' + Format('%9.2n',[dTotalSuprimento]) + chr(10)
       + 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10)
-      + 'Troco      ' + Format('%9.2n',[dTotalTroco]) + chr(10)
-      + 'Sangria    ' + Format('%9.2n',[dTotalSangria]) + chr(10)
+      + 'Troco      ' + Format('%9.2n',[dTotalTroco * (-1)]) + chr(10)
+      + 'Sangria    ' + Format('%9.2n',[dTotalSangria * (-1)]) + chr(10)
       + ImprimeTracos() + Chr(10)
       + 'Total      ' + Format('%9.2n',[dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + chr(10)
       + chr(10);
@@ -2578,9 +2598,10 @@ begin
       ', sum(P.VALOR) as VALOR ' +
       'from PAGAMENT P ' +
       'where P.FORMA not like ''00%'' ' +
+      ' and P.FORMA not like ''02%'' ' +
       'and P.FORMA not like ''13%'' ' +
       'and (coalesce(P.CLIFOR, '''') <> ''Sangria'' and coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
-      sListaCaixas +
+      sCaixasMarcados +
       sPeriodo +
       ' group by replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''') ' +
       ' order by FORMA';
@@ -2592,7 +2613,11 @@ begin
       + ImprimeTracos() + Chr(10)
       ;
 
-    dTotal := 0.00;
+    // Dinheiro é o total apurado na movimentação acima
+    sCupomFiscalVinculado := sCupomFiscalVinculado
+      + Copy('Dinheiro' + DupeString(' ', 31), 1, 31) + Format('%9.2n', [dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + Chr(10);
+
+    dTotal := dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria;
     while IBQNFCE.Eof = False do
     begin
 
