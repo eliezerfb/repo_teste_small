@@ -105,8 +105,10 @@ object FEditaMovimento: TFEditaMovimento
     OnDrawColumnCell = DBGridItensDrawColumnCell
     OnKeyDown = DBGridItensKeyDown
     OnKeyPress = DBGridItensKeyPress
+    OnKeyUp = DBGridItensKeyUp
     Columns = <
       item
+        Alignment = taCenter
         Expanded = False
         FieldName = 'ITEM'
         Title.Caption = 'Item'
@@ -146,6 +148,7 @@ object FEditaMovimento: TFEditaMovimento
   end
   object DataSource1: TDataSource
     DataSet = Form1.ibDataSet27
+    OnStateChange = DataSource1StateChange
     OnDataChange = DataSource1DataChange
     Left = 184
     Top = 160

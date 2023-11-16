@@ -31,13 +31,16 @@ type
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
+    procedure DBGridItensKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DataSource1StateChange(Sender: TObject);
   private
     { Private declarations }
     FCaixa: String;
     FPedido: String;
     FSelectOld: String;
     function TotalizaMovimento(DataSet: TDataSet): Double;
-    function ItemCancelado: Boolean;
+    function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
   public
     { Public declarations }
@@ -54,7 +57,7 @@ uses
   fiscal
   , SmallFunc
   , uajustaresolucao
-  ;
+  , Types;
 
 {$R *.dfm}
 
@@ -136,29 +139,41 @@ begin
     end;
 
 
+    if ItemCancelado(Column.Field) then
+    begin
+      //(Sender As TDBGrid).Canvas.Font.Color  := clBlack;
+      //(Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
+      (Sender As TDBGrid).Canvas.Font.Style  := [fsStrikeOut, fsBold];
+      (Sender As TDBGrid).ReadOnly := True;
+    end;
+
     // Cor de fundo para célula depende se está selecionada
     if gdSelected in State then
     begin
       (Sender As TDBGrid).Canvas.Brush.Color := clHighlight;
+
+      if ItemCancelado(Column.Field) then
+      begin
+        //(Sender As TDBGrid).Canvas.Font.Color  := clBlack;
+        //(Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
+        (Sender As TDBGrid).Canvas.Font.Style  := [fsStrikeOut];
+      end;
+
     end
     else
     begin
 
       (Sender As TDBGrid).Canvas.Brush.Color := (Sender As TDBGrid).Color;
 
-      if (Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE') then
+      //if ((Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE')) then
+      if ((Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE'))
+        or (ItemCancelado(Column.Field) or (Column.Field.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto') or (Column.Field.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo'))
+      then
       begin
         (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
       end;
 
     end;
-
-    if ItemCancelado then
-    begin
-      (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
-      (Sender As TDBGrid).Canvas.Font.Style := [fsStrikeOut];
-    end;
-
 
     // Preenche com a cor de fundo
     (Sender As TDBGrid).Canvas.FillRect(Rect);
@@ -166,6 +181,13 @@ begin
     // Calcula posição para centralizar o sTexto na vertical
     yCalc := (Sender As TDBGrid).Canvas.TextHeight(sTexto);
     yCalc := (Rect.Top + (Rect.Bottom - Rect.Top - yCalc) div 2);// + 2;
+
+    // Centraliza o texto da coluna item
+    if (Column.Field.FieldName = 'ITEM') then
+    begin
+      xCalc := (Sender As TDBGrid).Canvas.TextWidth(sTexto);
+      xCalc := (Rect.Left + (Rect.Right - Rect.Left - xCalc) div 2);// + 2;
+    end;                                                         
 
     (Sender As TDBGrid).Canvas.TextRect(Rect, xCalc, yCalc, sTexto);
 
@@ -215,8 +237,9 @@ var
   sItem: String;
 begin
   DataSet.DisableControls;
+  Result := 0.00;
   try
-    sItem := DataSet.FieldByName('ITEM').AsString;
+    sItem := DataSet.FieldByName('REGISTRO').AsString;
     while DataSet.Eof = False do
     begin
       if (DataSet.FieldByName('UNITARIO').AsFloat * DataSet.FieldByName('QUANTIDADE').AsFloat) <> DataSet.FieldByName('TOTAL').AsFloat then
@@ -225,15 +248,17 @@ begin
         DataSet.FieldByName('TOTAL').AsFloat := StrToFloat(FormatFloat('0.00', DataSet.FieldByName('UNITARIO').AsFloat * DataSet.FieldByName('QUANTIDADE').AsFloat));
         DataSet.Post;
       end;
+      if ItemCancelado(DataSet.FieldByName('TOTAL')) = False then
+        Result := Result + DataSet.FieldByName('TOTAL').AsFloat;
       DataSet.Next;
     end;
-    DataSet.Locate('ITEM', sItem, []);
+    DataSet.Locate('REGISTRO', sItem, []);
   finally
     DataSet.EnableControls;
   end;
 
-  Form1.fTotal    := 9999999.99; // Jeito de forçar a totalização :(
-  Result := Form1.PDV_SubTotal(True);
+  //  Form1.fTotal    := 9999999.99; // Jeito de forçar a totalização :(
+  //Result := Form1.PDV_SubTotal(True);
   lbTotal.Caption := 'Total:R$ ' + FormatFloat('0.00', Result);
 end;
 
@@ -252,11 +277,12 @@ begin
   //if
     or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL') or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC') then
   }
-  if ItemCancelado then
+  {
+  if ItemCancelado(DBGridItens.SelectedField) then
     DBGridItens.ReadOnly := True;
+  }
 
-
-  if NaoEditavel(DBGridItens.SelectedField) then          testar
+  if NaoEditavel(DBGridItens.SelectedField) then
     DBGridItens.ReadOnly := True;
 end;
 
@@ -268,6 +294,8 @@ begin
     if Key = Chr(46) then
       Key := Chr(44);
   end;
+  if Key = '-' then
+    Key := #0;
 end;
 
 procedure TFEditaMovimento.DBGridItensKeyDown(Sender: TObject;
@@ -278,7 +306,7 @@ begin
 
   if Key in [VK_TAB, VK_ESCAPE] then
     Key := VK_RETURN;
-    
+
   try
 
     if Key = VK_RETURN then
@@ -292,7 +320,7 @@ begin
         if TDBGrid(Sender).DataSource.DataSet.Eof then
           btnOk.SetFocus
         else
-          TDBGrid(Sender).SelectedIndex := ColumnIndex(TDBGrid(Sender).Columns, 'QUANTIDADE'); // TDBGrid(Sender).SelectedIndex := 0;        
+          TDBGrid(Sender).SelectedIndex := ColumnIndex(TDBGrid(Sender).Columns, 'QUANTIDADE'); // TDBGrid(Sender).SelectedIndex := 0;
 
       end
       else
@@ -325,6 +353,15 @@ begin
   if Field.DataSet.Active = False then
     Exit;
 
+  {  
+  if NaoEditavel(Field) then
+  begin
+    Field.DataSet.FieldByName('QUANTIDADE').AsFloat := Field.DataSet.FieldByName('QUANTIDADE').OldValue;
+    Field.DataSet.FieldByName('UNITARIO').AsFloat   := Field.DataSet.FieldByName('UNITARIO').OldValue;
+  end;
+  }
+
+
   if (Field.FieldName = 'QUANTIDADE')
     or (Field.FieldName = 'UNITARIO')
   then
@@ -351,13 +388,19 @@ begin
   end;
 end;
 
-function TFEditaMovimento.ItemCancelado: Boolean;
+function TFEditaMovimento.ItemCancelado(Field: TField): Boolean;
 begin
   Result := False;
+  {
   if (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
     or (DBGridItens.DataSource.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
     or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL')
     or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC')
+    }
+  if (Field.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
+    or (Field.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
+    or (Field.DataSet.FieldByName('TIPO').AsString = 'CANCEL')
+    or (Field.DataSet.FieldByName('TIPO').AsString = 'KOLNAC')
   then
     Result := True;
 end;
@@ -365,13 +408,42 @@ end;
 function TFEditaMovimento.NaoEditavel(Field: TField): Boolean;
 begin
   Result := False;
-  if (Field.FieldName <> 'QUANTIDADE')
-    or (Field.FieldName <> 'UNITARIO')
-    or ItemCancelado
-    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
-    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo')
+  if ((Field.FieldName <> 'QUANTIDADE')
+    and (Field.FieldName <> 'UNITARIO'))
+    or ItemCancelado(Field)
+    or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
+    or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo')
     then
     Result := True;
+end;
+
+procedure TFEditaMovimento.DBGridItensKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+    //if Key = VK_DOWN then
+    begin
+
+      DBGridItens.ReadOnly := False;
+      if NaoEditavel(DBGridItens.SelectedField) then
+        DBGridItens.ReadOnly := True;
+    end;
+
+end;
+
+procedure TFEditaMovimento.DataSource1StateChange(Sender: TObject);
+var
+  sRegistro: String;
+begin
+{
+  if Form1.ibDataSet27.State = dsEdit then
+  begin
+    sRegistro := Form1.ibDataSet27.FieldByName('REGISTRO').AsString;
+    Commitatudo(True);
+    Form1.ibDataSet27.Locate('REGISTRO', sRegistro, []);
+    Form1.ibDataSet27.Edit;
+    Break;
+  end;
+}
 end;
 
 end.
