@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
-  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons,
+  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons, jpeg,
   IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico, uframeCampo;
 
 const COLOR_GRID_CINZA = $00F0F0F0;
@@ -80,6 +80,8 @@ type
     fFrameIdentifi2: TfFrameCampo;
     fFrameIdentifi3: TfFrameCampo;
     fFrameIdentifi4: TfFrameCampo;
+    pnlFotoProd: TPanel;
+    imgFotoProd: TImage;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
@@ -104,7 +106,6 @@ type
     procedure Label22MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure SMALL_DBEdit7Enter(Sender: TObject);
-    procedure ListBox1Click(Sender: TObject);
     procedure SMALL_DBEdit7Change(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
     procedure DBGrid2Enter(Sender: TObject);
@@ -158,11 +159,11 @@ type
     procedure fFrameIdentifi2txtCampoEnter(Sender: TObject);
     procedure fFrameIdentifi3txtCampoEnter(Sender: TObject);
     procedure fFrameIdentifi4txtCampoEnter(Sender: TObject);
-    procedure SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure SMALL_DBEdit7Click(Sender: TObject);
+    procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
 
   private
     { Private declarations }
@@ -170,6 +171,7 @@ type
     procedure DescricaoServicoChange(Sender: TField);
     procedure AtribuirItemPesquisaServico;
     procedure OcultaListaDePesquisa;
+    procedure MostraFoto;
   public
     { Public declarations }
     sSistema, sDatafield : String;
@@ -191,9 +193,7 @@ function Seleciona(pP1: Boolean):Boolean;
 begin
   with Form30 do
   begin
-    //
     // Tecnicos
-    //
     if dbGrid3.Top = (SMALL_DBEdit2.Top + SMALL_DBEdit2.Height -1) then
     begin
       Form7.ibDataSet3.Edit;
@@ -201,9 +201,8 @@ begin
       SMALL_DBEdit2.SetFocus;
       dBGrid3.Visible := False;
     end;
-    //
+
     // Clientes
-    //
     if dbGrid3.Top = (SMALL_DBEdit3.Top + SMALL_DBEdit3.Height -1) then
     begin
       Form7.ibDataSet3.Edit;
@@ -211,9 +210,8 @@ begin
       SMALL_DBEdit3.SetFocus;
       dBGrid3.Visible := False;
     end;
-    //
+
     // Produtos
-    //
     if dbGrid3.Top = (dbGrid1.Top + dbGrid1.Height -1) then
     begin
       Form7.ibDataSet16.Edit;
@@ -221,9 +219,8 @@ begin
       dbGrid1.SetFocus;
       dBGrid3.Visible := False;
     end;
-    //
+
     // Tecnicos no grid
-    //
     if dbGrid3.Top = (dbGrid2.Top + dbGrid2.Height -1) then
     begin
       Form7.ibDataSet35.Edit;
@@ -231,19 +228,13 @@ begin
       dbGrid2.SetFocus;
       dBGrid3.Visible := False;
     end;
-    //
   end;
-  //
+
   Result := True;
-  //
 end;
 
 procedure TForm30.FormCreate(Sender: TObject);
 begin
-  //
-//  Form30.BorderIcons := [biSystemMenu];
-//  Form30.BorderStyle := bsDialog;
-  //
   {Sandro Silva 2023-10-10 inicio}
   fFrameDescricao.gdRegistros.Color := COLOR_GRID_CINZA;
   fFrameDescricao.CampoVazioAbrirGridPesquisa := True;
@@ -265,9 +256,7 @@ end;
 
 procedure TForm30.SMALL_DBEdit2Enter(Sender: TObject);
 begin
-  //
   // Tecnicos
-  //
   dBGrid3.DataSource                 := Form7.DataSource9;
   dBgrid3.Columns.Items[0].FieldName := 'NOME';
   dBgrid3.Columns.Items[0].Width     := SMALL_DBEdit2.Width - 21;
@@ -287,7 +276,6 @@ begin
   dBgrid3.Columns.Items[3].Visible   := False;
   //
   Form30.SMALL_DBEdit2Change(Sender);
-  //
 end;
 
 procedure TForm30.SMALL_DBEdit6Enter(Sender: TObject);
@@ -297,7 +285,6 @@ end;
 
 procedure TForm30.SMALL_DBEdit3Change(Sender: TObject);
 begin
-  //
   if Alltrim(SMALL_DBEdit3.Text) <> '' then
   begin
     if (Form30.Visible) and (Form7.ibDataSet2.Active) and (not dbGrid3.Focused) then
@@ -319,7 +306,6 @@ begin
     DefinirCorClienteDevedor;  
   //
   ListBox1.Visible := False;
-  //
 end;
 
 procedure TForm30.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -332,35 +318,29 @@ procedure TForm30.SMALL_DBEdit2Change(Sender: TObject);
 begin
   if (Form30.Visible) and (Form7.ibDataSet9.Active) then
   begin
-    //
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%TECNICO%')+' and Upper(NOME) like '+QuotedStr(UpperCase(SMALL_DBEdit2.Text)+'%')+' order by NOME');
     Form7.ibDataSet99.Open;
     Form7.ibDataSet99.First;
-    //
+
     if not Form7.ibDataSet9.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]) then
     begin
-      //
       Form7.ibDataSet99.Close;
       Form7.ibDataSet99.SelectSQL.Clear;
       Form7.ibDataSet99.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%TECNICO%')+' and Upper(NOME) like '+QuotedStr('%'+UpperCase(SMALL_DBEdit2.Text)+'%')+' order by NOME');
       Form7.ibDataSet99.Open;
       Form7.ibDataSet99.First;
       Form7.ibDataSet9.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]);
-      //
     end;
-    //
   end;
 end;
 
 procedure TForm30.SMALL_DBEdit3Enter(Sender: TObject);
 begin
-  //
   // Cliente
-  //
   Form1.bChaveSelecionaCliente := True;
-  //
+
   dBGrid3.DataSource                 := Form7.DataSource2;
   dBgrid3.Columns.Items[0].FieldName := 'NOME';
   dBgrid3.Columns.Items[0].Width     := SMALL_DBEdit3.Width - 21;
@@ -405,22 +385,18 @@ var
   sNome : String;
   SmallIni : tIniFile;
 begin
-  //
   with Sender as TLabel do
   begin
-    //
     sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),'','');
     if AllTrim(sNome) <> '' then Caption := sNome else sNome := Caption;
     Repaint;
-    //
+    
     SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
     SmallIni.WriteString('OS',NAME,sNome);
     SmallIni.Free;
-    //
   end;
-  //
+
   Mais.LeLabels(True);
-  //
 end;
 
 procedure TForm30.Label14MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -487,13 +463,6 @@ begin
   ListBox1.Visible  := True;
   ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
   SMALL_DBEdit7.SelectAll;
-  //
-end;
-
-procedure TForm30.ListBox1Click(Sender: TObject);
-begin
-  //
-  //
 end;
 
 procedure TForm30.SMALL_DBEdit7Change(Sender: TObject);
@@ -520,7 +489,6 @@ end;
 
 procedure TForm30.DBGrid1Enter(Sender: TObject);
 begin
-  //
   // Estoque
   //
   Form7.ibDataSet4.Close;
@@ -555,14 +523,10 @@ begin
   //
   ListBox1.Visible                   := False;
   // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
-  //
 end;
 
 procedure TForm30.DBGrid2Enter(Sender: TObject);
-//var
-//  I          : Integer;
 begin
-  //
   // Autocompletar serviços
   //
   // Sandro Silva 2023-09-28 ListBox22.Visible      := False;
@@ -627,22 +591,20 @@ begin
   ListBox22.Height   := Panel1.Height - ListBox22.Top -17;
   ListBox22.Width    := 305;
   }
-  //
   // THE END AUTOCOMPLETAR
-  //
+
   // Técnicos
-  //
   if not Form30.dBGrid3.Visible then
     DbGrid2.SelectedIndex := 0;
-  //
+
   dBGrid3.DataSource                 := Form7.DataSource9;
   dBgrid3.Columns.Items[0].FieldName := 'NOME';
   dBgrid3.Columns.Items[0].Width     := 110;
-  //
+
   dBGrid3.Left       := 315;
   dbGrid3.Top        := dbGrid2.Top + dbGrid2.Height -1;
   dbGrid3.Width      := 105;
-  //
+
   dBGrid3.Height     := Panel1.Height - dbGrid3.Top -5;
 
   {Sandro Silva 2023-09-28 inicio
@@ -661,62 +623,43 @@ end;
 
 procedure TForm30.SMALL_DBEdit3Exit(Sender: TObject);
 begin
-  //
   Form1.bChaveSelecionaCliente := False;
 
-  //
-  // teste
-  //
-
-
-  //
   // CPF/CGC
-  //
   if Form7.ibDataSet3CLIENTE.AsString <> Form7.ibDataSet2NOME.AsString then
   begin
-    //
     if AllTrim(LimpaNumero(SMALL_DBEDIT3.Text))<>'' then
     begin
-      //
       if Length(LimpaNumero(Copy(SMALL_DBEDIT3.Text,1,3)))=3 then
       begin
-        //
         if CpfCgc(LimpaNumero(SMALL_DBEDIT3.Text)) then
         begin
-          //
           // CAAD9
-          //
           Form7.ibDataSet2.DisableControls;
           Form7.ibDataSet2.Close;
           Form7.ibDataSet2.SelectSQL.Clear;
           Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where CGC='+QuotedStr(ConverteCpfCgc(AllTrim(LimpaNumero(SMALL_DBEDIT3.Text))))+'');
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
-          //
+
           Form7.ibDataSet3CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
-          //
         end;
       end;
     end;
-    //
+
     // CPF/CGC
-    //
     if AllTrim(SMALL_DBEDIT3.Text)<>AllTrim(Form7.ibDAtaSet2NOME.AsString) then
     begin
       Form7.ibDataSet3CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
     end;
-    //
   end;
-  //
+
   // Teste
-  //
   if AllTrim(LimpaNumero(SMALL_DBEdit3.Text))<>'' then
   begin
     if CpfCgc(LimpaNumero(SMALL_DBEdit3.Text)) then
     begin
-      //
       // CAAD9
-      //
       Form7.ibDataSet99.DisableControls;
       Form7.ibDataSet99.Close;
       Form7.ibDataSet99.SelectSQL.Clear;
@@ -727,14 +670,13 @@ begin
       //
     end;
   end;
-  //
+
   // CPF/CGC
-  //
   if AllTrim(SMALL_DBEdit3.Text)<>AllTrim(Form7.ibDAtaSet2NOME.AsString) then
   begin
     Form7.ibDataSet3CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
   end;
-  //
+
   DefinirCorClienteDevedor;
 end;
 
@@ -749,81 +691,18 @@ end;
 
 procedure TForm30.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  //
   if Form7.ibDataSet3.Modified then Form7.ibDataSet3.Post;
   Form7.ibDataSet3.Edit;
 
-{
-  try
-    //
-    Form7.ibDataSet16.DisableControls;
-    Form7.ibDataSet4.DisableControls;
-    //
-    if Form7.ibDataSet3.Modified then Form7.ibDataSet3.Post;
-    if AllTrim(Form7.ibDataSet3CLIENTE.AsString) <> '' then
-    begin
-      //
-      // Atenção a rotina abaixo altera a quantidade no estoque
-      //
-      Form7.ibDataSet16.First;
-      while not Form7.ibDataSet16.Eof do
-      begin
-        //
-        // Procura o produto no estoque
-        //
-        try
-          //
-          Form7.ibDataSet4.Close;
-          Form7.ibDataSet4.Selectsql.Clear;
-          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
-          Form7.ibDataSet4.Open;
-          //
-          if (Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '') then
-          begin
-            //
-            // Atenção a rotina abaixo altera a quantidade no estoque
-            //
-            Form7.ibDataSet4.Edit;
-//            Form7.ibDataSet4QTD_ATUAL.Value      := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat;
-            Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet3DATA.AsDateTime;
-            Form7.ibDataSet4.Post;
-            //
-//            Form7.sModulo := 'FECHAOS';
-//            Form7.ibDataSet16.Edit;
-//            Form7.ibDataSet16SINCRONIA.AsFloat := Form7.ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
-            Form7.ibDataSet16.Post;
-            //
-            // Atenção a rotina acima altera a quantidade no estoque
-            //
-          end;
-          //
-        except end;
-        //
-        Form7.sModulo := 'OS';
-        Form7.ibDataSet16.next;
-        //
-      end;
-      //
-      Form7.ibDataSet16UNITARIO.Visible := False;
-  //    Form7.ibDataSet35UNITARIO.Visible := False;
-      //
-    end else
-    begin
-      Form7.ibDataSet3.Delete;
-    end;
-    //
-  except end;
-}
-  //
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 29;
   Form7.ibDataSet35TECNICO.DisplayWidth   := 12;
   Form7.ibDataSet3.EnableControls;
-  //
+
   try
     Form7.Close;
     Form7.Show;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm30.SMALL_DBEdit2KeyDown(Sender: TObject; var Key: Word;
@@ -859,7 +738,6 @@ end;
 procedure TForm30.ListBox1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
   if Key = VK_RETURN then
   begin
     if ListBox1.ItemIndex = 0 then
@@ -872,14 +750,11 @@ begin
     Key := VK_SHIFT;
     ListBox1.Visible := False;
   end;
-  //
 end;
 
 procedure TForm30.DBGrid2KeyPress(Sender: TObject; var Key: Char);
 begin
-  //
   // Descriçao dos serviços
-  //
   if DbGrid2.SelectedIndex = 0 then
   begin
     if Key <> Chr(13) then
@@ -892,36 +767,32 @@ begin
   begin
     framePesquisaServOS.Visible := False;
   end;
-  //
+
   // Técnicos
-  //
   if DbGrid2.SelectedIndex = 1 then
   begin
-    //
     // Sandro Silva 2023-09-28 ListBox22.Visible  := False;
     if Key <> Chr(13) then
       if not Form30.dBGrid3.Visible then
         Form30.dBGrid3.Visible := True; // Key press serviços
-    //
+
     Form1.bFlag := False;
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
-    //
+
     // Tecnicos
-    //
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * from VENDEDOR where FUNCAO='+QuotedStr('TECNICO')+' and Upper(NOME) like Upper('+QuotedStr('%'+ AllTrim(Form7.ibDataSet35TECNICO.AsString)+Key +'%')+') order by NOME');
     Form7.IBDataSet99.Open;
     Form7.ibDataSet9.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]);
     Form7.ibDataSet35.Edit;
-    //
-  end else Form30.dBGrid3.Visible := False;
-  //
+  end else
+    Form30.dBGrid3.Visible := False;
+
   if dbGrid1.SelectedField.DataType = ftFloat then
     if Key = chr(46) then
       key := chr(44);
-  //
 end;
 
 procedure TForm30.DBGrid2KeyUp(Sender: TObject; var Key: Word;
@@ -951,9 +822,7 @@ begin
 
       if Key = VK_RETURN then
       begin
-        //
         // Técnicos
-        //
         if AllTrim(Form7.ibDataSet35DESCRICAO.AsString) = '' then
         begin
           if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then
@@ -980,9 +849,7 @@ begin
         end;
       end;
     end;
-    //
   except end;
-  //
 end;
 
 procedure TForm30.AtribuirItemPesquisaServico;
@@ -1043,58 +910,43 @@ begin
 
   if Key = VK_RETURN then
   begin
-    //
     // Sistema de procura
-    //
     if DbGrid2.SelectedIndex = 0 then
     begin
-      //
       if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
         Form7.ibDataset35.Edit;
       Form7.ibDataSet35.UpdateRecord;
       if not (Form7.ibDataset35.State in ([dsEdit, dsInsert])) then
         Form7.ibDataset35.Edit;
-      //
+
       // Procura produto pelo código
-      //
       Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString,[loCaseInsensitive,loPartialKey]);
-      //
+
       if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) then
       begin
-        //
         if (Length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) then
         begin
-          //
           // Procura por código
-          //
           try
-            // Sandro Silva 2022-09-21 if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
             if StrToIntDef(AllTrim(Form7.ibDataSet35DESCRICAO.AsString), 0) <> 0 then
             begin
-              //
-              // Sandro Silva 2022-09-21 Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
               Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToIntDef(AllTrim(LimpaNumero(Form7.ibDataSet35DESCRICAO.AsString)), 0),5,0),[loCaseInsensitive,loPartialKey]);
-              //
-              // Sandro Silva 2022-09-21 if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
               if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToIntDef(AllTrim(LimpaNumero(Form7.ibDataSet35DESCRICAO.AsString)), 0),5,0) then
               begin
-                //
                 Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-                //
+
                 if Form7.ibDataSet35QUANTIDADE.AsFloat >= 0 then
                 begin
                   Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
                   Form7.ibDataSet35UNITARIO.AsFloat   := Form7.ibDataSet4PRECO.AsFloat;
                 end;
-                //
+
                 Form7.ibDataSet35.Post;
                 Form7.ibDataSet35.Edit;
-                //
-                //
+
                 Seleciona(True);
                 Abort;
-                //
-                //
+
               end else
               begin
                 Form7.ibDataSet35DESCRICAO.AsString := '';
@@ -1105,23 +957,20 @@ begin
       end;
     end;
   end;  
-  //
 end;
 
 procedure TForm30.DBGrid1ColExit(Sender: TObject);
 var
   Sreg1 : String;
 begin
-  //
   if UpperCase(Form1.ConfDuplo) <> 'SIM' then Jatem(Form7.ibDataSet16,Form7.ibDataSet16DESCRICAO,True) else
   begin
     sReg1 := Form7.ibDataSet16.FieldByname('REGISTRO').AsString;
     Form7.ibDataSet16.First;
     Form7.ibDataSet16.Locate('REGISTRO',sREg1,[]);
   end;
-  //
+
   if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '' then Perform(Wm_NextDlgCtl,0,0);
-  //
 end;
 
 procedure TForm30.DBGrid2ColExit(Sender: TObject);
@@ -1136,44 +985,48 @@ end;
 procedure TForm30.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //
-//  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('os_cadastro.htm')));
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
-  //
   try
     if DbGrid1.SelectedIndex = 0 then
     begin
-      //
       if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
       begin
-        //
-        if not dBGrid3.Visible then dBgrid3.Visible := True; //
-        //
+        if not dBGrid3.Visible then dBgrid3.Visible := True;
+
         if not (Form7.ibDataSet16.State in ([dsEdit, dsInsert])) then
         begin
           Form7.ibDataSet16.Edit;
         end;
-{
-        Form1.bFlag := False;
-        Form7.ibDataSet16.UpdateRecord; // Teste 99
-        Form1.bFlag := True;
-}
-        //
+
         Form1.bFlag := False;
         Form7.ibDataSet16.Edit;
         Form7.ibDataSet16.UpdateRecord;
         Form7.ibDataSet16.Edit;
         Form1.bFlag := True;
-        //
       end;
-      if Key = VK_DOWN then if dBgrid3.CanFocus then dBgrid3.SetFocus;
-      //
+      if Key = VK_DOWN then
+        if dBgrid3.CanFocus then
+          dBgrid3.SetFocus;
     end;
-    //
+
     if (Key = VK_UP) and (Form7.ibDataSet16.BOF) then dbGrid2.SetFocus;
   except end;
-  //
+  {Mauricio Parizotto 2023-11-15 Inicio}
+  if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
+  begin
+    if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
+    begin
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Text := ' Select * '+
+                                         ' From ESTOQUE '+
+                                         ' Where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString);
+      Form7.ibDataSet4.Open;
+    end;
+  end;
+
+  MostraFoto;
+  {Mauricio Parizotto 2023-11-15 Fim}
 end;
 
 procedure TForm30.ListBox2Click(Sender: TObject);
@@ -1226,26 +1079,23 @@ procedure TForm30.DBGrid1KeyDown(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
-  //
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
     Key := VK_SHIFT;
     Abort;
   end;
-  //
+
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
   try
     begin
       if Key = VK_RETURN then
       begin
-        //
         Form7.ibDataSet16.Edit;
-        //
+
         if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> '' then
         begin
-          //
           if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
           begin
             Form7.ibDataSet4.Close;                                                //
@@ -1253,7 +1103,7 @@ begin
             Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
             Form7.ibDataSet4.Open;
           end;
-          //
+
           if DbGrid1.SelectedIndex = 0 then
           begin
             Form1.bFlag := True;
@@ -1275,21 +1125,16 @@ begin
           end;
         end else
         begin
-          //
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16.Post;
           Perform(Wm_NextDlgCtl,0,0);
-//         SMALL_DBEdit17.SetFocus;
-//          SMALL_DBEdit17.SelectAll;
-          //
         end;
       end;
     end;
-    //
-  except end;
-  //
+  except
+  end;
+
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet16DESCRICAO.AsString) = '') then DbGrid1.SelectedIndex := 0;
-  //
 end;
 
 procedure TForm30.DBGrid3DblClick(Sender: TObject);
@@ -1311,121 +1156,99 @@ begin
   framePesquisaServOS.Height := 136;
   
   DefinirCorClienteDevedor;
-  //
+
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where Coalesce(Ativo,0)=0 order by upper(NOME)');  //
   Form7.ibDataSet2.Open;
-  //
+
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 35;
   Form7.ibDataSet35TECNICO.DisplayWidth   := 10;
-  //
+
   bProximo := False;
   Form7.ibDataSet3.DisableControls;
-  //
+
   Form7.ibDataSet35TECNICO.Visible := True;
-  //
+
   Form7.ibDataSet9.Active := False;
   Form7.ibDataSet9.Active := True;
-  //
+
   Form7.ibDataSet19.Active     := False;
   Form7.ibDataSet19.Active     := True;
-  //
-//  Form30.ScrollBox1.Color := Form7.Color;
-//  Form30.Panel2.Color := Form7.Color;
-  //
+
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString)+' ');  //
   Form7.ibDataSet2.Open;
-  //
+
   SMALL_DBEdit2.SetFocus;
   SMALL_DBEdit2.SelectAll;
-  //
+
   ScrollBox1.VertScrollBar.Position := 1;
   Label25.Caption := 'ORDEM DE SERVIÇO '+Form7.ibDataSet3NUMERO.AsString;
-  //
+
   // Atenção a rotina abaixo altera a quantidade no estoque
-  //
   Form7.ibDataSet16.DisableControls;
   Form7.ibDataSet16.First;
   while not Form7.ibDataSet16.Eof do
   begin
-    //
     // Procura o produto no estoque
-    //
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     if Form7.ibDataSet16SINCRONIA.AsFloat = Form7.ibDataSet16QUANTIDADE.AsFloat then // Resolvi este problema as 4 da madrugada no NoteBook em casa
     begin
-      //
       Form7.ibDataSet4.Close;                                                //
       Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
       Form7.ibDataSet4.Open;
-      //
+
       if (Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (Alltrim(Form7.ibDataSet16CODIGO.AsString)<>'') then
       begin
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet16QUANTIDADE.AsFloat;
         Form7.ibDataSet4.Post;
-        //                                                                        //
-        Form7.ibDataSet16.Edit;                                                       //
-        Form7.ibDataSet16SINCRONIA.AsFloat := 0;                                      // Resolvi este problema as 4 da madrugada no NoteBook em casa
-        //                                                                        //
+
+        Form7.ibDataSet16.Edit;
+        Form7.ibDataSet16SINCRONIA.AsFloat := 0;
       end;
     end;
-    //
+
     Form7.ibDataSet16.Next;
-    //
   end;
-  //
+
   Form7.ibDataSet16.EnableControls;
-  //
+
   Form7.ibDataSet16UNITARIO.Visible := True;
-//  Form7.ibDataSet35UNITARIO.Visible := True;
-  //
-//  Label20.Caption := Form7.ibDataSet13NOME.AsString;
-//  Label22.Caption := Form7.ibDataSet13CGC.AsString+' IE: '+Form7.ibDataSet13IE.AsString;
-//  Label24.Caption := AllTrim(Form7.ibDataSet13ENDERECO.AsString) + ' - ' + AllTrim(Form7.ibDataSet13COMPLE.AsString);
-//  Label26.Caption := AllTrim(Form7.ibDataSet13CEP.AsString) + ' ' + AllTrim(Form7.ibDataSet13MUNICIPIO.AsString) + ' - ' + AllTrim(Form7.ibDataSet13ESTADO.AsString);
-//  Label28.Caption := AllTrim(Form7.ibDataSet13TELEFO.AsString);
-  //
+
   Form7.ibDataSet4.Close;
   Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.ibDataSet3.EnableControls;
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
 end;
 
 procedure TForm30.FormActivate(Sender: TObject);
 begin
-  //
   Form30.Top     := Form7.Top;
   Form30.Left    := 0;
   Form30.Width   := Form7.Width;
   Form30.Height  := Form7.Height;
-  //
+
   // Posiciona na tabéla de CFOP
-  //
   Form7.ibDataSet14.Close;
   Form7.ibDataSet14.SelectSQL.Clear;
   Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
   Form7.ibDataSet14.Open;
-  //
+
   // VENDAS
-  //
   Form7.ibDataSet15.Close;
   Form7.ibDataSet15.SelectSQL.Clear;
   Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where NUMERONF=''0000000000''');
   Form7.ibDataSet15.Open;
-  //
-  //
-  //
+
   Form7.ibDataSet16IPI.Visible            := False;
   Form7.ibDataSet16CST_IPI.Visible        := False;
   Form7.ibDataSet16ICM.Visible            := False;
@@ -1438,11 +1261,9 @@ begin
   Form7.ibDataSet16VIPI.Visible           := False;
   Form7.ibDataSet16XPED.Visible           := False;
   Form7.ibDataSet16NITEMPED.Visible       := False;
-  //
-  //
-  //
+
   Form7.ibDataSet16.EnableControls;
-  //
+
   Form7.ibDataSet16UNITARIO.Visible := True;
   Form7.ibDataSet35UNITARIO.Visible := True;
 
@@ -1481,6 +1302,20 @@ begin
   fFrameIdentifi4.sTabela         := 'OS';
   fFrameIdentifi4.CarregaDescricao;
   {Sandro Silva 2023-09-28 fim}
+
+  {Mauricio Parizotto 2023-11-16 Inicio}
+  imgFotoProd.Picture := nil;
+  imgFotoProd.Visible := False;
+  pnlFotoProd.Visible := False;
+  // FOTO
+  pnlFotoProd.Top    := Panel1.Top;
+  pnlFotoProd.Left   := Panel1.Left + Panel1.Width + 5;
+  pnlFotoProd.Width  := Screen.Width - pnlFotoProd.Left - 10;
+  pnlFotoProd.Height := 300;
+
+  if pnlFotoProd.Width  > 300 then pnlFotoProd.Width := 300;
+  if pnlFotoProd.Height > 300 then pnlFotoProd.Height := 300;
+  {Mauricio Parizotto 2023-11-16 Fim}
 end;
 
 procedure TForm30.DBMemo1KeyUp(Sender: TObject; var Key: Word;
@@ -1525,21 +1360,15 @@ begin
   Form7.ibDataSet3.Edit;
   Form7.ibDataSet3PROBLEMA.AsString := AllTrimCHR(AllTrimCHR(Alltrim(Form7.ibDataSet3PROBLEMA.AsString),chr(10)),chr(13));
   Form30.DBMemo1.Repaint;
-  //
-//  Form7.ibDataSet3.Post;
-//  Form7.ibDataSet3.Edit;
-//  Form30.DBMemo1.Update;
-
 end;
 
 procedure TForm30.Incluirnovoitemnoestoque1Click(Sender: TObject);
 begin
   if Form1.imgEstoque.Visible then
   begin
-    //
     Form7.ibDataSet3.DisableControls;
     Form7.ibDataSet16.DisableControls;
-    //
+
     try
       Form1.bFechaTudo           := False;
       Form1.imgEstoqueClick(Sender);
@@ -1548,8 +1377,9 @@ begin
       Form7.ibDataSet4.Append; // Incluir novo item pelo menu estoque
       Form10.ShowModal;
       Form7.sModulo := 'OS';
-    except end;
-    //
+    except
+    end;
+
     Form1.bFechaTudo           := True;
     Form7.ibDataSet3.EnableControls;
     Form7.ibDataSet16.EnableControls;
@@ -1583,9 +1413,12 @@ end;
 procedure TForm30.DBMemo1Change(Sender: TObject);
 begin
   try
-    if Length(Alltrim(dbMemo1.Text)) >= 128 then
+    //Mauricio Parizotto 2023-11-15
+    //if Length(Alltrim(dbMemo1.Text)) >= 128 then
+    if Length(Alltrim(dbMemo1.Text)) >= 1000 then
     begin
-      dbMemo1.Text := Copy(dbMemo1.Text,1,128);
+      //dbMemo1.Text := Copy(dbMemo1.Text,1,128);
+      dbMemo1.Text := Copy(dbMemo1.Text,1,1000);
       Perform(Wm_NextDlgCtl,0,0);
     end;
   except
@@ -1594,17 +1427,15 @@ end;
 
 procedure TForm30.ListBox1DblClick(Sender: TObject);
 begin
-  //
   if ListBox1.ItemIndex = 0 then
     Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
   if ListBox1.ItemIndex = 1 then
     Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
   if ListBox1.ItemIndex = 2 then
     Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
-  //
+
   SMALL_DBEdit3.SetFocus;
   ListBox1.Visible := False;
-  //
 end;
 
 procedure TForm30.Button1Click(Sender: TObject);
@@ -1686,18 +1517,10 @@ begin
   OcultaListaDePesquisa;
 end;
 
-procedure TForm30.SMALL_DBEdit13KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  PostMessage(GetParentForm(Self).Handle, wm_NextDlgCtl, Ord((ssShift in Shift)), 0);
-  Key := 0;
-end;
-
 procedure TForm30.fFrameDescricaogdRegistrosDblClick(Sender: TObject);
 begin
   fFrameDescricao.gdRegistrosDblClick(Sender);
   Form7.ibDataSet35.Edit;
-  //Form7.ibDataSet35DESCRICAO.AsString := ListBox22.Items[ListBox22.ItemIndex];
   Form7.ibDataSet35TOTAL.AsFloat      := TDBGrid(Sender).DataSource.DataSet.FieldByName('TOTAL').AsFloat;//( fPrecoDoServico[ListBox22.ItemIndex];
   Form7.ibDataSet35UNITARIO.AsFloat   := TDBGrid(Sender).DataSource.DataSet.FieldByName('UNITARIO').AsFloat;//fPrecoDoServico[ListBox22.ItemIndex];
   Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
@@ -1716,6 +1539,58 @@ begin
   //ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
   SMALL_DBEdit7.SelectAll;
   {Sandro Silva 2023-10-23 fim}
+end;
+
+
+procedure TForm30.MostraFoto;
+var
+  BlobStream : TStream;
+  jP2  : TJPEGImage;
+  bMostrarImage: Boolean;
+begin
+  bMostrarImage := False;
+  imgFotoProd.Picture := nil;
+  imgFotoProd.Visible := False;
+  pnlFotoProd.Visible := False;
+
+  if Form7.ibDataset4FOTO.BlobSize <> 0 then
+  begin
+    BlobStream:= Form7.ibDataset4.CreateBlobStream(Form7.ibDataset4FOTO,bmRead);
+    jp2 := TJPEGImage.Create;
+    try
+      try
+        jp2.LoadFromStream(BlobStream);
+        imgFotoProd.Picture.Assign(jp2);
+
+        if imgFotoProd.Picture.Width > imgFotoProd.Picture.Height then
+        begin
+          imgFotoProd.Width  := (StrToInt(StrZero((imgFotoProd.Picture.Width * (pnlFotoProd.Width / 2 / imgFotoProd.Picture.Width)),10,0)))*2;
+          imgFotoProd.Height := (StrToInt(StrZero((imgFotoProd.Picture.Height* (pnlFotoProd.Width / 2 / imgFotoProd.Picture.Width)),10,0)))*2;
+        end else
+        begin
+          imgFotoProd.Width  := (StrToInt(StrZero((imgFotoProd.Picture.Width * (pnlFotoProd.Height / 2 / imgFotoProd.Picture.Height)),10,0)))*2;
+          imgFotoProd.Height := (StrToInt(StrZero((imgFotoProd.Picture.Height* (pnlFotoProd.Height / 2 / imgFotoProd.Picture.Height)),10,0)))*2;
+        end;
+        imgFotoProd.Left := (pnlFotoProd.Width  - imgFotoProd.Width) div 2;
+        imgFotoProd.Top  := (pnlFotoProd.Height - imgFotoProd.Height) div 2;
+        imgFotoProd.Repaint;
+        pnlFotoProd.Visible := True;
+        imgFotoProd.Visible := True;
+
+      except
+      end;
+    finally
+      BlobStream.Free;
+      jp2.Free;
+    end;
+  end;
+end;
+
+procedure TForm30.DBGrid3KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  //Mauricio Parizotto 2023-11-15
+  MostraFoto;
 end;
 
 end.

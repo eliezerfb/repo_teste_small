@@ -37,6 +37,7 @@ type
     Edit_09: TEdit;
     Label_10: TLabel;
     Edit_10: TEdit;
+    btnCancelar: TButton;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -47,11 +48,14 @@ type
     procedure FormCreate(Sender: TObject);
 	procedure SomenteNumerosKeyPress(Sender: TObject; var Key: Char);
     procedure SomenteNumerosChange(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
   private
     FnMaxLength: Integer;
+    FbClicouOK: Boolean;
   public
     procedure DefinirSomenteNumeros;
     property MaxLength: Integer read FnMaxLength write FnMaxLength;
+    property ClicouOK: Boolean read FbClicouOK write FbClicouOK;
   end;
 
 var
@@ -65,11 +69,13 @@ uses Unit7, Mais, Unit10;
 
 procedure TForm29.Button1Click(Sender: TObject);
 begin
+  FbClicouOK := True;
   Close;
 end;
 
 procedure TForm29.FormActivate(Sender: TObject);
 begin
+  FbClicouOK := True;
   //
   Form7.AlphaBlend       := True;
   Form10.AlphaBlend      := True;
@@ -230,6 +236,12 @@ begin
   Edit1.Text := LimpaNumero(Edit1.Text);
   if FnMaxLength > 0 then
     Edit1.Text := Copy(Edit1.Text, 1, FnMaxLength);
+end;
+
+procedure TForm29.btnCancelarClick(Sender: TObject);
+begin
+  FbClicouOK := False;
+  Self.Close;
 end;
 
 end.

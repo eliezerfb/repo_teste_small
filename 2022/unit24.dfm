@@ -2328,7 +2328,6 @@ object Form24: TForm24
       Width = 200
       Height = 200
       BevelOuter = bvNone
-      BorderStyle = bsSingle
       Color = clWhite
       Ctl3D = False
       ParentCtl3D = False
@@ -2336,8 +2335,8 @@ object Form24: TForm24
       object Image5: TImage
         Left = 0
         Top = 0
-        Width = 198
-        Height = 198
+        Width = 200
+        Height = 200
         Center = True
         Stretch = True
       end
