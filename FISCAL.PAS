@@ -30590,17 +30590,6 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_Dataehoradaimpressora(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_Dataehoradaimpressora(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_Dataehoradaimpressora(pP1);
-    
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_Dataehoradaimpressora(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_Dataehoradaimpressora(pP1);
-  }
 
 end;
 
@@ -30619,16 +30608,6 @@ begin
   if Form1.sModeloECF = '02' then
     sAliquotasISS := _ecf02_VerificaAliquotasIss;
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_RetornaAliquotas(pP1);
-  }
 end;
 
 function TForm1.PDV_StatusGaveta(pP1: Boolean): String;
@@ -30644,16 +30623,6 @@ begin
   if Form1.sModeloECF = '65' then Result := _ecf65_StatusGaveta(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_StatusGaveta(pP1);
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_StatusGaveta(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_StatusGaveta(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_StatusGaveta(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_StatusGaveta(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_StatusGaveta(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_StatusGaveta(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_StatusGaveta(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_StatusGaveta(pP1);
-  }
 end;
 
 function TForm1.PDV_AbreGaveta(pP1: Boolean): Boolean;
@@ -30669,16 +30638,6 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_AbreGaveta(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_AbreGaveta(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_AbreGaveta(pP1);
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_AbreGaveta(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_AbreGaveta(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_AbreGaveta(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_AbreGaveta(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_AbreGaveta(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_AbreGaveta(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_AbreGaveta(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_AbreGaveta(pP1);
-  }
 
 end;
 
@@ -30695,17 +30654,7 @@ begin
   if Form1.sModeloECF = '59' then Result := AllTrim(_ecf59_NmerodeSrie(pP1));
   if Form1.sModeloECF = '65' then Result := AllTrim(_ecf65_NmerodeSrie(pP1));
   if Form1.sModeloECF = '99' then Result := AllTrim(_ecf99_NmerodeSrie(pP1));
-    
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := AllTrim(_ecf04_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '05' then Result := AllTrim(_ecf05_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '06' then Result := AllTrim(_ecf06_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '07' then Result := AllTrim(_ecf07_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '08' then Result := AllTrim(_ecf08_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '09' then Result := AllTrim(_ecf09_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '10' then Result := AllTrim(_ecf10_NmerodeSrie(pP1));
-  if Form1.sModeloECF = '11' then Result := AllTrim(_ecf11_NmerodeSrie(pP1));
-  }
+
 end;
 
 function TForm1.PDV_GrandeTotal(pP1: Boolean): String;
@@ -30722,16 +30671,6 @@ begin
   if Form1.sModeloECF = '65' then Result := _ecf65_GrandeTotal(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_GrandeTotal(pP1);
     
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_GrandeTotal(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_GrandeTotal(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_GrandeTotal(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_GrandeTotal(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_GrandeTotal(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_GrandeTotal(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_GrandeTotal(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_GrandeTotal(pP1);
-  }
 end;
 
 function TForm1.PDV_NumeroIntervencoesTecnicas(pP1: Boolean): String;
@@ -30749,16 +30688,6 @@ begin
   if Form1.sModeloECF = '65' then Result := _ecf65_Nmdeintervenestcnicas(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_Nmdeintervenestcnicas(pP1);
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_Nmdeintervenestcnicas(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_Nmdeintervenestcnicas(pP1);
-  }
 end;
 
 function TForm1.PDV_NumeroDeReducoesZ(pP1: Boolean): String;
@@ -30775,16 +30704,7 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_NmdeRedues(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_NmdeRedues(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_NmdeRedues(pP1);
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_NmdeRedues(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_NmdeRedues(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_NmdeRedues(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_NmdeRedues(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_NmdeRedues(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_NmdeRedues(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_NmdeRedues(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_NmdeRedues(pP1);
-  }
+
 end;
 
 function TForm1.PDV_TipoDaImpressora(pP1: Boolean): String;
@@ -30800,30 +30720,12 @@ begin
   if Form1.sModeloECF = '65' then Result := _ecf65_Tipodaimpressora(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_Tipodaimpressora(pP1);
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_Tipodaimpressora(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_Tipodaimpressora(pP1);
-  }
 end;
 
 function TForm1.PDV_MarcaImpressora(pP1: Boolean): String;
 begin
   if Form1.sModeloECF = '02' then Result := _ecf02_Marca(pP1);
   if Form1.sModeloECF = '03' then Result := _ecf03_Marca(pP1);
-  //  if Form1.sModeloECF = '04' then Result := _ecf04_Marca(pP1);
-  //  if Form1.sModeloECF = '05' then Result := _ecf05_Marca(pP1);
-  //  if Form1.sModeloECF = '06' then Result := _ecf06_Marca(pP1);
-  //  if Form1.sModeloECF = '07' then Result := _ecf07_Marca(pP1);
-  //  if Form1.sModeloECF = '08' then Result := _ecf08_Marca(pP1);
-  //  if Form1.sModeloECF = '09' then Result := _ecf09_Marca(pP1);
-  //  if Form1.sModeloECF = '10' then Result := _ecf10_Marca(pP1);
-  //  if Form1.sModeloECF = '11' then Result := _ecf11_Marca(pP1);
   if Form1.sModeloECF = '12' then Result := _ecf12_Marca(pP1);
   if Form1.sModeloECF = '14' then Result := _ecf14_Marca(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_Marca(pP1);
@@ -30836,14 +30738,6 @@ function TForm1.PDV_ModeloImpressora(pP1: Boolean): String;
 begin
   if Form1.sModeloECF = '02' then Result := _ecf02_Modelo(pP1);
   if Form1.sModeloECF = '03' then Result := _ecf03_Modelo(pP1);
-  //  if Form1.sModeloECF = '04' then Result := _ecf04_Modelo(pP1);
-  //  if Form1.sModeloECF = '05' then Result := _ecf05_Modelo(pP1);
-  //  if Form1.sModeloECF = '06' then Result := _ecf06_Modelo(pP1);
-  //  if Form1.sModeloECF = '07' then Result := _ecf07_Modelo(pP1);
-  //  if Form1.sModeloECF = '08' then Result := _ecf08_Modelo(pP1);
-  //  if Form1.sModeloECF = '09' then Result := _ecf09_Modelo(pP1);
-  //  if Form1.sModeloECF = '10' then Result := _ecf10_Modelo(pP1);
-  //  if Form1.sModeloECF = '11' then Result := _ecf11_Modelo(pP1);
   if Form1.sModeloECF = '12' then Result := _ecf12_Modelo(pP1);
   if Form1.sModeloECF = '14' then Result := _ecf14_Modelo(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_Modelo(pP1);
@@ -30856,14 +30750,6 @@ function TForm1.PDV_VersaoSBImpressora(pP1: Boolean): String;
 begin
   if Form1.sModeloECF = '02' then Result := _ecf02_VersaoSB(pP1);
   if Form1.sModeloECF = '03' then Result := _ecf03_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '04' then Result := _ecf04_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '05' then Result := _ecf05_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '06' then Result := _ecf06_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '07' then Result := _ecf07_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '08' then Result := _ecf08_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '09' then Result := _ecf09_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '10' then Result := _ecf10_VersaoSB(pP1);
-  //  if Form1.sModeloECF = '11' then Result := _ecf11_VersaoSB(pP1);
   if Form1.sModeloECF = '12' then Result := _ecf12_VersaoSB(pP1);
   if Form1.sModeloECF = '14' then Result := _ecf14_VersaoSB(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_VersaoSB(pP1);
@@ -30876,14 +30762,6 @@ function TForm1.PDV_DataInstalacaoSB(pP1: Boolean): String;
 begin
   if Form1.sModeloECF = '02' then Result := _ecf02_DataIntalacaoSB(pP1);
   if Form1.sModeloECF = '03' then Result := _ecf03_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '04' then Result := _ecf04_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '05' then Result := _ecf05_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '06' then Result := _ecf06_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '07' then Result := _ecf07_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '08' then Result := _ecf08_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '09' then Result := _ecf09_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '10' then Result := _ecf10_DataIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '11' then Result := _ecf11_DataIntalacaoSB(pP1);
   if Form1.sModeloECF = '12' then Result := _ecf12_DataIntalacaoSB(pP1);
   if Form1.sModeloECF = '14' then Result := _ecf14_DataIntalacaoSB(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_DataIntalacaoSB(pP1);
@@ -30896,14 +30774,6 @@ function TForm1.PDV_HoraInstalacaoSB(pP1: Boolean): String;
 begin
   if Form1.sModeloECF = '02' then Result := _ecf02_HoraIntalacaoSB(pP1);
   if Form1.sModeloECF = '03' then Result := _ecf03_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '04' then Result := _ecf04_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '05' then Result := _ecf05_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '06' then Result := _ecf06_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '07' then Result := _ecf07_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '08' then Result := _ecf08_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '09' then Result := _ecf09_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '10' then Result := _ecf10_HoraIntalacaoSB(pP1);
-  //  if Form1.sModeloECF = '11' then Result := _ecf11_HoraIntalacaoSB(pP1);
   if Form1.sModeloECF = '12' then Result := _ecf12_HoraIntalacaoSB(pP1);
   if Form1.sModeloECF = '14' then Result := _ecf14_HoraIntalacaoSB(pP1);
   if Form1.sModeloECF = '15' then Result := _ecf15_HoraIntalacaoSB(pP1);
@@ -30950,16 +30820,6 @@ begin
   if Form1.sModeloECF = '65' then Result := _ecf65_fechaCupom2(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_fechaCupom2(pP1);
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_fechaCupom2(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_fechaCupom2(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_fechaCupom2(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_fechaCupom2(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_fechaCupom2(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_fechaCupom2(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_fechaCupom2(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_fechaCupom2(pP1);
-  }
 end;
 
 function TForm1.PDV_Inicializa(pP1: String): Boolean;
@@ -30993,17 +30853,6 @@ begin
     Result := _ecf99_Inicializa(pP1);
   end;
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_Inicializa(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_Inicializa(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_Inicializa(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_Inicializa(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_Inicializa(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_Inicializa(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_Inicializa(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_Inicializa(pP1);
-  } 
-
 end;
 
 function TForm1.PDV_NumeroDoCaixa(pP1: Boolean): String;
@@ -31019,16 +30868,7 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_NmdoCaixa(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_NmdoCaixa(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_NmdoCaixa(pP1);
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_NmdoCaixa(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_NmdoCaixa(pP1);
-  }
+
 end;
 
 function TForm1.PDV_CancelaUltimoCupom(pP1: Boolean): Boolean;
@@ -31046,17 +30886,6 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_CancelaUltimoCupom(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_CancelaUltimoCupom(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_CancelaUltimoCupom(pP1);
-
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_CancelaUltimoCupom(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_CancelaUltimoCupom(pP1);
-  }
 
 end;
 
@@ -31078,16 +30907,6 @@ begin
   if Form1.sModeloECF = '65' then Result := _ecf65_FechaCupom(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_FechaCupom(pP1);
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_FechaCupom(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_FechaCupom(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_FechaCupom(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_FechaCupom(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_FechaCupom(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_FechaCupom(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_FechaCupom(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_FechaCupom(pP1);
-  }
 end;
 
 function TForm1.PDV_Pagamento(pP1: Boolean): Boolean;
@@ -31121,16 +30940,6 @@ begin
   end;
   {Sandro Silva 2023-06-01 fim}
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_Pagamento(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_Pagamento(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_Pagamento(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_Pagamento(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_Pagamento(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_Pagamento(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_Pagamento(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_Pagamento(pP1);
-  }
 end;
 
 function TForm1.PDV_NumeroDoCupom(pP1: Boolean): String;
@@ -31153,16 +30962,6 @@ begin
 
   end;
 
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_NumeroDoCupom(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_NumeroDoCupom(pP1);
-  }
 end;
 
 function TForm1.PDV_FaltaPagamento(pP1: Boolean): Boolean;
@@ -31178,16 +30977,7 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_FaltaPagamento(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_FaltaPagamento(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_FaltaPagamento(pP1);
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then Result := _ecf04_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '05' then Result := _ecf05_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '06' then Result := _ecf06_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '07' then Result := _ecf07_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '08' then Result := _ecf08_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '09' then Result := _ecf09_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '10' then Result := _ecf10_FaltaPagamento(pP1);
-  if Form1.sModeloECF = '11' then Result := _ecf11_FaltaPagamento(pP1);
-  }
+
 end;
 
 procedure TForm1.PDV_GerarArquivosRequisitoXII;
