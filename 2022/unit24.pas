@@ -116,8 +116,6 @@ type
     Panel9: TPanel;
     Edit2: TEdit;
     Panel5: TPanel;
-    SMALL_DBEdit42: TSMALL_DBEdit;
-    Label9: TLabel;
     Label10: TLabel;
     SMALL_DBEdit44: TSMALL_DBEdit;
     SMALL_DBEdit45: TSMALL_DBEdit;
@@ -153,7 +151,6 @@ type
     ComboBox13: TComboBox;
     Label89: TLabel;
     Image5: TImage;
-    Button1: TBitBtn;
     SMALL_DBEdit51: TSMALL_DBEdit;
     SMALL_DBEdit52: TSMALL_DBEdit;
     lblPFCP: TLabel;
@@ -169,6 +166,7 @@ type
     Label7: TLabel;
     SMALL_DBEdit16: TSMALL_DBEdit;
     cbDescontaICMSDesonerado: TCheckBox;
+    btnPrecificar: TBitBtn;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

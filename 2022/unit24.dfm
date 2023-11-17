@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = 486
-  Top = 283
+  Left = 426
+  Top = 57
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -2353,20 +2353,6 @@ object Form24: TForm24
       ParentCtl3D = False
       TabOrder = 2
       Visible = False
-      object Label9: TLabel
-        Left = 183
-        Top = 58
-        Width = 57
-        Height = 13
-        Caption = 'Novo Pre'#231'o'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clSilver
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
       object Label10: TLabel
         Left = 15
         Top = 58
@@ -3009,7 +2995,7 @@ object Form24: TForm24
         Font.Name = 'System'
         Font.Style = []
         ParentFont = False
-        TabOrder = 16
+        TabOrder = 15
         OnClick = cbDescontaICMSDesoneradoClick
       end
       object SMALL_DBEdit16: TSMALL_DBEdit
@@ -3030,24 +3016,14 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 15
+        TabOrder = 14
         OnExit = SMALL_DBEdit16Exit
-        OnKeyUp = ComboBox12KeyUp
-      end
-      object SMALL_DBEdit42: TSMALL_DBEdit
-        Left = 183
-        Top = 73
-        Width = 121
-        Height = 22
-        DataField = 'LISTA'
-        DataSource = Form7.DataSource23
-        TabOrder = 2
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit44: TSMALL_DBEdit
         Left = 15
         Top = 73
-        Width = 121
+        Width = 120
         Height = 22
         DataField = 'PRECO'
         DataSource = Form7.DataSource4
@@ -3078,7 +3054,7 @@ object Form24: TForm24
         Caption = '...'
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 8
+        TabOrder = 7
         OnClick = Button2Click
       end
       object ComboBox12: TComboBox
@@ -3094,7 +3070,7 @@ object Form24: TForm24
         Font.Style = []
         ItemHeight = 16
         ParentFont = False
-        TabOrder = 3
+        TabOrder = 2
         OnChange = ComboBox12Change
         OnExit = ComboBox12Exit
         OnKeyUp = ComboBox12KeyUp
@@ -3117,7 +3093,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 4
+        TabOrder = 3
         OnExit = SMALL_DBEdit64Exit
         OnKeyUp = ComboBox12KeyUp
       end
@@ -3134,7 +3110,7 @@ object Form24: TForm24
         Font.Style = []
         ItemHeight = 16
         ParentFont = False
-        TabOrder = 5
+        TabOrder = 4
         OnChange = ComboBox13Change
         OnExit = ComboBox13Exit
         OnKeyUp = ComboBox12KeyUp
@@ -3144,7 +3120,7 @@ object Form24: TForm24
         Top = 383
         Width = 290
         Height = 22
-        TabOrder = 7
+        TabOrder = 6
         Visible = False
         OnChange = edtAlteraEntradaChange
         OnKeyDown = edtAlteraEntradaKeyDown
@@ -3167,7 +3143,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 9
+        TabOrder = 8
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit55: TSMALL_DBEdit
@@ -3188,7 +3164,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 13
+        TabOrder = 12
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit54: TSMALL_DBEdit
@@ -3209,7 +3185,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 12
+        TabOrder = 11
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit52: TSMALL_DBEdit
@@ -3230,7 +3206,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 10
+        TabOrder = 9
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit53: TSMALL_DBEdit
@@ -3251,7 +3227,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 11
+        TabOrder = 10
         OnKeyUp = ComboBox12KeyUp
       end
       object SMALL_DBEdit56: TSMALL_DBEdit
@@ -3272,7 +3248,7 @@ object Form24: TForm24
         Font.Style = []
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 14
+        TabOrder = 13
         OnKeyUp = ComboBox12KeyUp
       end
       object DBGrid33: TDBGrid
@@ -3289,7 +3265,7 @@ object Form24: TForm24
         Font.Style = []
         Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         ParentFont = False
-        TabOrder = 6
+        TabOrder = 5
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -3306,6 +3282,23 @@ object Form24: TForm24
             Visible = True
           end>
       end
+      object btnPrecificar: TBitBtn
+        Left = 150
+        Top = 72
+        Width = 94
+        Height = 23
+        Hint = 'Alterar'
+        Caption = 'Precificar'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 16
+      end
     end
     object ok: TBitBtn
       Left = 593
@@ -3321,16 +3314,6 @@ object Form24: TForm24
       ParentFont = False
       TabOrder = 3
       OnClick = OKClick
-    end
-    object Button1: TBitBtn
-      Left = 896
-      Top = 8
-      Width = 75
-      Height = 25
-      Caption = 'Button1'
-      TabOrder = 4
-      Visible = False
-      OnClick = Button1Click
     end
   end
   object PopupMenu3: TPopupMenu
