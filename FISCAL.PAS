@@ -15330,6 +15330,8 @@ procedure TForm1.ibDataSet27QUANTIDADESetText(Sender: TField;
 var
   bArtificioParaAfetarApenasEdicaoMovimento: Boolean;
   dQuantidade: Double;
+  dQuantidadeOld: Double;
+  dValorUnitario: Double;
   sRegistro: String;
   iTenta: Integer;
   bGravou: Boolean;
@@ -15385,6 +15387,8 @@ begin
     if bArtificioParaAfetarApenasEdicaoMovimento then
     begin
       sRegistro := Form1.ibDataSet27.FieldByname('REGISTRO').AsString;
+      dValorUnitario := Form1.ibDataSet27.FieldByname('UNITARIO').AsFloat;
+
       if Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat < 0 then
       begin
         dQuantidade := 0.00; // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := 0
@@ -15442,15 +15446,18 @@ begin
         end;
       end;
 
+      dQuantidadeOld := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue; // Sandro Silva 2023-11-17
+      Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidade; // Sandro Silva 2023-11-16
       if dQuantidade = 0 then
       begin
         Form1.ibDataSet27.Edit;
-        Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue;
+        Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidadeOld;
       end;
 
-      if dQuantidade <> Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue then
+      if dQuantidade <> dQuantidadeOld then
       begin
         bGravou := False;
+
         for iTenta := 1 to 10 do
         begin
           try
@@ -15463,19 +15470,26 @@ begin
             if (Form1.ibDataSet27.FieldByname('CODIGO').AsString = Form1.ibDataSet4.FieldByname('CODIGO').AsString) and (Form1.ibDataSet4.FieldByname('CODIGO').AsString <> '') then
             begin
               Form1.ibDataSet4.Edit; // altera a quantidade no estoque
-              Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat := Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat - (dQuantidade - Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue);
+              Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat := Form1.ibDataSet4.FieldByName('QTD_ATUAL').AsFloat - (dQuantidade - dQuantidadeOld);
               Form1.ibDataSet4.Post;
               bGravou := True;
               Break;
             end;
 
           except
-            //dQuantidade := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue;
             Commitatudo(True);
+
+            Form1.ibDataSet27.Close;
+            Form1.ibDataSet27.SelectSQL.Text := FEditaMovimento.SelectSqlAlteracaEdicao;
+            Form1.ibDataSet27.Open;
+
+            // Depois de comitado irá perder
             if Form1.ibDataSet27.Locate('REGISTRO', sRegistro, []) then
             begin
               Form1.ibDataSet27.Edit;
               Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidade; // Sandro Silva 2023-11-16
+              Form1.ibDataSet27.FieldByname('UNITARIO').AsFloat   := dValorUnitario;
+              Form1.ibDataSet27.FieldByname('TOTAL').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat * Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat));
             end;
           end;
 

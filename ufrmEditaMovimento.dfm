@@ -101,6 +101,7 @@ object FEditaMovimento: TFEditaMovimento
     TitleFont.Height = -13
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
+    OnCellClick = DBGridItensCellClick
     OnColEnter = DBGridItensColEnter
     OnDrawColumnCell = DBGridItensDrawColumnCell
     OnKeyDown = DBGridItensKeyDown
@@ -148,9 +149,14 @@ object FEditaMovimento: TFEditaMovimento
   end
   object DataSource1: TDataSource
     DataSet = Form1.ibDataSet27
-    OnStateChange = DataSource1StateChange
     OnDataChange = DataSource1DataChange
     Left = 184
     Top = 160
+  end
+  object CDSALTERACA: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 280
+    Top = 208
   end
 end

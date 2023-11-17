@@ -7,7 +7,7 @@ uses
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
   Grids, DBGrids, DB, IBCustomDataSet, IBQuery
   , StrUtils
-  , ufuncoesfrente
+  , ufuncoesfrente, DBClient
   ;
 
 type
@@ -19,6 +19,7 @@ type
     DBGridItens: TDBGrid;
     DataSource1: TDataSource;
     lbTotal: TLabel;
+    CDSALTERACA: TClientDataSet;
     procedure btnOkClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -33,19 +34,24 @@ type
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure DBGridItensKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DataSource1StateChange(Sender: TObject);
+    procedure FIBDATASETALTERACAAfterScroll(DataSet: TDataSet);
+    procedure DBGridItensCellClick(Column: TColumn);
   private
     { Private declarations }
+    FoMessageEvent: TMessageEvent;    
     FCaixa: String;
     FPedido: String;
     FSelectOld: String;
+    FIBDATASETALTERACA: TIBDataSet;
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
+     procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
   public
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
     property Caixa: String read FCaixa write FCaixa;
+    function SelectSqlAlteracaEdicao: String;
   end;
 
 var
@@ -97,6 +103,14 @@ begin
   AjustaResolucao(FEditaMovimento.Frame_teclado1);
   Form1.Image7Click(Sender); // Sandro Silva 2016-08-18
 
+  FIBDATASETALTERACA := TIBDataSet.Create(nil);
+  FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
+
+  FoMessageEvent := Application.OnMessage;
+
+  Application.OnMessage := ScrollMouse;
+
+
 end;
 
 procedure TFEditaMovimento.DBGridItensDrawColumnCell(Sender: TObject;
@@ -138,13 +152,9 @@ begin
         sTexto := RightStr(Column.Field.AsString, 3);
     end;
 
-
     if ItemCancelado(Column.Field) then
     begin
-      //(Sender As TDBGrid).Canvas.Font.Color  := clBlack;
-      //(Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
       (Sender As TDBGrid).Canvas.Font.Style  := [fsStrikeOut, fsBold];
-      (Sender As TDBGrid).ReadOnly := True;
     end;
 
     // Cor de fundo para célula depende se está selecionada
@@ -154,8 +164,6 @@ begin
 
       if ItemCancelado(Column.Field) then
       begin
-        //(Sender As TDBGrid).Canvas.Font.Color  := clBlack;
-        //(Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
         (Sender As TDBGrid).Canvas.Font.Style  := [fsStrikeOut];
       end;
 
@@ -165,7 +173,6 @@ begin
 
       (Sender As TDBGrid).Canvas.Brush.Color := (Sender As TDBGrid).Color;
 
-      //if ((Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE')) then
       if ((Column.Field.FieldName <> 'UNITARIO') and (Column.Field.FieldName <> 'QUANTIDADE'))
         or (ItemCancelado(Column.Field) or (Column.Field.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto') or (Column.Field.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo'))
       then
@@ -198,7 +205,7 @@ end;
 procedure TFEditaMovimento.FormShow(Sender: TObject);
 var
   iCol: Integer;
-begin
+begin           
 
   for iCol := 0 to DBGridItens.Columns.Count - 1 do
   begin
@@ -208,19 +215,7 @@ begin
   FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
 
   Form1.ibDataSet27.Close;
-  Form1.ibDataSet27.SelectSQL.Text :=
-    'select * ' +
-    'from ALTERACA ' +
-    'where PEDIDO = :PEDIDO ' +
-    ' and CAIXA = :CAIXA ';// +
-//    ' and TIPO <> ''CANCEL'' ' +
-//    ' and TIPO <> ''KOLNAC'' ' + // Sandro Silva 2019-03-26 Quando em Dead Lock, regsitro fica com TIPO=KOLNAC. Altera para "CANCEL" quando estiver destravado
-//    ' and DESCRICAO <> ''Acréscimo'' ' +
-//    ' and DESCRICAO <> ''Desconto'' ' +
-//    ' and DESCRICAO <> ''<CANCELADO>'' ' +
-//    ' and coalesce(VENDEDOR, '''') <> ''<cancelado>'' ';
-  Form1.ibDataSet27.ParamByName('PEDIDO').AsString := FPedido;
-  Form1.ibDataSet27.ParamByName('CAIXA').AsString  := FCaixa;
+  Form1.ibDataSet27.SelectSQL.Text := SelectSqlAlteracaEdicao;
   Form1.ibDataSet27.Open;
 
   AjustaLarguraDBGrid(DBGridItens);
@@ -229,6 +224,10 @@ begin
 
   Form1.ibDataSet27.Last;
   DBGridItens.SelectedIndex := ColumnIndex(DBGridItens.Columns, 'UNITARIO');
+  DBGridItensColEnter(DBGridItens);
+
+  FIBDATASETALTERACA := Form1.ibDataSet27;
+  FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
 
 end;
 
@@ -240,6 +239,7 @@ begin
   Result := 0.00;
   try
     sItem := DataSet.FieldByName('REGISTRO').AsString;
+    DataSet.First;
     while DataSet.Eof = False do
     begin
       if (DataSet.FieldByName('UNITARIO').AsFloat * DataSet.FieldByName('QUANTIDADE').AsFloat) <> DataSet.FieldByName('TOTAL').AsFloat then
@@ -257,8 +257,6 @@ begin
     DataSet.EnableControls;
   end;
 
-  //  Form1.fTotal    := 9999999.99; // Jeito de forçar a totalização :(
-  //Result := Form1.PDV_SubTotal(True);
   lbTotal.Caption := 'Total:R$ ' + FormatFloat('0.00', Result);
 end;
 
@@ -267,23 +265,8 @@ begin
   DBGridItens.ReadOnly := False;
   if (DBGridItens.SelectedField.FieldName <> 'QUANTIDADE') and (DBGridItens.SelectedField.FieldName <> 'UNITARIO') then
     DBGridItens.ReadOnly := True;
-  {
-  if (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
-    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
-    or (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
-    or (DBGridItens.DataSource.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
-    //then
-    //DBGridItens.ReadOnly := True;
-  //if
-    or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL') or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC') then
-  }
-  {
-  if ItemCancelado(DBGridItens.SelectedField) then
-    DBGridItens.ReadOnly := True;
-  }
-
-  if NaoEditavel(DBGridItens.SelectedField) then
-    DBGridItens.ReadOnly := True;
+//  if NaoEditavel(DBGridItens.SelectedField) then
+//    DBGridItens.ReadOnly := True;
 end;
 
 procedure TFEditaMovimento.DBGridItensKeyPress(Sender: TObject;
@@ -294,8 +277,13 @@ begin
     if Key = Chr(46) then
       Key := Chr(44);
   end;
+
+  if NaoEditavel(DBGridItens.SelectedField) then
+    Key := #0;
+    
   if Key = '-' then
     Key := #0;
+
 end;
 
 procedure TFEditaMovimento.DBGridItensKeyDown(Sender: TObject;
@@ -304,7 +292,7 @@ begin
   if (Shift = [ssCtrl]) and (Key = 46) then
     Key := 0;
 
-  if Key in [VK_TAB, VK_ESCAPE] then
+  if Key in [VK_TAB{, VK_ESCAPE}] then
     Key := VK_RETURN;
 
   try
@@ -337,8 +325,11 @@ end;
 procedure TFEditaMovimento.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
+  Application.OnMessage := FoMessageEvent;
   Form1.bEditandoMovimento := False;
   Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
+  FIBDATASETALTERACA.AfterScroll  := nil;
+  FIBDATASETALTERACA.BeforeScroll := nil;
 end;
 
 procedure TFEditaMovimento.DataSource1DataChange(Sender: TObject;
@@ -351,16 +342,7 @@ begin
     Exit;
 
   if Field.DataSet.Active = False then
-    Exit;
-
-  {  
-  if NaoEditavel(Field) then
-  begin
-    Field.DataSet.FieldByName('QUANTIDADE').AsFloat := Field.DataSet.FieldByName('QUANTIDADE').OldValue;
-    Field.DataSet.FieldByName('UNITARIO').AsFloat   := Field.DataSet.FieldByName('UNITARIO').OldValue;
-  end;
-  }
-
+    Exit;            
 
   if (Field.FieldName = 'QUANTIDADE')
     or (Field.FieldName = 'UNITARIO')
@@ -390,13 +372,7 @@ end;
 
 function TFEditaMovimento.ItemCancelado(Field: TField): Boolean;
 begin
-  Result := False;
-  {
-  if (DBGridItens.DataSource.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
-    or (DBGridItens.DataSource.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
-    or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'CANCEL')
-    or (DBGridItens.DataSource.DataSet.FieldByName('TIPO').AsString = 'KOLNAC')
-    }
+  Result := False;    
   if (Field.DataSet.FieldByName('DESCRICAO').AsString = '<CANCELADO>')
     or (Field.DataSet.FieldByName('VENDEDOR').AsString = '<cancelado>')
     or (Field.DataSet.FieldByName('TIPO').AsString = 'CANCEL')
@@ -420,30 +396,65 @@ end;
 procedure TFEditaMovimento.DBGridItensKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-    //if Key = VK_DOWN then
+  if Key = VK_DOWN then
+  begin
+    if TDBGrid(Sender).DataSource.DataSet.Eof then
     begin
-
-      DBGridItens.ReadOnly := False;
-      if NaoEditavel(DBGridItens.SelectedField) then
-        DBGridItens.ReadOnly := True;
+      Key := 0;
+      TDBGrid(Sender).DataSource.DataSet.Cancel;
     end;
-
+  end;
 end;
 
-procedure TFEditaMovimento.DataSource1StateChange(Sender: TObject);
-var
-  sRegistro: String;
+procedure TFEditaMovimento.FIBDATASETALTERACAAfterScroll(
+  DataSet: TDataSet);
 begin
-{
-  if Form1.ibDataSet27.State = dsEdit then
+   DBGridItens.ReadOnly := False;
+  if NaoEditavel(DBGridItens.SelectedField) then
+    DBGridItens.ReadOnly := True;
+end;
+
+procedure TFEditaMovimento.ScrollMouse(var Msg: TMsg;
+  var Handled: Boolean);
+var
+  i: Smallint;
+begin
+  if Msg.message = WM_MOUSEWHEEL then
   begin
-    sRegistro := Form1.ibDataSet27.FieldByName('REGISTRO').AsString;
-    Commitatudo(True);
-    Form1.ibDataSet27.Locate('REGISTRO', sRegistro, []);
-    Form1.ibDataSet27.Edit;
-    Break;
+    Msg.message := WM_KEYDOWN;
+    Msg.lParam := 0;
+    i := HiWord(Msg.wParam) ;
+    if i > 0 then
+    begin
+      if DBGridItens.DataSource.DataSet.RecNo = 1 then
+        Exit;
+      Msg.wParam := VK_UP
+    end
+    else
+    begin
+      if DBGridItens.DataSource.DataSet.RecNo = DBGridItens.DataSource.DataSet.RecordCount then
+        Exit;
+      Msg.wParam := VK_DOWN;
+    end;
+    Handled := False;
   end;
-}
+end;
+
+procedure TFEditaMovimento.DBGridItensCellClick(Column: TColumn);
+begin
+  DBGridItens.ReadOnly := False;
+  if NaoEditavel(Column.Field) then
+    DBGridItens.ReadOnly := True;
+end;
+
+function TFEditaMovimento.SelectSqlAlteracaEdicao: String;
+begin
+  Result :=
+    'select * ' +
+    'from ALTERACA ' +
+    'where PEDIDO = ' + QuotedStr(FPedido) +
+    ' and CAIXA = ' + QuotedStr(FCaixa) +
+    ' order by REGISTRO';
 end;
 
 end.
