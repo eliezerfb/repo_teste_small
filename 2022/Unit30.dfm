@@ -999,7 +999,7 @@ object Form30: TForm30
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        MaxLength = 254
+        MaxLength = 1000
         ParentFont = False
         TabOrder = 14
         OnChange = DBMemo1Change
@@ -1046,7 +1046,6 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 22
         Visible = False
-        OnClick = ListBox1Click
         OnDblClick = ListBox1DblClick
         OnKeyDown = ListBox1KeyDown
       end

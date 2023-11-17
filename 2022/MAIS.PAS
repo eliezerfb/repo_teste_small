@@ -6178,9 +6178,8 @@ end;
 
 procedure TForm1.imgOrdemServicoClick(Sender: TObject);
 begin
-  //
   if not Legal(True) then Abort;
-  //
+
   try
     if not FechaTudo(bFechaTudo) then
       Exit;
@@ -6190,9 +6189,9 @@ begin
     Form7.sRPS := 'N';
     Form7.Show;
   except end;
-  //
-  if Form30.Visible then Form30.Show;
-  //
+
+  if Form30.Visible then
+    Form30.Show;
 end;
 
 procedure TForm1.Cadastrodetcnicos1Click(Sender: TObject);
