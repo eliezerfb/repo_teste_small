@@ -1,6 +1,6 @@
 object Form30: TForm30
-  Left = 644
-  Top = 82
+  Left = 388
+  Top = 105
   AlphaBlendValue = 200
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -1231,6 +1231,7 @@ object Form30: TForm30
         Visible = False
         OnDblClick = DBGrid3DblClick
         OnKeyDown = DBGrid3KeyDown
+        OnKeyUp = DBGrid3KeyUp
         Columns = <
           item
             Expanded = False
@@ -1275,6 +1276,25 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 0
         OnClick = Button1Click
+      end
+    end
+    object pnlFotoProd: TPanel
+      Left = 656
+      Top = 10
+      Width = 200
+      Height = 200
+      BevelOuter = bvNone
+      Color = clWhite
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 2
+      object imgFotoProd: TImage
+        Left = 0
+        Top = 0
+        Width = 198
+        Height = 198
+        Center = True
+        Stretch = True
       end
     end
   end
