@@ -3,7 +3,8 @@ unit uajustaresolucao;
 interface
 
 uses Classes, ExtCtrls, Controls, StdCtrls, Graphics, Forms
-  , SysUtils, TypInfo, Mask, DBGrids, ComCtrls, SMALL_DBEdit;
+  , SysUtils, TypInfo, Mask, DBGrids, ComCtrls, SMALL_DBEdit
+  , CheckLst;
 
 const SCREEN_HEIGHT_PADRAO = 768; // Sandro Silva 2016-07-28
 const SCREEN_WIDTH_PADRAO  = 1024;
@@ -215,6 +216,13 @@ begin
         DimensionaFonte(Components[I], dHeight);
         //
       end;
+      {Sandro Silva 2023-11-01 inicio}
+      if Components[ I ] is TCheckListBox then
+      begin
+        Dimensao(Components[I]);
+        DimensionaFonte(Components[I], dHeight);
+      end;
+      {Sandro Silva 2023-11-01 fim}
       //
     end;
   end;

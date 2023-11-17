@@ -14,6 +14,7 @@ uses
   , Variants
   , ComCtrls
   , msxml
+  , CheckLst
 ;
 
 procedure RelatorioConferenciaDeMesa;
@@ -29,6 +30,9 @@ procedure VendasPorNFCe(dtInicio: TDate; dtFinal: TDate;
 procedure RelatorioTotalDiario;
 procedure TotalDiario(dtInicio, dtFinal: TDate; sCaixa: String;
   sModelo: String);
+procedure RelatorioFechamentoDeCaixa;
+function ListaCaixasSelecionados(Lista: TCheckListBox): String;
+procedure FechamentoDeCaixa(bNaHora: Boolean);
 
 implementation
 
@@ -2248,6 +2252,7 @@ begin
 
     if Form1.sModeloECF = '59' then
       _ecf59_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkVendaPorDocumento.Checked); // Sandro Silva 2018-03-22 _ecf59_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado));
+
     if Form1.sModeloECF = '65' then
       _ecf65_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkVendaPorDocumento.Checked);
 
@@ -2406,6 +2411,241 @@ begin
     for iDiario := 0 to High(aDiario) do
       FreeAndNil(aDiario[iDiario]);
     Screen.Cursor  := crDefault;
+  end;
+end;
+
+procedure RelatorioFechamentoDeCaixa;
+begin
+
+  try
+    // Já faz em TotalDiario() CommitaTudo(True); // Vendaspor1Click
+    Form1.Timer2.Enabled := False;
+    Form7.bFechamentoDeCaixa := True;
+    Form7.Caption := '';
+    Form7.ShowModal;
+    if Form7.ModalResult = mrOk then
+    begin
+      //TotalDiario(Form7.dtpInicialDiario.Date, Form7.dtpFinalDiario.Date, Form7.edCaixaDiario.Text, Copy(Form7.cbModeloDiario.Text, 1, 2));
+      FechamentoDeCaixa(Form7.chkFechamentoDeCaixaHoraI.Checked);
+    end;
+  finally
+    Form7.bFechamentoDeCaixa := False;
+    if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
+      Form1.Timer2.Enabled := True;
+  end;
+
+end;
+
+function ListaCaixasSelecionados(Lista: TCheckListBox): String;
+var
+  iCaixa: Integer;
+begin
+  Result := '';
+  for iCaixa := 0 to Lista.Items.Count - 1 do
+  begin
+
+    if Lista.Checked[iCaixa] then
+    begin
+      if Result <> '' then
+        Result := Result + ', ';
+
+      Result := Result + QuotedStr(LIsta.Items.Strings[iCaixa]);
+    end;
+  end;
+
+end;
+
+procedure FechamentoDeCaixa(bNaHora: Boolean);
+var
+  iCaixa: Integer;
+  sCaixasMarcados: String;
+  IBQNFCE: TIBQuery;
+  sRegraNFCe: String;
+  sJoinPagament: String;
+  dTotalSuprimento: Double;
+  dTotalDinheiro: Double;
+  dTotalTroco: Double;
+  dTotalSangria: Double;
+  dTotal: Double;
+  sCupomFiscalVinculado: String;
+  sPeriodo: String;
+  slListaCaixas: TStringList;
+  sListaCaixas: String;
+begin
+  // Solicitado por migração de concorrente
+  Commitatudo(True); // TotalDiario()
+  IBQNFCE       := CriaIBQuery(Form1.ibDataSet27.Transaction);
+  Screen.Cursor := crHourGlass;
+
+  try
+
+    sCaixasMarcados := ListaCaixasSelecionados(Form7.chklbCaixas);
+
+    if sCaixasMarcados <> '' then
+      sCaixasMarcados := ' and coalesce(P.CAIXA, '''') in (' + sCaixasMarcados + ') ';
+
+    sJoinPagament := ' join PAGAMENT P on P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA and P.DATA = N.DATA ';
+    sRegraNFCe := ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' +
+      ' and (N.STATUS not containing ''Rejei'') ';
+
+    if bNaHora then
+      sPeriodo := ' and cast(P.DATA || '' '' || P.HORA as timestamp) between cast(' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaIni.Date)) + ' || '' '' || ' + QuotedStr(FormatDateTime('HH:nn:00', Form7.dtpFechamentoDeCaixaHoraI.Time)) + ' as timestamp) and cast(' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaFim.Date)) + ' || '' '' || ' + QuotedStr(FormatDateTime('HH:nn:59', Form7.dtpFechamentoDeCaixaHoraF.Time)) + ' as timestamp) '
+    else
+      sPeriodo := ' and P.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaIni.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaFim.Date)) + ' ';
+
+    //'-- suprimento ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ' +
+      ' sum(P.VALOR) as VALOR ' +
+      'from PAGAMENT P ' +
+      'where P.FORMA not like ''00%'' ' +
+      'and coalesce(P.CLIFOR, '''') = ''Suprimento'' ' +
+      sCaixasMarcados +
+      sPeriodo;
+    IBQNFCE.Open;
+    dTotalSuprimento := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+      //'-- Dinheiro ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ' +
+      ' sum(P.VALOR) as VALOR ' +
+      'from NFCE N ' +
+      sJoinPagament +
+      ' where P.FORMA not like ''00%'' ' +
+      'and (coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
+      'and P.FORMA like ''02%'' ' + /// dinheiro
+      sCaixasMarcados + sRegraNFCe +
+      sPeriodo;// +
+    IBQNFCE.Open;
+    dTotalDinheiro := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+    //'-- Troco ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ' +
+      ' sum(coalesce(P.VALOR, 0.00)) as VALOR ' +
+      'from NFCE N ' +
+      sJoinPagament +
+      ' where P.FORMA like ''13%'' ' + // Troco
+      sCaixasMarcados + sRegraNFCe +
+      sPeriodo;// +
+    IBQNFCE.Open;
+    dTotalTroco := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+    //'-- Sangria ' +
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select ' +
+      ' sum(P.VALOR) as VALOR ' +
+      'from PAGAMENT P ' +
+      'where P.FORMA not like ''00%'' ' +
+      'and coalesce(P.CLIFOR, '''') = ''Sangria'' ' +
+      sCaixasMarcados +
+      sPeriodo;// +
+    IBQNFCE.Open;
+    dTotalSangria := IBQNFCE.FieldByName('VALOR').AsFloat;    
+
+    sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais;
+
+    // Atribui quebra de linha na lista de caixas marcadas
+    slListaCaixas := TStringList.Create;
+    slListaCaixas.Delimiter := ',';
+    slListaCaixas.DelimitedText := StringReplace(ListaCaixasSelecionados(Form7.chklbCaixas), #39, '', [rfReplaceAll]);
+
+    sListaCaixas := 'Caixa(s): ';
+    for iCaixa := 0 to slListaCaixas.Count - 1 do
+    begin
+      if Length(sListaCaixas + slListaCaixas.Strings[iCaixa]) >= 45 then
+      begin
+        sCupomFiscalVinculado := sCupomFiscalVinculado + sListaCaixas + chr(10);
+        sListaCaixas := '';
+      end;
+
+      sListaCaixas := sListaCaixas + slListaCaixas.Strings[iCaixa];
+      if iCaixa < slListaCaixas.Count - 1 then
+        sListaCaixas := sListaCaixas + ', ';
+
+    end;
+    if sListaCaixas <> '' then
+      sCupomFiscalVinculado := sCupomFiscalVinculado + sListaCaixas;
+
+    FreeAndNil(slListaCaixas);
+
+    sCupomFiscalVinculado := sCupomFiscalVinculado + Chr(10) +
+      'Período: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaIni.Date) + ' à ' + FormatDateTime('dd/mm/yyyy', Form7.dtpFechamentoDeCaixaFim.Date) + Chr(10);
+
+    if bNaHora then
+      sCupomFiscalVinculado := sCupomFiscalVinculado + 'Horário: ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraI.Date) + ' à ' + FormatDateTime('HH:nn', Form7.dtpFechamentoDeCaixaHoraF.Date) + Chr(10);
+
+    sCupomFiscalVinculado := sCupomFiscalVinculado
+      + ImprimeTracos() + Chr(10)
+      + 'MOVIMENTAÇÃO EM DINHEIRO  ' + Chr(10)
+      + ImprimeTracos() + Chr(10)
+      + 'Suprimento ' + Format('%9.2n',[dTotalSuprimento]) + chr(10)
+      + 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10)
+      + 'Troco      ' + Format('%9.2n',[dTotalTroco * (-1)]) + chr(10)
+      + 'Sangria    ' + Format('%9.2n',[dTotalSangria * (-1)]) + chr(10)
+      + ImprimeTracos() + Chr(10)
+      + 'Total      ' + Format('%9.2n',[dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + chr(10)
+      + chr(10);
+
+      // Totalizadores
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''') as FORMA ' +
+      ', sum(P.VALOR) as VALOR ' +
+      'from PAGAMENT P ' +
+      'where P.FORMA not like ''00%'' ' +
+      ' and P.FORMA not like ''02%'' ' +
+      'and P.FORMA not like ''13%'' ' +
+      'and (coalesce(P.CLIFOR, '''') <> ''Sangria'' and coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
+      sCaixasMarcados +
+      sPeriodo +
+      ' group by replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''') ' +
+      ' order by FORMA';
+    IBQNFCE.Open;
+
+    sCupomFiscalVinculado := sCupomFiscalVinculado
+      + ImprimeTracos() + Chr(10)
+      + 'TOTALIZADORES             ' + Chr(10)
+      + ImprimeTracos() + Chr(10)
+      ;
+
+    // Dinheiro é o total apurado na movimentação acima
+    sCupomFiscalVinculado := sCupomFiscalVinculado
+      + Copy('Dinheiro' + DupeString(' ', 31), 1, 31) + Format('%9.2n', [dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + Chr(10);
+
+    dTotal := dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria;
+    while IBQNFCE.Eof = False do
+    begin
+
+      sCupomFiscalVinculado := sCupomFiscalVinculado
+        + Copy(IBQNFCE.FieldByName('Forma').AsString + DupeString(' ', 31), 1, 31) + Format('%9.2n', [IBQNFCE.FieldByName('VALOR').AsFloat]) + Chr(10);
+      dTotal   := dTotal + IBQNFCE.FieldByName('VALOR').AsFloat;
+
+      IBQNFCE.Next;
+    end;
+
+    sCupomFiscalVinculado := sCupomFiscalVinculado
+      + ImprimeTracos() + Chr(10)
+      +  Copy('Total' + DupeString(' ', 31), 1, 31) + Format('%9.2n',[dTotal]) + Chr(10) + Chr(10);
+
+    if Form1.sModeloECF = '59' then
+      _ecf59_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkFechamentoDeCaixaPDF.Checked);
+
+    if Form1.sModeloECF = '65' then
+      _ecf65_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkFechamentoDeCaixaPDF.Checked);
+
+    if Form1.sModeloECF = '99' then
+      _ecf99_ImpressaoNaoSujeitoaoICMS(ConverteAcentos(sCupomFiscalVinculado), Form7.checkFechamentoDeCaixaPDF.Checked);
+
+
+  finally
+    Screen.Cursor := crDefault;
+    FreeAndNil(IBQNFCE);
+
   end;
 end;
 
