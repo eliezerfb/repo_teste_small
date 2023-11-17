@@ -1030,6 +1030,7 @@ type
     itemMenugerencial: TMenuItem;
     IBDataSet150GERENCIAL: TStringField;
     EmitirNFCedogerencial1: TMenuItem;
+    FechamentodeCaixa1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1392,6 +1393,7 @@ type
     procedure ibDataSet13AfterOpen(DataSet: TDataSet);
     procedure itemMenugerencialClick(Sender: TObject);
     procedure EmitirNFCedogerencial1Click(Sender: TObject);
+    procedure FechamentodeCaixa1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -15463,6 +15465,7 @@ begin
   Form1.IdentificarCredenciadoraPoS1.Visible     := False; // Sandro Silva 2018-11-20
   EnviaremailcomXMLePDFacadavenda1.Visible       := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65')); // Ficha 4736 Sandro Silva 2019-08-02
   ValorLimiteTotalNFCeEstabelecidoSefaz1.Visible := (Form1.sModeloECF = '65'); // Sandro Silva 2021-07-12
+  FechamentodeCaixa1.Visible                     := ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')); // Ficha 7504 Sandro Silva 2023-11-06
 
   Vendaspor1.Caption                           := 'Resumo de Vendas...';
   Imprimiroramento1.Caption                    := 'Imprimir Orçamento - Documento Auxiliar de Venda (DAV) ...';
@@ -34594,6 +34597,11 @@ begin
       GerenciadordeNFCe1Click(GerenciadordeNFCe1); // Sandro Silva 2023-09-06 GerenciadordeNFCe1Click(Sender);
   end;
 
+end;
+
+procedure TForm1.FechamentodeCaixa1Click(Sender: TObject);
+begin
+  RelatorioFechamentoDeCaixa; // Sandro Silva 2023-11-01
 end;
 
 end.
