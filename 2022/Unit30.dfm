@@ -838,7 +838,7 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 13
         OnEnter = SMALL_DBEdit4Enter
-        OnKeyDown = SMALL_DBEdit13KeyDown
+        OnKeyDown = SMALL_DBEdit2KeyDown
       end
       object DBGrid1: TDBGrid
         Left = 15
