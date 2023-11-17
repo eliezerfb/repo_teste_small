@@ -3167,6 +3167,8 @@ begin
       MensagemSistema('Erro 2503 ao baixar lista de NF-e´s emitidas: '+E.Message,msgErro);
     end;
   end;
+  // Em procedure TForm7.ibDataSet24NewRecord(DataSet: TDataSet); faz DisableControls
+  Form7.ibDataSet24.EnableControls; // Sandro Silva 2023-11-17
   Result := True;
 end;
 
