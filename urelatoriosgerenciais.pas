@@ -1978,7 +1978,7 @@ begin
     Form7.ShowModal;
     if Form7.ModalResult = mrOk then
     begin
-      VendasPorNFCe(Form7.dtpVendasInicial.Date, Form7.dtpVendasFinal.Date, Form7.edCaixa.Text, Form7.edCliente.Text, Form7.cbFormasPagto.Text);
+      VendasPorNFCe(Form7.dtpVendasInicial.Date, Form7.dtpVendasFinal.Date, Form7.frameCampoCaixasRelVendaPorDoc.CaixasSelecionados, Form7.edCliente.Text, Form7.cbFormasPagto.Text);
     end;
   finally
     Form7.bVendaPorDocumento := False;
@@ -1991,6 +1991,7 @@ procedure VendasPorNFCe(dtInicio: TDate; dtFinal: TDate;
   sCaixa: String; sCliente: String; sFormaPagto: String);
 // Relatório de vendas por NFC-e/CF-e-SAT
 var
+  cLinhaCaixa: String;
   IBQNFCE: TIBQuery;
   sCupomfiscalVinculado : String;
   sCupom: String;
@@ -2044,7 +2045,7 @@ begin
 
   sContingenciaPendente := '';
   if Form1.sModeloECF = '65' then
-    sContingenciaPendente := IfThen(_ecf65_VerificaContingenciaPendentedeTransmissao(dtInicio, dtFinal, sCaixa), ALERTA_CONTINGENCIA_NAO_TRANSMITIDA + '(C)' + Chr(10), '');
+    sContingenciaPendente := IfThen(_ecf65_VerificaContingenciaPendentedeTransmissao(dtInicio, dtFinal, Form1.sCaixa), ALERTA_CONTINGENCIA_NAO_TRANSMITIDA + '(C)' + Chr(10), '');
 
   try
     sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais
@@ -2061,8 +2062,20 @@ begin
         + 'Forma: ' + sFormaPagto + chr(10);
 
     if Trim(sCaixa) <> '' then
-      sCupomFiscalVinculado := sCupomFiscalVinculado
-        + 'Caixa: ' + sCaixa + chr(10);
+    begin
+      cLinhaCaixa := 'Caixa(s): ' + sCaixa;
+
+      if Length(cLinhaCaixa) > 35 then
+      begin
+        while cLinhaCaixa <> EmptyStr do
+        begin
+          sCupomFiscalVinculado := sCupomFiscalVinculado + Copy(cLinhaCaixa,1,35) + chr(10);
+          cLinhaCaixa := Copy(cLinhaCaixa, 36, Length(cLinhaCaixa));
+        end;
+      end
+      else
+        sCupomFiscalVinculado := sCupomFiscalVinculado + cLinhaCaixa + chr(10);
+    end;
 
 
     sCupomFiscalVinculado := sCupomFiscalVinculado
@@ -2071,26 +2084,31 @@ begin
       + ImprimeTracos() + Chr(10);
 
     IBQNFCE.Close;
-    IBQNFCE.SQL.Text :=
-      'select N.NUMERONF, N.DATA, N.CAIXA, N.MODELO, N.STATUS, ' +
-      'max(P.CLIFOR) as CLIFOR, ' +
-      '(select sum(A.TOTAL) from ALTERACA A where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA and A.DATA = N.DATA and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'') and A.DESCRICAO <> ''<CANCELADO>'') as TOTAL, ' +
-      'trim(replace(replace(substring(P.FORMA from 1 for 30), ''NFC-e'', ''''), ''NF-e'', '''')) as FORMA, ' + // Sandro Silva 2018-08-06 'trim(replace(replace(substring(P.FORMA from 4 for 30), ''NFC-e'', ''''), ''NF-e'', '''')) as FORMA, ' +
-      'sum(case when substring(P.FORMA from 1 for 2) = ''13'' then (P.VALOR * (-1)) else P.VALOR end) as VALOR ' + // Quando for troco o valor deve ser negativo para descontar dos totais // Sandro Silva 2018-08-06
-      'from NFCE N ' +
-      'left join PAGAMENT P on P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA and P.DATA = N.DATA and substring(FORMA from 1 for 2) <> ''00'' ' +
-                              ' and coalesce(P.CCF, '''') <> '''' ' + // Sangria e Suprimento tem CCF vazio
-      'where N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtInicio)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtFinal)) +
+    IBQNFCE.SQL.Clear;
+    IBQNFCE.SQL.Add('select');
+    IBQNFCE.SQL.Add('N.NUMERONF,');
+    IBQNFCE.SQL.Add('N.DATA,');
+    IBQNFCE.SQL.Add('N.CAIXA,');
+    IBQNFCE.SQL.Add('N.MODELO,');
+    IBQNFCE.SQL.Add('N.STATUS,');
+    IBQNFCE.SQL.Add('max(P.CLIFOR) as CLIFOR,');
+    IBQNFCE.SQL.Add('(select sum(A.TOTAL) from ALTERACA A where (A.PEDIDO = N.NUMERONF) and (A.CAIXA = N.CAIXA) and (A.DATA = N.DATA) and ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED'')) and (A.DESCRICAO <> ''<CANCELADO>'')) as TOTAL,');
+    IBQNFCE.SQL.Add('trim(replace(replace(substring(P.FORMA from 1 for 30), ''NFC-e'', ''''), ''NF-e'', '''')) as FORMA,'); // Sandro Silva 2018-08-06 'trim(replace(replace(substring(P.FORMA from 4 for 30), ''NFC-e'', ''''), ''NF-e'', '''')) as FORMA, ' +
+    IBQNFCE.SQL.Add('sum(case when substring(P.FORMA from 1 for 2) = ''13'' then (P.VALOR * (-1)) else P.VALOR end) as VALOR'); // Quando for troco o valor deve ser negativo para descontar dos totais // Sandro Silva 2018-08-06
+    IBQNFCE.SQL.Add('from NFCE N');
+    IBQNFCE.SQL.Add('left join PAGAMENT P on (P.PEDIDO = N.NUMERONF) and (P.CAIXA = N.CAIXA) and (P.DATA = N.DATA) and (substring(FORMA from 1 for 2) <> ''00'')');
+    IBQNFCE.SQL.Add('and coalesce(P.CCF, '''') <> '''''); // Sangria e Suprimento tem CCF vazio
+    IBQNFCE.SQL.Add('where (N.DATA between ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtInicio)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', dtFinal)) + ')');
       // Sandro Silva 2020-09-28  ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' ) ' + // Ficha 4819 Sandro Silva 2020-02-18 ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' ) ' +
-      ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' ) ' + // Ficha 4819 Sandro Silva 2020-02-18 ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' ) ' +
-      ' and (N.STATUS not containing ''Rejei'') ' +
-      ' and coalesce(P.VALOR, 0) > 0 ';
+    IBQNFCE.SQL.Add('and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' or N.STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' or N.STATUS containing ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + ' or N.STATUS containing ' + QuotedStr(VENDA_MEI_ANTIGA_FINALIZADA) + ' )'); // Ficha 4819 Sandro Silva 2020-02-18 ' and (N.STATUS containing ''Autoriza'' or N.STATUS containing ''Emitido com sucesso'' ) ' +
+    IBQNFCE.SQL.Add('and (N.STATUS not containing ''Rejei'')');
+    IBQNFCE.SQL.Add('and coalesce(P.VALOR, 0) > 0');
     if sCaixa <> '' then
-      IBQNFCE.SQL.Add(' and N.CAIXA = ' + QuotedStr(sCaixa));
+      IBQNFCE.SQL.Add(' and (N.CAIXA IN (' + sCaixa + '))');
     if sCliente <> '' then
-      IBQNFCE.SQL.Add(' and upper(P.CLIFOR) = ' + QuotedStr(UpperCase(sCliente))); // Sandro Silva 2018-08-07 IBQNFCE.SQL.Add(' and upper(A.CLIFOR) = ' + QuotedStr(UpperCase(sCliente)));
+      IBQNFCE.SQL.Add('and upper(P.CLIFOR) = ' + QuotedStr(UpperCase(sCliente))); // Sandro Silva 2018-08-07 IBQNFCE.SQL.Add(' and upper(A.CLIFOR) = ' + QuotedStr(UpperCase(sCliente)));
     if sFormaPagto <> '' then
-      IBQNFCE.SQL.Add(' and substring(P.FORMA from 4 for 30) containing ' + QuotedStr(sFormaPagto));
+      IBQNFCE.SQL.Add('and substring(P.FORMA from 4 for 30) containing ' + QuotedStr(sFormaPagto));
     IBQNFCE.SQL.Add('group by N.NUMERONF, N.DATA, N.CAIXA, N.MODELO, N.STATUS, ' +
                     'trim(replace(replace(substring(P.FORMA from 1 for 30), ''NFC-e'', ''''), ''NF-e'', '''')) ' + // Sandro Silva 2018-08-06 'trim(replace(replace(substring(P.FORMA from 4 for 30), ''NFC-e'', ''''), ''NF-e'', '''')) ' + // Sandro Silva 2017-08-28 , P.VALOR ' +
                     'order by DATA, CAIXA, MODELO, NUMERONF, FORMA' // Sandro Silva 2018-08-06 'order by DATA, CAIXA, MODELO, NUMERONF'
@@ -2105,7 +2123,7 @@ begin
       sCaixa := ' '; // Para quando escolher relatório por um caixa
     sData := FormatDateTime('dd/mm/yyyy', IBQNFCE.FieldByName('DATA').AsDateTime);
 
-    while IBQNFCE.Eof = False do
+    while not IBQNFCE.Eof do
     begin
       if (IBQNFCE.FieldByName('STATUS').AsString <> '') then // NFC-e/CF-e-SAT autorizados
       begin

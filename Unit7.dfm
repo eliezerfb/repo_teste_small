@@ -185,7 +185,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object DateTimePicker2: TDateTimePicker
@@ -203,7 +202,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 1
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object MaskEdit1: TMaskEdit
@@ -222,7 +220,6 @@ object Form7: TForm7
         TabOrder = 2
         Text = '0001'
         OnKeyDown = MaskEdit1KeyDown
-        OnKeyPress = FocusNextControl
       end
       object MaskEdit2: TMaskEdit
         Left = 11
@@ -240,7 +237,6 @@ object Form7: TForm7
         TabOrder = 3
         Text = '9999'
         OnKeyDown = MaskEdit2KeyDown
-        OnKeyPress = FocusNextControl
       end
       object CheckBox1: TCheckBox
         Left = 66
@@ -256,7 +252,6 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 4
         Visible = False
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object ComboBox1: TComboBox
@@ -275,7 +270,6 @@ object Form7: TForm7
         Text = 'ComboBox1'
         Visible = False
         OnChange = ComboBox1Change
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object CheckBox2: TCheckBox
@@ -292,7 +286,6 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 6
         Visible = False
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object checkMeioPagamento: TCheckBox
@@ -303,7 +296,6 @@ object Form7: TForm7
         Caption = 'Exportar para PDF'
         TabOrder = 7
         Visible = False
-        OnKeyPress = FocusNextControl
       end
     end
     object TabSheet2: TTabSheet
@@ -340,7 +332,6 @@ object Form7: TForm7
         Format = 'MM/yyyy'
         Time = 42233.570227627320000000
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object edCPFCNPJ: TEdit
@@ -349,7 +340,6 @@ object Form7: TForm7
         Width = 217
         Height = 21
         TabOrder = 1
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
     end
@@ -391,7 +381,7 @@ object Form7: TForm7
       end
       object Label10: TLabel
         Left = 11
-        Top = 71
+        Top = 62
         Width = 59
         Height = 13
         Caption = 'Data final:'
@@ -405,24 +395,10 @@ object Form7: TForm7
       end
       object Label11: TLabel
         Left = 11
-        Top = 115
+        Top = 96
         Width = 122
         Height = 13
         Caption = 'Forma de pagamento:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Layout = tlBottom
-      end
-      object Label12: TLabel
-        Left = 11
-        Top = 159
-        Width = 35
-        Height = 13
-        Caption = 'Caixa:'
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -460,12 +436,11 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object dtpVendasFinal: TDateTimePicker
         Left = 11
-        Top = 84
+        Top = 75
         Width = 270
         Height = 21
         Date = 35796.376154398150000000
@@ -478,12 +453,11 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 1
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object cbFormasPagto: TComboBox
         Left = 11
-        Top = 129
+        Top = 110
         Width = 270
         Height = 21
         Font.Charset = ANSI_CHARSET
@@ -495,25 +469,7 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 2
         OnChange = ComboBox1Change
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
-      end
-      object edCaixa: TEdit
-        Left = 11
-        Top = 172
-        Width = 40
-        Height = 21
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        MaxLength = 3
-        ParentFont = False
-        TabOrder = 3
-        Text = '   '
-        OnExit = edCaixaExit
-        OnKeyPress = FocusNextControl
       end
       object edCliente: TEdit
         Left = 11
@@ -521,16 +477,32 @@ object Form7: TForm7
         Width = 270
         Height = 21
         TabOrder = 4
-        OnKeyPress = FocusNextControl
       end
       object checkVendaPorDocumento: TCheckBox
-        Left = 72
-        Top = 176
+        Left = 120
+        Top = 172
         Width = 201
         Height = 17
         Caption = 'Exportar para PDF'
         TabOrder = 5
-        OnKeyPress = FocusNextControl
+      end
+      inline frameCampoCaixasRelVendaPorDoc: TframeCampoCaixasRel
+        Left = 0
+        Top = 129
+        Width = 105
+        Height = 69
+        HorzScrollBar.Visible = False
+        VertScrollBar.Visible = False
+        Color = clWhite
+        ParentColor = False
+        TabOrder = 3
+        inherited chklbCaixas: TCheckListBox
+          Top = 18
+          Height = 49
+        end
+        inherited chkCaixaFechamentoDeCaixa: TCheckBox
+          Top = 1
+        end
       end
     end
     object TabSheet4: TTabSheet
@@ -585,7 +557,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
     end
@@ -669,7 +640,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object edMovimentoDia: TEdit
@@ -687,7 +657,6 @@ object Form7: TForm7
         TabOrder = 2
         Text = '   '
         OnExit = edMovimentoDiaExit
-        OnKeyPress = FocusNextControl
       end
       object dtpMovimentoDiaF: TDateTimePicker
         Left = 11
@@ -704,7 +673,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 1
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object checkMovimendoDiaPDF: TCheckBox
@@ -720,7 +688,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 3
-        OnKeyPress = FocusNextControl
       end
       object dtpMovimentoHoraI: TDateTimePicker
         Left = 11
@@ -739,7 +706,6 @@ object Form7: TForm7
         Kind = dtkTime
         ParentFont = False
         TabOrder = 4
-        OnKeyPress = FocusNextControl
       end
       object dtpMovimentoHoraF: TDateTimePicker
         Left = 179
@@ -758,7 +724,6 @@ object Form7: TForm7
         Kind = dtkTime
         ParentFont = False
         TabOrder = 5
-        OnKeyPress = FocusNextControl
       end
       object chkMovimentoDiaHoraI: TCheckBox
         Left = 11
@@ -774,7 +739,6 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 6
         OnClick = chkMovimentoDiaHoraIClick
-        OnKeyPress = FocusNextControl
       end
       object chkMovimentoDiaHoraF: TCheckBox
         Left = 179
@@ -790,7 +754,6 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 7
         OnClick = chkMovimentoDiaHoraFClick
-        OnKeyPress = FocusNextControl
       end
     end
     object TabSheet6: TTabSheet
@@ -886,7 +849,6 @@ object Form7: TForm7
         TabOrder = 0
         OnEnter = edCaixaDiarioEnter
         OnExit = edMovimentoDiaExit
-        OnKeyPress = FocusNextControl
       end
       object dtpInicialDiario: TDateTimePicker
         Left = 11
@@ -903,7 +865,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 1
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object dtpFinalDiario: TDateTimePicker
@@ -921,7 +882,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 2
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object cbModeloDiario: TComboBox
@@ -938,7 +898,6 @@ object Form7: TForm7
         ItemHeight = 13
         ParentFont = False
         TabOrder = 3
-        OnKeyPress = FocusNextControl
         Items.Strings = (
           '59 - CF-e-SAT'
           '65 - NFC-e')
@@ -950,7 +909,6 @@ object Form7: TForm7
         Height = 17
         Caption = 'Exportar para PDF'
         TabOrder = 4
-        OnKeyPress = FocusNextControl
       end
     end
     object TabSheet7: TTabSheet
@@ -1018,7 +976,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object DateTimePicker5: TDateTimePicker
@@ -1036,7 +993,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 1
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object CheckBox3: TCheckBox
@@ -1055,7 +1011,6 @@ object Form7: TForm7
         State = cbChecked
         TabOrder = 2
         OnClick = CheckBox3Click
-        OnKeyPress = FocusNextControl
       end
       object chkNFCe: TCheckBox
         Left = 13
@@ -1073,7 +1028,6 @@ object Form7: TForm7
         State = cbChecked
         TabOrder = 3
         Visible = False
-        OnKeyPress = FocusNextControl
       end
       object chkCFe: TCheckBox
         Left = 141
@@ -1091,7 +1045,6 @@ object Form7: TForm7
         State = cbChecked
         TabOrder = 4
         Visible = False
-        OnKeyPress = FocusNextControl
       end
     end
     object TabSheet8: TTabSheet
@@ -1175,7 +1128,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object edFechamentoDeCaixa1: TEdit
@@ -1194,7 +1146,6 @@ object Form7: TForm7
         Text = '   '
         Visible = False
         OnExit = edMovimentoDiaExit
-        OnKeyPress = FocusNextControl
       end
       object dtpFechamentoDeCaixaFim: TDateTimePicker
         Left = 11
@@ -1211,7 +1162,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 2
-        OnKeyPress = FocusNextControl
         OnKeyUp = DateTimePicker1KeyUp
       end
       object checkFechamentoDeCaixaPDF: TCheckBox
@@ -1227,7 +1177,6 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 3
-        OnKeyPress = FocusNextControl
       end
       object dtpFechamentoDeCaixaHoraI: TDateTimePicker
         Left = 11
@@ -1246,7 +1195,6 @@ object Form7: TForm7
         Kind = dtkTime
         ParentFont = False
         TabOrder = 4
-        OnKeyPress = FocusNextControl
       end
       object dtpFechamentoDeCaixaHoraF: TDateTimePicker
         Left = 179
@@ -1265,7 +1213,6 @@ object Form7: TForm7
         Kind = dtkTime
         ParentFont = False
         TabOrder = 5
-        OnKeyPress = FocusNextControl
       end
       object chkFechamentoDeCaixaHoraI: TCheckBox
         Left = 11
@@ -1281,7 +1228,6 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 6
         OnClick = chkFechamentoDeCaixaHoraIClick
-        OnKeyPress = FocusNextControl
       end
       object chkFechamentoDeCaixaHoraF: TCheckBox
         Left = 179
@@ -1297,7 +1243,6 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 7
         OnClick = chkFechamentoDeCaixaHoraIClick
-        OnKeyPress = FocusNextControl
       end
       object chklbCaixas: TCheckListBox
         Left = 11
@@ -1319,7 +1264,6 @@ object Form7: TForm7
           '005')
         ParentFont = False
         TabOrder = 8
-        OnKeyPress = FocusNextControl
       end
     end
   end
