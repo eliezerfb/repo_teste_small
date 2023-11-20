@@ -33,6 +33,7 @@ procedure TotalDiario(dtInicio, dtFinal: TDate; sCaixa: String;
 procedure RelatorioFechamentoDeCaixa;
 function ListaCaixasSelecionados(Lista: TCheckListBox): String;
 procedure FechamentoDeCaixa(bNaHora: Boolean);
+function RetornarAvisoCaixasComContigenciaNFCe(AdtInicio: TDate; AdtFinal: TDate; AcCaixas: String): String;
 
 implementation
 
@@ -1987,6 +1988,67 @@ begin
   end;
 end;
 
+function RetornarAvisoCaixasComContigenciaNFCe(AdtInicio: TDate; AdtFinal: TDate; AcCaixas: String): String;
+var
+  qryCaixas: TIBQuery;
+  cCaixasContingencia: String;
+  cLinhaCaixa: String;
+begin
+  qryCaixas := CriaIBQuery(Form1.ibDataSet27.Transaction);
+  try
+    qryCaixas.Close;
+    qryCaixas.SQL.Clear;
+    qryCaixas.SQL.Add('SELECT DISTINCT');
+    qryCaixas.SQL.Add('NFCE.CAIXA');
+    qryCaixas.SQL.Add('FROM NFCE');
+    qryCaixas.SQL.Add('WHERE');
+    if AcCaixas <> EmptyStr then
+      qryCaixas.SQL.Add('(NFCE.CAIXA IN (' + AcCaixas + '))')
+    else
+      qryCaixas.SQL.Add('(NFCE.CAIXA <> '''')');
+    qryCaixas.SQL.Add('AND (NFCE.MODELO=''65'')');
+    qryCaixas.Open;
+    qryCaixas.First;
+
+    if qryCaixas.IsEmpty then
+      Exit;
+
+    while not qryCaixas.Eof do
+    begin
+      if IfThen(_ecf65_VerificaContingenciaPendentedeTransmissao(AdtInicio, AdtFinal, qryCaixas.fieldByname('CAIXA').AsString), 'S', EmptyStr) <> EmptyStr then
+      begin
+        if cCaixasContingencia <> EmptyStr then
+          cCaixasContingencia := cCaixasContingencia + ', ';
+
+        cCaixasContingencia := cCaixasContingencia + qryCaixas.fieldByname('CAIXA').AsString;
+      end;
+
+      qryCaixas.Next;
+    end;
+
+    if cCaixasContingencia <> EmptyStr then
+    begin
+      cLinhaCaixa := 'no(s) caixa(s): ' + cCaixasContingencia;
+      cCaixasContingencia := EmptyStr;
+
+      if Length(cLinhaCaixa) > 35 then
+      begin
+        while cLinhaCaixa <> EmptyStr do
+        begin
+          cCaixasContingencia := cCaixasContingencia + Trim(Copy(cLinhaCaixa,1,35)) + chr(10);
+          cLinhaCaixa := Copy(cLinhaCaixa, 36, Length(cLinhaCaixa));
+        end;
+      end
+      else
+        cCaixasContingencia := cCaixasContingencia + cLinhaCaixa + chr(10);
+
+      Result := ALERTA_CONTINGENCIA_NAO_TRANSMITIDA + '(C)' + Chr(10) + cCaixasContingencia;
+    end;
+  finally
+    FreeAndNil(qryCaixas);
+  end;
+end;
+
 procedure VendasPorNFCe(dtInicio: TDate; dtFinal: TDate;
   sCaixa: String; sCliente: String; sFormaPagto: String);
 // Relatório de vendas por NFC-e/CF-e-SAT
@@ -2043,9 +2105,7 @@ begin
 
   Screen.Cursor := crHourGlass;
 
-  sContingenciaPendente := '';
-  if Form1.sModeloECF = '65' then
-    sContingenciaPendente := IfThen(_ecf65_VerificaContingenciaPendentedeTransmissao(dtInicio, dtFinal, Form1.sCaixa), ALERTA_CONTINGENCIA_NAO_TRANSMITIDA + '(C)' + Chr(10), '');
+  sContingenciaPendente := RetornarAvisoCaixasComContigenciaNFCe(dtInicio, dtFinal, sCaixa);
 
   try
     sCupomFiscalVinculado := CabecalhoRelatoriosGerenciais

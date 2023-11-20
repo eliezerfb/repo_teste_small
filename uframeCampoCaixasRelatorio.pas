@@ -80,6 +80,8 @@ procedure TframeCampoCaixasRel.CarregarCaixas(AoTransaction: TIBTransaction);
 var
   QryCaixas: TIBQuery;
 begin
+  chkCaixaFechamentoDeCaixa.Checked := False;
+
   QryCaixas := CriaIBQuery(AoTransaction);
   try
     chklbCaixas.Clear;
