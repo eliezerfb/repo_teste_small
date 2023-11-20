@@ -2314,6 +2314,7 @@ type
     function getUsuarioLogado: String;
     procedure SalvaXMLNFSaida(AcCaminho: String = '');
     function TestaNFSaidaFaturada: Boolean;
+    procedure FechaModulos;
   public
     // Public declarations
 
@@ -7951,6 +7952,8 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
+  FechaModulos;
+
   //Mauricio Parizotto 2023-09-21
   if sModulo = 'PARAMETROTRIBUTACAO' then
   begin
@@ -8156,6 +8159,8 @@ end;
 procedure TForm7.Image101Click(Sender: TObject);
 begin
   Form7.bEstaSendoUsado := False;
+
+  FechaModulos;
 
   //Mauricio Parizotto 2023-09-21
   if sModulo = 'PARAMETROTRIBUTACAO' then
@@ -34278,6 +34283,21 @@ end;
 procedure TForm7.InutilizaodeNFes1Click(Sender: TObject);
 begin
   Form1.InutilizarNFe1Click(Self);
+end;
+
+procedure TForm7.FechaModulos;
+begin
+  try
+    if FrmParametroTributacao <> nil then
+      FreeAndNil(FrmParametroTributacao);
+
+    if FrmPerfilTributacao <> nil then
+      FreeAndNil(FrmPerfilTributacao);
+
+    if FrmNaturezaOperacao <> nil then
+      FreeAndNil(FrmNaturezaOperacao);
+  except
+  end;
 end;
 
 end.

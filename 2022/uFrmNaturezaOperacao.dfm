@@ -1,6 +1,6 @@
 inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
-  Left = 702
-  Top = 306
+  Left = 587
+  Top = 178
   OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 16
@@ -7767,7 +7767,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         inline fraPlanoContas: TfFrameCampo
           Left = 150
           Top = 123
-          Width = 323
+          Width = 313
           Height = 22
           Color = clWhite
           Ctl3D = False
@@ -7775,6 +7775,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentColor = False
           ParentCtl3D = False
           TabOrder = 5
+          inherited txtCampo: TEdit
+            Width = 313
+          end
+          inherited gdRegistros: TDBGrid
+            Width = 313
+          end
         end
       end
       object tbsPisCofins: TTabSheet
@@ -7961,13 +7967,5 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   inherited DSCadastro: TDataSource
     DataSet = Form7.ibDataSet14
     OnDataChange = DSCadastroDataChange
-  end
-  object IBQPLANOCONTAS: TIBQuery
-    Database = Form7.IBDatabase1
-    Transaction = Form7.IBTransaction1
-    BufferChunks = 1000
-    CachedUpdates = False
-    Left = 504
-    Top = 64
   end
 end

@@ -41,6 +41,7 @@ type
     sCampoDescricao: String;
     //sTabela: String;
     CampoCodigo: TField;
+    CampoCodigoPesquisa : string; // Mauricio Parizotto 2023-11-20 para caso em que tabela de origem o campo esteja com nome diferente
     property GravarSomenteTextoEncontrato: Boolean read FGravarSomenteTextoEncontrato write FGravarSomenteTextoEncontrato default True;
     property TipoDePesquisa: TTipoPesquisa read FTipoPesquisa write FTipoPesquisa;
     property sFiltro: String read FFiltro write FFiltro;
@@ -150,7 +151,11 @@ begin
     Exit;
   end;
 
-  sNomeCampoChave := CampoCodigo.FieldName;
+  //Mauricio Parizotto 2023-11-20
+  //sNomeCampoChave := CampoCodigo.FieldName;
+  sNomeCampoChave := CampoCodigoPesquisa;
+  if sNomeCampoChave = '' then
+    sNomeCampoChave := CampoCodigo.FieldName;
 
   //Mauricio Parizotto 2023-11-15
   txtCampo.Text := CampoCodigo.AsString;
@@ -178,7 +183,11 @@ begin
     txtCampo.onChange := CampoChange;
   end else
   begin
-    txtCampo.Text := '';
+    {Mauricio Parizotto 2023-1-20 Inicio}
+    //txtCampo.Text := '';
+    if FGravarSomenteTextoEncontrato then
+      txtCampo.Text := '';
+    {Mauricio Parizotto 2023-1-20 Fim}
   end;
 
 end;
@@ -278,9 +287,17 @@ begin
 end; 
 
 function TfFrameCampo.SelectPesquisa: String;
+var
+  sNomeCampoChave: String;
 begin
+  //Mauricio Parizotto 2023-11-20
+  sNomeCampoChave := CampoCodigoPesquisa;
+  if sNomeCampoChave = '' then
+    sNomeCampoChave := CampoCodigo.FieldName;
+
   Result :=
-    ' Select distinct  ' + CampoCodigo.FieldName + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+    //' Select distinct  ' + CampoCodigo.FieldName + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO + Mauricio Parizotto 2023-11-20
+    ' Select distinct  ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
     ' From ' + FTabela +
     ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
     ' Order by upper(' + sCampoDescricao + ')';
