@@ -2250,7 +2250,6 @@ type
     procedure ibdPerfilTributaDESCRICAOSetText(Sender: TField;
       const Text: String);
     procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
-    procedure DSPerfilTributaStateChange(Sender: TObject);
     procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
     procedure ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
     procedure ibDataSet4TIPO_ITEMChange(Sender: TField);
@@ -2506,7 +2505,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImportaOrdemServico
   , uDialogs
   , uFrmProdutosDevolucao
-  ;
+  , uFrmPerfilTributacao, uFrmNaturezaOperacao;
 
 {$R *.DFM}
 
@@ -7963,6 +7962,28 @@ begin
     Exit;
   end;
 
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmPerfilTributacao = nil then
+      FrmPerfilTributacao := TFrmPerfilTributacao.Create(Self);
+      
+    FrmPerfilTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'ICM' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmNaturezaOperacao = nil then
+      FrmNaturezaOperacao := TFrmNaturezaOperacao.Create(Self);
+
+    FrmNaturezaOperacao.Show;
+    Exit;
+  end;
+
   if sModulo = 'OS' then
   begin
     Form30.Show;
@@ -8144,6 +8165,29 @@ begin
       
     FrmParametroTributacao.lblNovoClick(Sender);
     FrmParametroTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    if FrmPerfilTributacao = nil then
+      FrmPerfilTributacao := TFrmPerfilTributacao.Create(Self);
+      
+    FrmPerfilTributacao.lblNovoClick(Sender);
+    FrmPerfilTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'ICM' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmNaturezaOperacao = nil then
+      FrmNaturezaOperacao := TFrmNaturezaOperacao.Create(Self);
+
+    FrmNaturezaOperacao.lblNovoClick(Sender);
+    FrmNaturezaOperacao.Show;
     Exit;
   end;
 
@@ -33859,13 +33903,6 @@ begin
       Abort;
     end;
   end;
-end;
-
-procedure TForm7.DSPerfilTributaStateChange(Sender: TObject);
-begin
-  Form10.lblAtencaoPerfilTrib.Visible := DSPerfilTributa.State = dsEdit;
-  Form10.lbAtencaoPisCofins.Visible   := DSPerfilTributa.State = dsEdit;
-  Form10.lbAtencaoIPI.Visible         := DSPerfilTributa.State = dsEdit;    
 end;
 
 procedure TForm7.ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
