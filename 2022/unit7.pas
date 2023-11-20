@@ -1607,6 +1607,7 @@ type
     CartadeCorreoEletrnicaCCe1: TMenuItem;
     ExportarXML1: TMenuItem;
     N70: TMenuItem;
+    InutilizaodeNFes1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2268,6 +2269,7 @@ type
     procedure DuplicaOrcamentoClick(Sender: TObject);
     procedure ImprimirOrcamentoClick(Sender: TObject);
     procedure ExportarXML1Click(Sender: TObject);
+    procedure InutilizaodeNFes1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -34234,6 +34236,11 @@ begin
   finally
     FreeAndNil(lsXML);
   end;
+end;
+
+procedure TForm7.InutilizaodeNFes1Click(Sender: TObject);
+begin
+  Form1.InutilizarNFe1Click(Self);
 end;
 
 end.

@@ -152,6 +152,9 @@ begin
 
   sNomeCampoChave := CampoCodigo.FieldName;
 
+  //Mauricio Parizotto 2023-11-15
+  txtCampo.Text := CampoCodigo.AsString;
+
   Query.Close;
   case FTipoPesquisa of
     tpSelect:

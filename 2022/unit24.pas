@@ -389,12 +389,12 @@ begin
     end;
     if Form24.Image5.Picture.Width > Form24.Image5.Picture.Height then
     begin
-      Form24.Image5.Width  := (StrToInt(StrZero((Form24.Image5.Picture.Width * (Form24.Panel9.Width / 2 / Form24.Image5.Picture.Width)),10,0))); // *2;
-      Form24.Image5.Height := (StrToInt(StrZero((Form24.Image5.Picture.Height* (Form24.Panel9.Width / 2 / Form24.Image5.Picture.Width)),10,0))); // *2;
+      Form24.Image5.Width  := (StrToInt(StrZero((Form24.Image5.Picture.Width * (Form24.Panel9.Width / 2 / Form24.Image5.Picture.Width)),10,0))) *2;
+      Form24.Image5.Height := (StrToInt(StrZero((Form24.Image5.Picture.Height* (Form24.Panel9.Width / 2 / Form24.Image5.Picture.Width)),10,0))) *2;
     end else
     begin
-      Form24.Image5.Width  := (StrToInt(StrZero((Form24.Image5.Picture.Width * (Form24.Panel9.Height / 2 / Form24.Image5.Picture.Height)),10,0))); //*2;
-      Form24.Image5.Height := (StrToInt(StrZero((Form24.Image5.Picture.Height* (Form24.Panel9.Height / 2 / Form24.Image5.Picture.Height)),10,0))); //*2;
+      Form24.Image5.Width  := (StrToInt(StrZero((Form24.Image5.Picture.Width * (Form24.Panel9.Height / 2 / Form24.Image5.Picture.Height)),10,0))) *2;
+      Form24.Image5.Height := (StrToInt(StrZero((Form24.Image5.Picture.Height* (Form24.Panel9.Height / 2 / Form24.Image5.Picture.Height)),10,0))) *2;
     end;
     Form24.Image5.Left := (Form24.Panel9.Width  - Form24.Image5.Width) div 2;
     Form24.Image5.Top  := (Form24.Panel9.Height - Form24.Image5.Height) div 2;
@@ -2720,7 +2720,7 @@ begin
     Panel9.Top    := Form24.pnlNota.Top;
     Panel9.Left   := pnlNota.Left + pnlNota.Width + 10;
 
-    Panel9.Width  := 1050 - Panel9.Left - 20;
+    Panel9.Width  := 300; // Dailon Parisotto 2023-11-16 (Ficar igual rotina VENDA)
     Panel9.Height := Panel9.Width;
 
     Panel5.Top    := Panel9.Top + Panel9.Height + 10;
