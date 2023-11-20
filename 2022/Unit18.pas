@@ -173,106 +173,112 @@ begin
     if Form7.sModulo = 'VENDA' then // Ok
     begin
       // RECEBER
-      Form7.ibDataSet15.Edit;
-      //
-      if Form7.ibDataSet15.Modified then
-      begin
-         Form7.ibDataSet15.Post;
-         Form7.ibDataSet15.Edit;
-      end;
+      try
+        Form7.ibDataSet7.DisableControls; // Sandro Silva 2023-11-20
 
-      // Cria as duplicatas
-      // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
-      I := 0;
-      Form7.ibDataSet7.First;
-      while not Form7.ibDataSet7.Eof do
-      begin
-        I := I + 1;
-        Form7.ibDataSet7.Next;
-      end;
+        Form7.ibDataSet15.Edit;
+        //
+        if Form7.ibDataSet15.Modified then
+        begin
+           Form7.ibDataSet15.Post;
+           Form7.ibDataSet15.Edit;
+        end;
 
-      if I <> Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) then
-      begin
+        // Cria as duplicatas
+        // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
+        I := 0;
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
         begin
-          Form7.ibDataSet7.Delete;
-          Form7.ibDataSet7.First;
-        end;
-
-        for I := 1 to Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) do
-        begin
-          Form7.ibDataSet7.Append;
-          Form7.ibDataSet7NUMERONF.AsString := Form7.ibDataSet15NUMERONF.AsString;
-
-          if Form7.sRPS <> 'S' then
-          begin
-            if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '002' then
-            begin
-              Form7.ibDataSet7DOCUMENTO.Value := 'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,2,8) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
-            end else
-            begin
-              Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
-            end;
-          end else
-          begin
-            Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,1)+'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,3,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
-          end;
-
-          Form7.ibDataSet7VALOR_DUPL.AsFloat          := Arredonda((Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR) / Form7.ibDataSet15DUPLICATAS.AsFloat,2);;
-
-          if Form7.sRPS <> 'S' then
-          begin
-            Form7.ibDataSet7HISTORICO.Value := 'NFE NAO AUTORIZADA';
-          end else
-          begin
-            Form7.ibDataSet7HISTORICO.AsString := 'RPS número: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);
-          end;
-
-          Form7.ibDataSet7EMISSAO.asDateTime    := Form7.ibDataSet15EMISSAO.AsDateTime;
-          Form7.ibDataSet7NOME.Value            := Form7.ibDataSet15CLIENTE.Value;
-          Form7.ibDataSet7CONTA.AsString        := sConta;
-          if I = 1 then
-            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
-          if I = 2 then
-            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
-          if I = 3 then
-            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
-          if I > 3 then
-            Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text))+
-              ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
-               -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
-          //
-          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then
-            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
-          if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
-            Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
-
-          Form7.ibDataSet7.Post;
-        end;
-
-        // Valor quebrado
-        dDiferenca := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
-        Form7.ibDataSet7.First;
-        while not Form7.ibDataSet7.Eof do
-        begin
-          dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+          I := I + 1;
           Form7.ibDataSet7.Next;
         end;
 
-        Form7.ibDataSet7.First;
-        Form7.ibDataSet7.Edit;
-        if dDiferenca <> 0 then
-          Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
-      end
-      {Sandro Silva 2023-11-09 inicio}
-      else
-      begin
-        //ReparcelaValor
-      end;
-      {Sandro Silva 2023-11-09 fim}
+        if I <> Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) then
+        begin
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
+          begin
+            Form7.ibDataSet7.Delete;
+            Form7.ibDataSet7.First;
+          end;
 
-      Form7.ibDataSet7.First;
+          for I := 1 to Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) do
+          begin
+            Form7.ibDataSet7.Append;
+            Form7.ibDataSet7NUMERONF.AsString := Form7.ibDataSet15NUMERONF.AsString;
+
+            if Form7.sRPS <> 'S' then
+            begin
+              if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '002' then
+              begin
+                Form7.ibDataSet7DOCUMENTO.Value := 'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,2,8) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
+              end else
+              begin
+                Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
+              end;
+            end else
+            begin
+              Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,1)+'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,3,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),I,1);
+            end;
+
+            Form7.ibDataSet7VALOR_DUPL.AsFloat          := Arredonda((Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR) / Form7.ibDataSet15DUPLICATAS.AsFloat,2);;
+
+            if Form7.sRPS <> 'S' then
+            begin
+              Form7.ibDataSet7HISTORICO.Value := 'NFE NAO AUTORIZADA';
+            end else
+            begin
+              Form7.ibDataSet7HISTORICO.AsString := 'RPS número: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);
+            end;
+
+            Form7.ibDataSet7EMISSAO.asDateTime    := Form7.ibDataSet15EMISSAO.AsDateTime;
+            Form7.ibDataSet7NOME.Value            := Form7.ibDataSet15CLIENTE.Value;
+            Form7.ibDataSet7CONTA.AsString        := sConta;
+            if I = 1 then
+              Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
+            if I = 2 then
+              Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit5.Text)));
+            if I = 3 then
+              Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text)));
+            if I > 3 then
+              Form7.ibDataSet7VENCIMENTO.AsDateTime := SomaDias(Form7.ibDataSet15EMISSAO.AsDateTime,StrToInt(AllTrim(Form19.MaskEdit6.Text))+
+                ((StrToInt(AllTrim(Form19.MaskEdit6.Text))
+                 -StrToInt(AllTrim(Form19.MaskEdit5.Text)))*(I-3)));
+            //
+            if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then
+              Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
+            if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
+              Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
+
+            Form7.ibDataSet7.Post;
+          end;
+
+          // Valor quebrado
+          dDiferenca := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR))); // Sandro Silva 2023-11-20 dDiferenca := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
+          begin
+            dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_DUPL.AsFloat)))); // Sandro Silva 2023-11-20 dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+            Form7.ibDataSet7.Next;
+          end;
+
+          Form7.ibDataSet7.First;
+          Form7.ibDataSet7.Edit;
+          if dDiferenca <> 0 then
+            Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca)); // Sandro Silva 2023-11-20 Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
+        end
+        {Sandro Silva 2023-11-09 inicio}
+        else
+        begin
+          //ReparcelaValor
+        end;
+        {Sandro Silva 2023-11-09 fim}
+
+        Form7.ibDataSet7.First;
+      finally
+        Form7.ibDataSet7.EnableControls; // Sandro Silva 2023-11-20      
+      end;
     end;
   except
   end;
@@ -547,11 +553,16 @@ begin
     if Form7.sModulo = 'VENDA' then // Ok
     begin
       Total := 0;
-      Form7.ibDataSet7.First;
-      while not Form7.ibDataSet7.Eof do
-      begin
-        Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
-        Form7.ibDataSet7.Next;
+      try
+        Form7.ibDataSet7.DisableControls; // Sandro Silva 2023-11-20
+        Form7.ibDataSet7.First;
+        while not Form7.ibDataSet7.Eof do
+        begin
+          Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
+          Form7.ibDataSet7.Next;
+        end;
+      finally
+        Form7.ibDataSet7.EnableControls; // Sandro Silva 2023-11-20
       end;
 
       if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
@@ -568,11 +579,21 @@ begin
         }
         if Form7.ibDataSet7.RecordCount > 0 then
         begin
-          ReparcelaValor(Form7.ibDataSet7, StrToInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
+          try
+            Form7.ibDataSet7.DisableControls;
+            ReparcelaValor(Form7.ibDataSet7, StrToInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
+          finally
+            Form7.ibDataSet7.EnableControls;
+          end;
         end;
         {Sandro Silva 2023-11-09 fim}
 
-        SMALL_DBEdit1Exit(Sender);
+        try
+          Form7.ibDataSet7.DisableControls;
+          SMALL_DBEdit1Exit(Sender);
+        finally
+          Form7.ibDataSet7.EnableControls;
+        end;
       end;
     end;
 
@@ -1727,7 +1748,7 @@ begin
           Column.Field.DataSet.DisableControls;
           RateiaDiferencaParcelaEntreAsDemais(Form7.sModulo);
         finally
-          Column.Field.DataSet.EnableControls
+          Column.Field.DataSet.EnableControls;
         end;
       end;
     end;
@@ -1810,18 +1831,23 @@ begin
 end;
 
 procedure TForm18.SetPickListParaColuna;
+const
+  iDropDownRows = 20;
 begin
   if Form7.sModulo = 'VENDA' then
   begin
 
     if Form7.ibDataSet7BANDEIRA.Visible then
     begin
-      if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
+      if Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
       begin
-        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList.Clear;
+        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].PickList.Clear;
 
         if FormaDePagamentoEnvolveCartao(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
-          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListBandeira;
+        begin
+          Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].PickList     := Form7.slPickListBandeira;
+          Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+        end;
 
       end;
     end;
@@ -1830,8 +1856,11 @@ begin
     if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
     begin
 
-      if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
-        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList := Form7.slPickListFormaDePagamento;
+      if Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
+      begin
+        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].PickList     := Form7.slPickListFormaDePagamento;
+        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+      end;
 
     end;
 
@@ -1840,11 +1869,17 @@ begin
 
       Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList.Clear;
       if FormaDePagamentoEnvolveBancos(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+      begin
         Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList := Form7.slPickListBanco;
+        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+      end;
 
       if FormaDePagamentoEnvolveCartao(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+      begin
         Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList := Form7.slPickListInstituicao;
-
+        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+      end;
+      
     end
   end;
 
@@ -1855,7 +1890,7 @@ begin
   Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
 end;
 
-function TForm18.ValidarDesdobramentoParcela: Boolean; 
+function TForm18.ValidarDesdobramentoParcela: Boolean;
 var
   slFormas: TStringList;
   sForma: String;
@@ -2006,6 +2041,7 @@ begin
 
   //TotalizaParcelas
   dTotal := 0.00;
+  dTotalParcelar := StrToFloat(FormatFloat('0.00', dTotalParcelar)); // Sandro Silva 2023-11-20
   DataSet.First;
   while DataSet.Eof = False do
   begin
@@ -2027,18 +2063,17 @@ begin
   dTotal := 0.00;
   DataSet.First;
   while DataSet.Eof = False do
-  begin
-
+  begin  
     DataSet.Edit;
     DataSet.FieldByName('VALOR_DUPL').AsFloat := StrToFloat(FormatFloat('0.00', dTotalParcelar * aParcelas[DataSet.Recno - 1]));
-    dTotal := dTotal + DataSet.FieldByName('VALOR_DUPL').AsFloat;
+    dTotal := dTotal + StrToFloat(FormatFloat('0.00', DataSet.FieldByName('VALOR_DUPL').AsFloat));
     DataSet.Next;
   end;
+  
   DataSet.First;
   DataSet.Edit;
   DataSet.FieldByName('VALOR_DUPL').AsFloat := StrToFloat(FormatFloat('0.00', DataSet.FieldByName('VALOR_DUPL').AsFloat + (dTotalParcelar - dTotal)));
   DataSet.Post;
-
 end;
 
 procedure TForm18.RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
@@ -2046,6 +2081,7 @@ var
   dDiferenca : Double;
   MyBookmark: TBookmark;
   iRegistro, iDuplicatas: Integer;
+  dSomaParcelas: Double; // Sandro Silva 2023-11-20
 begin
   // Quando altera o valor de uma parcela, a diferença é repassada para as demais com vencimento posterior daquela alterada
   if ModuloAtual = 'VENDA' then // Ok
@@ -2056,12 +2092,14 @@ begin
     else
     begin
       iRegistro   := Form7.ibDataSet7.Recno;
-      dDiferenca  := StrToFloat(Format('%8.2f',[(Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)])); // Sandro Silva 2023-11-13 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+      dDiferenca  := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR))); // Sandro Silva 2023-11-13 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
       iDuplicatas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
       //
       Form7.ibDataSet7.DisableControls;
       try
   //        Dbgrid1.Enabled := false;
+
+        {Sandro Silva 2023-11-20 inicio
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
         begin
@@ -2077,19 +2115,46 @@ begin
           end;
           Form7.ibDataSet7.Next;
         end;
-
-        dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+        }
+        dSomaParcelas := 0.00;
         Form7.ibDataSet7.First;
         while not Form7.ibDataSet7.Eof do
         begin
-          dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+          dSomaParcelas := dSomaParcelas + StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_DUPL.AsFloat)); // Sandro Silva 2023-11-13 dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
+          Form7.ibDataSet7.Next;
+        end;
+
+        if dSomaParcelas <> StrToFloat(FormatFloat('0.00',(Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR))) then
+        begin
+          Form7.ibDataSet7.First;
+          while not Form7.ibDataSet7.Eof do
+          begin
+            if Form7.ibDataSet7.Recno <= iRegistro then
+            begin
+              iDuplicatas := iDuplicatas - 1;
+              dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.AsFloat; // Sandro Silva 2023-11-13 dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
+            end else
+            begin
+              Form7.ibDataSet7.Edit;
+              Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(FormatFloat('0.00', dDiferenca / iDuplicatas));
+            end;
+            Form7.ibDataSet7.Next;
+          end;
+        end;
+        {Sandro Silva 2023-11-20 fim}
+
+        dDiferenca  := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR))); // Sandro Silva 2023-11-20 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
+        Form7.ibDataSet7.First;
+        while not Form7.ibDataSet7.Eof do
+        begin
+          dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_DUPL.AsFloat)))); // Sandro Silva 2023-11-20 dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
           Form7.ibDataSet7.Next;
         end;
 
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
         if dDiferenca <> 0 then
-          Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca])); // Sandro Silva 2023-11-13 Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca;
+          Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca)); // Sandro Silva 2023-11-20 Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca]));
 
       finally
         Form7.ibDataSet7.GotoBookmark(MyBookmark);
