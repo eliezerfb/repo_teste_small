@@ -103,6 +103,7 @@ uses
   , umfe
   , usmall_elginpay_pos
   , usincronizamobile
+  , uSmallEnumerados
   ;
 
   const MARGEM_ESQUERDA_OBJ = 14; // Sandro Silva 2021-07-29 // 15
@@ -1031,6 +1032,7 @@ type
     IBDataSet150GERENCIAL: TStringField;
     EmitirNFCedogerencial1: TMenuItem;
     FechamentodeCaixa1: TMenuItem;
+    Iniciarnovavenda1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1394,6 +1396,7 @@ type
     procedure itemMenugerencialClick(Sender: TObject);
     procedure EmitirNFCedogerencial1Click(Sender: TObject);
     procedure FechamentodeCaixa1Click(Sender: TObject);
+    procedure Iniciarnovavenda1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1465,6 +1468,7 @@ type
     procedure ConfigurarINITEFsPadrao(AoIniFile: TIniFile);
     procedure DefineTemTEF;
     procedure ChamarTelaConfiguracaoTEF;
+    procedure IniciarNovaVendaComDocAberto;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1657,6 +1661,7 @@ type
     procedure PDV_GerarArquivosRequisitoXII;
     function PDV_ECF0909: Boolean;
     function PDV_DataMovimento(pP1: Boolean): String;
+    procedure PDV_PausaVenda(AbIniciarNova: Boolean);
     function ImpressaoNaoSujeitoaoICMS(sP1: String; bPDF: Boolean = False; LarguraPapel: Integer = 640): Boolean; // Sandro Silva 2018-11-20 function ImpressaoNaoSujeitoaoICMS(sP1: String; bPDF: Boolean = False): Boolean;
     function UsaIntegradorFiscal(UF: String = ''): Boolean;
     procedure AcertaPendenciaCancelAlteraca;
@@ -1673,6 +1678,7 @@ type
       FModeloECF: String; // Sandro Silva 2023-08-30
       FModeloDocOld: String // Sandro Silva 2023-08-30      
     ): Boolean;
+    function RetornarTipoDocumentoConfigurado: tTipoDocFrente; // Dailon Parisotto 2023-11-13
   end;
 
 var
@@ -4852,12 +4858,49 @@ begin
   //
 end;
 
+{Dailon Parisotto (f-7558) 2023-11-13 Inicio}
+function TForm1.RetornarTipoDocumentoConfigurado: tTipoDocFrente;
+begin
+  Result := tTipoDocFrente(StrToInt(Form1.sModeloECF));
+end;
+
+procedure TForm1.IniciarNovaVendaComDocAberto;
+var
+  cMensagem: String;
+begin
+  // Se não for NFCe, SAT ou Gerencial não faz nada.
+  if not (RetornarTipoDocumentoConfigurado in [ttdcSAT, ttdcNFCe, ttdcGerencial]) then
+    Exit;
+
+  cMensagem := 'A venda atual ficará pendente para finalização posterior e uma nova venda será aberta.';
+  if (RetornarTipoDocumentoConfigurado = ttdcGerencial) then
+    cMensagem := 'O movimento atual ficará pendente para finalização posterior e um novo movimento será aberto.';
+
+  if (Application.MessageBox(PChar(cMensagem + sLineBreak + sLineBreak + 'Confirma?'), 'Atenção', MB_YESNO + MB_ICONQUESTION) = mrNo) then
+    Exit;
+
+  PDV_PausaVenda(True);
+end;
+
+procedure TForm1.PDV_PausaVenda(AbIniciarNova: Boolean);
+begin
+  GravaNumeroCupomFrenteINI(FormataNumeroDoCupom(0), Form1.sModeloECF);
+  Button8Click(Button8);
+
+  if AbIniciarNova then
+  begin
+    if Button2.Enabled then
+      Button2Click(Self);
+  end;
+end;
+{Dailon Parisotto (f-7558) 2023-11-13 Fim}
+
 function Mesas(pP1: Integer) : Boolean;
 var
   I, IX, IY : Integer;
 begin
   //
-  if (Copy(Form1.sConcomitante,1,12) <> 'CONCOMITANTE') and (Form1.bBalancaAutonoma = False) then 
+  if (Copy(Form1.sConcomitante,1,12) <> 'CONCOMITANTE') and (Form1.bBalancaAutonoma = False) then
   begin
     //
     //
@@ -15848,6 +15891,17 @@ begin
   Form1.FunesAdministrativasPosElginPay1.Enabled := SmartPOSElginPay1.Enabled; // Sandro Silva 2022-02-11
   if Form1.sTef <> 'Sim' then
     SmartPOSElginPay1.Checked := (PosElginPay.Configuracao.Ativo = 'Sim'); // Sandro Silva 2022-02-14
+
+  {Dailon Parisotto (f-7558) 2023-11-20 Inicio}
+  if RetornarTipoDocumentoConfigurado in [ttdcSAT, ttdcNFCe, ttdcGerencial] then
+  begin
+    Iniciarnovavenda1.Caption := 'Iniciar nova venda';
+    if RetornarTipoDocumentoConfigurado = ttdcGerencial then
+      Iniciarnovavenda1.Caption := 'Iniciar novo movimento';
+  end;
+
+  Iniciarnovavenda1.Visible := (RetornarTipoDocumentoConfigurado in [ttdcSAT, ttdcNFCe, ttdcGerencial]) and (not Button2.Enabled);
+  {Dailon Parisotto (f-7558) 2023-11-20 Fim}
 
   Screen.Cursor := crDefault; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
 end;
@@ -34602,6 +34656,11 @@ end;
 procedure TForm1.FechamentodeCaixa1Click(Sender: TObject);
 begin
   RelatorioFechamentoDeCaixa; // Sandro Silva 2023-11-01
+end;
+
+procedure TForm1.Iniciarnovavenda1Click(Sender: TObject);
+begin
+  IniciarNovaVendaComDocAberto;
 end;
 
 end.

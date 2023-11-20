@@ -62,7 +62,8 @@ uses
   _Small_59 in '_Small_59.pas',
   _Small_99 in '_small_99.pas',
   uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
-  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas';
+  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
+  uSmallEnumerados in '..\unit_compartilhada\uSmallEnumerados.pas';
 
 {$R *.RES}
 
