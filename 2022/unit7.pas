@@ -20762,7 +20762,8 @@ begin
   if Form7.ibDataSet35QUANTIDADE.AsFloat > 0 then
   begin
     //
-    if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat)]) then
+    // Sandro Silva 2023-11-20 if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat)]) then
+    if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[Arredonda(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,StrToInt(Form1.ConfPreco))]) then
     begin
       //
       Form7.ibDataSet35.Edit;
