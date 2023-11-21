@@ -42,6 +42,7 @@ type
     //sTabela: String;
     CampoCodigo: TField;
     CampoCodigoPesquisa : string; // Mauricio Parizotto 2023-11-20 para caso em que tabela de origem o campo esteja com nome diferente
+    CampoAuxExiber : string;
     property GravarSomenteTextoEncontrato: Boolean read FGravarSomenteTextoEncontrato write FGravarSomenteTextoEncontrato default True;
     property TipoDePesquisa: TTipoPesquisa read FTipoPesquisa write FTipoPesquisa;
     property sFiltro: String read FFiltro write FFiltro;
@@ -298,6 +299,7 @@ begin
   Result :=
     //' Select distinct  ' + CampoCodigo.FieldName + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO + Mauricio Parizotto 2023-11-20
     ' Select distinct  ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+    CampoAuxExiber+// Mauricio Parizotto 2023-11-21
     ' From ' + FTabela +
     ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
     ' Order by upper(' + sCampoDescricao + ')';

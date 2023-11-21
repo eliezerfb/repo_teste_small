@@ -7473,7 +7473,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
-          OnEnter = dbeIcmCFOPEnter
           OnExit = dbeIcmCFOPExit
           OnKeyDown = PadraoKeyDown
         end
@@ -7780,6 +7779,20 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           inherited gdRegistros: TDBGrid
             Width = 313
+            Options = [dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'CONTA'
+                Width = 70
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'NOME'
+                Width = 200
+                Visible = True
+              end>
           end
         end
       end

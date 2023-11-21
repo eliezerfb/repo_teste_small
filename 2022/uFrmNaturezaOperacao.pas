@@ -94,7 +94,6 @@ type
     procedure tbsNaturezaShow(Sender: TObject);
     procedure SMALL_DBEditXExit(Sender: TObject);
     procedure dbeIcmCFOPExit(Sender: TObject);
-    procedure dbeIcmCFOPEnter(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tbsPisCofinsEnter(Sender: TObject);
@@ -337,6 +336,7 @@ begin
   fraPlanoContas.CampoCodigoPesquisa := 'NOME';
   fraPlanoContas.sCampoDescricao := 'NOME';
   fraPlanoContas.sTabela         := 'CONTAS';
+  fraPlanoContas.CampoAuxExiber  := ',CONTA';
   fraPlanoContas.CarregaDescricao;
 
   AtualizaObjComValorDoBanco;
@@ -470,14 +470,6 @@ begin
   end;
 end;
 
-
-procedure TFrmNaturezaOperacao.dbeIcmCFOPEnter(Sender: TObject);
-begin
-  with Sender as TSMALL_DBEdit do
-  begin
-    TSMALL_DBEdit(Sender).SelStart := 1;
-  end;
-end;
 
 procedure TFrmNaturezaOperacao.FormActivate(Sender: TObject);
 begin
