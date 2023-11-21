@@ -8,6 +8,7 @@ type
   tAmbienteNFe = (tanfHomologacao, tanfProducao);
   tAmbienteNFSe = (tanfsProducao = 1, tanfsHomologacao = 2);
   tTipoImpressaoOrcamento = (ttioPDF, ttioHTML, ttioPadraoWindows, ttioTXT);
+  tTipoDocFrente = (ttdcMesaContaCliente = 1, ttdcSAT = 59, ttdcNFCe = 65, ttdcGerencial = 99);
 
 implementation
 
