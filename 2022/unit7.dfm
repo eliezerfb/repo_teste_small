@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 301
-  Top = 54
+  Left = 200
+  Top = 127
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -19344,8 +19344,9 @@ object Form7: TForm7
     end
     object ibDataSet3OBSERVACAO: TIBStringField
       DisplayLabel = 'Observa'#231#227'o'
+      DisplayWidth = 128
       FieldName = 'OBSERVACAO'
-      Size = 254
+      Size = 1000
     end
     object ibDataSet3NF: TIBStringField
       DisplayLabel = 'Nota Fiscal'
@@ -19417,6 +19418,17 @@ object Form7: TForm7
       object GerarNotaFiscaldeServio2: TMenuItem
         Caption = 'Gerar Nota Fiscal de Servi'#231'o '
         OnClick = GerarNotaFiscaldeServio2Click
+      end
+      object N71: TMenuItem
+        Caption = '-'
+      end
+      object ConfigurarobservaoparaOS1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o para OS'
+        OnClick = ConfigurarobservaoparaOS1Click
+      end
+      object ConfigurarobservaoparaRecibo1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o para Recibo'
+        OnClick = ConfigurarobservaoparaRecibo1Click
       end
       object N30: TMenuItem
         Caption = '-'
@@ -21429,7 +21441,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21464,7 +21476,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21779,7 +21791,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21809,7 +21821,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -1608,6 +1608,9 @@ type
     ExportarXML1: TMenuItem;
     N70: TMenuItem;
     InutilizaodeNFes1: TMenuItem;
+    N71: TMenuItem;
+    ConfigurarobservaoparaOS1: TMenuItem;
+    ConfigurarobservaoparaRecibo1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2270,6 +2273,8 @@ type
     procedure ImprimirOrcamentoClick(Sender: TObject);
     procedure ExportarXML1Click(Sender: TObject);
     procedure InutilizaodeNFes1Click(Sender: TObject);
+    procedure ConfigurarobservaoparaOS1Click(Sender: TObject);
+    procedure ConfigurarobservaoparaRecibo1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -12965,37 +12970,46 @@ end;
 procedure TForm7.ibDataSet3NewRecord(DataSet: TDataSet);
 var
   sNumero : String;
+  ConfSistema : TArquivosDAT;
 begin
-  //
   IBDataSet99.Close;
   IBDataSet99.SelectSQL.Clear;
   IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,1) from rdb$database');
   IBDataSet99.Open;
   sNumero := StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0);
   IBDataSet99.Close;
-  //
+  {Mauricio Parizotto 2023-11-21 Inicio
   try
     IBDataSet99.Close;
     IBDataSet99.SelectSQL.Clear;
     IBDataSet99.SelectSQL.Add('select OBSERVACAO from OS where NUMERO='+QuotedStr(StrZero( StrtoFloat(AllTrim( sNumero ))-1,10,0))+' ');
     IBDataSet99.Open;
   except end;
-  //
-  //
+  }
+
   ibDataSet3REGISTRO.AsString   := sProximo;
   ibDataSet3NUMERO.AsString     := sNumero;
   ibDataSet3DATA.AsDateTime     := Date;
   ibDataSet3HORA.AsString       := TimeToStr(Time);
   ibDataSet3TEMPO.AsString      := '00:45';
   ibDataSet3SITUACAO.AsString   := 'Agendada';
+  {
   try
     ibDataSet3OBSERVACAO.AsString := IBDataSet99.FieldByname('OBSERVACAO').AsString;
-  except end;  
-  //
+  except end;
+
   IBDataSet99.Close;
-  //
+  }
+
+  try
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ibDataSet3OBSERVACAO.AsString := ConfSistema.BD.OS.ObservacaoOS;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+  {Mauricio Parizotto 2023-11-21 Fim}
+
   ibDataSet2.Append;
-  //
 end;
 
 procedure TForm7.Arquivos1Click(Sender: TObject);
@@ -17896,15 +17910,23 @@ end;
 procedure TForm7.Imprimirrecibo1Click(Sender: TObject);
 var
   F: TextFile;
+  ObservacaoRecibo : string;
+  ConfSistema : TArquivosDAT;
 begin
-  //
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString)+' ');  //
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString));
   Form7.ibDataSet2.Open;
-  //
+
+  {Mauricio Parizotto 2023-11-21 Inicio}
+  try
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ObservacaoRecibo := ConfSistema.BD.OS.ObservacaoReciboOS;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+
   begin
-    //
     CriaJpg('logotip.jpg');
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);
@@ -17969,16 +17991,25 @@ begin
     WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+Form30.Label19.Caption+': <b>'+Form7.ibDataSet3PROBLEMA.AsString+'</b>');
+    //WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+Form30.Label19.Caption+': <b>'+Form7.ibDataSet3PROBLEMA.AsString+'</b>'); Mauricio Parizotto 2023-11-23
+    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+Form30.Label19.Caption+': <b>'+QuebraLinhaHtml(Form7.ibDataSet3PROBLEMA.AsString)+'</b>');
     WriteLn(F,'  </td>');
     WriteLn(F,' </tr>');
     WriteLn(F,'</table>');
     WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>Observação: <b>'+Form7.ibDataSet3OBSERVACAO.AsString+'</b>');
+    //WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>Observação: <b>'+Form7.ibDataSet3OBSERVACAO.AsString+'</b>');  Mauricio Parizotto 2023-11-23
+    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>Observação: <b>'+QuebraLinhaHtml(Form7.ibDataSet3OBSERVACAO.AsString)+'</b>');
     WriteLn(F,'  </td>');
     WriteLn(F,' </tr>');
+    {Mauricio Parizotto 2023-11-21 Inicio}
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+QuebraLinhaHtml(ObservacaoRecibo));
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    {Mauricio Parizotto 2023-11-21 Inicio}
     WriteLn(F,'</table>');
 
 
@@ -18006,11 +18037,9 @@ begin
     WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>pelo sistema Small Commerce, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a></font></center>');
     WriteLn(F,'</html>');
     CloseFile(F);
-    //
+    
     AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-    //
   end;
-  //
 end;
 
 procedure TForm7.ImprimirOrdemdeServio1Click(Sender: TObject);
@@ -22589,9 +22618,8 @@ end;
 
 procedure TForm7.ibDataSet3BeforeInsert(DataSet: TDataSet);
 begin
-  //
   if (not Form7.ibDataSet3.Bof) then try if Alltrim(Form7.ibDataSet3CLIENTE.AsString) = '' then Form7.ibDataSet3.Delete; except end;
-  //
+  
   try
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
@@ -22602,7 +22630,6 @@ begin
   except
     Abort
   end;
-  //
 end;
 
 procedure TForm7.IBDataSet2BeforeInsert(DataSet: TDataSet);
@@ -34241,6 +34268,34 @@ end;
 procedure TForm7.InutilizaodeNFes1Click(Sender: TObject);
 begin
   Form1.InutilizarNFe1Click(Self);
+end;
+
+procedure TForm7.ConfigurarobservaoparaOS1Click(Sender: TObject);
+var
+  ConfSistema : TArquivosDAT;
+  Observacao : string;
+begin
+  try
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    Observacao := Form1.Small_InputFormMemo('Configuração de observação para OS','Observação:',ConfSistema.BD.OS.ObservacaoOS);
+    ConfSistema.BD.OS.ObservacaoOS := Observacao;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+end;
+
+procedure TForm7.ConfigurarobservaoparaRecibo1Click(Sender: TObject);
+var
+  ConfSistema : TArquivosDAT;
+  ObservacaoRec : string;
+begin
+  try
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ObservacaoRec := Form1.Small_InputFormMemo('Configuração de observação para Recibo','Observação:',ConfSistema.BD.OS.ObservacaoReciboOS);
+    ConfSistema.BD.OS.ObservacaoReciboOS := ObservacaoRec;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
 end;
 
 end.

@@ -509,6 +509,7 @@ type
     function AvisoConfig(bP1 : Boolean):Boolean;
     function GetCNPJCertificado(SubjectName: String): String;
     function Small_InputForm(sP1, sP2, sP3: String) : String;
+    function Small_InputFormMemo(sP1, sP2, sP3: String) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
     function Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0): String;    
     function NcmDeMedicamentos(sNcm: String): Boolean;
@@ -1001,6 +1002,30 @@ begin
   Form29.Edit1.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
+end;
+
+function tForm1.Small_InputFormMemo(sP1, sP2, sP3: String) : String;
+begin
+  Form7.AlphaBlend      := True;
+  Form7.AlphaBlendValue := 0;
+
+  Form29.Label1.Font.Size := 18;
+  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+
+  Form29.memTexto.Visible  := True;
+  Form29.memTexto.Text     := sP3;
+  Form29.memTexto.Left     := 70;
+  Form29.memTexto.Height   := 120;
+  Form29.memTexto.Top      := 250;
+  Form29.memTexto.Width    := 900;
+
+  Form29.ShowModal;
+
+  Result                := Form29.memTexto.Text;
+
+  Form29.memTexto.Visible  := False;
+  Form7.AlphaBlendValue := 255;
+  Form29.memTexto.Text     := '';
 end;
 
 function tForm1.Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0) : String;
