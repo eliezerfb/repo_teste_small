@@ -20473,11 +20473,13 @@ begin
       MensagemSistema('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.',msgAtencao);
     end;
 
+    {Sandro Silva 2023-11-20 inicio
     if Length(LimpaNumero(Sender.AsString))=9 then
     begin
       //ShowMessage('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.',msgAtencao);
     end;
+    }
   end;
 end;
 
