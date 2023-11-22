@@ -76,15 +76,23 @@ type
   TParcelamentoReceber = class
   private
     FParcelas: TParcelasReceberList;
+    FRetencaoIR: Double;
+    FTotalNota: Double;
+    FNumeroParcelas: Integer;
   protected
     procedure AtualizaObjReceber(DataSetParcelas: TIBDataSet);
     procedure AtualizaDataSetReceber(DataSetParcelas: TibDataSet);
     procedure ParcelarValor(iParcelas: Integer; dTotalParcelar: Double);
+    procedure RateiaDiferencaParcelaEntreAsDemais(
+      DataSetParcelas: TIBDataSet; ModuloAtual: String);
   public
     constructor Create; virtual;
     procedure LimpaItens;
     function GetValorTotalParcelas: Double;
     property Parcelas: TParcelasReceberList read FParcelas write FParcelas;
+    property RetencaoIR: Double read FRetencaoIR write FRetencaoIR;
+    property TotalNota: Double read FTotalNota write FTotalNota;
+    property NumeroParcelas: Integer read FNumeroParcelas write FNumeroParcelas;
   end;
 
 implementation
@@ -155,36 +163,36 @@ begin
     for i := 0 to FParcelas.Count -1 do
     begin
       oItem := FParcelas.GetItem(i);
-      if DataSetParcelas.Locate('REGISTRO', oItem.REGISTRO, []) = False then
-        DataSetParcelas.Append
-      else
+      if DataSetParcelas.Locate('REGISTRO', oItem.REGISTRO, []) then
+      begin
         DataSetParcelas.Edit;
 
-      DataSetParcelas.FieldByName('HISTORICO').AsString             := oItem.HISTORICO;
-      DataSetParcelas.FieldByName('PORTADOR').AsString              := oItem.PORTADOR;
-      DataSetParcelas.FieldByName('DOCUMENTO').AsString             := oItem.DOCUMENTO;
-      DataSetParcelas.FieldByName('NOME').AsString                  := oItem.NOME;
-      DataSetParcelas.FieldByName('EMISSAO').AsDateTime             := oItem.EMISSAO;
-      DataSetParcelas.FieldByName('VENCIMENTO').AsDateTime          := oItem.VENCIMENTO;
-      DataSetParcelas.FieldByName('VALOR_DUPL').AsFloat             := oItem.VALOR_DUPL;
-      DataSetParcelas.FieldByName('RECEBIMENT').AsString            := oItem.RECEBIMENT;
-      DataSetParcelas.FieldByName('VALOR_RECE').AsString            := oItem.VALOR_RECE;
-      DataSetParcelas.FieldByName('VALOR_JURO').AsString            := oItem.VALOR_JURO;
-      DataSetParcelas.FieldByName('ATIVO').AsInteger                := oItem.ATIVO;
-      DataSetParcelas.FieldByName('CONTA').AsString                 := oItem.CONTA;
-      DataSetParcelas.FieldByName('NOSSONUM').AsString              := oItem.NOSSONUM;
-      DataSetParcelas.FieldByName('CODEBAR').AsString               := oItem.CODEBAR;
-      DataSetParcelas.FieldByName('NUMERONF').AsString              := oItem.NUMERONF;
-      DataSetParcelas.FieldByName('REGISTRO').AsString              := oItem.REGISTRO;
-      DataSetParcelas.FieldByName('NN').AsString                    := oItem.NN;
-      DataSetParcelas.FieldByName('MOVIMENTO').AsString             := oItem.MOVIMENTO;
-      DataSetParcelas.FieldByName('INSTITUICAOFINANCEIRA').AsString := oItem.INSTITUICAOFINANCEIRA;
-      DataSetParcelas.FieldByName('FORMADEPAGAMENTO').AsString      := oItem.FORMADEPAGAMENTO;
-      DataSetParcelas.FieldByName('FORMADEPAGAMENTO').AsString      := oItem.AUTORIZACAOTRANSACAO;
-      DataSetParcelas.FieldByName('BANDEIRA').AsString              := oItem.BANDEIRA;
-      DataSetParcelas.FieldByName('VALOR_MULTA').AsString           := oItem.VALOR_MULTA;
-      DataSetParcelas.FieldByName('PERCENTUAL_MULTA').AsString      := oItem.PERCENTUAL_MULTA;
-      DataSetParcelas.Post;
+        DataSetParcelas.FieldByName('HISTORICO').AsString             := oItem.HISTORICO;
+        DataSetParcelas.FieldByName('PORTADOR').AsString              := oItem.PORTADOR;
+        DataSetParcelas.FieldByName('DOCUMENTO').AsString             := oItem.DOCUMENTO;
+        DataSetParcelas.FieldByName('NOME').AsString                  := oItem.NOME;
+        DataSetParcelas.FieldByName('EMISSAO').AsDateTime             := oItem.EMISSAO;
+        DataSetParcelas.FieldByName('VENCIMENTO').AsDateTime          := oItem.VENCIMENTO;
+        DataSetParcelas.FieldByName('VALOR_DUPL').AsFloat             := oItem.VALOR_DUPL;
+        DataSetParcelas.FieldByName('RECEBIMENT').AsString            := oItem.RECEBIMENT;
+        DataSetParcelas.FieldByName('VALOR_RECE').AsString            := oItem.VALOR_RECE;
+        DataSetParcelas.FieldByName('VALOR_JURO').AsString            := oItem.VALOR_JURO;
+        DataSetParcelas.FieldByName('ATIVO').AsInteger                := oItem.ATIVO;
+        DataSetParcelas.FieldByName('CONTA').AsString                 := oItem.CONTA;
+        DataSetParcelas.FieldByName('NOSSONUM').AsString              := oItem.NOSSONUM;
+        DataSetParcelas.FieldByName('CODEBAR').AsString               := oItem.CODEBAR;
+        DataSetParcelas.FieldByName('NUMERONF').AsString              := oItem.NUMERONF;
+        DataSetParcelas.FieldByName('REGISTRO').AsString              := oItem.REGISTRO;
+        DataSetParcelas.FieldByName('NN').AsString                    := oItem.NN;
+        DataSetParcelas.FieldByName('MOVIMENTO').AsString             := oItem.MOVIMENTO;
+        DataSetParcelas.FieldByName('INSTITUICAOFINANCEIRA').AsString := oItem.INSTITUICAOFINANCEIRA;
+        DataSetParcelas.FieldByName('FORMADEPAGAMENTO').AsString      := oItem.FORMADEPAGAMENTO;
+        DataSetParcelas.FieldByName('FORMADEPAGAMENTO').AsString      := oItem.AUTORIZACAOTRANSACAO;
+        DataSetParcelas.FieldByName('BANDEIRA').AsString              := oItem.BANDEIRA;
+        DataSetParcelas.FieldByName('VALOR_MULTA').AsString           := oItem.VALOR_MULTA;
+        DataSetParcelas.FieldByName('PERCENTUAL_MULTA').AsString      := oItem.PERCENTUAL_MULTA;
+        DataSetParcelas.Post;
+      end;
     end;
   finally
     DataSetParcelas.EnableControls;
@@ -279,6 +287,57 @@ begin
   begin
     FParcelas.Items[0].VALOR_DUPL := StrToFloat(FormatFloat('0.00', FParcelas.Items[i].VALOR_DUPL + (dTotalParcelar - dTotal)));
   end;
+end;
+
+procedure TParcelamentoReceber.RateiaDiferencaParcelaEntreAsDemais(
+  DataSetParcelas: TIBDataSet; ModuloAtual: String);
+var
+  dDiferenca: Currency; // Sandro Silva 2023-11-21 Double;
+  iRegistro, iDuplicatas: Integer;
+  dSomaParcelas: Currency; // Sandro Silva 2023-11-20
+  i: Integer;
+begin
+  // Quando altera o valor de uma parcela, a diferença é repassada para as demais com vencimento posterior daquela alterada
+  if ModuloAtual = 'VENDA' then // Ok
+  begin
+    try
+      //DataSetParcelas.DisableControls; // Sandro Silva 2023-11-21
+        iRegistro   := DataSetParcelas.Recno;
+        dDiferenca  := StrToFloat(FormatFloat('0.00', (FTotalNota - FRetencaoIR))); // Sandro Silva 2023-11-13 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - FRetencaoIR);
+        iDuplicatas := FNumeroParcelas;
+
+        dSomaParcelas := GetValorTotalParcelas;// 0.00;
+
+        if dSomaParcelas <> StrToFloat(FormatFloat('0.00',(FTotalNota - FRetencaoIR))) then
+        begin
+          for i := 0 to FParcelas.Count -1 do
+          begin
+            if i <= iRegistro then
+            begin
+              iDuplicatas := iDuplicatas - 1;
+              dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - FParcelas.Items[i].VALOR_DUPL)); // Sandro Silva 2023-11-13 dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
+            end else
+            begin
+              FParcelas.Items[i].VALOR_DUPL := StrToFloat(FormatFloat('0.00', dDiferenca / iDuplicatas));
+            end;
+          end;
+        end;
+
+        dDiferenca  := StrToFloat(FormatFloat('0.00', (FTotalNota - FRetencaoIR))); // Sandro Silva 2023-11-20 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - FRetencaoIR);
+        for i := 0 to FParcelas.Count -1 do
+        begin
+          dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - StrToFloat(FormatFloat('0.00', FParcelas.Items[i].VALOR_DUPL)))); // Sandro Silva 2023-11-20 dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
+        end;
+
+        if dDiferenca <> 0 then
+          FParcelas.Items[FParcelas.Count -1].VALOR_DUPL := StrToFloat(FormatFloat('0.00', FParcelas.Items[FParcelas.Count -1].VALOR_DUPL + dDiferenca)); // Sandro Silva 2023-11-20 Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca]));
+
+    finally
+      //DataSetParcelas.EnableControls;
+    end;
+
+  end;
+
 end;
 
 end.

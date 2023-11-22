@@ -84,7 +84,7 @@ var
 implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
-  uFuncoesRetaguarda, StrUtils, uDialogs, uParcelasReceber;
+  uFuncoesRetaguarda, StrUtils, uDialogs, uParcelasReceberDesdobramento;
 
 {$R *.DFM}
 
@@ -2049,12 +2049,14 @@ begin
 end;
 
 procedure TForm18.RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
+(*
 var
   dDiferenca : Currency; // Sandro Silva 2023-11-21 Double;
   MyBookmark: TBookmark;
   iRegistro, iDuplicatas: Integer;
   dSomaParcelas: Currency; // Sandro Silva 2023-11-20
 begin
+
   // Quando altera o valor de uma parcela, a diferença é repassada para as demais com vencimento posterior daquela alterada
   if ModuloAtual = 'VENDA' then // Ok
   begin
@@ -2142,15 +2144,28 @@ begin
     end;
 
   end;
+*)
+var
+  Parcelas: TReceberDesdobramento;
+begin
+  Parcelas := TReceberDesdobramento.Create;
+  Parcelas.RetencaoIR := Form1.fRetencaoIR;
+  Parcelas.TotalNota := Form7.ibDataSet15TOTAL.AsFloat;
+  Parcelas.NumeroParcelas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
+  Parcelas.RateiaDiferenca(Form7.ibDataSet15, Form7.ibDataSet7, Form7.sModulo);
+  FreeAndNil(Parcelas);
+
 end;
 
 function TForm18.TotalParcelasLancadas: Double;
 var
   iRecno: Integer;
+  Parcelas: TReceberDesdobramento;
 begin
   if Form7.sModulo <> 'VENDA' then
     Exit;
   iRecno := DBGrid1.DataSource.DataSet.Recno;
+  {
   Result := 0.00;
   DBGrid1.DataSource.DataSet.First;
   while DBGrid1.DataSource.DataSet.Eof = False do
@@ -2159,14 +2174,25 @@ begin
     DBGrid1.DataSource.DataSet.Next;
   end;
   DBGrid1.DataSource.DataSet.RecNo := iRecno;
+  }
+
+  Parcelas := TReceberDesdobramento.Create;
+  Parcelas.RetencaoIR := Form1.fRetencaoIR;
+  Parcelas.TotalNota  := Form7.ibDataSet15TOTAL.AsFloat;
+  Parcelas.NumeroParcelas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
+  Result := Parcelas.TotalParcelasLancadas(Form7.ibDataSet7);
+  FreeAndNil(Parcelas);
+
+
 end;
 
 procedure TForm18.Button1Click(Sender: TObject);
 var
-  Parcelas: TParcelamentoReceber;
+  Parcelas: TReceberDesdobramento;
 begin
-  Parcelas := TParcelamentoReceber.Create;
-  Parcelas.LimpaItens;
+  Parcelas := TReceberDesdobramento.Create;
+
+  Parcelas.CalculaValores(Form7.ibDataSet7, StrtoInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
 //  Parcelas.AtualizaObjReceber(Form7.ibDataSet7);
   FreeAndNil(Parcelas);
 end;
