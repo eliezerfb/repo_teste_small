@@ -2031,12 +2031,12 @@ begin
       cLinhaCaixa := 'no(s) caixa(s): ' + cCaixasContingencia;
       cCaixasContingencia := EmptyStr;
 
-      if Length(cLinhaCaixa) > 35 then
+      if Length(cLinhaCaixa) > 45 then
       begin
         while cLinhaCaixa <> EmptyStr do
         begin
-          cCaixasContingencia := cCaixasContingencia + Trim(Copy(cLinhaCaixa,1,35)) + chr(10);
-          cLinhaCaixa := Copy(cLinhaCaixa, 36, Length(cLinhaCaixa));
+          cCaixasContingencia := cCaixasContingencia + Trim(Copy(cLinhaCaixa,1,45)) + chr(10);
+          cLinhaCaixa := Copy(cLinhaCaixa, 46, Length(cLinhaCaixa));
         end;
       end
       else
@@ -2125,12 +2125,12 @@ begin
     begin
       cLinhaCaixa := 'Caixa(s): ' + sCaixa;
 
-      if Length(cLinhaCaixa) > 35 then
+      if Length(cLinhaCaixa) > 45 then
       begin
         while cLinhaCaixa <> EmptyStr do
         begin
-          sCupomFiscalVinculado := sCupomFiscalVinculado + Copy(cLinhaCaixa,1,35) + chr(10);
-          cLinhaCaixa := Copy(cLinhaCaixa, 36, Length(cLinhaCaixa));
+          sCupomFiscalVinculado := sCupomFiscalVinculado + Copy(cLinhaCaixa,1,45) + chr(10);
+          cLinhaCaixa := Copy(cLinhaCaixa, 46, Length(cLinhaCaixa));
         end;
       end
       else
