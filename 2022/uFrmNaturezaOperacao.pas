@@ -187,6 +187,18 @@ var
   I : integer;
 begin
   try
+    fraPlanoContas.TipoDePesquisa  := tpSelect;
+    fraPlanoContas.GravarSomenteTextoEncontrato := False;
+    fraPlanoContas.CampoCodigo     := Form7.ibDataSet14CONTA;
+    fraPlanoContas.CampoCodigoPesquisa := 'NOME';
+    fraPlanoContas.sCampoDescricao := 'NOME';
+    fraPlanoContas.sTabela         := 'CONTAS';
+    fraPlanoContas.CampoAuxExiber  := ',CONTA';
+    fraPlanoContas.CarregaDescricao;
+  except
+  end;
+
+  try
     if FrmNaturezaOperacao = nil then
       Exit;
 
@@ -329,15 +341,6 @@ begin
 
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
-
-  fraPlanoContas.TipoDePesquisa  := tpSelect;
-  fraPlanoContas.GravarSomenteTextoEncontrato := False;
-  fraPlanoContas.CampoCodigo     := Form7.ibDataSet14CONTA;
-  fraPlanoContas.CampoCodigoPesquisa := 'NOME';
-  fraPlanoContas.sCampoDescricao := 'NOME';
-  fraPlanoContas.sTabela         := 'CONTAS';
-  fraPlanoContas.CampoAuxExiber  := ',CONTA';
-  fraPlanoContas.CarregaDescricao;
 
   AtualizaObjComValorDoBanco;
 end;
