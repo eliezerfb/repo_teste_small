@@ -3298,6 +3298,7 @@ object Form24: TForm24
         ParentShowHint = False
         ShowHint = True
         TabOrder = 16
+        OnClick = btnPrecificarClick
       end
     end
     object ok: TBitBtn

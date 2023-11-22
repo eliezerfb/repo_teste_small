@@ -120,6 +120,7 @@ uses
   // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
   function processExists(exeFileName: string): Boolean;
   function ConsultaProcesso(sDescricao:String): boolean;
+  function MontaMascaraCasaDec(qtdCasas : integer) : string;
 
 implementation
 
@@ -2799,6 +2800,22 @@ begin
   until not Process32Next(Snapshot, ProcessEntry32);
 
   CloseHandle (Snapshot);
+end;
+
+function MontaMascaraCasaDec(qtdCasas : integer) : string;
+begin
+  case qtdCasas of
+    0: Result := '#,##0';
+    1: Result := '#,##0.0';
+    2: Result := '#,##0.00';
+    3: Result := '#,##0.000';
+    4: Result := '#,##0.0000';
+    5: Result := '#,##0.00000';
+    6: Result := '#,##0.000000';
+    7: Result := '#,##0.0000000';
+    8: Result := '#,##0.00000000';
+    9: Result := '#,##0.000000000';
+  end;
 end;
 
 end.

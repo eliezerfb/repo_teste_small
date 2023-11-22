@@ -139,6 +139,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Top = 39
     Width = 961
     Height = 402
+    Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
     Color = clWhite
     Ctl3D = False

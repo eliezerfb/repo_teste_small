@@ -271,6 +271,7 @@ type
     procedure SMALL_DBEdit23Exit(Sender: TObject);
     procedure edFretePorContaExit(Sender: TObject);
     procedure cbDescontaICMSDesoneradoClick(Sender: TObject);
+    procedure btnPrecificarClick(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -301,7 +302,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
-  uFuncoesBancoDados, uDialogs;
+  uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto;
 
 {$R *.DFM}
 
@@ -3743,6 +3744,18 @@ begin
   Form7.bDescontaICMSDeso := cbDescontaICMSDesonerado.Checked;
   
   Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+end;
+
+procedure TForm24.btnPrecificarClick(Sender: TObject);
+begin
+  try
+    FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := Form7.ibDataSet24FORNECEDOR.AsString;
+    FrmPrecificacaoProduto.ShowModal;
+  finally
+    FreeAndNil(FrmPrecificacaoProduto);
+  end;
 end;
 
 end.
