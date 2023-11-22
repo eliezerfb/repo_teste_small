@@ -198,7 +198,9 @@ uses
   ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel},
   MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
   uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
-  uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas';
+  uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas',
+  uParcelasReceber in 'uParcelasReceber.pas',
+  uParcelasReceberDesdobramento in 'uParcelasReceberDesdobramento.pas';
 
 {$R *.RES}
 

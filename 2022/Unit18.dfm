@@ -203,6 +203,15 @@ object Form18: TForm18
       OnKeyDown = SMALL_DBEdit1KeyDown
       OnKeyPress = edtQtdParcKeyPress
     end
+    object Button1: TButton
+      Left = 304
+      Top = 16
+      Width = 75
+      Height = 25
+      Caption = 'Button1'
+      TabOrder = 7
+      OnClick = Button1Click
+    end
   end
   object IBQINSTITUICAOFINANCEIRA: TIBQuery
     Database = Form7.IBDatabase1
