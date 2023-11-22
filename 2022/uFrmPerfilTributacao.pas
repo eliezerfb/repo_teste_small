@@ -83,6 +83,7 @@ type
     procedure cboCSOSNPerfilTribChange(Sender: TObject);
     procedure cboCSTPerfilTribChange(Sender: TObject);
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
+    procedure lblNovoClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -487,8 +488,15 @@ procedure TFrmPerfilTributacao.DSCadastroDataChange(Sender: TObject;
 begin
   inherited;
 
-  if DSCadastro.DataSet.State = dsEdit then
+  if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
+
+  tbsIPIShow(Sender);
+end;
+
+procedure TFrmPerfilTributacao.lblNovoClick(Sender: TObject);
+begin
+  inherited;
 
   tbsIPIShow(Sender);
 end;

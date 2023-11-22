@@ -7779,18 +7779,17 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           inherited gdRegistros: TDBGrid
             Width = 313
-            Options = [dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
             Columns = <
               item
                 Expanded = False
                 FieldName = 'CONTA'
-                Width = 70
+                Width = 45
                 Visible = True
               end
               item
                 Expanded = False
                 FieldName = 'NOME'
-                Width = 200
+                Width = 240
                 Visible = True
               end>
           end
