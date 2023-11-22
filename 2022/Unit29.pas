@@ -39,6 +39,7 @@ type
     Edit_08: TEdit;
     Edit_09: TEdit;
     Edit_10: TEdit;
+    lblCaracteresMax: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -50,6 +51,8 @@ type
 	procedure SomenteNumerosKeyPress(Sender: TObject; var Key: Char);
     procedure SomenteNumerosChange(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
+    procedure memTextoChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FnMaxLength: Integer;
     FbClicouOK: Boolean;
@@ -243,6 +246,17 @@ procedure TForm29.btnCancelarClick(Sender: TObject);
 begin
   FbClicouOK := False;
   Self.Close;
+end;
+
+procedure TForm29.memTextoChange(Sender: TObject);
+begin
+  lblCaracteresMax.Caption := 'Caracteres disponíveis '+IntToStr(memTexto.MaxLength - Length(memTexto.Text));
+end;
+
+procedure TForm29.FormShow(Sender: TObject);
+begin
+  if memTexto.Visible then
+    memTextoChange(sender);
 end;
 
 end.
