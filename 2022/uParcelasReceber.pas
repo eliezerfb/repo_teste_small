@@ -79,7 +79,6 @@ type
   protected
     procedure AtualizaObjReceber(DataSetParcelas: TIBDataSet);
     procedure AtualizaDataSetReceber(DataSetParcelas: TibDataSet);
-    //procedure ReparcelaValor(iParcelas: Integer; dTotalParcelar: Double);
   public
     constructor Create; virtual;
     procedure LimpaItens;
@@ -235,51 +234,5 @@ begin
   FreeAndNil(FParcelas);
   Parcelas := TParcelasReceberList.Create;
 end;
-
-(*
-procedure TParcelamentoReceber.ReparcelaValor(iParcelas: Integer; dTotalParcelar: Double);
-var
-  dTotal: Double;
-  aParcelas: array of Double;
-  i: Integer;
-begin
-  // Quando o total da nota de venda é alterado, essa rotina irá reparcelar o novo valor com base no valor que cada parcela possui
-  // Se lançar novos itens na nota, ou mudar o valor dos itens, o total da nota será alterado
-  // Ex.:
-  // Total antigo da nota: R$100,00
-  // Parcela 1: R$75,00
-  // Parcela 2: R$25,00
-  //
-  // Novo Total da nota: R$120,00
-  // Parcela 1: R$90,00
-  // Parcela 2: R$30,00
-
-
-  //TotalizaParcelas
-  dTotal := GetValorTotalParcelas;
-  dTotalParcelar := StrToFloat(FormatFloat('0.00', dTotalParcelar)); // Sandro Silva 2023-11-20
-
-  //Identifica a proporção de cada parcela no total
-  SetLength(aParcelas, 0);
-  for i := 0 to FParcelas.Count do
-  begin
-    SetLength(aParcelas, Length(aParcelas) + 1);
-    aParcelas[High(aParcelas)] := StrToFloat(FormatFloat('0.00', FParcelas.Items[i].VALOR_DUPL)) / dTotal;
-  end;
-
-  //Reparcela o total da nota
-  dTotal := 0.00;
-  for i := 0 to FParcelas.Count do
-  begin
-    FParcelas.Items[i].VALOR_DUPL := StrToFloat(FormatFloat('0.00', dTotalParcelar * aParcelas[i]));
-    dTotal := dTotal + StrToFloat(FormatFloat('0.00', FParcelas.Items[i].VALOR_DUPL));
-  end;
-
-  if dTotal <> dTotalParcelar then
-  begin
-    FParcelas.Items[FParcelas.Count -1].VALOR_DUPL := StrToFloat(FormatFloat('0.00', FParcelas.Items[FParcelas.Count -1].VALOR_DUPL + (dTotalParcelar - dTotal)));
-  end;
-end;
-*)
 
 end.
