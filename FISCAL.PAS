@@ -1395,6 +1395,8 @@ type
     procedure EmitirNFCedogerencial1Click(Sender: TObject);
     procedure Memo1DblClick(Sender: TObject);
     procedure FechamentodeCaixa1Click(Sender: TObject);
+    procedure ibDataSet27UNITARIOSetText(Sender: TField;
+      const Text: String);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -15325,6 +15327,21 @@ begin
   //
 end;
 
+{Sandro Silva 2023-11-23 inicio}
+procedure TForm1.ibDataSet27UNITARIOSetText(Sender: TField;
+  const Text: String);
+var
+  dValorUnitarioOld: Double;
+begin
+  dValorUnitarioOld := Form1.ibDataSet27.FieldByname('UNITARIO').OldValue; // Sandro Silva 2023-11-23
+  if StrToFloatDef(Text, 0.00) <= 0.00 then
+  begin
+    Form1.ibDataSet27.Edit;
+    Form1.ibDataSet27.FieldByname('UNITARIO').AsFloat := dValorUnitarioOld;
+  end;
+end;
+{Sandro Silva 2023-11-23 fim}
+
 procedure TForm1.ibDataSet27QUANTIDADESetText(Sender: TField;
   const Text: String);
 var
@@ -15388,10 +15405,20 @@ begin
     begin
       sRegistro := Form1.ibDataSet27.FieldByname('REGISTRO').AsString;
       dValorUnitario := Form1.ibDataSet27.FieldByname('UNITARIO').AsFloat;
+      dQuantidadeOld := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue; // Sandro Silva 2023-11-17
+
+      {Sandro Silva 2023-11-23 inicio}
+      if StrToFloatDef(Text, 0.00) <= 0.00 then
+      begin
+        Form1.ibDataSet27.Edit;
+        Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidadeOld;
+        Exit;
+      end;
+      {Sandro Silva 2023-11-23 fim}
 
       if Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat < 0 then
       begin
-        dQuantidade := 0.00; // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := 0
+        dQuantidade := 1.00; // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := 0
       end
       else
       begin
@@ -15446,7 +15473,7 @@ begin
         end;
       end;
 
-      dQuantidadeOld := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue; // Sandro Silva 2023-11-17
+      // Sandro Silva 2023-11-23 dQuantidadeOld := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue; // Sandro Silva 2023-11-17
       Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidade; // Sandro Silva 2023-11-16
       if dQuantidade = 0 then
       begin
@@ -15498,6 +15525,10 @@ begin
 
         if bGravou = False then
         begin
+          // Volta a quantidade antes da alteração porque não conseguiu atualizar o estoque
+          Form1.ibDataSet27.Edit;
+          Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat   := dQuantidadeOld;
+
           SmallMessageBox('Não foi possível alterar a quantidade do item ' + #10 +
             Form1.ibDataSet27.FieldByname('ITEM').AsString + '-' + Form1.ibDataSet27.FieldByname('DESCRICAO').AsString + #10 + #10 +
             'Foi movimentado ao mesmo tempo por outro usuário' + #10 + #10 +

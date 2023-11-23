@@ -43,6 +43,8 @@ type
     FPedido: String;
     FSelectOld: String;
     FIBDATASETALTERACA: TIBDataSet;
+    FEditFormatUnitario: String;
+    FEditFormatQuantidade: String;
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
@@ -214,9 +216,15 @@ begin
 
   FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
 
+  FEditFormatUnitario   := TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat; // Sandro Silva 2023-11-23
+  FEditFormatQuantidade := TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat; // Sandro Silva 2023-11-23
+  TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat   := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfPreco, 2)); // Sandro Silva 2023-11-23
+  TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)); // Sandro Silva 2023-11-23
+
   Form1.ibDataSet27.Close;
   Form1.ibDataSet27.SelectSQL.Text := SelectSqlAlteracaEdicao;
   Form1.ibDataSet27.Open;
+
 
   AjustaLarguraDBGrid(DBGridItens);
 
@@ -281,7 +289,7 @@ begin
   if NaoEditavel(DBGridItens.SelectedField) then
     Key := #0;
     
-  if Key = '-' then
+  if (Key = '-') or (Key = '+') or (Key = 'E') or (Key = 'e') then
     Key := #0;
 
 end;
@@ -328,6 +336,8 @@ begin
   Application.OnMessage := FoMessageEvent;
   Form1.bEditandoMovimento := False;
   Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
+  TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat   := FEditFormatUnitario; // Sandro Silva 2023-11-23
+  TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat := FEditFormatQuantidade; // Sandro Silva 2023-11-23
   FIBDATASETALTERACA.AfterScroll  := nil;
   FIBDATASETALTERACA.BeforeScroll := nil;
 end;
@@ -342,7 +352,7 @@ begin
     Exit;
 
   if Field.DataSet.Active = False then
-    Exit;            
+    Exit;
 
   if (Field.FieldName = 'QUANTIDADE')
     or (Field.FieldName = 'UNITARIO')
