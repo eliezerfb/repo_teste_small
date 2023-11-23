@@ -29,9 +29,11 @@ procedure TRateioDiferencaEntreParcelasReceber.RateiaDiferenca(DataSetNota: TIBD
   dTotalNota: Double; iNumeroParcelas: Integer);
 var
   dDiferenca: Currency; // Sandro Silva 2023-11-21 Double;
-  iRegistro, iDuplicatas: Integer;
+  //iRegistro,
+  iDuplicatas: Integer;
   dSomaParcelas: Currency; // Sandro Silva 2023-11-20
   i: Integer;
+  sRegistro: String;
 begin
   // Quando altera o valor de uma parcela, a diferença é repassada para as demais com vencimento posterior daquela alterada
   if ModuloAtual = 'VENDA' then // Ok
@@ -40,7 +42,8 @@ begin
 
       DataSetParcelas.DisableControls;
 
-      iRegistro   := DataSetParcelas.Recno;//Guarda o registro que está posicionado
+      //iRegistro   := DataSetParcelas.Recno;//Guarda o registro que está posicionado
+      sRegistro := DataSetParcelas.FieldByName('REGISTRO').AsString;
 
       AtualizaObjReceber(DataSetParcelas); // Carrega os dados do dataset para o objeto
 
@@ -54,7 +57,7 @@ begin
       begin
         for i := 0 to Parcelas.Count -1 do
         begin
-          if (i + 1) <= iRegistro then
+          if Parcelas.Items[i].REGISTRO <= sRegistro then // Sandro Silva 2023-11-23 if (i + 1) <= iRegistro then
           begin
             iDuplicatas := iDuplicatas - 1;
             dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - Parcelas.Items[i].VALOR_DUPL)); // Sandro Silva 2023-11-13 dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
@@ -76,10 +79,10 @@ begin
       if dDiferenca <> 0 then
         Parcelas.Items[Parcelas.Count -1].VALOR_DUPL := StrToFloat(FormatFloat('0.00', Parcelas.Items[Parcelas.Count -1].VALOR_DUPL + dDiferenca)); // Sandro Silva 2023-11-20 Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca]));
 
-      // atualiza os dados do objeto devolta para o dataset 
+      // atualiza os dados do objeto devolta para o dataset
       AtualizaDataSetReceber(DataSetParcelas);
 
-      DataSetParcelas.Recno := iRegistro;//DataSetParcelas.Recno := iRecno;
+      DataSetParcelas.Locate('REGISTRO', sRegistro, []); // DataSetParcelas.Recno := iRegistro;//DataSetParcelas.Recno := iRecno;
 
     finally
       DataSetParcelas.EnableControls;
