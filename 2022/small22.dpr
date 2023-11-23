@@ -200,7 +200,7 @@ uses
   uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
   uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas',
   uParcelasReceber in 'uParcelasReceber.pas',
-  uParcelasReceberDesdobramento in 'uParcelasReceberDesdobramento.pas';
+  uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas';
 
 {$R *.RES}
 

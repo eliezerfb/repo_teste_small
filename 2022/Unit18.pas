@@ -23,7 +23,6 @@ type
     edtQtdParc: TEdit;
     IBQINSTITUICAOFINANCEIRA: TIBQuery;
     IBQBANCOS: TIBQuery;
-    Button1: TButton;
     procedure SMALL_DBEdit1Exit(Sender: TObject);
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -52,7 +51,6 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure cboDocCobrancaEnter(Sender: TObject);
     procedure DBGrid1Exit(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
@@ -62,7 +60,7 @@ type
     procedure GetInstituicaoFinanceira(slInstituicao: TStringList);
     function FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
     function ValidarDesdobramentoParcela: Boolean;
-    procedure ReparcelaValor(DataSet: TDataSet; iParcelas: Integer;
+    procedure ReparcelaValor(DataSet: TibDataSet; iParcelas: Integer;
       dTotalParcelar: Double);
     //procedure RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
     function TotalParcelasLancadas: Double;
@@ -84,7 +82,7 @@ var
 implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
-  uFuncoesRetaguarda, StrUtils, uDialogs, uParcelasReceberDesdobramento;
+  uFuncoesRetaguarda, StrUtils, uDialogs, uRaterioDiferencaEntreParcelasReceber;
 
 {$R *.DFM}
 
@@ -366,7 +364,7 @@ var
   dDiferenca : Double;
   MyBookmark: TBookmark;
   iRegistro, iDuplicatas: Integer;
-  iColumnIndex: Integer; // Sandro Silva 2023-11-13
+  //iColumnIndex: Integer; // Sandro Silva 2023-11-13
 begin
   try
 
@@ -997,9 +995,9 @@ var
   iColumnIndex : Integer; // Sandro Silva 2023-11-13 I : Integer;
   slFormas: TStringList;
   sForma: String;
-  iRecno: Integer;
+  //iRecno: Integer;
 begin
-  iColumnIndex := -1;
+  //iColumnIndex := -1;
 
   try
     {Sandro Silva 2023-06-21 inicio}
@@ -1053,17 +1051,11 @@ begin
 
           if Form7.ibDataSet7.State in [dsInsert, dsEdit] then
           begin
+            Form7.ibDataSet7.Post; // Sandro Silva 2023-11-23
 
             if TotalParcelasLancadas <> StrToFloat(FormatFloat('0.00', Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) then
             begin
-              try
-                //dBgrid1.DataSource.DataSet.DisableControls;
-
-                RateiaDiferencaParcelaEntreAsDemais(Form7.sModulo);
-
-              finally
-                //dBgrid1.DataSource.DataSet.EnableControls
-              end;
+              RateiaDiferencaParcelaEntreAsDemais(Form7.sModulo);
             end;
 
           end;
@@ -1701,6 +1693,23 @@ begin
 
   end;
 
+  {Sandro Silva 2023-11-23 inicio}
+  if (DBGrid1.Columns[DBGrid1.SelectedIndex].FieldName = 'VALOR_DUPL') then
+  begin
+
+    if DBGrid1.DataSource.DataSet.State in [dsEdit, dsInsert] then
+    begin
+      DBGrid1.DataSource.DataSet.Post;
+
+      if TotalParcelasLancadas <> StrToFloat(FormatFloat('0.00', Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) then
+      begin
+        RateiaDiferencaParcelaEntreAsDemais(Form7.sModulo);
+      end;
+
+    end;
+  end;
+  {Sandro Silva 2023-11-23 fim}
+
 end;
 
 procedure TForm18.DBGrid1CellClick(Column: TColumn);
@@ -1716,12 +1725,7 @@ begin
       {Sandro Silva 2023-11-21 fim}
       if TotalParcelasLancadas <> StrToFloat(FormatFloat('0.00', Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) then
       begin
-        try
-          //Column.Field.DataSet.DisableControls;
-          RateiaDiferencaParcelaEntreAsDemais(Form7.sModulo);
-        finally
-          //Column.Field.DataSet.EnableControls;
-        end;
+        RateiaDiferencaParcelaEntreAsDemais(Form7.sModulo);
       end;
     end;
   end;
@@ -1994,7 +1998,8 @@ begin
   ValidaValor(Sender,Key,'I');
 end;
 
-procedure TForm18.ReparcelaValor(DataSet: TDataSet; iParcelas: Integer; dTotalParcelar: Double);
+procedure TForm18.ReparcelaValor(DataSet: TibDataSet; iParcelas: Integer;
+  dTotalParcelar: Double);
 var
   dTotal: Double;
   aParcelas: array of Double;
@@ -2010,7 +2015,7 @@ begin
   // Parcela 1: R$90,00
   // Parcela 2: R$30,00
 
-
+  {Sandro Silva 2023-11-23 inicio
   //TotalizaParcelas
   dTotal := 0.00;
   dTotalParcelar := StrToFloat(FormatFloat('0.00', dTotalParcelar)); // Sandro Silva 2023-11-20
@@ -2020,6 +2025,12 @@ begin
     dTotal := dTotal + StrToFloat(FormatFloat('0.00', DataSet.FieldByName('VALOR_DUPL').AsFloat));
     DataSet.Next;
   end;
+  }
+  //TotalizaParcelas
+  dTotal := TotalParcelasLancadas;
+  dTotalParcelar := StrToFloat(FormatFloat('0.00', dTotalParcelar)); // Sandro Silva 2023-11-20
+  {Sandro Silva 2023-11-23 fim}
+
 
   //Identifica a proporção de cada parcela no total
   SetLength(aParcelas, 0);
@@ -2146,25 +2157,22 @@ begin
   end;
 *)
 var
-  Parcelas: TReceberDesdobramento;
+  Parcelas: TRateioDiferencaEntreParcelasReceber;
 begin
-  Parcelas := TReceberDesdobramento.Create;
-  Parcelas.RetencaoIR := Form1.fRetencaoIR;
-  Parcelas.TotalNota := Form7.ibDataSet15TOTAL.AsFloat;
-  Parcelas.NumeroParcelas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
-  Parcelas.RateiaDiferenca(Form7.ibDataSet15, Form7.ibDataSet7, Form7.sModulo);
+  Parcelas := TRateioDiferencaEntreParcelasReceber.Create;
+  Parcelas.RateiaDiferenca(Form7.ibDataSet15, Form7.ibDataSet7, Form7.sModulo, Form1.fRetencaoIR, Form7.ibDataSet15TOTAL.AsFloat, Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat));
   FreeAndNil(Parcelas);
-
 end;
 
 function TForm18.TotalParcelasLancadas: Double;
 var
-  iRecno: Integer;
-  Parcelas: TReceberDesdobramento;
+  //iRecno: Integer;
+  Parcelas: TRateioDiferencaEntreParcelasReceber;
 begin
+  Result := 0.00;
   if Form7.sModulo <> 'VENDA' then
     Exit;
-  iRecno := DBGrid1.DataSource.DataSet.Recno;
+  //iRecno := DBGrid1.DataSource.DataSet.Recno;
   {
   Result := 0.00;
   DBGrid1.DataSource.DataSet.First;
@@ -2176,25 +2184,10 @@ begin
   DBGrid1.DataSource.DataSet.RecNo := iRecno;
   }
 
-  Parcelas := TReceberDesdobramento.Create;
-  Parcelas.RetencaoIR := Form1.fRetencaoIR;
-  Parcelas.TotalNota  := Form7.ibDataSet15TOTAL.AsFloat;
-  Parcelas.NumeroParcelas := Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat);
+  Parcelas := TRateioDiferencaEntreParcelasReceber.Create;
   Result := Parcelas.TotalParcelasLancadas(Form7.ibDataSet7);
   FreeAndNil(Parcelas);
 
-
-end;
-
-procedure TForm18.Button1Click(Sender: TObject);
-var
-  Parcelas: TReceberDesdobramento;
-begin
-  Parcelas := TReceberDesdobramento.Create;
-
-  Parcelas.CalculaValores(Form7.ibDataSet7, StrtoInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
-//  Parcelas.AtualizaObjReceber(Form7.ibDataSet7);
-  FreeAndNil(Parcelas);
 end;
 
 end.

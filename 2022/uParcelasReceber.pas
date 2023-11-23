@@ -76,23 +76,15 @@ type
   TParcelamentoReceber = class
   private
     FParcelas: TParcelasReceberList;
-    FRetencaoIR: Double;
-    FTotalNota: Double;
-    FNumeroParcelas: Integer;
   protected
     procedure AtualizaObjReceber(DataSetParcelas: TIBDataSet);
     procedure AtualizaDataSetReceber(DataSetParcelas: TibDataSet);
-    procedure ParcelarValor(iParcelas: Integer; dTotalParcelar: Double);
-    procedure RateiaDiferencaParcelaEntreAsDemais(
-      DataSetParcelas: TIBDataSet; ModuloAtual: String);
+    //procedure ReparcelaValor(iParcelas: Integer; dTotalParcelar: Double);
   public
     constructor Create; virtual;
     procedure LimpaItens;
     function GetValorTotalParcelas: Double;
     property Parcelas: TParcelasReceberList read FParcelas write FParcelas;
-    property RetencaoIR: Double read FRetencaoIR write FRetencaoIR;
-    property TotalNota: Double read FTotalNota write FTotalNota;
-    property NumeroParcelas: Integer read FNumeroParcelas write FNumeroParcelas;
   end;
 
 implementation
@@ -139,8 +131,7 @@ end;
 
 function TParcelasReceberList.GetItem(Index: Integer): TParcelaReceber;
 begin
-  Result := TParcelaReceber(inherited Items[Index]);
-
+  Result := TParcelaReceber(inherited Items[Index]);  
 end;
 
 procedure TParcelasReceberList.SetItem(Index: Integer;
@@ -245,7 +236,8 @@ begin
   Parcelas := TParcelasReceberList.Create;
 end;
 
-procedure TParcelamentoReceber.ParcelarValor(iParcelas: Integer; dTotalParcelar: Double);
+(*
+procedure TParcelamentoReceber.ReparcelaValor(iParcelas: Integer; dTotalParcelar: Double);
 var
   dTotal: Double;
   aParcelas: array of Double;
@@ -285,59 +277,9 @@ begin
 
   if dTotal <> dTotalParcelar then
   begin
-    FParcelas.Items[0].VALOR_DUPL := StrToFloat(FormatFloat('0.00', FParcelas.Items[i].VALOR_DUPL + (dTotalParcelar - dTotal)));
+    FParcelas.Items[FParcelas.Count -1].VALOR_DUPL := StrToFloat(FormatFloat('0.00', FParcelas.Items[FParcelas.Count -1].VALOR_DUPL + (dTotalParcelar - dTotal)));
   end;
 end;
-
-procedure TParcelamentoReceber.RateiaDiferencaParcelaEntreAsDemais(
-  DataSetParcelas: TIBDataSet; ModuloAtual: String);
-var
-  dDiferenca: Currency; // Sandro Silva 2023-11-21 Double;
-  iRegistro, iDuplicatas: Integer;
-  dSomaParcelas: Currency; // Sandro Silva 2023-11-20
-  i: Integer;
-begin
-  // Quando altera o valor de uma parcela, a diferença é repassada para as demais com vencimento posterior daquela alterada
-  if ModuloAtual = 'VENDA' then // Ok
-  begin
-    try
-      //DataSetParcelas.DisableControls; // Sandro Silva 2023-11-21
-        iRegistro   := DataSetParcelas.Recno;
-        dDiferenca  := StrToFloat(FormatFloat('0.00', (FTotalNota - FRetencaoIR))); // Sandro Silva 2023-11-13 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - FRetencaoIR);
-        iDuplicatas := FNumeroParcelas;
-
-        dSomaParcelas := GetValorTotalParcelas;// 0.00;
-
-        if dSomaParcelas <> StrToFloat(FormatFloat('0.00',(FTotalNota - FRetencaoIR))) then
-        begin
-          for i := 0 to FParcelas.Count -1 do
-          begin
-            if i <= iRegistro then
-            begin
-              iDuplicatas := iDuplicatas - 1;
-              dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - FParcelas.Items[i].VALOR_DUPL)); // Sandro Silva 2023-11-13 dDiferenca := dDiferenca - Form7.ibDataSet7VALOR_DUPL.Value;
-            end else
-            begin
-              FParcelas.Items[i].VALOR_DUPL := StrToFloat(FormatFloat('0.00', dDiferenca / iDuplicatas));
-            end;
-          end;
-        end;
-
-        dDiferenca  := StrToFloat(FormatFloat('0.00', (FTotalNota - FRetencaoIR))); // Sandro Silva 2023-11-20 dDiferenca  := (Form7.ibDataSet15TOTAL.AsFloat - FRetencaoIR);
-        for i := 0 to FParcelas.Count -1 do
-        begin
-          dDiferenca := StrToFloat(FormatFloat('0.00', dDiferenca - StrToFloat(FormatFloat('0.00', FParcelas.Items[i].VALOR_DUPL)))); // Sandro Silva 2023-11-20 dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
-        end;
-
-        if dDiferenca <> 0 then
-          FParcelas.Items[FParcelas.Count -1].VALOR_DUPL := StrToFloat(FormatFloat('0.00', FParcelas.Items[FParcelas.Count -1].VALOR_DUPL + dDiferenca)); // Sandro Silva 2023-11-20 Form7.ibDataSet7VALOR_DUPL.AsFloat := StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat + dDiferenca]));
-
-    finally
-      //DataSetParcelas.EnableControls;
-    end;
-
-  end;
-
-end;
+*)
 
 end.
