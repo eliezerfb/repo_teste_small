@@ -34277,7 +34277,7 @@ var
 begin
   try
     ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
-    Observacao := Form1.Small_InputFormMemo('Configuração de observação para OS','Observação:',ConfSistema.BD.OS.ObservacaoOS,1000);
+    Observacao := Form1.Small_InputFormMemo('Configuração de observação para OS',ConfSistema.BD.OS.ObservacaoOS,1000);
     ConfSistema.BD.OS.ObservacaoOS := Observacao;
   finally
     FreeAndNil(ConfSistema);
@@ -34291,7 +34291,7 @@ var
 begin
   try
     ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
-    ObservacaoRec := Form1.Small_InputFormMemo('Configuração de observação para Recibo','Observação:',ConfSistema.BD.OS.ObservacaoReciboOS,1000);
+    ObservacaoRec := Form1.Small_InputFormMemo('Configuração de observação para Recibo',ConfSistema.BD.OS.ObservacaoReciboOS,1000);
     ConfSistema.BD.OS.ObservacaoReciboOS := ObservacaoRec;
   finally
     FreeAndNil(ConfSistema);

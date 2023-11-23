@@ -4,18 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, SmallFunc, Gauges;
+  Dialogs, StdCtrls, ExtCtrls, SmallFunc, Gauges, Buttons;
 
 type
   TForm29 = class(TForm)
     Image1: TImage;
-    Button1: TButton;
-    Label2: TLabel;
-    Label1: TLabel;
+    lblTitulo1: TLabel;
+    lblTitulo2: TLabel;
     Edit1: TEdit;
     Panel1: TPanel;
     Gauge1: TGauge;
-    btnCancelar: TButton;
     memTexto: TMemo;
     Panel_dados: TPanel;
     Label3: TLabel;
@@ -40,7 +38,8 @@ type
     Edit_09: TEdit;
     Edit_10: TEdit;
     lblCaracteresMax: TLabel;
-    procedure Button1Click(Sender: TObject);
+    btnOK: TBitBtn;
+    btnCancelar: TBitBtn;
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -53,11 +52,13 @@ type
     procedure btnCancelarClick(Sender: TObject);
     procedure memTextoChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
   private
     FnMaxLength: Integer;
     FbClicouOK: Boolean;
   public
     procedure DefinirSomenteNumeros;
+    procedure EscondeComponentesPadrao;
     property MaxLength: Integer read FnMaxLength write FnMaxLength;
     property ClicouOK: Boolean read FbClicouOK write FbClicouOK;
   end;
@@ -71,88 +72,73 @@ uses Unit7, Mais, Unit10;
 
 {$R *.dfm}
 
-procedure TForm29.Button1Click(Sender: TObject);
-begin
-  FbClicouOK := True;
-  Close;
-end;
-
 procedure TForm29.FormActivate(Sender: TObject);
 begin
   FbClicouOK := True;
-  //
+  
   Form7.AlphaBlend       := True;
   Form10.AlphaBlend      := True;
   Form7.AlphaBlendValue  := 0;
   Form10.AlphaBlendValue := 0;
-  //
-  if Form29.Button1.CanFocus then Form29.Button1.SetFocus;
+
+  if Form29.btnOK.CanFocus then Form29.btnOK.SetFocus;
   if Form29.Edit1.CanFocus then Form29.Edit1.SetFocus;
   if Form29.Panel_dados.Visible then Edit_01.SetFocus;
-  //
+
   if Copy(TimeToStr(Time),1,2) < '04' then
   begin
-    Form29.Label2.Caption := 'Boa noite!';
+    Form29.lblTitulo1.Caption := 'Boa noite!';
   end else
   begin
     if Copy(TimeToStr(Time),1,2) < '12' then
     begin
-      Form29.Label2.Caption := 'Bom dia!';
+      Form29.lblTitulo1.Caption := 'Bom dia!';
     end else
     begin
       if Copy(TimeToStr(Time),1,2) < '20' then
       begin
-        Form29.Label2.Caption := 'Boa tarde!';
+        Form29.lblTitulo1.Caption := 'Boa tarde!';
       end else
       begin
-        Form29.Label2.Caption := 'Boa noite!';
+        Form29.lblTitulo1.Caption := 'Boa noite!';
       end;
     end;
   end;
-  //
+
   Form29.Height := Form7.Height;
   Form29.Width  := Form7.Width;
   Form29.Top    := Form7.Top;
   Form29.Left   := Form7.Left;
-  //
-  Form29.Label2.Left      := Form1.Label1.Left;
-  Form29.Label1.Left      := Form1.Label3.Left;
-  //
-  Form29.Label2.Top       := Form1.Label1.Top;
-  Form29.Label1.Top       := Form29.Label2.Top + Form29.Label2.Height + 35;
-  //
-//  Form29.Image1.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_'+FloatToStr(Random(12))+'.bmp');
-  //
-  Form29.Label2.Font.Height := Form1.Label1.Font.Height;
-  Form29.Label1.Font.Height := Form1.Label3.Font.Height;
-  //
-  if Form29.Label1.Height > 250 then
+
+  lblTitulo1.Top       := 60;
+  lblTitulo2.Top       := lblTitulo1.Top + lblTitulo1.Height + 35;
+
+  if Form29.lblTitulo2.Height > 250 then
   begin
-    Form29.Label1.Font.Size := 11;
-    Form29.Label1.Repaint;
+    lblTitulo2.Font.Size := 11;
+    lblTitulo2.Repaint;
   end;
-  //
-  if Form29.Label1.Width > 800 then
+
+  if Form29.lblTitulo2.Width > 800 then
   begin
-    if Length(Form29.Label1.Caption) > 100 then Form29.Label1.Caption := Copy(Form29.Label1.Caption,1,100)+chr(10)+AllTrim(Copy(Form29.Label1.Caption+Replicate(' ',200),101,200));
-    if Length(Form29.Label1.Caption) > 50 then Form29.Label1.Caption := Copy(Form29.Label1.Caption,1,50)+chr(10)+AllTrim(Copy(Form29.Label1.Caption+Replicate(' ',200),51,200));
-    Form29.Label1.Repaint;
+    if Length(Form29.lblTitulo2.Caption) > 100 then Form29.lblTitulo2.Caption := Copy(Form29.lblTitulo2.Caption,1,100)+chr(10)+AllTrim(Copy(Form29.lblTitulo2.Caption+Replicate(' ',200),101,200));
+    if Length(Form29.lblTitulo2.Caption) > 50 then Form29.lblTitulo2.Caption := Copy(Form29.lblTitulo2.Caption,1,50)+chr(10)+AllTrim(Copy(Form29.lblTitulo2.Caption+Replicate(' ',200),51,200));
+    Form29.lblTitulo2.Repaint;
   end;
-  //
-  if Form29.Label1.Height > 250 then
+
+  if Form29.lblTitulo2.Height > 250 then
   begin
-    Form29.Label1.Font.Size := 8;
-    Form29.Label1.Repaint;
+    Form29.lblTitulo2.Font.Size := 8;
+    Form29.lblTitulo2.Repaint;
   end;
-  //
-  Form29.Edit1.Top      := Form29.Label1.Top + Form29.Label1.Height + 20;
-  Form29.Edit1.Left     := Form29.Label1.Left;
-  //
+
+  Form29.Edit1.Top      := Form29.lblTitulo2.Top + Form29.lblTitulo2.Height + 20;
+  Form29.Edit1.Left     := Form29.lblTitulo2.Left;
+
   Form29.Gauge1.Progress := 0;
   Form29.Panel1.Width    := 650;
   Form29.Panel1.Top      := 300;
   Form29.Panel1.Left     := 70;
-  //
 end;
 
 procedure TForm29.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -183,7 +169,7 @@ begin
   Form29.Edit_09.Visible := False;
   Form29.Edit_10.Visible := False;
   //
-  Button1.Visible     := True;
+  btnOK.Visible     := True;
   Panel1.Visible      := False;
   Panel_Dados.Visible  := False;
   //
@@ -197,7 +183,7 @@ procedure TForm29.Edit1KeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = Vk_Return then
   begin
-    Button1Click(Sender);
+    btnOKClick(Sender);
   end;
 end;
 
@@ -257,6 +243,23 @@ procedure TForm29.FormShow(Sender: TObject);
 begin
   if memTexto.Visible then
     memTextoChange(sender);
+end;
+
+procedure TForm29.btnOKClick(Sender: TObject);
+begin
+  FbClicouOK := True;
+  Close;
+end;
+
+procedure TForm29.EscondeComponentesPadrao;
+begin
+  lblCaracteresMax.Visible := False;
+  memTexto.Visible         := False;
+  btnCancelar.Visible      := False;
+  Edit1.Visible            := False;
+
+  lblTitulo2.Font.Size := 18;
+  lblTitulo1.Font.Size := 18;
 end;
 
 end.

@@ -509,7 +509,7 @@ type
     function AvisoConfig(bP1 : Boolean):Boolean;
     function GetCNPJCertificado(SubjectName: String): String;
     function Small_InputForm(sP1, sP2, sP3: String) : String;
-    function Small_InputFormMemo(sP1, sP2, sP3: String; MaxLength : integer) : String;
+    function Small_InputFormMemo(sP1, sP3: String; MaxLength : integer) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
     function Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0): String;    
     function NcmDeMedicamentos(sNcm: String): Boolean;
@@ -938,8 +938,8 @@ begin
         IBQuery.ParamByName('DATA').AsString     := sData;
         IBQuery.ExecSQL;
         Result := True
-      end; // if (iNINI > 0) and (iNFIN > 0) then
-    end; // if xmlNodeValue(sXML, '//infInut/cStat') = '102' then
+      end;
+    end; 
   except
   end;
 end;
@@ -947,8 +947,9 @@ end;
 
 function Aviso2(sP1: String) : Boolean;
 begin
-  Form29.Button1.Visible := False;
-  Form29.Label1.Caption  := sP1;
+  Form29.EscondeComponentesPadrao;
+  Form29.btnOK.Visible := False;
+  Form29.lblTitulo2.Caption  := sP1;
   Form29.Show;
   Form29.Repaint;
   Result := True;
@@ -957,7 +958,8 @@ end;
 
 function Aviso(sP1: String) : Boolean;
 begin
-  Form29.Label1.Caption := sP1;
+  Form29.EscondeComponentesPadrao;
+  Form29.lblTitulo2.Caption := sP1;
   Form29.ShowModal;
   
   Result := True;
@@ -965,8 +967,7 @@ end;
 
 function tForm1.Small_InputForm_Dados(sP1: String) : boolean;
 begin
-  Form29.lblCaracteresMax.Visible := False;
-  Form29.memTexto.Visible         := False;
+  Form29.EscondeComponentesPadrao;
 
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
@@ -988,52 +989,58 @@ end;
 
 function tForm1.Small_InputForm(sP1, sP2, sP3: String) : String;
 begin
-  Form29.lblCaracteresMax.Visible := False;
-  Form29.memTexto.Visible         := False;
+  Form29.EscondeComponentesPadrao;
+  Form29.btnCancelar.Visible      := True;
   
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
-  Form29.Label1.Font.Size := 18;
-  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+  Form29.lblTitulo2.Caption := sP1+chr(10)+chr(10)+sP2;
 
   Form29.Edit1.Visible  := True;
   Form29.Edit1.Text     := sP3;
-  Form29.Edit1.Left     := Form29.Label1.Left;
+  Form29.Edit1.Left     := Form29.lblTitulo2.Left;
 
   Form29.ShowModal;
 
-  Result                := Form29.Edit1.Text;
+  //Result                := Form29.Edit1.Text; Mauricio Parizotto 2023-11-22
+  if Form29.ClicouOK then
+    Result := Form29.Edit1.Text
+  else
+    Result := sP3;
 
   Form29.Edit1.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
 end;
 
-function tForm1.Small_InputFormMemo(sP1, sP2, sP3: String; MaxLength : integer) : String;
+function tForm1.Small_InputFormMemo(sP1, sP3: String; MaxLength : integer) : String;
 begin
-  Form29.Edit1.Visible  := False;
+  Form29.EscondeComponentesPadrao;
+  Form29.btnCancelar.Visible  := True;
   
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
-  Form29.Label1.Font.Size := 18;
-  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+  Form29.lblTitulo2.Caption := sP1;
 
   Form29.memTexto.Visible         := True;
   Form29.lblCaracteresMax.Visible := True;
   Form29.memTexto.Text            := sP3;
-  Form29.memTexto.Left            := 70;
-  Form29.memTexto.Height          := 130;
-  Form29.memTexto.Top             := 250;
-  Form29.memTexto.Width           := 900;
+  Form29.memTexto.Left            := 60;
+  Form29.memTexto.Height          := 210;
+  Form29.memTexto.Top             := 170;
+  Form29.memTexto.Width           := 910;
   Form29.memTexto.MaxLength       := MaxLength;
-  Form29.lblCaracteresMax.Left    := 70;
+  Form29.lblCaracteresMax.Left    := 60;
   Form29.lblCaracteresMax.top     := 390;
 
   Form29.ShowModal;
 
-  Result                := Form29.memTexto.Text;
+  if Form29.ClicouOK then
+    Result := Form29.memTexto.Text
+  else
+    Result := sP3;
 
   Form29.memTexto.Visible  := False;
   Form7.AlphaBlendValue := 255;
@@ -1042,15 +1049,15 @@ end;
 
 function tForm1.Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0) : String;
 begin
+  Form29.EscondeComponentesPadrao;
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
-  Form29.Label1.Font.Size := 18;
-  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+  Form29.lblTitulo2.Caption := sP1+chr(10)+chr(10)+sP2;
 
   Form29.Edit1.Visible  := True;
   Form29.Edit1.Text     := sP3;
-  Form29.Edit1.Left     := Form29.Label1.Left;
+  Form29.Edit1.Left     := Form29.lblTitulo2.Left;
 
   Form29.MaxLength := AnMaxLength;
   Form29.DefinirSomenteNumeros;
@@ -9078,7 +9085,7 @@ begin
     Form29.Edit_04.Text := EmptyStr;
     Form29.Edit_05.Text := 'Exemplo de inutilizacao da NF-e';
 
-    Form29.Button1.OnClick := ClickOKInformacoesInutilizacao;
+    Form29.btnOK.OnClick := ClickOKInformacoesInutilizacao;
 
     if not Form1.Small_InputForm_Dados('Inutilização de NF-e') then
       Exit;
@@ -9156,7 +9163,7 @@ begin
     Form29.Edit_03.MaxLength := nLengthEdit3;
     Form29.Edit_04.MaxLength := nLengthEdit4;
     Form29.btnCancelar.Visible := False;
-    Form29.Button1.OnClick := Form29.Button1Click;
+    Form29.btnOK.OnClick := Form29.btnOKClick;
   end;
 end;
 
@@ -9205,7 +9212,7 @@ begin
     Exit;
   end;
 
-  Form29.Button1Click(Form29);
+  Form29.btnOKClick(Form29);
 end;
 {Dailon Parisotto (f-7540) 2023-11-06 fim}
 
