@@ -20,7 +20,10 @@ interface
 }
 
 uses
-  uEstoqueDAT, uSmallComINF, uUsuarioINF, uFrenteINI, uNFeINI, uNFSeINI;
+  uEstoqueDAT, uSmallComINF, uUsuarioINF, uFrenteINI, uNFeINI, uNFSeINI
+  , uConfSisBD
+  , IbdataBase
+  ;
 
 type
   TArquivosDAT = class
@@ -32,6 +35,8 @@ type
     FoFrente: TFreteINI;
     FoNFe: TNFeINI;
     FoNFSe: TNFSeINI;
+    FoBD: TConfBD; //Mauricio Parizotto 2023-11-20
+    FoTRANSACTION: TIBTransaction; // Mauricio Parizotto 2023-11-20
     function getEstoque: TEstoqueDAT;
     function getSmallCom: TSmallComINF;
     function getUsuario: TUsuarioINF;
@@ -39,8 +44,10 @@ type
     function getFrente: TFreteINI;
     function getNFeIni: TNFeINI;
     function getNFSeIni: TNFSeINI;
+    function getConfBD: TConfBD; //Mauricio Parizotto 2023-11-20
   public
-    constructor Create(AcUsuario: String);
+    //constructor Create(AcUsuario: String);  //Mauricio Parizotto 2023-11-20
+    constructor Create(AcUsuario: String; ConTransaction : TIBTransaction = nil);
     destructor Destroy; override;
     procedure RecarregarArquivos;
 
@@ -50,6 +57,8 @@ type
     property Frente: TFreteINI read getFrente;
     property NFe: TNFeINI read getNFeIni;
     property NFSe: TNFSeINI read getNFSeIni;
+    property BD: TConfBD read getConfBD; //Mauricio Parizotto 2023-11-20
+    property Transaction: TIBTransaction read FoTRANSACTION;
   end;
 
 implementation
@@ -58,9 +67,11 @@ uses SysUtils;
 
 { TArquivosIni }
 
-constructor TArquivosDAT.Create(AcUsuario: String);
+//constructor TArquivosDAT.Create(AcUsuario: String); //Mauricio Parizotto 2023-11-20
+constructor TArquivosDAT.Create(AcUsuario: String; ConTransaction : TIBTransaction = nil);
 begin
   FcUsuario := AcUsuario;
+  FoTRANSACTION := ConTransaction; //Mauricio Parizotto 2023-11-20
 end;
 
 destructor TArquivosDAT.Destroy;
@@ -113,6 +124,8 @@ begin
     FreeAndNil(FoNFe);
   if Assigned(FoNFSe) then
     FreeAndNil(FoNFSe);
+  if Assigned(FoBD) then //Mauricio Parizotto 2023-11-20
+    FreeAndNil(FoBD);
 end;
 
 function TArquivosDAT.getFrente: TFreteINI;
@@ -137,6 +150,14 @@ begin
     FoNFSe := TNFSeINI.Create;
 
   Result := FoNFSe;
+end;
+
+function TArquivosDAT.getConfBD: TConfBD;
+begin
+  if not Assigned(FoBD) then
+    FoBD := TConfBD.Create(Transaction);
+
+  Result := FoBD;
 end;
 
 end.

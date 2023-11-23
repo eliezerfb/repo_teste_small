@@ -82,6 +82,11 @@ const
   _cIdentiPadraoCidade = 'Padrao'; // Sandro Silva 2023-10-02
   _cIdentNFSEAmbiente = 'Ambiente';
 
+  //OS
+  _cSectionOS = 'OS';
+  _cOSObservacao  ='Observação';
+  _cOSObservacaoRecibo = 'Observação Recibo';
+
   _cPrivateKeyExponent = '75C2624A448186B59016FE623' +
                          'EF23ED97137C8D5F273C15EE813D2AEFD322C2AFBF868ADBB5096A78CD' +
                          'EA9D678CA9370EE0C79FAD21FEC0ECE440149D09367077B46A33F829B3' +

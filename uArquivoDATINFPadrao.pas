@@ -3,7 +3,12 @@ unit uArquivoDATINFPadrao;
 interface
 
 uses
-  IniFiles, Forms, SysUtils;
+  IniFiles
+  , Forms
+  , SysUtils
+  , IbQuery
+  , IBDatabase
+  ;
 
 type
   TArquivoDATINFPadrao = class
@@ -17,7 +22,21 @@ type
     procedure CarregarArquivo; virtual;
   end;
 
+//Mauricio Parizotto 2023-11-20  
+type
+  TConfiguracoesSistemaBD = class
+  private
+    FoTRANSACTION: TIBTransaction;
+  public
+    property Transaction: TIBTransaction read FoTRANSACTION;
+    constructor Create(IBTRANSACTION: TIBTransaction);
+    destructor Destroy; override;
+  protected
+  end;
+
 implementation
+
+uses uFuncoesBancoDados;
 
 { TArquivoDATINFPadrao }
 
@@ -39,6 +58,19 @@ end;
 destructor TArquivoDATINFPadrao.Destroy;
 begin
   FreeAndNil(FoIni);
+  inherited;
+end;
+
+{ TArquivoDATINF_BD }
+
+
+constructor TConfiguracoesSistemaBD.Create(IBTRANSACTION: TIBTransaction);
+begin
+  FoTRANSACTION := IBTRANSACTION;
+end;
+
+destructor TConfiguracoesSistemaBD.Destroy;
+begin
   inherited;
 end;
 
