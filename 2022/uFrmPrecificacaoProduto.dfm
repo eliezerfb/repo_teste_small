@@ -1,32 +1,15 @@
 inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
-  Left = 2352
-  Top = 268
+  Left = 711
+  Top = 352
   BorderIcons = []
   Caption = 'Precifica'#231#227'o dos Produtos'
   ClientHeight = 483
   ClientWidth = 896
+  OldCreateOrder = True
   Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
-  object imgEdit: TImage
-    Left = 760
-    Top = 8
-    Width = 16
-    Height = 16
-    AutoSize = True
-    Picture.Data = {
-      0A54504E474F626A65637489504E470D0A1A0A0000000D494844520000001000
-      00001008060000001FF3FF61000000097048597300000B1300000B1301009A9C
-      18000000B9494441547801A590B10DC2301444CF8B44162D0BD066095A1A7600
-      2116A0A666004A28105DB6A0048B45E02512B61542B0E5AF7BD625F69D121B15
-      8E29CC2BA7C04ABAC019D6D029A7E048620EAD762C5D494A8195B4850D9C6006
-      3798C2DF5FB0921AB092AEB0803DACC08919FB02AB10C6763AB02EC1EB5741C5
-      890626F0D11353C31DBC8C77C154D8A430E7BEEE202BDC2FC80EF70B1EBCB00A
-      E324D5E0343226DA7B457EF0C2A27D6F870A92C36D4B5CD03E67535CF0065AAE
-      2211D61FC68D0000000049454E44AE426082}
-    Visible = False
-  end
   object lblTitulo: TLabel
     Left = 16
     Top = 11
@@ -88,7 +71,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs]
+    Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs]
     ParentBiDiMode = False
     ParentCtl3D = False
     ParentFont = False
@@ -101,9 +84,6 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Pitch = fpFixed
     TitleFont.Style = []
-    OnCellClick = dbgPrincipalCellClick
-    OnDrawColumnCell = dbgPrincipalDrawColumnCell
-    OnDblClick = dbgPrincipalDblClick
     Columns = <
       item
         Expanded = False
@@ -129,12 +109,22 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       item
         Expanded = False
         FieldName = 'PERC_LUC'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
         Width = 100
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'PRECO_NOVO'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
         Width = 100
         Visible = True
       end>
@@ -221,6 +211,8 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Aggregates = <>
     Params = <>
     ProviderName = 'dspProdutosNota'
+    AfterInsert = cdsProdutosNotaAfterInsert
+    BeforeDelete = cdsProdutosNotaBeforeDelete
     Left = 216
     Top = 144
     object cdsProdutosNotaREGISTRO: TStringField
@@ -242,12 +234,13 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       EditFormat = '##0.00'
     end
     object cdsProdutosNotaPRECO_VENDA: TFloatField
-      DisplayLabel = 'Pre'#231'o Venda'
+      DisplayLabel = 'Pre'#231'o Atual'
       FieldName = 'PRECO_VENDA'
     end
     object cdsProdutosNotaPERC_LUC: TFloatField
       DisplayLabel = '% Lucro'
       FieldName = 'PERC_LUC'
+      OnSetText = cdsProdutosNotaPERC_LUCSetText
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
     end

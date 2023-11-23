@@ -3287,7 +3287,6 @@ object Form24: TForm24
         Top = 72
         Width = 94
         Height = 23
-        Hint = 'Alterar'
         Caption = 'Precificar'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText

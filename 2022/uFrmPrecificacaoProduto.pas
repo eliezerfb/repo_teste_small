@@ -26,7 +26,6 @@ type
     cdsProdutosNotaPRECO_VENDA: TFloatField;
     cdsProdutosNotaPERC_LUC: TFloatField;
     cdsProdutosNotaPRECO_NOVO: TFloatField;
-    imgEdit: TImage;
     edtPercGeral: TEdit;
     lblTitulo: TLabel;
     ibdProdutosNotaREGISTRO: TIBStringField;
@@ -34,18 +33,16 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure dbgPrincipalDrawColumnCell(Sender: TObject;
-      const Rect: TRect; DataCol: Integer; Column: TColumn;
-      State: TGridDrawState);
-    procedure dbgPrincipalDblClick(Sender: TObject);
-    procedure dbgPrincipalCellClick(Column: TColumn);
     procedure edtPercGeralKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edtPercGeralExit(Sender: TObject);
     procedure edtPercGeralKeyPress(Sender: TObject; var Key: Char);
+    procedure cdsProdutosNotaPERC_LUCSetText(Sender: TField;
+      const Text: String);
+    procedure cdsProdutosNotaAfterInsert(DataSet: TDataSet);
+    procedure cdsProdutosNotaBeforeDelete(DataSet: TDataSet);
   private
     { Private declarations }
-    CampoSel : string;
   public
     { Public declarations }
   end;
@@ -58,7 +55,6 @@ implementation
 uses Unit7
   , uArquivosDAT
   , Mais
-  , uFrmSmallImput
   , SmallFunc
   , uDialogs;
 
@@ -125,92 +121,60 @@ begin
   cdsProdutosNota.Open;
 end;
 
-procedure TFrmPrecificacaoProduto.dbgPrincipalDrawColumnCell(
-  Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
-  State: TGridDrawState);
-begin
-  if Column.Field.Name =  'cdsProdutosNotaPERC_LUC' then
-  begin
-    dbgPrincipal.Canvas.Draw(Rect.Left +1,Rect.Top + 1,imgEdit.Picture.Graphic)
-  end;
-
-  if Column.Field.Name =  'cdsProdutosNotaPRECO_NOVO' then
-  begin
-    dbgPrincipal.Canvas.Draw(Rect.Left +1,Rect.Top + 1,imgEdit.Picture.Graphic)
-  end;
-end;
-
-procedure TFrmPrecificacaoProduto.dbgPrincipalDblClick(Sender: TObject);
-var
-  retorno : string;
-begin
-  if CampoSel = 'PERC_LUC' then
-  begin
-    retorno := ImputBoxSmall('Informe o percentual de lucro',
-                             cdsProdutosNotaPERC_LUC.Text,
-                             FormatFloat(cdsProdutosNotaPERC_LUC.DisplayFormat, cdsProdutosNotaPERC_LUC.AsFloat),
-                             tpFloat
-                             );
-
-    if retorno <> '' then
-    begin
-      if StrToFloatDef(retorno,0) < 0 then
-      begin
-        MensagemSistema('Não pode ser informado quantidade negativa.',msgAtencao);
-        Exit;
-      end;
-
-      cdsProdutosNota.Edit;
-      cdsProdutosNotaPERC_LUC.AsFloat := StrToFloatDef(retorno,0);
-      cdsProdutosNota.Post;
-    end;
-  end;
-
-  if CampoSel = 'PRECO_NOVO' then
-  begin
-    retorno := ImputBoxSmall('Informe o novo preço',
-                             cdsProdutosNotaPRECO_NOVO.Text,
-                             FormatFloat(cdsProdutosNotaPRECO_NOVO.DisplayFormat, cdsProdutosNotaPRECO_NOVO.AsFloat),
-                             tpFloat
-                             );
-
-    if retorno <> '' then
-    begin
-      if StrToFloatDef(retorno,0) < 0 then
-      begin
-        MensagemSistema('Não pode ser informado valor negativo.',msgAtencao);
-        Exit;
-      end;
-
-      cdsProdutosNota.Edit;
-      cdsProdutosNotaPRECO_NOVO.AsFloat := StrToFloatDef(retorno,0);
-      cdsProdutosNota.Post;
-    end;
-  end;
-
-end;
-
-procedure TFrmPrecificacaoProduto.dbgPrincipalCellClick(Column: TColumn);
-begin
-  CampoSel := Column.FieldName;
-end;
-
 procedure TFrmPrecificacaoProduto.edtPercGeralKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    Perform(Wm_NextDlgCtl,0,0);
+    dbgPrincipal.SetFocus;
 end;
 
 procedure TFrmPrecificacaoProduto.edtPercGeralExit(Sender: TObject);
 begin
   edtPercGeral.Text := FormatFloat('##0.00', StrToFloatDef(edtPercGeral.Text,0));
+
+  try
+    cdsProdutosNota.DisableConstraints;
+    cdsProdutosNota.First;
+    while not cdsProdutosNota.Eof do
+    begin
+      cdsProdutosNota.Edit;
+      cdsProdutosNotaPERC_LUC.AsFloat := StrToFloatDef(edtPercGeral.Text,0);
+      cdsProdutosNotaPRECO_NOVO.AsFloat := cdsProdutosNotaPRECO_CUSTO.AsFloat + (cdsProdutosNotaPRECO_CUSTO.AsFloat * (cdsProdutosNotaPERC_LUC.AsFloat / 100));
+      cdsProdutosNota.Post;
+      cdsProdutosNota.Next;
+    end;
+  finally
+    cdsProdutosNota.First;
+    cdsProdutosNota.EnableConstraints;
+  end;
 end;
 
 procedure TFrmPrecificacaoProduto.edtPercGeralKeyPress(Sender: TObject;
   var Key: Char);
 begin
   ValidaValor(Sender,Key,'F');
+end;
+
+procedure TFrmPrecificacaoProduto.cdsProdutosNotaPERC_LUCSetText(
+  Sender: TField; const Text: String);
+begin
+  cdsProdutosNotaPRECO_NOVO.AsFloat := cdsProdutosNotaPRECO_CUSTO.AsFloat + (cdsProdutosNotaPRECO_CUSTO.AsFloat * (StrToFloatDef(Text,0) / 100));
+
+  Sender.AsString := Text;
+end;
+
+procedure TFrmPrecificacaoProduto.cdsProdutosNotaAfterInsert(
+  DataSet: TDataSet);
+begin
+  inherited;
+  cdsProdutosNota.Cancel;
+end;
+
+procedure TFrmPrecificacaoProduto.cdsProdutosNotaBeforeDelete(
+  DataSet: TDataSet);
+begin
+  inherited;
+  Abort;
 end;
 
 end.
