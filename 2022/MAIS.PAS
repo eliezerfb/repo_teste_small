@@ -8722,6 +8722,7 @@ begin
           end;
         end;
 
+        {Sandro Silva 2023-11-20 inicio
         // cProdANP
         if (Length(LimpaNumero(Form7.ibDataset4LIVRE1.AsString)) = 9) and (Length(AllTrim(Form7.ibDataset4LIVRE1.AsString)) = 9) then
         begin
@@ -8732,6 +8733,7 @@ begin
             Form7.ibDataset4.Post;
           except end;
         end;
+        }
 
         // vUnid
         if (Copy(Form7.ibDataSet4LIVRE3.AsString,1,7) = '<vUnid=') then // Pereti trib ipi por valor unitário engarafados bebidas
