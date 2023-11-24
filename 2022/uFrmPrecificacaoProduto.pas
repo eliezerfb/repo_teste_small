@@ -41,6 +41,11 @@ type
       const Text: String);
     procedure cdsProdutosNotaAfterInsert(DataSet: TDataSet);
     procedure cdsProdutosNotaBeforeDelete(DataSet: TDataSet);
+    procedure dbgPrincipalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dbgPrincipalDrawColumnCell(Sender: TObject;
+      const Rect: TRect; DataCol: Integer; Column: TColumn;
+      State: TGridDrawState);
   private
     { Private declarations }
   public
@@ -119,6 +124,12 @@ begin
   cdsProdutosNotaPRECO_NOVO.EditFormat     := Mascara;
 
   cdsProdutosNota.Open;
+
+  try
+    dbgPrincipal.SetFocus;
+    dbgPrincipal.SelectedIndex := 3;
+  except
+  end;
 end;
 
 procedure TFrmPrecificacaoProduto.edtPercGeralKeyUp(Sender: TObject;
@@ -126,11 +137,16 @@ procedure TFrmPrecificacaoProduto.edtPercGeralKeyUp(Sender: TObject;
 begin
   if Key = VK_RETURN then
     dbgPrincipal.SetFocus;
+
+  dbgPrincipal.SelectedIndex := 3;
 end;
 
 procedure TFrmPrecificacaoProduto.edtPercGeralExit(Sender: TObject);
 begin
   edtPercGeral.Text := FormatFloat('##0.00', StrToFloatDef(edtPercGeral.Text,0));
+
+  if StrToFloatDef(edtPercGeral.Text,0) <= 0 then
+    Exit;
 
   try
     cdsProdutosNota.DisableConstraints;
@@ -175,6 +191,44 @@ procedure TFrmPrecificacaoProduto.cdsProdutosNotaBeforeDelete(
 begin
   inherited;
   Abort;
+end;
+
+procedure TFrmPrecificacaoProduto.dbgPrincipalKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    if dbgPrincipal.SelectedIndex = 4 then
+    begin
+      cdsProdutosNota.Next;
+      dbgPrincipal.SelectedIndex := 3;
+
+      if cdsProdutosNota.Eof then
+      begin
+        btnOK.SetFocus;
+      end;
+
+    end else
+      dbgPrincipal.SelectedIndex := dbgPrincipal.SelectedIndex +1;
+    begin
+    end;
+  end;
+end;
+
+procedure TFrmPrecificacaoProduto.dbgPrincipalDrawColumnCell(
+  Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+begin
+  if Column.Field.Name = 'cdsProdutosNotaPRECO_NOVO' then
+  begin
+    if cdsProdutosNotaPRECO_VENDA.AsFloat <> cdsProdutosNotaPRECO_NOVO.AsFloat then
+      TDBGrid(Sender).Canvas.Font.Style := [fsBold]
+    else
+      TDBGrid(Sender).Canvas.Font.Style := [];
+
+    dbgPrincipal.Canvas.FillRect(Rect);
+    dbgPrincipal.DefaultDrawColumnCell(Rect,DataCol,Column,State);
+  end;
 end;
 
 end.

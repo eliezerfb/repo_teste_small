@@ -25,7 +25,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     ParentFont = False
   end
   object btnCancelar: TBitBtn
-    Left = 620
+    Left = 754
     Top = 448
     Width = 126
     Height = 25
@@ -37,11 +37,11 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 3
     OnClick = btnCancelarClick
   end
   object btnOK: TBitBtn
-    Left = 754
+    Left = 620
     Top = 448
     Width = 126
     Height = 25
@@ -53,7 +53,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
     OnClick = btnOKClick
   end
   object dbgPrincipal: TDBGrid
@@ -77,15 +77,18 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 2
+    TabOrder = 1
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clBlack
     TitleFont.Height = -12
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Pitch = fpFixed
     TitleFont.Style = []
+    OnDrawColumnCell = dbgPrincipalDrawColumnCell
+    OnKeyDown = dbgPrincipalKeyDown
     Columns = <
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'PRODUTO'
         ReadOnly = True
@@ -93,6 +96,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'PRECO_CUSTO'
         ReadOnly = True
@@ -100,6 +104,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'PRECO_VENDA'
         ReadOnly = True
@@ -113,7 +118,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
         Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
+        Font.Style = []
         Width = 100
         Visible = True
       end
@@ -124,7 +129,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
         Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
+        Font.Style = []
         Width = 100
         Visible = True
       end>
@@ -146,7 +151,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     ParentBiDiMode = False
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 0
     Text = '0,00'
     OnExit = edtPercGeralExit
     OnKeyPress = edtPercGeralKeyPress
@@ -169,7 +174,13 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       #9'I.UNITARIO PRECO_CUSTO,'
       #9'Coalesce(E.PRECO,0) PRECO_VENDA,'
       #9'Coalesce(E.MARGEMLB,0) PERC_LUC,'
-      #9'Coalesce(I.LISTA,0) PRECO_NOVO'
+      #9'Coalesce(E.MARGEMLB,0) PERC_LUC,'
+      #9'Case'
+      
+        #9#9'When Coalesce(E.MARGEMLB,0) > 0 then I.UNITARIO + (I.UNITARIO ' +
+        '* (E.MARGEMLB / 100) ) '
+      #9#9'Else Coalesce(E.PRECO,0)'
+      #9'End PRECO_NOVO'
       'From ITENS002 I'
       #9'Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO'
       'Where NUMERONF = :NUMERONF'
