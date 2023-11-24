@@ -2254,7 +2254,6 @@ type
     procedure ibdPerfilTributaDESCRICAOSetText(Sender: TField;
       const Text: String);
     procedure ibdPerfilTributaBeforePost(DataSet: TDataSet);
-    procedure DSPerfilTributaStateChange(Sender: TObject);
     procedure ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
     procedure ibDataSet4IDPERFILTRIBUTACAOChange(Sender: TField);
     procedure ibDataSet4TIPO_ITEMChange(Sender: TField);
@@ -2322,6 +2321,7 @@ type
     function getUsuarioLogado: String;
     procedure SalvaXMLNFSaida(AcCaminho: String = '');
     function TestaNFSaidaFaturada: Boolean;
+    procedure FechaModulos;
   public
     // Public declarations
 
@@ -2513,7 +2513,9 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImportaOrdemServico
   , uDialogs
   , uFrmProdutosDevolucao
-  , uOrdemServico;
+  , uOrdemServico
+  , uFrmPerfilTributacao
+  , uFrmNaturezaOperacao;
 
 {$R *.DFM}
 
@@ -7959,6 +7961,8 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
+  FechaModulos;
+
   //Mauricio Parizotto 2023-09-21
   if sModulo = 'PARAMETROTRIBUTACAO' then
   begin
@@ -7967,6 +7971,28 @@ begin
       FrmParametroTributacao := TFrmParametroTributacao.Create(Self);
       
     FrmParametroTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmPerfilTributacao = nil then
+      FrmPerfilTributacao := TFrmPerfilTributacao.Create(Self);
+      
+    FrmPerfilTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'ICM' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmNaturezaOperacao = nil then
+      FrmNaturezaOperacao := TFrmNaturezaOperacao.Create(Self);
+
+    FrmNaturezaOperacao.Show;
     Exit;
   end;
 
@@ -8143,6 +8169,8 @@ procedure TForm7.Image101Click(Sender: TObject);
 begin
   Form7.bEstaSendoUsado := False;
 
+  FechaModulos;
+
   //Mauricio Parizotto 2023-09-21
   if sModulo = 'PARAMETROTRIBUTACAO' then
   begin
@@ -8151,6 +8179,29 @@ begin
       
     FrmParametroTributacao.lblNovoClick(Sender);
     FrmParametroTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'PERFILTRIBUTACAO' then
+  begin
+    if FrmPerfilTributacao = nil then
+      FrmPerfilTributacao := TFrmPerfilTributacao.Create(Self);
+      
+    FrmPerfilTributacao.lblNovoClick(Sender);
+    FrmPerfilTributacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-11-17
+  if sModulo = 'ICM' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmNaturezaOperacao = nil then
+      FrmNaturezaOperacao := TFrmNaturezaOperacao.Create(Self);
+
+    FrmNaturezaOperacao.lblNovoClick(Sender);
+    FrmNaturezaOperacao.Show;
     Exit;
   end;
 
@@ -33894,13 +33945,6 @@ begin
   end;
 end;
 
-procedure TForm7.DSPerfilTributaStateChange(Sender: TObject);
-begin
-  Form10.lblAtencaoPerfilTrib.Visible := DSPerfilTributa.State = dsEdit;
-  Form10.lbAtencaoPisCofins.Visible   := DSPerfilTributa.State = dsEdit;
-  Form10.lbAtencaoIPI.Visible         := DSPerfilTributa.State = dsEdit;    
-end;
-
 procedure TForm7.ibdPerfilTributaBeforeDelete(DataSet: TDataSet);
 var
   sApagar : string;
@@ -34307,6 +34351,22 @@ begin
   finally
     FreeAndNil(ConfSistema);
   end;
+end;
+
+procedure TForm7.FechaModulos;
+begin
+  try
+    if FrmParametroTributacao <> nil then
+      FreeAndNil(FrmParametroTributacao);
+
+    if FrmPerfilTributacao <> nil then
+      FreeAndNil(FrmPerfilTributacao);
+
+    if FrmNaturezaOperacao <> nil then
+      FreeAndNil(FrmNaturezaOperacao);
+  except
+  end;
+  
 end;
 
 end.

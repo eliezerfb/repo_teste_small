@@ -22308,7 +22308,6 @@ object Form7: TForm7
   end
   object DSPerfilTributa: TDataSource
     DataSet = ibdPerfilTributa
-    OnStateChange = DSPerfilTributaStateChange
     Left = 40
     Top = 723
   end
@@ -22626,7 +22625,6 @@ object Form7: TForm7
   end
   object DSParametroTributa: TDataSource
     DataSet = ibdParametroTributa
-    OnStateChange = DSPerfilTributaStateChange
     Left = 40
     Top = 757
   end

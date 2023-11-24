@@ -199,6 +199,8 @@ uses
   MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
   uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
   uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas', 
+  uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
+  uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
   uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
   uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
   uOrdemServico in 'units\uOrdemServico.pas';
