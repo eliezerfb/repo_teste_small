@@ -1608,6 +1608,7 @@ type
     ExportarXML1: TMenuItem;
     N70: TMenuItem;
     InutilizaodeNFes1: TMenuItem;
+    ImprimirOrdemdeServio2: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2270,6 +2271,7 @@ type
     procedure ImprimirOrcamentoClick(Sender: TObject);
     procedure ExportarXML1Click(Sender: TObject);
     procedure InutilizaodeNFes1Click(Sender: TObject);
+    procedure ImprimirOrdemdeServio2Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2506,7 +2508,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uImportaOrdemServico
   , uDialogs
   , uFrmProdutosDevolucao
-  ;
+  , uOrdemServico;
 
 {$R *.DFM}
 
@@ -10922,36 +10924,29 @@ begin
       if sModulo = 'OS' then
       begin
         sAjuda := 'os.htm';
-        //
-//        Form7.ibDataSet2.Close;                                                //
-//        Form7.ibDataSet2.Selectsql.Clear;                                      // receber Relacionado
-//        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR order by upper(NOME)');  //
-//        Form7.ibDataSet2.Open;
-        //
+
         Form7.ibDataSet9.Close;
         Form7.ibDataSet9.SelectSQL.Clear;
         Form7.ibDataSet9.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%TECNICO%')+' order by upper(NOME)');
         Form7.ibDataSet9.Open;
         Form7.ibDataSet9.DataSource := Nil;
         Form7.ibDataSet9.First;
-        //
-  //      Image210.Visible := True;
-        //
+
         ibDataSet16.Close;
         ibDataSet16.DataSource := DataSource3;
         ibDataSet16.Selectsql.Clear;
         ibDataSet16.Selectsql.Add('select * from ITENS001 where NUMEROOS=:NUMERO');
         ibDataSet16.Open;
-        //
+
         ibDataSet35.Close;
         ibDataSet35.DataSource := DataSource3;
         ibDataSet35.Selectsql.Clear;
         ibDataSet35.Selectsql.Add('select * from ITENS003 where NUMEROOS=:NUMERO');
         ibDataSet35.Open;
-        //
+
         if not Form7.ibDataSet4.active  then
           Form7.ibDataSet4.Open;
-        //
+
         dBgrid3.Visible        := True;
 
         // Liga os dbGrids aos dataSurces
@@ -13331,9 +13326,10 @@ begin
   VisualizarXMLdamanifestaododestinatrio1.Visible  := False;
   N66.Visible                                      := False;
   DuplicatestaNFe1.Visible                         := False;
-  DuplicarProduto.Visible                          := False;  
+  DuplicarProduto.Visible                          := False;
   DuplicaOrcamento.Visible                         := False;
   ImprimirOrcamento.Visible                        := False;
+  ImprimirOrdemdeServio2.Visible                   := False; // Mauricio Parizotto 2023-11-21
   //
   Editar1.Visible := True;
   Apagar2.Visible := True;
@@ -13443,6 +13439,7 @@ begin
     begin
       Apagar2.Enabled := False;
       Apagar2.Visible := False;
+      ImprimirOrdemdeServio2.Visible := True; // Mauricio Parizotto 2023-11-21
     end;
 
     if sModulo = 'COMPRA'  then
@@ -18014,11 +18011,16 @@ begin
 end;
 
 procedure TForm7.ImprimirOrdemdeServio1Click(Sender: TObject);
+{
 var
   F: TextFile;
   fTotal1, fTotal2: Real;
   sArquivo : String;
+}
 begin
+  //Mauricio Parizotto 2023-11-21
+  ImprimeOrdemServico;
+  {
   //
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
@@ -18344,6 +18346,7 @@ begin
     //
   end;
   //
+  Mauricio Parizotto 2023-11-21}
 end;
 
 procedure TForm7.MenuItem12Click(Sender: TObject);
@@ -34244,6 +34247,11 @@ end;
 procedure TForm7.InutilizaodeNFes1Click(Sender: TObject);
 begin
   Form1.InutilizarNFe1Click(Self);
+end;
+
+procedure TForm7.ImprimirOrdemdeServio2Click(Sender: TObject);
+begin
+  ImprimeOrdemServico;
 end;
 
 end.

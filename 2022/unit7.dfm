@@ -18212,6 +18212,11 @@ object Form7: TForm7
       Visible = False
       OnClick = DuplicaOrcamentoClick
     end
+    object ImprimirOrdemdeServio2: TMenuItem
+      Caption = 'Imprimir Ordem de Servi'#231'o'
+      Visible = False
+      OnClick = ImprimirOrdemdeServio2Click
+    end
   end
   object ibDataSet10: TIBDataSet
     Database = IBDatabase1
