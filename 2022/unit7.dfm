@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 301
-  Top = 54
+  Left = 200
+  Top = 127
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -19349,8 +19349,9 @@ object Form7: TForm7
     end
     object ibDataSet3OBSERVACAO: TIBStringField
       DisplayLabel = 'Observa'#231#227'o'
+      DisplayWidth = 128
       FieldName = 'OBSERVACAO'
-      Size = 254
+      Size = 1000
     end
     object ibDataSet3NF: TIBStringField
       DisplayLabel = 'Nota Fiscal'
@@ -19422,6 +19423,17 @@ object Form7: TForm7
       object GerarNotaFiscaldeServio2: TMenuItem
         Caption = 'Gerar Nota Fiscal de Servi'#231'o '
         OnClick = GerarNotaFiscaldeServio2Click
+      end
+      object N71: TMenuItem
+        Caption = '-'
+      end
+      object ConfigurarobservaoparaOS1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o para OS'
+        OnClick = ConfigurarobservaoparaOS1Click
+      end
+      object ConfigurarobservaoparaRecibo1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o para Recibo'
+        OnClick = ConfigurarobservaoparaRecibo1Click
       end
       object N30: TMenuItem
         Caption = '-'
