@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls, Mask, SmallFunc, ShellApi, HtmlHelp,
   frame_teclado_1, Buttons, DB, IBCustomDataSet, IBQuery
-  , uajustaresolucao, CheckLst;
+  , uajustaresolucao, CheckLst, uframeCampoCaixasRelatorio;
 
 const DOCUMENTO_NFCE   = '65 - NFC-e';
 const DOCUMENTO_CFeSAT = '59 - CF-e-SAT';
@@ -45,8 +45,6 @@ type
     dtpVendasFinal: TDateTimePicker;
     cbFormasPagto: TComboBox;
     Label11: TLabel;
-    edCaixa: TEdit;
-    Label12: TLabel;
     Label13: TLabel;
     edCliente: TEdit;
     IBQFORMASPAGAMENTO: TIBQuery;
@@ -103,6 +101,7 @@ type
     chkFechamentoDeCaixaHoraI: TCheckBox;
     chkFechamentoDeCaixaHoraF: TCheckBox;
     chklbCaixas: TCheckListBox;
+    frameCampoCaixasRelVendaPorDoc: TframeCampoCaixasRel;
     procedure FormActivate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -116,7 +115,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure edCaixaExit(Sender: TObject);
     procedure edMovimentoDiaExit(Sender: TObject);
     procedure edCaixaDiarioEnter(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -124,7 +122,6 @@ type
     procedure TabSheet5Show(Sender: TObject);
     procedure chkMovimentoDiaHoraIClick(Sender: TObject);
     procedure chkMovimentoDiaHoraFClick(Sender: TObject);
-    procedure FocusNextControl(Sender: TObject; var Key: Char);
     procedure chkFechamentoDeCaixaHoraIClick(Sender: TObject);
     procedure TabSheet8Show(Sender: TObject);
     procedure chklbCaixasClickCheck(Sender: TObject);
@@ -190,9 +187,20 @@ begin
 
   if bVendaPorDocumento then
   begin
-    checkVendaPorDocumento.Font := Label12.Font;
-    checkVendaPorDocumento.Left := edCaixa.Left + edCaixa.Width + AjustaLargura(15);
-    checkVendaPorDocumento.Top  := edCaixa.Top;
+    if checkVendaPorDocumento.Parent <> frameCampoCaixasRelVendaPorDoc.chklbCaixas.Parent then
+      AjustaResolucao(frameCampoCaixasRelVendaPorDoc);
+
+    frameCampoCaixasRelVendaPorDoc.Height := frameCampoCaixasRelVendaPorDoc.chklbCaixas.Top + frameCampoCaixasRelVendaPorDoc.chklbCaixas.Height + 1;
+    frameCampoCaixasRelVendaPorDoc.Width := Self.Width;
+
+    checkVendaPorDocumento.Parent := frameCampoCaixasRelVendaPorDoc.chklbCaixas.Parent;
+    checkVendaPorDocumento.Left   := frameCampoCaixasRelVendaPorDoc.chklbCaixas.Left + frameCampoCaixasRelVendaPorDoc.chklbCaixas.Width + 50;
+    checkVendaPorDocumento.Top    := (frameCampoCaixasRelVendaPorDoc.chklbCaixas.Top + frameCampoCaixasRelVendaPorDoc.chklbCaixas.Height - checkVendaPorDocumento.Height) + 5;
+
+    checkVendaPorDocumento.BringToFront;
+
+    checkVendaPorDocumento.Font := Label13.Font;
+
     PageControl1.ActivePage := TabSheet3;
   end;
 
@@ -277,7 +285,6 @@ begin
     dtpVendasInicial.Date := Date;
     dtpVendasFinal.Date   := Date;
     edCliente.Clear;
-    edCaixa.Clear;
 
     IBQFORMASPAGAMENTO.Close;
     IBQFORMASPAGAMENTO.SQL.Text :=
@@ -528,13 +535,14 @@ begin
       chklbCaixas.Items.Add(Form1.sCaixa); // Se ainda não tem movimento na tabela NFCE adiciona o caixa atual na lista de caixas
   end;
   {Sandro Silva 2023-11-01 fim}
-end;
 
-procedure TForm7.edCaixaExit(Sender: TObject);
-begin
-  edCaixa.Text := Right('000' + LimpaNumero(edCaixa.Text), 3);
-  if edCaixa.Text = '000' then
-    edCaixa.Clear;
+  {Dailon Parisotto (f-7567) 2023-11-16 Inicio}
+  if bVendaPorDocumento then
+  begin
+    frameCampoCaixasRelVendaPorDoc.Caixa := Form1.sCaixa;
+    frameCampoCaixasRelVendaPorDoc.CarregarCaixas(Form1.IBTransaction1);
+  end;
+  {Dailon Parisotto (f-7567) 2023-11-16 Fim}  
 end;
 
 procedure TForm7.edMovimentoDiaExit(Sender: TObject);
@@ -583,12 +591,6 @@ begin
   Form7.chkMovimentoDiaHoraI.Checked := Form7.chkMovimentoDiaHoraF.Checked; // Sandro Silva 2018-11-30
   dtpMovimentoHoraI.Enabled := Form7.chkMovimentoDiaHoraI.Checked;
   dtpMovimentoHoraF.Enabled := Form7.chkMovimentoDiaHoraI.Checked;
-end;
-
-procedure TForm7.FocusNextControl(Sender: TObject; var Key: Char);
-begin
-  if Key = #13 then
-    SelectNext(Sender as TWinControl, True, True);
 end;
 
 procedure TForm7.chkFechamentoDeCaixaHoraIClick(Sender: TObject);

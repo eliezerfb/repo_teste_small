@@ -766,6 +766,7 @@ uConfiguracaoTEF.dcu
 *.~pas
 *.~ddp
 *.~dfm
+uframeCampoCaixasRelatorio.dcu
 ueditamovimento.dcu
 ueditamovimento.ddp
 ufrmEditaMovimento.dcu
