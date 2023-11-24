@@ -63,6 +63,7 @@ uses
   _Small_99 in '_small_99.pas',
   uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
+  uSmallEnumerados in '..\unit_compartilhada\uSmallEnumerados.pas',
   uframeCampoCaixasRelatorio in 'uframeCampoCaixasRelatorio.pas' {frameCampoCaixasRel: TFrame};
 
 {$R *.RES}
