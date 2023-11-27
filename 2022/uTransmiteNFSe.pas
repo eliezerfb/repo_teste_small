@@ -817,7 +817,10 @@ begin
                 Form7.ibDataset35.Next;
               end;
 
-              if (sPadraoSistema = 'GINFES') or (sPadraoSistema = 'FINTEL') then
+              //if (sPadraoSistema = 'GINFES') or (sPadraoSistema = 'FINTEL') then Mauricio parizotto 2023-11-16
+              if (sPadraoSistema = 'GINFES')
+                or (sPadraoSistema = 'FINTEL')
+                or ((sPadraoSistema = 'WEBISS20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'ITANHANGAMT') ) then
               begin
                 sDescricaoDosServicos := sDescricaoDosServicos + '|' + ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString);
               end;
