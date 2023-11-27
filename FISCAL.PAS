@@ -15442,9 +15442,7 @@ begin
 
   if FEditaMovimento <> nil then
   begin
-    //DBGridItensEnabled := FEditaMovimento.DBGridItens.Enabled;
     FEditaMovimento.Enabled := False;
-    //FEditaMovimento.DBGridItens.DataSource.DataSet.DisableControls;
     FEditaMovimento.btnOk.Enabled := False;
   end;
 
@@ -15538,7 +15536,7 @@ begin
         begin
           bGravou := False;
 
-          for iTenta := 1 to 10 do
+          for iTenta := 1 to 5 do
           begin
             try
 
@@ -15573,7 +15571,7 @@ begin
               end;
             end;
 
-            SleepWithoutFreeze(1000);// Combinado com Gian para aguardar 10X de 1 segundo
+            SleepWithoutFreeze(500);// Combinado com Gian para aguardar 10X de 1 segundo
           end;
 
           if bGravou = False then
@@ -15582,7 +15580,7 @@ begin
             Form1.ibDataSet27.Edit;
             Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat   := dQuantidadeOld;
 
-            SmallMessageBox('Não foi possível alterar a quantidade do item ' + #10 +
+            SmallMessageBox('Não foi possível alterar a quantidade do item: ' + #10 + #10 +
               Form1.ibDataSet27.FieldByname('ITEM').AsString + '-' + Form1.ibDataSet27.FieldByname('DESCRICAO').AsString + #10 + #10 +
               'Foi movimentado ao mesmo tempo por outro usuário' + #10 + #10 +
               'Tente novamente', 'Atenção', MB_ICONINFORMATION + MB_OK);
@@ -15595,8 +15593,9 @@ begin
   finally
     if FEditaMovimento <> nil then
     begin
-      FEditaMovimento.Enabled := DBGridItensEnabled;
+      FEditaMovimento.Enabled := True;
       FEditaMovimento.btnOk.Enabled := True;
+      FEditaMovimento.ActiveControl := FEditaMovimento.DBGridItens;
     end;
   end;
   
