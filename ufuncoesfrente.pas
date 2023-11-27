@@ -357,8 +357,9 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
   out fTributos_federais: Real; out fTributos_estaduais: Real;
   out fTributos_municipais: Real): String;
+procedure SleepWithoutFreeze(msec: int64);  
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
-  
+
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -2610,6 +2611,23 @@ begin
   end;
 
 end;
+
+{Sandro Silva 2023-11-24 inicio}
+procedure SleepWithoutFreeze(msec: int64);
+var
+  Start, Elapsed: DWORD;
+begin
+  Start := GetTickCount;
+  Elapsed := 0;
+  repeat
+    // (WAIT_OBJECT_0+nCount) is returned when a message is in the queue.
+    // WAIT_TIMEOUT is returned when the timeout elapses.
+    if MsgWaitForMultipleObjects(0, Pointer(nil)^, FALSE, msec-Elapsed, QS_ALLINPUT) <> WAIT_OBJECT_0 then Break;
+    Application.ProcessMessages;
+    Elapsed := GetTickCount - Start;
+  until Elapsed >= msec;
+end;
+{Sandro Silva 2023-11-24 fim}
 
 {Sandro Silva 2023-10-24 inicio}
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean;
