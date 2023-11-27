@@ -1778,7 +1778,7 @@ begin
                     {Sandro Silva 2023-11-07 inicio}
                     try
                       Form7.bFabrica := True;
-                      FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Form7.ibDataSet16QUANTIDADE.AsFloat, Form7.bFabrica);
+                      FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Form7.ibDataSet16QUANTIDADE.AsFloat, Form7.bFabrica, 1);
                     finally
                       Form7.bFabrica := False;
                     end;

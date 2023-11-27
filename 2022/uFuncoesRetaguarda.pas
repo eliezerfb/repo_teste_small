@@ -361,7 +361,7 @@ begin
   // essa rotina de log quando ativa pode afetar o desempenho do sistema
   // usar apenas para testes no desenvolvimento
   /////////
-  Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
+  //Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
 
   GetDir(0, sDirAtual);
   ////////
