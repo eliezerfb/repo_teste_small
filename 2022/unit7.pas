@@ -3123,6 +3123,9 @@ begin
 
               if AllTrim(Form7.iBQuery99.FieldByName('NFEID').AsString) = '' then
               begin
+
+                LogRetaguarda('Nova nota: 3127'); // Sandro Silva 2023-11-27
+
                 Form7.ibDataSet24.Append;
                 Form7.ibDataSet24NUMERONF.AsString   := Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe')),26,9)+Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe')),23,3);
                 Form7.ibDataSet24FORNECEDOR.AsString := pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/xNome'));
