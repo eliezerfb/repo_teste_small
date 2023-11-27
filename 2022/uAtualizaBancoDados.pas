@@ -2297,10 +2297,44 @@ begin
   end;
   {Mauricio Parizotto 2023-09-29 Fim}
 
+  {Mauricio Parizotto 2023-11-15 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'PROBLEMA') < 1000 then
+  begin
+    if ExecutaComando(' ALTER TABLE OS ALTER COLUMN PROBLEMA TYPE VARCHAR(1000) ') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-11-15 Fim}
+
+  {Mauricio Parizotto 2023-11-20 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOSISTEMA')) then
+  begin
+    ExecutaComando('CREATE TABLE CONFIGURACAOSISTEMA ('+
+                   ' 	IDCONFIGURACAOSISTEMA INTEGER NOT NULL,'+
+                   ' 	NOME VARCHAR(30) NOT NULL,'+
+                   ' 	MODULO VARCHAR(20) NOT NULL,'+
+                   ' 	VALOR BLOB SUB_TYPE TEXT,'+
+                   '  DESCRICAO VARCHAR(100),'+
+                   '  CONSTRAINT PK_CONFIGURACAOSISTEMA PRIMARY KEY (IDCONFIGURACAOSISTEMA)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_CONFIGURACAOSISTEMA');
+
+    ExecutaComando('Commit');
+  end;
+
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'OBSERVACAO') < 1000 then
+  begin
+    if ExecutaComando(' ALTER TABLE OS ALTER COLUMN OBSERVACAO TYPE VARCHAR(1000) ') then
+      ExecutaComando('Commit');
+  end;
+
+  {Mauricio Parizotto 2023-11-20 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
+
+  
   try
     Form7.TabelaAberta           := Form7.ibDataSet2;
 
@@ -2363,23 +2397,5 @@ begin
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');
 end;
-
-{Sandro Silva 2023-09-22 inicio
-function ExecutaComando(comando:string):Boolean;
-begin
-  Result := False;
-
-  try
-    Form1.ibDataset200.Close;
-    Form1.ibDataset200.SelectSql.Clear;
-    Form1.ibDataset200.SelectSql.Add(comando);
-    Form1.ibDataset200.Open;
-    Form1.ibDataset200.Close;
-
-    Result := True;
-  except
-  end;
-end;
-}
 
 end.

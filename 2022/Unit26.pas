@@ -523,15 +523,21 @@ begin
   if cboBancos.Text = 'Banrisul' then
   begin
     MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
-    chkCNAB400.Checked := True;
-    chkCNAB240.Checked := False;
+    //Mauricio Parizotto 2023-11-01
+    //chkCNAB400.Checked := True;
+    //chkCNAB240.Checked := False;
+    chkCNAB400.Enabled := True;
+    chkCNAB240.Enabled := True;
   end;
 
   if cboBancos.Text = 'Itaú' then
   begin
     MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
-    chkCNAB400.Checked := True;
-    chkCNAB240.Checked := False;
+    //Mauricio Parizotto 2023-10-23
+    //chkCNAB400.Checked := True;
+    //chkCNAB240.Checked := False;
+    chkCNAB400.Enabled := True;
+    chkCNAB240.Enabled := True;
   end;
 
   if cboBancos.Text = 'Unibanco' then

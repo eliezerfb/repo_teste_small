@@ -468,6 +468,15 @@ procedure TfrmRelResumoVendas.CarrregarDadosTotalGrupos;
 var
   QryDados: TIBQuery;
 begin
+
+  {Sandro Silva 2023-11-06 inicio}
+  // no filtro salvo no módulo Estoque não fica salvo a tabela junto com o nome do campo na cláusula where
+  // Ex.: where upper( Coalesce(NOME,'~') ) like '%STIHL%'
+  // Atribuir o nome da tabela junto ao campo
+  FcWhereEstoque := StringReplace(FcWhereEstoque, 'Coalesce(NOME,''~'')', 'Coalesce(ESTOQUE.NOME,''~'')', [rfReplaceAll]);
+  FcWhereEstoque := StringReplace(FcWhereEstoque, 'Coalesce(NOME, ''~'')', 'Coalesce(ESTOQUE.NOME, ''~'')', [rfReplaceAll]);
+  {Sandro Silva 2023-11-06 fim}
+
   QryDados := CriaIBQuery(DataSetEstoque.Transaction);
   try
     QryDados.Close;
@@ -608,6 +617,10 @@ procedure TfrmRelResumoVendas.FazUpdateValores;
 var
   nRecNo: Integer;
   qryCons99, qryCons100: TIBQuery;
+  function EscapeQuoted(Texto: String): String;
+  begin
+    Result := StringReplace(Texto, #39, #39#39, [rfReplaceAll]);
+  end;
 begin
   qryCons99 := CriaIBQuery(DataSetEstoque.Transaction);
   qryCons100 := CriaIBQuery(DataSetEstoque.Transaction);
@@ -648,7 +661,8 @@ begin
         begin
           if qryCons99.FieldByname('VTOT1').AsFloat > 0 then
           begin
-            if not cdsExcluidos.Locate('NOME', qryCons99.FieldByname('DESCRICAO').AsString, []) then
+            // Sandro Silva 2023-11-06 if not cdsExcluidos.Locate('NOME', qryCons99.FieldByname('DESCRICAO').AsString, []) then
+            if not cdsExcluidos.Locate('NOME', EscapeQuoted(qryCons99.FieldByname('DESCRICAO').AsString), []) then
             begin
               cdsExcluidos.Append;
               cdsExcluidosNOME.AsString    := qryCons99.FieldByname('DESCRICAO').AsString;
@@ -695,7 +709,8 @@ begin
         begin
           if qryCons100.FieldByname('VTOT2').AsFloat > 0 then
           begin
-            if not cdsExcluidos.Locate('NOME', qryCons100.FieldByname('DESCRICAO').AsString, []) then
+            // Sandro Silva 2023-11-06 if not cdsExcluidos.Locate('NOME', qryCons100.FieldByname('DESCRICAO').AsString, []) then
+            if not cdsExcluidos.Locate('NOME', EscapeQuoted(qryCons100.FieldByname('DESCRICAO').AsString), []) then
             begin
               cdsExcluidos.Append;
               cdsExcluidosNOME.AsString    := qryCons100.FieldByname('DESCRICAO').AsString;

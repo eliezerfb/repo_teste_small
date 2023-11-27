@@ -1,6 +1,6 @@
 object Form7: TForm7
-  Left = 369
-  Top = 77
+  Left = 200
+  Top = 127
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -18212,6 +18212,11 @@ object Form7: TForm7
       Visible = False
       OnClick = DuplicaOrcamentoClick
     end
+    object ImprimirOrdemdeServio2: TMenuItem
+      Caption = 'Imprimir Ordem de Servi'#231'o'
+      Visible = False
+      OnClick = ImprimirOrdemdeServio2Click
+    end
   end
   object ibDataSet10: TIBDataSet
     Database = IBDatabase1
@@ -19274,7 +19279,7 @@ object Form7: TForm7
     object ibDataSet3PROBLEMA: TIBStringField
       DisplayWidth = 128
       FieldName = 'PROBLEMA'
-      Size = 128
+      Size = 1000
     end
     object ibDataSet3IDENTIFI1: TIBStringField
       FieldName = 'IDENTIFI1'
@@ -19344,8 +19349,9 @@ object Form7: TForm7
     end
     object ibDataSet3OBSERVACAO: TIBStringField
       DisplayLabel = 'Observa'#231#227'o'
+      DisplayWidth = 128
       FieldName = 'OBSERVACAO'
-      Size = 254
+      Size = 1000
     end
     object ibDataSet3NF: TIBStringField
       DisplayLabel = 'Nota Fiscal'
@@ -19417,6 +19423,17 @@ object Form7: TForm7
       object GerarNotaFiscaldeServio2: TMenuItem
         Caption = 'Gerar Nota Fiscal de Servi'#231'o '
         OnClick = GerarNotaFiscaldeServio2Click
+      end
+      object N71: TMenuItem
+        Caption = '-'
+      end
+      object ConfigurarobservaoparaOS1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o para OS'
+        OnClick = ConfigurarobservaoparaOS1Click
+      end
+      object ConfigurarobservaoparaRecibo1: TMenuItem
+        Caption = 'Configurar observa'#231#227'o para Recibo'
+        OnClick = ConfigurarobservaoparaRecibo1Click
       end
       object N30: TMenuItem
         Caption = '-'
@@ -19659,6 +19676,10 @@ object Form7: TForm7
       object ransmitirNFe1: TMenuItem
         Caption = 'NF-e - Transmitir as pr'#243'ximas '
         OnClick = ransmitirNFe1Click
+      end
+      object InutilizaodeNFes1: TMenuItem
+        Caption = 'Inutiliza'#231#227'o de NF-e'#39's'
+        OnClick = InutilizaodeNFes1Click
       end
       object N35: TMenuItem
         Caption = '-'
@@ -22287,7 +22308,6 @@ object Form7: TForm7
   end
   object DSPerfilTributa: TDataSource
     DataSet = ibdPerfilTributa
-    OnStateChange = DSPerfilTributaStateChange
     Left = 40
     Top = 723
   end
@@ -22605,7 +22625,6 @@ object Form7: TForm7
   end
   object DSParametroTributa: TDataSource
     DataSet = ibdParametroTributa
-    OnStateChange = DSPerfilTributaStateChange
     Left = 40
     Top = 757
   end

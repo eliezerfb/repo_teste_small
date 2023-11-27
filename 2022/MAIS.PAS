@@ -31,7 +31,7 @@ uses
 //  procedure DropViewProcedure;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2023038'; // Sandro Silva 2023-10-06 const BUILD_DO_BANCO = '2023036'; // Sandro Silva 2023-09-29 BUILD_DO_BANCO = '2023034';
+const BUILD_DO_BANCO = '2023042'; // Sandro Silva 2023-11-24 const BUILD_DO_BANCO = '2023040'; // Sandro Silva 2023-11-17 const BUILD_DO_BANCO = '2023038'; 
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
 const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
@@ -451,6 +451,7 @@ type
     function RetornarWhereNotasManifestar: String;
     procedure DefinirBuildEXEDAT;
     procedure EnviarXMLContabilidadeAut;
+    procedure ClickOKInformacoesInutilizacao(Sender: TObject);
 
   public
     fDias : Real;
@@ -508,6 +509,7 @@ type
     function AvisoConfig(bP1 : Boolean):Boolean;
     function GetCNPJCertificado(SubjectName: String): String;
     function Small_InputForm(sP1, sP2, sP3: String) : String;
+    function Small_InputFormMemo(sP1, sP3: String; MaxLength : integer) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
     function Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0): String;    
     function NcmDeMedicamentos(sNcm: String): Boolean;
@@ -556,7 +558,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uIconesSistema
   , uFrmConfigEmailAutContabilidade
   , uDialogs
-  ;
+  , uSmallResourceString;
 
 {$R *.DFM}
 
@@ -936,8 +938,8 @@ begin
         IBQuery.ParamByName('DATA').AsString     := sData;
         IBQuery.ExecSQL;
         Result := True
-      end; // if (iNINI > 0) and (iNFIN > 0) then
-    end; // if xmlNodeValue(sXML, '//infInut/cStat') = '102' then
+      end;
+    end; 
   except
   end;
 end;
@@ -945,8 +947,9 @@ end;
 
 function Aviso2(sP1: String) : Boolean;
 begin
-  Form29.Button1.Visible := False;
-  Form29.Label1.Caption  := sP1;
+  Form29.EscondeComponentesPadrao;
+  Form29.btnOK.Visible := False;
+  Form29.lblTitulo2.Caption  := sP1;
   Form29.Show;
   Form29.Repaint;
   Result := True;
@@ -955,7 +958,8 @@ end;
 
 function Aviso(sP1: String) : Boolean;
 begin
-  Form29.Label1.Caption := sP1;
+  Form29.EscondeComponentesPadrao;
+  Form29.lblTitulo2.Caption := sP1;
   Form29.ShowModal;
   
   Result := True;
@@ -963,6 +967,8 @@ end;
 
 function tForm1.Small_InputForm_Dados(sP1: String) : boolean;
 begin
+  Form29.EscondeComponentesPadrao;
+
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
@@ -974,42 +980,84 @@ begin
   Form29.Panel_Dados.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
-  
-  Result                := True;
+
+  if Form29.btnCancelar.Visible then
+    Result := Form29.ClicouOK
+  else
+    Result := True;  
 end;
 
 function tForm1.Small_InputForm(sP1, sP2, sP3: String) : String;
 begin
+  Form29.EscondeComponentesPadrao;
+  Form29.btnCancelar.Visible      := True;
+  
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
-  Form29.Label1.Font.Size := 18;
-  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+  Form29.lblTitulo2.Caption := sP1+chr(10)+chr(10)+sP2;
 
   Form29.Edit1.Visible  := True;
   Form29.Edit1.Text     := sP3;
-  Form29.Edit1.Left     := Form29.Label1.Left;
+  Form29.Edit1.Left     := Form29.lblTitulo2.Left;
 
   Form29.ShowModal;
 
-  Result                := Form29.Edit1.Text;
+  //Result                := Form29.Edit1.Text; Mauricio Parizotto 2023-11-22
+  if Form29.ClicouOK then
+    Result := Form29.Edit1.Text
+  else
+    Result := sP3;
 
   Form29.Edit1.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
 end;
 
-function tForm1.Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0) : String;
+function tForm1.Small_InputFormMemo(sP1, sP3: String; MaxLength : integer) : String;
 begin
+  Form29.EscondeComponentesPadrao;
+  Form29.btnCancelar.Visible  := True;
+  
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
-  Form29.Label1.Font.Size := 18;
-  Form29.Label1.Caption := sP1+chr(10)+chr(10)+sP2;
+  Form29.lblTitulo2.Caption := sP1;
+
+  Form29.memTexto.Visible         := True;
+  Form29.lblCaracteresMax.Visible := True;
+  Form29.memTexto.Text            := sP3;
+  Form29.memTexto.Left            := 60;
+  Form29.memTexto.Height          := 210;
+  Form29.memTexto.Top             := 170;
+  Form29.memTexto.Width           := 910;
+  Form29.memTexto.MaxLength       := MaxLength;
+  Form29.lblCaracteresMax.Left    := 60;
+  Form29.lblCaracteresMax.top     := 390;
+
+  Form29.ShowModal;
+
+  if Form29.ClicouOK then
+    Result := Form29.memTexto.Text
+  else
+    Result := sP3;
+
+  Form29.memTexto.Visible  := False;
+  Form7.AlphaBlendValue := 255;
+  Form29.memTexto.Text     := '';
+end;
+
+function tForm1.Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0) : String;
+begin
+  Form29.EscondeComponentesPadrao;
+  Form7.AlphaBlend      := True;
+  Form7.AlphaBlendValue := 0;
+
+  Form29.lblTitulo2.Caption := sP1+chr(10)+chr(10)+sP2;
 
   Form29.Edit1.Visible  := True;
   Form29.Edit1.Text     := sP3;
-  Form29.Edit1.Left     := Form29.Label1.Left;
+  Form29.Edit1.Left     := Form29.lblTitulo2.Left;
 
   Form29.MaxLength := AnMaxLength;
   Form29.DefinirSomenteNumeros;
@@ -3781,7 +3829,8 @@ begin
     Mauricio Parizotto 2023-10-25}
     MensagemSistema('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 400 para o BANCO '+
                     Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-                    Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
+                    //Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+ Mauricio Parizotto 2023-11-07
+                    Chr(10)+'Este arquivo deverá ser transmitido conforme orientação específica do banco.'+
                     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10)
                     ,msgAtencao);
   end;
@@ -3812,7 +3861,8 @@ begin
     Mauricio Parizotto 2023-10-25}
     MensagemSistema('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 240 para o BANCO '+
                     Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-                    Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
+                    //Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+ Mauricio Parizotto 2023-11-07
+                    Chr(10)+'Este arquivo deverá ser transmitido conforme orientação específica do banco.'+
                     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10)
                     ,msgAtencao);
   end;
@@ -5759,6 +5809,11 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  {Sandro Silva 2023-11-06 inicio}
+  //Alguns lugares da acesso negado no TASKKILL Ficha 7556
+  Application.Terminate;
+  Halt(1);
+  {Sandro Silva 2023-11-06 fim}
 end;
 
 procedure TForm1.Postit1Click(Sender: TObject);
@@ -6167,9 +6222,8 @@ end;
 
 procedure TForm1.imgOrdemServicoClick(Sender: TObject);
 begin
-  //
   if not Legal(True) then Abort;
-  //
+
   try
     if not FechaTudo(bFechaTudo) then
       Exit;
@@ -6179,9 +6233,9 @@ begin
     Form7.sRPS := 'N';
     Form7.Show;
   except end;
-  //
-  if Form30.Visible then Form30.Show;
-  //
+
+  if Form30.Visible then
+    Form30.Show;
 end;
 
 procedure TForm1.Cadastrodetcnicos1Click(Sender: TObject);
@@ -8712,6 +8766,7 @@ begin
           end;
         end;
 
+        {Sandro Silva 2023-11-20 inicio
         // cProdANP
         if (Length(LimpaNumero(Form7.ibDataset4LIVRE1.AsString)) = 9) and (Length(AllTrim(Form7.ibDataset4LIVRE1.AsString)) = 9) then
         begin
@@ -8722,6 +8777,7 @@ begin
             Form7.ibDataset4.Post;
           except end;
         end;
+        }
 
         // vUnid
         if (Copy(Form7.ibDataSet4LIVRE3.AsString,1,7) = '<vUnid=') then // Pereti trib ipi por valor unitário engarafados bebidas
@@ -8907,6 +8963,8 @@ begin
     MensagemSistema('Senha do administrador inválida.');
 end;
 
+{Dailon Parisotto (f-7540) 2023-11-06 inicio
+
 procedure TForm1.InutilizarNFe1Click(Sender: TObject);
 var
   sID, sRetorno, aAno, aModelo, aSerie, aIni, aFim, txtJustificativa: string;
@@ -8962,22 +9020,203 @@ begin
               //ShowMessage('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+sRetorno); Mauricio Parizotto 2023-10-25
               MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+sRetorno,msgAtencao);
             end;
-
-            {$IFDEF VER150}
-            DecimalSeparator := ',';
-            DateSeparator    := '/';
-            {$ELSE}
-            FormatSettings.DecimalSeparator := ',';
-            FormatSettings.DateSeparator    := '/';
-            {$ENDIF}
-          end;
+                                        }
+//            {$IFDEF VER150}
+//            DecimalSeparator := ',';
+//            DateSeparator    := '/';
+//            {$ELSE}
+//            FormatSettings.DecimalSeparator := ',';
+//            FormatSettings.DateSeparator    := '/';
+//            {$ENDIF}
+{          end;
         end;
       end;
     end;
   end;
-
   Screen.Cursor            := crDefault;
+end;                                       }
+
+procedure TForm1.InutilizarNFe1Click(Sender: TObject);
+var
+  nLengthEdit1, nLengthEdit2, nLengthEdit3,
+  nLengthEdit4, nLengthEdit5 : Integer;
+  cRetorno: String;
+begin
+  nLengthEdit1 := Form29.Edit_01.MaxLength;
+  nLengthEdit2 := Form29.Edit_02.MaxLength;
+  nLengthEdit3 := Form29.Edit_03.MaxLength;
+  nLengthEdit4 := Form29.Edit_04.MaxLength;
+  nLengthEdit5 := Form29.Edit_05.MaxLength;
+  try
+    Form29.Label_01.Visible := True;
+    Form29.Label_02.Visible := True;
+    Form29.Label_03.Visible := True;
+    Form29.Label_04.Visible := True;
+    Form29.Label_05.Visible := True;
+    Form29.btnCancelar.Visible := True;
+
+    Form29.Edit_01.MaxLength := 4;
+    Form29.Edit_02.MaxLength := 3;
+    Form29.Edit_03.MaxLength := 9;
+    Form29.Edit_04.MaxLength := 9;
+    Form29.Edit_05.MaxLength := 0;
+
+    Form29.Edit_01.Visible := True;
+    Form29.Edit_01.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_01.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_02.Visible := True;
+    Form29.Edit_02.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_02.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_03.Visible := True;
+    Form29.Edit_03.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_03.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_04.Visible := True;
+    Form29.Edit_04.OnKeyPress := Form29.SomenteNumerosKeyPress;
+    Form29.Edit_04.OnChange   := Form29.SomenteNumerosChange;
+    Form29.Edit_05.Visible := True;
+
+    Form29.Label_01.Caption := 'Insira o ano da nota a ser inutilizada:';
+    Form29.Label_02.Caption := 'Insira a série da nota a ser inutilizada:';
+    Form29.Label_03.Caption := 'Insira o número da nota inicial a ser inutilizada:';
+    Form29.Label_04.Caption := 'Insira o número da nota final a ser inutilizada:';
+    Form29.Label_05.Caption := 'Insira a justificativa com no mínimo 15 caracteres:';
+
+    Form29.Edit_01.Text := EmptyStr;
+    Form29.Edit_02.Text := EmptyStr;
+    Form29.Edit_03.Text := EmptyStr;
+    Form29.Edit_04.Text := EmptyStr;
+    Form29.Edit_05.Text := 'Exemplo de inutilizacao da NF-e';
+
+    Form29.btnOK.OnClick := ClickOKInformacoesInutilizacao;
+
+    if not Form1.Small_InputForm_Dados('Inutilização de NF-e') then
+      Exit;
+
+    Screen.Cursor := crHourGlass;
+    try
+      Form29.Edit_01.Text := Copy(Form29.Edit_01.Text, Length(Form29.Edit_01.Text)-1, 2);
+
+      if StrToIntDef(Form29.Edit_02.Text,0) > 0 then
+        Form29.Edit_02.Text := IntToStr(StrToIntDef(Form29.Edit_02.Text,0));
+
+      if StrToIntDef(Form29.Edit_03.Text,0) > 0 then
+        Form29.Edit_03.Text := IntToStr(StrToIntDef(Form29.Edit_03.Text,0));
+      if StrToIntDef(Form29.Edit_04.Text,0) > 0 then
+        Form29.Edit_04.Text := IntToStr(StrToIntDef(Form29.Edit_04.Text,0));
+
+      Form29.Edit_05.Text := ConverteAcentos(Form29.Edit_05.Text);
+
+      if Application.MessageBox(Pchar('Será inutilizada da numeração ' + Form29.Edit_03.Text + ' à ' + Form29.Edit_04.Text + ' da série ' + Form29.Edit_02.Text + '.'), Pchar(_cTituloMsg), MB_OKCANCEL + MB_ICONWARNING) = mrCancel then
+        Exit;
+
+      ConfiguraNFE;
+      
+      try
+        Form7.ibDataset15.Locate('NFEID','55',[loPartialKey]);
+
+        cRetorno := Form7.spdNFe.InutilizarNF(EmptyStr, Form29.Edit_01.Text,
+                                              LimpaNumero(Form7.ibDataSet13CGC.AsString), '55',
+                                              Form29.Edit_02.Text, Form29.Edit_03.Text,
+                                              Form29.Edit_04.Text, Form29.Edit_05.Text
+                                             );
+
+        if GravarInutilizacao(cRetorno, Form1.ibQuery2) then
+        begin
+          cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
+          MensagemSistema(cRetorno);
+        end else
+        begin
+          cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
+          MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+cRetorno,msgAtencao);
+        end;
+      except
+        cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
+        MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+cRetorno,msgAtencao);
+      end;
+                                  
+      {$IFDEF VER150}
+      DecimalSeparator := ',';
+      DateSeparator    := '/';
+      {$ELSE}
+      FormatSettings.DecimalSeparator := ',';
+      FormatSettings.DateSeparator    := '/';
+      {$ENDIF}
+    finally
+      Screen.Cursor := crDefault;
+    end;
+  finally
+    Form29.Edit_01.OnKeyPress := nil;
+    Form29.Edit_01.OnChange   := nil;
+    Form29.Edit_02.OnKeyPress := nil;
+    Form29.Edit_02.OnChange   := nil;
+    Form29.Edit_03.OnKeyPress := nil;
+    Form29.Edit_03.OnChange   := nil;
+    Form29.Edit_04.OnKeyPress := nil;
+    Form29.Edit_04.OnChange   := nil;
+
+    Form29.Edit_01.Text := EmptyStr;
+    Form29.Edit_02.Text := EmptyStr;
+    Form29.Edit_03.Text := EmptyStr;
+    Form29.Edit_04.Text := EmptyStr;
+    Form29.Edit_05.Text := EmptyStr;
+
+    Form29.Edit_01.MaxLength := nLengthEdit1;
+    Form29.Edit_02.MaxLength := nLengthEdit2;
+    Form29.Edit_03.MaxLength := nLengthEdit3;
+    Form29.Edit_04.MaxLength := nLengthEdit4;
+    Form29.btnCancelar.Visible := False;
+    Form29.btnOK.OnClick := Form29.btnOKClick;
+  end;
 end;
+
+procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
+begin
+  if StrToIntDef(Form29.Edit_01.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe o ano da nota.', msgAtencao);
+    Form29.Edit_01.SetFocus;
+    Exit;
+  end;
+  if (Length(Form29.Edit_01.Text) <= 1) then
+  begin
+    MensagemSistema('O ano informado é inválido.', msgAtencao);
+    Form29.Edit_01.SetFocus;
+    Exit;
+  end;
+  if StrToIntDef(Form29.Edit_02.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe a série da nota.', msgAtencao);
+    Form29.Edit_02.SetFocus;
+    Exit;
+  end;
+  if StrToIntDef(Form29.Edit_03.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe o número da nota inicial.', msgAtencao);
+    Form29.Edit_03.SetFocus;
+    Exit;
+  end;
+  if StrToIntDef(Form29.Edit_04.Text,0) = 0 then
+  begin
+    MensagemSistema('Informe o número da nota final.', msgAtencao);
+    Form29.Edit_04.SetFocus;
+    Exit;
+  end;
+  if Trim(Form29.Edit_05.Text) = EmptyStr then
+  begin
+    MensagemSistema('Informe a justificativa.', msgAtencao);
+    Form29.Edit_05.SetFocus;
+    Exit;
+  end;
+  if Length(Trim(Form29.Edit_05.Text)) < 15 then
+  begin
+    MensagemSistema('Informe pelo menos 15 caracteres na justificativa.', msgAtencao);
+    Form29.Edit_05.SetFocus;
+    Exit;
+  end;
+
+  Form29.btnOKClick(Form29);
+end;
+{Dailon Parisotto (f-7540) 2023-11-06 fim}
 
 procedure TForm1.estarDisponibilidadedeServiosdasSecretariasdeFazenda1Click(
   Sender: TObject);
@@ -10764,6 +11003,14 @@ begin
   if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
     Exit;
 
+  //Mauricio Parizotto 2023-11-17
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+    Exit;
+
+  //Mauricio Parizotto 2023-11-17
+  if Form7.sModulo = 'ICM' then
+    Exit;
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
@@ -11374,6 +11621,14 @@ begin
 
   //Mauricio Parizotto 2023-09-26
   if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
+    Exit;
+
+  //Mauricio Parizotto 2023-11-17
+  if Form7.sModulo = 'PERFILTRIBUTACAO' then
+    Exit;
+
+  //Mauricio Parizotto 2023-11-17
+  if Form7.sModulo = 'ICM' then
     Exit;
 
   if Form5.Visible then

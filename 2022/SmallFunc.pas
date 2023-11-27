@@ -120,6 +120,7 @@ uses
   // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
   function processExists(exeFileName: string): Boolean;
   function ConsultaProcesso(sDescricao:String): boolean;
+  function QuebraLinhaHtml(sTexto : string) : string;
 
 implementation
 
@@ -2799,6 +2800,11 @@ begin
   until not Process32Next(Snapshot, ProcessEntry32);
 
   CloseHandle (Snapshot);
+end;
+
+function QuebraLinhaHtml(sTexto : string) : string;
+begin
+  Result := StringReplace(sTexto,#$D#$A,'<br>',[rfReplaceAll]);
 end;
 
 end.
