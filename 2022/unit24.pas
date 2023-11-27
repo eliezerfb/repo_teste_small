@@ -303,7 +303,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
-  uFuncoesBancoDados, uDialogs;
+  uFuncoesBancoDados, uDialogs, uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -1652,6 +1652,9 @@ begin
     Form7.ibDataSet14.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]);
     //
     Form7.ibDataSet24.Enablecontrols;
+
+    LogRetaguarda('Form7.ibDataSet24.EnableControls; 1656'); // Sandro Silva 2023-11-27
+
     dBGrid2.DataSource := Form7.DataSource14;
     Form7.ibDataSet14.EnableControls;
     //
@@ -2698,6 +2701,9 @@ begin
     // Form Ativate
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet24.EnableControls;
+
+    LogRetaguarda('Form7.ibDataSet24.EnableControls; 2705'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.EnableControls;
     Form7.ibDataSet18.EnableControls;
     Form7.ibDataSet8.EnableControls;
@@ -2746,6 +2752,9 @@ begin
       Form7.ibDataset23.Post;
     //
     Form7.ibDataSet24.DisableControls;
+
+    LogRetaguarda('ibDataSet24.DisableControls; 2750'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.DisableControls;
     //
     try
@@ -2782,6 +2791,9 @@ begin
     Grid_Compra(True);
 
     Form7.ibDataSet24.EnableControls;
+
+    LogRetaguarda('Form7.ibDataSet24.EnableControls; 2795'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.EnableControls;
   end;
 
@@ -2797,6 +2809,9 @@ begin
   begin
     sTitulo := Form7.sTitulo;
     Form7.ibDataSet24.DisableControls;
+
+    LogRetaguarda('ibDataSet24.DisableControls; 2804'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.DisableControls;
     try
       Form1.bFechaTudo           := False;
@@ -2821,6 +2836,9 @@ begin
 
     Form1.bFechaTudo           := True;
     Form7.ibDataSet24.EnableControls;
+
+    LogRetaguarda('Form7.ibDataSet24.EnableControls; 2840'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.EnableControls;
   end;
 

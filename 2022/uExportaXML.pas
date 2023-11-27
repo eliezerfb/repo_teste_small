@@ -62,7 +62,7 @@ uses
   , uSmallResourceString
   , unit7
   , DateUtils
-  , uDialogs;
+  , uDialogs, uFuncoesRetaguarda;
 
 {$R *.dfm}
 
@@ -158,6 +158,9 @@ begin
       if cbNFeEntrada.Checked then
       begin
         Form7.ibDataSet24.DisableControls;
+
+        LogRetaguarda('ibDataSet24.DisableControls; 162'); // Sandro Silva 2023-11-27
+
         try
           Form7.ibDataSet24.Close;
           Form7.ibDataSet24.SelectSql.Clear;
@@ -176,6 +179,9 @@ begin
                                                     .getCaminhoArquivos;
         finally
           Form7.ibDataSet24.EnableControls;
+
+          LogRetaguarda('Form7.ibDataSet24.EnableControls; 183'); // Sandro Silva 2023-11-27
+
         end;
       end;
 

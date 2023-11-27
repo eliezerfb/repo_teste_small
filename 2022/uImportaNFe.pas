@@ -154,6 +154,9 @@ begin
     Form7.ibDataset2.DisableControls;
     Form7.ibDataset23.DisableControls;
     Form7.ibDataset24.DisableControls;
+
+    LogRetaguarda('ibDataSet24.DisableControls; 158'); // Sandro Silva 2023-11-27
+
     Form7.ibDataset4.DisableControls;
 
     //Mauricio Parizotto 2023-05-02
@@ -978,7 +981,10 @@ begin
   end;
 
   try
-    Form7.ibDataset24.EnableControls
+    Form7.ibDataset24.EnableControls;
+
+    LogRetaguarda('Form7.ibDataSet24.EnableControls; 986'); // Sandro Silva 2023-11-27
+
   except
   end;
 
