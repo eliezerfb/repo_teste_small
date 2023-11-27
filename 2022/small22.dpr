@@ -201,7 +201,12 @@ uses
   uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas',
   uFrmPrecificacaoProduto in 'uFrmPrecificacaoProduto.pas' {FrmPrecificacaoProduto},
   uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
-  uOSSections in '..\..\unit_compartilhada\uOSSections.pas';
+  uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
+  uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
+  uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
+  uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
+  uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
+  uOrdemServico in 'units\uOrdemServico.pas';
 
 {$R *.RES}
 

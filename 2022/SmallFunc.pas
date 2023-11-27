@@ -121,6 +121,7 @@ uses
   function processExists(exeFileName: string): Boolean;
   function ConsultaProcesso(sDescricao:String): boolean;
   function MontaMascaraCasaDec(qtdCasas : integer) : string;
+  function QuebraLinhaHtml(sTexto : string) : string;
 
 implementation
 
@@ -2816,6 +2817,11 @@ begin
     8: Result := '#,##0.00000000';
     9: Result := '#,##0.000000000';
   end;
+end;
+
+function QuebraLinhaHtml(sTexto : string) : string;
+begin
+  Result := StringReplace(sTexto,#$D#$A,'<br>',[rfReplaceAll]);
 end;
 
 end.

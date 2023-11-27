@@ -13,9 +13,6 @@ uses
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
   uframeCampo;
 
-const TEXTO_NAO_MOVIMENTA_ESTOQUE          = '= Não movimenta o Estoque';
-const TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS = '0 Usar o custo de compra nas notas';
-
 const ID_CONSULTANDO_INSTITUICAO_FINANCEIRA = 1;
 const ID_CONSULTANDO_FORMA_DE_PAGAMENTO     = 2;
 const ID_CONSULTANDO_CFOP                   = 3; //Mauricio Parizotto 2023-08-25
@@ -238,53 +235,6 @@ type
     Button18: TBitBtn;
     Button14: TBitBtn;
     Orelha_promo: TTabSheet;
-    ORELHA_CFOP: TTabSheet;
-    Image7: TImage;
-    __RR: TLabel;
-    __AP: TLabel;
-    __AM: TLabel;
-    __AC: TLabel;
-    __RO: TLabel;
-    __PA: TLabel;
-    __MT: TLabel;
-    __MA: TLabel;
-    __CE: TLabel;
-    __RN: TLabel;
-    __PB: TLabel;
-    __PE: TLabel;
-    __AL: TLabel;
-    __SE: TLabel;
-    __BA: TLabel;
-    __PI: TLabel;
-    __TO: TLabel;
-    __DF: TLabel;
-    __GO: TLabel;
-    __MS: TLabel;
-    __SP: TLabel;
-    __MG: TLabel;
-    __ES: TLabel;
-    __RJ: TLabel;
-    __PR: TLabel;
-    __SC: TLabel;
-    __RS: TLabel;
-    Label100: TLabel;
-    Label73: TLabel;
-    Label74: TLabel;
-    Label75: TLabel;
-    Label76: TLabel;
-    Label77: TLabel;
-    Label78: TLabel;
-    Label79: TLabel;
-    Label80: TLabel;
-    dbeIcmCFOP: TSMALL_DBEdit;
-    SMALL_DBEdit54: TSMALL_DBEdit;
-    SMALL_DBEdit55: TSMALL_DBEdit;
-    SMALL_DBEdit56: TSMALL_DBEdit;
-    SMALL_DBEdit57: TSMALL_DBEdit;
-    SMALL_DBEdit58: TSMALL_DBEdit;
-    SMALL_DBEdit59: TSMALL_DBEdit;
-    SMALL_DBEdit60: TSMALL_DBEdit;
-    SMALL_DBEditX: TSMALL_DBEdit;
     ORELHA_COMISSAO: TTabSheet;
     Label81: TLabel;
     Label82: TLabel;
@@ -389,75 +339,9 @@ type
     framePesquisaProdComposicao: TframePesquisaProduto;
     lblLimiteCredDisponivel: TLabel;
     eLimiteCredDisponivel: TEdit;
-    Label108: TLabel;
-    SMALL_DBEdit44: TSMALL_DBEdit;
-    Label109: TLabel;
-    SMALL_DBEdit47: TSMALL_DBEdit;
-    DBCheckSobreIPI: TDBCheckBox;
-    DBCheckSobreOutras: TDBCheckBox;
-    DBCheckFRETESOBREIPI: TDBCheckBox;
-    Label110: TLabel;
-    DBMemo4: TDBMemo;
-    cbMovimentacaoEstoque: TComboBox;
-    Label111: TLabel;
     IBQPLANOCONTAS: TIBQuery;
-    cbIntegracaoFinanceira: TComboBox;
-    orelha_PerfilTrib: TTabSheet;
-    Label113: TLabel;
-    Label114: TLabel;
-    Label115: TLabel;
-    Label116: TLabel;
-    lblCSOSNPerfilTrib: TLabel;
-    lblCSTPerfilTrib: TLabel;
-    Label119: TLabel;
-    Label120: TLabel;
-    lblCitPerfilTrib: TLabel;
-    lblCFOPNfce: TLabel;
-    lblCSOSN_NFCePerfilTrib: TLabel;
-    lblCST_NFCePerfilTrib: TLabel;
-    edtIVAPerfilTrb: TSMALL_DBEdit;
-    edtCITPerfilTrib: TSMALL_DBEdit;
-    cboCSTPerfilTrib: TComboBox;
-    cboTipoItemPerfTrib: TComboBox;
-    cboIPPTPerfTrib: TComboBox;
-    cboIATPerfTrib: TComboBox;
-    cboOrigemPerfTrib: TComboBox;
-    cboCSOSNPerfilTrib: TComboBox;
-    cboCFOP_NFCePerfTrib: TComboBox;
-    cboCST_NFCePerfilTrib: TComboBox;
-    cboCSOSN_NFCePerfilTrib: TComboBox;
-    lblAliqNFCEPerfilTrib: TLabel;
-    edtAliqNFCEPerfilTrib: TSMALL_DBEdit;
-    Label128: TLabel;
-    edtDescricaoPerfilTrib: TSMALL_DBEdit;
-    Label129: TLabel;
-    orelha_PerfilTrib_IPI: TTabSheet;
-    orelha_PerfilTrib_PISCOFINS: TTabSheet;
-    GroupBox1: TGroupBox;
-    Label112: TLabel;
-    lblCST_PIS_S_PerTrib: TLabel;
-    lblCST_COFINS_S_PerTrib: TLabel;
-    cboCST_PISCOFINS_S_PerTrib: TComboBox;
-    edtPercPISPerfiLTrib: TSMALL_DBEdit;
-    edtPercCofinsPefilTrib: TSMALL_DBEdit;
-    GroupBox2: TGroupBox;
-    Label131: TLabel;
-    lblCST_PIS_E_PerTrib: TLabel;
-    lblCST_COFINS_E_PerTrib: TLabel;
-    cboCST_PISCOFINS_E_PerTrib: TComboBox;
-    edtPecPISEntPerfilTrib: TSMALL_DBEdit;
-    edtPercCofnsEntPerfilTrib: TSMALL_DBEdit;
-    Label134: TLabel;
-    Label135: TLabel;
-    Label136: TLabel;
-    cboCST_IPI_PerTrib: TComboBox;
-    edtPercIPIPerfilTrib: TSMALL_DBEdit;
-    edtCodEnquadPerfilTrib: TSMALL_DBEdit;
     lbBCPISCOFINS: TLabel;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
-    lblAtencaoPerfilTrib: TLabel;
-    lbAtencaoIPI: TLabel;
-    lbAtencaoPisCofins: TLabel;
     Label118: TLabel;
     fraPerfilTrib: TfFrameCampo;
     procedure Image204Click(Sender: TObject);
@@ -554,8 +438,6 @@ type
     procedure Image23Click(Sender: TObject);
     procedure SMALL_DBEdit1MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure DBMemo1KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBMemo2KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBMemo2Enter(Sender: TObject);
@@ -615,9 +497,6 @@ type
     procedure Orelha_promoEnter(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure SMALL_DBEdit31Change(Sender: TObject);
-    procedure ORELHA_CFOPShow(Sender: TObject);
-    procedure __RRClick(Sender: TObject);
-    procedure SMALL_DBEditXExit(Sender: TObject);
     procedure _RRClick(Sender: TObject);
     procedure SMALL_DBEditYExit(Sender: TObject);
     procedure ORELHA_COMISSAOEnter(Sender: TObject);
@@ -670,29 +549,8 @@ type
     procedure framePesquisaProdComposicaodbgItensPesqKeyDown(
       Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure DBGrid3CellClick(Column: TColumn);
-    procedure cbIntegracaoFinanceiraExit(Sender: TObject);
-    procedure cbMovimentacaoEstoqueExit(Sender: TObject);
-    procedure DBMemo4Enter(Sender: TObject);
     procedure ComboBoxEnter(Sender: TObject);
-    procedure DBMemo4KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
-    procedure cboCST_IPI_PerTribChange(Sender: TObject);
-    procedure orelha_PerfilTrib_IPIShow(Sender: TObject);
-    procedure orelha_PerfilTrib_IPIEnter(Sender: TObject);
-    procedure cboCST_PISCOFINS_S_PerTribChange(Sender: TObject);
-    procedure cboCST_PISCOFINS_E_PerTribChange(Sender: TObject);
-    procedure edtDescricaoPerfilTribMouseMove(Sender: TObject;
-      Shift: TShiftState; X, Y: Integer);
-    procedure cboTipoItemPerfTribChange(Sender: TObject);
-    procedure cboIPPTPerfTribChange(Sender: TObject);
-    procedure cboIATPerfTribChange(Sender: TObject);
-    procedure cboOrigemPerfTribChange(Sender: TObject);
-    procedure cboCFOP_NFCePerfTribChange(Sender: TObject);
-    procedure cboCSTPerfilTribChange(Sender: TObject);
-    procedure cboCST_NFCePerfilTribChange(Sender: TObject);
-    procedure cboCSOSN_NFCePerfilTribChange(Sender: TObject);
-    procedure cboCSOSNPerfilTribChange(Sender: TObject);
-    procedure edtCITPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -700,11 +558,9 @@ type
     procedure AtribuirItemPesquisaComposicao;
     procedure DefinirLimiteDisponivel;
     procedure AlteracaoInstituicaoFinanceira;
-    procedure AtualizaObjComValorDoBanco;
     { Private declarations }
     function MostraImagemEstoque: Boolean;
     procedure CarregaCit;
-    procedure CarregaCitPerfilTrib;
   public
     { Public declarations }
 
@@ -967,11 +823,6 @@ begin
       end;
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
-    end;
-
-    if Form7.sModulo = 'PERFILTRIBUTACAO' then
-    begin
-      Form10.Caption := form7.ibdPerfilTributaDESCRICAO.AsString;
     end;
 
     if Form7.sModulo = 'RECEBER' then
@@ -1630,20 +1481,6 @@ begin
         Form10.dBGrid3.Visible := False;
       end;
     end;
-
-    {Sandro Silva 2023-06-28 inicio}
-    // Contas a receber
-    if Form7.sModulo = 'ICM' then
-    begin
-      Form7.ibDataSet14.Edit;
-
-      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
-      begin
-        Form7.ibDataSet14CONTA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
-        Form10.dBGrid3.Visible := False;
-      end;
-    end;
-    {Sandro Silva 2023-06-28 fim}
   except
   end;
 end;
@@ -1654,9 +1491,7 @@ begin
   try
     Form7.ArquivoAberto.MoveBy(-1);
   except
-  end;  
-
-  AtualizaObjComValorDoBanco; // Sandro Silva 2023-06-28
+  end;
     
   try
     Form7.IBTransaction1.CommitRetaining;
@@ -1974,40 +1809,6 @@ begin
         dBGrid3.Columns[0].Width := 310;
       end;
       {Sandro Silva 2023-06-21 fim}
-      {Sandro Silva 2023-06-28 inicio}
-      if (vDataField = 'CONTA') and (Form7.sModulo = 'ICM') then
-      begin
-        // Procura
-        Form7.ibqConsulta.Close;
-        Form7.ibqConsulta.SelectSQL.Text :=
-          ' Select * '+
-          ' From CONTAS'+
-          ' Order by CONTA';
-        Form7.ibqConsulta.Open;
-
-        Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
-
-        dBgrid3.Columns.Items[0].FieldName := 'CONTA';
-        dBgrid3.Columns.Items[0].Width     := 40;
-
-        dBgrid3.Columns.Items[1].FieldName := 'NOME';
-        dBgrid3.Columns.Items[1].Width     := 245;
-        dBgrid3.Columns.Items[1].Visible   := True;
-
-        dBGrid3.Visible    := True;
-        dBGrid3.Top        := Top + 19;
-        dBGrid3.Left       := Left;
-        dBGrid3.Height     := 100;
-        dBGrid3.Width      := Width;
-        dBGrid3.Font       := Font;
-        dBGrid3.DataSource := Form7.DSConsulta;
-        //dBGrid3.Columns[0].Width := 310;
-      end;
-
-      if (vDataField = 'CFOP') and (Form7.sModulo = 'ICM') then
-        TSMALL_DBEdit(Sender).SelStart := 1;
-      {Sandro Silva 2023-06-28 fim}
-
     end;
   except
     //ShowMessage('Erro 10/77 comunique o suporte técnico.')Mauricio Parizotto 2023-10-25
@@ -2048,10 +1849,9 @@ begin
            (Form7.sModulo = 'COMPRA') or
             (Form7.sModulo = 'CLIENTES') or
              (Form7.sModulo = 'ESTOQUE')
-              //(Form7.sModulo = 'ICM')
              ) then
       begin
- 
+
         // Caixa
         if ((DataField = 'NOME')  and (Form7.sModulo = 'CAIXA'  ))
         or ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))
@@ -2075,15 +1875,15 @@ begin
             end;
          except end;
         end;
-  
+
         sText := AllTrim(Text);
-  
+
         if sText <> '' then
         begin
           tProcura := Form7.ibDataSet12;
           if Form7.sModulo = 'CAIXA' then
             tProcura := Form7.ibDataSet12;
-  
+
           if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
           begin
             if DataField = 'NOME' then
@@ -2091,10 +1891,10 @@ begin
             else
               tProcura := Form7.ibDataSet12;
           end;
-  
+
           if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
             tProcura := Form7.ibDataSet21;
-  
+
           if bGravaEscolha then
           begin
             if Pos(AnsiUpperCase(sText), AnsiUpperCase(AllTrim(tProcura.FieldByName('NOME').AsString))) <> 0 then
@@ -2126,8 +1926,8 @@ begin
         end;
       end;
       {Sandro Silva 2023-06-22 fim}
-      
-      
+
+
       {Mauricio Parizotto 2023-05-29 Inicio}
       if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
       begin
@@ -2160,25 +1960,6 @@ begin
         end;
       end;
       {Mauricio Parizotto 2023-06-16 Inicio}
-
-      {Sandro Silva 2023-06-28 inicio}
-      if (DataField = 'CONTA') and (Form7.sModulo = 'ICM') and (bGravaEscolha) then
-      begin
-        if Pos(AnsiUpperCase(Text), AnsiUpperCase(AllTrim(Form7.ibqConsulta.FieldByName('NOME').AsString))) <> 0 then
-        begin
-          GravaEscolha;
-        end else
-        begin
-          DataSource.DataSet.Edit;
-          DataSource.DataSet.FieldByName(DataField).AsString := '';
-          Form10.dBGrid3.Visible := False;
-
-          Exit;
-        end;
-      end;
-      if (DataField = 'CFOP') and (Form7.sModulo = 'ICM')then
-        DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
-      {Sandro Silva 2023-06-28 fim}
 
       {Dailon (f-7224) 2023-08-22 inicio}
       if Form7.sModulo = 'CLIENTES' then
@@ -2250,15 +2031,6 @@ begin
     if SMALL_DBEdit6.CanFocus then
       SMALL_DBEdit6.SetFocus;
   end;
-
-  {Sandro Silva 2023-06-28 inicio}
-  if Form7.sModulo = 'ICM' then
-  begin
-    if (dBGrid1.DataSource.Name = 'DataSource2') then
-      if SMALL_DBEdit56.CanFocus then
-        SMALL_DBEdit56.SetFocus;
-  end;
-  {Sandro Silva 2023-06-28 fim}
 
   dBGrid1.Visible := False;
 end;
@@ -2367,16 +2139,6 @@ begin
           Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
 
-        {Sandro Silva 2023-06-28 inicio}
-        if (vDataField = 'CONTA')
-          and (Form7.sModulo = 'ICM')
-          and (Form7.ibqConsulta.Active) then
-        begin
-          if Trim(TSMALL_DBEdit(Sender).Text) <> '' then
-            Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
-        end;
-        {Sandro Silva 2023-06-28 fim}
-
         if (Form7.sModulo = 'ESTOQUE')
           and (vDataField = 'NOME')
           and (Form7.ibDataSet21.Active) then
@@ -2441,13 +2203,7 @@ begin
   except
   end;
 
-  if Form7.sModulo <> 'ICM' then
-  begin
-    Orelhas.ActivePage := Orelha_cadastro;
-  end else
-  begin
-    Orelhas.ActivePage := Orelha_CFOP;
-  end;
+  Orelhas.ActivePage := Orelha_cadastro;
 
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
@@ -3129,15 +2885,6 @@ begin
       btnOK.SetFocus;
   end;
   {Mauricio Parizotto 2023-06-20 Fim}
-
-  {Sandro Silva 2023-06-28 inicio}
-  if (Form7.sModulo = 'ICM') and (DBGrid3.DataSource.Name = 'DSConsulta') then
-  begin
-    Form10.SMALL_DBEdit56.SetFocus;
-    Exit;
-  end;
-  {Sandro Silva 2023-06-28 fim}
-
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -3510,9 +3257,7 @@ begin
   try
     Form7.ArquivoAberto.MoveBy(1);
   except 
-  end;   
- 
-  AtualizaObjComValorDoBanco; // Sandro Silva 2023-06-28
+  end;
 
   try
     Form7.IBTransaction1.CommitRetaining;
@@ -3564,11 +3309,6 @@ begin
 
   //Mauricio Parizotto 2023-06-19
   DBGrid3.TabStop := False;
-
-  cbMovimentacaoEstoque.Items.Clear;
-  cbMovimentacaoEstoque.Items.Add('');
-  cbMovimentacaoEstoque.Items.Add(TEXTO_NAO_MOVIMENTA_ESTOQUE);
-  cbMovimentacaoEstoque.Items.Add(TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS);
 
   {$IFDEF VER150}
   {$ELSE}
@@ -3700,14 +3440,8 @@ begin
             end;
           end;
         end;
-        
-        if Form7.sModulo <> 'ICM' then
-        begin
-          Orelhas.ActivePage := Orelha_cadastro;
-        end else
-        begin
-          Orelhas.ActivePage := Orelha_CFOP;
-        end;
+
+        Orelhas.ActivePage := Orelha_cadastro;
       end else
       begin
         try
@@ -3724,13 +3458,7 @@ begin
       Mais1ini.Free;
     end else
     begin
-      if Form7.sModulo <> 'ICM' then
-      begin
-        Orelhas.ActivePage := Orelha_cadastro;
-      end else
-      begin
-        Orelhas.ActivePage := Orelha_CFOP;
-      end;
+      Orelhas.ActivePage := Orelha_cadastro;
     end;
 
     if (AllTrim(Form10.StringGrid1.Cells[0,1]) = '') and (AllTrim(Form10.StringGrid1.Cells[1,0]) = '') then
@@ -3755,18 +3483,8 @@ begin
   Form7.iFoco := 0;
   Form10.Paint;
 
-  //Mauricio Parizotto 2023-09-21
-  if Form7.sModulo = 'PERFILTRIBUTACAO' then
-    Exit;
-
-  if Form7.sModulo <> 'ICM' then
-  begin
-    Orelhas.ActivePage := orelha_cadastro;
-    Form10.Panel_1Enter(Sender);
-  end else
-  begin
-    Orelhas.ActivePage := Orelha_CFOP;
-  end;
+  Orelhas.ActivePage := orelha_cadastro;
+  Form10.Panel_1Enter(Sender);
 end;
 
 procedure TForm10.Label37MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -3784,14 +3502,9 @@ procedure TForm10.Image9Click(Sender: TObject);
 begin
   if not Form7.bSoLeitura then
   begin
-    if Form7.sModulo <> 'ICM' then
-    begin
-      Orelhas.ActivePage := orelha_cadastro;
-      if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
-    end else
-    begin
-      Orelhas.ActivePage := Orelha_CFOP;
-    end;
+    Orelhas.ActivePage := orelha_cadastro;
+    if dbgComposicao.CanFocus then
+      dbgComposicao.SetFocus;
   end;
 end;
 
@@ -3872,8 +3585,6 @@ begin
     Form10.Image1.Visible := False;
   end;
   
-  Image4.Picture.Bitmap := Image7.Picture.Bitmap;
-  
   Image5.Left     := 20;
   Image5.Top      := 80;
   Image5.Width    := 640 div 2;
@@ -3890,14 +3601,10 @@ begin
   orelha_preco.TabVisible      := False;
   orelha_PROMO.TabVisible      := False;
   orelha_CONVERSAO.TabVisible  := False;
-  orelha_CFOP.TabVisible       := False;
   orelha_COMISSAO.TabVisible   := False;
   orelha_CODEBAR.TabVisible    := False;
   orelha_TAGS.TabVisible       := False;
   orelha_MKT.TabVisible        := False;
-  orelha_PerfilTrib.TabVisible            := False; //Mauricio Parizotto 2023-08-31
-  orelha_PerfilTrib_IPI.TabVisible        := False; //Mauricio Parizotto 2023-08-31
-  orelha_PerfilTrib_PISCOFINS.TabVisible  := False; //Mauricio Parizotto 2023-08-31
 
   {Sandro Silva 2023-06-28 inicio}
   dbepPisSaida.DataField  := '';
@@ -3914,27 +3621,7 @@ begin
   lbBCPISCOFINS.Visible     := False;
   {Sandro Silva 2023-06-28 fim}
 
-  if Form7.sModulo = 'ICM' then
-  begin
-    dbepPisSaida.DataField  := '';
-    dbepPisSaida.DataSource := Form7.DataSource14;
-    dbepPisSaida.DataField  := 'PPIS';
 
-    dbepCofinsSaida.DataField  := '';
-    dbepCofinsSaida.DataSource := Form7.DataSource14;
-    dbepCofinsSaida.DataField  := 'PCOFINS';
-
-    gbPisCofinsSaida.Caption := '';//'PIS/COFINS';
-    gbPisCofinsEntrada.Visible := False;
-
-    dbeIcmBCPISCOFINS.Visible := True;
-    lbBCPISCOFINS.Visible     := True;
-
-    Form10.orelha_cadastro.TabVisible   := False;
-    Form10.orelha_CFOP.TabVisible       := True;
-    Form10.Orelha_PISCOFINS.TabVisible  := True; // Sandro Silva 2023-06-27
-  end;
- 
   if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
   begin
     orelha_cadastro.TabVisible   := True;
@@ -3952,17 +3639,6 @@ begin
     orelha_TAGS.TabVisible       := True;
     orelha_MKT.TabVisible        := True;
   end;
-
-
-  //Mauricio Parizotto 2023-08-31
-  if (Form7.sModulo = 'PERFILTRIBUTACAO') then
-  begin
-    orelha_cadastro.TabVisible              := False;
-    orelha_PerfilTrib.TabVisible            := True;
-    orelha_PerfilTrib_IPI.TabVisible        := True;
-    orelha_PerfilTrib_PISCOFINS.TabVisible  := True;
-  end;
-
 
   if Form7.sModulo = 'CLIENTES' then
   begin
@@ -4418,22 +4094,6 @@ begin
   end;
 end;
 
-procedure TForm10.DBMemo1KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-  begin
-    if bProximo then
-    begin
-      Perform(Wm_NextDlgCtl,0,0);
-    end
-    else
-      bProximo := True;
-  end
-  else
-    bProximo := False;
-end;
-
 procedure TForm10.DBMemo2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -4733,7 +4393,6 @@ begin
   {Sandro Silva 2023-06-27 inicio}
   orelha_cadastro.PageIndex  :=  0;
   Orelha_PISCOFINS.PageIndex :=  3;
-  ORELHA_CFOP.PageIndex      := 10;
   {Sandro Silva 2023-06-27 fim}
 
   Orelhas.Left   := 5;
@@ -5163,9 +4822,8 @@ begin
             end;
           end;
         end;
-      end; // for I := 1 to Form7.iCampos do
-    end; // if Form7.sModulo <> 'ICM' then
-
+      end;
+    end;
   except
     //ShowMessage('Erro número  13 comunique o suporte técnico.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro número  13 comunique o suporte técnico.',msgErro);
@@ -5221,20 +4879,9 @@ begin
     Button12.Visible := False;
   end;
 
-  if Form7.sModulo <> 'ICM' then
-  begin
-    Orelhas.ActivePage := orelha_cadastro;
-    if dbgComposicao.CanFocus then
-      dbgComposicao.SetFocus;
-  end else
-  begin
-    {Sandro Silva 2023-06-27 inicio}
-    ORELHA_CFOP.PageIndex      := 0;
-    Orelha_PISCOFINS.PageIndex := 1;
-    {Sandro Silva 2023-06-27 fim}
-
-    Orelhas.ActivePage := Orelha_CFOP;
-  end;
+  Orelhas.ActivePage := orelha_cadastro;
+  if dbgComposicao.CanFocus then
+    dbgComposicao.SetFocus;
 
   {Sandro Silva 2022-11-14 inicio}
   if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'VENDEDOR') then
@@ -5278,13 +4925,6 @@ begin
   Form10.Left := (Form7.Width - Form10.Width) div 2;
   Form10.Repaint;
   {Sandro Silva 2023-06-22 inicio}
-
-  //Mauricio Parizotto 2023-08-31
-  if Form7.sModulo = 'PERFILTRIBUTACAO' then
-  begin
-    if edtDescricaoPerfilTrib.CanFocus then
-      edtDescricaoPerfilTrib.SetFocus;
-  end;
 end;
 
 procedure TForm10.Button9Click(Sender: TObject);
@@ -8032,55 +7672,6 @@ begin
     }
   end;
 
-  if Form7.sModulo = 'ICM' then
-  begin
-      // 01-Operação Tributável com Alíquota Básica
-    // 02-Operação Tributável com Alíquota Diferenciada
-    // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
-    // 04-Operação Tributável Monofásica - Revenda a Alíquota Zero
-    // 05-Operação Tributável por Substituição Tributária
-    // 06-Operação Tributável a Alíquota Zero
-    // 07-Operação Isenta da Contribuição
-    // 08-Operação sem Incidência da Contribuição
-    // 09-Operação com Suspensão da Contribuição
-    // 49-Outras Operações de Saída
-    // 50-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno
-    // 51-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno
-    // 52-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação
-    // 53-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
-    // 54-Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
-    // 55-Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
-    // 56-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
-    // 60-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno
-    // 61-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno
-    // 62-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação
-    // 63-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
-    // 64-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
-    // 65-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
-    // 66-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
-    // 67-Crédito Presumido - Outras Operações
-    // 70-Operação de Aquisição sem Direito a Crédito
-    // 71-Operação de Aquisição com Isenção
-    // 72-Operação de Aquisição com Suspensão
-    // 73-Operação de Aquisição a Alíquota Zero
-    // 74-Operação de Aquisição sem Incidência da Contribuição
-    // 75-Operação de Aquisição por Substituição Tributária
-    // 98-Outras Operações de Entrada
-    // 99-Outras Operações
-
-    if AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)<>'' then
-    begin
-      for I := 0 to Form10.ComboBox7.Items.Count -1 do
-      begin
-        if Copy(Form10.ComboBox7.Items[I], 1, 2) = UpperCase(AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)) then
-        begin
-          Form10.ComboBox7.ItemIndex := I;
-        end;
-      end;
-    end;
-
-  end;
-
   if Copy(Form10.ComboBox7.Text, 1, 2) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
@@ -8251,12 +7842,6 @@ begin
       Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
     end;
   end;
-
-  if Form7.sModulo = 'ICM' then
-  begin
-      Form7.ibDataSet14CSTPISCOFINS.AsString := Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2);
-  end;
-
 
   if Copy(Form10.ComboBox7.Items[Form10.ComboBox7.ItemIndex]+'  ',1,2) = '03' then
   begin
@@ -8662,13 +8247,6 @@ begin
       Form7.ibDataset4.Edit;
   end;
   {Sandro Silva 2023-06-28 fim}
-  {Sandro Silva 2023-11-06 inicio}
-  if Form7.sModulo = 'ICM' then
-  begin
-    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
-      Form7.ibDataSet14.Edit;
-  end;
-  {Sandro Silva 2023-11-06 fim}
 end;
 
 procedure TForm10.Orelha_IPIEnter(Sender: TObject);
@@ -8903,151 +8481,6 @@ begin
   end;
 
   Form1.ibQuery1.Close;
-end;
-
-procedure TForm10.ORELHA_CFOPShow(Sender: TObject);
-begin
-    //
-    __RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
-    __AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
-    __AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
-    __PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
-    __MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
-    __AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
-    __RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
-    __MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
-    __TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
-    __CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
-    __RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
-    __PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
-    __PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
-    __PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
-    __AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
-    __SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
-    __BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
-    __GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
-    __DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
-    __MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
-    __ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
-    __MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
-    __SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
-    __RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
-    __PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
-    __SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
-    __RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
-    //
-    __RR.font.size := 8;
-    __AP.font.size := 8;
-    __AM.font.size := 8;
-    __PA.font.size := 8;
-    __MA.font.size := 8;
-    __AC.font.size := 8;
-    __RO.font.size := 8;
-    __MT.font.size := 8;
-    __TO.font.size := 8;
-    __CE.font.size := 8;
-    __RN.font.size := 8;
-    __PI.font.size := 8;
-    __PB.font.size := 8;
-    __PE.font.size := 8;
-    __AL.font.size := 8;
-    __SE.font.size := 8;
-    __BA.font.size := 8;
-    __GO.font.size := 8;
-    __DF.font.size := 8;
-    __MG.font.size := 8;
-    __ES.font.size := 8;
-    __MS.font.size := 8;
-    __SP.font.size := 8;
-    __RJ.font.size := 8;
-    __PR.font.size := 8;
-    __SC.font.size := 8;
-    __RS.font.size := 8;
-    //
-    //
-    if Form7.ibDataSet13ESTADO.AsString = 'RR' then __RR.Font.Color := clRed else __RR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AP' then __AP.Font.Color := clRed else __AP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AM' then __AM.Font.Color := clRed else __AM.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PA' then __PA.Font.Color := clRed else __PA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MA' then __MA.Font.Color := clRed else __MA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AC' then __AC.Font.Color := clRed else __AC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RO' then __RO.Font.Color := clRed else __RO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MT' then __MT.Font.Color := clRed else __MT.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'TO' then __TO.Font.Color := clRed else __TO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'CE' then __CE.Font.Color := clRed else __CE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RN' then __RN.Font.Color := clRed else __RN.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PI' then __PI.Font.Color := clRed else __PI.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PB' then __PB.Font.Color := clRed else __PB.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PE' then __PE.Font.Color := clRed else __PE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AL' then __AL.Font.Color := clRed else __AL.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SE' then __SE.Font.Color := clRed else __SE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'BA' then __BA.Font.Color := clRed else __BA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'GO' then __GO.Font.Color := clRed else __GO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'DF' then __DF.Font.Color := clRed else __DF.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MG' then __MG.Font.Color := clRed else __MG.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'ES' then __ES.Font.Color := clRed else __ES.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MS' then __MS.Font.Color := clRed else __MS.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SP' then __SP.Font.Color := clRed else __SP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RJ' then __RJ.Font.Color := clRed else __RJ.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PR' then __PR.Font.Color := clRed else __PR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SC' then __SC.Font.Color := clRed else __SC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RS' then __RS.Font.Color := clRed else __RS.Font.Color := clSilver;
-    //
-
-  AtualizaObjComValorDoBanco; // Sandro Silva 2023-06-28
-
-  IBQPLANOCONTAS.Close;
-  IBQPLANOCONTAS.SQL.Text :=
-    'select REGISTRO, CONTA, NOME ' +
-    'from CONTAS ' +
-    'order by NOME';
-  IBQPLANOCONTAS.Open;
-end;
-
-procedure TForm10.__RRClick(Sender: TObject);
-begin
-  with Sender as TLabel do
-  begin
-    SMALL_DBEditX.DataField := Copy(Caption,1,2)+'_';
-    SMALL_DBEditX.Top       := Top;
-    SMALL_DBEditX.Left      := Left;
-    SMALL_DBEditX.Visible   := True;
-    SMALL_DBEditX.SetFocus;
-    SMALL_DBEditX.SetFocus;
-  end;
-end;
-
-procedure TForm10.SMALL_DBEditXExit(Sender: TObject);
-begin
-  SMALL_DBEditX.Visible   := False;
-
-  __RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
-  __AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
-  __AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
-  __PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
-  __MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
-  __AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
-  __RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
-  __MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
-  __TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
-  __CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
-  __RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
-  __PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
-  __PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
-  __PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
-  __AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
-  __SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
-  __BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
-  __GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
-  __DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
-  __MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
-  __ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
-  __MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
-  __SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
-  __RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
-  __PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
-  __SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
-  __RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
 end;
 
 procedure TForm10._RRClick(Sender: TObject);
@@ -9957,127 +9390,12 @@ begin
   end;
 end;
 
-procedure TForm10.AtualizaObjComValorDoBanco;
-begin
-  if (Form7.sModulo = 'ICM') {and (orelhas.ActivePage = ORELHA_CFOP)} and Form10.Active {and (Form7.ibDataSet14.State in [dsEdit, dsInsert])} then
-  begin
 
-    Form7.ibDataSet14.Edit;
-    if Form7.ibDataSet14SOBREIPI.AsString <> 'S' then
-      Form7.ibDataSet14SOBREIPI.AsString := 'N';
-    if Form7.ibDataSet14SOBREOUTRAS.AsString <> 'S' then
-      Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
-    if Form7.ibDataSet14FRETESOBREIPI.AsString <> 'S' then
-      Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
-
-    DBCheckSobreIPI.Checked       := Form7.ibDataSet14SOBREIPI.AsString = 'S';
-    DBCheckSobreOutras.Checked    := Form7.ibDataSet14SOBREOUTRAS.AsString = 'S';
-    DBCheckFRETESOBREIPI.Checked  := Form7.ibDataSet14FRETESOBREIPI.AsString = 'S';
-
-    cbIntegracaoFinanceira.ItemIndex := 0;
-    cbMovimentacaoEstoque.ItemIndex  := 0;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'CAIXA') then
-      cbIntegracaoFinanceira.ItemIndex := 1;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'PAGAR') then
-      cbIntegracaoFinanceira.ItemIndex := 2;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'RECEBER') then
-      cbIntegracaoFinanceira.ItemIndex := 3;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '=') then
-      cbMovimentacaoEstoque.ItemIndex := 1;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '0') then
-      cbMovimentacaoEstoque.ItemIndex := 2;
-  end;
-end;
-
-procedure TForm10.cbIntegracaoFinanceiraExit(Sender: TObject);
-begin
-  if (Form7.sModulo = 'ICM') and Form10.Active then
-  begin
-    Form7.ibDataSet14.Edit;
-    if cbIntegracaoFinanceira.Text = '' then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Receber', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Pagar', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Caixa', '', [rfReplaceAll]);
-    end
-    else if cbIntegracaoFinanceira.Text = 'Caixa' then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Receber', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Pagar', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Caixa', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + 'Caixa';
-    end
-    else if cbIntegracaoFinanceira.Text = 'Pagar' then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Receber', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Pagar', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Caixa', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + 'Pagar';
-    end
-    else if cbIntegracaoFinanceira.Text = 'Receber' then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Receber', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Pagar', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, 'Caixa', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + 'Receber';
-    end;
-  end;
-end;
-
-procedure TForm10.cbMovimentacaoEstoqueExit(Sender: TObject);
-begin
-  if (Form7.sModulo = 'ICM') and Form10.Active then
-  begin
-    Form7.ibDataSet14.Edit;
-    if cbMovimentacaoEstoque.Text = '' then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '=', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '0', '', [rfReplaceAll]);
-    end else if cbMovimentacaoEstoque.Text = TEXTO_NAO_MOVIMENTA_ESTOQUE then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '=', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '0', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '=';
-    end else if cbMovimentacaoEstoque.Text = TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS then
-    begin
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '=', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := StringReplace(Form7.ibDataSet14INTEGRACAO.AsString, '0', '', [rfReplaceAll]);
-      Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '0';
-    end;
-  end;
-end;
-
-procedure TForm10.DBMemo4Enter(Sender: TObject);
-begin
-  DBMemo4.MaxLength := Form7.ibDataSet14OBS.Size;
-  
-  SendMessage(DBMemo4.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
-  SendMessage(DBMemo4.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
-  DBMemo4.SelStart := Length(DBMemo4.Text); //move o cursor pra o final da ultima linha
-  DBMemo4.SetFocus;
-
-end;
 
 procedure TForm10.ComboBoxEnter(Sender: TObject);
 begin
   dBGrid3.Visible := False;
   dBGrid1.Visible := False;
-end;
-
-procedure TForm10.DBMemo4KeyPress(Sender: TObject; var Key: Char);
-begin
-  {Sandro Silva 2023-06-29 inicio}
-  if Length(DBMemo4.Text) >= Form7.ibDataSet14OBS.Size then
-  begin
-    if not (Ord(Key) in [VK_BACK, VK_RETURN, 27..43]) then
-      Key := #0;
-  end;
-  {Sandro Silva 2023-06-29 fim}
 end;
 
 function TForm10.MostraImagemEstoque: Boolean;
@@ -10162,400 +9480,6 @@ procedure TForm10.SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
 begin
   if Form7.sModulo = 'CONVERSAOCFOP' then
     ValidaValor(Sender,Key,'I');
-end;
-
-procedure TForm10.cboCST_IPI_PerTribChange(Sender: TObject);
-begin
-  if Form10.caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCST_IPI.AsString := Copy(cboCST_IPI_PerTrib.Items[cboCST_IPI_PerTrib.ItemIndex]+'  ',1,2);
-  end;
-end;
-
-procedure TForm10.orelha_PerfilTrib_IPIShow(Sender: TObject);
-var
-  I : integer;
-begin
-  if Form7.sModulo = 'PERFILTRIBUTACAO' then
-  begin
-    Form10.Caption := form7.ibdPerfilTributaDESCRICAO.AsString;
-
-    // Antes de tudo Zera os combos
-    cboCST_IPI_PerTrib.ItemIndex := -1;
-    cboCST_PISCOFINS_S_PerTrib.ItemIndex := -1;
-    cboCST_PISCOFINS_E_PerTrib.ItemIndex := -1;
-    cboTipoItemPerfTrib.ItemIndex := -1;
-    cboIPPTPerfTrib.ItemIndex := -1;
-    cboIATPerfTrib.ItemIndex := -1;
-    cboOrigemPerfTrib.ItemIndex := -1;
-    cboCFOP_NFCePerfTrib.ItemIndex := -1;
-    cboCSTPerfilTrib.ItemIndex := -1;
-    cboCSOSNPerfilTrib.ItemIndex := -1;
-    cboCST_NFCePerfilTrib.ItemIndex := -1;
-    cboCSOSN_NFCePerfilTrib.ItemIndex := -1;
-
-    if Form7.bSoLeitura or Form7.bEstaSendoUsado then
-    begin
-      cboCST_IPI_PerTrib.Enabled          := False;
-      cboCST_PISCOFINS_S_PerTrib.Enabled  := False;
-      cboCST_PISCOFINS_E_PerTrib.Enabled  := False;
-      cboTipoItemPerfTrib.Enabled         := False;
-      cboIPPTPerfTrib.Enabled             := False;
-      cboIATPerfTrib.Enabled              := False;
-      cboOrigemPerfTrib.Enabled           := False;
-      cboCFOP_NFCePerfTrib.Enabled        := False;
-      cboCSTPerfilTrib.Enabled            := False;
-      cboCSOSNPerfilTrib.Enabled          := False;
-      cboCST_NFCePerfilTrib.Enabled       := False;
-      cboCSOSN_NFCePerfilTrib.Enabled     := False;
-      edtPercIPIPerfilTrib.Enabled        := False;
-      edtCodEnquadPerfilTrib.Enabled      := False;
-      edtPercPISPerfiLTrib.Enabled        := False;
-      edtPercCofinsPefilTrib.Enabled      := False;
-      edtPecPISEntPerfilTrib.Enabled      := False;
-      edtPercCofnsEntPerfilTrib.Enabled   := False;
-      edtDescricaoPerfilTrib.Enabled      := False;
-      edtIVAPerfilTrb.Enabled             := False;
-      edtAliqNFCEPerfilTrib.Enabled       := False;
-      edtCITPerfilTrib.Enabled            := False;
-    end else
-    begin
-      cboCST_IPI_PerTrib.Enabled          := True;
-      cboCST_PISCOFINS_S_PerTrib.Enabled  := True;
-      cboCST_PISCOFINS_E_PerTrib.Enabled  := True;
-      cboTipoItemPerfTrib.Enabled         := True;
-      cboIPPTPerfTrib.Enabled             := True;
-      cboIATPerfTrib.Enabled              := True;
-      cboOrigemPerfTrib.Enabled           := True;
-      cboCFOP_NFCePerfTrib.Enabled        := True;
-      cboCSTPerfilTrib.Enabled            := True;
-      cboCSOSNPerfilTrib.Enabled          := True;
-      cboCST_NFCePerfilTrib.Enabled       := True;
-      cboCSOSN_NFCePerfilTrib.Enabled     := True;
-      edtPercIPIPerfilTrib.Enabled        := True;
-      edtCodEnquadPerfilTrib.Enabled      := True;
-      edtPercPISPerfiLTrib.Enabled        := True;
-      edtPercCofinsPefilTrib.Enabled      := True;
-      edtPecPISEntPerfilTrib.Enabled      := True;
-      edtPercCofnsEntPerfilTrib.Enabled   := True;
-      edtDescricaoPerfilTrib.Enabled      := True;
-      edtIVAPerfilTrb.Enabled             := True;
-      edtAliqNFCEPerfilTrib.Enabled       := True;
-      edtCITPerfilTrib.Enabled            := True;
-    end;
-
-    if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
-      Form7.ibdPerfilTributa.Edit;
-
-
-    //Tipo Item
-    if AllTrim(Form7.ibdPerfilTributaTIPO_ITEM.AsString)<>'' then
-    begin
-      for I := 0 to cboTipoItemPerfTrib.Items.Count -1 do
-      begin
-        if Copy(cboTipoItemPerfTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaTIPO_ITEM.AsString)) then
-        begin
-          cboTipoItemPerfTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //CST IPI
-    if AllTrim(Form7.ibdPerfilTributaCST_IPI.AsString)<>'' then
-    begin
-      for I := 0 to cboCST_IPI_PerTrib.Items.Count -1 do
-      begin
-        if Copy(cboCST_IPI_PerTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaCST_IPI.AsString)) then
-        begin
-          cboCST_IPI_PerTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //IPPT
-    for I := 0 to cboIPPTPerfTrib.Items.Count -1 do
-    begin
-      if Copy(cboIPPTPerfTrib.Items[I],1,1) = UpperCase(AllTrim(Form7.ibdPerfilTributaIPPT.AsString)) then
-      begin
-        cboIPPTPerfTrib.ItemIndex := I;
-      end;
-    end;
-
-    //IAT
-    for I := 0 to cboIATPerfTrib.Items.Count -1 do
-    begin
-      if Copy(cboIATPerfTrib.Items[I],1,1) = UpperCase(AllTrim(Form7.ibdPerfilTributaIAT.AsString)) then
-      begin
-        cboIATPerfTrib.ItemIndex := I;
-      end;
-    end;
-
-    //Origem
-    if AllTrim(Form7.ibdPerfilTributaCST.AsString)<>'' then
-    begin
-      for I := 0 to cboOrigemPerfTrib.Items.Count -1 do
-      begin
-        if Copy(cboOrigemPerfTrib.Items[I],1,1) = Copy(Form7.ibdPerfilTributaCST.AsString+'000',1,1) then
-        begin
-          cboOrigemPerfTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //CFOP NFCe
-    if AllTrim(Form7.ibdPerfilTributaCFOP.AsString)<>'' then
-    begin
-      for I := 0 to cboCFOP_NFCePerfTrib.Items.Count -1 do
-      begin
-        if Copy(cboCFOP_NFCePerfTrib.Items[I],1,4) = UpperCase(AllTrim(Form7.ibdPerfilTributaCFOP.AsString)) then
-        begin
-          cboCFOP_NFCePerfTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //CST
-    if AllTrim(Form7.ibdPerfilTributaCST.AsString)<>'' then
-    begin
-      for I := 0 to cboCSTPerfilTrib.Items.Count -1 do
-      begin
-        if Copy(cboCSTPerfilTrib.Items[I],1,2) = Copy(Form7.ibdPerfilTributaCST.AsString+'000',2,2) then
-        begin
-          cboCSTPerfilTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //CSOSN
-    if AllTrim(Form7.ibdPerfilTributaCSOSN.AsString)<>'' then
-    begin
-      for I := 0 to cboCSOSNPerfilTrib.Items.Count -1 do
-      begin
-        if Copy(cboCSOSNPerfilTrib.Items[I],1, Length(Trim(Form7.ibdPerfilTributaCSOSN.AsString))) = UpperCase(AllTrim(Form7.ibdPerfilTributaCSOSN.AsString)) then
-        begin
-          cboCSOSNPerfilTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //CST NFCE
-    if AllTrim(Form7.ibdPerfilTributaCST_NFCE.AsString)<>'' then
-    begin
-      for I := 0 to cboCST_NFCePerfilTrib.Items.Count -1 do
-      begin
-        if Copy(cboCST_NFCePerfilTrib.Items[I],1,2) = Copy(Form7.ibdPerfilTributaCST_NFCE.AsString+'000',2,2) then
-        begin
-          cboCST_NFCePerfilTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //CSOSN NFCE
-    if AllTrim(Form7.ibdPerfilTributaCSOSN_NFCE.AsString)<>'' then
-    begin
-      for I := 0 to cboCSOSN_NFCePerfilTrib.Items.Count -1 do
-      begin
-        if Copy(cboCSOSN_NFCePerfilTrib.Items[I],1,Length(Trim(Form7.ibdPerfilTributaCSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibdPerfilTributaCSOSN_NFCE.AsString)) then
-        begin
-          cboCSOSN_NFCePerfilTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-
-    //Pis-Cofins Saída
-    if AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString)<>'' then
-    begin
-      for I := 0 to cboCST_PISCOFINS_S_PerTrib.Items.Count -1 do
-      begin
-        if Copy(cboCST_PISCOFINS_S_PerTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString)) then
-        begin
-          cboCST_PISCOFINS_S_PerTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-    //Pis-Cofins Entrada
-    if AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString)<>'' then
-    begin
-      for I := 0 to cboCST_PISCOFINS_E_PerTrib.Items.Count -1 do
-      begin
-        if Copy(cboCST_PISCOFINS_E_PerTrib.Items[I],1,2) = UpperCase(AllTrim(Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString)) then
-        begin
-          cboCST_PISCOFINS_E_PerTrib.ItemIndex := I;
-        end;
-      end;
-    end;
-
-
-    //CST-CSOCN
-    if Form7.ibDataSet13CRT.AsString = '1' then
-    begin
-      lblCSOSNPerfilTrib.Visible       := True;
-      cboCSOSNPerfilTrib.Visible       := True;
-      lblCSTPerfilTrib.Visible         := False;
-      cboCSTPerfilTrib.Visible         := False;
-
-      lblCSOSN_NFCePerfilTrib.Visible  := True;
-      cboCSOSN_NFCePerfilTrib.Visible  := True;
-      lblCST_NFCePerfilTrib.Visible    := False;
-      cboCST_NFCePerfilTrib.Visible    := False;
-    end else
-    begin
-      lblCSOSNPerfilTrib.Visible       := False;
-      cboCSOSNPerfilTrib.Visible       := False;
-      lblCSTPerfilTrib.Visible         := True;
-      cboCSTPerfilTrib.Visible         := True;
-
-      lblCSOSN_NFCePerfilTrib.Visible  := False;
-      cboCSOSN_NFCePerfilTrib.Visible  := False;
-      lblCST_NFCePerfilTrib.Visible    := True;
-      cboCST_NFCePerfilTrib.Visible    := True;
-    end;
-
-    //NFC-e ou SAT
-    if Form7.ibDataSet13ESTADO.AsString = 'SP' then
-    begin
-      lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'NFC-e','SAT');
-      lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'NFC-e','SAT');
-      lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'NFC-e','SAT');
-      lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'NFC-e','SAT');
-    end else
-    begin
-      lblCFOPNfce.Caption             := StrTran(lblCFOPNfce.Caption,'SAT','NFC-e');
-      lblCST_NFCePerfilTrib.Caption   := StrTran(lblCST_NFCePerfilTrib.Caption,'SAT','NFC-e');
-      lblCSOSN_NFCePerfilTrib.Caption := StrTran(lblCSOSN_NFCePerfilTrib.Caption,'SAT','NFC-e');
-      lblAliqNFCEPerfilTrib.Caption   := StrTran(lblAliqNFCEPerfilTrib.Caption,'SAT','NFC-e');
-    end;
-
-    //CIT
-    CarregaCitPerfilTrib;
-
-  end;
-end;
-
-procedure TForm10.orelha_PerfilTrib_IPIEnter(Sender: TObject);
-begin
-  if Form7.sModulo = 'PERFILTRIBUTACAO' then
-  begin
-    if not (Form7.ibdPerfilTributa.State in ([dsEdit, dsInsert])) then
-      Form7.ibdPerfilTributa.Edit;
-  end;
-end;
-
-procedure TForm10.cboCST_PISCOFINS_S_PerTribChange(Sender: TObject);
-begin
-  if Form7.sModulo = 'PERFILTRIBUTACAO' then
-  begin
-    if Form10.Caption = Form7.ibdPerfilTributaDESCRICAO.AsString then
-    begin
-      Form7.ibdPerfilTributaCST_PIS_COFINS_SAIDA.AsString := Copy(cboCST_PISCOFINS_S_PerTrib.Items[cboCST_PISCOFINS_S_PerTrib.ItemIndex]+'  ',1,2);
-    end;
-
-    if Copy(cboCST_PISCOFINS_S_PerTrib.Items[cboCST_PISCOFINS_S_PerTrib.ItemIndex]+'  ',1,2) = '03' then
-    begin
-      lblCST_PIS_S_PerTrib.Caption    := 'R$ PIS:';
-      lblCST_COFINS_S_PerTrib.Caption := 'R$ COFINS:';
-    end else
-    begin
-      lblCST_PIS_S_PerTrib.Caption    := '% PIS:';
-      lblCST_COFINS_S_PerTrib.Caption := '% COFINS:';
-    end;
-  end;
-end;
-
-procedure TForm10.cboCST_PISCOFINS_E_PerTribChange(Sender: TObject);
-begin
-  if Form7.sModulo = 'PERFILTRIBUTACAO' then
-  begin
-    if AllTrim(Form10.Caption) = AllTrim(Form7.ibdPerfilTributaDESCRICAO.AsString) then
-    begin
-      Form7.ibdPerfilTributaCST_PIS_COFINS_ENTRADA.AsString := Copy(cboCST_PISCOFINS_E_PerTrib.Items[cboCST_PISCOFINS_E_PerTrib.ItemIndex]+'  ',1,2);
-    end;
-  end;
-end;
-
-procedure TForm10.edtDescricaoPerfilTribMouseMove(Sender: TObject;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  with Sender as TSMALL_DBEdit do
-  begin
-    Hint := Field.DisplayLabel;
-    ShowHint := True;
-  end;
-end;
-
-procedure TForm10.cboTipoItemPerfTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaTIPO_ITEM.AsString := Copy(cboTipoItemPerfTrib.Items[cboTipoItemPerfTrib.ItemIndex]+'  ',1,2);
-  end;
-end;
-
-procedure TForm10.cboIPPTPerfTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaIPPT.AsString := Copy(cboIPPTPerfTrib.Items[cboIPPTPerfTrib.ItemIndex]+' ',1,1);
-  end;
-end;
-
-procedure TForm10.cboIATPerfTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaIAT.AsString := Copy(cboIATPerfTrib.Items[cboIATPerfTrib.ItemIndex]+' ',1,1);
-  end;
-end;
-
-procedure TForm10.cboOrigemPerfTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCST.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST.AsString+'  ',2,2);
-    Form7.ibdPerfilTributaCST_NFCE.AsString := Copy(cboOrigemPerfTrib.Items[cboOrigemPerfTrib.ItemIndex]+' ',1,1)+Copy(Form7.ibdPerfilTributaCST_NFCE.AsString+'  ',2,2); // Mauricio Parizotto 2023-09-06
-  end;
-end;
-
-procedure TForm10.cboCFOP_NFCePerfTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCFOP.AsString := Copy(cboCFOP_NFCePerfTrib.Items[cboCFOP_NFCePerfTrib.ItemIndex]+'    ',1,4);
-  end;
-end;
-
-procedure TForm10.cboCSTPerfilTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCST.AsString := Copy(Form7.ibdPerfilTributaCST.AsString+' ',1,1)+Copy(cboCSTPerfilTrib.Items[cboCSTPerfilTrib.ItemIndex]+'   ',1,2);
-  end;
-end;
-
-procedure TForm10.cboCST_NFCePerfilTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCST_NFCE.AsString := Copy(Form7.ibdPerfilTributaCST.AsString+' ',1,1)+Copy(cboCST_NFCePerfilTrib.Items[cboCST_NFCePerfilTrib.ItemIndex]+'   ',1,2);
-  end;
-end;
-
-procedure TForm10.cboCSOSN_NFCePerfilTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCSOSN_NFCE.AsString := Trim(Copy(cboCSOSN_NFCePerfilTrib.Items[cboCSOSN_NFCePerfilTrib.ItemIndex]+'   ',1,3));
-  end;
-end;
-
-procedure TForm10.cboCSOSNPerfilTribChange(Sender: TObject);
-begin
-  if Form10.Caption = form7.ibdPerfilTributaDESCRICAO.AsString then
-  begin
-    Form7.ibdPerfilTributaCSOSN.AsString := Trim(Copy(cboCSOSNPerfilTrib.Items[cboCSOSNPerfilTrib.ItemIndex]+'   ',1,3));
-  end;
 end;
 
 procedure TForm10.CarregaCit;
@@ -10679,31 +9603,5 @@ end;
 
 
 
-procedure TForm10.CarregaCitPerfilTrib;
-begin
-  if AllTrim(Form7.ibdPerfilTributaST.AsString) <> '' then
-  begin
-    Form7.ibDataSet14.Close;
-    Form7.ibDataSet14.SelectSQL.Text := ' Select * FROM ICM '+
-                                        ' Where ST='+QuotedStr(Form7.ibdPerfilTributaST.AsString);
-    Form7.ibDataSet14.Open;
-
-    if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
-    begin
-      lblCitPerfilTrib.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
-    end else
-    begin
-      lblCitPerfilTrib.Caption := '';
-    end;
-  end else
-  begin
-    lblCitPerfilTrib.Caption := '';
-  end;
-end;
-
-procedure TForm10.edtCITPerfilTribExit(Sender: TObject);
-begin
-  CarregaCitPerfilTrib;
-end;
 
 end.

@@ -43,7 +43,7 @@ object fFrameCampo: TfFrameCampo
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    Options = [dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     ParentFont = False
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
