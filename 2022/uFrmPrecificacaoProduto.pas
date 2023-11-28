@@ -46,6 +46,8 @@ type
     procedure dbgPrincipalDrawColumnCell(Sender: TObject;
       const Rect: TRect; DataCol: Integer; Column: TColumn;
       State: TGridDrawState);
+    procedure cdsProdutosNotaPRECO_NOVOSetText(Sender: TField;
+      const Text: String);
   private
     { Private declarations }
   public
@@ -229,6 +231,14 @@ begin
     dbgPrincipal.Canvas.FillRect(Rect);
     dbgPrincipal.DefaultDrawColumnCell(Rect,DataCol,Column,State);
   end;
+end;
+
+procedure TFrmPrecificacaoProduto.cdsProdutosNotaPRECO_NOVOSetText(
+  Sender: TField; const Text: String);
+begin
+  cdsProdutosNotaPERC_LUC.AsFloat :=  ( (( StrToFloatDef(Text,0) / cdsProdutosNotaPRECO_CUSTO.AsFloat ) - 1) *100) ;
+
+  Sender.AsString := Text;
 end;
 
 end.

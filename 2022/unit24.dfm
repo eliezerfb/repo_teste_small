@@ -3115,16 +3115,6 @@ object Form24: TForm24
         OnExit = ComboBox13Exit
         OnKeyUp = ComboBox12KeyUp
       end
-      object edtAlteraEntrada: TEdit
-        Left = 15
-        Top = 383
-        Width = 290
-        Height = 22
-        TabOrder = 6
-        Visible = False
-        OnChange = edtAlteraEntradaChange
-        OnKeyDown = edtAlteraEntradaKeyDown
-      end
       object SMALL_DBEdit51: TSMALL_DBEdit
         Left = 15
         Top = 260
@@ -3251,6 +3241,23 @@ object Form24: TForm24
         TabOrder = 13
         OnKeyUp = ComboBox12KeyUp
       end
+      object btnPrecificar: TBitBtn
+        Left = 150
+        Top = 72
+        Width = 94
+        Height = 23
+        Caption = 'Precificar'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 16
+        OnClick = btnPrecificarClick
+      end
       object DBGrid33: TDBGrid
         Left = 15
         Top = 404
@@ -3282,22 +3289,15 @@ object Form24: TForm24
             Visible = True
           end>
       end
-      object btnPrecificar: TBitBtn
-        Left = 150
-        Top = 72
-        Width = 94
-        Height = 23
-        Caption = 'Precificar'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 16
-        OnClick = btnPrecificarClick
+      object edtAlteraEntrada: TEdit
+        Left = 15
+        Top = 383
+        Width = 290
+        Height = 22
+        TabOrder = 6
+        Visible = False
+        OnChange = edtAlteraEntradaChange
+        OnKeyDown = edtAlteraEntradaKeyDown
       end
     end
     object ok: TBitBtn

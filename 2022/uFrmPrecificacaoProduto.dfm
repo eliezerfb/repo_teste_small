@@ -1,6 +1,6 @@
 inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
-  Left = 711
-  Top = 352
+  Left = 581
+  Top = 274
   BorderIcons = []
   Caption = 'Precifica'#231#227'o dos Produtos'
   ClientHeight = 483
@@ -114,22 +114,12 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       item
         Expanded = False
         FieldName = 'PERC_LUC'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
         Width = 100
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'PRECO_NOVO'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
         Width = 100
         Visible = True
       end>
@@ -168,24 +158,47 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     BufferChunks = 1000
     CachedUpdates = True
     SelectSQL.Strings = (
-      'Select '
-      #9'I.REGISTRO,'
-      #9'I.DESCRICAO PRODUTO,'
-      #9'I.UNITARIO PRECO_CUSTO,'
-      #9'Coalesce(E.PRECO,0) PRECO_VENDA,'
-      #9'Coalesce(E.MARGEMLB,0) PERC_LUC,'
-      #9'Coalesce(E.MARGEMLB,0) PERC_LUC,'
+      'Select'
+      #9'REGISTRO,'
+      #9'PRODUTO,'
+      #9'PRECO_CUSTO,'
+      #9'PRECO_VENDA,'
+      #9'Case'
+      #9#9'When Coalesce(MARGEMLB,0) > 0 then MARGEMLB '
+      #9#9'Else (((Coalesce(PRECO,0) / PRECO_CUSTO) -1 ) * 100)'
+      #9'End PERC_LUC,'
       #9'Case'
       
-        #9#9'When Coalesce(E.MARGEMLB,0) > 0 then I.UNITARIO + (I.UNITARIO ' +
-        '* (E.MARGEMLB / 100) ) '
-      #9#9'Else Coalesce(E.PRECO,0)'
+        #9#9'When Coalesce(MARGEMLB,0) > 0 then PRECO_CUSTO + (PRECO_CUSTO ' +
+        '* (MARGEMLB / 100) ) '
+      #9#9'Else Coalesce(PRECO,0)'
       #9'End PRECO_NOVO'
-      'From ITENS002 I'
-      #9'Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO'
-      'Where NUMERONF = :NUMERONF'
-      #9'and I.FORNECEDOR  =  :FORNECEDOR  '
-      'Order By I.REGISTRO')
+      'From'
+      #9'(Select '
+      #9#9'I.REGISTRO,'
+      #9#9'I.DESCRICAO PRODUTO,'
+      
+        #9#9'(I.UNITARIO + (Coalesce(I.VICMSST,0) + Coalesce(I.VIPI,0) + Co' +
+        'alesce(I.VFCPST,0)) / I.QUANTIDADE)  +'
+      #9#9#9'('
+      #9#9#9#9'(I.UNITARIO / C.MERCADORIA) * '
+      
+        #9#9#9#9'(Coalesce(C.FRETE,0) + Coalesce(C.SEGURO,0) + Coalesce(C.DES' +
+        'PESAS,0) + Coalesce(C.DESCONTO,0))      '#9#9
+      #9#9#9') PRECO_CUSTO,'
+      #9#9'Coalesce(E.PRECO,0) PRECO_VENDA,'
+      #9#9'E.MARGEMLB,'
+      #9#9'E.PRECO'
+      #9'From ITENS002 I'
+      
+        #9#9'Left Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDO' +
+        'R = I.FORNECEDOR'
+      #9#9'Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO'
+      #9'Where I.NUMERONF = :NUMERONF'
+      #9#9'and I.FORNECEDOR  =  :FORNECEDOR  '
+      #9#9'and Coalesce(I.CODIGO,'#39#39') <> '#39#39
+      #9') A'
+      'Order By REGISTRO')
     Left = 280
     Top = 144
     object ibdProdutosNotaREGISTRO: TIBStringField
@@ -238,7 +251,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       Size = 45
     end
     object cdsProdutosNotaPRECO_CUSTO: TFloatField
-      DisplayLabel = 'Pre'#231'o Custo'
+      DisplayLabel = 'Custo de Compra'
       FieldName = 'PRECO_CUSTO'
       Origin = 'ITENS002.UNITARIO'
       DisplayFormat = '##0.00'
@@ -258,6 +271,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     object cdsProdutosNotaPRECO_NOVO: TFloatField
       DisplayLabel = 'Novo Pre'#231'o'
       FieldName = 'PRECO_NOVO'
+      OnSetText = cdsProdutosNotaPRECO_NOVOSetText
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
     end

@@ -93,7 +93,6 @@ type
     ibDataSet4NOME: TIBStringField;
     ibDataSet4FORNECEDOR: TIBStringField;
     ibDataSet4MEDIDA: TIBStringField;
-//    ibDataSet4PRECO: TFloatField;
     ibDataSet4CUSTOCOMPR: TFloatField;
     ibDataSet4CUSTOMEDIO: TFloatField;
     ibDataSet4QTD_ATUAL: TFloatField;
@@ -13851,10 +13850,11 @@ end;
 
 procedure TForm7.ibDataSet4MARGEMLBChange(Sender: TField);
 begin
-  //
-  if ibDataSet4CUSTOCOMPR.Asfloat < 0 then ibDataSet4CUSTOCOMPR.Asfloat := 0;
-  if (ibDataSet4MARGEMLB.AsFloat <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
-  //
+  if ibDataSet4CUSTOCOMPR.Asfloat < 0 then
+    ibDataSet4CUSTOCOMPR.Asfloat := 0;
+
+  if (ibDataSet4MARGEMLB.AsFloat <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
+    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
 end;
 
 

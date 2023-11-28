@@ -1296,6 +1296,8 @@ begin
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                   )); //
                           }
+
+                          //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1303,7 +1305,7 @@ begin
                                                                      Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                  )); //
+                                                                  )); 
                           {Sandro Silva 2023-10-16 fim}
 
                           {Sandro Silva 2023-03-02 inicio}
