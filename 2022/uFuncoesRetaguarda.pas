@@ -68,6 +68,7 @@ uses
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
   function GeraMD5(valor :string):string;
   function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
+  function ProdutoComposto(IBTransaction: TIBTransaction; sCodigoProduto: String): Boolean;
   procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
     iQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer); // Sandro Silva 2023-11-06
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
@@ -738,6 +739,33 @@ begin
     end;
   except
   end;
+end;
+
+function ProdutoComposto(IBTransaction: TIBTransaction; sCodigoProduto: String): Boolean;
+var
+  IBQCOMPOSTO: TIBQuery;
+begin
+  // Retorna verdadeiro se o produto é composto
+  Result := False;
+  IBQCOMPOSTO := CriaIBQuery(IBTransaction);
+
+  try
+
+    IBQCOMPOSTO.Close;
+    IBQCOMPOSTO.SQL.Clear;
+    IBQCOMPOSTO.SQL.Text :=
+      'select count(CODIGO) as CONTADOR ' +
+      'from COMPOSTO C ' +
+      'where coalesce(C.DESCRICAO, '''') <> '''' ' +
+      ' and C.CODIGO = ' + QuotedStr(sCodigoProduto);
+    IBQCOMPOSTO.Open;
+
+    if IBQCOMPOSTO.FieldByName('CONTADOR').AsInteger > 0 then
+      Result := True;
+  finally
+    FreeAndNil(IBQCOMPOSTO);
+  end;
+
 end;
 
 procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
