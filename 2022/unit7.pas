@@ -3022,6 +3022,9 @@ var
   Mais1Ini : tIniFile;
 begin
   //
+  Form7.ibDataSet24.DisableControls;
+  LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3026'); // Sandro Silva 2023-11-27
+
   try
     //
     if Pos('<cStat>137</cStat>',sP1) <> 0  then // Não encontrou nenhuma nota
@@ -3123,9 +3126,6 @@ begin
 
               if AllTrim(Form7.iBQuery99.FieldByName('NFEID').AsString) = '' then
               begin
-
-                LogRetaguarda('Nova nota: 3127'); // Sandro Silva 2023-11-27
-
                 Form7.ibDataSet24.Append;
                 Form7.ibDataSet24NUMERONF.AsString   := Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe')),26,9)+Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/chNFe')),23,3);
                 Form7.ibDataSet24FORNECEDOR.AsString := pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/xNome'));
@@ -3133,10 +3133,6 @@ begin
                 Form7.ibDataSet24TOTAL.AsFloat       := StrToFloat(StrTran(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/vNF')),'.',','));
                 Form7.ibDataSet24EMISSAO.AsDateTime  := StrToDate(Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/dhEmi')),9,2)+'/'+Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/dhEmi')),6,2)+'/'+Copy(pChar(xmlNodeValue(slXMLDescom.Text, '//resNFe/dhEmi')),1,4));
                 Form7.ibDataSet24.Post;
-
-                // o evento procedure TForm7.ibDataSet24NewRecord(DataSet: TDataSet); executa ibDataSet24.DisableControls;
-                Form7.ibDataSet24.EnableControls; // Destrava o grid Ficha 7575 Sandro Silva 2023-11-27
-
               end;
             except
               on E: Exception do
@@ -8293,8 +8289,19 @@ begin
     begin
       if sModulo = 'COMPRA' then
       begin
+        {Sandro Silva 2023-11-28 inicio
         Form7.ibDataSet24.Append;
         Form24.Show;
+        }
+        Form7.ibDataSet24.DisableControls;
+        LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3130'); // Sandro Silva 2023-11-27
+        try
+          Form7.ibDataSet24.Append;
+          Form24.Show;
+        finally
+          Form7.ibDataSet24.EnableControls;
+        end;
+        {Sandro Silva 2023-11-28 fim}
       end else
       begin
         if sModulo = 'ORCAMENTO' then
@@ -21556,9 +21563,11 @@ begin
   //
   sFornecedorAntigo := '';
   //
+  {Sandro Silva 2023-11-28 inicio
   Form7.ibDataSet24.DisableControls;
 
   LogRetaguarda('ibDataSet24.DisableControls; 21548'); // Sandro Silva 2023-11-27
+  }
 
   Form7.ibDataSet23.DisableControls;
   Form7.ibDataSet8.DisableControls;
