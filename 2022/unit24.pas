@@ -302,7 +302,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
-  uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto;
+  uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto, Windows;
 
 {$R *.DFM}
 
@@ -3750,6 +3750,9 @@ end;
 
 procedure TForm24.btnPrecificarClick(Sender: TObject);
 begin
+  if Form7.ibDataSet24.State in ([dsEdit, dsInsert]) then
+    Form7.ibDataSet24.Post;
+
   try
     FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
     FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
