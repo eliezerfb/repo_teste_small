@@ -2770,28 +2770,21 @@ function RecuperaXML(sP1: Boolean) : Boolean;
 var
   sRetorno, wsNFeAssinada : String;
 begin
-  //
   if not FileExists( Form7.spdNFe.DiretorioXmlDestinatario + pChar(Form7.ibDataSet15NFEID.AsString) + '-nfe.xml') then
   begin
-    //
     sRetorno       := Form7.spdNFe.ConsultarNF(Alltrim(Form7.ibDataSet15NFEID.AsString));
     wsNFeAssinada := Form7.ibDataSet15NFEXML.AsString;
-    //
+
     if (Pos('<cStat>100</cStat>',sRetorno) <> 0) or (Pos('<cStat>150</cStat>',sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo // Sandro Silva 2018-08-10
     begin
-      //
       // Se foi autorizada faz a montagem do xml assinado com os dados da autorização
-      //
       if xmlNodeXML(sRetorno, '//protNFe') <> '' then
       begin
-        //
         // conferir o digestvalue do retorno com a nota
-        //
         if xmlNodeValue(sRetorno, '//infProt/digVal') = xmlNodeValue(wsNFeAssinada, '//DigestValue') then
         begin
-          //
           sRetorno := '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="' + xmlNodeValue(wsNFeAssinada, '//infNFe/@versao') + '">' + wsNFeAssinada + xmlNodeXML(sRetorno, '//protNFe') + '</nfeProc>';
-          //
+
           with TStringList.Create do
           begin
             Text := sRetorno;
@@ -2802,20 +2795,19 @@ begin
       end;
     end;
   end;
-  //
+
   if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
   Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
-  //
+  
   if (Pos('xMotivo',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Pos('nProt',Form7.ibDataSet15NFEXML.AsString) <> 0) then
   begin
     Form7.ibDataSet15STATUS.AsString       := RetornaValorDaTagNoCampo('xMotivo',Form7.ibDataSet15NFEXML.AsString);
     Form7.ibDataSet15NFEPROTOCOLO.AsString := RetornaValorDaTagNoCampo('nProt',Form7.ibDataSet15NFEXML.AsString);
   end;
-  //
+
   Form7.ibDataSet15.Post;
-  //
+
   Result := True;
-  //
 end;
 
 {Sandro Silva 2022-09-12 inicio
@@ -3920,9 +3912,8 @@ end;
 
 function DenegadoOuCancelado(bP1:Boolean): boolean;
 begin
-  //
   Result := False;
-  //
+  
   if FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) then
   begin
     if (Pos('cancelada',LowerCase(Form7.ibDataSet15NFEXML.AsString)) = 0) then
@@ -3932,60 +3923,52 @@ begin
       Form7.ibDataSet15.Post;
       Result := True;
     end;
-    //
+
     if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
     begin
-      //
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
       Form7.ibDataset15STATUS.AsString  := 'NF-e cancelada';
       Form7.ibDataSet15.Delete;
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
-      //
+
       Form7.ibDataSet15EMITIDA.AsString := 'X';
       Form7.ibDataSet15.Post;
-      //
+
       Result := True;
       Screen.Cursor            := crDefault;
       commitatudo(True);
       Form7.Close;
       Form7.Show;
-      //
     end;
-    //
   end;
-  //
+  
   if (FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-den.xml'))))
   or (  Pos('denegado',LowerCase(Form7.ibDataSet15STATUS.AsString)) <> 0) then
   begin
-    //
     Screen.Cursor            := crHourGlass;
-    //
+
     if (Pos('denegado',LowerCase(Form7.ibDataSet15NFEXML.AsString)) = 0) then
     begin
-      //
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
       Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
       Form7.ibDataSet15.Post;
       Result := True;
-      //
     end;
-    //
+
     if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
     begin
-      //
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
       Form7.ibDataset15STATUS.AsString  := 'Uso Denegado';
       Form7.ibDataSet15.Delete;
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
       Form7.ibDataSet15EMITIDA.AsString := 'X';
       Form7.ibDataSet15.Post;
-      //
+
       Result := True;
       Screen.Cursor            := crDefault;
       commitatudo(True);
       Form7.Close;
       Form7.Show;
-      //
     end;
   end;
 end;
@@ -4078,50 +4061,41 @@ end;
 
 function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
 begin
-  //
   // Atenção a rotina abaixo altera a quantidade no estoque
-  //
   if TestarEstadosAlteraEmitadaNota then
   begin
     try
-      //
       Form7.ibDataSet15.Edit;
-      //
+
       if (Form7.ibDataSet15.State in ([dsEdit, dsInsert])) then
       begin
-        //
         if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
         begin
           Form7.ibDataSet15EMITIDA.AsString := 'S'; // Imitida
         end;
-        //
+
         Form7.ibDataSet15.Post;
-        //
       end;
-      //
-    except end;
+    except
+    end;
   end;
-  //
+  
   if (Form7.ibDataSet15EMITIDA.AsString = 'S') then
   begin
-    //
     try
-      //
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
       Form7.ibDataSet14.Open;
-      //
+
       if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
       begin
-        //                                                            //
         // Integração com o Livro caixa CAIXA.DBF                     //
-        //                                                            //
         ApagaIntegracaoComOCaixa(True);
-        //
+
         Form7.ibDataSet12.First;
-        //
+
         if (AllTrim(Form7.ibDataSet14CONTA.AsString) = '') then
         begin
           if (Form7.ibDataSet15TOTAL.AsFloat>0) then
@@ -4130,20 +4104,19 @@ begin
         begin
           Form7.ibDataSet12.Locate('NOME',AllTrim(Form7.ibDataSet14CONTA.AsString),[loCaseInsensitive, loPartialKey]);
         end;
-        //
+
         if not Form7.ibDataSet1.Active then Form7.ibDataSet1.Open;
-        //
+        
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1DATA.Value      := Form7.ibDataSet15EMISSAO.Value;
         Form7.ibDataSet1HISTORICO.Value := 'Nota Fiscal: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet15CLIENTE.asString;
         Form7.ibDataSet1ENTRADA.Value   := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
         Form7.ibDataSet1NOME.AsString   := Form7.ibDataSet12NOME.AsString;
         Form7.ibDataSet1.Post;
-        //
       end;
-      //
-    except end;
-    //
+    except
+    end;
+
     try
       Form7.ibDataSet7.DisableControls;
       Form7.ibDataSet7.First;
@@ -4154,19 +4127,16 @@ begin
         Form7.ibDataSet7.Post;
         Form7.ibDataSet7.Next;
       end;
-    except end;
-    //
+    except
+    end;
+
     // Emitida
-    //
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet16.First;
     while not Form7.ibDataSet16.Eof do // disable
     begin
-      //
       // Procura o produto no estoque
-      //
       try
-        //
         Form7.ibDataSet4.Close;                                                //
         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
@@ -4174,7 +4144,6 @@ begin
         //
         if Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
         begin
-          //
           if Form7.ibDataSet16SINCRONIA.AsFloat <> Form7.ibDataSet16QUANTIDADE.AsFloat then
           begin
             if TestarNatOperacaoMovEstoque then
@@ -4187,26 +4156,23 @@ begin
                 Form7.ibDataSet4.Post;
               end;
             end;
-            //
+            
             Form7.sModulo := 'FECHAVENDA';
             Form7.ibDataSet16.Edit;
             Form7.ibDataSet16SINCRONIA.AsFloat := Form7.ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
             Form7.ibDataSet16.Post;
-            //
           end;
         end;
-      except end;
-      //
+      except
+      end;
+
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet16.Next;
-      //
     end;
   end;
-  //
+
   // Atenção a rotina acima altera a quantidade no estoque
-  //
   Result := True;
-  //
 end;
 
 
@@ -24697,66 +24663,70 @@ begin
         if Alltrim(Form7.ibDataSet15NFERECIBO.AsString) <> '' then
         begin
           Screen.Cursor            := crHourGlass;
-          Form7.Panel7.Caption     := 'Consultando NF-e...'+replicate(' ',100);
-          Form7.Panel7.Repaint;
-          
-          Form7.ibDataSet15.Edit;
-          Form7.ibDataset15STATUS.AsString := 'Consultando NF-e';
+
+          Panel7.Caption     := 'Consultando NF-e...'+replicate(' ',100);
+          Panel7.Repaint;
+
+          ibDataSet15.Edit;
+          ibDataset15STATUS.AsString := 'Consultando NF-e';
 
           ConfiguraNFE;
           Form7.spdNFe.TimeOut                      := 60000*30;
           
           try
             sRetorno := spdNFe.ConsultarNF(Alltrim(Form7.ibDataSet15NFEID.AsString));
-            //
+
+            //Mauricio Parizotto 2023-11-28
+            Panel7.Caption     := 'Verificando retorno...'+replicate(' ',100);
+            Panel7.Repaint;
+            
             Form7.ibDataSet15.Edit;
             Form7.ibDataset15STATUS.AsString       := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
             Form7.ibDataSet15NFEPROTOCOLO.AsString := Copy(sRetorno+'   ',Pos('<nProt>',sRetorno)+7,Pos('</nProt>',sRetorno)-Pos('<nProt>',sRetorno)-7);
             Form7.ibDataSet15.Post;
             Form7.ibDataSet15.Edit;
-            //
+
             if Form7.ibDataSet15NFEPROTOCOLO.AsString <> '' then
             begin
-              //
               Form7.ibDataSet15.Edit;
               Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
-              //
+
               if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
               begin
                 Form7.ibDataSet15EMITIDA.AsString := 'S'; // Emitida
-                //
               end;
-              //
+
               Form7.ibDataSet15.Post;
-              //
+
+              //Mauricio Parizotto 2023-11-28
+              Panel7.Caption     := 'Verificando Estoque...'+replicate(' ',100);
+              Panel7.Repaint;
+              
               BaixaEstoqueDaNFeAutorizada('');
-              //
+
               Form7.ibDataSet128.active := True;
-              //
+
               if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) <> 'URB' then
               begin
                 PegaImpostosDoXML(Form7.ibDataSet15.FieldByName('NUMERONF').AsString);
               end;
               
               try
-                //
                 // Relaciona a natureza da operação com o arquivo de vendas
-                //
                 if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
                   Form7.ibDataSet14.Append
                 else
                   Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-                //
+                
                 if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
                 begin
-                  //
                   ibDataSet128.Append;
-                  //
+
                   ibDataSet128.FieldByName('DATA').AsDateTime    := Form7.ibDataSet15EMISSAO.AsDateTIme;
                   ibDataSet128.FieldByName('PEDIDO').AsString    := Copy(Form7.ibDataSet15NUMERONF.AsString,4,6);
                   ibDataSet128.FieldByName('CLIFOR').AsString    := Form7.ibDataSet15CLIENTE.AsString;
                   ibDataSet128.FieldByName('VENDEDOR').AsString  := Form7.ibDataSet15VENDEDOR.AsString;
-                  //
+
                   if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '2') then
                   begin
                     ibDataSet128.FieldByName('FORMA').AsString     := '02 Dinheiro NF-e entrada';
@@ -24766,22 +24736,20 @@ begin
                     ibDataSet128.FieldByName('FORMA').AsString     := '02 Dinheiro NF-e';
                     ibDataSet128.FieldByName('VALOR').Asfloat      := Form7.ibDataSet15TOTAL.AsFloat;
                   end;
-                  //
+
                   ibDataSet128.Post;
-                  //
                 end;
-                //
+
                 if ((Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0)) or
                    ((Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'PAGAR') and (Form7.ibDataSet24TOTAL.AsFloat > 0)) then
                 begin
-                  //
                   ibDataSet128.Append;
-                  //
+
                   ibDataSet128.FieldByName('DATA').AsDateTime    := Form7.ibDataSet15EMISSAO.AsDateTIme;
                   ibDataSet128.FieldByName('PEDIDO').AsString    := Copy(Form7.ibDataSet15NUMERONF.AsString,4,6);
                   ibDataSet128.FieldByName('CLIFOR').AsString    := Form7.ibDataSet15CLIENTE.AsString;
                   ibDataSet128.FieldByName('VENDEDOR').AsString  := Form7.ibDataSet15VENDEDOR.AsString;
-                  //
+
                   if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '2') then
                   begin
                     ibDataSet128.FieldByName('FORMA').AsString     := '04 A prazo NF-e entrada';
@@ -24791,37 +24759,45 @@ begin
                     ibDataSet128.FieldByName('FORMA').AsString     := '04 A prazo NF-e';
                     ibDataSet128.FieldByName('VALOR').Asfloat      := Form7.ibDataSet15TOTAL.AsFloat;
                   end;
-                  //
+
                   ibDataSet128.Post;
-                  //
                 end;
-              except end;
-              //
+              except
+              end;
+
               Form7.ibDataSet128.active := False;
-              //
             end;
-            //
-          except end;
-          //
+          except
+          end;
+
           Screen.Cursor            := crDefault;
-          //
         end;
       end;
     end;
-    //
+
+    //Mauricio Parizotto 2023-11-28
+    Panel7.Caption     := 'Consultando status...'+replicate(' ',100);
+    Panel7.Repaint;
     DenegadoOuCancelado(True);
-    //
-  except end;
-  //
+  except
+  end;
+
+  //Mauricio Parizotto 2023-11-28
+  Panel7.Caption     := 'Finalizando...'+replicate(' ',100);
+  Panel7.Repaint;
+
   RecuperaXML(True);
-  //
+
   AgendaCommit(True);
-  //
+
+  //Mauricio Parizotto 2023-11-28
+  Panel7.Caption     := '';
+  Panel7.Repaint;
+
   Form7.Close;
   Form7.Show;
-  //
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.CancelarNFe1Click(Sender: TObject);
