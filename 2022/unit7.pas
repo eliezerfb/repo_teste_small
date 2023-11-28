@@ -24655,6 +24655,7 @@ end;
 procedure TForm7.N3ConsultarNFe1Click(Sender: TObject);
 var
   sRetorno : String;
+  sqlAntes : string;
 begin
   try
     if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
@@ -24701,10 +24702,10 @@ begin
               //Mauricio Parizotto 2023-11-28
               Panel7.Caption     := 'Verificando Estoque...'+replicate(' ',100);
               Panel7.Repaint;
-              
+
               BaixaEstoqueDaNFeAutorizada('');
 
-              Form7.ibDataSet128.active := True;
+              // Form7.ibDataSet128.active := True; Mauricio Parizotto 2023-11-28
 
               if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) <> 'URB' then
               begin
@@ -24720,6 +24721,12 @@ begin
                 
                 if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
                 begin
+                  //Mauricio Parizotto 2023-11-28
+                  ibDataSet128.Close;
+                  sqlAntes := ibDataSet128.SelectSQL.Text;
+                  ibDataSet128.SelectSQL.Text := ' Select * From PAGAMENT Where 1=2 '; // Para evitar lentidão
+                  ibDataSet128.active := True;
+
                   ibDataSet128.Append;
 
                   ibDataSet128.FieldByName('DATA').AsDateTime    := Form7.ibDataSet15EMISSAO.AsDateTIme;
@@ -24738,11 +24745,21 @@ begin
                   end;
 
                   ibDataSet128.Post;
+
+                  //Mauricio Parizotto 2023-11-28
+                  ibDataSet128.Close;
+                  ibDataSet128.SelectSQL.Text := sqlAntes;
                 end;
 
                 if ((Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0)) or
                    ((Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'PAGAR') and (Form7.ibDataSet24TOTAL.AsFloat > 0)) then
                 begin
+                  //Mauricio Parizotto 2023-11-28
+                  ibDataSet128.Close;
+                  sqlAntes := ibDataSet128.SelectSQL.Text;
+                  ibDataSet128.SelectSQL.Text := ' Select * From PAGAMENT Where 1=2 '; // Para evitar lentidão
+                  ibDataSet128.active := True;
+
                   ibDataSet128.Append;
 
                   ibDataSet128.FieldByName('DATA').AsDateTime    := Form7.ibDataSet15EMISSAO.AsDateTIme;
@@ -24761,6 +24778,10 @@ begin
                   end;
 
                   ibDataSet128.Post;
+
+                  //Mauricio Parizotto 2023-11-28
+                  ibDataSet128.Close;
+                  ibDataSet128.SelectSQL.Text := sqlAntes;
                 end;
               except
               end;
