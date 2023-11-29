@@ -2803,7 +2803,8 @@ begin
     end;
   end;
   //
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset15.Edit;
   Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
   //
   if (Pos('xMotivo',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Pos('nProt',Form7.ibDataSet15NFEXML.AsString) <> 0) then
@@ -3021,6 +3022,9 @@ var
   Mais1Ini : tIniFile;
 begin
   //
+  Form7.ibDataSet24.DisableControls;
+  LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3026'); // Sandro Silva 2023-11-27
+
   try
     //
     if Pos('<cStat>137</cStat>',sP1) <> 0  then // Não encontrou nenhuma nota
@@ -3181,6 +3185,11 @@ begin
       MensagemSistema('Erro 2503 ao baixar lista de NF-e´s emitidas: '+E.Message,msgErro);
     end;
   end;
+  // Em procedure TForm7.ibDataSet24NewRecord(DataSet: TDataSet); faz DisableControls
+  Form7.ibDataSet24.EnableControls; // Sandro Silva 2023-11-17
+
+  LogRetaguarda('Form7.ibDataSet24.EnableControls; 3183'); // Sandro Silva 2023-11-27
+
   Result := True;
 end;
 
@@ -5363,6 +5372,9 @@ begin
     if Form7.ibDataSet23.Active then Form7.ibDataSet23.EnableControls;
     LogRetaguarda('unit7 EnableControls 5359'); // Sandro Silva 2023-11-29
     if Form7.ibDataSet24.Active then Form7.ibDataSet24.EnableControls;
+
+    LogRetaguarda('Form7.ibDataSet24.EnableControls; 5367'); // Sandro Silva 2023-11-27
+
     if Form7.ibDataSet35.Active then Form7.ibDataSet35.EnableControls;
     if Form7.ibDataSet13.Active then Form7.ibDataSet13.EnableControls;
     if Form7.ibDataSet14.Active then Form7.ibDataSet14.EnableControls;
@@ -8283,8 +8295,19 @@ begin
     begin
       if sModulo = 'COMPRA' then
       begin
+        {Sandro Silva 2023-11-28 inicio
         Form7.ibDataSet24.Append;
         Form24.Show;
+        }
+        Form7.ibDataSet24.DisableControls;
+        LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3130'); // Sandro Silva 2023-11-27
+        try
+          Form7.ibDataSet24.Append;
+          Form24.Show;
+        finally
+          Form7.ibDataSet24.EnableControls;
+        end;
+        {Sandro Silva 2023-11-28 fim}
       end else
       begin
         if sModulo = 'ORCAMENTO' then
@@ -16551,6 +16574,9 @@ begin
     ibDataSet15.EnableControls;
     //
     ibDataSet24.DisableControls;
+
+    LogRetaguarda('ibDataSet24.DisableControls; 16549'); // Sandro Silva 2023-11-27
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     // Procura e altera o novo nome no Arquivo de VENDAS//
     ibDataSet24.First;
@@ -16565,7 +16591,9 @@ begin
     end;
     Screen.Cursor := crDefault; // Cursor de Aguardo
     ibDataSet24.EnableControls;
-    
+
+    LogRetaguarda('ibDataSet24.EnableControls; 16567'); // Sandro Silva 2023-11-27
+
     if Length(sApagar) <> 85 then
     begin
       sApagar := sApagar + Chr(10) + Chr(10) + 'Portanto não pode ser apagado.' + Chr(10)
@@ -21547,7 +21575,12 @@ begin
   //
   sFornecedorAntigo := '';
   //
+  {Sandro Silva 2023-11-28 inicio
   Form7.ibDataSet24.DisableControls;
+
+  LogRetaguarda('ibDataSet24.DisableControls; 21548'); // Sandro Silva 2023-11-27
+  }
+
   Form7.ibDataSet23.DisableControls;
   LogRetaguarda('unit7 DisableControls 21542 '); // Sandro Silva 2023-11-29
   Form7.ibDataSet8.DisableControls;
@@ -31189,6 +31222,8 @@ begin
 
       Form7.ibDataSet24.DisableControls;
 
+      LogRetaguarda('ibDataSet24.DisableControls; 31183'); // Sandro Silva 2023-11-27
+
       try
         Form7.ibDataSet24.Close;
         Form7.ibDataSet24.SelectSQL.Clear;
@@ -31210,6 +31245,9 @@ begin
       end;
 
       Form7.ibDataSet24.EnableControls;
+
+      LogRetaguarda('Form7.ibDataSet24.EnableControls; 31213'); // Sandro Silva 2023-11-27
+
     end else
     begin
       Form22.Label6.Caption := 'Última consulta de NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+' foi as '+sHora+
