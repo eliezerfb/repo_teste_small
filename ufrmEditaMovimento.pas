@@ -54,6 +54,7 @@ type
     property Pedido: String read FPedido write FPedido;
     property Caixa: String read FCaixa write FCaixa;
     function SelectSqlAlteracaEdicao: String;
+    function SelecionaItens: Boolean;
   end;
 
 var
@@ -214,6 +215,7 @@ begin
     DBGridItens.Columns[iCol].Title.Font.Size := DBGridItens.Font.Size;
   end;
 
+  {Sandro Silva 2023-11-28 inicio
   FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
 
   FEditFormatUnitario   := TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat; // Sandro Silva 2023-11-23
@@ -224,7 +226,10 @@ begin
   Form1.ibDataSet27.Close;
   Form1.ibDataSet27.SelectSQL.Text := SelectSqlAlteracaEdicao;
   Form1.ibDataSet27.Open;
+  }
 
+  TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat   := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfPreco, 2)); // Sandro Silva 2023-11-23
+  TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)); // Sandro Silva 2023-11-23
 
   AjustaLarguraDBGrid(DBGridItens);
 
@@ -321,7 +326,7 @@ begin
       end
       else
         TDBGrid(Sender).SelectedIndex := TDBGrid(Sender).SelectedIndex + 1;
-      
+
     end;
 
   except
@@ -347,7 +352,7 @@ procedure TFEditaMovimento.DataSource1DataChange(Sender: TObject;
 var
   dTotalItem: Double;
 begin
-  // Atualizando o total do item se alterado quantidade ou valor unitário 
+  // Atualizando o total do item se alterado quantidade ou valor unitário
   if Field = nil then
     Exit;
 
@@ -465,6 +470,69 @@ begin
     'where PEDIDO = ' + QuotedStr(FPedido) +
     ' and CAIXA = ' + QuotedStr(FCaixa) +
     ' order by REGISTRO';
+end;
+
+function TFEditaMovimento.SelecionaItens: Boolean;
+var
+  SelectEstoqueOld: String;
+  sItem: String;
+  sCodigo: String;
+  sDescricao: String;
+begin
+  Result := True;
+  FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
+  SelectEstoqueOld := Form1.ibDataSet4.SelectSQL.Text;
+
+  FEditFormatUnitario   := TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat; // Sandro Silva 2023-11-23
+  FEditFormatQuantidade := TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat; // Sandro Silva 2023-11-23
+  try
+    Form1.ibDataSet27.Close;
+    Form1.ibDataSet27.SelectSQL.Text := SelectSqlAlteracaEdicao;
+    Form1.ibDataSet27.Open;
+
+    while Form1.ibDataSet27.Eof = False do
+    begin
+
+      // Para pode exibir na mensagem quando não consegue bloquear os registros dos itens da venda
+      sItem      := Form1.ibDataSet27.FieldByName('ITEM').AsString;
+      sCodigo    := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
+      sDescricao := Form1.ibDataSet27.FieldByName('DESCRICAO').AsString;
+
+      try
+        // Artifício para forçar a edição e bloquear nas tabelas alteraca e estoque
+        Form1.ibDataSet27.Edit;
+        Form1.ibDataSet27.FieldByName('CODIGO').AsString := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
+        Form1.ibDataSet27.Post;
+
+        Form1.ibDataSet4.Close;
+        Form1.ibDataSet4.SelectSQL.Text :=
+          'select * from ESTOQUE where CODIGO = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CODIGO').AsString);
+        Form1.ibDataSet4.Open;
+
+        if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> '') and (Form1.ibDataSet4.FieldByName('DESCRICAO').AsString <> '') then
+        begin
+          Form1.ibDataSet4.Edit;
+          Form1.ibDataSet4.FieldByName('CODIGO').AsString := Form1.ibDataSet4.FieldByName('CODIGO').AsString;
+          Form1.ibDataSet4.Post;
+        end;
+
+      except
+        on E: Exception do
+        begin
+          Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
+          Result := False;
+          Application.BringToFront;
+          SmallMessageBox(
+            'Item: ' + RightStr(sItem, 3) + ' - ' + sDescricao + #13 + #13 +
+            'Está sendo movimentado por outro usuário', 'Atenção', MB_OK + MB_ICONWARNING);
+          Break;
+        end;
+      end;
+      Form1.ibDataSet27.Next;
+    end;
+  finally
+    Form1.ibDataSet4.SelectSQL.Text := SelectEstoqueOld;
+  end;
 end;
 
 end.

@@ -15381,7 +15381,9 @@ begin
   begin
     Form1.ibDataSet27.Edit;
     Form1.ibDataSet27.FieldByname('UNITARIO').AsFloat := dValorUnitarioOld;
-  end;
+  end
+  else
+    Sender.AsString := Text;
 end;
 {Sandro Silva 2023-11-23 fim}
 
@@ -15581,7 +15583,7 @@ begin
             Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat   := dQuantidadeOld;
 
             SmallMessageBox('Não foi possível alterar a quantidade do item: ' + #10 + #10 +
-              Form1.ibDataSet27.FieldByname('ITEM').AsString + '-' + Form1.ibDataSet27.FieldByname('DESCRICAO').AsString + #10 + #10 +
+              RightStr(Form1.ibDataSet27.FieldByname('ITEM').AsString, 3) + '-' + Form1.ibDataSet27.FieldByname('DESCRICAO').AsString + #10 + #10 +
               'Foi movimentado ao mesmo tempo por outro usuário' + #10 + #10 +
               'Tente novamente', 'Atenção', MB_ICONINFORMATION + MB_OK);
           end;
@@ -15595,7 +15597,9 @@ begin
     begin
       FEditaMovimento.Enabled := True;
       FEditaMovimento.btnOk.Enabled := True;
+      FEditaMovimento.ActiveControl := nil;
       FEditaMovimento.ActiveControl := FEditaMovimento.DBGridItens;
+      FEditaMovimento.DBGridItensColEnter(FEditaMovimento.DBGridItens);
     end;
   end;
   
@@ -35507,6 +35511,9 @@ begin
   IBQTEMP := CriaIBQuery(Form1.ibDataSet27.Transaction);
 
   try
+
+    Commitatudo(True);
+
     IBQTEMP.Close;
     IBQTEMP.SQL.Text :=
       'select first 1 distinct PEDIDO ' +
@@ -35523,7 +35530,8 @@ begin
     Application.CreateForm(TFEditaMovimento, FEditaMovimento);
     FEditaMovimento.Pedido := FormataNumeroDoCupom(Form1.icupom);
     FEditaMovimento.Caixa  := Form1.sCaixa;
-    FEditaMovimento.ShowModal;
+    if FEditaMovimento.SelecionaItens then
+      FEditaMovimento.ShowModal;
   finally
     if FEditaMovimento <> nil then
       FreeAndNil(FEditaMovimento);
