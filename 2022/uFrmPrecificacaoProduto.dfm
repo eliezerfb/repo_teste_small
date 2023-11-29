@@ -165,18 +165,21 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       #9'PRECO_VENDA,'
       #9'Case'
       #9#9'When Coalesce(MARGEMLB,0) > 0 then MARGEMLB '
+      #9#9'When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100)'
       #9#9'Else (((Coalesce(PRECO,0) / PRECO_CUSTO) -1 ) * 100)'
       #9'End PERC_LUC,'
       #9'Case'
       
         #9#9'When Coalesce(MARGEMLB,0) > 0 then PRECO_CUSTO + (PRECO_CUSTO ' +
-        '* (MARGEMLB / 100) ) '
+        '* (MARGEMLB / 100) )'
+      #9#9'When LISTA > 0 then LISTA'
       #9#9'Else Coalesce(PRECO,0)'
       #9'End PRECO_NOVO'
       'From'
       #9'(Select '
       #9#9'I.REGISTRO,'
       #9#9'I.DESCRICAO PRODUTO,'
+      #9#9'Coalesce(I.LISTA,0) LISTA,'
       
         #9#9'(I.UNITARIO + (Coalesce(I.VICMSST,0) + Coalesce(I.VIPI,0) + Co' +
         'alesce(I.VFCPST,0)) / I.QUANTIDADE)  +'
@@ -188,7 +191,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       #9#9#9') PRECO_CUSTO,'
       #9#9'Coalesce(E.PRECO,0) PRECO_VENDA,'
       #9#9'E.MARGEMLB,'
-      #9#9'E.PRECO'
+      #9#9'E.PRECO'#9#9
       #9'From ITENS002 I'
       
         #9#9'Left Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDO' +

@@ -3753,6 +3753,9 @@ begin
   if Form7.ibDataSet24.State in ([dsEdit, dsInsert]) then
     Form7.ibDataSet24.Post;
 
+  if Form7.ibDataSet23.State in ([dsEdit, dsInsert]) then
+    Form7.ibDataSet23.Post;
+
   try
     FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
     FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
