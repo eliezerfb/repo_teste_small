@@ -11248,15 +11248,6 @@ object Form7: TForm7
       OnMouseMove = Panel7MouseMove
     end
   end
-  object Button1: TButton
-    Left = 832
-    Top = 416
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 20
-    OnClick = Button1Click
-  end
   object mmCaixa: TMainMenu
     AutoHotkeys = maManual
     AutoLineReduction = maManual

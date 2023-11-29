@@ -1612,7 +1612,6 @@ type
     N71: TMenuItem;
     ConfigurarobservaoparaOS1: TMenuItem;
     ConfigurarobservaoparaRecibo1: TMenuItem;
-    Button1: TButton;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2277,7 +2276,6 @@ type
     procedure ImprimirOrdemdeServio2Click(Sender: TObject);
     procedure ConfigurarobservaoparaOS1Click(Sender: TObject);
     procedure ConfigurarobservaoparaRecibo1Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -3107,7 +3105,7 @@ begin
       slXMLDescom := TStringList.Create; // Armazena o xml descompactado para extrair o id a ser baixado
       lXMLDocZip  := CoDOMDocument.Create;
 
-      LogRetaguarda('3107 com docZip ' + sP1);
+      //LogRetaguarda('3107 com docZip ' + sP1);
       
       lXMLDocZip.loadXML(sP1);
       NodeZip     := lXMLDocZip.selectNodes('//retDistDFeInt/loteDistDFeInt/docZip');
@@ -31154,7 +31152,7 @@ begin
                                );
 
 
-            LogRetaguarda('31154 retorno ConsultarDistribuicaoDFe() ' + sRetorno);
+            //LogRetaguarda('31154 retorno ConsultarDistribuicaoDFe() ' + sRetorno);
 
             // Erro do vídeo
             Form7.ibDataSet23.DisableControls;
@@ -33475,8 +33473,6 @@ begin
     PrevCompra.Enabled                       := False;
  end;
 
-
- Button1.BringToFront;
 end;
 
 procedure TForm7.RefreshDados;
@@ -34379,32 +34375,6 @@ begin
   except
   end;
   
-end;
-
-procedure TForm7.Button1Click(Sender: TObject);
-var
-  sldfe: TStringList;
-begin
-
-  if OpenDialog1.Execute = False then
-    Exit;
-
-  sldfe := TStringList.Create;
-  sldfe.LoadFromFile(OpenDialog1.FileName);
-  try
-              // Erro do vídeo
-            Form7.ibDataSet23.DisableControls;
-            Form7.ibDataSet4.DisableControls;
-
-            // Erro do vídeo
-            DownloadListaDeNFesEmitidas(sldfe.Text); // Baixa uma lista de nf-e´s que foram emitidas para o CNPJ
-
-            Form7.ibDataSet23.EnableControls;
-            Form7.ibDataSet4.EnableControls;
-
-  except
-  end;
-  sldfe.Free;
 end;
 
 end.
