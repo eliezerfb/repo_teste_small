@@ -1277,6 +1277,20 @@ object Form30: TForm30
         TabOrder = 0
         OnClick = Button1Click
       end
+      object BitBtn1: TBitBtn
+        Left = 10
+        Top = 0
+        Width = 99
+        Height = 30
+        Caption = 'Anexos'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+      end
     end
     object pnlFotoProd: TPanel
       Left = 656

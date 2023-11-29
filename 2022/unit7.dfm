@@ -19130,7 +19130,7 @@ object Form7: TForm7
       
         '   IDENTIFI2, IDENTIFI3, IDENTIFI4, GARANTIA, OBSERVACAO, TOTAL_' +
         'SERV, TOTAL_PECA, '
-      '   TOTAL_FRET, DESCONTO, TOTAL_OS, NF, REGISTRO)'
+      '   TOTAL_FRET, DESCONTO, TOTAL_OS, NF, REGISTRO, IDOS)'
       'values'
       
         '  (:NUMERO, :DATA, :HORA, :CLIENTE, :DATA_PRO, :HORA_PRO, :TEMPO' +
@@ -19143,7 +19143,7 @@ object Form7: TForm7
         'BSERVACAO, '
       
         '   :TOTAL_SERV, :TOTAL_PECA, :TOTAL_FRET, :DESCONTO, :TOTAL_OS, ' +
-        ':NF, :REGISTRO)')
+        ':NF, :REGISTRO, :IDOS)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERO,'
@@ -19173,7 +19173,8 @@ object Form7: TForm7
       '  DESCONTO,'
       '  TOTAL_OS,'
       '  NF,'
-      '  REGISTRO'
+      '  REGISTRO,'
+      '  IDOS'
       'from OS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -19209,7 +19210,8 @@ object Form7: TForm7
       '  DESCONTO = :DESCONTO,'
       '  TOTAL_OS = :TOTAL_OS,'
       '  NF = :NF,'
-      '  REGISTRO = :REGISTRO'
+      '  REGISTRO = :REGISTRO,'
+      '  IDOS = :IDOS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -19364,6 +19366,11 @@ object Form7: TForm7
       Origin = 'OS.REGISTRO'
       Visible = False
       Size = 10
+    end
+    object ibDataSet3IDOS: TIntegerField
+      FieldName = 'IDOS'
+      Origin = 'OS.IDOS'
+      Visible = False
     end
   end
   object DataSource3: TDataSource
@@ -20096,6 +20103,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -21446,7 +21454,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21481,7 +21489,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21796,7 +21804,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DP' +
+      'EC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21826,7 +21835,8 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPE' +
+      'C'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

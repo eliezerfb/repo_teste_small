@@ -82,6 +82,7 @@ type
     fFrameIdentifi4: TfFrameCampo;
     pnlFotoProd: TPanel;
     imgFotoProd: TImage;
+    BitBtn1: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);

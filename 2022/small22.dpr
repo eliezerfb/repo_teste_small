@@ -198,12 +198,13 @@ uses
   ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel},
   MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
   uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
-  uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas', 
+  uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas',
   uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
   uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
   uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
   uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
-  uOrdemServico in 'units\uOrdemServico.pas';
+  uOrdemServico in 'units\uOrdemServico.pas',
+  uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS};
 
 {$R *.RES}
 
@@ -304,6 +305,7 @@ begin
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+  Application.CreateForm(TFrmAnexosOS, FrmAnexosOS);
   Application.Run;
     end else
     begin

@@ -1612,6 +1612,7 @@ type
     N71: TMenuItem;
     ConfigurarobservaoparaOS1: TMenuItem;
     ConfigurarobservaoparaRecibo1: TMenuItem;
+    ibDataSet3IDOS: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -13034,6 +13035,7 @@ begin
   }
 
   ibDataSet3REGISTRO.AsString   := sProximo;
+  ibDataSet3IDOS.AsInteger      := sProximoID; //Mauricio Parizotto 2023-11-29
   ibDataSet3NUMERO.AsString     := sNumero;
   ibDataSet3DATA.AsDateTime     := Date;
   ibDataSet3HORA.AsString       := TimeToStr(Time);
@@ -17873,24 +17875,19 @@ end;
 
 procedure TForm7.ibDataSet3BeforeDelete(DataSet: TDataSet);
 begin
-  //
   // Reaproveita o Número da OS
-  //
   IBDataSet99.Close;
   IBDataSet99.SelectSQL.Clear;
   IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,0) from rdb$database');
   IBDataSet99.Open;
-  //
+
   if Form7.ibDataSet3NUMERO.AsString = StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0) then
   begin
-    //
     IBDataSet99.Close;
     IBDataSet99.SelectSQL.Clear;
     IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,-1) from rdb$database');
     IBDataSet99.Open;
-    //
   end;
-  //
 end;
 
 procedure TForm7.Agendada1Click(Sender: TObject);
@@ -22683,6 +22680,7 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_OS,1) from rdb$database');
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+    sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
     ibDataset99.Close;
   except
     Abort

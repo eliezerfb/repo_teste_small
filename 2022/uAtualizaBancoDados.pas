@@ -2330,6 +2330,34 @@ begin
 
   {Mauricio Parizotto 2023-11-20 Fim}
 
+
+  {Mauricio Parizotto 2023-11-29 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OS', 'IDOS') = False then
+  begin
+    if ExecutaComando('ALTER TABLE OS ADD IDOS INTEGER') then
+    begin
+      ExecutaComando('Commit');
+      ExecutaComando('UPDATE OS SET IDOS = cast(REGISTRO as integer)');
+    end;
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OSANEXOS')) then
+  begin
+    ExecutaComando(' Create table OSANEXOS ('+
+                   ' 	 IDANEXO INTEGER NOT NULL,'+
+                   ' 	 IDOS INTEGER NOT NULL,'+
+                   ' 	 NOME VARCHAR(100) NOT NULL,'+
+                   ' 	 ANEXO BLOB SUB_TYPE TEXT NOT NULL,'+
+                   ' 	 CONSTRAINT PK_OSANEXOS_IDANEXO PRIMARY KEY(IDANEXO)'+
+                   ' )');
+
+    ExecutaComando('CREATE SEQUENCE G_OSANEXOS');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-11-29 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
