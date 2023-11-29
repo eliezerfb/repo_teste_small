@@ -184,6 +184,7 @@ begin
     Form7.IBDataSet15.DisableControls;
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet23.DisableControls;
+    LogRetaguarda('unit38 DisableControls  187'); // Sandro Silva 2023-11-29
     Form7.IBDataSet24.DisableControls;
     Form7.ibDataSet27.DisableControls;
     Form7.ibDataSet35.DisableControls;
@@ -481,6 +482,7 @@ begin
         Form7.IBDataSet15.EnableControls;
         Form7.ibDataSet16.EnableControls;
         Form7.ibDataSet23.EnableControls;
+        LogRetaguarda('unit38 EnableControls 485'); // Sandro Silva 2023-11-29
         Form7.IBDataSet24.EnableControls;
         Form7.ibDataSet27.EnableControls;
         Form7.ibDataSet35.EnableControls;
@@ -508,6 +510,7 @@ begin
     Form7.IBDataSet15.EnableControls;
     Form7.ibDataSet16.EnableControls;
     Form7.ibDataSet23.EnableControls;
+    LogRetaguarda('unit38 EnableControls 513'); // Sandro Silva 2023-11-29
     Form7.IBDataSet24.EnableControls;
     Form7.ibDataSet27.EnableControls;
     Form7.ibDataSet35.EnableControls;

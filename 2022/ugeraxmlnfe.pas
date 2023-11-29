@@ -70,6 +70,7 @@ begin
   try
     Form7.ibDataSet16.DisableControls; // Sandro Silva 2023-05-09
     Form7.ibDataSet23.DisableControls; // Sandro Silva 2023-05-09
+    LogRetaguarda('ugeraxmlnfe DisableControls  73 '); // Sandro Silva 2023-11-29
     Screen.Cursor            := crHourGlass;
     Form7.Panel7.Caption     := 'Verificando status do serviço...'+replicate(' ',100);
     Form7.Panel7.Repaint;
@@ -252,6 +253,7 @@ begin
     if Form7.ibDataSet23.Active then
       Form7.ibDataSet23.First;
     Form7.ibDataSet23.EnableControls; // Sandro Silva 2023-05-09
+    LogRetaguarda('ugeraxmlnfe EnableControls 256'); // Sandro Silva 2023-11-29
   end;
 end;
 

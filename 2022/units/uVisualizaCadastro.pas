@@ -80,6 +80,7 @@ begin
     Form7.ibDataSet26.DisableControls;
     Form7.ibDataSet24.DisableControls;
     Form7.ibDataSet23.DisableControls;
+    LogRetaguarda('uvisualizacadastro DisableControls  83 '); // Sandro Silva 2023-11-29    
     Form7.ibDataSet28.DisableControls;
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet15.DisableControls;
@@ -1221,6 +1222,7 @@ begin
     Form7.ibDataSet26.EnableControls;
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
+    LogRetaguarda('uvisualizacadastro EnableControls 1225'); // Sandro Silva 2023-11-29
     Form7.ibDataSet28.EnableControls;
     Form7.ibDataSet16.EnableControls;
     Form7.ibDataSet15.EnableControls;

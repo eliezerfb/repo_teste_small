@@ -1181,6 +1181,7 @@ begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Form7.ibDataSet4.DisableControls;
   Form7.ibDataSet23.DisableControls;
+  LogRetaguarda('unit24 DisableControls  1184 '); // Sandro Silva 2023-11-29
 
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
@@ -1623,6 +1624,7 @@ begin
 
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet23.EnableControls;
+  LogRetaguarda('unit24 EnableControls 1627'); // Sandro Silva 2023-11-29
 
   if Form7.Visible then
   begin
@@ -2463,6 +2465,7 @@ begin
   begin
     // Atenção a rotina abaixo altera a quantidade no estoque
     Form7.ibDataSet23.DisableControls;
+    LogRetaguarda('unit24  DisableControls 2467 '); // Sandro Silva 2023-11-29
     Form7.ibDataSet23.First;
     while not Form7.ibDataSet23.Eof do
     begin
@@ -2505,6 +2508,7 @@ begin
   Form7.ibDataSet4.Open;
 
   Form7.ibDataSet23.EnableControls;
+  LogRetaguarda('unit24 EnableControls 2511'); // Sandro Silva 2023-11-29
 
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
@@ -2699,6 +2703,7 @@ begin
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
+    LogRetaguarda('unit24 EnableControls 2706'); // Sandro Silva 2023-11-29
     Form7.ibDataSet18.EnableControls;
     Form7.ibDataSet8.EnableControls;
     Form7.ibDataSet2.EnableControls;
@@ -2747,6 +2752,7 @@ begin
     //
     Form7.ibDataSet24.DisableControls;
     Form7.ibDataSet23.DisableControls;
+    LogRetaguarda('unit24  DisableControls 2752 '); // Sandro Silva 2023-11-29
     //
     try
       Form1.bFechaTudo           := False;
@@ -2783,6 +2789,7 @@ begin
 
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
+    LogRetaguarda('unit24 EnableControls 2792'); // Sandro Silva 2023-11-29
   end;
 
   // Altera o Grid de mercadorias para mostrar na NF
@@ -2798,6 +2805,8 @@ begin
     sTitulo := Form7.sTitulo;
     Form7.ibDataSet24.DisableControls;
     Form7.ibDataSet23.DisableControls;
+    LogRetaguarda('unit24 DisableControls  2804 '); // Sandro Silva 2023-11-29
+
     try
       Form1.bFechaTudo           := False;
       Form1.imgCliForClick(Sender);
@@ -2822,6 +2831,7 @@ begin
     Form1.bFechaTudo           := True;
     Form7.ibDataSet24.EnableControls;
     Form7.ibDataSet23.EnableControls;
+    LogRetaguarda('unit24 EnableControls 2834'); // Sandro Silva 2023-11-29
   end;
 
   // Altera o Grid de mercadorias para mostrar na NF

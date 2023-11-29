@@ -5356,6 +5356,7 @@ begin
 // ka    if Form7.ibDataSet16.Active then Form7.ibDataSet16.EnableControls;
     if Form7.ibDataSet15.Active then Form7.ibDataSet15.EnableControls;
     if Form7.ibDataSet23.Active then Form7.ibDataSet23.EnableControls;
+    LogRetaguarda('unit7 EnableControls 5359'); // Sandro Silva 2023-11-29
     if Form7.ibDataSet24.Active then Form7.ibDataSet24.EnableControls;
     if Form7.ibDataSet35.Active then Form7.ibDataSet35.EnableControls;
     if Form7.ibDataSet13.Active then Form7.ibDataSet13.EnableControls;
@@ -9907,6 +9908,7 @@ begin
       ibDataSet4.DisableControls;
       ibDataSet16.DisableControls;
       ibDataSet23.DisableControls;
+      LogRetaguarda('unit7 DisableControls 9910 '); // Sandro Silva 2023-11-29
       ibDataSet12.DisableControls;
 
       AtualizaPromocao(True);
@@ -10161,6 +10163,7 @@ begin
       ibDataSet4.EnableControls;
       ibDataSet16.EnableControls;
       ibDataSet23.EnableControls;
+      LogRetaguarda('unit7 EnableControls 10166'); // Sandro Silva 2023-11-29
       ibDataSet12.EnableControls;
 
       sModulo := 'ESTOQUE';
@@ -21065,6 +21068,7 @@ begin
   if (Form1.bFlag) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
   begin
     Form7.ibDataSet23.DisableControls;
+    LogRetaguarda('unit7 DisableControls 21069 '); // Sandro Silva 2023-11-29
     Form7.ibDataSet4.DisableControls;
 
     // Só procura se estiver diferente
@@ -21130,6 +21134,7 @@ begin
             LimparColunasItemCompra;
             ibDataSet4.EnableControls;
             ibDataSet23.EnableControls;
+            LogRetaguarda('unit7 EnableControls 21137'); // Sandro Silva 2023-11-29            
             Exit;
           end;
         end;
@@ -21195,6 +21200,7 @@ begin
       LimparColunasItemCompra;
       ibDataSet4.EnableControls;
       ibDataSet23.EnableControls;
+      LogRetaguarda('unit7 EnableControls 21203'); // Sandro Silva 2023-11-29      
       Exit;
     end;
     // So altera se for um produto novo
@@ -21354,6 +21360,7 @@ begin
 
     ibDataSet4.EnableControls;
     ibDataSet23.EnableControls;
+    LogRetaguarda('unit7 EnableControls 21363'); // Sandro Silva 2023-11-29    
 
     Observacao2(False);
   end;
@@ -21537,6 +21544,7 @@ begin
   //
   Form7.ibDataSet24.DisableControls;
   Form7.ibDataSet23.DisableControls;
+  LogRetaguarda('unit7 DisableControls 21542 '); // Sandro Silva 2023-11-29
   Form7.ibDataSet8.DisableControls;
   //
   Form7.ibDataSet24REGISTRO.AsString  := sProximo;
@@ -21947,6 +21955,7 @@ begin
       if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet24OPERACAO.AsString then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
       //
       Form7.ibDataSet23.DisableControls;
+      LogRetaguarda('unit7 DisableControls 21953 '); // Sandro Silva 2023-11-29
       Form7.ibDataSet4.DisableControls;
       //
       Form7.ibDataSet23.First;
@@ -21975,6 +21984,7 @@ begin
       end;
       //
       Form7.ibDataSet23.EnableControls;
+      LogRetaguarda('unit7 EnableControls 21987'); // Sandro Silva 2023-11-29
       Form7.ibDataSet4.EnableControls;
       //
       // Contas a PAGAR
@@ -31148,12 +31158,14 @@ begin
 
             // Erro do vídeo
             Form7.ibDataSet23.DisableControls;
+            LogRetaguarda('unit7 DisableControls 31155 '); // Sandro Silva 2023-11-29            
             Form7.ibDataSet4.DisableControls;
 
             // Erro do vídeo
             DownloadListaDeNFesEmitidas(sRetorno); // Baixa uma lista de nf-e´s que foram emitidas para o CNPJ
 
             Form7.ibDataSet23.EnableControls;
+            LogRetaguarda('unit7 EnableControls 31168'); // Sandro Silva 2023-11-29
             Form7.ibDataSet4.EnableControls;
           except
             on E: Exception do
