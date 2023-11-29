@@ -164,15 +164,15 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       #9'PRECO_CUSTO,'
       #9'PRECO_VENDA,'
       #9'Case'
-      #9#9'When Coalesce(MARGEMLB,0) > 0 then MARGEMLB '
       #9#9'When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100)'
+      #9#9'When Coalesce(MARGEMLB,0) > 0 then MARGEMLB '
       #9#9'Else (((Coalesce(PRECO,0) / PRECO_CUSTO) -1 ) * 100)'
       #9'End PERC_LUC,'
       #9'Case'
+      #9#9'When LISTA > 0 then LISTA'
       
         #9#9'When Coalesce(MARGEMLB,0) > 0 then PRECO_CUSTO + (PRECO_CUSTO ' +
         '* (MARGEMLB / 100) )'
-      #9#9'When LISTA > 0 then LISTA'
       #9#9'Else Coalesce(PRECO,0)'
       #9'End PRECO_NOVO'
       'From'
