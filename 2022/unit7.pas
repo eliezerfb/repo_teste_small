@@ -3081,8 +3081,11 @@ begin
             end
           end;
 
+          {Sandro Silva 2023-11-29 inicio
+          /// Não faz sentido limpar o xml recebido quando
           if Form1.DisponivelSomenteParaNos = False then //testando se precisa mesmo limpar a variável para não importar a notas iniciais, quando CNPJ é novo, empresa nova constituída
             sP1 := '';
+          }
         end else
         begin
           if StrToInt(LimpaNumero(xmlNodeValue(sP1, '//retDistDFeInt/ultNSU'))) > 0 then // Não pode zerar - Estava voltando zero quando consumo indevido
@@ -3101,6 +3104,8 @@ begin
       // Seleciona os elementos contendo xml zipados
       slXMLDescom := TStringList.Create; // Armazena o xml descompactado para extrair o id a ser baixado
       lXMLDocZip  := CoDOMDocument.Create;
+
+      //LogRetaguarda('3107 com docZip ' + sP1);
       
       lXMLDocZip.loadXML(sP1);
       NodeZip     := lXMLDocZip.selectNodes('//retDistDFeInt/loteDistDFeInt/docZip');
@@ -31155,6 +31160,9 @@ begin
                                StrTran(StrZero(StrToInt(Form1.ibQuery2.FieldByname('GEN_ID').AsString),15,0),'-','0'),
                                nkUltimo
                                );
+
+
+            //LogRetaguarda('31154 retorno ConsultarDistribuicaoDFe() ' + sRetorno);
 
             // Erro do vídeo
             Form7.ibDataSet23.DisableControls;
