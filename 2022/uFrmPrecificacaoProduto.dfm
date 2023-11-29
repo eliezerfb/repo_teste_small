@@ -184,7 +184,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       #9#9#9#9'(I.UNITARIO / C.MERCADORIA) * '
       
         #9#9#9#9'(Coalesce(C.FRETE,0) + Coalesce(C.SEGURO,0) + Coalesce(C.DES' +
-        'PESAS,0) + Coalesce(C.DESCONTO,0))      '#9#9
+        'PESAS,0) - Coalesce(C.DESCONTO,0))      '#9#9
       #9#9#9') PRECO_CUSTO,'
       #9#9'Coalesce(E.PRECO,0) PRECO_VENDA,'
       #9#9'E.MARGEMLB,'
