@@ -165,6 +165,7 @@ type
     procedure SMALL_DBEdit7Click(Sender: TObject);
     procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure BitBtn1Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -186,7 +187,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit12, Unit41, Unit19, Unit22, Unit24, Mais3, preco1,
-  Unit10, uTestaClienteDevendo;
+  Unit10, uTestaClienteDevendo, uFrmAnexosOS;
 
 {$R *.dfm}
 
@@ -1592,6 +1593,17 @@ procedure TForm30.DBGrid3KeyUp(Sender: TObject; var Key: Word;
 begin
   //Mauricio Parizotto 2023-11-15
   MostraFoto;
+end;
+
+procedure TForm30.BitBtn1Click(Sender: TObject);
+begin
+  FrmAnexosOS := TFrmAnexosOS.Create(self);
+  try
+    FrmAnexosOS.IDOS := Form7.ibDataSet3IDOS.AsInteger;
+    FrmAnexosOS.ShowModal;
+  finally
+    FreeAndNil(FrmAnexosOS);
+  end;
 end;
 
 end.

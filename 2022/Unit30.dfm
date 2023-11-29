@@ -1290,6 +1290,7 @@ object Form30: TForm30
         Font.Style = []
         ParentFont = False
         TabOrder = 1
+        OnClick = BitBtn1Click
       end
     end
     object pnlFotoProd: TPanel

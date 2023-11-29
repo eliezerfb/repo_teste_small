@@ -305,7 +305,6 @@ begin
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-  Application.CreateForm(TFrmAnexosOS, FrmAnexosOS);
   Application.Run;
     end else
     begin
