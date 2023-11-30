@@ -498,6 +498,12 @@ begin
       sCodigo    := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
       sDescricao := Form1.ibDataSet27.FieldByName('DESCRICAO').AsString;
 
+      if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
+      begin
+        Result := False;
+        Break;
+      end;
+      
       try
         // Artifício para forçar a edição e bloquear nas tabelas alteraca e estoque
         Form1.ibDataSet27.Edit;
@@ -521,16 +527,19 @@ begin
         begin
           Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
           Result := False;
-          Application.BringToFront;
-          SmallMessageBox(
-            'Item: ' + RightStr(sItem, 3) + ' - ' + sDescricao + #13 + #13 +
-            'Está sendo movimentado por outro usuário', 'Atenção', MB_OK + MB_ICONWARNING);
           Break;
         end;
       end;
       Form1.ibDataSet27.Next;
     end;
   finally
+    if Result = False then
+    begin
+      Application.BringToFront;
+      SmallMessageBox(
+        'Item: ' + RightStr(sItem, 3) + ' - ' + sDescricao + #13 + #13 +
+        'Está sendo movimentado por outro usuário', 'Atenção', MB_OK + MB_ICONWARNING);
+    end;
     Form1.ibDataSet4.SelectSQL.Text := SelectEstoqueOld;
   end;
 end;
