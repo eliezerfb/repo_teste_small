@@ -199,6 +199,7 @@ uses
   MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
   uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',  
   uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas',
+  uFrmPrecificacaoProduto in 'uFrmPrecificacaoProduto.pas' {FrmPrecificacaoProduto},
   uParcelasReceber in 'uParcelasReceber.pas',
   uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas', 
   uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},

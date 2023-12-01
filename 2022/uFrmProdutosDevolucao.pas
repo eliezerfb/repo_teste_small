@@ -454,7 +454,7 @@ end;
 procedure TFrmProdutosDevolucao.FormShow(Sender: TObject);
 var
   CasasQtd, CasasPreco: integer;
-var
+
   oArqDat: TArquivosDAT;
 begin
   oArqDat := TArquivosDAT.Create(Usuario);

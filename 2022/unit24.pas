@@ -8,6 +8,7 @@ uses
   DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, Variants, HtmlHelp, ShellApi, jpeg,
   IBCustomDataSet, Buttons
   , StrUtils
+  , Windows
   ;
 
 type
@@ -116,8 +117,6 @@ type
     Panel9: TPanel;
     Edit2: TEdit;
     Panel5: TPanel;
-    SMALL_DBEdit42: TSMALL_DBEdit;
-    Label9: TLabel;
     Label10: TLabel;
     SMALL_DBEdit44: TSMALL_DBEdit;
     SMALL_DBEdit45: TSMALL_DBEdit;
@@ -153,7 +152,6 @@ type
     ComboBox13: TComboBox;
     Label89: TLabel;
     Image5: TImage;
-    Button1: TBitBtn;
     SMALL_DBEdit51: TSMALL_DBEdit;
     SMALL_DBEdit52: TSMALL_DBEdit;
     lblPFCP: TLabel;
@@ -169,6 +167,7 @@ type
     Label7: TLabel;
     SMALL_DBEdit16: TSMALL_DBEdit;
     cbDescontaICMSDesonerado: TCheckBox;
+    btnPrecificar: TBitBtn;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -273,6 +272,7 @@ type
     procedure SMALL_DBEdit23Exit(Sender: TObject);
     procedure edFretePorContaExit(Sender: TObject);
     procedure cbDescontaICMSDesoneradoClick(Sender: TObject);
+    procedure btnPrecificarClick(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -303,7 +303,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
-  uFuncoesBancoDados, uDialogs, uFuncoesRetaguarda;
+  uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto, uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -1297,6 +1297,8 @@ begin
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                   )); //
                           }
+
+                          //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1304,7 +1306,7 @@ begin
                                                                      Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                  )); //
+                                                                  )); 
                           {Sandro Silva 2023-10-16 fim}
 
                           {Sandro Silva 2023-03-02 inicio}
@@ -3763,6 +3765,24 @@ begin
   Form7.bDescontaICMSDeso := cbDescontaICMSDesonerado.Checked;
   
   Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+end;
+
+procedure TForm24.btnPrecificarClick(Sender: TObject);
+begin
+  if Form7.ibDataSet24.State in ([dsEdit, dsInsert]) then
+    Form7.ibDataSet24.Post;
+
+  if Form7.ibDataSet23.State in ([dsEdit, dsInsert]) then
+    Form7.ibDataSet23.Post;
+
+  try
+    FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := Form7.ibDataSet24FORNECEDOR.AsString;
+    FrmPrecificacaoProduto.ShowModal;
+  finally
+    FreeAndNil(FrmPrecificacaoProduto);
+  end;
 end;
 
 end.
