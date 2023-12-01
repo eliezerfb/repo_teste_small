@@ -3038,7 +3038,7 @@ begin
   
   Form7.ibDataSet24.DisableControls;
 
-  LogRetaguarda('ibDataSet24.DisableControls; 3041'); // Sandro Silva 2023-11-27
+  //LogRetaguarda('ibDataSet24.DisableControls; 3041'); // Sandro Silva 2023-11-27
   
   Form7.ibDataSet30.First;
   while not Form7.ibDataSet30.EOF do
@@ -3109,7 +3109,7 @@ begin
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet24.EnableControls;
 
-  LogRetaguarda('Form7.ibDataSet24.EnableControls; 3112'); // Sandro Silva 2023-11-27
+  //LogRetaguarda('Form7.ibDataSet24.EnableControls; 3112'); // Sandro Silva 2023-11-27
 
 end;
 
@@ -3197,7 +3197,7 @@ begin
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet24.EnableControls;
 
-  LogRetaguarda('Form7.ibDataSet24.EnableControls; 3200'); // Sandro Silva 2023-11-27
+  //LogRetaguarda('Form7.ibDataSet24.EnableControls; 3200'); // Sandro Silva 2023-11-27
 
 end;
 

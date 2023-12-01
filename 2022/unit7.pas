@@ -3014,7 +3014,7 @@ var
 begin
   //
   Form7.ibDataSet24.DisableControls;
-  LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3026'); // Sandro Silva 2023-11-27
+  //LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3026'); // Sandro Silva 2023-11-27
 
   try
     //
@@ -3179,7 +3179,7 @@ begin
   // Em procedure TForm7.ibDataSet24NewRecord(DataSet: TDataSet); faz DisableControls
   Form7.ibDataSet24.EnableControls; // Sandro Silva 2023-11-17
 
-  LogRetaguarda('Form7.ibDataSet24.EnableControls; 3183'); // Sandro Silva 2023-11-27
+  //LogRetaguarda('Form7.ibDataSet24.EnableControls; 3183'); // Sandro Silva 2023-11-27
 
   Result := True;
 end;
@@ -5337,7 +5337,7 @@ begin
     if Form7.ibDataSet23.Active then Form7.ibDataSet23.EnableControls;
     if Form7.ibDataSet24.Active then Form7.ibDataSet24.EnableControls;
 
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 5367'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 5367'); // Sandro Silva 2023-11-27
 
     if Form7.ibDataSet35.Active then Form7.ibDataSet35.EnableControls;
     if Form7.ibDataSet13.Active then Form7.ibDataSet13.EnableControls;
@@ -8264,7 +8264,7 @@ begin
         Form24.Show;
         }
         Form7.ibDataSet24.DisableControls;
-        LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3130'); // Sandro Silva 2023-11-27
+        //LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3130'); // Sandro Silva 2023-11-27
         try
           Form7.ibDataSet24.Append;
           Form24.Show;
@@ -16538,7 +16538,7 @@ begin
     //
     ibDataSet24.DisableControls;
 
-    LogRetaguarda('ibDataSet24.DisableControls; 16549'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('ibDataSet24.DisableControls; 16549'); // Sandro Silva 2023-11-27
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     // Procura e altera o novo nome no Arquivo de VENDAS//
@@ -16555,7 +16555,7 @@ begin
     Screen.Cursor := crDefault; // Cursor de Aguardo
     ibDataSet24.EnableControls;
 
-    LogRetaguarda('ibDataSet24.EnableControls; 16567'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('ibDataSet24.EnableControls; 16567'); // Sandro Silva 2023-11-27
 
     if Length(sApagar) <> 85 then
     begin
@@ -31207,7 +31207,7 @@ begin
 
       Form7.ibDataSet24.DisableControls;
 
-      LogRetaguarda('ibDataSet24.DisableControls; 31183'); // Sandro Silva 2023-11-27
+      //LogRetaguarda('ibDataSet24.DisableControls; 31183'); // Sandro Silva 2023-11-27
 
       try
         Form7.ibDataSet24.Close;
@@ -31231,7 +31231,7 @@ begin
 
       Form7.ibDataSet24.EnableControls;
 
-      LogRetaguarda('Form7.ibDataSet24.EnableControls; 31213'); // Sandro Silva 2023-11-27
+      //LogRetaguarda('Form7.ibDataSet24.EnableControls; 31213'); // Sandro Silva 2023-11-27
 
     end else
     begin

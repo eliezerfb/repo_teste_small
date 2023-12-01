@@ -11709,7 +11709,7 @@ begin
     
     Form7.ibDataSet24.DisableControls;
 
-    LogRetaguarda('Form7.ibDataSet24.DisableControls 11712'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.DisableControls 11712'); // Sandro Silva 2023-11-27
 
     try
       Form7.ibDataSet24.Close;
@@ -11720,7 +11720,7 @@ begin
     except end;
 
     Form7.ibDataSet24.EnableControls;
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 11723'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 11723'); // Sandro Silva 2023-11-27
   end;
 
   Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML nos últimos ' + PRAZO_MANIFESTAR + ' dias.'); // Sandro Silva 2023-06-20 Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');

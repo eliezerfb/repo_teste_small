@@ -1655,7 +1655,7 @@ begin
     //
     Form7.ibDataSet24.Enablecontrols;
 
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 1656'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 1656'); // Sandro Silva 2023-11-27
 
     dBGrid2.DataSource := Form7.DataSource14;
     Form7.ibDataSet14.EnableControls;
@@ -2755,7 +2755,7 @@ begin
     //
     Form7.ibDataSet24.DisableControls;
 
-    LogRetaguarda('ibDataSet24.DisableControls; 2750'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('ibDataSet24.DisableControls; 2750'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.DisableControls;
     //
@@ -2794,7 +2794,7 @@ begin
 
     Form7.ibDataSet24.EnableControls;
 
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 2795'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 2795'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.EnableControls;
   end;
@@ -2812,7 +2812,7 @@ begin
     sTitulo := Form7.sTitulo;
     Form7.ibDataSet24.DisableControls;
 
-    LogRetaguarda('ibDataSet24.DisableControls; 2804'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('ibDataSet24.DisableControls; 2804'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.DisableControls;
     try
@@ -2839,7 +2839,7 @@ begin
     Form1.bFechaTudo           := True;
     Form7.ibDataSet24.EnableControls;
 
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 2840'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 2840'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.EnableControls;
   end;

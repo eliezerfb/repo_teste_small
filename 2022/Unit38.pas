@@ -186,7 +186,7 @@ begin
     Form7.ibDataSet23.DisableControls;
     Form7.IBDataSet24.DisableControls;
 
-    LogRetaguarda('ibDataSet24.DisableControls; 189'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('ibDataSet24.DisableControls; 189'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet27.DisableControls;
     Form7.ibDataSet35.DisableControls;
@@ -516,7 +516,7 @@ begin
     Form7.ibDataSet23.EnableControls;
     Form7.IBDataSet24.EnableControls;
 
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 519'); // Sandro Silva 2023-11-27
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 519'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet27.EnableControls;
     Form7.ibDataSet35.EnableControls;
