@@ -121,6 +121,9 @@ begin
   Form7.ibDataSet23.Open;
 
   Form7.ibDataSet24.EnableControls;
+
+  LogRetaguarda('Form7.ibDataSet24.EnableControls; 125'); // Sandro Silva 2023-11-27
+
   Form7.ibDataSet23.EnableControls;
 
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
