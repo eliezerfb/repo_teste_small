@@ -493,41 +493,45 @@ begin
     while Form1.ibDataSet27.Eof = False do
     begin
 
-      // Para pode exibir na mensagem quando não consegue bloquear os registros dos itens da venda
-      sItem      := Form1.ibDataSet27.FieldByName('ITEM').AsString;
-      sCodigo    := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
-      sDescricao := Form1.ibDataSet27.FieldByName('DESCRICAO').AsString;
-
-      if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
+      if (Form1.ibDataSet27.FieldByName('TIPO').AsString <> 'CANCEL') then
       begin
-        Result := False;
-        Break;
-      end;
       
-      try
-        // Artifício para forçar a edição e bloquear nas tabelas alteraca e estoque
-        Form1.ibDataSet27.Edit;
-        Form1.ibDataSet27.FieldByName('CODIGO').AsString := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
-        Form1.ibDataSet27.Post;
+        // Para pode exibir na mensagem quando não consegue bloquear os registros dos itens da venda
+        sItem      := Form1.ibDataSet27.FieldByName('ITEM').AsString;
+        sCodigo    := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
+        sDescricao := Form1.ibDataSet27.FieldByName('DESCRICAO').AsString;
 
-        Form1.ibDataSet4.Close;
-        Form1.ibDataSet4.SelectSQL.Text :=
-          'select * from ESTOQUE where CODIGO = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CODIGO').AsString);
-        Form1.ibDataSet4.Open;
-
-        if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> '') and (Form1.ibDataSet4.FieldByName('DESCRICAO').AsString <> '') then
+        if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
         begin
-          Form1.ibDataSet4.Edit;
-          Form1.ibDataSet4.FieldByName('CODIGO').AsString := Form1.ibDataSet4.FieldByName('CODIGO').AsString;
-          Form1.ibDataSet4.Post;
-        end;
-
-      except
-        on E: Exception do
-        begin
-          Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
           Result := False;
           Break;
+        end;
+
+        try
+          // Artifício para forçar a edição e bloquear nas tabelas alteraca e estoque
+          Form1.ibDataSet27.Edit;
+          Form1.ibDataSet27.FieldByName('CODIGO').AsString := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
+          Form1.ibDataSet27.Post;
+
+          Form1.ibDataSet4.Close;
+          Form1.ibDataSet4.SelectSQL.Text :=
+            'select * from ESTOQUE where CODIGO = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CODIGO').AsString);
+          Form1.ibDataSet4.Open;
+
+          if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> '') and (Form1.ibDataSet4.FieldByName('DESCRICAO').AsString <> '') then
+          begin
+            Form1.ibDataSet4.Edit;
+            Form1.ibDataSet4.FieldByName('CODIGO').AsString := Form1.ibDataSet4.FieldByName('CODIGO').AsString;
+            Form1.ibDataSet4.Post;
+          end;
+
+        except
+          on E: Exception do
+          begin
+            Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
+            Result := False;
+            Break;
+          end;
         end;
       end;
       Form1.ibDataSet27.Next;
