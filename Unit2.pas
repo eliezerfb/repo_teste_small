@@ -381,7 +381,7 @@ begin
     Form1.ibDataSet25.FieldByname('ACUMULADO2').AsFloat := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByname('RECEBER').AsFloat)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat;  
     //
     Panel5.Visible := False;
-    Form2.SMALL_DBEdit5.Enabled := False;
+    // Sandro Silva 2023-11-01 Form2.SMALL_DBEdit5.Enabled := False;
     Form2.SMALL_DBEdit2.SetFocus;
     //
     Form1.Label_7.Caption := 'Forma de pagamento';
@@ -1529,7 +1529,7 @@ begin
     if bFalta then
     begin
       //
-      Form2.SMALL_DBEdit5.Enabled := False;
+      // Sandro Silva 2023-11-01 Form2.SMALL_DBEdit5.Enabled := False;
       //
       // Apaga o que ta em branco
       //
@@ -1557,7 +1557,7 @@ begin
       //
     end;
     //
-    Form2.SMALL_DBEdit5.Enabled := True;
+    // Sandro Silva 2023-11-01 Form2.SMALL_DBEdit5.Enabled := True;
     //
     if Alltrim(Edit9.Text)<>'' then
     begin
