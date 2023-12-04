@@ -352,12 +352,13 @@ function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
 function TemGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function TemSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function TemComposicao(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function SemEstoque(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
   out fTributos_federais: Real; out fTributos_estaduais: Real;
   out fTributos_municipais: Real): String;
-procedure SleepWithoutFreeze(msec: int64);  
+procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 
 var
@@ -2561,6 +2562,26 @@ begin
    except
    end;
    FreeAndNil(IBQCOMPOSTO);
+end;
+
+function SemEstoque(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQESTOQUE: TIBQuery;
+begin
+  Result := False;
+  IBQESTOQUE := CriaIBQuery(IBTransaction);
+  try
+    IBQESTOQUE.Close;
+    IBQESTOQUE.SQL.Text :=
+      'select QTD_ATUAL ' +
+      'from ESTOQUE ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQESTOQUE.Open;
+
+    Result := (IBQESTOQUE.FieldByName('QTD_ATUAL').AsFloat <= 0);
+   except
+   end;
+   FreeAndNil(IBQESTOQUE);
 end;
 
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;

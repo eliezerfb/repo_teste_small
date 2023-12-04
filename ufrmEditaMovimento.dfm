@@ -34,6 +34,20 @@ object FEditaMovimento: TFEditaMovimento
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object lbAlerta: TLabel
+    Left = 22
+    Top = 328
+    Width = 257
+    Height = 13
+    Caption = '*Produto composto, ou com grade ou controle de s'#233'rie'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
   object btnOk: TBitBtn
     Left = 462
     Top = 360

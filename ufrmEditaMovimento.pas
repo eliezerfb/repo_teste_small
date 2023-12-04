@@ -20,6 +20,7 @@ type
     DataSource1: TDataSource;
     lbTotal: TLabel;
     CDSALTERACA: TClientDataSet;
+    lbAlerta: TLabel;
     procedure btnOkClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -38,7 +39,7 @@ type
     procedure DBGridItensCellClick(Column: TColumn);
   private
     { Private declarations }
-    FoMessageEvent: TMessageEvent;    
+    FoMessageEvent: TMessageEvent;
     FCaixa: String;
     FPedido: String;
     FSelectOld: String;
@@ -48,7 +49,8 @@ type
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
-     procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
+    procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
+    procedure AlertaDeProdutoNaoEditavel;
   public
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
@@ -112,7 +114,6 @@ begin
   FoMessageEvent := Application.OnMessage;
 
   Application.OnMessage := ScrollMouse;
-
 
 end;
 
@@ -235,12 +236,19 @@ begin
 
   TotalizaMovimento(Form1.ibDataSet27);
 
+  {Sandro Silva 2023-12-04 inicio}
+  FIBDATASETALTERACA := Form1.ibDataSet27;
+  FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
+  {Sandro Silva 2023-12-04 fim}
+
   Form1.ibDataSet27.Last;
   DBGridItens.SelectedIndex := ColumnIndex(DBGridItens.Columns, 'UNITARIO');
   DBGridItensColEnter(DBGridItens);
 
+  {Sandro Silva 2023-12-04 inicio
   FIBDATASETALTERACA := Form1.ibDataSet27;
   FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
+  }
 
 end;
 
@@ -397,13 +405,35 @@ begin
 end;
 
 function TFEditaMovimento.NaoEditavel(Field: TField): Boolean;
+var
+  bNaoEditaQtd: Boolean;
 begin
   Result := False;
+
+  bNaoEditaQtd := False;
+
+  if (Field.FieldName = 'QUANTIDADE') then
+  begin
+    if (TemGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (TemSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (TemComposicao(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (SemEstoque(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) and (Form1.ConfNegat = 'Não'))
+    then
+      bNaoEditaQtd := True;
+  end;
+
   if ((Field.FieldName <> 'QUANTIDADE')
     and (Field.FieldName <> 'UNITARIO'))
     or ItemCancelado(Field)
     or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
     or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo')
+    {Sandro Silva 2023-12-04 inicio
+    or (TemGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (TemSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (TemComposicao(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (SemEstoque(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    {Sandro Silva 2023-12-04 fim}
+    or bNaoEditaQtd
     then
     Result := True;
 end;
@@ -427,6 +457,10 @@ begin
    DBGridItens.ReadOnly := False;
   if NaoEditavel(DBGridItens.SelectedField) then
     DBGridItens.ReadOnly := True;
+
+  {Sandro Silva 2023-12-04 inicio}
+  AlertaDeProdutoNaoEditavel;
+  {Sandro Silva 2023-12-04 fim}
 end;
 
 procedure TFEditaMovimento.ScrollMouse(var Msg: TMsg;
@@ -546,6 +580,26 @@ begin
     end;
     Form1.ibDataSet4.SelectSQL.Text := SelectEstoqueOld;
   end;
+end;
+
+procedure TFEditaMovimento.AlertaDeProdutoNaoEditavel;
+begin
+  {Sandro Silva 2023-12-04 inicio}
+  lbAlerta.Visible := False;
+  if (TemGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
+  or (TemSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
+  or (TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
+  or (SemEstoque(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) and (Form1.ConfNegat = 'Não') )
+  then
+  begin
+    lbAlerta.Caption := '*Item ' + RightStr(Form1.ibDataSet27.FieldByName('ITEM').AsString, 3) + ' é produto';
+    if (Form1.ConfNegat = 'Não') then
+      lbAlerta.Caption := lbAlerta.Caption + ' sem estoque, ';
+    lbAlerta.Caption := lbAlerta.Caption + ' composto, ou com grade ou controle de série';
+    lbAlerta.Visible := True;
+  end;
+  {Sandro Silva 2023-12-04 fim}
+
 end;
 
 end.

@@ -15398,6 +15398,7 @@ var
   iTenta: Integer;
   bGravou: Boolean;
   //DBGridItensEnabled: Boolean;
+  sMensagemAlerta: String;
 begin
   {                                         }
   { Não permite quantidade negativa         }
@@ -15438,7 +15439,6 @@ begin
     and (TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
   then
     bArtificioParaAfetarApenasEdicaoMovimento := True;
-
 
   {Sandro Silva 2023-11-08 fim}
 
@@ -15497,16 +15497,19 @@ begin
                   SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
                   }
                   if (Form1.sModeloECF_Reserva = '99') then
-                    SmallMsg('Não é possível efetuar a movimentação, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427')
+                    sMensagemAlerta := 'Não é possível efetuar a movimentação, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427'
                   else
-                    SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
+                    sMensagemAlerta := 'Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427';
+
+                   SmallMessageBox(sMensagemAlerta, 'Atenção', MB_OK + MB_ICONWARNING);
+
                   {Sandro Silva 2023-06-23 fim}
                   {Sandro Silva 2023-11-16 inicio}
                   if not (Form1.ibDataSet27.State in [dsInsert, dsEdit]) then
                     Form1.ibDataSet27.Edit;
                   {Sandro Silva 2023-11-16 fim}
                   // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
-                  dQuantidade := ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
+                  dQuantidade := Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat;
                   if (Form1.ClienteSmallMobile.sVendaImportando = '') then
                     Edit1.SetFocus;
                 end
@@ -15585,12 +15588,23 @@ begin
             SmallMessageBox('Não foi possível alterar a quantidade do item: ' + #10 + #10 +
               RightStr(Form1.ibDataSet27.FieldByname('ITEM').AsString, 3) + '-' + Form1.ibDataSet27.FieldByname('DESCRICAO').AsString + #10 + #10 +
               'Foi movimentado ao mesmo tempo por outro usuário' + #10 + #10 +
-              'Tente novamente', 'Atenção', MB_ICONINFORMATION + MB_OK);
+              'Tente novamente', 'Atenção', MB_ICONWARNING + MB_OK);
           end;
 
         end;
+      end
+      else
+      begin // bArtificioParaAfetarApenasEdicaoMovimento = False
+        {
+        if Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue <> StrToFloatDef(Form1.ibDataSet27.FieldByname('QUANTIDADE').AsString, 0) then
+          SmallMessageBox('Não é possível alterar a quantidade de produto: ' + #13 + #13 +
+                 '- Composto' + #13 +
+                 '- Com Grade' + #13 +
+                 '- Com controle se Série', 'Atenção', MB_ICONINFORMATION + MB_OK);
+        }
       end;
     end;
+//      if bArtificioParaAfetarApenasEdicaoMovimento = False then
 
   finally
     if FEditaMovimento <> nil then
