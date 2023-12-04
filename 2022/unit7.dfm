@@ -13294,6 +13294,10 @@ object Form7: TForm7
         Caption = 'Cat'#225'logo de produtos...'
         OnClick = Ca1Click
       end
+      object otalizadorgeraldevenda1: TMenuItem
+        Caption = 'Totalizador geral de venda'
+        OnClick = otalizadorgeraldevenda1Click
+      end
       object N56: TMenuItem
         Caption = '-'
       end

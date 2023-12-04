@@ -22,6 +22,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     FoDataBase: TIBDataBase;
+    FoTransaction: TIBTransaction;
     FcUsuario: String;
     function getImagem: TPicture;
     procedure setImagem(const Value: TPicture);
@@ -30,8 +31,11 @@ type
     function getUsuario: String;
     procedure setUsuario(const Value: String);
     procedure CriaArquivoDAT;
+    function getTransaction: TIBTransaction;
+    procedure setTransaction(const Value: TIBTransaction);
   public
     property DataBase: TIBDatabase read getDataBase write setDataBase;
+    property Transaction: TIBTransaction read getTransaction write setTransaction;
     property Imagem: TPicture read getImagem write setImagem;
     property Usuario: String read getUsuario write setUsuario;
   protected
@@ -119,6 +123,16 @@ procedure TfrmRelatorioPadrao.FormDestroy(Sender: TObject);
 begin
   if Assigned(FoArquivoDAT) then
     FreeAndNil(FoArquivoDAT);
+end;
+
+function TfrmRelatorioPadrao.getTransaction: TIBTransaction;
+begin
+  Result := FoTransaction;
+end;
+
+procedure TfrmRelatorioPadrao.setTransaction(const Value: TIBTransaction);
+begin
+  FoTransaction := Value;
 end;
 
 end.

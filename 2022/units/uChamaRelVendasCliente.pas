@@ -14,6 +14,7 @@ type
 
     class function New: IChamaRelatorioPadrao;
     function setDataBase(AoDataBase: TIBDatabase): IChamaRelatorioPadrao;
+    function setTransaction(AoTransaction: TIBTransaction): IChamaRelatorioPadrao;
     function setImagem(AoImagem: TPicture): IChamaRelatorioPadrao;
     function setUsuario(AcUsuario: string): IChamaRelatorioPadrao;    
     function ChamarTela: IChamaRelatorioPadrao;
@@ -62,6 +63,13 @@ begin
   Result := Self;
 
   frmRelVendasPorCliente.Imagem := AoImagem;
+end;
+
+function TChamaRelVendasCliente.setTransaction(AoTransaction: TIBTransaction): IChamaRelatorioPadrao;
+begin
+  Result := Self;
+  
+  frmRelVendasPorCliente.Transaction := AoTransaction;
 end;
 
 function TChamaRelVendasCliente.setUsuario(AcUsuario: string): IChamaRelatorioPadrao;

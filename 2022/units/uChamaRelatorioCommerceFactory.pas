@@ -12,12 +12,13 @@ type
     class function New: IChamaRelatorioFactory;
     function VendasPorCliente: IChamaRelatorioPadrao;
     function ResumoDeVendas: IChamaRelatorioPadrao;
+    function TotalizadorGeralVenda: IChamaRelatorioPadrao;
   end;
 
 implementation
 
 uses
-  uChamaRelVendasCliente, uChamaRelResumoVendas;
+  uChamaRelVendasCliente, uChamaRelResumoVendas, uChamaRelTotalizadorVendasGeral;
 
 { TChamaRelatorioFactory }
 
@@ -29,6 +30,11 @@ end;
 function TChamaRelatorioFactory.ResumoDeVendas: IChamaRelatorioPadrao;
 begin
   Result := TChamaRelResumoVendas.New;
+end;
+
+function TChamaRelatorioFactory.TotalizadorGeralVenda: IChamaRelatorioPadrao;
+begin
+  Result := TChamaRelTotalizadorVendasGeral.New;
 end;
 
 function TChamaRelatorioFactory.VendasPorCliente: IChamaRelatorioPadrao;

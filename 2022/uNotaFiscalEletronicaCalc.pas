@@ -21,6 +21,7 @@ type
   public
     Calculando: Boolean;
     procedure CalculaValores(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq : Boolean = True);
+    function RetornaObjetoNota(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq : Boolean = True): TVENDAS;
     constructor Create; Override;
     destructor Destroy; Override;
   end;
@@ -1304,6 +1305,33 @@ begin
     oItem.FreteRateado    := Arredonda((NotaFiscal.Frete / fTotalMercadoria) * oItem.TOTAL, 2);
     oItem.SeguroRateado   := Arredonda((NotaFiscal.Seguro / fTotalMercadoria) * oItem.TOTAL,2);
     oItem.DespesaRateado  := Arredonda((NotaFiscal.Despesas / fTotalMercadoria * oItem.TOTAL),2);
+  end;
+end;
+
+function TNotaFiscalEletronicaCalc.RetornaObjetoNota(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq: Boolean): TVENDAS;
+var
+  sReg16 : string;
+begin
+  Result := nil;
+  if not Calculando then
+  begin
+    try
+      Calculando := True;
+      sReg16 := DataSetItens.fieldByName('REGISTRO').AsString;
+
+      AtualizaValoresNota(DataSetNF, DataSetItens);
+
+      //Faz Rateios dos Desconos e Acrecimos dos itens
+      SetRateioDescAcre;
+
+      //Calcula Peso Líquido
+      if CalcPesoLiq then
+        CalculaPesoLiquido;
+
+      Result := FNotaFiscal;
+    finally
+      Calculando := False;
+    end;
   end;
 end;
 

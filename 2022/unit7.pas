@@ -1635,6 +1635,7 @@ type
     Cadastros1: TMenuItem;
     Cadastrodesituaes1: TMenuItem;
     ibDataSet14CBENEF: TIBStringField;
+    otalizadorgeraldevenda1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2307,6 +2308,7 @@ type
     procedure Cadastrodesituaes1Click(Sender: TObject);
     procedure ibdSituacaoOSSITUACAOSetText(Sender: TField;
       const Text: String);
+    procedure otalizadorgeraldevenda1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -34617,7 +34619,16 @@ begin
       FreeAndNil(FrmSituacaoOS);
   except
   end;
-  
+end;  
+
+procedure TForm7.otalizadorgeraldevenda1Click(Sender: TObject);
+begin
+  TChamaRelatorioFactory.New
+                        .TotalizadorGeralVenda
+                        .setTransaction(IBTransaction1)
+                        .setImagem(Image205.Picture)
+                        .setUsuario(Usuario)
+                        .ChamarTela;
 end;
 
 procedure TForm7.ibdSituacaoOSAfterDelete(DataSet: TDataSet);
