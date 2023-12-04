@@ -3014,6 +3014,7 @@ var
 begin
   //
   Form7.ibDataSet24.DisableControls;
+  Form7.ibDataSet23.DisableControls; // Sandro Silva 2023-12-04
   //LogRetaguarda('Form7.ibDataSet24.DisableControls;: 3026'); // Sandro Silva 2023-11-27
 
   try
@@ -3178,7 +3179,7 @@ begin
   end;
   // Em procedure TForm7.ibDataSet24NewRecord(DataSet: TDataSet); faz DisableControls
   Form7.ibDataSet24.EnableControls; // Sandro Silva 2023-11-17
-
+  Form7.ibDataSet23.EnableControls; // Sandro Silva 2023-12-04
   //LogRetaguarda('Form7.ibDataSet24.EnableControls; 3183'); // Sandro Silva 2023-11-27
 
   Result := True;
@@ -5335,7 +5336,7 @@ begin
 // ka    if Form7.ibDataSet16.Active then Form7.ibDataSet16.EnableControls;
     if Form7.ibDataSet15.Active then Form7.ibDataSet15.EnableControls;
     if Form7.ibDataSet23.Active then Form7.ibDataSet23.EnableControls;
-    LogRetaguarda('unit7 EnableControls 5359'); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit7 ibDataSet23.EnableControls 5359'); // Sandro Silva 2023-12-04
     if Form7.ibDataSet24.Active then Form7.ibDataSet24.EnableControls;
 
     //LogRetaguarda('Form7.ibDataSet24.EnableControls; 5367'); // Sandro Silva 2023-11-27
@@ -9901,7 +9902,7 @@ begin
       ibDataSet4.DisableControls;
       ibDataSet16.DisableControls;
       ibDataSet23.DisableControls;
-      LogRetaguarda('unit7 DisableControls 9910 '); // Sandro Silva 2023-11-29
+      LogRetaguarda('unit7 ibDataSet23.DisableControls 9904'); // Sandro Silva 2023-12-04
       ibDataSet12.DisableControls;
 
       AtualizaPromocao(True);
@@ -10156,7 +10157,7 @@ begin
       ibDataSet4.EnableControls;
       ibDataSet16.EnableControls;
       ibDataSet23.EnableControls;
-      LogRetaguarda('unit7 EnableControls 10166'); // Sandro Silva 2023-11-29
+      LogRetaguarda('unit7 ibDataSet23.EnableControls 10159'); // Sandro Silva 2023-12-04
       ibDataSet12.EnableControls;
 
       sModulo := 'ESTOQUE';
@@ -10384,6 +10385,9 @@ begin
         Form7.ibDataSet23VICMSST.Visible        := False;
         Form7.ibDataSet23VIPI.Visible           := False;
         Form7.ibDataSet23EAN_ORIGINAL.Visible   := False;
+
+        LogRetaguarda('unit7 ocultou colunas 10338'); // Sandro Silva 2023-12-04
+
         //
         Form7.ibDataSet23DESCRICAO.DisplayWidth := 41;
         Form7.ibDataSet23TOTAL.DisplayWidth     := 10;
@@ -21067,7 +21071,7 @@ begin
   if (Form1.bFlag) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
   begin
     Form7.ibDataSet23.DisableControls;
-    LogRetaguarda('unit7 DisableControls 21069 '); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit7 ibDataSet23.DisableControls 21070'); // Sandro Silva 2023-12-04
     Form7.ibDataSet4.DisableControls;
 
     // Só procura se estiver diferente
@@ -21133,7 +21137,7 @@ begin
             LimparColunasItemCompra;
             ibDataSet4.EnableControls;
             ibDataSet23.EnableControls;
-            LogRetaguarda('unit7 EnableControls 21137'); // Sandro Silva 2023-11-29            
+            LogRetaguarda('unit7 ibDataSet23.EnableControls 21136'); // Sandro Silva 2023-12-04
             Exit;
           end;
         end;
@@ -21199,7 +21203,7 @@ begin
       LimparColunasItemCompra;
       ibDataSet4.EnableControls;
       ibDataSet23.EnableControls;
-      LogRetaguarda('unit7 EnableControls 21203'); // Sandro Silva 2023-11-29      
+      LogRetaguarda('unit7 ibDataSet23.EnableControls 21202'); // Sandro Silva 2023-12-04
       Exit;
     end;
     // So altera se for um produto novo
@@ -21359,7 +21363,7 @@ begin
 
     ibDataSet4.EnableControls;
     ibDataSet23.EnableControls;
-    LogRetaguarda('unit7 EnableControls 21363'); // Sandro Silva 2023-11-29    
+    LogRetaguarda('unit7 ibDataSet23.EnableControls 21362'); // Sandro Silva 2023-12-04
 
     Observacao2(False);
   end;
@@ -21546,9 +21550,10 @@ begin
 
   LogRetaguarda('ibDataSet24.DisableControls; 21548'); // Sandro Silva 2023-11-27
   }
-
+  {
   Form7.ibDataSet23.DisableControls;
-  LogRetaguarda('unit7 DisableControls 21542 '); // Sandro Silva 2023-11-29
+  LogRetaguarda('unit7 ibDataSet23.DisableControls 21551'); // Sandro Silva 2023-12-04
+  }
   Form7.ibDataSet8.DisableControls;
   //
   Form7.ibDataSet24REGISTRO.AsString  := sProximo;
@@ -21959,7 +21964,7 @@ begin
       if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet24OPERACAO.AsString then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
       //
       Form7.ibDataSet23.DisableControls;
-      LogRetaguarda('unit7 DisableControls 21953 '); // Sandro Silva 2023-11-29
+      LogRetaguarda('unit7 ibDataSet23.DisableControls 21962'); // Sandro Silva 2023-12-04
       Form7.ibDataSet4.DisableControls;
       //
       Form7.ibDataSet23.First;
@@ -21988,7 +21993,7 @@ begin
       end;
       //
       Form7.ibDataSet23.EnableControls;
-      LogRetaguarda('unit7 EnableControls 21987'); // Sandro Silva 2023-11-29
+      LogRetaguarda('unit7 ibDataSet23.EnableControls 21991'); // Sandro Silva 2023-12-04
       Form7.ibDataSet4.EnableControls;
       //
       // Contas a PAGAR
@@ -31196,14 +31201,14 @@ begin
 
             // Erro do vídeo
             Form7.ibDataSet23.DisableControls;
-            LogRetaguarda('unit7 DisableControls 31155 '); // Sandro Silva 2023-11-29            
+            LogRetaguarda('unit7 ibDataSet23.DisableControls 31199'); // Sandro Silva 2023-12-04
             Form7.ibDataSet4.DisableControls;
 
             // Erro do vídeo
             DownloadListaDeNFesEmitidas(sRetorno); // Baixa uma lista de nf-e´s que foram emitidas para o CNPJ
 
             Form7.ibDataSet23.EnableControls;
-            LogRetaguarda('unit7 EnableControls 31168'); // Sandro Silva 2023-11-29
+            LogRetaguarda('unit7 ibDataSet23.EnableControls 31206'); // Sandro Silva 2023-12-04
             Form7.ibDataSet4.EnableControls;
           except
             on E: Exception do

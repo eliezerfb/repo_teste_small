@@ -83,7 +83,7 @@ begin
     //LogRetaguarda('ibDataSet24.DisableControls; 83'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.DisableControls;
-    LogRetaguarda('uvisualizacadastro DisableControls  83 '); // Sandro Silva 2023-11-29    
+    LogRetaguarda('uvisualizacadastro ibDataSet23.DisableControls 86'); // Sandro Silva 2023-12-04
     Form7.ibDataSet28.DisableControls;
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet15.DisableControls;
@@ -1228,7 +1228,7 @@ begin
     //LogRetaguarda('Form7.ibDataSet24.EnableControls; 1227'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.EnableControls;
-    LogRetaguarda('uvisualizacadastro EnableControls 1225'); // Sandro Silva 2023-11-29
+    LogRetaguarda('uvisualizacadastro ibDataSet23.EnableControls 1231'); // Sandro Silva 2023-12-04
     Form7.ibDataSet28.EnableControls;
     Form7.ibDataSet16.EnableControls;
     Form7.ibDataSet15.EnableControls;

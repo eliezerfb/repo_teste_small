@@ -63,7 +63,7 @@ uses Unit7
   , uArquivosDAT
   , Mais
   , SmallFunc
-  , uDialogs;
+  , uDialogs, uFuncoesRetaguarda;
 
 {$R *.dfm}
 
@@ -73,6 +73,7 @@ begin
     try
       cdsProdutosNota.DisableControls;
       Form7.ibDataSet23.DisableControls;
+      LogRetaguarda('ufrmPrecificacaoProduto ibDataSet23.DisableControls 76'); // Sandro Silva 2023-12-04
       
       cdsProdutosNota.First;
 
@@ -92,6 +93,7 @@ begin
       cdsProdutosNota.First;
     finally
       Form7.ibDataSet23.EnableControls;
+      LogRetaguarda('ufrmPrecificacaoProduto ibDataSet23.EnableControls 95'); // Sandro Silva 2023-12-04
       cdsProdutosNota.EnableControls;
     end;
   except

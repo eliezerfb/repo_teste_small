@@ -1181,7 +1181,7 @@ begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Form7.ibDataSet4.DisableControls;
   Form7.ibDataSet23.DisableControls;
-  LogRetaguarda('unit24 DisableControls  1184 '); // Sandro Silva 2023-11-29
+  LogRetaguarda('unit24 ibDataSet23.DisableControls 1184'); // Sandro Silva 2023-12-04
 
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
@@ -1603,7 +1603,11 @@ begin
     Form7.ibDataSet23VBCFCPST.Visible     := False;
     Form7.ibDataSet23PFCPST.Visible       := False;
     Form7.ibDataSet23VFCPST.Visible       := False;
-    {Sandro Silva 2023-04-11 fim}         
+    {Sandro Silva 2023-04-11 fim}
+
+    LogRetaguarda('unit24 ocultou colunas 1611'); // Sandro Silva 2023-12-04
+
+
     Form7.ibDataSet23DESCRICAO.DisplayWidth    := 41;         //
     Form7.ibDataSet23TOTAL.DisplayWidth        := 09;
     Form7.ibDataSet23QUANTIDADE.DisplayWidth   := 09;
@@ -1626,7 +1630,7 @@ begin
 
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet23.EnableControls;
-  LogRetaguarda('unit24 EnableControls 1627'); // Sandro Silva 2023-11-29
+  LogRetaguarda('unit24 ibDataSet23.EnableControls 1629'); // Sandro Silva 2023-12-04
 
   if Form7.Visible then
   begin
@@ -2372,9 +2376,15 @@ begin
     Form7.ibDataSet24NUMERONF.AsString := '000000000';
   end;
   //
-  if Form1.bNotaVendaLiberada then Edit5.Enabled := True else Edit5.Enabled := False;
+  if Form1.bNotaVendaLiberada then
+    Edit5.Enabled := True
+  else
+    Edit5.Enabled := False;
   //
+  {Sandro Silva 2023-12-04 inicio
   Grid_Compra(True);
+  LogRetaguarda('unit24 exibiu colunas 2382'); // Sandro Silva 2023-12-04
+  }
   //
   pnlNota.Left                   := 10;
   Form24.VertScrollBar.Position := 1;
@@ -2470,7 +2480,7 @@ begin
   begin
     // Atenção a rotina abaixo altera a quantidade no estoque
     Form7.ibDataSet23.DisableControls;
-    LogRetaguarda('unit24  DisableControls 2467 '); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit24 ibDataSet23.DisableControls 2473'); // Sandro Silva 2023-12-04
     Form7.ibDataSet23.First;
     while not Form7.ibDataSet23.Eof do
     begin
@@ -2513,7 +2523,7 @@ begin
   Form7.ibDataSet4.Open;
 
   Form7.ibDataSet23.EnableControls;
-  LogRetaguarda('unit24 EnableControls 2511'); // Sandro Silva 2023-11-29
+  LogRetaguarda('unit24 ibDataSet23.EnableControls 2516'); // Sandro Silva 2023-12-04
 
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
@@ -2536,6 +2546,11 @@ begin
               edFretePorConta.Text := '';
 
   Form12.Edit4.Visible := True;
+
+  {Sandro Silva 2023-12-04 inicio}
+  Grid_Compra(True);
+  LogRetaguarda('unit24 exibiu colunas 2549'); // Sandro Silva 2023-12-04
+  {Sandro Silva 2023-12-04 fim}
 
   Form24.Button1Click(Sender);
 
@@ -2708,10 +2723,8 @@ begin
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet24.EnableControls;
 
-    LogRetaguarda('Form7.ibDataSet24.EnableControls; 2705'); // Sandro Silva 2023-11-27
-
     Form7.ibDataSet23.EnableControls;
-    LogRetaguarda('unit24 EnableControls 2706'); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit24 ibDataSet23.EnableControls 2714'); // Sandro Silva 2023-12-04
     Form7.ibDataSet18.EnableControls;
     Form7.ibDataSet8.EnableControls;
     Form7.ibDataSet2.EnableControls;
@@ -2763,7 +2776,7 @@ begin
     //LogRetaguarda('ibDataSet24.DisableControls; 2750'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.DisableControls;
-    LogRetaguarda('unit24  DisableControls 2752 '); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit24 ibDataSet23.DisableControls 2764'); // Sandro Silva 2023-12-04
     //
     try
       Form1.bFechaTudo           := False;
@@ -2797,17 +2810,19 @@ begin
     Form7.ibDataSet23.Open;
 
     Grid_Compra(True);
+    LogRetaguarda('unit24 exibiu colunas 2803'); // Sandro Silva 2023-12-04    
 
     Form7.ibDataSet24.EnableControls;
 
     //LogRetaguarda('Form7.ibDataSet24.EnableControls; 2795'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.EnableControls;
-    LogRetaguarda('unit24 EnableControls 2792'); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit24 ibDataSet23.EnableControls 2804'); // Sandro Silva 2023-12-04
   end;
 
   // Altera o Grid de mercadorias para mostrar na NF
   Grid_Compra(True);
+  LogRetaguarda('unit24 exibiu colunas 2815'); // Sandro Silva 2023-12-04  
 end;
 
 procedure TForm24.Incluirnovocliente1Click(Sender: TObject);
@@ -2822,7 +2837,7 @@ begin
     //LogRetaguarda('ibDataSet24.DisableControls; 2804'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.DisableControls;
-    LogRetaguarda('unit24 DisableControls  2804 '); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit24 ibDataSet23.DisableControls 2823'); // Sandro Silva 2023-12-04
 
     try
       Form1.bFechaTudo           := False;
@@ -2851,11 +2866,12 @@ begin
     //LogRetaguarda('Form7.ibDataSet24.EnableControls; 2840'); // Sandro Silva 2023-11-27
 
     Form7.ibDataSet23.EnableControls;
-    LogRetaguarda('unit24 EnableControls 2834'); // Sandro Silva 2023-11-29
+    LogRetaguarda('unit24 ibDataSet23.EnableControls 2852'); // Sandro Silva 2023-12-04
   end;
 
   // Altera o Grid de mercadorias para mostrar na NF
   Grid_Compra(True);
+  LogRetaguarda('unit24 exibiu colunas 2864'); // Sandro Silva 2023-12-04  
 end;
 
 procedure TForm24.Label64Click(Sender: TObject);
