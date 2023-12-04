@@ -159,7 +159,7 @@ begin
       begin
         Form7.ibDataSet24.DisableControls;
 
-        LogRetaguarda('ibDataSet24.DisableControls; 162'); // Sandro Silva 2023-11-27
+        //LogRetaguarda('ibDataSet24.DisableControls; 162'); // Sandro Silva 2023-11-27
 
         try
           Form7.ibDataSet24.Close;
@@ -180,7 +180,7 @@ begin
         finally
           Form7.ibDataSet24.EnableControls;
 
-          LogRetaguarda('Form7.ibDataSet24.EnableControls; 183'); // Sandro Silva 2023-11-27
+          //LogRetaguarda('Form7.ibDataSet24.EnableControls; 183'); // Sandro Silva 2023-11-27
 
         end;
       end;

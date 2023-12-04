@@ -139,6 +139,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Top = 39
     Width = 961
     Height = 402
+    Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
     Color = clWhite
     Ctl3D = False
@@ -166,6 +167,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     OnDblClick = dbgPrincipalDblClick
     Columns = <
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'MARCADO'
         ReadOnly = True
@@ -173,6 +175,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'DESCRICAO'
         ReadOnly = True
@@ -186,17 +189,18 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        Width = 74
+        Font.Style = []
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'UNITARIO'
         ReadOnly = True
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'TOTAL'
         ReadOnly = True
@@ -204,6 +208,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'VBC'
         ReadOnly = True
@@ -211,6 +216,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'VICMS'
         ReadOnly = True
@@ -218,6 +224,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'VBCST'
         ReadOnly = True
@@ -225,6 +232,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'VICMSST'
         ReadOnly = True
@@ -232,6 +240,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'VIPI'
         ReadOnly = True
@@ -240,7 +249,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       end>
   end
   object btnOK: TBitBtn
-    Left = 852
+    Left = 718
     Top = 448
     Width = 126
     Height = 25
@@ -256,7 +265,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 718
+    Left = 852
     Top = 448
     Width = 126
     Height = 25
