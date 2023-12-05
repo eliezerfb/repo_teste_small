@@ -597,6 +597,8 @@ begin
       lbAlerta.Caption := lbAlerta.Caption + ' sem estoque, ou';
     lbAlerta.Caption := lbAlerta.Caption + ' composto, ou com grade, ou com controle de série';
     lbAlerta.Visible := True;
+    if (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = 'Desconto') or (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = 'Acréscimo') then
+      lbAlerta.Visible := False;
   end;
   {Sandro Silva 2023-12-04 fim}
 
