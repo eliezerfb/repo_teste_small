@@ -1,5 +1,5 @@
 inherited FrmSituacaoOS: TFrmSituacaoOS
-  Caption = 'FrmSituacaoOS'
+  Caption = 'Cadastro de situa'#231#245'es'
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel

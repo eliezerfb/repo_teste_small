@@ -265,7 +265,8 @@ begin
   dBGrid3.Left                       := SMALL_DBEdit2.Left;
   dbGrid3.Top                        := SMALL_DBEdit2.Top + SMALL_DBEdit2.Height -1;
   dbGrid3.Width                      := SMALL_DBEdit2.Width;
-  dBGrid3.Height                     := 201;
+  //dBGrid3.Height                     := 201;
+  dBGrid3.Height                     := 161;
   listSituacao.Visible               := False;
   // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   //
@@ -462,7 +463,8 @@ begin
   }
   OcultaListaDePesquisa;  
   listSituacao.Visible  := True;
-  listSituacao.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
+  //listSituacao.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41; Mauricio Parizotto
+  listSituacao.Height   := 161;
   SMALL_DBEdit7.SelectAll;
 end;
 
@@ -740,18 +742,24 @@ procedure TForm30.listSituacaoKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
   begin
-    {
-    if listSituacao.ItemIndex = 0 then
-      Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-    if listSituacao.ItemIndex = 1 then
-      Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-    if listSituacao.ItemIndex = 2 then
-      Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
-    Mauricio Parizotto 2023-12-04 }
-    Form7.ibDataSet3SITUACAO.AsString := listSituacao.Items[listSituacao.ItemIndex];
-    SMALL_DBEdit7.SetFocus;
-    Key := VK_SHIFT;
-    listSituacao.Visible := False;
+    try
+      if listSituacao.ItemIndex < 0 then
+        listSituacao.ItemIndex := 0;
+
+      {
+      if listSituacao.ItemIndex = 0 then
+        Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
+      if listSituacao.ItemIndex = 1 then
+        Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
+      if listSituacao.ItemIndex = 2 then
+        Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+      Mauricio Parizotto 2023-12-04 }
+      Form7.ibDataSet3SITUACAO.AsString := listSituacao.Items[listSituacao.ItemIndex];
+      SMALL_DBEdit7.SetFocus;
+      Key := VK_SHIFT;
+      listSituacao.Visible := False;
+    except
+    end;
   end;
 end;
 
@@ -1635,6 +1643,8 @@ begin
   //Se tiver excluido ou renomeado uma situação cadastrada
   if listSituacao.Items.IndexOf(Form7.ibDataSet3SITUACAO.AsString) < 0 then
     listSituacao.Items.Add(Form7.ibDataSet3SITUACAO.AsString);
+
+  listSituacao.Sorted := True;
 end;
 
 end.

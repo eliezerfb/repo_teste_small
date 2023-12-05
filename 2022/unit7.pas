@@ -9675,6 +9675,10 @@ begin
   DBGrid1.GradientEndColor   := $00F0F0F0;
   DBGrid1.GradientStartColor := $00F0F0F0;
   {$ENDIF}
+
+  //Mauricio Parizotto 2023-12-05
+  //Marca campo chave da tabela
+  ibdSituacaoOSIDSITUACAO.ProviderFlags := [pfInUpdate,pfInWhere,pfInKey];
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -9693,6 +9697,7 @@ end;
 procedure TForm7.DBGrid1TitleClick(Column: TColumn);
 var
   Mais1ini : tIniFile;
+  CampoPK   : string;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
 
@@ -9700,8 +9705,17 @@ begin
     Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName+', EMISSAO')
   else
     Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName);
-  
-  Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
+
+  {Mauricio Parizotto 2023-12-05 Inicio}
+  try
+    CampoPK := GetCampoPKDataSet(Form7.TabelaAberta);
+  except
+    CampoPK := 'REGISTRO';
+  end;
+
+  //Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
+  Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName(CampoPK).AsString);
+  {Mauricio Parizotto 2023-12-05 Fim}
   Mais1Ini.Free;
   Form7.Close;
   Form7.Show;
