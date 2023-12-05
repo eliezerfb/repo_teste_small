@@ -2533,12 +2533,12 @@ begin
   try
     IBQSERIE.Close;
     IBQSERIE.SQL.Text :=
-      'select distinct CODIGO ' +
-      'from SERIE ' +
+      'select SERIE ' +
+      'from ESTOQUE ' +
       'where CODIGO = ' + QuotedStr(sCodigo);
     IBQSERIE.Open;
 
-    Result := (IBQSERIE.FieldByName('CODIGO').AsString <> '');
+    Result := (IBQSERIE.FieldByName('SERIE').AsString = '1');
   except
   end;
   FreeAndNil(IBQSERIE);

@@ -435,7 +435,7 @@ begin
     {Sandro Silva 2023-12-04 fim}
     or bNaoEditaQtd
     then
-    Result := True;
+      Result := True;
 end;
 
 procedure TFEditaMovimento.DBGridItensKeyUp(Sender: TObject; var Key: Word;
@@ -594,8 +594,8 @@ begin
   begin
     lbAlerta.Caption := '*Item ' + RightStr(Form1.ibDataSet27.FieldByName('ITEM').AsString, 3) + ' é produto';
     if (Form1.ConfNegat = 'Não') then
-      lbAlerta.Caption := lbAlerta.Caption + ' sem estoque, ';
-    lbAlerta.Caption := lbAlerta.Caption + ' composto, ou com grade ou controle de série';
+      lbAlerta.Caption := lbAlerta.Caption + ' sem estoque, ou';
+    lbAlerta.Caption := lbAlerta.Caption + ' composto, ou com grade, ou com controle de série';
     lbAlerta.Visible := True;
   end;
   {Sandro Silva 2023-12-04 fim}
