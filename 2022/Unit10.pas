@@ -1100,7 +1100,7 @@ begin
                   if FileExists(Form1.sAtual+'\tempo.bmp') then
                   begin
                     //
-                    Form1.Image1.Picture.LoadFromFile('tempo.bmp');
+                    Form1.Image1.Picture.LoadFromFile(Form1.sAtual+'\tempo.bmp');
                     //
                     Rect.Top := 0;
                     Rect.Left := 0;
@@ -1312,7 +1312,8 @@ begin
         Rect.Right := 360;
         Rect.Bottom := 90;
         //
-        Form1.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
+        //Form1.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
+        Form1.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP');
         Form1.Image1.Canvas.stretchdraw(Rect,Form1.Image1.Picture.Graphic);
         //
         Form1.Image1.Picture.Bitmap.Width  := 360;

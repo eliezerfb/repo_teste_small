@@ -5,13 +5,14 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrmPadrao, StdCtrls, Buttons, Grids, DBGrids, DB, JPEG, pngimage,
-  IBCustomDataSet, ExtCtrls, ImgList, ShellAPI, Videocap, Clipbrd;
+  IBCustomDataSet, ExtCtrls, ImgList, ShellAPI, Videocap, Clipbrd,
+  OleCtrls, SHDocVw;
 
 type
   TFrmAnexosOS = class(TFrmPadrao)
     dbgPrincipal: TDBGrid;
-    Button22: TBitBtn;
-    Button13: TBitBtn;
+    btnSelecionarArquivo: TBitBtn;
+    btnWebCam: TBitBtn;
     DSAnexosOS: TDataSource;
     ibdAnexosOS: TIBDataSet;
     ibdAnexosOSIDANEXO: TIntegerField;
@@ -24,23 +25,29 @@ type
     OpenDlgAnexo: TOpenDialog;
     memAnexoOS: TMemo;
     VideoCap1: TVideoCap;
+    btnOK: TBitBtn;
+    pnlWeb: TPanel;
+    webbOS: TWebBrowser;
+    SaveDialogAnexo: TSaveDialog;
     procedure dbgPrincipalDrawColumnCell(Sender: TObject;
       const Rect: TRect; DataCol: Integer; Column: TColumn;
       State: TGridDrawState);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure dbgPrincipalCellClick(Column: TColumn);
-    procedure Button22Click(Sender: TObject);
+    procedure btnSelecionarArquivoClick(Sender: TObject);
     procedure DSAnexosOSDataChange(Sender: TObject; Field: TField);
     procedure dbgPrincipalDblClick(Sender: TObject);
     procedure memAnexoOSDblClick(Sender: TObject);
     procedure pnlArquivoDblClick(Sender: TObject);
     procedure imgAnexoOSDblClick(Sender: TObject);
-    procedure Button13Click(Sender: TObject);
+    procedure btnWebCamClick(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
   private
     procedure CarregaVisualizacao;
     procedure AbreAnexo;
-    procedure SalvaImagemBD(dirImagem: string; Numerado : boolean = false);
+    procedure SalvaAnexoBD(dirAnexo: string; Numerado : boolean = false);
+    procedure SalvaAnexo;
     { Private declarations }
   public
     { Public declarations }
@@ -73,14 +80,18 @@ begin
   (Sender as TDBGrid).Canvas.FillRect(Rect);
   (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
 
-  if UpperCase(Column.Title.Caption) = '' then
+  if (Column.Index = 1) or (Column.Index = 2) then
   begin
     (Sender as TDBGrid).Canvas.FillRect(Rect);
 
     (Sender as TDBGrid).Canvas.Font.Color := clWindow;
     (Sender as TDBGrid).Canvas.Brush.Color := clBlack;
 
-    ImageList.Draw((Sender as TDBGrid).Canvas, Rect.Left + 6, Rect.Top + 1, 0);
+    if Column.Index = 1 then
+      ImageList.Draw((Sender as TDBGrid).Canvas, Rect.Left + 4, Rect.Top + 1, 0);
+
+    if Column.Index = 2 then
+      ImageList.Draw((Sender as TDBGrid).Canvas, Rect.Left + 4, Rect.Top + 1, 1);
   end;
 end;
 
@@ -101,7 +112,8 @@ end;
 
 procedure TFrmAnexosOS.dbgPrincipalCellClick(Column: TColumn);
 begin
-  if UpperCase(Column.Title.Caption) = '' then
+  //Excluir
+  if Column.Index = 1 then
   begin
     if ibdAnexosOS.IsEmpty then
       Exit;
@@ -113,15 +125,25 @@ begin
       ibdAnexosOS.Open;
     end;
   end;
+
+  //Salvar
+  if Column.Index = 2 then
+  begin
+    if ibdAnexosOS.IsEmpty then
+      Exit;
+
+    SalvaAnexo;
+  end;
 end;
 
-procedure TFrmAnexosOS.Button22Click(Sender: TObject);
+procedure TFrmAnexosOS.btnSelecionarArquivoClick(Sender: TObject);
 begin
-  OpenDlgAnexo.Execute;
+  if not OpenDlgAnexo.Execute then
+    Exit;
 
   if FileExists(OpenDlgAnexo.FileName) then
   begin
-    SalvaImagemBD(OpenDlgAnexo.FileName);
+    SalvaAnexoBD(OpenDlgAnexo.FileName);
   end;
 end;
 
@@ -135,10 +157,17 @@ procedure TFrmAnexosOS.CarregaVisualizacao;
 var
   Stream : TMemoryStream;
   JPEGImage: TJPEGImage;
+  DirArquivo : string;
+  DiretorioTemp : PChar;
+  TempBuffer    : Dword;
 begin
   try
     imgAnexoOS.Visible := False;
     memAnexoOS.Visible := False;
+    webbOS.Navigate('about:blank');
+    pnlWeb.Visible     := False;
+    Application.ProcessMessages;
+
     pnlArquivo.Caption := ibdAnexosOSNOME.AsString;
 
     //Imagem
@@ -157,8 +186,27 @@ begin
         FreeAndNil(JPEGImage);
       end;
 
-      //imgAnexoOS
       imgAnexoOS.Visible := True;
+    end;
+
+    //PDF
+    if AnsiContainsText(ibdAnexosOSNOME.AsString,'.pdf') then
+    begin
+      try
+        //Salva na pasta temporaria do windows
+        TempBuffer := 255;
+        GetMem(DiretorioTemp,255);
+        GetTempPath(tempbuffer,diretoriotemp);
+        DirArquivo := DiretorioTemp+'smallOS.pdf';
+
+        if FileExists(DirArquivo) then
+          DeleteFile(DirArquivo);
+
+        TBlobField(ibdAnexosOSANEXO).SaveToFile(DirArquivo);
+        webbOS.Navigate(DirArquivo);
+        pnlWeb.Visible     := True;
+      finally
+      end;
     end;
 
     //Texto
@@ -171,6 +219,8 @@ begin
     end;
   except
   end;
+
+  btnOK.SetFocus;
 end;
 
 procedure TFrmAnexosOS.AbreAnexo;
@@ -210,6 +260,26 @@ begin
 end;
 
 
+
+procedure TFrmAnexosOS.SalvaAnexo;
+var
+  DirArquivo : string;
+begin
+  SaveDialogAnexo.FileName := ibdAnexosOSNOME.AsString;
+
+  if SaveDialogAnexo.Execute then
+  begin
+    try
+      if FileExists(SaveDialogAnexo.FileName) then
+        DeleteFile(SaveDialogAnexo.FileName);
+
+      TBlobField(ibdAnexosOSANEXO).SaveToFile(SaveDialogAnexo.FileName);
+    except
+    end;
+  end;
+end;
+
+
 procedure TFrmAnexosOS.dbgPrincipalDblClick(Sender: TObject);
 begin
   AbreAnexo;
@@ -230,7 +300,7 @@ begin
   AbreAnexo;
 end;
 
-procedure TFrmAnexosOS.Button13Click(Sender: TObject);
+procedure TFrmAnexosOS.btnWebCamClick(Sender: TObject);
 var
   jp : TJPEGImage;
 
@@ -238,7 +308,7 @@ var
   TempBuffer    : Dword;
   DirArquivo : string;
 begin
-  if Button13.Caption <> '&Captura' then
+  if btnWebCam.Caption <> '&Captura' then
   begin
     try
       imgAnexoOS.Visible       := False;
@@ -253,7 +323,7 @@ begin
         VideoCap1.CapAudio     := False;
 
         VideoCap1.visible      := True;
-        Button13.Caption       := '&Captura';
+        btnWebCam.Caption       := '&Captura';
       except
         on e:exception do
         begin
@@ -285,16 +355,16 @@ begin
 
       jp.SaveToFile(DirArquivo);
       
-      Button13.Caption     := '&Webcam';
+      btnWebCam.Caption     := '&Webcam';
       imgAnexoOS.Visible       := True;
 
-      SalvaImagemBD(DirArquivo,True);
+      SalvaAnexoBD(DirArquivo,True);
     except
     end;
   end;
 end;
 
-procedure TFrmAnexosOS.SalvaImagemBD(dirImagem:string; Numerado : boolean = false);
+procedure TFrmAnexosOS.SalvaAnexoBD(dirAnexo:string; Numerado : boolean = false);
 begin
   try
     ibdAnexosOS.Append;
@@ -304,13 +374,19 @@ begin
     if Numerado then
       ibdAnexosOSNOME.AsString := 'Captura'+ibdAnexosOSIDANEXO.AsString+'.jpg'
     else
-      ibdAnexosOSNOME.AsString := ExtractFileName(dirImagem);
+      ibdAnexosOSNOME.AsString := ExtractFileName(dirAnexo);
 
-    TBlobField(ibdAnexosOSANEXO).LoadFromFile(dirImagem);
+    TBlobField(ibdAnexosOSANEXO).LoadFromFile(dirAnexo);
     ibdAnexosOS.Post;
   except
     MensagemSistema('Erro ao gravar anexo!',msgErro);
+    ibdAnexosOS.Cancel;
   end;
+end;
+
+procedure TFrmAnexosOS.btnOKClick(Sender: TObject);
+begin
+  Close;
 end;
 
 end.

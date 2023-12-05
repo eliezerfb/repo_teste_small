@@ -1600,6 +1600,7 @@ begin
   FrmAnexosOS := TFrmAnexosOS.Create(self);
   try
     FrmAnexosOS.IDOS := Form7.ibDataSet3IDOS.AsInteger;
+    FrmAnexosOS.Caption := 'Anexos da Ordem de Serviço '+Form7.ibDataSet3NUMERO.AsString;
     FrmAnexosOS.ShowModal;
   finally
     FreeAndNil(FrmAnexosOS);

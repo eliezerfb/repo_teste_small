@@ -1414,7 +1414,12 @@ begin
   Form14.Caption := 'Assistente de relatórios';
   Form14.Left := Screen.Width - Form14.Width - Form9.Width -12;
   Form14.Top  := Form7.Top + 25;
-  if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then Image1.Picture.LoadFromFile('LOGOTIP.BMP') else Image1.Picture := Form1.Image1.Picture;
+
+  if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
+    //Image1.Picture.LoadFromFile('LOGOTIP.BMP') Mauricio Parizotto 2023-12-05
+    Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP')
+  else
+    Image1.Picture := Form1.Image1.Picture;
 end;
 
 procedure TForm14.FormClose(Sender: TObject; var Action: TCloseAction);

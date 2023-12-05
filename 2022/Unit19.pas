@@ -769,7 +769,8 @@ end;
 procedure TForm19.Image1Click(Sender: TObject);
 begin
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
-    Form14.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
+    Form14.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP');
+    
   if not FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
     Form14.Image1.Picture.SaveToFile('LOGOTIP.BMP');
 
@@ -779,8 +780,8 @@ begin
 
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
   begin
-    Form19.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
-    Form14.Image1.Picture.LoadFromFile('LOGOTIP.BMP');
+    Form19.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP');
+    Form14.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP');
   end;
 
   Form14.Image1.Picture.Bitmap.Height :=  90;
