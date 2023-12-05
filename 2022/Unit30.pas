@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
-  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons, jpeg,
-  IBCustomDataSet, uframePesquisaPadrao, uframePesquisaServico, uframeCampo;
+  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons, jpeg, IBQuery,
+  uframeCampo, uframePesquisaPadrao, uframePesquisaServico, IBCustomDataSet;
 
 const COLOR_GRID_CINZA = $00F0F0F0;
 
@@ -42,7 +42,7 @@ type
     SMALL_DBEdit11: TSMALL_DBEdit;
     DBGrid3: TDBGrid;
     SMALL_DBEdit13: TSMALL_DBEdit;
-    ListBox1: TListBox;
+    listSituacao: TListBox;
     ListBox2: TListBox;
     DBGrid1: TDBGrid;
     DBGrid2: TDBGrid;
@@ -116,7 +116,7 @@ type
       Shift: TShiftState);
     procedure SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ListBox1KeyDown(Sender: TObject; var Key: Word;
+    procedure listSituacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGrid2KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid2KeyUp(Sender: TObject; var Key: Word;
@@ -143,7 +143,7 @@ type
     procedure Incluirnovoitemnoestoque1Click(Sender: TObject);
     procedure Incluirnovocliente1Click(Sender: TObject);
     procedure DBMemo1Change(Sender: TObject);
-    procedure ListBox1DblClick(Sender: TObject);
+    procedure listSituacaoDblClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Label_fecha_0Click(Sender: TObject);
     procedure DBGrid2ColEnter(Sender: TObject);
@@ -172,6 +172,7 @@ type
     procedure AtribuirItemPesquisaServico;
     procedure OcultaListaDePesquisa;
     procedure MostraFoto;
+    procedure CarregaSituacoes;
   public
     { Public declarations }
     sSistema, sDatafield : String;
@@ -185,7 +186,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit12, Unit41, Unit19, Unit22, Unit24, Mais3, preco1,
-  Unit10, uTestaClienteDevendo;
+  Unit10, uTestaClienteDevendo, uFuncoesBancoDados;
 
 {$R *.dfm}
 
@@ -265,7 +266,7 @@ begin
   dbGrid3.Top                        := SMALL_DBEdit2.Top + SMALL_DBEdit2.Height -1;
   dbGrid3.Width                      := SMALL_DBEdit2.Width;
   dBGrid3.Height                     := 201;
-  ListBox1.Visible                   := False;
+  listSituacao.Visible               := False;
   // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   //
   dBgrid3.Columns.Items[1].FieldName := '';
@@ -303,9 +304,9 @@ begin
       //
     end;
   end else
-    DefinirCorClienteDevedor;  
-  //
-  ListBox1.Visible := False;
+    DefinirCorClienteDevedor;
+  
+  listSituacao.Visible := False;
 end;
 
 procedure TForm30.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -348,7 +349,7 @@ begin
   dbGrid3.Top                        := SMALL_DBEdit3.Top + SMALL_DBEdit3.Height -1;
   dbGrid3.Width                      := SMALL_DBEdit3.Width;
   dBGrid3.Height                     := 182;
-  ListBox1.Visible                   := False;
+  listSituacao.Visible               := False;
   // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
   //
   dBgrid3.Columns.Items[1].FieldName := '';
@@ -460,8 +461,8 @@ begin
   dbGrid3.Visible   := False;
   }
   OcultaListaDePesquisa;  
-  ListBox1.Visible  := True;
-  ListBox1.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
+  listSituacao.Visible  := True;
+  listSituacao.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41;
   SMALL_DBEdit7.SelectAll;
 end;
 
@@ -476,12 +477,12 @@ begin
       ListBox1.ItemIndex := I;
   end;
   }
-  ListBox1.Visible := True;
-  for I := 0 to ListBox1.Items.Count -1 do
+  listSituacao.Visible := True;
+  for I := 0 to listSituacao.Items.Count -1 do
   begin
-    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(ListBox1.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+    if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(listSituacao.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
     begin
-      ListBox1.ItemIndex := I;
+      listSituacao.ItemIndex := I;
     end;
   end;
 
@@ -519,9 +520,8 @@ begin
   dBgrid3.Columns.Items[3].FieldName := 'LOCAL';
   dBgrid3.Columns.Items[3].Width     := 77;
   dBgrid3.Columns.Items[3].Visible   := True;
-  //
-  //
-  ListBox1.Visible                   := False;
+
+  listSituacao.Visible                   := False;
   // Sandro Silva 2023-09-28 ListBox22.Visible                   := False;
 end;
 
@@ -717,38 +717,41 @@ procedure TForm30.SMALL_DBEdit7KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DOWN   then
-    if ListBox1.Visible = True then
-      ListBox1.SetFocus
+    if listSituacao.Visible = True then
+      listSituacao.SetFocus
     else
       Perform(Wm_NextDlgCtl,0,0);
   if Key = VK_UP     then
   begin
-    if ListBox1.Visible = True then
-      ListBox1.SetFocus
+    if listSituacao.Visible = True then
+      listSituacao.SetFocus
     else
       Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_RETURN then
   begin
-    ListBox1.Visible  := False; // Sandro Silva 2023-10-17
+    listSituacao.Visible  := False; // Sandro Silva 2023-10-17
     Perform(Wm_NextDlgCtl,0,0);
   end;
 end;
 
-procedure TForm30.ListBox1KeyDown(Sender: TObject; var Key: Word;
+procedure TForm30.listSituacaoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
   begin
-    if ListBox1.ItemIndex = 0 then
+    {
+    if listSituacao.ItemIndex = 0 then
       Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-    if ListBox1.ItemIndex = 1 then
+    if listSituacao.ItemIndex = 1 then
       Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-    if ListBox1.ItemIndex = 2 then
+    if listSituacao.ItemIndex = 2 then
       Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+    Mauricio Parizotto 2023-12-04 }
+    Form7.ibDataSet3SITUACAO.AsString := listSituacao.Items[listSituacao.ItemIndex];
     SMALL_DBEdit7.SetFocus;
     Key := VK_SHIFT;
-    ListBox1.Visible := False;
+    listSituacao.Visible := False;
   end;
 end;
 
@@ -1237,6 +1240,9 @@ begin
   Form30.Width   := Form7.Width;
   Form30.Height  := Form7.Height;
 
+  //Mauricio Parizotto 2023-12-05
+  CarregaSituacoes;
+
   // Posiciona na tabéla de CFOP
   Form7.ibDataSet14.Close;
   Form7.ibDataSet14.SelectSQL.Clear;
@@ -1425,17 +1431,21 @@ begin
   end;
 end;
 
-procedure TForm30.ListBox1DblClick(Sender: TObject);
+procedure TForm30.listSituacaoDblClick(Sender: TObject);
 begin
-  if ListBox1.ItemIndex = 0 then
+  {
+  if listSituacao.ItemIndex = 0 then
     Form7.ibDataSet3SITUACAO.AsString := 'Agendada';
-  if ListBox1.ItemIndex = 1 then
+  if listSituacao.ItemIndex = 1 then
     Form7.ibDataSet3SITUACAO.AsString := 'Aberta';
-  if ListBox1.ItemIndex = 2 then
+  if listSituacao.ItemIndex = 2 then
     Form7.ibDataSet3SITUACAO.AsString := 'Fechada';
+  Mauricio Parizotto 2023-12-04}
+
+  Form7.ibDataSet3SITUACAO.AsString := listSituacao.Items[listSituacao.ItemIndex];
 
   SMALL_DBEdit3.SetFocus;
-  ListBox1.Visible := False;
+  listSituacao.Visible := False;
 end;
 
 procedure TForm30.Button1Click(Sender: TObject);
@@ -1474,7 +1484,7 @@ end;
 
 procedure TForm30.OcultaListaDePesquisa;
 begin
-  ListBox1.Visible := False;
+  listSituacao.Visible := False;
   dbGrid3.Visible  := False;
 end;
 
@@ -1529,7 +1539,10 @@ end;
 
 procedure TForm30.SMALL_DBEdit7Exit(Sender: TObject);
 begin
-  SMALL_DBEdit7.Field.AsString := ListBox1.Items[ListBox1.ItemIndex]; // Sandro Silva 2023-10-17
+  try
+    SMALL_DBEdit7.Field.AsString := listSituacao.Items[listSituacao.ItemIndex]; // Sandro Silva 2023-10-17
+  except
+  end;
 end;
 
 procedure TForm30.SMALL_DBEdit7Click(Sender: TObject);
@@ -1591,6 +1604,37 @@ procedure TForm30.DBGrid3KeyUp(Sender: TObject; var Key: Word;
 begin
   //Mauricio Parizotto 2023-11-15
   MostraFoto;
+end;
+
+procedure TForm30.CarregaSituacoes;
+var
+  IbqSituacao : TIBQuery;
+begin
+  listSituacao.Items.Clear;
+  listSituacao.Items.Add('Agendada');
+  listSituacao.Items.Add('Aberta');
+  listSituacao.Items.Add('Fechada');
+
+  //Dados do cadastro situação OS
+  try
+    IbqSituacao := CriaIBQuery(Form7.ibDataSet3.Transaction);
+    IbqSituacao.SQL.Text := ' Select SITUACAO '+
+                            ' From OSSITUACAO '+
+                            ' Order by Upper(SITUACAO)';
+    IbqSituacao.Open;
+
+    while not IbqSituacao.Eof do
+    begin
+      listSituacao.Items.Add(IbqSituacao.FieldByName('SITUACAO').Asstring);
+      IbqSituacao.Next;
+    end;
+  finally
+    FreeAndNil(IbqSituacao);
+  end;
+
+  //Se tiver excluido ou renomeado uma situação cadastrada
+  if listSituacao.Items.IndexOf(Form7.ibDataSet3SITUACAO.AsString) < 0 then
+    listSituacao.Items.Add(Form7.ibDataSet3SITUACAO.AsString);
 end;
 
 end.

@@ -1026,7 +1026,7 @@ object Form30: TForm30
         OnEnter = DBMemo2Enter
         OnKeyUp = DBMemo1KeyUp
       end
-      object ListBox1: TListBox
+      object listSituacao: TListBox
         Left = 475
         Top = 80
         Width = 140
@@ -1046,8 +1046,8 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 22
         Visible = False
-        OnDblClick = ListBox1DblClick
-        OnKeyDown = ListBox1KeyDown
+        OnDblClick = listSituacaoDblClick
+        OnKeyDown = listSituacaoKeyDown
       end
       object ListBox2: TListBox
         Left = 400

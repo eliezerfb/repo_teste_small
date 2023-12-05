@@ -2330,6 +2330,24 @@ begin
 
   {Mauricio Parizotto 2023-11-20 Fim}
 
+
+
+  {Mauricio Parizotto 2023-12-04 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OSSITUACAO')) then
+  begin
+    ExecutaComando('CREATE TABLE OSSITUACAO ('+
+                   ' 	IDSITUACAO INTEGER NOT NULL,'+
+                   '  SITUACAO VARCHAR(25),'+
+                   '  CONSTRAINT PK_OSSITUACAO_IDSITUACAO PRIMARY KEY (IDSITUACAO)'+
+                   ')');
+
+    ExecutaComando('CREATE SEQUENCE G_OSSITUACAO');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-12-04 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
