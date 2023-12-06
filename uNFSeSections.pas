@@ -26,6 +26,18 @@ type
     function Section: String; override;
   end;
 
+type
+  TSectionNFSE_BD = class(TSectionBD)
+  private
+    function getObsNaDescricao: Boolean;
+    function getConfObsNaDescricao: string;
+    procedure setObsNaDescricao(const Value: Boolean);
+  public
+    property ObsNaDescricao: Boolean read getObsNaDescricao write setObsNaDescricao;
+    property ConfObsNaDescricao: string read getConfObsNaDescricao;
+  protected
+  end;
+
 implementation
 
 uses SysUtils, uSmallConsts;
@@ -64,6 +76,33 @@ end;
 function TSectionInformacoesObtidasNaPrefeitura.getPadraoProvedor: String;
 begin
   Result := FoIni.ReadString(_cSectionNFSE_InformacoesObtidasPrefeitura, _cIdentiPadraoCidade, '');
+end;
+
+{ TSectionNFSE_BD }
+
+function TSectionNFSE_BD.getConfObsNaDescricao: string;
+begin
+  Result := getValorBD(_cObsNaDescricaoNFSE);
+end;
+
+function TSectionNFSE_BD.getObsNaDescricao: Boolean;
+begin
+  Result := getValorBD(_cObsNaDescricaoNFSE) = '1';
+end;
+
+procedure TSectionNFSE_BD.setObsNaDescricao(const Value: Boolean);
+var
+  valorBD : string;
+begin
+  if Value then
+    valorBD := '1'
+  else
+    valorBD := '0';
+
+  setValorBD(_cObsNaDescricaoNFSE,
+             'Gera observação junto com a descrição dos serviços',
+             valorBD);
+
 end;
 
 end.

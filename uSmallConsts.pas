@@ -81,6 +81,7 @@ const
   _cSectionNFSE_InformacoesObtidasPrefeitura = 'Informacoes obtidas na prefeitura'; // Sandro Silva 2023-10-02
   _cIdentiPadraoCidade = 'Padrao'; // Sandro Silva 2023-10-02
   _cIdentNFSEAmbiente = 'Ambiente';
+  _cObsNaDescricaoNFSE  = 'Observação na descrição';
 
   //OS
   _cSectionOS = 'OS';
