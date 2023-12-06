@@ -4541,8 +4541,6 @@ begin
         //
 
         try
-          //
-          //
           _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
 
           try // Sandro Silva 2021-09-13
@@ -5359,7 +5357,7 @@ begin
             Form1.ibDataSet27.First;
             while Form1.ibDataSet27.Eof = False do
             begin
-            
+
               try
                 Form1.ibDataSet27.Edit;
                 Form1.ibDataSet27.FieldByName('COO').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
@@ -5507,21 +5505,9 @@ begin
             if _ecf65_JaTemContingenciaPorSubstituicao(Form1.ibDataSet27.Transaction, LimpaNumero(xmlNodeValue(sXmlNFCeSubstituida, '//infNFe/@Id'))) = False then
             begin
 
-              //slLog.Add(FormatDateTime('dd-mm-yyyy HH:nn:ss', Now) + ' IniciouContingência por substituição');
-
-              // Esse if precisa ser revisto se não há algum problema em ocorrer cancelamento por substituição nestas 2 UFs 
+              // Esse if precisa ser revisto se não há algum problema em ocorrer cancelamento por substituição nestas 2 UFs
               if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'CE') and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') then
               begin
-
-                {Sandro Silva 2021-11-03 inicio
-                try
-                  Audita('EMISSAO','FRENTE', '', 'Iniciou Contingência-' + ExtractFileName(Application.ExeName) + ' ' + LimpaNumero(Form22.sBuild) + ' ' + StrZero(Form1.iCupom,6,0) + ' ' + Form1.sCaixa,0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2019-03-06
-                except
-
-                end;
-                }
-
-                // Sandro Silva 2021-09-30 sXmlNFCeSubstituida := IfThen(Trim(fNFe) <> '', fNFE, Form1.spdNFCeDataSets1.LoteNFCe.GetText); // Extrai o xml
 
                 if sXmlNFCeSubstituida <> '' then
                 begin
