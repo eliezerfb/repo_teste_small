@@ -485,6 +485,7 @@ begin
     if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(listSituacao.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
     begin
       listSituacao.ItemIndex := I;
+      Exit; // Mauricio Parizotto 2023-12-06
     end;
   end;
 
