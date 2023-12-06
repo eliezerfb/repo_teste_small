@@ -5,7 +5,12 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  Grids, DBGrids, DB, IBCustomDataSet, IBQuery
+  Grids, DBGrids, DB
+  {$IFDEF VER150}
+  , IBCustomDataSet, IBQuery, IBDatabase
+  {$ELSE}
+  , IBX.IBCustomDataSet, IBX.IBQuery, IBX.IBDatabase
+  {$ENDIF}
   , StrUtils
   , ufuncoesfrente, DBClient
   ;

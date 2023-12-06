@@ -15435,9 +15435,9 @@ begin
   end;
 
   bArtificioParaAfetarApenasEdicaoMovimento := False;
-  if (TemGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
-    and (TemSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
-    and (TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
+  if (ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
+    and (ProdutoComControleDeSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
+    and (ProdutoComposto(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) = False)
   then
     bArtificioParaAfetarApenasEdicaoMovimento := True;
 

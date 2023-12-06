@@ -27,7 +27,11 @@ interface
 
 uses
   Classes, Dialogs, SysUtils, Forms, StrUtils
+  {$IFDEF VER150}
   , IBDatabase, IBQuery, IBCustomDataSet
+  {$ELSE}
+  , IBX.IBDatabase, IBX.IBCustomDataSet, IBX.IBQuery
+  {$ENDIF}
   , smallfunc, ufuncoesfrente;
 
 type
