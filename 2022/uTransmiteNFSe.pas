@@ -21,7 +21,7 @@ uses
 
 implementation
 
-uses Unit7, Mais, uSmallConsts, unit29, StdCtrls, uDialogs;
+uses Unit7, Mais, uSmallConsts, unit29, StdCtrls, uDialogs, uArquivosDAT;
 
 function GetCidadeUF: String;
 begin
@@ -80,6 +80,9 @@ var
   sDDDTomador: String;
   sTelefoneTomador: String;
   sEmailTomador: String;
+
+  ConfSistema : TArquivosDAT;
+  sObsNaDescricao : Boolean;
 
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
@@ -189,6 +192,29 @@ begin
   begin
     Mais1ini.Free;
   end;
+
+  {Mauricio Parizotto 2023-12-05 Inicio}
+  try
+    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+
+    //Seta configuração para Padrões
+    if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC')
+      or (sPadraoSistema = 'GINFES')
+      or (sPadraoSistema = 'FINTEL')
+      or ((sPadraoSistema = 'WEBISS20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'ITANHANGAMT') )
+      then
+    begin
+      //Só vai marcar como True se não tiver configuração ainda
+      if ConfSistema.BD.NFSE.ConfObsNaDescricao = '' then
+        ConfSistema.BD.NFSE.ObsNaDescricao := True;
+    end;
+
+    sObsNaDescricao := ConfSistema.BD.NFSE.ObsNaDescricao;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+  {Mauricio Parizotto 2023-12-05 Fim}
+
 
   try
     if Form1.ExisteNfseExe(Form1.sAtual) then
@@ -818,9 +844,12 @@ begin
               end;
 
               //if (sPadraoSistema = 'GINFES') or (sPadraoSistema = 'FINTEL') then Mauricio parizotto 2023-11-16
+              {
               if (sPadraoSistema = 'GINFES')
                 or (sPadraoSistema = 'FINTEL')
                 or ((sPadraoSistema = 'WEBISS20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'ITANHANGAMT') ) then
+              Mauricio Parizotto 2023-12-05}
+              if sObsNaDescricao then
               begin
                 sDescricaoDosServicos := sDescricaoDosServicos + '|' + ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString);
               end;
@@ -903,7 +932,8 @@ begin
                 //Verifica se é o último registro
                 if Form7.ibDataSet35.RecNo = Form7.ibDataSet35.RecordCount then
                 begin
-                  if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then
+                  //if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC') then Mauricio Parizotto 2023-12-05
+                  if sObsNaDescricao then
                   begin
                     ComplementoOBS := ' - '+Trim(ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString));
                   end
