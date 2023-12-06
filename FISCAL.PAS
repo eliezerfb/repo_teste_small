@@ -15399,6 +15399,7 @@ var
   bGravou: Boolean;
   //DBGridItensEnabled: Boolean;
   sMensagemAlerta: String;
+  dSaldoParaMovimetar: Double; // Sandro Silva 2023-12-05
 begin
   {                                         }
   { Não permite quantidade negativa         }
@@ -15479,7 +15480,8 @@ begin
           begin
             if (ibDataSet4.FieldByName('TIPO_ITEM').AsString <> '09') then // serviços não atera a quantidade
             begin
-              if (StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
+              // Sandro Silva 2023-12-06 if (StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
+              if (StrToFloat(Text) > (dQuantidadeOld + ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
               begin
                 //
                 // Verifica se é produto composto
@@ -15496,10 +15498,13 @@ begin
                   {Sandro Silva 2023-06-23 inicio
                   SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
                   }
+                  dSaldoParaMovimetar := dQuantidadeOld + ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
+                  sMensagemAlerta := #13 + #13 + 'Só tem ' + FormatFloat('0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)), dSaldoParaMovimetar) + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque' + #13 + #13 + 'Erro 5427';
                   if (Form1.sModeloECF_Reserva = '99') then
-                    sMensagemAlerta := 'Não é possível efetuar a movimentação, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427'
+                    sMensagemAlerta := ' movimentação' + sMensagemAlerta
                   else
-                    sMensagemAlerta := 'Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427';
+                    sMensagemAlerta := ' venda' + sMensagemAlerta;
+                  sMensagemAlerta := 'Não é possível efetuar a' + sMensagemAlerta;
 
                    SmallMessageBox(sMensagemAlerta, 'Atenção', MB_OK + MB_ICONWARNING);
 
@@ -15512,6 +15517,7 @@ begin
                   dQuantidade := Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat;
                   if (Form1.ClienteSmallMobile.sVendaImportando = '') then
                     Edit1.SetFocus;
+                    
                 end
                 else
                   dQuantidade := StrToFloat(Text); // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);

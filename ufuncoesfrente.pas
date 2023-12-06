@@ -349,10 +349,9 @@ function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
 procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
 function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
-function TemGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
-function TemSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
-function TemComposicao(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
-function SemEstoque(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComControleDeGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComControleDeSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComposto(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
@@ -2505,7 +2504,7 @@ begin
   INI.Free;
 end;
 
-function TemGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComControleDeGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 var
   IBQGRADE: TIBQuery;
 begin
@@ -2524,7 +2523,7 @@ begin
   FreeAndNil(IBQGRADE);
 end;
 
-function TemSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComControleDeSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 var
   IBQSERIE: TIBQuery;
 begin
@@ -2544,7 +2543,7 @@ begin
   FreeAndNil(IBQSERIE);
 end;
 
-function TemComposicao(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComposto(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 var
   IBQCOMPOSTO: TIBQuery;
 begin
@@ -2562,26 +2561,6 @@ begin
    except
    end;
    FreeAndNil(IBQCOMPOSTO);
-end;
-
-function SemEstoque(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
-var
-  IBQESTOQUE: TIBQuery;
-begin
-  Result := False;
-  IBQESTOQUE := CriaIBQuery(IBTransaction);
-  try
-    IBQESTOQUE.Close;
-    IBQESTOQUE.SQL.Text :=
-      'select QTD_ATUAL ' +
-      'from ESTOQUE ' +
-      'where CODIGO = ' + QuotedStr(sCodigo);
-    IBQESTOQUE.Open;
-
-    Result := (IBQESTOQUE.FieldByName('QTD_ATUAL').AsFloat <= 0);
-   except
-   end;
-   FreeAndNil(IBQESTOQUE);
 end;
 
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;

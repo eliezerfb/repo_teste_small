@@ -46,11 +46,16 @@ type
     FIBDATASETALTERACA: TIBDataSet;
     FEditFormatUnitario: String;
     FEditFormatQuantidade: String;
+    aItemEdicaoBloqueada: array of String;
+    bBloquearTodaColunaQuantidades: Boolean; // Sandro Silva 2023-12-03
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
     procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
     procedure AlertaDeProdutoNaoEditavel;
+    function ItemComEdicaoTabelaAlteracaBloqueada(sItem: String): Boolean;
+    function ProdutoComEstoqueNegativo(IBTransaction: TIBTransaction;
+      sCodigo: String): Boolean;
   public
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
@@ -96,6 +101,7 @@ end;
 procedure TFEditaMovimento.FormCreate(Sender: TObject);
 begin
   // Artifício para o botão OK nunca ficar com foco quando o form for aberto. Evitar confirmação OK quando ler código de barras Sandro Silva 2018-10-24
+  SetLength(aItemEdicaoBloqueada, 0); // Sandro Silva 2023-12-06
   BitBtn1.Top := -10000;
   Form1.bEditandoMovimento := True;
 
@@ -183,6 +189,22 @@ begin
       begin
         (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
       end;
+
+      {Sandro Silva 2023-12-05 inicio}
+      if (Column.Field.FieldName = 'QUANTIDADE') then
+      begin
+        if ItemComEdicaoTabelaAlteracaBloqueada(Column.Field.DataSet.FieldByName('ITEM').AsString) // Sandro Silva 2023-12-06
+          or bBloquearTodaColunaQuantidades // Sandro Silva 2023-12-06
+        then
+          (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
+      end;
+
+      if (Column.Field.FieldName = 'UNITARIO') then
+      begin
+        if ItemComEdicaoTabelaAlteracaBloqueada(Column.Field.DataSet.FieldByName('ITEM').AsString) then
+          (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
+      end;
+      {Sandro Silva 2023-12-05 fim}
 
     end;
 
@@ -353,6 +375,7 @@ begin
   TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat := FEditFormatQuantidade; // Sandro Silva 2023-11-23
   FIBDATASETALTERACA.AfterScroll  := nil;
   FIBDATASETALTERACA.BeforeScroll := nil;
+  aItemEdicaoBloqueada := nil; // Sandro Silva 2023-12-06
 end;
 
 procedure TFEditaMovimento.DataSource1DataChange(Sender: TObject;
@@ -371,9 +394,9 @@ begin
     or (Field.FieldName = 'UNITARIO')
   then
   begin
-    if ((TemGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
-      and (TemSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
-      and (TemComposicao(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
+    if ((ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
+      and (ProdutoComControleDeSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
+      and (ProdutoComposto(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) = False)
       and (Field.FieldName = 'QUANTIDADE'))
       or (Field.FieldName = 'UNITARIO')
     then
@@ -414,13 +437,18 @@ begin
 
   if (Field.FieldName = 'QUANTIDADE') then
   begin
-    if (TemGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (TemSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (TemComposicao(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (SemEstoque(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) and (Form1.ConfNegat = 'Não'))
+    if (ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComControleDeSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComposto(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComEstoqueNegativo(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString) and (Form1.ConfNegat = 'Não'))
+    or ItemComEdicaoTabelaAlteracaBloqueada(Field.DataSet.FieldByName('ITEM').AsString) // Sandro Silva 2023-12-06
+    or bBloquearTodaColunaQuantidades // Sandro Silva 2023-12-06
     then
       bNaoEditaQtd := True;
   end;
+
+  if ((Field.FieldName = 'UNITARIO') and ItemComEdicaoTabelaAlteracaBloqueada(Field.DataSet.FieldByName('ITEM').AsString)) then
+    bNaoEditaQtd := True;
 
   if ((Field.FieldName <> 'QUANTIDADE')
     and (Field.FieldName <> 'UNITARIO'))
@@ -428,10 +456,10 @@ begin
     or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
     or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo')
     {Sandro Silva 2023-12-04 inicio
-    or (TemGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (TemSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (TemComposicao(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (SemEstoque(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComControleDeSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComposto(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
+    or (ProdutoComEstoqueNegativo(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
     {Sandro Silva 2023-12-04 fim}
     or bNaoEditaQtd
     then
@@ -516,6 +544,7 @@ begin
   Result := True;
   FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
   SelectEstoqueOld := Form1.ibDataSet4.SelectSQL.Text;
+  bBloquearTodaColunaQuantidades := False; // Sandro Silva 2023-12-06
 
   FEditFormatUnitario   := TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat; // Sandro Silva 2023-11-23
   FEditFormatQuantidade := TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat; // Sandro Silva 2023-11-23
@@ -529,12 +558,13 @@ begin
 
       if (Form1.ibDataSet27.FieldByName('TIPO').AsString <> 'CANCEL') then
       begin
-      
+
         // Para pode exibir na mensagem quando não consegue bloquear os registros dos itens da venda
         sItem      := Form1.ibDataSet27.FieldByName('ITEM').AsString;
         sCodigo    := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
         sDescricao := Form1.ibDataSet27.FieldByName('DESCRICAO').AsString;
 
+        {Sandro Silva 2023-12-06 inicio
         if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
         begin
           Result := False;
@@ -562,13 +592,58 @@ begin
         except
           on E: Exception do
           begin
+
             Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
             Result := False;
+          end;
+        end;
+
+        }
+
+        if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
+        begin
+          SetLength(aItemEdicaoBloqueada, Length(aItemEdicaoBloqueada) + 1);
+          aItemEdicaoBloqueada[High(aItemEdicaoBloqueada)] := Form1.ibDataSet27.FieldByName('ITEM').AsString;
+        end;
+
+        try
+          // Artifício para forçar a edição e bloquear nas tabelas alteraca e estoque
+          Form1.ibDataSet27.Edit;
+          Form1.ibDataSet27.FieldByName('CODIGO').AsString := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
+          Form1.ibDataSet27.Post;
+        except
+          on E: Exception do
+          begin
+            Form1.ibDataSet27.Cancel;
+            SetLength(aItemEdicaoBloqueada, Length(aItemEdicaoBloqueada) + 1);
+            aItemEdicaoBloqueada[High(aItemEdicaoBloqueada)] := Form1.ibDataSet27.FieldByName('ITEM').AsString;
+          end;
+        end;
+
+        try
+          Form1.ibDataSet4.Close;
+          Form1.ibDataSet4.SelectSQL.Text :=
+            'select * from ESTOQUE where CODIGO = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CODIGO').AsString);
+          Form1.ibDataSet4.Open;
+
+          if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> '') and (Form1.ibDataSet4.FieldByName('DESCRICAO').AsString <> '') then
+          begin
+            Form1.ibDataSet4.Edit;
+            Form1.ibDataSet4.FieldByName('CODIGO').AsString := Form1.ibDataSet4.FieldByName('CODIGO').AsString;
+            Form1.ibDataSet4.Post;
+          end;
+
+        except
+          on E: Exception do
+          begin
+            bBloquearTodaColunaQuantidades := True;
             Break;
           end;
         end;
       end;
+
       Form1.ibDataSet27.Next;
+
     end;
   finally
     if Result = False then
@@ -585,23 +660,80 @@ end;
 procedure TFEditaMovimento.AlertaDeProdutoNaoEditavel;
 begin
   {Sandro Silva 2023-12-04 inicio}
+  lbAlerta.Caption := '';
   lbAlerta.Visible := False;
-  if (TemGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
-  or (TemSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
-  or (TemComposicao(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
-  or (SemEstoque(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) and (Form1.ConfNegat = 'Não') )
+  if (ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
+  or (ProdutoComControleDeSerie(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
+  or (ProdutoComposto(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
+  or (ProdutoComEstoqueNegativo(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString) and (Form1.ConfNegat = 'Não') )
   then
   begin
     lbAlerta.Caption := '*Item ' + RightStr(Form1.ibDataSet27.FieldByName('ITEM').AsString, 3) + ' é produto';
     if (Form1.ConfNegat = 'Não') then
       lbAlerta.Caption := lbAlerta.Caption + ' sem estoque, ou';
     lbAlerta.Caption := lbAlerta.Caption + ' composto, ou com grade, ou com controle de série';
-    lbAlerta.Visible := True;
+
     if (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = 'Desconto') or (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = 'Acréscimo') then
       lbAlerta.Visible := False;
+    lbAlerta.Visible := True;
   end;
+
+  if ItemComEdicaoTabelaAlteracaBloqueada(Form1.ibDataSet27.FieldByName('ITEM').AsString) then
+  begin
+    if lbAlerta.Caption = '' then
+      lbAlerta.Caption := '*Item ' + RightStr(Form1.ibDataSet27.FieldByName('ITEM').AsString, 3) + ' bloqueado para alteração';
+  end;
+
+  if bBloquearTodaColunaQuantidades then
+  begin
+    if lbAlerta.Caption <> '' then
+      lbAlerta.Caption := lbAlerta.Caption + #13 + '*';
+    lbAlerta.Caption := lbAlerta.Caption + '*Alteração na coluna quantidade bloqueada. Está sendo movimentado por outro usuário';
+    lbAlerta.Visible := True;
+  end;
+
+  if lbAlerta.Caption <> '' then
+    lbAlerta.Visible := True;
   {Sandro Silva 2023-12-04 fim}
 
+end;
+
+function TFEditaMovimento.ItemComEdicaoTabelaAlteracaBloqueada(sItem: String): Boolean;
+var
+  iItem: Integer;
+begin
+  Result := False;
+  if Length(aItemEdicaoBloqueada) > 0 then
+  begin
+    for iItem := 0 to Length(aItemEdicaoBloqueada) -1 do
+    begin
+      if aItemEdicaoBloqueada[iItem] = sItem then
+      begin
+        Result := True;
+        Break;
+      end;
+    end;
+  end;
+end;
+
+function TFEditaMovimento.ProdutoComEstoqueNegativo(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQESTOQUE: TIBQuery;
+begin
+  Result := False;
+  IBQESTOQUE := CriaIBQuery(IBTransaction);
+  try
+    IBQESTOQUE.Close;
+    IBQESTOQUE.SQL.Text :=
+      'select QTD_ATUAL ' +
+      'from ESTOQUE ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQESTOQUE.Open;
+
+    Result := (IBQESTOQUE.FieldByName('QTD_ATUAL').AsFloat < 0); // Sandro Silva 2023-12-06 Result := (IBQESTOQUE.FieldByName('QTD_ATUAL').AsFloat <= 0);
+   except
+   end;
+   FreeAndNil(IBQESTOQUE);
 end;
 
 end.
