@@ -164,14 +164,16 @@ begin
   try
     imgAnexoOS.Visible := False;
     memAnexoOS.Visible := False;
-    webbOS.Navigate('about:blank');
+    //webbOS.Navigate('about:blank');
     pnlWeb.Visible     := False;
     Application.ProcessMessages;
 
     pnlArquivo.Caption := ibdAnexosOSNOME.AsString;
 
     //Imagem
-    if AnsiContainsText(ibdAnexosOSNOME.AsString,'.jpg') then
+    if (AnsiContainsText(ibdAnexosOSNOME.AsString,'.jpg')) or
+      (AnsiContainsText(ibdAnexosOSNOME.AsString,'.jpeg')) 
+      then
     begin
       try
         Stream := TMemoryStream.Create;
@@ -190,6 +192,7 @@ begin
     end;
 
     //PDF
+    {
     if AnsiContainsText(ibdAnexosOSNOME.AsString,'.pdf') then
     begin
       try
@@ -208,6 +211,7 @@ begin
       finally
       end;
     end;
+    Só funciona se tiver foxit instalado}
 
     //Texto
     if (AnsiContainsText(ibdAnexosOSNOME.AsString,'.txt')) then

@@ -204,7 +204,8 @@ uses
   uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
   uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
   uOrdemServico in 'units\uOrdemServico.pas',
-  uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS};
+  uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS},
+  uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas';
 
 {$R *.RES}
 
