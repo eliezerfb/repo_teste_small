@@ -200,6 +200,8 @@ procedure TForm29.FormCreate(Sender: TObject);
 begin
   Gauge1.Font.Name := 'MS Serif'; //Problema fonte borada no Delphi 7
   Gauge1.Font.Style := [fsBold];
+
+  Panel_dados.Left := 40;
 end;
 
 procedure TForm29.DefinirSomenteNumeros;
