@@ -5237,17 +5237,17 @@ begin
   /////////
 
 //  if LerParametroIni('FRENTE.INI', 'Frente de Caixa', 'Log PAF', 'Não') = 'Não' then
-   Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
+//   Exit; // Comentar essa linha para Ativar apenas quando precisar debugar algum teste. Descomentar a linha para Desativar depois de testar
 
   GetDir(0, sDirAtual);
   ////////
 
   sl := TStringList.Create;
   try
-    sNomeLog := '\log\LogFrente_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt';
+    sNomeLog := '\log\LogFrente_' + GetComputerNameFunc() + '_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt';
     if FileExists(ExtractFileDir(Application.ExeName) + sNomeLog) then
       sl.LoadFromFile(ExtractFileDir(Application.ExeName) + sNomeLog);
-    sl.Add(FormatDateTime('dd/mm/yyyy HH:nn:ss.zzzz', Now) + ' - ' + sTexto);
+    sl.Add(FormatDateTime('dd/mm/yyyy HH:nn:ss.zzzz', Now) + ' - ' + GetComputerNameFunc() + ' - ' + sTexto);
     sl.SaveToFile(ExtractFileDir(Application.ExeName) + sNomeLog);
   except
   end;
@@ -6860,7 +6860,7 @@ var
   IBQASSINADESCARGA: TIBQuery;
   IBQDESCARGABLOCOX: TIBQuery;
 begin
-  LogFrente('Teste 01: Iniciando Descarga ' + pP1);
+  //LogFrente('Teste 01: Iniciando Descarga ' + pP1);
 
   {Sandro Silva 2021-02-23 inicio}
   try
@@ -7016,7 +7016,7 @@ begin
                 ' where REGISTRO = ' + QuotedStr(sRegistro);
               Form1.IBDataSet200.Open;
 
-              LogFrente('Teste 01: Antes ENCRYPTHASH ' + sRegistro + ' ' + Form1.IBDataSet200.FieldByName('ENCRYPTHASH').AsString);
+              //LogFrente('Teste 01: Antes ENCRYPTHASH ' + sRegistro + ' ' + Form1.IBDataSet200.FieldByName('ENCRYPTHASH').AsString);
 
               Form1.IBDataSet200.Edit;
               AssinaRegistro(pP1, Form1.IBDataSet200, True);
@@ -7038,13 +7038,13 @@ begin
                 ' ENCRYPTHASH = ' + QuotedStr(sAssinaturaRegistro) +
                 ' where REGISTRO = ' + QuotedStr(sRegistro);
               IBQASSINADESCARGA.ExecSQL;
-              LogFrente('Teste 01: Depois ENCRYPTHASH ' + sAssinaturaRegistro);
+              //LogFrente('Teste 01: Depois ENCRYPTHASH ' + sAssinaturaRegistro);
 
-              LogFrente('Teste 01: Atualizou ENCRYPTHASH ' + pP1 + ' ' + sRegistro);
+              //LogFrente('Teste 01: Atualizou ENCRYPTHASH ' + pP1 + ' ' + sRegistro);
 
 
             except
-              LogFrente('Teste 01: Erro atualizar ENCRYPTHASH ' + pP1 + ' ' + sRegistro);
+              //LogFrente('Teste 01: Erro atualizar ENCRYPTHASH ' + pP1 + ' ' + sRegistro);
             end;
 
           end;
@@ -7070,7 +7070,7 @@ begin
           //
           on E: Exception do
           begin
-            LogFrente('Teste 01: Erro Descarga ' + pP1 + ' ' + E.Message);
+            //LogFrente('Teste 01: Erro Descarga ' + pP1 + ' ' + E.Message);
           end;
         end;
       end;
@@ -7182,7 +7182,7 @@ begin
   FreeAndNil(IBQASSINADESCARGA);
   FreeAndNil(IBQDESCARGABLOCOX);
   //
-  LogFrente('Teste 01: Final Descarga ' + pP1);
+  //LogFrente('Teste 01: Final Descarga ' + pP1);
 end;
 
 
@@ -7320,13 +7320,13 @@ begin
       IP       := AllTrim(Mais1Ini.ReadString('Firebird','Server IP',''));
       Alias    := AllTrim(Mais1Ini.ReadString('Firebird','Alias',''));
 
-      LogFrente('Teste 01: IP ' + Form1.sAtual+'\small.ini' + ' ' + ip);
+      //LogFrente('Teste 01: IP ' + Form1.sAtual+'\small.ini' + ' ' + ip);
 
       //
       if IP = '' then
         IP := GetIp;
 
-      LogFrente('Teste 01: depois getip ' + ' ' + ip);
+      //LogFrente('Teste 01: depois getip ' + ' ' + ip);
 
       //
       if IP <> '' then
@@ -7360,8 +7360,8 @@ begin
         begin
           Screen.Cursor := crDefault;
 
-          LogFrente('Teste 01: 9863 ' + E.Message);
-          LogFrente('Teste 01: 9863 ' + Form1.IbDatabase1.DatabaseName);
+          //LogFrente('Teste 01: 9863 ' + E.Message);
+          //LogFrente('Teste 01: 9863 ' + Form1.IbDatabase1.DatabaseName);
 
           SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos.');
           Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
@@ -7677,7 +7677,7 @@ begin
               //
               Screen.Cursor := crDefault;
 
-              LogFrente('Teste 01: 10180');
+              //LogFrente('Teste 01: 10180');
 
               SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos......');
               Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
@@ -7907,7 +7907,7 @@ begin
           if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = '\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
           begin
 
-            LogFrente('Teste 01: 10434');
+            //LogFrente('Teste 01: 10434');
 
             SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos.');
 
@@ -8354,13 +8354,13 @@ begin
       IP       := AllTrim(Mais1Ini.ReadString('Firebird','Server IP',''));
       Alias    := AllTrim(Mais1Ini.ReadString('Firebird','Alias',''));
 
-      LogFrente('Teste 01: IP ' + Form1.sAtual+'\small.ini' + ' ' + ip);
+      //LogFrente('Teste 01: IP ' + Form1.sAtual+'\small.ini' + ' ' + ip);
 
       //
       if IP = '' then
         IP := GetIp;
 
-      LogFrente('Teste 01: depois getip ' + ' ' + ip);
+      //LogFrente('Teste 01: depois getip ' + ' ' + ip);
 
       //
       if IP <> '' then
@@ -8394,8 +8394,8 @@ begin
         begin
           Screen.Cursor := crDefault;
 
-          LogFrente('Teste 01: 9863 ' + E.Message);
-          LogFrente('Teste 01: 9863 ' + Form1.IbDatabase1.DatabaseName);
+          //LogFrente('Teste 01: 9863 ' + E.Message);
+          //LogFrente('Teste 01: 9863 ' + Form1.IbDatabase1.DatabaseName);
 
           SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos.');
           Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
@@ -8711,7 +8711,7 @@ begin
               //
               Screen.Cursor := crDefault;
 
-              LogFrente('Teste 01: 10180');
+              //LogFrente('Teste 01: 10180');
 
               SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos......');
               Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
@@ -8941,7 +8941,7 @@ begin
           if Copy(UpperCase(Form1.IBDatabase1.DatabaseName),1,32) = '\DESENVOLVIMENTO\FONTES\DELPHI' then  // Minha pasta de projetos
           begin
 
-            LogFrente('Teste 01: 10434');
+            //LogFrente('Teste 01: 10434');
 
             SmallMsg('Entre antes no programa "Small Commerce" para ajustar os arquivos.');
 
@@ -9232,7 +9232,7 @@ begin
 
         Result := True;// 2015-11-11 Gravou a RZ
 
-        LogFrente('Teste 01: Gravou dados da Última RZ ' + s);
+        //LogFrente('Teste 01: Gravou dados da Última RZ ' + s);
 
         //
       end;
@@ -9247,7 +9247,7 @@ begin
 
       if AssinaRegistro('REDUCOES', Form1.ibDataset88, False) = False then
       begin
-        LogFrente('Teste 01: Gravou dados da Última RZ evidenciado');
+        //LogFrente('Teste 01: Gravou dados da Última RZ evidenciado');
       end;
       //
       // 2015-11-11 Somente se gravou a RZ Result := True;
@@ -11775,8 +11775,12 @@ begin
             end;
             //
             Form1.Label_7.Caption := 'Forma de pagamento';
-            //
+
+            LogFrente('11779 vai fechar venda ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+
             bFechado := Form1.PDV_Pagamento(True); // Fecha cupom
+
+            LogFrente('11783 fechou venda ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
             if PAFNFCe then
             begin
@@ -11789,7 +11793,13 @@ begin
 
           if (Form1.ClienteSmallMobile.sVendaImportando <> '') and (bFechado = False) then
           begin
+
+            LogFrente('11797 vai commitar ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+
             Form1.Button8Click(Sender); // Corta o papel, commita, etc e tal, fecha a tela da mesa do cupom status das mesas, zeresima
+
+
+
             //
             if Form1.bNFazMaisNada then
             begin
@@ -22447,7 +22457,13 @@ begin
   //
   if (Form1.Label_7.Caption <> 'Entrando em modo off line...') then // Caiu a rede
   begin
+
+    LogFrente('22462 antes commit ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+
     CommitaTudo(True); // Fecha Mesa
+
+    LogFrente('22466 depois commit ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+
     Form1.DeletaDataSet25; // Button8Click()
     Form1.ibDataSet25.Append;
   end;
