@@ -197,16 +197,17 @@ uses
   uFrmConfigEmailAutContabilidade in 'uFrmConfigEmailAutContabilidade.pas' {frmConfigEmailAutContab},
   ufrmOrigemCombustivel in 'ufrmOrigemCombustivel.pas' {FrmOrigemCombustivel},
   MSXML2_TLB in '..\..\unit_compartilhada\MSXML2_TLB.pas',
-  uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',  
+  uIRetornaSQLGerencialInventario in '..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas',
   uRetornaSQLGerencialInventario in '..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas',
   uFrmPrecificacaoProduto in 'uFrmPrecificacaoProduto.pas' {FrmPrecificacaoProduto},
   uParcelasReceber in 'uParcelasReceber.pas',
-  uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas', 
+  uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas',
   uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
   uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
   uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
   uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
-  uOrdemServico in 'units\uOrdemServico.pas';
+  uOrdemServico in 'units\uOrdemServico.pas',
+  uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas';
 
 {$R *.RES}
 

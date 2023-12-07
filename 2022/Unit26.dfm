@@ -1639,7 +1639,8 @@ object Form26: TForm26
         'Santander'
         'SICOOB'
         'SICREDI'
-        'Unibanco')
+        'Unibanco'
+        'Unicred')
     end
     object chkCNAB400: TCheckBox
       Left = 174
