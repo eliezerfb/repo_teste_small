@@ -7,7 +7,12 @@ unit ufuncoesfrentepaf;
 interface
 
 uses IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs, Windows
-  , IBDatabase, IBQuery, SmallFunc, Classes, LbCipher, LbClass,
+  {$IFDEF VER150}
+  , IBDatabase, IBQuery
+  {$ELSE}
+  , IBX.IBDatabase, IBX.IBQuery
+  {$ENDIF}
+  , SmallFunc, Classes, LbCipher, LbClass,
   ShellApi // Sandro Silva 2019-02-20
   , DateUtils
   , DB // Sandro Silva 2019-03-14
