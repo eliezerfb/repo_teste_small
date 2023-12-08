@@ -5,7 +5,8 @@ interface
 uses
   uIGeraRelatorioTotalizadorGeralVenda, uSmallEnumerados, IBDataBase,
   IBQuery, SysUtils, uConectaBancoSmall, uIEstruturaTipoRelatorioPadrao,
-  DB, DBClient, udmRelTotalizadorVendasGeral, Variants, uNotaFiscalEletronica;
+  DB, DBClient, udmRelTotalizadorVendasGeral, Variants, uNotaFiscalEletronica,
+  smallfunc;
 
 type
   TGeraRelatorioTotalizadorGeralVenda = class(TInterfacedObject, IGeraRelatorioTotalizadorGeralVenda)
@@ -16,20 +17,29 @@ type
     FdDataIni: TDateTime;
     FdDataFim: TDateTime;
     FdmRelatorio: TdmRelTotalizadorVendasGeral;
+    FenImprimirFiltroData: tDocsImprimirTotGeralVenda;
     procedure CarregarDados;
-    procedure CarregaPorCFOPCSTCSOSN;
-    procedure CarregaPorFormaPagamento;
-    procedure CarregaPorCSOSN;
-    procedure GeraEstruturaFormaPgto;
+    procedure CarregaPorCFOPCSTCSOSN(AenDoc: TDocsImprimirTotGeralVenda);
+    procedure CarregaPorFormaPagamento(AenDoc: TDocsImprimirTotGeralVenda);
+    procedure GeraEstruturaFormaPgto(AenDoc: TDocsImprimirTotGeralVenda);
     function RetornarDescricaoDocumento(AenDoc: TDocsImprimirTotGeralVenda): String;
     function TipoDocStrToEnum(AcDoc: String): TDocsImprimirTotGeralVenda;
     constructor Create;
-    procedure GeraEstruturaCFOPCSTCSOSN;
+    procedure GeraEstruturaCFOPCSTCSOSN(AenDoc: TDocsImprimirTotGeralVenda);
+    procedure MapearPorFormaPagamento;
+    procedure MapearClientOficial;
+    procedure AjustaCentavo(AenDoc: TDocsImprimirTotGeralVenda);
+    function SomaClient(AcdsClient: TClientDataSet;
+      AcCampo: String): Currency;
+    procedure GeraEstruturaRelatorio;
+    function TestaTemRegistroDoc(
+      AenDoc: TDocsImprimirTotGeralVenda): Boolean;
+    function RetornaDocImprimeFiltroData: TDocsImprimirTotGeralVenda;
   public
     destructor Destroy; override;
     class function New: IGeraRelatorioTotalizadorGeralVenda;
     function setTransaction(AoTransaction: TIBTransaction): IGeraRelatorioTotalizadorGeralVenda;
-    function setPerido(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioTotalizadorGeralVenda;
+    function setPeriodo(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioTotalizadorGeralVenda;
     function setUsuario(AcUsuario: String): IGeraRelatorioTotalizadorGeralVenda;
     function Salvar(AcCaminhoSemExtensao: String; AenTipoRelatorio: uSmallEnumerados.tTipoRelatorio): IGeraRelatorioTotalizadorGeralVenda;
     function GeraRelatorio: IGeraRelatorioTotalizadorGeralVenda;
@@ -59,19 +69,23 @@ begin
     Result := tditgvCupom;
 end;
 
-procedure TGeraRelatorioTotalizadorGeralVenda.CarregaPorFormaPagamento;
+procedure TGeraRelatorioTotalizadorGeralVenda.CarregaPorFormaPagamento(AenDoc: TDocsImprimirTotGeralVenda);
+begin
+  FdmRelatorio.CarregaDadosFormaPgto(AenDoc);
+  MapearPorFormaPagamento;
+end;
+
+procedure TGeraRelatorioTotalizadorGeralVenda.MapearPorFormaPagamento;
 var
   cTipo: String;
 begin
-  FdmRelatorio.qryDocumentos.First;
   try
-    while not FdmRelatorio.qryDocumentos.Eof do
+    while not FdmRelatorio.qryFormaPgto.Eof do
     begin
-      cTipo := Trim(FdmRelatorio.qryDocumentos.FieldByName('TIPO').AsString);
-      FdmRelatorio.CarregaDadosFormaPgto(TipoDocStrToEnum(cTipo));
 
-      while not FdmRelatorio.qryFormaPgto.Eof do
+      if FdmRelatorio.qryFormaPgto.FieldByName('TOTAL').AsCurrency <> 0 then
       begin
+        cTipo := Trim(FdmRelatorio.qryFormaPgto.FieldByName('TIPO').AsString);
         if not FdmRelatorio.cdsTotalPorFormaPgto.Locate('TIPO;FORMA', VarArrayOf([cTipo, FdmRelatorio.qryFormaPgto.FieldByName('FORMA').AsString]), []) then
         begin
           FdmRelatorio.cdsTotalPorFormaPgto.Append;
@@ -84,11 +98,9 @@ begin
         FdmRelatorio.cdsTotalPorFormaPgtoVALOR.AsCurrency := FdmRelatorio.cdsTotalPorFormaPgtoVALOR.AsCurrency + FdmRelatorio.qryFormaPgto.FieldByName('TOTAL').AsCurrency;
 
         FdmRelatorio.cdsTotalPorFormaPgto.Post;
-
-        FdmRelatorio.qryFormaPgto.Next;
       end;
-
-      FdmRelatorio.qryDocumentos.Next;
+      
+      FdmRelatorio.qryFormaPgto.Next;
     end;
   finally
     FdmRelatorio.cdsTotalPorFormaPgto.IndexFieldNames := 'FORMA';
@@ -96,27 +108,26 @@ begin
   end;
 end;
 
-procedure TGeraRelatorioTotalizadorGeralVenda.CarregaPorCFOPCSTCSOSN;
+procedure TGeraRelatorioTotalizadorGeralVenda.CarregaPorCFOPCSTCSOSN(AenDoc: TDocsImprimirTotGeralVenda);
 var
   nDescontoItem, nDescontoRateioDoc, nAcrescimoRateioDoc: Currency;
   cTipo: String;
   cCSOSN: String;
+  cCFOP: String;
   enTipoDoc: tDocsImprimirTotGeralVenda;
   oNotaFiscalCalc: TNotaFiscalEletronicaCalc;
   oObjetoNF: TVENDAS;
   oObjetoNFItem: TITENS001;
   i: Integer;
 begin
-  FdmRelatorio.qryDocumentos.First;
   try
-    while not FdmRelatorio.qryDocumentos.Eof do
+    if AenDoc = tditgvNFe then
     begin
-      cTipo := Trim(FdmRelatorio.qryDocumentos.FieldByName('TIPO').AsString);
+      FdmRelatorio.CarregaNFs;
 
-      enTipoDoc := TipoDocStrToEnum(cTipo);
-      if enTipoDoc = tditgvNFe then
+      while not FdmRelatorio.qryNFs.Eof do
       begin
-        FdmRelatorio.CarregaDadosNF(FdmRelatorio.qryDocumentos.FieldByName('PEDIDO').AsString);
+        FdmRelatorio.CarregaDadosNFParaObj(FdmRelatorio.qryNFs.FieldByName('PEDIDO').AsString);
 
         oNotaFiscalCalc := TNotaFiscalEletronicaCalc.Create;
         try
@@ -126,161 +137,324 @@ begin
           begin
             oObjetoNFItem := oObjetoNF.Itens.Items[i];
 
-            if not FdmRelatorio.cdsTotalCFOP.Locate('CFOP', oObjetoNFItem.Cfop, []) then
+            cCFOP := Trim(oObjetoNFItem.Cfop);
+            if not FdmRelatorio.cdsTotalCFOPTemp.Locate('TIPO;CFOP', VarArrayOf([RetornarDescricaoDocumento(AenDoc), cCFOP]), []) then
             begin
-              FdmRelatorio.cdsTotalCFOP.Append;
-              FdmRelatorio.cdsTotalCFOPCFOP.AsString := oObjetoNFItem.Cfop;
-              FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency := 0;              
+              FdmRelatorio.cdsTotalCFOPTemp.Append;
+              FdmRelatorio.cdsTotalCFOPTempTIPO.AsString := RetornarDescricaoDocumento(AenDoc);
+              FdmRelatorio.cdsTotalCFOPTempCFOP.AsString := cCFOP;
+              FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency := 0;
             end
             else
-              FdmRelatorio.cdsTotalCFOP.Edit;
+              FdmRelatorio.cdsTotalCFOPTemp.Edit;
 
-            FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency + oObjetoNFItem.Total +
-                                                                                                     oObjetoNFItem.FreteRateado +
-                                                                                                     oObjetoNFItem.SeguroRateado +
-                                                                                                     oObjetoNFItem.VIpi +
-                                                                                                     oObjetoNFItem.Vicmsst +
-                                                                                                     oObjetoNFItem.VFCPST +
-                                                                                                     oObjetoNFItem.DespesaRateado +
-                                                                                                     oObjetoNFItem.DescontoRateado
-                                                                                                     ;
+            FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency + oObjetoNFItem.Total
+                                                                                                           + oObjetoNFItem.FreteRateado
+                                                                                                           + oObjetoNFItem.SeguroRateado
+                                                                                                           + oObjetoNFItem.VIpi
+                                                                                                           + oObjetoNFItem.Vicmsst
+                                                                                                           + oObjetoNFItem.VFCPST
+                                                                                                           + oObjetoNFItem.DespesaRateado
+                                                                                                           - oObjetoNFItem.DescontoRateado
+                                                                                                           ;
 
-            FdmRelatorio.cdsTotalCFOP.Post;
-
+            FdmRelatorio.cdsTotalCFOPTemp.Post;
 
             cCSOSN := Trim(oObjetoNFItem.Csosn); // CSOSN de ALTERACA
 
-            if not FdmRelatorio.cdsTotalCSOSN.Locate('CSOSN', cCSOSN, []) then
+            if not FdmRelatorio.cdsTotalCSOSNTemp.Locate('TIPO;CSOSN', VarArrayOf([RetornarDescricaoDocumento(AenDoc), cCSOSN]), []) then
             begin
-              FdmRelatorio.cdsTotalCSOSN.Append;
-              FdmRelatorio.cdsTotalCSOSNCSOSN.AsString := cCSOSN;
+              FdmRelatorio.cdsTotalCSOSNTemp.Append;
+              FdmRelatorio.cdsTotalCSOSNTempTIPO.AsString  := RetornarDescricaoDocumento(AenDoc);
+              FdmRelatorio.cdsTotalCSOSNTempCSOSN.AsString := cCSOSN;
             end
             else
-              FdmRelatorio.cdsTotalCSOSN.Edit;
+              FdmRelatorio.cdsTotalCSOSNTemp.Edit;
 
-            FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency + oObjetoNFItem.Total +
-                                                                                                       oObjetoNFItem.FreteRateado +
-                                                                                                       oObjetoNFItem.SeguroRateado +
-                                                                                                       oObjetoNFItem.VIpi +
-                                                                                                       oObjetoNFItem.Vicmsst +
-                                                                                                       oObjetoNFItem.VFCPST +
-                                                                                                       oObjetoNFItem.DespesaRateado +
-                                                                                                       oObjetoNFItem.DescontoRateado
-                                                                                                       ;
-            FdmRelatorio.cdsTotalCSOSN.Post;
+            FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency + oObjetoNFItem.Total
+                                                                                                             + oObjetoNFItem.FreteRateado
+                                                                                                             + oObjetoNFItem.SeguroRateado
+                                                                                                             + oObjetoNFItem.VIpi
+                                                                                                             + oObjetoNFItem.Vicmsst
+                                                                                                             + oObjetoNFItem.VFCPST
+                                                                                                             + oObjetoNFItem.DespesaRateado
+                                                                                                             - oObjetoNFItem.DescontoRateado
+                                                                                                             ;
+            FdmRelatorio.cdsTotalCSOSNTemp.Post;
           end;
         finally
           FreeAndNil(oNotaFiscalCalc);
         end;
-      end
-      else
-      begin
-        FdmRelatorio.CarregaPorCFOPCSTCSOSN(enTipoDoc);
+
+        FdmRelatorio.qryNFs.Next;
+      end;
+    end
+    else
+    begin
+      try
+        // SETA O VALOR PRODUTO DOS ITENS PARA SEUS RESPECTIVOS CFOPs e CSOSNs
+        FdmRelatorio.CarregaPorCFOPCSTCSOSN(AenDoc);
 
         while not FdmRelatorio.qryDadosCST.Eof do
         begin
+
           if FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsCurrency <> 0 then
           begin
-            nDescontoItem := 0;
-            nAcrescimoRateioDoc := 0;
-            nDescontoRateioDoc := 0;
-
-            FdmRelatorio.CarregaDescontos(enTipoDoc);
-            if enTipoDoc in [tditgvNFCe, tditgvSAT, tditgvCupom] then
-            begin
-              if FdmRelatorio.qryDescontoItem.Locate('PEDIDO;ITEM', VarArrayOf([FdmRelatorio.qryDadosCST.FieldByName('PEDIDO').AsString, FdmRelatorio.qryDadosCST.FieldByName('ITEM').AsString]), []) then
-                nDescontoItem := FdmRelatorio.qryDescontoItem.FieldByName('DESCONTO').AsFloat;
-
-              //Rateio do desconto do documento
-              if FdmRelatorio.qryTotalDoc.Locate('PEDIDO', FdmRelatorio.qryDadosCST.FieldByName('PEDIDO').AsString, []) then
-              begin
-                // Não arredondar os valores individuais, somente no momento de imprimir o total do array
-                if FdmRelatorio.qryDescontoDoc.Locate('PEDIDO', FdmRelatorio.qryDadosCST.FieldByName('PEDIDO').AsString, []) then
-                  nDescontoRateioDoc := (FdmRelatorio.qryDescontoDoc.FieldByName('DESCONTOCUPOM').AsFloat / FdmRelatorio.qryTotalItens.FieldByName('TOTAL').AsFloat) * (FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsFloat + nDescontoItem);
-
-                if FdmRelatorio.qryAcrescimoDoc.Locate('PEDIDO', FdmRelatorio.qryDadosCST.FieldByName('PEDIDO').AsString, []) then
-                  nAcrescimoRateioDoc := (FdmRelatorio.qryAcrescimoDoc.FieldByName('ACRESCIMOCUPOM').AsFloat / FdmRelatorio.qryTotalItens.FieldByName('TOTAL').AsFloat) * (FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsFloat + nDescontoItem);
-              end;
-            end
-            else
-            begin
-              if FdmRelatorio.qryTotalDoc.Locate('PEDIDO', FdmRelatorio.qryDadosCST.FieldByName('PEDIDO').AsString, []) then
-              begin
-                // Não arredondar os valores individuais, somente no momento de imprimir o total do array
-                if FdmRelatorio.qryDescontoDoc.Locate('PEDIDO', FdmRelatorio.qryDadosCST.FieldByName('PEDIDO').AsString, []) then
-                  nDescontoRateioDoc := (FdmRelatorio.qryDescontoDoc.FieldByName('DESCONTOCUPOM').AsFloat / FdmRelatorio.qryTotalItens.FieldByName('TOTAL').AsFloat) * (FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsFloat + nDescontoItem);
-              end;
-            end;
-
             // CFOP
             if not FdmRelatorio.qryDadosCST.IsEmpty then
             begin
-              if not FdmRelatorio.cdsTotalCFOP.Locate('CFOP', FdmRelatorio.qryDadosCST.FieldByName('CFOP').AsString, []) then
+              if not FdmRelatorio.cdsTotalCFOPTemp.Locate('TIPO;CFOP'
+                                                          , VarArrayOf([RetornarDescricaoDocumento(AenDoc), FdmRelatorio.qryDadosCST.FieldByName('CFOP').AsString])
+                                                          , []) then
               begin
-                FdmRelatorio.cdsTotalCFOP.Append;
-                FdmRelatorio.cdsTotalCFOPCFOP.AsString := FdmRelatorio.qryDadosCST.FieldByName('CFOP').AsString;
+                FdmRelatorio.cdsTotalCFOPTemp.Append;
+                FdmRelatorio.cdsTotalCFOPTempTIPO.AsString := RetornarDescricaoDocumento(AenDoc);
+                FdmRelatorio.cdsTotalCFOPTempCFOP.AsString := FdmRelatorio.qryDadosCST.FieldByName('CFOP').AsString;
               end
               else
-                FdmRelatorio.cdsTotalCFOP.Edit;
+                FdmRelatorio.cdsTotalCFOPTemp.Edit;
 
-              FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency + FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsCurrency +
-                                                                                                       nDescontoItem + nDescontoRateioDoc + nAcrescimoRateioDoc;
+              FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency + FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsCurrency;
 
-              FdmRelatorio.cdsTotalCFOP.Post;
+              FdmRelatorio.cdsTotalCFOPTemp.Post;
 
-              // CSOSN
-              cCSOSN := Trim(FdmRelatorio.qryDadosCST.FieldByName('CSOSN').AsString); // CSOSN de ALTERACA
-              if (cCSOSN = EmptyStr) and (Trim(FdmRelatorio.qryDadosCST.FieldByName('CSOSN_NFCE').AsString) <> EmptyStr) then
-                cCSOSN := Trim(FdmRelatorio.qryDadosCST.FieldByName('CSOSN_NFCE').AsString); // CSOSN de ESTOQUE para NFCE
-              if cCSOSN = EmptyStr then
-                cCSOSN := Trim(FdmRelatorio.qryDadosCST.FieldByName('ESTOQUE_CSOSN').AsString); // CSOSN de ESTOQUE geral
-              if AnsiUpperCase(FdmRelatorio.qryDadosCST.FieldByName('ALIQUICM').AsString) = 'ISS' then
-                cCSOSN := 'ISS';
-
-              if not FdmRelatorio.cdsTotalCSOSN.Locate('CSOSN', cCSOSN, []) then
+              if not FdmRelatorio.cdsTotalCSOSNTemp.Locate('TIPO;CSOSN'
+                                                           , VarArrayOf([RetornarDescricaoDocumento(AenDoc), FdmRelatorio.qryDadosCST.FieldByName('CSOSN').AsString])
+                                                           , []) then
               begin
-                FdmRelatorio.cdsTotalCSOSN.Append;
-                FdmRelatorio.cdsTotalCSOSNCSOSN.AsString := cCSOSN;
+                FdmRelatorio.cdsTotalCSOSNTemp.Append;
+                FdmRelatorio.cdsTotalCSOSNTempTIPO.AsString  := RetornarDescricaoDocumento(AenDoc);
+                FdmRelatorio.cdsTotalCSOSNTempCSOSN.AsString := FdmRelatorio.qryDadosCST.FieldByName('CSOSN').AsString;
               end
               else
-                FdmRelatorio.cdsTotalCSOSN.Edit;
+                FdmRelatorio.cdsTotalCSOSNTemp.Edit;
 
-              FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency + FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsCurrency +
-                                                                                                         nDescontoItem + nDescontoRateioDoc + nAcrescimoRateioDoc;
-              FdmRelatorio.cdsTotalCSOSN.Post;
+              FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency + FdmRelatorio.qryDadosCST.FieldByName('VALOR').AsCurrency;
+
+              FdmRelatorio.cdsTotalCSOSNTemp.Post;
             end;
           end;
           FdmRelatorio.qryDadosCST.Next;
         end;
+      finally
+        FdmRelatorio.cdsTotalCFOPTemp.First;
+        FdmRelatorio.cdsTotalCSOSNTemp.First;
       end;
-      FdmRelatorio.qryDocumentos.Next;
+
+      // SETA OS DESCONTOS DOS ITENS PARA SEUS RESPECTIVOS CFOPs e CSOSNs
+      FdmRelatorio.CarregaDescontosItem(AenDoc);
+      try
+
+        while not FdmRelatorio.qryDescontoItemCFOP.Eof do
+        begin
+          if FdmRelatorio.cdsTotalCFOPTemp.Locate('TIPO;CFOP'
+                                                  , VarArrayOf([RetornarDescricaoDocumento(AenDoc), FdmRelatorio.qryDescontoItemCFOP.FieldByName('CFOP').AsString])
+                                                  , []) then
+            FdmRelatorio.cdsTotalCFOPTemp.Edit;
+
+          FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency + FdmRelatorio.qryDescontoItemCFOP.FieldByName('DESCONTO').AsCurrency;
+
+          FdmRelatorio.cdsTotalCFOPTemp.Post;
+
+          FdmRelatorio.qryDescontoItemCFOP.Next;
+        end;
+
+        while not FdmRelatorio.qryDescontoItemCSOSN.Eof do
+        begin
+          if FdmRelatorio.cdsTotalCSOSNTemp.Locate('TIPO;CSOSN'
+                                                   , VarArrayOf([RetornarDescricaoDocumento(AenDoc), FdmRelatorio.qryDescontoItemCSOSN.FieldByName('CSOSN').AsString])
+                                                   , []) then
+            FdmRelatorio.cdsTotalCSOSNTemp.Edit;
+
+          FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency + FdmRelatorio.qryDescontoItemCSOSN.FieldByName('DESCONTO').AsCurrency;
+
+          FdmRelatorio.cdsTotalCSOSNTemp.Post;
+
+          FdmRelatorio.qryDescontoItemCSOSN.Next;
+        end;
+      finally
+        FdmRelatorio.cdsTotalCFOPTemp.First;
+        FdmRelatorio.cdsTotalCSOSNTemp.First;
+      end;
+
+      FdmRelatorio.CarregaDadosDescAcrescDocumentos(AenDoc);
+
+      //Rateio do desconto/acrescimo do documento
+      while not FdmRelatorio.qryDocumentosDescAcresc.Eof do
+      begin
+        FdmRelatorio.CarregaItensDocumento(FdmRelatorio.qryDocumentosDescAcresc.FieldByName('PEDIDO').AsString, FdmRelatorio.qryDocumentosDescAcresc.FieldByName('CAIXA').AsString);
+
+        while not FdmRelatorio.qryItensDocumento.Eof do
+        begin
+          nDescontoRateioDoc  := 0;
+          nAcrescimoRateioDoc := 0;
+
+          FdmRelatorio.CarregarDescontoDoc(FdmRelatorio.qryItensDocumento.FieldByName('PEDIDO').AsString, FdmRelatorio.qryItensDocumento.FieldByName('CAIXA').AsString);
+          FdmRelatorio.CarregarAcrescimoDoc(FdmRelatorio.qryItensDocumento.FieldByName('PEDIDO').AsString, FdmRelatorio.qryItensDocumento.FieldByName('CAIXA').AsString);
+          FdmRelatorio.CarregarTotalItens(FdmRelatorio.qryItensDocumento.FieldByName('PEDIDO').AsString, FdmRelatorio.qryItensDocumento.FieldByName('CAIXA').AsString);
+          FdmRelatorio.CarregaDescontoItem(FdmRelatorio.qryItensDocumento.FieldByName('PEDIDO').AsString,
+                                           FdmRelatorio.qryItensDocumento.FieldByName('CAIXA').AsString,
+                                           FdmRelatorio.qryItensDocumento.FieldByName('ITEM').AsString);
+
+          nDescontoRateioDoc := (FdmRelatorio.qryDescontoDoc.FieldByName('DESCONTOCUPOM').AsFloat / FdmRelatorio.qryTotalItens.FieldByName('TOTAL').AsFloat) * (FdmRelatorio.qryItensDocumento.FieldByName('VALOR').AsFloat + FdmRelatorio.qryDescontoItem.FieldByName('DESCONTO').AsFloat);
+
+          nAcrescimoRateioDoc := (FdmRelatorio.qryAcrescimoDoc.FieldByName('ACRESCIMOCUPOM').AsFloat / FdmRelatorio.qryTotalItens.FieldByName('TOTAL').AsFloat) * (FdmRelatorio.qryItensDocumento.FieldByName('VALOR').AsFloat + FdmRelatorio.qryDescontoItem.FieldByName('DESCONTO').AsFloat);
+
+
+          if (nDescontoRateioDoc <> 0) or (nAcrescimoRateioDoc <> 0) then
+          begin
+            if FdmRelatorio.cdsTotalCFOPTemp.Locate('TIPO;CFOP'
+                                                    , VarArrayOf([RetornarDescricaoDocumento(AenDoc), FdmRelatorio.qryItensDocumento.FieldByName('CFOP').AsString])
+                                                    , []) then
+              FdmRelatorio.cdsTotalCFOPTemp.Edit;
+            FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency + nDescontoRateioDoc + nAcrescimoRateioDoc;
+            FdmRelatorio.cdsTotalCFOPTemp.Post;
+
+            if FdmRelatorio.cdsTotalCSOSNTemp.Locate('TIPO;CSOSN'
+                                                     , VarArrayOf([RetornarDescricaoDocumento(AenDoc), FdmRelatorio.qryItensDocumento.FieldByName('CSOSN').AsString])
+                                                     , []) then
+              FdmRelatorio.cdsTotalCSOSNTemp.Edit;
+            FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency + nDescontoRateioDoc + nAcrescimoRateioDoc;
+            FdmRelatorio.cdsTotalCSOSNTemp.Post;
+          end;
+
+          FdmRelatorio.qryItensDocumento.Next;
+        end;
+
+        FdmRelatorio.qryDocumentosDescAcresc.Next;
+      end;    
     end;
   finally
-    FdmRelatorio.cdsTotalCFOP.IndexFieldNames := 'CFOP';
+    FdmRelatorio.cdsTotalCFOPTemp.IndexFieldNames := 'CFOP';
+    FdmRelatorio.cdsTotalCFOPTemp.First;
+    FdmRelatorio.cdsTotalCSOSNTemp.IndexFieldNames := 'CSOSN';
+    FdmRelatorio.cdsTotalCSOSNTemp.First;
+  end;
+end;
+
+procedure TGeraRelatorioTotalizadorGeralVenda.AjustaCentavo(AenDoc: TDocsImprimirTotGeralVenda);
+var
+  nTotalFormaPgto: Currency;
+  nTotalCFOP, nTotalCSOSN: Currency;
+begin
+  FdmRelatorio.cdsTotalPorFormaPgto.Filtered := False;
+  FdmRelatorio.cdsTotalPorFormaPgto.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(AenDoc)) + ')';
+  FdmRelatorio.cdsTotalPorFormaPgto.Filtered := True;
+
+  FdmRelatorio.cdsTotalCFOP.Filtered := False;
+  FdmRelatorio.cdsTotalCFOP.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(AenDoc)) + ')';
+  FdmRelatorio.cdsTotalCFOP.Filtered := True;
+
+  FdmRelatorio.cdsTotalCSOSN.Filtered := False;
+  FdmRelatorio.cdsTotalCSOSN.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(AenDoc)) + ')';
+  FdmRelatorio.cdsTotalCSOSN.Filtered := True;
+  try
+    nTotalFormaPgto := SomaClient(FdmRelatorio.cdsTotalPorFormaPgto, 'VALOR');
+    nTotalCFOP := SomaClient(FdmRelatorio.cdsTotalCFOP, 'VALOR');
+    nTotalCSOSN := SomaClient(FdmRelatorio.cdsTotalCSOSN, 'VALOR');
+
+    if (nTotalFormaPgto <> nTotalCFOP) and (((nTotalFormaPgto - nTotalCFOP) <= 0.02) and ((nTotalFormaPgto - nTotalCFOP) >= -0.02)) then
+    begin
+      FdmRelatorio.cdsTotalCFOP.Last;
+
+      FdmRelatorio.cdsTotalCFOP.Edit;
+      FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency := FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency + (nTotalFormaPgto - nTotalCFOP);
+      FdmRelatorio.cdsTotalCFOP.Post;
+
+    end;
+    if (nTotalFormaPgto <> nTotalCSOSN) and (((nTotalFormaPgto - nTotalCSOSN) <= 0.02) and ((nTotalFormaPgto - nTotalCSOSN) >= -0.02)) then
+    begin
+      FdmRelatorio.cdsTotalCSOSN.Last;
+
+      FdmRelatorio.cdsTotalCSOSN.Edit;
+      FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency := FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency + (nTotalFormaPgto - nTotalCSOSN);
+      FdmRelatorio.cdsTotalCSOSN.Post;
+    end;
+  finally
+    FdmRelatorio.cdsTotalPorFormaPgto.Filtered := False;
+    FdmRelatorio.cdsTotalCFOP.Filtered := False;
+    FdmRelatorio.cdsTotalCSOSN.Filtered := False;
+    FdmRelatorio.cdsTotalPorFormaPgto.First;
     FdmRelatorio.cdsTotalCFOP.First;
-    FdmRelatorio.cdsTotalCSOSN.IndexFieldNames := 'CSOSN';
     FdmRelatorio.cdsTotalCSOSN.First;
   end;
 end;
 
-procedure TGeraRelatorioTotalizadorGeralVenda.CarregaPorCSOSN;
+function TGeraRelatorioTotalizadorGeralVenda.SomaClient(AcdsClient: TClientDataSet; AcCampo: String): Currency;
 begin
-  try
+  Result := 0;
 
+  AcdsClient.First;
+  while not AcdsClient.Eof do
+  begin
+    Result := Result + AcdsClient.FieldByName(AcCampo).AsCurrency;
+
+    AcdsClient.Next;
+  end;
+end;
+
+procedure TGeraRelatorioTotalizadorGeralVenda.MapearClientOficial;
+begin
+  FdmRelatorio.cdsTotalPorFormaPgto.First;
+  FdmRelatorio.cdsTotalCFOPTemp.First;
+  FdmRelatorio.cdsTotalCSOSNTemp.First;
+  try
+    while not FdmRelatorio.cdsTotalPorFormaPgto.Eof do
+    begin
+      FdmRelatorio.cdsTotalPorFormaPgto.Edit;
+      FdmRelatorio.cdsTotalPorFormaPgtoVALOR.AsCurrency := Arredonda(FdmRelatorio.cdsTotalPorFormaPgtoVALOR.AsCurrency, 2);
+      FdmRelatorio.cdsTotalPorFormaPgto.Post;
+
+      FdmRelatorio.cdsTotalPorFormaPgto.Next;
+    end;
+    while not FdmRelatorio.cdsTotalCFOPTemp.Eof do
+    begin
+      FdmRelatorio.cdsTotalCFOP.Append;
+      FdmRelatorio.cdsTotalCFOPTIPO.AsString    := FdmRelatorio.cdsTotalCFOPTempTIPO.AsString;
+      FdmRelatorio.cdsTotalCFOPCFOP.AsString    := FdmRelatorio.cdsTotalCFOPTempCFOP.AsString;
+      FdmRelatorio.cdsTotalCFOPVALOR.AsCurrency := Arredonda(FdmRelatorio.cdsTotalCFOPTempVALOR.AsCurrency, 2);
+      FdmRelatorio.cdsTotalCFOP.Post;
+
+      FdmRelatorio.cdsTotalCFOPTemp.Next;
+    end;
+    while not FdmRelatorio.cdsTotalCSOSNTemp.Eof do
+    begin
+      FdmRelatorio.cdsTotalCSOSN.Append;
+      FdmRelatorio.cdsTotalCSOSNTIPO.AsString    := FdmRelatorio.cdsTotalCSOSNTempTIPO.AsString;
+      FdmRelatorio.cdsTotalCSOSNCSOSN.AsString   := FdmRelatorio.cdsTotalCSOSNTempCSOSN.AsString;
+      FdmRelatorio.cdsTotalCSOSNVALOR.AsCurrency := Arredonda(FdmRelatorio.cdsTotalCSOSNTempVALOR.AsCurrency, 2);
+      FdmRelatorio.cdsTotalCSOSN.Post;
+
+      FdmRelatorio.cdsTotalCSOSNTemp.Next;
+    end;
   finally
-    FdmRelatorio.cdsTotalCSOSN.IndexFieldNames := 'CSOSN';
+    FdmRelatorio.cdsTotalPorFormaPgto.First;
+    FdmRelatorio.cdsTotalCFOP.First;
     FdmRelatorio.cdsTotalCSOSN.First;
   end;
 end;
 
 procedure TGeraRelatorioTotalizadorGeralVenda.CarregarDados;
+var
+  i: Integer;
+  enTipoDoc: tDocsImprimirTotGeralVenda;
 begin
   FdmRelatorio.setDataBase(FoTransaction.DefaultDatabase);
-  // Carrega todos os documentos no periodo
-  FdmRelatorio.CarregaDadosDocumentos(FdDataIni, FdDataFim);
 
-  CarregaPorFormaPagamento;
-  CarregaPorCFOPCSTCSOSN;
+  for i := 0 to Pred(Ord(High(tDocsImprimirTotGeralVenda))) do
+  begin
+    enTipoDoc := tDocsImprimirTotGeralVenda(i);
+
+    CarregaPorFormaPagamento(enTipoDoc);
+    CarregaPorCFOPCSTCSOSN(enTipoDoc);
+  end;
+  MapearClientOficial;
+  for i := 0 to Pred(Ord(High(tDocsImprimirTotGeralVenda))) do
+  begin
+    enTipoDoc := tDocsImprimirTotGeralVenda(i);
+
+    AjustaCentavo(enTipoDoc);
+  end;
 end;
 
 function TGeraRelatorioTotalizadorGeralVenda.Imprimir: IGeraRelatorioTotalizadorGeralVenda;
@@ -300,12 +474,14 @@ begin
   Result := Self;
 end;
 
-function TGeraRelatorioTotalizadorGeralVenda.setPerido(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioTotalizadorGeralVenda;
+function TGeraRelatorioTotalizadorGeralVenda.setPeriodo(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioTotalizadorGeralVenda;
 begin
   Result := Self;
 
   FdDataIni := AdDataIni;
   FdDataFim := AdDataFim;
+
+  FdmRelatorio.setPeriodo(FdDataIni, FdDataFim);
 end;
 
 function TGeraRelatorioTotalizadorGeralVenda.setTransaction(AoTransaction: TIBTransaction): IGeraRelatorioTotalizadorGeralVenda;
@@ -337,61 +513,112 @@ begin
 
   CarregarDados;
 
-  // Se não tem Dados de
-  if FdmRelatorio.qryDocumentos.IsEmpty then
-    Exit;
-
-  GeraEstruturaFormaPgto;
-  GeraEstruturaCFOPCSTCSOSN;
+  GeraEstruturaRelatorio;
 end;
 
-procedure TGeraRelatorioTotalizadorGeralVenda.GeraEstruturaFormaPgto;
+procedure TGeraRelatorioTotalizadorGeralVenda.GeraEstruturaRelatorio;
 var
-  oEstruturaCat: IEstruturaRelatorioPadrao;
   i: Integer;
+  enTipoDoc: tDocsImprimirTotGeralVenda;
 begin
-  // LOOP entre todos os tipos de documentos, o que tiver dados vai imprimir agrupado
+  FenImprimirFiltroData := RetornaDocImprimeFiltroData;
+
   for i := 0 to Pred(Ord(High(tDocsImprimirTotGeralVenda))) do
   begin
-    FdmRelatorio.cdsTotalPorFormaPgto.Filtered := False;
-    FdmRelatorio.cdsTotalPorFormaPgto.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(tDocsImprimirTotGeralVenda(i))) + ')';
-    FdmRelatorio.cdsTotalPorFormaPgto.Filtered := True;
+    enTipoDoc := tDocsImprimirTotGeralVenda(i);
 
-    if FdmRelatorio.cdsTotalPorFormaPgto.IsEmpty then
-      Continue;
-
-    oEstruturaCat := TEstruturaRelTotalizadorGeralVenda.New
-                                                       .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                       .setDataBase(FoTransaction.DefaultDatabase)
-                                                                                       .CarregarDados(FdmRelatorio.cdsTotalPorFormaPgto)
-                                                              );
-
-    FoEstrutura.GerarImpressaoAgrupado(oEstruturaCat, 'Total por forma de pagamento - ' + RetornarDescricaoDocumento(tDocsImprimirTotGeralVenda(i)));
+    GeraEstruturaFormaPgto(enTipoDoc);
+    GeraEstruturaCFOPCSTCSOSN(enTipoDoc);
   end;
 end;
 
-procedure TGeraRelatorioTotalizadorGeralVenda.GeraEstruturaCFOPCSTCSOSN;
+procedure TGeraRelatorioTotalizadorGeralVenda.GeraEstruturaFormaPgto(AenDoc: TDocsImprimirTotGeralVenda);
+var
+  oEstruturaCat: IEstruturaRelatorioPadrao;
+begin
+  FdmRelatorio.cdsTotalPorFormaPgto.Filtered := False;
+  FdmRelatorio.cdsTotalPorFormaPgto.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(AenDoc)) + ')';
+  FdmRelatorio.cdsTotalPorFormaPgto.Filtered := True;
+
+  if FdmRelatorio.cdsTotalPorFormaPgto.IsEmpty then
+    Exit;
+
+  oEstruturaCat := TEstruturaRelTotalizadorGeralVenda.New
+                                                     .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                     .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                     .CarregarDados(FdmRelatorio.cdsTotalPorFormaPgto)
+                                                            );
+
+  FoEstrutura.GerarImpressaoAgrupado(oEstruturaCat, 'Total por forma de pagamento - ' + RetornarDescricaoDocumento(AenDoc));
+end;
+
+procedure TGeraRelatorioTotalizadorGeralVenda.GeraEstruturaCFOPCSTCSOSN(AenDoc: TDocsImprimirTotGeralVenda);
 var
   oEstruturaCat: IEstruturaRelatorioPadrao;
   cFiltroData: String;
 begin
-  oEstruturaCat := TEstruturaRelTotalizadorGeralVenda.New
-                                                     .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                     .setDataBase(FoTransaction.DefaultDatabase)
-                                                                                     .CarregarDados(FdmRelatorio.cdsTotalCFOP)
-                                                            );
+  FdmRelatorio.cdsTotalCFOP.Filtered := False;
+  FdmRelatorio.cdsTotalCFOP.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(AenDoc)) + ')';
+  FdmRelatorio.cdsTotalCFOP.Filtered := True;
 
-  FoEstrutura.GerarImpressaoAgrupado(oEstruturaCat, 'Total por CFOP');
+  if not FdmRelatorio.cdsTotalPorFormaPgto.IsEmpty then
+  begin
+    oEstruturaCat := TEstruturaRelTotalizadorGeralVenda.New
+                                                       .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                       .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                       .CarregarDados(FdmRelatorio.cdsTotalCFOP)
+                                                              );
 
-  oEstruturaCat := TEstruturaRelTotalizadorGeralVenda.New
-                                                     .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                     .setDataBase(FoTransaction.DefaultDatabase)
-                                                                                     .CarregarDados(FdmRelatorio.cdsTotalCSOSN)
-                                                            );
+    FoEstrutura.GerarImpressaoAgrupado(oEstruturaCat, 'Total por CFOP - ' + RetornarDescricaoDocumento(AenDoc));
+  end;
 
-  oEstruturaCat.FiltrosRodape.setFiltroData('Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim));
+  FdmRelatorio.cdsTotalCSOSN.Filtered := False;
+  FdmRelatorio.cdsTotalCSOSN.Filter   := '(TIPO=' + QuotedStr(RetornarDescricaoDocumento(AenDoc)) + ')';
+  FdmRelatorio.cdsTotalCSOSN.Filtered := True;
 
-  FoEstrutura.GerarImpressaoAgrupado(oEstruturaCat, 'Total por CSOSN');
+  if not FdmRelatorio.cdsTotalPorFormaPgto.IsEmpty then
+  begin
+    oEstruturaCat := TEstruturaRelTotalizadorGeralVenda.New
+                                                       .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                       .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                       .CarregarDados(FdmRelatorio.cdsTotalCSOSN)
+                                                              );
+
+    if AenDoc = FenImprimirFiltroData then
+      oEstruturaCat.FiltrosRodape.setFiltroData('Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim));
+
+    FoEstrutura.GerarImpressaoAgrupado(oEstruturaCat, 'Total por CSOSN - ' + RetornarDescricaoDocumento(AenDoc));
+  end;
+end;
+
+function TGeraRelatorioTotalizadorGeralVenda.RetornaDocImprimeFiltroData: TDocsImprimirTotGeralVenda;
+var
+  nQtde: Integer;
+begin
+  nQtde := Ord(High(tDocsImprimirTotGeralVenda));
+
+  while nQtde >= 0 do
+  begin
+    if TestaTemRegistroDoc(TDocsImprimirTotGeralVenda(nQtde)) then
+    begin
+      Result := TDocsImprimirTotGeralVenda(nQtde);
+      Break;
+    end;
+
+    nQtde := Pred(nQtde);
+  end;
+end;
+
+function TGeraRelatorioTotalizadorGeralVenda.TestaTemRegistroDoc(AenDoc: TDocsImprimirTotGeralVenda): Boolean;
+var
+  nRecNo: Integer;
+begin
+  nRecNo := FdmRelatorio.cdsTotalCSOSN.RecNo;
+  try
+    Result := FdmRelatorio.cdsTotalCSOSN.Locate('TIPO', RetornarDescricaoDocumento(AenDoc), []);
+  finally
+    FdmRelatorio.cdsTotalCSOSN.RecNo := nRecNo;
+  end;
 end;
 
 function TGeraRelatorioTotalizadorGeralVenda.RetornarDescricaoDocumento(AenDoc: TDocsImprimirTotGeralVenda): String;

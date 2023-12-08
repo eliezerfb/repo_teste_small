@@ -11,9 +11,9 @@ type
     cdsTotalPorFormaPgto: TClientDataSet;
     cdsTotalPorFormaPgtoFORMA: TStringField;
     cdsTotalPorFormaPgtoVALOR: TFMTBCDField;
-    qryDocumentos: TIBQuery;
+    qryDocumentosDescAcresc: TIBQuery;
     qryFormaPgto: TIBQuery;
-    qryDescontoItem: TIBQuery;
+    qryDescontoItemCFOP: TIBQuery;
     cdsTotalCFOP: TClientDataSet;
     cdsTotalCFOPCFOP: TStringField;
     cdsTotalCFOPVALOR: TFMTBCDField;
@@ -28,21 +28,45 @@ type
     qryTotalDoc: TIBQuery;
     DataSetNF: TIBDataSet;
     DataSetItensNF: TIBDataSet;
+    qryDescontoItemCSOSN: TIBQuery;
+    qryItensDocumento: TIBQuery;
+    qryDescontoItem: TIBQuery;
+    qryNFs: TIBQuery;
+    cdsTotalCFOPTemp: TClientDataSet;
+    cdsTotalCSOSNTemp: TClientDataSet;
+    cdsTotalCFOPTempCFOP: TStringField;
+    cdsTotalCFOPTempVALOR: TFMTBCDField;
+    cdsTotalCSOSNTempCSOSN: TStringField;
+    cdsTotalCSOSNTempVALOR: TFMTBCDField;
+    cdsTotalCFOPTIPO: TStringField;
+    cdsTotalCSOSNTIPO: TStringField;
+    cdsTotalCFOPTempTIPO: TStringField;
+    cdsTotalCSOSNTempTIPO: TStringField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
-    procedure CarregarDescontoDoc;
-    procedure CarregarAcrescimoDoc;
-    procedure CarregarTotalItens;
-    procedure CarregarTotalDoc;
-    procedure CarregarDescontoItem;
+    FdDataIni: TDateTime;
+    FdDataFim: TDateTime;
+
+    procedure CarregarTotalDoc(AenDocImp: tDocsImprimirTotGeralVenda);
+    procedure CarregarDescontoItemPorCFOP(AenDocImp: tDocsImprimirTotGeralVenda);
+    function RetornarTabelaTemporariaDocumentos(AenDocImp: tDocsImprimirTotGeralVenda): String;
+    procedure CarregarDescontoItemPorCSOSN(AenDocImp: tDocsImprimirTotGeralVenda);
+    procedure CarregaDadosDocumentosComDescAcresc(AenDocImp: tDocsImprimirTotGeralVenda);
   public
     procedure setDataBase(AoDataBase: TIBDatabase);
-    procedure CarregaDadosDocumentos(AdDataIni, AdDataFim: TDateTime);
     procedure CarregaDadosFormaPgto(AenDocImp: tDocsImprimirTotGeralVenda);
     procedure CarregaPorCFOPCSTCSOSN(AenDocImp: tDocsImprimirTotGeralVenda);
-    procedure CarregaDescontos(AenDocImp: tDocsImprimirTotGeralVenda);
-    procedure CarregaDadosNF(AcNumeroNF: String);
+    procedure CarregaNFs;
+    procedure CarregaDadosNFParaObj(AcNumeroNF: String);
+    procedure setPeriodo(AdDataIni, AdDataFim: TDateTime);
+    procedure CarregaDescontosItem(AenDocImp: tDocsImprimirTotGeralVenda);
+    procedure CarregaDadosDescAcrescDocumentos(AenDocImp: tDocsImprimirTotGeralVenda);
+    procedure CarregarDescontoDoc(AcPedido, AcCaixa: String);
+    procedure CarregaItensDocumento(AcPedido, AcCaixa: String);
+    procedure CarregarTotalItens(AcPedido, AcCaixa: String);
+    procedure CarregaDescontoItem(AcPedido, AcCaixa, AcItem: String);
+    procedure CarregarAcrescimoDoc(AcPedido, AcCaixa: String);      
   end;
 
 var
@@ -51,72 +75,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TdmRelTotalizadorVendasGeral.CarregaDadosDocumentos(AdDataIni, AdDataFim: TDateTime);
-begin
-  // Carrega as NFCe emitidas no periodo
-  qryDocumentos.Close;
-  qryDocumentos.SQL.Clear;
-  qryDocumentos.SQL.Add('SELECT DISTINCT');
-  qryDocumentos.SQL.Add('    ''NFC-e'' AS TIPO');
-  qryDocumentos.SQL.Add('    , NFCE.DATA');
-  qryDocumentos.SQL.Add('    , NFCE.CAIXA');
-  qryDocumentos.SQL.Add('    , NFCE.NUMERONF AS PEDIDO');
-  qryDocumentos.SQL.Add('    , NFCE.MODELO');
-  qryDocumentos.SQL.Add('FROM NFCE');
-  qryDocumentos.SQL.Add('JOIN ALTERACA A');
-  qryDocumentos.SQL.Add('    ON (A.PEDIDO = NFCE.NUMERONF) AND (A.CAIXA = NFCE.CAIXA)');
-  qryDocumentos.SQL.Add('WHERE');
-  qryDocumentos.SQL.Add('    ((NFCE.STATUS CONTAINING ''Autorizad'')');
-  qryDocumentos.SQL.Add('      OR (NFCE.STATUS CONTAINING ''NFC-e emitida em modo de contingência'')');
-  qryDocumentos.SQL.Add('    )');
-  qryDocumentos.SQL.Add('    AND (NFCE.DATA BETWEEN :XDATAINI AND :XDATAFIM)');
-  qryDocumentos.SQL.Add('    AND (NFCE.MODELO = ''65'')');
-  qryDocumentos.SQL.Add('UNION ALL');
-  qryDocumentos.SQL.Add('SELECT DISTINCT');
-  qryDocumentos.SQL.Add('    ''SAT'' AS TIPO');
-  qryDocumentos.SQL.Add('    , NFCE.DATA');
-  qryDocumentos.SQL.Add('    , NFCE.CAIXA');
-  qryDocumentos.SQL.Add('    , NFCE.NUMERONF AS PEDIDO');
-  qryDocumentos.SQL.Add('    , NFCE.MODELO');
-  qryDocumentos.SQL.Add('FROM NFCE');
-  qryDocumentos.SQL.Add('JOIN ALTERACA A');
-  qryDocumentos.SQL.Add('    ON (A.PEDIDO = NFCE.NUMERONF) AND (A.CAIXA = NFCE.CAIXA)');
-  qryDocumentos.SQL.Add('WHERE');
-  qryDocumentos.SQL.Add('    ((NFCE.STATUS CONTAINING ''Autorizad'')');
-  qryDocumentos.SQL.Add('      OR (NFCE.STATUS CONTAINING ''Emitido com sucesso'')');
-  qryDocumentos.SQL.Add('    )');
-  qryDocumentos.SQL.Add('    AND (NFCE.DATA BETWEEN :XDATAINI AND :XDATAFIM)');
-  qryDocumentos.SQL.Add('    AND (NFCE.MODELO = ''59'')');
-  qryDocumentos.SQL.Add('UNION ALL');
-  qryDocumentos.SQL.Add('SELECT DISTINCT');
-  qryDocumentos.SQL.Add('    ''Cupom'' AS TIPO');
-  qryDocumentos.SQL.Add('    , A.DATA');
-  qryDocumentos.SQL.Add('    , A.CAIXA');
-  qryDocumentos.SQL.Add('    , A.PEDIDO AS PEDIDO');
-  qryDocumentos.SQL.Add('    , CAST(''2D'' AS VARCHAR(2)) AS MODELO');
-  qryDocumentos.SQL.Add('FROM ALTERACA A');
-  qryDocumentos.SQL.Add('WHERE ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''VENDA'') OR (A.TIPO = ''LOKED''))');
-  qryDocumentos.SQL.Add('    AND (A.DATA BETWEEN :XDATAINI AND :XDATAFIM)');
-  qryDocumentos.SQL.Add('    AND ((SELECT COUNT(N.NUMERONF) FROM NFCE N WHERE (N.CAIXA=A.CAIXA) AND (N.NUMERONF=A.PEDIDO)) = 0)'); // Não trazer dados de NFCe
-  qryDocumentos.SQL.Add('UNION ALL');
-  qryDocumentos.SQL.Add('SELECT DISTINCT');
-  qryDocumentos.SQL.Add('    ''NF-e'' AS TIPO');
-  qryDocumentos.SQL.Add('    , V.EMISSAO AS DATA');
-  qryDocumentos.SQL.Add('    , CAST('''' AS VARCHAR(3)) AS CAIXA');
-  qryDocumentos.SQL.Add('    , V.NUMERONF AS PEDIDO');
-  qryDocumentos.SQL.Add('    , V.MODELO AS MODELO');
-  qryDocumentos.SQL.Add('FROM VENDAS V');
-  qryDocumentos.SQL.Add('WHERE');
-  qryDocumentos.SQL.Add('    (V.EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
-  qryDocumentos.SQL.Add('    AND (V.EMITIDA=''S'')');
-  qryDocumentos.SQL.Add('    AND (((V.FINNFE = ''1'') and (V.MODELO = ''55'')) or ((coalesce(V.FINNFE, '''') = '''') and (V.MODELO <> ''55'')))');
-  qryDocumentos.SQL.Add('ORDER BY 1,2,4');
-  qryDocumentos.ParamByName('XDATAINI').AsDate := AdDataIni;
-  qryDocumentos.ParamByName('XDATAFIM').AsDate := AdDataFim;
-  qryDocumentos.Open;
-  qryDocumentos.First;
-end;
 
 procedure TdmRelTotalizadorVendasGeral.DataModuleCreate(Sender: TObject);
 begin
@@ -130,9 +88,17 @@ begin
     cdsTotalCFOP.Close;
   cdsTotalCFOP.CreateDataSet;
 
+  if cdsTotalCFOPTemp.Active then
+    cdsTotalCFOPTemp.Close;
+  cdsTotalCFOPTemp.CreateDataSet;
+
   if cdsTotalCSOSN.Active then
     cdsTotalCSOSN.Close;
   cdsTotalCSOSN.CreateDataSet;
+
+  if cdsTotalCSOSNTemp.Active then
+    cdsTotalCSOSNTemp.Close;
+  cdsTotalCSOSNTemp.CreateDataSet;
 end;
 
 procedure TdmRelTotalizadorVendasGeral.DataModuleDestroy(Sender: TObject);
@@ -140,18 +106,101 @@ begin
   cdsTotalPorFormaPgto.Close;
   cdsTotalCFOP.Close;
   cdsTotalCSOSN.Close;
+  cdsTotalCFOPTemp.Close;
+  cdsTotalCSOSNTemp.Close;
+end;
+
+function TdmRelTotalizadorVendasGeral.RetornarTabelaTemporariaDocumentos(AenDocImp: tDocsImprimirTotGeralVenda): String;
+var
+  slSQL: TStringList;
+begin
+  slSQL := TStringList.Create;
+  try
+    slSQL.Add('WITH DOCUMENTOS AS (');
+    slSQL.Add('SELECT DISTINCT');
+    case AenDocImp of
+      tditgvNFCe:
+      begin
+        slSQL.Add('    ''NFC-e'' AS TIPO');
+        slSQL.Add('    , NFCE.DATA');
+        slSQL.Add('    , NFCE.CAIXA');
+        slSQL.Add('    , NFCE.NUMERONF AS PEDIDO');
+        slSQL.Add('    , NFCE.MODELO');
+        slSQL.Add('FROM NFCE');
+        slSQL.Add('JOIN ALTERACA A');
+        slSQL.Add('    ON (A.PEDIDO = NFCE.NUMERONF) AND (A.CAIXA = NFCE.CAIXA)');
+        slSQL.Add('WHERE');
+        slSQL.Add('    ((NFCE.STATUS CONTAINING ''Autorizad'')');
+        slSQL.Add('      OR (NFCE.STATUS CONTAINING ''NFC-e emitida em modo de contingência'')');
+        slSQL.Add('    )');
+        slSQL.Add('    AND (NFCE.DATA BETWEEN :XDATAINI AND :XDATAFIM)');
+        slSQL.Add('    AND (NFCE.MODELO = ''65'')');
+      end;
+      tditgvSAT:
+      begin
+        slSQL.Add('    ''SAT'' AS TIPO');
+        slSQL.Add('    , NFCE.DATA');
+        slSQL.Add('    , NFCE.CAIXA');
+        slSQL.Add('    , NFCE.NUMERONF AS PEDIDO');
+        slSQL.Add('    , NFCE.MODELO');
+        slSQL.Add('FROM NFCE');
+        slSQL.Add('JOIN ALTERACA A');
+        slSQL.Add('    ON (A.PEDIDO = NFCE.NUMERONF) AND (A.CAIXA = NFCE.CAIXA)');
+        slSQL.Add('WHERE');
+        slSQL.Add('    ((NFCE.STATUS CONTAINING ''Autorizad'')');
+        slSQL.Add('      OR (NFCE.STATUS CONTAINING ''Emitido com sucesso'')');
+        slSQL.Add('    )');
+        slSQL.Add('    AND (NFCE.DATA BETWEEN :XDATAINI AND :XDATAFIM)');
+        slSQL.Add('    AND (NFCE.MODELO = ''59'')');
+      end;
+      tditgvCupom:
+      begin
+        slSQL.Add('    ''Cupom'' AS TIPO');
+        slSQL.Add('    , A.DATA');
+        slSQL.Add('    , A.CAIXA');
+        slSQL.Add('    , A.PEDIDO AS PEDIDO');
+        slSQL.Add('    , CAST(''2D'' AS VARCHAR(2)) AS MODELO');
+        slSQL.Add('FROM ALTERACA A');
+        slSQL.Add('WHERE ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''VENDA'') OR (A.TIPO = ''LOKED''))');
+        slSQL.Add('    AND (A.DATA BETWEEN :XDATAINI AND :XDATAFIM)');
+        slSQL.Add('    AND ((SELECT COUNT(N.NUMERONF) FROM NFCE N WHERE (N.CAIXA=A.CAIXA) AND (N.NUMERONF=A.PEDIDO)) = 0)');
+      end;
+      else
+      begin
+        slSQL.Add('    ''NF-e'' AS TIPO');
+        slSQL.Add('    , V.EMISSAO AS DATA');
+        slSQL.Add('    , CAST('''' AS VARCHAR(3)) AS CAIXA');
+        slSQL.Add('    , V.NUMERONF AS PEDIDO');
+        slSQL.Add('    , V.MODELO AS MODELO');
+        slSQL.Add('FROM VENDAS V');
+        slSQL.Add('WHERE');
+        slSQL.Add('    (V.EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
+        slSQL.Add('    AND (V.EMITIDA=''S'')');
+        slSQL.Add('    AND (((V.FINNFE = ''1'') and (V.MODELO = ''55'')) or ((coalesce(V.FINNFE, '''') = '''') and (V.MODELO <> ''55'')))');
+      end;
+    end;
+    slSQL.Add('ORDER BY 1,2,4)');
+
+    Result := slSQL.Text;
+  finally
+    FreeAndNil(slSQL);
+  end;
 end;
 
 procedure TdmRelTotalizadorVendasGeral.setDataBase(AoDataBase: TIBDatabase);
 begin
-  qryDocumentos.Database   := AoDataBase;
-  qryFormaPgto.Database    := AoDataBase;
-  qryDescontoItem.Database := AoDataBase;
-  qryDescontoDoc.Database  := AoDataBase;
-  qryAcrescimoDoc.Database := AoDataBase;
-  qryDadosCST.Database     := AoDataBase;
-  qryTotalItens.Database   := AoDataBase;
-  qryTotalDoc.Database     := AoDataBase;
+  qryDocumentosDescAcresc.Database := AoDataBase;
+  qryFormaPgto.Database            := AoDataBase;
+  qryDescontoItemCFOP.Database     := AoDataBase;
+  qryDescontoItemCSOSN.Database    := AoDataBase;
+  qryDescontoDoc.Database    := AoDataBase;
+  qryAcrescimoDoc.Database   := AoDataBase;
+  qryDadosCST.Database       := AoDataBase;
+  qryTotalItens.Database     := AoDataBase;
+  qryTotalDoc.Database       := AoDataBase;
+  qryItensDocumento.Database := AoDataBase;
+  qryDescontoItem.Database   := AoDataBase;
+  qryNFs.Database            := AoDataBase;
 
   DataSetNF.Database       := AoDataBase;
   DataSetItensNF.Database  := AoDataBase;
@@ -161,58 +210,50 @@ procedure TdmRelTotalizadorVendasGeral.CarregaDadosFormaPgto(AenDocImp: tDocsImp
 begin
   qryFormaPgto.Close;
   qryFormaPgto.SQL.Clear;
+  qryFormaPgto.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryFormaPgto.SQL.Add('SELECT');
+  qryFormaPgto.SQL.Add('    DOCUMENTOS.TIPO');
   case AenDocImp of
     tditgvNFCe, tditgvSAT, tditgvCupom:
     begin
-      qryFormaPgto.SQL.Add('    TRIM(REPLACE(REPLACE(SUBSTRING(P.FORMA FROM 4 FOR 30), ''NFC-e'', ''''), ''NF-e'', '''')) AS FORMA');
+      qryFormaPgto.SQL.Add('    , TRIM(REPLACE(REPLACE(SUBSTRING(P.FORMA FROM 4 FOR 30), ''NFC-e'', ''''), ''NF-e'', '''')) AS FORMA');
       qryFormaPgto.SQL.Add('    , SUM(COALESCE(CASE WHEN SUBSTRING(P.FORMA FROM 1 FOR 2) = ''13'' THEN (P.VALOR * -1) ELSE P.VALOR END,0)) AS TOTAL');
       qryFormaPgto.SQL.Add('FROM PAGAMENT P');
+      qryFormaPgto.SQL.Add('INNER JOIN DOCUMENTOS');
+      qryFormaPgto.SQL.Add('    ON (DOCUMENTOS.PEDIDO=P.PEDIDO)');
+      qryFormaPgto.SQL.Add('    AND (DOCUMENTOS.CAIXA=P.CAIXA)');
+      qryFormaPgto.SQL.Add('    AND (DOCUMENTOS.DATA=P.DATA)');
       qryFormaPgto.SQL.Add('WHERE');
-      qryFormaPgto.SQL.Add('    (P.DATA=:XDATA)');
-      qryFormaPgto.SQL.Add('    AND (P.CAIXA = ' + QuotedStr(qryDocumentos.FieldByName('CAIXA').AsString) + ')');
-      qryFormaPgto.SQL.Add('    AND (P.PEDIDO = ' + QuotedStr(qryDocumentos.FieldByName('PEDIDO').AsString) + ')');
-      qryFormaPgto.SQL.Add('    AND (P.FORMA <> ''00 Total'')');
+      qryFormaPgto.SQL.Add('    (P.FORMA <> ''00 Total'')');
       qryFormaPgto.SQL.Add('    AND (COALESCE(P.CLIFOR, ''X'') <> ''Sangria'')');
       qryFormaPgto.SQL.Add('    AND (COALESCE(P.CLIFOR, ''X'') <> ''Suprimento'')');
       qryFormaPgto.SQL.Add('    AND ((COALESCE(P.CAIXA, '''') = '''')');
       qryFormaPgto.SQL.Add('         OR (P.PEDIDO IN (SELECT A.PEDIDO FROM ALTERACA A WHERE (A.PEDIDO = P.PEDIDO) AND (A.CAIXA = P.CAIXA) AND (A.DATA = P.DATA) AND ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''LOKED'') OR (TIPO = ''VENDA''))))');
       qryFormaPgto.SQL.Add('        )');
-      qryFormaPgto.SQL.Add('GROUP BY TRIM(REPLACE(REPLACE(SUBSTRING(P.FORMA FROM 4 FOR 30), ''NFC-e'', ''''), ''NF-e'', ''''))');
+      qryFormaPgto.SQL.Add('GROUP BY DOCUMENTOS.TIPO, TRIM(REPLACE(REPLACE(SUBSTRING(P.FORMA FROM 4 FOR 30), ''NFC-e'', ''''), ''NF-e'', ''''))');
       qryFormaPgto.SQL.Add('ORDER BY SUBSTRING(1 FROM 4 FOR 20)');
     end;
     else
     begin
-      qryFormaPgto.SQL.Add('    CASE WHEN COALESCE(RECEBER.FORMADEPAGAMENTO,'''') = '''' THEN ''Não informado'' ELSE RECEBER.FORMADEPAGAMENTO END AS FORMA');
+      qryFormaPgto.SQL.Add('    , CASE WHEN COALESCE(RECEBER.FORMADEPAGAMENTO,'''') = '''' THEN ''Não informado'' ELSE RECEBER.FORMADEPAGAMENTO END AS FORMA');
       qryFormaPgto.SQL.Add('    , SUM(CASE WHEN (COALESCE(RECEBER.NUMERONF,'''') <> '''') THEN COALESCE(RECEBER.VALOR_DUPL, 0) ELSE VENDAS.TOTAL END) AS TOTAL');
       qryFormaPgto.SQL.Add('FROM VENDAS');
+      qryFormaPgto.SQL.Add('INNER JOIN DOCUMENTOS');
+      qryFormaPgto.SQL.Add('    ON (DOCUMENTOS.PEDIDO=VENDAS.NUMERONF)');
+      qryFormaPgto.SQL.Add('    AND (DOCUMENTOS.DATA=VENDAS.EMISSAO)');
       qryFormaPgto.SQL.Add('LEFT JOIN RECEBER');
       qryFormaPgto.SQL.Add('    ON (RECEBER.NUMERONF=VENDAS.NUMERONF)');
-      qryFormaPgto.SQL.Add('WHERE');
-      qryFormaPgto.SQL.Add('(VENDAS.NUMERONF=' + QuotedStr(qryDocumentos.FieldByName('PEDIDO').AsString) + ')');
-      qryFormaPgto.SQL.Add('AND (VENDAS.EMISSAO=:XDATA)');
-      qryFormaPgto.SQL.Add('GROUP BY VENDAS.NUMERONF, FORMA');
+      qryFormaPgto.SQL.Add('GROUP BY DOCUMENTOS.TIPO, VENDAS.NUMERONF, FORMA');
       qryFormaPgto.SQL.Add('ORDER BY FORMA');
     end;
   end;
-  qryFormaPgto.ParamByName('XDATA').AsDate := qryDocumentos.FieldByName('DATA').AsDateTime;
+  qryFormaPgto.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryFormaPgto.ParamByName('XDATAFIM').AsDate := FdDataFim;
   qryFormaPgto.Open;
   qryFormaPgto.First;
 end;
 
-procedure TdmRelTotalizadorVendasGeral.CarregaDescontos(AenDocImp: tDocsImprimirTotGeralVenda);
-begin
-  if AenDocImp in [tditgvNFCe, tditgvSAT, tditgvCupom] then
-  begin
-    CarregarDescontoItem;
-    CarregarAcrescimoDoc;
-    CarregarTotalDoc;
-    CarregarTotalItens;
-    CarregarDescontoDoc;
-  end;
-end;
-
-procedure TdmRelTotalizadorVendasGeral.CarregaDadosNF(AcNumeroNF: String);
+procedure TdmRelTotalizadorVendasGeral.CarregaDadosNFParaObj(AcNumeroNF: String);
 begin
   DataSetNF.Close;
   DataSetNF.SelectSQL.Clear;
@@ -227,187 +268,325 @@ begin
   DataSetItensNF.Open;
 end;
 
-procedure TdmRelTotalizadorVendasGeral.CarregarTotalDoc;
+procedure TdmRelTotalizadorVendasGeral.CarregarTotalDoc(AenDocImp: tDocsImprimirTotGeralVenda);
 begin
   qryTotalDoc.Close;
   qryTotalDoc.SQL.Clear;
+  qryTotalDoc.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryTotalDoc.SQL.Add('SELECT');
   qryTotalDoc.SQL.Add('    A.PEDIDO');
+  qryTotalDoc.SQL.Add('    , A.CAIXA');
   qryTotalDoc.SQL.Add('    , SUM(A.TOTAL) AS TOTALCUPOM');
   qryTotalDoc.SQL.Add('FROM ALTERACA A');
+  qryTotalDoc.SQL.Add('INNER JOIN DOCUMENTOS');
+  qryTotalDoc.SQL.Add('    ON (DOCUMENTOS.PEDIDO=A.PEDIDO)');
+  qryTotalDoc.SQL.Add('    AND (DOCUMENTOS.CAIXA=A.CAIXA)');
+  qryTotalDoc.SQL.Add('    AND (DOCUMENTOS.DATA=A.DATA)');
   qryTotalDoc.SQL.Add('WHERE');
-  qryTotalDoc.SQL.Add('    (A.DATA=:XDATA)');
-  qryTotalDoc.SQL.Add('    AND (A.CAIXA=:XCAIXA)');
-  qryTotalDoc.SQL.Add('    AND (A.PEDIDO=:XPEDIDO)');
-  qryTotalDoc.SQL.Add('    AND ((A.TIPO=''BALCAO'') OR (A.TIPO = ''LOKED''))');
+  qryTotalDoc.SQL.Add('    ((A.TIPO=''BALCAO'') OR (A.TIPO = ''LOKED''))');
   qryTotalDoc.SQL.Add('    AND (A.DESCRICAO <> ''<CANCELADO>'')');
   qryTotalDoc.SQL.Add('    AND (A.DESCRICAO <> ''Desconto'')');
   qryTotalDoc.SQL.Add('    AND (A.DESCRICAO <> ''Acréscimo'')');
-  qryTotalDoc.SQL.Add('GROUP BY A.PEDIDO');
-  qryTotalDoc.SQL.Add('ORDER BY PEDIDO');
-  qryTotalDoc.ParamByName('XDATA').AsDate   := qryDocumentos.FieldByName('DATA').AsDateTime;
-  qryTotalDoc.ParamByName('XCAIXA').AsString  := qryDocumentos.FieldByName('CAIXA').AsString;
-  qryTotalDoc.ParamByName('XPEDIDO').AsString := qryDocumentos.FieldByName('PEDIDO').AsString;
+  qryTotalDoc.SQL.Add('    AND (COALESCE(A.ITEM,'''') <> '''')');
+  qryTotalDoc.SQL.Add('    AND ((SELECT COUNT(DESCACRES.PEDIDO) FROM ALTERACA DESCACRES');
+  qryTotalDoc.SQL.Add('          WHERE');
+  qryTotalDoc.SQL.Add('          (DESCACRES.PEDIDO=A.PEDIDO)');
+  qryTotalDoc.SQL.Add('          AND (DESCACRES.CAIXA=A.CAIXA)');
+  qryTotalDoc.SQL.Add('          AND ((DESCACRES.TIPO=''BALCAO'') OR (DESCACRES.TIPO = ''LOKED''))');
+  qryTotalDoc.SQL.Add('          AND (DESCACRES.DESCRICAO <> ''<CANCELADO>'')');
+  qryTotalDoc.SQL.Add('          AND ((DESCACRES.DESCRICAO = ''Desconto'')');
+  qryTotalDoc.SQL.Add('                OR (DESCACRES.DESCRICAO = ''Acréscimo''))');
+  qryTotalDoc.SQL.Add('          AND (COALESCE(DESCACRES.ITEM,'''') = '''')');
+  qryTotalDoc.SQL.Add('          ) > 0)');
+  qryTotalDoc.SQL.Add('GROUP BY 1,2');
+  qryTotalDoc.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryTotalDoc.ParamByName('XDATAFIM').AsDate := FdDataFim;
   qryTotalDoc.Open;
   qryTotalDoc.First;
 end;
 
-procedure TdmRelTotalizadorVendasGeral.CarregarTotalItens;
+procedure TdmRelTotalizadorVendasGeral.CarregarDescontoItemPorCFOP(AenDocImp: tDocsImprimirTotGeralVenda);
 begin
-  qryTotalItens.Close;
-  qryTotalItens.SQL.Clear;
-  qryTotalItens.SQL.Add('SELECT');
-  qryTotalItens.SQL.Add('    SUM(CAST(TOTAL AS NUMERIC(18,2))) AS TOTAL');
-  qryTotalItens.SQL.Add('FROM ALTERACA');
-  qryTotalItens.SQL.Add('WHERE (PEDIDO=:XPEDIDO)');
-  qryTotalItens.SQL.Add('    AND (CAIXA=:XCAIXA)');
-  qryTotalItens.SQL.Add('    AND (DESCRICAO <> ''<CANCELADO>'')');
-  qryTotalItens.SQL.Add('    AND (TIPO <> ''KOLNAC'')');
-  qryTotalItens.SQL.Add('    AND (COALESCE(ITEM,''XX'') <> ''XX'')');
-  qryTotalItens.ParamByName('XCAIXA').AsString  := qryDocumentos.FieldByName('CAIXA').AsString;
-  qryTotalItens.ParamByName('XPEDIDO').AsString := qryDocumentos.FieldByName('PEDIDO').AsString;
-  qryTotalItens.Open;
-  qryTotalItens.First;
+  qryDescontoItemCFOP.Close;
+  qryDescontoItemCFOP.SQL.Clear;
+  qryDescontoItemCFOP.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
+  qryDescontoItemCFOP.SQL.Add('SELECT');
+  qryDescontoItemCFOP.SQL.Add('    CASE WHEN COALESCE(ITEM.CFOP,'''') = '''' THEN E.CFOP ELSE ITEM.CFOP END AS CFOP');
+  qryDescontoItemCFOP.SQL.Add('    , SUM(DESCONTO.TOTAL) AS DESCONTO');
+  qryDescontoItemCFOP.SQL.Add('FROM ALTERACA DESCONTO');
+  qryDescontoItemCFOP.SQL.Add('INNER JOIN DOCUMENTOS');
+  qryDescontoItemCFOP.SQL.Add('    ON  (DESCONTO.PEDIDO=DOCUMENTOS.PEDIDO)');
+  qryDescontoItemCFOP.SQL.Add('    AND (DESCONTO.CAIXA=DOCUMENTOS.CAIXA)');
+  qryDescontoItemCFOP.SQL.Add('    AND (DESCONTO.DATA=DOCUMENTOS.DATA)');
+  qryDescontoItemCFOP.SQL.Add('INNER JOIN ALTERACA ITEM');
+  qryDescontoItemCFOP.SQL.Add('    ON (ITEM.PEDIDO=DESCONTO.PEDIDO)');
+  qryDescontoItemCFOP.SQL.Add('    AND (ITEM.CAIXA=DESCONTO.CAIXA)');
+  qryDescontoItemCFOP.SQL.Add('    AND (ITEM.DATA=DESCONTO.DATA)');
+  qryDescontoItemCFOP.SQL.Add('    AND (ITEM.ITEM=DESCONTO.ITEM)');
+  qryDescontoItemCFOP.SQL.Add('    AND (ITEM.DESCRICAO<>DESCONTO.DESCRICAO)');
+  qryDescontoItemCFOP.SQL.Add('LEFT JOIN ESTOQUE E');
+  qryDescontoItemCFOP.SQL.Add('    ON (E.CODIGO = ITEM.CODIGO)');
+  qryDescontoItemCFOP.SQL.Add('    AND (COALESCE(E.DESCRICAO,'''')<>'''')');
+  qryDescontoItemCFOP.SQL.Add('WHERE');
+  qryDescontoItemCFOP.SQL.Add(' ((DESCONTO.TIPO = ''BALCAO'') or (DESCONTO.TIPO = ''LOKED''))');
+  qryDescontoItemCFOP.SQL.Add(' AND (DESCONTO.DESCRICAO = ''Desconto'')');
+  qryDescontoItemCFOP.SQL.Add(' AND (COALESCE(DESCONTO.ITEM, '''') <> '''')');
+  qryDescontoItemCFOP.SQL.Add('GROUP BY 1');
+  qryDescontoItemCFOP.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryDescontoItemCFOP.ParamByName('XDATAFIM').AsDate := FdDataFim;
+  qryDescontoItemCFOP.Open;
+  qryDescontoItemCFOP.First;
 end;
 
-procedure TdmRelTotalizadorVendasGeral.CarregarDescontoItem;
+procedure TdmRelTotalizadorVendasGeral.CarregarDescontoItemPorCSOSN(AenDocImp: tDocsImprimirTotGeralVenda);
 begin
-  qryDescontoItem.Close;
-  qryDescontoItem.SQL.Clear;
-  qryDescontoItem.SQL.Add('SELECT');
-  qryDescontoItem.SQL.Add('    A.PEDIDO');
-  qryDescontoItem.SQL.Add('    , A.CODIGO');
-  qryDescontoItem.SQL.Add('    , A.ALIQUICM');
-  qryDescontoItem.SQL.Add('    , A.ITEM');
-  qryDescontoItem.SQL.Add('    , A.TOTAL AS DESCONTO');
-  qryDescontoItem.SQL.Add('FROM ALTERACA A');
-  qryDescontoItem.SQL.Add('WHERE (A.DATA=:XDATA)');
-  qryDescontoItem.SQL.Add('AND (A.CAIXA=:XCAIXA)');
-  qryDescontoItem.SQL.Add('AND (A.PEDIDO=:XPEDIDO)');
-  qryDescontoItem.SQL.Add('AND ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED''))');
-  qryDescontoItem.SQL.Add('AND (A.DESCRICAO = ''Desconto'')');
-  qryDescontoItem.SQL.Add('AND (COALESCE(A.ITEM, '''') <> '''')');
-  qryDescontoItem.SQL.Add('ORDER BY A.ITEM');
-  qryDescontoItem.ParamByName('XDATA').AsDate     := qryDocumentos.FieldByName('DATA').AsDateTime;
-  qryDescontoItem.ParamByName('XCAIXA').AsString  := qryDocumentos.FieldByName('CAIXA').AsString;
-  qryDescontoItem.ParamByName('XPEDIDO').AsString := qryDocumentos.FieldByName('PEDIDO').AsString;
-  qryDescontoItem.Open;
-  qryDescontoItem.First;
+  qryDescontoItemCSOSN.Close;
+  qryDescontoItemCSOSN.SQL.Clear;
+  qryDescontoItemCSOSN.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
+  qryDescontoItemCSOSN.SQL.Add('SELECT');
+  qryDescontoItemCSOSN.SQL.Add('    CASE WHEN COALESCE(ITEM.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(ITEM.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSOSN');
+  qryDescontoItemCSOSN.SQL.Add('    , SUM(DESCONTO.TOTAL) AS DESCONTO');
+  qryDescontoItemCSOSN.SQL.Add('FROM ALTERACA DESCONTO');
+  qryDescontoItemCSOSN.SQL.Add('INNER JOIN DOCUMENTOS');
+  qryDescontoItemCSOSN.SQL.Add('    ON  (DESCONTO.PEDIDO=DOCUMENTOS.PEDIDO)');
+  qryDescontoItemCSOSN.SQL.Add(' AND (DESCONTO.CAIXA=DOCUMENTOS.CAIXA)');
+  qryDescontoItemCSOSN.SQL.Add(' AND (DESCONTO.DATA=DOCUMENTOS.DATA)');
+  qryDescontoItemCSOSN.SQL.Add('INNER JOIN ALTERACA ITEM');
+  qryDescontoItemCSOSN.SQL.Add('    ON (ITEM.PEDIDO=DESCONTO.PEDIDO)');
+  qryDescontoItemCSOSN.SQL.Add('    AND (ITEM.CAIXA=DESCONTO.CAIXA)');
+  qryDescontoItemCSOSN.SQL.Add('    AND (ITEM.DATA=DESCONTO.DATA)');
+  qryDescontoItemCSOSN.SQL.Add('    AND (ITEM.ITEM=DESCONTO.ITEM)');
+  qryDescontoItemCSOSN.SQL.Add('    AND (ITEM.DESCRICAO<>DESCONTO.DESCRICAO)');
+  qryDescontoItemCSOSN.SQL.Add('LEFT JOIN ESTOQUE E');
+  qryDescontoItemCSOSN.SQL.Add('    ON (E.CODIGO = ITEM.CODIGO)');
+  qryDescontoItemCSOSN.SQL.Add('    AND (COALESCE(E.DESCRICAO,'''')<>'''')');
+  qryDescontoItemCSOSN.SQL.Add('WHERE');
+  qryDescontoItemCSOSN.SQL.Add(' ((DESCONTO.TIPO = ''BALCAO'') or (DESCONTO.TIPO = ''LOKED''))');
+  qryDescontoItemCSOSN.SQL.Add(' AND (DESCONTO.DESCRICAO = ''Desconto'')');
+  qryDescontoItemCSOSN.SQL.Add(' AND (COALESCE(DESCONTO.ITEM, '''') <> '''')');
+  qryDescontoItemCSOSN.SQL.Add('GROUP BY 1');
+  qryDescontoItemCSOSN.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryDescontoItemCSOSN.ParamByName('XDATAFIM').AsDate := FdDataFim;
+  qryDescontoItemCSOSN.Open;
+  qryDescontoItemCSOSN.First;
 end;
 
-procedure TdmRelTotalizadorVendasGeral.CarregarDescontoDoc;
+procedure TdmRelTotalizadorVendasGeral.CarregarDescontoDoc(AcPedido, AcCaixa: String);
 begin
   qryDescontoDoc.Close;
   qryDescontoDoc.SQL.Clear;
   qryDescontoDoc.SQL.Add('SELECT');
   qryDescontoDoc.SQL.Add('    A.PEDIDO');
+  qryDescontoDoc.SQL.Add('    , A.CAIXA');
   qryDescontoDoc.SQL.Add('    , SUM(A.TOTAL) AS DESCONTOCUPOM');
   qryDescontoDoc.SQL.Add('FROM ALTERACA A');
-  qryDescontoDoc.SQL.Add('WHERE (A.DATA=:XDATA)');
-  qryDescontoDoc.SQL.Add('AND (A.CAIXA=:XCAIXA)');
-  qryDescontoDoc.SQL.Add('AND (A.PEDIDO=:XPEDIDO)');
-  qryDescontoDoc.SQL.Add('AND ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED''))');
-  qryDescontoDoc.SQL.Add('AND (A.DESCRICAO = ''Desconto'')');
-  qryDescontoDoc.SQL.Add('AND (COALESCE(A.ITEM, '''') = '''')');
-  qryDescontoDoc.SQL.Add('GROUP BY A.PEDIDO');
+  qryDescontoDoc.SQL.Add('WHERE');
+  qryDescontoDoc.SQL.Add('    (A.PEDIDO=:XPEDIDO)');
+  qryDescontoDoc.SQL.Add('    AND (A.CAIXA=:XCAIXA)');
+  qryDescontoDoc.SQL.Add('    AND ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED''))');
+  qryDescontoDoc.SQL.Add('    AND (A.DESCRICAO = ''Desconto'')');
+  qryDescontoDoc.SQL.Add('    AND (COALESCE(A.ITEM, '''') = '''')');
+  qryDescontoDoc.SQL.Add('GROUP BY A.PEDIDO, A.CAIXA');
   qryDescontoDoc.SQL.Add('ORDER BY PEDIDO');
-  qryDescontoDoc.ParamByName('XDATA').AsDate     := qryDocumentos.FieldByName('DATA').AsDateTime;
-  qryDescontoDoc.ParamByName('XCAIXA').AsString  := qryDocumentos.FieldByName('CAIXA').AsString;
-  qryDescontoDoc.ParamByName('XPEDIDO').AsString := qryDocumentos.FieldByName('PEDIDO').AsString;
+  qryDescontoDoc.ParamByName('XPEDIDO').AsString := AcPedido;
+  qryDescontoDoc.ParamByName('XCAIXA').AsString := AcCaixa;
   qryDescontoDoc.Open;
   qryDescontoDoc.First;
 end;
 
-procedure TdmRelTotalizadorVendasGeral.CarregarAcrescimoDoc;
+procedure TdmRelTotalizadorVendasGeral.CarregarTotalItens(AcPedido, AcCaixa: String);
 begin
-  qryAcrescimoDoc.Close;
-  qryAcrescimoDoc.SQL.Clear;
-  qryAcrescimoDoc.SQL.Add('SELECT');
-  qryAcrescimoDoc.SQL.Add('    A.PEDIDO');
-  qryAcrescimoDoc.SQL.Add('    , SUM(A.TOTAL) AS ACRESCIMOCUPOM');
-  qryAcrescimoDoc.SQL.Add('FROM ALTERACA A');
-  qryAcrescimoDoc.SQL.Add('WHERE (A.DATA=:XDATA)');
-  qryAcrescimoDoc.SQL.Add('AND (A.CAIXA=:XCAIXA)');
-  qryAcrescimoDoc.SQL.Add('AND (A.PEDIDO=:XPEDIDO)');
-  qryAcrescimoDoc.SQL.Add('AND ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED''))');
-  qryAcrescimoDoc.SQL.Add('AND (A.DESCRICAO = ''Acréscimo'')');
-  qryAcrescimoDoc.SQL.Add('AND (COALESCE(A.ITEM, '''') = '''')');
-  qryAcrescimoDoc.SQL.Add('GROUP BY A.PEDIDO');
-  qryAcrescimoDoc.SQL.Add('ORDER BY PEDIDO');
-  qryAcrescimoDoc.ParamByName('XDATA').AsDate     := qryDocumentos.FieldByName('DATA').AsDateTime;
-  qryAcrescimoDoc.ParamByName('XCAIXA').AsString  := qryDocumentos.FieldByName('CAIXA').AsString;
-  qryAcrescimoDoc.ParamByName('XPEDIDO').AsString := qryDocumentos.FieldByName('PEDIDO').AsString;
-  qryAcrescimoDoc.Open;
-  qryAcrescimoDoc.First;
+  qryTotalItens.Close;
+  qryTotalItens.SQL.Clear;
+  qryTotalItens.SQL.Add('SELECT');
+  qryTotalItens.SQL.Add('    SUM(CAST(ALTERACA.TOTAL AS NUMERIC(18,2))) AS TOTAL');
+  qryTotalItens.SQL.Add('FROM ALTERACA');
+  qryTotalItens.SQL.Add('WHERE');
+  qryTotalItens.SQL.Add('    (ALTERACA.PEDIDO=:XPEDIDO)');
+  qryTotalItens.SQL.Add('    AND (ALTERACA.CAIXA=:XCAIXA)');
+  qryTotalItens.SQL.Add('    AND (ALTERACA.DESCRICAO <> ''<CANCELADO>'')');
+  qryTotalItens.SQL.Add('    AND (ALTERACA.TIPO <> ''KOLNAC'')');
+  qryTotalItens.SQL.Add('    AND (COALESCE(ALTERACA.ITEM,''XX'') <> ''XX'')');
+  qryTotalItens.ParamByName('XPEDIDO').AsString := AcPedido;
+  qryTotalItens.ParamByName('XCAIXA').AsString := AcCaixa;
+  qryTotalItens.Open;
+  qryTotalItens.First;
 end;
 
 procedure TdmRelTotalizadorVendasGeral.CarregaPorCFOPCSTCSOSN(AenDocImp: tDocsImprimirTotGeralVenda);
 begin
   qryDadosCST.Close;
   qryDadosCST.SQL.Clear;
+  qryDadosCST.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryDadosCST.SQL.Add('SELECT');
-  case AenDocImp of
-    tditgvNFCe, tditgvSAT, tditgvCupom:
-    begin
-      qryDadosCST.SQL.Add('    A.PEDIDO');
-      qryDadosCST.SQL.Add('    , A.ITEM');
-      qryDadosCST.SQL.Add('    , A.CODIGO');
-      qryDadosCST.SQL.Add('    , A.CST_ICMS');
-      qryDadosCST.SQL.Add('    , COALESCE(A.ALIQUICM, '''') AS ALIQUICM');
-      qryDadosCST.SQL.Add('    , A.CST_PIS_COFINS');
-      qryDadosCST.SQL.Add('    , A.ALIQ_PIS');
-      qryDadosCST.SQL.Add('    , A.ALIQ_COFINS');
-      qryDadosCST.SQL.Add('    , CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
-      qryDadosCST.SQL.Add('    , COALESCE(A.TOTAL, 0) AS VALOR');
-      qryDadosCST.SQL.Add('    , A.CSOSN');
-      qryDadosCST.SQL.Add('    , E.CSOSN AS ESTOQUE_CSOSN');
-      qryDadosCST.SQL.Add('    , E.CFOP AS ESTOQUE_CFOP');
-      qryDadosCST.SQL.Add('    , E.ALIQUOTA_NFCE');
-      qryDadosCST.SQL.Add('    , E.CSOSN_NFCE');
-      qryDadosCST.SQL.Add('    , E.CST_NFCE');
-      qryDadosCST.SQL.Add('    , E.CEST');
-      qryDadosCST.SQL.Add('FROM ALTERACA A');
-      qryDadosCST.SQL.Add('LEFT JOIN ESTOQUE E');
-      qryDadosCST.SQL.Add('    ON (E.CODIGO = A.CODIGO)');
-      qryDadosCST.SQL.Add('WHERE');
-      qryDadosCST.SQL.Add('    (A.DATA = :XDATA)');
-      qryDadosCST.SQL.Add('    AND (A.CAIXA = :XCAIXA)');
-      qryDadosCST.SQL.Add('    AND (A.PEDIDO = :XPEDIDO)');
-      qryDadosCST.SQL.Add('    AND ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''LOKED''))');
-      qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''<CANCELADO>'')');
-      qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''Desconto'')');
-      qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''Acréscimo'')');
-      qryDadosCST.SQL.Add('    AND (COALESCE(A.ITEM, '''') <> '''')');
-      qryDadosCST.SQL.Add('ORDER BY A.REGISTRO');
-      qryDadosCST.ParamByName('XDATA').AsDate     := qryDocumentos.FieldByName('DATA').AsDateTime;
-      qryDadosCST.ParamByName('XCAIXA').AsString  := qryDocumentos.FieldByName('CAIXA').AsString;
-    end;
-    tditgvNFe:
-    begin
-      qryDadosCST.SQL.Add('    ITENS001.NUMERONF AS PEDIDO');
-      qryDadosCST.SQL.Add('    , ITENS001.DESCRICAO AS ITEM');
-      qryDadosCST.SQL.Add('    , ITENS001.CODIGO');
-      qryDadosCST.SQL.Add('    , ITENS001.CST_ICMS');
-      qryDadosCST.SQL.Add('    , CASE WHEN (ITENS001.NUMERONF CONTAINING ''RPS'') THEN ''ISS'' ELSE '''' END AS ALIQUICM');
-      qryDadosCST.SQL.Add('    , ITENS001.CST_PIS_COFINS');
-      qryDadosCST.SQL.Add('    , ITENS001.ALIQ_PIS');
-      qryDadosCST.SQL.Add('    , ITENS001.ALIQ_COFINS');
-      qryDadosCST.SQL.Add('    , CASE WHEN COALESCE(ITENS001.CFOP,'''') = '''' THEN ESTOQUE.CFOP ELSE ITENS001.CFOP END AS CFOP');
-      qryDadosCST.SQL.Add('    , ITENS001.TOTAL AS VALOR');
-      qryDadosCST.SQL.Add('    , ITENS001.CSOSN');
-      qryDadosCST.SQL.Add('    , ESTOQUE.CSOSN AS CSOSN_NFCE');
-      qryDadosCST.SQL.Add('    , ESTOQUE.CSOSN AS ESTOQUE_CSOSN');            
-      qryDadosCST.SQL.Add('FROM ITENS001');
-      qryDadosCST.SQL.Add('LEFT JOIN ESTOQUE');
-      qryDadosCST.SQL.Add('    ON (ESTOQUE.CODIGO = ITENS001.CODIGO)');
-      qryDadosCST.SQL.Add('WHERE');
-      qryDadosCST.SQL.Add('    (ITENS001.NUMERONF=:XPEDIDO)');
-      qryDadosCST.SQL.Add('ORDER BY ITENS001.REGISTRO');
-    end;
-  end;
-  qryDadosCST.ParamByName('XPEDIDO').AsString := qryDocumentos.FieldByName('PEDIDO').AsString;
+  qryDadosCST.SQL.Add('    CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
+  qryDadosCST.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSOSN');
+  qryDadosCST.SQL.Add('    , SUM(COALESCE(A.TOTAL, 0)) AS VALOR');
+  qryDadosCST.SQL.Add('FROM ALTERACA A');
+  qryDadosCST.SQL.Add('INNER JOIN DOCUMENTOS');
+  qryDadosCST.SQL.Add('    ON (DOCUMENTOS.PEDIDO=A.PEDIDO)');
+  qryDadosCST.SQL.Add('    AND (DOCUMENTOS.CAIXA=A.CAIXA)');
+  qryDadosCST.SQL.Add('    AND (DOCUMENTOS.DATA=A.DATA)');
+  qryDadosCST.SQL.Add('LEFT JOIN ESTOQUE E');
+  qryDadosCST.SQL.Add('    ON (E.CODIGO = A.CODIGO)');
+  qryDadosCST.SQL.Add('    AND (COALESCE(E.DESCRICAO,'''')<>'''')');
+  qryDadosCST.SQL.Add('WHERE');
+  qryDadosCST.SQL.Add('    ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''LOKED''))');
+  qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''<CANCELADO>'')');
+  qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''Desconto'')');
+  qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''Acréscimo'')');
+  qryDadosCST.SQL.Add('    AND (COALESCE(A.ITEM, '''') <> '''')');
+  qryDadosCST.SQL.Add('GROUP BY 1,2');
+  qryDadosCST.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryDadosCST.ParamByName('XDATAFIM').AsDate := FdDataFim;
   qryDadosCST.Open;
   qryDadosCST.First;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.setPeriodo(AdDataIni, AdDataFim: TDateTime);
+begin
+  FdDataIni := AdDataIni;
+  FdDataFim := AdDataFim;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaDescontosItem(AenDocImp: tDocsImprimirTotGeralVenda);
+begin
+  CarregarDescontoItemPorCFOP(AenDocImp);
+  CarregarDescontoItemPorCSOSN(AenDocImp);
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaDadosDescAcrescDocumentos(AenDocImp: tDocsImprimirTotGeralVenda);
+begin
+  CarregaDadosDocumentosComDescAcresc(AenDocImp);
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaDadosDocumentosComDescAcresc(AenDocImp: tDocsImprimirTotGeralVenda);
+begin
+  // RETORNA OS DOCUMENTOS QUE POSSUEM DESCONTO E ACRESCIMO
+  qryDocumentosDescAcresc.Close;
+  qryDocumentosDescAcresc.SQL.Clear;
+  qryDocumentosDescAcresc.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
+  qryDocumentosDescAcresc.SQL.Add('SELECT');
+  qryDocumentosDescAcresc.SQL.Add('    A.PEDIDO');
+  qryDocumentosDescAcresc.SQL.Add('    , A.CAIXA');
+  qryDocumentosDescAcresc.SQL.Add('    , SUM(A.TOTAL) AS TOTALCUPOM');
+  qryDocumentosDescAcresc.SQL.Add('FROM ALTERACA A');
+  qryDocumentosDescAcresc.SQL.Add('INNER JOIN DOCUMENTOS');
+  qryDocumentosDescAcresc.SQL.Add('    ON (DOCUMENTOS.PEDIDO=A.PEDIDO)');
+  qryDocumentosDescAcresc.SQL.Add('    AND (DOCUMENTOS.CAIXA=A.CAIXA)');
+  qryDocumentosDescAcresc.SQL.Add('    AND (DOCUMENTOS.DATA=A.DATA)');
+  qryDocumentosDescAcresc.SQL.Add('WHERE');
+  qryDocumentosDescAcresc.SQL.Add('    ((A.TIPO=''BALCAO'') OR (A.TIPO = ''LOKED''))');
+  qryDocumentosDescAcresc.SQL.Add('    AND (A.DESCRICAO <> ''<CANCELADO>'')');
+  qryDocumentosDescAcresc.SQL.Add('    AND (A.DESCRICAO <> ''Desconto'')');
+  qryDocumentosDescAcresc.SQL.Add('    AND (A.DESCRICAO <> ''Acréscimo'')');
+  qryDocumentosDescAcresc.SQL.Add('    AND (COALESCE(A.ITEM,'''') <> '''')');
+  qryDocumentosDescAcresc.SQL.Add('    AND ((SELECT COUNT(DESCACRES.PEDIDO) FROM ALTERACA DESCACRES');
+  qryDocumentosDescAcresc.SQL.Add('          WHERE');
+  qryDocumentosDescAcresc.SQL.Add('          (DESCACRES.PEDIDO=A.PEDIDO)');
+  qryDocumentosDescAcresc.SQL.Add('          AND (DESCACRES.CAIXA=A.CAIXA)');
+  qryDocumentosDescAcresc.SQL.Add('          AND ((DESCACRES.TIPO=''BALCAO'') OR (DESCACRES.TIPO = ''LOKED''))');
+  qryDocumentosDescAcresc.SQL.Add('          AND (DESCACRES.DESCRICAO <> ''<CANCELADO>'')');
+  qryDocumentosDescAcresc.SQL.Add('          AND ((DESCACRES.DESCRICAO = ''Desconto'')');
+  qryDocumentosDescAcresc.SQL.Add('                OR (DESCACRES.DESCRICAO = ''Acréscimo''))');
+  qryDocumentosDescAcresc.SQL.Add('          AND (COALESCE(DESCACRES.item,'''') = '''')');
+  qryDocumentosDescAcresc.SQL.Add('          ) > 0)');
+  qryDocumentosDescAcresc.SQL.Add('GROUP BY 1,2');
+  qryDocumentosDescAcresc.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryDocumentosDescAcresc.ParamByName('XDATAFIM').AsDate := FdDataFim;
+  qryDocumentosDescAcresc.Open;
+  qryDocumentosDescAcresc.First;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaItensDocumento(AcPedido, AcCaixa: String);
+begin
+  qryItensDocumento.Close;
+  qryItensDocumento.SQL.Clear;
+  qryItensDocumento.SQL.Add('SELECT');
+  qryItensDocumento.SQL.Add('    A.PEDIDO');
+  qryItensDocumento.SQL.Add('    , A.CAIXA');
+  qryItensDocumento.SQL.Add('    , A.ITEM');
+  qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
+  qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSOSN');
+  qryItensDocumento.SQL.Add('    , COALESCE(A.TOTAL,0) AS VALOR');
+  qryItensDocumento.SQL.Add('FROM ALTERACA A');
+  qryItensDocumento.SQL.Add('LEFT JOIN ESTOQUE E');
+  qryItensDocumento.SQL.Add('    ON (E.CODIGO = A.CODIGO)');
+  qryItensDocumento.SQL.Add('    AND (COALESCE(E.DESCRICAO,'''')<>'''')');
+  qryItensDocumento.SQL.Add('WHERE');
+  qryItensDocumento.SQL.Add('    (A.PEDIDO=:XPEDIDO)');
+  qryItensDocumento.SQL.Add('    AND (A.CAIXA=:XCAIXA)');
+  qryItensDocumento.SQL.Add('    AND ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''LOKED''))');
+  qryItensDocumento.SQL.Add('    AND (A.DESCRICAO <> ''<CANCELADO>'')');
+  qryItensDocumento.SQL.Add('    AND (A.DESCRICAO <> ''Desconto'')');
+  qryItensDocumento.SQL.Add('    AND (A.DESCRICAO <> ''Acréscimo'')');
+  qryItensDocumento.SQL.Add('    AND (COALESCE(A.ITEM, '''') <> '''')');
+  qryItensDocumento.SQL.Add('ORDER BY A.REGISTRO');
+  qryItensDocumento.ParamByName('XPEDIDO').AsString := AcPedido;
+  qryItensDocumento.ParamByName('XCAIXA').AsString := AcCaixa;
+  qryItensDocumento.Open;
+  qryItensDocumento.First;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaDescontoItem(AcPedido, AcCaixa, AcItem: String);
+begin
+  qryDescontoItem.Close;
+  qryDescontoItem.SQL.Clear;
+  qryDescontoItem.SQL.Add('SELECT');
+  qryDescontoItem.SQL.Add('  A.PEDIDO, A.CODIGO, A.ALIQUICM, A.ITEM, A.TOTAL as DESCONTO');
+  qryDescontoItem.SQL.Add('from ALTERACA A');
+  qryDescontoItem.SQL.Add('where');
+  qryDescontoItem.SQL.Add(' A.CAIXA = :XCAIXA');
+  qryDescontoItem.SQL.Add(' and A.PEDIDO = :XPEDIDO');
+  qryDescontoItem.SQL.Add(' and A.ITEM = :XITEM');
+  qryDescontoItem.SQL.Add(' and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'')');
+  qryDescontoItem.SQL.Add(' and A.DESCRICAO = ''Desconto''');
+  qryDescontoItem.SQL.Add(' and coalesce(A.ITEM, '''') <> ''''');
+  qryDescontoItem.SQL.Add('order by A.ITEM');
+  qryDescontoItem.ParamByName('XPEDIDO').AsString := AcPedido;
+  qryDescontoItem.ParamByName('XCAIXA').AsString := AcCaixa;
+  qryDescontoItem.ParamByName('XITEM').AsString := AcItem;
+  qryDescontoItem.Open;
+  qryDescontoItem.First;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregarAcrescimoDoc(AcPedido, AcCaixa: String);
+begin
+  qryAcrescimoDoc.Close;
+  qryAcrescimoDoc.SQL.Clear;
+  qryAcrescimoDoc.SQL.Add('SELECT');
+  qryAcrescimoDoc.SQL.Add('    A.PEDIDO');
+  qryAcrescimoDoc.SQL.Add('    , A.CAIXA');
+  qryAcrescimoDoc.SQL.Add('    , SUM(A.TOTAL) AS ACRESCIMOCUPOM');
+  qryAcrescimoDoc.SQL.Add('FROM ALTERACA A');
+  qryAcrescimoDoc.SQL.Add('WHERE');
+  qryAcrescimoDoc.SQL.Add('    (A.PEDIDO=:XPEDIDO)');
+  qryAcrescimoDoc.SQL.Add('    AND (A.CAIXA=:XCAIXA)');
+  qryAcrescimoDoc.SQL.Add('    AND ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED''))');
+  qryAcrescimoDoc.SQL.Add('    AND (A.DESCRICAO = ''Acréscimo'')');
+  qryAcrescimoDoc.SQL.Add('    AND (COALESCE(A.ITEM, '''') = '''')');
+  qryAcrescimoDoc.SQL.Add('GROUP BY A.PEDIDO, A.CAIXA');
+  qryAcrescimoDoc.SQL.Add('ORDER BY PEDIDO');
+  qryAcrescimoDoc.ParamByName('XPEDIDO').AsString := AcPedido;
+  qryAcrescimoDoc.ParamByName('XCAIXA').AsString := AcCaixa;
+  qryAcrescimoDoc.Open;
+  qryAcrescimoDoc.First;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaNFs;
+begin
+  qryNFs.Close;
+  qryNFs.SQL.Clear;
+  qryNFs.SQL.Add(RetornarTabelaTemporariaDocumentos(tditgvNFe));
+  qryNFs.SQL.Add('SELECT');
+  qryNFs.SQL.Add('    DOCUMENTOS.TIPO');
+  qryNFs.SQL.Add('    , DOCUMENTOS.PEDIDO');
+  qryNFs.SQL.Add('    , DOCUMENTOS.DATA');
+  qryNFs.SQL.Add('FROM DOCUMENTOS');
+  qryNFs.ParamByName('XDATAINI').AsDate := FdDataIni;
+  qryNFs.ParamByName('XDATAFIM').AsDate := FdDataFim;
+  qryNFs.Open;
+  qryNFs.First;
 end;
 
 end.

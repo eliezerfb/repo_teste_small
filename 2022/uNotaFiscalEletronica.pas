@@ -271,6 +271,7 @@ type
     procedure AtualizaDataSetItens(DataSetItens: TibDataSet);
   public
     constructor Create; virtual;
+    destructor Destroy; override;
     procedure LimpaItens;
     property NotaFiscal: TVENDAS read FNotaFiscal write FNotaFiscal;
   end;
@@ -595,6 +596,14 @@ begin
   NotaFiscal := TVENDAS.Create;
 end;
 
+
+destructor TNotaFiscalEletronica.Destroy;
+begin
+  FreeAndNil(FNotaFiscal.FItens);
+  FreeAndNil(FNotaFiscal);
+
+  inherited;
+end;
 
 function TNotaFiscalEletronica.GetTotalMercadoria: Double;
 var

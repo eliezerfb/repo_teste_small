@@ -38,7 +38,7 @@ function TfrmRelTotalizadorGeralVenda.Estrutura: IEstruturaTipoRelatorioPadrao;
 begin
   Result := TGeraRelatorioTotalizadorGeralVenda.New
                                                .setTransaction(Transaction)
-                                               .setPerido(dtInicial.Date, dtFinal.Date)
+                                               .setPeriodo(dtInicial.Date, dtFinal.Date)
                                                .setUsuario(Usuario)
                                                .GeraRelatorio
                                                .getEstruturaRelatorio;
@@ -77,10 +77,14 @@ end;
 
 procedure TfrmRelTotalizadorGeralVenda.btnAvancarClick(Sender: TObject);
 begin
-  if not FazValidacoes then
-    Exit;
-    
-  inherited;
+  try
+    btnAvancar.Enabled := False;
+    if not FazValidacoes then
+      Exit;
+    inherited;
+  finally
+    btnAvancar.Enabled := True;
+  end;
 end;
 
 end.

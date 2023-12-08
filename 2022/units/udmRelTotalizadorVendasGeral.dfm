@@ -2,10 +2,10 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Left = 912
-  Top = 336
+  Left = 793
+  Top = 409
   Height = 318
-  Width = 639
+  Width = 816
   object cdsTotalPorFormaPgto: TClientDataSet
     Aggregates = <>
     FieldDefs = <
@@ -43,10 +43,11 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
     end
     object cdsTotalPorFormaPgtoTIPO: TStringField
       FieldName = 'TIPO'
+      Visible = False
       Size = 80
     end
   end
-  object qryDocumentos: TIBQuery
+  object qryDocumentosDescAcresc: TIBQuery
     BufferChunks = 1000
     CachedUpdates = False
     Left = 40
@@ -55,10 +56,10 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
   object qryFormaPgto: TIBQuery
     BufferChunks = 1000
     CachedUpdates = False
-    Left = 128
+    Left = 152
     Top = 32
   end
-  object qryDescontoItem: TIBQuery
+  object qryDescontoItemCFOP: TIBQuery
     BufferChunks = 1000
     CachedUpdates = False
     Left = 136
@@ -77,6 +78,11 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
         DataType = ftFMTBcd
         Precision = 18
         Size = 2
+      end
+      item
+        Name = 'TIPO'
+        DataType = ftString
+        Size = 80
       end>
     IndexDefs = <>
     Params = <>
@@ -93,6 +99,11 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
       Precision = 18
       Size = 2
     end
+    object cdsTotalCFOPTIPO: TStringField
+      FieldName = 'TIPO'
+      Visible = False
+      Size = 80
+    end
   end
   object cdsTotalCSOSN: TClientDataSet
     Aggregates = <>
@@ -107,6 +118,11 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
         DataType = ftFMTBcd
         Precision = 18
         Size = 2
+      end
+      item
+        Name = 'TIPO'
+        DataType = ftString
+        Size = 80
       end>
     IndexDefs = <>
     Params = <>
@@ -122,6 +138,11 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
       FieldName = 'VALOR'
       Precision = 18
       Size = 2
+    end
+    object cdsTotalCSOSNTIPO: TStringField
+      FieldName = 'TIPO'
+      Visible = False
+      Size = 80
     end
   end
   object qryDadosCST: TIBQuery
@@ -165,5 +186,107 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
     CachedUpdates = False
     Left = 328
     Top = 216
+  end
+  object qryDescontoItemCSOSN: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 48
+    Top = 176
+  end
+  object qryItensDocumento: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 40
+    Top = 232
+  end
+  object qryDescontoItem: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 232
+    Top = 168
+  end
+  object qryNFs: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 288
+    Top = 96
+  end
+  object cdsTotalCFOPTemp: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'CFOP'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'VALOR'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'TIPO'
+        DataType = ftString
+        Size = 80
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 528
+    Top = 80
+    object cdsTotalCFOPTempCFOP: TStringField
+      FieldName = 'CFOP'
+      Size = 100
+    end
+    object cdsTotalCFOPTempVALOR: TFMTBCDField
+      FieldName = 'VALOR'
+      Precision = 18
+      Size = 6
+    end
+    object cdsTotalCFOPTempTIPO: TStringField
+      FieldName = 'TIPO'
+      Visible = False
+      Size = 80
+    end
+  end
+  object cdsTotalCSOSNTemp: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'CSOSN'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'VALOR'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 4
+      end
+      item
+        Name = 'TIPO'
+        DataType = ftString
+        Size = 80
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 528
+    Top = 136
+    object cdsTotalCSOSNTempCSOSN: TStringField
+      FieldName = 'CSOSN'
+      Size = 100
+    end
+    object cdsTotalCSOSNTempVALOR: TFMTBCDField
+      FieldName = 'VALOR'
+      Precision = 18
+      Size = 8
+    end
+    object cdsTotalCSOSNTempTIPO: TStringField
+      FieldName = 'TIPO'
+      Visible = False
+      Size = 80
+    end
   end
 end
