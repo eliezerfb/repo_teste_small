@@ -9977,7 +9977,7 @@ begin
       ibDataSet4.DisableControls;
       ibDataSet16.DisableControls;
       ibDataSet23.DisableControls;
-      LogRetaguarda('unit7 ibDataSet23.DisableControls 9904'); // Sandro Silva 2023-12-04
+      //LogRetaguarda('unit7 ibDataSet23.DisableControls 9904'); // Sandro Silva 2023-12-04
       ibDataSet12.DisableControls;
 
       AtualizaPromocao(True);
@@ -10232,7 +10232,7 @@ begin
       ibDataSet4.EnableControls;
       ibDataSet16.EnableControls;
       ibDataSet23.EnableControls;
-      LogRetaguarda('unit7 ibDataSet23.EnableControls 10159'); // Sandro Silva 2023-12-04
+      //LogRetaguarda('unit7 ibDataSet23.EnableControls 10159'); // Sandro Silva 2023-12-04
       ibDataSet12.EnableControls;
 
       sModulo := 'ESTOQUE';
@@ -10461,7 +10461,7 @@ begin
         Form7.ibDataSet23VIPI.Visible           := False;
         Form7.ibDataSet23EAN_ORIGINAL.Visible   := False;
 
-        LogRetaguarda('unit7 ocultou colunas 10338'); // Sandro Silva 2023-12-04
+        //LogRetaguarda('unit7 ocultou colunas 10338'); // Sandro Silva 2023-12-04
 
         //
         Form7.ibDataSet23DESCRICAO.DisplayWidth := 41;
@@ -21184,7 +21184,7 @@ begin
   if (Form1.bFlag) and (Alltrim(ibDataSet23DESCRICAO.AsString) <> '') then
   begin
     Form7.ibDataSet23.DisableControls;
-    LogRetaguarda('unit7 ibDataSet23.DisableControls 21070'); // Sandro Silva 2023-12-04
+    //LogRetaguarda('unit7 ibDataSet23.DisableControls 21070'); // Sandro Silva 2023-12-04
     Form7.ibDataSet4.DisableControls;
 
     // Só procura se estiver diferente
@@ -21250,7 +21250,7 @@ begin
             LimparColunasItemCompra;
             ibDataSet4.EnableControls;
             ibDataSet23.EnableControls;
-            LogRetaguarda('unit7 ibDataSet23.EnableControls 21136'); // Sandro Silva 2023-12-04
+            //LogRetaguarda('unit7 ibDataSet23.EnableControls 21136'); // Sandro Silva 2023-12-04
             Exit;
           end;
         end;
@@ -21316,7 +21316,7 @@ begin
       LimparColunasItemCompra;
       ibDataSet4.EnableControls;
       ibDataSet23.EnableControls;
-      LogRetaguarda('unit7 ibDataSet23.EnableControls 21202'); // Sandro Silva 2023-12-04
+      //LogRetaguarda('unit7 ibDataSet23.EnableControls 21202'); // Sandro Silva 2023-12-04
       Exit;
     end;
     // So altera se for um produto novo
@@ -21476,7 +21476,7 @@ begin
 
     ibDataSet4.EnableControls;
     ibDataSet23.EnableControls;
-    LogRetaguarda('unit7 ibDataSet23.EnableControls 21362'); // Sandro Silva 2023-12-04
+    //LogRetaguarda('unit7 ibDataSet23.EnableControls 21362'); // Sandro Silva 2023-12-04
 
     Observacao2(False);
   end;
@@ -21661,11 +21661,11 @@ begin
   {Sandro Silva 2023-11-28 inicio
   Form7.ibDataSet24.DisableControls;
 
-  LogRetaguarda('ibDataSet24.DisableControls; 21548'); // Sandro Silva 2023-11-27
+  //LogRetaguarda('ibDataSet24.DisableControls; 21548'); // Sandro Silva 2023-11-27
   }
   {
   Form7.ibDataSet23.DisableControls;
-  LogRetaguarda('unit7 ibDataSet23.DisableControls 21551'); // Sandro Silva 2023-12-04
+  //LogRetaguarda('unit7 ibDataSet23.DisableControls 21551'); // Sandro Silva 2023-12-04
   }
   Form7.ibDataSet8.DisableControls;
   //
@@ -22077,7 +22077,7 @@ begin
       if Form7.ibDataSet14NOME.AsString <> Form7.ibDataSet24OPERACAO.AsString then Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
       //
       Form7.ibDataSet23.DisableControls;
-      LogRetaguarda('unit7 ibDataSet23.DisableControls 21962'); // Sandro Silva 2023-12-04
+      //LogRetaguarda('unit7 ibDataSet23.DisableControls 21962'); // Sandro Silva 2023-12-04
       Form7.ibDataSet4.DisableControls;
       //
       Form7.ibDataSet23.First;
@@ -22106,7 +22106,7 @@ begin
       end;
       //
       Form7.ibDataSet23.EnableControls;
-      LogRetaguarda('unit7 ibDataSet23.EnableControls 21991'); // Sandro Silva 2023-12-04
+      //LogRetaguarda('unit7 ibDataSet23.EnableControls 21991'); // Sandro Silva 2023-12-04
       Form7.ibDataSet4.EnableControls;
       //
       // Contas a PAGAR
@@ -31314,14 +31314,14 @@ begin
 
             // Erro do vídeo
             Form7.ibDataSet23.DisableControls;
-            LogRetaguarda('unit7 ibDataSet23.DisableControls 31199'); // Sandro Silva 2023-12-04
+            //LogRetaguarda('unit7 ibDataSet23.DisableControls 31199'); // Sandro Silva 2023-12-04
             Form7.ibDataSet4.DisableControls;
 
             // Erro do vídeo
             DownloadListaDeNFesEmitidas(sRetorno); // Baixa uma lista de nf-e´s que foram emitidas para o CNPJ
 
             Form7.ibDataSet23.EnableControls;
-            LogRetaguarda('unit7 ibDataSet23.EnableControls 31206'); // Sandro Silva 2023-12-04
+            //LogRetaguarda('unit7 ibDataSet23.EnableControls 31206'); // Sandro Silva 2023-12-04
             Form7.ibDataSet4.EnableControls;
           except
             on E: Exception do
