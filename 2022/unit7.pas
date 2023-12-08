@@ -4201,9 +4201,9 @@ begin
                 {Sandro Silva 2023-11-07 inicio}
                 try
                   Form7.bFabrica := True;
-                  FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Form7.ibDataSet16QUANTIDADE.AsFloat, Form7.bFabrica, 1, Form7.sModulo);
+                  if (Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat) <= 0 then
+                    FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Abs(Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat), Form7.bFabrica, 1, Form7.sModulo); // Sandro Silva 2023-12-08 FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Form7.ibDataSet16QUANTIDADE.AsFloat, Form7.bFabrica, 1, Form7.sModulo);
                 finally
-
                   Form7.bFabrica := False;
                 end;
                 {Sandro Silva 2023-11-07 fim}

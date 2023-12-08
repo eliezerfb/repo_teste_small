@@ -70,7 +70,7 @@ uses
   function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
   function ProdutoComposto(IBTransaction: TIBTransaction; sCodigoProduto: String): Boolean;
   procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
-    iQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer; var sModulo: String); // Sandro Silva 2023-11-06
+    dQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer; var sModulo: String); // Sandro Silva 2023-11-06
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
   //procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao); //Mauricio Parizotto 2023-09-13
 
@@ -769,17 +769,22 @@ begin
 end;
 
 procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
-  iQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer;
+  dQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer;
   var sModulo: String); // Sandro Silva 2023-11-06
 var
   IBQCOMPOSTO: TIBQuery;
   sModuloOld: String; // Sandro Silva 2023-12-05
 begin
+
+  //Faz a fabricação do produto composto
+
   IBQCOMPOSTO := CriaIBQuery(DataSetEstoque.Transaction);
   sModuloOld := sModulo;// Sandro Silva 2023-12-05
   try
 
-    sModulo := 'ESTOQUE'; // Sandro Silva 2023-12-05
+    sModulo := 'ESTOQUE'; //Precisa para rotina de movimentação de estoque ser acionada
+
+    //Seleciona a matérias-prima do produto
     IBQCOMPOSTO.Close;
     IBQCOMPOSTO.SQL.Clear;
     IBQCOMPOSTO.SQL.Text :=
@@ -808,24 +813,28 @@ begin
 
           LogRetaguarda(DupeString(' ', iHierarquia) + 'Insumo do produto ' + IBQCOMPOSTO.FieldByName('CODIGO').AsString + ': ' + IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString + ' - ' + IBQCOMPOSTO.FieldByName('DESCRICAO').AsString + ' - Qtd ' + FormatFloat('0.00####', IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat));
 
-          FabricaComposto(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, DataSetEstoque, IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat, bFabrica, iHierarquia + 2, sModulo);
+          if (DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat - (IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat * dQtdMovimentada)) < 0 then
+            FabricaComposto(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, DataSetEstoque, Abs(DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat - (IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat * dQtdMovimentada)), bFabrica, iHierarquia + 2, sModulo);
 
+          // Localiza o produto materia-prima no estoque
           if DataSetEstoque.Locate('CODIGO', IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, []) then
           begin
 
+            // Desconta o estoque da matéria-prima
             DataSetEstoque.Edit;
-            DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat := DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat - (IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat * iQtdMovimentada);
+            DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat := DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat - (IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat * dQtdMovimentada);
             DataSetEstoque.Post;
 
           end;
+          {Sandro Silva 2023-12-08 fim}
 
           IBQCOMPOSTO.Next;
 
         end;
 
-        DataSetEstoque.Locate('CODIGO', sCodigo, []);
+        DataSetEstoque.Locate('CODIGO', sCodigo, []); // Localiza o produto final no estoque
         DataSetEstoque.Edit;
-        DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat := DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat + iQtdMovimentada;
+        DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat := DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat + dQtdMovimentada;  // Atribui a quantidade produzida ao estoque do produto para ficar disponível de ser baixado posteriormente
 
         LogRetaguarda(DupeString(' ', iHierarquia) + '<Fim da composição do produto ' + DataSetEstoque.FieldByName('CODIGO').AsString + ' - ' + DataSetEstoque.FieldByName('DESCRICAO').AsString);
       end;
