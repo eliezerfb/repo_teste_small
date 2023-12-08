@@ -8,6 +8,7 @@ uses
   DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, Variants, HtmlHelp, ShellApi, jpeg,
   IBCustomDataSet, Buttons
   , StrUtils
+  , Windows
   ;
 
 type
@@ -116,8 +117,6 @@ type
     Panel9: TPanel;
     Edit2: TEdit;
     Panel5: TPanel;
-    SMALL_DBEdit42: TSMALL_DBEdit;
-    Label9: TLabel;
     Label10: TLabel;
     SMALL_DBEdit44: TSMALL_DBEdit;
     SMALL_DBEdit45: TSMALL_DBEdit;
@@ -153,7 +152,6 @@ type
     ComboBox13: TComboBox;
     Label89: TLabel;
     Image5: TImage;
-    Button1: TBitBtn;
     SMALL_DBEdit51: TSMALL_DBEdit;
     SMALL_DBEdit52: TSMALL_DBEdit;
     lblPFCP: TLabel;
@@ -169,6 +167,7 @@ type
     Label7: TLabel;
     SMALL_DBEdit16: TSMALL_DBEdit;
     cbDescontaICMSDesonerado: TCheckBox;
+    btnPrecificar: TBitBtn;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -273,6 +272,7 @@ type
     procedure SMALL_DBEdit23Exit(Sender: TObject);
     procedure edFretePorContaExit(Sender: TObject);
     procedure cbDescontaICMSDesoneradoClick(Sender: TObject);
+    procedure btnPrecificarClick(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -303,7 +303,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
-  uFuncoesBancoDados, uDialogs;
+  uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto, uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -1181,6 +1181,7 @@ begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Form7.ibDataSet4.DisableControls;
   Form7.ibDataSet23.DisableControls;
+  //LogRetaguarda('unit24 ibDataSet23.DisableControls 1184'); // Sandro Silva 2023-12-04
 
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
@@ -1297,6 +1298,8 @@ begin
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                   )); //
                           }
+
+                          //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
@@ -1304,7 +1307,7 @@ begin
                                                                      Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                  )); //
+                                                                  )); 
                           {Sandro Silva 2023-10-16 fim}
 
                           {Sandro Silva 2023-03-02 inicio}
@@ -1600,7 +1603,11 @@ begin
     Form7.ibDataSet23VBCFCPST.Visible     := False;
     Form7.ibDataSet23PFCPST.Visible       := False;
     Form7.ibDataSet23VFCPST.Visible       := False;
-    {Sandro Silva 2023-04-11 fim}         
+    {Sandro Silva 2023-04-11 fim}
+
+    //LogRetaguarda('unit24 ocultou colunas 1611'); // Sandro Silva 2023-12-04
+
+
     Form7.ibDataSet23DESCRICAO.DisplayWidth    := 41;         //
     Form7.ibDataSet23TOTAL.DisplayWidth        := 09;
     Form7.ibDataSet23QUANTIDADE.DisplayWidth   := 09;
@@ -1623,6 +1630,7 @@ begin
 
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet23.EnableControls;
+  //LogRetaguarda('unit24 ibDataSet23.EnableControls 1629'); // Sandro Silva 2023-12-04
 
   if Form7.Visible then
   begin
@@ -1652,6 +1660,9 @@ begin
     Form7.ibDataSet14.Locate('NOME',AllTrim( Form7.ibDataSet99.FieldByname('NOME').AsString  ),[loCaseInsensitive, loPartialKey]);
     //
     Form7.ibDataSet24.Enablecontrols;
+
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 1656'); // Sandro Silva 2023-11-27
+
     dBGrid2.DataSource := Form7.DataSource14;
     Form7.ibDataSet14.EnableControls;
     //
@@ -2365,9 +2376,15 @@ begin
     Form7.ibDataSet24NUMERONF.AsString := '000000000';
   end;
   //
-  if Form1.bNotaVendaLiberada then Edit5.Enabled := True else Edit5.Enabled := False;
+  if Form1.bNotaVendaLiberada then
+    Edit5.Enabled := True
+  else
+    Edit5.Enabled := False;
   //
+  {Sandro Silva 2023-12-04 inicio
   Grid_Compra(True);
+  //LogRetaguarda('unit24 exibiu colunas 2382'); // Sandro Silva 2023-12-04
+  }
   //
   pnlNota.Left                   := 10;
   Form24.VertScrollBar.Position := 1;
@@ -2463,6 +2480,7 @@ begin
   begin
     // Atenção a rotina abaixo altera a quantidade no estoque
     Form7.ibDataSet23.DisableControls;
+    //LogRetaguarda('unit24 ibDataSet23.DisableControls 2473'); // Sandro Silva 2023-12-04
     Form7.ibDataSet23.First;
     while not Form7.ibDataSet23.Eof do
     begin
@@ -2505,6 +2523,7 @@ begin
   Form7.ibDataSet4.Open;
 
   Form7.ibDataSet23.EnableControls;
+  //LogRetaguarda('unit24 ibDataSet23.EnableControls 2516'); // Sandro Silva 2023-12-04
 
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
@@ -2527,6 +2546,11 @@ begin
               edFretePorConta.Text := '';
 
   Form12.Edit4.Visible := True;
+
+  {Sandro Silva 2023-12-04 inicio}
+  Grid_Compra(True);
+  //LogRetaguarda('unit24 exibiu colunas 2549'); // Sandro Silva 2023-12-04
+  {Sandro Silva 2023-12-04 fim}
 
   Form24.Button1Click(Sender);
 
@@ -2698,7 +2722,9 @@ begin
     // Form Ativate
     Form7.ibDataSet14.EnableControls;
     Form7.ibDataSet24.EnableControls;
+
     Form7.ibDataSet23.EnableControls;
+    //LogRetaguarda('unit24 ibDataSet23.EnableControls 2714'); // Sandro Silva 2023-12-04
     Form7.ibDataSet18.EnableControls;
     Form7.ibDataSet8.EnableControls;
     Form7.ibDataSet2.EnableControls;
@@ -2746,7 +2772,11 @@ begin
       Form7.ibDataset23.Post;
     //
     Form7.ibDataSet24.DisableControls;
+
+    //LogRetaguarda('ibDataSet24.DisableControls; 2750'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.DisableControls;
+    //LogRetaguarda('unit24 ibDataSet23.DisableControls 2764'); // Sandro Silva 2023-12-04
     //
     try
       Form1.bFechaTudo           := False;
@@ -2780,13 +2810,19 @@ begin
     Form7.ibDataSet23.Open;
 
     Grid_Compra(True);
+    //LogRetaguarda('unit24 exibiu colunas 2803'); // Sandro Silva 2023-12-04
 
     Form7.ibDataSet24.EnableControls;
+
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 2795'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.EnableControls;
+    //LogRetaguarda('unit24 ibDataSet23.EnableControls 2804'); // Sandro Silva 2023-12-04
   end;
 
   // Altera o Grid de mercadorias para mostrar na NF
   Grid_Compra(True);
+  //LogRetaguarda('unit24 exibiu colunas 2815'); // Sandro Silva 2023-12-04
 end;
 
 procedure TForm24.Incluirnovocliente1Click(Sender: TObject);
@@ -2797,7 +2833,12 @@ begin
   begin
     sTitulo := Form7.sTitulo;
     Form7.ibDataSet24.DisableControls;
+
+    //LogRetaguarda('ibDataSet24.DisableControls; 2804'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.DisableControls;
+    //LogRetaguarda('unit24 ibDataSet23.DisableControls 2823'); // Sandro Silva 2023-12-04
+
     try
       Form1.bFechaTudo           := False;
       Form1.imgCliForClick(Sender);
@@ -2821,11 +2862,16 @@ begin
 
     Form1.bFechaTudo           := True;
     Form7.ibDataSet24.EnableControls;
+
+    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 2840'); // Sandro Silva 2023-11-27
+
     Form7.ibDataSet23.EnableControls;
+    //LogRetaguarda('unit24 ibDataSet23.EnableControls 2852'); // Sandro Silva 2023-12-04
   end;
 
   // Altera o Grid de mercadorias para mostrar na NF
   Grid_Compra(True);
+  //LogRetaguarda('unit24 exibiu colunas 2864'); // Sandro Silva 2023-12-04  
 end;
 
 procedure TForm24.Label64Click(Sender: TObject);
@@ -3745,6 +3791,24 @@ begin
   Form7.bDescontaICMSDeso := cbDescontaICMSDesonerado.Checked;
   
   Form7.ibDataSet23AfterPost(Form7.ibDataSet23);
+end;
+
+procedure TForm24.btnPrecificarClick(Sender: TObject);
+begin
+  if Form7.ibDataSet24.State in ([dsEdit, dsInsert]) then
+    Form7.ibDataSet24.Post;
+
+  if Form7.ibDataSet23.State in ([dsEdit, dsInsert]) then
+    Form7.ibDataSet23.Post;
+
+  try
+    FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := Form7.ibDataSet24FORNECEDOR.AsString;
+    FrmPrecificacaoProduto.ShowModal;
+  finally
+    FreeAndNil(FrmPrecificacaoProduto);
+  end;
 end;
 
 end.

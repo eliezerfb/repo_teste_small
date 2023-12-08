@@ -17,7 +17,7 @@ interface
 uses
   SysUtils,{BDE,} DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
   msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
-  ShellAPI, jpeg, TLHelp32;
+  ShellAPI, jpeg, TLHelp32, IBCustomDataSet;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
@@ -120,7 +120,9 @@ uses
   // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
   function processExists(exeFileName: string): Boolean;
   function ConsultaProcesso(sDescricao:String): boolean;
+  function MontaMascaraCasaDec(qtdCasas : integer) : string;
   function QuebraLinhaHtml(sTexto : string) : string;
+  function GetCampoPKDataSet(sDataSet: TDataSet): String;
 
 implementation
 
@@ -2802,9 +2804,42 @@ begin
   CloseHandle (Snapshot);
 end;
 
+function MontaMascaraCasaDec(qtdCasas : integer) : string;
+begin
+  case qtdCasas of
+    0: Result := '#,##0';
+    1: Result := '#,##0.0';
+    2: Result := '#,##0.00';
+    3: Result := '#,##0.000';
+    4: Result := '#,##0.0000';
+    5: Result := '#,##0.00000';
+    6: Result := '#,##0.000000';
+    7: Result := '#,##0.0000000';
+    8: Result := '#,##0.00000000';
+    9: Result := '#,##0.000000000';
+  end;
+end;
+
 function QuebraLinhaHtml(sTexto : string) : string;
 begin
   Result := StringReplace(sTexto,#$D#$A,'<br>',[rfReplaceAll]);
+end;
+
+
+function GetCampoPKDataSet(sDataSet: TDataSet): String;
+var
+  i :integer;
+begin
+  Result := 'REGISTRO';
+
+  try
+    for i :=0 to sDataSet.FieldCount -1 do
+    begin
+      if (pfInKey in sDataSet.fields[i].ProviderFlags) then
+        Result := sDataSet.fields[i].FieldName;
+    end;
+  except
+  end;
 end;
 
 end.

@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=2023
 MinorVer=0
 Release=0
-Build=116
+Build=120
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Small
-FileVersion=2023.0.0.116
+FileVersion=2023.0.0.120
 InternalName=Small
 LegalCopyright=Zucchetti Software e Sistemas Ltda
 LegalTrademarks=Zucchetti Software e Sistemas Ltda

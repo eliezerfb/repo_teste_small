@@ -1026,29 +1026,6 @@ object Form30: TForm30
         OnEnter = DBMemo2Enter
         OnKeyUp = DBMemo1KeyUp
       end
-      object ListBox1: TListBox
-        Left = 475
-        Top = 80
-        Width = 140
-        Height = 5
-        BevelInner = bvNone
-        Color = 15790320
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ItemHeight = 13
-        Items.Strings = (
-          'Agendada'
-          'Aberta'
-          'Fechada')
-        ParentFont = False
-        TabOrder = 22
-        Visible = False
-        OnDblClick = ListBox1DblClick
-        OnKeyDown = ListBox1KeyDown
-      end
       object ListBox2: TListBox
         Left = 400
         Top = 201
@@ -1252,6 +1229,29 @@ object Form30: TForm30
             Expanded = False
             Visible = True
           end>
+      end
+      object listSituacao: TListBox
+        Left = 475
+        Top = 80
+        Width = 140
+        Height = 5
+        BevelInner = bvNone
+        Color = 15790320
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ItemHeight = 13
+        Items.Strings = (
+          'Agendada'
+          'Aberta'
+          'Fechada')
+        ParentFont = False
+        TabOrder = 22
+        Visible = False
+        OnDblClick = listSituacaoDblClick
+        OnKeyDown = listSituacaoKeyDown
       end
     end
     object Panel2: TPanel
