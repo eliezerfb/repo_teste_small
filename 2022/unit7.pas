@@ -1611,6 +1611,28 @@ type
     N71: TMenuItem;
     ConfigurarobservaoparaOS1: TMenuItem;
     ConfigurarobservaoparaRecibo1: TMenuItem;
+    ibdSituacaoOS: TIBDataSet;
+    DSSitucaoOS: TDataSource;
+    mmSituacaoOS: TMainMenu;
+    MenuItem216: TMenuItem;
+    MenuItem226: TMenuItem;
+    MenuItem227: TMenuItem;
+    MenuItem228: TMenuItem;
+    MenuItem229: TMenuItem;
+    MenuItem230: TMenuItem;
+    MenuItem231: TMenuItem;
+    MenuItem232: TMenuItem;
+    MenuItem233: TMenuItem;
+    MenuItem234: TMenuItem;
+    MenuItem235: TMenuItem;
+    MenuItem236: TMenuItem;
+    MenuItem237: TMenuItem;
+    MenuItem238: TMenuItem;
+    Label40: TLabel;
+    ibdSituacaoOSIDSITUACAO: TIntegerField;
+    ibdSituacaoOSSITUACAO: TIBStringField;
+    Cadastros1: TMenuItem;
+    Cadastrodesituaes1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2275,6 +2297,14 @@ type
     procedure ImprimirOrdemdeServio2Click(Sender: TObject);
     procedure ConfigurarobservaoparaOS1Click(Sender: TObject);
     procedure ConfigurarobservaoparaRecibo1Click(Sender: TObject);
+    procedure ibdSituacaoOSAfterDelete(DataSet: TDataSet);
+    procedure ibdSituacaoOSAfterPost(DataSet: TDataSet);
+    procedure ibdSituacaoOSBeforeInsert(DataSet: TDataSet);
+    procedure ibdSituacaoOSNewRecord(DataSet: TDataSet);
+    procedure ibdSituacaoOSBeforeEdit(DataSet: TDataSet);
+    procedure Cadastrodesituaes1Click(Sender: TObject);
+    procedure ibdSituacaoOSSITUACAOSetText(Sender: TField;
+      const Text: String);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2514,7 +2544,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFrmProdutosDevolucao
   , uOrdemServico
   , uFrmPerfilTributacao
-  , uFrmNaturezaOperacao;
+  , uFrmNaturezaOperacao
+  , uFrmSituacaoOS;
 
 {$R *.DFM}
 
@@ -5082,6 +5113,7 @@ begin
     Form7.ibdConversaoCFOP.BufferChunks  := 500; //Mauricio Parizotto 2023-08-25
     Form7.ibdPerfilTributa.BufferChunks  := 500; //Mauricio Parizotto 2023-08-30
     Form7.ibdParametroTributa.BufferChunks  := 500; //Mauricio Parizotto 2023-09-21
+    Form7.ibdSituacaoOS.BufferChunks  := 500; //Mauricio Parizotto 2023-12-04
   end else
   begin
     Form7.ibDataSet1.BufferChunks  := 1000;
@@ -5115,6 +5147,7 @@ begin
     Form7.ibdConversaoCFOP.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-25
     Form7.ibdPerfilTributa.BufferChunks  := 1000; //Mauricio Parizotto 2023-08-30
     Form7.ibdParametroTributa.BufferChunks  := 1000; //Mauricio Parizotto 2023-09-21
+    Form7.ibdSituacaoOS.BufferChunks  := 1000; //Mauricio Parizotto 2023-12-04
   end;
 
   if Form1.bFechaTudo then
@@ -5198,6 +5231,7 @@ begin
         Form7.ibdConversaoCFOP.Selectsql.Clear; //Mauricio Parizotto 2023-08-25
         Form7.ibdPerfilTributa.Selectsql.Clear; //Mauricio Parizotto 2023-08-30
         Form7.ibdParametroTributa.Selectsql.Clear; //Mauricio Parizotto 2023-09-21
+        Form7.ibdSituacaoOS.Selectsql.Clear; //Mauricio Parizotto 2023-12-04
 
         Form7.ibDataSet1.Selectsql.Add('select * from CAIXA where DATA=CURRENT_DATE order by DATA, REGISTRO');
         Form7.ibDataSet27.Selectsql.Add('select * from ALTERACA where CODIGO='+QuotedStr('99999')+' ');
@@ -5232,6 +5266,7 @@ begin
                                                 '  PF.DESCRICAO'+
                                                 ' From PARAMETROTRIBUTACAO PR'+
                                                 '  Left Join PERFILTRIBUTACAO PF on PF.IDPERFILTRIBUTACAO = PR.IDPERFILTRIBUTACAO'); //Mauricio Parizotto 2023-09-21
+        Form7.ibdSituacaoOS.SelectSQL.Add('Select * From OSSITUACAO'); //Mauricio Parizotto 2023-12-04
 
         //  CAIXA
         //  ICM
@@ -5303,6 +5338,7 @@ begin
     if not Form7.ibdConversaoCFOP.active  then Form7.ibdConversaoCFOP.active  := True; //Mauricio Parizotto 2023-08-25
     if not Form7.ibdPerfilTributa.active  then Form7.ibdPerfilTributa.active  := True; //Mauricio Parizotto 2023-08-30
     if not Form7.ibdParametroTributa.active  then Form7.ibdParametroTributa.active  := True; //Mauricio Parizotto 2023-09-21
+    if not Form7.ibdSituacaoOS.active  then Form7.ibdSituacaoOS.active  := True; //Mauricio Parizotto 2023-12-04
   except
     on E: Exception do
     begin
@@ -5360,6 +5396,7 @@ begin
     if Form7.ibdConversaoCFOP.Active then  Form7.ibdConversaoCFOP.EnableControls; // Mauricio Parizotto 2023-08-25
     if Form7.ibdPerfilTributa.Active then  Form7.ibdPerfilTributa.EnableControls; // Mauricio Parizotto 2023-08-30
     if Form7.ibdParametroTributa.Active then  Form7.ibdParametroTributa.EnableControls; // Mauricio Parizotto 2023-09-21
+    if Form7.ibdSituacaoOS.Active then  Form7.ibdSituacaoOS.EnableControls; // Mauricio Parizotto 2023-12-04
   end;
   
   Result := True;
@@ -5383,6 +5420,7 @@ begin
   P1 := StrTran(P1, QuotedStr('~'),'');
   P1 := StrTran(P1,'PEDIDO', 'orçamento');
   P1 := StrTran(P1,'REGISTRO', 'Lançamento');
+  P1 := StrTran(P1,'IDSITUACAO', 'Código'); // Mauricio Parizotto 2023-12-04
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('C')+')='+QuotedStr('C')+'', ' só clientes ');
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('F')+')='+QuotedStr('F')+'', ' só fornecedores ');
 
@@ -7980,6 +8018,17 @@ begin
     Exit;
   end;
 
+  //Mauricio Parizotto 2023-12-04
+  if sModulo = 'OSSITUACAO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmSituacaoOS = nil then
+      FrmSituacaoOS := TFrmSituacaoOS.Create(Self);
+
+    FrmSituacaoOS.Show;
+    Exit;
+  end;
+
   if sModulo = 'OS' then
   begin
     Form30.Show;
@@ -8186,6 +8235,18 @@ begin
 
     FrmNaturezaOperacao.lblNovoClick(Sender);
     FrmNaturezaOperacao.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2023-12-04
+  if sModulo = 'OSSITUACAO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmSituacaoOS = nil then
+      FrmSituacaoOS := TFrmSituacaoOS.Create(Self);
+
+    FrmSituacaoOS.lblNovoClick(Sender);
+    FrmSituacaoOS.Show;
     Exit;
   end;
 
@@ -9616,6 +9677,10 @@ begin
   DBGrid1.GradientEndColor   := $00F0F0F0;
   DBGrid1.GradientStartColor := $00F0F0F0;
   {$ENDIF}
+
+  //Mauricio Parizotto 2023-12-05
+  //Marca campo chave da tabela
+  ibdSituacaoOSIDSITUACAO.ProviderFlags := [pfInUpdate,pfInWhere,pfInKey];
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -9634,6 +9699,7 @@ end;
 procedure TForm7.DBGrid1TitleClick(Column: TColumn);
 var
   Mais1ini : tIniFile;
+  CampoPK   : string;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
 
@@ -9641,8 +9707,17 @@ begin
     Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName+', EMISSAO')
   else
     Mais1Ini.WriteString(sModulo,'ORDEM',Column.FieldName);
-  
-  Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
+
+  {Mauricio Parizotto 2023-12-05 Inicio}
+  try
+    CampoPK := GetCampoPKDataSet(Form7.TabelaAberta);
+  except
+    CampoPK := 'REGISTRO';
+  end;
+
+  //Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
+  Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName(CampoPK).AsString);
+  {Mauricio Parizotto 2023-12-05 Fim}
   Mais1Ini.Free;
   Form7.Close;
   Form7.Show;
@@ -11288,6 +11363,37 @@ begin
       end;
       {Mauricio Parizotto 2023-09-21 Fim}
 
+      {Mauricio Parizotto 2023-12-04 Inicio}
+      if sModulo = 'OSSITUACAO' then
+      begin
+        sAjuda := 'INDEX.HTM';
+
+        // Campos
+        sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','T');
+        iCampos                := 1;
+
+        // Menu
+        Form7.Menu             := mmSituacaoOS;
+
+        // Arquivo
+        ArquivoAberto          := DSSitucaoOS.Dataset;
+        TabelaAberta           := ibdSituacaoOS;
+        DataSourceAtual        := DSSitucaoOS;
+
+        // Sql
+        sSelect := ' Select'+
+                   '   *'+
+                   ' From OSSITUACAO ';
+
+        sWhere    := Mais1Ini.ReadString(sModulo,'FILTRO','');
+        sOrderBy  := 'order by '+Mais1Ini.ReadString(sModulo,'ORDEM','IDSITUACAO');
+        sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','1');
+        sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
+        sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
+        sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
+      end;
+      {Mauricio Parizotto 2023-12-04 Fim}
+
 
       if sModulo = 'BANCOS' then
       begin
@@ -12044,7 +12150,8 @@ begin
     if (sModulo = 'ORCAMENTO') then
       TabelaAberta.FieldByName('Registro').Visible := False;
 
-    if (sModulo <> 'CAIXA') and (sModulo <> 'BANCOS') then
+    //if (sModulo <> 'CAIXA') and (sModulo <> 'BANCOS') then Mauricio Parizotto 2023-12-04
+    if (sModulo <> 'CAIXA') and (sModulo <> 'BANCOS') and (sModulo <> 'OSSITUACAO') then
     begin
       try
         if not bFirst then
@@ -12659,7 +12766,6 @@ end;
 
 procedure TForm7.ibDataSet5BeforeDelete(DataSet: TDataSet);
 begin
-  //
   if sModulo = 'BANCOS' then
   begin
     Audita('APAGOU', sModulo, Senhas.UsuarioPub,
@@ -12667,12 +12773,12 @@ begin
     ((ibDataSet5SAIDA_.AsFloat*-1)+ibDataSet5ENTRADA_.AsFloat)
     ,0);   // Ato, Modulo, Usuário, Histórico
   end;
-  //
 end;
 
 procedure TForm7.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1ini : tIniFile;
+  CampoPK   : string;
 begin
   try
     if sTitulo = 'Cadastro dos vendedores' then
@@ -12680,6 +12786,14 @@ begin
 
     if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (TabelaAberta.Active) then
     begin
+      //Mauricio Parizotto 2023-12-04
+      try
+        CampoPK := GetCampoPKDataSet(Form7.ArquivoAberto);
+      except
+        CampoPK := 'REGISTRO';
+      end;
+
+
       Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
 
       if sRPS = 'S' then //ver onde está setando para 'S'
@@ -12690,7 +12804,8 @@ begin
       if AllTrim(sWhere) = 'where' then
         sWhere := '';
       Mais1Ini.WriteString(sModulo,'FILTRO',AllTrim(sWhere));
-      Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString);
+      //Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName('REGISTRO').AsString); Mauricio Parizotto 2023-12-04
+      Mais1Ini.WriteString(sModulo,'REGISTRO',TabelaAberta.FieldByName(CampoPK).AsString);
       Mais1Ini.WriteString(sModulo,'COLUNA',StrZero(DbGrid1.SelectedIndex,2,0));
       Mais1Ini.WriteString(sModulo,'LINHA',StrZero(TStringGrid(DBGrid1).Row,4,0));
       Mais1Ini.Free;
@@ -17914,15 +18029,13 @@ end;
 
 procedure TForm7.Cadastrodetcnicos1Click(Sender: TObject);
 begin
-  //
   Label1.Caption := 'CADASTRO DE TÉCNICOS';
-  //
+  
   Form7.Close;
   Form7.sModulo := 'TECNICO';
   Form7.sTitulo := Label1.Caption;
   Form7.sRPS := 'N';
   Form7.Show;
-  //
 end;
 
 procedure TForm7.RelatriodepeasemOSabertas1Click(Sender: TObject);
@@ -34424,9 +34537,86 @@ begin
 
     if FrmNaturezaOperacao <> nil then
       FreeAndNil(FrmNaturezaOperacao);
+
+    if FrmSituacaoOS <> nil then
+      FreeAndNil(FrmSituacaoOS);
   except
   end;
   
+end;
+
+procedure TForm7.ibdSituacaoOSAfterDelete(DataSet: TDataSet);
+begin
+  AgendaCommit(True);
+end;
+
+procedure TForm7.ibdSituacaoOSAfterPost(DataSet: TDataSet);
+begin
+  if AllTrim(ibdSituacaoOSSITUACAO.AsString) = '' then
+    ibdSituacaoOS.Delete;
+end;
+
+procedure TForm7.ibdSituacaoOSBeforeInsert(DataSet: TDataSet);
+begin
+  try
+    ibDataSet99.Close;
+    ibDataSet99.SelectSql.Clear;
+    ibDataset99.SelectSql.Add('select gen_id(G_OSSITUACAO,1) from rdb$database');
+    ibDataset99.Open;
+    sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
+    ibDataset99.Close;
+  except
+    Abort
+  end;
+end;
+
+procedure TForm7.ibdSituacaoOSNewRecord(DataSet: TDataSet);
+begin
+  ibdSituacaoOS.Edit;
+  ibdSituacaoOSIDSITUACAO.AsInteger := sProximoID;
+end;
+
+procedure TForm7.ibdSituacaoOSBeforeEdit(DataSet: TDataSet);
+begin
+  sNumeroAnterior := ibdSituacaoOSIDSITUACAO.AsString;
+end;
+
+procedure TForm7.Cadastrodesituaes1Click(Sender: TObject);
+begin
+  Label1.Caption := 'Cadastro de situações';
+  
+  Form7.Close;
+  Form7.sModulo := 'OSSITUACAO';
+  Form7.sTitulo := Label1.Caption;
+  Form7.sRPS := 'N';
+  Form7.Show;
+end;
+
+procedure TForm7.ibdSituacaoOSSITUACAOSetText(Sender: TField;
+  const Text: String);
+var
+  cTexto: String;
+begin
+  cTexto := Text;
+
+  if (AllTrim(ibdSituacaoOSSITUACAO.AsString) <> '') and (AllTrim(cTexto) = '') then
+  begin
+    MensagemSistema('Situação inválida (não pode ficar em branco).'
+                    ,msgAtencao);
+  end else
+  begin
+    if (UpperCase(AllTrim(cTexto)) = 'AGENDADA' )
+      or (UpperCase(AllTrim(cTexto)) = 'ABERTA' )
+      or (UpperCase(AllTrim(cTexto)) = 'FECHADA' ) then
+    begin
+      MensagemSistema('Está situação já foi cadastrada!',msgAtencao);
+      Exit;
+    end;
+
+    if Valida_Campo('OSSITUACAO',AllTrim(cTexto),'SITUACAO','Está situação já foi cadastrada!') then
+      ibdSituacaoOSSITUACAO.AsString := AllTrim(cTexto);
+  end;
+
 end;
 
 end.

@@ -1,11 +1,11 @@
 object Form7: TForm7
-  Left = 200
-  Top = 127
+  Left = 324
+  Top = 18
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 880
+  ClientHeight = 926
   ClientWidth = 1369
   Color = clWhite
   Ctl3D = False
@@ -2504,6 +2504,20 @@ object Form7: TForm7
     Width = 107
     Height = 13
     Caption = 'Par'#226'metros Tributa'#231#227'o'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
+  object Label40: TLabel
+    Left = 119
+    Top = 842
+    Width = 60
+    Height = 13
+    Caption = 'Situa'#231#227'o OS'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -7960,7 +7974,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 840
+    Top = 886
     Width = 1369
     Height = 40
     Align = alBottom
@@ -19379,9 +19393,16 @@ object Form7: TForm7
     object MenuItem12: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem12Click
-      object Cadastrodetcnicos1: TMenuItem
-        Caption = 'Cadastro de t'#233'cnicos...'
-        OnClick = Cadastrodetcnicos1Click
+      object Cadastros1: TMenuItem
+        Caption = 'Cadastros'
+        object Cadastrodetcnicos1: TMenuItem
+          Caption = 'Cadastro de t'#233'cnicos'
+          OnClick = Cadastrodetcnicos1Click
+        end
+        object Cadastrodesituaes1: TMenuItem
+          Caption = 'Cadastro de situa'#231#245'es'
+          OnClick = Cadastrodesituaes1Click
+        end
       end
       object N12: TMenuItem
         Caption = '-'
@@ -21796,8 +21817,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPE' +
-      'C'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      '\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -22822,6 +22843,123 @@ object Form7: TForm7
       Required = True
       Visible = False
       Size = 10
+    end
+  end
+  object ibdSituacaoOS: TIBDataSet
+    Database = IBDatabase1
+    Transaction = IBTransaction1
+    AfterDelete = ibdSituacaoOSAfterDelete
+    AfterPost = ibdSituacaoOSAfterPost
+    BeforeEdit = ibdSituacaoOSBeforeEdit
+    BeforeInsert = ibdSituacaoOSBeforeInsert
+    OnDeleteError = IBDataSet2DeleteError
+    OnEditError = IBDataSet2EditError
+    OnNewRecord = ibdSituacaoOSNewRecord
+    OnPostError = IBDataSet2PostError
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      'delete from OSSITUACAO'
+      'where'
+      '  IDSITUACAO= :OLD_IDSITUACAO')
+    InsertSQL.Strings = (
+      'insert into OSSITUACAO'
+      '  (IDSITUACAO, SITUACAO)'
+      'values'
+      '  (:IDSITUACAO, :SITUACAO)')
+    RefreshSQL.Strings = (
+      'Select '
+      '  SITUACAO,'
+      '  IDSITUACAO'
+      'from OSSITUACAO'
+      'where'
+      '  IDSITUACAO= :IDSITUACAO')
+    SelectSQL.Strings = (
+      'select * from OSSITUACAO')
+    ModifySQL.Strings = (
+      'update OSSITUACAO'
+      'set'
+      '  SITUACAO= :SITUACAO,'
+      '  IDSITUACAO= :IDSITUACAO'
+      'where'
+      '  IDSITUACAO = :OLD_IDSITUACAO')
+    Left = 8
+    Top = 835
+    object ibdSituacaoOSSITUACAO: TIBStringField
+      DisplayLabel = 'Situa'#231#227'o'
+      FieldName = 'SITUACAO'
+      Origin = 'OSSITUACAO.SITUACAO'
+      OnSetText = ibdSituacaoOSSITUACAOSetText
+      Size = 25
+    end
+    object ibdSituacaoOSIDSITUACAO: TIntegerField
+      FieldName = 'IDSITUACAO'
+      Origin = 'OSSITUACAO.IDSITUACAO'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Visible = False
+    end
+  end
+  object DSSitucaoOS: TDataSource
+    DataSet = ibdSituacaoOS
+    Left = 40
+    Top = 835
+  end
+  object mmSituacaoOS: TMainMenu
+    AutoHotkeys = maManual
+    OwnerDraw = True
+    Left = 78
+    Top = 835
+    object MenuItem216: TMenuItem
+      Caption = '&Arquivo'
+      object MenuItem226: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = Image205Click
+      end
+      object MenuItem227: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem228: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object MenuItem229: TMenuItem
+      Caption = '&Edita'
+      object MenuItem230: TMenuItem
+        Caption = '&Novo...'
+        OnClick = Image101Click
+      end
+      object MenuItem231: TMenuItem
+        Caption = '&Alterar...'
+        OnClick = Image106Click
+      end
+      object MenuItem232: TMenuItem
+        Caption = 'E&xcluir...'
+        OnClick = Image102Click
+      end
+    end
+    object MenuItem233: TMenuItem
+      Caption = '&Procura'
+      OnClick = Image103Click
+    end
+    object MenuItem234: TMenuItem
+      Caption = '&Caractere'
+      OnClick = Image6Click
+    end
+    object MenuItem235: TMenuItem
+      Caption = '?'
+      object MenuItem236: TMenuItem
+        Caption = 'Ajuda'
+        OnClick = Ajuda7Click
+      end
+      object MenuItem237: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem238: TMenuItem
+        Caption = 'Sobre o programa...'
+        OnClick = Sobreoprograma8Click
+      end
     end
   end
 end

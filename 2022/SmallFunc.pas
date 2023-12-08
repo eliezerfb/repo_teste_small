@@ -17,7 +17,7 @@ interface
 uses
   SysUtils,{BDE,} DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml,
   msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
-  ShellAPI, jpeg, TLHelp32;
+  ShellAPI, jpeg, TLHelp32, IBCustomDataSet;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
   function RetornaNomeDoComputador : string;
@@ -122,6 +122,7 @@ uses
   function ConsultaProcesso(sDescricao:String): boolean;
   function MontaMascaraCasaDec(qtdCasas : integer) : string;
   function QuebraLinhaHtml(sTexto : string) : string;
+  function GetCampoPKDataSet(sDataSet: TDataSet): String;
 
 implementation
 
@@ -2822,6 +2823,23 @@ end;
 function QuebraLinhaHtml(sTexto : string) : string;
 begin
   Result := StringReplace(sTexto,#$D#$A,'<br>',[rfReplaceAll]);
+end;
+
+
+function GetCampoPKDataSet(sDataSet: TDataSet): String;
+var
+  i :integer;
+begin
+  Result := 'REGISTRO';
+
+  try
+    for i :=0 to sDataSet.FieldCount -1 do
+    begin
+      if (pfInKey in sDataSet.fields[i].ProviderFlags) then
+        Result := sDataSet.fields[i].FieldName;
+    end;
+  except
+  end;
 end;
 
 end.
