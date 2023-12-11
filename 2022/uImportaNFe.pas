@@ -153,6 +153,7 @@ begin
   try
     Form7.ibDataset2.DisableControls;
     Form7.ibDataset23.DisableControls;
+    //LogRetaguarda('uimportanfe ibDataSet23.DisableControls 156'); // Sandro Silva 2023-12-04
     Form7.ibDataset24.DisableControls;
 
     //LogRetaguarda('ibDataSet24.DisableControls; 158'); // Sandro Silva 2023-11-27
@@ -976,7 +977,8 @@ begin
   end;
 
   try
-    Form7.ibDataset23.EnableControls
+    Form7.ibDataset23.EnableControls;
+    //LogRetaguarda('uimportanfe ibDataSet23.EnableControls 981'); // Sandro Silva 2023-12-04
   except
   end;
 

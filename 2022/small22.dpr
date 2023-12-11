@@ -206,6 +206,7 @@ uses
   uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
   uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
   uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
+  uFrmSituacaoOS in 'uFrmSituacaoOS.pas' {FrmSituacaoOS},
   uOrdemServico in 'units\uOrdemServico.pas',
   uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas';
 

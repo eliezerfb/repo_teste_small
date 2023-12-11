@@ -125,6 +125,7 @@ begin
   //LogRetaguarda('Form7.ibDataSet24.EnableControls; 125'); // Sandro Silva 2023-11-27
 
   Form7.ibDataSet23.EnableControls;
+  //LogRetaguarda('ugeraxmlnfeentrada ibDataSet23.EnableControls 128'); // Sandro Silva 2023-12-04
 
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append

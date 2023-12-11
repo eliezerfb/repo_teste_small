@@ -101,63 +101,59 @@ procedure TForm20.Button1Click(Sender: TObject);
 var
   iReg      : Integer;
   bSair     : Boolean;
-//  MyBookmark: TBookmark;
   sRegistro : String;
+  CampoPK   : string;
 begin
-  //
   try
-    //
     Form20.Button2.Tag := 0;
     Button3.Enabled    := False;
     Button1.Enabled    := False;
-    //
+
     MemoPesquisa.Text    := 'Pesquisando...';
-    //
+
+    //Mauricio Parizotto 2023-12-04
+    try
+      CampoPK := GetCampoPKDataSet(Form7.ArquivoAberto);
+    except
+      CampoPK := 'REGISTRO';
+    end;
+
     Form7.sProcura := AllTrim(Edit1.Text);
-    //
+
     if Form7.DbGrid1.SelectedField.DataType = ftFloat then
     begin
-      //
       iReg := Form7.ArquivoAberto.RecNo;
       Form7.ArquivoAberto.Next;
-      //
+
       if AllTrim(Form7.sProcura) = '' then Form7.sProcura := '0';
-      //
+
       with Form7 do
       begin
-        //
         if Copy(AllTrim(Format('%12.4n', [(StrToFloat(sProcura) - ArquivoAberto.FieldByName(dBgrid1.SelectedField.FieldName).AsFloat)])),1,4) <> '0,00' then
         begin
           bSair     := False;
           ArquivoAberto.DisableControls;
-          //
+          
           // Inicia a procura
-          //
           Screen.Cursor  := crAppStart;  // Cursor de Aguardo
-          //
+
           // Ainda não encontrou
-          //
           while bSair = False do
           begin
-            //
             // Se clicar no botão cancelar para o processamento
-            //
             Application.ProcessMessages;
             //
             if Form20.Button2.Tag = 1 then Abort;
             if ArquivoAberto.Eof then ArquivoAberto.First else ArquivoAberto.Next;
             if Copy(AllTrim(Format('%12.4n', [(StrToFloat(sProcura) - ArquivoAberto.FieldByName(dBgrid1.SelectedField.FieldName).AsFloat)])),1,4) = '0,00' then bSair := True;
             if iReg = ArquivoAberto.RecNo then bSair := True;
-            //
           end;
-          //
+
           Screen.Cursor  := crDefault;  // Cursor normal
           ArquivoAberto.EnableControls;
-          //
         end;
-        //
+
         // encontrou
-        //
         if Copy(AllTrim(Format('%12.4n', [(StrToFloat(sProcura) - ArquivoAberto.FieldByName(dBgrid1.SelectedField.FieldName).AsFloat)])),1,4) = '0,00' then
         begin
           MemoPesquisa.Text      := dBgrid1.SelectedField.AsString;
@@ -187,7 +183,8 @@ begin
             Form7.sProcura:=Edit1.Text;
             //
             Form7.TabelaAberta.Locate(Form7.dBgrid1.SelectedField.FieldName,form7.sProcura,[loCaseInsensitive, loPartialKey]);
-            sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Foi criado para eliminar metodo MyBookmark
+            //sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Mauricio Parizotto 2023-12-04
+            sRegistro  := Form7.ArquivoAberto.FieldByName(CampoPK).AsString;
           end else
           begin
             //ShowMessage('CPF ou CNPJ inválido!'); Mauricio Parizotto 2023-10-25
@@ -199,22 +196,26 @@ begin
         end;
       end else
       begin
-        sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Foi criado para eliminar metodo MyBookmark
-        //
+        //sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Mauricio Parizotto 2023-12-04
+        sRegistro  := Form7.ArquivoAberto.FieldByName(CampoPK).AsString;
+
         if (not Form20.Button4.Enabled) then
         begin
           try
             Form7.TabelaAberta.Locate(Form7.dBgrid1.SelectedField.FieldName,form7.sProcura,[loCaseInsensitive, loPartialKey]);
-          except end;
+          except
+          end;
         end;
-        //
+
         if (pos(AnsiUpperCase(Form7.sProcura),AnsiUpperCase(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString)) = 0)
         or (Form20.Button4.Enabled) then
         begin
           try
-            Form7.TabelaAberta.Locate('REGISTRO',sRegistro,[loCaseInsensitive, loPartialKey]); // Foi criado para eliminar metodo MyBookmark
-          except end;
-          //
+            //Form7.TabelaAberta.Locate('REGISTRO',sRegistro,[loCaseInsensitive, loPartialKey]); // Mauricio Parizotto 2023-12-04
+            Form7.TabelaAberta.Locate(CampoPK,sRegistro,[loCaseInsensitive, loPartialKey]); // Foi criado para eliminar metodo MyBookmark
+          except
+          end;
+
           iReg    := Form7.ArquivoAberto.RecNo;
           //
           // faz um controle do botão voltar
