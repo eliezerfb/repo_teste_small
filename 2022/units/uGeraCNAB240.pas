@@ -424,7 +424,7 @@ begin
       sTipoDocumento         := '1';
       sEspecieDoTitulo       := '02';
       sNumeroDeDiasParaBaixa := '   ';
-      sCodigoParaBaixa       := '2';
+      sCodigoParaBaixa       := '0';
       sDigitoAgencia         := ' ';
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000805076';
@@ -593,7 +593,8 @@ begin
               // Registro Detalhe - Segmento P (Obrigatório - Remessa)
               iReg := iReg + 1;
 
-              if (Form1.fTaxa = 0) and (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748') then
+              //if (Form1.fTaxa = 0) and (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748') then Mauricio Parizotto 2023-12-11
+              if (Form1.fTaxa = 0) and ( (CodBanco = '748') or (CodBanco = '041')  ) then
               begin
                 sCodigodoJurosdeMora := '3';          // Código do Juros de Mora
                 sDatadoJurosdeMora   := '00000000';   // Data do Juros de Mora
@@ -697,7 +698,13 @@ begin
 
                 //Copy(Right('0000000000',10),1,10)                                                         + // 230 a 239 (10) Nº do Contrato da Operação de Créd. Mauricio Parizotto 2023-11-07
                 Copy(Right(sNumeroContratoOP,10),1,10)                                                      + // 230 a 239 (10) Nº do Contrato da Operação de Créd.
-                Copy(' ',1,1)                                                                               // 240 a 240 (001) Uso Exclusivo FEBRABAN / CNAB
+                //Copy(' ',1,1)                                                                               // 240 a 240 (001) Uso Exclusivo FEBRABAN / CNAB
+
+                IfThen(CodBanco = '041',
+                      '1'                                                                                     // 240 a 240 (001) Pagamento Parcial
+                      ,' '                                                                                    // 240 a 240 (001) Uso Exclusivo FEBRABAN / CNAB
+                      )
+
                 );
 
 
