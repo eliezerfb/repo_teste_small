@@ -382,7 +382,7 @@ begin
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '041' then MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '341' then MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '409' then MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
-      if Copy(AllTrim(MaskEdit42.Text),1,3) = '136' then MaskEdit45.Text := '55??????00NNNNNNNNNNNNNNd'; // Mauricio Parizotto 2023-12-07
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '136' then MaskEdit45.Text := 'AAAACCCCCCCCCCNNNNNNNNNNN'; // Mauricio Parizotto 2023-12-07
 
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
       if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
@@ -398,7 +398,7 @@ begin
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banrisul');
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Itaú');
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unibanco');
-      if Form26.MaskEdit45.Text = '55??????00NNNNNNNNNNNNNNd' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unicred'); // Mauricio Parizotto 2023-12-07
+      if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unicred'); // Mauricio Parizotto 2023-12-07
     end;
   end;
 end;
@@ -516,7 +516,7 @@ begin
 
   if cboBancos.Text = 'Unicred' then
   begin
-    MaskEdit45.Text := '55??????00NNNNNNNNNNNNNNd';
+    MaskEdit45.Text := 'AAAACCCCCCCCCCNNNNNNNNNNN';
     chkCNAB400.Checked := False;
     chkCNAB240.Checked := True;
   end;

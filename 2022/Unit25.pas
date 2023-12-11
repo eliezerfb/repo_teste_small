@@ -61,6 +61,7 @@ type
     sNumero   : String;
     procedure GravaPortadorNossoNumCodeBar;
     function GeraCodBarra(codBanco:string): string;
+    function FormataCodBarra(codBarra: string): string;
   end;
 
 var
@@ -181,6 +182,7 @@ var
   hDMode : THandle;
   PDMode : PDEVMODE;
   NumBancoBoleto : string;
+  codBarrasSemDV, DV : string;
 begin
   Form7.ibDataSet11.Active := True;
   Form7.ibDataSet11.First;
@@ -236,12 +238,19 @@ begin
     end;
 
     Form26.MaskEdit47.Text := Form7.ibDataSet7NN.AsString;
+
+    if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '136' then // Unicred
+    begin
+      Form26.MaskEdit47.Text := Right('00000000000'+LimpaNumero( Form7.ibDataSet7NN.AsString),10) +'-'+Modulo_11_Febraban(LimpaNumero( Form7.ibDataSet7NN.AsString)); 
+    end;
+
     Form26.MaskEdit43.Text := Form26.MaskEdit43.Text + Modulo_11_febraban(LimpaNumero(Form26.MaskEdit43.Text));  // Modulo 11
     Form25.sNumero         := '';
 
     if Length(Form26.MaskEdit45.Text) <> 25 then
       Form26.MaskEdit45.Text := '0000000000000000000000000';
-    
+
+    {
     if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
       Form25.sNumero := LimpaNumero(
@@ -255,6 +264,29 @@ begin
                           Modulo_11_febraban(LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3))+'9'+
                           StrZero(StrToDate(Form7.ibDataSet7VENCIMENTO.AsString)-FatorDeVencimento(StrToDate(Form7.ibDataSet7VENCIMENTO.AsString)),4,0)+
                           StrZero(Form7.ibDataSet7VALOR_DUPL.AsFloat*100,10,0) +LimpaNumero(Form26.MaskEdit48.Text))+StrZero(StrToDate(Form7.ibDataSet7VENCIMENTO.AsString)-FatorDeVencimento(StrToDate(Form7.ibDataSet7VENCIMENTO.AsString)),4,0)+ StrZero(Form7.ibDataSet7VALOR_DUPL.AsFloat*100,10,0) +LimpaNumero(Form26.MaskEdit48.Text);
+    end;
+    Mauricio Parizotto 2023-12-08}
+
+    if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
+    begin
+      codBarrasSemDV := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3))+ // Banco
+                        '9'+//Moeda
+                        StrZero(DATE-FatorDeVencimento(DATE),4,0)+//Vencimento
+                        StrZero(Form7.ibDataSet7VALOR_JURO.AsFloat*100,10,0) +//Valor título
+                        LimpaNumero(Form26.MaskEdit48.Text);//Mascara
+
+      DV := Modulo_11_febraban(codBarrasSemDV);
+      Form25.sNumero := copy(codBarrasSemDV,1,4)+DV+copy(codBarrasSemDV,5,39);
+    end else
+    begin
+      codBarrasSemDV := LimpaNumero(Copy(Form26.MaskEdit42.Text,1,3))+ //Banco
+                        '9'+//Moeda
+                        StrZero(StrToDate(Form7.ibDataSet7VENCIMENTO.AsString)-FatorDeVencimento(StrToDate(Form7.ibDataSet7VENCIMENTO.AsString)),4,0)+//Vencimento
+                        StrZero(Form7.ibDataSet7VALOR_DUPL.AsFloat*100,10,0) +//Valor título
+                        LimpaNumero(Form26.MaskEdit48.Text);//Mascara
+
+      DV := Modulo_11_febraban(codBarrasSemDV);
+      Form25.sNumero := copy(codBarrasSemDV,1,4)+DV+copy(codBarrasSemDV,5,39);
     end;
 
 
@@ -342,7 +374,7 @@ begin
         Copy(Form25.sNumero,6,4)+                // 6 a 9 do código de barras - fator de vencimento
         Copy(Form25.sNumero,10,10));             // 10 a 19 do código de barras - valor nominal
       }
-      Impressao.TextOut(largura(63),altura(6+iVia),Form25.GeraCodBarra(Copy(Form26.MaskEdit42.Text,1,3)));
+      Impressao.TextOut(largura(63),altura(6+iVia),Form25.FormataCodBarra(Form25.GeraCodBarra(Copy(Form26.MaskEdit42.Text,1,3))));
 
       Impressao.Font.Name   := 'Times New Roman';      // Fonte
       Impressao.Font.Size   := 12;          // Tamanho da Fonte
@@ -578,7 +610,7 @@ begin
                         //Mauricio Parizotto 2023-12-07
                         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '136' then // Unicred
                         begin
-                          Form25.sNossoNum := Right('00000000000'+LimpaNumero(Form26.MaskEdit47.Text),10) +'-'+Modulo_11_Febraban(LimpaNumero(Form26.MaskEdit47.Text));
+                          Form25.sNossoNum := Form26.MaskEdit47.Text;
 
                           Impressao.Font.Size   := 10;             // Tamanho da Fonte
                           Impressao.TextOut(largura(-8+151-6),altura(28+iVia), Right(Replicate(' ',30)+Form25.sNossoNum,17));
@@ -1028,7 +1060,7 @@ begin
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banrisul');
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
-      if Form26.MaskEdit45.Text = '55??????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
+      if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
         Form26.chkCNAB400.State := cbChecked
@@ -1463,7 +1495,6 @@ procedure TForm25.ValidaEmailPagador;
 var
   sEmail : String;
 begin
-  //
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
@@ -1478,54 +1509,40 @@ begin
   begin
     btnEnviaEmail.Visible := False; // Sandro Silva 2022-12-23 Button7.Visible := False;
   end;
-
 end;
 
 function TForm25.GeraCodBarra(codBanco:string):string;
+var
+  codBarrasSemDV : string;
+  DV : string;
 begin
   Result := '';
 
   try
-    if codBanco = '136' then
-    begin
-      Result := Copy(Form26.MaskEdit42.Text,1,3)+             // Identificação do banco
-                '9'+                                          // Moeda
-                Copy(Form25.sNumero,20,1)+                    // Dígito verificador do código de barras
-                '.'+
-                Copy(Form25.sNumero,21,4)+                    // Fator vencimento
-                                                              // Valor nomeinal do título
-                //                                            // Agência - sem o dígito verificador
-                Copy(Form25.sNumero,25,5)+                    // Conta do Beneficiário
-                '.';                                          // Nosso Número
-
-    end else
-    begin
-      Result := Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
-                '9'+                                          // Moeda
-                Copy(Form25.sNumero,20,1)+                    // Campo Livre 20 a 21 do código de barras
-                '.'+                                          // Ponto para facilitar a digitação
-                Copy(Form25.sNumero,21,4)+                    // Campo Livre 21 a 24 do código de barras
-                Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(Form25.sNumero,20,1)+Copy(Form25.sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
-                //
-                '  '+
-                Copy(Form25.sNumero,25,5)+                    // Campo Livre 25 a 29 do código de barras
-                '.'+                                          // Ponto para facilitar a digitação
-                Copy(Form25.sNumero,30,5)+                    // Campo Livre 30 a 34 do código de barras
-                Modulo_10(Copy(Form25.sNumero,25,10))+        // Digito verificador
-                '  '+
-                Copy(Form25.sNumero,35,5)+                    // Campo Livre 35 a 39 do código de barras
-                '.'+                                          // Ponto para facilitar a digitação
-                Copy(Form25.sNumero,40,5)+                    // Campo Livre 40 a 44 do código de barras
-                Modulo_10(Copy(Form25.sNumero,35,10))+        // Digito verificador
-                //
-                '  '+
-                Copy(Form25.sNumero,5,1)+                     // Dígito de verificação geral posição 5 do codebat
-                '  '+
-                Copy(Form25.sNumero,6,4)+                     // 6 a 9 do código de barras - fator de vencimento
-                Copy(Form25.sNumero,10,10);                   // 10 a 19 do código de barras - valor nominal
-    end;
+    Result := Copy(Form26.MaskEdit42.Text,1,3)+ // Identificação do banco
+              '9'+                                          // Moeda
+              Copy(Form25.sNumero,20,1)+                    // Campo Livre 20 a 21 do código de barras
+              Copy(Form25.sNumero,21,4)+                    // Campo Livre 21 a 24 do código de barras
+              Modulo_10(Copy(Form26.MaskEdit42.Text,1,3)+'9'+Copy(Form25.sNumero,20,1)+Copy(Form25.sNumero,21,4))+ // Digito verificador dos 10 primeiros numeros
+              Copy(Form25.sNumero,25,5)+                    // Campo Livre 25 a 29 do código de barras
+              Copy(Form25.sNumero,30,5)+                    // Campo Livre 30 a 34 do código de barras
+              Modulo_10(Copy(Form25.sNumero,25,10))+        // Digito verificador
+              Copy(Form25.sNumero,35,5)+                    // Campo Livre 35 a 39 do código de barras
+              Copy(Form25.sNumero,40,5)+                    // Campo Livre 40 a 44 do código de barras
+              Modulo_10(Copy(Form25.sNumero,35,10))+        // Digito verificador
+              Copy(Form25.sNumero,5,1)+                     // Dígito de verificação geral posição 5 do codebat
+              Copy(Form25.sNumero,6,4)+                     // 6 a 9 do código de barras - fator de vencimento
+              Copy(Form25.sNumero,10,10);                   // 10 a 19 do código de barras - valor nominal
   except
   end;
+end;
+
+function TForm25.FormataCodBarra(codBarra : string):string;
+var
+  CodFormatado : string;
+begin
+  CodFormatado := copy(codBarra,1,5)+'.'+copy(codBarra,6,5)+' '+copy(codBarra,11,5)+'.'+copy(codBarra,16,6)+' '+copy(codBarra,22,5)+'.'+copy(codBarra,27,6)+' '+copy(codBarra,33,1)+' '+copy(codBarra,34,14);
+  Result := CodFormatado;
 end;
 
 end.
