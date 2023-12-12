@@ -82,6 +82,8 @@ type
     dbepCofinsSaida: TSMALL_DBEdit;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     fraPlanoContas: TfFrameCampo;
+    Label1: TLabel;
+    SMALL_DBEdit1: TSMALL_DBEdit;
     procedure DBMemo4Enter(Sender: TObject);
     procedure DBMemo4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);

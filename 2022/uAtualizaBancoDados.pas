@@ -2347,6 +2347,13 @@ begin
   end;
   {Mauricio Parizotto 2023-12-04 Fim}
 
+  {Mauricio Parizotto 2023-12-11 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CBENEF') = False then
+  begin
+    if ExecutaComando('alter table ICM add CBENEF varchar(10)') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-12-11 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');

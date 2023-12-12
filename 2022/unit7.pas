@@ -1633,6 +1633,7 @@ type
     ibdSituacaoOSSITUACAO: TIBStringField;
     Cadastros1: TMenuItem;
     Cadastrodesituaes1: TMenuItem;
+    ibDataSet14CBENEF: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -11782,9 +11783,10 @@ begin
         sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 46)); // Sandro Silva 2023-07-03 sMostra   := Replicate('T',47);
+        sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 47)); // Mauricio Parizotto 2023-12-11 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 46)); // Sandro Silva 2023-07-03 sMostra   := Replicate('T',47);
         // Sandro Silva 2023-07-03 iCampos   := 44;
-        iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5;
+        //iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5; Mauricio Parizotto 2023-12-11
+        iCampos   := 47;
       end;
 
       if sModulo = 'TRANSPORT' then
