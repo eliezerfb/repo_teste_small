@@ -54,12 +54,12 @@ uses
   // Declaração das Funções da nova DLL BEMAFI32.DLL                          //
   // 0800 -  644 2362                                                         //
   //--------------------------------------------------------------------------//
-  function Bematech_FI_ProgramaIdAplicativoMFD(IDAplicativo: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AlteraSimboloMoeda(SimboloMoeda: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ProgramaAliquota(Aliquota: String; ICMS_ISS: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ProgramaIdAplicativoMFD(IDAplicativo: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AlteraSimboloMoeda(SimboloMoeda: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ProgramaAliquota(Aliquota: AnsiString; ICMS_ISS: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ProgramaHorarioVerao: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NomeiaDepartamento(Indice: Integer; Departamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NomeiaTotalizadorNaoSujeitoIcms(Indice: Integer; Totalizador: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NomeiaDepartamento(Indice: Integer; Departamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NomeiaTotalizadorNaoSujeitoIcms(Indice: Integer; Totalizador: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ProgramaArredondamento:Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ProgramaTruncamento:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ProgramaTruncamento';
   function Bematech_FI_LinhasEntreCupons(Linhas: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -68,136 +68,136 @@ uses
 
   // Funções do Cupom Fiscal /////////////////////////////////////////////////////
 
-  function Bematech_FI_AbreCupom(CGC_CPF: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VendeItem(Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VendeItemDepartamento(Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AbreCupom(CGC_CPF: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VendeItem(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; TipoQuantidade: AnsiString; Quantidade: AnsiString; CasasDecimais: Integer; ValorUnitario: AnsiString; TipoDesconto: AnsiString; Desconto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VendeItemDepartamento(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; ValorUnitario: AnsiString; Quantidade: AnsiString; Acrescimo: AnsiString; Desconto: AnsiString; IndiceDepartamento: AnsiString; UnidadeMedida: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_CancelaItemAnterior: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_CancelaItemGenerico(NumeroItem: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_CancelaItemGenerico(NumeroItem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_CancelaCupom: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_EstornoNaoFiscalVinculadoPosteriorMFD(FormaPagamento: String; Valor: String; COOCupom: String; COOCDC: String; CPF: String; Nome: String; Endereco: String): Integer; StdCall; External 'BEMAFI32.DLL'; //2015-10-22 Cancelar vinculados
-  function Bematech_FI_EstornoNaoFiscalVinculadoMFD(CPF: String; Nome: String; Endereco: String): Integer; StdCall; External 'BEMAFI32.DLL'; //2017-0725 Cancelar vinculados
+  function Bematech_FI_EstornoNaoFiscalVinculadoPosteriorMFD(FormaPagamento: AnsiString; Valor: AnsiString; COOCupom: AnsiString; COOCDC: AnsiString; CPF: AnsiString; Nome: AnsiString; Endereco: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL'; //2015-10-22 Cancelar vinculados
+  function Bematech_FI_EstornoNaoFiscalVinculadoMFD(CPF: AnsiString; Nome: AnsiString; Endereco: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL'; //2017-0725 Cancelar vinculados
 
 
-  function Bematech_FI_FechaCupomResumido(FormaPagamento: String; Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_FechaCupom(FormaPagamento: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorPago: String; Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_FechaCupomResumido(FormaPagamento: AnsiString; Mensagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_FechaCupom(FormaPagamento: AnsiString; AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString; ValorPago: AnsiString; Mensagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ResetaImpressora:Integer; StdCall; External 'BEMAFI32.DLL';
 
-  function Bematech_FI_IniciaFechamentoCupom(AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_IniciaFechamentoCupom(AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
-  function Bematech_FI_EfetuaFormaPagamento(FormaPagamento: String; ValorFormaPagamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_EfetuaFormaPagamentoDescricaoForma(FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string ): integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_TerminaFechamentoCupom(Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_EstornoFormasPagamento(FormaOrigem: String; FormaDestino: String; Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UsaUnidadeMedida(UnidadeMedida: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AumentaDescricaoItem(Descricao: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_EfetuaFormaPagamento(FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_EfetuaFormaPagamentoDescricaoForma(FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString; DescricaoFormaPagto: AnsiString ): integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_TerminaFechamentoCupom(Mensagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_EstornoFormasPagamento(FormaOrigem: AnsiString; FormaDestino: AnsiString; Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UsaUnidadeMedida(UnidadeMedida: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AumentaDescricaoItem(Descricao: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   // Funções dos Relatórios Fiscais //////////////////////////////////////////////
 
   function Bematech_FI_LeituraX:Integer; StdCall; External 'BEMAFI32.DLL' ;
-  function Bematech_FI_ReducaoZ(Data: String; Hora: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_RelatorioGerencial(Texto: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UsaRelatorioGerencialMFD(Texto: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ReducaoZ(Data: AnsiString; Hora: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_RelatorioGerencial(Texto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UsaRelatorioGerencialMFD(Texto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FechaRelatorioGerencial:Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalData(DataInicial: String; DataFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalReducao(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialData(DataInicial: String; DataFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialReducao(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DownloadMFD(sArquivo:String; sTipo:String; DataInicial: String; DataFinal: String; sUsuario: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_FormatoDadosMFD( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ArquivoMFD( cNomeArquivoOrigem: String; cDadoInicial: String; cDadoFinal: String; cTipoDownload: String; cUsuario: String; iTipoGeracao: integer; cChavePublica: String; cChavePrivada: String; iUnicoArquivo: integer ): Integer;  StdCall; External'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalData(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalReducao(ReducaoInicial: AnsiString; ReducaoFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialData(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialReducao(ReducaoInicial: AnsiString; ReducaoFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DownloadMFD(sArquivo:AnsiString; sTipo:AnsiString; DataInicial: AnsiString; DataFinal: AnsiString; sUsuario: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_FormatoDadosMFD( ArquivoOrigem: AnsiString; ArquivoDestino: AnsiString; TipoFormato: AnsiString; TipoDownload: AnsiString; ParametroInicial: AnsiString; ParametroFinal: AnsiString; UsuarioECF: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ArquivoMFD( cNomeArquivoOrigem: AnsiString; cDadoInicial: AnsiString; cDadoFinal: AnsiString; cTipoDownload: AnsiString; cUsuario: AnsiString; iTipoGeracao: integer; cChavePublica: AnsiString; cChavePrivada: AnsiString; iUnicoArquivo: integer ): Integer;  StdCall; External'BEMAFI32.DLL';
 
 
-  function Bematech_FI_DownloadMF( Arquivo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DownloadMF( Arquivo: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 
   //
   // Novas leituras MFD
   //
-  function Bematech_FI_LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_GeraRegistrosCAT52MFD(cArquivo,cData: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_GeraRegistrosCAT52MFDEx( cArquivo, cData, cArqDestino: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_GeraRegistrosCAT52MFD(cArquivo,cData: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_GeraRegistrosCAT52MFDEx( cArquivo, cData, cArqDestino: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //
-  function BemaGeraRegistrosTipoE( cArqMFD: string; cArqTXT: string; cDataInicial: string; cDataFinal: string; cRazao: string; cEndereco: string; cPAR1: string; cCMD: string; cPAR2: string; cPAR3: string; cPAR4: string; cPAR5: string; cPAR6: string; cPAR7: string; cPAR8: string; cPAR9: string; cPAR10: string; cPAR11: string; cPAR12: string; cPAR13: string; cPAR14: string ): Integer; StdCall; External 'BemaMFD2.dll';
+  function BemaGeraRegistrosTipoE( cArqMFD: AnsiString; cArqTXT: AnsiString; cDataInicial: AnsiString; cDataFinal: AnsiString; cRazao: AnsiString; cEndereco: AnsiString; cPAR1: AnsiString; cCMD: AnsiString; cPAR2: AnsiString; cPAR3: AnsiString; cPAR4: AnsiString; cPAR5: AnsiString; cPAR6: AnsiString; cPAR7: AnsiString; cPAR8: AnsiString; cPAR9: AnsiString; cPAR10: AnsiString; cPAR11: AnsiString; cPAR12: AnsiString; cPAR13: AnsiString; cPAR14: AnsiString ): Integer; StdCall; External 'BemaMFD2.dll';
 
   // Funções das Operações Não Fiscais ///////////////////////////////////////////
 
-  function Bematech_FI_RecebimentoNaoFiscal(IndiceTotalizador: String; Valor: String; FormaPagamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AbreComprovanteNaoFiscalVinculado(FormaPagamento: String; Valor: String; NumeroCupom: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UsaComprovanteNaoFiscalVinculado(Texto: String): Integer; StdCall; External 'BEMAFI32.DLL'
+  function Bematech_FI_RecebimentoNaoFiscal(IndiceTotalizador: AnsiString; Valor: AnsiString; FormaPagamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AbreComprovanteNaoFiscalVinculado(FormaPagamento: AnsiString; Valor: AnsiString; NumeroCupom: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UsaComprovanteNaoFiscalVinculado(Texto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL'
   function Bematech_FI_FechaComprovanteNaoFiscalVinculado:Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Sangria(Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Suprimento(Valor: String; FormaPagamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Sangria(Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Suprimento(Valor: AnsiString; FormaPagamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   // Funções de Informações da Impressora ////////////////////////////////////////
 
-  function Bematech_FI_NumeroSerie(NumeroSerie: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroSerieMFD(NumeroSerie: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_SubTotal(SubTotal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroCupom(NumeroCupom: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroSerie(NumeroSerie: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroSerieMFD(NumeroSerie: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_SubTotal(SubTotal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroCupom(NumeroCupom: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_LeituraXSerial: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VersaoFirmware(VersaoFirmware: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_CGC_IE(CGC: String; IE: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_GrandeTotal(GrandeTotal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Cancelamentos(ValorCancelamentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Descontos(ValorDescontos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroOperacoesNaoFiscais(NumeroOperacoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroCuponsCancelados(NumeroCancelamentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroIntervencoes(NumeroIntervencoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroReducoes(NumeroReducoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroSubstituicoesProprietario(NumeroSubstituicoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UltimoItemVendido(NumeroItem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ClicheProprietario(Cliche: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroCaixa(NumeroCaixa: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroLoja(NumeroLoja: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_SimboloMoeda(SimboloMoeda: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_MinutosLigada(Minutos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_MinutosImprimindo(Minutos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaModoOperacao(Modo: string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaEpromConectada(Flag: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VersaoFirmware(VersaoFirmware: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_CGC_IE(CGC: AnsiString; IE: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_GrandeTotal(GrandeTotal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Cancelamentos(ValorCancelamentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Descontos(ValorDescontos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroOperacoesNaoFiscais(NumeroOperacoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroCuponsCancelados(NumeroCancelamentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroIntervencoes(NumeroIntervencoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroReducoes(NumeroReducoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroSubstituicoesProprietario(NumeroSubstituicoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UltimoItemVendido(NumeroItem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ClicheProprietario(Cliche: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroCaixa(NumeroCaixa: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroLoja(NumeroLoja: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_SimboloMoeda(SimboloMoeda: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_MinutosLigada(Minutos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_MinutosImprimindo(Minutos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaModoOperacao(Modo: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaEpromConectada(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FlagsFiscais(Var Flag: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ValorPagoUltimoCupom(ValorCupom: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DataHoraImpressora(Data: String; Hora: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ValorPagoUltimoCupom(ValorCupom: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DataHoraImpressora(Data: AnsiString; Hora: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   //Convênio 0909 Início
-  function Bematech_FI_VendaLiquida(Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VendaLiquida(Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //Convênio 0909 Fim
   //
   // Contadores
   //
-  function Bematech_FI_ContadoresTotalizadoresNaoFiscais(Contadores: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorCupomFiscalMFD(CuponsEmitidos : String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorRelatoriosGerenciaisMFD (Relatorios : String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorComprovantesCreditoMFD(Comprovantes : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadoresTotalizadoresNaoFiscais(Contadores: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorCupomFiscalMFD(CuponsEmitidos : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorRelatoriosGerenciaisMFD (Relatorios : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorComprovantesCreditoMFD(Comprovantes : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //
 
 
-  function Bematech_FI_VerificaTotalizadoresNaoFiscais(Totalizadores: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DataHoraReducao(Data: String; Hora: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DataMovimento(Data: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaTruncamento(Flag: string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Acrescimos(ValorAcrescimos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorBilhetePassagem(ContadorPassagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaAliquotasIss(Flag: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaFormasPagamento(Formas: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaRecebimentoNaoFiscal(Recebimentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaDepartamentos(Departamentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaTotalizadoresNaoFiscais(Totalizadores: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DataHoraReducao(Data: AnsiString; Hora: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DataMovimento(Data: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaTruncamento(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Acrescimos(ValorAcrescimos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorBilhetePassagem(ContadorPassagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaAliquotasIss(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaFormasPagamento(Formas: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaRecebimentoNaoFiscal(Recebimentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaDepartamentos(Departamentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_VerificaTipoImpressora(Var TipoImpressora: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaTotalizadoresParciais(Totalizadores: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_RetornoAliquotas(Aliquotas: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaTotalizadoresParciais(Totalizadores: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_RetornoAliquotas(Aliquotas: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_VerificaEstadoImpressora(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DadosUltimaReducao(DadosReducao: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DadosUltimaReducao(DadosReducao: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_MonitoramentoPapel(Var Linhas: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaIndiceAliquotasIss(Flag: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ValorFormaPagamento(FormaPagamento: String; Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ValorTotalizadorNaoFiscal(Totalizador: String; Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_MarcaModeloTipoImpressoraMFD(Marca, Modelo, Tipo : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaIndiceAliquotasIss(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ValorFormaPagamento(FormaPagamento: AnsiString; Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ValorTotalizadorNaoFiscal(Totalizador: AnsiString; Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_MarcaModeloTipoImpressoraMFD(Marca, Modelo, Tipo : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   // Funções de Autenticação e Gaveta de Dinheiro ////////////////////////////////
 
   function Bematech_FI_Autenticacao:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_Autenticacao';
-  function Bematech_FI_ProgramaCaracterAutenticacao(Parametros: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ProgramaCaracterAutenticacao(Parametros: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_AcionaGaveta:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_AcionaGaveta';
   function Bematech_FI_VerificaEstadoGaveta(Var EstadoGaveta: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
 
@@ -209,23 +209,23 @@ uses
   function Bematech_FI_RetornoImpressora(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FechaPortaSerial:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_FechaPortaSerial';
   function Bematech_FI_MapaResumo:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_MapaResumo';
-  function Bematech_FI_AberturaDoDia( ValorCompra: string; FormaPagamento: string ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AberturaDoDia( ValorCompra: AnsiString; FormaPagamento: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FechamentoDoDia:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_FechamentoDoDia';
   function Bematech_FI_ImprimeConfiguracoesImpressora:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeConfiguracoesImpressora';
   function Bematech_FI_ImprimeDepartamentos:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeDepartamentos';
   function Bematech_FI_RelatorioTipo60Analitico:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60Analitico';
   function Bematech_FI_RelatorioTipo60Mestre:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60Mestre';
   function Bematech_FI_VerificaImpressoraLigada:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_VerificaImpressoraLigada';
-  function Bematech_FI_ImprimeCheque( Banco: String; Valor: String; Favorecido: String; Cidade: String; Data: String; Mensagem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ImprimeCheque( Banco: AnsiString; Valor: AnsiString; Favorecido: AnsiString; Cidade: AnsiString; Data: AnsiString; Mensagem: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_SegundaViaNaoFiscalVinculadoMFD(): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DadosUltimaReducaoMFD(DadosReducao : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DadosUltimaReducaoMFD(DadosReducao : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //
-  function Bematech_FI_NomeiaRelatorioGerencialMFD (Indice, Descricao : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AbreRelatorioGerencialMFD(Indice : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaRelatorioGerencialMFD(Relatorios : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NomeiaRelatorioGerencialMFD (Indice, Descricao : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AbreRelatorioGerencialMFD(Indice : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaRelatorioGerencialMFD(Relatorios : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   {Sandro Silva 2016-03-01 inicio}
-  function Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(FlagRetorno : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(FlagRetorno : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_RetornoImpressoraMFD(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer; Var ST3: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
   {Sandro Silva 2016-03-01 final}
 

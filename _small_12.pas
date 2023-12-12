@@ -34,11 +34,11 @@ uses
   //                                 //
   /////////////////////////////////////
 
-  function  DLLG2_DefineTimeout( MHandle:integer; TempoMaximo:integer ) :integer;  stdcall;external 'DLLG2.DLL';
-  function  DLLG2_LeTimeout(Porta : Integer) : Integer; stdcall; external 'dllg2.dll';
-  function  DLLG2_IniciaDriver(porta:Pchar):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_EncerraDriver(MHandle:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_Versao(Versao : Pchar; TamVersao:integer):pchar; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_DefineTimeout(MHandle: integer; TempoMaximo: integer): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_LeTimeout(Porta: Integer): Integer; stdcall; external 'dllg2.dll';
+  function  DLLG2_IniciaDriver(porta: AnsiString): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_EncerraDriver(MHandle: integer): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_Versao(Versao: PAnsiChar; TamVersao: integer): PAnsiChar; stdcall; external 'DLLG2.DLL';
   function  DLLG2_SetaArquivoLog(NomeArquivoLog:Pchar):integer; stdcall;external 'DLLG2.DLL';
   function  DLLG2_LimpaParams(MHandle:integer):integer; stdcall;external 'DLLG2.DLL';
   function  DLLG2_AdicionaParam(MHandle:integer;NomePar:Pchar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL';
