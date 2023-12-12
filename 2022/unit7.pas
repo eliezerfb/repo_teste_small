@@ -9231,6 +9231,8 @@ var
   fDesconto, fTotal9, fAliquota, fRetencao, fST : Real;
   sReg14: String;
   sReg16: String;
+  fRateioDoDesconto: Real; // Sandro Silva 2023-12-12
+  dvCredICMSSN: Double; // Sandro Silva 2023-12-12
 begin
   // Não faz nada quando entra a 1 vez
   if Form7.sModulo <> 'CANCELA' then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
@@ -9287,6 +9289,7 @@ begin
               fAliquota := 2.82;
             end;
 
+            {Sandro Silva 2023-12-12 inicio
             Form7.IBQuery99.Close;
             Form7.IBQuery99.SQL.Clear;
             Form7.IBQuery99.SQL.Add('select sum(Itens001.TOTAL) from ITENS001 ,ESTOQUE where ESTOQUE.DESCRICAO=ITENS001.DESCRICAO and (ESTOQUE.CSOSN=''101'' or ESTOQUE.CSOSN=''201'' or ESTOQUE.CSOSN=''900'') and ITENS001.NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString)+' ');
@@ -9298,7 +9301,8 @@ begin
             begin
               if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) <> 0 then
               begin
-                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset15.Edit;
                 Form7.ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,Form7.sAproveitamento,'');                      // Retira o anterios
               end;
 
@@ -9306,10 +9310,58 @@ begin
 
               if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
               begin
-                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset15.Edit;
                 Form7.ibDataSet15COMPLEMENTO.AsString := Form7.sAproveitamento + Form7.ibDataSet15COMPLEMENTO.AsString;                                // Coloca o novo
               end;
             end;
+            }
+
+            Form7.IBQuery99.Close;
+            Form7.IBQuery99.SQL.Clear;
+            Form7.IBQuery99.SQL.Text :=
+              'select ITENS001.CODIGO, ITENS001.TOTAL ' +
+              ' from ITENS001 ' +
+              'where (coalesce(ITENS001.CSOSN, '''') in (''101'', ''201'',''900'')) ' +
+              ' and ITENS001.NUMERONF='+QuotedStr(Form7.ibDataSet15NUMERONF.AsString);
+            Form7.IBQuery99.Open;
+
+            fST := 0.00;
+            Form7.IBQuery99.First;
+            while Form7.IBQuery99.Eof = False do
+            begin
+              if (Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.IBQuery99.FieldByname('TOTAL').AsFloat) <> 0 then
+              begin
+                fRateioDoDesconto  := Arredonda((Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat / Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat * Form7.IBQuery99.FieldByname('TOTAL').AsFloat),2);
+
+                dvCredICMSSN := StrToFloat(FormatFloat('0.00', (Form7.IBQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) * fAliquota / 100));
+
+                fST := fST + dvCredICMSSN;
+
+              end;
+
+              Form7.IBQuery99.Next;
+            end;
+
+            if FST > 0 then
+            begin
+              if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) <> 0 then
+              begin
+                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset15.Edit;
+                Form7.ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,Form7.sAproveitamento,'');                      // Retira o anterios
+              end;
+
+              Form7.sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[fST])) +'; ');  // Gera o novo e grava em sAproveitamento
+
+              if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
+              begin
+                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset15.Edit;
+                Form7.ibDataSet15COMPLEMENTO.AsString := Form7.sAproveitamento + Form7.ibDataSet15COMPLEMENTO.AsString;                                // Coloca o novo
+              end;
+            end;
+            {Sandro Silva 2023-12-12 fim}
           except
           end;
         end else
