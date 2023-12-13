@@ -97,7 +97,10 @@ var
   stpRest_VeiculosNovos : String;
   dQtdAcumulado: Double;
   IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
+  bAproveitamentoDeCredito: Boolean; // Sandro Silva 2023-12-13
 begin
+  bAproveitamentoDeCredito := False; // Sandro Silva 2023-12-13
+  
   Form7.ibDataSet24.Close;
   Form7.ibDataSet24.SelectSQL.Clear;
   Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NUMERONF='+QuotedStr(Copy(Form7.ibDataSet15NUMERONF.AsString,1,12))+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString) );
@@ -1501,6 +1504,8 @@ begin
           end;
         end;
 
+        bAproveitamentoDeCredito := True; // Sandro Silva 2023-12-13
+
         Form7.spdNFeDataSets.IncluirItem;
 
         // Informações Referentes aos ITens da NFe
@@ -1514,18 +1519,31 @@ begin
         Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := '0.00'; // Valor Comercializado do Item
         Form7.spdNFeDataSets.Campo('vProd_I11').Value    := '0.00'; // Valor Total Bruto do Item
 
+        {Sandro Silva 2023-12-13 inicio
+
         // Campo obrigatório
         Form7.spdNFeDataSets.Campo('indTot_I17b').Value   := '0'; // 0 - O valor do Item NÃO compõe o valor total da nota 1 - O valor do Item compõe o valor total da nota
         Form7.spdNFeDataSets.Campo('uTrib_I13').Value     := 'UND'; // Unidade de Medida Tributável do Item
-
         Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '1'; // Quantidade Tributável do Item
-//                    Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('VBC').AsFloat)),',','.');  // Valor Tributável do Item
         Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := StrTran(Alltrim(FormatFloat('##0.'+Replicate('0',StrToInt(Form1.ConfPreco)),Form7.ibDAtaset23.FieldByname('UNITARIO').AsFloat)),',','.'); // Valor Tributável do Item
-
         Form7.spdNFeDataSets.Campo('vBC_N15').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('VBC').AsFloat)),',','.');  // BC
         Form7.spdNFeDataSets.Campo('vICMS_N17').Value  := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('VICMS').AsFloat)),',','.');     // Valor do ICMS em Reais
         Form7.spdNFeDataSets.Campo('modBC_N13').Value  := '3'; // Modalidade de determinação da Base de Cálculo - ver Manual
         Form7.spdNFeDataSets.Campo('pICMS_N16').Value  := '100'; // Alíquota do ICMS em Percentual
+        }
+        Form7.spdNFeDataSets.Campo('cEAN_I03').Value     := 'SEM GTIN'; // EAN do Produto // Sandro Silva 2023-12-13
+        Form7.spdNFeDataSets.Campo('cEANTrib_I12').Value := 'SEM GTIN'; // EAN do Produto // Sandro Silva 2023-12-13
+
+        // Campo obrigatório Card 7634
+        Form7.spdNFeDataSets.Campo('indTot_I17b').Value  := '0'; // 0 - O valor do Item NÃO compõe o valor total da nota 1 - O valor do Item compõe o valor total da nota
+        Form7.spdNFeDataSets.Campo('uTrib_I13').Value    := 'UND'; // Unidade de Medida Tributável do Item
+        Form7.spdNFeDataSets.Campo('qTrib_I14').Value    := '0.00'; // Quantidade Tributável do Item
+        Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
+        Form7.spdNFeDataSets.Campo('vBC_N15').Value      := '0.00';  // BC
+        Form7.spdNFeDataSets.Campo('vICMS_N17').Value    := FormatFloatXML(Form7.ibDAtaset23.FieldByname('VICMS').AsFloat);     // Valor do ICMS em Reais
+        Form7.spdNFeDataSets.Campo('modBC_N13').Value    := '3'; // Modalidade de determinação da Base de Cálculo - ver Manual
+        Form7.spdNFeDataSets.Campo('pICMS_N16').Value    := '0.00'; // Alíquota do ICMS em Percentual
+        {Sandro Silva 2023-12-13 fim}
 
         if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
         begin
@@ -1646,6 +1664,10 @@ begin
   {Sandro Silva 2023-09-04 fim}
 
   Form7.spdNFeDataSets.Campo('vProd_W07').Value   := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('MERCADORIA').AsFloat)),',','.'); // Valor Total de Produtos
+  {Sandro Silva 2023-12-13 inicio}
+  if bAproveitamentoDeCredito then
+    Form7.spdNFeDataSets.Campo('vProd_W07').Value   := '0.00';
+  {Sandro Silva 2023-12-13 fim}
   Form7.spdNFeDataSets.Campo('vFrete_W08').Value  := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('FRETE').AsFloat)),',','.'); // Valor Total do Frete
   Form7.spdNFeDataSets.Campo('vSeg_W09').Value    := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('SEGURO').AsFloat)),',','.'); // Valor Total do Seguro
   Form7.spdNFeDataSets.Campo('vDesc_W10').Value   := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('DESCONTO').AsFloat)),',','.'); // Valor Total de Desconto
