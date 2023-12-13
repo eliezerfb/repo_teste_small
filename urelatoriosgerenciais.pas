@@ -2123,7 +2123,7 @@ begin
 
     if Trim(sCaixa) <> '' then
     begin
-      cLinhaCaixa := 'Caixa(s): ' + sCaixa;
+      cLinhaCaixa := 'Caixa(s): ' + StringReplace(sCaixa, #39, EmptyStr, [rfReplaceAll]); // Sandro Silva 2023-12-13 cLinhaCaixa := 'Caixa(s): ' + sCaixa;
 
       if Length(cLinhaCaixa) > 45 then
       begin
