@@ -31,7 +31,7 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
     Left = 400
     Top = 24
     object cdsTotalPorFormaPgtoFORMA: TStringField
-      DisplayLabel = 'Forma'
+      DisplayLabel = 'Forma de pagamento'
       FieldName = 'FORMA'
       Size = 100
     end
@@ -288,5 +288,11 @@ object dmRelTotalizadorVendasGeral: TdmRelTotalizadorVendasGeral
       Visible = False
       Size = 80
     end
+  end
+  object qryEmitente: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    Left = 296
+    Top = 32
   end
 end

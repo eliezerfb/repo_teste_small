@@ -42,6 +42,7 @@ type
     cdsTotalCSOSNTIPO: TStringField;
     cdsTotalCFOPTempTIPO: TStringField;
     cdsTotalCSOSNTempTIPO: TStringField;
+    qryEmitente: TIBQuery;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -66,7 +67,8 @@ type
     procedure CarregaItensDocumento(AcPedido, AcCaixa: String);
     procedure CarregarTotalItens(AcPedido, AcCaixa: String);
     procedure CarregaDescontoItem(AcPedido, AcCaixa, AcItem: String);
-    procedure CarregarAcrescimoDoc(AcPedido, AcCaixa: String);      
+    procedure CarregarAcrescimoDoc(AcPedido, AcCaixa: String);
+    procedure CarregaDadosEmitente;     
   end;
 
 var
@@ -175,7 +177,7 @@ begin
         slSQL.Add('FROM VENDAS V');
         slSQL.Add('WHERE');
         slSQL.Add('    (V.EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
-        slSQL.Add('    AND (V.EMITIDA=''S'')');
+        slSQL.Add('    AND (V.STATUS CONTAINING ''Autorizado'')');
         slSQL.Add('    AND (((V.FINNFE = ''1'') and (V.MODELO = ''55'')) or ((coalesce(V.FINNFE, '''') = '''') and (V.MODELO <> ''55'')))');
       end;
     end;
@@ -189,6 +191,7 @@ end;
 
 procedure TdmRelTotalizadorVendasGeral.setDataBase(AoDataBase: TIBDatabase);
 begin
+  qryEmitente.Database             := AoDataBase;
   qryDocumentosDescAcresc.Database := AoDataBase;
   qryFormaPgto.Database            := AoDataBase;
   qryDescontoItemCFOP.Database     := AoDataBase;
@@ -235,14 +238,19 @@ begin
     end;
     else
     begin
-      qryFormaPgto.SQL.Add('    , CASE WHEN COALESCE(RECEBER.FORMADEPAGAMENTO,'''') = '''' THEN ''Não informado'' ELSE RECEBER.FORMADEPAGAMENTO END AS FORMA');
-      qryFormaPgto.SQL.Add('    , SUM(CASE WHEN (COALESCE(RECEBER.NUMERONF,'''') <> '''') THEN COALESCE(RECEBER.VALOR_DUPL, 0) ELSE VENDAS.TOTAL END) AS TOTAL');
+      qryFormaPgto.SQL.Add('    , COALESCE(COALESCE(RECEBER.FORMADEPAGAMENTO, PAGAMENT.FORMA), ''Não informado'') AS FORMA');
+      qryFormaPgto.SQL.Add('    , SUM(COALESCE(COALESCE(RECEBER.VALOR_DUPL, PAGAMENT.VALOR), VENDAS.TOTAL)) AS TOTAL');
       qryFormaPgto.SQL.Add('FROM VENDAS');
       qryFormaPgto.SQL.Add('INNER JOIN DOCUMENTOS');
       qryFormaPgto.SQL.Add('    ON (DOCUMENTOS.PEDIDO=VENDAS.NUMERONF)');
       qryFormaPgto.SQL.Add('    AND (DOCUMENTOS.DATA=VENDAS.EMISSAO)');
       qryFormaPgto.SQL.Add('LEFT JOIN RECEBER');
       qryFormaPgto.SQL.Add('    ON (RECEBER.NUMERONF=VENDAS.NUMERONF)');
+      // Se for INTEGRACAO = CAIXA Vai gerar registro no PAGAMENT e não no RECEBER
+      qryFormaPgto.SQL.Add('LEFT JOIN PAGAMENT');
+      qryFormaPgto.SQL.Add('    ON (PAGAMENT.DATA=VENDAS.EMISSAO)');
+      qryFormaPgto.SQL.Add('    AND (PAGAMENT.CLIFOR=VENDAS.CLIENTE)');
+      qryFormaPgto.SQL.Add('    AND (PAGAMENT.PEDIDO=(SUBSTRING(VENDAS.NUMERONF FROM 4 FOR 6)))');
       qryFormaPgto.SQL.Add('GROUP BY DOCUMENTOS.TIPO, VENDAS.NUMERONF, FORMA');
       qryFormaPgto.SQL.Add('ORDER BY FORMA');
     end;
@@ -587,6 +595,14 @@ begin
   qryNFs.ParamByName('XDATAFIM').AsDate := FdDataFim;
   qryNFs.Open;
   qryNFs.First;
+end;
+
+procedure TdmRelTotalizadorVendasGeral.CarregaDadosEmitente;
+begin
+  qryEmitente.Close;
+  qryEmitente.SQL.Clear;
+  qryEmitente.SQL.Add('SELECT * FROM EMITENTE');
+  qryEmitente.Open;
 end;
 
 end.
