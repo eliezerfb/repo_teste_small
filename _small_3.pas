@@ -9,7 +9,7 @@ interface
 
 uses
   Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB//, DBTables
+  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB
   , DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7, md5;
 
   // Alterado p/versão 2005 07/01/2005 - RONEI                                //
@@ -535,7 +535,7 @@ type
       _Daruma_FIMFD_GerarAtoCotepePafData: function(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall;
       //function Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni: AnsiString; COOFim: AnsiString): Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FIMFD_GerarAtoCotepePafCOO: function(COOIni: AnsiString; COOFim: AnsiString): Integer; StdCall;
-      procedure Import(var Proc: pointer; Name: Pchar);
+      procedure Import(var Proc: pointer; Name: PAnsiChar);
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -547,6 +547,7 @@ type
       function Daruma_Registry_AplMensagem2(AplMsg1: String): Integer;
       //
       function Daruma_Registry_MFD_LeituraMFCompleta( Valor: String ): Integer;
+
       function Daruma_Registry_Porta(Porta: String ): Integer;
       function Daruma_Registry_Path(Path: String ): Integer;
       function Daruma_Registry_Status(Status: String ): Integer;
@@ -939,7 +940,7 @@ begin
   if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
   begin
     //
-    _ecf03.Daruma_Registry_Porta(pchar(pP1));
+    _ecf03.Daruma_Registry_Porta(AnsiString(pP1)); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar(pP1));
     Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
     //
     for I := 1 to 7 do
@@ -947,7 +948,7 @@ begin
       if Retorno <> 1 then
       begin
         ShowMessage('DARUMA'+Chr(10)+'Testando COM'+StrZero(I,1,0));
-        _ecf03.Daruma_Registry_Porta(pchar('COM'+StrZero(I,1,0)));
+        _ecf03.Daruma_Registry_Porta(AnsiString('COM'+StrZero(I,1,0))); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar('COM'+StrZero(I,1,0)));
         Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
         if Retorno = 1 then
           Form1.sPorta := 'COM'+StrZero(I,1,0);
@@ -956,7 +957,7 @@ begin
     //
     if Retorno = 1 then Result := True else Result := False;
   end else Result := True;
-  //
+  {Sandro Silva 2023-12-13 inicio
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('IDENT DO PAF'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('MEIOS DE PAGTO'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('VENDA PRAZO'));
@@ -973,7 +974,21 @@ begin
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('TRANSF MESA'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('MESAS ABERTAS'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('PARAM CONFIG'));
-  //
+  }
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('IDENT DO PAF'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('MEIOS DE PAGTO'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('VENDA PRAZO'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('DAV Emitidos'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CARTAO TEF'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('Orcamento'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CONF CONTA CLI'));// 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('TRANSF CONT CLI')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CONT CLI ABERTA')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CONF MESA'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('TRANSF MESA'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('MESAS ABERTAS'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('PARAM CONFIG'));
+  {Sandro Silva 2023-12-13 fim}
 end;
 
 // ------------------------------ //
@@ -1046,7 +1061,7 @@ begin
   {Sandro Silva 2017-11-13 final HOMOLOGA 2017}
   //
   Sleep(200);
-  //
+  {Sandro Silva 2023-12-13 inicio
   if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label9.Caption)) ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO1.AsFloat]));
   if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar('Dinheiro')                    ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO2.AsFloat]));
   if Form1.ibDataSet25PAGAR.AsFloat      <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label8.Caption)),Format('%10.2n',[Form1.ibDataSet25PAGAR.AsFloat])      );
@@ -1059,6 +1074,20 @@ begin
   if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label23.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR06.AsFloat])   );
   if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label24.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR07.AsFloat])   );
   if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label25.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR08.AsFloat])   );
+  }
+  if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label9.Caption)) ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO1.AsFloat]));
+  if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString('Dinheiro')                    ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO2.AsFloat]));
+  if Form1.ibDataSet25PAGAR.AsFloat      <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label8.Caption)),Format('%10.2n',[Form1.ibDataSet25PAGAR.AsFloat])      );
+  if Form1.ibDataSet25DIFERENCA_.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label17.Caption)),Format('%10.2n' ,[Form1.ibDataSet25DIFERENCA_.AsFloat]));
+  if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label18.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR01.AsFloat])   );
+  if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label19.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR02.AsFloat])   );
+  if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label20.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR03.AsFloat])   );
+  if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label21.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR04.AsFloat])   );
+  if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label22.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR05.AsFloat])   );
+  if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label23.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR06.AsFloat])   );
+  if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label24.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR07.AsFloat])   );
+  if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label25.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR08.AsFloat])   );
+  {Sandro Silva 2023-12-13 fim}
 {
   if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then Daruma_FI_EfetuaFormaPagamentoDescricaoForma(pchar(AllTrim(Form2.Label9.Caption)) ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO1.AsFloat]),'');
   if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then Daruma_FI_EfetuaFormaPagamentoDescricaoForma(pchar('Dinheiro')                    ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO2.AsFloat]),'');
@@ -1304,7 +1333,7 @@ end;
 // -------------------------------- //
 function _ecf03_NovaAliquota(Pp1: String):Boolean;
 begin
-  if _ecf03_CodeErro(_ecf03.Daruma_FI_ProgramaAliquota( pchar( pP1 ),0)) = 0 then
+  if _ecf03_CodeErro(_ecf03.Daruma_FI_ProgramaAliquota(AnsiString( pP1 ),0)) = 0 then // Sandro Silva 2023-12-13   if _ecf03_CodeErro(_ecf03.Daruma_FI_ProgramaAliquota( pchar( pP1 ),0)) = 0 then
     Result := True
   else
     Result := False;
@@ -1356,7 +1385,7 @@ begin
     //
   end else
   begin
-    I := _ecf03.Daruma_FIMFD_DownloadDaMFD(pchar(pP2),pchar(pP3));
+    I := _ecf03.Daruma_FIMFD_DownloadDaMFD(AnsiString(pP2), AnsiString(pP3)); // Sandro Silva 2023-12-13 I := _ecf03.Daruma_FIMFD_DownloadDaMFD(pchar(pP2),pchar(pP3));
   end;
   //
   if Form7.sMfd = '2' then
@@ -1393,79 +1422,6 @@ begin
   end;
   //
 
-
-{
-  //
-  Deletefile(pChar('c:\DarumaATOCOTEPE_DARUMA.txt'));
-  Deletefile(pChar('c:\RETORNO.TXT'));
-  //
-//  Daruma_Registry_AlterarRegistry('AtoCotepe','Path','c:\DARUMA');
-//  Daruma_Registry_AlterarRegistry('AtoCotepe','Beep','1');
-  //
-  //
-  if Form7.Label3.Caption = 'Data inicial:' then
-  begin
-    //
-    pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+'/'+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+'/'+Copy(DateToStr(Form7.DateTimePicker1.Date),9,2);
-    pP3 := Copy(DateToStr(Form7.DateTimePicker2.Date),1,2)+'/'+Copy(DateToStr(Form7.DateTimePicker2.Date),4,2)+'/'+Copy(DateToStr(Form7.DateTimePicker2.Date),9,2);
-    //
-    // ShowMessage(pP2+chr(10)+pP3);
-    //
-  end else
-  begin
-    //
-    pP2 := StrZero(StrToInt(pP2),6,0);
-    pP3 := StrZero(StrToInt(pP3),6,0);
-    //
-  end;
-  //
-  if Form7.sMfd = '2' then
-  begin
-    //
-    if Form7.Label3.Caption = 'Data inicial:' then
-    begin
-      //
-      pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),7,4);
-      pP3 := Copy(DateToStr(Form7.DateTimePicker2.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker2.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker2.Date),7,4);
-      I := Daruma_FIMFD_GerarAtoCotepePafData(pP2,pP3); // Por Data
-      //
-    end else
-    begin
-      I := Daruma_FIMFD_GerarAtoCotepePafCoo(pP2,pP3); // Por COO
-    end;
-    //
-  end else
-  begin
-    I := Daruma_FIMFD_DownloadDaMFD(pchar(pP2),pchar(pP3));
-  end;
-  //
-  if I = 1 then
-  begin
-    //
-    if FileExists('C:\RETORNO.TXT') then
-    begin
-      CopyFile(pChar('C:\RETORNO.TXT'),pChar(pP1),True);
-      ShowMessage('O seguinte arquivo será gravado: '+pP1);
-    end;
-    //
-    if FileExists('DarumaATOCOTEPE_DARUMA.txt') then
-    begin
-      CopyFile(pChar('DarumaATOCOTEPE_DARUMA.txt'),pChar(pP1),True);
-      ShowMessage('O seguinte arquivo será gravado: '+pP1);
-    end;
-    //
-    Result := True;
-//    Deletefile(pChar('c:\DarumaATOCOTEPE_DARUMA.txt'));
-//    Deletefile(pChar('c:\RETORNO.TXT'));
-    //
-    //
-  end else
-  begin
-    _ecf03_CodeErro(I);
-    Result := False;
-  end;
-  //
-}
 end;
 
 function _ecf03_LeituraMemoriaFiscal(pP1, pP2: String):Boolean;
@@ -1501,7 +1457,7 @@ begin
   //
   pP6 := Copy(pP6+'   ',1,3);
   pP5 := pP5 + '0';
-  //
+  {Sandro Silva 2023-12-13 inicio
   if _ecf03.Daruma_FI_VendeItemDepartamento( pchar(pP1),          //Codigo
                                       pchar(AllTrim(pP2)), // Descricao
                                       pChar(pP3),          // Aliquota
@@ -1512,6 +1468,19 @@ begin
                                       pChar('01'),         // IndiceDepartamento
                                       pChar(pP6),          // UnidadeMedida
                                       ) <> 1 then
+  }
+  if _ecf03.Daruma_FI_VendeItemDepartamento(AnsiString(pP1),          //Codigo
+                                      AnsiString(AllTrim(pP2)), // Descricao
+                                      AnsiString(pP3),          // Aliquota
+                                      AnsiString(pP5),          // ValorUnitario
+                                      AnsiString(pP4),          // Quantidade
+                                      '0',                 // Acrescimo
+                                      pP8,                 // Desconto
+                                      AnsiString('01'),         // IndiceDepartamento
+                                      AnsiString(pP6),          // UnidadeMedida
+                                      ) <> 1 then
+
+  {Sandro Silva 2023-12-13 fim}
   begin
     //
     if StrToInt(pP7) > 0 then pP7 := StrZero(StrToInt(pP7)*10,4,0); // Desconto %
@@ -1519,7 +1488,7 @@ begin
     //
     pP4 := '0'+Copy(pP4,1,4)+','+Copy(pP4,5,3);
     pP5 := Copy('00' + pP5,1,9);
-    //
+    {Sandro Silva 2023-12-13 inicio
     if StrToInt(pP7) > 0 then
     begin
                                           // Valor de desconto em %
@@ -1541,6 +1510,29 @@ begin
                            pchar(pP8)); // ValorDesconto: String com até 8 dígitos para desconto por valor (2 casas decimais) e 4 dígitos para desconto percentual.
 
     end;
+    }
+    if StrToInt(pP7) > 0 then
+    begin
+                                          // Valor de desconto em %
+      I := _ecf03.Daruma_FI_VendeItemTresDecimais(AnsiString(pP1),            // Codigo: STRING até 13 caracteres com o código do produto.
+                           AnsiString(Copy(AllTrim(pP2)+Replicate(' ',29),1,29)), // Descricao: STRING até 29 caracteres com a descrição do produto.
+                           AnsiString(pP3),            // Aliquota: STRING com o valor ou o índice da alíquota tributária. Se for o valor deve ser informado com o tamanho de 4 caracteres ou 5 com a vírgula. Se for o índice da alíquota deve ser 2 caracteres. Ex. (18,00 para o valor ou 05 para o índice).
+                           AnsiString(pP4),            // Quantidade: STRING com até 4 dígitos para quantidade inteira e 7 dígitos para quantidade fracionária. Na quantidade fracionária são 3 casas decimais.
+                           AnsiString(pP5),            // ValorUnitario: STRING até 9 dígitos para valor unitário
+                           '%',                   // TipoDesconto: 1 (um) caracter indicando a forma do desconto. '$' desconto por valor e '%' desconto percentual.
+                           AnsiString(pP7));
+    end else
+    begin                                         // Valor de desconto em $
+      I := _ecf03.Daruma_FI_VendeItemTresDecimais(AnsiString(pP1),            // Codigo: STRING até 13 caracteres com o código do produto.
+                           AnsiString(Copy(AllTrim(pP2)+Replicate(' ',29),1,29)), // Descricao: STRING até 29 caracteres com a descrição do produto.
+                           AnsiString(pP3),            // Aliquota: STRING com o valor ou o índice da alíquota tributária. Se for o valor deve ser informado com o tamanho de 4 caracteres ou 5 com a vírgula. Se for o índice da alíquota deve ser 2 caracteres. Ex. (18,00 para o valor ou 05 para o índice).
+                           AnsiString(pP4),            // Quantidade: STRING com até 4 dígitos para quantidade inteira e 7 dígitos para quantidade fracionária. Na quantidade fracionária são 3 casas decimais.
+                           AnsiString(pP5),            // ValorUnitario: STRING até 8 dígitos para valor unitário
+                           '$',                   // TipoDesconto: 1 (um) caracter indicando a forma do desconto. '$' desconto por valor e '%' desconto percentual.
+                           AnsiString(pP8)); // ValorDesconto: String com até 8 dígitos para desconto por valor (2 casas decimais) e 4 dígitos para desconto percentual.
+
+    end;
+    {Sandro Silva 2023-12-13 fim}
     if I = 1 then Result := True else
     begin
       _ecf03_CodeErro(I);
@@ -1858,9 +1850,15 @@ begin
     //
     iRetorno := 1;
     //
+    {Sandro Silva 2023-12-13 inicio
     if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(pchar(AllTrim(Form2.Label17.Caption)),pchar(''),pchar(''));
     if Form1.ibDataSet25PAGAR.AsFloat >      0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(pchar(AllTrim(Form2.Label8.Caption)) ,pchar(''),pchar(''));
     if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(pchar(AllTrim(Form2.Label9.Caption)) ,pchar(''),pchar(''));
+    }
+    if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(AnsiString(AllTrim(Form2.Label17.Caption)), AnsiString(''), AnsiString(''));
+    if Form1.ibDataSet25PAGAR.AsFloat >      0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(AnsiString(AllTrim(Form2.Label8.Caption)) , AnsiString(''), AnsiString(''));
+    if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(AnsiString(AllTrim(Form2.Label9.Caption)) , AnsiString(''), AnsiString(''));
+    {Sandro Silva 2023-12-13 fim}
     //
     for I := 1 to Length(sP1) do
     begin
@@ -1873,33 +1871,12 @@ begin
         begin
           //
           if sLinha = '' then sLinha:=' ';
-          iRetorno := _ecf03.Daruma_FI_UsaComprovanteNaoFiscalVinculado(pChar(sLinha));
+          iRetorno := _ecf03.Daruma_FI_UsaComprovanteNaoFiscalVinculado(AnsiString(sLinha)); // Sandro Silva 2023-12-13 iRetorno := _ecf03.Daruma_FI_UsaComprovanteNaoFiscalVinculado(pChar(sLinha));
           sLinha:='';
         end;
      end;
     end;
 
-
-{
-    for JiI := 1 to 1 do
-    begin
-      //
-      for I := 1 to 3 do if iRetorno = 1 then iRetorno := Daruma_FI_UsaComprovanteNaoFiscalVinculado('');
-      J := 0;
-      for I := 1 to Length(sP1) do
-      begin
-        J := J + 1;
-        if J = 600 then
-        begin
-          Daruma_FI_UsaComprovanteNaoFiscalVinculado(Copy(sP1,I-J+1,J));
-          J := 0;
-        end;
-      end;
-      //
-      if J > 0 then Daruma_FI_UsaComprovanteNaoFiscalVinculado(Copy(sP1,Length(sP1)-J+1,J));
-      //
-    end;
-}
     //
     if iRetorno = 1 then iRetorno := _ecf03.Daruma_FI_FechaComprovanteNaoFiscalVinculado();
     if (iRetorno = 1) or (iRetorno = -27) then Result   := True else
@@ -1919,41 +1896,37 @@ begin
   //
   if Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0 then
   begin
-    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('IDENT DO PAF'));
+    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('IDENT DO PAF')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('IDENT DO PAF'));
   end else
   begin
     if Pos('Período Solicitado: de',sP1)<>0 then
     begin
-      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MEIOS DE PAGTO'));
+      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('MEIOS DE PAGTO')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MEIOS DE PAGTO'));
     end else
     begin
       if (Pos('Documento: ',sP1)<>0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
       begin
-        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('VENDA PRAZO'));
+        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('VENDA PRAZO')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('VENDA PRAZO'));
       end else
       begin
         if Pos('DAV EMITIDOS',sP1)<>0 then
         begin
-          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('DAV Emitidos'));
+          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('DAV Emitidos')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('DAV Emitidos'));
         end else
         begin
           if Pos('AUXILIAR DE VENDA (DAV) - OR',sP1)<>0 then
           begin
-            _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('Orcamento'));
+            _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('Orcamento')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('Orcamento'));
           end else
           begin
             if Pos('CONFERENCIA DE CONTA',sP1)<>0 then
             begin
-              // 2016-02-04 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF CONTA'));
-              // 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-              _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF CONTA CLI'));
+              _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CONF CONTA CLI')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF CONTA CLI'));
             end else
             begin
               if Pos('TRANSFERENCIAS ENTRE CONTA',sP1)<>0 then
               begin
-                //Sandro Silva 2016-02-11 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF CONTA'));
-                // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-               _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF CONT CLI'));
+               _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('TRANSF CONT CLI')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF CONT CLI'));
               end else
               begin
                 // Sandro Silva 2016-02-04 POLIMIG  if (Pos('CONTAS DE CLIENTES ABERTAS',sP1)<>0) or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0) or (Pos('NENHUMA',sP1)<>0) then
@@ -1961,34 +1934,31 @@ begin
                     or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0)
                     or ((Pos('NENHUMA',sP1)<>0) and (Pos('CONTA DE CLIENTE',sP1)<>0)) then
                 begin
-                  // Sandro Silva 2016-02-11 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONTAS ABERTAS'));
-                  // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-                  _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONT CLI ABERTA'));
+                  _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CONT CLI ABERTA')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONT CLI ABERTA'));
                 end else
                 begin
                   if Pos('CONFERENCIA DE MESA',sP1)<>0 then
                   begin
-                    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF MESA')); // TEF
+                    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CONF MESA')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF MESA')); // TEF
                   end else
                   begin
                     if Pos('TRANSFERENCIAS ENTRE MESA',sP1)<>0 then
                     begin
-                      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF MESA')); // TEF
+                      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('TRANSF MESA')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF MESA')); // TEF
                     end else
                     begin
-                      // Sandro Silva 2016-02-04 POLIMIG  if Pos('MESAS ABERTAS',sP1)<>0 then
                       if (Pos('MESAS ABERTAS',sP1)<>0) or
                        (Pos('NENHUMA MESA',sP1)<>0) then
                       begin
-                        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MESAS ABERTAS')); // TEF
+                        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('MESAS ABERTAS')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MESAS ABERTAS')); // TEF
                       end else
                       begin
                         if Pos('Parametros de Configuracao',sP1)<>0 then
                         begin
-                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('PARAM CONFIG')); // TEF
+                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('PARAM CONFIG')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('PARAM CONFIG')); // TEF
                         end else
                         begin
-                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CARTAO TEF')); // TEF
+                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CARTAO TEF')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CARTAO TEF')); // TEF
                         end;
                       end;
                     end;
@@ -2021,7 +1991,7 @@ begin
           begin
             //
             if sLinha = '' then sLinha:=' ';
-            iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(pChar(sLinha));
+            iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(AnsiString(sLinha)); // Sandro Silva 2023-12-13 iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(pChar(sLinha));
             sLinha:='';
           end;
        end;
@@ -2126,8 +2096,13 @@ function _ecf03_ProgramaAplicativo(sP1: Boolean): boolean;
 begin
 //  Daruma_Registry_AplMensagem1(pchar('MD5: '+Form1.sMD5DaLista ));
 //  Daruma_Registry_AplMensagem2(PChar('--------------------------------'));
+  {Sandro Silva 2023-12-13 inicio
   _ecf03.Daruma_Registry_AplMensagem1(pchar('   '));
   _ecf03.Daruma_Registry_AplMensagem2(pchar('   '));
+  }
+  _ecf03.Daruma_Registry_AplMensagem1(AnsiString('   '));
+  _ecf03.Daruma_Registry_AplMensagem2(AnsiString('   '));
+  {Sandro Silva 2023-12-13 fim}
 
   Result := True;
 end;
@@ -2284,7 +2259,7 @@ begin
   try
     //ShowMessage(DLLName);  // 2015-06-16
 
-    DLL     := LoadLibrary(PChar(DARUMA_DLLNAME_03)); //carregando dll
+    DLL     := LoadLibrary(PAnsiChar(AnsiString(DARUMA_DLLNAME_03))); //carregando dll // Sandro Silva 2023-12-13 DLL     := LoadLibrary(PChar(DARUMA_DLLNAME_03)); //carregando dll
     //DLL := LoadLibrary(Pchar('C:\Program Files (x86)\Sweda Informática Ltda\Ativação SAT Sweda\SATDLL.dll')); //carregando dll
     if DLL = 0 then
       raise Exception.Create('Não foi possível carregar a biblioteca ' + DARUMA_DLLNAME_03);
@@ -3430,11 +3405,11 @@ begin
 
 end;
 
-procedure TDaruma32.Import(var Proc: pointer; Name: Pchar);
+procedure TDaruma32.Import(var Proc: pointer; Name: PAnsiChar);
 begin
   if not Assigned(Proc) then
   begin
-    Proc := GetProcAddress(DLL, Pchar(Name));
+    Proc := GetProcAddress(DLL, PAnsiChar(AnsiString(Name))); // Sandro Silva 2023-12-13 Proc := GetProcAddress(DLL, Pchar(Name));
     if Proc = nil then
       raise Exception.Create('Não foi possível carregar a função ' + Name + ' da biblioteca ' + DARUMA_DLLNAME_03);
   end;

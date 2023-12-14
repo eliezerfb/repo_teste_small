@@ -337,11 +337,11 @@ var
 begin
   Result := false;
   LibPointer := NIL;
-  if LoadLibrary(PChar(LibName)) = 0 then exit;
-  LibHandle := GetModuleHandle(PChar(LibName));
+  if LoadLibrary(PAnsiChar(AnsiString(LibName))) = 0 then exit; // Sandro Silva 2023-12-13 if LoadLibrary(PChar(LibName)) = 0 then exit;
+  LibHandle := GetModuleHandle(PAnsiChar(AnsiString(LibName))); // Sandro Silva 2023-12-13 LibHandle := GetModuleHandle(PChar(LibName));
   if LibHandle <> 0 then
   begin
-    LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
+    LibPointer := GetProcAddress(LibHandle, PAnsiChar(AnsiString(FuncName))); // Sandro Silva 2023-12-13 LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
     if LibPointer <> NIL then Result := true;
   end;
 end;
@@ -354,7 +354,7 @@ end;
 
 function _ecf02_ConfigAliquota(sAliquota: String): Boolean;
 begin
-  Result := (Bematech_FI_ProgramaAliquota(PChar(sAliquota), 0) = 1);
+  Result := (Bematech_FI_ProgramaAliquota(AnsiString(sAliquota), 0) = 1); // Sandro Silva 2023-12-13 Result := (Bematech_FI_ProgramaAliquota(PChar(sAliquota), 0) = 1);
 end;
 
 function _ecf02_TestaLigadaePapel(pP1:Boolean):Boolean;
@@ -568,7 +568,7 @@ begin
   {Sandro Silva 2016-03-01 inicio}
   try
     sFlag := '1';
-    Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(sFlag));
+    Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(AnsiString(sFlag)); // Sandro Silva 2023-12-13 Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(sFlag));
     _ecf02_RetornoStatusImpressora(True);
   except
   end;
@@ -579,15 +579,13 @@ begin
   if iRetorno = 1 then
   begin
     //
+    {Sandro Silva 2023-12-13 inicio
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('02'),pchar('IDENT DO PAF'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('03'),pchar('VENDA PRAZO'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('04'),pchar('CARTAO TEF'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('05'),pchar('MEIOS DE PAGTO'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('06'),pchar('DAV EMITIDOS'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('07'),pchar('ORCAMENT (DAV)'));
-    // 2016-02-04 Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('08'),pchar('CONF CONTA'));
-    // Sandro Silva 2016-02-11 Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('09'),pchar('TRANSF CONTA'));
-    // Sandro Silva 2016-02-11 Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('10'),pchar('CONTAS ABERTAS'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('08'),pchar('CONF CONTA CLI'));// 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('09'),pchar('TRANSF CONT CLI'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('10'),pchar('CONT CLI ABERTA'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
@@ -595,6 +593,21 @@ begin
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('12'),pchar('TRANSF MESA'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('13'),pchar('MESAS ABERTAS'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('14'),pchar('PARAM CONFIG'));
+    }
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('02'), AnsiString('IDENT DO PAF'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('03'), AnsiString('VENDA PRAZO'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('04'), AnsiString('CARTAO TEF'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('05'), AnsiString('MEIOS DE PAGTO'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('06'), AnsiString('DAV EMITIDOS'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('07'), AnsiString('ORCAMENT (DAV)'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('08'), AnsiString('CONF CONTA CLI'));// 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('09'), AnsiString('TRANSF CONT CLI'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('10'), AnsiString('CONT CLI ABERTA'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('11'), AnsiString('CONF MESA'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('12'), AnsiString('TRANSF MESA'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('13'), AnsiString('MESAS ABERTAS'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('14'), AnsiString('PARAM CONFIG'));
+    {Sandro Silva 2023-12-13 fim}
     //
     Result := True;
     //
@@ -619,10 +632,10 @@ begin
     //
     if Form1.fTotal >= Form1.ibDataSet25RECEBER.AsFloat then
     begin
-       Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D','$',pchar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,12,0)));
+      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D', '$', AnsiString(StrZero((Form1.fTotal - Form1.ibDataSet25RECEBER.AsFloat) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D','$',pchar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,12,0)));
     end else
     begin
-       Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A','$',pchar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,12,0)));
+      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A', '$', AnsiString(StrZero((Form1.ibDataSet25RECEBER.AsFloat - Form1.fTotal) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A','$',pchar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,12,0)));
     end;
     //
     if Form1.Retorno = 1 then
@@ -645,6 +658,7 @@ begin
 //    ShowMessage(
 //      'Em dinheiro.: '+StrZero(Form1.ibDataSet25ACUMULADO2.AsFloat*100,14,0)+ Chr(10) +
 //      'Prazo.......: '+StrZero(Form1.ibDataSet25DIFERENCA_.AsFloat*100,14,0));
+  {Sandro Silva 2023-12-13 inicio
   if Form1.fTEFPago                      > 0 then Bematech_FI_EfetuaFormaPagamento(pchar('Cartao') ,pchar( Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.fTEFPago*100])),15),1,12)));      // Cartão
 //  if Form1.fTEFPago                      > 0 then Bematech_FI_EfetuaFormaPagamento(pchar('Cartao '+Form1.sDebitoOuCredito)  ,pchar( Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.fTEFPago*100])),15),1,12)));      // Cartão
   if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(pchar('Cheque')  ,pchar( Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25ACUMULADO1.AsFloat*100])),15),1,12))); // Cheque
@@ -662,6 +676,23 @@ begin
   //
   // Sandro Silva 2016-09-14  Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom('MD5: '+pchar(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional))) )=1);
   Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom(Copy('MD5: '+pchar(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)), 1, 384)) )=1);
+  }
+  if Form1.fTEFPago                      > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Cartao'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.fTEFPago * 100])),15),1,12)));      // Cartão
+  if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Cheque'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.ibDataSet25ACUMULADO1.AsFloat * 100])), 15), 1, 12))); // Cheque
+  if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Prazo'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.ibDataSet25DIFERENCA_.AsFloat * 100])), 15), 1, 12))); // Prazo
+  if Form1.ibDataSet25ACUMULADO2.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Dinheiro'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.ibDataSet25ACUMULADO2.AsFloat * 100])), 15), 1, 12))); // Dinheiro
+
+  if Form1.ibDataSet25VALOR01.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label18.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR01.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR02.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label19.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR02.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR03.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label20.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR03.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR04.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label21.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR04.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR05.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label22.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR05.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR06.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label23.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR06.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR07.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label24.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR07.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR08.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label25.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR08.AsFloat*100])),15),1,12)));    // Dinheiro
+  //
+  Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom(Copy('MD5: '+ AnsiString(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)), 1, 384)) ) = 1);
+  {Sandro Silva 2023-12-13 fim}
   //
   // Result:=true;
   //
@@ -890,7 +921,7 @@ end;
 function _ecf02_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
   pP1:=Right(pP1,3);
-  Result:=(_ecf02_CodeErro(Bematech_FI_CancelaItemGenerico( pchar( pP1 ) ))=1);
+  Result:=(_ecf02_CodeErro(Bematech_FI_CancelaItemGenerico(AnsiString( pP1 ) ))=1); // Sandro Silva 2023-12-13 Result:=(_ecf02_CodeErro(Bematech_FI_CancelaItemGenerico( pchar( pP1 ) ))=1);
 end;
 
 // -------------------------------- //
@@ -933,9 +964,12 @@ function _ecf02_Sangria(Pp1: Real):Boolean;
 var
   iResult : Integer;
 begin
-  iResult := Bematech_FI_Sangria(pchar(StrZero(pP1*100,12,0)));
+  iResult := Bematech_FI_Sangria(AnsiString(StrZero(pP1*100,12,0))); // Sandro Silva 2023-12-13 iResult := Bematech_FI_Sangria(pchar(StrZero(pP1*100,12,0)));
   iResult := _ecf02_CodeErro(iResult);
-  if iResult = 1 then Result := True else Result := False;
+  if iResult = 1 then
+    Result := True
+  else
+    Result := False;
 end;
 
 // -------------------------------- //
@@ -945,7 +979,7 @@ function _ecf02_Suprimento(Pp1: Real):Boolean;
 var
   iResult : Integer;
 begin
-  iResult := Bematech_FI_Suprimento(pchar(StrZero(pP1*100,12,0)),pChar(''));
+  iResult := Bematech_FI_Suprimento(AnsiString(StrZero(pP1*100,12,0)), AnsiString('')); // Sandro Silva 2023-12-13 iResult := Bematech_FI_Suprimento(pchar(StrZero(pP1*100,12,0)),pChar(''));
 //  iResult := Bematech_FI_Suprimento( pchar(Format('%13.2f',[pP1])), pchar(''));
   iResult := _ecf02_CodeErro(iResult);
   if iResult = 1 then Result := True else Result := False;
@@ -1059,7 +1093,7 @@ begin
       end;
       //
       try
-        I := Bematech_FI_DownloadMF(PChar(pP1));
+        I := Bematech_FI_DownloadMF(AnsiString(pP1)); // Sandro Silva 2023-12-13 I := Bematech_FI_DownloadMF(PChar(pP1));
         _ecf02_CodeErro(I);
       except
         ShowMessage('Erro ao gravar o arquivo MF.');
@@ -1085,7 +1119,7 @@ begin
       cCOOFinal      := AllTrim(pp3);
       cUsuario       := '1';
 
-      I := Bematech_FI_DownloadMFD(pchar(cArquivoOrigem), pchar(cTipoDownload), pchar(cCOOInicial), pchar(cCOOFinal), pchar(cUsuario));
+      I := Bematech_FI_DownloadMFD(AnsiString(cArquivoOrigem), AnsiString(cTipoDownload), AnsiString(cCOOInicial), AnsiString(cCOOFinal), AnsiString(cUsuario)); // Sandro Silva 2023-12-13 I := Bematech_FI_DownloadMFD(pchar(cArquivoOrigem), pchar(cTipoDownload), pchar(cCOOInicial), pchar(cCOOFinal), pchar(cUsuario));
 
       _ecf02_CodeErro(I);
 
@@ -1114,7 +1148,7 @@ begin
       end;
       //
       try
-        _ecf02_CodeErro( Bematech_FI_DownloadMF( pchar( pP1 ) ));
+        _ecf02_CodeErro(Bematech_FI_DownloadMF(AnsiString( pP1 ) )); // Sandro Silva 2023-12-13 _ecf02_CodeErro( Bematech_FI_DownloadMF( pchar( pP1 ) ));
       except
         ShowMessage('Erro ao gravar o arquivo MF.');
       end;
@@ -1156,7 +1190,7 @@ begin
           cCOOInicial := '000001';
           cCOOFinal := '999999';
           //
-          _ecf02_CodeErro(Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) ));
+          _ecf02_CodeErro(Bematech_FI_DownloadMFD(AnsiString(cArquivoOrigem), AnsiString(cTipoDownload), AnsiString( cCOOInicial ), AnsiString( cCOOFinal ), AnsiString( cUsuario ) )); // Sandro Silva 2023-12-13 _ecf02_CodeErro(Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) ));
           //
         except
           ShowMessage('Erro ao gravar o arquivo MFD.');
@@ -1222,7 +1256,7 @@ begin
             iUnicoArquivo   := 1;
             cUsuario        := '1'; // Sandro Silva 2016-03-03
             if Form7.sMfd = '2' then
-              I := Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar(cTipoDownload), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
+              I := Bematech_FI_ArquivoMFD( AnsiString( '' ), AnsiString( cDadoInicial ), AnsiString( cDadoFinal ), AnsiString(cTipoDownload), AnsiString( cUsuario ), iTipoGeracao, AnsiString( sChavePublica ), AnsiString( sChavePrivada ), iUnicoArquivo ); // Sandro Silva 2023-12-13 I := Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar(cTipoDownload), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
           end
           else
           begin
@@ -1241,7 +1275,7 @@ begin
 
               iUnicoArquivo := 1;
 
-              Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar( cTipoDownload ), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
+              Bematech_FI_ArquivoMFD( AnsiString( '' ), AnsiString( cDadoInicial ), AnsiString( cDadoFinal ), AnsiString( cTipoDownload ), AnsiString( cUsuario ), iTipoGeracao, AnsiString( sChavePublica ), AnsiString( sChavePrivada ), iUnicoArquivo ); // Sandro Silva 2023-12-13 Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar( cTipoDownload ), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
 
             except
               ShowMessage('Erro ao gravar o arquivo MFD.');
@@ -1254,7 +1288,7 @@ begin
           //
         end else
         begin
-          I := Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) );
+          I := Bematech_FI_DownloadMFD(AnsiString(cArquivoOrigem), AnsiString(cTipoDownload), AnsiString( cCOOInicial ), AnsiString( cCOOFinal ), AnsiString( cUsuario ) ); // Sandro Silva 2023-12-13 I := Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) );
         end;
         //
         if I = 1 then
@@ -1299,6 +1333,7 @@ begin
               cUsuario        := '1';
               cArquivoDestino := Form1.SaveDialog1.FileName;
               //
+              {Sandro Silva 2023-12-13 inicio
               I := Bematech_FI_FormatoDadosMFD( pchar( cArquivoOrigem ),
                                                 pchar( cArquivoDestino ),
                                                 pchar( cTipoFormato ),
@@ -1306,6 +1341,15 @@ begin
                                                 pchar( cCOOInicial ),
                                                 pchar( cCOOFinal ),
                                                 pchar( cUsuario ) );
+              }
+              I := Bematech_FI_FormatoDadosMFD( AnsiString( cArquivoOrigem ),
+                                                AnsiString( cArquivoDestino ),
+                                                AnsiString( cTipoFormato ),
+                                                AnsiString( cTipoDownload ),
+                                                AnsiString( cCOOInicial ),
+                                                AnsiString( cCOOFinal ),
+                                                AnsiString( cUsuario ) );
+              {Sandro Silva 2023-12-13 fim}
               //
             end;
           end;
@@ -1359,11 +1403,11 @@ begin
 // ShowMessage(Form1.sTipo);
   if Form7.Label3.Caption = 'Data inicial:' then
   begin
-    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalDataMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
+    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalDataMFD(AnsiString(pP1), AnsiString(pP2), AnsiString(Form1.sTipo)))=1); // Sandro Silva 2023-12-13 Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalDataMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
 //    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalData( pchar( pP1 ), pchar( pP2 ) ))=1)
   end else
   begin
-    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducaoMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
+    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducaoMFD(AnsiString( pP1 ), AnsiString( pP2 ), AnsiString(Form1.sTipo)))=1); // Sandro Silva 2023-12-13 Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducaoMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
 //    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducao( pchar( pP1 ), pchar( pP2 ) ))=1);
   end;
 end;
@@ -1390,6 +1434,7 @@ begin
   sIndice  := '00';
   sAcresc  := '00';
   //
+  {Sandro Silva 2023-12-13 inicio
   I := Bematech_FI_VendeItemDepartamento(pchar( pP1 ),    // Código
                                          pchar( pP2 ),    // Descricao
                                          pchar( pP3 ),    // ST
@@ -1400,6 +1445,18 @@ begin
                                          pchar( sIndice ),// Índice do departamento
                                          pchar( pP6 )     // Unidade medida
                                          );
+  }
+  I := Bematech_FI_VendeItemDepartamento(AnsiString( pP1 ),    // Código
+                                         AnsiString( pP2 ),    // Descricao
+                                         AnsiString( pP3 ),    // ST
+                                         AnsiString( pP5 ),    // Valor Unitário
+                                         AnsiString( pP4 ),    // Quantidade
+                                         AnsiString( sAcresc), // Acréscimo
+                                         AnsiString( pP8 ),    // Desconto
+                                         AnsiString( sIndice ),// Índice do departamento
+                                         AnsiString( pP6 )     // Unidade medida
+                                         );
+  {Sandro Silva 2023-12-13 fim}
 //  if I <> 1 then
   _ecf02_CodeErro(I);
   //
@@ -1416,8 +1473,8 @@ var
 begin
   //
   // Sandro Silva 2017-06-19  Bematech_FI_ReducaoZ(pChar(''),pChar(''));
-  iRetorno := Bematech_FI_ReducaoZ(pChar(''),pChar('')); // Sandro Silva 2017-06-19
-  _ecf02_CodeErro(iRetorno); // Sandro Silva 2017-06-19 
+  iRetorno := Bematech_FI_ReducaoZ(AnsiString(''), AnsiString(''));  // Sandro Silva 2023-12-13   iRetorno := Bematech_FI_ReducaoZ(pChar(''),pChar('')); // Sandro Silva 2017-06-19
+  _ecf02_CodeErro(iRetorno); // Sandro Silva 2017-06-19
   //Bematech_FI_ReducaoZ(pChar(''),pChar('18:10:00'));
   Result := True;
   //
@@ -1645,7 +1702,7 @@ begin
       Break;
     Sleep(1000);
   end;
-  Result:=Right(AllTrim(pChar(Result)),3);
+  Result := Right(AllTrim(pChar(Result)),3);
   //
 end;
 
@@ -1792,7 +1849,7 @@ begin
       delete(sIndiceAliquotas,1,2);
     end;
   end;
-  Result:=chr(BinToInt(Copy(Result,1,8)))+chr(BinToInt(Copy(Result,9,8)));
+  Result := chr(BinToInt(Copy(Result,1,8)))+chr(BinToInt(Copy(Result,9,8)));
 end;
 
 function _ecf02_FechaPortaDeComunicacao(pP1: Boolean): Boolean;
@@ -1803,7 +1860,7 @@ end;
 
 function _ecf02_MudaMoeda(pP1: String): Boolean;
 begin
-  Result:=(_ecf02_CodeErro(Bematech_FI_AlteraSimboloMoeda( pchar( pP1 ) ))=1)
+  Result := (_ecf02_CodeErro(Bematech_FI_AlteraSimboloMoeda( AnsiString( pP1 ) )) = 1) // Sandro Silva 2023-12-13 Result := (_ecf02_CodeErro(Bematech_FI_AlteraSimboloMoeda( pchar( pP1 ) ))=1)
 end;
 
 function _ecf02_MostraDisplay(pP1: String): Boolean;
@@ -1820,10 +1877,10 @@ begin
   begin
     pP2 := DateToStr(Form7.DateTimePicker1.Date);
     pP3 := DateToStr(Form7.DateTimePicker2.Date);
-    Bematech_FI_LeituraMemoriaFiscalSerialDataMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
+    Bematech_FI_LeituraMemoriaFiscalSerialDataMFD( AnsiString( pP2 ), AnsiString( pP3 ), AnsiString(Form1.sTipo) ); // Sandro Silva 2023-12-13 Bematech_FI_LeituraMemoriaFiscalSerialDataMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
   end else
   begin
-    Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
+    Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD( AnsiString( pP2 ), AnsiString( pP3 ), AnsiString(Form1.sTipo) ); // Sandro Silva 2023-12-13 Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
   end;
   //
   CopyFile('c:\retorno.txt', pChar(pP1), True );
@@ -1839,16 +1896,22 @@ var
   J, I: Integer;
   sLinha: String;
 begin
-  //
-  //
   Result := False;
   //
+  {Sandro Silva 2023-12-13 inicio
   if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Prazo'),  pchar(''), pchar(''))=1);
   //  if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao '+Form1.sDebitoOuCredito), pchar(''), pchar(''))=1);
   //  if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao'), pchar(''), pchar(''))=1);
   if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao'), pChar(StrZero(Form1.fTEFPago*100,12,0)), pChar(FormataNumeroDoCupom(Form1.icupom)) )=1); // Sandro Silva 2021-11-29 if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao'), pChar(StrZero(Form1.fTEFPago*100,12,0)), pChar(StrZero(Form1.icupom,6,0)) )=1);
   if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cheque'), pchar(''), pchar(''))=1);
-  //
+  }
+  if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then
+    Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( AnsiString('Prazo'),  AnsiString(''), AnsiString('')) = 1);
+  if Form1.fTEFPago                      > 0 then
+    Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( AnsiString('Cartao'), AnsiString(StrZero(Form1.fTEFPago * 100, 12, 0)), AnsiString(FormataNumeroDoCupom(Form1.icupom))) = 1);
+  if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then
+    Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( AnsiString('Cheque'), AnsiString(''), AnsiString('')) = 1);
+  {Sandro Silva 2023-12-13 fim}
   if Result then
   begin
     //
@@ -1870,12 +1933,16 @@ begin
               sLinha := sLinha+Copy(sP1,I,1);
             end else
             begin
-              if sLinha = '' then sLinha:=' ';
-              if Form1.sCRLF = 'Sim' then sLinha := sLinha + Chr(10);
-              Result:=_ecf02_TestaLigadaePapel(true);
-              if Result then Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
-              if Result then Result:=_ecf02_TestaLigadaePapel(true);
-              sLinha:='';
+              if sLinha = '' then
+                sLinha := ' ';
+              if Form1.sCRLF = 'Sim' then
+                sLinha := sLinha + Chr(10);
+              Result := _ecf02_TestaLigadaePapel(true);
+              if Result then
+                Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( AnsiString( sLinha ) )=1); // Sandro Silva 2023-12-13 if Result then Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
+              if Result then
+                Result := _ecf02_TestaLigadaePapel(true);
+              sLinha := '';
             end;
           end;
         end;
@@ -1883,10 +1950,12 @@ begin
       //
       if Result = True then
       begin
-        sLinha:=Chr(10)+chr(10)+Chr(10);
-        Result:=_ecf02_TestaLigadaePapel(true);
-        if Result then Result:=(Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
-        if Result then Result:=_ecf02_TestaLigadaePapel(true);
+        sLinha := Chr(10)+chr(10)+Chr(10);
+        Result := _ecf02_TestaLigadaePapel(true);
+        if Result then
+          Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( AnsiString( sLinha ) ) = 1); // Sandro Silva 2023-12-13 if Result then Result:=(Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
+        if Result then
+          Result := _ecf02_TestaLigadaePapel(true);
       end;
       //
     end;
@@ -1954,39 +2023,39 @@ begin
     //
     if Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0 then
     begin
-      iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('02')); // Identificação do PAF
+      iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('02')); // Identificação do PAF // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('02')); // Identificação do PAF
       bImprimindoConferenciaMesa := True
     end else
     begin
-      if Pos('Período Solicitado: de',sP1)<>0 then
+      if Pos('Período Solicitado: de', sP1)<>0 then
       begin
-        iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('05')); // Meios de pagamento
+        iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('05')); // Meios de pagamento // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('05')); // Meios de pagamento
       end else
       begin
-        if (Pos('Documento: ',sP1)<>0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
+        if (Pos('Documento: ', sP1) <> 0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
         begin
-          iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('03')); // Venda a prazo
+          iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('03')); // Venda a prazo // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('03')); // Venda a prazo
         end else
         begin
           if Pos('DAV EMITIDOS',sP1)<>0 then
           begin
-            iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('06')); // DAV Emitidos
+            iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('06')); // DAV Emitidos // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('06')); // DAV Emitidos
           end else
           begin
             if Pos('AUXILIAR DE VENDA (DAV) - OR',sP1)<>0 then
             begin
-              iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('07')); // Orçamento (DAV)
+              iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('07')); // Orçamento (DAV) // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('07')); // Orçamento (DAV)
             end else
             begin
               if Pos('CONFERENCIA DE CONTA',sP1)<>0 then
               begin
-                iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('08')); // Conferencia de contas
+                iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('08')); // Conferencia de contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('08')); // Conferencia de contas
                 bImprimindoConferenciaMesa := True
               end else
               begin
                 if Pos('TRANSFERENCIAS ENTRE CONTA',sP1)<>0 then
                 begin
-                  iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('09')); // Transferencia entre contas
+                  iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('09')); // Transferencia entre contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('09')); // Transferencia entre contas
                 end else
                 begin
                   // Sandro Silva 2016-02-04 POLIMIG  if (Pos('CONTAS DE CLIENTES ABERTAS',sP1)<>0) or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0) or (Pos('NENHUMA',sP1)<>0) then
@@ -1994,33 +2063,33 @@ begin
                     or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0)
                     or ((Pos('NENHUMA',sP1)<>0) and (Pos('CONTA DE CLIENTE',sP1)<>0)) then
                   begin
-                    iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('10')); // Mesas contas
+                    iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('10')); // Mesas contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('10')); // Mesas contas
                   end else
                   begin
                     if Pos('CONFERENCIA DE MESA',sP1)<>0 then
                     begin
-                      iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('11')); // Conferencia de contas
+                      iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('11')); // Conferencia de contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('11')); // Conferencia de contas
                       bImprimindoConferenciaMesa := True
                     end else
                     begin
                       if Pos('TRANSFERENCIAS ENTRE MESA',sP1)<>0 then
                       begin
-                        iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('12')); // Transferencia entre contas
+                        iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('12')); // Transferencia entre contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('12')); // Transferencia entre contas
                       end else
                       begin
                         // Sandro Silva 2016-02-04 POLIMIG if Pos('MESAS ABERTAS',sP1)<>0 then
                         if (Pos('MESAS ABERTAS',sP1)<>0) or
                          (Pos('NENHUMA MESA',sP1)<>0) then
                         begin
-                          iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('13')); // Mesas contas
+                          iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('13')); // Mesas contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('13')); // Mesas contas
                         end else
                         begin
                           if Pos('Parametros de Configuracao',sP1)<>0 then
                           begin
-                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('14')); // Parâmetros de Configuração
+                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('14')); // Parâmetros de Configuração // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('14')); // Parâmetros de Configuração
                           end else
                           begin
-                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // Cartão TEF
+                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('04')); // Cartão TEF // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // Cartão TEF
                             bImprimindoConferenciaMesa := False;
                           end;
                         end;
@@ -2086,7 +2155,7 @@ begin
                   //
                   if iResult = 1 then
                   begin
-                    iResult := Bematech_FI_UsaRelatorioGerencialMFD(pchar(sLinha));
+                    iResult := Bematech_FI_UsaRelatorioGerencialMFD(AnsiString(sLinha)); // Sandro Silva 2023-12-13 iResult := Bematech_FI_UsaRelatorioGerencialMFD(pchar(sLinha));
                   end;
                   //
                   DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
@@ -2094,7 +2163,7 @@ begin
                   begin
                     tInicio := Time;
                     Bematech_FI_FechaRelatorioGerencial();  // Fecha cupom não sujeito ao ICMS
-                    Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // TEP
+                    Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('04')); // TEP // Sandro Silva 2023-12-13 Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // TEP
                   end;
                   //
                   if iResult = 1 then
@@ -2211,7 +2280,8 @@ var
 begin
   sDados := Replicate(' ',1278);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Form1.sMFD_ = 'Sim' then Bematech_FI_DadosUltimaReducaoMFD( sDados );
+  if Form1.sMFD_ = 'Sim' then
+    Bematech_FI_DadosUltimaReducaoMFD( sDados );
   REsult := sDados;
 end;
 
