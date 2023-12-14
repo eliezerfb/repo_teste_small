@@ -64,7 +64,7 @@ var
   sNumerocontaCorrente,
   sAgencia,
   sLayoutdoLote, sDensidade, sLayoutArquivo,
-  sCodigoDoConvenio, sNomeDoBanco, sComandoMovimento, sParcela, sCPFOuCNPJ: String;
+  sCodigoDoConvenio, sNomeDoBanco, sComandoMovimento, sParcela, sCPFOuCNPJ, sCodigoBenef: String;
   I, iReg, iRemessa, iLote : Integer;
 
   CodBanco : string;
@@ -348,15 +348,18 @@ begin
       end;
 
       //Conta
-      if Pos('-',Form7.ibDataSet11CONTA.AsString) > 0 then
+      if Pos('-',Form26.MaskEdit46.Text) > 0 then
       begin
-        sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
-        sDigitocontacorrente   := Copy(Copy(Form7.ibDataSet11CONTA.AsString,Pos('-',Form7.ibDataSet11CONTA.AsString)+1,1)+' ',1,1);
+        //sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
+        sNumeroContaCorrente   := Right('000000000000'+Copy(Form26.MaskEdit46.Text,1,Pos('-',Form26.MaskEdit46.Text)-1),12);
+        sDigitocontacorrente   := Copy(Copy(Form26.MaskEdit46.Text,Pos('-',Form26.MaskEdit46.Text)+1,1)+' ',1,1);
       end else
       begin
-        sNumeroContaCorrente   := Right('000000000000'+Form7.ibDataSet11CONTA.AsString,12);
+        sNumeroContaCorrente   := Right('000000000000'+Form26.MaskEdit46.Text,12);
         sDigitocontacorrente   := ' ';
       end;
+
+      sCodigoBenef := Form7.ibDataSet11CONTA.AsString;
 
       sCodigoDaCarteira      := '1';
       sFormaDeCadastrar      := '1';
@@ -404,9 +407,22 @@ begin
         copy(sCodigoDoconvenio,1,20)                                                              + // 033 a 052 (020) Código do Convênio no Banco
         Copy('0'+Copy(sAgencia+'0000-0',1,4),1,5)                                                 + // 053 a 057 (005) Agência Mantenedora da Conta
         Copy(sDVdaAgencia,1,1)                                                                    + // 058 a 058 (001) Dígito Verificador da Agência
-        Copy(sNumeroContaCorrente,1,12)                                                           + // 059 a 070 (012) Número da Conta Corrente
-        Copy(sDigitocontacorrente,1,1)                                                            + // 071 a 071 (001) Dígito Verificador da Conta
-        Copy(sDigitoAgencia,1,1)                                                                  + // 072 a 072 (001) Dígito Verificador da Ag/Conta
+        //Copy(sNumeroContaCorrente,1,12)                                                           + // 059 a 070 (012) Número da Conta Corrente
+        //Copy(sDigitocontacorrente,1,1)                                                            + // 071 a 071 (001) Dígito Verificador da Conta
+        //Copy(sDigitoAgencia,1,1)                                                                  + // 072 a 072 (001) Dígito Verificador da Ag/Conta
+
+        IfThen(Banco <> bUnicred,
+              Copy(sNumeroContaCorrente,1,12)                                                      + // 059 a 070 (012) Número da Conta Corrente
+              Copy(sDigitocontacorrente,1,1)                                                       + // 071 a 071 (001) Dígito Verificador da Conta
+              Copy(sDigitoAgencia,1,1)                                                               // 072 a 072 (001) Dígito Verificador da Ag/Conta
+              ,''
+              )+
+
+        IfThen(Banco = bUnicred,
+              Copy(Right(Replicate('0',14)+LimpaNumero(sCodigoBenef),14),1,14)                      // 059 a 072 (014) Código Beneficiario
+              ,''
+              )+
+
         Copy(UpperCase(Form7.IbDataSet13NOME.AsString)+Replicate(' ',30),1,030)                   + // 073 a 102 (030) Nome da Empresa
         Copy(sNomeDoBanco+replicate(' ',30),1,30)                                                 + // 103 a 132 (030) Nome do Banco
         Copy(Replicate(' ',10),1,10)                                                              + // 133 a 142 (010) Uso Exclusivo FEBRABAN / CNAB
@@ -418,7 +434,7 @@ begin
         Copy(sDensidade,1,5)                                                                      + // 167 a 171 (005) Densidade de Gravação do Arquivo
         Copy(Replicate(' ',20),1,20)                                                              + // 172 a 191 (020) Para Uso Reservado do Banco
         Copy(Replicate(' ',20),1,20)                                                              + // 192 a 211 (020) Para Uso Reservado da Empresa
-        Copy(Replicate(' ',29),1,29)                                                              // 212 a 240 (029) Uso Exclusivo FEBRABAN / CNAB
+        Copy(Replicate(' ',29),1,29)                                                                // 212 a 240 (029) Uso Exclusivo FEBRABAN / CNAB
         );
 
       if Banco <> bUnicred then
@@ -905,7 +921,7 @@ begin
         copy(sCodigoDoconvenio,1,20)                                                              + // 034 a 053 (020) Código do Convênio no Banco
         Copy('0'+sAgencia,1,5)                                                                    + // 054 a 058 (005) Agência Mantenedora da Conta
         Copy(sDVdaAgencia,1,1)                                                                    + // 059 a 059 (001) Dígito Verificador da Agência
-        '00'+ sNumeroContaCorrente                                                                + // 060 a 073 (014) Número da Conta Corrente
+        '0'+ sNumeroContaCorrente + Copy(sDigitocontacorrente,1,1)                                + // 060 a 073 (014) Número da Conta Corrente
         Copy(UpperCase(Form7.IbDataSet13NOME.AsString)+Replicate(' ',30),1,030)                   + // 074 a 103 (030) Nome da Empresa
         Replicate(' ',40)                                                                         + // 104 a 143 (040) Mensagem 1
         Replicate(' ',40)                                                                         + // 144 a 183 (040) Mensagem 2
