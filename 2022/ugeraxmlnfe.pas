@@ -21,13 +21,10 @@ uses
   , Dialogs
   , Math
   , DB
-  , IBQuery // Sandro Silva 2022-11-10
+  , IBQuery
   , ShellApi
   , SpdNFeDataSets
-  , spdXMLUtils
-//  , spdNFeType
   , spdNFe
-//  , spdType
   , SmallFunc
   , unit7
   , unit11
