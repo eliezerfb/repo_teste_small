@@ -82,7 +82,7 @@ uses
   function ECF_Cancelamentos(ValorCancelamentos: AnsiString): Integer; StdCall; External 'CONVECF.DLL';
   function ECF_Descontos(ValorDescontos: AnsiString): Integer; StdCall; External 'CONVECF.DLL';
   function ECF_NumeroOperacoesNaoFiscais(NumeroOperacoes: AnsiString): Integer; StdCall; External 'CONVECF.DLL';
-aqui
+
 
 
 
@@ -385,22 +385,22 @@ var
   Retorno,i,j:integer;
   sFormasPagamento:String;
 begin
-   Result:='XX';
-   sFormasPagamento:=Replicate(' ',3016);
-   Retorno:=ECF_VerificaFormasPagamento( sFormasPagamento );
-   if Retorno=1 then //ok
+   Result := 'XX';
+   sFormasPagamento := Replicate(' ', 3016);
+   Retorno := ECF_VerificaFormasPagamento(AnsiString(sFormasPagamento));
+   if Retorno = 1 then //ok
    begin
-     i:=1;
-     J:=1;
+     i := 1;
+     J := 1;
      while i < length(sFormasPagamento) do
      begin
-       if Result='XX' then // só entra se ainda não encontrou
+       if Result = 'XX' then // só entra se ainda não encontrou
          if Pos(UpperCase(Forma),UpperCase(Copy(sFormasPagamento,i,58)))>0 then
          begin
-           Result:='0'+IntToStr(j);//Forma;//
+           Result := '0' + IntToStr(j);//Forma;//
          end;
-       i:=i+58;
-       j:=J+1;
+       i := i + 58;
+       j := J + 1;
      end;
    end;
 end;
@@ -409,17 +409,19 @@ function _ecf14_VerificaDescricaoFormaPgto(Forma:String):String;
 var
   sFormasPagamento:String;
 begin
-   if (isNumericString(Forma)) and (Alltrim(Forma)<> '') then
-   begin
-     sFormasPagamento:=Replicate(' ',3016);
-     if (ECF_VerificaFormasPagamento( sFormasPagamento )<>1) then
-     begin
-       Result:='';
-     end else
-     begin
-       Result:=Copy(sFormasPagamento,((StrToInt(Forma)-1)*58)+1,15);
-     end;
-   end else Result:='';
+  if (isNumericString(Forma)) and (Alltrim(Forma)<> '') then
+  begin
+    sFormasPagamento := Replicate(' ', 3016);
+    if (ECF_VerificaFormasPagamento(AnsiString(sFormasPagamento)) <> 1) then
+    begin
+      Result := '';
+    end else
+    begin
+      Result := Copy(sFormasPagamento, ((StrToInt(Forma) - 1) * 58) + 1, 15);
+    end;
+  end
+  else
+    Result := '';
 end;
 
 // --------------------------- //
@@ -988,8 +990,11 @@ end;
 // -------------------------------- //
 function _ecf14_Nmdeoperaesnofiscais(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',631);
-  if ECF_DadosUltimaReducao( Result ) <> 1 then Result:='' else Result:=Copy(Result,586,6);
+  Result := Replicate(' ', 631);
+  if ECF_DadosUltimaReducao(AnsiString(Result) ) <> 1 then
+    Result := ''
+  else
+    Result := Copy(Result, 586, 6);
 end;
 
 function _ecf14_NmdeCuponscancelados(pP1: Boolean): String;
@@ -1000,21 +1005,34 @@ end;
 
 function _ecf14_NmdeRedues(pP1: Boolean): String;
 begin
+  {Sandro Silva 2023-12-14 inicio
   Result:=Replicate(' ',4);
   if (ECF_NumeroReducoes( Result ) <> 1) then Result:='' else Result:=StrZero(StrToInt(Result)+1,4,0);//soma um para gravar certo no arq. de reduções.
+  }
+  Result := AnsiString(Replicate(' ', 4));
+  if (ECF_NumeroReducoes( Result ) <> 1) then
+    Result := ''
+  else
+    Result := StrZero(StrToIntDef(Result, 0) + 1, 4, 0);//soma um para gravar certo no arq. de reduções.
 end;
 
 function _ecf14_Nmdeintervenestcnicas(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',4);
+  Result := AnsiString(Replicate(' ',4)); // Sandro Silva 2023-12-14 Result := (Replicate(' ',4);
   if (ECF_NumeroIntervencoes( Result ) <> 1) then Result:='';
 end;
 
 
 function _ecf14_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
 begin
+  {Sandro Silva 2023-12-14 inicio
   Result:=Replicate(' ',4);
   if (ECF_NumeroSubstituicoesProprietario( Result ) <> 1) then Result:='';
+  }
+  Result := AnsiString(Replicate(' ', 4));
+  if (ECF_NumeroSubstituicoesProprietario( Result ) <> 1) then
+    Result := '';
+
 end;
 
 function _ecf14_Clichdoproprietrio(pP1: Boolean): String;
@@ -1029,20 +1047,20 @@ end;
 // ------------------------------------ //
 function _ecf14_NmdoCaixa(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',4);
+  Result := AnsiString(Replicate(' ', 4)); // Sandro Silva 2023-12-14 Result := Replicate(' ',4);
   _ecf14_CodeErro(ECF_NumeroCaixa( Result ));
-  Result:=Right(Result,3);
+  Result := Right(Result, 3);
 end;
 
 function _ecf14_Nmdaloja(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',4);
+  Result := AnsiString(Replicate(' ', 4)); // Sandro Silva 2023-12-14 Result:=Replicate(' ',4);
   _ecf14_CodeErro(ECF_NumeroLoja( Result ));
 end;
 
 function _ecf14_Moeda(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',2);
+  Result := AnsiString(Replicate(' ', 2)); // Sandro Silva 2023-12-14   Result:=Replicate(' ',2);
   _ecf14_CodeErro(ECF_SimboloMoeda( Result ));
   Result:=StrTran(AllTrim(Result),'$','');
 end;
@@ -1053,8 +1071,8 @@ var
 begin
  sData := Replicate(' ',6);
  sHora := Replicate(' ',6);
- _ecf14_CodeErro(ECF_DataHoraImpressora(sData,sHora));
- Result:=sData+sHora;//DDMMAAHHMMSS
+ _ecf14_CodeErro(ECF_DataHoraImpressora(AnsiString(sData), AnsiString(sHora))); // Sandro Silva 2023-12-14 _ecf14_CodeErro(ECF_DataHoraImpressora(sData,sHora));
+ Result := sData + sHora;//DDMMAAHHMMSS
 end;
 
 function _ecf14_DataUltimaReducao: String;
@@ -1067,7 +1085,7 @@ begin
   sHora := Replicate(' ',6);
 
   try
-    ECF_DataHoraReducao(sData, sHora);
+    ECF_DataHoraReducao(AnsiString(sData), AnsiString(sHora)); // Sandro Silva 2023-12-14 ECF_DataHoraReducao(sData, sHora);
     if (Trim(sData) <> '') and (Trim(sHora) <> '') then
     begin
       // Retorno da DLL: 09062016154545
@@ -1086,15 +1104,17 @@ end;
 
 function _ecf14_Datadaultimareduo(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',6);
-  if ECF_DataMovimento( Result ) <> 1 then Result:='';
+  Result := Replicate(' ', 6);
+  if ECF_DataMovimento( AnsiString(Result) ) <> 1 then
+    Result := '';
 end;
 
 
 function _ecf14_Datadomovimento(pP1: Boolean): String;
 begin
-  Result:=Replicate(' ',6);
-  if ECF_DataMovimento( Result ) <> 1 then Result:='';
+  Result := Replicate(' ', 6);
+  if ECF_DataMovimento(AnsiString(Result)) <> 1 then
+    Result := '';
 end;
 
 // Deve retornar uma String com:                                          //
@@ -1110,15 +1130,15 @@ var
 begin
 //  AliquotasIss:=Replicate(' ',79);
 //  iRetorno := ECF_VerificaAliquotasIss( AliquotasIss );
-  Result:='';
-  sAliquotas := Replicate(' ',79);
-  if _ecf14_CodeErro(ECF_RetornoAliquotas( sAliquotas ))=1 then
+  Result := '';
+  sAliquotas := Replicate(' ', 79);
+  if _ecf14_CodeErro(ECF_RetornoAliquotas(AnsiString(sAliquotas) )) = 1 then
   begin
     Result:=Copy(AllTrim(LimpaNumero(sAliquotas))+Replicate('0',64),1,64);//tira as vírgulas
     sISS:='';
     //verifica qual é a aliquota de ISS
     sIndiceAliquotas:=Replicate(' ',48);
-    if _ecf14_CodeErro(ECF_VerificaIndiceAliquotasIss( sIndiceAliquotas ))=1 then
+    if _ecf14_CodeErro(ECF_VerificaIndiceAliquotasIss(AnsiString(sIndiceAliquotas) ))=1 then
     begin
       for i:=1 to 16 do
       begin
@@ -1438,7 +1458,10 @@ end;
 function _ecf14_TotalizadoresDasAliquotas(sP1: Boolean): String;
 begin
   Result:=Replicate(' ',445);
-  if ECF_VerificaTotalizadoresParciais( Result ) <> 1 then Result:='' else Result:=Copy(Result,1,224)+Copy(Result,226,14)+Copy(Result,241,14)+Copy(Result,256,14);
+  if ECF_VerificaTotalizadoresParciais(AnsiString(Result)) <> 1 then
+    Result := ''
+  else
+    Result := Copy(Result, 1, 224) + Copy(Result, 226, 14) + Copy(Result, 241, 14) + Copy(Result, 256, 14);
 end;
 
 function _ecf14_CupomAberto(sP1: Boolean): boolean;
