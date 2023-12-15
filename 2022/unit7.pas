@@ -1611,6 +1611,7 @@ type
     N71: TMenuItem;
     ConfigurarobservaoparaOS1: TMenuItem;
     ConfigurarobservaoparaRecibo1: TMenuItem;
+    ibDataSet3IDOS: TIntegerField;
     ibdSituacaoOS: TIBDataSet;
     DSSitucaoOS: TDataSource;
     mmSituacaoOS: TMainMenu;
@@ -7304,18 +7305,18 @@ var
   jp: TJPEGImage;  //Requires the "jpeg" unit added to "uses" clause.
 begin
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
-    Form14.Image1.Picture.LoadFromFile('LOGOTIP.BMP')
+    Form14.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP')
   else
     Form14.Image1.Picture := Form1.Image1.Picture;
-  //
+
   try
     jp := TJPEGImage.Create;
     jp.Assign(Form14.Image1.Picture.Bitmap);
     jp.CompressionQuality := 100;
     jp.SaveToFile('logotip.jpg');
-  except end;
+  except
+  end;
 
-  //
   Result := True;
 end;
 
@@ -7329,8 +7330,7 @@ begin
       tSp2.Width       := tSp1.Width;
       tSp2.Top         := -5; // tSp1.Top; // + tSp1.Height -20;
       tSp2.Left        := tSp1.Left;
-      //
-      //
+
       // if Form1.sContrasteCor = 'BRANCO' then tSp2.Font.Color := clWhite;
       // if Form1.sContrasteCor = 'PRETO' then tSp2.Font.Color := clBlack;
       // if Form1.sContrasteCor = 'ROSA' then tSp2.Font.Color := clFuchsia;
@@ -7359,15 +7359,12 @@ var
   sReg1, sReg2 : String;
   sDescricao : String;
 begin
-  //
   Result := False;
   //
   with Form7 do
   begin
-    //
     if (AllTrim(p2.AsString) = AllTrim(ibDataSet4DESCRICAO.ASString)) and (Form7.ibDataSet4.FieldByname('SERIE').Value <> 1) then
     begin
-      //
       p1.DisableControls;
       sDescricao := p2.AsString;
       //
@@ -7416,7 +7413,6 @@ begin
       //
     end;
   end;
-  //
 end;
 
 function Totalizaservicos(sP1: Boolean):Boolean;
@@ -7498,14 +7494,13 @@ begin
     Form7.ibDataSet3TOTAL_PECA.AsFloat := Form7.ibDataSet3TOTAL_PECA.AsFloat + Form7.ibDataSet16TOTAL.AsFloat;
     Form7.ibDataSet16.Next;
   end;
-  //
+
   Form7.ibDataSet16.GotoBookmark(MyBookMark);
   if Form7.sModulo <> 'RETRIBUTA' then
     Form7.ibDataSet16.EnableControls;
   Form7.ibDataSet16.Edit;
-  //
+
   // Servicos
-  //
   MyBookMark1 := Form7.ibDataSet35.GetBookMark();
   Form7.ibDataSet35.DisableControls;
   Form7.ibDataSet35.First;
@@ -7515,15 +7510,14 @@ begin
     Form7.ibDataSet3TOTAL_SERV.AsFloat := Form7.ibDataSet3TOTAL_SERV.AsFloat + Form7.ibDataSet35TOTAL.AsFloat;
     Form7.ibDataSet35.Next;
   end;
-  //
+
   Form7.ibDataSet35.GotoBookmark(MyBookMark1);
   Form7.ibDataSet35.EnableControls;
   Form7.ibDataSet35.Edit;
-  //
+
   Form7.ibDataSet3TOTAL_OS.AsFloat := Form7.ibDataSet3TOTAL_FRET.AsFloat + Form7.ibDataSet3TOTAL_SERV.AsFloat + Form7.ibDataSet3TOTAL_PECA.AsFloat - Form7.ibDataSet3DESCONTO.AsFloat;
-  //
+
   Result := True;
-  //
 end;
 
 function Valida_Campo(Arquivo: String; Text: String;
@@ -7578,7 +7572,6 @@ end;
 {                                   }
 function ObservacaoProduto(pP1:Boolean):Boolean;
 begin
-  //
   // Relacionado ao produto
   //
   if (Copy(Form7.ibDataSet14OBS.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') and  (Copy(Form7.ibDataSet14OBS.AsString,1,24) <> 'DEVOLUCAO DA NF-e')  then
@@ -7596,7 +7589,6 @@ begin
   end;
   //
   Result := True;
-  //
 end;
 
 function ObservacaoOperacao(pP1:Boolean):Boolean;
@@ -13149,6 +13141,7 @@ begin
   }
 
   ibDataSet3REGISTRO.AsString   := sProximo;
+  ibDataSet3IDOS.AsInteger      := sProximoID; //Mauricio Parizotto 2023-11-29
   ibDataSet3NUMERO.AsString     := sNumero;
   ibDataSet3DATA.AsDateTime     := Date;
   ibDataSet3HORA.AsString       := TimeToStr(Time);
@@ -17994,24 +17987,19 @@ end;
 
 procedure TForm7.ibDataSet3BeforeDelete(DataSet: TDataSet);
 begin
-  //
   // Reaproveita o Número da OS
-  //
   IBDataSet99.Close;
   IBDataSet99.SelectSQL.Clear;
   IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,0) from rdb$database');
   IBDataSet99.Open;
-  //
+
   if Form7.ibDataSet3NUMERO.AsString = StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0) then
   begin
-    //
     IBDataSet99.Close;
     IBDataSet99.SelectSQL.Clear;
     IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,-1) from rdb$database');
     IBDataSet99.Open;
-    //
   end;
-  //
 end;
 
 procedure TForm7.Agendada1Click(Sender: TObject);
@@ -22815,6 +22803,13 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_OS,1) from rdb$database');
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+
+    //Mauricio Parizotto 2023-12-08
+    ibDataSet99.Close;
+    ibDataSet99.SelectSql.Clear;
+    ibDataset99.SelectSql.Add('select gen_id(G_OSIDOS,1) from rdb$database');
+    ibDataset99.Open;
+    sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
     ibDataset99.Close;
   except
     Abort

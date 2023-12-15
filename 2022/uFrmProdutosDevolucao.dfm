@@ -2,7 +2,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   Left = 551
   Top = 279
   BorderIcons = []
-  Caption = 'Produtos para devolu'#231#227'o'
+  Caption = #39#39#39#39
   ClientHeight = 483
   ClientWidth = 994
   OldCreateOrder = True

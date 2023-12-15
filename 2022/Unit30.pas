@@ -82,6 +82,7 @@ type
     fFrameIdentifi4: TfFrameCampo;
     pnlFotoProd: TPanel;
     imgFotoProd: TImage;
+    BitBtn1: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit2Enter(Sender: TObject);
     procedure SMALL_DBEdit6Enter(Sender: TObject);
@@ -164,6 +165,7 @@ type
     procedure SMALL_DBEdit7Click(Sender: TObject);
     procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure BitBtn1Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -186,7 +188,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit12, Unit41, Unit19, Unit22, Unit24, Mais3, preco1,
-  Unit10, uTestaClienteDevendo, uFuncoesBancoDados;
+  Unit10, uTestaClienteDevendo, uFuncoesBancoDados, uFrmAnexosOS;
 
 {$R *.dfm}
 
@@ -1646,6 +1648,18 @@ begin
     listSituacao.Items.Add(Form7.ibDataSet3SITUACAO.AsString);
 
   listSituacao.Sorted := True;
+end;
+
+procedure TForm30.BitBtn1Click(Sender: TObject);
+begin
+  FrmAnexosOS := TFrmAnexosOS.Create(self);
+  try
+    FrmAnexosOS.IDOS := Form7.ibDataSet3IDOS.AsInteger;
+    FrmAnexosOS.Caption := 'Anexos da Ordem de Serviço '+Form7.ibDataSet3NUMERO.AsString;
+    FrmAnexosOS.ShowModal;
+  finally
+    FreeAndNil(FrmAnexosOS);
+  end;
 end;
 
 end.

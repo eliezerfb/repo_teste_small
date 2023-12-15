@@ -604,7 +604,8 @@ end;
 procedure TForm12.Image2Click(Sender: TObject);
 begin
   if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
-    Image2.Picture.LoadFromFile('LOGONFE.BMP');
+    //Image2.Picture.LoadFromFile('LOGONFE.BMP');
+    Image2.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
   if not FileExists(Form1.sAtual+'\LOGONFE.BMP') then
      Image2.Picture.SaveToFile('LOGONFE.BMP');
   ShellExecute( 0, 'Open','pbrush.exe','LOGONFE.BMP', '', SW_SHOW);
