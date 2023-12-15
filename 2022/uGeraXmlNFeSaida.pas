@@ -54,7 +54,7 @@ var
 implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
-  uDialogs, ufrmOrigemCombustivel;
+  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados;
 
 procedure GeraXmlNFeSaida;
 var
@@ -113,6 +113,7 @@ var
   vlBalseIPI, vlFreteRateadoItem : Double;
 
   vFreteSobreIPI,vIPISobreICMS : Boolean;
+  cBenef, cBenefItem : string;
 begin
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
@@ -133,6 +134,7 @@ begin
   //Mauricio Parizotto 2023-03-28
   vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
   vIPISobreICMS  := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+  cBenef         := trim(CampoICMporNatureza('CBENEF',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction)); //Mauricio Parizotto 2023-12-12
 
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
@@ -257,8 +259,6 @@ begin
   Form7.spdNFeDataSets.Campo('tpNF_B11').Value     := '1'; // Tipo de Documento Fiscal (0-Entrada, 1-Saída)
 
   // Identificador do local de destino da operação 1-Operação Interna, 2-Operação Interestadual e 3-Operação com exterior
-  //
-//              if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = 'EX' then
   if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7' then
   begin
     Form7.spdNFeDataSets.Campo('idDest_B11a').Value  := '3'; // Identificador do local de destino da operação 1-Operação Interna, 2-Operação Interestadual e 3-Operação com exterior
@@ -266,7 +266,6 @@ begin
   begin
     if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) <> UpperCase(Form7.ibDataSet13ESTADO.AsString))  then
     begin
-      //
       if (Pos('<idDest>1<',Form7.ibDataSet14OBS.AsString)<>0) then
       begin
         Form7.spdNFeDataSets.Campo('idDest_B11a').Value  := '1'; // Identificador do local de destino da operação 1-Operação Interna, 2-Operação Interestadual e 3-Operação com exterior
@@ -826,7 +825,7 @@ begin
     begin
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)); 
       Form7.ibDataSet4.Open;
 
       if (Alltrim(Form7.ibDataSet4DESCRICAO.AsString) = Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) and (Alltrim(Form7.ibDataSet4DESCRICAO.AsString) <> '') then
@@ -929,7 +928,7 @@ begin
 
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.Selectsql.Clear;
-    Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+    Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
     Form7.ibDataSet4.Open;
 
     if (Alltrim(Form7.ibDataSet4DESCRICAO.AsString) = Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) and (Alltrim(Form7.ibDataSet4DESCRICAO.AsString) <> '') then
@@ -943,11 +942,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
                           chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                           ,msgAtencao);
@@ -988,22 +982,39 @@ begin
       if Length(Alltrim(LimpaNumero(Form7.ibDataSet4.FieldByname('CF').AsString))) = 8 then
       begin
         Form7.spdNFeDataSets.Campo('NCM_I05').Value      := Alltrim(LimpaNumero(Form7.ibDataSet4.FieldByname('CF').AsString)); // Código do NCM - informar de acordo com o Tabela oficial do NCM
-{                      if ((Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') and (
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '20') or
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '30') or
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '40') or
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '41') or
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '50') or
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '70') or
-                                                                 (Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2) = '90')))
-}
+
         fICMSDesonerado := 0;
+
+        //cBenef
+        {Mauricio Parizotto 2023-12-12 Inicio}
+        cBenefItem := '';
+        if cBenef = '' then
+        begin
+          //Verifica CIT
+          if trim(Form7.ibDataSet4ST.AsString) <> '' then
+          begin
+            cBenefItem := ExecutaComandoEscalar(Form7.ibDataSet4.Transaction,
+                                                ' Select CBENEF'+
+                                                ' From ICM'+
+                                                ' Where ST = '+QuotedStr(Form7.ibDataSet4ST.AsString));
+          end;
+
+          //Se não tiver valor na operação e nem CIT, tenta pegar do produto
+          if cBenefItem = '' then
+            cBenefItem := RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString);
+        end else
+        begin
+          cBenefItem := cBenef;
+        end;
+        {Mauricio Parizotto 2023-12-12 Fim}
 
         //if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') then Mauricio Parizotto 2023-11-03 ficha 7553
         begin
-          if (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'') and (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'0000000000') then
+          //if (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'') and (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'0000000000') then Mauricio Parizotto 2023-12-12
+          if (cBenefItem<>'') and (cBenefItem<>'0000000000') then
           begin
-            Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString);      // Código de Benefício Fiscal na UF aplicado ao item
+            //Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString);      // Código de Benefício Fiscal na UF aplicado ao item Mauricio Parizotto 2023-12-12
+            Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := cBenefItem;
 
             if AllTrim(RetornaValorDaTagNoCampo('motDesICMS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
             begin
@@ -3982,81 +3993,10 @@ begin
 
   if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
   begin
-    ///////////////////////////////
-    //
     // Início TAGS saída por CSOSN - CRT = 1 imples Nacional
-    //
-    ///////////////////////////////
-
-    //
     // TAGS - Simples NAcional - CSOSN
-    //
     // N12a Tem em todas - e eé referencia para classificar as tags
-    //
-    {Sandro Silva 2022-11-11 inicio
-    // Posiciona na tabéla de CFOP
-    //
-    if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
-    begin
-      //
-      sReg := Form7.ibDataSet14REGISTRO.AsString;
-      Form7.ibDataSet14.DisableControls;
-      Form7.ibDataSet14.Close;
-      Form7.ibDataSet14.SelectSQL.Clear;
-      Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
-      Form7.ibDataSet14.Open;
-      if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
-        Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
-      Form7.ibDataSet14.EnableControls;
-      //
-      if not (AllTrim(Form7.ibDataSet14.FieldByName('CSOSN').AsString) <> '') then
-      begin
-        //
-        Form7.ibDataSet14.DisableControls;
-        Form7.ibDataSet14.Close;
-        Form7.ibDataSet14.SelectSQL.Clear;
-        Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
-        Form7.ibDataSet14.Open;
-        Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-        Form7.ibDataSet14.EnableControls;
-        //
-      end;
-      //
-    end else
-    begin
-      //
-      Form7.ibDataSet14.DisableControls;
-      Form7.ibDataSet14.Close;
-      Form7.ibDataSet14.SelectSQL.Clear;
-      Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
-      Form7.ibDataSet14.Open;
-      Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-      Form7.ibDataSet14.EnableControls;
-      //
-    end;
-    //
-    if AllTrim(Form7.ibDataSet14.FieldByName('CSOSN').AsString) <> '' then
-    begin
-      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Form7.ibDataSet14.FieldByname('CSOSN').AsString;
-    end else
-    begin
-      Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value  := Form7.ibDataSet4.FieldByname('CSOSN').AsString;
-    end;
-    //
-    // N11 - Tem em todas
-    //
-    try
-      if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
-      begin
-        Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-      end else
-      begin
-        Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-      end;
-    except
-      Form7.spdNFeDataSets.Campo('orig_N11').Value   := '0';
-    end;
-    }
+
     {Sandro Silva 2023-05-15 inicio
     ItemNFe := TItemNFe.Create;
     CsosnComOrigemdoProdutoNaOperacao(Form7.ibDataSet4.FieldByName('CODIGO').AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
@@ -4073,7 +4013,6 @@ begin
 
       // N11 - Tem em todas
       Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString, 1, 1); // origem
-
     end
     else
     begin
@@ -4086,7 +4025,6 @@ begin
       FreeAndNil(ItemNFe);
     end;
     {Sandro Silva 2023-05-15 fim}
-    {Sandro Silva 2022-11-11 fim}
 
     {Sandro Silva 2022-10-04 inicio}
     // Sandro Silva 2022-11-11 AtualizaItens001CSOSN(Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value);
