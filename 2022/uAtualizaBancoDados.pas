@@ -2354,6 +2354,16 @@ begin
     ExecutaComando('CREATE SEQUENCE G_OSANEXOS');
 
     ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_OSIDOS');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('UPDATE OS SET IDOS = (select gen_id(G_OSIDOS,1) from rdb$database)');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE UNIQUE INDEX OS_IDOS_IDX ON OS (IDOS);');
   end;
   {Mauricio Parizotto 2023-11-29 Fim}
 

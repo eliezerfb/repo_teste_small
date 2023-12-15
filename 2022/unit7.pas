@@ -22671,6 +22671,12 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_OS,1) from rdb$database');
     ibDataset99.Open;
     sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+
+    //Mauricio Parizotto 2023-12-08
+    ibDataSet99.Close;
+    ibDataSet99.SelectSql.Clear;
+    ibDataset99.SelectSql.Add('select gen_id(G_OSIDOS,1) from rdb$database');
+    ibDataset99.Open;
     sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
     ibDataset99.Close;
   except
