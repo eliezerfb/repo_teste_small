@@ -253,6 +253,7 @@ begin
 
   qryDados := CriaIBQuery(DataSetEstoque.Transaction);
   try
+    {Sandro Silva 2023-12-14 inicio
     qryDados.Close;
     qryDados.SQL.Clear;
     qryDados.SQL.Add('SELECT');
@@ -267,7 +268,19 @@ begin
     qryDados.SQL.Add('(EMITIDA=''S'')');
     qryDados.SQL.Add('and (EMISSAO BETWEEN '+QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' AND ' + QuotedStr(DateToStrInvertida(dtFinal.Date))+')');
     qryDados.Open;
+
     Result := Result + (qryDados.FieldByname('SUM').AsFloat*-1);
+    }
+    qryDados.Close;
+    qryDados.SQL.Text :=
+      'select sum(DESCONTO) as DESCONTOS ' +
+      'from VENDAS ' +
+      'where (EMITIDA = ''S'') ' +
+      'and (EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date)) + ')';
+    qryDados.Open;
+
+    Result := Result + (qryDados.FieldByname('DESCONTOS').AsFloat*-1);
+    {Sandro Silva 2023-12-14 fim}
 
     // Desconto nas Vendas ECF
     qryDados.Close;
