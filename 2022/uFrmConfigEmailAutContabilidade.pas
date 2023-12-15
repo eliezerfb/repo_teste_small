@@ -18,6 +18,7 @@ type
     cbNFeSaida: TCheckBox;
     cbNFeEntrada: TCheckBox;
     cbNFCeSAT: TCheckBox;
+    cbIncluirRelatorio: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -39,7 +40,8 @@ var
 
 implementation
 
-uses uSmallConsts, uSmallResourceString, uExportaXML, DateUtils;
+uses uSmallConsts, uSmallResourceString, uExportaXML, DateUtils,
+  uNFeSections;
 
 {$R *.dfm}
 
@@ -57,11 +59,12 @@ end;
 
 procedure TfrmConfigEmailAutContab.CarregaINI;
 begin
-  cbAtivarEnvio.Checked := FoArqDat.NFe.XML.EnvioAutomatico;
-  cbNFeSaida.Checked    := FoArqDat.NFe.XML.NFeSaida;
-  cbNFeEntrada.Checked  := FoArqDat.NFe.XML.NFeEntrada;
-  cbNFCeSAT.Checked     := FoArqDat.NFe.XML.NFCe;
-  edtEmailContab.Text   := FoArqDat.NFe.XML.EmailContabilidade;
+  cbAtivarEnvio.Checked      := FoArqDat.NFe.XML.EnvioAutomatico;
+  cbNFeSaida.Checked         := FoArqDat.NFe.XML.NFeSaida;
+  cbNFeEntrada.Checked       := FoArqDat.NFe.XML.NFeEntrada;
+  cbNFCeSAT.Checked          := FoArqDat.NFe.XML.NFCe;
+  edtEmailContab.Text        := FoArqDat.NFe.XML.EmailContabilidade;
+  cbIncluirRelatorio.Checked := FoArqDat.NFe.XML.IncluirRelatorioTotalizador;  
 end;
 
 procedure TfrmConfigEmailAutContab.FormActivate(Sender: TObject);
@@ -78,6 +81,7 @@ begin
   FoArqDat.NFe.XML.NFeEntrada         := cbNFeEntrada.Checked;
   FoArqDat.NFe.XML.NFCe               := cbNFCeSAT.Checked;
   FoArqDat.NFe.XML.EmailContabilidade := edtEmailContab.Text;
+  FoArqDat.NFe.XML.IncluirRelatorioTotalizador := cbIncluirRelatorio.Checked;
 end;
 
 function TfrmConfigEmailAutContab.FazVerificacoes: Boolean;
@@ -169,16 +173,18 @@ end;
 
 procedure TfrmConfigEmailAutContab.cbAtivarEnvioClick(Sender: TObject);
 begin
-  cbNFeSaida.Enabled     := cbAtivarEnvio.Checked;
-  cbNFeEntrada.Enabled   := cbAtivarEnvio.Checked;
-  cbNFCeSAT.Enabled      := cbAtivarEnvio.Checked;
-  edtEmailContab.Enabled := cbAtivarEnvio.Checked;
+  cbNFeSaida.Enabled         := cbAtivarEnvio.Checked;
+  cbNFeEntrada.Enabled       := cbAtivarEnvio.Checked;
+  cbNFCeSAT.Enabled          := cbAtivarEnvio.Checked;
+  edtEmailContab.Enabled     := cbAtivarEnvio.Checked;
+  cbIncluirRelatorio.Enabled := cbAtivarEnvio.Checked;
 
   if (not cbAtivarEnvio.Checked) then
   begin
-    cbNFeSaida.Checked   := False;
-    cbNFeEntrada.Checked := False;
-    cbNFCeSAT.Checked    := False;
+    cbNFeSaida.Checked         := False;
+    cbNFeEntrada.Checked       := False;
+    cbNFCeSAT.Checked          := False;
+    cbIncluirRelatorio.Checked := False;
   end;
 end;
 

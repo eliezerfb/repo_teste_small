@@ -3,7 +3,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   Top = 427
   BorderStyle = bsDialog
   Caption = 'Envio autom'#225'tico de XML'
-  ClientHeight = 224
+  ClientHeight = 248
   ClientWidth = 510
   Font.Charset = ANSI_CHARSET
   Font.Height = -11
@@ -17,7 +17,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   TextHeight = 13
   object Label4: TLabel
     Left = 200
-    Top = 126
+    Top = 150
     Width = 111
     Height = 13
     Caption = 'e-mail da contabilidade:'
@@ -39,7 +39,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   end
   object edtEmailContab: TEdit
     Left = 200
-    Top = 141
+    Top = 165
     Width = 290
     Height = 19
     Font.Charset = ANSI_CHARSET
@@ -48,7 +48,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
   end
   object cbAtivarEnvio: TCheckBox
     Left = 200
@@ -67,20 +67,20 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   end
   object btnOk: TBitBtn
     Left = 370
-    Top = 179
+    Top = 203
     Width = 120
     Height = 25
     Caption = 'Ok'
-    TabOrder = 3
+    TabOrder = 4
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
     Left = 200
-    Top = 179
+    Top = 203
     Width = 120
     Height = 25
     Caption = 'Cancelar'
-    TabOrder = 4
+    TabOrder = 5
     OnClick = btnCancelarClick
   end
   object gbDocumentos: TGroupBox
@@ -132,5 +132,19 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
       ParentFont = False
       TabOrder = 2
     end
+  end
+  object cbIncluirRelatorio: TCheckBox
+    Left = 200
+    Top = 126
+    Width = 169
+    Height = 17
+    Caption = 'Incluir relat'#243'rio de totalizadores'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
   end
 end
