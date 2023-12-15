@@ -12,7 +12,7 @@ type
   function setPeriodo(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioTotalizadorGeralVenda;
   function setUsuario(AcUsuario: String): IGeraRelatorioTotalizadorGeralVenda;
   function getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
-  function Salvar(AcCaminhoSemExtensao: String; AenTipoRelatorio: uSmallEnumerados.tTipoRelatorio): IGeraRelatorioTotalizadorGeralVenda;
+  function Salvar(AcCaminho: String; AenTipoRelatorio: uSmallEnumerados.tTipoRelatorio): IGeraRelatorioTotalizadorGeralVenda;
   function GeraRelatorio: IGeraRelatorioTotalizadorGeralVenda;
   function Imprimir: IGeraRelatorioTotalizadorGeralVenda;
   end;

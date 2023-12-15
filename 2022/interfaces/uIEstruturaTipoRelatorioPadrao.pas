@@ -13,7 +13,8 @@ type
   function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
   function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
   function Imprimir: IEstruturaTipoRelatorioPadrao;
-  function Salvar: IEstruturaTipoRelatorioPadrao;  
+  function Salvar: IEstruturaTipoRelatorioPadrao; overload;
+  function Salvar(AenTipoRel: tTipoRelatorio): IEstruturaTipoRelatorioPadrao; overload;
   end;
 
 implementation

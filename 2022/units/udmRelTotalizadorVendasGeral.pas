@@ -238,7 +238,7 @@ begin
     end;
     else
     begin
-      qryFormaPgto.SQL.Add('    , COALESCE(COALESCE(RECEBER.FORMADEPAGAMENTO, PAGAMENT.FORMA), ''Não informado'') AS FORMA');
+      qryFormaPgto.SQL.Add('    , TRIM(COALESCE(COALESCE(RECEBER.FORMADEPAGAMENTO, TRIM(REPLACE(REPLACE(SUBSTRING(PAGAMENT.FORMA FROM 4 FOR 30), ''NFC-e'', ''''), ''NF-e'', ''''))), ''Não informado'')) AS FORMA');
       qryFormaPgto.SQL.Add('    , SUM(COALESCE(COALESCE(RECEBER.VALOR_DUPL, PAGAMENT.VALOR), VENDAS.TOTAL)) AS TOTAL');
       qryFormaPgto.SQL.Add('FROM VENDAS');
       qryFormaPgto.SQL.Add('INNER JOIN DOCUMENTOS');
@@ -251,7 +251,7 @@ begin
       qryFormaPgto.SQL.Add('    ON (PAGAMENT.DATA=VENDAS.EMISSAO)');
       qryFormaPgto.SQL.Add('    AND (PAGAMENT.CLIFOR=VENDAS.CLIENTE)');
       qryFormaPgto.SQL.Add('    AND (PAGAMENT.PEDIDO=(SUBSTRING(VENDAS.NUMERONF FROM 4 FOR 6)))');
-      qryFormaPgto.SQL.Add('GROUP BY DOCUMENTOS.TIPO, VENDAS.NUMERONF, FORMA');
+      qryFormaPgto.SQL.Add('GROUP BY DOCUMENTOS.TIPO, FORMA');
       qryFormaPgto.SQL.Add('ORDER BY FORMA');
     end;
   end;
@@ -352,7 +352,10 @@ begin
   qryDescontoItemCSOSN.SQL.Clear;
   qryDescontoItemCSOSN.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryDescontoItemCSOSN.SQL.Add('SELECT');
-  qryDescontoItemCSOSN.SQL.Add('    CASE WHEN COALESCE(ITEM.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(ITEM.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSOSN');
+  if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
+    qryDescontoItemCSOSN.SQL.Add('    COALESCE(COALESCE(DESCONTO.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+  else
+    qryDescontoItemCSOSN.SQL.Add('    CASE WHEN COALESCE(ITEM.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(ITEM.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
   qryDescontoItemCSOSN.SQL.Add('    , SUM(DESCONTO.TOTAL) AS DESCONTO');
   qryDescontoItemCSOSN.SQL.Add('FROM ALTERACA DESCONTO');
   qryDescontoItemCSOSN.SQL.Add('INNER JOIN DOCUMENTOS');
@@ -428,7 +431,10 @@ begin
   qryDadosCST.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryDadosCST.SQL.Add('SELECT');
   qryDadosCST.SQL.Add('    CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
-  qryDadosCST.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSOSN');
+  if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
+    qryDadosCST.SQL.Add('    , COALESCE(COALESCE(A.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+  else
+    qryDadosCST.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
   qryDadosCST.SQL.Add('    , SUM(COALESCE(A.TOTAL, 0)) AS VALOR');
   qryDadosCST.SQL.Add('FROM ALTERACA A');
   qryDadosCST.SQL.Add('INNER JOIN DOCUMENTOS');
@@ -515,7 +521,11 @@ begin
   qryItensDocumento.SQL.Add('    , A.CAIXA');
   qryItensDocumento.SQL.Add('    , A.ITEM');
   qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
-  qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSOSN');
+  if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
+    qryItensDocumento.SQL.Add('    , COALESCE(COALESCE(A.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+  else
+    qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
+
   qryItensDocumento.SQL.Add('    , COALESCE(A.TOTAL,0) AS VALOR');
   qryItensDocumento.SQL.Add('FROM ALTERACA A');
   qryItensDocumento.SQL.Add('LEFT JOIN ESTOQUE E');

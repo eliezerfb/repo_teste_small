@@ -47,7 +47,8 @@ type
     function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
     function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
     function Imprimir: IEstruturaTipoRelatorioPadrao;
-    function Salvar: IEstruturaTipoRelatorioPadrao;
+    function Salvar: IEstruturaTipoRelatorioPadrao; overload;
+    function Salvar(AenTipoRel: tTipoRelatorio): IEstruturaTipoRelatorioPadrao; overload;    
   end;
 
 implementation
@@ -75,6 +76,17 @@ begin
     ttiHTML: ImprimirHTML;
     ttiTXT: ImprimirTXT;
     ttiPDF: ImprimirPDF;
+  end;
+end;
+
+function TEstruturaTipoRelatorioPadrao.Salvar(AenTipoRel: tTipoRelatorio): IEstruturaTipoRelatorioPadrao;
+begin
+  DefineFinalArquivo;
+
+  case AenTipoRel of
+    ttiHTML: ImprimirHTML(False);
+    ttiTXT: ImprimirTXT(False);
+    ttiPDF: ImprimirPDF(False);
   end;
 end;
 
