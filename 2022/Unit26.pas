@@ -336,25 +336,7 @@ end;
 
 procedure TForm26.cboBancosChange(Sender: TObject);
 begin
-  {Mauricio Parizotto 2023-09-29 Inicio
-  if cboBancos.Text = 'AILOS - Sistema de Cooperativas de Crédito'   then Form26.MaskEdit45.Text := 'XXXXXXccccccccNNNNNNNNNKK';
-  if cboBancos.Text = 'SICOOB - Sem registro'                        then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
-  if cboBancos.Text = 'SICOOB - Com registro'                        then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
-  if cboBancos.Text = 'SICREDI - Com registro'                       then Form26.MaskEdit45.Text := '11YY2NNNNNVAAAAAACCCCC10D';
-  if cboBancos.Text = 'Caixa Econômica - Com registro'               then Form26.MaskEdit45.Text := 'CCCCCCC00010004NNNNNNNNND';
-  if cboBancos.Text = 'Caixa Econômica - Sem registro'               then Form26.MaskEdit45.Text := 'CCCCCCC00020004NNNNNNNNND';
-  if cboBancos.Text = 'Banco do Brasil - Com registro 7 posições'    then Form26.MaskEdit45.Text := '000000xxxxxxxnnnnnnnnnnkk';
-  if cboBancos.Text = 'Banco do Brasil - Com registro 6 posições'    then Form26.MaskEdit45.Text := 'XXXXXXnnnnnaaaa000ccccckk';
-  if cboBancos.Text = 'Banco do Brasil - Sem registro'               then Form26.MaskEdit45.Text := 'xxxxxxnnnnnnnnnnnnnnnnnkk';
-  if cboBancos.Text = 'Bradesco - Com registro'                      then Form26.MaskEdit45.Text := 'AAAAKKNNNNNNNNNNNCCCCCCC0';
-  if cboBancos.Text = 'Santander - Com registro'                     then Form26.MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
-  if cboBancos.Text = 'Banrisul - Com registro'                      then Form26.MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
-  if cboBancos.Text = 'Itaú - Com registro'                          then Form26.MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
-  if cboBancos.Text = 'Unibanco'                                     then Form26.MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
-  }
-
   SelectBanco;
-  {Mauricio Parizotto 2023-09-29 Fim}
 end;
 
 procedure TForm26.Button2Click(Sender: TObject);
@@ -400,26 +382,10 @@ begin
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '041' then MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '341' then MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '409' then MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '136' then MaskEdit45.Text := 'AAAACCCCCCCCCCNNNNNNNNNNN'; // Mauricio Parizotto 2023-12-07
 
       if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa01cccccccnnnnnnnS0PP';
       if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS001' then Form26.MaskEdit45.Text := '1aaaa02cccccccnnnnnnnS0PP';
-
-      {
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.Text := 'AILOS - Sistema de Cooperativas de Crédito';
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.Text := 'SICREDI - Com registro';
-      if Form26.MaskEdit45.Text = '1aaaa02cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Sem registro';
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then cboBancos.Text := 'SICOOB - Com registro';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica - Com registro';
-      if Form26.MaskEdit45.Text = 'CCCCCCC00020004NNNNNNNNND' then cboBancos.Text := 'Caixa Econômica - Sem registro';
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil - Com registro 7 posições';
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then cboBancos.Text := 'Banco do Brasil - Com registro 6 posições';
-      if Form26.MaskEdit45.Text = 'xxxxxxnnnnnnnnnnnnnnnnnkk' then cboBancos.Text := 'Banco do Brasil - Sem registro';
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then cboBancos.Text := 'Bradesco - Com registro';
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.Text := 'Santander - Com registro';
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.Text := 'Banrisul - Com registro';
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.Text := 'Itaú - Com registro';
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.Text := 'Unibanco';
-      Mauricio Parizotto 2023-10-02}
 
       if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('AILOS');
       if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('SICREDI');
@@ -432,6 +398,7 @@ begin
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banrisul');
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Itaú');
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unibanco');
+      if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unicred'); // Mauricio Parizotto 2023-12-07
     end;
   end;
 end;
@@ -545,6 +512,13 @@ begin
     MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
     chkCNAB400.Checked := True;
     chkCNAB240.Checked := False;
+  end;
+
+  if cboBancos.Text = 'Unicred' then
+  begin
+    MaskEdit45.Text := 'AAAACCCCCCCCCCNNNNNNNNNNN';
+    chkCNAB400.Checked := False;
+    chkCNAB240.Checked := True;
   end;
 end;
 
