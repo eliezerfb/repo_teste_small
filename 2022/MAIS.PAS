@@ -4504,6 +4504,7 @@ begin
                     StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.'
                     ,msgAtencao);
 
+    DefinirBuildEXEDAT;
     Instalarpackcomasltimasalteraes1Click(Sender);
 
     Application.Terminate;
@@ -5675,6 +5676,9 @@ begin
   {Sandro Silva 2023-11-06 inicio}
   //Alguns lugares da acesso negado no TASKKILL Ficha 7556
   Application.Terminate;
+  {Dailon Parisotto (f-7599) 2023-12-11 inicio}
+  Sleep(200);
+  {Dailon Parisotto (f-7599) 2023-12-11 fim}
   Halt(1);
   {Sandro Silva 2023-11-06 fim}
 end;
