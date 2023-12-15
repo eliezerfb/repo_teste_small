@@ -4107,6 +4107,8 @@ begin
 end;
 
 function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
+//var
+//  sCodigo: String; // Sandro Silva 2023-11-07
 begin
   // Atenção a rotina abaixo altera a quantidade no estoque
   if TestarEstadosAlteraEmitadaNota then
@@ -4197,6 +4199,17 @@ begin
             begin
               if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
               begin
+
+                {Sandro Silva 2023-11-07 inicio}
+                try
+                  Form7.bFabrica := True;
+                  if (Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat) <= 0 then
+                    FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Abs(Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat), Form7.bFabrica, 1, Form7.sModulo); // Sandro Silva 2023-12-08 FabricaComposto(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4, Form7.ibDataSet16QUANTIDADE.AsFloat, Form7.bFabrica, 1, Form7.sModulo);
+                finally
+                  Form7.bFabrica := False;
+                end;
+                {Sandro Silva 2023-11-07 fim}
+
                 Form7.ibDataSet4.Edit;
                 Form7.ibDataSet4QTD_ATUAL.AsFloat    := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet16QUANTIDADE.AsFloat; // Baixa a quantidade no estoque quando fecha a NF
                 Form7.ibDataSet4ULT_VENDA.AsDateTime := Form7.ibDataSet15EMISSAO.AsDateTime;
@@ -7582,6 +7595,10 @@ begin
       begin
         if Pos(Alltrim(LimpaLetras(Form7.ibQuery14.FieldByname('OBS').AsString)),LimpaLetras(Form7.ibDataSet15COMPLEMENTO.AsString)) = 0 then
         begin
+          {Sandro Silva 2023-11-28 inicio}
+          if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+            Form7.ibDataSet15.Edit; 
+          {Sandro Silva 2023-11-28 fim}
           Form7.ibDataSet15COMPLEMENTO.AsString := AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString) + ' ' + Form7.ibQuery14.FieldByname('OBS').AsString; // Nunca limpa só vai acrescentando OK
         end;
       end
@@ -12044,7 +12061,8 @@ begin
     if (sModulo = 'COMPRA') or (sModulo = 'VENDA') or (sModulo = 'OS') then
     begin
       Image308.Visible := False;
-      Image208.Visible := False; Form7.Label208.Caption  := 'Bloquear';
+      Image208.Visible := False;
+      Form7.Label208.Caption  := 'Bloquear';
       Label208.Visible := False;
     end;
     
@@ -12105,7 +12123,8 @@ begin
 //      iLeft := iLeft + iIconeCom;
     end;
 
-    if (AllTrim(sWhere)     = 'where')     then swhere   := '';
+    if (AllTrim(sWhere)     = 'where')     then
+      swhere   := '';
     if (UpperCase(sOrderBy) = 'ORDER BY NOME')      then
     begin
       if sModulo = 'ESTOQUE' then
@@ -19470,7 +19489,7 @@ begin
           //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
-            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then
+            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) and (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then // Sandro Silva 2023-11-28 if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then
               VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat)
             else
             begin
@@ -19573,7 +19592,7 @@ begin
               Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
               if Form7.ibDataSet16QUANTIDADE.AsFloat = 0 then
                 Form7.ibDataSet16QUANTIDADE.AsFloat := 0;
-              
+
               // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (Form7.Tag = 999) then // Devolucao Devolução
               if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (Form7.Tag = 999) then // Devolucao Devolução
               begin
@@ -20123,8 +20142,12 @@ begin
       begin
         Form7.ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat * Form7.ibDataSet16UNITARIO.AsFloat,4);
       end;
-
+      {Sandro Silva 2023-11-28 inicio
       VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
+      }
+      if (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then
+        VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
+      {Sandro Silva 2023-11-28 fim}
     end else
     begin
       //if Form7.ibDataSet16TOTAL.AsFloat <> 0 then Mauricio Parizotto 2023-06-05
@@ -20151,6 +20174,7 @@ begin
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
 
+
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
       if ibDataSet4QTD_ATUAL.AsCurrency < 0 then
@@ -20172,6 +20196,7 @@ begin
         Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
       end;
     end;
+
   end;
 end;
 
@@ -20204,7 +20229,7 @@ begin
       begin
         if Length(cPesq) < 5 then
           cPesq := Replicate('0', 5 - Length(cPesq)) + cPesq;
-          
+
         Form7.ibDataSet4.Selectsql.Add('(CODIGO='+QuotedStr(cPesq)+')');
       end else
         Form7.ibDataSet4.Selectsql.Add('(DESCRICAO='+QuotedStr(cPesq)+')');
@@ -20274,6 +20299,7 @@ begin
           Form7.ibDataSet16QUANTIDADE.AsString  := Form7.ibDataSet16QUANTIDADE.AsString; // Fica 1
         end;
       end;
+
     end;
   end;
 end;
