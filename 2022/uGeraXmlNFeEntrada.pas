@@ -97,10 +97,8 @@ var
   stpRest_VeiculosNovos : String;
   dQtdAcumulado: Double;
   IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
-  bAproveitamentoDeCredito: Boolean; // Sandro Silva 2023-12-13
   bAjusteICMS: Boolean; // Sandro Silva 2023-12-14
 begin
-  bAproveitamentoDeCredito := False; // Sandro Silva 2023-12-13
   bAjusteICMS := False;
   
   Form7.ibDataSet24.Close;
@@ -1506,7 +1504,6 @@ begin
           end;
         end;
 
-        bAproveitamentoDeCredito := True; // Sandro Silva 2023-12-13
 
         Form7.spdNFeDataSets.IncluirItem;
 
