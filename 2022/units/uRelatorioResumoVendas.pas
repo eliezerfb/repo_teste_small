@@ -274,21 +274,9 @@ begin
     qryDados.Close;
     qryDados.SQL.Text :=
       'select sum(DESCONTO) as DESCONTOS ' +
-      'from VENDAS ';
-
-    // *(?) Por que tem esse join com ITENS001?
-    // *Em nenhum momento vai executar esse IF, porque o método RetornarTotalDescontoAcresc só é acionado quando FcWhereEstoque estiver vazio
-    if Trim(FcWhereEstoque) <> EmptyStr then
-    begin
-      qryDados.SQL.Add('inner join ITENS001 on (ITENS001.NUMERONF = VENDAS.NUMERONF) ' +
-                       StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') and'
-                      );
-    end
-    else
-      qryDados.SQL.Add('where');
-    qryDados.SQL.Add('(EMITIDA = ''S'') ' +
-                     'and (EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date)) + ')'
-                    );
+      'from VENDAS ' +
+      'where (EMITIDA = ''S'') ' +
+      'and (EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date)) + ')';
     qryDados.Open;
 
     Result := Result + (qryDados.FieldByname('DESCONTOS').AsFloat*-1);
