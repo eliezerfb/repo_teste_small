@@ -136,8 +136,10 @@ begin
 
         {Sandro Silva 2023-07-03 inicio} 
         iCamposVisualizar := Form7.iCampos;
+        {
         if Form7.sModulo = 'ICM' then
           iCamposVisualizar := 46; // Não dá para usar Form7.iCampos porque está definido 5 campos, aumentar pode afetar em outras rotinas. Altera aqui para ficar isolado
+        Mauricio Parizotto 2023-12-11}
         {Sandro Silva 2023-07-03 fim}
         for I := 1 to iCamposVisualizar do // Sandro Silva 2023-07-03 for I := 1 to Form7.iCampos do
         begin

@@ -3,7 +3,7 @@ unit uRetornaBuildEXE;
 interface
 
 uses
-  uIRetornaBuildEXE, Windows;
+  uIRetornaBuildEXE, Windows, SysUtils;
 
 type
   TRetornarBuildEXE = class(TInterfacedObject, IRetornabuildEXE)

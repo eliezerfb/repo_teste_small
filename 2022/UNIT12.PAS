@@ -1179,7 +1179,7 @@ begin
       if (dBgrid2.Visible) then
         dBgrid2.SetFocus
       else
-        Perform(Wm_NextDlgCtl,-1,0);
+        Perform(Wm_NextDlgCtl,1,0);
     end;
   end;
 end;

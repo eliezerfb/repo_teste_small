@@ -16,7 +16,9 @@ uses
   , IBQuery
   , ShellApi
   , SpdNFeDataSets
+  {$IFDEF VER150}
   , spdXMLUtils
+  {$ENDIF}
   , spdNFeType
   , spdNFe
   , SmallFunc

@@ -7420,7 +7420,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label110: TLabel
           Left = 14
-          Top = 313
+          Top = 338
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7444,6 +7444,24 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Alignment = taRightJustify
           AutoSize = False
           Caption = 'Movimenta'#231#227'o do Estoque'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label1: TLabel
+          Left = 14
+          Top = 296
+          Width = 130
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'cBenef'
           Color = clBtnHighlight
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -7621,7 +7639,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = [fsBold]
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 16
+          TabOrder = 17
           Visible = False
           OnExit = SMALL_DBEditXExit
           OnKeyDown = PadraoKeyDown
@@ -7670,49 +7688,49 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object DBCheckSobreIPI: TDBCheckBox
           Left = 108
-          Top = 294
+          Top = 319
           Width = 92
           Height = 17
           Alignment = taLeftJustify
           Caption = 'ICMS sobre IPI'
           DataField = 'SOBREIPI'
           DataSource = DSCadastro
-          TabOrder = 12
+          TabOrder = 13
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckSobreOutras: TDBCheckBox
           Left = 255
-          Top = 294
+          Top = 318
           Width = 109
           Height = 17
           Alignment = taLeftJustify
           Caption = 'ICMS sobre Outras'
           DataField = 'SOBREOUTRAS'
           DataSource = DSCadastro
-          TabOrder = 13
+          TabOrder = 14
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckFRETESOBREIPI: TDBCheckBox
           Left = 402
-          Top = 294
+          Top = 318
           Width = 89
           Height = 17
           Alignment = taLeftJustify
           Caption = 'IPI sobre Frete'
           DataField = 'FRETESOBREIPI'
           DataSource = DSCadastro
-          TabOrder = 14
+          TabOrder = 15
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnKeyDown = PadraoKeyDown
         end
         object DBMemo4: TDBMemo
           Left = 150
-          Top = 313
+          Top = 338
           Width = 640
           Height = 75
           DataField = 'OBS'
@@ -7724,7 +7742,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           MaxLength = 32768
           ParentFont = False
-          TabOrder = 15
+          TabOrder = 16
           OnEnter = DBMemo4Enter
           OnKeyDown = DBMemo4KeyDown
           OnKeyPress = DBMemo4KeyPress
@@ -7793,6 +7811,27 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
                 Visible = True
               end>
           end
+        end
+        object SMALL_DBEdit1: TSMALL_DBEdit
+          Left = 150
+          Top = 296
+          Width = 100
+          Height = 20
+          AutoSize = False
+          BevelInner = bvLowered
+          BevelOuter = bvNone
+          Ctl3D = True
+          DataField = 'CBENEF'
+          DataSource = DSCadastro
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 12
+          OnKeyDown = PadraoKeyDown
         end
       end
       object tbsPisCofins: TTabSheet
