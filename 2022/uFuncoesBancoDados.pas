@@ -52,6 +52,7 @@ const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
+function TamanhoCampoFB(Banco: TIBDatabase; sTabela: String; sCampo: String): integer;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet; // Mauricio Parizotto 2023-09-12
@@ -129,6 +130,30 @@ begin
       ' and upper(F.RDB$FIELD_NAME) = upper(' + QuotedStr(sCampo) + ')';
     IBQUERY.Open;
     Result := (IBQUERY.IsEmpty = False);
+  finally
+    IBTRANSACTION.Rollback;
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+end;
+
+function TamanhoCampoFB(Banco: TIBDatabase; sTabela: String; sCampo: String): integer;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+  try
+    IBQUERY.Close;
+    IBQUERY.SQL.Text := ' SELECT'+
+                        '   A.RDB$FIELD_LENGTH TAMANHO'+
+                        ' FROM RDB$FIELDS A '+
+                        '   Left Join RDB$RELATION_FIELDS B on b.RDB$FIELD_SOURCE = A.RDB$FIELD_NAME '+
+                        ' WHERE B.RDB$RELATION_NAME = ' + QuotedStr(sTabela)+
+                        '  AND B.RDB$FIELD_NAME = ' + QuotedStr(sCampo);
+    IBQUERY.Open;
+    Result := IBQUERY.FieldByName('TAMANHO').AsInteger;
   finally
     IBTRANSACTION.Rollback;
     FreeAndNil(IBQUERY);
