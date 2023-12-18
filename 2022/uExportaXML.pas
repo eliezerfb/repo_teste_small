@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, SmallFunc, uArquivosDAT,
-  uSalvaXMLContabilFactory, IBQuery, uConectaBancoSmall;
+  uSalvaXMLContabilFactory, IBQuery, uConectaBancoSmall, uSmallEnumerados;
 
 type
   TfrmExportaXML = class(TForm)
@@ -62,7 +62,9 @@ uses
   , uSmallResourceString
   , unit7
   , DateUtils
-  , uDialogs, uFuncoesRetaguarda;
+  , uDialogs
+  , uFuncoesRetaguarda
+  , uGeraRelatorioTotalizadorGeralVenda;
 
 {$R *.dfm}
 
@@ -114,7 +116,7 @@ end;      }
 function TfrmExportaXML.EnviarXml: Boolean;
 var
   cTipoGeracao, cDocs, cAnexo, cTitulo, cCorpo: String;
-  cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT: String;
+  cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT, cRelTotalizador: String;
   bTamanhoZip: Boolean;
 begin
   Result := False;
@@ -129,8 +131,9 @@ begin
     // Limpa os arquivos XML para garantir não ficar sujeira.
     LimpaArquivosXML;
     {Dailon Parisotto 2023-10-17 (f-7487) Fim}
-    
+
     try
+      cRelTotalizador := ExtractFilePath(Application.ExeName) + 'CONTABIL\' + 'Totalizador de vendas.pdf';
       if cbNFeSaida.Checked then
       begin
         Form7.ibDataSet15.DisableControls;
@@ -158,9 +161,6 @@ begin
       if cbNFeEntrada.Checked then
       begin
         Form7.ibDataSet24.DisableControls;
-
-        //LogRetaguarda('ibDataSet24.DisableControls; 162'); // Sandro Silva 2023-11-27
-
         try
           Form7.ibDataSet24.Close;
           Form7.ibDataSet24.SelectSql.Clear;
@@ -179,9 +179,6 @@ begin
                                                     .getCaminhoArquivos;
         finally
           Form7.ibDataSet24.EnableControls;
-
-          //LogRetaguarda('Form7.ibDataSet24.EnableControls; 183'); // Sandro Silva 2023-11-27
-
         end;
       end;
 
@@ -230,6 +227,19 @@ begin
         cCorpo := StringReplace(cCorpo, '<CNPJEMPRESA>', Form7.ibDataSet13CGC.AsString, []);
         cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
 
+        if (FbBackGround) and (FoArquivoDAT.NFe.XML.IncluirRelatorioTotalizador) then
+        begin
+          TGeraRelatorioTotalizadorGeralVenda.New
+                                             .setTransaction(Form7.IBTransaction1)
+                                             .setUsuario(Form7.UsuarioLogado)
+                                             .setPeriodo(dtInicial.Date, dtFinal.Date)
+                                             .GeraRelatorio
+                                             .Salvar(cRelTotalizador, ttiPDF);
+
+          if FileExists(cRelTotalizador) then
+            cAnexo := cAnexo + ';' + cRelTotalizador;
+        end;
+
         Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
 
         Result := True;
@@ -273,6 +283,8 @@ begin
                         'Não foi encontrado nenhum XML para os documentos marcados, verifique o período informado.'
                         ,msgAtencao);
     finally
+      if FileExists(cRelTotalizador) then
+        DeleteFile(cRelTotalizador);
       {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
       // Solicitado para manter os arquivos ZIP para envio manual posterior.
       //  LimparPastaContabil;
