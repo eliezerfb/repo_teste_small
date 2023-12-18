@@ -209,7 +209,9 @@ uses
   uFrmSituacaoOS in 'uFrmSituacaoOS.pas' {FrmSituacaoOS},
   uOrdemServico in 'units\uOrdemServico.pas',
   uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS},
-  uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas';
+  uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas',
+  uEstruturaRelVendasNotaFiscal in 'units\uEstruturaRelVendasNotaFiscal.pas',
+  uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal};
 
 {$R *.RES}
 
