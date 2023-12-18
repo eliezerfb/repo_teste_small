@@ -632,7 +632,7 @@ begin
                                                                                        .CarregarDados(FdmRelatorio.cdsTotalCSOSN)
                                                               );
 
-    if (FdmRelatorio.cdsTotalCFOP.IsEmpty) and (AenDoc = FenImprimirFiltroData) then
+    if (AenDoc = FenImprimirFiltroData) then
       oEstruturaCat.FiltrosRodape.setFiltroData('Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim));
 
     if TestarGeraCSOSN then
