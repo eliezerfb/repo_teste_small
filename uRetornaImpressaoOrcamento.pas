@@ -282,9 +282,12 @@ begin
         end else
         begin
           // Divide o texto da observação em 2 partes para imprimir sem cortar
+          {Mauricio Parizotto 2023-12-18
           FlsImpressao.Add('               ' + Copy(FQryItens.FieldByname('DESCRICAO').AsString+Replicate(' ',30),1,30));
           if Copy(FQryItens.FieldByname('DESCRICAO').AsString, 31, 15) <> EmptyStr then
             FlsImpressao.Add('               ' + Copy(Copy(FQryItens.FieldByname('DESCRICAO').AsString, 31, 15)+Replicate(' ',30),1,30));
+          }
+          FlsImpressao.Add(DescricaoComQuebraLinha(FQryItens.FieldByname('DESCRICAO').AsString,'               ',30)) ;
         end;
       end;
     end;

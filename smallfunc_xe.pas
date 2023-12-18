@@ -141,6 +141,7 @@ function Extenso(pP1:double):String;
 function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 function BuscaSerialSmall: String;
 // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
+function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
 
 var
   IMG: TImage;
@@ -1558,5 +1559,16 @@ begin
   end;
 end;
 { Dailon Parisotto (f-7492) 2023-10-24 Fim}
+
+
+//Mauricio Parizotto 2023-12-18
+function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
+begin
+  while Descricao <> '' do
+  begin
+    Result := Result + EspacamentoEsquerdo + Copy(Descricao+Replicate(' ',Tamanho),1,Tamanho)+chr(10);
+    delete(Descricao,1,Tamanho);
+  end;
+end;
 
 end.
