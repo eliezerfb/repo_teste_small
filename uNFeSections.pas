@@ -36,6 +36,8 @@ type
     procedure setNFCe(const Value: Boolean);
     function getDataUltimoEnvio: TDateTime;
     procedure setDataUltimoEnvio(const Value: TDateTime);
+    function getIncluirRelatorioTotalizador: Boolean;
+    procedure setIncluirRelatorioTotalizador(const Value: Boolean);
   public
     property PeriodoInicial: TDateTime read getPeriodoInicial write setPeriodoInicial;
     property PeriodoFinal: TDateTime read getPeriodoFinal write setPeriodoFinal;
@@ -45,6 +47,7 @@ type
     property NFeEntrada: Boolean read getNFeEntrada write setNFeEntrada;
     property NFCe: Boolean read getNFCe write setNFCe;
     property DataUltimoEnvio: TDateTime read getDataUltimoEnvio write setDataUltimoEnvio;
+    property IncluirRelatorioTotalizador: Boolean read getIncluirRelatorioTotalizador write setIncluirRelatorioTotalizador; 
   protected
     function Section: String; override;
   end;
@@ -110,6 +113,11 @@ begin
   Result := (FoIni.ReadString(Section, _cIdentEnvioAutomatico, _cNao) = _cSim);
 end;
 
+function TSectionXML.getIncluirRelatorioTotalizador: Boolean;
+begin
+  Result := (FoIni.ReadString(Section, _cIdentIncluirRelatorioTotalizador, _cNao) = _cSim);
+end;
+
 function TSectionXML.getNFCe: Boolean;
 begin
   Result := (FoIni.ReadString(Section, _cIdentNFCe, _cNao) = _cSim);
@@ -158,6 +166,16 @@ begin
   if Value then
     cValor := _cSim;
   FoIni.WriteString(Section, _cIdentEnvioAutomatico, cValor);
+end;
+
+procedure TSectionXML.setIncluirRelatorioTotalizador(const Value: Boolean);
+var
+  cValor: String;
+begin
+  cValor := _cNao;
+  if Value then
+    cValor := _cSim;
+  FoIni.WriteString(Section, _cIdentIncluirRelatorioTotalizador, cValor);
 end;
 
 procedure TSectionXML.setNFCe(const Value: Boolean);

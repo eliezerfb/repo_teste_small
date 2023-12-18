@@ -71,6 +71,7 @@ const
   _cIdentXMLPeriodoFinal = 'Periodo Final';
   _cIdentXMLEmailContabilidade = 'e-mail contabilidade';
   _cIdentEnvioAutomatico = 'Envio automatico';
+  _cIdentIncluirRelatorioTotalizador = 'Incluir Relatorio Totalizador';
   _cIdentNFeSaida = 'NFE SAIDA';
   _cIdentNFeEntrada = 'NFE ENTRADA';
   _cIdentNFCe = 'NFCE';
