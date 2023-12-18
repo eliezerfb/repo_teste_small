@@ -123,6 +123,7 @@ uses
   function MontaMascaraCasaDec(qtdCasas : integer) : string;
   function QuebraLinhaHtml(sTexto : string) : string;
   function GetCampoPKDataSet(sDataSet: TDataSet): String;
+  function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
 
 implementation
 
@@ -2839,6 +2840,16 @@ begin
         Result := sDataSet.fields[i].FieldName;
     end;
   except
+  end;
+end;
+
+//Mauricio Parizotto 2023-12-18
+function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
+begin
+  while Descricao <> '' do
+  begin
+    Result := Result + EspacamentoEsquerdo + Copy(Descricao+Replicate(' ',Tamanho),1,Tamanho)+chr(10);
+    delete(Descricao,1,Tamanho);
   end;
 end;
 
