@@ -36,8 +36,6 @@ type
 
 implementation
 
-uses uFuncoesBancoDados;
-
 { TArquivoDATINFPadrao }
 
 procedure TArquivoDATINFPadrao.CarregarArquivo;
