@@ -27492,7 +27492,7 @@ begin
         'forma clara e objetiva a correção que deve ser considerada.';
 
         Form36.ShowModal;
-        sCartaCorrecao := ConverteAcentos2(Form36.Memo1.Text);
+        sCartaCorrecao := ConverteCaracterEspecialXML(Form36.Memo1.Text);
 
         if Length(sCartaCorrecao) >= 30 then
         begin
