@@ -55,7 +55,9 @@ function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet; // Mauricio Parizotto 2023-09-12
+{$IFDEF VER150}
 function ExecutaComando(comando: String): Boolean;  overload;
+{$ENDIF}
 function ExecutaComando(comando: String; IBTRANSACTION: TIBTransaction): Boolean; overload;
 function ExecutaComandoEscalar(Banco: TIBDatabase; vSQL : string; vNull : string = ''): Variant; overload;
 function ExecutaComandoEscalar(Transaction: TIBTransaction; vSQL : string; vNull : string = ''): Variant; overload;// Mauricio Parizotto 2023-09-12
@@ -73,7 +75,10 @@ function DateToBD(data:TDateTime):string;
 implementation
 
 uses
-  mais, uDialogs;
+  {$IFDEF VER150}
+  mais,
+  {$ENDIF}
+  uDialogs;
 
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 {Sandro Silva 2015-10-01 inicio
@@ -185,6 +190,7 @@ begin
   end;
 end;
 
+{$IFDEF VER150}
 function ExecutaComando(comando:string):Boolean;  overload;
 begin
   Result := False;
@@ -199,6 +205,7 @@ begin
   except
   end;
 end;
+{$ENDIF}
 
 
 function GeneratorExisteFB(Banco: TIBDatabase; sGenerator: String): Boolean;
