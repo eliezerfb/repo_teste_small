@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormRelatorioPadrao, StdCtrls, Buttons, ExtCtrls, CheckLst,
   ComCtrls, uIEstruturaTipoRelatorioPadrao, uIEstruturaRelatorioPadrao,
-  IBQuery;
+  IBQuery, DB, DBClient, SmallFunc;
 
 type
   TfrmRelVendasNotaFiscal = class(TfrmRelatorioPadrao)
@@ -24,6 +24,25 @@ type
     rbRelatorioICMS: TRadioButton;
     rbItemPorITem: TRadioButton;
     cbListarCodigos: TCheckBox;
+    cdsRelICMS: TClientDataSet;
+    cdsItemPorItem: TClientDataSet;
+    cdsItemPorItemNOTA: TStringField;
+    cdsItemPorItemEMISSAO: TDateField;
+    cdsItemPorItemQUANTIDADE: TFMTBCDField;
+    cdsItemPorItemVENDIDOPOR: TFMTBCDField;
+    cdsItemPorItemCUSTOCOMPRA: TFMTBCDField;
+    cdsItemPorItemCODIGO: TStringField;
+    cdsItemPorItemDESCRICAO: TStringField;
+    cdsRelICMSNOTA: TStringField;
+    cdsRelICMSEMISSAO: TDateField;
+    cdsRelICMSCLIENTE: TStringField;
+    cdsRelICMSMERCADORIA: TFMTBCDField;
+    cdsRelICMSSERVICOS: TFMTBCDField;
+    cdsRelICMSFRETE: TFMTBCDField;
+    cdsRelICMSDESCONTO: TFMTBCDField;
+    cdsRelICMSDESPESAS: TFMTBCDField;
+    cdsRelICMSTOTAL: TFMTBCDField;
+    cdsRelICMSICMS: TFMTBCDField;
     procedure btnVoltarClick(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -45,8 +64,7 @@ type
     procedure DefinirEnabledListarCodigo;
     function RetornarDescrFiltroData: string;
     function RetornarWhereOperacoes: String;
-    function RetornarCampoComFormatoDecimalValor(AcCampo: String): String;
-    function RetornarCampoComFormatoDecimalQtde(AcCampo: String): String;
+    procedure AjustaCasasDecimais;
   public
     property DecimaisValor: Integer read FnDecimaisValor write FnDecimaisValor;
     property DecimaisQuantidade: Integer read FnDecimaisQuantidade write FnDecimaisQuantidade;
@@ -73,16 +91,23 @@ var
   i: Integer;
   cAux: String;
   oEstruturaCat: IEstruturaRelatorioPadrao;
+
+  cdsImprimir: TClientDataSet;
 begin
   Result := TEstruturaTipoRelatorioPadrao.New
                                          .setUsuario(Usuario);
 
   CarregaDados;
 
+  if rbRelatorioICMS.Checked then
+    cdsImprimir := cdsRelICMS;
+  if rbItemPorITem.Checked then
+    cdsImprimir := cdsItemPorItem;
+
   oEstruturaCat := TEstruturaRelVendasNotaFiscal.New
                                                 .setDAO(TDadosRelatorioPadraoDAO.New
                                                                                 .setDataBase(Transaction.DefaultDatabase)
-                                                                                .CarregarDados(FqryDados)
+                                                                                .CarregarDados(cdsImprimir)
                                                        );
 
   // Monta os filtros
@@ -194,18 +219,19 @@ begin
 end;
 
 procedure TfrmRelVendasNotaFiscal.CarregaDadosItemAItem;
+var
+  i: Integer;
 begin
   FqryDados.Close;
   FqryDados.SQL.Clear;
   FqryDados.SQL.Add('SELECT');
-  FqryDados.SQL.Add('    SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9)||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS "Nota"');
-  FqryDados.SQL.Add('    , VENDAS.EMISSAO AS "Data"');
-  if cbListarCodigos.Checked then
-    FqryDados.SQL.Add('    , ITENS001.CODIGO AS "Código"');
-  FqryDados.SQL.Add('    , ITENS001.DESCRICAO AS "Descrição do item"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalQtde('ITENS001.QUANTIDADE') + ' AS "Quantidade"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('(ITENS001.QUANTIDADE * ITENS001.UNITARIO)') + ' AS "Vendido por"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('(ITENS001.QUANTIDADE * ITENS001.CUSTO)') + ' AS "Custo compra"');
+  FqryDados.SQL.Add('    SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9)||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS NOTA');
+  FqryDados.SQL.Add('    , VENDAS.EMISSAO AS EMISSAO');
+  FqryDados.SQL.Add('    , ITENS001.CODIGO AS CODIGO');
+  FqryDados.SQL.Add('    , ITENS001.DESCRICAO AS DESCRICAO');
+  FqryDados.SQL.Add('    , ITENS001.QUANTIDADE AS QUANTIDADE');
+  FqryDados.SQL.Add('    , (ITENS001.QUANTIDADE * ITENS001.UNITARIO) AS VENDIDOPOR');
+  FqryDados.SQL.Add('    , (ITENS001.QUANTIDADE * ITENS001.CUSTO) AS CUSTOCOMPRA');
   FqryDados.SQL.Add('FROM VENDAS');
   FqryDados.SQL.Add('INNER JOIN ITENS001');
   FqryDados.SQL.Add('    ON (ITENS001.NUMERONF=VENDAS.NUMERONF)');
@@ -218,33 +244,78 @@ begin
   FqryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
   FqryDados.ParamByName('XDATAFIM').AsDate := dtFinal.Date;
   FqryDados.Open;
+  FqryDados.First;
+
+  cdsItemPorItemCODIGO.Visible := cbListarCodigos.Checked;
+  while not FqryDados.Eof do
+  begin
+    cdsItemPorItem.Close;
+    cdsItemPorItem.CreateDataSet;
+
+    cdsItemPorItem.Append;
+
+    for i := 0 to Pred(FqryDados.Fields.Count) do
+    begin
+      if FqryDados.Fields[i].DataType <> ftFloat then
+        cdsItemPorItem.FieldByName(FqryDados.Fields[i].FieldName).Value := FqryDados.Fields[i].Value
+      else
+      begin
+        if AnsiUpperCase(FqryDados.Fields[i].FieldName) <> 'QUANTIDADE' then
+          cdsItemPorItem.FieldByName(FqryDados.Fields[i].FieldName).AsFloat := Arredonda(FqryDados.Fields[i].AsFloat, FnDecimaisValor)
+        else
+          cdsItemPorItem.FieldByName(FqryDados.Fields[i].FieldName).AsFloat := Arredonda(FqryDados.Fields[i].AsFloat, FnDecimaisQuantidade);
+      end;
+    end;
+
+    cdsItemPorItem.Post;    
+    FqryDados.Next;
+  end;
 end;
 
-function TfrmRelVendasNotaFiscal.RetornarCampoComFormatoDecimalValor(AcCampo: String): String;
+procedure TfrmRelVendasNotaFiscal.AjustaCasasDecimais;
 begin
-  Result := 'CAST('+AcCampo+' AS NUMERIC(18,' + IntToStr(DecimaisValor) + '))';
-end;
+  // cdsRelICMS
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSMERCADORIA.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSMERCADORIA.Size := FnDecimaisValor;
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSSERVICOS.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSSERVICOS.Size := FnDecimaisValor;
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSFRETE.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSFRETE.Size := FnDecimaisValor;
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSDESCONTO.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSDESCONTO.Size := FnDecimaisValor;
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSDESPESAS.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSDESPESAS.Size := FnDecimaisValor;
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSTOTAL.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSTOTAL.Size := FnDecimaisValor;
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSICMS.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSICMS.Size := FnDecimaisValor;  
 
-function TfrmRelVendasNotaFiscal.RetornarCampoComFormatoDecimalQtde(AcCampo: String): String;
-begin
-  Result := 'CAST('+AcCampo+' AS NUMERIC(18,' + IntToStr(DecimaisQuantidade) + '))';
+  // cdsItemPorItem
+  cdsItemPorItem.FieldDefs.Items[cdsItemPorItem.FieldDefs.IndexOf(cdsItemPorItemQUANTIDADE.FieldName)].Size := FnDecimaisQuantidade;
+  cdsItemPorItemQUANTIDADE.Size := FnDecimaisQuantidade;
+  cdsItemPorItem.FieldDefs.Items[cdsItemPorItem.FieldDefs.IndexOf(cdsItemPorItemVENDIDOPOR.FieldName)].Size := FnDecimaisValor;
+  cdsItemPorItemVENDIDOPOR.Size := FnDecimaisValor;
+  cdsItemPorItem.FieldDefs.Items[cdsItemPorItem.FieldDefs.IndexOf(cdsItemPorItemCUSTOCOMPRA.FieldName)].Size := FnDecimaisValor;
+  cdsItemPorItemCUSTOCOMPRA.Size := FnDecimaisValor;
 end;
 
 procedure TfrmRelVendasNotaFiscal.CarregaDadosICMS;
+var
+  i: Integer;
 begin
   FqryDados.Close;
   FqryDados.SQL.Clear;
   FqryDados.SQL.Add('SELECT');
-  FqryDados.SQL.Add('    SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9)||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS "Nota"');
-  FqryDados.SQL.Add('    , VENDAS.EMISSAO AS "Data"');
-  FqryDados.SQL.Add('    , VENDAS.CLIENTE AS "Cliente"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.MERCADORIA') + ' AS "Produtos R$"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.SERVICOS') + ' AS "Serviços R$"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.FRETE') + ' AS "Frete R$"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.DESCONTO') + ' AS "Desconto R$"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.DESPESAS') + ' AS "Outras R$"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.TOTAL') + ' AS "TOTAL R$"');
-  FqryDados.SQL.Add('    , ' + RetornarCampoComFormatoDecimalValor('VENDAS.ICMS') + ' AS "ICMS R$"');
+  FqryDados.SQL.Add('    SUBSTRING(VENDAS.NUMERONF FROM 1 FOR 9)||''/''||SUBSTRING(VENDAS.NUMERONF FROM 10 FOR 3) AS NOTA');
+  FqryDados.SQL.Add('    , VENDAS.EMISSAO AS EMISSAO');
+  FqryDados.SQL.Add('    , VENDAS.CLIENTE AS CLIENTE');
+  FqryDados.SQL.Add('    , VENDAS.MERCADORIA AS MERCADORIA');
+  FqryDados.SQL.Add('    , VENDAS.SERVICOS AS SERVICOS');
+  FqryDados.SQL.Add('    , VENDAS.FRETE AS FRETE');
+  FqryDados.SQL.Add('    , VENDAS.DESCONTO AS DESCONTO');
+  FqryDados.SQL.Add('    , VENDAS.DESPESAS AS DESPESAS');
+  FqryDados.SQL.Add('    , VENDAS.TOTAL AS TOTAL');
+  FqryDados.SQL.Add('    , VENDAS.ICMS AS ICMS');
   FqryDados.SQL.Add('FROM VENDAS');
   FqryDados.SQL.Add('WHERE');
   FqryDados.SQL.Add('    (VENDAS.EMITIDA=''S'')');
@@ -255,6 +326,26 @@ begin
   FqryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
   FqryDados.ParamByName('XDATAFIM').AsDate := dtFinal.Date;
   FqryDados.Open;
+  FqryDados.First;
+
+  while not FqryDados.Eof do
+  begin
+    cdsRelICMS.Close;
+    cdsRelICMS.CreateDataSet;
+
+    cdsRelICMS.Append;
+
+    for i := 0 to Pred(FqryDados.Fields.Count) do
+    begin
+      if FqryDados.Fields[i].DataType <> ftFloat then
+        cdsRelICMS.FieldByName(FqryDados.Fields[i].FieldName).Value := FqryDados.Fields[i].Value
+      else
+        cdsRelICMS.FieldByName(FqryDados.Fields[i].FieldName).AsFloat := Arredonda(FqryDados.Fields[i].AsFloat, FnDecimaisValor);
+    end;
+
+    cdsRelICMS.Post;
+    FqryDados.Next;
+  end;
 end;
 
 procedure TfrmRelVendasNotaFiscal.AjustaLayout;
@@ -269,7 +360,8 @@ procedure TfrmRelVendasNotaFiscal.FormShow(Sender: TObject);
 begin
   inherited;
   AjustaLayout;
-
+  AjustaCasasDecimais;
+  
   dtInicial.Date := FoArquivoDAT.Usuario.Outros.PeriodoInicial;
   dtFinal.Date   := FoArquivoDAT.Usuario.Outros.PeriodoFinal;
 end;

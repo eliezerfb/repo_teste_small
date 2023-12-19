@@ -163,4 +163,207 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       OnClick = btnDesmarcarTodosOperClick
     end
   end
+  object cdsRelICMS: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'NOTA'
+        DataType = ftString
+        Size = 12
+      end
+      item
+        Name = 'EMISSAO'
+        DataType = ftDate
+      end
+      item
+        Name = 'CLIENTE'
+        DataType = ftString
+        Size = 200
+      end
+      item
+        Name = 'MERCADORIA'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'SERVICOS'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'FRETE'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'DESCONTO'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'DESPESAS'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'TOTAL'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'ICMS'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 40
+    Top = 120
+    object cdsRelICMSNOTA: TStringField
+      DisplayLabel = 'Nota'
+      FieldName = 'NOTA'
+      Size = 12
+    end
+    object cdsRelICMSEMISSAO: TDateField
+      DisplayLabel = 'Data'
+      FieldName = 'EMISSAO'
+    end
+    object cdsRelICMSCLIENTE: TStringField
+      DisplayLabel = 'Cliente'
+      FieldName = 'CLIENTE'
+      Size = 200
+    end
+    object cdsRelICMSMERCADORIA: TFMTBCDField
+      DisplayLabel = 'Produtos R$'
+      FieldName = 'MERCADORIA'
+      Precision = 18
+      Size = 6
+    end
+    object cdsRelICMSSERVICOS: TFMTBCDField
+      DisplayLabel = 'Servi'#231'os R$'
+      FieldName = 'SERVICOS'
+      Precision = 18
+      Size = 6
+    end
+    object cdsRelICMSFRETE: TFMTBCDField
+      DisplayLabel = 'Frete R$'
+      FieldName = 'FRETE'
+      Precision = 18
+      Size = 6
+    end
+    object cdsRelICMSDESCONTO: TFMTBCDField
+      DisplayLabel = 'Desconto R$'
+      FieldName = 'DESCONTO'
+      Precision = 18
+      Size = 6
+    end
+    object cdsRelICMSDESPESAS: TFMTBCDField
+      DisplayLabel = 'Outras R$'
+      FieldName = 'DESPESAS'
+      Precision = 18
+      Size = 6
+    end
+    object cdsRelICMSTOTAL: TFMTBCDField
+      DisplayLabel = 'TOTAL R$'
+      FieldName = 'TOTAL'
+      Precision = 18
+      Size = 6
+    end
+    object cdsRelICMSICMS: TFMTBCDField
+      DisplayLabel = 'ICMS R$'
+      FieldName = 'ICMS'
+      Precision = 18
+      Size = 6
+    end
+  end
+  object cdsItemPorItem: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'NOTA'
+        DataType = ftString
+        Size = 12
+      end
+      item
+        Name = 'EMISSAO'
+        DataType = ftDate
+      end
+      item
+        Name = 'CODIGO'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'DESCRICAO'
+        DataType = ftString
+        Size = 150
+      end
+      item
+        Name = 'QUANTIDADE'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'VENDIDOPOR'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end
+      item
+        Name = 'CUSTOCOMPRA'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 40
+    Top = 152
+    object cdsItemPorItemNOTA: TStringField
+      DisplayLabel = 'Nota'
+      FieldName = 'NOTA'
+      Size = 12
+    end
+    object cdsItemPorItemEMISSAO: TDateField
+      DisplayLabel = 'Data'
+      FieldName = 'EMISSAO'
+    end
+    object cdsItemPorItemCODIGO: TStringField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'CODIGO'
+    end
+    object cdsItemPorItemDESCRICAO: TStringField
+      DisplayLabel = 'Descri'#231#227'o do item'
+      FieldName = 'DESCRICAO'
+      Size = 150
+    end
+    object cdsItemPorItemQUANTIDADE: TFMTBCDField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'QUANTIDADE'
+      Precision = 18
+      Size = 6
+    end
+    object cdsItemPorItemVENDIDOPOR: TFMTBCDField
+      DisplayLabel = 'Vendido por'
+      FieldName = 'VENDIDOPOR'
+      Precision = 18
+      Size = 6
+    end
+    object cdsItemPorItemCUSTOCOMPRA: TFMTBCDField
+      DisplayLabel = 'Custo compra'
+      FieldName = 'CUSTOCOMPRA'
+      Precision = 18
+      Size = 6
+    end
+  end
 end
