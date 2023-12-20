@@ -250,7 +250,7 @@ end;
 procedure TForm33.FormActivate(Sender: TObject);
 begin
   bVisualizar := False;
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 end;
 
 procedure TForm33.Button2Click(Sender: TObject);

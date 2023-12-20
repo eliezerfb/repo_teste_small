@@ -1,12 +1,12 @@
 object Form7: TForm7
-  Left = 323
-  Top = 133
+  Left = 4
+  Top = 1
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 926
-  ClientWidth = 1369
+  ClientHeight = 659
+  ClientWidth = 1348
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7974,8 +7974,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 886
-    Width = 1369
+    Top = 619
+    Width = 1348
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -8047,7 +8047,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1369
+    Width = 1348
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -8072,7 +8072,7 @@ object Form7: TForm7
     ShowHint = False
     TabOrder = 13
     OnMouseMove = Panel_0MouseMove
-    object Image208: TImage
+    object imgLibBloq: TImage
       Left = 350
       Top = 0
       Width = 70
@@ -8394,9 +8394,9 @@ object Form7: TForm7
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
       ShowHint = True
       Transparent = True
-      OnClick = Image208Click
+      OnClick = imgLibBloqClick
     end
-    object Image201: TImage
+    object imgNovo: TImage
       Left = 0
       Top = 0
       Width = 70
@@ -8407,7 +8407,7 @@ object Form7: TForm7
       Transparent = True
       OnClick = Image101Click
     end
-    object Image202: TImage
+    object imgExcluir: TImage
       Left = 70
       Top = 0
       Width = 70
@@ -8730,7 +8730,7 @@ object Form7: TForm7
       Transparent = True
       OnClick = Image102Click
     end
-    object Image203: TImage
+    object imgProcurar: TImage
       Left = 140
       Top = 0
       Width = 70
@@ -9053,7 +9053,7 @@ object Form7: TForm7
       Transparent = True
       OnClick = Image103Click
     end
-    object Image205: TImage
+    object imgImprimir: TImage
       Left = 210
       Top = 0
       Width = 70
@@ -9374,9 +9374,9 @@ object Form7: TForm7
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
       ShowHint = False
       Transparent = True
-      OnClick = Image205Click
+      OnClick = imgImprimirClick
     end
-    object Image204: TImage
+    object imgVisualizar: TImage
       Left = 280
       Top = 0
       Width = 70
@@ -9697,9 +9697,9 @@ object Form7: TForm7
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
       ShowHint = False
       Transparent = True
-      OnClick = Image204Click
+      OnClick = imgVisualizarClick
     end
-    object Image206: TImage
+    object imgEditar: TImage
       Left = 420
       Top = 0
       Width = 70
@@ -10344,9 +10344,9 @@ object Form7: TForm7
       ShowHint = False
       Transparent = True
       Visible = False
-      OnClick = Image208Click
+      OnClick = imgLibBloqClick
     end
-    object Image209: TImage
+    object imgFiltrar: TImage
       Left = 560
       Top = 0
       Width = 70
@@ -10757,7 +10757,7 @@ object Form7: TForm7
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image205Click
+      OnClick = imgImprimirClick
       OnMouseMove = Label205MouseMove
       OnMouseLeave = Label205MouseLeave
     end
@@ -10781,7 +10781,7 @@ object Form7: TForm7
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image204Click
+      OnClick = imgVisualizarClick
       OnMouseMove = Label204MouseMove
       OnMouseLeave = Label204MouseLeave
     end
@@ -10827,7 +10827,7 @@ object Form7: TForm7
       Transparent = True
       Layout = tlBottom
       Visible = False
-      OnClick = Image208Click
+      OnClick = imgLibBloqClick
       OnMouseMove = Label208MouseMove
       OnMouseLeave = Label208MouseLeave
     end
@@ -11313,7 +11313,7 @@ object Form7: TForm7
       end
       object FluxodeCaixa1: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object N1: TMenuItem
         Caption = '-'
@@ -13006,7 +13006,7 @@ object Form7: TForm7
       end
       object MenuItem2: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem3: TMenuItem
         Caption = '-'
@@ -13325,7 +13325,7 @@ object Form7: TForm7
       end
       object MenuItem24: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem25: TMenuItem
         Caption = '-'
@@ -13427,7 +13427,7 @@ object Form7: TForm7
       end
       object MenuItem35: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object Imprimircheque1: TMenuItem
         Caption = 'Imprimir &cheque...'
@@ -13583,7 +13583,7 @@ object Form7: TForm7
       end
       object MenuItem57: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object N11: TMenuItem
         Caption = '-'
@@ -13843,7 +13843,7 @@ object Form7: TForm7
       end
       object MenuItem79: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem80: TMenuItem
         Caption = '-'
@@ -14188,7 +14188,7 @@ object Form7: TForm7
       end
       object MenuItem46: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem47: TMenuItem
         Caption = '-'
@@ -15021,7 +15021,7 @@ object Form7: TForm7
       end
       object MenuItem107: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem108: TMenuItem
         Caption = '-'
@@ -18411,7 +18411,7 @@ object Form7: TForm7
       end
       object MenuItem69: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem89: TMenuItem
         Caption = '-'
@@ -18572,7 +18572,7 @@ object Form7: TForm7
       end
       object MenuItem123: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object N17: TMenuItem
         Caption = '-'
@@ -18730,7 +18730,7 @@ object Form7: TForm7
       Caption = '&Arquivo'
       object MenuItem68: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object N13: TMenuItem
         Caption = '-'
@@ -19480,7 +19480,7 @@ object Form7: TForm7
       end
       object MenuItem20: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem21: TMenuItem
         Caption = '-'
@@ -19737,7 +19737,7 @@ object Form7: TForm7
       end
       object MenuItem164: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem165: TMenuItem
         Caption = '-'
@@ -19903,7 +19903,7 @@ object Form7: TForm7
       end
       object MenuItem206: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem207: TMenuItem
         Caption = '-'
@@ -20136,6 +20136,7 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
+    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
@@ -21194,7 +21195,7 @@ object Form7: TForm7
       end
       object MenuItem16: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem17: TMenuItem
         Caption = '-'
@@ -21486,7 +21487,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21521,7 +21522,7 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21836,8 +21837,8 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm5' +
-      '0\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
+      '\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21867,8 +21868,8 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50' +
-      '\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\' +
+      'vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21939,7 +21940,7 @@ object Form7: TForm7
       end
       object MenuItem95: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem96: TMenuItem
         Caption = '-'
@@ -22169,7 +22170,7 @@ object Form7: TForm7
       end
       object MenuItem142: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem144: TMenuItem
         Caption = '-'
@@ -22300,7 +22301,7 @@ object Form7: TForm7
       end
       object MenuItem132: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem175: TMenuItem
         Caption = '-'
@@ -22683,7 +22684,7 @@ object Form7: TForm7
       end
       object MenuItem194: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem195: TMenuItem
         Caption = '-'
@@ -22933,7 +22934,7 @@ object Form7: TForm7
       Caption = '&Arquivo'
       object MenuItem226: TMenuItem
         Caption = '&Imprimir...'
-        OnClick = Image205Click
+        OnClick = imgImprimirClick
       end
       object MenuItem227: TMenuItem
         Caption = '-'

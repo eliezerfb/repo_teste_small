@@ -59,7 +59,7 @@ var
   Mais1Ini : TIniFile;
 begin
   //
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
   //
   // Desabilita os controles
   //

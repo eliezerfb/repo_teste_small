@@ -7,6 +7,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
   ClientWidth = 896
   OldCreateOrder = True
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16

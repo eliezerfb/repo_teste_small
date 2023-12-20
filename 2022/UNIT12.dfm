@@ -1,6 +1,6 @@
 object Form12: TForm12
-  Left = 612
-  Top = 73
+  Left = 459
+  Top = 224
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False
@@ -13,7 +13,7 @@ object Form12: TForm12
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL VENDA (SA'#205'DA)'
-  ClientHeight = 888
+  ClientHeight = 688
   ClientWidth = 1020
   Color = clWhite
   Ctl3D = False
@@ -46,7 +46,7 @@ object Form12: TForm12
     Left = 0
     Top = 0
     Width = 1020
-    Height = 888
+    Height = 688
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -1966,7 +1966,7 @@ object Form12: TForm12
           item
             Expanded = False
             FieldName = 'DESCRICAO'
-            Width = 310
+            Width = 450
             Visible = True
           end
           item

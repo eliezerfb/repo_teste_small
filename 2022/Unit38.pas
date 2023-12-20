@@ -534,7 +534,7 @@ procedure TForm38.FormActivate(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 
   if Form7.sModulo = 'Auditoria' then
   begin

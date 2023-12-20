@@ -927,8 +927,7 @@ var
   I, J : Integer;
   F      : TextFile;
 begin
-  //
-  Form15.Image1.Picture := Form7.Image205.Picture;
+  Form15.Image1.Picture := Form7.imgImprimir.Picture;
   //
   if (not FileExists(Form1.sAtual + '\etiquetas.inf')) and (AllTrim(Form1.sAtual) <> '')  then
   begin

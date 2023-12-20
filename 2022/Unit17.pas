@@ -192,7 +192,7 @@ begin
       DSEmitente.DataSet.Edit;
       if SMALL_DBEdit7.CanFocus then SMALL_DBEdit7.SetFocus;
 
-      Image2.Picture.Bitmap :=  Form7.Image204.Picture.Bitmap;
+      Image2.Picture.Bitmap :=  Form7.imgVisualizar.Picture.Bitmap;
     end;
   except
   end;

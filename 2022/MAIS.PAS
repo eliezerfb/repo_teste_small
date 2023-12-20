@@ -4298,49 +4298,26 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
-  {
-  try
-    DownloadDoArquivo(PChar('http://www.smallsoft.com.br/imagens/small_aviso_promocao_1.bmp?fakevariable=%rand%, out.dat'),PChar('small_aviso_promocao_1.bmp'));
-  except end;
-  Mauricio Parizotto 2023-09-19 sem uso aparente}
 
   Application.OnMessage := ScrollMouse;
 
   ValidaRecursos := TValidaRecurso.Create; // Sandro Silva 2023-05-31
 
-  {Sandro Silva 2023-06-01 inicio
-  Mais1ini := TIniFile.Create('WIND0WS.L0G');
-  Form1.sSerial := Mais1Ini.ReadString('LICENCA','Ser','');
-  Mais1ini.Free;
-  }
-  //
-//  Form22.Image1.Left    := ((Screen.Width - Form22.Image1.Width ) div 2)+55 - 120;
-//  Form22.Image1.Top     := (Screen.Height - Form22.Image1.Height ) div 2 - 150 -100;
-  //
   Form22.Image1.Left    := ((Screen.Width - Form22.Image1.Width ) div 2);
   Form22.Image1.Top     := ((Screen.Height - Form22.Image1.Height ) div 2) - 220;
-//  Form22.Image1.Left    := 50;
-//  Form22.Image1.Top     := 50;
-
-
-//  Form22.Image1.Left    := ((Screen.Width - 750) div 2) + 60;
-//  Form22.Image1.Top     := (Screen.Height - Form22.Image1.Height ) div 2 -250;
 
   Form22.Image1.Visible := True;
-  //
+
   Form22.Button1.Left    := (Screen.Width - Form22.Button1.Width ) div 2;
   Form22.Button1.Top     := (Screen.Height - Form22.Button1.Height ) div 2 - 160 + 370;
-  //
+
   Form22.Label6.Top     := Form22.Image1.Top + Form22.Image1.Height + 40;
   Form22.Label6.Width   := Screen.Width;
   Form22.Label6.Left    := 0;
-  //
+
   Form1.WebBrowser1.Left := -2000;
   Form1.WebBrowser2.Left := -2000;
-  //
-  //
-  // ChDIR('C:\Program Files (x86)\SmallSoft\Small Commerce');
-  //
+
   GetDir(0,sAtual);
   Form1.BorderIcons := [biSystemMenu,biMinimize,biMaximize];
   tCrono               := Time;
@@ -4357,15 +4334,7 @@ begin
     if FileExists(Form1.sAtual+'\danferb.dll') then DeleteFile(pChar(Form1.sAtual+'\danferb.dll'));
   except
   end;
-  
-{
-  try
-    if FileExists(Form1.sAtual+'\nfe\nfeServidoresHom.ini')      then CopyFile(pChar(Form1.sAtual+'\nfe\nfeServidoresHom.ini'),     pChar(Form1.sAtual+'\nfeServidoresHom.ini'),false);
-    if FileExists(Form1.sAtual+'\nfe\nfeServidoresHomScan.ini')  then CopyFile(pChar(Form1.sAtual+'\nfe\nfeServidoresHomScan.ini'), pChar(Form1.sAtual+'\nfeServidoresHomScan.ini'),false);
-    if FileExists(Form1.sAtual+'\nfe\nfeServidoresProd.ini')     then CopyFile(pChar(Form1.sAtual+'\nfe\nfeServidoresProd.ini'),    pChar(Form1.sAtual+'\nfeServidoresProd.ini'),false);
-    if FileExists(Form1.sAtual+'\nfe\nfeServidoresProdScan.ini') then CopyFile(pChar(Form1.sAtual+'\nfe\nfeServidoresProdScan.ini'),pChar(Form1.sAtual+'\nfeServidoresProdScan.ini'),false);
-  except end;
-}
+
   GetDir(0,sAtual);
 
   // Atualização de arquivos
@@ -4462,6 +4431,7 @@ var
   fJuro, fMulta : Real;
   dtLimite: TDate;
   bEmpresaMei: Boolean;
+  SizeDescricaoProd : integer;
 begin
   // controle de licenças de uso
   Form22.Inicio := Time;
@@ -4540,6 +4510,19 @@ begin
   }
 
   ConectaBancoCommerce; // Sandro Silva 2023-05-31
+
+  {Mauricio Parizotto 2023-12-19 Inicio}
+  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+  Form7.ibDataSet4DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataSet23DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataSet28DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataset40DESCRICAO.Size := SizeDescricaoProd;
+  Form7.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+  Form24.ibDataSet44DESCRICAO.Size := SizeDescricaoProd;
+  {Mauricio Parizotto 2023-12-19 Fim}
 
   if Form1.sSerial = '' then
   begin
@@ -4678,24 +4661,6 @@ begin
 
     end;
 
-    {
-    if (Form1.iReduzida = 2) then
-    begin
-      //Form22.sTitulo := StrTran(StrTran(Form22.sTitulo,'Commerce','Mei'),'Start','Mei');
-      Form22.sTitulo := Form22.sTitulo + ' - Mei');
-    end;
-    }
-    {
-    if (Form1.iReduzida = 1) or (ValidaRecursos.PermiteRecursoParaProduto = False) then // Sandro Silva 2023-05-31 if (Form1.iReduzida = 1) then
-    begin
-      Form1.Planodecontas1.Enabled  := False;
-      Form7.SPEDFiscal1.Enabled     := False;
-      Form7.SPEDPISCOFINS1.Enabled  := False;
-      Form7.RegistroFiscal1.Enabled := False;
-      Form7.ImportarOS1.Enabled     := False;
-    end;
-    }
-
     Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
     //
     // é arqui a chave pra resolver os controles de seriais                                 X
@@ -4800,7 +4765,6 @@ begin
          'do MEI');
   end;
 
-  //
   Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
   Form22.sLicenca           := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
@@ -4834,192 +4798,6 @@ begin
       Form1.SelecionarCertificadoDigital1Click(nil); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
     end;
   end;
-
-
-  (* // Sandro Silva 2023-05-31
-  Criei uConectaBancoCommerce com function ConectaBancoCommerce para isolar esse código e melhorar no futuro (usar método de conexão padrão)
-  with Form7 do
-  begin
-    bFlag := True;
-    //                                     //
-    // Cria os arquivos no diretório atual //
-    //                                     //
-    form7.sProcura := '';
-    Screen.Cursor             := crHourGlass;                  // Cursor de Aguardo
-    //
-    try
-      //
-      Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
-      //
-      if (not FileExists(Form1.sAtual+'\'+'small.fdb'))   and (FileExists(Form1.sAtual+'\'+'small.gdb'))   then RenameFile(pchar(Form1.sAtual+'\'+'small.gdb'),pchar(Form1.sAtual+'\'+'small.fdb'));
-      if (not FileExists(Form1.sAtual+'\'+'exemplo.fdb')) and (FileExists(Form1.sAtual+'\'+'exemplo.gdb')) then RenameFile(pchar(Form1.sAtual+'\'+'exemplo.gdb'),pchar(Form1.sAtual+'\'+'exemplo.fdb'));
-      if (not FileExists(Form1.sAtual+'\'+'padrao.fdb'))  and (FileExists(Form1.sAtual+'\'+'padrao.gdb'))  then RenameFile(pchar(Form1.sAtual+'\'+'padrao.gdb'),pchar(Form1.sAtual+'\'+'padrao.fdb'));
-      if (not FileExists(Form1.sAtual+'\'+'off.fdb'))     and (FileExists(Form1.sAtual+'\'+'off.gdb'))     then RenameFile(pchar(Form1.sAtual+'\'+'off.gdb'),pchar(Form1.sAtual+'\'+'off.fdb'));
-      //
-      if (not FileExists(Form1.sAtual+'\'+'small.fdb'))   and (FileExists(Form1.sAtual+'\'+'small.gdb'))   then
-      begin
-        Screen.Cursor := crDefault;
-        ShowMessage('Não foi possível renomear o arquivo SMALL.GDB para SMALL.FDB'+Chr(10)+Chr(10)+
-        ' 1 - Feche todos os programas que usam o SMALL.GDB em todos os terminais'+Chr(10)+
-        ' 2 - Execute o Small Commerce novamente');
-        // Form1.DestroyWindowHandle;
-        Application.Terminate;
-        Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        //
-      end;
-      //
-      Mais1Ini := TIniFile.Create(Form1.sAtual+'\small.ini');
-      Url      := Mais1Ini.ReadString('Firebird','Server url','');
-      IP       := AllTrim(Mais1Ini.ReadString('Firebird','Server IP',''));
-      Alias    := AllTrim(Mais1Ini.ReadString('Firebird','Alias',''));
-      sConve   := AllTrim(Mais1Ini.ReadString('T','Tempo','00:00:00'));
-      sOrigem  := AllTrim(Mais1Ini.ReadString('T','Origem','00'));
-      //
-      if IP = '' then IP := GetIp;
-      //
-      if IP <> '' then Url := IP+':'+Url+'\small.fdb' else Url:= Url+'\small.fdb';
-      //
-      if Alltrim(Alias) <> '' then
-      begin
-        Url := IP+':'+Alias;
-      end;
-      //
-      Mais1Ini.Free;
-      //
-      Mensagem22(sAtual);
-      Form22.sIniciandoEm   := 'Iniciando em: '+Form1.sAtual;
-      Form22.sUrlDoGdb      := 'Url do FDB:   '+AllTrim(Url);
-      //
-      // Se não existe cria o arquivo GDB
-      //
-      try
-        IBDatabase1.Close;
-        IBDatabase1.Params.Clear;
-        IbDatabase1.DatabaseName := Url;
-        IBDatabase1.Params.Add('USER_NAME=SYSDBA');
-        IBDatabase1.Params.Add('PASSWORD=masterkey');
-        IbDatabase1.Open;
-        IBTransaction1.Active := True;
-        //
-        // AtivaTodosOsIndices(True);
-        //
-      except
-        //
-        Mensagem22('Aguarde instalando arquivos de atualização (10)...');
-        //
-        while FileExists(Form1.sAtual+'\firebird.exe') do
-        begin
-          DeleteFile(pChar(Form1.sAtual+'\firebird.exe'));
-          Sleep(1000);
-        end;
-        //
-        if not FileExists(pChar(Form1.sAtual+'\firebird.~~1')) then
-        begin
-          ShowMessage('Reinstale o sistema.');
-          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        end;
-        //
-        while not FileExists(Form1.sAtual+'\firebird.exe') do
-        begin
-          CopyFile(pChar(Form1.sAtual+'\firebird.~~1'),pChar(Form1.sAtual+'\firebird.exe'),False);
-          Sleep(100);
-        end;
-        //
-        Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-        sCertificado := AllTrim(Mais1ini.ReadString('NFE','Certificado',''));
-        Mais1ini.Free;
-        //
-        if AllTrim(sCertificado) = '' then
-        begin
-          if (Copy(Form1.sSerial,4,1) <> 'N') and
-             (Copy(Form1.sSerial,4,1) <> 'O') and
-             (Copy(Form1.sSerial,4,1) <> 'P') and
-             (Copy(Form1.sSerial,4,1) <> 'Q') and
-             (Copy(Form1.sSerial,4,1) <> 'R') and
-             (Copy(Form1.sSerial,4,1) <> 'M') then
-          begin
-            Form1.SelecionarCertificadoDigital1Click(Sender);
-          end;
-        end;
-        //
-        Form22.Image1.Visible := False;
-        Mensagem22('');
-        Form22.Repaint;
-        Sleep(1000);
-        //
-        ShellExecute( 0, 'Open', pChar(Form1.sAtual+'\firebird.exe'),'', '', SW_SHOW);
-        //
-        while ConsultaProcesso('firebird.exe') do
-        begin
-          sleep(1000);
-        end;
-        //
-        if FileExists(Form1.sAtual+'\firebird.exe') then
-        begin
-          DeleteFile(pChar(Form1.sAtual+'\firebird.exe'));
-          Sleep(1000);
-        end;
-        //
-        Form22.Image1.Visible := True;
-        Form22.Repaint;
-        //
-        try
-          //
-          Mais1Ini := TIniFile.Create(Form1.sAtual+'\small.ini');
-          Url := Mais1Ini.ReadString('Firebird','Server url','');
-          if AllTrim(Mais1Ini.ReadString('Firebird','Server IP','')) <> '' then
-            Url := Mais1Ini.ReadString('Firebird','Server IP','')+':'+Url;
-          Mais1Ini.Free;
-          IBDatabase1.Close;
-          IBDatabase1.Params.Clear;
-          IbDatabase1.DatabaseName := Url+'\small.fdb';
-          IBDatabase1.Params.Add('USER_NAME=SYSDBA');
-          IBDatabase1.Params.Add('PASSWORD=masterkey');
-          IbDatabase1.Open;
-          IBTransaction1.Active := True;
-          //
-          // AtivaTodosOsIndices(True);
-          //
-//          Form1.este1Click(Sender); // TESTE rONEI vOLTO
-          //
-        except
-          Screen.Cursor := crDefault;
-          ShowMessage('Verifique:'+Chr(10)+Chr(10)+
-          ' 1 - Se o servidor firebird está instalado (reinicie o windows).'+Chr(10)+
-          ' 2 - Se o IP e a URL do servidor estão configurados corretamente.'+Chr(10)+
-          ' 3 - Se a sua conexão de rede está disponível.'+Chr(10)+
-          ' 4 - Se a porta 3050 está liberada no firewal do windows.'+Chr(10)+
-          ' 5 - Se for necessário, reinstale o sistema...');
-          // Form1.DestroyWindowHandle;
-          Application.Terminate;
-          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        end;
-        //
-      end;
-      //
-      Form7.IBQuery1.Close;
-      Form7.IBQuery1.SQL.Clear;
-      Form7.IBQuery1.SQL.Add('select current_time,current_date from rdb$database');
-      Form7.IBQuery1.Open;
-      //
-      Form1.tSgdb := StrToTime(Form7.IBQuery1.FieldByname('CURRENT_TIME').AsString) - Time;
-      //
-      // Abrindo os arquivos
-      //
-//    AbreArquivos(True);
-      //
-    except
-      //
-      Screen.Cursor := crDefault;
-      Application.MessageBox(Pchar('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.'),'Atenção',mb_IconError+mb_Ok);
-      // Form1.DestroyWindowHandle;
-      Application.Terminate;
-      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      //
-    end;
-  end;
-  *)
-
 
   iUsuariosConectados := Form7.IBDatabaseInfo1.UserNames.Count;
 
@@ -5098,13 +4876,13 @@ begin
     Form1.ibQuery2.SQL.Add('create generator G_GRAFICO_VENDAS');
     Form1.ibQuery2.ExecSQL;
   end;
-  //
+  
   // Genarator G_GRAFICO_CAIXA
   //
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Text := 'select trim(RDB$GENERATOR_NAME) as GENERATOR_NAME from RDB$GENERATORS where RDB$GENERATOR_NAME = ' + QuotedStr('G_GRAFICO_CAIXA');
   Form1.ibQuery2.Open;
-  //
+
   if Form1.IBQuery2.FieldByName('GENERATOR_NAME').AsString = '' then
   begin
     Form1.ibQuery2.Close;
@@ -5112,9 +4890,8 @@ begin
     Form1.ibQuery2.SQL.Add('create generator G_GRAFICO_CAIXA');
     Form1.ibQuery2.ExecSQL;
   end;
-  //
+
   try
-    //
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('select NFEPROTOCOLO from VENDAS where NUMERONF=''999999'' ');
@@ -5122,7 +4899,6 @@ begin
     //
     if Form1.ibDataSet200.FieldByName('NFEPROTOCOLO').Size <= 15 then
     begin
-      //
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('alter table VENDAS alter NFEPROTOCOLO type varchar(80)');
@@ -7994,7 +7770,8 @@ begin
       StrPCopy(@wndClass[0], 'Shell_TrayWnd');
       wndHandle:=FindWindow(@wndClass[0],nil);
       GetWindowRect(wndHandle,Retangulo);
-    except end;
+    except
+    end;
 
     // cópia Automatica
     try
@@ -8446,6 +8223,7 @@ begin
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
 
+
     MontaTela(True);
     
     Form8.Width          := 310;
@@ -8459,7 +8237,7 @@ begin
       if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
       begin
         Form1.imgVendasClick(Form1.imgVendas);
-        Form7.Image101Click(Form7.Image201);
+        Form7.Image101Click(Form7.imgNovo);
       end;
     end;
     

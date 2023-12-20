@@ -1,6 +1,6 @@
 object Form48: TForm48
-  Left = 285
-  Top = 183
+  Left = 287
+  Top = 103
   HorzScrollBar.Color = clRed
   HorzScrollBar.Margin = 10
   HorzScrollBar.ParentColor = False

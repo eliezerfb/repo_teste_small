@@ -1,6 +1,6 @@
 object FrmPadrao: TFrmPadrao
-  Left = 315
-  Top = 151
+  Left = 316
+  Top = 73
   BorderStyle = bsSingle
   Caption = 'FrmPadrao'
   ClientHeight = 636

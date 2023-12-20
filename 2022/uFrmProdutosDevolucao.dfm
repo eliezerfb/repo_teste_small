@@ -7,6 +7,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   ClientWidth = 994
   OldCreateOrder = True
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -185,11 +186,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       item
         Expanded = False
         FieldName = 'QUANTIDADE'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
         Visible = True
       end
       item

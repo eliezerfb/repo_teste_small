@@ -280,7 +280,8 @@ begin
                     WriteLn(F,' <tr>');
                     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet15EMISSAO.AsDateTime)      +'</td>'+  // Data
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+'</td>'+  // Doc
-                            '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+                            //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+                            '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+  // Descricao
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat])            +'</td>'+  // Quantidade
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16UNITARIO.AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat])+'</td>'); // Valor
                     WriteLn(F,' </tr>');
@@ -291,7 +292,8 @@ begin
                     WriteLn(F,' <tr>');
                     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Data
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Doc
-                            '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+                            //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+                            '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+  // Descricao
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'); // Valor
                     WriteLn(F,' </tr>');
@@ -357,7 +359,8 @@ begin
                           // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ ifThen(Form7.ibDataSet15.FieldByName('MODELO').AsString = 'SV', ifThen(Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString <> '', Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString, Form7.ibDataSet15.FieldByName('NUMERONF').AsString), Form7.ibDataSet15.FieldByName('NUMERONF').AsString)+'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ sNumeroNF +'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10) + Replicate(' ', 10),1,10)    +'</td>'+  // Doc  // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
-                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+                          //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>'+  // Descricao
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'</td>'); // Valor
                   WriteLn(F,' </tr>');
                   fTotal := fTotal + Form7.ibDataSet35TOTAL.AsFloat;
@@ -406,7 +409,8 @@ begin
               WriteLn(F,' <tr>');
               Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'</td>');  // Data
               Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'</td>'); // Doc
-              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet27DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao
+              //Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet27DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao Mauricio Parizotto 2023-12-19
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27DESCRICAO.AsString+'</td>'); // Descricao
               Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Quantidade
               Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet27UNITARIO.AsFloat* Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Valor
               WriteLn(F,' </tr>');
@@ -454,7 +458,8 @@ begin
                 WriteLn(F,' <tr>');
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet37DATA.AsDateTime)+'</td>');  // Data
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37PEDIDO.AsString+'</td>'); // Doc
-                Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao
+                //Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao Mauricio Parizotto 2023-12-19
+                Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'</td>'); // Descricao
                 Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet37QUANTIDADE.AsFloat])+'</td>'); // Quantidade
                 Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet37UNITARIO.AsFloat* Form7.ibDataSet37QUANTIDADE.AsFloat])+'</td>'); // Valor
                 WriteLn(F,' </tr>');
@@ -464,7 +469,8 @@ begin
                 WriteLn(F,' <tr>');
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet37DATA.AsDateTime)+'</td>');  // Data
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37PEDIDO.AsString+'</td>'); // Doc
-                Writeln(F,'  <td  nowrap colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao
+                //Writeln(F,'  <td  nowrap colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao Mauricio Parizotto 2023-12-19
+                Writeln(F,'  <td  nowrap colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'</td>'); // Descricao
                 WriteLn(F,' </tr>');
               end;
               
@@ -617,7 +623,8 @@ begin
                   WriteLn(F,' <tr>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet24EMISSAO.AsDateTime)      +'</td>'+  // Data
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet24NUMERONF.AsString,10,3)+'</td>'+  // Doc
-                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+                          //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+                          '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'</td>'+  // Descricao
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat])            +'</td>'+  // Quantidade
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet23UNITARIO.AsFloat * Form7.ibDataSet23QUANTIDADE.AsFloat])+'</td>'); // Valor
                   WriteLn(F,' </tr>');
@@ -1060,7 +1067,8 @@ begin
           if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
           begin
             WriteLn(F,' <tr>'+
-                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+
+                    //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+ Mauricio Parizotto 2023-12-19
+                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet16QUANTIDADE.AsFloat]) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16UNITARIO.AsFloat]  ) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16UNITARIO.AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat])+'</td>');
@@ -1070,7 +1078,8 @@ begin
           begin
             // Descrição no corpo da NF
             WriteLn(F,' <tr>');
-            Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+            //Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+            Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'); // Valor
@@ -1106,7 +1115,8 @@ begin
           if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then
           begin
             WriteLn(F,' <tr>'+
-                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+
+                    //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+ // Mauricio Parizotto 2023-12-19
+                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>'+
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35TECNICO.AsString+Replicate(' ',20),1,20)                       +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet35QUANTIDADE.AsFloat]) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat])+'</td>');
@@ -1116,7 +1126,8 @@ begin
           begin
             // Descrição no corpo da NF
             WriteLn(F,' <tr>');
-            Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+            //Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+            Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'); // Valor
@@ -1158,7 +1169,8 @@ begin
           begin
             WriteLn(F,' <tr>'+
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet23CODIGO.AsString + '</td>'+
-                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+
+                    //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+ Mauricio Parizotto 2023-12-19
+                    '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet23QUANTIDADE.AsFloat]) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet23UNITARIO.AsFloat]  ) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet23UNITARIO.AsFloat * Form7.ibDataSet23QUANTIDADE.AsFloat])+'</td>');
@@ -1168,7 +1180,8 @@ begin
           begin
             // Descrição no corpo da NF
             WriteLn(F,' <tr>');
-            Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao
+            //Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
+            Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'); // Valor

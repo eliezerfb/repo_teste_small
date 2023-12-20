@@ -1,6 +1,6 @@
 object Form24: TForm24
-  Left = 426
-  Top = 57
+  Left = 195
+  Top = 113
   HorzScrollBar.Margin = 10
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 20
@@ -9,7 +9,7 @@ object Form24: TForm24
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL COMPRA (ENTRADA)'
-  ClientHeight = 885
+  ClientHeight = 688
   ClientWidth = 1218
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -28,7 +28,7 @@ object Form24: TForm24
     Left = 0
     Top = 0
     Width = 1218
-    Height = 885
+    Height = 688
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False
@@ -2241,7 +2241,7 @@ object Form24: TForm24
           item
             Expanded = False
             FieldName = 'DESCRICAO'
-            Width = 241
+            Width = 610
             Visible = True
           end>
       end

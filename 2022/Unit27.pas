@@ -539,7 +539,7 @@ end;
 
 procedure TForm27.FormActivate(Sender: TObject);
 begin
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 
   {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';

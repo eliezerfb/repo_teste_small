@@ -1409,7 +1409,7 @@ end;
 
 procedure TForm14.FormActivate(Sender: TObject);
 begin
-  Form14.Image2.Picture := Form7.Image205.Picture;
+  Form14.Image2.Picture := Form7.imgImprimir.Picture;
   Button1.Enabled := True;
   Form14.Caption := 'Assistente de relatórios';
   Form14.Left := Screen.Width - Form14.Width - Form9.Width -12;
