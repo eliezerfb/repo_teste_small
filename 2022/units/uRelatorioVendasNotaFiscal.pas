@@ -213,9 +213,15 @@ begin
     FqryDados := CriaIBQuery(Transaction);
 
   if rbRelatorioICMS.Checked then
+  begin
     CarregaDadosICMS;
+    cdsRelICMS.First;
+  end;
   if rbItemPorITem.Checked then
+  begin
     CarregaDadosItemAItem;
+    cdsItemPorItem.First;    
+  end;
 end;
 
 procedure TfrmRelVendasNotaFiscal.CarregaDadosItemAItem;
@@ -247,11 +253,10 @@ begin
   FqryDados.First;
 
   cdsItemPorItemCODIGO.Visible := cbListarCodigos.Checked;
+  cdsItemPorItem.Close;
+  cdsItemPorItem.CreateDataSet;
   while not FqryDados.Eof do
   begin
-    cdsItemPorItem.Close;
-    cdsItemPorItem.CreateDataSet;
-
     cdsItemPorItem.Append;
 
     for i := 0 to Pred(FqryDados.Fields.Count) do
@@ -328,11 +333,10 @@ begin
   FqryDados.Open;
   FqryDados.First;
 
+  cdsRelICMS.Close;
+  cdsRelICMS.CreateDataSet;
   while not FqryDados.Eof do
   begin
-    cdsRelICMS.Close;
-    cdsRelICMS.CreateDataSet;
-
     cdsRelICMS.Append;
 
     for i := 0 to Pred(FqryDados.Fields.Count) do
