@@ -835,7 +835,7 @@ object Form48: TForm48
       object DBGrid3: TDBGrid
         Left = 10
         Top = 326
-        Width = 640
+        Width = 639
         Height = 5
         Color = 15790320
         DataSource = Form7.DataSource4
@@ -859,13 +859,13 @@ object Form48: TForm48
           item
             Expanded = False
             FieldName = 'DESCRICAO'
-            Width = 310
+            Width = 548
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'PRECO'
-            Width = 75
+            Width = 70
             Visible = True
           end>
       end

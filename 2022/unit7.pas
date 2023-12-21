@@ -24096,7 +24096,6 @@ end;
 
 procedure TForm7.Resumodascompras1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
   //
   Form38.Label2.Visible := True;
@@ -24105,12 +24104,10 @@ begin
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Resumo das compras'; // 1
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Resumodascomrpas1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
@@ -24121,7 +24118,6 @@ begin
   Form7.sModulo := 'Resumo das compras';
   Form38.ShowModal; // Ok
   Form38.Label21.Visible := False;
-  //
 end;
 
 procedure TForm7.MenuItem117Click(Sender: TObject);
