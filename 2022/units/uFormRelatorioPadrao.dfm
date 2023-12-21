@@ -1,6 +1,6 @@
 object frmRelatorioPadrao: TfrmRelatorioPadrao
-  Left = 1403
-  Top = 604
+  Left = 1058
+  Top = 599
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio padr'#227'o'

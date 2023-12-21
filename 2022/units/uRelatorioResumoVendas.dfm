@@ -1,6 +1,6 @@
 inherited frmRelResumoVendas: TfrmRelResumoVendas
-  Left = 1420
-  Top = 574
+  Left = 467
+  Top = 502
   Caption = 'Resumo das vendas'
   ClientWidth = 769
   OldCreateOrder = True
@@ -231,8 +231,9 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       Size = 6
     end
     object cdsProdutosDescrio: TStringField
+      DisplayWidth = 120
       FieldName = 'Descri'#231#227'o'
-      Size = 80
+      Size = 120
     end
     object cdsProdutosQuantidade: TFMTBCDField
       FieldName = 'Quantidade'

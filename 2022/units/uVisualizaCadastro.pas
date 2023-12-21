@@ -469,8 +469,7 @@ begin
                 WriteLn(F,' <tr>');
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet37DATA.AsDateTime)+'</td>');  // Data
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37PEDIDO.AsString+'</td>'); // Doc
-                //Writeln(F,'  <td  nowrap colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao Mauricio Parizotto 2023-12-19
-                Writeln(F,'  <td  nowrap colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'</td>'); // Descricao
+                Writeln(F,'  <td  '+{nowrap}' colspan=3 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'</td>'); // Descricao
                 WriteLn(F,' </tr>');
               end;
               

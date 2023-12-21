@@ -1,7 +1,7 @@
 object Form1: TForm1
   Tag = 99
-  Left = 338
-  Top = 165
+  Left = -7
+  Top = 13
   Hint = 'Small Commerce'
   HelpContext = 1
   HorzScrollBar.Visible = False
@@ -10,7 +10,7 @@ object Form1: TForm1
   BorderStyle = bsSingle
   Caption = 'form'
   ClientHeight = 679
-  ClientWidth = 1348
+  ClientWidth = 1022
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET

@@ -518,7 +518,7 @@ procedure TFrmProdutosDevolucao.FormCreate(Sender: TObject);
 var
   SizeDescricaoProd : integer;
 begin
-  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO'); // Mauricio Parizotto 2023-12-21
   cdsProdutosNotaDESCRICAO.Size := SizeDescricaoProd;
   ibdProdutosNotaDESCRICAO.Size := SizeDescricaoProd;
 end;

@@ -66,35 +66,35 @@ begin
 
     WriteLn(F,'<table border=1 cellspacing=1 cellpadding=5 Width=100% style="border-collapse: collapse">');
     WriteLn(F,' <tr  height=25>');
-    WriteLn(F,'  <td nowrap colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Microsoft Sans Serif" size=1><center>Identificação do Estabelecimento Emitente</center></td>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Microsoft Sans Serif" size=1><center>Identificação do Estabelecimento Emitente</center></td>');
     WriteLn(F,' </tr>');
     WriteLn(F,' <tr  height=25>');
-    WriteLn(F,'  <td   nowrap   colspan=3><font face="Microsoft Sans Serif" size=1>Denominação:  <b>'+AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35))+'</b>'+
+    WriteLn(F,'  <td   '+{nowrap}'   colspan=3><font face="Microsoft Sans Serif" size=1>Denominação:  <b>'+AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35))+'</b>'+
     '<br>'+
     Form7.ibDataSet13.FieldByname('ENDERECO').AsString+'<br>'+
     Form7.ibDataSet13.FieldByname('CEP').AsString+' - '+Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString+', '+Form7.ibDataSet13.FieldByname('ESTADO').AsString+'<br>'+
     Form7.ibDataSet13.FieldByname('COMPLE').AsString+'<br>'+
     'Telefone: '+Form7.ibDataSet13.FieldByname('TELEFO').AsString+'<br></td>');
-    WriteLn(F,'  <td nowrap colspan=1 vAlign=Top width=50%><font face="Microsoft Sans Serif" size=1>CNPJ:  <b>'+Form7.ibDataSet13CGC.AsString+'</b></td>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=1 vAlign=Top width=50%><font face="Microsoft Sans Serif" size=1>CNPJ:  <b>'+Form7.ibDataSet13CGC.AsString+'</b></td>');
     WriteLn(F,' </tr>');
 
     WriteLn(F,' <tr height=25>');
-    WriteLn(F,'  <td nowrap colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Microsoft Sans Serif" size=1><center>Identificação do Destinatário</center></td>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Microsoft Sans Serif" size=1><center>Identificação do Destinatário</center></td>');
     WriteLn(F,' </tr height=25>');
     WriteLn(F,' <tr>');
 
-    WriteLn(F,'  <td nowrap colspan=3><font face="Microsoft Sans Serif" size=1>Denominação:  <b>'+AllTrim(Copy(Form7.ibDataSet2.FieldByname('NOME').AsString+Replicate(' ',35),1,35))+'</b>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=3><font face="Microsoft Sans Serif" size=1>Denominação:  <b>'+AllTrim(Copy(Form7.ibDataSet2.FieldByname('NOME').AsString+Replicate(' ',35),1,35))+'</b>');
     WriteLn(F,'<br>'+
     Form7.ibDataSet2.FieldByname('ENDERE').AsString+'<br>'+
     Form7.ibDataSet2.FieldByname('CEP').AsString+' - '+Form7.ibDataSet2.FieldByname('CIDADE').AsString+', '+Form7.ibDataSet2.FieldByname('ESTADO').AsString+'<br>'+
     Form7.ibDataSet2.FieldByname('COMPLE').AsString+'<br>'+
     'Telefone: '+Form7.ibDataSet2.FieldByname('FONE').AsString+'<br>'+'</td>');
-    WriteLn(F,'  <td nowrap colspan=1 vAlign=Top width=50%><font face="Microsoft Sans Serif" size=1>CNPJ:  <b>'+Form7.ibDataSet2.FieldByname('CGC').AsString+'</b></td>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=1 vAlign=Top width=50%><font face="Microsoft Sans Serif" size=1>CNPJ:  <b>'+Form7.ibDataSet2.FieldByname('CGC').AsString+'</b></td>');
     WriteLn(F,' </tr>');
 
     WriteLn(F,' <tr height=25>');
-    WriteLn(F,'  <td nowrap colspan=3 bgcolor=#FFFFFF><font face="Microsoft Sans Serif" size=1>Número do Documento: '+Form7.ibDataSet3NUMERO.AsString+'</b></center></td>');
-    WriteLn(F,'  <td nowrap colspan=3 bgcolor=#FFFFFF width=50%><font face="Microsoft Sans Serif" size=1>Número do Documento Fiscal: '+Form7.ibDataSet3NF.AsString+'</b></center></td>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=3 bgcolor=#FFFFFF><font face="Microsoft Sans Serif" size=1>Número do Documento: '+Form7.ibDataSet3NUMERO.AsString+'</b></center></td>');
+    WriteLn(F,'  <td '+{nowrap}' colspan=3 bgcolor=#FFFFFF width=50%><font face="Microsoft Sans Serif" size=1>Número do Documento Fiscal: '+Form7.ibDataSet3NF.AsString+'</b></center></td>');
     WriteLn(F,' </tr>');
     WriteLn(F,'</table>');
 
@@ -166,7 +166,7 @@ begin
           WriteLn(F,' <tr>');
           Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
           Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-          Writeln(F,'  <td   nowrap   colspan=5 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'&nbsp</td>');
+          Writeln(F,'  <td   '+{nowrap}'   colspan=5 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'&nbsp</td>');
           WriteLn(F,' </tr>');
         end;
       end;
