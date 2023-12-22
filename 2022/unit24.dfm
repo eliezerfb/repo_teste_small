@@ -2241,7 +2241,7 @@ object Form24: TForm24
           item
             Expanded = False
             FieldName = 'DESCRICAO'
-            Width = 610
+            Width = 628
             Visible = True
           end>
       end
