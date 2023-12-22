@@ -163,9 +163,9 @@ type
     procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure SMALL_DBEdit7Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
     procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure BitBtn1Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -496,32 +496,31 @@ end;
 procedure TForm30.DBGrid1Enter(Sender: TObject);
 begin
   // Estoque
-  //
   Form7.ibDataSet4.Close;
   Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where TIPO_ITEM<>'+QuotedStr('09')+' order by DESCRICAO');  //
   Form7.ibDataSet4.Open;
-  //
+
   Form7.ibDataSet16.Enablecontrols;
   dbGrid3.Visible    := False;
   dBGrid3.Left       := 15;
   dbGrid3.Top        := dbGrid1.Top + dbGrid1.Height -1;
-  //
+
   dbGrid3.Width      := dbGrid1.Width;
   dBGrid3.Height     := Panel1.Height - dbGrid3.Top -15;
-  //
+
   dBGrid3.DataSource                 := Form7.DataSource4;
   dBgrid3.Columns.Items[0].FieldName := 'DESCRICAO';
   dBgrid3.Columns.Items[0].Width     := 335;
-  //
+
   dBgrid3.Columns.Items[1].FieldName := 'QTD_ATUAL';
   dBgrid3.Columns.Items[1].Width     := 77;
   dBgrid3.Columns.Items[1].Visible   := True;
-  //
+
   dBgrid3.Columns.Items[2].FieldName := 'PRECO';
   dBgrid3.Columns.Items[2].Width     := 77;
   dBgrid3.Columns.Items[2].Visible   := True;
-  //
+  
   dBgrid3.Columns.Items[3].FieldName := 'LOCAL';
   dBgrid3.Columns.Items[3].Width     := 77;
   dBgrid3.Columns.Items[3].Visible   := True;
@@ -1001,6 +1000,7 @@ procedure TForm30.DBGrid1KeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_TAB    then Key := VK_RETURN;
   if Key = VK_ESCAPE then Key := VK_RETURN;
+
   try
     if DbGrid1.SelectedIndex = 0 then
     begin
@@ -1025,7 +1025,9 @@ begin
     end;
 
     if (Key = VK_UP) and (Form7.ibDataSet16.BOF) then dbGrid2.SetFocus;
-  except end;
+  except
+  end;
+  
   {Mauricio Parizotto 2023-11-15 Inicio}
   if AllTrim(Form7.ibDataSet16CODIGO.AsString) <> '' then
   begin
@@ -1610,13 +1612,6 @@ begin
   end;
 end;
 
-procedure TForm30.DBGrid3KeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  //Mauricio Parizotto 2023-11-15
-  MostraFoto;
-end;
-
 procedure TForm30.CarregaSituacoes;
 var
   IbqSituacao : TIBQuery;
@@ -1660,6 +1655,15 @@ begin
   finally
     FreeAndNil(FrmAnexosOS);
   end;
+end;
+
+procedure TForm30.DBGrid3KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  //Mauricio Parizotto 2023-11-15
+  //MostraFoto; Mauricio Parizotto 2023-12-15
+  if dBGrid3.DataSource = Form7.DataSource4 then
+    MostraFoto;
 end;
 
 end.
