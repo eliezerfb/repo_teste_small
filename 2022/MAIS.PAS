@@ -978,6 +978,7 @@ begin
 
   form29.Label3.Caption := sP1;
   Form29.Panel_Dados.Visible  := True;
+  Form29.btnCancelar.Visible  := True;
 
   Form29.ShowModal;
 
