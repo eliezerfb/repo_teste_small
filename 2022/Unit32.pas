@@ -334,7 +334,7 @@ end;
 
 procedure TForm32.FormShow(Sender: TObject);
 begin
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 
   DefinirVisibleGerencial;  
 end;

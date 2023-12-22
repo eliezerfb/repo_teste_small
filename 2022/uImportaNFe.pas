@@ -28,7 +28,8 @@ function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
 
-uses uFuncoesRetaguarda, uParametroTributacao, uDialogs;
+uses uFuncoesRetaguarda, uParametroTributacao, uDialogs,
+  uFuncoesBancoDados;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
 
@@ -70,10 +71,13 @@ var
   sItens: String;
 
   IBQConversaoCFOP: TIBQuery;
+  SizeDescricaoProd : integer;
 begin
   Result := True;
 
   try
+    SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+
     if AllTrim(sP1) = '' then
     begin
       // Importa de um arquivo XML informado pelo usuário
@@ -82,7 +86,7 @@ begin
 
       if not Form7.OpenDialog1.Execute then
         Exit;
-        
+
       if LowerCase(Right(Form7.OpenDialog1.FileName,4))='.xml' then
       begin
         try
@@ -95,7 +99,7 @@ begin
       end;
 
       // Novo
-      Form7.Image101Click(Form7.Image201);
+      Form7.Image101Click(Form7.imgNovo);
     end else
     begin
       // Importa atravez do XML gravado no COMPRAS automaticamento por download (ConsultarDistribuicaoDFeChave)
@@ -119,7 +123,7 @@ begin
 
       // Alterar
       try
-        Form7.Image106Click(Form7.Image206);
+        Form7.Image106Click(Form7.imgEditar);
       except
         on E: Exception do
         begin
@@ -396,7 +400,8 @@ begin
                       begin
                         Form7.ibDataSet4.Close;
                         Form7.ibDataSet4.SelectSQL.Clear;
-                        Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' ');
+                        //Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' '); Mauricio Parizotto 2023-12-19
+                        Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd))));
                         Form7.ibDataSet4.Open;
 
                         bProdutoCadastrado := AllTrim(Form7.ibDataSet4CODIGO.AsString) <> EmptyStr;
@@ -428,16 +433,20 @@ begin
                       // Procura para ver se já existe um nome igual
                       Form7.ibQuery1.Close;
                       Form7.ibQuery1.Sql.Clear;
-                      Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' ');
+                      //Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' '); Mauricio Parizotto 2023-12-19
+                      Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd))));
                       Form7.ibQuery1.Open;
 
-                      if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)) then
+                      //if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)) then Mauricio Parizotto 2023-12-19
+                      if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd)) then
                       begin
                         // Se já existe cria o nome com o código no final
-                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString;
+                        //Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString; Mauricio Parizotto 2023-12-19
+                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
                       end else
                       begin
-                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString;
+                        //Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString; Mauricio Parizotto 2023-12-19
+                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
                       end;
 
                       Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text);
@@ -494,7 +503,7 @@ begin
 
                     Form7.ibDAtaSet23.Append;
                     Form7.ibDataSet23CODIGO.AsString       := Form7.ibDataSet4CODIGO.AsString; // Importar NF
-                    Form7.ibDataSet23DESCRICAO.AsString    := Form7.ibDataSet4DESCRICAO.AsString; // NodeTmp.ChildNodes['xProd'].Text;
+                    Form7.ibDataSet23DESCRICAO.AsString    := Form7.ibDataSet4DESCRICAO.AsString; 
                     Form7.ibDataSet23QTD_ORIGINAL.AsString := StrTran(NodeTmp.ChildNodes['qCom'].Text,'.',',');
                     Form7.ibDataSet23TOTAL.AsString        := StrTran(NodeTmp.ChildNodes['vProd'].Text,'.',',');
 

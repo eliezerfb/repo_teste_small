@@ -1283,14 +1283,14 @@ type
     MainMenu00: TMainMenu;
     Panel4: TPanel;
     Panel_0: TPanel;
-    Image201: TImage;
-    Image202: TImage;
-    Image203: TImage;
-    Image205: TImage;
-    Image204: TImage;
-    Image206: TImage;
+    imgNovo: TImage;
+    imgExcluir: TImage;
+    imgProcurar: TImage;
+    imgImprimir: TImage;
+    imgVisualizar: TImage;
+    imgEditar: TImage;
     Image308: TImage;
-    Image209: TImage;
+    imgFiltrar: TImage;
     Label201: TLabel;
     Label202: TLabel;
     Label203: TLabel;
@@ -1299,7 +1299,7 @@ type
     Label206: TLabel;
     Label208: TLabel;
     Label209: TLabel;
-    Image208: TImage;
+    imgLibBloq: TImage;
     Panel5: TPanel;
     Image201_X: TImage;
     Image202_X: TImage;
@@ -1798,7 +1798,7 @@ type
     procedure ibDataSet14NOMESetText(Sender: TField; const Text: String);
     procedure ibDataSet1AfterDelete(DataSet: TDataSet);
     procedure Colunas1Click(Sender: TObject);
-    procedure Image208Click(Sender: TObject);
+    procedure imgLibBloqClick(Sender: TObject);
     procedure ibDataSet8VALOR_DUPLChange(Sender: TField);
     procedure ibDataSet8VALOR_PAGOChange(Sender: TField);
     procedure ibDataSet8VALOR_PAGOValidate(Sender: TField);
@@ -1834,7 +1834,7 @@ type
     procedure MenuItem147Click(Sender: TObject);
     procedure Image210Click(Sender: TObject);
     procedure ibDataSet3TOTAL_FRETChange(Sender: TField);
-    procedure Image204Click(Sender: TObject);
+    procedure imgVisualizarClick(Sender: TObject);
     procedure ibDataSet9NewRecord(DataSet: TDataSet);
     procedure ibDataSet34AfterPost(DataSet: TDataSet);
     procedure ibDataSet3BeforeDelete(DataSet: TDataSet);
@@ -2112,7 +2112,7 @@ type
     procedure Imprimirrecibo2Click(Sender: TObject);
     procedure Imprimirrecibo3Click(Sender: TObject);
     procedure ibDataSet4LIVRE4Validate(Sender: TField);
-    procedure Image205Click(Sender: TObject);
+    procedure imgImprimirClick(Sender: TObject);
     procedure ibDataSet27BeforeDelete(DataSet: TDataSet);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
@@ -9724,15 +9724,15 @@ begin
   ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibdParametroTributaDESCRICAO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-09-21
   //Mauricio Parizotto 2023-06-01
-  Image201.Transparent := False;
-  Image202.Transparent := False;
-  Image203.Transparent := False;
-  Image205.Transparent := False;
-  Image204.Transparent := False;
-  Image208.Transparent := False;
-  Image206.Transparent := False;
+  imgNovo.Transparent := False;
+  imgExcluir.Transparent := False;
+  imgProcurar.Transparent := False;
+  imgImprimir.Transparent := False;
+  imgVisualizar.Transparent := False;
+  imgLibBloq.Transparent := False;
+  imgEditar.Transparent := False;
   Image308.Transparent := False;
-  Image209.Transparent := False;
+  imgFiltrar.Transparent := False;
 
   {$IFDEF VER150}
   {$ELSE}
@@ -10540,7 +10540,7 @@ begin
         Form7.DbGrid1.ReadOnly  := True;
         Form7.DbGrid1.Update;
         Form7.Image308.Visible  := False;
-        Form7.Image208.Visible  := True;
+        Form7.imgLibBloq.Visible  := True;
         Form7.Label208.Caption  := 'Liberar';
 
         if Form7.sRPS = 'S' then
@@ -10647,7 +10647,7 @@ begin
 
         Form7.dbGrid1.ReadOnly := True;
         Form7.Image308.Visible := False;
-        Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
+        Form7.imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
 
     //LogRetaguarda('10263'); // Sandro Silva 2023-09-13
 
@@ -10735,7 +10735,7 @@ begin
 
         Form7.dbGrid1.ReadOnly := True;
         Form7.Image308.Visible := False;
-        Form7.Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
+        Form7.imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
 
         CalculaTotalRecebido(True);
         //
@@ -11893,7 +11893,7 @@ begin
       
       if sModulo = '2CONTAS' then
       begin
-        Image209.Visible := False; // Filtros
+        imgFiltrar.Visible := False; // Filtros
         Label209.Visible := False;
 
         sAjuda := 'bancos.htm'; // Falta contas bancárias
@@ -11913,7 +11913,7 @@ begin
         iCampos   := 6;
       end else
       begin
-        Image209.Visible := True; // Filtros
+        imgFiltrar.Visible := True; // Filtros
         Label209.Visible := True;
       end;
 
@@ -11968,9 +11968,9 @@ begin
               Form7.Ativo5.Enabled     := False;
             end;
 
-            Image201.Visible := False;
-            Image202.Visible := False;
-            Image208.Visible := False; Form7.Label208.Caption  := 'Bloquear';
+            imgNovo.Visible := False;
+            imgExcluir.Visible := False;
+            imgLibBloq.Visible := False; Form7.Label208.Caption  := 'Bloquear';
             Image308.Visible := False;
 
             Label201.Visible := False;
@@ -11984,9 +11984,9 @@ begin
         try
           if (Form7.Menu <> MainMenu99) or  (sModulo = 'GRUPOS') or (sModulo = 'TRANSPORT')  then
           begin
-            Image201.Visible := True;
-            Image202.Visible := True;
-            Image208.Visible := True; Form7.Label208.Caption  := 'Liberar';
+            imgNovo.Visible := True;
+            imgExcluir.Visible := True;
+            imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
             //
             Label201.Visible := True;
             Label202.Visible := True;
@@ -12003,7 +12003,7 @@ begin
         if not Form7.bSoLeitura then
         begin
           Form7.Image308.Visible  := False;
-          Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
+          Form7.imgLibBloq.Visible  := True; Form7.Label208.Caption  := 'Liberar';
           Form7.Label208.Visible  := True;
         end;
         if (sModulo = 'NOTA') or (sModulo = 'CONCILIACAO') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
@@ -12020,16 +12020,16 @@ begin
       end;
 
     // Abre e posiciona
-    Image209.Visible := True;
-    Image206.Visible := True;
-    Image201.Visible := True;
+    imgFiltrar.Visible := True;
+    imgEditar.Visible := True;
+    imgNovo.Visible := True;
     Label209.Visible := True;
     Label206.Visible := True;
     Label201.Visible := True;
 
     if (sModulo = 'TECNICO') then
     begin
-      Image209.Visible := False;
+      imgFiltrar.Visible := False;
       Label209.Visible := False;
     end;
     
@@ -12047,81 +12047,80 @@ begin
 
     if sModulo = 'ORCAMENTO' then
     begin
-      Image202.Visible := True;
+      imgExcluir.Visible := True;
       Label202.Visible := True;
-      Image206.Visible := False;
+      imgEditar.Visible := False;
       Label206.Visible := False;
     end;
 
     if sModulo = 'VENDA' then
     begin
-      Image202.Visible := False;
+      imgExcluir.Visible := False;
       Label202.Visible := False;
     end;
 
     if (sModulo = 'COMPRA') or (sModulo = 'VENDA') or (sModulo = 'OS') then
     begin
       Image308.Visible := False;
-      Image208.Visible := False;
+      imgLibBloq.Visible := False;
       Form7.Label208.Caption  := 'Bloquear';
       Label208.Visible := False;
     end;
     
     if (sModulo = 'OS') then
     begin
-      Image202.Visible := False; // Não pode apagar DAV
+      imgExcluir.Visible := False; // Não pode apagar DAV
       Label202.Visible := False;
     end;
 
     iLeft := 2+5;
 
-    if Image201.Visible then
+    if imgNovo.Visible then
     begin
-      Image201.Left := iLeft ;
+      imgNovo.Left := iLeft ;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image202.Visible then
+    if imgExcluir.Visible then
     begin
-      Image202.Left := iLeft ;
+      imgExcluir.Left := iLeft ;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image203.Visible then
+    if imgProcurar.Visible then
     begin
-      Image203.Left := iLeft ;
+      imgProcurar.Left := iLeft ;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image205.Visible then
+    if imgImprimir.Visible then
     begin
-      Image205.Left := iLeft ;
+      imgImprimir.Left := iLeft ;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image204.Visible then
+    if imgVisualizar.Visible then
     begin
-      Image204.Left := iLeft ;
+      imgVisualizar.Left := iLeft ;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image206.Visible then
+    if imgEditar.Visible then
     begin
-      Image206.Left := iLeft ;
+      imgEditar.Left := iLeft ;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image208.Visible then
+    if imgLibBloq.Visible then
     begin
-      Image208.Left := iLeft ;
-      Image308.Left := Image208.Left;
+      imgLibBloq.Left := iLeft ;
+      Image308.Left := imgLibBloq.Left;
       iLeft := iLeft + iIconeCom;
     end;
 
-    if Image209.Visible then
+    if imgFiltrar.Visible then
     begin
-      Image209.Left := iLeft ;
-//      iLeft := iLeft + iIconeCom;
+      imgFiltrar.Left := iLeft ;
     end;
 
     if (AllTrim(sWhere)     = 'where')     then
@@ -12266,27 +12265,25 @@ begin
     Form7.Panel7.Caption   := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     Form7.pnlFiltro.Repaint;
-    //
-    //  Panel7.Visible  := True;
-    //
-    if Image201.Visible then
-      MostraLabels(Form7.Image201,Form7.Label201);
-    if Image202.Visible then
-      MostraLabels(Form7.Image202,Form7.Label202);
-    if Image203.Visible then
-      MostraLabels(Form7.Image203,Form7.Label203);
-    if Image204.Visible then
-      MostraLabels(Form7.Image204,Form7.Label204);
-    if Image205.Visible then
-      MostraLabels(Form7.Image205,Form7.Label205);
-    if Image206.Visible then
-      MostraLabels(Form7.Image206,Form7.Label206);
-    if Image209.Visible then
-      MostraLabels(Form7.Image209,Form7.Label209);
-    if Image203.Visible then
-      MostraLabels(Form7.Image203,Form7.Label203);
-    if Image208.Visible then
-      MostraLabels(Form7.Image208,Form7.Label208);
+
+    if imgNovo.Visible then
+      MostraLabels(Form7.imgNovo,Form7.Label201);
+    if imgExcluir.Visible then
+      MostraLabels(Form7.imgExcluir,Form7.Label202);
+    if imgProcurar.Visible then
+      MostraLabels(Form7.imgProcurar,Form7.Label203);
+    if imgVisualizar.Visible then
+      MostraLabels(Form7.imgVisualizar,Form7.Label204);
+    if imgImprimir.Visible then
+      MostraLabels(Form7.imgImprimir,Form7.Label205);
+    if imgEditar.Visible then
+      MostraLabels(Form7.imgEditar,Form7.Label206);
+    if imgFiltrar.Visible then
+      MostraLabels(Form7.imgFiltrar,Form7.Label209);
+    if imgProcurar.Visible then
+      MostraLabels(Form7.imgProcurar,Form7.Label203);
+    if imgLibBloq.Visible then
+      MostraLabels(Form7.imgLibBloq,Form7.Label208);
     
     try
       if (sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
@@ -13115,7 +13112,7 @@ begin
   frmRelResumoVendas := TfrmRelResumoVendas.Create(nil);
   try
     frmRelResumoVendas.DataBase           := IBDatabase1;
-    frmRelResumoVendas.Imagem             := Image205.Picture;
+    frmRelResumoVendas.Imagem             := imgImprimir.Picture;
     frmRelResumoVendas.Usuario            := Usuario;
     frmRelResumoVendas.DataSetEstoque     := ibDataSet4;
     frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
@@ -14020,7 +14017,6 @@ end;
 
 procedure TForm7.Relatriodeoramentospendentes1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
@@ -14028,7 +14024,6 @@ begin
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Relatório de orçamentos pendentes';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.ibDataSet4MARGEMLBChange(Sender: TField);
@@ -14978,18 +14973,18 @@ begin
 
   WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap  colspan=2 align=left><font size=2>Saldo inicial do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=2 align=left><font size=2>Saldo inicial do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   // Cabeçalho
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>ENTRADAS<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>ENTRADAS<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor mês</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor mês</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
 
   Form7.ibDataSet12.First;
@@ -15000,10 +14995,10 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '1' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalDasReceitas := fTotalDasReceitas + Form7.ibDataSet12MES.AsFloat;
     end;
     Form7.ibDataSet12.Next;
@@ -15011,10 +15006,10 @@ begin
   end;
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo])+'<br></font></td>');
   //
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
@@ -15032,12 +15027,12 @@ begin
   WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   // Cabeçalho
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>SAÍDAS<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>SAÍDAS<br></td>');
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor mês</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor mês</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   Form7.ibDataSet12.First;
@@ -15048,10 +15043,10 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '3' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalDasDespesas := fTotalDasDespesas + Form7.ibDataSet12MES.AsFloat;
     end;
     Form7.ibDataSet12.Next;
@@ -15059,19 +15054,19 @@ begin
   end;
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasDespesas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo +fTotalDasDespesas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasDespesas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo +fTotalDasDespesas])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   //
   // ENTRADAS - SAIDAS
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2>ENTRADAS - SAIDAS</font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas +  fTotalDasDespesas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>ENTRADAS - SAIDAS</font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas +  fTotalDasDespesas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
   WriteLn(F,'    </tr>');
   //
   WriteLn(F,'   </table>');
@@ -15091,12 +15086,12 @@ begin
   // Cabeçalho
   //
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>BANCOS<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>BANCOS<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor mês</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor mês</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   Form7.ibDataSet12.First;
@@ -15107,20 +15102,20 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '5' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalDasContas := fTotalDasContas + Form7.ibDataSet12MES.AsFloat;
     end;
     Form7.ibDataSet12.Next;
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'     <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'     <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'     <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasContas])+'<br></font></td>');
-  WriteLn(F,'     <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas])+'<br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasContas])+'<br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
   WriteLn(F,'  </td>');
@@ -15136,12 +15131,12 @@ begin
 //  WriteLn(F,'   <table  border=0 align=left width=400>');
   WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>RETIRADAS/INTEGRALIZAÇÕES<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>RETIRADAS/INTEGRALIZAÇÕES<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor mês</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor mês</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   Form7.ibDataSet12.First;
@@ -15152,10 +15147,10 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '7' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12MES.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalRetiradas := fTotalRetiradas + Form7.ibDataSet12MES.AsFloat;
     end;
     Form7.ibDataSet12.Next;
@@ -15163,10 +15158,10 @@ begin
   end;
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalRetiradas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalRetiradas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
@@ -15180,9 +15175,9 @@ begin
   ibDataset1.Locate('REGISTRO',ibDataSet99.FieldByname('REGISTRO').AsString,[]);
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap  colspan=2 align=left><font size=2>Saldo final do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2 color=#FF0000>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas - Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=2 align=left><font size=2>Saldo final do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2 color=#FF0000>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas - Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
   Form7.ibDataSet12.First;
   fTotalNaoIdentificado := 0;
   while not Form7.ibDataSet12.EOF do
@@ -15196,8 +15191,8 @@ begin
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap  colspan=3 align=left><font size=2>Lançamentos não identificados no caixa<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalNaoIdentificado])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=3 align=left><font size=2>Lançamentos não identificados no caixa<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalNaoIdentificado])+'<br></font></td>');
   //
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
@@ -15395,18 +15390,18 @@ begin
   //
   WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td  nowrap colspan=2 align=left><font size=2>Saldo inicial do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
-  WriteLn(F,'        <td  nowrap align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
-  WriteLn(F,'        <td  nowrap align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
+  WriteLn(F,'        <td  '+{nowrap}' colspan=2 align=left><font size=2>Saldo inicial do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
+  WriteLn(F,'        <td  '+{nowrap}' align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
+  WriteLn(F,'        <td  '+{nowrap}' align=right><font size=2>'+ Format('%15.2n',[fSaldo])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   // Cabeçalho
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td  nowrap colspan=4><font size=2 ><b>ENTRADAS<br></td>');
+  WriteLn(F,'        <td  '+{nowrap}' colspan=4><font size=2 ><b>ENTRADAS<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor ano</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor ano</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   //
@@ -15418,20 +15413,20 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '1' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalDasReceitas := fTotalDasReceitas + Form7.ibDataSet12ANO.AsFloat;
     end;
     Form7.ibDataSet12.Next;
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo])+'<br></font></td>');
 
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
@@ -15449,12 +15444,12 @@ begin
   WriteLn(F,'   <table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   // Cabeçalho
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>SAÍDAS<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>SAÍDAS<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor ano</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor ano</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   Form7.ibDataSet12.First;
@@ -15465,29 +15460,29 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '3' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalDasDespesas := fTotalDasDespesas + Form7.ibDataSet12ANO.AsFloat;
     end;
     Form7.ibDataSet12.Next;
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasDespesas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo +fTotalDasDespesas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasDespesas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo +fTotalDasDespesas])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   //
   // ENTRADAS - SAIDAS
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2>ENTRADAS - SAIDAS</font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas +  fTotalDasDespesas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>ENTRADAS - SAIDAS</font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas +  fTotalDasDespesas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
   WriteLn(F,'    </tr>');
   //
   WriteLn(F,'   </table>');
@@ -15505,12 +15500,12 @@ begin
   WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   // Cabeçalho
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>BANCOS<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>BANCOS<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor ano</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor ano</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   Form7.ibDataSet12.First;
@@ -15521,20 +15516,20 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '5' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalDasContas := fTotalDasContas + Form7.ibDataSet12ano.AsFloat;
     end;
     Form7.ibDataSet12.Next;
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'     <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'     <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'     <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasContas])+'<br></font></td>');
-  WriteLn(F,'     <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas])+'<br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasContas])+'<br></font></td>');
+  WriteLn(F,'     <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
   WriteLn(F,'  </td>');
@@ -15549,12 +15544,12 @@ begin
   WriteLn(F,'  <td  >');
   WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=400>');
   WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-  WriteLn(F,'        <td   nowrap  colspan=4><font size=2 ><b>RETIRADAS/INTEGRALIZAÇÕES<br></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=4><font size=2 ><b>RETIRADAS/INTEGRALIZAÇÕES<br></td>');
   WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-  WriteLn(F,'        <th  nowrap><font size=2>Código</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Conta</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Valor ano</font></th>');
-  WriteLn(F,'        <th  nowrap><font size=2>Saldo</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Código</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Conta</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Valor ano</font></th>');
+  WriteLn(F,'        <th  '+{nowrap}'><font size=2>Saldo</font></th>');
   WriteLn(F,'    </tr>');
   //
   Form7.ibDataSet12.First;
@@ -15565,20 +15560,20 @@ begin
     if Copy(ibDataSet12CONTA.AsString,1,1) = '7' then
     begin
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td   nowrap   align=right><font size=2><br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12CONTA.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2>'+Form7.ibDataSet12NOME.AsString+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet12ANO.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2><br></font></td>');
       fTotalRetiradas := fTotalRetiradas + Form7.ibDataSet12ANO.AsFloat;
     end;
     Form7.ibDataSet12.Next;
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=left><font size=2><br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalRetiradas])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=left><font size=2><br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalRetiradas])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas])+'<br></font></td>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
@@ -15593,9 +15588,9 @@ begin
   ibDataset1.Locate('REGISTRO',ibDataSet99.FieldByname('REGISTRO').AsString,[]);
   //
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap  colspan=2 align=left><font size=2>Saldo final do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2 color=#FF0000>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas - Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=2 align=left><font size=2>Saldo final do caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2 color=#FF0000>'+ Format('%15.2n',[fTotalDasReceitas + fSaldo + fTotalDasDespesas + fTotalDasContas + fTotalRetiradas - Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
   Form7.ibDataSet12.First;
   fTotalNaoIdentificado := 0;
   while not Form7.ibDataSet12.EOF do
@@ -15609,8 +15604,8 @@ begin
     //
   end;
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-  WriteLn(F,'        <td   nowrap  colspan=3 align=left><font size=2>Lançamentos não identificados no caixa<br></font></td>');
-  WriteLn(F,'        <td   nowrap   align=right><font size=2>'+ Format('%15.2n',[fTotalNaoIdentificado])+'<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'  colspan=3 align=left><font size=2>Lançamentos não identificados no caixa<br></font></td>');
+  WriteLn(F,'        <td   '+{nowrap}'   align=right><font size=2>'+ Format('%15.2n',[fTotalNaoIdentificado])+'<br></font></td>');
   //
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
@@ -17261,7 +17256,7 @@ begin
   //
 end;
 
-procedure TForm7.Image208Click(Sender: TObject);
+procedure TForm7.imgLibBloqClick(Sender: TObject);
 var
   i : integer;
 begin
@@ -17283,7 +17278,7 @@ begin
     Form7.DBGrid1.Options   := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgColumnResize,dgTitleClick];        // Botão Libera
     {$ENDIF}
     Form7.dbGrid1.ReadOnly  := False;
-    Form7.Image208.Visible  := False; Form7.Label208.Caption  := 'Bloquear';
+    Form7.imgLibBloq.Visible  := False; Form7.Label208.Caption  := 'Bloquear';
     Form7.Image308.Visible  := True;
 
     //Mauricio Parizotto 2023-05-29
@@ -17305,7 +17300,7 @@ begin
     {$ENDIF}
     Form7.dbGrid1.ReadOnly  := True;
     Form7.Image308.Visible  := False;
-    Form7.Image208.Visible  := True; Form7.Label208.Caption  := 'Liberar';
+    Form7.imgLibBloq.Visible  := True; Form7.Label208.Caption  := 'Liberar';
   end;
 
   dBGrid1.Repaint;
@@ -17992,9 +17987,8 @@ begin
   TotalizaOS(True);
 end;
 
-procedure TForm7.Image204Click(Sender: TObject);
+procedure TForm7.imgVisualizarClick(Sender: TObject);
 begin
-  //
   if (Form7.sModulo = 'ORCAMENTO') then
   begin
     {Dailon Parisotto 2023-10-13 Inicio
@@ -18014,10 +18008,9 @@ begin
     {Dailon Parisotto 2023-10-13 Fim}
     Abort;
   end;
-  //
+  
   Form38.DateTimePicker1.Date := StrToDate('31/12/1899');
   Form10.Image203Click(Sender);
-  //
 end;
 
 {Dailon Parisotto 2023-10-13 Inicio}
@@ -18272,342 +18265,9 @@ begin
 end;
 
 procedure TForm7.ImprimirOrdemdeServio1Click(Sender: TObject);
-{
-var
-  F: TextFile;
-  fTotal1, fTotal2: Real;
-  sArquivo : String;
-}
 begin
   //Mauricio Parizotto 2023-11-21
   ImprimeOrdemServico;
-  {
-  //
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  begin
-    //
-    CriaJpg('logotip.jpg');
-    //
-    sArquivo := 'OS_'+Form7.ibDataSet3NUMERO.AsString;
-    //
-    AssignFile(F,pChar(sArquivo+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
-    Rewrite(F);
-    //
-    Writeln(F,'<html><head><title>OS '+Form7.ibDataSet3NUMERO.AsString+'</title></head>');
-    WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
-    //
-    WriteLn(F,'<table border=1 cellspacing=1 cellpadding=10 Width=640 style="border-collapse: collapse" >');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td  >');
-    WriteLn(F,'<table border=0 cellspacing=1 cellpadding=5 Width=100%>');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'   <img src="logotip.jpg" alt="'+AllTrim(ibDataSet13NOME.AsString)+'">');
-    WriteLn(F,'  </td>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>Data: <b>'+ibDataSet3.FieldByname('DATA').AsString+' '+TimeToStr(Time)+'</b>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>Atendente: <b>'+Form7.ibDataSet3TECNICO.AsString+'</b>');
-    WriteLn(F,'   <br>Telefone: <b>' + AllTrim(ibDataSet13TELEFO.AsString));
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'<table>');
-    WriteLn(F,'<table  border=0 cellspacing=0 cellpadding=0 Width=100%>');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'   <center><font face="Microsoft Sans Serif" size=2><b>DOCUMENTO AUXILIAR DE VENDA - OS</b></center>');
-    WriteLn(F,'   <center><font face="Microsoft Sans Serif" size=2><b>NÃO É DOCUMENTO FISCAL - NÃO É VÁLIDO COMO RECIBO E COMO GARANTIA DE</b></center>');
-    WriteLn(F,'   <center><font face="Microsoft Sans Serif" size=2><b>MERCADORIA - NÃO COMPROVA PAGAMENTO</b></center>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'<table>');
-    //
-    WriteLn(F,'<br>');
-    //
-    WriteLn(F,'<table border=1 cellspacing=1 cellpadding=5 Width=100% style="border-collapse: collapse">');
-    WriteLn(F,' <tr  height=25>');
-    WriteLn(F,'  <td nowrap colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Microsoft Sans Serif" size=1><center>Identificação do Estabelecimento Emitente</center></td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,' <tr  height=25>');
-    WriteLn(F,'  <td   nowrap   colspan=3><font face="Microsoft Sans Serif" size=1>Denominação:  <b>'+AllTrim(Copy(ibDataSet13NOME.AsString+Replicate(' ',35),1,35))+'</b>'+
-    '<br>'+
-    ibDataSet13.FieldByname('ENDERECO').AsString+'<br>'+
-    ibDataSet13.FieldByname('CEP').AsString+' - '+ibDataSet13.FieldByname('MUNICIPIO').AsString+', '+ibDataSet13.FieldByname('ESTADO').AsString+'<br>'+
-    ibDataSet13.FieldByname('COMPLE').AsString+'<br>'+
-    'Telefone: '+ibDataSet13.FieldByname('TELEFO').AsString+'<br></td>');
-    WriteLn(F,'  <td nowrap colspan=1 vAlign=Top width=50%><font face="Microsoft Sans Serif" size=1>CNPJ:  <b>'+ibDataSet13CGC.AsString+'</b></td>');
-    WriteLn(F,' </tr>');
-    //
-    WriteLn(F,' <tr height=25>');
-    WriteLn(F,'  <td nowrap colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Microsoft Sans Serif" size=1><center>Identificação do Destinatário</center></td>');
-    WriteLn(F,' </tr height=25>');
-    WriteLn(F,' <tr>');
-    //
-    WriteLn(F,'  <td nowrap colspan=3><font face="Microsoft Sans Serif" size=1>Denominação:  <b>'+AllTrim(Copy(ibDataSet2.FieldByname('NOME').AsString+Replicate(' ',35),1,35))+'</b>');
-    WriteLn(F,'<br>'+
-    ibDataSet2.FieldByname('ENDERE').AsString+'<br>'+
-    ibDataSet2.FieldByname('CEP').AsString+' - '+ibDataSet2.FieldByname('CIDADE').AsString+', '+ibDataSet2.FieldByname('ESTADO').AsString+'<br>'+
-    ibDataSet2.FieldByname('COMPLE').AsString+'<br>'+
-    'Telefone: '+ibDataSet2.FieldByname('FONE').AsString+'<br>'+'</td>');
-    WriteLn(F,'  <td nowrap colspan=1 vAlign=Top width=50%><font face="Microsoft Sans Serif" size=1>CNPJ:  <b>'+ibDataSet2.FieldByname('CGC').AsString+'</b></td>');
-    WriteLn(F,' </tr>');
-    //
-    WriteLn(F,' <tr height=25>');
-    WriteLn(F,'  <td nowrap colspan=3 bgcolor=#FFFFFF><font face="Microsoft Sans Serif" size=1>Número do Documento: '+Form7.ibDataSet3NUMERO.AsString+'</b></center></td>');
-    WriteLn(F,'  <td nowrap colspan=3 bgcolor=#FFFFFF width=50%><font face="Microsoft Sans Serif" size=1>Número do Documento Fiscal: '+Form7.ibDataSet3NF.AsString+'</b></center></td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-
-    //
-    // Dados da OS
-    //
-    WriteLn(F,'<table border=0 cellspacing=1 cellpadding=5 Width=100%>');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'       <font face="Microsoft Sans Serif" size=1>'+Form30.Label14.Caption+': <b>'+Form7.ibDataSet3DESCRICAO.AsString+'</b>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>'+Form30.Label15.Caption+': <b>'+Form7.ibDataSet3IDENTIFI1.AsString+'</b>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>'+Form30.Label16.Caption+': <b>'+Form7.ibDataSet3IDENTIFI2.AsString+'</b>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'       <font face="Microsoft Sans Serif" size=1>'+Form30.Label17.Caption+': <b>'+Form7.ibDataSet3IDENTIFI3.AsString+'</b>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>'+Form30.Label18.Caption+': <b>'+Form7.ibDataSet3IDENTIFI4.AsString+'</b>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>'+Form30.Label30.Caption+': <b>'+Form7.ibDataSet3GARANTIA.AsString+'</b>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5>');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF vAlign=TOP>');
-    WriteLn(F,'    <font face="Microsoft Sans Serif" size=1>'+Form30.Label19.Caption+':<br>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF vAlign=TOP>');
-    WriteLn(F,'    <font face="Microsoft Sans Serif" size=1><b>'+StrTran(Form7.ibDataSet3PROBLEMA.AsString,chr(10),'<br>')+'</b>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-    //
-    // Peças
-    //
-    WriteLn(F,'<font face="Microsoft Sans Serif" size=1><b><br>Peças:</b><br>');
-    WriteLn(F,'<table  border=1  cellspacing=1 cellpadding=2 style="border-collapse: collapse"  >');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=50><font face="Microsoft Sans Serif" size=1>Código</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Cód de barras</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=270><font face="Microsoft Sans Serif" size=1>Descrição</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Unitário</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Total</td>');
-    WriteLn(F,' </tr>');
-    //
-    fTotal1 := 0;
-    //
-    Form7.ibDataSet16.DisableControls;
-    Form7.ibDataSet16.First;
-    while not Form7.ibDataSet16.Eof do // Disable
-    begin
-      //
-      Form7.ibDataSet4.Close;                                                //
-      Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
-      Form7.ibDataSet4.Open;
-      //
-      if Form7.ibDataSet16CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
-      begin
-        //
-        WriteLn(F,' <tr>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16CODIGO.AsString+'</td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4REFERENCIA.AsString+'</td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>');
-        Writeln(F,'  <td   align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat])+'</td>'); // Valor
-        Writeln(F,'  <td   align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16UNITARIO.AsFloat])+'</td>'); // Valor
-        Writeln(F,'  <td   align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16TOTAL.AsFloat])+'</td>'); // Valor
-        WriteLn(F,' </tr>');
-        //
-        fTotal1 := fTotal1 + Form7.ibDataSet16TOTAL.AsFloat;
-        //
-      end else
-      begin
-        //
-        if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) <> '' then
-        begin
-          WriteLn(F,' <tr>');
-          Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-          Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-          Writeln(F,'  <td   nowrap   colspan=5 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'&nbsp</td>');
-          WriteLn(F,' </tr>');
-        end;
-        //
-      end;
-      //
-      Form7.ibDataSet16.Next;
-      //
-    end;
-    //
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td   align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[fTotal1])+'</td>'); // Valor
-    WriteLn(F,' </tr>');
-    //
-    Form7.ibDataSet16.EnableControls;
-    WriteLn(F,'</table>');
-    //
-    // Serviços
-    //
-
-    WriteLn(F,'<font face="Microsoft Sans Serif" size=1><b><br>Serviços:</b><br>');
-    WriteLn(F,'<table  border=1  cellspacing=1 cellpadding=2 style="border-collapse: collapse"  >');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=270><font face="Microsoft Sans Serif" size=1>Descrição</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=140><font face="Microsoft Sans Serif" size=1>'+Form30.Label34.Caption+'</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Unitário</td>');
-    WriteLn(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' width=80><font face="Microsoft Sans Serif" size=1>Total</td>');
-    WriteLn(F,' </tr>');
-    //
-    fTotal2 := 0;
-    //
-    Form7.ibDataSet35.DisableControls;
-    Form7.ibDataSet35.First;
-    while not Form7.ibDataSet35.Eof do
-    begin
-      //
-      if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then
-      begin
-        //
-        WriteLn(F,' <tr>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35TECNICO.AsString+'</td>');
-        Writeln(F,'  <td   align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35QUANTIDADE.AsFloat])+'</td>'); // Valor
-        Writeln(F,'  <td   align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35UNITARIO.AsFloat])+'</td>'); // Valor
-        Writeln(F,'  <td   align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'</td>'); // Valor
-        WriteLn(F,' </tr>');
-        //
-      end else
-      begin
-        //
-        WriteLn(F,' <tr>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-        Writeln(F,'  <td   bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>');
-        WriteLn(F,' </tr>');
-        //
-      end;
-      //
-      fTotal2 := fTotal2 + Form7.ibDataSet35TOTAL.AsFloat;
-      //
-      //
-      Form7.ibDataSet35.Next;
-      //
-    end;
-    //
-    Form7.ibDataSet35.EnableControls;
-    //
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td  ></td>');
-    Writeln(F,'  <td   align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[fTotal2])+'</td>'); // Valor
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table><br>');
-    //
-    // Fim de serviços
-    //
-    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=0 style="border-collapse: collapse"  >');
-    WriteLn(F,' <tr>');
-    //
-    // Observação
-    //
-    WriteLn(F,'  <td   bgcolor=#FFFFFF vAlign=Top>');
-    WriteLn(F,'   <font face="Microsoft Sans Serif" size=1>Observação: <b>'+Form7.ibDataSet3OBSERVACAO.AsString+'<b>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,'  <td  >');
-    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=2 style="border-collapse: collapse"  >');
-    //
-    // TOTAIS
-    //
-
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td   width=590 align=Right><font face="Microsoft Sans Serif" size=1 >Total de peças R$:</td>');
-    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3TOTAL_PECA.AsFloat])+'</td>'); // total de peças
-    WriteLn(F,' </tr>');
-
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td   width=590 align=Right><font face="Microsoft Sans Serif" size=1 >Total de serviços R$:</td>');
-    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3TOTAL_SERV.AsFloat])+'</td>'); // total serviços
-    WriteLn(F,' </tr>');
-
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td   width=590 align=Right><font face="Microsoft Sans Serif" size=1 >'+Form30.Label10.Caption+' R$:</td>');
-
-    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3TOTAL_FRET.AsFloat])+'</td>'); // Frete
-    WriteLn(F,' </tr>');
-
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td   width=590 align=Right><font face="Microsoft Sans Serif" size=1 >Desconto R$:</td>');
-    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3DESCONTO.AsFloat])+'</td>'); // Frete
-    WriteLn(F,' </tr>');
-
-    WriteLn(F,' <tr>');
-    Writeln(F,'  <td   width=590 align=Right><font face="Microsoft Sans Serif" size=1 >Total R$:</td>');
-    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3TOTAL_OS.AsFloat])+'</td>'); // total da OS
-    WriteLn(F,' </tr>');
-
-    WriteLn(F,'</table>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-    //
-    // Fim dos totais
-    //
-    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF vAlign=Top>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,'  <td   bgcolor=#FFFFFF width=50% vAlign=Bot>');
-    WriteLn(F,'   <br><br><center><font face="Microsoft Sans Serif" size=2>______________________________________</b>');
-    WriteLn(F,'   <br><center><font face="Microsoft Sans Serif" size=1>Assinatura do cliente</b>');
-    WriteLn(F,'   <br><center><font face="Microsoft Sans Serif" size=1>Autorizo a execução desta ordem de serviços</b>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-    WriteLn(F,'  </td>');
-    WriteLn(F,' </tr>');
-    WriteLn(F,'</table>');
-    WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>É vedada a autenticação deste documento</font></center><br>');
-
-    WriteLn(F,'<br><font size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
-        + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
-        + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
-    // Condição do relatório
-    // WWW
-    //
-    if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
-    begin
-      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
-    end else
-    begin
-      WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
-    end;
-    CloseFile(F);
-    //
-    AbreArquivoNoFormatoCerto(pChar(sArquivo));
-    //
-  end;
-  //
-  Mauricio Parizotto 2023-11-21}
 end;
 
 procedure TForm7.MenuItem12Click(Sender: TObject);
@@ -18626,7 +18286,6 @@ begin
     Gerarnotafiscalsrie11.Enabled := True;
     Gerarnotafiscalsrie21.Enabled := True;
   end;
-  //
 end;
 
 procedure TForm7.Agenda1Click(Sender: TObject);
@@ -20262,7 +19921,8 @@ begin
       Form7.ibDataSet4.Open;
     end;
 
-    if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then
+    //if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then Mauricio Parizotto 2023-12-20
+    if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',120),1,120) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',120),1,120)) then
     begin
       Form7.ibDataSet16UNITARIO.AsString   := EmptyStr;
       Form7.ibDataSet16TOTAL.AsString      := EmptyStr;
@@ -20419,9 +20079,10 @@ begin
       Form7.ibDataSet4.Open;
     end;
 
-    if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then
+    //if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then Mauricio Parizotto 2023-12-20
+    if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',120),1,120) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',120),1,120)) then
     begin
-      // Quando o produto não ta cadatrado é coméntario fica em cinza //
+      // Quando o produto não ta cadatrado é coméntario fica em cinza
       Form7.ibDataSet16UNITARIO.AsString   := '';
       Form7.ibDataSet16TOTAL.AsString      := '';
       Form7.ibDataSet16QUANTIDADE.AsString := '';
@@ -20501,21 +20162,14 @@ begin
       // Calcula o FCP ST para devolução
       CalculaFCPSTAoIncluirProdutoDevolucao;
       {Sandro Silva 2023-05-08 fim}
-
     end;
-    
   except
   end;
-  //
-  // The end no modifi
-  //
 end;
 
 procedure TForm7.ibDataSet16TOTALSetText(Sender: TField; const Text: String);
 begin
-  //
   // Verifica se ta cadastrado
-  //
   try
     if AllTrim(Form7.ibDataSet16DESCRICAO.AsString) <> AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
     begin
@@ -20524,8 +20178,9 @@ begin
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet16DESCRICAO.AsString)+' ');
       Form7.ibDataSet4.Open;
     end;
-    //
-    if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then
+    
+    //if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',44),1,44) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',44),1,44)) then Mauricio Parizotto 2023-12-20
+    if (copy(AllTrim(Form7.ibDataSet16DESCRICAO.AsString)+Replicate(' ',120),1,120) <> copy(AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',120),1,120)) then
     begin
       // Quando o produto não ta cadatrado é coméntario fica em cinza
       Form7.ibDataSet16UNITARIO.AsString   := '';
@@ -21755,14 +21410,13 @@ begin
   //
   Form7.ibDataSet24.Post;
   Form7.ibDataSet24.Edit;
-  //
 end;
 
 procedure TForm7.Label201MouseLeave(Sender: TObject);
 begin
   if Form7.Label201.Font.Style <> [] then
   begin
-    Form7.Image201.Picture    := Form7.Image201_R.Picture;
+    Form7.imgNovo.Picture    := Form7.Image201_R.Picture;
     Form7.Label201.Font.Style := [];
   end;
 end;
@@ -21773,7 +21427,7 @@ begin
   Form1.Panel4.Visible  := True;
   if Form7.Label201.Font.Style <> [fsBold] then
   begin
-    Form7.Image201.Picture    := Form7.Image201_X.Picture;
+    Form7.imgNovo.Picture    := Form7.Image201_X.Picture;
     Form7.Label201.Font.Style := [fsBold];
   end;
 end;
@@ -23861,26 +23515,29 @@ begin
   Writeln(F,'');
   Writeln(F,'CODIGO        DESCRICÃO                                QUANTIDADE');
   Writeln(F,'------------- ---------------------------------------- -------------');
-  //
+  
   ibDataSet4.First;
   while not ibDataSet4.Eof do
   begin
     try
-      if ibDataSet4QTD_ATUAL.AsFloat < 0 then Writeln(F,ibDataSet4CODIGO.AsString+'         '+Copy(ibDataSet4DESCRICAO.AsString+Replicate(' ',40),1,40)+' '+Format('%14.2n',[ibDataSet4QTD_ATUAL.AsFloat]));
-    except end;
+      if ibDataSet4QTD_ATUAL.AsFloat < 0 then
+        Writeln(F,ibDataSet4CODIGO.AsString+'         '+Copy(ibDataSet4DESCRICAO.AsString+Replicate(' ',40),1,40)+' '+Format('%14.2n',[ibDataSet4QTD_ATUAL.AsFloat]));
+    except
+    end;
     ibDataSet4.Next;
   end;
-  //
+
   Writeln(F,'');
   Writeln(F,'');
   Writeln(F,'MOTIVO REINICIO: Não houve reinicio de NSU.');
-  //
+
   CloseFile(F);  // Fecha o arquivo
-  //
+
   Form7.Close;
   Form7.Show;
-  //
-  if FileExists(Form1.sAtual+'\CORRELACAO.TXT') then ShellExecute( 0, 'Open','notepad.exe',PChar('CORRELACAO.TXT'), '', SW_SHOW);
+
+  if FileExists(Form1.sAtual+'\CORRELACAO.TXT') then
+    ShellExecute( 0, 'Open','notepad.exe',PChar('CORRELACAO.TXT'), '', SW_SHOW);
 end;
 
 procedure TForm7.Sosclientescomcontasatrasadas1Click(Sender: TObject);
@@ -24438,7 +24095,6 @@ end;
 
 procedure TForm7.Resumodascompras1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
   //
   Form38.Label2.Visible := True;
@@ -24447,12 +24103,10 @@ begin
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Resumo das compras'; // 1
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Resumodascomrpas1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
@@ -24463,7 +24117,6 @@ begin
   Form7.sModulo := 'Resumo das compras';
   Form38.ShowModal; // Ok
   Form38.Label21.Visible := False;
-  //
 end;
 
 procedure TForm7.MenuItem117Click(Sender: TObject);
@@ -26903,7 +26556,7 @@ begin
   end;
 end;
 
-procedure TForm7.Image205Click(Sender: TObject);
+procedure TForm7.imgImprimirClick(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
@@ -28396,13 +28049,13 @@ begin
       WriteLn(F,'<font face="verdana" size=2><b>'+MesExtenso(Month(dInicio))+' de '+IntToStr(Year(dInicio))+'</b><br><br>');              // Mês e ano
       WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F,' <tr   bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Dom</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Seg</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Ter</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qua</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qui</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Sex</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Sab</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Dom</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Seg</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Ter</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qua</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qui</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Sex</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Sab</font></th>');
       WriteLn(F,' </tr>');
       //
       WriteLn(F,' <tr  bgcolor=#FFFFFF>');
@@ -28412,14 +28065,14 @@ begin
       //
       fTotal2 := 0;
       //
-      for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+      for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
       while dContador <= dFinal + DiasPorMes(Year(dFinal),Month(dFinal)) - Day(dFinal) do
       begin
         //
         if Month(dContador) = MesInicial then
         begin
           if DayOfWeek(dContador) = 1 then WriteLn(F,' <tr  bgcolor=#FFFFFF>');
-          if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td   nowrap   align=left valign=top width=100><font face="verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td   nowrap   align=left valign=top width=100><font face="verdana" size=1>'+IntToStr(Day(dContador)));
+          if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td   '+{nowrap}'   align=left valign=top width=100><font face="verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td   '+{nowrap}'   align=left valign=top width=100><font face="verdana" size=1>'+IntToStr(Day(dContador)));
           //
           Form7.Panel7.Caption := 'Analizando dia '+DateToStr(dContador)+'...';
           Form7.Panel7.Repaint;
@@ -28488,24 +28141,24 @@ begin
         end else
         begin
           MesInicial := Month(dContador);
-          for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+          for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
           WriteLn(F,' </tr>');
           WriteLn(F,'</table>');
           WriteLn(F,'<br>');
           WriteLn(F,'<br><font face="verdana" size=1><b>'+MesExtenso(Month(dContador))+' de '+IntToStr(Year(dInicio))+'</b>');              // Mês e ano
           WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
           WriteLn(F,' <tr   bgcolor=#'+Form1.sHtmlCor+' align=left>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Dom</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Seg</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Ter</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qua</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qui</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Sex</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Sab</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Dom</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Seg</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Ter</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qua</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qui</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Sex</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Sab</font></th>');
           WriteLn(F,' </tr>');
           //
           WriteLn(F,' <tr  bgcolor=#FFFFFF>');
-          for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+          for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
         end;
       end;
       //
@@ -28597,13 +28250,13 @@ begin
       WriteLn(F,'<font face="verdana" size=2><b>'+MesExtenso(Month(dInicio))+' de '+IntToStr(Year(dInicio))+'</b><br><br>');              // Mês e ano
       WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F,' <tr   bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Dom</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Seg</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Ter</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qua</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qui</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Sex</font></th>');
-      WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Sab</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Dom</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Seg</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Ter</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qua</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qui</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Sex</font></th>');
+      WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Sab</font></th>');
       WriteLn(F,' </tr>');
       //
       WriteLn(F,' <tr  bgcolor=#FFFFFF>');
@@ -28614,14 +28267,14 @@ begin
       fTotal1 := 0;
       fTotal2 := 0;
       //
-      for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+      for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
       while dContador <= dFinal + DiasPorMes(Year(dFinal),Month(dFinal)) - Day(dFinal) do
       begin
         //
         if Month(dContador) = MesInicial then
         begin
           if DayOfWeek(dContador) = 1 then WriteLn(F,' <tr  bgcolor=#FFFFFF>');
-          if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td   nowrap   align=left valign=top width=100><font face="verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td   nowrap   align=left valign=top width=100><font face="verdana" size=1>'+IntToStr(Day(dContador)));
+          if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td   '+{nowrap}'   align=left valign=top width=100><font face="verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td   '+{nowrap}'   align=left valign=top width=100><font face="verdana" size=1>'+IntToStr(Day(dContador)));
           //
           Form7.Panel7.Caption := 'Analizando dia '+DateToStr(dContador)+'...';
           Form7.Panel7.Repaint;
@@ -28655,24 +28308,24 @@ begin
         end else
         begin
           MesInicial := Month(dContador);
-          for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+          for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
           WriteLn(F,' </tr>');
           WriteLn(F,'</table>');
           WriteLn(F,'<br>');
           WriteLn(F,'<br><font face="verdana" size=1><b>'+MesExtenso(Month(dContador))+' de '+IntToStr(Year(dInicio))+'</b>');              // Mês e ano
           WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
           WriteLn(F,' <tr   bgcolor=#'+Form1.sHtmlCor+' align=left>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Dom</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Seg</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Ter</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qua</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qui</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Sex</font></th>');
-          WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Sab</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Dom</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Seg</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Ter</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qua</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qui</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Sex</font></th>');
+          WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Sab</font></th>');
           WriteLn(F,' </tr>');
           //
           WriteLn(F,' <tr  bgcolor=#FFFFFF>');
-          for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+          for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
         end;
       end;
       //
@@ -28796,13 +28449,13 @@ begin
         WriteLn(F,'<font face="verdana" size=2><b>'+MesExtenso(Month(dInicio))+' de '+IntToStr(Year(dInicio))+'</b><br><br>');              // Mês e ano
         WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr   bgcolor=#'+Form1.sHtmlCor+' align=left>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Dom</font></th>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Seg</font></th>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Ter</font></th>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qua</font></th>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qui</font></th>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Sex</font></th>');
-        WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Sab</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Dom</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Seg</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Ter</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qua</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qui</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Sex</font></th>');
+        WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Sab</font></th>');
         WriteLn(F,' </tr>');
         //
         WriteLn(F,' <tr  bgcolor=#FFFFFF>');
@@ -28813,14 +28466,14 @@ begin
         fTotal1 := 0;
         fTotal2 := 0;
         //
-        for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+        for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
         while dContador <= dFinal + DiasPorMes(Year(dFinal),Month(dFinal)) - Day(dFinal) do
         begin
           //
           if Month(dContador) = MesInicial then
           begin
             if DayOfWeek(dContador) = 1 then WriteLn(F,' <tr  bgcolor=#FFFFFF>');
-            if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td   nowrap   align=left valign=top width=70><font face="verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td   nowrap   align=left valign=top width=70><font face="verdana" size=1>'+IntToStr(Day(dContador)));
+            if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td   '+{nowrap}'   align=left valign=top width=70><font face="verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td   '+{nowrap}'   align=left valign=top width=70><font face="verdana" size=1>'+IntToStr(Day(dContador)));
             //
             Form7.Panel7.Caption := 'Analizando contatos do vendedor '+Form7.ibQuery3.FieldByname('NOME').AsString+' do dia '+DateToStr(dContador)+'...';
             Form7.Panel7.Repaint;
@@ -28854,24 +28507,24 @@ begin
           end else
           begin
             MesInicial := Month(dContador);
-            for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td   nowrap   align=left><font face="verdana" size=1> </td>');
+            for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td   '+{nowrap}'   align=left><font face="verdana" size=1> </td>');
             WriteLn(F,' </tr>');
             WriteLn(F,'</table>');
             WriteLn(F,'<br>');
             WriteLn(F,'<br><font face="verdana" size=1><b>'+MesExtenso(Month(dContador))+' de '+IntToStr(Year(dInicio))+'</b>');              // Mês e ano
             WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
             WriteLn(F,' <tr   bgcolor=#'+Form1.sHtmlCor+' align=left>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Dom</font></th>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Seg</font></th>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Ter</font></th>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qua</font></th>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Qui</font></th>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1>Sex</font></th>');
-            WriteLn(F,'  <th  nowrap><font face="verdana" size=1 color=FF0000>Sab</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Dom</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Seg</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Ter</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qua</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Qui</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1>Sex</font></th>');
+            WriteLn(F,'  <th  '+{nowrap}'><font face="verdana" size=1 color=FF0000>Sab</font></th>');
             WriteLn(F,' </tr>');
             //
             WriteLn(F,' <tr  bgcolor=#FFFFFF>');
-            for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   nowrap  align=left><font face="verdana" size=1> </td>');
+            for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td   '+{nowrap}'  align=left><font face="verdana" size=1> </td>');
           end;
         end;
         //
@@ -29191,7 +28844,7 @@ procedure TForm7.Label202MouseLeave(Sender: TObject);
 begin
   if Form7.Label202.Font.Style <> [] then
   begin
-    Form7.Image202.Picture    := Form7.Image202_R.Picture;
+    Form7.imgExcluir.Picture    := Form7.Image202_R.Picture;
     Form7.Label202.Font.Style := [];
   end;
 end;
@@ -29200,7 +28853,7 @@ procedure TForm7.Label203MouseLeave(Sender: TObject);
 begin
   if Form7.Label203.Font.Style <> [] then
   begin
-    Form7.Image203.Picture    := Form7.Image203_R.Picture;
+    Form7.imgProcurar.Picture    := Form7.Image203_R.Picture;
     Form7.Label203.Font.Style := [];
   end;
 end;
@@ -29209,7 +28862,7 @@ procedure TForm7.Label205MouseLeave(Sender: TObject);
 begin
   if Form7.Label205.Font.Style <> [] then
   begin
-    Form7.Image205.Picture    := Form7.Image205_R.Picture;
+    Form7.imgImprimir.Picture    := Form7.Image205_R.Picture;
     Form7.Label205.Font.Style := [];
   end;
 end;
@@ -29218,7 +28871,7 @@ procedure TForm7.Label204MouseLeave(Sender: TObject);
 begin
   if Form7.Label204.Font.Style <> [] then
   begin
-    Form7.Image204.Picture    := Form7.Image204_R.Picture;
+    Form7.imgVisualizar.Picture    := Form7.Image204_R.Picture;
     Form7.Label204.Font.Style := [];
   end;
 end;
@@ -29227,7 +28880,7 @@ procedure TForm7.Label206MouseLeave(Sender: TObject);
 begin
   if Form7.Label206.Font.Style <> [] then
   begin
-    Form7.Image206.Picture    := Form7.Image206_R.Picture;
+    Form7.imgEditar.Picture    := Form7.Image206_R.Picture;
     Form7.Label206.Font.Style := [];
   end;
 end;
@@ -29236,7 +28889,7 @@ procedure TForm7.Label208MouseLeave(Sender: TObject);
 begin
   if Form7.Label208.Font.Style <> [] then
   begin
-    Form7.Image208.Picture    := Form7.Image208_R.Picture;
+    Form7.imgLibBloq.Picture    := Form7.Image208_R.Picture;
     Form7.Image308.Picture    := Form7.Image308_R.Picture;
     Form7.Label208.Font.Style := [];
   end;
@@ -29246,7 +28899,7 @@ procedure TForm7.Label209MouseLeave(Sender: TObject);
 begin
   if Form7.Label209.Font.Style <> [] then
   begin
-    Form7.Image209.Picture    := Form7.Image209_R.Picture;
+    Form7.imgFiltrar.Picture    := Form7.Image209_R.Picture;
     Form7.Label209.Font.Style := [];
   end;
 end;
@@ -29256,7 +28909,7 @@ procedure TForm7.Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label202.Font.Style <> [fsBold] then
   begin
-    Form7.Image202.Picture    := Form7.Image202_X.Picture;
+    Form7.imgExcluir.Picture    := Form7.Image202_X.Picture;
     Form7.Label202.Font.Style := [fsBold];
   end;
 end;
@@ -29266,7 +28919,7 @@ procedure TForm7.Label203MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label203.Font.Style <> [fsBold] then
   begin
-    Form7.Image203.Picture    := Form7.Image203_X.Picture;
+    Form7.imgProcurar.Picture    := Form7.Image203_X.Picture;
     Form7.Label203.Font.Style := [fsBold];
   end;
 end;
@@ -29276,7 +28929,7 @@ procedure TForm7.Label205MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label205.Font.Style <> [fsBold] then
   begin
-    Form7.Image205.Picture    := Form7.Image205_X.Picture;
+    Form7.imgImprimir.Picture    := Form7.Image205_X.Picture;
     Form7.Label205.Font.Style := [fsBold];
   end;
 end;
@@ -29286,7 +28939,7 @@ procedure TForm7.Label204MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label204.Font.Style <> [fsBold] then
   begin
-    Form7.Image204.Picture    := Form7.Image204_X.Picture;
+    Form7.imgVisualizar.Picture    := Form7.Image204_X.Picture;
     Form7.Label204.Font.Style := [fsBold];
   end;
 end;
@@ -29296,7 +28949,7 @@ procedure TForm7.Label206MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label206.Font.Style <> [fsBold] then
   begin
-    Form7.Image206.Picture    := Form7.Image206_X.Picture;
+    Form7.imgEditar.Picture    := Form7.Image206_X.Picture;
     Form7.Label206.Font.Style := [fsBold];
   end;
 end;
@@ -29306,7 +28959,7 @@ procedure TForm7.Label208MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label208.Font.Style <> [fsBold] then
   begin
-    Form7.Image208.Picture    := Form7.Image208_X.Picture;
+    Form7.imgLibBloq.Picture    := Form7.Image208_X.Picture;
     Form7.Image308.Picture    := Form7.Image308_X.Picture;
     Form7.Label208.Font.Style := [fsBold];
   end;
@@ -29317,7 +28970,7 @@ procedure TForm7.Label209MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if Form7.Label209.Font.Style <> [fsBold] then
   begin
-    Form7.Image209.Picture    := Form7.Image209_X.Picture;
+    Form7.imgFiltrar.Picture    := Form7.Image209_X.Picture;
     Form7.Label209.Font.Style := [fsBold];
   end;
 end;
@@ -30125,10 +29778,10 @@ begin
         WriteLn(F,'<center>');
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-        WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Foto</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Vendedor</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Contatos</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Foto</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Vendedor</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Contatos</font></th>');
         WriteLn(F,' </tr>');
         //
         Form7.IBDataSet99.Close;
@@ -30196,16 +29849,16 @@ begin
             //
             if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
             begin
-              WriteLn(F,'<td nowrap valign=top bgcolor=#FFFFFF align=right><img src="'+'_t_'+Form7.ibDataSet99999.FieldByName('REGISTRO').AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet99999.FieldByName('NOME').AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (100 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (100 / Form10.Image5.Picture.Width)),10,0)+'></td>');
+              WriteLn(F,'<td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><img src="'+'_t_'+Form7.ibDataSet99999.FieldByName('REGISTRO').AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet99999.FieldByName('NOME').AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (100 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (100 / Form10.Image5.Picture.Width)),10,0)+'></td>');
             end
             else
             begin
-              WriteLn(F,'<td nowrap valign=top bgcolor=#FFFFFF align=right><img src="'+'_t_'+Form7.ibDataSet99999.FieldByName('REGISTRO').AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet99999.FieldByName('REGISTRO').AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (100 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (100 / Form10.Image5.Picture.Height)),10,0)+'></td>');
+              WriteLn(F,'<td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><img src="'+'_t_'+Form7.ibDataSet99999.FieldByName('REGISTRO').AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet99999.FieldByName('REGISTRO').AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (100 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (100 / Form10.Image5.Picture.Height)),10,0)+'></td>');
             end;
             //
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99999.FieldByname('NOME').AsString+'</font></td>');
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotal1+fTotal2])+'<br></font></td>');
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+FloatToStr(fTotal3)+'<br></font></td>');
+            WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99999.FieldByname('NOME').AsString+'</font></td>');
+            WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotal1+fTotal2])+'<br></font></td>');
+            WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+FloatToStr(fTotal3)+'<br></font></td>');
             WriteLn(F,'   </tr>');
             //
             III := III + 1;
@@ -30246,16 +29899,15 @@ begin
           Sleep(100);
         //
         WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-        WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-        WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-        WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
-        WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ FloatToStr(fTotalContatos)+'<br></font></td>');
+        WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+        WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+        WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+        WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ FloatToStr(fTotalContatos)+'<br></font></td>');
         WriteLn(F,'  </tr>');
         WriteLn(F,' </table>');
         //
         Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
         WriteLn(F,'</center>');
-        //
       except
         on E: Exception do
         begin
@@ -30265,9 +29917,7 @@ begin
       //
       Form7.IBDataSet2.DisableControls;
       Form7.ibDataSet3.DisableControls;
-      //
-      // WWW
-      //
+
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
         WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -30303,9 +29953,7 @@ var
   bButton : Integer;
   bForm10 : Integer;
 begin
-  //
   try
-    //
     bButton := Application.MessageBox(pChar('Preencher automaticamente o CEST:'+TExt+' com NCM: '+ibDataSet4CF.AsString+Chr(10)),'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
     //
     if bButton = IDYES  then
@@ -30319,7 +29967,7 @@ begin
         bForm10 := 1
       else
         bForm10 := 0;
-      //
+      
       Screen.Cursor            := crHourGlass;
       AgendaCommit(True);
       if bForm10 = 1 then
@@ -30335,17 +29983,12 @@ begin
         Form10.Orelhas.ActivePage := Form10.orelha_ICMS;
         Form10.ComboBox5.SetFocus;
       end;
-      //
-    end
-    else
+    end else
     begin
       ibDataSet4CEST.AsString := Text;
     end;
-    //
   except
-
   end;
-  //
 end;
 
 procedure TForm7.btnRetornoCNAB400Click(Sender: TObject);
@@ -33860,7 +33503,7 @@ begin
   TChamaRelatorioFactory.New
                         .VendasPorCliente
                         .setDataBase(IBDatabase1)
-                        .setImagem(Image205.Picture)
+                        .setImagem(imgImprimir.Picture)
                         .setUsuario(Usuario)
                         .ChamarTela;
 end;
@@ -34625,7 +34268,7 @@ begin
   TChamaRelatorioFactory.New
                         .TotalizadorGeralVenda
                         .setTransaction(IBTransaction1)
-                        .setImagem(Image205.Picture)
+                        .setImagem(imgImprimir.Picture)
                         .setUsuario(Usuario)
                         .ChamarTela;
 end;

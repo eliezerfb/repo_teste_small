@@ -48,6 +48,7 @@ type
       State: TGridDrawState);
     procedure cdsProdutosNotaPRECO_NOVOSetText(Sender: TField;
       const Text: String);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -63,7 +64,7 @@ uses Unit7
   , uArquivosDAT
   , Mais
   , SmallFunc
-  , uDialogs, uFuncoesRetaguarda;
+  , uDialogs, uFuncoesRetaguarda, uFuncoesBancoDados;
 
 {$R *.dfm}
 
@@ -241,6 +242,15 @@ begin
   cdsProdutosNotaPERC_LUC.AsFloat :=  ( (( StrToFloatDef(Text,0) / cdsProdutosNotaPRECO_CUSTO.AsFloat ) - 1) *100) ;
 
   Sender.AsString := Text;
+end;
+
+procedure TFrmPrecificacaoProduto.FormCreate(Sender: TObject);
+var
+  SizeDescricaoProd : integer;
+begin
+  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+  cdsProdutosNotaPRODUTO.Size := SizeDescricaoProd;
+  ibdProdutosNotaPRODUTO.Size := SizeDescricaoProd;
 end;
 
 end.

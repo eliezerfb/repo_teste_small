@@ -52,13 +52,11 @@ var
   dContador, dInicio, dFinal : TdateTime;
   MesInicial, I : Integer;
 begin
-  //
   tInicio := Time;
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Form27.Repaint;
   //
   try
-    //
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
     Rewrite(F);                           // Abre para gravação
     Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - '+Form7.Caption)+'</title></head>');
@@ -92,13 +90,9 @@ begin
     Form7.ibDataSet2.DisableControls;
     Form7.ibDataSet7.DisableControls;
     Form7.ibDataSet8.DisableControls;
-    //
-    //
-//    if (dFinal - dInicio) > 30 then
-    begin
-      WriteLn(F,'<a href="fluxo.png"><img src="fluxo.png" border="0" width=760 height=380></a><br><br><br>');
-    end;
-    //
+
+    WriteLn(F,'<a href="fluxo.png"><img src="fluxo.png" border="0" width=760 height=380></a><br><br><br>');
+    
     WriteLn(F,'<table border=0>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td>');
@@ -111,8 +105,8 @@ begin
       if Form7.ibDataSet11SALDO3.AsFloat <> 0 then             // Só as não zeradas
       begin                                          //
         WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-        WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet11NOME.AsString+'<br></font></td>');
-        WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet11SALDO3.AsFloat])+'<br></font></td>');
+        WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet11NOME.AsString+'<br></font></td>');
+        WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet11SALDO3.AsFloat])+'<br></font></td>');
         fTotal := fTotal + Form7.ibDataSet11SALDO3.AsFloat;    // Soma ao total
       end;                                           //
       Form7.ibDataSet11.Next;                                  // Próxima conta
@@ -121,20 +115,17 @@ begin
     Form7.ibDataSet1.Last;                                     // vai para o último registro
     //
     WriteLn(F,'     <tr bgcolor=#FFFFFF>');
-    WriteLn(F,'        <td nowrap align=left width=560><font face="Verdana" size=1>Caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
-    WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=left width=560><font face="Verdana" size=1>Caixa do dia '+DateToStr(Form7.ibDataSet1DATA.AsDateTime)+'<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet1SALDO.AsFloat])+'<br></font></td>');
     fTotal := fTotal + Form7.ibDataSet1SALDO.AsFloat;          // Soma ao total
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-    WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1>Total<br></font></td>');
-    WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1>Total<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[fTotal])+'<br></font></td>');
     WriteLn(F,'   </table>');
     WriteLn(F,'  </td>');
     WriteLn(F,' </tr>');
     WriteLn(F,'</table><br>');
-    //
-//      WriteLn(F,'<br>');              // Linha em branco
-//      WriteLn(F,'<br>');              // Linha em branco
-////////////////////// Poe o calendario ao lado
+    
     WriteLn(F,'<table border=0 cellspacing=10>');
     WriteLn(F,' <tr valign=top>');
     WriteLn(F,'  <td>');
@@ -145,13 +136,13 @@ begin
     WriteLn(F,'<font face="Verdana" size=1><b>'+MesExtenso(Month(dInicio))+' de '+IntToStr(Year(dInicio))+'</b>');              // Mês e ano
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1 color=FF0000>Dom</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Seg</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Ter</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Qua</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Qui</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Sex</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1 color=FF0000>Sab</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1 color=FF0000>Dom</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Seg</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Ter</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Qua</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Qui</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Sex</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1 color=FF0000>Sab</font></th>');
     WriteLn(F,' </tr>');
     //
     WriteLn(F,' <tr bgcolor=#FFFFFF>');
@@ -159,63 +150,56 @@ begin
     dContador  := DInicio - Day(dInicio) +1;
     MesInicial := Month(dInicio);
     //
-    for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td nowrap align=left><font face="Verdana" size=1> </td>');
+    for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td '+{nowrap}' align=left><font face="Verdana" size=1> </td>');
     while dContador <= dFinal + DiasPorMes(Year(dFinal),Month(dFinal)) - Day(dFinal) do
     begin
       if Month(dContador) = MesInicial then
       begin
         if DayOfWeek(dContador) = 1 then WriteLn(F,' <tr bgcolor=#FFFFFF>');
-        if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td nowrap align=left><font face="Verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td nowrap align=left><font face="Verdana" size=1>'+IntToStr(Day(dContador))+'</td>');
+        if (dContador < dInicio) or (dContador > dFinal) then WriteLn(F,'   <td '+{nowrap}' align=left><font face="Verdana" size=1 color=c0c0c0>'+IntToStr(Day(dContador))+'</td>') else WriteLn(F,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+IntToStr(Day(dContador))+'</td>');
         if DayOfWeek(dContador) = 7 then WriteLn(F,' </tr>');
         dContador := SomaDias(dContador, 1);                // Incrementa o contador
       end else
       begin
         MesInicial := Month(dContador);
-        for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td nowrap align=left><font face="Verdana" size=1> </td>');
+        for I := DayOfWeek(dContador) to 7 do WriteLn(F,'   <td '+{nowrap}' align=left><font face="Verdana" size=1> </td>');
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
         WriteLn(F,'<br>');
         WriteLn(F,'<br><font face="Verdana" size=1><b>'+MesExtenso(Month(dContador))+' de '+IntToStr(Year(dInicio))+'</b>');              // Mês e ano
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1 color=FF0000>Dom</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Seg</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Ter</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Qua</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Qui</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Sex</font></th>');
-        WriteLn(F,'  <th nowrap><font face="Verdana" size=1 color=FF0000>Sab</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1 color=FF0000>Dom</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Seg</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Ter</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Qua</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Qui</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Sex</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1 color=FF0000>Sab</font></th>');
         WriteLn(F,' </tr>');
         //
         WriteLn(F,' <tr bgcolor=#FFFFFF>');
-        for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td nowrap align=left><font face="Verdana" size=1> </td>');
+        for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'   <td '+{nowrap}' align=left><font face="Verdana" size=1> </td>');
       end;
     end;
     //
     WriteLn(F,' </tr>');
     WriteLn(F,'</table>');
     WriteLn(F,'<br>');
-    //
-/////////////////////////
-// C A L E N D A R I O //
-/////////////////////////
+
 
     WriteLn(F,'  </td><td>');
-
-////////////////
-// F L U X O  //
-////////////////
 
     // Cabeçalho
     //      WriteLn(F,'<table border=0>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=2>');
     WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-    WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Data</font></th>');
-    WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Dia</font></th>');
-    WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Receber</font></th>');
-    WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Pagar</font></th>');
-    WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Diferença</font></th>');
-    WriteLn(F,'        <th nowrap><font face="Verdana" size=1>Saldo</font></th>');
+    WriteLn(F,'        <th '+{nowrap}'><font face="Verdana" size=1>Data</font></th>');
+    WriteLn(F,'        <th '+{nowrap}'><font face="Verdana" size=1>Dia</font></th>');
+    WriteLn(F,'        <th '+{nowrap}'><font face="Verdana" size=1>Receber</font></th>');
+    WriteLn(F,'        <th '+{nowrap}'><font face="Verdana" size=1>Pagar</font></th>');
+    WriteLn(F,'        <th '+{nowrap}'><font face="Verdana" size=1>Diferença</font></th>');
+    WriteLn(F,'        <th '+{nowrap}'><font face="Verdana" size=1>Saldo</font></th>');
     WriteLn(F,'    </tr>');
     
     try
@@ -268,12 +252,12 @@ begin
       WriteLn(F1,'<center>');
       WriteLn(F1,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F1,'  <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Documento</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Valor</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Cliente</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Histórico</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Telefone</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Portador</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Documento</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Valor</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Cliente</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Histórico</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Telefone</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Portador</font></th>');
       WriteLn(F1,'  </tr>');
       fReceber := 0;                                     // Zerezima
       //
@@ -284,7 +268,6 @@ begin
       //
       while not Form7.ibDataSet7.EOF do
       begin
-        //
         Form7.ibDataSet100.Close;
         Form7.ibDataSet100.SelectSql.Clear;
         Form7.ibDataSet100.SelectSQL.Add('select FONE from CLIFOR where NOME='+QuotedStr(Alltrim(Form7.ibDataSet7NOME.AsString))+'');
@@ -292,25 +275,24 @@ begin
         //
         fReceber := fReceber + Form7.ibDataSet7VALOR_DUPL.AsFloat; // soma o valor da dupl
         WriteLn(F1,' <tr bgcolor=#FFFFFF>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet7DOCUMENTO.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=right><font face="Verdana" size=1>'+Format('%15.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat])+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet7NOME.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet7HISTORICO.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet100.FieldByname('FONE').AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet7PORTADOR.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet7DOCUMENTO.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=right><font face="Verdana" size=1>'+Format('%15.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat])+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet7NOME.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet7HISTORICO.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet100.FieldByname('FONE').AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet7PORTADOR.AsString+'</td>');
         WriteLn(F1,' </tr>');
         //
         Form7.ibDataSet7.Next;                                                    // Proximo
-        //
       end;
       //
       WriteLn(F1,'  <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>'+Format('%15.2n',[fReceber])+'</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>'+Format('%15.2n',[fReceber])+'</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
       WriteLn(F1,'  </tr>');
       //
       WriteLn(F1,'</table>');
@@ -321,12 +303,12 @@ begin
       WriteLn(F1,'<center>');
       WriteLn(F1,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F1,'  <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Documento</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Valor</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Fornecedor</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Histórico</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Telefone</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Portador</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Documento</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Valor</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Fornecedor</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Histórico</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Telefone</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Portador</font></th>');
       WriteLn(F1,'  </tr>');
       //
       fPagar := 0;                                       //  Zerezima
@@ -337,7 +319,6 @@ begin
       //
       while not Form7.ibDataSet8.EOF do   // Percore o arquivo do dia
       begin
-        //
         fPagar := fPagar + Form7.ibDataSet8VALOR_DUPL.AsFloat; // Soma o valor da dupl
         //
         Form7.ibDataSet100.Close;
@@ -346,12 +327,12 @@ begin
         Form7.ibDataSet100.Open;
         //
         WriteLn(F1,'  <tr bgcolor=#FFFFFF>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet8DOCUMENTO.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=right><font face="Verdana" size=1>'+Format('%15.2n',[Form7.ibDataSet8VALOR_DUPL.AsFloat])+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet8NOME.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet8HISTORICO.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet100.FieldByname('FONE').AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet8PORTADOR.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet8DOCUMENTO.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=right><font face="Verdana" size=1>'+Format('%15.2n',[Form7.ibDataSet8VALOR_DUPL.AsFloat])+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet8NOME.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet8HISTORICO.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet100.FieldByname('FONE').AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet8PORTADOR.AsString+'</td>');
         WriteLn(F1,'  </tr>');
         //
         Form7.ibDataSet8.Next;
@@ -359,12 +340,12 @@ begin
       end;
       //
       WriteLn(F1,'  <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>'+Format('%15.2n',[fPagar])+'</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>'+Format('%15.2n',[fPagar])+'</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
       WriteLn(F1,'  </tr>');
       WriteLn(F1,' </table>');
       //
@@ -374,10 +355,10 @@ begin
       WriteLn(F1,'<center>');
       WriteLn(F1,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F1,'  <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Documento</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Valor</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Banco</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>Histórico</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Documento</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Valor</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Banco</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>Histórico</font></th>');
       WriteLn(F1,'  </tr>');
       //
       fNConsiliados := 0;                                       //  Zerezima
@@ -392,21 +373,20 @@ begin
         fNConsiliados := fNConsiliados + (Form7.ibDataSet5ENTRADA_.AsFloat - Form7.ibDataSet5SAIDA_.AsFloat) ; // Soma o valor da dupl
         //
         WriteLn(F1,'  <tr bgcolor=#FFFFFF>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet5DOCUMENTO.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=right><font face="Verdana" size=1>'+Format('%15.2n',[Form7.ibDataSet5ENTRADA_.AsFloat - Form7.ibDataSet5SAIDA_.AsFloat])+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet5NOME.AsString+'</td>');
-        WriteLn(F1,'   <td nowrap align=left><font face="Verdana" size=1>'+Form7.ibDataSet5HISTORICO.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet5DOCUMENTO.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=right><font face="Verdana" size=1>'+Format('%15.2n',[Form7.ibDataSet5ENTRADA_.AsFloat - Form7.ibDataSet5SAIDA_.AsFloat])+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet5NOME.AsString+'</td>');
+        WriteLn(F1,'   <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Form7.ibDataSet5HISTORICO.AsString+'</td>');
         WriteLn(F1,'  </tr>');
         //
         Form7.ibDataSet5.Next;
-        //
       end;
       //
       WriteLn(F1,'  <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1>'+Format('%15.2n',[fNConsiliados])+'</font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
-      WriteLn(F1,'   <th nowrap><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1>'+Format('%15.2n',[fNConsiliados])+'</font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
+      WriteLn(F1,'   <th '+{nowrap}'><font face="Verdana" size=1></font></th>');
       WriteLn(F1,'  </tr>');
       //
       if fNConsiliados > 0 then fReceber := fReceber + fNConsiliados else fPagar := fPagar + (fNConsiliados * -1);
@@ -431,14 +411,14 @@ begin
       CloseFile(F1);                                    // Fecha o arquivo
       //
       WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-      WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1><a href="'+StrTraN(DateToStr(dCONTADOR),'/','')+'.HTM">'+DateTimeToStr(Form7.ibDataSet25DATA.AsDateTime)+'</a><br></font></td>');
+      WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1><a href="'+StrTraN(DateToStr(dCONTADOR),'/','')+'.HTM">'+DateTimeToStr(Form7.ibDataSet25DATA.AsDateTime)+'</a><br></font></td>');
 
       if (DayOfWeek(Form7.ibDataSet25DATA.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet25DATA.AsDateTime) = 7) then
-        WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1 color=#FF0000>'+Copy(DiaDaSemana(Form7.ibDataSet25DATA.AsDateTime),1,3)+'<br></font></td>') else WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1>'+Copy(DiaDaSemana(Form7.ibDataSet25DATA.AsDateTime),1,3)+'<br></font></td>');
-      WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25RECEBER.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25PAGAR.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25DIFERENCA_.AsFloat])+'<br></font></td>');
-      WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25ACUMULADO3.AsFloat])+'<br></font></td>');
+        WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1 color=#FF0000>'+Copy(DiaDaSemana(Form7.ibDataSet25DATA.AsDateTime),1,3)+'<br></font></td>') else WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1>'+Copy(DiaDaSemana(Form7.ibDataSet25DATA.AsDateTime),1,3)+'<br></font></td>');
+      WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25RECEBER.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25PAGAR.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25DIFERENCA_.AsFloat])+'<br></font></td>');
+      WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ Format('%15.2n',[Form7.ibDataSet25ACUMULADO3.AsFloat])+'<br></font></td>');
       //
       if Form7.ibDataSet25ACUMULADO3.AsFloat <> 0 then
       begin
@@ -457,30 +437,24 @@ begin
     Mais1Ini.Free;
     //
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+'>');
-    WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1><br></font></td>');
-    WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1><br></font></td>');
-    WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+ Format('%15.2n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+ Format('%15.2n',[fTotal2])+'<br></font></td>');
-    WriteLn(F,'        <td nowrap align=right><font face="Verdana" size=1>'+ Format('%15.2n',[fTotal3])+'<br></font></td>');
-    WriteLn(F,'        <td nowrap align=left><font face="Verdana" size=1></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1><br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1><br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+ Format('%15.2n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+ Format('%15.2n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=right><font face="Verdana" size=1>'+ Format('%15.2n',[fTotal3])+'<br></font></td>');
+    WriteLn(F,'        <td '+{nowrap}' align=left><font face="Verdana" size=1></font></td>');
     // -----------
     WriteLn(F,'  </tr>');
     WriteLn(F,'</table>');
-    //
-////////////////
-// F L U X O  //
-////////////////
+
     WriteLn(F,'  </td>');
     WriteLn(F,' </tr>');
     WriteLn(F,'</table>');
     WriteLn(F,'<br>');
     //
     Writeln(F,'<font face="Verdana" size=1><br>Período de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal));
-    //
-    //
+
     CriaJpg('logotip.jpg');
-    //
-//    if (dFinal - dInicio) > 30 then
     begin
       ShellExecute( 0, 'Open', 'graficos.exe', 'FLUXO.GRA SMALLSOFT', '', SW_SHOWMINNOACTIVE);
       while not FileExists(Form1.sAtual+'\fluxo.png') do sleep(100);
@@ -495,9 +469,7 @@ begin
       + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
     //
     WriteLn(F,'<br>');              // Linha em branco
-    //
-    // WWW
-    //
+
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
       WriteLn(F,'<font face="Verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -539,7 +511,7 @@ end;
 
 procedure TForm27.FormActivate(Sender: TObject);
 begin
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 
   {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';

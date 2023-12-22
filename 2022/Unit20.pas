@@ -57,9 +57,8 @@ uses Unit7, Mais, uDialogs;
 
 procedure TForm20.FormActivate(Sender: TObject);
 begin
-  //
-  Form20.Image1.Picture := Form7.Image203.Picture;
-  //
+  Form20.Image1.Picture := Form7.imgProcurar.Picture;
+  
   Button3.Tag          :=0; //Botão voltar
   Button1.Tag          := 0;
   Button3.Enabled      := False;

@@ -58,7 +58,7 @@ uses Unit7, Mais, Unit14;
 
 procedure TForm16.FormActivate(Sender: TObject);
 begin
-  Form16.Image2.Picture := Form7.Image209.Picture;
+  Form16.Image2.Picture := Form7.imgFiltrar.Picture;
 
   try
     {-----------------------------------------}

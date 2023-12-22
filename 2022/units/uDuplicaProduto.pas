@@ -30,7 +30,8 @@ type
 
 implementation
 
-uses SysUtils, SmallFunc, uSmallResourceString, uDialogs;
+uses SysUtils, SmallFunc, uSmallResourceString, uDialogs,
+  uFuncoesBancoDados;
 
 { TDuplicaProduto }
 
@@ -86,9 +87,13 @@ procedure TDuplicaProduto.DuplicaTabelaEstoque;
 var
   i: Integer;
   qryDados: TIBQuery;
+
+  SizeDescricaoProd : integer;
 begin
   qryDados := RetornarDadosProduto;
   try
+    SizeDescricaoProd := TamanhoCampoFB(qryDados.Database,'ESTOQUE','DESCRICAO'); // Mauricio Parizotto 2023-12-21
+
     while not qryDados.Eof do
     begin
       FoDataSetEstoque.Append;
@@ -104,7 +109,8 @@ begin
             Continue;
 
           if qryDados.Fields[i].FieldName = 'DESCRICAO' then
-            FoDataSetEstoque.FieldByName('DESCRICAO').AsString := Copy(qryDados.FieldByName('DESCRICAO').AsString, 1, 39)
+            //FoDataSetEstoque.FieldByName('DESCRICAO').AsString := Copy(qryDados.FieldByName('DESCRICAO').AsString, 1, 39)
+            FoDataSetEstoque.FieldByName('DESCRICAO').AsString := Copy(qryDados.FieldByName('DESCRICAO').AsString, 1, SizeDescricaoProd -6)
                                                                   + ' ' + FcCodigoProdNew
           else
             FoDataSetEstoque.FindField(qryDados.Fields[i].FieldName).Value := qryDados.Fields[i].Value;

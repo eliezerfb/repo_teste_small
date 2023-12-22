@@ -105,7 +105,7 @@ begin
   if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
     Form7.ibDataset15.Edit;
 
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 
   MaskEdit2.Visible := False;
   Label8.Visible    := False;

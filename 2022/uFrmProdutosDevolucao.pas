@@ -108,6 +108,7 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cdsProdutosNotaBeforeDelete(DataSet: TDataSet);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     CampoSel : string;
@@ -130,7 +131,7 @@ uses uFrmParametroTributacao
   , uFuncoesRetaguarda
   , uDialogs
   , uArquivosDAT
-  , uSmallComINF, uSmallComSections;
+  , uSmallComINF, uSmallComSections, uFuncoesBancoDados;
 
 {$R *.dfm}
 
@@ -285,7 +286,7 @@ procedure TFrmProdutosDevolucao.DevolveNF;
 begin
   try
     Form1.imgVendasClick(Form1.imgVendas);
-    Form7.Image101Click(Form7.Image201);
+    Form7.Image101Click(Form7.imgNovo);
 
     Form7.ibDataSet2.Close;
     Form7.ibDataSet2.Selectsql.Text := ' Select * '+
@@ -511,6 +512,15 @@ procedure TFrmProdutosDevolucao.cdsProdutosNotaBeforeDelete(
   DataSet: TDataSet);
 begin
   Abort;
+end;
+
+procedure TFrmProdutosDevolucao.FormCreate(Sender: TObject);
+var
+  SizeDescricaoProd : integer;
+begin
+  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO'); // Mauricio Parizotto 2023-12-21
+  cdsProdutosNotaDESCRICAO.Size := SizeDescricaoProd;
+  ibdProdutosNotaDESCRICAO.Size := SizeDescricaoProd;
 end;
 
 end.

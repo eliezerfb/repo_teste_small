@@ -25,15 +25,6 @@ type
     cdsExcluidos: TClientDataSet;
     cdsExcluidosNOME: TStringField;
     cdsExcluidosVALOR: TBCDField;
-    cdsProdutos: TClientDataSet;
-    cdsProdutosOrdem: TIntegerField;
-    cdsProdutosCdigo: TStringField;
-    cdsProdutosDescrio: TStringField;
-    cdsProdutosQuantidade: TFMTBCDField;
-    cdsProdutosCustocompra: TFMTBCDField;
-    cdsProdutosVendidopor: TFMTBCDField;
-    cdsProdutosLucrobruto: TFMTBCDField;
-    cdsProdutosCDSDesigner: TFMTBCDField;
     cdsTotalGrupo: TClientDataSet;
     cdsTotalGrupoOrdem: TIntegerField;
     cdsTotalGrupoGrupo: TStringField;
@@ -48,6 +39,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
+    QryProdutos: TIBQuery;
     FoDataSetEstoque: TIBDataSet;
     FnCasasDecimais: Integer;
     FnCasasDecimaisQtde: Integer;
@@ -123,6 +115,7 @@ end;
 procedure TfrmRelResumoVendas.AjustaCasasDecimais;
 begin
   // cdsProdutos
+  {
   cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosQuantidade.FieldName)].Size := FnCasasDecimaisQtde;
   cdsProdutosQuantidade.Size := FnCasasDecimaisQtde;
   cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosCustocompra.FieldName)].Size := FnCasasDecimais;
@@ -133,6 +126,7 @@ begin
   cdsProdutosLucrobruto.Size := FnCasasDecimais;
   cdsProdutos.FieldDefs.Items[cdsProdutos.FieldDefs.IndexOf(cdsProdutosCDSDesigner.FieldName)].Size := FnCasasDecimais;
   cdsProdutosCDSDesigner.Size := FnCasasDecimais;
+  Mauricio Parizotto 2023-12-21}
 
   // cdsTotalGrupo
   cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoCustocompra.FieldName)].Size := FnCasasDecimais;
@@ -167,15 +161,22 @@ begin
       if cdsTotalGrupoOrdem.AsInteger > 0 then
       begin
         // Gera a impressão agrupada por grupo
+        try
+
         CarregaDadosProdutos(cdsTotalGrupo.FieldByName('Grupo').AsString);
 
         oEstruturaCat := TEstruturaRelResumoVendas.New
                                                   .setDAO(TDadosRelatorioPadraoDAO.New
                                                                                   .setDataBase(DataBase)
-                                                                                  .CarregarDados(cdsProdutos)
+                                                                                  //.CarregarDados(cdsProdutos) Mauricio Parizotto 2023-12-21
+                                                                                  .CarregarDados(QryProdutos)
                                                          );
 
         Estrutura.GerarImpressaoAgrupado(oEstruturaCat, cdsTotalGrupo.FieldByName('Grupo').AsString);
+
+        finally
+          FreeAndNil(QryProdutos);
+        end;
       end;
 
       cdsTotalGrupo.Next;
@@ -196,19 +197,25 @@ begin
         Estrutura.GerarImpressaoAgrupado(oEstruturaCat, 'TOTALIZADOR POR GRUPO');
       end;
     end;
-  end
-  else
+  end else
   begin
+    try
+
     CarregaDadosProdutos;
     oEstruturaCat := TEstruturaRelResumoVendas.New
                                               .setDAO(TDadosRelatorioPadraoDAO.New
                                                                               .setDataBase(DataBase)
-                                                                              .CarregarDados(cdsProdutos)
+                                                                              //.CarregarDados(cdsProdutos) Mauricio Parizotto 2023-12-21
+                                                                              .CarregarDados(QryProdutos)
                                                      );
 
     MontarFiltrosRodape(oEstruturaCat);
 
     Estrutura.GerarImpressao(oEstruturaCat);
+
+    finally
+      FreeAndNil(QryProdutos);
+    end;
   end;
     
   GerarImpressaoNaoRelacionados;
@@ -349,79 +356,79 @@ begin
 end;
 
 procedure TfrmRelResumoVendas.CarregaDadosProdutos(AcGrupo: String = '');
-var
-  QryDados: TIBQuery;
+//var
+//  QryDados: TIBQuery; Mauricio Parizotto 2023-12-21
 begin
   AcGrupo := Copy(AcGrupo,1,25);
-  QryDados := CriaIBQuery(DataSetEstoque.Transaction);
+  QryProdutos := CriaIBQuery(DataSetEstoque.Transaction);
   try
-    QryDados.Close;
-    QryDados.Database := DataBase;
-    QryDados.SQL.Clear;
-    QryDados.SQL.Add('SELECT');
-    QryDados.SQL.Add('    0 as "Ord"');
-    QryDados.SQL.Add('    , ESTOQUE.CODIGO AS "Código"');
-    QryDados.SQL.Add('    , ESTOQUE.DESCRICAO AS "Descrição"');
-    QryDados.SQL.Add('    , CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-    QryDados.SQL.Add('    , CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-    QryDados.SQL.Add('    , CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-    QryDados.SQL.Add('    , CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-    QryDados.SQL.Add('    , CASE WHEN COALESCE(ESTOQUE.CUS_VEND,0) > 0 THEN');
-    QryDados.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))');
-    QryDados.SQL.Add('      ELSE 0 END AS "%"');
-    QryDados.SQL.Add('FROM ESTOQUE');
+    QryProdutos.Close;
+    QryProdutos.Database := DataBase;
+    QryProdutos.SQL.Clear;
+    QryProdutos.SQL.Add('SELECT');
+    QryProdutos.SQL.Add('    0 as "Ord"');
+    QryProdutos.SQL.Add('    , ESTOQUE.CODIGO AS "Código"');
+    QryProdutos.SQL.Add('    , ESTOQUE.DESCRICAO AS "Descrição"');
+    QryProdutos.SQL.Add('    , CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+    QryProdutos.SQL.Add('    , CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+    QryProdutos.SQL.Add('    , CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+    QryProdutos.SQL.Add('    , CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+    QryProdutos.SQL.Add('    , CASE WHEN COALESCE(ESTOQUE.CUS_VEND,0) > 0 THEN');
+    QryProdutos.SQL.Add('      CAST(((ESTOQUE.VAL_VEND / ESTOQUE.CUS_VEND * 100) - 100) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))');
+    QryProdutos.SQL.Add('      ELSE 0 END AS "%"');
+    QryProdutos.SQL.Add('FROM ESTOQUE');
     if Trim(FcWhereEstoque) <> EmptyStr then
-      QryDados.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
+      QryProdutos.SQL.Add(StringReplace(AnsiUpperCase(FcWhereEstoque), 'WHERE ', 'WHERE (', []) + ') AND')
     else
-      QryDados.SQL.Add('WHERE');
-    QryDados.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
-    QryDados.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
+      QryProdutos.SQL.Add('WHERE');
+    QryProdutos.SQL.Add('(COALESCE(ESTOQUE.QTD_VEND,0) <> 0)');
+    QryProdutos.SQL.Add('AND (ESTOQUE.ULT_VENDA >= :XDATAINI)');
     if AcGrupo <> EmptyStr then
-      QryDados.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
+      QryProdutos.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
     if (AcGrupo = EmptyStr) then
     begin
       if (Trim(FcWhereEstoque) = EmptyStr) then
       begin
-        QryDados.SQL.Add('UNION ALL');
-        QryDados.SQL.Add('SELECT FIRST 1');
-        QryDados.SQL.Add('    1 as "Ord"');
-        QryDados.SQL.Add('    , '''' AS "Código"');
-        QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-        QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
-        QryDados.SQL.Add('FROM EMITENTE');
+        QryProdutos.SQL.Add('UNION ALL');
+        QryProdutos.SQL.Add('SELECT FIRST 1');
+        QryProdutos.SQL.Add('    1 as "Ord"');
+        QryProdutos.SQL.Add('    , '''' AS "Código"');
+        QryProdutos.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Descrição"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+        QryProdutos.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
+        QryProdutos.SQL.Add('FROM EMITENTE');
 
-        QryDados.SQL.Add('UNION ALL');
-        QryDados.SQL.Add('SELECT FIRST 1');
-        QryDados.SQL.Add('    2 as "Ord"');
-        QryDados.SQL.Add('    , '''' AS "Código"');
+        QryProdutos.SQL.Add('UNION ALL');
+        QryProdutos.SQL.Add('SELECT FIRST 1');
+        QryProdutos.SQL.Add('    2 as "Ord"');
+        QryProdutos.SQL.Add('    , '''' AS "Código"');
         if FoArquivoDAT.Usuario.Html.TipoRelatorio = ttiHTML then
-          QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
+          QryProdutos.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Descrição"')
         else
-          QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
-        QryDados.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
-        QryDados.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
-        QryDados.SQL.Add('FROM EMITENTE');
+          QryProdutos.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Descrição"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
+        QryProdutos.SQL.Add('    , CAST(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ' AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
+        QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
+        QryProdutos.SQL.Add('FROM EMITENTE');
       end;
     end;
-    QryDados.SQL.Add('ORDER BY 1,7 DESC');
-    QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
+    QryProdutos.SQL.Add('ORDER BY 1,7 DESC');
+    QryProdutos.ParamByName('XDATAINI').AsDate := dtInicial.Date;
     if AcGrupo <> EmptyStr then
-      QryDados.ParamByName('XGRUPO').AsString := AcGrupo;
-    QryDados.Open;
-    QryDados.First;
+      QryProdutos.ParamByName('XGRUPO').AsString := AcGrupo;
+    QryProdutos.Open;
+    QryProdutos.First;
 
-    DesativarColunas(QryDados);
+    DesativarColunas(QryProdutos);
 
-    MapearQueryParaClientDataSet(QryDados, cdsProdutos);
+    //MapearQueryParaClientDataSet(QryProdutos, cdsProdutos); Mauricio Parizotto 2023-12-21
   finally
-    FreeAndNil(QryDados);
+    //FreeAndNil(QryProdutos); Mauricio Parizotto 2023-12-21
   end;
 end;
 

@@ -59,7 +59,7 @@ var
   Mais1Ini : TIniFile;
 begin
   //
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
   //
   // Desabilita os controles
   //
@@ -381,8 +381,8 @@ begin
       //
       WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=2>');
       WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Venda</font></th>');
-      WriteLn(F,'  <th nowrap>');
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Venda</font></th>');
+      WriteLn(F,'  <th '+{nowrap}'>');
       WriteLn(F,'   <table border=0 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
       //
@@ -391,12 +391,12 @@ begin
         //
         if CheckBox1.Checked then // Item por item
         begin
-          WriteLn(F,'     <th nowrap width=250><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-          WriteLn(F,'     <th nowrap width=60><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-          WriteLn(F,'     <th nowrap width=30><font face="Microsoft Sans Serif" size=1>%</font></th>');
+          WriteLn(F,'     <th '+{nowrap}' width=250><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+          WriteLn(F,'     <th '+{nowrap}' width=60><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+          WriteLn(F,'     <th '+{nowrap}' width=30><font face="Microsoft Sans Serif" size=1>%</font></th>');
         end;
-        WriteLn(F,'     <th nowrap width=60><font face="Microsoft Sans Serif" size=1>Total</font></th>');
-        WriteLn(F,'     <th nowrap width=60><font face="Microsoft Sans Serif" size=1>Comissão</font></th>');
+        WriteLn(F,'     <th '+{nowrap}' width=60><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+        WriteLn(F,'     <th '+{nowrap}' width=60><font face="Microsoft Sans Serif" size=1>Comissão</font></th>');
         WriteLn(F,'    </tr>');
         WriteLn(F,'   </th>');
         WriteLn(F,'  </table>');
@@ -1015,8 +1015,8 @@ end;
         end;
         //
         WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-        WriteLn(F,'  <th nowrap align=right><font face="Microsoft Sans Serif" size=1><b>Total recebido no período</font></th>');
-        WriteLn(F,'  <th nowrap>');
+        WriteLn(F,'  <th '+{nowrap}' align=right><font face="Microsoft Sans Serif" size=1><b>Total recebido no período</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'>');
         WriteLn(F,'   <table border=0 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
         //
@@ -1041,13 +1041,13 @@ end;
         //
         if CheckBox1.Checked then // Item por item
         begin
-          WriteLn(F,'     <th nowrap width=250><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-          WriteLn(F,'     <th nowrap width=60><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-          WriteLn(F,'     <th nowrap width=30><font face="Microsoft Sans Serif" size=1>%</font></th>');
+          WriteLn(F,'     <th '+{nowrap}' width=250><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+          WriteLn(F,'     <th '+{nowrap}' width=60><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+          WriteLn(F,'     <th '+{nowrap}' width=30><font face="Microsoft Sans Serif" size=1>%</font></th>');
         end;
         //
-        WriteLn(F,'     <th nowrap width=60><font face="Microsoft Sans Serif" size=1>Total</font></th>');
-        WriteLn(F,'     <th nowrap width=60><font face="Microsoft Sans Serif" size=1>Comissão</font></th>');
+        WriteLn(F,'     <th '+{nowrap}' width=60><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+        WriteLn(F,'     <th '+{nowrap}' width=60><font face="Microsoft Sans Serif" size=1>Comissão</font></th>');
         WriteLn(F,'    </tr>');
         WriteLn(F,'   </th>');
         WriteLn(F,'  </table>');
@@ -1334,8 +1334,8 @@ end;
         WriteLn(F,'    <tr>');
         //
         WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-        WriteLn(F,'  <th nowrap align=right><font face="Microsoft Sans Serif" size=1><b>Total</font></th>');
-        WriteLn(F,'  <th nowrap>');
+        WriteLn(F,'  <th '+{nowrap}' align=right><font face="Microsoft Sans Serif" size=1><b>Total</font></th>');
+        WriteLn(F,'  <th '+{nowrap}'>');
         WriteLn(F,'   <table border=0 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
         //

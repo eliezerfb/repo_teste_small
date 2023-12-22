@@ -69,7 +69,7 @@ procedure TForm21.FormActivate(Sender: TObject);
 var
   I : Integer;
 begin
-  Form21.Image1.Picture := Form7.Image202.Picture;
+  Form21.Image1.Picture := Form7.imgExcluir.Picture;
 
   Label11.Visible := False;
   Label12.Visible := False;

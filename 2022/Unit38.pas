@@ -534,7 +534,7 @@ procedure TForm38.FormActivate(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
-  Image1.Picture := Form7.Image205.Picture;
+  Image1.Picture := Form7.imgImprimir.Picture;
 
   if Form7.sModulo = 'Auditoria' then
   begin
@@ -732,88 +732,6 @@ begin
 end;
 
 procedure TForm38.RelatorioBalanca(var F: TextFile);
-(*
-var
-  sValidade : string;
-  I : integer;
-  cNomeArqPadrao: String;
-  cCaminho: String;
-  cCaminhoExtra: String;
-  oDialog: TSaveDialog;
-  oArqDat: TArquivosDAT;
-begin
-  if Radiobutton3.Checked then
-    AssignFile(F,pchar(Form1.sAtual+'\produtos.txt'));  // Urano
-
-  if Radiobutton4.Checked then
-    AssignFile(F,pchar(Form1.sAtual+'\txitens.txt'));  // Toledo
-
-  if Radiobutton5.Checked then
-    AssignFile(F,pchar(Form1.sAtual+'\cadtxt.txt'));   // Felizola
-
-  Rewrite(F);
-
-  Form7.ibDataSet4.First;
-  while not Form7.ibDataSet4.EOF do
-  begin
-    if (Copy(Form7.ibDataSet4REFERENCIA.AsString,1,1) = '2') and ((UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG') or (UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KU')) then
-    begin
-      if AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
-        sValidade := AllTrim(RetornaValorDaTagNoCampo('VAL',form7.ibDataSet4.FieldByname('TAGS_').AsString))
-      else
-        sValidade := '000';
-
-      if UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG' then                                                                                   // Quando é KG pro programa da
-      begin                                                                                                                                   // FILISOLA vai um 'P', ai o a balança
-        if Radiobutton3.Checked then
-          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 1'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
-        if Radiobutton4.Checked then
-          Writeln(F,'010100'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
-        if Radiobutton5.Checked then
-          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'P'+                                                           // gera uma etiqueta com o peso
-        Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',22),1,22)+'0'+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',',''));  //
-      end else
-      begin                                                                                                                                   // Quando é KU pro programa
-        if Radiobutton3.Checked then
-          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+' 6'+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',20),1,20)+StrZero(Form7.ibDataSet4PRECO.AsFloat,11,4) + sVAlidade + 'D00000');
-        if Radiobutton4.Checked then
-          Writeln(F,'010110'+Form7.ibDataSet4CODIGO.AsString+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',','')+Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',300),1,300));
-        if Radiobutton5.Checked then
-          Writeln(F,'0'+Form7.ibDataSet4CODIGO.AsString+'U'+                                                           // FILISOLA vai um 'U', ai o balança
-        Copy(UpperCase(Form7.ibDataSet4DESCRICAO.AsString)+Replicate(' ',22),1,22)+'0'+StrTran(StrZero(Form7.ibDataSet4PRECO.AsFloat,7,2)+sValidade,',',''));  // gera uma etiqueta com a unidade
-      end;
-    end;
-    Form7.ibDataSet4.Next;
-  end;
-
-  CloseFile(F);
-
-  if Radiobutton5.Checked then
-  begin
-    AssignFile(F,pchar(cCaminhoExtra));   // Filizola
-    Rewrite(F);                     
-
-    I := 0;
-    Form7.ibDataSet4.First;
-    while not Form7.ibDataSet4.EOF do
-    begin
-      if (Copy(Form7.ibDataSet4REFERENCIA.AsString,1,1) = '2') and ((UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KG') or (UpperCase(Form7.ibDataSet4MEDIDA.AsString) = 'KU')) then
-      begin
-        I := I + 1;
-        Writeln(F,Copy(UpperCase(Form7.ibDataSet4NOME.AsString)+Replicate(' ',12),1,12)+'0'+Form7.ibDataSet4CODIGO.AsString+Strzero(I,5,0)+'000');
-      end;
-      Form7.ibDataSet4.Next;
-    end;
-
-    CloseFile(F);
-    ShellExecute( 0, 'Open', PChar(cCaminhoExtra),'', '', SW_SHOW);
-  end;
-
-  ShellExecute( 0, 'Open',PChar(cCaminho),'', '', SW_SHOW);
-
-  Form38.Tag := 1;
-  FechaForm38(True);
-*)
 var
   sValidade : string;
   I : integer;
@@ -983,23 +901,23 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
     {Sandro Silva 2022-10-13 inicio}
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
     {Sandro Silva 2022-10-13 fim}
     WriteLn(F,' </tr>');
   end else
@@ -1117,20 +1035,20 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibQuery99.FieldByname('EMISSAO').AsDateTime)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibQuery99.FieldByname('NUMERONF').AsString,1,9)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CODIGO').AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.2n',[Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CST_PIS_COFINS').AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CFOP').AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CF').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibQuery99.FieldByname('EMISSAO').AsDateTime)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibQuery99.FieldByname('NUMERONF').AsString,1,9)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CODIGO').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.2n',[Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CST_PIS_COFINS').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CFOP').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CF').AsString+'<br></font></td>');
         {Sandro Silva 2022-10-30 inicio}
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
         {Sandro Silva 2022-10-30 fim}
         WriteLn(F,'   </tr>');
       end else
@@ -1172,22 +1090,22 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-11 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal3])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-11 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-11 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-11 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal3])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-11 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-11 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
 
@@ -1198,8 +1116,8 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCFOP := 0.00;
@@ -1209,13 +1127,13 @@ begin
     begin
       dTotalCFOP := dTotalCFOP + aCFOP[iItem].Valor;
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [aCFOP[iItem].Valor]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [aCFOP[iItem].Valor]) + '</font></td>');
       WriteLn(F,'    </tr>');
     end;
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.2n', [dTotalCFOP]) + '<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.2n', [dTotalCFOP]) + '<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
 
@@ -1230,10 +1148,10 @@ begin
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCSTCSOSN := 0.00;
@@ -1241,13 +1159,13 @@ begin
     begin
       dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
       WriteLn(F,'    </tr>');
     end;
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
 
@@ -1347,23 +1265,23 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
     {Sandro Silva 2022-09-30 inicio}
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
     {Sandro Silva 2022-09-30 fim}
     WriteLn(F,' </tr>');
   end else
@@ -1479,22 +1397,22 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibQuery99.FieldByname('EMISSAO').AsDateTime)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibQuery99.FieldByname('NUMERONF').AsString,1,9)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CODIGO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.2n',[Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CST_PIS_COFINS').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat])+'<br></font></td>');
-      // Sandro Silva 2022-10-10 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+'<br></font></td>');
-      // Sandro Silva 2022-10-10 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibQuery99.FieldByname('EMISSAO').AsDateTime)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibQuery99.FieldByname('NUMERONF').AsString,1,9)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CODIGO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.2n',[Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CST_PIS_COFINS').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat])+'<br></font></td>');
+      // Sandro Silva 2022-10-10 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+'<br></font></td>');
+      // Sandro Silva 2022-10-10 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
       {Sandro Silva 2022-09-30 inicio}
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
       {Sandro Silva 2022-09-30 fim}
       WriteLn(F,'   </tr>');
     end else
@@ -1545,23 +1463,23 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-10 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal3])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-10 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-10 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-10 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal3])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-10 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-10 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2])+'<br></font></td>');
     {Sandro Silva 2022-10-30 inicio}
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     {Sandro Silva 2022-10-30 fim}
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
@@ -1571,9 +1489,9 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCFOP := 0.00;
@@ -1587,9 +1505,9 @@ begin
         if sCFOP <> '--' then
         begin
           WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
           WriteLn(F,'    </tr>');
           dTotalCFOPCSTPISCOFINS := 0.00;
         end;
@@ -1599,24 +1517,24 @@ begin
       dTotalCFOPCSTPISCOFINS := dTotalCFOPCSTPISCOFINS + aCFOP[iItem].Valor;
 
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CSTPISCOFINS + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [aCFOP[iItem].Valor]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CSTPISCOFINS + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [aCFOP[iItem].Valor]) + '</font></td>');
       WriteLn(F,'    </tr>');
     end;
     if sCFOP <> '' then
     begin
       WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
       WriteLn(F,'    </tr>');
     end;
 
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.2n', [dTotalCFOP]) + '<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.2n', [dTotalCFOP]) + '<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
@@ -1627,11 +1545,11 @@ begin
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCSTCSOSN          := 0.00;
@@ -1644,9 +1562,9 @@ begin
         if sCSTCSOSN <> '--' then
         begin
           WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
           WriteLn(F,'    </tr>');
           dTotalPISCOFINSCSTCSOSN := 0.00;
         end;
@@ -1656,25 +1574,25 @@ begin
       dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
       dTotalPISCOFINSCSTCSOSN := dTotalPISCOFINSCSTCSOSN + aCSTCSOSN[iItem].Valor;
       WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTPISCOFINS + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTPISCOFINS + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
       WriteLn(F,'    </tr>');
     end;
 
     if sCSTCSOSN <> '' then
     begin
       WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
       WriteLn(F,'    </tr>');
     end;
 
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     WriteLn(F,'<br>');
@@ -1815,23 +1733,23 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Caixa</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Caixa</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -1941,22 +1859,22 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + DateToStr(Form7.ibQuery99.FieldByname('DATA').AsDateTime) + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CAIXA').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('PEDIDO').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CODIGO').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('DESCRICAO').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%10.2n', [Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CST_PIS_COFINS').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%8.4n', [Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat]) + '<br></font></td>');
-        // Sandro Silva 2022-10-11 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.' + Form1.ConfCasas + 'n', [Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.2n', [Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%8.4n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat]) + '<br></font></td>');
-        // Sandro Silva 2022-10-11 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.' + Form1.ConfCasas + 'n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.2n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + DateToStr(Form7.ibQuery99.FieldByname('DATA').AsDateTime) + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CAIXA').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('PEDIDO').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CODIGO').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('DESCRICAO').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%10.2n', [Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CST_PIS_COFINS').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%8.4n', [Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat]) + '<br></font></td>');
+        // Sandro Silva 2022-10-11 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.' + Form1.ConfCasas + 'n', [Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.2n', [Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%8.4n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat]) + '<br></font></td>');
+        // Sandro Silva 2022-10-11 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.' + Form1.ConfCasas + 'n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.2n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -2008,23 +1926,23 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-11 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n',[fTotal3]) + '<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal3]) + '<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-11 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n',[fTotal1]) + '<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1]) + '<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    // Sandro Silva 2022-10-11 WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n',[fTotal2]) + '<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2]) + '<br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-11 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n',[fTotal3]) + '<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal3]) + '<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-11 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n',[fTotal1]) + '<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1]) + '<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    // Sandro Silva 2022-10-11 WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.' + Form1.ConfPreco + 'n',[fTotal2]) + '<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2]) + '<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
     WriteLn(F,'<br>');
@@ -2033,9 +1951,9 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCFOP := 0.00;
@@ -2049,9 +1967,9 @@ begin
         if sCFOP <> '--' then
         begin
           WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
           WriteLn(F,'    </tr>');
           dTotalCFOPCSTPISCOFINS := 0.00;
         end;
@@ -2061,24 +1979,24 @@ begin
       dTotalCFOPCSTPISCOFINS := dTotalCFOPCSTPISCOFINS + aCFOP[iItem].Valor;
 
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CSTPISCOFINS + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [aCFOP[iItem].Valor]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CSTPISCOFINS + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [aCFOP[iItem].Valor]) + '</font></td>');
       WriteLn(F,'    </tr>');
     end;
     if sCFOP <> '' then
     begin
       WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalCFOPCSTPISCOFINS]) + '</font></td>');
       WriteLn(F,'    </tr>');
     end;
 
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.2n', [dTotalCFOP]) + '<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + Format('%11.2n', [dTotalCFOP]) + '<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     WriteLn(F,'<br>');
@@ -2090,11 +2008,11 @@ begin
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST PIS/COFINS</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCSTCSOSN          := 0.00;
@@ -2107,9 +2025,9 @@ begin
         if sCSTCSOSN <> '--' then
         begin
           WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
           WriteLn(F,'    </tr>');
           dTotalPISCOFINSCSTCSOSN := 0.00;
         end;
@@ -2119,25 +2037,25 @@ begin
       dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
       dTotalPISCOFINSCSTCSOSN := dTotalPISCOFINSCSTCSOSN + aCSTCSOSN[iItem].Valor;
       WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTPISCOFINS + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTPISCOFINS + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
       WriteLn(F,'    </tr>');
     end;
 
     if sCSTCSOSN <> '' then
     begin
       WriteLn(F,'  <tr bgcolor=#' + Form1.sHtmlCor + '   FF7F00>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n', [dTotalPISCOFINSCSTCSOSN]) + '</font></td>');
       WriteLn(F,'    </tr>');
       dTotalPISCOFINSCSTCSOSN := 0.00;
     end;
     WriteLn(F,'    <tr bgcolor=#' + Form1.sHtmlCor + ' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
 
@@ -2259,17 +2177,17 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Modelo</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Numero NF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Qtd.</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>VBCST Entrada</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total Venda</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Diferença</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Alq. Interna</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor ICMS Final</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Modelo</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Numero NF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Qtd.</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>VBCST Entrada</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total Venda</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Diferença</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Alq. Interna</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor ICMS Final</font></th>');
     WriteLn(F,' </tr>');
   end;
 
@@ -2336,17 +2254,17 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('MODELO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibQuery99.FieldByname('NUMERONF').AsString,1,9)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CODIGO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('NCM').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('QTD_VENDIDA').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('VBCST_ENTRADA').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('TOTAL_VENDA').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('DIFERENCA').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('ALQ_INTERNA').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('V_ICMS_FINAL').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('MODELO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibQuery99.FieldByname('NUMERONF').AsString,1,9)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('CODIGO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibQuery99.FieldByname('NCM').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('QTD_VENDIDA').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('VBCST_ENTRADA').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('TOTAL_VENDA').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('DIFERENCA').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('ALQ_INTERNA').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery99.FieldByname('V_ICMS_FINAL').AsFloat])+'<br></font></td>');
       WriteLn(F,'   </tr>');
     end;
 
@@ -2358,17 +2276,17 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -2388,10 +2306,10 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>IPI</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>IPI</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -2414,10 +2332,10 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet15CLIENTE.AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet15IPI.AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet15CLIENTE.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet15IPI.AsFloat])+'<br></font></td>');
       WriteLn(F,'   </tr>');
     end else
     begin
@@ -2434,10 +2352,10 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -2463,11 +2381,11 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>OS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição dos serviços</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>OS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição dos serviços</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -2500,11 +2418,11 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35NUMERONF.AsString,1,9)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35NUMERONF.AsString,1,9)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -2524,11 +2442,11 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -2555,8 +2473,8 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Técnico</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Técnico</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -2576,8 +2494,8 @@ begin
   begin
     if Form1.bHtml1 then
     begin
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('TECNICO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('SUM').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('TECNICO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('SUM').AsFloat])+'<br></font></td>');
       WriteLn(F,'   </tr>');
     end else
     begin
@@ -2592,8 +2510,8 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -2642,8 +2560,8 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Vendedor</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Vendedor</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -2692,8 +2610,8 @@ begin
 
     if Form1.bHtml1 then
     begin
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet9.FieldByname('NOME').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotal1+fTotal2])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet9.FieldByname('NOME').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotal1+fTotal2])+'<br></font></td>');
       WriteLn(F,'   </tr>');
 
       I := I + 1;
@@ -2738,8 +2656,8 @@ begin
 
   if Form1.bHtml1 then
   begin
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>?<br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotalIndefinido])+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>?<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[fTotalIndefinido])+'<br></font></td>');
     WriteLn(F,'   </tr>');
 
     I := I + 1;
@@ -2762,8 +2680,8 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'  <tr bgcolor=#'+Form1.sHtmlCor+'   FF7F00>');
-    WriteLn(F,'   <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'   <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -2792,12 +2710,12 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+' align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Estoque atual</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Média de venda</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Período</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Estoque para</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Estoque atual</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Média de venda</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Período</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Estoque para</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -2915,12 +2833,12 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+ Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+ Format('%7.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=Left><font face="Microsoft Sans Serif" size=1>'+ AllTrim(sDias)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=Left><font face="Microsoft Sans Serif" size=1>'+ AllTrim(sOBS)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+ Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+ Format('%7.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=Left><font face="Microsoft Sans Serif" size=1>'+ AllTrim(sDias)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=Left><font face="Microsoft Sans Serif" size=1>'+ AllTrim(sOBS)+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -2965,11 +2883,11 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Ordem</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total de compra</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Ordem</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total de compra</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -3085,11 +3003,11 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntToStr(Y)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_VEND.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet4VAL_VEND.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntToStr(Y)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_VEND.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet4VAL_VEND.AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -3109,27 +3027,27 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
     WriteLn(F,'    </tr>');
 
     WriteLn(F,'   <tr>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><a href="naolistados.htm">Itens não relacionados</a><br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fApagado])+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><a href="naolistados.htm">Itens não relacionados</a><br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fApagado])+'<br></font></td>');
     WriteLn(F,'   </tr>');
 
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal2 + fApagado])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal2 + fApagado])+'<br></font></td>');
     WriteLn(F,'    </tr>');
 
     WriteLn(F,'   </table>');
@@ -3182,14 +3100,14 @@ begin
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
 
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Vendedor</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Vendedor</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -3218,14 +3136,14 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet99.FieldByname('NUMERONF').AsString,1,9)+'/'+Copy(Form7.ibDataSet99.FieldByname('NUMERONF').AsString,10,3)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('EMISSAO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('CODIGO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('QUANTIDADE').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('UNITARIO').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('TOTAL').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('VENDEDOR').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet99.FieldByname('NUMERONF').AsString,1,9)+'/'+Copy(Form7.ibDataSet99.FieldByname('NUMERONF').AsString,10,3)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('EMISSAO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('CODIGO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('QUANTIDADE').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('UNITARIO').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('TOTAL').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('VENDEDOR').AsString+'<br></font></td>');
       WriteLn(F,'   </tr>');
     end else
     begin
@@ -3253,28 +3171,28 @@ begin
     if Form7.ibDataSet99.FieldByname('FDESCONTO').AsFloat <> 0 then
     begin
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br>Desconto</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('FDESCONTO').AsFloat])+'</font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br>Desconto</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('FDESCONTO').AsFloat])+'</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
       WriteLn(F,'    </tr>');
 
       fTotal := fTotal - Form7.ibDataSet99.FieldByname('FDESCONTO').AsFloat;
     end;
 
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     WriteLn(F,'    </tr>');
 
     WriteLn(F,'   </table>');
@@ -3324,14 +3242,14 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Ordem</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Custo de compra</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Vendido por</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Lucro bruto</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>%</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Ordem</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Custo de compra</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Vendido por</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Lucro bruto</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>%</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -3509,17 +3427,17 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntToStr(Y)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_VEND.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUS_VEND.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet4VAL_VEND.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfPreco+'n',[Form7.ibDataSet4LUC_VEND.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntToStr(Y)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_VEND.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet4CUS_VEND.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet4VAL_VEND.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfPreco+'n',[Form7.ibDataSet4LUC_VEND.AsFloat])+'<br></font></td>');
 
         if Form7.ibDataSet4CUS_VEND.AsFloat <> 0
-          then WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfPreco+'n',[(Form7.ibDataSet4VAL_VEND.AsFloat / Form7.ibDataSet4CUS_VEND.AsFloat * 100)-100])+'<br></font></td>')
-            else WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          then WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfPreco+'n',[(Form7.ibDataSet4VAL_VEND.AsFloat / Form7.ibDataSet4CUS_VEND.AsFloat * 100)-100])+'<br></font></td>')
+            else WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
 
         WriteLn(F,'   </tr>');
       end else
@@ -3599,47 +3517,47 @@ begin
     if Pos('where',LowerCase(Form7.ibDataSet4.SelectSQL.Text)) = 0 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>Descontos/Acréscimos<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fDescontos])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>Descontos/Acréscimos<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fDescontos])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
       WriteLn(F,'   </tr>');
 
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b><br></font></td>');
       WriteLn(F,'    </tr>');
 
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><a href="naolistados.htm">Itens não relacionados</a><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fApagado])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><a href="naolistados.htm">Itens não relacionados</a><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fApagado])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
       WriteLn(F,'   </tr>');
 
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal2 + fApagado])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal2 + fApagado])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b><br></font></td>');
       WriteLn(F,'    </tr>');
     end;
 
@@ -3729,14 +3647,14 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Hora</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Ato</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Módulo</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Usuário</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Histórico</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>De</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Para</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Hora</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Ato</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Módulo</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Usuário</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Histórico</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>De</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Para</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -3760,14 +3678,14 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('DATA').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('HORA').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('ATO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('MODULO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('USUARIO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('HISTORICO').AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('VALOR_DE').AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('VALOR_PARA').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('DATA').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('HORA').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('ATO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('MODULO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('USUARIO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('HISTORICO').AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('VALOR_DE').AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('VALOR_PARA').AsFloat])+'<br></font></td>');
       WriteLn(F,'   </tr>');
     end else
     begin
@@ -3855,14 +3773,14 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap width=150><font face="Verdana" size=1>Cliente</font></th>');
-    WriteLn(F,'  <th nowrap width=150><font face="Verdana" size=1>Contato</font></th>');
-    WriteLn(F,'  <th nowrap width=150><font face="Verdana" size=1>Cidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>UF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Telefone</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>Últ. venda</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Verdana" size=1>ABC</font></th>');
-    WriteLn(F,'  <th nowrap width=250><font face="Verdana" size=1>OBS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}' width=150><font face="Verdana" size=1>Cliente</font></th>');
+    WriteLn(F,'  <th '+{nowrap}' width=150><font face="Verdana" size=1>Contato</font></th>');
+    WriteLn(F,'  <th '+{nowrap}' width=150><font face="Verdana" size=1>Cidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>UF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Telefone</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>Últ. venda</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Verdana" size=1>ABC</font></th>');
+    WriteLn(F,'  <th '+{nowrap}' width=250><font face="Verdana" size=1>OBS</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -3887,39 +3805,26 @@ begin
         if Form1.bHtml1 then
         begin
           WriteLn(F,'   <tr>');
-          WriteLn(F,'    <td nowrap width=150 valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2NOME.AsString +'<br></font></td>');
-          WriteLn(F,'    <td nowrap width=150 valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2CONTATO.AsString +'<br></font></td>');
-          WriteLn(F,'    <td nowrap width=150 valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2CIDADE.AsString +'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2ESTADO.AsString +'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2FONE.AsString +'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+DateToStr(Form7.ibDataSet2ULTIMACO.AsDateTime)+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' width=150 valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2NOME.AsString +'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' width=150 valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2CONTATO.AsString +'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' width=150 valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2CIDADE.AsString +'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2ESTADO.AsString +'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+Form7.ibDataSet2FONE.AsString +'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Verdana" size=1>'+DateToStr(Form7.ibDataSet2ULTIMACO.AsDateTime)+'<br></font></td>');
 
           {Mauricio Parizotto 2023-05-29 Inicio}
-          
-          {
-          fTotal4 := fTotal4 + (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
-
-          if fTotal4 < 70 then
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>')
-          else
-            if fTotal4 < 90 then
-              WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
-            else
-                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
-          WriteLn(F,'    <td nowrap width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
-          }
 
           vPercIndividual := (( Form7.ibDataSet99.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
           vPercAcumulado  := vPercAcumulado + vPercIndividual;
 
           if (vPercAcumulado < 70) or (vPercIndividual > 30) then
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>') //
+            WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'A'+'<br></font></td>') //
           else
             if vPercAcumulado < 90 then
-              WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
+              WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'B'+'<br></font></td>')
             else
-                WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
-          WriteLn(F,'    <td nowrap width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
+                WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Verdana" size=1>'+'C'+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' width=250 valign=top bgcolor=#FFFFFF align=left bgcolor=#'+Form1.sHtmlCor+' ><font face="Verdana" size=1>' + StrTran(Form7.ibDataSet2OBS.AsString,Chr(10),'<br>')+'<br></font></td>');
 
           WriteLn(F,'   </tr>');
         end else
@@ -3999,12 +3904,12 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total faturado</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>%</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% Acu.</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>ABC</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total faturado</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>%</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% Acu.</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>ABC</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -4048,16 +3953,16 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery6.FieldByName('TOTAL').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CODIGO.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4DESCRICAO.AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%10.'+Form1.ConfCasas+'n',[Form7.ibQuery6.FieldByName('TOTAL').AsFloat])+'<br></font></td>');
 
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[((Form7.ibQuery6.FieldByName('TOTAL').AsFloat)/fTotal5*100)])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[fTotal4])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[((Form7.ibQuery6.FieldByName('TOTAL').AsFloat)/fTotal5*100)])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[fTotal4])+'<br></font></td>');
 
-        if fTotal4 < 70 then  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+'A'+'<br></font></td>') else
-         if fTotal4 < 90 then  WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+'B'+'<br></font></td>') else
-           WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+'C'+'<br></font></td>');
+        if fTotal4 < 70 then  WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+'A'+'<br></font></td>') else
+         if fTotal4 < 90 then  WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+'B'+'<br></font></td>') else
+           WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+'C'+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -4080,12 +3985,12 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%12.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%12.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -4117,13 +4022,13 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Ranking</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>UF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Telefone</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Últ. venda</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor das vendas</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Ranking</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>UF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Telefone</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Últ. venda</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor das vendas</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -4151,13 +4056,13 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntTostr(Y)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('CLIENTE').AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet2.FieldByname('CIDADE').AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet2.FieldByname('ESTADO').AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet2.FieldByname('FONE').AsString +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet2.FieldByname('ULTIMACO').AsDateTime)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('VTOTAL').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntTostr(Y)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('CLIENTE').AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet2.FieldByname('CIDADE').AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet2.FieldByname('ESTADO').AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet2.FieldByname('FONE').AsString +'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet2.FieldByname('ULTIMACO').AsDateTime)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('VTOTAL').AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -4178,13 +4083,13 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap  align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'  align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'</font></th>');
     WriteLn(F,' </tr>');
     WriteLn(F,'   </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -4245,12 +4150,12 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Ranking</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Telefone</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>UF</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Valor atrasado</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Ranking</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Telefone</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>UF</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Valor atrasado</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -4274,12 +4179,12 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntTostr(Y)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('NOME').AsString   + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('FONE').AsString   + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('CIDADE').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('ESTADO').AsString + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByName('VENCIDO').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=center><font face="Microsoft Sans Serif" size=1>'+IntTostr(Y)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('NOME').AsString   + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('FONE').AsString   + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('CIDADE').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('ESTADO').AsString + '<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByName('VENCIDO').AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -4300,12 +4205,12 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1></font></th>');
-    WriteLn(F,'  <th nowrap align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1></font></th>');
+    WriteLn(F,'  <th '+{nowrap}' align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'</font></th>');
     WriteLn(F,' </tr>');
     WriteLn(F,'</table>');
   end else
@@ -4327,11 +4232,11 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>OS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>OS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -4357,11 +4262,11 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('NUMEROOS').AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('QUANTIDADE').AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('UNITARIO').AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('TOTAL').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('NUMEROOS').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet99.FieldByname('DESCRICAO').AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('QUANTIDADE').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('UNITARIO').AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet99.FieldByname('TOTAL').AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -4381,11 +4286,11 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -4426,11 +4331,11 @@ begin
 
   WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
   WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-  WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-  WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código de barras</font></th>');
-  WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-  WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-  WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Medida</font></th>');
+  WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+  WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código de barras</font></th>');
+  WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+  WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+  WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Medida</font></th>');
   WriteLn(F,' </tr>');
 
   while not Form7.IBDataSet99.Eof do
@@ -4442,22 +4347,22 @@ begin
     Form7.ibDataSet100.First;
 
     WriteLn(F,'   <tr>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('CODIGO').AsString+'<br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('REFERENCIA').AsString+'<br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('DESCRICAO').AsString+'<br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('SUM').AsFloat])+'<br></font></td>');
-    WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('MEDIDA').AsString+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('CODIGO').AsString+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('REFERENCIA').AsString+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('DESCRICAO').AsString+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet99.FieldByname('SUM').AsFloat])+'<br></font></td>');
+    WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet100.FieldByname('MEDIDA').AsString+'<br></font></td>');
     WriteLn(F,'   </tr>');
 
     Form7.IBDataSet99.Next;
   end;
 
   WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-  WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-  WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-  WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-  WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-  WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+  WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+  WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+  WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+  WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+  WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table>');
 
@@ -4479,9 +4384,9 @@ begin
   WriteLn(F,'<center>');
   WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
   WriteLn(F,' <tr bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-  WriteLn(F,'  <th nowrap ><font face="Microsoft Sans Serif" size=1>Cliente/Contato/Telefone</font></th>');
-  WriteLn(F,'  <th nowrap ><font face="Microsoft Sans Serif" size=1>Endereço</font></th>');
-  WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Entregar</font></th>');
+  WriteLn(F,'  <th '+{nowrap}' ><font face="Microsoft Sans Serif" size=1>Cliente/Contato/Telefone</font></th>');
+  WriteLn(F,'  <th '+{nowrap}' ><font face="Microsoft Sans Serif" size=1>Endereço</font></th>');
+  WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Entregar</font></th>');
   WriteLn(F,' </tr>');
 
   // Clientes
@@ -4510,16 +4415,16 @@ begin
         Form7.IBDataSet15.First;
         
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet2NOME.AsString +'<br>'
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet2NOME.AsString +'<br>'
                                                                                                       + Form7.ibDataSet2CONTATO.AsString + '<br>'
                                                                                                                 + Form7.ibDataSet2FONE.AsString
                                                                                                                 +'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet2CEP.AsString + '<br>'
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet2CEP.AsString + '<br>'
                                                                                                                 + Form7.ibDataSet2CIDADE.AsString + ' - ' + Form7.ibDataSet2ESTADO.AsString + '<br>'
                                                                                                                 + Form7.ibDataSet2ENDERE.AsString + '<br>'
                                                                                                                 + Form7.ibDataSet2COMPLE.AsString
                                                                                                                    + '<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>');
 
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');;
         WriteLn(F,' <tr bgcolor=#E6E8FA align=left>');
@@ -4603,24 +4508,24 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Caixa</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Caixa</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ PIS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>% COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>R$ COFINS</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>NCM</font></th>');
     {Sandro Silva 2022-09-30 inicio}
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
     {Sandro Silva 2022-09-30 fim}
     WriteLn(F,' </tr>');
   end else
@@ -4731,24 +4636,24 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <tr>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CAIXA.AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CODIGO.AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27DESCRICAO.AsString,'<',''),'>','')+'<br></font></td>');
-      // Sandro Silva 2022-10-17 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[Form7.ibDataSet27TOTAL.AsFloat])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CST_PIS_COFINS.AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibDataSet27ALIQ_PIS.AsFloat])+'<br></font></td>');
-      // Sandro Silva 2022-10-17 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * Form7.ibDataSet27TOTAL.AsFloat ])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) ])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat])+'<br></font></td>');
-      // Sandro Silva 2022-10-17 WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * Form7.ibDataSet27TOTAL.AsFloat ])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) ])+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CFOP.AsString+'<br></font></td>');
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CF.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CAIXA.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CODIGO.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27DESCRICAO.AsString,'<',''),'>','')+'<br></font></td>');
+      // Sandro Silva 2022-10-17 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[Form7.ibDataSet27TOTAL.AsFloat])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CST_PIS_COFINS.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibDataSet27ALIQ_PIS.AsFloat])+'<br></font></td>');
+      // Sandro Silva 2022-10-17 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * Form7.ibDataSet27TOTAL.AsFloat ])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) ])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat])+'<br></font></td>');
+      // Sandro Silva 2022-10-17 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * Form7.ibDataSet27TOTAL.AsFloat ])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) ])+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CFOP.AsString+'<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CF.AsString+'<br></font></td>');
       {Sandro Silva 2022-09-30 inicio}
-      WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
+      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
       {Sandro Silva 2022-09-30 fim}
       WriteLn(F,'   </tr>');
     end else
@@ -4807,21 +4712,21 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal])+'<br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1])+'<br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2])+'<br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal1])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fTotal2])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     {Sandro Silva 2022-09-30 inicio}
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     {Sandro Silva 2022-09-30 fim}
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
@@ -4833,8 +4738,8 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CFOP</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCFOP := 0.00;
@@ -4842,13 +4747,13 @@ begin
     begin
       dTotalCFOP := dTotalCFOP + aCFOP[iItem].Valor;
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCFOP[iItem].Valor])+'</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCFOP[iItem].CFOP + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCFOP[iItem].Valor])+'</font></td>');
       WriteLn(F,'    </tr>');
     end;
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[dTotalCFOP])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[dTotalCFOP])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     {Sandro Silva 2022-09-29 fim}
@@ -4864,10 +4769,10 @@ begin
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CST ICMS</font></th>')
     else
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total</font></th>');
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>CSOSN</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total</font></th>');
     WriteLn(F,'    </tr>');
 
     dTotalCSTCSOSN := 0.00;
@@ -4875,13 +4780,13 @@ begin
     begin
       dTotalCSTCSOSN := dTotalCSTCSOSN + aCSTCSOSN[iItem].Valor;
       WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
-      WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + aCSTCSOSN[iItem].CSTCSOSN + '</font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%11.2n',[aCSTCSOSN[iItem].Valor])+'</font></td>');
       WriteLn(F,'    </tr>');
     end;
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n', [dTotalCSTCSOSN])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     {Sandro Silva 2022-09-30 fim}
@@ -4976,15 +4881,15 @@ begin
     WriteLn(F,'<center>');
     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr  bgcolor=#'+Form1.sHtmlCor+'   align=left>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cupom</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
     if cbListarCodigos.Checked then
-      WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
-    WriteLn(F,'  <th nowrap><font face="Microsoft Sans Serif" size=1>Caixa</font></th>');
+      WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Caixa</font></th>');
     WriteLn(F,' </tr>');
   end else
   begin
@@ -5020,15 +4925,15 @@ begin
         if Form1.bHtml1 then
         begin
           WriteLn(F,'   <tr>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'<br></font></td>');
           if cbListarCodigos.Checked then
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27CODIGO.AsString,'<',''),'>','')+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27DESCRICAO.AsString,'<',''),'>','')+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat])+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet27UNITARIO.AsFloat])+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat * Form7.ibDataSet27UNITARIO.AsFloat])+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CAIXA.AsString+'<br></font></td>');
+            WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27CODIGO.AsString,'<',''),'>','')+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27DESCRICAO.AsString,'<',''),'>','')+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat])+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet27UNITARIO.AsFloat])+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat * Form7.ibDataSet27UNITARIO.AsFloat])+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CAIXA.AsString+'<br></font></td>');
           WriteLn(F,'   </tr>');
         end else
         begin
@@ -5053,15 +4958,15 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     if cbListarCodigos.Checked then
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
@@ -5119,10 +5024,10 @@ begin
         if Form1.bHtml1 then
         begin
           WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+          WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+          WriteLn(F,'     <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
           WriteLn(F,'    </tr>');
         end else
         begin
@@ -5151,10 +5056,10 @@ begin
         WriteLn(F,'  <td>');
         WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
         WriteLn(F,'    <tr  bgcolor=#'+Form1.sHtmlCor+'  align=left>');
-        WriteLn(F,'     <th nowrap  width="300"><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
-        WriteLn(F,'     <th nowrap  width="80"><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-        WriteLn(F,'     <th nowrap  width="80"><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
-        WriteLn(F,'     <th nowrap  width="80"><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+        WriteLn(F,'     <th width="300"><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
+        WriteLn(F,'     <th width="80"><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+        WriteLn(F,'     <th width="80"><font face="Microsoft Sans Serif" size=1>Unitário R$</font></th>');
+        WriteLn(F,'     <th width="80"><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
         WriteLn(F,'    </tr>');
       end else
       begin
@@ -5172,18 +5077,18 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'     <tr>');
-      WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'<br></font></td>');
+      WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'<br></font></td>');
 
       if Alltrim(Form7.IbDataSet37DESCRICAO.AsString) = 'Desconto' then
       begin
-        WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
-        WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1></font></td>');
-        WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet37TOTAL.AsFloat*-1])+'<br></font></td>');
+        WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><br></font></td>');
+        WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1></font></td>');
+        WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet37TOTAL.AsFloat*-1])+'<br></font></td>');
       end else
       begin
-        WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet37QUANTIDADE.AsFloat])+'<br></font></td>');
-        WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet37UNITARIO.AsFloat])+'<br></font></td>');
-        WriteLn(F,'      <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet37QUANTIDADE.AsFloat * Form7.ibDataSet37UNITARIO.AsFloat])+'<br></font></td>');
+        WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet37QUANTIDADE.AsFloat])+'<br></font></td>');
+        WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet37UNITARIO.AsFloat])+'<br></font></td>');
+        WriteLn(F,'      <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet37QUANTIDADE.AsFloat * Form7.ibDataSet37UNITARIO.AsFloat])+'<br></font></td>');
       end;
 
       WriteLn(F,'     </tr>');
@@ -5220,10 +5125,10 @@ begin
   if Form1.bHtml1 then
   begin
     WriteLn(F,'    <tr bgcolor=#'+Form1.sHtmlCor+' >');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-    WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'    </tr>');
     WriteLn(F,'    </table>');
     WriteLn(F,'   </td>');
@@ -5260,16 +5165,16 @@ begin
   begin
     WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Produtos R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Serviços R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Frete R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Desconto R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Outras R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>ICMS R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Cliente</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Produtos R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Serviços R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Frete R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Desconto R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Outras R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>ICMS R$</font></th>');
     WriteLn(F,'    </tr>');
   end else
   begin
@@ -5296,16 +5201,16 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet15CLIENTE.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15MERCADORIA.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15SERVICOS.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15FRETE.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15DESCONTO.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15DESPESAS.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15TOTAL.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15ICMS.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet15CLIENTE.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15MERCADORIA.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15SERVICOS.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15FRETE.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15DESCONTO.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15DESPESAS.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15TOTAL.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet15ICMS.AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -5343,14 +5248,14 @@ begin
   begin
     WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
     if cbListarCodigos.Checked then
-      WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Vendido por</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Custo compra</font></th>');
+      WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Vendido por</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Custo compra</font></th>');
     WriteLn(F,'    </tr>');
   end else
   begin
@@ -5401,14 +5306,14 @@ begin
         if Form1.bHtml1 then
         begin
           WriteLn(F,'   <tr>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet15EMISSAO.AsDateTime)+'<br></font></td>');
           if cbListarCodigos.Checked then
-            WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16CODIGO.AsString+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat])+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat * Form7.ibDataSet16UNITARIO.AsFloat ])+'<br></font></td>');
-          WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat * Form7.ibDataSet16CUSTO.AsFloat ])+'<br></font></td>');
+            WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16CODIGO.AsString+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat])+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat * Form7.ibDataSet16UNITARIO.AsFloat ])+'<br></font></td>');
+          WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat * Form7.ibDataSet16CUSTO.AsFloat ])+'<br></font></td>');
           WriteLn(F,'   </tr>');
         end else
         begin
@@ -5448,16 +5353,16 @@ begin
   begin
     WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Fornecedor</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Produtos R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Serviços R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Frete R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Desconto R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Outras R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>ICMS R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Fornecedor</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Produtos R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Serviços R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Frete R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Desconto R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Outras R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>ICMS R$</font></th>');
     WriteLn(F,'    </tr>');
   end else
   begin
@@ -5484,16 +5389,16 @@ begin
       if Form1.bHtml1 then
       begin
         WriteLn(F,'   <tr>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataset24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataset24NUMERONF.AsString,10,3)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataset24EMISSAO.AsDateTime)+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataset24FORNECEDOR.AsString+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24MERCADORIA.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24SERVICOS.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24FRETE.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24DESCONTO.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24DESPESAS.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24TOTAL.AsFloat])+'<br></font></td>');
-        WriteLn(F,'    <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24ICMS.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataset24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataset24NUMERONF.AsString,10,3)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataset24EMISSAO.AsDateTime)+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataset24FORNECEDOR.AsString+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24MERCADORIA.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24SERVICOS.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24FRETE.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24DESCONTO.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24DESPESAS.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24TOTAL.AsFloat])+'<br></font></td>');
+        WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataset24ICMS.AsFloat])+'<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
       begin
@@ -5531,13 +5436,13 @@ begin
   begin
     WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Data</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Código</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Comprado por</font></th>');
-    WriteLn(F,'     <th nowrap><font face="Microsoft Sans Serif" size=1>Custo compra</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Nota</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Data</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Código</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Descrição do item</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Quantidade</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Comprado por</font></th>');
+    WriteLn(F,'     <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>Custo compra</font></th>');
     WriteLn(F,'    </tr>');
   end else
   begin
@@ -5573,13 +5478,13 @@ begin
         if Form1.bHtml1 then
         begin
           WriteLn(F,'    <tr>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet24NUMERONF.AsString,10,3)+'<br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet24EMISSAO.AsDateTime)+'<br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23CODIGO.AsString+'<br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'<br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat])+'<br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat * Form7.ibDataSet23UNITARIO.AsFloat ])+'<br></font></td>');
-          WriteLn(F,'     <td nowrap valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat * Form7.ibDataSet23CUSTO.AsFloat ])+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet24NUMERONF.AsString,10,3)+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+DateToStr(Form7.ibDataSet24EMISSAO.AsDateTime)+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23CODIGO.AsString+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat])+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat * Form7.ibDataSet23UNITARIO.AsFloat ])+'<br></font></td>');
+          WriteLn(F,'     <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat * Form7.ibDataSet23CUSTO.AsFloat ])+'<br></font></td>');
           WriteLn(F,'    </tr>');
         end else
         begin
@@ -5633,14 +5538,14 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
       if (cbListarCodigos.Checked) or (Form7.sModulo =  'Relatório de compras') then
-        WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+        WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
       WriteLn(F,'    </tr>');
       WriteLn(F,'   </table></center>');
     end else
@@ -5670,16 +5575,16 @@ begin
     if Form1.bHtml1 then
     begin
       WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal6])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal4])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal5])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
-      WriteLn(F,'     <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal2])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal6])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal3])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal4])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal5])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+      WriteLn(F,'     <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal1])+'<br></font></td>');
       WriteLn(F,'    </tr>');
       WriteLn(F,'   </table></center>');
     end else

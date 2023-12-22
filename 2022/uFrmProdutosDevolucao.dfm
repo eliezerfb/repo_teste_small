@@ -2,11 +2,12 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   Left = 551
   Top = 279
   BorderIcons = []
-  Caption = #39#39#39#39
+  Caption = 'Produtos Devolu'#231#227'o'
   ClientHeight = 483
   ClientWidth = 994
   OldCreateOrder = True
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -185,11 +186,6 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       item
         Expanded = False
         FieldName = 'QUANTIDADE'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
         Visible = True
       end
       item

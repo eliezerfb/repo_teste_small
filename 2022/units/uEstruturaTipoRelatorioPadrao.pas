@@ -243,10 +243,10 @@ begin
         else
           cTotal := FormataCulunaValor(SomarValor(FDataSetDados.Fields[i]), 2);
           
-        FlsImpressao.Add('    <td nowrap valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + cTotal);
+        FlsImpressao.Add('    <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>' + cTotal);
       end
       else
-        FlsImpressao.Add('    <td nowrap valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font>');
+        FlsImpressao.Add('    <td '+{nowrap}' valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font>');
 
       FlsImpressao.Add('    </td>');
     end;
