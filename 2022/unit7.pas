@@ -2549,7 +2549,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uOrdemServico
   , uFrmPerfilTributacao
   , uFrmNaturezaOperacao
-  , uFrmSituacaoOS;
+  , uFrmSituacaoOS
+  , uRelatorioVendasNotaFiscal;
 
 {$R *.DFM}
 
@@ -9068,19 +9069,17 @@ end;
 
 procedure TForm7.Relatriodevendas1Click(Sender: TObject);
 begin
-  //
-  sModuloAnterior := sModulo;
-  //
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.RadioButton1.Visible := True;
-  Form38.rbItemPorITem.Visible := True;
-  Form38.cbListarCodigos.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  sModulo := 'Relatório de vendas';
-  Form38.ShowModal; // Ok
-  //
+  frmRelVendasNotaFiscal := TfrmRelVendasNotaFiscal.Create(nil);
+  try
+    frmRelVendasNotaFiscal.Imagem             := Image205.Picture;
+    frmRelVendasNotaFiscal.Usuario            := Usuario;
+    frmRelVendasNotaFiscal.Transaction        := IBTransaction1;
+    frmRelVendasNotaFiscal.DecimaisValor      := StrToIntDef(Form1.ConfPreco,0);
+    frmRelVendasNotaFiscal.DecimaisQuantidade := StrToIntDef(Form1.ConfCasas,0);
+    frmRelVendasNotaFiscal.ShowModal;
+  finally
+    FreeAndNil(frmRelVendasNotaFiscal);
+  end;
 end;
 
 procedure TForm7.Previsodecompra1Click(Sender: TObject);
