@@ -34,7 +34,6 @@ type
     function getTransaction: TIBTransaction;
     procedure setTransaction(const Value: TIBTransaction);
   public
-    property Transaction: TIBTransaction read getTransaction write setTransaction;
     property DataBase: TIBDatabase read getDataBase write setDataBase;
     property Transaction: TIBTransaction read getTransaction write setTransaction;
     property Imagem: TPicture read getImagem write setImagem;

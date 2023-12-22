@@ -216,7 +216,7 @@ uses
   uChamaRelTotalizadorVendasGeral in 'units\uChamaRelTotalizadorVendasGeral.pas',
   uEstruturaRelTotalizadorGeralVenda in 'units\uEstruturaRelTotalizadorGeralVenda.pas',
   uEstruturaRelVendasNotaFiscal in 'units\uEstruturaRelVendasNotaFiscal.pas',
-  uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal}
+  uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal},
   udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule};
 
 {$R *.RES}
