@@ -96,35 +96,35 @@ begin
 
   FlsImpressao.Add('<table border=1 cellspacing=1 cellpadding=5 Width=640 style="border-collapse: collapse"  bordercolor=#000000>');
   FlsImpressao.Add(' <tr>');
-  FlsImpressao.Add('  <td nowrap colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Arial" size=1><center>Identificação do Estabelecimento Emitente</center></td>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Arial" size=1><center>Identificação do Estabelecimento Emitente</center></td>');
   FlsImpressao.Add(' </tr>');
   FlsImpressao.Add(' <tr >');
-  FlsImpressao.Add('  <td nowrap colspan=3><font face="Arial" size=1>Denominação:  <b>'+AllTrim(Copy(FQryEmitente.FieldByname('NOMEEMIT').AsString+Replicate(' ',35),1,35))+'</b>'+
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=3><font face="Arial" size=1>Denominação:  <b>'+AllTrim(Copy(FQryEmitente.FieldByname('NOMEEMIT').AsString+Replicate(' ',35),1,35))+'</b>'+
     '<br>'+
     FQryEmitente.FieldByname('ENDERECOEMIT').AsString+'<br>'+
     FQryEmitente.FieldByname('CEPEMIT').AsString+' - '+FQryEmitente.FieldByname('MUNICIPIOEMIT').AsString+', '+FQryEmitente.FieldByname('ESTADOEMIT').AsString+'<br>'+
     FQryEmitente.FieldByname('COMPLEEMIT').AsString+'<br>'+
     'Telefone: '+FQryEmitente.FieldByname('TELEFONEEMIT').AsString+'<br></td>');
 
-  FlsImpressao.Add('  <td nowrap colspan=1 vAlign=Top><font face="Arial" size=1>CNPJ/CPF:  <b>'+FQryEmitente.FieldByname('CGCEMIT').AsString+'</b></td>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=1 vAlign=Top><font face="Arial" size=1>CNPJ/CPF:  <b>'+FQryEmitente.FieldByname('CGCEMIT').AsString+'</b></td>');
   FlsImpressao.Add(' </tr>');
 
   FlsImpressao.Add(' <tr >');
-  FlsImpressao.Add('  <td nowrap colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Arial" size=1><center>Identificação do Destinatário</center></td>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=4 bgcolor=#FFFFFF vAlign=Top><font face="Arial" size=1><center>Identificação do Destinatário</center></td>');
   FlsImpressao.Add(' </tr >');
   FlsImpressao.Add(' <tr>');
-  FlsImpressao.Add('  <td nowrap colspan=3><font face="Arial" size=1>Denominação:  <b>'+AllTrim(Copy(FQryOrcamento.FieldByname('NOME').AsString+Replicate(' ',35),1,35))+'</b>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=3><font face="Arial" size=1>Denominação:  <b>'+AllTrim(Copy(FQryOrcamento.FieldByname('NOME').AsString+Replicate(' ',35),1,35))+'</b>');
   FlsImpressao.Add('<br>'+
     FQryOrcamento.FieldByname('ENDERE').AsString+'<br>'+
     FQryOrcamento.FieldByname('CEP').AsString+' - '+FQryOrcamento.FieldByname('CIDADE').AsString+', '+FQryOrcamento.FieldByname('ESTADO').AsString+'<br>'+
     FQryOrcamento.FieldByname('COMPLE').AsString+'<br>'+
     'Telefone: '+FQryOrcamento.FieldByname('FONE').AsString+'<br>'+'</td>');
-  FlsImpressao.Add('  <td nowrap colspan=1 vAlign=Top><font face="Arial" size=1>CNPJ/CPF:  <b>'+FQryOrcamento.FieldByname('CGC').AsString+'</b></td>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=1 vAlign=Top><font face="Arial" size=1>CNPJ/CPF:  <b>'+FQryOrcamento.FieldByname('CGC').AsString+'</b></td>');
   FlsImpressao.Add(' </tr>');
 
   FlsImpressao.Add(' <tr >');
-  FlsImpressao.Add('  <td nowrap colspan=2 bgcolor=#FFFFFF width=300><font face="Arial" size=1>Número do Orçamento: <b>'+FcNumeroOrcamento+'</b></td>');
-  FlsImpressao.Add('  <td nowrap colspan=2 bgcolor=#FFFFFF width=300><font face="Arial" size=1>Número do Documento Fiscal: <b>'+FQryOrcamento.FieldByname('NUMERONF').AsString+'</b></td>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=2 bgcolor=#FFFFFF width=300><font face="Arial" size=1>Número do Orçamento: <b>'+FcNumeroOrcamento+'</b></td>');
+  FlsImpressao.Add('  <td '+{nowrap}' colspan=2 bgcolor=#FFFFFF width=300><font face="Arial" size=1>Número do Documento Fiscal: <b>'+FQryOrcamento.FieldByname('NUMERONF').AsString+'</b></td>');
   FlsImpressao.Add(' </tr>');
   FlsImpressao.Add('</table>');
 
@@ -169,7 +169,7 @@ begin
           begin
             FlsImpressao.Add(' <tr>');
             FlsImpressao.Add('  <td bgcolor=#FFFFFFFF><font face="Arial" size=1></td>');
-            FlsImpressao.Add('  <td  nowrap colspan=5 bgcolor=#FFFFFFFF><font face="Arial" size=1>'+FQryItens.FieldByName('DESCRICAO').AsString+'</td>');
+            FlsImpressao.Add('  <td  '+{nowrap}' colspan=5 bgcolor=#FFFFFFFF><font face="Arial" size=1>'+FQryItens.FieldByName('DESCRICAO').AsString+'</td>');
             FlsImpressao.Add(' </tr>');
           end;
         end;
