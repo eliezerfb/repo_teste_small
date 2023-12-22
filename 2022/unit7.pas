@@ -9071,7 +9071,7 @@ procedure TForm7.Relatriodevendas1Click(Sender: TObject);
 begin
   frmRelVendasNotaFiscal := TfrmRelVendasNotaFiscal.Create(nil);
   try
-    frmRelVendasNotaFiscal.Imagem             := Image205.Picture;
+    frmRelVendasNotaFiscal.Imagem             := imgImprimir.Picture;
     frmRelVendasNotaFiscal.Usuario            := Usuario;
     frmRelVendasNotaFiscal.Transaction        := IBTransaction1;
     frmRelVendasNotaFiscal.DecimaisValor      := StrToIntDef(Form1.ConfPreco,0);
