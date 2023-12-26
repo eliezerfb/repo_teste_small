@@ -25,7 +25,6 @@ object Form12: TForm12
   OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
-  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16

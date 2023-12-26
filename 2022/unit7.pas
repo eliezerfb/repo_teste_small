@@ -1636,6 +1636,7 @@ type
     Cadastrodesituaes1: TMenuItem;
     ibDataSet14CBENEF: TIBStringField;
     otalizadorgeraldevenda1: TMenuItem;
+    ibDataSet3NFSE: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);

@@ -215,7 +215,6 @@ type
     procedure SMALL_DBEdit9Exit(Sender: TObject);
     procedure Button1Enter(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure ImportarOS2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1359,32 +1358,19 @@ end;
 
 procedure TForm12.Button1Enter(Sender: TObject);
 begin
-  //
   ScrollBox1.VertScrollBar.Position := 200;
-  //
 end;
 
 procedure TForm12.Button1Click(Sender: TObject);
 begin
-  //
   bOk := True;
   Form12.Close;
-  //
-end;
-
-procedure TForm12.FormCreate(Sender: TObject);
-begin
-  //
-//  Form12.BorderIcons := [biSystemMenu,biMaximize]; //[biSystemMenu];
-//  Form12.BorderStyle := bsSingle;
-  //
-  // Venda
-  //
 end;
 
 procedure TForm12.ImportarOS2Click(Sender: TObject);
 var
   NumeroOS : string;
+  Origem : TOrigemImpOS;
 begin
   {Mauricio Parizotto 2023-10-20 Inicio
   Form7.sModulo := 'OS';
@@ -1397,7 +1383,12 @@ begin
   Retributa(True);
   }
 
-  NumeroOS := PesquisaNumeroOrdemServico('Importar Ordem de Serviço');
+  if Form7.sRPS = 'N' then
+    Origem := orNFE
+  else
+    Origem := orNFSE;
+
+  NumeroOS := PesquisaNumeroOrdemServico('Importar Ordem de Serviço',Origem);
   if NumeroOS <> '' then
   begin
     Form7.sModulo := 'OS';
