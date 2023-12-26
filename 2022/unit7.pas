@@ -1291,14 +1291,14 @@ type
     imgEditar: TImage;
     Image308: TImage;
     imgFiltrar: TImage;
-    Label201: TLabel;
-    Label202: TLabel;
-    Label203: TLabel;
-    Label205: TLabel;
-    Label204: TLabel;
-    Label206: TLabel;
+    lblNovo: TLabel;
+    lblExcluir: TLabel;
+    lblProcurar: TLabel;
+    lblImprimir: TLabel;
+    lblVisualizar: TLabel;
+    lblEditar: TLabel;
     Label208: TLabel;
-    Label209: TLabel;
+    lblFiltrar: TLabel;
     imgLibBloq: TImage;
     Panel5: TPanel;
     Image201_X: TImage;
@@ -1895,8 +1895,8 @@ type
     procedure ibDataSet23CFOPSetText(Sender: TField; const Text: String);
     procedure ibDataSet23NewRecord(DataSet: TDataSet);
     procedure ibDataSet24NewRecord(DataSet: TDataSet);
-    procedure Label201MouseLeave(Sender: TObject);
-    procedure Label201MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblNovoMouseLeave(Sender: TObject);
+    procedure lblNovoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure ibDataSet3AfterDelete(DataSet: TDataSet);
     procedure ibDataSet35UNITARIOChange(Sender: TField);
@@ -2152,26 +2152,26 @@ type
     procedure Clientescontactadospordiaeporvendedor1Click(Sender: TObject);
     procedure IBDataSet2BeforePost(DataSet: TDataSet);
     procedure Button10Click(Sender: TObject);
-    procedure Label202MouseLeave(Sender: TObject);
-    procedure Label203MouseLeave(Sender: TObject);
-    procedure Label205MouseLeave(Sender: TObject);
-    procedure Label204MouseLeave(Sender: TObject);
-    procedure Label206MouseLeave(Sender: TObject);
+    procedure lblExcluirMouseLeave(Sender: TObject);
+    procedure lblProcurarMouseLeave(Sender: TObject);
+    procedure lblImprimirMouseLeave(Sender: TObject);
+    procedure lblVisualizarMouseLeave(Sender: TObject);
+    procedure lblEditarMouseLeave(Sender: TObject);
     procedure Label208MouseLeave(Sender: TObject);
-    procedure Label209MouseLeave(Sender: TObject);
-    procedure Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblFiltrarMouseLeave(Sender: TObject);
+    procedure lblExcluirMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Label203MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblProcurarMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Label205MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblImprimirMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Label204MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblVisualizarMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Label206MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblEditarMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure Label208MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure Label209MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure lblFiltrarMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure ibDataSet23QTD_ORIGINALChange(Sender: TField);
     procedure ibDataSet23UNITARIO_OChange(Sender: TField);
@@ -2346,7 +2346,9 @@ type
     procedure LimpaCamposItensNota;
     procedure DefineCaptionReceberPagar;
     function TestarPodeExcluirOrcamento: Boolean;
+    function TestarPodeExcluirOS: Boolean;
     procedure ExcluirOrcamento;
+    procedure ExcluirOS;
     procedure VerificaAlteracaoPerfil;
     procedure ChamarTelaXMLContab;
     function MensagemPortalConsultaCNPJCPF: Integer;
@@ -7934,8 +7936,17 @@ end;
 
 procedure TForm7.Image102Click(Sender: TObject);
 begin
+  {Mauricio Parizotto 2023-12-26 Inicio
   if (sModulo = 'OS') then
     Exit;
+  }
+
+  if (sModulo = 'OS') then
+  begin
+    ExcluirOS;
+    Exit;
+  end;
+  {Mauricio Parizotto 2023-12-26 Fim}
 
   if (sModulo = 'ORCAMENTO') then
   begin
@@ -7954,6 +7965,18 @@ begin
   begin
     //Application.MessageBox(PChar(_cOrcamentoComDocFiscal), PChar(_cTituloMsg), MB_ICONINFORMATION + MB_OK); Mauricio Parizotto 2023-10-24
     MensagemSistema(_cOrcamentoComDocFiscal,msgAtencao);
+    Exit;
+  end;
+    
+  Result := True;
+end;
+
+function TForm7.TestarPodeExcluirOS: Boolean;
+begin
+  Result := False;
+
+  if (ibDataSet3.FieldByName('NF').AsString <> '') or (ibDataSet3.FieldByName('NFSE').AsString <> '') then
+  begin
     Exit;
   end;
     
@@ -7986,6 +8009,53 @@ begin
         IBDataSet97.EnableControls;
       end;
     end;
+  end;
+end;
+
+procedure TForm7.ExcluirOS;
+var
+  iErros : integer;
+begin
+  try
+    //Para não dar scroll no grid e acabar exluindo outra OS
+    DBGrid1.Enabled := False;
+
+    if Application.MessageBox(PChar(_cMensagemExcluir), PChar(_cTituloMsg), MB_ICONQUESTION + MB_OKCANCEL + MB_DEFBUTTON1) = mrOk then
+    begin
+      if TestarPodeExcluirOS then
+      begin
+        iErros := 0;
+
+        //Exclui Produtos
+        if not ExecutaComando('Delete from ITENS001 Where NUMEROOS = '+QuotedStr(ibDataSet3NUMERO.AsString),ibDataSet3.Transaction) then
+          Inc(iErros);
+
+        //Exclui Serviços
+        if not ExecutaComando('Delete from ITENS003 Where NUMEROOS = '+QuotedStr(ibDataSet3NUMERO.AsString),ibDataSet3.Transaction) then
+          Inc(iErros);
+
+        //Exlui Anexos
+        if not ExecutaComando('Delete from OSANEXOS Where IDOS = '+ibDataSet3IDOS.AsString,ibDataSet3.Transaction) then
+          Inc(iErros);
+
+        if iErros = 0 then
+        begin
+          ibDataSet3.Delete;
+
+          DBGrid1.Enabled := True;
+          Form7.Close;
+          Form7.Show;
+        end else
+        begin
+          MensagemSistema('Erro ao excluir produtos da ordem de serviço.',msgAtencao);
+        end;
+      end else
+      begin
+        MensagemSistema('Esta ordem de serviço já foi importado para um documento fiscal e não poderá ser excluído.',msgAtencao);
+      end;
+    end;
+  finally
+    DBGrid1.Enabled := True;
   end;
 end;
 
@@ -11894,7 +11964,7 @@ begin
       if sModulo = '2CONTAS' then
       begin
         imgFiltrar.Visible := False; // Filtros
-        Label209.Visible := False;
+        lblFiltrar.Visible := False;
 
         sAjuda := 'bancos.htm'; // Falta contas bancárias
 
@@ -11914,7 +11984,7 @@ begin
       end else
       begin
         imgFiltrar.Visible := True; // Filtros
-        Label209.Visible := True;
+        lblFiltrar.Visible := True;
       end;
 
 
@@ -11973,8 +12043,8 @@ begin
             imgLibBloq.Visible := False; Form7.Label208.Caption  := 'Bloquear';
             Image308.Visible := False;
 
-            Label201.Visible := False;
-            Label202.Visible := False;
+            lblNovo.Visible := False;
+            lblExcluir.Visible := False;
             Label208.Visible := False;
           end;
         except
@@ -11988,8 +12058,8 @@ begin
             imgExcluir.Visible := True;
             imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
             //
-            Label201.Visible := True;
-            Label202.Visible := True;
+            lblNovo.Visible := True;
+            lblExcluir.Visible := True;
             Label208.Visible := True;
             //
             if (Form7.Menu <> MainMenu99) then
@@ -12023,14 +12093,14 @@ begin
     imgFiltrar.Visible := True;
     imgEditar.Visible := True;
     imgNovo.Visible := True;
-    Label209.Visible := True;
-    Label206.Visible := True;
-    Label201.Visible := True;
+    lblFiltrar.Visible := True;
+    lblEditar.Visible := True;
+    lblNovo.Visible := True;
 
     if (sModulo = 'TECNICO') then
     begin
       imgFiltrar.Visible := False;
-      Label209.Visible := False;
+      lblFiltrar.Visible := False;
     end;
     
     if sModulo = 'ICM' then
@@ -12048,15 +12118,15 @@ begin
     if sModulo = 'ORCAMENTO' then
     begin
       imgExcluir.Visible := True;
-      Label202.Visible := True;
+      lblExcluir.Visible := True;
       imgEditar.Visible := False;
-      Label206.Visible := False;
+      lblEditar.Visible := False;
     end;
 
     if sModulo = 'VENDA' then
     begin
       imgExcluir.Visible := False;
-      Label202.Visible := False;
+      lblExcluir.Visible := False;
     end;
 
     if (sModulo = 'COMPRA') or (sModulo = 'VENDA') or (sModulo = 'OS') then
@@ -12069,8 +12139,10 @@ begin
     
     if (sModulo = 'OS') then
     begin
-      imgExcluir.Visible := False; // Não pode apagar DAV
-      Label202.Visible := False;
+      //imgExcluir.Visible := False; // Não pode apagar DAV
+      //Label202.Visible := False;
+      imgExcluir.Visible := True;
+      lblExcluir.Visible := True;
     end;
 
     iLeft := 2+5;
@@ -12267,21 +12339,21 @@ begin
     Form7.pnlFiltro.Repaint;
 
     if imgNovo.Visible then
-      MostraLabels(Form7.imgNovo,Form7.Label201);
+      MostraLabels(Form7.imgNovo,Form7.lblNovo);
     if imgExcluir.Visible then
-      MostraLabels(Form7.imgExcluir,Form7.Label202);
+      MostraLabels(Form7.imgExcluir,Form7.lblExcluir);
     if imgProcurar.Visible then
-      MostraLabels(Form7.imgProcurar,Form7.Label203);
+      MostraLabels(Form7.imgProcurar,Form7.lblProcurar);
     if imgVisualizar.Visible then
-      MostraLabels(Form7.imgVisualizar,Form7.Label204);
+      MostraLabels(Form7.imgVisualizar,Form7.lblVisualizar);
     if imgImprimir.Visible then
-      MostraLabels(Form7.imgImprimir,Form7.Label205);
+      MostraLabels(Form7.imgImprimir,Form7.lblImprimir);
     if imgEditar.Visible then
-      MostraLabels(Form7.imgEditar,Form7.Label206);
+      MostraLabels(Form7.imgEditar,Form7.lblEditar);
     if imgFiltrar.Visible then
-      MostraLabels(Form7.imgFiltrar,Form7.Label209);
+      MostraLabels(Form7.imgFiltrar,Form7.lblFiltrar);
     if imgProcurar.Visible then
-      MostraLabels(Form7.imgProcurar,Form7.Label203);
+      MostraLabels(Form7.imgProcurar,Form7.lblProcurar);
     if imgLibBloq.Visible then
       MostraLabels(Form7.imgLibBloq,Form7.Label208);
     
@@ -13678,11 +13750,14 @@ begin
       EnviarOrcamentoPorEmail1.Enabled := (cEmails <> EmptyStr);
       EnviarOrcamentoPorEmail1.Caption := 'Enviar orçamento por e-mail ' + cEmails;
     end;
-    //
+    
     if sModulo = 'OS'  then
     begin
-      Apagar2.Enabled := False;
-      Apagar2.Visible := False;
+      //Mauricio Parizotto 2023-12-26
+      //Apagar2.Enabled := False;
+      //Apagar2.Visible := False;
+      Apagar2.Enabled := True;
+      Apagar2.Visible := True;
       ImprimirOrdemdeServio2.Visible := True; // Mauricio Parizotto 2023-11-21
     end;
 
@@ -21412,23 +21487,23 @@ begin
   Form7.ibDataSet24.Edit;
 end;
 
-procedure TForm7.Label201MouseLeave(Sender: TObject);
+procedure TForm7.lblNovoMouseLeave(Sender: TObject);
 begin
-  if Form7.Label201.Font.Style <> [] then
+  if Form7.lblNovo.Font.Style <> [] then
   begin
     Form7.imgNovo.Picture    := Form7.Image201_R.Picture;
-    Form7.Label201.Font.Style := [];
+    Form7.lblNovo.Font.Style := [];
   end;
 end;
 
-procedure TForm7.Label201MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblNovoMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   Form1.Panel4.Visible  := True;
-  if Form7.Label201.Font.Style <> [fsBold] then
+  if Form7.lblNovo.Font.Style <> [fsBold] then
   begin
     Form7.imgNovo.Picture    := Form7.Image201_X.Picture;
-    Form7.Label201.Font.Style := [fsBold];
+    Form7.lblNovo.Font.Style := [fsBold];
   end;
 end;
 
@@ -28840,48 +28915,48 @@ begin
   end;
 end;
 
-procedure TForm7.Label202MouseLeave(Sender: TObject);
+procedure TForm7.lblExcluirMouseLeave(Sender: TObject);
 begin
-  if Form7.Label202.Font.Style <> [] then
+  if Form7.lblExcluir.Font.Style <> [] then
   begin
     Form7.imgExcluir.Picture    := Form7.Image202_R.Picture;
-    Form7.Label202.Font.Style := [];
+    Form7.lblExcluir.Font.Style := [];
   end;
 end;
 
-procedure TForm7.Label203MouseLeave(Sender: TObject);
+procedure TForm7.lblProcurarMouseLeave(Sender: TObject);
 begin
-  if Form7.Label203.Font.Style <> [] then
+  if Form7.lblProcurar.Font.Style <> [] then
   begin
     Form7.imgProcurar.Picture    := Form7.Image203_R.Picture;
-    Form7.Label203.Font.Style := [];
+    Form7.lblProcurar.Font.Style := [];
   end;
 end;
 
-procedure TForm7.Label205MouseLeave(Sender: TObject);
+procedure TForm7.lblImprimirMouseLeave(Sender: TObject);
 begin
-  if Form7.Label205.Font.Style <> [] then
+  if Form7.lblImprimir.Font.Style <> [] then
   begin
     Form7.imgImprimir.Picture    := Form7.Image205_R.Picture;
-    Form7.Label205.Font.Style := [];
+    Form7.lblImprimir.Font.Style := [];
   end;
 end;
 
-procedure TForm7.Label204MouseLeave(Sender: TObject);
+procedure TForm7.lblVisualizarMouseLeave(Sender: TObject);
 begin
-  if Form7.Label204.Font.Style <> [] then
+  if Form7.lblVisualizar.Font.Style <> [] then
   begin
     Form7.imgVisualizar.Picture    := Form7.Image204_R.Picture;
-    Form7.Label204.Font.Style := [];
+    Form7.lblVisualizar.Font.Style := [];
   end;
 end;
 
-procedure TForm7.Label206MouseLeave(Sender: TObject);
+procedure TForm7.lblEditarMouseLeave(Sender: TObject);
 begin
-  if Form7.Label206.Font.Style <> [] then
+  if Form7.lblEditar.Font.Style <> [] then
   begin
     Form7.imgEditar.Picture    := Form7.Image206_R.Picture;
-    Form7.Label206.Font.Style := [];
+    Form7.lblEditar.Font.Style := [];
   end;
 end;
 
@@ -28895,62 +28970,62 @@ begin
   end;
 end;
 
-procedure TForm7.Label209MouseLeave(Sender: TObject);
+procedure TForm7.lblFiltrarMouseLeave(Sender: TObject);
 begin
-  if Form7.Label209.Font.Style <> [] then
+  if Form7.lblFiltrar.Font.Style <> [] then
   begin
     Form7.imgFiltrar.Picture    := Form7.Image209_R.Picture;
-    Form7.Label209.Font.Style := [];
+    Form7.lblFiltrar.Font.Style := [];
   end;
 end;
 
-procedure TForm7.Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblExcluirMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  if Form7.Label202.Font.Style <> [fsBold] then
+  if Form7.lblExcluir.Font.Style <> [fsBold] then
   begin
     Form7.imgExcluir.Picture    := Form7.Image202_X.Picture;
-    Form7.Label202.Font.Style := [fsBold];
+    Form7.lblExcluir.Font.Style := [fsBold];
   end;
 end;
 
-procedure TForm7.Label203MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblProcurarMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  if Form7.Label203.Font.Style <> [fsBold] then
+  if Form7.lblProcurar.Font.Style <> [fsBold] then
   begin
     Form7.imgProcurar.Picture    := Form7.Image203_X.Picture;
-    Form7.Label203.Font.Style := [fsBold];
+    Form7.lblProcurar.Font.Style := [fsBold];
   end;
 end;
 
-procedure TForm7.Label205MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblImprimirMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  if Form7.Label205.Font.Style <> [fsBold] then
+  if Form7.lblImprimir.Font.Style <> [fsBold] then
   begin
     Form7.imgImprimir.Picture    := Form7.Image205_X.Picture;
-    Form7.Label205.Font.Style := [fsBold];
+    Form7.lblImprimir.Font.Style := [fsBold];
   end;
 end;
 
-procedure TForm7.Label204MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblVisualizarMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  if Form7.Label204.Font.Style <> [fsBold] then
+  if Form7.lblVisualizar.Font.Style <> [fsBold] then
   begin
     Form7.imgVisualizar.Picture    := Form7.Image204_X.Picture;
-    Form7.Label204.Font.Style := [fsBold];
+    Form7.lblVisualizar.Font.Style := [fsBold];
   end;
 end;
 
-procedure TForm7.Label206MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblEditarMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  if Form7.Label206.Font.Style <> [fsBold] then
+  if Form7.lblEditar.Font.Style <> [fsBold] then
   begin
     Form7.imgEditar.Picture    := Form7.Image206_X.Picture;
-    Form7.Label206.Font.Style := [fsBold];
+    Form7.lblEditar.Font.Style := [fsBold];
   end;
 end;
 
@@ -28965,21 +29040,19 @@ begin
   end;
 end;
 
-procedure TForm7.Label209MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TForm7.lblFiltrarMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  if Form7.Label209.Font.Style <> [fsBold] then
+  if Form7.lblFiltrar.Font.Style <> [fsBold] then
   begin
     Form7.imgFiltrar.Picture    := Form7.Image209_X.Picture;
-    Form7.Label209.Font.Style := [fsBold];
+    Form7.lblFiltrar.Font.Style := [fsBold];
   end;
 end;
 
 procedure TForm7.ibDataSet23QTD_ORIGINALChange(Sender: TField);
 begin
-  //
   // converter unidades de medida na nota de compra
-  //
   try
     if (Form7.ProdutoOld.sDescricao  <> Form7.ibDataSet23DESCRICAO.AsString) or
        (Form7.ProdutoOld.sQuantidade <> Form7.ibDataSet23QTD_ORIGINAL.AsString) or
@@ -28987,9 +29060,9 @@ begin
        bMudei then
     begin
       bMudei := False;
-      //
+      
       if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
-      //
+
       if (Form7.ibDataSet4FATORC.AsFloat = 0) or (Form7.ibDataSet4FATORC.AsFloat = 1) then
       begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := Form7.ibDataSet23QTD_ORIGINAL.AsFloat;
@@ -28999,19 +29072,18 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
         Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
       end;
-      //
+
       Form7.ProdutoOld.sDescricao  := Form7.ibDataSet23DESCRICAO.AsString;
       Form7.ProdutoOld.sQuantidade := Form7.ibDataSet23QTD_ORIGINAL.AsString;
       Form7.ProdutoOld.sUnitario   := Form7.ibDataSet23UNITARIO_O.AsString;
     end;
-  except end;  
+  except
+  end;
 end;
 
 procedure TForm7.ibDataSet23UNITARIO_OChange(Sender: TField);
 begin
-  //
   // converter unidades de medida na nota de compra
-  //
   try
     if (Form7.ProdutoOld.sDescricao  <> Form7.ibDataSet23DESCRICAO.AsString) or
        (Form7.ProdutoOld.sQuantidade <> Form7.ibDataSet23QTD_ORIGINAL.AsString) or
@@ -29031,10 +29103,9 @@ begin
       Form7.ProdutoOld.sDescricao  := Form7.ibDataSet23DESCRICAO.AsString;
       Form7.ProdutoOld.sQuantidade := Form7.ibDataSet23QTD_ORIGINAL.AsString;
       Form7.ProdutoOld.sUnitario   := Form7.ibDataSet23UNITARIO_O.AsString;
-      //
     end;
-  except end;
-  //
+  except
+  end;
 end;
 
 procedure TForm7.ibDataSet23AfterScroll(DataSet: TDataSet);
