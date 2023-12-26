@@ -8052,7 +8052,7 @@ begin
         end;
       end else
       begin
-        MensagemSistema('Esta ordem de serviço já foi importada para um documento fiscal e não poderá ser excluída.',msgAtencao);
+        MensagemSistema('Esta Ordem de Serviço já foi importada para um documento fiscal e não poderá ser excluída.',msgAtencao);
       end;
     end;
   finally
