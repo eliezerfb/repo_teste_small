@@ -8,6 +8,9 @@ uses
   Buttons, Grids, DBGrids, ComCtrls;
 
 type
+  TOrigemImpOS = (orNFE, orNFSE);
+
+type
   TFrmPesquisaOrdemServico = class(TFrmGridPesquisaPadrao)
     IBQPESQUISANUMERO: TIBStringField;
     IBQPESQUISADATA: TDateField;
@@ -25,9 +28,10 @@ type
     procedure SelecionaPesquisa; override;
   public
     { Public declarations }
+    campoDocumento : string;
   end;
 
-  function PesquisaNumeroOrdemServico(Titulo:string):string;
+  function PesquisaNumeroOrdemServico(Titulo:string; Origem : TOrigemImpOS):string;
 
 var
   FrmPesquisaOrdemServico: TFrmPesquisaOrdemServico;
@@ -41,13 +45,22 @@ uses uSmallConsts
 
 {$R *.dfm}
 
-function PesquisaNumeroOrdemServico(Titulo:string):string;
+function PesquisaNumeroOrdemServico(Titulo:string; Origem : TOrigemImpOS):string;
 begin
   Result := '';
 
   try
     FrmPesquisaOrdemServico := TFrmPesquisaOrdemServico.create(nil);
     FrmPesquisaOrdemServico.lblTitulo1.Caption := Titulo;
+
+    {Mauricio Parizotto 2023-12-23 Inicio}
+    if Origem = orNFE then
+      FrmPesquisaOrdemServico.campoDocumento := 'NF';
+
+    if Origem = orNFSE then
+      FrmPesquisaOrdemServico.campoDocumento := 'NFSE as NF';
+    {Mauricio Parizotto 2023-12-23 Fim}
+
     if FrmPesquisaOrdemServico.ShowModal = mrOk then
     begin
       Result := FrmPesquisaOrdemServico.FIdSelecionado;
@@ -115,7 +128,8 @@ begin
                           ' 	CLIENTE, '+
                           ' 	TECNICO, '+
                           ' 	TOTAL_OS, '+
-                          ' 	NF'+
+                          //' 	NF'+ Mauricio Parizotto 2023-12-26
+                          campoDocumento+
                           ' From OS'+
                           vFiltro+
                           ' Order By DATA desc, NUMERO desc ';

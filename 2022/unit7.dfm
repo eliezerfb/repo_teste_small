@@ -1,11 +1,11 @@
 object Form7: TForm7
-  Left = 227
-  Top = 68
+  Left = 232
+  Top = 32
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 850
+  ClientHeight = 917
   ClientWidth = 1383
   Color = clWhite
   Ctl3D = False
@@ -7974,7 +7974,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 810
+    Top = 877
     Width = 1383
     Height = 40
     Align = alBottom
@@ -19156,7 +19156,7 @@ object Form7: TForm7
       
         '   IDENTIFI2, IDENTIFI3, IDENTIFI4, GARANTIA, OBSERVACAO, TOTAL_' +
         'SERV, TOTAL_PECA, '
-      '   TOTAL_FRET, DESCONTO, TOTAL_OS, NF, REGISTRO, IDOS)'
+      '   TOTAL_FRET, DESCONTO, TOTAL_OS, NF, REGISTRO, IDOS,NFSE)'
       'values'
       
         '  (:NUMERO, :DATA, :HORA, :CLIENTE, :DATA_PRO, :HORA_PRO, :TEMPO' +
@@ -19169,7 +19169,7 @@ object Form7: TForm7
         'BSERVACAO, '
       
         '   :TOTAL_SERV, :TOTAL_PECA, :TOTAL_FRET, :DESCONTO, :TOTAL_OS, ' +
-        ':NF, :REGISTRO, :IDOS)')
+        ':NF, :REGISTRO, :IDOS, :NFSE)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERO,'
@@ -19200,7 +19200,8 @@ object Form7: TForm7
       '  TOTAL_OS,'
       '  NF,'
       '  REGISTRO,'
-      '  IDOS'
+      '  IDOS,'
+      '  NFSE'
       'from OS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -19237,7 +19238,8 @@ object Form7: TForm7
       '  TOTAL_OS = :TOTAL_OS,'
       '  NF = :NF,'
       '  REGISTRO = :REGISTRO,'
-      '  IDOS = :IDOS'
+      '  IDOS = :IDOS,'
+      '  NFSE = :NFSE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -19397,6 +19399,12 @@ object Form7: TForm7
       FieldName = 'IDOS'
       Origin = 'OS.IDOS'
       Visible = False
+    end
+    object ibDataSet3NFSE: TIBStringField
+      DisplayLabel = 'Nota Fiscal'
+      FieldName = 'NFSE'
+      Origin = 'OS.NFSE'
+      Size = 12
     end
   end
   object DataSource3: TDataSource
@@ -20136,7 +20144,6 @@ object Form7: TForm7
     Top = 281
   end
   object IBDatabase1: TIBDatabase
-    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'

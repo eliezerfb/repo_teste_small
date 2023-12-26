@@ -2390,6 +2390,15 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2023-12-11 Fim}
+
+
+  {Mauricio Parizotto 2023-12-26 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OS', 'NFSE') = False then
+  begin
+    if ExecutaComando('alter table OS add NFSE varchar(12)') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2023-12-26 Fim}
   
   Form22.Repaint;
   Mensagem22('Aguarde...');
