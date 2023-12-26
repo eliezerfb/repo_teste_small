@@ -11795,12 +11795,6 @@ begin
             //
             if Form1.bNFazMaisNada then
             begin
-              {Sandro Silva 2023-06-23 inicio
-              if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
-                Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
-              else
-                Display('EM VENDA','Menu Fiscal Indisponível nesta tela. Entre com EAN 13, Código ou Descrição'); // Sandro Silva 2016-03-01
-              }
               if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (PAFNFCe = False) then // Sandro Silva 2020-12-07 if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
                 Display('EM VENDA','Entre com EAN 13, Código ou Descrição')
               else if (Form1.sModeloECF_Reserva = '99') then
@@ -12494,8 +12488,7 @@ begin
                   end;
                   Form1.ibDataSet7.Next;
                 end;
-
-
+                                 
               end;// if bNFCeUsoDenegado = False then
 
               LogFrente('12427 Salvou PAGAMENT ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
@@ -31355,7 +31348,6 @@ begin
   }
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
-    LogFrente('31060 vai validar recursos ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
     if ValidaRecursos.ValidaQtdDocumentoFrente(Form1.ibDataSet27.FieldByName('DATA').AsDateTime, tmdLancando) then
     begin
       if Form1.sModeloECF = '59' then Result := _ecf59_Pagamento(pP1);
