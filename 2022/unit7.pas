@@ -9696,6 +9696,7 @@ end;
 
 procedure TForm7.FormCreate(Sender: TObject);
 begin
+  IBDatabase1.Connected := False; // Garantia, caso esquecer a propriedade Connected := True no objeto Sandro Silva 2023-12-26
   {Sandro Silva 2023-07-05 inicio}
   slPickListBandeira         := TStringList.Create;
   slPickListFormaDePagamento := TStringList.Create;
