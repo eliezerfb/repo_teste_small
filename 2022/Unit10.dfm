@@ -13120,12 +13120,12 @@ object Form10: TForm10
           Caption = '  Promo'#231#227'o por quantidade '
           TabOrder = 1
           object Label99: TLabel
-            Left = 49
+            Left = 36
             Top = 45
-            Width = 97
+            Width = 105
             Height = 13
             AutoSize = False
-            Caption = 'Comprando mais de '
+            Caption = 'Comprando a partir de'
             Color = clBtnHighlight
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
@@ -13171,12 +13171,12 @@ object Form10: TForm10
             Transparent = True
           end
           object Label103: TLabel
-            Left = 49
+            Left = 36
             Top = 75
-            Width = 97
+            Width = 105
             Height = 13
             AutoSize = False
-            Caption = 'Comprando mais de '
+            Caption = 'Comprando a partir de'
             Color = clBtnHighlight
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
