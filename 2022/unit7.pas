@@ -8052,11 +8052,12 @@ begin
         end;
       end else
       begin
-        MensagemSistema('Esta ordem de serviço já foi importado para um documento fiscal e não poderá ser excluído.',msgAtencao);
+        MensagemSistema('Esta ordem de serviço já foi importada para um documento fiscal e não poderá ser excluída.',msgAtencao);
       end;
     end;
   finally
     DBGrid1.Enabled := True;
+    DBGrid1.SetFocus;
   end;
 end;
 
