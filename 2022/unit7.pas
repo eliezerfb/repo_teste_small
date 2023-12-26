@@ -11150,7 +11150,8 @@ begin
 
         // Campos
         sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TFFTTTTTTFFFFFFFFFFFFFFFF');
-        iCampos                := 25;
+        //iCampos                := 25; Mauricio Parizotto 2023-12-26
+        iCampos                := 26;
 
         // Menu
         Form7.Menu             := mmOS;
