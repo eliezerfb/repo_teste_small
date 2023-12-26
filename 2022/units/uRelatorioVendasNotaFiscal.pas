@@ -244,7 +244,6 @@ begin
   FqryDados.SQL.Add('WHERE');
   FqryDados.SQL.Add('    (EMITIDA=''S'')');
   FqryDados.SQL.Add('    AND (EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
-  FqryDados.SQL.Add('    AND (COALESCE(VENDAS.TOTAL,0) > 0)');
   FqryDados.SQL.Add(RetornarWhereOperacoes);
   FqryDados.SQL.Add('ORDER BY VENDAS.EMISSAO, VENDAS.NUMERONF');
   FqryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
@@ -325,7 +324,6 @@ begin
   FqryDados.SQL.Add('WHERE');
   FqryDados.SQL.Add('    (VENDAS.EMITIDA=''S'')');
   FqryDados.SQL.Add('    AND (VENDAS.EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
-  FqryDados.SQL.Add('    AND (COALESCE(VENDAS.TOTAL,0) > 0)');
   FqryDados.SQL.Add(RetornarWhereOperacoes);
   FqryDados.SQL.Add('ORDER BY VENDAS.EMISSAO, VENDAS.NUMERONF');
   FqryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
