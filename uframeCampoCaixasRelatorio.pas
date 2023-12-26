@@ -127,7 +127,8 @@ end;
 
 function TframeCampoCaixasRel.getCaixasSelecionados: String;
 begin
-  Result := StringReplace(ListaCaixasSelecionados(chklbCaixas), #39, EmptyStr, [rfReplaceAll]);
+  // Sandro Silva 2023-12-13 Result := StringReplace(ListaCaixasSelecionados(chklbCaixas), #39, EmptyStr, [rfReplaceAll]);
+  Result := ListaCaixasSelecionados(chklbCaixas);
 end;
 
 end.

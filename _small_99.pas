@@ -7,7 +7,12 @@ uses
   Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls, SMALL_DBEdit, IniFiles,
   Unit2, ShellApi, Unit22
-  , IBQuery, IBDatabase, StrUtils
+  {$IFDEF VER150}
+  , IBQuery, IBDatabase
+  {$ELSE}
+  , IBX.IBQuery, IBX.IBDatabase
+  {$ENDIF}
+  , StrUtils
   , ufuncoesfrente // Sandro Silva 2018-07-03
   , usmallprint
   , tnPDF

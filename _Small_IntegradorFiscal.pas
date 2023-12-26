@@ -9,7 +9,13 @@ interface
 uses
 
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, IniFiles, IBCustomDataSet, IBQuery, IBDatabase, StrUtils,
+  Dialogs, IniFiles
+  {$IFDEF VER150}
+  , IBCustomDataSet, IBQuery, IBDatabase
+  {$ELSE}
+  , IBX.IBCustomDataSet, IBX.IBQuery, IBX.IBDatabase
+  {$ENDIF}
+  , StrUtils,
   smallfunc
   , ufuncoesfrente
   , Fiscal

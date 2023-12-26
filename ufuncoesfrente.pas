@@ -349,13 +349,17 @@ function TemGerencialLancadoOuConvertido(
   IBTransaction: TIBTransaction): Boolean;
 procedure GravaNumeroCupomFrenteINI(sNumero: String; sModelo: String);
 function LeNumeroCupomFrenteINI(sModelo: String; Default: String): String;
+function ProdutoComControleDeGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComControleDeSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+function ProdutoComposto(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
   out fTributos_federais: Real; out fTributos_estaduais: Real;
   out fTributos_municipais: Real): String;
+procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
-  
+
 var
   cWinDir: array[0..200] of Char;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
@@ -2500,6 +2504,65 @@ begin
   INI.Free;
 end;
 
+function ProdutoComControleDeGrade(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQGRADE: TIBQuery;
+begin
+  Result := False;
+  IBQGRADE    := CriaIBQuery(IBTransaction);
+  try
+    IBQGRADE.Close;
+    IBQGRADE.SQL.Text :=
+      'select distinct CODIGO ' +
+      'from GRADE ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQGRADE.Open;
+    Result := (IBQGRADE.FieldByName('CODIGO').AsString <> '');
+  except
+  end;
+  FreeAndNil(IBQGRADE);
+end;
+
+function ProdutoComControleDeSerie(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQSERIE: TIBQuery;
+begin
+  Result := False;
+  IBQSERIE    := CriaIBQuery(IBTransaction);
+  try
+    IBQSERIE.Close;
+    IBQSERIE.SQL.Text :=
+      'select SERIE ' +
+      'from ESTOQUE ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQSERIE.Open;
+
+    Result := (IBQSERIE.FieldByName('SERIE').AsString = '1');
+  except
+  end;
+  FreeAndNil(IBQSERIE);
+end;
+
+function ProdutoComposto(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+var
+  IBQCOMPOSTO: TIBQuery;
+begin
+  Result := False;
+  IBQCOMPOSTO := CriaIBQuery(IBTransaction);
+  try
+    IBQCOMPOSTO.Close;
+    IBQCOMPOSTO.SQL.Text :=
+      'select distinct CODIGO ' +
+      'from COMPOSTO ' +
+      'where CODIGO = ' + QuotedStr(sCodigo);
+    IBQCOMPOSTO.Open;
+
+    Result := (IBQCOMPOSTO.FieldByName('CODIGO').AsString <> '');
+   except
+   end;
+   FreeAndNil(IBQCOMPOSTO);
+end;
+
 function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   sPedido: String; sCaixa: String;
   dDescontoNoTotal: Double; dTotalDaVenda: Double;
@@ -2548,6 +2611,23 @@ begin
   end;
 
 end;
+
+{Sandro Silva 2023-11-24 inicio}
+procedure SleepWithoutFreeze(msec: int64);
+var
+  Start, Elapsed: DWORD;
+begin
+  Start := GetTickCount;
+  Elapsed := 0;
+  repeat
+    // (WAIT_OBJECT_0+nCount) is returned when a message is in the queue.
+    // WAIT_TIMEOUT is returned when the timeout elapses.
+    if MsgWaitForMultipleObjects(0, Pointer(nil)^, FALSE, msec-Elapsed, QS_ALLINPUT) <> WAIT_OBJECT_0 then Break;
+    Application.ProcessMessages;
+    Elapsed := GetTickCount - Start;
+  until Elapsed >= msec;
+end;
+{Sandro Silva 2023-11-24 fim}
 
 {Sandro Silva 2023-10-24 inicio}
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean;
