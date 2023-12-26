@@ -109,6 +109,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure cdsProdutosNotaBeforeDelete(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
+    procedure dbgPrincipalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     CampoSel : string;
@@ -521,6 +523,12 @@ begin
   SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO'); // Mauricio Parizotto 2023-12-21
   cdsProdutosNotaDESCRICAO.Size := SizeDescricaoProd;
   ibdProdutosNotaDESCRICAO.Size := SizeDescricaoProd;
+end;
+
+procedure TFrmProdutosDevolucao.dbgPrincipalKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
 
 end.

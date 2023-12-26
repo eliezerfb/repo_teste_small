@@ -108,6 +108,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
     OnDblClick = dbGridPrincipalDblClick
+    OnKeyDown = dbGridPrincipalKeyDown
   end
   object btnOK: TBitBtn
     Left = 698

@@ -166,6 +166,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     OnCellClick = dbgPrincipalCellClick
     OnDrawColumnCell = dbgPrincipalDrawColumnCell
     OnDblClick = dbgPrincipalDblClick
+    OnKeyDown = dbgPrincipalKeyDown
     Columns = <
       item
         Color = clBtnFace

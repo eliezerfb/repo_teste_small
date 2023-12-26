@@ -7826,6 +7826,7 @@ object Form7: TForm7
     TitleFont.Style = []
     Visible = False
     OnDrawDataCell = DBGrid2DrawDataCell
+    OnKeyDown = DBGrid2KeyDown
   end
   object DBGrid3: TDBGrid
     Left = 624
@@ -7857,6 +7858,7 @@ object Form7: TForm7
     TitleFont.Style = []
     Visible = False
     OnDrawDataCell = DBGrid3DrawDataCell
+    OnKeyDown = DBGrid3KeyDown
     OnKeyUp = DBGrid3KeyUp
   end
   object Panel9: TPanel
@@ -7907,6 +7909,7 @@ object Form7: TForm7
     Visible = False
     OnColEnter = DBGrid4ColEnter
     OnDrawDataCell = DBGrid4DrawDataCell
+    OnKeyDown = DBGrid4KeyDown
   end
   object Panel10: TPanel
     Left = 624
@@ -14369,7 +14372,6 @@ object Form7: TForm7
       DisplayLabel = 'Munic'#237'pio'
       DisplayWidth = 40
       FieldName = 'MUNICIPIO'
-      OnSetText = ibDataSet13MUNICIPIOSetText
       Size = 40
     end
     object ibDataSet13ESTADO: TIBStringField
@@ -21486,7 +21488,8 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm' +
+      '50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21521,7 +21524,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm5' +
+      '0a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21837,7 +21841,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\DPEC'
+      'vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21868,7 +21872,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\DPEC'
+      'm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -2252,8 +2252,6 @@ type
     procedure ibDataSet7AfterScroll(DataSet: TDataSet);
     procedure FormDestroy(Sender: TObject);
     procedure ibDataSet15SAIDADChange(Sender: TField);
-    procedure ibDataSet13MUNICIPIOSetText(Sender: TField;
-      const Text: String);
     procedure RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
     procedure ibDataSet16AfterOpen(DataSet: TDataSet);
     procedure IBDataSet2ENDERESetText(Sender: TField; const Text: String);
@@ -2309,6 +2307,12 @@ type
     procedure ibdSituacaoOSSITUACAOSetText(Sender: TField;
       const Text: String);
     procedure otalizadorgeraldevenda1Click(Sender: TObject);
+    procedure DBGrid2KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DBGrid3KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -12563,6 +12567,8 @@ begin
 
     RefreshDados;
   end;
+
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift);
 end;
 
 procedure TForm7.Imprimircheque1Click(Sender: TObject);
@@ -30540,17 +30546,11 @@ procedure TForm7.ibDataSet7PORTADORSetText(Sender: TField;
   const Text: String);
 var
   MyBookmark: TBookmark;
-//  bButton : Integer;
 begin
-  //
   if Form7.sModulo = 'VENDA' then // Ok
   begin
     try
-      //
-//    bButton := Application.MessageBox(Pchar('Alterar o portador para todas as duplicatas? '),'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-//    if bButton = IDYes then
       begin
-
         if Pos('|' + Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) + '|', '||15|') > 0 then
         begin
 
@@ -30591,13 +30591,12 @@ begin
           Form7.ibDataSet7PORTADOR.AsString := Text;
 
       end;
-      //
-    except end;
+    except
+    end;
   end else
   begin
     Form7.ibDataSet7PORTADOR.AsString := Text;
   end;
-  //
 end;
 
 procedure TForm7.Anlisediaria1Click(Sender: TObject);
@@ -30629,12 +30628,10 @@ begin
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     //
     // Faturamento
-    //
     DeleteFile(pChar(Form1.sAtual+'\faturamento.gra'));
     DeleteFile(pChar(Form1.sAtual+'\faturamento.png'));
     //                               //
     // cria o gráfico de receber.png //
-    //                               //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\faturamento.gra');
     Mais1Ini.WriteString('DADOS','3D','1');
     Mais1Ini.WriteString('DADOS','NomeBmp','faturamento.png');
@@ -30685,12 +30682,10 @@ begin
     WriteLn(F,'     <br><a href="'+Form1.sAtual+'\faturamento.png"><img src="faturamento.png" border="0" width=500 height=250></a>');
     //
     // Despesas
-    //
     DeleteFile(pChar(Form1.sAtual+'\despesas.gra'));
     DeleteFile(pChar(Form1.sAtual+'\despesas.png'));
     //                               //
     // cria o gráfico de receber.png //
-    //                               //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\despesas.gra');
     Mais1Ini.WriteString('DADOS','3D','1');
     Mais1Ini.WriteString('DADOS','NomeBmp','despesas.png');
@@ -30742,12 +30737,10 @@ begin
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\despesas.png"><img src="despesas.png" border="0" width=500 height=250></a>');
     //
     // Lucro
-    //
     DeleteFile(pChar(Form1.sAtual+'\lucro.gra'));
     DeleteFile(pChar(Form1.sAtual+'\lucro.png'));
     //                               //
     // cria o gráfico de receber.png //
-    //                               //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\lucro.gra');
     Mais1Ini.WriteString('DADOS','3D','1');
     Mais1Ini.WriteString('DADOS','NomeBmp','lucro.png');
@@ -30780,7 +30773,6 @@ begin
     //
     while not Form1.ibQuery1.Eof do
     begin
-      //
       I := I + 1;
       //
       if Form1.ibQuery2.FieldByName('DIA').AsString = Form1.ibQuery1.FieldByName('DIA').AsString then
@@ -30794,19 +30786,17 @@ begin
       Form1.ibQuery1.Next;
       Form1.ibQuery2.Next;
     end;
-    //
+
     ShellExecute( 0, 'Open', 'graficos.exe','lucro.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
     while not FileExists(Form1.sAtual+'\lucro.png') do sleep(10);
     WriteLn(F,'     <br><br><a href="'+Form1.sAtual+'\lucro.png"><img src="lucro.png" border="0" width=500 height=250></a>');
-    //
+
     WriteLn(F,'<br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
       + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
       + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><font face="Microsoft Sans Serif" size=1><br>');
-    //
+
     WriteLn(F,'<br>');              // Linha em branco
-    //
-    // WWW
-    //
+
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
       WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -30822,13 +30812,12 @@ begin
     //
     Form7.Close;
     Form7.Show;
-    //
-  except end;
-  //
+  except
+  end;
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
   Form7.ibDataSet1.EnableControls;
   AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
-  //
 end;
 
 procedure TForm7.btnRetornoCNAB240Click(Sender: TObject);
@@ -32410,19 +32399,6 @@ begin
   end;
 end;
 
-{ Movido para uFuncoesRetaguarda
-function TForm7.FormatFloatXML(dValor: Double; iPrecisao: Integer): String;
-// Sandro Silva 2015-12-10 Formata valor float com as casas decimais para usar nos elementos do xml da nfce
-// Parâmetros:
-// dValor: Valor a ser formatado
-// iPrecisao: Quantidade de casas decimais resultante no valor formatado. Por default formata com 2 casas. Ex.: 2 casas = 0,00; 3 casas = 0,000
-var
-  sMascara: String;
-begin
-  sMascara := '##0.' + DupeString('0', iPrecisao);
-  Result := StrTran(Alltrim(FormatFloat(sMascara, dValor)), ',', '.');
-end;
-}
 // A PEDIDO DO
 // VANDERLEI PERETI
 // FONES: 49 35664136 / 91427178
@@ -32651,10 +32627,8 @@ begin
           //
           if bButton = IDYES then
           begin
-            //
             while (not Form7.ibDataSet7.Eof) and (sRegistro <> Form7.ibDataSet7.FieldByName('REGISTRO').AsString) do
             begin
-              //
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
@@ -32694,13 +32668,10 @@ begin
           if (Pos(Form7.ibDataSet7NOME.AsString,sMandados)=0) and (Form7.ibDataSet7ATIVO.AsFloat=0) then
           begin
             try
-              //
-              //                                                                    //
-              // Relaciona os clientes com o arquivo de vendas                     //
-              //                                                                  //
+              // Relaciona os clientes com o arquivo de vendas
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
-              Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+              Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');
               Form7.ibDataSet2.Open;
               //
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
@@ -33455,47 +33426,6 @@ begin
   finally
     ibDataSet15SAIDAD.OnChange := ibDataSet15SAIDADChange;
   end;
-end;
-
-procedure TForm7.ibDataSet13MUNICIPIOSetText(Sender: TField;
-  const Text: String);
-begin
-  {
-  if Screen.ActiveForm = Form17 then
-  begin
-    //
-    if (Form17.ibdMunicipiosNOME.AsString <> '') or (Trim(Text) <> '') then
-    begin
-      //
-      if Length(AllTrim(Form7.ibDataSet13ESTADO.AsString)) <> 2 then
-      begin
-        Form17.ibdMunicipios.Close;
-        Form17.ibdMunicipios.SelectSQL.Clear;
-        Form17.ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS order by NOME'); // Procura em todo o Pais o estado está em branco
-        Form17.ibdMunicipios.Open;
-      end else
-      begin
-        Form17.ibdMunicipios.Close;
-        Form17.ibdMunicipios.SelectSQL.Clear;
-        Form17.ibdMunicipios.SelectSQL.Add('select * from MUNICIPIOS where UF='+QuotedStr(Form7.IBDataSet13ESTADO.AsString)+ ' order by NOME'); // Procura dentro do estado
-        Form17.ibdMunicipios.Open;
-      end;
-      //
-      Form17.ibdMunicipios.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
-      //
-      if AllTrim(Text) = '' then
-        Form7.ibDataSet13MUNICIPIO.AsString := Text
-      else if Pos(AnsiUpperCase(AllTrim(Text)), AnsiUpperCase(Form17.ibdMunicipiosNOME.AsString)) <> 0 then
-      begin
-        Form7.ibDataSet13MUNICIPIO.AsString := Form17.ibdMunicipiosNOME.AsString;
-        if Form7.ibDataSet13ESTADO.AsString = '' then
-          Form7.ibDataSet13ESTADO.AsString := Form17.ibdMunicipiosUF.AsString;
-      end;
-    end
-    else
-      Form7.ibDataSet13MUNICIPIO.AsString := Text;
-  end;
-  Mauricio Parizotto 2023-06-27}
 end;
 
 procedure TForm7.RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
@@ -34346,6 +34276,24 @@ begin
       ibdSituacaoOSSITUACAO.AsString := AllTrim(cTexto);
   end;
 
+end;
+
+procedure TForm7.DBGrid2KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+end;
+
+procedure TForm7.DBGrid3KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+end;
+
+procedure TForm7.DBGrid4KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
 
 end.

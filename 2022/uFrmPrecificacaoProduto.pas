@@ -201,6 +201,8 @@ end;
 procedure TFrmPrecificacaoProduto.dbgPrincipalKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   if Key = VK_RETURN then
   begin
     if dbgPrincipal.SelectedIndex = 4 then

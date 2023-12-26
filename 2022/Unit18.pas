@@ -995,9 +995,8 @@ var
   iColumnIndex : Integer; // Sandro Silva 2023-11-13 I : Integer;
   slFormas: TStringList;
   sForma: String;
-  //iRecno: Integer;
 begin
-  //iColumnIndex := -1;
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
   try
     {Sandro Silva 2023-06-21 inicio}

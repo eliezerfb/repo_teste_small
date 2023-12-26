@@ -490,6 +490,8 @@ end;
 procedure TFrmOrigemCombustivel.DBGridRastroKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   if Key = VK_DELETE then
   begin
     if TDBGrid(Sender).DataSource.DataSet.RecordCount > 0 then

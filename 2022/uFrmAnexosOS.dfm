@@ -42,6 +42,7 @@ inherited FrmAnexosOS: TFrmAnexosOS
     OnCellClick = dbgPrincipalCellClick
     OnDrawColumnCell = dbgPrincipalDrawColumnCell
     OnDblClick = dbgPrincipalDblClick
+    OnKeyDown = dbgPrincipalKeyDown
     Columns = <
       item
         Expanded = False

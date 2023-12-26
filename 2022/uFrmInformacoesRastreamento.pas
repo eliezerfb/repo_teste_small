@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB,
+  Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB, smallfunc,
   DBClient, Grids, DBGrids, IBCustomDataSet;
 
 const COR_CAMPO_OBRIGATORIO = $0080FFFF;
@@ -379,6 +379,8 @@ end;
 procedure TFrmInformacoesRastreamento.DBGridRastroKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   if Key = VK_DELETE then
   begin
     if CDSLOTES.RecordCount > 0 then
