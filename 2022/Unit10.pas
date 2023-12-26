@@ -7686,7 +7686,10 @@ begin
   {$IFDEF VER150}
   if ACol <> 1 then
   begin
-    StringGrid2.Canvas.Font.Color  := clGray;
+    {Dailon Parisotto (f-7704) 2023-12-26 INICIO}
+    StringGrid2.Canvas.Brush.Color  := clBtnFace;
+    StringGrid2.Canvas.Font.Color  := clBlack;
+    {Dailon Parisotto (f-7704) 2023-12-26 FIM}
     if gdSelected in State then
       StringGrid2.Canvas.Font.Color  := clBlack; // Sandro Silva 2023-05-15
     StringGrid2.Canvas.FillRect(Rect);
@@ -7697,7 +7700,10 @@ begin
   {$ELSE}
   if (ACol > 1) and not (gdSelected in State) and (ARow > 0) then
   begin
-    StringGrid2.Canvas.Font.Color  := clGray;
+    {Dailon Parisotto (f-7704) 2023-12-26 INICIO}
+    StringGrid2.Canvas.Brush.Color  := clBtnFace;
+    StringGrid2.Canvas.Font.Color  := clBlack;
+    {Dailon Parisotto (f-7704) 2023-12-26 FIM}
     StringGrid2.Canvas.FillRect(Rect);
     StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
   end;
