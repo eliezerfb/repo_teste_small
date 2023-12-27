@@ -66,6 +66,8 @@ type
     FTroco: Currency;
     FMensagem: String;
     FTotal: Currency;
+    FEmailCliente: String;
+    FEnderecoCliente: String;
   procedure SetTransaction(const Value: TIBTransaction);
     procedure SetPedido(const Value: String);
     procedure SetCaixa(const Value: String);
@@ -74,6 +76,8 @@ type
     //procedure SetfDescontoNoTotal(const Value: Currency);
     procedure SetTroco(const Value: Currency);
     procedure SetMensagem(const Value: String);
+    procedure SetEmailCliente(const Value: String);
+    procedure SetEnderecoCliente(const Value: String);
   public
     constructor Create; // constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -82,6 +86,8 @@ type
     property Caixa: String read FCaixa write SetCaixa;
     property Cliente: String read FCliente write SetCliente;
     property CNPJCliente: String read FCNPJCliente write SetCNPJCliente;
+    property EmailCliente: String read FEmailCliente write SetEmailCliente;
+    property EnderecoCliente: String read FEnderecoCliente write SetEnderecoCliente;
     //property fDescontoNoTotal: Currency read FfDescontoNoTotal write SetfDescontoNoTotal;
     property Troco: Currency read FTroco write SetTroco;
     property Total: Currency read FTotal write FTotal;
@@ -451,7 +457,14 @@ begin
 
     Venda.IBTransaction := Form1.ibDataSet27.Transaction;
     Venda.Pedido := FormataNumeroDoCupom(Form1.icupom);
-    Venda.Caixa  := Form1.sCaixa;      
+    Venda.Caixa  := Form1.sCaixa;
+
+    {Sandro Silva 2023-12-27 inicio}
+    Venda.CNPJCliente     := Form2.Edit2.Text;
+    Venda.Cliente         := Form2.Edit8.Text;
+    Venda.EmailCliente    := Form2.Edit10.Text;
+    Venda.EnderecoCliente := Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text;
+    {Sandro Silva 2023-12-27 fim}
 
     if Form1.ibDataSet25ACUMULADO2.AsFloat > 0 then
     begin
@@ -497,49 +510,41 @@ begin
     begin
       if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then
       begin
-        // Sandro Silva 2023-08-21 _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_99);
         _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
       end;
 
@@ -620,8 +625,8 @@ begin
       // Não retornar False se não imprimir ou enviar o email
       // False apenas se não conseguir gerar CF-e-SAT
       if Form1.ImprimirDANFCE1.Checked then
-       _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
-
+       _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Venda.CNPJCliente, Venda.CNPJCliente, Venda.EmailCliente, Venda.EnderecoCliente); // Sandro Silva 2023-12-27 _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
+       // 'Avenida Ipiranga, 99 Centro'#$A'Manaus - 90160-091'
     end
     else
     begin  // Importando MOBILE
@@ -1990,23 +1995,10 @@ begin
       IBQCLIFOR.SQL.Text := 'select * from CLIFOR where NOME='+QuotedStr(IBQALTERACA.FieldByName('CLIFOR').AsString)+' and trim(coalesce(NOME,'''')) <> '''' ';
       IBQCLIFOR.Open;
       //
-      {Sandro Silva 2023-08-16 inicio
-      if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Alltrim(IBQALTERACA.FieldByName('CLIFOR').AsString)<>'') then
-      begin
-        if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
-        begin
-          sCNPJCliente     := IBQCLIFOR.FieldByName('CGC').AsString; // CNPJ do Destinatário
-          sNomeCliente     := Trim(ConverteAcentos2(IBQCLIFOR.FieldByName('NOME').AsString));
-          sEmailCliente    := IBQCLIFOR.FieldByname('EMAIL').AsString;
-          sEnderecoCliente := IBQCLIFOR.FieldByname('ENDERE').AsString;
-          sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('COMPLE').AsString;
-          sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('CIDADE').AsString + '-' + IBQCLIFOR.FieldByname('ESTADO').AsString  + ' ' + IBQCLIFOR.FieldByname('CEP').AsString;
-        end;
-      end;
-      }
       if LimpaNumero(IBQALTERACA.FieldByName('CNPJ').AsString) <> '' then
         sCNPJCliente     := FormataCpfCgc(LimpaNumero(IBQALTERACA.FieldByName('CNPJ').AsString)); // CNPJ do Destinatário
-      sNomeCliente     := Trim(ConverteAcentos2(IBQALTERACA.FieldByName('CLIFOR').AsString));
+      if Trim(ConverteAcentos2(IBQALTERACA.FieldByName('CLIFOR').AsString)) <> '' then
+        sNomeCliente     := Trim(ConverteAcentos2(IBQALTERACA.FieldByName('CLIFOR').AsString));
 
       if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Trim(IBQALTERACA.FieldByName('CLIFOR').AsString) <> '') then
       begin
@@ -2020,7 +2012,6 @@ begin
           sEnderecoCliente := sEnderecoCliente + ' - ' + IBQCLIFOR.FieldByname('CIDADE').AsString + '-' + IBQCLIFOR.FieldByname('ESTADO').AsString  + ' ' + IBQCLIFOR.FieldByname('CEP').AsString;
         end;
       end;
-      {Sandro Silva 2023-08-16 fim}
 
       Canvas := TCanvas.Create;
 
@@ -2749,6 +2740,16 @@ begin
     Result := Result  +
      Copy(FaForma[i].Forma + Replicate(' ',35),1,35)+ Format('%10.2n',[FaForma[i].Valor])+chr(10);
   end;
+end;
+
+procedure TVenda99.SetEmailCliente(const Value: String);
+begin
+  FEmailCliente := Value;
+end;
+
+procedure TVenda99.SetEnderecoCliente(const Value: String);
+begin
+  FEnderecoCliente := Value;
 end;
 
 end.

@@ -24794,9 +24794,11 @@ end;
 
 procedure TForm1.ImprimeoDANFCE1Click(Sender: TObject);
 var
-  IBQPAGAMENT: TIBQuery;
+//  IBQPAGAMENT: TIBQuery;
+  IBQALTERACA: TIBQuery;
 begin
-  IBQPAGAMENT := CriaIBQuery(Form1.IBDataSet150.Transaction);
+  //IBQPAGAMENT := CriaIBQuery(Form1.IBDataSet150.Transaction);
+  IBQALTERACA := CriaIBQuery(Form1.IBDataSet150.Transaction);
 
   Form1.ExibePanelMensagem('Aguarde, imprimindo ' + Form1.sTipoDocumento2 + '...'); // Sandro Silva 2023-08-09 Form1.ExibePanelMensagem('Aguarde, imprimindo DANFCE...'); // Sandro Silva 2021-11-05
 
@@ -24804,6 +24806,7 @@ begin
   begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') then
     begin
+      {
       IBQPAGAMENT.Close;
       IBQPAGAMENT.SQL.Text :=
         'select * ' +
@@ -24812,6 +24815,7 @@ begin
         ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString) +
         ' and FORMA = ''13 Troco'' ';
       IBQPAGAMENT.Open;
+      }
       _ecf65_Imprime_DANFECE(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString);
     end
     else
@@ -24829,14 +24833,29 @@ begin
   begin
     Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
 
+    {Sandro Silva 2023-12-27 inicio
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, '', '', '', '');
+    }
+    IBQALTERACA.Close;
+    IBQALTERACA.SQL.Text :=
+      'select DISTINCT A.CNPJ, A.CLIFOR, ' +
+      'C.EMAIL, C.ENDERE, C.COMPLE, C.CIDADE, C.ESTADO, C.CEP ' +
+      'from ALTERACA A ' +
+      'left join CLIFOR C on C.CGC = A.CNPJ ' +
+      'where coalesce(A.CNPJ, '''') <> '''' ' +
+      ' and A.PEDIDO = ' + QuotedStr(Form1.ibDataSet150.FieldByName('NUMERONF').AsString) +
+      ' and CAIXA = ' + QuotedStr(Form1.ibDataSet150.FieldByName('CAIXA').AsString);
+    IBQALTERACA.Open;
+    _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, IBQALTERACA.FieldByName('CNPJ').AsString, IBQALTERACA.FieldByName('CLIFOR').AsString, IBQALTERACA.FieldByName('EMAIL').AsString, IBQALTERACA.FieldByName('ENDERE').AsString);
+    {Sandro Silva 2023-12-27 fim}
   end;
 
   Form1.OcultaPanelMensagem; // Sandro Silva 2021-11-05
-    
+
   Display(Form1.sStatusECF,Form1.sF); // Sandro Silva 2021-11-05
 
-  FreeAndNil(IBQPAGAMENT);
+  //FreeAndNil(IBQPAGAMENT);
+  FreeAndNil(IBQALTERACA);
 end;
 
 procedure TForm1.VisualizaroXMLdaNFCe1Click(Sender: TObject);
