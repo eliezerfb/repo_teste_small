@@ -7349,7 +7349,71 @@ begin
       MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
     end;
   end;
+
   {Sandro Silva 2023-03-29 fim}
+  // F7709 - Caso do banco onde existia registro com VALOR_DUPL e VALOR_PAGO armazenando o valor "INF"
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select first 1 VALOR_DUPL ' +
+      'from PAGAR ' +
+      'where cast(VALOR_DUPL as varchar(1000)) containing ''INF'' ' +
+      ' or upper(cast(VALOR_DUPL as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('VALOR_DUPL').AsString <> '' then
+    begin
+
+      Mensagem22('validando o valor das contas a pagar');
+
+      CommitaTudo(True);
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Text :=
+        'update PAGAR set VALOR_DUPL = 0.00 ' +
+        'where cast(VALOR_DUPL as varchar(1000)) containing ''INF'' ' +
+        ' or upper(cast(VALOR_DUPL as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
+      Form1.ibQuery1.ExecSQL;
+    end;
+  except
+    on E: Exception do
+    begin
+      //ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
+    end;
+  end;
+
+  // F7709 - Caso do banco onde existia registro com VALOR_DUPL e VALOR_PAGO armazenando o valor "INF"
+  try
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text :=
+      'select first 1 VALOR_PAGO ' +
+      'from PAGAR ' +
+      'where cast(VALOR_PAGO as varchar(1000)) containing ''INF'' ' +
+      ' or upper(cast(VALOR_PAGO as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
+    Form1.ibQuery1.Open;
+    if Form1.ibQuery1.FieldByName('VALOR_PAGO').AsString <> '' then
+    begin
+
+      Mensagem22('validando o valor pago das contas a pagar');
+
+      CommitaTudo(True);
+      Form1.ibQuery1.Close;
+      Form1.ibQuery1.SQL.Text :=
+        'update PAGAR set VALOR_PAGO = 0.00 ' +
+        'where cast(VALOR_PAGO as varchar(1000)) containing ''INF'' ' +
+        ' or upper(cast(VALOR_PAGO as varchar(1000))) containing ''1.#IND00000000000'' '; // NAN
+      Form1.ibQuery1.ExecSQL;
+    end;
+  except
+    on E: Exception do
+    begin
+      //ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
+    end;
+  end;
+
+  {Sandro Silva 2023-12-27 inicio}
+
+  {Sandro Silva 2023-12-27 fim}
 
   Form7.Caption := sMensagem + '...';
   //

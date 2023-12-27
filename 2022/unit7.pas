@@ -17315,7 +17315,13 @@ end;
 
 procedure TForm7.ibDataSet8VALOR_DUPLChange(Sender: TField);
 begin
-  if ibDataSet8VALOR_DUPL.AsFloat < 0 then ibDataSet8VALOR_DUPL.AsFloat := 0;
+  if ibDataSet8VALOR_DUPL.AsFloat < 0 then
+    ibDataSet8VALOR_DUPL.AsFloat := 0;
+  {Sandro Silva 2023-12-27 inicio}
+  // F7709 - Caso do banco onde existia registro com VALOR_DUPL e VALOR_PAGO armazenando o valor "INF"  
+  if AnsiContainsText(ibDataSet8VALOR_DUPL.AsString, 'INF') then
+    ibDataSet8VALOR_DUPL.AsFloat := 0;
+  {Sandro Silva 2023-12-27 fim}
 end;
 
 procedure TForm7.ibDataSet8VALOR_PAGOChange(Sender: TField);
@@ -17331,6 +17337,11 @@ begin
   end;
   if ibDataSet8VALOR_PAGO.AsFloat < 0 then
     ibDataSet8VALOR_PAGO.AsFloat := 0;
+  {Sandro Silva 2023-12-27 inicio}
+  // F7709 - Caso do banco onde existia registro com VALOR_DUPL e VALOR_PAGO armazenando o valor "INF"
+  if AnsiContainsText(ibDataSet8VALOR_PAGO.AsString, 'INF') then
+    ibDataSet8VALOR_PAGO.AsFloat := 0;
+  {Sandro Silva 2023-12-27 fim}
 end;
 
 procedure TForm7.ibDataSet8VALOR_PAGOValidate(Sender: TField);
