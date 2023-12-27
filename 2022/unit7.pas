@@ -2523,7 +2523,7 @@ type
   function JaTem(p1:tibDataSet; p2:tField; p3: boolean):Boolean;
   function CriaJpg(sP1: String) :Boolean;
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
-  function TraduzSql(P1: String;P2 :Boolean): String;
+  function TraduzSql(P1: String;P2 :Boolean; AoDataSet: TIBDataSet = nil): String;
   function ConfiguraNFE : Boolean;
 //  function ConsultaProcesso(sP1:String): boolean;
   function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
@@ -5509,10 +5509,13 @@ begin
   Result := True;
 end;
 
-function TraduzSql(P1: String;P2 :Boolean): String;
+function TraduzSql(P1: String;P2 :Boolean; AoDataSet: TIBDataSet = nil): String;
 var
   I : Integer;
 begin
+  if not Assigned(AoDataSet) then
+    AoDataSet := Form7.TabelaAberta;
+
   P1 := StrTran(P1,'COALESCE(ATIVO,0)=0', 'só ativos');
   P1 := StrTran(P1,'COALESCE(ATIVO,0)=1', 'só inativos');
 
@@ -5536,7 +5539,7 @@ begin
   P1 := StrTran(P1,' IE', ' Inscrição');
   P1 := StrTran(P1,'(IE)', ' Inscrição');
 
-  if Copy(Form7.TabelaAberta.SelectSQL.Text,1,12)='select first' then
+  if Copy(AoDataSet.SelectSQL.Text,1,12)='select first' then
     P1 := StrTran(P1, 'Listando' ,'Mostrando os últimos '+Form7.sMaxReg+' registros' );
 
   P1 := StrTran(P1,' and EMITIDA='+QuotedStr('X'), ', canceladas ');
@@ -5569,14 +5572,14 @@ begin
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
 
-  for I := 1 to Form7.TabelaAberta.FieldCount do
+  for I := 1 to AoDataSet.FieldCount do
   begin
-    if Form7.TabelaAberta.Fields[I-1].FieldName <> Form7.TabelaAberta.Fields[I-1].DisplayLabel then
+    if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
     begin
-      if (Form7.TabelaAberta.Fields[I-1].FieldName <> 'IPI')
-        and (copy(Form7.TabelaAberta.Fields[I-1].FieldName,1,3) <> 'CST') then
+      if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
+        and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
       begin
-        P1 := StrTran(P1,' '+Form7.TabelaAberta.Fields[I-1].FieldName,' '+Form7.TabelaAberta.Fields[I-1].DisplayLabel);
+        P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
       end;
     end;
   end;
@@ -11900,6 +11903,8 @@ begin
 end;
 
 procedure TForm7.Resumodasvendas1Click(Sender: TObject);
+var
+  oIni : tIniFile;
 begin
   Form7.ibDataSet99.Close;
   Form7.ibDataSet99.SelectSql.Clear;
@@ -11918,8 +11923,20 @@ begin
     begin
       frmRelResumoVendas.WhereEstoque     := sWhere;
       frmRelResumoVendas.OrderBy          := sOrderBy;
+    end
+    else
+    begin
+      // Se não for estoque então pega do INI o WHERE do ESTOQUE
+      // para atualizar os valores igual na rotina ESTOQUE
+      oIni := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+      try
+        frmRelResumoVendas.WhereEstoque     := oIni.ReadString('ESTOQUE','FILTRO',EmptyStr);
+        frmRelResumoVendas.OrderBy          := EmptyStr;
+      finally
+        FreeAndNil(oIni);
+      end;
     end;
-    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True);
+    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True, ibDataSet4);
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);
