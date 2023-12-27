@@ -37,6 +37,8 @@ uses
   , xmldom
   , XMLIntf
   , MsXml
+  , DBGrids
+  , ClipBrd
   , uConectaBancoSmall
   , uconstantes_chaves_privadas
   ;
@@ -142,6 +144,8 @@ function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True
 function BuscaSerialSmall: String;
 // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
+procedure DBGridCopiarCampo(DBGrid: TDBGrid); overload;
+procedure DBGridCopiarCampo(DBGrid: TDBGrid; var Key: Word;  Shift: TShiftState); overload;
 
 var
   IMG: TImage;
@@ -1568,6 +1572,22 @@ begin
   begin
     Result := Result + EspacamentoEsquerdo + Copy(Descricao+Replicate(' ',Tamanho),1,Tamanho)+chr(10);
     delete(Descricao,1,Tamanho);
+  end;
+end;
+
+procedure DBGridCopiarCampo(DBGrid: TDBGrid); overload;
+//Copia valor do campo conforme a coluna da grid que estiver focada
+begin
+  Clipboard.AsText := DBGrid.SelectedField.AsString;
+end;
+
+procedure DBGridCopiarCampo(DBGrid: TDBGrid; var Key: Word;
+  Shift: TShiftState); overload;
+//Copia valor do campo conforme a coluna da grid que estiver focada quando teclado CTRL + C
+begin
+  if (ssCtrl in Shift) and (UpperCase(Chr(Key)) = 'C') then
+  begin
+    DBGridCopiarCampo(DBGrid);
   end;
 end;
 
