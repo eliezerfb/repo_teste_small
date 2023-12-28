@@ -625,8 +625,7 @@ begin
       // Não retornar False se não imprimir ou enviar o email
       // False apenas se não conseguir gerar CF-e-SAT
       if Form1.ImprimirDANFCE1.Checked then
-       _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Venda.CNPJCliente, Venda.CNPJCliente, Venda.EmailCliente, Venda.EnderecoCliente); // Sandro Silva 2023-12-27 _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
-       // 'Avenida Ipiranga, 99 Centro'#$A'Manaus - 90160-091'
+       _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Venda.CNPJCliente, Venda.Cliente, Venda.EmailCliente, Venda.EnderecoCliente); // Sandro Silva 2023-12-27 _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
     end
     else
     begin  // Importando MOBILE
@@ -640,12 +639,11 @@ begin
 
           if sPdfMobile <> '' then
           begin
-            _ecf99_ImprimirCupomDinamico(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text, toImage, sPdfMobile);
+            _ecf99_ImprimirCupomDinamico(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Venda.CNPJCliente, Venda.Cliente, Venda.EmailCliente, Venda.EnderecoCliente, toImage, sPdfMobile); // Sandro Silva 2023-12-28 _ecf99_ImprimirCupomDinamico(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text, toImage, sPdfMobile);
             Sleep(1000);
             if FileExists(sPdfMobile) then
             begin
               // upload pdf
-              // Sandro Silva 2022-08-08 UploadMobile(
               Form1.ClienteSmallMobile.UploadMobile(sPdfMobile);
               // Após upload exclui o arquivo
               DeleteFile(sPdfMobile);
@@ -660,7 +658,7 @@ begin
 
         try
           if Form1.ImprimirDANFCE1.Checked then
-           _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
+            _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Venda.CNPJCliente, Venda.Cliente, Venda.EmailCliente, Venda.EnderecoCliente); // Sandro Silva 2023-12-28 _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
         except
         end;
 
@@ -1744,44 +1742,6 @@ var
     if FileExists('logofrente.bmp') then
     begin
       try
-        {
-        CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
-        Logotipo := TBitmap.Create;
-        Logotipo.PixelFormat := pf32bit; //2014-04-30
-
-        Logotipo.LoadFromFile('logofrente.bmp');
-
-        iLogoheight := Round(PERCENTUAL_LARGURA_LOGO_X_LARGURA_PAPEL * iLarguraPapel);
-        if iLarguraPapel <= 464 then
-        begin
-          iLogoheight := (iLarguraPapel - iMargemEsq) div 2;
-        end;
-
-        if Destino = toImage then
-        begin
-          if iLarguraFisica > LARGURA_REFERENCIA_PAPEL_BOBINA then
-            iLogoheight := Round(iLogoheight * 0.5);
-        end
-        else
-        begin
-          if iPrinterPhysicalWidth > LARGURA_REFERENCIA_PAPEL_BOBINA then // Sandro Silva 2017-09-12
-            iLogoheight := Round(iLogoheight * 2);
-        end;
-
-        ResizeBitmap(Logotipo, iLogoheight, iLogoheight, clWhite);
-
-        if iLarguraPapel <= 464 then
-        begin
-          Canvas.Draw((iLarguraPapel - iMargemEsq - iLogoheight) div 2, iLinha, Logotipo);
-          iMargemRazaoSocial := iMargemEsq;
-          iLinha := iLinha + iLogoheight;
-        end
-        else
-        begin
-          Canvas.Draw(iMargemEsq, iLinha, Logotipo);
-          iMargemRazaoSocial := Logotipo.Width + iMargemEsq + 26;
-        end;
-        }
         iMargemRazaoSocial := iMargemEsq;
       except
 
@@ -1831,13 +1791,15 @@ var
     CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
 
     PrinterTexto(iLinha, iMargemEsq, 'Data: ' + FormatDateTime('dd/mm/yyyy', IBQALTERACA.FieldByName('DATA').AsDateTime) + ' ' + Copy(IBQALTERACA.FieldByName('HORA').AsString, 1, 5), poLeft);
-    {Sandro Silva 2023-08-09 inicio
-    PrinterTexto(iLinha, Canvas.PenPos.X + 15, ' Status: ' + sStatusVenda, poLeft);
-    }
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
+
+    {Sandro Silva 2023-12-28 inicio
     PrinterTexto(iLinha, iMargemEsq, 'Status: ' + sStatusVenda, poLeft);
-    {Sandro Silva 2023-08-09 fim}
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
+    }
+    PrinterTextoMemo(iLinha, iMargemRazaoSocial, iLarguraPapel - iMargemRazaoSocial - 5, 'Status: ' + sStatusVenda, poLeft);
+    CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
+    {Sandro Silva 2023-12-28 fim}
     PrinterTexto(iLinha, iMargemEsq, 'Controle: ' + IBQALTERACA.FieldByName('PEDIDO').AsString, poLeft);
     PrinterTexto(iLinha, Canvas.PenPos.X + 120, ' Caixa: ' + IBQALTERACA.FieldByName('CAIXA').AsString, poLeft);
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
@@ -2286,31 +2248,11 @@ begin
             IBQTOTAL.Sql.Clear;
             IBQTOTAL.SQL.Text := 'select sum(cast(TOTAL as numeric(18,2))) from ALTERACA where PEDIDO = ' + QuotedStr(sPedido) + ' and CAIXA = ' + quotedStr(sCaixa) + ' and ITEM = ' + QuotedStr(IBQALTERACA.FieldByName('ITEM').AsString) + ' and DESCRICAO = ''Desconto'' ';
             IBQTOTAL.Open;
-            //
+
             fDescontoDoItem := 0.00;
             if (IBQTOTAL.FieldByname('SUM').AsFloat * -1) > 0.00 then
               fDescontoDoItem := (IBQTOTAL.FieldByname('SUM').AsFloat * -1);
-            {Sandro Silva 2020-10-15 inicio
-            //
-            dTotalDescontoItem := 0;
-            if (Length(aDescontoItem) > 0) then
-            begin
-              if (FormatFloatXML(aDescontoItem[iItem - 1]) <> '0.00') then
-              begin
-                dTotalDescontoItem := aDescontoItem[iItem - 1];
-              end
-            end;
 
-            dTotalDescontoItem := dTotalDescontoItem + fDescontoDoItem;
-            if (dTotalDescontoItem > 0) then
-            begin
-              // Desconto no ítem
-              CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
-              PrinterTexto(iLinha, iMargemEsq, Copy('Desconto (-)' + Replicate(' ', 30), 1, 30) + Format('%10.2n', [dTotalDescontoItem]), poRight);
-            end;
-            fDesconto := fDesconto + dTotalDescontoItem; // Valor Total de Desconto
-
-            }
             dTotalDescontoItem := dTotalDescontoItem + fDescontoDoItem;
             if (fDescontoDoItem > 0) then
             begin
@@ -2318,25 +2260,7 @@ begin
               CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
               PrinterTexto(iLinha, iMargemEsq, Copy('Desconto (-)' + Replicate(' ', 30), 1, 30) + Format('%10.2n', [fDescontoDoItem]), poRight);
             end;
-            //fDesconto := fDesconto + dTotalDescontoItem; // Valor Total de Desconto
 
-            {Sandro Silva 2020-10-15 inicio
-            dRateioAcrescimoItem := 0.00;
-            if Length(aAcrescimoItem) > 0 then
-            begin
-              if aAcrescimoItem[iItem - 1] > 0 then
-              begin
-                dRateioAcrescimoItem := aAcrescimoItem[iItem - 1];
-
-                CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
-                PrinterTexto(iLinha, iMargemEsq, Copy('Acréscimo' + Replicate(' ', 30), 1, 30) + Format('%10.2n', [dRateioAcrescimoItem]), poRight);
-
-              end;
-            end;
-            dTotalAcrescimo := dTotalAcrescimo + dRateioAcrescimoItem; // Sandro Silva 2017-04-26
-            {Sandro Silva 2020-10-15 fim}
-
-            //
             if (IBQESTOQUE.FieldByName('TIPO_ITEM').AsString = '09') then // Serviço
             begin
               dTotalServicos   := dTotalServicos + dvProd_I11; //vBC_U02;
@@ -2350,10 +2274,9 @@ begin
 
           end;// if (Alltrim(IBQESTOQUE.FieldByName('CODIGO').AsString) = Alltrim(IBQALTERACA.FieldByName('CODIGO').AsString)) and (Alltrim(IBQESTOQUE.FieldByName('CODIGO').AsString) <> '') then
         end; // if (IBQALTERACA.FieldByName('TIPO').AsString = 'BALCAO') or (IBQALTERACA.FieldByName('TIPO').AsString = 'LOKED') then // Apenas os itens não cancelados
-        //
-        //
+
         IBQALTERACA.Next;
-        //
+
       end; // while not IBQALTERACA.Eof do
 
       {Sandro Silva 2020-10-15 inicio}
@@ -2413,12 +2336,12 @@ begin
         CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
         PrinterTexto(iLinha, iMargemFormas, 'Troco', poLeft);
         PrinterTexto(iLinha, iLarguraPapel, Format('%10.2n', [Venda.Troco]), poRight);
-        
+
       end;
 
       CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
       PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
-      
+
       //
       sMensagem := Venda.Mensagem;
       while StringReplace(sMensagem, Chr(10), '', [rfReplaceAll]) <> '' do
@@ -2448,16 +2371,10 @@ begin
           if sFileExport = '' then // 2015-06-30
           begin
             sFilePDF := 'Venda_' + IBQALTERACA.FieldByName('PEDIDO').AsString + '_' + IBQALTERACA.FieldByName('CAIXA').AsString;
-            {Sandro Silva 2020-10-13 inicio
-            if DirectoryExists(ExtractFilePath(Application.ExeName) + 'VENDAS') = False then
-              ForceDirectories(ExtractFilePath(Application.ExeName) + 'VENDAS');
-            }
           end;
 
-          {Sandro Silva 2020-10-13 inicio}
           if DirectoryExists(ExtractFilePath(Application.ExeName) + 'VENDAS') = False then
             ForceDirectories(ExtractFilePath(Application.ExeName) + 'VENDAS');
-          {Sandro Silva 2020-10-13 fim}
 
           // Cria o PDF
 
@@ -2508,8 +2425,6 @@ begin
 
           {End Printing}
           sRetornoGeraPDF := PDF.EndDoc;
-          //if sRetornoGeraPDF <> '' then
-          //  FLogRetornoMobile := sRetornoGeraPDF;
 
           Sleep(500 * Length(Pagina) -1);
         except
@@ -2537,7 +2452,6 @@ begin
     if Printer.Printing then
       Printer.Abort;
 
-    //Screen.Cursor := FCursor;
   end;
 
   FreeAndNil(IBQTOTAL);
