@@ -1474,6 +1474,7 @@ type
     procedure ChamarTelaConfiguracaoTEF;
     procedure IniciarNovaVendaComDocAberto;
     procedure AbreEdicaoMovimento;
+    procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -3684,7 +3685,7 @@ begin
       end else
       begin
         Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),1,45));
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),46,44));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),46,89));
       end;
     end
     else
@@ -20878,87 +20879,6 @@ begin
                         StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
                         StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
 
-          {Sandro Silva 2021-07-22 inicio 
-          if Form1.sModeloECF = '04' then
-            bVenda := _ecf04_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '05' then
-            bVenda := _ecf05_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '06' then
-            bVenda := _ecf06_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '07' then
-            bVenda := _ecf07_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '08' then
-            bVenda := _ecf08_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '09' then
-            bVenda := _ecf09_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '10' then
-            bVenda := _ecf10_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '11' then
-            bVenda := _ecf11_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-          }
           if Form1.sModeloECF = '12' then
           begin
             bVenda := _ecf12_VendaDeItem(sCodigo, // Código
@@ -26919,11 +26839,13 @@ begin
 
 end;
 
-procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
+
+{Sandro Silva 2023-12-27 inicio}
+procedure TForm1.AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
 var
   SizeDescricaoProd: Integer;
 begin
-  {Sandro Silva 2023-12-28 inicio}
+
   SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
   Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
   Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
@@ -26931,8 +26853,24 @@ begin
   Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
   Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
 
-  Form14.ibDataSet027DESCRICAO.Size := SizeDescricaoProd;
-  
+end;
+{Sandro Silva 2023-12-27 fim}
+
+
+procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
+begin
+  {Sandro Silva 2023-12-28 inicio
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+  }
+  AjustaDataSetTamanhoCampoDescricao(Sender);
+
   {Sandro Silva 2023-12-28 fim}
 
   AtualizaBase(IBDatabase2);
@@ -26942,16 +26880,15 @@ procedure TForm1.IBDatabase1AfterConnect(Sender: TObject);
 var
   SizeDescricaoProd: Integer;
 begin
-  {Sandro Silva 2023-12-28 inicio}
+  {Sandro Silva 2023-12-28 inicio
   SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
   Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
   Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
   Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
   Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
   Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
-
-  Form14.ibDataSet027DESCRICAO.Size := SizeDescricaoProd;
-
+  }
+  AjustaDataSetTamanhoCampoDescricao(Sender);  
   {Sandro Silva 2023-12-28 fim}
 
   AtualizaBase(IBDatabase1);

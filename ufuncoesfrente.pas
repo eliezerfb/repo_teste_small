@@ -358,8 +358,6 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   out fTributos_federais: Real; out fTributos_estaduais: Real;
   out fTributos_municipais: Real): String;
 procedure SleepWithoutFreeze(msec: int64);
-procedure AjustaDataSetTamanhoCampoDescricao(IBTransaction: TIBTransaction;
-  Field: TStringField); // Sandro Silva 2023-12-27
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 
 var
@@ -2630,27 +2628,6 @@ begin
   until Elapsed >= msec;
 end;
 {Sandro Silva 2023-11-24 fim}
-
-{Sandro Silva 2023-12-27 inicio}
-procedure AjustaDataSetTamanhoCampoDescricao(IBTransaction: TIBTransaction; Field: TStringField);
-var
-  SizeDescricaoProd: Integer;
-begin
-  SizeDescricaoProd := TamanhoCampo(IBTransaction, 'ESTOQUE', 'DESCRICAO');
-  {
-  Form7.ibDataSet4DESCRICAO.Size   := SizeDescricaoProd;
-  Form7.ibDataSet16DESCRICAO.Size  := SizeDescricaoProd;
-  Form7.ibDataSet23DESCRICAO.Size  := SizeDescricaoProd;
-  Form7.ibDataSet27DESCRICAO.Size  := SizeDescricaoProd;
-  Form7.ibDataSet28DESCRICAO.Size  := SizeDescricaoProd;
-  Form7.ibDataSet35DESCRICAO.Size  := SizeDescricaoProd;
-  Form7.ibDataset40DESCRICAO.Size  := SizeDescricaoProd;
-  Form7.ibDataSet37DESCRICAO.Size  := SizeDescricaoProd;
-  Form24.ibDataSet44DESCRICAO.Size := SizeDescricaoProd;
-  }
-  Field.Size   := SizeDescricaoProd;
-end;
-{Sandro Silva 2023-12-27 fim}
 
 {Sandro Silva 2023-10-24 inicio}
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean;

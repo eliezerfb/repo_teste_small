@@ -57,6 +57,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ibDataSet027BeforePost(DataSet: TDataSet);
     procedure ibDataSet027UNITARIOChange(Sender: TField);
+    procedure FormCreate(Sender: TObject);
   private
     procedure ExcluirLinhasSemProduto;
     { Private declarations }
@@ -75,7 +76,7 @@ var
 
 implementation
 
-uses fiscal, ufuncoesfrente;
+uses fiscal, ufuncoesfrente, ufuncoestef;
 
 {$R *.dfm}
 
@@ -609,6 +610,11 @@ begin
   if (ibDataSet027QUANTIDADE.AsFloat > 0) and (ibDataSet027UNITARIO.AsFloat > 0) then
     ibDataSet027TOTAL.AsFloat := StrToFloat(FormatFloat('0.00', (ibDataSet027UNITARIO.AsFloat * ibDataSet027QUANTIDADE.AsFloat)));
   //  
+end;
+
+procedure TForm14.FormCreate(Sender: TObject);
+begin
+  Form14.ibDataSet027DESCRICAO.Size := TamanhoCampo(Form1.ibDataSet27.Transaction, 'ESTOQUE', 'DESCRICAO'); // Sandro Silva 2023-12-28
 end;
 
 end.

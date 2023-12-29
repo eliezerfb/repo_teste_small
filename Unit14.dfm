@@ -14,6 +14,7 @@ object Form14: TForm14
   Position = poDesktopCenter
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   DesignSize = (
     1008
     689)
