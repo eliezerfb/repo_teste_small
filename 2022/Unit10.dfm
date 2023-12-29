@@ -12947,7 +12947,6 @@ object Form10: TForm10
       object Orelha_promo: TTabSheet
         Caption = 'Promo'#231#227'o'
         ImageIndex = 9
-        OnEnter = Orelha_promoEnter
         object GroupBox3: TGroupBox
           Left = 16
           Top = 16
