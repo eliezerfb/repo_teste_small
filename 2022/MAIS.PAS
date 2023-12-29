@@ -3891,22 +3891,20 @@ begin
   end;
   //
   Mais.LeLabels(True);
-  //
+  
   // Ativa o verificador de rede
-  //
   bChaveDoTempo := True;
-  //
+
   // Limpar movimento
-  //
   Form2.Top  := Form7.Top;
   Form2.Left := (Form1.Width div 2) - (Form2.Width div 2);
-  //
+
   if FileExists(Form1.sAtual+'\smallzip_.exe') then
   begin
     while FileExists(Form1.sAtual+'\smallzip.exe') do DeleteFile(pChar(Form1.sAtual+'\smallzip.exe'));
     RenameFile(pChar(Form1.sAtual+'\smallzip_.exe'),pChar(Form1.sAtual+'\smallzip.exe'));
   end;
-  //
+
   if FileExists(Form1.sAtual+'\smallcon_.exe') then
   begin
     while FileExists(Form1.sAtual+'\smallcon.exe') do DeleteFile(pChar(Form1.sAtual+'\smallcon.exe'));
@@ -3920,6 +3918,14 @@ begin
   if FileExists(Form1.sAtual+'\mei.exe') then
     DeleteFile(pChar(Form1.sAtual+'\mei.exe'));
   {Dailon (f-7308) 2023-08-28 fim}
+
+  //Mauricio Parizotto 2023-12-27 
+  if (FileExists(Form1.sAtual+'\backup_.exe')) and (FileExists(Form1.sAtual+'\backup.exe')) then
+  begin
+    RenameFile(pChar(Form1.sAtual+'\backup.exe'),pChar(Form1.sAtual+'\backup_o.exe'));
+    RenameFile(pChar(Form1.sAtual+'\backup_.exe'),pChar(Form1.sAtual+'\backup.exe'));
+  end;
+
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
