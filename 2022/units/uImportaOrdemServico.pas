@@ -28,6 +28,7 @@ uses Unit7
 procedure ImportaOS(NumeroOS:string);
 var
   iB : Integer;
+  campoDocumento : string;
 begin
   // N do caixa
   if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
@@ -57,8 +58,15 @@ begin
   Form7.ibDataSet3.Open;
   Form7.ibDataSet3.First;
 
+  //Mauricio Parizotto 2023-12-26
+  if Form7.sRPS = 'N' then
+    campoDocumento := 'NF'
+  else
+    campoDocumento := 'NFSE';
+
   Form7.ibDataSet3.DisableControls;
-  if (Form7.ibDataSet3NUMERO.AsString = NumeroOS) and (Form7.ibDataSet3SITUACAO.AsString<>'Fechada') then
+  //if (Form7.ibDataSet3NUMERO.AsString = NumeroOS) and (Form7.ibDataSet3SITUACAO.AsString<>'Fechada') then Mauricio Parizotto 2023-12-26
+  if Form7.ibDataSet3.FieldByName(campoDocumento).AsString = '' then
   begin
     Form7.ibDataSet2.Close;
     Form7.ibDataSet2.Selectsql.Text := ' Select * '+
@@ -140,7 +148,8 @@ begin
         Form7.ibDataSet3SITUACAO.AsString   := 'Fechada';
         Form7.ibDataSet3DATA_ENT.AsDateTime := Date;
         Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time);
-        Form7.ibDataSet3NF.AsString         := Form7.ibDataSet15NUMERONF.AsString;
+        //Form7.ibDataSet3NF.AsString         := Form7.ibDataSet15NUMERONF.AsString; Mauricio Parizotto 2023-12-26
+        Form7.ibDataSet3.FieldByName(campoDocumento).AsString := Form7.ibDataSet15NUMERONF.AsString;
         Form7.ibDataSet3.Post;
       end;
     end;

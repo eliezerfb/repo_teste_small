@@ -466,7 +466,7 @@ begin
   Form7.sModulo := 'VENDA';
   Mauricio Parizotto 2023-10-23}
 
-  NumeroOS := PesquisaNumeroOrdemServico('Importar Ordem de Serviço');
+  NumeroOS := PesquisaNumeroOrdemServico('Importar Ordem de Serviço',orNFSE);
   if NumeroOS <> '' then
   begin
     Form7.sModulo := 'OS';

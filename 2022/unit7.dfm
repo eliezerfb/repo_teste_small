@@ -1,11 +1,11 @@
 object Form7: TForm7
-  Left = 227
-  Top = 68
+  Left = 232
+  Top = 32
   BiDiMode = bdLeftToRight
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 850
+  ClientHeight = 917
   ClientWidth = 1383
   Color = clWhite
   Ctl3D = False
@@ -7974,7 +7974,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 810
+    Top = 877
     Width = 1383
     Height = 40
     Align = alBottom
@@ -10669,7 +10669,7 @@ object Form7: TForm7
       Transparent = True
       OnClick = Image109Click
     end
-    object Label201: TLabel
+    object lblNovo: TLabel
       Left = 0
       Top = 25
       Width = 70
@@ -10689,10 +10689,10 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = Image101Click
-      OnMouseMove = Label201MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblNovoMouseMove
+      OnMouseLeave = lblNovoMouseLeave
     end
-    object Label202: TLabel
+    object lblExcluir: TLabel
       Left = 70
       Top = 25
       Width = 70
@@ -10712,10 +10712,10 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = Image102Click
-      OnMouseMove = Label202MouseMove
-      OnMouseLeave = Label202MouseLeave
+      OnMouseMove = lblExcluirMouseMove
+      OnMouseLeave = lblExcluirMouseLeave
     end
-    object Label203: TLabel
+    object lblProcurar: TLabel
       Left = 140
       Top = 25
       Width = 70
@@ -10735,10 +10735,10 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = Image103Click
-      OnMouseMove = Label203MouseMove
-      OnMouseLeave = Label203MouseLeave
+      OnMouseMove = lblProcurarMouseMove
+      OnMouseLeave = lblProcurarMouseLeave
     end
-    object Label205: TLabel
+    object lblImprimir: TLabel
       Left = 210
       Top = 25
       Width = 70
@@ -10758,10 +10758,10 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = imgImprimirClick
-      OnMouseMove = Label205MouseMove
-      OnMouseLeave = Label205MouseLeave
+      OnMouseMove = lblImprimirMouseMove
+      OnMouseLeave = lblImprimirMouseLeave
     end
-    object Label204: TLabel
+    object lblVisualizar: TLabel
       Left = 280
       Top = 25
       Width = 70
@@ -10782,10 +10782,10 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = imgVisualizarClick
-      OnMouseMove = Label204MouseMove
-      OnMouseLeave = Label204MouseLeave
+      OnMouseMove = lblVisualizarMouseMove
+      OnMouseLeave = lblVisualizarMouseLeave
     end
-    object Label206: TLabel
+    object lblEditar: TLabel
       Left = 420
       Top = 25
       Width = 70
@@ -10805,8 +10805,8 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = Image106Click
-      OnMouseMove = Label206MouseMove
-      OnMouseLeave = Label206MouseLeave
+      OnMouseMove = lblEditarMouseMove
+      OnMouseLeave = lblEditarMouseLeave
     end
     object Label208: TLabel
       Left = 490
@@ -10831,7 +10831,7 @@ object Form7: TForm7
       OnMouseMove = Label208MouseMove
       OnMouseLeave = Label208MouseLeave
     end
-    object Label209: TLabel
+    object lblFiltrar: TLabel
       Left = 560
       Top = 25
       Width = 70
@@ -10851,8 +10851,8 @@ object Form7: TForm7
       Layout = tlBottom
       Visible = False
       OnClick = Image109Click
-      OnMouseMove = Label209MouseMove
-      OnMouseLeave = Label209MouseLeave
+      OnMouseMove = lblFiltrarMouseMove
+      OnMouseLeave = lblFiltrarMouseLeave
     end
   end
   object Panel2: TPanel
@@ -19156,7 +19156,7 @@ object Form7: TForm7
       
         '   IDENTIFI2, IDENTIFI3, IDENTIFI4, GARANTIA, OBSERVACAO, TOTAL_' +
         'SERV, TOTAL_PECA, '
-      '   TOTAL_FRET, DESCONTO, TOTAL_OS, NF, REGISTRO, IDOS)'
+      '   TOTAL_FRET, DESCONTO, TOTAL_OS, NF, REGISTRO, IDOS,NFSE)'
       'values'
       
         '  (:NUMERO, :DATA, :HORA, :CLIENTE, :DATA_PRO, :HORA_PRO, :TEMPO' +
@@ -19169,7 +19169,7 @@ object Form7: TForm7
         'BSERVACAO, '
       
         '   :TOTAL_SERV, :TOTAL_PECA, :TOTAL_FRET, :DESCONTO, :TOTAL_OS, ' +
-        ':NF, :REGISTRO, :IDOS)')
+        ':NF, :REGISTRO, :IDOS, :NFSE)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERO,'
@@ -19200,7 +19200,8 @@ object Form7: TForm7
       '  TOTAL_OS,'
       '  NF,'
       '  REGISTRO,'
-      '  IDOS'
+      '  IDOS,'
+      '  NFSE'
       'from OS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -19237,7 +19238,8 @@ object Form7: TForm7
       '  TOTAL_OS = :TOTAL_OS,'
       '  NF = :NF,'
       '  REGISTRO = :REGISTRO,'
-      '  IDOS = :IDOS'
+      '  IDOS = :IDOS,'
+      '  NFSE = :NFSE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     Filtered = True
@@ -19383,8 +19385,15 @@ object Form7: TForm7
     end
     object ibDataSet3NF: TIBStringField
       DisplayLabel = 'Nota Fiscal'
-      DisplayWidth = 12
+      DisplayWidth = 14
       FieldName = 'NF'
+      Size = 12
+    end
+    object ibDataSet3NFSE: TIBStringField
+      DisplayLabel = 'NF Servi'#231'o'
+      DisplayWidth = 14
+      FieldName = 'NFSE'
+      Origin = 'OS.NFSE'
       Size = 12
     end
     object ibDataSet3REGISTRO: TIBStringField
@@ -21486,7 +21495,8 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm' +
+      '50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21521,7 +21531,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm5' +
+      '0a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21837,7 +21848,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\DPEC'
+      'vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21868,7 +21879,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\DPEC'
+      'm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
