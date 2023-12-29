@@ -30,7 +30,7 @@ uses
   IdHTTP
   , uFuncoesRetaguarda
   , uSmallConsts
-  , uArquivosDAT // Sandro Silva 2023-10-02
+  , uArquivosDAT, System.Contnrs // Sandro Silva 2023-10-02
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -2124,11 +2124,7 @@ type
     procedure Livrodereceitas1Click(Sender: TObject);
     procedure ibDataSet4ALIQ_PIS_ENTRADAChange(Sender: TField);
     procedure SPEDPISCOFINS1Click(Sender: TObject);
-    procedure WebBrowser1NavigateComplete2(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure WebBrowser1DownloadComplete(Sender: TObject);
-    procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure CCartadeCorreoEletronicaCCe1Click(Sender: TObject);
     procedure IBDataSet128BeforeInsert(DataSet: TDataSet);
     procedure IBDataSet128BeforePost(DataSet: TDataSet);
@@ -2314,6 +2310,10 @@ type
       Shift: TShiftState);
     procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1NavigateComplete2(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -7207,15 +7207,22 @@ begin
     //
     with Msg do
     begin
-      if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
-      if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
+      if (sAssunto <> '') then
+        //lpszSubject := PChar(sAssunto);  Mauricio Parizotto 2023-12-29
+        lpszSubject := PAnsiChar(AnsiString(sAssunto));
+
+      if (sTexto <> '')   then
+        //lpszNoteText := PChar(sTexto); //Corpo da Mensagem Mauricio Parizotto 2023-12-29
+        lpszNoteText := PAnsiChar(AnsiString(sTexto)); //Corpo da Mensagem
 
       // remetente
       if (sDe <> '') then
       begin
         lpSender.ulRecipClass := MAPI_ORIG;
-        lpSender.lpszName := PChar(sDe);
-        lpSender.lpszAddress := PChar(sDe);
+        //lpSender.lpszName := PChar(sDe); Mauricio Parizotto 2023-12-29
+        lpSender.lpszName := PAnsiChar(AnsiString(sDe));
+        //lpSender.lpszAddress := PChar(sDe); Mauricio Parizotto 2023-12-29
+        lpSender.lpszAddress := PAnsiChar(AnsiString(sDe));
         lpSender.ulReserved := 0;
         lpSender.ulEIDSize := 0;
         lpSender.lpEntryID := nil;
@@ -7233,8 +7240,10 @@ begin
         end;
         //
         lpRecepient.ulRecipClass := MAPI_TO;
-        lpRecepient.lpszName := PChar('');
-        lpRecepient.lpszAddress := PChar(sPara);
+        //lpRecepient.lpszName := PChar(''); Mauricio Parizotto 2023-12-19
+        lpRecepient.lpszName := PAnsiChar(AnsiString(''));
+        //lpRecepient.lpszAddress := PChar(sPara); Mauricio Parizotto 2023-12-19
+        lpRecepient.lpszAddress := PAnsiChar(AnsiString(sPara));
         lpRecepient.ulReserved := 0;
         lpRecepient.ulEIDSize := 0;
         lpRecepient.lpEntryID := nil;
@@ -7245,8 +7254,10 @@ begin
         if (sCC <> '') then
         begin
           lpComCopia.ulRecipClass := MAPI_CC;
-          lpComCopia.lpszName     := PChar(sCC);
-          lpComCopia.lpszAddress  := PChar(sCC);
+          //lpComCopia.lpszName     := PChar(sCC);
+          lpComCopia.lpszName     := PAnsiChar(AnsiString(sCC));
+          //lpComCopia.lpszAddress  := PChar(sCC);
+          lpComCopia.lpszAddress  := PAnsiChar(AnsiString(sCC));
           lpComCopia.ulReserved   := 0;
           lpComCopia.ulEIDSize    := 0;
           lpComCopia.lpEntryID    := nil;
@@ -27176,8 +27187,8 @@ begin
     MensagemSistema('O executável spedpiscofins.exe não foi encontrado na pasta de instalação do programa.',msgAtencao);
 end;
 
-procedure TForm7.WebBrowser1NavigateComplete2(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+procedure TForm7.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
 begin
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
 end;
@@ -27187,8 +27198,8 @@ begin
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
 end;
 
-procedure TForm7.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+procedure TForm7.WebBrowser1NavigateComplete2(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
 begin
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
 end;

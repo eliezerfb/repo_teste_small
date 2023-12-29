@@ -15,7 +15,6 @@ object Form7: TForm7
   Font.Name = 'System'
   Font.Style = []
   Menu = mmCaixa
-  OldCreateOrder = True
   ParentBiDiMode = False
   OnActivate = FormActivate
   OnClose = FormClose
@@ -11014,7 +11013,6 @@ object Form7: TForm7
       Font.Height = -12
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 15
       ParentFont = False
       TabOrder = 1
     end
@@ -11044,7 +11042,6 @@ object Form7: TForm7
       Font.Height = -12
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 15
       ParentFont = False
       TabOrder = 2
     end
@@ -11428,6 +11425,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 311
@@ -11764,6 +11763,8 @@ object Form7: TForm7
       '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 377
@@ -12416,6 +12417,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 643
@@ -12620,6 +12623,8 @@ object Form7: TForm7
       '  PERCENTUAL_MULTA = :PERCENTUAL_MULTA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     DataSource = DataSource15
     OnFilterRecord = ibDataSet7FilterRecord
@@ -12856,6 +12861,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 443
     object ibDataSet9NOME: TIBStringField
@@ -13955,6 +13962,8 @@ object Form7: TForm7
       '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 200
     Top = 643
@@ -14081,6 +14090,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 476
@@ -14335,6 +14346,8 @@ object Form7: TForm7
       '  ENCRYPTHASH = :ENCRYPTHASH'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 477
     object ibDataSet13CGC: TIBStringField
@@ -14636,6 +14649,8 @@ object Form7: TForm7
       '  CBENEF = :CBENEF'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 509
     object ibDataSet14CFOP: TIBStringField
@@ -15270,6 +15285,8 @@ object Form7: TForm7
       '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 211
     object ibDataSet15NUMERONF: TIBStringField
@@ -15831,6 +15848,8 @@ object Form7: TForm7
       '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     DataSource = DataSource15
     Left = 200
     Top = 211
@@ -16219,6 +16238,8 @@ object Form7: TForm7
       '  ANTT = :ANTT'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 575
     object ibDataSet18CGC: TIBStringField
@@ -16359,6 +16380,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 311
     object ibDataSet19DESCRICAO: TIBStringField
@@ -16456,6 +16479,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 510
     object ibDataSet21NOME: TIBStringField
@@ -16626,6 +16651,8 @@ object Form7: TForm7
       '  ICMS_DESONERADO = :ICMS_DESONERADO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 245
     object ibDataSet23NUMERONF: TIBStringField
@@ -17119,6 +17146,8 @@ object Form7: TForm7
       '  ICMS_DESONERADO = :ICMS_DESONERADO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 245
     object ibDataSet24NUMERONF: TIBStringField
@@ -17519,6 +17548,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 411
     object ibDataSet25DATA: TDateField
@@ -17662,6 +17693,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 444
     object ibDataSet26DATA: TDateField
@@ -17831,6 +17864,8 @@ object Form7: TForm7
       '  CFOP = :CFOP'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 378
     object ibDataSet27CODIGO: TIBStringField
@@ -18292,6 +18327,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 543
     object ibDataSet10CODIGO: TIBStringField
@@ -18367,6 +18404,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 577
     object ibDataSet28CODIGO: TIBStringField
@@ -18514,6 +18553,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 609
@@ -18665,6 +18706,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     OnFilterRecord = ibDataSet30FilterRecord
     Left = 200
@@ -19030,6 +19073,8 @@ object Form7: TForm7
       '  ATIVO = :ATIVO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 542
@@ -19244,6 +19289,8 @@ object Form7: TForm7
       '  NFSE = :NFSE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 8
     Top = 278
@@ -20058,6 +20105,8 @@ object Form7: TForm7
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 200
     Top = 278
@@ -20152,9 +20201,7 @@ object Form7: TForm7
       'user_name=SYSDBA'
       'password=masterkey')
     LoginPrompt = False
-    IdleTimer = 0
-    SQLDialect = 3
-    TraceFlags = []
+    ServerType = 'IBServer'
     AllowStreamedConnected = False
     Left = 16
     Top = 155
@@ -20288,6 +20335,8 @@ object Form7: TForm7
       '  WHATSAPP = :WHATSAPP'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 344
     object IBDataSet2CGC: TIBStringField
@@ -20542,6 +20591,8 @@ object Form7: TForm7
     OnUpdateError = IBDataSet2UpdateError
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 147
   end
@@ -20550,6 +20601,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 240
     Top = 147
   end
@@ -20595,6 +20648,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 611
     object ibDataset40CODIGO: TIBStringField
@@ -20711,6 +20766,8 @@ object Form7: TForm7
       '  ENCRYPTHASH = :ENCRYPTHASH'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 199
     Top = 679
     object ibDataSet37CODIGO: TIBStringField
@@ -20835,11 +20892,13 @@ object Form7: TForm7
       '')
     LoginPrompt = False
     TraceFlags = []
+    ServerType = 'IBServer'
     BackupFile.Strings = (
       'teste.gbak')
     BlockingFactor = 0
     DatabaseName = 'C:\Projeto 2021\2021\small.fdb'
     Options = []
+    PreAllocate = 0
     Left = 440
     Top = 219
   end
@@ -20852,20 +20911,22 @@ object Form7: TForm7
       '')
     LoginPrompt = False
     TraceFlags = []
+    ServerType = 'IBServer'
     BackupFile.Strings = (
       'teste.gbak')
     PageBuffers = 0
     Options = [Replace, CreateNewDB, UseAllSpace]
+    PreAllocate = 0
+    ReadOnly = False
+    RestoreType = rtDatabase
     Left = 472
     Top = 219
   end
   object IBTransaction1: TIBTransaction
-    Active = False
     DefaultDatabase = IBDatabase1
     Params.Strings = (
       'isc_tpb_concurrency'
       'isc_tpb_nowait')
-    AutoStopAction = saNone
     Left = 80
     Top = 155
   end
@@ -20926,6 +20987,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 384
     Top = 575
     object IBDataSet119DESCRICAO: TIBStringField
@@ -20995,6 +21058,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 400
     Top = 459
   end
@@ -21054,6 +21119,8 @@ object Form7: TForm7
       '  UF = :UF'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 384
     Top = 611
@@ -21094,6 +21161,8 @@ object Form7: TForm7
     OnUpdateError = IBDataSet2UpdateError
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 168
     Top = 147
   end
@@ -21119,13 +21188,14 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 368
     Top = 491
   end
   object XMLDocument1: TXMLDocument
     Left = 368
     Top = 419
-    DOMVendorDesc = 'Open XML'
   end
   object SaveDialog2: TSaveDialog
     Options = []
@@ -21146,6 +21216,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 400
     Top = 491
   end
@@ -21159,6 +21231,8 @@ object Form7: TForm7
     OnUpdateError = IBDataSet2UpdateError
     BufferChunks = 100
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 384
     Top = 643
   end
@@ -21314,6 +21388,8 @@ object Form7: TForm7
       '  OBS = :OBS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 528
     Top = 579
@@ -21345,6 +21421,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 848
     Top = 475
   end
@@ -21353,6 +21431,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 440
     Top = 459
   end
@@ -21361,6 +21441,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 848
     Top = 507
   end
@@ -21369,6 +21451,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 368
     Top = 459
   end
@@ -21435,6 +21519,8 @@ object Form7: TForm7
       '  CDC = :CDC'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 528
     Top = 539
   end
@@ -21497,8 +21583,8 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm' +
-      '50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21533,8 +21619,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm5' +
-      '0a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21600,6 +21686,8 @@ object Form7: TForm7
       '  FORNECEDOR = :FORNECEDOR'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 200
     Top = 758
     object IBDataSet6CODIGO: TIBStringField
@@ -21761,6 +21849,8 @@ object Form7: TForm7
       '  FOTO = :FOTO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 592
     Top = 688
     object IBDataSet99999NOME: TIBStringField
@@ -21796,6 +21886,8 @@ object Form7: TForm7
     OnUpdateError = IBDataSet2UpdateError
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 552
     Top = 691
   end
@@ -21850,7 +21942,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\vm50\DPEC'
+      'vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21881,7 +21973,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\vm50\DPEC'
+      'm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21894,18 +21986,18 @@ object Form7: TForm7
     Top = 528
   end
   object IdHTTP1: TIdHTTP
-    MaxLineAction = maException
-    ReadTimeout = 0
-    AllowCookies = True
     ProxyParams.BasicAuthentication = False
     ProxyParams.ProxyPort = 0
     Request.ContentLength = -1
     Request.ContentRangeEnd = 0
     Request.ContentRangeStart = 0
+    Request.ContentRangeInstanceLength = -1
     Request.ContentType = 'text/html'
     Request.Accept = 'text/html, */*'
     Request.BasicAuthentication = False
     Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
     Left = 896
     Top = 168
@@ -21915,6 +22007,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 848
     Top = 547
   end
@@ -21982,6 +22076,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 440
     Top = 491
   end
@@ -21990,6 +22086,8 @@ object Form7: TForm7
     Transaction = IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 136
     Top = 148
   end
@@ -22125,6 +22223,8 @@ object Form7: TForm7
       '  WHATSAPP = :WHATSAPP'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 768
     Top = 632
   end
@@ -22275,6 +22375,8 @@ object Form7: TForm7
       '  CFOP_CONVERSAO= :CFOP_CONVERSAO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 683
     object ibdConversaoCFOPCFOP_ORIGEM: TIBStringField
@@ -22462,6 +22564,8 @@ object Form7: TForm7
       #9'ALIQ_COFINS_ENTRADA=:ALIQ_COFINS_ENTRADA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 723
     object ibdPerfilTributaDESCRICAO: TIBStringField
@@ -22652,6 +22756,8 @@ object Form7: TForm7
       '  OBS = :OBS'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 199
     Top = 711
     object IbdOrcamentObsREGISTRO: TIBStringField
@@ -22809,6 +22915,8 @@ object Form7: TForm7
       '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 757
     object ibdParametroTributaCFOP_ENTRADA: TIBStringField
@@ -22915,6 +23023,8 @@ object Form7: TForm7
       '  IDSITUACAO= :IDSITUACAO'
       'where'
       '  IDSITUACAO = :OLD_IDSITUACAO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 8
     Top = 835
     object ibdSituacaoOSSITUACAO: TIBStringField

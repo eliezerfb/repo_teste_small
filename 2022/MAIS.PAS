@@ -30,6 +30,8 @@ uses
   function mensagem22(sP1 : String) : Boolean;
 //  procedure DropViewProcedure;
 
+  function ExecutaComando(comando:string):Boolean;  overload;
+
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2023048';// Sandro Silva 2023-12-29 const BUILD_DO_BANCO = '2023046'; //Mauricio Parizotto 2023-12-15 const BUILD_DO_BANCO = '2023044';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
@@ -433,8 +435,6 @@ type
     procedure Debug1Click(Sender: TObject);
     procedure Image_bola_cliforClick(Sender: TObject);
     procedure Mensagemparaenviodeemail1Click(Sender: TObject);
-    procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure Configuraes1Click(Sender: TObject);
     procedure Label_Bola_vendasClick(Sender: TObject);
     procedure FazerBackupAgora1Click(Sender: TObject);
@@ -446,6 +446,8 @@ type
     procedure EnvioautomticodeXML1Click(Sender: TObject);
     procedure Observaonadescriodosservios1Click(Sender: TObject);
     procedure ConfiguraesdaNFSe1Click(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
 
 
   private
@@ -841,7 +843,7 @@ begin
 end;
 
 
-
+{ Mauricio Parizotto 2023-12-29
 function GetSystemPath(Folder: Integer): string;
 var
   PIDL: PItemIDList;
@@ -857,11 +859,13 @@ begin
   AMalloc.Free(PIDL);
   StrDispose(Path);
 end;
+}
 
 
 function ApagaArquivoNoDeskTop(sP1:String): boolean;
 begin
-  DeleteFile(pChar(GetSystemPath(0)+'\'+sP1));
+  //DeleteFile(pChar(GetSystemPath(0)+'\'+sP1)); Mauricio Parizotto 2023-12-29
+  DeleteFile(ExtractFilePath(Application.ExeName)+'sP1');
   DeleteFile(pChar('c:\Users\Public\Desktop\'+Sp1));
   DeleteFile(pChar('c:\Documents and Settings\All Users\Desktop\'+sP1));
   
@@ -1600,8 +1604,8 @@ begin
   begin
     if AnsiUpperCase(ProcessFileName(FProcessEntry32.th32ProcessID)) = AnsiUpperCase(sNomeExeComCaminho)  then
     begin
-      WinExec(PChar('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F'), SW_HIDE);
-      // Break;
+      //WinExec(PChar('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F'), SW_HIDE); Mauricio Parizotto 2023-12-29
+      WinExec(PAnsiChar(AnsiString('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F')), SW_HIDE);
     end;
     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
   end;
@@ -1735,9 +1739,10 @@ begin
         CopyFile(pChar(Form1.sAtual+'\'+pP1+'.~~1'),pChar(Form1.sAtual+'\'+pP1+'.exe'),false);
         Sleep(100);
       end;
-      //
-//      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\'+pP1+'.exe'),'/verysilent','', SW_SHOWNORMAL);
-      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then Winexec(pChar(Form1.sAtual+'\'+pP1+'.exe /verysilent'), SW_HIDE );
+
+      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then
+        //Winexec(pChar(Form1.sAtual+'\'+pP1+'.exe /verysilent'), SW_HIDE );
+        WinExec(PAnsiChar(AnsiString( Form1.sAtual+'\'+pP1+'.exe /verysilent' )), SW_HIDE);
 
       while FileExists(Form1.sAtual+'\'+pP1+'.~~1') do
       begin
@@ -3504,6 +3509,31 @@ end;
 procedure Tform1.NovoFormExit(Sender:TObject);
 begin
   Screen.ActiveForm.Visible := False;
+end;
+
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+var
+  vBody : string;
+  vRecurso : string;
+  documentoAtivo: variant;
+begin
+  try
+    documentoAtivo := WebBrowser1.Document;
+    vBody := documentoAtivo.Body.OuterHTML;
+
+    vBody := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
+    vBody := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
+
+	  //Mauricio Parizotto 2023-05-29
+    if AnsiContainsText(vBody,'Serial') then
+    begin
+      vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
+      ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+      ExecutaComando('Commit;');
+	  end;
+  except
+  end;
 end;
 
 procedure TForm1.WMUser (var msg: TMessage);
@@ -12387,31 +12417,6 @@ begin
 end;
 
 
-procedure TForm1.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-var
-  vBody : string;
-  vRecurso : string;
-  documentoAtivo: variant;
-begin
-  try
-    documentoAtivo := WebBrowser1.Document;
-    vBody := documentoAtivo.Body.OuterHTML;
-
-    vBody := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
-    vBody := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
-
-	  //Mauricio Parizotto 2023-05-29
-    if AnsiContainsText(vBody,'Serial') then
-    begin	
-      vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
-      ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      ExecutaComando('Commit;');
-	  end;
-  except
-  end;
-end;
-
 procedure TForm1.RegistrodoPrograma(InfTermo:boolean);
 var
   sNFCE :String;
@@ -12660,6 +12665,21 @@ begin
     Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
   finally
     FreeAndNil(ConfSistema);
+  end;
+end;
+
+function ExecutaComando(comando:string):Boolean;  overload;
+begin
+  Result := False;
+
+  try
+    Form1.ibDataset200.Close;
+    Form1.ibDataset200.SelectSql.Text := comando;
+    Form1.ibDataset200.ExecSQL;
+    Form1.ibDataset200.Close;
+
+    Result := True;
+  except
   end;
 end;
 

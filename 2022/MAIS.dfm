@@ -18,7 +18,6 @@ object Form1: TForm1
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   WindowState = wsMaximized
   OnActivate = FormActivate
   OnClose = FormClose
@@ -6006,7 +6005,6 @@ object Form1: TForm1
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = True
-    ParentBackground = True
     ParentCtl3D = False
     TabOrder = 6
     Visible = False
@@ -6175,7 +6173,6 @@ object Form1: TForm1
     Top = 48
     Width = 153
     Height = 89
-    ItemHeight = 16
     Mask = 'small??.exe'
     TabOrder = 10
     Visible = False
@@ -6282,7 +6279,6 @@ object Form1: TForm1
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = True
-    ParentBackground = True
     ParentCtl3D = False
     TabOrder = 5
     Visible = False
@@ -14082,6 +14078,8 @@ object Form1: TForm1
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 832
     Top = 452
   end
@@ -14170,6 +14168,8 @@ object Form1: TForm1
       '  REGISTRO = :REGISTRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 832
     Top = 412
   end
@@ -14178,6 +14178,8 @@ object Form1: TForm1
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 832
     Top = 340
   end
@@ -14187,19 +14189,15 @@ object Form1: TForm1
       'user_name=SYSDBA'
       'password=masterkey')
     LoginPrompt = False
-    IdleTimer = 0
-    SQLDialect = 3
-    TraceFlags = []
+    ServerType = 'IBServer'
     AllowStreamedConnected = False
     Left = 832
     Top = 260
   end
   object IBTransaction1: TIBTransaction
-    Active = False
     DefaultDatabase = IBDatabase1
     Params.Strings = (
       'isc_tpb_nowait')
-    AutoStopAction = saNone
     Left = 832
     Top = 292
   end
@@ -14215,6 +14213,8 @@ object Form1: TForm1
     CachedUpdates = False
     SelectSQL.Strings = (
       '')
+    ParamCheck = True
+    UniDirectional = False
     Left = 832
     Top = 372
   end
@@ -14228,6 +14228,8 @@ object Form1: TForm1
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 832
     Top = 492
   end
@@ -14236,13 +14238,14 @@ object Form1: TForm1
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 832
     Top = 524
   end
   object XMLDocument1: TXMLDocument
     Left = 864
     Top = 408
-    DOMVendorDesc = 'Open XML'
   end
   object Timer2: TTimer
     Interval = 10000
@@ -14272,16 +14275,16 @@ object Form1: TForm1
     Transaction = IBTransaction2
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 832
     Top = 628
   end
   object IBTransaction2: TIBTransaction
-    Active = False
     DefaultDatabase = Form7.IBDatabase1
     Params.Strings = (
       'isc_tpb_concurrency'
       'isc_tpb_nowait')
-    AutoStopAction = saNone
     Left = 872
     Top = 627
   end
@@ -14290,6 +14293,8 @@ object Form1: TForm1
     Transaction = IBTransaction2
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 832
     Top = 659
   end
@@ -14298,6 +14303,8 @@ object Form1: TForm1
     Transaction = IBTransaction2
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 832
     Top = 691
   end
@@ -14306,6 +14313,8 @@ object Form1: TForm1
     Transaction = IBTransaction2
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 832
     Top = 723
   end

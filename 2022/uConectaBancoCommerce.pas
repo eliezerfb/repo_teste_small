@@ -24,7 +24,8 @@ uses
   , Unit22
   , SmallFunc
   , uValidaRecursosDelphi7
-  , uDialogs;
+  , uDialogs
+  , smallfunc_xe;
 
 function ConectaBancoCommerce: Boolean;
 var

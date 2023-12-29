@@ -27,6 +27,7 @@ implementation
 
 uses Unit22, Unit13, uFuncoesBancoDados, uFuncoesRetaguarda, uDialogs;
 
+
 procedure DropViewProcedure;
 begin
   try

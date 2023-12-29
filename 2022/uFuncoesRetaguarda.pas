@@ -55,7 +55,7 @@ uses
   function FormatXMLToFloat(sValor: String): Double;
   function TextoIdentificadorFinalidadeNFe(Value: String): String;
   procedure LogRetaguarda(sTexto: String);
-  function GetIP:string;
+  //function GetIP:string;
   function GetSenhaAdmin : Boolean;
   procedure GetBanderiasOperadorasNFe(slBandeira: TStringList);
   procedure GetFormasDePagamentoNFe(slForma: TStringList);
@@ -380,6 +380,7 @@ begin
   ChDir(sDirAtual); // Para voltar
 end;
 
+{Mauricio Parizotto 2023-12-29
 function GetIP:string;
 var
   WSAData: TWSAData;
@@ -397,6 +398,7 @@ begin
   end;
   WSACleanup;
 end;
+}
 
 function GetSenhaAdmin : Boolean;
 var
