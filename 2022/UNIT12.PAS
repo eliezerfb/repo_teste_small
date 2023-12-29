@@ -1372,17 +1372,6 @@ var
   NumeroOS : string;
   Origem : TOrigemImpOS;
 begin
-  {Mauricio Parizotto 2023-10-20 Inicio
-  Form7.sModulo := 'OS';
-  Form41.ShowModal;
-  Form7.sModulo := 'VENDA';
-
-  Form7.ibDataSet16.First;
-  Form7.ibDataSet16.Edit;
-  Form7.ibDataSet16.Post;
-  Retributa(True);
-  }
-
   if Form7.sRPS = 'N' then
     Origem := orNFE
   else
@@ -1400,8 +1389,6 @@ begin
     Form7.ibDataSet16.Post;
     Retributa(True);
   end;
-
-  {Mauricio Parizotto 2023-10-20 Fim}
 end;
 
 procedure TForm12.DefineVisibleHomologacao;

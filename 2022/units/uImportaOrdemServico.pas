@@ -23,7 +23,22 @@ uses Unit7
     , uTransmiteNFSe
     , Unit12
     , Mais
-    ;
+    , uDialogs;
+
+procedure FinalizaImportacaoOS;
+begin
+  Form7.sModulo := 'VENDA';
+  Form7.ibDataSet16.Edit;
+  Form7.ibDataSet16.Post;
+  Form7.sModulo := 'OS';
+  Form7.ibDataSet16.Edit;
+
+  Form7.ibDataSet16.EnableControls;
+  Form7.ibDataSet16.MoveBy(-1);
+  Form7.ibDataSet16.MoveBy(1);
+  Form12.DBGrid1.Update;
+  Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
+end;
 
 procedure ImportaOS(NumeroOS:string);
 var
@@ -74,6 +89,22 @@ begin
                                        ' Where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString);
     Form7.ibDataSet2.Open;
 
+    Form7.ibQuery1.Close;
+    Form7.ibQuery1.SQL.Text := ' Select * '+
+                               ' From ITENS003 '+
+                               ' Where NUMEROOS='+QuotedStr(Form7.ibDataSet3NUMERO.AsString)+
+                               ' Order by REGISTRO';
+    Form7.ibQuery1.Open;
+
+    //Mauricio Parizotto 2023-12-28
+    //Verfica se serviços já foram importado na nota fiscal
+    if (Form7.sRPS = 'S') and (Form7.ibQuery1.FieldByName('NUMERONF').AssTring <> '') then
+    begin
+      MensagemSistema('Serviços já foram importados para Nota Fiscal: '+Form7.ibQuery1.FieldByName('NUMERONF').AssTring);
+      FinalizaImportacaoOS;
+      Exit;
+    end;
+
     Form7.ibDataSet15.EnableControls;
     Form7.ibDataSet15CLIENTE.AsString     := Form7.ibDataSet2.fieldByName('NOME').AsString;
     Form7.ibDataSet15FRETE.AsFloat        := Form7.ibDataSet3TOTAL_FRET.AsFloat;
@@ -83,13 +114,6 @@ begin
     Form7.ibDataSet15.Post;
     Form7.ibDataSet15.Edit;
 
-    Form7.ibQuery1.Close;
-    Form7.ibQuery1.SQL.Text := ' Select * '+
-                               ' From ITENS003 '+
-                               ' Where NUMEROOS='+QuotedStr(Form7.ibDataSet3NUMERO.AsString)+
-                               ' Order by REGISTRO';
-    Form7.ibQuery1.Open;
-
     if Form7.ibQuery1.FieldByname('NUMEROOS').AsString = Form7.ibDataSet3NUMERO.AsString then
     begin
       if Form7.sRPS = 'S' then
@@ -97,10 +121,25 @@ begin
         iB := IDYES;
       end else
       begin
+        //Mauricio Parizotto 2023-12-28
+        {
         iB := Application.MessageBox(Pchar('Importar os serviços desta OS?'
                                 + chr(10)
                                 + Chr(10))
                                 ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
+        }
+
+        //Verfica se serviços já foram importado na nota de serviço
+        if Form7.ibQuery1.FieldByName('NUMERONF').AsString <> '' then
+        begin
+          iB := IDNO;
+        end else
+        begin
+          iB := Application.MessageBox(Pchar('Importar os serviços desta OS?'
+                                  + chr(10)
+                                  + Chr(10))
+                                  ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
+        end;
       end;
 
       if iB = IDYES then
@@ -211,9 +250,13 @@ begin
     end;
   end else
   begin
-    ShowMessage('Ordem de serviço já importada ou inexistente.');
+    //ShowMessage('Ordem de serviço já importada ou inexistente.');
+    MensagemSistema('Ordem de serviço já importada ou inexistente.');
   end;
 
+  //Mauricio Parizotto 2023-12-28
+  FinalizaImportacaoOS;
+  {
   Form7.sModulo := 'VENDA';
   Form7.ibDataSet16.Edit;
   Form7.ibDataSet16.Post;
@@ -225,6 +268,7 @@ begin
   Form7.ibDataSet16.MoveBy(1);
   Form12.DBGrid1.Update;
   Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
+  }
 end;
 
 end.
