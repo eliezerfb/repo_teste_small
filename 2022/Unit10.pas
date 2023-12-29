@@ -551,6 +551,8 @@ type
     procedure DBGrid3CellClick(Column: TColumn);
     procedure ComboBoxEnter(Sender: TObject);
     procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
+    procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -2341,6 +2343,8 @@ var
   sCodigo: String;
   oTestaProd: ITestaProdutoExiste;
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   try
     if ((Key = VK_DOWN) or (Key = VK_UP)) and (framePesquisaProdComposicao.dbgItensPesq.CanFocus) then
     begin
@@ -7305,6 +7309,8 @@ end;
 procedure TForm10.DBGrid5KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+  
   if Key = VK_DELETE then
   begin
      Form7.IBDataSet6.Delete;
@@ -8127,5 +8133,11 @@ end;
 
 
 
+
+procedure TForm10.DBGrid4KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+end;
 
 end.

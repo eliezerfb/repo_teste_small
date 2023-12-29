@@ -3,7 +3,7 @@ unit uFrmAnexosOS;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, smallfunc,
   Dialogs, uFrmPadrao, StdCtrls, Buttons, Grids, DBGrids, DB, JPEG, pngimage,
   IBCustomDataSet, ExtCtrls, ImgList, ShellAPI, Videocap, Clipbrd,
   OleCtrls, SHDocVw;
@@ -43,6 +43,8 @@ type
     procedure imgAnexoOSDblClick(Sender: TObject);
     procedure btnWebCamClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure dbgPrincipalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     procedure CarregaVisualizacao;
     procedure AbreAnexo;
@@ -391,6 +393,12 @@ end;
 procedure TFrmAnexosOS.btnOKClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TFrmAnexosOS.dbgPrincipalKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
 
 end.

@@ -897,6 +897,8 @@ end;
 procedure TForm30.DBGrid2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+  
   Form1.bFlag := True;
 
   if (Key = VK_DOWN) or (Key = VK_UP) then
@@ -1095,6 +1097,8 @@ procedure TForm30.DBGrid1KeyDown(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);

@@ -957,6 +957,8 @@ procedure TForm48.DBGrid4KeyDown(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   if Key = VK_DOWN  then
   begin
     if dbGrid3.Visible then

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrmPadrao, DB, IBCustomDataSet, IBQuery, Grids, DBGrids,
+  Dialogs, uFrmPadrao, DB, IBCustomDataSet, IBQuery, Grids, DBGrids, smallfunc,
   ComCtrls, StdCtrls, Buttons;
 
 type
@@ -29,6 +29,8 @@ type
     procedure dtpFiltroKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure dtpFiltroCloseUp(Sender: TObject);
+    procedure dbGridPrincipalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -127,6 +129,13 @@ begin
   inherited;
   
   SelecionaPesquisa;
+end;
+
+procedure TFrmGridPesquisaPadrao.dbGridPrincipalKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
 
 end.

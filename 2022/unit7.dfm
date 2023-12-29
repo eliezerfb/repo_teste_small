@@ -7826,6 +7826,7 @@ object Form7: TForm7
     TitleFont.Style = []
     Visible = False
     OnDrawDataCell = DBGrid2DrawDataCell
+    OnKeyDown = DBGrid2KeyDown
   end
   object DBGrid3: TDBGrid
     Left = 624
@@ -7857,6 +7858,7 @@ object Form7: TForm7
     TitleFont.Style = []
     Visible = False
     OnDrawDataCell = DBGrid3DrawDataCell
+    OnKeyDown = DBGrid3KeyDown
     OnKeyUp = DBGrid3KeyUp
   end
   object Panel9: TPanel
@@ -7907,6 +7909,7 @@ object Form7: TForm7
     Visible = False
     OnColEnter = DBGrid4ColEnter
     OnDrawDataCell = DBGrid4DrawDataCell
+    OnKeyDown = DBGrid4KeyDown
   end
   object Panel10: TPanel
     Left = 624
@@ -14369,7 +14372,6 @@ object Form7: TForm7
       DisplayLabel = 'Munic'#237'pio'
       DisplayWidth = 40
       FieldName = 'MUNICIPIO'
-      OnSetText = ibDataSet13MUNICIPIOSetText
       Size = 40
     end
     object ibDataSet13ESTADO: TIBStringField

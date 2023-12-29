@@ -2076,6 +2076,8 @@ procedure TForm24.DBGrid1KeyDown(Sender: TObject; var Key: Word;
 var
   I : Integer;
 begin
+  DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
+
   if Key = VK_INSERT then
   begin
     PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
