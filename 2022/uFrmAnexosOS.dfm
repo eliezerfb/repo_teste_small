@@ -5,10 +5,11 @@ inherited FrmAnexosOS: TFrmAnexosOS
   Caption = 'Anexos da Ordem de Servi'#231'o'
   ClientHeight = 432
   ClientWidth = 907
-  OldCreateOrder = True
   Position = poScreenCenter
   OnClose = FormClose
   OnShow = FormShow
+  ExplicitWidth = 923
+  ExplicitHeight = 471
   PixelsPerInch = 96
   TextHeight = 16
   object dbgPrincipal: TDBGrid
@@ -5837,6 +5838,8 @@ inherited FrmAnexosOS: TFrmAnexosOS
       '  ANEXO=:ANEXO'
       'where'
       '  IDANEXO= :OLD_IDANEXO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 536
     Top = 30

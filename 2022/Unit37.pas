@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls, IniFiles, SmallFunc, shellapi, Grids,
-  DBGrids, Printers;
+  DBGrids, Printers, Data.DB;
 
 type
   TForm37 = class(TForm)

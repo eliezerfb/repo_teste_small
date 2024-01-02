@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, smallfunc,
   Dialogs, uFrmPadrao, StdCtrls, Buttons, Grids, DBGrids, DB, JPEG, pngimage,
   IBCustomDataSet, ExtCtrls, ImgList, ShellAPI, Videocap, Clipbrd,
-  OleCtrls, SHDocVw;
+  OleCtrls, SHDocVw, System.ImageList;
 
 type
   TFrmAnexosOS = class(TFrmPadrao)
