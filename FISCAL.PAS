@@ -113,16 +113,6 @@ uses
   const TIPO_PESQUISA_ESTOQUE_INICIANDO = 'Pesquisar estoque iniciando com o texto digitado';
   const TIPO_PESQUISA_ESTOQUE_CONTENDO  = 'Pesquisar estoque contendo o texto digitado';
 
-  {Sandro Silva 2022-08-15 inicio
-  const FORMA_PAGAMENTO_A_VISTA         = 'A VISTA';
-  const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
-  const FORMA_PAGAMENTO_CARTAO          = 'CARTAO';
-  const FORMA_PAGAMENTO_CHEQUE          = 'CHEQUE'; // Sandro Silva 2016-04-19
-  }
-{Sandro Silva 2022-11-22 inicio
-  const VERSAO_ER_PAF_ECF               = '02.06'; // ER 02.06 Sandro Silva 2019-06-19  '02.05'; // Sandro Silva 2017-07-24 ER 02.05 '02.03';
-  const NUMERO_LAUDO_PAF_ECF            = 'UNO3302019';
-}
   const INFORME_CPF_OU_CNPJ             = 'Informe o CPF ou o CNPJ válido:'; // 2015-09-16
 
   const CRIPTA_SECAO_ECFS_AUTORIZADAS   = 'R24_4';
