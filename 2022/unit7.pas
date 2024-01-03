@@ -8361,29 +8361,6 @@ begin
     if sModulo = 'VENDA' then
     begin
 
-      {Sandro Silva 2023-05-31 inicio
-      Form7.ibDataSet15.Append;
-
-      if Form7.sRPS = 'S' then
-      begin
-        Form48.Show;
-      end
-      else
-      begin
-        if ParamCount > 0 then
-        begin
-          if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
-          begin
-            Form12.ShowModal;
-          end
-          else
-            Form12.Show;
-        end
-        else
-          Form12.Show;
-      end;
-      }
-
       if Form7.sRPS = 'S' then
       begin
 
@@ -8417,7 +8394,6 @@ begin
             Form12.Show;
         end;
       end;
-      {Sandro Silva 2023-05-31 fim}
     end  else
     begin
       if sModulo = 'COMPRA' then
