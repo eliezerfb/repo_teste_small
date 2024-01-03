@@ -5,12 +5,13 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
-  StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
+  StdCtrls, Unit10, Unit11, Unit14, Unit16, Mask, DBCtrls, smallfunc_xe,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, {MD5,} xmldom, XMLIntf,
   msxmldom, XMLDoc,
   {$IFDEF VER150}
+  SmallFunc,
   oxmldom, spdXMLUtils, spdType, CAPICOM_TLB,
   {$ELSE}
   {$ENDIF}
@@ -2314,6 +2315,12 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1NavigateComplete2(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid3DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid4DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -18709,6 +18716,16 @@ begin
   //
 end;
 
+procedure TForm7.DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid2, Column, Rect, State, Column.FieldName);
+  end;
+end;
+
 procedure TForm7.DBGrid2DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
 var
@@ -18755,6 +18772,16 @@ begin
     Form7.Panel9.Caption  := Format('%14.2n',[Form7.ibDataSet24MERCADORIA.AsFloat]);
   end;
   //
+end;
+
+procedure TForm7.DBGrid3DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid3, Column, Rect, State, Column.FieldName);
+  end;
 end;
 
 procedure TForm7.DBGrid3DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -20681,6 +20708,16 @@ begin
   if Form7.sModulo = 'OS' then
     TotalizaOS(True);
   AgendaCommit(True);
+end;
+
+procedure TForm7.DBGrid4DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid4, Column, Rect, State, Column.FieldName);
+  end;
 end;
 
 procedure TForm7.DBGrid4DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -25707,6 +25744,12 @@ begin
   end;
 
   {$ENDIF}
+
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid1, Column, Rect, State, Column.FieldName);
+  end;
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
