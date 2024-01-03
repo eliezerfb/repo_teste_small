@@ -21,7 +21,7 @@ type
     ibdProdutosNotaPRECO_VENDA: TFloatField;
     ibdProdutosNotaPERC_LUC: TFloatField;
     ibdProdutosNotaPRECO_NOVO: TFloatField;
-    cdsProdutosNotaPRODUTO: TStringField;
+    cdsProdutosNotaPRODUTO: TIBStringField;
     cdsProdutosNotaPRECO_CUSTO: TFloatField;
     cdsProdutosNotaPRECO_VENDA: TFloatField;
     cdsProdutosNotaPERC_LUC: TFloatField;
@@ -29,7 +29,7 @@ type
     edtPercGeral: TEdit;
     lblTitulo: TLabel;
     ibdProdutosNotaREGISTRO: TIBStringField;
-    cdsProdutosNotaREGISTRO: TStringField;
+    cdsProdutosNotaREGISTRO: TIBStringField;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);

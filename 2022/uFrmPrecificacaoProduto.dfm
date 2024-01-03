@@ -5,10 +5,11 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
   Caption = 'Precifica'#231#227'o dos Produtos'
   ClientHeight = 483
   ClientWidth = 896
-  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
+  ExplicitWidth = 912
+  ExplicitHeight = 522
   PixelsPerInch = 96
   TextHeight = 16
   object lblTitulo: TLabel
@@ -203,6 +204,8 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       #9#9'and Coalesce(I.CODIGO,'#39#39') <> '#39#39
       #9') A'
       'Order By REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 280
     Top = 144
     object ibdProdutosNotaREGISTRO: TIBStringField
@@ -243,12 +246,12 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     BeforeDelete = cdsProdutosNotaBeforeDelete
     Left = 216
     Top = 144
-    object cdsProdutosNotaREGISTRO: TStringField
+    object cdsProdutosNotaREGISTRO: TIBStringField
       FieldName = 'REGISTRO'
       Required = True
       Size = 10
     end
-    object cdsProdutosNotaPRODUTO: TStringField
+    object cdsProdutosNotaPRODUTO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'PRODUTO'
       Origin = 'ITENS002.DESCRICAO'
