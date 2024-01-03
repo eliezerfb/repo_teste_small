@@ -450,10 +450,6 @@ type
     procedure SMALL_DBEdit1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Image5Click(Sender: TObject);
-    procedure WebBrowser1NavigateComplete2(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
-    procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure FormShow(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
@@ -553,6 +549,10 @@ type
     procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure WebBrowser1NavigateComplete2(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -2782,6 +2782,18 @@ begin
   end;
 end;
 
+procedure TForm10.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := Form10.Tag + 1;
+end;
+
+procedure TForm10.WebBrowser1NavigateComplete2(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := 33;
+end;
+
 procedure TForm10.DBGrid3DblClick(Sender: TObject);
   function LocalizaDBEditPosicionar(FieldName: String): TDBEdit;
   var
@@ -4353,18 +4365,6 @@ begin
     AtualizaTela(True);    
   except
   end;
-end;
-
-procedure TForm10.WebBrowser1NavigateComplete2(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-begin
-  Form10.Tag := 33;
-end;
-
-procedure TForm10.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-begin
-  Form10.Tag := Form10.Tag + 1;
 end;
 
 procedure TForm10.FormShow(Sender: TObject);
