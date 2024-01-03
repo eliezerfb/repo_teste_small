@@ -3,7 +3,17 @@ unit uRetornaSQLGerencialInventario;
 interface
 
 uses
-  uIRetornaSQLGerencialInventario, Smallfunc_xe;
+  uIRetornaSQLGerencialInventario
+  {Sandro Silva 2024-01-03 inicio
+  smallfunc_xe
+  }
+  {$IFDEF VER150}
+  , smallfunc
+  {$ELSE}
+  , smallfunc_xe
+  {$ENDIF}
+  {Sandro Silva 2024-01-03 fim}
+  ;
 
 type
   TRetornaSQLGerencialInventario = class(TInterfacedObject, IRetornaSQLGerencialInventario)

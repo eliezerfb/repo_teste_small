@@ -41,8 +41,14 @@ uses
   , ClipBrd
   , uConectaBancoSmall
   , uconstantes_chaves_privadas
+  {$IFDEF VER150}
+  , Grids
+  , uTestaEmail
+  , DB
+  {$ELSE}
   , Vcl.Grids
   , uTestaEmail, Data.DB
+  {$ENDIF}
   ;
 
 

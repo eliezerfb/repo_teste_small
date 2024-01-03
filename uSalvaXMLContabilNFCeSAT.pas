@@ -3,7 +3,18 @@ unit uSalvaXMLContabilNFCeSAT;
 interface
 
 uses
-  uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery, SmallFunc, smallfunc_xe, ShellAPI, Windows,
+  uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery
+
+  {Sandro Silva 2024-01-03 inicio
+  , SmallFunc, smallfunc_xe
+  }
+  {$IFDEF VER150}
+  , smallfunc
+  {$ELSE}
+  , smallfunc_xe
+  {$ENDIF}
+  {Sandro Silva 2024-01-03 fim}
+  , ShellAPI, Windows,
   Forms, uConectaBancoSmall, Classes, DB;
 
 type
@@ -146,16 +157,24 @@ begin
         if ((Pos('<nfeProc',FQryNFe.FieldByName('XML').AsString) <> 0) // NFC-e emitida
             or ((Pos('CANCEL', AnsiUpperCase(FQryNFe.FieldByName('STATUS').AsString)) <> 0)) // NFC-e cancelada
            )
+          {Sandro Silva 2024-01-03 inicio
           or ((smallfunc_xe.xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//infCFe/@Id') <> '')  //CF-e-SAT de venda com ID
               and (smallfunc_xe.xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//Signature/SignatureValue') <> '')  //CF-e-SAT assinado
              )
+          }
+          or ((xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//infCFe/@Id') <> '')  //CF-e-SAT de venda com ID
+              and (xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//Signature/SignatureValue') <> '')  //CF-e-SAT assinado
+             )
+          {Sandro Silva 2024-01-03 fim}
+
           then
         begin
           slArq.Text := StringReplace(FQryNFe.FieldByName('XML').AsString, '﻿','', [rfReplaceAll]);
 
           cArquivo := RetornarCaminho + FQryNFe.FieldByName('ID').AsString;
 
-          if (Copy(smallfunc_xe.xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//chNFe'), 21, 2) = '65') then  // Assim para identificar xml de cancelamento de NFC-e
+          // Sandro Silva 2024-01-03 if (Copy(smallfunc_xe.xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//chNFe'), 21, 2) = '65') then  // Assim para identificar xml de cancelamento de NFC-e
+          if (Copy(xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//chNFe'), 21, 2) = '65') then  // Assim para identificar xml de cancelamento de NFC-e
           begin
 
             if (Pos('CANCEL', AnsiUpperCase(FQryNFe.FieldByName('STATUS').AsString)) <> 0) then
@@ -163,7 +182,7 @@ begin
             else
               cArquivo := cArquivo + '-nfce.xml';
           end;
-          if (smallfunc_xe.xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//ide/mod') = '59') then
+          if (xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//ide/mod') = '59') then // Sandro Silva 2024-01-03 if (smallfunc_xe.xmlNodeValue(FQryNFe.FieldByName('XML').AsString, '//ide/mod') = '59') then
           begin
             cArquivo := RetornarCaminho;
             if (Pos('CANCEL', AnsiUpperCase(FQryNFe.FieldByName('STATUS').AsString)) <> 0) then
@@ -180,6 +199,7 @@ begin
         begin
           slArq.Text := StringReplace(FQryNFe.FieldByName('XML').AsString, '﻿','', [rfReplaceAll]);
 
+          {Sandro Silva 2024-01-03 inicio
           cArquivo := RetornarCaminho +
                       smallfunc_xe.xmlNodeValue(slArq.Text, '//cUF') +
                       smallfunc_xe.xmlNodeValue(slArq.Text, '//ano') +
@@ -189,6 +209,17 @@ begin
                       RightStr('000000000' + smallfunc_xe.xmlNodeValue(slArq.Text, '//nNFIni'), 9) +
                       RightStr('000000000' + smallfunc_xe.xmlNodeValue(slArq.Text, '//nNFFin'), 9) +
                       '-inut.xml';
+          }
+          cArquivo := RetornarCaminho +
+                      xmlNodeValue(slArq.Text, '//cUF') +
+                      xmlNodeValue(slArq.Text, '//ano') +
+                      xmlNodeValue(slArq.Text, '//CNPJ') +
+                      xmlNodeValue(slArq.Text, '//mod') +
+                      RightStr('000' + xmlNodeValue(slArq.Text, '//serie'), 3) +
+                      RightStr('000000000' + xmlNodeValue(slArq.Text, '//nNFIni'), 9) +
+                      RightStr('000000000' + xmlNodeValue(slArq.Text, '//nNFFin'), 9) +
+                      '-inut.xml';
+          {Sandro Silva 2024-01-03 fim}
         end;
       end;
 
