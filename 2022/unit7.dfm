@@ -21497,8 +21497,8 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm' +
-      '50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21533,8 +21533,8 @@ object Form7: TForm7
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm5' +
-      '0a\'
+      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
+      'a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21850,7 +21850,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50\vm50\DPEC'
+      'vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21881,7 +21881,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50\vm50\DPEC'
+      'm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
