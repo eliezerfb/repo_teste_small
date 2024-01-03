@@ -2167,10 +2167,18 @@ begin
   Panel4.Height  := Screen.Height;
 
   Form7.Top    := Form1.Panel_3.Top + 30;
+  {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
+  {$IFDEF VER150}
   Form7.Left   := 0;
   Form7.Width  := Form1.Width -6;
   Form7.Height := Form1.Height - Form7.Top -6;
-  
+  {$ELSE}
+  Form7.Left   := Form1.Left;
+  Form7.Width  := Form1.Width;
+  Form7.Height := (Form1.Height - 9) - Form7.Top;
+  {$ENDIF}
+  {Dailon Parisotto (f-7757) 2023-01-03 Fim}
+
   iTop := 6;
   iFix := 0;
   iFixL := 70;
