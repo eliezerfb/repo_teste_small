@@ -594,3 +594,4 @@ update/smallcom.inf
 *.ddp
 2022/small22.identcache
 2022/small22.dproj.local
+/2022/__recovery
