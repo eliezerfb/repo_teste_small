@@ -367,7 +367,6 @@ type
     procedure StringGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
-    procedure TabSheet4Show(Sender: TObject);
     procedure DBGrid3DblClick(Sender: TObject);
     procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit23KeyDown(Sender: TObject; var Key: Word;
@@ -574,6 +573,7 @@ type
     procedure BloqueiaCamposAbaConversao(AbBloquear: Boolean);
     procedure BloqueiaCamposAbaTAGs(AbBloquear: Boolean);
     procedure BloqueiaCamposAbaMarketPlace(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
   public
     { Public declarations }
 
@@ -2780,23 +2780,6 @@ begin
       Form7.ibDataSet28.Next;
       if Form7.ibDataSet28.EOF then Form7.ibDataSet28.Append;
     end;
-  end;
-end;
-
-procedure TForm10.TabSheet4Show(Sender: TObject);
-begin
-  if Form7.bSoLeitura or Form7.bEstaSendoUsado then
-  begin
-    dbgComposicao.Enabled  := False;
-    Button8.Enabled  := False;
-    Button10.Enabled := False;
-    Button11.Enabled := False;
-  end else
-  begin
-    dbgComposicao.Enabled  := True;
-    Button8.Enabled  := True;
-    Button10.Enabled := True;
-    Button11.Enabled := True;
   end;
 end;
 
@@ -5370,14 +5353,6 @@ var
   I, J : Integer;
   bChave : Boolean;
 begin
-  if Form7.bSoLeitura or Form7.bEstaSendoUsado then
-  begin
-    StringGrid1.Enabled := False;
-  end else
-  begin
-    StringGrid1.Enabled := True;
-  end;
-  
   StringGrid1.Col := 0;
   StringGrid1.Row := 0;
 
@@ -8151,6 +8126,7 @@ begin
   BloqueiaCamposAbaICMS(TestarSomenteLeitura);
   BloqueiaCamposAbaIPI(TestarSomenteLeitura);
   BloqueiaCamposAbaPISCOFINS(TestarSomenteLeitura);
+  BloqueiaCamposAbaGrade(TestarSomenteLeitura);
   BloqueiaCamposAbaComposicao(TestarSomenteLeitura);
   BloqueiaCamposAbaFoto(TestarSomenteLeitura);
   BloqueiaCamposAbaPreco(TestarSomenteLeitura);
@@ -8288,6 +8264,11 @@ begin
   bAtiva := (not AbBloquear);
 
   framePesquisaProdComposicao.Enabled := bAtiva;
+  Button8.Enabled                     := bAtiva;
+  Button10.Enabled                    := bAtiva;
+  Button11.Enabled                    := bAtiva;
+  SMALL_DBEdit33.ReadOnly             := not bAtiva;
+  SMALL_DBEdit34.ReadOnly             := not bAtiva;
 
   if not bAtiva then
     dbgComposicao.Options := dbgComposicao.Options - [dgEditing]
@@ -8421,6 +8402,23 @@ begin
   bAtiva := (not AbBloquear);
 
   CheckBox2.Enabled := bAtiva;
+end;
+
+procedure TForm10.BloqueiaCamposAbaGrade(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  StringGrid1.EditorMode := bAtiva;
+  Button1.Enabled        := bAtiva;
+  Button2.Enabled        := bAtiva;
+  Button3.Enabled        := bAtiva;
+
+  if not bAtiva then
+    StringGrid1.Options := StringGrid2.Options - [goEditing]
+  else
+    StringGrid1.Options := StringGrid2.Options + [goEditing];
 end;
 
 function TForm10.TestarSomenteLeitura: Boolean;
