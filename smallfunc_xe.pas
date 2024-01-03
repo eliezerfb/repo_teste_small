@@ -41,6 +41,8 @@ uses
   , ClipBrd
   , uConectaBancoSmall
   , uconstantes_chaves_privadas
+  , Vcl.Grids
+  , uTestaEmail, Data.DB
   ;
 
 
@@ -146,6 +148,24 @@ function BuscaSerialSmall: String;
 function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
 procedure DBGridCopiarCampo(DBGrid: TDBGrid); overload;
 procedure DBGridCopiarCampo(DBGrid: TDBGrid; var Key: Word;  Shift: TShiftState); overload;
+procedure DBGridExibeMemo(DBGrid: TDBGrid; Column: TColumn; Rect: TRect;
+  State: TGridDrawState; sCampo: String);
+function processExists(exeFileName: string): Boolean;
+function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
+function ValidaEmail(AcEmail: String): Boolean;
+function GetCampoPKDataSet(sDataSet: TDataSet): String;
+function RetornaOperadora(sNumero: String): String;
+function ValidaEAN(AGTIN:String):Boolean;
+function DiaDaSemana(pP1:TDateTime):String;
+function Month(Data:TdateTime): Integer;
+function ConverteCpfCgc(pP1:String):String;
+function SomaDias(Data: TDateTime; Dias: Integer): TDateTime;
+function DiasPorMes(AAno, AMes: Integer): Integer;
+function Bisexto(AAno: Integer): Boolean;
+function LimpaLetrasPor_(pP1:String):String;
+function QuebraLinhaHtml(sTexto : string) : string;
+function ConverteCaracterEspecialXML(Value: String): String;
+function DiasDesteMes: Integer;
 
 var
   IMG: TImage;
@@ -1589,6 +1609,403 @@ begin
   begin
     DBGridCopiarCampo(DBGrid);
   end;
+end;
+
+
+procedure DBGridExibeMemo(DBGrid: TDBGrid; Column: TColumn; Rect: TRect;
+  State: TGridDrawState; sCampo: String);
+//Exibe conteúdo texto de campos blob em tdbgrid
+var
+  R: TRect;
+begin
+  try
+    R := Rect;
+    Inc(R.Top, 2);
+    Inc(R.Left, 2); //Sandro Silva 2022-04-01
+    if AnsiUpperCase(Column.FieldName) = sCampo then
+    begin
+      DBGrid.Canvas.Rectangle(Rect);
+      if not (gdSelected in State) then
+        DBGrid.Canvas.FillRect(Rect);
+      //DBGrid.Canvas.TextRect(R, R.Left, R.Top, Column.Field.AsString);
+      //Vai pegar somente os primeiros 200 caracteres, campos muitro grande ficou lento
+      DBGrid.Canvas.TextRect(R, R.Left, R.Top, Copy(Column.Field.AsString,1,200));
+    end;
+  except
+    //on e:exception do
+  end;
+end;
+
+function processExists(exeFileName: string): Boolean;
+var
+  ContinueLoop: BOOL;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+begin
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+  Result := False;
+  while Integer(ContinueLoop) <> 0 do
+  begin
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(exeFileName)) or (UpperCase(FProcessEntry32.szExeFile) = UpperCase(exeFileName))) then
+    begin
+      Result := True;
+    end;
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  end;
+  CloseHandle(FSnapshotHandle);
+end;
+
+function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
+begin
+  Result := TStringList.Create;
+
+  if (Pos(AcCaracQuebra, AcTexto) <= 0) and (Trim(AcTexto) <> EmptyStr) then
+    Result.Add(AcTexto)
+  else
+  begin
+    while Pos(AcCaracQuebra, AcTexto) > 0 do
+    begin
+      Result.Add(Copy(AcTexto, 1, Pos(AcCaracQuebra, AcTexto)-Length(AcCaracQuebra)));
+      AcTexto := Copy(AcTexto, Pos(AcCaracQuebra, AcTexto) + Length(AcCaracQuebra), Length(AcTexto));
+    end;
+    if AcTexto <> EmptyStr then
+      Result.Add(AcTexto);
+  end;
+end;
+
+
+function ValidaEmail(AcEmail: String): Boolean;
+begin
+  Result := TTestaEmail.New
+                       .setEmail(AcEmail)
+                       .Testar;
+end;
+
+function GetCampoPKDataSet(sDataSet: TDataSet): String;
+var
+  i :integer;
+begin
+  Result := 'REGISTRO';
+
+  try
+    for i :=0 to sDataSet.FieldCount -1 do
+    begin
+      if (pfInKey in sDataSet.fields[i].ProviderFlags) then
+        Result := sDataSet.fields[i].FieldName;
+    end;
+  except
+  end;
+end;
+
+
+function RetornaOperadora(sNumero: String): String;
+begin
+  //
+  // 4999127336
+  //
+  sNumero := LimpaNumero(sNumero);
+  //
+  if Copy(sNumero,1,1) = '0' then sNumero := Copy(sNumero,2,Length(SNumero)-2);
+  if Copy(sNumero,3,1) <= '5' then Result := 'Convencional';
+  //
+  // Rio de janeiro, Espirito Santo
+  //
+  if (Copy(sNumero,1,2) >= '21') and (Copy(sNumero,1,2) <= '28') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '83') then Result := 'Tim - Rio de janeiro, Espirito Santo';
+    if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - Rio de janeiro';
+  end;
+  //
+  // Amazônia
+  //
+  if (Copy(sNumero,1,2) >= '91') and (Copy(sNumero,1,2) <= '99') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Amazônia celular - Amazônia';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Vivo - Amazônia';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Amazônia';
+    if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '83') then Result := 'Tim - Amazônia';
+  end;
+  //
+  // Minas Gerais
+  //
+  if (Copy(sNumero,1,2) >= '31') and (Copy(sNumero,1,2) <= '38') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Telemig - Minas Gerais';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Tim - Minas Gerais';
+    if (Copy(sNumero,3,2) >= '86') and (Copy(sNumero,3,2) <= '89') then Result := 'Oi - Minas Gerais';
+    if (Copy(sNumero,3,2) = '81') or (Copy(sNumero,3,2) = '84')    then Result := 'Claro - Minas Gerais';
+  end;
+  //
+  // Bahia, Sergipe
+  //
+  if (Copy(sNumero,1,2) >= '71') and (Copy(sNumero,1,2) <= '79') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Bahia, Sergipe';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Tim - Bahia, Sergipe';
+    if (Copy(sNumero,3,2) = '81')                                  then Result := 'Claro - Bahia, Sergipe';
+  end;
+  //
+  // Nordeste
+  //
+  if (Copy(sNumero,1,2) >= '81') and (Copy(sNumero,1,2) <= '89') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Tim - Nordeste';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Nordeste';
+    if (Copy(sNumero,3,1) >= '8') then Result := 'Claro - Nordeste verificar';
+  end;
+  //
+  // Parana, Santa Catarina
+  //
+  if (Copy(sNumero,1,2) >= '41') and (Copy(sNumero,1,2) <= '49') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Tim - Parana, Santa Catarina';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Vivo - Parana, Santa Catarina';
+    if (Copy(sNumero,3,2) = '88')                                  then Result := 'Claro - Parana, Santa Catarina';
+    if (Copy(sNumero,3,2) = '84')                                  then Result := 'Brasil Telecom - Parana, Santa Catarina';
+  end;
+  //
+  // Rio Grande do Sul
+  //
+  if (Copy(sNumero,1,2) >= '51') and (Copy(sNumero,1,2) <= '55') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Rio Grande do Sul';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Rio Grande do Sul';
+    if (Copy(sNumero,3,2) = '81')                                  then Result := 'Tim - Rio Grande do Sul';
+    if (Copy(sNumero,3,2) = '84')                                  then Result := 'Brasil Telecom - Rio Grande do Sul';
+  end;
+  //
+  // Centro Oeste
+  //
+  if (Copy(sNumero,1,2) >= '61') and (Copy(sNumero,1,2) <= '69') then
+  begin
+    if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - Centro Oeste';
+    if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - Centro Oeste';
+    if (Copy(sNumero,3,2) = '81')                                  then Result := 'Tim - Centro Oeste';
+    if (Copy(sNumero,3,2) = '84')                                  then Result := 'Brasil Telecom - Centro Oeste';
+// Ver
+    if (Copy(sNumero,3,2) = '95')                                  then Result := 'Claro - Distrito Federal';
+  end;
+  //
+  // São Paulo
+  //
+  if (Copy(sNumero,1,2) >= '11') and (Copy(sNumero,1,2) <= '19') then
+  begin
+    //
+    if (Copy(sNumero,1,2) = '11') then
+    begin
+      if (Copy(sNumero,3,3) >= '996') and (Copy(sNumero,3,3) <= '999') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,3) >= '971') and (Copy(sNumero,3,3) <= '974') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,3) >= '991') and (Copy(sNumero,3,3) <= '994') then Result := 'Claro - São Paulo';
+      if (Copy(sNumero,3,3) >= '981') and (Copy(sNumero,3,3) <= '986') then Result := 'Tim - São Paulo';
+      if (Copy(sNumero,3,3) = '995')                                  then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,3) = '976') and (Copy(sNumero,3,3) = '989')   then Result := 'Claro - São Paulo';
+    end else
+    begin
+      if (Copy(sNumero,3,2) >= '96') and (Copy(sNumero,3,2) <= '99') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,2) >= '71') and (Copy(sNumero,3,2) <= '74') then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,2) >= '91') and (Copy(sNumero,3,2) <= '94') then Result := 'Claro - São Paulo';
+      if (Copy(sNumero,3,2) >= '81') and (Copy(sNumero,3,2) <= '86') then Result := 'Tim - São Paulo';
+      if (Copy(sNumero,3,2) = '95')                                  then Result := 'Vivo - São Paulo';
+      if (Copy(sNumero,3,2) = '76') and (Copy(sNumero,3,2) = '89')   then Result := 'Claro - São Paulo';
+    end;
+    //
+  end;
+  //
+  // Londrina e Tamarana, PR
+  //
+  if (Copy(sNumero,1,2) >= '43') then
+  begin
+    if (Copy(sNumero,3,2) = '81') then Result := 'Tim - Londrina e Tamarana, PR';
+    if (Copy(sNumero,3,2) = '9')  then Result := 'Sercomtel - Londrina e Tamarana, PR';
+  end;
+  //
+  // Pelotas e região
+  //
+  if (Copy(sNumero,1,2) >= '53') then
+  begin
+    if (Copy(sNumero,3,4) = '9911')                                    then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) = '9913')                                    then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) = '9939')                                    then Result := 'Tim - Pelotas e região';
+    if (Copy(sNumero,3,4) >= '9981') and (Copy(sNumero,3,4) <= '9989') then Result := 'Tim - Pelotas e região';
+  end;
+  //
+end;
+
+
+function ValidaEAN(AGTIN:String):Boolean;
+  function Par(Cod:Integer):Boolean;
+  begin
+    Result:= Cod Mod 2 = 0 ;
+  end;
+var
+  i,
+  soma, resultado, base10: integer;
+begin
+  Result := False;
+
+  if (Length(LimpaNumero(AGTIN)) <> Length(AGTIN)) then
+  begin
+    Exit;
+  end;
+
+  if not (Length(AGTIN) in [8,12,13,14]) then
+  begin
+    Exit;
+  end;
+
+  soma:= 0;
+  for i:= 1 to (Length(AGTIN) -1) do
+  begin
+    if Length(AGTIN) = 13 then
+    begin
+      if Odd(i) then
+        soma:= soma + (strtoint(AGTIN[i]) * 1)
+      else
+        soma:= soma + (strtoint(AGTIN[i]) * 3);
+    end
+    else
+    begin
+      if Odd(i) then
+        soma:= soma + (strtoint(AGTIN[i]) * 3)
+      else
+        soma:= soma + (strtoint(AGTIN[i]) * 1);
+    end;
+  end;
+
+  base10:= soma;
+  //Verifica se base10 é múltiplo de 10
+  if not (base10 mod 10 = 0) then
+  begin
+    while not (base10 mod 10 = 0) do
+    begin
+      base10:= base10 + 1;
+    end;
+  end;
+  resultado:= base10 - soma;
+  //Verifica se o resultado encontrado é igual ao caractere de controle
+  if resultado = strtoint(AGTIN[Length(AGTIN)]) then
+    Result:= True
+  else
+    Result:= False;
+
+end;
+
+function DiaDaSemana(pP1:TDateTime):String;
+begin
+  Result := Copy('DomingoSegundaTerça  Quarta Quinta Sexta  Sábado ',((DayOfWeek(pP1)-1)*7)+1,7);
+end;
+
+function Month(Data:TdateTime): Integer;
+var
+   DataD:TDateTime;
+begin
+   DataD:=Date;
+   if Data <> DataD then DataD:=Data;
+   result:=StrToInt(Copy(DateToStr(DataD),4,2));
+end;
+
+Function ConverteCpfCgc(pP1:String):String;
+begin
+   if length(pP1)=14 then
+      Result:=Copy(pP1,1,2)+'.'+
+                  Copy(pP1,3,3)+'.'+
+                  Copy(pP1,6,3)+'/'+
+                  Copy(pP1,9,4)+'-'+
+                  Copy(pP1,13,2)
+   else
+      Result:=Copy(pP1,1,3)+'.'+
+                  Copy(pP1,4,3)+'.'+
+                  Copy(pP1,7,3)+'-'+
+                  Copy(pP1,10,2);
+end;
+
+
+function SomaDias(Data: TDateTime; Dias: Integer): TDateTime;
+var
+   I,D,M,A:integer;
+begin
+   D:=Day(Data);
+   M:=Month(Data);
+   A:=Year(Data);
+   for I:= 1 to Dias do
+   begin
+      D:=D+1;
+      if D > DiasPorMes(A,M) then
+      begin
+        if M=12 then {se for dezembro atribui Mes=1 e soma 1 no ano}
+          begin
+           M:=1;
+           A:=A+1;
+          end
+        else M:=M+1;
+        D:=1;
+      end;
+   end;
+   result:=StrToDate(IntToStr(D)+'/'+IntToStr(M)+'/'+IntToStr(A));
+end;
+
+function DiasPorMes(AAno, AMes: Integer): Integer;
+const
+  DiasNoMes: array[1..12] of Integer = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+begin
+  Result := DiasNoMes[AMes];
+  if (AMes = 2) and Bisexto(AAno) then Inc(Result); { leap-year Feb is special }
+end;
+
+function Bisexto(AAno: Integer): Boolean;
+begin
+  Result := (AAno mod 4 = 0) and ((AAno mod 100 <> 0) or (AAno mod 400 = 0));
+end;
+
+Function LimpaLetrasPor_(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZ') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+'_';
+   end;
+end;
+
+
+function QuebraLinhaHtml(sTexto : string) : string;
+begin
+  Result := StringReplace(sTexto,#$D#$A,'<br>',[rfReplaceAll]);
+end;
+
+function ConverteCaracterEspecialXML(Value: String): String;
+//Elimina caracteres especiais do texto usado em XML
+var
+  I: Integer;
+  sTexto: String;
+begin
+  sTexto := Value;
+  for I := 1 to 42 do
+    sTexto :=  StringReplace(sTexto,
+                             Copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç', I, 1),
+                             Copy('AAAAAEEEEIIIOOOUUCaaaaaaeeeeiiiiooooouuuuc', I, 1),
+                             [rfReplaceAll]);
+
+  Result := '';
+  for I := 1 to Length(sTexto) do
+  begin
+    if Pos(AnsiUpperCase(Copy(sTexto, I, 1)), '1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW!@#$%*()_+-=;:/|\?,.ºª[]') > 0 then
+      Result := Result + Copy(sTexto, I, 1)
+    else
+      Result := Result + ' ';
+  end;
+end;
+
+function DiasDesteMes: Integer;
+begin
+  Result := DiasPorMes(Year(Date), Month(Date));
 end;
 
 end.
