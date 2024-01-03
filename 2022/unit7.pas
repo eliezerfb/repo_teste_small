@@ -4627,11 +4627,21 @@ begin
   
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
 
+  {Sandro Silva 2024-01-03- inicio}
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+  {
+  // F5800 Sugestão da Tecnospeed para quando não existir o tipo de certificado configurado no NFE.ini seja considera '' e não 'File'
+  // Executável com essa alteração será testado no cliente
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+  {Sandro Silva 2024-01-03 fim}
 
   Form7.sFuso                := Mais1ini.ReadString('NFE' , 'FUSO','');
   if Form7.sFuso = '' then
