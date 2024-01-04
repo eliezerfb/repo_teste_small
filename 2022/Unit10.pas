@@ -7,7 +7,13 @@ uses
   Windows,
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
-  Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
+  Buttons
+  {$IFDEF VER150}
+  , SmallFunc
+  {$ELSE}
+  , SmallFunc_XE
+  {$ENDIF}
+  , DB, shellapi, ComCtrls, Grids,
   DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
