@@ -171,6 +171,7 @@ function Bisexto(AAno: Integer): Boolean;
 function LimpaLetrasPor_(pP1:String):String;
 function QuebraLinhaHtml(sTexto : string) : string;
 function ConverteCaracterEspecialXML(Value: String): String;
+function ConverteAcentosPHP(pP1:String):String;
 function DiasDesteMes: Integer;
 
 var
@@ -2007,6 +2008,19 @@ begin
     else
       Result := Result + ' ';
   end;
+end;
+
+function ConverteAcentosPHP(pP1:String):String;
+var
+   I:Integer;
+begin
+   pP1 := ConverteAcentos(pP1);
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,.;') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+' ';
+   end;
 end;
 
 function DiasDesteMes: Integer;
