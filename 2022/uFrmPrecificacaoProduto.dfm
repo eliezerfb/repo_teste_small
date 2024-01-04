@@ -251,10 +251,9 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       Required = True
       Size = 10
     end
-    object cdsProdutosNotaPRODUTO: TIBStringField
+    object cdsProdutosNotaPRODUTO: TWideStringField
       DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'PRODUTO'
-      Origin = 'ITENS002.DESCRICAO'
       Size = 45
     end
     object cdsProdutosNotaPRECO_CUSTO: TFloatField
