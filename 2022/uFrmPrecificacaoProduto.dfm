@@ -68,6 +68,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Color = clWhite
     Ctl3D = False
     DataSource = DSProdutos
+    DrawingStyle = gdsClassic
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
