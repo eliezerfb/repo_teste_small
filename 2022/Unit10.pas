@@ -4427,6 +4427,14 @@ begin
     Form10.Top    := 0 + Form1.iVista;
   end;
 
+  {Dailon Parisotto (f-7756) 2023-01-03 Inicio}
+  {$IFNDEF VER150}
+  StringGrid2.DrawingStyle       := gdsClassic;
+  StringGrid2.GradientEndColor   := $00F0F0F0;
+  StringGrid2.GradientStartColor := $00F0F0F0;
+  {$ENDIF}
+  {Dailon Parisotto (f-7756) 2023-01-03 Fim}
+
   sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
   sLinha         := StrZero(tStringGrid(Form7.DBGrid1).Row,4,0);
   sColuna        := StrZero(Form7.DbGrid1.SelectedIndex,2,0);

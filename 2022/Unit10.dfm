@@ -11384,6 +11384,7 @@ object Form10: TForm10
           Ctl3D = False
           DefaultColWidth = 85
           DefaultRowHeight = 25
+          DrawingStyle = gdsClassic
           FixedColor = clWhite
           FixedCols = 0
           RowCount = 30
@@ -11595,6 +11596,7 @@ object Form10: TForm10
           BiDiMode = bdLeftToRight
           Ctl3D = False
           DataSource = Form7.DataSource30
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -11772,6 +11774,7 @@ object Form10: TForm10
           Height = 235
           Ctl3D = False
           DataSource = Form7.DataSource28
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -13543,6 +13546,7 @@ object Form10: TForm10
           Height = 376
           Ctl3D = False
           DataSource = Form7.DataSource6
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -13643,6 +13647,7 @@ object Form10: TForm10
           ColCount = 4
           Ctl3D = False
           DefaultColWidth = 158
+          DrawingStyle = gdsClassic
           RowCount = 10
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
           ParentCtl3D = False

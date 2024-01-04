@@ -585,6 +585,7 @@ object Form17: TForm17
       Height = 5
       Ctl3D = True
       DataSource = Form7.DataSource39
+      DrawingStyle = gdsClassic
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -13

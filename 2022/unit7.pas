@@ -8364,7 +8364,8 @@ begin
   begin
     Form7.ibDataSet3.Append;
     Form7.ibDataSet3DATA_PRO.AsDateTime := Date;
-    Form7.ibDataSet3HORA_PRO.AsString   := TimeToStr(Time);
+    //Form7.ibDataSet3HORA_PRO.AsString   := TimeToStr(Time); Mauricio Parizotto 2024-01-03 Migração delphi
+    Form7.ibDataSet3HORA_PRO.AsString   := Copy(TimeToStr(Time),1,5);
     Form30.Show;
   end else
   begin
@@ -13296,7 +13297,8 @@ begin
   ibDataSet3IDOS.AsInteger      := sProximoID; //Mauricio Parizotto 2023-11-29
   ibDataSet3NUMERO.AsString     := sNumero;
   ibDataSet3DATA.AsDateTime     := Date;
-  ibDataSet3HORA.AsString       := TimeToStr(Time);
+  //ibDataSet3HORA.AsString       := TimeToStr(Time); Mauricio Parizotto 2024-01-03
+  ibDataSet3HORA.AsString       := Copy(TimeToStr(Time),1,5);
   ibDataSet3TEMPO.AsString      := '00:45';
   ibDataSet3SITUACAO.AsString   := 'Agendada';
   {
@@ -18214,7 +18216,8 @@ begin
     begin
       Form7.ibDataSet3.Edit;
       Form7.ibDataSet3DATA_ENT.AsDateTime := Date;
-      Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time);
+      //Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time); Mauricio Parizotto 2024-01-03
+      Form7.ibDataSet3HORA_ENT.AsString := Copy(TimeToStr(Time),1,5);
     end;
   end else
   begin
@@ -18222,7 +18225,6 @@ begin
     Form7.ibDataSet3DATA_ENT.AsString := '';
     Form7.ibDataSet3HORA_ENT.AsString := '';
   end;
-  //
 end;
 
 procedure TForm7.Imprimirrecibo1Click(Sender: TObject);

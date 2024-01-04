@@ -2503,6 +2503,9 @@ end;
 
 procedure TForm12.ListBox2Click(Sender: TObject);
 begin
+  if ListBox2.Items.Count <= 0 then
+    Exit;
+
   Form7.ibDataSet35.DisableControls;
   Form7.ibDataSet35.Edit;
   Form7.ibDataSet35DESCRICAO.AsString := ListBox2.Items[ListBox2.ItemIndex];

@@ -4,6 +4,7 @@ object framePesquisaPadrao: TframePesquisaPadrao
   Width = 820
   Height = 146
   TabOrder = 0
+  PixelsPerInch = 96
   object pnlPrincipal: TPanel
     Left = 0
     Top = 0
@@ -20,6 +21,7 @@ object framePesquisaPadrao: TframePesquisaPadrao
       TabStop = False
       Align = alClient
       Color = 15790320
+      DrawingStyle = gdsClassic
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -11
