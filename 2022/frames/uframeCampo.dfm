@@ -38,6 +38,7 @@ object fFrameCampo: TfFrameCampo
     Height = 102
     Anchors = [akLeft, akTop, akRight]
     DataSource = DataSource
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
