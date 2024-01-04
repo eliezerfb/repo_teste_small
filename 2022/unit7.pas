@@ -7427,7 +7427,7 @@ begin
         end;
         p1.Next;
       end;
-      //
+
       p1.Locate('REGISTRO',sREg1,[]);
       p1.EnableControls;
       if Form12.dbGrid1.CanFocus then
@@ -7440,12 +7440,13 @@ begin
         if Form24.Visible then
           Form24.dbGrid1.SetFocus;
       end;
-      //
+
+      {Mauricio Parizotto 2024-01-004
       if p1.MoveBy(+1) = 1 then
         p1.MoveBy(-1)
       else if p1.MoveBy(-1) = -1 then
         p1.MoveBy(+1);
-      //
+      }
     end;
   end;
 end;
@@ -10051,8 +10052,6 @@ var
   sSerieNFSelecionada: String;
   IBQCONTAS: TIBQuery; // Sandro Silva 2023-09-13
 begin
-  //LogRetaguarda('9590'); // Sandro Silva 2023-09-13
-
   if oArqConfiguracao = nil then
     oArqConfiguracao := TArquivosDAT.Create(Usuario);
 
@@ -10122,7 +10121,7 @@ begin
     Form7.Panel2.Visible  := False;
     Form7.Panel3.Visible  := False;
 
-    // Recalcula a quantidade no estoque
+    {$Region'//// Módulo Estoque ////'}
     if (sModulo = 'ESTOQUE') and (not Form12.Visible) and (not Form30.Visible) then
     begin
       ibDataSet27.DisableControls;
@@ -10190,10 +10189,6 @@ begin
                 if Form7.ibDataSet27TIPO.AsString = 'KOLNAC' then
                 begin
                   ibDataSet27DESCRICAO.AsString := '<CANCELADO>';
-//                  ibDataSet27QUANTIDADE.AsFloat := 0;
-//                  ibDataSet27UNITARIO.AsFloat   := 0;
-//                  ibDataSet27TOTAL.AsFloat      := 0;
-//                  ibDataSet27DESCONTO.AsFloat   := 0;
                   ibDataSet27TIPO.AsString      := 'CANCEL'; // Resolvi este problema baseado no sincronia
                 end;
               end else
@@ -10390,8 +10385,9 @@ begin
       sModulo := 'ESTOQUE';
     end;
 
-    // Recaulcula a quantidade no estoque
-    // Recalcula a data da última venda
+    {$Endregion}
+
+    {$Region' //// Módulo Clientes ////'}
     if sModulo = 'CLIENTES' then
     begin
       try
@@ -10447,13 +10443,12 @@ begin
         sModulo := 'CLIENTES';
       end;
     end;
+    {$Endregion}
 
-    // Recaulcula a data da última venda
     dbGrid1.DataSource := Form7.DataSource13;
     Form4.Close;
-    //
+
     // Desabilita os grids e paineis secundários
-    //
     Panel9.Visible         := False;
     Panel10.Visible        := False;
     dbGrid2.Visible        := False;
@@ -10462,6 +10457,7 @@ begin
 
     Form7.Panel9.Caption :=   '0,00';
 
+    {$Region '//// Permisões Usuários'}
     try
       bSoLeitura := False;
       Mais1Ini   := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
@@ -10501,43 +10497,41 @@ begin
           bSoLeitura := True;
       end;
       Mais1Ini.Free;
-    except end;
+    except
+    end;
+    {$Endregion}
 
+    Form7.Caption := StrTran(sTitulo,'(RPS) RPS','(RPS)');
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+    try
+      if AllTrim(sModulo) <> '' then
+      begin
+        DBGrid1.Font.Name  := Mais1Ini.ReadString(sModulo,'FonteName_','Microsoft Sans Serif');
+        DBGrid1.Font.Size  := StrToInt(Mais1Ini.ReadString(sModulo,'FonteSize_','10'));
+        DBGrid1.Font.Color := StrToInt(Mais1Ini.ReadString(sModulo,'FonteColor_','0'));
 
-      Form7.Caption := StrTran(sTitulo,'(RPS) RPS','(RPS)');
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Le a fonte no .INF}                                                                                         //
-      try
-        if AllTrim(sModulo) <> '' then
-        begin
-          DBGrid1.Font.Name  := Mais1Ini.ReadString(sModulo,'FonteName_','Microsoft Sans Serif');
-          DBGrid1.Font.Size  := StrToInt(Mais1Ini.ReadString(sModulo,'FonteSize_','10'));
-          DBGrid1.Font.Color := StrToInt(Mais1Ini.ReadString(sModulo,'FonteColor_','0'));
+        if Mais1Ini.ReadString(sModulo,'FonteY_','') = ''         then
+          DBGrid1.Font.Style := [];                  //
+        if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsItalic' then
+          DBGrid1.Font.Style := [fsItalic];         //
+        if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsBold'   then
+          DBGrid1.Font.Style := [fsBold];
 
-          if Mais1Ini.ReadString(sModulo,'FonteY_','') = ''         then
-            DBGrid1.Font.Style := [];                  //
-          if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsItalic' then
-            DBGrid1.Font.Style := [fsItalic];         //
-          if Mais1Ini.ReadString(sModulo,'FonteY_','') = 'fsBold'   then
-            DBGrid1.Font.Style := [fsBold];
+        DBGrid1.TitleFont.Name  := DBGrid1.Font.Name;
 
-          DBGrid1.TitleFont.Name  := DBGrid1.Font.Name;
+        {$IFDEF VER150}
+        DBGrid1.TitleFont.Size  := DBGrid1.Font.Size +2;
+        {$ELSE}
+        DBGrid1.TitleFont.Size  := DBGrid1.Font.Size;
+        {$ENDIF}
 
-          {$IFDEF VER150}
-          DBGrid1.TitleFont.Size  := DBGrid1.Font.Size +2;
-          {$ELSE}
-          DBGrid1.TitleFont.Size  := DBGrid1.Font.Size;
-          {$ENDIF}
-
-          DBGrid1.TitleFont.Color := DBGrid1.Font.Color;
-          DBGrid1.TitleFont.sTyle := [];
-        end;
-      except
+        DBGrid1.TitleFont.Color := DBGrid1.Font.Color;
+        DBGrid1.TitleFont.sTyle := [];
       end;
-      //////////////////////////////////////////////////////
+    except
+    end;
+
       // Abilita ou desabilita os campos                   //
-      ////////////////////////////////////////////////////////
       if (sModulo = 'COMPRA') or (sModulo = 'VENDA') or (sModulo = 'OS') then
       begin
         //
@@ -10613,9 +10607,6 @@ begin
         Form7.ibDataSet23VIPI.Visible           := False;
         Form7.ibDataSet23EAN_ORIGINAL.Visible   := False;
 
-        //LogRetaguarda('unit7 ocultou colunas 10338'); // Sandro Silva 2023-12-04
-
-        //
         Form7.ibDataSet23DESCRICAO.DisplayWidth := 41;
         Form7.ibDataSet23TOTAL.DisplayWidth     := 10;
         Form7.ibDataSet23QUANTIDADE.DisplayWidth:= 9;
@@ -10639,16 +10630,12 @@ begin
 
             dbGrid3.Top            := dbGrid1.Top;
             dbGrid3.Height         := (dbGrid1.Height);
-        end else
-        begin
         end;
       end;
 
+      {$Region'//// Módulo Receber ////'}
       if (sModulo = 'RECEBER') then
       begin
-
-    //LogRetaguarda('10175'); // Sandro Silva 2023-09-13
-
         Form7.ibDataSet7FORMADEPAGAMENTO.Index  := 17; // Sandro Silva 2023-06-22
 
         ComboBox1.Items.Clear;
@@ -10702,9 +10689,6 @@ begin
         FreeAndNil(IBQCONTAS);
         {Sandro Silva 2023-09-13 fim}
 
-    //LogRetaguarda('10227'); // Sandro Silva 2023-09-13
-
-        //
         Panel9.Top      := 86;
         Panel9.Width    := Panel2.Width;
         //
@@ -10738,11 +10722,7 @@ begin
         Form7.Image308.Visible := False;
         Form7.imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
 
-    //LogRetaguarda('10263'); // Sandro Silva 2023-09-13
-
         CalculaTotalRecebido(True);
-        //
-    //LogRetaguarda('10267'); // Sandro Silva 2023-09-13
 
         Form1.IBDataSet200.Close;
         Form1.IBDataSet200.SelectSQL.Clear;
@@ -10765,11 +10745,10 @@ begin
         //
         Form7.ibDataSet25.Active := True;
         Form7.ibDataSet25.Append;
-
-    //LogRetaguarda('10291'); // Sandro Silva 2023-09-13
-
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Pagar'}
       if (sModulo = 'PAGAR') then
       begin
         ComboBox1.Items.Clear;
@@ -10851,7 +10830,9 @@ begin
         Form7.ibDataSet25.Active := True;
         Form7.ibDataSet25.Append;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Compra ////'}
       if sModulo = 'COMPRA' then
       begin
         sAjuda := 'nf_compra.htm';
@@ -10973,16 +10954,13 @@ begin
       end
       else
         Form7.ibDataSet8.DataSource := Nil;
+      {$Endregion}
 
+      {$Region'//// Módulo Venda'}
       if sModulo = 'VENDA' then
       begin
         sAjuda := 'nf_venda.htm';
-        //
-//        Form7.ibDataSet2.Close;                                                //
-//        Form7.ibDataSet2.Selectsql.Clear;                                      // receber Relacionado
-//        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR order by upper(NOME)');  //
-//        Form7.ibDataSet2.Open;
-        //
+
         Form7.ibDataSet9.Close;
         Form7.ibDataSet9.SelectSQL.Clear;
         Form7.ibDataSet9.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%VENDEDOR%')+' order by upper(NOME)');
@@ -11204,6 +11182,9 @@ begin
       else
         Form7.ibDataSet7.DataSource := Nil;
 
+      {$Endregion}
+
+      {$Region'//// Módulo OS ////'}
       if sModulo = 'OS' then
       begin
         sAjuda := 'os.htm';
@@ -11257,7 +11238,9 @@ begin
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
       end;
-      
+      {$Endregion}
+
+      {$Region'//// Módulo Nota ////'}
       if sModulo = 'NOTA' then
       begin
         sAjuda := 'nf_config.htm';
@@ -11307,7 +11290,9 @@ begin
 
         Form7.Button2.Visible := True;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Orçamento ////'}
       if Form7.sModulo = 'ORCAMENTO' then
       begin
         try
@@ -11375,7 +11360,9 @@ begin
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
-      
+      {$Endregion}
+
+      {$Region'//// Módulo Caixa'}
       if sModulo = 'CAIXA' then
       begin
         sAjuda := 'livro.htm';
@@ -11401,8 +11388,9 @@ begin
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
+      {$Endregion}
 
-
+      {$Region'//// Módlo Conversão CFOP ////' }
       {Mauricio Parizotto 2023-08-25 Inicio}
       if sModulo = 'CONVERSAOCFOP' then
       begin
@@ -11433,8 +11421,9 @@ begin
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
       {Mauricio Parizotto 2023-08-25 Fim}
+      {$Endregion}
 
-
+      {$Region '//// Módulo Perfil Tributção ////'}
       {Mauricio Parizotto 2023-08-30 Inicio}
       if sModulo = 'PERFILTRIBUTACAO' then
       begin
@@ -11481,8 +11470,9 @@ begin
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
       {Mauricio Parizotto 2023-08-30 Fim}
+      {$Endregion}
 
-
+      {$Region'//// Módulo Parametro Tributação ////'}
       {Mauricio Parizotto 2023-09-21 Inicio}
       if sModulo = 'PARAMETROTRIBUTACAO' then
       begin
@@ -11515,7 +11505,9 @@ begin
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
       {Mauricio Parizotto 2023-09-21 Fim}
+      {$Endregion}
 
+      {$Region'//// Módulo OS Situação ////'}
       {Mauricio Parizotto 2023-12-04 Inicio}
       if sModulo = 'OSSITUACAO' then
       begin
@@ -11546,8 +11538,9 @@ begin
         sMaxReg   := Mais1Ini.ReadString(sModulo,'MAX','5000');
       end;
       {Mauricio Parizotto 2023-12-04 Fim}
+      {$Endregion}
 
-
+      {$Region'//// Módulo Bancos ////'}
       if sModulo = 'BANCOS' then
       begin
         sAjuda := 'bancos.htm';
@@ -11595,9 +11588,11 @@ begin
           Form7.sRPS := 'N';
         end;
       end;
+      {$Endregion}
       
       Relatriodecomisses1.Visible := False;
 
+      {$Region'//// Módulo Clientes/Vendedor ////'}
       if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
       begin
         if sModulo = 'VENDEDOR' then
@@ -11686,19 +11681,11 @@ begin
           Form7.ibDataSet9.Open;
         end;
       end;
-      
+      {$Endregion}
+
+      {$Region'//// Módulo Estoque'}
       if sModulo = 'ESTOQUE' then
       begin
-        {
-        try
-          Form7.ibDataSet13.Close;
-          Form7.ibDataSet13.Selectsql.Clear;
-          Form7.ibDataSet13.Selectsql.Add('select * from EMITENTE');
-          Form7.ibDataSet13.Open;
-        except
-        end;
-        Mauricio Parizotto 2023-09-06}
-
         sAjuda := 'estoque.htm';
         
         //if AllTrim(Form7.ibDataSet13ESTADO.AsString) = 'SP' then  Mauricio Parizotto 2023-09-06
@@ -11751,13 +11738,12 @@ begin
           iCampos   := 51;
         {Sandro Silva 2022-12-20 fim}
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Receber'}
       // Receber
       if sModulo = 'RECEBER' then
       begin
-
-    //LogRetaguarda('11162'); // Sandro Silva 2023-09-13
-
         sAjuda := 'cr.htm';
 
         Odas1.Checked          := True;
@@ -11796,7 +11782,9 @@ begin
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Pagar ////'}
       // Pagar
       if sModulo = 'PAGAR' then
       begin
@@ -11837,7 +11825,9 @@ begin
         sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
         sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Técnico ////'}
       // Técnicos
       if sModulo = 'TECNICO' then
       begin
@@ -11866,7 +11856,9 @@ begin
         Form7.ibDataSet9COMISSA1.Visible := False;
         Form7.ibDataSet9COMISSA2.Visible := False;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Convenio ////'}
       // Convenio
       if sModulo = 'CONVENIO' then
       begin
@@ -11890,7 +11882,9 @@ begin
         sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');
         iCampos   := 5;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Contas ////'}
       // CONTAS
       if sModulo = 'CONTAS' then
       begin
@@ -11914,7 +11908,9 @@ begin
         sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTTTTT'); // Sandro Silva 2022-12-19 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTT');
         iCampos   := 9; // Sandro Silva 2022-12-19 iCampos   := 6;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Natureza OP ////'}
       // Tabela de ICM
       if sModulo = 'ICM' then
       begin
@@ -11940,7 +11936,9 @@ begin
         //iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5; Mauricio Parizotto 2023-12-11
         iCampos   := 47;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Transportadora ////'}
       if sModulo = 'TRANSPORT' then
       begin
         sAjuda := 'config_transportadoras.htm'; // Falta tranport
@@ -11963,7 +11961,9 @@ begin
         sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTFTTTFTFTT');
         iCampos   := 11;
       end;
+      {$Endregion}
 
+      {$Region'//// Módulo Grupos ////'}
       if sModulo = 'GRUPOS' then
       begin
         sAjuda := 'est_grupos.htm'; // Falta grupo
@@ -11980,7 +11980,9 @@ begin
         sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','T');
         iCampos   := 1;
       end;
-      
+      {$Endregion}
+
+      {$Region'//// Módulo Contas ////'}
       if sModulo = '2CONTAS' then
       begin
         imgFiltrar.Visible := False; // Filtros
@@ -12006,10 +12008,7 @@ begin
         imgFiltrar.Visible := True; // Filtros
         lblFiltrar.Visible := True;
       end;
-
-
-    //LogRetaguarda('11411'); // Sandro Silva 2023-09-13
-
+      {$Endregion}
 
       // dBGrid
       TabelaAberta.DisableControls;
@@ -12021,7 +12020,6 @@ begin
         Form7.DBGrid1.Options := [dgTitles, dgColLines, dgRowLines, dgTabs, dgColumnResize,dgTitleClick]; // 2CONTAS
         {$ENDIF}
 
-
         try
           for I := 1 to iCampos do
           begin
@@ -12031,11 +12029,8 @@ begin
           end;
         except
         end;
-
       except
       end;
-
-    //LogRetaguarda('11438'); // Sandro Silva 2023-09-13
 
       // Visual
       iIconeCom := 70;
@@ -12122,18 +12117,6 @@ begin
       imgFiltrar.Visible := False;
       lblFiltrar.Visible := False;
     end;
-    
-    if sModulo = 'ICM' then
-    begin
-{
-      Image209.Visible := False;
-      Image206.Visible := False;
-      Image201.Visible := False;
-      Label209.Visible := False;
-      Label206.Visible := False;
-      Label201.Visible := False;
-}
-    end;
 
     if sModulo = 'ORCAMENTO' then
     begin
@@ -12215,6 +12198,8 @@ begin
       imgFiltrar.Left := iLeft ;
     end;
 
+    {$Region'//// Monta SQL Consulta ////'}
+
     if (AllTrim(sWhere)     = 'where')     then
       swhere   := '';
     if (UpperCase(sOrderBy) = 'ORDER BY NOME')      then
@@ -12267,10 +12252,6 @@ begin
           end;
           //
           TabelaAberta.Open;
-          //
-
-    //LogRetaguarda('11679'); // Sandro Silva 2023-09-13
-
         except
           on E: Exception do
           begin
@@ -12302,7 +12283,7 @@ begin
       end;
     end;
 
-    //LogRetaguarda('11707'); // Sandro Silva 2023-09-13
+    {$Endregion}
 
     if (sModulo = 'ORCAMENTO') then
       TabelaAberta.FieldByName('Registro').Visible := False;
@@ -12325,12 +12306,10 @@ begin
     end
     else
       TabelaAberta.Last;
-    //
+
     dbGrid1.DataSource := DataSourceAtual;
 
-    //LogRetaguarda('11730'); // Sandro Silva 2023-09-13
-
-    //
+    {Mauricio Parizotto 2024-01-04 - não funciona corretamente, buga o grid
     try
       if StrToInt('0'+LimpaNumero(sLinha)) <> 0 then
       begin
@@ -12339,21 +12318,17 @@ begin
       end;
     except
     end;
+    }
 
-    //LogRetaguarda('11742'); // Sandro Silva 2023-09-13
-
-    //
     try
       dbGrid1.SelectedIndex := StrToInt('0'+LimpaNumero(sColuna));
     except
       dbGrid1.SelectedIndex := 0;
     end;
 
-    //LogRetaguarda('11751'); // Sandro Silva 2023-09-13
-
     // Este bloco tem toda a demora
     DefineLayoutFiltro;
-    //
+
     Form7.Panel7.Caption   := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
     Form7.pnlFiltro.Repaint;
@@ -12401,7 +12376,10 @@ begin
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     end;
   end;
-  
+
+
+  DefineCaptionReceberPagar;
+
   try
     if sModulo = 'CAIXA' then
     begin
@@ -12412,14 +12390,14 @@ begin
       Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,0) from rdb$database');
       Form7.ibDataset101.Open;
 
-      if (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat <> Form7.fMutado3) then // or (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat = 0) then
+      if (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat <> Form7.fMutado3) then
       begin
         Form7.fMutado3 := Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat;
         CalculaSaldo(False);
         TabelaAberta.Last;
       end;
     end;
-    
+
     if sModulo = 'BANCOS' then
     begin
       Form7.ibDataSet101.Close;
@@ -12427,7 +12405,7 @@ begin
       Form7.ibDataset101.SelectSql.Add('select gen_id(G_MUTADO,0) from rdb$database');
       Form7.ibDataset101.Open;
 
-      if (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat <> Form7.fMutado3) then // or (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat = 0) then
+      if (Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat <> Form7.fMutado3) then
       begin
         Form7.fMutado3 := Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat;
         SaldoBanco(True);
@@ -12435,8 +12413,8 @@ begin
       end;
     end;
 
-    //LogRetaguarda('11834'); // Sandro Silva 2023-09-13
-
+    {Mauricio Parizotto 2024-01-04
+    //Posiciona Grid na linha salva
     try
       if TabelaAberta.Active then
       begin
@@ -12448,9 +12426,11 @@ begin
     except
       TabelaAberta.First;
     end;
+    }
 
     try
-      if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
+      if Form7.DBGrid1.CanFocus then
+        Form7.DBGrid1.SetFocus;
 
       ArquivoAberto.EnableControls;
 
@@ -12468,6 +12448,7 @@ begin
   begin
     btnRetornoCNAB400.Visible := True; // Sandro Silva 2022-12-21 Button1.Visible := True;
   end;
+
   DefineCaptionReceberPagar;
 
   Form7.AlphaBlendValue := 255;
@@ -13349,7 +13330,7 @@ begin
   dData := ibDataSet1DATA.AsDateTime;
   Form16.Button3.Click; // Limpa os filtros //
   ibDataSet1.Locate('DATA',dData,[]);
-  ibDataSet1.MoveBy(-1);
+  //ibDataSet1.MoveBy(-1);
   //
   if Form1.bHtml1 then
   begin
@@ -13399,8 +13380,9 @@ begin
   //
   fTotal1 := 0;
   fTotal2 := 0;
-  //
-  if not ibDataSet1.BOF then ibDataSet1.MoveBy(1);
+
+  if not ibDataSet1.BOF then
+    ibDataSet1.MoveBy(1);
   while not Form7.ibDataSet1.EOF and (dData = ibDataSet1DATA.AsDateTime) do
   begin
     //
@@ -16894,12 +16876,14 @@ end;
 
 procedure TForm7.MenuItem119Click(Sender: TObject);
 begin
-  //
   Form37.Caption := 'Relatório de convênio';
-  if Form7.ibDataSet29.MoveBy(+1) = 1 then Form7.ibDataSet29.MoveBy(-1) else if Form7.ibDataSet29.MoveBy(-1) = -1 then ArquivoAberto.MoveBy(+1);
+  if Form7.ibDataSet29.MoveBy(+1) = 1 then
+    Form7.ibDataSet29.MoveBy(-1)
+  else
+    if Form7.ibDataSet29.MoveBy(-1) = -1 then
+      ArquivoAberto.MoveBy(+1);
   Form37.ShowModal;
   Form37.Caption := 'Relatório de comissões';
-  //
 end;
 
 procedure TForm7.MenuItem118Click(Sender: TObject);
@@ -17026,9 +17010,12 @@ end;
 
 procedure TForm7.Receberconvnio1Click(Sender: TObject);
 begin
-  //
   Form37.Caption := 'Receber convênio';
-  if Form7.ibDataSet29.MoveBy(+1) = 1 then Form7.ibDataSet29.MoveBy(-1) else if Form7.ibDataSet29.MoveBy(-1) = -1 then ArquivoAberto.MoveBy(+1);
+  if Form7.ibDataSet29.MoveBy(+1) = 1 then
+    Form7.ibDataSet29.MoveBy(-1)
+  else
+    if Form7.ibDataSet29.MoveBy(-1) = -1 then
+      ArquivoAberto.MoveBy(+1);
   Form37.Panel3.Visible := True;
   Form37.ShowModal;
   Form37.Caption := 'Relatório de comissões';
@@ -17406,7 +17393,11 @@ begin
   if ArquivoAberto.Active then
   begin
     if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
-    if ArquivoAberto.MoveBy(+1) = 1 then ArquivoAberto.MoveBy(-1) else if ArquivoAberto.MoveBy(-1) = -1 then ArquivoAberto.MoveBy(+1);
+    if ArquivoAberto.MoveBy(+1) = 1 then
+      ArquivoAberto.MoveBy(-1)
+    else
+      if ArquivoAberto.MoveBy(-1) = -1 then
+        ArquivoAberto.MoveBy(+1);
   end;
 end;
 
@@ -22546,9 +22537,6 @@ end;
 
 procedure TForm7.ibDataSet1BeforeInsert(DataSet: TDataSet);
 begin
-  //
-  // if (Form7.ibDataSet1ENTRADA.AsFloat + Form7.ibDataSet1SAIDA.AsFloat) = 0 then Abort;
-  //
   try
     ibDataset99.Close;
     ibDataSet99.SelectSql.Clear;
@@ -22559,34 +22547,31 @@ begin
   except abort end;
   //
   fValorAnterior := 0;
-  //
 end;
 
 procedure TForm7.IBDataSet2NewRecord(DataSet: TDataSet);
 begin
-  //
   ibDataSet2REGISTRO.AsString   := sProximo;
   ibDataSet2CADASTRO.AsDateTime := Date;
-  //
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);
 begin
-  //
+  {Mauriico Parizotto 2024-01-04
   ArquivoAberto.DisableControls;
   if ArquivoAberto.MoveBy(+1) = 1 then
     ArquivoAberto.MoveBy(-1)
-  else if ArquivoAberto.MoveBy(-1) = -1 then
-    ArquivoAberto.MoveBy(+1);
+  else
+    if ArquivoAberto.MoveBy(-1) = -1 then
+        ArquivoAberto.MoveBy(+1);
+
+
   ArquivoAberto.EnableControls;
-  //
+  }
 end;
 
 procedure TForm7.ibDataSet15BeforeInsert(DataSet: TDataSet);
 begin
-  //
-//  try if Alltrim(Form7.ibDataSet15CLIENTE.AsString) = '' then Form7.ibDataSet15.Delete; except end;
-  //
   try
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
@@ -22597,7 +22582,6 @@ begin
   except
     Abort
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet16BeforeInsert(DataSet: TDataSet);
