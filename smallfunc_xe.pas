@@ -170,6 +170,9 @@ function DiasPorMes(AAno, AMes: Integer): Integer;
 function Bisexto(AAno: Integer): Boolean;
 function LimpaLetrasPor_(pP1:String):String;
 function QuebraLinhaHtml(sTexto : string) : string;
+function LimpaNumeroDeixandoOponto(pP1:String):String;
+function Modulo_11(pP1:String):String;
+function ConverteAcentosIBPT(pP1:String):String;
 function ConverteCaracterEspecialXML(Value: String): String;
 function ConverteAcentosPHP(pP1:String):String;
 function DiasDesteMes: Integer;
@@ -1985,6 +1988,54 @@ end;
 function QuebraLinhaHtml(sTexto : string) : string;
 begin
   Result := StringReplace(sTexto,#$D#$A,'<br>',[rfReplaceAll]);
+end;
+
+function LimpaNumeroDeixandoOponto(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(Copy(pP1,I,1),'0123456789.-') > 0 then
+        Result:=Result+Copy(pP1,I,1);
+   end;
+end;
+
+function Modulo_11(pP1:String):String;
+var
+   Acumulado,I,Controle:integer;
+begin
+   //acumula a soma da multiplicação dos digitos
+   try
+     Pp1:=alltrim(pP1);
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(Pp1) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=2;
+     end;
+     //calcula o digito
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado = 10) or (Acumulado = 11)  then Acumulado:=0;
+     //devolve o digito de controle
+     Result:=IntToStr(Acumulado);
+   except Result :='0' end;
+end;
+
+function ConverteAcentosIBPT(pP1:String):String;
+var
+   I:Integer;
+begin
+   pP1 := ConverteAcentos(pP1);
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,.;') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+' ';
+   end;
 end;
 
 function ConverteCaracterEspecialXML(Value: String): String;
