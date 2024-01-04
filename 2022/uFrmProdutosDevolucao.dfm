@@ -145,6 +145,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Color = clWhite
     Ctl3D = False
     DataSource = DSProdutos
+    DrawingStyle = gdsClassic
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -306,6 +307,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Left = 216
     Top = 144
     object cdsProdutosNotaMARCADO: TWideStringField
+      DisplayLabel = ' '
       FieldName = 'MARCADO'
       Required = True
       FixedChar = True
