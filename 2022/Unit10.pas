@@ -3624,6 +3624,7 @@ begin
       CheckBox2.Checked := False;
 
     {Mauricio Parizotto 2023-09-18 Inicio}
+    fraPerfilTrib.GravarSomenteTextoEncontrato := False; // Sandro Silva 20-24.01.04
     fraPerfilTrib.TipoDePesquisa  := tpLocate; //Mauricio Parizotto 2023-10-31
     fraPerfilTrib.CampoCodigo     := Form7.ibDataSet4IDPERFILTRIBUTACAO;
     fraPerfilTrib.sCampoDescricao := 'DESCRICAO';
