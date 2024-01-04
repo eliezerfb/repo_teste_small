@@ -566,6 +566,8 @@ type
   public
     { Public declarations }
 
+    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
+
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
     sLinha : String;
@@ -787,7 +789,7 @@ begin
     {Sandro Silva 2024-01-04 inicio
     Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
     }
-    if Form7.ArquivoAberto.Recno < StrToIntDef(sTotal, 0) then
+    if Form7.ArquivoAberto.Recno > StrToIntDef(sTotal, 0) then
       Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(Form7.ArquivoAberto.Recno)
     else
       Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
@@ -2203,7 +2205,7 @@ begin
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
   try
-//    if Form7.ArquivoAberto.State <> dsInsert then
+    {Sandro Silva 2024-01-04 inicio
     for I := 0 to 29 do
     begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataSource := nil;
@@ -2211,7 +2213,19 @@ begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
       TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     end;
+    }
+    if Form10.bDesvincularCampos then
+    begin
+      for I := 0 to 29 do
+      begin
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataSource := nil;
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataField  := '';
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
+        TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
+      end;
 
+    end;
+    {Sandro Silva 2024-01-04 fim}
   except
   end;
 
@@ -3322,6 +3336,7 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
+  Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
   {Sandro Silva 2023-06-21 inicio}
   pnRelacaoComercial.BorderStyle := bsNone;
   pnRelacaoComercial.BevelOuter  := bvNone;
