@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrmPadrao, StdCtrls, Grids, DBGrids, Buttons, DB,
-  IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, SmallFunc;
+  IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, smallfunc_xe;
 
 type
   TFrmProdutosDevolucao = class(TFrmPadrao)

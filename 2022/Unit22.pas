@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, ShellApi, SmallFunc, OleCtrls, SHDocVw; //, URLMON;
+  ComCtrls, ExtCtrls, ShellApi, smallfunc_xe, OleCtrls, SHDocVw; //, URLMON;
 
 type
   TForm22 = class(TForm)

@@ -4,7 +4,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, SmallFunc;
+  Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, smallfunc_xe;
   
 type
   TForm9 = class(TForm)

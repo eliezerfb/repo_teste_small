@@ -7,8 +7,9 @@ uses
   Windows,
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
-  Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
-  DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
+  Buttons, smallfunc_xe, DB, shellapi, ComCtrls, Grids,
+  DBGrids, Printers
+  , JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
   uframeCampo;
@@ -451,9 +452,9 @@ type
       Shift: TShiftState);
     procedure Image5Click(Sender: TObject);
     procedure WebBrowser1NavigateComplete2(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
+      const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
+      const pDisp: IDispatch; const URL: OleVariant);
     procedure FormShow(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
@@ -4356,13 +4357,13 @@ begin
 end;
 
 procedure TForm10.WebBrowser1NavigateComplete2(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+  const pDisp: IDispatch; const URL: OleVariant);
 begin
   Form10.Tag := 33;
 end;
 
 procedure TForm10.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+  const pDisp: IDispatch; const URL: OleVariant);
 begin
   Form10.Tag := Form10.Tag + 1;
 end;

@@ -14,7 +14,6 @@ object Form19: TForm19
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -719,7 +718,6 @@ object Form19: TForm19
         Top = 15
         Width = 60
         Height = 21
-        ItemHeight = 13
         TabOrder = 0
         Text = '2'
         Items.Strings = (
@@ -739,7 +737,6 @@ object Form19: TForm19
         Top = 45
         Width = 60
         Height = 21
-        ItemHeight = 13
         TabOrder = 1
         Text = '2'
         Items.Strings = (
@@ -754,7 +751,6 @@ object Form19: TForm19
         Top = 75
         Width = 60
         Height = 21
-        ItemHeight = 13
         TabOrder = 2
         Text = '2'
         Items.Strings = (
@@ -769,7 +765,6 @@ object Form19: TForm19
         Top = 190
         Width = 40
         Height = 21
-        ItemHeight = 13
         TabOrder = 3
         Text = '20'
         Visible = False
@@ -828,7 +823,6 @@ object Form19: TForm19
         Top = 220
         Width = 40
         Height = 21
-        ItemHeight = 13
         TabOrder = 4
         Text = '5'
         Visible = False
@@ -887,7 +881,6 @@ object Form19: TForm19
         Top = 250
         Width = 40
         Height = 21
-        ItemHeight = 13
         TabOrder = 5
         Text = '20'
         Visible = False
@@ -946,7 +939,6 @@ object Form19: TForm19
         Top = 280
         Width = 40
         Height = 21
-        ItemHeight = 13
         TabOrder = 6
         Text = '5'
         Visible = False
@@ -1005,7 +997,6 @@ object Form19: TForm19
         Top = 310
         Width = 40
         Height = 21
-        ItemHeight = 13
         TabOrder = 7
         Text = '1'
         Visible = False
@@ -1020,7 +1011,6 @@ object Form19: TForm19
         Top = 105
         Width = 60
         Height = 21
-        ItemHeight = 13
         TabOrder = 8
         Text = ' '
         OnExit = ComboBox11Exit
@@ -1053,7 +1043,6 @@ object Form19: TForm19
         Top = 30
         Width = 260
         Height = 21
-        ItemHeight = 13
         TabOrder = 0
         Text = 'R$ 10.000,00'
         Items.Strings = (
@@ -1096,7 +1085,6 @@ object Form19: TForm19
         Top = 80
         Width = 260
         Height = 21
-        ItemHeight = 13
         TabOrder = 1
         Text = '1,50 %'
         Items.Strings = (
@@ -1164,7 +1152,6 @@ object Form19: TForm19
         Top = 90
         Width = 200
         Height = 21
-        ItemHeight = 13
         TabOrder = 2
       end
       object ComboBoxNF2: TComboBox
@@ -1172,7 +1159,6 @@ object Form19: TForm19
         Top = 120
         Width = 200
         Height = 21
-        ItemHeight = 13
         TabOrder = 3
       end
       object ComboBoxImpressora: TComboBox
@@ -1180,7 +1166,6 @@ object Form19: TForm19
         Top = 280
         Width = 300
         Height = 21
-        ItemHeight = 13
         TabOrder = 4
         Text = 'ComboBoxImpressora'
         Visible = False
@@ -1190,7 +1175,6 @@ object Form19: TForm19
         Top = 60
         Width = 200
         Height = 21
-        ItemHeight = 13
         TabOrder = 1
       end
       object ComboBoxORCA: TComboBox
@@ -1198,7 +1182,6 @@ object Form19: TForm19
         Top = 30
         Width = 200
         Height = 21
-        ItemHeight = 13
         TabOrder = 0
       end
     end

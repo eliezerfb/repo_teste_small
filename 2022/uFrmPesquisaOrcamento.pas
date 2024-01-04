@@ -35,7 +35,7 @@ var
 implementation
 
 uses uFuncoesBancoDados
-  , SmallFunc
+  , smallfunc_xe
   , Unit7
   , uFuncoesRetaguarda
   , uSmallConsts

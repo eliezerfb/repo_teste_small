@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uframePesquisaPadrao, Grids, DBGrids, ExtCtrls, DB, SmallFunc;
+  Dialogs, uframePesquisaPadrao, Grids, DBGrids, ExtCtrls, DB, smallfunc_xe;
 
 type
   TframePesquisaProduto = class(TframePesquisaPadrao)

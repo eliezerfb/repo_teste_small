@@ -12,7 +12,6 @@ object Form10: TForm10
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -1754,7 +1753,6 @@ object Form10: TForm10
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox8Change
@@ -3183,7 +3181,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 9
           OnChange = cboCST_ProdChange
@@ -10476,7 +10473,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = ComboBox9Change
@@ -10508,7 +10504,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 4
           OnChange = ComboBox5Change
@@ -10529,7 +10524,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 5
           OnChange = ComboBox6Change
@@ -10550,7 +10544,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 7
           OnChange = cboOrigemProdChange
@@ -10597,7 +10590,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 8
           OnChange = cboCSOSN_ProdChange
@@ -10640,7 +10632,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 11
           OnChange = ComboBox11Change
@@ -10686,7 +10677,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 13
           OnChange = ComboBox14Change
@@ -10715,7 +10705,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 12
           OnChange = ComboBox15Change
@@ -10864,11 +10853,15 @@ object Form10: TForm10
           ParentColor = False
           ParentCtl3D = False
           TabOrder = 0
+          ExplicitLeft = 110
+          ExplicitTop = 25
+          ExplicitWidth = 390
           DesignSize = (
             390
             22)
           inherited txtCampo: TEdit
             Width = 390
+            ExplicitWidth = 390
           end
           inherited gdRegistros: TDBGrid
             Width = 390
@@ -10949,7 +10942,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 0
           OnChange = ComboBox1Change
@@ -11102,7 +11094,6 @@ object Form10: TForm10
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox7Change
@@ -11260,7 +11251,6 @@ object Form10: TForm10
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox10Change
@@ -11469,7 +11459,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11488,7 +11478,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11507,7 +11497,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11526,7 +11516,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11545,7 +11535,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11564,7 +11554,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11583,7 +11573,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11930,9 +11920,15 @@ object Form10: TForm10
           Height = 100
           TabOrder = 9
           Visible = False
+          ExplicitLeft = 20
+          ExplicitTop = 280
+          ExplicitWidth = 781
+          ExplicitHeight = 100
           inherited pnlPrincipal: TPanel
             Width = 781
             Height = 100
+            ExplicitWidth = 781
+            ExplicitHeight = 100
             inherited dbgItensPesq: TDBGrid
               Width = 781
               Height = 100
@@ -13517,7 +13513,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 0
           OnChange = ComboBox12Change
@@ -13534,7 +13529,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 2
           OnChange = ComboBox13Change
@@ -15082,6 +15076,8 @@ object Form10: TForm10
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 504
     Top = 64
   end

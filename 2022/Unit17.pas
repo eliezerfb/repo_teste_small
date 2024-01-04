@@ -5,8 +5,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, DBCtrls, Mask, SMALL_DBEdit, ExtCtrls, HtmlHelp, ShellApi, Grids,
-  DBGrids, SmallFunc, strutils, 
+  StdCtrls, DBCtrls, Mask, SMALL_DBEdit, ExtCtrls
+  ,ShellApi, Grids,
+  DBGrids, smallfunc_xe, strutils,
   WinTypes, WinProcs, IniFiles, Buttons, DB, ComCtrls, Clipbrd, OleCtrls, SHDocVw, Registry,
   IBCustomDataSet;
 

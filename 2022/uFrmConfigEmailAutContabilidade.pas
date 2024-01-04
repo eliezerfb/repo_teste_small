@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, SmallFunc, Buttons, ExtCtrls;
+  Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, smallfunc_xe, Buttons, ExtCtrls;
 
 type
   TfrmConfigEmailAutContab = class(TFrmPadrao)

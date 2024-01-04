@@ -5,8 +5,9 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
-  StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
-  SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
+  StdCtrls, Unit10, Unit11, Unit14, Unit16, smallfunc_xe, Mask, DBCtrls,
+  SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd
+  , jpeg, MAPI, Variants,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, {MD5,} xmldom, XMLIntf,
   msxmldom, XMLDoc,

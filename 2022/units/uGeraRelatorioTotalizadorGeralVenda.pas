@@ -6,7 +6,7 @@ uses
   uIGeraRelatorioTotalizadorGeralVenda, uSmallEnumerados, IBDataBase,
   IBQuery, SysUtils, uConectaBancoSmall, uIEstruturaTipoRelatorioPadrao,
   DB, DBClient, udmRelTotalizadorVendasGeral, Variants, uNotaFiscalEletronica,
-  smallfunc, Windows;
+  smallfunc_xe, Windows;
 
 type
   TGeraRelatorioTotalizadorGeralVenda = class(TInterfacedObject, IGeraRelatorioTotalizadorGeralVenda)

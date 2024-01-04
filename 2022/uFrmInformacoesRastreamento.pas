@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB, smallfunc,
+  Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB, smallfunc_xe,
   DBClient, Grids, DBGrids, IBCustomDataSet;
 
 const COR_CAMPO_OBRIGATORIO = $0080FFFF;

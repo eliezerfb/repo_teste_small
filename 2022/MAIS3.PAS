@@ -4,8 +4,9 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99, SmallFunc,
-  ShellApi, HtmlHelp;
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99, smallfunc_xe,
+  ShellApi
+  ;
 
 type
     TSenhas = class(TForm)
@@ -132,7 +133,8 @@ procedure TSenhas.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_F1 then
-    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('login.htm')));
+   HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('login.htm')));
+   //HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('login.htm')));
 end;
 
 procedure TSenhas.USUARIOExit(Sender: TObject);

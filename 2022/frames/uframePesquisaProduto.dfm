@@ -1,4 +1,5 @@
 inherited framePesquisaProduto: TframePesquisaProduto
+  PixelsPerInch = 96
   inherited pnlPrincipal: TPanel
     inherited dbgItensPesq: TDBGrid
       Columns = <

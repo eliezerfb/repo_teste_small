@@ -12,7 +12,6 @@ object Form16: TForm16
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -96,6 +95,7 @@ object Form16: TForm16
       Ctl3D = False
       ParentCtl3D = False
       TabOrder = 0
+      Text = ''
       OnExit = MaskEdit1Exit
       OnKeyPress = MaskEdit1KeyPress
       OnKeyUp = MaskEdit1KeyUp
@@ -108,6 +108,7 @@ object Form16: TForm16
       Ctl3D = False
       ParentCtl3D = False
       TabOrder = 1
+      Text = ''
       OnKeyPress = MaskEdit1KeyPress
       OnKeyUp = MaskEdit2KeyUp
     end

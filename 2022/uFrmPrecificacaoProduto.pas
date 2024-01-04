@@ -63,7 +63,7 @@ implementation
 uses Unit7
   , uArquivosDAT
   , Mais
-  , SmallFunc
+  , smallfunc_xe
   , uDialogs, uFuncoesRetaguarda, uFuncoesBancoDados;
 
 {$R *.dfm}

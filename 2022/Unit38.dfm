@@ -12,7 +12,6 @@ object Form38: TForm38
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -166,8 +165,8 @@ object Form38: TForm38
       Top = 32
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 6
       Visible = False
@@ -177,8 +176,8 @@ object Form38: TForm38
       Top = 72
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 7
       Visible = False
@@ -305,7 +304,7 @@ object Form38: TForm38
         Align = alClient
         CalColors.BackColor = clWhite
         CalColors.TitleBackColor = 14456320
-        Date = 37168.572637337970000000
+        Date = 37168.000000000000000000
         ShowToday = False
         ShowTodayCircle = False
         TabOrder = 0
@@ -446,7 +445,6 @@ object Form38: TForm38
       Top = 150
       Width = 160
       Height = 21
-      ItemHeight = 13
       TabOrder = 14
       Text = 'ComboBox1'
       Visible = False

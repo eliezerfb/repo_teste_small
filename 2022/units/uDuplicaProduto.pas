@@ -30,7 +30,7 @@ type
 
 implementation
 
-uses SysUtils, SmallFunc, uSmallResourceString, uDialogs,
+uses SysUtils, smallfunc_xe, uSmallResourceString, uDialogs,
   uFuncoesBancoDados;
 
 { TDuplicaProduto }

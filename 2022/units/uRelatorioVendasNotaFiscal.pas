@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormRelatorioPadrao, StdCtrls, Buttons, ExtCtrls, CheckLst,
   ComCtrls, uIEstruturaTipoRelatorioPadrao, uIEstruturaRelatorioPadrao,
-  IBQuery, DB, DBClient, SmallFunc;
+  IBQuery, DB, DBClient, smallfunc_xe;
 
 type
   TfrmRelVendasNotaFiscal = class(TfrmRelatorioPadrao)

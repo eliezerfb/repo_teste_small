@@ -1,16 +1,15 @@
 object Form6: TForm6
   Left = 606
   Top = 274
-  Width = 377
-  Height = 359
   Caption = 'Download do XML'
+  ClientHeight = 320
+  ClientWidth = 361
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   PixelsPerInch = 96

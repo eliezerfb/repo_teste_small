@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFormRelatorioPadrao, StdCtrls, Buttons, ExtCtrls, CheckLst,
-  ComCtrls, uIEstruturaTipoRelatorioPadrao, DB, IBQuery, SmallFunc,
+  ComCtrls, uIEstruturaTipoRelatorioPadrao, DB, IBQuery, smallfunc_xe,
   uIEstruturaRelatorioPadrao, IBCustomDataSet, DBClient;
 
 type

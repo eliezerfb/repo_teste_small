@@ -10,7 +10,7 @@ uses
   , Classes
   , Forms
   , Winsock
-  , SmallFunc
+  , smallfunc_xe
   , IniFiles
   , Unit22
   , Unit3

@@ -6,7 +6,7 @@ uses
   SysUtils
   , StrUtils
   , StdCtrls
-  , SmallFunc
+  , smallfunc_xe
   , uFuncoesBancoDados
   , Dialogs
   , DB

@@ -6,7 +6,7 @@ uses
   SysUtils
   , Controls
   , Forms
-  , SmallFunc
+  , smallfunc_xe
   , DB
   , IBCustomDataSet
   , IBQuery

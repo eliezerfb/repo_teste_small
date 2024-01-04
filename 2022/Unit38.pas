@@ -5,7 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, IniFiles, SmallFunc, ShellApi, checklst,
+  StdCtrls, ComCtrls, ExtCtrls, IniFiles, smallfunc_xe, ShellApi, checklst,
   Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils, FileCtrl;
 
 type

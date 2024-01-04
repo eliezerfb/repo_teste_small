@@ -12,7 +12,6 @@ object Form40: TForm40
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   PixelsPerInch = 96

@@ -3,7 +3,7 @@ unit uNotaFiscalEletronica;
 interface
 
 uses
-  Dialogs, Classes, SysUtils, SmallFunc,
+  Dialogs, Classes, SysUtils, smallfunc_xe,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   Forms, Windows,DB,
   Controls, Contnrs;
