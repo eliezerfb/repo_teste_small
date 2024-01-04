@@ -13140,7 +13140,6 @@ object Form7: TForm7
       end
       object Mostrartodososclientesefornecedores1: TMenuItem
         Caption = 'Todos'
-        OnClick = Mostrartodososclientesefornecedores1Click
       end
     end
     object MenuItem9: TMenuItem

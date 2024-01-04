@@ -1804,7 +1804,6 @@ type
     procedure ibDataSet8VALOR_PAGOChange(Sender: TField);
     procedure ibDataSet8VALOR_PAGOValidate(Sender: TField);
     procedure ibDataSet8NewRecord(DataSet: TDataSet);
-    procedure Mostrartodososclientesefornecedores1Click(Sender: TObject);
     procedure Sosclientes1Click(Sender: TObject);
     procedure Sosfornecedores1Click(Sender: TObject);
     procedure Acertodecontasde2Click(Sender: TObject);
@@ -2362,6 +2361,7 @@ type
     procedure SalvaXMLNFSaida(AcCaminho: String = '');
     function TestaNFSaidaFaturada: Boolean;
     procedure FechaModulos;
+    procedure EscolheOclifor(Sender: TObject);
   public
     // Public declarations
 
@@ -11619,7 +11619,9 @@ begin
 
           // Menu
           Form7.Menu            := mmCLifor;
-          Mostrartodososclientesefornecedores1.Checked := True;
+
+          if not Assigned(Mostrartodososclientesefornecedores1.OnClick) then
+            Mostrartodososclientesefornecedores1.Checked := True;
 
           // Sql
           sSelect   := 'select * from CLIFOR';
@@ -17475,17 +17477,6 @@ begin
   { Sugere sempre a data de vencimento de acordo com a configuração }
   ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
   ibDataSet8PORTADOR.AsString     := '';
-end;
-
-procedure TForm7.Mostrartodososclientesefornecedores1Click(
-  Sender: TObject);
-begin
-  sWhere := '';
-
-  Form7.Close;
-  Form7.Show;
-
-  Mostrartodososclientesefornecedores1.Checked := False;
 end;
 
 procedure TForm7.Sosclientes1Click(Sender: TObject);
@@ -27368,7 +27359,12 @@ var
   bI : Boolean;
   NewItem: TMenuItem;
 begin
-  if ibDataSet2ATIVO.AsString='1' then Ativo2.Checked := False else Ativo2.Checked := True;
+  if ibDataSet2ATIVO.AsString='1' then
+    Ativo2.Checked := False
+  else
+    Ativo2.Checked := True;
+
+  Mostrartodososclientesefornecedores1.OnClick := EscolheOclifor;
   //
   for I := 0 to Form10.ComboBox8.Items.Count -1 do
   begin
@@ -27393,13 +27389,45 @@ begin
         NewItem         := TMenuItem.Create(Exibir1);
         NewItem.Caption := 'Só '+Form10.ComboBox8.Items[J];
         Exibir1.Add(NewItem);
-        NewItem.OnClick := Form1.EscolheOclifor;
+        NewItem.OnClick := Self.EscolheOclifor;
       end;
     end;
   end;
 end;
 
-procedure TForm7.ibDataSet4PROMOINISetText(Sender: TField;
+procedure TForm7.EscolheOclifor(Sender:TObject);
+var
+  i: Integer;
+  oMenuItem: TMenuItem;
+  bNosDinamicos: Boolean;
+begin
+  bNosDinamicos := False;
+
+  oMenuItem := (Sender as TMenuItem);
+
+  sWhere := EmptyStr;
+
+  if oMenuItem <> Mostrartodososclientesefornecedores1 then
+    Form7.sWhere  := 'where CLIFOR='+QuotedStr( Copy(oMenuItem.Caption,4,Length(oMenuItem.Caption)-2))+ ' ';
+
+  oMenuItem.Checked := True;
+  for I := 0 to Pred(Exibir1.Count) do
+  begin
+    if not bNosDinamicos then
+    begin
+      bNosDinamicos := (Exibir1.Items[I].Caption = '-');
+      Continue;
+    end;
+
+    if (bNosDinamicos) and (Exibir1.Items[I].Caption <> oMenuItem.Caption) then
+      Exibir1.Items[I].Checked := False;
+  end;
+
+  Form7.Close;
+  Form7.Show;
+end;
+
+ procedure TForm7.ibDataSet4PROMOINISetText(Sender: TField;
   const Text: String);
 begin
   { ------------------------------------------------------------------ }
