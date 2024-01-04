@@ -1173,6 +1173,7 @@ begin
     close;
     Form1.Close;
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 end;
 

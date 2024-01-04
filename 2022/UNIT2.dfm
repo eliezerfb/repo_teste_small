@@ -14,7 +14,6 @@ object Form2: TForm2
   Font.Height = -12
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   Position = poDesktopCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -453,7 +452,6 @@ object Form2: TForm2
       BevelOuter = bvNone
       Style = csDropDownList
       Ctl3D = True
-      ItemHeight = 16
       ParentCtl3D = False
       TabOrder = 23
       OnClick = UsuarioClick
