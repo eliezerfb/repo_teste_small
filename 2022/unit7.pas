@@ -8444,7 +8444,9 @@ begin
         end else
         begin
           Form10.Show;
+          Form7.TabelaAberta.Cancel; //2024-01-03
           Form10.Image201Click(Sender);
+          Form7.TabelaAberta.Append; //2024-01-03
         end;
       end;
     end;
@@ -17993,7 +17995,8 @@ begin
   if Form7.ibDataSet9NOME.AsString = Form7.ibDataset2NOME.AsString then
   begin
     try
-      Form7.ibDataSet9.Delete;
+      if Form7.ibDataSet9.RecordCount > 0  then // Se ambos estiverem vazios, Form7.ibDataSet9NOME.AsString e Form7.ibDataset2NOME.AsString ocorre erro
+        Form7.ibDataSet9.Delete;
     except end;
   end;
 end;
