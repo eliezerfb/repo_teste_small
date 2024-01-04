@@ -175,6 +175,7 @@ function Modulo_11(pP1:String):String;
 function ConverteAcentosIBPT(pP1:String):String;
 function ConverteCaracterEspecialXML(Value: String): String;
 function ConverteAcentosPHP(pP1:String):String;
+procedure SleepWithoutFreeze(msec: int64);
 function DiasDesteMes: Integer;
 
 var
@@ -2074,9 +2075,27 @@ begin
    end;
 end;
 
+procedure SleepWithoutFreeze(msec: int64);
+var
+  Start, Elapsed: DWORD;
+begin
+  Start := GetTickCount;
+  Elapsed := 0;
+  repeat
+    // (WAIT_OBJECT_0+nCount) is returned when a message is in the queue.
+    // WAIT_TIMEOUT is returned when the timeout elapses.
+    if MsgWaitForMultipleObjects(0, Pointer(nil)^, FALSE, msec-Elapsed, QS_ALLINPUT) <> WAIT_OBJECT_0 then Break;
+    Application.ProcessMessages;
+    Elapsed := GetTickCount - Start;
+  until Elapsed >= msec;
+end;
+
 function DiasDesteMes: Integer;
 begin
   Result := DiasPorMes(Year(Date), Month(Date));
 end;
+
+
+
 
 end.
